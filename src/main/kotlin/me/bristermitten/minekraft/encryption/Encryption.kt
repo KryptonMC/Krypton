@@ -2,15 +2,30 @@ package me.bristermitten.minekraft.encryption
 
 import java.security.KeyPair
 import java.security.KeyPairGenerator
+import java.security.PublicKey
+import javax.crypto.Cipher
 
-object Encryption
-{
-    val keyPair: KeyPair = genKeyPair()
+class Encryption {
+    private val keyPair: KeyPair = genKeyPair()
 
-    private fun genKeyPair(): KeyPair
-    {
-        val generator = KeyPairGenerator.getInstance("RSA")
+
+    val public: PublicKey = keyPair.public
+
+    private fun genKeyPair(): KeyPair {
+        val generator = KeyPairGenerator.getInstance(PAIR_ALGORITHM)
         generator.initialize(1024)
         return generator.generateKeyPair()
+    }
+
+    fun decryptWithPrivateKey(encryptedActual: ByteArray): ByteArray {
+        val cipher = Cipher.getInstance(PAIR_ALGORITHM)
+        cipher.init(Cipher.DECRYPT_MODE, keyPair.private)
+        return cipher.doFinal(encryptedActual)
+    }
+
+
+    companion object {
+        const val SHARED_SECRET_ALGORITHM = "AES/CFB8/NoPadding"
+        const val PAIR_ALGORITHM = "RSA"
     }
 }

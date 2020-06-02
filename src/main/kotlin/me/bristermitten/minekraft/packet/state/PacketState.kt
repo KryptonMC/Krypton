@@ -1,7 +1,8 @@
-package me.bristermitten.minekraft.packet
+package me.bristermitten.minekraft.packet.state
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
+import me.bristermitten.minekraft.packet.Packet
 
 enum class PacketState(private val id: Int)
 {

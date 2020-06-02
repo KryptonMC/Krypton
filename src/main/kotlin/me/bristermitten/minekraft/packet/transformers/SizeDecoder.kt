@@ -1,4 +1,4 @@
-package me.bristermitten.minekraft.packet.codec
+package me.bristermitten.minekraft.packet.transformers
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled

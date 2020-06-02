@@ -3,28 +3,26 @@ package me.bristermitten.minekraft.packet.out
 import io.netty.buffer.ByteBuf
 import me.bristermitten.minekraft.extension.writeString
 import me.bristermitten.minekraft.extension.writeVarInt
-import me.bristermitten.minekraft.packet.Packet
-import me.bristermitten.minekraft.packet.PacketInfo
-import me.bristermitten.minekraft.packet.PacketState
+import me.bristermitten.minekraft.packet.state.LoginPacket
 import java.security.PublicKey
 
-class PacketOutEncryptionRequest(
-    private val serverId: String,
-    private val publicKey: PublicKey,
-    private val verifyToken: ByteArray
-) : Packet
-{
-    override val info = Companion
 
-    companion object : PacketInfo
+class PacketOutEncryptionRequest(
+        private val publicKey: PublicKey,
+        private val verifyToken: ByteArray
+) : LoginPacket(0x01)
+{
+    companion object
     {
-        override val id = 0x01
-        override val state = PacketState.LOGIN
+        /**
+         * Will always be empty in the modern protocol
+         */
+        const val SERVER_ID = ""
     }
 
     override fun write(buf: ByteBuf)
     {
-        buf.writeString(serverId)
+        buf.writeString(SERVER_ID)
 
         val encoded = publicKey.encoded
         buf.writeVarInt(encoded.size)
@@ -32,6 +30,5 @@ class PacketOutEncryptionRequest(
 
         buf.writeVarInt(verifyToken.size)
         buf.writeBytes(verifyToken)
-
     }
 }

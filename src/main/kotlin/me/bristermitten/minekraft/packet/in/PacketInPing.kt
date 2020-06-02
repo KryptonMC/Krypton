@@ -3,7 +3,7 @@ package me.bristermitten.minekraft.packet.`in`
 import io.netty.buffer.ByteBuf
 import me.bristermitten.minekraft.packet.Packet
 import me.bristermitten.minekraft.packet.PacketInfo
-import me.bristermitten.minekraft.packet.PacketState
+import me.bristermitten.minekraft.packet.state.PacketState
 
 class PacketInPing : Packet
 {

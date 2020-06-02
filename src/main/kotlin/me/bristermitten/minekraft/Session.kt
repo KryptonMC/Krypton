@@ -1,51 +1,67 @@
 package me.bristermitten.minekraft
 
 import io.netty.channel.Channel
-import me.bristermitten.minekraft.extension.pollEach
+import me.bristermitten.minekraft.encryption.Encryption.Companion.SHARED_SECRET_ALGORITHM
+import me.bristermitten.minekraft.encryption.toDecryptingCipher
+import me.bristermitten.minekraft.encryption.toEncryptingCipher
 import me.bristermitten.minekraft.packet.Packet
 import me.bristermitten.minekraft.packet.PacketHandler
-import me.bristermitten.minekraft.packet.PacketState
-import java.util.*
+import me.bristermitten.minekraft.packet.state.PacketState
+import me.bristermitten.minekraft.packet.transformers.PacketDecoder
+import me.bristermitten.minekraft.packet.transformers.PacketDecrypter
+import me.bristermitten.minekraft.packet.transformers.PacketEncoder
+import me.bristermitten.minekraft.packet.transformers.PacketEncrypter
+import javax.crypto.SecretKey
 
-class Session(val channel: Channel)
+class Session(private val channel: Channel, private val server: Server)
 {
 
-    private val handler = PacketHandler()
+    private val handler = PacketHandler(this, server)
+    var isEncrypted = false
+        private set
+
+    private lateinit var packetDecrypter: PacketDecrypter
+    private lateinit var packetEncrypter: PacketEncrypter
 
     @Volatile
-    var currentState: PacketState = PacketState.HANDSHAKE
-
-    private val outQueue: Queue<Packet> = LinkedList()
-    private val inQueue: Queue<Packet> = LinkedList()
+    internal var currentState: PacketState = PacketState.HANDSHAKE
 
     fun sendPacket(packet: Packet)
     {
-        synchronized(outQueue) {
-            outQueue.add(packet)
-        }
+        channel.writeAndFlush(packet)
     }
 
-    fun pulse()
-    {
-        synchronized(inQueue) {
-            inQueue.pollEach {
-                handler.handle(this, it)
-            }
-        }
-
-        synchronized(outQueue) {
-            outQueue.pollEach {
-                channel.writeAndFlush(it)
-            }
-        }
-
-
-    }
 
     fun receive(msg: Packet)
     {
-        synchronized(inQueue) {
-            inQueue.add(msg)
+        handler.handle(msg)
+    }
+
+    fun verifyToken(expected: ByteArray, encryptedActual: ByteArray)
+    {
+
+        val actual = server.encryption.decryptWithPrivateKey(encryptedActual)
+        require(actual.contentEquals(expected)) {
+            "Decrypted Verify Token did not match original!, ${expected.contentToString()}, ${actual.contentToString()}"
         }
+        //TODO fail by disconnecting
+    }
+
+    fun commenceEncryption(secretKey: SecretKey)
+    {
+        packetDecrypter = PacketDecrypter(secretKey.toDecryptingCipher(SHARED_SECRET_ALGORITHM))
+        packetEncrypter = PacketEncrypter(secretKey.toEncryptingCipher(SHARED_SECRET_ALGORITHM))
+
+        channel.pipeline().addBefore(
+                PacketDecoder.NETTY_NAME,
+                "decrypt",
+                packetDecrypter
+        )
+
+        channel.pipeline().addBefore(
+                PacketEncoder.NETTY_NAME, "encrypt", packetEncrypter
+        )
+
+        isEncrypted = true
     }
 }

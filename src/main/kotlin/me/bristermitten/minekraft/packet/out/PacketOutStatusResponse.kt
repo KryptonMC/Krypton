@@ -7,7 +7,7 @@ import kotlinx.serialization.json.JsonConfiguration
 import me.bristermitten.minekraft.extension.writeString
 import me.bristermitten.minekraft.packet.Packet
 import me.bristermitten.minekraft.packet.PacketInfo
-import me.bristermitten.minekraft.packet.PacketState
+import me.bristermitten.minekraft.packet.state.PacketState
 import me.bristermitten.minekraft.packet.data.StatusResponse
 
 class PacketOutStatusResponse(private val value: StatusResponse) : Packet

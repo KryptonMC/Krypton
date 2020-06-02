@@ -1,17 +1,11 @@
 package me.bristermitten.minekraft
 
-import me.bristermitten.minekraft.channel.NettyThread
-import me.bristermitten.minekraft.packet.PacketLoader
+import net.minecraft.server.v1_15_R1.EnumProtocol
+import net.minecraft.server.v1_15_R1.EnumProtocolDirection
+import net.minecraft.server.v1_15_R1.MinecraftServer
+import net.minecraft.server.v1_15_R1.PacketPlayOutLogin
 
-fun main()
-{
-    PacketLoader.loadAll()
-
-    NettyThread().start()
-    println("Started Netty Thread.")
-
-    while (true)
-    {
-        SessionStorage.pulse()
-    }
+fun main() {
+    println(EnumProtocol.PLAY.a(EnumProtocolDirection.CLIENTBOUND, PacketPlayOutLogin()))
+    Server().start()
 }

@@ -5,7 +5,7 @@ import me.bristermitten.minekraft.extension.logger
 import me.bristermitten.minekraft.extension.readString
 import me.bristermitten.minekraft.packet.Packet
 import me.bristermitten.minekraft.packet.PacketInfo
-import me.bristermitten.minekraft.packet.PacketState
+import me.bristermitten.minekraft.packet.state.PacketState
 
 class PacketInLoginStart : Packet
 {

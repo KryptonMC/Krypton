@@ -1,11 +1,11 @@
-package me.bristermitten.minekraft.packet.codec
+package me.bristermitten.minekraft.packet.transformers
 
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
 import me.bristermitten.minekraft.channel.ChannelHandler
 import me.bristermitten.minekraft.extension.readVarInt
-import me.bristermitten.minekraft.packet.PacketState
+import me.bristermitten.minekraft.packet.state.PacketState
 import me.bristermitten.minekraft.packet.`in`.PacketInHandshake
 
 class PacketDecoder : ByteToMessageDecoder()
@@ -18,7 +18,6 @@ class PacketDecoder : ByteToMessageDecoder()
         }
 
         val id = buf.readVarInt()
-
         val session = ctx.pipeline().get(ChannelHandler::class.java).session
         val packet = session.currentState.createPacket(id)
 
@@ -44,6 +43,10 @@ class PacketDecoder : ByteToMessageDecoder()
 
         out.add(packet)
 
+    }
+
+    companion object {
+        const val NETTY_NAME = "Decoder"
     }
 
 }
