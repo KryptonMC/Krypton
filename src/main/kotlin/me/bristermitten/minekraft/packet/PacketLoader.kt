@@ -20,5 +20,8 @@ object PacketLoader
         //LOGIN
         PacketState.LOGIN.registerPacketType(0, ::PacketInLoginStart)
         PacketState.LOGIN.registerPacketType(1, ::PacketInEncryptionResponse)
+
+        //PLAY
+//        PacketState.PLAY.registerPacketType(5, ) TODO implement
     }
 }

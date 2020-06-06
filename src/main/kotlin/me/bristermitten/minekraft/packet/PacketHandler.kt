@@ -28,7 +28,7 @@ class PacketHandler(private val session: Session, private val server: Server)
         {
             is PacketInPing -> handlePing(packet)
             is PacketInStatusRequest -> handleStatusPacket()
-            is PacketInLoginStart -> doLoginSequence()
+            is PacketInLoginStart -> sendEncryptionRequest()
             is PacketInEncryptionResponse -> handleEncryptionResponse(packet)
         }
     }
@@ -74,22 +74,23 @@ class PacketHandler(private val session: Session, private val server: Server)
                 UUID.fromString("876ce46d-dc56-4a17-9644-0be67fe7c7f6"),
                 "BristerMitten"
         ))
-        println("Sent final packet!")
+
         session.currentState = PacketState.PLAY
 
         session.sendPacket(PacketOutJoinGame())
+        session.sendPacket(
+            PacketOutPluginMessage()
+        )
+        println("Sent final packet!")
     }
 
-    private fun doLoginSequence()
+    private fun sendEncryptionRequest()
     {
         session.sendPacket(
                 PacketOutEncryptionRequest(
                         server.encryption.public,
                         verifyToken
                 )
-        )
-        session.sendPacket(
-                PacketOutPluginMessage()
         )
     }
 

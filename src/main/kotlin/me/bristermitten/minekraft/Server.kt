@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory.getLogger
 import java.security.SecureRandom
 
 class Server(
-    port: Int = 25565
+    port: Int
 ) {
     internal val encryption = Encryption()
     internal val nettyThread = NettyThread(this, port)
