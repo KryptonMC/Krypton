@@ -17,10 +17,10 @@ class Encryption {
         return generator.generateKeyPair()
     }
 
-    fun decryptWithPrivateKey(encryptedActual: ByteArray): ByteArray {
+    fun decryptWithPrivateKey(encryptedData: ByteArray): ByteArray {
         val cipher = Cipher.getInstance(PAIR_ALGORITHM)
         cipher.init(Cipher.DECRYPT_MODE, keyPair.private)
-        return cipher.doFinal(encryptedActual)
+        return cipher.doFinal(encryptedData)
     }
 
 

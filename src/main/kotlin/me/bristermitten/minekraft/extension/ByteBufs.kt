@@ -3,8 +3,10 @@ package me.bristermitten.minekraft.extension
 import io.netty.buffer.ByteBuf
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
+import me.bristermitten.minekraft.packet.data.Chat
 import java.io.IOException
 import java.nio.charset.StandardCharsets.UTF_8
+import java.util.*
 import kotlin.experimental.and
 
 
@@ -25,17 +27,14 @@ fun ByteBuf.readVarInt(): Int {
     return result
 }
 
-fun ByteBuf.writeVarInt(value: Int) {
-    var varInt = value
-    var part: Int
-
-    while (true) {
-        part = varInt and 0x7F
-        varInt = varInt ushr 7
-        if (varInt != 0) part = part or 0x80
-        writeByte(part)
-        if (varInt == 0) break
+fun ByteBuf.writeVarInt(varInt: Int) {
+    var i = varInt
+    while (i and -128 != 0) {
+        writeByte(i and 127 or 128)
+        i = i ushr 7
     }
+
+    writeByte(i)
 }
 
 fun ByteBuf.readString(maxLength: Short = Short.MAX_VALUE): String {
@@ -61,10 +60,10 @@ fun ByteBuf.readString(maxLength: Short = Short.MAX_VALUE): String {
     }
 }
 
-fun ByteBuf.writeString(s: String) {
-    val bytes = s.toByteArray()
-    if (bytes.size > 32767) {
-        throw EncoderException("String too big (was " + bytes.size + " bytes encoded, max " + 32767 + ")")
+fun ByteBuf.writeString(s: String, maxLength: Short = Short.MAX_VALUE) {
+    val bytes = s.toByteArray(Charsets.UTF_8)
+    if (bytes.size > maxLength) {
+        throw EncoderException("String too big (was " + bytes.size + " bytes encoded, max " + maxLength + ")")
     } else {
         writeVarInt(bytes.size)
         writeBytes(bytes)
@@ -85,4 +84,21 @@ fun ByteBuf.readVarIntByteArray(): ByteArray {
 fun ByteBuf.readAllAvailableBytes(): ByteArray {
     val length = readableBytes()
     return readBytes(length).array()
+}
+
+
+fun ByteBuf.writeUUID(uuid: UUID) {
+    writeLong(uuid.mostSignificantBits)
+    writeLong(uuid.leastSignificantBits)
+//    val ints = uuid.toIntArray()
+//
+//    for (element in ints) {
+//        writeInt(element)
+//    }
+}
+
+private fun UUID.toIntArray(): IntArray {
+    val mostSig = mostSignificantBits
+    val leastSig = leastSignificantBits
+    return intArrayOf((mostSig shr 32).toInt(), mostSig.toInt(), (leastSig shr 32).toInt(), leastSig.toInt())
 }

@@ -13,10 +13,10 @@ import me.bristermitten.minekraft.packet.transformers.PacketEncoder
 import me.bristermitten.minekraft.packet.transformers.PacketEncrypter
 import javax.crypto.SecretKey
 
-class Session(private val channel: Channel, private val server: Server)
-{
+class Session(private val channel: Channel, private val server: Server) {
 
     private val handler = PacketHandler(this, server)
+
     var isEncrypted = false
         private set
 
@@ -26,19 +26,16 @@ class Session(private val channel: Channel, private val server: Server)
     @Volatile
     internal var currentState: PacketState = PacketState.HANDSHAKE
 
-    fun sendPacket(packet: Packet)
-    {
+    fun sendPacket(packet: Packet) {
         channel.writeAndFlush(packet)
     }
 
 
-    fun receive(msg: Packet)
-    {
+    fun receive(msg: Packet) {
         handler.handle(msg)
     }
 
-    fun verifyToken(expected: ByteArray, encryptedActual: ByteArray)
-    {
+    fun verifyToken(expected: ByteArray, encryptedActual: ByteArray) {
 
         val actual = server.encryption.decryptWithPrivateKey(encryptedActual)
         require(actual.contentEquals(expected)) {
@@ -47,19 +44,20 @@ class Session(private val channel: Channel, private val server: Server)
         //TODO fail by disconnecting
     }
 
-    fun commenceEncryption(secretKey: SecretKey)
-    {
+    fun commenceEncryption(secretKey: SecretKey) {
         packetDecrypter = PacketDecrypter(secretKey.toDecryptingCipher(SHARED_SECRET_ALGORITHM))
         packetEncrypter = PacketEncrypter(secretKey.toEncryptingCipher(SHARED_SECRET_ALGORITHM))
 
         channel.pipeline().addBefore(
-                PacketDecoder.NETTY_NAME,
-                "decrypt",
-                packetDecrypter
+            PacketDecoder.NETTY_NAME,
+            "decrypt",
+            packetDecrypter
         )
 
         channel.pipeline().addBefore(
-                PacketEncoder.NETTY_NAME, "encrypt", packetEncrypter
+            PacketEncoder.NETTY_NAME,
+            "encrypt",
+            packetEncrypter
         )
 
         isEncrypted = true

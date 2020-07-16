@@ -21,12 +21,14 @@ class PacketDecoder : ByteToMessageDecoder()
         val session = ctx.pipeline().get(ChannelHandler::class.java).session
         val packet = session.currentState.createPacket(id)
 
+
         if (packet == null)
         {
             println("Skipping Packet for state ${session.currentState} ID $id as a packet object was not found")
             buf.skipBytes(buf.readableBytes())
             return
         }
+        println("Incoming Packet of type ${packet.javaClass}")
 
         packet.read(buf)
 

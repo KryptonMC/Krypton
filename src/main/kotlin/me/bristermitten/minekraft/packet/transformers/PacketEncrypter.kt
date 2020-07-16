@@ -7,24 +7,23 @@ import me.bristermitten.minekraft.extension.readAllAvailableBytes
 import javax.crypto.Cipher
 
 class PacketEncrypter(
-        private val cipher: Cipher
-) : MessageToByteEncoder<ByteBuf>()
-{
+    private val cipher: Cipher
+) : MessageToByteEncoder<ByteBuf>() {
 
 
-    override fun encode(ctx: ChannelHandlerContext, message: ByteBuf, out: ByteBuf)
-    {
+    override fun encode(ctx: ChannelHandlerContext, message: ByteBuf, out: ByteBuf) {
         //Load in all of the written data
         val dataToWrite = message.readAllAvailableBytes()
 
         //Encrypt the data
-        val encryptedBytesLength = encrypt(dataToWrite)
+        val encryptedBytes = encrypt(dataToWrite)
         //Write it back
-        message.writeBytes(dataToWrite, 0, encryptedBytesLength)
+        message.writeBytes(encryptedBytes)
+
+        println("Encrypted bytes length $encryptedBytes")
     }
 
-    fun encrypt(bytes: ByteArray): Int
-    {
-        return cipher.update(bytes, 0, bytes.size, bytes)
+    fun encrypt(bytes: ByteArray): ByteArray {
+        return cipher.doFinal(bytes)
     }
 }

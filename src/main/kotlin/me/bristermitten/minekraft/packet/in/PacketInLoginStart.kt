@@ -17,11 +17,8 @@ class PacketInLoginStart : Packet
         override val state = PacketState.LOGIN
     }
 
-    private val logger by logger(javaClass)
-
     override fun read(buf: ByteBuf)
     {
         val name = buf.readString(16)
-        logger.info("$name connecting to Server")
     }
 }

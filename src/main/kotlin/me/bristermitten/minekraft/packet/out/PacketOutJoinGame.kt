@@ -19,15 +19,18 @@ class PacketOutJoinGame : Packet
 
     override fun write(buf: ByteBuf)
     {
-        buf.writeInt(1)
-        buf.writeByte(0)
-        buf.writeInt(0)
-        buf.writeLong(12345678L)
-        buf.writeByte(5)
-        buf.writeString("default")
-        buf.writeVarInt(16)
-        buf.writeBoolean(false)
-        buf.writeBoolean(false)
+        buf.writeInt(1) //EID
+        buf.writeByte(0) //gamemode
+        buf.writeInt(0) //dimension
+
+
+        buf.writeLong(11111111) //Hashed Seed
+        buf.writeByte(0) //Max Players
+        buf.writeString("default") //Level Type
+        buf.writeVarInt(16) //Render Distance
+        buf.writeBoolean(false) //Reduced Debug Info
+        buf.writeBoolean(false) //Respawn Screen
+
     }
 
 }

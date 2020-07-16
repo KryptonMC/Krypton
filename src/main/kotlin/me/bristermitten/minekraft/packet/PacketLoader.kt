@@ -18,10 +18,10 @@ object PacketLoader
         PacketState.STATUS.registerPacketType(1, ::PacketInPing)
 
         //LOGIN
-        PacketState.LOGIN.registerPacketType(0, ::PacketInLoginStart)
-        PacketState.LOGIN.registerPacketType(1, ::PacketInEncryptionResponse)
+        PacketState.LOGIN.registerPacketType(0x0, ::PacketInLoginStart)
+        PacketState.LOGIN.registerPacketType(0x1, ::PacketInEncryptionResponse)
 
         //PLAY
-//        PacketState.PLAY.registerPacketType(5, ) TODO implement
+        PacketState.PLAY.registerPacketType(0x05, ::PacketInClientSettings)
     }
 }

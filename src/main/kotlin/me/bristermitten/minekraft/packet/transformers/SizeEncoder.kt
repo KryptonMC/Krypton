@@ -7,15 +7,15 @@ import me.bristermitten.minekraft.extension.writeVarInt
 
 
 /**
- * Writes a packet size in an appropriate var-int before the data is written
+ * Writes a packet size in an appropriate VarInt before the data is written
  */
 class SizeEncoder : MessageToByteEncoder<ByteBuf>() {
 
     override fun encode(ctx: ChannelHandlerContext, msg: ByteBuf, out: ByteBuf) {
-        val bodyLen = msg.readableBytes()
-        val headerLen = varIntSize(bodyLen)
-        out.ensureWritable(headerLen + bodyLen)
-        out.writeVarInt(bodyLen)
+        val packetSize = msg.readableBytes()
+        val headerLen = varIntSize(packetSize)
+        out.ensureWritable(headerLen + packetSize)
+        out.writeVarInt(packetSize)
         out.writeBytes(msg)
     }
 

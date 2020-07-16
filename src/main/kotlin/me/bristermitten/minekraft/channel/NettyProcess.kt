@@ -1,5 +1,6 @@
 package me.bristermitten.minekraft.channel
 
+import com.sun.org.apache.bcel.internal.classfile.SourceFile
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.ChannelOption
@@ -15,10 +16,11 @@ import me.bristermitten.minekraft.packet.transformers.PacketEncoder
 import me.bristermitten.minekraft.packet.transformers.SizeDecoder
 import me.bristermitten.minekraft.packet.transformers.SizeEncoder
 
-class NettyThread(
+class NettyProcess(
     private val server: Server,
     private val port: Int
 ) {
+
     private val bossGroup: EventLoopGroup = NioEventLoopGroup()
     private val workerGroup: EventLoopGroup = NioEventLoopGroup()
 
@@ -37,7 +39,6 @@ class NettyThread(
                                 PacketDecoder.NETTY_NAME,
                                 PacketDecoder()
                             )
-
                             .addLast(SizeEncoder())
                             .addLast(
                                 PacketEncoder.NETTY_NAME,
@@ -46,8 +47,9 @@ class NettyThread(
                             .addLast("Handler", ChannelHandler(server))
                     }
                 })
+
             withContext(Dispatchers.IO) {
-                val f = bootstrap.bind(port).sync()
+                val f = bootstrap.bind(port).await()
                 f.channel().closeFuture().sync()
             }
         } finally {

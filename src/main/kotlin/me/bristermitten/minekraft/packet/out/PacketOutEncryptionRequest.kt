@@ -1,10 +1,6 @@
 package me.bristermitten.minekraft.packet.out
 
 import io.netty.buffer.ByteBuf
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import me.bristermitten.minekraft.extension.writeString
 import me.bristermitten.minekraft.extension.writeVarInt
 import me.bristermitten.minekraft.packet.state.LoginPacket
