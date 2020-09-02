@@ -1,16 +1,14 @@
 package me.bristermitten.minekraft.packet.out
 
 import io.netty.buffer.ByteBuf
-import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.builtins.SetSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import me.bristermitten.minekraft.extension.writeString
 import me.bristermitten.minekraft.extension.writeUUID
 import me.bristermitten.minekraft.extension.writeVarInt
 import me.bristermitten.minekraft.lang.Color
 import me.bristermitten.minekraft.packet.data.Chat
-import me.bristermitten.minekraft.packet.state.PlayPacket
+import me.bristermitten.minekraft.packet.play.PlayPacket
 import java.util.*
 
 /**
@@ -18,8 +16,7 @@ import java.util.*
  */
 class PacketOutPlayerInfo : PlayPacket(0x34) {
 
-    @UnstableDefault
-    private val json = Json(JsonConfiguration.Default.copy(encodeDefaults = false))
+    private val json = Json { encodeDefaults = false }
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(0)
@@ -38,7 +35,7 @@ class PacketOutPlayerInfo : PlayPacket(0x34) {
         buf.writeBoolean(true)
 
         buf.writeString(
-            json.stringify(
+            json.encodeToString(
                 SetSerializer(Chat.serializer()), "BristerMitten".toCharArray().map {
                     Chat(
                         it.toString(),

@@ -4,11 +4,12 @@ import me.bristermitten.minekraft.Server
 import me.bristermitten.minekraft.Session
 import me.bristermitten.minekraft.lang.Color
 import me.bristermitten.minekraft.packet.`in`.PacketInClientSettings
-import me.bristermitten.minekraft.packet.`in`.PacketInLoginStart
+import me.bristermitten.minekraft.packet.login.inbound.PacketInLoginStart
 import me.bristermitten.minekraft.packet.`in`.PacketInPing
 import me.bristermitten.minekraft.packet.`in`.PacketInStatusRequest
-import me.bristermitten.minekraft.packet.`in`.login.PacketInEncryptionResponse
+import me.bristermitten.minekraft.packet.login.inbound.PacketInEncryptionResponse
 import me.bristermitten.minekraft.packet.data.*
+import me.bristermitten.minekraft.packet.login.outbound.PacketOutLoginSuccess
 import me.bristermitten.minekraft.packet.out.*
 import me.bristermitten.minekraft.packet.state.PacketState
 import java.util.*

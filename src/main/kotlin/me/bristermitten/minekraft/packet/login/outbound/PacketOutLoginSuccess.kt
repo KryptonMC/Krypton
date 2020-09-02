@@ -1,9 +1,8 @@
-package me.bristermitten.minekraft.packet.out
+package me.bristermitten.minekraft.packet.login.outbound
 
 import io.netty.buffer.ByteBuf
 import me.bristermitten.minekraft.extension.writeString
-import me.bristermitten.minekraft.extension.writeUUID
-import me.bristermitten.minekraft.packet.state.LoginPacket
+import me.bristermitten.minekraft.packet.login.LoginPacket
 import java.util.*
 
 class PacketOutLoginSuccess(
@@ -12,7 +11,6 @@ class PacketOutLoginSuccess(
 ) : LoginPacket(0x02) {
 
     override fun write(buf: ByteBuf) {
-//        buf.writeUUID(uuid)
         buf.writeString(uuid.toString())
         buf.writeString(username)
     }

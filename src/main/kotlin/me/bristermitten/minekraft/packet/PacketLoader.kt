@@ -1,7 +1,8 @@
 package me.bristermitten.minekraft.packet
 
 import me.bristermitten.minekraft.packet.`in`.*
-import me.bristermitten.minekraft.packet.`in`.login.PacketInEncryptionResponse
+import me.bristermitten.minekraft.packet.login.inbound.PacketInEncryptionResponse
+import me.bristermitten.minekraft.packet.login.inbound.PacketInLoginStart
 import me.bristermitten.minekraft.packet.state.PacketState
 
 object PacketLoader

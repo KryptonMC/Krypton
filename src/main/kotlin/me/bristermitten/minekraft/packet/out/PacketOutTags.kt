@@ -3,7 +3,7 @@ package me.bristermitten.minekraft.packet.out
 import io.netty.buffer.ByteBuf
 import me.bristermitten.minekraft.extension.writeString
 import me.bristermitten.minekraft.extension.writeVarInt
-import me.bristermitten.minekraft.packet.state.PlayPacket
+import me.bristermitten.minekraft.packet.play.PlayPacket
 
 class PacketOutTags : PlayPacket(0x5C) {
 

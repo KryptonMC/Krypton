@@ -3,7 +3,7 @@ package me.bristermitten.minekraft.packet.`in`
 import io.netty.buffer.ByteBuf
 import me.bristermitten.minekraft.extension.readString
 import me.bristermitten.minekraft.extension.readVarInt
-import me.bristermitten.minekraft.packet.state.PlayPacket
+import me.bristermitten.minekraft.packet.play.PlayPacket
 
 class PacketInClientSettings : PlayPacket(0x05)
 {
@@ -23,6 +23,6 @@ class PacketInClientSettings : PlayPacket(0x05)
         displayedSkinParts = buf.readByte().toUByte()
         mainHand = buf.readVarInt().toByte()
 
-        println("locale = ${locale}")
+        println("locale = $locale")
     }
 }
