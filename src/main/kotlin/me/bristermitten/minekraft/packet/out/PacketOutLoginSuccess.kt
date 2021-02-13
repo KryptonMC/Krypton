@@ -12,8 +12,7 @@ class PacketOutLoginSuccess(
 ) : LoginPacket(0x02) {
 
     override fun write(buf: ByteBuf) {
-//        buf.writeUUID(uuid)
-        buf.writeString(uuid.toString())
+        buf.writeUUID(uuid)
         buf.writeString(username)
     }
 }

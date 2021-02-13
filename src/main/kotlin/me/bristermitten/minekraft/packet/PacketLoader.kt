@@ -1,7 +1,10 @@
 package me.bristermitten.minekraft.packet
 
 import me.bristermitten.minekraft.packet.`in`.*
+import me.bristermitten.minekraft.packet.`in`.handshake.PacketInHandshake
 import me.bristermitten.minekraft.packet.`in`.login.PacketInEncryptionResponse
+import me.bristermitten.minekraft.packet.`in`.status.PacketInPing
+import me.bristermitten.minekraft.packet.`in`.status.PacketInStatusRequest
 import me.bristermitten.minekraft.packet.state.PacketState
 
 object PacketLoader
@@ -23,5 +26,10 @@ object PacketLoader
 
         //PLAY
         PacketState.PLAY.registerPacketType(0x05, ::PacketInClientSettings)
+        PacketState.PLAY.registerPacketType(0x10, ::PacketInKeepAlive)
+        PacketState.PLAY.registerPacketType(0x12, ::PacketInPlayerPosition)
+        PacketState.PLAY.registerPacketType(0x13, ::PacketInPlayerPositionAndRotation)
+        PacketState.PLAY.registerPacketType(0x14, ::PacketInPlayerRotation)
+        PacketState.PLAY.registerPacketType(0x0B, ::PacketInPluginMessage)
     }
 }

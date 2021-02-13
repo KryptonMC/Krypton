@@ -1,6 +1,10 @@
 package me.bristermitten.minekraft.lang;
 
 import kotlinx.serialization.*
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 
 @Serializable
@@ -26,11 +30,10 @@ enum class Color(private val char: Char, private val clientName: String)
     fun toClientString() = clientName
     fun toChatString() = "$COLOR_CHAR$char"
 
-    @Serializer(forClass = Color::class)
     companion object : KSerializer<Color>
     {
 
-        override val descriptor: SerialDescriptor = SerialDescriptor("Color", PrimitiveKind.STRING)
+        override val descriptor = PrimitiveSerialDescriptor("Color", PrimitiveKind.STRING)
 
         override fun serialize(encoder: Encoder, value: Color)
         {
