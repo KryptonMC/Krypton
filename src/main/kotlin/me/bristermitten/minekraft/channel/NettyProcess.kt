@@ -1,6 +1,5 @@
 package me.bristermitten.minekraft.channel
 
-import com.sun.org.apache.bcel.internal.classfile.SourceFile
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.ChannelOption

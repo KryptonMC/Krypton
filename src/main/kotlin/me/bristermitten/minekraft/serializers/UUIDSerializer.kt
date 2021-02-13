@@ -1,12 +1,15 @@
 package me.bristermitten.minekraft.serializers
 
 import kotlinx.serialization.*
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import java.util.*
 
-@Serializer(forClass = UUID::class)
 class UUIDSerializer : KSerializer<UUID> {
 
-    override val descriptor: SerialDescriptor = SerialDescriptor("UUID", PrimitiveKind.STRING)
+    override val descriptor = PrimitiveSerialDescriptor("UUID", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: UUID) = encoder.encodeString(value.toString())
 

@@ -1,29 +1,40 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.71'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.71'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.21'
     id 'java-library'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'application'
 }
 
 group 'me.bristermitten'
 version '1.0-SNAPSHOT'
 
+application.mainClassName 'me.bristermitten.minekraft.MineKraftKt'
+
 repositories {
     mavenCentral()
+    maven { url 'https://repo.bristermitten.me/repository/maven-public/' }
     mavenLocal()
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5"
-    implementation "it.unimi.dsi:fastutil:+"
-    implementation "io.netty:netty-all:+"
-    implementation "com.google.guava:guava:28.2-jre"
-    implementation "com.google.code.gson:gson:2.8.6"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5'
+    implementation 'it.unimi.dsi:fastutil:+'
+    implementation 'io.netty:netty-all:+'
+    implementation 'com.google.guava:guava:28.2-jre'
+    implementation 'com.google.code.gson:gson:2.8.6'
 
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0"
+    implementation 'net.kyori:adventure-api:4.4.0'
+    implementation 'net.kyori:adventure-text-serializer-gson:4.4.0'
+    implementation 'net.kyori:adventure-nbt:4.4.0'
+
+    //implementation 'io.github.mrpng:KotlinNBT:1.2'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1'
 
     //Logging
-    api "org.slf4j:slf4j-api:1.7.30"
+    api 'org.slf4j:slf4j-api:1.7.30'
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'ch.qos.logback:logback-core:1.2.3'
 //    implementation "org.spigotmc:spigot:1.15.2-R0.1-SNAPSHOT"
@@ -34,4 +45,8 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+shadowJar {
+    archiveFileName.set("MineKraft-${project.version}.jar")
 }

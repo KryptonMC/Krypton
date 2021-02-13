@@ -1,4 +1,4 @@
-package me.bristermitten.minekraft.packet.`in`
+package me.bristermitten.minekraft.packet.`in`.handshake
 
 import io.netty.buffer.ByteBuf
 import me.bristermitten.minekraft.extension.readString
@@ -12,7 +12,7 @@ class PacketInHandshake : Packet
 {
     override val info = object : PacketInfo
     {
-        override val id = 0x0
+        override val id = 0x00
         override val state = PacketState.HANDSHAKE
     }
 

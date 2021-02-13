@@ -4,6 +4,7 @@ import io.netty.channel.Channel
 import me.bristermitten.minekraft.encryption.Encryption.Companion.SHARED_SECRET_ALGORITHM
 import me.bristermitten.minekraft.encryption.toDecryptingCipher
 import me.bristermitten.minekraft.encryption.toEncryptingCipher
+import me.bristermitten.minekraft.entity.Player
 import me.bristermitten.minekraft.packet.Packet
 import me.bristermitten.minekraft.packet.PacketHandler
 import me.bristermitten.minekraft.packet.state.PacketState
@@ -11,11 +12,14 @@ import me.bristermitten.minekraft.packet.transformers.PacketDecoder
 import me.bristermitten.minekraft.packet.transformers.PacketDecrypter
 import me.bristermitten.minekraft.packet.transformers.PacketEncoder
 import me.bristermitten.minekraft.packet.transformers.PacketEncrypter
+import me.bristermitten.minekraft.world.Location
 import javax.crypto.SecretKey
 
 class Session(private val channel: Channel, private val server: Server) {
 
     private val handler = PacketHandler(this, server)
+
+    val player = Player(0)
 
     var isEncrypted = false
         private set

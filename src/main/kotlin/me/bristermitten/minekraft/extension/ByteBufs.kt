@@ -3,14 +3,17 @@ package me.bristermitten.minekraft.extension
 import io.netty.buffer.ByteBuf
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
-import me.bristermitten.minekraft.packet.data.Chat
+import net.kyori.adventure.nbt.BinaryTagIO
+import net.kyori.adventure.nbt.CompoundBinaryTag
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.*
 import kotlin.experimental.and
 
 
-fun ByteBuf.readVarInt(): Int {
+fun ByteBuf.readVarInt(): Int
+{
     var numRead = 0
     var result = 0
     var read: Byte
@@ -27,7 +30,8 @@ fun ByteBuf.readVarInt(): Int {
     return result
 }
 
-fun ByteBuf.writeVarInt(varInt: Int) {
+fun ByteBuf.writeVarInt(varInt: Int)
+{
     var i = varInt
     while (i and -128 != 0) {
         writeByte(i and 127 or 128)
@@ -37,7 +41,8 @@ fun ByteBuf.writeVarInt(varInt: Int) {
     writeByte(i)
 }
 
-fun ByteBuf.readString(maxLength: Short = Short.MAX_VALUE): String {
+fun ByteBuf.readString(maxLength: Short = Short.MAX_VALUE): String
+{
     val length = this.readVarInt()
 
     return when {
@@ -95,6 +100,22 @@ fun ByteBuf.writeUUID(uuid: UUID) {
 //    for (element in ints) {
 //        writeInt(element)
 //    }
+}
+
+//fun ByteBuf.writeNBTCompound(tag: TagCompound) {
+//    val byteBuffer = ByteBuffer.allocate(tag.sizeInBytes + 10)
+//    tag.writeRoot(byteBuffer)
+//    writeBytes(byteBuffer)
+//}
+
+fun ByteBuf.writeNBTCompound(tag: CompoundBinaryTag) {
+    val outputStream = ByteArrayOutputStream()
+    BinaryTagIO.writer().write(tag, outputStream)
+    writeBytes(outputStream.toByteArray())
+}
+
+fun ByteBuf.writeLongs(array: LongArray) {
+    for (element in array) writeLong(element)
 }
 
 private fun UUID.toIntArray(): IntArray {
