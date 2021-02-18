@@ -28,6 +28,11 @@ class SizeEncoder : MessageToByteEncoder<ByteBuf>() {
             else -> 5
         }
     }
+
+    companion object {
+
+        const val NETTY_NAME = "prepender"
+    }
 }
 
 const val VARINT_THRESHOLD_1 = -0x80

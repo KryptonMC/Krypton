@@ -9,7 +9,7 @@ import kotlinx.serialization.encoding.Encoder
 
 @Serializable(with = NamespacedKeySerialiser::class)
 data class NamespacedKey(
-    val namespace: String,
+    val namespace: String = "minecraft",
     val value: String
 ) {
 
@@ -23,7 +23,7 @@ fun String.toNamespacedKey(): NamespacedKey {
 
 object NamespacedKeySerialiser : KSerializer<NamespacedKey> {
 
-    override val descriptor = PrimitiveSerialDescriptor("Key", PrimitiveKind.STRING)
+    override val descriptor = PrimitiveSerialDescriptor("NamespacedKey", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: NamespacedKey) = encoder.encodeString(value.toString())
 

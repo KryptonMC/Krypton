@@ -1,33 +1,50 @@
 package me.bristermitten.minekraft.packet
 
+import me.bardy.komponent.colour.Color
+import me.bardy.komponent.dsl.textComponent
+import me.bardy.komponent.dsl.translationComponent
+import me.bardy.komponent.event.Entity
+import me.bardy.komponent.event.showEntity
+import me.bardy.komponent.event.suggestCommand
 import me.bristermitten.minekraft.Server
+import me.bristermitten.minekraft.ServerStorage
 import me.bristermitten.minekraft.Session
 import me.bristermitten.minekraft.SessionStorage
+import me.bristermitten.minekraft.auth.requests.SessionService
+import me.bristermitten.minekraft.encryption.hexDigest
+import me.bristermitten.minekraft.entity.Abilities
 import me.bristermitten.minekraft.entity.Gamemode
-import me.bristermitten.minekraft.lang.Color
-import me.bristermitten.minekraft.packet.`in`.*
+import me.bristermitten.minekraft.entity.Player
+import me.bristermitten.minekraft.packet.`in`.PacketInChat
+import me.bristermitten.minekraft.packet.`in`.PacketInClientSettings
+import me.bristermitten.minekraft.packet.`in`.PacketInLoginStart
+import me.bristermitten.minekraft.packet.`in`.PacketInPlayerPosition
 import me.bristermitten.minekraft.packet.`in`.login.PacketInEncryptionResponse
 import me.bristermitten.minekraft.packet.`in`.status.PacketInPing
 import me.bristermitten.minekraft.packet.`in`.status.PacketInStatusRequest
-import me.bristermitten.minekraft.packet.data.*
+import me.bristermitten.minekraft.packet.data.PlayerInfo
+import me.bristermitten.minekraft.packet.data.Players
+import me.bristermitten.minekraft.packet.data.ServerVersion
+import me.bristermitten.minekraft.packet.data.StatusResponse
 import me.bristermitten.minekraft.packet.out.*
 import me.bristermitten.minekraft.packet.out.entity.PacketOutEntityPosition
+import me.bristermitten.minekraft.packet.out.entity.PacketOutSpawnPlayer
+import me.bristermitten.minekraft.packet.out.PacketOutAbilities
 import me.bristermitten.minekraft.packet.out.status.PacketOutPong
 import me.bristermitten.minekraft.packet.out.status.PacketOutStatusResponse
 import me.bristermitten.minekraft.packet.state.PacketState
-import net.kyori.adventure.text.Component
+import me.bristermitten.minekraft.registry.NamespacedKey
+import me.bristermitten.minekraft.world.Difficulty
+import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 import javax.crypto.spec.SecretKeySpec
 import kotlin.random.Random
 
 class PacketHandler(private val session: Session, private val server: Server) {
 
     private val executor = Executors.newSingleThreadScheduledExecutor()
-
-    private val numberOfPlayers = AtomicInteger(1)
 
     private val verifyToken by lazy {
         val bytes = ByteArray(4)
@@ -39,10 +56,11 @@ class PacketHandler(private val session: Session, private val server: Server) {
         when (packet) {
             is PacketInPing -> handlePing(packet)
             is PacketInStatusRequest -> handleStatusPacket()
-            is PacketInLoginStart -> beginPlayState(packet)
+            is PacketInLoginStart -> handleLoginStart(packet)
             is PacketInEncryptionResponse -> handleEncryptionResponse(packet)
             is PacketInClientSettings -> Unit //handleClientSettings()
             is PacketInPlayerPosition -> handlePositionUpdate(packet)
+            is PacketInChat -> handleChat(packet)
         }
     }
 
@@ -58,95 +76,140 @@ class PacketHandler(private val session: Session, private val server: Server) {
 //        session.sendPacket(PacketOutPlayerInfo())
 //    }
 
-    fun handleStatusPacket() {
-        session.sendPacket(
-            PacketOutStatusResponse(
-                StatusResponse(
-                    ServerVersion("1.16.5", 754),
-                    Players(
-                        100, 2,
-                        setOf(
-                            PlayerInfo(Chat("Hello", bold = true, color = Color.RED).toChatString()),
-                            PlayerInfo(Chat("World!", bold = true, color = Color.BLUE).toChatString())
-                        )
-                    ),
-                    Chat(
-                        "MineKraft is a Minecraft Server written in Kotlin!",
-                        bold = true,
-                        color = Color.values().random()
-                    )
-                )
-            )
-        )
+    private fun handleStatusPacket() {
+        val players = SessionStorage.sessions.filter { it != session }.map {
+            PlayerInfo(it.profile.name, it.profile.uuid)
+        }.toSet()
+
+        session.sendPacket(PacketOutStatusResponse(StatusResponse(
+            ServerVersion("1.16.5", 754),
+            Players(
+                MAX_PLAYERS,
+                ServerStorage.playerCount.get(),
+                players
+            ),
+            textComponent("MineKraft is a Minecraft Server written in Kotlin!") {
+                color = Color.random()
+            }
+        )))
+    }
+
+    private fun handleLoginStart(packet: PacketInLoginStart) {
+        session.player = Player(ServerStorage.nextEntityId.getAndIncrement())
+        session.player.name = packet.name
+
+        session.sendPacket(PacketOutEncryptionRequest(
+            server.encryption.publicKey,
+            verifyToken
+        ))
     }
 
     private fun handleEncryptionResponse(packet: PacketInEncryptionResponse) {
         session.verifyToken(verifyToken, packet.verifyToken)
 
-
         val sharedSecret = server.encryption.decryptWithPrivateKey(packet.secret)
         val secretKey = SecretKeySpec(sharedSecret, "AES")
         session.commenceEncryption(secretKey)
 
-        //beginPlayState()
+        authenticateUser(session.player.name, sharedSecret)
+
+        beginPlayState()
     }
 
+    private fun authenticateUser(username: String, sharedSecret: ByteArray) {
+        val cachedProfile = SessionStorage.profiles.getIfPresent(username)
+        if (cachedProfile != null) session.profile = cachedProfile
 
-    private fun beginPlayState(packet: PacketInLoginStart) {
-        val uuid = UUID.randomUUID()
-        session.sendPacket(PacketOutLoginSuccess(uuid, packet.name))
+        val shaDigest = MessageDigest.getInstance("SHA-1")
+        shaDigest.update(SERVER_ID_ASCII)
+        shaDigest.update(sharedSecret)
+        shaDigest.update(server.encryption.publicKey.encoded)
+        val serverId = shaDigest.hexDigest()
 
+        val response = SessionService.hasJoined(username, serverId, ServerStorage.SERVER_IP.hostAddress).execute()
+        if (response.code() != 200 || !response.isSuccessful || response.errorBody() != null) {
+            session.sendPacket(PacketOutDisconnect(
+                translationComponent("")
+            ))
+            return
+        }
+
+        val profile = response.body()
+        session.profile = requireNotNull(profile)
+        SessionStorage.profiles.put(profile.name, profile)
+    }
+
+    private fun beginPlayState() {
+        session.player = Player(session.id)
+
+        session.sendPacket(PacketOutLoginSuccess(session.profile.uuid, session.profile.name))
         session.currentState = PacketState.PLAY
 
-        val entityId = numberOfPlayers.getAndIncrement()
-
-        session.sendPacket(PacketOutJoinGame(entityId, Gamemode.CREATIVE, MAX_PLAYERS))
-        session.sendPacket(PacketOutPluginMessage())
-        session.sendPacket(PacketOutServerDifficulty())
-        session.sendPacket(PacketOutAbilities())
-        session.sendPacket(PacketOutHeldItemChange())
+        session.sendPacket(PacketOutJoinGame(session.id, Gamemode.CREATIVE, MAX_PLAYERS))
+        session.sendPacket(PacketOutPluginMessage(NamespacedKey(value = "brand"), "MineKraft"))
+        session.sendPacket(PacketOutServerDifficulty(Difficulty.PEACEFUL, true))
+        session.sendPacket(
+            PacketOutAbilities(Abilities(
+            isInvulnerable = true,
+            canFly = true,
+            isFlyingAllowed = true,
+            isCreativeMode = true
+        ))
+        )
+        session.sendPacket(PacketOutHeldItemChange(0))
         session.sendPacket(PacketOutDeclareRecipes())
         session.sendPacket(PacketOutTags(server.registryManager, server.tagManager))
-        session.sendPacket(PacketOutEntityStatus(entityId))
+        session.sendPacket(PacketOutEntityStatus(session.id))
         session.sendPacket(PacketOutDeclareRecipes())
-        session.sendPacket(PacketOutPlayerPositionAndLook(session.player.location))
+        session.sendPacket(PacketOutPlayerPositionAndLook(session.player.location, teleportId = session.lastTeleportId))
         session.sendPacket(PacketOutChat(
-            Component.text("${packet.name} joined the game"),
+            textComponent("${session.profile.name} joined the game"),
             ChatPosition.SYSTEM_MESSAGE,
-            UUID.fromString("00000000-0000-0000-0000-000000000000"))
-        )
-        SessionStorage.sessions.forEach {
+            UUID.fromString("00000000-0000-0000-0000-000000000000")
+        ))
+
+        val playerInfos = SessionStorage.sessions.map {
+            PacketOutPlayerInfo.PlayerInfo(
+                Random.Default.nextInt(1000),
+                Gamemode.CREATIVE,
+                it.profile,
+                textComponent(it.profile.name)
+            )
+        }
+
+        session.sendPacket(PacketOutPlayerInfo(
+            PacketOutPlayerInfo.PlayerAction.ADD_PLAYER,
+            playerInfos
+        ))
+
+        SessionStorage.sessions.filter { it != session }.forEach {
+            it.sendPacket(PacketOutChat(
+                textComponent("${session.profile.name} joined the game"),
+                ChatPosition.SYSTEM_MESSAGE,
+                UUID.fromString("00000000-0000-0000-0000-000000000000")
+            ))
+
             it.sendPacket(PacketOutPlayerInfo(
                 PacketOutPlayerInfo.PlayerAction.ADD_PLAYER,
-                1,
-                uuid,
-                packet.name,
-                listOf(Property("textures", "ewogICJ0aW1lc3RhbXAiIDogMTU5NDkyNzk1OTc2OSwKICAicHJvZmlsZUlkIiA6ICI4NzZjZTQ2ZGRjNTY0YTE3OTY0NDBiZTY3ZmU3YzdmNiIsCiAgInByb2ZpbGVOYW1lIiA6ICJCcmlzdGVyTWl0dGVuIiwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzVjY2VjM2ZjMDZhMWI2YmY5NjJkMjMwNzA0YjY2MjNiYmZiNDMwNDNmMDY2Nzk2NmMyMGM4OWMzMGM0YTMzMCIKICAgIH0KICB9Cn0=")),
-                Gamemode.CREATIVE,
-                Random.Default.nextInt(1000),
-                true,
-                Component.text(packet.name)
+                listOf(PacketOutPlayerInfo.PlayerInfo(
+                    Random.Default.nextInt(1000),
+                    Gamemode.CREATIVE,
+                    session.profile,
+                    textComponent(session.profile.name)
+                ))
             ))
+
+            it.sendPacket(PacketOutSpawnPlayer(session.player))
         }
+
         session.sendPacket(PacketOutChunkData())
+        session.sendPacket(PacketOutTimeUpdate(0L, 6000L))
+        ServerStorage.playerCount.getAndIncrement()
 
         executor.scheduleAtFixedRate({
             session.sendPacket(PacketOutKeepAlive())
         }, 0, 20, TimeUnit.SECONDS)
-//        session.sendPacket(PacketOutPluginMessage())
     }
-
-    // we'll also deal with encryption later
-    // TODO: implement AES encryption
-//    private fun sendEncryptionRequest() {
-//        beginPlayState()
-//        session.sendPacket(
-//                PacketOutEncryptionRequest(
-//                        server.encryption.public,
-//                        verifyToken
-//                )
-//        ) TODO
-//    }
 
     private fun handlePing(packet: PacketInPing) {
         session.sendPacket(PacketOutPong(packet.payload))
@@ -159,7 +222,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
 
         SessionStorage.sessions.filter { it != session }.forEach {
             it.sendPacket(PacketOutEntityPosition(
-                session.player.id,
+                session.id,
                 ((newLocation.x * 32) - (oldLocation.x * 32) * 128).toInt().toShort(),
                 ((newLocation.y * 32) - (oldLocation.y * 32) * 128).toInt().toShort(),
                 ((newLocation.z * 32) - (oldLocation.z * 32) * 128).toInt().toShort(),
@@ -168,8 +231,31 @@ class PacketHandler(private val session: Session, private val server: Server) {
         }
     }
 
+    private fun handleChat(packet: PacketInChat) {
+        SessionStorage.sessions.forEach {
+            it.sendPacket(PacketOutChat(
+                translationComponent("chat.type.text") {
+                    text(session.profile.name) {
+                        insertion = session.profile.name
+                        clickEvent = suggestCommand("/msg ${session.profile.name}")
+                        hoverEvent = showEntity(Entity(
+                            session.profile.uuid,
+                            "minecraft:player",
+                            session.profile.name
+                        ))
+                    }
+                    text(packet.message)
+                },
+                ChatPosition.CHAT_BOX,
+                session.profile.uuid
+            ))
+        }
+    }
+
     companion object {
 
         private const val MAX_PLAYERS = 200
+
+        private val SERVER_ID_ASCII = "".toByteArray(Charsets.US_ASCII)
     }
 }

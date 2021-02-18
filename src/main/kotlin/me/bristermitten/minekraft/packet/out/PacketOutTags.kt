@@ -64,21 +64,8 @@ class PacketOutTags(private val registryManager: RegistryManager, private val ta
         }
     }
 
-//    private fun ByteBuf.writeTags(entries: List<String>) {
-//        val blockRegistry = registryManager.registries.blocks
-//        for (entry in entries) {
-//            if (entry.startsWith("#")) {
-//                writeTags(tagManager.blockTags[entry.split(":")[1]]!!.values)
-//            } else {
-//                writeVarInt(blockRegistry.entries[entry.toNamespacedKey()]!!.protocolId)
-//            }
-//        }
-//    }
-
     private fun ByteBuf.writeTags(tags: List<Tag>, registry: Registry) {
-        for (tag in tags) {
-            writeVarInt(registry.entries.getValue(NamespacedKey("minecraft", tag.name)).protocolId)
-        }
+        tags.forEach { writeVarInt(registry.entries.getValue(NamespacedKey(value = it.name)).protocolId) }
     }
 
     private fun ByteBuf.writeTags(tags: List<Tag>, registry: DefaultedRegistry) =

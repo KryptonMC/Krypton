@@ -1,4 +1,4 @@
 package me.bristermitten.minekraft.entity
 
-enum class MobEffectType {
-}
+// TODO: Add mob effects
+enum class MobEffectType

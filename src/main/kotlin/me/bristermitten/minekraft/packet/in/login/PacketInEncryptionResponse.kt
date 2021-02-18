@@ -6,15 +6,12 @@ import me.bristermitten.minekraft.packet.state.LoginPacket
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
-
-class PacketInEncryptionResponse : LoginPacket(0x01)
-{
+class PacketInEncryptionResponse : LoginPacket(0x01) {
 
     lateinit var secret: ByteArray
     lateinit var verifyToken: ByteArray
 
-    override fun read(buf: ByteBuf)
-    {
+    override fun read(buf: ByteBuf) {
         secret = buf.readVarIntByteArray()
         verifyToken = buf.readVarIntByteArray()
     }

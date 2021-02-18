@@ -1,6 +1,8 @@
 package me.bristermitten.minekraft.packet.data
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import me.bardy.komponent.Component
 import me.bristermitten.minekraft.serializers.UUIDSerializer
 import java.util.*
 
@@ -8,7 +10,7 @@ import java.util.*
 data class StatusResponse(
     val version: ServerVersion,
     val players: Players,
-    val description: Chat
+    @Serializable(with = Component.Companion::class) val description: Component
 )
 
 @Serializable
@@ -27,8 +29,5 @@ data class Players(
 @Serializable
 data class PlayerInfo(
     val name: String,
-    @Serializable(with = UUIDSerializer::class)
-    val id: UUID = UUID.randomUUID()
+    @SerialName("id") @Serializable(with = UUIDSerializer::class) val uuid: UUID
 )
-
-

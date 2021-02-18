@@ -7,24 +7,22 @@ import me.bristermitten.minekraft.packet.`in`.status.PacketInPing
 import me.bristermitten.minekraft.packet.`in`.status.PacketInStatusRequest
 import me.bristermitten.minekraft.packet.state.PacketState
 
-object PacketLoader
-{
+object PacketLoader {
 
-    fun loadAll()
-    {
-        //HANDSHAKE STATE
+    fun loadAll() {
+        // HANDSHAKE
         PacketState.HANDSHAKE.registerPacketType(0, ::PacketInHandshake)
 
-        //STATUS
-
+        // STATUS
         PacketState.STATUS.registerPacketType(0, ::PacketInStatusRequest)
         PacketState.STATUS.registerPacketType(1, ::PacketInPing)
 
-        //LOGIN
+        // LOGIN
         PacketState.LOGIN.registerPacketType(0x0, ::PacketInLoginStart)
         PacketState.LOGIN.registerPacketType(0x1, ::PacketInEncryptionResponse)
 
-        //PLAY
+        // PLAY
+        PacketState.PLAY.registerPacketType(0x03, ::PacketInChat)
         PacketState.PLAY.registerPacketType(0x05, ::PacketInClientSettings)
         PacketState.PLAY.registerPacketType(0x10, ::PacketInKeepAlive)
         PacketState.PLAY.registerPacketType(0x12, ::PacketInPlayerPosition)

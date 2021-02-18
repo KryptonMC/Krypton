@@ -1,6 +1,4 @@
 package me.bristermitten.minekraft.world.sound
 
-enum class SoundType {
-
-
-}
+// TODO: Add sound types
+enum class SoundType

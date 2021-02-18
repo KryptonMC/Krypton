@@ -7,6 +7,7 @@ import io.netty.channel.EventLoopGroup
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
+import io.netty.handler.timeout.ReadTimeoutHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.bristermitten.minekraft.Server
@@ -33,16 +34,11 @@ class NettyProcess(
                 .childHandler(object : ChannelInitializer<SocketChannel>() {
                     override fun initChannel(ch: SocketChannel) {
                         ch.pipeline()
-                            .addLast(SizeDecoder())
-                            .addLast(
-                                PacketDecoder.NETTY_NAME,
-                                PacketDecoder()
-                            )
-                            .addLast(SizeEncoder())
-                            .addLast(
-                                PacketEncoder.NETTY_NAME,
-                                PacketEncoder()
-                            )
+                            .addLast("timeout", ReadTimeoutHandler(30))
+                            .addLast(SizeDecoder.NETTY_NAME, SizeDecoder())
+                            .addLast(PacketDecoder.NETTY_NAME, PacketDecoder())
+                            .addLast(SizeEncoder.NETTY_NAME, SizeEncoder())
+                            .addLast(PacketEncoder.NETTY_NAME, PacketEncoder())
                             .addLast("Handler", ChannelHandler(server))
                     }
                 })

@@ -1,9 +1,12 @@
 package me.bristermitten.minekraft.packet.data
 
+import me.bristermitten.minekraft.packet.state.PacketState
+import java.net.InetAddress
+
 data class HandshakeData(
-	var protocol: Int = 0,
-	var address: String = "",
-	var port: Short = 0,
-	var nextState: Int = -1
+	val protocol: Int,
+	val address: InetAddress,
+	val port: Short,
+	val nextState: PacketState
 )
 

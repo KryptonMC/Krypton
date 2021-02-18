@@ -1,5 +1,6 @@
 package me.bristermitten.minekraft.world.block
 
+// TODO: Finish adding block types
 enum class BlockType {
 
     AIR,

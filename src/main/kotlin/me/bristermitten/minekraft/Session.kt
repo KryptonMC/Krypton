@@ -1,25 +1,26 @@
 package me.bristermitten.minekraft
 
 import io.netty.channel.Channel
+import me.bristermitten.minekraft.auth.GameProfile
 import me.bristermitten.minekraft.encryption.Encryption.Companion.SHARED_SECRET_ALGORITHM
 import me.bristermitten.minekraft.encryption.toDecryptingCipher
 import me.bristermitten.minekraft.encryption.toEncryptingCipher
 import me.bristermitten.minekraft.entity.Player
+import me.bristermitten.minekraft.extension.logger
 import me.bristermitten.minekraft.packet.Packet
 import me.bristermitten.minekraft.packet.PacketHandler
 import me.bristermitten.minekraft.packet.state.PacketState
-import me.bristermitten.minekraft.packet.transformers.PacketDecoder
-import me.bristermitten.minekraft.packet.transformers.PacketDecrypter
-import me.bristermitten.minekraft.packet.transformers.PacketEncoder
-import me.bristermitten.minekraft.packet.transformers.PacketEncrypter
-import me.bristermitten.minekraft.world.Location
+import me.bristermitten.minekraft.packet.transformers.*
 import javax.crypto.SecretKey
 
-class Session(private val channel: Channel, private val server: Server) {
+class Session(val id: Int, private val channel: Channel, private val server: Server) {
 
     private val handler = PacketHandler(this, server)
 
-    val player = Player(0)
+    lateinit var profile: GameProfile
+
+    lateinit var player: Player
+    val lastTeleportId = 0
 
     var isEncrypted = false
         private set
@@ -43,9 +44,9 @@ class Session(private val channel: Channel, private val server: Server) {
 
         val actual = server.encryption.decryptWithPrivateKey(encryptedActual)
         require(actual.contentEquals(expected)) {
-            "Decrypted Verify Token did not match original!, ${expected.contentToString()}, ${actual.contentToString()}"
+            LOGGER.warn("Decrypted Verify Token did not match original! Expected: ${expected.contentToString()}, actual: ${actual.contentToString()}")
         }
-        //TODO fail by disconnecting
+        // TODO: fail by disconnecting
     }
 
     fun commenceEncryption(secretKey: SecretKey) {
@@ -53,17 +54,22 @@ class Session(private val channel: Channel, private val server: Server) {
         packetEncrypter = PacketEncrypter(secretKey.toEncryptingCipher(SHARED_SECRET_ALGORITHM))
 
         channel.pipeline().addBefore(
-            PacketDecoder.NETTY_NAME,
-            "decrypt",
+            SizeDecoder.NETTY_NAME,
+            PacketDecrypter.NETTY_NAME,
             packetDecrypter
         )
 
         channel.pipeline().addBefore(
-            PacketEncoder.NETTY_NAME,
-            "encrypt",
+            SizeEncoder.NETTY_NAME,
+            PacketEncrypter.NETTY_NAME,
             packetEncrypter
         )
 
         isEncrypted = true
+    }
+
+    companion object {
+
+        private val LOGGER = logger<Session>()
     }
 }

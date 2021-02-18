@@ -15,11 +15,9 @@ class PacketOutJoinGame(
     val gamemode: Gamemode,
     val maxPlayers: Int,
     val viewDistance: Int = 16
-) : PlayPacket(0x24)
-{
+) : PlayPacket(0x24) {
 
-    override fun write(buf: ByteBuf)
-    {
+    override fun write(buf: ByteBuf) {
         buf.writeInt(entityId) // EID
         buf.writeBoolean(false) // is hardcore
         buf.writeByte(gamemode.id) // gamemode
@@ -110,5 +108,4 @@ class PacketOutJoinGame(
         buf.writeBoolean(false) // is debug world
         buf.writeBoolean(true) // is flat world
     }
-
 }

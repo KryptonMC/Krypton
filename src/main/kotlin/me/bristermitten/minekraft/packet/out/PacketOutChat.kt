@@ -1,11 +1,11 @@
 package me.bristermitten.minekraft.packet.out
 
 import io.netty.buffer.ByteBuf
+import kotlinx.serialization.json.Json
+import me.bardy.komponent.Component
 import me.bristermitten.minekraft.extension.writeString
 import me.bristermitten.minekraft.extension.writeUUID
 import me.bristermitten.minekraft.packet.state.PlayPacket
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import java.util.*
 
 class PacketOutChat(
@@ -15,9 +15,14 @@ class PacketOutChat(
 ) : PlayPacket(0x0E) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(GsonComponentSerializer.gson().serialize(component))
+        buf.writeString(JSON.encodeToString(Component.Companion, component))
         buf.writeByte(position.id)
         buf.writeUUID(senderUUID)
+    }
+
+    companion object {
+
+        private val JSON = Json {}
     }
 }
 

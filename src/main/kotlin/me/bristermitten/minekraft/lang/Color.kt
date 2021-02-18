@@ -6,10 +6,10 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-
 @Serializable
-enum class Color(private val char: Char, private val clientName: String)
-{
+@Deprecated("We now use Komponent for this")
+enum class Color(private val char: Char, private val clientName: String) {
+
     BLACK('0', "black"),
     DARK_BLUE('1', "dark_blue"),
     DARK_GREEN('2', "dark_green"),
@@ -28,25 +28,21 @@ enum class Color(private val char: Char, private val clientName: String)
     WHITE('f', "white");
 
     fun toClientString() = clientName
-    fun toChatString() = "$COLOR_CHAR$char"
+    fun toChatString() = "§$char"
 
-    companion object : KSerializer<Color>
-    {
+    companion object : KSerializer<Color> {
 
         override val descriptor = PrimitiveSerialDescriptor("Color", PrimitiveKind.STRING)
 
-        override fun serialize(encoder: Encoder, value: Color)
-        {
+        override fun serialize(encoder: Encoder, value: Color) {
             encoder.encodeString(value.toClientString())
         }
 
-        override fun deserialize(decoder: Decoder): Color
-        {
+        override fun deserialize(decoder: Decoder): Color {
             return fromClientString(decoder.decodeString())
         }
 
-        fun fromClientString(clientString: String): Color
-        {
+        fun fromClientString(clientString: String): Color {
             return valueOf(clientString.toUpperCase())
         }
     }

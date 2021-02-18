@@ -32,4 +32,9 @@ class SizeDecoder : ByteToMessageDecoder() {
         }
         throw CorruptedFrameException("length wider than 21 bits")
     }
+
+    companion object {
+
+        const val NETTY_NAME = "splitter"
+    }
 }

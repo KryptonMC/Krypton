@@ -6,12 +6,12 @@ import java.security.PublicKey
 import javax.crypto.Cipher
 
 class Encryption {
-    private val keyPair: KeyPair = genKeyPair()
 
+    private val keyPair = generateKeyPair()
 
-    val public: PublicKey = keyPair.public
+    val publicKey: PublicKey = keyPair.public
 
-    private fun genKeyPair(): KeyPair {
+    private fun generateKeyPair(): KeyPair {
         val generator = KeyPairGenerator.getInstance(PAIR_ALGORITHM)
         generator.initialize(1024)
         return generator.generateKeyPair()
@@ -22,7 +22,6 @@ class Encryption {
         cipher.init(Cipher.DECRYPT_MODE, keyPair.private)
         return cipher.doFinal(encryptedData)
     }
-
 
     companion object {
         const val SHARED_SECRET_ALGORITHM = "AES/CFB8/NoPadding"

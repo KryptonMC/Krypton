@@ -104,7 +104,7 @@ class PacketOutChunkData : PlayPacket(0x20) {
 
         buf.writeVarInt(2056) // size of data in bytes
 
-        buf.writeShort(1) // block count - 2 bytes
+        buf.writeShort(4096) // block count - 2 bytes
         buf.writeByte(4) // bits per block - 1 byte
         buf.writeVarInt(2) // palette length - 1 byte
         buf.writeVarInt(1) // palette[0] = stone (PID 1) - 1 byte

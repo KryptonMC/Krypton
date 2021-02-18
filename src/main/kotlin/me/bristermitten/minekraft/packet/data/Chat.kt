@@ -5,6 +5,7 @@ import me.bristermitten.minekraft.lang.Color
 import me.bristermitten.minekraft.lang.Effect
 
 @Serializable
+@Deprecated("We now use Komponent for this")
 data class Chat(
     val text: String,
     val bold: Boolean = false,

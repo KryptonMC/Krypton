@@ -2,11 +2,15 @@ package me.bristermitten.minekraft.packet.out
 
 import io.netty.buffer.ByteBuf
 import me.bristermitten.minekraft.packet.state.PlayPacket
+import me.bristermitten.minekraft.world.Difficulty
 
-class PacketOutServerDifficulty : PlayPacket(0x0D) {
+class PacketOutServerDifficulty(
+    val difficulty: Difficulty,
+    val isLocked: Boolean = false
+) : PlayPacket(0x0D) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeByte(0)
-        buf.writeBoolean(true)
+        buf.writeByte(difficulty.id)
+        buf.writeBoolean(isLocked)
     }
 }
