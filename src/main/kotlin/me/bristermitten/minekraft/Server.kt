@@ -8,7 +8,6 @@ import me.bristermitten.minekraft.extension.logger
 import me.bristermitten.minekraft.packet.PacketLoader
 import me.bristermitten.minekraft.registry.RegistryManager
 import me.bristermitten.minekraft.registry.tags.TagManager
-import org.slf4j.LoggerFactory.getLogger
 import java.security.SecureRandom
 
 class Server(port: Int) {

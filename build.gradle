@@ -45,7 +45,7 @@ dependencies {
 compileKotlin {
     kotlinOptions {
         jvmTarget = '11'
-        freeCompilerArgs = ["-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi"]
+        freeCompilerArgs = ["-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi", "-Xopt-in=kotlin.ExperimentalUnsignedTypes"]
     }
 }
 

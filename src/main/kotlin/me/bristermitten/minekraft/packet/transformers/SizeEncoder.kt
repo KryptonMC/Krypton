@@ -5,7 +5,6 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToByteEncoder
 import me.bristermitten.minekraft.extension.writeVarInt
 
-
 /**
  * Writes a packet size in an appropriate VarInt before the data is written
  */

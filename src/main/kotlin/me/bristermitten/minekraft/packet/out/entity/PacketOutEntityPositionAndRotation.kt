@@ -1,6 +1,8 @@
 package me.bristermitten.minekraft.packet.out.entity
 
 import io.netty.buffer.ByteBuf
+import me.bristermitten.minekraft.entity.cardinal.Angle
+import me.bristermitten.minekraft.extension.writeAngle
 import me.bristermitten.minekraft.extension.writeVarInt
 import me.bristermitten.minekraft.packet.state.PlayPacket
 
@@ -9,8 +11,8 @@ class PacketOutEntityPositionAndRotation(
     val deltaX: Short,
     val deltaY: Short,
     val deltaZ: Short,
-    val yaw: Byte, // 1/256ths of a full rotation
-    val pitch: Byte,
+    val yaw: Angle,
+    val pitch: Angle,
     val onGround: Boolean
 ) : PlayPacket(0x28) {
 
@@ -19,8 +21,8 @@ class PacketOutEntityPositionAndRotation(
         buf.writeShort(deltaX.toInt())
         buf.writeShort(deltaY.toInt())
         buf.writeShort(deltaZ.toInt())
-        buf.writeByte(yaw.toInt())
-        buf.writeByte(pitch.toInt())
+        buf.writeAngle(yaw)
+        buf.writeAngle(pitch)
         buf.writeBoolean(onGround)
     }
 }

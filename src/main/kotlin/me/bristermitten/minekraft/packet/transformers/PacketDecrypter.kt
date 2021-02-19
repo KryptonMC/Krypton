@@ -2,7 +2,6 @@ package me.bristermitten.minekraft.packet.transformers
 
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
-import io.netty.handler.codec.ByteToMessageDecoder
 import io.netty.handler.codec.MessageToMessageDecoder
 import me.bristermitten.minekraft.extension.logger
 import me.bristermitten.minekraft.extension.readAllAvailableBytes

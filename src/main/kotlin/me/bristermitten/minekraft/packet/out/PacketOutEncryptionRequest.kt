@@ -6,7 +6,6 @@ import me.bristermitten.minekraft.extension.writeVarInt
 import me.bristermitten.minekraft.packet.state.LoginPacket
 import java.security.PublicKey
 
-
 class PacketOutEncryptionRequest(
     private val publicKey: PublicKey,
     private val verifyToken: ByteArray

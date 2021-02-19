@@ -5,7 +5,7 @@ import me.bristermitten.minekraft.auth.GameProfile
 import me.bristermitten.minekraft.encryption.Encryption.Companion.SHARED_SECRET_ALGORITHM
 import me.bristermitten.minekraft.encryption.toDecryptingCipher
 import me.bristermitten.minekraft.encryption.toEncryptingCipher
-import me.bristermitten.minekraft.entity.Player
+import me.bristermitten.minekraft.entity.entities.Player
 import me.bristermitten.minekraft.extension.logger
 import me.bristermitten.minekraft.packet.Packet
 import me.bristermitten.minekraft.packet.PacketHandler
@@ -20,7 +20,7 @@ class Session(val id: Int, private val channel: Channel, private val server: Ser
     lateinit var profile: GameProfile
 
     lateinit var player: Player
-    val lastTeleportId = 0
+    var lastTeleportId = 0
 
     var isEncrypted = false
         private set

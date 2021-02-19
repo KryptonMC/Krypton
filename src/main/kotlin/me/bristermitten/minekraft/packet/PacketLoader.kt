@@ -1,6 +1,7 @@
 package me.bristermitten.minekraft.packet
 
 import me.bristermitten.minekraft.packet.`in`.*
+import me.bristermitten.minekraft.packet.`in`.PacketInPlayerMovement.*
 import me.bristermitten.minekraft.packet.`in`.handshake.PacketInHandshake
 import me.bristermitten.minekraft.packet.`in`.login.PacketInEncryptionResponse
 import me.bristermitten.minekraft.packet.`in`.status.PacketInPing

@@ -6,7 +6,6 @@ import io.netty.handler.codec.ByteToMessageDecoder
 import me.bristermitten.minekraft.channel.ChannelHandler
 import me.bristermitten.minekraft.extension.logger
 import me.bristermitten.minekraft.extension.readVarInt
-import me.bristermitten.minekraft.packet.state.PacketState
 import me.bristermitten.minekraft.packet.`in`.handshake.PacketInHandshake
 
 class PacketDecoder : ByteToMessageDecoder() {

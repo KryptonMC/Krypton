@@ -13,7 +13,7 @@ import java.util.*
 data class GameProfile(
     @SerialName("id") @Serializable(with = MojangUUIDSerialiser::class) val uuid: UUID,
     val name: String,
-    val properties: List<Property>
+    val properties: List<ProfileProperty>
 )
 
 object MojangUUIDSerialiser : KSerializer<UUID> {
