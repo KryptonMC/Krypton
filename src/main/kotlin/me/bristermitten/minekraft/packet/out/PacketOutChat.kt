@@ -1,6 +1,7 @@
 package me.bristermitten.minekraft.packet.out
 
 import io.netty.buffer.ByteBuf
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import me.bardy.komponent.Component
 import me.bristermitten.minekraft.extension.writeString
@@ -15,7 +16,7 @@ class PacketOutChat(
 ) : PlayPacket(0x0E) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(JSON.encodeToString(Component.Companion, component))
+        buf.writeString(JSON.encodeToString(component))
         buf.writeByte(position.id)
         buf.writeUUID(senderUUID)
     }

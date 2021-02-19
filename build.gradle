@@ -23,7 +23,7 @@ dependencies {
     implementation 'it.unimi.dsi:fastutil:+'
     implementation 'io.netty:netty-all:+'
 
-    implementation 'me.bardy:komponent:1.1'
+    implementation 'me.bardy:komponent:1.1.1'
 
     implementation 'net.kyori:adventure-nbt:4.4.0'
 
