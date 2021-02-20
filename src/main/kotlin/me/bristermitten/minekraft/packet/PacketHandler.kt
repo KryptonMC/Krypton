@@ -12,22 +12,23 @@ import me.bristermitten.minekraft.Session
 import me.bristermitten.minekraft.SessionStorage
 import me.bristermitten.minekraft.auth.requests.SessionService
 import me.bristermitten.minekraft.encryption.hexDigest
-import me.bristermitten.minekraft.entity.*
+import me.bristermitten.minekraft.entity.Abilities
+import me.bristermitten.minekraft.entity.Attribute
+import me.bristermitten.minekraft.entity.AttributeKey
+import me.bristermitten.minekraft.entity.Gamemode
 import me.bristermitten.minekraft.entity.cardinal.Angle
 import me.bristermitten.minekraft.entity.cardinal.toAngle
 import me.bristermitten.minekraft.entity.entities.Player
 import me.bristermitten.minekraft.entity.metadata.PlayerMetadata
-import me.bristermitten.minekraft.packet.`in`.*
+import me.bristermitten.minekraft.packet.`in`.PacketInChat
+import me.bristermitten.minekraft.packet.`in`.PacketInClientSettings
+import me.bristermitten.minekraft.packet.`in`.PacketInLoginStart
 import me.bristermitten.minekraft.packet.`in`.PacketInPlayerMovement.*
 import me.bristermitten.minekraft.packet.`in`.login.PacketInEncryptionResponse
 import me.bristermitten.minekraft.packet.`in`.status.PacketInPing
 import me.bristermitten.minekraft.packet.`in`.status.PacketInStatusRequest
-import me.bristermitten.minekraft.packet.data.PlayerInfo
-import me.bristermitten.minekraft.packet.data.Players
-import me.bristermitten.minekraft.packet.data.ServerVersion
-import me.bristermitten.minekraft.packet.data.StatusResponse
+import me.bristermitten.minekraft.packet.data.*
 import me.bristermitten.minekraft.packet.out.*
-import me.bristermitten.minekraft.packet.out.PacketOutAbilities
 import me.bristermitten.minekraft.packet.out.entity.*
 import me.bristermitten.minekraft.packet.out.status.PacketOutPong
 import me.bristermitten.minekraft.packet.out.status.PacketOutStatusResponse
@@ -57,7 +58,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
             is PacketInStatusRequest -> handleStatusPacket()
             is PacketInLoginStart -> handleLoginStart(packet)
             is PacketInEncryptionResponse -> handleEncryptionResponse(packet)
-            is PacketInClientSettings -> Unit //handleClientSettings()
+            is PacketInClientSettings -> handleClientSettings(packet)
             is PacketInPlayerPosition -> handlePositionUpdate(packet)
             is PacketInPlayerRotation -> handleRotationUpdate(packet)
             is PacketInPlayerPositionAndRotation -> handlePositionAndRotationUpdate(packet)
@@ -65,22 +66,21 @@ class PacketHandler(private val session: Session, private val server: Server) {
         }
     }
 
-    // we'll deal with this some time later
-//    private fun handleClientSettings() {
-//        session.sendPacket(PacketOutHeldItemChange())
-//        session.sendPacket(PacketOutDeclareRecipes())
-//        session.sendPacket(PacketOutTags())
-//        session.sendPacket(PacketOutEntityStatus())
-//        session.sendPacket(PacketOutDeclareCommands())
-//        session.sendPacket(PacketOutUnlockRecipes())
-//        session.sendPacket(PacketOutPlayerPositionAndLook())
-//        session.sendPacket(PacketOutPlayerInfo())
-//    }
+    private fun handleClientSettings(packet: PacketInClientSettings) {
+        session.settings = packet.settings
+
+        session.sendPacket(PacketOutEntityMetadata(
+            session.id,
+            PlayerMetadata(skinFlags = packet.settings.skinFlags)
+        ))
+    }
 
     private fun handleStatusPacket() {
-        val players = SessionStorage.sessions.filter { it != session && it.currentState == PacketState.PLAY }.map {
-            PlayerInfo(it.profile.name, it.profile.uuid)
-        }.toSet()
+        val players = SessionStorage.sessions.asSequence()
+            .filter { it != session }
+            .filter { it.currentState == PacketState.PLAY }
+            .map { PlayerInfo(it.profile.name, it.profile.uuid) }
+            .toSet()
 
         session.sendPacket(PacketOutStatusResponse(StatusResponse(
             ServerVersion("1.16.5", 754),
@@ -187,85 +187,66 @@ class PacketHandler(private val session: Session, private val server: Server) {
             playerInfos
         ))
 
-        SessionStorage.sessions.filter { it != session && it.currentState == PacketState.PLAY }.forEach {
-            it.sendPacket(PacketOutChat(
-                textComponent("${session.profile.name} joined the game"),
-                ChatPosition.SYSTEM_MESSAGE,
-                UUID.fromString("00000000-0000-0000-0000-000000000000")
-            ))
-
-            it.sendPacket(PacketOutPlayerInfo(
-                PacketOutPlayerInfo.PlayerAction.ADD_PLAYER,
-                listOf(PacketOutPlayerInfo.PlayerInfo(
-                    Random.Default.nextInt(1000),
-                    Gamemode.CREATIVE,
-                    session.profile,
-                    textComponent(session.profile.name)
+        SessionStorage.sessions.asSequence()
+            .filter { it != session }
+            .filter { it.currentState == PacketState.PLAY }
+            .forEach {
+                it.sendPacket(PacketOutChat(
+                    textComponent("${session.profile.name} joined the game"),
+                    ChatPosition.SYSTEM_MESSAGE,
+                    UUID.fromString("00000000-0000-0000-0000-000000000000")
                 ))
-            ))
 
-            it.sendPacket(PacketOutSpawnPlayer(session.player))
+                it.sendPacket(PacketOutPlayerInfo(
+                    PacketOutPlayerInfo.PlayerAction.ADD_PLAYER,
+                    listOf(PacketOutPlayerInfo.PlayerInfo(
+                        Random.Default.nextInt(1000),
+                        Gamemode.CREATIVE,
+                        session.profile,
+                        textComponent(session.profile.name)
+                    ))
+                ))
 
-            it.sendPacket(PacketOutEntityMetadata(
-                session.player.id,
-                PlayerMetadata()
-            ))
+                it.sendPacket(PacketOutSpawnPlayer(session.player))
 
-            it.sendPacket(PacketOutEntityProperties(
-                session.player.id,
-                listOf(
-                    Attribute(AttributeKey.GENERIC_MAX_HEALTH, 20.0),
-                    Attribute(AttributeKey.GENERIC_MOVEMENT_SPEED, 0.1)
-                )
-            ))
+                it.sendPacket(PacketOutEntityMetadata(
+                    session.player.id,
+                    PlayerMetadata.Default
+                ))
 
-            it.sendPacket(PacketOutEntityHeadLook(
-                session.player.id,
-                Angle(0u)
-            ))
+                it.sendPacket(PacketOutEntityProperties(
+                    session.player.id,
+                    listOf(
+                        Attribute(AttributeKey.GENERIC_MAX_HEALTH, 20.0),
+                        Attribute(AttributeKey.GENERIC_MOVEMENT_SPEED, 0.1)
+                    )
+                ))
 
-            session.sendPacket(PacketOutSpawnPlayer(it.player))
+                it.sendPacket(PacketOutEntityHeadLook(
+                    session.player.id,
+                    Angle(0u)
+                ))
 
-            session.sendPacket(PacketOutEntityMetadata(
-                it.player.id,
-                PlayerMetadata()
-            ))
+                session.sendPacket(PacketOutSpawnPlayer(it.player))
 
-            session.sendPacket(PacketOutEntityProperties(
-                it.player.id,
-                listOf(
-                    Attribute(AttributeKey.GENERIC_MAX_HEALTH, 20.0),
-                    Attribute(AttributeKey.GENERIC_MOVEMENT_SPEED, 0.1)
-                )
-            ))
+                session.sendPacket(PacketOutEntityMetadata(
+                    it.player.id,
+                    PlayerMetadata.Default
+                ))
 
-            session.sendPacket(PacketOutEntityHeadLook(
-                it.player.id,
-                Angle(0u)
-            ))
-        }
+                session.sendPacket(PacketOutEntityProperties(
+                    it.player.id,
+                    listOf(
+                        Attribute(AttributeKey.GENERIC_MAX_HEALTH, 20.0),
+                        Attribute(AttributeKey.GENERIC_MOVEMENT_SPEED, 0.1)
+                    )
+                ))
 
-//        SessionStorage.sessions.filter { it != session && it.currentState == PacketState.PLAY }.forEach {
-//            session.sendPacket(PacketOutSpawnPlayer(it.player))
-//
-//            session.sendPacket(PacketOutEntityMetadata(
-//                it.player.id,
-//                PlayerMetadata()
-//            ))
-//
-//            session.sendPacket(PacketOutEntityProperties(
-//                it.player.id,
-//                listOf(
-//                    Attribute(AttributeKey.GENERIC_MAX_HEALTH, 20.0),
-//                    Attribute(AttributeKey.GENERIC_MOVEMENT_SPEED, 0.1)
-//                )
-//            ))
-//
-//            session.sendPacket(PacketOutEntityHeadLook(
-//                it.player.id,
-//                Angle(0u)
-//            ))
-//        }
+                session.sendPacket(PacketOutEntityHeadLook(
+                    it.player.id,
+                    Angle(0u)
+                ))
+            }
 
         session.sendPacket(PacketOutChunkData())
         session.sendPacket(PacketOutTimeUpdate(0L, 6000L))
@@ -289,9 +270,10 @@ class PacketHandler(private val session: Session, private val server: Server) {
             packet.onGround
         )
 
-        SessionStorage.sessions.filter { it != session && it.currentState == PacketState.PLAY }.forEach {
-            it.sendPacket(positionPacket)
-        }
+        SessionStorage.sessions.asSequence()
+            .filter { it != session }
+            .filter { it.currentState == PacketState.PLAY }
+            .forEach { it.sendPacket(positionPacket) }
     }
 
     private fun handleRotationUpdate(packet: PacketInPlayerRotation) {
@@ -306,10 +288,13 @@ class PacketHandler(private val session: Session, private val server: Server) {
             packet.yaw.toAngle()
         )
 
-        SessionStorage.sessions.filter { it != session && it.currentState == PacketState.PLAY }.forEach {
-            it.sendPacket(rotationPacket)
-            it.sendPacket(headLookPacket)
-        }
+        SessionStorage.sessions.asSequence()
+            .filter { it != session }
+            .filter { it.currentState == PacketState.PLAY }
+            .forEach {
+                it.sendPacket(rotationPacket)
+                it.sendPacket(headLookPacket)
+            }
     }
 
     private fun handlePositionAndRotationUpdate(packet: PacketInPlayerPositionAndRotation) {
@@ -331,10 +316,13 @@ class PacketHandler(private val session: Session, private val server: Server) {
             newLocation.yaw.toAngle()
         )
 
-        SessionStorage.sessions.filter { it != session && it.currentState == PacketState.PLAY }.forEach {
-            it.sendPacket(positionAndRotationPacket)
-            it.sendPacket(headLookPacket)
-        }
+        SessionStorage.sessions.asSequence()
+            .filter { it != session }
+            .filter { it.currentState == PacketState.PLAY }
+            .forEach {
+                it.sendPacket(positionAndRotationPacket)
+                it.sendPacket(headLookPacket)
+            }
     }
 
     private fun handleChat(packet: PacketInChat) {
@@ -355,9 +343,10 @@ class PacketHandler(private val session: Session, private val server: Server) {
             session.profile.uuid
         )
 
-        SessionStorage.sessions.filter { it.currentState == PacketState.PLAY }.forEach {
-            it.sendPacket(chatPacket)
-        }
+        SessionStorage.sessions.asSequence()
+            .filter { it.currentState == PacketState.PLAY }
+            .filter { it.settings.chatMode == ChatMode.ENABLED }
+            .forEach { it.sendPacket(chatPacket) }
     }
 
     companion object {

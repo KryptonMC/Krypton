@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'me.bristermitten'
-version '0.6'
+version '0.6.1'
 
 application.mainClassName 'me.bristermitten.minekraft.MineKraftKt'
 

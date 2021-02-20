@@ -14,8 +14,8 @@ import me.bristermitten.minekraft.entity.cardinal.Position
 import me.bristermitten.minekraft.entity.entities.villager.VillagerData
 import me.bristermitten.minekraft.entity.entities.villager.VillagerProfession
 import me.bristermitten.minekraft.entity.entities.villager.VillagerType
-import me.bristermitten.minekraft.entity.metadata.MetadataType
-import me.bristermitten.minekraft.entity.metadata.Pose
+import me.bristermitten.minekraft.entity.metadata.*
+import me.bristermitten.minekraft.entity.metadata.Optional
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import java.io.ByteArrayOutputStream
@@ -113,16 +113,24 @@ fun ByteBuf.readAllAvailableBytes(): ByteArray {
     return readBytes(length).array()
 }
 
+fun ByteBuf.writeOptionalVarInt(varInt: Optional<Int>) {
+    if (varInt.value != null) {
+        writeBoolean(true)
+        writeVarInt(varInt.value)
+    } else {
+        writeBoolean(false)
+    }
+}
 
 fun ByteBuf.writeUUID(uuid: UUID) {
     writeLong(uuid.mostSignificantBits)
     writeLong(uuid.leastSignificantBits)
 }
 
-fun ByteBuf.writeOptionalUUID(uuid: UUID?) {
-    if (uuid != null) {
+fun ByteBuf.writeOptionalUUID(uuid: Optional<UUID>) {
+    if (uuid.value != null) {
         writeBoolean(true)
-        writeUUID(uuid)
+        writeUUID(uuid.value)
     } else {
         writeBoolean(false)
     }
@@ -142,10 +150,10 @@ fun ByteBuf.writeChat(component: Component) {
     writeString(Json {}.encodeToString(component))
 }
 
-fun ByteBuf.writeOptionalChat(component: Component?) {
-    if (component != null) {
+fun ByteBuf.writeOptionalChat(component: Optional<Component>) {
+    if (component.value != null) {
         writeBoolean(true)
-        writeChat(component)
+        writeChat(component.value)
     } else {
         writeBoolean(false)
     }
@@ -170,10 +178,10 @@ fun ByteBuf.writePosition(position: Position) {
     writeLong(position.toProtocol())
 }
 
-fun ByteBuf.writeOptionalPosition(position: Position?) {
-    if (position != null) {
+fun ByteBuf.writeOptionalPosition(position: Optional<Position>) {
+    if (position.value != null) {
         writeBoolean(true)
-        writePosition(position)
+        writePosition(position.value)
     } else {
         writeBoolean(false)
     }

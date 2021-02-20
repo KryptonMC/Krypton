@@ -3,44 +3,69 @@ package me.bristermitten.minekraft.entity.metadata
 import io.netty.buffer.ByteBuf
 import me.bardy.komponent.Component
 import me.bristermitten.minekraft.entity.MainHand
+import me.bristermitten.minekraft.entity.cardinal.Position
 import me.bristermitten.minekraft.entity.metadata.MetadataType.*
 import me.bristermitten.minekraft.extension.writeMetadata
+import me.bristermitten.minekraft.main
 import me.bristermitten.minekraft.world.block.BlockPosition
 import net.kyori.adventure.nbt.CompoundBinaryTag
 
-class PlayerMetadata(
-    override val movementFlags: MovementFlags = MovementFlags(),
-    override val airTicks: Int = 300,
-    override val customName: Component? = null,
-    override val isCustomNameVisible: Boolean = false,
-    override val isSilent: Boolean = false,
-    override val hasNoGravity: Boolean = false,
-    override val pose: Pose = Pose.STANDING,
-    override val handFlags: HandFlags = HandFlags(),
-    override val health: Float = 1.0f,
-    override val potionEffectColor: Int = 0,
-    override val isPotionEffectAmbient: Boolean = false,
-    override val arrowsInEntity: Int = 0,
-    override val absorptionHealth: Int = 0,
-    override val bedPosition: BlockPosition? = null,
-    val additionalHearts: Float = 0.0f,
-    val score: Int = 0,
-    val skinFlags: SkinFlags = SkinFlags(),
-    val mainHand: MainHand = MainHand.RIGHT,
-    val leftShoulderEntityData: CompoundBinaryTag = CompoundBinaryTag.empty(),
-    val rightShoulderEntityData: CompoundBinaryTag = CompoundBinaryTag.empty()
+open class PlayerMetadata(
+    override val movementFlags: MovementFlags? = null,
+    override val airTicks: Int? = null,
+    override val customName: Optional<Component>? = null,
+    override val isCustomNameVisible: Boolean? = null,
+    override val isSilent: Boolean? = null,
+    override val hasNoGravity: Boolean? = null,
+    override val pose: Pose? = null,
+    override val handFlags: HandFlags? = null,
+    override val health: Float? = null,
+    override val potionEffectColor: Int? = null,
+    override val isPotionEffectAmbient: Boolean? = null,
+    override val arrowsInEntity: Int? = null,
+    override val absorptionHealth: Int? = null,
+    override val bedPosition: Optional<Position>? = null,
+    val additionalHearts: Float? = null,
+    val score: Int? = null,
+    val skinFlags: SkinFlags? = null,
+    val mainHand: MainHand? = null,
+    val leftShoulderEntityData: CompoundBinaryTag? = null,
+    val rightShoulderEntityData: CompoundBinaryTag? = null
 ) : LivingEntityMetadata(movementFlags, airTicks, customName, isCustomNameVisible, isSilent, hasNoGravity, pose, handFlags, health, potionEffectColor, isPotionEffectAmbient, arrowsInEntity, absorptionHealth, bedPosition) {
 
     override fun write(buf: ByteBuf) {
         super.write(buf)
 
-        buf.writeMetadata(14u, additionalHearts)
-        buf.writeMetadata(15u, score)
-        buf.writeMetadata(16u, skinFlags.toProtocol())
-        buf.writeMetadata(17u, mainHand.id.toByte())
-        buf.writeMetadata(18u, leftShoulderEntityData)
-        buf.writeMetadata(19u, rightShoulderEntityData)
+        if (additionalHearts != null) buf.writeMetadata(14u, additionalHearts)
+        if (score != null) buf.writeMetadata(15u, score)
+        if (skinFlags != null) buf.writeMetadata(16u, skinFlags.toProtocol())
+        if (mainHand != null) buf.writeMetadata(17u, mainHand.id)
+        if (leftShoulderEntityData != null) buf.writeMetadata(18u, leftShoulderEntityData)
+        if (rightShoulderEntityData != null) buf.writeMetadata(19u, rightShoulderEntityData)
     }
+
+    companion object Default : PlayerMetadata(
+        MovementFlags(),
+        300,
+        Optional(null),
+        false,
+        false,
+        false,
+        Pose.STANDING,
+        HandFlags(),
+        1.0f,
+        0,
+        false,
+        0,
+        0,
+        Optional(null),
+        0.0f,
+        0,
+        SkinFlags(),
+        MainHand.RIGHT,
+        CompoundBinaryTag.empty(),
+        CompoundBinaryTag.empty()
+    )
 }
 
 data class SkinFlags(
@@ -65,3 +90,13 @@ data class SkinFlags(
         return byte.toByte()
     }
 }
+
+fun Short.toSkinFlags() = SkinFlags(
+    (toInt() and 0x01) != 0,
+    (toInt() and 0x02) != 0,
+    (toInt() and 0x04) != 0,
+    (toInt() and 0x08) != 0,
+    (toInt() and 0x10) != 0,
+    (toInt() and 0x20) != 0,
+    (toInt() and 0x40) != 0
+)

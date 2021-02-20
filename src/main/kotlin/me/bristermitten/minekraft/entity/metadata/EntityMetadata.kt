@@ -1,35 +1,39 @@
 package me.bristermitten.minekraft.entity.metadata
 
 import io.netty.buffer.ByteBuf
-import kotlinx.serialization.json.Json
 import me.bardy.komponent.Component
 import me.bristermitten.minekraft.extension.writeMetadata
 import me.bristermitten.minekraft.extension.writeOptionalMetadata
 
 open class EntityMetadata(
-    open val movementFlags: MovementFlags = MovementFlags(),
-    open val airTicks: Int = 300,
-    open val customName: Component? = null,
-    open val isCustomNameVisible: Boolean = false,
-    open val isSilent: Boolean = false,
-    open val hasNoGravity: Boolean = false,
-    open val pose: Pose = Pose.STANDING
+    open val movementFlags: MovementFlags? = null,
+    open val airTicks: Int? = null,
+    open val customName: Optional<Component>? = null,
+    open val isCustomNameVisible: Boolean? = null,
+    open val isSilent: Boolean? = null,
+    open val hasNoGravity: Boolean? = null,
+    open val pose: Pose? = null
 ) {
 
     open fun write(buf: ByteBuf) {
-        buf.writeMetadata(0u, movementFlags.toProtocol())
-        buf.writeMetadata(1u, airTicks)
-        buf.writeOptionalMetadata(2u, customName)
-        buf.writeMetadata(3u, isCustomNameVisible)
-        buf.writeMetadata(4u, isSilent)
-        buf.writeMetadata(5u, hasNoGravity)
-        buf.writeMetadata(6u, pose)
+        if (movementFlags != null) buf.writeMetadata(0u, requireNotNull(movementFlags).toProtocol())
+        if (airTicks != null) buf.writeMetadata(1u, requireNotNull(airTicks))
+        if (customName != null) buf.writeOptionalMetadata(2u, requireNotNull(customName))
+        if (isCustomNameVisible != null) buf.writeMetadata(3u, requireNotNull(isCustomNameVisible))
+        if (isSilent != null) buf.writeMetadata(4u, requireNotNull(isSilent))
+        if (hasNoGravity != null) buf.writeMetadata(5u, requireNotNull(hasNoGravity))
+        if (pose != null) buf.writeMetadata(6u, requireNotNull(pose))
     }
 
-    companion object {
-
-        private val JSON = Json {}
-    }
+    companion object Default : EntityMetadata(
+        MovementFlags(),
+        300,
+        Optional(null),
+        false,
+        false,
+        false,
+        Pose.STANDING
+    )
 }
 
 data class MovementFlags(
@@ -77,3 +81,5 @@ enum class MetadataType(val id: Int) {
     OPTIONAL_VARINT(17),
     POSE(18)
 }
+
+data class Optional<T>(val value: T?)

@@ -9,6 +9,7 @@ import me.bristermitten.minekraft.entity.entities.Player
 import me.bristermitten.minekraft.extension.logger
 import me.bristermitten.minekraft.packet.Packet
 import me.bristermitten.minekraft.packet.PacketHandler
+import me.bristermitten.minekraft.packet.data.ClientSettings
 import me.bristermitten.minekraft.packet.state.PacketState
 import me.bristermitten.minekraft.packet.transformers.*
 import javax.crypto.SecretKey
@@ -18,6 +19,7 @@ class Session(val id: Int, private val channel: Channel, private val server: Ser
     private val handler = PacketHandler(this, server)
 
     lateinit var profile: GameProfile
+    lateinit var settings: ClientSettings
 
     lateinit var player: Player
     var lastTeleportId = 0
