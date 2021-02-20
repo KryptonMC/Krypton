@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'me.bristermitten'
-version '0.5'
+version '0.6'
 
 application.mainClassName 'me.bristermitten.minekraft.MineKraftKt'
 
@@ -45,7 +45,11 @@ dependencies {
 compileKotlin {
     kotlinOptions {
         jvmTarget = '11'
-        freeCompilerArgs = ["-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi", "-Xopt-in=kotlin.ExperimentalUnsignedTypes"]
+        freeCompilerArgs = [
+                "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
+                "-Xopt-in=kotlin.ExperimentalUnsignedTypes",
+                "-Xinline-classes"
+        ]
     }
 }
 

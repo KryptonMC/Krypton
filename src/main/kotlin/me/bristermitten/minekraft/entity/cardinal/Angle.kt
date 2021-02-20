@@ -3,7 +3,7 @@ package me.bristermitten.minekraft.entity.cardinal
 /**
  * Represents a protocol angle, measured in 256ths of a full turn
  */
-data class Angle(val value: UByte) : Comparable<Angle> {
+inline class Angle(val value: UByte) : Comparable<Angle> {
 
     override operator fun compareTo(other: Angle) = if (value == other.value) 0 else if (value < other.value) -1 else 1
 
