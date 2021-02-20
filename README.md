@@ -1,6 +1,6 @@
-# MineKraft
+# Krypton
 
-MineKraft is a Minecraft server implementation, written purely from scratch in Kotlin.
+Krypton is a Minecraft server implementation, written purely from scratch in Kotlin.
 
 It is currently a W.I.P, so if you find any bugs, feel free to make an issue about them
 

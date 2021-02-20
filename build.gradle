@@ -6,10 +6,10 @@ plugins {
     id 'application'
 }
 
-group 'me.bristermitten'
+group 'org.kryptonmc'
 version '0.6.1'
 
-application.mainClassName 'me.bristermitten.minekraft.MineKraftKt'
+application.mainClassName 'org.kryptonmc.krypton.KryptonKt'
 
 repositories {
     mavenCentral()
@@ -58,5 +58,5 @@ compileTestKotlin {
 }
 
 shadowJar {
-    archiveFileName.set("MineKraft-${project.version}.jar")
+    archiveFileName.set("Krypton-${project.version}.jar")
 }

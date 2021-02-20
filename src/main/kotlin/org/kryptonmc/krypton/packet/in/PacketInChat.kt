@@ -1,0 +1,14 @@
+package org.kryptonmc.krypton.packet.`in`
+
+import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.extension.readString
+import org.kryptonmc.krypton.packet.state.PlayPacket
+
+class PacketInChat : PlayPacket(0x03) {
+
+    lateinit var message: String
+
+    override fun read(buf: ByteBuf) {
+        message = buf.readString(256)
+    }
+}
