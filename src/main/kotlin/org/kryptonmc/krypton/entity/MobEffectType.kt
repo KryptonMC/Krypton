@@ -40,14 +40,14 @@ enum class MobEffectType(private val id: Int) {
         private val mobEffectIds = values().toList()
         private val mobEffectNames = mobEffectIds.associate { it.name to it; }
 
-        fun getFromId(id: Int): MobEffectType? {
+        fun fromId(id: Int): MobEffectType? {
             if (id >= 0 && id < mobEffectIds.size) {
                 return mobEffectIds[id]
             }
             return null
         }
 
-        fun getFromName(id: String): MobEffectType? {
+        fun fromName(id: String): MobEffectType? {
             return mobEffectNames[id]
         }
 
