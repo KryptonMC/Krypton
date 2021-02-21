@@ -1,7 +1,5 @@
 package org.kryptonmc.krypton.packet.state
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import org.kryptonmc.krypton.packet.Packet
 
 enum class PacketState(val id: Int) {
@@ -11,7 +9,7 @@ enum class PacketState(val id: Int) {
     LOGIN(2),
     PLAY(3);
 
-    private val packets: Int2ObjectMap<() -> Packet> = Int2ObjectArrayMap()
+    private val packets: MutableMap<Int, () -> Packet> = mutableMapOf()
 
     fun registerPacketType(id: Int, supplier: () -> Packet) {
         packets.putIfAbsent(id, supplier)

@@ -1,6 +1,7 @@
-package org.kryptonmc.krypton.world
+package org.kryptonmc.krypton.world.chunk
 
 import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.kryptonmc.krypton.world.Biome
 
 // TODO: Make this used
 data class Chunk(
@@ -11,11 +12,4 @@ data class Chunk(
     val heightmaps: CompoundBinaryTag,
     val biomes: List<Biome>,
     val sections: List<ChunkSection>
-)
-
-data class ChunkSection(
-    val blockCount: Short,
-    val bitsPerBlock: Byte,
-    val palette: List<Int>? = null,
-    val dataArray: LongArray
 )

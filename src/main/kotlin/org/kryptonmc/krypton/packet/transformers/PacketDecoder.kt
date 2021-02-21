@@ -19,7 +19,6 @@ class PacketDecoder : ByteToMessageDecoder() {
         val session = ctx.pipeline().get(ChannelHandler::class.java).session
         val packet = session.currentState.createPacket(id)
 
-
         if (packet == null) {
             LOGGER.debug("Skipping packet with state ${session.currentState} and ID $id because a packet object was not found")
             buf.skipBytes(buf.readableBytes())
@@ -39,7 +38,6 @@ class PacketDecoder : ByteToMessageDecoder() {
         }
 
         out.add(packet)
-
     }
 
     companion object {

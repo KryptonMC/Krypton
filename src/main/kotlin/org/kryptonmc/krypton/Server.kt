@@ -21,7 +21,7 @@ class Server(port: Int) {
 
     fun start() {
         PacketLoader.loadAll()
-        LOGGER.info("Starting MineKraft Server...")
+        LOGGER.info("Starting Krypton...")
         LOGGER.info("Starting Netty...")
 
         GlobalScope.launch {
