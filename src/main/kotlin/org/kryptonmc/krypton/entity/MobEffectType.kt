@@ -37,26 +37,18 @@ enum class MobEffectType(private val id: Int) {
 
     companion object {
 
-        private val MOB_EFFECT_IDS = values()
-        private val MOB_EFFECT_NAMES: Map<String, MobEffectType> = mutableMapOf()
+        private val mobEffectIds = values().toList()
+        private val mobEffectNames = mobEffectIds.associate { it.name to it; }
 
-        init {
-            for (id in MOB_EFFECT_IDS) {
-                MOB_EFFECT_NAMES.plus(id.name to id);
-            }
-        }
-
-        @JvmStatic
         fun getFromId(id: Int): MobEffectType? {
-            if (id >= 0 && id < MOB_EFFECT_IDS.size) {
-                return MOB_EFFECT_IDS[id]
+            if (id >= 0 && id < mobEffectIds.size) {
+                return mobEffectIds[id]
             }
             return null
         }
 
-        @JvmStatic
         fun getFromName(id: String): MobEffectType? {
-            return MOB_EFFECT_NAMES[id];
+            return mobEffectNames[id]
         }
 
     }
