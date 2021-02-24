@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import me.bardy.komponent.Component
+import me.bardy.komponent.dsl.textComponent
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.entity.Gamemode
 import org.kryptonmc.krypton.extension.writeString
@@ -17,7 +18,7 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  */
 class PacketOutPlayerInfo(
     val action: PlayerAction,
-    val players: List<PlayerInfo>
+    val players: List<PlayerInfo> = emptyList()
 ) : PlayPacket(0x32) {
 
     override fun write(buf: ByteBuf) {
@@ -55,10 +56,10 @@ class PacketOutPlayerInfo(
     }
 
     data class PlayerInfo(
-        val latency: Int,
-        val gamemode: Gamemode,
+        val latency: Int = 0,
+        val gamemode: Gamemode = Gamemode.SURVIVAL,
         val profile: GameProfile,
-        val displayName: Component
+        val displayName: Component = textComponent("")
     )
 
     enum class PlayerAction(val id: Int) {
