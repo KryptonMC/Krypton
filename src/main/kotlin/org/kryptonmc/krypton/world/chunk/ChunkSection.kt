@@ -1,5 +1,6 @@
 package org.kryptonmc.krypton.world.chunk
 
+import net.kyori.adventure.nbt.BinaryTag
 import org.kryptonmc.krypton.registry.NamespacedKey
 
 //data class ChunkSection(
@@ -19,5 +20,5 @@ data class ChunkSection(
 
 data class ChunkBlock(
     val name: NamespacedKey,
-    val properties: Map<String, Any> = emptyMap()
+    val properties: Map<String, BinaryTag> = emptyMap()
 )
