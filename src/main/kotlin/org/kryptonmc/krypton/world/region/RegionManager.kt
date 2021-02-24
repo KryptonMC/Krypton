@@ -19,7 +19,7 @@ class RegionManager {
 
     init {
         LOGGER.debug("Loading region at 0, 0 for world hardcore")
-        val folder = File(URI.create("file:///C:/Users/callu/IdeaProjects/MineKraft/server/hardcore/hardcore/region/"))
+        val folder = File(URI.create("file://${System.getProperty("krypton.region.dir")}"))
         regions += loadRegion(folder, 0, 0)
         LOGGER.debug("Region loaded!")
     }

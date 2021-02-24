@@ -10,6 +10,7 @@ import okhttp3.internal.toHexString
 import org.kryptonmc.krypton.extension.*
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.chunk.Chunk
+import org.kryptonmc.krypton.world.chunk.HeightmapType
 import kotlin.math.ceil
 
 class PacketOutChunkData(
@@ -130,8 +131,8 @@ class PacketOutChunkData(
 
         buf.writeNBTCompound(CompoundBinaryTag.builder()
             .put("", CompoundBinaryTag.builder()
-                .put("MOTION_BLOCKING", LongArrayBinaryTag.of(*chunk.level.heightmaps[0].second.toLongArray()))
-                .put("WORLD_SURFACE", LongArrayBinaryTag.of(*chunk.level.heightmaps[0].second.toLongArray()))
+                .put("MOTION_BLOCKING", LongArrayBinaryTag.of(*chunk.level.heightmaps.single { it.first == HeightmapType.MOTION_BLOCKING }.second.toLongArray()))
+                .put("WORLD_SURFACE", LongArrayBinaryTag.of(*chunk.level.heightmaps.single { it.first == HeightmapType.MOTION_BLOCKING }.second.toLongArray()))
                 .build())
             .build())
 
