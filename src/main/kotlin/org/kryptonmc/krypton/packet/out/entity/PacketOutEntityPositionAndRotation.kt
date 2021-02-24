@@ -1,7 +1,7 @@
 package org.kryptonmc.krypton.packet.out.entity
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.entity.cardinal.Angle
+import org.kryptonmc.krypton.space.Angle
 import org.kryptonmc.krypton.extension.writeAngle
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket

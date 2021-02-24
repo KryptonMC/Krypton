@@ -16,8 +16,8 @@ import org.kryptonmc.krypton.entity.Abilities
 import org.kryptonmc.krypton.entity.Attribute
 import org.kryptonmc.krypton.entity.AttributeKey
 import org.kryptonmc.krypton.entity.Gamemode
-import org.kryptonmc.krypton.entity.cardinal.Angle
-import org.kryptonmc.krypton.entity.cardinal.toAngle
+import org.kryptonmc.krypton.space.Angle
+import org.kryptonmc.krypton.space.toAngle
 import org.kryptonmc.krypton.entity.entities.Player
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
 import org.kryptonmc.krypton.extension.logger
@@ -262,7 +262,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
                 ))
             }
 
-        session.sendPacket(PacketOutChunkData())
+        session.sendPacket(PacketOutChunkData(server.regionManager.regions[0].chunks[0]))
         session.sendPacket(PacketOutTimeUpdate(0L, 6000L))
         ServerStorage.playerCount.getAndIncrement()
 
