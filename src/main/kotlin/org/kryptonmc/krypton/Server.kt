@@ -8,6 +8,8 @@ import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.packet.PacketLoader
 import org.kryptonmc.krypton.registry.RegistryManager
 import org.kryptonmc.krypton.registry.tags.TagManager
+import org.kryptonmc.krypton.world.WorldManager
+import org.kryptonmc.krypton.world.region.RegionManager
 import java.security.SecureRandom
 
 class Server(port: Int) {
@@ -18,6 +20,9 @@ class Server(port: Int) {
 
     val registryManager = RegistryManager()
     val tagManager = TagManager()
+
+    val worldManager = WorldManager()
+    val regionManager = RegionManager()
 
     fun start() {
         PacketLoader.loadAll()

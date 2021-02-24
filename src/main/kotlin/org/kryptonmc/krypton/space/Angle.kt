@@ -1,4 +1,4 @@
-package org.kryptonmc.krypton.entity.cardinal
+package org.kryptonmc.krypton.space
 
 /**
  * Represents a protocol angle, measured in 256ths of a full turn

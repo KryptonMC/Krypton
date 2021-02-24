@@ -4,10 +4,10 @@ import io.netty.buffer.ByteBuf
 import me.bardy.komponent.Component
 import org.kryptonmc.krypton.entity.Particle
 import org.kryptonmc.krypton.entity.Slot
-import org.kryptonmc.krypton.entity.cardinal.Direction
-import org.kryptonmc.krypton.entity.cardinal.Position
-import org.kryptonmc.krypton.entity.cardinal.Rotation
-import org.kryptonmc.krypton.entity.entities.villager.VillagerData
+import org.kryptonmc.krypton.space.Direction
+import org.kryptonmc.krypton.space.Position
+import org.kryptonmc.krypton.space.Rotation
+import org.kryptonmc.krypton.entity.entities.data.VillagerData
 import org.kryptonmc.krypton.entity.metadata.MetadataType
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.Pose
@@ -90,7 +90,7 @@ fun ByteBuf.writeMetadata(index: UByte, direction: Direction) {
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.DIRECTION.id)
-        writeVarInt(direction.id)
+        writeVarInt(direction.value)
     }
 }
 

@@ -27,6 +27,7 @@ enum class AttributeKey(val key: NamespacedKey, val default: Double, val min: Do
 }
 
 data class AttributeModifier(
+    val name: String,
     val uuid: UUID,
     val amount: Double,
     val operation: ModifierOperation

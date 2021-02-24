@@ -3,7 +3,7 @@ package org.kryptonmc.krypton.entity.metadata
 import io.netty.buffer.ByteBuf
 import me.bardy.komponent.Component
 import org.kryptonmc.krypton.entity.Hand
-import org.kryptonmc.krypton.entity.cardinal.Position
+import org.kryptonmc.krypton.space.Position
 import org.kryptonmc.krypton.extension.writeMetadata
 import org.kryptonmc.krypton.extension.writeOptionalMetadata
 

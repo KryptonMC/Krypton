@@ -1,9 +1,19 @@
 package org.kryptonmc.krypton.world
 
 import org.kryptonmc.krypton.registry.NamespacedKey
+import java.util.*
 
+/**
+ * The enum that holds all the biomes in Minecraft, including both their namespaced ID and
+ * their numeric ID
+ *
+ * @author Callum Seabrook
+ */
 enum class Biome(val key: NamespacedKey, val id: Int) {
 
+    /**
+     * Overworld biomes
+     */
     OCEAN(NamespacedKey(value = "ocean"), 0),
     PLAINS(NamespacedKey(value = "plains"), 1),
     DESERT(NamespacedKey(value = "desert"), 2),
@@ -12,8 +22,6 @@ enum class Biome(val key: NamespacedKey, val id: Int) {
     TAIGA(NamespacedKey(value = "taiga"), 5),
     SWAMP(NamespacedKey(value = "swamp"), 6),
     RIVER(NamespacedKey(value = "river"), 7),
-    NETHER_WASTES(NamespacedKey(value = "nether_wastes"), 8),
-    THE_END(NamespacedKey(value = "the_end"), 9),
     FROZEN_OCEAN(NamespacedKey(value = "frozen_ocean"), 10),
     FROZEN_RIVER(NamespacedKey(value = "frozen_river"), 11),
     SNOWY_TUNDRA(NamespacedKey(value = "snowy_tundra"), 12),
@@ -44,10 +52,6 @@ enum class Biome(val key: NamespacedKey, val id: Int) {
     BADLANDS(NamespacedKey(value = "badlands"), 37),
     WOODED_BADLANDS_PLATEAU(NamespacedKey(value = "wooded_badlands_plateau"), 38),
     BADLANDS_PLATEAU(NamespacedKey(value = "badlands_plateau"), 39),
-    SMALL_END_ISLANDS(NamespacedKey(value = "small_end_islands"), 40),
-    END_MIDLANDS(NamespacedKey(value = "end_midlands"), 41),
-    END_HIGHLANDS(NamespacedKey(value = "end_highlands"), 42),
-    END_BARRENS(NamespacedKey(value = "end_barrens"), 43),
     WARM_OCEAN(NamespacedKey(value = "warm_ocean"), 44),
     LUKEWARM_OCEAN(NamespacedKey(value = "lukewarm_ocean"), 45),
     COLD_OCEAN(NamespacedKey(value = "cold_ocean"), 46),
@@ -55,7 +59,6 @@ enum class Biome(val key: NamespacedKey, val id: Int) {
     DEEP_LUKEWARM_OCEAN(NamespacedKey(value = "deep_lukewarm_ocean"), 48),
     DEEP_COLD_OCEAN(NamespacedKey(value = "deep_cold_ocean"), 49),
     DEEP_FROZEN_OCEAN(NamespacedKey(value = "deep_frozen_ocean"), 50),
-    THE_VOID(NamespacedKey(value = "the_void"), 127),
     SUNFLOWER_PLAINS(NamespacedKey(value = "sunflower_plains"), 129),
     DESERT_LAKES(NamespacedKey(value = "desert_lakes"), 130),
     GRAVELLY_MOUNTAINS(NamespacedKey(value = "gravelly_mountains"), 131),
@@ -79,8 +82,47 @@ enum class Biome(val key: NamespacedKey, val id: Int) {
     MODIFIED_BADLANDS_PLATEAU(NamespacedKey(value = "modified_badlands_plateau"), 167),
     BAMBOO_JUNGLE(NamespacedKey(value = "bamboo_jungle"), 168),
     BAMBOO_JUNGLE_HILLS(NamespacedKey(value = "bamboo_jungle_hills"), 169),
+
+    /**
+     * Nether biomes
+     */
+    NETHER_WASTES(NamespacedKey(value = "nether_wastes"), 8),
     SOUL_SAND_VALLEY(NamespacedKey(value = "soul_sand_valley"), 170),
     CRIMSON_FOREST(NamespacedKey(value = "crimson_forest"), 171),
     WARPED_FOREST(NamespacedKey(value = "warped_forest"), 172),
-    BASALT_DELTAS(NamespacedKey(value = "basalt_deltas"), 173)
+    BASALT_DELTAS(NamespacedKey(value = "basalt_deltas"), 173),
+
+    /**
+     * End biomes
+     */
+    THE_END(NamespacedKey(value = "the_end"), 9),
+    SMALL_END_ISLANDS(NamespacedKey(value = "small_end_islands"), 40),
+    END_MIDLANDS(NamespacedKey(value = "end_midlands"), 41),
+    END_HIGHLANDS(NamespacedKey(value = "end_highlands"), 42),
+    END_BARRENS(NamespacedKey(value = "end_barrens"), 43),
+
+    /**
+     * Miscellaneous biomes
+     */
+    THE_VOID(NamespacedKey(value = "the_void"), 127);
+
+    companion object {
+
+        val VALUES = values().associateBy { it.id }
+
+        val OCEANS = EnumSet.of(
+            OCEAN,
+            COLD_OCEAN,
+            DEEP_OCEAN,
+            DEEP_WARM_OCEAN,
+            FROZEN_OCEAN,
+            DEEP_LUKEWARM_OCEAN,
+            DEEP_COLD_OCEAN,
+            DEEP_FROZEN_OCEAN,
+            WARM_OCEAN,
+            LUKEWARM_OCEAN
+        )
+
+        fun fromId(id: Int) = VALUES[id]!!
+    }
 }

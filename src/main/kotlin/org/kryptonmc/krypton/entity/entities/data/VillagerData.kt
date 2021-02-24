@@ -1,4 +1,4 @@
-package org.kryptonmc.krypton.entity.entities.villager
+package org.kryptonmc.krypton.entity.entities.data
 
 data class VillagerData(
     val type: VillagerType,

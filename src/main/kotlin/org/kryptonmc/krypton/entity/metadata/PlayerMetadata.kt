@@ -4,8 +4,7 @@ import io.netty.buffer.ByteBuf
 import me.bardy.komponent.Component
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import org.kryptonmc.krypton.entity.MainHand
-import org.kryptonmc.krypton.entity.cardinal.Position
-import org.kryptonmc.krypton.entity.metadata.MetadataType.*
+import org.kryptonmc.krypton.space.Position
 import org.kryptonmc.krypton.extension.writeMetadata
 
 open class PlayerMetadata(

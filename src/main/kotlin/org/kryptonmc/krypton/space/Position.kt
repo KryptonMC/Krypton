@@ -1,4 +1,4 @@
-package org.kryptonmc.krypton.entity.cardinal
+package org.kryptonmc.krypton.space
 
 /**
  * x is 26 bit

@@ -1,6 +1,6 @@
 package org.kryptonmc.krypton.world.block
 
-import org.kryptonmc.krypton.entity.cardinal.Position
+import org.kryptonmc.krypton.space.Position
 
 data class BlockPosition(
     override val x: Int,

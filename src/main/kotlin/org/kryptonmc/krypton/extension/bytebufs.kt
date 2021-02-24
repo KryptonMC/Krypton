@@ -9,10 +9,10 @@ import me.bardy.komponent.Component
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import org.kryptonmc.krypton.entity.*
-import org.kryptonmc.krypton.entity.cardinal.Angle
-import org.kryptonmc.krypton.entity.cardinal.Position
-import org.kryptonmc.krypton.entity.cardinal.Rotation
-import org.kryptonmc.krypton.entity.entities.villager.VillagerData
+import org.kryptonmc.krypton.space.Angle
+import org.kryptonmc.krypton.space.Position
+import org.kryptonmc.krypton.space.Rotation
+import org.kryptonmc.krypton.entity.entities.data.VillagerData
 import org.kryptonmc.krypton.entity.metadata.Optional
 import java.io.ByteArrayOutputStream
 import java.io.IOException
