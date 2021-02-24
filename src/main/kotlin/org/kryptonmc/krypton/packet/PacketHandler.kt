@@ -180,7 +180,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
         session.sendPacket(PacketOutTags(server.registryManager, server.tagManager))
         session.sendPacket(PacketOutEntityStatus(session.id))
         session.sendPacket(PacketOutDeclareRecipes())
-        session.sendPacket(PacketOutPlayerPositionAndLook(server.worldManager.worlds[0].spawnLocation, teleportId = session.lastTeleportId))
+        session.sendPacket(PacketOutPlayerPositionAndLook(session.player.location, teleportId = session.lastTeleportId))
         session.sendPacket(PacketOutChat(
             textComponent("${session.profile.name} joined the game"),
             ChatPosition.SYSTEM_MESSAGE,

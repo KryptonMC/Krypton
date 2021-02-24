@@ -15,7 +15,7 @@ class WorldManager {
 
     init {
         LOGGER.debug("Loading world hardcore...")
-        val folder = File(URI.create("file:///C:/Users/callu/IdeaProjects/MineKraft/server/hardcore/hardcore/"))
+        val folder = File(URI.create("file://${System.getProperty("krypton.world.dir")}"))
         worlds += loadWorld(File(folder, "level.dat"))
         LOGGER.debug("World loaded!")
     }
