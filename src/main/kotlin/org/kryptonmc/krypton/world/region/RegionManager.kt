@@ -48,11 +48,11 @@ class RegionManager {
     fun deserializeChunk(file: RandomAccessFile): Chunk {
         val compressionType = file.readByte()
         val bufferedStream = decompress(file, compressionType)
-        val nbt = BinaryTagIO.unlimitedReader().read(bufferedStream)
+        val nbt = BinaryTagIO.unlimitedReader().read(bufferedStream).getCompound("Level")
 
 //        val carvingMasks = nbt.getCompound("CarvingMasks")
         val heightmaps = nbt.getCompound("Heightmaps").map { (key, value) ->
-            HeightmapType.valueOf(key) to (value as ListBinaryTag).toList().map { (it as LongBinaryTag).value() }
+            HeightmapType.valueOf(key) to (value as LongArrayBinaryTag).toList()
         }
         val lights = nbt.getList("Lights").map { light ->
             (light as ListBinaryTag).map { (it as ShortBinaryTag).value() }
@@ -70,11 +70,13 @@ class RegionManager {
         }.map { section ->
             val nbtSection = section as CompoundBinaryTag
 
-            val palette = nbtSection.getList("Palette").map {
-                ChunkBlock(
-                    nbt.getString("Name").toNamespacedKey(),
-                    nbt.getCompound("Properties").associate { it.key to (it.value as Any) }
-                )
+            val palette = nbtSection.getList("Palette").map { block ->
+                (block as CompoundBinaryTag).let { nbtBlock ->
+                    ChunkBlock(
+                        nbtBlock.getString("Name").toNamespacedKey(),
+                        nbtBlock.getCompound("Properties").associate { it.key to it.value }
+                    )
+                }
             }
 
             ChunkSection(
@@ -97,9 +99,9 @@ class RegionManager {
 //                nbt.getInt("t")
 //            )
 //        }
-        val toBeTicked = nbt.getList("ToBeTicked").map { element ->
-            (element as ListBinaryTag).map { (it as ShortBinaryTag).value() }
-        }
+//        val toBeTicked = nbt.getList("ToBeTicked").map { element ->
+//            (element as ListBinaryTag).map { (it as ShortBinaryTag).value() }
+//        }
 
 //        val nbtStructures = nbt.getCompound("Structures")
 //
