@@ -7,13 +7,12 @@ plugins {
 }
 
 group 'org.kryptonmc'
-version '0.6.4'
+version '0.7'
 
 application.mainClassName 'org.kryptonmc.krypton.KryptonKt'
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
