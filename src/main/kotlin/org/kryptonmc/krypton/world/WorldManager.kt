@@ -2,6 +2,7 @@ package org.kryptonmc.krypton.world
 
 import net.kyori.adventure.nbt.BinaryTagIO
 import org.kryptonmc.krypton.extension.logger
+import org.kryptonmc.krypton.space.Position
 import java.io.File
 import java.net.URI
 import java.time.Instant
@@ -45,17 +46,17 @@ class WorldManager {
 //            )
 //        }
 
-//        val worldBorder = WorldBorder(
-//            nbt.getDouble("BorderSize"),
-//            nbt.getDouble("BorderCenterX"),
-//            nbt.getDouble("BorderCenterZ"),
-//            nbt.getDouble("BorderDamagePerBlock"),
-//            nbt.getDouble("BorderSafeZone"),
-//            nbt.getDouble("BorderSizeLerpTarget"),
-//            nbt.getLong("BorderSizeLerpTime"),
-//            nbt.getDouble("BorderWarningBlocks"),
-//            nbt.getDouble("BorderWarningTime")
-//        )
+        val worldBorder = WorldBorder(
+            nbt.getDouble("BorderSize"),
+            nbt.getDouble("BorderCenterX"),
+            nbt.getDouble("BorderCenterZ"),
+            nbt.getDouble("BorderDamagePerBlock"),
+            nbt.getDouble("BorderSafeZone"),
+            nbt.getDouble("BorderSizeLerpTarget"),
+            nbt.getLong("BorderSizeLerpTime"),
+            nbt.getDouble("BorderWarningBlocks"),
+            nbt.getDouble("BorderWarningTime")
+        )
 
 //        val endDimensionData = nbt.getCompound("DimensionData")
 //            .getCompound("1")
@@ -94,14 +95,15 @@ class WorldManager {
 //            )
 //        }
 
-        val spawnLocation = Location(
-            nbt.getInt("SpawnX").toDouble(),
-            nbt.getInt("SpawnY").toDouble(),
-            nbt.getInt("SpawnZ").toDouble()
+        val spawnLocation = Position(
+            nbt.getInt("SpawnX"),
+            nbt.getInt("SpawnY"),
+            nbt.getInt("SpawnZ")
         )
 
         return World(
             nbt.getString("LevelName"),
+            worldBorder,
             nbt.getLong("DayTime"),
             Difficulty.fromId(nbt.getByte("Difficulty").toInt()),
             nbt.getBoolean("DifficultyLocked"),

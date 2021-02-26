@@ -5,6 +5,7 @@ import org.kryptonmc.krypton.lang.LegacyColor
 import org.kryptonmc.krypton.registry.NamespacedKey
 import java.util.*
 
+// TODO: Use this
 data class Bossbar(
     val id: NamespacedKey,
     val name: Component,

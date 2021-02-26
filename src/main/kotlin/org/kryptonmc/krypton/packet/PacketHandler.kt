@@ -262,8 +262,17 @@ class PacketHandler(private val session: Session, private val server: Server) {
                 ))
             }
 
-        session.sendPacket(PacketOutChunkData(server.regionManager.regions[0].chunks[0]))
+        val world = server.worldManager.worlds[0]
+        val chunk = server.regionManager.regions[0].chunks[0]
+
+        session.sendPacket(PacketOutUpdateViewPosition(chunk.position))
+
+        session.sendPacket(PacketOutChunkData(chunk))
+        session.sendPacket(PacketOutUpdateLight(chunk))
+        session.sendPacket(PacketOutWorldBorder(BorderAction.INITIALIZE, world.border))
+
         session.sendPacket(PacketOutTimeUpdate(0L, 6000L))
+        session.sendPacket(PacketOutSpawnPosition(world.spawnPosition))
         ServerStorage.playerCount.getAndIncrement()
 
         executor.scheduleAtFixedRate({
