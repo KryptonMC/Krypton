@@ -12,6 +12,8 @@ import java.io.RandomAccessFile
 import java.net.URI
 import java.util.zip.GZIPInputStream
 import java.util.zip.InflaterInputStream
+import kotlin.math.floor
+import kotlin.math.sqrt
 
 class RegionManager {
 
@@ -36,7 +38,7 @@ class RegionManager {
             if (file.readByte() == 0.toByte()) continue
 
             file.seek(4096L + i * 4)
-            val timestamp = file.readInt()
+            val timestamp = file.readInt() // ignored for now
 
             file.seek(4096L * offset + 4)
             chunks += deserializeChunk(file)
@@ -45,7 +47,7 @@ class RegionManager {
         return Region(x, z, chunks)
     }
 
-    fun deserializeChunk(file: RandomAccessFile): Chunk {
+    private fun deserializeChunk(file: RandomAccessFile): Chunk {
         val compressionType = file.readByte()
         val bufferedStream = decompress(file, compressionType)
         val nbt = BinaryTagIO.unlimitedReader().read(bufferedStream).getCompound("Level")
@@ -54,9 +56,9 @@ class RegionManager {
         val heightmaps = nbt.getCompound("Heightmaps").map { (key, value) ->
             HeightmapType.valueOf(key) to (value as LongArrayBinaryTag).toList()
         }
-        val lights = nbt.getList("Lights").map { light ->
-            (light as ListBinaryTag).map { (it as ShortBinaryTag).value() }
-        }
+//        val lights = nbt.getList("Lights").map { light ->
+//            (light as ListBinaryTag).map { (it as ShortBinaryTag).value() }
+//        }
 //        val liquidsToBeTicked = nbt.getList("LiquidsToBeTicked").map { liquid ->
 //            (liquid as ListBinaryTag).map { (it as ShortBinaryTag).value() }
 //        }
@@ -65,9 +67,7 @@ class RegionManager {
 //            (element as ListBinaryTag).map { (it as ShortBinaryTag).value() }
 //        }
 
-        val sections = nbt.getList("Sections").filter { section ->
-            (section as CompoundBinaryTag).getLongArray("BlockStates").takeIf { it.isNotEmpty() } != null
-        }.map { section ->
+        val sections = nbt.getList("Sections").map { section ->
             val nbtSection = section as CompoundBinaryTag
 
             val palette = nbtSection.getList("Palette").map { block ->
@@ -127,18 +127,14 @@ class RegionManager {
             nbt.getIntArray("Biomes").map { Biome.fromId(it) },
             heightmaps,
             nbt.getLong("LastUpdate"),
-            lights,
             nbt.getLong("InhabitedTime"),
             sections
         )
 
-        return Chunk(
-            ChunkPosition(nbt.getInt("xPos"), nbt.getInt("zPos")),
-            chunkData
-        )
+        return Chunk(ChunkPosition(nbt.getInt("xPos"), nbt.getInt("zPos")), chunkData)
     }
 
-    fun decompress(file: RandomAccessFile, type: Byte): BufferedInputStream = when (type.toInt()) {
+    private fun decompress(file: RandomAccessFile, type: Byte): BufferedInputStream = when (type.toInt()) {
         0 -> BufferedInputStream(FileInputStream(file.fd))
         1 -> BufferedInputStream(GZIPInputStream(FileInputStream(file.fd)))
         2 -> BufferedInputStream(InflaterInputStream(FileInputStream(file.fd)))

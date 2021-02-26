@@ -106,6 +106,6 @@ class PacketOutJoinGame(
         buf.writeBoolean(false) // reduced debug info
         buf.writeBoolean(true) // enable respawn screen
         buf.writeBoolean(false) // is debug world
-        buf.writeBoolean(true) // is flat world
+        buf.writeBoolean(false) // is flat world
     }
 }

@@ -60,6 +60,16 @@ fun ByteBuf.writeVarInt(varInt: Int) {
     writeByte(i)
 }
 
+fun ByteBuf.writeVarLong(varLong: Long) {
+    var i = varLong
+    while (i and -128 != 0.toLong()) {
+        writeByte((i and 127 or 128).toInt())
+        i = i ushr 7
+    }
+
+    writeByte(i.toInt())
+}
+
 fun ByteBuf.readString(maxLength: Short = Short.MAX_VALUE): String {
     val length = this.readVarInt()
 

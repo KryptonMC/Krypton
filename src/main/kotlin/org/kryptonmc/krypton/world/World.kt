@@ -1,5 +1,6 @@
 package org.kryptonmc.krypton.world
 
+import org.kryptonmc.krypton.space.Position
 import org.kryptonmc.krypton.world.region.Region
 import java.time.LocalDateTime
 
@@ -7,7 +8,7 @@ data class World(
     val name: String,
     //val bossbars: List<Bossbar>,
     //val allowCheats: Boolean,
-    //val border: WorldBorder,
+    val border: WorldBorder,
     //val clearWeatherTime: Int,
     var dayTime: Long,
     val difficulty: Difficulty,
@@ -22,7 +23,7 @@ data class World(
     //val isRaining: Boolean,
     //val rainTime: Int,
     //val randomSeed: Long,
-    val spawnLocation: Location,
+    val spawnPosition: Position,
     //val isThundering: Boolean,
     //val thunderTime: Int,
     val time: Long

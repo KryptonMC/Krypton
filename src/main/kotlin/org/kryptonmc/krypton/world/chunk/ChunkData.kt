@@ -11,7 +11,7 @@ data class ChunkData(
     //val entities: List<Entity>,
     val heightmaps: List<Pair<HeightmapType, List<Long>>>,
     val lastUpdate: Long,
-    val lights: List<List<Short>>,
+    //val lights: List<List<Short>>,
     //val liquidsToBeTicked: List<List<Short>>,
     //val liquidTicks: List<CompoundBinaryTag>,
     val inhabitedTime: Long,
