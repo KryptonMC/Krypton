@@ -1,5 +1,6 @@
 package org.kryptonmc.krypton.packet
 
+import me.bardy.komponent.Component
 import me.bardy.komponent.colour.Color
 import me.bardy.komponent.dsl.textComponent
 import me.bardy.komponent.dsl.translationComponent
@@ -22,6 +23,7 @@ import org.kryptonmc.krypton.entity.entities.Player
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
 import org.kryptonmc.krypton.packet.`in`.PacketInChat
 import org.kryptonmc.krypton.packet.`in`.PacketInClientSettings
+import org.kryptonmc.krypton.packet.`in`.PacketInKeepAlive
 import org.kryptonmc.krypton.packet.`in`.PacketInLoginStart
 import org.kryptonmc.krypton.packet.`in`.PacketInPlayerMovement.*
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
@@ -63,6 +65,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
             is PacketInPlayerRotation -> handleRotationUpdate(packet)
             is PacketInPlayerPositionAndRotation -> handlePositionAndRotationUpdate(packet)
             is PacketInChat -> handleChat(packet)
+            is PacketInKeepAlive -> verifyKeepAlive(packet)
         }
     }
 
@@ -89,7 +92,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
                 ServerStorage.playerCount.get(),
                 players
             ),
-            textComponent("MineKraft is a Minecraft Server written in Kotlin!") {
+            textComponent("Krypton is a Minecraft Server written in Kotlin!") {
                 color = Color.random()
             }
         )))
@@ -253,7 +256,9 @@ class PacketHandler(private val session: Session, private val server: Server) {
         ServerStorage.playerCount.getAndIncrement()
 
         executor.scheduleAtFixedRate({
-            session.sendPacket(PacketOutKeepAlive(System.currentTimeMillis()))
+            val keepAliveId = System.currentTimeMillis()
+            session.lastKeepAliveId = keepAliveId
+            session.sendPacket(PacketOutKeepAlive(keepAliveId))
         }, 0, 20, TimeUnit.SECONDS)
     }
 
@@ -347,6 +352,11 @@ class PacketHandler(private val session: Session, private val server: Server) {
             .filter { it.currentState == PacketState.PLAY }
             .filter { it.settings.chatMode == ChatMode.ENABLED }
             .forEach { it.sendPacket(chatPacket) }
+    }
+
+    private fun verifyKeepAlive(packet: PacketInKeepAlive) {
+        if (session.lastKeepAliveId == packet.keepAliveId) return
+        session.disconnect(translationComponent("disconnect.timeout"))
     }
 
     companion object {

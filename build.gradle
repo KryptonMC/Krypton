@@ -24,7 +24,7 @@ dependencies {
 
     implementation 'me.bardy:komponent:1.1.1'
 
-    implementation 'net.kyori:adventure-nbt:4.4.0'
+    implementation 'net.kyori:adventure-nbt:4.5.0'
 
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1'
 
