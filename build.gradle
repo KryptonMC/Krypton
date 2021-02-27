@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'org.kryptonmc'
-version '0.6.2'
+version '0.6.4'
 
 application.mainClassName 'org.kryptonmc.krypton.KryptonKt'
 
