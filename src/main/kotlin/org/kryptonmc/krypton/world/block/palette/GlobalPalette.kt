@@ -1,7 +1,25 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import org.kryptonmc.krypton.registry.NamespacedKey
+import org.kryptonmc.krypton.world.block.BlockState
 
+//object GlobalPalette {
+//
+//    private val LOGGER = logger<GlobalPalette>()
+//
+//    val PALETTE: Map<NamespacedKey, RegistryBlock>
+//
+//    init {
+//        LOGGER.debug("Loading block registry...")
+//        val data = javaClass.classLoader.getResourceAsStream("blocks.json")!!
+//            .reader(Charset.forName("UTF-8"))
+//            .readText()
+//        PALETTE = Json {}.decodeFromString(data)
+//        LOGGER.debug("Block registry loaded!")
+//    }
+//}
+
+// TODO: Fix global palette
 object GlobalPalette {
 
     val PALETTE = mapOf(
@@ -25,3 +43,14 @@ object GlobalPalette {
         NamespacedKey(value = "sand") to 66
     )
 }
+
+data class RegistryBlock(
+    val states: List<RegistryBlockState>,
+    val properties: Map<String, List<Any>> = emptyMap()
+)
+
+data class RegistryBlockState(
+    val id: Int,
+    val default: Boolean = false,
+    val properties: Map<String, BlockState> = emptyMap()
+)

@@ -90,7 +90,7 @@ fun ByteBuf.writeMetadata(index: UByte, direction: Direction) {
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.DIRECTION.id)
-        writeVarInt(direction.value)
+        writeVarInt(direction.id)
     }
 }
 
