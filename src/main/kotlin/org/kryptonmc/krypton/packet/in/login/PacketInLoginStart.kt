@@ -1,4 +1,4 @@
-package org.kryptonmc.krypton.packet.`in`
+package org.kryptonmc.krypton.packet.`in`.login
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.extension.readString

@@ -1,6 +1,5 @@
 package org.kryptonmc.krypton.packet
 
-import me.bardy.komponent.Component
 import me.bardy.komponent.colour.Color
 import me.bardy.komponent.dsl.textComponent
 import me.bardy.komponent.dsl.translationComponent
@@ -24,7 +23,7 @@ import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
 import org.kryptonmc.krypton.packet.`in`.PacketInChat
 import org.kryptonmc.krypton.packet.`in`.PacketInClientSettings
 import org.kryptonmc.krypton.packet.`in`.PacketInKeepAlive
-import org.kryptonmc.krypton.packet.`in`.PacketInLoginStart
+import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
 import org.kryptonmc.krypton.packet.`in`.PacketInPlayerMovement.*
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.status.PacketInPing
@@ -32,6 +31,9 @@ import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
 import org.kryptonmc.krypton.packet.data.*
 import org.kryptonmc.krypton.packet.out.*
 import org.kryptonmc.krypton.packet.out.entity.*
+import org.kryptonmc.krypton.packet.out.login.PacketOutDisconnect
+import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
+import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.status.PacketOutPong
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
 import org.kryptonmc.krypton.packet.state.PacketState
@@ -106,10 +108,12 @@ class PacketHandler(private val session: Session, private val server: Server) {
         session.player = Player(ServerStorage.nextEntityId.getAndIncrement())
         session.player.name = packet.name
 
-        session.sendPacket(PacketOutEncryptionRequest(
+        session.sendPacket(
+            PacketOutEncryptionRequest(
             server.encryption.publicKey,
             verifyToken
-        ))
+        )
+        )
     }
 
     private fun handleEncryptionResponse(packet: PacketInEncryptionResponse) {
@@ -136,9 +140,11 @@ class PacketHandler(private val session: Session, private val server: Server) {
 
         val response = SessionService.hasJoined(username, serverId, ServerStorage.SERVER_IP.hostAddress).execute()
         if (response.code() != 200 || !response.isSuccessful || response.errorBody() != null) {
-            session.sendPacket(PacketOutDisconnect(
+            session.sendPacket(
+                PacketOutDisconnect(
                 translationComponent("")
-            ))
+            )
+            )
             return
         }
 

@@ -4,6 +4,7 @@ import org.kryptonmc.krypton.packet.`in`.*
 import org.kryptonmc.krypton.packet.`in`.PacketInPlayerMovement.*
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
+import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
 import org.kryptonmc.krypton.packet.`in`.status.PacketInPing
 import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
 import org.kryptonmc.krypton.packet.state.PacketState

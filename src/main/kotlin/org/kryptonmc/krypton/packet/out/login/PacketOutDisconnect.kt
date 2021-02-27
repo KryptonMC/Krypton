@@ -1,4 +1,4 @@
-package org.kryptonmc.krypton.packet.out
+package org.kryptonmc.krypton.packet.out.login
 
 import io.netty.buffer.ByteBuf
 import kotlinx.serialization.json.Json
