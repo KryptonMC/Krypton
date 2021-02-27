@@ -8,5 +8,5 @@ class Player(val id: Int) {
     lateinit var uuid: UUID
     lateinit var name: String
 
-    var location = Location(0.0, 70.0, 0.0)
+    var location = Location(40.0, 70.0, 40.0)
 }

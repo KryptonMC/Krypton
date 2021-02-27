@@ -1,8 +1,6 @@
 package org.kryptonmc.krypton.space
 
-import org.kryptonmc.krypton.world.block.BlockState
-
-enum class Direction(override val value: Int) : BlockState<Int> {
+enum class Direction(val id: Int) {
 
     UP(1),
     DOWN(0),

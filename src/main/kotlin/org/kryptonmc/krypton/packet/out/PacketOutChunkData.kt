@@ -39,7 +39,6 @@ class PacketOutChunkData(
 
             bytesLength += section.palette.size.varIntSize()
             bytesLength += section.palette.sumBy {
-                if (it.name.value == "tall_seagrass") return@sumBy 2
                 GlobalPalette.PALETTE.getValue(it.name).varIntSize()
             }
 

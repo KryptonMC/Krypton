@@ -141,6 +141,40 @@ class RegionManager {
         else -> throw UnsupportedOperationException("Unsupported compression type: $type")
     }
 
+    fun chunkInSpiral(id: Int, offset: Int = 0): ChunkPosition {
+        if (id == 0) return ChunkPosition(0 + offset, 0 + offset)
+
+        val n = id - 1
+        val r = floor((sqrt(n + 1.0) - 1) / 2) + 1
+        val p = (8 * r * (r - 1)) / 2
+        val en = r * 2
+        val a = (1 + n - p) % (r * 8)
+
+        var x = 0.0
+        var z = 0.0
+
+        when (floor(a / (r * 2)).toInt()) {
+            0 -> {
+                x = a - r
+                z = -r
+            }
+            1 -> {
+                x = r
+                z = (a % en) - r
+            }
+            2 -> {
+                x = r - (a % en)
+                z = r
+            }
+            3 -> {
+                x = -r
+                z = r - (a % en)
+            }
+        }
+
+        return ChunkPosition(x.toInt() + offset, z.toInt() + offset)
+    }
+
     companion object {
 
         private val LOGGER = logger<RegionManager>()

@@ -5,11 +5,12 @@ import org.kryptonmc.krypton.registry.NamespacedKey
 import org.kryptonmc.krypton.world.World
 import org.kryptonmc.krypton.world.block.blocks.BannerEntity
 
-abstract class Block(
-    val key: NamespacedKey,
-    val world: World,
-    val position: BlockPosition
-)
+abstract class Block(open val key: NamespacedKey) {
+
+    abstract val world: World
+
+    abstract val position: BlockPosition
+}
 
 // TODO: Add the rest of these
 abstract class BlockEntity(val id: String) {

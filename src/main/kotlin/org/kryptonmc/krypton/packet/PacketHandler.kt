@@ -40,7 +40,9 @@ import org.kryptonmc.krypton.packet.out.status.PacketOutPong
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.registry.NamespacedKey
+import org.kryptonmc.krypton.space.Position
 import org.kryptonmc.krypton.world.Difficulty
+import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.Executors
@@ -263,16 +265,22 @@ class PacketHandler(private val session: Session, private val server: Server) {
             }
 
         val world = server.worldManager.worlds[0]
-        val chunk = server.regionManager.regions[0].chunks[0]
+        val region = server.regionManager.regions[0]
 
-        session.sendPacket(PacketOutUpdateViewPosition(chunk.position))
+        session.sendPacket(PacketOutUpdateViewPosition(ChunkPosition(2, 2)))
 
-        session.sendPacket(PacketOutChunkData(chunk))
-        session.sendPacket(PacketOutUpdateLight(chunk))
+        for (i in 0..24) {
+            val chunk = region.chunks.single { it.position == server.regionManager.chunkInSpiral(i, 2) }
+            session.sendPacket(PacketOutChunkData(chunk))
+            session.sendPacket(PacketOutUpdateLight(chunk))
+        }
+
+//        session.sendPacket(PacketOutChunkData(chunk))
+//        session.sendPacket(PacketOutUpdateLight(chunk))
         session.sendPacket(PacketOutWorldBorder(BorderAction.INITIALIZE, world.border))
 
         session.sendPacket(PacketOutTimeUpdate(0L, 6000L))
-        session.sendPacket(PacketOutSpawnPosition(world.spawnPosition))
+        session.sendPacket(PacketOutSpawnPosition(Position(40, 70, 40)))
         ServerStorage.playerCount.getAndIncrement()
 
         executor.scheduleAtFixedRate({
