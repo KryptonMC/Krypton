@@ -13,5 +13,5 @@ data class ChunkSection(
 
 data class ChunkBlock(
     val name: NamespacedKey,
-    val properties: Map<String, BinaryTag> = emptyMap()
+    val properties: Map<String, String> = emptyMap()
 )

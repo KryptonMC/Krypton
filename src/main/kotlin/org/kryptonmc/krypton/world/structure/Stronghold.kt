@@ -2,7 +2,6 @@ package org.kryptonmc.krypton.world.structure
 
 import org.kryptonmc.krypton.space.BoundingBox
 import org.kryptonmc.krypton.world.Biome
-import org.kryptonmc.krypton.world.block.FacingState
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 
 // TODO: Do thingys with these
@@ -36,14 +35,14 @@ enum class LargeRoomType {
 data class StrongholdPortalRoom(
     override val ordinal: Int,
     override val boundingBox: BoundingBox,
-    override val orientation: FacingState,
+    override val orientation: Orientation,
     override val entryDoor: EntryDoorType
 ) : StrongholdPiece("SHPR")
 
 data class StrongholdLibrary(
     override val ordinal: Int,
     override val boundingBox: BoundingBox,
-    override val orientation: FacingState,
+    override val orientation: Orientation,
     override val entryDoor: EntryDoorType,
     val isTall: Boolean
 ) : StrongholdPiece("SHLi")
@@ -51,11 +50,7 @@ data class StrongholdLibrary(
 data class StrongholdLargeRoom(
     override val ordinal: Int,
     override val boundingBox: BoundingBox,
-    override val orientation: FacingState,
+    override val orientation: Orientation,
     override val entryDoor: EntryDoorType,
     val type: LargeRoomType
 ) : StrongholdPiece("SHRC")
-
-//data class StrongholdFiveWayCrossing(
-//
-//) : StrongholdPiece("SH5C")

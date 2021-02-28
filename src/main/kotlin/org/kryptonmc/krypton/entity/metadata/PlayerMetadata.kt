@@ -36,7 +36,7 @@ open class PlayerMetadata(
         if (additionalHearts != null) buf.writeMetadata(14u, additionalHearts)
         if (score != null) buf.writeMetadata(15u, score)
         if (skinFlags != null) buf.writeMetadata(16u, skinFlags.toProtocol())
-        if (mainHand != null) buf.writeMetadata(17u, mainHand.id)
+        if (mainHand != null) buf.writeMetadata(17u, mainHand.id.toByte())
         if (leftShoulderEntityData != null) buf.writeMetadata(18u, leftShoulderEntityData)
         if (rightShoulderEntityData != null) buf.writeMetadata(19u, rightShoulderEntityData)
     }

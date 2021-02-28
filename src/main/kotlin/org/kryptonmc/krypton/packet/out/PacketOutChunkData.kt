@@ -9,6 +9,7 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.chunk.Chunk
 import org.kryptonmc.krypton.world.chunk.HeightmapType
+import kotlin.math.max
 
 class PacketOutChunkData(
     val chunk: Chunk
@@ -28,7 +29,7 @@ class PacketOutChunkData(
             .build())
 
         buf.writeVarInt(1024)
-        for (biome in chunk.level.biomes) buf.writeVarInt(biome.id)
+        for (i in 1..1024) buf.writeVarInt(1)
 
         val sections = chunk.level.sections.filter { it.blockStates.isNotEmpty() }
 
@@ -37,9 +38,13 @@ class PacketOutChunkData(
             bytesLength += 2
             bytesLength += 1
 
-            bytesLength += section.palette.size.varIntSize()
-            bytesLength += section.palette.sumBy {
-                GlobalPalette.PALETTE.getValue(it.name).varIntSize()
+            val paletteSize = section.palette.size
+            val bitsPerBlock = paletteSize.calculateBits()
+            if (bitsPerBlock < 9) {
+                bytesLength += section.palette.size.varIntSize()
+                bytesLength += section.palette.sumBy { entry ->
+                    GlobalPalette.PALETTE.getValue(entry.name).states.first { it.properties == entry.properties }.id.varIntSize()
+                }
             }
 
             bytesLength += section.blockStates.size.varIntSize()
@@ -48,22 +53,20 @@ class PacketOutChunkData(
         buf.writeVarInt(bytesLength)
 
         for (section in sections) {
-            buf.writeShort(section.blockStates.size) // short - 2 bytes
-            buf.writeUByte(4u) // ubyte - 1 byte
+            buf.writeShort(section.blockStates.size)
 
-            buf.writeVarInt(section.palette.size)
-            for (block in section.palette) {
-                if (block.name.value == "tall_seagrass") {
-                    when ((block.properties.getValue("half") as StringBinaryTag).value()) {
-                        "lower" -> buf.writeVarInt(1347)
-                        "upper" -> buf.writeVarInt(1346)
-                    }
-                    continue
+            val paletteSize = section.palette.size
+            val bitsPerBlock = paletteSize.calculateBits()
+            buf.writeUByte(bitsPerBlock.toUByte())
+
+            if (bitsPerBlock < 9) {
+                buf.writeVarInt(paletteSize)
+                for (block in section.palette) {
+                    buf.writeVarInt(GlobalPalette.PALETTE.getValue(block.name).states.first { it.properties == block.properties }.id)
                 }
-                buf.writeVarInt(GlobalPalette.PALETTE.getValue(block.name))
             }
 
-            buf.writeVarInt(section.blockStates.size) // arbitrary length
+            buf.writeVarInt(section.blockStates.size)
             for (blockState in section.blockStates) {
                 buf.writeLong(blockState)
             }
