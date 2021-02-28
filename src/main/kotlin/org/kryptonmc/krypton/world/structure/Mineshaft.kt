@@ -2,7 +2,6 @@ package org.kryptonmc.krypton.world.structure
 
 import org.kryptonmc.krypton.space.BoundingBox
 import org.kryptonmc.krypton.world.Biome
-import org.kryptonmc.krypton.world.block.FacingState
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 
 data class Mineshaft(
@@ -18,7 +17,7 @@ sealed class MineshaftPiece(override val id: String) : StructurePiece(id)
 data class MineshaftCorridor(
     override val ordinal: Int,
     override val boundingBox: BoundingBox,
-    override val orientation: FacingState,
+    override val orientation: Orientation,
     val hasCobwebs: Boolean,
     val hasSpawner: Boolean,
     val hasRails: Boolean,
@@ -28,7 +27,7 @@ data class MineshaftCorridor(
 data class MineshaftCrossing(
     override val ordinal: Int,
     override val boundingBox: BoundingBox,
-    override val orientation: FacingState,
+    override val orientation: Orientation,
     val incoming: Int,
     val twoFloors: Boolean
 ) : MineshaftPiece("MSCrossing")
@@ -36,6 +35,6 @@ data class MineshaftCrossing(
 data class MineshaftRoom(
     override val ordinal: Int,
     override val boundingBox: BoundingBox,
-    override val orientation: FacingState,
+    override val orientation: Orientation,
     val entrances: List<BoundingBox>
 ) : MineshaftPiece("MSRoom")

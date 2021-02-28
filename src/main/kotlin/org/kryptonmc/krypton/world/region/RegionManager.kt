@@ -9,6 +9,7 @@ import java.io.BufferedInputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.RandomAccessFile
+import java.lang.Exception
 import java.net.URI
 import java.util.zip.GZIPInputStream
 import java.util.zip.InflaterInputStream
@@ -74,7 +75,7 @@ class RegionManager {
                 (block as CompoundBinaryTag).let { nbtBlock ->
                     ChunkBlock(
                         nbtBlock.getString("Name").toNamespacedKey(),
-                        nbtBlock.getCompound("Properties").associate { it.key to it.value }
+                        nbtBlock.getCompound("Properties").associate { it.key to (it.value as StringBinaryTag).value() }
                     )
                 }
             }

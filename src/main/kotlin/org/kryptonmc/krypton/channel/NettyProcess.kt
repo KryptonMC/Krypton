@@ -4,7 +4,14 @@ import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.ChannelOption
 import io.netty.channel.EventLoopGroup
+import io.netty.channel.epoll.Epoll
+import io.netty.channel.epoll.EpollEventLoopGroup
+import io.netty.channel.epoll.EpollServerSocketChannel
+import io.netty.channel.kqueue.KQueue
+import io.netty.channel.kqueue.KQueueEventLoopGroup
+import io.netty.channel.kqueue.KQueueServerSocketChannel
 import io.netty.channel.nio.NioEventLoopGroup
+import io.netty.channel.socket.ServerSocketChannel
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.handler.timeout.ReadTimeoutHandler
@@ -21,14 +28,14 @@ class NettyProcess(
     private val port: Int
 ) {
 
-    private val bossGroup: EventLoopGroup = NioEventLoopGroup()
-    private val workerGroup: EventLoopGroup = NioEventLoopGroup()
+    private val bossGroup: EventLoopGroup = bestLoopGroup()
+    private val workerGroup: EventLoopGroup = bestLoopGroup()
 
     suspend fun run() {
         try {
             val bootstrap = ServerBootstrap()
             bootstrap.group(bossGroup)
-                .channel(NioServerSocketChannel::class.java)
+                .channel(bestChannel())
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(object : ChannelInitializer<SocketChannel>() {
@@ -51,5 +58,17 @@ class NettyProcess(
             workerGroup.shutdownGracefully()
             bossGroup.shutdownGracefully()
         }
+    }
+
+    private fun bestLoopGroup() = when {
+        Epoll.isAvailable() -> EpollEventLoopGroup()
+        KQueue.isAvailable() -> KQueueEventLoopGroup()
+        else -> NioEventLoopGroup()
+    }
+
+    private fun bestChannel(): Class<out ServerSocketChannel> = when {
+        Epoll.isAvailable() -> EpollServerSocketChannel::class.java
+        KQueue.isAvailable() -> KQueueServerSocketChannel::class.java
+        else -> NioServerSocketChannel::class.java
     }
 }

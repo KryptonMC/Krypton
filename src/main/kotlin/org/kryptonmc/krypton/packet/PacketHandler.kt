@@ -275,12 +275,26 @@ class PacketHandler(private val session: Session, private val server: Server) {
             session.sendPacket(PacketOutUpdateLight(chunk))
         }
 
+        session.sendPacket(PacketOutEntityMetadata(
+            session.player.id,
+            PlayerMetadata.Default
+        ))
+
 //        session.sendPacket(PacketOutChunkData(chunk))
 //        session.sendPacket(PacketOutUpdateLight(chunk))
         session.sendPacket(PacketOutWorldBorder(BorderAction.INITIALIZE, world.border))
 
         session.sendPacket(PacketOutTimeUpdate(0L, 6000L))
         session.sendPacket(PacketOutSpawnPosition(Position(40, 70, 40)))
+
+        session.sendPacket(PacketOutEntityProperties(
+            session.player.id,
+            listOf(
+                Attribute(AttributeKey.GENERIC_MAX_HEALTH, 20.0),
+                Attribute(AttributeKey.GENERIC_MOVEMENT_SPEED, 0.1)
+            )
+        ))
+
         ServerStorage.playerCount.getAndIncrement()
 
         executor.scheduleAtFixedRate({

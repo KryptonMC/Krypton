@@ -31,7 +31,7 @@ open class LivingEntityMetadata(
     override fun write(buf: ByteBuf) {
         super.write(buf)
 
-        if (handFlags != null) buf.writeMetadata(7u, requireNotNull(handFlags).toProtocol())
+        if (handFlags != null) buf.writeMetadata(7u, requireNotNull(handFlags).toProtocol().toByte())
         if (health != null) buf.writeMetadata(8u, requireNotNull(health))
         if (potionEffectColor != null) buf.writeMetadata(9u, requireNotNull(potionEffectColor))
         if (isPotionEffectAmbient != null) buf.writeMetadata(10u, requireNotNull(isPotionEffectAmbient))
