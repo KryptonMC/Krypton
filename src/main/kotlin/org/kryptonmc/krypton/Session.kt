@@ -2,6 +2,7 @@ package org.kryptonmc.krypton
 
 import io.netty.channel.Channel
 import me.bardy.komponent.Component
+import me.bardy.komponent.event.changePage
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.encryption.Encryption.Companion.SHARED_SECRET_ALGORITHM
 import org.kryptonmc.krypton.encryption.toDecryptingCipher
@@ -13,10 +14,7 @@ import org.kryptonmc.krypton.packet.PacketHandler
 import org.kryptonmc.krypton.packet.data.ClientSettings
 import org.kryptonmc.krypton.packet.out.PacketOutPlayDisconnect
 import org.kryptonmc.krypton.packet.state.PacketState
-import org.kryptonmc.krypton.packet.transformers.PacketDecrypter
-import org.kryptonmc.krypton.packet.transformers.PacketEncrypter
-import org.kryptonmc.krypton.packet.transformers.SizeDecoder
-import org.kryptonmc.krypton.packet.transformers.SizeEncoder
+import org.kryptonmc.krypton.packet.transformers.*
 import javax.crypto.SecretKey
 
 class Session(val id: Int, private val channel: Channel, private val server: Server) {
@@ -78,6 +76,39 @@ class Session(val id: Int, private val channel: Channel, private val server: Ser
         )
 
         isEncrypted = true
+    }
+
+    fun setupCompression(threshold: Int) {
+        val compressor = channel.pipeline().get(PacketCompressor.NETTY_NAME)
+        val decompressor = channel.pipeline().get(PacketDecompressor.NETTY_NAME)
+        if (threshold >= 0) {
+            if (decompressor is PacketDecompressor) {
+                decompressor.threshold = threshold
+            } else {
+                channel.pipeline().addBefore(
+                    PacketDecoder.NETTY_NAME,
+                    PacketDecompressor.NETTY_NAME,
+                    PacketDecompressor(threshold)
+                )
+            }
+            if (compressor is PacketCompressor) {
+                compressor.threshold = threshold
+            } else {
+                channel.pipeline().addBefore(
+                    PacketEncoder.NETTY_NAME,
+                    PacketCompressor.NETTY_NAME,
+                    PacketCompressor(threshold)
+                )
+            }
+            return
+        }
+
+        if (decompressor is PacketDecompressor) {
+            channel.pipeline().remove(PacketDecompressor.NETTY_NAME)
+        }
+        if (compressor is PacketCompressor) {
+            channel.pipeline().remove(PacketCompressor.NETTY_NAME)
+        }
     }
 
     companion object {

@@ -211,6 +211,14 @@ fun ByteBuf.writeAngle(angle: Angle) {
     writeUByte(angle.value)
 }
 
+fun Int.varIntSize(): Int {
+    for (i in 1 until 5) {
+        if ((this and (-1 shl i * 7)) != 0) continue
+        return i
+    }
+    return 5
+}
+
 private fun UUID.toIntArray(): IntArray {
     val mostSig = mostSignificantBits
     val leastSig = leastSignificantBits

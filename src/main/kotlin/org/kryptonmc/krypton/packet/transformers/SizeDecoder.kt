@@ -19,16 +19,15 @@ class SizeDecoder : ByteToMessageDecoder() {
                 return
             }
             buffer[i] = buf.readByte()
-            if (buffer[i] >= 0) {
-                val length: Int = Unpooled.wrappedBuffer(buffer).readVarInt()
-                if (buf.readableBytes() < length) {
-                    buf.resetReaderIndex()
-                    return
-                } else {
-                    out.add(buf.readBytes(length))
-                    return
-                }
+            if (buffer[i] < 0) continue
+
+            val length = Unpooled.wrappedBuffer(buffer).readVarInt()
+            if (buf.readableBytes() < length) {
+                buf.resetReaderIndex()
+                return
             }
+            out.add(buf.readBytes(length))
+            return
         }
         throw CorruptedFrameException("length wider than 21 bits")
     }

@@ -20,6 +20,7 @@ import org.kryptonmc.krypton.entity.cardinal.Angle
 import org.kryptonmc.krypton.entity.cardinal.toAngle
 import org.kryptonmc.krypton.entity.entities.Player
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
+import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.packet.`in`.PacketInChat
 import org.kryptonmc.krypton.packet.`in`.PacketInClientSettings
 import org.kryptonmc.krypton.packet.`in`.PacketInKeepAlive
@@ -34,6 +35,7 @@ import org.kryptonmc.krypton.packet.out.entity.*
 import org.kryptonmc.krypton.packet.out.login.PacketOutDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
+import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.out.status.PacketOutPong
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
 import org.kryptonmc.krypton.packet.state.PacketState
@@ -108,12 +110,10 @@ class PacketHandler(private val session: Session, private val server: Server) {
         session.player = Player(ServerStorage.nextEntityId.getAndIncrement())
         session.player.name = packet.name
 
-        session.sendPacket(
-            PacketOutEncryptionRequest(
+        session.sendPacket(PacketOutEncryptionRequest(
             server.encryption.publicKey,
             verifyToken
-        )
-        )
+        ))
     }
 
     private fun handleEncryptionResponse(packet: PacketInEncryptionResponse) {
@@ -124,6 +124,10 @@ class PacketHandler(private val session: Session, private val server: Server) {
         session.commenceEncryption(secretKey)
 
         authenticateUser(session.player.name, sharedSecret)
+
+        val threshold = 256
+        session.sendPacket(PacketOutSetCompression(threshold))
+        session.setupCompression(threshold)
 
         beginPlayState()
     }
@@ -140,16 +144,17 @@ class PacketHandler(private val session: Session, private val server: Server) {
 
         val response = SessionService.hasJoined(username, serverId, ServerStorage.SERVER_IP.hostAddress).execute()
         if (response.code() != 200 || !response.isSuccessful || response.errorBody() != null) {
-            session.sendPacket(
-                PacketOutDisconnect(
-                translationComponent("")
-            )
-            )
+            LOGGER.error("Failed to verify username $username!")
+            LOGGER.debug("Error code: ${response.code()}, was successful: ${response.isSuccessful}, error body: ${response.errorBody()}")
+            session.sendPacket(PacketOutDisconnect(
+                translationComponent("multiplayer.disconnect.unverified_username")
+            ))
             return
         }
 
-        val profile = response.body()
-        session.profile = requireNotNull(profile)
+        val profile = requireNotNull(response.body())
+        LOGGER.info("UUID of player ${profile.name} is ${profile.uuid}")
+        session.profile = profile
         SessionStorage.profiles.put(profile.name, profile)
     }
 
@@ -370,5 +375,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
         private const val MAX_PLAYERS = 200
 
         private val SERVER_ID_ASCII = "".toByteArray(Charsets.US_ASCII)
+
+        private val LOGGER = logger<PacketHandler>()
     }
 }
