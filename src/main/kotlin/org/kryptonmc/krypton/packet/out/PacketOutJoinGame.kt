@@ -1,14 +1,13 @@
 package org.kryptonmc.krypton.packet.out
 
 import io.netty.buffer.ByteBuf
+import net.kyori.adventure.nbt.CompoundBinaryTag
+import net.kyori.adventure.nbt.ListBinaryTag
 import org.kryptonmc.krypton.entity.Gamemode
 import org.kryptonmc.krypton.extension.writeNBTCompound
 import org.kryptonmc.krypton.extension.writeString
 import org.kryptonmc.krypton.extension.writeVarInt
-import org.kryptonmc.krypton.packet.PacketHandler
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.ListBinaryTag
 
 class PacketOutJoinGame(
     val entityId: Int,

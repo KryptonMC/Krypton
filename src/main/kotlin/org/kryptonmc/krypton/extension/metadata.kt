@@ -14,7 +14,9 @@ import org.kryptonmc.krypton.entity.metadata.Pose
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import java.util.*
 
-fun ByteBuf.writeMetadata(index: UByte, byte: Byte) {
+fun ByteBuf.writeMetadata(index: UByte, byte: Byte?) {
+    if (byte == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.BYTE.id)
@@ -22,7 +24,9 @@ fun ByteBuf.writeMetadata(index: UByte, byte: Byte) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, varInt: Int) {
+fun ByteBuf.writeMetadata(index: UByte, varInt: Int?) {
+    if (varInt == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.VARINT.id)
@@ -30,7 +34,9 @@ fun ByteBuf.writeMetadata(index: UByte, varInt: Int) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, float: Float) {
+fun ByteBuf.writeMetadata(index: UByte, float: Float?) {
+    if (float == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.FLOAT.id)
@@ -38,7 +44,9 @@ fun ByteBuf.writeMetadata(index: UByte, float: Float) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, string: String) {
+fun ByteBuf.writeMetadata(index: UByte, string: String?) {
+    if (string == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.STRING.id)
@@ -46,7 +54,9 @@ fun ByteBuf.writeMetadata(index: UByte, string: String) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, chat: Component) {
+fun ByteBuf.writeMetadata(index: UByte, chat: Component?) {
+    if (chat == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.CHAT.id)
@@ -54,7 +64,9 @@ fun ByteBuf.writeMetadata(index: UByte, chat: Component) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, slot: Slot) {
+fun ByteBuf.writeMetadata(index: UByte, slot: Slot?) {
+    if (slot == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.SLOT.id)
@@ -62,7 +74,9 @@ fun ByteBuf.writeMetadata(index: UByte, slot: Slot) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, boolean: Boolean) {
+fun ByteBuf.writeMetadata(index: UByte, boolean: Boolean?) {
+    if (boolean == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.BOOLEAN.id)
@@ -70,7 +84,9 @@ fun ByteBuf.writeMetadata(index: UByte, boolean: Boolean) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, rotation: Rotation) {
+fun ByteBuf.writeMetadata(index: UByte, rotation: Rotation?) {
+    if (rotation == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.ROTATION.id)
@@ -78,7 +94,9 @@ fun ByteBuf.writeMetadata(index: UByte, rotation: Rotation) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, position: Position) {
+fun ByteBuf.writeMetadata(index: UByte, position: Position?) {
+    if (position == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.POSITION.id)
@@ -86,7 +104,9 @@ fun ByteBuf.writeMetadata(index: UByte, position: Position) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, direction: Direction) {
+fun ByteBuf.writeMetadata(index: UByte, direction: Direction?) {
+    if (direction == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.DIRECTION.id)
@@ -94,7 +114,9 @@ fun ByteBuf.writeMetadata(index: UByte, direction: Direction) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, nbt: CompoundBinaryTag) {
+fun ByteBuf.writeMetadata(index: UByte, nbt: CompoundBinaryTag?) {
+    if (nbt == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.NBT.id)
@@ -102,7 +124,9 @@ fun ByteBuf.writeMetadata(index: UByte, nbt: CompoundBinaryTag) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, particle: Particle) {
+fun ByteBuf.writeMetadata(index: UByte, particle: Particle?) {
+    if (particle == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.PARTICLE.id)
@@ -110,7 +134,9 @@ fun ByteBuf.writeMetadata(index: UByte, particle: Particle) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, villagerData: VillagerData) {
+fun ByteBuf.writeMetadata(index: UByte, villagerData: VillagerData?) {
+    if (villagerData == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.VILLAGER_DATA.id)
@@ -118,7 +144,9 @@ fun ByteBuf.writeMetadata(index: UByte, villagerData: VillagerData) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, pose: Pose) {
+fun ByteBuf.writeMetadata(index: UByte, pose: Pose?) {
+    if (pose == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.POSE.id)
@@ -128,7 +156,9 @@ fun ByteBuf.writeMetadata(index: UByte, pose: Pose) {
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 @JvmName("writeOptionalChatMetadata")
-fun ByteBuf.writeOptionalMetadata(index: UByte, optionalChat: Optional<Component>) {
+fun ByteBuf.writeOptionalMetadata(index: UByte, optionalChat: Optional<Component>?) {
+    if (optionalChat == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.OPTIONAL_CHAT.id)
@@ -138,7 +168,9 @@ fun ByteBuf.writeOptionalMetadata(index: UByte, optionalChat: Optional<Component
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 @JvmName("writeOptionalPositionMetadata")
-fun ByteBuf.writeOptionalMetadata(index: UByte, optionalPosition: Optional<Position>) {
+fun ByteBuf.writeOptionalMetadata(index: UByte, optionalPosition: Optional<Position>?) {
+    if (optionalPosition == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.OPTIONAL_POSITION.id)
@@ -148,7 +180,9 @@ fun ByteBuf.writeOptionalMetadata(index: UByte, optionalPosition: Optional<Posit
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 @JvmName("writeOptionalUUIDMetadata")
-fun ByteBuf.writeOptionalMetadata(index: UByte, optionalUUID: Optional<UUID>) {
+fun ByteBuf.writeOptionalMetadata(index: UByte, optionalUUID: Optional<UUID>?) {
+    if (optionalUUID == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.OPTIONAL_UUID.id)
@@ -158,7 +192,9 @@ fun ByteBuf.writeOptionalMetadata(index: UByte, optionalUUID: Optional<UUID>) {
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 @JvmName("writeOptionalVarIntMetadata")
-fun ByteBuf.writeOptionalMetadata(index: UByte, optionalVarInt: Optional<Int>, type: MetadataType = MetadataType.OPTIONAL_VARINT) {
+fun ByteBuf.writeOptionalMetadata(index: UByte, optionalVarInt: Optional<Int>?, type: MetadataType = MetadataType.OPTIONAL_VARINT) {
+    if (optionalVarInt == null) return
+
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(type.id)

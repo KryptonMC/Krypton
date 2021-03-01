@@ -16,17 +16,16 @@ import org.kryptonmc.krypton.entity.Abilities
 import org.kryptonmc.krypton.entity.Attribute
 import org.kryptonmc.krypton.entity.AttributeKey
 import org.kryptonmc.krypton.entity.Gamemode
-import org.kryptonmc.krypton.space.Angle
-import org.kryptonmc.krypton.space.toAngle
 import org.kryptonmc.krypton.entity.entities.Player
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
 import org.kryptonmc.krypton.extension.logger
+import org.kryptonmc.krypton.extension.toArea
 import org.kryptonmc.krypton.packet.`in`.PacketInChat
 import org.kryptonmc.krypton.packet.`in`.PacketInClientSettings
 import org.kryptonmc.krypton.packet.`in`.PacketInKeepAlive
-import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
 import org.kryptonmc.krypton.packet.`in`.PacketInPlayerMovement.*
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
+import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
 import org.kryptonmc.krypton.packet.`in`.status.PacketInPing
 import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
 import org.kryptonmc.krypton.packet.data.*
@@ -40,14 +39,16 @@ import org.kryptonmc.krypton.packet.out.status.PacketOutPong
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.registry.NamespacedKey
+import org.kryptonmc.krypton.space.Angle
 import org.kryptonmc.krypton.space.Position
-import org.kryptonmc.krypton.world.Difficulty
+import org.kryptonmc.krypton.space.toAngle
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.crypto.spec.SecretKeySpec
+import kotlin.math.floor
 import kotlin.random.Random
 
 class PacketHandler(private val session: Session, private val server: Server) {
@@ -168,9 +169,13 @@ class PacketHandler(private val session: Session, private val server: Server) {
         session.sendPacket(PacketOutLoginSuccess(session.profile.uuid, session.profile.name))
         session.currentState = PacketState.PLAY
 
+        val world = server.worldManager.worlds[0]
+        val spawnPosition = Position(40, 70, 40)
+        session.player.location = spawnPosition.toLocation()
+
         session.sendPacket(PacketOutJoinGame(session.id, Gamemode.CREATIVE, MAX_PLAYERS))
         session.sendPacket(PacketOutPluginMessage(NamespacedKey(value = "brand"), "MineKraft"))
-        session.sendPacket(PacketOutServerDifficulty(Difficulty.PEACEFUL, true))
+        session.sendPacket(PacketOutServerDifficulty(world.difficulty, world.difficultyLocked))
         session.sendPacket(PacketOutAbilities(Abilities(
             isInvulnerable = true,
             canFly = true,
@@ -264,13 +269,14 @@ class PacketHandler(private val session: Session, private val server: Server) {
                 ))
             }
 
-        val world = server.worldManager.worlds[0]
-        val region = server.regionManager.regions[0]
+        val centerChunk = ChunkPosition(2, 2)
+        val region = server.regionManager.loadRegionFromChunk(centerChunk)
 
-        session.sendPacket(PacketOutUpdateViewPosition(ChunkPosition(2, 2)))
+        session.sendPacket(PacketOutUpdateViewPosition(centerChunk))
 
-        for (i in 0..24) {
-            val chunk = region.chunks.single { it.position == server.regionManager.chunkInSpiral(i, 2) }
+        for (i in 0 until 2.toArea()) {
+            val chunk = region.chunks.singleOrNull { it.position == server.regionManager.chunkInSpiral(i, centerChunk.x, centerChunk.z) }
+                ?: continue
             session.sendPacket(PacketOutChunkData(chunk))
             session.sendPacket(PacketOutUpdateLight(chunk))
         }
@@ -284,8 +290,8 @@ class PacketHandler(private val session: Session, private val server: Server) {
 //        session.sendPacket(PacketOutUpdateLight(chunk))
         session.sendPacket(PacketOutWorldBorder(BorderAction.INITIALIZE, world.border))
 
-        session.sendPacket(PacketOutTimeUpdate(0L, 6000L))
-        session.sendPacket(PacketOutSpawnPosition(Position(40, 70, 40)))
+        session.sendPacket(PacketOutTimeUpdate(world.time, world.dayTime))
+        session.sendPacket(PacketOutSpawnPosition(spawnPosition))
 
         session.sendPacket(PacketOutEntityProperties(
             session.player.id,
@@ -404,6 +410,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
     companion object {
 
         private const val MAX_PLAYERS = 200
+        private const val DEFAULT_RENDER_DISTANCE = 10
 
         private val SERVER_ID_ASCII = "".toByteArray(Charsets.US_ASCII)
 

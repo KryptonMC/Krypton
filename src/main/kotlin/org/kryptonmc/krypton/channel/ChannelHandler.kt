@@ -30,18 +30,21 @@ class ChannelHandler(private val server: Server) : SimpleChannelInboundHandler<P
     override fun handlerRemoved(ctx: ChannelHandlerContext) {
         LOGGER.debug("[-] Channel Disconnected: ${ctx.channel().remoteAddress()}")
         if (session.currentState == PacketState.PLAY) {
-            SessionStorage.sessions.forEach {
-                it.sendPacket(PacketOutEntityDestroy(listOf(session.id)))
-                it.sendPacket(PacketOutPlayerInfo(
-                    PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER,
-                    listOf(PacketOutPlayerInfo.PlayerInfo(profile = session.profile))
-                ))
-                it.sendPacket(PacketOutChat(
-                    textComponent("${session.profile.name} left the game"),
-                    ChatPosition.SYSTEM_MESSAGE,
-                    UUID.fromString("00000000-0000-0000-0000-000000000000")
-                ))
-            }
+            SessionStorage.sessions.asSequence()
+                .filter { it != session }
+                .filter { it.currentState == PacketState.PLAY }
+                .forEach {
+                    it.sendPacket(PacketOutEntityDestroy(listOf(session.id)))
+                    it.sendPacket(PacketOutPlayerInfo(
+                        PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER,
+                        listOf(PacketOutPlayerInfo.PlayerInfo(profile = session.profile))
+                    ))
+                    it.sendPacket(PacketOutChat(
+                        textComponent("${session.profile.name} left the game"),
+                        ChatPosition.SYSTEM_MESSAGE,
+                        UUID.fromString("00000000-0000-0000-0000-000000000000")
+                    ))
+                }
             ServerStorage.playerCount.getAndDecrement()
         }
         SessionStorage.sessions -= session

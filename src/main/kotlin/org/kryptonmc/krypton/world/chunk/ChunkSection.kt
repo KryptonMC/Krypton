@@ -1,6 +1,5 @@
 package org.kryptonmc.krypton.world.chunk
 
-import net.kyori.adventure.nbt.BinaryTag
 import org.kryptonmc.krypton.registry.NamespacedKey
 
 data class ChunkSection(

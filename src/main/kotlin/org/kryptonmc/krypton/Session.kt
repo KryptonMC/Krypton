@@ -25,12 +25,11 @@ class Session(val id: Int, private val channel: Channel, private val server: Ser
     lateinit var settings: ClientSettings
 
     lateinit var player: Player
-    var lastTeleportId = 0
 
+    var lastTeleportId = 0
     var lastKeepAliveId = 0L
 
-    var isEncrypted = false
-        private set
+    private var isEncrypted = false
 
     private lateinit var packetDecrypter: PacketDecrypter
     private lateinit var packetEncrypter: PacketEncrypter
