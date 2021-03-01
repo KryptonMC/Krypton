@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.Location
 
-open class PacketInPlayerMovement(packetId: Int = 0x15) : PlayPacket(packetId) {
+open class PacketInPlayerMovement(id: Int = 0x15) : PlayPacket(id) {
 
     var onGround: Boolean = false
         private set

@@ -108,9 +108,9 @@ enum class Biome(val key: NamespacedKey, val id: Int) {
 
     companion object {
 
-        val VALUES = values().associateBy { it.id }
+        private val VALUES = values().associateBy { it.id }
 
-        val OCEANS = EnumSet.of(
+        val OCEANS: EnumSet<Biome> = EnumSet.of(
             OCEAN,
             COLD_OCEAN,
             DEEP_OCEAN,
@@ -123,6 +123,6 @@ enum class Biome(val key: NamespacedKey, val id: Int) {
             LUKEWARM_OCEAN
         )
 
-        fun fromId(id: Int) = VALUES[id]!!
+        fun fromId(id: Int) = VALUES.getValue(id)
     }
 }

@@ -9,7 +9,7 @@ enum class Difficulty(val id: Int) {
 
     companion object {
 
-        val VALUES = values().associateBy { it.id }
+        private val VALUES = values().associateBy { it.id }
 
         fun fromId(id: Int) = VALUES.getValue(id)
     }

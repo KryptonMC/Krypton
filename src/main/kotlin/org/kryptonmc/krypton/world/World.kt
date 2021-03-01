@@ -1,7 +1,6 @@
 package org.kryptonmc.krypton.world
 
 import org.kryptonmc.krypton.space.Position
-import org.kryptonmc.krypton.world.region.Region
 import java.time.LocalDateTime
 
 data class World(
@@ -26,11 +25,8 @@ data class World(
     val spawnPosition: Position,
     //val isThundering: Boolean,
     //val thunderTime: Int,
-    val time: Long
-) {
-
-    var regions = mutableListOf<Region>()
-}
+    var time: Long
+)
 
 // TODO: Use this in MCA file writing
 //object LevelDataVersion {

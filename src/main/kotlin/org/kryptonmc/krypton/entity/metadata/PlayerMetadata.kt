@@ -8,20 +8,20 @@ import org.kryptonmc.krypton.space.Position
 import org.kryptonmc.krypton.extension.writeMetadata
 
 open class PlayerMetadata(
-    override val movementFlags: MovementFlags? = null,
-    override val airTicks: Int? = null,
-    override val customName: Optional<Component>? = null,
-    override val isCustomNameVisible: Boolean? = null,
-    override val isSilent: Boolean? = null,
-    override val hasNoGravity: Boolean? = null,
-    override val pose: Pose? = null,
-    override val handFlags: HandFlags? = null,
-    override val health: Float? = null,
-    override val potionEffectColor: Int? = null,
-    override val isPotionEffectAmbient: Boolean? = null,
-    override val arrowsInEntity: Int? = null,
-    override val absorptionHealth: Int? = null,
-    override val bedPosition: Optional<Position>? = null,
+    movementFlags: MovementFlags? = null,
+    airTicks: Int? = null,
+    customName: Optional<Component>? = null,
+    isCustomNameVisible: Boolean? = null,
+    isSilent: Boolean? = null,
+    hasNoGravity: Boolean? = null,
+    pose: Pose? = null,
+    handFlags: HandFlags? = null,
+    health: Float? = null,
+    potionEffectColor: Int? = null,
+    isPotionEffectAmbient: Boolean? = null,
+    arrowsInEntity: Int? = null,
+    absorptionHealth: Int? = null,
+    bedPosition: Optional<Position>? = null,
     val additionalHearts: Float? = null,
     val score: Int? = null,
     val skinFlags: SkinFlags? = null,
@@ -33,12 +33,12 @@ open class PlayerMetadata(
     override fun write(buf: ByteBuf) {
         super.write(buf)
 
-        if (additionalHearts != null) buf.writeMetadata(14u, additionalHearts)
-        if (score != null) buf.writeMetadata(15u, score)
-        if (skinFlags != null) buf.writeMetadata(16u, skinFlags.toProtocol())
-        if (mainHand != null) buf.writeMetadata(17u, mainHand.id.toByte())
-        if (leftShoulderEntityData != null) buf.writeMetadata(18u, leftShoulderEntityData)
-        if (rightShoulderEntityData != null) buf.writeMetadata(19u, rightShoulderEntityData)
+        buf.writeMetadata(14u, additionalHearts)
+        buf.writeMetadata(15u, score)
+        buf.writeMetadata(16u, skinFlags?.toProtocol())
+        buf.writeMetadata(17u, mainHand?.id?.toByte())
+        buf.writeMetadata(18u, leftShoulderEntityData)
+        buf.writeMetadata(19u, rightShoulderEntityData)
     }
 
     companion object Default : PlayerMetadata(

@@ -6,23 +6,23 @@ import org.kryptonmc.krypton.extension.writeMetadata
 import org.kryptonmc.krypton.extension.writeOptionalMetadata
 
 open class EntityMetadata(
-    open val movementFlags: MovementFlags? = null,
-    open val airTicks: Int? = null,
-    open val customName: Optional<Component>? = null,
-    open val isCustomNameVisible: Boolean? = null,
-    open val isSilent: Boolean? = null,
-    open val hasNoGravity: Boolean? = null,
-    open val pose: Pose? = null
+    val movementFlags: MovementFlags? = null,
+    val airTicks: Int? = null,
+    val customName: Optional<Component>? = null,
+    val isCustomNameVisible: Boolean? = null,
+    val isSilent: Boolean? = null,
+    val hasNoGravity: Boolean? = null,
+    val pose: Pose? = null
 ) {
 
     open fun write(buf: ByteBuf) {
-        if (movementFlags != null) buf.writeMetadata(0u, requireNotNull(movementFlags).toProtocol())
-        if (airTicks != null) buf.writeMetadata(1u, requireNotNull(airTicks))
-        if (customName != null) buf.writeOptionalMetadata(2u, requireNotNull(customName))
-        if (isCustomNameVisible != null) buf.writeMetadata(3u, requireNotNull(isCustomNameVisible))
-        if (isSilent != null) buf.writeMetadata(4u, requireNotNull(isSilent))
-        if (hasNoGravity != null) buf.writeMetadata(5u, requireNotNull(hasNoGravity))
-        if (pose != null) buf.writeMetadata(6u, requireNotNull(pose))
+        buf.writeMetadata(0u, movementFlags?.toProtocol())
+        buf.writeMetadata(1u, airTicks)
+        buf.writeOptionalMetadata(2u, customName)
+        buf.writeMetadata(3u, isCustomNameVisible)
+        buf.writeMetadata(4u, isSilent)
+        buf.writeMetadata(5u, hasNoGravity)
+        buf.writeMetadata(6u, pose)
     }
 
     companion object Default : EntityMetadata(

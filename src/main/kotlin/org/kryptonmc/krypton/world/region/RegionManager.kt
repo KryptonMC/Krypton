@@ -9,7 +9,6 @@ import java.io.BufferedInputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.RandomAccessFile
-import java.lang.Exception
 import java.net.URI
 import java.util.zip.GZIPInputStream
 import java.util.zip.InflaterInputStream
@@ -20,14 +19,20 @@ class RegionManager {
 
     val regions = mutableListOf<Region>()
 
-    init {
-        LOGGER.debug("Loading region at 0, 0 for world hardcore")
-        val folder = File(URI.create("file://${System.getProperty("krypton.region.dir")}"))
-        regions += loadRegion(folder, 0, 0)
-        LOGGER.debug("Region loaded!")
+    private val folder = File(URI.create("file://${System.getProperty("krypton.world.dir")}/region"))
+
+//    init {
+//        LOGGER.debug("Loading region at 0, 0 for world pregen11")
+//        val folder = File(URI.create("file://${System.getProperty("krypton.world.dir")}/region"))
+//        regions += loadRegion(folder, -1, 0)
+//        LOGGER.debug("Region loaded!")
+//    }
+
+    fun loadRegionFromChunk(position: ChunkPosition): Region {
+        return loadRegion(folder, floor(position.x / 32.0).toInt(), floor(position.z / 32.0).toInt())
     }
 
-    fun loadRegion(folder: File, x: Int, z: Int): Region {
+    private fun loadRegion(folder: File, x: Int, z: Int): Region {
         val file = RandomAccessFile(File(folder, "r.$x.$z.mca"), "r")
         val chunks = mutableListOf<Chunk>()
 
@@ -142,8 +147,8 @@ class RegionManager {
         else -> throw UnsupportedOperationException("Unsupported compression type: $type")
     }
 
-    fun chunkInSpiral(id: Int, offset: Int = 0): ChunkPosition {
-        if (id == 0) return ChunkPosition(0 + offset, 0 + offset)
+    fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): ChunkPosition {
+        if (id == 0) return ChunkPosition(0 + xOffset, 0 + zOffset)
 
         val n = id - 1
         val r = floor((sqrt(n + 1.0) - 1) / 2) + 1
@@ -173,7 +178,7 @@ class RegionManager {
             }
         }
 
-        return ChunkPosition(x.toInt() + offset, z.toInt() + offset)
+        return ChunkPosition(x.toInt() + xOffset, z.toInt() + zOffset)
     }
 
     companion object {
