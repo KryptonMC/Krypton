@@ -25,6 +25,6 @@ fun CompoundBinaryTag.toBlockEntity(): BlockEntity {
     val keepPacked = getBoolean("keepPacked")
     when (val id = getString("id")) {
         "banner" -> return BannerEntity.fromNBT(position, keepPacked, this)
-        else -> throw IllegalArgumentException("Unknown block entity with id ${getString("id")}")
+        else -> throw IllegalArgumentException("Unknown block entity with id $id")
     }
 }

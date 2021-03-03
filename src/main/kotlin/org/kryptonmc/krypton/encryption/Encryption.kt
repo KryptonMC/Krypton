@@ -17,13 +17,14 @@ class Encryption {
         return generator.generateKeyPair()
     }
 
-    fun decryptWithPrivateKey(encryptedData: ByteArray): ByteArray {
+    fun decrypt(encryptedData: ByteArray): ByteArray {
         val cipher = Cipher.getInstance(PAIR_ALGORITHM)
         cipher.init(Cipher.DECRYPT_MODE, keyPair.private)
         return cipher.doFinal(encryptedData)
     }
 
     companion object {
+
         const val SHARED_SECRET_ALGORITHM = "AES/CFB8/NoPadding"
         const val PAIR_ALGORITHM = "RSA"
     }

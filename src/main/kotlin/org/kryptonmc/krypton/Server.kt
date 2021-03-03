@@ -34,7 +34,7 @@ class Server(port: Int) {
         }
 
         while (true) {
-            //Keep server alive
+            // keep server alive
         }
     }
 

@@ -7,18 +7,15 @@ import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.extension.readAllAvailableBytes
 import javax.crypto.Cipher
 
-class PacketDecrypter(
-        private val cipher: Cipher
-) : MessageToMessageDecoder<ByteBuf>() {
+class PacketDecrypter(private val cipher: Cipher) : MessageToMessageDecoder<ByteBuf>() {
 
     override fun decode(ctx: ChannelHandlerContext, msg: ByteBuf, out: MutableList<Any>) {
         val data = msg.readAllAvailableBytes()
-        val dataSize = data.size
 
-        //Allocate a ByteBuf for decrypted output
-        val decryptedBuffer = ctx.alloc().heapBuffer(cipher.getOutputSize(dataSize))
+        // allocate a buffer to store decrypted output
+        val decryptedBuffer = ctx.alloc().heapBuffer(cipher.getOutputSize(data.size))
 
-        //Write decrypted data into the ByteBuf
+        // write decrypted data into the buffer
         val decryptedContent = decrypt(data, decryptedBuffer.array(), decryptedBuffer.arrayOffset())
 
         decryptedBuffer.writerIndex(decryptedContent)

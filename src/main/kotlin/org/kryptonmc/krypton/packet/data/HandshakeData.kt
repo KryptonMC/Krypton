@@ -6,6 +6,6 @@ import java.net.InetAddress
 data class HandshakeData(
 	val protocol: Int,
 	val address: InetAddress,
-	val port: Short,
+	val port: UShort,
 	val nextState: PacketState
 )

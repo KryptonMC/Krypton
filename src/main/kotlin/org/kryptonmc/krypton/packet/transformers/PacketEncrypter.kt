@@ -7,17 +7,15 @@ import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.extension.readAllAvailableBytes
 import javax.crypto.Cipher
 
-class PacketEncrypter(
-    private val cipher: Cipher
-) : MessageToByteEncoder<ByteBuf>() {
+class PacketEncrypter(private val cipher: Cipher) : MessageToByteEncoder<ByteBuf>() {
 
     override fun encode(ctx: ChannelHandlerContext, message: ByteBuf, out: ByteBuf) {
-        //Load in all of the written data
+        // load in all of the written data
         val dataToWrite = message.readAllAvailableBytes()
 
-        //Encrypt the data
+        // encrypt the data
         val encryptedBytes = encrypt(dataToWrite)
-        //Write it back
+        // write it back
         out.writeBytes(encryptedBytes)
 
         LOGGER.debug("Encrypted bytes length ${encryptedBytes.size}")

@@ -17,16 +17,7 @@ import kotlin.math.sqrt
 
 class RegionManager {
 
-    val regions = mutableListOf<Region>()
-
     private val folder = File(URI.create("file://${System.getProperty("krypton.world.dir")}/region"))
-
-//    init {
-//        LOGGER.debug("Loading region at 0, 0 for world pregen11")
-//        val folder = File(URI.create("file://${System.getProperty("krypton.world.dir")}/region"))
-//        regions += loadRegion(folder, -1, 0)
-//        LOGGER.debug("Region loaded!")
-//    }
 
     fun loadRegionFromChunk(position: ChunkPosition): Region {
         return loadRegion(folder, floor(position.x / 32.0).toInt(), floor(position.z / 32.0).toInt())

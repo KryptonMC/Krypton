@@ -1,5 +1,6 @@
 package org.kryptonmc.krypton.world
 
+import org.kryptonmc.krypton.entity.Gamemode
 import org.kryptonmc.krypton.space.Position
 import java.time.LocalDateTime
 
@@ -15,6 +16,7 @@ data class World(
     //val endDimensionData: EndDimensionData,
     //val gamerules: List<Gamerule>,
     //val worldGenSettings: WorldGenerationSettings,
+    val gameType: Gamemode,
     //val isHardcore: Boolean,
     //val isInitialized: Boolean,
     val lastPlayed: LocalDateTime,

@@ -18,10 +18,7 @@ import io.netty.handler.timeout.ReadTimeoutHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.kryptonmc.krypton.Server
-import org.kryptonmc.krypton.packet.transformers.PacketDecoder
-import org.kryptonmc.krypton.packet.transformers.PacketEncoder
-import org.kryptonmc.krypton.packet.transformers.SizeDecoder
-import org.kryptonmc.krypton.packet.transformers.SizeEncoder
+import org.kryptonmc.krypton.packet.transformers.*
 
 class NettyProcess(
     private val server: Server,
@@ -34,7 +31,7 @@ class NettyProcess(
     suspend fun run() {
         try {
             val bootstrap = ServerBootstrap()
-            bootstrap.group(bossGroup)
+            bootstrap.group(bossGroup, workerGroup)
                 .channel(bestChannel())
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
@@ -42,6 +39,7 @@ class NettyProcess(
                     override fun initChannel(ch: SocketChannel) {
                         ch.pipeline()
                             .addLast("timeout", ReadTimeoutHandler(30))
+                            .addLast(LegacyQueryHandler.NETTY_NAME, LegacyQueryHandler())
                             .addLast(SizeDecoder.NETTY_NAME, SizeDecoder())
                             .addLast(PacketDecoder.NETTY_NAME, PacketDecoder())
                             .addLast(SizeEncoder.NETTY_NAME, SizeEncoder())
@@ -51,8 +49,8 @@ class NettyProcess(
                 })
 
             withContext(Dispatchers.IO) {
-                val f = bootstrap.bind(port).await()
-                f.channel().closeFuture().sync()
+                val future = bootstrap.bind(port).await()
+                future.channel().closeFuture().sync()
             }
         } finally {
             workerGroup.shutdownGracefully()

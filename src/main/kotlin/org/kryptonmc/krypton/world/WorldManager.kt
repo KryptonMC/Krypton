@@ -1,6 +1,7 @@
 package org.kryptonmc.krypton.world
 
 import net.kyori.adventure.nbt.BinaryTagIO
+import org.kryptonmc.krypton.entity.Gamemode
 import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.space.Position
 import java.io.File
@@ -107,6 +108,7 @@ class WorldManager {
             nbt.getLong("DayTime"),
             Difficulty.fromId(nbt.getByte("Difficulty").toInt()),
             nbt.getBoolean("DifficultyLocked"),
+            Gamemode.fromId(nbt.getInt("GameType")),
             LocalDateTime.ofInstant(Instant.ofEpochMilli(nbt.getLong("LastPlayed")), ZoneOffset.UTC),
             spawnLocation,
             nbt.getLong("Time")

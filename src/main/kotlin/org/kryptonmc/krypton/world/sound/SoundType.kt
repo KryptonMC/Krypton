@@ -996,5 +996,4 @@ enum class SoundType(val id: NamespacedKey) {
     UI_TOAST_OUT(NamespacedKey(value = "ui.toast.out")),
     WEATHER_RAIN(NamespacedKey(value = "weather.rain")),
     WEATHER_RAIN_ABOVE(NamespacedKey(value = "weather.rain.above"))
-
 }

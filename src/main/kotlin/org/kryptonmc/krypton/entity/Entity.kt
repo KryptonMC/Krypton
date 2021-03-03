@@ -4,7 +4,7 @@ import org.kryptonmc.krypton.world.Location
 import java.util.*
 
 data class Entity(
-    val entityId: Int,
+    val id: Int,
     val uuid: UUID,
     val type: EntityType,
     val location: Location,

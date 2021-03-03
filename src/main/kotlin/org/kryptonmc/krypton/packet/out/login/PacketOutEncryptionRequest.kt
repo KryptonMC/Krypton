@@ -1,6 +1,7 @@
 package org.kryptonmc.krypton.packet.out.login
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.extension.writeString
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.LoginPacket
@@ -12,7 +13,7 @@ class PacketOutEncryptionRequest(
 ) : LoginPacket(0x01) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(SERVER_ID, 20)
+        buf.writeString(ServerInfo.SERVER_ID, 20)
 
         val encoded = publicKey.encoded
         buf.writeVarInt(encoded.size)
@@ -20,13 +21,5 @@ class PacketOutEncryptionRequest(
 
         buf.writeVarInt(verifyToken.size)
         buf.writeBytes(verifyToken)
-    }
-
-    companion object {
-
-        /**
-         * Will always be empty in the modern protocol
-         */
-        const val SERVER_ID = ""
     }
 }

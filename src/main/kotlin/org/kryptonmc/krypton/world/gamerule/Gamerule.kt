@@ -1,9 +1,9 @@
 package org.kryptonmc.krypton.world.gamerule
 
 // TODO: Actually do something with this
-data class Gamerule(
+data class Gamerule<T>(
     val type: GameruleType,
-    val value: Any = type.default
+    val value: T
 )
 
-enum class GameruleType(val ruleName: String, val default: Any)
+enum class GameruleType(val rule: String)

@@ -11,10 +11,7 @@ import org.kryptonmc.krypton.packet.data.HandshakeData
 
 class PacketInHandshake : Packet {
 
-    override val info = object : PacketInfo {
-        override val id = 0x00
-        override val state = PacketState.HANDSHAKE
-    }
+    override val info = PacketInfo(0x00, PacketState.HANDSHAKE)
 
     lateinit var data: HandshakeData
         private set
@@ -22,7 +19,7 @@ class PacketInHandshake : Packet {
     override fun read(buf: ByteBuf) {
         val protocol = buf.readVarInt()
         val address = buf.readString(255).toInetAddress()
-        val port = buf.readShort()
+        val port = buf.readUnsignedShort().toUShort()
         val nextState = PacketState.fromId(buf.readVarInt())
 
         data = HandshakeData(protocol, address, port, nextState)

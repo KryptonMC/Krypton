@@ -1,8 +1,6 @@
 package org.kryptonmc.krypton
 
 import io.netty.channel.Channel
-import me.bardy.komponent.Component
-import me.bardy.komponent.event.changePage
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.encryption.Encryption.Companion.SHARED_SECRET_ALGORITHM
 import org.kryptonmc.krypton.encryption.toDecryptingCipher
@@ -12,7 +10,6 @@ import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketHandler
 import org.kryptonmc.krypton.packet.data.ClientSettings
-import org.kryptonmc.krypton.packet.out.PacketOutPlayDisconnect
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.packet.transformers.*
 import javax.crypto.SecretKey
@@ -26,7 +23,6 @@ class Session(val id: Int, private val channel: Channel, private val server: Ser
 
     lateinit var player: Player
 
-    var lastTeleportId = 0
     var lastKeepAliveId = 0L
 
     private var isEncrypted = false
@@ -41,8 +37,8 @@ class Session(val id: Int, private val channel: Channel, private val server: Ser
         channel.writeAndFlush(packet)
     }
 
-    fun disconnect(component: Component) {
-        channel.writeAndFlush(PacketOutPlayDisconnect(component)).addListener { channel.close() }
+    fun disconnect() {
+        if (channel.isOpen) channel.close().awaitUninterruptibly()
     }
 
     fun receive(msg: Packet) {
@@ -51,9 +47,10 @@ class Session(val id: Int, private val channel: Channel, private val server: Ser
 
     fun verifyToken(expected: ByteArray, encryptedActual: ByteArray) {
 
-        val actual = server.encryption.decryptWithPrivateKey(encryptedActual)
+        val actual = server.encryption.decrypt(encryptedActual)
         require(actual.contentEquals(expected)) {
             LOGGER.warn("Decrypted Verify Token did not match original! Expected: ${expected.contentToString()}, actual: ${actual.contentToString()}")
+
         }
         // TODO: fail by disconnecting
     }

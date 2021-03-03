@@ -9,16 +9,13 @@ enum class PacketState(val id: Int) {
     LOGIN(2),
     PLAY(3);
 
-    private val packets: MutableMap<Int, () -> Packet> = mutableMapOf()
+    private val packets = mutableMapOf<Int, () -> Packet>()
 
     fun registerPacketType(id: Int, supplier: () -> Packet) {
         packets.putIfAbsent(id, supplier)
     }
 
-    fun createPacket(id: Int): Packet? {
-        val packetCreator = packets[id]
-        return packetCreator?.invoke()
-    }
+    fun createPacket(id: Int) = packets[id]?.invoke()
 
     companion object {
 

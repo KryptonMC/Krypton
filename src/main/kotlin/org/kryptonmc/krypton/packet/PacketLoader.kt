@@ -1,10 +1,10 @@
 package org.kryptonmc.krypton.packet
 
-import org.kryptonmc.krypton.packet.`in`.*
-import org.kryptonmc.krypton.packet.`in`.PacketInPlayerMovement.*
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.*
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
+import org.kryptonmc.krypton.packet.`in`.play.*
 import org.kryptonmc.krypton.packet.`in`.status.PacketInPing
 import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
 import org.kryptonmc.krypton.packet.state.PacketState
@@ -26,10 +26,10 @@ object PacketLoader {
         // PLAY
         PacketState.PLAY.registerPacketType(0x03, ::PacketInChat)
         PacketState.PLAY.registerPacketType(0x05, ::PacketInClientSettings)
+        PacketState.PLAY.registerPacketType(0x0B, ::PacketInPluginMessage)
         PacketState.PLAY.registerPacketType(0x10, ::PacketInKeepAlive)
         PacketState.PLAY.registerPacketType(0x12, ::PacketInPlayerPosition)
         PacketState.PLAY.registerPacketType(0x13, ::PacketInPlayerPositionAndRotation)
         PacketState.PLAY.registerPacketType(0x14, ::PacketInPlayerRotation)
-        PacketState.PLAY.registerPacketType(0x0B, ::PacketInPluginMessage)
     }
 }

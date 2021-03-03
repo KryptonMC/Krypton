@@ -4,9 +4,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.LoginPacket
 
-class PacketOutSetCompression(
-    val threshold: Int
-) : LoginPacket(0x03) {
+class PacketOutSetCompression(private val threshold: Int) : LoginPacket(0x03) {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(threshold)

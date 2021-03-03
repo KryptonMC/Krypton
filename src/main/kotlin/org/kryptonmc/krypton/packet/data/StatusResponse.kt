@@ -10,13 +10,13 @@ import java.util.*
 data class StatusResponse(
     val version: ServerVersion,
     val players: Players,
-    @Serializable(with = Component.Companion::class) val description: Component
+    val description: Component
 )
 
 @Serializable
 data class ServerVersion(
     val name: String,
-    val protocol: Long
+    val protocol: Int
 )
 
 @Serializable
