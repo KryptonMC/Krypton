@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1] - 2021-03-03
+### Changed
+- Downgraded to Netty 4.1.59.Final from 5.0.0.Alpha2 due to issues
+  with Epoll and KQueue, general stability, and that 5 has been
+  discontinued by Netty
+- `readAllAvailableBytes` (`ByteBuf` extension function) now checks
+  if the buffer has a backing array, and copies the bytes into an
+  array if it doesn't (to avoid issues with direct buffers not having
+  backing arrays)
+
 ## [0.8] - 2021-03-03
 ### Added
 - Legacy server list ping support

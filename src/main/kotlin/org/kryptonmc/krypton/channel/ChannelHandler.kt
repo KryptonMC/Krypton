@@ -2,7 +2,6 @@ package org.kryptonmc.krypton.channel
 
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
-import me.bardy.komponent.dsl.textComponent
 import me.bardy.komponent.dsl.translationComponent
 import org.kryptonmc.krypton.Server
 import org.kryptonmc.krypton.ServerStorage
@@ -56,7 +55,7 @@ class ChannelHandler(private val server: Server) : SimpleChannelInboundHandler<P
         SessionStorage.sessions -= session
     }
 
-    override fun messageReceived(ctx: ChannelHandlerContext, msg: Packet) {
+    override fun channelRead0(ctx: ChannelHandlerContext, msg: Packet) {
         if (!ctx.channel().isOpen) return
         session.receive(msg)
     }

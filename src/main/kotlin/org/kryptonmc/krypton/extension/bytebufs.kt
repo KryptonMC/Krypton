@@ -116,7 +116,11 @@ fun ByteBuf.readVarIntByteArray(): ByteArray {
 
 fun ByteBuf.readAllAvailableBytes(): ByteArray {
     val length = readableBytes()
-    return readBytes(length).array()
+    if (hasArray()) return array()
+
+    val bytes = ByteArray(length)
+    getBytes(readerIndex(), bytes)
+    return bytes
 }
 
 fun ByteBuf.writeOptionalVarInt(varInt: Optional<Int>) {

@@ -3,14 +3,14 @@ package org.kryptonmc.krypton.packet.transformers
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import io.netty.channel.ChannelFutureListener
-import io.netty.channel.ChannelHandlerAdapter
 import io.netty.channel.ChannelHandlerContext
+import io.netty.channel.ChannelInboundHandlerAdapter
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.extension.logger
 import java.net.InetSocketAddress
 
-class LegacyQueryHandler : ChannelHandlerAdapter() {
+class LegacyQueryHandler : ChannelInboundHandlerAdapter() {
 
     override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
         val buf = (msg as ByteBuf).copy()

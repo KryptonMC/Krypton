@@ -15,7 +15,7 @@ import java.security.SecureRandom
 class Server(port: Int) {
 
     internal val encryption = Encryption()
-    private val nettyThread = NettyProcess(this, port)
+    private val nettyProcess = NettyProcess(this, port)
     internal val random: SecureRandom = SecureRandom()
 
     val registryManager = RegistryManager()
@@ -30,7 +30,7 @@ class Server(port: Int) {
         LOGGER.info("Starting Netty...")
 
         GlobalScope.launch {
-            nettyThread.run()
+            nettyProcess.run()
         }
 
         while (true) {
