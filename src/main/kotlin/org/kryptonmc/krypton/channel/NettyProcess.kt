@@ -44,7 +44,7 @@ class NettyProcess(private val server: Server) {
                             .addLast(PacketDecoder.NETTY_NAME, PacketDecoder())
                             .addLast(SizeEncoder.NETTY_NAME, SizeEncoder())
                             .addLast(PacketEncoder.NETTY_NAME, PacketEncoder())
-                            .addLast("Handler", ChannelHandler(server))
+                            .addLast(ChannelHandler.NETTY_NAME, ChannelHandler(server))
                     }
                 })
 

@@ -1,19 +1,18 @@
 package org.kryptonmc.krypton.world.region
 
-import net.kyori.adventure.nbt.*
+import net.kyori.adventure.nbt.BinaryTagIO
+import net.kyori.adventure.nbt.CompoundBinaryTag
+import net.kyori.adventure.nbt.LongArrayBinaryTag
+import net.kyori.adventure.nbt.StringBinaryTag
 import org.kryptonmc.krypton.config.WorldConfig
 import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.registry.toNamespacedKey
 import org.kryptonmc.krypton.world.Biome
 import org.kryptonmc.krypton.world.chunk.*
-import java.io.BufferedInputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.RandomAccessFile
-import java.net.URI
 import java.nio.file.Path
-import java.util.zip.GZIPInputStream
-import java.util.zip.InflaterInputStream
 import kotlin.math.floor
 import kotlin.math.sqrt
 import kotlin.system.exitProcess
@@ -64,9 +63,6 @@ class RegionManager(config: WorldConfig) {
         val nbt = BinaryTagIO.unlimitedReader().read(FileInputStream(file.fd), compressionType).getCompound("Level")
 
 //        val carvingMasks = nbt.getCompound("CarvingMasks")
-//        val heightmaps = nbt.getCompound("Heightmaps").map { (key, value) ->
-//            HeightmapType.valueOf(key) to (value as LongArrayBinaryTag).toList()
-//        }
         val heightmaps = nbt.getCompound("Heightmaps")
 
         val motionBlocking = LongArrayBinaryTag.of(*heightmaps.getLongArray("MOTION_BLOCKING"))
@@ -149,13 +145,6 @@ class RegionManager(config: WorldConfig) {
 
         return Chunk(ChunkPosition(nbt.getInt("xPos"), nbt.getInt("zPos")), chunkData)
     }
-
-//    private fun decompress(file: RandomAccessFile, type: Byte): BufferedInputStream = when (type.toInt()) {
-//        0 -> BufferedInputStream(FileInputStream(file.fd))
-//        1 -> BufferedInputStream(GZIPInputStream(FileInputStream(file.fd)))
-//        2 -> BufferedInputStream(InflaterInputStream(FileInputStream(file.fd)))
-//        else -> throw UnsupportedOperationException("Unsupported compression type: $type")
-//    }
 
     fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): ChunkPosition {
         if (id == 0) return ChunkPosition(0 + xOffset, 0 + zOffset)

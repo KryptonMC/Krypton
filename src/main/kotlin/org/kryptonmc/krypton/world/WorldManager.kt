@@ -1,10 +1,16 @@
 package org.kryptonmc.krypton.world
 
 import net.kyori.adventure.nbt.BinaryTagIO
+import net.kyori.adventure.nbt.CompoundBinaryTag
 import org.kryptonmc.krypton.config.WorldConfig
 import org.kryptonmc.krypton.entity.Gamemode
 import org.kryptonmc.krypton.extension.logger
+import org.kryptonmc.krypton.registry.toNamespacedKey
 import org.kryptonmc.krypton.space.Position
+import org.kryptonmc.krypton.world.dimension.Dimension
+import org.kryptonmc.krypton.world.generation.Generator
+import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
+import org.kryptonmc.krypton.world.generation.toGenerator
 import java.io.File
 import java.net.URI
 import java.nio.file.Path
@@ -88,21 +94,19 @@ class WorldManager(config: WorldConfig) {
 //            Gamerule(GameruleType.valueOf(key), value)
 //        }
 
-//        val worldGenSettings = nbt.getCompound("WorldGenSettings").let { settings ->
-//            val dimensions = settings.getCompound("dimensions").map { dimension ->
-//                (dimension as CompoundBinaryTag).let {
-//                    Dimension(
-//                        it.getString("type").toNamespacedKey(),
-//                        Generator.fromNBT(it)
-//                    )
-//                }
-//            }
-//
-//            WorldGenerationSettings(
-//                settings.getLong("seed"),
-//                settings.getBoolean("generate_features"),
-//            )
-//        }
+        val worldGenSettings = nbt.getCompound("WorldGenSettings").let { settings ->
+            val dimensions = settings.getCompound("dimensions").associate { (key, value) ->
+                key.toNamespacedKey() to (value as CompoundBinaryTag).let {
+                    Dimension(it.getString("type").toNamespacedKey(), it.getCompound("generator").toGenerator())
+                }
+            }
+
+            WorldGenerationSettings(
+                settings.getLong("seed"),
+                settings.getBoolean("generate_features"),
+                dimensions
+            )
+        }
 
         val spawnLocation = Position(
             nbt.getInt("SpawnX"),
@@ -116,6 +120,7 @@ class WorldManager(config: WorldConfig) {
             nbt.getLong("DayTime"),
             Difficulty.fromId(nbt.getByte("Difficulty").toInt()),
             nbt.getBoolean("DifficultyLocked"),
+            worldGenSettings,
             Gamemode.fromId(nbt.getInt("GameType")),
             LocalDateTime.ofInstant(Instant.ofEpochMilli(nbt.getLong("LastPlayed")), ZoneOffset.UTC),
             spawnLocation,

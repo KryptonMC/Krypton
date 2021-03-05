@@ -9,7 +9,7 @@ abstract class GeneratorSettings {
 
 data class GeneratorStructures(
     val stronghold: GeneratorStronghold,
-    val structures: List<GeneratorStructure>
+    val structures: Map<NamespacedKey, GeneratorStructure>
 )
 
 data class GeneratorStronghold(
@@ -19,7 +19,6 @@ data class GeneratorStronghold(
 )
 
 data class GeneratorStructure(
-    val id: NamespacedKey,
     val spacing: Int,
     val separation: Int,
     val salt: Int

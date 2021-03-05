@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.1] - 2021-03-05
+### Added
+- Some basic world generation configuration support
+
+### Changed
+- Join game now correctly specifies the hashed seed of the world, and
+  the status (is debug/flat world)
+- Chunk data's primary bit mask is finally no longer hard-coded, which
+  means that now all worlds should be supported
+
 ## [0.9] - 2021-03-04
 ### Added
 - Basic TOML configuration file - you can now configure various options

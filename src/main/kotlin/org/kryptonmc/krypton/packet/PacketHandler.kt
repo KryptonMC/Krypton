@@ -45,7 +45,6 @@ import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.registry.NamespacedKey
 import org.kryptonmc.krypton.space.Angle
-import org.kryptonmc.krypton.space.Position
 import org.kryptonmc.krypton.space.toAngle
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.security.MessageDigest
@@ -53,6 +52,7 @@ import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.crypto.spec.SecretKeySpec
+import kotlin.math.floor
 import kotlin.math.max
 import kotlin.random.Random
 
@@ -202,7 +202,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
         val world = server.worldManager.worlds[0]
         world.gameType = server.config.world.gamemode
         session.player.gamemode = world.gameType
-        val spawnPosition = Position(40, 70, 40)
+        val spawnPosition = world.spawnPosition
         session.player.location = spawnPosition.toLocation()
 
         val joinPacket = PacketOutChat(
@@ -216,6 +216,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
 
         session.sendPacket(PacketOutJoinGame(
             session.id,
+            world,
             world.gameType,
             server.registryManager.dimensions,
             server.registryManager.biomes,
@@ -284,7 +285,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
                 session.sendPacket(PacketOutEntityHeadLook(it.player.id, Angle.ZERO))
             }
 
-        val centerChunk = ChunkPosition(2, 2)
+        val centerChunk = ChunkPosition(floor(spawnPosition.x / 16.0).toInt(), floor(spawnPosition.z / 16.0).toInt())
         val region = server.regionManager.loadRegionFromChunk(centerChunk)
 
         session.sendPacket(PacketOutUpdateViewPosition(centerChunk))

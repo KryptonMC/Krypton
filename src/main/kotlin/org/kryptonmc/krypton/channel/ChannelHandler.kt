@@ -83,6 +83,8 @@ class ChannelHandler(private val server: Server) : SimpleChannelInboundHandler<P
 
     companion object {
 
+        const val NETTY_NAME = "handler"
+
         private val LOGGER = logger<ChannelHandler>()
     }
 }

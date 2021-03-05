@@ -6,15 +6,15 @@ import org.kryptonmc.krypton.extension.*
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.chunk.Chunk
+import org.kryptonmc.krypton.world.chunk.ChunkSection
 
-// TODO: Remove hard-coded primary bit mask and replace it with a properly calculated one
 class PacketOutChunkData(private val chunk: Chunk) : PlayPacket(0x20) {
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(chunk.position.x)
         buf.writeInt(chunk.position.z)
         buf.writeBoolean(true)
-        buf.writeVarInt(0b1111111111111111)
+        buf.writeVarInt(calculateBitMask(chunk.level.sections))
 
         buf.writeNBTCompound(CompoundBinaryTag.builder()
             .put("", CompoundBinaryTag.builder()
@@ -68,5 +68,14 @@ class PacketOutChunkData(private val chunk: Chunk) : PlayPacket(0x20) {
         }
 
         buf.writeVarInt(0)
+    }
+
+    private fun calculateBitMask(sections: List<ChunkSection>): Int {
+        var result = 0
+        for (i in 0..15) {
+            if (sections.singleOrNull { it.y.toInt() == i && it.blockStates.isNotEmpty() } == null) continue
+            result = result or (1 shl i)
+        }
+        return result
     }
 }

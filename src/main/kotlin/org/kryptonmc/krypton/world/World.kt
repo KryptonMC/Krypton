@@ -2,6 +2,7 @@ package org.kryptonmc.krypton.world
 
 import org.kryptonmc.krypton.entity.Gamemode
 import org.kryptonmc.krypton.space.Position
+import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import java.time.LocalDateTime
 
 data class World(
@@ -14,8 +15,8 @@ data class World(
     val difficulty: Difficulty,
     val difficultyLocked: Boolean,
     //val endDimensionData: EndDimensionData,
-    //val gamerules: List<Gamerule>,
-    //val worldGenSettings: WorldGenerationSettings,
+    //val gamerules: List<Gamerule<*>>,
+    val worldGenSettings: WorldGenerationSettings,
     var gameType: Gamemode,
     //val isHardcore: Boolean,
     //val isInitialized: Boolean,

@@ -7,11 +7,18 @@ import org.kryptonmc.krypton.extension.writeNBTCompound
 import org.kryptonmc.krypton.extension.writeString
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.registry.NamespacedKey
 import org.kryptonmc.krypton.registry.biomes.BiomeRegistry
 import org.kryptonmc.krypton.registry.dimensions.DimensionRegistry
+import org.kryptonmc.krypton.world.World
+import org.kryptonmc.krypton.world.generation.DebugGenerator
+import org.kryptonmc.krypton.world.generation.FlatGenerator
+import java.nio.ByteBuffer
+import java.security.MessageDigest
 
 class PacketOutJoinGame(
     private val entityId: Int,
+    private val world: World,
     private val gamemode: Gamemode,
     private val dimensions: DimensionRegistry,
     private val biomes: BiomeRegistry,
@@ -20,12 +27,14 @@ class PacketOutJoinGame(
 ) : PlayPacket(0x24) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeInt(entityId) // EID
+        val namespacedWorldName = NamespacedKey(value = world.name)
+
+        buf.writeInt(entityId)
         buf.writeBoolean(false) // is hardcore
         buf.writeByte(gamemode.id) // gamemode
         buf.writeByte(-1) // previous gamemode
         buf.writeVarInt(1) // size of worlds array
-        buf.writeString("minecraft:world")
+        buf.writeString(namespacedWorldName.toString())
 
         // dimension codec (dimension/biome type registry)
         buf.writeNBTCompound(CompoundBinaryTag.builder()
@@ -36,14 +45,22 @@ class PacketOutJoinGame(
         // dimension info
         buf.writeNBTCompound(OVERWORLD_NBT)
 
-        buf.writeString("minecraft:world") // world name
-        buf.writeLong(11111111) // hashed seed
-        buf.writeVarInt(maxPlayers) // max players
-        buf.writeVarInt(viewDistance) // view distance
+        val messageDigest = MessageDigest.getInstance("SHA-256")
+        val seedBytes = ByteBuffer.allocate(Long.SIZE_BYTES).putLong(world.worldGenSettings.seed).array()
+        val hashedSeed = ByteBuffer.wrap(messageDigest.digest(seedBytes)).getLong(0)
+
+        buf.writeString(namespacedWorldName.toString())
+        buf.writeLong(hashedSeed)
+        buf.writeVarInt(maxPlayers)
+        buf.writeVarInt(viewDistance)
+
+        // TODO: Add gamerules and make these two use them
         buf.writeBoolean(false) // reduced debug info
         buf.writeBoolean(true) // enable respawn screen
-        buf.writeBoolean(false) // is debug world
-        buf.writeBoolean(false) // is flat world
+
+        val generator = world.worldGenSettings.dimensions.getValue(NamespacedKey(value = "overworld")).generator
+        buf.writeBoolean(generator is DebugGenerator) // is debug world
+        buf.writeBoolean(generator is FlatGenerator) // is flat world
     }
 }
 
