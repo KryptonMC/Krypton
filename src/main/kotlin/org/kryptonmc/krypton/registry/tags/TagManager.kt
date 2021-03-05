@@ -19,10 +19,10 @@ class TagManager {
         val jarFile = JarFile(File(javaClass.protectionDomain.codeSource.location.toURI()))
         val jarEntries = jarFile.entries().asSequence().filter { !it.isDirectory && it.name.endsWith(".json") }.toList()
 
-        val blockTagFiles = jarEntries.filter { it.name.startsWith("tags/blocks/") }
-        val entityTypeTagFiles = jarEntries.filter { it.name.startsWith("tags/entity_types/") }
-        val fluidTagFiles = jarEntries.filter { it.name.startsWith("tags/fluids/") }
-        val itemTagFiles = jarEntries.filter { it.name.startsWith("tags/items/") }
+        val blockTagFiles = jarEntries.filter { it.name.startsWith("registries/tags/blocks/") }
+        val entityTypeTagFiles = jarEntries.filter { it.name.startsWith("registries/tags/entity_types/") }
+        val fluidTagFiles = jarEntries.filter { it.name.startsWith("registries/tags/fluids/") }
+        val itemTagFiles = jarEntries.filter { it.name.startsWith("registries/tags/items/") }
 
         val blockTags = mutableListOf<Tag>()
         val entityTypeTags = mutableListOf<Tag>()
@@ -30,19 +30,19 @@ class TagManager {
         val itemTags = mutableListOf<Tag>()
 
         blockTagFiles.forEach {
-            val tagName = it.name.removePrefix("tags/blocks/").removeSuffix(".json")
+            val tagName = it.name.removePrefix("registries/tags/blocks/").removeSuffix(".json")
             blockTags += Tag(tagName, JSON.decodeFromString(TagData.serializer(), InputStreamReader(javaClass.classLoader.getResourceAsStream(it.name)!!).readText()))
         }
         entityTypeTagFiles.forEach {
-            val tagName = it.name.removePrefix("tags/entity_types/").removeSuffix(".json")
+            val tagName = it.name.removePrefix("registries/tags/entity_types/").removeSuffix(".json")
             entityTypeTags += Tag(tagName, JSON.decodeFromString(TagData.serializer(), InputStreamReader(javaClass.classLoader.getResourceAsStream(it.name)!!).readText()))
         }
         fluidTagFiles.forEach {
-            val tagName = it.name.removePrefix("tags/fluids/").removeSuffix(".json")
+            val tagName = it.name.removePrefix("registries/tags/fluids/").removeSuffix(".json")
             fluidTags += Tag(tagName, JSON.decodeFromString(TagData.serializer(), InputStreamReader(javaClass.classLoader.getResourceAsStream(it.name)!!).readText()))
         }
         itemTagFiles.forEach {
-            val tagName = it.name.removePrefix("tags/items/").removeSuffix(".json")
+            val tagName = it.name.removePrefix("registries/tags/items/").removeSuffix(".json")
             itemTags += Tag(tagName, JSON.decodeFromString(TagData.serializer(), InputStreamReader(javaClass.classLoader.getResourceAsStream(it.name)!!).readText()))
         }
 

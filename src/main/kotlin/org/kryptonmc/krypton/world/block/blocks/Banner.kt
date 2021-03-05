@@ -1,9 +1,8 @@
 package org.kryptonmc.krypton.world.block.blocks
 
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import me.bardy.komponent.Component
 import net.kyori.adventure.nbt.CompoundBinaryTag
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.world.block.BlockEntity
 import org.kryptonmc.krypton.world.block.BlockPosition
 
@@ -22,7 +21,7 @@ data class BannerEntity(
 
         fun fromNBT(position: BlockPosition, keepPacked: Boolean, nbt: CompoundBinaryTag): BannerEntity {
             val customName = nbt.getString("CustomName").takeIf { it.isNotEmpty() }
-                ?.let { Json.Default.decodeFromString<Component>(it) }
+                ?.let { GsonComponentSerializer.gson().deserialize(it) }
             val patterns = nbt.getList("Patterns").map {
                 val nbtPattern = it as CompoundBinaryTag
                 BannerPattern(
@@ -86,7 +85,7 @@ enum class BannerPatternType(val code: String) {
 
     companion object {
 
-        val VALUES = values().associateBy { it.code }
+        private val VALUES = values().associateBy { it.code }
 
         fun fromCode(code: String) = VALUES.getValue(code)
     }
@@ -113,7 +112,7 @@ enum class BannerPatternColor {
 
     companion object {
 
-        val VALUES = values().associateBy { it.ordinal }
+        private val VALUES = values().associateBy { it.ordinal }
 
         fun fromId(id: Int) = VALUES.getValue(id)
     }

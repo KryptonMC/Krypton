@@ -14,8 +14,6 @@ data class PiglinBrain(override val memories: PiglinMemories) : Brain<PiglinMemo
 
 data class VillagerBrain(override val memories: VillagerMemories) : Brain<VillagerMemories>()
 
-data class AxolotlBrain(override val memories: AxolotlMemories) : Brain<AxolotlMemories>()
-
 interface EntityMemories
 
 object EmptyMemories : EntityMemories
@@ -35,5 +33,3 @@ data class VillagerMemories(
     val lastWorked: LastWorkedMemory,
     val meetingPoint: MeetingPointMemory
 ) : EntityMemories
-
-data class AxolotlMemories(val playDead: PlayDeadMemory) : EntityMemories

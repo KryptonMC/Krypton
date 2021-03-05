@@ -3,7 +3,6 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.MainHand
 import org.kryptonmc.krypton.entity.metadata.toSkinFlags
-import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.extension.readString
 import org.kryptonmc.krypton.extension.readVarInt
 import org.kryptonmc.krypton.packet.data.ChatMode

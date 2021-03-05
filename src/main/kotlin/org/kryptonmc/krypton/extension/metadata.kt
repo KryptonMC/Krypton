@@ -1,17 +1,17 @@
 package org.kryptonmc.krypton.extension
 
 import io.netty.buffer.ByteBuf
-import me.bardy.komponent.Component
+import net.kyori.adventure.nbt.CompoundBinaryTag
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.entity.Particle
 import org.kryptonmc.krypton.entity.Slot
-import org.kryptonmc.krypton.space.Direction
-import org.kryptonmc.krypton.space.Position
-import org.kryptonmc.krypton.space.Rotation
 import org.kryptonmc.krypton.entity.entities.data.VillagerData
 import org.kryptonmc.krypton.entity.metadata.MetadataType
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.Pose
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.kryptonmc.krypton.space.Direction
+import org.kryptonmc.krypton.space.Position
+import org.kryptonmc.krypton.space.Rotation
 import java.util.*
 
 fun ByteBuf.writeMetadata(index: UByte, byte: Byte?) {

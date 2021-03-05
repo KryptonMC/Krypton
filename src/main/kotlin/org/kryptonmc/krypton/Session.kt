@@ -77,7 +77,7 @@ class Session(val id: Int, private val channel: Channel, private val server: Ser
     fun setupCompression(threshold: Int) {
         val compressor = channel.pipeline().get(PacketCompressor.NETTY_NAME)
         val decompressor = channel.pipeline().get(PacketDecompressor.NETTY_NAME)
-        if (threshold >= 0) {
+        if (threshold > 0) {
             if (decompressor is PacketDecompressor) {
                 decompressor.threshold = threshold
             } else {

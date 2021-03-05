@@ -1,11 +1,11 @@
 package org.kryptonmc.krypton.entity.metadata
 
 import io.netty.buffer.ByteBuf
-import me.bardy.komponent.Component
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.entity.Hand
-import org.kryptonmc.krypton.space.Position
 import org.kryptonmc.krypton.extension.writeMetadata
 import org.kryptonmc.krypton.extension.writeOptionalMetadata
+import org.kryptonmc.krypton.space.Position
 
 /**
  * Represents living entity metadata. This is ordered by the index ordering, which can be found on

@@ -41,8 +41,6 @@ class LastWorkedMemory(override val value: Long) : EntityMemory<Long>(Namespaced
 
 class MeetingPointMemory(override val value: Position) : EntityMemory<Position>(NamespacedKey(value = "meeting_point"))
 
-class PlayDeadMemory(override val value: Int) : EntityMemory<Int>(NamespacedKey(value = "play_dead_ticks"))
-
 data class Position(
     val dimension: NamespacedKey,
     val position: Location

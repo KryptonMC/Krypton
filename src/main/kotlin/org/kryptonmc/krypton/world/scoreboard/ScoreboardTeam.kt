@@ -1,6 +1,6 @@
 package org.kryptonmc.krypton.world.scoreboard
 
-import me.bardy.komponent.Component
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.entity.entities.Entity
 
 data class ScoreboardTeam(

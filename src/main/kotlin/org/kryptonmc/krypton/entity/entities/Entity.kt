@@ -1,11 +1,12 @@
 package org.kryptonmc.krypton.entity.entities
 
-import me.bardy.komponent.Component
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.space.Rotation
 import org.kryptonmc.krypton.space.Vector
 import org.kryptonmc.krypton.world.Location
 import java.util.*
 
+// TODO: Actually implement some entities
 abstract class Entity {
 
     abstract val uuid: UUID

@@ -1,12 +1,10 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import me.bardy.komponent.Component
-import me.bardy.komponent.dsl.textComponent
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.entity.Gamemode
+import org.kryptonmc.krypton.extension.writeChat
 import org.kryptonmc.krypton.extension.writeString
 import org.kryptonmc.krypton.extension.writeUUID
 import org.kryptonmc.krypton.extension.writeVarInt
@@ -42,13 +40,13 @@ class PacketOutPlayerInfo(
                     buf.writeVarInt(update.gamemode.id)
                     buf.writeVarInt(update.latency)
                     buf.writeBoolean(true)
-                    buf.writeString(JSON.encodeToString(update.displayName))
+                    buf.writeChat(update.displayName)
                 }
                 PlayerAction.UPDATE_GAMEMODE -> buf.writeVarInt(update.gamemode.id)
                 PlayerAction.UPDATE_LATENCY -> buf.writeVarInt(update.latency)
                 PlayerAction.UPDATE_DISPLAY_NAME -> {
                     buf.writeBoolean(true)
-                    buf.writeString(JSON.encodeToString(update.displayName))
+                    buf.writeChat(update.displayName)
                 }
                 PlayerAction.REMOVE_PLAYER -> Unit
             }
@@ -59,7 +57,7 @@ class PacketOutPlayerInfo(
         val latency: Int = 0,
         val gamemode: Gamemode = Gamemode.SURVIVAL,
         val profile: GameProfile,
-        val displayName: Component = textComponent("")
+        val displayName: Component = Component.text("")
     )
 
     enum class PlayerAction(val id: Int) {
@@ -69,10 +67,5 @@ class PacketOutPlayerInfo(
         UPDATE_LATENCY(2),
         UPDATE_DISPLAY_NAME(3),
         REMOVE_PLAYER(4)
-    }
-
-    companion object {
-
-        private val JSON = Json {}
     }
 }

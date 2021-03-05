@@ -1,11 +1,11 @@
 package org.kryptonmc.krypton.entity.metadata
 
 import io.netty.buffer.ByteBuf
-import me.bardy.komponent.Component
 import net.kyori.adventure.nbt.CompoundBinaryTag
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.entity.MainHand
-import org.kryptonmc.krypton.space.Position
 import org.kryptonmc.krypton.extension.writeMetadata
+import org.kryptonmc.krypton.space.Position
 
 open class PlayerMetadata(
     movementFlags: MovementFlags? = null,

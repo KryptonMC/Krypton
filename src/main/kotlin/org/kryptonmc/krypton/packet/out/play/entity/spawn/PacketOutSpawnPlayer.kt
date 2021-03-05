@@ -8,7 +8,7 @@ import org.kryptonmc.krypton.extension.writeUUID
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
-class PacketOutSpawnPlayer(val player: Player) : PlayPacket(0x04) {
+class PacketOutSpawnPlayer(private val player: Player) : PlayPacket(0x04) {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(player.id)

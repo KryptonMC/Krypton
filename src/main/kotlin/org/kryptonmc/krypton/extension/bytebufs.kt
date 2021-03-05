@@ -3,11 +3,10 @@ package org.kryptonmc.krypton.extension
 import io.netty.buffer.ByteBuf
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import me.bardy.komponent.Component
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.CompoundBinaryTag
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.entity.*
 import org.kryptonmc.krypton.space.Angle
 import org.kryptonmc.krypton.space.Position
@@ -71,7 +70,7 @@ fun ByteBuf.writeVarLong(varLong: Long) {
 }
 
 fun ByteBuf.readString(maxLength: Short = Short.MAX_VALUE): String {
-    val length = this.readVarInt()
+    val length = readVarInt()
 
     return when {
         length > maxLength * 4 -> {
@@ -93,8 +92,8 @@ fun ByteBuf.readString(maxLength: Short = Short.MAX_VALUE): String {
     }
 }
 
-fun ByteBuf.writeString(s: String, maxLength: Short = Short.MAX_VALUE) {
-    val bytes = s.toByteArray(Charsets.UTF_8)
+fun ByteBuf.writeString(string: String, maxLength: Short = Short.MAX_VALUE) {
+    val bytes = string.toByteArray(Charsets.UTF_8)
     if (bytes.size > maxLength) {
         throw EncoderException("String too big (was " + bytes.size + " bytes encoded, max " + maxLength + ")")
     } else {
@@ -152,12 +151,8 @@ fun ByteBuf.writeNBTCompound(tag: CompoundBinaryTag) {
     writeBytes(outputStream.toByteArray())
 }
 
-fun ByteBuf.writeLongs(array: LongArray) {
-    for (element in array) writeLong(element)
-}
-
 fun ByteBuf.writeChat(component: Component) {
-    writeString(Json {}.encodeToString(component))
+    writeString(GsonComponentSerializer.gson().serialize(component))
 }
 
 fun ByteBuf.writeOptionalChat(component: Optional<Component>) {
@@ -231,10 +226,4 @@ fun Int.varIntSize(): Int {
         return i
     }
     return 5
-}
-
-private fun UUID.toIntArray(): IntArray {
-    val mostSig = mostSignificantBits
-    val leastSig = leastSignificantBits
-    return intArrayOf((mostSig shr 32).toInt(), mostSig.toInt(), (leastSig shr 32).toInt(), leastSig.toInt())
 }

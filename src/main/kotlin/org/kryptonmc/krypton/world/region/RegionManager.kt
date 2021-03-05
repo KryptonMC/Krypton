@@ -1,6 +1,7 @@
 package org.kryptonmc.krypton.world.region
 
 import net.kyori.adventure.nbt.*
+import org.kryptonmc.krypton.config.WorldConfig
 import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.registry.toNamespacedKey
 import org.kryptonmc.krypton.world.Biome
@@ -10,14 +11,23 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.RandomAccessFile
 import java.net.URI
+import java.nio.file.Path
 import java.util.zip.GZIPInputStream
 import java.util.zip.InflaterInputStream
 import kotlin.math.floor
 import kotlin.math.sqrt
+import kotlin.system.exitProcess
 
-class RegionManager {
+class RegionManager(config: WorldConfig) {
 
-    private val folder = File(URI.create("file://${System.getProperty("krypton.world.dir")}/region"))
+    private val folder = File(Path.of("").toAbsolutePath().toFile(), "${config.name}/region")
+
+    init {
+        if (!folder.exists()) {
+            LOGGER.error("ERROR! World with name ${config.name} does not exist!")
+            exitProcess(0)
+        }
+    }
 
     fun loadRegionFromChunk(position: ChunkPosition): Region {
         return loadRegion(folder, floor(position.x / 32.0).toInt(), floor(position.z / 32.0).toInt())
@@ -45,14 +55,23 @@ class RegionManager {
     }
 
     private fun deserializeChunk(file: RandomAccessFile): Chunk {
-        val compressionType = file.readByte()
-        val bufferedStream = decompress(file, compressionType)
-        val nbt = BinaryTagIO.unlimitedReader().read(bufferedStream).getCompound("Level")
+        val compressionType = when (val type = file.readByte().toInt()) {
+            0 -> BinaryTagIO.Compression.NONE
+            1 -> BinaryTagIO.Compression.GZIP
+            2 -> BinaryTagIO.Compression.ZLIB
+            else -> throw UnsupportedOperationException("Unknown compression type $type")
+        }
+        val nbt = BinaryTagIO.unlimitedReader().read(FileInputStream(file.fd), compressionType).getCompound("Level")
 
 //        val carvingMasks = nbt.getCompound("CarvingMasks")
-        val heightmaps = nbt.getCompound("Heightmaps").map { (key, value) ->
-            HeightmapType.valueOf(key) to (value as LongArrayBinaryTag).toList()
-        }
+//        val heightmaps = nbt.getCompound("Heightmaps").map { (key, value) ->
+//            HeightmapType.valueOf(key) to (value as LongArrayBinaryTag).toList()
+//        }
+        val heightmaps = nbt.getCompound("Heightmaps")
+
+        val motionBlocking = LongArrayBinaryTag.of(*heightmaps.getLongArray("MOTION_BLOCKING"))
+        val oceanFloor = LongArrayBinaryTag.of(*heightmaps.getLongArray("OCEAN_FLOOR"))
+        val worldSurface = LongArrayBinaryTag.of(*heightmaps.getLongArray("WORLD_SURFACE"))
 //        val lights = nbt.getList("Lights").map { light ->
 //            (light as ListBinaryTag).map { (it as ShortBinaryTag).value() }
 //        }
@@ -122,7 +141,7 @@ class RegionManager {
 
         val chunkData = ChunkData(
             nbt.getIntArray("Biomes").map { Biome.fromId(it) },
-            heightmaps,
+            Heightmaps(motionBlocking, oceanFloor, worldSurface),
             nbt.getLong("LastUpdate"),
             nbt.getLong("InhabitedTime"),
             sections
@@ -131,12 +150,12 @@ class RegionManager {
         return Chunk(ChunkPosition(nbt.getInt("xPos"), nbt.getInt("zPos")), chunkData)
     }
 
-    private fun decompress(file: RandomAccessFile, type: Byte): BufferedInputStream = when (type.toInt()) {
-        0 -> BufferedInputStream(FileInputStream(file.fd))
-        1 -> BufferedInputStream(GZIPInputStream(FileInputStream(file.fd)))
-        2 -> BufferedInputStream(InflaterInputStream(FileInputStream(file.fd)))
-        else -> throw UnsupportedOperationException("Unsupported compression type: $type")
-    }
+//    private fun decompress(file: RandomAccessFile, type: Byte): BufferedInputStream = when (type.toInt()) {
+//        0 -> BufferedInputStream(FileInputStream(file.fd))
+//        1 -> BufferedInputStream(GZIPInputStream(FileInputStream(file.fd)))
+//        2 -> BufferedInputStream(InflaterInputStream(FileInputStream(file.fd)))
+//        else -> throw UnsupportedOperationException("Unsupported compression type: $type")
+//    }
 
     fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): ChunkPosition {
         if (id == 0) return ChunkPosition(0 + xOffset, 0 + zOffset)

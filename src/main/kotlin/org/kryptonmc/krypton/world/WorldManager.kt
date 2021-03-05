@@ -1,23 +1,31 @@
 package org.kryptonmc.krypton.world
 
 import net.kyori.adventure.nbt.BinaryTagIO
+import org.kryptonmc.krypton.config.WorldConfig
 import org.kryptonmc.krypton.entity.Gamemode
 import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.space.Position
 import java.io.File
 import java.net.URI
+import java.nio.file.Path
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import kotlin.system.exitProcess
 
 @Suppress("MemberVisibilityCanBePrivate")
-class WorldManager {
+class WorldManager(config: WorldConfig) {
 
     val worlds = mutableListOf<World>()
 
     init {
-        LOGGER.debug("Loading world hardcore...")
-        val folder = File(URI.create("file://${System.getProperty("krypton.world.dir")}"))
+        LOGGER.debug("Loading world ${config.name}...")
+        val folder = File(Path.of("").toAbsolutePath().toFile(), config.name)
+        if (!folder.exists()) {
+            LOGGER.error("ERROR: World with name ${config.name} does not exist!")
+            exitProcess(0)
+        }
+
         worlds += loadWorld(File(folder, "level.dat"))
         LOGGER.debug("World loaded!")
     }

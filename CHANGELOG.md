@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9] - 2021-03-04
+### Added
+- Basic TOML configuration file - you can now configure various options
+  in the config.toml file, which will generate inside of the file that
+  the JAR file is placed in.
+- Support for reading the dimension codec from customly converted JSON
+  files (found under registries/custom in resources, converted from
+  the original SNBT files, which can be found [here](https://gist.githubusercontent.com/aramperes/44e2beefac9fe966177f2f28dd0136ab/raw/fedb31c32e27265fb916a68ad476470fc65631da/1-dimension_codec.snbt))
+- Adventure! We have now fully switched to Adventure! See more
+  [here](https://docs.adventure.kyori.net)
+
+### Changed
+- Fixed issue with dimension codec only sending one biome, thus making
+  biomes invalid
+- Continued cleaning things up.
+
+### Removed
+- No more system properties! Say goodbye to configuring worlds in system
+  properties! You can now just specify the world name in the config
+  and Krypton will find a world with that folder name
+
 ## [0.8.1] - 2021-03-03
 ### Changed
 - Downgraded to Netty 4.1.59.Final from 5.0.0.Alpha2 due to issues

@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
+// TODO: Use this
 class PacketOutUnlockRecipes : PlayPacket(0x37) {
 
     override fun write(buf: ByteBuf) {

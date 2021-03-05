@@ -1,13 +1,15 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.31'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.31'
     id 'java-library'
     id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'application'
 }
 
 group 'org.kryptonmc'
-version '0.8.1'
+version '0.9'
 
 application.mainClassName 'org.kryptonmc.krypton.KryptonKt'
 
@@ -22,12 +24,16 @@ dependencies {
     implementation 'io.netty:netty-all:4.1.59.Final'
     implementation 'io.netty:netty-transport-native-epoll:4.1.59.Final'
     implementation 'io.netty:netty-transport-native-kqueue:4.1.59.Final'
+    implementation 'io.netty.incubator:netty-incubator-transport-native-io_uring:0.0.4.Final'
 
-    implementation 'me.bardy:komponent:1.1.1'
+    implementation 'net.kyori:adventure-api:4.6.0'
+    implementation 'net.kyori:adventure-extra-kotlin:4.6.0'
+    implementation 'net.kyori:adventure-text-serializer-gson:4.6.0'
+    implementation 'net.kyori:adventure-text-serializer-legacy:4.6.0'
+    implementation 'net.kyori:adventure-nbt:4.6.0'
 
-    implementation 'net.kyori:adventure-nbt:4.5.0'
-
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0'
+    implementation 'com.moandjiezana.toml:toml4j:0.7.2'
 
     // logging
     api 'org.slf4j:slf4j-api:1.7.30'
@@ -59,4 +65,8 @@ compileTestKotlin {
 
 shadowJar {
     archiveFileName.set("Krypton-${project.version}.jar")
+}
+
+processResources {
+    filter ReplaceTokens, tokens: ["version": project.version.toString()]
 }

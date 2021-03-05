@@ -10,7 +10,7 @@ fun Key.toDecryptingCipher(algorithm: String): Cipher = toCipher(algorithm, Ciph
 
 fun Key.toEncryptingCipher(algorithm: String): Cipher = toCipher(algorithm, Cipher.ENCRYPT_MODE)
 
-fun MessageDigest.hexDigest(): String = BigInteger(this.digest()).toString(16)
+fun MessageDigest.hexDigest(): String = BigInteger(digest()).toString(16)
 
 private fun Key.toCipher(algorithm: String, operation: Int): Cipher {
     val cipher = Cipher.getInstance(algorithm)

@@ -15,15 +15,15 @@ import io.netty.channel.socket.ServerSocketChannel
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.handler.timeout.ReadTimeoutHandler
+import io.netty.incubator.channel.uring.IOUring
+import io.netty.incubator.channel.uring.IOUringEventLoopGroup
+import io.netty.incubator.channel.uring.IOUringServerSocketChannel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.kryptonmc.krypton.Server
 import org.kryptonmc.krypton.packet.transformers.*
 
-class NettyProcess(
-    private val server: Server,
-    private val port: Int
-) {
+class NettyProcess(private val server: Server) {
 
     private val bossGroup: EventLoopGroup = bestLoopGroup()
     private val workerGroup: EventLoopGroup = bestLoopGroup()
@@ -39,7 +39,7 @@ class NettyProcess(
                     override fun initChannel(ch: SocketChannel) {
                         ch.pipeline()
                             .addLast("timeout", ReadTimeoutHandler(30))
-                            .addLast(LegacyQueryHandler.NETTY_NAME, LegacyQueryHandler())
+                            .addLast(LegacyQueryHandler.NETTY_NAME, LegacyQueryHandler(server.config.status))
                             .addLast(SizeDecoder.NETTY_NAME, SizeDecoder())
                             .addLast(PacketDecoder.NETTY_NAME, PacketDecoder())
                             .addLast(SizeEncoder.NETTY_NAME, SizeEncoder())
@@ -49,7 +49,7 @@ class NettyProcess(
                 })
 
             withContext(Dispatchers.IO) {
-                val future = bootstrap.bind(port).await()
+                val future = bootstrap.bind(server.config.server.ip, server.config.server.port).await()
                 future.channel().closeFuture().sync()
             }
         } finally {
@@ -59,12 +59,14 @@ class NettyProcess(
     }
 
     private fun bestLoopGroup() = when {
+        IOUring.isAvailable() -> IOUringEventLoopGroup()
         Epoll.isAvailable() -> EpollEventLoopGroup()
         KQueue.isAvailable() -> KQueueEventLoopGroup()
         else -> NioEventLoopGroup()
     }
 
     private fun bestChannel(): Class<out ServerSocketChannel> = when {
+        IOUring.isAvailable() -> IOUringServerSocketChannel::class.java
         Epoll.isAvailable() -> EpollServerSocketChannel::class.java
         KQueue.isAvailable() -> KQueueServerSocketChannel::class.java
         else -> NioServerSocketChannel::class.java

@@ -2,6 +2,7 @@ package org.kryptonmc.krypton.lang;
 
 import kotlinx.serialization.Serializable
 
+// TODO: Look into removing this as Adventure has it's own boss bars
 @Serializable
 enum class LegacyColor(val char: Char) {
 
@@ -26,7 +27,7 @@ enum class LegacyColor(val char: Char) {
 
     companion object {
 
-        val VALUES = values().associateBy { it.char }
+        private val VALUES = values().associateBy { it.char }
 
         fun fromLegacy(legacy: String): LegacyColor {
             val code = legacy.toCharArray()[1]

@@ -2,7 +2,8 @@ package org.kryptonmc.krypton.packet.data
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import me.bardy.komponent.Component
+import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.serializers.ComponentSerializer
 import org.kryptonmc.krypton.serializers.UUIDSerializer
 import java.util.*
 
@@ -10,7 +11,7 @@ import java.util.*
 data class StatusResponse(
     val version: ServerVersion,
     val players: Players,
-    val description: Component
+    @Serializable(with = ComponentSerializer::class) val description: Component
 )
 
 @Serializable

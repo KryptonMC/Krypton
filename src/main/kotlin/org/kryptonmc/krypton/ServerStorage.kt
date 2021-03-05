@@ -1,17 +1,12 @@
 package org.kryptonmc.krypton
 
-import java.net.InetAddress
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 object ServerStorage {
 
-    val playerCount = AtomicInteger(0)
-    val nextEntityId = AtomicInteger(0)
-
-    val SERVER_IP: InetAddress = InetAddress.getLocalHost()
-    const val MOTD = "Krypton is a Minecraft server written in Kotlin!"
-    const val MAX_PLAYERS = 200
+    val PLAYER_COUNT = AtomicInteger(0)
+    val NEXT_ENTITY_ID = AtomicInteger(0)
 }
 
 object ServerInfo {

@@ -7,10 +7,11 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.ServerStorage
+import org.kryptonmc.krypton.config.StatusConfig
 import org.kryptonmc.krypton.extension.logger
 import java.net.InetSocketAddress
 
-class LegacyQueryHandler : ChannelInboundHandlerAdapter() {
+class LegacyQueryHandler(private val status: StatusConfig) : ChannelInboundHandlerAdapter() {
 
     override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
         val buf = (msg as ByteBuf).copy()
@@ -22,9 +23,9 @@ class LegacyQueryHandler : ChannelInboundHandlerAdapter() {
 
             val address = ctx.channel().remoteAddress() as InetSocketAddress
             val version = ServerInfo.VERSION
-            val motd = ServerStorage.MOTD
-            val playerCount = ServerStorage.playerCount.get()
-            val maxPlayers = ServerStorage.MAX_PLAYERS
+            val motd = status.motd.content()
+            val playerCount = ServerStorage.PLAYER_COUNT.get()
+            val maxPlayers = status.maxPlayers
             when (buf.readableBytes()) {
                 0 -> {
                     LOGGER.debug("Legacy server list ping (versions <=1.3.x) received from ${address.address}:${address.port}")

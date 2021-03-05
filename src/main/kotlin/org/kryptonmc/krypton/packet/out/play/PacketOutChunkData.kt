@@ -2,13 +2,12 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.LongArrayBinaryTag
 import org.kryptonmc.krypton.extension.*
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.chunk.Chunk
-import org.kryptonmc.krypton.world.chunk.HeightmapType
 
+// TODO: Remove hard-coded primary bit mask and replace it with a properly calculated one
 class PacketOutChunkData(private val chunk: Chunk) : PlayPacket(0x20) {
 
     override fun write(buf: ByteBuf) {
@@ -19,13 +18,13 @@ class PacketOutChunkData(private val chunk: Chunk) : PlayPacket(0x20) {
 
         buf.writeNBTCompound(CompoundBinaryTag.builder()
             .put("", CompoundBinaryTag.builder()
-                .put("MOTION_BLOCKING", LongArrayBinaryTag.of(*chunk.level.heightmaps.single { it.first == HeightmapType.MOTION_BLOCKING }.second.toLongArray()))
-                .put("WORLD_SURFACE", LongArrayBinaryTag.of(*chunk.level.heightmaps.single { it.first == HeightmapType.MOTION_BLOCKING }.second.toLongArray()))
+                .put("MOTION_BLOCKING", chunk.level.heightmaps.motionBlocking)
+                .put("WORLD_SURFACE", chunk.level.heightmaps.worldSurface)
                 .build())
             .build())
 
-        buf.writeVarInt(1024)
-        for (i in 1..1024) buf.writeVarInt(1)
+        buf.writeVarInt(chunk.level.biomes.size)
+        for (biome in chunk.level.biomes) buf.writeVarInt(biome.id)
 
         val sections = chunk.level.sections.filter { it.blockStates.isNotEmpty() }
 

@@ -1,11 +1,12 @@
 package org.kryptonmc.krypton.world.bossbar
 
-import me.bardy.komponent.Component
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.lang.LegacyColor
 import org.kryptonmc.krypton.registry.NamespacedKey
 import java.util.*
 
 // TODO: Use this
+// TODO: Also possibly switch this to Adventure
 data class Bossbar(
     val id: NamespacedKey,
     val name: Component,

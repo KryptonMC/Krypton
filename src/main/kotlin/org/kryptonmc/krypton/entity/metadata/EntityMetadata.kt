@@ -1,7 +1,7 @@
 package org.kryptonmc.krypton.entity.metadata
 
 import io.netty.buffer.ByteBuf
-import me.bardy.komponent.Component
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.extension.writeMetadata
 import org.kryptonmc.krypton.extension.writeOptionalMetadata
 

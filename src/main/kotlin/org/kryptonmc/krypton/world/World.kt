@@ -16,7 +16,7 @@ data class World(
     //val endDimensionData: EndDimensionData,
     //val gamerules: List<Gamerule>,
     //val worldGenSettings: WorldGenerationSettings,
-    val gameType: Gamemode,
+    var gameType: Gamemode,
     //val isHardcore: Boolean,
     //val isInitialized: Boolean,
     val lastPlayed: LocalDateTime,

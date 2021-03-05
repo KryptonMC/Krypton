@@ -10,7 +10,7 @@ object GlobalPalette {
     val PALETTE: Map<NamespacedKey, RegistryBlock>
 
     init {
-        val blocksText = javaClass.classLoader.getResourceAsStream("blocks.json")!!.reader(Charsets.UTF_8).readText()
+        val blocksText = javaClass.classLoader.getResourceAsStream("registries/blocks.json")!!.reader(Charsets.UTF_8).readText()
         PALETTE = Json {}.decodeFromString(blocksText)
     }
 }

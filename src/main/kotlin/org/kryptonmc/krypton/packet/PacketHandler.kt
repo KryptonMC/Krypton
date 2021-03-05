@@ -1,12 +1,16 @@
 package org.kryptonmc.krypton.packet
 
-import me.bardy.komponent.colour.Color
-import me.bardy.komponent.dsl.textComponent
-import me.bardy.komponent.dsl.translationComponent
-import me.bardy.komponent.event.Entity
-import me.bardy.komponent.event.showEntity
-import me.bardy.komponent.event.suggestCommand
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import net.kyori.adventure.extra.kotlin.text
+import net.kyori.adventure.extra.kotlin.translatable
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.event.ClickEvent.suggestCommand
+import net.kyori.adventure.text.event.HoverEvent.ShowEntity
+import net.kyori.adventure.text.event.HoverEvent.showEntity
 import org.kryptonmc.krypton.*
+import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.encryption.hexDigest
 import org.kryptonmc.krypton.entity.Abilities
@@ -30,9 +34,11 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.out.play.*
-import org.kryptonmc.krypton.packet.out.play.entity.*
+import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMovement.*
+import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
+import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityStatus
 import org.kryptonmc.krypton.packet.out.play.entity.spawn.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.status.PacketOutPong
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
@@ -43,6 +49,7 @@ import org.kryptonmc.krypton.space.Position
 import org.kryptonmc.krypton.space.toAngle
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.security.MessageDigest
+import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.crypto.spec.SecretKeySpec
@@ -83,9 +90,15 @@ class PacketHandler(private val session: Session, private val server: Server) {
                 session.currentState = PacketState.LOGIN
                 if (packet.data.protocol != ServerInfo.PROTOCOL) {
                     val reason = if (packet.data.protocol < ServerInfo.PROTOCOL) {
-                        translationComponent("multiplayer.disconnect.outdated_client") { text(ServerInfo.VERSION) }
+                        translatable {
+                            key("multiplayer.disconnect.outdated_client")
+                            args(text { content(ServerInfo.VERSION) })
+                        }
                     } else {
-                        translationComponent("multiplayer.disconnect.incompatible") { text(ServerInfo.VERSION) }
+                        translatable {
+                            key("multiplayer.disconnect.incompatible")
+                            args(text { content(ServerInfo.VERSION) })
+                        }
                     }
                     session.sendPacket(PacketOutDisconnect(reason))
                     session.disconnect()
@@ -110,10 +123,8 @@ class PacketHandler(private val session: Session, private val server: Server) {
 
         session.sendPacket(PacketOutStatusResponse(StatusResponse(
             ServerVersion(ServerInfo.VERSION, ServerInfo.PROTOCOL),
-            Players(ServerStorage.MAX_PLAYERS, ServerStorage.playerCount.get(), players),
-            textComponent(ServerStorage.MOTD) {
-                color = Color.random()
-            }
+            Players(server.config.status.maxPlayers, ServerStorage.PLAYER_COUNT.get(), players),
+            server.config.status.motd
         )))
     }
 
@@ -122,8 +133,15 @@ class PacketHandler(private val session: Session, private val server: Server) {
     }
 
     private fun handleLoginStart(packet: PacketInLoginStart) {
-        session.player = Player(ServerStorage.nextEntityId.getAndIncrement())
+        session.player = Player(ServerStorage.NEXT_ENTITY_ID.getAndIncrement())
         session.player.name = packet.name
+
+        if (!server.config.server.onlineMode) {
+            val offlineUUID = UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
+            session.profile = GameProfile(offlineUUID, packet.name, emptyList())
+            beginPlayState()
+            return
+        }
 
         session.sendPacket(PacketOutEncryptionRequest(server.encryption.publicKey, verifyToken))
     }
@@ -137,9 +155,10 @@ class PacketHandler(private val session: Session, private val server: Server) {
 
         authenticateUser(session.player.name, sharedSecret)
 
-        val threshold = 256
-        session.sendPacket(PacketOutSetCompression(threshold))
-        session.setupCompression(threshold)
+        if (server.config.server.compressionThreshold > 0) {
+            session.sendPacket(PacketOutSetCompression(server.config.server.compressionThreshold))
+            session.setupCompression(server.config.server.compressionThreshold)
+        }
 
         beginPlayState()
     }
@@ -157,11 +176,11 @@ class PacketHandler(private val session: Session, private val server: Server) {
         shaDigest.update(server.encryption.publicKey.encoded)
         val serverId = shaDigest.hexDigest()
 
-        val response = SessionService.hasJoined(username, serverId, ServerStorage.SERVER_IP.hostAddress).execute()
+        val response = SessionService.hasJoined(username, serverId, server.config.server.ip).execute()
         if (!response.isSuccessful) {
             LOGGER.error("Failed to verify username $username!")
             LOGGER.debug("Error code: ${response.code()}, was successful: ${response.isSuccessful}, error body: ${response.errorBody()}")
-            session.sendPacket(PacketOutDisconnect(translationComponent("multiplayer.disconnect.unverified_username")))
+            session.sendPacket(PacketOutDisconnect(translatable { key("multiplayer.disconnect.unverified_username") }))
             session.disconnect()
             return
         }
@@ -181,21 +200,30 @@ class PacketHandler(private val session: Session, private val server: Server) {
         session.currentState = PacketState.PLAY
 
         val world = server.worldManager.worlds[0]
+        world.gameType = server.config.world.gamemode
         session.player.gamemode = world.gameType
         val spawnPosition = Position(40, 70, 40)
         session.player.location = spawnPosition.toLocation()
 
         val joinPacket = PacketOutChat(
-            translationComponent("multiplayer.player.joined") {
-                text(session.profile.name)
+            translatable {
+                key("multiplayer.player.joined")
+                args(text { content(session.profile.name) })
             },
             ChatPosition.SYSTEM_MESSAGE,
             SERVER_UUID
         )
 
-        session.sendPacket(PacketOutJoinGame(session.id, world.gameType, ServerStorage.MAX_PLAYERS))
-        session.sendPacket(PacketOutPluginMessage(NamespacedKey(value = "brand"), "MineKraft"))
-        session.sendPacket(PacketOutServerDifficulty(world.difficulty, world.difficultyLocked))
+        session.sendPacket(PacketOutJoinGame(
+            session.id,
+            world.gameType,
+            server.registryManager.dimensions,
+            server.registryManager.biomes,
+            server.config.status.maxPlayers,
+            server.config.world.viewDistance
+        ))
+        session.sendPacket(PacketOutPluginMessage(NamespacedKey(value = "brand"), "Krypton"))
+        session.sendPacket(PacketOutServerDifficulty(server.config.world.difficulty, true))
 
         val abilities = when (world.gameType) {
             Gamemode.SURVIVAL, Gamemode.ADVENTURE -> Abilities()
@@ -214,10 +242,10 @@ class PacketHandler(private val session: Session, private val server: Server) {
 
         val playerInfos = SessionStorage.sessions.filter { it.currentState == PacketState.PLAY }.map {
             PacketOutPlayerInfo.PlayerInfo(
-                Random.Default.nextInt(1000),
+                Random.nextInt(1000),
                 it.player.gamemode,
                 it.profile,
-                textComponent(it.profile.name)
+                text { content(it.profile.name) }
             )
         }
 
@@ -230,7 +258,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
                     Random.nextInt(1000),
                     session.player.gamemode,
                     session.profile,
-                    textComponent(session.profile.name)
+                    text { content(session.profile.name) }
                 )
             )
         )
@@ -261,12 +289,15 @@ class PacketHandler(private val session: Session, private val server: Server) {
 
         session.sendPacket(PacketOutUpdateViewPosition(centerChunk))
 
-        for (i in 0 until 2.toArea()) {
-            val chunk = region.chunks.singleOrNull {
-                it.position == server.regionManager.chunkInSpiral(i, centerChunk.x, centerChunk.z)
-            } ?: continue
-            session.sendPacket(PacketOutChunkData(chunk))
-            session.sendPacket(PacketOutUpdateLight(chunk))
+        GlobalScope.launch(Dispatchers.IO) {
+            for (i in 0 until server.config.world.viewDistance.toArea()) {
+                val chunk = region.chunks.singleOrNull {
+                    it.position == server.regionManager.chunkInSpiral(i, centerChunk.x, centerChunk.z)
+                } ?: continue
+                session.sendPacket(PacketOutUpdateLight(chunk))
+                session.sendPacket(PacketOutChunkData(chunk))
+                Thread.sleep(20L)
+            }
         }
 
         session.sendPacket(PacketOutEntityMetadata(session.player.id, PlayerMetadata))
@@ -278,7 +309,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
 
         session.sendPacket(PacketOutEntityProperties(session.player.id, DEFAULT_PLAYER_ATTRIBUTES))
 
-        ServerStorage.playerCount.getAndIncrement()
+        ServerStorage.PLAYER_COUNT.getAndIncrement()
 
         executor.scheduleAtFixedRate({
             val keepAliveId = System.currentTimeMillis()
@@ -351,13 +382,18 @@ class PacketHandler(private val session: Session, private val server: Server) {
 
     private fun handleChat(packet: PacketInChat) {
         val chatPacket = PacketOutChat(
-            translationComponent("chat.type.text") {
-                text(session.profile.name) {
-                    insertion = session.profile.name
-                    clickEvent = suggestCommand("/msg ${session.profile.name}")
-                    hoverEvent = showEntity(Entity(session.profile.uuid, "minecraft:player", session.profile.name))
-                }
-                text(packet.message)
+            translatable {
+                key("chat.type.text")
+                args(text {
+                    content(session.profile.name)
+                    insertion(session.profile.name)
+                    clickEvent(suggestCommand("/msg ${session.profile.name}"))
+                    hoverEvent(showEntity(ShowEntity.of(
+                        Key.key("minecraft", "player"),
+                        session.profile.uuid,
+                        text { content(session.profile.name) }
+                    )))
+                }, text { content(packet.message) })
             },
             ChatPosition.CHAT_BOX,
             session.profile.uuid
@@ -374,7 +410,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
             updateLatency(max((packet.keepAliveId - session.lastKeepAliveId), 0L).toInt())
             return
         }
-        session.sendPacket(PacketOutPlayDisconnect(translationComponent("disconnect.timeout")))
+        session.sendPacket(PacketOutPlayDisconnect(translatable { key("disconnect.timeout") }))
         session.disconnect()
     }
 
