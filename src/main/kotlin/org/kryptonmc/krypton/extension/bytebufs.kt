@@ -13,6 +13,7 @@ import org.kryptonmc.krypton.space.Position
 import org.kryptonmc.krypton.space.Rotation
 import org.kryptonmc.krypton.entity.entities.data.VillagerData
 import org.kryptonmc.krypton.entity.metadata.Optional
+import org.kryptonmc.krypton.registry.NamespacedKey
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets.UTF_8
@@ -218,6 +219,10 @@ fun ByteBuf.writeVillagerData(data: VillagerData) {
 
 fun ByteBuf.writeAngle(angle: Angle) {
     writeUByte(angle.value)
+}
+
+fun ByteBuf.writeKey(key: NamespacedKey) {
+    writeString(key.toString())
 }
 
 fun Int.varIntSize(): Int {

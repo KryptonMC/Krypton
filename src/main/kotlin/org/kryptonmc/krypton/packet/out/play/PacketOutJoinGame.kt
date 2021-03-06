@@ -3,6 +3,7 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import org.kryptonmc.krypton.entity.Gamemode
+import org.kryptonmc.krypton.extension.writeKey
 import org.kryptonmc.krypton.extension.writeNBTCompound
 import org.kryptonmc.krypton.extension.writeString
 import org.kryptonmc.krypton.extension.writeVarInt
@@ -18,6 +19,7 @@ import java.security.MessageDigest
 
 class PacketOutJoinGame(
     private val entityId: Int,
+    private val isHardcore: Boolean,
     private val world: World,
     private val gamemode: Gamemode,
     private val dimensions: DimensionRegistry,
@@ -27,14 +29,16 @@ class PacketOutJoinGame(
 ) : PlayPacket(0x24) {
 
     override fun write(buf: ByteBuf) {
-        val namespacedWorldName = NamespacedKey(value = world.name)
-
         buf.writeInt(entityId)
-        buf.writeBoolean(false) // is hardcore
+        buf.writeBoolean(isHardcore) // is hardcore
         buf.writeByte(gamemode.id) // gamemode
         buf.writeByte(-1) // previous gamemode
-        buf.writeVarInt(1) // size of worlds array
-        buf.writeString(namespacedWorldName.toString())
+
+        // worlds that exist
+        buf.writeVarInt(3)
+        buf.writeKey(OVERWORLD)
+        buf.writeKey(NETHER)
+        buf.writeKey(END)
 
         // dimension codec (dimension/biome type registry)
         buf.writeNBTCompound(CompoundBinaryTag.builder()
@@ -49,7 +53,7 @@ class PacketOutJoinGame(
         val seedBytes = ByteBuffer.allocate(Long.SIZE_BYTES).putLong(world.worldGenSettings.seed).array()
         val hashedSeed = ByteBuffer.wrap(messageDigest.digest(seedBytes)).getLong(0)
 
-        buf.writeString(namespacedWorldName.toString())
+        buf.writeKey(OVERWORLD) // world spawning into - for now, this is always overworld
         buf.writeLong(hashedSeed)
         buf.writeVarInt(maxPlayers)
         buf.writeVarInt(viewDistance)
@@ -61,6 +65,13 @@ class PacketOutJoinGame(
         val generator = world.worldGenSettings.dimensions.getValue(NamespacedKey(value = "overworld")).generator
         buf.writeBoolean(generator is DebugGenerator) // is debug world
         buf.writeBoolean(generator is FlatGenerator) // is flat world
+    }
+
+    companion object {
+
+        private val OVERWORLD = NamespacedKey(value = "overworld")
+        private val NETHER = NamespacedKey(value = "the_nether")
+        private val END = NamespacedKey(value = "the_end")
     }
 }
 

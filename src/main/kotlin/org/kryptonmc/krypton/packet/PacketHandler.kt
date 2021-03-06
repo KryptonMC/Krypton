@@ -216,6 +216,7 @@ class PacketHandler(private val session: Session, private val server: Server) {
 
         session.sendPacket(PacketOutJoinGame(
             session.id,
+            server.config.world.hardcore,
             world,
             world.gameType,
             server.registryManager.dimensions,

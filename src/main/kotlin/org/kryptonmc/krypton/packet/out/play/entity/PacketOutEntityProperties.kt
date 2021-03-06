@@ -3,6 +3,7 @@ package org.kryptonmc.krypton.packet.out.play.entity
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.Attribute
 import org.kryptonmc.krypton.entity.AttributeKey
+import org.kryptonmc.krypton.extension.writeKey
 import org.kryptonmc.krypton.extension.writeString
 import org.kryptonmc.krypton.extension.writeUUID
 import org.kryptonmc.krypton.extension.writeVarInt
@@ -18,7 +19,7 @@ class PacketOutEntityProperties(
         buf.writeInt(properties.size)
 
         properties.forEach { property ->
-            buf.writeString(property.key.key.toString())
+            buf.writeKey(property.key.key)
             buf.writeDouble(property.value)
 
             buf.writeVarInt(property.modifiers.size)

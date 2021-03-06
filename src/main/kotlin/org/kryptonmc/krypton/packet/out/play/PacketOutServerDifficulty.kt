@@ -6,7 +6,7 @@ import org.kryptonmc.krypton.world.Difficulty
 
 class PacketOutServerDifficulty(
     private val difficulty: Difficulty,
-    private val isLocked: Boolean = false
+    private val isLocked: Boolean = true
 ) : PlayPacket(0x0D) {
 
     override fun write(buf: ByteBuf) {
