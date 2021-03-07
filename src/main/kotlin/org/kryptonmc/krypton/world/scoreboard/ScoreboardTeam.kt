@@ -2,17 +2,19 @@ package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.entity.entities.Entity
+import org.kryptonmc.krypton.entity.entities.Player
 
+// TODO: Add support for entity members back once Player extends Entity
 data class ScoreboardTeam(
     val name: String,
-    val displayName: String,
+    val displayName: Component,
     val flags: TeamFlags,
     val nametagVisibility: NametagVisibility,
     val collisionRule: CollisionRule,
-    val teamColor: TeamColor,
-    val teamPrefix: Component,
-    val teamSuffix: Component,
-    val members: List<Entity>
+    val color: TeamColor,
+    val prefix: Component,
+    val suffix: Component,
+    val members: MutableList<Player>
 )
 
 data class TeamFlags(
@@ -46,6 +48,9 @@ enum class CollisionRule(val id: String) {
 
 enum class TeamColor(val id: Int) {
 
+    /**
+     * Colors
+     */
     BLACK(0),
     DARK_BLUE(1),
     DARK_GREEN(2),
@@ -62,10 +67,18 @@ enum class TeamColor(val id: Int) {
     PINK(13),
     YELLOW(14),
     WHITE(15),
+
+    /**
+     * Decoration
+     */
     OBFUSCATED(16),
     BOLD(17),
     STRIKETHROUGH(18),
     UNDERLINED(19),
     ITALIC(20),
+
+    /**
+     * Other
+     */
     RESET(21)
 }

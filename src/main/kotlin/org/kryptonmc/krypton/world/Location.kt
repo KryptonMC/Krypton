@@ -1,6 +1,7 @@
 package org.kryptonmc.krypton.world
 
 data class Location(
+    val world: World,
     val x: Double,
     val y: Double,
     val z: Double,

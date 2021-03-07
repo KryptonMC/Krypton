@@ -15,14 +15,17 @@ open class PacketInPlayerMovement(id: Int = 0x15) : PlayPacket(id) {
 
     class PacketInPlayerPosition : PacketInPlayerMovement(0x12) {
 
-        lateinit var location: Location
+        var x = 0.0
+            private set
+        var y = 0.0
+            private set
+        var z = 0.0
             private set
 
         override fun read(buf: ByteBuf) {
-            val x = buf.readDouble()
-            val y = buf.readDouble()
-            val z = buf.readDouble()
-            location = Location(x, y, z)
+            x = buf.readDouble()
+            y = buf.readDouble()
+            z = buf.readDouble()
 
             super.read(buf)
         }
@@ -30,10 +33,9 @@ open class PacketInPlayerMovement(id: Int = 0x15) : PlayPacket(id) {
 
     class PacketInPlayerRotation : PacketInPlayerMovement(0x14) {
 
-        var yaw: Float = 0.0f
+        var yaw = 0.0f
             private set
-
-        var pitch: Float = 0.0f
+        var pitch = 0.0f
             private set
 
         override fun read(buf: ByteBuf) {
@@ -46,16 +48,23 @@ open class PacketInPlayerMovement(id: Int = 0x15) : PlayPacket(id) {
 
     class PacketInPlayerPositionAndRotation : PacketInPlayerMovement(0x13) {
 
-        lateinit var location: Location
+        var x = 0.0
+            private set
+        var y = 0.0
+            private set
+        var z = 0.0
+            private set
+        var yaw = 0.0f
+            private set
+        var pitch = 0.0f
             private set
 
         override fun read(buf: ByteBuf) {
-            val x = buf.readDouble()
-            val y = buf.readDouble()
-            val z = buf.readDouble()
-            val yaw = buf.readFloat()
-            val pitch = buf.readFloat()
-            location = Location(x, y, z, yaw, pitch)
+            x = buf.readDouble()
+            y = buf.readDouble()
+            z = buf.readDouble()
+            yaw = buf.readFloat()
+            pitch = buf.readFloat()
 
             super.read(buf)
         }

@@ -8,58 +8,30 @@ import org.kryptonmc.krypton.*
 import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.login.PacketOutDisconnect
-import org.kryptonmc.krypton.packet.out.play.ChatPosition
-import org.kryptonmc.krypton.packet.out.play.PacketOutChat
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
-import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityDestroy
-import org.kryptonmc.krypton.packet.state.PacketState
+import org.kryptonmc.krypton.session.Session
+import org.kryptonmc.krypton.session.SessionManager
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeoutException
 
-class ChannelHandler(private val server: Server) : SimpleChannelInboundHandler<Packet>() {
+class ChannelHandler(private val sessionManager: SessionManager) : SimpleChannelInboundHandler<Packet>() {
 
-    lateinit var session: Session
-        private set
+    internal lateinit var session: Session
 
     override fun handlerAdded(ctx: ChannelHandlerContext) {
         LOGGER.debug("[+] Channel Connected: ${ctx.channel().remoteAddress()}")
-        session = Session(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), ctx.channel(), server)
-        SessionStorage.sessions += session
+        session = Session(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), ctx.channel())
+        sessionManager.sessions += session
     }
 
     override fun handlerRemoved(ctx: ChannelHandlerContext) {
         LOGGER.debug("[-] Channel Disconnected: ${ctx.channel().remoteAddress()}")
-        if (session.currentState == PacketState.PLAY) {
-            val destroyPacket = PacketOutEntityDestroy(listOf(session.id))
-            val infoPacket = PacketOutPlayerInfo(
-                PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER,
-                listOf(PacketOutPlayerInfo.PlayerInfo(profile = session.profile))
-            )
-            val leavePacket = PacketOutChat(
-                translatable {
-                    key("multiplayer.player.left")
-                    args(text { content(session.profile.name) })
-                },
-                ChatPosition.SYSTEM_MESSAGE,
-                SERVER_UUID
-            )
-
-            SessionStorage.sessions.asSequence()
-                .filter { it != session }
-                .filter { it.currentState == PacketState.PLAY }
-                .forEach {
-                    it.sendPacket(destroyPacket)
-                    it.sendPacket(infoPacket)
-                    it.sendPacket(leavePacket)
-                }
-            ServerStorage.PLAYER_COUNT.getAndDecrement()
-        }
-        SessionStorage.sessions -= session
+        sessionManager.handleDisconnection(session)
+        sessionManager.sessions -= session
     }
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: Packet) {
         if (!ctx.channel().isOpen) return
-        session.receive(msg)
+        sessionManager.handle(session, msg)
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {

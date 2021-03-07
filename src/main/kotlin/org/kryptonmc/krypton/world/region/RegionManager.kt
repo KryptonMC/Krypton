@@ -34,7 +34,7 @@ class RegionManager(config: WorldConfig) {
 
     private fun loadRegion(folder: File, x: Int, z: Int): Region {
         val file = RandomAccessFile(File(folder, "r.$x.$z.mca"), "r")
-        val chunks = mutableListOf<Chunk>()
+        val chunks = mutableMapOf<ChunkPosition, Chunk>()
 
         for (i in 0 until 1024) {
             file.seek(i * 4L)
@@ -53,7 +53,7 @@ class RegionManager(config: WorldConfig) {
         return Region(x, z, chunks)
     }
 
-    private fun deserializeChunk(file: RandomAccessFile): Chunk {
+    private fun deserializeChunk(file: RandomAccessFile): Pair<ChunkPosition, Chunk> {
         val compressionType = when (val type = file.readByte().toInt()) {
             0 -> BinaryTagIO.Compression.NONE
             1 -> BinaryTagIO.Compression.GZIP
@@ -143,7 +143,8 @@ class RegionManager(config: WorldConfig) {
             sections
         )
 
-        return Chunk(ChunkPosition(nbt.getInt("xPos"), nbt.getInt("zPos")), chunkData)
+        val position = ChunkPosition(nbt.getInt("xPos"), nbt.getInt("zPos"))
+        return position to Chunk(position, chunkData)
     }
 
     fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): ChunkPosition {

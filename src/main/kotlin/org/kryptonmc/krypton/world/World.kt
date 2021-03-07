@@ -2,15 +2,16 @@ package org.kryptonmc.krypton.world
 
 import org.kryptonmc.krypton.entity.Gamemode
 import org.kryptonmc.krypton.space.Position
+import org.kryptonmc.krypton.world.bossbar.Bossbar
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import java.time.LocalDateTime
 
 data class World(
     val name: String,
-    //val bossbars: List<Bossbar>,
-    //val allowCheats: Boolean,
+    val bossbars: List<Bossbar>,
+    val allowCheats: Boolean,
     val border: WorldBorder,
-    //val clearWeatherTime: Int,
+    val clearWeatherTime: Int,
     var dayTime: Long,
     val difficulty: Difficulty,
     val difficultyLocked: Boolean,
@@ -18,17 +19,25 @@ data class World(
     //val gamerules: List<Gamerule<*>>,
     val worldGenSettings: WorldGenerationSettings,
     var gameType: Gamemode,
-    //val isHardcore: Boolean,
+    val isHardcore: Boolean,
     //val isInitialized: Boolean,
     val lastPlayed: LocalDateTime,
-    //val mapFeatures: Boolean,
-    //val isRaining: Boolean,
-    //val rainTime: Int,
-    //val randomSeed: Long,
+    val mapFeatures: Boolean,
+    val isRaining: Boolean,
+    val rainTime: Int,
+    val randomSeed: Long,
     val spawnPosition: Position,
-    //val isThundering: Boolean,
-    //val thunderTime: Int,
-    var time: Long
+    val isThundering: Boolean,
+    val thunderTime: Int,
+    var time: Long,
+    val nbtVersion: Int,
+    val version: WorldVersion
+)
+
+data class WorldVersion(
+    val id: Int,
+    val name: String,
+    val isSnapshot: Boolean
 )
 
 // TODO: Use this in MCA file writing

@@ -9,6 +9,7 @@ import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.config.StatusConfig
 import org.kryptonmc.krypton.extension.logger
+import org.kryptonmc.krypton.extension.readAvailableBytes
 import java.net.InetSocketAddress
 
 class LegacyQueryHandler(private val status: StatusConfig) : ChannelInboundHandlerAdapter() {
@@ -40,12 +41,12 @@ class LegacyQueryHandler(private val status: StatusConfig) : ChannelInboundHandl
                     var isValid = buf.readUnsignedByte() == 1.toShort()
                     isValid = isValid and (buf.readUnsignedByte() == 250.toShort())
                     isValid = isValid and ("MC|PingHost" == String(
-                        buf.readBytes(buf.readShort() * 2).array(),
+                        buf.readAvailableBytes(buf.readShort() * 2),
                         Charsets.UTF_16BE
                     ))
                     val dataLength = buf.readUnsignedShort()
                     isValid = isValid and (buf.readUnsignedByte() >= 73)
-                    isValid = isValid and (3 + buf.readBytes(buf.readShort() * 2).array().size + 4 == dataLength)
+                    isValid = isValid and (3 + buf.readAvailableBytes(buf.readShort() * 2).size + 4 == dataLength)
                     isValid = isValid and (buf.readInt() <= 65535)
                     isValid = isValid and (buf.readableBytes() == 0)
                     if (!isValid) return

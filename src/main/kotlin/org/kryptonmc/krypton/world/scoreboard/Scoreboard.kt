@@ -3,7 +3,8 @@ package org.kryptonmc.krypton.world.scoreboard
 data class Scoreboard(
     val position: ScoreboardPosition,
     val name: String,
-    val objectives: List<ScoreboardObjective>
+    val objectives: MutableList<ScoreboardObjective>,
+    val teams: MutableList<ScoreboardTeam>
 )
 
 enum class ScoreboardPosition(val id: Int) {

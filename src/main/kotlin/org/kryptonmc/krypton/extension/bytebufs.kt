@@ -17,6 +17,7 @@ import org.kryptonmc.krypton.registry.NamespacedKey
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets.UTF_8
+import java.time.Duration
 import java.util.*
 import kotlin.experimental.and
 
@@ -111,6 +112,14 @@ fun ByteBuf.readVarIntByteArray(): ByteArray {
     }
     val bytes = ByteArray(length)
     readBytes(bytes)
+    return bytes
+}
+
+fun ByteBuf.readAvailableBytes(length: Int): ByteArray {
+    if (hasArray()) return readBytes(length).array()
+
+    val bytes = ByteArray(length)
+    readBytes(bytes, readerIndex(), length)
     return bytes
 }
 
@@ -223,6 +232,10 @@ fun ByteBuf.writeAngle(angle: Angle) {
 
 fun ByteBuf.writeKey(key: NamespacedKey) {
     writeString(key.toString())
+}
+
+fun ByteBuf.writeDuration(duration: Duration) {
+    writeInt(duration.seconds.toInt() * 20)
 }
 
 fun Int.varIntSize(): Int {

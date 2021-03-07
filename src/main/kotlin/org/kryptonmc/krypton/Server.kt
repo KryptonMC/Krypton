@@ -4,7 +4,6 @@ import com.moandjiezana.toml.Toml
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.kryptonmc.krypton.channel.NettyProcess
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.config.ServerConfig
 import org.kryptonmc.krypton.config.StatusConfig
@@ -15,6 +14,7 @@ import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.packet.PacketLoader
 import org.kryptonmc.krypton.registry.RegistryManager
 import org.kryptonmc.krypton.registry.tags.TagManager
+import org.kryptonmc.krypton.session.SessionManager
 import org.kryptonmc.krypton.world.Difficulty
 import org.kryptonmc.krypton.world.WorldManager
 import org.kryptonmc.krypton.world.region.RegionManager
@@ -32,6 +32,8 @@ class Server {
     private val nettyProcess = NettyProcess(this)
     internal val random: SecureRandom = SecureRandom()
 
+    val sessionManager = SessionManager(this)
+
     val registryManager = RegistryManager()
     val tagManager = TagManager()
 
@@ -45,6 +47,14 @@ class Server {
 
         GlobalScope.launch {
             nettyProcess.run()
+        }
+
+        if (!config.server.onlineMode) {
+            LOGGER.warn("-----------------------------------------------------------------------------------")
+            LOGGER.warn("SERVER IS IN OFFLINE MODE! THIS SERVER WILL MAKE NO ATTEMPTS TO AUTHENTICATE USERS!")
+            LOGGER.warn("While this may allow players without full Minecraft accounts to connect, it also allows hackers to connect with any username they choose! Beware!")
+            LOGGER.warn("To get rid of this message, change online_mode to true in config.toml")
+            LOGGER.warn("-----------------------------------------------------------------------------------")
         }
 
         while (true) {

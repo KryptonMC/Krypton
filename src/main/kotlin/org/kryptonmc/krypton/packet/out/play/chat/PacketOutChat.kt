@@ -1,4 +1,4 @@
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.packet.out.play.chat
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component

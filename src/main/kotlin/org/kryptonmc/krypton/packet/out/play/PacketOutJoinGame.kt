@@ -19,13 +19,13 @@ import java.security.MessageDigest
 
 class PacketOutJoinGame(
     private val entityId: Int,
-    private val isHardcore: Boolean,
+    private val isHardcore: Boolean = false,
     private val world: World,
     private val gamemode: Gamemode,
     private val dimensions: DimensionRegistry,
     private val biomes: BiomeRegistry,
-    private val maxPlayers: Int,
-    private val viewDistance: Int = 16
+    private val maxPlayers: Int = 20,
+    private val viewDistance: Int = 10
 ) : PlayPacket(0x24) {
 
     override fun write(buf: ByteBuf) {

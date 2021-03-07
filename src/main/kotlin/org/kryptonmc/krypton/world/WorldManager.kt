@@ -1,12 +1,15 @@
 package org.kryptonmc.krypton.world
 
+import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.CompoundBinaryTag
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.config.WorldConfig
 import org.kryptonmc.krypton.entity.Gamemode
 import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.registry.toNamespacedKey
 import org.kryptonmc.krypton.space.Position
+import org.kryptonmc.krypton.world.bossbar.Bossbar
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.generation.Generator
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
@@ -17,6 +20,7 @@ import java.nio.file.Path
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import java.util.*
 import kotlin.system.exitProcess
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -39,27 +43,29 @@ class WorldManager(config: WorldConfig) {
     fun loadWorld(file: File): World {
         val nbt = BinaryTagIO.unlimitedReader().read(file.toPath(), BinaryTagIO.Compression.GZIP).getCompound("Data")
 
-//        val bossbars = nbt.getCompound("CustomBossEvents").map { bossbar ->
-//            val nbtBossbar = bossbar as CompoundBinaryTag
-//            val players = nbtBossbar.getList("Players").map {
-//                val nbtPlayerUUID = it as CompoundBinaryTag
-//                UUID(nbtPlayerUUID.getLong("M"), nbtPlayerUUID.getLong("L"))
-//            }
-//
-//            Bossbar(
-//                bossbar.key.toNamespacedKey(),
-//                Json.Default.decodeFromString(nbtBossbar.getString("Name")),
-//                LegacyColor.fromLegacy(nbtBossbar.getString("Color")),
-//                BossbarOverlay.valueOf(nbtBossbar.getString("Overlay")),
-//                nbtBossbar.getInt("Max"),
-//                nbtBossbar.getInt("Value"),
-//                nbtBossbar.getBoolean("CreateWorldFog"),
-//                nbtBossbar.getBoolean("DarkenScreen"),
-//                nbtBossbar.getBoolean("PlayBossMusic"),
-//                nbtBossbar.getBoolean("Visible"),
-//                players
-//            )
-//        }
+        val bossbars = nbt.getCompound("CustomBossEvents").map { (key, bossbar) ->
+            val nbtBossbar = bossbar as CompoundBinaryTag
+            val players = nbtBossbar.getList("Players").map {
+                val nbtPlayerUUID = it as CompoundBinaryTag
+                UUID(nbtPlayerUUID.getLong("M"), nbtPlayerUUID.getLong("L"))
+            }
+
+            val flags = mutableSetOf<BossBar.Flag>()
+            if (nbtBossbar.getBoolean("CreateWorldFog")) flags += BossBar.Flag.CREATE_WORLD_FOG
+            if (nbtBossbar.getBoolean("DarkenScreen")) flags += BossBar.Flag.DARKEN_SCREEN
+            if (nbtBossbar.getBoolean("PlayBossMusic")) flags += BossBar.Flag.PLAY_BOSS_MUSIC
+
+            Bossbar(
+                key.toNamespacedKey(),
+                GsonComponentSerializer.gson().deserialize(nbtBossbar.getString("Name")),
+                BossBar.Color.NAMES.value(nbtBossbar.getString("Color")) ?: BossBar.Color.WHITE,
+                BossBar.Overlay.NAMES.value(nbtBossbar.getString("Overlay")) ?: BossBar.Overlay.PROGRESS,
+                nbtBossbar.getInt("Value").toFloat() / nbtBossbar.getInt("Max").toFloat(),
+                flags,
+                nbtBossbar.getBoolean("Visible"),
+                players
+            )
+        }
 
         val worldBorder = WorldBorder(
             nbt.getDouble("BorderSize"),
@@ -116,15 +122,29 @@ class WorldManager(config: WorldConfig) {
 
         return World(
             nbt.getString("LevelName"),
+            bossbars,
+            nbt.getBoolean("allowCommands"),
             worldBorder,
+            nbt.getInt("clearWeatherTime"),
             nbt.getLong("DayTime"),
             Difficulty.fromId(nbt.getByte("Difficulty").toInt()),
             nbt.getBoolean("DifficultyLocked"),
             worldGenSettings,
             Gamemode.fromId(nbt.getInt("GameType")),
+            nbt.getBoolean("hardcore"),
             LocalDateTime.ofInstant(Instant.ofEpochMilli(nbt.getLong("LastPlayed")), ZoneOffset.UTC),
+            nbt.getBoolean("raining"),
+            nbt.getBoolean("MapFeatures"),
+            nbt.getInt("rainTime"),
+            nbt.getLong("RandomSeed"),
             spawnLocation,
-            nbt.getLong("Time")
+            nbt.getBoolean("thundering"),
+            nbt.getInt("thunderTime"),
+            nbt.getLong("Time"),
+            nbt.getInt("version"),
+            nbt.getCompound("Version").let {
+                WorldVersion(it.getInt("Id"), it.getString("Name"), it.getBoolean("Snapshot"))
+            }
         )
     }
 

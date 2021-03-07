@@ -1,4 +1,4 @@
-package org.kryptonmc.krypton.channel
+package org.kryptonmc.krypton
 
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelInitializer
@@ -20,8 +20,13 @@ import io.netty.incubator.channel.uring.IOUringEventLoopGroup
 import io.netty.incubator.channel.uring.IOUringServerSocketChannel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.kryptonmc.krypton.Server
+import org.kryptonmc.krypton.channel.ChannelHandler
+import org.kryptonmc.krypton.concurrent.NamedThreadFactory
+import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.packet.transformers.*
+import java.io.IOException
+import java.util.concurrent.Executors
+import kotlin.system.exitProcess
 
 class NettyProcess(private val server: Server) {
 
@@ -29,6 +34,7 @@ class NettyProcess(private val server: Server) {
     private val workerGroup: EventLoopGroup = bestLoopGroup()
 
     suspend fun run() {
+        LOGGER.debug("${bossGroup::class.simpleName} is the chosen one")
         try {
             val bootstrap = ServerBootstrap()
             bootstrap.group(bossGroup, workerGroup)
@@ -44,14 +50,21 @@ class NettyProcess(private val server: Server) {
                             .addLast(PacketDecoder.NETTY_NAME, PacketDecoder())
                             .addLast(SizeEncoder.NETTY_NAME, SizeEncoder())
                             .addLast(PacketEncoder.NETTY_NAME, PacketEncoder())
-                            .addLast(ChannelHandler.NETTY_NAME, ChannelHandler(server))
+                            .addLast(ChannelHandler.NETTY_NAME, ChannelHandler(server.sessionManager))
                     }
                 })
 
             withContext(Dispatchers.IO) {
-                val future = bootstrap.bind(server.config.server.ip, server.config.server.port).await()
+                val future = bootstrap.bind(server.config.server.ip, server.config.server.port).syncUninterruptibly()
                 future.channel().closeFuture().sync()
             }
+        } catch (exception: IOException) {
+            LOGGER.error("-------------------------------------------------")
+            LOGGER.error("FAILED TO BIND TO PORT ${server.config.server.port}!")
+            LOGGER.error("Exception: $exception")
+            LOGGER.error("Perhaps a server is already running on that port?")
+            LOGGER.error("-------------------------------------------------")
+            exitProcess(0)
         } finally {
             workerGroup.shutdownGracefully()
             bossGroup.shutdownGracefully()
@@ -59,10 +72,10 @@ class NettyProcess(private val server: Server) {
     }
 
     private fun bestLoopGroup() = when {
-        IOUring.isAvailable() -> IOUringEventLoopGroup()
-        Epoll.isAvailable() -> EpollEventLoopGroup()
-        KQueue.isAvailable() -> KQueueEventLoopGroup()
-        else -> NioEventLoopGroup()
+        IOUring.isAvailable() -> IOUringEventLoopGroup(0, NamedThreadFactory("Netty IO Uring Worker #%d"))
+        Epoll.isAvailable() -> EpollEventLoopGroup(0, NamedThreadFactory("Netty Epoll Worker #%d"))
+        KQueue.isAvailable() -> KQueueEventLoopGroup(0, NamedThreadFactory("Netty KQueue Worker #%d"))
+        else -> NioEventLoopGroup(0, NamedThreadFactory("Netty NIO Worker #%d"))
     }
 
     private fun bestChannel(): Class<out ServerSocketChannel> = when {
@@ -70,5 +83,10 @@ class NettyProcess(private val server: Server) {
         Epoll.isAvailable() -> EpollServerSocketChannel::class.java
         KQueue.isAvailable() -> KQueueServerSocketChannel::class.java
         else -> NioServerSocketChannel::class.java
+    }
+
+    companion object {
+
+        private val LOGGER = logger<Server>()
     }
 }

@@ -1,33 +1,19 @@
 package org.kryptonmc.krypton.world.bossbar
 
+import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.lang.LegacyColor
 import org.kryptonmc.krypton.registry.NamespacedKey
 import java.util.*
 
-// TODO: Use this
-// TODO: Also possibly switch this to Adventure
+// We wrap a lot of Adventure's boss bar stuff here so we can include the ID, visibility and player list
 data class Bossbar(
     val id: NamespacedKey,
     val name: Component,
-    val color: LegacyColor,
-    val overlay: BossbarOverlay,
-    val maxHealth: Int,
-    val currentHealth: Int,
-    val createWorldFog: Boolean,
-    val darkenSky: Boolean,
-    val playBossMusic: Boolean,
+    val color: BossBar.Color,
+    val overlay: BossBar.Overlay,
+    val progress: Float,
+    val flags: Set<BossBar.Flag>,
     val visible: Boolean,
     val players: List<UUID>
 )
-
-enum class BossbarOverlay {
-
-    PROGRESS,
-    NOTCHED_6,
-    NOTCHED_10,
-    NOTCHED_12,
-    NOTCHED_20;
-
-    override fun toString() = name.toLowerCase()
-}

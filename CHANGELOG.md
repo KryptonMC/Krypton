@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10] - 2021-03-07
+### Added
+- Player swing arm animation
+- Entity actions (start/stop sneaking, start/stop sprinting, leave bed
+  and start flying with elytra currently usable)
+- Support for scoreboards, titles, action bars and tablist header & footer.
+  You can't do anything with them yet, but they will be more usable in
+  future versions. Also currently untested.
+
+### Changed
+- Sessions are now better managed by the `SessionManager`, which handles
+  a lot of the packet sending and encryption & compression setup for
+  sessions, instead of sessions handling that themselves (removal of god
+  objects)
+- Authentication is now entirely handled by `SessionService`, instead of
+  it just wrapping the `MojangSessionService` and `Retrofit`
+- `PacketHandler` has been reduced to a, well, packet handler, instead of
+  distributing packets and authenticating users itself, further reducing
+  god objects
+- The second declare recipes packet that was being sent is now unlock recipes
+  (like it should be), and unlock recipes is now working how it should.
+- `Location` is now world bound, meaning it requires a world. This further
+  separates it from `Position`, which is not world bound and doesn't allow
+  for decimals in its coordinates, and `Vector`, which isn't world bound.
+
 ## [0.9.2] - 2021-03-06
 ### Changed
 - Added some actual checking into namespaced key conversions

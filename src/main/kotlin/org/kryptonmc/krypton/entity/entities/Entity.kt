@@ -11,7 +11,7 @@ abstract class Entity {
 
     abstract val uuid: UUID
 
-    abstract val customName: Component?
+    abstract val name: Component?
 
     abstract val isCustomNameVisible: Boolean
 
