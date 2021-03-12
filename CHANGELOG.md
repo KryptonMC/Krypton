@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11] - 2021-03-12
+### Added
+- Brand new Krypton API! Still a work in progress, but the core of it is
+  there!
+- Support for reading boss bars from world files (`CustomBossEvents`)
+
+### Changed
+- `RegionManager` has now been merged into `KryptonWorldManager`
+- Due to the new API, all classes that are implementations of their API
+  counterparts have been renamed to now be prefixed with `Krypton` (e.g.
+  `KryptonServer`, `KryptonWorldManager`, etc.)
+- The project has now been split into two modules: api and server.
+
+### Removed
+- `Position`, `BlockPosition` and `ChunkPosition` have all been removed
+  and replaced with `Vector`.
+
 ## [0.10] - 2021-03-07
 ### Added
 - Player swing arm animation

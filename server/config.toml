@@ -1,0 +1,19 @@
+# Krypton config version 0.10 by BomBardyGamer
+
+[server]
+ip = "0.0.0.0" # The IP for the server to bind to. 0.0.0.0 means listen on all interfaces
+port = 25565 # The port for the server to bind to. Defaults to 25565
+online_mode = true # Whether the server is in online mode (authenticates users through Mojang)
+compression_threshold = 256 # The threshold at which packets larger will be compressed (-1 to disable)
+
+[status]
+motd = "&#8000ffKrypton is a Minecraft server written in Kotlin!" # The MOTD. Supports legacy colors
+max_players = 20 # The maximum amount of players the server can have (doesn't do anything yet, other than in the status)
+
+[world]
+# The name of the world folder (NOTE: you MUST use your own world, Krypton does not automatically generate worlds yet)
+name = "world"
+gamemode = "survival" # The default gamemode. Valid values are: 0, 1, 2, 3, survival, creative, adventure and spectator
+difficulty = "normal" # The default difficulty. Valid values are:
+hardcore = false
+view_distance = 10
