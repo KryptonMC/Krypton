@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PluginDescriptionFile(
     val name: String,
-    val main: String,
     val version: String,
     val description: String = "",
     val authors: List<String> = emptyList(),

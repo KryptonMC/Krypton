@@ -55,7 +55,7 @@ class NettyProcess(private val server: KryptonServer) {
 
             withContext(Dispatchers.IO) {
                 val future = bootstrap.bind(server.config.server.ip, server.config.server.port).syncUninterruptibly()
-                future.channel().closeFuture().sync()
+                future.channel().closeFuture().syncUninterruptibly()
             }
         } catch (exception: IOException) {
             LOGGER.error("-------------------------------------------------")

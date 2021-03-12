@@ -23,6 +23,7 @@ import org.kryptonmc.krypton.session.SessionManager
 import org.kryptonmc.krypton.api.world.Difficulty
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.io.File
@@ -70,6 +71,8 @@ class KryptonServer : Server {
     override val commandManager = KryptonCommandManager()
     override val eventManager = KryptonEventManager()
 
+    override lateinit var pluginManager: KryptonPluginManager
+
     fun start() {
         PacketLoader.loadAll()
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
@@ -85,6 +88,12 @@ class KryptonServer : Server {
             LOGGER.warn("While this may allow players without full Minecraft accounts to connect, it also allows hackers to connect with any username they choose! Beware!")
             LOGGER.warn("To get rid of this message, change online_mode to true in config.toml")
             LOGGER.warn("-----------------------------------------------------------------------------------")
+        }
+
+        GlobalScope.launch(Dispatchers.IO) {
+            LOGGER.info("Loading plugins...")
+            pluginManager = KryptonPluginManager(this@KryptonServer)
+            LOGGER.info("Plugin loading complete!")
         }
 
         while (true) {

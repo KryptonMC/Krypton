@@ -10,14 +10,23 @@ import org.kryptonmc.krypton.api.event.listen
 import java.io.File
 
 /**
- * A plugin. These are extensions
+ * A plugin. These are extensions to the server that can be "plugged in"
+ * (hence the name) to provide extra functionality that is not part of
+ * the standard server.
+ *
+ * @author Callum Seabrook
  */
 abstract class Plugin(val context: PluginContext) {
 
     /**
+     * The current load state of this plugin
+     */
+    var loadState = PluginLoadState.INITIALIZING
+
+    /**
      * This is called when the plugin is initialised.
      */
-    fun initialize() {}
+    open fun initialize() {}
 
     /**
      * Registers the given [command] with the command manager

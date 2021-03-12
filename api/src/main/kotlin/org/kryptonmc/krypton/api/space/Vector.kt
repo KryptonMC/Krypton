@@ -128,7 +128,7 @@ data class Vector(
      */
     fun normalize() = copy(x = x / length, y = y / length, z = z / length)
 
-    val isNormalized = abs(lengthSquared - 1) < EPSILON
+    val isNormalized by lazy { abs(lengthSquared - 1) < EPSILON }
 
     /**
      * Converts this [Vector] to a [Location] with the specified

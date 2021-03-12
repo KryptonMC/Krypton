@@ -6,6 +6,7 @@ import org.kryptonmc.krypton.api.command.CommandManager
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.event.EventManager
+import org.kryptonmc.krypton.api.plugin.PluginManager
 import org.kryptonmc.krypton.api.status.StatusInfo
 import org.kryptonmc.krypton.api.world.Difficulty
 import org.kryptonmc.krypton.api.world.WorldManager
@@ -37,6 +38,14 @@ interface Server : ForwardingAudience {
      * This is used to register and unregister commands
      */
     val commandManager: CommandManager
+
+    /**
+     * The plugin manager for this server
+     *
+     * This is used to retrieve plugins and check whether they have
+     * been initialised or not.
+     */
+    val pluginManager: PluginManager
 
     /**
      * The event bus for this server
