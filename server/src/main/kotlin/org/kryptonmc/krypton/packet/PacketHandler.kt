@@ -1,5 +1,6 @@
 package org.kryptonmc.krypton.packet
 
+import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.extra.kotlin.text
 import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.key.Key
@@ -37,6 +38,7 @@ import org.kryptonmc.krypton.session.Session
 import org.kryptonmc.krypton.session.SessionManager
 import org.kryptonmc.krypton.space.toAngle
 import org.kryptonmc.krypton.world.LocationBuilder
+import java.net.InetSocketAddress
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
 import kotlin.math.max
@@ -123,7 +125,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     }
 
     private fun handleLoginStart(session: Session, packet: PacketInLoginStart) {
-        session.player = KryptonPlayer(ServerStorage.NEXT_ENTITY_ID.getAndIncrement())
+        session.player = KryptonPlayer(session, session.channel.remoteAddress() as InetSocketAddress)
         session.player.name = packet.name
 
         if (!server.config.server.onlineMode) {
@@ -158,6 +160,8 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     private fun handlePositionUpdate(session: Session, packet: PacketInPlayerPosition) {
         val oldLocation = session.player.location
         val newLocation = Location(session.player.location.world, packet.x, packet.y, packet.z)
+        if (newLocation == oldLocation) return
+
         session.player.location = newLocation
 
         val positionPacket = PacketOutEntityPosition(
@@ -190,6 +194,8 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     private fun handlePositionAndRotationUpdate(session: Session, packet: PacketInPlayerPositionAndRotation) {
         val oldLocation = session.player.location
         val newLocation = Location(session.player.location.world, packet.x, packet.y, packet.z, packet.yaw, packet.pitch)
+        if (newLocation == oldLocation) return
+
         session.player.location = newLocation
 
         val positionAndRotationPacket = PacketOutEntityPositionAndRotation(
@@ -209,6 +215,11 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     }
 
     private fun handleChat(session: Session, packet: PacketInChat) {
+        if (packet.message.startsWith("/")) {
+            server.commandManager.dispatch(session.player, packet.message.removePrefix("/"))
+            return
+        }
+
         val chatPacket = PacketOutChat(
             translatable {
                 key("chat.type.text")
@@ -223,7 +234,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
                     )))
                 }, text { content(packet.message) })
             },
-            ChatPosition.CHAT_BOX,
+            MessageType.CHAT,
             session.profile.uuid
         )
 

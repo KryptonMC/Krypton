@@ -18,7 +18,7 @@ data class Location(
     val z: Double,
     val yaw: Float = 0.0f,
     val pitch: Float = 0.0f
-) : Cloneable {
+) : Cloneable, Comparable<Location> {
 
     operator fun plus(other: Location): Location {
         if (world != other.world) throw IllegalArgumentException("Cannot add locations from different worlds!")
@@ -43,4 +43,11 @@ data class Location(
     operator fun times(factor: Float) = copy(x = x * factor, y = y * factor, z = z * factor)
 
     fun toVector() = Vector(x, y, z)
+
+    override fun compareTo(other: Location): Int {
+        if (x == other.x && y == other.y && z == other.z) return 0
+        if (x > other.x && y > other.y && z > other.z) return 1
+        if (x < other.x && y < other.y && z < other.z) return -1
+        return 0
+    }
 }

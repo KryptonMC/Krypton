@@ -9,6 +9,7 @@ import org.kryptonmc.krypton.extension.logger
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
+import java.lang.Exception
 import java.net.URLClassLoader
 import java.nio.file.Path
 import java.util.jar.JarFile
@@ -17,7 +18,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
     override val plugins = mutableSetOf<Plugin>()
 
-    private val pluginsFolder = File(ROOT_FOLDER, "/plugins/").apply {
+    private val pluginsFolder = File(ROOT_FOLDER, "plugins/").apply {
         mkdir()
         walk().filter { !it.isDirectory }.forEach {
             val plugin = load(it) ?: return@forEach
@@ -48,11 +49,11 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
             server,
             dataFolder,
             description,
-            logger("Plugin - " + description.name)
+            logger("[${description.name}]")
         )
 
         val mainClassName = JarFile(file).use {
-            return@use it.manifest.mainAttributes.getValue("Main-Class")
+            it.manifest.mainAttributes.getValue("Main-Class")
                 ?: throw IllegalStateException("The manifest does not contain a Main-Class attribute!")
         }
 
@@ -61,7 +62,6 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
         return try {
             val jarClass = loader.loadClass(mainClassName)
             val pluginClass = jarClass.asSubclass(Plugin::class.java)
-
             pluginClass.getDeclaredConstructor(PluginContext::class.java).newInstance(context)
         } catch (exception: ClassNotFoundException) {
             LOGGER.error("Could not find main class for plugin ${description.name}!")
@@ -69,6 +69,17 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
             null
         } catch (exception: ClassCastException) {
             LOGGER.error("Main class of ${description.name} does not extend Plugin!")
+            LOGGER.info("Shutting down ${description.name} version ${description.version}")
+            null
+        } catch (exception: NoSuchMethodException) {
+            LOGGER.error("Main class of ${description.name} does not have a constructor that accepts a plugin context!")
+            LOGGER.info("Shutting down ${description.name} version ${description.version}")
+            null
+        } catch (exception: Exception) {
+            LOGGER.error(
+                "An unexpected exception occured when attempting to load the main class of ${description.name}",
+                exception
+            )
             LOGGER.info("Shutting down ${description.name} version ${description.version}")
             null
         }
@@ -87,6 +98,12 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
             jar.close()
             stream.close()
         }
+    }
+
+    fun shutdown() = plugins.forEach {
+        it.loadState = PluginLoadState.SHUTTING_DOWN
+        LOGGER.info("Shutting down ${it.context.description.name} version ${it.context.description.version}")
+        it.loadState = PluginLoadState.SHUT_DOWN
     }
 
     companion object {
