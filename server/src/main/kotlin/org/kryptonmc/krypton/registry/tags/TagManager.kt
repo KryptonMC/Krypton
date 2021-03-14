@@ -3,7 +3,12 @@ package org.kryptonmc.krypton.registry.tags
 import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.InputStreamReader
-import java.util.jar.JarFile
+import java.net.URI
+import java.nio.file.FileSystem
+import java.nio.file.FileSystems
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.util.stream.Collectors
 
 class TagManager {
 
@@ -16,40 +21,31 @@ class TagManager {
         get() = blockTags + entityTypeTags + fluidTags + itemTags
 
     init {
-        val jarFile = JarFile(File(javaClass.protectionDomain.codeSource.location.toURI()))
-        val jarEntries = jarFile.entries().asSequence().filter { !it.isDirectory && it.name.endsWith(".json") }.toList()
+        val jarFile = File(javaClass.protectionDomain.codeSource.location.toURI())
 
-        val blockTagFiles = jarEntries.filter { it.name.startsWith("registries/tags/blocks/") }
-        val entityTypeTagFiles = jarEntries.filter { it.name.startsWith("registries/tags/entity_types/") }
-        val fluidTagFiles = jarEntries.filter { it.name.startsWith("registries/tags/fluids/") }
-        val itemTagFiles = jarEntries.filter { it.name.startsWith("registries/tags/items/") }
-
-        val blockTags = mutableListOf<Tag>()
-        val entityTypeTags = mutableListOf<Tag>()
-        val fluidTags = mutableListOf<Tag>()
-        val itemTags = mutableListOf<Tag>()
-
-        blockTagFiles.forEach {
-            val tagName = it.name.removePrefix("registries/tags/blocks/").removeSuffix(".json")
-            blockTags += Tag(tagName, JSON.decodeFromString(TagData.serializer(), InputStreamReader(javaClass.classLoader.getResourceAsStream(it.name)!!).readText()))
-        }
-        entityTypeTagFiles.forEach {
-            val tagName = it.name.removePrefix("registries/tags/entity_types/").removeSuffix(".json")
-            entityTypeTags += Tag(tagName, JSON.decodeFromString(TagData.serializer(), InputStreamReader(javaClass.classLoader.getResourceAsStream(it.name)!!).readText()))
-        }
-        fluidTagFiles.forEach {
-            val tagName = it.name.removePrefix("registries/tags/fluids/").removeSuffix(".json")
-            fluidTags += Tag(tagName, JSON.decodeFromString(TagData.serializer(), InputStreamReader(javaClass.classLoader.getResourceAsStream(it.name)!!).readText()))
-        }
-        itemTagFiles.forEach {
-            val tagName = it.name.removePrefix("registries/tags/items/").removeSuffix(".json")
-            itemTags += Tag(tagName, JSON.decodeFromString(TagData.serializer(), InputStreamReader(javaClass.classLoader.getResourceAsStream(it.name)!!).readText()))
+        var fileSystem: FileSystem? = null
+        val rootPath = if (jarFile.isFile) {
+            fileSystem = FileSystems.newFileSystem(URI.create("jar:${jarFile.toURI()}"), mapOf<String, Any>())
+            fileSystem.getPath("/registries")
+        } else {
+            Paths.get(URI.create("file://${javaClass.classLoader.getResource("registries")!!.file}"))
         }
 
-        this.blockTags = blockTags.toList()
-        this.entityTypeTags = entityTypeTags.toList()
-        this.fluidTags = fluidTags.toList()
-        this.itemTags = itemTags.toList()
+        val entries = Files.walk(rootPath, Int.MAX_VALUE).filter { !Files.isDirectory(it) && it.toString().endsWith(".json") }.collect(Collectors.toList())
+
+        fun getTagsAtPath(path: String): List<Tag> {
+            return entries.filter { it.parent.toUri().toString().removeSuffix("/").endsWith(path) }.map {
+                val tagName = it.fileName.toString().removeSuffix(".json")
+                Tag(tagName, JSON.decodeFromString(TagData.serializer(), InputStreamReader(Files.newInputStream(it)).readText()))
+            }.toList()
+        }
+
+        blockTags = getTagsAtPath("registries/tags/blocks")
+        entityTypeTags = getTagsAtPath("registries/tags/entity_types")
+        fluidTags = getTagsAtPath("registries/tags/fluids")
+        itemTags = getTagsAtPath("registries/tags/items")
+
+        fileSystem?.close()
     }
 
     fun getDeepTags(tag: Tag): List<Tag> {
