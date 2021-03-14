@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12] - 2021-03-12
+### Added
+- Cancellable event support using a BungeeCord-style event bus.
+- Some basic events.
+- Plugin scope, for executing the `initialize` method asynchronously.
+
+### Changed
+- Command scope now uses the same amount of threads as available processors
+  on the CPU.
+- Command errors are now appropriately handled.
+
+### Removed
+- Reactive event manager :(
+
 ## [0.11.2] - 2021-03-12
 ### Added
 - Logging to files (creates a directory called logs and generates log

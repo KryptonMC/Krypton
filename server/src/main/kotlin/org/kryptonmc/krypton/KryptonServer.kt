@@ -1,10 +1,7 @@
 package org.kryptonmc.krypton
 
 import com.moandjiezana.toml.Toml
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.krypton.api.Server
@@ -15,7 +12,6 @@ import org.kryptonmc.krypton.config.ServerConfig
 import org.kryptonmc.krypton.config.StatusConfig
 import org.kryptonmc.krypton.config.WorldConfig
 import org.kryptonmc.krypton.encryption.Encryption
-import org.kryptonmc.krypton.event.KryptonEventManager
 import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.packet.PacketLoader
 import org.kryptonmc.krypton.registry.RegistryManager
@@ -26,13 +22,12 @@ import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.console.ConsoleScope
 import org.kryptonmc.krypton.console.ConsoleSender
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.event.KryptonEventBus
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
-import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
-import java.io.InputStreamReader
 import java.net.InetSocketAddress
 import java.nio.file.Files
 import java.nio.file.Path
@@ -74,7 +69,7 @@ class KryptonServer : Server {
     override val worldManager = KryptonWorldManager(this, config.world)
 
     override val commandManager = KryptonCommandManager()
-    override val eventManager = KryptonEventManager()
+    override val eventBus = KryptonEventBus()
 
     override lateinit var pluginManager: KryptonPluginManager
 

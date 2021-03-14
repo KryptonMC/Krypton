@@ -7,6 +7,13 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
+/**
+ * A namespaced key is a key that contains both a namespace and a value.
+ *
+ * These are generally represented in the format "namespace:value".
+ *
+ * @author Callum Seabrook
+ */
 @Serializable(with = NamespacedKeySerialiser::class)
 data class NamespacedKey(
     val namespace: String = "minecraft",

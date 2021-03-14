@@ -1,6 +1,7 @@
 package org.kryptonmc.krypton.plugin
 
 import com.typesafe.config.ConfigFactory
+import kotlinx.coroutines.launch
 import kotlinx.serialization.hocon.Hocon
 import kotlinx.serialization.hocon.decodeFromConfig
 import org.kryptonmc.krypton.KryptonServer
@@ -18,31 +19,35 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
     override val plugins = mutableSetOf<Plugin>()
 
-    private val pluginsFolder = File(ROOT_FOLDER, "plugins/").apply {
-        mkdir()
-        walk().filter { !it.isDirectory }.forEach {
-            val plugin = load(it) ?: return@forEach
+    init {
+        File(ROOT_FOLDER, "plugins/").apply {
+            mkdir()
+            walk().filter { !it.isDirectory }.forEach {
+                val plugin = load(this, it) ?: return@forEach
 
-            val name = plugin.context.description.name
-            val version = plugin.context.description.version
-            LOGGER.info("Successfully loaded $name version $version")
+                val name = plugin.context.description.name
+                val version = plugin.context.description.version
+                LOGGER.info("Successfully loaded $name version $version")
 
-            LOGGER.info("Initializing $name version $version...")
-            plugin.initialize()
-            LOGGER.info("Successfully initialized $name version $version")
-            plugin.loadState = PluginLoadState.INITIALIZED
+                PluginScope.launch {
+                    LOGGER.info("Initializing $name version $version...")
+                    plugin.initialize()
+                    LOGGER.info("Successfully initialized $name version $version")
+                    plugin.loadState = PluginLoadState.INITIALIZED
+                }
 
-            plugins += plugin
+                plugins += plugin
+            }
         }
     }
 
     override fun isInitialized(plugin: Plugin) = plugin in plugins && plugin.loadState == PluginLoadState.INITIALIZED
 
-    private fun load(file: File): Plugin? {
+    private fun load(folder: File, file: File): Plugin? {
         val description = loadDescription(file)
         LOGGER.info("Loading ${description.name} version ${description.version}...")
 
-        val dataFolder = File(pluginsFolder, description.name)
+        val dataFolder = File(folder, description.name)
         dataFolder.mkdir()
 
         val context = PluginContext(
@@ -103,6 +108,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
     fun shutdown() = plugins.forEach {
         it.loadState = PluginLoadState.SHUTTING_DOWN
         LOGGER.info("Shutting down ${it.context.description.name} version ${it.context.description.version}")
+        it.shutdown()
         it.loadState = PluginLoadState.SHUT_DOWN
     }
 

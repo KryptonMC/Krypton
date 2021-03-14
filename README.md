@@ -20,6 +20,68 @@ and build from source with `gradle shadowJar` if you wish to run the server.
 
 **WARNING: Krypton is far from production ready. DO NOT USE ON PRODUCTION SERVERS! WILL CONTAIN BUGS! You have been warned.**
 
+### API
+
+As of version 0.11, Krypton now has an API. It is heavily in development, so expect to find bugs, but it is
+at least semi-functional.
+
+* You can depend on it like this:
+```groovy
+repositories {
+    mavenCentral()
+    maven { url 'https://libraries.minecraft.net' } // for Brigadier
+    maven { url 'https://repo.bristermitten.me/repository/maven-public/' }
+}
+
+dependencies {
+    compileOnly 'org.kryptonmc:krypton-api:LATEST'
+}
+```
+
+* Or alternatively, with Maven:
+```xml
+<repositories>
+    <!-- For Brigadier -->
+    <repository>
+        <id>minecraft</id>
+        <url>https://libraries.minecraft.net</url>
+    </repository>
+    <repository>
+        <id>bristermitten</id>
+        <url>https://repo.bristermitten.me/repository/maven-public/</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>org.kryptonmc</groupId>
+        <artifactId>krypton-api</artifactId>
+        <version>LATEST</version>
+    </dependency>
+</dependencies>
+```
+
+Beware that none of the documentation for this is publicly hosted yet.
+You can view all of the documentation by depending on the artifact and looking at the source files.
+
+* Example usage:
+```kotlin
+class MyPlugin(context: PluginContext) : Plugin(context) {
+
+    init {
+        registerCommand(MyCommand()) // example command registration
+    }
+
+    // this is called separately after instantiation, on its own scope, so this is preferred over init where necessary
+    override suspend fun initialize() {
+        // do some other things
+    }
+}
+```
+
+If you have any questions about the usage of the API, feel free to join our Discord server!
+If you have an idea on how I could improve the API, feel free to open an issue.
+
 ### Contributing
 
 Krypton is open-source for a reason. You are more than welcome to contribute, and we even encourage it. This project wouldn't

@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.api.command.CommandManager
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.entity.entities.Player
-import org.kryptonmc.krypton.api.event.EventManager
+import org.kryptonmc.krypton.api.event.EventBus
 import org.kryptonmc.krypton.api.plugin.PluginManager
 import org.kryptonmc.krypton.api.status.StatusInfo
 import org.kryptonmc.krypton.api.world.Difficulty
@@ -52,7 +52,7 @@ interface Server : ForwardingAudience {
      *
      * This is used to subscribe to and call events
      */
-    val eventManager: EventManager
+    val eventBus: EventBus
 
     /**
      * The status information for this server
@@ -121,6 +121,11 @@ interface Server : ForwardingAudience {
      */
     fun broadcast(message: Component, permission: String? = null)
 
+    /**
+     * Holder for information about the server implementing this API
+     *
+     * @author Callum Seabrook
+     */
     interface ServerInfo {
 
         /**

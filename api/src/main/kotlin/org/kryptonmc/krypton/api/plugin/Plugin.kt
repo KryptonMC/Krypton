@@ -1,12 +1,8 @@
 package org.kryptonmc.krypton.api.plugin
 
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.Flow
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.krypton.api.Server
 import org.kryptonmc.krypton.api.command.Command
-import org.kryptonmc.krypton.api.event.Event
-import org.kryptonmc.krypton.api.event.listen
 import java.io.File
 
 /**
@@ -25,36 +21,52 @@ abstract class Plugin(val context: PluginContext) {
 
     /**
      * This is called when the plugin is initialised.
+     *
+     * This function should be preferred over the init block, as this
+     * is called within its own plugin scope, whereas the init block is
+     * called synchronously.
      */
-    open fun initialize() {}
+    open suspend fun initialize() {}
+
+    /**
+     * This is called when the plugin is shut down.
+     */
+    open fun shutdown() {}
 
     /**
      * Registers the given [command] with the command manager
+     *
+     * @param command the command to register
      */
     fun registerCommand(command: Command) = context.server.commandManager.register(command)
 
     /**
      * Registers the given [commands] with the command manager
+     *
+     * @param commands the commands to register
      */
     fun registerCommands(vararg commands: Command) = context.server.commandManager.register(*commands)
 
     /**
      * Registers the given [commands] with the command manager
+     *
+     * @param commands the commands to register
      */
     fun registerCommands(commands: Iterable<Command>) = context.server.commandManager.register(commands)
 
     /**
-     * Listens for a specific [Event]
+     * Register a new event listener
+     *
+     * @param listener the listener to register
      */
-    inline fun <reified T : Event> listen() = context.server.eventManager.listen<T>()
-
-    /**
-     * Listens for a specific [Event] and executes the specified [action] when the event is
-     * emitted by using [Flow.collect]
-     */
-    suspend inline fun <reified T : Event> on(crossinline action: suspend (T) -> Unit) = listen<T>().collect(action)
+    fun registerListener(listener: Any) = context.server.eventBus.register(listener)
 }
 
+/**
+ * Holder for the context that a plugin was loaded in.
+ *
+ * @author Callum Seabrook
+ */
 data class PluginContext(
     val server: Server,
     val folder: File,

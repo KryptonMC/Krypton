@@ -173,4 +173,11 @@ data class Vector(
     }
 }
 
+/**
+ * Returns the square of this number.
+ *
+ * The square of a number is the number multiplied by itself once.
+ *
+ * @author Callum Seabrook
+ */
 fun Double.square() = this * this

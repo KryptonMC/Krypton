@@ -1,5 +1,7 @@
 package org.kryptonmc.krypton.packet
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.extra.kotlin.text
 import net.kyori.adventure.extra.kotlin.translatable
@@ -8,6 +10,10 @@ import net.kyori.adventure.text.event.ClickEvent.suggestCommand
 import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import org.kryptonmc.krypton.*
+import org.kryptonmc.krypton.api.event.events.handshake.HandshakeEvent
+import org.kryptonmc.krypton.api.event.events.login.LoginEvent
+import org.kryptonmc.krypton.api.event.events.play.ChatEvent
+import org.kryptonmc.krypton.api.event.events.play.ClientSettingsEvent
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
@@ -17,6 +23,7 @@ import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.entity.metadata.MovementFlags
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
+import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
@@ -37,7 +44,6 @@ import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.session.Session
 import org.kryptonmc.krypton.session.SessionManager
 import org.kryptonmc.krypton.space.toAngle
-import org.kryptonmc.krypton.world.LocationBuilder
 import java.net.InetSocketAddress
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
@@ -71,6 +77,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     }
 
     private fun handleHandshake(session: Session, packet: PacketInHandshake) {
+        GlobalScope.launch { server.eventBus.call(HandshakeEvent(session.channel.remoteAddress() as InetSocketAddress)) }
         when (val nextState = packet.data.nextState) {
             PacketState.LOGIN -> {
                 session.currentState = PacketState.LOGIN
@@ -99,10 +106,18 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     }
 
     private fun handleClientSettings(session: Session, packet: PacketInClientSettings) {
+        val event = ClientSettingsEvent(
+            session.player,
+            Locale(packet.settings.locale),
+            packet.settings.viewDistance.toInt(),
+            packet.settings.chatColors,
+            packet.settings.skinSettings
+        )
+
         session.settings = packet.settings
         session.sendPacket(PacketOutEntityMetadata(
             session.id,
-            PlayerMetadata(mainHand = packet.settings.mainHand, skinFlags = packet.settings.skinFlags)
+            PlayerMetadata(mainHand = packet.settings.mainHand, skinFlags = packet.settings.skinSettings)
         ))
     }
 
@@ -130,7 +145,17 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
 
         if (!server.config.server.onlineMode) {
             val offlineUUID = UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
+            session.player.uuid = offlineUUID
             session.profile = GameProfile(offlineUUID, packet.name, emptyList())
+
+            val event = LoginEvent(packet.name, offlineUUID, session.channel.remoteAddress() as InetSocketAddress)
+            server.eventBus.call(event)
+            if (event.isCancelled) {
+                session.sendPacket(PacketOutDisconnect(translatable { key("multiplayer.disconnect.kicked") }))
+                session.disconnect()
+                return
+            }
+
             sessionManager.beginPlayState(session)
             return
         }
@@ -147,6 +172,14 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
 
         try {
             session.profile = SessionService.authenticateUser(session.player.name, sharedSecret, server.encryption.publicKey, server.config.server.ip)
+
+            val event = LoginEvent(session.profile.name, session.profile.uuid, session.channel.remoteAddress() as InetSocketAddress)
+            server.eventBus.call(event)
+            if (event.isCancelled) {
+                session.sendPacket(PacketOutDisconnect(translatable { key("multiplayer.disconnect.kicked") }))
+                session.disconnect()
+                return
+            }
         } catch (exception: AuthenticationException) {
             session.sendPacket(PacketOutDisconnect(translatable { key("multiplayer.disconnect.unverified_username") }))
             session.disconnect()
@@ -154,6 +187,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
         }
         sessionManager.enableCompression(session, server.config.server.compressionThreshold)
 
+        session.player.uuid = session.profile.uuid
         sessionManager.beginPlayState(session)
     }
 
@@ -220,6 +254,10 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
             return
         }
 
+        val event = ChatEvent(session.player, packet.message)
+        server.eventBus.call(event)
+        if (event.isCancelled) return
+
         val chatPacket = PacketOutChat(
             translatable {
                 key("chat.type.text")
@@ -281,6 +319,11 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
         sessionManager.sendPackets(metadataPacket) {
             it != session && it.currentState == PacketState.PLAY
         }
+    }
+
+    companion object {
+
+        private val LOGGER = logger<PacketHandler>()
     }
 }
 

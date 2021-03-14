@@ -2,6 +2,7 @@ package org.kryptonmc.krypton.command
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.exceptions.CommandSyntaxException
 import kotlinx.coroutines.launch
 import me.bardy.admiral.literal
 import net.kyori.adventure.text.Component
@@ -40,7 +41,11 @@ class KryptonCommandManager : CommandManager {
     override fun register(vararg commands: LiteralArgumentBuilder<Sender>) = commands.forEach { register(it) }
 
     override fun dispatch(sender: Sender, command: String) {
-        if (dispatcher.execute(command, sender) != 1) sender.sendMessage(DEFAULT_NO_PERMISSION)
+        try {
+            if (dispatcher.execute(command, sender) != 1) sender.sendMessage(DEFAULT_NO_PERMISSION)
+        } catch (exception: CommandSyntaxException) {
+            sender.sendMessage(Component.text("Unknown command. Type help for help."))
+        }
     }
 
     private fun dispatchCommand(command: Command, sender: Sender, args: List<String>): Int {

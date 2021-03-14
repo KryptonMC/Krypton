@@ -3,6 +3,7 @@ package org.kryptonmc.krypton.entity.metadata
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.api.event.events.play.SkinSettings
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.entity.MainHand
 import org.kryptonmc.krypton.extension.writeMetadata
@@ -24,7 +25,7 @@ open class PlayerMetadata(
     bedPosition: Optional<Vector>? = null,
     val additionalHearts: Float? = null,
     val score: Int? = null,
-    val skinFlags: SkinFlags? = null,
+    val skinFlags: SkinSettings? = null,
     val mainHand: MainHand? = null,
     val leftShoulderEntityData: CompoundBinaryTag? = null,
     val rightShoulderEntityData: CompoundBinaryTag? = null
@@ -41,6 +42,7 @@ open class PlayerMetadata(
         buf.writeMetadata(19u, rightShoulderEntityData)
     }
 
+    @Suppress("BooleanLiteralArgument")
     companion object Default : PlayerMetadata(
         MovementFlags(),
         300,
@@ -58,11 +60,23 @@ open class PlayerMetadata(
         Optional(null),
         0.0f,
         0,
-        SkinFlags(),
+        SkinSettings(false, false, false, false, false, false, false),
         MainHand.RIGHT,
         CompoundBinaryTag.empty(),
         CompoundBinaryTag.empty()
     )
+}
+
+fun SkinSettings.toProtocol(): Byte {
+    var byte = 0
+    if (cape) byte += 1
+    if (jacket) byte += 2
+    if (leftSleeve) byte += 4
+    if (rightSleeve) byte += 8
+    if (leftPants) byte += 0x10
+    if (rightPants) byte += 0x20
+    if (hat) byte += 0x40
+    return byte.toByte()
 }
 
 data class SkinFlags(
@@ -88,7 +102,7 @@ data class SkinFlags(
     }
 }
 
-fun Short.toSkinFlags() = SkinFlags(
+fun Short.toSkinSettings() = SkinSettings(
     (toInt() and 0x01) != 0,
     (toInt() and 0x02) != 0,
     (toInt() and 0x04) != 0,

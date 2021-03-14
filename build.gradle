@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.kryptonmc'
-version '0.11.2'
+version '0.12'
 
 ext.globalVersion = project.version.toString()
 

@@ -8,6 +8,7 @@ import net.kyori.adventure.extra.kotlin.text
 import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.krypton.*
+import org.kryptonmc.krypton.api.event.events.login.JoinEvent
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Gamemode
@@ -16,12 +17,12 @@ import org.kryptonmc.krypton.encryption.Encryption.Companion.SHARED_SECRET_ALGOR
 import org.kryptonmc.krypton.encryption.toDecryptingCipher
 import org.kryptonmc.krypton.encryption.toEncryptingCipher
 import org.kryptonmc.krypton.entity.Abilities
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
 import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.extension.toArea
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketHandler
+import org.kryptonmc.krypton.packet.out.login.PacketOutDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.out.play.*
@@ -55,12 +56,16 @@ class SessionManager(private val server: KryptonServer) {
     fun handle(session: Session, packet: Packet) = handler.handle(session, packet)
 
     fun beginPlayState(session: Session) {
-        session.player = KryptonPlayer(session)
-        session.player.name = session.profile.name
-        session.player.uuid = session.profile.uuid
-
         session.sendPacket(PacketOutLoginSuccess(session.profile.uuid, session.profile.name))
         session.currentState = PacketState.PLAY
+
+        val event = JoinEvent(session.player)
+        server.eventBus.call(event)
+        if (event.isCancelled) {
+            session.sendPacket(PacketOutDisconnect(translatable { key("multiplayer.disconnect.kicked") }))
+            session.disconnect()
+            return
+        }
 
         val world = server.worldManager.worlds.getValue(server.config.world.name)
         world.gamemode = server.config.world.gamemode

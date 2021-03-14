@@ -1,14 +1,14 @@
 package org.kryptonmc.krypton.packet.data
 
+import org.kryptonmc.krypton.api.event.events.play.SkinSettings
 import org.kryptonmc.krypton.entity.MainHand
-import org.kryptonmc.krypton.entity.metadata.SkinFlags
 
 data class ClientSettings(
     val locale: String,
     val viewDistance: Byte,
     val chatMode: ChatMode,
     val chatColors: Boolean,
-    val skinFlags: SkinFlags,
+    val skinSettings: SkinSettings,
     val mainHand: MainHand
 )
 
