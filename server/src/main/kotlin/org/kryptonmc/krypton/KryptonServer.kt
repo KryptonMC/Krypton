@@ -4,6 +4,7 @@ import com.moandjiezana.toml.Toml
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.krypton.api.Server
@@ -22,12 +23,16 @@ import org.kryptonmc.krypton.registry.tags.TagManager
 import org.kryptonmc.krypton.session.SessionManager
 import org.kryptonmc.krypton.api.world.Difficulty
 import org.kryptonmc.krypton.api.world.Gamemode
+import org.kryptonmc.krypton.console.ConsoleScope
+import org.kryptonmc.krypton.console.ConsoleSender
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
+import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
+import java.io.InputStreamReader
 import java.net.InetSocketAddress
 import java.nio.file.Files
 import java.nio.file.Path
@@ -73,12 +78,23 @@ class KryptonServer : Server {
 
     override lateinit var pluginManager: KryptonPluginManager
 
-    fun start() {
-        PacketLoader.loadAll()
+    fun start() = runBlocking(Dispatchers.IO) {
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
-        LOGGER.info("Starting Netty...")
+        val startTime = System.nanoTime()
 
-        GlobalScope.launch(Dispatchers.IO) {
+        ConsoleScope.launch {
+            LOGGER.debug("Starting console handler")
+            while (true) {
+                val line = readLine() ?: continue
+                commandManager.dispatch(CONSOLE_SENDER, line)
+            }
+        }
+
+        LOGGER.debug("Loading packets...")
+        PacketLoader.loadAll()
+
+        LOGGER.debug("Starting Netty...")
+        val nettyJob = GlobalScope.launch(Dispatchers.IO) {
             nettyProcess.run()
         }
 
@@ -93,12 +109,18 @@ class KryptonServer : Server {
         GlobalScope.launch(Dispatchers.IO) {
             LOGGER.info("Loading plugins...")
             pluginManager = KryptonPluginManager(this@KryptonServer)
-            LOGGER.info("Plugin loading complete!")
+            LOGGER.info("Plugin loading done!")
+            LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type \"help\" for help.")
         }
 
-        while (true) {
-            // keep server alive
-        }
+        Runtime.getRuntime().addShutdownHook(Thread({
+            LOGGER.info("Stopping Krypton...")
+            LOGGER.info("Shutting down plugins...")
+            pluginManager.shutdown()
+            LOGGER.info("Goodbye")
+        }, "Shutdown Handler"))
+
+        nettyJob.join()
     }
 
     override fun broadcast(message: Component, permission: String?) {
@@ -165,11 +187,21 @@ class KryptonServer : Server {
     object KryptonServerInfo : Server.ServerInfo {
 
         override val name = "Krypton"
-        override val version = "0.10"
-        override val minecraftVersion = "1.16.5"
+        override val version: String
+        override val minecraftVersion: String
+
+        init {
+            val infoProperties = Properties().apply {
+                load(Thread.currentThread().contextClassLoader.getResourceAsStream("META-INF/krypton.properties"))
+            }
+            version = infoProperties.getProperty("krypton.version")
+            minecraftVersion = infoProperties.getProperty("minecraft.version")
+        }
     }
 
     companion object {
+
+        private val CONSOLE_SENDER = ConsoleSender()
 
         private val LOGGER = logger<KryptonServer>()
     }

@@ -3,31 +3,30 @@ package org.kryptonmc.krypton.command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import kotlinx.coroutines.launch
-import me.bardy.admiral.literalArgument
+import me.bardy.admiral.literal
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.Style
 import org.kryptonmc.krypton.api.command.Command
 import org.kryptonmc.krypton.api.command.CommandManager
 import org.kryptonmc.krypton.api.command.Sender
 
 class KryptonCommandManager : CommandManager {
 
-    private val dispatcher = CommandDispatcher<Sender>()
+    internal val dispatcher = CommandDispatcher<Sender>()
 
     override fun register(command: Command) {
-        val commandNode = dispatcher.register(literalArgument(command.name) {
+        val commandNode = dispatcher.register(literal(command.name) {
             executes {
-                val permission = command.permission ?: return@executes 1
+                val sender = it.source
+                val args = it.input.split(" ").drop(0)
+                val permission = command.permission ?: return@executes dispatchCommand(command, sender, args)
 
-                if (it.source.hasPermission(permission)) {
-                    CommandScope.launch { command.execute(it.source, it.input.split(" ").drop(0)) }
-                    1
-                } else 0
+                if (sender.hasPermission(permission)) return@executes dispatchCommand(command, sender, args)
+                0
             }
         })
 
-        command.aliases.forEach { dispatcher.register(literalArgument(it) { redirect(commandNode) }) }
+        command.aliases.forEach { dispatcher.register(literal(it) { redirect(commandNode) }) }
     }
 
     override fun register(vararg commands: Command) = commands.forEach { register(it) }
@@ -42,6 +41,11 @@ class KryptonCommandManager : CommandManager {
 
     override fun dispatch(sender: Sender, command: String) {
         if (dispatcher.execute(command, sender) != 1) sender.sendMessage(DEFAULT_NO_PERMISSION)
+    }
+
+    private fun dispatchCommand(command: Command, sender: Sender, args: List<String>): Int {
+        CommandScope.launch { command.execute(sender, args) }
+        return 1
     }
 
     companion object {

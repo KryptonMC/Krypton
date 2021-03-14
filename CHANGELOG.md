@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.2] - 2021-03-12
+### Added
+- Logging to files (creates a directory called logs and generates log
+  files just like vanilla)
+- Console input handling (you can now type commands into the console)
+- Command handling! Typing commands in chat will now actually have them
+  function as commands!
+- Shutdown hook, so the server shuts down correctly.
+
 ## [0.11.1] - 2021-03-12
 ### Added
 - Plugin loading! Plugins will now be loaded if their JARs are placed

@@ -3,6 +3,7 @@ package org.kryptonmc.krypton.session
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.extra.kotlin.text
 import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.text.format.NamedTextColor
@@ -54,7 +55,7 @@ class SessionManager(private val server: KryptonServer) {
     fun handle(session: Session, packet: Packet) = handler.handle(session, packet)
 
     fun beginPlayState(session: Session) {
-        session.player = KryptonPlayer(session.id)
+        session.player = KryptonPlayer(session)
         session.player.name = session.profile.name
         session.player.uuid = session.profile.uuid
 
@@ -73,7 +74,7 @@ class SessionManager(private val server: KryptonServer) {
                 color(NamedTextColor.YELLOW)
                 args(text { content(session.profile.name) })
             },
-            ChatPosition.SYSTEM_MESSAGE,
+            MessageType.SYSTEM,
             SERVER_UUID
         )
 
@@ -101,6 +102,7 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutDeclareRecipes())
         session.sendPacket(PacketOutTags(server.registryManager, server.tagManager))
         session.sendPacket(PacketOutEntityStatus(session.id))
+        session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
         session.sendPacket(PacketOutPlayerPositionAndLook(session.player.location, teleportId = session.teleportId))
         session.sendPacket(joinPacket)
@@ -253,7 +255,7 @@ class SessionManager(private val server: KryptonServer) {
                 color(NamedTextColor.YELLOW)
                 args(text { content(session.profile.name) })
             },
-            ChatPosition.SYSTEM_MESSAGE,
+            MessageType.SYSTEM,
             SERVER_UUID
         )
 

@@ -1,6 +1,7 @@
 package org.kryptonmc.krypton.packet.out.play.chat
 
 import io.netty.buffer.ByteBuf
+import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.extension.writeChat
 import org.kryptonmc.krypton.extension.writeUUID
@@ -9,20 +10,19 @@ import java.util.*
 
 class PacketOutChat(
     private val component: Component,
-    private val position: ChatPosition,
+    private val type: MessageType,
     private val senderUUID: UUID
 ) : PlayPacket(0x0E) {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(component)
-        buf.writeByte(position.id)
+        buf.writeByte(type.id)
         buf.writeUUID(senderUUID)
     }
-}
 
-enum class ChatPosition(val id: Int) {
-
-    CHAT_BOX(0),
-    SYSTEM_MESSAGE(1),
-    GAME_INFO(2)
+    private val MessageType.id: Int
+        get() = when (this) {
+            MessageType.CHAT -> 0
+            MessageType.SYSTEM -> 1
+        }
 }

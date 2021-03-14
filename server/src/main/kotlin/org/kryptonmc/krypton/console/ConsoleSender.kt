@@ -8,7 +8,9 @@ import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.command.KryptonSender
 
-class ConsoleSender(override val name: String) : KryptonSender() {
+class ConsoleSender : KryptonSender() {
+
+    override val name = "CONSOLE"
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
         LOGGER.info(LegacyComponentSerializer.legacySection().serialize(message))
