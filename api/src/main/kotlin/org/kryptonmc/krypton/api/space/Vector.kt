@@ -170,6 +170,8 @@ data class Vector(
          * for floating point errors.
          */
         const val EPSILON = 0.000001
+
+        val ZERO = Vector(0, 0, 0)
     }
 }
 

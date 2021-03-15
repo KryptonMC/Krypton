@@ -7,19 +7,24 @@ import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.kryptonmc.krypton.entity.*
-import org.kryptonmc.krypton.space.Angle
-import org.kryptonmc.krypton.space.Rotation
-import org.kryptonmc.krypton.entity.entities.data.VillagerData
-import org.kryptonmc.krypton.entity.metadata.Optional
+import org.kryptonmc.krypton.api.effect.particle.*
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
+import org.kryptonmc.krypton.api.world.Location
+import org.kryptonmc.krypton.entity.Slot
+import org.kryptonmc.krypton.entity.entities.data.VillagerData
+import org.kryptonmc.krypton.entity.metadata.Optional
+import org.kryptonmc.krypton.space.Angle
+import org.kryptonmc.krypton.space.Rotation
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.Duration
-import java.util.*
+import java.util.UUID
+import java.util.concurrent.ThreadLocalRandom
 import kotlin.experimental.and
+import kotlin.math.max
+import kotlin.math.min
 
 // Allows us to write a byte without having to convert it to an integer every time
 fun ByteBuf.writeByte(byte: Byte) {
@@ -202,21 +207,86 @@ fun ByteBuf.writeOptionalPosition(position: Optional<Vector>) {
     }
 }
 
-fun ByteBuf.writeParticle(particle: Particle) {
-    writeVarInt(particle.type.id)
+fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
+    writeInt(particle.type.id)
+    writeBoolean(particle.longDistance)
 
-    when (particle.type) {
-        ParticleType.BLOCK -> writeVarInt((particle as BlockParticle).state)
-        ParticleType.DUST -> {
-            particle as DustParticle
-            writeFloat(particle.red)
-            writeFloat(particle.green)
-            writeFloat(particle.blue)
-            writeFloat(particle.scale)
+    val data = particle.data
+
+    // Write location. If the particle is directional, colorable, or a note then we need to manually apply the offsets first
+    when (data) {
+        is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> {
+            val random = ThreadLocalRandom.current()
+            writeDouble(location.x + particle.offset.x * random.nextGaussian())
+            writeDouble(location.y + particle.offset.y * random.nextGaussian())
+            writeDouble(location.z + particle.offset.z * random.nextGaussian())
         }
-        ParticleType.FALLING_DUST -> writeVarInt((particle as FallingDustParticle).state)
-        ParticleType.ITEM -> writeSlot((particle as ItemParticle).slot)
-        else -> Unit
+        else -> {
+            writeDouble(location.x)
+            writeDouble(location.y)
+            writeDouble(location.z)
+        }
+    }
+
+    // Write offsets depending on what type of particle it is
+    when (data) {
+        // Particle is directional, the offset fields are used for the direction
+        is DirectionalParticleData -> {
+            val random = ThreadLocalRandom.current()
+            val direction = data.direction ?: Vector(random.nextGaussian(), random.nextGaussian(), random.nextGaussian())
+
+            writeFloat(direction.x.toFloat())
+            writeFloat(direction.y.toFloat())
+            writeFloat(direction.z.toFloat())
+        }
+        // Particle is colorable, the offset fields are used to define the color
+        is ColorParticleData -> {
+            writeFloat(data.r.toFloat() / 255.0F)
+            writeFloat(data.g.toFloat() / 255.0F)
+            writeFloat(data.b.toFloat() / 255.0F)
+        }
+        // Particle is a note, the offset fields are used to define the note value (only the x field)
+        is NoteParticleData -> {
+            writeFloat(data.note.toFloat() / 24.0F)
+            writeFloat(0.0F)
+            writeFloat(0.0F)
+        }
+        // Particle is normal, let the client handle the offsets
+        else -> {
+            writeFloat(particle.offset.x.toFloat())
+            writeFloat(particle.offset.y.toFloat())
+            writeFloat(particle.offset.z.toFloat())
+        }
+    }
+
+    // Write the extra data
+    when (data) {
+        // Used for the velocity
+        is DirectionalParticleData -> writeFloat(data.velocity)
+        // Default to 1 otherwise
+        else -> writeFloat(1.0F)
+    }
+
+    // Write the count
+    when (data) {
+        // Count needs to be set to 0 so the special particle properties get applied
+        is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> writeInt(0)
+        // Count is set to whatever is defined
+        else -> writeInt(particle.quantity)
+    }
+
+    // Write the data, if applicable
+    when (data) {
+        is DustParticleData -> {
+            // If the red value is exactly 0, it will be displayed as 255 in the client. We can use a really small value
+            // to bypass this.
+            writeFloat(if (data.color.r == 0.toUByte()) Float.MIN_VALUE else data.color.r.toFloat() / 255.0F)
+            writeFloat(data.color.g.toFloat() / 255.0F)
+            writeFloat(data.color.b.toFloat() / 255.0F)
+            writeFloat(max(0.01F, min(4.0F, data.scale)))
+        }
+        is BlockParticleData -> writeVarInt(data.id)
+        is ItemParticleData -> writeSlot(Slot(true, data.id, 1)) // TODO: Item
     }
 }
 

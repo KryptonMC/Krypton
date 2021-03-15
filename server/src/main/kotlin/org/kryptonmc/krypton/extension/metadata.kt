@@ -3,14 +3,15 @@ package org.kryptonmc.krypton.extension
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
 import org.kryptonmc.krypton.api.space.Vector
-import org.kryptonmc.krypton.entity.Particle
 import org.kryptonmc.krypton.entity.Slot
 import org.kryptonmc.krypton.entity.entities.data.VillagerData
 import org.kryptonmc.krypton.entity.metadata.MetadataType
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.Pose
 import org.kryptonmc.krypton.api.space.Direction
+import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.space.Rotation
 import java.util.*
 
@@ -124,13 +125,13 @@ fun ByteBuf.writeMetadata(index: UByte, nbt: CompoundBinaryTag?) {
     }
 }
 
-fun ByteBuf.writeMetadata(index: UByte, particle: Particle?) {
-    if (particle == null) return
+fun ByteBuf.writeMetadata(index: UByte, particle: ParticleEffect?, location: Location?) {
+    if (particle == null || location == null) return
 
     writeUByte(index)
     if (index != 0xFF.toUByte()) {
         writeVarInt(MetadataType.PARTICLE.id)
-        writeParticle(particle)
+        writeParticle(particle, location)
     }
 }
 

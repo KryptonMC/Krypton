@@ -3,6 +3,10 @@ package org.kryptonmc.krypton.entity.entities
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.api.effect.particle.ColorParticleData
+import org.kryptonmc.krypton.api.effect.particle.DirectionalParticleData
+import org.kryptonmc.krypton.api.effect.particle.NoteParticleData
+import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
 import org.kryptonmc.krypton.api.entity.Abilities
 import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.space.Vector
@@ -10,10 +14,12 @@ import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.command.KryptonSender
+import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
 import org.kryptonmc.krypton.session.Session
 import java.net.InetSocketAddress
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 class KryptonPlayer(
     val session: Session,
@@ -43,6 +49,16 @@ class KryptonPlayer(
     override lateinit var locale: Locale
 
     var gamemode = Gamemode.SURVIVAL
+
+    override fun spawnParticles(particleEffect: ParticleEffect, location: Location) {
+        val packet = PacketOutParticles(particleEffect, location)
+        when (particleEffect.data) {
+            // Send multiple packets based on the quantity
+            is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> for (i in 0..particleEffect.quantity) session.sendPacket(packet)
+            // Send particles to player at location
+            else -> session.sendPacket(packet)
+        }
+    }
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
         session.sendPacket(PacketOutChat(message, type, source.uuid()))
