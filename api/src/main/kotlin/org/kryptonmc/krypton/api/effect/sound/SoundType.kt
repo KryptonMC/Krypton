@@ -2,7 +2,7 @@ package org.kryptonmc.krypton.api.effect.sound
 
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 
-enum class Sound(val id: NamespacedKey) {
+enum class SoundType(val id: NamespacedKey) {
 
     AMBIENT_BASALT_DELTAS_ADDITIONS(NamespacedKey(value = "ambient.basalt_deltas.additions")),
     AMBIENT_BASALT_DELTAS_LOOP(NamespacedKey(value = "ambient.basalt_deltas.loop")),

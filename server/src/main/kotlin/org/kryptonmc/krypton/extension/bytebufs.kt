@@ -241,9 +241,9 @@ fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
         }
         // Particle is colorable, the offset fields are used to define the color
         is ColorParticleData -> {
-            writeFloat(data.r.toFloat() / 255.0F)
-            writeFloat(data.g.toFloat() / 255.0F)
-            writeFloat(data.b.toFloat() / 255.0F)
+            writeFloat(data.red.toFloat() / 255.0F)
+            writeFloat(data.green.toFloat() / 255.0F)
+            writeFloat(data.blue.toFloat() / 255.0F)
         }
         // Particle is a note, the offset fields are used to define the note value (only the x field)
         is NoteParticleData -> {
@@ -280,9 +280,9 @@ fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
         is DustParticleData -> {
             // If the red value is exactly 0, it will be displayed as 255 in the client. We can use a really small value
             // to bypass this.
-            writeFloat(if (data.color.r == 0.toUByte()) Float.MIN_VALUE else data.color.r.toFloat() / 255.0F)
-            writeFloat(data.color.g.toFloat() / 255.0F)
-            writeFloat(data.color.b.toFloat() / 255.0F)
+            writeFloat(if (data.color.red == 0.toUByte()) Float.MIN_VALUE else data.color.red.toFloat() / 255.0F)
+            writeFloat(data.color.green.toFloat() / 255.0F)
+            writeFloat(data.color.blue.toFloat() / 255.0F)
             writeFloat(max(0.01F, min(4.0F, data.scale)))
         }
         is BlockParticleData -> writeVarInt(data.id)

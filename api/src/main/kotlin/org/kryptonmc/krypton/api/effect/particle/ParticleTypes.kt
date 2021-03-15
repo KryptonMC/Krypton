@@ -3,6 +3,9 @@ package org.kryptonmc.krypton.api.effect.particle
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 
 /**
+ * Interface for a particle.
+ * Contains the [NamespacedKey] and internal ID of the particle type.
+ *
  * @author Esophose
  */
 interface Particle {
@@ -18,34 +21,74 @@ interface Particle {
     val id: Int
 }
 
+/**
+ * Represents a particle that has basic options available.
+ *
+ * @author Esophose
+ */
 class SimpleParticle internal constructor(override val key: NamespacedKey, override val id: Int) : Particle {
     val builder: ParticleEffectBuilder get() = ParticleEffectBuilder(this)
 }
 
+/**
+ * Represents a particle that can have velocity applied in a direction.
+ *
+ * @author Esophose
+ */
 class DirectionalParticle internal constructor(override val key: NamespacedKey, override val id: Int) : Particle {
     val builder: DirectionalParticleEffectBuilder get() = DirectionalParticleEffectBuilder(this)
 }
 
+/**
+ * Represents a particle that uses a block texture for its appearance.
+ *
+ * @author Esophose
+ */
 class BlockParticle internal constructor(override val key: NamespacedKey, override val id: Int) : Particle {
     val builder: BlockParticleEffectBuilder get() = BlockParticleEffectBuilder(this)
 }
 
+/**
+ * Represents a particle that uses an item texture for its appearance.
+ *
+ * @author Esophose
+ */
 class ItemParticle internal constructor(override val key: NamespacedKey, override val id: Int) : Particle {
     val builder: ItemParticleEffectBuilder get() = ItemParticleEffectBuilder(this)
 }
 
+/**
+ * Represents a particle that uses a color for its appearance.
+ *
+ * @author Esophose
+ */
 class ColorParticle internal constructor(override val key: NamespacedKey, override val id: Int) : Particle {
     val builder: ColorParticleEffectBuilder get() = ColorParticleEffectBuilder(this)
 }
 
+/**
+ * Represents a particle that uses a color and scale for its appearance.
+ *
+ * @author Esophose
+ */
 class DustParticle internal constructor(override val key: NamespacedKey, override val id: Int) : Particle {
     val builder: DustParticleEffectBuilder get() = DustParticleEffectBuilder(this)
 }
 
+/**
+ * Represents a particle that uses a specific note value for its color appearance.
+ *
+ * @author Esophose
+ */
 class NoteParticle internal constructor(override val key: NamespacedKey, override val id: Int) : Particle {
     val builder: NoteParticleEffectBuilder get() = NoteParticleEffectBuilder(this)
 }
 
+/**
+ * Exposes all available particle types.
+ *
+ * @author Esophose
+ */
 object ParticleType {
 
     private val _values = mutableListOf<Particle>()
