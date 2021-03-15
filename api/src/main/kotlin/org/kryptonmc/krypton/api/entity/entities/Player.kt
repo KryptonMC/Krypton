@@ -2,6 +2,7 @@ package org.kryptonmc.krypton.api.entity.entities
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.api.command.Sender
+import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
 import org.kryptonmc.krypton.api.entity.Abilities
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Location
@@ -87,4 +88,6 @@ interface Player : Sender {
      * This player's locale
      */
     val locale: Locale
+
+    fun spawnParticles(particleEffect: ParticleEffect, location: Location)
 }

@@ -43,21 +43,6 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine:2.8.8'
 }
 
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = '11'
-        freeCompilerArgs = [
-                "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
-                "-Xopt-in=kotlin.ExperimentalUnsignedTypes",
-                "-Xinline-classes"
-        ]
-    }
-}
-
-compileTestKotlin {
-    kotlinOptions.jvmTarget = '11'
-}
-
 shadowJar {
     archiveFileName.set("Krypton-${globalVersion}.jar")
 }
