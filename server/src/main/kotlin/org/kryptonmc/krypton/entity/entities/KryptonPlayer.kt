@@ -54,7 +54,7 @@ class KryptonPlayer(
         val packet = PacketOutParticles(particleEffect, location)
         when (particleEffect.data) {
             // Send multiple packets based on the quantity
-            is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> for (i in 0..particleEffect.quantity) session.sendPacket(packet)
+            is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(particleEffect.quantity) { session.sendPacket(packet) }
             // Send particles to player at location
             else -> session.sendPacket(packet)
         }

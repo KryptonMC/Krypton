@@ -3,6 +3,8 @@ package org.kryptonmc.krypton.api.effect.particle
 import org.kryptonmc.krypton.api.space.Vector
 
 /**
+ * Allows building a [ParticleEffect] for simple particle effects using method chaining.
+ *
  * @author Esophose
  */
 open class ParticleEffectBuilder internal constructor(
@@ -42,7 +44,12 @@ open class ParticleEffectBuilder internal constructor(
     internal open fun build() = ParticleEffect(type, quantity, offset, longDistance)
 }
 
-open class DirectionalParticleEffectBuilder internal constructor(
+/**
+ * Allows building a [ParticleEffect] for directional particle effects using method chaining.
+ *
+ * @author Esophose
+ */
+class DirectionalParticleEffectBuilder internal constructor(
     type: Particle,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
@@ -53,7 +60,6 @@ open class DirectionalParticleEffectBuilder internal constructor(
 
     /**
      * Set the direction of the particles.
-     * This value is normalized by the client.
      *
      * @param direction the direction of the particles
      */
@@ -73,7 +79,12 @@ open class DirectionalParticleEffectBuilder internal constructor(
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, DirectionalParticleData(direction, velocity))
 }
 
-open class ItemParticleEffectBuilder internal constructor(
+/**
+ * Allows building a [ParticleEffect] for item particle effects using method chaining.
+ *
+ * @author Esophose
+ */
+class ItemParticleEffectBuilder internal constructor(
     type: Particle,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
@@ -94,7 +105,12 @@ open class ItemParticleEffectBuilder internal constructor(
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = ItemParticleData(itemId))
 }
 
-open class BlockParticleEffectBuilder internal constructor(
+/**
+ * Allows building a [ParticleEffect] for block particle effects using method chaining.
+ *
+ * @author Esophose
+ */
+class BlockParticleEffectBuilder internal constructor(
     type: Particle,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
@@ -115,14 +131,19 @@ open class BlockParticleEffectBuilder internal constructor(
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = BlockParticleData(blockId))
 }
 
+/**
+ * Allows building a [ParticleEffect] for colored particle effects using method chaining.
+ *
+ * @author Esophose
+ */
 open class ColorParticleEffectBuilder internal constructor(
     type: Particle,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
     longDistance: Boolean = false,
-    protected var r: UByte = 0u,
-    protected var g: UByte = 0u,
-    protected var b: UByte = 0u
+    protected var red: UByte = 0u,
+    protected var green: UByte = 0u,
+    protected var blue: UByte = 0u
 ) : ParticleEffectBuilder(type, quantity, offset, longDistance) {
 
     /**
@@ -133,27 +154,32 @@ open class ColorParticleEffectBuilder internal constructor(
      * @param b the blue value
      */
     fun color(r: UByte, g: UByte, b: UByte) = apply {
-        this.r = r
-        this.g = g
-        this.b = b
+        this.red = r
+        this.green = g
+        this.blue = b
     }
 
     /**
      * @return a new [ParticleEffect] created from this builder
      */
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = ColorParticleData(r, g, b))
+    override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = ColorParticleData(red, green, blue))
 }
 
-open class DustParticleEffectBuilder internal constructor(
+/**
+ * Allows building a [ParticleEffect] for dust particle effects using method chaining.
+ *
+ * @author Esophose
+ */
+class DustParticleEffectBuilder internal constructor(
     type: Particle,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
     longDistance: Boolean = false,
-    r: UByte = 255u,
-    g: UByte = 0u,
-    b: UByte = 0u,
+    red: UByte = 255u,
+    green: UByte = 0u,
+    blue: UByte = 0u,
     private var scale: Float = 0.0F
-) : ColorParticleEffectBuilder(type, quantity, offset, longDistance, r, g, b) {
+) : ColorParticleEffectBuilder(type, quantity, offset, longDistance, red, green, blue) {
 
     /**
      * Set the scale of the dust particles.
@@ -167,10 +193,15 @@ open class DustParticleEffectBuilder internal constructor(
      * @return a new [ParticleEffect] created from this builder
      */
     override fun build() =
-        ParticleEffect(type, quantity, offset, longDistance, data = DustParticleData(ColorParticleData(r, g, b), scale))
+        ParticleEffect(type, quantity, offset, longDistance, data = DustParticleData(ColorParticleData(red, green, blue), scale))
 }
 
-open class NoteParticleEffectBuilder internal constructor(
+/**
+ * Allows building a [ParticleEffect] for note particle effects using method chaining.
+ *
+ * @author Esophose
+ */
+class NoteParticleEffectBuilder internal constructor(
     type: Particle,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
@@ -192,23 +223,79 @@ open class NoteParticleEffectBuilder internal constructor(
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = NoteParticleData(note))
 }
 
-fun particleEffect(particleType: SimpleParticle, lambda: ParticleEffectBuilder.() -> Unit) =
+/**
+ * DSL to create simple [ParticleEffect]s.
+ *
+ * @param particleType type of simple particle in [ParticleType]
+ * @param lambda function to allow configuring the [ParticleEffect] using a [ParticleEffectBuilder]
+ * @return a new [ParticleEffect] based on the given settings
+ * @author Esophose
+ */
+fun particleEffect(particleType: SimpleParticle, lambda: ParticleEffectBuilder.() -> Unit = {}) =
     ParticleEffectBuilder(particleType).apply(lambda).build()
 
-fun particleEffect(particleType: DirectionalParticle, lambda: DirectionalParticleEffectBuilder.() -> Unit) =
+/**
+ * DSL to create directional [ParticleEffect]s.
+ *
+ * @param particleType type of directional particle in [ParticleType]
+ * @param lambda function to allow configuring the [ParticleEffect] using a [DirectionalParticleEffectBuilder]
+ * @return a new [ParticleEffect] based on the given settings
+ * @author Esophose
+ */
+fun particleEffect(particleType: DirectionalParticle, lambda: DirectionalParticleEffectBuilder.() -> Unit = {}) =
     DirectionalParticleEffectBuilder(particleType).apply(lambda).build()
 
-fun particleEffect(particleType: BlockParticle, lambda: BlockParticleEffectBuilder.() -> Unit) =
+/**
+ * DSL to create block [ParticleEffect]s.
+ *
+ * @param particleType type of block particle in [ParticleType]
+ * @param lambda function to allow configuring the [ParticleEffect] using a [BlockParticleEffectBuilder]
+ * @return a new [ParticleEffect] based on the given settings
+ * @author Esophose
+ */
+fun particleEffect(particleType: BlockParticle, lambda: BlockParticleEffectBuilder.() -> Unit = {}) =
     BlockParticleEffectBuilder(particleType).apply(lambda).build()
 
-fun particleEffect(particleType: ItemParticle, lambda: ItemParticleEffectBuilder.() -> Unit) =
+/**
+ * DSL to create item [ParticleEffect]s.
+ *
+ * @param particleType type of particle in [ParticleType]
+ * @param lambda function to allow configuring the [ParticleEffect] using an [ItemParticleEffectBuilder]
+ * @return a new [ParticleEffect] based on the given settings
+ * @author Esophose
+ */
+fun particleEffect(particleType: ItemParticle, lambda: ItemParticleEffectBuilder.() -> Unit = {}) =
     ItemParticleEffectBuilder(particleType).apply(lambda).build()
 
-fun particleEffect(particleType: ColorParticle, lambda: ColorParticleEffectBuilder.() -> Unit) =
+/**
+ * DSL to create colored [ParticleEffect]s.
+ *
+ * @param particleType type of particle in [ParticleType]
+ * @param lambda function to allow configuring the [ParticleEffect] using a [ColorParticleEffectBuilder]
+ * @return a new [ParticleEffect] based on the given settings
+ * @author Esophose
+ */
+fun particleEffect(particleType: ColorParticle, lambda: ColorParticleEffectBuilder.() -> Unit = {}) =
     ColorParticleEffectBuilder(particleType).apply(lambda).build()
 
-fun particleEffect(particleType: DustParticle, lambda: DustParticleEffectBuilder.() -> Unit) =
+/**
+ * DSL to create dust [ParticleEffect]s.
+ *
+ * @param particleType type of particle in [ParticleType]
+ * @param lambda function to allow configuring the [ParticleEffect] using a [DustParticleEffectBuilder]
+ * @return a new [ParticleEffect] based on the given settings
+ * @author Esophose
+ */
+fun particleEffect(particleType: DustParticle, lambda: DustParticleEffectBuilder.() -> Unit = {}) =
     DustParticleEffectBuilder(particleType).apply(lambda).build()
 
-fun particleEffect(particleType: NoteParticle, lambda: NoteParticleEffectBuilder.() -> Unit) =
+/**
+ * DSL to create note [ParticleEffect]s.
+ *
+ * @param particleType type of particle in [ParticleType]
+ * @param lambda function to allow configuring the [ParticleEffect] using a [NoteParticleEffectBuilder]
+ * @return a new [ParticleEffect] based on the given settings
+ * @author Esophose
+ */
+fun particleEffect(particleType: NoteParticle, lambda: NoteParticleEffectBuilder.() -> Unit = {}) =
     NoteParticleEffectBuilder(particleType).apply(lambda).build()

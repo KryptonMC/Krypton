@@ -89,5 +89,11 @@ interface Player : Sender {
      */
     val locale: Locale
 
+    /**
+     * Spawns particles for this player relative to a location.
+     *
+     * @param particleEffect the [ParticleEffect] used to describe the particles' appearance
+     * @param location the central location to spawn the particles at
+     */
     fun spawnParticles(particleEffect: ParticleEffect, location: Location)
 }
