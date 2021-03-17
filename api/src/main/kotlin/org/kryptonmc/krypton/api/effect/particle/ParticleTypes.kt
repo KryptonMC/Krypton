@@ -90,14 +90,10 @@ class NoteParticle internal constructor(override val key: NamespacedKey, overrid
  * @author Esophose
  */
 object ParticleType {
-
-    private val _values = mutableListOf<Particle>()
-
     /**
      * An immutable list of all [ParticleType], ordered by ID
      */
-    val values
-        get() = _values.toList()
+    val values: List<Particle> = mutableListOf<Particle>()
 
     val AMBIENT_ENTITY_EFFECT = simple("ambient_entity_effect")
     val ANGRY_VILLAGER = simple("angry_villager")
@@ -183,7 +179,12 @@ object ParticleType {
     private fun note(name: String) = add(NoteParticle(NamespacedKey(value = name), id++))
 
     private fun <T : Particle> add(particle: T): T {
-        _values += particle
+
+        // Hacky simple solution
+
+        values as MutableList<Particle>
+
+        values += particle
         return particle
     }
 }
