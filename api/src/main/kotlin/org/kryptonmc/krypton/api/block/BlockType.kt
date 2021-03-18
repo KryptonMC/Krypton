@@ -22,6 +22,7 @@ enum class BlockType {
     ACACIA_TRAPDOOR,
     ACACIA_WOOD,
     ACTIVATOR_RAIL,
+    AIR,
     ALLIUM,
     ANCIENT_DEBRIS,
     ANDESITE,

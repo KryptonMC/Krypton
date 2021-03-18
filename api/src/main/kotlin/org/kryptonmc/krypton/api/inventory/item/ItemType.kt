@@ -1,4 +1,4 @@
-package org.kryptonmc.krypton.api.item
+package org.kryptonmc.krypton.api.inventory.item
 
 /**
  * The list of types of items.
