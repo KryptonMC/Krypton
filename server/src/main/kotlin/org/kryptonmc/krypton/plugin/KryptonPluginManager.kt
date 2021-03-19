@@ -11,7 +11,6 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.lang.Exception
-import java.net.URLClassLoader
 import java.nio.file.Path
 import java.util.jar.JarFile
 
@@ -43,6 +42,9 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
     override fun isInitialized(plugin: Plugin) = plugin in plugins && plugin.loadState == PluginLoadState.INITIALIZED
 
+    // if the cast here fails, something is seriously wrong
+    override fun addToClasspath(plugin: Plugin, path: Path) = (plugin.javaClass.classLoader as PluginClassLoader).addPath(path)
+
     private fun load(folder: File, file: File): Plugin? {
         val description = loadDescription(file)
         LOGGER.info("Loading ${description.name} version ${description.version}...")
@@ -62,7 +64,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
                 ?: throw IllegalStateException("The manifest does not contain a Main-Class attribute!")
         }
 
-        val loader = URLClassLoader(arrayOf(file.toURI().toURL()))
+        val loader = PluginClassLoader(file.toURI().toURL())
 
         return try {
             val jarClass = loader.loadClass(mainClassName)
@@ -82,7 +84,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
             null
         } catch (exception: Exception) {
             LOGGER.error(
-                "An unexpected exception occured when attempting to load the main class of ${description.name}",
+                "An unexpected exception occurred when attempting to load the main class of ${description.name}",
                 exception
             )
             LOGGER.info("Shutting down ${description.name} version ${description.version}")
