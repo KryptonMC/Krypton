@@ -7,6 +7,7 @@ import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.event.EventBus
 import org.kryptonmc.krypton.api.plugin.PluginManager
+import org.kryptonmc.krypton.api.scheduling.Scheduler
 import org.kryptonmc.krypton.api.status.StatusInfo
 import org.kryptonmc.krypton.api.world.Difficulty
 import org.kryptonmc.krypton.api.world.WorldManager
@@ -53,6 +54,13 @@ interface Server : ForwardingAudience {
      * This is used to subscribe to and call events
      */
     val eventBus: EventBus
+
+    /**
+     * The scheduler for this server
+     *
+     * This can be used to run and schedule asynchronous tasks
+     */
+    val scheduler: Scheduler
 
     /**
      * The status information for this server

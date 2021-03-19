@@ -24,6 +24,7 @@ import org.kryptonmc.krypton.console.ConsoleSender
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonEventBus
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
+import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.io.File
@@ -71,6 +72,8 @@ class KryptonServer : Server {
     override val commandManager = KryptonCommandManager()
     override val eventBus = KryptonEventBus()
 
+    override val scheduler = KryptonScheduler
+
     override lateinit var pluginManager: KryptonPluginManager
 
     fun start() = runBlocking(Dispatchers.IO) {
@@ -110,6 +113,8 @@ class KryptonServer : Server {
 
         Runtime.getRuntime().addShutdownHook(Thread({
             LOGGER.info("Stopping Krypton...")
+            LOGGER.debug("Shutting down scheduler...")
+            scheduler.shutdown()
             LOGGER.info("Shutting down plugins...")
             pluginManager.shutdown()
             LOGGER.info("Goodbye")
