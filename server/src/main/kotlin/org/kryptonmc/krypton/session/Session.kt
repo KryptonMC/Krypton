@@ -18,6 +18,7 @@ class Session(val id: Int, internal val channel: Channel) {
     lateinit var player: KryptonPlayer
 
     var lastKeepAliveId = 0L
+    var latency = 0
 
     @Volatile
     internal var currentState: PacketState = PacketState.HANDSHAKE

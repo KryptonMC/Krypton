@@ -1,6 +1,7 @@
 package org.kryptonmc.krypton.api.event.events.play
 
 import org.kryptonmc.krypton.api.entity.entities.Player
+import org.kryptonmc.krypton.api.event.Event
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 
 /**
@@ -12,4 +13,4 @@ data class PluginMessageEvent(
     val player: Player,
     val channel: NamespacedKey,
     val message: String
-)
+) : Event

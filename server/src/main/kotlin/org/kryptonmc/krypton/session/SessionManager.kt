@@ -62,7 +62,7 @@ class SessionManager(private val server: KryptonServer) {
         val event = JoinEvent(session.player)
         server.eventBus.call(event)
         if (event.isCancelled) {
-            session.sendPacket(PacketOutDisconnect(translatable { key("multiplayer.disconnect.kicked") }))
+            session.sendPacket(PacketOutDisconnect(event.cancelledReason))
             session.disconnect()
             return
         }
@@ -111,11 +111,15 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
         session.sendPacket(PacketOutPlayerPositionAndLook(session.player.location, teleportId = session.teleportId))
         session.sendPacket(joinPacket)
+        session.sendPacket(PacketOutPlayerInfo(
+            PlayerAction.UPDATE_LATENCY,
+            listOf(PlayerInfo(latency = session.latency, profile = session.profile))
+        ))
 
         val playerInfos = sessions.filter { it.currentState == PacketState.PLAY }.map {
             PlayerInfo(0, it.player.gamemode, it.profile, text { content(it.profile.name) })
         }
-        session.sendPacket(PacketOutPlayerInfo(PlayerAction.ADD_PLAYER, playerInfos))
+        if (playerInfos.isNotEmpty()) session.sendPacket(PacketOutPlayerInfo(PlayerAction.ADD_PLAYER, playerInfos))
 
         GlobalScope.launch(Dispatchers.IO) { handlePlayStateBegin(session, joinPacket) }
 
@@ -269,6 +273,7 @@ class SessionManager(private val server: KryptonServer) {
     }
 
     fun updateLatency(session: Session, latency: Int) {
+        session.latency = latency
         val infoPacket = PacketOutPlayerInfo(
             PlayerAction.UPDATE_LATENCY,
             listOf(PlayerInfo(latency, profile = session.profile))

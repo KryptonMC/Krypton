@@ -1,7 +1,7 @@
 package org.kryptonmc.krypton.api.event.events.play
 
 import org.kryptonmc.krypton.api.entity.entities.Player
-import org.kryptonmc.krypton.api.event.CancellableEvent
+import org.kryptonmc.krypton.api.event.Event
 import org.kryptonmc.krypton.api.world.Location
 
 /**
@@ -13,4 +13,4 @@ class MoveEvent(
     val player: Player,
     val oldLocation: Location,
     val newLocation: Location
-) : CancellableEvent()
+) : Event

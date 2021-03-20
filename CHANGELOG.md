@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.1] - 2021-03-20
+### Added
+- Calling of the PluginMessageEvent and MoveEvent
+- Optional reason for cancellation for the login and join events (defaults to the Mojang default)
+- Latency update packet to the login sequence, as denoted in https://wiki.vg/Protocol_FAQ#What.27s_the_normal_login_sequence_for_a_client.3F
+
+### Changed
+- For now, MoveEvent is no longer cancellable, as I do not want to cause any issues.
+
+## [0.13] - 2021-03-19
+### Added
+- Simple scheduling using an executor service.
+
 ## [0.12.1] - 2021-03-19
 ### Added
 - Support for appending URLs to plugins' class loaders at runtime.
