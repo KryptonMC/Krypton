@@ -13,6 +13,7 @@ import org.kryptonmc.krypton.api.command.CommandManager
 import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.api.event.events.play.PermissionCheckEvent
 import org.kryptonmc.krypton.api.event.events.play.PermissionCheckResult
+import org.kryptonmc.krypton.extension.logger
 
 class KryptonCommandManager(private val server: KryptonServer) : CommandManager {
 
@@ -25,15 +26,14 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
                 val args = it.input.split(" ").drop(0)
                 val permission = command.permission ?: return@executes dispatchCommand(command, sender, args)
 
-                if (sender.hasPermission(permission)) {
-                    server.eventBus.call(PermissionCheckEvent(sender, permission, PermissionCheckResult.TRUE))
-                    return@executes dispatchCommand(command, sender, args)
-                } else if (permission in sender.permissions) {
-                    server.eventBus.call(PermissionCheckEvent(sender, permission, PermissionCheckResult.FALSE))
-                    return@executes 0
+                val event = PermissionCheckEvent(sender, permission)
+                server.eventBus.call(event)
+                logger("CommandManager").debug("Permission check event called. Result is ${event.result}")
+                when (event.result) {
+                    PermissionCheckResult.TRUE -> return@executes dispatchCommand(command, sender, args)
+                    PermissionCheckResult.FALSE -> return@executes 0
+                    PermissionCheckResult.UNSET -> return@executes 0
                 }
-                server.eventBus.call(PermissionCheckEvent(sender, permission, PermissionCheckResult.UNSET))
-                0
             }
         })
 

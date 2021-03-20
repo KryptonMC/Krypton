@@ -5,9 +5,15 @@ import org.kryptonmc.krypton.api.event.Event
 
 data class PermissionCheckEvent(
     val sender: Sender,
-    val permission: String,
-    val result: PermissionCheckResult
-) : Event
+    val permission: String
+) : Event {
+
+    var result = when {
+        sender.hasPermission(permission) -> PermissionCheckResult.TRUE
+        permission in sender.permissions -> PermissionCheckResult.FALSE
+        else -> PermissionCheckResult.UNSET
+    }
+}
 
 /**
  * The result of a permission check
