@@ -4,9 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.4] - 2021-03-20
+### Added
+- Permission check event, which is fired every time a permission check is made.
+
+### Changed
+- Permissions are now mapped to boolean values, to allow for them to be tristate (true, false or unset).
+
 ## [0.13.3] - 2021-03-20
 ### Changed
-- Priority values are now bytes to avoid confusion because the event bus ignores any values outside of the
+- Priority values are now bytes to avoid confusion because the event bus ignores any values outside the
   range of a byte
 
 ## [0.13.2] - 2021-03-20

@@ -13,6 +13,11 @@ interface Sender : Audience {
     val name: String
 
     /**
+     * The sender's permissions
+     */
+    val permissions: Map<String, Boolean>
+
+    /**
      * If the sender has the specified [permission]
      *
      * @param permission the permission to check

@@ -7,11 +7,14 @@ import kotlinx.coroutines.launch
 import me.bardy.admiral.literal
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.api.command.Command
 import org.kryptonmc.krypton.api.command.CommandManager
 import org.kryptonmc.krypton.api.command.Sender
+import org.kryptonmc.krypton.api.event.events.play.PermissionCheckEvent
+import org.kryptonmc.krypton.api.event.events.play.PermissionCheckResult
 
-class KryptonCommandManager : CommandManager {
+class KryptonCommandManager(private val server: KryptonServer) : CommandManager {
 
     internal val dispatcher = CommandDispatcher<Sender>()
 
@@ -22,7 +25,14 @@ class KryptonCommandManager : CommandManager {
                 val args = it.input.split(" ").drop(0)
                 val permission = command.permission ?: return@executes dispatchCommand(command, sender, args)
 
-                if (sender.hasPermission(permission)) return@executes dispatchCommand(command, sender, args)
+                if (sender.hasPermission(permission)) {
+                    server.eventBus.call(PermissionCheckEvent(sender, permission, PermissionCheckResult.TRUE))
+                    return@executes dispatchCommand(command, sender, args)
+                } else if (permission in sender.permissions) {
+                    server.eventBus.call(PermissionCheckEvent(sender, permission, PermissionCheckResult.FALSE))
+                    return@executes 0
+                }
+                server.eventBus.call(PermissionCheckEvent(sender, permission, PermissionCheckResult.UNSET))
                 0
             }
         })

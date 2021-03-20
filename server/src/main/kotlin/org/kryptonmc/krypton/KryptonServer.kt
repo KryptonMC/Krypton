@@ -69,7 +69,7 @@ class KryptonServer : Server {
 
     override val worldManager = KryptonWorldManager(this, config.world)
 
-    override val commandManager = KryptonCommandManager()
+    override val commandManager = KryptonCommandManager(this)
     override val eventBus = KryptonEventBus()
 
     override val scheduler = KryptonScheduler
