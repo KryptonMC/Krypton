@@ -3,6 +3,7 @@ package org.kryptonmc.krypton.api
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.api.command.CommandManager
+import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.event.EventBus
@@ -113,6 +114,11 @@ interface Server : ForwardingAudience {
      * @param name the player's name
      */
     fun player(name: String): Player?
+
+    /**
+     * The console's [Sender] object
+     */
+    val console: Sender
 
     /**
      * The server's [Scoreboard], or null if there isn't one

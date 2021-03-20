@@ -5,6 +5,7 @@ import kotlinx.coroutines.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.krypton.api.Server
+import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.api.status.StatusInfo
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.config.KryptonConfig
@@ -55,6 +56,8 @@ class KryptonServer : Server {
 
     override fun player(uuid: UUID) = players.firstOrNull { it.uuid == uuid }
     override fun player(name: String) = players.firstOrNull { it.name == name }
+
+    override val console = CONSOLE_SENDER
 
     override var scoreboard: KryptonScoreboard? = null
 
