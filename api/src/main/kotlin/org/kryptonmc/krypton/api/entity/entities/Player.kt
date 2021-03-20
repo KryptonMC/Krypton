@@ -87,7 +87,7 @@ interface Player : Sender {
     /**
      * This player's locale
      */
-    val locale: Locale
+    val locale: Locale?
 
     /**
      * Spawns particles for this player relative to a location.

@@ -18,10 +18,10 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
     override val plugins = mutableSetOf<Plugin>()
 
-    init {
+    internal fun initialise() {
         File(ROOT_FOLDER, "plugins/").apply {
             mkdir()
-            walk().filter { !it.isDirectory }.forEach {
+            (listFiles() ?: return).filter { !it.isDirectory }.forEach {
                 val plugin = load(this, it) ?: return@forEach
 
                 val name = plugin.context.description.name

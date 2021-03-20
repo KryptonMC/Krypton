@@ -46,7 +46,7 @@ class KryptonPlayer(
 
     override var scoreboard: Scoreboard? = null
 
-    override lateinit var locale: Locale
+    override var locale: Locale? = null
 
     var gamemode = Gamemode.SURVIVAL
 

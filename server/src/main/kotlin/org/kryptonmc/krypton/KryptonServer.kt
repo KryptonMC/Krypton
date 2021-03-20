@@ -110,12 +110,14 @@ class KryptonServer : Server {
         GlobalScope.launch(Dispatchers.IO) {
             LOGGER.info("Loading plugins...")
             pluginManager = KryptonPluginManager(this@KryptonServer)
+            pluginManager.initialise()
             LOGGER.info("Plugin loading done!")
             LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type \"help\" for help.")
         }
 
         Runtime.getRuntime().addShutdownHook(Thread({
             LOGGER.info("Stopping Krypton...")
+            nettyJob.cancel()
             LOGGER.debug("Shutting down scheduler...")
             scheduler.shutdown()
             LOGGER.info("Shutting down plugins...")

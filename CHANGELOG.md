@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.8] - 2021-03-20
+### Changed
+- Made locale a nullable var rather than a lateinit var to avoid issues where it would not be set and
+  a plugin would attempt to access it, resulting in an error.
+
 ## [0.13.7] - 2021-03-20
 ### Added
 - Console's sender object is now exposed to the API
