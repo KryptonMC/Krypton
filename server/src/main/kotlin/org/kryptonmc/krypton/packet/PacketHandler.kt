@@ -80,7 +80,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     }
 
     private fun handleHandshake(session: Session, packet: PacketInHandshake) {
-        GlobalScope.launch { server.eventBus.call(HandshakeEvent(session.channel.remoteAddress() as InetSocketAddress)) }
+        server.eventBus.call(HandshakeEvent(session.channel.remoteAddress() as InetSocketAddress))
         when (val nextState = packet.data.nextState) {
             PacketState.LOGIN -> {
                 session.currentState = PacketState.LOGIN

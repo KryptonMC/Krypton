@@ -13,7 +13,7 @@ import java.util.concurrent.locks.ReentrantLock
  */
 class KryptonEventBus : EventBus {
 
-    private val byListenerAndPriority = mutableMapOf<Class<*>, MutableMap<Byte, MutableMap<Any, MutableSet<Method>>>>()
+    private val byListenerAndPriority = ConcurrentHashMap<Class<*>, MutableMap<Byte, MutableMap<Any, MutableSet<Method>>>>()
     private val byEventBaked = ConcurrentHashMap<Class<*>, MutableSet<EventHandlerMethod>>()
     private val lock = ReentrantLock()
 
@@ -61,12 +61,12 @@ class KryptonEventBus : EventBus {
 
         val handlers = mutableSetOf<EventHandlerMethod>()
 
-        var value = Byte.MIN_VALUE
+        var value = Byte.MAX_VALUE
         do {
             handlersByPriority[value]?.forEach { handler ->
                 handler.value.forEach { handlers += EventHandlerMethod(handler.key, it) }
             } ?: continue
-        } while (value++ < Byte.MAX_VALUE)
+        } while (value-- > Byte.MIN_VALUE)
         byEventBaked[eventClass] = handlers
     }
 
