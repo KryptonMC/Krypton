@@ -10,9 +10,9 @@ package org.kryptonmc.krypton.api.event
  */
 object ListenerPriority {
 
-    const val MAXIMUM = 64
-    const val HIGH = 32
-    const val MEDIUM = 0
-    const val LOW = -32
-    const val NONE = -64
+    const val MAXIMUM: Byte = 64
+    const val HIGH: Byte = 32
+    const val MEDIUM: Byte = 0
+    const val LOW: Byte = -32
+    const val NONE: Byte = -64
 }

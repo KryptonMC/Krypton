@@ -8,4 +8,4 @@ package org.kryptonmc.krypton.api.event
  * @author Callum Seabrook
  */
 @Target(AnnotationTarget.FUNCTION)
-annotation class Listener(val priority: Int = ListenerPriority.MEDIUM)
+annotation class Listener(val priority: Byte = ListenerPriority.MEDIUM)
