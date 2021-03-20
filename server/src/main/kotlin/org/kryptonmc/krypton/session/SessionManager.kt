@@ -9,6 +9,7 @@ import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.krypton.*
 import org.kryptonmc.krypton.api.event.events.login.JoinEvent
+import org.kryptonmc.krypton.api.event.events.play.QuitEvent
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Gamemode
@@ -252,6 +253,8 @@ class SessionManager(private val server: KryptonServer) {
 
     fun handleDisconnection(session: Session) {
         if (session.currentState != PacketState.PLAY) return
+
+        GlobalScope.launch { server.eventBus.call(QuitEvent(session.player)) }
 
         val destroyPacket = PacketOutEntityDestroy(listOf(session.id))
         val infoPacket = PacketOutPlayerInfo(
