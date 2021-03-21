@@ -7,4 +7,6 @@ abstract class Command(
 ) {
 
     abstract suspend fun execute(sender: Sender, args: List<String>)
+
+    fun suggest(sender: Sender): List<String> = emptyList()
 }

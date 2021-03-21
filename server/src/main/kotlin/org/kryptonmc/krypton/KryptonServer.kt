@@ -22,6 +22,7 @@ import org.kryptonmc.krypton.api.world.Difficulty
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.console.ConsoleScope
 import org.kryptonmc.krypton.console.ConsoleSender
+import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonEventBus
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
@@ -57,7 +58,7 @@ class KryptonServer : Server {
     override fun player(uuid: UUID) = players.firstOrNull { it.uuid == uuid }
     override fun player(name: String) = players.firstOrNull { it.name == name }
 
-    override val console = CONSOLE_SENDER
+    override val console = ConsoleSender(this)
 
     override var scoreboard: KryptonScoreboard? = null
 
@@ -85,10 +86,7 @@ class KryptonServer : Server {
 
         ConsoleScope.launch {
             LOGGER.debug("Starting console handler")
-            while (true) {
-                val line = readLine() ?: continue
-                commandManager.dispatch(CONSOLE_SENDER, line)
-            }
+            KryptonConsole(this@KryptonServer).start()
         }
 
         LOGGER.debug("Loading packets...")
@@ -117,7 +115,6 @@ class KryptonServer : Server {
 
         Runtime.getRuntime().addShutdownHook(Thread({
             LOGGER.info("Stopping Krypton...")
-            nettyJob.cancel()
             LOGGER.debug("Shutting down scheduler...")
             scheduler.shutdown()
             LOGGER.info("Shutting down plugins...")
@@ -205,8 +202,6 @@ class KryptonServer : Server {
     }
 
     companion object {
-
-        private val CONSOLE_SENDER = ConsoleSender()
 
         private val LOGGER = logger<KryptonServer>()
     }

@@ -144,7 +144,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     }
 
     private fun handleLoginStart(session: Session, packet: PacketInLoginStart) {
-        session.player = KryptonPlayer(session, session.channel.remoteAddress() as InetSocketAddress)
+        session.player = KryptonPlayer(server, session, session.channel.remoteAddress() as InetSocketAddress)
         session.player.name = packet.name
 
         if (!server.config.server.onlineMode) {

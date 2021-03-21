@@ -6,11 +6,12 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.api.command.Sender
+import org.kryptonmc.krypton.command.argument.ArgumentTypes.writeArgumentType
 import org.kryptonmc.krypton.extension.writeString
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
-// TODO: Add some commands here
+// TODO: Add support for suggestions through tab completion
 class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : PlayPacket(0x10) {
 
     override fun write(buf: ByteBuf) {
@@ -27,22 +28,22 @@ class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : Play
         node.children.forEach { writeVarInt(enumerations.getValue(it)) }
         if (node.redirect != null) writeVarInt(enumerations.getValue(node.redirect))
 
-        if (node is ArgumentCommandNode<*, *> || node is LiteralCommandNode<*>) {
+        if (node is ArgumentCommandNode<*, *>) {
+            writeString(node.name)
+            writeArgumentType(node.type)
+        } else if (node is LiteralCommandNode<*>) {
             writeString(node.name)
         }
     }
 
     private fun ByteBuf.writeFlags(node: CommandNode<*>) {
         var byte = 0
-        if (node.redirect != null) byte += 8
-        if (node.command != null) byte += 4
+        if (node.redirect != null) byte = byte or 8
+        if (node.command != null) byte = byte or 4
         when (node) {
-            is RootCommandNode<*> -> byte += 0
-            is LiteralCommandNode<*> -> byte += 1
-            is ArgumentCommandNode<*, *> -> {
-                byte += 2
-                if (node.customSuggestions != null) byte += 0x10
-            }
+            is RootCommandNode<*> -> byte = byte or 0
+            is LiteralCommandNode<*> -> byte = byte or 1
+            is ArgumentCommandNode<*, *> -> byte = byte or 2
         }
         writeByte(byte)
     }
@@ -54,6 +55,7 @@ class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : Play
 
         while (queue.isNotEmpty()) {
             val element = queue.removeFirst()
+            if (element in result) continue
             val size = result.size
             result[element] = size
             queue += element.children

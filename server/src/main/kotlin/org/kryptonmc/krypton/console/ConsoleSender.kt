@@ -4,11 +4,11 @@ import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.apache.logging.log4j.LogManager
-import org.kryptonmc.krypton.api.command.Sender
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.KryptonSender
+import org.kryptonmc.krypton.extension.logger
 
-class ConsoleSender : KryptonSender() {
+class ConsoleSender(server: KryptonServer) : KryptonSender(server) {
 
     override val name = "CONSOLE"
 
@@ -16,8 +16,5 @@ class ConsoleSender : KryptonSender() {
         LOGGER.info(LegacyComponentSerializer.legacySection().serialize(message))
     }
 
-    companion object {
-
-        private val LOGGER = LogManager.getLogger("CONSOLE")
-    }
+    private val LOGGER = logger("CONSOLE")
 }

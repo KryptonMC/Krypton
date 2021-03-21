@@ -3,6 +3,7 @@ package org.kryptonmc.krypton.entity.entities
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.api.effect.particle.ColorParticleData
 import org.kryptonmc.krypton.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.krypton.api.effect.particle.NoteParticleData
@@ -22,9 +23,10 @@ import java.util.Locale
 import java.util.UUID
 
 class KryptonPlayer(
+    server: KryptonServer,
     val session: Session,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
-) : Player, KryptonSender() {
+) : Player, KryptonSender(server) {
 
     override lateinit var uuid: UUID
     override lateinit var name: String

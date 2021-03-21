@@ -1,12 +1,18 @@
 package org.kryptonmc.krypton.command
 
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.api.command.Sender
+import org.kryptonmc.krypton.api.event.events.play.PermissionCheckEvent
 
-abstract class KryptonSender : Sender {
+abstract class KryptonSender(private val server: KryptonServer) : Sender {
 
     override val permissions = mutableMapOf<String, Boolean>()
 
-    override fun hasPermission(permission: String) = permission in permissions && permissions.getValue(permission)
+    override fun hasPermission(permission: String): Boolean {
+        val event = PermissionCheckEvent(this, permission, permission in permissions)
+        server.eventBus.call(event)
+        return event.result.value
+    }
 
     override fun grant(permission: String) {
         permissions[permission] = true

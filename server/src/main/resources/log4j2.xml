@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Configuration xmlns="http://logging.apache.org/log4j/2.0/config" status="DEBUG">
     <Appenders>
-        <Console name="CONSOLE" target="SYSTEM_OUT">
-            <PatternLayout disableAnsi="false" pattern="%red{%d{yyyy-MM-dd HH:mm:ss}} %green{[%thread]} %highlight{%level}{STYLE=Logback} %cyan{%logger{0}} - %msg%n" />
-        </Console>
+        <TerminalConsole name="CONSOLE">
+            <PatternLayout noConsoleNoAnsi="true" pattern="%red{%d{yyyy-MM-dd HH:mm:ss}} %green{[%thread]} %highlight{%level}{STYLE=Logback} %cyan{%logger{0}} - %minecraftFormatting{%msg}%n" />
+        </TerminalConsole>
         <RollingRandomAccessFile name="File" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz" fileName="logs/latest.log">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%thread] %level %logger{0} - %msg%n" />
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%thread] %level %logger{0} - %minecraftFormatting{%msg}{strip}%n" />
             <Policies>
                 <TimeBasedTriggeringPolicy />
                 <OnStartupTriggeringPolicy />

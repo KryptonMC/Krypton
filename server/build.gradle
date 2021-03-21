@@ -33,6 +33,8 @@ dependencies {
 
     // Logging
     runtimeOnly 'org.apache.logging.log4j:log4j-core:2.14.1'
+    implementation 'net.minecrell:terminalconsoleappender:1.2.0'
+    runtimeOnly 'org.jline:jline-terminal-jansi:3.19.0'
 
     // HTTP
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
