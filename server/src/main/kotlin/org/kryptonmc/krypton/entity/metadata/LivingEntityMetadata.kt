@@ -19,13 +19,13 @@ open class LivingEntityMetadata(
     isSilent: Boolean? = null,
     hasNoGravity: Boolean? = null,
     pose: Pose? = null,
-    val handFlags: HandFlags? = null,
-    val health: Float? = null,
-    val potionEffectColor: Int? = null,
-    val isPotionEffectAmbient: Boolean? = null,
-    val arrowsInEntity: Int? = null,
-    val absorptionHealth: Int? = null,
-    val bedPosition: Optional<Vector>? = null
+    private val handFlags: HandFlags? = null,
+    private val health: Float? = null,
+    private val potionEffectColor: Int? = null,
+    private val isPotionEffectAmbient: Boolean? = null,
+    private val arrowsInEntity: Int? = null,
+    private val absorptionHealth: Int? = null,
+    private val bedPosition: Optional<Vector>? = null
 ) : EntityMetadata(movementFlags, airTicks, customName, isCustomNameVisible, isSilent, hasNoGravity, pose) {
 
     override fun write(buf: ByteBuf) {
@@ -69,7 +69,7 @@ data class HandFlags(
         if (isHandActive) byte += 0x01
         if (activeHand != null) {
             byte += 0x02
-            byte += activeHand.id
+            byte += activeHand.ordinal
         }
         if (isInRiptideSpinAttack) byte += 0x04
         return byte

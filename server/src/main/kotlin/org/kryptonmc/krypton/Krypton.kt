@@ -1,6 +1,6 @@
 package org.kryptonmc.krypton
 
-import org.kryptonmc.krypton.KryptonServer.*
+import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.extension.logger
 
 fun main() {

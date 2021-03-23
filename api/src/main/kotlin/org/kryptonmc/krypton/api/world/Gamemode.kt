@@ -1,5 +1,8 @@
 package org.kryptonmc.krypton.api.world
 
+import kotlinx.serialization.Serializable
+import java.util.*
+
 /**
  * Represents a game mode, those being [SURVIVAL], [CREATIVE], [ADVENTURE]
  * and [SPECTATOR].
@@ -9,6 +12,7 @@ package org.kryptonmc.krypton.api.world
  *
  * @author Callum Seabrook
  */
+@Serializable
 enum class Gamemode(val id: Int) {
 
     /**
@@ -35,6 +39,8 @@ enum class Gamemode(val id: Int) {
      * to your client (you can see things, but you will never collide with them)
      */
     SPECTATOR(3);
+
+    override fun toString() = name.toLowerCase(Locale.ROOT)
 
     companion object {
 

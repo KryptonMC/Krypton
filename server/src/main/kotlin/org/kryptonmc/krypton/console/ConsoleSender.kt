@@ -16,5 +16,8 @@ class ConsoleSender(server: KryptonServer) : KryptonSender(server) {
         LOGGER.info(LegacyComponentSerializer.legacySection().serialize(message))
     }
 
-    private val LOGGER = logger("CONSOLE")
+    companion object {
+
+        private val LOGGER = logger("CONSOLE")
+    }
 }

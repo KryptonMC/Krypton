@@ -12,16 +12,14 @@ data class ClientSettings(
     val mainHand: MainHand
 )
 
-enum class ChatMode(val id: Int) {
+enum class ChatMode {
 
-    ENABLED(0),
-    COMMANDS_ONLY(1),
-    HIDDEN(2);
+    ENABLED,
+    COMMANDS_ONLY,
+    HIDDEN;
 
     companion object {
 
-        private val VALUES = values()
-
-        fun fromId(id: Int) = VALUES[id]
+        fun fromId(id: Int) = values()[id]
     }
 }

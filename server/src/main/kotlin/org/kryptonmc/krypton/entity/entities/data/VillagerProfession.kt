@@ -2,21 +2,23 @@ package org.kryptonmc.krypton.entity.entities.data
 
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 
-enum class VillagerProfession(val key: NamespacedKey, val id: Int) {
+enum class VillagerProfession(val id: Int) {
 
-    NONE(NamespacedKey(value = "none"), 0),
-    ARMORER(NamespacedKey(value = "armorer"), 1),
-    BUTCHER(NamespacedKey(value = "butcher"), 2),
-    CARTOGRAPHER(NamespacedKey(value = "cartographer"), 3),
-    CLERIC(NamespacedKey(value = "cleric"), 4),
-    FARMER(NamespacedKey(value = "farmer"), 5),
-    FISHERMAN(NamespacedKey(value = "fisherman"), 6),
-    FLETCHER(NamespacedKey(value = "fletcher"), 7),
-    LEATHERWORKER(NamespacedKey(value = "leatherworker"), 8),
-    LIBRARIAN(NamespacedKey(value = "librarian"), 9),
-    MASON(NamespacedKey(value = "mason"), 10),
-    NITWIT(NamespacedKey(value = "nitwit"), 11),
-    SHEPHERD(NamespacedKey(value = "shepherd"), 12),
-    TOOLSMITH(NamespacedKey(value = "toolsmith"), 13),
-    WEAPONSMITH(NamespacedKey(value = "weaponsmith"), 14)
+    NONE(0),
+    ARMORER(1),
+    BUTCHER(2),
+    CARTOGRAPHER(3),
+    CLERIC(4),
+    FARMER(5),
+    FISHERMAN(6),
+    FLETCHER(7),
+    LEATHERWORKER(8),
+    LIBRARIAN(9),
+    MASON(10),
+    NITWIT(11),
+    SHEPHERD(12),
+    TOOLSMITH(13),
+    WEAPONSMITH(14);
+
+    val key by lazy { NamespacedKey(value = name.toLowerCase()) }
 }

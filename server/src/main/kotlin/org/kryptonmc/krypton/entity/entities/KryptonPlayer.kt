@@ -3,6 +3,7 @@ package org.kryptonmc.krypton.entity.entities
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.title.Title
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.api.effect.particle.ColorParticleData
 import org.kryptonmc.krypton.api.effect.particle.DirectionalParticleData
@@ -17,6 +18,9 @@ import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
+import org.kryptonmc.krypton.packet.out.play.chat.PacketOutPlayerListHeaderFooter
+import org.kryptonmc.krypton.packet.out.play.chat.PacketOutTitle
+import org.kryptonmc.krypton.packet.out.play.chat.TitleAction
 import org.kryptonmc.krypton.session.Session
 import java.net.InetSocketAddress
 import java.util.Locale
@@ -64,5 +68,27 @@ class KryptonPlayer(
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
         session.sendPacket(PacketOutChat(message, type, source.uuid()))
+    }
+
+    override fun sendActionBar(message: Component) {
+        session.sendPacket(PacketOutTitle(TitleAction.SET_ACTION_BAR, actionBar = message))
+    }
+
+    override fun sendPlayerListHeaderAndFooter(header: Component, footer: Component) {
+        session.sendPacket(PacketOutPlayerListHeaderFooter(header, footer))
+    }
+
+    override fun showTitle(title: Title) {
+        session.sendPacket(PacketOutTitle(TitleAction.SET_TITLE, title))
+        session.sendPacket(PacketOutTitle(TitleAction.SET_SUBTITLE, title))
+        session.sendPacket(PacketOutTitle(TitleAction.SET_TIMES_AND_DISPLAY, title))
+    }
+
+    override fun clearTitle() {
+        session.sendPacket(PacketOutTitle(TitleAction.HIDE))
+    }
+
+    override fun resetTitle() {
+        session.sendPacket(PacketOutTitle(TitleAction.RESET))
     }
 }

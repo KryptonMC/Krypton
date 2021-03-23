@@ -11,7 +11,7 @@ import java.time.Duration
 
 class PacketOutTitle(
     private val action: TitleAction,
-    private val title: Title,
+    private val title: Title = Title.title(Component.empty(), Component.empty()),
     private val actionBar: Component = Component.empty()
 ) : PlayPacket(0x4F) {
 

@@ -1,3 +1,4 @@
+@file:JvmName("ParticleUtils")
 package org.kryptonmc.krypton.api.effect.particle
 
 import org.kryptonmc.krypton.api.space.Vector
@@ -231,6 +232,7 @@ class NoteParticleEffectBuilder internal constructor(
  * @return a new [ParticleEffect] based on the given settings
  * @author Esophose
  */
+@JvmName("of")
 fun particleEffect(particleType: SimpleParticle, lambda: ParticleEffectBuilder.() -> Unit = {}) =
     ParticleEffectBuilder(particleType).apply(lambda).build()
 
@@ -242,6 +244,7 @@ fun particleEffect(particleType: SimpleParticle, lambda: ParticleEffectBuilder.(
  * @return a new [ParticleEffect] based on the given settings
  * @author Esophose
  */
+@JvmName("of")
 fun particleEffect(particleType: DirectionalParticle, lambda: DirectionalParticleEffectBuilder.() -> Unit = {}) =
     DirectionalParticleEffectBuilder(particleType).apply(lambda).build()
 
@@ -253,6 +256,7 @@ fun particleEffect(particleType: DirectionalParticle, lambda: DirectionalParticl
  * @return a new [ParticleEffect] based on the given settings
  * @author Esophose
  */
+@JvmName("of")
 fun particleEffect(particleType: BlockParticle, lambda: BlockParticleEffectBuilder.() -> Unit = {}) =
     BlockParticleEffectBuilder(particleType).apply(lambda).build()
 
@@ -264,6 +268,7 @@ fun particleEffect(particleType: BlockParticle, lambda: BlockParticleEffectBuild
  * @return a new [ParticleEffect] based on the given settings
  * @author Esophose
  */
+@JvmName("of")
 fun particleEffect(particleType: ItemParticle, lambda: ItemParticleEffectBuilder.() -> Unit = {}) =
     ItemParticleEffectBuilder(particleType).apply(lambda).build()
 
@@ -275,6 +280,7 @@ fun particleEffect(particleType: ItemParticle, lambda: ItemParticleEffectBuilder
  * @return a new [ParticleEffect] based on the given settings
  * @author Esophose
  */
+@JvmName("of")
 fun particleEffect(particleType: ColorParticle, lambda: ColorParticleEffectBuilder.() -> Unit = {}) =
     ColorParticleEffectBuilder(particleType).apply(lambda).build()
 
@@ -286,6 +292,7 @@ fun particleEffect(particleType: ColorParticle, lambda: ColorParticleEffectBuild
  * @return a new [ParticleEffect] based on the given settings
  * @author Esophose
  */
+@JvmName("of")
 fun particleEffect(particleType: DustParticle, lambda: DustParticleEffectBuilder.() -> Unit = {}) =
     DustParticleEffectBuilder(particleType).apply(lambda).build()
 
@@ -297,5 +304,6 @@ fun particleEffect(particleType: DustParticle, lambda: DustParticleEffectBuilder
  * @return a new [ParticleEffect] based on the given settings
  * @author Esophose
  */
+@JvmName("of")
 fun particleEffect(particleType: NoteParticle, lambda: NoteParticleEffectBuilder.() -> Unit = {}) =
     NoteParticleEffectBuilder(particleType).apply(lambda).build()

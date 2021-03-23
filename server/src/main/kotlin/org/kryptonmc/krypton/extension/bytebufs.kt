@@ -48,9 +48,7 @@ fun ByteBuf.readVarInt(): Int {
         val value = (read and 127).toInt()
         result = result or (value shl 7 * numRead)
         numRead++
-        if (numRead > 5) {
-            throw RuntimeException("VarInt is too big")
-        }
+        if (numRead > 5) throw RuntimeException("VarInt is too big")
     } while (read and 128.toByte() != 0.toByte())
 
     return result
@@ -68,7 +66,7 @@ fun ByteBuf.writeVarInt(varInt: Int) {
 
 fun ByteBuf.writeVarLong(varLong: Long) {
     var i = varLong
-    while (i and -128 != 0.toLong()) {
+    while (i and -128 != 0L) {
         writeByte((i and 127 or 128).toInt())
         i = i ushr 7
     }
@@ -80,12 +78,10 @@ fun ByteBuf.readString(maxLength: Short = Short.MAX_VALUE): String {
     val length = readVarInt()
 
     return when {
-        length > maxLength * 4 -> {
+        length > maxLength * 4 ->
             throw IOException("The received encoded string buffer length is longer than maximum allowed (" + length + " > " + maxLength * 4 + ")")
-        }
-        length < 0 -> {
+        length < 0 ->
             throw IOException("The received encoded string buffer length is less than zero! Weird string!")
-        }
         else -> {
             val array = ByteArray(length)
             this.readBytes(array)

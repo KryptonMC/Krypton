@@ -5,10 +5,10 @@ import org.kryptonmc.krypton.api.entity.entities.Player
 /**
  * Represents a [Player]'s abilities.
  *
- * [isInvulnerable] - if this [Player] does not take damage
- * [canFly] - if this [Player] can fly
- * [isFlyingAllowed] - if this [Player] is allowed to fly
- * [isCreativeMode] if this [Player] is in creative mode
+ * @param isInvulnerable if this [Player] does not take damage
+ * @param canFly if this [Player] can fly
+ * @param isFlyingAllowed if this [Player] is allowed to fly
+ * @param isCreativeMode if this [Player] is in creative mode
  */
 data class Abilities(
     val isInvulnerable: Boolean = false,

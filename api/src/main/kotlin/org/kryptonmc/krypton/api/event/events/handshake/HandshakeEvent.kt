@@ -10,6 +10,7 @@ import java.net.InetSocketAddress
  * indicate the client intends to login, or they intend to request the
  * status information for the server.
  *
+ * @param address the address of the connecting client
  * @author Callum Seabrook
  */
 data class HandshakeEvent(val address: InetSocketAddress) : Event

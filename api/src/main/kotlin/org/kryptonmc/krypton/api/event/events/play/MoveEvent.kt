@@ -7,6 +7,9 @@ import org.kryptonmc.krypton.api.world.Location
 /**
  * Called when a player moves.
  *
+ * @param player the player who moved
+ * @param oldLocation the old location of the player
+ * @param newLocation the new location of the player
  * @author Callum Seabrook
  */
 class MoveEvent(

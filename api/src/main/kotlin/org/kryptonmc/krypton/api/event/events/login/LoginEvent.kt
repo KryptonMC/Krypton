@@ -11,6 +11,9 @@ import java.util.*
  * a player object constructed for them (when the state has not moved into PLAY
  * yet)
  *
+ * @param username the username of the player logging in
+ * @param uuid the UUID of the player logging in
+ * @param address the address of the player logging in
  * @author Callum Seabrook
  */
 data class LoginEvent(

@@ -1,5 +1,7 @@
 package org.kryptonmc.krypton.api.world
 
+import kotlinx.serialization.Serializable
+
 /**
  * Represents the difficulty of a world. That being a measure of how difficult
  * it is to play the game (though this is not always accurate).
@@ -9,6 +11,7 @@ package org.kryptonmc.krypton.api.world
  *
  * @author Callum Seabrook
  */
+@Serializable
 enum class Difficulty(val id: Int) {
 
     /**

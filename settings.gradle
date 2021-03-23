@@ -1,8 +1,0 @@
-rootProject.name = 'krypton'
-
-include 'api'
-include 'server'
-
-["api", "server"].each {
-    findProject(":$it")?.name = "krypton-$it"
-}

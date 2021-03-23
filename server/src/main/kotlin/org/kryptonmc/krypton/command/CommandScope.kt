@@ -8,7 +8,7 @@ import java.util.concurrent.Executors
 object CommandScope : CoroutineScope {
 
     override val coroutineContext = Executors.newFixedThreadPool(
-        Runtime.getRuntime().availableProcessors(),
+        2,
         NamedThreadFactory("Command Handler #%d")
     ).asCoroutineDispatcher()
 }

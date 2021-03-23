@@ -20,7 +20,7 @@ enum class MobEffectType(private val id: Int) {
     NIGHT_VISION(16),
     HUNGER(17),
     WEAKNESS(18),
-    POSION(19),
+    POISON(19),
     WITHER(20),
     HEALTH_BOOST(21),
     ABSORPTION(22),

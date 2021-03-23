@@ -15,12 +15,14 @@ import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.space.Rotation
 import java.util.*
 
+private const val ENDING_INDEX: UByte = 0xFFu
+
 fun ByteBuf.writeMetadata(index: UByte, byte: Byte?) {
     if (byte == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.BYTE.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.BYTE.ordinal)
         writeByte(byte)
     }
 }
@@ -29,8 +31,8 @@ fun ByteBuf.writeMetadata(index: UByte, varInt: Int?) {
     if (varInt == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.VARINT.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.VARINT.ordinal)
         writeVarInt(varInt)
     }
 }
@@ -39,8 +41,8 @@ fun ByteBuf.writeMetadata(index: UByte, float: Float?) {
     if (float == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.FLOAT.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.FLOAT.ordinal)
         writeFloat(float)
     }
 }
@@ -49,8 +51,8 @@ fun ByteBuf.writeMetadata(index: UByte, string: String?) {
     if (string == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.STRING.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.STRING.ordinal)
         writeString(string)
     }
 }
@@ -59,8 +61,8 @@ fun ByteBuf.writeMetadata(index: UByte, chat: Component?) {
     if (chat == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.CHAT.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.CHAT.ordinal)
         writeChat(chat)
     }
 }
@@ -69,8 +71,8 @@ fun ByteBuf.writeMetadata(index: UByte, slot: Slot?) {
     if (slot == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.SLOT.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.SLOT.ordinal)
         writeSlot(slot)
     }
 }
@@ -79,8 +81,8 @@ fun ByteBuf.writeMetadata(index: UByte, boolean: Boolean?) {
     if (boolean == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.BOOLEAN.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.BOOLEAN.ordinal)
         writeBoolean(boolean)
     }
 }
@@ -89,8 +91,8 @@ fun ByteBuf.writeMetadata(index: UByte, rotation: Rotation?) {
     if (rotation == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.ROTATION.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.ROTATION.ordinal)
         writeRotation(rotation)
     }
 }
@@ -99,8 +101,8 @@ fun ByteBuf.writeMetadata(index: UByte, position: Vector?) {
     if (position == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.POSITION.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.POSITION.ordinal)
         writePosition(position)
     }
 }
@@ -109,8 +111,8 @@ fun ByteBuf.writeMetadata(index: UByte, direction: Direction?) {
     if (direction == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.DIRECTION.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.DIRECTION.ordinal)
         writeVarInt(direction.id)
     }
 }
@@ -119,8 +121,8 @@ fun ByteBuf.writeMetadata(index: UByte, nbt: CompoundBinaryTag?) {
     if (nbt == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.NBT.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.NBT.ordinal)
         writeNBTCompound(nbt)
     }
 }
@@ -129,8 +131,8 @@ fun ByteBuf.writeMetadata(index: UByte, particle: ParticleEffect?, location: Loc
     if (particle == null || location == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.PARTICLE.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.PARTICLE.ordinal)
         writeParticle(particle, location)
     }
 }
@@ -139,8 +141,8 @@ fun ByteBuf.writeMetadata(index: UByte, villagerData: VillagerData?) {
     if (villagerData == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.VILLAGER_DATA.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.VILLAGER_DATA.ordinal)
         writeVillagerData(villagerData)
     }
 }
@@ -149,9 +151,9 @@ fun ByteBuf.writeMetadata(index: UByte, pose: Pose?) {
     if (pose == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.POSE.id)
-        writeVarInt(pose.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.POSE.ordinal)
+        writeVarInt(pose.ordinal)
     }
 }
 
@@ -161,8 +163,8 @@ fun ByteBuf.writeOptionalMetadata(index: UByte, optionalChat: Optional<Component
     if (optionalChat == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.OPTIONAL_CHAT.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.OPTIONAL_CHAT.ordinal)
         writeOptionalChat(optionalChat)
     }
 }
@@ -173,8 +175,8 @@ fun ByteBuf.writeOptionalMetadata(index: UByte, optionalPosition: Optional<Vecto
     if (optionalPosition == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.OPTIONAL_POSITION.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.OPTIONAL_POSITION.ordinal)
         writeOptionalPosition(optionalPosition)
     }
 }
@@ -185,8 +187,8 @@ fun ByteBuf.writeOptionalMetadata(index: UByte, optionalUUID: Optional<UUID>?) {
     if (optionalUUID == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(MetadataType.OPTIONAL_UUID.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(MetadataType.OPTIONAL_UUID.ordinal)
         writeOptionalUUID(optionalUUID)
     }
 }
@@ -197,8 +199,8 @@ fun ByteBuf.writeOptionalMetadata(index: UByte, optionalVarInt: Optional<Int>?, 
     if (optionalVarInt == null) return
 
     writeUByte(index)
-    if (index != 0xFF.toUByte()) {
-        writeVarInt(type.id)
+    if (index != ENDING_INDEX) {
+        writeVarInt(type.ordinal)
         writeOptionalVarInt(optionalVarInt)
     }
 }

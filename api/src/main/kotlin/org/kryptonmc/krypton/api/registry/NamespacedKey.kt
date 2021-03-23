@@ -1,3 +1,4 @@
+@file:JvmName("KeyUtils")
 package org.kryptonmc.krypton.api.registry
 
 import kotlinx.serialization.KSerializer
@@ -23,6 +24,7 @@ data class NamespacedKey(
     override fun toString() = "$namespace:$value"
 }
 
+@JvmName("fromString")
 fun String.toNamespacedKey(): NamespacedKey {
     val components = split(":")
     if (components.size != 2) throw IllegalArgumentException("Not a namespaced key!")

@@ -6,13 +6,13 @@ import org.kryptonmc.krypton.extension.writeMetadata
 import org.kryptonmc.krypton.extension.writeOptionalMetadata
 
 open class EntityMetadata(
-    val movementFlags: MovementFlags? = null,
-    val airTicks: Int? = null,
-    val customName: Optional<Component>? = null,
-    val isCustomNameVisible: Boolean? = null,
-    val isSilent: Boolean? = null,
-    val hasNoGravity: Boolean? = null,
-    val pose: Pose? = null
+    private val movementFlags: MovementFlags? = null,
+    private val airTicks: Int? = null,
+    private val customName: Optional<Component>? = null,
+    private val isCustomNameVisible: Boolean? = null,
+    private val isSilent: Boolean? = null,
+    private val hasNoGravity: Boolean? = null,
+    private val pose: Pose? = null
 ) {
 
     open fun write(buf: ByteBuf) {
@@ -59,27 +59,27 @@ data class MovementFlags(
     }
 }
 
-enum class MetadataType(val id: Int) {
+enum class MetadataType {
 
-    BYTE(0),
-    VARINT(1),
-    FLOAT(2),
-    STRING(3),
-    CHAT(4),
-    OPTIONAL_CHAT(5),
-    SLOT(6),
-    BOOLEAN(7),
-    ROTATION(8),
-    POSITION(9),
-    OPTIONAL_POSITION(10),
-    DIRECTION(11),
-    OPTIONAL_UUID(12),
-    OPTIONAL_BLOCK_ID(13),
-    NBT(14),
-    PARTICLE(15),
-    VILLAGER_DATA(16),
-    OPTIONAL_VARINT(17),
-    POSE(18)
+    BYTE,
+    VARINT,
+    FLOAT,
+    STRING,
+    CHAT,
+    OPTIONAL_CHAT,
+    SLOT,
+    BOOLEAN,
+    ROTATION,
+    POSITION,
+    OPTIONAL_POSITION,
+    DIRECTION,
+    OPTIONAL_UUID,
+    OPTIONAL_BLOCK_ID,
+    NBT,
+    PARTICLE,
+    VILLAGER_DATA,
+    OPTIONAL_VARINT,
+    POSE
 }
 
 data class Optional<T>(val value: T?)

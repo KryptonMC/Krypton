@@ -17,7 +17,7 @@ import org.kryptonmc.krypton.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.encryption.Encryption.Companion.SHARED_SECRET_ALGORITHM
 import org.kryptonmc.krypton.encryption.toDecryptingCipher
 import org.kryptonmc.krypton.encryption.toEncryptingCipher
-import org.kryptonmc.krypton.entity.Abilities
+import org.kryptonmc.krypton.api.entity.Abilities
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
 import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.extension.toArea
@@ -53,6 +53,10 @@ class SessionManager(private val server: KryptonServer) {
     private val handler = PacketHandler(this, server)
 
     private val keepAliveExecutor = Executors.newScheduledThreadPool(8, NamedThreadFactory("Keep Alive Thread #%d"))
+
+    init {
+        Runtime.getRuntime().addShutdownHook(Thread { keepAliveExecutor.shutdown() })
+    }
 
     fun handle(session: Session, packet: Packet) = handler.handle(session, packet)
 
@@ -135,24 +139,18 @@ class SessionManager(private val server: KryptonServer) {
             }
 
         val centerChunk = Vector(floor(spawnLocation.x / 16.0), 0.0, floor(spawnLocation.z / 16.0))
-        val region = server.worldManager.loadRegionFromChunk(centerChunk)
 
         session.sendPacket(PacketOutUpdateViewPosition(centerChunk))
 
         GlobalScope.launch(Dispatchers.IO) {
-            var chunkRegion = region
-            for (i in 0 until server.config.world.viewDistance.toArea()) {
-                val chunkPosition = server.worldManager.chunkInSpiral(i, centerChunk.x, centerChunk.z)
+            val positionsToLoad = mutableListOf<Vector>()
+            repeat(server.config.world.viewDistance.toArea()) {
+                positionsToLoad += server.worldManager.chunkInSpiral(it, centerChunk.x, centerChunk.z)
+            }
 
-                val regionX = floor(chunkPosition.x / 32.0).toInt()
-                val regionZ = floor(chunkPosition.z / 32.0).toInt()
-                if (chunkRegion.x != regionX || chunkRegion.z != regionZ) {
-                    chunkRegion = server.worldManager.loadRegionFromChunk(chunkPosition)
-                }
-
-                val chunk = chunkRegion.chunks[chunkPosition] ?: continue
-                session.sendPacket(PacketOutUpdateLight(chunk))
-                session.sendPacket(PacketOutChunkData(chunk))
+            server.worldManager.loadChunks(positionsToLoad).forEach { (_, value) ->
+                session.sendPacket(PacketOutUpdateLight(value))
+                session.sendPacket(PacketOutChunkData(value))
             }
         }
 

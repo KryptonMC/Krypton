@@ -13,28 +13,27 @@ import java.util.concurrent.locks.ReentrantLock
  */
 class KryptonEventBus : EventBus {
 
-    private val byListenerAndPriority = ConcurrentHashMap<Class<*>, MutableMap<Byte, MutableMap<Any, MutableSet<Method>>>>()
-    private val byEventBaked = ConcurrentHashMap<Class<*>, MutableSet<EventHandlerMethod>>()
+    private val byListenerAndPriority = ConcurrentHashMap<Class<*>, MutableMap<Byte, MutableMap<Any, Set<Method>>>>()
+    private val byEventBaked = ConcurrentHashMap<Class<*>, Set<EventHandlerMethod>>()
     private val lock = ReentrantLock()
 
     override fun call(event: Any) = byEventBaked[event::class.java]?.forEach { it(event) } ?: Unit
 
     override fun register(listener: Any) {
-        val handler = findHandlers(listener)
+        val handlers = findHandlers(listener)
         lock.lock()
-        handler.forEach { entry ->
-            val priorities = byListenerAndPriority.getOrPut(entry.key) { mutableMapOf() }
-            entry.value.forEach {
-                val currentPriorities = priorities.getOrPut(it.key) { mutableMapOf() }
-                currentPriorities[listener] = it.value
+        handlers.forEach { handler ->
+            val priorities = byListenerAndPriority.getOrPut(handler.key) { mutableMapOf() }
+            handler.value.forEach {
+                priorities.getOrPut(it.key) { mutableMapOf() }.apply { put(listener, it.value) }
             }
-            bakeHandlers(entry.key)
+            byEventBaked[handler.key] = bakeHandlers(handler.key) ?: return@forEach
         }
         lock.unlock()
     }
 
     private fun findHandlers(listener: Any): MutableMap<Class<*>, MutableMap<Byte, MutableSet<Method>>> {
-        val handler = mutableMapOf<Class<*>, MutableMap<Byte, MutableSet<Method>>>()
+        val handlers = mutableMapOf<Class<*>, MutableMap<Byte, MutableSet<Method>>>()
         listener::class.java.declaredMethods.forEach {
             val annotation = it.getAnnotation(Listener::class.java) ?: return@forEach
 
@@ -44,34 +43,31 @@ class KryptonEventBus : EventBus {
                 return@forEach
             }
 
-            val priorities = handler.getOrPut(parameters[0]) { mutableMapOf() }
-
-            val priority = priorities.getOrPut(annotation.priority.toByte()) { mutableSetOf() }
-            priority.add(it)
+            val priorities = handlers.getOrPut(parameters[0]) { mutableMapOf() }
+            priorities.getOrPut(annotation.priority) { mutableSetOf() }.add(it)
         }
-        return handler
+        return handlers
     }
 
-    private fun bakeHandlers(eventClass: Class<*>) {
+    private fun bakeHandlers(eventClass: Class<*>): Set<EventHandlerMethod>? {
         val handlersByPriority = byListenerAndPriority[eventClass]
         if (handlersByPriority == null) {
             byEventBaked -= eventClass
-            return
+            return null
         }
 
         val handlers = mutableSetOf<EventHandlerMethod>()
-
-        var value = Byte.MAX_VALUE
-        do {
-            handlersByPriority[value]?.forEach { handler ->
+        for (i in Byte.MAX_VALUE downTo Byte.MIN_VALUE) {
+            handlersByPriority[i.toByte()]?.forEach { handler ->
                 handler.value.forEach { handlers += EventHandlerMethod(handler.key, it) }
-            } ?: continue
-        } while (value-- > Byte.MIN_VALUE)
-        byEventBaked[eventClass] = handlers
+            }
+        }
+
+        return handlers
     }
 
     companion object {
 
-        private val LOGGER = logger<EventBus>()
+        private val LOGGER = logger<KryptonEventBus>()
     }
 }

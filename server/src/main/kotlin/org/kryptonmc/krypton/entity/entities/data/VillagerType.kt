@@ -2,13 +2,15 @@ package org.kryptonmc.krypton.entity.entities.data
 
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 
-enum class VillagerType(val key: NamespacedKey, val id: Int) {
+enum class VillagerType(val id: Int) {
 
-    DESERT(NamespacedKey(value = "desert"), 0),
-    JUNGLE(NamespacedKey(value = "jungle"), 1),
-    PLAINS(NamespacedKey(value = "plains"), 2),
-    SAVANNA(NamespacedKey(value = "savanna"), 3),
-    SNOW(NamespacedKey(value = "snow"), 4),
-    SWAMP(NamespacedKey(value = "swamp"), 5),
-    TAIGA(NamespacedKey(value = "taiga"), 6)
+    DESERT(0),
+    JUNGLE(1),
+    PLAINS(2),
+    SAVANNA(3),
+    SNOW(4),
+    SWAMP(5),
+    TAIGA(6);
+
+    val key by lazy { NamespacedKey(value = name.toLowerCase()) }
 }

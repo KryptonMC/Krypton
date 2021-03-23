@@ -1,11 +1,13 @@
 package org.kryptonmc.krypton.world
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.LongArrayBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.api.registry.toNamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
@@ -24,6 +26,7 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.math.floor
 import kotlin.math.sqrt
 import kotlin.system.exitProcess
@@ -31,8 +34,12 @@ import kotlin.system.exitProcess
 @Suppress("MemberVisibilityCanBePrivate")
 class KryptonWorldManager(override val server: KryptonServer, config: WorldConfig) : WorldManager {
 
-    private val folder = File(Path.of("").toAbsolutePath().toFile(), config.name)
+    private val folder = File(CURRENT_DIRECTORY, config.name)
     private val regionFolder = File(folder, "/region")
+
+    private val regionCache = Caffeine.newBuilder()
+        .expireAfterWrite(1, TimeUnit.HOURS)
+        .build<Vector, MutableMap<Vector, KryptonChunk>>()
 
     override val worlds = mutableMapOf<String, KryptonWorld>()
 
@@ -44,7 +51,7 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
         }
 
         worlds[config.name] = loadWorld(File(folder, "level.dat"))
-        LOGGER.debug("World loaded!")
+        LOGGER.info("World loaded!")
     }
 
     override fun load(name: String) = loadWorld(File(folder, name))
@@ -140,32 +147,54 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
         )
     }
 
-    fun loadRegionFromChunk(position: Vector): Region {
-        return loadRegion(regionFolder, floor(position.x / 32.0).toInt(), floor(position.z / 32.0).toInt())
+    fun loadChunks(positions: List<Vector>): Map<Vector, KryptonChunk> {
+        val chunks = mutableMapOf<Vector, KryptonChunk>()
+        val groupedByRegion = mutableMapOf<Vector, MutableList<Vector>>()
+
+        positions.forEach {
+            val regionX = floor(it.x / 32.0)
+            val regionZ = floor(it.z / 32.0)
+
+            groupedByRegion.getOrPut(Vector(regionX, 0.0, regionZ)) { mutableListOf() } += it
+        }
+
+        groupedByRegion.forEach { (key, value) ->
+            val cachedChunks = regionCache.getIfPresent(key)
+            if (cachedChunks != null) {
+                chunks += cachedChunks
+                return@forEach
+            }
+
+            val region = loadRegion(regionFolder, key.x.toInt(), key.z.toInt(), value)
+            chunks += region.chunks
+            regionCache.put(key, region.chunks.toMutableMap())
+        }
+
+        return chunks
     }
 
-    private fun loadRegion(folder: File, x: Int, z: Int): Region {
+    private fun loadRegion(folder: File, x: Int, z: Int, positions: List<Vector>): Region {
         val file = RandomAccessFile(File(folder, "r.$x.$z.mca"), "r")
         val chunks = mutableMapOf<Vector, KryptonChunk>()
 
-        for (i in 0 until 1024) {
-            file.seek(i * 4L)
+        repeat(1024) {
+            file.seek(it * 4L)
             var offset = file.read() shl 16
             offset = offset or ((file.read() and 0xFF) shl 8)
             offset = offset or (file.read() and 0xFF)
-            if (file.readByte() == 0.toByte()) continue
+            if (file.readByte() == 0.toByte()) return@repeat
 
-            file.seek(4096L + i * 4)
+            file.seek(4096L + it * 4)
             val timestamp = file.readInt()
 
             file.seek(4096L * offset + 4)
-            chunks += deserializeChunk(file)
+            deserializeChunk(file, positions)?.let { chunks += it }
         }
 
         return Region(x, z, chunks)
     }
 
-    private fun deserializeChunk(file: RandomAccessFile): Pair<Vector, KryptonChunk> {
+    private fun deserializeChunk(file: RandomAccessFile, positions: List<Vector>): Pair<Vector, KryptonChunk>? {
         val compressionType = when (val type = file.readByte().toInt()) {
             0 -> BinaryTagIO.Compression.NONE
             1 -> BinaryTagIO.Compression.GZIP
@@ -173,6 +202,9 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
             else -> throw UnsupportedOperationException("Unknown compression type $type")
         }
         val nbt = BinaryTagIO.unlimitedReader().read(FileInputStream(file.fd), compressionType).getCompound("Level")
+
+        val location = Vector(nbt.getInt("xPos").toDouble(), 0.0, nbt.getInt("zPos").toDouble())
+        if (location !in positions) return null
 
         val heightmaps = nbt.getCompound("Heightmaps")
 
@@ -201,7 +233,6 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
             )
         }
 
-        val location = Vector(nbt.getInt("xPos").toDouble(), 0.0, nbt.getInt("zPos").toDouble())
         return location to KryptonChunk(
             location,
             sections,
@@ -212,34 +243,68 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
         )
     }
 
+    /**
+     * Calculates a chunk position from a given [id] in a spiral pattern.
+     *
+     * **Algorithm:**
+     *
+     * Given n, an index in the squared spiral
+     * p, the sum of a point in the inner square
+     * and a, the position on the current square
+     *
+     * n = p + a
+     *
+     * Credit for this algorithm goes to
+     * [davidonet](https://stackoverflow.com/users/1068670/davidonet) (for the original algorithm),
+     * and [Esophose](https://github.com/Esophose) (for the Kotlin conversion and modifications)
+     *
+     * See [here](https://stackoverflow.com/questions/398299/looping-in-a-spiral) for original
+     *
+     * @param id the id in the spiral
+     * @param xOffset an optional X offset
+     * @param zOffset an optional Z offset
+     * @return a [Vector] containing the calculated position in the spiral.
+     * Note: as chunk positions are two-dimensional, the Y value of this will always be 0.0
+     */
     fun chunkInSpiral(id: Int, xOffset: Double = 0.0, zOffset: Double = 0.0): Vector {
+        // if the id is 0 then we know we're in the centre
         if (id == 0) return Vector(0.0 + xOffset, 0.0, 0.0 + zOffset)
 
-        val n = id - 1
-        val r = floor((sqrt(n + 1.0) - 1) / 2) + 1
-        val p = (8 * r * (r - 1)) / 2
-        val en = r * 2
-        val a = (1 + n - p) % (r * 8)
+        val index = id - 1
+
+        // compute radius (inverse arithmetic sum of 8 + 16 + 24 + ...)
+        val radius = floor((sqrt(index + 1.0) - 1) / 2) + 1
+
+        // compute total point on radius -1 (arithmetic sum of 8 + 16 + 24 + ...)
+        val p = (8 * radius * (radius - 1)) / 2
+
+        // points by face
+        val en = radius * 2
+
+        // compute de position and shift it so the first is (-r, -r) but (-r + 1, -r)
+        // so the square can connect
+        val a = (1 + index - p) % (radius * 8)
 
         var x = 0.0
         var z = 0.0
 
-        when (floor(a / (r * 2)).toInt()) {
+        when (floor(a / (radius * 2)).toInt()) {
+            // find the face (0 = top, 1 = right, 2 = bottom, 3 = left)
             0 -> {
-                x = a - r
-                z = -r
+                x = a - radius
+                z = -radius
             }
             1 -> {
-                x = r
-                z = (a % en) - r
+                x = radius
+                z = (a % en) - radius
             }
             2 -> {
-                x = r - (a % en)
-                z = r
+                x = radius - (a % en)
+                z = radius
             }
             3 -> {
-                x = -r
-                z = r - (a % en)
+                x = -radius
+                z = radius - (a % en)
             }
         }
 

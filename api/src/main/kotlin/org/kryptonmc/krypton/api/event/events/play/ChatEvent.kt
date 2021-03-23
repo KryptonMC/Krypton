@@ -6,6 +6,8 @@ import org.kryptonmc.krypton.api.event.CancellableEvent
 /**
  * Called when a player sends a chat message (not a command)
  *
+ * @param player the player sending the message
+ * @param message the message sent
  * @author Callum Seabrook
  */
 data class ChatEvent(

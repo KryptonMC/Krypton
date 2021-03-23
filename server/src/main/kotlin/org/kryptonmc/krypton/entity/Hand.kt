@@ -1,27 +1,23 @@
 package org.kryptonmc.krypton.entity
 
-enum class Hand(val id: Int) {
+enum class Hand {
 
-    MAIN(0),
-    OFF(1);
+    MAIN,
+    OFF;
 
     companion object {
 
-        private val VALUES = values().associateBy { it.id }
-
-        fun fromId(id: Int) = VALUES.getValue(id)
+        fun fromId(id: Int) = values()[id]
     }
 }
 
-enum class MainHand(val id: Int) {
+enum class MainHand {
 
-    LEFT(0),
-    RIGHT(1);
+    LEFT,
+    RIGHT;
 
     companion object {
 
-        private val VALUES = values()
-
-        fun fromId(id: Int) = VALUES[id]
+        fun fromId(id: Int) = values()[id]
     }
 }
