@@ -44,7 +44,7 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
     override val worlds = mutableMapOf<String, KryptonWorld>()
 
     init {
-        LOGGER.debug("Loading world ${config.name}...")
+        LOGGER.info("Loading world ${config.name}...")
         if (!folder.exists()) {
             LOGGER.error("ERROR: World with name ${config.name} does not exist!")
             exitProcess(0)

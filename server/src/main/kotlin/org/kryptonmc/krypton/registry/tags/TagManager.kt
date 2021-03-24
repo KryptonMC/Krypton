@@ -25,10 +25,10 @@ class TagManager {
 
         var fileSystem: FileSystem? = null
         val rootPath = if (jarFile.isFile) {
-            fileSystem = FileSystems.newFileSystem(URI.create("jar:${jarFile.toURI()}"), mapOf<String, Any>())
+            fileSystem = FileSystems.newFileSystem(URI("jar:${jarFile.toURI()}"), mapOf<String, Any>())
             fileSystem.getPath("/registries")
         } else {
-            Paths.get(URI.create("file://${javaClass.classLoader.getResource("registries")!!.file}"))
+            Paths.get(URI("file://${javaClass.classLoader.getResource("registries")!!.file}"))
         }
 
         val entries = Files.walk(rootPath, Int.MAX_VALUE).filter { !Files.isDirectory(it) && it.toString().endsWith(".json") }.collect(Collectors.toList())

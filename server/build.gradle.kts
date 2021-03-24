@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
@@ -46,6 +47,7 @@ dependencies {
 tasks {
     withType<ShadowJar> {
         archiveFileName.set("Krypton-${rootProject.extra["globalVersion"]}.jar")
+        transform(Log4j2PluginsCacheFileTransformer::class.java)
     }
     withType<ProcessResources> {
         val tokens = mapOf("version" to rootProject.extra["globalVersion"])
