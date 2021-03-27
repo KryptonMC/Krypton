@@ -62,7 +62,6 @@ class SessionManager(private val server: KryptonServer) {
 
     fun beginPlayState(session: Session) {
         session.sendPacket(PacketOutLoginSuccess(session.profile.uuid, session.profile.name))
-        session.currentState = PacketState.PLAY
 
         val event = JoinEvent(session.player)
         server.eventBus.call(event)
@@ -74,9 +73,13 @@ class SessionManager(private val server: KryptonServer) {
 
         val world = server.worldManager.worlds.getValue(server.config.world.name)
         world.gamemode = server.config.world.gamemode
+        session.player.world = world
+
         session.player.gamemode = world.gamemode
         val spawnLocation = world.spawnLocation
         session.player.location = spawnLocation
+
+        session.currentState = PacketState.PLAY
 
         val joinPacket = PacketOutChat(
             translatable {

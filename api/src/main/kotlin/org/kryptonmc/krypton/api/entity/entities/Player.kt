@@ -6,6 +6,7 @@ import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
 import org.kryptonmc.krypton.api.entity.Abilities
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Location
+import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
 import java.net.InetSocketAddress
 import java.util.*
@@ -36,6 +37,11 @@ interface Player : Sender {
      * The player's abilities
      */
     val abilities: Abilities
+
+    /**
+     * The world this player is currently in
+     */
+    val world: World
 
     /**
      * The current location of the player

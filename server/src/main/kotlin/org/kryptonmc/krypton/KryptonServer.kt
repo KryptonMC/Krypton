@@ -169,6 +169,7 @@ class KryptonServer : Server {
                 val timePacket = PacketOutTimeUpdate(world.time, world.dayTime)
                 sessionManager.sessions.asSequence()
                     .filter { it.currentState == PacketState.PLAY }
+                    .filter { it.player.world == world }
                     .forEach { it.sendPacket(timePacket) }
             }
             world.tick()
