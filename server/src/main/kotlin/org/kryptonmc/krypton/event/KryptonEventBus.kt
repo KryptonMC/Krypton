@@ -17,7 +17,7 @@ class KryptonEventBus : EventBus {
     private val byEventBaked = ConcurrentHashMap<Class<*>, Set<EventHandlerMethod>>()
     private val lock = ReentrantLock()
 
-    override fun call(event: Any) = byEventBaked[event::class.java]?.forEach { it(event) } ?: Unit
+    override fun call(event: Any) = byEventBaked[event::class.java]?.forEach { listener -> listener(event) } ?: Unit
 
     override fun register(listener: Any) {
         val handlers = findHandlers(listener)
@@ -64,6 +64,11 @@ class KryptonEventBus : EventBus {
         }
 
         return handlers
+    }
+
+    internal fun unregisterAll() {
+        byListenerAndPriority.clear()
+        byEventBaked.clear()
     }
 
     companion object {

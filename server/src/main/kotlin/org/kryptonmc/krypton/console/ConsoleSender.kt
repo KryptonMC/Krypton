@@ -12,9 +12,13 @@ class ConsoleSender(server: KryptonServer) : KryptonSender(server) {
 
     override val name = "CONSOLE"
 
+    override fun identity() = Identity.nil()
+
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
         LOGGER.info(LegacyComponentSerializer.legacySection().serialize(message))
     }
+
+    override fun hasPermission(permission: String) = true // we are literally god, we never fail permission checks
 
     companion object {
 

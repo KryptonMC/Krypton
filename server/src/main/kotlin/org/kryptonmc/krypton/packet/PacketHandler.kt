@@ -1,7 +1,5 @@
 package org.kryptonmc.krypton.packet
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.extra.kotlin.text
 import net.kyori.adventure.extra.kotlin.translatable
@@ -76,6 +74,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
             is PacketInTeleportConfirm -> Unit // we can ignore this for now
             is PacketInEntityAction -> handleEntityAction(session, packet)
             is PacketInPluginMessage -> handlePluginMessage(session, packet)
+            is PacketInTabComplete -> handleTabComplete(session, packet)
         }
     }
 
@@ -284,6 +283,12 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
 
         sessionManager.sendPackets(chatPacket) {
             it.currentState == PacketState.PLAY && it.settings.chatMode == ChatMode.ENABLED
+        }
+    }
+
+    private fun handleTabComplete(session: Session, packet: PacketInTabComplete) {
+        server.commandManager.suggest(session.player, packet.text.removePrefix("/")).thenAccept {
+            session.sendPacket(PacketOutTabComplete(packet.id, it))
         }
     }
 

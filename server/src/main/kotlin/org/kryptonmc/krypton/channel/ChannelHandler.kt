@@ -47,7 +47,7 @@ class ChannelHandler(private val sessionManager: SessionManager) : SimpleChannel
                 key("disconnect.genericReason")
                 args(text { content("Internal Exception: $cause") })
             }
-            LOGGER.debug("Failed to send packet! Cause: ", cause)
+            LOGGER.debug("Failed to send or received invalid packet! Cause: ", cause)
             session.sendPacket(PacketOutDisconnect(disconnectReason))
             ctx.channel().config().isAutoRead = false
         }

@@ -7,7 +7,7 @@ import org.kryptonmc.krypton.api.event.CancellableEvent
 
 /**
  * Called when a player logs in and a player object has been
- * constructed for them (after the state is switched to PLAY)
+ * constructed for them (just before the state is switched to PLAY)
  *
  * @param player the player who joined
  * @author Callum Seabrook

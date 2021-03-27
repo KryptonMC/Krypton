@@ -14,6 +14,7 @@ import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Location
+import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
@@ -56,6 +57,8 @@ class KryptonPlayer(
 
     var gamemode = Gamemode.SURVIVAL
 
+    override lateinit var world: World
+
     override fun spawnParticles(particleEffect: ParticleEffect, location: Location) {
         val packet = PacketOutParticles(particleEffect, location)
         when (particleEffect.data) {
@@ -91,4 +94,6 @@ class KryptonPlayer(
     override fun resetTitle() {
         session.sendPacket(PacketOutTitle(TitleAction.RESET))
     }
+
+    override fun identity() = Identity.identity(uuid)
 }

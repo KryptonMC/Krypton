@@ -6,7 +6,9 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.api.command.Sender
+import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.command.argument.ArgumentTypes.writeArgumentType
+import org.kryptonmc.krypton.extension.writeKey
 import org.kryptonmc.krypton.extension.writeString
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
@@ -31,6 +33,7 @@ class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : Play
         if (node is ArgumentCommandNode<*, *>) {
             writeString(node.name)
             writeArgumentType(node.type)
+            if (node.customSuggestions != null) writeKey(NamespacedKey(value = "ask_server"))
         } else if (node is LiteralCommandNode<*>) {
             writeString(node.name)
         }
@@ -43,7 +46,10 @@ class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : Play
         when (node) {
             is RootCommandNode<*> -> byte = byte or 0
             is LiteralCommandNode<*> -> byte = byte or 1
-            is ArgumentCommandNode<*, *> -> byte = byte or 2
+            is ArgumentCommandNode<*, *> -> {
+                byte = byte or 2
+                if (node.customSuggestions != null) byte = byte or 0x10
+            }
         }
         writeByte(byte)
     }

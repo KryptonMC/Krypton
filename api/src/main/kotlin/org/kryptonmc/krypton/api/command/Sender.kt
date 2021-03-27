@@ -1,11 +1,12 @@
 package org.kryptonmc.krypton.api.command
 
 import net.kyori.adventure.audience.Audience
+import net.kyori.adventure.identity.Identified
 
 /**
  * A sender is an interface representing the sender of a command.
  */
-interface Sender : Audience {
+interface Sender : Audience, Identified {
 
     /**
      * The sender's name
