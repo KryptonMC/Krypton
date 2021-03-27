@@ -5,7 +5,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import net.kyori.adventure.text.TextComponent
@@ -25,7 +24,8 @@ data class ServerConfig(
     val ip: String,
     val port: Int,
     @SerialName("online-mode") val onlineMode: Boolean,
-    @SerialName("compression-threshold") val compressionThreshold: Int
+    @SerialName("compression-threshold") val compressionThreshold: Int,
+    @SerialName("tick-threshold") val tickThreshold: Int
 )
 
 @Serializable
@@ -71,5 +71,3 @@ internal object TextComponentSerializer : KSerializer<TextComponent> {
     override fun deserialize(decoder: Decoder) =
         LegacyComponentSerializer.legacyAmpersand().deserialize(decoder.decodeString())
 }
-
-const val RGB_MAX_VALUE = 16777215

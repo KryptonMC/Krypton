@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15] - 2021-03-27
+### Added
+- Time ticking (the server now sends out a time update packet every second, and the time is
+  updated every tick). This is the start of ticking for Krypton.
+- Watchdog thread, to make sure the tick thread doesn't die. The threshold for what this thread
+  considers "death" is configurable in the main configuration
+- Suggestion support (tab completion)
+- Warning when memory is 512 MB or below (vanilla threshold)
+- Built-in stop command to stop the server.
+- Vanilla's two uncaught exception handlers, to catch and log exceptions from threads that throw
+  exceptions in execution.
+
+### Changed
+- Updated `CommandManager`'s `register` functions that take Brigadier types to accept nodes
+  instead of builders
+- `Sender` is now identified (extends `Identified`, meaning it has an `Identity`, or a UUID)
+- `WorldBorder` now has a `World` property again.
+- Overrode permission checks for the console to force them to always succeed, as we are god
+  and permission checks are for peasants :)
+- Added `unregisterAll` function to the event bus, to allow
+- Properly disconnect all connected players when the server stops.
+
 ## [0.14.1] - 2021-03-24
 ### Changed
 - Fixed Krypton JAR not working properly due to the `Log4J2Plugins.dat` file not being merged from

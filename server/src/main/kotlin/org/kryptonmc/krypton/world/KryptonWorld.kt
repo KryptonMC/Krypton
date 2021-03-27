@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 
 data class KryptonWorld(
     override val name: String,
-    override val chunks: Set<KryptonChunk>,
+    override val chunks: MutableSet<KryptonChunk>,
     val bossbars: List<Bossbar>,
     val allowCheats: Boolean,
     val borderBuilder: BorderBuilder,
@@ -41,6 +41,7 @@ data class KryptonWorld(
 ) : World {
 
     override val border = KryptonWorldBorder(
+        this,
         borderBuilder.size,
         Location(this, borderBuilder.centerX, 0.0, borderBuilder.centerZ),
         borderBuilder.damagePerBlock,
@@ -57,6 +58,11 @@ data class KryptonWorld(
         spawnLocationBuilder.y,
         spawnLocationBuilder.z
     )
+
+    fun tick() {
+        time++
+        dayTime++
+    }
 }
 
 // TODO: Use this in MCA file writing

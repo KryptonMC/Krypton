@@ -22,6 +22,12 @@ abstract class Command(
      */
     abstract suspend fun execute(sender: Sender, args: List<String>)
 
-    // TODO: Support command suggestions
-    fun suggest(sender: Sender): List<String> = emptyList()
+    /**
+     * Called when the [sender] sends a tab complete request.
+     *
+     * @param sender the sender who sent the tab completion request
+     * @param args the arguments the sender sent
+     * @return a list of possible tab completions for the specified [args]
+     */
+    open fun suggest(sender: Sender, args: List<String>): List<String> = emptyList()
 }

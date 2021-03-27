@@ -1,6 +1,6 @@
 package org.kryptonmc.krypton.api.command
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.tree.LiteralCommandNode
 
 /**
  * The command manager is responsible for registering, unregistering, and
@@ -36,14 +36,14 @@ interface CommandManager {
      *
      * @param command the command to register
      */
-    fun register(command: LiteralArgumentBuilder<Sender>)
+    fun register(command: LiteralCommandNode<Sender>)
 
     /**
      * Register Brigadier [com.mojang.brigadier.Command]s
      *
      * @param commands the commands to register
      */
-    fun register(vararg commands: LiteralArgumentBuilder<Sender>)
+    fun register(vararg commands: LiteralCommandNode<Sender>)
 
     /**
      * Dispatch a command from the given [sender] with the given [command]

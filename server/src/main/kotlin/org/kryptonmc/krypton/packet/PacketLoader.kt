@@ -27,6 +27,7 @@ object PacketLoader {
         PacketState.PLAY.registerPacketType(0x00, ::PacketInTeleportConfirm)
         PacketState.PLAY.registerPacketType(0x03, ::PacketInChat)
         PacketState.PLAY.registerPacketType(0x05, ::PacketInClientSettings)
+        PacketState.PLAY.registerPacketType(0x06, ::PacketInTabComplete)
         PacketState.PLAY.registerPacketType(0x0B, ::PacketInPluginMessage)
         PacketState.PLAY.registerPacketType(0x10, ::PacketInKeepAlive)
         PacketState.PLAY.registerPacketType(0x12, ::PacketInPlayerPosition)

@@ -91,4 +91,6 @@ class KryptonPlayer(
     override fun resetTitle() {
         session.sendPacket(PacketOutTitle(TitleAction.RESET))
     }
+
+    override fun identity() = Identity.identity(uuid)
 }

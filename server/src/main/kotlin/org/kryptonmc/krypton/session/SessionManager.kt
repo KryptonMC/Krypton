@@ -289,6 +289,15 @@ class SessionManager(private val server: KryptonServer) {
         sessions.asSequence().filter(predicate).forEach { session -> packets.forEach(session::sendPacket) }
     }
 
+    fun shutdown() {
+        if (sessions.isEmpty()) return
+        val disconnectPacket = PacketOutPlayDisconnect(translatable { key("multiplayer.disconnect.server_shutdown") })
+        sessions.forEach {
+            it.sendPacket(disconnectPacket)
+            it.disconnect()
+        }
+    }
+
     companion object {
 
         private val LOGGER = logger<SessionManager>()
