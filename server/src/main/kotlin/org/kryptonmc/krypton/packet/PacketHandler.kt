@@ -118,10 +118,14 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
         server.eventBus.call(event)
 
         session.settings = packet.settings
-        session.sendPacket(PacketOutEntityMetadata(
+
+        val metadataPacket = PacketOutEntityMetadata(
             session.id,
             PlayerMetadata(mainHand = packet.settings.mainHand, skinFlags = packet.settings.skinSettings)
-        ))
+        )
+
+        session.sendPacket(metadataPacket)
+        sessionManager.sendPackets(metadataPacket)
     }
 
     private fun handleStatusPacket(session: Session) {
@@ -143,8 +147,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     }
 
     private fun handleLoginStart(session: Session, packet: PacketInLoginStart) {
-        session.player = KryptonPlayer(server, session, session.channel.remoteAddress() as InetSocketAddress)
-        session.player.name = packet.name
+        session.player = KryptonPlayer(packet.name, server, session, session.channel.remoteAddress() as InetSocketAddress)
 
         if (!server.config.server.onlineMode) {
             val offlineUUID = UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())

@@ -30,8 +30,7 @@ class PacketDecrypter(private val cipher: Cipher) : MessageToMessageDecoder<Byte
 
     companion object {
 
-        private val LOGGER = logger<PacketDecrypter>()
-
         const val NETTY_NAME = "decrypter"
+        private val LOGGER = logger<PacketDecrypter>()
     }
 }

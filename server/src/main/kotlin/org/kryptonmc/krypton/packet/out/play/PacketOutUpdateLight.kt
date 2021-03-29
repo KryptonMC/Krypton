@@ -33,13 +33,13 @@ class PacketOutUpdateLight(private val chunk: KryptonChunk) : PlayPacket(0x23) {
         buf.writeVarInt(emptySkyLightMask)
         buf.writeVarInt(emptyBlockLightMask)
 
-        for (section in sections.filter { section -> !section.skyLight.all { it == 0.toByte() } }) {
+        sections.filter { section -> !section.skyLight.all { it == 0.toByte() } }.forEach {
             buf.writeVarInt(2048)
-            buf.writeBytes(section.skyLight.toByteArray())
+            buf.writeBytes(it.skyLight)
         }
-        for (section in sections.filter { section -> !section.blockLight.all { it == 0.toByte() } }) {
+        sections.filter { section -> !section.blockLight.all { it == 0.toByte() } }.forEach {
             buf.writeVarInt(2048)
-            buf.writeBytes(section.blockLight.toByteArray())
+            buf.writeBytes(it.blockLight)
         }
     }
 }

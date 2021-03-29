@@ -9,7 +9,13 @@ data class NoiseGenerator(
     val seed: Int,
     val settings: NamespacedKey,
     val biomeSource: BiomeGenerator
-) : Generator(NamespacedKey(value = "noise"))
+) : Generator(ID) {
+
+    companion object {
+
+        val ID = NamespacedKey(value = "noise")
+    }
+}
 
 data class NoiseGeneratorSettings(
     val bedrockRoofPosition: Int,
@@ -60,21 +66,27 @@ sealed class BiomeGenerator(val type: NamespacedKey) {
 
     companion object {
 
+        internal val VANILLA_LAYERED = NamespacedKey(value = "vanilla_layered")
+        internal val MULTI_NOISE = NamespacedKey(value = "multi_noise")
+        internal val THE_END = NamespacedKey(value = "the_end")
+        internal val FIXED = NamespacedKey(value = "fixed")
+        internal val CHECKERBOARD = NamespacedKey(value = "checkerboard")
+
         fun fromNBT(nbt: CompoundBinaryTag) = when (val type = nbt.getString("type").toNamespacedKey()) {
-            NamespacedKey(value = "vanilla_layered") -> VanillaLayeredBiomeGenerator(
+            VANILLA_LAYERED -> VanillaLayeredBiomeGenerator(
                 nbt.getInt("seed"),
                 nbt.getBoolean("large_biomes")
             )
-            NamespacedKey(value = "multi_noise") -> MultiNoiseBiomeGenerator(
+            MULTI_NOISE -> MultiNoiseBiomeGenerator(
                 nbt.getInt("seed"),
                 nbt.getString("preset").toNamespacedKey()
             )
-            NamespacedKey(value = "the_end") -> TheEndBiomeGenerator(nbt.getInt("seed"))
-            NamespacedKey(value = "fixed") -> FixedBiomeGenerator(
+            THE_END -> TheEndBiomeGenerator(nbt.getInt("seed"))
+            FIXED -> FixedBiomeGenerator(
                 nbt.getInt("seed"),
                 nbt.getString("biome")
             )
-            NamespacedKey(value = "checkerboard") -> CheckerboardBiomeGenerator(
+            CHECKERBOARD -> CheckerboardBiomeGenerator(
                 nbt.getInt("seed"),
                 nbt.getList("biomes").map { (it as IntBinaryTag).value() },
                 nbt.getInt("scale")
@@ -87,25 +99,25 @@ sealed class BiomeGenerator(val type: NamespacedKey) {
 data class VanillaLayeredBiomeGenerator(
     override val seed: Int,
     val largeBiomes: Boolean,
-) : BiomeGenerator(NamespacedKey(value = "vanilla_layered"))
+) : BiomeGenerator(VANILLA_LAYERED)
 
 data class MultiNoiseBiomeGenerator(
     override val seed: Int,
     val preset: NamespacedKey
-) : BiomeGenerator(NamespacedKey(value = "multi_noise"))
+) : BiomeGenerator(MULTI_NOISE)
 
-data class TheEndBiomeGenerator(override val seed: Int) : BiomeGenerator(NamespacedKey(value = "the_end"))
+data class TheEndBiomeGenerator(override val seed: Int) : BiomeGenerator(THE_END)
 
 data class FixedBiomeGenerator(
     override val seed: Int,
     val biome: String
-) : BiomeGenerator(NamespacedKey(value = "fixed"))
+) : BiomeGenerator(FIXED)
 
 data class CheckerboardBiomeGenerator(
     override val seed: Int,
     val biomes: List<Int>,
     val scale: Int
-) : BiomeGenerator(NamespacedKey(value = "checkerboard"))
+) : BiomeGenerator(CHECKERBOARD)
 
 data class NoiseSettings(
     val firstOctave: Int,

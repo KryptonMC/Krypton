@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
 import org.kryptonmc.krypton.api.entity.Abilities
+import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.World
@@ -42,6 +43,11 @@ interface Player : Sender {
      * The world this player is currently in
      */
     val world: World
+
+    /**
+     * The dimension the player is currently in
+     */
+    val dimension: NamespacedKey
 
     /**
      * The current location of the player

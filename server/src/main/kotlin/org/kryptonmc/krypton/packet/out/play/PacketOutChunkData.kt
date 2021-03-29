@@ -68,9 +68,7 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
             }
 
             buf.writeVarInt(section.blockStates.size)
-            section.blockStates.forEach {
-                buf.writeLong(it)
-            }
+            section.blockStates.forEach { buf.writeLong(it) }
         }
 
         // TODO: When block entities are added, make use of this here
@@ -80,7 +78,7 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
     private fun calculateBitMask(sections: List<KryptonChunkSection>): Int {
         var result = 0
         repeat(16) { i ->
-            if (sections.singleOrNull { it.y == i && it.blockStates.isNotEmpty() } == null) return@repeat
+            if (sections.firstOrNull { it.y == i && it.blockStates.isNotEmpty() } == null) return@repeat
             result = result or (1 shl i)
         }
         return result

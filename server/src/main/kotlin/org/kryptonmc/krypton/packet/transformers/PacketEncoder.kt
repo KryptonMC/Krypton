@@ -17,8 +17,7 @@ class PacketEncoder : MessageToByteEncoder<Packet>() {
 
     companion object {
 
-        private val LOGGER = logger<PacketEncoder>()
-
         const val NETTY_NAME = "encoder"
+        private val LOGGER = logger<PacketEncoder>()
     }
 }

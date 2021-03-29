@@ -6,6 +6,7 @@ import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.entity.Attribute
 import org.kryptonmc.krypton.entity.memory.EmptyBrain
+import org.kryptonmc.krypton.packet.out.play.PacketOutJoinGame.Companion.OVERWORLD
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
 
 // don't even ask
@@ -28,8 +29,8 @@ data class PlayerData(
     val hurtTime: Short = 0,
     val inventory: List<InventoryItem> = emptyList(),
     val fallFlying: Boolean = false,
-    val spawnDimension: NamespacedKey = NamespacedKey(value = "overworld"),
-    val dimension: NamespacedKey = NamespacedKey(value = "overworld"),
+    val spawnDimension: NamespacedKey = OVERWORLD,
+    val dimension: NamespacedKey = OVERWORLD,
     val health: Float = 1.0F,
     val isOnGround: Boolean = false,
     val rotationX: Float = 0.0F,

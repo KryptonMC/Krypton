@@ -14,6 +14,7 @@ import org.kryptonmc.krypton.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.console.ConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
+import org.kryptonmc.krypton.data.PlayerDataManager
 import org.kryptonmc.krypton.encryption.Encryption
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonEventBus
@@ -74,6 +75,7 @@ class KryptonServer : Server {
     val tagManager = TagManager()
 
     override val worldManager = KryptonWorldManager(this, config.world)
+    val playerDataManager = PlayerDataManager(File(worldManager.folder, "/playerdata").apply { mkdir() })
 
     override val commandManager = KryptonCommandManager(this)
     override val eventBus = KryptonEventBus()
@@ -98,7 +100,7 @@ class KryptonServer : Server {
 
         Thread {
             LOGGER.debug("Starting console handler")
-            KryptonConsole(this@KryptonServer).start()
+            KryptonConsole(this).start()
         }.apply {
             name = "Console Handler"
             uncaughtExceptionHandler = DefaultUncaughtExceptionHandler(logger("CONSOLE"))
@@ -134,7 +136,7 @@ class KryptonServer : Server {
         }
 
         lastTickTime = System.currentTimeMillis()
-        if (config.server.tickThreshold > 0) WatchdogProcess(this@KryptonServer).start()
+        if (config.server.tickThreshold > 0) WatchdogProcess(this).start()
 
         Runtime.getRuntime().addShutdownHook(Thread({
             LOGGER.info("Stopping Krypton...")

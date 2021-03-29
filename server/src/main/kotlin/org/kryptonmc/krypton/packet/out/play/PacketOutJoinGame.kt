@@ -73,7 +73,7 @@ class PacketOutJoinGame(
 
     companion object {
 
-        private val OVERWORLD = NamespacedKey(value = "overworld")
+        val OVERWORLD = NamespacedKey(value = "overworld")
         private val NETHER = NamespacedKey(value = "the_nether")
         private val END = NamespacedKey(value = "the_end")
     }
