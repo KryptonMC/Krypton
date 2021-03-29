@@ -1,54 +1,56 @@
 package org.kryptonmc.krypton.api.world
 
 import kotlinx.serialization.Serializable
+import net.kyori.adventure.util.Index
 import java.util.*
 
 /**
  * Represents a game mode, those being [SURVIVAL], [CREATIVE], [ADVENTURE]
  * and [SPECTATOR].
  *
- * [id] is the legacy ID of the game mode. It should mostly only be used
- * internally, as the protocol still uses these legacy IDs.
- *
  * @author Callum Seabrook
  */
 @Serializable
-enum class Gamemode(val id: Int) {
+@Suppress("MemberVisibilityCanBePrivate")
+enum class Gamemode {
 
     /**
      * Plain old survival mode. In this mode, you have a finite amount of health,
      * and you can take damage.
      */
-    SURVIVAL(0),
+    SURVIVAL,
 
     /**
      * In creative this mode, you are completely invulnerable, you can fly,
      * and you can spawn and use any item you wish.
      */
-    CREATIVE(1),
+    CREATIVE,
 
     /**
      * Adventure mode is designed for map creators, in that blocks require specific
      * tools to break, and you cannot break them without those tools.
      */
-    ADVENTURE(2),
+    ADVENTURE,
 
     /**
      * In spectator mode, you are also completely invulnerable, but you can
      * also fly through blocks, as the entire world is essentially non existant
      * to your client (you can see things, but you will never collide with them)
      */
-    SPECTATOR(3);
+    SPECTATOR;
 
     override fun toString() = name.toLowerCase(Locale.ROOT)
 
     companion object {
 
-        private val VALUES = values().associateBy { it.id }
+        /**
+         * An index of gamemodes to their IDs (ordinals in this case)
+         */
+        val VALUES = Index.create(Gamemode::class.java) { it.ordinal }
 
         /**
          * Retrieves a game mode from its legacy ID. Should only need to be used internally.
          */
-        fun fromId(id: Int) = VALUES[id]
+        fun fromId(id: Int) = VALUES.value(id)
     }
 }

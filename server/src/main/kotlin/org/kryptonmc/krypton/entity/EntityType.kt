@@ -2,6 +2,8 @@ package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 
+// commented out entries in here are ones that are spawned in their own special ways
+// TODO: Use this for something
 enum class EntityType(val type: Int, val id: NamespacedKey) {
 
     AREA_EFFECT_CLOUD(0, NamespacedKey(value = "area_effect_cloud")),

@@ -30,6 +30,6 @@ class RegistryManager {
 
     companion object {
 
-        private val JSON = Json {}
+        private val JSON = Json { ignoreUnknownKeys = true }
     }
 }

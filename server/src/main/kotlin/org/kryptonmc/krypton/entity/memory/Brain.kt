@@ -1,13 +1,23 @@
 package org.kryptonmc.krypton.entity.memory
 
+import net.kyori.adventure.nbt.CompoundBinaryTag
+
 sealed class Brain<T : EntityMemories> {
 
     abstract val memories: T
+
+    open fun write(): CompoundBinaryTag = CompoundBinaryTag.empty()
 }
 
 object EmptyBrain : Brain<EmptyMemories>() {
 
     override val memories = EmptyMemories
+
+    override fun write() = CompoundBinaryTag.builder()
+        .put("Brain", CompoundBinaryTag.builder()
+            .put("memories", CompoundBinaryTag.empty())
+            .build())
+        .build()
 }
 
 data class PiglinBrain(override val memories: PiglinMemories) : Brain<PiglinMemories>()

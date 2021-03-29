@@ -86,3 +86,15 @@ If you have an idea on how I could improve the API, feel free to open an issue.
 
 Krypton is open-source for a reason. You are more than welcome to contribute, and we even encourage it. This project wouldn't
 be possible without contributions.
+
+### Credits
+
+- The project's [contributors](https://github.com/KryptonMC/Krypton/graphs/contributors) (of course)
+- [The Minecraft Coalition](https://wiki.vg) and [`#mcdevs`](https://github.com/mcdevs), for their hard work and effort
+  documenting the protocol, allowing these projects to exist, and their amazing support.
+- [The Minecraft Wiki](https://minecraft.gamepedia.com)
+- The project's dependencies, each and every one helping to make our lives as developers easier.
+  Notable mentions: [Adventure](https://github.com/KyoriPowered/Adventure), [Kotlin](https://kotlinlang.org),
+  [Netty](https://netty.io), [OkHttp](https://square.github.io/okhttp/), [Log4J](https://logging.apache.org/log4j/2.x/)
+- [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html), for being kind enough to grant me
+  an open-source license for their profiler.

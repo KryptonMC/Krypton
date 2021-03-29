@@ -1,5 +1,6 @@
 package org.kryptonmc.krypton.entity
 
+import net.kyori.adventure.util.Index
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import java.util.*
 
@@ -23,7 +24,14 @@ enum class AttributeKey(val key: NamespacedKey, val default: Double, val min: Do
     GENERIC_ATTACK_KNOCKBACK(NamespacedKey(value = "generic.attack_knockback"), 0.0, 0.0, 5.0),
     GENERIC_LUCK(NamespacedKey(value = "generic.luck"), 0.0, -1024.0, 1024.0, "Luck."),
     HORSE_JUMP_STRENGTH(NamespacedKey(value = "horse.jump_strength"), 0.7, 0.0, 2.0, "Jump Strength."),
-    ZOMBIE_SPAWN_REINFORCEMENTS(NamespacedKey(value = "zombie.spawn_reinforcements"), 0.0, 0.0, 1.0, "Spawn Reinforcements Chance."),
+    ZOMBIE_SPAWN_REINFORCEMENTS(NamespacedKey(value = "zombie.spawn_reinforcements"), 0.0, 0.0, 1.0, "Spawn Reinforcements Chance.");
+
+    companion object {
+
+        private val BY_KEY = Index.create(AttributeKey::class.java) { it.key }
+
+        fun fromKey(key: NamespacedKey) = requireNotNull(BY_KEY.value(key))
+    }
 }
 
 data class AttributeModifier(

@@ -21,6 +21,8 @@ class PacketOutJoinGame(
     private val isHardcore: Boolean = false,
     private val world: KryptonWorld,
     private val gamemode: Gamemode,
+    private val previousGamemode: Gamemode? = null,
+    private val dimension: NamespacedKey? = null,
     private val dimensions: DimensionRegistry,
     private val biomes: BiomeRegistry,
     private val maxPlayers: Int = 20,
@@ -30,8 +32,8 @@ class PacketOutJoinGame(
     override fun write(buf: ByteBuf) {
         buf.writeInt(entityId)
         buf.writeBoolean(isHardcore) // is hardcore
-        buf.writeByte(gamemode.id) // gamemode
-        buf.writeByte(-1) // previous gamemode
+        buf.writeByte(gamemode.ordinal) // gamemode
+        buf.writeByte(previousGamemode?.ordinal ?: -1) // previous gamemode
 
         // worlds that exist
         buf.writeVarInt(3)
@@ -46,13 +48,16 @@ class PacketOutJoinGame(
             .build())
 
         // dimension info
-        buf.writeNBTCompound(OVERWORLD_NBT)
+        val dimensionData = dimensions.values.firstOrNull {
+            it.name == dimension?.toString() ?: OVERWORLD
+        }?.settings?.toNBT() ?: OVERWORLD_NBT
+        buf.writeNBTCompound(dimensionData)
 
         val messageDigest = MessageDigest.getInstance("SHA-256")
         val seedBytes = ByteBuffer.allocate(Long.SIZE_BYTES).putLong(world.worldGenSettings.seed).array()
         val hashedSeed = ByteBuffer.wrap(messageDigest.digest(seedBytes)).getLong(0)
 
-        buf.writeKey(OVERWORLD) // world spawning into - for now, this is always overworld
+        buf.writeKey(dimension ?: OVERWORLD) // world spawning into
         buf.writeLong(hashedSeed)
         buf.writeVarInt(maxPlayers)
         buf.writeVarInt(viewDistance)
@@ -61,7 +66,7 @@ class PacketOutJoinGame(
         buf.writeBoolean(false) // reduced debug info
         buf.writeBoolean(true) // enable respawn screen
 
-        val generator = world.worldGenSettings.dimensions.getValue(NamespacedKey(value = "overworld")).generator
+        val generator = world.worldGenSettings.dimensions.getValue(OVERWORLD).generator
         buf.writeBoolean(generator is DebugGenerator) // is debug world
         buf.writeBoolean(generator is FlatGenerator) // is flat world
     }

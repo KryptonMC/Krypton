@@ -14,18 +14,18 @@ import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Location
-import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.command.KryptonSender
+import org.kryptonmc.krypton.entity.entities.data.PlayerData
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.chat.TitleAction
 import org.kryptonmc.krypton.session.Session
+import org.kryptonmc.krypton.world.KryptonWorld
 import java.net.InetSocketAddress
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 
 class KryptonPlayer(
     server: KryptonServer,
@@ -57,7 +57,9 @@ class KryptonPlayer(
 
     var gamemode = Gamemode.SURVIVAL
 
-    override lateinit var world: World
+    override lateinit var world: KryptonWorld
+
+    lateinit var data: PlayerData
 
     override fun spawnParticles(particleEffect: ParticleEffect, location: Location) {
         val packet = PacketOutParticles(particleEffect, location)

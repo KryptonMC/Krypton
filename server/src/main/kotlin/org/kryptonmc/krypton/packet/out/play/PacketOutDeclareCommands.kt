@@ -13,7 +13,6 @@ import org.kryptonmc.krypton.extension.writeString
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
-// TODO: Add support for suggestions through tab completion
 class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : PlayPacket(0x10) {
 
     override fun write(buf: ByteBuf) {

@@ -23,12 +23,12 @@ open class PlayerMetadata(
     arrowsInEntity: Int? = null,
     absorptionHealth: Int? = null,
     bedPosition: Optional<Vector>? = null,
-    private val additionalHearts: Float? = null,
+    val additionalHearts: Float? = null,
     val score: Int? = null,
     val skinFlags: SkinSettings? = null,
     val mainHand: MainHand? = null,
-    private val leftShoulderEntityData: CompoundBinaryTag? = null,
-    private val rightShoulderEntityData: CompoundBinaryTag? = null
+    val leftShoulderEntityData: CompoundBinaryTag? = null,
+    val rightShoulderEntityData: CompoundBinaryTag? = null
 ) : LivingEntityMetadata(movementFlags, airTicks, customName, isCustomNameVisible, isSilent, hasNoGravity, pose, handFlags, health, potionEffectColor, isPotionEffectAmbient, arrowsInEntity, absorptionHealth, bedPosition) {
 
     override fun write(buf: ByteBuf) {

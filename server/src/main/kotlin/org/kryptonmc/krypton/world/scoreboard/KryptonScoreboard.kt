@@ -1,32 +1,25 @@
 package org.kryptonmc.krypton.world.scoreboard
 
-import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.world.scoreboard.*
-import org.kryptonmc.krypton.api.world.scoreboard.criteria.Criterion
 
 data class KryptonScoreboard(
     override val position: ScoreboardPosition,
     override val name: String,
-    override val objectives: List<Objective> = listOf(),
-    override val teams: List<Team> = listOf(),
-    override val scores: Map<Player, Score> = mapOf(),
-    override val players: Set<Player> = setOf()
+    override val objectives: MutableList<Objective> = mutableListOf(),
+    override val teams: MutableList<Team> = mutableListOf(),
+    override val scores: MutableMap<Player, Score> = mutableMapOf(),
+    override val players: MutableSet<Player> = mutableSetOf()
 ) : Scoreboard {
 
-    override fun registerObjective(objective: Objective): Objective = Objective(
-        "",
-        Component.empty(),
-        Criterion.AIR,
-        RenderType.INTEGER
-    )
+    override fun registerObjective(objective: Objective): Objective {
+        objectives += objective
+        return objective
+    }
 
     override fun team(name: String) = teams.firstOrNull { it.name == name }
 
-    // TODO: Make this work as intended
-    @Suppress("ImplicitNullableNothingType")
-    override fun playerTeam(player: Player) = null
+    override fun playerTeam(player: Player) = teams.firstOrNull { player in it.members }
 
-    // TODO: Make this work as intended
-    override fun resetScores(player: Player) = Unit
+    override fun resetScores(player: Player) = scores.clear()
 }

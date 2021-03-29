@@ -8,11 +8,11 @@ import org.kryptonmc.krypton.api.registry.NamespacedKey
 
 class PacketOutPluginMessage(
     private val channelName: NamespacedKey,
-    private val content: String
+    private val content: ByteArray
 ) : PlayPacket(0x17) {
 
     override fun write(buf: ByteBuf) {
         buf.writeKey(channelName)
-        buf.writeString(content)
+        buf.writeBytes(content)
     }
 }

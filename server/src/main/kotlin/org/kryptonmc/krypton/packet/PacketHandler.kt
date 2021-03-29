@@ -196,7 +196,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
 
     private fun handlePositionUpdate(session: Session, packet: PacketInPlayerPosition) {
         val oldLocation = session.player.location
-        val newLocation = Location(session.player.location.world, packet.x, packet.y, packet.z)
+        val newLocation = oldLocation.copy(x = packet.x, y = packet.y, z = packet.z)
         if (newLocation == oldLocation) return
 
         session.player.location = newLocation
@@ -216,6 +216,12 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     }
 
     private fun handleRotationUpdate(session: Session, packet: PacketInPlayerRotation) {
+        val oldLocation = session.player.location
+        val newLocation = oldLocation.copy(yaw = packet.yaw, pitch = packet.pitch)
+
+        session.player.location = newLocation
+        server.eventBus.call(MoveEvent(session.player, oldLocation, newLocation))
+
         val rotationPacket = PacketOutEntityRotation(
             session.id,
             packet.yaw.toAngle(),
@@ -231,7 +237,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
 
     private fun handlePositionAndRotationUpdate(session: Session, packet: PacketInPlayerPositionAndRotation) {
         val oldLocation = session.player.location
-        val newLocation = Location(session.player.location.world, packet.x, packet.y, packet.z, packet.yaw, packet.pitch)
+        val newLocation = Location(session.player.world, packet.x, packet.y, packet.z, packet.yaw, packet.pitch)
         if (newLocation == oldLocation) return
 
         session.player.location = newLocation
@@ -263,27 +269,25 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
         server.eventBus.call(event)
         if (event.isCancelled) return
 
-        val chatPacket = PacketOutChat(
-            translatable {
-                key("chat.type.text")
-                args(text {
-                    content(session.profile.name)
-                    insertion(session.profile.name)
-                    clickEvent(suggestCommand("/msg ${session.profile.name}"))
-                    hoverEvent(showEntity(ShowEntity.of(
-                        Key.key("minecraft", "player"),
-                        session.profile.uuid,
-                        text { content(session.profile.name) }
-                    )))
-                }, text { content(packet.message) })
-            },
-            MessageType.CHAT,
-            session.profile.uuid
-        )
+        val message = translatable {
+            key("chat.type.text")
+            args(text {
+                content(session.profile.name)
+                insertion(session.profile.name)
+                clickEvent(suggestCommand("/msg ${session.profile.name}"))
+                hoverEvent(showEntity(ShowEntity.of(
+                    Key.key("minecraft", "player"),
+                    session.profile.uuid,
+                    text { content(session.profile.name) }
+                )))
+            }, text { content(packet.message) })
+        }
 
+        val chatPacket = PacketOutChat(message, MessageType.CHAT, session.profile.uuid)
         sessionManager.sendPackets(chatPacket) {
             it.currentState == PacketState.PLAY && it.settings.chatMode == ChatMode.ENABLED
         }
+        server.console.sendMessage(message, MessageType.CHAT)
     }
 
     private fun handleTabComplete(session: Session, packet: PacketInTabComplete) {
@@ -333,12 +337,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     }
 
     private fun handlePluginMessage(session: Session, packet: PacketInPluginMessage) {
-        server.eventBus.call(PluginMessageEvent(session.player, packet.channel, packet.data.decodeToString()))
-    }
-
-    companion object {
-
-        private val LOGGER = logger<PacketHandler>()
+        server.eventBus.call(PluginMessageEvent(session.player, packet.channel, packet.data))
     }
 }
 

@@ -3,7 +3,6 @@ package org.kryptonmc.krypton.plugin
 import java.net.URL
 import java.net.URLClassLoader
 import java.nio.file.Path
-import java.util.concurrent.CopyOnWriteArraySet
 
 // this is only so we can expose addURL for internal use
 class PluginClassLoader(vararg urls: URL) : URLClassLoader(urls) {

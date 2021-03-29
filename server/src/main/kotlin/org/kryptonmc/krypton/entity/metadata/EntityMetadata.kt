@@ -6,13 +6,13 @@ import org.kryptonmc.krypton.extension.writeMetadata
 import org.kryptonmc.krypton.extension.writeOptionalMetadata
 
 open class EntityMetadata(
-    private val movementFlags: MovementFlags? = null,
-    private val airTicks: Int? = null,
-    private val customName: Optional<Component>? = null,
-    private val isCustomNameVisible: Boolean? = null,
-    private val isSilent: Boolean? = null,
-    private val hasNoGravity: Boolean? = null,
-    private val pose: Pose? = null
+    val movementFlags: MovementFlags? = null,
+    val airTicks: Int? = null,
+    val customName: Optional<Component>? = null,
+    val isCustomNameVisible: Boolean? = null,
+    val isSilent: Boolean? = null,
+    val hasNoGravity: Boolean? = null,
+    val pose: Pose? = null
 ) {
 
     open fun write(buf: ByteBuf) {
@@ -82,4 +82,6 @@ enum class MetadataType {
     POSE
 }
 
+// For optional metadata values. This allows us to use a tristate for metadata, a.k.a to separate
+// optional metadata from not present metadata (represented by null)
 data class Optional<T>(val value: T?)
