@@ -12,23 +12,29 @@ plugins {
 
 application.mainClassName = "org.kryptonmc.krypton.KryptonKt"
 
+object Versions {
+
+    const val NETTY = "4.1.60.Final"
+    const val ADVENTURE = "4.7.0"
+}
+
 dependencies {
     implementation(project(":krypton-api"))
 
     // Netty
-    implementation("io.netty:netty-buffer:4.1.60.Final")
-    implementation("io.netty:netty-handler:4.1.60.Final")
-    implementation("io.netty:netty-transport:4.1.60.Final")
+    implementation("io.netty:netty-buffer:${Versions.NETTY}")
+    implementation("io.netty:netty-handler:${Versions.NETTY}")
+    implementation("io.netty:netty-transport:${Versions.NETTY}")
 
     // Netty native transport
-    implementation("io.netty:netty-transport-native-epoll:4.1.60.Final")
-    implementation("io.netty:netty-transport-native-kqueue:4.1.60.Final")
+    implementation("io.netty:netty-transport-native-epoll:${Versions.NETTY}")
+    implementation("io.netty:netty-transport-native-kqueue:${Versions.NETTY}")
     implementation("io.netty.incubator:netty-incubator-transport-native-io_uring:0.0.4.Final")
 
     // Adventure
-    implementation("net.kyori:adventure-text-serializer-gson:4.6.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.6.0")
-    implementation("net.kyori:adventure-nbt:4.6.0")
+    implementation("net.kyori:adventure-text-serializer-gson:${Versions.ADVENTURE}")
+    implementation("net.kyori:adventure-text-serializer-legacy:${Versions.ADVENTURE}")
+    implementation("net.kyori:adventure-nbt:${Versions.ADVENTURE}")
 
     // Logging
     runtimeOnly("org.apache.logging.log4j:log4j-core:2.14.1")

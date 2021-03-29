@@ -10,8 +10,6 @@ import kotlin.random.Random
 
 class Session(val id: Int, internal val channel: Channel) {
 
-    internal val teleportId = Random.nextInt(1000)
-
     lateinit var profile: GameProfile
     lateinit var settings: ClientSettings
 

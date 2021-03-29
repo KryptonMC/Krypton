@@ -2,10 +2,8 @@ package org.kryptonmc.krypton.world
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import net.kyori.adventure.bossbar.BossBar
-import net.kyori.adventure.nbt.BinaryTagIO
-import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.LongArrayBinaryTag
-import net.kyori.adventure.nbt.StringBinaryTag
+import net.kyori.adventure.nbt.*
+import net.kyori.adventure.nbt.BinaryTagIO.Compression.*
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
@@ -13,6 +11,12 @@ import org.kryptonmc.krypton.api.registry.toNamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.*
 import org.kryptonmc.krypton.config.WorldConfig
+import org.kryptonmc.krypton.entity.Attribute
+import org.kryptonmc.krypton.entity.AttributeKey
+import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.entity.entities.data.InventoryItem
+import org.kryptonmc.krypton.entity.entities.data.PlayerAbilities
+import org.kryptonmc.krypton.entity.entities.data.PlayerData
 import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.world.chunk.*
 import org.kryptonmc.krypton.world.dimension.Dimension
@@ -20,8 +24,8 @@ import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.generation.toGenerator
 import java.io.File
 import java.io.FileInputStream
+import java.io.IOException
 import java.io.RandomAccessFile
-import java.nio.file.Path
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -36,6 +40,7 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
 
     private val folder = File(CURRENT_DIRECTORY, config.name)
     private val regionFolder = File(folder, "/region")
+    private val playerDataFolder = File(folder, "/playerdata").apply { mkdir() }
 
     private val regionCache = Caffeine.newBuilder()
         .expireAfterWrite(1, TimeUnit.HOURS)
@@ -57,7 +62,7 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
     override fun load(name: String) = loadWorld(File(folder, name))
 
     private fun loadWorld(file: File): KryptonWorld {
-        val nbt = BinaryTagIO.unlimitedReader().read(file.toPath(), BinaryTagIO.Compression.GZIP).getCompound("Data")
+        val nbt = BinaryTagIO.unlimitedReader().read(file.toPath(), GZIP).getCompound("Data")
 
         val bossbars = nbt.getCompound("CustomBossEvents").map { (key, bossbar) ->
             val nbtBossbar = bossbar as CompoundBinaryTag
@@ -143,8 +148,139 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
                 WorldVersion(it.getInt("Id"), it.getString("Name"), it.getBoolean("Snapshot"))
             },
             DEFAULT_BUILD_LIMIT,
-            nbt.getLong("RandomSeed")
+            nbt.getLong("RandomSeed"),
+            mutableListOf()
         )
+    }
+
+    fun loadPlayerData(uuid: UUID): PlayerData? {
+        val playerFile = File(playerDataFolder, "$uuid.dat")
+        if (!playerFile.exists()) {
+            playerFile.createNewFile()
+            return null
+        }
+
+        val nbt = try {
+            BinaryTagIO.unlimitedReader().read(playerFile.toPath(), GZIP)
+        } catch (exception: IOException) {
+            return null
+        }
+
+        val attributes = nbt.getList("Attributes").asSequence()
+            .map { it as CompoundBinaryTag }
+            .map { Attribute(AttributeKey.fromKey(it.getString("Name").toNamespacedKey()), it.getDouble("Base")) }
+            .toList()
+
+        val abilities = nbt.getCompound("abilities").let {
+            PlayerAbilities(
+                it.getBoolean("instabuild"),
+                it.getBoolean("mayfly"),
+                it.getBoolean("invulnerable"),
+                it.getBoolean("mayBuild"),
+                it.getBoolean("flying"),
+                it.getFloat("walkSpeed"),
+                it.getFloat("flySpeed")
+            )
+        }
+
+        val inventory = nbt.getList("Inventory").asSequence()
+            .map { it as CompoundBinaryTag }
+            .map {
+                InventoryItem(
+                    it.getByte("Slot"),
+                    it.getString("id").toNamespacedKey(),
+                    it.getCompound("tag"),
+                    it.getByte("Count")
+                )
+            }
+            .toList()
+
+        val position = nbt.getList("Pos").map { (it as DoubleBinaryTag).value() }
+        val rotation = nbt.getList("Rotation").map { (it as FloatBinaryTag).value() }
+
+        return PlayerData(
+            nbt.getShort("SleepTimer"),
+            nbt.getBoolean("SpawnForced"),
+            attributes,
+            nbt.getBoolean("Invulnerable"),
+            nbt.getFloat("AbsorptionAmount"),
+            abilities,
+            nbt.getFloat("FallDistance"),
+            nbt.getShort("Air", 300),
+            Vector(nbt.getInt("SpawnX"), nbt.getInt("SpawnY"), nbt.getInt("SpawnZ")),
+            nbt.getFloat("SpawnAngle"),
+            nbt.getInt("Score"),
+            Vector(position[0], position[1], position[2]),
+            Gamemode.fromId(nbt.getInt("previousPlayerGameType", -1)),
+            Gamemode.fromId(nbt.getInt("playerGameType", 0)) ?: Gamemode.SURVIVAL,
+            nbt.getInt("SelectedItemSlot"),
+            nbt.getShort("HurtTime"),
+            inventory,
+            nbt.getBoolean("FallFlying"),
+            nbt.getString("SpawnDimension", "minecraft:overworld").toNamespacedKey(),
+            nbt.getString("Dimension", "minecraft:overworld").toNamespacedKey(),
+            nbt.getFloat("Health", 1.0F),
+            nbt.getBoolean("OnGround"),
+            rotation[1],
+            rotation[0]
+        )
+    }
+
+    fun savePlayerData(player: KryptonPlayer) {
+        val playerFile = File(playerDataFolder, "${player.uuid}.dat").apply { createNewFile() }
+
+        val attributes = player.data.attributes.map {
+            CompoundBinaryTag.builder()
+                .putDouble("Base", it.value)
+                .putString("Name", it.key.key.toString())
+                .build()
+        }
+
+        BinaryTagIO.writer().write(CompoundBinaryTag.builder()
+            .put(player.data.brain.write())
+            .putShort("SleepTimer", player.data.sleepTimer)
+            .putBoolean("SpawnForced", player.data.spawnForced)
+            .put("Attributes", ListBinaryTag.from(attributes))
+            .putBoolean("Invulnerable", player.data.isInvulnerable)
+            .putFloat("AbsorptionAmount", player.data.absorptionAmount)
+            .put("abilities", CompoundBinaryTag.builder()
+                .putFloat("walkSpeed", 0.1F)
+                .putBoolean("instabuild", player.abilities.isCreativeMode)
+                .putBoolean("mayfly", player.abilities.canFly)
+                .putBoolean("invulnerable", player.abilities.isInvulnerable)
+                .putBoolean("mayBuild", player.gamemode != Gamemode.ADVENTURE && player.gamemode != Gamemode.SPECTATOR)
+                .putBoolean("flying", player.isFlying)
+                .putFloat("flySpeed", player.abilities.flyingSpeed)
+                .build())
+            .putFloat("FallDistance", player.data.fallDistance)
+            .put("UUID", player.uuid.serialize())
+            .putInt("SpawnX", player.world.spawnLocation.x.toInt())
+            .putInt("SpawnY", player.world.spawnLocation.y.toInt())
+            .putInt("SpawnZ", player.world.spawnLocation.z.toInt())
+            .putFloat("SpawnAngle", player.data.spawnAngle)
+            .putShort("Air", player.data.air)
+            .putInt("Score", player.data.score)
+            .put("Pos", ListBinaryTag.builder()
+                .add(DoubleBinaryTag.of(player.location.x))
+                .add(DoubleBinaryTag.of(player.location.y))
+                .add(DoubleBinaryTag.of(player.location.z))
+                .build())
+            .putInt("previousPlayerGameType", player.data.previousGamemode?.ordinal ?: -1)
+            .putInt("DataVersion", NBT_DATA_VERSION)
+            .putInt("SelectedItemSlot", player.data.selectedItemSlot)
+            .putShort("HurtTime", player.data.hurtTime)
+            .put("Inventory", ListBinaryTag.of(BinaryTagTypes.COMPOUND, player.data.inventory.map { it.toNBT() }))
+            .putBoolean("FallFlying", player.data.fallFlying)
+            .putInt("playerGameType", player.gamemode.ordinal)
+            .putString("SpawnDimension", player.data.spawnDimension.toString())
+            .putFloat("Health", player.data.health)
+            .putBoolean("OnGround", player.isOnGround)
+            .putString("Dimension", player.data.dimension.toString())
+            .put("Rotation", ListBinaryTag.builder()
+                .add(FloatBinaryTag.of(player.location.pitch))
+                .add(FloatBinaryTag.of(player.location.yaw))
+                .build())
+            .build(), playerFile.toPath(), GZIP)
     }
 
     fun loadChunks(positions: List<Vector>): Map<Vector, KryptonChunk> {
@@ -196,9 +332,9 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
 
     private fun deserializeChunk(file: RandomAccessFile, positions: List<Vector>): Pair<Vector, KryptonChunk>? {
         val compressionType = when (val type = file.readByte().toInt()) {
-            0 -> BinaryTagIO.Compression.NONE
-            1 -> BinaryTagIO.Compression.GZIP
-            2 -> BinaryTagIO.Compression.ZLIB
+            0 -> NONE
+            1 -> GZIP
+            2 -> ZLIB
             else -> throw UnsupportedOperationException("Unknown compression type $type")
         }
         val nbt = BinaryTagIO.unlimitedReader().read(FileInputStream(file.fd), compressionType).getCompound("Level")
@@ -318,3 +454,10 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
         private val LOGGER = logger<KryptonWorldManager>()
     }
 }
+
+private fun UUID.serialize() = IntArrayBinaryTag.of(
+    (mostSignificantBits shr 32).toInt(),
+    (mostSignificantBits and Int.MAX_VALUE.toLong()).toInt(),
+    (leastSignificantBits shr 32).toInt(),
+    (leastSignificantBits and Int.MAX_VALUE.toLong()).toInt()
+)

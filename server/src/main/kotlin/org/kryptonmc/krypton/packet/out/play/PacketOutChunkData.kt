@@ -13,23 +13,28 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
     override fun write(buf: ByteBuf) {
         buf.writeInt(chunk.position.x.toInt())
         buf.writeInt(chunk.position.z.toInt())
-        buf.writeBoolean(true)
-        buf.writeVarInt(calculateBitMask(chunk.sections))
 
-        buf.writeNBTCompound(CompoundBinaryTag.builder()
+        val isFullChunk = chunk.biomes.isNotEmpty()
+        buf.writeBoolean(isFullChunk) // if the chunk is full
+        buf.writeVarInt(calculateBitMask(chunk.sections)) // the primary bit mask
+
+        buf.writeNBTCompound(CompoundBinaryTag.builder() // heightmaps
             .put("", CompoundBinaryTag.builder()
                 .put("MOTION_BLOCKING", chunk.heightmaps.motionBlocking)
                 .put("WORLD_SURFACE", chunk.heightmaps.worldSurface)
                 .build())
             .build())
 
-        buf.writeVarInt(chunk.biomes.size)
-        for (biome in chunk.biomes) buf.writeVarInt(biome.id)
+        if (isFullChunk) { // respect full chunk setting
+            buf.writeVarInt(chunk.biomes.size)
+            for (biome in chunk.biomes) buf.writeVarInt(biome.id)
+        }
 
         val sections = chunk.sections.filter { it.blockStates.isNotEmpty() }
 
+        // calculate the size of the chunk data
         var bytesLength = 0
-        for (section in sections) {
+        sections.forEach { section ->
             bytesLength += 2
             bytesLength += 1
 
@@ -47,33 +52,35 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
         }
         buf.writeVarInt(bytesLength)
 
-        for (section in sections) {
+        // write the chunk data
+        sections.forEach { section ->
             buf.writeShort(section.blockStates.size)
 
             val paletteSize = section.palette.size
             val bitsPerBlock = paletteSize.calculateBits()
             buf.writeUByte(bitsPerBlock.toUByte())
 
-            if (bitsPerBlock < 9) {
+            if (bitsPerBlock < 9) { // write palette
                 buf.writeVarInt(paletteSize)
-                for (block in section.palette) {
+                section.palette.forEach { block ->
                     buf.writeVarInt(GlobalPalette.PALETTE.getValue(block.name).states.first { it.properties == block.properties }.id)
                 }
             }
 
             buf.writeVarInt(section.blockStates.size)
-            for (blockState in section.blockStates) {
-                buf.writeLong(blockState)
+            section.blockStates.forEach {
+                buf.writeLong(it)
             }
         }
 
-        buf.writeVarInt(0)
+        // TODO: When block entities are added, make use of this here
+        buf.writeVarInt(0) // number of block entities
     }
 
     private fun calculateBitMask(sections: List<KryptonChunkSection>): Int {
         var result = 0
-        for (i in 0..15) {
-            if (sections.singleOrNull { it.y == i && it.blockStates.isNotEmpty() } == null) continue
+        repeat(16) { i ->
+            if (sections.singleOrNull { it.y == i && it.blockStates.isNotEmpty() } == null) return@repeat
             result = result or (1 shl i)
         }
         return result

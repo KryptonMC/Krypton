@@ -4,6 +4,7 @@ import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.space.BoundingBox
 import org.kryptonmc.krypton.api.world.Biome
 
+// TODO: Do thingys with these
 data class Mineshaft(
     val name: String,
     val boundingBox: BoundingBox,

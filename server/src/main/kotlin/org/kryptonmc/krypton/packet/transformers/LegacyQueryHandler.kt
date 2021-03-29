@@ -55,7 +55,6 @@ class LegacyQueryHandler(private val status: StatusConfig) : ChannelInboundHandl
                     ctx.sendFlushAndClose("\u00a71\u0000127\u0000$version\u0000$motd\u0000$playerCount\u0000$maxPlayers".toReply())
                 }
             }
-            buf.release()
             failed = false
         } finally {
             if (failed) {
@@ -63,6 +62,7 @@ class LegacyQueryHandler(private val status: StatusConfig) : ChannelInboundHandl
                 ctx.channel().pipeline().remove(NETTY_NAME)
                 ctx.fireChannelRead(msg)
             }
+            buf.release()
         }
     }
 

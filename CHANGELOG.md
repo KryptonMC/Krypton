@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16] - 2021-03-28
+### Added
+- Player data persistence (now uses <player>.dat files to save and load player data)
+- Console now has three simple registered translation keys, to allow sending join, leave and chat
+  messages to the console without extra work (`TranslationRegister`)
+- Rain ticking (now checks if there is rain time and counts it down every tick, and stops raining when
+  the counter reaches 0)
+
+### Changed
+- Fixed `LegacyQueryHandler`'s copied `ByteBuf` sometimes not getting released before it was
+  garbage collected
+- Rotation update packets now actually update the player's stored position, rather than just
+  sending it to the other players
+- `start` in `KryptonServer` is now `internal` (for obvious reasons)
+- `PacketOutJoinGame` now accepts a previous gamemode and a dimension key from the player's data,
+  instead of using previously hard coded -1 and overworld values respectively
+- Scoreboard functions now (mostly) do what they are supposed to
+- Unused registry entries are now commented out, to avoid us storing way more data than we need to
+- Bumped Adventure version to 4.7.0 and made it a shared constant in the server (Netty's version is
+  now also a shared constant)
+- Terminal console now uses `server.isRunning` to determine if the server is running, rather than a
+  hard coded `true`
+
+### Removed
+- `Item` class (internally, left over from when I thought you needed a class per item)
+- `teleportId` property from `Session` (no need to store it, as we only read it once)
+
 ## [0.15.1] - 2021-03-27
 ### Added
 - Players now have a `World`, which is the world they are currently in.

@@ -4,6 +4,9 @@ import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.*
 import org.kryptonmc.krypton.api.world.Difficulty
 import org.kryptonmc.krypton.api.world.WorldVersion
+import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.packet.out.play.GameState
+import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.world.bossbar.Bossbar
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
@@ -27,8 +30,8 @@ data class KryptonWorld(
     //val isInitialized: Boolean,
     val lastPlayed: LocalDateTime,
     val mapFeatures: Boolean,
-    val isRaining: Boolean,
-    val rainTime: Int,
+    var isRaining: Boolean,
+    var rainTime: Int,
     val randomSeed: Long,
     val spawnLocationBuilder: LocationBuilder,
     val isThundering: Boolean,
@@ -37,7 +40,8 @@ data class KryptonWorld(
     val nbtVersion: Int,
     override val version: WorldVersion,
     override val maxHeight: Int,
-    override val seed: Long
+    override val seed: Long,
+    val players: MutableList<KryptonPlayer>
 ) : World {
 
     override val border = KryptonWorldBorder(
@@ -60,10 +64,30 @@ data class KryptonWorld(
     )
 
     fun tick() {
+        if (players.isEmpty()) return // don't tick the world if there's no players in it
+
+        // tick time
         time++
         dayTime++
+
+        // tick rain
+        // TODO: Actually add in some probabilities and calculations for rain and thunder storms
+        if (rainTime > 0) {
+            if (!isRaining) isRaining = true
+            rainTime--
+            return
+        }
+
+        // this ensures the game state change to signal we've stopped raining only happens once
+        if (isRaining) {
+            isRaining = false
+            val endRainPacket = PacketOutChangeGameState(GameState.END_RAINING)
+            players.forEach { it.session.sendPacket(endRainPacket) }
+        }
     }
 }
+
+const val NBT_DATA_VERSION = 2584
 
 // TODO: Use this in MCA file writing
 //object LevelDataVersion {

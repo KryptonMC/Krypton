@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "org.kryptonmc"
-version = "0.15.1"
+version = "0.16"
 
 rootProject.extra["globalVersion"] = project.version
 
@@ -25,15 +25,14 @@ allprojects {
         api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
         api("org.jetbrains.kotlinx:kotlinx-serialization-hocon:1.1.0")
 
-        api("net.kyori:adventure-api:4.6.0") {
+        api("net.kyori:adventure-api:4.7.0") {
             exclude("org.checkerframework", "checker-qual")
         }
-        api("net.kyori:adventure-extra-kotlin:4.6.0") {
+        api("net.kyori:adventure-extra-kotlin:4.7.0") {
             exclude("org.checkerframework", "checker-qual")
         }
 
         api("com.mojang:brigadier:1.0.17")
-        api("me.bardy:admiral:1.1")
 
         api("org.apache.logging.log4j:log4j-api:2.14.1")
     }

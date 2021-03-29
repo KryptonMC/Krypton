@@ -17,3 +17,8 @@ fun Int.calculateBits() = max(log(takeHighestOneBit().toDouble(), 2.0).toInt() +
 fun Int.toArea() = (this * 2 + 1).square()
 
 fun Int.square() = this * this
+
+fun String.toProtocol(): ByteArray {
+    val bytes = encodeToByteArray()
+    return byteArrayOf(bytes.size.toByte(), *bytes)
+}

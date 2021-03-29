@@ -18,6 +18,7 @@ import org.kryptonmc.krypton.encryption.Encryption
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonEventBus
 import org.kryptonmc.krypton.extension.logger
+import org.kryptonmc.krypton.locale.TranslationRegister
 import org.kryptonmc.krypton.packet.PacketLoader
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.state.PacketState
@@ -91,7 +92,7 @@ class KryptonServer : Server {
     @Volatile
     internal var isRunning = true
 
-    fun start() {
+    internal fun start() {
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
         val startTime = System.nanoTime()
 
@@ -107,8 +108,9 @@ class KryptonServer : Server {
         LOGGER.debug("Loading packets...")
         PacketLoader.loadAll()
 
-        LOGGER.debug("Registering built-in commands...")
+        LOGGER.debug("Registering commands and console translations...")
         commandManager.registerBuiltins()
+        TranslationRegister.initialize()
 
         LOGGER.debug("Starting Netty...")
         GlobalScope.launch(Dispatchers.IO) {
@@ -164,6 +166,8 @@ class KryptonServer : Server {
 
     private fun tick() {
         tickCount++
+        if (players.isEmpty()) return // don't tick if there are no players on the server
+
         worldManager.worlds.forEach { (_, world) ->
             if (tickCount % 20 == 0) {
                 val timePacket = PacketOutTimeUpdate(world.time, world.dayTime)
@@ -177,11 +181,15 @@ class KryptonServer : Server {
     }
 
     override fun broadcast(message: Component, permission: String?) {
-        if (permission != null) players.filter { it.hasPermission(permission) }.forEach { it.sendMessage(message) }
-        else sendMessage(message)
+        if (permission != null) {
+            players.filter { it.hasPermission(permission) }.forEach { it.sendMessage(message) }
+            console.sendMessage(message)
+            return
+        }
+        sendMessage(message)
     }
 
-    override fun audiences() = players
+    override fun audiences() = players + console
 
     private fun loadConfig(): KryptonConfig {
         val configFile = File(CURRENT_DIRECTORY, "config.conf")

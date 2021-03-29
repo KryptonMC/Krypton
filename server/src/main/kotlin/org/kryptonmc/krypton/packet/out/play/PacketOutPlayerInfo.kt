@@ -37,12 +37,12 @@ class PacketOutPlayerInfo(
                         buf.writeString(it.signature)
                     }
 
-                    buf.writeVarInt(update.gamemode.id)
+                    buf.writeVarInt(update.gamemode.ordinal)
                     buf.writeVarInt(update.latency)
                     buf.writeBoolean(true)
                     buf.writeChat(update.displayName)
                 }
-                PlayerAction.UPDATE_GAMEMODE -> buf.writeVarInt(update.gamemode.id)
+                PlayerAction.UPDATE_GAMEMODE -> buf.writeVarInt(update.gamemode.ordinal)
                 PlayerAction.UPDATE_LATENCY -> buf.writeVarInt(update.latency)
                 PlayerAction.UPDATE_DISPLAY_NAME -> {
                     buf.writeBoolean(true)

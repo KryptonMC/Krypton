@@ -3,10 +3,14 @@ package org.kryptonmc.krypton.console
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import net.kyori.adventure.translation.GlobalTranslator
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.extension.logger
+import java.util.*
 
 class ConsoleSender(server: KryptonServer) : KryptonSender(server) {
 
@@ -15,7 +19,12 @@ class ConsoleSender(server: KryptonServer) : KryptonSender(server) {
     override fun identity() = Identity.nil()
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        LOGGER.info(LegacyComponentSerializer.legacySection().serialize(message))
+        val component = when (message) {
+            is TranslatableComponent -> GlobalTranslator.render(message, Locale.ENGLISH)
+            is TextComponent -> message
+            else -> return
+        }
+        LOGGER.info(LegacyComponentSerializer.legacySection().serialize(component))
     }
 
     override fun hasPermission(permission: String) = true // we are literally god, we never fail permission checks
