@@ -2,12 +2,12 @@ package org.kryptonmc.krypton.packet.state
 
 import org.kryptonmc.krypton.packet.Packet
 
-enum class PacketState(val id: Int) {
+enum class PacketState {
 
-    HANDSHAKE(0),
-    STATUS(1),
-    LOGIN(2),
-    PLAY(3);
+    HANDSHAKE,
+    STATUS,
+    LOGIN,
+    PLAY;
 
     private val packets = mutableMapOf<Int, () -> Packet>()
 
@@ -19,8 +19,6 @@ enum class PacketState(val id: Int) {
 
     companion object {
 
-        private val VALUES = values()
-
-        fun fromId(id: Int) = VALUES[id]
+        fun fromId(id: Int) = values()[id]
     }
 }

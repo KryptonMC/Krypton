@@ -27,8 +27,7 @@ class PacketEncrypter(private val cipher: Cipher) : MessageToByteEncoder<ByteBuf
 
     companion object {
 
-        private val LOGGER = logger<PacketEncrypter>()
-
         const val NETTY_NAME = "encrypter"
+        private val LOGGER = logger<PacketEncrypter>()
     }
 }

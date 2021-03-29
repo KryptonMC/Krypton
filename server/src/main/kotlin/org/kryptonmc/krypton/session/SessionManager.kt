@@ -33,6 +33,7 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.out.play.*
+import org.kryptonmc.krypton.packet.out.play.PacketOutJoinGame.Companion.OVERWORLD
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo.*
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityDestroy
@@ -78,14 +79,15 @@ class SessionManager(private val server: KryptonServer) {
             return
         }
 
-        val playerData = server.worldManager.loadPlayerData(session.profile.uuid)
+        val playerData = server.playerDataManager.load(session.profile.uuid)
 
         val world = server.worldManager.worlds.getValue(server.config.world.name)
         world.gamemode = server.config.world.gamemode
         world.players += session.player
         server.players += session.player
-        session.player.world = world
 
+        session.player.world = world
+        session.player.dimension = playerData?.dimension ?: OVERWORLD
         session.player.gamemode = playerData?.gamemode ?: world.gamemode
 
         val pitch = playerData?.rotationY ?: 0.0F
@@ -107,10 +109,7 @@ class SessionManager(private val server: KryptonServer) {
             server.config.status.maxPlayers,
             server.config.world.viewDistance
         ))
-        val pluginMessage = NamespacedKey(value = "brand") to "Krypton".toProtocol()
-        session.sendPacket(PacketOutPluginMessage(pluginMessage.first, pluginMessage.second))
-        server.eventBus.call(PluginMessageEvent(session.player, pluginMessage.first, pluginMessage.second))
-
+        session.sendPacket(PacketOutPluginMessage(BRAND_MESSAGE.first, BRAND_MESSAGE.second))
         session.sendPacket(PacketOutServerDifficulty(server.config.world.difficulty, true))
 
         val abilities = when (world.gamemode) {
@@ -171,13 +170,12 @@ class SessionManager(private val server: KryptonServer) {
         }
         if (playerInfos.isNotEmpty()) session.sendPacket(PacketOutPlayerInfo(PlayerAction.ADD_PLAYER, playerInfos))
 
-        GlobalScope.launch(Dispatchers.IO) { handlePlayStateBegin(session) }
+        GlobalScope.launch(Dispatchers.IO) { handlePlayStateBegin(session, joinPacket) }
 
         sessions.asSequence()
             .filter { it != session }
             .filter { it.currentState == PacketState.PLAY }
             .forEach {
-                session.sendPacket(joinPacket)
                 session.sendPacket(PacketOutSpawnPlayer(it.player))
                 session.sendPacket(PacketOutEntityMetadata(it.id, metadata))
                 session.sendPacket(PacketOutEntityProperties(it.id, playerData?.attributes ?: DEFAULT_PLAYER_ATTRIBUTES))
@@ -267,7 +265,7 @@ class SessionManager(private val server: KryptonServer) {
         }
     }
 
-    private fun handlePlayStateBegin(session: Session) {
+    private fun handlePlayStateBegin(session: Session, joinPacket: PacketOutChat) {
         val infoPacket = PacketOutPlayerInfo(
             PlayerAction.ADD_PLAYER,
             listOf(
@@ -288,7 +286,7 @@ class SessionManager(private val server: KryptonServer) {
             .filter { it != session }
             .filter { it.currentState == PacketState.PLAY }
             .forEach {
-//                it.sendPacket(joinPacket)
+                it.sendPacket(joinPacket)
                 it.sendPacket(infoPacket)
                 it.sendPacket(spawnPlayerPacket)
                 it.sendPacket(metadataPacket)
@@ -301,7 +299,7 @@ class SessionManager(private val server: KryptonServer) {
         if (session.currentState != PacketState.PLAY) return
 
         GlobalScope.launch { server.eventBus.call(QuitEvent(session.player)) }
-        server.worldManager.savePlayerData(session.player)
+        server.playerDataManager.save(session.player)
 
         val destroyPacket = PacketOutEntityDestroy(listOf(session.id))
         val infoPacket = PacketOutPlayerInfo(
@@ -356,6 +354,7 @@ class SessionManager(private val server: KryptonServer) {
 
     companion object {
 
+        private val BRAND_MESSAGE = NamespacedKey(value = "brand") to "Krypton".toProtocol()
         private val LOGGER = logger<SessionManager>()
     }
 }

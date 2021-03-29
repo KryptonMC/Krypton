@@ -1,4 +1,5 @@
 @file:Suppress("unused", "MemberVisibilityCanBePrivate")
+@file:JvmName("NumberUtils")
 package org.kryptonmc.krypton.api.space
 
 import org.kryptonmc.krypton.api.world.Location

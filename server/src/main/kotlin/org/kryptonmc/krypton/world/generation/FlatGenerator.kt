@@ -4,7 +4,13 @@ import net.kyori.adventure.nbt.CompoundBinaryTag
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.registry.toNamespacedKey
 
-data class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(NamespacedKey(value = "flat"))
+data class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(ID) {
+
+    companion object {
+
+        val ID = NamespacedKey(value = "flat")
+    }
+}
 
 data class FlatGeneratorSettings(
     val layers: List<FlatLayer>,

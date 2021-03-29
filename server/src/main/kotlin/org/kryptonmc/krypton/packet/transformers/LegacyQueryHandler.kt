@@ -82,7 +82,6 @@ class LegacyQueryHandler(private val status: StatusConfig) : ChannelInboundHandl
     companion object {
 
         const val NETTY_NAME = "legacy_query"
-
         private val LOGGER = logger<LegacyQueryHandler>()
     }
 }

@@ -15,7 +15,7 @@ import kotlinx.serialization.encoding.Encoder
  *
  * @author Callum Seabrook
  */
-@Serializable(with = NamespacedKeySerialiser::class)
+@Serializable(with = NamespacedKeySerializer::class)
 data class NamespacedKey(
     val namespace: String = "minecraft",
     val value: String
@@ -36,7 +36,7 @@ fun String.toNamespacedKey(): NamespacedKey {
     throw IllegalArgumentException("Invalid characters found in string \"$this\"! Must match $NAMESPACE_REGEX!")
 }
 
-object NamespacedKeySerialiser : KSerializer<NamespacedKey> {
+object NamespacedKeySerializer : KSerializer<NamespacedKey> {
 
     override val descriptor = PrimitiveSerialDescriptor("NamespacedKey", PrimitiveKind.STRING)
 

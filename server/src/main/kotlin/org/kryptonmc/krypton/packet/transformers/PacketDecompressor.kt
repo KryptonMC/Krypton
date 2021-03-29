@@ -38,9 +38,7 @@ class PacketDecompressor(var threshold: Int) : ByteToMessageDecoder() {
     companion object {
 
         const val NETTY_NAME = "decompressor"
-
         private const val PROTOCOL_MAX_SIZE = 0x200000
-
         private val LOGGER = logger<PacketDecompressor>()
     }
 }

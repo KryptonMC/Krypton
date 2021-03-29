@@ -38,23 +38,15 @@ enum class MobEffectType(private val id: Int) {
     companion object {
 
         private val mobEffectIds = values().toList()
-        private val mobEffectNames = mobEffectIds.associate { it.name to it; }
+        private val mobEffectNames = mobEffectIds.associateBy { it.name }
 
         fun fromId(id: Int): MobEffectType? {
-            if (id >= 0 && id < mobEffectIds.size) {
-                return mobEffectIds[id]
-            }
+            if (id >= 0 && id < mobEffectIds.size) return mobEffectIds[id]
             return null
         }
 
-        fun fromName(id: String): MobEffectType? {
-            return mobEffectNames[id]
-        }
-
+        fun fromName(id: String) = mobEffectNames[id]
     }
 
-    override fun toString(): String {
-        return "PotionEffectType[$id, $name]";
-    }
-
+    override fun toString() = "PotionEffectType[$id, $name]"
 }

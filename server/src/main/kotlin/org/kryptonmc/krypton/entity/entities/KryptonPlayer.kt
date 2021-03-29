@@ -11,6 +11,7 @@ import org.kryptonmc.krypton.api.effect.particle.NoteParticleData
 import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
 import org.kryptonmc.krypton.api.entity.Abilities
 import org.kryptonmc.krypton.api.entity.entities.Player
+import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Location
@@ -28,13 +29,13 @@ import java.net.InetSocketAddress
 import java.util.*
 
 class KryptonPlayer(
+    override val name: String,
     server: KryptonServer,
     val session: Session,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
 ) : Player, KryptonSender(server) {
 
     override lateinit var uuid: UUID
-    override lateinit var name: String
 
     override var displayName: Component = Component.empty()
     override lateinit var abilities: Abilities
@@ -56,8 +57,8 @@ class KryptonPlayer(
     override var locale: Locale? = null
 
     var gamemode = Gamemode.SURVIVAL
-
     override lateinit var world: KryptonWorld
+    override lateinit var dimension: NamespacedKey
 
     lateinit var data: PlayerData
 
