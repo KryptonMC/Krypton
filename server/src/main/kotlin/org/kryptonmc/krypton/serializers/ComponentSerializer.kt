@@ -13,7 +13,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 
 object ComponentSerializer : KSerializer<Component> {
 
-    override val descriptor = PrimitiveSerialDescriptor("Component", PrimitiveKind.STRING)
+    override val descriptor = PrimitiveSerialDescriptor("net.kyori.adventure.text.Component", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: Component) {
         encoder.encodeSerializableValue(JsonElement.serializer(), Json.parseToJsonElement(GsonComponentSerializer.gson().serialize(value)))

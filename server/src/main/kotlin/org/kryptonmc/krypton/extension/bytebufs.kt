@@ -84,7 +84,7 @@ fun ByteBuf.readString(maxLength: Short = Short.MAX_VALUE): String {
             throw IOException("The received encoded string buffer length is less than zero! Weird string!")
         else -> {
             val array = ByteArray(length)
-            this.readBytes(array)
+            readBytes(array)
             val s = String(array, UTF_8)
             if (s.length > maxLength) {
                 throw IOException("The received string length is longer than maximum allowed ($length > $maxLength)")
@@ -129,7 +129,7 @@ fun ByteBuf.readAllAvailableBytes(): ByteArray {
     if (hasArray()) return array()
 
     val bytes = ByteArray(length)
-    getBytes(readerIndex(), bytes)
+    readBytes(bytes, readerIndex(), length)
     return bytes
 }
 
