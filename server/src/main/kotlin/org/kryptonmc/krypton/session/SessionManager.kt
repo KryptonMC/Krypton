@@ -89,6 +89,10 @@ class SessionManager(private val server: KryptonServer) {
         session.player.world = world
         session.player.dimension = playerData?.dimension ?: OVERWORLD
         session.player.gamemode = playerData?.gamemode ?: world.gamemode
+        session.player.attributes = playerData?.attributes ?: DEFAULT_PLAYER_ATTRIBUTES
+
+        playerData?.isOnGround?.let { session.player.isOnGround = it }
+        playerData?.inventory?.let { session.player.inventory += it }
 
         val pitch = playerData?.rotationY ?: 0.0F
         val yaw = playerData?.rotationX ?: 0.0F
@@ -178,7 +182,7 @@ class SessionManager(private val server: KryptonServer) {
             .forEach {
                 session.sendPacket(PacketOutSpawnPlayer(it.player))
                 session.sendPacket(PacketOutEntityMetadata(it.id, metadata))
-                session.sendPacket(PacketOutEntityProperties(it.id, playerData?.attributes ?: DEFAULT_PLAYER_ATTRIBUTES))
+                session.sendPacket(PacketOutEntityProperties(it.id, session.player.attributes))
                 session.sendPacket(PacketOutEntityHeadLook(it.id, it.player.location.yaw.toAngle()))
             }
 
@@ -202,10 +206,9 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutWorldBorder(BorderAction.INITIALIZE, world.border))
         session.sendPacket(PacketOutTimeUpdate(world.time, world.dayTime))
         session.sendPacket(PacketOutSpawnPosition(spawnLocation))
-        session.sendPacket(PacketOutEntityProperties(session.id, playerData?.attributes ?: DEFAULT_PLAYER_ATTRIBUTES))
+        session.sendPacket(PacketOutEntityProperties(session.id, session.player.attributes))
         if (world.isRaining) session.sendPacket(PacketOutChangeGameState(GameState.BEGIN_RAINING))
 
-        session.player.data = playerData ?: createPlayerData(session.player)
         ServerStorage.PLAYER_COUNT.getAndIncrement()
 
         keepAliveExecutor.scheduleAtFixedRate({

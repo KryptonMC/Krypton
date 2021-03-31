@@ -11,7 +11,7 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 
 class PacketOutEntityProperties(
     private val entityId: Int,
-    private val properties: List<Attribute> = emptyList()
+    private val properties: Collection<Attribute> = emptyList()
 ) : PlayPacket(0x58) {
 
     override fun write(buf: ByteBuf) {
@@ -33,7 +33,7 @@ class PacketOutEntityProperties(
 
     companion object {
 
-        val DEFAULT_PLAYER_ATTRIBUTES = listOf(
+        val DEFAULT_PLAYER_ATTRIBUTES = setOf(
             Attribute(AttributeKey.GENERIC_MAX_HEALTH, 20.0),
             Attribute(AttributeKey.GENERIC_MOVEMENT_SPEED, 0.1)
         )

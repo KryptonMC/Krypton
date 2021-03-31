@@ -10,7 +10,7 @@ class PacketOutServerDifficulty(
 ) : PlayPacket(0x0D) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeByte(difficulty.id)
+        buf.writeByte(difficulty.ordinal)
         buf.writeBoolean(isLocked)
     }
 }

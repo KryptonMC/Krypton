@@ -97,6 +97,7 @@ class KryptonServer : Server {
     internal fun start() {
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
         val startTime = System.nanoTime()
+        Class.forName("org.kryptonmc.krypton.world.block.palette.GlobalPalette")
 
         Thread {
             LOGGER.debug("Starting console handler")
@@ -141,6 +142,9 @@ class KryptonServer : Server {
         Runtime.getRuntime().addShutdownHook(Thread({
             LOGGER.info("Stopping Krypton...")
             isRunning = false
+            LOGGER.info("Saving player and world data...")
+            worldManager.worlds.forEach { worldManager.save(it.value) }
+            players.forEach { playerDataManager.save(it) }
             LOGGER.info("Shutting down plugins...")
             pluginManager.shutdown()
             eventBus.unregisterAll()
@@ -177,6 +181,11 @@ class KryptonServer : Server {
                     .filter { it.currentState == PacketState.PLAY }
                     .filter { it.player.world == world }
                     .forEach { it.sendPacket(timePacket) }
+            }
+            if (tickCount % 6000 == 0) {
+                LOGGER.debug("Autosave started")
+                worldManager.save(world)
+                LOGGER.debug("Autosave finished")
             }
             world.tick()
         }

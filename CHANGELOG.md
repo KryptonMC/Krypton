@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   messages to the console without extra work (`TranslationRegister`)
 - Rain ticking (now checks if there is rain time and counts it down every tick, and stops raining when
   the counter reaches 0)
+- World data persistence (now also saves data to level.dat as well as loading it)
+- Autosaves, just like vanilla, now happen every 5 minutes
 
 ### Changed
 - Fixed `LegacyQueryHandler`'s copied `ByteBuf` sometimes not getting released before it was

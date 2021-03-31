@@ -11,6 +11,7 @@ import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.registry.biomes.BiomeRegistry
 import org.kryptonmc.krypton.registry.dimensions.DimensionRegistry
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.Gamerule
 import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.krypton.world.generation.FlatGenerator
 import java.nio.ByteBuffer
@@ -54,7 +55,7 @@ class PacketOutJoinGame(
         buf.writeNBTCompound(dimensionData)
 
         val messageDigest = MessageDigest.getInstance("SHA-256")
-        val seedBytes = ByteBuffer.allocate(Long.SIZE_BYTES).putLong(world.worldGenSettings.seed).array()
+        val seedBytes = ByteBuffer.allocate(Long.SIZE_BYTES).putLong(world.generationSettings.seed).array()
         val hashedSeed = ByteBuffer.wrap(messageDigest.digest(seedBytes)).getLong(0)
 
         buf.writeKey(dimension ?: OVERWORLD) // world spawning into
@@ -63,10 +64,10 @@ class PacketOutJoinGame(
         buf.writeVarInt(viewDistance)
 
         // TODO: Add gamerules and make these two use them
-        buf.writeBoolean(false) // reduced debug info
-        buf.writeBoolean(true) // enable respawn screen
+        buf.writeBoolean(world.gamerules[Gamerule.REDUCED_DEBUG_INFO].toBoolean()) // reduced debug info
+        buf.writeBoolean(!world.gamerules[Gamerule.DO_IMMEDIATE_RESPAWN].toBoolean()) // enable respawn screen
 
-        val generator = world.worldGenSettings.dimensions.getValue(OVERWORLD).generator
+        val generator = world.generationSettings.dimensions.getValue(OVERWORLD).generator
         buf.writeBoolean(generator is DebugGenerator) // is debug world
         buf.writeBoolean(generator is FlatGenerator) // is flat world
     }

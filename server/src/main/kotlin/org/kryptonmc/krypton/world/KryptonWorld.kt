@@ -17,23 +17,23 @@ data class KryptonWorld(
     override val chunks: MutableSet<KryptonChunk>,
     val bossbars: List<Bossbar>,
     val allowCheats: Boolean,
-    val borderBuilder: BorderBuilder,
+    private val borderBuilder: BorderBuilder,
     val clearWeatherTime: Int,
     var dayTime: Long,
     override val difficulty: Difficulty,
     val difficultyLocked: Boolean,
-    //val endDimensionData: EndDimensionData,
-    //val gamerules: List<Gamerule<*>>,
-    val worldGenSettings: WorldGenerationSettings,
+    //val endDimensionData: EndDimensionData, // for the end, when it is supported
+    val gamerules: Map<Gamerule, String>, // everything is a string because Mojang :fingerguns:
+    val generationSettings: WorldGenerationSettings,
     override var gamemode: Gamemode,
     override val isHardcore: Boolean,
-    //val isInitialized: Boolean,
+    //val isInitialized: Boolean, // we always assume this is a complete world
     val lastPlayed: LocalDateTime,
     val mapFeatures: Boolean,
     var isRaining: Boolean,
     var rainTime: Int,
     val randomSeed: Long,
-    val spawnLocationBuilder: LocationBuilder,
+    private val spawnLocationBuilder: LocationBuilder,
     val isThundering: Boolean,
     val thunderTime: Int,
     override var time: Long,
@@ -41,7 +41,8 @@ data class KryptonWorld(
     override val version: WorldVersion,
     override val maxHeight: Int,
     override val seed: Long,
-    val players: MutableList<KryptonPlayer>
+    val players: MutableList<KryptonPlayer>,
+    val serverBrands: Set<String>
 ) : World {
 
     override val border = KryptonWorldBorder(
@@ -88,13 +89,11 @@ data class KryptonWorld(
 }
 
 const val NBT_DATA_VERSION = 2584
+const val NBT_VERSION = 19133
 
-// TODO: Use this in MCA file writing
-//object LevelDataVersion {
-//
-//    const val ID = 2584
-//
-//    const val NAME = "1.16.5"
-//
-//    const val SNAPSHOT = false
-//}
+object LevelDataVersion {
+
+    const val ID = 2584
+    const val NAME = "1.16.5"
+    const val SNAPSHOT = false
+}
