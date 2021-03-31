@@ -344,17 +344,6 @@ class SessionManager(private val server: KryptonServer) {
         }
     }
 
-    private fun createPlayerData(player: KryptonPlayer) = PlayerData(
-        isInvulnerable = player.abilities.isInvulnerable,
-        spawnPosition = player.world.spawnLocation.toVector(),
-        position = player.location.toVector(),
-        gamemode = player.gamemode,
-        spawnDimension = NamespacedKey(value = "overworld"),
-        dimension = NamespacedKey(value = "overworld"),
-        rotationX = player.location.yaw,
-        rotationY = player.location.pitch
-    )
-
     companion object {
 
         private val BRAND_MESSAGE = NamespacedKey(value = "brand") to "Krypton".toProtocol()

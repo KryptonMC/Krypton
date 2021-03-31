@@ -97,6 +97,7 @@ class KryptonServer : Server {
     internal fun start() {
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
         val startTime = System.nanoTime()
+        // loading this here avoids loading it when the first player joins
         Class.forName("org.kryptonmc.krypton.world.block.palette.GlobalPalette")
 
         Thread {
