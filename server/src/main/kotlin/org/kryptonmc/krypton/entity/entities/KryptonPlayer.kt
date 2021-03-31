@@ -17,6 +17,8 @@ import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.command.KryptonSender
+import org.kryptonmc.krypton.entity.Attribute
+import org.kryptonmc.krypton.entity.entities.data.InventoryItem
 import org.kryptonmc.krypton.entity.entities.data.PlayerData
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
@@ -39,10 +41,13 @@ class KryptonPlayer(
 
     override var displayName: Component = Component.empty()
     override lateinit var abilities: Abilities
+    lateinit var attributes: Set<Attribute>
+
+    val inventory = mutableListOf<InventoryItem>()
 
     override lateinit var location: Location
 
-    override var velocity = Vector(0.0, 0.0, 0.0)
+    override var velocity = Vector.ZERO
 
     override var isOnGround = false
     override var isCrouching = false
@@ -59,8 +64,6 @@ class KryptonPlayer(
     var gamemode = Gamemode.SURVIVAL
     override lateinit var world: KryptonWorld
     override lateinit var dimension: NamespacedKey
-
-    lateinit var data: PlayerData
 
     override fun spawnParticles(particleEffect: ParticleEffect, location: Location) {
         val packet = PacketOutParticles(particleEffect, location)

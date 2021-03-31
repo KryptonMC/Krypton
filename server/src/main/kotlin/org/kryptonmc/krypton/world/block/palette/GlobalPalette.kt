@@ -4,15 +4,19 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.kryptonmc.krypton.api.registry.NamespacedKey
+import java.io.IOException
 
-object GlobalPalette {
+// these allow us to use delegated inheritance in GlobalPalette, making it easier to access the values
+private val BLOCKS_TEXT = (Thread.currentThread().contextClassLoader.getResourceAsStream("registries/blocks.json")
+    ?: throw IOException("registries/blocks.json not in classpath! Something has gone horribly wrong!"))
+    .reader(Charsets.UTF_8)
+    .readText()
 
-    val PALETTE: Map<NamespacedKey, RegistryBlock>
+private val PALETTE: Map<NamespacedKey, RegistryBlock> = Json.decodeFromString(BLOCKS_TEXT)
 
-    init {
-        val blocksText = javaClass.classLoader.getResourceAsStream("registries/blocks.json")!!.reader(Charsets.UTF_8).readText()
-        PALETTE = Json {}.decodeFromString(blocksText)
-    }
+object GlobalPalette : Map<NamespacedKey, RegistryBlock> by PALETTE {
+
+    override fun get(key: NamespacedKey) = PALETTE.getValue(key)
 }
 
 @Serializable

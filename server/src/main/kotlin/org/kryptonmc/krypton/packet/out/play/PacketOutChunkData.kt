@@ -43,7 +43,7 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
             if (bitsPerBlock < 9) {
                 bytesLength += section.palette.size.varIntSize()
                 bytesLength += section.palette.sumBy { entry ->
-                    GlobalPalette.PALETTE.getValue(entry.name).states.first { it.properties == entry.properties }.id.varIntSize()
+                    GlobalPalette[entry.name].states.first { it.properties == entry.properties }.id.varIntSize()
                 }
             }
 
@@ -63,7 +63,7 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
             if (bitsPerBlock < 9) { // write palette
                 buf.writeVarInt(paletteSize)
                 section.palette.forEach { block ->
-                    buf.writeVarInt(GlobalPalette.PALETTE.getValue(block.name).states.first { it.properties == block.properties }.id)
+                    buf.writeVarInt(GlobalPalette[block.name].states.first { it.properties == block.properties }.id)
                 }
             }
 
@@ -78,8 +78,8 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
     private fun calculateBitMask(sections: List<KryptonChunkSection>): Int {
         var result = 0
         repeat(16) { i ->
-            if (sections.firstOrNull { it.y == i && it.blockStates.isNotEmpty() } == null) return@repeat
-            result = result or (1 shl i)
+            if (sections.firstOrNull { it.y == (i - 1) && it.blockStates.isNotEmpty() } == null) return@repeat
+            result = result or (1 shl (i - 1))
         }
         return result
     }

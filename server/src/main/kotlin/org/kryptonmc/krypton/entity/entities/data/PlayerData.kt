@@ -13,7 +13,7 @@ import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties.Co
 data class PlayerData(
     val sleepTimer: Short = 0,
     val spawnForced: Boolean = false,
-    val attributes: List<Attribute> = DEFAULT_PLAYER_ATTRIBUTES,
+    val attributes: Set<Attribute> = DEFAULT_PLAYER_ATTRIBUTES,
     val isInvulnerable: Boolean = false,
     val absorptionAmount: Float = 0.0F,
     val abilities: PlayerAbilities = PlayerAbilities(),

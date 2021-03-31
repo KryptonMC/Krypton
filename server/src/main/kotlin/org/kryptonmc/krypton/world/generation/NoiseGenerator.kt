@@ -1,7 +1,6 @@
 package org.kryptonmc.krypton.world.generation
 
-import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.IntBinaryTag
+import net.kyori.adventure.nbt.*
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.registry.toNamespacedKey
 
@@ -10,6 +9,13 @@ data class NoiseGenerator(
     val settings: NamespacedKey,
     val biomeSource: BiomeGenerator
 ) : Generator(ID) {
+
+    override fun toNBT() = CompoundBinaryTag.builder()
+        .putString("type", ID.toString())
+        .putInt("seed", seed)
+        .putString("settings", settings.toString())
+        .put("biome_source", biomeSource.toNBT())
+        .build()
 
     companion object {
 
@@ -26,18 +32,37 @@ data class NoiseGeneratorSettings(
     val defaultFluid: NoiseBlockState,
     override val structures: GeneratorStructures,
     val noise: NoiseGeneratorConfig
-) : GeneratorSettings()
+) : GeneratorSettings() {
+
+    override fun toNBT() = CompoundBinaryTag.builder()
+        .putInt("bedrock_roof_position", bedrockRoofPosition)
+        .putInt("bedrock_floor_position", bedrockFloorPosition)
+        .putInt("sea_level", seaLevel)
+        .putBoolean("disable_mob_generation", disableMobGeneration)
+        .put("default_block", defaultBlock.toNBT())
+        .put("default_fluid", defaultFluid.toNBT())
+        .put("structures", structures.toNBT())
+        .put("noise", noise.toNBT())
+        .build()
+}
 
 data class NoiseBlockState(
     val name: NamespacedKey,
     val properties: Map<String, String>
-)
+) {
+
+    fun toNBT() = CompoundBinaryTag.builder()
+        .putString("Name", name.toString())
+        .put("Properties", CompoundBinaryTag.from(properties.mapValues { StringBinaryTag.of(it.value) }))
+        .build()
+}
 
 data class NoiseGeneratorConfig(
     val height: Int,
     val horizontalSize: Int,
     val verticalSize: Int,
     val densityFactor: Double,
+    val densityOffset: Double,
     val simplexSurfaceNoise: Boolean,
     val randomDensityOffset: Boolean = false,
     val islandNoiseOverride: Boolean = false,
@@ -45,24 +70,57 @@ data class NoiseGeneratorConfig(
     val sampling: NoiseSampling,
     val topSlide: NoiseSlide,
     val bottomSlide: NoiseSlide
-)
+) {
+
+    fun toNBT() = CompoundBinaryTag.builder()
+        .putInt("height", height)
+        .putInt("size_horizontal", horizontalSize)
+        .putInt("size_vertical", verticalSize)
+        .putDouble("density_factor", densityFactor)
+        .putDouble("density_offset", densityOffset)
+        .putBoolean("simplex_surface_noise", simplexSurfaceNoise)
+        .apply { if (randomDensityOffset) putBoolean("random_density_offset", randomDensityOffset) }
+        .apply { if (islandNoiseOverride) putBoolean("island_noise_override", islandNoiseOverride) }
+        .apply { if (amplified) putBoolean("amplified", amplified) }
+        .put("sampling", sampling.toNBT())
+        .put("top_slide", topSlide.toNBT())
+        .put("bottom_slide", bottomSlide.toNBT())
+        .build()
+}
 
 data class NoiseSampling(
     val xzScale: Double,
     val xzFactor: Double,
     val yScale: Double,
     val yFactor: Double
-)
+) {
+
+    fun toNBT() = CompoundBinaryTag.builder()
+        .putDouble("xz_scale", xzScale)
+        .putDouble("xz_factor", xzFactor)
+        .putDouble("y_scale", yScale)
+        .putDouble("y_factor", yFactor)
+        .build()
+}
 
 data class NoiseSlide(
     val target: Int,
     val size: Int,
     val offset: Int
-)
+) {
+
+    fun toNBT() = CompoundBinaryTag.builder()
+        .putInt("target", target)
+        .putInt("size", size)
+        .putInt("offset", offset)
+        .build()
+}
 
 sealed class BiomeGenerator(val type: NamespacedKey) {
 
     abstract val seed: Int
+
+    abstract fun toNBT(): CompoundBinaryTag
 
     companion object {
 
@@ -88,7 +146,7 @@ sealed class BiomeGenerator(val type: NamespacedKey) {
             )
             CHECKERBOARD -> CheckerboardBiomeGenerator(
                 nbt.getInt("seed"),
-                nbt.getList("biomes").map { (it as IntBinaryTag).value() },
+                nbt.getList("biomes").map { (it as IntBinaryTag).value() }.toIntArray(),
                 nbt.getInt("scale")
             )
             else -> throw UnsupportedOperationException("Unsupported biome generator type $type")
@@ -99,27 +157,90 @@ sealed class BiomeGenerator(val type: NamespacedKey) {
 data class VanillaLayeredBiomeGenerator(
     override val seed: Int,
     val largeBiomes: Boolean,
-) : BiomeGenerator(VANILLA_LAYERED)
+) : BiomeGenerator(VANILLA_LAYERED) {
+
+    override fun toNBT() = CompoundBinaryTag.builder()
+        .putString("type", VANILLA_LAYERED.toString())
+        .putInt("seed", seed)
+        .putBoolean("large_biomes", largeBiomes)
+        .build()
+}
 
 data class MultiNoiseBiomeGenerator(
     override val seed: Int,
     val preset: NamespacedKey
-) : BiomeGenerator(MULTI_NOISE)
+) : BiomeGenerator(MULTI_NOISE) {
 
-data class TheEndBiomeGenerator(override val seed: Int) : BiomeGenerator(THE_END)
+    override fun toNBT() = CompoundBinaryTag.builder()
+        .putString("type", MULTI_NOISE.toString())
+        .putInt("seed", seed)
+        .putString("preset", preset.toString())
+        .build()
+}
+
+data class TheEndBiomeGenerator(override val seed: Int) : BiomeGenerator(THE_END) {
+
+    override fun toNBT() = CompoundBinaryTag.builder()
+        .putString("type", THE_END.toString())
+        .putInt("seed", seed)
+        .build()
+}
 
 data class FixedBiomeGenerator(
     override val seed: Int,
     val biome: String
-) : BiomeGenerator(FIXED)
+) : BiomeGenerator(FIXED) {
+
+    override fun toNBT() = CompoundBinaryTag.builder()
+        .putString("type", FIXED.toString())
+        .putInt("seed", seed)
+        .putString("biome", biome)
+        .build()
+}
 
 data class CheckerboardBiomeGenerator(
     override val seed: Int,
-    val biomes: List<Int>,
+    val biomes: IntArray,
     val scale: Int
-) : BiomeGenerator(CHECKERBOARD)
+) : BiomeGenerator(CHECKERBOARD) {
+
+    override fun toNBT() = CompoundBinaryTag.builder()
+        .putString("type", CHECKERBOARD.toString())
+        .putInt("seed", seed)
+        .put("biomes", ListBinaryTag.of(BinaryTagTypes.INT, biomes.toList().map { IntBinaryTag.of(it) }))
+        .putInt("scale", scale)
+        .build()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as CheckerboardBiomeGenerator
+        return seed == other.seed && biomes.contentEquals(other.biomes) && scale == other.scale
+    }
+
+    override fun hashCode(): Int {
+        var result = seed
+        result = 31 * result + biomes.contentHashCode()
+        result = 31 * result + scale
+        return result
+    }
+}
 
 data class NoiseSettings(
     val firstOctave: Int,
-    val amplitudes: List<Float>
-)
+    val amplitudes: FloatArray
+) {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as NoiseSettings
+        return firstOctave == other.firstOctave && amplitudes.contentEquals(other.amplitudes)
+    }
+
+    override fun hashCode(): Int {
+        var result = firstOctave
+        result = 31 * result + amplitudes.contentHashCode()
+        return result
+    }
+}

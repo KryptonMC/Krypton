@@ -7,6 +7,7 @@ import net.kyori.adventure.nbt.BinaryTagIO.Compression.*
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.api.registry.toNamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.*
@@ -34,9 +35,10 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
     internal val folder = File(CURRENT_DIRECTORY, config.name)
     private val regionFolder = File(folder, "/region")
 
-    private val regionCache = Caffeine.newBuilder()
-        .expireAfterWrite(1, TimeUnit.HOURS)
-        .build<Vector, MutableMap<Vector, KryptonChunk>>()
+    private val chunkCache = Caffeine.newBuilder()
+        .maximumSize(512)
+        .expireAfterWrite(10, TimeUnit.MINUTES)
+        .build<Vector, KryptonChunk>()
 
     override val worlds = mutableMapOf<String, KryptonWorld>()
 
@@ -121,8 +123,9 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
             ),
             nbt.getInt("clearWeatherTime"),
             nbt.getLong("DayTime"),
-            Difficulty.fromId(nbt.getByte("Difficulty").toInt())!!,
+            Difficulty.fromId(nbt.getByte("Difficulty").toInt()),
             nbt.getBoolean("DifficultyLocked"),
+            nbt.getCompound("GameRules").associate { Gamerule.fromName(it.key) to (it.value as StringBinaryTag).value() },
             worldGenSettings,
             requireNotNull(Gamemode.fromId(nbt.getInt("GameType"))),
             nbt.getBoolean("hardcore"),
@@ -141,7 +144,8 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
             },
             DEFAULT_BUILD_LIMIT,
             nbt.getLong("RandomSeed"),
-            mutableListOf()
+            mutableListOf(),
+            nbt.getList("ServerBrands").add(StringBinaryTag.of("Krypton")).map { (it as StringBinaryTag).value() }.toSet()
         )
     }
 
@@ -150,6 +154,11 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
         val groupedByRegion = mutableMapOf<Vector, MutableList<Vector>>()
 
         positions.forEach {
+            if (chunkCache.getIfPresent(it) != null) {
+                chunks += it to chunkCache.getIfPresent(it)!!
+                return@forEach
+            }
+
             val regionX = floor(it.x / 32.0)
             val regionZ = floor(it.z / 32.0)
 
@@ -157,15 +166,8 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
         }
 
         groupedByRegion.forEach { (key, value) ->
-            val cachedChunks = regionCache.getIfPresent(key)
-            if (cachedChunks != null) {
-                chunks += cachedChunks
-                return@forEach
-            }
-
             val region = loadRegion(regionFolder, key.x.toInt(), key.z.toInt(), value)
             chunks += region.chunks
-            regionCache.put(key, region.chunks.toMutableMap())
         }
 
         return chunks
@@ -175,14 +177,14 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
         val file = RandomAccessFile(File(folder, "r.$x.$z.mca"), "r")
         val chunks = mutableMapOf<Vector, KryptonChunk>()
 
-        repeat(1024) {
-            file.seek(it * 4L)
+        repeat(1024) { i ->
+            file.seek(i * 4L)
             var offset = file.read() shl 16
             offset = offset or ((file.read() and 0xFF) shl 8)
             offset = offset or (file.read() and 0xFF)
             if (file.readByte() == 0.toByte()) return@repeat
 
-            file.seek(4096L + it * 4)
+            file.seek(4096L + i * 4)
             val timestamp = file.readInt()
 
             file.seek(4096L * offset + 4)
@@ -238,7 +240,93 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
             nbt.getLong("LastUpdate"),
             nbt.getLong("inhabitedTime"),
             Heightmaps(motionBlocking, oceanFloor, worldSurface)
-        )
+        ).apply { chunkCache.put(location, this) }
+    }
+
+    fun save(world: KryptonWorld) {
+        val dataFile = File(folder, "level.dat")
+
+        val customBossEvents = world.bossbars.associate { bossbar ->
+            val players = bossbar.players.map {
+                CompoundBinaryTag.builder()
+                    .putLong("L", it.leastSignificantBits)
+                    .putLong("M", it.mostSignificantBits)
+                    .build()
+            }
+
+            val createWorldFog = BossBar.Flag.CREATE_WORLD_FOG in bossbar.flags
+            val darkenScreen = BossBar.Flag.DARKEN_SCREEN in bossbar.flags
+            val playBossMusic = BossBar.Flag.PLAY_BOSS_MUSIC in bossbar.flags
+
+            bossbar.id.toString() to CompoundBinaryTag.builder()
+                .put("Players", ListBinaryTag.of(BinaryTagTypes.COMPOUND, players))
+                .putString("Color", bossbar.color.name)
+                .putBoolean("CreateWorldFog", createWorldFog)
+                .putBoolean("DarkenScreen", darkenScreen)
+                .putInt("Max", 20)
+                .putInt("Value", 20)
+                .putString("Name", GsonComponentSerializer.gson().serialize(bossbar.name))
+                .putString("Overlay", bossbar.overlay.name)
+                .putBoolean("PlayBossMusic", playBossMusic)
+                .putBoolean("Visible", bossbar.visible)
+                .build()
+        }
+
+        val gamerules = world.gamerules.transform { (rule, value) -> rule.rule to StringBinaryTag.of(value) }
+        val dimensions = world.generationSettings.dimensions.transform { (key, value) -> key.toString() to value.toNBT() }
+
+        BinaryTagIO.writer().write(CompoundBinaryTag.builder().put("Data", CompoundBinaryTag.builder()
+            .putBoolean("allowCommands", false)
+            .putDouble("BorderCenterX", world.border.center.x)
+            .putDouble("BorderCenterZ", world.border.center.z)
+            .putDouble("BorderDamagePerBlock", world.border.damageMultiplier)
+            .putDouble("BorderSize", world.border.size)
+            .putDouble("BorderSafeZone", world.border.safeZone)
+            .putDouble("BorderSizeLerpTarget", world.border.sizeLerpTarget)
+            .putLong("BorderSizeLerpTime", world.border.sizeLerpTime)
+            .putDouble("BorderWarningBlocks", world.border.warningBlocks)
+            .putDouble("BorderWarningTime", world.border.warningTime)
+            .putInt("clearWeatherTime", world.clearWeatherTime)
+            .put("CustomBossEvents", CompoundBinaryTag.from(customBossEvents))
+            .put("DataPacks", CompoundBinaryTag.builder()
+                .put("Enabled", ListBinaryTag.of(BinaryTagTypes.STRING, listOf(StringBinaryTag.of("vanilla"))))
+                .put("Disabled", ListBinaryTag.empty())
+                .build())
+            .putInt("DataVersion", LevelDataVersion.ID)
+            .putLong("DayTime", world.dayTime)
+            .putByte("Difficulty", world.difficulty.ordinal.toByte())
+            .putBoolean("DifficultyLocked", world.difficultyLocked)
+            .put("GameRules", CompoundBinaryTag.from(gamerules))
+            .put("WorldGenSettings", CompoundBinaryTag.builder()
+                .putLong("seed", world.generationSettings.seed)
+                .putBoolean("generate_features", world.generationSettings.generateStructures)
+                .put("dimensions", CompoundBinaryTag.from(dimensions))
+                .build())
+            .putInt("GameType", world.gamemode.ordinal)
+            .putBoolean("hardcore", world.isHardcore)
+            .putBoolean("initialized", true)
+            .putString("Krypton.Version", KryptonServerInfo.version)
+            .putLong("LastPlayed", world.lastPlayed.toInstant(ZoneOffset.UTC).toEpochMilli())
+            .putString("LevelName", world.name)
+            .putBoolean("MapFeatures", world.mapFeatures)
+            .putBoolean("raining", world.isRaining)
+            .putInt("rainTime", world.rainTime)
+            .putLong("RandomSeed", world.randomSeed)
+            .put("ServerBrands", ListBinaryTag.from(world.serverBrands.map { StringBinaryTag.of(it) }))
+            .putInt("SpawnX", world.spawnLocation.x.toInt())
+            .putInt("SpawnY", world.spawnLocation.y.toInt())
+            .putInt("SpawnZ", world.spawnLocation.z.toInt())
+            .putBoolean("thundering", world.isThundering)
+            .putLong("Time", world.time)
+            .putInt("version", NBT_VERSION)
+            .put("Version", CompoundBinaryTag.builder()
+                .putInt("Id", LevelDataVersion.ID)
+                .putString("Name", LevelDataVersion.NAME)
+                .putBoolean("Snapshot", LevelDataVersion.SNAPSHOT)
+                .build())
+            .putInt("WanderingTraderSpawnChance", 25)
+            .putInt("WanderingTraderSpawnDelay", 24000)
+            .build()).build(), dataFile.toPath(), GZIP)
     }
 
     /**
@@ -283,30 +371,14 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
         // so the square can connect
         val a = (1 + index - p) % (radius * 8)
 
-        var x = 0.0
-        var z = 0.0
-
-        when (floor(a / (radius * 2)).toInt()) {
+        return when (floor(a / (radius * 2)).toInt()) {
             // find the face (0 = top, 1 = right, 2 = bottom, 3 = left)
-            0 -> {
-                x = a - radius
-                z = -radius
-            }
-            1 -> {
-                x = radius
-                z = (a % en) - radius
-            }
-            2 -> {
-                x = radius - (a % en)
-                z = radius
-            }
-            3 -> {
-                x = -radius
-                z = radius - (a % en)
-            }
+            0 -> Vector((a - radius) + xOffset, 0.0, -radius + zOffset)
+            1 -> Vector(radius + xOffset, 0.0, ((a % en) - radius) + zOffset)
+            2 -> Vector((radius - (a % en)) + xOffset, 0.0, radius + zOffset)
+            3 -> Vector(-radius + xOffset, 0.0, (radius - (a % en)) + zOffset)
+            else -> Vector.ZERO
         }
-
-        return Vector(x + xOffset, 0.0, z + zOffset)
     }
 
     companion object {
@@ -315,4 +387,22 @@ class KryptonWorldManager(override val server: KryptonServer, config: WorldConfi
 
         private val LOGGER = logger<KryptonWorldManager>()
     }
+}
+
+// I know this looks stupid, and it probably is stupid, but this avoids me having to use toByte()
+// also means I don't declare extra unnecessary integers on the stack
+private const val ONE: Byte = 1
+
+val ByteBinaryTag.boolean: Boolean
+    get() {
+        if (value() > ONE) throw IllegalArgumentException("Boolean value cannot be greater than 1!")
+        return value() == ONE
+    }
+
+fun <K, V, K1, V1> Map<K, V>.transform(function: (Map.Entry<K, V>) -> Pair<K1, V1>): Map<K1, V1> {
+    val temp = mutableMapOf<K1, V1>()
+    for (entry in this) {
+        temp += function(entry)
+    }
+    return temp
 }

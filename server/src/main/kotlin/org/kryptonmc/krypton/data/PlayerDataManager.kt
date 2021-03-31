@@ -11,6 +11,7 @@ import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.entity.entities.data.InventoryItem
 import org.kryptonmc.krypton.entity.entities.data.PlayerAbilities
 import org.kryptonmc.krypton.entity.entities.data.PlayerData
+import org.kryptonmc.krypton.entity.memory.EmptyBrain
 import org.kryptonmc.krypton.serializers.serialize
 import org.kryptonmc.krypton.world.NBT_DATA_VERSION
 import java.io.File
@@ -36,7 +37,7 @@ class PlayerDataManager(private val folder: File) {
             (attribute as CompoundBinaryTag).let {
                 Attribute(AttributeKey.fromKey(it.getString("Name").toNamespacedKey()), it.getDouble("Base"))
             }
-        }
+        }.toSet()
 
         val abilities = nbt.getCompound("abilities").let {
             PlayerAbilities(
@@ -95,7 +96,7 @@ class PlayerDataManager(private val folder: File) {
     fun save(player: KryptonPlayer) {
         val playerFile = File(folder, "${player.uuid}.dat").apply { createNewFile() }
 
-        val attributes = player.data.attributes.map {
+        val attributes = player.attributes.map {
             CompoundBinaryTag.builder()
                 .putDouble("Base", it.value)
                 .putString("Name", it.key.key.toString())
@@ -103,12 +104,12 @@ class PlayerDataManager(private val folder: File) {
         }
 
         BinaryTagIO.writer().write(CompoundBinaryTag.builder()
-            .put(player.data.brain.write())
-            .putShort("SleepTimer", player.data.sleepTimer)
-            .putBoolean("SpawnForced", player.data.spawnForced)
+            .put(EmptyBrain.write())
+            .putShort("SleepTimer", 0)
+            .putBoolean("SpawnForced", false)
             .put("Attributes", ListBinaryTag.from(attributes))
             .putBoolean("Invulnerable", player.abilities.isInvulnerable)
-            .putFloat("AbsorptionAmount", player.data.absorptionAmount)
+            .putFloat("AbsorptionAmount", 0F)
             .put("abilities", CompoundBinaryTag.builder()
                 .putFloat("walkSpeed", 0.1F)
                 .putBoolean("instabuild", player.abilities.isCreativeMode)
@@ -118,7 +119,7 @@ class PlayerDataManager(private val folder: File) {
                 .putBoolean("flying", player.isFlying)
                 .putFloat("flySpeed", player.abilities.flyingSpeed)
                 .build())
-            .putFloat("FallDistance", 0.0F)
+            .putFloat("FallDistance", 0F)
             .put("UUID", player.uuid.serialize())
             .putInt("SpawnX", 0)
             .putInt("SpawnY", 0)
@@ -135,7 +136,7 @@ class PlayerDataManager(private val folder: File) {
             .putInt("DataVersion", NBT_DATA_VERSION)
             .putInt("SelectedItemSlot", 0)
             .putShort("HurtTime", 0)
-            .put("Inventory", ListBinaryTag.of(BinaryTagTypes.COMPOUND, player.data.inventory.map(InventoryItem::toNBT)))
+            .put("Inventory", ListBinaryTag.of(BinaryTagTypes.COMPOUND, player.inventory.map(InventoryItem::toNBT)))
             .putBoolean("FallFlying", false)
             .putInt("playerGameType", player.gamemode.ordinal)
             .putString("SpawnDimension", player.dimension.toString())
