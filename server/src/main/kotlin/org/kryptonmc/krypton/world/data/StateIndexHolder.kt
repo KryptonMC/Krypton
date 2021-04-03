@@ -69,13 +69,7 @@ class StateIndexHolder(
         return bits == other.bits && size == other.size && data.contentEquals(other.data)
     }
 
-    override fun hashCode(): Int {
-        var result = 0
-        result = 31 * result + bits.hashCode()
-        result = 31 * result + size.hashCode()
-        result = 31 * result + data.contentHashCode()
-        return result
-    }
+    override fun hashCode() = arrayOf(bits, size, data).contentDeepHashCode()
 
     companion object {
 

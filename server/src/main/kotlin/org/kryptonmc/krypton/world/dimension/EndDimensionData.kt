@@ -17,12 +17,6 @@ data class EndDimensionData(
         return exitPortalLocation == other.exitPortalLocation && gateways.contentEquals(other.gateways) && dragonKilled == other.dragonKilled && dragonUUID == other.dragonUUID && previouslyKilled == other.previouslyKilled
     }
 
-    override fun hashCode(): Int {
-        var result = exitPortalLocation.hashCode()
-        result = 31 * result + gateways.contentHashCode()
-        result = 31 * result + dragonKilled.hashCode()
-        result = 31 * result + dragonUUID.hashCode()
-        result = 31 * result + previouslyKilled.hashCode()
-        return result
-    }
+    override fun hashCode() =
+        arrayOf(exitPortalLocation, gateways, dragonKilled, dragonUUID, previouslyKilled).contentDeepHashCode()
 }
