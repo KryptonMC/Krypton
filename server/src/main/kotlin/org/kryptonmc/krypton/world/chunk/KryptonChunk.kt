@@ -1,39 +1,61 @@
 package org.kryptonmc.krypton.world.chunk
 
+import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.LongArrayBinaryTag
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Biome
+import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.chunk.Chunk
 import org.kryptonmc.krypton.world.block.Block
+import org.kryptonmc.krypton.world.generation.WorldGenerationStatus
 import org.kryptonmc.krypton.world.structure.Structure
+import java.util.*
 
+@Suppress("EqualsOrHashCode")
 data class KryptonChunk(
-    override var position: Vector,
-    override val sections: List<KryptonChunkSection>,
+    override val world: World,
+    var position: ChunkPosition,
+    val sections: List<ChunkSection>,
     override val biomes: List<Biome>,
-    override val lastUpdate: Long,
-    override val inhabitedTime: Long,
-    val heightmaps: Heightmaps
-) : Chunk
+    override var lastUpdate: Long,
+    override var inhabitedTime: Long,
+    val heightmaps: Heightmaps,
+    val carvingMasks: Pair<ByteArray, ByteArray>,
+    val structures: CompoundBinaryTag
+) : Chunk {
+
+    override val x: Int
+        get() = position.x
+
+    override val z: Int
+        get() = position.z
+
+    fun tick(playerCount: Int) {
+        inhabitedTime += playerCount
+    }
+
+    // avoid stack overflow due to circular dependencies
+    override fun hashCode() = Objects.hash(position, sections, biomes, lastUpdate, inhabitedTime, heightmaps, carvingMasks, structures)
+}
 
 // TODO: Migrate the remaining commented parameters to KryptonChunk
 data class ChunkData(
     val biomes: List<Biome>,
-    //val carvingMasks: Pair<List<Byte>, List<Byte>>,
-    //val entities: List<Entity>,
+    val carvingMasks: Pair<ByteArray, ByteArray>,
+//    val entities: List<Entity>,
     val heightmaps: Heightmaps,
     val lastUpdate: Long,
-    //val lights: List<List<Short>>,
-    //val liquidsToBeTicked: List<List<Short>>,
-    //val liquidTicks: List<CompoundBinaryTag>,
+    val lights: List<ShortArray>,
+    val liquidsToBeTicked: List<List<Short>>,
+    val liquidTicks: List<CompoundBinaryTag>,
     val inhabitedTime: Long,
-    //val postProcessing: List<List<Short>>,
-    val sections: List<KryptonChunkSection>,
-    //val status: WorldGenerationStatus,
-    //val tileEntities: List<BlockEntity>,
-    //val tileTicks: List<TileTick>,
-    //val toBeTicked: List<List<Short>>,
-    //val structures: StructureData
+    val postProcessing: List<ShortArray>,
+    val sections: List<ChunkSection>,
+    val status: WorldGenerationStatus,
+//    val tileEntities: List<BlockEntity>,
+    val tileTicks: List<TileTick>,
+    val toBeTicked: List<ShortArray>,
+    val structures: StructureData
 )
 
 data class Heightmaps(

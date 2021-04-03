@@ -6,13 +6,13 @@ import org.kryptonmc.krypton.extension.*
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
-import org.kryptonmc.krypton.world.chunk.KryptonChunkSection
+import org.kryptonmc.krypton.world.chunk.ChunkSection
 
 class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeInt(chunk.position.x.toInt())
-        buf.writeInt(chunk.position.z.toInt())
+        buf.writeInt(chunk.position.x)
+        buf.writeInt(chunk.position.z)
 
         val isFullChunk = chunk.biomes.isNotEmpty()
         buf.writeBoolean(isFullChunk) // if the chunk is full
@@ -48,13 +48,13 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
             }
 
             bytesLength += section.blockStates.size.varIntSize()
-            bytesLength += section.blockStates.sumBy { Long.SIZE_BYTES }
+            bytesLength += section.blockStates.data.sumBy { Long.SIZE_BYTES }
         }
         buf.writeVarInt(bytesLength)
 
         // write the chunk data
         sections.forEach { section ->
-            buf.writeShort(section.blockStates.size)
+            buf.writeShort(section.blockStates.data.size)
 
             val paletteSize = section.palette.size
             val bitsPerBlock = paletteSize.calculateBits()
@@ -67,15 +67,14 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
                 }
             }
 
-            buf.writeVarInt(section.blockStates.size)
-            section.blockStates.forEach { buf.writeLong(it) }
+            buf.writeLongArray(section.blockStates.data)
         }
 
         // TODO: When block entities are added, make use of this here
         buf.writeVarInt(0) // number of block entities
     }
 
-    private fun calculateBitMask(sections: List<KryptonChunkSection>): Int {
+    private fun calculateBitMask(sections: List<ChunkSection>): Int {
         var result = 0
         repeat(16) { i ->
             if (sections.firstOrNull { it.y == (i - 1) && it.blockStates.isNotEmpty() } == null) return@repeat

@@ -5,6 +5,7 @@ import kotlinx.coroutines.*
 import kotlinx.serialization.hocon.Hocon
 import kotlinx.serialization.hocon.decodeFromConfig
 import net.kyori.adventure.text.Component
+import org.apache.logging.log4j.LogManager
 import org.kryptonmc.krypton.api.Server
 import org.kryptonmc.krypton.api.event.events.ticking.TickEndEvent
 import org.kryptonmc.krypton.api.event.events.ticking.TickStartEvent
@@ -14,7 +15,7 @@ import org.kryptonmc.krypton.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.console.ConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
-import org.kryptonmc.krypton.data.PlayerDataManager
+import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.encryption.Encryption
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonEventBus
@@ -74,7 +75,7 @@ class KryptonServer : Server {
     val registryManager = RegistryManager()
     val tagManager = TagManager()
 
-    override val worldManager = KryptonWorldManager(this, config.world)
+    override val worldManager = KryptonWorldManager(this, config.world.name, config.advanced.synchronizeChunkWrites)
     val playerDataManager = PlayerDataManager(File(worldManager.folder, "/playerdata").apply { mkdir() })
 
     override val commandManager = KryptonCommandManager(this)
@@ -89,7 +90,7 @@ class KryptonServer : Server {
     private var lastOverloadWarning = 0L
     private var tickCount = 0
 
-    private val tickScheduler = Executors.newSingleThreadScheduledExecutor()
+    private val tickScheduler = Executors.newSingleThreadScheduledExecutor { Thread(it, "Tick Scheduler") }
 
     @Volatile
     internal var isRunning = true
@@ -143,9 +144,14 @@ class KryptonServer : Server {
         Runtime.getRuntime().addShutdownHook(Thread({
             LOGGER.info("Stopping Krypton...")
             isRunning = false
-            LOGGER.info("Saving player and world data...")
-            worldManager.worlds.forEach { worldManager.save(it.value) }
-            players.forEach { playerDataManager.save(it) }
+            sessionManager.shutdown()
+            LOGGER.info("Saving player, world and region data...")
+            try {
+                worldManager.saveAll()
+                players.forEach { playerDataManager.save(it) }
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
             LOGGER.info("Shutting down plugins...")
             pluginManager.shutdown()
             eventBus.unregisterAll()
@@ -153,11 +159,14 @@ class KryptonServer : Server {
             // shut down schedulers and disconnect players
             scheduler.shutdown()
             tickScheduler.shutdownNow()
-            sessionManager.shutdown()
             LOGGER.info("Goodbye")
-        }, "Shutdown Handler"))
+
+            LogManager.shutdown()
+        }, "Shutdown Handler").apply { isDaemon = false })
 
         tickScheduler.scheduleAtFixedRate({
+            if (!isRunning) return@scheduleAtFixedRate
+
             val nextTickTime = System.currentTimeMillis() - lastTickTime
             if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15000L) {
                 LOGGER.warn("Woah there! Can't keep up! Running ${nextTickTime}ms (${nextTickTime / 50} ticks) behind!")
@@ -183,12 +192,11 @@ class KryptonServer : Server {
                     .filter { it.player.world == world }
                     .forEach { it.sendPacket(timePacket) }
             }
-            if (tickCount % 6000 == 0) {
-                LOGGER.debug("Autosave started")
-                worldManager.save(world)
-                LOGGER.debug("Autosave finished")
-            }
             world.tick()
+        }
+        if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
+            LOGGER.info("Autosave started")
+            GlobalScope.launch(Dispatchers.IO) { worldManager.saveAll() }
         }
     }
 

@@ -48,12 +48,22 @@ dependencies {
 
     // Caching
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.8")
+    implementation("it.unimi.dsi:fastutil-core:8.5.4")
 }
 
 tasks {
     withType<ShadowJar> {
         archiveFileName.set("Krypton-${rootProject.extra["globalVersion"]}.jar")
         transform(Log4j2PluginsCacheFileTransformer::class.java)
+
+        exclude("it.unimi.dsi.fastutil.booleans")
+        exclude("it.unimi.dsi.fastutil.bytes")
+        exclude("it.unimi.dsi.fastutil.chars")
+        exclude("it.unimi.dsi.fastutil.doubles")
+        exclude("it.unimi.dsi.fastutil.floats")
+        exclude("it.unimi.dsi.fastutil.io")
+        exclude("it.unimi.dsi.fastutil.objects")
+        exclude("it.unimi.dsi.fastutil.shorts")
     }
     withType<ProcessResources> {
         val tokens = mapOf("version" to rootProject.extra["globalVersion"])

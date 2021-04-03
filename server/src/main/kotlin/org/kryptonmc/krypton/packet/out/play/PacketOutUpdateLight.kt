@@ -8,8 +8,8 @@ import org.kryptonmc.krypton.world.chunk.KryptonChunk
 class PacketOutUpdateLight(private val chunk: KryptonChunk) : PlayPacket(0x23) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(chunk.position.x.toInt())
-        buf.writeVarInt(chunk.position.z.toInt())
+        buf.writeVarInt(chunk.position.x)
+        buf.writeVarInt(chunk.position.z)
         buf.writeBoolean(true)
         val sections = chunk.sections.sortedBy { it.y }
 

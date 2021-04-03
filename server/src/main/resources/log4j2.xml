@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Configuration xmlns="http://logging.apache.org/log4j/2.0/config" status="DEBUG">
+<Configuration xmlns="http://logging.apache.org/log4j/2.0/config" status="DEBUG" shutdownHook="disable">
     <Appenders>
         <TerminalConsole name="CONSOLE">
             <PatternLayout noConsoleNoAnsi="true" pattern="%red{%d{yyyy-MM-dd HH:mm:ss}} %green{[%thread]} %highlight{%level}{STYLE=Logback} %cyan{%logger{0}} - %minecraftFormatting{%msg}%n" />

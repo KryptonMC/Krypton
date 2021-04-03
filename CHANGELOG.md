@@ -26,6 +26,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the counter reaches 0)
 - World data persistence (now also saves data to level.dat as well as loading it)
 - Autosaves, just like vanilla, now happen every 5 minutes
+- Region data persistence, using a system that is very similar to how vanilla handles region data
+  persistence. This includes support for MCC (files used when chunks are more than 1 MB in size) files
+  and all compression types.
+- `ChunkPosition`, as I was getting fed up with having to do double to int conversions all the time
+  when using `Vector`, and also to save wasted space from the Y always being 0
+- Inhabited time (chunks) is now updated every tick (increments by the amount of players currently
+  in that chunk)
 
 ### Changed
 - Fixed `LegacyQueryHandler`'s copied `ByteBuf` sometimes not getting released before it was
@@ -41,6 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   now also a shared constant)
 - Terminal console now uses `server.isRunning` to determine if the server is running, rather than a
   hard coded `true`
+- Log4J now no longer shuts down before we finish logging, resulting in logging messages not getting
+  sent.
 
 ### Removed
 - `Item` class (internally, left over from when I thought you needed a class per item)
