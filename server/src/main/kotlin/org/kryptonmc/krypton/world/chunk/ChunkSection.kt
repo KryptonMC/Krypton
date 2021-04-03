@@ -18,14 +18,7 @@ data class ChunkSection(
         return y == other.y && blockLight.contentEquals(other.blockLight) && skyLight.contentEquals(other.skyLight) && palette == other.palette && blockStates == other.blockStates
     }
 
-    override fun hashCode(): Int {
-        var result = y
-        result = 31 * result + blockLight.contentHashCode()
-        result = 31 * result + skyLight.contentHashCode()
-        result = 31 * result + palette.hashCode()
-        result = 31 * result + blockStates.hashCode()
-        return result
-    }
+    override fun hashCode() = arrayOf(y, blockLight, skyLight, palette, blockStates).contentDeepHashCode()
 }
 
 data class ChunkBlock(
