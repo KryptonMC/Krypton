@@ -14,21 +14,19 @@ import java.time.LocalDateTime
 interface Chunk {
 
     /**
-     * The position of this chunk in the world.
-     *
-     * As [Location] is three-dimensional but chunks are two-dimensional,
-     * this location will always have a Y value of 0. It's yaw and pitch
-     * will also always be 0.
+     * The world this chunk is in
      */
-    val position: Vector
+    val world: World
 
     /**
-     * The list of chunk sections for this chunk, ordered by Y level.
-     *
-     * This list does not include the two special sections, at Y = -1
-     * and Y = 16, that are used for lighting purposes.
+     * The X position of this chunk
      */
-    val sections: List<ChunkSection>
+    val x: Int
+
+    /**
+     * The Z position of this chunk
+     */
+    val z: Int
 
     /**
      * The list of biomes in this chunk.

@@ -1,4 +1,4 @@
-package org.kryptonmc.krypton.data
+package org.kryptonmc.krypton.world.data
 
 import net.kyori.adventure.nbt.*
 import net.kyori.adventure.nbt.BinaryTagIO.Compression.GZIP

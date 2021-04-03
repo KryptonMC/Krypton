@@ -85,6 +85,8 @@ data class KryptonWorld(
             val endRainPacket = PacketOutChangeGameState(GameState.END_RAINING)
             players.forEach { it.session.sendPacket(endRainPacket) }
         }
+
+        chunks.forEach { chunk -> chunk.tick(players.filter { it.location in chunk.position }.size) }
     }
 }
 

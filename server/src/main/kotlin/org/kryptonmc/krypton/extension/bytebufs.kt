@@ -133,6 +133,11 @@ fun ByteBuf.readAllAvailableBytes(): ByteArray {
     return bytes
 }
 
+fun ByteBuf.writeLongArray(array: LongArray) {
+    writeVarInt(array.size)
+    array.forEach { writeLong(it) }
+}
+
 fun ByteBuf.writeOptionalVarInt(varInt: Optional<Int>) {
     if (varInt.value != null) {
         writeBoolean(true)

@@ -16,7 +16,8 @@ import org.kryptonmc.krypton.api.world.Gamemode
 data class KryptonConfig(
     val server: ServerConfig,
     val status: StatusConfig,
-    val world: WorldConfig
+    val world: WorldConfig,
+    val advanced: AdvancedConfig
 )
 
 @Serializable
@@ -40,7 +41,13 @@ data class WorldConfig(
     @Serializable(with = GamemodeSerializer::class) val gamemode: Gamemode,
     @Serializable(with = DifficultySerializer::class) val difficulty: Difficulty,
     val hardcore: Boolean,
-    @SerialName("view-distance") val viewDistance: Int
+    @SerialName("view-distance") val viewDistance: Int,
+    @SerialName("autosave-interval") val autosaveInterval: Int
+)
+
+@Serializable
+data class AdvancedConfig(
+    @SerialName("synchronize-chunk-writes") val synchronizeChunkWrites: Boolean = true
 )
 
 internal object GamemodeSerializer : KSerializer<Gamemode> by Gamemode.serializer() {

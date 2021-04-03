@@ -7,20 +7,18 @@ import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.extra.kotlin.text
 import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.text.format.NamedTextColor
-import org.kryptonmc.krypton.*
+import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.SERVER_UUID
+import org.kryptonmc.krypton.ServerStorage
+import org.kryptonmc.krypton.api.entity.Abilities
 import org.kryptonmc.krypton.api.event.events.login.JoinEvent
 import org.kryptonmc.krypton.api.event.events.play.QuitEvent
 import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.encryption.Encryption.Companion.SHARED_SECRET_ALGORITHM
 import org.kryptonmc.krypton.encryption.toDecryptingCipher
 import org.kryptonmc.krypton.encryption.toEncryptingCipher
-import org.kryptonmc.krypton.api.entity.Abilities
-import org.kryptonmc.krypton.api.event.events.play.PluginMessageEvent
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
-import org.kryptonmc.krypton.entity.entities.data.PlayerData
 import org.kryptonmc.krypton.entity.metadata.MovementFlags
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
@@ -47,6 +45,7 @@ import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.packet.transformers.*
 import org.kryptonmc.krypton.space.Angle
 import org.kryptonmc.krypton.space.toAngle
+import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -81,7 +80,7 @@ class SessionManager(private val server: KryptonServer) {
 
         val playerData = server.playerDataManager.load(session.profile.uuid)
 
-        val world = server.worldManager.worlds.getValue(server.config.world.name)
+        val world = server.worldManager.default
         world.gamemode = server.config.world.gamemode
         world.players += session.player
         server.players += session.player
@@ -186,19 +185,18 @@ class SessionManager(private val server: KryptonServer) {
                 session.sendPacket(PacketOutEntityHeadLook(it.id, it.player.location.yaw.toAngle()))
             }
 
-        val centerChunk = Vector(floor(spawnLocation.x / 16.0), 0.0, floor(spawnLocation.z / 16.0))
-
+        val centerChunk = ChunkPosition(floor(spawnLocation.x / 16.0).toInt(), floor(spawnLocation.z / 16.0).toInt())
         session.sendPacket(PacketOutUpdateViewPosition(centerChunk))
 
         GlobalScope.launch(Dispatchers.IO) {
-            val positionsToLoad = mutableListOf<Vector>()
+            val positionsToLoad = mutableListOf<ChunkPosition>()
             repeat(server.config.world.viewDistance.toArea()) {
                 positionsToLoad += server.worldManager.chunkInSpiral(it, centerChunk.x, centerChunk.z)
             }
 
-            server.worldManager.loadChunks(positionsToLoad).forEach { (_, value) ->
-                session.sendPacket(PacketOutUpdateLight(value))
-                session.sendPacket(PacketOutChunkData(value))
+            server.worldManager.loadChunks(world, positionsToLoad).forEach { chunk ->
+                session.sendPacket(PacketOutUpdateLight(chunk))
+                session.sendPacket(PacketOutChunkData(chunk))
             }
         }
 
