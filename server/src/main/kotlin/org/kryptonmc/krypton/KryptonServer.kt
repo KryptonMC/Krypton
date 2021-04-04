@@ -196,7 +196,7 @@ class KryptonServer : Server {
         }
         if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
             LOGGER.info("Autosave started")
-            GlobalScope.launch(Dispatchers.IO) { worldManager.saveAll() }
+            GlobalScope.launch(Dispatchers.IO) { worldManager.saveAll(true) }
         }
     }
 

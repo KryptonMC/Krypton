@@ -10,7 +10,9 @@ import org.kryptonmc.krypton.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.krypton.api.effect.particle.NoteParticleData
 import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
 import org.kryptonmc.krypton.api.entity.Abilities
+import org.kryptonmc.krypton.api.entity.MainHand
 import org.kryptonmc.krypton.api.entity.entities.Player
+import org.kryptonmc.krypton.api.inventory.item.ItemStack
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Gamemode
@@ -20,6 +22,7 @@ import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.entity.Attribute
 import org.kryptonmc.krypton.entity.entities.data.InventoryItem
 import org.kryptonmc.krypton.entity.entities.data.PlayerData
+import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutPlayerListHeaderFooter
@@ -43,8 +46,6 @@ class KryptonPlayer(
     override lateinit var abilities: Abilities
     lateinit var attributes: Set<Attribute>
 
-    val inventory = mutableListOf<InventoryItem>()
-
     override lateinit var location: Location
 
     override var velocity = Vector.ZERO
@@ -57,7 +58,11 @@ class KryptonPlayer(
     override var viewDistance = 10
     override var time = 0L
 
+    override lateinit var mainHand: MainHand
+
     override var scoreboard: Scoreboard? = null
+
+    val inventory = mutableListOf<InventoryItem>()
 
     override var locale: Locale? = null
 

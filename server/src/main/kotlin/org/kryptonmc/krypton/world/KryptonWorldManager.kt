@@ -381,9 +381,9 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
             .build()
     }
 
-    fun saveAll() {
+    fun saveAll(isAutosave: Boolean = false) {
         worlds.forEach { (_, world) -> save(world) }
-        LOGGER.info("Autosave finished")
+        LOGGER.info(if (isAutosave) "Autosave finished" else "Save finished")
     }
 
     /**

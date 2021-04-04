@@ -2,6 +2,7 @@ package org.kryptonmc.krypton.world.data
 
 import net.kyori.adventure.nbt.*
 import net.kyori.adventure.nbt.BinaryTagIO.Compression.GZIP
+import org.kryptonmc.krypton.api.inventory.item.ItemStack
 import org.kryptonmc.krypton.api.registry.toNamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Gamemode
@@ -12,6 +13,7 @@ import org.kryptonmc.krypton.entity.entities.data.InventoryItem
 import org.kryptonmc.krypton.entity.entities.data.PlayerAbilities
 import org.kryptonmc.krypton.entity.entities.data.PlayerData
 import org.kryptonmc.krypton.entity.memory.EmptyBrain
+import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.serializers.serialize
 import org.kryptonmc.krypton.world.NBT_DATA_VERSION
 import java.io.File

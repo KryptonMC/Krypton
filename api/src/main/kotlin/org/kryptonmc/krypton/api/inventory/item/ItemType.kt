@@ -343,5 +343,10 @@ enum class ItemType {
     ZOMBIE_HORSE_SPAWN_EGG,
     ZOMBIE_SPAWN_EGG,
     ZOMBIE_VILLAGER_SPAWN_EGG,
-    ZOMBIFIED_PIGLIN_SPAWN_EGG;
+    ZOMBIFIED_PIGLIN_SPAWN_EGG,
+
+    /**
+     * Miscellaneous
+     */
+    AIR;
 }
