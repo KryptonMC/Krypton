@@ -23,7 +23,7 @@ class PacketOutJoinGame(
     private val world: KryptonWorld,
     private val gamemode: Gamemode,
     private val previousGamemode: Gamemode? = null,
-    private val dimension: NamespacedKey? = null,
+    private val dimension: NamespacedKey,
     private val dimensions: DimensionRegistry,
     private val biomes: BiomeRegistry,
     private val maxPlayers: Int = 20,
@@ -50,7 +50,7 @@ class PacketOutJoinGame(
 
         // dimension info
         val dimensionData = dimensions.values.firstOrNull {
-            it.name == dimension?.toString() ?: OVERWORLD
+            it.name == dimension.toString()
         }?.settings?.toNBT() ?: OVERWORLD_NBT
         buf.writeNBTCompound(dimensionData)
 
@@ -58,7 +58,7 @@ class PacketOutJoinGame(
         val seedBytes = ByteBuffer.allocate(Long.SIZE_BYTES).putLong(world.generationSettings.seed).array()
         val hashedSeed = ByteBuffer.wrap(messageDigest.digest(seedBytes)).getLong(0)
 
-        buf.writeKey(dimension ?: OVERWORLD) // world spawning into
+        buf.writeKey(dimension) // world spawning into
         buf.writeLong(hashedSeed)
         buf.writeVarInt(maxPlayers)
         buf.writeVarInt(viewDistance)
@@ -67,14 +67,14 @@ class PacketOutJoinGame(
         buf.writeBoolean(world.gamerules[Gamerule.REDUCED_DEBUG_INFO].toBoolean()) // reduced debug info
         buf.writeBoolean(!world.gamerules[Gamerule.DO_IMMEDIATE_RESPAWN].toBoolean()) // enable respawn screen
 
-        val generator = world.generationSettings.dimensions.getValue(OVERWORLD).generator
+        val generator = world.generationSettings.dimensions.getValue(dimension).generator
         buf.writeBoolean(generator is DebugGenerator) // is debug world
         buf.writeBoolean(generator is FlatGenerator) // is flat world
     }
 
     companion object {
 
-        val OVERWORLD = NamespacedKey(value = "overworld")
+        private val OVERWORLD = NamespacedKey(value = "overworld")
         private val NETHER = NamespacedKey(value = "the_nether")
         private val END = NamespacedKey(value = "the_end")
     }

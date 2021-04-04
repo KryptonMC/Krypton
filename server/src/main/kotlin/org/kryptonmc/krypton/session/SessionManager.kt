@@ -31,7 +31,6 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.out.play.*
-import org.kryptonmc.krypton.packet.out.play.PacketOutJoinGame.Companion.OVERWORLD
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo.*
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityDestroy
@@ -77,35 +76,23 @@ class SessionManager(private val server: KryptonServer) {
             return
         }
 
-        val playerData = server.playerDataManager.load(session.profile.uuid)
-
         val world = server.worldManager.default
         world.gamemode = server.config.world.gamemode
         world.players += session.player
         server.players += session.player
 
-        session.player.world = world
-        session.player.dimension = playerData?.dimension ?: OVERWORLD
-        session.player.gamemode = playerData?.gamemode ?: world.gamemode
-        session.player.attributes = playerData?.attributes ?: DEFAULT_PLAYER_ATTRIBUTES
-
-        playerData?.isOnGround?.let { session.player.isOnGround = it }
-        playerData?.inventory?.let { session.player.inventory += it }
-
-        val pitch = playerData?.rotationY ?: 0.0F
-        val yaw = playerData?.rotationX ?: 0.0F
-        val spawnLocation = playerData?.position?.toLocation(world, yaw, pitch) ?: world.spawnLocation
-        session.player.location = spawnLocation
+        // load the player's data and populate the provided player with their loaded data
+        server.playerDataManager.loadAndPopulate(world, session.player)
+        val spawnLocation = session.player.location
 
         session.currentState = PacketState.PLAY
-
         session.sendPacket(PacketOutJoinGame(
             session.id,
             server.config.world.hardcore,
             world,
             session.player.gamemode,
-            playerData?.previousGamemode,
-            playerData?.dimension,
+            null,
+            session.player.dimension,
             server.registryManager.dimensions,
             server.registryManager.biomes,
             server.config.status.maxPlayers,
@@ -116,28 +103,28 @@ class SessionManager(private val server: KryptonServer) {
 
         val abilities = when (world.gamemode) {
             Gamemode.SURVIVAL, Gamemode.ADVENTURE -> Abilities()
-            Gamemode.CREATIVE -> Abilities(isInvulnerable = true, isFlyingAllowed = true, isCreativeMode = true)
-            Gamemode.SPECTATOR -> Abilities(isInvulnerable = true, canFly = true, isFlyingAllowed = true)
+            Gamemode.CREATIVE -> Abilities(isInvulnerable = true, isFlying = true, canInstantlyBuild = true)
+            Gamemode.SPECTATOR -> Abilities(isInvulnerable = true, canFly = true, isFlying = true)
         }
         session.player.abilities = abilities
 
         val metadata = PlayerMetadata(
-            MovementFlags(isFlying = playerData?.abilities?.isFlying ?: false),
-            playerData?.air?.toInt() ?: PlayerMetadata.airTicks,
+            MovementFlags(isFlying = session.player.isFlying),
+            PlayerMetadata.airTicks,
             PlayerMetadata.customName,
             PlayerMetadata.isCustomNameVisible,
             PlayerMetadata.isSilent,
             PlayerMetadata.hasNoGravity,
             PlayerMetadata.pose,
             PlayerMetadata.handFlags,
-            playerData?.health ?: PlayerMetadata.health,
+            PlayerMetadata.health,
             PlayerMetadata.potionEffectColor,
             PlayerMetadata.isPotionEffectAmbient,
             PlayerMetadata.arrowsInEntity,
             PlayerMetadata.absorptionHealth,
             Optional(null), // setting this to null tells the client it's not sleeping
             PlayerMetadata.additionalHearts,
-            playerData?.score ?: PlayerMetadata.score,
+            PlayerMetadata.score,
             PlayerMetadata.skinFlags,
             PlayerMetadata.mainHand,
             PlayerMetadata.leftShoulderEntityData,
@@ -145,13 +132,13 @@ class SessionManager(private val server: KryptonServer) {
         )
 
         session.sendPacket(PacketOutAbilities(abilities))
-        session.sendPacket(PacketOutHeldItemChange(playerData?.selectedItemSlot ?: 0))
+        session.sendPacket(PacketOutHeldItemChange(session.player.inventory.heldSlot ?: 0))
         session.sendPacket(PacketOutDeclareRecipes())
         session.sendPacket(PacketOutTags(server.registryManager, server.tagManager))
         session.sendPacket(PacketOutEntityStatus(session.id))
         session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
-        session.sendPacket(PacketOutPlayerPositionAndLook(spawnLocation, teleportId = Random.nextInt(1000)))
+        session.sendPacket(PacketOutPlayerPositionAndLook(session.player.location, teleportId = Random.nextInt(1000)))
 
         val joinMessage = translatable {
             key("multiplayer.player.joined")

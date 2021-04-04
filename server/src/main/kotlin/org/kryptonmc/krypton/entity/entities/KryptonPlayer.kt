@@ -12,7 +12,6 @@ import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
 import org.kryptonmc.krypton.api.entity.Abilities
 import org.kryptonmc.krypton.api.entity.MainHand
 import org.kryptonmc.krypton.api.entity.entities.Player
-import org.kryptonmc.krypton.api.inventory.item.ItemStack
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Gamemode
@@ -20,8 +19,6 @@ import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.entity.Attribute
-import org.kryptonmc.krypton.entity.entities.data.InventoryItem
-import org.kryptonmc.krypton.entity.entities.data.PlayerData
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
@@ -62,11 +59,13 @@ class KryptonPlayer(
 
     override var scoreboard: Scoreboard? = null
 
-    val inventory = mutableListOf<InventoryItem>()
+    override val inventory = KryptonPlayerInventory(this)
 
     override var locale: Locale? = null
 
+    var oldGamemode: Gamemode? = null
     var gamemode = Gamemode.SURVIVAL
+
     override lateinit var world: KryptonWorld
     override lateinit var dimension: NamespacedKey
 
