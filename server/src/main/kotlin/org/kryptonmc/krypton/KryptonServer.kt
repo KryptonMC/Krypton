@@ -142,25 +142,27 @@ class KryptonServer : Server {
         if (config.server.tickThreshold > 0) WatchdogProcess(this).start()
 
         Runtime.getRuntime().addShutdownHook(Thread({
+            // stop server and shut down session manager (disconnecting all players)
             LOGGER.info("Stopping Krypton...")
             isRunning = false
             sessionManager.shutdown()
+
+            // save player, world and region data
             LOGGER.info("Saving player, world and region data...")
-            try {
-                worldManager.saveAll()
-                players.forEach { playerDataManager.save(it) }
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-            }
+            worldManager.saveAll()
+            players.forEach { playerDataManager.save(it) }
+
+            // shut down plugins and unregister listeners
             LOGGER.info("Shutting down plugins...")
             pluginManager.shutdown()
             eventBus.unregisterAll()
 
-            // shut down schedulers and disconnect players
+            // shut down schedulers
             scheduler.shutdown()
             tickScheduler.shutdownNow()
             LOGGER.info("Goodbye")
 
+            // manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
             LogManager.shutdown()
         }, "Shutdown Handler").apply { isDaemon = false })
 

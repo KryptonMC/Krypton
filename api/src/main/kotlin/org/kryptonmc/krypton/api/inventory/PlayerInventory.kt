@@ -19,9 +19,48 @@ import org.kryptonmc.krypton.api.inventory.item.ItemStack
 interface PlayerInventory : Inventory {
 
     /**
+     * The crafting inventory (sub selection of [items] containing the first 5 elements (0-4))
+     *
+     * May copy the [items] array
+     */
+    val crafting: Array<ItemStack?>
+
+    /**
      * The elements of this inventory which are armour pieces
+     *
+     * May copy the [items] array
      */
     val armor: Array<ItemStack?>
+
+    /**
+     * The main inventory (sub selection of [items] containing elements 9-35 inclusive)
+     *
+     * May copy the [items] array
+     */
+    val main: Array<ItemStack?>
+
+    /**
+     * The hotbar (sub selection of [items] containing elements 36-44)
+     *
+     * May copy the [items] array
+     */
+    val hotbar: Array<ItemStack?>
+
+    /**
+     * The item that this player is currently holding in their main hand.
+     *
+     * Will be an [ItemStack] of type AIR and amount 0 if this player is
+     * not holding anything in their main hand.
+     */
+    val mainHand: ItemStack?
+
+    /**
+     * The item that this player is currently holding in their offhand.
+     *
+     * Will be an [ItemStack] of type AIR and amount 0 if this player is
+     * not holding anything in their offhand.
+     */
+    val offHand: ItemStack?
 
     /**
      * The helmet this player is currently wearing, or null if this player
@@ -48,26 +87,9 @@ interface PlayerInventory : Inventory {
     val boots: ItemStack?
 
     /**
-     * The item that this player is currently holding in their main hand.
-     *
-     * Will be an [ItemStack] of type AIR and amount 0 if this player is
-     * not holding anything in their main hand.
-     */
-    val mainHand: ItemStack
-
-    /**
-     * The item that this player is currently holding in their offhand.
-     *
-     * Will be an [ItemStack] of type AIR and amount 0 if this player is
-     * not holding anything in their offhand.
-     */
-    val offHand: ItemStack
-
-    /**
      * Gets the slot of the currently held item
      */
     val heldSlot: Int
 
-    // TODO: Fix this when we fix the implementation and Player extends InventoryHolder again
-//    override val owner: Player
+    override val owner: Player
 }

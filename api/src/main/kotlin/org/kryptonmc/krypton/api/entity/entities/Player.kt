@@ -21,7 +21,7 @@ import java.util.*
  *
  * @author Callum Seabrook
  */
-interface Player : Sender/*, InventoryHolder*/ {
+interface Player : Sender, InventoryHolder {
 
     /**
      * The player's UUID
@@ -110,8 +110,7 @@ interface Player : Sender/*, InventoryHolder*/ {
      *
      * This can and should never be changed
      */
-    // TODO: When we fix up data loading to support this, support it
-//    override val inventory: PlayerInventory
+    override val inventory: PlayerInventory
 
     /**
      * This player's locale
