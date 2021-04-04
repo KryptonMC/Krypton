@@ -4,6 +4,10 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
 import org.kryptonmc.krypton.api.entity.Abilities
+import org.kryptonmc.krypton.api.entity.Hand
+import org.kryptonmc.krypton.api.entity.MainHand
+import org.kryptonmc.krypton.api.inventory.InventoryHolder
+import org.kryptonmc.krypton.api.inventory.PlayerInventory
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Location
@@ -17,7 +21,7 @@ import java.util.*
  *
  * @author Callum Seabrook
  */
-interface Player : Sender {
+interface Player : Sender/*, InventoryHolder*/ {
 
     /**
      * The player's UUID
@@ -95,6 +99,19 @@ interface Player : Sender {
      * The scoreboard currently being shown to this player
      */
     var scoreboard: Scoreboard?
+
+    /**
+     * This player's main hand
+     */
+    val mainHand: MainHand
+
+    /**
+     * The player's inventory
+     *
+     * This can and should never be changed
+     */
+    // TODO: When we fix up data loading to support this, support it
+//    override val inventory: PlayerInventory
 
     /**
      * This player's locale
