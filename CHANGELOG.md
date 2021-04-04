@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.2] - 2021-04-04
+### Changed
+- Fixed fastutil exclusions, cutting JAR size down by ~3 MB
+- Fixed permission check dispatching having `has` hard coded to true, meaning permission checks would
+  never fail for non-null permissions. [https://tenor.com/bggaL.gif](https://tenor.com/bggaL.gif)
+
 ## [0.16.1] - 2021-03-29
 ### Changed
 - Moved player data persistence into its own `PlayerDataManager`
@@ -17,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `PacketState`'s ID field is gone, and its references (literally none) have been replaced with the
   enum's ordinal
 
-## [0.16] - 2021-03-28
+## [0.16] - 2021-03-28 to 2021-04-03
 ### Added
 - Player data persistence (now uses <player>.dat files to save and load player data)
 - Console now has three simple registered translation keys, to allow sending join, leave and chat

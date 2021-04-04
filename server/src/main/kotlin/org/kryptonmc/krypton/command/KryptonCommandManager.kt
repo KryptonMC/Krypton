@@ -68,7 +68,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
     }
 
     private fun dispatchPermissionCheck(sender: Sender, permission: String?): PermissionCheckResult {
-        val event = PermissionCheckEvent(sender, permission, true)
+        val event = PermissionCheckEvent(sender, permission, permission?.let { sender.hasPermission(it) } ?: true)
         server.eventBus.call(event)
         return event.result
     }

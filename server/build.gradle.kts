@@ -56,14 +56,14 @@ tasks {
         archiveFileName.set("Krypton-${rootProject.extra["globalVersion"]}.jar")
         transform(Log4j2PluginsCacheFileTransformer::class.java)
 
-        exclude("it.unimi.dsi.fastutil.booleans")
-        exclude("it.unimi.dsi.fastutil.bytes")
-        exclude("it.unimi.dsi.fastutil.chars")
-        exclude("it.unimi.dsi.fastutil.doubles")
-        exclude("it.unimi.dsi.fastutil.floats")
-        exclude("it.unimi.dsi.fastutil.io")
-        exclude("it.unimi.dsi.fastutil.objects")
-        exclude("it.unimi.dsi.fastutil.shorts")
+        exclude("it/unimi/dsi/fastutil/booleans/*.class")
+        exclude("it/unimi/dsi/fastutil/bytes/*.class")
+        exclude("it/unimi/dsi/fastutil/chars/*.class")
+        exclude("it/unimi/dsi/fastutil/doubles/*.class")
+        exclude("it/unimi/dsi/fastutil/floats/*.class")
+        exclude("it/unimi/dsi/fastutil/io/*.class")
+        exclude("it/unimi/dsi/fastutil/objects/*.class")
+        exclude("it/unimi/dsi/fastutil/shorts/*.class")
     }
     withType<ProcessResources> {
         val tokens = mapOf("version" to rootProject.extra["globalVersion"])
