@@ -15,6 +15,8 @@ import org.kryptonmc.krypton.api.event.events.play.ClientSettingsEvent
 import org.kryptonmc.krypton.api.event.events.play.MoveEvent
 import org.kryptonmc.krypton.api.event.events.play.PluginMessageEvent
 import org.kryptonmc.krypton.api.world.Gamemode
+import org.kryptonmc.krypton.api.inventory.item.ItemStack
+import org.kryptonmc.krypton.api.inventory.item.Material
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
@@ -74,6 +76,8 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
             is PacketInPluginMessage -> handlePluginMessage(session, packet)
             is PacketInTabComplete -> handleTabComplete(session, packet)
             is PacketInPlayerAbilities -> handleFlyingStatus(session, packet)
+            is PacketInCreativeInventoryAction -> handleCreativeInventoryAction(session, packet)
+            is PacketInHeldItemChange -> handleHeldItemChange(session, packet)
         }
     }
 
@@ -343,6 +347,18 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
             PlayerMetadata(movementFlags = MovementFlags(isFlying = packet.isFlying))
         ))
         session.player.isFlying = packet.isFlying
+    }
+
+    private fun handleCreativeInventoryAction(session: Session, packet: PacketInCreativeInventoryAction) {
+        val blockRegistry = server.registryManager.registries.blocks
+
+        val type = Material.KEYS.value(blockRegistry.byId[packet.clickedItem.id] ?: return)
+        val item = type?.let { ItemStack(type, packet.clickedItem.count.toInt()) } ?: ItemStack.EMPTY
+        session.player.inventory[packet.slot.toInt()] = item
+    }
+
+    private fun handleHeldItemChange(session: Session, packet: PacketInHeldItemChange) {
+        session.player.inventory.heldSlot = packet.slot.toInt()
     }
 }
 

@@ -6,8 +6,9 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.api.entity.Abilities
 import org.kryptonmc.krypton.api.inventory.item.ItemStack
-import org.kryptonmc.krypton.api.inventory.item.ItemType
+import org.kryptonmc.krypton.api.inventory.item.Material
 import org.kryptonmc.krypton.api.inventory.item.meta.ItemMeta
+import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.registry.toNamespacedKey
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Location
@@ -30,6 +31,7 @@ class PlayerDataManager(private val folder: File) {
         val playerFile = File(folder, "${player.uuid}.dat")
         if (!playerFile.exists()) {
             playerFile.createNewFile()
+            applyDefaults(world, player)
             return
         }
 
@@ -57,12 +59,15 @@ class PlayerDataManager(private val folder: File) {
             )
         }
 
-        val inventoryItems = nbt.getList("Inventory").map { item ->
+        val inventoryItems = nbt.getList("Inventory").associate { item ->
             (item as CompoundBinaryTag).let {
-                ItemStack(ItemType.valueOf(it.getString("id").split(":")[1]), it.getByte("Count").toInt())
+                val type = Material.valueOf(it.getString("id").split(":")[1].toUpperCase())
+                val slot = it.getByte("Slot")
+                val count = it.getByte("Count")
+                slot.toInt() to ItemStack(type, count.toInt())
             }
         }
-        player.inventory.populate(9, 35, inventoryItems)
+        player.inventory.populate(inventoryItems)
 
         val position = nbt.getList("Pos").map { (it as DoubleBinaryTag).value() }
         val rotation = nbt.getList("Rotation").map { (it as FloatBinaryTag).value() }
@@ -143,14 +148,34 @@ class PlayerDataManager(private val folder: File) {
             .putBoolean("OnGround", player.isOnGround)
             .putString("Dimension", player.dimension.toString())
             .put("Rotation", ListBinaryTag.builder()
-                .add(FloatBinaryTag.of(player.location.pitch))
                 .add(FloatBinaryTag.of(player.location.yaw))
+                .add(FloatBinaryTag.of(player.location.pitch))
                 .build())
             .build(), playerFile.toPath(), GZIP)
+    }
+
+    // this ensures player data is always set, even when the player doesn't have any
+    // persisted data
+    private fun applyDefaults(world: KryptonWorld, player: KryptonPlayer) {
+        player.location = world.spawnLocation
+        player.gamemode = world.gamemode
+        player.dimension = OVERWORLD
+
+        player.abilities = when (world.gamemode) {
+            Gamemode.SURVIVAL, Gamemode.ADVENTURE -> Abilities()
+            Gamemode.CREATIVE -> Abilities(isInvulnerable = true, isFlying = true, canInstantlyBuild = true)
+            Gamemode.SPECTATOR -> Abilities(isInvulnerable = true, canFly = true, isFlying = true)
+        }
+    }
+
+    companion object {
+
+        private val OVERWORLD = NamespacedKey(value = "overworld")
     }
 }
 
 private fun ItemStack.toNBT(slot: Int) = CompoundBinaryTag.builder()
+    .putString("id", type.key.toString())
     .putByte("Slot", slot.toByte())
     .putByte("Count", amount.toByte())
     .apply { if (meta != null) { put("display", meta!!.toNBT()) } }

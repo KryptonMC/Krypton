@@ -3,6 +3,7 @@ package org.kryptonmc.krypton.registry
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.kryptonmc.krypton.api.registry.NamespacedKey
+import org.kryptonmc.krypton.world.transform
 
 // TODO: Use the remainder of these registries (commented out for efficiency)
 @Serializable
@@ -66,7 +67,10 @@ data class DefaultedRegistry(
     val default: String,
     @SerialName("protocol_id") val protocolId: Int,
     val entries: Map<NamespacedKey, RegistryEntry>
-)
+) {
+
+    val byId = entries.transform { it.value.protocolId to it.key }
+}
 
 @Serializable
 data class RegistryEntry(

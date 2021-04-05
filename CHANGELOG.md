@@ -8,11 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Inventories are now better than they were and exposed properly to the API
 - Implemented inventories on the backend
+- Inventories are now properly persisted, along with your currently held item
 
 ### Changed
 - `saveAll` message is now dependent on whether the save was an autosave or not.
 - Player data is now directly applied to a `KryptonPlayer`, rather than using a `PlayerData` object
   and applying the values in `SessionManager`
+- Fixed player data not being applied when there is no file for the player, resulting in lateinit
+  properties not being initialised
+- Fixed NBT reading
+- Fixed index out of bounds when populating a player's inventory
 
 ### Removed
 - The useless, stupid `PlayerData` object is now gone

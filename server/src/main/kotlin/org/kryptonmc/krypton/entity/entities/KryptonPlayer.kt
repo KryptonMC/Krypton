@@ -25,6 +25,7 @@ import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.chat.TitleAction
+import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
 import org.kryptonmc.krypton.session.Session
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.net.InetSocketAddress
@@ -41,7 +42,7 @@ class KryptonPlayer(
 
     override var displayName: Component = Component.empty()
     override lateinit var abilities: Abilities
-    lateinit var attributes: Set<Attribute>
+    var attributes: Set<Attribute> = DEFAULT_PLAYER_ATTRIBUTES
 
     override lateinit var location: Location
 
