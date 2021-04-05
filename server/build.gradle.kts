@@ -62,7 +62,6 @@ tasks {
         exclude("it/unimi/dsi/fastutil/doubles/*.class")
         exclude("it/unimi/dsi/fastutil/floats/*.class")
         exclude("it/unimi/dsi/fastutil/io/*.class")
-        exclude("it/unimi/dsi/fastutil/objects/*.class")
         exclude("it/unimi/dsi/fastutil/shorts/*.class")
     }
     withType<ProcessResources> {
