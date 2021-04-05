@@ -1,5 +1,6 @@
 package org.kryptonmc.krypton.api.block
 
+import org.kryptonmc.krypton.api.inventory.item.Material
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.chunk.Chunk
@@ -14,7 +15,7 @@ interface Block {
     /**
      * The type of this block
      */
-    val type: BlockType
+    val type: Material
 
     /**
      * This block's lighting values
@@ -39,14 +40,14 @@ interface Block {
     /**
      * If this block is empty
      *
-     * A block is defined as being empty if it's type is [BlockType.AIR]
+     * A block is defined as being empty if it's type is [Material.AIR]
      */
     val isEmpty: Boolean
 
     /**
      * If this block is a liquid
      *
-     * A block is defined as being a liquid if its type is [BlockType.WATER] or [BlockType.LAVA]
+     * A block is defined as being a liquid if its type is [Material.WATER] or [Material.LAVA]
      */
     val isLiquid: Boolean
 

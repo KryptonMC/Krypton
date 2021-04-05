@@ -44,10 +44,14 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         owner.session.sendPacket(PacketOutHeldItemChange(index))
     }
 
-    internal fun populate(from: Int, to: Int, itemList: List<ItemStack>) {
-        if (itemList.isEmpty()) return
-        for (i in from..to) {
-            items[i] = itemList[i - from]
+    internal fun populate(itemMap: Map<Int, ItemStack>) {
+        // set hotbar items
+        for (i in 0..8) {
+            if (itemMap[i] != null) items[i + 36] = itemMap[i]
+        }
+        // set main inventory items
+        for (i in 9..35) {
+            if (itemMap[i] != null) items[i + 9] = itemMap[i]
         }
     }
 

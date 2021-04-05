@@ -1,6 +1,7 @@
 package org.kryptonmc.krypton.extension
 
 import io.netty.buffer.ByteBuf
+import io.netty.buffer.ByteBufInputStream
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
 import net.kyori.adventure.nbt.BinaryTagIO
@@ -16,8 +17,10 @@ import org.kryptonmc.krypton.entity.entities.data.VillagerData
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.space.Angle
 import org.kryptonmc.krypton.space.Rotation
+import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.io.InputStream
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.Duration
 import java.util.UUID
@@ -158,6 +161,17 @@ fun ByteBuf.writeNBTCompound(tag: CompoundBinaryTag) {
     writeBytes(outputStream.toByteArray())
 }
 
+fun ByteBuf.readNBTCompound(): CompoundBinaryTag {
+    val type = readByte()
+    if (type == 0.toByte()) return CompoundBinaryTag.empty()
+
+    try {
+        return BinaryTagIO.unlimitedReader().read(ByteBufInputStream(this) as InputStream)
+    } catch (exception: IOException) {
+        throw DecoderException(exception)
+    }
+}
+
 fun ByteBuf.writeChat(component: Component) {
     writeString(GsonComponentSerializer.gson().serialize(component))
 }
@@ -174,8 +188,8 @@ fun ByteBuf.writeOptionalChat(component: Optional<Component>) {
 fun ByteBuf.writeSlot(slot: Slot) {
     writeBoolean(slot.isPresent)
     if (slot.isPresent) {
-        writeVarInt(slot.itemId)
-        writeByte(slot.itemCount)
+        writeVarInt(slot.id)
+        writeByte(slot.count)
         writeNBTCompound(slot.nbt)
     }
 }

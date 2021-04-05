@@ -36,6 +36,8 @@ object PacketLoader {
         PacketState.PLAY.registerPacketType(0x15, ::PacketInPlayerMovement)
         PacketState.PLAY.registerPacketType(0x1A, ::PacketInPlayerAbilities)
         PacketState.PLAY.registerPacketType(0x1C, ::PacketInEntityAction)
+        PacketState.PLAY.registerPacketType(0x25, ::PacketInHeldItemChange)
+        PacketState.PLAY.registerPacketType(0x28, ::PacketInCreativeInventoryAction)
         PacketState.PLAY.registerPacketType(0x2C, ::PacketInAnimation)
     }
 }

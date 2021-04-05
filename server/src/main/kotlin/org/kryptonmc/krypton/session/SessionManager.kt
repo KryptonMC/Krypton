@@ -10,11 +10,9 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.SERVER_UUID
 import org.kryptonmc.krypton.ServerStorage
-import org.kryptonmc.krypton.api.entity.Abilities
 import org.kryptonmc.krypton.api.event.events.login.JoinEvent
 import org.kryptonmc.krypton.api.event.events.play.QuitEvent
 import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.encryption.Encryption.Companion.SHARED_SECRET_ALGORITHM
 import org.kryptonmc.krypton.encryption.toDecryptingCipher
@@ -101,13 +99,6 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutPluginMessage(BRAND_MESSAGE.first, BRAND_MESSAGE.second))
         session.sendPacket(PacketOutServerDifficulty(server.config.world.difficulty, true))
 
-        val abilities = when (world.gamemode) {
-            Gamemode.SURVIVAL, Gamemode.ADVENTURE -> Abilities()
-            Gamemode.CREATIVE -> Abilities(isInvulnerable = true, isFlying = true, canInstantlyBuild = true)
-            Gamemode.SPECTATOR -> Abilities(isInvulnerable = true, canFly = true, isFlying = true)
-        }
-        session.player.abilities = abilities
-
         val metadata = PlayerMetadata(
             MovementFlags(isFlying = session.player.isFlying),
             PlayerMetadata.airTicks,
@@ -131,8 +122,8 @@ class SessionManager(private val server: KryptonServer) {
             PlayerMetadata.rightShoulderEntityData
         )
 
-        session.sendPacket(PacketOutAbilities(abilities))
-        session.sendPacket(PacketOutHeldItemChange(session.player.inventory.heldSlot ?: 0))
+        session.sendPacket(PacketOutAbilities(session.player.abilities))
+        session.sendPacket(PacketOutHeldItemChange(session.player.inventory.heldSlot))
         session.sendPacket(PacketOutDeclareRecipes())
         session.sendPacket(PacketOutTags(server.registryManager, server.tagManager))
         session.sendPacket(PacketOutEntityStatus(session.id))
@@ -183,6 +174,10 @@ class SessionManager(private val server: KryptonServer) {
             server.worldManager.loadChunks(world, positionsToLoad).forEach { chunk ->
                 session.sendPacket(PacketOutUpdateLight(chunk))
                 session.sendPacket(PacketOutChunkData(chunk))
+            }
+
+            if (session.player.inventory.items.isNotEmpty()) {
+                session.sendPacket(PacketOutWindowItems(server.registryManager.registries.blocks, session.player.inventory))
             }
         }
 

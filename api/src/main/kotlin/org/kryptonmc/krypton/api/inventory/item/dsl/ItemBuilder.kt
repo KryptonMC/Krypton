@@ -2,7 +2,7 @@ package org.kryptonmc.krypton.api.inventory.item.dsl
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.api.inventory.item.ItemStack
-import org.kryptonmc.krypton.api.inventory.item.ItemType
+import org.kryptonmc.krypton.api.inventory.item.Material
 import org.kryptonmc.krypton.api.inventory.item.meta.ItemMeta
 
 /**
@@ -12,7 +12,7 @@ import org.kryptonmc.krypton.api.inventory.item.meta.ItemMeta
  */
 @Suppress("unused")
 class ItemBuilder internal constructor(
-    private var type: ItemType = ItemType.AIR,
+    private var type: Material = Material.AIR,
     private var amount: Int = 1,
     private var name: Component? = null,
     private var lore: List<Component> = emptyList()
@@ -24,7 +24,7 @@ class ItemBuilder internal constructor(
      * @param type the type
      * @return this builder, with the type set to the provided type
      */
-    fun type(type: ItemType) = apply { this.type = type }
+    fun type(type: Material) = apply { this.type = type }
 
     /**
      * Sets the amount of items in this stack
