@@ -41,6 +41,7 @@ import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMovement.*
 import org.kryptonmc.krypton.packet.out.status.PacketOutPong
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
 import org.kryptonmc.krypton.packet.state.PacketState
+import org.kryptonmc.krypton.registry.Registries
 import org.kryptonmc.krypton.session.Session
 import org.kryptonmc.krypton.session.SessionManager
 import org.kryptonmc.krypton.space.toAngle
@@ -350,9 +351,8 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     }
 
     private fun handleCreativeInventoryAction(session: Session, packet: PacketInCreativeInventoryAction) {
-        val blockRegistry = server.registryManager.registries.blocks
-
-        val type = Material.KEYS.value(blockRegistry.byId[packet.clickedItem.id] ?: return)
+        val registryEntry = Registries.BLOCKS.entries.firstOrNull { it.value.id == packet.clickedItem.id }?.key ?: return
+        val type = Material.KEYS.value(registryEntry)
         val item = type?.let { ItemStack(type, packet.clickedItem.count.toInt()) } ?: ItemStack.EMPTY
         session.player.inventory[packet.slot.toInt()] = item
     }

@@ -18,11 +18,6 @@ interface Block {
     val type: Material
 
     /**
-     * This block's lighting values
-     */
-    val light: BlockLighting
-
-    /**
      * The world this block is in
      */
     val world: World

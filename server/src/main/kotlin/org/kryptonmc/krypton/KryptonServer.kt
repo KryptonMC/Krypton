@@ -72,7 +72,6 @@ class KryptonServer : Server {
 
     val sessionManager = SessionManager(this)
 
-    val registryManager = RegistryManager()
     val tagManager = TagManager()
 
     override val worldManager = KryptonWorldManager(this, config.world.name, config.advanced.synchronizeChunkWrites)

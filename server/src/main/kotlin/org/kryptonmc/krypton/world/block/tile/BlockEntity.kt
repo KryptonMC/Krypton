@@ -1,20 +1,9 @@
-package org.kryptonmc.krypton.world.block
+package org.kryptonmc.krypton.world.block.tile
 
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
-import org.kryptonmc.krypton.api.world.Location
-import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.blocks.BannerEntity
 
-abstract class Block(open val key: NamespacedKey) {
-
-    abstract val world: KryptonWorld
-
-    abstract val location: Location
-}
-
-// TODO: Add the rest of these
 abstract class BlockEntity(val id: String) {
 
     abstract val position: Vector

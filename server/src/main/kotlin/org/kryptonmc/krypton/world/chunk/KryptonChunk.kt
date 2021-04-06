@@ -2,13 +2,9 @@ package org.kryptonmc.krypton.world.chunk
 
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.LongArrayBinaryTag
-import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Biome
 import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.chunk.Chunk
-import org.kryptonmc.krypton.world.block.Block
-import org.kryptonmc.krypton.world.generation.WorldGenerationStatus
-import org.kryptonmc.krypton.world.structure.Structure
 import java.util.*
 
 @Suppress("EqualsOrHashCode")
@@ -39,24 +35,24 @@ data class KryptonChunk(
 }
 
 // TODO: Migrate the remaining commented parameters to KryptonChunk
-data class ChunkData(
-    val biomes: List<Biome>,
-    val carvingMasks: Pair<ByteArray, ByteArray>,
+//data class ChunkData(
+//    val biomes: List<Biome>,
+//    val carvingMasks: Pair<ByteArray, ByteArray>,
 //    val entities: List<Entity>,
-    val heightmaps: Heightmaps,
-    val lastUpdate: Long,
-    val lights: List<ShortArray>,
-    val liquidsToBeTicked: List<List<Short>>,
-    val liquidTicks: List<CompoundBinaryTag>,
-    val inhabitedTime: Long,
-    val postProcessing: List<ShortArray>,
-    val sections: List<ChunkSection>,
-    val status: WorldGenerationStatus,
+//    val heightmaps: Heightmaps,
+//    val lastUpdate: Long,
+//    val lights: List<ShortArray>,
+//    val liquidsToBeTicked: List<List<Short>>,
+//    val liquidTicks: List<CompoundBinaryTag>,
+//    val inhabitedTime: Long,
+//    val postProcessing: List<ShortArray>,
+//    val sections: List<ChunkSection>,
+//    val status: WorldGenerationStatus,
 //    val tileEntities: List<BlockEntity>,
-    val tileTicks: List<TileTick>,
-    val toBeTicked: List<ShortArray>,
-    val structures: StructureData
-)
+//    val tileTicks: List<TileTick>,
+//    val toBeTicked: List<ShortArray>,
+//    val structures: StructureData
+//)
 
 data class Heightmaps(
     val motionBlocking: LongArrayBinaryTag,
@@ -65,13 +61,13 @@ data class Heightmaps(
 )
 
 // TODO: Do things with these
-data class TileTick(
-    val block: Block,
-    val priority: Int,
-    val delay: Int
-)
-
-data class StructureData(
-    val references: Map<String, Vector>,
-    val starts: List<Structure>
-)
+//data class TileTick(
+//    val block: Block,
+//    val priority: Int,
+//    val delay: Int
+//)
+//
+//data class StructureData(
+//    val references: Map<String, Vector>,
+//    val starts: List<Structure>
+//)
