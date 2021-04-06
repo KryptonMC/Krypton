@@ -1,27 +1,19 @@
 package org.kryptonmc.krypton.world.block.palette
 
-import io.netty.buffer.ByteBuf
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import net.kyori.adventure.nbt.ListBinaryTag
 import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.extension.varIntSize
-import org.kryptonmc.krypton.registry.Registry
+import org.kryptonmc.krypton.registry.json.RegistryBlock
 import java.io.IOException
 
-class GlobalPalette<T>(
-    private val registry: Registry<T>,
-    private val default: T
-) : Palette<T>, Registry<T> by registry {
+private val BLOCKS_TEXT = (Thread.currentThread().contextClassLoader.getResourceAsStream("registries/blocks.json")
+    ?: throw IOException("registries/blocks.json not in classpath! Something has gone horribly wrong!"))
+    .reader(Charsets.UTF_8)
+    .readText()
 
-    override val serializedSize = 0.varIntSize()
+private val PALETTE: Map<NamespacedKey, RegistryBlock> = Json.decodeFromString(BLOCKS_TEXT)
 
-    override fun contains(predicate: (T?) -> Boolean) = true
+object GlobalPalette : Map<NamespacedKey, RegistryBlock> by PALETTE {
 
-    override fun get(id: Int) = registry[id] ?: default
-
-    override fun write(buf: ByteBuf) = Unit
-    override fun write(tag: ListBinaryTag) = Unit
-    override fun read(tag: ListBinaryTag) = Unit
+    override fun get(key: NamespacedKey) = PALETTE.getValue(key)
 }

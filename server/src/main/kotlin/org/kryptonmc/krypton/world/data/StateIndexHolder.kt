@@ -24,8 +24,8 @@ class StateIndexHolder(
     }
 
     fun getAndSet(index: Int, value: Int): Int {
-        require(index in 0 until size) { "Index must be between 0 and $size!" }
-        require(value in 0..mask) { "Value must be between 0 and $mask!" }
+        require(index in 0 until size) { "Index must be between 0 and $size, was $index" }
+        require(value in 0..mask) { "Value must be between 0 and $mask, was $value" }
 
         val cellIndex = cellIndex(index)
         val cell = data[cellIndex]
@@ -36,13 +36,14 @@ class StateIndexHolder(
     }
 
     operator fun set(index: Int, value: Int) {
-        require(index in 0 until size) { "Index must be between 0 and $size!" }
-        require(value in 0..mask) { "Value must be between 0 and $mask!" }
+        require(index in 0 until size) { "Index must be between 0 and $size, was $index" }
+        require(value in 0..mask) { "Value must be between 0 and $mask, was $value" }
 
         val cellIndex = cellIndex(index)
         val cell = data[cellIndex]
         val magic = (index - (cellIndex * valuesPerLong)) * bits
         data[cellIndex] = (cell and (mask shl magic).inv()) or ((value.toLong() and mask) shl magic)
+        println("Cell index $cellIndex updated to ${data[cellIndex]} (was $cell)")
     }
 
     operator fun get(index: Int): Int {
@@ -52,19 +53,6 @@ class StateIndexHolder(
         val cell = data[cellIndex]
         val magic = (index - (cellIndex * valuesPerLong)) * bits
         return ((cell shr magic) and mask).toInt()
-    }
-
-    fun getAll(consumer: (Int) -> Unit) {
-        var result = 0
-        for (element in data) {
-            var mutable = element
-            for (i in 0 until valuesPerLong) {
-                consumer((element and mask).toInt())
-                mutable = mutable shr bits
-                if (result++ < size) continue
-                return
-            }
-        }
     }
 
     private fun cellIndex(index: Int): Int {

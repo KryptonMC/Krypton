@@ -22,8 +22,7 @@ object Registries {
     val ITEMS = MappedRegistry(REGISTRIES.getValue(NamespacedKey(value = "item")).entries.mapValues { it.value.id })
     val ENTITY_TYPES = MappedRegistry(REGISTRIES.getValue(NamespacedKey(value = "entity_type")).entries.mapValues { it.value.id })
 
-    val BLOCK_STATES: MappedRegistry<BlockState> =
-        MappedRegistry(STATE_REGISTRY.mapKeys {  })
+    val STATES = STATE_REGISTRY
 
     val BIOMES = Json.decodeFromString<BiomeRegistry>(registryData("registries/custom/biomes.json"))
     val DIMENSIONS = Json.decodeFromString<DimensionRegistry>(registryData("registries/custom/dimensions.json"))

@@ -25,7 +25,6 @@ import org.kryptonmc.krypton.packet.PacketLoader
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
-import org.kryptonmc.krypton.registry.RegistryManager
 import org.kryptonmc.krypton.registry.tags.TagManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.session.SessionManager
@@ -97,7 +96,8 @@ class KryptonServer : Server {
     internal fun start() {
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
         val startTime = System.nanoTime()
-        // loading this here avoids loading it when the first player joins
+        // loading these here avoids loading them when the first player joins
+        Class.forName("org.kryptonmc.krypton.registry.Registries")
         Class.forName("org.kryptonmc.krypton.world.block.palette.GlobalPalette")
 
         Thread {
