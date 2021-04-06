@@ -54,6 +54,19 @@ class StateIndexHolder(
         return ((cell shr magic) and mask).toInt()
     }
 
+    fun getAll(consumer: (Int) -> Unit) {
+        var result = 0
+        for (element in data) {
+            var mutable = element
+            for (i in 0 until valuesPerLong) {
+                consumer((element and mask).toInt())
+                mutable = mutable shr bits
+                if (result++ < size) continue
+                return
+            }
+        }
+    }
+
     private fun cellIndex(index: Int): Int {
         val multiply = Integer.toUnsignedLong(divideMultiply)
         val add = Integer.toUnsignedLong(divideAdd)

@@ -5,26 +5,24 @@ import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.extension.writeString
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.registry.Registries
 import org.kryptonmc.krypton.registry.RegistryManager
 import org.kryptonmc.krypton.registry.tags.Tag
 import org.kryptonmc.krypton.registry.tags.TagManager
 
-class PacketOutTags(
-    private val registryManager: RegistryManager,
-    private val tagManager: TagManager
-) : PlayPacket(0x5B) {
+class PacketOutTags(private val tagManager: TagManager) : PlayPacket(0x5B) {
 
     private val blockRegistry: (NamespacedKey) -> Int? = {
-        registryManager.registries.blocks.entries[it]?.protocolId
+        Registries.BLOCKS[it]?.id
     }
     private val fluidRegistry: (NamespacedKey) -> Int? = {
-        registryManager.registries.fluids.entries[it]?.protocolId
+        Registries.FLUIDS[it]?.id
     }
-    private val itemRegistry: (NamespacedKey) -> Int? = lambda@{
-        registryManager.registries.items.entries[it]?.protocolId
+    private val itemRegistry: (NamespacedKey) -> Int? = {
+        Registries.ITEMS[it]?.id
     }
     private val entityRegistry: (NamespacedKey) -> Int? = {
-        registryManager.registries.entityTypes.entries[it]?.protocolId
+        Registries.ENTITY_TYPES[it]?.id
     }
 
     override fun write(buf: ByteBuf) {

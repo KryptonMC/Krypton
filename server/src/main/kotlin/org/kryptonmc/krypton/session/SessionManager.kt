@@ -91,8 +91,6 @@ class SessionManager(private val server: KryptonServer) {
             session.player.gamemode,
             null,
             session.player.dimension,
-            server.registryManager.dimensions,
-            server.registryManager.biomes,
             server.config.status.maxPlayers,
             server.config.world.viewDistance
         ))
@@ -125,7 +123,7 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutAbilities(session.player.abilities))
         session.sendPacket(PacketOutHeldItemChange(session.player.inventory.heldSlot))
         session.sendPacket(PacketOutDeclareRecipes())
-        session.sendPacket(PacketOutTags(server.registryManager, server.tagManager))
+        session.sendPacket(PacketOutTags(server.tagManager))
         session.sendPacket(PacketOutEntityStatus(session.id))
         session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
@@ -177,7 +175,7 @@ class SessionManager(private val server: KryptonServer) {
             }
 
             if (session.player.inventory.items.isNotEmpty()) {
-                session.sendPacket(PacketOutWindowItems(server.registryManager.registries.blocks, session.player.inventory))
+                session.sendPacket(PacketOutWindowItems(session.player.inventory))
             }
         }
 

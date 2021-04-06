@@ -8,6 +8,7 @@ import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.world.Gamemode
+import org.kryptonmc.krypton.registry.Registries
 import org.kryptonmc.krypton.registry.biomes.BiomeRegistry
 import org.kryptonmc.krypton.registry.dimensions.DimensionRegistry
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -24,8 +25,6 @@ class PacketOutJoinGame(
     private val gamemode: Gamemode,
     private val previousGamemode: Gamemode? = null,
     private val dimension: NamespacedKey,
-    private val dimensions: DimensionRegistry,
-    private val biomes: BiomeRegistry,
     private val maxPlayers: Int = 20,
     private val viewDistance: Int = 10
 ) : PlayPacket(0x24) {
@@ -44,12 +43,12 @@ class PacketOutJoinGame(
 
         // dimension codec (dimension/biome type registry)
         buf.writeNBTCompound(CompoundBinaryTag.builder()
-            .put("minecraft:dimension_type", dimensions.toNBT())
-            .put("minecraft:worldgen/biome", biomes.toNBT())
+            .put("minecraft:dimension_type", Registries.DIMENSIONS.toNBT())
+            .put("minecraft:worldgen/biome", Registries.BIOMES.toNBT())
             .build())
 
         // dimension info
-        val dimensionData = dimensions.values.firstOrNull {
+        val dimensionData = Registries.DIMENSIONS.values.firstOrNull {
             it.name == dimension.toString()
         }?.settings?.toNBT() ?: OVERWORLD_NBT
         buf.writeNBTCompound(dimensionData)
