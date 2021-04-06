@@ -5,7 +5,6 @@ import org.kryptonmc.krypton.api.inventory.PlayerInventory
 import org.kryptonmc.krypton.api.inventory.item.ItemStack
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.registry.DefaultedRegistry
 import org.kryptonmc.krypton.registry.Registries
 
 class PacketOutWindowItems(private val inventory: PlayerInventory) : PlayPacket(0x13) {
@@ -23,7 +22,7 @@ class PacketOutWindowItems(private val inventory: PlayerInventory) : PlayPacket(
             return
         }
         writeBoolean(true)
-        writeVarInt(Registries.BLOCKS.entries.getValue(item.type.key).id)
+        writeVarInt(Registries.BLOCKS.idOf(item.type.key))
         writeByte(item.amount)
         writeByte(0) // TAG_End
     }

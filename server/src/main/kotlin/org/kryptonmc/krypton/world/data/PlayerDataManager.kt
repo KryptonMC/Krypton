@@ -61,7 +61,7 @@ class PlayerDataManager(private val folder: File) {
 
         val inventoryItems = nbt.getList("Inventory").associate { item ->
             (item as CompoundBinaryTag).let {
-                val type = Material.valueOf(it.getString("id").split(":")[1].toUpperCase())
+                val type = Material.KEYS.value(it.getString("id").toNamespacedKey())!!
                 val slot = it.getByte("Slot")
                 val count = it.getByte("Count")
                 slot.toInt() to ItemStack(type, count.toInt())

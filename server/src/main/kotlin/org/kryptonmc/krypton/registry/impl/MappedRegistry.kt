@@ -1,17 +1,16 @@
 package org.kryptonmc.krypton.registry.impl
 
 import org.kryptonmc.krypton.registry.Registry
-import java.util.*
 
-open class MappedRegistry<T>(values: Map<T?, Int>? = null) : Registry<T> {
+open class MappedRegistry<T>(values: Map<out T, Int>? = null) : Registry<T> {
 
     private var nextID = 0
-    private val byT = IdentityHashMap<T, Int>()
+    private val byT = mutableMapOf<T, Int>()
     private val byId = mutableListOf<T?>()
 
     init {
         if (values != null) {
-            byT += values
+            byT.putAll(values)
             byId += values.keys
         }
     }

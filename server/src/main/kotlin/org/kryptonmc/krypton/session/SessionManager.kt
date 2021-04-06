@@ -278,8 +278,10 @@ class SessionManager(private val server: KryptonServer) {
     fun handleDisconnection(session: Session) {
         if (session.currentState != PacketState.PLAY) return
 
-        GlobalScope.launch { server.eventBus.call(QuitEvent(session.player)) }
-        server.playerDataManager.save(session.player)
+        GlobalScope.launch {
+            server.eventBus.call(QuitEvent(session.player))
+            server.playerDataManager.save(session.player)
+        }
 
         val destroyPacket = PacketOutEntityDestroy(listOf(session.id))
         val infoPacket = PacketOutPlayerInfo(

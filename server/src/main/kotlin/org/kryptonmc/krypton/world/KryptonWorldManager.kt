@@ -189,12 +189,12 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
     }
 
     private fun deserializeChunk(world: KryptonWorld, position: ChunkPosition): KryptonChunk {
-        val nbt = regionFileManager.read(position).getCompound("Level")
+        if (chunkCache.getIfPresent(position) != null) return chunkCache.getIfPresent(position)!!
 
+        val nbt = regionFileManager.read(position).getCompound("Level")
         val location = ChunkPosition(nbt.getInt("xPos"), nbt.getInt("zPos"))
 
         val heightmaps = nbt.getCompound("Heightmaps")
-
         val motionBlocking = LongArrayBinaryTag.of(*heightmaps.getLongArray("MOTION_BLOCKING"))
         val oceanFloor = LongArrayBinaryTag.of(*heightmaps.getLongArray("OCEAN_FLOOR"))
         val worldSurface = LongArrayBinaryTag.of(*heightmaps.getLongArray("WORLD_SURFACE"))
@@ -209,7 +209,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
                         nbtBlock.getCompound("Properties").associate { it.key to (it.value as StringBinaryTag).value() }
                     )
                 }
-            }
+            } as MutableList<ChunkBlock>
 
             ChunkSection(
                 nbtSection.getByte("Y").toInt(),

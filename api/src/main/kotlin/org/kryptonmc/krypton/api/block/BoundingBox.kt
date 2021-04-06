@@ -19,4 +19,9 @@ data class BoundingBox(
     val volume by lazy { size.x * size.y * size.z }
 
     val center by lazy { Vector(minimum.x + size.x * 0.5, minimum.y + size.y * 0.5, minimum.z + size.z * 0.5) }
+
+    companion object {
+
+        val EMPTY = BoundingBox(Vector.ZERO, Vector.ZERO)
+    }
 }

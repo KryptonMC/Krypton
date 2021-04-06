@@ -9,13 +9,14 @@ import org.kryptonmc.krypton.api.world.chunk.Chunk
 
 data class KryptonBlock(
     override val type: Material,
-    override val world: World,
     override val chunk: Chunk,
-    override val location: Location,
-    override val boundingBox: BoundingBox
+    override val location: Location
 ) : Block {
 
     override val isEmpty = type == Material.AIR
-
     override val isLiquid = type == Material.WATER || type == Material.LAVA
+    override val world = chunk.world
+    override val boundingBox = BoundingBox.EMPTY
+
+    override fun toString() = "KryptonBlock(type=$type,location=$location,boundingBox=$boundingBox)"
 }

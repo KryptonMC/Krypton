@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Inventories are now better than they were and exposed properly to the API
 - Implemented inventories on the backend
 - Inventories are now properly persisted, along with your currently held item
+- Added block placement support (currently with a few limitations, like no placing blocks in non existent
+  chunk sections, and you can't place blocks that aren't in this current palette)
 
 ### Changed
 - `saveAll` message is now dependent on whether the save was an autosave or not.
@@ -18,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   properties not being initialised
 - Fixed NBT reading
 - Fixed index out of bounds when populating a player's inventory
+- Registries are no longer required to be dependency injected, as `RegistryManager` is gone and
+  `Registries` is now an object
 
 ### Removed
 - The useless, stupid `PlayerData` object is now gone

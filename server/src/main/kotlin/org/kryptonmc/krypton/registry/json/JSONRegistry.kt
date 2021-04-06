@@ -7,6 +7,7 @@ import org.kryptonmc.krypton.api.registry.NamespacedKey
 @Serializable
 data class RegistryEntry(
     @SerialName("protocol_id") val id: Int,
+    val default: NamespacedKey? = null,
     val entries: Map<NamespacedKey, RegistryIdHolder>
 )
 

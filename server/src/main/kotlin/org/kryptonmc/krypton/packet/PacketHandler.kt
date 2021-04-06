@@ -45,6 +45,7 @@ import org.kryptonmc.krypton.registry.Registries
 import org.kryptonmc.krypton.session.Session
 import org.kryptonmc.krypton.session.SessionManager
 import org.kryptonmc.krypton.space.toAngle
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import java.net.InetSocketAddress
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
@@ -79,6 +80,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
             is PacketInPlayerAbilities -> handleFlyingStatus(session, packet)
             is PacketInCreativeInventoryAction -> handleCreativeInventoryAction(session, packet)
             is PacketInHeldItemChange -> handleHeldItemChange(session, packet)
+            is PacketInPlayerBlockPlacement -> handleBlockPlacement(session, packet)
         }
     }
 
@@ -351,14 +353,22 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     }
 
     private fun handleCreativeInventoryAction(session: Session, packet: PacketInCreativeInventoryAction) {
-        val registryEntry = Registries.BLOCKS.entries.firstOrNull { it.value.id == packet.clickedItem.id }?.key ?: return
-        val type = Material.KEYS.value(registryEntry)
+        val type = Material.KEYS.value(Registries.ITEMS[packet.clickedItem.id] ?: return)
         val item = type?.let { ItemStack(type, packet.clickedItem.count.toInt()) } ?: ItemStack.EMPTY
         session.player.inventory[packet.slot.toInt()] = item
     }
 
     private fun handleHeldItemChange(session: Session, packet: PacketInHeldItemChange) {
         session.player.inventory.heldSlot = packet.slot.toInt()
+    }
+
+    private fun handleBlockPlacement(session: Session, packet: PacketInPlayerBlockPlacement) {
+        val world = session.player.world
+        val chunk = world.chunks.firstOrNull { session.player.location in it.position } ?: return
+        val section = chunk.sections.firstOrNull { it.y == (session.player.location.y.toInt() / 16) } ?: return
+
+        val item = session.player.inventory.mainHand ?: return
+        section.setBlock(packet.location, KryptonBlock(item.type, chunk, packet.location.toLocation(world)))
     }
 }
 

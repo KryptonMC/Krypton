@@ -10,7 +10,7 @@ import java.util.*
 @Suppress("EqualsOrHashCode")
 data class KryptonChunk(
     override val world: World,
-    var position: ChunkPosition,
+    val position: ChunkPosition,
     val sections: List<ChunkSection>,
     override val biomes: List<Biome>,
     override var lastUpdate: Long,
