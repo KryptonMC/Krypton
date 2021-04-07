@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.extension.writeChat
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
-class PacketOutPlayDisconnect(private val component: Component) : PlayPacket(0x19) {
+class PacketOutDisconnect(private val component: Component) : PlayPacket(0x19) {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(component)

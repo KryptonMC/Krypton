@@ -23,7 +23,6 @@ import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.entity.metadata.MovementFlags
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
-import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
@@ -32,9 +31,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.*
 import org.kryptonmc.krypton.packet.`in`.status.PacketInPing
 import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
 import org.kryptonmc.krypton.packet.data.*
-import org.kryptonmc.krypton.packet.out.login.PacketOutDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
-import org.kryptonmc.krypton.packet.out.play.*
 import org.kryptonmc.krypton.packet.out.play.chat.*
 import org.kryptonmc.krypton.packet.out.play.entity.*
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMovement.*
@@ -93,13 +90,11 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
                         key(key)
                         args(text { content(ServerInfo.VERSION) })
                     }
-                    session.sendPacket(PacketOutDisconnect(reason))
-                    session.disconnect()
+                    session.disconnect(reason)
                     return
                 }
                 if (ServerStorage.PLAYER_COUNT.get() >= server.config.status.maxPlayers) {
-                    session.sendPacket(PacketOutDisconnect(translatable { key("multiplayer.disconnect.server_full") }))
-                    session.disconnect()
+                    session.disconnect(translatable { key("multiplayer.disconnect.server_full") })
                 }
             }
             PacketState.STATUS -> session.currentState = PacketState.STATUS
@@ -157,8 +152,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
             val event = LoginEvent(packet.name, offlineUUID, session.channel.remoteAddress() as InetSocketAddress)
             server.eventBus.call(event)
             if (event.isCancelled) {
-                session.sendPacket(PacketOutDisconnect(event.cancelledReason))
-                session.disconnect()
+                session.disconnect(event.cancelledReason)
                 return
             }
 
@@ -182,13 +176,11 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
             val event = LoginEvent(session.profile.name, session.profile.uuid, session.channel.remoteAddress() as InetSocketAddress)
             server.eventBus.call(event)
             if (event.isCancelled) {
-                session.sendPacket(PacketOutDisconnect(translatable { key("multiplayer.disconnect.kicked") }))
-                session.disconnect()
+                session.disconnect(translatable { key("multiplayer.disconnect.kicked") })
                 return
             }
         } catch (exception: AuthenticationException) {
-            session.sendPacket(PacketOutDisconnect(translatable { key("multiplayer.disconnect.unverified_username") }))
-            session.disconnect()
+            session.disconnect(translatable { key("multiplayer.disconnect.unverified_username") })
             return
         }
         sessionManager.enableCompression(session, server.config.server.compressionThreshold)
@@ -304,8 +296,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
             sessionManager.updateLatency(session, max((packet.keepAliveId - session.lastKeepAliveId), 0L).toInt())
             return
         }
-        session.sendPacket(PacketOutPlayDisconnect(translatable { key("disconnect.timeout") }))
-        session.disconnect()
+        session.disconnect(translatable { key("disconnect.timeout") })
     }
 
     private fun handleAnimation(session: Session, packet: PacketInAnimation) {

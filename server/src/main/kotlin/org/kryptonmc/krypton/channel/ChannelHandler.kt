@@ -7,7 +7,6 @@ import net.kyori.adventure.extra.kotlin.translatable
 import org.kryptonmc.krypton.*
 import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.login.PacketOutDisconnect
 import org.kryptonmc.krypton.session.Session
 import org.kryptonmc.krypton.session.SessionManager
 import java.net.InetSocketAddress
@@ -40,15 +39,14 @@ class ChannelHandler(private val sessionManager: SessionManager) : SimpleChannel
         if (cause is TimeoutException) {
             val address = ctx.channel().remoteAddress() as InetSocketAddress
             LOGGER.debug("Connection from ${address.address}:${address.port} timed out. Reason: ", cause)
-            session.sendPacket(PacketOutDisconnect(translatable { key("disconnect.timeout") }))
-            session.disconnect()
+            session.disconnect(translatable { key("disconnect.timeout") })
         } else {
             val disconnectReason = translatable {
                 key("disconnect.genericReason")
                 args(text { content("Internal Exception: $cause") })
             }
             LOGGER.debug("Failed to send or received invalid packet! Cause: ", cause)
-            session.sendPacket(PacketOutDisconnect(disconnectReason))
+            session.disconnect(disconnectReason)
             ctx.channel().config().isAutoRead = false
         }
     }

@@ -111,27 +111,18 @@ fun ByteBuf.readVarIntByteArray(): ByteArray {
     if (length > readable) {
         throw DecoderException("Not enough bytes to read. Expected Length: $length, actual length: $readable")
     }
-    val bytes = ByteArray(length)
-    readBytes(bytes)
-    return bytes
+    return readAvailableBytes(length)
 }
 
 fun ByteBuf.readAvailableBytes(length: Int): ByteArray {
     if (hasArray()) return readBytes(length).array()
 
     val bytes = ByteArray(length)
-    readBytes(bytes, readerIndex(), length)
+    readBytes(bytes, 0, length)
     return bytes
 }
 
-fun ByteBuf.readAllAvailableBytes(): ByteArray {
-    val length = readableBytes()
-    if (hasArray()) return array()
-
-    val bytes = ByteArray(length)
-    readBytes(bytes, readerIndex(), length)
-    return bytes
-}
+fun ByteBuf.readAllAvailableBytes() = readAvailableBytes(readableBytes())
 
 fun ByteBuf.writeLongArray(array: LongArray) {
     writeVarInt(array.size)

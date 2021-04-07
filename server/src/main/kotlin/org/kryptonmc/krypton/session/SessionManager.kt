@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.extension.toArea
 import org.kryptonmc.krypton.extension.toProtocol
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketHandler
-import org.kryptonmc.krypton.packet.out.login.PacketOutDisconnect
+import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.out.play.*
@@ -73,8 +73,7 @@ class SessionManager(private val server: KryptonServer) {
         val event = JoinEvent(session.player)
         server.eventBus.call(event)
         if (event.isCancelled) {
-            session.sendPacket(PacketOutDisconnect(event.cancelledReason))
-            session.disconnect()
+            session.disconnect(event.cancelledReason)
             return
         }
 
@@ -335,11 +334,8 @@ class SessionManager(private val server: KryptonServer) {
 
     fun shutdown() {
         if (sessions.isEmpty()) return
-        val disconnectPacket = PacketOutPlayDisconnect(translatable { key("multiplayer.disconnect.server_shutdown") })
-        sessions.forEach {
-            it.sendPacket(disconnectPacket)
-            it.disconnect()
-        }
+        val reason = translatable { key("multiplayer.disconnect.server_shutdown") }
+        sessions.forEach { it.disconnect(reason) }
     }
 
     companion object {

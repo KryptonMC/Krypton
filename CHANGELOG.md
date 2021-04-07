@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.3] - 2021-04-07
+### Changed
+- Fixed error handling so the disconnect packet varies based on the session's current state
+- Fixed plugin message handling (again) because I was reading bytes wrong (using `readerIndex()` as
+  the destination index instead of 0)
+- Cleaned up some code that was repeated unnecessarily in bytebufs.kt
+- Renamed `PacketOutDisconnect` (login) to `PacketOutLoginDisconnect` and `PacketOutPlayDisconnect`
+  (play) to `PacketOutDisconnect`, as the latter is used much more often.
+- Made `Session`'s `disconnect` function take the reason rather than having it sent manually.
+
 ## [0.16.2] - 2021-04-04
 ### Changed
 - Fixed fastutil exclusions, cutting JAR size down by ~3 MB
