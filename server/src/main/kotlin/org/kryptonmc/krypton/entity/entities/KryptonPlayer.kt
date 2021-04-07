@@ -19,6 +19,7 @@ import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.entity.Attribute
+import org.kryptonmc.krypton.extension.canBuild
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
@@ -51,7 +52,6 @@ class KryptonPlayer(
     override var isOnGround = false
     override var isCrouching = false
     override var isSprinting = false
-    override var isFlying = false
 
     override var viewDistance = 10
     override var time = 0L
@@ -107,4 +107,22 @@ class KryptonPlayer(
     }
 
     override fun identity() = Identity.identity(uuid)
+
+    fun updateAbilities() {
+        abilities = when (gamemode) {
+            Gamemode.CREATIVE -> Abilities(
+                isInvulnerable = true,
+                canFly = true,
+                canInstantlyBuild = true
+            )
+            Gamemode.SPECTATOR -> Abilities(
+                isInvulnerable = true,
+                canFly = true,
+                isFlying = true,
+                canInstantlyBuild = false
+            )
+            else -> Abilities()
+        }
+        abilities.canBuild = gamemode.canBuild
+    }
 }

@@ -47,18 +47,6 @@ class PlayerDataManager(private val folder: File) {
             }
         }.toSet()
 
-        player.abilities = nbt.getCompound("abilities").let {
-            Abilities(
-                it.getBoolean("instabuild"),
-                it.getBoolean("mayfly"),
-                it.getBoolean("invulnerable"),
-                it.getBoolean("mayBuild"),
-                it.getBoolean("flying"),
-                it.getFloat("walkSpeed"),
-                it.getFloat("flySpeed")
-            )
-        }
-
         val inventoryItems = nbt.getList("Inventory").associate { item ->
             (item as CompoundBinaryTag).let {
                 val type = Material.KEYS.value(it.getString("id").toNamespacedKey())!!

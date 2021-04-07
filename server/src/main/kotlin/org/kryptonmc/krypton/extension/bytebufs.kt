@@ -162,8 +162,10 @@ fun ByteBuf.writeNBTCompound(tag: CompoundBinaryTag) {
 }
 
 fun ByteBuf.readNBTCompound(): CompoundBinaryTag {
+    val index = readerIndex()
     val type = readByte()
     if (type == 0.toByte()) return CompoundBinaryTag.empty()
+    readerIndex(index) // reset the head if it's not an end tag
 
     try {
         return BinaryTagIO.unlimitedReader().read(ByteBufInputStream(this) as InputStream)

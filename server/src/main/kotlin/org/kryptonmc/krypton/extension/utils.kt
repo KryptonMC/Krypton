@@ -2,6 +2,7 @@ package org.kryptonmc.krypton.extension
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.kryptonmc.krypton.api.world.Gamemode
 import java.net.InetAddress
 import kotlin.math.log2
 import kotlin.math.max
@@ -22,3 +23,6 @@ fun String.toProtocol(): ByteArray {
     val bytes = encodeToByteArray()
     return byteArrayOf(bytes.size.toByte(), *bytes)
 }
+
+val Gamemode.canBuild: Boolean
+    get() = this == Gamemode.SURVIVAL || this == Gamemode.CREATIVE

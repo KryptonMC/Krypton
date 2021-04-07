@@ -39,6 +39,7 @@ data class StatusConfig(
 data class WorldConfig(
     val name: String,
     @Serializable(with = GamemodeSerializer::class) val gamemode: Gamemode,
+    @SerialName("force-default-gamemode") val forceDefaultGamemode: Boolean,
     @Serializable(with = DifficultySerializer::class) val difficulty: Difficulty,
     val hardcore: Boolean,
     @SerialName("view-distance") val viewDistance: Int,

@@ -79,11 +79,6 @@ interface Player : Sender, InventoryHolder {
     val isSprinting: Boolean
 
     /**
-     * If this player is flying
-     */
-    val isFlying: Boolean
-
-    /**
      * The view distance of this player
      */
     val viewDistance: Int
