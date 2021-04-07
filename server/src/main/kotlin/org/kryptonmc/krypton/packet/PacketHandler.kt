@@ -14,6 +14,7 @@ import org.kryptonmc.krypton.api.event.events.play.ChatEvent
 import org.kryptonmc.krypton.api.event.events.play.ClientSettingsEvent
 import org.kryptonmc.krypton.api.event.events.play.MoveEvent
 import org.kryptonmc.krypton.api.event.events.play.PluginMessageEvent
+import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
@@ -72,6 +73,7 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
             is PacketInEntityAction -> handleEntityAction(session, packet)
             is PacketInPluginMessage -> handlePluginMessage(session, packet)
             is PacketInTabComplete -> handleTabComplete(session, packet)
+            is PacketInPlayerAbilities -> handleFlyingStatus(session, packet)
         }
     }
 
@@ -332,6 +334,15 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
 
     private fun handlePluginMessage(session: Session, packet: PacketInPluginMessage) {
         server.eventBus.call(PluginMessageEvent(session.player, packet.channel, packet.data))
+    }
+
+    private fun handleFlyingStatus(session: Session, packet: PacketInPlayerAbilities) {
+        if (session.player.gamemode != Gamemode.CREATIVE) return
+        session.sendPacket(PacketOutEntityMetadata(
+            session.id,
+            PlayerMetadata(movementFlags = MovementFlags(isFlying = packet.isFlying))
+        ))
+        session.player.isFlying = packet.isFlying
     }
 }
 
