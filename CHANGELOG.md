@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.1] - 2021-04-07
+### Added
+- Optional `force-default-gamemode` setting (allows you to force all players and world gamemodes to the
+  gamemode set in the config)
+
+### Changed
+- Fixed abilities being read from the config (meaning they never change)
+- Fixed block breaking not returning if the player can't build
+- Fixed inbound abilities packet using some logic that was not what we wanted
+- Fixed NBT compounds not reading properly due to not resetting the reader index if the tag type isn't an
+  end tag
+
 ## [0.17] - 2021-04-04
 ### Added
 - Inventories are now better than they were and exposed properly to the API

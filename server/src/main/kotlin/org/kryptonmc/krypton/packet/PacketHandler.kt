@@ -26,6 +26,7 @@ import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.entity.metadata.MovementFlags
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
+import org.kryptonmc.krypton.extension.canBuild
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
@@ -344,12 +345,11 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     }
 
     private fun handleFlyingStatus(session: Session, packet: PacketInPlayerAbilities) {
-        if (session.player.gamemode != Gamemode.CREATIVE) return
+        session.player.abilities.isFlying = packet.isFlying && session.player.abilities.canFly
         session.sendPacket(PacketOutEntityMetadata(
             session.id,
-            PlayerMetadata(movementFlags = MovementFlags(isFlying = packet.isFlying))
+            PlayerMetadata(movementFlags = MovementFlags(isFlying = session.player.abilities.isFlying))
         ))
-        session.player.isFlying = packet.isFlying
     }
 
     private fun handleCreativeInventoryAction(session: Session, packet: PacketInCreativeInventoryAction) {
@@ -363,6 +363,8 @@ class PacketHandler(private val sessionManager: SessionManager, private val serv
     }
 
     private fun handleBlockPlacement(session: Session, packet: PacketInPlayerBlockPlacement) {
+        if (!session.player.abilities.canBuild) return // if they can't place blocks, they are irrelevant :)
+
         val world = session.player.world
         val chunk = world.chunks.firstOrNull { session.player.location in it.position } ?: return
         val section = chunk.sections.firstOrNull { it.y == (session.player.location.y.toInt() / 16) } ?: return

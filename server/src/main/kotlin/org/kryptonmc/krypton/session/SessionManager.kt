@@ -13,10 +13,12 @@ import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.api.event.events.login.JoinEvent
 import org.kryptonmc.krypton.api.event.events.play.QuitEvent
 import org.kryptonmc.krypton.api.registry.NamespacedKey
+import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.encryption.Encryption.Companion.SHARED_SECRET_ALGORITHM
 import org.kryptonmc.krypton.encryption.toDecryptingCipher
 import org.kryptonmc.krypton.encryption.toEncryptingCipher
+import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.entity.metadata.MovementFlags
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
@@ -75,13 +77,15 @@ class SessionManager(private val server: KryptonServer) {
         }
 
         val world = server.worldManager.default
-        world.gamemode = server.config.world.gamemode
+        if (server.config.world.forceDefaultGamemode) world.gamemode = server.config.world.gamemode
         world.players += session.player
         server.players += session.player
 
         // load the player's data and populate the provided player with their loaded data
         server.playerDataManager.loadAndPopulate(world, session.player)
+        if (server.config.world.forceDefaultGamemode) session.player.gamemode = server.config.world.gamemode
         val spawnLocation = session.player.location
+        session.player.updateAbilities()
 
         session.currentState = PacketState.PLAY
         session.sendPacket(PacketOutJoinGame(
@@ -98,7 +102,7 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutServerDifficulty(server.config.world.difficulty, true))
 
         val metadata = PlayerMetadata(
-            MovementFlags(isFlying = session.player.isFlying),
+            MovementFlags(isFlying = session.player.abilities.isFlying),
             PlayerMetadata.airTicks,
             PlayerMetadata.customName,
             PlayerMetadata.isCustomNameVisible,
