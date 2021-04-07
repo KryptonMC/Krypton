@@ -190,9 +190,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
 
     private fun deserializeChunk(world: KryptonWorld, position: ChunkPosition): KryptonChunk {
         if (chunkCache.getIfPresent(position) != null) return chunkCache.getIfPresent(position)!!
-
         val nbt = regionFileManager.read(position).getCompound("Level")
-        val location = ChunkPosition(nbt.getInt("xPos"), nbt.getInt("zPos"))
 
         val heightmaps = nbt.getCompound("Heightmaps")
         val motionBlocking = LongArrayBinaryTag.of(*heightmaps.getLongArray("MOTION_BLOCKING"))
@@ -226,7 +224,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
 
         return KryptonChunk(
             world,
-            location,
+            position,
             sections,
             nbt.getIntArray("Biomes").map { Biome.fromId(it) },
             nbt.getLong("LastUpdate"),
@@ -234,7 +232,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
             Heightmaps(motionBlocking, oceanFloor, worldSurface),
             carvingMasks,
             nbt.getCompound("Structures")
-        ).apply { chunkCache.put(location, this) }
+        ).apply { chunkCache.put(position, this) }
     }
 
     fun KryptonWorld.save() {
