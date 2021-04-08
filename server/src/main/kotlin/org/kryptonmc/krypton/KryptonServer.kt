@@ -56,6 +56,7 @@ class KryptonServer : Server {
     override val gamemode = config.world.gamemode
 
     override lateinit var address: InetSocketAddress
+        private set
 
     override val players = mutableSetOf<KryptonPlayer>()
 
@@ -65,6 +66,7 @@ class KryptonServer : Server {
     override val console = ConsoleSender(this)
 
     override var scoreboard: KryptonScoreboard? = null
+        private set
 
     internal val encryption = Encryption()
     private val nettyProcess = NettyProcess(this)
@@ -83,19 +85,20 @@ class KryptonServer : Server {
     override val scheduler = KryptonScheduler
 
     override lateinit var pluginManager: KryptonPluginManager
+        private set
 
     @Volatile
-    internal var lastTickTime = 0L
+    internal var lastTickTime = 0L; private set
     private var lastOverloadWarning = 0L
     private var tickCount = 0
 
     internal val tickTimes = LongArray(100)
-    internal var averageTickTime = 0F
+    internal var averageTickTime = 0F; private set
 
     private val tickScheduler = Executors.newSingleThreadScheduledExecutor { Thread(it, "Tick Scheduler") }
 
     @Volatile
-    internal var isRunning = true
+    internal var isRunning = true; private set
 
     internal fun start() {
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
@@ -104,11 +107,8 @@ class KryptonServer : Server {
         Class.forName("org.kryptonmc.krypton.registry.Registries")
         Class.forName("org.kryptonmc.krypton.world.block.palette.GlobalPalette")
 
-        Thread {
-            LOGGER.debug("Starting console handler")
-            KryptonConsole(this).start()
-        }.apply {
-            name = "Console Handler"
+        LOGGER.debug("Starting console handler")
+        Thread(KryptonConsole(this)::start, "Console Handler").apply {
             uncaughtExceptionHandler = DefaultUncaughtExceptionHandler(logger("CONSOLE"))
             isDaemon = true
         }.start()
@@ -133,43 +133,18 @@ class KryptonServer : Server {
             LOGGER.warn("-----------------------------------------------------------------------------------")
         }
 
-        GlobalScope.launch(Dispatchers.IO) {
-            LOGGER.info("Loading plugins...")
-            pluginManager = KryptonPluginManager(this@KryptonServer)
-            pluginManager.initialise()
-            LOGGER.info("Plugin loading done!")
-            LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type \"help\" for help.")
-        }
+        LOGGER.info("Loading plugins...")
+        pluginManager = KryptonPluginManager(this)
+        pluginManager.initialize()
+        LOGGER.info("Plugin loading done!")
 
         lastTickTime = System.currentTimeMillis()
+        if (config.advanced.enableJmxMonitoring) KryptonStatistics.register(this)
         if (config.server.tickThreshold > 0) WatchdogProcess(this).start()
 
-        Runtime.getRuntime().addShutdownHook(Thread({
-            // stop server and shut down session manager (disconnecting all players)
-            LOGGER.info("Stopping Krypton...")
-            isRunning = false
-            sessionManager.shutdown()
+        Runtime.getRuntime().addShutdownHook(Thread(this::stop, "Shutdown Handler").apply { isDaemon = false })
 
-            // save player, world and region data
-            LOGGER.info("Saving player, world and region data...")
-            worldManager.saveAll()
-            players.forEach { playerDataManager.save(it) }
-
-            // shut down plugins and unregister listeners
-            LOGGER.info("Shutting down plugins...")
-            pluginManager.shutdown()
-            eventBus.unregisterAll()
-
-            // shut down schedulers
-            scheduler.shutdown()
-            tickScheduler.shutdownNow()
-            LOGGER.info("Goodbye")
-
-            // manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
-            LogManager.shutdown()
-        }, "Shutdown Handler").apply { isDaemon = false })
-
-        if (config.advanced.enableJmxMonitoring) KryptonStatistics.register(this)
+        LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type \"help\" for help.")
         tickScheduler.scheduleAtFixedRate({
             if (!isRunning) return@scheduleAtFixedRate
 
@@ -233,6 +208,31 @@ class KryptonServer : Server {
         }
 
         return HOCON.decodeFromConfig(ConfigFactory.parseFile(configFile))
+    }
+
+    private fun stop() {
+        // stop server and shut down session manager (disconnecting all players)
+        LOGGER.info("Stopping Krypton...")
+        isRunning = false
+        sessionManager.shutdown()
+
+        // save player, world and region data
+        LOGGER.info("Saving player, world and region data...")
+        worldManager.saveAll()
+        players.forEach { playerDataManager.save(it) }
+
+        // shut down plugins and unregister listeners
+        LOGGER.info("Shutting down plugins...")
+        pluginManager.shutdown()
+        eventBus.unregisterAll()
+
+        // shut down schedulers
+        scheduler.shutdown()
+        tickScheduler.shutdownNow()
+        LOGGER.info("Goodbye")
+
+        // manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
+        LogManager.shutdown()
     }
 
     object KryptonServerInfo : Server.ServerInfo {

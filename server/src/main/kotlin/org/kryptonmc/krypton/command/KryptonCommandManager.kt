@@ -121,7 +121,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         .executes(brigadierCommand)
         .build()
 
-    fun registerBuiltins() {
+    internal fun registerBuiltins() {
         register(StopCommand())
     }
 

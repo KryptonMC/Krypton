@@ -26,7 +26,7 @@ abstract class Plugin(val context: PluginContext) {
      * is called within its own plugin scope, whereas the init block is
      * called synchronously.
      */
-    open suspend fun initialize() {}
+    open fun initialize() {}
 
     /**
      * This is called when the plugin is shut down.

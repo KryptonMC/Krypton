@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.2] - 2021-04-08
+### Changed
+- Internal vars in `KryptonServer` have been made `private set`, to avoid them being updated outside of
+  the server class.
+- Moved done message to the bottom (so it actually prints when the server is fully done, rather than after
+  plugin loading is done)
+- Moved shutdown logic into its own function called `stop`, for readability
+
+### Removed
+- Asynchronous plugin loading with `PluginScope`, as it was unnecessary
+
 ## [0.17.1] - 2021-04-07
 ### Added
 - Optional `force-default-gamemode` setting (allows you to force all players and world gamemodes to the

@@ -18,7 +18,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
     override val plugins = mutableSetOf<Plugin>()
 
-    internal fun initialise() {
+    internal fun initialize() {
         File(ROOT_FOLDER, "plugins/").apply {
             mkdir()
             (listFiles() ?: return).filter { !it.isDirectory }.forEach {
@@ -28,12 +28,10 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
                 val version = plugin.context.description.version
                 LOGGER.info("Successfully loaded $name version $version")
 
-                PluginScope.launch {
-                    LOGGER.info("Initializing $name version $version...")
-                    plugin.initialize()
-                    LOGGER.info("Successfully initialized $name version $version")
-                    plugin.loadState = PluginLoadState.INITIALIZED
-                }
+                LOGGER.info("Initializing $name version $version...")
+                plugin.initialize()
+                LOGGER.info("Successfully initialized $name version $version")
+                plugin.loadState = PluginLoadState.INITIALIZED
 
                 plugins += plugin
             }
