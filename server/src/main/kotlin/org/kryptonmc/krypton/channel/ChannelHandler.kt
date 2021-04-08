@@ -12,25 +12,25 @@ import org.kryptonmc.krypton.session.SessionManager
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeoutException
 
-class ChannelHandler(private val sessionManager: SessionManager) : SimpleChannelInboundHandler<Packet>() {
+class ChannelHandler(private val server: KryptonServer) : SimpleChannelInboundHandler<Packet>() {
 
     internal lateinit var session: Session
 
     override fun handlerAdded(ctx: ChannelHandlerContext) {
         LOGGER.debug("[+] Channel Connected: ${ctx.channel().remoteAddress()}")
-        session = Session(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), ctx.channel())
-        sessionManager.sessions += session
+        session = Session(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), server, ctx.channel())
+        server.sessionManager.sessions += session
     }
 
     override fun handlerRemoved(ctx: ChannelHandlerContext) {
         LOGGER.debug("[-] Channel Disconnected: ${ctx.channel().remoteAddress()}")
-        sessionManager.handleDisconnection(session)
-        sessionManager.sessions -= session
+        server.sessionManager.handleDisconnection(session)
+        server.sessionManager.sessions -= session
     }
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: Packet) {
         if (!ctx.channel().isOpen) return
-        sessionManager.handle(session, msg)
+        session.handler.handle(msg)
     }
 
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {
