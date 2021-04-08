@@ -28,6 +28,7 @@ import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.registry.tags.TagManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.session.SessionManager
+import org.kryptonmc.krypton.util.monitoring.jmx.KryptonStatistics
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.io.File
@@ -87,6 +88,9 @@ class KryptonServer : Server {
     internal var lastTickTime = 0L
     private var lastOverloadWarning = 0L
     private var tickCount = 0
+
+    internal val tickTimes = LongArray(100)
+    internal var averageTickTime = 0F
 
     private val tickScheduler = Executors.newSingleThreadScheduledExecutor { Thread(it, "Tick Scheduler") }
 
@@ -165,6 +169,7 @@ class KryptonServer : Server {
             LogManager.shutdown()
         }, "Shutdown Handler").apply { isDaemon = false })
 
+        if (config.advanced.enableJmxMonitoring) KryptonStatistics.register(this)
         tickScheduler.scheduleAtFixedRate({
             if (!isRunning) return@scheduleAtFixedRate
 
@@ -173,9 +178,16 @@ class KryptonServer : Server {
                 LOGGER.warn("Woah there! Can't keep up! Running ${nextTickTime}ms (${nextTickTime / 50} ticks) behind!")
                 lastOverloadWarning = lastTickTime
             }
+            // start tick
             eventBus.call(TickStartEvent(tickCount))
             val tickTime = measureTimeMillis(::tick)
             val finishTime = System.currentTimeMillis()
+
+            // store historical tick time and update average
+            tickTimes[tickCount % 100] = tickTime
+            averageTickTime = averageTickTime * 0.8F + tickTime * 0.19999999F
+
+            // end tick
             eventBus.call(TickEndEvent(tickCount, tickTime, finishTime))
             lastTickTime = finishTime
         }, 0, TICK_INTERVAL, TimeUnit.MILLISECONDS)

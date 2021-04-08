@@ -48,7 +48,8 @@ data class WorldConfig(
 
 @Serializable
 data class AdvancedConfig(
-    @SerialName("synchronize-chunk-writes") val synchronizeChunkWrites: Boolean = true
+    @SerialName("synchronize-chunk-writes") val synchronizeChunkWrites: Boolean = true,
+    @SerialName("enable-jmx-monitoring") val enableJmxMonitoring: Boolean = true
 )
 
 internal object GamemodeSerializer : KSerializer<Gamemode> by Gamemode.serializer() {

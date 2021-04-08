@@ -7,7 +7,7 @@ import org.kryptonmc.krypton.api.event.Event
  *
  * @param tickNumber the tick number
  * @param tickDuration the duration of the tick
- * @param timeEnd the time this tick ended in nanoseconds
+ * @param timeEnd the time this tick ended in milliseconds
  * @author Callum Seabrook
  */
 data class TickEndEvent(
