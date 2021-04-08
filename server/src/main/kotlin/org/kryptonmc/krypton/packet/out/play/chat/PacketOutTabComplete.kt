@@ -16,8 +16,8 @@ class PacketOutTabComplete(
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(id)
-        buf.writeVarInt(matches.range.start + 1)
-        buf.writeVarInt(matches.range.end)
+        buf.writeVarInt(matches.range.start)
+        buf.writeVarInt(matches.range.length)
 
         buf.writeVarInt(matches.list.size)
         matches.list.forEach {

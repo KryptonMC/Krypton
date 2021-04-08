@@ -49,7 +49,7 @@ class NettyProcess(private val server: KryptonServer) {
                             .addLast(PacketDecoder.NETTY_NAME, PacketDecoder())
                             .addLast(SizeEncoder.NETTY_NAME, SizeEncoder())
                             .addLast(PacketEncoder.NETTY_NAME, PacketEncoder())
-                            .addLast(ChannelHandler.NETTY_NAME, ChannelHandler(server.sessionManager))
+                            .addLast(ChannelHandler.NETTY_NAME, ChannelHandler(server))
                     }
                 })
 

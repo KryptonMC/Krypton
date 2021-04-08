@@ -2,7 +2,7 @@ package org.kryptonmc.krypton.entity.metadata
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.entity.Hand
+import org.kryptonmc.krypton.api.entity.Hand
 import org.kryptonmc.krypton.extension.writeMetadata
 import org.kryptonmc.krypton.extension.writeOptionalMetadata
 import org.kryptonmc.krypton.api.space.Vector

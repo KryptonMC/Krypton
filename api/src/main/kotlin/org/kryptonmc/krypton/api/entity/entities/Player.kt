@@ -1,10 +1,11 @@
 package org.kryptonmc.krypton.api.entity.entities
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.HoverEvent
+import net.kyori.adventure.text.event.HoverEventSource
 import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
 import org.kryptonmc.krypton.api.entity.Abilities
-import org.kryptonmc.krypton.api.entity.Hand
 import org.kryptonmc.krypton.api.entity.MainHand
 import org.kryptonmc.krypton.api.inventory.InventoryHolder
 import org.kryptonmc.krypton.api.inventory.PlayerInventory
@@ -21,7 +22,7 @@ import java.util.*
  *
  * @author Callum Seabrook
  */
-interface Player : Sender, InventoryHolder {
+interface Player : Sender, InventoryHolder, HoverEventSource<HoverEvent.ShowEntity> {
 
     /**
      * The player's UUID

@@ -1,6 +1,7 @@
 package org.kryptonmc.krypton.command
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.ParseResults
 import com.mojang.brigadier.arguments.StringArgumentType.greedyString
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
@@ -59,8 +60,8 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         }
     }
 
-    fun suggest(sender: Sender, command: String): CompletableFuture<Suggestions> =
-        dispatcher.getCompletionSuggestions(dispatcher.parse(command, sender))
+    fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> =
+        dispatcher.getCompletionSuggestions(parseResults)
 
     private fun dispatchCommand(command: Command, sender: Sender, args: List<String>): Int {
         CommandScope.launch { command.execute(sender, args) }

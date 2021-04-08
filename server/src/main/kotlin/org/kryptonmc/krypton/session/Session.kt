@@ -2,16 +2,22 @@ package org.kryptonmc.krypton.session
 
 import io.netty.channel.Channel
 import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.data.ClientSettings
+import org.kryptonmc.krypton.packet.handlers.HandshakeHandler
+import org.kryptonmc.krypton.packet.handlers.PacketHandler
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
 import org.kryptonmc.krypton.packet.state.PacketState
-import kotlin.random.Random
 
-class Session(val id: Int, internal val channel: Channel) {
+class Session(
+    val id: Int,
+    server: KryptonServer,
+    internal val channel: Channel
+) {
 
     lateinit var profile: GameProfile
     lateinit var settings: ClientSettings
@@ -23,6 +29,9 @@ class Session(val id: Int, internal val channel: Channel) {
 
     @Volatile
     internal var currentState: PacketState = PacketState.HANDSHAKE
+
+    @Volatile
+    internal var handler: PacketHandler = HandshakeHandler(server, this)
 
     fun sendPacket(packet: Packet) {
         channel.writeAndFlush(packet)

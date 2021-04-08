@@ -28,6 +28,7 @@ import java.util.concurrent.ThreadLocalRandom
 import kotlin.experimental.and
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.reflect.KClass
 
 // Allows us to write a byte without having to convert it to an integer every time
 fun ByteBuf.writeByte(byte: Byte) {
@@ -315,6 +316,8 @@ fun ByteBuf.writeKey(key: NamespacedKey) {
 fun ByteBuf.writeDuration(duration: Duration) {
     writeInt(duration.seconds.toInt() * 20)
 }
+
+fun <T : Enum<T>> ByteBuf.readEnum(kClass: KClass<T>): T = kClass.java.enumConstants[readVarInt()]
 
 fun Int.varIntSize(): Int {
     for (i in 1 until 5) {

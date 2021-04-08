@@ -2,7 +2,10 @@ package org.kryptonmc.krypton.entity.entities
 
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.HoverEvent.*
+import net.kyori.adventure.text.event.HoverEventSource
 import net.kyori.adventure.title.Title
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.api.effect.particle.ColorParticleData
@@ -10,6 +13,7 @@ import org.kryptonmc.krypton.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.krypton.api.effect.particle.NoteParticleData
 import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
 import org.kryptonmc.krypton.api.entity.Abilities
+import org.kryptonmc.krypton.api.entity.Hand
 import org.kryptonmc.krypton.api.entity.MainHand
 import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.registry.NamespacedKey
@@ -31,6 +35,7 @@ import org.kryptonmc.krypton.session.Session
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.net.InetSocketAddress
 import java.util.*
+import java.util.function.UnaryOperator
 
 class KryptonPlayer(
     override val name: String,
@@ -57,6 +62,7 @@ class KryptonPlayer(
     override var time = 0L
 
     override lateinit var mainHand: MainHand
+    var hand = Hand.MAIN
 
     override var scoreboard: Scoreboard? = null
 
@@ -107,6 +113,9 @@ class KryptonPlayer(
     }
 
     override fun identity() = Identity.identity(uuid)
+
+    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) =
+        showEntity(ShowEntity.of(Key.key("minecraft", "player"), uuid, displayName))
 
     fun updateAbilities() {
         abilities = when (gamemode) {

@@ -13,12 +13,7 @@ import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.api.event.events.login.JoinEvent
 import org.kryptonmc.krypton.api.event.events.play.QuitEvent
 import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.concurrent.NamedThreadFactory
-import org.kryptonmc.krypton.encryption.Encryption.Companion.SHARED_SECRET_ALGORITHM
-import org.kryptonmc.krypton.encryption.toDecryptingCipher
-import org.kryptonmc.krypton.encryption.toEncryptingCipher
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.entity.metadata.MovementFlags
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
@@ -26,12 +21,11 @@ import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.extension.toArea
 import org.kryptonmc.krypton.extension.toProtocol
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.PacketHandler
-import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
+import org.kryptonmc.krypton.packet.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
-import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.out.play.*
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo.*
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo.PlayerAction
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo.PlayerInfo
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityDestroy
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMetadata
@@ -41,14 +35,12 @@ import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties.Co
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityStatus
 import org.kryptonmc.krypton.packet.out.play.entity.spawn.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.state.PacketState
-import org.kryptonmc.krypton.packet.transformers.*
 import org.kryptonmc.krypton.space.Angle
 import org.kryptonmc.krypton.space.toAngle
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import javax.crypto.SecretKey
 import kotlin.math.floor
 import kotlin.random.Random
 
@@ -56,18 +48,15 @@ class SessionManager(private val server: KryptonServer) {
 
     val sessions: MutableSet<Session> = ConcurrentHashMap.newKeySet()
 
-    private val handler = PacketHandler(this, server)
-
     private val keepAliveExecutor = Executors.newScheduledThreadPool(8, NamedThreadFactory("Keep Alive Thread #%d"))
 
     init {
         Runtime.getRuntime().addShutdownHook(Thread { keepAliveExecutor.shutdown() })
     }
 
-    fun handle(session: Session, packet: Packet) = handler.handle(session, packet)
-
     fun beginPlayState(session: Session) {
         session.sendPacket(PacketOutLoginSuccess(session.profile.uuid, session.profile.name))
+        session.handler = PlayHandler(server, this, session)
 
         val event = JoinEvent(session.player)
         server.eventBus.call(event)
@@ -197,56 +186,6 @@ class SessionManager(private val server: KryptonServer) {
             session.lastKeepAliveId = keepAliveId
             session.sendPacket(PacketOutKeepAlive(keepAliveId))
         }, 0, 20, TimeUnit.SECONDS)
-    }
-
-    fun verifyToken(session: Session, expected: ByteArray, actual: ByteArray) {
-        val decryptedActual = server.encryption.decrypt(actual)
-        require(decryptedActual.contentEquals(expected)) {
-            LOGGER.warn("${session.player.name} failed verification! Expected ${expected.contentToString()}, received ${decryptedActual.contentToString()}")
-        }
-    }
-
-    fun enableEncryption(session: Session, key: SecretKey) {
-        val encrypter = PacketEncrypter(key.toEncryptingCipher(SHARED_SECRET_ALGORITHM))
-        val decrypter = PacketDecrypter(key.toDecryptingCipher(SHARED_SECRET_ALGORITHM))
-
-        session.channel.pipeline().addBefore(
-            SizeDecoder.NETTY_NAME,
-            PacketDecrypter.NETTY_NAME,
-            decrypter
-        )
-        session.channel.pipeline().addBefore(
-            SizeEncoder.NETTY_NAME,
-            PacketEncrypter.NETTY_NAME,
-            encrypter
-        )
-    }
-
-    fun enableCompression(session: Session, threshold: Int) {
-        val compressor = session.channel.pipeline()[PacketCompressor.NETTY_NAME]
-        val decompressor = session.channel.pipeline()[PacketDecompressor.NETTY_NAME]
-
-        if (threshold > 0) {
-            session.sendPacket(PacketOutSetCompression(threshold))
-            if (decompressor is PacketDecompressor) {
-                decompressor.threshold = threshold
-            } else {
-                session.channel.pipeline().addBefore(
-                    PacketDecoder.NETTY_NAME,
-                    PacketDecompressor.NETTY_NAME,
-                    PacketDecompressor(threshold)
-                )
-            }
-            if (compressor is PacketCompressor) {
-                compressor.threshold = threshold
-            } else {
-                session.channel.pipeline().addBefore(
-                    PacketEncoder.NETTY_NAME,
-                    PacketCompressor.NETTY_NAME,
-                    PacketCompressor(threshold)
-                )
-            }
-        }
     }
 
     private fun handlePlayStateBegin(session: Session, joinPacket: PacketOutChat) {

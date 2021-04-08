@@ -4,14 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.17.3] - 2021-04-09
+## [0.17.3] - 2021-04-08
 ### Added
 - GS4 status query handler
 - Default values to all of the configuration options
 
 ### Changed
+- Packet handling has been separated into multiple per-session handlers rather than a single handler
+- `Player` now implements `HoverEventSource`, meaning you can use it as a hover event source
+- `Hand` has been fully moved to the API, and no longer exists in both the API and the server
+- Tab completion now uses `StringReader` to avoid having to add one to the start when we send the packet
+  (and also because it's the way you're meant to do it)
 - Fixed server's address never getting instantiated
-- 
+
+### Removed
+- `PacketHandler` (the god object) is finally gone and has been divided up into separate packet handlers
+  for each state in the protocol
 
 ## [0.17.2] - 2021-04-08
 ### Changed
