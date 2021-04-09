@@ -34,6 +34,7 @@ dependencies {
     // Adventure
     implementation("net.kyori:adventure-text-serializer-gson:${Versions.ADVENTURE}")
     implementation("net.kyori:adventure-text-serializer-legacy:${Versions.ADVENTURE}")
+    implementation("net.kyori:adventure-text-serializer-plain:${Versions.ADVENTURE}")
     implementation("net.kyori:adventure-nbt:${Versions.ADVENTURE}")
 
     // Logging

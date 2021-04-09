@@ -19,6 +19,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
     override val plugins = mutableSetOf<Plugin>()
 
     internal fun initialize() {
+        LOGGER.info("Loading plugins...")
         File(ROOT_FOLDER, "plugins/").apply {
             mkdir()
             (listFiles() ?: return).filter { !it.isDirectory }.forEach {
@@ -36,6 +37,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
                 plugins += plugin
             }
         }
+        LOGGER.info("Plugin loading done!")
     }
 
     override fun isInitialized(plugin: Plugin) = plugin in plugins && plugin.loadState == PluginLoadState.INITIALIZED

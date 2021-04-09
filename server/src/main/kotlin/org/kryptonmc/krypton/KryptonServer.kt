@@ -29,10 +29,12 @@ import org.kryptonmc.krypton.registry.tags.TagManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.session.SessionManager
 import org.kryptonmc.krypton.util.monitoring.jmx.KryptonStatistics
+import org.kryptonmc.krypton.util.query.GS4QueryHandler
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.io.File
 import java.io.IOException
+import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.nio.file.Files
 import java.nio.file.Path
@@ -55,8 +57,7 @@ class KryptonServer : Server {
     override val difficulty = config.world.difficulty
     override val gamemode = config.world.gamemode
 
-    override lateinit var address: InetSocketAddress
-        private set
+    override val address = InetSocketAddress(config.server.ip, config.server.port)
 
     override val players = mutableSetOf<KryptonPlayer>()
 
@@ -65,8 +66,7 @@ class KryptonServer : Server {
 
     override val console = ConsoleSender(this)
 
-    override var scoreboard: KryptonScoreboard? = null
-        private set
+    override var scoreboard: KryptonScoreboard? = null; private set
 
     internal val encryption = Encryption()
     private val nettyProcess = NettyProcess(this)
@@ -84,8 +84,7 @@ class KryptonServer : Server {
 
     override val scheduler = KryptonScheduler
 
-    override lateinit var pluginManager: KryptonPluginManager
-        private set
+    override val pluginManager = KryptonPluginManager(this)
 
     @Volatile
     internal var lastTickTime = 0L; private set
@@ -99,6 +98,8 @@ class KryptonServer : Server {
 
     @Volatile
     internal var isRunning = true; private set
+
+    private var gs4QueryHandler: GS4QueryHandler? = null
 
     internal fun start() {
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
@@ -132,15 +133,16 @@ class KryptonServer : Server {
             LOGGER.warn("To get rid of this message, change online-mode to true in config.conf")
             LOGGER.warn("-----------------------------------------------------------------------------------")
         }
-
-        LOGGER.info("Loading plugins...")
-        pluginManager = KryptonPluginManager(this)
         pluginManager.initialize()
-        LOGGER.info("Plugin loading done!")
 
         lastTickTime = System.currentTimeMillis()
         if (config.advanced.enableJmxMonitoring) KryptonStatistics.register(this)
         if (config.server.tickThreshold > 0) WatchdogProcess(this).start()
+
+        if (config.query.enabled) {
+            LOGGER.info("Starting GS4 status listener")
+            gs4QueryHandler = GS4QueryHandler.create(this)
+        }
 
         Runtime.getRuntime().addShutdownHook(Thread(this::stop, "Shutdown Handler").apply { isDaemon = false })
 
@@ -215,6 +217,7 @@ class KryptonServer : Server {
         LOGGER.info("Stopping Krypton...")
         isRunning = false
         sessionManager.shutdown()
+        gs4QueryHandler?.let { it.stop() }
 
         // save player, world and region data
         LOGGER.info("Saving player, world and region data...")
