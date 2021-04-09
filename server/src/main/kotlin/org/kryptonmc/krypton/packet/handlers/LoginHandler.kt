@@ -1,5 +1,9 @@
 package org.kryptonmc.krypton.packet.handlers
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import net.kyori.adventure.extra.kotlin.text
 import net.kyori.adventure.extra.kotlin.translatable
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.api.event.events.login.LoginEvent
@@ -48,6 +52,7 @@ class LoginHandler(
         session.player = KryptonPlayer(packet.name, server, session, session.channel.remoteAddress() as InetSocketAddress)
 
         if (!server.isOnline) {
+            // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
             val offlineUUID = UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
             session.player.uuid = offlineUUID
             session.profile = GameProfile(offlineUUID, packet.name, emptyList())
@@ -61,45 +66,38 @@ class LoginHandler(
     }
 
     private fun handleEncryptionResponse(packet: PacketInEncryptionResponse) {
-        verifyToken(verifyToken, packet.verifyToken)
+        if (!verifyToken(verifyToken, packet.verifyToken)) return
 
         val sharedSecret = server.encryption.decrypt(packet.secret)
         val secretKey = SecretKeySpec(sharedSecret, "AES")
         enableEncryption(secretKey)
 
-        Thread({
+        GlobalScope.launch(Dispatchers.IO) {
             try {
                 session.profile = SessionService.authenticateUser(session.player.name, sharedSecret, server.encryption.publicKey, server.config.server.ip)
-                if (!callLoginEvent()) return@Thread
+                if (!callLoginEvent()) return@launch
             } catch (exception: AuthenticationException) {
                 session.disconnect(translatable { key("multiplayer.disconnect.unverified_username") })
-                return@Thread
+                return@launch
             }
             enableCompression()
 
             session.player.uuid = session.profile.uuid
             sessionManager.beginPlayState(session)
-        }, "User Authenticator #${UNIQUE_THREAD_ID.incrementAndGet()}")
-            .apply { uncaughtExceptionHandler = DefaultUncaughtExceptionHandler(LOGGER) }
-            .start()
-//        try {
-//            session.profile = SessionService.authenticateUser(session.player.name, sharedSecret, server.encryption.publicKey, server.config.server.ip)
-//            if (!callLoginEvent()) return
-//        } catch (exception: AuthenticationException) {
-//            session.disconnect(translatable { key("multiplayer.disconnect.unverified_username") })
-//            return
-//        }
-//        enableCompression()
-//
-//        session.player.uuid = session.profile.uuid
-//        sessionManager.beginPlayState(session)
+        }
     }
 
-    private fun verifyToken(expected: ByteArray, actual: ByteArray) {
+    private fun verifyToken(expected: ByteArray, actual: ByteArray): Boolean {
         val decryptedActual = server.encryption.decrypt(actual)
         require(decryptedActual.contentEquals(expected)) {
-            LOGGER.warn("${session.player.name} failed verification! Expected ${expected.contentToString()}, received ${decryptedActual.contentToString()}")
+            LOGGER.error("${session.player.name} failed verification! Expected ${expected.contentToString()}, received ${decryptedActual.contentToString()}!")
+            session.disconnect(translatable {
+                key("disconnect.loginFailedInfo")
+                args(text { content("Verify tokens did not match!") })
+            })
+            return false
         }
+        return true
     }
 
     private fun enableEncryption(key: SecretKey) {
@@ -120,29 +118,29 @@ class LoginHandler(
 
     private fun enableCompression() {
         val threshold = server.config.server.compressionThreshold
+        if (threshold <= 0) return
+
         val compressor = session.channel.pipeline()[PacketCompressor.NETTY_NAME]
         val decompressor = session.channel.pipeline()[PacketDecompressor.NETTY_NAME]
 
-        if (threshold > 0) {
-            session.sendPacket(PacketOutSetCompression(threshold))
-            if (decompressor is PacketDecompressor) {
-                decompressor.threshold = threshold
-            } else {
-                session.channel.pipeline().addBefore(
-                    PacketDecoder.NETTY_NAME,
-                    PacketDecompressor.NETTY_NAME,
-                    PacketDecompressor(threshold)
-                )
-            }
-            if (compressor is PacketCompressor) {
-                compressor.threshold = threshold
-            } else {
-                session.channel.pipeline().addBefore(
-                    PacketEncoder.NETTY_NAME,
-                    PacketCompressor.NETTY_NAME,
-                    PacketCompressor(threshold)
-                )
-            }
+        session.sendPacket(PacketOutSetCompression(threshold))
+        if (decompressor is PacketDecompressor) {
+            decompressor.threshold = threshold
+        } else {
+            session.channel.pipeline().addBefore(
+                PacketDecoder.NETTY_NAME,
+                PacketDecompressor.NETTY_NAME,
+                PacketDecompressor(threshold)
+            )
+        }
+        if (compressor is PacketCompressor) {
+            compressor.threshold = threshold
+        } else {
+            session.channel.pipeline().addBefore(
+                PacketEncoder.NETTY_NAME,
+                PacketCompressor.NETTY_NAME,
+                PacketCompressor(threshold)
+            )
         }
     }
 
@@ -158,7 +156,6 @@ class LoginHandler(
 
     companion object {
 
-        private val UNIQUE_THREAD_ID = AtomicInteger(0)
         private val LOGGER = logger<LoginHandler>()
     }
 }
