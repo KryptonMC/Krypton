@@ -14,7 +14,7 @@ application.mainClassName = "org.kryptonmc.krypton.KryptonKt"
 
 object Versions {
 
-    const val NETTY = "4.1.60.Final"
+    const val NETTY = "4.1.63.Final"
     const val ADVENTURE = "4.7.0"
 }
 
@@ -29,7 +29,7 @@ dependencies {
     // Netty native transport
     implementation("io.netty:netty-transport-native-epoll:${Versions.NETTY}")
     implementation("io.netty:netty-transport-native-kqueue:${Versions.NETTY}")
-    implementation("io.netty.incubator:netty-incubator-transport-native-io_uring:0.0.4.Final")
+    implementation("io.netty.incubator:netty-incubator-transport-native-io_uring:0.0.5.Final")
 
     // Adventure
     implementation("net.kyori:adventure-text-serializer-gson:${Versions.ADVENTURE}")
@@ -45,10 +45,10 @@ dependencies {
     // HTTP
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
-    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
 
     // Caching
-    implementation("com.github.ben-manes.caffeine:caffeine:2.8.8")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.0.1")
     implementation("it.unimi.dsi:fastutil-core:8.5.4")
 }
 
