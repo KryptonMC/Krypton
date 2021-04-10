@@ -424,10 +424,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
             .build()
     }
 
-    fun saveAll(isAutosave: Boolean = false) {
-        worlds.forEach { (_, world) -> save(world) }
-        LOGGER.info(if (isAutosave) "Autosave finished" else "Save finished")
-    }
+    fun saveAll() = worlds.forEach { (_, world) -> save(world) }
 
     /**
      * Calculates a chunk position from a given [id] in a spiral pattern.

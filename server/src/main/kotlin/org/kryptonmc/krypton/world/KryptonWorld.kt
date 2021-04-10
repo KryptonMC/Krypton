@@ -1,16 +1,22 @@
 package org.kryptonmc.krypton.world
 
-import org.kryptonmc.krypton.api.world.Difficulty
+import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.world.Gamemode
+import org.kryptonmc.krypton.api.world.Difficulty
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.WorldVersion
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
+import org.kryptonmc.krypton.util.csv.csv
+import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.bossbar.Bossbar
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
+import java.io.Writer
+import java.nio.file.Files
+import java.nio.file.Path
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -48,6 +54,8 @@ data class KryptonWorld(
     val serverBrands: Set<String>
 ) : World {
 
+    val dimension = NamespacedKey(value = "overworld")
+
     override val border = KryptonWorldBorder(
         this,
         borderBuilder.size,
@@ -67,15 +75,18 @@ data class KryptonWorld(
         spawnLocationBuilder.z
     )
 
-    fun tick() {
+    fun tick(profiler: Profiler) {
         if (players.isEmpty()) return // don't tick the world if there's no players in it
 
+        profiler.push("timeTick")
         // tick time
         time++
         dayTime++
+        profiler.pop()
 
         // tick rain
         // TODO: Actually add in some probabilities and calculations for rain and thunder storms
+        profiler.push("weather")
         if (rainTime > 0) {
             if (!isRaining) isRaining = true
             rainTime--
@@ -84,12 +95,23 @@ data class KryptonWorld(
 
         // this ensures the game state change to signal we've stopped raining only happens once
         if (isRaining) {
+            profiler.push("rainUpdate")
             isRaining = false
             val endRainPacket = PacketOutChangeGameState(GameState.END_RAINING)
             players.forEach { it.session.sendPacket(endRainPacket) }
+            profiler.pop()
         }
+        profiler.pop()
 
+        profiler.push("chunkTick")
         chunks.forEach { chunk -> chunk.tick(players.filter { it.location in chunk.position }.size) }
+        profiler.pop()
+    }
+
+    fun saveDebugReport(path: Path) {
+        val chunksPath = path.resolve("chunks.csv")
+        val writer = Files.newBufferedWriter(chunksPath)
+        writer.dumpChunks()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -102,6 +124,15 @@ data class KryptonWorld(
     override fun hashCode() = uuid.hashCode()
 
     override fun toString() = "KryptonWorld(uuid=$uuid,name=$name)"
+
+    private fun Writer.dumpChunks() {
+        val output = csv(this) {
+            plus("x")
+            plus("z")
+            plus("world")
+        }
+        chunks.forEach { output.writeRow(it.position.x, it.position.z, it.world) }
+    }
 }
 
 const val NBT_DATA_VERSION = 2584
