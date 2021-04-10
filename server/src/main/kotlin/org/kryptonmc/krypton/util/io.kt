@@ -22,6 +22,8 @@ fun Path.deleteIfExists() = Files.deleteIfExists(this)
 
 fun Path.moveTo(target: Path, vararg options: CopyOption): Path = Files.move(this, target, *options)
 
+fun Path.createDirectories(): Path = Files.createDirectories(this)
+
 val Path.isRegularFile: Boolean
     get() = Files.isRegularFile(this)
 

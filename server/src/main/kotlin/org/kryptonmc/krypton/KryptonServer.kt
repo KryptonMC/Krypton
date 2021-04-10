@@ -30,9 +30,16 @@ import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.util.TranslationRegister
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.copyTo
+import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.isRegularFile
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.monitoring.jmx.KryptonStatistics
+import org.kryptonmc.krypton.util.profiling.ContinuousProfiler
+import org.kryptonmc.krypton.util.profiling.DeadProfiler
+import org.kryptonmc.krypton.util.profiling.Profiler
+import org.kryptonmc.krypton.util.profiling.SingleTickProfiler
+import org.kryptonmc.krypton.util.profiling.results.ProfileResults
+import org.kryptonmc.krypton.util.profiling.decorate
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
@@ -47,7 +54,6 @@ import java.util.Properties
 import java.util.UUID
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
 
 class KryptonServer(private val disableGUI: Boolean) : Server {
@@ -102,6 +108,10 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
     val tickables = mutableListOf<Runnable>()
 
     @Volatile internal var isRunning = true; private set
+
+    private val continuousProfiler = ContinuousProfiler(this::tickCount)
+    private var profiler: Profiler = DeadProfiler
+    private var delayProfilerStart = false
 
     private var gs4QueryHandler: GS4QueryHandler? = null
     private var watchdog: WatchdogProcess? = null
@@ -172,19 +182,35 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
                 LOGGER.warn("Woah there! Can't keep up! Running ${nextTickTime}ms (${nextTickTime / 50} ticks) behind!")
                 lastOverloadWarning = lastTickTime
             }
+            // start profiler
+            val singleTickProfiler = SingleTickProfiler.create("Server")
+            startProfilerTick(singleTickProfiler)
+            profiler.start()
+
             // start tick
+            profiler.push("tickStartEvent")
             eventBus.call(TickStartEvent(tickCount))
+            profiler.pop()
+
+            profiler.push("tick")
             val tickTime = measureTimeMillis(::tick)
-            val finishTime = System.currentTimeMillis()
+            profiler.pop()
 
             // store historical tick time and update average
+            profiler.push("tallying")
+            val finishTime = System.currentTimeMillis()
             tickTimes[tickCount % 100] = tickTime
             averageTickTime = averageTickTime * 0.8F + tickTime * 0.19999999F
+            profiler.pop()
 
             // end tick
+            profiler.push("tickEndEvent")
             eventBus.call(TickEndEvent(tickCount, tickTime, finishTime))
+            profiler.pop()
             lastTickTime = finishTime
             watchdog?.tick(finishTime)
+            profiler.end()
+            endProfilerTick(singleTickProfiler)
         }, 0, TICK_INTERVAL, TimeUnit.MILLISECONDS)
     }
 
@@ -193,20 +219,59 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
         if (players.isEmpty()) return // don't tick if there are no players on the server
 
         worldManager.worlds.forEach { (_, world) ->
+            profiler.push { "$world in ${world.dimension}" }
             if (tickCount % 20 == 0) {
+                profiler.push("time sync")
                 val timePacket = PacketOutTimeUpdate(world.time, world.dayTime)
                 sessionManager.sessions.asSequence()
                     .filter { it.currentState == PacketState.PLAY }
                     .filter { it.player.world == world }
                     .forEach { it.sendPacket(timePacket) }
+                profiler.pop()
             }
-            world.tick()
+            world.tick(profiler)
+            profiler.pop()
         }
         if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
-            LOGGER.info("Autosave started")
-            GlobalScope.launch(Dispatchers.IO) { worldManager.saveAll(true) }
+            profiler.push("autosave")
+            LOGGER.debug("Autosave started")
+            worldManager.saveAll()
+            LOGGER.debug("Autosave finished")
+            profiler.pop()
         }
         tickables.forEach { it.run() }
+    }
+
+    fun startProfiling() {
+        delayProfilerStart = true
+    }
+
+    fun finishProfiling(): ProfileResults {
+        val results = continuousProfiler.results
+        continuousProfiler.disable()
+        return results
+    }
+
+    fun saveDebugReport(path: Path) {
+        val worldsPath = path.resolve("levels")
+        worldManager.worlds.forEach { (name, world) ->
+            val worldPath = worldsPath.resolve("krypton").resolve(name)
+            worldPath.createDirectories()
+            world.saveDebugReport(worldPath)
+        }
+    }
+
+    private fun startProfilerTick(profiler: SingleTickProfiler?) {
+        if (delayProfilerStart) {
+            delayProfilerStart = false
+            continuousProfiler.enable()
+        }
+        this.profiler = continuousProfiler.profiler.decorate(profiler)
+    }
+
+    private fun endProfilerTick(profiler: SingleTickProfiler?) {
+        profiler?.end()
+        this.profiler = continuousProfiler.profiler
     }
 
     override fun broadcast(message: Component, permission: String?) {
