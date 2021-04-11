@@ -189,7 +189,9 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
     }
 
     private fun deserializeChunk(world: KryptonWorld, position: ChunkPosition): KryptonChunk {
-        if (chunkCache.getIfPresent(position) != null) return chunkCache.getIfPresent(position)!!
+        val cachedChunk = chunkCache.getIfPresent(position)
+        if (cachedChunk != null) return cachedChunk
+
         val nbt = regionFileManager.read(position).getCompound("Level")
 
         val heightmaps = nbt.getCompound("Heightmaps")

@@ -13,9 +13,12 @@ data class ChunkSection(
     val blockStates: StateIndexHolder
 ) {
 
-    fun setBlock(location: Vector, block: KryptonBlock) {
-        val index = indexOf(location.x.toInt() and 0xF, location.y.toInt() and 0xF, location.z.toInt() and 0xF)
-        val state = palette.indexOfFirst { it.name == block.type.key }
+    operator fun plusAssign(block: KryptonBlock) {
+        val x = block.location.x.toInt()
+        val y = block.location.y.toInt()
+        val z = block.location.z.toInt()
+        val index = indexOf(x and 0xF, y and 0xF, z and 0xF)
+        val state = palette.indexOfFirst { it.name == block.type.key }.takeIf { it != -1 } ?: return
         blockStates[index] = state
     }
 

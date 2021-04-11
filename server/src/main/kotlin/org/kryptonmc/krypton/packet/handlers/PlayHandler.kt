@@ -173,7 +173,7 @@ class PlayHandler(
         val section = chunk.sections.firstOrNull { it.y == (session.player.location.y.toInt() / 16) } ?: return
 
         val item = session.player.inventory.mainHand ?: return
-        section.setBlock(packet.location, KryptonBlock(item.type, chunk, packet.location.toLocation(world)))
+        section += KryptonBlock(item.type, chunk, packet.location.toLocation(world))
     }
 
     private fun handlePositionUpdate(packet: PacketInPlayerPosition) {
