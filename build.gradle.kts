@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -11,7 +12,8 @@ version = "0.17.3"
 rootProject.extra["globalVersion"] = project.version
 
 allprojects {
-    apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply<KotlinPlatformJvmPlugin>()
+//    apply(plugin = "org.jetbrains.kotlin.jvm")
 
     repositories {
         mavenCentral()

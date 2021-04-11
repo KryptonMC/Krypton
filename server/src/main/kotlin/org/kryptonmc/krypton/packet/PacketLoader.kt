@@ -13,15 +13,15 @@ object PacketLoader {
 
     fun loadAll() {
         // HANDSHAKE
-        PacketState.HANDSHAKE.registerPacketType(0, ::PacketInHandshake)
+        PacketState.HANDSHAKE.registerPacketType(0x00, ::PacketInHandshake)
 
         // STATUS
-        PacketState.STATUS.registerPacketType(0, ::PacketInStatusRequest)
-        PacketState.STATUS.registerPacketType(1, ::PacketInPing)
+        PacketState.STATUS.registerPacketType(0x00, ::PacketInStatusRequest)
+        PacketState.STATUS.registerPacketType(0x01, ::PacketInPing)
 
         // LOGIN
-        PacketState.LOGIN.registerPacketType(0x0, ::PacketInLoginStart)
-        PacketState.LOGIN.registerPacketType(0x1, ::PacketInEncryptionResponse)
+        PacketState.LOGIN.registerPacketType(0x00, ::PacketInLoginStart)
+        PacketState.LOGIN.registerPacketType(0x01, ::PacketInEncryptionResponse)
 
         // PLAY
         PacketState.PLAY.registerPacketType(0x00, ::PacketInTeleportConfirm)

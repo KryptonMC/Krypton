@@ -7,9 +7,9 @@ plugins {
     `java-library`
     id("com.github.johnrengelman.shadow") version "6.1.0"
     application
-    maven
 }
 
+//application.mainClass.set("org.kryptonmc.krypton.KryptonKt")
 application.mainClassName = "org.kryptonmc.krypton.KryptonKt"
 
 object Versions {
