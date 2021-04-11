@@ -9,6 +9,7 @@ import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.event.EventBus
 import org.kryptonmc.krypton.api.plugin.PluginManager
 import org.kryptonmc.krypton.api.scheduling.Scheduler
+import org.kryptonmc.krypton.api.service.ServicesManager
 import org.kryptonmc.krypton.api.status.StatusInfo
 import org.kryptonmc.krypton.api.world.Difficulty
 import org.kryptonmc.krypton.api.world.WorldManager
@@ -48,6 +49,11 @@ interface Server : ForwardingAudience {
      * been initialised or not.
      */
     val pluginManager: PluginManager
+
+    /**
+     *
+     */
+    val servicesManager: ServicesManager
 
     /**
      * The event bus for this server
