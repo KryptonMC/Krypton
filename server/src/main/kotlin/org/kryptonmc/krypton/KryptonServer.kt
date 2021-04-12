@@ -27,6 +27,7 @@ import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.registry.tags.TagManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
+import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.session.SessionManager
 import org.kryptonmc.krypton.util.monitoring.jmx.KryptonStatistics
 import org.kryptonmc.krypton.util.query.GS4QueryHandler
@@ -34,7 +35,6 @@ import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.io.File
 import java.io.IOException
-import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.nio.file.Files
 import java.nio.file.Path
@@ -85,6 +85,7 @@ class KryptonServer : Server {
     override val scheduler = KryptonScheduler
 
     override val pluginManager = KryptonPluginManager(this)
+    override val servicesManager = KryptonServicesManager()
 
     @Volatile
     internal var lastTickTime = 0L; private set
