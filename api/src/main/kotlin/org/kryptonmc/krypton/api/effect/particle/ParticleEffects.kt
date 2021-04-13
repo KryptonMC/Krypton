@@ -16,10 +16,9 @@ data class ParticleEffect internal constructor(
     val longDistance: Boolean,
     val data: ParticleData? = null
 ) {
+
     init {
-        if (quantity < 0) throw IllegalArgumentException("quantity must be at least 1")
-        // TODO: Do we want this check? It's here to prevent the server from freezing from a developer creating a few million particle packets
-        if (quantity > 16384) throw IllegalArgumentException("quantity exceeds client maximum")
+        require(quantity >= 0) { "Quantity must be at least 1!" }
     }
 }
 
@@ -66,7 +65,7 @@ data class ColorParticleData(val red: UByte, val green: UByte, val blue: UByte) 
  *
  * @author Esophose
  */
-data class DustParticleData(
+data class DustParticleData @JvmOverloads constructor(
     val color: ColorParticleData = ColorParticleData(0u, 0u, 0u),
     val scale: Float = 1.0F
 ) : ParticleData
@@ -77,7 +76,8 @@ data class DustParticleData(
  * @author Esophose
  */
 data class NoteParticleData(val note: UByte) : ParticleData {
+
     init {
-        if (0u > note || note > 24u) throw IllegalArgumentException("note must be between 0 and 24 inclusively")
+        require(note in 0u..24u) { "Note must be between 0 and 24!" }
     }
 }

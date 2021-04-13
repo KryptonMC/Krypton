@@ -22,6 +22,7 @@ data class BoundingBox(
 
     companion object {
 
+        @JvmField
         val EMPTY = BoundingBox(Vector.ZERO, Vector.ZERO)
     }
 }

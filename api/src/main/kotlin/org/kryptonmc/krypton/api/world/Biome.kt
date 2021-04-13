@@ -113,6 +113,7 @@ enum class Biome(val id: Int) : Keyed {
 
         private val VALUES = values().associateBy { it.id }
 
+        @JvmField
         val OCEANS: EnumSet<Biome> = EnumSet.of(
             OCEAN,
             COLD_OCEAN,
@@ -126,6 +127,7 @@ enum class Biome(val id: Int) : Keyed {
             LUKEWARM_OCEAN
         )
 
+        @JvmStatic
         fun fromId(id: Int) = VALUES.getValue(id)
     }
 }

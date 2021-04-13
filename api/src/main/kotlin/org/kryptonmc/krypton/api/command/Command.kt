@@ -8,7 +8,7 @@ package org.kryptonmc.krypton.api.command
  * @param aliases a list of aliases for this command
  * @author Callum Seabrook
  */
-abstract class Command(
+abstract class Command @JvmOverloads constructor(
     val name: String,
     val permission: String? = null,
     val aliases: List<String> = emptyList()

@@ -7,6 +7,7 @@ import org.kryptonmc.krypton.api.inventory.item.ItemStack
  *
  * @author Callum Seabrook
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 interface Inventory : Iterable<ItemStack?> {
 
     /**
@@ -50,6 +51,7 @@ interface Inventory : Iterable<ItemStack?> {
      * @throws ArrayIndexOutOfBoundsException if [index] is out of bounds
      * (not in 0 <= [index] < [size])
      */
+    @JvmName("put")
     operator fun set(index: Int, item: ItemStack)
 
     /**
@@ -58,6 +60,7 @@ interface Inventory : Iterable<ItemStack?> {
      *
      * @param item the item to add
      */
+    @JvmName("add")
     operator fun plusAssign(item: ItemStack)
 
     /**
@@ -66,6 +69,7 @@ interface Inventory : Iterable<ItemStack?> {
      *
      * @param item the item to remove
      */
+    @JvmName("remove")
     operator fun minusAssign(item: ItemStack)
 
     /**

@@ -19,6 +19,8 @@ import java.util.*
 
 /**
  * The server
+ *
+ * @author Callum Seabrook
  */
 interface Server : ForwardingAudience {
 

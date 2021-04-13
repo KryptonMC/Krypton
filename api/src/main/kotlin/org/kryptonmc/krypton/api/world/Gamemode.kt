@@ -44,13 +44,9 @@ enum class Gamemode {
     companion object {
 
         /**
-         * An index of gamemodes to their IDs (ordinals in this case)
-         */
-        val VALUES = Index.create(Gamemode::class.java) { it.ordinal }
-
-        /**
          * Retrieves a game mode from its legacy ID. Should only need to be used internally.
          */
-        fun fromId(id: Int) = VALUES.value(id)
+        @JvmStatic
+        fun fromId(id: Int) = values()[id]
     }
 }

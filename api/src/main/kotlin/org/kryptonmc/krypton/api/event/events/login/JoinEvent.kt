@@ -17,6 +17,13 @@ data class JoinEvent(val player: Player) : CancellableEvent() {
     @Volatile
     var cancelledReason: Component = translatable { key("multiplayer.disconnect.kicked") }
 
+    /**
+     * Cancel this event with the specified [reason] for cancellation
+     *
+     * This reason will be the exact disconnect message sent to the client
+     *
+     * @param reason the reason for cancellation
+     */
     fun cancel(reason: Component) {
         isCancelled = true
         cancelledReason = reason

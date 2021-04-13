@@ -5,13 +5,15 @@ import org.kryptonmc.krypton.api.entity.entities.Player
 /**
  * Represents a [Player]'s abilities.
  *
- * @param isInvulnerable if this [Player] does not take damage
+ * @param isInvulnerable if this [Player] can take damage
  * @param canFly if this [Player] can fly
  * @param isFlying if this [Player] is currently flying
  * @param canBuild if this [Player] can build (place/break blocks)
- * @param canInstantlyBuild if this [Player] is in creative mode
+ * @param canInstantlyBuild if this [Player] can place and break blocks with no delay (creative mode)
+ *
+ * @author Callum Seabrook
  */
-data class Abilities(
+data class Abilities @JvmOverloads constructor(
     var isInvulnerable: Boolean = false,
     var canFly: Boolean = false,
     var isFlying: Boolean = false,
