@@ -65,6 +65,11 @@ abstract class Plugin(val context: PluginContext) {
 /**
  * Holder for the context that a plugin was loaded in.
  *
+ * @param server the server this plugin is being plugged in to
+ * @param folder the folder that this plugin can use to store files that it may need, e.g. configs
+ * @param description an object representation of this plugin's plugin.conf file
+ * @param logger the logger instance for this plugin
+ *
  * @author Callum Seabrook
  */
 data class PluginContext(

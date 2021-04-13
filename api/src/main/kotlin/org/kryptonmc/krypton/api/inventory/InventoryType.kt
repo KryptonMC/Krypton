@@ -10,6 +10,7 @@ import org.kryptonmc.krypton.api.registry.NamespacedKey
  * @param title the default title of the inventory
  * @param key the namespaced key for the inventory
  */
+@Suppress("MemberVisibilityCanBePrivate")
 enum class InventoryType(
     val size: Int,
     val title: String = "",

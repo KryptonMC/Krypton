@@ -1,6 +1,9 @@
 package org.kryptonmc.krypton.api.world
 
+import org.jetbrains.annotations.Contract
+import org.kryptonmc.krypton.api.space.Position
 import org.kryptonmc.krypton.api.space.Vector
+import kotlin.math.sqrt
 
 /**
  * A [Location] is a three-dimensional space in a world. That is, it possesses
@@ -11,43 +14,50 @@ import org.kryptonmc.krypton.api.space.Vector
  * @author Callum Seabrook
  * @see [Vector]
  */
-data class Location(
+data class Location @JvmOverloads constructor(
     val world: World,
-    val x: Double,
-    val y: Double,
-    val z: Double,
-    val yaw: Float = 0.0f,
-    val pitch: Float = 0.0f
-) : Cloneable, Comparable<Location> {
+    override val x: Double,
+    override val y: Double,
+    override val z: Double,
+    val yaw: Float = 0F,
+    val pitch: Float = 0F
+) : Position {
 
-    operator fun plus(other: Location): Location {
-        if (world != other.world) throw IllegalArgumentException("Cannot add locations from different worlds!")
-        return copy(x = x + other.x, y = y + other.y, z = z + other.z)
+    override val length by lazy { sqrt(lengthSquared) }
+
+    override fun plus(other: Position): Position {
+        if (other is Location) require(world == other.world) { "Cannot add locations from different worlds!" }
+        return super.plus(other)
     }
 
-    operator fun plus(other: Vector) = copy(x = x + other.x, y = y + other.y, z = z + other.z)
-
-    operator fun minus(other: Location): Location {
-        if (world != other.world) throw IllegalArgumentException("Cannot add locations from different worlds!")
-        return copy(x = x - other.x, y = y - other.y, z = z - other.z)
+    override fun minus(other: Position): Position {
+        if (other is Location) require(world == other.world) { "Cannot subtract locations from different worlds!" }
+        return super.minus(other)
     }
 
-    operator fun minus(other: Vector) = copy(x = x - other.x, y = y - other.y, z = z - other.z)
+    override fun times(other: Position): Position {
+        if (other is Location) require(world == other.world) { "Cannot multiply locations from different worlds!" }
+        return super.times(other)
+    }
 
-    operator fun times(other: Location) = copy(x = x * other.x, y = y * other.y, z = z * other.z)
+    override fun div(other: Position): Position {
+        if (other is Location) require(world == other.world) { "Cannot divide locations from different worlds!" }
+        return super.div(other)
+    }
 
-    operator fun times(factor: Int) = copy(x = x * factor, y = y * factor, z = z * factor)
+    override fun rem(other: Position): Position {
+        if (other is Location) require(world == other.world) { "Cannot perform modulo division on locations from different worlds!" }
+        return super.rem(other)
+    }
 
-    operator fun times(factor: Double) = copy(x = x * factor, y = y * factor, z = z * factor)
+    override fun apply(x: Double, y: Double, z: Double) = copy(x = x, y = y, z = z)
 
-    operator fun times(factor: Float) = copy(x = x * factor, y = y * factor, z = z * factor)
-
+    /**
+     * Convert this [Location] to a [Vector]
+     *
+     * @return the new vector from this location
+     */
+    @Contract("_ -> new", pure = true)
+    @Suppress("unused")
     fun toVector() = Vector(x, y, z)
-
-    override fun compareTo(other: Location): Int {
-        if (x == other.x && y == other.y && z == other.z) return 0
-        if (x > other.x && y > other.y && z > other.z) return 1
-        if (x < other.x && y < other.y && z < other.z) return -1
-        return 0
-    }
 }

@@ -1,3 +1,4 @@
+@file:JvmMultifileClass
 package org.kryptonmc.krypton.api.world
 
 import org.kryptonmc.krypton.api.world.chunk.Chunk

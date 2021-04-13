@@ -44,6 +44,7 @@ enum class Difficulty {
         /**
          * Retrieves a difficulty from its legacy ID. Should only need to be used internally.
          */
+        @JvmStatic
         fun fromId(id: Int) = values()[id]
     }
 }

@@ -4,17 +4,20 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.api.world.scoreboard.criteria.Criteria
 
 /**
- * Represents an objective for a [Scoreboard]
+ * Represents an objective for a [Scoreboard].
  *
- * An [Objective] is a goal that teams can work towards
+ * @param name the name of the objective
+ * @param displayName the display name of the objective (this is what gets displayed on the scoreboard)
+ * @param criteria optional criteria for the scoreboard
+ * @param renderType how this objective is rendered to the client.
  *
  * @author Callum Seabrook
  */
-data class Objective(
+data class Objective @JvmOverloads constructor(
     val name: String,
     val displayName: Component,
-    val criteria: Criteria,
-    val renderType: RenderType
+    val criteria: Criteria? = null,
+    val renderType: RenderType = RenderType.INTEGER
 )
 
 /**

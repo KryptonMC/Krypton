@@ -2,6 +2,12 @@ package org.kryptonmc.krypton.api.plugin
 
 import kotlinx.serialization.Serializable
 
+/**
+ * Represents the plugin.conf file that every plugin has.
+ *
+ * This holds details about the plugin, for example it's name, main class, version, descrpiton,
+ * authors and dependencies
+ */
 @Serializable
 data class PluginDescriptionFile(
     val name: String,
@@ -9,12 +15,5 @@ data class PluginDescriptionFile(
     val version: String,
     val description: String = "",
     val authors: List<String> = emptyList(),
-    val dependencies: List<String> = emptyList(),
-    val permissions: Map<String, PermissionEntry> = emptyMap()
-)
-
-@Serializable
-data class PermissionEntry(
-    val default: Boolean = false,
-    val children: Map<String, PermissionEntry> = emptyMap()
+    val dependencies: List<String> = emptyList()
 )

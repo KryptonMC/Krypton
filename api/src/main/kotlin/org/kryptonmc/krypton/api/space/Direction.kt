@@ -7,7 +7,7 @@ package org.kryptonmc.krypton.api.space
  * As this is three-dimensional, this also includes the directions [UP]
  * and [DOWN].
  *
- * [id] is the ID of this [Direction]. This should only be used internally.
+ * [id] is the ID of this [Direction]. This should only need to be used internally.
  *
  * @author Callum Seabrook
  */
