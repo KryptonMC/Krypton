@@ -4,6 +4,11 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
 
+/**
+ * A serialiser for Brigadier's [IntegerArgumentType]
+ *
+ * @author Callum Seabrook
+ */
 class IntegerArgumentSerializer : ArgumentSerializer<IntegerArgumentType> {
 
     override fun write(argument: IntegerArgumentType, buf: ByteBuf) {

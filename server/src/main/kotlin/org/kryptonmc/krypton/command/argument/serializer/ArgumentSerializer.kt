@@ -3,8 +3,20 @@ package org.kryptonmc.krypton.command.argument.serializer
 import com.mojang.brigadier.arguments.ArgumentType
 import io.netty.buffer.ByteBuf
 
+/**
+ * A serialiser for argument types of [T]
+ *
+ * @param T the argument type this is a serialiser for
+ * @author Callum Seabrook
+ */
 interface ArgumentSerializer<T : ArgumentType<*>> {
 
+    /**
+     * Write this argument serialiser to the given [buf]
+     *
+     * @param argument the argument type to write
+     * @param buf the buffer to write to
+     */
     fun write(argument: T, buf: ByteBuf)
 
     fun createFlags(minimum: Boolean, maximum: Boolean): Int {

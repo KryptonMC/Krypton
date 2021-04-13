@@ -12,6 +12,12 @@ import org.kryptonmc.krypton.session.SessionManager
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeoutException
 
+/**
+ * This is the handler at the end of the Netty pipeline that does the actual processing of
+ * inbound packets (after they have been processed and turned into Packet objects)
+ *
+ * @author Callum Seabrook
+ */
 class ChannelHandler(private val server: KryptonServer) : SimpleChannelInboundHandler<Packet>() {
 
     internal lateinit var session: Session

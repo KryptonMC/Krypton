@@ -60,6 +60,9 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         }
     }
 
+    /**
+     * Retrieves command completion suggestions from the specified parse results
+     */
     fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> =
         dispatcher.getCompletionSuggestions(parseResults)
 
