@@ -12,6 +12,11 @@ import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.extension.logger
 import java.util.*
 
+/**
+ * Represents a sender for the server console.
+ *
+ * @author Callum Seabrook
+ */
 class ConsoleSender(server: KryptonServer) : KryptonSender(server) {
 
     override val name = "CONSOLE"

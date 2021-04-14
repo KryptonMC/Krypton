@@ -2,6 +2,11 @@ package org.kryptonmc.krypton.entity.entities.data
 
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 
+/**
+ * Types of villagers
+ *
+ * @author Callum Seabrook
+ */
 enum class VillagerType(val id: Int) {
 
     DESERT(0),

@@ -4,6 +4,12 @@ import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.world.LocationBuilder
 import java.util.*
 
+/**
+ * Represents a memory of an entity. These are specific to the type of entity,
+ * and may vary depending on what entity it is.
+ *
+ * @author Callum Seabrook
+ */
 sealed class EntityMemory<T>(val key: NamespacedKey) {
 
     abstract val value: T
