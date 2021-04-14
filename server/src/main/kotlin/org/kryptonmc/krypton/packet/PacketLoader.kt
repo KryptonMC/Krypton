@@ -12,7 +12,7 @@ import org.kryptonmc.krypton.packet.state.PacketState
 /**
  * Responsible for registering all of the inbound packets to their respective states.
  *
- * @author Callum Seabrook
+ * @author Alex Wood
  */
 object PacketLoader {
 

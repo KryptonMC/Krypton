@@ -6,7 +6,7 @@ import org.kryptonmc.krypton.packet.state.PacketState
 /**
  * Super interface for all inbound and outbound packets.
  *
- * @author Callum Seabrook
+ * @author Alex Wood
  */
 interface Packet {
 

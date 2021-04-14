@@ -6,13 +6,26 @@ import org.kryptonmc.krypton.extension.readNBTCompound
 import org.kryptonmc.krypton.extension.readVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
+/**
+ * Sent by the client to indicate that they have performed an action in the creative inventory.
+ *
+ * The creative inventory works very different to the survival inventory, mainly that in vanilla,
+ * the Notchian server deletes an item from a player's inventory, and when you place an item back
+ * into your inventory, the server recreates the item.
+ *
+ * @author Callum Seabrook
+ */
 class PacketInCreativeInventoryAction : PlayPacket(0x28) {
 
-    var slot: Short = 0
-        private set
+    /**
+     * The inventory slot that the player clicked
+     */
+    var slot: Short = 0; private set
 
-    lateinit var clickedItem: Slot
-        private set
+    /**
+     * The item that was clicked
+     */
+    lateinit var clickedItem: Slot private set
 
     override fun read(buf: ByteBuf) {
         slot = buf.readShort()

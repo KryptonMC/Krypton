@@ -7,17 +7,42 @@ import org.kryptonmc.krypton.extension.*
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.block.BlockFace
 
+/**
+ * Sent to indicate the player has placed a block.
+ *
+ * @author Callum Seabrook
+ */
 class PacketInPlayerBlockPlacement : PlayPacket(0x2E) {
 
-    lateinit var hand: Hand
-    lateinit var location: Vector
-    lateinit var face: BlockFace
+    /**
+     * The hand the player used to place the block
+     */
+    lateinit var hand: Hand private set
 
-    var cursorX = 0.0F
-    var cursorY = 0.0F
-    var cursorZ = 0.0F
+    /**
+     * The location of the __block__ being placed
+     */
+    lateinit var location: Vector private set
 
-    var insideBlock = false
+    /**
+     * The face of the block that has been placed that is facing the player
+     */
+    lateinit var face: BlockFace private set
+
+    /**
+     * The X, Y and Z positions of the crosshair on the block, from 0 to 1 increasing:
+     * - West to east for X
+     * - Bottom to top for Y
+     * - North to south for Z
+     */
+    var cursorX = 0F; private set
+    var cursorY = 0F; private set
+    var cursorZ = 0F; private set
+
+    /**
+     * Whether the player's head is inside a block
+     */
+    var insideBlock = false; private set
 
     override fun read(buf: ByteBuf) {
         hand = buf.readEnum(Hand::class)
