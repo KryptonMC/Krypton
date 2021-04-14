@@ -2,6 +2,11 @@ package org.kryptonmc.krypton.entity.memory
 
 import net.kyori.adventure.nbt.CompoundBinaryTag
 
+/**
+ * Represents an entity's brain. For most entities, this will use [EmptyBrain].
+ *
+ * @author Callum Seabrook
+ */
 sealed class Brain<T : EntityMemories> {
 
     abstract val memories: T

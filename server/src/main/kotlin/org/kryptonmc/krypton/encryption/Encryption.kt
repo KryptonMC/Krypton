@@ -5,6 +5,9 @@ import java.security.KeyPairGenerator
 import java.security.PublicKey
 import javax.crypto.Cipher
 
+/**
+ * @author Callum Seabrook
+ */
 class Encryption {
 
     private val keyPair = generateKeyPair()

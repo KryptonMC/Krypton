@@ -17,6 +17,14 @@ import org.kryptonmc.krypton.api.world.Gamemode
 private val DEFAULT_MOTD = Component.text("Krypton is a Minecraft server written in Kotlin!")
     .color(TextColor.color(128, 0, 255))
 
+/**
+ * Represents the main config.conf file, in a [Serializable] object.
+ *
+ * Notice all of these have default values. This is to avoid errors on upgrade when we add
+ * new options
+ *
+ * @author Callum Seabrook
+ */
 @Serializable
 data class KryptonConfig(
     val server: ServerConfig = ServerConfig(),
@@ -26,6 +34,11 @@ data class KryptonConfig(
     val query: QueryConfig = QueryConfig()
 )
 
+/**
+ * The server config section within the main configuration file.
+ *
+ * @author Callum Seabrook
+ */
 @Serializable
 data class ServerConfig(
     val ip: String = "0.0.0.0",
@@ -35,12 +48,22 @@ data class ServerConfig(
     @SerialName("tick-threshold") val tickThreshold: Int = 60000
 )
 
+/**
+ * The server config section within the main configuration file.
+ *
+ * @author Callum Seabrook
+ */
 @Serializable
 data class StatusConfig(
     @Serializable(with = TextComponentSerializer::class) val motd: TextComponent = DEFAULT_MOTD,
     @SerialName("max-players") val maxPlayers: Int = 20
 )
 
+/**
+ * The world config section within the main configuration file.
+ *
+ * @author Callum Seabrook
+ */
 @Serializable
 data class WorldConfig(
     val name: String = "world",
@@ -52,12 +75,22 @@ data class WorldConfig(
     @SerialName("autosave-interval") val autosaveInterval: Int = 6000
 )
 
+/**
+ * The advanced config section within the main configuration file.
+ *
+ * @author Callum Seabrook
+ */
 @Serializable
 data class AdvancedConfig(
     @SerialName("synchronize-chunk-writes") val synchronizeChunkWrites: Boolean = true,
     @SerialName("enable-jmx-monitoring") val enableJmxMonitoring: Boolean = true
 )
 
+/**
+ * The query config section within the main configuration file.
+ *
+ * @author Callum Seabrook
+ */
 @Serializable
 data class QueryConfig(
     val enabled: Boolean = false,

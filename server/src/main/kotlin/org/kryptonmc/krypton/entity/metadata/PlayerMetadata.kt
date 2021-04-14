@@ -8,6 +8,13 @@ import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.entity.MainHand
 import org.kryptonmc.krypton.extension.writeMetadata
 
+/**
+ * Represents metadata common to all players
+ *
+ * The ordering of this comes from [wiki.vg](https://wiki.vg/Entity_metadata#Entity_Metadata_Format)
+ *
+ * @author Callum Seabrook
+ */
 open class PlayerMetadata(
     movementFlags: MovementFlags? = null,
     airTicks: Int? = null,

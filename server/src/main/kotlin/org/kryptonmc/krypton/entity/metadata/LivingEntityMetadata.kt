@@ -9,7 +9,10 @@ import org.kryptonmc.krypton.api.space.Vector
 
 /**
  * Represents living entity metadata. This is ordered by the index ordering, which can be found on
- * [wiki.vg](https://wiki.vg/Entity_metadata#Entity_Metadata_Format)
+ *
+ * The ordering of this comes from [wiki.vg](https://wiki.vg/Entity_metadata#Entity_Metadata_Format)
+ *
+ * @author Callum Seabrook
  */
 open class LivingEntityMetadata(
     movementFlags: MovementFlags? = null,
@@ -58,12 +61,21 @@ open class LivingEntityMetadata(
     )
 }
 
+/**
+ * Flags for a living entity's hands.
+ *
+ * @author Callum Seabrook
+ */
 data class HandFlags(
     val isHandActive: Boolean = false,
     val activeHand: Hand? = null,
     val isInRiptideSpinAttack: Boolean = false
 ) {
 
+    /**
+     * Convert this [HandFlags] object to flags compatible with the protocol
+     * (a single byte that contains all of the values)
+     */
     fun toProtocol(): Int {
         var byte = 0x0
         if (isHandActive) byte += 0x01

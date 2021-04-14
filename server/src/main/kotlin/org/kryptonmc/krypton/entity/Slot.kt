@@ -2,6 +2,11 @@ package org.kryptonmc.krypton.entity
 
 import net.kyori.adventure.nbt.CompoundBinaryTag
 
+/**
+ * A protocol slot. The API equivalent of this would be [org.kryptonmc.krypton.api.inventory.item.ItemStack]
+ *
+ * @author Callum Seabrook
+ */
 data class Slot(
     val isPresent: Boolean,
     val id: Int = 0,

@@ -6,6 +6,9 @@ import org.jline.reader.LineReaderBuilder
 import org.kryptonmc.krypton.KryptonServer
 import kotlin.system.exitProcess
 
+/**
+ * @author Callum Seabrook
+ */
 class KryptonConsole(private val server: KryptonServer) : SimpleTerminalConsole() {
 
     override fun isRunning() = server.isRunning

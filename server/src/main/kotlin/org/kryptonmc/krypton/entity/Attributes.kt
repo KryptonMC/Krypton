@@ -4,12 +4,26 @@ import net.kyori.adventure.util.Index
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import java.util.*
 
+/**
+ * Represents an attribute for an entity.
+ *
+ * @param key the attribute key
+ * @param value the value of the attribute
+ * @param modifiers attribute modifiers
+ *
+ * @author Callum Seabrook
+ */
 data class Attribute(
     val key: AttributeKey,
     val value: Double = key.default,
     val modifiers: List<AttributeModifier> = emptyList()
 )
 
+/**
+ * Built-in attribute keys
+ *
+ * @author Callum Seabrook
+ */
 enum class AttributeKey(val key: NamespacedKey, val default: Double, val min: Double, val max: Double, val label: String = "") {
 
     GENERIC_MAX_HEALTH(NamespacedKey(value = "generic.max_health"), 20.0, 0.0, 1024.0, "Max Health."),
@@ -30,10 +44,23 @@ enum class AttributeKey(val key: NamespacedKey, val default: Double, val min: Do
 
         private val BY_KEY = Index.create(AttributeKey::class.java) { it.key }
 
+        /**
+         * Convert the provided [key] to an [AttributeKey]
+         */
         fun fromKey(key: NamespacedKey) = requireNotNull(BY_KEY.value(key))
     }
 }
 
+/**
+ * A modifier for an [Attribute]
+ *
+ * @param name the name of the modifier
+ * @param uuid the modifier's UUID
+ * @param amount the modifier amount
+ * @param operation the operation to apply the modifier with
+ *
+ * @author Callum Seabrook
+ */
 data class AttributeModifier(
     val name: String,
     val uuid: UUID,
@@ -41,6 +68,11 @@ data class AttributeModifier(
     val operation: ModifierOperation
 )
 
+/**
+ * Various operations for attribute modifiers
+ *
+ * @author Callum Seabrook
+ */
 enum class ModifierOperation(val id: Int) {
 
     ADD(0),

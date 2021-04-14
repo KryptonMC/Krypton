@@ -5,6 +5,13 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.extension.writeMetadata
 import org.kryptonmc.krypton.extension.writeOptionalMetadata
 
+/**
+ * Represents metadata common to all entities.
+ *
+ * The ordering of this comes from [wiki.vg](https://wiki.vg/Entity_metadata#Entity_Metadata_Format)
+ *
+ * @author Callum Seabrook
+ */
 open class EntityMetadata(
     val movementFlags: MovementFlags? = null,
     val airTicks: Int? = null,
@@ -15,6 +22,11 @@ open class EntityMetadata(
     val pose: Pose? = null
 ) {
 
+    /**
+     * Write this metadata to a [ByteBuf] (for serialising to network)
+     *
+     * @param buf the buffer to write to
+     */
     open fun write(buf: ByteBuf) {
         buf.writeMetadata(0u, movementFlags?.toProtocol())
         buf.writeMetadata(1u, airTicks)
@@ -36,6 +48,11 @@ open class EntityMetadata(
     )
 }
 
+/**
+ * Flags for entity movement info. These are self-explanatory.
+ *
+ * @author Callum Seabrook
+ */
 data class MovementFlags(
     val isOnFire: Boolean = false,
     val isCrouching: Boolean = false,
@@ -46,6 +63,10 @@ data class MovementFlags(
     val isFlying: Boolean = false
 ) {
 
+    /**
+     * Convert this [MovementFlags] object to flags compatible with the protocol
+     * (a single byte that contains all of the values)
+     */
     fun toProtocol(): Byte {
         var byte = 0x0
         if (isOnFire) byte += 0x01
@@ -59,6 +80,12 @@ data class MovementFlags(
     }
 }
 
+/**
+ * The type of metadata being sent. This has to prefix the metadata value, no matter the index or if
+ * it could be inferred by the client.
+ *
+ * @author Callum Seabrook
+ */
 enum class MetadataType {
 
     BYTE,
@@ -82,6 +109,10 @@ enum class MetadataType {
     POSE
 }
 
-// For optional metadata values. This allows us to use a tristate for metadata, a.k.a to separate
-// optional metadata from not present metadata (represented by null)
+/**
+ * For optional metadata values. This allows us to use a tristate for metadata, a.k.a to separate
+ * optional metadata from not present metadata (represented by null)
+ *
+ * @author Callum Seabrook
+ */
 data class Optional<T>(val value: T?)
