@@ -24,10 +24,5 @@ enum class ChatMode {
 
     ENABLED,
     COMMANDS_ONLY,
-    HIDDEN;
-
-    companion object {
-
-        fun fromId(id: Int) = values()[id]
-    }
+    HIDDEN
 }

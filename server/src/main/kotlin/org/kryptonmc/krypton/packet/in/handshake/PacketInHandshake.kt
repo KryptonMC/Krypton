@@ -9,6 +9,15 @@ import org.kryptonmc.krypton.packet.PacketInfo
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.packet.data.HandshakeData
 
+/**
+ * This is the only packet in the [Handshake][PacketState.HANDSHAKE] state.
+ *
+ * The client uses this packet to inform the server of its intention for the connection (either
+ * login or status)
+ *
+ * @author Alex Wood
+ * @author Callum Seabrook
+ */
 class PacketInHandshake : Packet {
 
     override val info = PacketInfo(0x00, PacketState.HANDSHAKE)
