@@ -3,6 +3,11 @@ package org.kryptonmc.krypton.packet
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.state.PacketState
 
+/**
+ * Super interface for all inbound and outbound packets.
+ *
+ * @author Callum Seabrook
+ */
 interface Packet {
 
     val info: PacketInfo

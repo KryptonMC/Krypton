@@ -7,8 +7,12 @@ import net.kyori.adventure.translation.TranslationRegistry
 import java.text.MessageFormat
 import java.util.*
 
-// Register console locale strings. This is temporary, and will be replaced with a proper
-// locale system when Krypton has one.
+/**
+ * Register console locale strings. This is temporary, and will be replaced with a proper
+ * locale system when Krypton has one.
+ *
+ * @author Callum Seabrook
+ */
 object TranslationRegister {
 
     private val registry = TranslationRegistry.create(Key.key("krypton", "console"))
