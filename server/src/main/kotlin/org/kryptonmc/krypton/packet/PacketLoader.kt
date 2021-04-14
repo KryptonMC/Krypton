@@ -9,6 +9,11 @@ import org.kryptonmc.krypton.packet.`in`.status.PacketInPing
 import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
 import org.kryptonmc.krypton.packet.state.PacketState
 
+/**
+ * Responsible for registering all of the inbound packets to their respective states.
+ *
+ * @author Callum Seabrook
+ */
 object PacketLoader {
 
     fun loadAll() {

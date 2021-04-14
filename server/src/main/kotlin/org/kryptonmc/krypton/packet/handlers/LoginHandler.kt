@@ -30,6 +30,17 @@ import java.util.concurrent.atomic.AtomicInteger
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
+/**
+ * Handles all inbound packets in the [Login][org.kryptonmc.krypton.packet.state.PacketState.LOGIN] state.
+ *
+ * There are two inbound packets in this state that we handle:
+ * - [Login Start][org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart] -
+ *   sent to initiate the login sequence
+ * - [Encryption Response][org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse] -
+ *   sent to confirm the client wants to enable encryption
+ *
+ * @author Callum Seabrook
+ */
 class LoginHandler(
     override val server: KryptonServer,
     private val sessionManager: SessionManager,

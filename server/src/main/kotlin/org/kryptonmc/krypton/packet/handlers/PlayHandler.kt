@@ -37,6 +37,15 @@ import org.kryptonmc.krypton.world.block.KryptonBlock
 import java.util.*
 import kotlin.math.max
 
+/**
+ * This is the largest and most important of the four packet handlers, as the play state is where the
+ * vast majority of packets reside.
+ *
+ * As mentioned above, this is the packet handler for the [Play][org.kryptonmc.krypton.packet.state.PacketState.PLAY] state.
+ * This handles all supported inbound packets in the play state.
+ *
+ * @author Callum Seabrook
+ */
 class PlayHandler(
     override val server: KryptonServer,
     private val sessionManager: SessionManager,
