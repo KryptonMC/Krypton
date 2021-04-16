@@ -18,6 +18,21 @@ import org.kryptonmc.krypton.world.generation.FlatGenerator
 import java.nio.ByteBuffer
 import java.security.MessageDigest
 
+/**
+ * This packet is used to initialise some things that the client needs to know so that it can join the game
+ * properly.
+ *
+ * @param entityId the entity ID of the client
+ * @param isHardcore if the server is in hardcore mode
+ * @param world the world the client is spawning into
+ * @param gamemode the client's current gamemode
+ * @param previousGamemode the client's previous gamemode
+ * @param dimension the key of the dimension the client is spawning into (e.g. "minecraft:overworld" for the overworld)
+ * @param maxPlayers the maximum players allowed on the server
+ * @param viewDistance the server's maximum render distance
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutJoinGame(
     private val entityId: Int,
     private val isHardcore: Boolean = false,

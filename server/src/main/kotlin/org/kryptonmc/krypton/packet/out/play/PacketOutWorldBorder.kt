@@ -6,6 +6,14 @@ import org.kryptonmc.krypton.extension.writeVarLong
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.KryptonWorldBorder
 
+/**
+ * Sets the world border for the world. The only action supported for this at the moment is [INITIALIZE][BorderAction.INITIALIZE]
+ *
+ * @param action the action for this packet
+ * @param border the world border
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutWorldBorder(
     private val action: BorderAction,
     private val border: KryptonWorldBorder

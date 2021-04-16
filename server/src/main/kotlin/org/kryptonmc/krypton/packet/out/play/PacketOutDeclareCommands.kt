@@ -13,6 +13,16 @@ import org.kryptonmc.krypton.extension.writeString
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
+/**
+ * Declares commands that exist on the server to the client.
+ *
+ * This is done by transforming the [root]'s children into a tree, then using a breadth first search
+ * to put all of the nodes into an ordered list, which is then sent to the client.
+ *
+ * @param root the root command node
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : PlayPacket(0x10) {
 
     override fun write(buf: ByteBuf) {
@@ -53,6 +63,7 @@ class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : Play
         writeByte(byte)
     }
 
+    // a breadth-first search algorithm to enumerate a root node
     private fun RootCommandNode<*>.enumerate(): Map<CommandNode<*>, Int> {
         val result = mutableMapOf<CommandNode<*>, Int>()
         val queue = ArrayDeque<CommandNode<*>>()
