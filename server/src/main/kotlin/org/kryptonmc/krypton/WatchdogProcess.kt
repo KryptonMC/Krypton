@@ -5,6 +5,13 @@ import org.kryptonmc.krypton.extension.logger
 import java.util.*
 import kotlin.system.exitProcess
 
+/**
+ * The server watchdog. It's watching you...
+ *
+ * Nah, all this class does is make sure that the server doesn't freeze forever, and shuts it down if it does.
+ *
+ * @author Callum Seabrook
+ */
 class WatchdogProcess(private val server: KryptonServer) : Thread("Krypton Watchdog") {
 
     init {

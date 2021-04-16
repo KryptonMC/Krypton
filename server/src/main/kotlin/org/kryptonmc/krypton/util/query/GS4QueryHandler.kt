@@ -10,6 +10,12 @@ import java.io.IOException
 import java.net.*
 import kotlin.random.Random
 
+/**
+ * This query handler is responsible for handling UDP queries sent using the Game Stop 4 (GS4) protocol.
+ *
+ * @author Callum Seabrook
+ */
+// TODO: Look into Velocity's query handler and possibly convert this to a Netty handler
 class GS4QueryHandler private constructor(
     private val server: KryptonServer,
     private val port: Int

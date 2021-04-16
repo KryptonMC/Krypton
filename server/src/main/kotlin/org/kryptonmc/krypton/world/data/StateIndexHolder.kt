@@ -1,6 +1,14 @@
 package org.kryptonmc.krypton.world.data
 
-// holder for block state indices packed within a long array
+/**
+ * This one is a strange one. This is essentially an array that allows arbitrarily-sized numbers of any
+ * size in bits to be tightly packed into longs in a backing long array.
+ *
+ * When instantiated, the [size] of this should always be 4096, as this is used to hold block states, and
+ * there are always a maximum of 4096 blocks in a chunk section (16^3 = 4096)
+ *
+ * @author Callum Seabrook
+ */
 class StateIndexHolder(
     private val bits: Int,
     val size: Int,

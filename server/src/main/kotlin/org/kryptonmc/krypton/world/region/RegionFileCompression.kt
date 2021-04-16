@@ -7,6 +7,12 @@ import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 import java.util.zip.InflaterInputStream
 
+/**
+ * Region file compression values, with their respective (de)compressors, so they can be used to (de)compress
+ * given I/O streams in the [compress] and [decompress] functions
+ *
+ * @author Callum Seabrook
+ */
 enum class RegionFileCompression(
     private val compressor: (OutputStream) -> OutputStream,
     private val decompressor: (InputStream) -> InputStream

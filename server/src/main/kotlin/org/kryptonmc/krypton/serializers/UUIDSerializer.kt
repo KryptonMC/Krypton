@@ -8,6 +8,11 @@ import kotlinx.serialization.encoding.Encoder
 import net.kyori.adventure.nbt.IntArrayBinaryTag
 import java.util.*
 
+/**
+ * Standard UUID serialiser, as kotlinx.serialization still doesn't seem to have a built-in
+ *
+ * @author Callum Seabrook
+ */
 object UUIDSerializer : KSerializer<UUID> {
 
     override val descriptor = PrimitiveSerialDescriptor("UUID", PrimitiveKind.STRING)
@@ -17,8 +22,12 @@ object UUIDSerializer : KSerializer<UUID> {
     override fun deserialize(decoder: Decoder): UUID = UUID.fromString(decoder.decodeString())
 }
 
-// this isn't related to the above, this turns a UUID into 4 integers sorted by significance
-// descending (most significant first, least significant last)
+/**
+ * This isn't related to the above, this turns a UUID into 4 integers sorted by significance descending
+ * (most significant first, least significant last)
+ *
+ * @author Callum Seabrook
+ */
 fun UUID.serialize() = IntArrayBinaryTag.of(
     (mostSignificantBits shr 32).toInt(),
     (mostSignificantBits and Int.MAX_VALUE.toLong()).toInt(),

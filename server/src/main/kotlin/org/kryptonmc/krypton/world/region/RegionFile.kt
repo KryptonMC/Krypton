@@ -13,6 +13,17 @@ import java.nio.file.StandardOpenOption
 import java.time.Instant
 import java.util.*
 
+/**
+ * A region file holder, used for reading and writing region file data.
+ *
+ * This is heavily based on the original work from MCRegion, made by Scaevolous, and the modifications to it
+ * made by Mojang AB, and also the modifications to make it work in Kotlin, and a few other optimisations, by
+ * me, Callum Seabrook.
+ *
+ * @author Scaevolous
+ * @author Mojang AB
+ * @author Callum Seabrook
+ */
 class RegionFile(
     path: Path,
     synchronizeWrites: Boolean,
@@ -65,6 +76,12 @@ class RegionFile(
         }
     }
 
+    /**
+     * Gets a [DataInputStream] containing all of the chunk data for a chunk at the specified [position]
+     *
+     * @param position the position of the chunk to get data for
+     * @return a [DataInputStream] containing the chunk data, or null if an error occurred
+     */
     @Synchronized
     fun getChunkDataInputStream(position: ChunkPosition): DataInputStream? {
         val offset = offsets[position.offsetIndex]
@@ -106,9 +123,21 @@ class RegionFile(
         return createChunkInputStream(position, compressionType, ByteArrayInputStream(buffer.array(), buffer.position(), dataLength))
     }
 
+    /**
+     * Gets a [DataOutputStream] for writing chunk data to
+     *
+     * @param position the position of the chunk
+     * @return a [DataOutputStream] for writing chunk data to
+     */
     fun getChunkDataOutputStream(position: ChunkPosition) =
         DataOutputStream(BufferedOutputStream(compression.compress(ChunkBuffer(position))))
 
+    /**
+     * Writes chunk data for a chunk at the specified [position]
+     *
+     * @param position the position of the chunk to write
+     * @param buffer the data to write
+     */
     @Synchronized
     fun write(position: ChunkPosition, buffer: ByteBuffer) {
         val action: () -> Unit
@@ -259,5 +288,3 @@ class RegionBitmap {
 }
 
 operator fun IntBuffer.set(index: Int, value: Int): IntBuffer = put(index, value)
-
-const val BYTE_MIN_UNSIGNED_VALUE: Byte = 0
