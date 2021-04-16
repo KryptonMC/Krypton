@@ -11,8 +11,13 @@ import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
 /**
- * @author AlexL
- * @author Callum Jay Seabrook (BomBardyGamer)
+ * Updates information on the tab list (called the player list by vanilla).
+ *
+ * @param action the action to perform
+ * @param players a list of players, can be empty if not required by the [action]
+ *
+ * @author Alex Wood
+ * @author Callum Seabrook
  */
 class PacketOutPlayerInfo(
     private val action: PlayerAction,

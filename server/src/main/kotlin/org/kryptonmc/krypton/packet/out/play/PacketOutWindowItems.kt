@@ -7,6 +7,13 @@ import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.Registries
 
+/**
+ * Set the items for an inventory with an ID. Currently only supports player inventories.
+ *
+ * @param inventory the inventory to get the items to send from
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutWindowItems(private val inventory: PlayerInventory) : PlayPacket(0x13) {
 
     override fun write(buf: ByteBuf) {

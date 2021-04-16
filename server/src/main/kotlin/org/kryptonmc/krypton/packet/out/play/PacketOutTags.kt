@@ -9,6 +9,13 @@ import org.kryptonmc.krypton.registry.Registries
 import org.kryptonmc.krypton.registry.tags.Tag
 import org.kryptonmc.krypton.registry.tags.TagManager
 
+/**
+ * Tells the client all the tags present on the server
+ *
+ * @param tagManager the tag manager instance for the server
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutTags(private val tagManager: TagManager) : PlayPacket(0x5B) {
 
     private val blockRegistry: (NamespacedKey) -> Int? = {

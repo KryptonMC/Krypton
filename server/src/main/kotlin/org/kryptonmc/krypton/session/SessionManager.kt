@@ -120,7 +120,7 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutEntityStatus(session.id))
         session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
-        session.sendPacket(PacketOutPlayerPositionAndLook(session.player.location, teleportId = Random.nextInt(1000)))
+        session.sendPacket(PacketOutPlayerPositionAndLook(session.player.location))
 
         val joinMessage = translatable {
             key("multiplayer.player.joined")

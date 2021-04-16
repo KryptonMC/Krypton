@@ -4,11 +4,22 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import kotlin.random.Random
 
+/**
+ * Sent to tell the client its initial position. This is one of the last packets sent by the server in the play
+ * sequence.
+ *
+ * @param location the client's location
+ * @param flags strange flags that determine whether each of the components of the [location] are relative
+ * @param teleportId the ID for teleportation. Unused by Krypton.
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutPlayerPositionAndLook(
     private val location: Location,
     private val flags: PositionAndLookFlags = PositionAndLookFlags(),
-    private val teleportId: Int
+    private val teleportId: Int = Random.nextInt(1000)
 ) : PlayPacket(0x34) {
 
     override fun write(buf: ByteBuf) {

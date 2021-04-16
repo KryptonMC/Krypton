@@ -8,6 +8,16 @@ import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.chunk.ChunkSection
 
+/**
+ * This packet is very strange and really weird to compute, so don't expect to understand it straight away.
+ *
+ * I recommend reading [wiki.vg](https://wiki.vg/Chunk_Format) for more information on this, as they can do
+ * a much better job at explaining it than I can.
+ *
+ * @param chunk the chunk to send the data of
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
 
     override fun write(buf: ByteBuf) {
