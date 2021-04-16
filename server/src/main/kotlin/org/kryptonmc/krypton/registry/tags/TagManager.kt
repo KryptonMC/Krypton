@@ -7,7 +7,15 @@ import org.kryptonmc.krypton.api.registry.NamespacedKey
 import java.io.*
 import java.util.concurrent.ConcurrentHashMap
 
-// All credit goes to Minestom for the tag stuff (this manager and the tag class)
+/**
+ * The tag manager, responsible for, well, managing tags.
+ *
+ * All credit goes to Minestom for the tag stuff (this manager and the tag class)
+ *
+ * @author The Minestom Project
+ * @author Callum Seabrook
+ */
+// TODO: Look into possibly replacing this with a singleton, like the registries
 class TagManager {
 
     private val cache = ConcurrentHashMap<NamespacedKey, Tag>()

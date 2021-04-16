@@ -6,6 +6,11 @@ import io.netty.handler.codec.MessageToByteEncoder
 import org.kryptonmc.krypton.extension.writeVarInt
 import java.util.zip.Deflater
 
+/**
+ * Compresses packets that meet or exceed the specified [threshold] in length.
+ *
+ * @author Callum Seabrook
+ */
 class PacketCompressor(var threshold: Int) : MessageToByteEncoder<ByteBuf>() {
 
     private val encodeBuffer = ByteArray(8192)

@@ -1,4 +1,4 @@
 package org.kryptonmc.krypton.registry.impl
 
-class DefaultedRegistry<T> : MappedRegistry<T>() {
-}
+// TODO: Evaluate the usefulness of this class
+class DefaultedRegistry<T> : MappedRegistry<T>()

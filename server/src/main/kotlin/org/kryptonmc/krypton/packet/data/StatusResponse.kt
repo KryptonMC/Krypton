@@ -12,7 +12,7 @@ import java.util.*
  * to JSON and sent by the [Status response][org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse]
  * packet.
  *
- * @author Callum Seabrook
+ * @author Alex Wood
  */
 @Serializable
 data class StatusResponse(
@@ -25,7 +25,7 @@ data class StatusResponse(
  * Information about the server's version. This is used by the Notchian client to determine whether
  * we are compatible with it.
  *
- * @author Callum Seabrook
+ * @author Alex Wood
  */
 @Serializable
 data class ServerVersion(
@@ -37,7 +37,7 @@ data class ServerVersion(
  * The players list. This is used by the Notchian client to display the current, maximum and sample
  * players currently on the server.
  *
- * @author Callum Seabrook
+ * @author Alex Wood
  */
 @Serializable
 data class Players(
@@ -49,7 +49,7 @@ data class Players(
 /**
  * A player's info, for status
  *
- * @author Callum Seabrook
+ * @author Alex Wood
  */
 @Serializable
 data class PlayerInfo(
