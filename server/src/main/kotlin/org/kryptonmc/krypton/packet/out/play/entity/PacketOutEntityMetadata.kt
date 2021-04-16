@@ -6,6 +6,17 @@ import org.kryptonmc.krypton.extension.writeUByte
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
+/**
+ * The way we construct and use metadata in Krypton is a bit strange, as unlike vanilla, we do not store a
+ * reference to this data from within the entities, it is constructed manually when a player joins.
+ *
+ * This packet informs the client of all the metadata it should assign to the specified [entityId]
+ *
+ * @param entityId the ID of the entity to set metadata for
+ * @param metadata the metadata to set
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutEntityMetadata(
     private val entityId: Int,
     private val metadata: EntityMetadata

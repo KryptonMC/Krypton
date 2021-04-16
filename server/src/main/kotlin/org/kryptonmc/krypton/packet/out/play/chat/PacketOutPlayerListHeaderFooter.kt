@@ -5,7 +5,15 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.extension.writeChat
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
-// Unused by the server, for future use in plugins
+/**
+ * This only exists in the protocol for use in modded servers. It is never used by the official vanilla
+ * server. How nice of Mojang to do that for us :)
+ *
+ * Informs the client of the component to display above ([header] of the list) or below ([footer] of the list)
+ * the player list.
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutPlayerListHeaderFooter(
     private val header: Component,
     private val footer: Component

@@ -16,7 +16,7 @@ import java.util.concurrent.TimeoutException
  * This is the handler at the end of the Netty pipeline that does the actual processing of
  * inbound packets (after they have been processed and turned into Packet objects)
  *
- * @author Callum Seabrook
+ * @author Alex Wood
  */
 class ChannelHandler(private val server: KryptonServer) : SimpleChannelInboundHandler<Packet>() {
 
