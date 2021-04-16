@@ -11,6 +11,12 @@ import kotlinx.serialization.json.JsonObject
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 
+/**
+ * A hacky serialiser that bridges the Gson component serialiser and kotlinx.serialization, allowing us to (de)serialise
+ * using this serialiser rather than treating everything as a string and parsing that
+ *
+ * @author Callum Seabrook
+ */
 object ComponentSerializer : KSerializer<Component> {
 
     override val descriptor = PrimitiveSerialDescriptor("net.kyori.adventure.text.Component", PrimitiveKind.STRING)

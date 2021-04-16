@@ -4,6 +4,11 @@ import org.kryptonmc.krypton.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.extension.logger
 import java.util.concurrent.atomic.AtomicInteger
 
+/**
+ * A generic named thread with a unique ID
+ *
+ * @author Callum Seabrook
+ */
 abstract class GenericThread(protected val name: String) : Runnable {
 
     @Volatile

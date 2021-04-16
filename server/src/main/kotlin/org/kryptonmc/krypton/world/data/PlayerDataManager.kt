@@ -23,6 +23,11 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 
+/**
+ * Responsible for loading and saving player data files
+ *
+ * @author Callum Seabrook
+ */
 class PlayerDataManager(private val folder: File) {
 
     fun loadAndPopulate(world: KryptonWorld, player: KryptonPlayer) {

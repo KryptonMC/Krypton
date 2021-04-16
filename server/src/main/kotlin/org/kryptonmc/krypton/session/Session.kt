@@ -13,6 +13,16 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
 import org.kryptonmc.krypton.packet.state.PacketState
 
+/**
+ * Represents a session, which is a connection between the server and a client.
+ *
+ * @param id the entity ID of this session
+ * @param server the server this session is connected to
+ * @param channel the backing Netty channel that does all the IO stuff
+ *
+ * @author Alex Wood
+ * @author Callum Seabrook
+ */
 class Session(
     val id: Int,
     server: KryptonServer,

@@ -9,6 +9,11 @@ import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
+/**
+ * Manages region files. That's literally it.
+ *
+ * @author Callum Seabrook
+ */
 class RegionFileManager(
     private val folder: File,
     private val synchronizeWrites: Boolean

@@ -5,6 +5,11 @@ import org.kryptonmc.krypton.extension.logger
 import java.lang.management.ManagementFactory
 import javax.management.*
 
+/**
+ * Used to publish some statistics to the Java Management Extensions (JMX) framework
+ *
+ * @author Callum Seabrook
+ */
 class KryptonStatistics(private val server: KryptonServer) : DynamicMBean {
 
     private val attributeDescriptionByName = mapOf(

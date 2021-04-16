@@ -44,6 +44,14 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.floor
 import kotlin.random.Random
 
+/**
+ * The session manager is, as the name suggests, responsible for managing sessions. It was a replacement for
+ * the whacky logic that used to go on in the old `PacketHandler`, which was even more of a god object than it
+ * was before it was removed.
+ *
+ * @author Callum Seabrook
+ */
+// TODO: Look into this and see if it should be replaced by something better
 class SessionManager(private val server: KryptonServer) {
 
     val sessions: MutableSet<Session> = ConcurrentHashMap.newKeySet()

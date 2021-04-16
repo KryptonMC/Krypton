@@ -2,6 +2,8 @@ package org.kryptonmc.krypton.space
 
 /**
  * Represents a protocol angle, measured in 256ths of a full turn
+ *
+ * @author Callum Seabrook
  */
 inline class Angle(val value: UByte) : Comparable<Angle> {
 
@@ -15,4 +17,10 @@ inline class Angle(val value: UByte) : Comparable<Angle> {
     }
 }
 
+/**
+ * Convert a float value (in degrees) to a protocol [Angle] by dividing its value by 360 and multiplying
+ * the result by 256, then rounding to an integer
+ *
+ * @author Callum Seabrook
+ */
 fun Float.toAngle() = Angle(((this / 360.0f) * 256.0f).toInt().toUByte())

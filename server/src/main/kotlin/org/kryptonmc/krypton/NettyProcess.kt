@@ -27,6 +27,12 @@ import org.kryptonmc.krypton.packet.transformers.*
 import java.io.IOException
 import kotlin.system.exitProcess
 
+/**
+ * The base Netty connection handler initialiser.
+ *
+ * @author Alex Wood
+ * @author Callum Seabrook
+ */
 class NettyProcess(private val server: KryptonServer) {
 
     private val bossGroup: EventLoopGroup = bestLoopGroup()
