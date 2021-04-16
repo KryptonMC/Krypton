@@ -10,6 +10,11 @@ import org.kryptonmc.krypton.extension.readAllAvailableBytes
 import org.kryptonmc.krypton.extension.readVarInt
 import java.util.zip.Inflater
 
+/**
+ * Decompresses packets that meet or exceed the specified [threshold] in length.
+ *
+ * @author Callum Seabrook
+ */
 class PacketDecompressor(var threshold: Int) : ByteToMessageDecoder() {
 
     private val inflater = Inflater()

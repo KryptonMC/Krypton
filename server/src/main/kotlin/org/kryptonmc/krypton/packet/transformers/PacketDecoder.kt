@@ -7,6 +7,12 @@ import org.kryptonmc.krypton.channel.ChannelHandler
 import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.extension.readVarInt
 
+/**
+ * Decodes packet data into readable packets and reads the data in by calling this packet's
+ * [read][org.kryptonmc.krypton.packet.Packet.read] function
+ *
+ * @author Alex Wood
+ */
 class PacketDecoder : ByteToMessageDecoder() {
 
     override fun decode(ctx: ChannelHandlerContext, buf: ByteBuf, out: MutableList<Any>) {

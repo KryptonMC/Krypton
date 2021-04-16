@@ -9,7 +9,7 @@ import java.net.InetAddress
  * [address] and [port] are ignored by the Notchian server, and it is unclear why they are even sent,
  * but we also completely ignore them, as we already know the server's address and port.
  *
- * @author Callum Seabrook
+ * @author Alex Wood
  */
 data class HandshakeData(
 	val protocol: Int,

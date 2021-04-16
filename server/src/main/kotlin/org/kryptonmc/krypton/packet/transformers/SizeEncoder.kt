@@ -8,6 +8,8 @@ import org.kryptonmc.krypton.extension.writeVarInt
 
 /**
  * Writes a packet size in an appropriate VarInt before the data is written
+ *
+ * @author Alex Wood
  */
 class SizeEncoder : MessageToByteEncoder<ByteBuf>() {
 

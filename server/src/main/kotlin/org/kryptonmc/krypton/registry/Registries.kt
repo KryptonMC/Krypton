@@ -15,6 +15,11 @@ private val REGISTRIES: Map<NamespacedKey, RegistryEntry> =
 private val STATE_REGISTRY: Map<NamespacedKey, RegistryBlock> =
     Json.decodeFromString(registryData("registries/blocks.json"))
 
+/**
+ * Singleton for all of the registries that we load from files. This is a singleton for ease of use
+ *
+ * @author Callum Seabrook
+ */
 object Registries {
 
     val BLOCKS = MappedRegistry(REGISTRIES.getValue(NamespacedKey(value = "block")).entries.mapValues { it.value.id })

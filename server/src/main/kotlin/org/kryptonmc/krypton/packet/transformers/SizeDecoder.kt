@@ -7,6 +7,11 @@ import io.netty.handler.codec.ByteToMessageDecoder
 import io.netty.handler.codec.CorruptedFrameException
 import org.kryptonmc.krypton.extension.readVarInt
 
+/**
+ * Decodes the size of a packet.
+ *
+ * @author Alex Wood
+ */
 class SizeDecoder : ByteToMessageDecoder() {
 
     override fun decode(ctx: ChannelHandlerContext, buf: ByteBuf, out: MutableList<Any>) {

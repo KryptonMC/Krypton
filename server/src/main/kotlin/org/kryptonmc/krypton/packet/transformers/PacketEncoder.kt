@@ -7,6 +7,12 @@ import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.Packet
 
+/**
+ * Encodes packets into raw packet data by writing the packet's ID as a varint followed by calling the packet's
+ * [write][org.kryptonmc.krypton.packet.Packet.write] function
+ *
+ * @author Alex Wood
+ */
 class PacketEncoder : MessageToByteEncoder<Packet>() {
 
     override fun encode(ctx: ChannelHandlerContext, msg: Packet, out: ByteBuf) {

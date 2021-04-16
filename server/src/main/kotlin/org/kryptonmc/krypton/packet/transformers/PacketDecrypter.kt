@@ -7,6 +7,13 @@ import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.extension.readAllAvailableBytes
 import javax.crypto.Cipher
 
+/**
+ * Decrypts packets using a stream cipher provided by the specified [cipher]. The algorithm for this [cipher] should
+ * always be [AES/CFB8/NoPadding][org.kryptonmc.krypton.encryption.Encryption.SHARED_SECRET_ALGORITHM]
+ *
+ * @author Alex Wood
+ * @author Callum Seabrook
+ */
 class PacketDecrypter(private val cipher: Cipher) : MessageToMessageDecoder<ByteBuf>() {
 
     override fun decode(ctx: ChannelHandlerContext, msg: ByteBuf, out: MutableList<Any>) {

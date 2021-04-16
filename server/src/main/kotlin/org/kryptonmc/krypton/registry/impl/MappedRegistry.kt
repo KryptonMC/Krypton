@@ -2,9 +2,16 @@ package org.kryptonmc.krypton.registry.impl
 
 import org.kryptonmc.krypton.registry.Registry
 
+/**
+ * Default implementation for [Registry], which is backed by a map of T to Int, and a list of T?
+ *
+ * @param values optional pre-filled values map
+ *
+ * @author Callum Seabrook
+ */
 open class MappedRegistry<T>(values: Map<out T, Int>? = null) : Registry<T> {
 
-    private var nextID = 0
+    private var nextId = 0
     private val byT = mutableMapOf<T, Int>()
     private val byId = mutableListOf<T?>()
 
@@ -28,10 +35,10 @@ open class MappedRegistry<T>(values: Map<out T, Int>? = null) : Registry<T> {
             byId += null
         }
         byId[id] = value
-        if (nextID <= id) nextID = id + 1
+        if (nextId <= id) nextId = id + 1
     }
 
-    operator fun plus(value: T) = set(nextID, value)
+    operator fun plus(value: T) = set(nextId, value)
 
     override fun iterator() = byId.filterNotNull().iterator()
 

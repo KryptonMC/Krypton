@@ -4,7 +4,11 @@ import java.net.URL
 import java.net.URLClassLoader
 import java.nio.file.Path
 
-// this is only so we can expose addURL for internal use
+/**
+ * The class loader used to load plugins. This is only so we can expose addURL for internal use
+ *
+ * @author Callum Seabrook
+ */
 class PluginClassLoader(vararg urls: URL) : URLClassLoader(urls) {
 
     internal fun addPath(path: Path) {

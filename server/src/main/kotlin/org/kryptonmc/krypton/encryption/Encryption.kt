@@ -6,7 +6,7 @@ import java.security.PublicKey
 import javax.crypto.Cipher
 
 /**
- * @author Callum Seabrook
+ * @author Alex Wood
  */
 class Encryption {
 

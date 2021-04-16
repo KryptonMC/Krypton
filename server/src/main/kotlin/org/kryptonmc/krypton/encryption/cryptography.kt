@@ -9,14 +9,14 @@ import javax.crypto.spec.IvParameterSpec
 /**
  * Convert a [Key] to a [Cipher] that is set for decryption
  *
- * @author Callum Seabrook
+ * @author Alex Wood
  */
 fun Key.toDecryptingCipher(algorithm: String): Cipher = toCipher(algorithm, Cipher.DECRYPT_MODE)
 
 /**
  * Convert a [Key] to a [Cipher] that is set for encryption
  *
- * @author Callum Seabrook
+ * @author Alex Wood
  */
 fun Key.toEncryptingCipher(algorithm: String): Cipher = toCipher(algorithm, Cipher.ENCRYPT_MODE)
 

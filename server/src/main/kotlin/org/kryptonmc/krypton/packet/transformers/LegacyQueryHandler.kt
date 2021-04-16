@@ -12,6 +12,17 @@ import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.extension.readAvailableBytes
 import java.net.InetSocketAddress
 
+/**
+ * The legacy query handler is a special handler for special cases. It handles the server list ping packet from
+ * old versions of Minecraft.
+ *
+ * From the words of wiki.vg: "while not technically part of the current protocol, legacy clients may send this to
+ * initiate a legacy server list ping, and modern servers should handle it correctly"
+ *
+ * This handler is essentially a Kotlin converted version of the vanilla handler, which is why it is such a mess.
+ *
+ * @author Callum Seabrook
+ */
 class LegacyQueryHandler(private val status: StatusConfig) : ChannelInboundHandlerAdapter() {
 
     override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
