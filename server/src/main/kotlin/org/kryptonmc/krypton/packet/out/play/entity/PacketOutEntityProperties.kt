@@ -9,6 +9,15 @@ import org.kryptonmc.krypton.extension.writeUUID
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
+/**
+ * Set entity attributes. Note that this packet is not incremental, and sending it with data will reset
+ * all of the existing attributes and reapply them.
+ *
+ * @param entityId the ID of the entity to set the attributes of
+ * @param properties the attributes to set
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutEntityProperties(
     private val entityId: Int,
     private val properties: Collection<Attribute> = emptyList()

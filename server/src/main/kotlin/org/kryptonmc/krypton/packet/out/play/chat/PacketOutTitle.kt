@@ -9,6 +9,16 @@ import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import java.time.Duration
 
+/**
+ * Send a title or action bar to the client.
+ *
+ * @param action the action to send for this packet.
+ * @param title the title to send to the player. Not used if the action is [TitleAction.SET_ACTION_BAR]
+ * (also includes [TitleAction.HIDE] and [TitleAction.RESET], where no data is sent)
+ * @param actionBar the action bar to send to the player. Not used if the action isn't [TitleAction.SET_ACTION_BAR]
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutTitle(
     private val action: TitleAction,
     private val title: Title = Title.title(Component.empty(), Component.empty()),

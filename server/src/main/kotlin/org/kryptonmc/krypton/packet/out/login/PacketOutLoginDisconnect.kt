@@ -5,9 +5,15 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.extension.writeChat
 import org.kryptonmc.krypton.packet.state.LoginPacket
 
-class PacketOutLoginDisconnect(private val component: Component) : LoginPacket(0x00) {
+/**
+ * Informs the client that they have been disconnected for the specified [reason]
+ * The client assumes that the connection has already been dropped by this point.
+ *
+ * @author Callum Seabrook
+ */
+class PacketOutLoginDisconnect(private val reason: Component) : LoginPacket(0x00) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeChat(component)
+        buf.writeChat(reason)
     }
 }

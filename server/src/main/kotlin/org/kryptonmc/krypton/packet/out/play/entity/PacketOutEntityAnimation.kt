@@ -5,6 +5,15 @@ import org.kryptonmc.krypton.extension.writeUByte
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
+/**
+ * Sent when some form of animation should be played by the client for a specific entity it knows about.
+ * Possible values are in [EntityAnimation].
+ *
+ * @param entityId the ID of the entity who we want the client to play an animation for
+ * @param animation the animation we want played
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutEntityAnimation(
     private val entityId: Int,
     private val animation: EntityAnimation

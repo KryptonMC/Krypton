@@ -8,6 +8,13 @@ import org.kryptonmc.krypton.extension.writeUUID
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
+/**
+ * Spawn a player for the client.
+ *
+ * @param player the player to spawn.
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutSpawnPlayer(private val player: KryptonPlayer) : PlayPacket(0x04) {
 
     override fun write(buf: ByteBuf) {

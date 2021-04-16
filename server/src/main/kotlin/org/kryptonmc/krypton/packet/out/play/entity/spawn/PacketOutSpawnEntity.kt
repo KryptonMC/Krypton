@@ -8,7 +8,14 @@ import org.kryptonmc.krypton.extension.writeUUID
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
-// TODO: Make use of this
+/**
+ * Spawn an entity for the client.
+ *
+ * @param entity the entity to spawn. Will eventually be replaced with the API entity.
+ *
+ * @author Callum Seabrook
+ */
+// TODO: Make use of this and use API entity rather than whatever the hell this is
 class PacketOutSpawnEntity(private val entity: Entity) : PlayPacket(0x00) {
 
     override fun write(buf: ByteBuf) {

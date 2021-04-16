@@ -6,6 +6,12 @@ import org.kryptonmc.krypton.extension.writeUUID
 import org.kryptonmc.krypton.packet.state.LoginPacket
 import java.util.*
 
+/**
+ * Sent to the client on successful login, to inform them of their own UUID. Not sure why we return their
+ * username to them though, as they already know it because they told us it in login start.
+ *
+ * @author Alex Wood
+ */
 class PacketOutLoginSuccess(
     private val uuid: UUID,
     private val username: String

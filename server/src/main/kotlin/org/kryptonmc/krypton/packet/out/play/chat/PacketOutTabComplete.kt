@@ -9,6 +9,15 @@ import org.kryptonmc.krypton.extension.writeString
 import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
+/**
+ * Sent by the server as a response to the [tab complete][org.kryptonmc.krypton.packet.in.play.PacketInTabComplete].
+ * Contains all of the matches that the server got for the command provided by the request packet.
+ *
+ * @param id the unique ID sent by the client to identify this request
+ * @param matches matches for the given request
+ *
+ * @author Callum Seabrook
+ */
 class PacketOutTabComplete(
     private val id: Int,
     private val matches: Suggestions

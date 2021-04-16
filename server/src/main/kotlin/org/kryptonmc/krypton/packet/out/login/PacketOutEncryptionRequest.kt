@@ -7,6 +7,13 @@ import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.LoginPacket
 import java.security.PublicKey
 
+/**
+ * Sent to instruct the client that we wish to encrypt this connection. The client is provided
+ * with our public key, so they can use it to encrypt the shared secret, and a verify token,
+ * to attempt to ensure the connection hasn't been tampered with (no hackers listening in)
+ *
+ * @author Alex Wood
+ */
 class PacketOutEncryptionRequest(
     private val publicKey: PublicKey,
     private val verifyToken: ByteArray
