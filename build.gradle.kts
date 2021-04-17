@@ -1,9 +1,10 @@
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
+import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.4.32"
     kotlin("plugin.serialization") version "1.4.32"
+    id("org.jetbrains.dokka") version "1.4.30"
 }
 
 group = "org.kryptonmc"
@@ -12,12 +13,14 @@ version = "0.18.1"
 rootProject.extra["globalVersion"] = project.version
 
 allprojects {
-    apply<KotlinPlatformJvmPlugin>()
-//    apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
+    apply(plugin = "org.jetbrains.dokka")
 
     repositories {
         mavenCentral()
         maven("https://libraries.minecraft.net")
+        jcenter()
     }
 
     dependencies {
@@ -48,5 +51,15 @@ allprojects {
                 "-Xinline-classes"
             )
         }
+    }
+
+    task<Jar>("sourcesJar") {
+        from(sourceSets.main.get().allSource)
+        archiveClassifier.set("sources")
+    }
+
+    task<Jar>("javadocJar") {
+        from(tasks["dokkaJavadoc"])
+        archiveClassifier.set("javadoc")
     }
 }
