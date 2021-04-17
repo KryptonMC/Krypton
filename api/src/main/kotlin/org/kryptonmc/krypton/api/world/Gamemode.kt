@@ -47,6 +47,9 @@ enum class Gamemode {
          * Retrieves a game mode from its legacy ID. Should only need to be used internally.
          */
         @JvmStatic
-        fun fromId(id: Int) = values()[id]
+        fun fromId(id: Int): Gamemode? {
+            if (id !in 0 until values().size) return null
+            return values()[id]
+        }
     }
 }
