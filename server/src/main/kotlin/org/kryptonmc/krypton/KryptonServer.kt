@@ -19,6 +19,7 @@ import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.encryption.Encryption
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonEventBus
+import org.kryptonmc.krypton.extension.copyTo
 import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.locale.TranslationRegister
 import org.kryptonmc.krypton.packet.PacketLoader
@@ -36,7 +37,6 @@ import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.io.File
 import java.io.IOException
 import java.net.InetSocketAddress
-import java.nio.file.Files
 import java.nio.file.Path
 import java.security.SecureRandom
 import java.util.*
@@ -207,7 +207,8 @@ class KryptonServer : Server {
         if (!configFile.exists()) {
             val inputStream = Thread.currentThread().contextClassLoader.getResourceAsStream("config.conf")
                 ?: throw IOException("Config file not in classpath! Something has gone horribly wrong!")
-            Files.copy(inputStream, configFile.toPath())
+            inputStream.copyTo(configFile)
+//            Files.copy(inputStream, configFile.toPath())
         }
 
         return HOCON.decodeFromConfig(ConfigFactory.parseFile(configFile))

@@ -1,12 +1,11 @@
 package org.kryptonmc.krypton.world.region
 
-import org.kryptonmc.krypton.extension.logger
+import org.kryptonmc.krypton.extension.*
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.io.*
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
 import java.nio.channels.FileChannel
-import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import java.nio.file.StandardOpenOption
@@ -38,18 +37,18 @@ class RegionFile(
     private val usedSectors = RegionBitmap()
 
     init {
-        require(Files.isDirectory(externalDirectory)) { "Expected directory, got ${externalDirectory.toAbsolutePath()}" }
+        require(externalDirectory.isDirectory) { "Expected directory, got ${externalDirectory.toAbsolutePath()}" }
         offsets = header.asIntBuffer().limit(1024)
         header.position(4096)
         timestamps = header.asIntBuffer()
-        file = FileChannel.open(path, if (synchronizeWrites) SHARED_FLAGS + StandardOpenOption.DSYNC else SHARED_FLAGS)
+        file = path.openChannel(if (synchronizeWrites) SHARED_FLAGS + StandardOpenOption.DSYNC else SHARED_FLAGS)
+//        file = FileChannel.open(path, if (synchronizeWrites) SHARED_FLAGS + StandardOpenOption.DSYNC else SHARED_FLAGS)
         usedSectors.force(0, 2)
         header.position(0)
 
         val first = file.read(header, 0L)
         if (first != -1) {
             if (first != 8192) LOGGER.warn("Region file $path has truncated header: $first")
-            val size = Files.size(path)
             for (i in 0 until 1024) {
                 val offset = offsets[i]
                 if (offset == 0) continue
@@ -66,7 +65,7 @@ class RegionFile(
                     offsets[i] = 0
                     continue
                 }
-                if (sectorNumber * 4096L > size) {
+                if (sectorNumber * 4096L > path.size) {
                     LOGGER.warn("Region file $path has an invalid sector at index $i. Sector $sectorNumber is out of bounds")
                     offsets[i] = 0
                     continue
@@ -160,7 +159,8 @@ class RegionFile(
             file.write(externalStub, sectors * 4096L)
         } else {
             sectors = usedSectors.allocate(requiredSectors)
-            action = { Files.deleteIfExists(externalDirectory.resolve("c.${position.x}.${position.z}.mcc")) }
+            action = { externalDirectory.resolve("c.${position.x}.${position.z}.mcc").deleteIfExists() }
+//            action = { Files.deleteIfExists(externalDirectory.resolve("c.${position.x}.${position.z}.mcc")) }
             file.write(buffer, sectors * 4096L)
         }
         val timestamp = (Instant.now().toEpochMilli() / 1000).toInt()
@@ -173,11 +173,11 @@ class RegionFile(
 
     private fun createExternalChunkInputStream(position: ChunkPosition, compressionType: Byte): DataInputStream? {
         val path = externalDirectory.resolve("c.${position.x}.${position.z}.mcc")
-        if (!Files.isRegularFile(path)) {
+        if (!path.isRegularFile) {
             LOGGER.error("External chunk path $path is not a file!")
             return null
         }
-        return createChunkInputStream(position, compressionType, Files.newInputStream(path))
+        return createChunkInputStream(position, compressionType, path.newInputStream())
     }
 
     private fun createChunkInputStream(position: ChunkPosition, compressionType: Byte, input: InputStream): DataInputStream? {
@@ -190,12 +190,18 @@ class RegionFile(
     }
 
     private fun writeExternal(path: Path, buffer: ByteBuffer): () -> Unit {
-        val temp = Files.createTempFile(externalDirectory, "tmp", null)
-        FileChannel.open(path, StandardOpenOption.CREATE, StandardOpenOption.WRITE).use {
+//        val temp = Files.createTempFile(externalDirectory, "tmp", null)
+        val temp = externalDirectory.createTempFile("tmp")
+        path.openChannel(StandardOpenOption.CREATE, StandardOpenOption.WRITE).use {
             buffer.position(5)
             it.write(buffer)
         }
-        return { Files.move(temp, path, StandardCopyOption.REPLACE_EXISTING) }
+//        FileChannel.open(path, StandardOpenOption.CREATE, StandardOpenOption.WRITE).use {
+//            buffer.position(5)
+//            it.write(buffer)
+//        }
+        return { temp.moveTo(path, StandardCopyOption.REPLACE_EXISTING) }
+//        return { Files.move(temp, path, StandardCopyOption.REPLACE_EXISTING) }
     }
 
     private fun writeHeader() {
@@ -218,12 +224,10 @@ class RegionFile(
 
     fun flush() = file.force(true)
 
-    override fun close() {
-        try {
-            padToFullSector()
-        } finally {
-            file.use { it.force(true) }
-        }
+    override fun close() = try {
+        padToFullSector()
+    } finally {
+        file.use { it.force(true) }
     }
 
     private inner class ChunkBuffer(private val position: ChunkPosition) : ByteArrayOutputStream(8096) {
@@ -252,19 +256,19 @@ class RegionFile(
         private val LOGGER = logger<RegionFile>()
 
         private val Int.sectorNumber: Int
-            get() = (this shr 8) and 0xFFFFFF
+            get() = shr(8) and 0xFFFFFF
 
         private val Int.sectorCount: Int
-            get() = this and 0xFF
+            get() = and(0xFF)
 
         private val ChunkPosition.offsetIndex: Int
             get() = regionLocalX + regionLocalZ * 32
 
         private val Byte.isExternalStreamChunk: Boolean
-            get() = (this.toInt() and 0x80) != 0
+            get() = (toInt() and 0x80) != 0
 
         private val Byte.externalChunkVersion: Byte
-            get() = (this.toInt() and 0xFFFFFF7F.toInt()).toByte()
+            get() = (toInt() and 0xFFFFFF7F.toInt()).toByte()
     }
 }
 
