@@ -124,7 +124,7 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutAbilities(session.player.abilities))
         session.sendPacket(PacketOutHeldItemChange(session.player.inventory.heldSlot))
         session.sendPacket(PacketOutDeclareRecipes())
-        session.sendPacket(PacketOutTags(server.tagManager))
+        session.sendPacket(PacketOutTags)
         session.sendPacket(PacketOutEntityStatus(session.id))
         session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))

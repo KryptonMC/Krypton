@@ -15,8 +15,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @author The Minestom Project
  * @author Callum Seabrook
  */
-// TODO: Look into possibly replacing this with a singleton, like the registries
-class TagManager {
+object TagManager {
 
     private val cache = ConcurrentHashMap<NamespacedKey, Tag>()
 

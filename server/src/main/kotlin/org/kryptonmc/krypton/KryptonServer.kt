@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.packet.PacketLoader
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
-import org.kryptonmc.krypton.registry.tags.TagManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.session.SessionManager
@@ -74,8 +73,6 @@ class KryptonServer : Server {
 
     val sessionManager = SessionManager(this)
 
-    val tagManager = TagManager()
-
     override val worldManager = KryptonWorldManager(this, config.world.name, config.advanced.synchronizeChunkWrites)
     val playerDataManager = PlayerDataManager(File(worldManager.folder, "/playerdata").apply { mkdir() })
 
@@ -107,6 +104,7 @@ class KryptonServer : Server {
         val startTime = System.nanoTime()
         // loading these here avoids loading them when the first player joins
         Class.forName("org.kryptonmc.krypton.registry.Registries")
+        Class.forName("org.kryptonmc.krypton.registry.tags.TagManager")
         Class.forName("org.kryptonmc.krypton.world.block.palette.GlobalPalette")
 
         LOGGER.debug("Starting console handler")
@@ -208,7 +206,6 @@ class KryptonServer : Server {
             val inputStream = Thread.currentThread().contextClassLoader.getResourceAsStream("config.conf")
                 ?: throw IOException("Config file not in classpath! Something has gone horribly wrong!")
             inputStream.copyTo(configFile)
-//            Files.copy(inputStream, configFile.toPath())
         }
 
         return HOCON.decodeFromConfig(ConfigFactory.parseFile(configFile))

@@ -45,7 +45,7 @@ fun String.toNamespacedKey(): NamespacedKey {
 
     val (namespace, key) = components
     require(NAMESPACE_REGEX matches namespace) {
-        "Invalid characters found in string \"$this\"! Must match $NAMESPACE_REGEX!"
+        "Invalid characters found in namespace \"$this\"! Must match $NAMESPACE_REGEX!"
     }
     return NamespacedKey(namespace, key)
 }

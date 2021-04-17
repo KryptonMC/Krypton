@@ -42,7 +42,6 @@ class RegionFile(
         header.position(4096)
         timestamps = header.asIntBuffer()
         file = path.openChannel(if (synchronizeWrites) SHARED_FLAGS + StandardOpenOption.DSYNC else SHARED_FLAGS)
-//        file = FileChannel.open(path, if (synchronizeWrites) SHARED_FLAGS + StandardOpenOption.DSYNC else SHARED_FLAGS)
         usedSectors.force(0, 2)
         header.position(0)
 
@@ -160,7 +159,6 @@ class RegionFile(
         } else {
             sectors = usedSectors.allocate(requiredSectors)
             action = { externalDirectory.resolve("c.${position.x}.${position.z}.mcc").deleteIfExists() }
-//            action = { Files.deleteIfExists(externalDirectory.resolve("c.${position.x}.${position.z}.mcc")) }
             file.write(buffer, sectors * 4096L)
         }
         val timestamp = (Instant.now().toEpochMilli() / 1000).toInt()
@@ -190,18 +188,12 @@ class RegionFile(
     }
 
     private fun writeExternal(path: Path, buffer: ByteBuffer): () -> Unit {
-//        val temp = Files.createTempFile(externalDirectory, "tmp", null)
         val temp = externalDirectory.createTempFile("tmp")
         path.openChannel(StandardOpenOption.CREATE, StandardOpenOption.WRITE).use {
             buffer.position(5)
             it.write(buffer)
         }
-//        FileChannel.open(path, StandardOpenOption.CREATE, StandardOpenOption.WRITE).use {
-//            buffer.position(5)
-//            it.write(buffer)
-//        }
         return { temp.moveTo(path, StandardCopyOption.REPLACE_EXISTING) }
-//        return { Files.move(temp, path, StandardCopyOption.REPLACE_EXISTING) }
     }
 
     private fun writeHeader() {
