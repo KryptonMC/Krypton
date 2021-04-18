@@ -29,12 +29,15 @@ import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.session.SessionManager
+import org.kryptonmc.krypton.util.gui.KryptonServerGUI
 import org.kryptonmc.krypton.util.monitoring.jmx.KryptonStatistics
 import org.kryptonmc.krypton.util.query.GS4QueryHandler
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
+import java.awt.GraphicsEnvironment
 import java.io.File
 import java.io.IOException
+import java.lang.Runnable
 import java.net.InetSocketAddress
 import java.nio.file.Path
 import java.security.SecureRandom
@@ -93,6 +96,7 @@ class KryptonServer : Server {
     internal var averageTickTime = 0F; private set
 
     private val tickScheduler = Executors.newSingleThreadScheduledExecutor { Thread(it, "Tick Scheduler") }
+    val tickables = mutableListOf<Runnable>()
 
     @Volatile
     internal var isRunning = true; private set
@@ -142,6 +146,7 @@ class KryptonServer : Server {
             LOGGER.info("Starting GS4 status listener")
             gs4QueryHandler = GS4QueryHandler.create(this)
         }
+        if (!GraphicsEnvironment.isHeadless()) KryptonServerGUI.open(this)
 
         Runtime.getRuntime().addShutdownHook(Thread(this::stop, "Shutdown Handler").apply { isDaemon = false })
 
@@ -187,6 +192,7 @@ class KryptonServer : Server {
             LOGGER.info("Autosave started")
             GlobalScope.launch(Dispatchers.IO) { worldManager.saveAll(true) }
         }
+        tickables.forEach { it.run() }
     }
 
     override fun broadcast(message: Component, permission: String?) {
@@ -211,7 +217,7 @@ class KryptonServer : Server {
         return HOCON.decodeFromConfig(ConfigFactory.parseFile(configFile))
     }
 
-    private fun stop() {
+    internal fun stop() {
         // stop server and shut down session manager (disconnecting all players)
         LOGGER.info("Stopping Krypton...")
         isRunning = false
