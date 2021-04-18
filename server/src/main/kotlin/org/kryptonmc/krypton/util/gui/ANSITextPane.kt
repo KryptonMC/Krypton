@@ -13,7 +13,7 @@ class ANSITextPane : JTextPane() {
         background = Color.BLACK
     }
 
-    fun append(color: ANSIColor, text: String) {
+    private fun append(color: ANSIColor, text: String) {
         val context = StyleContext.getDefaultStyleContext()
         val attributes = context.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, color.color)
         try {
@@ -47,7 +47,7 @@ class ANSITextPane : JTextPane() {
             while (stillSearching) {
                 mIndex = addString.indexOf("m", aPosition)
                 if (mIndex < 0) {
-                    remaining = addString.substring(aPosition, addString.length)
+                    remaining = addString.substring(aPosition)
                     stillSearching = false
                     continue
                 } else {
@@ -58,7 +58,7 @@ class ANSITextPane : JTextPane() {
 
                 aIndex = addString.indexOf('\u001B', aPosition)
                 if (aIndex == -1) {
-                    tempString = addString.substring(aPosition, addString.length)
+                    tempString = addString.substring(aPosition)
                     append(currentColor, tempString)
                     stillSearching = false
                     continue
@@ -105,7 +105,7 @@ enum class ANSIColor(code: String, val color: Color) {
 
         fun fromString(string: String): ANSIColor {
             values().forEach { if (it.regex matches string) return it }
-            return ANSIColor.B_WHITE
+            return B_WHITE
         }
     }
 }

@@ -46,7 +46,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
-class KryptonServer : Server {
+class KryptonServer(private val disableGUI: Boolean) : Server {
 
     override val info = KryptonServerInfo
 
@@ -146,7 +146,7 @@ class KryptonServer : Server {
             LOGGER.info("Starting GS4 status listener")
             gs4QueryHandler = GS4QueryHandler.create(this)
         }
-        if (!GraphicsEnvironment.isHeadless()) KryptonServerGUI.open(this)
+        if (!disableGUI && !GraphicsEnvironment.isHeadless()) KryptonServerGUI.open(this)
 
         Runtime.getRuntime().addShutdownHook(Thread(this::stop, "Shutdown Handler").apply { isDaemon = false })
 
@@ -222,7 +222,7 @@ class KryptonServer : Server {
         LOGGER.info("Stopping Krypton...")
         isRunning = false
         sessionManager.shutdown()
-        gs4QueryHandler?.let { it.stop() }
+        gs4QueryHandler?.stop()
 
         // save player, world and region data
         LOGGER.info("Saving player, world and region data...")

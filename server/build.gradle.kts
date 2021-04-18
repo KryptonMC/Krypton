@@ -51,6 +51,9 @@ dependencies {
     // Caching
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.1")
     implementation("it.unimi.dsi:fastutil-core:8.5.4")
+
+    // CLI
+    implementation("com.github.ajalt.clikt:clikt:3.0.1")
 }
 
 tasks {

@@ -92,7 +92,6 @@ class KryptonServerGUI(private val server: KryptonServer) : JComponent(), AutoCl
             return
         }
 
-//        val document = textArea.document
         val scrollBar = scrollPane.verticalScrollBar
 
         val flag = if (scrollPane.viewport.view == textPane) {
@@ -100,7 +99,6 @@ class KryptonServerGUI(private val server: KryptonServer) : JComponent(), AutoCl
         } else false
 
         textPane.appendANSI(text)
-//        document.insertString(document.length, text, null)
         if (flag) scrollBar.value = Integer.MAX_VALUE
     }
 
