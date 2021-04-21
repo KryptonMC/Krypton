@@ -20,12 +20,12 @@ object Versions {
 }
 
 dependencies {
-    implementation(project(":krypton-api"))
+    api(project(":krypton-api"))
 
     // Netty
-    implementation("io.netty:netty-buffer:${Versions.NETTY}")
-    implementation("io.netty:netty-handler:${Versions.NETTY}")
-    implementation("io.netty:netty-transport:${Versions.NETTY}")
+    api("io.netty:netty-buffer:${Versions.NETTY}")
+    api("io.netty:netty-handler:${Versions.NETTY}")
+    api("io.netty:netty-transport:${Versions.NETTY}")
 
     // Netty native transport
     implementation("io.netty:netty-transport-native-epoll:${Versions.NETTY}")
@@ -33,24 +33,24 @@ dependencies {
     implementation("io.netty.incubator:netty-incubator-transport-native-io_uring:0.0.5.Final")
 
     // Adventure
-    implementation("net.kyori:adventure-text-serializer-gson:${Versions.ADVENTURE}")
-    implementation("net.kyori:adventure-text-serializer-legacy:${Versions.ADVENTURE}")
-    implementation("net.kyori:adventure-text-serializer-plain:${Versions.ADVENTURE}")
-    implementation("net.kyori:adventure-nbt:${Versions.ADVENTURE}")
+    api("net.kyori:adventure-text-serializer-gson:${Versions.ADVENTURE}")
+    api("net.kyori:adventure-text-serializer-legacy:${Versions.ADVENTURE}")
+    api("net.kyori:adventure-text-serializer-plain:${Versions.ADVENTURE}")
+    api("net.kyori:adventure-nbt:${Versions.ADVENTURE}")
 
     // Logging
     runtimeOnly("org.apache.logging.log4j:log4j-core:2.14.1")
-    implementation("net.minecrell:terminalconsoleappender:1.2.0")
+    api("net.minecrell:terminalconsoleappender:1.2.0")
     runtimeOnly("org.jline:jline-terminal-jansi:3.19.0")
 
     // HTTP
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
-    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    api("com.squareup.retrofit2:retrofit:2.9.0")
+    api("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+    api("com.squareup.okhttp3:okhttp:4.9.1")
 
     // Caching
-    implementation("com.github.ben-manes.caffeine:caffeine:3.0.1")
-    implementation("it.unimi.dsi:fastutil-core:8.5.4")
+    api("com.github.ben-manes.caffeine:caffeine:3.0.1")
+    api("it.unimi.dsi:fastutil-core:8.5.4")
 
     // CLI
     implementation("com.github.ajalt.clikt:clikt:3.0.1")
