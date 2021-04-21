@@ -24,13 +24,15 @@ import org.kryptonmc.krypton.api.world.WorldManager
 import org.kryptonmc.krypton.api.world.WorldVersion
 import org.kryptonmc.krypton.util.calculateBits
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.world.Heightmap.Type.MOTION_BLOCKING
+import org.kryptonmc.krypton.world.Heightmap.Type.OCEAN_FLOOR
+import org.kryptonmc.krypton.world.Heightmap.Type.WORLD_SURFACE
 import org.kryptonmc.krypton.world.bossbar.Bossbar
 import org.kryptonmc.krypton.world.chunk.ChunkBlock
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.chunk.ChunkSection
-import org.kryptonmc.krypton.world.chunk.Heightmaps
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
-import org.kryptonmc.krypton.world.data.StateIndexHolder
+import org.kryptonmc.krypton.world.data.BitStorage
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.generation.toGenerator
@@ -41,6 +43,7 @@ import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import java.util.LinkedList
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import kotlin.math.floor
@@ -232,30 +235,27 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
         val nbt = regionFileManager.read(position).getCompound("Level")
 
         val heightmaps = nbt.getCompound("Heightmaps")
-        val motionBlocking = LongArrayBinaryTag.of(*heightmaps.getLongArray("MOTION_BLOCKING"))
-        val oceanFloor = LongArrayBinaryTag.of(*heightmaps.getLongArray("OCEAN_FLOOR"))
-        val worldSurface = LongArrayBinaryTag.of(*heightmaps.getLongArray("WORLD_SURFACE"))
 
         val sections = nbt.getList("Sections").map { section ->
             val nbtSection = section as CompoundBinaryTag
 
-            val palette = nbtSection.getList("Palette").map { block ->
+            val palette = LinkedList(nbtSection.getList("Palette").map { block ->
                 (block as CompoundBinaryTag).let { nbtBlock ->
                     ChunkBlock(
                         nbtBlock.getString("Name").toNamespacedKey(),
                         nbtBlock.getCompound("Properties").associate { it.key to (it.value as StringBinaryTag).value() }
                     )
                 }
-            } as MutableList<ChunkBlock>
+            })
 
             ChunkSection(
                 nbtSection.getByte("Y").toInt(),
                 nbtSection.getByteArray("BlockLight"),
                 nbtSection.getByteArray("SkyLight"),
                 palette,
-                StateIndexHolder(palette.size.calculateBits(), 4096, nbtSection.getLongArray("BlockStates"))
+                BitStorage(palette.size.calculateBits(), 4096, nbtSection.getLongArray("BlockStates"))
             )
-        }
+        } as MutableList<ChunkSection>
 
         val carvingMasks = nbt.getCompound("CarvingMasks").let {
             it.getByteArray("AIR") to it.getByteArray("LIQUID")
@@ -268,10 +268,17 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
             nbt.getIntArray("Biomes").map { Biome.fromId(it) },
             nbt.getLong("LastUpdate"),
             nbt.getLong("inhabitedTime"),
-            Heightmaps(motionBlocking, oceanFloor, worldSurface),
+            mutableMapOf(),
             carvingMasks,
             nbt.getCompound("Structures")
-        ).apply { chunkCache.put(position, this) }
+        ).apply {
+            this.heightmaps.putAll(mapOf(
+                MOTION_BLOCKING to Heightmap(this, LongArrayBinaryTag.of(*heightmaps.getLongArray("MOTION_BLOCKING")), MOTION_BLOCKING),
+                OCEAN_FLOOR to Heightmap(this, LongArrayBinaryTag.of(*heightmaps.getLongArray("OCEAN_FLOOR")), OCEAN_FLOOR),
+                WORLD_SURFACE to Heightmap(this, LongArrayBinaryTag.of(*heightmaps.getLongArray("WORLD_SURFACE")), WORLD_SURFACE)
+            ))
+            chunkCache.put(position, this)
+        }
     }
 
     fun KryptonWorld.save() {
@@ -393,11 +400,11 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
                     .putByteArray("LIQUID", carvingMasks.second)
                     .build())
                 .put("Heightmaps", CompoundBinaryTag.builder()
-                    .put("MOTION_BLOCKING", heightmaps.motionBlocking)
+                    .putLongArray("MOTION_BLOCKING", heightmaps.getValue(MOTION_BLOCKING).data.data)
                     .putLongArray("MOTION_BLOCKING_NO_LEAVES", LongArray(0))
-                    .put("OCEAN_FLOOR", heightmaps.oceanFloor)
+                    .putLongArray("OCEAN_FLOOR", heightmaps.getValue(OCEAN_FLOOR).data.data)
                     .putLongArray("OCEAN_FLOOR_WG", LongArray(0))
-                    .put("WORLD_SURFACE", heightmaps.worldSurface)
+                    .putLongArray("WORLD_SURFACE", heightmaps.getValue(WORLD_SURFACE).data.data)
                     .putLongArray("WORLD_SURFACE_WG", LongArray(0))
                     .build())
                 .putLong("LastUpdate", lastUpdate)

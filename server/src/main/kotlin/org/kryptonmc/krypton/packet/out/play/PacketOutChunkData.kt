@@ -2,11 +2,18 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import org.kryptonmc.krypton.util.*
+import net.kyori.adventure.nbt.LongArrayBinaryTag
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.calculateBits
+import org.kryptonmc.krypton.util.varIntSize
+import org.kryptonmc.krypton.util.writeLongArray
+import org.kryptonmc.krypton.util.writeNBTCompound
+import org.kryptonmc.krypton.util.writeUByte
+import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.chunk.ChunkSection
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
+import org.kryptonmc.krypton.world.transform
 
 /**
  * This packet is very strange and really weird to compute, so don't expect to understand it straight away.
@@ -18,6 +25,10 @@ import org.kryptonmc.krypton.world.chunk.KryptonChunk
  */
 class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
 
+    private val heightmaps = CompoundBinaryTag.from(chunk.heightmaps.transform {
+        it.key.name to LongArrayBinaryTag.of(*it.value.data.data)
+    })
+
     override fun write(buf: ByteBuf) {
         buf.writeInt(chunk.position.x)
         buf.writeInt(chunk.position.z)
@@ -26,12 +37,7 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
         buf.writeBoolean(isFullChunk) // if the chunk is full
         buf.writeVarInt(calculateBitMask(chunk.sections)) // the primary bit mask
 
-        buf.writeNBTCompound(CompoundBinaryTag.builder() // heightmaps
-            .put("", CompoundBinaryTag.builder()
-                .put("MOTION_BLOCKING", chunk.heightmaps.motionBlocking)
-                .put("WORLD_SURFACE", chunk.heightmaps.worldSurface)
-                .build())
-            .build())
+        buf.writeNBTCompound(heightmaps)
 
         if (isFullChunk) { // respect full chunk setting
             buf.writeVarInt(chunk.biomes.size)
@@ -62,7 +68,7 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
 
         // write the chunk data
         sections.forEach { section ->
-            buf.writeShort(section.blockStates.data.size)
+            buf.writeShort(section.nonEmptyBlockCount)
 
             val paletteSize = section.palette.size
             val bitsPerBlock = paletteSize.calculateBits()

@@ -16,6 +16,7 @@ import org.kryptonmc.krypton.api.effect.particle.ItemParticleData
 import org.kryptonmc.krypton.api.effect.particle.NoteParticleData
 import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
 import org.kryptonmc.krypton.api.registry.NamespacedKey
+import org.kryptonmc.krypton.api.space.Position
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.entity.Slot
@@ -206,7 +207,7 @@ fun ByteBuf.writeRotation(rotation: Rotation) {
     writeFloat(rotation.z)
 }
 
-fun ByteBuf.writePosition(position: Vector) {
+fun ByteBuf.writePosition(position: Position) {
     writeLong(position.toProtocol())
 }
 

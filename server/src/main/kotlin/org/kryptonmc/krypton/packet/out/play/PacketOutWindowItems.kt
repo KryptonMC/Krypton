@@ -27,7 +27,7 @@ class PacketOutWindowItems(private val inventory: PlayerInventory) : PlayPacket(
             return
         }
         writeBoolean(true)
-        writeVarInt(Registries.BLOCKS.idOf(item.type.key))
+        writeVarInt(Registries.ITEMS.idOf(item.type.key))
         writeByte(item.amount)
         writeByte(0) // TAG_End
     }

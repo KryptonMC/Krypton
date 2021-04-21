@@ -7,15 +7,15 @@ package org.kryptonmc.krypton.world.data
  * When instantiated, the [size] of this should always be 4096, as this is used to hold block states, and
  * there are always a maximum of 4096 blocks in a chunk section (16^3 = 4096)
  */
-class StateIndexHolder(
+class BitStorage(
     private val bits: Int,
     val size: Int,
-    // we have to use (64 / bits) instead of valuesPerLong as that isn't initialised yet
-    val data: LongArray = LongArray((size + (64 / bits)) / (64 / bits))
+    data: LongArray? = null
 ) {
 
     private val mask = (1L shl bits) - 1L
     private val valuesPerLong = 64 / bits
+    val data = data ?: LongArray((size + valuesPerLong - 1) / valuesPerLong)
 
     // magic operations
     private val divideMultiply: Long
@@ -63,12 +63,14 @@ class StateIndexHolder(
 
     private fun cellIndex(index: Int) = (index.toLong() * divideMultiply + divideAdd shr 32 shr divideShift).toInt()
 
-    fun isNotEmpty() = data.isNotEmpty()
+    fun isEmpty() = data.isEmpty()
+
+    fun isNotEmpty() = !isEmpty()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        other as StateIndexHolder
+        other as BitStorage
         return bits == other.bits && size == other.size && data.contentEquals(other.data)
     }
 
