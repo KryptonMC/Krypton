@@ -11,8 +11,10 @@ import org.kryptonmc.krypton.world.bossbar.Bossbar
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import java.time.LocalDateTime
+import java.util.*
 
 data class KryptonWorld(
+    val uuid: UUID,
     override val name: String,
     override val chunks: MutableSet<KryptonChunk>,
     val bossbars: List<Bossbar>,
@@ -88,6 +90,17 @@ data class KryptonWorld(
 
         chunks.forEach { chunk -> chunk.tick(players.filter { it.location in chunk.position }.size) }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as KryptonWorld
+        return uuid == other.uuid
+    }
+
+    override fun hashCode() = uuid.hashCode()
+
+    override fun toString() = "KryptonWorld(uuid=$uuid,name=$name)"
 }
 
 const val NBT_DATA_VERSION = 2584

@@ -13,12 +13,15 @@ import org.kryptonmc.krypton.api.registry.toNamespacedKey
 import org.kryptonmc.krypton.api.world.*
 import org.kryptonmc.krypton.extension.calculateBits
 import org.kryptonmc.krypton.extension.logger
+import org.kryptonmc.krypton.world.bossbar.Bossbar
 import org.kryptonmc.krypton.world.chunk.*
 import org.kryptonmc.krypton.world.data.StateIndexHolder
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.generation.toGenerator
 import org.kryptonmc.krypton.world.region.RegionFileManager
+import java.io.DataInputStream
+import java.io.DataOutputStream
 import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
@@ -103,13 +106,20 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
             if (nbtBossbar.getBoolean("DarkenScreen")) flags += BossBar.Flag.DARKEN_SCREEN
             if (nbtBossbar.getBoolean("PlayBossMusic")) flags += BossBar.Flag.PLAY_BOSS_MUSIC
 
-            org.kryptonmc.krypton.world.bossbar.Bossbar(
+            Bossbar(
+                BossBar.bossBar(
+                    GsonComponentSerializer.gson().deserialize(nbtBossbar.getString("Name")),
+                    nbtBossbar.getInt("Value").toFloat() / nbtBossbar.getInt("Max").toFloat(),
+                    BossBar.Color.NAMES.value(nbtBossbar.getString("Color")) ?: BossBar.Color.WHITE,
+                    BossBar.Overlay.NAMES.value(nbtBossbar.getString("Overlay")) ?: BossBar.Overlay.PROGRESS,
+                    flags
+                ),
                 key.toNamespacedKey(),
-                GsonComponentSerializer.gson().deserialize(nbtBossbar.getString("Name")),
-                BossBar.Color.NAMES.value(nbtBossbar.getString("Color")) ?: BossBar.Color.WHITE,
-                BossBar.Overlay.NAMES.value(nbtBossbar.getString("Overlay")) ?: BossBar.Overlay.PROGRESS,
-                nbtBossbar.getInt("Value").toFloat() / nbtBossbar.getInt("Max").toFloat(),
-                flags,
+//                GsonComponentSerializer.gson().deserialize(nbtBossbar.getString("Name")),
+//                BossBar.Color.NAMES.value(nbtBossbar.getString("Color")) ?: BossBar.Color.WHITE,
+//                BossBar.Overlay.NAMES.value(nbtBossbar.getString("Overlay")) ?: BossBar.Overlay.PROGRESS,
+//                nbtBossbar.getInt("Value").toFloat() / nbtBossbar.getInt("Max").toFloat(),
+//                flags,
                 nbtBossbar.getBoolean("Visible"),
                 players
             )
@@ -139,6 +149,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
         )
 
         return KryptonWorld(
+            loadUUID(folder),
             nbt.getString("LevelName"),
             mutableSetOf(),
             bossbars,
@@ -180,6 +191,22 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
             mutableListOf(),
             nbt.getList("ServerBrands").add(StringBinaryTag.of("Krypton")).map { (it as StringBinaryTag).value() }.toSet()
         )
+    }
+
+    private fun loadUUID(folder: File): UUID {
+        val uuidFile = File(folder, "uid.dat")
+        return if (uuidFile.exists()) {
+            DataInputStream(uuidFile.inputStream()).use {
+                UUID(it.readLong(), it.readLong())
+            }
+        } else {
+            val uuid = UUID.randomUUID()
+            DataOutputStream(uuidFile.outputStream()).use {
+                it.writeLong(uuid.mostSignificantBits)
+                it.writeLong(uuid.leastSignificantBits)
+            }
+            return uuid
+        }
     }
 
     fun loadChunks(world: KryptonWorld, positions: List<ChunkPosition>): List<KryptonChunk> {
@@ -248,19 +275,19 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
                     .build()
             }
 
-            val createWorldFog = BossBar.Flag.CREATE_WORLD_FOG in bossbar.flags
-            val darkenScreen = BossBar.Flag.DARKEN_SCREEN in bossbar.flags
-            val playBossMusic = BossBar.Flag.PLAY_BOSS_MUSIC in bossbar.flags
+            val createWorldFog = BossBar.Flag.CREATE_WORLD_FOG in bossbar.flags()
+            val darkenScreen = BossBar.Flag.DARKEN_SCREEN in bossbar.flags()
+            val playBossMusic = BossBar.Flag.PLAY_BOSS_MUSIC in bossbar.flags()
 
             bossbar.id.toString() to CompoundBinaryTag.builder()
                 .put("Players", ListBinaryTag.of(BinaryTagTypes.COMPOUND, players))
-                .putString("Color", bossbar.color.name)
+                .putString("Color", bossbar.color().name)
                 .putBoolean("CreateWorldFog", createWorldFog)
                 .putBoolean("DarkenScreen", darkenScreen)
                 .putInt("Max", 20)
                 .putInt("Value", 20)
-                .putString("Name", GsonComponentSerializer.gson().serialize(bossbar.name))
-                .putString("Overlay", bossbar.overlay.name)
+                .putString("Name", GsonComponentSerializer.gson().serialize(bossbar.name()))
+                .putString("Overlay", bossbar.overlay().name)
                 .putBoolean("PlayBossMusic", playBossMusic)
                 .putBoolean("Visible", bossbar.visible)
                 .build()

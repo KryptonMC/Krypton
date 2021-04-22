@@ -17,6 +17,4 @@ data class KryptonBlock(
     override val isLiquid = type == Material.WATER || type == Material.LAVA
     override val world = chunk.world
     override val boundingBox = BoundingBox.EMPTY
-
-    override fun toString() = "KryptonBlock(type=$type,location=$location,boundingBox=$boundingBox)"
 }

@@ -33,7 +33,11 @@ data class ChunkSection(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as ChunkSection
-        return y == other.y && blockLight.contentEquals(other.blockLight) && skyLight.contentEquals(other.skyLight) && palette == other.palette && blockStates == other.blockStates
+        return y == other.y
+                && blockLight.contentEquals(other.blockLight)
+                && skyLight.contentEquals(other.skyLight)
+                && palette == other.palette
+                && blockStates == other.blockStates
     }
 
     override fun hashCode() = arrayOf(y, blockLight, skyLight, palette, blockStates).contentDeepHashCode()

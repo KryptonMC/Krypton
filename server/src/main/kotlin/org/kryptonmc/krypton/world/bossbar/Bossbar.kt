@@ -12,13 +12,10 @@ import java.util.*
  *
  * @author Callum Seabrook
  */
+@Suppress("NonExtendableApiUsage")
 data class Bossbar(
+    val wrapped: BossBar,
     val id: NamespacedKey,
-    val name: Component,
-    val color: BossBar.Color,
-    val overlay: BossBar.Overlay,
-    val progress: Float,
-    val flags: Set<BossBar.Flag>,
     val visible: Boolean,
     val players: List<UUID>
-)
+) : BossBar by wrapped

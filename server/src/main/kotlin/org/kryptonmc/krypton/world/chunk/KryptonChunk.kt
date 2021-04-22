@@ -7,7 +7,6 @@ import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.chunk.Chunk
 import java.util.*
 
-@Suppress("EqualsOrHashCode")
 data class KryptonChunk(
     override val world: World,
     val position: ChunkPosition,
@@ -29,9 +28,6 @@ data class KryptonChunk(
     fun tick(playerCount: Int) {
         inhabitedTime += playerCount
     }
-
-    // avoid stack overflow due to circular dependencies
-    override fun hashCode() = Objects.hash(position, sections, biomes, lastUpdate, inhabitedTime, heightmaps, carvingMasks, structures)
 }
 
 // TODO: Migrate the remaining commented parameters to KryptonChunk
