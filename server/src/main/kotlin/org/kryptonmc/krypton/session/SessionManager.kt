@@ -3,12 +3,9 @@ package org.kryptonmc.krypton.session
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import net.kyori.adventure.audience.MessageType
-import net.kyori.adventure.extra.kotlin.text
-import net.kyori.adventure.extra.kotlin.translatable
-import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.SERVER_UUID
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.api.event.events.login.JoinEvent
 import org.kryptonmc.krypton.api.event.events.play.QuitEvent
@@ -26,7 +23,6 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.play.*
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo.PlayerAction
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo.PlayerInfo
-import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityDestroy
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMovement.PacketOutEntityHeadLook
@@ -42,7 +38,6 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.math.floor
-import kotlin.random.Random
 
 /**
  * The session manager is, as the name suggests, responsible for managing sessions. It was a replacement for
@@ -129,27 +124,18 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
         session.sendPacket(PacketOutPlayerPositionAndLook(session.player.location))
-
-        val joinMessage = translatable {
-            key("multiplayer.player.joined")
-            color(NamedTextColor.YELLOW)
-            args(text { content(session.profile.name) })
-        }
-        val joinPacket = PacketOutChat(joinMessage, MessageType.SYSTEM, SERVER_UUID)
-        session.sendPacket(joinPacket)
-        server.console.sendMessage(joinMessage)
-
+        server.sendMessage(event.message)
         session.sendPacket(PacketOutPlayerInfo(
             PlayerAction.UPDATE_LATENCY,
             listOf(PlayerInfo(latency = session.latency, profile = session.profile))
         ))
 
         val playerInfos = sessions.filter { it.currentState == PacketState.PLAY }.map {
-            PlayerInfo(0, it.player.gamemode, it.profile, text { content(it.profile.name) })
+            PlayerInfo(0, it.player.gamemode, it.profile, text(it.profile.name))
         }
         if (playerInfos.isNotEmpty()) session.sendPacket(PacketOutPlayerInfo(PlayerAction.ADD_PLAYER, playerInfos))
 
-        GlobalScope.launch(Dispatchers.IO) { handlePlayStateBegin(session, joinPacket) }
+        GlobalScope.launch(Dispatchers.IO) { handlePlayStateBegin(session) }
 
         sessions.asSequence()
             .filter { it != session }
@@ -196,7 +182,7 @@ class SessionManager(private val server: KryptonServer) {
         }, 0, 20, TimeUnit.SECONDS)
     }
 
-    private fun handlePlayStateBegin(session: Session, joinPacket: PacketOutChat) {
+    private fun handlePlayStateBegin(session: Session) {
         val infoPacket = PacketOutPlayerInfo(
             PlayerAction.ADD_PLAYER,
             listOf(
@@ -204,7 +190,7 @@ class SessionManager(private val server: KryptonServer) {
                     0,
                     session.player.gamemode,
                     session.profile,
-                    text { content(session.profile.name) }
+                    text(session.profile.name)
                 )
             )
         )
@@ -217,7 +203,6 @@ class SessionManager(private val server: KryptonServer) {
             .filter { it != session }
             .filter { it.currentState == PacketState.PLAY }
             .forEach {
-                it.sendPacket(joinPacket)
                 it.sendPacket(infoPacket)
                 it.sendPacket(spawnPlayerPacket)
                 it.sendPacket(metadataPacket)
@@ -229,10 +214,9 @@ class SessionManager(private val server: KryptonServer) {
     fun handleDisconnection(session: Session) {
         if (session.currentState != PacketState.PLAY) return
 
-        GlobalScope.launch {
-            server.eventBus.call(QuitEvent(session.player))
-            server.playerDataManager.save(session.player)
-        }
+        val event = QuitEvent(session.player)
+        server.eventBus.call(event)
+        GlobalScope.launch(Dispatchers.IO) { server.playerDataManager.save(session.player) }
 
         val destroyPacket = PacketOutEntityDestroy(listOf(session.id))
         val infoPacket = PacketOutPlayerInfo(
@@ -241,11 +225,7 @@ class SessionManager(private val server: KryptonServer) {
         )
 
         sendPackets(destroyPacket, infoPacket) { it != session && it.currentState == PacketState.PLAY }
-        server.sendMessage(translatable {
-            key("multiplayer.player.left")
-            color(NamedTextColor.YELLOW)
-            args(text { content(session.profile.name) })
-        })
+        server.sendMessage(event.message)
         ServerStorage.PLAYER_COUNT.getAndDecrement()
     }
 
@@ -267,7 +247,7 @@ class SessionManager(private val server: KryptonServer) {
 
     fun shutdown() {
         if (sessions.isEmpty()) return
-        val reason = translatable { key("multiplayer.disconnect.server_shutdown") }
+        val reason = translatable("multiplayer.disconnect.server_shutdown")
         sessions.forEach { it.disconnect(reason) }
     }
 
