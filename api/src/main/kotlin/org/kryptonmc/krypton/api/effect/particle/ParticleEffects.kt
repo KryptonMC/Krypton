@@ -16,7 +16,7 @@ data class ParticleEffect internal constructor(
 ) {
 
     init {
-        require(quantity >= 0) { "Quantity must be at least 1!" }
+        require(quantity > 0) { "Quantity must be at least 1!" }
     }
 
     companion object {
