@@ -1,12 +1,9 @@
 package org.kryptonmc.krypton.api.status
 
 import net.kyori.adventure.text.Component
-import java.awt.image.BufferedImage
 
 /**
  * Holder for status information
- *
- * @author Callum Seabrook
  */
 interface StatusInfo {
 

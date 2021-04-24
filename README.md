@@ -12,20 +12,22 @@ It is currently a W.I.P, so if you find any bugs, feel free to make an issue abo
 
 We now have a Jenkins CI server! You can find it at https://ci.kryptonmc.org
 
-You can download the latest JAR file from here and run it with `java -jar Krypton-VERSION.jar`. If you have any questions,
-feel free to ask in our Discord server.
+You can download the latest JAR file from here and run it with `java -jar Krypton-VERSION.jar`. If you have any
+questions, feel free to ask in our Discord server.
 
 Or, if you prefer, you can clone the repository with `git clone https://github.com/KryptonMC/Krypton.git`
 and build from source with `gradle shadowJar` if you wish to run the server.
 
-**WARNING: Krypton is far from production ready. DO NOT USE ON PRODUCTION SERVERS! WILL CONTAIN BUGS! You have been warned.**
+**WARNING: Krypton is far from production ready. DO NOT USE ON PRODUCTION SERVERS! WILL CONTAIN BUGS! You have been
+warned.**
 
 ### API
 
-As of version 0.11, Krypton now has an API. It is heavily in development, so expect to find bugs, but it is
-at least semi-functional.
+As of version 0.11, Krypton now has an API. It is heavily in development, so expect to find bugs, but it is at least
+semi-functional.
 
 * You can depend on it like this:
+
 ```groovy
 repositories {
     mavenCentral()
@@ -39,6 +41,7 @@ dependencies {
 ```
 
 * Or alternatively, with Maven:
+
 ```xml
 <repositories>
     <!-- For Brigadier -->
@@ -61,10 +64,11 @@ dependencies {
 </dependencies>
 ```
 
-Beware that none of the documentation for this is publicly hosted yet.
-You can view all of the documentation by depending on the artifact and looking at the source files.
+Beware that none of the documentation for this is publicly hosted yet. You can view all of the documentation by
+depending on the artifact and looking at the source files.
 
 * Example usage:
+
 ```kotlin
 class MyPlugin(context: PluginContext) : Plugin(context) {
 
@@ -84,8 +88,8 @@ If you have an idea on how I could improve the API, feel free to open an issue.
 
 ### Contributing
 
-Krypton is open-source for a reason. You are more than welcome to contribute, and we even encourage it. This project wouldn't
-be possible without contributions.
+Krypton is open-source for a reason. You are more than welcome to contribute, and we even encourage it. This project
+wouldn't be possible without contributions.
 
 ### Credits
 
@@ -93,8 +97,8 @@ be possible without contributions.
 - [The Minecraft Coalition](https://wiki.vg) and [`#mcdevs`](https://github.com/mcdevs), for their hard work and effort
   documenting the protocol, allowing these projects to exist, and their amazing support.
 - [The Minecraft Wiki](https://minecraft.gamepedia.com)
-- The project's dependencies, each and every one helping to make our lives as developers easier.
-  Notable mentions: [Adventure](https://github.com/KyoriPowered/Adventure), [Kotlin](https://kotlinlang.org),
+- The project's dependencies, each and every one helping to make our lives as developers easier. Notable
+  mentions: [Adventure](https://github.com/KyoriPowered/Adventure), [Kotlin](https://kotlinlang.org),
   [Netty](https://netty.io), [OkHttp](https://square.github.io/okhttp/), [Log4J](https://logging.apache.org/log4j/2.x/)
-- [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html), for being kind enough to grant me
-  an open-source license for their profiler.
+- [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html), for being kind enough to grant me an
+  open-source license for their profiler.

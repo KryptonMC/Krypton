@@ -6,8 +6,6 @@ import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
 
 /**
  * A serialiser for Brigadier's [FloatArgumentType]
- *
- * @author Callum Seabrook
  */
 class FloatArgumentSerializer : ArgumentSerializer<FloatArgumentType> {
 

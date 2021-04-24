@@ -4,10 +4,8 @@ import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
-import io.netty.handler.codec.DecoderException
-import org.kryptonmc.krypton.extension.logger
-import org.kryptonmc.krypton.extension.readAllAvailableBytes
-import org.kryptonmc.krypton.extension.readVarInt
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.readVarInt
 import java.util.zip.Inflater
 
 /**

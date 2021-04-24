@@ -20,18 +20,19 @@ import io.netty.incubator.channel.uring.IOUringEventLoopGroup
 import io.netty.incubator.channel.uring.IOUringServerSocketChannel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.kryptonmc.krypton.channel.ChannelHandler
-import org.kryptonmc.krypton.concurrent.NamedThreadFactory
-import org.kryptonmc.krypton.extension.logger
-import org.kryptonmc.krypton.packet.transformers.*
+import org.kryptonmc.krypton.packet.ChannelHandler
+import org.kryptonmc.krypton.packet.transformers.LegacyQueryHandler
+import org.kryptonmc.krypton.packet.transformers.PacketDecoder
+import org.kryptonmc.krypton.packet.transformers.PacketEncoder
+import org.kryptonmc.krypton.packet.transformers.SizeDecoder
+import org.kryptonmc.krypton.packet.transformers.SizeEncoder
+import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
+import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 import kotlin.system.exitProcess
 
 /**
  * The base Netty connection handler initialiser.
- *
- * @author Alex Wood
- * @author Callum Seabrook
  */
 class NettyProcess(private val server: KryptonServer) {
 
@@ -42,7 +43,7 @@ class NettyProcess(private val server: KryptonServer) {
         LOGGER.debug("${bossGroup::class.simpleName} is the chosen one")
         try {
             val bootstrap = ServerBootstrap()
-            bootstrap.group(bossGroup, workerGroup)
+                .group(bossGroup, workerGroup)
                 .channel(bestChannel())
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
@@ -76,6 +77,7 @@ class NettyProcess(private val server: KryptonServer) {
         }
     }
 
+    // Determines the best loop group to use based on what is available on the current operating system
     private fun bestLoopGroup() = when {
         IOUring.isAvailable() -> IOUringEventLoopGroup(0, NamedThreadFactory("Netty IO Uring Worker #%d"))
         Epoll.isAvailable() -> EpollEventLoopGroup(0, NamedThreadFactory("Netty Epoll Worker #%d"))
@@ -83,6 +85,7 @@ class NettyProcess(private val server: KryptonServer) {
         else -> NioEventLoopGroup(0, NamedThreadFactory("Netty NIO Worker #%d"))
     }
 
+    // Determines the best socket channel to use based on what is available on the current operating system
     private fun bestChannel(): Class<out ServerSocketChannel> = when {
         IOUring.isAvailable() -> IOUringServerSocketChannel::class.java
         Epoll.isAvailable() -> EpollServerSocketChannel::class.java

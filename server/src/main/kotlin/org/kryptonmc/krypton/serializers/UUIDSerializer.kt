@@ -1,17 +1,15 @@
 package org.kryptonmc.krypton.serializers
 
-import kotlinx.serialization.*
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import net.kyori.adventure.nbt.IntArrayBinaryTag
-import java.util.*
+import java.util.UUID
 
 /**
  * Standard UUID serialiser, as kotlinx.serialization still doesn't seem to have a built-in
- *
- * @author Callum Seabrook
  */
 object UUIDSerializer : KSerializer<UUID> {
 
@@ -25,8 +23,6 @@ object UUIDSerializer : KSerializer<UUID> {
 /**
  * This isn't related to the above, this turns a UUID into 4 integers sorted by significance descending
  * (most significant first, least significant last)
- *
- * @author Callum Seabrook
  */
 fun UUID.serialize() = IntArrayBinaryTag.of(
     (mostSignificantBits shr 32).toInt(),

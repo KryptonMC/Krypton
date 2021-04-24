@@ -1,7 +1,11 @@
 package org.kryptonmc.krypton.world.scoreboard
 
 import org.kryptonmc.krypton.api.entity.entities.Player
-import org.kryptonmc.krypton.api.world.scoreboard.*
+import org.kryptonmc.krypton.api.world.scoreboard.Objective
+import org.kryptonmc.krypton.api.world.scoreboard.Score
+import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
+import org.kryptonmc.krypton.api.world.scoreboard.ScoreboardPosition
+import org.kryptonmc.krypton.api.world.scoreboard.Team
 
 data class KryptonScoreboard(
     override val position: ScoreboardPosition,

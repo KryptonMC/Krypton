@@ -3,14 +3,14 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.api.entity.Hand
 import org.kryptonmc.krypton.api.space.Vector
-import org.kryptonmc.krypton.extension.*
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.toVector
 import org.kryptonmc.krypton.world.block.BlockFace
 
 /**
  * Sent to indicate the player has placed a block.
- *
- * @author Callum Seabrook
  */
 class PacketInPlayerBlockPlacement : PlayPacket(0x2E) {
 

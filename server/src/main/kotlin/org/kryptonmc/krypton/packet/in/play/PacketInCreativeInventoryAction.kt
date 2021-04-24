@@ -2,9 +2,9 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.Slot
-import org.kryptonmc.krypton.extension.readNBTCompound
-import org.kryptonmc.krypton.extension.readVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.readNBTCompound
+import org.kryptonmc.krypton.util.readVarInt
 
 /**
  * Sent by the client to indicate that they have performed an action in the creative inventory.
@@ -12,8 +12,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  * The creative inventory works very different to the survival inventory, mainly that in vanilla,
  * the Notchian server deletes an item from a player's inventory, and when you place an item back
  * into your inventory, the server recreates the item.
- *
- * @author Callum Seabrook
  */
 class PacketInCreativeInventoryAction : PlayPacket(0x28) {
 

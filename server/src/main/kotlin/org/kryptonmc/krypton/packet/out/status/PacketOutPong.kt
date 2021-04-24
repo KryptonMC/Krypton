@@ -5,8 +5,6 @@ import org.kryptonmc.krypton.packet.state.StatusPacket
 
 /**
  * Response to the client's [ping][org.kryptonmc.krypton.packet.in.status.PacketInPing] packet
- *
- * @author Callum Seabrook
  */
 class PacketOutPong(private val value: Long) : StatusPacket(0x01) {
 

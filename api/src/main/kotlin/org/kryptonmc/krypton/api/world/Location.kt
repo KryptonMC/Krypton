@@ -11,7 +11,6 @@ import kotlin.math.sqrt
  *
  * As opposed to a [Vector], a [Location] is bound to a world.
  *
- * @author Callum Seabrook
  * @see [Vector]
  */
 data class Location @JvmOverloads constructor(
@@ -26,31 +25,35 @@ data class Location @JvmOverloads constructor(
     override val length by lazy { sqrt(lengthSquared) }
 
     override fun plus(other: Position): Position {
-        if (other is Location) require(world == other.world) { "Cannot add locations from different worlds!" }
+        check(other, "add")
         return super.plus(other)
     }
 
     override fun minus(other: Position): Position {
-        if (other is Location) require(world == other.world) { "Cannot subtract locations from different worlds!" }
+        check(other, "subtract")
         return super.minus(other)
     }
 
     override fun times(other: Position): Position {
-        if (other is Location) require(world == other.world) { "Cannot multiply locations from different worlds!" }
+        check(other, "multiply")
         return super.times(other)
     }
 
     override fun div(other: Position): Position {
-        if (other is Location) require(world == other.world) { "Cannot divide locations from different worlds!" }
+        check(other, "divide")
         return super.div(other)
     }
 
     override fun rem(other: Position): Position {
-        if (other is Location) require(world == other.world) { "Cannot perform modulo division on locations from different worlds!" }
+        check(other, "perform modulo division on")
         return super.rem(other)
     }
 
     override fun apply(x: Double, y: Double, z: Double) = copy(x = x, y = y, z = z)
+
+    private fun check(position: Position, message: String) {
+        if (position is Location) require(world == position.world) { "Cannot $message locations from different worlds!" }
+    }
 
     /**
      * Convert this [Location] to a [Vector]

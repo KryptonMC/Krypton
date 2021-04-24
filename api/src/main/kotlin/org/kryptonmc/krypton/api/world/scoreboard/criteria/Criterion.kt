@@ -4,8 +4,6 @@ package org.kryptonmc.krypton.api.world.scoreboard.criteria
  * Represents a single criteria, also known as a [Criterion]
  *
  * See [here](https://minecraft.gamepedia.com/Scoreboard#Single_criteria) for details
- *
- * @author Callum Seabrook
  */
 enum class Criterion(override val isMutable: Boolean) : Criteria {
 

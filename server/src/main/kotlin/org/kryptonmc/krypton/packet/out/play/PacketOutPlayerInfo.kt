@@ -4,10 +4,10 @@ import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.auth.GameProfile
-import org.kryptonmc.krypton.extension.writeChat
-import org.kryptonmc.krypton.extension.writeString
-import org.kryptonmc.krypton.extension.writeUUID
-import org.kryptonmc.krypton.extension.writeVarInt
+import org.kryptonmc.krypton.util.writeChat
+import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeUUID
+import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
 /**
@@ -15,9 +15,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  *
  * @param action the action to perform
  * @param players a list of players, can be empty if not required by the [action]
- *
- * @author Alex Wood
- * @author Callum Seabrook
  */
 class PacketOutPlayerInfo(
     private val action: PlayerAction,
@@ -25,7 +22,7 @@ class PacketOutPlayerInfo(
 ) : PlayPacket(0x32) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(action.id)
+        buf.writeVarInt(action.ordinal)
         buf.writeVarInt(players.size)
 
         players.forEach { update ->
@@ -65,12 +62,12 @@ class PacketOutPlayerInfo(
         val displayName: Component = Component.text("")
     )
 
-    enum class PlayerAction(val id: Int) {
+    enum class PlayerAction {
 
-        ADD_PLAYER(0),
-        UPDATE_GAMEMODE(1),
-        UPDATE_LATENCY(2),
-        UPDATE_DISPLAY_NAME(3),
-        REMOVE_PLAYER(4)
+        ADD_PLAYER,
+        UPDATE_GAMEMODE,
+        UPDATE_LATENCY,
+        UPDATE_DISPLAY_NAME,
+        REMOVE_PLAYER
     }
 }

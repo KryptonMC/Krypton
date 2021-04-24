@@ -3,8 +3,12 @@ package org.kryptonmc.krypton.scheduling
 import org.kryptonmc.krypton.api.plugin.Plugin
 import org.kryptonmc.krypton.api.scheduling.Scheduler
 import org.kryptonmc.krypton.api.scheduling.Task
-import org.kryptonmc.krypton.concurrent.NamedThreadFactory
-import java.util.concurrent.*
+import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 
 object KryptonScheduler : Scheduler {
 

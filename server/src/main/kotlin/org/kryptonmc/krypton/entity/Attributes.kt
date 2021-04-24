@@ -2,7 +2,7 @@ package org.kryptonmc.krypton.entity
 
 import net.kyori.adventure.util.Index
 import org.kryptonmc.krypton.api.registry.NamespacedKey
-import java.util.*
+import java.util.UUID
 
 /**
  * Represents an attribute for an entity.
@@ -10,8 +10,6 @@ import java.util.*
  * @param key the attribute key
  * @param value the value of the attribute
  * @param modifiers attribute modifiers
- *
- * @author Callum Seabrook
  */
 data class Attribute(
     val key: AttributeKey,
@@ -21,8 +19,6 @@ data class Attribute(
 
 /**
  * Built-in attribute keys
- *
- * @author Callum Seabrook
  */
 enum class AttributeKey(val key: NamespacedKey, val default: Double, val min: Double, val max: Double, val label: String = "") {
 
@@ -58,8 +54,6 @@ enum class AttributeKey(val key: NamespacedKey, val default: Double, val min: Do
  * @param uuid the modifier's UUID
  * @param amount the modifier amount
  * @param operation the operation to apply the modifier with
- *
- * @author Callum Seabrook
  */
 data class AttributeModifier(
     val name: String,
@@ -73,9 +67,9 @@ data class AttributeModifier(
  *
  * @author Callum Seabrook
  */
-enum class ModifierOperation(val id: Int) {
+enum class ModifierOperation {
 
-    ADD(0),
-    MULTIPLY_BASE(1),
-    MULTIPLY(2)
+    ADD,
+    MULTIPLY_BASE,
+    MULTIPLY
 }

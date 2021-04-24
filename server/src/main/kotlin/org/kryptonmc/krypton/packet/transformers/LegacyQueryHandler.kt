@@ -7,9 +7,9 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.ServerStorage
-import org.kryptonmc.krypton.config.StatusConfig
-import org.kryptonmc.krypton.extension.logger
-import org.kryptonmc.krypton.extension.readAvailableBytes
+import org.kryptonmc.krypton.server.StatusConfig
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.readAvailableBytes
 import java.net.InetSocketAddress
 
 /**
@@ -20,8 +20,6 @@ import java.net.InetSocketAddress
  * initiate a legacy server list ping, and modern servers should handle it correctly"
  *
  * This handler is essentially a Kotlin converted version of the vanilla handler, which is why it is such a mess.
- *
- * @author Callum Seabrook
  */
 class LegacyQueryHandler(private val status: StatusConfig) : ChannelInboundHandlerAdapter() {
 

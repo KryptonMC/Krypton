@@ -2,9 +2,9 @@ package org.kryptonmc.krypton.packet.out.play.entity
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.metadata.EntityMetadata
-import org.kryptonmc.krypton.extension.writeUByte
-import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeUByte
+import org.kryptonmc.krypton.util.writeVarInt
 
 /**
  * The way we construct and use metadata in Krypton is a bit strange, as unlike vanilla, we do not store a
@@ -14,8 +14,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  *
  * @param entityId the ID of the entity to set metadata for
  * @param metadata the metadata to set
- *
- * @author Callum Seabrook
  */
 class PacketOutEntityMetadata(
     private val entityId: Int,

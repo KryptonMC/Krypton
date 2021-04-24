@@ -3,19 +3,20 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.MainHand
 import org.kryptonmc.krypton.entity.metadata.toSkinSettings
-import org.kryptonmc.krypton.extension.*
 import org.kryptonmc.krypton.packet.data.ChatMode
 import org.kryptonmc.krypton.packet.data.ClientSettings
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.readString
 
 /**
  * Sent by the client to inform the server of its local settings.
- *
- * @author Alex Wood
- * @author Callum Seabrook
  */
 class PacketInClientSettings : PlayPacket(0x05) {
 
+    /**
+     * The client's settings
+     */
     lateinit var settings: ClientSettings private set
 
     override fun read(buf: ByteBuf) {

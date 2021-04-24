@@ -5,8 +5,6 @@ import org.kryptonmc.krypton.api.world.World
 
 /**
  * Represents a chunk, or a 16 x 16 x 256 area of blocks.
- *
- * @author Callum Seabrook
  */
 interface Chunk {
 

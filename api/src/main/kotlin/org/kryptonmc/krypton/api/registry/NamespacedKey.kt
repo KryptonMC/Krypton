@@ -7,19 +7,24 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import net.kyori.adventure.key.Key
 
 /**
  * A namespaced key is a key that contains both a namespace and a value.
  *
  * These are generally represented in the format "namespace:value".
- *
- * @author Callum Seabrook
  */
 @Serializable(with = NamespacedKeySerializer::class)
 data class NamespacedKey @JvmOverloads constructor(
     val namespace: String = "minecraft",
     val value: String
-) {
+) : Key {
+
+    override fun namespace() = namespace
+
+    override fun value() = value
+
+    override fun asString() = toString()
 
     override fun toString() = "$namespace:$value"
 }
@@ -33,10 +38,8 @@ data class NamespacedKey @JvmOverloads constructor(
  * - Both the namespace and the key must only contain a-z, 0-9, /, ., _ or - characters (regex: [NAMESPACE_REGEX])
  *
  * If all of the above required checks pass, this
- *
- * @author Callum Seabrook
  */
-@JvmName("fromString")
+@JvmName("of")
 fun String.toNamespacedKey(): NamespacedKey {
     val components = split(":")
     require(components.size == 2) {
@@ -51,10 +54,20 @@ fun String.toNamespacedKey(): NamespacedKey {
 }
 
 /**
+ * Convert this string to Adventure's [Key]
+ */
+@JvmName("of")
+fun String.toAdventureKey(): Key = Key.key(this)
+
+/**
+ * Convert an Adventure [Key] to a [NamespacedKey]
+ */
+@JvmName("of")
+fun Key.toNamespacedKey(): NamespacedKey = NamespacedKey(namespace(), value())
+
+/**
  * Custom serializer for namespaced keys, to convert them to and from string format
  * (converts namespace:key to NamespacedKey and vice versa)
- *
- * @author Callum Seabrook
  */
 object NamespacedKeySerializer : KSerializer<NamespacedKey> {
 

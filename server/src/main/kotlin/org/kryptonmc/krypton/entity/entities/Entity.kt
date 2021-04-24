@@ -1,9 +1,9 @@
 package org.kryptonmc.krypton.entity.entities
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.space.Vector
-import java.util.*
+import org.kryptonmc.krypton.api.world.Location
+import java.util.UUID
 
 // TODO: Actually implement some entities
 abstract class Entity {

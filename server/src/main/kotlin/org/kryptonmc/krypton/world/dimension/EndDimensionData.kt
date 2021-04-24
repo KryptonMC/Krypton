@@ -1,7 +1,7 @@
 package org.kryptonmc.krypton.world.dimension
 
 import org.kryptonmc.krypton.api.space.Vector
-import java.util.*
+import java.util.UUID
 
 data class EndDimensionData(
     val exitPortalLocation: Vector,
@@ -10,6 +10,7 @@ data class EndDimensionData(
     val dragonUUID: UUID,
     val previouslyKilled: Boolean
 ) {
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

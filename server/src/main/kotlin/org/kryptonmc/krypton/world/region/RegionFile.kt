@@ -1,8 +1,22 @@
 package org.kryptonmc.krypton.world.region
 
-import org.kryptonmc.krypton.extension.*
+import org.kryptonmc.krypton.util.createTempFile
+import org.kryptonmc.krypton.util.deleteIfExists
+import org.kryptonmc.krypton.util.isDirectory
+import org.kryptonmc.krypton.util.isRegularFile
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.moveTo
+import org.kryptonmc.krypton.util.newInputStream
+import org.kryptonmc.krypton.util.openChannel
+import org.kryptonmc.krypton.util.size
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
-import java.io.*
+import java.io.BufferedInputStream
+import java.io.BufferedOutputStream
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.DataInputStream
+import java.io.DataOutputStream
+import java.io.InputStream
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
 import java.nio.channels.FileChannel
@@ -10,7 +24,7 @@ import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import java.nio.file.StandardOpenOption
 import java.time.Instant
-import java.util.*
+import java.util.BitSet
 
 /**
  * A region file holder, used for reading and writing region file data.
@@ -18,10 +32,6 @@ import java.util.*
  * This is heavily based on the original work from MCRegion, made by Scaevolous, and the modifications to it
  * made by Mojang AB, and also the modifications to make it work in Kotlin, and a few other optimisations, by
  * me, Callum Seabrook.
- *
- * @author Scaevolous
- * @author Mojang AB
- * @author Callum Seabrook
  */
 class RegionFile(
     path: Path,

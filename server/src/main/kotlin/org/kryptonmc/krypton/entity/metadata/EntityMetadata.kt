@@ -2,15 +2,13 @@ package org.kryptonmc.krypton.entity.metadata
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.extension.writeMetadata
-import org.kryptonmc.krypton.extension.writeOptionalMetadata
+import org.kryptonmc.krypton.util.writeMetadata
+import org.kryptonmc.krypton.util.writeOptionalMetadata
 
 /**
  * Represents metadata common to all entities.
  *
  * The ordering of this comes from [wiki.vg](https://wiki.vg/Entity_metadata#Entity_Metadata_Format)
- *
- * @author Callum Seabrook
  */
 open class EntityMetadata(
     val movementFlags: MovementFlags? = null,
@@ -50,8 +48,6 @@ open class EntityMetadata(
 
 /**
  * Flags for entity movement info. These are self-explanatory.
- *
- * @author Callum Seabrook
  */
 data class MovementFlags(
     val isOnFire: Boolean = false,
@@ -83,8 +79,6 @@ data class MovementFlags(
 /**
  * The type of metadata being sent. This has to prefix the metadata value, no matter the index or if
  * it could be inferred by the client.
- *
- * @author Callum Seabrook
  */
 enum class MetadataType {
 
@@ -112,7 +106,5 @@ enum class MetadataType {
 /**
  * For optional metadata values. This allows us to use a tristate for metadata, a.k.a to separate
  * optional metadata from not present metadata (represented by null)
- *
- * @author Callum Seabrook
  */
 data class Optional<T>(val value: T?)

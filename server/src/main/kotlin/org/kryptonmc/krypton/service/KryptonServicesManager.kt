@@ -3,7 +3,7 @@ package org.kryptonmc.krypton.service
 import org.kryptonmc.krypton.api.plugin.Plugin
 import org.kryptonmc.krypton.api.service.ServiceProvider
 import org.kryptonmc.krypton.api.service.ServicesManager
-import java.util.concurrent.*
+import java.util.concurrent.ConcurrentHashMap
 
 class KryptonServicesManager : ServicesManager {
 
@@ -14,7 +14,7 @@ class KryptonServicesManager : ServicesManager {
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T> getProvider(clazz: Class<T>): ServiceProvider<T>? = synchronized(providers) {
+    override fun <T> provide(clazz: Class<T>): ServiceProvider<T>? = synchronized(providers) {
         providers[clazz] as? ServiceProvider<T>
     }
 }

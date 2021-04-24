@@ -2,7 +2,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.extension.writeChat
+import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
 /**
@@ -11,8 +11,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  * which is sent in the [play][org.kryptonmc.krypton.packet.state.PacketState.PLAY] state.
  *
  * @param reason the reason for disconnection
- *
- * @author Callum Seabrook
  */
 class PacketOutDisconnect(private val reason: Component) : PlayPacket(0x19) {
 

@@ -9,8 +9,6 @@ import java.io.File
  * A plugin. These are extensions to the server that can be "plugged in"
  * (hence the name) to provide extra functionality that is not part of
  * the standard server.
- *
- * @author Callum Seabrook
  */
 abstract class Plugin(val context: PluginContext) {
 
@@ -69,8 +67,6 @@ abstract class Plugin(val context: PluginContext) {
  * @param folder the folder that this plugin can use to store files that it may need, e.g. configs
  * @param description an object representation of this plugin's plugin.conf file
  * @param logger the logger instance for this plugin
- *
- * @author Callum Seabrook
  */
 data class PluginContext(
     val server: Server,

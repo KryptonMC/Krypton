@@ -1,12 +1,10 @@
 package org.kryptonmc.krypton
 
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.parameters.options.*
-import com.github.ajalt.clikt.parameters.types.file
-import com.github.ajalt.clikt.parameters.types.int
+import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.option
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
-import org.kryptonmc.krypton.extension.logger
-import java.io.File
+import org.kryptonmc.krypton.util.logger
 
 // max memory in megabytes (bytes / 1024 / 1024)
 private val MAX_MEMORY = Runtime.getRuntime().maxMemory() / 1024L / 1024L
@@ -14,8 +12,10 @@ private const val MEMORY_WARNING_THRESHOLD = 512
 
 fun main(args: Array<String>) = KryptonCLI().main(args)
 
+/**
+ * The CLI handler for Krypton
+ */
 class KryptonCLI : CliktCommand() {
-
     private val disableGUI by option("-nogui", "--disable-gui").flag()
     private val version by option("-v", "--version").flag()
 
@@ -24,7 +24,6 @@ class KryptonCLI : CliktCommand() {
             println("Krypton version ${KryptonServerInfo.version} for Minecraft ${KryptonServerInfo.minecraftVersion}")
             return
         }
-
         val logger = logger("Krypton")
         logger.info("Starting Krypton server version ${KryptonServerInfo.version} for Minecraft ${KryptonServerInfo.minecraftVersion}")
 

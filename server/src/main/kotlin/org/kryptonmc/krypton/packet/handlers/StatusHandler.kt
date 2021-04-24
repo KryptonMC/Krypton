@@ -12,20 +12,17 @@ import org.kryptonmc.krypton.packet.data.ServerVersion
 import org.kryptonmc.krypton.packet.data.StatusResponse
 import org.kryptonmc.krypton.packet.out.status.PacketOutPong
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
+import org.kryptonmc.krypton.packet.session.Session
 import org.kryptonmc.krypton.packet.state.PacketState
-import org.kryptonmc.krypton.session.Session
-import org.kryptonmc.krypton.session.SessionManager
 
 /**
  * Handles all inbound packets in the [Status][org.kryptonmc.krypton.packet.state.PacketState.STATUS] state.
  *
  * There are two packets in this state that we handle:
- * - [Status request][org.kryptonmc.krypton.packet.in.status.PacketInStatusRequest] -
+ * - [Status request][org.kryptonmc.krypton.packet. in.status.PacketInStatusRequest] -
  *   sent by the client to request status information
- * - [Ping][org.kryptonmc.krypton.packet.in.status.PacketInPing] -
+ * - [Ping][org.kryptonmc.krypton.packet. in.status.PacketInPing] -
  *   pings the server (to calculate latency on its end)
- *
- * @author Callum Seabrook
  */
 class StatusHandler(
     override val server: KryptonServer,

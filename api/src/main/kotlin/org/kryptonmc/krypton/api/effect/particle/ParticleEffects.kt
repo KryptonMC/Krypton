@@ -6,8 +6,6 @@ import org.kryptonmc.krypton.api.space.Vector
 /**
  * Holds information used to spawn particles for a [Player].
  * These effects can be reused.
- *
- * @author Esophose
  */
 data class ParticleEffect internal constructor(
     val type: Particle,
@@ -20,19 +18,21 @@ data class ParticleEffect internal constructor(
     init {
         require(quantity >= 0) { "Quantity must be at least 1!" }
     }
+
+    companion object {
+
+        @JvmStatic
+        fun builder(type: Particle) = ParticleEffectBuilder(type)
+    }
 }
 
 /**
  * Interface used to denote that a class can be used as a [ParticleEffect]'s data.
- *
- * @author Esophose
  */
 interface ParticleData
 
 /**
  * Holds data for directional [ParticleEffect]s.
- *
- * @author Esophose
  */
 data class DirectionalParticleData(
     val direction: Vector?, // If null, direction will be random
@@ -41,29 +41,21 @@ data class DirectionalParticleData(
 
 /**
  * Holds data for item [ParticleEffect]s.
- *
- * @author Esophose
  */
 data class ItemParticleData(val id: Int) : ParticleData // TODO: Item
 
 /**
  * Holds data for block [ParticleEffect]s.
- *
- * @author Esophose
  */
 data class BlockParticleData(val id: Int) : ParticleData // TODO: Block
 
 /**
  * Holds data for colored [ParticleEffect]s.
- *
- * @author Esophose
  */
 data class ColorParticleData(val red: UByte, val green: UByte, val blue: UByte) : ParticleData
 
 /**
  * Holds data for dust [ParticleEffect]s.
- *
- * @author Esophose
  */
 data class DustParticleData @JvmOverloads constructor(
     val color: ColorParticleData = ColorParticleData(0u, 0u, 0u),
@@ -72,8 +64,6 @@ data class DustParticleData @JvmOverloads constructor(
 
 /**
  * Holds data for note [ParticleEffect]s.
- *
- * @author Esophose
  */
 data class NoteParticleData(val note: UByte) : ParticleData {
 

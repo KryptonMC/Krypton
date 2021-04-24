@@ -8,10 +8,10 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.command.argument.ArgumentTypes.writeArgumentType
-import org.kryptonmc.krypton.extension.writeKey
-import org.kryptonmc.krypton.extension.writeString
-import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeKey
+import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeVarInt
 
 /**
  * Declares commands that exist on the server to the client.
@@ -20,8 +20,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  * to put all of the nodes into an ordered list, which is then sent to the client.
  *
  * @param root the root command node
- *
- * @author Callum Seabrook
  */
 class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : PlayPacket(0x10) {
 

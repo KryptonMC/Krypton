@@ -4,6 +4,9 @@ import kotlinx.serialization.Serializable
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.registry.toNamespacedKey
 
+/**
+ * Represents a tag, which holds information about its name and its set of values (including those of its children)
+ */
 data class Tag(val name: NamespacedKey, val values: MutableSet<NamespacedKey> = mutableSetOf()) {
 
     constructor(manager: TagManager, name: NamespacedKey, type: String, previous: Tag, data: TagData) : this(name) {

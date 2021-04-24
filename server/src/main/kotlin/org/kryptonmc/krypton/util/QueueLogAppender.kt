@@ -1,13 +1,22 @@
 package org.kryptonmc.krypton.util
 
-import org.apache.logging.log4j.core.*
+import org.apache.logging.log4j.core.Filter
+import org.apache.logging.log4j.core.Layout
+import org.apache.logging.log4j.core.LogEvent
 import org.apache.logging.log4j.core.appender.AbstractAppender
-import org.apache.logging.log4j.core.config.plugins.*
+import org.apache.logging.log4j.core.config.plugins.Plugin
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute
+import org.apache.logging.log4j.core.config.plugins.PluginElement
+import org.apache.logging.log4j.core.config.plugins.PluginFactory
 import org.apache.logging.log4j.core.layout.PatternLayout
 import java.io.Serializable
-import java.util.concurrent.*
-import java.util.concurrent.locks.*
+import java.util.concurrent.BlockingQueue
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.locks.ReentrantReadWriteLock
 
+/**
+ * An appender that creates a queue for log events and allows you to retrieve them
+ */
 @Plugin(name = "Queue", category = "Core", elementType = "appender", printObject = true)
 class QueueLogAppender(
     name: String,

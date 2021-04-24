@@ -3,18 +3,19 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.registry.toNamespacedKey
-import org.kryptonmc.krypton.extension.readAllAvailableBytes
-import org.kryptonmc.krypton.extension.readString
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.readAllAvailableBytes
+import org.kryptonmc.krypton.util.readString
 
 /**
  * Sent when the client sends a plugin message on the specified [channel]. Currently only triggers
  * the [plugin message event][org.kryptonmc.krypton.api.event.events.play.PluginMessageEvent].
- *
- * @author Callum Seabrook
  */
 class PacketInPluginMessage : PlayPacket(0x0B) {
 
+    /**
+     * The channel the plugin message was sent on
+     */
     lateinit var channel: NamespacedKey private set
 
     /**

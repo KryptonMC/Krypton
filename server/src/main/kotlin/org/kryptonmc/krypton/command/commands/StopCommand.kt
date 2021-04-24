@@ -7,12 +7,10 @@ import kotlin.system.exitProcess
 
 /**
  * Stop the server. That's literally all this does
- *
- * @author Callum Seabrook
  */
 class StopCommand : Command("stop", "krypton.command.stop") {
 
-    override suspend fun execute(sender: Sender, args: List<String>) {
+    override fun execute(sender: Sender, args: List<String>) {
         sender.sendMessage(Component.text("Stopping server..."))
         exitProcess(0)
     }

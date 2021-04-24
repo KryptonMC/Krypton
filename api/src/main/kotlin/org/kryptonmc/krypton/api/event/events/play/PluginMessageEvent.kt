@@ -3,7 +3,6 @@ package org.kryptonmc.krypton.api.event.events.play
 import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.event.Event
 import org.kryptonmc.krypton.api.registry.NamespacedKey
-import java.util.*
 
 /**
  * Called when a plugin message is received from a client.
@@ -11,7 +10,6 @@ import java.util.*
  * @param player the player who's client sent the message
  * @param channel the channel the message came from
  * @param message the message received
- * @author Callum Seabrook
  */
 data class PluginMessageEvent(
     val player: Player,
@@ -28,8 +26,8 @@ data class PluginMessageEvent(
 
     override fun hashCode(): Int {
         var result = player.hashCode()
-        result = 31 * result + channel.hashCode()
-        result = 31 * result + message.contentHashCode()
+        result *= 31 + channel.hashCode()
+        result *= 31 + message.contentHashCode()
         return result
     }
 }

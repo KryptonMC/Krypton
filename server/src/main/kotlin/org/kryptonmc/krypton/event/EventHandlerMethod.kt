@@ -4,8 +4,6 @@ import java.lang.reflect.Method
 
 /**
  * Represents a method of an event handler.
- *
- * @author Callum Seabrook
  */
 class EventHandlerMethod(
     private val listener: Any,

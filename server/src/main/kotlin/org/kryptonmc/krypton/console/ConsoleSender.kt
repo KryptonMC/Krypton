@@ -9,13 +9,11 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.translation.GlobalTranslator
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.KryptonSender
-import org.kryptonmc.krypton.extension.logger
-import java.util.*
+import org.kryptonmc.krypton.util.logger
+import java.util.Locale
 
 /**
  * Represents a sender for the server console.
- *
- * @author Callum Seabrook
  */
 class ConsoleSender(server: KryptonServer) : KryptonSender(server) {
 

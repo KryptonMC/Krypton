@@ -10,23 +10,28 @@ import org.kryptonmc.krypton.api.event.events.login.LoginEvent
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.auth.requests.SessionService
-import org.kryptonmc.krypton.concurrent.DefaultUncaughtExceptionHandler
-import org.kryptonmc.krypton.encryption.Encryption
-import org.kryptonmc.krypton.encryption.toDecryptingCipher
-import org.kryptonmc.krypton.encryption.toEncryptingCipher
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
-import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
 import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
-import org.kryptonmc.krypton.packet.transformers.*
-import org.kryptonmc.krypton.session.Session
-import org.kryptonmc.krypton.session.SessionManager
+import org.kryptonmc.krypton.packet.session.Session
+import org.kryptonmc.krypton.packet.session.SessionManager
+import org.kryptonmc.krypton.packet.transformers.PacketCompressor
+import org.kryptonmc.krypton.packet.transformers.PacketDecoder
+import org.kryptonmc.krypton.packet.transformers.PacketDecompressor
+import org.kryptonmc.krypton.packet.transformers.PacketDecrypter
+import org.kryptonmc.krypton.packet.transformers.PacketEncoder
+import org.kryptonmc.krypton.packet.transformers.PacketEncrypter
+import org.kryptonmc.krypton.packet.transformers.SizeDecoder
+import org.kryptonmc.krypton.packet.transformers.SizeEncoder
+import org.kryptonmc.krypton.util.encryption.Encryption
+import org.kryptonmc.krypton.util.encryption.toDecryptingCipher
+import org.kryptonmc.krypton.util.encryption.toEncryptingCipher
+import org.kryptonmc.krypton.util.logger
 import java.net.InetSocketAddress
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.UUID
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
@@ -38,8 +43,6 @@ import javax.crypto.spec.SecretKeySpec
  *   sent to initiate the login sequence
  * - [Encryption Response][org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse] -
  *   sent to confirm the client wants to enable encryption
- *
- * @author Callum Seabrook
  */
 class LoginHandler(
     override val server: KryptonServer,
@@ -73,19 +76,18 @@ class LoginHandler(
             return
         }
 
-        session.sendPacket(PacketOutEncryptionRequest(server.encryption.publicKey, verifyToken))
+        session.sendPacket(PacketOutEncryptionRequest(Encryption.publicKey, verifyToken))
     }
 
     private fun handleEncryptionResponse(packet: PacketInEncryptionResponse) {
         if (!verifyToken(verifyToken, packet.verifyToken)) return
-
-        val sharedSecret = server.encryption.decrypt(packet.secret)
+        val sharedSecret = Encryption.decrypt(packet.secret)
         val secretKey = SecretKeySpec(sharedSecret, "AES")
         enableEncryption(secretKey)
 
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                session.profile = SessionService.authenticateUser(session.player.name, sharedSecret, server.encryption.publicKey, server.config.server.ip)
+                session.profile = SessionService.authenticateUser(session.player.name, sharedSecret, server.config.server.ip)
                 if (!callLoginEvent()) return@launch
             } catch (exception: AuthenticationException) {
                 session.disconnect(translatable { key("multiplayer.disconnect.unverified_username") })
@@ -99,7 +101,7 @@ class LoginHandler(
     }
 
     private fun verifyToken(expected: ByteArray, actual: ByteArray): Boolean {
-        val decryptedActual = server.encryption.decrypt(actual)
+        val decryptedActual = Encryption.decrypt(actual)
         require(decryptedActual.contentEquals(expected)) {
             LOGGER.error("${session.player.name} failed verification! Expected ${expected.contentToString()}, received ${decryptedActual.contentToString()}!")
             session.disconnect(translatable {

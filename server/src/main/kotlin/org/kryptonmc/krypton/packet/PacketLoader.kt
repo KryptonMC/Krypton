@@ -1,18 +1,30 @@
 package org.kryptonmc.krypton.packet
 
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.*
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
-import org.kryptonmc.krypton.packet.`in`.play.*
+import org.kryptonmc.krypton.packet.`in`.play.PacketInAnimation
+import org.kryptonmc.krypton.packet.`in`.play.PacketInChat
+import org.kryptonmc.krypton.packet.`in`.play.PacketInClientSettings
+import org.kryptonmc.krypton.packet.`in`.play.PacketInCreativeInventoryAction
+import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityAction
+import org.kryptonmc.krypton.packet.`in`.play.PacketInHeldItemChange
+import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAbilities
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerBlockPlacement
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPosition
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPositionAndRotation
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerRotation
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
+import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
+import org.kryptonmc.krypton.packet.`in`.play.PacketInTeleportConfirm
 import org.kryptonmc.krypton.packet.`in`.status.PacketInPing
 import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
 import org.kryptonmc.krypton.packet.state.PacketState
 
 /**
  * Responsible for registering all of the inbound packets to their respective states.
- *
- * @author Alex Wood
  */
 object PacketLoader {
 

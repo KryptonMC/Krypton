@@ -8,16 +8,14 @@ import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.api.event.events.handshake.HandshakeEvent
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
+import org.kryptonmc.krypton.packet.session.Session
 import org.kryptonmc.krypton.packet.state.PacketState
-import org.kryptonmc.krypton.session.Session
 import java.net.InetSocketAddress
 
 /**
  * Handles all inbound packets in the [Handshake][PacketState.HANDSHAKE] state. Contrary to the
  * other handlers and states, there is only one packet in this state, so this is directly handled
  * by the [handle] function, instead of delegating to another function.
- *
- * @author Callum Seabrook
  */
 class HandshakeHandler(
     override val server: KryptonServer,
@@ -59,6 +57,7 @@ class HandshakeHandler(
         }
         session.handler = LoginHandler(server, server.sessionManager, session)
     }
+
     /**
      * Handles when next state is [PacketState.STATUS]
      */

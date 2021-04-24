@@ -3,16 +3,14 @@ package org.kryptonmc.krypton.entity.metadata
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.api.entity.Hand
-import org.kryptonmc.krypton.extension.writeMetadata
-import org.kryptonmc.krypton.extension.writeOptionalMetadata
 import org.kryptonmc.krypton.api.space.Vector
+import org.kryptonmc.krypton.util.writeMetadata
+import org.kryptonmc.krypton.util.writeOptionalMetadata
 
 /**
  * Represents living entity metadata. This is ordered by the index ordering, which can be found on
  *
  * The ordering of this comes from [wiki.vg](https://wiki.vg/Entity_metadata#Entity_Metadata_Format)
- *
- * @author Callum Seabrook
  */
 open class LivingEntityMetadata(
     movementFlags: MovementFlags? = null,

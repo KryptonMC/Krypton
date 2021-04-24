@@ -1,7 +1,13 @@
 package org.kryptonmc.krypton.world.data
 
-import net.kyori.adventure.nbt.*
+import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.BinaryTagIO.Compression.GZIP
+import net.kyori.adventure.nbt.BinaryTagTypes
+import net.kyori.adventure.nbt.CompoundBinaryTag
+import net.kyori.adventure.nbt.DoubleBinaryTag
+import net.kyori.adventure.nbt.FloatBinaryTag
+import net.kyori.adventure.nbt.ListBinaryTag
+import net.kyori.adventure.nbt.StringBinaryTag
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.api.entity.Abilities
@@ -21,12 +27,9 @@ import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.NBT_DATA_VERSION
 import java.io.File
 import java.io.IOException
-import java.util.*
 
 /**
  * Responsible for loading and saving player data files
- *
- * @author Callum Seabrook
  */
 class PlayerDataManager(private val folder: File) {
 
@@ -171,7 +174,7 @@ private fun ItemStack.toNBT(slot: Int) = CompoundBinaryTag.builder()
     .putString("id", type.key.toString())
     .putByte("Slot", slot.toByte())
     .putByte("Count", amount.toByte())
-    .apply { if (meta != null) { put("display", meta!!.toNBT()) } }
+    .apply { if (meta != null) put("display", meta!!.toNBT()) }
     .build()
 
 private fun ItemMeta.toNBT() = CompoundBinaryTag.builder()

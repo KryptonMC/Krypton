@@ -2,18 +2,15 @@ package org.kryptonmc.krypton.registry.tags
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import okhttp3.internal.toImmutableList
 import org.kryptonmc.krypton.api.registry.NamespacedKey
-import java.io.*
+import java.io.FileNotFoundException
+import java.io.Reader
 import java.util.concurrent.ConcurrentHashMap
 
 /**
  * The tag manager, responsible for, well, managing tags.
  *
  * All credit goes to Minestom for the tag stuff (this manager and the tag class)
- *
- * @author The Minestom Project
- * @author Callum Seabrook
  */
 object TagManager {
 

@@ -2,13 +2,12 @@ package org.kryptonmc.krypton.api.world
 
 import org.kryptonmc.krypton.api.Keyed
 import org.kryptonmc.krypton.api.registry.NamespacedKey
-import java.util.*
+import java.util.EnumSet
+import java.util.Locale
 
 /**
  * The enum that holds all the biomes in Minecraft, including both their namespaced ID and
  * their numeric ID
- *
- * @author Callum Seabrook
  */
 enum class Biome(val id: Int) : Keyed {
 

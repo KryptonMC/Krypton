@@ -4,8 +4,6 @@ import java.nio.file.Path
 
 /**
  * The plugin manager.
- *
- * @author Callum Seabrook
  */
 interface PluginManager {
 

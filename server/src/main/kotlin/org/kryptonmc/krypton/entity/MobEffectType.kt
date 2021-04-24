@@ -36,10 +36,8 @@ enum class MobEffectType(private val id: Int) {
     HERO_OF_THE_VILLAGE(32);
 
     companion object {
-
         private val mobEffectIds = values().toList()
         private val mobEffectNames = mobEffectIds.associateBy { it.name }
-
         fun fromId(id: Int): MobEffectType? {
             if (id >= 0 && id < mobEffectIds.size) return mobEffectIds[id]
             return null

@@ -2,7 +2,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.api.world.Location
-import org.kryptonmc.krypton.extension.writeVarInt
+import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import kotlin.random.Random
 
@@ -13,8 +13,6 @@ import kotlin.random.Random
  * @param location the client's location
  * @param flags strange flags that determine whether each of the components of the [location] are relative
  * @param teleportId the ID for teleportation. Unused by Krypton.
- *
- * @author Callum Seabrook
  */
 class PacketOutPlayerPositionAndLook(
     private val location: Location,

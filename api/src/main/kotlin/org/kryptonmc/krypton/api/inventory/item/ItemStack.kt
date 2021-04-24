@@ -20,6 +20,7 @@ data class ItemStack(
         /**
          * An empty item stack.
          */
+        @JvmField
         val EMPTY = ItemStack(Material.AIR, 0)
     }
 }

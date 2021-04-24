@@ -6,8 +6,6 @@ import org.kryptonmc.krypton.packet.Packet
 /**
  * Represents one of the four packet states in the Minecraft protocol. Each one of these states has
  * different packets and different purposes.
- *
- * @author Alex Wood
  */
 enum class PacketState {
 

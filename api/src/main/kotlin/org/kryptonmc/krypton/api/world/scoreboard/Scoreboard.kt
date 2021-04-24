@@ -6,8 +6,6 @@ import org.kryptonmc.krypton.api.world.scoreboard.ScoreboardPosition.TEAM_SPECIF
 /**
  * A [Scoreboard] is a method of keeping track of scores.
  * These are primarily for use in minigames.
- *
- * @author Callum Seabrook
  */
 interface Scoreboard {
 
@@ -78,11 +76,6 @@ interface Scoreboard {
 
 /**
  * Represents positions that a [Scoreboard] may appear in.
- *
- * [id] is the protocol ID of the position. This should only
- * be used internally.
- *
- * [TEAM_SPECIFIC]
  */
 enum class ScoreboardPosition(val id: Int) {
 

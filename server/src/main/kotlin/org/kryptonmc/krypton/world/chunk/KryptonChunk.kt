@@ -5,7 +5,6 @@ import net.kyori.adventure.nbt.LongArrayBinaryTag
 import org.kryptonmc.krypton.api.world.Biome
 import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.chunk.Chunk
-import java.util.*
 
 data class KryptonChunk(
     override val world: World,
@@ -19,11 +18,8 @@ data class KryptonChunk(
     val structures: CompoundBinaryTag
 ) : Chunk {
 
-    override val x: Int
-        get() = position.x
-
-    override val z: Int
-        get() = position.z
+    override val x: Int get() = position.x
+    override val z: Int get() = position.z
 
     fun tick(playerCount: Int) {
         inhabitedTime += playerCount

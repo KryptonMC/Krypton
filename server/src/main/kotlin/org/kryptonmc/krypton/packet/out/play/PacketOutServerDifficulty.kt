@@ -9,8 +9,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  *
  * @param difficulty the difficulty of the server
  * @param isLocked if the difficulty is locked. Should always be true in multiplayer
- *
- * @author Callum Seabrook
  */
 class PacketOutServerDifficulty(
     private val difficulty: Difficulty,

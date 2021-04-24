@@ -1,10 +1,6 @@
 package org.kryptonmc.krypton.api.event
 
 /**
- * Represents an event.
- *
- * An event is something that can be emitted, or "fired", and listened to.
- *
- * @author Callum Seabrook
+ * Represents an event. These can be called, or fired, and listened to
  */
 interface Event

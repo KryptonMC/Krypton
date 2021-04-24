@@ -1,12 +1,9 @@
-@file:JvmMultifileClass
 package org.kryptonmc.krypton.api.world
 
 import org.kryptonmc.krypton.api.world.chunk.Chunk
 
 /**
  * Represents a loaded world
- *
- * @author Callum Seabrook
  */
 interface World {
 
@@ -77,8 +74,6 @@ interface World {
 /**
  * Holder for information about the version of Minecraft this world was
  * generated in.
- *
- * @author Callum Seabrook
  */
 data class WorldVersion(
     val id: Int,

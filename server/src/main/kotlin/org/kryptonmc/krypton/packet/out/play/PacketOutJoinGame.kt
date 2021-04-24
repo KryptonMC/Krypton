@@ -2,17 +2,15 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import org.kryptonmc.krypton.extension.writeKey
-import org.kryptonmc.krypton.extension.writeNBTCompound
-import org.kryptonmc.krypton.extension.writeVarInt
-import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.world.Gamemode
+import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.Registries
-import org.kryptonmc.krypton.registry.biomes.BiomeRegistry
-import org.kryptonmc.krypton.registry.dimensions.DimensionRegistry
-import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.util.writeKey
+import org.kryptonmc.krypton.util.writeNBTCompound
+import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.Gamerule
+import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.krypton.world.generation.FlatGenerator
 import java.nio.ByteBuffer
@@ -30,8 +28,6 @@ import java.security.MessageDigest
  * @param dimension the key of the dimension the client is spawning into (e.g. "minecraft:overworld" for the overworld)
  * @param maxPlayers the maximum players allowed on the server
  * @param viewDistance the server's maximum render distance
- *
- * @author Callum Seabrook
  */
 class PacketOutJoinGame(
     private val entityId: Int,

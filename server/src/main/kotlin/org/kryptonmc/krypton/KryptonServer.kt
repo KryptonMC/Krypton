@@ -1,7 +1,9 @@
 package org.kryptonmc.krypton
 
 import com.typesafe.config.ConfigFactory
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.serialization.hocon.Hocon
 import kotlinx.serialization.hocon.decodeFromConfig
 import net.kyori.adventure.text.Component
@@ -11,37 +13,37 @@ import org.kryptonmc.krypton.api.event.events.ticking.TickEndEvent
 import org.kryptonmc.krypton.api.event.events.ticking.TickStartEvent
 import org.kryptonmc.krypton.api.status.StatusInfo
 import org.kryptonmc.krypton.command.KryptonCommandManager
-import org.kryptonmc.krypton.concurrent.DefaultUncaughtExceptionHandler
-import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.console.ConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
-import org.kryptonmc.krypton.world.data.PlayerDataManager
-import org.kryptonmc.krypton.encryption.Encryption
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonEventBus
-import org.kryptonmc.krypton.extension.copyTo
-import org.kryptonmc.krypton.extension.logger
-import org.kryptonmc.krypton.locale.TranslationRegister
 import org.kryptonmc.krypton.packet.PacketLoader
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
+import org.kryptonmc.krypton.packet.session.SessionManager
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
+import org.kryptonmc.krypton.server.KryptonConfig
+import org.kryptonmc.krypton.server.gui.KryptonServerGUI
+import org.kryptonmc.krypton.server.query.GS4QueryHandler
 import org.kryptonmc.krypton.service.KryptonServicesManager
-import org.kryptonmc.krypton.session.SessionManager
-import org.kryptonmc.krypton.util.gui.KryptonServerGUI
+import org.kryptonmc.krypton.util.TranslationRegister
+import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
+import org.kryptonmc.krypton.util.copyTo
+import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.monitoring.jmx.KryptonStatistics
-import org.kryptonmc.krypton.util.query.GS4QueryHandler
 import org.kryptonmc.krypton.world.KryptonWorldManager
+import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.awt.GraphicsEnvironment
 import java.io.File
 import java.io.IOException
-import java.lang.Runnable
 import java.net.InetSocketAddress
 import java.nio.file.Path
 import java.security.SecureRandom
-import java.util.*
+import java.util.Locale
+import java.util.Properties
+import java.util.UUID
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
@@ -70,7 +72,6 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
 
     override var scoreboard: KryptonScoreboard? = null; private set
 
-    internal val encryption = Encryption()
     private val nettyProcess = NettyProcess(this)
     internal val random: SecureRandom = SecureRandom()
 
@@ -87,8 +88,7 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
     override val pluginManager = KryptonPluginManager(this)
     override val servicesManager = KryptonServicesManager()
 
-    @Volatile
-    internal var lastTickTime = 0L; private set
+    @Volatile internal var lastTickTime = 0L; private set
     private var lastOverloadWarning = 0L
     private var tickCount = 0
 
@@ -98,8 +98,7 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
     private val tickScheduler = Executors.newSingleThreadScheduledExecutor { Thread(it, "Tick Scheduler") }
     val tickables = mutableListOf<Runnable>()
 
-    @Volatile
-    internal var isRunning = true; private set
+    @Volatile internal var isRunning = true; private set
 
     private var gs4QueryHandler: GS4QueryHandler? = null
 

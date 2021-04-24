@@ -9,8 +9,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  * the values present in the new [abilities])
  *
  * @param abilities the abilities to set
- *
- * @author Callum Seabrook
  */
 class PacketOutAbilities(private val abilities: Abilities) : PlayPacket(0x30) {
 

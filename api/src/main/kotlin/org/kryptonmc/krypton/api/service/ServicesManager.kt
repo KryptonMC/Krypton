@@ -4,8 +4,6 @@ import org.kryptonmc.krypton.api.plugin.Plugin
 
 /**
  * Manager of services
- *
- * @author Callum Seabrook
  */
 interface ServicesManager {
 
@@ -25,7 +23,7 @@ interface ServicesManager {
      * @return a [ServiceProvider] containing the service to be provided, or null if
      * there is no service registered with the given class [clazz]
      */
-    fun <T> getProvider(clazz: Class<T>): ServiceProvider<T>?
+    fun <T> provide(clazz: Class<T>): ServiceProvider<T>?
 }
 
 /**
@@ -38,4 +36,4 @@ inline fun <reified T> ServicesManager.register(plugin: Plugin, provider: T) = r
  * Allows retrieval of providers with the use of reified types,
  * removing that ugly class parameter
  */
-inline fun <reified T> ServicesManager.getProvider() = getProvider(T::class.java)
+inline fun <reified T> ServicesManager.provide() = provide(T::class.java)

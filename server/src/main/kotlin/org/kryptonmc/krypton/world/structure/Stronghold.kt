@@ -1,7 +1,7 @@
 package org.kryptonmc.krypton.world.structure
 
+import org.kryptonmc.krypton.api.block.BoundingBox
 import org.kryptonmc.krypton.api.space.Vector
-import org.kryptonmc.krypton.space.BoundingBox
 import org.kryptonmc.krypton.api.world.Biome
 
 // TODO: Do thingys with these

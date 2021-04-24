@@ -1,18 +1,19 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.extension.readEnum
-import org.kryptonmc.krypton.extension.readVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.readVarInt
 
 /**
  * Contrary to its name, this is only for players, as it is only sent by clients.
  * This is sent when the player performs one of the actions listed in the [EntityAction] enum.
- *
- * @author Callum Seabrook
  */
 class PacketInEntityAction : PlayPacket(0x1C) {
 
+    /**
+     * The action taken by the entity
+     */
     lateinit var action: EntityAction private set
 
     /**
@@ -28,15 +29,18 @@ class PacketInEntityAction : PlayPacket(0x1C) {
     }
 }
 
-enum class EntityAction(val id: Int) {
+/**
+ * Represents possible entity actions for the client
+ */
+enum class EntityAction {
 
-    START_SNEAKING(0),
-    STOP_SNEAKING(1),
-    LEAVE_BED(2),
-    START_SPRINTING(3),
-    STOP_SPRINTING(4),
-    START_JUMP_WITH_HORSE(5),
-    STOP_JUMP_WITH_HORSE(6),
-    OPEN_HORSE_INVENTORY(7),
-    START_FLYING_WITH_ELYTRA(8)
+    START_SNEAKING,
+    STOP_SNEAKING,
+    LEAVE_BED,
+    START_SPRINTING,
+    STOP_SPRINTING,
+    START_JUMP_WITH_HORSE,
+    STOP_JUMP_WITH_HORSE,
+    OPEN_HORSE_INVENTORY,
+    START_FLYING_WITH_ELYTRA
 }

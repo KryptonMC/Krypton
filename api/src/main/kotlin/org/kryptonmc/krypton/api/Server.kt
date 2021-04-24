@@ -4,7 +4,6 @@ import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.api.command.CommandManager
 import org.kryptonmc.krypton.api.command.Sender
-import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.event.EventBus
 import org.kryptonmc.krypton.api.plugin.PluginManager
@@ -12,15 +11,14 @@ import org.kryptonmc.krypton.api.scheduling.Scheduler
 import org.kryptonmc.krypton.api.service.ServicesManager
 import org.kryptonmc.krypton.api.status.StatusInfo
 import org.kryptonmc.krypton.api.world.Difficulty
+import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.WorldManager
 import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
 import java.net.InetSocketAddress
-import java.util.*
+import java.util.UUID
 
 /**
  * The server
- *
- * @author Callum Seabrook
  */
 interface Server : ForwardingAudience {
 
@@ -145,8 +143,6 @@ interface Server : ForwardingAudience {
 
     /**
      * Holder for information about the server implementing this API
-     *
-     * @author Callum Seabrook
      */
     interface ServerInfo {
 

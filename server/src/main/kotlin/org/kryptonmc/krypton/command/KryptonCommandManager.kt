@@ -13,7 +13,7 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import com.mojang.brigadier.tree.LiteralCommandNode
 import kotlinx.coroutines.launch
-import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.api.command.Command
@@ -22,7 +22,7 @@ import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.api.event.events.play.PermissionCheckEvent
 import org.kryptonmc.krypton.api.event.events.play.PermissionCheckResult
 import org.kryptonmc.krypton.command.commands.StopCommand
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
 class KryptonCommandManager(private val server: KryptonServer) : CommandManager {
@@ -53,8 +53,8 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
             if (dispatcher.execute(command.removePrefix("/"), sender) != 1) sender.sendMessage(DEFAULT_NO_PERMISSION)
         } catch (exception: CommandSyntaxException) {
             val message = when (exception) {
-                BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand() -> Component.text("Unknown command $command.")
-                else -> Component.text(exception.message ?: "")
+                BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand() -> text("Unknown command $command.")
+                else -> text(exception.message ?: "")
             }
             sender.sendMessage(message)
         }
@@ -131,7 +131,6 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
 
     companion object {
 
-        private val DEFAULT_NO_PERMISSION = Component.text("You do not have permission to execute this command!")
-            .color(NamedTextColor.RED)
+        private val DEFAULT_NO_PERMISSION = text("You do not have permission to execute this command!", NamedTextColor.RED)
     }
 }

@@ -8,7 +8,6 @@ import org.kryptonmc.krypton.api.event.CancellableEvent
  *
  * @param player the player sending the message
  * @param message the message sent
- * @author Callum Seabrook
  */
 data class ChatEvent(
     val player: Player,

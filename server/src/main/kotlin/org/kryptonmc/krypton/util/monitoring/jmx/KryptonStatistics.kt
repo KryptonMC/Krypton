@@ -1,14 +1,17 @@
 package org.kryptonmc.krypton.util.monitoring.jmx
 
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.extension.logger
+import org.kryptonmc.krypton.util.logger
 import java.lang.management.ManagementFactory
-import javax.management.*
+import javax.management.Attribute
+import javax.management.AttributeList
+import javax.management.DynamicMBean
+import javax.management.MBeanAttributeInfo
+import javax.management.MBeanInfo
+import javax.management.ObjectName
 
 /**
  * Used to publish some statistics to the Java Management Extensions (JMX) framework
- *
- * @author Callum Seabrook
  */
 class KryptonStatistics(private val server: KryptonServer) : DynamicMBean {
 
@@ -42,7 +45,8 @@ class KryptonStatistics(private val server: KryptonServer) : DynamicMBean {
 
         fun register(server: KryptonServer) {
             try {
-                ManagementFactory.getPlatformMBeanServer().registerMBean(KryptonStatistics(server), ObjectName("org.kryptonmc.krypton:type=KryptonServer"))
+                ManagementFactory.getPlatformMBeanServer()
+                    .registerMBean(KryptonStatistics(server), ObjectName("org.kryptonmc.krypton:type=KryptonServer"))
             } catch (exception: Exception) {
                 LOGGER.warn("Failed to register server as a JMX bean", exception)
             }

@@ -10,8 +10,6 @@ import kotlinx.serialization.Serializable
  * @param name the name of the property
  * @param value the value of the property
  * @param signature the Yggdrasil signed hash for this property
- *
- * @author Callum Seabrook
  */
 @Serializable
 data class ProfileProperty(

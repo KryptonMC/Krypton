@@ -4,8 +4,8 @@ import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.event.HoverEvent.*
-import net.kyori.adventure.text.event.HoverEventSource
+import net.kyori.adventure.text.event.HoverEvent.ShowEntity
+import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.title.Title
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.api.effect.particle.ColorParticleData
@@ -23,7 +23,6 @@ import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.entity.Attribute
-import org.kryptonmc.krypton.extension.canBuild
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
@@ -31,10 +30,12 @@ import org.kryptonmc.krypton.packet.out.play.chat.PacketOutPlayerListHeaderFoote
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.chat.TitleAction
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
-import org.kryptonmc.krypton.session.Session
+import org.kryptonmc.krypton.packet.session.Session
+import org.kryptonmc.krypton.util.canBuild
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.net.InetSocketAddress
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 import java.util.function.UnaryOperator
 
 class KryptonPlayer(

@@ -1,7 +1,7 @@
 package org.kryptonmc.krypton.world.structure
 
 import org.kryptonmc.krypton.api.world.Biome
-import java.util.*
+import java.util.EnumSet
 
 enum class StructureType(val structureName: String, val biomes: Set<Biome> = emptySet()) {
 

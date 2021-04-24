@@ -2,8 +2,6 @@ package org.kryptonmc.krypton.registry
 
 /**
  * Represents a registry, which is a bi-map of Int to T and T to Int
- *
- * @author Callum Seabrook
  */
 interface Registry<T> : Iterable<T> {
 

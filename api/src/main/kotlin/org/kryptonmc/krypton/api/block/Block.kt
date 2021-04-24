@@ -7,8 +7,6 @@ import org.kryptonmc.krypton.api.world.chunk.Chunk
 
 /**
  * Represents a block.
- *
- * @author Callum Seabrook
  */
 interface Block {
 

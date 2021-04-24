@@ -8,8 +8,6 @@ import org.kryptonmc.krypton.api.registry.NamespacedKey
  * The list of types of items.
  *
  * The ordering of this enum is based off of the [official Minecraft wiki](https://minecraft.gamepedia.com/Item#List_of_items)'s ordering
- *
- * @author Callum Seabrook
  */
 enum class Material(internalKey: NamespacedKey? = null) : Keyed {
 

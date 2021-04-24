@@ -5,8 +5,6 @@ import kotlinx.serialization.Serializable
 /**
  * Represents the difficulty of a world. That being a measure of how difficult
  * it is to play the game (though this is not always accurate).
- *
- * @author Callum Seabrook
  */
 @Serializable
 enum class Difficulty {

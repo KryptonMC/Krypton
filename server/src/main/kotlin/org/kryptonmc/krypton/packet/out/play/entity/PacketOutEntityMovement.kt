@@ -1,11 +1,11 @@
 package org.kryptonmc.krypton.packet.out.play.entity
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.extension.writeAngle
-import org.kryptonmc.krypton.extension.writeShort
-import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.space.Angle
+import org.kryptonmc.krypton.util.Angle
+import org.kryptonmc.krypton.util.writeAngle
+import org.kryptonmc.krypton.util.writeShort
+import org.kryptonmc.krypton.util.writeVarInt
 
 /**
  * This is the base class for movement packets. Entity movement is a packet in itself, but its use is
@@ -14,8 +14,6 @@ import org.kryptonmc.krypton.space.Angle
  *
  * @param entityId the ID of the entity who moved
  * @param id the packet ID
- *
- * @author Callum Seabrook
  */
 sealed class PacketOutEntityMovement(private val entityId: Int, id: Int = 0x2A) : PlayPacket(id) {
 

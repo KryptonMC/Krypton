@@ -3,13 +3,11 @@ package org.kryptonmc.krypton.packet.transformers
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToByteEncoder
-import org.kryptonmc.krypton.extension.varIntSize
-import org.kryptonmc.krypton.extension.writeVarInt
+import org.kryptonmc.krypton.util.varIntSize
+import org.kryptonmc.krypton.util.writeVarInt
 
 /**
  * Writes a packet size in an appropriate VarInt before the data is written
- *
- * @author Alex Wood
  */
 class SizeEncoder : MessageToByteEncoder<ByteBuf>() {
 

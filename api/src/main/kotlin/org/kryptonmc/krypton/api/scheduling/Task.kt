@@ -3,9 +3,7 @@ package org.kryptonmc.krypton.api.scheduling
 import org.kryptonmc.krypton.api.plugin.Plugin
 
 /**
- * A scheduled task.
- *
- * @author Callum Seabrook
+ * A scheduled task
  */
 interface Task {
 

@@ -3,7 +3,7 @@ package org.kryptonmc.krypton.scheduling
 import org.kryptonmc.krypton.api.plugin.Plugin
 import org.kryptonmc.krypton.api.scheduling.Task
 import org.kryptonmc.krypton.api.scheduling.TaskState
-import org.kryptonmc.krypton.extension.logger
+import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 

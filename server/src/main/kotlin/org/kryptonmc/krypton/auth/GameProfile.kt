@@ -7,7 +7,7 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import java.util.*
+import java.util.UUID
 
 /**
  * Represents a Mojang game profile received from the session server on successful
@@ -16,8 +16,6 @@ import java.util.*
  * @param uuid the universally unique identifier for this user
  * @param name the user's username
  * @param properties optional list of properties related to this profile (e.g. skins)
- *
- * @author Callum Seabrook
  */
 @Serializable
 data class GameProfile(
@@ -26,6 +24,9 @@ data class GameProfile(
     val properties: List<ProfileProperty>
 )
 
+/**
+ * Used to (de)serialize the UUID format that Yggdrasil uses (has no dashes in it)
+ */
 object MojangUUIDSerializer : KSerializer<UUID> {
 
     override val descriptor = PrimitiveSerialDescriptor("UUID", PrimitiveKind.STRING)

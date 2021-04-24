@@ -1,10 +1,10 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.extension.writeKey
-import org.kryptonmc.krypton.extension.writeVarInt
-import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.api.registry.NamespacedKey
+import org.kryptonmc.krypton.util.writeKey
+import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.packet.state.PlayPacket
 
 /**
  * Unlocks recipes in the recipe book
@@ -20,8 +20,6 @@ import org.kryptonmc.krypton.api.registry.NamespacedKey
  * @param isSmokerBookFiltered if the smoker book is filtered
  * @param recipes the recipes unlocked in the book
  * @param newRecipes the new recipes that should be highlighted in the book
- *
- * @author Callum Seabrook
  */
 // TODO: Use this
 class PacketOutUnlockRecipes(
@@ -39,7 +37,7 @@ class PacketOutUnlockRecipes(
 ) : PlayPacket(0x35) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(action.id)
+        buf.writeVarInt(action.ordinal)
 
         buf.writeBoolean(isCraftingBookOpen)
         buf.writeBoolean(isCraftingBookFiltered)
@@ -60,9 +58,9 @@ class PacketOutUnlockRecipes(
     }
 }
 
-enum class UnlockRecipesAction(val id: Int) {
+enum class UnlockRecipesAction {
 
-    INIT(0),
-    ADD(1),
-    REMOVE(2)
+    INIT,
+    ADD,
+    REMOVE
 }

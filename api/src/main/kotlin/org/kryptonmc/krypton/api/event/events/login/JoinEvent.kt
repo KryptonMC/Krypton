@@ -13,7 +13,6 @@ import org.kryptonmc.krypton.api.event.CancellableEvent
  * constructed for them (just before the state is switched to PLAY)
  *
  * @param player the player who joined
- * @author Callum Seabrook
  */
 data class JoinEvent(val player: Player) : CancellableEvent() {
 

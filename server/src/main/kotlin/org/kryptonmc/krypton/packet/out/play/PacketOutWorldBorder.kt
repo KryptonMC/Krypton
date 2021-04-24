@@ -1,8 +1,8 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.extension.writeVarInt
-import org.kryptonmc.krypton.extension.writeVarLong
+import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.writeVarLong
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.KryptonWorldBorder
 
@@ -11,8 +11,6 @@ import org.kryptonmc.krypton.world.KryptonWorldBorder
  *
  * @param action the action for this packet
  * @param border the world border
- *
- * @author Callum Seabrook
  */
 class PacketOutWorldBorder(
     private val action: BorderAction,

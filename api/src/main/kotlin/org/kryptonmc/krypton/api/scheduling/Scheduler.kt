@@ -5,9 +5,7 @@ import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
 /**
- * The scheduler. This can be used to run or schedule tasks asynchronously.
- *
- * @author Callum Seabrook
+ * The scheduler. This can be used to run or schedule tasks (a)synchronously
  */
 interface Scheduler {
 

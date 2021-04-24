@@ -6,8 +6,6 @@ import java.nio.file.Path
 
 /**
  * The class loader used to load plugins. This is only so we can expose addURL for internal use
- *
- * @author Callum Seabrook
  */
 class PluginClassLoader(vararg urls: URL) : URLClassLoader(urls) {
 

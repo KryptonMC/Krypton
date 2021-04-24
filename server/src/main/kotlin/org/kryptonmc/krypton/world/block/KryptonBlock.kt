@@ -4,7 +4,6 @@ import org.kryptonmc.krypton.api.block.Block
 import org.kryptonmc.krypton.api.block.BoundingBox
 import org.kryptonmc.krypton.api.inventory.item.Material
 import org.kryptonmc.krypton.api.world.Location
-import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.chunk.Chunk
 
 data class KryptonBlock(

@@ -8,8 +8,6 @@ import org.kryptonmc.krypton.entity.MainHand
  * [chatMode], [skinSettings] and [mainHand], we make use of. [locale] and [chatColors] are
  * currently unused, and merely there because the client sends these, and we will make use
  * of them later.
- *
- * @author Callum Seabrook
  */
 data class ClientSettings(
     val locale: String,
@@ -20,6 +18,12 @@ data class ClientSettings(
     val mainHand: MainHand
 )
 
+/**
+ * The status of the client's chat mode. Enabled indicates that the client is happy to receive any
+ * form of media from any source. Commands only indicates that the client only wishes to receive
+ * messages from commands and action bars. Hidden indicates the client only wishes to receive action
+ * bars.
+ */
 enum class ChatMode {
 
     ENABLED,

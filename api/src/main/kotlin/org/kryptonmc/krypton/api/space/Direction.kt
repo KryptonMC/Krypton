@@ -8,8 +8,6 @@ package org.kryptonmc.krypton.api.space
  * and [DOWN].
  *
  * [id] is the ID of this [Direction]. This should only need to be used internally.
- *
- * @author Callum Seabrook
  */
 enum class Direction(val id: Int) {
 

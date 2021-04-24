@@ -5,7 +5,7 @@ package org.kryptonmc.krypton.api.event
  * for an event.
  *
  * @param priority the priority of the event (defaults to [ListenerPriority.MEDIUM])
- * @author Callum Seabrook
  */
 @Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
 annotation class Listener(val priority: Byte = ListenerPriority.MEDIUM)

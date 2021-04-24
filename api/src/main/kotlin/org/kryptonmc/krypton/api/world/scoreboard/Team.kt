@@ -8,8 +8,6 @@ import org.kryptonmc.krypton.api.entity.entities.Player
  *
  * Teams are groups of entities that have a name, prefix,
  * suffix, colour, and a specific set of rules they follow.
- *
- * @author Callum Seabrook
  */
 data class Team(
     val name: String,
@@ -25,8 +23,6 @@ data class Team(
 
 /**
  * Represents options for teams.
- *
- * @author Callum Seabrook
  */
 enum class Option {
 
@@ -48,8 +44,6 @@ enum class Option {
 
 /**
  * Represents how an [Option] is applied.
- *
- * @author Callum Seabrook
  */
 enum class OptionApplication {
 
@@ -76,46 +70,41 @@ enum class OptionApplication {
 
 /**
  * Represents the colour of a team. This is used because team colours are
- * legacy colours, and because they have special IDs.
- *
- * [id] is the protocol ID of this team colour. This should only need to
- * be used internally.
- *
- * @author Callum Seabrook
+ * legacy colours, and because they have special IDs
  */
-enum class TeamColor(val id: Int) {
+enum class TeamColor {
 
     /**
-     * Colors
+     * Colours
      */
-    BLACK(0),
-    DARK_BLUE(1),
-    DARK_GREEN(2),
-    DARK_CYAN(3),
-    DARK_RED(4),
-    PURPLE(5),
-    GOLD(6),
-    GRAY(7),
-    DARK_GRAY(8),
-    BLUE(9),
-    BRIGHT_GREEN(10),
-    CYAN(11),
-    RED(12),
-    PINK(13),
-    YELLOW(14),
-    WHITE(15),
+    BLACK,
+    DARK_BLUE,
+    DARK_GREEN,
+    DARK_CYAN,
+    DARK_RED,
+    PURPLE,
+    GOLD,
+    GRAY,
+    DARK_GRAY,
+    BLUE,
+    BRIGHT_GREEN,
+    CYAN,
+    RED,
+    PINK,
+    YELLOW,
+    WHITE,
 
     /**
      * Decoration
      */
-    OBFUSCATED(16),
-    BOLD(17),
-    STRIKETHROUGH(18),
-    UNDERLINED(19),
-    ITALIC(20),
+    OBFUSCATED,
+    BOLD,
+    STRIKETHROUGH,
+    UNDERLINED,
+    ITALIC,
 
     /**
      * Other
      */
-    RESET(21)
+    RESET
 }

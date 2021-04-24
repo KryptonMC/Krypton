@@ -6,8 +6,6 @@ import org.kryptonmc.krypton.api.space.Vector
 
 /**
  * Allows building a [ParticleEffect] for simple particle effects using method chaining.
- *
- * @author Esophose
  */
 open class ParticleEffectBuilder internal constructor(
     protected val type: Particle,
@@ -47,13 +45,12 @@ open class ParticleEffectBuilder internal constructor(
      * @return a new [ParticleEffect] created from this builder
      */
     @Contract("_ -> new", pure = true)
+    @JvmSynthetic
     internal open fun build() = ParticleEffect(type, quantity, offset, longDistance)
 }
 
 /**
  * Allows building a [ParticleEffect] for directional particle effects using method chaining.
- *
- * @author Esophose
  */
 class DirectionalParticleEffectBuilder internal constructor(
     type: Particle,
@@ -85,13 +82,12 @@ class DirectionalParticleEffectBuilder internal constructor(
      * @return a new [ParticleEffect] created from this builder
      */
     @Contract("_ -> new", pure = true)
+    @JvmSynthetic
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, DirectionalParticleData(direction, velocity))
 }
 
 /**
  * Allows building a [ParticleEffect] for item particle effects using method chaining.
- *
- * @author Esophose
  */
 class ItemParticleEffectBuilder internal constructor(
     type: Particle,
@@ -113,13 +109,12 @@ class ItemParticleEffectBuilder internal constructor(
      * @return a new [ParticleEffect] created from this builder
      */
     @Contract("_ -> new", pure = true)
+    @JvmSynthetic
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = ItemParticleData(itemId))
 }
 
 /**
  * Allows building a [ParticleEffect] for block particle effects using method chaining.
- *
- * @author Esophose
  */
 class BlockParticleEffectBuilder internal constructor(
     type: Particle,
@@ -141,13 +136,12 @@ class BlockParticleEffectBuilder internal constructor(
      * @return a new [ParticleEffect] created from this builder
      */
     @Contract("_ -> new", pure = true)
+    @JvmSynthetic
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = BlockParticleData(blockId))
 }
 
 /**
  * Allows building a [ParticleEffect] for colored particle effects using method chaining.
- *
- * @author Esophose
  */
 open class ColorParticleEffectBuilder internal constructor(
     type: Particle,
@@ -177,13 +171,12 @@ open class ColorParticleEffectBuilder internal constructor(
      * @return a new [ParticleEffect] created from this builder
      */
     @Contract("_ -> new")
+    @JvmSynthetic
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = ColorParticleData(red, green, blue))
 }
 
 /**
  * Allows building a [ParticleEffect] for dust particle effects using method chaining.
- *
- * @author Esophose
  */
 class DustParticleEffectBuilder internal constructor(
     type: Particle,
@@ -209,14 +202,13 @@ class DustParticleEffectBuilder internal constructor(
      * @return a new [ParticleEffect] created from this builder
      */
     @Contract("_ -> new")
+    @JvmSynthetic
     override fun build() =
         ParticleEffect(type, quantity, offset, longDistance, DustParticleData(ColorParticleData(red, green, blue), scale))
 }
 
 /**
  * Allows building a [ParticleEffect] for note particle effects using method chaining.
- *
- * @author Esophose
  */
 class NoteParticleEffectBuilder internal constructor(
     type: Particle,
@@ -239,6 +231,7 @@ class NoteParticleEffectBuilder internal constructor(
      * @return a new [ParticleEffect] created from this builder
      */
     @Contract("_ -> new")
+    @JvmSynthetic
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = NoteParticleData(note))
 }
 
@@ -248,7 +241,6 @@ class NoteParticleEffectBuilder internal constructor(
  * @param particleType type of simple particle in [ParticleType]
  * @param lambda function to allow configuring the [ParticleEffect] using a [ParticleEffectBuilder]
  * @return a new [ParticleEffect] based on the given settings
- * @author Esophose
  */
 @JvmName("of")
 fun particleEffect(particleType: SimpleParticle, lambda: ParticleEffectBuilder.() -> Unit = {}) =
@@ -260,7 +252,6 @@ fun particleEffect(particleType: SimpleParticle, lambda: ParticleEffectBuilder.(
  * @param particleType type of directional particle in [ParticleType]
  * @param lambda function to allow configuring the [ParticleEffect] using a [DirectionalParticleEffectBuilder]
  * @return a new [ParticleEffect] based on the given settings
- * @author Esophose
  */
 @JvmName("of")
 fun particleEffect(particleType: DirectionalParticle, lambda: DirectionalParticleEffectBuilder.() -> Unit = {}) =
@@ -272,7 +263,6 @@ fun particleEffect(particleType: DirectionalParticle, lambda: DirectionalParticl
  * @param particleType type of block particle in [ParticleType]
  * @param lambda function to allow configuring the [ParticleEffect] using a [BlockParticleEffectBuilder]
  * @return a new [ParticleEffect] based on the given settings
- * @author Esophose
  */
 @JvmName("of")
 fun particleEffect(particleType: BlockParticle, lambda: BlockParticleEffectBuilder.() -> Unit = {}) =
@@ -284,7 +274,6 @@ fun particleEffect(particleType: BlockParticle, lambda: BlockParticleEffectBuild
  * @param particleType type of particle in [ParticleType]
  * @param lambda function to allow configuring the [ParticleEffect] using an [ItemParticleEffectBuilder]
  * @return a new [ParticleEffect] based on the given settings
- * @author Esophose
  */
 @JvmName("of")
 fun particleEffect(particleType: ItemParticle, lambda: ItemParticleEffectBuilder.() -> Unit = {}) =
@@ -296,7 +285,6 @@ fun particleEffect(particleType: ItemParticle, lambda: ItemParticleEffectBuilder
  * @param particleType type of particle in [ParticleType]
  * @param lambda function to allow configuring the [ParticleEffect] using a [ColorParticleEffectBuilder]
  * @return a new [ParticleEffect] based on the given settings
- * @author Esophose
  */
 @JvmName("of")
 fun particleEffect(particleType: ColorParticle, lambda: ColorParticleEffectBuilder.() -> Unit = {}) =
@@ -308,7 +296,6 @@ fun particleEffect(particleType: ColorParticle, lambda: ColorParticleEffectBuild
  * @param particleType type of particle in [ParticleType]
  * @param lambda function to allow configuring the [ParticleEffect] using a [DustParticleEffectBuilder]
  * @return a new [ParticleEffect] based on the given settings
- * @author Esophose
  */
 @JvmName("of")
 fun particleEffect(particleType: DustParticle, lambda: DustParticleEffectBuilder.() -> Unit = {}) =
@@ -320,7 +307,6 @@ fun particleEffect(particleType: DustParticle, lambda: DustParticleEffectBuilder
  * @param particleType type of particle in [ParticleType]
  * @param lambda function to allow configuring the [ParticleEffect] using a [NoteParticleEffectBuilder]
  * @return a new [ParticleEffect] based on the given settings
- * @author Esophose
  */
 @JvmName("of")
 fun particleEffect(particleType: NoteParticle, lambda: NoteParticleEffectBuilder.() -> Unit = {}) =

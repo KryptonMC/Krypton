@@ -5,12 +5,10 @@ import io.netty.buffer.Unpooled
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
 import io.netty.handler.codec.CorruptedFrameException
-import org.kryptonmc.krypton.extension.readVarInt
+import org.kryptonmc.krypton.util.readVarInt
 
 /**
  * Decodes the size of a packet.
- *
- * @author Alex Wood
  */
 class SizeDecoder : ByteToMessageDecoder() {
 

@@ -4,7 +4,7 @@ import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.api.event.CancellableEvent
 import java.net.InetSocketAddress
-import java.util.*
+import java.util.UUID
 
 /**
  * Called when a player has been authenticated, but they have not yet had
@@ -14,7 +14,6 @@ import java.util.*
  * @param username the username of the player logging in
  * @param uuid the UUID of the player logging in
  * @param address the address of the player logging in
- * @author Callum Seabrook
  */
 data class LoginEvent(
     val username: String,
@@ -22,8 +21,7 @@ data class LoginEvent(
     val address: InetSocketAddress
 ) : CancellableEvent() {
 
-    @Volatile
-    var cancelledReason: Component = translatable { key("multiplayer.disconnect.kicked") }
+    @Volatile var cancelledReason: Component = translatable { key("multiplayer.disconnect.kicked") }
 
     /**
      * Cancel this event with the specified [reason] for cancellation

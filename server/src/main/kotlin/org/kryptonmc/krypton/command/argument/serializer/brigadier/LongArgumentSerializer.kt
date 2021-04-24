@@ -6,8 +6,6 @@ import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
 
 /**
  * A serialiser for Brigadier's [LongArgumentType]
- *
- * @author Callum Seabrook
  */
 class LongArgumentSerializer : ArgumentSerializer<LongArgumentType> {
 

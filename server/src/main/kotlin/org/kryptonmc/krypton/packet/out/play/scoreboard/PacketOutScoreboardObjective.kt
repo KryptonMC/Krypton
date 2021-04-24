@@ -2,11 +2,14 @@ package org.kryptonmc.krypton.packet.out.play.scoreboard
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.api.world.scoreboard.Objective
-import org.kryptonmc.krypton.extension.writeChat
-import org.kryptonmc.krypton.extension.writeString
-import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeChat
+import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeVarInt
 
+/**
+ * Tells the client to perform an action to an objective for a scoreboard
+ */
 class PacketOutScoreboardObjective(
     private val action: ObjectiveAction,
     private val objective: Objective
@@ -16,7 +19,7 @@ class PacketOutScoreboardObjective(
         buf.writeString(objective.name, 16)
         buf.writeByte(action.id)
         buf.writeChat(objective.displayName)
-        if (action != ObjectiveAction.REMOVE) buf.writeVarInt(objective.renderType.id)
+        if (action != ObjectiveAction.REMOVE) buf.writeVarInt(objective.renderType.ordinal)
     }
 }
 

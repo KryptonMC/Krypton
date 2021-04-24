@@ -1,8 +1,9 @@
 package org.kryptonmc.krypton.world
 
-import org.kryptonmc.krypton.api.world.Gamemode
-import org.kryptonmc.krypton.api.world.*
 import org.kryptonmc.krypton.api.world.Difficulty
+import org.kryptonmc.krypton.api.world.Gamemode
+import org.kryptonmc.krypton.api.world.Location
+import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.WorldVersion
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.GameState
@@ -11,7 +12,7 @@ import org.kryptonmc.krypton.world.bossbar.Bossbar
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 data class KryptonWorld(
     val uuid: UUID,

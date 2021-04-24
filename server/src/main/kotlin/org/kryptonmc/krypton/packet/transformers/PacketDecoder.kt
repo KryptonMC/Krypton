@@ -3,15 +3,13 @@ package org.kryptonmc.krypton.packet.transformers
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
-import org.kryptonmc.krypton.channel.ChannelHandler
-import org.kryptonmc.krypton.extension.logger
-import org.kryptonmc.krypton.extension.readVarInt
+import org.kryptonmc.krypton.packet.ChannelHandler
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.readVarInt
 
 /**
  * Decodes packet data into readable packets and reads the data in by calling this packet's
  * [read][org.kryptonmc.krypton.packet.Packet.read] function
- *
- * @author Alex Wood
  */
 class PacketDecoder : ByteToMessageDecoder() {
 

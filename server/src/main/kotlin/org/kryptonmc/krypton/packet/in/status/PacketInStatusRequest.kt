@@ -5,8 +5,6 @@ import org.kryptonmc.krypton.packet.state.StatusPacket
 
 /**
  * Sent by the client to request the server's status information
- *
- * @author Alex Wood
  */
 class PacketInStatusRequest : StatusPacket(0x00) {
 

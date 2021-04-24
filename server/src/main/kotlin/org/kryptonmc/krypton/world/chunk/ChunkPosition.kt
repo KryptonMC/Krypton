@@ -5,8 +5,6 @@ import kotlin.math.floor
 
 /**
  * Holds a pair of chunk coordinates (x and z)
- *
- * @author Callum Seabrook
  */
 data class ChunkPosition(val x: Int, val z: Int) {
 

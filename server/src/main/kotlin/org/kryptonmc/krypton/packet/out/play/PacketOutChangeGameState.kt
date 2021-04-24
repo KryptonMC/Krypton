@@ -1,8 +1,8 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.extension.writeUByte
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeUByte
 
 /**
  * Changes the state of something in the game, such as when it starts raining or when you "win" the game.
@@ -11,8 +11,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  *
  * @param reason the reason for the update (the state that's being updated, just what it's named in the protocol)
  * @param value the value of the updated state. Not used for most states.
- *
- * @author Callum Seabrook
  */
 class PacketOutChangeGameState(
     private val reason: GameState,

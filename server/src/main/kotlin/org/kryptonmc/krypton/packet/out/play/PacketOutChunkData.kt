@@ -2,11 +2,11 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import org.kryptonmc.krypton.extension.*
+import org.kryptonmc.krypton.util.*
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
-import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.chunk.ChunkSection
+import org.kryptonmc.krypton.world.chunk.KryptonChunk
 
 /**
  * This packet is very strange and really weird to compute, so don't expect to understand it straight away.
@@ -15,8 +15,6 @@ import org.kryptonmc.krypton.world.chunk.ChunkSection
  * a much better job at explaining it than I can.
  *
  * @param chunk the chunk to send the data of
- *
- * @author Callum Seabrook
  */
 class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
 

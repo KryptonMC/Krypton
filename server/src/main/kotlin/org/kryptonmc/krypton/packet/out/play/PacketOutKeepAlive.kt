@@ -9,8 +9,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  *
  * @param keepAliveId a unique ID for the keep alive. Vanilla calls this the challenge, and this is generally
  * [System.currentTimeMillis]
- *
- * @author Callum Seabrook
  */
 class PacketOutKeepAlive(private val keepAliveId: Long) : PlayPacket(0x1F) {
 

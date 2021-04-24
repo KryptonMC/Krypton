@@ -2,7 +2,7 @@ package org.kryptonmc.krypton.event
 
 import org.kryptonmc.krypton.api.event.EventBus
 import org.kryptonmc.krypton.api.event.Listener
-import org.kryptonmc.krypton.extension.logger
+import org.kryptonmc.krypton.util.logger
 import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock

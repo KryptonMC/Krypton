@@ -16,25 +16,40 @@ import org.kryptonmc.krypton.api.inventory.item.Material
 import org.kryptonmc.krypton.entity.metadata.MovementFlags
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
-import org.kryptonmc.krypton.extension.logger
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.`in`.play.*
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.*
+import org.kryptonmc.krypton.packet.`in`.play.EntityAction
+import org.kryptonmc.krypton.packet.`in`.play.PacketInAnimation
+import org.kryptonmc.krypton.packet.`in`.play.PacketInChat
+import org.kryptonmc.krypton.packet.`in`.play.PacketInClientSettings
+import org.kryptonmc.krypton.packet.`in`.play.PacketInCreativeInventoryAction
+import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityAction
+import org.kryptonmc.krypton.packet.`in`.play.PacketInHeldItemChange
+import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAbilities
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerBlockPlacement
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPosition
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPositionAndRotation
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerRotation
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
+import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.data.ChatMode
-import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutTabComplete
 import org.kryptonmc.krypton.packet.out.play.entity.EntityAnimation
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityAnimation
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMetadata
-import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMovement.*
+import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMovement.PacketOutEntityHeadLook
+import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMovement.PacketOutEntityPosition
+import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMovement.PacketOutEntityPositionAndRotation
+import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMovement.PacketOutEntityRotation
+import org.kryptonmc.krypton.packet.session.Session
+import org.kryptonmc.krypton.packet.session.SessionManager
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.registry.Registries
-import org.kryptonmc.krypton.session.Session
-import org.kryptonmc.krypton.session.SessionManager
-import org.kryptonmc.krypton.space.toAngle
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.world.block.KryptonBlock
-import java.util.*
+import java.util.Locale
 import kotlin.math.max
 
 /**
@@ -43,8 +58,6 @@ import kotlin.math.max
  *
  * As mentioned above, this is the packet handler for the [Play][org.kryptonmc.krypton.packet.state.PacketState.PLAY] state.
  * This handles all supported inbound packets in the play state.
- *
- * @author Callum Seabrook
  */
 class PlayHandler(
     override val server: KryptonServer,
@@ -102,11 +115,12 @@ class PlayHandler(
             }, text { content(packet.message) })
         }
 
-        val chatPacket = PacketOutChat(message, MessageType.CHAT, session.profile.uuid)
-        sessionManager.sendPackets(chatPacket) {
-            it.currentState == PacketState.PLAY && it.settings.chatMode == ChatMode.ENABLED
-        }
-        server.console.sendMessage(message, MessageType.CHAT)
+//        val chatPacket = PacketOutChat(message, MessageType.CHAT, session.profile.uuid)
+//        sessionManager.sendPackets(chatPacket) {
+//            it.currentState == PacketState.PLAY && it.settings.chatMode == ChatMode.ENABLED
+//        }
+//        server.console.sendMessage(message, MessageType.CHAT)
+        server.sendMessage(player, message, MessageType.CHAT)
     }
 
     private fun handleClientSettings(packet: PacketInClientSettings) {

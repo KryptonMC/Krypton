@@ -3,16 +3,13 @@ package org.kryptonmc.krypton.packet.transformers
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageDecoder
-import org.kryptonmc.krypton.extension.logger
-import org.kryptonmc.krypton.extension.readAllAvailableBytes
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.readAllAvailableBytes
 import javax.crypto.Cipher
 
 /**
  * Decrypts packets using a stream cipher provided by the specified [cipher]. The algorithm for this [cipher] should
- * always be [AES/CFB8/NoPadding][org.kryptonmc.krypton.encryption.Encryption.SHARED_SECRET_ALGORITHM]
- *
- * @author Alex Wood
- * @author Callum Seabrook
+ * always be [AES/CFB8/NoPadding][org.kryptonmc.krypton.util.encryption.Encryption.SHARED_SECRET_ALGORITHM]
  */
 class PacketDecrypter(private val cipher: Cipher) : MessageToMessageDecoder<ByteBuf>() {
 

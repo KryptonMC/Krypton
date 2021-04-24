@@ -2,13 +2,11 @@ package org.kryptonmc.krypton.packet.handlers
 
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.session.Session
+import org.kryptonmc.krypton.packet.session.Session
 
 /**
  * The base interface for packet handlers. This exists primarily to abstract away the [handle]
  * function, so we can call it without actually knowing which handler will handle it. :wesmart:
- *
- * @author Callum Seabrook
  */
 interface PacketHandler {
 

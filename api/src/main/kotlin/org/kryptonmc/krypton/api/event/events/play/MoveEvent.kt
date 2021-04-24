@@ -10,7 +10,6 @@ import org.kryptonmc.krypton.api.world.Location
  * @param player the player who moved
  * @param oldLocation the old location of the player
  * @param newLocation the new location of the player
- * @author Callum Seabrook
  */
 data class MoveEvent(
     val player: Player,

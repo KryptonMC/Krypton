@@ -7,7 +7,6 @@ import io.netty.buffer.ByteBuf
  * A serialiser for argument types of [T]
  *
  * @param T the argument type this is a serialiser for
- * @author Callum Seabrook
  */
 interface ArgumentSerializer<T : ArgumentType<*>> {
 

@@ -1,19 +1,17 @@
 package org.kryptonmc.krypton.packet.out.play.entity.spawn
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.space.toAngle
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
-import org.kryptonmc.krypton.extension.writeAngle
-import org.kryptonmc.krypton.extension.writeUUID
-import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.toAngle
+import org.kryptonmc.krypton.util.writeAngle
+import org.kryptonmc.krypton.util.writeUUID
+import org.kryptonmc.krypton.util.writeVarInt
 
 /**
  * Spawn a player for the client.
  *
  * @param player the player to spawn.
- *
- * @author Callum Seabrook
  */
 class PacketOutSpawnPlayer(private val player: KryptonPlayer) : PlayPacket(0x04) {
 

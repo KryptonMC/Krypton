@@ -7,7 +7,7 @@ import org.kryptonmc.krypton.KryptonServer
 import kotlin.system.exitProcess
 
 /**
- * @author Callum Seabrook
+ * The console handler for this server
  */
 class KryptonConsole(private val server: KryptonServer) : SimpleTerminalConsole() {
 

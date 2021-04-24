@@ -6,14 +6,12 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.api.event.events.play.SkinSettings
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.entity.MainHand
-import org.kryptonmc.krypton.extension.writeMetadata
+import org.kryptonmc.krypton.util.writeMetadata
 
 /**
  * Represents metadata common to all players
  *
  * The ordering of this comes from [wiki.vg](https://wiki.vg/Entity_metadata#Entity_Metadata_Format)
- *
- * @author Callum Seabrook
  */
 open class PlayerMetadata(
     movementFlags: MovementFlags? = null,
@@ -74,6 +72,9 @@ open class PlayerMetadata(
     )
 }
 
+/**
+ * Convert this [SkinSettings] object to a flags field for the protocol
+ */
 fun SkinSettings.toProtocol(): Byte {
     var byte = 0
     if (cape) byte += 1
@@ -86,29 +87,9 @@ fun SkinSettings.toProtocol(): Byte {
     return byte.toByte()
 }
 
-data class SkinFlags(
-    val cape: Boolean = false,
-    val jacket: Boolean = false,
-    val leftSleeve: Boolean = false,
-    val rightSleeve: Boolean = false,
-    val leftPants: Boolean = false,
-    val rightPants: Boolean = false,
-    val hat: Boolean = false
-) {
-
-    fun toProtocol(): Byte {
-        var byte = 0x0
-        if (cape) byte += 0x01
-        if (jacket) byte += 0x02
-        if (leftSleeve) byte += 0x04
-        if (rightSleeve) byte += 0x08
-        if (leftPants) byte += 0x10
-        if (rightPants) byte += 0x20
-        if (hat) byte += 0x40
-        return byte.toByte()
-    }
-}
-
+/**
+ * Convert a flags field to a [SkinSettings] object
+ */
 fun Short.toSkinSettings() = SkinSettings(
     (toInt() and 0x01) != 0,
     (toInt() and 0x02) != 0,

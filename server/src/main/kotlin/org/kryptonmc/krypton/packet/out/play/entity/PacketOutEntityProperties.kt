@@ -3,11 +3,10 @@ package org.kryptonmc.krypton.packet.out.play.entity
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.Attribute
 import org.kryptonmc.krypton.entity.AttributeKey
-import org.kryptonmc.krypton.extension.writeKey
-import org.kryptonmc.krypton.extension.writeString
-import org.kryptonmc.krypton.extension.writeUUID
-import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeKey
+import org.kryptonmc.krypton.util.writeUUID
+import org.kryptonmc.krypton.util.writeVarInt
 
 /**
  * Set entity attributes. Note that this packet is not incremental, and sending it with data will reset
@@ -15,8 +14,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  *
  * @param entityId the ID of the entity to set the attributes of
  * @param properties the attributes to set
- *
- * @author Callum Seabrook
  */
 class PacketOutEntityProperties(
     private val entityId: Int,
@@ -35,7 +32,7 @@ class PacketOutEntityProperties(
             property.modifiers.forEach {
                 buf.writeUUID(it.uuid)
                 buf.writeDouble(it.amount)
-                buf.writeByte(it.operation.id)
+                buf.writeByte(it.operation.ordinal)
             }
         }
     }

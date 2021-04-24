@@ -2,8 +2,6 @@ package org.kryptonmc.krypton.api.scheduling
 
 /**
  * Represents the current state of a scheduled [Task]
- *
- * @author Callum Seabrook
  */
 enum class TaskState {
 

@@ -3,13 +3,11 @@ package org.kryptonmc.krypton.packet.transformers
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToByteEncoder
-import org.kryptonmc.krypton.extension.writeVarInt
+import org.kryptonmc.krypton.util.writeVarInt
 import java.util.zip.Deflater
 
 /**
  * Compresses packets that meet or exceed the specified [threshold] in length.
- *
- * @author Callum Seabrook
  */
 class PacketCompressor(var threshold: Int) : MessageToByteEncoder<ByteBuf>() {
 

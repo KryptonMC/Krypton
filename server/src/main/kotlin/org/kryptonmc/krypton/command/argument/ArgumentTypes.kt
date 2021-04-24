@@ -1,14 +1,24 @@
 package org.kryptonmc.krypton.command.argument
 
-import com.mojang.brigadier.arguments.*
+import com.mojang.brigadier.arguments.ArgumentType
+import com.mojang.brigadier.arguments.BoolArgumentType
+import com.mojang.brigadier.arguments.DoubleArgumentType
+import com.mojang.brigadier.arguments.FloatArgumentType
+import com.mojang.brigadier.arguments.IntegerArgumentType
+import com.mojang.brigadier.arguments.LongArgumentType
+import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.registry.toNamespacedKey
 import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.EmptyArgumentSerializer
-import org.kryptonmc.krypton.command.argument.serializer.brigadier.*
-import org.kryptonmc.krypton.extension.logger
-import org.kryptonmc.krypton.extension.writeKey
+import org.kryptonmc.krypton.command.argument.serializer.brigadier.DoubleArgumentSerializer
+import org.kryptonmc.krypton.command.argument.serializer.brigadier.FloatArgumentSerializer
+import org.kryptonmc.krypton.command.argument.serializer.brigadier.IntegerArgumentSerializer
+import org.kryptonmc.krypton.command.argument.serializer.brigadier.LongArgumentSerializer
+import org.kryptonmc.krypton.command.argument.serializer.brigadier.StringArgumentSerializer
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.writeKey
 import kotlin.reflect.KClass
 
 /**
@@ -16,8 +26,6 @@ import kotlin.reflect.KClass
  *
  * An almost exact replica of the internal one made by Mojang, with a few changes like
  * the use of `KClass` over `Class` to make it easier for us.
- *
- * @author Callum Seabrook
  */
 object ArgumentTypes {
 

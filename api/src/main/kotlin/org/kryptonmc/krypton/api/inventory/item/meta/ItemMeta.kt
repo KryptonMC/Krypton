@@ -2,6 +2,9 @@ package org.kryptonmc.krypton.api.inventory.item.meta
 
 import net.kyori.adventure.text.Component
 
+/**
+ * Holder for metadata values for an item
+ */
 interface ItemMeta {
 
     /**

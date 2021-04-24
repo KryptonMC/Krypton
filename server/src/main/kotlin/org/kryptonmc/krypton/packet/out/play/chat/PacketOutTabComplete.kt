@@ -4,10 +4,10 @@ import com.mojang.brigadier.Message
 import com.mojang.brigadier.suggestion.Suggestions
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.extension.writeChat
-import org.kryptonmc.krypton.extension.writeString
-import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeChat
+import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeVarInt
 
 /**
  * Sent by the server as a response to the [tab complete][org.kryptonmc.krypton.packet.in.play.PacketInTabComplete].
@@ -15,8 +15,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  *
  * @param id the unique ID sent by the client to identify this request
  * @param matches matches for the given request
- *
- * @author Callum Seabrook
  */
 class PacketOutTabComplete(
     private val id: Int,

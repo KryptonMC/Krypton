@@ -8,8 +8,6 @@ import java.io.DataOutputStream
  * string lists with ease.
  *
  * Used in the GS4 query handler.
- *
- * @author Callum Seabrook
  */
 class NetworkDataOutputStream(size: Int) {
 
@@ -29,6 +27,5 @@ class NetworkDataOutputStream(size: Int) {
 
     fun reset() = outputStream.reset()
 
-    val byteArray: ByteArray
-        get() = outputStream.toByteArray()
+    val byteArray: ByteArray get() = outputStream.toByteArray()
 }

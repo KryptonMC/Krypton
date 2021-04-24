@@ -4,8 +4,6 @@ import org.kryptonmc.krypton.api.registry.NamespacedKey
 
 /**
  * Professions of villagers
- *
- * @author Callum Seabrook
  */
 enum class VillagerProfession(val id: Int) {
 

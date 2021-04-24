@@ -5,8 +5,6 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 /**
  * The command manager is responsible for registering, unregistering, and
  * keeping track of [Command]s
- *
- * @author Callum Seabrook
  */
 interface CommandManager {
 

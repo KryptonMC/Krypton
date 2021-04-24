@@ -7,8 +7,6 @@ import org.kryptonmc.krypton.api.inventory.item.meta.ItemMeta
 
 /**
  * Builder for building [ItemStack]s
- *
- * @author Callum Seabrook
  */
 @Suppress("unused")
 class ItemBuilder internal constructor(

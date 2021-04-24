@@ -1,14 +1,11 @@
 package org.kryptonmc.krypton.world.chunk
 
 import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.data.StateIndexHolder
 
 /**
  * A section of a chunk (*nah*). These are 16x16x16 areas that hold the actual block states and palette information
- *
- * @author Callum Seabrook
  */
 data class ChunkSection(
     val y: Int,

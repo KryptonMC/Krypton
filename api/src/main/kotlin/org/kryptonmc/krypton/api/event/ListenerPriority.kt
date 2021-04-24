@@ -5,8 +5,6 @@ package org.kryptonmc.krypton.api.event
  *
  * This is an object with const values as opposed to an enum
  * because BungeeCord.
- *
- * @author Callum Seabrook
  */
 object ListenerPriority {
 

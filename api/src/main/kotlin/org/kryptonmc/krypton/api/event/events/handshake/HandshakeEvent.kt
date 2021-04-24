@@ -11,6 +11,5 @@ import java.net.InetSocketAddress
  * status information for the server.
  *
  * @param address the address of the connecting client
- * @author Callum Seabrook
  */
 data class HandshakeEvent(val address: InetSocketAddress) : Event

@@ -15,8 +15,6 @@ private val PALETTE: Map<NamespacedKey, RegistryBlock> = Json.decodeFromString(B
 
 /**
  * The global block palette, backed by the block state registry
- *
- * @author Callum Seabrook
  */
 object GlobalPalette : Map<NamespacedKey, RegistryBlock> by PALETTE {
 

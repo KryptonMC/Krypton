@@ -5,11 +5,14 @@ import org.kryptonmc.krypton.api.world.scoreboard.Option
 import org.kryptonmc.krypton.api.world.scoreboard.OptionApplication
 import org.kryptonmc.krypton.api.world.scoreboard.Team
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
-import org.kryptonmc.krypton.extension.writeChat
-import org.kryptonmc.krypton.extension.writeString
-import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeChat
+import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeVarInt
 
+/**
+ * Tells the client to perform an action to a team on their current scoreboard
+ */
 class PacketOutScoreboardTeam(
     private val action: TeamAction,
     private val team: Team,
@@ -19,7 +22,7 @@ class PacketOutScoreboardTeam(
 
     override fun write(buf: ByteBuf) {
         buf.writeString(team.name, 16)
-        buf.writeByte(action.id)
+        buf.writeByte(action.ordinal)
 
         when (action) {
             TeamAction.CREATE -> {
@@ -45,7 +48,7 @@ class PacketOutScoreboardTeam(
         writeByte(team.flagsToProtocol())
         writeString(team.nametagVisibility(), 32)
         writeString(team.collisionRule(), 32)
-        writeVarInt(team.color.id)
+        writeVarInt(team.color.ordinal)
         writeChat(team.prefix)
         writeChat(team.suffix)
     }
@@ -76,11 +79,11 @@ class PacketOutScoreboardTeam(
     }
 }
 
-enum class TeamAction(val id: Int) {
+enum class TeamAction {
 
-    CREATE(0),
-    REMOVE(1),
-    UPDATE_INFO(2),
-    ADD_PLAYERS(3),
-    REMOVE_PLAYERS(4)
+    CREATE,
+    REMOVE,
+    UPDATE_INFO,
+    ADD_PLAYERS,
+    REMOVE_PLAYERS
 }

@@ -4,8 +4,6 @@ import org.kryptonmc.krypton.api.inventory.item.ItemStack
 
 /**
  * Represents an inventory that holds [ItemStack]s
- *
- * @author Callum Seabrook
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 interface Inventory : Iterable<ItemStack?> {

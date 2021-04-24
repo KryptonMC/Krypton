@@ -9,11 +9,8 @@ package org.kryptonmc.krypton.api.plugin
  * - In the initialised phase, the plugin is ready to use.
  * - In the shutting down phase, the plugin will be fully unloaded.
  * - In the shut down phase, the plugin is unloaded and should not be used.
- *
- * @author Callum Seabrook
  */
 enum class PluginLoadState {
-
     INITIALIZING,
     INITIALIZED,
     SHUTTING_DOWN,

@@ -13,8 +13,6 @@ import org.kryptonmc.krypton.api.inventory.item.ItemStack
  * - Slots 9-35 are the main inventory (27 slots)
  * - Slots 36-44 are the player's hotbar (9 slots)
  * - Slot 45 is the offhand slot
- *
- * @author Callum Seabrook
  */
 interface PlayerInventory : Inventory {
 

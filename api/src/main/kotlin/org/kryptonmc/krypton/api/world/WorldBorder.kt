@@ -1,5 +1,8 @@
 package org.kryptonmc.krypton.api.world
 
+/**
+ * The area around a world that prevents players from venturing too far into the wilderness.
+ */
 interface WorldBorder {
 
     /**

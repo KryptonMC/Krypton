@@ -4,8 +4,6 @@ package org.kryptonmc.krypton.api.event
  * The event bus is used to register and dispatch events
  *
  * This is heavily based off of BungeeCord's EventBus
- *
- * @author Callum Seabrook
  */
 interface EventBus {
 

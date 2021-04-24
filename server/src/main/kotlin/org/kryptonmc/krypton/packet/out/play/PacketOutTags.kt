@@ -2,8 +2,8 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.extension.writeString
-import org.kryptonmc.krypton.extension.writeVarInt
+import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.Registries
 import org.kryptonmc.krypton.registry.tags.Tag
@@ -11,8 +11,6 @@ import org.kryptonmc.krypton.registry.tags.TagManager
 
 /**
  * Tells the client all the tags present on the server. This is an object as it only needs to be instantiated once
- *
- * @author Callum Seabrook
  */
 object PacketOutTags : PlayPacket(0x5B) {
 

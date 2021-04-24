@@ -1,6 +1,6 @@
 package org.kryptonmc.krypton.world.structure
 
-import org.kryptonmc.krypton.space.BoundingBox
+import org.kryptonmc.krypton.api.block.BoundingBox
 
 abstract class Structure(open val id: String)
 

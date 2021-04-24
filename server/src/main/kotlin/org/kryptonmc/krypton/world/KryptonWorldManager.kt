@@ -3,18 +3,33 @@ package org.kryptonmc.krypton.world
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import net.kyori.adventure.bossbar.BossBar
-import net.kyori.adventure.nbt.*
+import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.BinaryTagIO.Compression.GZIP
+import net.kyori.adventure.nbt.BinaryTagTypes
+import net.kyori.adventure.nbt.ByteBinaryTag
+import net.kyori.adventure.nbt.CompoundBinaryTag
+import net.kyori.adventure.nbt.ListBinaryTag
+import net.kyori.adventure.nbt.LongArrayBinaryTag
+import net.kyori.adventure.nbt.StringBinaryTag
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.api.registry.toNamespacedKey
-import org.kryptonmc.krypton.api.world.*
-import org.kryptonmc.krypton.extension.calculateBits
-import org.kryptonmc.krypton.extension.logger
+import org.kryptonmc.krypton.api.world.Biome
+import org.kryptonmc.krypton.api.world.Difficulty
+import org.kryptonmc.krypton.api.world.Gamemode
+import org.kryptonmc.krypton.api.world.World
+import org.kryptonmc.krypton.api.world.WorldManager
+import org.kryptonmc.krypton.api.world.WorldVersion
+import org.kryptonmc.krypton.util.calculateBits
+import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.bossbar.Bossbar
-import org.kryptonmc.krypton.world.chunk.*
+import org.kryptonmc.krypton.world.chunk.ChunkBlock
+import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.chunk.ChunkSection
+import org.kryptonmc.krypton.world.chunk.Heightmaps
+import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.data.StateIndexHolder
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
@@ -26,7 +41,7 @@ import java.io.File
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import kotlin.math.floor
 import kotlin.math.sqrt
@@ -115,11 +130,6 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
                     flags
                 ),
                 key.toNamespacedKey(),
-//                GsonComponentSerializer.gson().deserialize(nbtBossbar.getString("Name")),
-//                BossBar.Color.NAMES.value(nbtBossbar.getString("Color")) ?: BossBar.Color.WHITE,
-//                BossBar.Overlay.NAMES.value(nbtBossbar.getString("Overlay")) ?: BossBar.Overlay.PROGRESS,
-//                nbtBossbar.getInt("Value").toFloat() / nbtBossbar.getInt("Max").toFloat(),
-//                flags,
                 nbtBossbar.getBoolean("Visible"),
                 players
             )

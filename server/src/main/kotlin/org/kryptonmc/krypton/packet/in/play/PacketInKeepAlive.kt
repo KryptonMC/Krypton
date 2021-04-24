@@ -5,8 +5,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 
 /**
  * Sent by the client to confirm to the server that it's still alive.
- *
- * @author Callum Seabrook
  */
 class PacketInKeepAlive : PlayPacket(0x10) {
 

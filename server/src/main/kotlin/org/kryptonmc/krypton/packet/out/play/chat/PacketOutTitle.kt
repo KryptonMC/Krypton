@@ -3,10 +3,10 @@ package org.kryptonmc.krypton.packet.out.play.chat
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
-import org.kryptonmc.krypton.extension.writeChat
-import org.kryptonmc.krypton.extension.writeDuration
-import org.kryptonmc.krypton.extension.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeChat
+import org.kryptonmc.krypton.util.writeDuration
+import org.kryptonmc.krypton.util.writeVarInt
 import java.time.Duration
 
 /**
@@ -16,8 +16,6 @@ import java.time.Duration
  * @param title the title to send to the player. Not used if the action is [TitleAction.SET_ACTION_BAR]
  * (also includes [TitleAction.HIDE] and [TitleAction.RESET], where no data is sent)
  * @param actionBar the action bar to send to the player. Not used if the action isn't [TitleAction.SET_ACTION_BAR]
- *
- * @author Callum Seabrook
  */
 class PacketOutTitle(
     private val action: TitleAction,

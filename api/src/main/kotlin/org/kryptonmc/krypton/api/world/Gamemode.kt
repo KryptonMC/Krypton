@@ -1,14 +1,15 @@
 package org.kryptonmc.krypton.api.world
 
 import kotlinx.serialization.Serializable
-import net.kyori.adventure.util.Index
-import java.util.*
+import org.kryptonmc.krypton.api.world.Gamemode.ADVENTURE
+import org.kryptonmc.krypton.api.world.Gamemode.CREATIVE
+import org.kryptonmc.krypton.api.world.Gamemode.SPECTATOR
+import org.kryptonmc.krypton.api.world.Gamemode.SURVIVAL
+import java.util.Locale
 
 /**
  * Represents a game mode, those being [SURVIVAL], [CREATIVE], [ADVENTURE]
  * and [SPECTATOR].
- *
- * @author Callum Seabrook
  */
 @Serializable
 @Suppress("MemberVisibilityCanBePrivate")

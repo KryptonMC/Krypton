@@ -14,8 +14,6 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 /**
  * A hacky serialiser that bridges the Gson component serialiser and kotlinx.serialization, allowing us to (de)serialise
  * using this serialiser rather than treating everything as a string and parsing that
- *
- * @author Callum Seabrook
  */
 object ComponentSerializer : KSerializer<Component> {
 

@@ -48,7 +48,8 @@ allprojects {
             freeCompilerArgs = listOf(
                 "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
                 "-Xopt-in=kotlin.ExperimentalUnsignedTypes",
-                "-Xinline-classes"
+                "-Xinline-classes",
+                "-Xjvm-default=enable"
             )
         }
     }

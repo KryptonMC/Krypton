@@ -6,7 +6,6 @@ package org.kryptonmc.krypton.api.command
  * @param name the name of the command
  * @param permission the permission required to execute the command (`null` for no permission)
  * @param aliases a list of aliases for this command
- * @author Callum Seabrook
  */
 abstract class Command @JvmOverloads constructor(
     val name: String,
@@ -20,7 +19,7 @@ abstract class Command @JvmOverloads constructor(
      * @param sender the sender who ran this command
      * @param args the arguments supplied to this command
      */
-    abstract suspend fun execute(sender: Sender, args: List<String>)
+    abstract fun execute(sender: Sender, args: List<String>)
 
     /**
      * Called when the [sender] sends a tab complete request.

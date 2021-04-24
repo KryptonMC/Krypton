@@ -2,8 +2,8 @@ package org.kryptonmc.krypton.packet.out.play.chat
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.extension.writeChat
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeChat
 
 /**
  * This only exists in the protocol for use in modded servers. It is never used by the official vanilla
@@ -11,8 +11,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  *
  * Informs the client of the component to display above ([header] of the list) or below ([footer] of the list)
  * the player list.
- *
- * @author Callum Seabrook
  */
 class PacketOutPlayerListHeaderFooter(
     private val header: Component,

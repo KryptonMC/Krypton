@@ -7,8 +7,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  * Sent when the player changes the item that they are currently holding in their hand, such
  * as when the player scrolls across their hotbar, presses one of the number keys, or switches
  * out the item they have in their hand.
- *
- * @author Callum Seabrook
  */
 class PacketInHeldItemChange : PlayPacket(0x25) {
 

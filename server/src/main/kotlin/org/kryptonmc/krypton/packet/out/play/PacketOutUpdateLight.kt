@@ -1,7 +1,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.extension.writeVarInt
+import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 
@@ -9,8 +9,6 @@ import org.kryptonmc.krypton.world.chunk.KryptonChunk
  * Update the light levels for the specified [chunk]
  *
  * @param chunk the chunk to update the light levels for
- *
- * @author Callum Seabrook
  */
 class PacketOutUpdateLight(private val chunk: KryptonChunk) : PlayPacket(0x23) {
 

@@ -10,7 +10,6 @@ import org.kryptonmc.krypton.api.event.Event
  * @param sender the sender who's permission is being checked
  * @param permission the permission being checked, or null if there isn't a permission
  * @param has if the player has the permission
- * @author Callum Seabrook
  */
 data class PermissionCheckEvent(
     val sender: Sender,
@@ -31,8 +30,6 @@ data class PermissionCheckEvent(
 
 /**
  * The result of a permission check
- *
- * @author Callum Seabrook
  */
 enum class PermissionCheckResult(val value: Boolean) {
 
