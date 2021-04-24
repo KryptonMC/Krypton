@@ -163,15 +163,15 @@ object ParticleType : Iterable<Particle> {
 
     private var id: Int = 0
 
-    private fun simple(name: String) = add(SimpleParticle(NamespacedKey(value = name), id++))
-    private fun directional(name: String) = add(DirectionalParticle(NamespacedKey(value = name), id++))
-    private fun block(name: String) = add(BlockParticle(NamespacedKey(value = name), id++))
-    private fun item(name: String) = add(ItemParticle(NamespacedKey(value = name), id++))
-    private fun dust(name: String) = add(DustParticle(NamespacedKey(value = name), id++))
-    private fun color(name: String) = add(ColorParticle(NamespacedKey(value = name), id++))
-    private fun note(name: String) = add(NoteParticle(NamespacedKey(value = name), id++))
+    @JvmStatic private fun simple(name: String) = add(SimpleParticle(NamespacedKey(value = name), id++))
+    @JvmStatic private fun directional(name: String) = add(DirectionalParticle(NamespacedKey(value = name), id++))
+    @JvmStatic private fun block(name: String) = add(BlockParticle(NamespacedKey(value = name), id++))
+    @JvmStatic private fun item(name: String) = add(ItemParticle(NamespacedKey(value = name), id++))
+    @JvmStatic private fun dust(name: String) = add(DustParticle(NamespacedKey(value = name), id++))
+    @JvmStatic private fun color(name: String) = add(ColorParticle(NamespacedKey(value = name), id++))
+    @JvmStatic private fun note(name: String) = add(NoteParticle(NamespacedKey(value = name), id++))
 
-    private fun <T : Particle> add(particle: T): T {
+    @JvmStatic private fun <T : Particle> add(particle: T): T {
         internalValues += particle
         return particle
     }

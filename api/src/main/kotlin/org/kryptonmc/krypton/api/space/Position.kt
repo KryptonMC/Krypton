@@ -3,6 +3,7 @@
 package org.kryptonmc.krypton.api.space
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.krypton.api.space.Vector.Companion.equals
 import org.kryptonmc.krypton.api.world.Location
 import kotlin.math.abs
 import kotlin.math.acos
@@ -323,7 +324,7 @@ interface Position : Comparable<Position>, Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmDefault
-    fun normalize(other: Position) = apply(x / length, y / length, z / length)
+    fun normalize() = apply(x / length, y / length, z / length)
 
     /**
      * The floored value of the X component. Used for block coordinates.
@@ -344,7 +345,7 @@ interface Position : Comparable<Position>, Cloneable {
      * If this vector is normalised or not. A vector is defined as being normalised
      * if it has a length of 1.
      */
-    val isNormalized: Boolean get() = abs(lengthSquared - 1) == 0.0
+    val isNormalized: Boolean get() = abs(lengthSquared - 1) < EPSILON
 
     /**
      * Apply the given [x], [y] and [z] values to the given object by returning a new
@@ -365,5 +366,14 @@ interface Position : Comparable<Position>, Cloneable {
         if (x > other.x && y > other.y && z > other.z) return 1
         if (x < other.x && y < other.y && z < other.z) return -1
         return 0
+    }
+
+    companion object {
+
+        /**
+         * Error correction term for fuzzy [equals] method, to account
+         * for floating point errors.
+         */
+        const val EPSILON = 0.000001
     }
 }

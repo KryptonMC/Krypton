@@ -3,6 +3,7 @@
 package org.kryptonmc.krypton.api.space
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.krypton.api.space.Position.Companion.EPSILON
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.World
 import kotlin.math.abs
@@ -58,19 +59,15 @@ data class Vector(
     fun toLocation(world: World, yaw: Float, pitch: Float) = Location(world, x, y, z, yaw, pitch)
 
     override fun equals(other: Any?): Boolean {
-        if (other !is Vector) return false
-        return abs(x - other.x) < EPSILON && abs(y - other.y) < EPSILON && abs(z - other.z) < EPSILON && (this::class == other::class)
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as Vector
+        return abs(x - other.x) < EPSILON && abs(y - other.y) < EPSILON && abs(z - other.z) < EPSILON
     }
 
     override fun apply(x: Double, y: Double, z: Double) = copy(x = x, y = y, z = z)
 
     companion object {
-
-        /**
-         * Error correction term for fuzzy [equals] method, to account
-         * for floating point errors.
-         */
-        const val EPSILON = 0.000001
 
         @JvmField
         val ZERO = Vector(0, 0, 0)

@@ -7,6 +7,7 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import net.kyori.adventure.extra.kotlin.keybind
 import net.kyori.adventure.key.Key
 
 /**
@@ -19,6 +20,11 @@ data class NamespacedKey @JvmOverloads constructor(
     val namespace: String = "minecraft",
     val value: String
 ) : Key {
+
+    init {
+        require(':' !in namespace && ':' !in value)
+        require(NAMESPACE_REGEX matches namespace)
+    }
 
     override fun namespace() = namespace
 

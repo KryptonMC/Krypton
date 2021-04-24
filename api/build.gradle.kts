@@ -6,6 +6,10 @@ plugins {
     signing
 }
 
+pitest {
+    excludedClasses.set(setOf("org.kryptonmc.krypton.api.effect.particle.*ParticleEffectBuilder"))
+}
+
 publishing {
     applyRepositories(project)
     publications {

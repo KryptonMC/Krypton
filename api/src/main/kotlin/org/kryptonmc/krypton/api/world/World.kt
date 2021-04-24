@@ -79,4 +79,14 @@ data class WorldVersion(
     val id: Int,
     val name: String,
     val isSnapshot: Boolean
-)
+) {
+
+    companion object {
+
+        /**
+         * The current world version
+         */
+        @JvmField
+        val CURRENT = WorldVersion(2568, "1.16.5", false)
+    }
+}

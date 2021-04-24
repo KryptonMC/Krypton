@@ -1,5 +1,7 @@
 package org.kryptonmc.krypton.api
 
+import io.mockk.every
+import io.mockk.mockk
 import org.kryptonmc.krypton.api.effect.particle.BlockParticle
 import org.kryptonmc.krypton.api.effect.particle.ColorParticle
 import org.kryptonmc.krypton.api.effect.particle.DirectionalParticle
@@ -20,31 +22,24 @@ private val KEY = NamespacedKey("krypton", "test")
 class ParticleTests {
 
     @Test
-    fun `test simple particle holds data correctly`() = SimpleParticle(KEY, 100).test()
+    fun `test particles hold data correctly`() {
+        SimpleParticle(KEY, 100).test()
+        DirectionalParticle(KEY, 100).test()
+        BlockParticle(KEY, 100).test()
+        ItemParticle(KEY, 100).test()
+        ColorParticle(KEY, 100).test()
+        DustParticle(KEY, 100).test()
+        NoteParticle(KEY, 100).test()
+    }
 
     @Test
-    fun `test directional particle holds data correctly`() = DirectionalParticle(KEY, 100).test()
+    fun `test particle type list is not empty and iterates`() {
+        assertTrue(ParticleType.values.isNotEmpty())
+        assertNotNull(ParticleType.iterator())
+    }
 
     @Test
-    fun `test block particle holds data correctly`() = BlockParticle(KEY, 100).test()
-
-    @Test
-    fun `test item particle holds data correctly`() = ItemParticle(KEY, 100).test()
-
-    @Test
-    fun `test color particle holds data correctly`() = ColorParticle(KEY, 100).test()
-
-    @Test
-    fun `test dust particle holds data correctly`() = DustParticle(KEY, 100).test()
-
-    @Test
-    fun `test note particle holds data correctly`() = NoteParticle(KEY, 100).test()
-
-    @Test
-    fun `test particle type list contains entries`() = assertTrue(ParticleType.values.isNotEmpty())
-
-    @Test
-    fun `test all particle type entry ids`() {
+    fun `test all particle type entry ids and nullability`() {
         var id = 0
         ParticleType.values.forEachIndexed { index, it ->
             assertNotNull(it)
@@ -54,8 +49,41 @@ class ParticleTests {
         }
     }
 
+    @Test
+    fun `test private particle initializer functions`() {
+        callMethod("simple")
+        callMethod("directional")
+        callMethod("block")
+        callMethod("item")
+        callMethod("dust")
+        callMethod("color")
+        callMethod("note")
+
+        val particle = mockk<Particle> {
+            every { id } returns 79
+        }
+        val function = ParticleType::class.java.getDeclaredMethod("add", Particle::class.java).apply { isAccessible = true }
+        assertNotNull(function.invoke(null, particle))
+    }
+
+    @Test
+    fun `test particle builder functions`() {
+        assertNotNull(SimpleParticle(KEY, 100).builder)
+        assertNotNull(DirectionalParticle(KEY, 100).builder)
+        assertNotNull(BlockParticle(KEY, 100).builder)
+        assertNotNull(ItemParticle(KEY, 100).builder)
+        assertNotNull(ColorParticle(KEY, 100).builder)
+        assertNotNull(DustParticle(KEY, 100).builder)
+        assertNotNull(NoteParticle(KEY, 100).builder)
+    }
+
     private fun Particle.test() {
         assertEquals(KEY, key)
         assertEquals(100, id)
+    }
+
+    private fun callMethod(name: String) {
+        val function = ParticleType::class.java.getDeclaredMethod(name, String::class.java).apply { isAccessible = true }
+        assertNotNull(function.invoke(null, "test"))
     }
 }

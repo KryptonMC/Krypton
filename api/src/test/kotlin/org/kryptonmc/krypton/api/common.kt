@@ -12,11 +12,14 @@ import org.kryptonmc.krypton.api.command.Command
 import org.kryptonmc.krypton.api.command.CommandManager
 import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.api.dummy.DummyCommand
+import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.event.EventBus
 import org.kryptonmc.krypton.api.plugin.Plugin
 import org.kryptonmc.krypton.api.plugin.PluginContext
 import org.kryptonmc.krypton.api.plugin.PluginDescriptionFile
 import java.io.File
+import java.net.InetSocketAddress
+import java.util.UUID
 
 val commandManagerMock = mockk<CommandManager> {
     every { register(any<Command>()) } returns Unit
@@ -36,14 +39,19 @@ val server = mockk<Server> {
     every { eventBus } returns eventBusMock
 }
 
-val command = spyk(DummyCommand("test", "test.test", listOf("hello", "world"))) {
-    every { execute(any(), any()) } returns Unit
-    every { suggest(any(), any()) } returns listOf("suggest", "me")
-}
+val command = DummyCommand("test", "test.test", listOf("hello", "world"))
 
 val sender = mockk<Sender> {
     every { name } returns "Dave"
     every { permissions } returns emptyMap()
+}
+
+val player = mockk<Player> {
+    every { name } returns "Dorothy"
+    every { permissions } returns emptyMap()
+    every { uuid } returns UUID.randomUUID()
+    every { address } returns InetSocketAddress.createUnresolved("0.0.0.0", 25565)
+    every { sendMessage(any()) } just runs
 }
 
 val description = PluginDescriptionFile(

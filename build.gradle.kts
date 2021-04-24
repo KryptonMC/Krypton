@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "org.kryptonmc"
-version = "0.18.4"
+version = "0.18.5"
 
 rootProject.extra["globalVersion"] = project.version
 
@@ -86,10 +86,7 @@ subprojects {
         targetTests.set(setOf("org.kryptonmc.*"))
         threads.set(Runtime.getRuntime().availableProcessors())
         outputFormats.set(setOf("XML", "HTML"))
-        excludedClasses.set(setOf(
-            "org.kryptonmc.krypton.api.effect.particle.*ParticleEffectBuilder",
-            "org.kryptonmc.krypton.api.effect.particle.ParticleType" // private functions untestable
-        ))
+        excludedMethods.set(setOf("equals", "hashCode", "toString"))
     }
 
     task<Jar>("sourcesJar") {
