@@ -23,7 +23,7 @@ data class Tag(val name: NamespacedKey, val values: MutableSet<NamespacedKey> = 
 
     companion object {
 
-        val EMPTY = Tag(NamespacedKey(value = "krypton:empty"))
+        val EMPTY = Tag(NamespacedKey("krypton", "empty"))
     }
 }
 

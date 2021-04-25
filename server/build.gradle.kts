@@ -1,6 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.kryptonmc.krypton.Versions
 import org.kryptonmc.krypton.adventure
 import org.kryptonmc.krypton.applyCommon
 import org.kryptonmc.krypton.applyRepositories
@@ -45,7 +46,7 @@ dependencies {
     // HTTP
     api("com.squareup.retrofit2:retrofit:2.9.0")
     api("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
-    api("com.squareup.okhttp3:okhttp:4.9.1")
+    api("com.squareup.okhttp3:okhttp:${Versions.OKHTTP}")
 
     // Caching
     api("com.github.ben-manes.caffeine:caffeine:3.0.1")
@@ -72,6 +73,25 @@ tasks {
         val tokens = mapOf("version" to rootProject.extra["globalVersion"])
         filter<ReplaceTokens>("tokens" to tokens)
     }
+}
+
+pitest {
+    avoidCallsTo.set(setOf(
+        "kotlin.jvm.internal",
+        "org.apache.logging.log4j"
+    ))
+    excludedClasses.set(setOf(
+        "org.kryptonmc.krypton.KryptonKt*",
+        "org.kryptonmc.krypton.KryptonCLI*",
+        "org.kryptonmc.krypton.KryptonServer*",
+        "org.kryptonmc.krypton.NettyProcess*",
+        "org.kryptonmc.krypton.WatchdogProcess*",
+        "org.kryptonmc.krypton.auth.MojangUUIDSerializer*",
+        "org.kryptonmc.krypton.auth.requests.SessionService*"
+    ))
+    excludedMethods.set(setOf(
+        "write\$Self"
+    ))
 }
 
 publishing {

@@ -22,7 +22,7 @@ data class NamespacedKey @JvmOverloads constructor(
 ) : Key {
 
     init {
-        require(':' !in namespace && ':' !in value)
+        require(':' !in namespace && ':' !in value) { "Namespace or value contained ':'! Namespace: $namespace, value: $value" }
         require(NAMESPACE_REGEX matches namespace)
     }
 

@@ -2,6 +2,7 @@ import org.gradle.jvm.tasks.Jar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.kryptonmc.krypton.Versions
 import org.kryptonmc.krypton.adventure
+import org.kryptonmc.krypton.dependsOn
 import org.kryptonmc.krypton.kotlinx
 import org.kryptonmc.krypton.log4j
 
@@ -98,4 +99,6 @@ subprojects {
         from(tasks["dokkaJavadoc"])
         archiveClassifier.set("javadoc")
     }
+
+    tasks["build"] dependsOn tasks["test"]
 }
