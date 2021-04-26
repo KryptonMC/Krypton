@@ -51,11 +51,8 @@ interface Chunk {
      * The time that this chunk was last updated. This is set when the chunk is saved to disk.
      */
     val lastUpdate: Long
-<<<<<<< HEAD
-=======
 
     fun getBlock(position: Position): Block?
 
     fun setBlock(block: Block): Boolean
->>>>>>> Added better block placement support
 }

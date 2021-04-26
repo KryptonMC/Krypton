@@ -241,8 +241,10 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
 
             val palette = LinkedList(nbtSection.getList("Palette").map { block ->
                 (block as CompoundBinaryTag).let { nbtBlock ->
+                    val name = nbtBlock.getString("Name").toNamespacedKey()
+                    if (name == ChunkBlock.AIR.name) return@let ChunkBlock.AIR
                     ChunkBlock(
-                        nbtBlock.getString("Name").toNamespacedKey(),
+                        name,
                         nbtBlock.getCompound("Properties").associate { it.key to (it.value as StringBinaryTag).value() }
                     )
                 }
@@ -268,17 +270,14 @@ class KryptonWorldManager(override val server: KryptonServer, name: String, sync
             nbt.getIntArray("Biomes").map { Biome.fromId(it) },
             nbt.getLong("LastUpdate"),
             nbt.getLong("inhabitedTime"),
-            mutableMapOf(),
+            listOf(
+                HeightmapBuilder(LongArrayBinaryTag.of(*heightmaps.getLongArray("MOTION_BLOCKING")), MOTION_BLOCKING),
+                HeightmapBuilder(LongArrayBinaryTag.of(*heightmaps.getLongArray("OCEAN_FLOOR")), OCEAN_FLOOR),
+                HeightmapBuilder(LongArrayBinaryTag.of(*heightmaps.getLongArray("WORLD_SURFACE")), WORLD_SURFACE)
+            ),
             carvingMasks,
             nbt.getCompound("Structures")
-        ).apply {
-            this.heightmaps.putAll(mapOf(
-                MOTION_BLOCKING to Heightmap(this, LongArrayBinaryTag.of(*heightmaps.getLongArray("MOTION_BLOCKING")), MOTION_BLOCKING),
-                OCEAN_FLOOR to Heightmap(this, LongArrayBinaryTag.of(*heightmaps.getLongArray("OCEAN_FLOOR")), OCEAN_FLOOR),
-                WORLD_SURFACE to Heightmap(this, LongArrayBinaryTag.of(*heightmaps.getLongArray("WORLD_SURFACE")), WORLD_SURFACE)
-            ))
-            chunkCache.put(position, this)
-        }
+        ).apply { chunkCache.put(position, this) }
     }
 
     fun KryptonWorld.save() {

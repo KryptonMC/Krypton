@@ -73,4 +73,10 @@ data class ChunkSection(
 data class ChunkBlock(
     val name: NamespacedKey,
     val properties: Map<String, String> = emptyMap()
-)
+) {
+
+    companion object {
+
+        val AIR = ChunkBlock(NamespacedKey(value = "air"))
+    }
+}

@@ -11,6 +11,7 @@ import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.chunk.Chunk
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.Heightmap
+import org.kryptonmc.krypton.world.HeightmapBuilder
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.data.BitStorage
 
@@ -21,10 +22,12 @@ data class KryptonChunk(
     override val biomes: List<Biome>,
     override var lastUpdate: Long,
     override var inhabitedTime: Long,
-    val heightmaps: MutableMap<Heightmap.Type, Heightmap>,
+    private val builderHeightmaps: List<HeightmapBuilder>,
     val carvingMasks: Pair<ByteArray, ByteArray>,
     val structures: CompoundBinaryTag
 ) : Chunk {
+
+    val heightmaps = builderHeightmaps.map { Heightmap(this, it.nbt, it.type) }.associateBy { it.type }
 
     override val x: Int get() = position.x
     override val z: Int get() = position.z
@@ -55,9 +58,10 @@ data class KryptonChunk(
 
         val section = sections.firstOrNull { it.y == sectionY } ?: ChunkSection(sectionY).apply {
             sections += this
-            palette += ChunkBlock(Material.AIR.key)
+            palette += ChunkBlock.AIR
             palette += ChunkBlock(block.type.key)
         }
+        if (ChunkBlock.AIR !in section.palette) section.palette.addFirst(ChunkBlock.AIR)
         if (section.blockStates.data.isEmpty()) section.blockStates = BitStorage(4, 4096)
         if (!section.set(block)) return false
 

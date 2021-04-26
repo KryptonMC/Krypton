@@ -6,16 +6,15 @@ import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.data.BitStorage
 
-class Heightmap(private val chunk: KryptonChunk, nbt: LongArrayBinaryTag, type: Type) {
+class Heightmap(private val chunk: KryptonChunk, nbt: LongArrayBinaryTag, val type: Type) {
 
-    private val isOpaque = type.isOpaque
     val data = BitStorage(9, 256, nbt.value())
 
     fun update(x: Int, y: Int, z: Int, material: Material): Boolean {
         val firstAvailable = data[indexOf(x, z)]
         if (y <= firstAvailable - 2) return false
 
-        if (isOpaque(material)) {
+        if (type.isOpaque(material)) {
             if (y >= firstAvailable) {
                 set(x, z, y + 1)
                 return true
@@ -23,7 +22,7 @@ class Heightmap(private val chunk: KryptonChunk, nbt: LongArrayBinaryTag, type: 
         } else if (firstAvailable - 1 == y) {
             for (i in y - 1 downTo 0) {
                 val position = Vector(x, i, z)
-                if (!isOpaque(chunk.getBlock(position).type)) continue
+                if (!type.isOpaque(chunk.getBlock(position).type)) continue
                 set(x, z, i + 1)
                 return true
             }
@@ -50,3 +49,8 @@ class Heightmap(private val chunk: KryptonChunk, nbt: LongArrayBinaryTag, type: 
         private val BLOCKS_MOTION: (Material) -> Boolean = { it.blocksMotion }
     }
 }
+
+data class HeightmapBuilder(
+    val nbt: LongArrayBinaryTag,
+    val type: Heightmap.Type
+)
