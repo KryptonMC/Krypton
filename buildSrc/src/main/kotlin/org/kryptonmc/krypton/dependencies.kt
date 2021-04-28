@@ -9,3 +9,9 @@ fun DependencyHandler.adventure(module: String) = "net.kyori:adventure-$module:$
 fun DependencyHandler.netty(module: String) = "io.netty:netty-$module:${Versions.NETTY}"
 
 fun DependencyHandler.log4j(module: String) = "org.apache.logging.log4j:log4j-$module:${Versions.LOG4J}"
+
+fun DependencyHandler.junit(
+    module: String,
+    subModule: String,
+    version: String = Versions.JUNIT
+) = "org.junit.$module:junit-$module-$subModule:$version"

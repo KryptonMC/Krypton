@@ -21,7 +21,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  * @param recipes the recipes unlocked in the book
  * @param newRecipes the new recipes that should be highlighted in the book
  */
-// TODO: Use this
 class PacketOutUnlockRecipes(
     private val action: UnlockRecipesAction,
     private val isCraftingBookOpen: Boolean = false,

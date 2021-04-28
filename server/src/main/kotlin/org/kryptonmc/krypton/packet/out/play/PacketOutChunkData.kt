@@ -2,8 +2,13 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import org.kryptonmc.krypton.util.*
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.calculateBits
+import org.kryptonmc.krypton.util.varIntSize
+import org.kryptonmc.krypton.util.writeLongArray
+import org.kryptonmc.krypton.util.writeNBTCompound
+import org.kryptonmc.krypton.util.writeUByte
+import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.chunk.ChunkSection
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
@@ -35,7 +40,7 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
 
         if (isFullChunk) { // respect full chunk setting
             buf.writeVarInt(chunk.biomes.size)
-            for (biome in chunk.biomes) buf.writeVarInt(biome.id)
+            chunk.biomes.forEach { buf.writeVarInt(it.id) }
         }
 
         val sections = chunk.sections.filter { it.blockStates.isNotEmpty() }

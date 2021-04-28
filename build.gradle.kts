@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.kryptonmc.krypton.Versions
 import org.kryptonmc.krypton.adventure
 import org.kryptonmc.krypton.dependsOn
+import org.kryptonmc.krypton.junit
 import org.kryptonmc.krypton.kotlinx
 import org.kryptonmc.krypton.log4j
 
@@ -51,9 +52,9 @@ subprojects {
         api(log4j("api"))
 
         // Testing
-        testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT}")
-        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.JUNIT}")
-        testImplementation("org.junit.platform:junit-platform-runner:1.7.1")
+        testImplementation(junit("jupiter", "api"))
+        testRuntimeOnly(junit("jupiter", "engine"))
+        testImplementation(junit("platform", "runner", "1.7.1"))
         testImplementation(kotlin("test-junit5"))
         testImplementation("io.mockk:mockk:1.10.6")
     }
