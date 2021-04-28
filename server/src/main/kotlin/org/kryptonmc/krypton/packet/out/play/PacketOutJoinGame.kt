@@ -73,7 +73,6 @@ class PacketOutJoinGame(
         buf.writeVarInt(maxPlayers)
         buf.writeVarInt(viewDistance)
 
-        // TODO: Add gamerules and make these two use them
         buf.writeBoolean(world.gamerules[Gamerule.REDUCED_DEBUG_INFO].toBoolean()) // reduced debug info
         buf.writeBoolean(!world.gamerules[Gamerule.DO_IMMEDIATE_RESPAWN].toBoolean()) // enable respawn screen
 

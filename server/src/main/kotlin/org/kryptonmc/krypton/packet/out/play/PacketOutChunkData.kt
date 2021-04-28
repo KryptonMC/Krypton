@@ -41,7 +41,7 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
 
         if (isFullChunk) { // respect full chunk setting
             buf.writeVarInt(chunk.biomes.size)
-            for (biome in chunk.biomes) buf.writeVarInt(biome.id)
+            chunk.biomes.forEach { buf.writeVarInt(it.id) }
         }
 
         val sections = chunk.sections.filter { it.blockStates.isNotEmpty() }
