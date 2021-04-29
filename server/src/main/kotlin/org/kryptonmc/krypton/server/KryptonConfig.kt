@@ -41,7 +41,8 @@ data class ServerConfig(
     val port: Int = 25565,
     @SerialName("online-mode") val onlineMode: Boolean = true,
     @SerialName("compression-threshold") val compressionThreshold: Int = 256,
-    @SerialName("tick-threshold") val tickThreshold: Int = 60000
+    @SerialName("tick-threshold") val tickThreshold: Int = 60000,
+    val bungeecord: Boolean = false
 )
 
 /**
