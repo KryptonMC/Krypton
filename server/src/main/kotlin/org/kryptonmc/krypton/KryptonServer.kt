@@ -128,6 +128,9 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
             nettyProcess.run()
         }
 
+        LOGGER.debug("Starting bStats metrics")
+        KryptonMetrics.initialize(this, config.other.metrics)
+
         if (!config.server.onlineMode) {
             LOGGER.warn("-----------------------------------------------------------------------------------")
             LOGGER.warn("SERVER IS IN OFFLINE MODE! THIS SERVER WILL MAKE NO ATTEMPTS TO AUTHENTICATE USERS!")
