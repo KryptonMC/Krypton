@@ -198,12 +198,6 @@ class PlayHandler(
         val block = KryptonBlock(item.type, chunk, packet.location.toLocation(world))
 
         session.sendPacket(PacketOutBlockChange(if (chunk.setBlock(block)) block else chunk.getBlock(packet.location)))
-//        try {
-//            chunk.setBlock(block)
-//            session.sendPacket(PacketOutBlockChange(block))
-//        } catch (exception: IllegalArgumentException) {
-//            session.sendPacket(PacketOutBlockChange(chunk.getBlock(packet.location)))
-//        }
     }
 
     private fun handlePositionUpdate(packet: PacketInPlayerPosition) {

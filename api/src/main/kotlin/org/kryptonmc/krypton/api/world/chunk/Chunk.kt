@@ -52,7 +52,19 @@ interface Chunk {
      */
     val lastUpdate: Long
 
-    fun getBlock(position: Position): Block?
+    /**
+     * Get a block from this world at the specified [position]
+     *
+     * @param position the position of the block to retrieve
+     * @return the block at that position
+     */
+    fun getBlock(position: Position): Block
 
+    /**
+     * Set the block at this [block]'s position to the specified [block]
+     *
+     * @param block the block to set this block's position to
+     * @return if the set was successful. This is implementation specific
+     */
     fun setBlock(block: Block): Boolean
 }
