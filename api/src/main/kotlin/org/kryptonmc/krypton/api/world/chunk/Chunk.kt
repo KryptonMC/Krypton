@@ -1,5 +1,7 @@
 package org.kryptonmc.krypton.api.world.chunk
 
+import org.kryptonmc.krypton.api.block.Block
+import org.kryptonmc.krypton.api.space.Position
 import org.kryptonmc.krypton.api.world.Biome
 import org.kryptonmc.krypton.api.world.World
 
@@ -49,4 +51,20 @@ interface Chunk {
      * The time that this chunk was last updated. This is set when the chunk is saved to disk.
      */
     val lastUpdate: Long
+
+    /**
+     * Get a block from this world at the specified [position]
+     *
+     * @param position the position of the block to retrieve
+     * @return the block at that position
+     */
+    fun getBlock(position: Position): Block
+
+    /**
+     * Set the block at this [block]'s position to the specified [block]
+     *
+     * @param block the block to set this block's position to
+     * @return if the set was successful. This is implementation specific
+     */
+    fun setBlock(block: Block): Boolean
 }

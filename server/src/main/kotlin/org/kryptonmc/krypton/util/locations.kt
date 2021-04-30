@@ -1,5 +1,6 @@
 package org.kryptonmc.krypton.util
 
+import org.kryptonmc.krypton.api.space.Position
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.World
@@ -10,12 +11,7 @@ import org.kryptonmc.krypton.api.world.World
  *
  * @author Callum Seabrook
  */
-fun Vector.toProtocol() = ((x.toLong() and 0x3FFFFFF) shl 38) or ((z.toLong() and 0x3FFFFFF) shl 12) or (y.toLong() and 0xFFF)
-
-/**
- * @see Vector.toProtocol
- */
-fun Location.toProtocol() = ((x.toLong() and 0x3FFFFFF) shl 38) or ((z.toLong() and 0x3FFFFFF) shl 12) or (y.toLong() and 0xFFF)
+fun Position.toProtocol() = ((x.toLong() and 0x3FFFFFF) shl 38) or ((z.toLong() and 0x3FFFFFF) shl 12) or (y.toLong() and 0xFFF)
 
 /**
  * Convert a single long to a [Vector]

@@ -32,8 +32,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPla
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
-import org.kryptonmc.krypton.packet.data.ChatMode
-import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
+import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutTabComplete
 import org.kryptonmc.krypton.packet.out.play.entity.EntityAnimation
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityAnimation
@@ -193,10 +192,12 @@ class PlayHandler(
 
         val world = session.player.world
         val chunk = world.chunks.firstOrNull { session.player.location in it.position } ?: return
-        val section = chunk.sections.firstOrNull { it.y == (session.player.location.y.toInt() / 16) } ?: return
+//        val section = chunk.sections.firstOrNull { it.y == (session.player.location.y.toInt() / 16) } ?: return
 
         val item = session.player.inventory.mainHand ?: return
-        section += KryptonBlock(item.type, chunk, packet.location.toLocation(world))
+        val block = KryptonBlock(item.type, chunk, packet.location.toLocation(world))
+
+        session.sendPacket(PacketOutBlockChange(if (chunk.setBlock(block)) block else chunk.getBlock(packet.location)))
     }
 
     private fun handlePositionUpdate(packet: PacketInPlayerPosition) {
