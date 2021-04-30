@@ -12,6 +12,7 @@ import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.`in`.handshake.BungeeCordHandshakeData
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
 import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
@@ -47,7 +48,8 @@ import javax.crypto.spec.SecretKeySpec
 class LoginHandler(
     override val server: KryptonServer,
     private val sessionManager: SessionManager,
-    override val session: Session
+    override val session: Session,
+    private val bungeecordData: BungeeCordHandshakeData?
 ) : PacketHandler {
 
     private val verifyToken by lazy {
@@ -63,14 +65,23 @@ class LoginHandler(
     }
 
     private fun handleLoginStart(packet: PacketInLoginStart) {
-        session.player = KryptonPlayer(packet.name, server, session, session.channel.remoteAddress() as InetSocketAddress)
+        val rawAddress = session.channel.remoteAddress() as InetSocketAddress
+        val address = if (bungeecordData != null) InetSocketAddress(bungeecordData.forwardedIp, rawAddress.port) else rawAddress
+        session.player = KryptonPlayer(packet.name, server, session, address)
 
         if (!server.isOnline) {
-            // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
-            val offlineUUID = UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
-            session.player.uuid = offlineUUID
-            session.profile = GameProfile(offlineUUID, packet.name, emptyList())
-            if (!callLoginEvent(packet.name, offlineUUID)) return
+            val uuid = if (bungeecordData != null) {
+                session.player.uuid = bungeecordData.uuid
+                session.profile = GameProfile(bungeecordData.uuid, packet.name, bungeecordData.properties)
+                bungeecordData.uuid
+            } else {
+                // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
+                val offlineUUID = UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
+                session.player.uuid = offlineUUID
+                session.profile = GameProfile(offlineUUID, packet.name, emptyList())
+                offlineUUID
+            }
+            if (!callLoginEvent(packet.name, uuid)) return
 
             sessionManager.beginPlayState(session)
             return

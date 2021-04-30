@@ -3,6 +3,7 @@ package org.kryptonmc.krypton.util
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.krypton.api.world.Gamemode
+import org.kryptonmc.krypton.auth.GameProfile
 import java.net.InetAddress
 import kotlin.math.log2
 import kotlin.math.max
