@@ -29,7 +29,8 @@ data class KryptonConfig(
     val status: StatusConfig = StatusConfig(),
     val world: WorldConfig = WorldConfig(),
     val advanced: AdvancedConfig = AdvancedConfig(),
-    val query: QueryConfig = QueryConfig()
+    val query: QueryConfig = QueryConfig(),
+    val other: OtherConfig = OtherConfig()
 )
 
 /**
@@ -83,6 +84,14 @@ data class AdvancedConfig(
 data class QueryConfig(
     val enabled: Boolean = false,
     val port: Int = 25566
+)
+
+/**
+ * The section for other settings that don't belong anywhere else
+ */
+@Serializable
+data class OtherConfig(
+    val metrics: Boolean = true
 )
 
 internal object GamemodeSerializer : KSerializer<Gamemode> by Gamemode.serializer() {

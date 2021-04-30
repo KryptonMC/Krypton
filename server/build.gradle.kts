@@ -54,6 +54,9 @@ dependencies {
 
     // CLI
     implementation("com.github.ajalt.clikt:clikt:3.0.1")
+
+    // Metrics
+    implementation("org.bstats:bstats-base:2.2.0")
 }
 
 tasks {
@@ -68,6 +71,8 @@ tasks {
         exclude("it/unimi/dsi/fastutil/floats/*.class")
         exclude("it/unimi/dsi/fastutil/io/*.class")
         exclude("it/unimi/dsi/fastutil/shorts/*.class")
+
+        relocate("org.bstats", "org.kryptonmc.krypton.bstats")
     }
     withType<ProcessResources> {
         val tokens = mapOf("version" to rootProject.extra["globalVersion"])
