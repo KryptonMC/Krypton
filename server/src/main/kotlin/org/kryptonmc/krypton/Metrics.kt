@@ -77,7 +77,7 @@ internal object KryptonMetrics {
         metrics += DrilldownPie("java_version") {
             val javaVersion = System.getProperty("java.version")
             val major = javaVersion.split("\\.")[0]
-            val dot = javaVersion.indexOf('.')
+            val dot = javaVersion.lastIndexOf('.')
 
             val release = "Java " + if (major == "1") {
                 javaVersion.substring(0, dot)

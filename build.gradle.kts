@@ -17,7 +17,7 @@ plugins {
 }
 
 group = "org.kryptonmc"
-version = "0.18.6"
+version = "0.18.7"
 
 rootProject.extra["globalVersion"] = project.version
 

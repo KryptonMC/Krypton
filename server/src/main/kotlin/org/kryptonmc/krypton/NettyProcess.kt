@@ -72,9 +72,13 @@ class NettyProcess(private val server: KryptonServer) {
             LOGGER.error("-------------------------------------------------")
             exitProcess(0)
         } finally {
-            workerGroup.shutdownGracefully()
-            bossGroup.shutdownGracefully()
+            shutdown()
         }
+    }
+
+    fun shutdown() {
+        workerGroup.shutdownGracefully()
+        bossGroup.shutdownGracefully()
     }
 
     // Determines the best loop group to use based on what is available on the current operating system

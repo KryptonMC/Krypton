@@ -30,6 +30,7 @@ import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.util.TranslationRegister
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.copyTo
+import org.kryptonmc.krypton.util.isRegularFile
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.monitoring.jmx.KryptonStatistics
 import org.kryptonmc.krypton.world.KryptonWorldManager
@@ -46,6 +47,7 @@ import java.util.Properties
 import java.util.UUID
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
 
 class KryptonServer(private val disableGUI: Boolean) : Server {
@@ -95,12 +97,14 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
     internal val tickTimes = LongArray(100)
     internal var averageTickTime = 0F; private set
 
-    private val tickScheduler = Executors.newSingleThreadScheduledExecutor { Thread(it, "Tick Scheduler") }
+    lateinit var mainThread: Thread private set
+    private val tickScheduler = Executors.newSingleThreadScheduledExecutor { Thread(it, "Tick Scheduler").apply { mainThread = this } }
     val tickables = mutableListOf<Runnable>()
 
     @Volatile internal var isRunning = true; private set
 
     private var gs4QueryHandler: GS4QueryHandler? = null
+    private var watchdog: WatchdogProcess? = null
 
     internal fun start() {
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
@@ -142,7 +146,11 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
 
         lastTickTime = System.currentTimeMillis()
         if (config.advanced.enableJmxMonitoring) KryptonStatistics.register(this)
-        if (config.server.tickThreshold > 0) WatchdogProcess(this).start()
+
+        if (config.other.timeoutTime > 0) {
+            watchdog = WatchdogProcess(this)
+            watchdog?.start()
+        }
 
         if (config.query.enabled) {
             LOGGER.info("Starting GS4 status listener")
@@ -150,9 +158,11 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
         }
         if (!disableGUI && !GraphicsEnvironment.isHeadless()) KryptonServerGUI.open(this)
 
-        Runtime.getRuntime().addShutdownHook(Thread(this::stop, "Shutdown Handler").apply { isDaemon = false })
+        Runtime.getRuntime().addShutdownHook(Thread(::stop, "Shutdown Handler").apply { isDaemon = false })
 
         LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type \"help\" for help.")
+        watchdog?.tick(System.currentTimeMillis())
+
         tickScheduler.scheduleAtFixedRate({
             if (!isRunning) return@scheduleAtFixedRate
 
@@ -173,6 +183,7 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
             // end tick
             eventBus.call(TickEndEvent(tickCount, tickTime, finishTime))
             lastTickTime = finishTime
+            watchdog?.tick(finishTime)
         }, 0, TICK_INTERVAL, TimeUnit.MILLISECONDS)
     }
 
@@ -219,12 +230,16 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
         return HOCON.decodeFromConfig(ConfigFactory.parseFile(configFile))
     }
 
-    internal fun stop() {
+    internal fun stop(shouldRestart: Boolean = false) {
+        if (!isRunning) return // Ensure we cannot accidentally run this twice
+
         // stop server and shut down session manager (disconnecting all players)
         LOGGER.info("Stopping Krypton...")
         isRunning = false
         sessionManager.shutdown()
+        nettyProcess.shutdown()
         gs4QueryHandler?.stop()
+        watchdog?.shutdown()
 
         // save player, world and region data
         LOGGER.info("Saving player, world and region data...")
@@ -243,6 +258,21 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
 
         // manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
         LogManager.shutdown()
+
+        // And after all that, restart the server with a restart script if we can
+        if (!shouldRestart) return
+
+        val split = config.other.restartScript.split(" ")
+        if (split.isNotEmpty() && Path.of(split[0]).isRegularFile) {
+            println("Attempting to restart the server with script ${split[0]}")
+            val os = System.getProperty("os.name").toLowerCase(Locale.ENGLISH)
+            Runtime.getRuntime().exec(if ("win" in os) {
+                "cmd /c start "
+            } else {
+                "sh "
+            } + config.other.restartScript)
+        }
+        exitProcess(0)
     }
 
     object KryptonServerInfo : Server.ServerInfo {

@@ -13,6 +13,7 @@ import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.krypton.api.world.Difficulty
 import org.kryptonmc.krypton.api.world.Gamemode
+import org.kryptonmc.krypton.serializers.ComponentSerializer
 
 private val DEFAULT_MOTD = Component.text("Krypton is a Minecraft server written in Kotlin!")
     .color(TextColor.color(128, 0, 255))
@@ -41,9 +42,7 @@ data class ServerConfig(
     val ip: String = "0.0.0.0",
     val port: Int = 25565,
     @SerialName("online-mode") val onlineMode: Boolean = true,
-    @SerialName("compression-threshold") val compressionThreshold: Int = 256,
-    @SerialName("tick-threshold") val tickThreshold: Int = 60000,
-    val bungeecord: Boolean = false
+    @SerialName("compression-threshold") val compressionThreshold: Int = 256
 )
 
 /**
@@ -92,7 +91,14 @@ data class QueryConfig(
  */
 @Serializable
 data class OtherConfig(
-    val metrics: Boolean = true
+    val bungeecord: Boolean = false,
+    val metrics: Boolean = true,
+    @SerialName("timeout-time") val timeoutTime: Int = 60000,
+    @SerialName("restart-on-crash") val restartOnCrash: Boolean = true,
+    @SerialName("restart-script") val restartScript: String = "./start.sh",
+    @SerialName("restart-message") @Serializable(TextComponentSerializer::class) val restartMessage: TextComponent = Component.empty(),
+    @SerialName("early-warning-interval") val earlyWarningInterval: Long = 5000,
+    @SerialName("early-warning-delay") val earlyWarningDelay: Long = 10000
 )
 
 internal object GamemodeSerializer : KSerializer<Gamemode> by Gamemode.serializer() {

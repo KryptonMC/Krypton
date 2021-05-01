@@ -44,9 +44,10 @@ data class BungeeCordHandshakeData(
     val properties: List<ProfileProperty>
 )
 
-fun String.splitData(): BungeeCordHandshakeData {
+fun String.splitData(): BungeeCordHandshakeData? {
     val split = split('\u0000')
-    require(split.size > 2) { "String does not contain at least the proxy, forwarded IP address and UUID" }
+    if (split.size <= 2) return null
+//    require(split.size > 2) { "String does not contain at least the proxy, forwarded IP address and UUID" }
     return BungeeCordHandshakeData(
         split[0],
         split[1],
