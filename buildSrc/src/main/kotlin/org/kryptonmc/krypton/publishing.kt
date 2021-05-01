@@ -25,7 +25,7 @@ fun PublishingExtension.applyRepositories(project: Project) = repositories {
 fun MavenPublication.applyCommon(project: Project, artifact: String) {
     groupId = project.group.toString()
     artifactId = artifact
-    version = project.rootProject.extra["globalVersion"].toString()
+    version = project.version.toString()
 
     from(project.components["kotlin"])
     artifact(project.tasks["sourcesJar"])

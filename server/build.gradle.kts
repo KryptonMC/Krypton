@@ -61,7 +61,7 @@ dependencies {
 
 tasks {
     withType<ShadowJar> {
-        archiveFileName.set("Krypton-${rootProject.extra["globalVersion"]}.jar")
+        archiveFileName.set("Krypton-${project.version}.jar")
         transform(Log4j2PluginsCacheFileTransformer::class.java)
 
         exclude("it/unimi/dsi/fastutil/booleans/*.class")
@@ -75,7 +75,7 @@ tasks {
         relocate("org.bstats", "org.kryptonmc.krypton.bstats")
     }
     withType<ProcessResources> {
-        val tokens = mapOf("version" to rootProject.extra["globalVersion"])
+        val tokens = mapOf("version" to project.version.toString())
         filter<ReplaceTokens>("tokens" to tokens)
     }
 }

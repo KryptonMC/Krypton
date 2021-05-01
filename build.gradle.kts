@@ -16,12 +16,10 @@ plugins {
     signing
 }
 
-group = "org.kryptonmc"
-version = "0.18.6"
-
-rootProject.extra["globalVersion"] = project.version
-
 allprojects {
+    group = "org.kryptonmc"
+    version = "0.18.6"
+
     repositories {
         mavenCentral()
         maven("https://libraries.minecraft.net")
