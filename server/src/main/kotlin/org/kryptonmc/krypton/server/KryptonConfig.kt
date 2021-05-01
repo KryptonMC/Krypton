@@ -93,10 +93,9 @@ data class QueryConfig(
 data class OtherConfig(
     val bungeecord: Boolean = false,
     val metrics: Boolean = true,
-    @SerialName("timeout-time") val timeoutTime: Int = 60000,
+    @SerialName("timeout-time") val timeoutTime: Int = 60,
     @SerialName("restart-on-crash") val restartOnCrash: Boolean = true,
     @SerialName("restart-script") val restartScript: String = "./start.sh",
-    @SerialName("restart-message") @Serializable(TextComponentSerializer::class) val restartMessage: TextComponent = Component.empty(),
     @SerialName("early-warning-interval") val earlyWarningInterval: Long = 5000,
     @SerialName("early-warning-delay") val earlyWarningDelay: Long = 10000
 )

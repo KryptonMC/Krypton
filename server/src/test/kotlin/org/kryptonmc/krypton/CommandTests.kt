@@ -3,13 +3,11 @@ package org.kryptonmc.krypton
 import com.mojang.brigadier.arguments.LongArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
-import com.mojang.brigadier.exceptions.CommandSyntaxException.BUILT_IN_EXCEPTIONS
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
 import org.junit.jupiter.api.BeforeAll
@@ -27,15 +25,15 @@ class CommandTests {
 
     @Test
     fun `stop command actually stops the server`() {
-        val stop = StopCommand()
+        val stop = StopCommand(server)
         val sender = mockk<Sender> {
             every { sendMessage(any()) } just runs
         }
 
-        assertThrows<IllegalStateException> { stop.execute(sender, emptyList()) }
+        stop.execute(sender, emptyList())
         verify { sender.sendMessage(any()) }
         try {
-            verify { exitProcess(any()) }
+            verify { server.stop() }
         } catch (ignored: IllegalStateException) {}
     }
 
@@ -65,6 +63,7 @@ class CommandTests {
 
         private val server = mockk<KryptonServer> {
             every { eventBus } returns eventBusMock
+            every { stop(any()) } returns Unit
         }
 
         private val manager = KryptonCommandManager(server)
