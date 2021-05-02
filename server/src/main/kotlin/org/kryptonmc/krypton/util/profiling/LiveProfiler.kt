@@ -2,7 +2,7 @@ package org.kryptonmc.krypton.util.profiling
 
 import it.unimi.dsi.fastutil.longs.LongArrayList
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
-import org.kryptonmc.krypton.extension.logger
+import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.profiling.entry.PathEntry
 import org.kryptonmc.krypton.util.profiling.results.FilledProfileResults
 import org.kryptonmc.krypton.util.profiling.results.ProfileResults
@@ -22,8 +22,7 @@ class LiveProfiler(
 
     private var path = ""
     private var running = false
-    private var currentEntry: LivePathEntry? = null
-        get() = field ?: entries.getOrPut(path) { LivePathEntry().apply { field = this } }
+    private var currentEntry: LivePathEntry? = null; get() = field ?: entries.getOrPut(path) { LivePathEntry().apply { field = this } }
 
     override fun start() {
         if (running) {
@@ -72,7 +71,7 @@ class LiveProfiler(
             return
         }
         val timeNow = System.nanoTime()
-        val lastTime = startTimes.removeLast()
+        val lastTime = startTimes.removeLong(startTimes.lastIndex)
         paths.removeLast()
         val difference = timeNow - lastTime
         currentEntry?.apply {
@@ -92,13 +91,12 @@ class LiveProfiler(
     }
 
     override fun incrementCounter(name: String) {
-        currentEntry!!.counters.addTo(name, 1L)
+        currentEntry?.counters?.addTo(name, 1L)
     }
 
     override fun incrementCounter(name: () -> String) = incrementCounter(name())
 
-    override val results: ProfileResults
-        get() = FilledProfileResults(entries, startTime, startTimeTicks, REAL_TIME_SOURCE(), tickTimeSource())
+    override val results: ProfileResults get() = FilledProfileResults(entries, startTime, startTimeTicks, REAL_TIME_SOURCE(), tickTimeSource())
 
     private class LivePathEntry : PathEntry {
 

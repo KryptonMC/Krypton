@@ -1,6 +1,6 @@
 package org.kryptonmc.krypton.util.profiling.results
 
-class ResultField(
+data class ResultField(
     val name: String,
     val percentage: Double,
     val globalPercentage: Double,

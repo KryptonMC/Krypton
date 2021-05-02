@@ -12,14 +12,11 @@ interface ProfileResults {
 
     val endTimeTicks: Int
 
-    val duration: Long
-        get() = endTime - startTime
+    val duration: Long get() = endTime - startTime
 
-    val durationTicks: Int
-        get() = endTimeTicks - startTimeTicks
+    val durationTicks: Int get() = endTimeTicks - startTimeTicks
 
     fun save(file: File): Boolean
 }
 
-val String.demangled: String
-    get() = replace("\u001e", ".")
+val String.demangled: String get() = replace("\u001e", ".")

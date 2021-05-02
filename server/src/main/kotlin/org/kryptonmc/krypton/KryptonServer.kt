@@ -34,7 +34,7 @@ import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.isRegularFile
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.monitoring.jmx.KryptonStatistics
-import org.kryptonmc.krypton.util.profiling.ContinuousProfiler
+import org.kryptonmc.krypton.util.profiling.ServerProfiler
 import org.kryptonmc.krypton.util.profiling.DeadProfiler
 import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.util.profiling.SingleTickProfiler
@@ -109,9 +109,9 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
 
     @Volatile internal var isRunning = true; private set
 
-    private val continuousProfiler = ContinuousProfiler(this::tickCount)
+    val continuousProfiler = ServerProfiler(this::tickCount)
     private var profiler: Profiler = DeadProfiler
-    private var delayProfilerStart = false
+    @Volatile private var delayProfilerStart = false
 
     private var gs4QueryHandler: GS4QueryHandler? = null
     private var watchdog: WatchdogProcess? = null
@@ -183,7 +183,7 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
                 lastOverloadWarning = lastTickTime
             }
             // start profiler
-            val singleTickProfiler = SingleTickProfiler.create("Server")
+            val singleTickProfiler = SingleTickProfiler(1000000000, File(CURRENT_DIRECTORY, "debug").apply { mkdir() })
             startProfilerTick(singleTickProfiler)
             profiler.start()
 
@@ -335,7 +335,7 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
         if (split.isNotEmpty()) {
             if (!Path.of(split[0]).isRegularFile) {
                 println("Unable to find restart script ${split[0]}! Refusing to restart.")
-                return
+                Runtime.getRuntime().halt(0)
             }
             println("Attempting to restart the server with script ${split[0]}...")
             val os = System.getProperty("os.name").toLowerCase(Locale.ENGLISH)
