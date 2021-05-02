@@ -21,7 +21,6 @@ class WatchdogProcess(private val server: KryptonServer) : Thread("Krypton Watch
     }
 
     private val timeoutTime = server.config.other.timeoutTime * 1000L
-    private val restartOnCrash = server.config.other.restartOnCrash
     private val earlyWarningInterval = min(server.config.other.earlyWarningInterval, timeoutTime)
     private val earlyWarningDelay = min(server.config.other.earlyWarningDelay, timeoutTime)
 
@@ -82,7 +81,9 @@ class WatchdogProcess(private val server: KryptonServer) : Thread("Krypton Watch
             }
             LOGGER.printBar(isLongTimeout)
 
-            if (isLongTimeout && server.isRunning) server.stop(restartOnCrash)
+            if (isLongTimeout && server.isRunning) {
+                if (server.config.other.restartOnCrash) server.restart() else server.stop()
+            }
         }
     }
 

@@ -70,7 +70,7 @@ class NettyProcess(private val server: KryptonServer) {
             LOGGER.error("Exception: $exception")
             LOGGER.error("Perhaps a server is already running on that port?")
             LOGGER.error("-------------------------------------------------")
-            exitProcess(0)
+            server.stop()
         } finally {
             shutdown()
         }

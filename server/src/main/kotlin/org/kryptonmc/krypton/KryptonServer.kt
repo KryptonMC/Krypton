@@ -231,7 +231,7 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
         return HOCON.decodeFromConfig(ConfigFactory.parseFile(configFile))
     }
 
-    internal fun stop(shouldRestart: Boolean = false) {
+    internal fun stop(halt: Boolean = true) {
         if (!isRunning) return // Ensure we cannot accidentally run this twice
 
         // stop server and shut down session manager (disconnecting all players)
@@ -260,20 +260,23 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
         // manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
         LogManager.shutdown()
 
-        // And after all that, restart the server with a restart script if we can
-        if (!shouldRestart) return
+        // Finally, halt the JVM if we should (avoids shutdown hooks running)
+        if (halt) Runtime.getRuntime().halt(0)
+    }
 
+    internal fun restart() {
+        stop(false) // avoid halting there because we halt here
         val split = config.other.restartScript.split(" ")
-        if (split.isNotEmpty() && Path.of(split[0]).isRegularFile) {
-            println("Attempting to restart the server with script ${split[0]}")
+        if (split.isNotEmpty()) {
+            if (!Path.of(split[0]).isRegularFile) {
+                println("Unable to find restart script ${split[0]}! Refusing to restart.")
+                return
+            }
+            println("Attempting to restart the server with script ${split[0]}...")
             val os = System.getProperty("os.name").toLowerCase(Locale.ENGLISH)
-            Runtime.getRuntime().exec(if ("win" in os) {
-                "cmd /c start "
-            } else {
-                "sh "
-            } + config.other.restartScript)
+            Runtime.getRuntime().exec((if ("win" in os) "cmd /c start " else "sh ") + config.other.restartScript)
         }
-        exitProcess(0)
+        Runtime.getRuntime().halt(0)
     }
 
     object KryptonServerInfo : Server.ServerInfo {

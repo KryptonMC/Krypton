@@ -4,7 +4,6 @@ import net.minecrell.terminalconsole.SimpleTerminalConsole
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
 import org.kryptonmc.krypton.KryptonServer
-import kotlin.system.exitProcess
 
 /**
  * The console handler for this server
@@ -15,7 +14,7 @@ class KryptonConsole(private val server: KryptonServer) : SimpleTerminalConsole(
 
     override fun runCommand(command: String) = server.commandManager.dispatch(server.console, command)
 
-    override fun shutdown() = exitProcess(0)
+    override fun shutdown() = server.stop()
 
     override fun buildReader(builder: LineReaderBuilder): LineReader = super.buildReader(
         builder.appName("Krypton Console")

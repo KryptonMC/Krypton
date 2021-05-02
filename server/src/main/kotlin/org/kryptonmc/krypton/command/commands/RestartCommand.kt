@@ -9,6 +9,6 @@ class RestartCommand(private val server: KryptonServer) : Command("restart", "kr
 
     override fun execute(sender: Sender, args: List<String>) {
         sender.sendMessage(Component.text("Attempting to restart the server..."))
-        server.stop(true)
+        server.restart()
     }
 }

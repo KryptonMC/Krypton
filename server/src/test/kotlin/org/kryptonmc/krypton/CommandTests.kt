@@ -15,6 +15,7 @@ import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.krypton.api.command.Command
 import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.command.KryptonCommandManager
+import org.kryptonmc.krypton.command.commands.RestartCommand
 import org.kryptonmc.krypton.command.commands.StopCommand
 import org.kryptonmc.krypton.event.KryptonEventBus
 import java.security.Permission
@@ -34,7 +35,21 @@ class CommandTests {
         verify { sender.sendMessage(any()) }
         try {
             verify { server.stop() }
-        } catch (ignored: IllegalStateException) {}
+        } catch (ignored: SecurityException) {}
+    }
+
+    @Test
+    fun `restart command restarts`() {
+        val restart = RestartCommand(server)
+        val sender = mockk<Sender> {
+            every { sendMessage(any()) } just runs
+        }
+
+        restart.execute(sender, emptyList())
+        verify { sender.sendMessage(any()) }
+        try {
+            verify { server.restart() }
+        } catch (ignored: SecurityException) {}
     }
 
     @Test
@@ -64,6 +79,7 @@ class CommandTests {
         private val server = mockk<KryptonServer> {
             every { eventBus } returns eventBusMock
             every { stop(any()) } returns Unit
+            every { restart() } returns Unit
         }
 
         private val manager = KryptonCommandManager(server)
@@ -96,7 +112,7 @@ private class ShadySecuritySystem : SecurityManager() {
 
     override fun checkExit(status: Int) {
         super.checkExit(status)
-        throw IllegalStateException("The shady security system has denied your request to shut down the JVM.")
+        throw SecurityException("The shady security system has denied your request to shut down the JVM.")
     }
 }
 
