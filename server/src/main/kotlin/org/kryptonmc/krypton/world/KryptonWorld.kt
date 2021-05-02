@@ -110,8 +110,7 @@ data class KryptonWorld(
 
     fun saveDebugReport(path: Path) {
         val chunksPath = path.resolve("chunks.csv")
-        val writer = Files.newBufferedWriter(chunksPath)
-        writer.dumpChunks()
+        Files.newBufferedWriter(chunksPath).use { it.dumpChunks() }
     }
 
     override fun equals(other: Any?): Boolean {

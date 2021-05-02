@@ -3,7 +3,7 @@ package org.kryptonmc.krypton.util.csv
 import java.io.StringWriter
 import java.io.Writer
 
-class CSVOutput(private val output: Writer, private val headers: List<String>) {
+class CSVOutput(private val output: Writer, headers: List<String>) {
 
     private val columns = headers.size
 

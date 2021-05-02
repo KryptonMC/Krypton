@@ -9,8 +9,8 @@ import java.io.StringWriter
 
 private const val CSV_DELIMETER = ','
 private const val CSV_QUOTE = '"'
-private const val CSV_QUOTE_STRING = "\""
-private val CSV_SEARCH_CHARACTERS = charArrayOf(',', '"', '\r', '\n')
+private const val CSV_QUOTE_STRING = CSV_QUOTE.toString()
+private val CSV_SEARCH_CHARACTERS = charArrayOf(CSV_DELIMETER, CSV_QUOTE, '\r', '\n')
 
 val Any?.escapedString: String
     get() = this?.toString()?.escapeCSV() ?: "[null]"
@@ -26,16 +26,19 @@ fun String.translate(writer: StringWriter) {
     while (position < length) {
         val consumed = translate(position, writer)
         if (consumed == 0) {
-            val c1 = this[position]
-            position++
-            val c2 = this[position]
+            val c1 = get(position)
             writer.write(c1.toInt())
-            if (!c1.isHighSurrogate() || position >= length || !c2.isLowSurrogate()) continue
-            writer.write(c2.toInt())
             position++
+            if (c1.isHighSurrogate() && position < length) {
+                val c2 = get(position)
+                if (c2.isHighSurrogate()) {
+                    writer.write(c2.toInt())
+                    position++
+                }
+            }
             continue
         }
-        repeat(consumed) { position += codePointAt(1).charCount() }
+        repeat(consumed) { position += codePointAt(position).charCount() }
     }
 }
 
@@ -44,9 +47,9 @@ fun String.translate(index: Int, writer: StringWriter): Int {
     if (CSV_SEARCH_CHARACTERS !in this) {
         writer.write(this)
     } else {
-        writer.write(34)
+        writer.write(CSV_QUOTE.toInt())
         writer.write(replace(CSV_QUOTE_STRING, CSV_QUOTE_STRING + CSV_QUOTE_STRING))
-        writer.write(34)
+        writer.write(CSV_QUOTE.toInt())
     }
     return codePointCount(0, length)
 }
