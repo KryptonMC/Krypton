@@ -61,6 +61,7 @@ class ConfigTests {
         assertEquals("./start.sh", config.other.restartScript)
         assertEquals(5000, config.other.earlyWarningInterval)
         assertEquals(10000, config.other.earlyWarningDelay)
+        assertEquals(5, config.other.saveThreshold)
 
         val modified = config.copy(
             server = config.server.copy(onlineMode = false),
@@ -119,6 +120,7 @@ class ConfigTests {
         assertEquals("./start.sh", config.other.restartScript)
         assertEquals(5000, config.other.earlyWarningInterval)
         assertEquals(10000, config.other.earlyWarningDelay)
+        assertEquals(5, config.other.saveThreshold)
     }
 
     @Test

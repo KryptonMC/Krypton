@@ -183,7 +183,7 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
                 lastOverloadWarning = lastTickTime
             }
             // start profiler
-            val singleTickProfiler = SingleTickProfiler(1000000000, File(CURRENT_DIRECTORY, "debug").apply { mkdir() })
+            val singleTickProfiler = SingleTickProfiler(config.other.saveThreshold * 1000000000L, File(CURRENT_DIRECTORY, "debug").apply { mkdir() })
             startProfilerTick(singleTickProfiler)
             profiler.start()
 
