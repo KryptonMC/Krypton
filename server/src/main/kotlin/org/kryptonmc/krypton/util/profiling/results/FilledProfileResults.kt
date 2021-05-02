@@ -1,8 +1,7 @@
 package org.kryptonmc.krypton.util.profiling.results
 
-import net.kyori.adventure.extra.kotlin.keybind
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
-import org.kryptonmc.krypton.extension.logger
+import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.profiling.entry.EmptyPathEntry
 import org.kryptonmc.krypton.util.profiling.entry.PathEntry
 import java.io.File
@@ -19,10 +18,9 @@ class FilledProfileResults(
 ) : ProfileResults {
 
     private fun timesFor(name: String): List<ResultField> {
-        var temp = name
+        val temp = if (name.isNotEmpty()) name + PATH_SEPARATOR else name
         val root = entries["root"] ?: EmptyPathEntry
-        val entry = entries[temp] ?: EmptyPathEntry
-        if (temp.isNotEmpty()) temp += PATH_SEPARATOR
+        val entry = entries[name] ?: EmptyPathEntry
 
         var totalDuration = entries.keys.sumBy {
             if (!temp.isChildOf(it)) return@sumBy 0L
@@ -45,7 +43,7 @@ class FilledProfileResults(
             }
         }
         results.sort()
-        results[0] = ResultField(name, 100.0, (totalDuration * 100.0) / root.duration, entry.count)
+        results.add(0, ResultField(temp, 100.0, (totalDuration * 100.0) / root.duration, entry.count))
         return results
     }
 
@@ -109,7 +107,7 @@ class FilledProfileResults(
         counters.forEach { (key, value) -> indentLine(accumulator).append("#$key $value/${value / durationTicks}\n") }
         if (times.size < 3) return
 
-        times.forEach {
+        times.drop(1).forEach {
             indentLine(accumulator).append("${it.name}(${it.count}/")
                 .append("${"%.0f".format(Locale.ROOT, (it.count / durationTicks).toFloat())}) - ")
                 .append("${"%.2f".format(Locale.ROOT, it.percentage.toFloat())}%/")
@@ -118,7 +116,6 @@ class FilledProfileResults(
             if (it.name == "unspecified") return@forEach
             try {
                 appendProfilerResults(accumulator + 1, name + PATH_SEPARATOR + it.name)
-                return@forEach
             } catch (exception: Exception) {
                 append("[[ EXCEPTION $exception ]]")
             }
@@ -126,7 +123,7 @@ class FilledProfileResults(
     }
 
     private fun StringBuilder.indentLine(number: Int) = apply {
-        append("[%02d]".format(number))
+        append("[%02d] ".format(number))
         repeat(number) { append("|   ") }
     }
 

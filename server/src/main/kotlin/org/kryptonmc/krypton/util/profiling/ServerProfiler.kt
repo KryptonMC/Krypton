@@ -2,12 +2,11 @@ package org.kryptonmc.krypton.util.profiling
 
 import org.kryptonmc.krypton.util.profiling.results.ProfileResults
 
-class ContinuousProfiler(private val tickTimeSource: () -> Int) {
+class ServerProfiler(private val tickTimeSource: () -> Int) {
 
     var profiler: CollectibleProfiler = DeadProfiler; private set
 
-    val isEnabled: Boolean
-        get() = profiler != DeadProfiler
+    val isEnabled: Boolean get() = profiler != DeadProfiler
 
     fun enable() {
         profiler = LiveProfiler(tickTimeSource, true)
@@ -17,6 +16,5 @@ class ContinuousProfiler(private val tickTimeSource: () -> Int) {
         profiler = DeadProfiler
     }
 
-    val results: ProfileResults
-        get() = profiler.results
+    val results: ProfileResults get() = profiler.results
 }

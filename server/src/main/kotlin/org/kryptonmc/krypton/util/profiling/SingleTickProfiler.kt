@@ -14,7 +14,7 @@ class SingleTickProfiler(
     private lateinit var profiler: CollectibleProfiler
 
     fun start(): Profiler {
-        profiler = LiveProfiler(this::tick, false)
+        profiler = LiveProfiler(::tick, false)
         tick++
         return profiler
     }
@@ -37,8 +37,6 @@ class SingleTickProfiler(
 
         private val FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")
         private val LOGGER = logger<SingleTickProfiler>()
-
-        fun create(name: String): SingleTickProfiler? = null
     }
 }
 
