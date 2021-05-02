@@ -97,7 +97,8 @@ data class OtherConfig(
     @SerialName("restart-on-crash") val restartOnCrash: Boolean = true,
     @SerialName("restart-script") val restartScript: String = "./start.sh",
     @SerialName("early-warning-interval") val earlyWarningInterval: Long = 5000,
-    @SerialName("early-warning-delay") val earlyWarningDelay: Long = 10000
+    @SerialName("early-warning-delay") val earlyWarningDelay: Long = 10000,
+    @SerialName("save-threshold") val saveThreshold: Int = 5
 )
 
 internal object GamemodeSerializer : KSerializer<Gamemode> by Gamemode.serializer() {

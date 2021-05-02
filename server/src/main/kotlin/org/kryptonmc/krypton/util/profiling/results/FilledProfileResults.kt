@@ -7,7 +7,8 @@ import org.kryptonmc.krypton.util.profiling.entry.PathEntry
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStreamWriter
-import java.util.*
+import java.util.Locale
+import java.util.TreeMap
 
 class FilledProfileResults(
     private val entries: Map<String, PathEntry>,
@@ -64,8 +65,8 @@ class FilledProfileResults(
                 ---- Krypton Profiler Results ----
                 // $comment
 
-                Minecraft version: ${KryptonServerInfo.minecraftVersion}
                 Krypton version: ${KryptonServerInfo.version}
+                Minecraft version: ${KryptonServerInfo.minecraftVersion}
                 Time span: ${duration / 1000000} ms
                 Tick span: $durationTicks ticks
                 // This is approximately ${"%.2f".format(Locale.ROOT, durationTicks / (duration / 1.0E9))} ticks per second. It should be 20 ticks per second
@@ -159,7 +160,12 @@ class FilledProfileResults(
     companion object {
 
         private const val PATH_SEPARATOR = '\u001e'
-        private val COMMENTS = arrayOf("Shiny numbers!", "Am I not running fast enough? :(", "I'm working as hard as I can!", "Will I ever be good enough for you? :(", "Speedy. Zoooooom!", "Hello world", "40% better than a crash report.", "Now with extra numbers", "Now with less numbers", "Now with the same numbers", "You should add flames to things, it makes them go faster!", "Do you feel the need for... optimization?", "*cracks redstone whip*", "Maybe if you treated it better then it'll have more motivation to work faster! Poor server.")
+        private val COMMENTS = arrayOf(
+            "Shiny numbers!", "Am I not running fast enough? :(", "I'm working as hard as I can!", "Will I ever be good enough for you? :(",
+            "Speedy. Zoooooom!", "Hello world", "40% better than a crash report.", "Now with extra numbers", "Now with less numbers",
+            "Now with the same numbers", "You should add flames to things, it makes them go faster!", "Do you feel the need for... optimization?",
+            "*cracks redstone whip*", "Maybe if you treated it better then it'll have more motivation to work faster! Poor server."
+        )
         private val COUNTER_ENTRY_COMPARATOR = java.util.Map.Entry
             .comparingByValue<String, CounterCollector> { o1, o2 -> o1.total.compareTo(o2.total) }
 
