@@ -148,6 +148,7 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
         if (config.advanced.enableJmxMonitoring) KryptonStatistics.register(this)
 
         if (config.other.timeoutTime > 0) {
+            LOGGER.debug("Starting watchdog")
             watchdog = WatchdogProcess(this)
             watchdog?.start()
         }

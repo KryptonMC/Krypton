@@ -22,12 +22,13 @@ class WatchdogProcess(private val server: KryptonServer) : Thread("Krypton Watch
 
     private val timeoutTime = server.config.other.timeoutTime * 1000L
     private val restartOnCrash = server.config.other.restartOnCrash
-    private val earlyWarningInterval = min(server.config.other.earlyWarningInterval, timeoutTime.toLong())
-    private val earlyWarningDelay = min(server.config.other.earlyWarningDelay, timeoutTime.toLong())
+    private val earlyWarningInterval = min(server.config.other.earlyWarningInterval, timeoutTime)
+    private val earlyWarningDelay = min(server.config.other.earlyWarningDelay, timeoutTime)
 
     private var lastEarlyWarning = 0L
     @Volatile private var lastTick = 0L
     @Volatile private var stopping = false
+    @Volatile private var hasStarted = false
 
     fun tick(time: Long) {
         if (lastTick == 0L) hasStarted = true
@@ -40,13 +41,16 @@ class WatchdogProcess(private val server: KryptonServer) : Thread("Krypton Watch
 
     override fun run() {
         if (DISABLE_WATCHDOG) return // Disable watchdog early if the flag is set
+        if (timeoutTime <= 0) return // Disable watchdog early if timeout time is <= 0
 
         while (!stopping) {
-            val currentTime = System.currentTimeMillis()
-            if (!(lastTick != 0L && timeoutTime > 0 && hasStarted && (!server.isRunning || (currentTime > lastTick + earlyWarningInterval)))) continue
-            val isLongTimeout = currentTime > lastTick + timeoutTime || (!server.isRunning && currentTime > lastTick + 1000)
+            if (!hasStarted || lastTick == 0L || !server.isRunning) continue // Jump out early if the server hasn't started yet
 
-            if (!isLongTimeout && (earlyWarningInterval <= 0 || !hasStarted || currentTime < lastEarlyWarning + earlyWarningInterval || currentTime < lastTick + earlyWarningDelay)) continue
+            val currentTime = System.currentTimeMillis()
+            if (currentTime <= lastTick + earlyWarningInterval) continue // Jump out if we don't need to do anything
+
+            val isLongTimeout = currentTime > lastTick + timeoutTime || (!server.isRunning && currentTime > lastTick + 1000)
+            if (!isLongTimeout && (earlyWarningInterval <= 0 || currentTime < lastEarlyWarning + earlyWarningInterval || currentTime < lastTick + earlyWarningDelay)) continue
             if (!isLongTimeout && !server.isRunning) continue
             lastEarlyWarning = currentTime
 
@@ -84,8 +88,6 @@ class WatchdogProcess(private val server: KryptonServer) : Thread("Krypton Watch
 
     companion object {
 
-        @Volatile var hasStarted = false
-
         private val DISABLE_WATCHDOG = java.lang.Boolean.getBoolean("disable.watchdog")
         private val THREAD_BEAN = ManagementFactory.getThreadMXBean()
         private val LOGGER = logger("Watchdog (I'm watching you)")
@@ -108,4 +110,4 @@ private fun ThreadInfo.dump(logger: Logger, fatal: Boolean) {
 
 private fun Logger.log(fatal: Boolean, message: String) = if (fatal) fatal(message) else warn(message)
 
-private fun Logger.printBar(fatal: Boolean) = log(fatal, "----------------------------------------------------------------------------")
+private fun Logger.printBar(fatal: Boolean) = log(fatal, "-".repeat(76))
