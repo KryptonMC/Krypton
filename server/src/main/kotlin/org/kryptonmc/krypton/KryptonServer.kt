@@ -253,7 +253,7 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
     }
 
     fun saveDebugReport(path: Path) {
-        val worldsPath = path.resolve("levels")
+        val worldsPath = path.resolve("worlds")
         worldManager.worlds.forEach { (name, world) ->
             val worldPath = worldsPath.resolve("krypton").resolve(name)
             worldPath.createDirectories()
