@@ -1,9 +1,8 @@
 package org.kryptonmc.krypton.util.csv
 
-import java.io.StringWriter
 import java.io.Writer
 
-class CSVOutput(private val output: Writer, headers: List<String>) {
+class CSVFile(private val output: Writer, headers: List<String>) {
 
     private val columns = headers.size
 
@@ -24,6 +23,6 @@ class CSVOutput(private val output: Writer, headers: List<String>) {
             return this
         }
 
-        fun build(writer: Writer) = CSVOutput(writer, headers)
+        fun build(writer: Writer) = CSVFile(writer, headers)
     }
 }

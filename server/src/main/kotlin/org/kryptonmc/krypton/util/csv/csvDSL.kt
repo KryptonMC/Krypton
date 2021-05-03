@@ -6,4 +6,4 @@ import java.io.Writer
 annotation class CSVDSL
 
 @CSVDSL
-fun csv(writer: Writer, builder: CSVOutput.Builder.() -> Unit) = CSVOutput.Builder().apply(builder).build(writer)
+fun csv(writer: Writer, builder: CSVFile.Builder.() -> Unit) = CSVFile.Builder().apply(builder).build(writer)

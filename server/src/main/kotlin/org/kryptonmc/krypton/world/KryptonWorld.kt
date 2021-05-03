@@ -78,7 +78,7 @@ data class KryptonWorld(
     fun tick(profiler: Profiler) {
         if (players.isEmpty()) return // don't tick the world if there's no players in it
 
-        profiler.push("timeTick")
+        profiler.push("time tick")
         // tick time
         time++
         dayTime++
@@ -95,7 +95,7 @@ data class KryptonWorld(
 
         // this ensures the game state change to signal we've stopped raining only happens once
         if (isRaining) {
-            profiler.push("rainUpdate")
+            profiler.push("rain update")
             isRaining = false
             val endRainPacket = PacketOutChangeGameState(GameState.END_RAINING)
             players.forEach { it.session.sendPacket(endRainPacket) }
@@ -103,7 +103,7 @@ data class KryptonWorld(
         }
         profiler.pop()
 
-        profiler.push("chunkTick")
+        profiler.push("chunk tick")
         chunks.forEach { chunk -> chunk.tick(players.filter { it.location in chunk.position }.size) }
         profiler.pop()
     }

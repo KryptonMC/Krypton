@@ -41,12 +41,12 @@ class KryptonStatistics(private val server: KryptonServer) : DynamicMBean {
 
     companion object {
 
+        private val PLATFORM_BEAN = ManagementFactory.getPlatformMBeanServer()
         private val LOGGER = logger<KryptonStatistics>()
 
         fun register(server: KryptonServer) {
             try {
-                ManagementFactory.getPlatformMBeanServer()
-                    .registerMBean(KryptonStatistics(server), ObjectName("org.kryptonmc.krypton:type=KryptonServer"))
+                PLATFORM_BEAN.registerMBean(KryptonStatistics(server), ObjectName("org.kryptonmc.krypton:type=KryptonServer"))
             } catch (exception: Exception) {
                 LOGGER.warn("Failed to register server as a JMX bean", exception)
             }

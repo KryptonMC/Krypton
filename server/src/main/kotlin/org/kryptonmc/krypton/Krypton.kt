@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.util.logger
+import java.util.concurrent.atomic.AtomicReference
 
 // max memory in megabytes (bytes / 1024 / 1024)
 private val MAX_MEMORY = Runtime.getRuntime().maxMemory() / 1024L / 1024L
@@ -16,6 +17,7 @@ fun main(args: Array<String>) = KryptonCLI().main(args)
  * The CLI handler for Krypton
  */
 class KryptonCLI : CliktCommand() {
+
     private val disableGUI by option("-nogui", "--disable-gui").flag()
     private val version by option("-v", "--version").flag()
 
@@ -32,6 +34,12 @@ class KryptonCLI : CliktCommand() {
             logger.warn("Consider starting it with more by using \"java -Xmx1024M -Xms1024M -jar Krypton-${KryptonServerInfo.version}.jar\" to start it with 1 GB RAM")
         }
 
-        KryptonServer(disableGUI).start()
+        val reference = AtomicReference<KryptonServer>()
+        val mainThread = Thread({ reference.get().start() }, "Server Thread").apply {
+            setUncaughtExceptionHandler { _, exception -> logger<KryptonServer>().error(exception) }
+        }
+        val server = KryptonServer(mainThread, disableGUI)
+        reference.set(server)
+        mainThread.start()
     }
 }

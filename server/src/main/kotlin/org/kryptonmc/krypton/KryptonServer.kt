@@ -52,11 +52,9 @@ import java.security.SecureRandom
 import java.util.Locale
 import java.util.Properties
 import java.util.UUID
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
-class KryptonServer(private val disableGUI: Boolean) : Server {
+class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : Server {
 
     override val info = KryptonServerInfo
 
@@ -96,18 +94,16 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
     override val pluginManager = KryptonPluginManager(this)
     override val servicesManager = KryptonServicesManager()
 
+    @Volatile internal var isRunning = true; private set
     @Volatile internal var lastTickTime = 0L; private set
     private var lastOverloadWarning = 0L
     private var tickCount = 0
+    private var oversleepFactor = 0L
 
     internal val tickTimes = LongArray(100)
     internal var averageTickTime = 0F; private set
 
-    lateinit var mainThread: Thread private set
-    private val tickScheduler = Executors.newSingleThreadScheduledExecutor { Thread(it, "Tick Scheduler").apply { mainThread = this } }
     val tickables = mutableListOf<Runnable>()
-
-    @Volatile internal var isRunning = true; private set
 
     val continuousProfiler = ServerProfiler(this::tickCount)
     private var profiler: Profiler = DeadProfiler
@@ -174,9 +170,7 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
         LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type \"help\" for help.")
         watchdog?.tick(System.currentTimeMillis())
 
-        tickScheduler.scheduleAtFixedRate({
-            if (!isRunning) return@scheduleAtFixedRate
-
+        while (isRunning) {
             val nextTickTime = System.currentTimeMillis() - lastTickTime
             if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15000L) {
                 LOGGER.warn("Woah there! Can't keep up! Running ${nextTickTime}ms (${nextTickTime / 50} ticks) behind!")
@@ -188,7 +182,7 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
             profiler.start()
 
             // start tick
-            profiler.push("tickStartEvent")
+            profiler.push("tick start event")
             eventBus.call(TickStartEvent(tickCount))
             profiler.pop()
 
@@ -204,14 +198,17 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
             profiler.pop()
 
             // end tick
-            profiler.push("tickEndEvent")
+            profiler.push("tick end event")
             eventBus.call(TickEndEvent(tickCount, tickTime, finishTime))
             profiler.pop()
             lastTickTime = finishTime
             watchdog?.tick(finishTime)
             profiler.end()
             endProfilerTick(singleTickProfiler)
-        }, 0, TICK_INTERVAL, TimeUnit.MILLISECONDS)
+
+            val sleepTime = measureTimeMillis { Thread.sleep(TICK_INTERVAL - tickTime - oversleepFactor) }
+            oversleepFactor = sleepTime - (TICK_INTERVAL - tickTime)
+        }
     }
 
     private fun tick() {
@@ -319,7 +316,7 @@ class KryptonServer(private val disableGUI: Boolean) : Server {
 
         // shut down schedulers
         scheduler.shutdown()
-        tickScheduler.shutdownNow()
+//        tickScheduler.shutdownNow()
         LOGGER.info("Goodbye")
 
         // manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
