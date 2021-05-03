@@ -10,14 +10,13 @@ import org.kryptonmc.krypton.netty
 
 plugins {
     `java-library`
-    id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
     application
     `maven-publish`
     signing
 }
 
-//application.mainClass.set("org.kryptonmc.krypton.KryptonKt")
-application.mainClassName = "org.kryptonmc.krypton.KryptonKt"
+application.mainClass.set("org.kryptonmc.krypton.KryptonKt")
 
 dependencies {
     api(project(":krypton-api"))
