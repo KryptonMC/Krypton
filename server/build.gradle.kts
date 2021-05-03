@@ -81,10 +81,6 @@ tasks {
 }
 
 pitest {
-    avoidCallsTo.set(setOf(
-        "kotlin.jvm.internal",
-        "org.apache.logging.log4j"
-    ))
     excludedClasses.set(setOf(
         "org.kryptonmc.krypton.KryptonKt*",
         "org.kryptonmc.krypton.KryptonCLI*",

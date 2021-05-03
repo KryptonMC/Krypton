@@ -3,6 +3,7 @@ package org.kryptonmc.krypton.api
 import io.mockk.every
 import io.mockk.mockk
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.Component.text
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.krypton.api.inventory.InventoryType
@@ -12,7 +13,9 @@ import org.kryptonmc.krypton.api.inventory.item.dsl.item
 import org.kryptonmc.krypton.api.inventory.item.meta.ItemMeta
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class InventoryTests {
 
@@ -41,8 +44,8 @@ class InventoryTests {
     @Test
     fun `test item stack data retention`() {
         val meta = mockk<ItemMeta> {
-            every { displayName } returns Component.text("Nothing")
-            every { lore } returns listOf(Component.text("Lorem ipsum"), Component.text("dolor sit amet"))
+            every { displayName } returns text("Nothing")
+            every { lore } returns listOf(text("Lorem ipsum"), text("dolor sit amet"))
         }
         val stack = ItemStack(Material.AIR, 10, meta)
 
@@ -56,5 +59,24 @@ class InventoryTests {
         assertNotNull(Material.KEYS)
         assertNotNull(Material.KEYS.keys())
         assertNotNull(Material.KEYS.values())
+    }
+
+    @Test
+    fun `motion blocking persistence`() {
+        assertTrue(Material.ACACIA_BOAT.blocksMotion)
+        assertFalse(Material.AIR.blocksMotion)
+    }
+
+    @Test
+    fun `built item metadata persistence`() {
+        val name = text("Hello World!")
+        val lore = listOf(text("Lorem ipsum"), text("dolor sit amet"))
+        val item = item(Material.AIR, 1) {
+            name(name)
+            lore(lore)
+        }
+
+        assertEquals(name, item.meta?.displayName)
+        assertEquals(lore, item.meta?.lore)
     }
 }

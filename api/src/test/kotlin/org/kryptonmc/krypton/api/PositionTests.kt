@@ -1,6 +1,6 @@
 package org.kryptonmc.krypton.api
 
-import org.kryptonmc.krypton.api.space.Position
+import org.junit.jupiter.api.RepeatedTest
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.space.square
 import kotlin.math.acos
@@ -8,6 +8,7 @@ import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
+import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -70,7 +71,7 @@ class PositionTests {
     fun `test angle, midpoint, dot and cross product`() {
         val dot = position.x * other.x + position.y * other.y + position.z * other.z
         val cross = Vector(position.y * other.z - other.y * position.z, position.z * other.x - other.z * position.x, position.x * other.y - other.x * position.y)
-        val angle = acos(max(min(dot / (position.length * other.length), -1.0), 1.0))
+        val angle = acos(min(max(dot / (position.length * other.length), -1.0), 1.0))
         val midpoint = Vector((position.x + other.x) / 2, (position.y + other.y) / 2, (position.z + other.z) / 2)
 
         assertEquals(angle, position.angle(other))
@@ -93,12 +94,22 @@ class PositionTests {
         assertEquals(floor(position.x).toInt(), position.blockX)
         assertEquals(floor(position.y).toInt(), position.blockY)
         assertEquals(floor(position.z).toInt(), position.blockZ)
+
+        val known = Vector(128.5, 128.5, 128.5)
+        assertEquals(128, known.blockX)
+        assertEquals(128, known.blockY)
+        assertEquals(128, known.blockZ)
     }
 
     @Test
-    fun `test comparisons`() {
-        assertEquals(Vector.ZERO, Vector.ZERO)
-        assertTrue(Vector(1.0, 1.0, 1.0) > Vector.ZERO)
-        assertTrue(Vector(-1.0, -1.0, -1.0) < Vector.ZERO)
+    fun `check equality`() {
+        val x = Random.nextDouble()
+        val y = Random.nextDouble()
+        val z = Random.nextDouble()
+        val one = Vector(x, y, z)
+        val two = Vector(x, y, z)
+
+        assertEquals(one, two)
+        assertEquals(one.hashCode(), two.hashCode())
     }
 }

@@ -11,11 +11,9 @@ class PluginTests {
         plugin.registerCommand(command)
         plugin.registerCommands(command)
         plugin.registerCommands(setOf(command))
-        verify {
-            commandManagerMock.register(command)
-            commandManagerMock.register(*arrayOf(command))
-            commandManagerMock.register(setOf(command))
-        }
+        verify { commandManagerMock.register(command) }
+        verify { commandManagerMock.register(*arrayOf(command)) }
+        verify { commandManagerMock.register(setOf(command)) }
     }
 
     @Test

@@ -62,7 +62,9 @@ data class Vector(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as Vector
-        return abs(x - other.x) < EPSILON && abs(y - other.y) < EPSILON && abs(z - other.z) < EPSILON
+        return abs(x - other.x) < EPSILON &&
+                abs(y - other.y) < EPSILON &&
+                abs(z - other.z) < EPSILON
     }
 
     override fun apply(x: Double, y: Double, z: Double) = copy(x = x, y = y, z = z)

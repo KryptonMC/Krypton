@@ -1,4 +1,5 @@
 import org.gradle.jvm.tasks.Jar
+import org.jetbrains.dokka.gradle.GradleExternalDocumentationLinkBuilder
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.kryptonmc.krypton.Versions
 import org.kryptonmc.krypton.adventure
@@ -80,13 +81,37 @@ subprojects {
 
     pitest {
         junit5PluginVersion.set("0.12")
-        avoidCallsTo.set(setOf("kotlin.jvm.internal"))
+        avoidCallsTo.set(setOf(
+            "kotlin.jvm.internal",
+            "java.util.logging",
+            "org.slf4j",
+            "org.apache.logging.log4j"
+        ))
         mutators.set(setOf("STRONGER"))
         targetClasses.set(setOf("org.kryptonmc.*"))
         targetTests.set(setOf("org.kryptonmc.*"))
         threads.set(Runtime.getRuntime().availableProcessors())
         outputFormats.set(setOf("XML", "HTML"))
-        excludedMethods.set(setOf("equals", "hashCode", "toString"))
+        excludedMethods.set(setOf("equals", "hashCode", "toString", "emptyList"))
+    }
+
+    tasks.withType<org.jetbrains.dokka.gradle.DokkaTask>().configureEach {
+        dokkaSourceSets {
+            named("main") {
+                fun adventure(module: String) = Action<GradleExternalDocumentationLinkBuilder> {
+                    val baseURL = "https://jd.adventure.kyori.net/$module/${Versions.ADVENTURE}/"
+                    url.set(uri(baseURL).toURL())
+                    packageListUrl.set(uri("${baseURL}element-list").toURL())
+                }
+
+                externalDocumentationLink(adventure("api"))
+                externalDocumentationLink(adventure("key"))
+                externalDocumentationLink(adventure("nbt"))
+                externalDocumentationLink(adventure("text-serializer-gson"))
+                externalDocumentationLink(adventure("text-serializer-legacy"))
+                externalDocumentationLink(adventure("text-serializer-plain"))
+            }
+        }
     }
 
     task<Jar>("sourcesJar") {

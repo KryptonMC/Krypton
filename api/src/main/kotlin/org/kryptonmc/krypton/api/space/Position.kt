@@ -15,7 +15,7 @@ import kotlin.math.sqrt
 /**
  * A neat abstraction layer between both [Vector] and [Location].
  */
-interface Position : Comparable<Position>, Cloneable {
+interface Position : Cloneable {
 
     /**
      * The X coordinate of this [Position]
@@ -275,7 +275,7 @@ interface Position : Comparable<Position>, Cloneable {
      */
     @Contract(pure = true)
     @JvmDefault
-    fun angle(other: Position) = acos(max(min(dot(other) / (length * other.length), -1.0), 1.0))
+    fun angle(other: Position) = acos(min(max(dot(other) / (length * other.length), -1.0), 1.0))
 
     /**
      * Creates a new [Vector] that is the midpoint between this [Vector] and
@@ -360,13 +360,6 @@ interface Position : Comparable<Position>, Cloneable {
      */
     @Contract("_ -> new", pure = true)
     fun apply(x: Double = this.x, y: Double = this.y, z: Double = this.z): Position
-
-    override fun compareTo(other: Position): Int {
-        if (x == other.x && y == other.y && z == other.z) return 0
-        if (x > other.x && y > other.y && z > other.z) return 1
-        if (x < other.x && y < other.y && z < other.z) return -1
-        return 0
-    }
 
     companion object {
 

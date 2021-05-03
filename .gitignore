@@ -31,5 +31,5 @@ build/
 server-test/
 test-server/
 run/
-krypton/
-krypton*/
+/krypton/
+/krypton*/

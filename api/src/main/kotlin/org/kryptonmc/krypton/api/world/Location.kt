@@ -2,7 +2,9 @@ package org.kryptonmc.krypton.api.world
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.krypton.api.space.Position
+import org.kryptonmc.krypton.api.space.Position.Companion.EPSILON
 import org.kryptonmc.krypton.api.space.Vector
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 /**
@@ -13,6 +15,7 @@ import kotlin.math.sqrt
  *
  * @see [Vector]
  */
+@Suppress("EqualsOrHashCode")
 data class Location @JvmOverloads constructor(
     val world: World,
     override val x: Double,
@@ -63,4 +66,16 @@ data class Location @JvmOverloads constructor(
     @Contract("_ -> new", pure = true)
     @Suppress("unused")
     fun toVector() = Vector(x, y, z)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as Location
+        return world == other.world &&
+                abs(x - other.x) < EPSILON &&
+                abs(y - other.y) < EPSILON &&
+                abs(z - other.z) < EPSILON &&
+                abs(yaw - other.yaw) < EPSILON &&
+                abs(pitch - other.pitch) < EPSILON
+    }
 }
