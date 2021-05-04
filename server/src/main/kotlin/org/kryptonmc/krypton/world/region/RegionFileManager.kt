@@ -3,16 +3,17 @@ package org.kryptonmc.krypton.world.region
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
-import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
+import java.nio.file.Path
 
 /**
  * Manages region files. That's literally it.
  */
 class RegionFileManager(
-    private val folder: File,
+    private val folder: Path,
     private val synchronizeWrites: Boolean
 ) : AutoCloseable {
 
@@ -32,10 +33,11 @@ class RegionFileManager(
         if (cachedFile != null) return cachedFile
 
         if (REGION_CACHE.size >= 256) REGION_CACHE.removeLast().close()
-        folder.mkdirs()
+        folder.createDirectories()
 
-        val file = File(folder, "r.${position.regionX}.${position.regionZ}.mca")
-        val regionFile = RegionFile(file.toPath(), synchronizeWrites, folder.toPath(), RegionFileCompression.ZLIB)
+//        val file = File(folder, "r.${position.regionX}.${position.regionZ}.mca")
+        val path = folder.resolve("r.${position.regionX}.${position.regionZ}.mca")
+        val regionFile = RegionFile(path, synchronizeWrites, folder, RegionFileCompression.ZLIB)
         REGION_CACHE.putAndMoveToFirst(serialized, regionFile)
         return regionFile
     }

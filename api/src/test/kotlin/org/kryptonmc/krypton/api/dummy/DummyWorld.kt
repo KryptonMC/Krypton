@@ -15,6 +15,7 @@ data class DummyWorld(override val name: String) : World {
 
     private val uuid = UUID.randomUUID()
 
+    override val server = org.kryptonmc.krypton.api.server
     override val border = mockk<WorldBorder>()
     override val chunks = emptySet<Chunk>()
     override val difficulty = Difficulty.PEACEFUL
@@ -25,6 +26,7 @@ data class DummyWorld(override val name: String) : World {
     override val spawnLocation = Location(this, 0.0, 0.0, 0.0)
     override val time = 0L
     override val version = WorldVersion.CURRENT
+    override fun save() = Unit
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

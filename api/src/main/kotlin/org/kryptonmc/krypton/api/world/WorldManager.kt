@@ -1,6 +1,7 @@
 package org.kryptonmc.krypton.api.world
 
 import org.kryptonmc.krypton.api.Server
+import java.util.concurrent.Future
 
 /**
  * The world manager for this server. Can be used to retrieve loaded worlds,
@@ -26,14 +27,14 @@ interface WorldManager {
     val worlds: Map<String, World>
 
     /**
-     * Load a world by its namespaced key
+     * Load a world by its namespaced key (asynchronously)
      *
      * @param name
      * @return the world with the specified name
      * @throws IllegalArgumentException if there is no world folder with
      * the specified name in the current directory
      */
-    fun load(name: String): World
+    fun load(name: String): Future<out World>
 
     /**
      * Save a world to disk
@@ -42,7 +43,7 @@ interface WorldManager {
      * @throws IllegalArgumentException if the provided world is not of the
      * internal server type (if it is a custom implementation)
      */
-    fun save(world: World)
+    fun save(world: World): Future<*>
 
     /**
      * If the specified world [name] is loaded into the server

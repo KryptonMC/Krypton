@@ -1,5 +1,13 @@
 package org.kryptonmc.krypton.world
 
+import net.kyori.adventure.bossbar.BossBar
+import net.kyori.adventure.nbt.BinaryTagIO
+import net.kyori.adventure.nbt.BinaryTagTypes
+import net.kyori.adventure.nbt.CompoundBinaryTag
+import net.kyori.adventure.nbt.ListBinaryTag
+import net.kyori.adventure.nbt.StringBinaryTag
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Difficulty
@@ -12,15 +20,19 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.util.csv.csv
 import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.bossbar.Bossbar
+import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import java.io.Writer
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.UUID
 
 data class KryptonWorld(
+    override val server: KryptonServer,
+    val folder: Path,
     val uuid: UUID,
     override val name: String,
     override val chunks: MutableSet<KryptonChunk>,
@@ -54,6 +66,7 @@ data class KryptonWorld(
     val serverBrands: Set<String>
 ) : World {
 
+    val chunkManager = ChunkManager(this)
     val dimension = NamespacedKey(value = "overworld")
 
     override val border = KryptonWorldBorder(
@@ -111,6 +124,93 @@ data class KryptonWorld(
     fun saveDebugReport(path: Path) {
         val chunksPath = path.resolve("chunks.csv")
         Files.newBufferedWriter(chunksPath).use { it.dumpChunks() }
+    }
+
+    override fun save() {
+        val dataPath = folder.resolve("level.dat")
+        val customBossEvents = bossbars.associate { bossbar ->
+            val players = bossbar.players.map {
+                CompoundBinaryTag.builder()
+                    .putLong("L", it.leastSignificantBits)
+                    .putLong("M", it.mostSignificantBits)
+                    .build()
+            }
+
+            val createWorldFog = BossBar.Flag.CREATE_WORLD_FOG in bossbar.flags()
+            val darkenScreen = BossBar.Flag.DARKEN_SCREEN in bossbar.flags()
+            val playBossMusic = BossBar.Flag.PLAY_BOSS_MUSIC in bossbar.flags()
+
+            bossbar.id.toString() to CompoundBinaryTag.builder()
+                .put("Players", ListBinaryTag.of(BinaryTagTypes.COMPOUND, players))
+                .putString("Color", bossbar.color().name)
+                .putBoolean("CreateWorldFog", createWorldFog)
+                .putBoolean("DarkenScreen", darkenScreen)
+                .putInt("Max", 20)
+                .putInt("Value", 20)
+                .putString("Name", GsonComponentSerializer.gson().serialize(bossbar.name()))
+                .putString("Overlay", bossbar.overlay().name)
+                .putBoolean("PlayBossMusic", playBossMusic)
+                .putBoolean("Visible", bossbar.visible)
+                .build()
+        }
+
+        val gamerules = gamerules.transform { (rule, value) -> rule.rule to StringBinaryTag.of(value) }
+        val dimensions = generationSettings.dimensions.transform { (key, value) -> key.toString() to value.toNBT() }
+
+        BinaryTagIO.writer().write(
+            CompoundBinaryTag.builder().put("Data", CompoundBinaryTag.builder()
+            .putBoolean("allowCommands", false)
+            .putDouble("BorderCenterX", border.center.x)
+            .putDouble("BorderCenterZ", border.center.z)
+            .putDouble("BorderDamagePerBlock", border.damageMultiplier)
+            .putDouble("BorderSize", border.size)
+            .putDouble("BorderSafeZone", border.safeZone)
+            .putDouble("BorderSizeLerpTarget", border.sizeLerpTarget)
+            .putLong("BorderSizeLerpTime", border.sizeLerpTime)
+            .putDouble("BorderWarningBlocks", border.warningBlocks)
+            .putDouble("BorderWarningTime", border.warningTime)
+            .putInt("clearWeatherTime", clearWeatherTime)
+            .put("CustomBossEvents", CompoundBinaryTag.from(customBossEvents))
+            .put("DataPacks", CompoundBinaryTag.builder()
+                .put("Enabled", ListBinaryTag.of(BinaryTagTypes.STRING, listOf(StringBinaryTag.of("vanilla"))))
+                .put("Disabled", ListBinaryTag.empty())
+                .build())
+            .putInt("DataVersion", LevelDataVersion.ID)
+            .putLong("DayTime", dayTime)
+            .putByte("Difficulty", difficulty.ordinal.toByte())
+            .putBoolean("DifficultyLocked", difficultyLocked)
+            .put("GameRules", CompoundBinaryTag.from(gamerules))
+            .put("WorldGenSettings", CompoundBinaryTag.builder()
+                .putLong("seed", generationSettings.seed)
+                .putBoolean("generate_features", generationSettings.generateStructures)
+                .put("dimensions", CompoundBinaryTag.from(dimensions))
+                .build())
+            .putInt("GameType", gamemode.ordinal)
+            .putBoolean("hardcore", isHardcore)
+            .putBoolean("initialized", true)
+            .putString("Krypton.Version", KryptonServer.KryptonServerInfo.version)
+            .putLong("LastPlayed", lastPlayed.toInstant(ZoneOffset.UTC).toEpochMilli())
+            .putString("LevelName", name)
+            .putBoolean("MapFeatures", mapFeatures)
+            .putBoolean("raining", isRaining)
+            .putInt("rainTime", rainTime)
+            .putLong("RandomSeed", randomSeed)
+            .put("ServerBrands", ListBinaryTag.from(serverBrands.map { StringBinaryTag.of(it) }))
+            .putInt("SpawnX", spawnLocation.x.toInt())
+            .putInt("SpawnY", spawnLocation.y.toInt())
+            .putInt("SpawnZ", spawnLocation.z.toInt())
+            .putBoolean("thundering", isThundering)
+            .putLong("Time", time)
+            .putInt("version", NBT_VERSION)
+            .put("Version", CompoundBinaryTag.builder()
+                .putInt("Id", LevelDataVersion.ID)
+                .putString("Name", LevelDataVersion.NAME)
+                .putBoolean("Snapshot", LevelDataVersion.SNAPSHOT)
+                .build())
+            .putInt("WanderingTraderSpawnChance", 25)
+            .putInt("WanderingTraderSpawnDelay", 24000)
+            .build()).build(), dataPath.toAbsolutePath(), BinaryTagIO.Compression.GZIP
+        )
     }
 
     override fun equals(other: Any?): Boolean {

@@ -14,7 +14,6 @@ import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.command.BrigadierCommand
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.logger
-import java.io.File
 import java.io.IOException
 import java.nio.file.spi.FileSystemProvider
 import java.time.LocalDateTime
@@ -38,8 +37,8 @@ class DebugCommand(private val server: KryptonServer) : BrigadierCommand {
     private fun stop(sender: Sender) {
         if (!server.continuousProfiler.isEnabled) throw ERROR_NOT_RUNNING.create()
         val results = server.finishProfiling()
-        val file = File(DEBUG_FOLDER, "profile-results-$TIME_NOW_FORMATTED.txt")
-        results.save(file)
+//        val file = File(DEBUG_FOLDER, "profile-results-$TIME_NOW_FORMATTED.txt")
+        results.save(DEBUG_FOLDER.resolve("profile-results-$TIME_NOW_FORMATTED.txt"))
 
         val secondsDuration = results.duration / 1.0E9F
         val ticksPerSecond = results.durationTicks / secondsDuration
@@ -53,7 +52,7 @@ class DebugCommand(private val server: KryptonServer) : BrigadierCommand {
     private fun report(sender: Sender) {
         val reportFileName = "debug-report-$TIME_NOW_FORMATTED"
         try {
-            val folderPath = DEBUG_FOLDER.toPath().apply { createDirectories() }
+            val folderPath = DEBUG_FOLDER.apply { createDirectories() }
             if (ZIP_FILE_SYSTEM_PROVIDER == null) {
                 val debugPath = folderPath.resolve(reportFileName)
                 server.saveDebugReport(debugPath)
@@ -77,7 +76,7 @@ class DebugCommand(private val server: KryptonServer) : BrigadierCommand {
         private val TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")
         private val TIME_NOW_FORMATTED: String get() = LocalDateTime.now().format(TIME_FORMAT)
 
-        private val DEBUG_FOLDER = File(CURRENT_DIRECTORY, "debug")
+        private val DEBUG_FOLDER = CURRENT_DIRECTORY.resolve("debug")
         private val LOGGER = logger<DebugCommand>()
     }
 }

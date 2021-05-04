@@ -1,8 +1,8 @@
 package org.kryptonmc.krypton.world.chunk
 
+import org.kryptonmc.krypton.api.block.Block
 import org.kryptonmc.krypton.api.inventory.item.Material
 import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.data.BitStorage
 import java.util.LinkedList
 
@@ -25,7 +25,7 @@ data class ChunkSection(
 
     operator fun get(x: Int, y: Int, z: Int) = palette[blockStates[indexOf(x, y, z)]].name
 
-    fun set(block: KryptonBlock): Boolean {
+    fun set(block: Block): Boolean {
         if (block.type != Material.AIR) nonEmptyBlockCount++
 
         val x = block.location.blockX

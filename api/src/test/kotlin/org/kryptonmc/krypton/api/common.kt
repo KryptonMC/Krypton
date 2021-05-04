@@ -4,9 +4,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkConstructor
 import io.mockk.runs
-import io.mockk.spyk
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.krypton.api.command.Command
 import org.kryptonmc.krypton.api.command.CommandManager
@@ -17,8 +15,8 @@ import org.kryptonmc.krypton.api.event.EventBus
 import org.kryptonmc.krypton.api.plugin.Plugin
 import org.kryptonmc.krypton.api.plugin.PluginContext
 import org.kryptonmc.krypton.api.plugin.PluginDescriptionFile
-import java.io.File
 import java.net.InetSocketAddress
+import java.nio.file.Path
 import java.util.UUID
 
 val commandManagerMock = mockk<CommandManager> {
@@ -69,4 +67,4 @@ val logger = mockk<Logger> {
     every { error(any<String>()) } just runs
 }
 
-val plugin = object : Plugin(PluginContext(server, File(""), description, logger)) {}
+val plugin = object : Plugin(PluginContext(server, Path.of(""), description, logger)) {}

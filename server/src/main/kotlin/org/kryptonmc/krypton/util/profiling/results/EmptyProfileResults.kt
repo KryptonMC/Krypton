@@ -1,6 +1,6 @@
 package org.kryptonmc.krypton.util.profiling.results
 
-import java.io.File
+import java.nio.file.Path
 
 object EmptyProfileResults : ProfileResults {
 
@@ -9,5 +9,5 @@ object EmptyProfileResults : ProfileResults {
     override val startTimeTicks = 0
     override val endTimeTicks = 0
 
-    override fun save(file: File) = false
+    override fun save(file: Path) = false
 }

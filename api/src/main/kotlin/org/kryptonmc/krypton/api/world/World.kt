@@ -1,11 +1,17 @@
 package org.kryptonmc.krypton.api.world
 
+import org.kryptonmc.krypton.api.Server
 import org.kryptonmc.krypton.api.world.chunk.Chunk
 
 /**
  * Represents a loaded world
  */
 interface World {
+
+    /**
+     * The server this world was loaded on
+     */
+    val server: Server
 
     /**
      * The name of this world
@@ -69,6 +75,12 @@ interface World {
      * The maximum build height of this world. Also known as the build limit.
      */
     val maxHeight: Int
+
+    /**
+     * Saves this world to disk. Exposed as a function of [World] to allow for custom world implementations
+     * to define this.
+     */
+    fun save()
 }
 
 /**

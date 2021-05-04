@@ -3,7 +3,7 @@ package org.kryptonmc.krypton.api.plugin
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.krypton.api.Server
 import org.kryptonmc.krypton.api.command.Command
-import java.io.File
+import java.nio.file.Path
 
 /**
  * A plugin. These are extensions to the server that can be "plugged in"
@@ -70,7 +70,7 @@ abstract class Plugin(val context: PluginContext) {
  */
 data class PluginContext(
     val server: Server,
-    val folder: File,
+    val folder: Path,
     val description: PluginDescriptionFile,
     val logger: Logger
 )

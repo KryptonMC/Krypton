@@ -1,12 +1,14 @@
 package org.kryptonmc.krypton.util.profiling.results
 
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
+import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.newOutputStream
 import org.kryptonmc.krypton.util.profiling.entry.EmptyPathEntry
 import org.kryptonmc.krypton.util.profiling.entry.PathEntry
-import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStreamWriter
+import java.nio.file.Path
 import java.util.Locale
 import java.util.TreeMap
 
@@ -48,10 +50,10 @@ class FilledProfileResults(
         return results
     }
 
-    override fun save(file: File): Boolean {
-        file.parentFile.mkdirs()
+    override fun save(file: Path): Boolean {
+        file.parent.createDirectories()
         return try {
-            OutputStreamWriter(FileOutputStream(file), Charsets.UTF_8).use { it.write(profilerResults) }
+            OutputStreamWriter(file.newOutputStream(), Charsets.UTF_8).use { it.write(profilerResults) }
             true
         } catch (exception: Exception) {
             LOGGER.error("Could not save profiler results to $file", exception)

@@ -31,6 +31,8 @@ import org.kryptonmc.krypton.util.TranslationRegister
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.copyTo
 import org.kryptonmc.krypton.util.createDirectories
+import org.kryptonmc.krypton.util.createDirectory
+import org.kryptonmc.krypton.util.exists
 import org.kryptonmc.krypton.util.isRegularFile
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.monitoring.jmx.KryptonStatistics
@@ -44,7 +46,6 @@ import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import java.awt.GraphicsEnvironment
-import java.io.File
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.nio.file.Path
@@ -83,8 +84,8 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
 
     val sessionManager = SessionManager(this)
 
-    override val worldManager = KryptonWorldManager(this, config.world.name, config.advanced.synchronizeChunkWrites)
-    val playerDataManager = PlayerDataManager(File(worldManager.folder, "/playerdata").apply { mkdir() })
+    override val worldManager = KryptonWorldManager(this, config.world.name)
+    val playerDataManager = PlayerDataManager(CURRENT_DIRECTORY.resolve(config.world.name).resolve("playerdata").createDirectory())
 
     override val commandManager = KryptonCommandManager(this)
     override val eventBus = KryptonEventBus()
@@ -177,7 +178,7 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
                 lastOverloadWarning = lastTickTime
             }
             // start profiler
-            val singleTickProfiler = SingleTickProfiler(config.other.saveThreshold * 1000000000L, File(CURRENT_DIRECTORY, "debug").apply { mkdir() })
+            val singleTickProfiler = SingleTickProfiler(config.other.saveThreshold * 1000000000L, CURRENT_DIRECTORY.resolve("debug").createDirectory())
             startProfilerTick(singleTickProfiler)
             profiler.start()
 
@@ -283,14 +284,14 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
     override fun audiences() = players + console
 
     private fun loadConfig(): KryptonConfig {
-        val configFile = File(CURRENT_DIRECTORY, "config.conf")
-        if (!configFile.exists()) {
+        val configPath = CURRENT_DIRECTORY.resolve("config.conf")
+        if (!configPath.exists) {
             val inputStream = Thread.currentThread().contextClassLoader.getResourceAsStream("config.conf")
                 ?: throw IOException("Config file not in classpath! Something has gone horribly wrong!")
-            inputStream.copyTo(configFile)
+            inputStream.copyTo(configPath)
         }
 
-        return HOCON.decodeFromConfig(ConfigFactory.parseFile(configFile))
+        return HOCON.decodeFromConfig(ConfigFactory.parseFile(configPath.toFile()))
     }
 
     internal fun stop(halt: Boolean = true) {
@@ -314,9 +315,8 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
         pluginManager.shutdown()
         eventBus.unregisterAll()
 
-        // shut down schedulers
+        // shut down scheduler
         scheduler.shutdown()
-//        tickScheduler.shutdownNow()
         LOGGER.info("Goodbye")
 
         // manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
@@ -369,4 +369,4 @@ data class KryptonStatusInfo(
     override val motd: Component
 ) : StatusInfo
 
-val CURRENT_DIRECTORY: File = Path.of("").toAbsolutePath().toFile()
+val CURRENT_DIRECTORY: Path = Path.of("").toAbsolutePath()

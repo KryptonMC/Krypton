@@ -23,28 +23,30 @@ import org.kryptonmc.krypton.entity.AttributeKey
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.entity.memory.EmptyBrain
 import org.kryptonmc.krypton.serializers.serialize
+import org.kryptonmc.krypton.util.createFile
+import org.kryptonmc.krypton.util.exists
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.NBT_DATA_VERSION
-import java.io.File
 import java.io.IOException
+import java.nio.file.Path
 
 /**
  * Responsible for loading and saving player data files
  */
-class PlayerDataManager(private val folder: File) {
+class PlayerDataManager(private val folder: Path) {
 
-    fun loadAndPopulate(world: KryptonWorld, player: KryptonPlayer) {
+    fun load(world: KryptonWorld, player: KryptonPlayer) {
         player.world = world
 
-        val playerFile = File(folder, "${player.uuid}.dat")
-        if (!playerFile.exists()) {
-            playerFile.createNewFile()
+        val playerFile = folder.resolve("${player.uuid}.dat")
+        if (!playerFile.exists) {
+            playerFile.createFile()
             applyDefaults(world, player)
             return
         }
 
         val nbt = try {
-            BinaryTagIO.unlimitedReader().read(playerFile.toPath(), GZIP)
+            BinaryTagIO.unlimitedReader().read(playerFile, GZIP)
         } catch (exception: IOException) {
             return
         }
@@ -77,7 +79,7 @@ class PlayerDataManager(private val folder: File) {
     }
 
     fun save(player: KryptonPlayer) {
-        val playerFile = File(folder, "${player.uuid}.dat").apply { createNewFile() }
+        val playerFile = folder.resolve("${player.uuid}.dat").createFile()
 
         val attributes = player.attributes.map {
             CompoundBinaryTag.builder()
@@ -147,7 +149,7 @@ class PlayerDataManager(private val folder: File) {
                 .add(FloatBinaryTag.of(player.location.yaw))
                 .add(FloatBinaryTag.of(player.location.pitch))
                 .build())
-            .build(), playerFile.toPath(), GZIP)
+            .build(), playerFile, GZIP)
     }
 
     // this ensures player data is always set, even when the player doesn't have any

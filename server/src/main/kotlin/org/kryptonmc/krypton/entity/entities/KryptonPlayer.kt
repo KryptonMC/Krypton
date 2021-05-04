@@ -1,5 +1,8 @@
 package org.kryptonmc.krypton.entity.entities
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.key.Key
@@ -18,13 +21,18 @@ import org.kryptonmc.krypton.api.entity.MainHand
 import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
+import org.kryptonmc.krypton.api.space.square
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.entity.Attribute
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
+import org.kryptonmc.krypton.packet.out.play.PacketOutChunkData
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
+import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutTitle
@@ -33,14 +41,17 @@ import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties.Co
 import org.kryptonmc.krypton.packet.session.Session
 import org.kryptonmc.krypton.util.canBuild
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.net.InetSocketAddress
 import java.util.Locale
 import java.util.UUID
 import java.util.function.UnaryOperator
+import kotlin.math.abs
+import kotlin.math.min
 
 class KryptonPlayer(
     override val name: String,
-    server: KryptonServer,
+    private val server: KryptonServer,
     val session: Session,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
 ) : Player, KryptonSender(server) {
@@ -76,6 +87,11 @@ class KryptonPlayer(
 
     override lateinit var world: KryptonWorld
     override lateinit var dimension: NamespacedKey
+
+    private var previousCentralX = 0
+    private var previousCentralZ = 0
+    private var hasLoadedChunks = false
+    private val visibleChunks = mutableSetOf<ChunkPosition>()
 
     override fun spawnParticles(particleEffect: ParticleEffect, location: Location) {
         val packet = PacketOutParticles(particleEffect, location)
@@ -134,5 +150,74 @@ class KryptonPlayer(
             else -> Abilities()
         }
         abilities.canBuild = gamemode.canBuild
+    }
+
+    fun updateChunks() {
+        var previousChunks: MutableSet<ChunkPosition>? = null
+        val newChunks = mutableListOf<ChunkPosition>()
+
+        val centralX = location.blockX shr 4
+        val centralZ = location.blockZ shr 4
+        val radius = min(server.config.world.viewDistance, 1 + viewDistance)
+
+        if (!hasLoadedChunks) {
+            hasLoadedChunks = true
+            println("Initial load for player $name")
+            println("Previous central X: $previousCentralX, previous central Z: $previousCentralZ, central X: $centralX, central Z: $centralZ, radius: $radius")
+            iterateChunks(centralX, centralZ, radius) { x, z -> newChunks += ChunkPosition(x, z) }
+        } else if (abs(centralX - previousCentralX) > radius || abs(centralZ - previousCentralZ) > radius) {
+            println("Second if for $name")
+            println("Previous central X: $previousCentralX, previous central Z: $previousCentralZ, central X: $centralX, central Z: $centralZ, radius: $radius")
+            visibleChunks.clear()
+            iterateChunks(centralX, centralZ, radius) { x, z -> newChunks += ChunkPosition(x, z) }
+        } else if (previousCentralX != centralX || previousCentralZ != centralZ) {
+            println("Third if for $name")
+            println("Previous central X: $previousCentralX, previous central Z: $previousCentralZ, central X: $centralX, central Z: $centralZ, radius: $radius")
+            previousChunks = HashSet(visibleChunks)
+            iterateChunks(centralX, centralZ, radius) { x, z ->
+                val position = ChunkPosition(x, z)
+                if (position in visibleChunks) previousChunks.remove(position) else newChunks += position
+            }
+        } else {
+            return
+        }
+
+        previousCentralX = centralX
+        previousCentralZ = centralZ
+
+        GlobalScope.launch(Dispatchers.IO) {
+            newChunks.sortWith { first, second ->
+                var dx = 16 * first.x + 8 - location.x
+                var dz = 16 * first.z + 8 - location.z
+                val da = dx.square() + dz.square()
+                dx = 16 * second.x + 8 - location.x
+                dz = 16 * second.z + 8 - location.z
+                val db = dx.square() + dz.square()
+                da.compareTo(db)
+            }
+
+            val loadedChunks = world.chunkManager.load(newChunks)
+            visibleChunks += newChunks
+
+            session.sendPacket(PacketOutUpdateViewPosition(ChunkPosition(centralX, centralZ)))
+            loadedChunks.forEach {
+                session.sendPacket(PacketOutUpdateLight(it))
+                session.sendPacket(PacketOutChunkData(it))
+            }
+
+            previousChunks?.forEach {
+                session.sendPacket(PacketOutUnloadChunk(it))
+                visibleChunks -= it
+            }
+            previousChunks?.clear()
+        }
+    }
+}
+
+private fun iterateChunks(centralX: Int, centralZ: Int, radius: Int, action: (x: Int, z: Int) -> Unit) {
+    for (x in (centralX - radius)..(centralX + radius)) {
+        for (z in (centralZ - radius)..(centralZ + radius)) {
+            action(x, z)
+        }
     }
 }

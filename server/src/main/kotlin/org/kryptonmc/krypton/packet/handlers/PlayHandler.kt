@@ -218,6 +218,7 @@ class PlayHandler(
         sessionManager.sendPackets(positionPacket) {
             it != session && it.currentState == PacketState.PLAY
         }
+        player.updateChunks()
     }
 
     private fun handleRotationUpdate(packet: PacketInPlayerRotation) {
@@ -262,6 +263,7 @@ class PlayHandler(
         sessionManager.sendPackets(positionAndRotationPacket, headLookPacket) {
             it != session && it.currentState == PacketState.PLAY
         }
+        player.updateChunks()
     }
 
     private fun handlePluginMessage(packet: PacketInPluginMessage) {

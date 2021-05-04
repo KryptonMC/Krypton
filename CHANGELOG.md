@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.19] - 2021-05-04
+### Added
+- Chunk streaming for players (they are now updated as you move)
+- Asynchronous world loading using a cached thread pool executor
+
+### Changed
+- Every reference of `java.io.File` has been removed and replaced with the newer and much better `java.nio.file.Path`.
+  This includes in the API.
+- All chunk loading has been moved out of `KryptonWorldManager` and moved in to `ChunkManager`, which is also now where
+  chunks are cached. This is to improve multi-world support, and also to better abide by the single responsibility principle (SRP)
+- Worlds now store a reference to the folder and server they were loaded from and by.
+
 ## [0.17.3] - 2021-04-08
 ### Added
 - GS4 status query handler

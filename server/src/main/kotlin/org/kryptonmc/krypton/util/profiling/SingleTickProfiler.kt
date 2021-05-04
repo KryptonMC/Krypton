@@ -1,13 +1,13 @@
 package org.kryptonmc.krypton.util.profiling
 
 import org.kryptonmc.krypton.util.logger
-import java.io.File
+import java.nio.file.Path
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class SingleTickProfiler(
     private val saveThreshold: Long,
-    private val folder: File
+    private val folder: Path
 ) {
 
     private var tick = 0
@@ -24,9 +24,10 @@ class SingleTickProfiler(
         val results = profiler.results
         profiler = DeadProfiler
         if (results.duration >= saveThreshold) {
-            val file = File(folder, "tick-results-$TIME_NOW_FORMATTED.txt")
+//            val file = File(folder, "tick-results-$TIME_NOW_FORMATTED.txt")
+            val file = folder.resolve("tick-results-$TIME_NOW_FORMATTED.txt")
             results.save(file)
-            LOGGER.info("Recorded long tick -- wrote info to ${file.absolutePath}")
+            LOGGER.info("Recorded long tick -- wrote info to ${file.toAbsolutePath()}")
         }
     }
 

@@ -20,7 +20,6 @@ import org.kryptonmc.krypton.packet.out.play.BorderAction
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
-import org.kryptonmc.krypton.packet.out.play.PacketOutChunkData
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeldItemChange
@@ -36,9 +35,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnlockRecipes
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
-import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.out.play.PacketOutWorldBorder
 import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityDestroy
@@ -53,7 +50,6 @@ import org.kryptonmc.krypton.util.Angle
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toAngle
-import org.kryptonmc.krypton.util.toArea
 import org.kryptonmc.krypton.util.toProtocol
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.util.concurrent.ConcurrentHashMap
@@ -94,7 +90,7 @@ class SessionManager(private val server: KryptonServer) {
         server.players += session.player
 
         // load the player's data and populate the provided player with their loaded data
-        server.playerDataManager.loadAndPopulate(world, session.player)
+        server.playerDataManager.load(world, session.player)
         if (server.config.world.forceDefaultGamemode) session.player.gamemode = server.config.world.gamemode
         val spawnLocation = session.player.location
         session.player.updateAbilities()
@@ -169,22 +165,7 @@ class SessionManager(private val server: KryptonServer) {
 
         val centerChunk = ChunkPosition(floor(spawnLocation.x / 16.0).toInt(), floor(spawnLocation.z / 16.0).toInt())
         session.sendPacket(PacketOutUpdateViewPosition(centerChunk))
-
-        GlobalScope.launch(Dispatchers.IO) {
-            val positionsToLoad = mutableListOf<ChunkPosition>()
-            repeat(server.config.world.viewDistance.toArea()) {
-                positionsToLoad += server.worldManager.chunkInSpiral(it, centerChunk.x, centerChunk.z)
-            }
-
-            server.worldManager.loadChunks(world, positionsToLoad).forEach { chunk ->
-                session.sendPacket(PacketOutUpdateLight(chunk))
-                session.sendPacket(PacketOutChunkData(chunk))
-            }
-
-            if (session.player.inventory.items.isNotEmpty()) {
-                session.sendPacket(PacketOutWindowItems(session.player.inventory))
-            }
-        }
+        session.player.updateChunks() // Initial stream
 
         session.sendPacket(PacketOutEntityMetadata(session.id, metadata))
         session.sendPacket(PacketOutWorldBorder(BorderAction.INITIALIZE, world.border))

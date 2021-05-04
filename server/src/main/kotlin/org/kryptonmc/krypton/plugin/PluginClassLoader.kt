@@ -9,6 +9,8 @@ import java.nio.file.Path
  */
 class PluginClassLoader(vararg urls: URL) : URLClassLoader(urls) {
 
+    constructor(path: Path) : this(path.toUri().toURL())
+
     internal fun addPath(path: Path) {
         addURL(path.toUri().toURL())
     }

@@ -1,6 +1,6 @@
 package org.kryptonmc.krypton.util.profiling.results
 
-import java.io.File
+import java.nio.file.Path
 
 interface ProfileResults {
 
@@ -16,7 +16,7 @@ interface ProfileResults {
 
     val durationTicks: Int get() = endTimeTicks - startTimeTicks
 
-    fun save(file: File): Boolean
+    fun save(file: Path): Boolean
 }
 
 val String.demangled: String get() = replace("\u001e", ".")

@@ -9,8 +9,10 @@ import org.kryptonmc.krypton.api.plugin.PluginContext
 import org.kryptonmc.krypton.api.plugin.PluginDescriptionFile
 import org.kryptonmc.krypton.api.plugin.PluginLoadState
 import org.kryptonmc.krypton.api.plugin.PluginManager
+import org.kryptonmc.krypton.util.createDirectory
+import org.kryptonmc.krypton.util.isDirectory
+import org.kryptonmc.krypton.util.list
 import org.kryptonmc.krypton.util.logger
-import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.lang.reflect.InvocationTargetException
@@ -23,9 +25,9 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
     internal fun initialize() {
         LOGGER.info("Loading plugins...")
-        File(ROOT_FOLDER, "plugins/").apply {
-            mkdir()
-            (listFiles() ?: return).filter { !it.isDirectory }.forEach {
+        ROOT_FOLDER.resolve("plugins").apply {
+            createDirectory()
+            list().filter { !it.isDirectory }.forEach {
                 val plugin = load(this, it) ?: return@forEach
 
                 val name = plugin.context.description.name
@@ -48,13 +50,11 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
     // if the cast here fails, something is seriously wrong
     override fun addToClasspath(plugin: Plugin, path: Path) = (plugin.javaClass.classLoader as PluginClassLoader).addPath(path)
 
-    private fun load(folder: File, file: File): Plugin? {
-        val description = loadDescription(file)
+    private fun load(folder: Path, path: Path): Plugin? {
+        val description = loadDescription(path)
         LOGGER.info("Loading ${description.name} version ${description.version}...")
 
-        val dataFolder = File(folder, description.name)
-        dataFolder.mkdir()
-
+        val dataFolder = folder.resolve(description.name).createDirectory()
         val context = PluginContext(
             server,
             dataFolder,
@@ -62,8 +62,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
             logger("[${description.name}]")
         )
 
-        val loader = PluginClassLoader(file.toURI().toURL())
-
+        val loader = PluginClassLoader(path)
         return try {
             val jarClass = loader.loadClass(description.main)
             val pluginClass = jarClass.asSubclass(Plugin::class.java)
@@ -83,12 +82,9 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
         }
     }
 
-    private fun loadDescription(file: File): PluginDescriptionFile = JarFile(file).use { jar ->
-        val entry = jar.getJarEntry("plugin.conf")
-            ?: throw FileNotFoundException("Plugin's JAR does not contain a plugin.conf!")
-        jar.getInputStream(entry).use {
-            HOCON.decodeFromConfig(ConfigFactory.parseReader(InputStreamReader(it)))
-        }
+    private fun loadDescription(path: Path): PluginDescriptionFile = JarFile(path.toFile()).use { jar ->
+        val entry = jar.getJarEntry("plugin.conf") ?: throw FileNotFoundException("Plugin's JAR does not contain a plugin.conf!")
+        jar.getInputStream(entry).use { HOCON.decodeFromConfig(ConfigFactory.parseReader(InputStreamReader(it))) }
     }
 
     fun shutdown() = plugins.forEach {
@@ -101,7 +97,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
     companion object {
 
         private val HOCON = Hocon {}
-        private val ROOT_FOLDER = Path.of("").toAbsolutePath().toFile()
+        private val ROOT_FOLDER = Path.of("").toAbsolutePath()
 
         private val LOGGER = logger("PluginManager")
     }
