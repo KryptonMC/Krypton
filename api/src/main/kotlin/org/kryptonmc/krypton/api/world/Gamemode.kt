@@ -40,7 +40,7 @@ enum class Gamemode {
      */
     SPECTATOR;
 
-    override fun toString() = name.toLowerCase(Locale.ROOT)
+    override fun toString() = name.lowercase()
 
     companion object {
 

@@ -106,7 +106,7 @@ enum class Biome(val id: Int) : Keyed {
      */
     THE_VOID(127);
 
-    override val key = NamespacedKey(value = name.toLowerCase(Locale.ROOT))
+    override val key = NamespacedKey(value = name.lowercase())
 
     companion object {
 

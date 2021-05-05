@@ -1,16 +1,15 @@
 package org.kryptonmc.krypton.util.profiling.results
 
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
-import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.newOutputStream
 import org.kryptonmc.krypton.util.profiling.entry.EmptyPathEntry
 import org.kryptonmc.krypton.util.profiling.entry.PathEntry
-import java.io.FileOutputStream
 import java.io.OutputStreamWriter
 import java.nio.file.Path
 import java.util.Locale
 import java.util.TreeMap
+import kotlin.io.path.createDirectories
+import kotlin.io.path.outputStream
 
 class FilledProfileResults(
     private val entries: Map<String, PathEntry>,
@@ -53,7 +52,7 @@ class FilledProfileResults(
     override fun save(file: Path): Boolean {
         file.parent.createDirectories()
         return try {
-            OutputStreamWriter(file.newOutputStream(), Charsets.UTF_8).use { it.write(profilerResults) }
+            OutputStreamWriter(file.outputStream(), Charsets.UTF_8).use { it.write(profilerResults) }
             true
         } catch (exception: Exception) {
             LOGGER.error("Could not save profiler results to $file", exception)

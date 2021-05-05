@@ -1,19 +1,17 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import io.netty.buffer.PooledByteBufAllocator
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.LongArrayBinaryTag
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.calculateBits
-import org.kryptonmc.krypton.util.varIntSize
 import org.kryptonmc.krypton.util.writeLongArray
 import org.kryptonmc.krypton.util.writeNBTCompound
-import org.kryptonmc.krypton.util.writeUByte
 import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.chunk.ChunkSection
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
-import org.kryptonmc.krypton.world.transform
 
 /**
  * This packet is very strange and really weird to compute, so don't expect to understand it straight away.
@@ -25,9 +23,10 @@ import org.kryptonmc.krypton.world.transform
  */
 class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
 
-    private val heightmaps = CompoundBinaryTag.from(chunk.heightmaps.transform {
-        it.key.name to LongArrayBinaryTag.of(*it.value.data.data)
-    })
+    private val heightmaps = CompoundBinaryTag.builder()
+        .put("MOTION_BLOCKING", chunk.heightmaps[Heightmap.Type.MOTION_BLOCKING]!!.nbt)
+        .put("WORLD_SURFACE", chunk.heightmaps[Heightmap.Type.WORLD_SURFACE]!!.nbt)
+        .build()
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(chunk.position.x)
@@ -35,65 +34,52 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
 
         val isFullChunk = chunk.biomes.isNotEmpty()
         buf.writeBoolean(isFullChunk) // if the chunk is full
-        buf.writeVarInt(calculateBitMask(chunk.sections)) // the primary bit mask
+        val sections = chunk.sections.filter { it.blockStates.isNotEmpty() }.sortedBy { it.y }
 
-        buf.writeNBTCompound(heightmaps)
+        var mask = 0
+        val buffer = PooledByteBufAllocator.DEFAULT.heapBuffer(MAX_BUFFER_SIZE)
+        sections.forEachIndexed { index, it ->
+            if (it.nonEmptyBlockCount == 0) return@forEachIndexed
+            mask = mask or (1 shl index)
+            it.write(buffer)
+        }
+
+        buf.writeVarInt(mask) // the primary bit mask
+        buf.writeNBTCompound(heightmaps) // heightmaps
 
         if (isFullChunk) { // respect full chunk setting
             buf.writeVarInt(chunk.biomes.size)
             chunk.biomes.forEach { buf.writeVarInt(it.id) }
         }
 
-        val sections = chunk.sections.filter { it.blockStates.isNotEmpty() }
-
-        // calculate the size of the chunk data
-        var bytesLength = 0
-        sections.forEach { section ->
-            bytesLength += 2
-            bytesLength += 1
-
-            val paletteSize = section.palette.size
-            val bitsPerBlock = paletteSize.calculateBits()
-            if (bitsPerBlock < 9) {
-                bytesLength += section.palette.size.varIntSize()
-                bytesLength += section.palette.sumBy { entry ->
-                    GlobalPalette[entry.name].states.first { it.properties == entry.properties }.id.varIntSize()
-                }
-            }
-
-            bytesLength += section.blockStates.size.varIntSize()
-            bytesLength += section.blockStates.data.sumBy { Long.SIZE_BYTES }
-        }
-        buf.writeVarInt(bytesLength)
-
-        // write the chunk data
-        sections.forEach { section ->
-            buf.writeShort(section.nonEmptyBlockCount)
-
-            val paletteSize = section.palette.size
-            val bitsPerBlock = paletteSize.calculateBits()
-            buf.writeUByte(bitsPerBlock.toUByte())
-
-            if (bitsPerBlock < 9) { // write palette
-                buf.writeVarInt(paletteSize)
-                section.palette.forEach { block ->
-                    buf.writeVarInt(GlobalPalette[block.name].states.first { it.properties == block.properties }.id)
-                }
-            }
-
-            buf.writeLongArray(section.blockStates.data)
-        }
+        buf.writeVarInt(buffer.writerIndex())
+        buf.writeBytes(buffer)
+        buffer.release()
 
         // TODO: When block entities are added, make use of this here
         buf.writeVarInt(0) // number of block entities
     }
 
-    private fun calculateBitMask(sections: List<ChunkSection>): Int {
-        var result = 0
-        repeat(16) { i ->
-            if (sections.firstOrNull { it.y == (i - 1) && it.blockStates.isNotEmpty() } == null) return@repeat
-            result = result or (1 shl (i - 1))
+    private fun ChunkSection.write(buf: ByteBuf) {
+        buf.writeShort(nonEmptyBlockCount)
+
+        val paletteSize = palette.size
+        val bitsPerBlock = paletteSize.calculateBits()
+        buf.writeByte(bitsPerBlock)
+
+        if (bitsPerBlock < 9) { // Write palette
+            buf.writeVarInt(paletteSize)
+            palette.forEach { block -> buf.writeVarInt(GlobalPalette[block.name].states.first { it.properties == block.properties }.id) }
         }
-        return result
+
+        buf.writeLongArray(blockStates.data)
+    }
+
+    companion object {
+
+        // Thanks Minestom :) (https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/network/packet/server/play/ChunkDataPacket.java#L50-52)
+        private const val CHUNK_SECTION_COUNT = 16
+        private const val MAX_BITS_PER_ENTRY = 16
+        private const val MAX_BUFFER_SIZE = (Short.SIZE_BYTES + Byte.SIZE_BYTES + 5 * Byte.SIZE_BYTES + (4096 * MAX_BITS_PER_ENTRY / Long.SIZE_BITS * Long.SIZE_BYTES)) * CHUNK_SECTION_COUNT + 256 * Int.SIZE_BYTES
     }
 }

@@ -27,12 +27,12 @@ fun String.translate(writer: StringWriter) {
         val consumed = translate(position, writer)
         if (consumed == 0) {
             val c1 = get(position)
-            writer.write(c1.toInt())
+            writer.write(c1.code)
             position++
             if (c1.isHighSurrogate() && position < length) {
                 val c2 = get(position)
                 if (c2.isHighSurrogate()) {
-                    writer.write(c2.toInt())
+                    writer.write(c2.code)
                     position++
                 }
             }
@@ -47,9 +47,9 @@ fun String.translate(index: Int, writer: StringWriter): Int {
     if (CSV_SEARCH_CHARACTERS !in this) {
         writer.write(this)
     } else {
-        writer.write(CSV_QUOTE.toInt())
+        writer.write(CSV_QUOTE.code)
         writer.write(replace(CSV_QUOTE_STRING, CSV_QUOTE_STRING + CSV_QUOTE_STRING))
-        writer.write(CSV_QUOTE.toInt())
+        writer.write(CSV_QUOTE.code)
     }
     return codePointCount(0, length)
 }

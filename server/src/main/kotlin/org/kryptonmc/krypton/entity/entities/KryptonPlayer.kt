@@ -21,7 +21,6 @@ import org.kryptonmc.krypton.api.entity.MainHand
 import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
-import org.kryptonmc.krypton.api.space.square
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
@@ -40,6 +39,8 @@ import org.kryptonmc.krypton.packet.out.play.chat.TitleAction
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
 import org.kryptonmc.krypton.packet.session.Session
 import org.kryptonmc.krypton.util.canBuild
+import org.kryptonmc.krypton.util.chunkInSpiral
+import org.kryptonmc.krypton.util.toArea
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.net.InetSocketAddress
@@ -162,20 +163,14 @@ class KryptonPlayer(
 
         if (!hasLoadedChunks) {
             hasLoadedChunks = true
-            println("Initial load for player $name")
-            println("Previous central X: $previousCentralX, previous central Z: $previousCentralZ, central X: $centralX, central Z: $centralZ, radius: $radius")
-            iterateChunks(centralX, centralZ, radius) { x, z -> newChunks += ChunkPosition(x, z) }
+            repeat(server.config.world.viewDistance.toArea()) { newChunks += chunkInSpiral(it, centralX, centralZ) }
         } else if (abs(centralX - previousCentralX) > radius || abs(centralZ - previousCentralZ) > radius) {
-            println("Second if for $name")
-            println("Previous central X: $previousCentralX, previous central Z: $previousCentralZ, central X: $centralX, central Z: $centralZ, radius: $radius")
             visibleChunks.clear()
-            iterateChunks(centralX, centralZ, radius) { x, z -> newChunks += ChunkPosition(x, z) }
+            repeat(server.config.world.viewDistance.toArea()) { newChunks += chunkInSpiral(it, centralX, centralZ) }
         } else if (previousCentralX != centralX || previousCentralZ != centralZ) {
-            println("Third if for $name")
-            println("Previous central X: $previousCentralX, previous central Z: $previousCentralZ, central X: $centralX, central Z: $centralZ, radius: $radius")
             previousChunks = HashSet(visibleChunks)
-            iterateChunks(centralX, centralZ, radius) { x, z ->
-                val position = ChunkPosition(x, z)
+            repeat(server.config.world.viewDistance.toArea()) {
+                val position = chunkInSpiral(it, centralX, centralZ)
                 if (position in visibleChunks) previousChunks.remove(position) else newChunks += position
             }
         } else {
@@ -186,16 +181,6 @@ class KryptonPlayer(
         previousCentralZ = centralZ
 
         GlobalScope.launch(Dispatchers.IO) {
-            newChunks.sortWith { first, second ->
-                var dx = 16 * first.x + 8 - location.x
-                var dz = 16 * first.z + 8 - location.z
-                val da = dx.square() + dz.square()
-                dx = 16 * second.x + 8 - location.x
-                dz = 16 * second.z + 8 - location.z
-                val db = dx.square() + dz.square()
-                da.compareTo(db)
-            }
-
             val loadedChunks = world.chunkManager.load(newChunks)
             visibleChunks += newChunks
 
@@ -210,14 +195,6 @@ class KryptonPlayer(
                 visibleChunks -= it
             }
             previousChunks?.clear()
-        }
-    }
-}
-
-private fun iterateChunks(centralX: Int, centralZ: Int, radius: Int, action: (x: Int, z: Int) -> Unit) {
-    for (x in (centralX - radius)..(centralX + radius)) {
-        for (z in (centralZ - radius)..(centralZ + radius)) {
-            action(x, z)
         }
     }
 }

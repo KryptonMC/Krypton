@@ -9,8 +9,8 @@ import org.kryptonmc.krypton.kotlinx
 import org.kryptonmc.krypton.log4j
 
 plugins {
-    kotlin("jvm") version "1.4.32"
-    kotlin("plugin.serialization") version "1.4.32"
+    kotlin("jvm") version "1.5.0"
+    kotlin("plugin.serialization") version "1.5.0"
     id("org.jetbrains.dokka") version "1.4.30"
     id("info.solidsoft.pitest") version "1.6.0"
     `maven-publish`
@@ -68,9 +68,7 @@ subprojects {
                 jvmTarget = "11"
                 freeCompilerArgs = listOf(
                     "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
-                    "-Xopt-in=kotlin.ExperimentalUnsignedTypes",
-                    "-Xinline-classes",
-                    "-Xjvm-default=enable"
+                    "-Xjvm-default=all"
                 )
             }
         }

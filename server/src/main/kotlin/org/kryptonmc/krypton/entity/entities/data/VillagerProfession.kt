@@ -23,5 +23,5 @@ enum class VillagerProfession(val id: Int) {
     TOOLSMITH(13),
     WEAPONSMITH(14);
 
-    val key by lazy { NamespacedKey(value = name.toLowerCase()) }
+    val key by lazy { NamespacedKey(value = name.lowercase()) }
 }

@@ -21,6 +21,9 @@ application.mainClass.set("org.kryptonmc.krypton.KryptonKt")
 dependencies {
     api(project(":krypton-api"))
 
+    implementation(kotlin("stdlib-jdk7"))
+    implementation(kotlin("stdlib-jdk8"))
+
     // Netty
     api(netty("buffer"))
     api(netty("handler"))

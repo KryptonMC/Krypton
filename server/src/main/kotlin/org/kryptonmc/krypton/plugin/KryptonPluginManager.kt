@@ -10,7 +10,6 @@ import org.kryptonmc.krypton.api.plugin.PluginDescriptionFile
 import org.kryptonmc.krypton.api.plugin.PluginLoadState
 import org.kryptonmc.krypton.api.plugin.PluginManager
 import org.kryptonmc.krypton.util.createDirectory
-import org.kryptonmc.krypton.util.isDirectory
 import org.kryptonmc.krypton.util.list
 import org.kryptonmc.krypton.util.logger
 import java.io.FileNotFoundException
@@ -18,6 +17,7 @@ import java.io.InputStreamReader
 import java.lang.reflect.InvocationTargetException
 import java.nio.file.Path
 import java.util.jar.JarFile
+import kotlin.io.path.isDirectory
 
 class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
@@ -27,7 +27,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
         LOGGER.info("Loading plugins...")
         ROOT_FOLDER.resolve("plugins").apply {
             createDirectory()
-            list().filter { !it.isDirectory }.forEach {
+            list().filter { !it.isDirectory() }.forEach {
                 val plugin = load(this, it) ?: return@forEach
 
                 val name = plugin.context.description.name

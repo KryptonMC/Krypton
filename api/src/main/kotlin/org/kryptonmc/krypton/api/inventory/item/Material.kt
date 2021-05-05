@@ -1023,7 +1023,7 @@ enum class Material(internalKey: NamespacedKey? = null, val blocksMotion: Boolea
      */
     AIR(blocksMotion = false);
 
-    override val key = internalKey ?: NamespacedKey(value = name.toLowerCase())
+    override val key = internalKey ?: NamespacedKey(value = name.lowercase())
 
     companion object {
 

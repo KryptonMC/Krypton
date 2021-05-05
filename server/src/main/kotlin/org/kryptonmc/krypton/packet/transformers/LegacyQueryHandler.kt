@@ -84,7 +84,7 @@ class LegacyQueryHandler(private val status: StatusConfig) : ChannelInboundHandl
         buf.writeByte(255)
         val chars = toCharArray()
         buf.writeShort(chars.size)
-        for (char in chars) buf.writeChar(char.toInt())
+        for (char in chars) buf.writeChar(char.code)
         return buf
     }
 

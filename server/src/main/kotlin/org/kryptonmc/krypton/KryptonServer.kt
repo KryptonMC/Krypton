@@ -32,8 +32,6 @@ import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.copyTo
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.createDirectory
-import org.kryptonmc.krypton.util.exists
-import org.kryptonmc.krypton.util.isRegularFile
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.monitoring.jmx.KryptonStatistics
 import org.kryptonmc.krypton.util.profiling.ServerProfiler
@@ -53,6 +51,8 @@ import java.security.SecureRandom
 import java.util.Locale
 import java.util.Properties
 import java.util.UUID
+import kotlin.io.path.exists
+import kotlin.io.path.isRegularFile
 import kotlin.system.measureTimeMillis
 
 class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : Server {
@@ -285,7 +285,7 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
 
     private fun loadConfig(): KryptonConfig {
         val configPath = CURRENT_DIRECTORY.resolve("config.conf")
-        if (!configPath.exists) {
+        if (!configPath.exists()) {
             val inputStream = Thread.currentThread().contextClassLoader.getResourceAsStream("config.conf")
                 ?: throw IOException("Config file not in classpath! Something has gone horribly wrong!")
             inputStream.copyTo(configPath)
@@ -330,12 +330,12 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
         stop(false) // avoid halting there because we halt here
         val split = config.other.restartScript.split(" ")
         if (split.isNotEmpty()) {
-            if (!Path.of(split[0]).isRegularFile) {
+            if (!Path.of(split[0]).isRegularFile()) {
                 println("Unable to find restart script ${split[0]}! Refusing to restart.")
                 Runtime.getRuntime().halt(0)
             }
             println("Attempting to restart the server with script ${split[0]}...")
-            val os = System.getProperty("os.name").toLowerCase(Locale.ENGLISH)
+            val os = System.getProperty("os.name").lowercase()
             Runtime.getRuntime().exec((if ("win" in os) "cmd /c start " else "sh ") + config.other.restartScript)
         }
         Runtime.getRuntime().halt(0)

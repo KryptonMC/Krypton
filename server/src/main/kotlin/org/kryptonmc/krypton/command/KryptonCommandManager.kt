@@ -109,7 +109,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
     }
 
     private fun LiteralCommandNode<Sender>.buildRedirect(alias: String) =
-        literal<Sender>(alias.toLowerCase(Locale.ENGLISH))
+        literal<Sender>(alias.lowercase())
             .requires(requirement)
             .forward(redirect, redirectModifier, isFork)
             .executes(command)
@@ -120,7 +120,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         alias: String,
         brigadierCommand: com.mojang.brigadier.Command<Sender>,
         suggestionProvider: SuggestionProvider<Sender>
-    ) = literal<Sender>(alias.toLowerCase(Locale.ENGLISH))
+    ) = literal<Sender>(alias.lowercase())
         .then(argument<Sender, String>("arguments", greedyString())
             .suggests(suggestionProvider)
             .executes(brigadierCommand))

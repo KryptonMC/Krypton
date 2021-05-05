@@ -1,14 +1,8 @@
 package org.kryptonmc.krypton.world.region
 
 import org.kryptonmc.krypton.util.createTempFile
-import org.kryptonmc.krypton.util.deleteIfExists
-import org.kryptonmc.krypton.util.isDirectory
-import org.kryptonmc.krypton.util.isRegularFile
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.moveTo
-import org.kryptonmc.krypton.util.newInputStream
 import org.kryptonmc.krypton.util.openChannel
-import org.kryptonmc.krypton.util.size
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
@@ -25,6 +19,12 @@ import java.nio.file.StandardCopyOption
 import java.nio.file.StandardOpenOption
 import java.time.Instant
 import java.util.BitSet
+import kotlin.io.path.moveTo
+import kotlin.io.path.deleteIfExists
+import kotlin.io.path.inputStream
+import kotlin.io.path.isDirectory
+import kotlin.io.path.isRegularFile
+import kotlin.io.path.fileSize
 
 /**
  * A region file holder, used for reading and writing region file data.
@@ -47,7 +47,7 @@ class RegionFile(
     private val usedSectors = RegionBitmap()
 
     init {
-        require(externalDirectory.isDirectory) { "Expected directory, got ${externalDirectory.toAbsolutePath()}" }
+        require(externalDirectory.isDirectory()) { "Expected directory, got ${externalDirectory.toAbsolutePath()}" }
         offsets = header.asIntBuffer().limit(1024)
         header.position(4096)
         timestamps = header.asIntBuffer()
@@ -74,7 +74,7 @@ class RegionFile(
                     offsets[i] = 0
                     continue
                 }
-                if (sectorNumber * 4096L > path.size) {
+                if (sectorNumber * 4096L > path.fileSize()) {
                     LOGGER.warn("Region file $path has an invalid sector at index $i. Sector $sectorNumber is out of bounds")
                     offsets[i] = 0
                     continue
@@ -181,11 +181,11 @@ class RegionFile(
 
     private fun createExternalChunkInputStream(position: ChunkPosition, compressionType: Byte): DataInputStream? {
         val path = externalDirectory.resolve("c.${position.x}.${position.z}.mcc")
-        if (!path.isRegularFile) {
+        if (!path.isRegularFile()) {
             LOGGER.error("External chunk path $path is not a file!")
             return null
         }
-        return createChunkInputStream(position, compressionType, path.newInputStream())
+        return createChunkInputStream(position, compressionType, path.inputStream())
     }
 
     private fun createChunkInputStream(position: ChunkPosition, compressionType: Byte, input: InputStream): DataInputStream? {

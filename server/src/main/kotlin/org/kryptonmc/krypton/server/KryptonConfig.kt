@@ -106,7 +106,7 @@ internal object GamemodeSerializer : KSerializer<Gamemode> by Gamemode.serialize
     override fun deserialize(decoder: Decoder): Gamemode {
         val value = decoder.decodeString()
         if (value.toIntOrNull() != null) return requireNotNull(Gamemode.fromId(value.toInt()))
-        return Gamemode.valueOf(value.toUpperCase())
+        return Gamemode.valueOf(value.uppercase())
     }
 }
 
@@ -115,7 +115,7 @@ internal object DifficultySerializer : KSerializer<Difficulty> by Difficulty.ser
     override fun deserialize(decoder: Decoder): Difficulty {
         val value = decoder.decodeString()
         if (value.toIntOrNull() != null) return requireNotNull(Difficulty.fromId(value.toInt()))
-        return Difficulty.valueOf(value.toUpperCase())
+        return Difficulty.valueOf(value.uppercase())
     }
 }
 

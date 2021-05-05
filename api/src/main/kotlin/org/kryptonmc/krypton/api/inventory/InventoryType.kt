@@ -61,5 +61,5 @@ enum class InventoryType(
     // hence why the size is 46 rather than 41
     PLAYER(46, "Player");
 
-    override fun toString() = name.toLowerCase()
+    override fun toString() = name.lowercase()
 }

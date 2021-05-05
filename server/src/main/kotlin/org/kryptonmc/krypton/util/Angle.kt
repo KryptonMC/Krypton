@@ -3,7 +3,8 @@ package org.kryptonmc.krypton.util
 /**
  * Represents a protocol angle, measured in 256ths of a full turn
  */
-inline class Angle(val value: UByte) : Comparable<Angle> {
+@JvmInline
+value class Angle(val value: UByte) : Comparable<Angle> {
 
     override fun compareTo(other: Angle) = if (value == other.value) 0 else if (value < other.value) -1 else 1
 

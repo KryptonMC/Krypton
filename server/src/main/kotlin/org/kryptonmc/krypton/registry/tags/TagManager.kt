@@ -28,7 +28,7 @@ object TagManager {
         val mutableEntityTags = mutableSetOf<Tag>()
 
         REQUIRED_TAGS.forEach {
-            val tag = load(it.name, it.type.name.toLowerCase())
+            val tag = load(it.name, it.type.name.lowercase())
             when (it.type) {
                 TagType.BLOCKS -> mutableBlockTags += tag
                 TagType.ITEMS -> mutableItemTags += tag

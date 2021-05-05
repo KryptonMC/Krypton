@@ -3,11 +3,11 @@ package org.kryptonmc.krypton.world.region
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
+import kotlin.io.path.createDirectories
 
 /**
  * Manages region files. That's literally it.

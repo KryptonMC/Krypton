@@ -16,10 +16,7 @@ import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.WorldManager
 import org.kryptonmc.krypton.api.world.WorldVersion
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
-import org.kryptonmc.krypton.util.exists
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.newInputStream
-import org.kryptonmc.krypton.util.newOutputStream
 import org.kryptonmc.krypton.world.bossbar.Bossbar
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
@@ -34,6 +31,9 @@ import java.util.UUID
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import kotlin.io.path.exists
+import kotlin.io.path.inputStream
+import kotlin.io.path.outputStream
 import kotlin.system.exitProcess
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -57,7 +57,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
 
     override fun load(name: String): Future<KryptonWorld> {
         val folder = CURRENT_DIRECTORY.resolve(name)
-        require(folder.exists) { "World with name $name does not exist!".apply { LOGGER.error(this) } }
+        require(folder.exists()) { "World with name $name does not exist!".apply { LOGGER.error(this) } }
         return loadWorld(folder)
     }
 
@@ -161,11 +161,11 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
 
     private fun loadUUID(folder: Path): UUID {
         val uuidFile = folder.resolve("uid.dat")
-        return if (uuidFile.exists) {
-            DataInputStream(uuidFile.newInputStream()).use { UUID(it.readLong(), it.readLong()) }
+        return if (uuidFile.exists()) {
+            DataInputStream(uuidFile.inputStream()).use { UUID(it.readLong(), it.readLong()) }
         } else {
             val uuid = UUID.randomUUID()
-            DataOutputStream(uuidFile.newOutputStream()).use {
+            DataOutputStream(uuidFile.outputStream()).use {
                 it.writeLong(uuid.mostSignificantBits)
                 it.writeLong(uuid.leastSignificantBits)
             }

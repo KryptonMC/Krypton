@@ -157,8 +157,7 @@ data class KryptonWorld(
         val gamerules = gamerules.transform { (rule, value) -> rule.rule to StringBinaryTag.of(value) }
         val dimensions = generationSettings.dimensions.transform { (key, value) -> key.toString() to value.toNBT() }
 
-        BinaryTagIO.writer().write(
-            CompoundBinaryTag.builder().put("Data", CompoundBinaryTag.builder()
+        BinaryTagIO.writer().write(CompoundBinaryTag.builder().put("Data", CompoundBinaryTag.builder()
             .putBoolean("allowCommands", false)
             .putDouble("BorderCenterX", border.center.x)
             .putDouble("BorderCenterZ", border.center.z)
@@ -175,7 +174,7 @@ data class KryptonWorld(
                 .put("Enabled", ListBinaryTag.of(BinaryTagTypes.STRING, listOf(StringBinaryTag.of("vanilla"))))
                 .put("Disabled", ListBinaryTag.empty())
                 .build())
-            .putInt("DataVersion", LevelDataVersion.ID)
+            .putInt("DataVersion", version.id)
             .putLong("DayTime", dayTime)
             .putByte("Difficulty", difficulty.ordinal.toByte())
             .putBoolean("DifficultyLocked", difficultyLocked)
@@ -203,14 +202,13 @@ data class KryptonWorld(
             .putLong("Time", time)
             .putInt("version", NBT_VERSION)
             .put("Version", CompoundBinaryTag.builder()
-                .putInt("Id", LevelDataVersion.ID)
-                .putString("Name", LevelDataVersion.NAME)
-                .putBoolean("Snapshot", LevelDataVersion.SNAPSHOT)
+                .putInt("Id", version.id)
+                .putString("Name", version.name)
+                .putBoolean("Snapshot", version.isSnapshot)
                 .build())
             .putInt("WanderingTraderSpawnChance", 25)
             .putInt("WanderingTraderSpawnDelay", 24000)
-            .build()).build(), dataPath.toAbsolutePath(), BinaryTagIO.Compression.GZIP
-        )
+            .build()).build(), dataPath, BinaryTagIO.Compression.GZIP)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -236,10 +234,3 @@ data class KryptonWorld(
 
 const val NBT_DATA_VERSION = 2584
 const val NBT_VERSION = 19133
-
-object LevelDataVersion {
-
-    const val ID = 2584
-    const val NAME = "1.16.5"
-    const val SNAPSHOT = false
-}

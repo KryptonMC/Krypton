@@ -15,5 +15,5 @@ enum class VillagerType(val id: Int) {
     SWAMP(5),
     TAIGA(6);
 
-    val key by lazy { NamespacedKey(value = name.toLowerCase()) }
+    val key by lazy { NamespacedKey(value = name.lowercase()) }
 }

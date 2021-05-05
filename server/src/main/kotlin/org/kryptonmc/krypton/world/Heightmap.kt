@@ -6,7 +6,7 @@ import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.data.BitStorage
 
-class Heightmap(private val chunk: KryptonChunk, nbt: LongArrayBinaryTag, val type: Type) {
+class Heightmap(private val chunk: KryptonChunk, val nbt: LongArrayBinaryTag, val type: Type) {
 
     val data = BitStorage(9, 256, nbt.value())
 

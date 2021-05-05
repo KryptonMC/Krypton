@@ -24,11 +24,11 @@ import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.entity.memory.EmptyBrain
 import org.kryptonmc.krypton.serializers.serialize
 import org.kryptonmc.krypton.util.createFile
-import org.kryptonmc.krypton.util.exists
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.NBT_DATA_VERSION
 import java.io.IOException
 import java.nio.file.Path
+import kotlin.io.path.exists
 
 /**
  * Responsible for loading and saving player data files
@@ -39,7 +39,7 @@ class PlayerDataManager(private val folder: Path) {
         player.world = world
 
         val playerFile = folder.resolve("${player.uuid}.dat")
-        if (!playerFile.exists) {
+        if (!playerFile.exists()) {
             playerFile.createFile()
             applyDefaults(world, player)
             return
