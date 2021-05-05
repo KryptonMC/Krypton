@@ -2,6 +2,7 @@ import org.kryptonmc.krypton.applyCommon
 import org.kryptonmc.krypton.applyRepositories
 
 plugins {
+    id("org.cadixdev.licenser")
     `maven-publish`
     signing
 }
@@ -22,4 +23,9 @@ publishing {
 
 signing {
     sign(publishing.publications["mavenKotlin"])
+}
+
+license {
+    header.set(project.resources.text.fromFile("HEADER.txt"))
+    newLine.set(false)
 }

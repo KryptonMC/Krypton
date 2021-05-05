@@ -13,6 +13,7 @@ plugins {
     kotlin("plugin.serialization") version "1.5.0"
     id("org.jetbrains.dokka") version "1.4.30"
     id("info.solidsoft.pitest") version "1.6.0"
+    id("org.cadixdev.licenser") version "0.6.0" apply false
     `maven-publish`
     signing
 }

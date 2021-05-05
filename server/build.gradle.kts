@@ -9,8 +9,9 @@ import org.kryptonmc.krypton.log4j
 import org.kryptonmc.krypton.netty
 
 plugins {
-    `java-library`
     id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("org.cadixdev.licenser")
+    `java-library`
     application
     `maven-publish`
     signing
@@ -109,4 +110,10 @@ publishing {
 
 signing {
     sign(publishing.publications["mavenKotlin"])
+}
+
+license {
+    header.set(project.rootProject.resources.text.fromFile("HEADER.txt"))
+    newLine.set(false)
+    exclude("**/*.properties", "**/*.conf", "**/*.json")
 }
