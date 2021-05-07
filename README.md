@@ -26,7 +26,23 @@ warned.**
 As of version 0.11, Krypton now has an API. It is heavily in development, so expect to find bugs, but it is at least
 semi-functional.
 
-* You can depend on it like this:
+You can depend on it like this:
+
+* Gradle Kotlin DSL:
+
+```kotlin
+repositories {
+    mavenCentral()
+    maven("https://libraries.minecraft.net")
+    maven("https://repo.bristermitten.me/repository/maven-public/")
+}
+
+dependencies {
+    compileOnly("org.kryptonmc:krypton-api:LATEST")
+}
+```
+
+* Gradle Groovy DSL:
 
 ```groovy
 repositories {
@@ -40,7 +56,7 @@ dependencies {
 }
 ```
 
-* Or alternatively, with Maven:
+* Maven:
 
 ```xml
 <repositories>
@@ -64,10 +80,9 @@ dependencies {
 </dependencies>
 ```
 
-Beware that none of the documentation for this is publicly hosted yet. You can view all of the documentation by
-depending on the artifact and looking at the source files.
+The documentation for both the API and the server can now be found [here](https://docs.kryptonmc.org).
 
-* Example usage:
+Example usage:
 
 ```kotlin
 class MyPlugin(context: PluginContext) : Plugin(context) {
@@ -76,20 +91,23 @@ class MyPlugin(context: PluginContext) : Plugin(context) {
         registerCommand(MyCommand()) // example command registration
     }
 
-    // this is called separately after instantiation, on its own scope, so this is preferred over init where necessary
-    override suspend fun initialize() {
+    override fun initialize() {
         // do some other things
     }
 }
 ```
 
 If you have any questions about the usage of the API, feel free to join our Discord server!
-If you have an idea on how I could improve the API, feel free to open an issue.
+
+Or if you have an idea on how I could improve the API, feel free to open an issue.
 
 ### Contributing
 
 Krypton is open-source for a reason. You are more than welcome to contribute, and we even encourage it. This project
 wouldn't be possible without contributions.
+
+If you're interested, I highly recommend reading the [contribution guide](CONTRIBUTING.md) to learn how to get started,
+and know the best practices.
 
 ### Credits
 
