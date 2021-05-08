@@ -31,5 +31,8 @@ ij_any_blank_lines_before_class_end = 0
 indent_size = 2
 insert_final_newline = false
 
+[{*.yaml, *.yml}]
+indent_size = 2
+
 [{*.xml, Dockerfile}]
 insert_final_newline = false

@@ -1,8 +1,9 @@
 ---
-name: 🐛 Bug report about: If you find a bug (quite likely in the early stages) with Krypton, you can report it like
+name: 🐛 Bug report
+about: If you find a bug (quite likely in the early stages) with Krypton, you can report it like
 this title: ''
-labels: 'type: issue' assignees: ''
-
+labels: 'type: issue'
+assignees: ''
 ---
 
 <!-- Before continuing, please make sure you are running the latest version. It can be found here: https://ci.kryptonmc.org/job/Krypton/lastSuccessfulBuild -->
