@@ -31,10 +31,12 @@ import org.kryptonmc.krypton.api.event.events.play.MoveEvent
 import org.kryptonmc.krypton.api.event.events.play.PluginMessageEvent
 import org.kryptonmc.krypton.api.inventory.item.ItemStack
 import org.kryptonmc.krypton.api.inventory.item.Material
+import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.entity.metadata.MovementFlags
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.`in`.play.DiggingStatus
 import org.kryptonmc.krypton.packet.`in`.play.EntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAnimation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChat
@@ -45,11 +47,13 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInHeldItemChange
 import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAbilities
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerBlockPlacement
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPosition
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPositionAndRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
+import org.kryptonmc.krypton.packet.out.play.PacketOutAcknowledgePlayerDigging
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutTabComplete
 import org.kryptonmc.krypton.packet.out.play.entity.EntityAnimation
@@ -92,6 +96,7 @@ class PlayHandler(
         is PacketInKeepAlive -> handleKeepAlive(packet)
         is PacketInPlayerAbilities -> handleAbilities(packet)
         is PacketInPlayerBlockPlacement -> handleBlockPlacement(packet)
+        is PacketInPlayerDigging -> handlePlayerDigging(packet)
         is PacketInPlayerPosition -> handlePositionUpdate(packet)
         is PacketInPlayerRotation -> handleRotationUpdate(packet)
         is PacketInPlayerPositionAndRotation -> handlePositionAndRotationUpdate(packet)
@@ -204,11 +209,25 @@ class PlayHandler(
 
         val world = session.player.world
         val chunk = world.chunks.firstOrNull { session.player.location in it.position } ?: return
+        val existingBlock = chunk.getBlock(packet.location)
+        if (existingBlock.type != Material.AIR) return
 
         val item = session.player.inventory.mainHand ?: return
         val block = KryptonBlock(item.type, chunk, packet.location.toLocation(world))
 
-        session.sendPacket(PacketOutBlockChange(if (chunk.setBlock(block)) block else chunk.getBlock(packet.location)))
+        sessionManager.sendPackets(PacketOutBlockChange(if (chunk.setBlock(block)) block else existingBlock)) { it.currentState == PacketState.PLAY }
+    }
+
+    private fun handlePlayerDigging(packet: PacketInPlayerDigging) {
+        if (player.gamemode != Gamemode.CREATIVE) return
+        if (packet.status != DiggingStatus.STARTED) return
+
+        val chunk = player.world.chunks.firstOrNull { packet.location in it.position } ?: return
+        val block = KryptonBlock(Material.AIR, chunk, packet.location.toLocation(player.world))
+        chunk.setBlock(block)
+
+        session.sendPacket(PacketOutAcknowledgePlayerDigging(packet.location, 0, DiggingStatus.FINISHED, true))
+        sessionManager.sendPackets(PacketOutBlockChange(block)) { it.currentState == PacketState.PLAY }
     }
 
     private fun handlePositionUpdate(packet: PacketInPlayerPosition) {

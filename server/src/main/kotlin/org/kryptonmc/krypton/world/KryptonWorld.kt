@@ -121,7 +121,7 @@ data class KryptonWorld(
         if (rainTime > 0) {
             if (!isRaining) isRaining = true
             rainTime--
-        } else {
+        } else if (isRaining) {
             profiler.push("rain update")
             isRaining = false
             val endRainPacket = PacketOutChangeGameState(GameState.END_RAINING)

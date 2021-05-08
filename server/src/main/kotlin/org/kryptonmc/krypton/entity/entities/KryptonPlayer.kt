@@ -38,6 +38,7 @@ import org.kryptonmc.krypton.api.entity.Hand
 import org.kryptonmc.krypton.api.entity.MainHand
 import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.registry.NamespacedKey
+import org.kryptonmc.krypton.api.space.Position
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Location

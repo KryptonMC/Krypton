@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
+import org.kryptonmc.krypton.api.space.Position
 import org.kryptonmc.krypton.api.world.Location
 import kotlin.math.floor
 
@@ -38,8 +39,7 @@ data class ChunkPosition(val x: Int, val z: Int) {
     val regionLocalX = x and 0x1F
     val regionLocalZ = z and 0x1F
 
-    operator fun contains(location: Location) =
-        floor(location.x / 16.0).toInt() == x && floor(location.z / 16.0).toInt() == z
+    operator fun contains(location: Position) = floor(location.x / 16.0).toInt() == x && floor(location.z / 16.0).toInt() == z
 
     companion object {
 

@@ -50,7 +50,6 @@ data class ChunkSection(
         val y = block.location.blockY
         val z = block.location.blockZ
         val index = indexOf(x and 0xF, y and 0xF, z and 0xF)
-        if (blockStates[index] != 0) return false
         blockStates[index] = palette.getOrUpdate(block.type.key)
         return true
     }
