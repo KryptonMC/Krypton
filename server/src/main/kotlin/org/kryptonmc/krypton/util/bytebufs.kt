@@ -339,7 +339,7 @@ fun ByteBuf.writeDuration(duration: Duration) {
     writeInt(duration.seconds.toInt() * 20)
 }
 
-fun <T : Enum<T>> ByteBuf.readEnum(kClass: KClass<T>): T = kClass.java.enumConstants[readVarInt()]
+inline fun <reified T : Enum<T>> ByteBuf.readEnum(): T = T::class.java.enumConstants[readVarInt()]
 
 fun Int.varIntSize(): Int {
     for (i in 1 until 5) {

@@ -43,12 +43,9 @@ class PacketDecompressor(var threshold: Int) : ByteToMessageDecoder() {
             out.add(msg.readBytes(msg.readableBytes()))
             return
         }
-        if (dataLength < threshold) {
-            LOGGER.error("Packet badly compressed! Size of $dataLength is below threshold of $threshold!")
-        }
-        if (dataLength > PROTOCOL_MAX_SIZE) {
-            LOGGER.error("Packet badly compressed! Size of $dataLength is larger than protocol maximum of $PROTOCOL_MAX_SIZE!")
-        }
+        if (dataLength < threshold) LOGGER.error("Packet badly compressed! Size of $dataLength is below threshold of $threshold!")
+        if (dataLength > PROTOCOL_MAX_SIZE) LOGGER.error("Packet badly compressed! Size of $dataLength is larger than protocol maximum of $PROTOCOL_MAX_SIZE!")
+
         inflater.setInput(msg.readBytes(msg.readableBytes()).array())
         val bytes = ByteArray(dataLength)
         inflater.inflate(bytes)

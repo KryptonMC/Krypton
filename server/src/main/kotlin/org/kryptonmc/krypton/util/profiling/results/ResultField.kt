@@ -25,6 +25,9 @@ data class ResultField(
     val count: Long
 ) : Comparable<ResultField> {
 
-    override fun compareTo(other: ResultField) =
-        if (other.percentage < percentage) -1 else if (other.percentage > percentage) 1 else other.name.compareTo(name)
+    override fun compareTo(other: ResultField) = when {
+        other.percentage < percentage -> -1
+        other.percentage > percentage -> 1
+        else -> other.name.compareTo(name)
+    }
 }

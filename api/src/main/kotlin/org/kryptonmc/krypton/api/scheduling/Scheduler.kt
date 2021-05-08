@@ -30,7 +30,7 @@ interface Scheduler {
      * @param task the task to be ran
      * @return a scheduled [Task] that can be [cancelled][Task.cancel]
      */
-    fun run(plugin: Plugin, task: () -> Unit): Task
+    fun run(plugin: Plugin, task: Runnable): Task
 
     /**
      * Schedule the given [task] asynchronously once with the given [delay]
@@ -42,7 +42,7 @@ interface Scheduler {
      * @param task the task to be ran
      * @return a scheduled [Task] that can be [cancelled][Task.cancel]
      */
-    fun schedule(plugin: Plugin, delay: Long, unit: TimeUnit, task: () -> Unit): Task
+    fun schedule(plugin: Plugin, delay: Long, unit: TimeUnit, task: Runnable): Task
 
     /**
      * Schedule the given [task] asynchronously repeatedly, with a [period] in between each
@@ -56,5 +56,5 @@ interface Scheduler {
      * @param task the task to be ran
      * @return a scheduled [Task] that can be [cancelled][Task.cancel]
      */
-    fun schedule(plugin: Plugin, delay: Long, period: Long, unit: TimeUnit, task: () -> Unit): Task
+    fun schedule(plugin: Plugin, delay: Long, period: Long, unit: TimeUnit, task: Runnable): Task
 }

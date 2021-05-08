@@ -42,7 +42,7 @@ class PacketInEntityAction : PlayPacket(0x1C) {
 
     override fun read(buf: ByteBuf) {
         buf.readVarInt() // we already know the entity ID because we know where this came from, smh Mojang.
-        action = buf.readEnum(EntityAction::class)
+        action = buf.readEnum()
         data = buf.readVarInt()
     }
 }

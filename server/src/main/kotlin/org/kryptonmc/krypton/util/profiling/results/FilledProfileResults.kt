@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util.profiling.results
 
+import com.google.common.base.Splitter
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.profiling.entry.EmptyPathEntry
@@ -108,7 +109,7 @@ class FilledProfileResults(
             entries.forEach { (key, value) ->
                 val counters = value.counters
                 if (counters.isEmpty()) return@forEach
-                val valueIterator = key.split(PATH_SEPARATOR).iterator()
+                val valueIterator = SPLITTER.splitToList(key).iterator()
                 counters.forEach { results.getOrPut(it.key) { CounterCollector() }.add(valueIterator, it.value) }
             }
             return results
@@ -156,7 +157,8 @@ class FilledProfileResults(
     private fun StringBuilder.appendCounterResults(accumulator: Int, name: String, collector: CounterCollector, durationTicks: Int) {
         indentLine(accumulator).append("$name total: ${collector.value}/${collector.total}")
             .append(" average: ${collector.value / durationTicks}/${collector.total / durationTicks}\n")
-        collector.children.entries.sortedWith(COUNTER_ENTRY_COMPARATOR)
+        collector.children.entries
+            .sortedWith(COUNTER_ENTRY_COMPARATOR)
             .forEach { appendCounterResults(accumulator + 1, it.key, it.value, durationTicks) }
     }
 
@@ -179,14 +181,15 @@ class FilledProfileResults(
     companion object {
 
         private const val PATH_SEPARATOR = '\u001e'
+        private val SPLITTER = Splitter.on(PATH_SEPARATOR)
+
         private val COMMENTS = arrayOf(
             "Shiny numbers!", "Am I not running fast enough? :(", "I'm working as hard as I can!", "Will I ever be good enough for you? :(",
             "Speedy. Zoooooom!", "Hello world", "40% better than a crash report.", "Now with extra numbers", "Now with less numbers",
             "Now with the same numbers", "You should add flames to things, it makes them go faster!", "Do you feel the need for... optimization?",
             "*cracks redstone whip*", "Maybe if you treated it better then it'll have more motivation to work faster! Poor server."
         )
-        private val COUNTER_ENTRY_COMPARATOR = java.util.Map.Entry
-            .comparingByValue<String, CounterCollector> { o1, o2 -> o1.total.compareTo(o2.total) }
+        private val COUNTER_ENTRY_COMPARATOR = Comparator<Map.Entry<String, CounterCollector>> { o1, o2 -> o1.value.total.compareTo(o2.value.total) }
 
         private val LOGGER = logger<FilledProfileResults>()
     }

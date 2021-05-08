@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.event
 
+import com.google.common.collect.Multimap
+import com.google.common.collect.Multimaps
 import org.kryptonmc.krypton.api.event.EventBus
 import org.kryptonmc.krypton.api.event.Listener
 import org.kryptonmc.krypton.util.logger
@@ -32,7 +34,7 @@ import java.util.concurrent.locks.ReentrantLock
 class KryptonEventBus : EventBus {
 
     private val byListenerAndPriority = ConcurrentHashMap<Class<*>, MutableMap<Byte, MutableMap<Any, Set<Method>>>>()
-    private val byEventBaked = ConcurrentHashMap<Class<*>, Set<EventHandlerMethod>>()
+    private val byEventBaked = Multimaps.newSetMultimap(ConcurrentHashMap<Class<*>, MutableCollection<EventHandlerMethod>>()) { mutableSetOf() }
     private val lock = ReentrantLock()
 
     override fun call(event: Any) = byEventBaked[event::class.java]?.forEach { listener -> listener(event) } ?: Unit
@@ -45,7 +47,7 @@ class KryptonEventBus : EventBus {
             handler.value.forEach {
                 priorities.getOrPut(it.key) { mutableMapOf() }.apply { put(listener, it.value) }
             }
-            byEventBaked[handler.key] = bakeHandlers(handler.key) ?: return@forEach
+            byEventBaked.putAll(handler.key, bakeHandlers(handler.key) ?: return@forEach)
         }
         lock.unlock()
     }
@@ -70,7 +72,7 @@ class KryptonEventBus : EventBus {
     private fun bakeHandlers(eventClass: Class<*>): Set<EventHandlerMethod>? {
         val handlersByPriority = byListenerAndPriority[eventClass]
         if (handlersByPriority == null) {
-            byEventBaked -= eventClass
+            byEventBaked.removeAll(eventClass)
             return null
         }
 

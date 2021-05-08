@@ -20,7 +20,7 @@ plugins {
 
 allprojects {
     group = "org.kryptonmc"
-    version = "0.19.1"
+    version = "0.19.2"
 
     repositories {
         mavenCentral()
@@ -39,8 +39,11 @@ subprojects {
 
     dependencies {
         api(kotlin("stdlib"))
-        api(kotlinx("coroutines-core", Versions.COROUTINES))
+        api("com.google.guava:guava:30.1.1-jre")
+        api("org.apache.commons:commons-lang3:3.12.0")
+        api("org.apache.commons:commons-text:1.9")
 
+        api(kotlinx("coroutines-core", Versions.COROUTINES))
         api(kotlinx("serialization-json", Versions.SERIALIZATION))
         api(kotlinx("serialization-hocon", Versions.SERIALIZATION))
 

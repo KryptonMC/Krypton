@@ -35,6 +35,6 @@ class PacketInAnimation : PlayPacket(0x2C) {
     lateinit var hand: Hand private set
 
     override fun read(buf: ByteBuf) {
-        hand = buf.readEnum(Hand::class)
+        hand = buf.readEnum()
     }
 }

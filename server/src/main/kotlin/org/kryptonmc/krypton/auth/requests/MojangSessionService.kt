@@ -35,6 +35,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import java.security.MessageDigest
 import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 /**
  * Retrofit interface for querying Mojang's session server.
@@ -81,7 +82,7 @@ object SessionService {
         .create(MojangSessionService::class.java)
 
     private val profiles: Cache<String, GameProfile> = Caffeine.newBuilder()
-        .expireAfterWrite(Duration.ofHours(6))
+        .expireAfterWrite(6, TimeUnit.HOURS)
         .build()
 
     /**

@@ -63,7 +63,7 @@ class PacketInPlayerBlockPlacement : PlayPacket(0x2E) {
     var insideBlock = false; private set
 
     override fun read(buf: ByteBuf) {
-        hand = buf.readEnum(Hand::class)
+        hand = buf.readEnum()
         location = buf.readLong().toVector()
         face = BlockFace.fromId(buf.readVarInt())
         cursorX = buf.readFloat()

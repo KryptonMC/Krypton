@@ -40,10 +40,10 @@ class PacketInClientSettings : PlayPacket(0x05) {
     override fun read(buf: ByteBuf) {
         val locale = buf.readString(16)
         val viewDistance = buf.readByte()
-        val chatMode = buf.readEnum(ChatMode::class)
+        val chatMode = buf.readEnum<ChatMode>()
         val chatColors = buf.readBoolean()
         val skinFlags = buf.readUnsignedByte().toSkinSettings()
-        val mainHand = buf.readEnum(MainHand::class)
+        val mainHand = buf.readEnum<MainHand>()
 
         settings = ClientSettings(locale, viewDistance, chatMode, chatColors, skinFlags, mainHand)
     }

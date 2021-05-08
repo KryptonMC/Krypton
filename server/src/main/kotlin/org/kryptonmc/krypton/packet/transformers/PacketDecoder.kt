@@ -33,7 +33,6 @@ class PacketDecoder : ByteToMessageDecoder() {
 
     override fun decode(ctx: ChannelHandlerContext, buf: ByteBuf, out: MutableList<Any>) {
         if (buf.readableBytes() == 0) return
-
         val id = buf.readVarInt()
         val session = ctx.pipeline().get(ChannelHandler::class.java).session
 
@@ -45,13 +44,8 @@ class PacketDecoder : ByteToMessageDecoder() {
         }
 
         LOGGER.debug("Incoming packet of type ${packet.javaClass}")
-
         packet.read(buf)
-
-        if (buf.readableBytes() != 0) {
-            LOGGER.debug("More bytes from packet $packet (${buf.readableBytes()})")
-        }
-
+        if (buf.readableBytes() != 0) LOGGER.debug("More bytes from packet $packet (${buf.readableBytes()})")
         out.add(packet)
     }
 

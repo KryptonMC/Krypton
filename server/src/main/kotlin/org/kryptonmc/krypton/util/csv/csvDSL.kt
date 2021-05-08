@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.util.csv
 import java.io.Writer
 
 @DslMarker
-annotation class CSVDSL
+annotation class CsvDsl
 
-@CSVDSL
+@CsvDsl
 fun csv(writer: Writer, builder: CSVFile.Builder.() -> Unit) = CSVFile.Builder().apply(builder).build(writer)

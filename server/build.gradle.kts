@@ -53,7 +53,7 @@ dependencies {
 
     // Caching
     api("com.github.ben-manes.caffeine:caffeine:3.0.1")
-    api("it.unimi.dsi:fastutil-core:8.5.4")
+    api("it.unimi.dsi:fastutil:8.5.4")
 
     // CLI
     implementation("com.github.ajalt.clikt:clikt:3.0.1")
@@ -66,15 +66,6 @@ tasks {
     withType<ShadowJar> {
         archiveFileName.set("Krypton-${project.version}.jar")
         transform(Log4j2PluginsCacheFileTransformer::class.java)
-
-        exclude("it/unimi/dsi/fastutil/booleans/*.class")
-        exclude("it/unimi/dsi/fastutil/bytes/*.class")
-        exclude("it/unimi/dsi/fastutil/chars/*.class")
-        exclude("it/unimi/dsi/fastutil/doubles/*.class")
-        exclude("it/unimi/dsi/fastutil/floats/*.class")
-        exclude("it/unimi/dsi/fastutil/io/*.class")
-        exclude("it/unimi/dsi/fastutil/shorts/*.class")
-
         relocate("org.bstats", "org.kryptonmc.krypton.bstats")
     }
     withType<ProcessResources> {

@@ -31,7 +31,7 @@ data class NamespacedKey @JvmOverloads constructor(
 
     init {
         require(':' !in namespace && ':' !in value) { "Namespace or value contained ':'! Namespace: $namespace, value: $value" }
-        require(NAMESPACE_REGEX matches namespace)
+        require(NAMESPACE_REGEX matches namespace) { "Expected namespace to match regex $NAMESPACE_REGEX, was $namespace" }
     }
 
     override fun namespace() = namespace
@@ -56,14 +56,9 @@ data class NamespacedKey @JvmOverloads constructor(
 @JvmName("of")
 fun String.toNamespacedKey(): NamespacedKey {
     val components = split(":")
-    require(components.size == 2) {
-        "Not a namespaced key! Must only contain one namespace and one key in the format namespace:key, was $this"
-    }
-
+    require(components.size == 2) { "Not a namespaced key! Must only contain one namespace and one key in the format namespace:key, was $this" }
     val (namespace, key) = components
-    require(NAMESPACE_REGEX matches namespace) {
-        "Invalid characters found in namespace \"$this\"! Must match $NAMESPACE_REGEX!"
-    }
+    require(NAMESPACE_REGEX matches namespace) { "Invalid characters found in namespace \"$this\"! Must match $NAMESPACE_REGEX!" }
     return NamespacedKey(namespace, key)
 }
 

@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.krypton.api.effect.particle
 
+import com.google.common.collect.ImmutableList
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 
 /**
@@ -93,8 +94,10 @@ object ParticleType : Iterable<Particle> {
 
     /**
      * An immutable list of all [ParticleType], ordered by ID
+     *
+     * This uses an [ImmutableList] to ensure that it cannot be casted to a mutable list and be mutated
      */
-    val values: List<Particle> @JvmStatic get() = internalValues.toList()
+    val values: List<Particle> @JvmStatic get() = ImmutableList.copyOf(internalValues)
 
     @JvmField val AMBIENT_ENTITY_EFFECT = simple("ambient_entity_effect")
     @JvmField val ANGRY_VILLAGER = simple("angry_villager")

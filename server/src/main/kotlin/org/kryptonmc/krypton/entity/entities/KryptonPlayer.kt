@@ -79,7 +79,7 @@ class KryptonPlayer(
 
     override var displayName: Component = Component.empty()
     override lateinit var abilities: Abilities
-    var attributes: Set<Attribute> = DEFAULT_PLAYER_ATTRIBUTES
+    var attributes = DEFAULT_PLAYER_ATTRIBUTES
 
     override lateinit var location: Location
 

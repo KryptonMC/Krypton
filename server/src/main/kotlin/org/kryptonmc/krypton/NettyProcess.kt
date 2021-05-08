@@ -47,7 +47,6 @@ import org.kryptonmc.krypton.packet.transformers.SizeEncoder
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.logger
 import java.io.IOException
-import kotlin.system.exitProcess
 
 /**
  * The base Netty connection handler initialiser.

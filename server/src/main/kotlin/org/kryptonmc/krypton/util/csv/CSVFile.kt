@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util.csv
 
+import org.apache.commons.text.StringEscapeUtils
 import java.io.Writer
 
 class CSVFile(private val output: Writer, headers: List<String>) {
@@ -30,7 +31,7 @@ class CSVFile(private val output: Writer, headers: List<String>) {
     }
 
     private fun writeLines(lines: List<*>) =
-        output.write(lines.map(Any?::escapedString).joinToString(",") + "\r\n")
+        output.write(lines.joinToString(",", transform = Any?::escapedString) + System.lineSeparator())
 
     class Builder {
 
@@ -44,3 +45,5 @@ class CSVFile(private val output: Writer, headers: List<String>) {
         fun build(writer: Writer) = CSVFile(writer, headers)
     }
 }
+
+private val Any?.escapedString: String get() = StringEscapeUtils.escapeCsv(this?.toString() ?: "[null]")

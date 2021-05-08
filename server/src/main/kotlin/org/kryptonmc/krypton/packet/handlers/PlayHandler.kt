@@ -131,12 +131,6 @@ class PlayHandler(
                 hoverEvent(player)
             }, text { content(packet.message) })
         }
-
-//        val chatPacket = PacketOutChat(message, MessageType.CHAT, session.profile.uuid)
-//        sessionManager.sendPackets(chatPacket) {
-//            it.currentState == PacketState.PLAY && it.settings.chatMode == ChatMode.ENABLED
-//        }
-//        server.console.sendMessage(message, MessageType.CHAT)
         server.sendMessage(player, message, MessageType.CHAT)
     }
 
@@ -210,7 +204,6 @@ class PlayHandler(
 
         val world = session.player.world
         val chunk = world.chunks.firstOrNull { session.player.location in it.position } ?: return
-//        val section = chunk.sections.firstOrNull { it.y == (session.player.location.y.toInt() / 16) } ?: return
 
         val item = session.player.inventory.mainHand ?: return
         val block = KryptonBlock(item.type, chunk, packet.location.toLocation(world))

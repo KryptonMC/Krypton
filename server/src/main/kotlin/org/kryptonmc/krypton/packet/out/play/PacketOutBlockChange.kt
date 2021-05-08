@@ -25,6 +25,9 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 
+/**
+ * Update a block in a chunk
+ */
 class PacketOutBlockChange(private val block: KryptonBlock) : PlayPacket(0x0B) {
 
     override fun write(buf: ByteBuf) {
