@@ -97,7 +97,7 @@ class LiveProfiler(
             count++
         }
         if (warn && difference > WARNING_TIME_NANOS) {
-            LOGGER.warn("Something's taking too long! ${path.demangled} too approximately ${difference / 1000000.0} ms")
+            LOGGER.warn("Something's taking too long! ${path.demangled} took approximately ${difference / 1000000.0} ms")
         }
         path = if (paths.isEmpty()) "" else paths.last()
         currentEntry = null

@@ -191,7 +191,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
         }
     }
 
-    fun saveAll() = worlds.forEach { (_, world) -> save(world) }
+    fun saveAll() = worlds.forEach { (_, world) -> save(world).get() }
 
     companion object {
 

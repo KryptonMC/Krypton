@@ -31,6 +31,7 @@ import org.kryptonmc.krypton.api.event.events.ticking.TickEndEvent
 import org.kryptonmc.krypton.api.event.events.ticking.TickStartEvent
 import org.kryptonmc.krypton.api.status.StatusInfo
 import org.kryptonmc.krypton.command.KryptonCommandManager
+import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDER
 import org.kryptonmc.krypton.console.ConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
@@ -196,7 +197,9 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
                 lastOverloadWarning = lastTickTime
             }
             // start profiler
-            val singleTickProfiler = SingleTickProfiler(config.other.saveThreshold * 1000000000L, CURRENT_DIRECTORY.resolve("debug").createDirectory())
+            val singleTickProfiler = if (config.other.saveThreshold > 0) {
+                SingleTickProfiler(config.other.saveThreshold * 1000000000L, DEBUG_FOLDER.createDirectory())
+            } else null
             startProfilerTick(singleTickProfiler)
             profiler.start()
 

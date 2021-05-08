@@ -50,16 +50,18 @@ class ChunkManager(private val world: KryptonWorld) {
         .build()
 
     fun load(positions: List<ChunkPosition>): List<KryptonChunk> {
-        val chunks = positions.map { load(it) }
+        val chunks = mutableListOf<KryptonChunk>()
+        positions.forEach { position -> load(position)?.let { chunks += it } }
         world.chunks += chunks
         return chunks
     }
 
-    fun load(position: ChunkPosition): KryptonChunk {
+    fun load(position: ChunkPosition): KryptonChunk? {
         val cachedChunk = chunkCache.getIfPresent(position)
         if (cachedChunk != null) return cachedChunk
 
         val nbt = regionFileManager.read(position).getCompound("Level")
+        if (nbt == CompoundBinaryTag.empty()) return null
         val heightmaps = nbt.getCompound("Heightmaps")
 
         val sections = nbt.getList("Sections").map { section ->

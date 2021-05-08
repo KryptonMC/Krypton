@@ -38,11 +38,10 @@ class SingleTickProfiler(
     }
 
     fun end() {
-        if (profiler == DeadProfiler) return
+        if (profiler === DeadProfiler) return
         val results = profiler.results
         profiler = DeadProfiler
         if (results.duration >= saveThreshold) {
-//            val file = File(folder, "tick-results-$TIME_NOW_FORMATTED.txt")
             val file = folder.resolve("tick-results-$TIME_NOW_FORMATTED.txt")
             results.save(file)
             LOGGER.info("Recorded long tick -- wrote info to ${file.toAbsolutePath()}")
@@ -51,9 +50,7 @@ class SingleTickProfiler(
 
     companion object {
 
-        private val TIME_NOW_FORMATTED: String
-            get() = FORMATTER.format(LocalDateTime.now())
-
+        private val TIME_NOW_FORMATTED: String get() = FORMATTER.format(LocalDateTime.now())
         private val FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")
         private val LOGGER = logger<SingleTickProfiler>()
     }

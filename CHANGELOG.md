@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.19.1] - 2021-05-08
+### Changed
+- Fixed weather ticking exiting early, causing the profiler to not get fully popped before it exits
+- Fixed non-existent chunks throwing errors when trying to cast the heightmaps to `LongArrayBinaryTag`s
+- Fixed world save all not calling `get` to join the future, resulting on data not being saved properly and getting
+  corrupted on shut down
+
 ## [0.19] - 2021-05-04
 ### Added
 - Chunk streaming for players (they are now updated as you move)

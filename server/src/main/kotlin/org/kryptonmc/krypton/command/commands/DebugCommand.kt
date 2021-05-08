@@ -33,6 +33,7 @@ import org.kryptonmc.krypton.command.BrigadierCommand
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.logger
 import java.io.IOException
+import java.nio.file.Path
 import java.nio.file.spi.FileSystemProvider
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -94,7 +95,7 @@ class DebugCommand(private val server: KryptonServer) : BrigadierCommand {
         private val TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")
         private val TIME_NOW_FORMATTED: String get() = LocalDateTime.now().format(TIME_FORMAT)
 
-        private val DEBUG_FOLDER = CURRENT_DIRECTORY.resolve("debug")
+        val DEBUG_FOLDER: Path = CURRENT_DIRECTORY.resolve("debug")
         private val LOGGER = logger<DebugCommand>()
     }
 }

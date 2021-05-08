@@ -121,11 +121,7 @@ data class KryptonWorld(
         if (rainTime > 0) {
             if (!isRaining) isRaining = true
             rainTime--
-            return
-        }
-
-        // this ensures the game state change to signal we've stopped raining only happens once
-        if (isRaining) {
+        } else {
             profiler.push("rain update")
             isRaining = false
             val endRainPacket = PacketOutChangeGameState(GameState.END_RAINING)
