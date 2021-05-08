@@ -1,6 +1,7 @@
 # IntelliJ IDEA
 .idea/
-out/
+/out/
+/*/out
 *.iml
 *.ipr
 *.iws
@@ -30,6 +31,6 @@ build/
 # Possible test server folders
 server-test/
 test-server/
-run/
+/run/
 /krypton/
 /krypton*/
