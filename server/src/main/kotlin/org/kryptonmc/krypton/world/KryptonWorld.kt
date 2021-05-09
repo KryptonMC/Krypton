@@ -47,6 +47,9 @@ import java.nio.file.Path
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.UUID
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.random.Random
 
 data class KryptonWorld(
     override val server: KryptonServer,
@@ -57,7 +60,7 @@ data class KryptonWorld(
     val bossbars: List<Bossbar>,
     val allowCheats: Boolean,
     private val borderBuilder: BorderBuilder,
-    val clearWeatherTime: Int,
+    var clearWeatherTime: Int,
     var dayTime: Long,
     override val difficulty: Difficulty,
     val difficultyLocked: Boolean,
@@ -69,12 +72,12 @@ data class KryptonWorld(
     //val isInitialized: Boolean, // we always assume this is a complete world
     val lastPlayed: LocalDateTime,
     val mapFeatures: Boolean,
-    var isRaining: Boolean,
+    override var isRaining: Boolean,
     var rainTime: Int,
     val randomSeed: Long,
     private val spawnLocationBuilder: LocationBuilder,
-    val isThundering: Boolean,
-    val thunderTime: Int,
+    override var isThundering: Boolean,
+    var thunderTime: Int,
     override var time: Long,
     val nbtVersion: Int,
     override val version: WorldVersion,
@@ -86,6 +89,11 @@ data class KryptonWorld(
 
     val chunkManager = ChunkManager(this)
     val dimension = NamespacedKey(value = "overworld")
+
+    private var oldRainLevel = 0F
+    override var rainLevel = 0F
+    private var oldThunderLevel = 0F
+    override var thunderLevel = 0F
 
     override val border = KryptonWorldBorder(
         this,
@@ -118,16 +126,65 @@ data class KryptonWorld(
         // tick rain
         // TODO: Actually add in some probabilities and calculations for rain and thunder storms
         profiler.push("weather")
-        if (rainTime > 0) {
-            if (!isRaining) isRaining = true
-            rainTime--
-        } else if (isRaining) {
-            profiler.push("rain update")
-            isRaining = false
-            val endRainPacket = PacketOutChangeGameState(GameState.END_RAINING)
-            players.forEach { it.session.sendPacket(endRainPacket) }
-            profiler.pop()
+        val raining = isRaining
+        if (gamerules[Gamerule.DO_WEATHER_CYCLE]?.equals("true") == true) {
+            if (clearWeatherTime > 0) {
+                --clearWeatherTime
+                thunderTime = if (isThundering) 0 else 1
+                rainTime = if (isRaining) 0 else 1
+                isThundering = false
+                isRaining = false
+            } else {
+                profiler.push("calculate thunder")
+                if (thunderTime > 0) {
+                    if (thunderTime-- == 0) isThundering = !isThundering
+                } else {
+                    thunderTime = if (isThundering) Random.nextInt(12000) + 3600 else Random.nextInt(168000) + 12000
+                }
+                profiler.pop()
+                profiler.push("calculate rain")
+                if (rainTime > 0) {
+                    if (rainTime-- == 0) isRaining = !isRaining
+                } else {
+                    rainTime = Random.nextInt(if (isRaining) 12000 else 168000) + 12000
+                }
+                profiler.pop()
+            }
         }
+        profiler.push("set levels")
+        oldThunderLevel = thunderLevel
+        thunderLevel = if (isThundering) (thunderLevel + 0.01).toFloat() else (thunderLevel - 0.01).toFloat()
+        thunderLevel = min(max(thunderLevel, 0F), 1F)
+        oldRainLevel = rainLevel
+        rainLevel = if (isRaining) (rainLevel + 0.01).toFloat() else (rainLevel - 0.01).toFloat()
+        rainLevel = min(max(rainLevel, 0F), 1F)
+        profiler.pop()
+
+        profiler.push("broadcast weather changes")
+        if (oldRainLevel != rainLevel) {
+            val rainPacket = PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel)
+            players.forEach { it.session.sendPacket(rainPacket) }
+        }
+        if (oldThunderLevel != thunderLevel) {
+            val thunderPacket = PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel)
+            players.forEach { it.session.sendPacket(thunderPacket) }
+        }
+        if (raining != isRaining) {
+            if (raining) {
+                val rainPacket = PacketOutChangeGameState(GameState.END_RAINING)
+                players.forEach { it.session.sendPacket(rainPacket) }
+            } else {
+                val rainPacket = PacketOutChangeGameState(GameState.BEGIN_RAINING)
+                players.forEach { it.session.sendPacket(rainPacket) }
+            }
+            val rainLevelPacket = PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel)
+            val thunderLevelPacket = PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel)
+            players.forEach {
+                it.session.sendPacket(rainLevelPacket)
+                it.session.sendPacket(thunderLevelPacket)
+            }
+        }
+        profiler.pop()
         profiler.pop()
 
         profiler.push("chunk tick")

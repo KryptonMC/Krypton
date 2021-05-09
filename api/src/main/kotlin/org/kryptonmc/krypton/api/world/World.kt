@@ -85,6 +85,26 @@ interface World {
     val maxHeight: Int
 
     /**
+     * If this world is currently thundering (has an ongoing thunderstorm)
+     */
+    var isThundering: Boolean
+
+    /**
+     * The level of the current thunderstorm (0 if there is no thunderstorm going on)
+     */
+    var thunderLevel: Float
+
+    /**
+     * If this world is currently raining
+     */
+    var isRaining: Boolean
+
+    /**
+     * The level of the current rain
+     */
+    var rainLevel: Float
+
+    /**
      * Saves this world to disk. Exposed as a function of [World] to allow for custom world implementations
      * to define this.
      */
