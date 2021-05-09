@@ -22,8 +22,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.kyori.adventure.audience.MessageType
+import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
+import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
@@ -33,11 +37,14 @@ import org.kryptonmc.krypton.api.effect.particle.ColorParticleData
 import org.kryptonmc.krypton.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.krypton.api.effect.particle.NoteParticleData
 import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
+import org.kryptonmc.krypton.api.effect.sound.SoundType
 import org.kryptonmc.krypton.api.entity.Abilities
 import org.kryptonmc.krypton.api.entity.Hand
 import org.kryptonmc.krypton.api.entity.MainHand
 import org.kryptonmc.krypton.api.entity.entities.Player
+import org.kryptonmc.krypton.api.inventory.item.ItemStack
 import org.kryptonmc.krypton.api.registry.NamespacedKey
+import org.kryptonmc.krypton.api.registry.toNamespacedKey
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Location
@@ -45,6 +52,7 @@ import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkData
+import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
@@ -54,11 +62,17 @@ import org.kryptonmc.krypton.packet.out.play.chat.PacketOutPlayerListHeaderFoote
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.chat.TitleAction
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
+import org.kryptonmc.krypton.packet.out.play.sound.PacketOutNamedSoundEffect
+import org.kryptonmc.krypton.packet.out.play.sound.PacketOutSoundEffect
+import org.kryptonmc.krypton.packet.out.play.sound.PacketOutStopSound
+import org.kryptonmc.krypton.packet.out.play.window.PacketOutSetSlot
 import org.kryptonmc.krypton.packet.session.Session
 import org.kryptonmc.krypton.util.canBuild
 import org.kryptonmc.krypton.util.chunkInSpiral
 import org.kryptonmc.krypton.util.toArea
+import org.kryptonmc.krypton.util.toItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.bossbar.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.net.InetSocketAddress
 import java.util.Locale
@@ -145,6 +159,34 @@ class KryptonPlayer(
 
     override fun resetTitle() {
         session.sendPacket(PacketOutTitle(TitleAction.RESET))
+    }
+
+    override fun showBossBar(bar: BossBar) = BossBarManager.addBar(bar, this)
+
+    override fun hideBossBar(bar: BossBar) = BossBarManager.removeBar(bar, this)
+
+    override fun playSound(sound: Sound) = playSound(sound, location.x, location.y, location.z)
+
+    override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
+        val soundName = sound.name().toNamespacedKey()
+        val event = SoundType.NAMES.value(soundName)
+        session.sendPacket(if (event != null) {
+            PacketOutSoundEffect(sound, Vector(x, y, z))
+        } else {
+            PacketOutNamedSoundEffect(sound, Vector(x, y, z))
+        })
+    }
+
+    override fun stopSound(stop: SoundStop) {
+        session.sendPacket(PacketOutStopSound(stop))
+    }
+
+    override fun openBook(book: Book) {
+        val (item, nbt) = book.toItemStack(locale ?: Locale.UK)
+        val slot = inventory.mainHand?.let { inventory.items.indexOf(it) } ?: return
+        session.sendPacket(PacketOutSetSlot(inventory.id, slot, item, nbt))
+        session.sendPacket(PacketOutOpenBook(hand))
+        session.sendPacket(PacketOutSetSlot(inventory.id, slot, inventory.mainHand ?: ItemStack.EMPTY))
     }
 
     override fun identity() = Identity.identity(uuid)

@@ -16,21 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.bossbar
+package org.kryptonmc.krypton.packet.out.play.window
 
-import net.kyori.adventure.bossbar.BossBar
-import org.kryptonmc.krypton.api.registry.NamespacedKey
-import java.util.UUID
+import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.inventory.KryptonInventory
+import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeItem
 
 /**
- * A boss bar.
- * Notice that we wrap a lot of Adventure's boss bar stuff here, but we use this so we can include the ID,
- * visibility and player list in this object
+ * Set the items for an inventory with an ID. Currently only supports player inventories.
+ *
+ * @param inventory the inventory to get the items to send from
  */
-@Suppress("NonExtendableApiUsage")
-data class Bossbar(
-    val wrapped: BossBar,
-    val id: NamespacedKey,
-    val visible: Boolean,
-    val players: List<UUID>
-) : BossBar by wrapped
+class PacketOutWindowItems(private val inventory: KryptonInventory) : PlayPacket(0x13) {
+
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(inventory.id)
+        buf.writeShort(inventory.items.size)
+        inventory.items.forEach { buf.writeItem(it, null) }
+    }
+}

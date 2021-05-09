@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.api.inventory.item.ItemStack
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeldItemChange
 
-class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(TYPE, owner, SIZE), PlayerInventory {
+class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE), PlayerInventory {
 
     override val crafting: Array<ItemStack?> get() = items.copyOfRange(0, 5)
     override val armor: Array<ItemStack?> get() = items.copyOfRange(5, 9)

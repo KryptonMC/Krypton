@@ -24,6 +24,7 @@ import org.kryptonmc.krypton.api.inventory.InventoryType
 import org.kryptonmc.krypton.api.inventory.item.ItemStack
 
 abstract class KryptonInventory(
+    val id: Int,
     override val type: InventoryType,
     override val owner: InventoryHolder,
     final override val size: Int

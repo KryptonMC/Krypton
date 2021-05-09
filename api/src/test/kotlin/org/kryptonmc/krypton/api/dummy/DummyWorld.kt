@@ -34,6 +34,10 @@ data class DummyWorld(override val name: String) : World {
     override val spawnLocation = Location(this, 0.0, 0.0, 0.0)
     override val time = 0L
     override val version = WorldVersion.CURRENT
+    override var isRaining = false
+    override var isThundering = false
+    override var rainLevel = 0F
+    override var thunderLevel = 0F
     override fun save() = Unit
 
     override fun equals(other: Any?): Boolean {

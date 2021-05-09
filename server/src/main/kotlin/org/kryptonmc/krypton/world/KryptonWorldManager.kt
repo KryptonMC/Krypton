@@ -18,13 +18,11 @@
  */
 package org.kryptonmc.krypton.world
 
-import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.BinaryTagIO.Compression.GZIP
 import net.kyori.adventure.nbt.ByteBinaryTag
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.api.registry.toNamespacedKey
@@ -35,7 +33,6 @@ import org.kryptonmc.krypton.api.world.WorldManager
 import org.kryptonmc.krypton.api.world.WorldVersion
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.world.bossbar.Bossbar
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.generation.toGenerator
@@ -91,31 +88,31 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
         val dataFile = folder.resolve("level.dat")
         val nbt = BinaryTagIO.unlimitedReader().read(dataFile, GZIP).getCompound("Data")
 
-        val bossbars = nbt.getCompound("CustomBossEvents").map { (key, bossbar) ->
-            bossbar as CompoundBinaryTag
-            val players = bossbar.getList("Players").map {
-                it as CompoundBinaryTag
-                UUID(it.getLong("M"), it.getLong("L"))
-            }
-
-            val flags = mutableSetOf<BossBar.Flag>()
-            if (bossbar.getBoolean("CreateWorldFog")) flags += BossBar.Flag.CREATE_WORLD_FOG
-            if (bossbar.getBoolean("DarkenScreen")) flags += BossBar.Flag.DARKEN_SCREEN
-            if (bossbar.getBoolean("PlayBossMusic")) flags += BossBar.Flag.PLAY_BOSS_MUSIC
-
-            Bossbar(
-                BossBar.bossBar(
-                    GsonComponentSerializer.gson().deserialize(bossbar.getString("Name")),
-                    bossbar.getInt("Value").toFloat() / bossbar.getInt("Max").toFloat(),
-                    BossBar.Color.NAMES.value(bossbar.getString("Color")) ?: BossBar.Color.WHITE,
-                    BossBar.Overlay.NAMES.value(bossbar.getString("Overlay")) ?: BossBar.Overlay.PROGRESS,
-                    flags
-                ),
-                key.toNamespacedKey(),
-                bossbar.getBoolean("Visible"),
-                players
-            )
-        }
+//        val bossbars = nbt.getCompound("CustomBossEvents").map { (key, bossbar) ->
+//            bossbar as CompoundBinaryTag
+//            val players = bossbar.getList("Players").map {
+//                it as CompoundBinaryTag
+//                UUID(it.getLong("M"), it.getLong("L"))
+//            }
+//
+//            val flags = mutableSetOf<BossBar.Flag>()
+//            if (bossbar.getBoolean("CreateWorldFog")) flags += BossBar.Flag.CREATE_WORLD_FOG
+//            if (bossbar.getBoolean("DarkenScreen")) flags += BossBar.Flag.DARKEN_SCREEN
+//            if (bossbar.getBoolean("PlayBossMusic")) flags += BossBar.Flag.PLAY_BOSS_MUSIC
+//
+//            Bossbar(
+//                BossBar.bossBar(
+//                    GsonComponentSerializer.gson().deserialize(bossbar.getString("Name")),
+//                    bossbar.getInt("Value").toFloat() / bossbar.getInt("Max").toFloat(),
+//                    BossBar.Color.NAMES.value(bossbar.getString("Color")) ?: BossBar.Color.WHITE,
+//                    BossBar.Overlay.NAMES.value(bossbar.getString("Overlay")) ?: BossBar.Overlay.PROGRESS,
+//                    flags
+//                ),
+//                UUID.randomUUID(),
+//                key.toNamespacedKey(),
+//                bossbar.getBoolean("Visible")
+//            )
+//        }
 
         val worldGenSettings = nbt.getCompound("WorldGenSettings").let { settings ->
             val dimensions = settings.getCompound("dimensions").associate { (key, value) ->
@@ -136,7 +133,6 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
             loadUUID(folder),
             nbt.getString("LevelName"),
             mutableSetOf(),
-            bossbars,
             nbt.getBoolean("allowCommands"),
             BorderBuilder(
                 nbt.getDouble("BorderCenterX"),

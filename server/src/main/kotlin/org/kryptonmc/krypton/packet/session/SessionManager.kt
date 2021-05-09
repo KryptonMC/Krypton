@@ -63,6 +63,7 @@ import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityStatus
 import org.kryptonmc.krypton.packet.out.play.entity.spawn.PacketOutSpawnPlayer
+import org.kryptonmc.krypton.packet.out.play.window.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.util.Angle
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
@@ -190,7 +191,7 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutTimeUpdate(world.time, world.dayTime))
         session.sendPacket(PacketOutSpawnPosition(spawnLocation))
         session.sendPacket(PacketOutEntityProperties(session.id, session.player.attributes))
-        if (world.isRaining) session.sendPacket(PacketOutChangeGameState(GameState.BEGIN_RAINING))
+        session.sendPacket(PacketOutWindowItems(session.player.inventory))
 
         ServerStorage.PLAYER_COUNT.getAndIncrement()
 

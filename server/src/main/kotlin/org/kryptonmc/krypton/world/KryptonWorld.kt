@@ -18,13 +18,11 @@
  */
 package org.kryptonmc.krypton.world
 
-import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.BinaryTagTypes
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.world.Gamemode
@@ -37,7 +35,7 @@ import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.util.csv.csv
 import org.kryptonmc.krypton.util.profiling.Profiler
-import org.kryptonmc.krypton.world.bossbar.Bossbar
+import org.kryptonmc.krypton.world.bossbar.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
@@ -57,7 +55,6 @@ data class KryptonWorld(
     val uuid: UUID,
     override val name: String,
     override val chunks: MutableSet<KryptonChunk>,
-    val bossbars: List<Bossbar>,
     val allowCheats: Boolean,
     private val borderBuilder: BorderBuilder,
     var clearWeatherTime: Int,
@@ -199,31 +196,6 @@ data class KryptonWorld(
 
     override fun save() {
         val dataPath = folder.resolve("level.dat")
-        val customBossEvents = bossbars.associate { bossbar ->
-            val players = bossbar.players.map {
-                CompoundBinaryTag.builder()
-                    .putLong("L", it.leastSignificantBits)
-                    .putLong("M", it.mostSignificantBits)
-                    .build()
-            }
-
-            val createWorldFog = BossBar.Flag.CREATE_WORLD_FOG in bossbar.flags()
-            val darkenScreen = BossBar.Flag.DARKEN_SCREEN in bossbar.flags()
-            val playBossMusic = BossBar.Flag.PLAY_BOSS_MUSIC in bossbar.flags()
-
-            bossbar.id.toString() to CompoundBinaryTag.builder()
-                .put("Players", ListBinaryTag.of(BinaryTagTypes.COMPOUND, players))
-                .putString("Color", bossbar.color().name)
-                .putBoolean("CreateWorldFog", createWorldFog)
-                .putBoolean("DarkenScreen", darkenScreen)
-                .putInt("Max", 20)
-                .putInt("Value", 20)
-                .putString("Name", GsonComponentSerializer.gson().serialize(bossbar.name()))
-                .putString("Overlay", bossbar.overlay().name)
-                .putBoolean("PlayBossMusic", playBossMusic)
-                .putBoolean("Visible", bossbar.visible)
-                .build()
-        }
 
         val gamerules = gamerules.transform { (rule, value) -> rule.rule to StringBinaryTag.of(value) }
         val dimensions = generationSettings.dimensions.transform { (key, value) -> key.toString() to value.toNBT() }
@@ -240,7 +212,7 @@ data class KryptonWorld(
             .putDouble("BorderWarningBlocks", border.warningBlocks)
             .putDouble("BorderWarningTime", border.warningTime)
             .putInt("clearWeatherTime", clearWeatherTime)
-            .put("CustomBossEvents", CompoundBinaryTag.from(customBossEvents))
+            .put("CustomBossEvents", CompoundBinaryTag.empty())
             .put("DataPacks", CompoundBinaryTag.builder()
                 .put("Enabled", ListBinaryTag.of(BinaryTagTypes.STRING, listOf(StringBinaryTag.of("vanilla"))))
                 .put("Disabled", ListBinaryTag.empty())

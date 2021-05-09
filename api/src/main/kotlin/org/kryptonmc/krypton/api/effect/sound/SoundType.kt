@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.krypton.api.effect.sound
 
+import net.kyori.adventure.util.Index
 import org.kryptonmc.krypton.api.Keyed
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 
@@ -1004,5 +1005,10 @@ enum class SoundType(override val key: NamespacedKey) : Keyed {
     UI_TOAST_IN(NamespacedKey(value = "ui.toast.in")),
     UI_TOAST_OUT(NamespacedKey(value = "ui.toast.out")),
     WEATHER_RAIN(NamespacedKey(value = "weather.rain")),
-    WEATHER_RAIN_ABOVE(NamespacedKey(value = "weather.rain.above"))
+    WEATHER_RAIN_ABOVE(NamespacedKey(value = "weather.rain.above"));
+
+    companion object {
+
+        val NAMES = Index.create(SoundType::class.java) { it.key }
+    }
 }

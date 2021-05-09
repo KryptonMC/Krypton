@@ -18,11 +18,18 @@
  */
 package org.kryptonmc.krypton.util
 
+import net.kyori.adventure.inventory.Book
+import net.kyori.adventure.nbt.CompoundBinaryTag
+import net.kyori.adventure.nbt.ListBinaryTag
+import net.kyori.adventure.nbt.StringBinaryTag
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.kryptonmc.krypton.api.inventory.item.ItemStack
+import org.kryptonmc.krypton.api.inventory.item.Material
 import org.kryptonmc.krypton.api.world.Gamemode
-import org.kryptonmc.krypton.auth.GameProfile
 import java.net.InetAddress
+import java.util.Locale
 import kotlin.math.log2
 import kotlin.math.max
 
@@ -69,6 +76,16 @@ fun Int.square() = this * this
 fun String.toProtocol(): ByteArray {
     val bytes = encodeToByteArray()
     return byteArrayOf(bytes.size.toByte(), *bytes)
+}
+
+fun Book.toItemStack(locale: Locale): Pair<ItemStack, CompoundBinaryTag> {
+    val item = ItemStack(Material.WRITTEN_BOOK, 1)
+    val tag = CompoundBinaryTag.builder()
+        .putString("title", GsonComponentSerializer.gson().serialize(title()))
+        .putString("author", GsonComponentSerializer.gson().serialize(author()))
+        .put("pages", ListBinaryTag.from(pages().map { StringBinaryTag.of(GsonComponentSerializer.gson().serialize(it)) }))
+        .build()
+    return item to tag
 }
 
 /**

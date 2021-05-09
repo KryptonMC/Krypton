@@ -33,6 +33,7 @@ import org.kryptonmc.krypton.api.effect.particle.DustParticleData
 import org.kryptonmc.krypton.api.effect.particle.ItemParticleData
 import org.kryptonmc.krypton.api.effect.particle.NoteParticleData
 import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
+import org.kryptonmc.krypton.api.inventory.item.ItemStack
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.space.Position
 import org.kryptonmc.krypton.api.space.Vector
@@ -40,6 +41,7 @@ import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.entity.Slot
 import org.kryptonmc.krypton.entity.entities.data.VillagerData
 import org.kryptonmc.krypton.entity.metadata.Optional
+import org.kryptonmc.krypton.registry.Registries
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -217,6 +219,17 @@ fun ByteBuf.writeSlot(slot: Slot) {
         writeByte(slot.count)
         writeNBTCompound(slot.nbt)
     }
+}
+
+fun ByteBuf.writeItem(item: ItemStack?, nbt: CompoundBinaryTag?) {
+    if (item == null) {
+        writeBoolean(false)
+        return
+    }
+    writeBoolean(true)
+    writeVarInt(Registries.ITEMS.idOf(item.type.key))
+    writeByte(item.amount)
+    nbt?.let { writeNBTCompound(it) } ?: writeByte(0)
 }
 
 fun ByteBuf.writeRotation(rotation: Rotation) {
