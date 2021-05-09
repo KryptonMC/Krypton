@@ -20,7 +20,7 @@ plugins {
 
 allprojects {
     group = "org.kryptonmc"
-    version = "0.19.3"
+    version = "0.19.4"
 
     repositories {
         mavenCentral()
