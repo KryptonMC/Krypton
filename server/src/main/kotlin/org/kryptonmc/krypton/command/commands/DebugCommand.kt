@@ -18,16 +18,14 @@
  */
 package org.kryptonmc.krypton.command.commands
 
-import com.mojang.brigadier.Message
+import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import com.mojang.brigadier.tree.LiteralCommandNode
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.adventure.toMessage
 import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.command.BrigadierCommand
 import org.kryptonmc.krypton.util.createDirectories
@@ -41,11 +39,13 @@ import java.util.Locale
 
 class DebugCommand(private val server: KryptonServer) : BrigadierCommand {
 
-    override fun command(): LiteralCommandNode<Sender> = literal<Sender>("debug")
-        .then(literal<Sender>("start").executes { start(it.source); 1 })
-        .then(literal<Sender>("stop").executes { stop(it.source); 1 })
-        .then(literal<Sender>("report").executes { report(it.source); 1 })
-        .build()
+    override fun register(dispatcher: CommandDispatcher<Sender>) {
+        dispatcher.register(literal<Sender>("debug")
+            .then(literal<Sender>("start").executes { start(it.source); 1 })
+            .then(literal<Sender>("stop").executes { stop(it.source); 1 })
+            .then(literal<Sender>("report").executes { report(it.source); 1 })
+        )
+    }
 
     private fun start(sender: Sender) {
         if (server.continuousProfiler.isEnabled) throw ERROR_ALREADY_RUNNING.create()
@@ -98,11 +98,4 @@ class DebugCommand(private val server: KryptonServer) : BrigadierCommand {
         val DEBUG_FOLDER: Path = CURRENT_DIRECTORY.resolve("debug")
         private val LOGGER = logger<DebugCommand>()
     }
-}
-
-private fun Component.toMessage() = AdventureMessage(this)
-
-private class AdventureMessage(private val component: Component) : Message {
-
-    override fun getString() = PlainComponentSerializer.plain().serialize(component)
 }

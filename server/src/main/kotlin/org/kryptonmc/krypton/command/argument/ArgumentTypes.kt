@@ -35,9 +35,10 @@ import org.kryptonmc.krypton.command.argument.serializer.brigadier.FloatArgument
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.IntegerArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.LongArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.StringArgumentSerializer
+import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.writeKey
-import kotlin.reflect.KClass
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Holder for argument serialisers used by Brigadier.
@@ -48,17 +49,18 @@ import kotlin.reflect.KClass
 object ArgumentTypes {
 
     private val LOGGER = logger<ArgumentTypes>()
-    private val BY_CLASS = mutableMapOf<KClass<*>, Entry<*>>()
-    private val BY_NAME = mutableMapOf<NamespacedKey, Entry<*>>()
+    private val BY_CLASS = ConcurrentHashMap<Class<*>, Entry<*>>()
+    private val BY_NAME = ConcurrentHashMap<NamespacedKey, Entry<*>>()
 
     init {
         // Brigadier types and serialisers
-        register("brigadier:bool", BoolArgumentType::class, EmptyArgumentSerializer())
-        register("brigadier:float", FloatArgumentType::class, FloatArgumentSerializer())
-        register("brigadier:double", DoubleArgumentType::class, DoubleArgumentSerializer())
-        register("brigadier:integer", IntegerArgumentType::class, IntegerArgumentSerializer())
-        register("brigadier:long", LongArgumentType::class, LongArgumentSerializer())
-        register("brigadier:string", StringArgumentType::class, StringArgumentSerializer())
+        register("brigadier:bool", BoolArgumentType::class.java, EmptyArgumentSerializer())
+        register("brigadier:float", FloatArgumentType::class.java, FloatArgumentSerializer())
+        register("brigadier:double", DoubleArgumentType::class.java, DoubleArgumentSerializer())
+        register("brigadier:integer", IntegerArgumentType::class.java, IntegerArgumentSerializer())
+        register("brigadier:long", LongArgumentType::class.java, LongArgumentSerializer())
+        register("brigadier:string", StringArgumentType::class.java, StringArgumentSerializer())
+        register("minecraft:vec3", VectorArgument::class.java, EmptyArgumentSerializer())
     }
 
     operator fun get(key: NamespacedKey) = BY_NAME[key]
@@ -71,7 +73,7 @@ object ArgumentTypes {
      * @return the [Entry] for the specified [type], or null if there isn't one
      */
     @Suppress("UNCHECKED_CAST") // this should never fail
-    operator fun <T : ArgumentType<*>> get(type: ArgumentType<*>) = BY_CLASS[type::class] as? Entry<T>
+    operator fun <T : ArgumentType<*>> get(type: ArgumentType<*>) = BY_CLASS[type::class.java] as? Entry<T>
 
     /**
      * Write an argument type to a [ByteBuf].
@@ -82,7 +84,7 @@ object ArgumentTypes {
     fun <T : ArgumentType<*>> ByteBuf.writeArgumentType(argument: T) {
         val entry = get<T>(argument)
         if (entry == null) {
-            LOGGER.error("Could not serialise $argument (Class ${argument::class})! Will not be sent to client!")
+            LOGGER.error("Could not serialise $argument (Class ${argument::class.java.simpleName})! Will not be sent to client!")
             writeKey(NamespacedKey(value = ""))
             return
         }
@@ -90,13 +92,13 @@ object ArgumentTypes {
         entry.serializer.write(argument, this)
     }
 
-    private fun <T : ArgumentType<*>> register(name: String, kClass: KClass<T>, serialiser: ArgumentSerializer<T>) {
+    private fun <T : ArgumentType<*>> register(name: String, clazz: Class<T>, serialiser: ArgumentSerializer<T>) {
         val key = name.toNamespacedKey()
-        if (kClass in BY_CLASS) throw IllegalArgumentException("Class ${kClass.simpleName} already has a serialiser!")
-        if (key in BY_NAME) throw IllegalArgumentException("'$name' is already a registered serialiser!")
+        if (BY_CLASS.containsKey(clazz)) throw IllegalArgumentException("Class ${clazz.simpleName} already has a serialiser!")
+        if (BY_NAME.containsKey(key)) throw IllegalArgumentException("'$name' is already a registered serialiser!")
 
-        val entry = Entry(kClass, serialiser, key)
-        BY_CLASS[kClass] = entry
+        val entry = Entry(clazz, serialiser, key)
+        BY_CLASS[clazz] = entry
         BY_NAME[key] = entry
     }
 
@@ -106,7 +108,7 @@ object ArgumentTypes {
      * This holds the class, serialiser and name for the argument type
      */
     data class Entry<T : ArgumentType<*>>(
-        val kClass: KClass<T>,
+        val clazz: Class<T>,
         val serializer: ArgumentSerializer<T>,
         val name: NamespacedKey
     )

@@ -54,7 +54,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPla
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.out.play.PacketOutAcknowledgePlayerDigging
-import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
+import org.kryptonmc.krypton.packet.out.play.chunk.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutTabComplete
 import org.kryptonmc.krypton.packet.out.play.entity.EntityAnimation
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityAnimation
@@ -67,6 +67,7 @@ import org.kryptonmc.krypton.packet.session.Session
 import org.kryptonmc.krypton.packet.session.SessionManager
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.registry.Registries
+import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.world.block.KryptonBlock
@@ -317,5 +318,3 @@ class PlayHandler(
         private val LOGGER = logger<PlayHandler>()
     }
 }
-
-fun calculatePositionChange(new: Double, old: Double) = ((new * 32 - old * 32) * 128).toInt().toShort()

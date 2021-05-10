@@ -45,28 +45,32 @@ import org.kryptonmc.krypton.api.entity.entities.Player
 import org.kryptonmc.krypton.api.inventory.item.ItemStack
 import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.api.registry.toNamespacedKey
+import org.kryptonmc.krypton.api.space.Position
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
-import org.kryptonmc.krypton.packet.out.play.PacketOutChunkData
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
-import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.chat.TitleAction
+import org.kryptonmc.krypton.packet.out.play.chunk.PacketOutChunkData
+import org.kryptonmc.krypton.packet.out.play.chunk.PacketOutUnloadChunk
+import org.kryptonmc.krypton.packet.out.play.chunk.PacketOutUpdateLight
+import org.kryptonmc.krypton.packet.out.play.chunk.PacketOutUpdateViewPosition
+import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMovement.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
+import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityTeleport
 import org.kryptonmc.krypton.packet.out.play.sound.PacketOutNamedSoundEffect
 import org.kryptonmc.krypton.packet.out.play.sound.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.sound.PacketOutStopSound
 import org.kryptonmc.krypton.packet.out.play.window.PacketOutSetSlot
 import org.kryptonmc.krypton.packet.session.Session
+import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.canBuild
 import org.kryptonmc.krypton.util.chunkInSpiral
 import org.kryptonmc.krypton.util.toArea
@@ -134,6 +138,26 @@ class KryptonPlayer(
             else -> session.sendPacket(packet)
         }
     }
+
+    override fun teleport(position: Position) {
+        val oldLocation = location
+        location = Location(world, position.x, position.y, position.z)
+
+        if (abs(location.x - oldLocation.x) > 8 || abs(location.y - oldLocation.y) > 8 || abs(location.z - oldLocation.z) > 8) {
+            session.sendPacket(PacketOutEntityTeleport(session.id, location, isOnGround))
+        } else {
+            session.sendPacket(PacketOutEntityPosition(
+                session.id,
+                calculatePositionChange(location.x, oldLocation.x),
+                calculatePositionChange(location.y, oldLocation.y),
+                calculatePositionChange(location.z, oldLocation.z),
+                isOnGround
+            ))
+        }
+        updateChunks()
+    }
+
+    override fun teleport(player: Player) = teleport(player.location)
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
         session.sendPacket(PacketOutChat(message, type, source.uuid()))

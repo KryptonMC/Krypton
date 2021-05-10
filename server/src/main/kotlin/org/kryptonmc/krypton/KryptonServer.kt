@@ -72,6 +72,7 @@ import java.util.Properties
 import java.util.UUID
 import kotlin.io.path.exists
 import kotlin.io.path.isRegularFile
+import kotlin.math.min
 import kotlin.system.measureTimeMillis
 
 class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : Server {
@@ -139,6 +140,7 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
         Class.forName("org.kryptonmc.krypton.registry.Registries")
         Class.forName("org.kryptonmc.krypton.registry.tags.TagManager")
         Class.forName("org.kryptonmc.krypton.world.block.palette.GlobalPalette")
+        Class.forName("org.kryptonmc.krypton.command.argument.ArgumentTypes")
 
         LOGGER.debug("Starting console handler")
         Thread(KryptonConsole(this)::start, "Console Handler").apply {
@@ -228,7 +230,7 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
             profiler.end()
             endProfilerTick(singleTickProfiler)
 
-            val sleepTime = measureTimeMillis { Thread.sleep(TICK_INTERVAL - tickTime - oversleepFactor) }
+            val sleepTime = measureTimeMillis { Thread.sleep(min(0, TICK_INTERVAL - tickTime - oversleepFactor)) }
             oversleepFactor = sleepTime - (TICK_INTERVAL - tickTime)
         }
     }

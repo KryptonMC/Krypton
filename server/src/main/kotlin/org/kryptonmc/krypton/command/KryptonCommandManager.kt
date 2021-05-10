@@ -42,6 +42,7 @@ import org.kryptonmc.krypton.api.event.events.play.PermissionCheckResult
 import org.kryptonmc.krypton.command.commands.DebugCommand
 import org.kryptonmc.krypton.command.commands.RestartCommand
 import org.kryptonmc.krypton.command.commands.StopCommand
+import org.kryptonmc.krypton.command.commands.TeleportCommand
 import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
@@ -148,7 +149,8 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
     internal fun registerBuiltins() {
         register(StopCommand(server))
         register(RestartCommand(server))
-        register(DebugCommand(server).command())
+        DebugCommand(server).register(dispatcher)
+        TeleportCommand().register(dispatcher)
     }
 
     companion object {

@@ -16,22 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.packet.out.play.chunk
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.util.writePosition
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.block.KryptonBlock
+import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 
 /**
- * Update the centre chunk of where the client is viewing.
- *
- * @param position the chunk position of the view point
+ * Update a block in a chunk
  */
-class PacketOutUpdateViewPosition(private val position: ChunkPosition) : PlayPacket(0x40) {
+class PacketOutBlockChange(private val block: KryptonBlock) : PlayPacket(0x0B) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(position.x)
-        buf.writeVarInt(position.z)
+        buf.writePosition(block.location)
+        buf.writeVarInt(GlobalPalette[block.type.key].states.firstOrNull()?.id ?: 0)
     }
 }

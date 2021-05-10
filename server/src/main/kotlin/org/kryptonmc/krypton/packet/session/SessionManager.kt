@@ -35,9 +35,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.play.BorderAction
-import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
-import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeldItemChange
@@ -53,9 +51,9 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnlockRecipes
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutWorldBorder
 import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
+import org.kryptonmc.krypton.packet.out.play.chunk.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityDestroy
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMovement.PacketOutEntityHeadLook
@@ -70,6 +68,7 @@ import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.toProtocol
+import org.kryptonmc.krypton.world.Gamerule
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
@@ -155,7 +154,7 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutHeldItemChange(session.player.inventory.heldSlot))
         session.sendPacket(PacketOutDeclareRecipes())
         session.sendPacket(PacketOutTags)
-        session.sendPacket(PacketOutEntityStatus(session.id))
+        if (world.gamerules[Gamerule.REDUCED_DEBUG_INFO]?.equals("true") == true) session.sendPacket(PacketOutEntityStatus(session.id, 22))
         session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
         session.sendPacket(PacketOutPlayerPositionAndLook(session.player.location))

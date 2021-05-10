@@ -18,10 +18,11 @@
  */
 package org.kryptonmc.krypton.command
 
+import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.tree.LiteralCommandNode
 import org.kryptonmc.krypton.api.command.Sender
 
 interface BrigadierCommand {
 
-    fun command(): LiteralCommandNode<Sender>
+    fun register(dispatcher: CommandDispatcher<Sender>)
 }

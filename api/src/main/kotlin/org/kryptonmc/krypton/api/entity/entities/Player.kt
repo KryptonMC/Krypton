@@ -18,6 +18,7 @@ import org.kryptonmc.krypton.api.entity.MainHand
 import org.kryptonmc.krypton.api.inventory.InventoryHolder
 import org.kryptonmc.krypton.api.inventory.PlayerInventory
 import org.kryptonmc.krypton.api.registry.NamespacedKey
+import org.kryptonmc.krypton.api.space.Position
 import org.kryptonmc.krypton.api.space.Vector
 import org.kryptonmc.krypton.api.world.Location
 import org.kryptonmc.krypton.api.world.World
@@ -127,4 +128,14 @@ interface Player : Sender, InventoryHolder, HoverEventSource<HoverEvent.ShowEnti
      * @param location the central location to spawn the particles at
      */
     fun spawnParticles(particleEffect: ParticleEffect, location: Location)
+
+    /**
+     * Teleport this player to the specified position
+     */
+    fun teleport(position: Position)
+
+    /**
+     * Teleport this player to the specified other [player]
+     */
+    fun teleport(player: Player)
 }

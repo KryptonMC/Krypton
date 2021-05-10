@@ -55,10 +55,9 @@ dependencies {
     api("com.github.ben-manes.caffeine:caffeine:3.0.1")
     api("it.unimi.dsi:fastutil:8.5.4")
 
-    // CLI
+    // Miscellaneous
+    api("org.spongepowered:math:2.0.0")
     implementation("com.github.ajalt.clikt:clikt:3.0.1")
-
-    // Metrics
     implementation("org.bstats:bstats-base:2.2.0")
 }
 

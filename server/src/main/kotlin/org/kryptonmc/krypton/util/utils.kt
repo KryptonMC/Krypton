@@ -88,6 +88,8 @@ fun Book.toItemStack(locale: Locale): Pair<ItemStack, CompoundBinaryTag> {
     return item to tag
 }
 
+fun calculatePositionChange(new: Double, old: Double) = ((new * 32 - old * 32) * 128).toInt().toShort()
+
 /**
  * If this gamemode has privileges to build. Only players in survival and creative can build (break/place blocks)
  */
