@@ -90,21 +90,21 @@ class ArgumentTests {
         val method = ArgumentTypes::class.java.getDeclaredMethod(
             "register",
             String::class.java,
-            KClass::class.java,
+            Class::class.java,
             ArgumentSerializer::class.java
         ).apply { isAccessible = true }
 
         assertThrows<IllegalArgumentException> {
-            throwCause { method(ArgumentTypes, "brigadier:bool", BoolArgumentType::class, EmptyArgumentSerializer<BoolArgumentType>()) }
+            throwCause { method(ArgumentTypes, "brigadier:bool", BoolArgumentType::class.java, EmptyArgumentSerializer<BoolArgumentType>()) }
         }
         assertThrows<IllegalArgumentException> {
-            throwCause { method(ArgumentTypes, "brigadier:bool", BogusArgumentType::class, EmptyArgumentSerializer<BogusArgumentType>()) }
+            throwCause { method(ArgumentTypes, "brigadier:bool", BogusArgumentType::class.java, EmptyArgumentSerializer<BogusArgumentType>()) }
         }
         assertDoesNotThrow {
-            throwCause { method(ArgumentTypes, "krypton:test", BogusArgumentType::class, EmptyArgumentSerializer<BogusArgumentType>()) }
+            throwCause { method(ArgumentTypes, "krypton:test", BogusArgumentType::class.java, EmptyArgumentSerializer<BogusArgumentType>()) }
         }
 
-        callRemove("BY_CLASS", BogusArgumentType::class)
+        callRemove("BY_CLASS", BogusArgumentType::class.java)
         callRemove("BY_NAME", NamespacedKey("krypton", "test"))
     }
 

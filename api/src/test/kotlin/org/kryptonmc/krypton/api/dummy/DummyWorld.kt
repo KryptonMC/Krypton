@@ -9,6 +9,7 @@
 package org.kryptonmc.krypton.api.dummy
 
 import io.mockk.mockk
+import net.kyori.adventure.audience.Audience
 import org.kryptonmc.krypton.api.world.Difficulty
 import org.kryptonmc.krypton.api.world.Gamemode
 import org.kryptonmc.krypton.api.world.Location
@@ -16,13 +17,14 @@ import org.kryptonmc.krypton.api.world.World
 import org.kryptonmc.krypton.api.world.WorldBorder
 import org.kryptonmc.krypton.api.world.WorldVersion
 import org.kryptonmc.krypton.api.world.chunk.Chunk
+import java.nio.file.Path
 import java.util.UUID
 
 @Suppress("EqualsOrHashCode")
 data class DummyWorld(override val name: String) : World {
 
-    private val uuid = UUID.randomUUID()
-
+    override val uuid: UUID = UUID.randomUUID()
+    override val folder: Path = Path.of("")
     override val server = org.kryptonmc.krypton.api.server
     override val border = mockk<WorldBorder>()
     override val chunks = emptySet<Chunk>()
@@ -39,6 +41,7 @@ data class DummyWorld(override val name: String) : World {
     override var rainLevel = 0F
     override var thunderLevel = 0F
     override fun save() = Unit
+    override fun audiences() = emptySet<Audience>()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
