@@ -50,16 +50,18 @@ data class KryptonChunk(
     override val x: Int get() = position.x
     override val z: Int get() = position.z
 
-    override fun getBlock(position: Position): KryptonBlock {
-        val x = position.blockX and 0xF
-        val y = position.blockY
-        val z = position.blockZ and 0xF
+    override fun getBlock(x: Int, y: Int, z: Int): KryptonBlock {
+        val localX = x and 0xF
+        val localY = y and 0xF
+        val localZ = z and 0xF
         val section = sections.firstOrNull { it.y == y shr 4 }
-            ?: return KryptonBlock(Material.AIR, this, Location(world, position.x, position.y, position.z))
+            ?: return KryptonBlock(Material.AIR, this, Location(world, x.toDouble(), y.toDouble(), z.toDouble()))
 
-        val name = section[x, y and 0xF, z]
-        return KryptonBlock(Material.KEYS.value(name)!!, this, Location(world, position.x, position.y, position.z))
+        val name = section[localX, localY, localZ]
+        return KryptonBlock(Material.KEYS.value(name)!!, this, Location(world, x.toDouble(), y.toDouble(), z.toDouble()))
     }
+
+    override fun getBlock(position: Position) = getBlock(position.blockX, position.blockY, position.blockZ)
 
     override fun setBlock(block: Block): Boolean {
         if (block !is KryptonBlock) return false

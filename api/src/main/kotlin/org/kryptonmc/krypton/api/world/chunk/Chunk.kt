@@ -61,7 +61,17 @@ interface Chunk {
     val lastUpdate: Long
 
     /**
-     * Get a block from this world at the specified [position]
+     * Get a block from this chunk at the specified [x], [y] and [z] coordinates
+     *
+     * @param x the x coordinate of the block
+     * @param y the y coordinate of the block
+     * @param z the z coordinate of the block
+     * @return the block at the specified coordinates
+     */
+    fun getBlock(x: Int, y: Int, z: Int): Block
+
+    /**
+     * Get a block from this chunk at the specified [position]
      *
      * @param position the position of the block to retrieve
      * @return the block at that position

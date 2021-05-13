@@ -8,13 +8,16 @@
  */
 package org.kryptonmc.krypton.api.world
 
+import net.kyori.adventure.audience.ForwardingAudience
 import org.kryptonmc.krypton.api.Server
 import org.kryptonmc.krypton.api.world.chunk.Chunk
+import java.nio.file.Path
+import java.util.UUID
 
 /**
  * Represents a loaded world
  */
-interface World {
+interface World : ForwardingAudience {
 
     /**
      * The server this world was loaded on
@@ -25,6 +28,16 @@ interface World {
      * The name of this world
      */
     val name: String
+
+    /**
+     * The unique ID of this world
+     */
+    val uuid: UUID
+
+    /**
+     * The folder of this world on disk
+     */
+    val folder: Path
 
     /**
      * The spawn location of this world.
@@ -114,6 +127,10 @@ interface World {
 /**
  * Holder for information about the version of Minecraft this world was
  * generated in.
+ *
+ * @param id the ID of the world version
+ * @param name the name of the Minecraft version
+ * @param isSnapshot whether this world version is a snapshot version or not
  */
 data class WorldVersion(
     val id: Int,

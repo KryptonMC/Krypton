@@ -35,7 +35,6 @@ import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.util.csv.csv
 import org.kryptonmc.krypton.util.profiling.Profiler
-import org.kryptonmc.krypton.world.bossbar.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
@@ -51,8 +50,8 @@ import kotlin.random.Random
 
 data class KryptonWorld(
     override val server: KryptonServer,
-    val folder: Path,
-    val uuid: UUID,
+    override val folder: Path,
+    override val uuid: UUID,
     override val name: String,
     override val chunks: MutableSet<KryptonChunk>,
     val allowCheats: Boolean,
@@ -253,6 +252,8 @@ data class KryptonWorld(
             .putInt("WanderingTraderSpawnDelay", 24000)
             .build()).build(), dataPath, BinaryTagIO.Compression.GZIP)
     }
+
+    override fun audiences() = players
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

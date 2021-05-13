@@ -16,12 +16,12 @@ abstract class CancellableEvent : Event {
     /**
      * Whether or not this [Event] has been cancelled
      */
-    @Volatile var isCancelled = false
+    @Volatile open var isCancelled = false
 
     /**
      * Cancel this [Event]
      */
-    fun cancel() {
+    open fun cancel() {
         isCancelled = true
     }
 }

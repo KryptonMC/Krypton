@@ -39,8 +39,7 @@ class Heightmap(private val chunk: KryptonChunk, val nbt: LongArrayBinaryTag, va
             }
         } else if (firstAvailable - 1 == y) {
             for (i in y - 1 downTo 0) {
-                val position = Vector(x, i, z)
-                if (!type.isOpaque(chunk.getBlock(position).type)) continue
+                if (!type.isOpaque(chunk.getBlock(x, i, z).type)) continue
                 set(x, z, i + 1)
                 return true
             }
