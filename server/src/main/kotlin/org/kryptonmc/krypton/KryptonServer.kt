@@ -59,6 +59,8 @@ import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.util.profiling.SingleTickProfiler
 import org.kryptonmc.krypton.util.profiling.results.ProfileResults
 import org.kryptonmc.krypton.util.profiling.decorate
+import org.kryptonmc.krypton.util.reports.CrashReport
+import org.kryptonmc.krypton.util.reports.ReportedException
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
@@ -67,12 +69,15 @@ import java.io.IOException
 import java.net.InetSocketAddress
 import java.nio.file.Path
 import java.security.SecureRandom
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.Properties
 import java.util.UUID
+import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
 import kotlin.io.path.isRegularFile
-import kotlin.math.min
+import kotlin.math.max
 import kotlin.system.measureTimeMillis
 
 class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : Server {
@@ -133,7 +138,7 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
     private var gs4QueryHandler: GS4QueryHandler? = null
     private var watchdog: WatchdogProcess? = null
 
-    internal fun start() {
+    internal fun start() = try {
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
         val startTime = System.nanoTime()
         // loading these here avoids loading them when the first player joins
@@ -141,6 +146,7 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
         Class.forName("org.kryptonmc.krypton.registry.tags.TagManager")
         Class.forName("org.kryptonmc.krypton.world.block.palette.GlobalPalette")
         Class.forName("org.kryptonmc.krypton.command.argument.ArgumentTypes")
+        CrashReport.preload()
 
         LOGGER.debug("Starting console handler")
         Thread(KryptonConsole(this)::start, "Console Handler").apply {
@@ -230,9 +236,24 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
             profiler.end()
             endProfilerTick(singleTickProfiler)
 
-            val sleepTime = measureTimeMillis { Thread.sleep(min(0, TICK_INTERVAL - tickTime - oversleepFactor)) }
+            val sleepTime = measureTimeMillis { Thread.sleep(max(0, TICK_INTERVAL - tickTime - oversleepFactor)) }
             oversleepFactor = sleepTime - (TICK_INTERVAL - tickTime)
         }
+    } catch (exception: Throwable) {
+        LOGGER.error("Encountered an unexpected exception", exception)
+        val report = if (exception is ReportedException) {
+            fillReport(exception.report)
+        } else {
+            fillReport(CrashReport("Exception in server tick loop", exception))
+        }
+        val file = CURRENT_DIRECTORY.resolve("crash-reports").resolve("crash-$TIME_NOW-server.txt")
+        LOGGER.error(if (report.save(file)) {
+            "This crash report has been saved to ${file.absolutePathString()}"
+        } else {
+            "Unable to save crash report to disk!"
+        })
+    } finally {
+        restart()
     }
 
     private fun tick() {
@@ -364,6 +385,10 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
         Runtime.getRuntime().halt(0)
     }
 
+    private fun fillReport(report: CrashReport): CrashReport = report.apply {
+        systemDetails["Player Count"] = { "${players.size} / ${status.maxPlayers}" }
+    }
+
     object KryptonServerInfo : Server.ServerInfo {
 
         override val name = "Krypton"
@@ -380,6 +405,9 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
     }
 
     companion object {
+
+        private val DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")
+        private val TIME_NOW: String get() = LocalDateTime.now().format(DATE_FORMAT)
 
         private const val TICK_INTERVAL = 1000L / 20L // milliseconds in a tick
         private val HOCON = Hocon {}
