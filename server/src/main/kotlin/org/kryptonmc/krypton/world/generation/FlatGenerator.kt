@@ -18,11 +18,12 @@
  */
 package org.kryptonmc.krypton.world.generation
 
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.BinaryTagTypes
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
-import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.registry.toNamespacedKey
+import org.kryptonmc.api.util.minecraftKey
+import org.kryptonmc.api.util.toKey
 
 data class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(ID) {
 
@@ -33,13 +34,13 @@ data class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(ID) {
 
     companion object {
 
-        val ID = NamespacedKey(value = "flat")
+        val ID = minecraftKey("flat")
     }
 }
 
 data class FlatGeneratorSettings(
     val layers: List<FlatLayer>,
-    val biome: NamespacedKey,
+    val biome: Key,
     override val structures: GeneratorStructures
 ) : GeneratorSettings() {
 
@@ -56,10 +57,10 @@ data class FlatGeneratorSettings(
         fun fromNBT(nbt: CompoundBinaryTag) = FlatGeneratorSettings(
             nbt.getList("layers").map { layer ->
                 (layer as CompoundBinaryTag).let {
-                    FlatLayer(it.getString("block").toNamespacedKey(), it.getInt("height"))
+                    FlatLayer(it.getString("block").toKey(), it.getInt("height"))
                 }
             },
-            nbt.getString("biome").toNamespacedKey(),
+            nbt.getString("biome").toKey(),
             nbt.getCompound("structures").let { nbtStructures ->
                 val stronghold = nbtStructures.getCompound("stronghold")
                 val structures = nbtStructures.getCompound("structures")
@@ -70,7 +71,7 @@ data class FlatGeneratorSettings(
                         stronghold.getInt("spread")
                     ),
                     structures.associate { (key, value) ->
-                        key.toNamespacedKey() to (value as CompoundBinaryTag).let {
+                        key.toKey() to (value as CompoundBinaryTag).let {
                             GeneratorStructure(
                                 it.getInt("spacing"),
                                 it.getInt("separation"),
@@ -85,7 +86,7 @@ data class FlatGeneratorSettings(
 }
 
 data class FlatLayer(
-    val block: NamespacedKey,
+    val block: Key,
     val height: Int
 ) {
 

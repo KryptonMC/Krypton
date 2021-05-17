@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.world.structure
 
-import org.kryptonmc.krypton.api.block.BoundingBox
-import org.kryptonmc.krypton.api.space.Vector
-import org.kryptonmc.krypton.api.world.Biome
+import org.kryptonmc.api.block.BoundingBox
+import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.world.Biome
 
 // TODO: Do thingys with these
 data class Mineshaft(

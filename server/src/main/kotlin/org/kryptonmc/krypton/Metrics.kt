@@ -26,7 +26,6 @@ import org.bstats.charts.SimplePie
 import org.bstats.charts.SingleLineChart
 import org.bstats.config.MetricsConfig
 import org.bstats.json.JsonObjectBuilder
-import org.kryptonmc.krypton.server.OtherConfig
 import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 import java.nio.file.Path

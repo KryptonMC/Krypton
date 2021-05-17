@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.api.world.Gamemode
+import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeString

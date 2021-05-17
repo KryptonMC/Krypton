@@ -1,7 +1,7 @@
 package org.kryptonmc.krypton.packet.out.play.entity
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.api.world.Location
+import org.kryptonmc.api.world.Location
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.writeAngle

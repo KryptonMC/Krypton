@@ -26,5 +26,7 @@ object Versions {
     const val NETTY = "4.1.63.Final"
     const val LOG4J = "2.14.1"
     const val JUNIT = "5.7.1"
+    const val RETROFIT = "2.9.0"
     const val OKHTTP = "4.9.1"
+    const val CONFIGURATE = "4.1.1"
 }

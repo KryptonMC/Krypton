@@ -18,20 +18,22 @@
  */
 package org.kryptonmc.krypton
 
-import com.typesafe.config.ConfigFactory
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.serialization.hocon.Hocon
-import kotlinx.serialization.hocon.decodeFromConfig
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.apache.logging.log4j.LogManager
-import org.kryptonmc.krypton.api.Server
-import org.kryptonmc.krypton.api.event.events.ticking.TickEndEvent
-import org.kryptonmc.krypton.api.event.events.ticking.TickStartEvent
-import org.kryptonmc.krypton.api.status.StatusInfo
+import org.kryptonmc.api.Server
+import org.kryptonmc.api.event.ticking.TickEndEvent
+import org.kryptonmc.api.event.ticking.TickStartEvent
+import org.kryptonmc.api.status.StatusInfo
+import org.kryptonmc.krypton.auth.MojangUUIDSerializer
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDER
+import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.console.ConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
@@ -41,14 +43,15 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.session.SessionManager
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
+import org.kryptonmc.krypton.registry.json.RegistryBlock
+import org.kryptonmc.krypton.registry.json.RegistryBlockState
+import org.kryptonmc.krypton.registry.json.RegistryEntry
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
-import org.kryptonmc.krypton.server.KryptonConfig
 import org.kryptonmc.krypton.server.gui.KryptonServerGUI
 import org.kryptonmc.krypton.server.query.GS4QueryHandler
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.util.TranslationRegister
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
-import org.kryptonmc.krypton.util.copyTo
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.createDirectory
 import org.kryptonmc.krypton.util.logger
@@ -59,11 +62,14 @@ import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.util.profiling.SingleTickProfiler
 import org.kryptonmc.krypton.util.profiling.results.ProfileResults
 import org.kryptonmc.krypton.util.profiling.decorate
+import org.kryptonmc.krypton.util.registerTypeAdapter
 import org.kryptonmc.krypton.util.reports.CrashReport
 import org.kryptonmc.krypton.util.reports.ReportedException
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader
+import org.spongepowered.configurate.kotlin.extensions.get
 import java.awt.GraphicsEnvironment
 import java.io.IOException
 import java.net.InetSocketAddress
@@ -74,13 +80,13 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.Properties
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.absolutePathString
-import kotlin.io.path.exists
 import kotlin.io.path.isRegularFile
 import kotlin.math.max
 import kotlin.system.measureTimeMillis
 
-class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : Server {
+class KryptonServer(val mainThread: Thread) : Server {
 
     override val info = KryptonServerInfo
 
@@ -95,7 +101,7 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
 
     override val address = InetSocketAddress(config.server.ip, config.server.port)
 
-    override val players = mutableSetOf<KryptonPlayer>()
+    override val players: ConcurrentHashMap.KeySetView<KryptonPlayer, Boolean> = ConcurrentHashMap.newKeySet()
 
     override fun player(uuid: UUID) = players.firstOrNull { it.uuid == uuid }
     override fun player(name: String) = players.firstOrNull { it.name == name }
@@ -113,12 +119,12 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
     val playerDataManager = PlayerDataManager(CURRENT_DIRECTORY.resolve(config.world.name).resolve("playerdata").createDirectory())
 
     override val commandManager = KryptonCommandManager(this)
-    override val eventBus = KryptonEventBus()
+    override val eventBus = KryptonEventBus
 
     override val scheduler = KryptonScheduler
 
     override val pluginManager = KryptonPluginManager(this)
-    override val servicesManager = KryptonServicesManager()
+    override val servicesManager = KryptonServicesManager
 
     @Volatile internal var isRunning = true; private set
     @Volatile internal var lastTickTime = 0L; private set
@@ -138,7 +144,7 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
     private var gs4QueryHandler: GS4QueryHandler? = null
     private var watchdog: WatchdogProcess? = null
 
-    internal fun start() = try {
+    internal fun start(disableGUI: Boolean) = try {
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
         val startTime = System.nanoTime()
         // loading these here avoids loading them when the first player joins
@@ -181,7 +187,7 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
         lastTickTime = System.currentTimeMillis()
         if (config.advanced.enableJmxMonitoring) KryptonStatistics.register(this)
 
-        if (config.other.timeoutTime > 0) {
+        if (config.watchdog.timeoutTime > 0) {
             LOGGER.debug("Starting watchdog")
             watchdog = WatchdogProcess(this)
             watchdog?.start()
@@ -328,14 +334,16 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
     override fun audiences() = players + console
 
     private fun loadConfig(): KryptonConfig {
-        val configPath = CURRENT_DIRECTORY.resolve("config.conf")
-        if (!configPath.exists()) {
-            val inputStream = Thread.currentThread().contextClassLoader.getResourceAsStream("config.conf")
-                ?: throw IOException("Config file not in classpath! Something has gone horribly wrong!")
-            inputStream.copyTo(configPath)
-        }
+        val configFile = CURRENT_DIRECTORY.resolve(KryptonConfig.FILE_NAME)
+        val loader = HoconConfigurationLoader.builder()
+            .path(configFile)
+            .defaultOptions(KryptonConfig.OPTIONS)
+            .build()
 
-        return HOCON.decodeFromConfig(ConfigFactory.parseFile(configPath.toFile()))
+        val node = loader.load()
+        val config = node.get<KryptonConfig>() ?: throw IOException("Unable to load configuration!")
+        loader.save(node)
+        return config
     }
 
     internal fun stop(halt: Boolean = true) {
@@ -372,7 +380,7 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
 
     internal fun restart() {
         stop(false) // avoid halting there because we halt here
-        val split = config.other.restartScript.split(" ")
+        val split = config.watchdog.restartScript.split(" ")
         if (split.isNotEmpty()) {
             if (!Path.of(split[0]).isRegularFile()) {
                 println("Unable to find restart script ${split[0]}! Refusing to restart.")
@@ -380,7 +388,7 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
             }
             println("Attempting to restart the server with script ${split[0]}...")
             val os = System.getProperty("os.name").lowercase()
-            Runtime.getRuntime().exec((if ("win" in os) "cmd /c start " else "sh ") + config.other.restartScript)
+            Runtime.getRuntime().exec((if ("win" in os) "cmd /c start " else "sh ") + config.watchdog.restartScript)
         }
         Runtime.getRuntime().halt(0)
     }
@@ -410,7 +418,6 @@ class KryptonServer(val mainThread: Thread, private val disableGUI: Boolean) : S
         private val TIME_NOW: String get() = LocalDateTime.now().format(DATE_FORMAT)
 
         private const val TICK_INTERVAL = 1000L / 20L // milliseconds in a tick
-        private val HOCON = Hocon {}
         private val LOGGER = logger<KryptonServer>()
     }
 }
@@ -421,3 +428,9 @@ data class KryptonStatusInfo(
 ) : StatusInfo
 
 val CURRENT_DIRECTORY: Path = Path.of("").toAbsolutePath()
+
+val GSON: Gson = GsonComponentSerializer.gson().populator().apply(
+    GsonBuilder().registerTypeAdapter<UUID>(MojangUUIDSerializer)
+        .registerTypeAdapter<RegistryBlock>(RegistryBlock.Companion)
+        .registerTypeAdapter<RegistryBlockState>(RegistryBlockState.Companion)
+).create()

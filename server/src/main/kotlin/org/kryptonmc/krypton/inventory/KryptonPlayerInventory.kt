@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.inventory
 
-import org.kryptonmc.krypton.api.inventory.InventoryType
-import org.kryptonmc.krypton.api.inventory.PlayerInventory
-import org.kryptonmc.krypton.api.inventory.item.ItemStack
+import org.kryptonmc.api.inventory.InventoryType
+import org.kryptonmc.api.inventory.PlayerInventory
+import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeldItemChange
 

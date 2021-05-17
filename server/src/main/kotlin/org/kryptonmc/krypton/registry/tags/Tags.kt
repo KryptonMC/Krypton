@@ -18,39 +18,37 @@
  */
 package org.kryptonmc.krypton.registry.tags
 
-import kotlinx.serialization.Serializable
-import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.registry.toNamespacedKey
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.util.toKey
 
 /**
  * Represents a tag, which holds information about its name and its set of values (including those of its children)
  */
-data class Tag(val name: NamespacedKey, val values: MutableSet<NamespacedKey> = mutableSetOf()) {
+data class Tag(val name: Key, val values: MutableSet<Key> = mutableSetOf()) {
 
-    constructor(manager: TagManager, name: NamespacedKey, type: String, previous: Tag, data: TagData) : this(name) {
+    constructor(manager: TagManager, name: Key, type: String, previous: Tag, data: TagData) : this(name) {
         if (!data.replace) values += previous.values
         data.values.forEach {
             if (it.startsWith('#')) {
-                val subTag = manager.load(it.drop(1).toNamespacedKey(), type)
+                val subTag = manager.load(it.drop(1).toKey(), type)
                 values += subTag.values
             } else {
-                values += it.toNamespacedKey()
+                values += it.toKey()
             }
         }
     }
 
     companion object {
 
-        val EMPTY = Tag(NamespacedKey("krypton", "empty"))
+        val EMPTY = Tag("krypton:empty".toKey())
     }
 }
 
 data class RequiredTag(
     val type: TagType,
-    val name: NamespacedKey
+    val name: Key
 )
 
-@Serializable
 data class TagData(
     val replace: Boolean,
     val values: List<String>

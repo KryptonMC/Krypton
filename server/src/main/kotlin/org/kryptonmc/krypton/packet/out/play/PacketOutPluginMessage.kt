@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.api.registry.NamespacedKey
+import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeKey
 
@@ -34,7 +34,7 @@ import org.kryptonmc.krypton.util.writeKey
  * @param content the content of the plugin message
  */
 class PacketOutPluginMessage(
-    private val channelName: NamespacedKey,
+    private val channelName: Key,
     private val content: ByteArray
 ) : PlayPacket(0x17) {
 

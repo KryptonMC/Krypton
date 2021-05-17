@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.command
 
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.api.command.Sender
-import org.kryptonmc.krypton.api.event.events.play.PermissionCheckEvent
+import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.event.play.PermissionCheckEvent
 
 abstract class KryptonSender(private val server: KryptonServer) : Sender {
 

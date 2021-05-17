@@ -20,16 +20,18 @@ package org.kryptonmc.krypton.util
 
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.nbt.CompoundBinaryTag
+import net.kyori.adventure.nbt.IntArrayBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import org.kryptonmc.krypton.api.inventory.item.ItemStack
-import org.kryptonmc.krypton.api.inventory.item.Material
-import org.kryptonmc.krypton.api.world.Gamemode
+import org.kryptonmc.api.inventory.item.ItemStack
+import org.kryptonmc.api.inventory.item.Material
+import org.kryptonmc.api.world.Gamemode
 import java.net.InetAddress
 import java.util.Locale
+import java.util.UUID
 import kotlin.math.log2
 import kotlin.math.max
 
@@ -77,6 +79,17 @@ fun String.toProtocol(): ByteArray {
     val bytes = encodeToByteArray()
     return byteArrayOf(bytes.size.toByte(), *bytes)
 }
+
+/**
+ * This isn't related to the above, this turns a UUID into 4 integers sorted by significance descending
+ * (most significant first, least significant last)
+ */
+fun UUID.serialize() = IntArrayBinaryTag.of(
+    (mostSignificantBits shr 32).toInt(),
+    (mostSignificantBits and Int.MAX_VALUE.toLong()).toInt(),
+    (leastSignificantBits shr 32).toInt(),
+    (leastSignificantBits and Int.MAX_VALUE.toLong()).toInt()
+)
 
 fun Book.toItemStack(locale: Locale): Pair<ItemStack, CompoundBinaryTag> {
     val item = ItemStack(Material.WRITTEN_BOOK, 1)

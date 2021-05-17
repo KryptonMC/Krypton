@@ -30,9 +30,10 @@ import org.kryptonmc.krypton.util.readString
 class PacketInLoginStart : LoginPacket(0x00) {
 
     /**
-     * The username of the player logging in
+     * The username of the player logging in.
      */
-    lateinit var name: String private set
+    lateinit var name: String
+        private set
 
     override fun read(buf: ByteBuf) {
         name = buf.readString(16)

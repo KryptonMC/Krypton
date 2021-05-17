@@ -18,11 +18,11 @@
  */
 package org.kryptonmc.krypton.world.block
 
-import org.kryptonmc.krypton.api.block.Block
-import org.kryptonmc.krypton.api.block.BoundingBox
-import org.kryptonmc.krypton.api.inventory.item.Material
-import org.kryptonmc.krypton.api.world.Location
-import org.kryptonmc.krypton.api.world.chunk.Chunk
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BoundingBox
+import org.kryptonmc.api.inventory.item.Material
+import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.world.chunk.Chunk
 
 data class KryptonBlock(
     override val type: Material,

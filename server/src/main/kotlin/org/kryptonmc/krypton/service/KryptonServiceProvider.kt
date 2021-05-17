@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.service
 
-import org.kryptonmc.krypton.api.plugin.Plugin
-import org.kryptonmc.krypton.api.service.ServiceProvider
+import org.kryptonmc.api.plugin.Plugin
+import org.kryptonmc.api.service.ServiceProvider
 
 data class KryptonServiceProvider<T>(
     override val plugin: Plugin,

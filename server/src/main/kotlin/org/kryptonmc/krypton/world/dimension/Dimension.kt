@@ -18,12 +18,12 @@
  */
 package org.kryptonmc.krypton.world.dimension
 
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import org.kryptonmc.krypton.api.registry.NamespacedKey
 import org.kryptonmc.krypton.world.generation.Generator
 
 data class Dimension(
-    val type: NamespacedKey,
+    val type: Key,
     val generator: Generator
 ) {
 

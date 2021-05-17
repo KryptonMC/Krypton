@@ -38,9 +38,9 @@ class WatchdogProcess(private val server: KryptonServer) : Thread("Krypton Watch
         isDaemon = true
     }
 
-    private val timeoutTime = server.config.other.timeoutTime * 1000L
-    private val earlyWarningInterval = min(server.config.other.earlyWarningInterval, timeoutTime)
-    private val earlyWarningDelay = min(server.config.other.earlyWarningDelay, timeoutTime)
+    private val timeoutTime = server.config.watchdog.timeoutTime * 1000L
+    private val earlyWarningInterval = min(server.config.watchdog.earlyWarningInterval, timeoutTime)
+    private val earlyWarningDelay = min(server.config.watchdog.earlyWarningDelay, timeoutTime)
 
     private var lastEarlyWarning = 0L
     @Volatile private var lastTick = 0L
@@ -100,7 +100,7 @@ class WatchdogProcess(private val server: KryptonServer) : Thread("Krypton Watch
             LOGGER.printBar(isLongTimeout)
 
             if (isLongTimeout && server.isRunning) {
-                if (server.config.other.restartOnCrash) server.restart() else server.stop()
+                if (server.config.watchdog.restartOnCrash) server.restart() else server.stop()
             }
         }
     }

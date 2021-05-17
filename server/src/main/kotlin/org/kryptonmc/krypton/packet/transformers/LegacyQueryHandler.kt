@@ -25,7 +25,7 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.ServerStorage
-import org.kryptonmc.krypton.server.StatusConfig
+import org.kryptonmc.krypton.config.category.StatusCategory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readAvailableBytes
 import java.net.InetSocketAddress
@@ -39,7 +39,7 @@ import java.net.InetSocketAddress
  *
  * This handler is essentially a Kotlin converted version of the vanilla handler, which is why it is such a mess.
  */
-class LegacyQueryHandler(private val status: StatusConfig) : ChannelInboundHandlerAdapter() {
+class LegacyQueryHandler(private val status: StatusCategory) : ChannelInboundHandlerAdapter() {
 
     override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
         val buf = (msg as ByteBuf).copy()

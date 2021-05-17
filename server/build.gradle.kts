@@ -47,8 +47,8 @@ dependencies {
     runtimeOnly("org.jline:jline-terminal-jansi:3.19.0")
 
     // HTTP
-    api("com.squareup.retrofit2:retrofit:2.9.0")
-    api("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+    api("com.squareup.retrofit2:retrofit:${Versions.RETROFIT}")
+    api("com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}")
     api("com.squareup.okhttp3:okhttp:${Versions.OKHTTP}")
 
     // Caching

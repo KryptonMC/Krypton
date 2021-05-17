@@ -1,11 +1,10 @@
 package org.kryptonmc.krypton.command.arguments.coordinates
 
 import com.mojang.brigadier.StringReader
-import org.kryptonmc.krypton.api.entity.entities.Player
-import org.kryptonmc.krypton.api.space.Vector
+import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.command.arguments.ERROR_MIXED_TYPE
 import org.kryptonmc.krypton.command.arguments.ERROR_NOT_COMPLETE
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.spongepowered.math.vector.Vector2d
 import kotlin.math.cos
 import kotlin.math.sin
@@ -17,7 +16,6 @@ class LocalCoordinates(
 ) : Coordinates {
 
     override fun position(player: Player): Vector {
-        val rotation = Vector2d(player.location.yaw, player.location.pitch)
         val location = player.location
         val dividedPi = Math.PI / 180
         val pitch1 = cos((location.pitch + 90F) * dividedPi).toFloat()

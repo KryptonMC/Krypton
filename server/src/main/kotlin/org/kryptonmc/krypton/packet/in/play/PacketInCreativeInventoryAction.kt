@@ -36,12 +36,14 @@ class PacketInCreativeInventoryAction : PlayPacket(0x28) {
     /**
      * The inventory slot that the player clicked
      */
-    var slot: Short = 0; private set
+    var slot: Short = 0
+        private set
 
     /**
      * The item that was clicked
      */
-    lateinit var clickedItem: Slot private set
+    lateinit var clickedItem: Slot
+        private set
 
     override fun read(buf: ByteBuf) {
         slot = buf.readShort()

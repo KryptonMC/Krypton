@@ -18,20 +18,17 @@
  */
 package org.kryptonmc.krypton
 
-import com.typesafe.config.ConfigFactory
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.hocon.Hocon
-import kotlinx.serialization.hocon.decodeFromConfig
 import kotlinx.serialization.json.Json
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.junit.jupiter.api.assertThrows
-import org.kryptonmc.krypton.api.world.Difficulty
-import org.kryptonmc.krypton.api.world.Gamemode
+import org.kryptonmc.api.world.Difficulty
+import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.server.DifficultySerializer
 import org.kryptonmc.krypton.server.GamemodeSerializer
 import org.kryptonmc.krypton.server.KryptonConfig
-import org.kryptonmc.krypton.server.ServerConfig
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader
+import org.spongepowered.configurate.kotlin.extensions.get
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -41,8 +38,10 @@ class ConfigTests {
 
     @Test
     fun `test config loads properly with correct values`() {
-        val parsed = ConfigFactory.parseResources("config.conf")
-        val config = Hocon.decodeFromConfig<KryptonConfig>(parsed)
+        val loader = HoconConfigurationLoader.builder()
+            .source { Thread.currentThread().contextClassLoader.getResourceAsStream("config.conf")!!.bufferedReader() }
+            .build()
+        val config = loader.load().get<KryptonConfig>()!!
 
         // Server settings
         assertEquals("0.0.0.0", config.server.ip)

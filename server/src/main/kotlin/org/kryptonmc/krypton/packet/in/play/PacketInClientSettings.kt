@@ -35,7 +35,8 @@ class PacketInClientSettings : PlayPacket(0x05) {
     /**
      * The client's settings
      */
-    lateinit var settings: ClientSettings private set
+    lateinit var settings: ClientSettings
+        private set
 
     override fun read(buf: ByteBuf) {
         val locale = buf.readString(16)

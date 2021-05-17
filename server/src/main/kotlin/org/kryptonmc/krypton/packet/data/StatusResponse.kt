@@ -18,11 +18,8 @@
  */
 package org.kryptonmc.krypton.packet.data
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.serializers.ComponentSerializer
-import org.kryptonmc.krypton.serializers.UUIDSerializer
 import java.util.UUID
 
 /**
@@ -30,18 +27,16 @@ import java.util.UUID
  * to JSON and sent by the [Status response][org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse]
  * packet.
  */
-@Serializable
 data class StatusResponse(
     val version: ServerVersion,
     val players: Players,
-    @Serializable(with = ComponentSerializer::class) val description: Component
+    val description: Component
 )
 
 /**
  * Information about the server's version. This is used by the Notchian client to determine whether
  * we are compatible with it.
  */
-@Serializable
 data class ServerVersion(
     val name: String,
     val protocol: Int
@@ -51,7 +46,6 @@ data class ServerVersion(
  * The players list. This is used by the Notchian client to display the current, maximum and sample
  * players currently on the server.
  */
-@Serializable
 data class Players(
     val max: Int,
     val online: Int,
@@ -61,8 +55,7 @@ data class Players(
 /**
  * A player's info, for status
  */
-@Serializable
 data class PlayerInfo(
     val name: String,
-    @SerialName("id") @Serializable(with = UUIDSerializer::class) val uuid: UUID
+    @SerializedName("id") val uuid: UUID
 )

@@ -3,10 +3,12 @@ import org.jetbrains.dokka.gradle.GradleExternalDocumentationLinkBuilder
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.kryptonmc.krypton.Versions
 import org.kryptonmc.krypton.adventure
+import org.kryptonmc.krypton.configurate
 import org.kryptonmc.krypton.dependsOn
 import org.kryptonmc.krypton.junit
 import org.kryptonmc.krypton.kotlinx
 import org.kryptonmc.krypton.log4j
+import org.kryptonmc.krypton.sponge
 
 plugins {
     kotlin("jvm") version "1.5.0"
@@ -20,7 +22,7 @@ plugins {
 
 allprojects {
     group = "org.kryptonmc"
-    version = "0.19.7"
+    version = "0.20"
 
     repositories {
         mavenCentral()
@@ -38,20 +40,30 @@ subprojects {
     apply(plugin = "signing")
 
     dependencies {
+        // Kotlin
         api(kotlin("stdlib"))
+        api(kotlin("reflect"))
+
+        // Core
         api("com.google.guava:guava:30.1.1-jre")
+        api("com.google.code.gson:gson:2.8.6")
         api("org.apache.commons:commons-lang3:3.12.0")
         api("org.apache.commons:commons-text:1.9")
-
         api(kotlinx("coroutines-core", Versions.COROUTINES))
-        api(kotlinx("serialization-json", Versions.SERIALIZATION))
-        api(kotlinx("serialization-hocon", Versions.SERIALIZATION))
 
+        // Adventure
         api(adventure("api"))
         api(adventure("extra-kotlin"))
+        api(adventure("serializer-configurate4"))
 
+        // Configurate
+        api(configurate("gson"))
+        api(configurate("hocon"))
+        api(configurate("extra-kotlin"))
+
+        // Miscellaneous
         api("com.mojang:brigadier:1.0.17")
-
+        api(sponge("math", "2.0.0"))
         api(log4j("api"))
 
         // Testing
@@ -69,7 +81,7 @@ subprojects {
     tasks {
         withType<KotlinCompile> {
             kotlinOptions {
-                jvmTarget = "11"
+                jvmTarget = "16"
                 freeCompilerArgs = listOf(
                     "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
                     "-Xjvm-default=all"

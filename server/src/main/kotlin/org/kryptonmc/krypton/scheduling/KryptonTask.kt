@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.scheduling
 
-import org.kryptonmc.krypton.api.plugin.Plugin
-import org.kryptonmc.krypton.api.scheduling.Task
-import org.kryptonmc.krypton.api.scheduling.TaskState
+import org.kryptonmc.api.plugin.Plugin
+import org.kryptonmc.api.scheduling.Task
+import org.kryptonmc.api.scheduling.TaskState
 import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -42,7 +42,6 @@ data class KryptonTask(
             if (future == null) return TaskState.SCHEDULED
             if (requireNotNull(future).isCancelled) return TaskState.INTERRUPTED
             if (requireNotNull(future).isDone) return TaskState.COMPLETED
-
             return TaskState.SCHEDULED
         }
 
@@ -55,11 +54,10 @@ data class KryptonTask(
     }
 
     override fun cancel() {
-        if (future != null) {
-            requireNotNull(future).cancel(false)
-            if (currentTaskThread != null) requireNotNull(currentTaskThread).interrupt()
-            scheduler.tasksByPlugin[plugin]?.minusAssign(this)
-        }
+        if (future == null) return
+        requireNotNull(future).cancel(false)
+        if (currentTaskThread != null) requireNotNull(currentTaskThread).interrupt()
+        finish()
     }
 
     override fun run() = scheduler.executor.execute {
@@ -78,9 +76,7 @@ data class KryptonTask(
         }
     }
 
-    private fun finish() {
-        scheduler.tasksByPlugin[plugin]?.minusAssign(this)
-    }
+    private fun finish() = scheduler.tasksByPlugin[plugin]?.minusAssign(this)
 
     companion object {
 

@@ -22,22 +22,22 @@ import io.netty.buffer.ByteBuf
 import io.netty.buffer.ByteBufInputStream
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.kryptonmc.krypton.api.effect.particle.BlockParticleData
-import org.kryptonmc.krypton.api.effect.particle.ColorParticleData
-import org.kryptonmc.krypton.api.effect.particle.DirectionalParticleData
-import org.kryptonmc.krypton.api.effect.particle.DustParticleData
-import org.kryptonmc.krypton.api.effect.particle.ItemParticleData
-import org.kryptonmc.krypton.api.effect.particle.NoteParticleData
-import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
-import org.kryptonmc.krypton.api.inventory.item.ItemStack
-import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.space.Position
-import org.kryptonmc.krypton.api.space.Vector
-import org.kryptonmc.krypton.api.world.Location
+import org.kryptonmc.api.effect.particle.BlockParticleData
+import org.kryptonmc.api.effect.particle.ColorParticleData
+import org.kryptonmc.api.effect.particle.DirectionalParticleData
+import org.kryptonmc.api.effect.particle.DustParticleData
+import org.kryptonmc.api.effect.particle.ItemParticleData
+import org.kryptonmc.api.effect.particle.NoteParticleData
+import org.kryptonmc.api.effect.particle.ParticleEffect
+import org.kryptonmc.api.inventory.item.ItemStack
+import org.kryptonmc.api.space.Position
+import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.world.Location
 import org.kryptonmc.krypton.entity.Slot
 import org.kryptonmc.krypton.entity.entities.data.VillagerData
 import org.kryptonmc.krypton.entity.metadata.Optional
@@ -52,7 +52,6 @@ import java.util.concurrent.ThreadLocalRandom
 import kotlin.experimental.and
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.reflect.KClass
 
 // Allows us to write a byte without having to convert it to an integer every time
 fun ByteBuf.writeByte(byte: Byte) {
@@ -227,7 +226,7 @@ fun ByteBuf.writeItem(item: ItemStack?, nbt: CompoundBinaryTag?) {
         return
     }
     writeBoolean(true)
-    writeVarInt(Registries.ITEMS.idOf(item.type.key))
+    writeVarInt(Registries.ITEMS.idOf(item.type.key()))
     writeByte(item.amount)
     nbt?.let { writeNBTCompound(it) } ?: writeByte(0)
 }
@@ -344,8 +343,8 @@ fun ByteBuf.writeAngle(angle: Angle) {
     writeUByte(angle.value)
 }
 
-fun ByteBuf.writeKey(key: NamespacedKey) {
-    writeString(key.toString())
+fun ByteBuf.writeKey(key: Key) {
+    writeString(key.asString())
 }
 
 fun ByteBuf.writeDuration(duration: Duration) {

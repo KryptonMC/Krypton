@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play.scoreboard
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.api.world.scoreboard.Objective
+import org.kryptonmc.api.world.scoreboard.Objective
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeString

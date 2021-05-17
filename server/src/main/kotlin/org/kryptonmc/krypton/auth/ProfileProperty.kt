@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.auth
 
-import kotlinx.serialization.Serializable
-
 /**
  * Represents a property of a [GameProfile]
  *
@@ -29,7 +27,6 @@ import kotlinx.serialization.Serializable
  * @param value the value of the property
  * @param signature the Yggdrasil signed hash for this property
  */
-@Serializable
 data class ProfileProperty(
     val name: String,
     val value: String,

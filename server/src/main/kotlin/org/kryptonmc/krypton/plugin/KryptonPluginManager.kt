@@ -18,20 +18,19 @@
  */
 package org.kryptonmc.krypton.plugin
 
-import com.typesafe.config.ConfigFactory
-import kotlinx.serialization.hocon.Hocon
-import kotlinx.serialization.hocon.decodeFromConfig
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.api.plugin.Plugin
-import org.kryptonmc.krypton.api.plugin.PluginContext
-import org.kryptonmc.krypton.api.plugin.PluginDescriptionFile
-import org.kryptonmc.krypton.api.plugin.PluginLoadState
-import org.kryptonmc.krypton.api.plugin.PluginManager
+import org.kryptonmc.api.plugin.Plugin
+import org.kryptonmc.api.plugin.PluginContext
+import org.kryptonmc.api.plugin.PluginDescriptionFile
+import org.kryptonmc.api.plugin.PluginLoadState
+import org.kryptonmc.api.plugin.PluginManager
+import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.util.createDirectory
 import org.kryptonmc.krypton.util.list
 import org.kryptonmc.krypton.util.logger
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader
+import org.spongepowered.configurate.kotlin.extensions.get
 import java.io.FileNotFoundException
-import java.io.InputStreamReader
 import java.lang.reflect.InvocationTargetException
 import java.nio.file.Path
 import java.util.jar.JarFile
@@ -43,7 +42,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
     internal fun initialize() {
         LOGGER.info("Loading plugins...")
-        ROOT_FOLDER.resolve("plugins").apply {
+        CURRENT_DIRECTORY.resolve("plugins").apply {
             createDirectory()
             list().filter { !it.isDirectory() }.forEach {
                 val plugin = load(this, it) ?: return@forEach
@@ -102,7 +101,10 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
     private fun loadDescription(path: Path): PluginDescriptionFile = JarFile(path.toFile()).use { jar ->
         val entry = jar.getJarEntry("plugin.conf") ?: throw FileNotFoundException("Plugin's JAR does not contain a plugin.conf!")
-        jar.getInputStream(entry).use { HOCON.decodeFromConfig(ConfigFactory.parseReader(InputStreamReader(it))) }
+        jar.getInputStream(entry).use { input ->
+            val loader = HoconConfigurationLoader.builder().source { input.bufferedReader() }.build()
+            loader.load().get()!!
+        }
     }
 
     fun shutdown() = plugins.forEach {
@@ -113,9 +115,6 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
     }
 
     companion object {
-
-        private val HOCON = Hocon {}
-        private val ROOT_FOLDER = Path.of("").toAbsolutePath()
 
         private val LOGGER = logger("PluginManager")
     }

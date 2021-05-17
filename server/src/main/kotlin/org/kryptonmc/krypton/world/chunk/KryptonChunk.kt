@@ -19,14 +19,13 @@
 package org.kryptonmc.krypton.world.chunk
 
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.LongArrayBinaryTag
-import org.kryptonmc.krypton.api.block.Block
-import org.kryptonmc.krypton.api.inventory.item.Material
-import org.kryptonmc.krypton.api.space.Position
-import org.kryptonmc.krypton.api.world.Biome
-import org.kryptonmc.krypton.api.world.Location
-import org.kryptonmc.krypton.api.world.World
-import org.kryptonmc.krypton.api.world.chunk.Chunk
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.inventory.item.Material
+import org.kryptonmc.api.space.Position
+import org.kryptonmc.api.world.Biome
+import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.HeightmapBuilder
@@ -79,7 +78,7 @@ data class KryptonChunk(
         val section = sections.firstOrNull { it.y == sectionY } ?: ChunkSection(sectionY).apply {
             sections += this
             palette += ChunkBlock.AIR
-            palette += ChunkBlock(block.type.key)
+            palette += ChunkBlock(block.type.key())
         }
         if (ChunkBlock.AIR !in section.palette) section.palette.addFirst(ChunkBlock.AIR)
         if (section.blockStates.data.isEmpty()) section.blockStates = BitStorage(4, 4096)
@@ -100,12 +99,6 @@ data class KryptonChunk(
         private val LOGGER = logger<KryptonChunk>()
     }
 }
-
-data class Heightmaps(
-    val motionBlocking: LongArrayBinaryTag,
-    val oceanFloor: LongArrayBinaryTag,
-    val worldSurface: LongArrayBinaryTag,
-)
 
 // TODO: Do things with these
 //data class TileTick(

@@ -1,11 +1,10 @@
 package org.kryptonmc.krypton.command.arguments.coordinates
 
 import com.mojang.brigadier.StringReader
-import org.kryptonmc.krypton.api.entity.entities.Player
-import org.kryptonmc.krypton.api.space.Vector
+import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.command.arguments.ERROR_MIXED_TYPE
 import org.kryptonmc.krypton.command.arguments.ERROR_NOT_COMPLETE
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.spongepowered.math.vector.Vector2d
 
 class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: WorldCoordinate) : Coordinates {

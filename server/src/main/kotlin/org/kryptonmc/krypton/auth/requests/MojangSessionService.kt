@@ -20,9 +20,7 @@ package org.kryptonmc.krypton.auth.requests
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
+import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
@@ -31,10 +29,10 @@ import org.kryptonmc.krypton.util.encryption.hexDigest
 import org.kryptonmc.krypton.util.logger
 import retrofit2.Call
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 import java.security.MessageDigest
-import java.time.Duration
 import java.util.concurrent.TimeUnit
 
 /**
@@ -77,7 +75,7 @@ object SessionService {
 
     private val sessionService = Retrofit.Builder()
         .baseUrl(SESSION_SERVER_BASE_URL)
-        .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+        .addConverterFactory(GsonConverterFactory.create(GSON))
         .build()
         .create(MojangSessionService::class.java)
 

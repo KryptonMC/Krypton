@@ -33,23 +33,21 @@ import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.title.Title
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.api.effect.particle.ColorParticleData
-import org.kryptonmc.krypton.api.effect.particle.DirectionalParticleData
-import org.kryptonmc.krypton.api.effect.particle.NoteParticleData
-import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
-import org.kryptonmc.krypton.api.effect.sound.SoundType
-import org.kryptonmc.krypton.api.entity.Abilities
-import org.kryptonmc.krypton.api.entity.Hand
-import org.kryptonmc.krypton.api.entity.MainHand
-import org.kryptonmc.krypton.api.entity.entities.Player
-import org.kryptonmc.krypton.api.inventory.item.ItemStack
-import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.registry.toNamespacedKey
-import org.kryptonmc.krypton.api.space.Position
-import org.kryptonmc.krypton.api.space.Vector
-import org.kryptonmc.krypton.api.world.Gamemode
-import org.kryptonmc.krypton.api.world.Location
-import org.kryptonmc.krypton.api.world.scoreboard.Scoreboard
+import org.kryptonmc.api.effect.particle.ColorParticleData
+import org.kryptonmc.api.effect.particle.DirectionalParticleData
+import org.kryptonmc.api.effect.particle.NoteParticleData
+import org.kryptonmc.api.effect.particle.ParticleEffect
+import org.kryptonmc.api.effect.sound.SoundType
+import org.kryptonmc.api.entity.Abilities
+import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.api.entity.MainHand
+import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.inventory.item.ItemStack
+import org.kryptonmc.api.space.Position
+import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
@@ -122,7 +120,7 @@ class KryptonPlayer(
     var gamemode = Gamemode.SURVIVAL
 
     override lateinit var world: KryptonWorld
-    override lateinit var dimension: NamespacedKey
+    override lateinit var dimension: Key
 
     private var previousCentralX = 0
     private var previousCentralZ = 0
@@ -192,7 +190,7 @@ class KryptonPlayer(
     override fun playSound(sound: Sound) = playSound(sound, location.x, location.y, location.z)
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
-        val soundName = sound.name().toNamespacedKey()
+        val soundName = sound.name()
         val event = SoundType.NAMES.value(soundName)
         session.sendPacket(if (event != null) {
             PacketOutSoundEffect(sound, Vector(x, y, z))

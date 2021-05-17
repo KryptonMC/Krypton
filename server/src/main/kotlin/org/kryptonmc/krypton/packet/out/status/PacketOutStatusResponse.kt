@@ -19,8 +19,7 @@
 package org.kryptonmc.krypton.packet.out.status
 
 import io.netty.buffer.ByteBuf
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.packet.data.StatusResponse
 import org.kryptonmc.krypton.packet.state.StatusPacket
 import org.kryptonmc.krypton.util.writeString
@@ -31,6 +30,6 @@ import org.kryptonmc.krypton.util.writeString
 class PacketOutStatusResponse(private val response: StatusResponse) : StatusPacket(0x00) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(Json.encodeToString(response))
+        buf.writeString(GSON.toJson(response))
     }
 }

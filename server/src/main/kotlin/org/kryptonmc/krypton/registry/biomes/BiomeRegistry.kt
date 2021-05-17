@@ -18,15 +18,13 @@
  */
 package org.kryptonmc.krypton.registry.biomes
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
 
-@Serializable
 data class BiomeRegistry(
     val type: String,
-    @SerialName("value") val values: List<BiomeEntry>
+    @SerializedName("value") val values: List<BiomeEntry>
 ) {
 
     fun toNBT() = CompoundBinaryTag.builder()
@@ -35,11 +33,10 @@ data class BiomeRegistry(
         .build()
 }
 
-@Serializable
 data class BiomeEntry(
     val name: String,
     val id: Int,
-    @SerialName("element") val settings: BiomeEntrySettings
+    @SerializedName("element") val settings: BiomeEntrySettings
 ) {
 
     fun toNBT() = CompoundBinaryTag.builder()
@@ -49,7 +46,6 @@ data class BiomeEntry(
         .build()
 }
 
-@Serializable
 data class BiomeEntrySettings(
     val precipitation: String,
     val effects: BiomeEntryEffects,
@@ -58,7 +54,7 @@ data class BiomeEntrySettings(
     val scale: Float,
     val downfall: Float,
     val category: String,
-    @SerialName("temperature_modifier") val temperatureModifier: String? = null
+    @SerializedName("temperature_modifier") val temperatureModifier: String? = null
 ) {
 
     fun toNBT() = CompoundBinaryTag.builder()
@@ -73,20 +69,19 @@ data class BiomeEntrySettings(
         .build()
 }
 
-@Serializable
 data class BiomeEntryEffects(
     val music: BiomeEntryMusic? = null,
-    @SerialName("grass_color_modifier") val grassColorModifier: String? = null,
-    @SerialName("sky_color") val skyColor: Int,
-    @SerialName("grass_color") val grassColor: Int? = null,
-    @SerialName("ambient_sound") val ambientSound: String? = null,
-    @SerialName("additions_sound") val additionsSound: BiomeEntrySound? = null,
-    @SerialName("foliage_color") val foliageColor: Int? = null,
-    @SerialName("particle") val particle: BiomeEntryParticle? = null,
-    @SerialName("water_fog_color") val waterFogColor: Int,
-    @SerialName("fog_color") val fogColor: Int,
-    @SerialName("water_color") val waterColor: Int,
-    @SerialName("mood_sound") val moodSound: BiomeEffectSound
+    @SerializedName("grass_color_modifier") val grassColorModifier: String? = null,
+    @SerializedName("sky_color") val skyColor: Int,
+    @SerializedName("grass_color") val grassColor: Int? = null,
+    @SerializedName("ambient_sound") val ambientSound: String? = null,
+    @SerializedName("additions_sound") val additionsSound: BiomeEntrySound? = null,
+    @SerializedName("foliage_color") val foliageColor: Int? = null,
+    @SerializedName("particle") val particle: BiomeEntryParticle? = null,
+    @SerializedName("water_fog_color") val waterFogColor: Int,
+    @SerializedName("fog_color") val fogColor: Int,
+    @SerializedName("water_color") val waterColor: Int,
+    @SerializedName("mood_sound") val moodSound: BiomeEffectSound
 ) {
 
     fun toNBT() = CompoundBinaryTag.builder()
@@ -109,12 +104,11 @@ data class BiomeEntryEffects(
         .build()
 }
 
-@Serializable
 data class BiomeEffectSound(
-    @SerialName("tick_delay") val tickDelay: Int,
+    @SerializedName("tick_delay") val tickDelay: Int,
     val offset: Double,
     val sound: String,
-    @SerialName("block_search_extent") val blockSearchExtent: Int
+    @SerializedName("block_search_extent") val blockSearchExtent: Int
 ) {
 
     fun toNBT() = CompoundBinaryTag.builder()
@@ -125,12 +119,11 @@ data class BiomeEffectSound(
         .build()
 }
 
-@Serializable
 data class BiomeEntryMusic(
-    @SerialName("replace_current_music") val replaceCurrentMusic: Boolean,
-    @SerialName("max_delay") val maxDelay: Int,
+    @SerializedName("replace_current_music") val replaceCurrentMusic: Boolean,
+    @SerializedName("max_delay") val maxDelay: Int,
     val sound: String,
-    @SerialName("min_delay") val minDelay: Int
+    @SerializedName("min_delay") val minDelay: Int
 ) {
 
     fun toNBT() = CompoundBinaryTag.builder()
@@ -141,10 +134,9 @@ data class BiomeEntryMusic(
         .build()
 }
 
-@Serializable
 data class BiomeEntrySound(
     val sound: String,
-    @SerialName("tick_chance") val tickChance: Double
+    @SerializedName("tick_chance") val tickChance: Double
 ) {
 
     fun toNBT() = CompoundBinaryTag.builder()
@@ -153,7 +145,6 @@ data class BiomeEntrySound(
         .build()
 }
 
-@Serializable
 data class BiomeEntryParticle(
     val probability: Float,
     val options: BiomeEntryParticleOptions
@@ -165,10 +156,7 @@ data class BiomeEntryParticle(
         .build()
 }
 
-@Serializable
-data class BiomeEntryParticleOptions(
-    val type: String
-) {
+data class BiomeEntryParticleOptions(val type: String) {
 
     fun toNBT() = CompoundBinaryTag.builder()
         .putString("type", type)

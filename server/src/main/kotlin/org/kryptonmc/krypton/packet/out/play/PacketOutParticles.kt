@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
-import org.kryptonmc.krypton.api.world.Location
+import org.kryptonmc.api.effect.particle.ParticleEffect
+import org.kryptonmc.api.world.Location
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeParticle
 

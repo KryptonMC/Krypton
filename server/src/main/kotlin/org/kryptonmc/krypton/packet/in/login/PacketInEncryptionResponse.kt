@@ -31,14 +31,16 @@ import org.kryptonmc.krypton.util.readVarIntByteArray
 class PacketInEncryptionResponse : LoginPacket(0x01) {
 
     /**
-     * The shared secret used for encryption, encrypted with the server's public key
+     * The shared secret used for encryption, encrypted with the server's public key.
      */
-    lateinit var secret: ByteArray private set
+    lateinit var secret: ByteArray
+        private set
 
     /**
-     * The verify token earlier sent by the server, also encrypted with the server's public key
+     * The verify token earlier sent by the server, also encrypted with the server's public key.
      */
-    lateinit var verifyToken: ByteArray private set
+    lateinit var verifyToken: ByteArray
+        private set
 
     override fun read(buf: ByteBuf) {
         secret = buf.readVarIntByteArray()

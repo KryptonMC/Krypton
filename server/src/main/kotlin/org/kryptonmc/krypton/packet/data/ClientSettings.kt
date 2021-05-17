@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.packet.data
 
-import org.kryptonmc.krypton.api.event.events.play.SkinSettings
+import org.kryptonmc.api.event.play.SkinSettings
 import org.kryptonmc.krypton.entity.MainHand
 
 /**

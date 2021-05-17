@@ -18,15 +18,13 @@
  */
 package org.kryptonmc.krypton.registry.dimensions
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
 
-@Serializable
 data class DimensionRegistry(
     val type: String,
-    @SerialName("value") val values: List<DimensionEntry>
+    @SerializedName("value") val values: List<DimensionEntry>
 ) {
 
     fun toNBT() = CompoundBinaryTag.builder()
@@ -35,11 +33,10 @@ data class DimensionRegistry(
         .build()
 }
 
-@Serializable
 data class DimensionEntry(
     val name: String,
     val id: Int,
-    @SerialName("element") val settings: DimensionEntrySettings
+    @SerializedName("element") val settings: DimensionEntrySettings
 ) {
 
     fun toNBT() = CompoundBinaryTag.builder()
@@ -49,22 +46,21 @@ data class DimensionEntry(
         .build()
 }
 
-@Serializable
 data class DimensionEntrySettings(
-    @SerialName("piglin_safe") val piglinSafe: Boolean = false,
+    @SerializedName("piglin_safe") val piglinSafe: Boolean = false,
     val natural: Boolean = true,
-    @SerialName("ambient_light") val ambientLight: Float = 0.0f,
+    @SerializedName("ambient_light") val ambientLight: Float = 0.0f,
     val infiniburn: String,
-    @SerialName("respawn_anchor_works") val respawnAnchorWorks: Boolean = false,
-    @SerialName("has_skylight") val hasSkylight: Boolean = true,
-    @SerialName("bed_works") val bedWorks: Boolean = true,
+    @SerializedName("respawn_anchor_works") val respawnAnchorWorks: Boolean = false,
+    @SerializedName("has_skylight") val hasSkylight: Boolean = true,
+    @SerializedName("bed_works") val bedWorks: Boolean = true,
     val effects: String,
-    @SerialName("fixed_time") val fixedTime: Long = -1L,
-    @SerialName("has_raids") val hasRaids: Boolean = true,
-    @SerialName("logical_height") val logicalHeight: Int = 256,
-    @SerialName("coordinate_scale") val coordinateScale: Double = 0.0,
+    @SerializedName("fixed_time") val fixedTime: Long = -1L,
+    @SerializedName("has_raids") val hasRaids: Boolean = true,
+    @SerializedName("logical_height") val logicalHeight: Int = 256,
+    @SerializedName("coordinate_scale") val coordinateScale: Double = 0.0,
     val ultrawarm: Boolean = false,
-    @SerialName("has_ceiling") val hasCeiling: Boolean = false
+    @SerializedName("has_ceiling") val hasCeiling: Boolean = false
 ) {
 
     fun toNBT() = CompoundBinaryTag.builder()

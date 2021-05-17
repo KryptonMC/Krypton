@@ -19,9 +19,10 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.world.Gamemode
+import org.kryptonmc.api.util.minecraftKey
+import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.Registries
 import org.kryptonmc.krypton.util.writeKey
@@ -53,7 +54,7 @@ class PacketOutJoinGame(
     private val world: KryptonWorld,
     private val gamemode: Gamemode,
     private val previousGamemode: Gamemode? = null,
-    private val dimension: NamespacedKey,
+    private val dimension: Key,
     private val maxPlayers: Int = 20,
     private val viewDistance: Int = 10
 ) : PlayPacket(0x24) {
@@ -101,9 +102,9 @@ class PacketOutJoinGame(
 
     companion object {
 
-        private val OVERWORLD = NamespacedKey(value = "overworld")
-        private val NETHER = NamespacedKey(value = "the_nether")
-        private val END = NamespacedKey(value = "the_end")
+        private val OVERWORLD = minecraftKey("overworld")
+        private val NETHER = minecraftKey("the_nether")
+        private val END = minecraftKey("the_end")
     }
 }
 

@@ -31,7 +31,8 @@ class PacketInHeldItemChange : PlayPacket(0x25) {
     /**
      * The slot of the newly held item.
      */
-    var slot: Short = 0; private set
+    var slot: Short = 0
+        private set
 
     override fun read(buf: ByteBuf) {
         slot = buf.readShort()

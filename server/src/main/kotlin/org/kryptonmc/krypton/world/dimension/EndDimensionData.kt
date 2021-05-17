@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.dimension
 
-import org.kryptonmc.krypton.api.space.Vector
+import org.kryptonmc.api.space.Vector
 import java.util.UUID
 
 data class EndDimensionData(

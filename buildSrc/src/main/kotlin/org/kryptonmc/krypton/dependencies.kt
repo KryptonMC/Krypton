@@ -33,3 +33,7 @@ fun DependencyHandler.junit(
     subModule: String,
     version: String = Versions.JUNIT
 ) = "org.junit.$module:junit-$module-$subModule:$version"
+
+fun DependencyHandler.sponge(module: String, version: String) = "org.spongepowered:$module:$version"
+
+fun DependencyHandler.configurate(module: String) = sponge("configurate-$module", Versions.CONFIGURATE)

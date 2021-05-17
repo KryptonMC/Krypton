@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.command.commands
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.api.command.Command
-import org.kryptonmc.krypton.api.command.Sender
+import org.kryptonmc.api.command.Command
+import org.kryptonmc.api.command.Sender
 
 class RestartCommand(private val server: KryptonServer) : Command("restart", "krypton.command.restart") {
 

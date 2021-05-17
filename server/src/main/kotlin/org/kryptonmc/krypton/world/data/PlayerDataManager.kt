@@ -28,19 +28,19 @@ import net.kyori.adventure.nbt.ListBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.kryptonmc.krypton.api.entity.Abilities
-import org.kryptonmc.krypton.api.inventory.item.ItemStack
-import org.kryptonmc.krypton.api.inventory.item.Material
-import org.kryptonmc.krypton.api.inventory.item.meta.ItemMeta
-import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.registry.toNamespacedKey
-import org.kryptonmc.krypton.api.world.Gamemode
-import org.kryptonmc.krypton.api.world.Location
+import org.kryptonmc.api.entity.Abilities
+import org.kryptonmc.api.inventory.item.ItemStack
+import org.kryptonmc.api.inventory.item.Material
+import org.kryptonmc.api.inventory.item.meta.ItemMeta
+import org.kryptonmc.api.util.minecraftKey
+import org.kryptonmc.api.util.toKey
+import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.Location
 import org.kryptonmc.krypton.entity.Attribute
 import org.kryptonmc.krypton.entity.AttributeKey
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.entity.memory.EmptyBrain
-import org.kryptonmc.krypton.serializers.serialize
+import org.kryptonmc.krypton.util.serialize
 import org.kryptonmc.krypton.util.createFile
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.NBT_DATA_VERSION
@@ -71,13 +71,13 @@ class PlayerDataManager(private val folder: Path) {
 
         player.attributes = nbt.getList("Attributes").map { attribute ->
             (attribute as CompoundBinaryTag).let {
-                Attribute(AttributeKey.fromKey(it.getString("Name").toNamespacedKey()), it.getDouble("Base"))
+                Attribute(AttributeKey.fromKey(it.getString("Name").toKey()), it.getDouble("Base"))
             }
         }.toSet()
 
         val inventoryItems = nbt.getList("Inventory").associate { item ->
             (item as CompoundBinaryTag).let {
-                val type = Material.KEYS.value(it.getString("id").toNamespacedKey())!!
+                val type = Material.KEYS.value(it.getString("id").toKey())!!
                 val slot = it.getByte("Slot")
                 val count = it.getByte("Count")
                 slot.toInt() to ItemStack(type, count.toInt())
@@ -92,7 +92,7 @@ class PlayerDataManager(private val folder: Path) {
         player.oldGamemode = Gamemode.fromId(nbt.getInt("previousPlayerGameType", -1))
         player.gamemode = Gamemode.fromId(nbt.getInt("playerGameType", 0)) ?: Gamemode.SURVIVAL
         player.inventory.heldSlot = nbt.getInt("SelectedItemSlot")
-        player.dimension = nbt.getString("Dimension").toNamespacedKey()
+        player.dimension = nbt.getString("Dimension").toKey()
         player.isOnGround = nbt.getBoolean("OnGround")
     }
 
@@ -186,12 +186,12 @@ class PlayerDataManager(private val folder: Path) {
 
     companion object {
 
-        private val OVERWORLD = NamespacedKey(value = "overworld")
+        private val OVERWORLD = minecraftKey("overworld")
     }
 }
 
 private fun ItemStack.toNBT(slot: Int) = CompoundBinaryTag.builder()
-    .putString("id", type.key.toString())
+    .putString("id", type.key().toString())
     .putByte("Slot", slot.toByte())
     .putByte("Count", amount.toByte())
     .apply { if (meta != null) put("display", meta!!.toNBT()) }

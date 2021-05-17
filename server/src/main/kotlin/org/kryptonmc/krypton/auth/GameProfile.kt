@@ -18,13 +18,14 @@
  */
 package org.kryptonmc.krypton.auth
 
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import com.google.gson.annotations.SerializedName
+import java.lang.reflect.Type
 import java.util.UUID
 
 /**
@@ -35,9 +36,8 @@ import java.util.UUID
  * @param name the user's username
  * @param properties optional list of properties related to this profile (e.g. skins)
  */
-@Serializable
 data class GameProfile(
-    @SerialName("id") @Serializable(with = MojangUUIDSerializer::class) val uuid: UUID,
+    @SerializedName("id") val uuid: UUID,
     val name: String,
     val properties: List<ProfileProperty>
 )
@@ -45,24 +45,23 @@ data class GameProfile(
 /**
  * Used to (de)serialize the UUID format that Yggdrasil uses (has no dashes in it)
  */
-object MojangUUIDSerializer : KSerializer<UUID> {
+object MojangUUIDSerializer : JsonSerializer<UUID>, JsonDeserializer<UUID> {
 
-    override val descriptor = PrimitiveSerialDescriptor("UUID", PrimitiveKind.STRING)
-
-    override fun deserialize(decoder: Decoder): UUID = UUID.fromString(
-        StringBuilder(decoder.decodeString())
+    override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): UUID = UUID.fromString(
+        StringBuilder(json.asString)
             .insert(20, '-')
             .insert(16, '-')
             .insert(12, '-')
             .insert(8, '-')
-            .toString())
+            .toString()
+    )
 
-    override fun serialize(encoder: Encoder, value: UUID) {
-        encoder.encodeString(StringBuilder(value.toString())
+    override fun serialize(src: UUID, type: Type, context: JsonSerializationContext) = JsonPrimitive(
+        StringBuilder(src.toString())
             .deleteCharAt(8)
             .deleteCharAt(12)
             .deleteCharAt(16)
             .deleteCharAt(20)
-            .toString())
-    }
+            .toString()
+    )
 }

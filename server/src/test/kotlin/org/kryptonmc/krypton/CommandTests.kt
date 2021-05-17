@@ -29,15 +29,11 @@ import io.mockk.verify
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.assertThrows
-import org.kryptonmc.krypton.api.command.Command
-import org.kryptonmc.krypton.api.command.Sender
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.command.commands.RestartCommand
 import org.kryptonmc.krypton.command.commands.StopCommand
 import org.kryptonmc.krypton.event.KryptonEventBus
 import java.security.Permission
-import kotlin.system.exitProcess
 import kotlin.test.Test
 
 class CommandTests {
@@ -45,7 +41,7 @@ class CommandTests {
     @Test
     fun `stop command actually stops the server`() {
         val stop = StopCommand(server)
-        val sender = mockk<Sender> {
+        val sender = mockk<org.kryptonmc.api.command.Sender> {
             every { sendMessage(any()) } just runs
         }
 
@@ -59,7 +55,7 @@ class CommandTests {
     @Test
     fun `restart command restarts`() {
         val restart = RestartCommand(server)
-        val sender = mockk<Sender> {
+        val sender = mockk<org.kryptonmc.api.command.Sender> {
             every { sendMessage(any()) } just runs
         }
 
@@ -102,7 +98,7 @@ class CommandTests {
 
         private val manager = KryptonCommandManager(server)
 
-        private val emptySender = mockk<Sender> {
+        private val emptySender = mockk<org.kryptonmc.api.command.Sender> {
             every { sendMessage(any()) } just runs
             every { hasPermission(any()) } returns false
             every { permissions } returns emptyMap()
@@ -114,7 +110,7 @@ class CommandTests {
             System.setSecurityManager(ShadySecuritySystem())
             manager.register(DefaultedExecuteCommand("test-null-perm"))
             manager.register(DefaultedExecuteCommand("test-def-exec", "test.def.exec"))
-            manager.register(LiteralArgumentBuilder.literal<Sender>("test-strict")
+            manager.register(LiteralArgumentBuilder.literal<org.kryptonmc.api.command.Sender>("test-strict")
                 .then(RequiredArgumentBuilder.argument("bounds", LongArgumentType.longArg(10, 20)))
                 .build()
             )
@@ -138,7 +134,7 @@ private open class DefaultedExecuteCommand(
     name: String,
     permission: String? = null,
     aliases: List<String> = emptyList()
-) : Command(name, permission, aliases) {
+) : org.kryptonmc.api.command.Command(name, permission, aliases) {
 
-    override fun execute(sender: Sender, args: List<String>) = Unit
+    override fun execute(sender: org.kryptonmc.api.command.Sender, args: List<String>) = Unit
 }

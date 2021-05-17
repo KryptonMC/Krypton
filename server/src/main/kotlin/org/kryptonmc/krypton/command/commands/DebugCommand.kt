@@ -26,7 +26,7 @@ import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.toMessage
-import org.kryptonmc.krypton.api.command.Sender
+import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.BrigadierCommand
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.logger

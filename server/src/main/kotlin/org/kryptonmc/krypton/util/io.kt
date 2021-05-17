@@ -19,9 +19,7 @@
 package org.kryptonmc.krypton.util
 
 import java.io.InputStream
-import java.io.OutputStream
 import java.nio.channels.FileChannel
-import java.nio.file.CopyOption
 import java.nio.file.Files
 import java.nio.file.OpenOption
 import java.nio.file.Path

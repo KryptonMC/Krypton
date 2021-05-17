@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.entities.data
 
-import org.kryptonmc.krypton.api.registry.NamespacedKey
+import org.kryptonmc.api.util.minecraftKey
 
 /**
  * Types of villagers
@@ -33,5 +33,5 @@ enum class VillagerType(val id: Int) {
     SWAMP(5),
     TAIGA(6);
 
-    val key by lazy { NamespacedKey(value = name.lowercase()) }
+    val key by lazy { minecraftKey(name.lowercase()) }
 }

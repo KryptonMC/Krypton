@@ -26,13 +26,12 @@ import com.mojang.brigadier.arguments.FloatArgumentType
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.LongArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
-import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
+import net.kyori.adventure.key.Key
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.registry.toNamespacedKey
+import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.command.argument.ArgumentTypes
 import org.kryptonmc.krypton.command.argument.ArgumentTypes.writeArgumentType
 import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
@@ -44,7 +43,6 @@ import org.kryptonmc.krypton.command.argument.serializer.brigadier.LongArgumentS
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.StringArgumentSerializer
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
-import kotlin.reflect.KClass
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -54,12 +52,12 @@ class ArgumentTests {
 
     @Test
     fun `argument types get call returns not null for registered types`() {
-        assertNotNull(ArgumentTypes["brigadier:bool".toNamespacedKey()])
-        assertNotNull(ArgumentTypes["brigadier:float".toNamespacedKey()])
-        assertNotNull(ArgumentTypes["brigadier:double".toNamespacedKey()])
-        assertNotNull(ArgumentTypes["brigadier:integer".toNamespacedKey()])
-        assertNotNull(ArgumentTypes["brigadier:long".toNamespacedKey()])
-        assertNotNull(ArgumentTypes["brigadier:string".toNamespacedKey()])
+        assertNotNull(ArgumentTypes["brigadier:bool".toKey()])
+        assertNotNull(ArgumentTypes["brigadier:float".toKey()])
+        assertNotNull(ArgumentTypes["brigadier:double".toKey()])
+        assertNotNull(ArgumentTypes["brigadier:integer".toKey()])
+        assertNotNull(ArgumentTypes["brigadier:long".toKey()])
+        assertNotNull(ArgumentTypes["brigadier:string".toKey()])
     }
 
     @Test
@@ -105,7 +103,7 @@ class ArgumentTests {
         }
 
         callRemove("BY_CLASS", BogusArgumentType::class.java)
-        callRemove("BY_NAME", NamespacedKey("krypton", "test"))
+        callRemove("BY_NAME", Key.key("krypton", "test"))
     }
 
     @Test

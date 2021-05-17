@@ -32,13 +32,15 @@ class PacketInEntityAction : PlayPacket(0x1C) {
     /**
      * The action taken by the entity
      */
-    lateinit var action: EntityAction private set
+    lateinit var action: EntityAction
+        private set
 
     /**
      * This is a bit magic. It's the jump boost modifier, only used with the
      * [start jump with horse][EntityAction.START_JUMP_WITH_HORSE] action.
      */
-    var data = -1; private set
+    var data = -1
+        private set
 
     override fun read(buf: ByteBuf) {
         buf.readVarInt() // we already know the entity ID because we know where this came from, smh Mojang.

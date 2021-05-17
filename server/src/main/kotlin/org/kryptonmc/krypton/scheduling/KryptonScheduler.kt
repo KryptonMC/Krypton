@@ -18,9 +18,10 @@
  */
 package org.kryptonmc.krypton.scheduling
 
-import org.kryptonmc.krypton.api.plugin.Plugin
-import org.kryptonmc.krypton.api.scheduling.Scheduler
-import org.kryptonmc.krypton.api.scheduling.Task
+import com.google.common.collect.Multimaps
+import org.kryptonmc.api.plugin.Plugin
+import org.kryptonmc.api.scheduling.Scheduler
+import org.kryptonmc.api.scheduling.Task
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
@@ -32,7 +33,7 @@ object KryptonScheduler : Scheduler {
 
     override val executor: ExecutorService = Executors.newCachedThreadPool(NamedThreadFactory("Krypton Scheduler #%d"))
     internal val timedExecutor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(NamedThreadFactory("Krypton Timed Scheduler"))
-    internal val tasksByPlugin = ConcurrentHashMap<Plugin, MutableSet<Task>>()
+    internal val tasksByPlugin = Multimaps.newMultimap(ConcurrentHashMap<Any, MutableCollection<KryptonTask>>()) { ConcurrentHashMap.newKeySet() }
 
     override fun run(plugin: Plugin, task: Runnable) = schedule(plugin, 0, TimeUnit.MILLISECONDS, task)
 
@@ -40,15 +41,13 @@ object KryptonScheduler : Scheduler {
 
     override fun schedule(plugin: Plugin, delay: Long, period: Long, unit: TimeUnit, task: Runnable): Task {
         val scheduledTask = KryptonTask(this, plugin, task, delay, period, unit)
-        tasksByPlugin.getOrPut(plugin) { ConcurrentHashMap.newKeySet() } += scheduledTask
+        tasksByPlugin.put(plugin, scheduledTask)
         scheduledTask.schedule()
         return scheduledTask
     }
 
     internal fun shutdown(): Boolean {
-        synchronized(tasksByPlugin) { tasksByPlugin.values.toList() }.forEach { tasks ->
-            tasks.forEach { it.cancel() }
-        }
+        synchronized(tasksByPlugin) { tasksByPlugin.values() }.forEach { it.cancel() }
         timedExecutor.shutdown()
         executor.shutdown()
         return executor.awaitTermination(10, TimeUnit.SECONDS)

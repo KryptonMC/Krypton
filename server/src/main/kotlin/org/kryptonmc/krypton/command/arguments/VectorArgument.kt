@@ -9,7 +9,7 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.adventure.toMessage
-import org.kryptonmc.krypton.api.entity.entities.Player
+import org.kryptonmc.api.entity.entities.Player
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.LocalCoordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.WorldCoordinates

@@ -34,16 +34,15 @@ import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.api.command.Command
-import org.kryptonmc.krypton.api.command.CommandManager
-import org.kryptonmc.krypton.api.command.Sender
-import org.kryptonmc.krypton.api.event.events.play.PermissionCheckEvent
-import org.kryptonmc.krypton.api.event.events.play.PermissionCheckResult
+import org.kryptonmc.api.command.Command
+import org.kryptonmc.api.command.CommandManager
+import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.event.play.PermissionCheckEvent
+import org.kryptonmc.api.event.play.PermissionCheckResult
 import org.kryptonmc.krypton.command.commands.DebugCommand
 import org.kryptonmc.krypton.command.commands.RestartCommand
 import org.kryptonmc.krypton.command.commands.StopCommand
 import org.kryptonmc.krypton.command.commands.TeleportCommand
-import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
 class KryptonCommandManager(private val server: KryptonServer) : CommandManager {
@@ -150,7 +149,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         register(StopCommand(server))
         register(RestartCommand(server))
         DebugCommand(server).register(dispatcher)
-        TeleportCommand().register(dispatcher)
+        TeleportCommand.register(dispatcher)
     }
 
     companion object {

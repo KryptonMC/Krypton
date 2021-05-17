@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.inventory
 
-import org.kryptonmc.krypton.api.inventory.Inventory
-import org.kryptonmc.krypton.api.inventory.InventoryHolder
-import org.kryptonmc.krypton.api.inventory.InventoryType
-import org.kryptonmc.krypton.api.inventory.item.ItemStack
+import org.kryptonmc.api.inventory.Inventory
+import org.kryptonmc.api.inventory.InventoryHolder
+import org.kryptonmc.api.inventory.InventoryType
+import org.kryptonmc.api.inventory.item.ItemStack
 
 abstract class KryptonInventory(
     val id: Int,

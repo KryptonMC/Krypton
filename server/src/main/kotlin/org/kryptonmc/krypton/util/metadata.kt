@@ -21,10 +21,10 @@ package org.kryptonmc.krypton.util
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.api.effect.particle.ParticleEffect
-import org.kryptonmc.krypton.api.space.Direction
-import org.kryptonmc.krypton.api.space.Vector
-import org.kryptonmc.krypton.api.world.Location
+import org.kryptonmc.api.effect.particle.ParticleEffect
+import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.world.Location
 import org.kryptonmc.krypton.entity.Slot
 import org.kryptonmc.krypton.entity.entities.data.VillagerData
 import org.kryptonmc.krypton.entity.metadata.MetadataType

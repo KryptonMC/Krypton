@@ -20,14 +20,9 @@ package org.kryptonmc.krypton.command.argument
 
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.arguments.BoolArgumentType
-import com.mojang.brigadier.arguments.DoubleArgumentType
-import com.mojang.brigadier.arguments.FloatArgumentType
-import com.mojang.brigadier.arguments.IntegerArgumentType
-import com.mojang.brigadier.arguments.LongArgumentType
-import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.registry.toNamespacedKey
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.util.minecraftKey
 import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.EmptyArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.DoubleArgumentSerializer
@@ -50,20 +45,20 @@ object ArgumentTypes {
 
     private val LOGGER = logger<ArgumentTypes>()
     private val BY_CLASS = ConcurrentHashMap<Class<*>, Entry<*>>()
-    private val BY_NAME = ConcurrentHashMap<NamespacedKey, Entry<*>>()
+    private val BY_NAME = ConcurrentHashMap<Key, Entry<*>>()
 
     init {
         // Brigadier types and serialisers
-        register("brigadier:bool", BoolArgumentType::class.java, EmptyArgumentSerializer())
-        register("brigadier:float", FloatArgumentType::class.java, FloatArgumentSerializer())
-        register("brigadier:double", DoubleArgumentType::class.java, DoubleArgumentSerializer())
-        register("brigadier:integer", IntegerArgumentType::class.java, IntegerArgumentSerializer())
-        register("brigadier:long", LongArgumentType::class.java, LongArgumentSerializer())
-        register("brigadier:string", StringArgumentType::class.java, StringArgumentSerializer())
-        register("minecraft:vec3", VectorArgument::class.java, EmptyArgumentSerializer())
+        register<BoolArgumentType>("brigadier:bool", EmptyArgumentSerializer())
+        register("brigadier:float", FloatArgumentSerializer())
+        register("brigadier:double", DoubleArgumentSerializer())
+        register("brigadier:integer", IntegerArgumentSerializer())
+        register("brigadier:long", LongArgumentSerializer())
+        register("brigadier:string", StringArgumentSerializer())
+        register<VectorArgument>("minecraft:vec3", EmptyArgumentSerializer())
     }
 
-    operator fun get(key: NamespacedKey) = BY_NAME[key]
+    operator fun get(key: Key) = BY_NAME[key]
 
     /**
      * Retrieve an [Entry] for the specified [type]
@@ -85,20 +80,20 @@ object ArgumentTypes {
         val entry = get<T>(argument)
         if (entry == null) {
             LOGGER.error("Could not serialise $argument (Class ${argument::class.java.simpleName})! Will not be sent to client!")
-            writeKey(NamespacedKey(value = ""))
+            writeKey(minecraftKey(""))
             return
         }
         writeKey(entry.name)
         entry.serializer.write(argument, this)
     }
 
-    private fun <T : ArgumentType<*>> register(name: String, clazz: Class<T>, serialiser: ArgumentSerializer<T>) {
-        val key = name.toNamespacedKey()
-        if (BY_CLASS.containsKey(clazz)) throw IllegalArgumentException("Class ${clazz.simpleName} already has a serialiser!")
+    private inline fun <reified T : ArgumentType<*>> register(name: String, serializer: ArgumentSerializer<T>) {
+        val key = Key.key(name)
+        if (BY_CLASS.containsKey(T::class.java)) throw IllegalArgumentException("Class ${T::class.java.simpleName} already has a serialiser!")
         if (BY_NAME.containsKey(key)) throw IllegalArgumentException("'$name' is already a registered serialiser!")
 
-        val entry = Entry(clazz, serialiser, key)
-        BY_CLASS[clazz] = entry
+        val entry = Entry(T::class.java, serializer, key)
+        BY_CLASS[T::class.java] = entry
         BY_NAME[key] = entry
     }
 
@@ -110,6 +105,6 @@ object ArgumentTypes {
     data class Entry<T : ArgumentType<*>>(
         val clazz: Class<T>,
         val serializer: ArgumentSerializer<T>,
-        val name: NamespacedKey
+        val name: Key
     )
 }

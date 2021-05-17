@@ -24,12 +24,12 @@ import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.world.Gamemode
-import org.kryptonmc.krypton.api.world.Difficulty
-import org.kryptonmc.krypton.api.world.Location
-import org.kryptonmc.krypton.api.world.World
-import org.kryptonmc.krypton.api.world.WorldVersion
+import org.kryptonmc.api.util.minecraftKey
+import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.Difficulty
+import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.WorldVersion
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
@@ -79,12 +79,12 @@ data class KryptonWorld(
     override val version: WorldVersion,
     override val maxHeight: Int,
     override val seed: Long,
-    val players: MutableList<KryptonPlayer>,
+    val players: MutableSet<KryptonPlayer>,
     val serverBrands: Set<String>
 ) : World {
 
     val chunkManager = ChunkManager(this)
-    val dimension = NamespacedKey(value = "overworld")
+    val dimension = minecraftKey("overworld")
 
     private var oldRainLevel = 0F
     override var rainLevel = 0F

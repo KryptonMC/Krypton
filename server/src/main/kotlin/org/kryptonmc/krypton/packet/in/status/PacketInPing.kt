@@ -30,7 +30,8 @@ class PacketInPing : StatusPacket(0x01) {
      * The ping payload. Can be anything, but the Notchian client generates this from the
      * time that this was sent
      */
-    var payload = -1L; private set
+    var payload = -1L
+        private set
 
     override fun read(buf: ByteBuf) {
         payload = buf.readLong()

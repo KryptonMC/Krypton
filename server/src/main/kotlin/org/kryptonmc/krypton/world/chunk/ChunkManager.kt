@@ -25,8 +25,8 @@ import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
 import net.kyori.adventure.nbt.LongArrayBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
-import org.kryptonmc.krypton.api.registry.toNamespacedKey
-import org.kryptonmc.krypton.api.world.Biome
+import org.kryptonmc.api.util.toKey
+import org.kryptonmc.api.world.Biome
 import org.kryptonmc.krypton.util.calculateBits
 import org.kryptonmc.krypton.world.Heightmap.Type.MOTION_BLOCKING
 import org.kryptonmc.krypton.world.Heightmap.Type.OCEAN_FLOOR
@@ -69,7 +69,7 @@ class ChunkManager(private val world: KryptonWorld) {
 
             val palette = LinkedList(section.getList("Palette").map { block ->
                 block as CompoundBinaryTag
-                val name = block.getString("Name").toNamespacedKey()
+                val name = block.getString("Name").toKey()
                 if (name == ChunkBlock.AIR.name) {
                     ChunkBlock.AIR
                 } else {

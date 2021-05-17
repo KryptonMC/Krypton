@@ -18,10 +18,9 @@
  */
 package org.kryptonmc.krypton.event
 
-import com.google.common.collect.Multimap
 import com.google.common.collect.Multimaps
-import org.kryptonmc.krypton.api.event.EventBus
-import org.kryptonmc.krypton.api.event.Listener
+import org.kryptonmc.api.event.EventBus
+import org.kryptonmc.api.event.Listener
 import org.kryptonmc.krypton.util.logger
 import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
@@ -31,7 +30,9 @@ import java.util.concurrent.locks.ReentrantLock
  * I got so fed up with the event system that I basically copied BungeeCord's
  * EventBus. All credit goes to md_5 for making this originally
  */
-class KryptonEventBus : EventBus {
+object KryptonEventBus : EventBus {
+
+    private val LOGGER = logger<KryptonEventBus>()
 
     private val byListenerAndPriority = ConcurrentHashMap<Class<*>, MutableMap<Byte, MutableMap<Any, Set<Method>>>>()
     private val byEventBaked = Multimaps.newSetMultimap(ConcurrentHashMap<Class<*>, MutableCollection<EventHandlerMethod>>()) { mutableSetOf() }
@@ -89,10 +90,5 @@ class KryptonEventBus : EventBus {
     internal fun unregisterAll() {
         byListenerAndPriority.clear()
         byEventBaked.clear()
-    }
-
-    companion object {
-
-        private val LOGGER = logger<KryptonEventBus>()
     }
 }

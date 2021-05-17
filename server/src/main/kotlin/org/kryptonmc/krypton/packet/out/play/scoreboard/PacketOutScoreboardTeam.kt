@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.packet.out.play.scoreboard
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.api.world.scoreboard.Option
-import org.kryptonmc.krypton.api.world.scoreboard.OptionApplication
-import org.kryptonmc.krypton.api.world.scoreboard.Team
+import org.kryptonmc.api.world.scoreboard.Option
+import org.kryptonmc.api.world.scoreboard.OptionApplication
+import org.kryptonmc.api.world.scoreboard.Team
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeChat

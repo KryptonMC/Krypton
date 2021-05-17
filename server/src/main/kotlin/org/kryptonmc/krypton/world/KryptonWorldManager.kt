@@ -25,12 +25,12 @@ import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.api.registry.toNamespacedKey
-import org.kryptonmc.krypton.api.world.Difficulty
-import org.kryptonmc.krypton.api.world.Gamemode
-import org.kryptonmc.krypton.api.world.World
-import org.kryptonmc.krypton.api.world.WorldManager
-import org.kryptonmc.krypton.api.world.WorldVersion
+import org.kryptonmc.api.util.toKey
+import org.kryptonmc.api.world.Difficulty
+import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.WorldManager
+import org.kryptonmc.api.world.WorldVersion
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.dimension.Dimension
@@ -44,6 +44,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.UUID
 import java.util.concurrent.Callable
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import kotlin.io.path.exists
@@ -116,8 +117,8 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
 
         val worldGenSettings = nbt.getCompound("WorldGenSettings").let { settings ->
             val dimensions = settings.getCompound("dimensions").associate { (key, value) ->
-                key.toNamespacedKey() to (value as CompoundBinaryTag).let {
-                    Dimension(it.getString("type").toNamespacedKey(), it.getCompound("generator").toGenerator())
+                key.toKey() to (value as CompoundBinaryTag).let {
+                    Dimension(it.getString("type").toKey(), it.getCompound("generator").toGenerator())
                 }
             }
             WorldGenerationSettings(settings.getLong("seed"), settings.getBoolean("generate_features"), dimensions)
@@ -132,7 +133,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
             folder,
             loadUUID(folder),
             nbt.getString("LevelName"),
-            mutableSetOf(),
+            ConcurrentHashMap.newKeySet(),
             nbt.getBoolean("allowCommands"),
             BorderBuilder(
                 nbt.getDouble("BorderCenterX"),
@@ -168,7 +169,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
             },
             DEFAULT_BUILD_LIMIT,
             nbt.getLong("RandomSeed"),
-            mutableListOf(),
+            ConcurrentHashMap.newKeySet(),
             nbt.getList("ServerBrands").add(StringBinaryTag.of("Krypton")).map { (it as StringBinaryTag).value() }.toSet()
         )
     })

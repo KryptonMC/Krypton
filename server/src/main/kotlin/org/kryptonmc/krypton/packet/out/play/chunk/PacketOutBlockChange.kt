@@ -32,6 +32,6 @@ class PacketOutBlockChange(private val block: KryptonBlock) : PlayPacket(0x0B) {
 
     override fun write(buf: ByteBuf) {
         buf.writePosition(block.location)
-        buf.writeVarInt(GlobalPalette[block.type.key].states.firstOrNull()?.id ?: 0)
+        buf.writeVarInt(GlobalPalette[block.type.key()].states.firstOrNull()?.id ?: 0)
     }
 }

@@ -25,9 +25,9 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerStorage
-import org.kryptonmc.krypton.api.event.events.login.JoinEvent
-import org.kryptonmc.krypton.api.event.events.play.QuitEvent
-import org.kryptonmc.krypton.api.registry.NamespacedKey
+import org.kryptonmc.api.event.login.JoinEvent
+import org.kryptonmc.api.event.play.QuitEvent
+import org.kryptonmc.api.util.minecraftKey
 import org.kryptonmc.krypton.entity.metadata.MovementFlags
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
@@ -272,7 +272,7 @@ class SessionManager(private val server: KryptonServer) {
 
     companion object {
 
-        private val BRAND_MESSAGE = NamespacedKey(value = "brand") to "Krypton".toProtocol()
+        private val BRAND_MESSAGE = minecraftKey("brand") to "Krypton".toProtocol()
         private val LOGGER = logger<SessionManager>()
     }
 }

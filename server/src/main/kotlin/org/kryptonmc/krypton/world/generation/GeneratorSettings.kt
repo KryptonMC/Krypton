@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.world.generation
 
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import org.kryptonmc.krypton.api.registry.NamespacedKey
 
 abstract class GeneratorSettings {
 
@@ -30,7 +30,7 @@ abstract class GeneratorSettings {
 
 data class GeneratorStructures(
     val stronghold: GeneratorStronghold,
-    val structures: Map<NamespacedKey, GeneratorStructure>
+    val structures: Map<Key, GeneratorStructure>
 ) {
 
     fun toNBT() = CompoundBinaryTag.builder()

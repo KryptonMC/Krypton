@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.entities.data
 
-import org.kryptonmc.krypton.api.registry.NamespacedKey
+import org.kryptonmc.api.util.minecraftKey
 
 /**
  * Professions of villagers
@@ -41,5 +41,5 @@ enum class VillagerProfession(val id: Int) {
     TOOLSMITH(13),
     WEAPONSMITH(14);
 
-    val key by lazy { NamespacedKey(value = name.lowercase()) }
+    val key by lazy { minecraftKey(name.lowercase()) }
 }

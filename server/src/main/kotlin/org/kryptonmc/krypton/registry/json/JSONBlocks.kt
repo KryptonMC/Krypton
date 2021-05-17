@@ -18,17 +18,48 @@
  */
 package org.kryptonmc.krypton.registry.json
 
-import kotlinx.serialization.Serializable
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
-@Serializable
 data class RegistryBlock(
     val properties: Map<String, List<String>> = emptyMap(),
     val states: List<RegistryBlockState>
-)
+) {
 
-@Serializable
+    companion object : JsonDeserializer<RegistryBlock> {
+
+        private val PROPERTIES_TYPE = object : TypeToken<Map<String, List<String>>>() {}.type
+        private val STATES_TYPE = object : TypeToken<List<RegistryBlockState>>() {}.type
+
+        override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): RegistryBlock {
+            json as JsonObject
+            val properties = context.deserialize<Map<String, List<String>>>(json.get("properties"), PROPERTIES_TYPE) ?: emptyMap()
+            val states = context.deserialize<List<RegistryBlockState>>(json.get("states"), STATES_TYPE)
+            return RegistryBlock(properties, states)
+        }
+    }
+}
+
 data class RegistryBlockState(
     val id: Int,
     val default: Boolean = false,
     val properties: Map<String, String> = emptyMap()
-)
+) {
+
+    companion object : JsonDeserializer<RegistryBlockState> {
+
+        private val PROPERTIES_TYPE = object : TypeToken<Map<String, String>>() {}.type
+
+        override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): RegistryBlockState {
+            json as JsonObject
+            val id = json.get("id").asInt
+            val default = json.get("default")?.asBoolean ?: false
+            val properties = context.deserialize<Map<String, String>>(json.get("properties"), PROPERTIES_TYPE) ?: emptyMap()
+            return RegistryBlockState(id, default, properties)
+        }
+    }
+}

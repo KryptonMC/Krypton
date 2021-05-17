@@ -18,18 +18,13 @@
  */
 package org.kryptonmc.krypton.registry.json
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import org.kryptonmc.krypton.api.registry.NamespacedKey
+import com.google.gson.annotations.SerializedName
+import net.kyori.adventure.key.Key
 
-@Serializable
 data class RegistryEntry(
-    @SerialName("protocol_id") val id: Int,
-    val default: NamespacedKey? = null,
-    val entries: Map<NamespacedKey, RegistryIdHolder>
+    @SerializedName("protocol_id") val id: Int,
+    val default: Key? = null,
+    val entries: Map<Key, RegistryIdHolder>
 )
 
-@Serializable
-data class RegistryIdHolder(
-    @SerialName("protocol_id") val id: Int
-)
+data class RegistryIdHolder(@SerializedName("protocol_id") val id: Int)

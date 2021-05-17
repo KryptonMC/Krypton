@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.world.block.blocks
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.kryptonmc.krypton.api.space.Vector
+import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.world.block.tile.BlockEntity
 
 // TODO: Add this

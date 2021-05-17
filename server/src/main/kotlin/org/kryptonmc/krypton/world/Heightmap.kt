@@ -19,8 +19,7 @@
 package org.kryptonmc.krypton.world
 
 import net.kyori.adventure.nbt.LongArrayBinaryTag
-import org.kryptonmc.krypton.api.inventory.item.Material
-import org.kryptonmc.krypton.api.space.Vector
+import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.data.BitStorage
 

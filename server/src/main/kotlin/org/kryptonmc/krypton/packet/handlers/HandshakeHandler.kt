@@ -24,7 +24,7 @@ import net.kyori.adventure.text.Component.text
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.ServerStorage
-import org.kryptonmc.krypton.api.event.events.handshake.HandshakeEvent
+import org.kryptonmc.api.event.handshake.HandshakeEvent
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.handshake.BungeeCordHandshakeData
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake

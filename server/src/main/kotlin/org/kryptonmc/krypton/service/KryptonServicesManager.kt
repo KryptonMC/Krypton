@@ -18,12 +18,12 @@
  */
 package org.kryptonmc.krypton.service
 
-import org.kryptonmc.krypton.api.plugin.Plugin
-import org.kryptonmc.krypton.api.service.ServiceProvider
-import org.kryptonmc.krypton.api.service.ServicesManager
+import org.kryptonmc.api.plugin.Plugin
+import org.kryptonmc.api.service.ServiceProvider
+import org.kryptonmc.api.service.ServicesManager
 import java.util.concurrent.ConcurrentHashMap
 
-class KryptonServicesManager : ServicesManager {
+object KryptonServicesManager : ServicesManager {
 
     private val providers = ConcurrentHashMap<Class<*>, MutableList<KryptonServiceProvider<*>>>()
 

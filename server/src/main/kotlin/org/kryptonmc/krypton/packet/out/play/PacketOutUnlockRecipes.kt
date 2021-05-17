@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.api.registry.NamespacedKey
+import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
@@ -49,8 +49,8 @@ class PacketOutUnlockRecipes(
     private val isBlastFurnaceBookFiltered: Boolean = false,
     private val isSmokerBookOpen: Boolean = false,
     private val isSmokerBookFiltered: Boolean = false,
-    private val recipes: List<NamespacedKey> = emptyList(),
-    private val newRecipes: List<NamespacedKey> = emptyList()
+    private val recipes: List<Key> = emptyList(),
+    private val newRecipes: List<Key> = emptyList()
 ) : PlayPacket(0x35) {
 
     override fun write(buf: ByteBuf) {

@@ -1,7 +1,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.api.space.Position
+import org.kryptonmc.api.space.Position
 import org.kryptonmc.krypton.packet.`in`.play.DiggingStatus
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.toProtocol

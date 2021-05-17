@@ -31,10 +31,12 @@ import org.kryptonmc.krypton.util.writeVarInt
  */
 class PacketEncoder : MessageToByteEncoder<Packet>() {
 
-    override fun encode(ctx: ChannelHandlerContext, msg: Packet, out: ByteBuf) {
+    override fun encode(ctx: ChannelHandlerContext, msg: Packet, out: ByteBuf) = try {
         LOGGER.debug("Outgoing packet of type ${msg.javaClass} id ${msg.info.id}")
         out.writeVarInt(msg.info.id)
         msg.write(out)
+    } catch (exception: Exception) {
+        exception.printStackTrace()
     }
 
     companion object {

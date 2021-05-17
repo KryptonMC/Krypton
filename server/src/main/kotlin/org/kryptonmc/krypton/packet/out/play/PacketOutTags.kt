@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.api.registry.NamespacedKey
+import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
@@ -32,16 +32,16 @@ import org.kryptonmc.krypton.registry.tags.TagManager
  */
 object PacketOutTags : PlayPacket(0x5B) {
 
-    private val blockRegistry: (NamespacedKey) -> Int? = {
+    private val blockRegistry: (Key) -> Int? = {
         Registries.BLOCKS.idOf(it)
     }
-    private val fluidRegistry: (NamespacedKey) -> Int? = {
+    private val fluidRegistry: (Key) -> Int? = {
         Registries.FLUIDS.idOf(it)
     }
-    private val itemRegistry: (NamespacedKey) -> Int? = {
+    private val itemRegistry: (Key) -> Int? = {
         Registries.ITEMS.idOf(it)
     }
-    private val entityRegistry: (NamespacedKey) -> Int? = {
+    private val entityRegistry: (Key) -> Int? = {
         Registries.ENTITY_TYPES.idOf(it)
     }
 
@@ -52,10 +52,10 @@ object PacketOutTags : PlayPacket(0x5B) {
         buf.writeTags(TagManager.entityTags, entityRegistry)
     }
 
-    private fun ByteBuf.writeTags(tags: Set<Tag>, registry: (NamespacedKey) -> Int?) {
+    private fun ByteBuf.writeTags(tags: Set<Tag>, registry: (Key) -> Int?) {
         writeVarInt(tags.size)
         tags.forEach { tag ->
-            writeString(tag.name.toString())
+            writeString(tag.name.asString())
 
             val values = tag.values.filter { registry(it) != null }
             writeVarInt(values.size)

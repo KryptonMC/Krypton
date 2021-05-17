@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.entity.metadata
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.api.event.events.play.SkinSettings
-import org.kryptonmc.krypton.api.space.Vector
+import org.kryptonmc.api.event.play.SkinSettings
+import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.entity.MainHand
 import org.kryptonmc.krypton.util.writeMetadata
 

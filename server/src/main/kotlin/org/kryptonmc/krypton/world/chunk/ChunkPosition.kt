@@ -18,8 +18,7 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import org.kryptonmc.krypton.api.space.Position
-import org.kryptonmc.krypton.api.world.Location
+import org.kryptonmc.api.space.Position
 import kotlin.math.floor
 
 /**

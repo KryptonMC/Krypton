@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.api.world.Difficulty
+import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
 /**

@@ -18,9 +18,10 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import org.kryptonmc.krypton.api.block.Block
-import org.kryptonmc.krypton.api.inventory.item.Material
-import org.kryptonmc.krypton.api.registry.NamespacedKey
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.inventory.item.Material
+import org.kryptonmc.api.util.minecraftKey
 import org.kryptonmc.krypton.world.data.BitStorage
 import java.util.LinkedList
 
@@ -50,7 +51,7 @@ data class ChunkSection(
         val y = block.location.blockY
         val z = block.location.blockZ
         val index = indexOf(x and 0xF, y and 0xF, z and 0xF)
-        blockStates[index] = palette.getOrUpdate(block.type.key)
+        blockStates[index] = palette.getOrUpdate(block.type.key())
         return true
     }
 
@@ -66,7 +67,7 @@ data class ChunkSection(
 
     private fun indexOf(x: Int, y: Int, z: Int) = (y shl 8) or (z shl 4) or x
 
-    private fun LinkedList<ChunkBlock>.getOrUpdate(name: NamespacedKey): Int =
+    private fun LinkedList<ChunkBlock>.getOrUpdate(name: Key): Int =
         indexOfFirst { it.name == name }.takeIf { it != -1 }?.let { return it } ?: palette.let {
             val block = ChunkBlock(name)
             it.addLast(block)
@@ -88,12 +89,12 @@ data class ChunkSection(
 }
 
 data class ChunkBlock(
-    val name: NamespacedKey,
+    val name: Key,
     val properties: Map<String, String> = emptyMap()
 ) {
 
     companion object {
 
-        val AIR = ChunkBlock(NamespacedKey(value = "air"))
+        val AIR = ChunkBlock(minecraftKey("air"))
     }
 }

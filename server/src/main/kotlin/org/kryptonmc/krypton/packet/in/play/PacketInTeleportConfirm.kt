@@ -31,7 +31,8 @@ class PacketInTeleportConfirm : PlayPacket(0x00) {
     /**
      * The ID sent in the [position and look][org.kryptonmc.krypton.packet.out.play.PacketOutPlayerPositionAndLook] packet.
      */
-    var teleportId = -1; private set
+    var teleportId = -1
+        private set
 
     override fun read(buf: ByteBuf) {
         teleportId = buf.readVarInt()

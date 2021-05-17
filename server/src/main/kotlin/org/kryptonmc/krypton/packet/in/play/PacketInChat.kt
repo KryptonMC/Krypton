@@ -31,7 +31,8 @@ class PacketInChat : PlayPacket(0x03) {
     /**
      * The chat message
      */
-    lateinit var message: String private set
+    lateinit var message: String
+        private set
 
     override fun read(buf: ByteBuf) {
         message = buf.readString(256)

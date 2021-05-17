@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.kryptonmc.krypton.api.space.Position
-import org.kryptonmc.krypton.api.space.Vector
-import org.kryptonmc.krypton.api.world.Location
-import org.kryptonmc.krypton.api.world.World
+import org.kryptonmc.api.space.Position
+import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.world.World
 
 /**
  * Convert a [Vector] to a single long with its X coordinate packed into the most significant 26

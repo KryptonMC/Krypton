@@ -30,7 +30,8 @@ class PacketInPlayerAbilities : PlayPacket(0x1A) {
     /**
      * If the client is flying or not
      */
-    var isFlying = false; private set
+    var isFlying = false
+        private set
 
     override fun read(buf: ByteBuf) {
         val flags = buf.readByte().toInt()

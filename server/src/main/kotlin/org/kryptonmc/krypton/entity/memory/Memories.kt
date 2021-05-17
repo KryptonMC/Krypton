@@ -18,7 +18,8 @@
  */
 package org.kryptonmc.krypton.entity.memory
 
-import org.kryptonmc.krypton.api.registry.NamespacedKey
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.util.minecraftKey
 import org.kryptonmc.krypton.world.LocationBuilder
 import java.util.UUID
 
@@ -26,7 +27,7 @@ import java.util.UUID
  * Represents a memory of an entity. These are specific to the type of entity,
  * and may vary depending on what entity it is.
  */
-sealed class EntityMemory<T>(val key: NamespacedKey) {
+sealed class EntityMemory<T>(val key: Key) {
 
     abstract val value: T
 }
@@ -37,7 +38,7 @@ sealed class EntityMemory<T>(val key: NamespacedKey) {
 class AdmiringDisabledMemory(
     override val value: Boolean,
     val ttl: Long
-) : EntityMemory<Boolean>(NamespacedKey(value = "admiring_disabled"))
+) : EntityMemory<Boolean>(minecraftKey("admiring_disabled"))
 
 /**
  * If this piglin is admiring an item
@@ -45,7 +46,7 @@ class AdmiringDisabledMemory(
 class AdmiringItemMemory(
     override val value: Boolean,
     val ttl: Long
-) : EntityMemory<Boolean>(NamespacedKey(value = "admiring_item"))
+) : EntityMemory<Boolean>(minecraftKey("admiring_item"))
 
 /**
  * The target of this piglin or piglin brute
@@ -53,12 +54,12 @@ class AdmiringItemMemory(
 class AngryAtMemory(
     override val value: UUID,
     val ttl: Long
-) : EntityMemory<UUID>(NamespacedKey(value = "angry_at"))
+) : EntityMemory<UUID>(minecraftKey("angry_at"))
 
 /**
  * Where this villager's bed is or where this piglin brute's patrol point is
  */
-class HomeMemory(override val value: Position) : EntityMemory<Position>(NamespacedKey(value = "home"))
+class HomeMemory(override val value: Position) : EntityMemory<Position>(minecraftKey("home"))
 
 /**
  * If this piglin just hunted, and as such, won't for a while. Set after hunting or spawning in a bastion remnant
@@ -66,37 +67,37 @@ class HomeMemory(override val value: Position) : EntityMemory<Position>(Namespac
 class HuntedRecentlyMemory(
     override val value: Boolean,
     val ttl: Long
-) : EntityMemory<Boolean>(NamespacedKey(value = "hunted_recently"))
+) : EntityMemory<Boolean>(minecraftKey("hunted_recently"))
 
 /**
  * Where this villager's job site block is
  */
-class JobSiteMemory(override val value: Position) : EntityMemory<Position>(NamespacedKey(value = "job_site"))
+class JobSiteMemory(override val value: Position) : EntityMemory<Position>(minecraftKey("job_site"))
 
 /**
  * The tick that this villager last slept in a bed
  */
-class LastSleptMemory(override val value: Long) : EntityMemory<Long>(NamespacedKey(value = "last_slept"))
+class LastSleptMemory(override val value: Long) : EntityMemory<Long>(minecraftKey("last_slept"))
 
 /**
  * The tick that this villager last woke up from a bed
  */
-class LastWokenMemory(override val value: Long) : EntityMemory<Long>(NamespacedKey(value = "last_woken"))
+class LastWokenMemory(override val value: Long) : EntityMemory<Long>(minecraftKey("last_woken"))
 
 /**
  * The tick that this villager last worked at their job site
  */
-class LastWorkedMemory(override val value: Long) : EntityMemory<Long>(NamespacedKey(value = "last_worked_at_poi"))
+class LastWorkedMemory(override val value: Long) : EntityMemory<Long>(minecraftKey("last_worked_at_poi"))
 
 /**
  * Where this villager's meeting point is
  */
-class MeetingPointMemory(override val value: Position) : EntityMemory<Position>(NamespacedKey(value = "meeting_point"))
+class MeetingPointMemory(override val value: Position) : EntityMemory<Position>(minecraftKey("meeting_point"))
 
 /**
  * Position information for a villager's meeting point
  */
 data class Position(
-    val dimension: NamespacedKey,
+    val dimension: Key,
     val position: LocationBuilder
 )

@@ -18,17 +18,18 @@
  */
 package org.kryptonmc.krypton.world.generation
 
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.BinaryTagTypes
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.IntBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
-import org.kryptonmc.krypton.api.registry.NamespacedKey
-import org.kryptonmc.krypton.api.registry.toNamespacedKey
+import org.kryptonmc.api.util.minecraftKey
+import org.kryptonmc.api.util.toKey
 
 data class NoiseGenerator(
     val seed: Int,
-    val settings: NamespacedKey,
+    val settings: Key,
     val biomeSource: BiomeGenerator
 ) : Generator(ID) {
 
@@ -41,7 +42,7 @@ data class NoiseGenerator(
 
     companion object {
 
-        val ID = NamespacedKey(value = "noise")
+        val ID = minecraftKey("noise")
     }
 }
 
@@ -69,7 +70,7 @@ data class NoiseGeneratorSettings(
 }
 
 data class NoiseBlockState(
-    val name: NamespacedKey,
+    val name: Key,
     val properties: Map<String, String>
 ) {
 
@@ -138,7 +139,7 @@ data class NoiseSlide(
         .build()
 }
 
-sealed class BiomeGenerator(val type: NamespacedKey) {
+sealed class BiomeGenerator(val type: Key) {
 
     abstract val seed: Int
 
@@ -146,20 +147,20 @@ sealed class BiomeGenerator(val type: NamespacedKey) {
 
     companion object {
 
-        internal val VANILLA_LAYERED = NamespacedKey(value = "vanilla_layered")
-        internal val MULTI_NOISE = NamespacedKey(value = "multi_noise")
-        internal val THE_END = NamespacedKey(value = "the_end")
-        internal val FIXED = NamespacedKey(value = "fixed")
-        internal val CHECKERBOARD = NamespacedKey(value = "checkerboard")
+        internal val VANILLA_LAYERED = minecraftKey("vanilla_layered")
+        internal val MULTI_NOISE = minecraftKey("multi_noise")
+        internal val THE_END = minecraftKey("the_end")
+        internal val FIXED = minecraftKey("fixed")
+        internal val CHECKERBOARD = minecraftKey("checkerboard")
 
-        fun fromNBT(nbt: CompoundBinaryTag) = when (val type = nbt.getString("type").toNamespacedKey()) {
+        fun fromNBT(nbt: CompoundBinaryTag) = when (val type = nbt.getString("type").toKey()) {
             VANILLA_LAYERED -> VanillaLayeredBiomeGenerator(
                 nbt.getInt("seed"),
                 nbt.getBoolean("large_biomes")
             )
             MULTI_NOISE -> MultiNoiseBiomeGenerator(
                 nbt.getInt("seed"),
-                nbt.getString("preset").toNamespacedKey()
+                nbt.getString("preset").toKey()
             )
             THE_END -> TheEndBiomeGenerator(nbt.getInt("seed"))
             FIXED -> FixedBiomeGenerator(
@@ -190,7 +191,7 @@ data class VanillaLayeredBiomeGenerator(
 
 data class MultiNoiseBiomeGenerator(
     override val seed: Int,
-    val preset: NamespacedKey
+    val preset: Key
 ) : BiomeGenerator(MULTI_NOISE) {
 
     override fun toNBT() = CompoundBinaryTag.builder()

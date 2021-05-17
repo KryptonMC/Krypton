@@ -30,7 +30,8 @@ open class PacketInPlayerMovement(id: Int = 0x15) : PlayPacket(id) {
     /**
      * If the client is on terra firma
      */
-    var onGround: Boolean = false; private set
+    var onGround: Boolean = false
+        private set
 
     override fun read(buf: ByteBuf) {
         onGround = buf.readBoolean()
@@ -44,17 +45,20 @@ open class PacketInPlayerMovement(id: Int = 0x15) : PlayPacket(id) {
         /**
          * The client's absolute X coordinate
          */
-        var x = 0.0; private set
+        var x = 0.0
+            private set
 
         /**
          * The client's absolute Y coordinate
          */
-        var y = 0.0; private set
+        var y = 0.0
+            private set
 
         /**
          * The client's absolute Z coordinate
          */
-        var z = 0.0; private set
+        var z = 0.0
+            private set
 
         override fun read(buf: ByteBuf) {
             x = buf.readDouble()
@@ -73,12 +77,14 @@ open class PacketInPlayerMovement(id: Int = 0x15) : PlayPacket(id) {
         /**
          * The client's current yaw (rotation on X axis), as an angle measured in degrees
          */
-        var yaw = 0F; private set
+        var yaw = 0F
+            private set
 
         /**
          * The client's current pitch (rotation on Y axis), as an angle measured in degrees
          */
-        var pitch = 0F; private set
+        var pitch = 0F
+            private set
 
         override fun read(buf: ByteBuf) {
             yaw = buf.readFloat()
@@ -96,27 +102,32 @@ open class PacketInPlayerMovement(id: Int = 0x15) : PlayPacket(id) {
         /**
          * The client's absolute X position
          */
-        var x = 0.0; private set
+        var x = 0.0
+            private set
 
         /**
          * The client's absolute X position
          */
-        var y = 0.0; private set
+        var y = 0.0
+            private set
 
         /**
          * The client's absolute X position
          */
-        var z = 0.0; private set
+        var z = 0.0
+            private set
 
         /**
          * The client's current yaw (rotation on X axis), as an angle measured in degrees
          */
-        var yaw = 0F; private set
+        var yaw = 0F
+            private set
 
         /**
          * The client's current pitch (rotation on Y axis), as an angle measured in degrees
          */
-        var pitch = 0F; private set
+        var pitch = 0F
+            private set
 
         override fun read(buf: ByteBuf) {
             x = buf.readDouble()

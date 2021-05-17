@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.world.block.tile
 
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import org.kryptonmc.krypton.api.space.Vector
+import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.world.block.blocks.BannerEntity
 
 abstract class BlockEntity(val id: String) {
