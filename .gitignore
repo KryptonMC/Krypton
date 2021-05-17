@@ -34,3 +34,6 @@ test-server/
 /run/
 /krypton/
 /krypton*/
+
+# Generated folders
+logs

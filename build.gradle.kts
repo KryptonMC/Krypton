@@ -72,6 +72,7 @@ subprojects {
         testImplementation(junit("platform", "runner", "1.7.1"))
         testImplementation(kotlin("test-junit5"))
         testImplementation("io.mockk:mockk:1.10.6")
+        testRuntimeOnly("net.bytebuddy:byte-buddy:1.11.0")
     }
 
     configurations.all {
@@ -82,10 +83,7 @@ subprojects {
         withType<KotlinCompile> {
             kotlinOptions {
                 jvmTarget = "16"
-                freeCompilerArgs = listOf(
-                    "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
-                    "-Xjvm-default=all"
-                )
+                freeCompilerArgs = listOf("-Xjvm-default=all")
             }
         }
         withType<Test> {

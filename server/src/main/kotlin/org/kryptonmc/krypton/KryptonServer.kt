@@ -30,6 +30,8 @@ import org.kryptonmc.api.Server
 import org.kryptonmc.api.event.ticking.TickEndEvent
 import org.kryptonmc.api.event.ticking.TickStartEvent
 import org.kryptonmc.api.status.StatusInfo
+import org.kryptonmc.api.world.Difficulty
+import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.auth.MojangUUIDSerializer
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDER
@@ -45,8 +47,9 @@ import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.registry.json.RegistryBlock
 import org.kryptonmc.krypton.registry.json.RegistryBlockState
-import org.kryptonmc.krypton.registry.json.RegistryEntry
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
+import org.kryptonmc.krypton.serializers.DifficultySerializer
+import org.kryptonmc.krypton.serializers.GamemodeSerializer
 import org.kryptonmc.krypton.server.gui.KryptonServerGUI
 import org.kryptonmc.krypton.server.query.GS4QueryHandler
 import org.kryptonmc.krypton.service.KryptonServicesManager
@@ -433,4 +436,6 @@ val GSON: Gson = GsonComponentSerializer.gson().populator().apply(
     GsonBuilder().registerTypeAdapter<UUID>(MojangUUIDSerializer)
         .registerTypeAdapter<RegistryBlock>(RegistryBlock.Companion)
         .registerTypeAdapter<RegistryBlockState>(RegistryBlockState.Companion)
+        .registerTypeAdapter<Gamemode>(GamemodeSerializer)
+        .registerTypeAdapter<Difficulty>(DifficultySerializer)
 ).create()

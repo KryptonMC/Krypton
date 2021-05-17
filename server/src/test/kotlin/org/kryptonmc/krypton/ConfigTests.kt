@@ -18,15 +18,14 @@
  */
 package org.kryptonmc.krypton
 
-import kotlinx.serialization.json.Json
+import com.google.gson.JsonParseException
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
-import org.kryptonmc.krypton.server.DifficultySerializer
-import org.kryptonmc.krypton.server.GamemodeSerializer
-import org.kryptonmc.krypton.server.KryptonConfig
+import org.kryptonmc.krypton.config.KryptonConfig
+import org.kryptonmc.krypton.util.fromJson
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
 import kotlin.test.Test
@@ -39,6 +38,7 @@ class ConfigTests {
     @Test
     fun `test config loads properly with correct values`() {
         val loader = HoconConfigurationLoader.builder()
+            .defaultOptions(KryptonConfig.OPTIONS)
             .source { Thread.currentThread().contextClassLoader.getResourceAsStream("config.conf")!!.bufferedReader() }
             .build()
         val config = loader.load().get<KryptonConfig>()!!
@@ -70,14 +70,16 @@ class ConfigTests {
         assertFalse(config.query.enabled)
         assertEquals(25566, config.query.port)
 
+        // Watchdog settings
+        assertEquals(60, config.watchdog.timeoutTime)
+        assertTrue(config.watchdog.restartOnCrash)
+        assertEquals("./start.sh", config.watchdog.restartScript)
+        assertEquals(5000, config.watchdog.earlyWarningInterval)
+        assertEquals(10000, config.watchdog.earlyWarningDelay)
+
         // Other settings
         assertFalse(config.other.bungeecord)
         assertTrue(config.other.metrics)
-        assertEquals(60, config.other.timeoutTime)
-        assertTrue(config.other.restartOnCrash)
-        assertEquals("./start.sh", config.other.restartScript)
-        assertEquals(5000, config.other.earlyWarningInterval)
-        assertEquals(10000, config.other.earlyWarningDelay)
         assertEquals(5, config.other.saveThreshold)
 
         val modified = config.copy(
@@ -85,7 +87,8 @@ class ConfigTests {
             world = config.world.copy(forceDefaultGamemode = true, hardcore = true),
             advanced = config.advanced.copy(synchronizeChunkWrites = false, enableJmxMonitoring = false),
             query = config.query.copy(enabled = true),
-            other = config.other.copy(bungeecord = true, metrics = false, restartOnCrash = false)
+            watchdog = config.watchdog.copy(restartOnCrash = false),
+            other = config.other.copy(bungeecord = true, metrics = false)
         )
         assertFalse(modified.server.onlineMode)
         assertTrue(modified.world.forceDefaultGamemode)
@@ -95,7 +98,7 @@ class ConfigTests {
         assertTrue(modified.query.enabled)
         assertTrue(modified.other.bungeecord)
         assertFalse(modified.other.metrics)
-        assertFalse(modified.other.restartOnCrash)
+        assertFalse(modified.watchdog.restartOnCrash)
     }
 
     @Test
@@ -129,36 +132,38 @@ class ConfigTests {
         assertFalse(config.query.enabled)
         assertEquals(25566, config.query.port)
 
+        // Watchdog settings
+        assertEquals(60, config.watchdog.timeoutTime)
+        assertTrue(config.watchdog.restartOnCrash)
+        assertEquals("./start.sh", config.watchdog.restartScript)
+        assertEquals(5000, config.watchdog.earlyWarningInterval)
+        assertEquals(10000, config.watchdog.earlyWarningDelay)
+
         // Other settings
         assertFalse(config.other.bungeecord)
         assertTrue(config.other.metrics)
-        assertEquals(60, config.other.timeoutTime)
-        assertTrue(config.other.restartOnCrash)
-        assertEquals("./start.sh", config.other.restartScript)
-        assertEquals(5000, config.other.earlyWarningInterval)
-        assertEquals(10000, config.other.earlyWarningDelay)
         assertEquals(5, config.other.saveThreshold)
     }
 
     @Test
     fun `test gamemode deserialization`() {
         val gamemodeString = "\"adventure\""
-        val gamemodeId = "\"2\""
-        assertEquals(Gamemode.ADVENTURE, Json.decodeFromString(GamemodeSerializer, gamemodeString))
-        assertEquals(Gamemode.ADVENTURE, Json.decodeFromString(GamemodeSerializer, gamemodeId))
+        val gamemodeId = "2"
+        assertEquals(Gamemode.ADVENTURE, GSON.fromJson(gamemodeString))
+        assertEquals(Gamemode.ADVENTURE, GSON.fromJson(gamemodeId))
 
-        assertThrows<IllegalArgumentException> { Json.decodeFromString(GamemodeSerializer, "\"4\"") }
-        assertThrows<IllegalArgumentException> { Json.decodeFromString(GamemodeSerializer, "\"-1\"") }
+        assertThrows<JsonParseException> { GSON.fromJson<Gamemode>("\"4\"") }
+        assertThrows<JsonParseException> { GSON.fromJson<Gamemode>("\"-1\"") }
     }
 
     @Test
     fun `test difficulty deserialization`() {
         val difficultyString = "\"normal\""
-        val difficultyId = "\"2\""
-        assertEquals(Difficulty.NORMAL, Json.decodeFromString(DifficultySerializer, difficultyString))
-        assertEquals(Difficulty.NORMAL, Json.decodeFromString(DifficultySerializer, difficultyId))
+        val difficultyId = "2"
+        assertEquals(Difficulty.NORMAL, GSON.fromJson(difficultyString))
+        assertEquals(Difficulty.NORMAL, GSON.fromJson(difficultyId))
 
-        assertThrows<IllegalArgumentException> { Json.decodeFromString(GamemodeSerializer, "\"4\"") }
-        assertThrows<IllegalArgumentException> { Json.decodeFromString(GamemodeSerializer, "\"-1\"") }
+        assertThrows<JsonParseException> { GSON.fromJson<Gamemode>("\"4\"") }
+        assertThrows<JsonParseException> { GSON.fromJson<Gamemode>("\"-1\"") }
     }
 }

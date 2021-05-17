@@ -43,6 +43,7 @@ import org.kryptonmc.krypton.command.argument.serializer.brigadier.LongArgumentS
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.StringArgumentSerializer
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
+import kotlin.reflect.full.declaredFunctions
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -81,29 +82,6 @@ class ArgumentTests {
         assertEquals(0b00000011, buffer.readByte())
         assertEquals(10, buffer.readInt())
         assertEquals(20, buffer.readInt())
-    }
-
-    @Test
-    fun `register calls for existing types fail and new types succeed`() {
-        val method = ArgumentTypes::class.java.getDeclaredMethod(
-            "register",
-            String::class.java,
-            Class::class.java,
-            ArgumentSerializer::class.java
-        ).apply { isAccessible = true }
-
-        assertThrows<IllegalArgumentException> {
-            throwCause { method(ArgumentTypes, "brigadier:bool", BoolArgumentType::class.java, EmptyArgumentSerializer<BoolArgumentType>()) }
-        }
-        assertThrows<IllegalArgumentException> {
-            throwCause { method(ArgumentTypes, "brigadier:bool", BogusArgumentType::class.java, EmptyArgumentSerializer<BogusArgumentType>()) }
-        }
-        assertDoesNotThrow {
-            throwCause { method(ArgumentTypes, "krypton:test", BogusArgumentType::class.java, EmptyArgumentSerializer<BogusArgumentType>()) }
-        }
-
-        callRemove("BY_CLASS", BogusArgumentType::class.java)
-        callRemove("BY_NAME", Key.key("krypton", "test"))
     }
 
     @Test
@@ -156,11 +134,6 @@ class ArgumentTests {
             Class.forName("org.kryptonmc.krypton.command.argument.ArgumentTypes")
         }
 
-        private fun callRemove(mapName: String, removal: Any) = ArgumentTypes::class.java.getDeclaredField(mapName).apply {
-            isAccessible = true
-            (get(ArgumentTypes) as? MutableMap<*, *>)?.remove(removal)
-        }
-
         private fun ArgumentSerializer<*>.checkFlags() {
             assertEquals(0b00000011, createFlags(minimum = true, maximum = true))
             assertEquals(0b00000000, createFlags(minimum = false, maximum = false))
@@ -173,10 +146,4 @@ class ArgumentTests {
 private class BogusArgumentType : ArgumentType<Nothing?> {
 
     override fun parse(reader: StringReader?): Nothing? = null
-}
-
-private fun throwCause(function: () -> Unit) = try {
-    function()
-} catch (exception: Exception) {
-    throw exception.cause ?: exception
 }
