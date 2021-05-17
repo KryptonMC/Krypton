@@ -1,7 +1,6 @@
 package org.kryptonmc.krypton.config
 
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer
-import net.kyori.adventure.text.flattener.ComponentFlattener
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.krypton.config.category.AdvancedCategory
 import org.kryptonmc.krypton.config.category.OtherCategory

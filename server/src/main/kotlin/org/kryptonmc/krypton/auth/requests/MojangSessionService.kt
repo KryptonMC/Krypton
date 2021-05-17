@@ -88,7 +88,6 @@ object SessionService {
      *
      * @param username the username to authenticate
      * @param secret the shared secret
-     * @param key the server's public key
      * @param ip the server's IP address (string format)
      * @return a new [GameProfile] for the user
      * @throws AuthenticationException if the response from Mojang was unsuccessful (authentication failed)

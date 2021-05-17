@@ -27,10 +27,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.LongArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.Unpooled
-import net.kyori.adventure.key.Key
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.assertDoesNotThrow
-import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.command.argument.ArgumentTypes
 import org.kryptonmc.krypton.command.argument.ArgumentTypes.writeArgumentType
@@ -43,7 +40,6 @@ import org.kryptonmc.krypton.command.argument.serializer.brigadier.LongArgumentS
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.StringArgumentSerializer
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
-import kotlin.reflect.full.declaredFunctions
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -130,6 +126,7 @@ class ArgumentTests {
 
         @BeforeAll
         @JvmStatic
+        @Suppress("unused")
         fun `preload needed classes`() {
             Class.forName("org.kryptonmc.krypton.command.argument.ArgumentTypes")
         }

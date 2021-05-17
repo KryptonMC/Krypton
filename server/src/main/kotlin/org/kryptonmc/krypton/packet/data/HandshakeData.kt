@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.packet.data
 
 import org.kryptonmc.krypton.packet.state.PacketState
-import java.net.InetAddress
 
 /**
  * Data sent in the [Handshake packet][org.kryptonmc.krypton.packet.in.handshake.PacketInHandshake].

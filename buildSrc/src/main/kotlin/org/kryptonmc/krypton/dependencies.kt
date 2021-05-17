@@ -18,22 +18,20 @@
  */
 package org.kryptonmc.krypton
 
-import org.gradle.api.artifacts.dsl.DependencyHandler
+fun kotlinx(module: String, version: String) = "org.jetbrains.kotlinx:kotlinx-$module:$version"
 
-fun DependencyHandler.kotlinx(module: String, version: String) = "org.jetbrains.kotlinx:kotlinx-$module:$version"
+fun adventure(module: String) = "net.kyori:adventure-$module:${Versions.ADVENTURE}"
 
-fun DependencyHandler.adventure(module: String) = "net.kyori:adventure-$module:${Versions.ADVENTURE}"
+fun netty(module: String) = "io.netty:netty-$module:${Versions.NETTY}"
 
-fun DependencyHandler.netty(module: String) = "io.netty:netty-$module:${Versions.NETTY}"
+fun log4j(module: String) = "org.apache.logging.log4j:log4j-$module:${Versions.LOG4J}"
 
-fun DependencyHandler.log4j(module: String) = "org.apache.logging.log4j:log4j-$module:${Versions.LOG4J}"
-
-fun DependencyHandler.junit(
+fun junit(
     module: String,
     subModule: String,
     version: String = Versions.JUNIT
 ) = "org.junit.$module:junit-$module-$subModule:$version"
 
-fun DependencyHandler.sponge(module: String, version: String) = "org.spongepowered:$module:$version"
+fun sponge(module: String, version: String) = "org.spongepowered:$module:$version"
 
-fun DependencyHandler.configurate(module: String) = sponge("configurate-$module", Versions.CONFIGURATE)
+fun configurate(module: String) = sponge("configurate-$module", Versions.CONFIGURATE)

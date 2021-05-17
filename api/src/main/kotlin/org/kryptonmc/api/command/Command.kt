@@ -27,7 +27,7 @@ abstract class Command @JvmOverloads constructor(
      * @param sender the sender who ran this command
      * @param args the arguments supplied to this command
      */
-    abstract fun execute(sender: org.kryptonmc.api.command.Sender, args: List<String>)
+    abstract fun execute(sender: Sender, args: List<String>)
 
     /**
      * Called when the [sender] sends a tab complete request.
@@ -36,5 +36,5 @@ abstract class Command @JvmOverloads constructor(
      * @param args the arguments the sender sent
      * @return a list of possible tab completions for the specified [args]
      */
-    open fun suggest(sender: org.kryptonmc.api.command.Sender, args: List<String>): List<String> = emptyList()
+    open fun suggest(sender: Sender, args: List<String>): List<String> = emptyList()
 }

@@ -24,7 +24,6 @@ import org.gradle.api.publish.maven.MavenPom
 import org.gradle.api.publish.maven.MavenPomContributorSpec
 import org.gradle.api.publish.maven.MavenPomDeveloperSpec
 import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.kotlin.dsl.extra
 import org.gradle.kotlin.dsl.get
 
 fun PublishingExtension.applyRepositories(project: Project) = repositories {

@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api
 
-import org.junit.jupiter.api.RepeatedTest
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.space.square
 import kotlin.math.acos

@@ -40,7 +40,7 @@ val eventBusMock = mockk<EventBus> {
     every { register(any()) } returns Unit
 }
 
-val server = mockk<org.kryptonmc.api.Server> {
+val server = mockk<Server> {
     every { commandManager } returns commandManagerMock
     every { eventBus } returns eventBusMock
 }

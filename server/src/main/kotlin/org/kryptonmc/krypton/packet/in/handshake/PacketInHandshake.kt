@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketInfo
 import org.kryptonmc.krypton.packet.data.HandshakeData
 import org.kryptonmc.krypton.packet.state.PacketState
-import org.kryptonmc.krypton.util.fromJson
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
 import java.util.UUID

@@ -99,6 +99,7 @@ class ANSITextPane : JTextPane() {
 
 private const val ANSI_START = "\\u001B\\["
 
+@Suppress("unused")
 enum class ANSIColor(code: String, val color: Color) {
 
     D_BLACK("(0;)?30m", Color.BLACK),

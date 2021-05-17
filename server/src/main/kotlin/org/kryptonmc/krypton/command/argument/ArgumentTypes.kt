@@ -36,7 +36,7 @@ import org.kryptonmc.krypton.util.writeKey
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Holder for argument serialisers used by Brigadier.
+ * Holder for argument serializers used by Brigadier.
  *
  * An almost exact replica of the internal one made by Mojang, with a few changes like
  * the use of `KClass` over `Class` to make it easier for us.
@@ -48,13 +48,15 @@ object ArgumentTypes {
     private val BY_NAME = ConcurrentHashMap<Key, Entry<*>>()
 
     init {
-        // Brigadier types and serialisers
+        // Brigadier types and serializers
         register<BoolArgumentType>("brigadier:bool", EmptyArgumentSerializer())
         register("brigadier:float", FloatArgumentSerializer())
         register("brigadier:double", DoubleArgumentSerializer())
         register("brigadier:integer", IntegerArgumentSerializer())
         register("brigadier:long", LongArgumentSerializer())
         register("brigadier:string", StringArgumentSerializer())
+
+        // Vanilla serializers
         register<VectorArgument>("minecraft:vec3", EmptyArgumentSerializer())
     }
 
@@ -98,9 +100,9 @@ object ArgumentTypes {
     }
 
     /**
-     * Represents an entry for an argument type and it's serialiser.
+     * Represents an entry for an argument type and it's serializer.
      *
-     * This holds the class, serialiser and name for the argument type
+     * This holds the class, serializer and name for the argument type
      */
     data class Entry<T : ArgumentType<*>>(
         val clazz: Class<T>,

@@ -20,7 +20,7 @@ import org.kryptonmc.api.event.Event
  * @param has if the player has the permission
  */
 data class PermissionCheckEvent(
-    val sender: org.kryptonmc.api.command.Sender,
+    val sender: Sender,
     val permission: String?,
     private val has: Boolean
 ) : Event {

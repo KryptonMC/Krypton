@@ -28,7 +28,7 @@ import org.kryptonmc.api.command.Sender
  */
 class StopCommand(private val server: KryptonServer) : Command("stop", "krypton.command.stop") {
 
-    override fun execute(sender: org.kryptonmc.api.command.Sender, args: List<String>) {
+    override fun execute(sender: Sender, args: List<String>) {
         sender.sendMessage(Component.text("Stopping server..."))
         server.stop()
     }

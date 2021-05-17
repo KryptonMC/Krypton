@@ -15,6 +15,7 @@ import kotlin.test.assertEquals
 class PluginTests {
 
     @Test
+    @Suppress("RemoveRedundantSpreadOperator")
     fun `test register commands calls correctly`() {
         plugin.registerCommand(command)
         plugin.registerCommands(command)

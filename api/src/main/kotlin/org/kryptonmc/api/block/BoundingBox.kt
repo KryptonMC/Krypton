@@ -49,6 +49,6 @@ data class BoundingBox(
          * Constant for an empty bounding box
          */
         @JvmField
-        val EMPTY = org.kryptonmc.api.block.BoundingBox()
+        val EMPTY = BoundingBox()
     }
 }

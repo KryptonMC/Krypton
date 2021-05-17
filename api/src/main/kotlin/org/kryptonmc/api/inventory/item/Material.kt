@@ -17,6 +17,7 @@ import net.kyori.adventure.util.Index
  *
  * The ordering of this enum is based off of the [official Minecraft wiki](https://minecraft.gamepedia.com/Item#List_of_items)'s ordering
  */
+@Suppress("unused")
 enum class Material(private val internalKey: String? = null, val blocksMotion: Boolean = true) : net.kyori.adventure.key.Keyed {
 
     /**

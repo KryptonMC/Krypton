@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.util.readString
 
 /**
  * Sent when the client sends a plugin message on the specified [channel]. Currently only triggers
- * the [plugin message event][org.kryptonmc.api.event.events.play.PluginMessageEvent].
+ * the [plugin message event][org.kryptonmc.api.event.play.PluginMessageEvent].
  */
 class PacketInPluginMessage : PlayPacket(0x0B) {
 

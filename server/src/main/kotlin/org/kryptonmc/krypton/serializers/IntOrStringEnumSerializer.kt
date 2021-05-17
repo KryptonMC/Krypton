@@ -7,7 +7,6 @@ import com.google.gson.JsonParseException
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
-import org.kryptonmc.api.world.Gamemode
 import java.lang.reflect.Type
 
 sealed class IntOrStringEnumSerializer<T : Enum<T>> : JsonSerializer<T>, JsonDeserializer<T> {
