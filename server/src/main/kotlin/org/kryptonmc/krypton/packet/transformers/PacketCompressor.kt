@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.packet.transformers
 
+import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToByteEncoder
@@ -29,8 +30,7 @@ import java.util.zip.Deflater
  */
 class PacketCompressor(var threshold: Int) : MessageToByteEncoder<ByteBuf>() {
 
-    private val encodeBuffer = ByteArray(8192)
-    private val deflater = Deflater()
+    private val compressor = Natives.compress.get().create(4)
 
     override fun encode(ctx: ChannelHandlerContext, msg: ByteBuf, out: ByteBuf) {
         val uncompressedSize = msg.readableBytes()
@@ -39,16 +39,8 @@ class PacketCompressor(var threshold: Int) : MessageToByteEncoder<ByteBuf>() {
             out.writeBytes(msg)
             return
         }
-        val uncompressedBytes = ByteArray(uncompressedSize)
-        msg.readBytes(uncompressedBytes)
-        out.writeVarInt(uncompressedBytes.size)
-        deflater.setInput(uncompressedBytes, 0, uncompressedSize)
-        deflater.finish()
-        while (!deflater.finished()) {
-            val someLength = deflater.deflate(encodeBuffer)
-            out.writeBytes(encodeBuffer, 0, someLength)
-        }
-        deflater.reset()
+        out.writeVarInt(uncompressedSize)
+        compressor.deflate(msg, out)
     }
 
     companion object {

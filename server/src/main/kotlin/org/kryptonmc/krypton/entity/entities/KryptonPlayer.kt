@@ -85,15 +85,16 @@ import kotlin.math.min
 
 class KryptonPlayer(
     override val name: String,
+    override val uuid: UUID,
     private val server: KryptonServer,
     val session: Session,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
 ) : Player, KryptonSender(server) {
 
-    override lateinit var uuid: UUID
+    @Volatile internal var isFullyInitialized = false
 
     override var displayName: Component = Component.empty()
-    override lateinit var abilities: Abilities
+    override var abilities = Abilities()
     var attributes = DEFAULT_PLAYER_ATTRIBUTES
 
     override lateinit var location: Location

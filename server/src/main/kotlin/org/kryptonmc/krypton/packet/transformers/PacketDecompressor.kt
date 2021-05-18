@@ -18,13 +18,13 @@
  */
 package org.kryptonmc.krypton.packet.transformers
 
+import com.velocitypowered.natives.util.MoreByteBufUtils
+import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.ByteBuf
-import io.netty.buffer.Unpooled
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readVarInt
-import java.util.zip.Inflater
 
 /**
  * Decompresses packets that meet or exceed the specified [threshold] in length.
@@ -33,7 +33,7 @@ import java.util.zip.Inflater
  */
 class PacketDecompressor(var threshold: Int) : ByteToMessageDecoder() {
 
-    private val inflater = Inflater()
+    private val compressor = Natives.compress.get().create(4)
 
     override fun decode(ctx: ChannelHandlerContext, msg: ByteBuf, out: MutableList<Any>) {
         if (msg.readableBytes() == 0) return
@@ -46,11 +46,23 @@ class PacketDecompressor(var threshold: Int) : ByteToMessageDecoder() {
         if (dataLength < threshold) LOGGER.error("Packet badly compressed! Size of $dataLength is below threshold of $threshold!")
         if (dataLength > PROTOCOL_MAX_SIZE) LOGGER.error("Packet badly compressed! Size of $dataLength is larger than protocol maximum of $PROTOCOL_MAX_SIZE!")
 
-        inflater.setInput(msg.readBytes(msg.readableBytes()).array())
-        val bytes = ByteArray(dataLength)
-        inflater.inflate(bytes)
-        out.add(Unpooled.wrappedBuffer(bytes))
-        inflater.reset()
+//        inflater.setInput(msg.readBytes(msg.readableBytes()).array())
+//        val bytes = ByteArray(dataLength)
+//        inflater.inflate(bytes)
+//        out.add(Unpooled.wrappedBuffer(bytes))
+//        inflater.reset()
+        val compatibleIn = MoreByteBufUtils.ensureCompatible(ctx.alloc(), compressor, msg)
+        val uncompressed = MoreByteBufUtils.preferredBuffer(ctx.alloc(), compressor, dataLength)
+        try {
+            compressor.inflate(compatibleIn, uncompressed, dataLength)
+            out.add(uncompressed)
+            msg.clear()
+        } catch (exception: Exception) {
+            uncompressed.release()
+            throw exception
+        } finally {
+            compatibleIn.release()
+        }
     }
 
     companion object {

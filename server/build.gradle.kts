@@ -19,6 +19,10 @@ plugins {
 
 application.mainClass.set("org.kryptonmc.krypton.KryptonKt")
 
+repositories {
+    maven("https://repo.velocitypowered.com/snapshots/")
+}
+
 dependencies {
     api(project(":krypton-api"))
 
@@ -59,6 +63,7 @@ dependencies {
     api("org.spongepowered:math:2.0.0")
     implementation("com.github.ajalt.clikt:clikt:3.0.1")
     implementation("org.bstats:bstats-base:2.2.0")
+    implementation("com.velocitypowered:velocity-native:1.1.0-SNAPSHOT")
 }
 
 tasks {

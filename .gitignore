@@ -23,10 +23,11 @@ nbactions.xml
 .gradle/
 build/
 
-# Temp files
+# Temp/heap files
 .*.sw[a-p]
 ~*
 .DS_Store
+*.hprof
 
 # Possible test server folders
 server-test/

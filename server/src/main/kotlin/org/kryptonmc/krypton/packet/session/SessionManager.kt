@@ -199,6 +199,7 @@ class SessionManager(private val server: KryptonServer) {
             session.lastKeepAliveId = keepAliveId
             session.sendPacket(PacketOutKeepAlive(keepAliveId))
         }, 0, 20, TimeUnit.SECONDS)
+        session.player.isFullyInitialized = true
     }
 
     private fun handlePlayStateBegin(session: Session) {

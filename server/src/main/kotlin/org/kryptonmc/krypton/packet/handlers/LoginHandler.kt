@@ -70,6 +70,8 @@ class LoginHandler(
     private val bungeecordData: BungeeCordHandshakeData?
 ) : PacketHandler {
 
+    private var name = ""
+
     private val verifyToken by lazy {
         val bytes = ByteArray(4)
         server.random.nextBytes(bytes)
@@ -85,26 +87,25 @@ class LoginHandler(
     private fun handleLoginStart(packet: PacketInLoginStart) {
         val rawAddress = session.channel.remoteAddress() as InetSocketAddress
         val address = if (bungeecordData != null) InetSocketAddress(bungeecordData.forwardedIp, rawAddress.port) else rawAddress
-        session.player = KryptonPlayer(packet.name, server, session, address)
 
         if (!server.isOnline) {
             val uuid = if (bungeecordData != null) {
-                session.player.uuid = bungeecordData.uuid
                 session.profile = GameProfile(bungeecordData.uuid, packet.name, bungeecordData.properties)
                 bungeecordData.uuid
             } else {
                 // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
                 val offlineUUID = UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
-                session.player.uuid = offlineUUID
                 session.profile = GameProfile(offlineUUID, packet.name, emptyList())
                 offlineUUID
             }
+            session.player = KryptonPlayer(packet.name, uuid, server, session, address)
             if (!callLoginEvent(packet.name, uuid)) return
 
             sessionManager.beginPlayState(session)
             return
         }
 
+        name = packet.name
         session.sendPacket(PacketOutEncryptionRequest(Encryption.publicKey, verifyToken))
     }
 
@@ -116,7 +117,7 @@ class LoginHandler(
 
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                session.profile = SessionService.authenticateUser(session.player.name, sharedSecret, server.config.server.ip)
+                session.profile = SessionService.authenticateUser(name, sharedSecret, server.config.server.ip)
                 if (!callLoginEvent()) return@launch
             } catch (exception: AuthenticationException) {
                 session.disconnect(translatable { key("multiplayer.disconnect.unverified_username") })
@@ -124,7 +125,9 @@ class LoginHandler(
             }
             enableCompression()
 
-            session.player.uuid = session.profile.uuid
+            val rawAddress = session.channel.remoteAddress() as InetSocketAddress
+            val address = if (bungeecordData != null) InetSocketAddress(bungeecordData.forwardedIp, rawAddress.port) else rawAddress
+            session.player = KryptonPlayer(name, session.profile.uuid, server, session, address)
             sessionManager.beginPlayState(session)
         }
     }
