@@ -176,6 +176,7 @@ class KryptonServer(val mainThread: Thread) : Server {
         }
 
         LOGGER.debug("Starting bStats metrics")
+        System.setProperty("bstats.relocatecheck", "false") // disables the bStats relocation check since we don't want to relocate bStats
         KryptonMetrics.initialize(this, config.other.metrics)
 
         if (!config.server.onlineMode) {

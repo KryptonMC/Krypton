@@ -2,22 +2,21 @@ import org.gradle.jvm.tasks.Jar
 import org.jetbrains.dokka.gradle.GradleExternalDocumentationLinkBuilder
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.kryptonmc.krypton.Versions
-import org.kryptonmc.krypton.adventure
-import org.kryptonmc.krypton.configurate
 import org.kryptonmc.krypton.dependsOn
 import org.kryptonmc.krypton.junit
-import org.kryptonmc.krypton.kotlinx
-import org.kryptonmc.krypton.log4j
-import org.kryptonmc.krypton.sponge
 
 plugins {
     kotlin("jvm") version "1.5.0"
-    kotlin("plugin.serialization") version "1.5.0"
     id("org.jetbrains.dokka") version "1.4.30"
     id("info.solidsoft.pitest") version "1.6.0"
     id("org.cadixdev.licenser") version "0.6.0" apply false
     `maven-publish`
     signing
+
+    // SlimJar
+    `java-library`
+    id("com.github.johnrengelman.shadow") version "7.0.0" apply false
+    id("io.github.slimjar") version "1.1.2" apply false
 }
 
 allprojects {
@@ -26,57 +25,33 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven("https://libraries.minecraft.net")
+        maven("https://libraries.minecraft.net/")
         jcenter()
     }
 }
 
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
     apply(plugin = "org.jetbrains.dokka")
     apply(plugin = "info.solidsoft.pitest")
+    apply(plugin = "java-library")
+    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "io.github.slimjar")
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
 
     dependencies {
-        // Kotlin
-        api(kotlin("stdlib"))
-        api(kotlin("reflect"))
-
-        // Core
-        api("com.google.guava:guava:30.1.1-jre")
-        api("com.google.code.gson:gson:2.8.6")
-        api("org.apache.commons:commons-lang3:3.12.0")
-        api("org.apache.commons:commons-text:1.9")
-        api(kotlinx("coroutines-core", Versions.COROUTINES))
-
-        // Adventure
-        api(adventure("api"))
-        api(adventure("extra-kotlin"))
-        api(adventure("serializer-configurate4"))
-
-        // Configurate
-        api(configurate("gson"))
-        api(configurate("hocon"))
-        api(configurate("extra-kotlin"))
-
-        // Miscellaneous
-        api("com.mojang:brigadier:1.0.17")
-        api(sponge("math", "2.0.0"))
-        api(log4j("api"))
-
-        // Testing
         testImplementation(junit("jupiter", "api"))
         testRuntimeOnly(junit("jupiter", "engine"))
         testImplementation(junit("platform", "runner", "1.7.1"))
         testImplementation(kotlin("test-junit5"))
-        testImplementation("io.mockk:mockk:1.10.6")
-        testRuntimeOnly("net.bytebuddy:byte-buddy:1.11.0")
+        testImplementation("io.mockk:mockk:${Versions.MOCKK}")
+        testRuntimeOnly("net.bytebuddy:byte-buddy:${Versions.BYTE_BUDDY}")
     }
 
     configurations.all {
         exclude("org.checkerframework", "checker-qual")
+        exclude("net.kyori", "adventure-bom")
     }
 
     tasks {
