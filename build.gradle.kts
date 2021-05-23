@@ -2,8 +2,10 @@ import org.gradle.jvm.tasks.Jar
 import org.jetbrains.dokka.gradle.GradleExternalDocumentationLinkBuilder
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.kryptonmc.krypton.Versions
+import org.kryptonmc.krypton.adventure
 import org.kryptonmc.krypton.dependsOn
 import org.kryptonmc.krypton.junit
+import org.kryptonmc.krypton.log4j
 
 plugins {
     kotlin("jvm") version "1.5.0"
@@ -47,6 +49,13 @@ subprojects {
         testImplementation(kotlin("test-junit5"))
         testImplementation("io.mockk:mockk:${Versions.MOCKK}")
         testRuntimeOnly("net.bytebuddy:byte-buddy:${Versions.BYTE_BUDDY}")
+
+        // Duplicated test dependencies because SJ doesn't add them by default :(
+        testImplementation("com.google.guava:guava:${Versions.GUAVA}")
+        testApi("com.mojang:brigadier:${Versions.BRIGADIER}")
+        testApi(adventure("api"))
+        testApi(adventure("extra-kotlin"))
+        testApi(log4j("api"))
     }
 
     configurations.all {

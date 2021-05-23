@@ -3,6 +3,7 @@ import org.kryptonmc.krypton.Versions
 import org.kryptonmc.krypton.adventure
 import org.kryptonmc.krypton.applyCommon
 import org.kryptonmc.krypton.applyRepositories
+import org.kryptonmc.krypton.configurate
 import org.kryptonmc.krypton.log4j
 import org.kryptonmc.krypton.netty
 
@@ -63,6 +64,16 @@ dependencies {
         exclude("com.google.guava", "guava")
         exclude("io.netty", "netty-handler")
     }
+
+    // Duplicated test dependencies because SJ doesn't add them by default :(
+    testImplementation(project(":krypton-api"))
+    testImplementation(netty("all"))
+    testImplementation("com.google.code.gson:gson:${Versions.GSON}")
+    testImplementation(configurate("hocon"))
+    testImplementation(configurate("extra-kotlin"))
+    testImplementation(adventure("serializer-configurate4"))
+    testImplementation(adventure("text-serializer-legacy"))
+    testImplementation(adventure("text-serializer-gson"))
 }
 
 tasks.withType<SlimJar> {
