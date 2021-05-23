@@ -4,6 +4,7 @@ import io.github.slimjar.task.SlimJar
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
+    id("org.cadixdev.licenser")
     java
     application
 }
@@ -32,4 +33,10 @@ tasks {
         isolate(project(":krypton-api"))
         isolate(project(":krypton-server"))
     }
+}
+
+license {
+    header.set(project.rootProject.resources.text.fromFile("HEADER.txt"))
+    newLine.set(false)
+    exclude("**/*.properties", "**/*.conf", "**/*.json")
 }
