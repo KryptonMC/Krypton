@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.event
 import com.google.common.collect.Multimaps
 import org.kryptonmc.api.event.EventBus
 import org.kryptonmc.api.event.Listener
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
@@ -60,7 +61,7 @@ object KryptonEventBus : EventBus {
 
             val parameters = it.parameterTypes
             if (parameters.size != 1) {
-                LOGGER.warn("Method $it in class ${listener::class.java} annotated with $annotation does not have a single argument!")
+                Messages.EVENT_SINGLE_ARGUMENT.warn(LOGGER, it, listener::class.java, annotation)
                 return@forEach
             }
 

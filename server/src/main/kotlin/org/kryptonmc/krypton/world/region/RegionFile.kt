@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.region
 
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.openChannel
@@ -75,7 +76,7 @@ class RegionFile(
 
         val first = file.read(header, 0L)
         if (first != -1) {
-            if (first != 8192) LOGGER.warn("Region file $path has truncated header: $first")
+            if (first != 8192) Messages.REGION.TRUNCATED.warn(LOGGER, path, first)
             for (i in 0 until 1024) {
                 val offset = offsets[i]
                 if (offset == 0) continue
@@ -83,17 +84,17 @@ class RegionFile(
                 val sectorNumber = offset.sectorNumber
                 val sectorCount = offset.sectorCount
                 if (sectorNumber < 2) {
-                    LOGGER.warn("Region file $path has an invalid sector at index $i. Sector $sectorNumber overlaps with header")
+                    Messages.REGION.SECTOR.OVERLAP.warn(LOGGER, path, i, sectorNumber)
                     offsets[i] = 0
                     continue
                 }
                 if (sectorCount == 0) {
-                    LOGGER.warn("Region file $path has an invalid sector at index $i. Size has to be > 0")
+                    Messages.REGION.SECTOR.SIZE.warn(LOGGER, path, i)
                     offsets[i] = 0
                     continue
                 }
                 if (sectorNumber * 4096L > path.fileSize()) {
-                    LOGGER.warn("Region file $path has an invalid sector at index $i. Sector $sectorNumber is out of bounds")
+                    Messages.REGION.SECTOR.OUT_OF_BOUNDS.warn(LOGGER, path, i, sectorNumber)
                     offsets[i] = 0
                     continue
                 }
@@ -122,28 +123,28 @@ class RegionFile(
         buffer.flip()
 
         if (buffer.remaining() < 5) {
-            LOGGER.error("Chunk $position's header is truncated! Expected $size but got ${buffer.remaining()}!")
+            Messages.REGION.CHUNK.TRUNCATED.error(LOGGER, position, size, buffer.remaining())
             return null
         }
 
         val length = buffer.int
         val compressionType = buffer.get()
         if (length == 0) {
-            LOGGER.warn("Chunk $position is allocated, but stream is missing.")
+            Messages.REGION.CHUNK.NO_STREAM.warn(LOGGER, position)
             return null
         }
 
         val dataLength = length - 1
         if (compressionType.isExternalStreamChunk) {
-            if (dataLength != 0) LOGGER.warn("Chunk has both internal and external streams.")
+            if (dataLength != 0) Messages.REGION.CHUNK.INTERNAL_EXTERNAL.warn(LOGGER)
             return createExternalChunkInputStream(position, compressionType.externalChunkVersion)
         }
         if (dataLength > buffer.remaining()) {
-            LOGGER.error("Chunk $position's stream is truncated! Expected $dataLength but got ${buffer.remaining()}")
+            Messages.REGION.CHUNK.STREAM_TRUNCATED.error(LOGGER, position, dataLength, buffer.remaining())
             return null
         }
         if (dataLength < 0) {
-            LOGGER.error("Declared size $length of chunk $position is negative!")
+            Messages.REGION.CHUNK.NEGATIVE.error(LOGGER, length, position)
             return null
         }
         return createChunkInputStream(position, compressionType, ByteArrayInputStream(buffer.array(), buffer.position(), dataLength))
@@ -178,7 +179,7 @@ class RegionFile(
 
         if (requiredSectors >= 256) {
             val path = externalDirectory.resolve("c.${position.x}.${position.z}.mcc")
-            LOGGER.warn("Saving oversized chunk $position ($length bytes) to external file $path.")
+            Messages.REGION.CHUNK.EXTERNAL.SAVE.warn(LOGGER, position, length, path)
             requiredSectors = 1
             sectors = usedSectors.allocate(length)
             action = writeExternal(path, buffer)
@@ -200,6 +201,7 @@ class RegionFile(
     private fun createExternalChunkInputStream(position: ChunkPosition, compressionType: Byte): DataInputStream? {
         val path = externalDirectory.resolve("c.${position.x}.${position.z}.mcc")
         if (!path.isRegularFile()) {
+            Messages.REGION.CHUNK.EXTERNAL.NOT_FILE.error(LOGGER, path)
             LOGGER.error("External chunk path $path is not a file!")
             return null
         }

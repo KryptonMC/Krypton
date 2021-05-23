@@ -11,6 +11,7 @@ import org.kryptonmc.krypton.config.category.WatchdogCategory
 import org.kryptonmc.krypton.config.category.WorldCategory
 import org.kryptonmc.krypton.config.serializer.DifficultyTypeSerializer
 import org.kryptonmc.krypton.config.serializer.GamemodeTypeSerializer
+import org.kryptonmc.krypton.config.serializer.LocaleTypeSerializer
 import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
@@ -59,6 +60,7 @@ data class KryptonConfig(
                     .serializers()
                 ).register(DifficultyTypeSerializer)
                     .register(GamemodeTypeSerializer)
+                    .register(LocaleTypeSerializer)
                     .registerAnnotatedObjects(objectMapperFactory())
             }
     }

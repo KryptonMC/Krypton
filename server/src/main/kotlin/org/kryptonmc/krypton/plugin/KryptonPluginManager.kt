@@ -25,6 +25,7 @@ import org.kryptonmc.api.plugin.PluginDescriptionFile
 import org.kryptonmc.api.plugin.PluginLoadState
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.createDirectory
 import org.kryptonmc.krypton.util.list
 import org.kryptonmc.krypton.util.logger
@@ -41,7 +42,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
     override val plugins = mutableSetOf<Plugin>()
 
     internal fun initialize() {
-        LOGGER.info("Loading plugins...")
+        Messages.PLUGIN.LOAD.INITIAL.info(LOGGER)
         CURRENT_DIRECTORY.resolve("plugins").apply {
             createDirectory()
             list().filter { !it.isDirectory() }.forEach {
@@ -49,17 +50,17 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
                 val name = plugin.context.description.name
                 val version = plugin.context.description.version
-                LOGGER.info("Successfully loaded $name version $version")
+                Messages.PLUGIN.LOAD.SUCCESS.info(LOGGER, name, version)
 
-                LOGGER.info("Initializing $name version $version...")
+                Messages.PLUGIN.INIT.START.info(LOGGER, name, version)
                 plugin.initialize()
-                LOGGER.info("Successfully initialized $name version $version")
+                Messages.PLUGIN.INIT.SUCCESS.info(LOGGER, name, version)
                 plugin.loadState = PluginLoadState.INITIALIZED
 
                 plugins += plugin
             }
         }
-        LOGGER.info("Plugin loading done!")
+        Messages.PLUGIN.LOAD.DONE.info(LOGGER)
     }
 
     override fun isInitialized(plugin: Plugin) = plugin in plugins && plugin.loadState == PluginLoadState.INITIALIZED
@@ -69,7 +70,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
     private fun load(folder: Path, path: Path): Plugin? {
         val description = loadDescription(path)
-        LOGGER.info("Loading ${description.name} version ${description.version}...")
+        Messages.PLUGIN.LOAD.START.info(LOGGER, description.name, description.version)
 
         val dataFolder = folder.resolve(description.name).createDirectory()
         val context = PluginContext(
@@ -85,16 +86,16 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
             val pluginClass = jarClass.asSubclass(Plugin::class.java)
             pluginClass.getDeclaredConstructor(PluginContext::class.java).newInstance(context)
         } catch (exception: Exception) {
-            LOGGER.error(when (exception) {
-                is ClassNotFoundException -> "Could not find main class for plugin ${description.name}!"
-                is ClassCastException -> "Main class of ${description.name} does not extend Plugin!"
-                is NoSuchMethodException -> "Main class of ${description.name} does not have a constructor that accepts a plugin context!"
-                is IllegalAccessException -> "Main class of ${description.name}'s primary constructor is not open!"
-                is InstantiationException -> "Main class of ${description.name} must not be abstract!"
-                is InvocationTargetException -> "Main class of ${description.name} threw an exception!"
-                else -> "An unexpected exception occurred when attempting to load the main class of ${description.name}"
-            }, exception)
-            LOGGER.info("Shutting down ${description.name} version ${description.version}...")
+            when (exception) {
+                is ClassNotFoundException -> Messages.PLUGIN.LOAD.ERROR.NO_MAIN.error(LOGGER, description.name, exception)
+                is ClassCastException -> Messages.PLUGIN.LOAD.ERROR.DOES_NOT_EXTEND.error(LOGGER, description.name, exception)
+                is NoSuchMethodException -> Messages.PLUGIN.LOAD.ERROR.NO_CONSTRUCTOR.error(LOGGER, description.name, exception)
+                is IllegalAccessException -> Messages.PLUGIN.LOAD.ERROR.CONSTRUCTOR_CLOSED.error(LOGGER, description.name, exception)
+                is InstantiationException -> Messages.PLUGIN.LOAD.ERROR.ABSTRACT.error(LOGGER, description.name, exception)
+                is InvocationTargetException -> Messages.PLUGIN.LOAD.ERROR.INSTANTIATION.error(LOGGER, description.name, exception)
+                else -> Messages.PLUGIN.LOAD.ERROR.UNEXPECTED.error(LOGGER, description.name, exception)
+            }
+            Messages.PLUGIN.SHUTDOWN.START.info(LOGGER, description.name, description.version)
             null
         }
     }
@@ -109,9 +110,10 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
     fun shutdown() = plugins.forEach {
         it.loadState = PluginLoadState.SHUTTING_DOWN
-        LOGGER.info("Shutting down ${it.context.description.name} version ${it.context.description.version}")
+        Messages.PLUGIN.SHUTDOWN.START.info(LOGGER, it.context.description.name, it.context.description.version)
         it.shutdown()
         it.loadState = PluginLoadState.SHUT_DOWN
+        Messages.PLUGIN.SHUTDOWN.SUCCESS.info(LOGGER, it.context.description.name, it.context.description.version)
     }
 
     companion object {

@@ -19,10 +19,15 @@
 package org.kryptonmc.krypton
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.convert
+import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
+import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.TranslationManager
 import org.kryptonmc.krypton.util.logger
+import java.util.Locale
 import java.util.concurrent.atomic.AtomicReference
 
 // max memory in megabytes (bytes / 1024 / 1024)
@@ -38,19 +43,22 @@ class KryptonCLI : CliktCommand() {
 
     private val disableGUI by option("-nogui", "--disable-gui").flag()
     private val version by option("-v", "--version").flag()
+    private val locale by option("-l", "--locale").convert {
+        val split = it.split("[_-]".toRegex())
+        if (split.isEmpty()) return@convert Locale.ENGLISH
+        if (split.size == 2) return@convert Locale(split[0], split[1])
+        Locale(split[0])
+    }.default(Locale.ENGLISH)
 
     override fun run() {
+        TranslationManager.reload(locale)
         if (version) {
-            println("Krypton version ${KryptonServerInfo.version} for Minecraft ${KryptonServerInfo.minecraftVersion}")
+            Messages.VERSION_INFO.print(KryptonServerInfo.version, KryptonServerInfo.minecraftVersion)
             return
         }
         val logger = logger("Krypton")
-        logger.info("Starting Krypton server version ${KryptonServerInfo.version} for Minecraft ${KryptonServerInfo.minecraftVersion}")
-
-        if (MAX_MEMORY < MEMORY_WARNING_THRESHOLD) {
-            logger.warn("You're starting the server with $MEMORY_WARNING_THRESHOLD megabytes of RAM.")
-            logger.warn("Consider starting it with more by using \"java -Xmx1024M -Xms1024M -jar Krypton-${KryptonServerInfo.version}.jar\" to start it with 1 GB RAM")
-        }
+        Messages.LOAD.info(logger, KryptonServerInfo.version, KryptonServerInfo.minecraftVersion)
+        if (MAX_MEMORY < MEMORY_WARNING_THRESHOLD) Messages.LOAD_LOW_MEMORY.warn(logger, MEMORY_WARNING_THRESHOLD.toString(), KryptonServerInfo.version)
 
         val reference = AtomicReference<KryptonServer>()
         val mainThread = Thread({ reference.get().start(disableGUI) }, "Server Thread").apply {

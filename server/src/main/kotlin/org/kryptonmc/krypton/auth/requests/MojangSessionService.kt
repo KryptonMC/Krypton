@@ -24,6 +24,7 @@ import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.encryption.Encryption
 import org.kryptonmc.krypton.util.encryption.hexDigest
 import org.kryptonmc.krypton.util.logger
@@ -105,12 +106,12 @@ object SessionService {
         val response = sessionService.hasJoined(username, serverId, ip).execute()
         if (!response.isSuccessful) {
             LOGGER.debug("Error authenticating $username! Code: ${response.code()}, body: ${response.errorBody()}")
-            LOGGER.error("Failed to verify username $username!")
+            Messages.AUTH.FAIL.error(LOGGER, username)
             throw AuthenticationException()
         }
 
         val profile = requireNotNull(response.body())
-        LOGGER.info("UUID of player ${profile.name} is ${profile.uuid}")
+        Messages.AUTH.SUCCESS.info(LOGGER, profile.name, profile.uuid)
         profiles.put(profile.name, profile)
         return profile
     }

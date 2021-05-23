@@ -27,6 +27,7 @@ import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.kyori.adventure.translation.GlobalTranslator
 import org.kryptonmc.api.effect.particle.BlockParticleData
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
@@ -41,6 +42,8 @@ import org.kryptonmc.api.world.Location
 import org.kryptonmc.krypton.entity.Slot
 import org.kryptonmc.krypton.entity.entities.data.VillagerData
 import org.kryptonmc.krypton.entity.metadata.Optional
+import org.kryptonmc.krypton.locale.TranslationManager
+import org.kryptonmc.krypton.locale.TranslationRepository
 import org.kryptonmc.krypton.registry.Registries
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -199,7 +202,7 @@ fun ByteBuf.readNBTCompound(): CompoundBinaryTag {
 }
 
 fun ByteBuf.writeChat(component: Component) {
-    writeString(GsonComponentSerializer.gson().serialize(component))
+    writeString(GsonComponentSerializer.gson().serialize(TranslationManager.render(component)))
 }
 
 fun ByteBuf.writeOptionalChat(component: Optional<Component>) {

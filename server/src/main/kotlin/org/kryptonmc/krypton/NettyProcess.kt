@@ -38,6 +38,7 @@ import io.netty.incubator.channel.uring.IOUringEventLoopGroup
 import io.netty.incubator.channel.uring.IOUringServerSocketChannel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.ChannelHandler
 import org.kryptonmc.krypton.packet.transformers.LegacyQueryHandler
 import org.kryptonmc.krypton.packet.transformers.PacketDecoder
@@ -83,9 +84,7 @@ class NettyProcess(private val server: KryptonServer) {
             }
         } catch (exception: IOException) {
             LOGGER.error("-------------------------------------------------")
-            LOGGER.error("FAILED TO BIND TO PORT ${server.config.server.port}!")
-            LOGGER.error("Exception: $exception")
-            LOGGER.error("Perhaps a server is already running on that port?")
+            Messages.ERROR_BIND.info(LOGGER, server.config.server.port, exception)
             LOGGER.error("-------------------------------------------------")
             server.stop()
         } finally {

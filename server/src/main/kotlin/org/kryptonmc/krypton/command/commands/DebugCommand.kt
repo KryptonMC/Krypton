@@ -28,6 +28,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.BrigadierCommand
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.logger
 import java.io.IOException
@@ -81,7 +82,7 @@ class DebugCommand(private val server: KryptonServer) : BrigadierCommand {
             }
             sender.sendMessage(translatable("commands.debug.reportSaved", listOf(text(reportFileName))))
         } catch (exception: IOException) {
-            LOGGER.error("Failed to save debug dump!", exception)
+            Messages.COMMANDS.DEBUG_SAVE_ERROR.error(LOGGER, exception)
             sender.sendMessage(translatable("commands.debug.reportFailed"))
         }
     }

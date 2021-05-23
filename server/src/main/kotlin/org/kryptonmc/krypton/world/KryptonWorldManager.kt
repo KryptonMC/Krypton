@@ -31,6 +31,7 @@ import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.api.world.WorldVersion
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.dimension.Dimension
@@ -61,19 +62,22 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
 
     init {
         default = try {
-            LOGGER.info("Loading world $name...")
+            Messages.WORLD.LOAD.info(LOGGER, name)
             load(name).get()
         } catch (exception: Exception) {
-            if (exception !is IllegalArgumentException) LOGGER.error("Exception loading world $name!", exception)
+            if (exception !is IllegalArgumentException) Messages.WORLD.LOAD_ERROR.error(LOGGER, name, exception)
             exitProcess(0)
         }
         worlds[name] = default
-        LOGGER.info("World loaded!")
+        Messages.WORLD.LOADED.info(LOGGER)
     }
 
     override fun load(name: String): Future<KryptonWorld> {
         val folder = CURRENT_DIRECTORY.resolve(name)
-        require(folder.exists()) { "World with name $name does not exist!".apply { LOGGER.error(this) } }
+        require(folder.exists()) {
+            Messages.WORLD.NOT_FOUND.error(LOGGER, name)
+            "World with name $name does not exist!"
+        }
         return loadWorld(folder)
     }
 

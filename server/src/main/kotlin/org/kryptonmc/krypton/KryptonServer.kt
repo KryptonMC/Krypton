@@ -40,6 +40,10 @@ import org.kryptonmc.krypton.console.ConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonEventBus
+import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.locale.MetadataResponse
+import org.kryptonmc.krypton.locale.TranslationManager
+import org.kryptonmc.krypton.locale.TranslationRepository
 import org.kryptonmc.krypton.packet.PacketLoader
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.session.SessionManager
@@ -148,7 +152,7 @@ class KryptonServer(val mainThread: Thread) : Server {
     private var watchdog: WatchdogProcess? = null
 
     internal fun start(disableGUI: Boolean) = try {
-        LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
+        Messages.START.INITIAL.info(LOGGER, config.server.ip, config.server.port)
         val startTime = System.nanoTime()
         // loading these here avoids loading them when the first player joins
         Class.forName("org.kryptonmc.krypton.registry.Registries")
@@ -169,6 +173,7 @@ class KryptonServer(val mainThread: Thread) : Server {
         LOGGER.debug("Registering commands and console translations...")
         commandManager.registerBuiltins()
         TranslationRegister.initialize()
+        TranslationRepository.scheduleRefresh()
 
         LOGGER.debug("Starting Netty...")
         GlobalScope.launch(Dispatchers.IO) {
@@ -179,11 +184,9 @@ class KryptonServer(val mainThread: Thread) : Server {
         KryptonMetrics.initialize(this, config.other.metrics)
 
         if (!config.server.onlineMode) {
-            LOGGER.warn("-----------------------------------------------------------------------------------")
-            LOGGER.warn("SERVER IS IN OFFLINE MODE! THIS SERVER WILL MAKE NO ATTEMPTS TO AUTHENTICATE USERS!")
-            LOGGER.warn("While this may allow players without full Minecraft accounts to connect, it also allows hackers to connect with any username they choose! Beware!")
-            LOGGER.warn("To get rid of this message, change online-mode to true in config.conf")
-            LOGGER.warn("-----------------------------------------------------------------------------------")
+            LOGGER.info("-----------------------------------------------------------------------------------")
+            Messages.PIRACY_WARNING.info(LOGGER)
+            LOGGER.info("-----------------------------------------------------------------------------------")
         }
         pluginManager.initialize()
 
@@ -197,20 +200,20 @@ class KryptonServer(val mainThread: Thread) : Server {
         }
 
         if (config.query.enabled) {
-            LOGGER.info("Starting GS4 status listener")
+            Messages.START.QUERY.info(LOGGER)
             gs4QueryHandler = GS4QueryHandler.create(this)
         }
         if (!disableGUI && !GraphicsEnvironment.isHeadless()) KryptonServerGUI.open(this)
 
         Runtime.getRuntime().addShutdownHook(Thread(::stop, "Shutdown Handler").apply { isDaemon = false })
 
-        LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type \"help\" for help.")
+        Messages.START.DONE.info(LOGGER, "%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9))
         watchdog?.tick(System.currentTimeMillis())
 
         while (isRunning) {
             val nextTickTime = System.currentTimeMillis() - lastTickTime
             if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15000L) {
-                LOGGER.warn("Woah there! Can't keep up! Running ${nextTickTime}ms (${nextTickTime / 50} ticks) behind!")
+                Messages.TICK_OVERLOAD_WARNING.warn(LOGGER, nextTickTime, nextTickTime / 50)
                 lastOverloadWarning = lastTickTime
             }
             // start profiler
@@ -285,9 +288,9 @@ class KryptonServer(val mainThread: Thread) : Server {
         }
         if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
             profiler.push("autosave")
-            LOGGER.debug("Autosave started")
+            Messages.AUTOSAVE.STARTED.info(LOGGER)
             worldManager.saveAll()
-            LOGGER.debug("Autosave finished")
+            Messages.AUTOSAVE.FINISHED.info(LOGGER)
             profiler.pop()
         }
         tickables.forEach { it.run() }
@@ -353,7 +356,7 @@ class KryptonServer(val mainThread: Thread) : Server {
         if (!isRunning) return // Ensure we cannot accidentally run this twice
 
         // stop server and shut down session manager (disconnecting all players)
-        LOGGER.info("Stopping Krypton...")
+        Messages.STOP.INITIAL.info(LOGGER)
         isRunning = false
         sessionManager.shutdown()
         nettyProcess.shutdown()
@@ -361,18 +364,18 @@ class KryptonServer(val mainThread: Thread) : Server {
         watchdog?.shutdown()
 
         // save player, world and region data
-        LOGGER.info("Saving player, world and region data...")
+        Messages.STOP.SAVE.info(LOGGER)
         worldManager.saveAll()
         players.forEach { playerDataManager.save(it) }
 
         // shut down plugins and unregister listeners
-        LOGGER.info("Shutting down plugins...")
+        Messages.STOP.PLUGINS.info(LOGGER)
         pluginManager.shutdown()
         eventBus.unregisterAll()
 
         // shut down scheduler
         scheduler.shutdown()
-        LOGGER.info("Goodbye")
+        Messages.STOP.GOODBYE.info(LOGGER)
 
         // manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
         LogManager.shutdown()
@@ -386,10 +389,10 @@ class KryptonServer(val mainThread: Thread) : Server {
         val split = config.watchdog.restartScript.split(" ")
         if (split.isNotEmpty()) {
             if (!Path.of(split[0]).isRegularFile()) {
-                println("Unable to find restart script ${split[0]}! Refusing to restart.")
+                Messages.RESTART.NO_SCRIPT.print(split[0])
                 Runtime.getRuntime().halt(0)
             }
-            println("Attempting to restart the server with script ${split[0]}...")
+            Messages.RESTART.ATTEMPT.print(split[0])
             val os = System.getProperty("os.name").lowercase()
             Runtime.getRuntime().exec((if ("win" in os) "cmd /c start " else "sh ") + config.watchdog.restartScript)
         }
@@ -438,4 +441,5 @@ val GSON: Gson = GsonComponentSerializer.gson().populator().apply(
         .registerTypeAdapter<RegistryBlockState>(RegistryBlockState.Companion)
         .registerTypeAdapter<Gamemode>(GamemodeSerializer)
         .registerTypeAdapter<Difficulty>(DifficultySerializer)
+        .registerTypeAdapter<MetadataResponse>(MetadataResponse)
 ).create()

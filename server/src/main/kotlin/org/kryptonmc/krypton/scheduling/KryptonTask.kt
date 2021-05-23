@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.scheduling
 import org.kryptonmc.api.plugin.Plugin
 import org.kryptonmc.api.scheduling.Task
 import org.kryptonmc.api.scheduling.TaskState
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -69,7 +70,7 @@ data class KryptonTask(
                 Thread.currentThread().interrupt()
                 return@execute
             }
-            LOGGER.error("Plugin ${plugin.context.description.name} generated an exception from task $runnable")
+            Messages.SCHEDULE_ERROR.error(LOGGER, plugin.context.description.name, runnable)
         } finally {
             if (period == 0L) finish()
             currentTaskThread = null

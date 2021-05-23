@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.command.commands
 
-import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.command.Command
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.locale.Messages
 
 /**
  * Stop the server. That's literally all this does
@@ -29,7 +29,7 @@ import org.kryptonmc.api.command.Sender
 class StopCommand(private val server: KryptonServer) : Command("stop", "krypton.command.stop") {
 
     override fun execute(sender: Sender, args: List<String>) {
-        sender.sendMessage(Component.text("Stopping server..."))
+        Messages.COMMANDS.STOP.send(sender)
         server.stop()
     }
 }

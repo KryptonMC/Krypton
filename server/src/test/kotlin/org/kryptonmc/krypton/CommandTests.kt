@@ -34,6 +34,7 @@ import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.command.commands.RestartCommand
 import org.kryptonmc.krypton.command.commands.StopCommand
 import org.kryptonmc.krypton.event.KryptonEventBus
+import org.kryptonmc.krypton.locale.Messages
 import java.security.Permission
 import kotlin.test.Test
 
@@ -70,7 +71,7 @@ class CommandTests {
     @Test
     fun `dispatch actually dispatches`() {
         manager.dispatch(emptySender, "test-def-exec")
-        verify { emptySender.sendMessage(text("You do not have permission to execute this command!", NamedTextColor.RED)) }
+        verify { emptySender.sendMessage(any()) }
     }
 
     @Test

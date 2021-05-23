@@ -20,11 +20,12 @@ package org.kryptonmc.krypton.packet.handlers
 
 import net.kyori.adventure.extra.kotlin.text
 import net.kyori.adventure.extra.kotlin.translatable
-import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.api.event.handshake.HandshakeEvent
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.handshake.BungeeCordHandshakeData
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
@@ -50,7 +51,7 @@ class HandshakeHandler(
         server.eventBus.call(HandshakeEvent(session.channel.remoteAddress() as InetSocketAddress))
 
         if (packet.data.address.split('\u0000').size > 1 && !server.config.other.bungeecord) {
-            disconnect("Please notify the server administrator that they are attempting to use BungeeCord IP forwarding without enabling BungeeCord support in their configuration file.")
+            disconnect(Messages.BUNGEE.NOTIFY())
             return
         }
 
@@ -58,8 +59,8 @@ class HandshakeHandler(
             val data = try {
                 packet.data.address.splitData()
             } catch (exception: Exception) {
-                disconnect("Could not decode BungeeCord handshake data! Please report this to an administrator!")
-                LOGGER.error("Error decoding BungeeCord handshake data! Please report this to Krypton.", exception)
+                disconnect(Messages.BUNGEE.FAIL_DECODE())
+                Messages.BUNGEE.FAIL_DECODE_ERROR.error(LOGGER, exception)
                 return
             }
 
@@ -67,8 +68,8 @@ class HandshakeHandler(
                 LOGGER.debug("Detected BungeeCord login for ${data.uuid}")
                 changeState(packet, packet.data.nextState, data)
             } else {
-                disconnect("You are unable to directly connect to this server, as it has BungeeCord enabled in the configuration.")
-                LOGGER.warn("Attempted connection from ${packet.data.address} not from BungeeCord when BungeeCord compatibility enabled.")
+                disconnect(Messages.BUNGEE.DIRECT())
+                Messages.BUNGEE.DIRECT_WARN.warn(LOGGER, packet.data.address)
                 return
             }
         }
@@ -115,8 +116,8 @@ class HandshakeHandler(
         session.handler = StatusHandler(server, session)
     }
 
-    private fun disconnect(reason: String) {
-        session.sendPacket(PacketOutLoginDisconnect(text(reason)))
+    private fun disconnect(reason: Component) {
+        session.sendPacket(PacketOutLoginDisconnect(reason))
         if (session.channel.isOpen) session.channel.closeFuture().syncUninterruptibly()
     }
 

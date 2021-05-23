@@ -26,6 +26,7 @@ import org.kryptonmc.api.world.Biome
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.chunk.Chunk
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.HeightmapBuilder
@@ -71,7 +72,7 @@ data class KryptonChunk(
 
         val sectionY = y shr 4
         if (sectionY !in 0..15) {
-            LOGGER.warn("Attempted to place block $block under/over the world! The section at $sectionY cannot be set!")
+            Messages.BLOCK_UNDER_WORLD.warn(LOGGER, block, sectionY)
             return false
         }
 

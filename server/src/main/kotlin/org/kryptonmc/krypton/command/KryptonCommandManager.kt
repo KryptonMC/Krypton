@@ -43,6 +43,7 @@ import org.kryptonmc.krypton.command.commands.DebugCommand
 import org.kryptonmc.krypton.command.commands.RestartCommand
 import org.kryptonmc.krypton.command.commands.StopCommand
 import org.kryptonmc.krypton.command.commands.TeleportCommand
+import org.kryptonmc.krypton.locale.Messages
 import java.util.concurrent.CompletableFuture
 
 class KryptonCommandManager(private val server: KryptonServer) : CommandManager {
@@ -73,7 +74,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
             if (dispatcher.execute(command.removePrefix("/"), sender) != 1) sender.sendMessage(DEFAULT_NO_PERMISSION)
         } catch (exception: CommandSyntaxException) {
             val message = when (exception) {
-                BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand() -> text("Unknown command $command.")
+                BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand() -> Messages.COMMAND.UNKNOWN(command)
                 else -> text(exception.message ?: "")
             }
             sender.sendMessage(message)
@@ -154,6 +155,6 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
 
     companion object {
 
-        private val DEFAULT_NO_PERMISSION = text("You do not have permission to execute this command!", NamedTextColor.RED)
+        private val DEFAULT_NO_PERMISSION = Messages.COMMAND.NO_PERMISSION().color(NamedTextColor.RED)
     }
 }

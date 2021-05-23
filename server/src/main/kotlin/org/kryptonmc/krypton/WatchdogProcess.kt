@@ -20,6 +20,7 @@ package org.kryptonmc.krypton
 
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.concurrent.NamedUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.logger
 import java.lang.management.ManagementFactory
@@ -73,29 +74,22 @@ class WatchdogProcess(private val server: KryptonServer) : Thread("Krypton Watch
 
             if (isLongTimeout) {
                 LOGGER.printBar(true)
-                LOGGER.fatal("The server has stopped responding! This could be, but is not likely to be, an issue with Krypton.")
-                LOGGER.fatal("If you see a plugin in the server thread dump below, then please report it to that author.")
-                LOGGER.fatal("\t *Especially* if it looks like HTTP or MySQL operations are occurring")
-                LOGGER.fatal("If you see a world save or edit, then it likely means you tried to do much more than your server can handle at once")
-                LOGGER.fatal("\tIf this is the case, consider increasing timeout-time in the main configuration file. Please note, however, that this will replace this crash with LARGE lag spikes")
-                LOGGER.fatal("If you are still unsure, or you think that this actually a Krypton issue, especially if you see org.kryptonmc at the top of the trace, please report this to https://github.com/KryptonMC/Krypton/issues")
-                LOGGER.fatal("When reporting to Krypton, please ensure that you include all relevant console errors and thread dumps, as this will help us diagnose your issue easier.")
-                LOGGER.fatal("Krypton version: ${KryptonServerInfo.version} (for Minecraft ${KryptonServerInfo.minecraftVersion})")
+                Messages.WATCHDOG.STOPPED.fatal(LOGGER, KryptonServerInfo.version, KryptonServerInfo.minecraftVersion)
             } else {
-                LOGGER.warn("---- DO NOT REPORT THIS TO KRYPTON! THIS IS NOT A BUG OR CRASH! ----")
-                LOGGER.warn("The server has not responded for ${(currentTime - lastTick) / 1000} seconds! Creating thread dump...")
+                Messages.WATCHDOG.HEADER.warn(LOGGER)
+                Messages.WATCHDOG.WARNING.warn(LOGGER, (currentTime - lastTick) / 1000)
             }
 
             LOGGER.printBar(isLongTimeout)
-            LOGGER.log(isLongTimeout, "Server thread dump (look for plugins here before reporting this to Krypton):")
+            if (isLongTimeout) Messages.WATCHDOG.DUMP.SERVER.fatal(LOGGER) else Messages.WATCHDOG.DUMP.SERVER.warn(LOGGER)
             THREAD_BEAN.getThreadInfo(server.mainThread.id, Int.MAX_VALUE)?.dump(LOGGER, isLongTimeout)
             LOGGER.printBar(isLongTimeout)
 
             if (isLongTimeout) {
-                LOGGER.fatal("Entire Thread Dump:")
+                Messages.WATCHDOG.DUMP.ALL.fatal(LOGGER)
                 THREAD_BEAN.dumpAllThreads(true, true).forEach { it.dump(LOGGER, true) }
             } else {
-                LOGGER.warn("---- DO NOT REPORT THIS TO KRYPTON! THIS IS NOT A BUG OR CRASH! ----")
+                Messages.WATCHDOG.HEADER.warn(LOGGER)
             }
             LOGGER.printBar(isLongTimeout)
 
@@ -115,16 +109,31 @@ class WatchdogProcess(private val server: KryptonServer) : Thread("Krypton Watch
 
 private fun ThreadInfo.dump(logger: Logger, fatal: Boolean) {
     logger.printBar(fatal)
-    logger.log(fatal, "Current Thread: $threadName")
-    logger.log(fatal, "\tPID: $threadId | Suspended: $isSuspended | Native: $isInNative | State: $threadState")
-
-    if (lockedMonitors.isNotEmpty()) {
-        logger.log(fatal, "\tThread is waiting on monitor(s):")
-        lockedMonitors.forEach { logger.log(fatal, "\t\tLocked on: ${it.lockedStackFrame}") }
+    if (fatal) {
+        Messages.WATCHDOG.DUMP.THREAD.fatal(logger, threadName)
+        Messages.WATCHDOG.DUMP.INFO.fatal(logger, threadId, isSuspended, isInNative, threadState)
+    } else {
+        Messages.WATCHDOG.DUMP.THREAD.warn(logger, threadName)
+        Messages.WATCHDOG.DUMP.INFO.warn(logger, threadId, isSuspended, isInNative, threadState)
     }
 
-    logger.log(fatal, "\tStack:")
-    stackTrace.forEach { logger.log(fatal, "\t\t$it") }
+    if (lockedMonitors.isNotEmpty()) {
+        if (fatal) {
+            Messages.WATCHDOG.DUMP.MONITORS.fatal(logger)
+            lockedMonitors.forEach { Messages.WATCHDOG.DUMP.MONITOR.fatal(logger, it.lockedStackFrame) }
+        } else {
+            Messages.WATCHDOG.DUMP.MONITORS.warn(logger)
+            lockedMonitors.forEach { Messages.WATCHDOG.DUMP.MONITOR.warn(logger, it.lockedStackFrame) }
+        }
+    }
+
+    if (fatal) {
+        Messages.WATCHDOG.DUMP.STACK.fatal(logger)
+        stackTrace.forEach { Messages.WATCHDOG.DUMP.STACK_ELEMENT.fatal(logger, it) }
+    } else {
+        Messages.WATCHDOG.DUMP.STACK.warn(logger)
+        stackTrace.forEach { Messages.WATCHDOG.DUMP.STACK_ELEMENT.warn(logger, it) }
+    }
 }
 
 private fun Logger.log(fatal: Boolean, message: String) = if (fatal) fatal(message) else warn(message)

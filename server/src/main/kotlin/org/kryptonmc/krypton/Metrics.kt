@@ -26,6 +26,7 @@ import org.bstats.charts.SimplePie
 import org.bstats.charts.SingleLineChart
 import org.bstats.config.MetricsConfig
 import org.bstats.json.JsonObjectBuilder
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 import java.nio.file.Path
@@ -58,13 +59,7 @@ class Metrics(logger: Logger, serviceId: Int, enabled: Boolean) {
             config.isLogResponseStatusTextEnabled
         )
 
-        if (!config.didExistBefore()) {
-            logger.info("Krypton and some of its plugins collect metrics and send them to bStats (https://bstats.org).")
-            logger.info("bStats collects some basic information for plugin authors, like how many people use")
-            logger.info("their plugin and their total player count. It's recommended to keep bStats enabled, but")
-            logger.info("if you're not comfortable with this, you can opt-out by editing the config.txt file in")
-            logger.info("the '/plugins/bStats/' folder and setting enabled to false.")
-        }
+        if (!config.didExistBefore()) Messages.METRICS_INFO.info(logger)
     }
 
     operator fun plusAssign(chart: CustomChart) {
