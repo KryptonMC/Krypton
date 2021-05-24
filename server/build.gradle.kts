@@ -1,81 +1,83 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
-import org.apache.tools.ant.filters.ReplaceTokens
+import io.github.slimjar.task.SlimJar
 import org.kryptonmc.krypton.Versions
 import org.kryptonmc.krypton.adventure
 import org.kryptonmc.krypton.applyCommon
 import org.kryptonmc.krypton.applyRepositories
+import org.kryptonmc.krypton.configurate
 import org.kryptonmc.krypton.log4j
 import org.kryptonmc.krypton.netty
 
 plugins {
-    id("com.github.johnrengelman.shadow") version "7.0.0"
     id("org.cadixdev.licenser")
     `java-library`
-    application
     `maven-publish`
     signing
 }
-
-application.mainClass.set("org.kryptonmc.krypton.KryptonKt")
 
 repositories {
     maven("https://repo.velocitypowered.com/snapshots/")
 }
 
 dependencies {
-    api(project(":krypton-api"))
+    compileOnlyApi(project(":krypton-api"))
 
-    implementation(kotlin("stdlib-jdk7"))
-    implementation(kotlin("stdlib-jdk8"))
+    // Kotlin
+    slimApi(kotlin("reflect"))
+    slim(kotlin("stdlib-jdk7"))
+    slim(kotlin("stdlib-jdk8"))
 
     // Netty
-    api(netty("buffer"))
-    api(netty("handler"))
-    api(netty("transport"))
+    slimApi(netty("buffer"))
+    slimApi(netty("handler"))
+    slimApi(netty("transport"))
 
     // Netty native transport
-    implementation(netty("transport-native-epoll"))
-    implementation(netty("transport-native-kqueue"))
-    implementation("io.netty.incubator:netty-incubator-transport-native-io_uring:0.0.5.Final")
+    slim(netty("transport-native-epoll"))
+    slim(netty("transport-native-kqueue"))
+    slim("io.netty.incubator:netty-incubator-transport-native-io_uring:0.0.5.Final")
 
     // Adventure
-    api(adventure("text-serializer-gson"))
-    api(adventure("text-serializer-legacy"))
-    api(adventure("text-serializer-plain"))
-    api(adventure("nbt"))
+    slimApi(adventure("text-serializer-gson"))
+    slimApi(adventure("text-serializer-legacy"))
+    slimApi(adventure("text-serializer-plain"))
+    slimApi(adventure("nbt"))
 
     // Logging
-    runtimeOnly(log4j("core"))
-    api("net.minecrell:terminalconsoleappender:1.2.0")
-    runtimeOnly("org.jline:jline-terminal-jansi:3.19.0")
+    slim(log4j("core"))
+    slimApi("net.minecrell:terminalconsoleappender:1.2.0")
+    slim("org.jline:jline-terminal-jansi:3.19.0")
 
     // HTTP
-    api("com.squareup.retrofit2:retrofit:${Versions.RETROFIT}")
-    api("com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}")
-    api("com.squareup.okhttp3:okhttp:${Versions.OKHTTP}")
+    slimApi("com.squareup.retrofit2:retrofit:${Versions.RETROFIT}")
+    slimApi("com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}")
+    slimApi("com.squareup.okhttp3:okhttp:${Versions.OKHTTP}")
 
     // Caching
-    api("com.github.ben-manes.caffeine:caffeine:3.0.1")
-    api("it.unimi.dsi:fastutil:8.5.4")
+    slimApi("com.github.ben-manes.caffeine:caffeine:3.0.1")
+    slimApi("it.unimi.dsi:fastutil:8.5.4")
 
     // Miscellaneous
-    api("org.spongepowered:math:2.0.0")
-    implementation("com.github.ajalt.clikt:clikt:3.0.1")
-    implementation("org.bstats:bstats-base:2.2.0")
-    implementation("com.velocitypowered:velocity-native:1.1.0-SNAPSHOT")
+    slimApi("org.spongepowered:math:2.0.0")
+    slim("com.github.ajalt.clikt:clikt:3.2.0")
+    slim("org.bstats:bstats-base:2.2.0")
+    implementation("com.velocitypowered:velocity-native:1.1.0-SNAPSHOT") {
+        exclude("com.google.guava", "guava")
+        exclude("io.netty", "netty-handler")
+    }
+
+    // Duplicated test dependencies because SJ doesn't add them by default :(
+    testImplementation(project(":krypton-api"))
+    testImplementation(netty("all"))
+    testImplementation("com.google.code.gson:gson:${Versions.GSON}")
+    testImplementation(configurate("hocon"))
+    testImplementation(configurate("extra-kotlin"))
+    testImplementation(adventure("serializer-configurate4"))
+    testImplementation(adventure("text-serializer-legacy"))
+    testImplementation(adventure("text-serializer-gson"))
 }
 
-tasks {
-    withType<ShadowJar> {
-        archiveFileName.set("Krypton-${project.version}.jar")
-        transform(Log4j2PluginsCacheFileTransformer::class.java)
-        relocate("org.bstats", "org.kryptonmc.krypton.bstats")
-    }
-    withType<ProcessResources> {
-        val tokens = mapOf("version" to project.version.toString())
-        filter<ReplaceTokens>("tokens" to tokens)
-    }
+tasks.withType<SlimJar> {
+    shade = false
 }
 
 pitest {

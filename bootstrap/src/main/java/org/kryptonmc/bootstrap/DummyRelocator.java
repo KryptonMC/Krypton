@@ -16,27 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.bootstrap;
 
-object Versions {
+import io.github.slimjar.relocation.Relocator;
 
-    // Main
-    const val COROUTINES = "1.4.3"
-    const val GUAVA = "30.1.1-jre"
-    const val GSON = "2.8.6"
-    const val COMMONS_LANG = "3.12.0"
-    const val COMMONS_TEXT = "1.9"
-    const val BRIGADIER = "1.0.17"
-    const val MATH = "2.0.0"
-    const val ADVENTURE = "4.7.0"
-    const val NETTY = "4.1.65.Final"
-    const val LOG4J = "2.14.1"
-    const val RETROFIT = "2.9.0"
-    const val OKHTTP = "4.9.1"
-    const val CONFIGURATE = "4.1.1"
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
-    // Test
-    const val JUNIT = "5.7.1"
-    const val MOCKK = "1.10.6"
-    const val BYTE_BUDDY = "1.11.0"
+public final class DummyRelocator implements Relocator {
+
+    @Override
+    public void relocate(final File source, final File target) {
+        try {
+            target.delete();
+            Files.copy(source.toPath(), target.toPath());
+        } catch (final IOException exception) {
+            exception.printStackTrace();
+        }
+    }
 }

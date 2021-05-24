@@ -23,6 +23,7 @@ import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
+import io.github.slimjar.app.Application
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.TranslationManager
@@ -34,7 +35,13 @@ import java.util.concurrent.atomic.AtomicReference
 private val MAX_MEMORY = Runtime.getRuntime().maxMemory() / 1024L / 1024L
 private const val MEMORY_WARNING_THRESHOLD = 512
 
-fun main(args: Array<String>) = KryptonCLI().main(args)
+class KryptonApplication(private val args: ArrayList<String>) : Application() {
+
+    override fun start(): Boolean {
+        KryptonCLI().main(args)
+        return true
+    }
+}
 
 /**
  * The CLI handler for Krypton
