@@ -11,9 +11,6 @@ plugins {
 
 application.mainClass.set("org.kryptonmc.bootstrap.Main")
 
-java.sourceCompatibility = JavaVersion.VERSION_16
-java.targetCompatibility = JavaVersion.VERSION_16
-
 dependencies {
     implementation("org.ow2.asm:asm:9.1")
     implementation("org.ow2.asm:asm-commons:9.1")

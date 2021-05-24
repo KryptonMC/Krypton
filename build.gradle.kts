@@ -63,15 +63,26 @@ subprojects {
         exclude("net.kyori", "adventure-bom")
     }
 
+    val compiler = javaToolchains.compilerFor {
+        languageVersion.set(JavaLanguageVersion.of(16))
+    }
+
     tasks {
         withType<KotlinCompile> {
             kotlinOptions {
                 jvmTarget = "16"
                 freeCompilerArgs = listOf("-Xjvm-default=all")
+                jdkHome = compiler.get().metadata.installationPath.asFile.absolutePath
             }
         }
         withType<Test> {
             useJUnitPlatform()
+        }
+    }
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(16))
         }
     }
 
