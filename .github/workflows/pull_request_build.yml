@@ -1,8 +1,7 @@
-name: "Branch Validation Build"
+name: "Pull Request Validation Build"
 
 on:
-  push:
-    branches-ignore: [master, dev]
+  pull_request: null
 
 jobs:
   build:
