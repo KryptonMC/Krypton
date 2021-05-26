@@ -1,6 +1,6 @@
 rootProject.name = "krypton"
 
-setOf("api", "bootstrap", "server").forEach {
+setOf("api", "server").forEach {
     include(it)
     findProject(":$it")?.name = "${rootProject.name}-$it"
 }
