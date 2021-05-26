@@ -18,33 +18,30 @@
  */
 package org.kryptonmc.krypton.packet.transformers
 
+import com.velocitypowered.natives.encryption.VelocityCipher
+import com.velocitypowered.natives.util.MoreByteBufUtils
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
-import io.netty.handler.codec.MessageToByteEncoder
+import io.netty.handler.codec.MessageToMessageEncoder
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.readAllAvailableBytes
-import javax.crypto.Cipher
 
 /**
- * Encrypts packets using a stream cipher provided by the specified [cipher]. The algorithm for this [cipher] should
- * always be [AES/CFB8/NoPadding][org.kryptonmc.krypton.util.encryption.Encryption.SHARED_SECRET_ALGORITHM]
+ * Encrypts packets using a stream cipher provided by the specified [cipher].
+ *
+ * Thanks Velocity for the native stuff! :)
  */
-class PacketEncrypter(private val cipher: Cipher) : MessageToByteEncoder<ByteBuf>() {
+class PacketEncrypter(private val cipher: VelocityCipher) : MessageToMessageEncoder<ByteBuf>() {
 
-    override fun encode(ctx: ChannelHandlerContext, message: ByteBuf, out: ByteBuf) {
-        // load in all of the written data
-        val dataToWrite = message.readAllAvailableBytes()
-
-        // encrypt the data
-        val encryptedBytes = encrypt(dataToWrite)
-        // write it back
-        out.writeBytes(encryptedBytes)
-
-        LOGGER.debug("Encrypted bytes length ${encryptedBytes.size}")
-    }
-
-    private fun encrypt(bytes: ByteArray): ByteArray {
-        return cipher.update(bytes)
+    override fun encode(ctx: ChannelHandlerContext, message: ByteBuf, out: MutableList<Any>) {
+        val compatible = MoreByteBufUtils.ensureCompatible(ctx.alloc(), cipher, message)
+        try {
+            cipher.process(compatible)
+            out += compatible
+            LOGGER.debug("Encrypted bytes length ${compatible.readableBytes()}")
+        } catch (exception: Exception) {
+            compatible.release()
+            throw exception
+        }
     }
 
     companion object {

@@ -53,6 +53,7 @@ import java.time.Duration
 import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.experimental.and
+import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 
@@ -70,28 +71,40 @@ fun ByteBuf.writeShort(short: Short) {
 }
 
 fun ByteBuf.readVarInt(): Int {
-    var numRead = 0
-    var result = 0
-    var read: Byte
-    do {
-        read = readByte()
-        val value = (read and 127).toInt()
-        result = result or (value shl 7 * numRead)
-        numRead++
-        if (numRead > 5) throw RuntimeException("VarInt is too big")
-    } while (read and 128.toByte() != 0.toByte())
-
-    return result
+    var i = 0
+    val maxRead = min(5, readableBytes())
+    for (j in 0 until maxRead) {
+        val k = readByte()
+        i = i or ((k.toInt() and 0x7F) shl (j * 7))
+        if (k.toInt() and 0x80 != 128) return i
+    }
+    return Int.MAX_VALUE
 }
 
-fun ByteBuf.writeVarInt(varInt: Int) {
-    var i = varInt
-    while (i and -128 != 0) {
-        writeByte(i and 127 or 128)
-        i = i ushr 7
+// This came from Velocity. See https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
+fun ByteBuf.writeVarInt(value: Int) {
+    when {
+        value.toLong() and (0xFFFFFFFF shl 7) == 0L -> writeByte(value)
+        value.toLong() and (0xFFFFFFFF shl 14) == 0L -> writeShort((((value and 0x7F) or 0x80) shl 8) or (value ushr 7))
+        else -> writeVarIntFull(value)
     }
+}
 
-    writeByte(i)
+// This came from Velocity. See https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
+fun ByteBuf.write21BitVarInt(value: Int) {
+    writeMedium((((value and 0x7F) or 0x80) shl 16) or ((((value ushr 7) and 0x7F) or 0x80) shl 8) or (value ushr 14))
+}
+
+// This came from Velocity. See https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
+private fun ByteBuf.writeVarIntFull(value: Int) {
+    when {
+        value.toLong() and (0xFFFFFFFF shl 21) == 0L -> writeMedium((((value and 0x7F) or 0x80) shl 16) or ((((value ushr 7) and 0x7F) or 0x80) shl 8) or (value ushr 14))
+        value.toLong() and (0xFFFFFFFF shl 28) == 0L -> writeInt((((value and 0x7F) or 0x80) shl 24) or ((((value ushr 7) and 0x7F) or 0x80) shl 16) or ((((value ushr 14) and 0x7F) or 0x80) shl 8) or (value ushr 21))
+        else -> {
+            writeInt((((value and 0x7F) or 0x80) shl 24) or ((((value ushr 7) and 0x7F) or 0x80) shl 16) or ((((value shr 14) and 0x7F) or 0x80) shl 8) or (((value ushr 21) and 0x7F) or 0x80))
+            writeByte(value ushr 28)
+        }
+    }
 }
 
 fun ByteBuf.writeVarLong(varLong: Long) {
@@ -363,3 +376,8 @@ fun Int.varIntSize(): Int {
     }
     return 5
 }
+
+private val VARINT_EXACT_BYTE_LENGTHS = IntArray(33) { ceil((31.0 - (it - 1)) / 7.0).toInt() }.apply { this[32] = 1 }
+
+val Int.varIntBytes: Int
+    get() = VARINT_EXACT_BYTE_LENGTHS[countLeadingZeroBits()]

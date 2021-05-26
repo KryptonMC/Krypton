@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.packet.transformers
 
+import com.velocitypowered.natives.compression.VelocityCompressor
 import com.velocitypowered.natives.util.MoreByteBufUtils
-import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
@@ -29,11 +29,9 @@ import org.kryptonmc.krypton.util.readVarInt
 /**
  * Decompresses packets that meet or exceed the specified [threshold] in length.
  *
- * @author Callum Seabrook
+ * Thanks Velocity for the native stuff! :)
  */
-class PacketDecompressor(var threshold: Int) : ByteToMessageDecoder() {
-
-    private val compressor = Natives.compress.get().create(4)
+class PacketDecompressor(private val compressor: VelocityCompressor, var threshold: Int) : ByteToMessageDecoder() {
 
     override fun decode(ctx: ChannelHandlerContext, msg: ByteBuf, out: MutableList<Any>) {
         if (msg.readableBytes() == 0) return
@@ -46,11 +44,6 @@ class PacketDecompressor(var threshold: Int) : ByteToMessageDecoder() {
         if (dataLength < threshold) LOGGER.error("Packet badly compressed! Size of $dataLength is below threshold of $threshold!")
         if (dataLength > PROTOCOL_MAX_SIZE) LOGGER.error("Packet badly compressed! Size of $dataLength is larger than protocol maximum of $PROTOCOL_MAX_SIZE!")
 
-//        inflater.setInput(msg.readBytes(msg.readableBytes()).array())
-//        val bytes = ByteArray(dataLength)
-//        inflater.inflate(bytes)
-//        out.add(Unpooled.wrappedBuffer(bytes))
-//        inflater.reset()
         val compatibleIn = MoreByteBufUtils.ensureCompatible(ctx.alloc(), compressor, msg)
         val uncompressed = MoreByteBufUtils.preferredBuffer(ctx.alloc(), compressor, dataLength)
         try {
@@ -65,10 +58,12 @@ class PacketDecompressor(var threshold: Int) : ByteToMessageDecoder() {
         }
     }
 
+    override fun handlerRemoved0(ctx: ChannelHandlerContext) = compressor.close()
+
     companion object {
 
         const val NETTY_NAME = "decompressor"
-        private const val PROTOCOL_MAX_SIZE = 0x200000
+        private const val PROTOCOL_MAX_SIZE = 16 * 1024 * 1024 // Vanilla limit is 2 MB, but we use 16 MB because that's the maximum size we can
         private val LOGGER = logger<PacketDecompressor>()
     }
 }

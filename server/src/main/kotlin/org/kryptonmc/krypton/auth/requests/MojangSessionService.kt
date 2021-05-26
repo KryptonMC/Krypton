@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.encryption.Encryption
-import org.kryptonmc.krypton.util.encryption.hexDigest
+import org.kryptonmc.krypton.util.hexDigest
 import org.kryptonmc.krypton.util.logger
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -98,7 +98,7 @@ object SessionService {
         if (cachedProfile != null) return cachedProfile
 
         val shaDigest = MessageDigest.getInstance("SHA-1")
-        shaDigest.update(ServerInfo.SERVER_ID.toByteArray(Charsets.US_ASCII))
+        shaDigest.update(SERVER_ID_BYTES)
         shaDigest.update(secret)
         shaDigest.update(Encryption.publicKey.encoded)
         val serverId = shaDigest.hexDigest()
@@ -116,5 +116,6 @@ object SessionService {
         return profile
     }
 
+    private val SERVER_ID_BYTES = ByteArray(0)
     private val LOGGER = logger<SessionService>()
 }

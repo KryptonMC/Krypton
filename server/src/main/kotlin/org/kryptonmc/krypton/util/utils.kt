@@ -29,7 +29,9 @@ import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.world.Gamemode
+import java.math.BigInteger
 import java.net.InetAddress
+import java.security.MessageDigest
 import java.util.Locale
 import java.util.UUID
 import kotlin.math.log2
@@ -107,3 +109,8 @@ fun calculatePositionChange(new: Double, old: Double) = ((new * 32 - old * 32) *
  * If this gamemode has privileges to build. Only players in survival and creative can build (break/place blocks)
  */
 val Gamemode.canBuild: Boolean get() = this == Gamemode.SURVIVAL || this == Gamemode.CREATIVE
+
+/**
+ * Digest a [MessageDigest] into a hex string. This is Yggdrasil's strange way of digesting to hex
+ */
+fun MessageDigest.hexDigest(): String = BigInteger(digest()).toString(16)

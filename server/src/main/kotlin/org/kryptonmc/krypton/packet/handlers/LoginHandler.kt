@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.packet.handlers
 
+import com.velocitypowered.natives.util.Natives
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -46,8 +47,6 @@ import org.kryptonmc.krypton.packet.transformers.PacketEncrypter
 import org.kryptonmc.krypton.packet.transformers.SizeDecoder
 import org.kryptonmc.krypton.packet.transformers.SizeEncoder
 import org.kryptonmc.krypton.util.encryption.Encryption
-import org.kryptonmc.krypton.util.encryption.toDecryptingCipher
-import org.kryptonmc.krypton.util.encryption.toEncryptingCipher
 import org.kryptonmc.krypton.util.logger
 import java.net.InetSocketAddress
 import java.util.UUID
@@ -146,47 +145,37 @@ class LoginHandler(
     }
 
     private fun enableEncryption(key: SecretKey) {
-        val encrypter = PacketEncrypter(key.toEncryptingCipher(Encryption.SHARED_SECRET_ALGORITHM))
-        val decrypter = PacketDecrypter(key.toDecryptingCipher(Encryption.SHARED_SECRET_ALGORITHM))
-
-        session.channel.pipeline().addBefore(
-            SizeDecoder.NETTY_NAME,
-            PacketDecrypter.NETTY_NAME,
-            decrypter
-        )
-        session.channel.pipeline().addBefore(
-            SizeEncoder.NETTY_NAME,
-            PacketEncrypter.NETTY_NAME,
-            encrypter
-        )
+        val cipher = Natives.cipher.get()
+        val encrypter = PacketEncrypter(cipher.forEncryption(key))
+        val decrypter = PacketDecrypter(cipher.forDecryption(key))
+        session.channel.pipeline().addBefore(SizeDecoder.NETTY_NAME, PacketDecrypter.NETTY_NAME, decrypter)
+        session.channel.pipeline().addBefore(SizeEncoder.NETTY_NAME, PacketEncrypter.NETTY_NAME, encrypter)
     }
 
     private fun enableCompression() {
         val threshold = server.config.server.compressionThreshold
-        if (threshold <= 0) return
+        if (threshold == -1) {
+            session.channel.pipeline().remove(PacketCompressor.NETTY_NAME)
+            session.channel.pipeline().remove(PacketDecompressor.NETTY_NAME)
+            return
+        }
 
-        val compressor = session.channel.pipeline()[PacketCompressor.NETTY_NAME]
-        val decompressor = session.channel.pipeline()[PacketDecompressor.NETTY_NAME]
+        var encoder = session.channel.pipeline()[PacketCompressor.NETTY_NAME] as? PacketCompressor
+        var decoder = session.channel.pipeline()[PacketDecompressor.NETTY_NAME] as? PacketDecompressor
+        if (encoder != null && decoder != null) {
+            encoder.threshold = threshold
+            decoder.threshold = threshold
+            return
+        }
 
         session.sendPacket(PacketOutSetCompression(threshold))
-        if (decompressor is PacketDecompressor) {
-            decompressor.threshold = threshold
-        } else {
-            session.channel.pipeline().addBefore(
-                PacketDecoder.NETTY_NAME,
-                PacketDecompressor.NETTY_NAME,
-                PacketDecompressor(threshold)
-            )
-        }
-        if (compressor is PacketCompressor) {
-            compressor.threshold = threshold
-        } else {
-            session.channel.pipeline().addBefore(
-                PacketEncoder.NETTY_NAME,
-                PacketCompressor.NETTY_NAME,
-                PacketCompressor(threshold)
-            )
-        }
+        val compressor = Natives.compress.get().create(4)
+        encoder = PacketCompressor(compressor, threshold)
+        decoder = PacketDecompressor(compressor, threshold)
+
+        session.channel.pipeline().remove(SizeEncoder.NETTY_NAME) // The compressor does this itself
+        session.channel.pipeline().addBefore(PacketDecoder.NETTY_NAME, PacketDecompressor.NETTY_NAME, decoder)
+        session.channel.pipeline().addBefore(PacketEncoder.NETTY_NAME, PacketCompressor.NETTY_NAME, encoder)
     }
 
     private fun callLoginEvent(name: String = session.profile.name, uuid: UUID = session.profile.uuid): Boolean {

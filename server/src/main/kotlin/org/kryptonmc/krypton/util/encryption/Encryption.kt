@@ -29,17 +29,11 @@ import javax.crypto.Cipher
 object Encryption {
 
     /**
-     * The algorithm used in the stream cipher
-     */
-    const val SHARED_SECRET_ALGORITHM = "AES/CFB8/NoPadding"
-
-    /**
      * The algorithm used to generate the key pair for the server
      */
     private const val PAIR_ALGORITHM = "RSA"
 
     private val keyPair = generateKeyPair()
-
     val publicKey: PublicKey = keyPair.public
 
     private fun generateKeyPair(): KeyPair {
