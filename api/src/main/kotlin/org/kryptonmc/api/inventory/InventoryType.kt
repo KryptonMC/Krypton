@@ -8,8 +8,8 @@
  */
 package org.kryptonmc.api.inventory
 
+import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.key.Keyed
-import org.kryptonmc.api.util.minecraftKey
 
 /**
  * Represents a type of [Inventory] that holds items.
@@ -69,7 +69,7 @@ enum class InventoryType(
     // hence why the size is 46 rather than 41
     PLAYER(46, "Player");
 
-    override fun key() = minecraftKey(toString())
+    override fun key() = key(toString())
 
     override fun toString() = name.lowercase()
 }

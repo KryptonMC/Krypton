@@ -45,14 +45,14 @@ interface Sender : Audience, Identified {
      *
      * @param permissions the permission to grant
      */
-    fun grant(vararg permissions: String)
+    fun grant(vararg permissions: String) = permissions.forEach { grant(it) }
 
     /**
      * Grant the sender the specified [permissions]
      *
      * @param permissions the permissions to grant
      */
-    fun grant(permissions: Iterable<String>)
+    fun grant(permissions: Iterable<String>) = permissions.forEach { grant(it) }
 
     /**
      * Revoke the specified [permission] from the sender
@@ -66,12 +66,12 @@ interface Sender : Audience, Identified {
      *
      * @param permissions the permissions to revoke
      */
-    fun revoke(vararg permissions: String)
+    fun revoke(vararg permissions: String) = permissions.forEach { revoke(it) }
 
     /**
      * Revoke the specified [permissions] from the sender
      *
      * @param permissions the permissions to revoke
      */
-    fun revoke(permissions: Iterable<String>)
+    fun revoke(permissions: Iterable<String>) = permissions.forEach { revoke(it) }
 }

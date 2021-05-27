@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.service
 
+import com.google.common.collect.Multimap
+import com.google.common.collect.Multimaps
 import org.kryptonmc.api.plugin.Plugin
 import org.kryptonmc.api.service.ServiceProvider
 import org.kryptonmc.api.service.ServicesManager
@@ -25,14 +27,12 @@ import java.util.concurrent.ConcurrentHashMap
 
 object KryptonServicesManager : ServicesManager {
 
-    private val providers = ConcurrentHashMap<Class<*>, MutableList<KryptonServiceProvider<*>>>()
+    private val providers: Multimap<Class<*>, KryptonServiceProvider<*>> = Multimaps.newListMultimap(ConcurrentHashMap()) { mutableListOf() }
 
-    override fun <T> register(plugin: Plugin, clazz: Class<T>, service: T) = synchronized(providers) {
-        providers.getOrPut(clazz) { mutableListOf() } += KryptonServiceProvider(plugin, clazz, service)
+    override fun <T> register(plugin: Plugin, clazz: Class<T>, service: T) {
+        providers.put(clazz, KryptonServiceProvider(plugin, clazz, service))
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T> provide(clazz: Class<T>): ServiceProvider<T>? = synchronized(providers) {
-        providers[clazz] as? ServiceProvider<T>
-    }
+    override fun <T> provide(clazz: Class<T>) = providers[clazz].firstOrNull() as? KryptonServiceProvider<T>
 }

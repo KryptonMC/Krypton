@@ -23,6 +23,8 @@ import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.apache.logging.log4j.LogManager
@@ -36,15 +38,15 @@ import org.kryptonmc.krypton.auth.MojangUUIDSerializer
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDER
 import org.kryptonmc.krypton.config.KryptonConfig
-import org.kryptonmc.krypton.console.ConsoleSender
+import org.kryptonmc.krypton.console.KryptonConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.event.KryptonEventBus
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.MetadataResponse
-import org.kryptonmc.krypton.locale.TranslationManager
 import org.kryptonmc.krypton.locale.TranslationRepository
 import org.kryptonmc.krypton.packet.PacketLoader
+import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.session.SessionManager
 import org.kryptonmc.krypton.packet.state.PacketState
@@ -108,12 +110,13 @@ class KryptonServer(val mainThread: Thread) : Server {
 
     override val address = InetSocketAddress(config.server.ip, config.server.port)
 
-    override val players: ConcurrentHashMap.KeySetView<KryptonPlayer, Boolean> = ConcurrentHashMap.newKeySet()
+    override val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
+    override val channels: MutableSet<Key> = ConcurrentHashMap.newKeySet()
 
     override fun player(uuid: UUID) = players.firstOrNull { it.uuid == uuid }
     override fun player(name: String) = players.firstOrNull { it.name == name }
 
-    override val console = ConsoleSender(this)
+    override val console = KryptonConsoleSender
 
     override var scoreboard: KryptonScoreboard? = null; private set
 
@@ -189,6 +192,7 @@ class KryptonServer(val mainThread: Thread) : Server {
             Messages.PIRACY_WARNING.info(LOGGER)
             LOGGER.info("-----------------------------------------------------------------------------------")
         }
+        Class.forName("org.kryptonmc.api.KryptonKt").getDeclaredField("server").apply { isAccessible = true }.set(null, this)
         pluginManager.initialize()
 
         lastTickTime = System.currentTimeMillis()
@@ -329,6 +333,22 @@ class KryptonServer(val mainThread: Thread) : Server {
         this.profiler = continuousProfiler.profiler
     }
 
+    override fun registerChannel(channel: Key) {
+        require(channel !in RESERVED_CHANNELS) { "Cannot register reserved channel with name \"minecraft:register\" or \"minecraft:unregister\"!" }
+        channels += channel
+        sessionManager.sendPackets(PacketOutPluginMessage(key("register"), channel.asString().encodeToByteArray())) {
+            it.currentState == PacketState.PLAY
+        }
+    }
+
+    override fun unregisterChannel(channel: Key) {
+        channels -= channel
+        require(channel !in RESERVED_CHANNELS) { "Cannot unregister reserved channels with name \"minecraft:register\" or \"minecraft:unregister\"!" }
+        sessionManager.sendPackets(PacketOutPluginMessage(key("unregister"), channel.asString().encodeToByteArray())) {
+            it.currentState == PacketState.PLAY
+        }
+    }
+
     override fun broadcast(message: Component, permission: String?) {
         if (permission != null) {
             players.filter { it.hasPermission(permission) }.forEach { it.sendMessage(message) }
@@ -420,6 +440,8 @@ class KryptonServer(val mainThread: Thread) : Server {
     }
 
     companion object {
+
+        private val RESERVED_CHANNELS = setOf(key("register"), key("unregister"))
 
         private val DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")
         private val TIME_NOW: String get() = LocalDateTime.now().format(DATE_FORMAT)

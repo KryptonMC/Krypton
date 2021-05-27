@@ -18,13 +18,13 @@
  */
 package org.kryptonmc.krypton.world
 
+import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.BinaryTagTypes
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.api.util.minecraftKey
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Location
@@ -84,7 +84,7 @@ data class KryptonWorld(
 ) : World {
 
     val chunkManager = ChunkManager(this)
-    val dimension = minecraftKey("overworld")
+    val dimension = key("overworld")
 
     private var oldRainLevel = 0F
     override var rainLevel = 0F

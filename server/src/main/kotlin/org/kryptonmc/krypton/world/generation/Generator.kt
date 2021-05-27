@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.world.generation
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import org.kryptonmc.api.util.minecraftKey
 import org.kryptonmc.api.util.toKey
 
 abstract class Generator(val id: Key) {
@@ -30,7 +30,7 @@ abstract class Generator(val id: Key) {
 
 // we want to use this in the constructor, but if we use a property, it's not initialised
 // by the time we need it
-private val DEBUG_GENERATOR_ID = minecraftKey("debug")
+private val DEBUG_GENERATOR_ID = key("debug")
 
 object DebugGenerator : Generator(DEBUG_GENERATOR_ID) {
 

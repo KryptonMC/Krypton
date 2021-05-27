@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import org.kryptonmc.api.util.minecraftKey
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.Registries
@@ -102,9 +102,9 @@ class PacketOutJoinGame(
 
     companion object {
 
-        private val OVERWORLD = minecraftKey("overworld")
-        private val NETHER = minecraftKey("the_nether")
-        private val END = minecraftKey("the_end")
+        private val OVERWORLD = key("overworld")
+        private val NETHER = key("the_nether")
+        private val END = key("the_end")
     }
 }
 

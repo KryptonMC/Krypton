@@ -18,6 +18,7 @@ import org.kryptonmc.api.entity.Abilities
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.inventory.PlayerInventory
+import org.kryptonmc.api.plugin.PluginMessageRecipient
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Location
@@ -30,7 +31,7 @@ import java.util.UUID
 /**
  * Represents a player
  */
-interface Player : Sender, InventoryHolder, HoverEventSource<HoverEvent.ShowEntity> {
+interface Player : Sender, InventoryHolder, PluginMessageRecipient, HoverEventSource<HoverEvent.ShowEntity> {
 
     /**
      * The player's UUID

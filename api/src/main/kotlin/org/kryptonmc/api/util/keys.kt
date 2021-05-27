@@ -8,8 +8,6 @@
  */
 package org.kryptonmc.api.util
 
-import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Key.key
 
-fun minecraftKey(value: String) = Key.key(Key.MINECRAFT_NAMESPACE, value)
-
-fun String.toKey() = Key.key(this)
+fun String.toKey() = key(this)

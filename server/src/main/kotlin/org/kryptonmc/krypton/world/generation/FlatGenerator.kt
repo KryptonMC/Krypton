@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.world.generation
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.nbt.BinaryTagTypes
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
-import org.kryptonmc.api.util.minecraftKey
 import org.kryptonmc.api.util.toKey
 
 data class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(ID) {
@@ -34,7 +34,7 @@ data class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(ID) {
 
     companion object {
 
-        val ID = minecraftKey("flat")
+        val ID = key("flat")
     }
 }
 

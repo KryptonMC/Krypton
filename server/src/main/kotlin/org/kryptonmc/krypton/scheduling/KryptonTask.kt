@@ -41,8 +41,8 @@ data class KryptonTask(
     override val state: TaskState
         get() {
             if (future == null) return TaskState.SCHEDULED
-            if (requireNotNull(future).isCancelled) return TaskState.INTERRUPTED
-            if (requireNotNull(future).isDone) return TaskState.COMPLETED
+            if (future!!.isCancelled) return TaskState.INTERRUPTED
+            if (future!!.isDone) return TaskState.COMPLETED
             return TaskState.SCHEDULED
         }
 
@@ -55,9 +55,8 @@ data class KryptonTask(
     }
 
     override fun cancel() {
-        if (future == null) return
-        requireNotNull(future).cancel(false)
-        if (currentTaskThread != null) requireNotNull(currentTaskThread).interrupt()
+        future?.cancel(false)
+        currentTaskThread?.interrupt()
         finish()
     }
 

@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.registry
 
 import com.google.gson.reflect.TypeToken
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.util.minecraftKey
+import net.kyori.adventure.key.Key.key
 import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.registry.biomes.BiomeRegistry
 import org.kryptonmc.krypton.registry.dimensions.DimensionRegistry
@@ -37,11 +37,11 @@ private val REGISTRIES: Map<Key, RegistryEntry> = GSON.fromJson(registryData("re
  */
 object Registries {
 
-    val BLOCKS = MappedRegistry(REGISTRIES.getValue(minecraftKey("block")).entries.mapValues { it.value.id })
-    val FLUIDS = MappedRegistry(REGISTRIES.getValue(minecraftKey("fluid")).entries.mapValues { it.value.id })
-    val ITEMS = MappedRegistry(REGISTRIES.getValue(minecraftKey("item")).entries.mapValues { it.value.id })
-    val ENTITY_TYPES = MappedRegistry(REGISTRIES.getValue(minecraftKey("entity_type")).entries.mapValues { it.value.id })
-    val SOUND_EVENTS = MappedRegistry(REGISTRIES.getValue(minecraftKey("sound_event")).entries.mapValues { it.value.id })
+    val BLOCKS = MappedRegistry(REGISTRIES.getValue(key("block")).entries.mapValues { it.value.id })
+    val FLUIDS = MappedRegistry(REGISTRIES.getValue(key("fluid")).entries.mapValues { it.value.id })
+    val ITEMS = MappedRegistry(REGISTRIES.getValue(key("item")).entries.mapValues { it.value.id })
+    val ENTITY_TYPES = MappedRegistry(REGISTRIES.getValue(key("entity_type")).entries.mapValues { it.value.id })
+    val SOUND_EVENTS = MappedRegistry(REGISTRIES.getValue(key("sound_event")).entries.mapValues { it.value.id })
 
     val BIOMES = GSON.fromJson<BiomeRegistry>(registryData("registries/custom/biomes.json"))
     val DIMENSIONS = GSON.fromJson<DimensionRegistry>(registryData("registries/custom/dimensions.json"))

@@ -26,13 +26,13 @@ import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.title.Title
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
@@ -48,10 +48,12 @@ import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.scoreboard.Scoreboard
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
+import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.chat.PacketOutTitle
@@ -71,6 +73,7 @@ import org.kryptonmc.krypton.packet.session.Session
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.canBuild
 import org.kryptonmc.krypton.util.chunkInSpiral
+import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toArea
 import org.kryptonmc.krypton.util.toItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -89,7 +92,7 @@ class KryptonPlayer(
     private val server: KryptonServer,
     val session: Session,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
-) : Player, KryptonSender(server) {
+) : Player, KryptonSender() {
 
     @Volatile internal var isFullyInitialized = false
 
@@ -158,6 +161,14 @@ class KryptonPlayer(
 
     override fun teleport(player: Player) = teleport(player.location)
 
+    override fun sendPluginMessage(channel: Key, message: ByteArray) {
+        if (channel !in PREREGISTERED_CHANNELS) require(channel in server.channels) { "Channel must be registered with the server to have data sent over it!" }
+        if (channel in DEBUG_CHANNELS) {
+            SERVER_LOGGER.warn("A plugin attempted to send a plugin message on a debug channel. These channels will only function correctly with a modified client.")
+        }
+        session.sendPacket(PacketOutPluginMessage(channel, message))
+    }
+
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
         session.sendPacket(PacketOutChat(message, type, source.uuid()))
     }
@@ -205,7 +216,7 @@ class KryptonPlayer(
     }
 
     override fun openBook(book: Book) {
-        val (item, nbt) = book.toItemStack(locale ?: Locale.UK)
+        val (item, nbt) = book.toItemStack(locale ?: Locale.ENGLISH)
         val slot = inventory.mainHand?.let { inventory.items.indexOf(it) } ?: return
         session.sendPacket(PacketOutSetSlot(inventory.id, slot, item, nbt))
         session.sendPacket(PacketOutOpenBook(hand))
@@ -215,7 +226,7 @@ class KryptonPlayer(
     override fun identity() = Identity.identity(uuid)
 
     override fun asHoverEvent(op: UnaryOperator<ShowEntity>) =
-        showEntity(ShowEntity.of(Key.key("minecraft", "player"), uuid, displayName))
+        showEntity(ShowEntity.of(key("minecraft", "player"), uuid, displayName))
 
     fun updateAbilities() {
         abilities = when (gamemode) {
@@ -278,5 +289,29 @@ class KryptonPlayer(
             }
             previousChunks?.clear()
         }
+    }
+
+    companion object {
+
+        private val DEBUG_CHANNELS = setOf(
+            key("debug/paths"),
+            key("debug/neighbors_update"),
+            key("debug/caves"),
+            key("debug/structures"),
+            key("debug/worldgen_attempt"),
+            key("debug/poi_ticket_count"),
+            key("debug/poi_added"),
+            key("debug/poi_removed"),
+            key("debug/village_sections"),
+            key("debug/goal_selector"),
+            key("debug/brain"),
+            key("debug/bee"),
+            key("debug/hive"),
+            key("debug/game_test_add_marker"),
+            key("debug/game_test_clear"),
+            key("debug/raids")
+        )
+        private val PREREGISTERED_CHANNELS = DEBUG_CHANNELS + key("brand")
+        private val SERVER_LOGGER = logger<KryptonServer>()
     }
 }

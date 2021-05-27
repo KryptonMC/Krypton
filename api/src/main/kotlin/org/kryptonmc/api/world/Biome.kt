@@ -8,8 +8,8 @@
  */
 package org.kryptonmc.api.world
 
+import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.key.Keyed
-import org.kryptonmc.api.util.minecraftKey
 import java.util.EnumSet
 
 /**
@@ -113,7 +113,7 @@ enum class Biome(val id: Int) : Keyed {
      */
     THE_VOID(127);
 
-    override fun key() = minecraftKey(name.lowercase())
+    override fun key() = key(name.lowercase())
 
     companion object {
 

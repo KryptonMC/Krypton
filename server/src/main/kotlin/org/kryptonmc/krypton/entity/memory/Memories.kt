@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.entity.memory
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.util.minecraftKey
+import net.kyori.adventure.key.Key.key
 import org.kryptonmc.krypton.world.LocationBuilder
 import java.util.UUID
 
@@ -38,7 +38,7 @@ sealed class EntityMemory<T>(val key: Key) {
 class AdmiringDisabledMemory(
     override val value: Boolean,
     val ttl: Long
-) : EntityMemory<Boolean>(minecraftKey("admiring_disabled"))
+) : EntityMemory<Boolean>(key("admiring_disabled"))
 
 /**
  * If this piglin is admiring an item
@@ -46,7 +46,7 @@ class AdmiringDisabledMemory(
 class AdmiringItemMemory(
     override val value: Boolean,
     val ttl: Long
-) : EntityMemory<Boolean>(minecraftKey("admiring_item"))
+) : EntityMemory<Boolean>(key("admiring_item"))
 
 /**
  * The target of this piglin or piglin brute
@@ -54,12 +54,12 @@ class AdmiringItemMemory(
 class AngryAtMemory(
     override val value: UUID,
     val ttl: Long
-) : EntityMemory<UUID>(minecraftKey("angry_at"))
+) : EntityMemory<UUID>(key("angry_at"))
 
 /**
  * Where this villager's bed is or where this piglin brute's patrol point is
  */
-class HomeMemory(override val value: Position) : EntityMemory<Position>(minecraftKey("home"))
+class HomeMemory(override val value: Position) : EntityMemory<Position>(key("home"))
 
 /**
  * If this piglin just hunted, and as such, won't for a while. Set after hunting or spawning in a bastion remnant
@@ -67,32 +67,32 @@ class HomeMemory(override val value: Position) : EntityMemory<Position>(minecraf
 class HuntedRecentlyMemory(
     override val value: Boolean,
     val ttl: Long
-) : EntityMemory<Boolean>(minecraftKey("hunted_recently"))
+) : EntityMemory<Boolean>(key("hunted_recently"))
 
 /**
  * Where this villager's job site block is
  */
-class JobSiteMemory(override val value: Position) : EntityMemory<Position>(minecraftKey("job_site"))
+class JobSiteMemory(override val value: Position) : EntityMemory<Position>(key("job_site"))
 
 /**
  * The tick that this villager last slept in a bed
  */
-class LastSleptMemory(override val value: Long) : EntityMemory<Long>(minecraftKey("last_slept"))
+class LastSleptMemory(override val value: Long) : EntityMemory<Long>(key("last_slept"))
 
 /**
  * The tick that this villager last woke up from a bed
  */
-class LastWokenMemory(override val value: Long) : EntityMemory<Long>(minecraftKey("last_woken"))
+class LastWokenMemory(override val value: Long) : EntityMemory<Long>(key("last_woken"))
 
 /**
  * The tick that this villager last worked at their job site
  */
-class LastWorkedMemory(override val value: Long) : EntityMemory<Long>(minecraftKey("last_worked_at_poi"))
+class LastWorkedMemory(override val value: Long) : EntityMemory<Long>(key("last_worked_at_poi"))
 
 /**
  * Where this villager's meeting point is
  */
-class MeetingPointMemory(override val value: Position) : EntityMemory<Position>(minecraftKey("meeting_point"))
+class MeetingPointMemory(override val value: Position) : EntityMemory<Position>(key("meeting_point"))
 
 /**
  * Position information for a villager's meeting point

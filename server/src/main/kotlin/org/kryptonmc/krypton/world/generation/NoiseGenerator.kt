@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.world.generation
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.nbt.BinaryTagTypes
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.IntBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
-import org.kryptonmc.api.util.minecraftKey
 import org.kryptonmc.api.util.toKey
 
 data class NoiseGenerator(
@@ -42,7 +42,7 @@ data class NoiseGenerator(
 
     companion object {
 
-        val ID = minecraftKey("noise")
+        val ID = key("noise")
     }
 }
 
@@ -147,11 +147,11 @@ sealed class BiomeGenerator(val type: Key) {
 
     companion object {
 
-        internal val VANILLA_LAYERED = minecraftKey("vanilla_layered")
-        internal val MULTI_NOISE = minecraftKey("multi_noise")
-        internal val THE_END = minecraftKey("the_end")
-        internal val FIXED = minecraftKey("fixed")
-        internal val CHECKERBOARD = minecraftKey("checkerboard")
+        internal val VANILLA_LAYERED = key("vanilla_layered")
+        internal val MULTI_NOISE = key("multi_noise")
+        internal val THE_END = key("the_end")
+        internal val FIXED = key("fixed")
+        internal val CHECKERBOARD = key("checkerboard")
 
         fun fromNBT(nbt: CompoundBinaryTag) = when (val type = nbt.getString("type").toKey()) {
             VANILLA_LAYERED -> VanillaLayeredBiomeGenerator(

@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.registry.tags
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.util.toKey
 
 /**
@@ -40,7 +41,7 @@ data class Tag(val name: Key, val values: MutableSet<Key> = mutableSetOf()) {
 
     companion object {
 
-        val EMPTY = Tag("krypton:empty".toKey())
+        val EMPTY = Tag(key("krypton", "empty"))
     }
 }
 

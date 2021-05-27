@@ -25,12 +25,14 @@ abstract class Plugin(val context: PluginContext) {
      */
     var loadState = PluginLoadState.INITIALIZING
 
+    // Helpers
+    val server = context.server
+    val folder = context.folder
+    val description = context.description
+    val logger = context.logger
+
     /**
      * This is called when the plugin is initialised.
-     *
-     * This function should be preferred over the init block, as this
-     * is called within its own plugin scope, whereas the init block is
-     * called synchronously.
      */
     open fun initialize() {}
 
@@ -40,21 +42,21 @@ abstract class Plugin(val context: PluginContext) {
     open fun shutdown() {}
 
     /**
-     * Registers the given [command] with the command manager
+     * Register the given [command] with the command manager
      *
      * @param command the command to register
      */
     fun registerCommand(command: Command) = context.server.commandManager.register(command)
 
     /**
-     * Registers the given [commands] with the command manager
+     * Register the given [commands] with the command manager
      *
      * @param commands the commands to register
      */
     fun registerCommands(vararg commands: Command) = context.server.commandManager.register(*commands)
 
     /**
-     * Registers the given [commands] with the command manager
+     * Register the given [commands] with the command manager
      *
      * @param commands the commands to register
      */
@@ -66,7 +68,23 @@ abstract class Plugin(val context: PluginContext) {
      * @param listener the listener to register
      */
     fun registerListener(listener: Any) = context.server.eventBus.register(listener)
+
+    /**
+     * Register a service with the [services manager][org.kryptonmc.api.service.ServicesManager].
+     *
+     * @param clazz the class of the service
+     * @param service the service instance
+     */
+    fun <T> registerService(clazz: Class<T>, service: T) = server.servicesManager.register(this, clazz, service)
 }
+
+/**
+ * Register a service with the [services manager][org.kryptonmc.api.service.ServicesManager].
+ * This is a helper function that uses type reification.
+ *
+ * @param service the service instance
+ */
+inline fun <reified T> Plugin.registerService(service: T) = registerService(T::class.java, service)
 
 /**
  * Holder for the context that a plugin was loaded in.

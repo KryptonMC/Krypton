@@ -27,6 +27,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.LongArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.Unpooled
+import net.kyori.adventure.key.Key.key
 import org.junit.jupiter.api.BeforeAll
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.command.argument.ArgumentTypes
@@ -49,12 +50,12 @@ class ArgumentTests {
 
     @Test
     fun `argument types get call returns not null for registered types`() {
-        assertNotNull(ArgumentTypes["brigadier:bool".toKey()])
-        assertNotNull(ArgumentTypes["brigadier:float".toKey()])
-        assertNotNull(ArgumentTypes["brigadier:double".toKey()])
-        assertNotNull(ArgumentTypes["brigadier:integer".toKey()])
-        assertNotNull(ArgumentTypes["brigadier:long".toKey()])
-        assertNotNull(ArgumentTypes["brigadier:string".toKey()])
+        assertNotNull(ArgumentTypes[key("brigadier", "bool")])
+        assertNotNull(ArgumentTypes[key("brigadier", "float")])
+        assertNotNull(ArgumentTypes[key("brigadier", "double")])
+        assertNotNull(ArgumentTypes[key("brigadier", "integer")])
+        assertNotNull(ArgumentTypes[key("brigadier", "long")])
+        assertNotNull(ArgumentTypes[key("brigadier", "string")])
     }
 
     @Test

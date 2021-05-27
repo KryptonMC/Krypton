@@ -25,19 +25,16 @@ import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.translation.GlobalTranslator
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.command.KryptonSender
+import org.kryptonmc.api.ConsoleSender
 import org.kryptonmc.krypton.util.logger
 import java.util.Locale
 
 /**
- * Represents a sender for the server console.
+ * Our implementation of the API's [ConsoleSender].
  */
-class ConsoleSender(server: KryptonServer) : KryptonSender(server) {
+object KryptonConsoleSender : ConsoleSender {
 
-    override val name = "CONSOLE"
-
-    override fun identity() = Identity.nil()
+    private val LOGGER = logger("CONSOLE")
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
         val component = when (message) {
@@ -46,12 +43,5 @@ class ConsoleSender(server: KryptonServer) : KryptonSender(server) {
             else -> return
         }
         LOGGER.info(LegacyComponentSerializer.legacySection().serialize(component))
-    }
-
-    override fun hasPermission(permission: String) = true // we are literally god, we never fail permission checks
-
-    companion object {
-
-        private val LOGGER = logger("CONSOLE")
     }
 }

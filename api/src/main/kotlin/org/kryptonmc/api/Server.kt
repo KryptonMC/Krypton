@@ -9,6 +9,7 @@
 package org.kryptonmc.api
 
 import net.kyori.adventure.audience.ForwardingAudience
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.Sender
@@ -148,6 +149,25 @@ interface Server : ForwardingAudience {
      * the broadcast
      */
     fun broadcast(message: Component, permission: String? = null)
+
+    /**
+     * The list of registered plugin messaging channels
+     */
+    val channels: Set<Key>
+
+    /**
+     * Register a plugin messaging channel.
+     *
+     * @param channel the channel to register
+     */
+    fun registerChannel(channel: Key)
+
+    /**
+     * Unregister a plugin messaging channel.
+     *
+     * @param channel the channel to register
+     */
+    fun unregisterChannel(channel: Key)
 
     /**
      * Holder for information about the server implementing this API

@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.entities.data
 
-import org.kryptonmc.api.util.minecraftKey
+import net.kyori.adventure.key.Key.key
 
 /**
  * Professions of villagers
@@ -41,5 +41,5 @@ enum class VillagerProfession(val id: Int) {
     TOOLSMITH(13),
     WEAPONSMITH(14);
 
-    val key by lazy { minecraftKey(name.lowercase()) }
+    val key by lazy { key(name.lowercase()) }
 }

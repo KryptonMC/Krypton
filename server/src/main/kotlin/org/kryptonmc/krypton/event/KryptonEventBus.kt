@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.event
 
 import com.google.common.collect.Multimaps
+import org.kryptonmc.api.event.Event
 import org.kryptonmc.api.event.EventBus
 import org.kryptonmc.api.event.Listener
 import org.kryptonmc.krypton.locale.Messages
@@ -39,7 +40,7 @@ object KryptonEventBus : EventBus {
     private val byEventBaked = Multimaps.newSetMultimap(ConcurrentHashMap<Class<*>, MutableCollection<EventHandlerMethod>>()) { mutableSetOf() }
     private val lock = ReentrantLock()
 
-    override fun call(event: Any) = byEventBaked[event::class.java]?.forEach { listener -> listener(event) } ?: Unit
+    override fun call(event: Event) = byEventBaked[event::class.java]?.forEach { listener -> listener(event) } ?: Unit
 
     override fun register(listener: Any) {
         val handlers = findHandlers(listener)

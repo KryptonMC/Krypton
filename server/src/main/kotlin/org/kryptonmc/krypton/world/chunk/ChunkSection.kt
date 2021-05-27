@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.world.chunk
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.inventory.item.Material
-import org.kryptonmc.api.util.minecraftKey
 import org.kryptonmc.krypton.world.data.BitStorage
 import java.util.LinkedList
 
@@ -95,6 +95,6 @@ data class ChunkBlock(
 
     companion object {
 
-        val AIR = ChunkBlock(minecraftKey("air"))
+        val AIR = ChunkBlock(key("air"))
     }
 }

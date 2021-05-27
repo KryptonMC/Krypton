@@ -22,7 +22,7 @@ import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.arguments.BoolArgumentType
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.util.minecraftKey
+import net.kyori.adventure.key.Key.key
 import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.EmptyArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.DoubleArgumentSerializer
@@ -82,7 +82,7 @@ object ArgumentTypes {
         val entry = get<T>(argument)
         if (entry == null) {
             LOGGER.error("Could not serialise $argument (Class ${argument::class.java.simpleName})! Will not be sent to client!")
-            writeKey(minecraftKey(""))
+            writeKey(key(""))
             return
         }
         writeKey(entry.name)
@@ -90,7 +90,7 @@ object ArgumentTypes {
     }
 
     private inline fun <reified T : ArgumentType<*>> register(name: String, serializer: ArgumentSerializer<T>) {
-        val key = Key.key(name)
+        val key = key(name)
         if (BY_CLASS.containsKey(T::class.java)) throw IllegalArgumentException("Class ${T::class.java.simpleName} already has a serialiser!")
         if (BY_NAME.containsKey(key)) throw IllegalArgumentException("'$name' is already a registered serialiser!")
 

@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.data
 
+import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.BinaryTagIO.Compression.GZIP
 import net.kyori.adventure.nbt.BinaryTagTypes
@@ -32,7 +33,6 @@ import org.kryptonmc.api.entity.Abilities
 import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.inventory.item.meta.ItemMeta
-import org.kryptonmc.api.util.minecraftKey
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Location
@@ -187,7 +187,7 @@ class PlayerDataManager(private val folder: Path) {
 
     companion object {
 
-        private val OVERWORLD = minecraftKey("overworld")
+        private val OVERWORLD = key("overworld")
     }
 }
 

@@ -21,13 +21,13 @@ package org.kryptonmc.krypton.packet.session
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.api.event.login.JoinEvent
 import org.kryptonmc.api.event.play.QuitEvent
-import org.kryptonmc.api.util.minecraftKey
 import org.kryptonmc.krypton.entity.metadata.MovementFlags
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
@@ -191,6 +191,7 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutSpawnPosition(spawnLocation))
         session.sendPacket(PacketOutEntityProperties(session.id, session.player.attributes))
         session.sendPacket(PacketOutWindowItems(session.player.inventory))
+        session.sendPacket(PacketOutPluginMessage(key("register"), server.channels.joinToString("\u0000").encodeToByteArray()))
 
         ServerStorage.PLAYER_COUNT.getAndIncrement()
 
@@ -273,7 +274,7 @@ class SessionManager(private val server: KryptonServer) {
 
     companion object {
 
-        private val BRAND_MESSAGE = minecraftKey("brand") to "Krypton".toProtocol()
+        private val BRAND_MESSAGE = key("brand") to "Krypton".toProtocol()
         private val LOGGER = logger<SessionManager>()
     }
 }

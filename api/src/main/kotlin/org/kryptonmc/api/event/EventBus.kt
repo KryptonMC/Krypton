@@ -20,7 +20,7 @@ interface EventBus {
      *
      * @param event the event to call
      */
-    fun call(event: Any)
+    fun call(event: Event)
 
     /**
      * Register a new listener
