@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.toMessage
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.BrigadierCommand
+import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.logger
@@ -38,7 +38,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class DebugCommand(private val server: KryptonServer) : BrigadierCommand {
+internal class DebugCommand(private val server: KryptonServer) : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("debug")

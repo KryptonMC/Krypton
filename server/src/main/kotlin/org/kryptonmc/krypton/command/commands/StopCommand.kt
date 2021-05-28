@@ -18,17 +18,14 @@
  */
 package org.kryptonmc.krypton.command.commands
 
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.api.command.Command
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.command.SimpleCommand
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.locale.Messages
 
-/**
- * Stop the server. That's literally all this does
- */
-class StopCommand(private val server: KryptonServer) : Command("stop", "krypton.command.stop") {
+internal class StopCommand(private val server: KryptonServer) : SimpleCommand("stop", "krypton.command.stop") {
 
-    override fun execute(sender: Sender, args: List<String>) {
+    override fun execute(sender: Sender, args: Array<String>) {
         Messages.COMMANDS.STOP.send(sender)
         server.stop()
     }

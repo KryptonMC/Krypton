@@ -8,13 +8,12 @@
  */
 package org.kryptonmc.api
 
-import com.mojang.brigadier.tree.LiteralCommandNode
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import org.apache.logging.log4j.Logger
-import org.kryptonmc.api.command.Command
+import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.dummy.DummyCommand
@@ -28,11 +27,7 @@ import java.nio.file.Path
 import java.util.UUID
 
 val commandManagerMock = mockk<CommandManager> {
-    every { register(any<Command>()) } returns Unit
-    every { register(*anyVararg<Command>()) } returns Unit
-    every { register(any<Iterable<Command>>()) } returns Unit
-    every { register(any<LiteralCommandNode<Sender>>()) } returns Unit
-    every { register(*anyVararg<LiteralCommandNode<Sender>>()) } returns Unit
+    every { register(any<SimpleCommand>()) } returns Unit
 }
 
 val eventBusMock = mockk<EventBus> {

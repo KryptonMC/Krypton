@@ -25,7 +25,7 @@ import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.translation.GlobalTranslator
-import org.kryptonmc.api.ConsoleSender
+import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.krypton.util.logger
 import java.util.Locale
 

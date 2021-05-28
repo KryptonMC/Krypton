@@ -10,7 +10,9 @@ package org.kryptonmc.api.plugin
 
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.Server
-import org.kryptonmc.api.command.Command
+import org.kryptonmc.api.command.BrigadierCommand
+import org.kryptonmc.api.command.SimpleCommand
+import org.kryptonmc.api.command.RawCommand
 import java.nio.file.Path
 
 /**
@@ -42,25 +44,25 @@ abstract class Plugin(val context: PluginContext) {
     open fun shutdown() {}
 
     /**
-     * Register the given [command] with the command manager
+     * Register the given [command] with the command manager.
      *
      * @param command the command to register
      */
-    fun registerCommand(command: Command) = context.server.commandManager.register(command)
+    fun registerCommand(command: BrigadierCommand) = context.server.commandManager.register(command)
 
     /**
-     * Register the given [commands] with the command manager
+     * Register the given [command] with the command manager.
      *
-     * @param commands the commands to register
+     * @param command the command to register
      */
-    fun registerCommands(vararg commands: Command) = context.server.commandManager.register(*commands)
+    fun registerCommand(command: SimpleCommand) = context.server.commandManager.register(command)
 
     /**
-     * Register the given [commands] with the command manager
+     * Register the given [command] with the command manager.
      *
-     * @param commands the commands to register
+     * @param command the command to register
      */
-    fun registerCommands(commands: Iterable<Command>) = context.server.commandManager.register(commands)
+    fun registerCommand(command: RawCommand) = context.server.commandManager.register(command)
 
     /**
      * Register a new event listener

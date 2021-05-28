@@ -8,14 +8,14 @@
  */
 package org.kryptonmc.api.dummy
 
-import org.kryptonmc.api.command.Command
+import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.Sender
 
 class DummyCommand(
     name: String,
     permission: String? = null,
     aliases: List<String> = emptyList()
-) : Command(name, permission, aliases) {
+) : SimpleCommand(name, permission, aliases) {
 
-    override fun execute(sender: Sender, args: List<String>) = Unit
+    override fun execute(sender: Sender, args: Array<String>) = Unit
 }

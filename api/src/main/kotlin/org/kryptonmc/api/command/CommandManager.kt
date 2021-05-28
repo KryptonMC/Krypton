@@ -8,8 +8,6 @@
  */
 package org.kryptonmc.api.command
 
-import com.mojang.brigadier.tree.LiteralCommandNode
-
 /**
  * The command manager is responsible for registering, unregistering, and
  * keeping track of [Command]s
@@ -17,39 +15,25 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 interface CommandManager {
 
     /**
-     * Register a command
+     * Register a Brigadier command with this manager.
      *
      * @param command the command to register
      */
-    fun register(command: Command)
+    fun register(command: BrigadierCommand)
 
     /**
-     * Register commands
-     *
-     * @param commands the commands to register
-     */
-    fun register(vararg commands: Command)
-
-    /**
-     * Register commands
-     *
-     * @param commands the commands to register
-     */
-    fun register(commands: Iterable<Command>)
-
-    /**
-     * Register a Brigadier [com.mojang.brigadier.Command]
+     * Register a legacy command with this manager.
      *
      * @param command the command to register
      */
-    fun register(command: LiteralCommandNode<Sender>)
+    fun register(command: SimpleCommand)
 
     /**
-     * Register Brigadier [com.mojang.brigadier.Command]s
+     * Register a raw command with this manager.
      *
-     * @param commands the commands to register
+     * @param command the command to register
      */
-    fun register(vararg commands: LiteralCommandNode<Sender>)
+    fun register(command: RawCommand)
 
     /**
      * Dispatch a command from the given [sender] with the given [command]

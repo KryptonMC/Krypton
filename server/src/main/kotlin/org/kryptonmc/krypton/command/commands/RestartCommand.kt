@@ -18,14 +18,14 @@
  */
 package org.kryptonmc.krypton.command.commands
 
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.api.command.Command
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.command.SimpleCommand
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.locale.Messages
 
-class RestartCommand(private val server: KryptonServer) : Command("restart", "krypton.command.restart") {
+internal class RestartCommand(private val server: KryptonServer) : SimpleCommand("restart", "krypton.command.restart") {
 
-    override fun execute(sender: Sender, args: List<String>) {
+    override fun execute(sender: Sender, args: Array<String>) {
         Messages.COMMANDS.RESTART.send(sender)
         server.restart()
     }

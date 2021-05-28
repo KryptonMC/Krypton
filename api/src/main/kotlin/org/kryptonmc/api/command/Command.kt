@@ -9,32 +9,13 @@
 package org.kryptonmc.api.command
 
 /**
- * Represents a command that may be executed, or provide suggestions to the user.
+ * A command that can be sent by a [Sender], such as a [org.kryptonmc.api.entity.entities.Player]
+ * or the [ConsoleSender].
  *
- * @param name the name of the command
- * @param permission the permission required to execute the command (`null` for no permission)
- * @param aliases a list of aliases for this command
+ * This interface cannot be inherited from directly. You must use one of the registrable interfaces:
+ *
+ * * [BrigadierCommand] - the more modern type of command, backed by Brigadier's [com.mojang.brigadier.tree.LiteralCommandNode]
+ * * [SimpleCommand] - the older style of command, mainly popularised by Bukkit and BungeeCord.
+ * * [RawCommand] - provides everything as-is, so it can be processed by external frameworks.
  */
-abstract class Command @JvmOverloads constructor(
-    val name: String,
-    val permission: String? = null,
-    val aliases: List<String> = emptyList()
-) {
-
-    /**
-     * Called when this command is executed (when the [sender] runs the command)
-     *
-     * @param sender the sender who ran this command
-     * @param args the arguments supplied to this command
-     */
-    abstract fun execute(sender: Sender, args: List<String>)
-
-    /**
-     * Called when the [sender] sends a tab complete request.
-     *
-     * @param sender the sender who sent the tab completion request
-     * @param args the arguments the sender sent
-     * @return a list of possible tab completions for the specified [args]
-     */
-    open fun suggest(sender: Sender, args: List<String>): List<String> = emptyList()
-}
+sealed interface Command

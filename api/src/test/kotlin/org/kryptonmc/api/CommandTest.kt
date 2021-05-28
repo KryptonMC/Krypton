@@ -18,6 +18,6 @@ class CommandTest {
         assertEquals("test", command.name)
         assertEquals("test.test", command.permission)
         assertEquals(listOf("hello", "world"), command.aliases)
-        assertEquals(emptyList(), command.suggest(sender, emptyList()))
+        assertEquals(emptyList(), command.suggest(sender, emptyArray()))
     }
 }

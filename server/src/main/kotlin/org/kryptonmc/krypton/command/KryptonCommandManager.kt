@@ -33,9 +33,11 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
+import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.api.command.Command
+import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.CommandManager
+import org.kryptonmc.api.command.RawCommand
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.api.event.play.PermissionCheckResult
@@ -50,24 +52,32 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
 
     internal val dispatcher = CommandDispatcher<Sender>()
 
-    override fun register(command: Command) {
-        val commandNode = buildRawArgumentsLiteral(
+    override fun register(command: BrigadierCommand) = dispatcher.root.addChild(command.node)
+
+    override fun register(command: SimpleCommand) {
+        val node = buildRawArgumentsLiteral(
             command.name,
             { execute(command, it) },
             { context, builder -> suggest(command, context, builder) }
         )
-        dispatcher.root.addChild(commandNode)
+        dispatcher.root.addChild(node)
 
-        command.aliases.forEach { dispatcher.root.addChild(commandNode.buildRedirect(it)) }
+        command.aliases.forEach { dispatcher.root.addChild(node.buildRedirect(it)) }
     }
 
-    override fun register(vararg commands: Command) = commands.forEach { register(it) }
+    override fun register(command: RawCommand) {
+        val node = buildRawArgumentsLiteral(
+            command.name,
+            { command.execute(it.source, it.input); 1 },
+            { context, builder ->
+                command.suggest(context.source, context.rawArguments).forEach { builder.suggest(it) }
+                builder.buildFuture()
+            }
+        )
+        dispatcher.root.addChild(node)
 
-    override fun register(commands: Iterable<Command>) = commands.forEach { register(it) }
-
-    override fun register(command: LiteralCommandNode<Sender>) = dispatcher.root.addChild(command)
-
-    override fun register(vararg commands: LiteralCommandNode<Sender>) = commands.forEach { register(it) }
+        command.aliases.forEach { dispatcher.root.addChild(node.buildRedirect(it)) }
+    }
 
     override fun dispatch(sender: Sender, command: String) {
         try {
@@ -87,7 +97,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
     fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> =
         dispatcher.getCompletionSuggestions(parseResults)
 
-    private fun dispatchCommand(command: Command, sender: Sender, args: List<String>): Int {
+    private fun dispatchCommand(command: SimpleCommand, sender: Sender, args: Array<String>): Int {
         CommandScope.launch { command.execute(sender, args) }
         return 1
     }
@@ -98,9 +108,9 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         return event.result
     }
 
-    private fun execute(command: Command, context: CommandContext<Sender>): Int {
+    private fun execute(command: SimpleCommand, context: CommandContext<Sender>): Int {
         val sender = context.source
-        val args = context.input.split(" ").drop(1)
+        val args = context.splitArguments
 
         if (command.permission == null) {
             dispatchPermissionCheck(sender, null)
@@ -115,11 +125,11 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
     }
 
     private fun suggest(
-        command: Command,
+        command: SimpleCommand,
         context: CommandContext<Sender>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
-        val args = context.input.split(" ").drop(1)
+        val args = context.splitArguments
         val hasPermission = command.permission?.let(context.source::hasPermission) ?: true
         if (!hasPermission) return builder.buildFuture()
 
@@ -158,3 +168,15 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         private val DEFAULT_NO_PERMISSION = Messages.COMMAND.NO_PERMISSION().color(NamedTextColor.RED)
     }
 }
+
+private val CommandContext<Sender>.rawArguments: String
+    get() {
+        val firstSpace = input.indexOf(' ')
+        return if (firstSpace == -1) "" else input.substring(firstSpace + 1)
+    }
+
+private val CommandContext<Sender>.splitArguments: Array<String>
+    get() {
+        val raw = rawArguments
+        return if (raw.isEmpty()) emptyArray() else raw.split(" ").toTypedArray()
+    }

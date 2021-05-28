@@ -21,7 +21,15 @@ package org.kryptonmc.krypton.command
 import com.mojang.brigadier.CommandDispatcher
 import org.kryptonmc.api.command.Sender
 
-interface BrigadierCommand {
+/**
+ * An internal command. Allows us to directly access the dispatcher where we need it.
+ */
+interface InternalCommand {
 
+    /**
+     * Register this command with the provided [dispatcher].
+     *
+     * @param dispatcher the dispatcher to use to register this command
+     */
     fun register(dispatcher: CommandDispatcher<Sender>)
 }

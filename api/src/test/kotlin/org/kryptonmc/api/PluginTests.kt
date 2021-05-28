@@ -18,11 +18,7 @@ class PluginTests {
     @Suppress("RemoveRedundantSpreadOperator")
     fun `test register commands calls correctly`() {
         plugin.registerCommand(command)
-        plugin.registerCommands(command)
-        plugin.registerCommands(setOf(command))
         verify { commandManagerMock.register(command) }
-        verify { commandManagerMock.register(*arrayOf(command)) }
-        verify { commandManagerMock.register(setOf(command)) }
     }
 
     @Test
