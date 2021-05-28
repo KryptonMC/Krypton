@@ -22,25 +22,30 @@ import com.google.common.collect.Multimaps
 import org.kryptonmc.api.plugin.Plugin
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.scheduling.Task
+import org.kryptonmc.api.scheduling.TaskState
+import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
+import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
-object KryptonScheduler : Scheduler {
+class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Scheduler {
 
     override val executor: ExecutorService = Executors.newCachedThreadPool(NamedThreadFactory("Krypton Scheduler #%d"))
-    internal val timedExecutor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(NamedThreadFactory("Krypton Timed Scheduler"))
-    internal val tasksByPlugin = Multimaps.newMultimap(ConcurrentHashMap<Any, MutableCollection<KryptonTask>>()) { ConcurrentHashMap.newKeySet() }
+    private val timedExecutor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(NamedThreadFactory("Krypton Timed Scheduler"))
+    private val tasksByPlugin = Multimaps.newMultimap(ConcurrentHashMap<Any, MutableCollection<KryptonTask>>()) { ConcurrentHashMap.newKeySet() }
 
     override fun run(plugin: Plugin, task: Runnable) = schedule(plugin, 0, TimeUnit.MILLISECONDS, task)
 
     override fun schedule(plugin: Plugin, delay: Long, unit: TimeUnit, task: Runnable) = schedule(plugin, delay, 0, unit, task)
 
     override fun schedule(plugin: Plugin, delay: Long, period: Long, unit: TimeUnit, task: Runnable): Task {
-        val scheduledTask = KryptonTask(this, plugin, task, delay, period, unit)
+        val scheduledTask = KryptonTask(plugin, task, delay, period, unit)
         tasksByPlugin.put(plugin, scheduledTask)
         scheduledTask.schedule()
         return scheduledTask
@@ -51,5 +56,63 @@ object KryptonScheduler : Scheduler {
         timedExecutor.shutdown()
         executor.shutdown()
         return executor.awaitTermination(10, TimeUnit.SECONDS)
+    }
+
+    private inner class KryptonTask(
+        override val plugin: Plugin,
+        val runnable: Runnable,
+        val delay: Long,
+        val period: Long,
+        val unit: TimeUnit
+    ) : Runnable, Task {
+
+        private var future: ScheduledFuture<*>? = null
+        private var currentTaskThread: Thread? = null
+
+        override val state: TaskState
+            get() {
+                if (future == null) return TaskState.SCHEDULED
+                if (future!!.isCancelled) return TaskState.INTERRUPTED
+                if (future!!.isDone) return TaskState.COMPLETED
+                return TaskState.SCHEDULED
+            }
+
+        fun schedule() {
+            future = if (period == 0L) {
+                timedExecutor.schedule(this, delay, unit)
+            } else {
+                timedExecutor.scheduleAtFixedRate(this, delay, period, unit)
+            }
+        }
+
+        override fun cancel() {
+            future?.cancel(false)
+            currentTaskThread?.interrupt()
+            finish()
+        }
+
+        override fun run() = executor.execute {
+            currentTaskThread = Thread.currentThread()
+            try {
+                runnable.run()
+            } catch (exception: Exception) {
+                if (exception is InterruptedException) {
+                    Thread.currentThread().interrupt()
+                    return@execute
+                }
+                val context = pluginManager.contextOf(plugin)
+                Messages.SCHEDULE_ERROR.error(LOGGER, context.description.name, runnable)
+            } finally {
+                if (period == 0L) finish()
+                currentTaskThread = null
+            }
+        }
+
+        private fun finish() = tasksByPlugin[plugin]?.minusAssign(this)
+    }
+
+    companion object {
+
+        private val LOGGER = logger("Scheduler")
     }
 }

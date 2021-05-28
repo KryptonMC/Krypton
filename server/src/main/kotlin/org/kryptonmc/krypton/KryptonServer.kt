@@ -131,10 +131,10 @@ class KryptonServer(val mainThread: Thread) : Server {
     override val commandManager = KryptonCommandManager(this)
     override val eventBus = KryptonEventBus
 
-    override val scheduler = KryptonScheduler
-
     override val pluginManager = KryptonPluginManager(this)
     override val servicesManager = KryptonServicesManager
+
+    override val scheduler = KryptonScheduler(pluginManager)
 
     @Volatile internal var isRunning = true; private set
     @Volatile internal var lastTickTime = 0L; private set
@@ -192,7 +192,6 @@ class KryptonServer(val mainThread: Thread) : Server {
             Messages.PIRACY_WARNING.info(LOGGER)
             LOGGER.info("-----------------------------------------------------------------------------------")
         }
-        Class.forName("org.kryptonmc.api.KryptonKt").getDeclaredField("server").apply { isAccessible = true }.set(null, this)
         pluginManager.initialize()
 
         lastTickTime = System.currentTimeMillis()

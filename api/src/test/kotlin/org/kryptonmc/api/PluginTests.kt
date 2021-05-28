@@ -8,25 +8,10 @@
  */
 package org.kryptonmc.api
 
-import io.mockk.verify
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class PluginTests {
-
-    @Test
-    @Suppress("RemoveRedundantSpreadOperator")
-    fun `test register commands calls correctly`() {
-        plugin.registerCommand(command)
-        verify { commandManagerMock.register(command) }
-    }
-
-    @Test
-    fun `test register listener calls correctly`() {
-        val event = Any()
-        plugin.registerListener(event)
-        verify { eventBusMock.register(event) }
-    }
 
     @Test
     fun `test plugin description file values`() {

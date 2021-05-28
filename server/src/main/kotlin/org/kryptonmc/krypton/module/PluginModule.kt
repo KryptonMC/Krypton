@@ -16,27 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command
+package org.kryptonmc.krypton.module
 
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.event.play.PermissionCheckEvent
-import org.kryptonmc.krypton.event.KryptonEventBus
+import dev.misfitlabs.kotlinguice4.KotlinModule
+import org.apache.logging.log4j.Logger
+import org.kryptonmc.api.plugin.PluginContext
+import org.kryptonmc.api.plugin.PluginDescriptionFile
+import java.nio.file.Path
 
-abstract class KryptonSender : Sender {
+class PluginModule(private val context: PluginContext) : KotlinModule() {
 
-    override val permissions = mutableMapOf<String, Boolean>()
-
-    override fun hasPermission(permission: String): Boolean {
-        val event = PermissionCheckEvent(this, permission, permission in permissions)
-        KryptonEventBus.call(event)
-        return event.result.value
-    }
-
-    override fun grant(permission: String) {
-        permissions[permission] = true
-    }
-
-    override fun revoke(permission: String) {
-        permissions[permission] = false
+    override fun configure() {
+        bind<PluginContext>().toInstance(context)
+        bind<Path>().toInstance(context.folder)
+        bind<PluginDescriptionFile>().toInstance(context.description)
+        bind<Logger>().toInstance(context.logger)
     }
 }

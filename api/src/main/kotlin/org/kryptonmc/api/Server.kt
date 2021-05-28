@@ -12,6 +12,7 @@ import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.CommandManager
+import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.entities.Player
 import org.kryptonmc.api.event.EventBus
@@ -133,7 +134,7 @@ interface Server : ForwardingAudience {
     /**
      * The console's [Sender] object
      */
-    val console: Sender
+    val console: ConsoleSender
 
     /**
      * The server's [Scoreboard], or null if there isn't one

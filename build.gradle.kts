@@ -11,8 +11,7 @@ import org.kryptonmc.krypton.log4j
 import org.kryptonmc.krypton.sponge
 
 plugins {
-    kotlin("jvm") version "1.5.0"
-    kotlin("plugin.serialization") version "1.5.0"
+    kotlin("jvm") version "1.5.10"
     id("org.jetbrains.dokka") version "1.4.30"
     id("info.solidsoft.pitest") version "1.6.0"
     id("org.cadixdev.licenser") version "0.6.0" apply false
@@ -22,7 +21,7 @@ plugins {
 
 allprojects {
     group = "org.kryptonmc"
-    version = "0.21"
+    version = "0.22.1"
 
     repositories {
         mavenCentral()
@@ -33,7 +32,6 @@ allprojects {
 
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
     apply(plugin = "org.jetbrains.dokka")
     apply(plugin = "info.solidsoft.pitest")
     apply(plugin = "maven-publish")
@@ -50,6 +48,10 @@ subprojects {
         api("org.apache.commons:commons-lang3:3.12.0")
         api("org.apache.commons:commons-text:1.9")
         api(kotlinx("coroutines-core", Versions.COROUTINES))
+
+        // Dependency Injection
+        api("com.google.inject:guice:5.0.1")
+        api("dev.misfitlabs.kotlinguice4:kotlin-guice:1.5.0")
 
         // Adventure
         api(adventure("api"))

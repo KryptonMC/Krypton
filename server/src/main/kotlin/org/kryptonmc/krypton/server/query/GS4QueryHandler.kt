@@ -215,13 +215,14 @@ class GS4QueryHandler private constructor(
         val result = StringBuilder("Krypton version ${KryptonServerInfo.version}")
         val plugins = server.pluginManager.plugins
 
-        if (plugins.size > 0) {
+        if (plugins.isNotEmpty()) {
             result.append(": ")
 
             plugins.forEachIndexed { index, plugin ->
                 if (index > 0) result.append("; ")
-                result.append(plugin.context.description.name).append(" ")
-                result.append(plugin.context.description.version.replace(";", ","))
+                val context = server.pluginManager.contextOf(plugin)
+                result.append(context.description.name).append(" ")
+                result.append(context.description.version.replace(";", ","))
             }
         }
 

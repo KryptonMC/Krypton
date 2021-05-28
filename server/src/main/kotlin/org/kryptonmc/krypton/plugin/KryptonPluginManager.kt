@@ -18,19 +18,21 @@
  */
 package org.kryptonmc.krypton.plugin
 
-import org.kryptonmc.krypton.KryptonServer
+import com.google.inject.Guice
 import org.kryptonmc.api.plugin.Plugin
 import org.kryptonmc.api.plugin.PluginContext
 import org.kryptonmc.api.plugin.PluginDescriptionFile
 import org.kryptonmc.api.plugin.PluginLoadState
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.module.GlobalModule
+import org.kryptonmc.krypton.module.PluginModule
 import org.kryptonmc.krypton.util.createDirectory
 import org.kryptonmc.krypton.util.list
 import org.kryptonmc.krypton.util.logger
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
-import org.spongepowered.configurate.kotlin.extensions.get
 import java.io.FileNotFoundException
 import java.lang.reflect.InvocationTargetException
 import java.nio.file.Path
@@ -39,17 +41,23 @@ import kotlin.io.path.isDirectory
 
 class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
-    override val plugins = mutableSetOf<Plugin>()
+    private val _plugins = object : MutableMap<Plugin, PluginContext> by mutableMapOf() {
+
+        override fun get(key: Plugin) = getValue(key)
+    }
+
+    override val plugins: Set<Plugin>
+        get() = _plugins.keys
 
     internal fun initialize() {
         Messages.PLUGIN.LOAD.INITIAL.info(LOGGER)
         CURRENT_DIRECTORY.resolve("plugins").apply {
             createDirectory()
             list().filter { !it.isDirectory() }.forEach {
-                val plugin = load(this, it) ?: return@forEach
+                val (plugin, context) = load(this, it) ?: return@forEach
 
-                val name = plugin.context.description.name
-                val version = plugin.context.description.version
+                val name = context.description.name
+                val version = context.description.version
                 Messages.PLUGIN.LOAD.SUCCESS.info(LOGGER, name, version)
 
                 Messages.PLUGIN.INIT.START.info(LOGGER, name, version)
@@ -57,7 +65,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
                 Messages.PLUGIN.INIT.SUCCESS.info(LOGGER, name, version)
                 plugin.loadState = PluginLoadState.INITIALIZED
 
-                plugins += plugin
+                _plugins[plugin] = context
             }
         }
         Messages.PLUGIN.LOAD.DONE.info(LOGGER)
@@ -68,7 +76,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
     // if the cast here fails, something is seriously wrong
     override fun addToClasspath(plugin: Plugin, path: Path) = (plugin.javaClass.classLoader as PluginClassLoader).addPath(path)
 
-    private fun load(folder: Path, path: Path): Plugin? {
+    private fun load(folder: Path, path: Path): Pair<Plugin, PluginContext>? {
         val description = loadDescription(path)
         Messages.PLUGIN.LOAD.START.info(LOGGER, description.name, description.version)
 
@@ -82,9 +90,8 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
         val loader = PluginClassLoader(path)
         return try {
-            val jarClass = loader.loadClass(description.main)
-            val pluginClass = jarClass.asSubclass(Plugin::class.java)
-            pluginClass.getDeclaredConstructor(PluginContext::class.java).newInstance(context)
+            val pluginClass = loader.loadClass(description.main).asSubclass(Plugin::class.java)
+            Guice.createInjector(GlobalModule(server), PluginModule(context)).getInstance(pluginClass) to context
         } catch (exception: Exception) {
             when (exception) {
                 is ClassNotFoundException -> Messages.PLUGIN.LOAD.ERROR.NO_MAIN.error(LOGGER, description.name, exception)
@@ -104,17 +111,26 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
         val entry = jar.getJarEntry("plugin.conf") ?: throw FileNotFoundException("Plugin's JAR does not contain a plugin.conf!")
         jar.getInputStream(entry).use { input ->
             val loader = HoconConfigurationLoader.builder().source { input.bufferedReader() }.build()
-            loader.load().get()!!
+            val node = loader.load()
+            val name = node.node("name").string ?: throw IllegalArgumentException("No name attribute in plugin.conf!")
+            val main = node.node("main").string ?: throw IllegalArgumentException("No main attribute in plugin.conf!")
+            val version = node.node("version").string ?: throw IllegalArgumentException("No version attribute in plugin.conf!")
+            val description = node.node("description").getString("")
+            val authors = node.node("authors").getList(String::class.java, emptyList())
+            val dependencies = node.node("dependencies").getList(String::class.java, emptyList())
+            PluginDescriptionFile(name, main, version, description, authors, dependencies)
         }
     }
 
-    fun shutdown() = plugins.forEach {
-        it.loadState = PluginLoadState.SHUTTING_DOWN
-        Messages.PLUGIN.SHUTDOWN.START.info(LOGGER, it.context.description.name, it.context.description.version)
-        it.shutdown()
-        it.loadState = PluginLoadState.SHUT_DOWN
-        Messages.PLUGIN.SHUTDOWN.SUCCESS.info(LOGGER, it.context.description.name, it.context.description.version)
+    fun shutdown() = _plugins.forEach { (plugin, context) ->
+        plugin.loadState = PluginLoadState.SHUTTING_DOWN
+        Messages.PLUGIN.SHUTDOWN.START.info(LOGGER, context.description.name, context.description.version)
+        plugin.shutdown()
+        plugin.loadState = PluginLoadState.SHUT_DOWN
+        Messages.PLUGIN.SHUTDOWN.SUCCESS.info(LOGGER, context.description.name, context.description.version)
     }
+
+    fun contextOf(plugin: Plugin) = _plugins[plugin]
 
     companion object {
 

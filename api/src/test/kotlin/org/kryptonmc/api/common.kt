@@ -70,4 +70,4 @@ val logger = mockk<Logger> {
     every { error(any<String>()) } just runs
 }
 
-val plugin = object : Plugin(PluginContext(server, Path.of(""), description, logger)) {}
+val plugin = object : Plugin() {}
