@@ -49,7 +49,7 @@ fun MavenPublication.applyCommon(project: Project, artifact: String) {
     artifact(project.tasks["javadocJar"])
 }
 
-fun MavenPom.applyCommon(name: String, description: String) {
+fun MavenPom.applyCommon(name: String, description: String, isGPL: Boolean = false) {
     this.name.set(name)
     this.description.set(description)
     url.set("https://www.kryptonmc.org")
@@ -59,8 +59,8 @@ fun MavenPom.applyCommon(name: String, description: String) {
 
     licenses {
         license {
-            this.name.set("MIT License")
-            this.url.set("https://opensource.org/licenses/MIT")
+            this.name.set(if (isGPL) "GNU General Public License v3.0" else "MIT License")
+            this.url.set(if (isGPL) "https://www.gnu.org/licenses/gpl-3.0.en.html" else "https://opensource.org/licenses/MIT")
         }
     }
 

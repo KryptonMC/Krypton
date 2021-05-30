@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.module
 
+import com.google.inject.name.Names
 import dev.misfitlabs.kotlinguice4.KotlinModule
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.command.CommandManager
@@ -44,6 +45,6 @@ class GlobalModule(private val server: KryptonServer) : KotlinModule() {
         bind<Scheduler>().toInstance(server.scheduler)
         bind<StatusInfo>().toInstance(server.status)
         bind<ConsoleSender>().toInstance(server.console)
-        bind<World>().toInstance(server.worldManager.default)
+        bind<World>().annotatedWith(Names.named("default")).toInstance(server.worldManager.default)
     }
 }

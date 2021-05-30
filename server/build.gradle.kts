@@ -98,7 +98,7 @@ publishing {
     publications {
         create<MavenPublication>("mavenKotlin") {
             applyCommon(project, "krypton")
-            pom.applyCommon("Krypton", "The fast and lightweight Minecraft server written in Kotlin!")
+            pom.applyCommon("Krypton", "The fast and lightweight Minecraft server written in Kotlin!", true)
         }
     }
 }

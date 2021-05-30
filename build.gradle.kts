@@ -26,6 +26,7 @@ allprojects {
     repositories {
         mavenCentral()
         maven("https://libraries.minecraft.net")
+        maven("https://repo.bristermitten.me/repository/maven-public/")
         jcenter()
     }
 }
@@ -67,6 +68,7 @@ subprojects {
         api("com.mojang:brigadier:1.0.17")
         api(sponge("math", "2.0.0"))
         api(log4j("api"))
+        api("me.bardy:gson-kt:1.1")
 
         // Testing
         testImplementation(junit("jupiter", "api"))

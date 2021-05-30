@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.registry.tags
 
+import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.krypton.GSON
-import org.kryptonmc.krypton.util.fromJson
 import java.io.FileNotFoundException
 import java.io.Reader
 import java.util.concurrent.ConcurrentHashMap

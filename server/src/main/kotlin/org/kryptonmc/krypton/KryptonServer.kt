@@ -19,10 +19,11 @@
 package org.kryptonmc.krypton
 
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import me.bardy.gsonkt.newBuilder
+import me.bardy.gsonkt.registerTypeAdapter
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component
@@ -71,7 +72,6 @@ import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.util.profiling.SingleTickProfiler
 import org.kryptonmc.krypton.util.profiling.results.ProfileResults
 import org.kryptonmc.krypton.util.profiling.decorate
-import org.kryptonmc.krypton.util.registerTypeAdapter
 import org.kryptonmc.krypton.util.reports.CrashReport
 import org.kryptonmc.krypton.util.reports.ReportedException
 import org.kryptonmc.krypton.world.KryptonWorldManager
@@ -457,11 +457,11 @@ data class KryptonStatusInfo(
 
 val CURRENT_DIRECTORY: Path = Path.of("").toAbsolutePath()
 
-val GSON: Gson = GsonComponentSerializer.gson().populator().apply(
-    GsonBuilder().registerTypeAdapter<UUID>(MojangUUIDSerializer)
-        .registerTypeAdapter<RegistryBlock>(RegistryBlock.Companion)
-        .registerTypeAdapter<RegistryBlockState>(RegistryBlockState.Companion)
-        .registerTypeAdapter<Gamemode>(GamemodeSerializer)
-        .registerTypeAdapter<Difficulty>(DifficultySerializer)
-        .registerTypeAdapter<MetadataResponse>(MetadataResponse)
-).create()
+val GSON: Gson = GsonComponentSerializer.gson().serializer().newBuilder {
+    registerTypeAdapter<UUID>(MojangUUIDSerializer)
+    registerTypeAdapter<RegistryBlock>(RegistryBlock.Companion)
+    registerTypeAdapter<RegistryBlockState>(RegistryBlockState.Companion)
+    registerTypeAdapter<Gamemode>(GamemodeSerializer)
+    registerTypeAdapter<Difficulty>(DifficultySerializer)
+    registerTypeAdapter<MetadataResponse>(MetadataResponse)
+}

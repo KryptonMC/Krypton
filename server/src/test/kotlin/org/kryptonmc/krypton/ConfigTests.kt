@@ -19,13 +19,13 @@
 package org.kryptonmc.krypton
 
 import com.google.gson.JsonParseException
+import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.config.KryptonConfig
-import org.kryptonmc.krypton.util.fromJson
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
 import kotlin.test.Test

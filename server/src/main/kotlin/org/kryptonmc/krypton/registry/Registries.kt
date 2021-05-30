@@ -18,17 +18,15 @@
  */
 package org.kryptonmc.krypton.registry
 
-import com.google.gson.reflect.TypeToken
+import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.registry.biomes.BiomeRegistry
 import org.kryptonmc.krypton.registry.dimensions.DimensionRegistry
 import org.kryptonmc.krypton.registry.json.RegistryEntry
-import org.kryptonmc.krypton.util.fromJson
 
-private val TYPE = object : TypeToken<Map<Key, RegistryEntry>>() {}.type
-private val REGISTRIES: Map<Key, RegistryEntry> = GSON.fromJson(registryData("registries/registries.json"), TYPE)
+private val REGISTRIES: Map<Key, RegistryEntry> = GSON.fromJson(registryData("registries/registries.json"))
 
 /**
  * Singleton for all of the registries that we load from files. This is a singleton for ease of use
