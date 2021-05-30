@@ -80,15 +80,18 @@ dependencies {
 </dependencies>
 ```
 
-The documentation for both the API and the server can now be found [here](https://docs.kryptonmc.org).
+The documentation for both the API and the server can now be found [here](https://docs.kryptonmc.org), and the
+wiki on how to use the API can be found [here](https://wiki.kryptonmc.org)
 
 Example usage:
 
 ```kotlin
-class MyPlugin(context: PluginContext) : Plugin(context) {
+// As of 0.22.1, we now use Guice, meaning you can now inject your required dependencies
+// in any one of your classes throughout the project
+class MyPlugin @Inject constructor(commandManager: CommandManager, command: MyCommand) : Plugin() {
 
     init {
-        registerCommand(MyCommand()) // example command registration
+        commandManager.register(command) // example command registration
     }
 
     override fun initialize() {
