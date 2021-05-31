@@ -8,8 +8,8 @@
  */
 package org.kryptonmc.api.dummy
 
-import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.command.SimpleCommand
 
 class DummyCommand(
     name: String,

@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues>
+    <ID>AnnotationOnSeparateLine:org.kryptonmc.api.effect.particle.ParticleEffectBuilders.kt:9</ID>
+    <ID>DataClassContainsFunctions:Location.kt$Location$private fun check(position: Position, message: String)</ID>
+    <ID>DataClassShouldBeImmutable:Abilities.kt$Abilities$@get:JvmName("canBuild") var canBuild: Boolean = true</ID>
+    <ID>DataClassShouldBeImmutable:Abilities.kt$Abilities$@get:JvmName("canFly") var canFly: Boolean = false</ID>
+    <ID>DataClassShouldBeImmutable:Abilities.kt$Abilities$@get:JvmName("canInstantlyBuild") var canInstantlyBuild: Boolean = false</ID>
+    <ID>DataClassShouldBeImmutable:Abilities.kt$Abilities$var flyingSpeed: Float = DEFAULT_FLYING_SPEED</ID>
+    <ID>DataClassShouldBeImmutable:Abilities.kt$Abilities$var isFlying: Boolean = false</ID>
+    <ID>DataClassShouldBeImmutable:Abilities.kt$Abilities$var isInvulnerable: Boolean = false</ID>
+    <ID>DataClassShouldBeImmutable:Abilities.kt$Abilities$var walkSpeed: Float = DEFAULT_WALKING_SPEED</ID>
+    <ID>Indentation:org.kryptonmc.api.world.Location.kt:79</ID>
+    <ID>Indentation:org.kryptonmc.api.world.Location.kt:80</ID>
+    <ID>Indentation:org.kryptonmc.api.world.Location.kt:81</ID>
+    <ID>Indentation:org.kryptonmc.api.world.Location.kt:82</ID>
+    <ID>Indentation:org.kryptonmc.api.world.Location.kt:83</ID>
+    <ID>Indentation:org.kryptonmc.api.world.Location.kt:84</ID>
+    <ID>LongParameterList:ParticleEffectBuilders.kt$ColorParticleEffectBuilder$( type: Particle, quantity: Int = 1, offset: Vector = Vector.ZERO, longDistance: Boolean = false, protected var red: UByte = 0u, protected var green: UByte = 0u, protected var blue: UByte = 0u )</ID>
+    <ID>LongParameterList:ParticleEffectBuilders.kt$DirectionalParticleEffectBuilder$( type: Particle, quantity: Int = 1, offset: Vector = Vector.ZERO, longDistance: Boolean = false, private var direction: Vector? = null, private var velocity: Float = 0.0F )</ID>
+    <ID>LongParameterList:ParticleEffectBuilders.kt$DustParticleEffectBuilder$( type: Particle, quantity: Int = 1, offset: Vector = Vector.ZERO, longDistance: Boolean = false, red: UByte = 255u, green: UByte = 0u, blue: UByte = 0u, private var scale: Float = 0.0F )</ID>
+    <ID>LongParameterList:Team.kt$Team$( val name: String, val displayName: Component, @get:JvmName("allowFriendlyFire") val allowFriendlyFire: Boolean, @get:JvmName("areInvisibleMembersVisible") val canSeeInvisibleMembers: Boolean, val options: Map&lt;Option, OptionApplication>, val color: TeamColor, val prefix: Component, val suffix: Component, val members: List&lt;Player> )</ID>
+    <ID>MagicNumber:BoundingBox.kt$BoundingBox$0.5</ID>
+    <ID>MethodOverloading:ItemDSL.kt$org.kryptonmc.api.inventory.item.dsl.ItemDSL.kt</ID>
+    <ID>MethodOverloading:ParticleEffectBuilders.kt$org.kryptonmc.api.effect.particle.ParticleEffectBuilders.kt</ID>
+    <ID>UnnecessaryAbstractClass:Plugin.kt$Plugin</ID>
+    <ID>AnnotationOnSeparateLine:org.kryptonmc.api.ClientSettingsTests.kt:9</ID>
+  </ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>ComplexInterface:Position.kt$Position : Cloneable</ID>
+    <ID>TooManyFunctions:Location.kt$Location : Position</ID>
+    <ID>TooManyFunctions:Position.kt$Position : Cloneable</ID>
+    <ID>UndocumentedPublicProperty:ParticleEffects.kt$BlockParticleData$val id: Int</ID>
+    <ID>UndocumentedPublicProperty:ParticleEffects.kt$ItemParticleData$val id: Int</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.service
 import com.google.common.collect.Multimap
 import com.google.common.collect.Multimaps
 import org.kryptonmc.api.plugin.Plugin
-import org.kryptonmc.api.service.ServiceProvider
 import org.kryptonmc.api.service.ServicesManager
 import java.util.concurrent.ConcurrentHashMap
 

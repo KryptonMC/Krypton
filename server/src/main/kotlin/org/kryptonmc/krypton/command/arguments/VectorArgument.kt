@@ -41,11 +41,7 @@ class VectorArgument(private val correctCenter: Boolean) : ArgumentType<Coordina
     override fun <S> listSuggestions(context: CommandContext<S>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
         if (context.source !is Player) return Suggestions.empty()
         val remaining = builder.remaining
-        val suggestions = listOf(if (remaining.isNotEmpty() && remaining[0] == '^') {
-            TextCoordinates.CENTER_LOCAL
-        } else {
-            TextCoordinates.CENTER_GLOBAL
-        })
+        val suggestions = listOf(if (remaining.isNotEmpty() && remaining[0] == '^') TextCoordinates.CENTER_LOCAL else TextCoordinates.CENTER_GLOBAL)
         return builder.suggestCoordinates(remaining, suggestions) {
             try {
                 parse(StringReader(it))
@@ -67,7 +63,7 @@ class VectorArgument(private val correctCenter: Boolean) : ArgumentType<Coordina
 val ERROR_NOT_COMPLETE = SimpleCommandExceptionType(Component.translatable("argument.pos3d.incomplete").toMessage())
 val ERROR_MIXED_TYPE = SimpleCommandExceptionType(Component.translatable("argument.pos.mixed").toMessage())
 
-class TextCoordinates(val x: String, val y: String, val z: String) {
+data class TextCoordinates(val x: String, val y: String, val z: String) {
 
     companion object {
 

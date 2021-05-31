@@ -52,7 +52,7 @@ data class BannerEntity(
     }
 }
 
-class BannerPattern(
+data class BannerPattern(
     val pattern: BannerPatternType,
     val color: BannerPatternColor
 )

@@ -20,4 +20,4 @@ import java.net.InetSocketAddress
  *
  * @param address the address of the connecting client
  */
-data class HandshakeEvent(val address: InetSocketAddress) : Event
+class HandshakeEvent(val address: InetSocketAddress) : Event

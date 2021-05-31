@@ -13,7 +13,7 @@ import org.kryptonmc.api.event.Event
 import java.util.Locale
 
 /**
- * Called when the client sends its settings information
+ * Called when the client sends its settings information.
  *
  * @param player the player who sent their settings
  * @param locale the player's locale
@@ -21,7 +21,7 @@ import java.util.Locale
  * @param hasColorsEnabled if the player has chat colours enabled
  * @param skinSettings the player's skin settings
  */
-data class ClientSettingsEvent(
+class ClientSettingsEvent(
     val player: Player,
     val locale: Locale,
     val viewDistance: Int,
@@ -30,7 +30,7 @@ data class ClientSettingsEvent(
 ) : Event
 
 /**
- * Holder for all the settings for a player's skin
+ * Holder for all the settings for a player's skin.
  *
  * @param cape whether the player has their cape shown
  * @param jacket whether the player has their jacket shown

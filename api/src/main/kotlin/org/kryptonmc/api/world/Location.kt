@@ -17,13 +17,13 @@ import kotlin.math.sqrt
 
 /**
  * A [Location] is a three-dimensional space in a world. That is, it possesses
- * an x, y and z coordinate, as well as angles of rotation in [pitch] and [yaw]
+ * an x, y and z coordinate, as well as angles of rotation in [pitch] and [yaw].
  *
  * As opposed to a [Vector], a [Location] is bound to a world.
  *
+ * @param world the world this location is in
  * @see [Vector]
  */
-@Suppress("EqualsOrHashCode")
 data class Location @JvmOverloads constructor(
     val world: World,
     override val x: Double,
@@ -75,15 +75,23 @@ data class Location @JvmOverloads constructor(
     @Suppress("unused")
     fun toVector() = Vector(x, y, z)
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as Location
-        return world == other.world &&
-                abs(x - other.x) < EPSILON &&
-                abs(y - other.y) < EPSILON &&
-                abs(z - other.z) < EPSILON &&
-                abs(yaw - other.yaw) < EPSILON &&
-                abs(pitch - other.pitch) < EPSILON
+    override fun equals(other: Any?) = other is Location &&
+            world == other.world &&
+            abs(x - other.x) < EPSILON &&
+            abs(y - other.y) < EPSILON &&
+            abs(z - other.z) < EPSILON &&
+            abs(yaw - other.yaw) < EPSILON &&
+            abs(pitch - other.pitch) < EPSILON
+
+    override fun hashCode(): Int {
+        var hash = 57 + world.hashCode()
+        hash *= 19 + (x.toRawBits() xor (x.toRawBits() shr 32)).toInt()
+        hash *= 19 + (y.toRawBits() xor (y.toRawBits() shr 32)).toInt()
+        hash *= 19 + (z.toRawBits() xor (z.toRawBits() shr 32)).toInt()
+        hash *= 19 + yaw.toRawBits()
+        hash *= 19 + pitch.toRawBits()
+        return hash
     }
+
+    override fun toString() = "$x, $y, $z"
 }

@@ -43,5 +43,5 @@ data class WatchdogCategory(
     val earlyWarningInterval: Long = 5000L,
     @Setting("early-warning-delay")
     @Comment("The time (in milliseconds) before watchdog first warns you about the server not responding")
-    val earlyWarningDelay: Long = 10000L
+    val earlyWarningDelay: Long = 10_000L
 )

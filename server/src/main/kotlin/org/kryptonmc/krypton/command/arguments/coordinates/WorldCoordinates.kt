@@ -84,7 +84,6 @@ data class WorldCoordinate(
 
     companion object {
 
-
         fun parseDouble(reader: StringReader, correctCenter: Boolean): WorldCoordinate {
             if (reader.canRead() && reader.peek() == '^') throw ERROR_MIXED_TYPE.createWithContext(reader)
             if (!reader.canRead()) throw ERROR_EXPECTED_DOUBLE.createWithContext(reader)

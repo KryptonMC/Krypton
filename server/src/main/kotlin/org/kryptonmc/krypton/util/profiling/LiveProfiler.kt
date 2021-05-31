@@ -97,7 +97,7 @@ class LiveProfiler(
             count++
         }
         if (warn && difference > WARNING_TIME_NANOS) {
-            LOGGER.warn("Something's taking too long! ${path.demangled} took approximately ${difference / 1000000.0} ms")
+            LOGGER.warn("Something's taking too long! ${path.demangled} took approximately ${difference / 1_000_000.0} ms")
         }
         path = if (paths.isEmpty()) "" else paths.last()
         currentEntry = null
@@ -125,7 +125,7 @@ class LiveProfiler(
 
     companion object {
 
-        private const val WARNING_TIME_NANOS = 100000000
+        private const val WARNING_TIME_NANOS = 100_000_000
         private val REAL_TIME_SOURCE = System::nanoTime
         private val LOGGER = logger<LiveProfiler>()
     }

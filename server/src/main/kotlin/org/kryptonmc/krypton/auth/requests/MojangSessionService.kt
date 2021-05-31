@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.auth.requests
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import org.kryptonmc.krypton.GSON
-import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.locale.Messages

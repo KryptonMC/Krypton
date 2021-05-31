@@ -35,6 +35,6 @@ class PacketInPlayerAbilities : PlayPacket(0x1A) {
 
     override fun read(buf: ByteBuf) {
         val flags = buf.readByte().toInt()
-        isFlying = (flags and 2) != 0
+        isFlying = flags and 2 != 0
     }
 }

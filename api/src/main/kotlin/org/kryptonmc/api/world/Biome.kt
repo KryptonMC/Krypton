@@ -15,7 +15,10 @@ import java.util.EnumSet
 /**
  * The enum that holds all the biomes in Minecraft, including both their namespaced ID and
  * their numeric ID
+ *
+ * [id] is the ID of this biome. This should only need to be used internally.
  */
+// TODO: Maybe use code generation for this?
 enum class Biome(val id: Int) : Keyed {
 
     /**
@@ -119,6 +122,9 @@ enum class Biome(val id: Int) : Keyed {
 
         private val VALUES = values().associateBy { it.id }
 
+        /**
+         * Set of all ocean biome values.
+         */
         @JvmField
         val OCEANS: EnumSet<Biome> = EnumSet.of(
             OCEAN,
@@ -133,6 +139,10 @@ enum class Biome(val id: Int) : Keyed {
             LUKEWARM_OCEAN
         )
 
+        /**
+         * Convert the given [id] in to its corresponding biome. Should only need to be used
+         * internally.
+         */
         @JvmStatic
         fun fromId(id: Int) = VALUES.getValue(id)
     }

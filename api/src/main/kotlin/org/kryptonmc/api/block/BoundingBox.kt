@@ -12,9 +12,13 @@ import org.kryptonmc.api.space.Vector
 
 /**
  * Represents a bounding box. This defines the box for any entity or block that may be collided with.
+ * A bounding box is a three-dimensional space, with lower X, Y and Z coordinates and higher X, Y and Z coordinates.
+ *
+ * @param minimum the minimum coordinates for this bounding box
+ * @param maximum the maximum coordinates for this bounding box
  */
-@Suppress("unused")
-data class BoundingBox(
+@Suppress("unused", "MemberVisibilityCanBePrivate")
+class BoundingBox(
     val minimum: Vector,
     val maximum: Vector
 ) : Cloneable {

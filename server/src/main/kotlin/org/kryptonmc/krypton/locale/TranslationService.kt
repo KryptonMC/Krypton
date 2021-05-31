@@ -31,7 +31,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.Path
 import retrofit2.http.Streaming
 import java.io.Closeable
@@ -56,7 +55,7 @@ interface TranslationService {
 object TranslationRequester {
 
     private const val DATA_URL = "https://data.kryptonmc.org/"
-    private const val MAX_BUNDLE_SIZE = 1048576L // 1MB
+    private const val MAX_BUNDLE_SIZE = 1_048_576L // 1MB
 
     private val service = Retrofit.Builder()
         .baseUrl(DATA_URL)
@@ -81,7 +80,7 @@ object TranslationRequester {
     private val LOGGER = logger<TranslationRequester>()
 }
 
-class MetadataResponse(val cacheMaxAge: Long, val languages: List<LanguageInfo>) {
+data class MetadataResponse(val cacheMaxAge: Long, val languages: List<LanguageInfo>) {
 
     companion object : JsonDeserializer<MetadataResponse> {
 

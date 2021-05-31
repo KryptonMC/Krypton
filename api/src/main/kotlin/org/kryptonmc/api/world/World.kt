@@ -132,11 +132,17 @@ interface World : ForwardingAudience {
  * @param name the name of the Minecraft version
  * @param isSnapshot whether this world version is a snapshot version or not
  */
-data class WorldVersion(
+class WorldVersion(
     val id: Int,
     val name: String,
     val isSnapshot: Boolean
 ) {
+
+    override fun equals(other: Any?) = other is WorldVersion && id == other.id && isSnapshot == other.isSnapshot
+
+    override fun hashCode() = id + if (isSnapshot) 1231 else 1237 // java.lang.Boolean.hashCode implementation
+
+    override fun toString() = "WorldVersion(id=$id, name=$name, isSnapshot=$isSnapshot)"
 
     companion object {
 

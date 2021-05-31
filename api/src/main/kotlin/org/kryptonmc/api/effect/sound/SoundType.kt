@@ -13,7 +13,11 @@ import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.util.Index
 
-enum class SoundType(val key: Key) : Keyed {
+/**
+ * Enum for all the available sound types in the current version.
+ */
+// TODO: Maybe use code generation for this?
+enum class SoundType(private val key: Key) : Keyed {
 
     AMBIENT_BASALT_DELTAS_ADDITIONS(key("ambient.basalt_deltas.additions")),
     AMBIENT_BASALT_DELTAS_LOOP(key("ambient.basalt_deltas.loop")),
@@ -1012,6 +1016,9 @@ enum class SoundType(val key: Key) : Keyed {
 
     companion object {
 
+        /**
+         * An index of sound types to their keys
+         */
         val NAMES = Index.create(SoundType::class.java) { it.key }
     }
 }

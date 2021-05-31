@@ -54,7 +54,9 @@ interface Position : Cloneable {
     /**
      * The magnitude of this vector squared.
      */
-    val lengthSquared: Double @JvmName("lengthSquared") get() = x * x + y * y + z * z
+    @get:JvmName("lengthSquared")
+    val lengthSquared: Double
+        get() = x * x + y * y + z * z
 
     /**
      * Add the specified [other] vector to this vector
@@ -312,23 +314,27 @@ interface Position : Cloneable {
     /**
      * The floored value of the X component. Used for block coordinates.
      */
-    val blockX: Int get() = floor(x).toInt()
+    val blockX: Int
+        get() = floor(x).toInt()
 
     /**
      * The floored value of the Y component. Used for block coordinates.
      */
-    val blockY: Int get() = floor(y).toInt()
+    val blockY: Int
+        get() = floor(y).toInt()
 
     /**
      * The floored value of the Z component. Used for block coordinates.
      */
-    val blockZ: Int get() = floor(z).toInt()
+    val blockZ: Int
+        get() = floor(z).toInt()
 
     /**
      * If this vector is normalised or not. A vector is defined as being normalised
      * if it has a length of 1.
      */
-    val isNormalized: Boolean get() = abs(lengthSquared - 1) < EPSILON
+    val isNormalized: Boolean
+        get() = abs(lengthSquared - 1) < EPSILON
 
     /**
      * Apply the given [x], [y] and [z] values to the given object by returning a new

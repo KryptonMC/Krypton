@@ -10,15 +10,21 @@ package org.kryptonmc.api.inventory.item
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
+import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.util.Index
 
 /**
- * The list of types of items.
+ * The list of types of items and blocks. The ordering of this enum is based off of the
+ * [official Minecraft wiki](https://minecraft.gamepedia.com/Item#List_of_items)'s ordering.
  *
- * The ordering of this enum is based off of the [official Minecraft wiki](https://minecraft.gamepedia.com/Item#List_of_items)'s ordering
+ * @param blocksMotion whether this enum value blocks motion or not
  */
+// TODO: Maybe use code generation for this?
 @Suppress("unused")
-enum class Material(private val internalKey: String? = null, val blocksMotion: Boolean = true) : net.kyori.adventure.key.Keyed {
+enum class Material(
+    private val internalKey: String? = null,
+    val blocksMotion: Boolean = true
+) : Keyed {
 
     /**
      * Items that create blocks, fluids or entities
@@ -1036,6 +1042,9 @@ enum class Material(private val internalKey: String? = null, val blocksMotion: B
 
     companion object {
 
+        /**
+         * Index of keys to materials.
+         */
         val KEYS = Index.create(Material::class.java) { it.key() }
     }
 }

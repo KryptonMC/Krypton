@@ -31,7 +31,7 @@ import kotlin.random.Random
  *
  * @see [Location]
  */
-@Suppress("EqualsOrHashCode") // data class' generated default is what we want
+@Suppress("Indentation")
 data class Vector(
     override val x: Double,
     override val y: Double,
@@ -66,21 +66,31 @@ data class Vector(
     @Contract("_ -> new", pure = true)
     fun toLocation(world: World, yaw: Float, pitch: Float) = Location(world, x, y, z, yaw, pitch)
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as Vector
-        return abs(x - other.x) < EPSILON &&
-                abs(y - other.y) < EPSILON &&
-                abs(z - other.z) < EPSILON
+    override fun equals(other: Any?) =
+        other is Vector && abs(x - other.x) < EPSILON && abs(y - other.y) < EPSILON && abs(z - other.z) < EPSILON
+
+    override fun hashCode(): Int {
+        var hash = 7 * 79 + (x.toRawBits() xor (x.toRawBits() shr 32)).toInt()
+        hash *= 79 + (y.toRawBits() xor (y.toRawBits() shr 32)).toInt()
+        hash *= 79 + (z.toRawBits() xor (z.toRawBits() shr 32)).toInt()
+        return hash
     }
 
     override fun apply(x: Double, y: Double, z: Double) = copy(x = x, y = y, z = z)
 
     companion object {
 
+        /**
+         * Constant for the zero vector.
+         */
         @JvmField
         val ZERO = Vector(0, 0, 0)
+
+        /**
+         * Constant for a unit vector (one with its coordinates all being 1).
+         */
+        @JvmField
+        val UNIT = Vector(1, 1, 1)
 
         /**
          * Retrieve a random [Vector] that has coordinates with completely random

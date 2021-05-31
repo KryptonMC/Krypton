@@ -43,7 +43,9 @@ object TranslationManager {
 
     private val installed = ConcurrentHashMap.newKeySet<Locale>()
     private lateinit var registry: TranslationRegistry
-    @Volatile var locale = DEFAULT_LOCALE
+
+    @Volatile
+    var locale = DEFAULT_LOCALE
 
     fun reload(locale: Locale = this.locale) {
         this.locale = locale

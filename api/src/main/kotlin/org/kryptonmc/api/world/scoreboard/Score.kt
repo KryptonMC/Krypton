@@ -11,7 +11,11 @@ package org.kryptonmc.api.world.scoreboard
 import org.kryptonmc.api.entity.entities.Player
 
 /**
- * Represents the score of a player for a specific [objective]
+ * Represents the score of a player for a specific [objective].
+ *
+ * @param player the player who's score this is
+ * @param objective the objective that's tracking this score
+ * @param score the actual score value
  */
 data class Score(
     val player: Player,

@@ -109,11 +109,11 @@ fun SkinSettings.toProtocol(): Byte {
  * Convert a flags field to a [SkinSettings] object
  */
 fun Short.toSkinSettings() = SkinSettings(
-    (toInt() and 0x01) != 0,
-    (toInt() and 0x02) != 0,
-    (toInt() and 0x04) != 0,
-    (toInt() and 0x08) != 0,
-    (toInt() and 0x10) != 0,
-    (toInt() and 0x20) != 0,
-    (toInt() and 0x40) != 0
+    toInt() and 0x01 != 0,
+    toInt() and 0x02 != 0,
+    toInt() and 0x04 != 0,
+    toInt() and 0x08 != 0,
+    toInt() and 0x10 != 0,
+    toInt() and 0x20 != 0,
+    toInt() and 0x40 != 0
 )

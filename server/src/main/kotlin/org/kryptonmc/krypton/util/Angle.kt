@@ -26,7 +26,7 @@ value class Angle(val value: UByte) : Comparable<Angle> {
 
     override fun compareTo(other: Angle) = if (value == other.value) 0 else if (value < other.value) -1 else 1
 
-    fun toDegrees() = ((value.toFloat() / 256.0f) * 360.0f)
+    fun toDegrees() = value.toFloat() / 256.0f * 360.0f
 
     companion object {
 
@@ -38,4 +38,4 @@ value class Angle(val value: UByte) : Comparable<Angle> {
  * Convert a float value (in degrees) to a protocol [Angle] by dividing its value by 360 and multiplying
  * the result by 256, then rounding to an integer
  */
-fun Float.toAngle() = Angle(((this / 360.0f) * 256.0f).toInt().toUByte())
+fun Float.toAngle() = Angle((div(360.0f) * 256.0f).toInt().toUByte())

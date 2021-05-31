@@ -44,9 +44,15 @@ class WatchdogProcess(private val server: KryptonServer) : Thread("Krypton Watch
     private val earlyWarningDelay = min(server.config.watchdog.earlyWarningDelay, timeoutTime)
 
     private var lastEarlyWarning = 0L
-    @Volatile private var lastTick = 0L
-    @Volatile private var stopping = false
-    @Volatile private var hasStarted = false
+
+    @Volatile
+    private var lastTick = 0L
+
+    @Volatile
+    private var stopping = false
+
+    @Volatile
+    private var hasStarted = false
 
     fun tick(time: Long) {
         if (lastTick == 0L) hasStarted = true
@@ -67,7 +73,7 @@ class WatchdogProcess(private val server: KryptonServer) : Thread("Krypton Watch
             val currentTime = System.currentTimeMillis()
             if (currentTime <= lastTick + earlyWarningInterval) continue // Jump out if we don't need to do anything
 
-            val isLongTimeout = currentTime > lastTick + timeoutTime || (!server.isRunning && currentTime > lastTick + 1000)
+            val isLongTimeout = currentTime > lastTick + timeoutTime || !server.isRunning && currentTime > lastTick + 1000
             if (!isLongTimeout && (earlyWarningInterval <= 0 || currentTime < lastEarlyWarning + earlyWarningInterval || currentTime < lastTick + earlyWarningDelay)) continue
             if (!isLongTimeout && !server.isRunning) continue
             lastEarlyWarning = currentTime

@@ -61,7 +61,7 @@ fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): ChunkPosition {
     val radius = ((sqrt(index + 1.0) - 1) / 2).floor() + 1
 
     // compute total point on radius -1 (arithmetic sum of 8 + 16 + 24 + ...)
-    val p = (8 * radius * (radius - 1)) / 2
+    val p = 8 * radius * (radius - 1) / 2
 
     // points by face
     val en = radius * 2
@@ -73,9 +73,9 @@ fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): ChunkPosition {
     return when (a / (radius * 2)) {
         // find the face (0 = top, 1 = right, 2 = bottom, 3 = left)
         0 -> ChunkPosition(a - radius + xOffset, -radius + zOffset)
-        1 -> ChunkPosition(radius + xOffset, (a % en) - radius + zOffset)
-        2 -> ChunkPosition(radius - (a % en) + xOffset, radius + zOffset)
-        3 -> ChunkPosition(-radius + xOffset, radius - (a % en) + zOffset)
+        1 -> ChunkPosition(radius + xOffset, a % en - radius + zOffset)
+        2 -> ChunkPosition(radius - a % en + xOffset, radius + zOffset)
+        3 -> ChunkPosition(-radius + xOffset, radius - a % en + zOffset)
         else -> ChunkPosition.ZERO
     }
 }

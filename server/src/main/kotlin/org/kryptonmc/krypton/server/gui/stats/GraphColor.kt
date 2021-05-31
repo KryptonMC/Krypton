@@ -35,13 +35,13 @@ object GraphColor {
     private fun create(percent: Int): Color {
         if (percent <= 50) return Color(0x00FF00)
 
-        val value = 510 - (min(max(0, ((percent - 50) / 50)), 1) * 510)
+        val value = 510 - min(max(0, (percent - 50) / 50), 1) * 510
 
         val (red, green) = if (value < 255) {
             255 to (sqrt(value.toDouble()) * 16).toInt()
         } else {
             val newValue = value - 255
-            (255 - (newValue.square() / 255)) to 255
+            255 - newValue.square() / 255 to 255
         }
         return Color(red, green, 0)
     }

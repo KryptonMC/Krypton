@@ -43,7 +43,7 @@ class PacketOutWorldBorder(
         buf.writeDouble(border.size)
         buf.writeDouble(border.size)
         buf.writeVarLong(0)
-        buf.writeVarInt(29999984) // portal teleport boundary - generally this value
+        buf.writeVarInt(29_999_984) // portal teleport boundary - generally this value
         buf.writeVarInt(border.warningBlocks.toInt())
         buf.writeVarInt(border.warningTime.toInt())
     }

@@ -14,6 +14,7 @@ plugins {
     kotlin("jvm") version "1.5.10"
     id("org.jetbrains.dokka") version "1.4.30"
     id("info.solidsoft.pitest") version "1.6.0"
+    id("io.gitlab.arturbosch.detekt") version "1.17.1" apply false
     id("org.cadixdev.licenser") version "0.6.0" apply false
     `maven-publish`
     signing

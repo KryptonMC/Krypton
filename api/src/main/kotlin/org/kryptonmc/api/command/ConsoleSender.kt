@@ -9,7 +9,6 @@
 package org.kryptonmc.api.command
 
 import net.kyori.adventure.identity.Identity
-import org.kryptonmc.api.command.Sender
 
 /**
  * The console sender represents the server source. That is, as if the server sent the command.

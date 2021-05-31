@@ -11,6 +11,7 @@ import org.kryptonmc.krypton.netty
 plugins {
     id("com.github.johnrengelman.shadow") version "7.0.0"
     id("org.cadixdev.licenser")
+    id("io.gitlab.arturbosch.detekt")
     `java-library`
     application
     `maven-publish`
@@ -64,6 +65,9 @@ dependencies {
     implementation("com.github.ajalt.clikt:clikt:3.0.1")
     implementation("org.bstats:bstats-base:2.2.0")
     implementation("com.velocitypowered:velocity-native:1.1.0-SNAPSHOT")
+
+    // Detekt formatting
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.17.1")
 }
 
 tasks {
@@ -91,6 +95,17 @@ pitest {
     excludedMethods.set(setOf(
         "write\$Self"
     ))
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    config = files("$projectDir/config/detekt.yml")
+    baseline = file("$projectDir/config/baseline.xml")
+
+    reports {
+        html.enabled = true
+        xml.enabled = true
+    }
 }
 
 publishing {

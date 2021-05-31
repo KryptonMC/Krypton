@@ -11,6 +11,9 @@ package org.kryptonmc.api.inventory.item.dsl
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.inventory.item.Material
 
+/**
+ * Marker for the item DSL
+ */
 @DslMarker
 annotation class ItemDSL
 

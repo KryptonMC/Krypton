@@ -11,12 +11,13 @@ package org.kryptonmc.api.event
 /**
  * An [Event] that can be explicitly cancelled.
  */
-abstract class CancellableEvent : Event {
+open class CancellableEvent : Event {
 
     /**
      * Whether or not this [Event] has been cancelled
      */
-    @Volatile open var isCancelled = false
+    @Volatile
+    open var isCancelled = false
 
     /**
      * Cancel this [Event]

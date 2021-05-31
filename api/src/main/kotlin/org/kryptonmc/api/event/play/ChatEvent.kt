@@ -12,12 +12,12 @@ import org.kryptonmc.api.entity.entities.Player
 import org.kryptonmc.api.event.CancellableEvent
 
 /**
- * Called when a player sends a chat message (not a command)
+ * Called when a player sends a chat message (not a command).
  *
  * @param player the player sending the message
  * @param message the message sent
  */
-data class ChatEvent(
+class ChatEvent(
     val player: Player,
     val message: String
 ) : CancellableEvent()

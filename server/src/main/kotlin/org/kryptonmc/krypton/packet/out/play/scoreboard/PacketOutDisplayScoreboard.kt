@@ -36,7 +36,7 @@ class PacketOutDisplayScoreboard(
     override fun write(buf: ByteBuf) {
         when (scoreboard.position) {
             ScoreboardPosition.TEAM_SPECIFIC -> {
-                if (team == null) throw IllegalArgumentException("Team must be supplied if position is team specific!")
+                requireNotNull(team) { "Team must be supplied if position is team specific!" }
                 buf.writeByte(3 + team.color.ordinal)
             }
             else -> buf.writeByte(scoreboard.position.id)

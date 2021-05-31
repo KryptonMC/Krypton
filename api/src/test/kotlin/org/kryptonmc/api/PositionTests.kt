@@ -77,7 +77,11 @@ class PositionTests {
     @Test
     fun `test angle, midpoint, dot and cross product`() {
         val dot = position.x * other.x + position.y * other.y + position.z * other.z
-        val cross = Vector(position.y * other.z - other.y * position.z, position.z * other.x - other.z * position.x, position.x * other.y - other.x * position.y)
+        val cross = Vector(
+            position.y * other.z - other.y * position.z,
+            position.z * other.x - other.z * position.x,
+            position.x * other.y - other.x * position.y
+        )
         val angle = acos(min(max(dot / (position.length * other.length), -1.0), 1.0))
         val midpoint = Vector((position.x + other.x) / 2, (position.y + other.y) / 2, (position.z + other.z) / 2)
 

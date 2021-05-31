@@ -19,7 +19,8 @@ import org.kryptonmc.api.world.Location
  * @param oldLocation the old location of the player
  * @param newLocation the new location of the player
  */
-data class MoveEvent(
+@Suppress("MemberVisibilityCanBePrivate")
+class MoveEvent(
     val player: Player,
     val oldLocation: Location,
     val newLocation: Location

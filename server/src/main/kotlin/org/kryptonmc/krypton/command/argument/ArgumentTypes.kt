@@ -91,8 +91,8 @@ object ArgumentTypes {
 
     private inline fun <reified T : ArgumentType<*>> register(name: String, serializer: ArgumentSerializer<T>) {
         val key = key(name)
-        if (BY_CLASS.containsKey(T::class.java)) throw IllegalArgumentException("Class ${T::class.java.simpleName} already has a serialiser!")
-        if (BY_NAME.containsKey(key)) throw IllegalArgumentException("'$name' is already a registered serialiser!")
+        require(!BY_CLASS.containsKey(T::class.java)) { "Class ${T::class.java.simpleName} already has a serializer!" }
+        require(!BY_NAME.containsKey(key)) { "'$name' is already a registered serializer!" }
 
         val entry = Entry(T::class.java, serializer, key)
         BY_CLASS[T::class.java] = entry

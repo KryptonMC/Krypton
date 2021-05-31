@@ -46,6 +46,6 @@ object Registries {
 }
 
 private fun registryData(path: String) = (Thread.currentThread().contextClassLoader.getResourceAsStream(path)
-    ?: throw IllegalStateException("$path not on classpath! Something has gone horribly wrong!"))
+    ?: error("$path not on classpath! Something has gone horribly wrong!"))
     .reader()
     .readText()

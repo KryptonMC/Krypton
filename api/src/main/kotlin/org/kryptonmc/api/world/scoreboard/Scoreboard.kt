@@ -17,38 +17,38 @@ import org.kryptonmc.api.entity.entities.Player
 interface Scoreboard {
 
     /**
-     * The position of this scoreboard
+     * The position of this scoreboard.
      */
     val position: ScoreboardPosition
 
     /**
-     * The name of this [Scoreboard]
+     * The name of this [Scoreboard].
      */
     val name: String
 
     /**
-     * The list of [Objective]s registered on this [Scoreboard]
+     * The list of [Objective]s registered on this [Scoreboard].
      */
     val objectives: List<Objective>
 
     /**
-     * The list of [Team]s tracked by this [Scoreboard]
+     * The list of [Team]s tracked by this [Scoreboard].
      */
     val teams: List<Team>
 
     /**
      * All the [Score]s for every player who has a score on
-     * this scoreboard
+     * this scoreboard.
      */
     val scores: Map<Player, Score>
 
     /**
-     * The set of players tracked by this [Scoreboard]
+     * The set of players tracked by this [Scoreboard].
      */
     val players: Set<Player>
 
     /**
-     * Registers a new [Objective] for this [Scoreboard]
+     * Registers a new [Objective] for this [Scoreboard].
      *
      * @param objective the [Objective] to register
      * @return the registered objective
@@ -57,7 +57,7 @@ interface Scoreboard {
 
     /**
      * Retrieves a [Team] by its name, or null if there is no team with the specified
-     * [name]
+     * [name].
      *
      * @param name the name of the team
      * @return the team with the given [name], or null if there isn't a team with the [name]
@@ -65,7 +65,7 @@ interface Scoreboard {
     fun team(name: String): Team?
 
     /**
-     * Retrieves the given [player]'s [Team] in this [Scoreboard]
+     * Retrieves the given [player]'s [Team] in this [Scoreboard].
      *
      * @param player the player to find the team for
      * @return the team of the given [player], or null, if the specified player is not in a
@@ -74,7 +74,7 @@ interface Scoreboard {
     fun playerTeam(player: Player): Team?
 
     /**
-     * Removes all [Score]s for the given [player] on this [Scoreboard]
+     * Removes all [Score]s for the given [player] on this [Scoreboard].
      *
      * @param player the [Player] who's [Score]s should be removed
      */
@@ -83,6 +83,8 @@ interface Scoreboard {
 
 /**
  * Represents positions that a [Scoreboard] may appear in.
+ *
+ * @param id the ID of this position, should only need to be used internally
  */
 enum class ScoreboardPosition(val id: Int) {
 

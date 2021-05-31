@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.event.login
 
-import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
@@ -18,24 +17,28 @@ import org.kryptonmc.api.event.CancellableEvent
 
 /**
  * Called when a player logs in and a player object has been
- * constructed for them (just before the state is switched to PLAY)
+ * constructed for them (just before the state is switched to PLAY).
  *
  * @param player the player who joined
  */
-data class JoinEvent(val player: Player) : CancellableEvent() {
-
-    @Volatile var cancelledReason: Component = translatable("multiplayer.disconnect.kicked")
-
-    @Volatile var message: Component = translatable {
-        key("multiplayer.player.joined")
-        color(NamedTextColor.YELLOW)
-        args(text(player.name))
-    }
+class JoinEvent(val player: Player) : CancellableEvent() {
 
     /**
-     * Cancel this event with the specified [reason] for cancellation
+     * The reason for cancelling this join event.
+     */
+    @Volatile
+    var cancelledReason: Component = translatable("multiplayer.disconnect.kicked")
+
+    /**
+     * The message sent when the player joins the game.
+     */
+    @Volatile
+    var message: Component = translatable("multiplayer.player.joined", NamedTextColor.YELLOW, listOf(text(player.name)))
+
+    /**
+     * Cancel this event with the specified [reason] for cancellation.
      *
-     * This reason will be the exact disconnect message sent to the client
+     * This reason will be the exact disconnect message sent to the client.
      *
      * @param reason the reason for cancellation
      */

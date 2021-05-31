@@ -208,7 +208,7 @@ private const val ONE: Byte = 1
 
 val ByteBinaryTag.boolean: Boolean
     get() {
-        if (value() > ONE) throw IllegalArgumentException("Boolean value cannot be greater than 1!")
+        require(value() <= ONE) { "Boolean value cannot be greater than 1!" }
         return value() == ONE
     }
 

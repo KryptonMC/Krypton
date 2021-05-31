@@ -29,7 +29,6 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.Unpooled
 import net.kyori.adventure.key.Key.key
 import org.junit.jupiter.api.BeforeAll
-import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.command.argument.ArgumentTypes
 import org.kryptonmc.krypton.command.argument.ArgumentTypes.writeArgumentType
 import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer

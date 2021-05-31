@@ -72,7 +72,7 @@ class LegacyQueryHandler(private val status: StatusCategory) : ChannelInboundHan
                     val dataLength = msg.readUnsignedShort()
                     isValid = isValid and (msg.readUnsignedByte() >= 73)
                     isValid = isValid and (3 + msg.readAvailableBytes(msg.readShort() * 2).size + 4 == dataLength)
-                    isValid = isValid and (msg.readInt() <= 65535)
+                    isValid = isValid and (msg.readInt() <= 65_535)
                     isValid = isValid and (msg.readableBytes() == 0)
                     if (!isValid) return
 

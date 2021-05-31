@@ -53,18 +53,18 @@ class FilledProfileResults(
         if (root.duration < totalDuration) root.duration = totalDuration
 
         val results = (entries.filter { temp.isChildOf(it.key) }.map { (key, value) ->
-            val percentage = (value.duration * 100.0) / totalDuration
-            val globalPercentage = (value.duration * 100.0) / root.duration
+            val percentage = value.duration * 100.0 / totalDuration
+            val globalPercentage = value.duration * 100.0 / root.duration
             ResultField(key.substring(temp.length), percentage, globalPercentage, value.count)
         } as MutableList<ResultField>).apply {
             if (totalDuration > floatDuration) {
-                val percentage = ((totalDuration - floatDuration) * 100.0) / totalDuration
-                val globalPercentage = ((totalDuration - floatDuration) * 100.0) / root.duration
+                val percentage = (totalDuration - floatDuration) * 100.0 / totalDuration
+                val globalPercentage = (totalDuration - floatDuration) * 100.0 / root.duration
                 add(ResultField("unspecified", percentage, globalPercentage, entry.count))
             }
         }
         results.sort()
-        results.add(0, ResultField(temp, 100.0, (totalDuration * 100.0) / root.duration, entry.count))
+        results.add(0, ResultField(temp, 100.0, totalDuration * 100.0 / root.duration, entry.count))
         return results
     }
 
@@ -87,7 +87,7 @@ class FilledProfileResults(
 
                 Krypton version: ${KryptonServerInfo.version}
                 Minecraft version: ${KryptonServerInfo.minecraftVersion}
-                Time span: ${duration / 1000000} ms
+                Time span: ${duration / 1_000_000} ms
                 Tick span: $durationTicks ticks
                 // This is approximately ${"%.2f".format(Locale.ROOT, durationTicks / (duration / 1.0E9))} ticks per second. It should be 20 ticks per second
 
@@ -195,9 +195,9 @@ class FilledProfileResults(
     }
 }
 
-private fun String.isChildOf(other: String) = other.length > length
-        && other.startsWith(this)
-        && other.indexOf(30.toChar(), length + 1) < 0
+private fun String.isChildOf(other: String) = other.length > length &&
+        other.startsWith(this) &&
+        other.indexOf(30.toChar(), length + 1) < 0
 
 fun <T> Iterable<T>.sumBy(selector: (T) -> Long): Long {
     var sum = 0L

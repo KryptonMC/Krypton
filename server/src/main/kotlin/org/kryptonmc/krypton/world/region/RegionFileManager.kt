@@ -71,4 +71,4 @@ class RegionFileManager(
 }
 
 // this & 0xFFFFFFFFL | (other & 0xFFFFFFFFL) << 32
-private infix fun Int.combine(other: Int) = (toLong() and 0xFFFFFFFFL) or ((other.toLong() and 0xFFFFFFFFL) shl 32)
+private infix fun Int.combine(other: Int) = toLong() and 0xFFFFFFFFL or (other.toLong() and 0xFFFFFFFFL shl 32)

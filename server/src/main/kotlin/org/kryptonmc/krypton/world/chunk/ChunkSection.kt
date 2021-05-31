@@ -61,11 +61,11 @@ data class ChunkSection(
         for (i in 0 until 4096) {
             try {
                 if (blockStates[i] != 0) nonEmptyBlockCount++
-            } catch (exception: ArrayIndexOutOfBoundsException) {}
+            } catch (ignored: ArrayIndexOutOfBoundsException) {}
         }
     }
 
-    private fun indexOf(x: Int, y: Int, z: Int) = (y shl 8) or (z shl 4) or x
+    private fun indexOf(x: Int, y: Int, z: Int) = y shl 8 or (z shl 4) or x
 
     private fun LinkedList<ChunkBlock>.getOrUpdate(name: Key): Int =
         indexOfFirst { it.name == name }.takeIf { it != -1 }?.let { return it } ?: palette.let {
@@ -74,18 +74,16 @@ data class ChunkSection(
             it.indexOf(block)
         }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as ChunkSection
-        return y == other.y
-                && blockLight.contentEquals(other.blockLight)
-                && skyLight.contentEquals(other.skyLight)
-                && palette == other.palette
-                && blockStates == other.blockStates
-    }
+    override fun equals(other: Any?) = other is ChunkSection &&
+        y == other.y &&
+        blockLight.contentEquals(other.blockLight) &&
+        skyLight.contentEquals(other.skyLight) &&
+        palette == other.palette &&
+        blockStates == other.blockStates
 
     override fun hashCode() = arrayOf(y, blockLight, skyLight, palette, blockStates).contentDeepHashCode()
+
+    override fun toString() = "ChunkSection(y=$y, blockLight=$blockLight, skyLight=$skyLight, palette=$palette, blockStates=$blockStates)"
 }
 
 data class ChunkBlock(

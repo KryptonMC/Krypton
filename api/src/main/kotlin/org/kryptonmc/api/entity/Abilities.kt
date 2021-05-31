@@ -18,6 +18,8 @@ import org.kryptonmc.api.entity.entities.Player
  * @param isFlying if this [Player] is currently flying
  * @param canBuild if this [Player] can build (place/break blocks)
  * @param canInstantlyBuild if this [Player] can place and break blocks with no delay (creative mode)
+ * @param walkSpeed the speed at which this [Player] can walk
+ * @param flyingSpeed the speed at which this [Player] can fly
  */
 data class Abilities @JvmOverloads constructor(
     var isInvulnerable: Boolean = false,

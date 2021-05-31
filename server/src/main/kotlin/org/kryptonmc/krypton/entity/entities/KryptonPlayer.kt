@@ -204,11 +204,7 @@ class KryptonPlayer(
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
         val soundName = sound.name()
         val event = SoundType.NAMES.value(soundName)
-        session.sendPacket(if (event != null) {
-            PacketOutSoundEffect(sound, Vector(x, y, z))
-        } else {
-            PacketOutNamedSoundEffect(sound, Vector(x, y, z))
-        })
+        session.sendPacket(if (event != null) PacketOutSoundEffect(sound, Vector(x, y, z)) else PacketOutNamedSoundEffect(sound, Vector(x, y, z)))
     }
 
     override fun stopSound(stop: SoundStop) {

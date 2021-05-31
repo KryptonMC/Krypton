@@ -156,8 +156,7 @@ class RegionFile(
      * @param position the position of the chunk
      * @return a [DataOutputStream] for writing chunk data to
      */
-    fun getChunkDataOutputStream(position: ChunkPosition) =
-        DataOutputStream(BufferedOutputStream(compression.compress(ChunkBuffer(position))))
+    fun getChunkDataOutputStream(position: ChunkPosition) = DataOutputStream(BufferedOutputStream(compression.compress(ChunkBuffer(position))))
 
     /**
      * Writes chunk data for a chunk at the specified [position]
@@ -191,7 +190,7 @@ class RegionFile(
             file.write(buffer, sectors * 4096L)
         }
         val timestamp = (Instant.now().toEpochMilli() / 1000).toInt()
-        offsets[offsetIndex] = (sectors shl 8) or requiredSectors
+        offsets[offsetIndex] = sectors shl 8 or requiredSectors
         timestamps[offsetIndex] = timestamp
         writeHeader()
         action()
@@ -287,7 +286,7 @@ class RegionFile(
             get() = regionLocalX + regionLocalZ * 32
 
         private val Byte.isExternalStreamChunk: Boolean
-            get() = (toInt() and 0x80) != 0
+            get() = toInt() and 0x80 != 0
 
         private val Byte.externalChunkVersion: Byte
             get() = (toInt() and 0xFFFFFF7F.toInt()).toByte()

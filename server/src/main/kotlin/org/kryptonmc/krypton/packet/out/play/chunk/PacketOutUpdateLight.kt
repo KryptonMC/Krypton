@@ -44,11 +44,11 @@ class PacketOutUpdateLight(private val chunk: KryptonChunk) : PlayPacket(0x23) {
             val section = sections[i]
 
             val skyMask = if (section.skyLight.all { it == 0.toByte() }) 0 else 1
-            emptySkyLightMask += (-skyMask + 1) shl i
+            emptySkyLightMask += -skyMask + 1 shl i
             skyLightMask += skyMask shl i
 
             val blockMask = if (section.blockLight.all { it == 0.toByte() }) 0 else 1
-            emptyBlockLightMask += (-blockMask + 1) shl i
+            emptyBlockLightMask += -blockMask + 1 shl i
             blockLightMask += blockMask shl i
         }
         buf.writeVarInt(skyLightMask)

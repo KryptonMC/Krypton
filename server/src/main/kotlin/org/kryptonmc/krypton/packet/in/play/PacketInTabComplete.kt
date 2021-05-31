@@ -42,6 +42,6 @@ class PacketInTabComplete : PlayPacket(0x06) {
 
     override fun read(buf: ByteBuf) {
         id = buf.readVarInt()
-        command = buf.readString(32500)
+        command = buf.readString(32_500)
     }
 }

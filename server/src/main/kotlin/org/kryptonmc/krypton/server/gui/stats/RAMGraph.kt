@@ -146,6 +146,6 @@ private class GraphMouseListener : MouseAdapter() {
 
     companion object {
 
-        private const val DISMISS_DELAY_MINUTES = 600000 // 10 minutes in milliseconds
+        private const val DISMISS_DELAY_MINUTES = 600_000 // 10 minutes in milliseconds
     }
 }

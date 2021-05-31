@@ -36,7 +36,7 @@ class PacketEncoder : MessageToByteEncoder<Packet>() {
         out.writeVarInt(msg.info.id)
         msg.write(out)
     } catch (exception: Exception) {
-        exception.printStackTrace()
+        LOGGER.error("Exception trying to send packet ${msg.javaClass} with id ${msg.info.id}", exception)
     }
 
     companion object {

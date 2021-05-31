@@ -88,12 +88,12 @@ class PacketCompressor(private val compressor: VelocityCompressor, var threshold
     override fun allocateBuffer(ctx: ChannelHandlerContext, msg: ByteBuf, preferDirect: Boolean): ByteBuf {
         val uncompressed = msg.readableBytes()
         if (uncompressed < threshold) {
-            val finalBufferSize = (uncompressed + 1) + (uncompressed + 1).varIntBytes
+            val finalBufferSize = uncompressed + 1 + (uncompressed + 1).varIntBytes
             return if (IS_JAVA_CIPHER) ctx.alloc().heapBuffer(finalBufferSize) else ctx.alloc().directBuffer(finalBufferSize)
         }
 
         // (maximum data length after compression) + packet length varint + uncompressed data varint
-        val initialBufferSize = (uncompressed - 1) + 3 + uncompressed.varIntBytes
+        val initialBufferSize = uncompressed - 1 + 3 + uncompressed.varIntBytes
         return MoreByteBufUtils.preferredBuffer(ctx.alloc(), compressor, initialBufferSize)
     }
 

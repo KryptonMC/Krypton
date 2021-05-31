@@ -27,17 +27,17 @@ data class Objective @JvmOverloads constructor(
 )
 
 /**
- * Controls how an [Objective] is rendered to the client
+ * Controls how an [Objective] is rendered to the client.
  */
 enum class RenderType {
 
     /**
-     * Display an integer value
+     * Display an integer value.
      */
     INTEGER,
 
     /**
-     * Display a number of hearts corresponding to the value
+     * Display a number of hearts corresponding to the value.
      */
     HEARTS
 }

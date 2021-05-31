@@ -12,18 +12,14 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
-import org.apache.logging.log4j.Logger
-import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.dummy.DummyCommand
 import org.kryptonmc.api.entity.entities.Player
 import org.kryptonmc.api.event.EventBus
-import org.kryptonmc.api.plugin.Plugin
-import org.kryptonmc.api.plugin.PluginContext
 import org.kryptonmc.api.plugin.PluginDescriptionFile
 import java.net.InetSocketAddress
-import java.nio.file.Path
 import java.util.UUID
 
 val commandManagerMock = mockk<CommandManager> {
@@ -47,6 +43,7 @@ val sender = mockk<Sender> {
     every { permissions } returns emptyMap()
 }
 
+@Suppress("UnderscoresInNumericLiterals")
 val player = mockk<Player> {
     every { name } returns "Dorothy"
     every { permissions } returns emptyMap()
@@ -63,11 +60,3 @@ val description = PluginDescriptionFile(
     listOf("BomBardyGamer"),
     listOf("EventTester")
 )
-
-val logger = mockk<Logger> {
-    every { info(any<String>()) } just runs
-    every { warn(any<String>()) } just runs
-    every { error(any<String>()) } just runs
-}
-
-val plugin = object : Plugin() {}

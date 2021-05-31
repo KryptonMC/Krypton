@@ -135,14 +135,14 @@ data class KryptonWorld(
                 if (thunderTime > 0) {
                     if (thunderTime-- == 0) isThundering = !isThundering
                 } else {
-                    thunderTime = if (isThundering) Random.nextInt(12000) + 3600 else Random.nextInt(168000) + 12000
+                    thunderTime = if (isThundering) Random.nextInt(12_000) + 3600 else Random.nextInt(168_000) + 12_000
                 }
                 profiler.pop()
                 profiler.push("calculate rain")
                 if (rainTime > 0) {
                     if (rainTime-- == 0) isRaining = !isRaining
                 } else {
-                    rainTime = Random.nextInt(if (isRaining) 12000 else 168000) + 12000
+                    rainTime = Random.nextInt(if (isRaining) 12_000 else 168_000) + 12_000
                 }
                 profiler.pop()
             }
@@ -184,7 +184,7 @@ data class KryptonWorld(
         profiler.pop()
 
         profiler.push("chunk tick")
-        chunks.forEach { chunk -> chunk.tick(players.filter { it.location in chunk.position }.size) }
+        chunks.forEach { chunk -> chunk.tick(players.count { it.location in chunk.position }) }
         profiler.pop()
     }
 
@@ -249,18 +249,13 @@ data class KryptonWorld(
                 .putBoolean("Snapshot", version.isSnapshot)
                 .build())
             .putInt("WanderingTraderSpawnChance", 25)
-            .putInt("WanderingTraderSpawnDelay", 24000)
+            .putInt("WanderingTraderSpawnDelay", 24_000)
             .build()).build(), dataPath, BinaryTagIO.Compression.GZIP)
     }
 
     override fun audiences() = players
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as KryptonWorld
-        return uuid == other.uuid
-    }
+    override fun equals(other: Any?) = other is KryptonWorld && uuid == other.uuid
 
     override fun hashCode() = uuid.hashCode()
 
@@ -277,4 +272,4 @@ data class KryptonWorld(
 }
 
 const val NBT_DATA_VERSION = 2584
-const val NBT_VERSION = 19133
+const val NBT_VERSION = 19_133

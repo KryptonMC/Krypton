@@ -41,13 +41,14 @@ class ScoreboardTests {
         assertEquals(10, score.score)
     }
 
+    @Suppress("BooleanLiteralArgument")
     @Test
     fun `test team data retention`() {
         val team = Team(
             "test",
             text("test"),
             allowFriendlyFire = true,
-            areInvisibleMembersVisible = true,
+            canSeeInvisibleMembers = true,
             options = emptyMap(),
             color = TeamColor.BLACK,
             prefix = text("hello"),
@@ -57,16 +58,26 @@ class ScoreboardTests {
         assertEquals("test", team.name)
         assertEquals(text("test"), team.displayName)
         assertTrue(team.allowFriendlyFire)
-        assertTrue(team.areInvisibleMembersVisible)
+        assertTrue(team.canSeeInvisibleMembers)
         assertEquals(emptyMap(), team.options)
         assertEquals(TeamColor.BLACK, team.color)
         assertEquals(text("hello"), team.prefix)
         assertEquals(text("world"), team.suffix)
         assertEquals(listOf(player), team.members)
 
-        val otherTeam = team.copy(allowFriendlyFire = false, areInvisibleMembersVisible = false)
+        val otherTeam = Team(
+            team.name,
+            team.displayName,
+            false,
+            false,
+            team.options,
+            team.color,
+            team.prefix,
+            team.suffix,
+            team.members
+        )
         assertFalse(otherTeam.allowFriendlyFire)
-        assertFalse(otherTeam.areInvisibleMembersVisible)
+        assertFalse(otherTeam.canSeeInvisibleMembers)
     }
 
     @Test

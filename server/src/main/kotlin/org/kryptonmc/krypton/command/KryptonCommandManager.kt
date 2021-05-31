@@ -85,7 +85,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         } catch (exception: CommandSyntaxException) {
             val message = when (exception) {
                 BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand() -> Messages.COMMAND.UNKNOWN(command)
-                else -> text(exception.message ?: "")
+                else -> text(exception.message.orEmpty())
             }
             sender.sendMessage(message)
         }

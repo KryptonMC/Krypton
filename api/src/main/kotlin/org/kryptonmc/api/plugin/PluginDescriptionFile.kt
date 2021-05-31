@@ -11,8 +11,15 @@ package org.kryptonmc.api.plugin
 /**
  * Represents the plugin.conf file that every plugin has.
  *
- * This holds details about the plugin, for example it's name, main class, version, descrpiton,
- * authors and dependencies
+ * This holds details about the plugin, for example it's name, main class, version, description,
+ * authors and dependencies.
+ *
+ * @param name the name of this plugin
+ * @param main the main class of this plugin
+ * @param version the version of this plugin
+ * @param description the description of this plugin, empty if not present
+ * @param authors the list of authors for this plugin, empty if not present
+ * @param dependencies the list of plugins this plugin depends on
  */
 data class PluginDescriptionFile(
     val name: String,

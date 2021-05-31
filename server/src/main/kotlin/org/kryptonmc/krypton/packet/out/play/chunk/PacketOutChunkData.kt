@@ -98,6 +98,6 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x20) {
         // Thanks Minestom :) (https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/network/packet/server/play/ChunkDataPacket.java#L50-52)
         private const val CHUNK_SECTION_COUNT = 16
         private const val MAX_BITS_PER_ENTRY = 16
-        private const val MAX_BUFFER_SIZE = (Short.SIZE_BYTES + Byte.SIZE_BYTES + 5 * Byte.SIZE_BYTES + (4096 * MAX_BITS_PER_ENTRY / Long.SIZE_BITS * Long.SIZE_BYTES)) * CHUNK_SECTION_COUNT + 256 * Int.SIZE_BYTES
+        private const val MAX_BUFFER_SIZE = (Short.SIZE_BYTES + Byte.SIZE_BYTES + 5 * Byte.SIZE_BYTES + 4096 * MAX_BITS_PER_ENTRY / Long.SIZE_BITS * Long.SIZE_BYTES) * CHUNK_SECTION_COUNT + 256 * Int.SIZE_BYTES
     }
 }

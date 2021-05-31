@@ -48,7 +48,7 @@ object KryptonEventBus : EventBus {
         handlers.forEach { handler ->
             val priorities = byListenerAndPriority.getOrPut(handler.key) { mutableMapOf() }
             handler.value.forEach {
-                priorities.getOrPut(it.key) { mutableMapOf() }.apply { put(listener, it.value) }
+                priorities.getOrPut(it.key) { mutableMapOf() }[listener] = it.value
             }
             byEventBaked.putAll(handler.key, bakeHandlers(handler.key) ?: return@forEach)
         }

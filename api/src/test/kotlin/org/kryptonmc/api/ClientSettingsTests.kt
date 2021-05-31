@@ -6,6 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
+@file:Suppress("BooleanLiteralArgument")
 package org.kryptonmc.api
 
 import org.kryptonmc.api.event.play.ClientSettingsEvent
@@ -47,5 +48,5 @@ class ClientSettingsTests {
     }
 }
 
-private val ALL_OFF_SETTINGS = SkinSettings(cape = false, jacket = false, leftSleeve = false, rightSleeve = false, leftPants = false, rightPants = false, hat = false)
-private val ALL_ON_SETTINGS = SkinSettings(cape = true, jacket = true, leftSleeve = true, rightSleeve = true, leftPants = true, rightPants = true, hat = true)
+private val ALL_OFF_SETTINGS = SkinSettings(false, false, false, false, false, false, false)
+private val ALL_ON_SETTINGS = SkinSettings(true, true, true, true, true, true, true)

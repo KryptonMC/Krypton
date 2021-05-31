@@ -17,19 +17,23 @@ import java.util.UUID
 /**
  * Called when a player has been authenticated, but they have not yet had
  * a player object constructed for them (when the state has not moved into PLAY
- * yet)
+ * yet).
  *
  * @param username the username of the player logging in
  * @param uuid the UUID of the player logging in
  * @param address the address of the player logging in
  */
-data class LoginEvent(
+class LoginEvent(
     val username: String,
     val uuid: UUID,
     val address: InetSocketAddress
 ) : CancellableEvent() {
 
-    @Volatile var cancelledReason: Component = translatable { key("multiplayer.disconnect.kicked") }
+    /**
+     * The reason for cancelling this event.
+     */
+    @Volatile
+    var cancelledReason: Component = translatable { key("multiplayer.disconnect.kicked") }
 
     /**
      * Cancel this event with the specified [reason] for cancellation

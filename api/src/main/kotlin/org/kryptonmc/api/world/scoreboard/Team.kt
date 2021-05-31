@@ -16,12 +16,22 @@ import org.kryptonmc.api.entity.entities.Player
  *
  * Teams are groups of entities that have a name, prefix,
  * suffix, colour, and a specific set of rules they follow.
+ *
+ * @param name the name of this team
+ * @param displayName the display name of this team
+ * @param allowFriendlyFire if this team allows friendly fire
+ * @param canSeeInvisibleMembers if team members can see other team members that are invisible
+ * @param options the options for this team
+ * @param color the color of this team
+ * @param prefix this team's prefix
+ * @param suffix this team's suffix
+ * @param members this team's members
  */
-data class Team(
+class Team(
     val name: String,
     val displayName: Component,
-    val allowFriendlyFire: Boolean,
-    val areInvisibleMembersVisible: Boolean,
+    @get:JvmName("allowFriendlyFire") val allowFriendlyFire: Boolean,
+    @get:JvmName("areInvisibleMembersVisible") val canSeeInvisibleMembers: Boolean,
     val options: Map<Option, OptionApplication>,
     val color: TeamColor,
     val prefix: Component,
@@ -35,7 +45,7 @@ data class Team(
 enum class Option {
 
     /**
-     * Whether or not nametags are visible
+     * Whether or not name tags are visible
      */
     NAMETAG_VISIBILITY,
 

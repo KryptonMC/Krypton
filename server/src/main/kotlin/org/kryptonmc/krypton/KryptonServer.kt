@@ -136,20 +136,29 @@ class KryptonServer(val mainThread: Thread) : Server {
 
     override val scheduler = KryptonScheduler(pluginManager)
 
-    @Volatile internal var isRunning = true; private set
-    @Volatile internal var lastTickTime = 0L; private set
+    @Volatile
+    internal var isRunning = true
+        private set
+
+    @Volatile
+    internal var lastTickTime = 0L
+        private set
+
     private var lastOverloadWarning = 0L
     private var tickCount = 0
     private var oversleepFactor = 0L
 
     internal val tickTimes = LongArray(100)
-    internal var averageTickTime = 0F; private set
+    internal var averageTickTime = 0F
+        private set
 
     val tickables = mutableListOf<Runnable>()
 
     val continuousProfiler = ServerProfiler(this::tickCount)
     private var profiler: Profiler = DeadProfiler
-    @Volatile private var delayProfilerStart = false
+
+    @Volatile
+    private var delayProfilerStart = false
 
     private var gs4QueryHandler: GS4QueryHandler? = null
     private var watchdog: WatchdogProcess? = null
@@ -216,13 +225,13 @@ class KryptonServer(val mainThread: Thread) : Server {
 
         while (isRunning) {
             val nextTickTime = System.currentTimeMillis() - lastTickTime
-            if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15000L) {
+            if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15_000L) {
                 Messages.TICK_OVERLOAD_WARNING.warn(LOGGER, nextTickTime, nextTickTime / 50)
                 lastOverloadWarning = lastTickTime
             }
             // start profiler
             val singleTickProfiler = if (config.other.saveThreshold > 0) {
-                SingleTickProfiler(config.other.saveThreshold * 1000000000L, DEBUG_FOLDER.createDirectory())
+                SingleTickProfiler(config.other.saveThreshold * 1_000_000_000L, DEBUG_FOLDER.createDirectory())
             } else null
             startProfilerTick(singleTickProfiler)
             profiler.start()
@@ -257,17 +266,9 @@ class KryptonServer(val mainThread: Thread) : Server {
         }
     } catch (exception: Throwable) {
         LOGGER.error("Encountered an unexpected exception", exception)
-        val report = if (exception is ReportedException) {
-            fillReport(exception.report)
-        } else {
-            fillReport(CrashReport("Exception in server tick loop", exception))
-        }
+        val report = fillReport(if (exception is ReportedException) exception.report else CrashReport("Exception in server tick loop", exception))
         val file = CURRENT_DIRECTORY.resolve("crash-reports").resolve("crash-$TIME_NOW-server.txt")
-        LOGGER.error(if (report.save(file)) {
-            "This crash report has been saved to ${file.absolutePathString()}"
-        } else {
-            "Unable to save crash report to disk!"
-        })
+        LOGGER.error(if (report.save(file)) "This crash report has been saved to ${file.absolutePathString()}" else "Unable to save crash report to disk!")
     } finally {
         restart()
     }

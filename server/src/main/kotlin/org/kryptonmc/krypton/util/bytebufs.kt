@@ -27,7 +27,6 @@ import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import net.kyori.adventure.translation.GlobalTranslator
 import org.kryptonmc.api.effect.particle.BlockParticleData
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
@@ -43,7 +42,6 @@ import org.kryptonmc.krypton.entity.Slot
 import org.kryptonmc.krypton.entity.entities.data.VillagerData
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.locale.TranslationManager
-import org.kryptonmc.krypton.locale.TranslationRepository
 import org.kryptonmc.krypton.registry.Registries
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -52,7 +50,6 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.time.Duration
 import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
-import kotlin.experimental.and
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -75,7 +72,7 @@ fun ByteBuf.readVarInt(): Int {
     val maxRead = min(5, readableBytes())
     for (j in 0 until maxRead) {
         val k = readByte()
-        i = i or ((k.toInt() and 0x7F) shl (j * 7))
+        i = i or (k.toInt() and 0x7F shl j * 7)
         if (k.toInt() and 0x80 != 128) return i
     }
     return Int.MAX_VALUE
@@ -85,23 +82,23 @@ fun ByteBuf.readVarInt(): Int {
 fun ByteBuf.writeVarInt(value: Int) {
     when {
         value.toLong() and (0xFFFFFFFF shl 7) == 0L -> writeByte(value)
-        value.toLong() and (0xFFFFFFFF shl 14) == 0L -> writeShort((((value and 0x7F) or 0x80) shl 8) or (value ushr 7))
+        value.toLong() and (0xFFFFFFFF shl 14) == 0L -> writeShort(value and 0x7F or 0x80 shl 8 or (value ushr 7))
         else -> writeVarIntFull(value)
     }
 }
 
 // This came from Velocity. See https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
 fun ByteBuf.write21BitVarInt(value: Int) {
-    writeMedium((((value and 0x7F) or 0x80) shl 16) or ((((value ushr 7) and 0x7F) or 0x80) shl 8) or (value ushr 14))
+    writeMedium(value and 0x7F or 0x80 shl 16 or (value ushr 7 and 0x7F or 0x80 shl 8) or (value ushr 14))
 }
 
 // This came from Velocity. See https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
 private fun ByteBuf.writeVarIntFull(value: Int) {
     when {
-        value.toLong() and (0xFFFFFFFF shl 21) == 0L -> writeMedium((((value and 0x7F) or 0x80) shl 16) or ((((value ushr 7) and 0x7F) or 0x80) shl 8) or (value ushr 14))
-        value.toLong() and (0xFFFFFFFF shl 28) == 0L -> writeInt((((value and 0x7F) or 0x80) shl 24) or ((((value ushr 7) and 0x7F) or 0x80) shl 16) or ((((value ushr 14) and 0x7F) or 0x80) shl 8) or (value ushr 21))
+        value.toLong() and (0xFFFFFFFF shl 21) == 0L -> writeMedium(value and 0x7F or 0x80 shl 16 or (value ushr 7 and 0x7F or 0x80 shl 8) or (value ushr 14))
+        value.toLong() and (0xFFFFFFFF shl 28) == 0L -> writeInt(value and 0x7F or 0x80 shl 24 or (value ushr 7 and 0x7F or 0x80 shl 16) or (value ushr 14 and 0x7F or 0x80 shl 8) or (value ushr 21))
         else -> {
-            writeInt((((value and 0x7F) or 0x80) shl 24) or ((((value ushr 7) and 0x7F) or 0x80) shl 16) or ((((value shr 14) and 0x7F) or 0x80) shl 8) or (((value ushr 21) and 0x7F) or 0x80))
+            writeInt(value and 0x7F or 0x80 shl 24 or (value ushr 7 and 0x7F or 0x80 shl 16) or (value shr 14 and 0x7F or 0x80 shl 8) or (value ushr 21 and 0x7F or 0x80))
             writeByte(value ushr 28)
         }
     }
@@ -371,7 +368,7 @@ inline fun <reified T : Enum<T>> ByteBuf.readEnum(): T = T::class.java.enumConst
 
 fun Int.varIntSize(): Int {
     for (i in 1 until 5) {
-        if ((this and (-1 shl i * 7)) != 0) continue
+        if (this and (-1 shl i * 7) != 0) continue
         return i
     }
     return 5

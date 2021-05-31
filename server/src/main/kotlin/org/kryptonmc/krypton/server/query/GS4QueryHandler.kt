@@ -179,7 +179,7 @@ class GS4QueryHandler private constructor(
         if (!isRunning) return
 
         val timeNow = System.currentTimeMillis()
-        if (timeNow < lastChallengeCheck + 30000L) return
+        if (timeNow < lastChallengeCheck + 30_000L) return
 
         lastChallengeCheck = timeNow
         validChallenges.values.removeIf { it.isBefore(timeNow) }
@@ -235,7 +235,7 @@ class GS4QueryHandler private constructor(
 
         fun create(server: KryptonServer): GS4QueryHandler? {
             val queryPort = server.config.query.port
-            if (queryPort !in 0..65535) {
+            if (queryPort !in 0..65_535) {
                 LOGGER.warn("Invalid query port! Should be between 0 and 65535, was $queryPort. Querying disabled.")
                 return null
             }
@@ -250,11 +250,11 @@ class GS4QueryHandler private constructor(
 private val HEX_CHARACTERS = "0123456789abcdef".toCharArray()
 
 private val Byte.hex: String
-    get() = "" + HEX_CHARACTERS[(this.toInt() and 0xF0) ushr 4] + HEX_CHARACTERS[this.toInt() and 0xF]
+    get() = "" + HEX_CHARACTERS[toInt() and 0xF0 ushr 4] + HEX_CHARACTERS[toInt() and 0xF]
 
 private fun ByteArray.networkToInt(index: Int, length: Int): Int {
     if (0 > length - index - 4) return 0
-    return (this[index].toInt() shl 24) or ((this[index + 1].toInt() and 0xFF) shl 16) or ((this[index + 2].toInt() and 0xFF) shl 8) or (this[index + 3].toInt() and 0xFF)
+    return this[index].toInt() shl 24 or (this[index + 1].toInt() and 0xFF) shl 16 or (this[index + 2].toInt() and 0xFF) shl 8 or (this[index + 3].toInt() and 0xFF)
 }
 
 private class RequestChallenge(packet: DatagramPacket) {

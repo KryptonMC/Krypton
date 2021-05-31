@@ -74,7 +74,7 @@ class PacketOutScoreboardTeam(
     private fun Team.flagsToProtocol(): Int {
         var byte = 0x0
         if (allowFriendlyFire) byte += 0x01
-        if (areInvisibleMembersVisible) byte += 0x02
+        if (canSeeInvisibleMembers) byte += 0x02
         return byte
     }
 

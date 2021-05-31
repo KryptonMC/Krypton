@@ -195,7 +195,7 @@ class PlayHandler(
 
     private fun handleKeepAlive(packet: PacketInKeepAlive) {
         if (session.lastKeepAliveId == packet.keepAliveId) {
-            sessionManager.updateLatency(session, max((packet.keepAliveId - session.lastKeepAliveId), 0L).toInt())
+            sessionManager.updateLatency(session, max(packet.keepAliveId - session.lastKeepAliveId, 0L).toInt())
             return
         }
         session.disconnect(translatable { key("disconnect.timeout") })
