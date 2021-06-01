@@ -9,11 +9,11 @@
 package org.kryptonmc.api.world
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.space.AbstractPosition
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Position.Companion.EPSILON
 import org.kryptonmc.api.space.Vector
 import kotlin.math.abs
-import kotlin.math.sqrt
 
 /**
  * A [Location] is a three-dimensional space in a world. That is, it possesses
@@ -24,16 +24,14 @@ import kotlin.math.sqrt
  * @param world the world this location is in
  * @see [Vector]
  */
-data class Location @JvmOverloads constructor(
+class Location @JvmOverloads constructor(
     val world: World,
-    override val x: Double,
-    override val y: Double,
-    override val z: Double,
+    x: Double,
+    y: Double,
+    z: Double,
     val yaw: Float = 0F,
     val pitch: Float = 0F
-) : Position {
-
-    override val length by lazy { sqrt(lengthSquared) }
+) : AbstractPosition(x, y, z) {
 
     override fun plus(other: Position): Position {
         check(other, "add")
@@ -60,14 +58,12 @@ data class Location @JvmOverloads constructor(
         return super.rem(other)
     }
 
-    override fun apply(x: Double, y: Double, z: Double) = copy(x = x, y = y, z = z)
-
     private fun check(position: Position, message: String) {
         if (position is Location) require(world == position.world) { "Cannot $message locations from different worlds!" }
     }
 
     /**
-     * Convert this [Location] to a [Vector]
+     * Convert this [Location] to a [Vector].
      *
      * @return the new vector from this location
      */
@@ -93,5 +89,19 @@ data class Location @JvmOverloads constructor(
         return hash
     }
 
-    override fun toString() = "$x, $y, $z"
+    override fun toString() = "Location(world=$world, x=$x, y=$y, z=$z, yaw=$yaw, pitch=$pitch)"
+
+    override fun copy(x: Double, y: Double, z: Double) = Location(world, x, y, z, yaw, pitch)
+
+    /**
+     * Create a copy of this location with the specified values applied to it.
+     */
+    fun copy(
+        world: World = this.world,
+        x: Double = this.x,
+        y: Double = this.y,
+        z: Double = this.z,
+        yaw: Float = this.yaw,
+        pitch: Float = this.pitch
+    ) = Location(world, x, y, z, yaw, pitch)
 }

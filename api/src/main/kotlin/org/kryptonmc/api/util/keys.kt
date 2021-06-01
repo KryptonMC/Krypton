@@ -12,6 +12,6 @@ import net.kyori.adventure.key.Key.key
 
 /**
  * Convert this string to a [net.kyori.adventure.key.Key]. Must be in the format namespace:key,
- * or if the namespace is absent, it will default to "minecraft"
+ * or if the namespace is absent, it will default to "minecraft".
  */
 fun String.toKey() = key(this)

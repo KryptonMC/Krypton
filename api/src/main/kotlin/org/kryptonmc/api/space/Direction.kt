@@ -15,7 +15,7 @@ package org.kryptonmc.api.space
  * As this is three-dimensional, this also includes the directions [UP]
  * and [DOWN].
  *
- * [id] is the ID of this [Direction]. This should only need to be used internally.
+ * @param id the internal ID of this direction
  */
 enum class Direction(val id: Int) {
 

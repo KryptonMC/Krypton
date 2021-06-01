@@ -112,6 +112,9 @@
     <ID>UnderscoresInNumericLiterals:ConfigTests.kt$ConfigTests$25565</ID>
     <ID>UnderscoresInNumericLiterals:ConfigTests.kt$ConfigTests$25566</ID>
     <ID>UnsafeCallOnNullableType:ConfigTests.kt$ConfigTests$loader.load().get&lt;KryptonConfig>()!!</ID>
+    <ID>UseOrEmpty:JSONBlocks.kt$RegistryBlock.Companion$json["properties"]?.let { context.deserialize(it) } ?: emptyMap&lt;String, List&lt;String>>()</ID>
+    <ID>UseOrEmpty:JSONBlocks.kt$RegistryBlock.Companion$json["states"]?.let { context.deserialize(it) } ?: emptyList&lt;RegistryBlockState>()</ID>
+    <ID>UseOrEmpty:JSONBlocks.kt$RegistryBlockState.Companion$json["properties"]?.let { context.deserialize(it) } ?: emptyMap&lt;String, String>()</ID>
   </ManuallySuppressedIssues>
   <CurrentIssues>
     <ID>LateinitUsage:ChannelHandler.kt$ChannelHandler$/** * The session this handler handles */ internal lateinit var session: Session</ID>

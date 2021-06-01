@@ -34,7 +34,9 @@ data class RegistryBlock(
 
         override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): RegistryBlock {
             json as JsonObject
-            return RegistryBlock(context.deserialize(json["properties"]), context.deserialize(json["states"]))
+            val properties = json["properties"]?.let { context.deserialize(it) } ?: emptyMap<String, List<String>>()
+            val states = json["states"]?.let { context.deserialize(it) } ?: emptyList<RegistryBlockState>()
+            return RegistryBlock(properties, states)
         }
     }
 }
@@ -49,7 +51,8 @@ data class RegistryBlockState(
 
         override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): RegistryBlockState {
             json as JsonObject
-            return RegistryBlockState(json["id"].asInt, json["default"]?.asBoolean ?: false, context.deserialize(json["properties"]))
+            val properties = json["properties"]?.let { context.deserialize(it) } ?: emptyMap<String, String>()
+            return RegistryBlockState(json["id"].asInt, json["default"]?.asBoolean ?: false, properties)
         }
     }
 }

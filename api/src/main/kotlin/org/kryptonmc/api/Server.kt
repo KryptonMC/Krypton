@@ -28,17 +28,17 @@ import java.net.InetSocketAddress
 import java.util.UUID
 
 /**
- * The server
+ * The server.
  */
 interface Server : ForwardingAudience {
 
     /**
-     * The information about this server implementation
+     * Information about this server implementation.
      */
     val info: ServerInfo
 
     /**
-     * The world manager for this server
+     * The world manager for this server.
      *
      * The world manager is used to load, save, create and update
      * worlds.
@@ -46,14 +46,14 @@ interface Server : ForwardingAudience {
     val worldManager: WorldManager
 
     /**
-     * The command manager for this server
+     * The command manager for this server.
      *
-     * This is used to register and unregister commands
+     * This is used to register and unregister commands.
      */
     val commandManager: CommandManager
 
     /**
-     * The plugin manager for this server
+     * The plugin manager for this server.
      *
      * This is used to retrieve plugins and check whether they have
      * been initialised or not.
@@ -61,47 +61,47 @@ interface Server : ForwardingAudience {
     val pluginManager: PluginManager
 
     /**
-     *
+     * The services manager for this server.
      */
     val servicesManager: ServicesManager
 
     /**
-     * The event bus for this server
+     * The event bus for this server.
      *
-     * This is used to subscribe to and call events
+     * This is used to subscribe to and call events.
      */
     val eventBus: EventBus
 
     /**
-     * The scheduler for this server
+     * The scheduler for this server.
      *
-     * This can be used to run and schedule asynchronous tasks
+     * This can be used to run and schedule asynchronous tasks.
      */
     val scheduler: Scheduler
 
     /**
-     * The status information for this server
+     * The status information for this server.
      */
     val status: StatusInfo
 
     /**
      * If this server is in online mode, meaning it authenticates
-     * players through Mojang
+     * players through Mojang.
      */
     val isOnline: Boolean
 
     /**
-     * If this server has hardcore mode enabled
+     * If this server has hardcore mode enabled.
      */
     val isHardcore: Boolean
 
     /**
-     * The default difficulty of this server
+     * The default difficulty of this server.
      */
     val difficulty: Difficulty
 
     /**
-     * The default gamemode of this server
+     * The default gamemode of this server.
      */
     val gamemode: Gamemode
 
@@ -111,12 +111,12 @@ interface Server : ForwardingAudience {
     val address: InetSocketAddress
 
     /**
-     * The list of online players
+     * The list of online players.
      */
     val players: Set<Player>
 
     /**
-     * Get a player by their [uuid]
+     * Get a player by their [uuid].
      *
      * @param uuid the player's [UUID]
      * @return the player with the specified [uuid], or null if there
@@ -125,25 +125,25 @@ interface Server : ForwardingAudience {
     fun player(uuid: UUID): Player?
 
     /**
-     * Get a player by their [name]
+     * Get a player by their [name].
      *
      * @param name the player's name
      */
     fun player(name: String): Player?
 
     /**
-     * The console's [Sender] object
+     * The console's [Sender] object.
      */
     val console: ConsoleSender
 
     /**
-     * The server's [Scoreboard], or null if there isn't one
+     * The server's [Scoreboard], or null if there isn't one.
      */
     val scoreboard: Scoreboard?
 
     /**
      * Broadcast a message to every player on the server, optionally with
-     * the specified [permission]
+     * the specified [permission].
      *
      * @param message the message to send
      * @param permission (optional) the permission that players require to receive
@@ -152,7 +152,7 @@ interface Server : ForwardingAudience {
     fun broadcast(message: Component, permission: String? = null)
 
     /**
-     * The list of registered plugin messaging channels
+     * The list of registered plugin messaging channels.
      */
     val channels: Set<Key>
 
@@ -171,22 +171,22 @@ interface Server : ForwardingAudience {
     fun unregisterChannel(channel: Key)
 
     /**
-     * Holder for information about the server implementing this API
+     * Holder for information about the server implementing this API.
      */
     interface ServerInfo {
 
         /**
-         * The name of this server implementation
+         * The name of this server implementation.
          */
         val name: String
 
         /**
-         * The version string of this server implementation (not Minecraft version)
+         * The version string of this server implementation (not Minecraft version).
          */
         val version: String
 
         /**
-         * The target Minecraft version for this implementation
+         * The target Minecraft version for this implementation.
          */
         val minecraftVersion: String
     }

@@ -18,14 +18,14 @@ import java.util.concurrent.Future
 interface WorldManager {
 
     /**
-     * The server this [WorldManager] is bound to
+     * The server this [WorldManager] is bound to.
      */
     val server: Server
 
     /**
-     * The default world for this [Server]
+     * The default world for this [Server].
      *
-     * What the default world is will be defined by the implementation
+     * What the default world is will be defined by the implementation.
      */
     val default: World
 
@@ -35,7 +35,7 @@ interface WorldManager {
     val worlds: Map<String, World>
 
     /**
-     * Load a world by its namespaced key (asynchronously)
+     * Load a world by its namespaced key (asynchronously).
      *
      * @param name
      * @return the world with the specified name
@@ -45,7 +45,7 @@ interface WorldManager {
     fun load(name: String): Future<out World>
 
     /**
-     * Save a world to disk
+     * Save a world to disk.
      *
      * @param world the world to save
      * @throws IllegalArgumentException if the provided world is not of the
@@ -54,7 +54,7 @@ interface WorldManager {
     fun save(world: World): Future<*>
 
     /**
-     * If the specified world [name] is loaded into the server
+     * If the specified world [name] is loaded into the server.
      *
      * @param name the name of the world
      * @return if there is a world with this [name] loaded

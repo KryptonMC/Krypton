@@ -19,17 +19,17 @@ import org.kryptonmc.api.world.World
 interface Chunk {
 
     /**
-     * The world this chunk is in
+     * The world this chunk is in.
      */
     val world: World
 
     /**
-     * The X position of this chunk
+     * The X position of this chunk.
      */
     val x: Int
 
     /**
-     * The Z position of this chunk
+     * The Z position of this chunk.
      */
     val z: Int
 
@@ -51,7 +51,7 @@ interface Chunk {
      * Also note that regional difficulty is capped when this value reaches
      * 3600000, meaning that none of the above will increase past that point.
      *
-     * See [here](https://minecraft.gamepedia.com/Chunk_format#NBT_structure) for more details
+     * See [here](https://minecraft.gamepedia.com/Chunk_format#NBT_structure) for more details.
      */
     val inhabitedTime: Long
 
@@ -61,7 +61,7 @@ interface Chunk {
     val lastUpdate: Long
 
     /**
-     * Get a block from this chunk at the specified [x], [y] and [z] coordinates
+     * Get a block from this chunk at the specified [x], [y] and [z] coordinates.
      *
      * @param x the x coordinate of the block
      * @param y the y coordinate of the block
@@ -71,7 +71,7 @@ interface Chunk {
     fun getBlock(x: Int, y: Int, z: Int): Block
 
     /**
-     * Get a block from this chunk at the specified [position]
+     * Get a block from this chunk at the specified [position].
      *
      * @param position the position of the block to retrieve
      * @return the block at that position
@@ -79,7 +79,7 @@ interface Chunk {
     fun getBlock(position: Position): Block
 
     /**
-     * Set the block at this [block]'s position to the specified [block]
+     * Set the block at this [block]'s position to the specified [block].
      *
      * @param block the block to set this block's position to
      * @return if the set was successful. This is implementation specific

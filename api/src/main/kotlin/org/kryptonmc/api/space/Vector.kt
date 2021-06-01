@@ -15,7 +15,6 @@ import org.kryptonmc.api.space.Position.Companion.EPSILON
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
 import kotlin.math.abs
-import kotlin.math.sqrt
 import kotlin.random.Random
 
 /**
@@ -32,17 +31,11 @@ import kotlin.random.Random
  * @see [Location]
  */
 @Suppress("Indentation")
-data class Vector(
-    override val x: Double,
-    override val y: Double,
-    override val z: Double
-) : Position {
+class Vector(x: Double, y: Double, z: Double) : AbstractPosition(x, y, z) {
 
     constructor(x: Int, y: Int, z: Int) : this(x.toDouble(), y.toDouble(), z.toDouble())
 
     constructor(x: Float, y: Float, z: Float) : this(x.toDouble(), y.toDouble(), z.toDouble())
-
-    override val length by lazy { sqrt(lengthSquared) }
 
     /**
      * Convert this [Vector] to a [Location] with the specified
@@ -76,7 +69,9 @@ data class Vector(
         return hash
     }
 
-    override fun apply(x: Double, y: Double, z: Double) = copy(x = x, y = y, z = z)
+    override fun toString() = "Vector(x=$x, y=$y, z=$z)"
+
+    override fun copy(x: Double, y: Double, z: Double) = Vector(x, y, z)
 
     companion object {
 

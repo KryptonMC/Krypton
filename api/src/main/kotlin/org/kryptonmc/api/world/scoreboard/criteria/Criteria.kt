@@ -14,12 +14,12 @@ package org.kryptonmc.api.world.scoreboard.criteria
 interface Criteria {
 
     /**
-     * The name of this criteria
+     * The name of this criteria.
      */
     val name: String
 
     /**
-     * If this criteria is mutable
+     * If this criteria is mutable.
      */
     val isMutable: Boolean
 }

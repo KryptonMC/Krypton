@@ -94,15 +94,13 @@ class KryptonPlayer(
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
 ) : Player, KryptonSender() {
 
-    @Volatile internal var isFullyInitialized = false
-
     override var displayName: Component = Component.empty()
     override var abilities = Abilities()
     var attributes = DEFAULT_PLAYER_ATTRIBUTES
 
     override lateinit var location: Location
 
-    override var velocity = Vector.ZERO
+    override val velocity = Vector.ZERO
 
     override var isOnGround = false
     override var isCrouching = false

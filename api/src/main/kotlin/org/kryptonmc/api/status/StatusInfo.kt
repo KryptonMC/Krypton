@@ -11,17 +11,17 @@ package org.kryptonmc.api.status
 import net.kyori.adventure.text.Component
 
 /**
- * Holder for status information
+ * Holder for status information.
  */
 interface StatusInfo {
 
     /**
-     * The maximum players that can join this server
+     * The maximum players that can join this server.
      */
     val maxPlayers: Int
 
     /**
-     * The message of the day for this server
+     * The message of the day for this server.
      */
     val motd: Component
 }

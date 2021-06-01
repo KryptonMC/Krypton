@@ -14,9 +14,9 @@ import java.util.EnumSet
 
 /**
  * The enum that holds all the biomes in Minecraft, including both their namespaced ID and
- * their numeric ID
+ * their numeric ID.
  *
- * [id] is the ID of this biome. This should only need to be used internally.
+ * @param id the internal ID of this biome
  */
 // TODO: Maybe use code generation for this?
 enum class Biome(val id: Int) : Keyed {

@@ -10,12 +10,12 @@
     <ID>DataClassShouldBeImmutable:Abilities.kt$Abilities$var isFlying: Boolean = false</ID>
     <ID>DataClassShouldBeImmutable:Abilities.kt$Abilities$var isInvulnerable: Boolean = false</ID>
     <ID>DataClassShouldBeImmutable:Abilities.kt$Abilities$var walkSpeed: Float = DEFAULT_WALKING_SPEED</ID>
+    <ID>Indentation:org.kryptonmc.api.world.Location.kt:75</ID>
+    <ID>Indentation:org.kryptonmc.api.world.Location.kt:76</ID>
+    <ID>Indentation:org.kryptonmc.api.world.Location.kt:77</ID>
+    <ID>Indentation:org.kryptonmc.api.world.Location.kt:78</ID>
     <ID>Indentation:org.kryptonmc.api.world.Location.kt:79</ID>
     <ID>Indentation:org.kryptonmc.api.world.Location.kt:80</ID>
-    <ID>Indentation:org.kryptonmc.api.world.Location.kt:81</ID>
-    <ID>Indentation:org.kryptonmc.api.world.Location.kt:82</ID>
-    <ID>Indentation:org.kryptonmc.api.world.Location.kt:83</ID>
-    <ID>Indentation:org.kryptonmc.api.world.Location.kt:84</ID>
     <ID>LongParameterList:ParticleEffectBuilders.kt$ColorParticleEffectBuilder$( type: Particle, quantity: Int = 1, offset: Vector = Vector.ZERO, longDistance: Boolean = false, protected var red: UByte = 0u, protected var green: UByte = 0u, protected var blue: UByte = 0u )</ID>
     <ID>LongParameterList:ParticleEffectBuilders.kt$DirectionalParticleEffectBuilder$( type: Particle, quantity: Int = 1, offset: Vector = Vector.ZERO, longDistance: Boolean = false, private var direction: Vector? = null, private var velocity: Float = 0.0F )</ID>
     <ID>LongParameterList:ParticleEffectBuilders.kt$DustParticleEffectBuilder$( type: Particle, quantity: Int = 1, offset: Vector = Vector.ZERO, longDistance: Boolean = false, red: UByte = 255u, green: UByte = 0u, blue: UByte = 0u, private var scale: Float = 0.0F )</ID>
@@ -28,8 +28,6 @@
   </ManuallySuppressedIssues>
   <CurrentIssues>
     <ID>ComplexInterface:Position.kt$Position : Cloneable</ID>
-    <ID>TooManyFunctions:Location.kt$Location : Position</ID>
-    <ID>TooManyFunctions:Position.kt$Position : Cloneable</ID>
     <ID>UndocumentedPublicProperty:ParticleEffects.kt$BlockParticleData$val id: Int</ID>
     <ID>UndocumentedPublicProperty:ParticleEffects.kt$ItemParticleData$val id: Int</ID>
   </CurrentIssues>

@@ -29,96 +29,96 @@ import java.util.Locale
 import java.util.UUID
 
 /**
- * Represents a player
+ * Represents a player.
  */
 interface Player : Sender, InventoryHolder, PluginMessageRecipient, HoverEventSource<HoverEvent.ShowEntity> {
 
     /**
-     * The player's UUID
+     * The player's UUID.
      */
     val uuid: UUID
 
     /**
-     * The player's display name
+     * The player's display name.
      */
     var displayName: Component
 
     /**
-     * The address that the player is currently connected from
+     * The address that the player is currently connected from.
      */
     val address: InetSocketAddress
 
     /**
-     * The player's abilities
+     * The player's abilities.
      */
     val abilities: Abilities
 
     /**
-     * The world this player is currently in
+     * The world this player is currently in.
      */
     val world: World
 
     /**
-     * The dimension the player is currently in
+     * The dimension the player is currently in.
      */
     val dimension: Key
 
     /**
-     * The current location of the player
+     * The current location of the player.
      */
     val location: Location
 
     /**
-     * The velocity of the player
+     * The velocity of the player. Unused at the moment.
      */
     val velocity: Vector
 
     /**
-     * If this player is on terra firma (solid earth)
+     * If this player is on terra firma (solid earth).
      */
     val isOnGround: Boolean
 
     /**
-     * If this player is crouching
+     * If this player is crouching.
      */
     val isCrouching: Boolean
 
     /**
-     * If this player is sprinting
+     * If this player is sprinting.
      */
     val isSprinting: Boolean
 
     /**
-     * The view distance of this player
+     * The view distance of this player.
      */
     val viewDistance: Int
 
     /**
-     * The current time of this player
+     * The current time of this player.
      *
-     * Will always be the time of the server
+     * Will always be the time of the server.
      */
     val time: Long
 
     /**
-     * The scoreboard currently being shown to this player
+     * The scoreboard currently being shown to this player.
      */
     var scoreboard: Scoreboard?
 
     /**
-     * This player's main hand
+     * This player's main hand.
      */
     val mainHand: MainHand
 
     /**
-     * The player's inventory
+     * The player's inventory.
      *
-     * This can and should never be changed
+     * This can and should never be changed.
      */
     override val inventory: PlayerInventory
 
     /**
-     * This player's locale
+     * This player's locale.
      */
     val locale: Locale?
 
@@ -131,12 +131,12 @@ interface Player : Sender, InventoryHolder, PluginMessageRecipient, HoverEventSo
     fun spawnParticles(particleEffect: ParticleEffect, location: Location)
 
     /**
-     * Teleport this player to the specified position
+     * Teleport this player to the specified position.
      */
     fun teleport(position: Position)
 
     /**
-     * Teleport this player to the specified other [player]
+     * Teleport this player to the specified other [player].
      */
     fun teleport(player: Player)
 }

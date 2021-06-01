@@ -15,27 +15,27 @@ import java.nio.file.Path
 import java.util.UUID
 
 /**
- * Represents a loaded world
+ * Represents a loaded world.
  */
 interface World : ForwardingAudience {
 
     /**
-     * The server this world was loaded on
+     * The server this world was loaded on.
      */
     val server: Server
 
     /**
-     * The name of this world
+     * The name of this world.
      */
     val name: String
 
     /**
-     * The unique ID of this world
+     * The unique ID of this world.
      */
     val uuid: UUID
 
     /**
-     * The folder of this world on disk
+     * The folder of this world on disk.
      */
     val folder: Path
 
@@ -53,12 +53,12 @@ interface World : ForwardingAudience {
     val spawnLocation: Location
 
     /**
-     * The set of chunks currently loaded in this world
+     * The set of chunks currently loaded in this world.
      */
     val chunks: Set<Chunk>
 
     /**
-     * This world's border
+     * This world's border.
      */
     val border: WorldBorder
 
@@ -68,27 +68,27 @@ interface World : ForwardingAudience {
     val difficulty: Difficulty
 
     /**
-     * The default gamemode of this world
+     * The default gamemode of this world.
      */
     val gamemode: Gamemode
 
     /**
-     * If the world is a hardcore world
+     * If the world is a hardcore world.
      */
     val isHardcore: Boolean
 
     /**
-     * The seed of this world
+     * The seed of this world.
      */
     val seed: Long
 
     /**
-     * The current time in this world
+     * The current time in this world.
      */
     val time: Long
 
     /**
-     * The version information of this world
+     * The version information of this world.
      */
     val version: WorldVersion
 
@@ -98,22 +98,22 @@ interface World : ForwardingAudience {
     val maxHeight: Int
 
     /**
-     * If this world is currently thundering (has an ongoing thunderstorm)
+     * If this world is currently thundering (has an ongoing thunderstorm).
      */
     var isThundering: Boolean
 
     /**
-     * The level of the current thunderstorm (0 if there is no thunderstorm going on)
+     * The level of the current thunderstorm (0 if there is no thunderstorm going on).
      */
     var thunderLevel: Float
 
     /**
-     * If this world is currently raining
+     * If this world is currently raining.
      */
     var isRaining: Boolean
 
     /**
-     * The level of the current rain
+     * The level of the current rain.
      */
     var rainLevel: Float
 
@@ -147,7 +147,7 @@ class WorldVersion(
     companion object {
 
         /**
-         * The current world version
+         * The current world version.
          */
         @JvmField
         val CURRENT = WorldVersion(2568, "1.16.5", false)

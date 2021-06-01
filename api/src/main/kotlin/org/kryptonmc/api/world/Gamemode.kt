@@ -40,8 +40,8 @@ enum class Gamemode {
 
     /**
      * In spectator mode, you are also completely invulnerable, but you can
-     * also fly through blocks, as the entire world is essentially non existant
-     * to your client (you can see things, but you will never collide with them)
+     * also fly through blocks, as the entire world is essentially non existent
+     * to your client (you can see things, but you will never collide with them).
      */
     SPECTATOR;
 

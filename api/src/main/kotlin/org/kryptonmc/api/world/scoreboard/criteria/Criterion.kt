@@ -9,9 +9,9 @@
 package org.kryptonmc.api.world.scoreboard.criteria
 
 /**
- * Represents a single criteria, also known as a [Criterion]
+ * Represents a single criterion for an objective.
  *
- * See [here](https://minecraft.gamepedia.com/Scoreboard#Single_criteria) for details
+ * See [here](https://minecraft.gamepedia.com/Scoreboard#Single_criteria) for details.
  */
 enum class Criterion(override val isMutable: Boolean) : Criteria {
 

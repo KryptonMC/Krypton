@@ -97,7 +97,6 @@ class PlayerDataManager(private val folder: Path) {
     }
 
     fun save(player: KryptonPlayer) {
-        if (!player.isFullyInitialized) return
         val playerFile = folder.resolve("${player.uuid}.dat").createFile()
 
         val attributes = player.attributes.map {

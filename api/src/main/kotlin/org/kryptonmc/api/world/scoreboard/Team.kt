@@ -14,8 +14,7 @@ import org.kryptonmc.api.entity.entities.Player
 /**
  * Represents a [Scoreboard] team.
  *
- * Teams are groups of entities that have a name, prefix,
- * suffix, colour, and a specific set of rules they follow.
+ * Teams are groups of entities that have a name, prefix, suffix, colour, and a specific set of rules they follow.
  *
  * @param name the name of this team
  * @param displayName the display name of this team
@@ -45,17 +44,17 @@ class Team(
 enum class Option {
 
     /**
-     * Whether or not name tags are visible
+     * Whether or not name tags are visible.
      */
     NAMETAG_VISIBILITY,
 
     /**
-     * Whether or not death messages are visible
+     * Whether or not death messages are visible.
      */
     DEATH_MESSAGE_VISIBILITY,
 
     /**
-     * Whether or not players will collide with each other
+     * Whether or not players will collide with each other.
      */
     COLLISION_RULE
 }
@@ -88,7 +87,7 @@ enum class OptionApplication {
 
 /**
  * Represents the colour of a team. This is used because team colours are
- * legacy colours, and because they have special IDs
+ * legacy colours, and because they have special IDs.
  */
 enum class TeamColor {
 

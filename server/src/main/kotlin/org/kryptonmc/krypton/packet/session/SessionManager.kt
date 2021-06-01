@@ -65,7 +65,6 @@ import org.kryptonmc.krypton.packet.out.play.window.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.util.Angle
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.toProtocol
 import org.kryptonmc.krypton.world.Gamerule
@@ -177,7 +176,7 @@ class SessionManager(private val server: KryptonServer) {
             .forEach {
                 session.sendPacket(PacketOutSpawnPlayer(it.player))
                 session.sendPacket(PacketOutEntityMetadata(it.id, metadata))
-                session.sendPacket(PacketOutEntityProperties(it.id, session.player.attributes))
+                session.sendPacket(PacketOutEntityProperties(it.id, it.player.attributes))
                 session.sendPacket(PacketOutEntityHeadLook(it.id, it.player.location.yaw.toAngle()))
             }
 
@@ -200,7 +199,6 @@ class SessionManager(private val server: KryptonServer) {
             session.lastKeepAliveId = keepAliveId
             session.sendPacket(PacketOutKeepAlive(keepAliveId))
         }, 0, 20, TimeUnit.SECONDS)
-        session.player.isFullyInitialized = true
     }
 
     private fun handlePlayStateBegin(session: Session) {
@@ -275,6 +273,5 @@ class SessionManager(private val server: KryptonServer) {
     companion object {
 
         private val BRAND_MESSAGE = key("brand") to "Krypton".toProtocol()
-        private val LOGGER = logger<SessionManager>()
     }
 }

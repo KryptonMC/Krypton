@@ -42,12 +42,15 @@ complexity:
   LongParameterList:
     active: true
     functionThreshold: 6
-    constructorThreshold: 6
+    constructorThreshold: 8
     ignoreAnnotated: ['Inject']
+    ignoreDefaultParameters: true
   MethodOverloading:
     active: true
   StringLiteralDuplication:
     active: true
+  TooManyFunctions:
+    active: false
 
 coroutines:
   active: true

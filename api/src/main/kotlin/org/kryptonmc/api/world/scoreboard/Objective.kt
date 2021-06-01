@@ -17,7 +17,7 @@ import org.kryptonmc.api.world.scoreboard.criteria.Criteria
  * @param name the name of the objective
  * @param displayName the display name of the objective (this is what gets displayed on the scoreboard)
  * @param criteria optional criteria for the scoreboard
- * @param renderType how this objective is rendered to the client.
+ * @param renderType how this objective is rendered to the client
  */
 data class Objective @JvmOverloads constructor(
     val name: String,
