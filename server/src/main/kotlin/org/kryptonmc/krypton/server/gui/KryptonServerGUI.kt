@@ -18,7 +18,9 @@
  */
 package org.kryptonmc.krypton.server.gui
 
+import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.server.gui.stats.GuiStatsComponent
 import org.kryptonmc.krypton.util.QueueLogAppender
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
@@ -59,7 +61,7 @@ class KryptonServerGUI(private val server: KryptonServer) : JComponent(), AutoCl
             add(buildChatPanel(), "Center")
             add(buildInfoPanel(), "West")
         } catch (exception: Exception) {
-            LOGGER.error("Could not build server GUI", exception)
+            Messages.GUI.CANNOT_BUILD.error(LOGGER, exception)
         }
     }
 
@@ -155,7 +157,7 @@ class KryptonServerGUI(private val server: KryptonServer) : JComponent(), AutoCl
                 addWindowListener(object : WindowAdapter() {
                     override fun windowClosing(event: WindowEvent) {
                         if (gui.isClosing.getAndSet(true)) return
-                        title = "Krypton - shutting down..."
+                        title = PlainComponentSerializer.plain().serialize(Messages.GUI.SHUTDOWN_TITLE())
                         server.stop()
                         gui.finalizers.forEach(Runnable::run)
                     }

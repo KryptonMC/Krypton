@@ -20,10 +20,10 @@ package org.kryptonmc.krypton.packet
 
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
-import net.kyori.adventure.extra.kotlin.text
-import net.kyori.adventure.extra.kotlin.translatable
+import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerStorage
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.session.Session
 import org.kryptonmc.krypton.util.logger
 import java.net.InetSocketAddress
@@ -63,12 +63,9 @@ class ChannelHandler(private val server: KryptonServer) : SimpleChannelInboundHa
         if (cause is TimeoutException) {
             val address = ctx.channel().remoteAddress() as InetSocketAddress
             LOGGER.debug("Connection from ${address.address}:${address.port} timed out. Reason: ", cause)
-            session.disconnect(translatable { key("disconnect.timeout") })
+            session.disconnect(translatable("disconnect.timeout"))
         } else {
-            val disconnectReason = translatable {
-                key("disconnect.genericReason")
-                args(text { content("Internal Exception: $cause") })
-            }
+            val disconnectReason = translatable("disconnect.genericReason", listOf(Messages.NETWORK.HANDLER_ERROR_DISCONNECT()))
             LOGGER.debug("Failed to send or received invalid packet! Cause: ", cause)
             session.disconnect(disconnectReason)
             ctx.channel().config().isAutoRead = false

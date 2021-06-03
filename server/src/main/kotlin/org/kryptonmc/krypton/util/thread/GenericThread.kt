@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util.thread
 
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.atomic.AtomicInteger
@@ -38,7 +39,7 @@ abstract class GenericThread(protected val name: String) : Runnable {
             uncaughtExceptionHandler = DefaultUncaughtExceptionHandler(LOGGER)
         }
         thread!!.start()
-        LOGGER.info("Thread $name started")
+        Messages.THREAD.START.info(LOGGER, name)
         return true
     }
 
@@ -51,14 +52,14 @@ abstract class GenericThread(protected val name: String) : Runnable {
         while (thread!!.isAlive) {
             thread!!.join(1000L)
             if (waitSeconds++ >= 5) {
-                LOGGER.warn("Waited $waitSeconds seconds, attempting to force stop.")
+                Messages.THREAD.STOP_FORCE.warn(LOGGER, waitSeconds)
                 continue
             }
             if (!thread!!.isAlive) continue
-            LOGGER.warn("Thread $this (${thread!!.state}) failed to exit after $waitSeconds second(s)")
+            Messages.THREAD.STOP_FORCE_ERROR.warn(LOGGER, this, thread!!.state, waitSeconds)
             thread!!.interrupt()
         }
-        LOGGER.info("Thread $name stopped.")
+        Messages.THREAD.STOPPED.info(LOGGER, name)
         thread = null
     }
 

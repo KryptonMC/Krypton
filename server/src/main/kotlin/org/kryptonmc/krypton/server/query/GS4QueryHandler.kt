@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.server.query
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.NetworkDataOutputStream
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.thread.GenericThread
@@ -57,7 +58,7 @@ class GS4QueryHandler private constructor(
     }
 
     override fun run() {
-        LOGGER.info("Query running on ${server.config.server.ip}:$port")
+        Messages.QUERY.RUNNING.info(LOGGER, server.config.server.ip, port)
         lastChallengeCheck = System.currentTimeMillis()
         val packet = DatagramPacket(buffer, buffer.size)
         try {
@@ -190,7 +191,7 @@ class GS4QueryHandler private constructor(
 
         LOGGER.warn("Unexpected exception", exception)
         if (!createSocket()) {
-            LOGGER.error("Failed to recover from exception! Shutting down...")
+            Messages.QUERY.CANNOT_RECOVER.error(LOGGER)
             isRunning = false
         }
     }
@@ -200,7 +201,7 @@ class GS4QueryHandler private constructor(
         socket.soTimeout = 500
         true
     } catch (exception: Exception) {
-        LOGGER.warn("Unable to initialise query system on ${server.config.server.ip}:$port", exception)
+        Messages.QUERY.INITIALIZE.error(LOGGER, server.config.server.ip, port, exception)
         false
     }
 
@@ -236,7 +237,7 @@ class GS4QueryHandler private constructor(
         fun create(server: KryptonServer): GS4QueryHandler? {
             val queryPort = server.config.query.port
             if (queryPort !in 0..65_535) {
-                LOGGER.warn("Invalid query port! Should be between 0 and 65535, was $queryPort. Querying disabled.")
+                Messages.QUERY.INVALID_PORT.error(LOGGER, queryPort)
                 return null
             }
 

@@ -21,12 +21,13 @@ package org.kryptonmc.krypton.locale
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
-import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.Listener
+import org.kryptonmc.krypton.util.thread.GenericThread
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.io.IOException
@@ -100,24 +101,23 @@ object Messages {
 
     sealed interface Args {
 
-        fun send(sender: Sender, component: Component) = sender.sendMessage(component)
+        fun text(component: Component) = PlainComponentSerializer.plain().serialize(TranslationManager.render(component))
 
-        fun print(component: Component) {
-            val translated = TranslationManager.render(component)
-            if (translated is TextComponent) translated.content().split("\n").forEach { println(it) }
-        }
+        fun send(sender: Sender, component: Component) = sender.sendMessage(TranslationManager.render(component))
 
-        fun log(logger: Logger, level: Level, component: Component) {
-            val serialized = LegacyComponentSerializer.legacySection().serialize(TranslationManager.render(component))
-            val split = serialized.split("\n")
-            if (split.isNotEmpty()) return split.forEach { logger.log(level, it) }
-            logger.log(level, serialized)
-        }
+        fun print(component: Component) = LegacyComponentSerializer.legacySection().serialize(
+            TranslationManager.render(component)
+        ).split("\n").forEach { println(it) }
 
-        fun log(logger: Logger, level: Level, component: Component, exception: Throwable) {
-            val serialized = LegacyComponentSerializer.legacySection().serialize(TranslationManager.render(component))
-            logger.log(level, serialized, exception)
-        }
+        fun log(logger: Logger, level: Level, component: Component) = LegacyComponentSerializer.legacySection().serialize(
+            TranslationManager.render(component)
+        ).split("\n").forEach { logger.log(level, it) }
+
+        fun log(logger: Logger, level: Level, component: Component, exception: Throwable) = logger.log(
+            level,
+            LegacyComponentSerializer.legacySection().serialize(TranslationManager.render(component)),
+            exception
+        )
 
         fun info(logger: Logger, component: Component) = log(logger, Level.INFO, component)
         fun warn(logger: Logger, component: Component) = log(logger, Level.WARN, component)
@@ -129,6 +129,7 @@ object Messages {
 
     fun interface Args0 : () -> Component, Args {
 
+        fun text() = text(this())
         fun send(sender: Sender) = send(sender, this())
         fun print() = print(this())
         fun info(logger: Logger) = info(logger, this())
@@ -141,6 +142,7 @@ object Messages {
 
     fun interface Args1<A> : (A) -> Component, Args {
 
+        fun text(arg1: A) = text(this(arg1))
         fun send(sender: Sender, arg1: A) = send(sender, this(arg1))
         fun print(arg1: A) = print(this(arg1))
         fun info(logger: Logger, arg1: A) = info(logger, this(arg1))
@@ -153,6 +155,7 @@ object Messages {
 
     fun interface Args2<A, B> : (A, B) -> Component, Args {
 
+        fun text(arg1: A, arg2: B) = text(this(arg1, arg2))
         fun send(sender: Sender, arg1: A, arg2: B) = send(sender, this(arg1, arg2))
         fun print(arg1: A, arg2: B) = print(this(arg1, arg2))
         fun info(logger: Logger, arg1: A, arg2: B) = info(logger, this(arg1, arg2))
@@ -165,6 +168,7 @@ object Messages {
 
     fun interface Args3<A, B, C> : (A, B, C) -> Component, Args {
 
+        fun text(arg1: A, arg2: B, arg3: C) = text(this(arg1, arg2, arg3))
         fun send(sender: Sender, arg1: A, arg2: B, arg3: C) = send(sender, this(arg1, arg2, arg3))
         fun print(arg1: A, arg2: B, arg3: C) = print(this(arg1, arg2, arg3))
         fun info(logger: Logger, arg1: A, arg2: B, arg3: C) = info(logger, this(arg1, arg2, arg3))
@@ -177,6 +181,7 @@ object Messages {
 
     fun interface Args4<A, B, C, D> : (A, B, C, D) -> Component, Args {
 
+        fun text(arg1: A, arg2: B, arg3: C, arg4: D) = text(this(arg1, arg2, arg3, arg4))
         fun send(sender: Sender, arg1: A, arg2: B, arg3: C, arg4: D) = send(sender, this(arg1, arg2, arg3, arg4))
         fun print(arg1: A, arg2: B, arg3: C, arg4: D) = print(this(arg1, arg2, arg3, arg4))
         fun info(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D) = info(logger, this(arg1, arg2, arg3, arg4))
@@ -189,6 +194,7 @@ object Messages {
 
     fun interface Args5<A, B, C, D, E> : (A, B, C, D, E) -> Component, Args {
 
+        fun text(arg1: A, arg2: B, arg3: C, arg4: D, arg5: E) = text(this(arg1, arg2, arg3, arg4, arg5))
         fun send(sender: Sender, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E) = send(sender, this(arg1, arg2, arg3, arg4, arg5))
         fun print(arg1: A, arg2: B, arg3: C, arg4: D, arg5: E) = print(this(arg1, arg2, arg3, arg4, arg5))
         fun info(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E) = info(logger, this(arg1, arg2, arg3, arg4, arg5))
@@ -201,6 +207,7 @@ object Messages {
 
     fun interface Args6<A, B, C, D, E, F> : (A, B, C, D, E, F) -> Component, Args {
 
+        fun text(arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, arg6: F) = text(this(arg1, arg2, arg3, arg4, arg5, arg6))
         fun send(sender: Sender, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, arg6: F) = send(sender, this(arg1, arg2, arg3, arg4, arg5, arg6))
         fun print(arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, arg6: F) = print(this(arg1, arg2, arg3, arg4, arg5, arg6))
         fun info(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, arg6: F) = info(logger, this(arg1, arg2, arg3, arg4, arg5, arg6))
@@ -371,7 +378,9 @@ object Messages {
             }
 
             // Chunk {0} has an invalid compression type! Type: {1}
-            val INVALID_COMPRESSION_TYPE = doubleText("region.chunk.invalid-compression-type")
+            val INVALID_COMPRESSION_TYPE = Args2<ChunkPosition, Byte> { position, type ->
+                translatable("krypton.region.chunk.invalid-compression-type", listOf(text(position.toString()), text(type.toInt())))
+            }
 
             object ExternalMessages {
 
@@ -457,10 +466,14 @@ object Messages {
         object CompressMessages {
 
             // Packet badly compressed! Size of {0} is below threshold of {1}!
-            val BELOW_THRESHOLD = doubleText("network.compress.below-threshold")
+            val BELOW_THRESHOLD = Args2<Int, Int> { size, threshold ->
+                translatable("krypton.network.compress.below-threshold", listOf(text(size), text(threshold)))
+            }
 
             // Packet badly compressed! Size of {0} is larger than protocol maximum of {1}!
-            val STUPIDLY_LARGE = doubleText("network.compress.stupidly-large")
+            val STUPIDLY_LARGE = Args2<Int, Int> { size, maximum ->
+                translatable("krypton.network.compress.stupidly-large", listOf(text(size), text(maximum)))
+            }
         }
     }
 
@@ -543,32 +556,36 @@ object Messages {
         object StatsMessages {
 
             // Memory use: {0} MB ({1}% free)
-            val MEMORY = doubleText("gui.stats.memory")
+            val MEMORY = Args2<Long, Long> { used, percentageFree ->
+                translatable("krypton.gui.stats.memory", listOf(text(used), text(percentageFree)))
+            }
 
             // Heap: {0} / {1} MB
-            val HEAP = doubleText("gui.stats.heap")
+            val HEAP = Args2<Long, Long> { used, max -> translatable("krypton.gui.stats.heap", listOf(text(used), text(max))) }
 
             // Average tick: {0} ms
-            val TICK = doubleText("gui.stats.tick")
+            val TICK = singleText("gui.stats.tick")
 
             // <html><body>Used: {0} MB ({1}%)<br/>{2}</body></html>
-            val TOOLTIP = tripleText("gui.stats.tooltip")
+            val TOOLTIP = Args3<Int, Int, String> { used, percentage, time ->
+                translatable("krypton.gui.stats.tooltip", listOf(text(used), text(percentage), text(time)))
+            }
         }
     }
 
     object QueryMessages {
 
         // Query running on {0}:{1}
-        val RUNNING = doubleText("query.running")
+        val RUNNING = Args2<String, Int> { ip, port -> translatable("krypton.query.running", listOf(text(ip), text(port))) }
 
         // Failed to recover from exception! Shutting down...
         val CANNOT_RECOVER = empty("query.cannot-recover")
 
         // Unable to initialise query system on {0}:{1}
-        val INITIALIZE = doubleText("query.initialize")
+        val INITIALIZE = Args2<String, Int> { ip, port -> translatable("krypton.query.initialize", listOf(text(ip), text(port))) }
 
         // Invalid query port! Should be between 0 and 65535, was {0}. Querying disabled.
-        val INVALID_PORT = singleText("query.invalid-port")
+        val INVALID_PORT = Args1<Int> { translatable("krypton.query.invalid-port", listOf(text(it))) }
     }
 
     object JMXMessages {
@@ -597,10 +614,7 @@ object Messages {
         val POP = empty("profiler.pop")
 
         // Recorded long tick -- wrote info to {0}
-        val TICK_RECORDED = singleText("profiler.tick-recorded")
-
-        // This is approximately {0} ticks per second. It should be 20 ticks per second.
-        val TPS = singleText("profiler.tps")
+        val TICK_RECORDED = Args1<Path> { translatable("krypton.profiler.tick-recorded", listOf(text(it.toString()))) }
 
         object ErrorMessages {
 
@@ -613,14 +627,14 @@ object Messages {
             // Profiler tick was ended before path was fully popped ({0} remaining)! Perhaps push and pop are mismatched?
             val NOT_FULLY_POPPED = singleText("profiler.error.not-fully-popped")
 
-            // You need to start profiling before attempting to push data! Ignoring attempt to {0} {1}
+            // You need to start profiling before attempting to {0} data! Ignoring attempt to {0} {1}
             val NOT_STARTED = doubleText("profiler.error.not-started")
 
             // Tried to pop one too many times! Perhaps push and pop are mismatched?
             val TOO_MANY_POPS = empty("profiler.error.too-many-pops")
 
             // Something's taking too long! {0} took approximately {1} ms
-            val TOO_LONG = doubleText("profiler.error.too-long")
+            val TOO_LONG = Args2<String, Double> { name, time -> translatable("krypton.profiler.error", text(name), text(time)) }
         }
     }
 
@@ -630,10 +644,12 @@ object Messages {
         val START = singleText("thread.start")
 
         // Waited {0} seconds, attempting to force stop.
-        val STOP_FORCE = singleText("thread.stop-force")
+        val STOP_FORCE = Args1<Int> { translatable("krypton.thread.stop-force", listOf(text(it))) }
 
         // Thread {0} ({1}) failed to exit after {2} second(s)
-        val STOP_FORCE_ERROR = tripleText("thread.stop-force.error")
+        val STOP_FORCE_ERROR = Args3<GenericThread, Thread.State, Int> { thread, state, seconds ->
+            translatable("krypton.thread.stop-force.error", listOf(text(thread.toString()), text(state.name), text(seconds)))
+        }
 
         // Thread {0} stopped
         val STOPPED = singleText("thread.stopped")

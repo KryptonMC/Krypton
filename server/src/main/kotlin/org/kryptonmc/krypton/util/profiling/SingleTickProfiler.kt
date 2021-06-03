@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util.profiling
 
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import java.nio.file.Path
 import java.time.LocalDateTime
@@ -44,7 +45,7 @@ class SingleTickProfiler(
         if (results.duration >= saveThreshold) {
             val file = folder.resolve("tick-results-$TIME_NOW_FORMATTED.txt")
             results.save(file)
-            LOGGER.info("Recorded long tick -- wrote info to ${file.toAbsolutePath()}")
+            Messages.PROFILER.TICK_RECORDED.info(LOGGER, file.toAbsolutePath())
         }
     }
 

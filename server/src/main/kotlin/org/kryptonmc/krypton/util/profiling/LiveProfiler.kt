@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.util.profiling
 
 import it.unimi.dsi.fastutil.longs.LongArrayList
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.profiling.entry.PathEntry
 import org.kryptonmc.krypton.util.profiling.results.FilledProfileResults
@@ -44,7 +45,7 @@ class LiveProfiler(
 
     override fun start() {
         if (running) {
-            LOGGER.error("Profiler tick has already been started! Perhaps we didn't call end?")
+            Messages.PROFILER.ERROR.STARTED.error(LOGGER)
             return
         }
         running = true
@@ -55,19 +56,17 @@ class LiveProfiler(
 
     override fun end() {
         if (!running) {
-            LOGGER.error("Profiler tick has already ended! Perhaps we didn't call start?")
+            Messages.PROFILER.ERROR.ENDED.error(LOGGER)
             return
         }
         pop()
         running = false
-        if (path.isNotEmpty()) {
-            LOGGER.error("Profiler tick was ended before path was fully popped (${path.demangled} remaining)! Perhaps push and pop are mismatched?")
-        }
+        if (path.isNotEmpty()) Messages.PROFILER.ERROR.NOT_FULLY_POPPED.error(LOGGER, path.demangled)
     }
 
     override fun push(name: String) {
         if (!running) {
-            LOGGER.error("You need to start profiling before attempting to push data! Ignoring attempt to push $name")
+            Messages.PROFILER.ERROR.NOT_STARTED.error(LOGGER, Messages.PROFILER.PUSH.text(), name)
             return
         }
         if (path.isNotEmpty()) path += '\u001e'
@@ -81,11 +80,11 @@ class LiveProfiler(
 
     override fun pop() {
         if (!running) {
-            LOGGER.error("You need to start profiling before attempting to pop data! Ignoring pop attempt")
+            Messages.PROFILER.ERROR.NOT_STARTED.error(LOGGER, Messages.PROFILER.POP.text(), "")
             return
         }
         if (startTimes.isEmpty) {
-            LOGGER.error("Tried to pop one too many times! Perhaps push and pop are mismatched?")
+            Messages.PROFILER.ERROR.TOO_MANY_POPS.error(LOGGER)
             return
         }
         val timeNow = System.nanoTime()
@@ -97,7 +96,7 @@ class LiveProfiler(
             count++
         }
         if (warn && difference > WARNING_TIME_NANOS) {
-            LOGGER.warn("Something's taking too long! ${path.demangled} took approximately ${difference / 1_000_000.0} ms")
+            Messages.PROFILER.ERROR.TOO_LONG.warn(LOGGER, path.demangled, difference / 1_000_000.0)
         }
         path = if (paths.isEmpty()) "" else paths.last()
         currentEntry = null

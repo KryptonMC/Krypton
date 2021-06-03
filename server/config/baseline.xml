@@ -16,40 +16,7 @@
     <ID>Deprecation:bytebufs.kt$Rotation</ID>
     <ID>Deprecation:metadata.kt$Rotation</ID>
     <ID>ComplexMethod:bytebufs.kt$fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location)</ID>
-    <ID>DontDowncastCollectionTypes:ChunkManager.kt$ChunkManager$nbt.getList("Sections").map { section -> section as CompoundBinaryTag val palette = LinkedList(section.getList("Palette").map { block -> block as CompoundBinaryTag val name = block.getString("Name").toKey() if (name == ChunkBlock.AIR.name) { ChunkBlock.AIR } else { ChunkBlock(name, block.getCompound("Properties").associate { it.key to (it.value as StringBinaryTag).value() }) } }) ChunkSection( section.getByte("Y").toInt(), section.getByteArray("BlockLight"), section.getByteArray("SkyLight"), palette, BitStorage(palette.size.calculateBits(), 4096, section.getLongArray("BlockStates")) ) } as MutableList&lt;ChunkSection></ID>
-    <ID>DontDowncastCollectionTypes:PlayerDataManager.kt$PlayerDataManager$(player.inventory.hotbar + player.inventory.main).mapIndexed { index, item -> if (item == null) return@mapIndexed null item.toNBT(index) }.filterNotNull() as MutableList&lt;CompoundBinaryTag></ID>
-    <ID>DontDowncastCollectionTypes:FilledProfileResults.kt$FilledProfileResults$entries.filter { temp.isChildOf(it.key) }.map { (key, value) -> val percentage = value.duration * 100.0 / totalDuration val globalPercentage = (value.duration * 100.0) / root.duration ResultField(key.substring(temp.length), percentage, globalPercentage, value.count) } as MutableList&lt;ResultField></ID>
     <ID>ExplicitItLambdaParameter:PacketOutChunkData.kt$PacketOutChunkData${ index, it -> if (it.nonEmptyBlockCount == 0) return@forEachIndexed mask = mask or (1 shl index) it.write(buffer) }</ID>
-    <ID>SwallowedException:CrashReport.kt$CrashReport.Companion$catch (exception: Exception) { "Witty comment unavailable :(" }</ID>
-    <ID>SwallowedException:FilledProfileResults.kt$FilledProfileResults$catch (exception: Exception) { "Witty comment unavailable :(" }</ID>
-    <ID>SwallowedException:GS4QueryHandler.kt$GS4QueryHandler$catch (exception: SocketTimeoutException) { pruneChallenges() }</ID>
-    <ID>SwallowedException:LoginHandler.kt$LoginHandler$catch (exception: AuthenticationException) { session.disconnect(translatable { key("multiplayer.disconnect.unverified_username") }) return@launch }</ID>
-    <ID>SwallowedException:PlayerDataManager.kt$PlayerDataManager$catch (exception: IOException) { return }</ID>
-    <ID>SwallowedException:TagManager.kt$TagManager$catch (exception: FileNotFoundException) { Tag.EMPTY }</ID>
-    <ID>SwallowedException:TranslationManager.kt$TranslationManager$catch (exception: Exception) { return null }</ID>
-    <ID>SwallowedException:TranslationManager.kt$TranslationManager$catch (exception: IOException) { emptyList() }</ID>
-    <ID>SwallowedException:VectorArgument.kt$VectorArgument$catch (exception: CommandSyntaxException) { false }</ID>
-    <ID>SwallowedException:io.kt$catch (exception: Exception) { this }</ID>
-    <ID>TooGenericExceptionCaught:CrashReport.kt$CrashReport$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:CrashReport.kt$CrashReport.Companion$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:DifficultyTypeSerializer.kt$DifficultyTypeSerializer$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:FilledProfileResults.kt$FilledProfileResults$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:GS4QueryHandler.kt$GS4QueryHandler$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:GamemodeTypeSerializer.kt$GamemodeTypeSerializer$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:HandshakeHandler.kt$HandshakeHandler$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:KryptonPluginManager.kt$KryptonPluginManager$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:KryptonScheduler.kt$KryptonScheduler.KryptonTask$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:KryptonServerGUI.kt$KryptonServerGUI$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:KryptonStatistics.kt$KryptonStatistics.Companion$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:KryptonWorldManager.kt$KryptonWorldManager$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:PacketDecompressor.kt$PacketDecompressor$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:PacketDecrypter.kt$PacketDecrypter$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:PacketEncoder.kt$PacketEncoder$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:PacketEncrypter.kt$PacketEncrypter$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:TranslationManager.kt$TranslationManager$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:io.kt$exception: Exception</ID>
-    <ID>TooGenericExceptionCaught:KryptonServer.kt$KryptonServer$exception: Throwable</ID>
-    <ID>TooGenericExceptionCaught:CrashReportCategory.kt$CrashReportCategory$exception: Throwable</ID>
     <ID>UseDataClass:CrashReportCategory.kt$CrashReportCategory$Entry</ID>
     <ID>UseIfInsteadOfWhen:KryptonCommandManager.kt$KryptonCommandManager$when (exception) { BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand() -> Messages.COMMAND.UNKNOWN(command) else -> text(exception.message ?: "") }</ID>
     <ID>UnsafeCallOnNullableType:CrashReportCategory.kt$CrashReportCategory$stackTrace[0]!!</ID>
@@ -104,10 +71,6 @@
     <ID>ReturnCount:RegionFile.kt$RegionFile$ @Synchronized fun getChunkDataInputStream(position: ChunkPosition): DataInputStream?</ID>
     <ID>MethodOverloading:metadata.kt$org.kryptonmc.krypton.util.metadata.kt</ID>
     <ID>NestedBlockDepth:KryptonWorld.kt$KryptonWorld$fun tick(profiler: Profiler)</ID>
-    <ID>LoopWithTooManyJumpStatements:ANSITextPane.kt$ANSITextPane$while (stillSearching) { mIndex = addString.indexOf("m", aPosition) if (mIndex &lt; 0) { remaining = addString.substring(aPosition) stillSearching = false continue } else { tempString = addString.substring(aPosition, mIndex + 1) currentColor = ANSIColor.fromString(tempString) } aPosition = mIndex + 1 aIndex = addString.indexOf('\u001B', aPosition) if (aIndex == -1) { tempString = addString.substring(aPosition) append(currentColor, tempString) stillSearching = false continue } tempString = addString.substring(aPosition, aIndex) aPosition = aIndex append(currentColor, tempString) }</ID>
-    <ID>LoopWithTooManyJumpStatements:GenericThread.kt$GenericThread$while (thread!!.isAlive) { thread!!.join(1000L) if (waitSeconds++ >= 5) { LOGGER.warn("Waited $waitSeconds seconds, attempting to force stop.") continue } if (!thread!!.isAlive) continue LOGGER.warn("Thread $this (${thread!!.state}) failed to exit after $waitSeconds second(s)") thread!!.interrupt() }</ID>
-    <ID>LoopWithTooManyJumpStatements:RegionFile.kt$RegionFile$for (i in 0 until 1024) { val offset = offsets[i] if (offset == 0) continue val sectorNumber = offset.sectorNumber val sectorCount = offset.sectorCount if (sectorNumber &lt; 2) { Messages.REGION.SECTOR.OVERLAP.warn(LOGGER, path, i, sectorNumber) offsets[i] = 0 continue } if (sectorCount == 0) { Messages.REGION.SECTOR.SIZE.warn(LOGGER, path, i) offsets[i] = 0 continue } if (sectorNumber * 4096L > path.fileSize()) { Messages.REGION.SECTOR.OUT_OF_BOUNDS.warn(LOGGER, path, i, sectorNumber) offsets[i] = 0 continue } usedSectors.force(sectorNumber, sectorCount) }</ID>
-    <ID>LoopWithTooManyJumpStatements:WatchdogProcess.kt$WatchdogProcess$while (!stopping) { if (!hasStarted || lastTick == 0L || !server.isRunning) continue // Jump out early if the server hasn't started yet val currentTime = System.currentTimeMillis() if (currentTime &lt;= lastTick + earlyWarningInterval) continue // Jump out if we don't need to do anything val isLongTimeout = currentTime > lastTick + timeoutTime || !server.isRunning &amp;&amp; currentTime > lastTick + 1000 if (!isLongTimeout &amp;&amp; (earlyWarningInterval &lt;= 0 || currentTime &lt; lastEarlyWarning + earlyWarningInterval || currentTime &lt; lastTick + earlyWarningDelay)) continue if (!isLongTimeout &amp;&amp; !server.isRunning) continue lastEarlyWarning = currentTime if (isLongTimeout) { LOGGER.printBar(true) Messages.WATCHDOG.STOPPED.fatal(LOGGER, KryptonServerInfo.version, KryptonServerInfo.minecraftVersion) } else { Messages.WATCHDOG.HEADER.warn(LOGGER) Messages.WATCHDOG.WARNING.warn(LOGGER, (currentTime - lastTick) / 1000) } LOGGER.printBar(isLongTimeout) if (isLongTimeout) Messages.WATCHDOG.DUMP.SERVER.fatal(LOGGER) else Messages.WATCHDOG.DUMP.SERVER.warn(LOGGER) THREAD_BEAN.getThreadInfo(server.mainThread.id, Int.MAX_VALUE)?.dump(LOGGER, isLongTimeout) LOGGER.printBar(isLongTimeout) if (isLongTimeout) { Messages.WATCHDOG.DUMP.ALL.fatal(LOGGER) THREAD_BEAN.dumpAllThreads(true, true).forEach { it.dump(LOGGER, true) } } else { Messages.WATCHDOG.HEADER.warn(LOGGER) } LOGGER.printBar(isLongTimeout) if (isLongTimeout &amp;&amp; server.isRunning) { if (server.config.watchdog.restartOnCrash) server.restart() else server.stop() } }</ID>
     <ID>UnderscoresInNumericLiterals:ConfigTests.kt$ConfigTests$10000</ID>
     <ID>UnderscoresInNumericLiterals:ConfigTests.kt$ConfigTests$25565</ID>
     <ID>UnderscoresInNumericLiterals:ConfigTests.kt$ConfigTests$25566</ID>
@@ -148,10 +111,5 @@
     <ID>LateinitUsage:Session.kt$Session$lateinit var settings: ClientSettings</ID>
     <ID>LateinitUsage:SingleTickProfiler.kt$SingleTickProfiler$private lateinit var profiler: CollectibleProfiler</ID>
     <ID>LateinitUsage:TranslationManager.kt$TranslationManager$private lateinit var registry: TranslationRegistry</ID>
-    <ID>GlobalCoroutineUsage:KryptonPlayer.kt$KryptonPlayer$GlobalScope.launch(Dispatchers.IO) { val loadedChunks = world.chunkManager.load(newChunks) visibleChunks += newChunks session.sendPacket(PacketOutUpdateViewPosition(ChunkPosition(centralX, centralZ))) loadedChunks.forEach { session.sendPacket(PacketOutUpdateLight(it)) session.sendPacket(PacketOutChunkData(it)) } previousChunks?.forEach { session.sendPacket(PacketOutUnloadChunk(it)) visibleChunks -= it } previousChunks?.clear() }</ID>
-    <ID>GlobalCoroutineUsage:KryptonServer.kt$KryptonServer$GlobalScope.launch(Dispatchers.IO) { nettyProcess.run() }</ID>
-    <ID>GlobalCoroutineUsage:LoginHandler.kt$LoginHandler$GlobalScope.launch(Dispatchers.IO) { try { session.profile = SessionService.authenticateUser(name, sharedSecret, server.config.server.ip) if (!callLoginEvent()) return@launch } catch (exception: AuthenticationException) { session.disconnect(translatable { key("multiplayer.disconnect.unverified_username") }) return@launch } enableCompression() val rawAddress = session.channel.remoteAddress() as InetSocketAddress val address = if (bungeecordData != null) InetSocketAddress(bungeecordData.forwardedIp, rawAddress.port) else rawAddress session.player = KryptonPlayer(name, session.profile.uuid, server, session, address) sessionManager.beginPlayState(session) }</ID>
-    <ID>GlobalCoroutineUsage:SessionManager.kt$SessionManager$GlobalScope.launch(Dispatchers.IO) { handlePlayStateBegin(session) }</ID>
-    <ID>GlobalCoroutineUsage:SessionManager.kt$SessionManager$GlobalScope.launch(Dispatchers.IO) { server.playerDataManager.save(session.player) }</ID>
   </CurrentIssues>
 </SmellBaseline>

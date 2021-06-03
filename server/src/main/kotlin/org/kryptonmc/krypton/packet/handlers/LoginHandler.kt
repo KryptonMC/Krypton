@@ -22,14 +22,14 @@ import com.velocitypowered.natives.util.Natives
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import net.kyori.adventure.extra.kotlin.text
-import net.kyori.adventure.extra.kotlin.translatable
+import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.event.login.LoginEvent
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.handshake.BungeeCordHandshakeData
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
@@ -119,7 +119,7 @@ class LoginHandler(
                 session.profile = SessionService.authenticateUser(name, sharedSecret, server.config.server.ip)
                 if (!callLoginEvent()) return@launch
             } catch (exception: AuthenticationException) {
-                session.disconnect(translatable { key("multiplayer.disconnect.unverified_username") })
+                session.disconnect(translatable("multiplayer.disconnect.unverified_username"))
                 return@launch
             }
             enableCompression()
@@ -134,11 +134,8 @@ class LoginHandler(
     private fun verifyToken(expected: ByteArray, actual: ByteArray): Boolean {
         val decryptedActual = Encryption.decrypt(actual)
         require(decryptedActual.contentEquals(expected)) {
-            LOGGER.error("${session.player.name} failed verification! Expected ${expected.contentToString()}, received ${decryptedActual.contentToString()}!")
-            session.disconnect(translatable {
-                key("disconnect.loginFailedInfo")
-                args(text { content("Verify tokens did not match!") })
-            })
+            Messages.NETWORK.LOGIN.FAIL_VERIFY_ERROR.error(LOGGER, session.player.name, expected.contentToString(), decryptedActual.contentToString())
+            session.disconnect(translatable("disconnect.loginFailedInfo", listOf(Messages.NETWORK.LOGIN.FAIL_VERIFY())))
             return false
         }
         return true

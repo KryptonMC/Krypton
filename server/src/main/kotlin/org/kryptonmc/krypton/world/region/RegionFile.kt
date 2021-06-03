@@ -104,7 +104,7 @@ class RegionFile(
     }
 
     /**
-     * Gets a [DataInputStream] containing all of the chunk data for a chunk at the specified [position]
+     * Get a [DataInputStream] containing all of the chunk data for a chunk at the specified [position].
      *
      * @param position the position of the chunk to get data for
      * @return a [DataInputStream] containing the chunk data, or null if an error occurred
@@ -201,7 +201,6 @@ class RegionFile(
         val path = externalDirectory.resolve("c.${position.x}.${position.z}.mcc")
         if (!path.isRegularFile()) {
             Messages.REGION.CHUNK.EXTERNAL.NOT_FILE.error(LOGGER, path)
-            LOGGER.error("External chunk path $path is not a file!")
             return null
         }
         return createChunkInputStream(position, compressionType, path.inputStream())
@@ -210,7 +209,7 @@ class RegionFile(
     private fun createChunkInputStream(position: ChunkPosition, compressionType: Byte, input: InputStream): DataInputStream? {
         val compression = RegionFileCompression.fromId(compressionType)
         if (compression == null) {
-            LOGGER.error("Chunk $position has an invalid compression type! Type: $compressionType")
+            Messages.REGION.CHUNK.INVALID_COMPRESSION_TYPE.error(LOGGER, position, compressionType)
             return null
         }
         return DataInputStream(BufferedInputStream(compression.decompress(input)))

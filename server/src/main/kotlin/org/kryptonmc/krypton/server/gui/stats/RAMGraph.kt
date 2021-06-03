@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.server.gui.stats
 
+import org.kryptonmc.krypton.locale.Messages
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Graphics
@@ -55,10 +56,7 @@ class RAMGraph : JComponent(), AutoCloseable {
             if (point != null) {
                 val location = Point(point)
                 SwingUtilities.convertPointFromScreen(location, this)
-                if (contains(location)) {
-                    ToolTipManager.sharedInstance()
-                        .mouseMoved(MouseEvent(this, -1, System.currentTimeMillis(), 0, location.x, location.y, point.x, point.y, 0, false, 0))
-                }
+                if (contains(location)) ToolTipManager.sharedInstance().mouseMoved(MouseEvent(this, -1, System.currentTimeMillis(), 0, location.x, location.y, point.x, point.y, 0, false, 0))
             }
         }
 
@@ -101,7 +99,7 @@ class RAMGraph : JComponent(), AutoCloseable {
             drawOval(mouse.x - 2, 100 - used - 2, 5, 5)
             color = data.lineColor
             fillOval(mouse.x - 2, 100 - used - 2, 5, 5)
-            toolTipText = "<html><body>Used: ${(data.usedMemory / 1024F / 1024F).roundToInt()} MB ($used%)<br/>${mouse.x.time()}</body></html>"
+            toolTipText = Messages.GUI.STATS.TOOLTIP.text((data.usedMemory / 1024F / 1024F).roundToInt(), used, mouse.x.time())
         }
     }
 

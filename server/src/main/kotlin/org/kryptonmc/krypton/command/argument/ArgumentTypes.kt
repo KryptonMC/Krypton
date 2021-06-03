@@ -31,6 +31,7 @@ import org.kryptonmc.krypton.command.argument.serializer.brigadier.IntegerArgume
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.LongArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.StringArgumentSerializer
 import org.kryptonmc.krypton.command.arguments.VectorArgument
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.writeKey
 import java.util.concurrent.ConcurrentHashMap
@@ -81,7 +82,7 @@ object ArgumentTypes {
     fun <T : ArgumentType<*>> ByteBuf.writeArgumentType(argument: T) {
         val entry = get<T>(argument)
         if (entry == null) {
-            LOGGER.error("Could not serialise $argument (Class ${argument::class.java.simpleName})! Will not be sent to client!")
+            Messages.ARGUMENT_ERROR.error(LOGGER, argument.toString(), argument::class.java.simpleName)
             writeKey(key(""))
             return
         }

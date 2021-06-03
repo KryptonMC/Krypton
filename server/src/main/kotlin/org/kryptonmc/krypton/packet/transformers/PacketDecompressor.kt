@@ -23,6 +23,7 @@ import com.velocitypowered.natives.util.MoreByteBufUtils
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readVarInt
 
@@ -41,8 +42,8 @@ class PacketDecompressor(private val compressor: VelocityCompressor, var thresho
             out.add(msg.readBytes(msg.readableBytes()))
             return
         }
-        if (dataLength < threshold) LOGGER.error("Packet badly compressed! Size of $dataLength is below threshold of $threshold!")
-        if (dataLength > PROTOCOL_MAX_SIZE) LOGGER.error("Packet badly compressed! Size of $dataLength is larger than protocol maximum of $PROTOCOL_MAX_SIZE!")
+        if (dataLength < threshold) Messages.NETWORK.COMPRESS.BELOW_THRESHOLD.error(LOGGER, dataLength, threshold)
+        if (dataLength > PROTOCOL_MAX_SIZE) Messages.NETWORK.COMPRESS.STUPIDLY_LARGE.error(LOGGER, dataLength, PROTOCOL_MAX_SIZE)
 
         val compatibleIn = MoreByteBufUtils.ensureCompatible(ctx.alloc(), compressor, msg)
         val uncompressed = MoreByteBufUtils.preferredBuffer(ctx.alloc(), compressor, dataLength)

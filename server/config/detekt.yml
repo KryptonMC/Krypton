@@ -47,12 +47,14 @@ complexity:
     active: true
   TooManyFunctions:
     active: true
+    thresholdInClasses: 15
+    thresholdInInterfaces: 15
+    thresholdInEnums: 5
+    thresholdInObjects: 15
     thresholdInFiles: 200 # Ensures we aren't told off for files in org.kryptonmc.krypton.util, such as bytebufs.kt
 
 coroutines:
   active: true
-  GlobalCoroutineUsage:
-    active: true
   RedundantSuspendModifier:
     active: true
   SleepInsteadOfDelay:
@@ -66,8 +68,12 @@ exceptions:
     active: true
   ObjectExtendsThrowable:
     active: true
+  SwallowedException:
+    active: false
   ThrowingExceptionInMain:
     active: true
+  TooGenericExceptionCaught:
+    active: false
 
 formatting:
   active: true
@@ -162,6 +168,8 @@ style:
     active: false
   ForbiddenVoid:
     active: true
+  LoopWithTooManyJumpStatements:
+    active: false
   MagicNumber:
     active: false
   MandatoryBracesIfStatements:

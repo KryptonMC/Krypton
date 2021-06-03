@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.util.monitoring.jmx
 
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import java.lang.management.ManagementFactory
 import javax.management.Attribute
@@ -34,14 +35,14 @@ import javax.management.ObjectName
 class KryptonStatistics(private val server: KryptonServer) : DynamicMBean {
 
     private val attributeDescriptionByName = mapOf(
-        "tickTimes" to AttributeDescription("tickTimes", server::tickTimes, "Historical tick times in ms", LongArray::class.java),
-        "averageTickTime" to AttributeDescription("averageTickTime", server::averageTickTime, "Average tick time in ms", Long::class.java)
+        "tickTimes" to AttributeDescription("tickTimes", server::tickTimes, Messages.JMX.HISTORICAL.text(), LongArray::class.java),
+        "averageTickTime" to AttributeDescription("averageTickTime", server::averageTickTime, Messages.JMX.AVERAGE.text(), Long::class.java)
     )
     private val beanInfo: MBeanInfo
 
     init {
         val attributes = attributeDescriptionByName.values.map(AttributeDescription::asAttributeInfo).toTypedArray()
-        beanInfo = MBeanInfo(this::class.simpleName, "Simple metrics for Krypton", attributes, null, null, emptyArray())
+        beanInfo = MBeanInfo(this::class.simpleName, Messages.JMX.DESCRIPTION.text(), attributes, null, null, emptyArray())
     }
 
     override fun getMBeanInfo() = beanInfo
@@ -66,7 +67,7 @@ class KryptonStatistics(private val server: KryptonServer) : DynamicMBean {
             try {
                 PLATFORM_BEAN.registerMBean(KryptonStatistics(server), ObjectName("org.kryptonmc.krypton:type=KryptonServer"))
             } catch (exception: Exception) {
-                LOGGER.warn("Failed to register server as a JMX bean", exception)
+                Messages.JMX.REGISTER_ERROR.error(LOGGER, exception)
             }
         }
     }

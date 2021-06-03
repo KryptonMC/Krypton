@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.server.gui.stats
 
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.locale.Messages
 import java.awt.Dimension
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -42,9 +43,9 @@ class RAMDetails(private val server: KryptonServer) : JList<String>() {
     fun update() {
         val data = RAMGraph.DATA.peekLast()
         setListData(Vector(listOf(
-            "Memory use: ${data.usedMemory / MEGABYTES_IN_BYTES} MB (${data.free * 100L / data.max}% free)",
-            "Heap: ${data.total / MEGABYTES_IN_BYTES} / ${data.max / MEGABYTES_IN_BYTES} MB",
-            "Average tick: ${DECIMAL_FORMAT.format(server.tickTimes.average() * 1.0E-6)} ms"
+            Messages.GUI.STATS.MEMORY.text(data.usedMemory / MEGABYTES_IN_BYTES, data.free * 100L / data.max),
+            Messages.GUI.STATS.HEAP.text(data.total / MEGABYTES_IN_BYTES, data.max / MEGABYTES_IN_BYTES),
+            Messages.GUI.STATS.TICK.text(DECIMAL_FORMAT.format(server.tickTimes.average() * 1.0E-6)),
         )))
     }
 

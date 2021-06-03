@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.packet.handlers
 
 import com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
-import net.kyori.adventure.extra.kotlin.text
-import net.kyori.adventure.extra.kotlin.translatable
+import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.event.ClickEvent.suggestCommand
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.entity.Hand
@@ -35,6 +35,7 @@ import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.entity.metadata.MovementFlags
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
+import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.play.DiggingStatus
 import org.kryptonmc.krypton.packet.`in`.play.EntityAction
@@ -128,15 +129,10 @@ class PlayHandler(
         server.eventBus.call(event)
         if (event.isCancelled) return
 
-        val message = translatable {
-            key("chat.type.text")
-            args(text {
-                content(session.profile.name)
-                insertion(session.profile.name)
-                clickEvent(suggestCommand("/msg ${session.profile.name}"))
-                hoverEvent(player)
-            }, text { content(packet.message) })
-        }
+        val message = translatable("chat.type.text", listOf(
+            text(session.profile.name).insertion(session.profile.name).clickEvent(suggestCommand("/msg ${session.profile.name}")).hoverEvent(player),
+            text(packet.message)
+        ))
         server.sendMessage(player, message, MessageType.CHAT)
     }
 
@@ -187,7 +183,7 @@ class PlayHandler(
 
     private fun handleHeldItemChange(packet: PacketInHeldItemChange) {
         if (packet.slot !in 0..9) {
-            LOGGER.warn("${player.name} tried to change their held item slot to an invalid value!")
+            Messages.NETWORK.INVALID_HELD_SLOT.warn(LOGGER, player.name)
             return
         }
         player.inventory.heldSlot = packet.slot.toInt()
@@ -198,7 +194,7 @@ class PlayHandler(
             sessionManager.updateLatency(session, max(packet.keepAliveId - session.lastKeepAliveId, 0L).toInt())
             return
         }
-        session.disconnect(translatable { key("disconnect.timeout") })
+        session.disconnect(translatable("disconnect.timeout"))
     }
 
     private fun handleAbilities(packet: PacketInPlayerAbilities) {
