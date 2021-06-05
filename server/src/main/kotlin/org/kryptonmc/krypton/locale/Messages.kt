@@ -480,8 +480,8 @@ object Messages {
     object PluginMessages {
 
         val LOAD = LoadMessages
-        val INIT = InitMessages
-        val SHUTDOWN = ShutdownMessages
+
+        val NOT_DIRECTORY = Args1<Path> { translatable("krypton.plugin.not-directory", listOf(text(it.toString()))) }
 
         object LoadMessages {
 
@@ -490,56 +490,29 @@ object Messages {
             // Loading plugins...
             val INITIAL = empty("plugin.load")
 
-            // Plugin loading done!
-            val DONE = empty("plugin.load.done")
+            // Plugin loading done! Loaded {0} plugins.
+            val DONE = Args1<Int> { translatable("krypton.plugin.load.done", listOf(text(it))) }
 
-            // Loading {0} version {1}...
-            val START = doubleText("plugin.load.start")
+            // Loaded plugin {0} {1} by {2}
+            val SUCCESS = tripleText("plugin.load.success")
 
-            // Successfully loaded {0} version {1}
-            val SUCCESS = doubleText("plugin.load.success")
+            // Couldn't load plugins!
+            val FAIL = empty("plugin.load.fail")
 
             object ErrorMessages {
 
-                // Could not find main class for plugin {0}!
-                val NO_MAIN = singleText("plugin.load.error.no-main")
+                // Unable to load plugin {0}!
+                val UNABLE = Args1<Path> { translatable("krypton.plugin.load.error.unable", listOf(text(it.toString()))) }
 
-                // Main class of {0} does not extend Plugin!
-                val DOES_NOT_EXTEND = singleText("plugin.load.error.does-not-extend")
+                // Can't load plugin {0} due to missing dependency {1}!
+                val MISSING_DEPENDENCY = doubleText("plugin.load.error.missing-dependency")
 
-                // Main class of {0} does not have a constructor that accepts a plugin context!
-                val NO_CONSTRUCTOR = singleText("plugin.load.error.no-constructor")
+                // Can't create module for plugin {0}!
+                val CREATE_MODULE = singleText("plugin.load.error.create-module")
 
-                // Main class of {0}'s primary constructor is not open!
-                val CONSTRUCTOR_CLOSED = singleText("plugin.load.error.constructor-closed")
-
-                // Main class of {0} must not be abstract!
-                val ABSTRACT = singleText("plugin.load.error.abstract")
-
-                // Main class of {0} threw an exception!
-                val INSTANTIATION = singleText("plugin.load.error.instantiation")
-
-                // An unexpected exception occurred when attempting to load the main class of {0}!
-                val UNEXPECTED = singleText("plugin.load.error.unexpected")
+                // Can't create plugin {0}!
+                val CREATE_PLUGIN = singleText("plugin.load.error.create-plugin")
             }
-        }
-
-        object InitMessages {
-
-            // Initializing {0} version {1}...
-            val START = doubleText("plugin.init")
-
-            // Successfully initialized {0} version {1}
-            val SUCCESS = doubleText("plugin.init.success")
-        }
-
-        object ShutdownMessages {
-
-            // Shutting down {0} version {1}...
-            val START = doubleText("plugin.shutdown")
-
-            // Successfully shutdown {0} version {1}
-            val SUCCESS = doubleText("plugin.shutdown.success")
         }
     }
 

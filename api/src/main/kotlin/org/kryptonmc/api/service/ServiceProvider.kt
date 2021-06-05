@@ -8,8 +8,6 @@
  */
 package org.kryptonmc.api.service
 
-import org.kryptonmc.api.plugin.Plugin
-
 /**
  * Represents a provider of a service of type [T]
  *
@@ -22,7 +20,7 @@ interface ServiceProvider<T> {
     /**
      * The plugin that provided this service
      */
-    val plugin: Plugin
+    val plugin: Any
 
     /**
      * The class of the service being provided

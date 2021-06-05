@@ -91,6 +91,8 @@ import java.util.Properties
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.absolutePathString
+import kotlin.io.path.exists
+import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 import kotlin.math.max
 import kotlin.system.measureTimeMillis
@@ -201,7 +203,7 @@ class KryptonServer(val mainThread: Thread) : Server {
             Messages.PIRACY_WARNING.info(LOGGER)
             LOGGER.info("-----------------------------------------------------------------------------------")
         }
-        pluginManager.initialize()
+        loadPlugins()
 
         lastTickTime = System.currentTimeMillis()
         if (config.advanced.enableJmxMonitoring) KryptonStatistics.register(this)
@@ -271,6 +273,25 @@ class KryptonServer(val mainThread: Thread) : Server {
         LOGGER.error(if (report.save(file)) "This crash report has been saved to ${file.absolutePathString()}" else "Unable to save crash report to disk!")
     } finally {
         restart()
+    }
+
+    // TODO: Register plugin instances as event listeners by default
+    private fun loadPlugins() {
+        Messages.PLUGIN.LOAD.INITIAL.info(LOGGER)
+
+        try {
+            val pluginPath = Path.of("plugins")
+            if (!pluginPath.exists()) pluginPath.createDirectory()
+            if (!pluginPath.isDirectory()) {
+                Messages.PLUGIN.NOT_DIRECTORY.warn(LOGGER, pluginPath)
+                return
+            }
+
+            pluginManager.loadPlugins(pluginPath)
+        } catch (exception: Exception) {
+            Messages.PLUGIN.LOAD.FAIL.error(LOGGER, exception)
+        }
+        Messages.PLUGIN.LOAD.DONE.info(LOGGER, pluginManager.plugins.size)
     }
 
     private fun tick() {
@@ -391,7 +412,6 @@ class KryptonServer(val mainThread: Thread) : Server {
 
         // shut down plugins and unregister listeners
         Messages.STOP.PLUGINS.info(LOGGER)
-        pluginManager.shutdown()
         eventBus.unregisterAll()
 
         // shut down scheduler

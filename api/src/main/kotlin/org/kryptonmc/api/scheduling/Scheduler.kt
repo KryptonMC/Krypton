@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.scheduling
 
-import org.kryptonmc.api.plugin.Plugin
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
@@ -30,7 +29,7 @@ interface Scheduler {
      * @param task the task to be ran
      * @return a scheduled [Task] that can be [cancelled][Task.cancel]
      */
-    fun run(plugin: Plugin, task: Runnable): Task
+    fun run(plugin: Any, task: Runnable): Task
 
     /**
      * Schedule the given [task] asynchronously once with the given [delay]
@@ -42,7 +41,7 @@ interface Scheduler {
      * @param task the task to be ran
      * @return a scheduled [Task] that can be [cancelled][Task.cancel]
      */
-    fun schedule(plugin: Plugin, delay: Long, unit: TimeUnit, task: Runnable): Task
+    fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: Runnable): Task
 
     /**
      * Schedule the given [task] asynchronously repeatedly, with a [period] in between each
@@ -56,5 +55,5 @@ interface Scheduler {
      * @param task the task to be ran
      * @return a scheduled [Task] that can be [cancelled][Task.cancel]
      */
-    fun schedule(plugin: Plugin, delay: Long, period: Long, unit: TimeUnit, task: Runnable): Task
+    fun schedule(plugin: Any, delay: Long, period: Long, unit: TimeUnit, task: Runnable): Task
 }

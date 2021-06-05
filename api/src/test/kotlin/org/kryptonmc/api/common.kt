@@ -18,7 +18,6 @@ import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.dummy.DummyCommand
 import org.kryptonmc.api.entity.entities.Player
 import org.kryptonmc.api.event.EventBus
-import org.kryptonmc.api.plugin.PluginDescriptionFile
 import java.net.InetSocketAddress
 import java.util.UUID
 
@@ -51,12 +50,3 @@ val player = mockk<Player> {
     every { address } returns InetSocketAddress.createUnresolved("0.0.0.0", 25565)
     every { sendMessage(any()) } just runs
 }
-
-val description = PluginDescriptionFile(
-    "Test",
-    "org.kryptonmc.test.TestPlugin",
-    "1.1.1",
-    "I am a test plugin!",
-    listOf("BomBardyGamer"),
-    listOf("EventTester")
-)

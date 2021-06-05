@@ -221,9 +221,8 @@ class GS4QueryHandler private constructor(
 
             plugins.forEachIndexed { index, plugin ->
                 if (index > 0) result.append("; ")
-                val context = server.pluginManager.contextOf(plugin)
-                result.append(context.description.name).append(" ")
-                result.append(context.description.version.replace(";", ","))
+                result.append(plugin.description.name).append(" ")
+                result.append(plugin.description.version.replace(";", ","))
             }
         }
 

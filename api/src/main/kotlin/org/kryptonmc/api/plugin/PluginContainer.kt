@@ -6,25 +6,20 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.scheduling
+package org.kryptonmc.api.plugin
 
 /**
- * A scheduled task
+ * A wrapper around a loaded plugin.
  */
-interface Task {
+interface PluginContainer {
 
     /**
-     * The plugin that scheduled this task
+     * The description of this plugin.
      */
-    val plugin: Any
+    val description: PluginDescription
 
     /**
-     * The current state of the scheduled task
+     * The instance of this loaded plugin if it is available, null otherwise.
      */
-    val state: TaskState
-
-    /**
-     * Attempt to cancel this scheduled task.
-     */
-    fun cancel()
+    val instance: Any?
 }

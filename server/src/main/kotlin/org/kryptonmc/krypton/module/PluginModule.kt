@@ -18,18 +18,28 @@
  */
 package org.kryptonmc.krypton.module
 
+import com.google.inject.Scopes
 import dev.misfitlabs.kotlinguice4.KotlinModule
 import org.apache.logging.log4j.Logger
-import org.kryptonmc.api.plugin.PluginContext
-import org.kryptonmc.api.plugin.PluginDescriptionFile
+import org.kryptonmc.api.plugin.PluginContainer
+import org.kryptonmc.api.plugin.PluginDescription
+import org.kryptonmc.api.plugin.annotation.DataFolder
+import org.kryptonmc.krypton.plugin.loader.LoadedPluginDescription
+import org.kryptonmc.krypton.util.logger
 import java.nio.file.Path
 
-class PluginModule(private val context: PluginContext) : KotlinModule() {
+class PluginModule(
+    private val description: LoadedPluginDescription,
+    private val container: PluginContainer,
+    private val basePluginPath: Path
+) : KotlinModule() {
 
     override fun configure() {
-        bind<PluginContext>().toInstance(context)
-        bind<Path>().toInstance(context.folder)
-        bind<PluginDescriptionFile>().toInstance(context.description)
-        bind<Logger>().toInstance(context.logger)
+        bind(description.mainClass).`in`(Scopes.SINGLETON)
+
+        bind<Logger>().toInstance(logger(description.id))
+        bind<Path>().annotatedWith<DataFolder>().toInstance(basePluginPath.resolve(description.id))
+        bind<PluginDescription>().toInstance(description)
+        bind<PluginContainer>().toInstance(container)
     }
 }

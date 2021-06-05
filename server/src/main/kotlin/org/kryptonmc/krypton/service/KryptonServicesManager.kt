@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.service
 
 import com.google.common.collect.Multimap
 import com.google.common.collect.Multimaps
-import org.kryptonmc.api.plugin.Plugin
 import org.kryptonmc.api.service.ServicesManager
 import java.util.concurrent.ConcurrentHashMap
 
@@ -28,7 +27,7 @@ object KryptonServicesManager : ServicesManager {
 
     private val providers: Multimap<Class<*>, KryptonServiceProvider<*>> = Multimaps.newListMultimap(ConcurrentHashMap()) { mutableListOf() }
 
-    override fun <T> register(plugin: Plugin, clazz: Class<T>, service: T) {
+    override fun <T> register(plugin: Any, clazz: Class<T>, service: T) {
         providers.put(clazz, KryptonServiceProvider(plugin, clazz, service))
     }
 

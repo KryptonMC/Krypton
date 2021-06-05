@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.scheduling
 
 import com.google.common.collect.Multimaps
-import org.kryptonmc.api.plugin.Plugin
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.scheduling.Task
 import org.kryptonmc.api.scheduling.TaskState
@@ -40,11 +39,11 @@ class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Schedu
     private val timedExecutor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(NamedThreadFactory("Krypton Timed Scheduler"))
     private val tasksByPlugin = Multimaps.newMultimap(ConcurrentHashMap<Any, MutableCollection<KryptonTask>>()) { ConcurrentHashMap.newKeySet() }
 
-    override fun run(plugin: Plugin, task: Runnable) = schedule(plugin, 0, TimeUnit.MILLISECONDS, task)
+    override fun run(plugin: Any, task: Runnable) = schedule(plugin, 0, TimeUnit.MILLISECONDS, task)
 
-    override fun schedule(plugin: Plugin, delay: Long, unit: TimeUnit, task: Runnable) = schedule(plugin, delay, 0, unit, task)
+    override fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: Runnable) = schedule(plugin, delay, 0, unit, task)
 
-    override fun schedule(plugin: Plugin, delay: Long, period: Long, unit: TimeUnit, task: Runnable): Task {
+    override fun schedule(plugin: Any, delay: Long, period: Long, unit: TimeUnit, task: Runnable): Task {
         val scheduledTask = KryptonTask(plugin, task, delay, period, unit)
         tasksByPlugin.put(plugin, scheduledTask)
         scheduledTask.schedule()
@@ -59,7 +58,7 @@ class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Schedu
     }
 
     private inner class KryptonTask(
-        override val plugin: Plugin,
+        override val plugin: Any,
         val runnable: Runnable,
         val delay: Long,
         val period: Long,
@@ -100,8 +99,8 @@ class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Schedu
                     Thread.currentThread().interrupt()
                     return@execute
                 }
-                val context = pluginManager.contextOf(plugin)
-                Messages.SCHEDULE_ERROR.error(LOGGER, context.description.name, runnable)
+                val name = pluginManager.fromInstance(plugin)?.description?.name ?: "UNKNOWN"
+                Messages.SCHEDULE_ERROR.error(LOGGER, name, runnable)
             } finally {
                 if (period == 0L) finish()
                 currentTaskThread = null

@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.service
+package org.kryptonmc.krypton.plugin
 
-import org.kryptonmc.api.service.ServiceProvider
+import org.kryptonmc.api.plugin.PluginContainer
+import org.kryptonmc.api.plugin.PluginDescription
 
-data class KryptonServiceProvider<T>(
-    override val plugin: Any,
-    override val serviceClass: Class<T>,
-    override val service: T
-) : ServiceProvider<T>
+data class KryptonPluginContainer(
+    override val description: PluginDescription,
+    override var instance: Any? = null
+) : PluginContainer

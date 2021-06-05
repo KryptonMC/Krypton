@@ -24,15 +24,18 @@ import org.kryptonmc.api.Server
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.event.EventBus
+import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
 import org.kryptonmc.api.status.StatusInfo
-import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
 
-class GlobalModule(private val server: KryptonServer) : KotlinModule() {
+class GlobalModule(
+    private val server: KryptonServer,
+    private val pluginContainers: Collection<PluginContainer>
+) : KotlinModule() {
 
     override fun configure() {
         bind<Server>().toInstance(server)
@@ -45,6 +48,9 @@ class GlobalModule(private val server: KryptonServer) : KotlinModule() {
         bind<Scheduler>().toInstance(server.scheduler)
         bind<StatusInfo>().toInstance(server.status)
         bind<ConsoleSender>().toInstance(server.console)
-        bind<World>().annotatedWith(Names.named("default")).toInstance(server.worldManager.default)
+
+        pluginContainers.forEach {
+            bind<PluginContainer>().annotatedWith(Names.named(it.description.id)).toInstance(it)
+        }
     }
 }

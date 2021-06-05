@@ -8,8 +8,6 @@
  */
 package org.kryptonmc.api.service
 
-import org.kryptonmc.api.plugin.Plugin
-
 /**
  * Manager of services
  */
@@ -22,7 +20,7 @@ interface ServicesManager {
      * @param clazz the class of the service to register
      * @param service the service being provided
      */
-    fun <T> register(plugin: Plugin, clazz: Class<T>, service: T)
+    fun <T> register(plugin: Any, clazz: Class<T>, service: T)
 
     /**
      * Retrieve a provider for a given class
@@ -38,7 +36,7 @@ interface ServicesManager {
  * Allows registration with the use of reified types, removing that
  * ugly class parameter
  */
-inline fun <reified T> ServicesManager.register(plugin: Plugin, provider: T) = register(plugin, T::class.java, provider)
+inline fun <reified T> ServicesManager.register(plugin: Any, provider: T) = register(plugin, T::class.java, provider)
 
 /**
  * Allows retrieval of providers with the use of reified types,
