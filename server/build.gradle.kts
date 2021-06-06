@@ -1,21 +1,12 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
 import org.apache.tools.ant.filters.ReplaceTokens
-import org.kryptonmc.krypton.Versions
-import org.kryptonmc.krypton.adventure
-import org.kryptonmc.krypton.applyCommon
-import org.kryptonmc.krypton.applyRepositories
-import org.kryptonmc.krypton.log4j
-import org.kryptonmc.krypton.netty
 
 plugins {
-    id("com.github.johnrengelman.shadow") version "7.0.0"
-    id("org.cadixdev.licenser")
-    id("io.gitlab.arturbosch.detekt")
+    id("krypton.common")
+    id("com.github.johnrengelman.shadow") version Versions.SHADOW
     `java-library`
     application
-    `maven-publish`
-    signing
 }
 
 application.mainClass.set("org.kryptonmc.krypton.KryptonKt")
@@ -25,60 +16,70 @@ repositories {
 }
 
 dependencies {
-    api(project(":krypton-api"))
+    implementation(project(":krypton-api"))
+    implementation(platform("io.netty:netty-bom:${Versions.NETTY}"))
 
+    // Extra Kotlin stuff for the JVM
     implementation(kotlin("stdlib-jdk7"))
     implementation(kotlin("stdlib-jdk8"))
 
     // Netty
-    api(netty("buffer"))
-    api(netty("handler"))
-    api(netty("transport"))
+    implementation("io.netty", "netty-buffer")
+    implementation("io.netty", "netty-handler")
+    implementation("io.netty", "netty-transport")
 
     // Netty native transport
-    implementation(netty("transport-native-epoll"))
-    implementation(netty("transport-native-kqueue"))
-    implementation("io.netty.incubator:netty-incubator-transport-native-io_uring:0.0.5.Final")
+    implementation("io.netty", "netty-transport-native-epoll")
+    implementation("io.netty", "netty-transport-native-kqueue")
+    implementation("io.netty.incubator", "netty-incubator-transport-native-io_uring", Versions.NETTY_IO_URING)
 
     // Adventure
-    api(adventure("text-serializer-gson"))
-    api(adventure("text-serializer-legacy"))
-    api(adventure("text-serializer-plain"))
-    api(adventure("nbt"))
+    implementation("net.kyori", "adventure-text-serializer-gson")
+    implementation("net.kyori", "adventure-text-serializer-legacy")
+    implementation("net.kyori", "adventure-text-serializer-plain")
+    implementation("net.kyori", "adventure-nbt")
 
     // Logging
-    runtimeOnly(log4j("core"))
-    api("net.minecrell:terminalconsoleappender:1.2.0")
-    runtimeOnly("org.jline:jline-terminal-jansi:3.19.0")
+    runtimeOnly("org.apache.logging.log4j", "log4j-core")
+    implementation("net.minecrell", "terminalconsoleappender", Versions.TCA)
+    runtimeOnly("org.jline", "jline-terminal-jansi", Versions.JANSI)
 
     // HTTP
-    api("com.squareup.retrofit2:retrofit:${Versions.RETROFIT}")
-    api("com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}")
-    api("com.squareup.okhttp3:okhttp:${Versions.OKHTTP}")
+    implementation("com.squareup.retrofit2", "retrofit", Versions.RETROFIT)
+    implementation("com.squareup.retrofit2", "converter-gson", Versions.RETROFIT)
+    implementation("com.squareup.okhttp3", "okhttp", Versions.OKHTTP)
 
     // Caching
-    api("com.github.ben-manes.caffeine:caffeine:3.0.1")
-    api("it.unimi.dsi:fastutil:8.5.4")
+    implementation("com.github.ben-manes.caffeine", "caffeine", Versions.CAFFEINE)
+    implementation("it.unimi.dsi", "fastutil", Versions.FASTUTIL)
 
     // Miscellaneous
-    api("org.spongepowered:math:2.0.0")
-    implementation("com.github.ajalt.clikt:clikt:3.0.1")
-    implementation("org.bstats:bstats-base:2.2.0")
-    implementation("com.velocitypowered:velocity-native:1.1.0-SNAPSHOT")
+    implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
+    implementation("org.bstats", "bstats-base", Versions.BSTATS)
+    implementation("com.velocitypowered", "velocity-native", Versions.VELOCITY_NATIVE)
 
     // Detekt formatting
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.17.1")
+    detektPlugins("io.gitlab.arturbosch.detekt", "detekt-formatting", "1.17.1")
 }
 
 tasks {
     withType<ShadowJar> {
-        archiveFileName.set("Krypton-${project.version}.jar")
+        val buildNumberProperty = System.getenv("BUILD_NUMBER")
+        val buildNumber = if (buildNumberProperty != null) "-$buildNumberProperty" else ""
+        archiveFileName.set("Krypton-${project.version}$buildNumber.jar")
         transform(Log4j2PluginsCacheFileTransformer::class.java)
-        relocate("org.bstats", "org.kryptonmc.krypton.bstats")
+
+        exclude("it/unimi/dsi/fastutil/booleans/**")
+        exclude("it/unimi/dsi/fastutil/bytes/**")
+        exclude("it/unimi/dsi/fastutil/chars/**")
+        exclude("it/unimi/dsi/fastutil/doubles/**")
+        exclude("it/unimi/dsi/fastutil/floats/**")
+        exclude("it/unimi/dsi/fastutil/io/**")
+        exclude("it/unimi/dsi/fastutil/objects/*Reference*")
+        exclude("it/unimi/dsi/fastutil/shorts/**")
     }
     withType<ProcessResources> {
-        val tokens = mapOf("version" to project.version.toString())
-        filter<ReplaceTokens>("tokens" to tokens)
+        filter<ReplaceTokens>("tokens" to mapOf("version" to project.version.toString()))
     }
 }
 
@@ -92,34 +93,7 @@ pitest {
         "org.kryptonmc.krypton.auth.MojangUUIDSerializer*",
         "org.kryptonmc.krypton.auth.requests.SessionService*"
     ))
-    excludedMethods.set(setOf(
-        "write\$Self"
-    ))
-}
-
-detekt {
-    buildUponDefaultConfig = true
-    config = files("$projectDir/config/detekt.yml")
-    baseline = file("$projectDir/config/baseline.xml")
-
-    reports {
-        html.enabled = true
-        xml.enabled = true
-    }
-}
-
-publishing {
-    applyRepositories(project)
-    publications {
-        create<MavenPublication>("mavenKotlin") {
-            applyCommon(project, "krypton")
-            pom.applyCommon("Krypton", "The fast and lightweight Minecraft server written in Kotlin!", true)
-        }
-    }
-}
-
-signing {
-    sign(publishing.publications["mavenKotlin"])
+    excludedMethods.set(setOf("write\$Self"))
 }
 
 license {

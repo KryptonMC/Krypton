@@ -30,10 +30,10 @@ import net.kyori.adventure.text.Component.text
 import org.junit.jupiter.api.BeforeAll
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.brigadierCommand
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.event.KryptonEventBus
-import java.security.Permission
 import kotlin.test.Test
 
 class CommandTests {
@@ -75,7 +75,6 @@ class CommandTests {
         @BeforeAll
         @JvmStatic
         fun `register shady security system and commands`() {
-            System.setSecurityManager(ShadySecuritySystem())
             manager.register(DefaultedExecuteCommand("test-null-perm"))
             manager.register(DefaultedExecuteCommand("test-def-exec", "test.def.exec"))
             manager.register(BrigadierCommand(
@@ -90,23 +89,11 @@ class CommandTests {
     }
 }
 
-private class ShadySecuritySystem : SecurityManager() {
-
-    override fun checkPermission(perm: Permission?) = Unit
-
-    override fun checkPermission(perm: Permission?, context: Any?) = Unit
-
-    override fun checkExit(status: Int) {
-        super.checkExit(status)
-        throw SecurityException("The shady security system has denied your request to shut down the JVM.")
-    }
-}
-
 private open class DefaultedExecuteCommand(
     name: String,
     permission: String? = null,
     aliases: List<String> = emptyList()
-) : org.kryptonmc.api.command.SimpleCommand(name, permission, aliases) {
+) : SimpleCommand(name, permission, aliases) {
 
     override fun execute(sender: Sender, args: Array<String>) = Unit
 }

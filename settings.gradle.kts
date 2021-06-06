@@ -1,6 +1,10 @@
+pluginManagement {
+    includeBuild("build-logic")
+}
+
 rootProject.name = "krypton"
 
-setOf("api", "server").forEach {
+sequenceOf("api", "server").forEach {
     include(it)
     findProject(":$it")?.name = "${rootProject.name}-$it"
 }
