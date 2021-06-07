@@ -29,6 +29,7 @@ import org.intellij.lang.annotations.Pattern
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
+@MustBeDocumented
 annotation class Plugin(
     @Pattern("[A-Za-z0-9-_]+") val id: String,
     val name: String = "",

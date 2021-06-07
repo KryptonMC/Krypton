@@ -3,6 +3,12 @@ import org.jetbrains.dokka.gradle.DokkaTask
 plugins {
     id("krypton.common")
     id("org.jetbrains.dokka")
+    `maven-publish`
+    signing
+}
+
+val ap by sourceSets.registering {
+    compileClasspath += sourceSets.main.get().compileClasspath + sourceSets.main.get().output
 }
 
 dependencies {
@@ -57,6 +63,7 @@ pitest {
 
 task<Jar>("sourcesJar") {
     from(sourceSets.main.get().allSource)
+    from(ap.get().output)
     archiveClassifier.set("sources")
 }
 
@@ -73,8 +80,8 @@ publishing {
             url = if (version.toString().endsWith("SNAPSHOT")) snapshots else releases
 
             credentials {
-                username = project.property("maven.username")!!.toString()
-                password = project.property("maven.password")!!.toString()
+                username = if (project.hasProperty("maven.username")) project.property("maven.username").toString() else System.getenv("MAVEN_USERNAME")
+                password = if (project.hasProperty("maven.password")) project.property("maven.password").toString() else System.getenv("MAVEN_PASSWORD")
             }
         }
     }
@@ -141,18 +148,28 @@ license {
     newLine.set(false)
 }
 
-tasks.withType<DokkaTask>().configureEach {
-    dokkaSourceSets {
-        named("main") {
-            sequenceOf("api", "key", "nbt", "text-serializer-gson", "text-serializer-legacy", "text-serializer-plain", "serializer-configurate4").forEach {
-                javadocLink("https://jd.adventure.kyori.net/$it/${Versions.ADVENTURE}/")
+tasks {
+    jar {
+        from(ap.get().output)
+        manifest {
+            attributes("Specification-Vendor" to "KryptonMC")
+            attributes("Specification-Title" to "Krypton API")
+            attributes("Specification-Version" to project.version.toString())
+        }
+    }
+    withType<DokkaTask>().configureEach {
+        dokkaSourceSets {
+            named("main") {
+                sequenceOf("api", "key", "nbt", "text-serializer-gson", "text-serializer-legacy", "text-serializer-plain", "serializer-configurate4").forEach {
+                    javadocLink("https://jd.adventure.kyori.net/$it/${Versions.ADVENTURE}/")
+                }
+                externalDocumentationLink("https://logging.apache.org/log4j/log4j-${Versions.LOG4J}/log4j-api/apidocs/")
+                javadocLink("https://javadoc.io/doc/com.google.code.gson/gson/${Versions.GSON}/")
+                javadocLink("https://google.github.io/guice/api-docs/${Versions.GUICE}/javadoc/")
+                externalDocumentationLink("https://commons.apache.org/proper/commons-lang/apidocs/")
+                externalDocumentationLink("https://commons.apache.org/proper/commons-text/apidocs/")
+                javadocLink("https://configurate.aoeu.xyz/${Versions.CONFIGURATE}/apidocs/")
             }
-            externalDocumentationLink("https://logging.apache.org/log4j/log4j-${Versions.LOG4J}/log4j-api/apidocs/")
-            javadocLink("https://javadoc.io/doc/com.google.code.gson/gson/${Versions.GSON}/")
-            javadocLink("https://google.github.io/guice/api-docs/${Versions.GUICE}/javadoc/")
-            externalDocumentationLink("https://commons.apache.org/proper/commons-lang/apidocs/")
-            externalDocumentationLink("https://commons.apache.org/proper/commons-text/apidocs/")
-            javadocLink("https://configurate.aoeu.xyz/${Versions.CONFIGURATE}/apidocs/")
         }
     }
 }

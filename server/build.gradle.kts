@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
     implementation(project(":krypton-api"))
+    implementation(project(":krypton-api").dependencyProject.sourceSets["ap"].output)
     implementation(platform("io.netty:netty-bom:${Versions.NETTY}"))
 
     // Extra Kotlin stuff for the JVM

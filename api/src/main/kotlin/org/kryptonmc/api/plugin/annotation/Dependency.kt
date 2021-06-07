@@ -19,6 +19,7 @@ package org.kryptonmc.api.plugin.annotation
  */
 @Target
 @Retention(AnnotationRetention.SOURCE)
+@MustBeDocumented
 annotation class Dependency(
     val id: String,
     val optional: Boolean = false

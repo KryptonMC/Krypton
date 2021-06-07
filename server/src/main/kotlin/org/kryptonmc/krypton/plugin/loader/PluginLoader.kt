@@ -20,38 +20,35 @@ package org.kryptonmc.krypton.plugin.loader
 
 import com.google.inject.Guice
 import com.google.inject.Module
+import me.bardy.gsonkt.fromJson
+import org.kryptonmc.api.plugin.InvalidPluginException
 import org.kryptonmc.api.plugin.PluginDependency
 import org.kryptonmc.api.plugin.PluginDescription
+import org.kryptonmc.api.plugin.ap.SerializedDependency
+import org.kryptonmc.api.plugin.ap.SerializedPluginDescription
+import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.plugin.PluginClassLoader
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
-import java.io.FileNotFoundException
+import java.io.BufferedInputStream
+import java.io.InputStream
+import java.io.InputStreamReader
 import java.nio.file.Path
 import java.security.AccessController
 import java.security.PrivilegedAction
-import java.util.jar.JarFile
+import java.util.jar.JarInputStream
+import kotlin.io.path.inputStream
 
 class PluginLoader {
 
-    fun loadDescription(source: Path) = JarFile(source.toFile()).use { jar ->
-        val entry = jar.getJarEntry("plugin.conf") ?: throw FileNotFoundException("Plugin's JAR does not contain a plugin.conf!")
-        jar.getInputStream(entry).use {
-            val node = HoconConfigurationLoader.builder().source { it.bufferedReader() }.build().load()
-            val id = requireNotNull(node.node("id").string) { "No ID specified in plugin.conf!" }
-            val name = node.node("name").getString("")
-            val main = requireNotNull(node.node("main").string) { "No main key found in plugin.conf!" }
-            val version = node.node("version").getString("<UNDEFINED>")
-            val description = node.node("description").getString("")
-            val authors = node.node("authors").getList(String::class.java, emptyList())
-            val dependencies = node.node("dependencies")
-            val required = dependencies.node("required").getList(String::class.java, emptyList()).map { PluginDependency(it, false) }
-            val optional = dependencies.node("optional").getList(String::class.java, emptyList()).map { PluginDependency(it, true) }
-            LoadedPluginDescriptionCandidate(id, name, version, description, authors, required + optional, source, main)
-        }
+    fun loadDescription(source: Path): LoadedPluginDescriptionCandidate {
+        val serialized = source.findMetadata() ?: throw InvalidPluginException("Could not find a valid krypton-plugin-meta.json or plugin.conf file!")
+        if (!serialized.id.matches(SerializedPluginDescription.ID_REGEX)) throw InvalidPluginException("Plugin ID ${serialized.id} is invalid!")
+        return serialized.toCandidate(source)
     }
 
     fun loadPlugin(description: PluginDescription): LoadedPluginDescription {
         require(description is LoadedPluginDescriptionCandidate) { "Description provided isn't a loaded candidate!" }
-        val loader = privileged { PluginClassLoader(description.source) }.apply { addToLoaders() }
+        val loader = doPrivileged { PluginClassLoader(description.source) }.apply { addToLoaders() }
         val mainClass = loader.loadClass(description.mainClass)
         return description.toFull(mainClass)
     }
@@ -60,6 +57,43 @@ class PluginLoader {
         val injector = Guice.createInjector(*modules)
         return injector.getInstance(description.mainClass) ?: error("Got nothing from injector for plugin ${description.name}!")
     }
+
+    private fun Path.findMetadata(): SerializedPluginDescription? = JarInputStream(BufferedInputStream(inputStream())).use { input ->
+        var foundBungeeBukkitPluginFile = false
+        generateSequence { input.nextJarEntry }.forEach { entry ->
+            if (entry.name == "plugin.yml" || entry.name == "bungee.yml") foundBungeeBukkitPluginFile = true
+            if (entry.name == "plugin.conf") return input.readPluginConfig()
+            if (entry.name == "krypton-plugin-meta.json") InputStreamReader(input, Charsets.UTF_8).use { return GSON.fromJson(it) }
+        }
+
+        if (foundBungeeBukkitPluginFile) throw InvalidPluginException("The plugin file $fileName appears to be a Bukkit or BungeeCord plugin. Krypton does not support Bukkit or BungeeCord plugins.")
+        return null
+    }
+
+    private fun InputStream.readPluginConfig(): SerializedPluginDescription = reader().use {
+        val node = HoconConfigurationLoader.builder().source { it.buffered() }.build().load()
+        val id = node.node("id").string ?: throw InvalidPluginException("No ID specified in plugin.conf!")
+        val name = node.node("name").getString("")
+        val main = node.node("main").string ?: throw InvalidPluginException("No main key found in plugin.conf!")
+        val version = node.node("version").getString("<UNDEFINED>")
+        val description = node.node("description").getString("")
+        val authors = node.node("authors").getList(String::class.java, emptyList())
+        val dependencies = node.node("dependencies")
+        val required = dependencies.node("required").getList(String::class.java, emptyList()).map { SerializedDependency(it, false) }
+        val optional = dependencies.node("optional").getList(String::class.java, emptyList()).map { SerializedDependency(it, true) }
+        return SerializedPluginDescription(id, name, version, description, authors, required + optional, main)
+    }
+
+    private fun SerializedPluginDescription.toCandidate(source: Path) = LoadedPluginDescriptionCandidate(
+        id,
+        name ?: "",
+        version ?: "<UNDEFINED>",
+        description ?: "",
+        authors ?: emptyList(),
+        dependencies?.map { PluginDependency(it.id, it.optional) } ?: emptyList(),
+        source,
+        main
+    )
 }
 
-private fun <T> privileged(action: () -> T): T = AccessController.doPrivileged(PrivilegedAction(action))
+private fun <T> doPrivileged(action: () -> T): T = AccessController.doPrivileged(PrivilegedAction(action))

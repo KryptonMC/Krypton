@@ -5,8 +5,6 @@ plugins {
     id("org.cadixdev.licenser")
     id("info.solidsoft.pitest")
     id("io.gitlab.arturbosch.detekt")
-    `maven-publish`
-    signing
 }
 
 repositories {
