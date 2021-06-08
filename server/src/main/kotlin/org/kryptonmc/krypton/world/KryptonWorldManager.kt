@@ -28,6 +28,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.api.world.WorldVersion
@@ -130,7 +131,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
 
         val spawnX = nbt.getInt("SpawnX")
         val spawnZ = nbt.getInt("SpawnZ")
-        val spawnLocation = LocationBuilder(spawnX.toDouble(), nbt.getInt("SpawnY").toDouble(), spawnZ.toDouble())
+        val spawnLocation = Location(spawnX.toDouble(), nbt.getInt("SpawnY").toDouble(), spawnZ.toDouble())
 
         KryptonWorld(
             server,

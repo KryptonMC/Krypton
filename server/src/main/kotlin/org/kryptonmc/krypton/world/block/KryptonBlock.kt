@@ -21,13 +21,13 @@ package org.kryptonmc.krypton.world.block
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BoundingBox
 import org.kryptonmc.api.inventory.item.Material
-import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.chunk.Chunk
 
 data class KryptonBlock(
     override val type: Material,
     override val chunk: Chunk,
-    override val location: Location
+    override val location: Vector
 ) : Block {
 
     override val isEmpty = type == Material.AIR

@@ -28,23 +28,8 @@ import org.kryptonmc.krypton.util.readString
  * Sent when the client sends a plugin message on the specified [channel]. Currently only triggers
  * the [plugin message event][org.kryptonmc.api.event.play.PluginMessageEvent].
  */
-class PacketInPluginMessage : PlayPacket(0x0B) {
+class PacketInPluginMessage(buf: ByteBuf) : PlayPacket(0x0B) {
 
-    /**
-     * The channel the plugin message was sent on
-     */
-    lateinit var channel: Key
-        private set
-
-    /**
-     * The raw data sent on the channel. Could be a string, could be a number, could just
-     * be raw bytes, we don't know, it's context-related.
-     */
-    lateinit var data: ByteArray
-        private set
-
-    override fun read(buf: ByteBuf) {
-        channel = Key.key(buf.readString())
-        data = buf.readAllAvailableBytes()
-    }
+    val channel = Key.key(buf.readString())
+    val data = buf.readAllAvailableBytes()
 }

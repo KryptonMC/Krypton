@@ -95,6 +95,8 @@ formatting:
     active: false # Has issues with my whacky code style
   MaximumLineLength:
     active: false
+  NoUnusedImports:
+    active: false # Detected by style
   ParameterListWrapping:
     active: false
   SpacingAroundAngleBrackets:

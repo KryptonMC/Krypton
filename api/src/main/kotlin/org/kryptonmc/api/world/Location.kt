@@ -10,7 +10,6 @@ package org.kryptonmc.api.world
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.space.AbstractPosition
-import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Position.Companion.EPSILON
 import org.kryptonmc.api.space.Vector
 import kotlin.math.abs
@@ -21,46 +20,15 @@ import kotlin.math.abs
  *
  * As opposed to a [Vector], a [Location] is bound to a world.
  *
- * @param world the world this location is in
  * @see [Vector]
  */
 class Location @JvmOverloads constructor(
-    val world: World,
     x: Double,
     y: Double,
     z: Double,
     val yaw: Float = 0F,
     val pitch: Float = 0F
 ) : AbstractPosition(x, y, z) {
-
-    override fun plus(other: Position): Position {
-        check(other, "add")
-        return super.plus(other)
-    }
-
-    override fun minus(other: Position): Position {
-        check(other, "subtract")
-        return super.minus(other)
-    }
-
-    override fun times(other: Position): Position {
-        check(other, "multiply")
-        return super.times(other)
-    }
-
-    override fun div(other: Position): Position {
-        check(other, "divide")
-        return super.div(other)
-    }
-
-    override fun rem(other: Position): Position {
-        check(other, "perform modulo division on")
-        return super.rem(other)
-    }
-
-    private fun check(position: Position, message: String) {
-        if (position is Location) require(world == position.world) { "Cannot $message locations from different worlds!" }
-    }
 
     /**
      * Convert this [Location] to a [Vector].
@@ -72,7 +40,6 @@ class Location @JvmOverloads constructor(
     fun toVector() = Vector(x, y, z)
 
     override fun equals(other: Any?) = other is Location &&
-            world == other.world &&
             abs(x - other.x) < EPSILON &&
             abs(y - other.y) < EPSILON &&
             abs(z - other.z) < EPSILON &&
@@ -80,7 +47,7 @@ class Location @JvmOverloads constructor(
             abs(pitch - other.pitch) < EPSILON
 
     override fun hashCode(): Int {
-        var hash = 57 + world.hashCode()
+        var hash = 57
         hash *= 19 + (x.toRawBits() xor (x.toRawBits() shr 32)).toInt()
         hash *= 19 + (y.toRawBits() xor (y.toRawBits() shr 32)).toInt()
         hash *= 19 + (z.toRawBits() xor (z.toRawBits() shr 32)).toInt()
@@ -89,19 +56,26 @@ class Location @JvmOverloads constructor(
         return hash
     }
 
-    override fun toString() = "Location(world=$world, x=$x, y=$y, z=$z, yaw=$yaw, pitch=$pitch)"
+    override fun toString() = "Location(x=$x, y=$y, z=$z, yaw=$yaw, pitch=$pitch)"
 
-    override fun copy(x: Double, y: Double, z: Double) = Location(world, x, y, z, yaw, pitch)
+    override fun copy(x: Double, y: Double, z: Double) = Location(x, y, z, yaw, pitch)
 
     /**
      * Create a copy of this location with the specified values applied to it.
      */
     fun copy(
-        world: World = this.world,
         x: Double = this.x,
         y: Double = this.y,
         z: Double = this.z,
         yaw: Float = this.yaw,
         pitch: Float = this.pitch
-    ) = Location(world, x, y, z, yaw, pitch)
+    ) = Location(x, y, z, yaw, pitch)
+
+    companion object {
+
+        /**
+         * A constant for the location at the centre of the world with 0 yaw and 0 pitch.
+         */
+        val ZERO = Location(0.0, 0.0, 0.0, 0F, 0F)
+    }
 }

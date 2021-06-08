@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.util
 
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.api.world.Location
-import org.kryptonmc.api.world.World
 
 /**
  * Convert a [Vector] to a single long with its X coordinate packed into the most significant 26
@@ -33,8 +31,3 @@ fun Position.toProtocol() = x.toLong() and 0x3FFFFFF shl 38 or (z.toLong() and 0
  * Convert a single long to a [Vector]
  */
 fun Long.toVector() = Vector((this shr 38).toDouble(), (this and 0xFFF).toDouble(), (this shl 26 shr 38).toDouble())
-
-/**
- * @see Long.toVector
- */
-fun Long.toLocation(world: World) = Location(world, (this shr 38).toDouble(), (this and 0xFFF).toDouble(), (this shl 26 shr 38).toDouble())

@@ -13,7 +13,6 @@ package org.kryptonmc.api.space
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.space.Position.Companion.EPSILON
 import org.kryptonmc.api.world.Location
-import org.kryptonmc.api.world.World
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -39,16 +38,6 @@ class Vector(x: Double, y: Double, z: Double) : AbstractPosition(x, y, z) {
 
     /**
      * Convert this [Vector] to a [Location] with the specified
-     * [world]
-     *
-     * @param world the world of the new [Location]
-     * @return the new location from this vector
-     */
-    @Contract("_ -> new", pure = true)
-    fun toLocation(world: World) = Location(world, x, y, z)
-
-    /**
-     * Convert this [Vector] to a [Location] with the specified
      * [world], [pitch] and [yaw].
      *
      * @param world the world of the new [Location]
@@ -57,7 +46,7 @@ class Vector(x: Double, y: Double, z: Double) : AbstractPosition(x, y, z) {
      * @return the new location from this vector
      */
     @Contract("_ -> new", pure = true)
-    fun toLocation(world: World, yaw: Float, pitch: Float) = Location(world, x, y, z, yaw, pitch)
+    fun toLocation(yaw: Float, pitch: Float) = Location(x, y, z, yaw, pitch)
 
     override fun equals(other: Any?) =
         other is Vector && abs(x - other.x) < EPSILON && abs(y - other.y) < EPSILON && abs(z - other.z) < EPSILON

@@ -71,7 +71,7 @@ data class KryptonWorld(
     override var isRaining: Boolean,
     var rainTime: Int,
     val randomSeed: Long,
-    private val spawnLocationBuilder: LocationBuilder,
+    override val spawnLocation: Location,
     override var isThundering: Boolean,
     var thunderTime: Int,
     override var time: Long,
@@ -94,20 +94,13 @@ data class KryptonWorld(
     override val border = KryptonWorldBorder(
         this,
         borderBuilder.size,
-        Location(this, borderBuilder.centerX, 0.0, borderBuilder.centerZ),
+        Location(borderBuilder.centerX, 0.0, borderBuilder.centerZ),
         borderBuilder.damagePerBlock,
         borderBuilder.safeZone,
         borderBuilder.sizeLerpTarget,
         borderBuilder.sizeLerpTime,
         borderBuilder.warningBlocks,
         borderBuilder.warningTime
-    )
-
-    override val spawnLocation = Location(
-        this,
-        spawnLocationBuilder.x,
-        spawnLocationBuilder.y,
-        spawnLocationBuilder.z
     )
 
     fun tick(profiler: Profiler) {

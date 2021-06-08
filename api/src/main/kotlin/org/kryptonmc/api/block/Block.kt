@@ -9,7 +9,7 @@
 package org.kryptonmc.api.block
 
 import org.kryptonmc.api.inventory.item.Material
-import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.chunk.Chunk
 
@@ -36,7 +36,7 @@ interface Block {
     /**
      * The location of this block
      */
-    val location: Location
+    val location: Vector
 
     /**
      * If this block is empty

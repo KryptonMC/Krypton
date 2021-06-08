@@ -27,8 +27,8 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readVarInt
 
 /**
- * Decodes packet data into readable packets and reads the data in by calling this packet's
- * [read][org.kryptonmc.krypton.packet.Packet.read] function
+ * Decodes packet data into readable packets and reads the data in by instantiating the packet with the
+ * input buffer as the argument.
  */
 class PacketDecoder : ByteToMessageDecoder() {
 
@@ -39,7 +39,7 @@ class PacketDecoder : ByteToMessageDecoder() {
         val id = buf.readVarInt()
         val session = this.session ?: ctx.pipeline().get(ChannelHandler::class.java).session.apply { this@PacketDecoder.session = this }
 
-        val packet = session.currentState.createPacket(id)
+        val packet = session.currentState.createPacket(id, buf)
         if (packet == null) {
             LOGGER.debug("Skipping packet with state ${session.currentState} and ID $id because a packet object was not found")
             buf.skipBytes(buf.readableBytes())
@@ -47,7 +47,6 @@ class PacketDecoder : ByteToMessageDecoder() {
         }
 
         LOGGER.debug("Incoming packet of type ${packet.javaClass}")
-        packet.read(buf)
         if (buf.readableBytes() != 0) LOGGER.debug("More bytes from packet $packet (${buf.readableBytes()})")
         out.add(packet)
     }

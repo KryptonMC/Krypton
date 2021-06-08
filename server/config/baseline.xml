@@ -71,6 +71,7 @@
     <ID>ReturnCount:RegionFile.kt$RegionFile$ @Synchronized fun getChunkDataInputStream(position: ChunkPosition): DataInputStream?</ID>
     <ID>MethodOverloading:metadata.kt$org.kryptonmc.krypton.util.metadata.kt</ID>
     <ID>NestedBlockDepth:KryptonWorld.kt$KryptonWorld$fun tick(profiler: Profiler)</ID>
+    <ID>NestedBlockDepth:PluginLoader.kt$PluginLoader$private fun Path.findMetadata(): SerializedPluginDescription?</ID>
     <ID>UnderscoresInNumericLiterals:ConfigTests.kt$ConfigTests$10000</ID>
     <ID>UnderscoresInNumericLiterals:ConfigTests.kt$ConfigTests$25565</ID>
     <ID>UnderscoresInNumericLiterals:ConfigTests.kt$ConfigTests$25566</ID>
@@ -84,8 +85,6 @@
     <ID>LateinitUsage:CrashReport.kt$CrashReport$private lateinit var saveFile: Path</ID>
     <ID>LateinitUsage:GS4QueryHandler.kt$GS4QueryHandler$private lateinit var socket: DatagramSocket</ID>
     <ID>LateinitUsage:KryptonPlayer.kt$KryptonPlayer$override lateinit var dimension: Key</ID>
-    <ID>LateinitUsage:KryptonPlayer.kt$KryptonPlayer$override lateinit var location: Location</ID>
-    <ID>LateinitUsage:KryptonPlayer.kt$KryptonPlayer$override lateinit var mainHand: MainHand</ID>
     <ID>LateinitUsage:KryptonPlayer.kt$KryptonPlayer$override lateinit var world: KryptonWorld</ID>
     <ID>LateinitUsage:KryptonServerGUI.kt$KryptonServerGUI$private lateinit var logAppenderThread: Thread</ID>
     <ID>LateinitUsage:PacketInAnimation.kt$PacketInAnimation$/** * The hand that was swung. */ lateinit var hand: Hand private set</ID>

@@ -27,15 +27,7 @@ import org.kryptonmc.krypton.util.readString
  * the player's offline UUID if we are not in online mode, or sent to Mojang to attempt to authenticate
  * the user if we are in online mode.
  */
-class PacketInLoginStart : LoginPacket(0x00) {
+class PacketInLoginStart(buf: ByteBuf) : LoginPacket(0x00) {
 
-    /**
-     * The username of the player logging in.
-     */
-    lateinit var name: String
-        private set
-
-    override fun read(buf: ByteBuf) {
-        name = buf.readString(16)
-    }
+    val name = buf.readString(16)
 }

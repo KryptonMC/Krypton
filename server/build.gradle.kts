@@ -9,6 +9,8 @@ plugins {
     application
 }
 
+evaluationDependsOn(":krypton-api")
+
 application.mainClass.set("org.kryptonmc.krypton.KryptonKt")
 
 repositories {

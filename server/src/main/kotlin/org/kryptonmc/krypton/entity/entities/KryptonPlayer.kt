@@ -98,8 +98,7 @@ class KryptonPlayer(
     override var abilities = Abilities()
     var attributes = DEFAULT_PLAYER_ATTRIBUTES
 
-    override lateinit var location: Location
-
+    override var location = Location.ZERO
     override val velocity = Vector.ZERO
 
     override var isOnGround = false
@@ -109,7 +108,7 @@ class KryptonPlayer(
     override var viewDistance = 10
     override var time = 0L
 
-    override lateinit var mainHand: MainHand
+    override var mainHand = MainHand.RIGHT
     var hand = Hand.MAIN
 
     override var scoreboard: Scoreboard? = null
@@ -122,7 +121,7 @@ class KryptonPlayer(
     var gamemode = Gamemode.SURVIVAL
 
     override lateinit var world: KryptonWorld
-    override lateinit var dimension: Key
+    override var dimension = key("overworld")
 
     private var previousCentralX = 0
     private var previousCentralZ = 0
@@ -141,7 +140,7 @@ class KryptonPlayer(
 
     override fun teleport(position: Position) {
         val oldLocation = location
-        location = Location(world, position.x, position.y, position.z)
+        location = Location(position.x, position.y, position.z)
 
         if (abs(location.x - oldLocation.x) > 8 || abs(location.y - oldLocation.y) > 8 || abs(location.z - oldLocation.z) > 8) {
             session.sendPacket(PacketOutEntityTeleport(session.id, location, isOnGround))

@@ -22,8 +22,8 @@ import net.kyori.adventure.nbt.CompoundBinaryTag
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.space.Position
+import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Biome
-import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.locale.Messages
@@ -55,10 +55,10 @@ data class KryptonChunk(
         val localY = y and 0xF
         val localZ = z and 0xF
         val section = sections.firstOrNull { it.y == y shr 4 }
-            ?: return KryptonBlock(Material.AIR, this, Location(world, x.toDouble(), y.toDouble(), z.toDouble()))
+            ?: return KryptonBlock(Material.AIR, this, Vector(x.toDouble(), y.toDouble(), z.toDouble()))
 
         val name = section[localX, localY, localZ]
-        return KryptonBlock(Material.KEYS.value(name)!!, this, Location(world, x.toDouble(), y.toDouble(), z.toDouble()))
+        return KryptonBlock(Material.KEYS.value(name)!!, this, Vector(x.toDouble(), y.toDouble(), z.toDouble()))
     }
 
     override fun getBlock(position: Position) = getBlock(position.blockX, position.blockY, position.blockZ)

@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.entity
 
-import org.kryptonmc.krypton.world.LocationBuilder
+import org.kryptonmc.api.world.Location
 import java.util.UUID
 
 @Deprecated("For removal, will be replaced with the API version")
@@ -26,7 +26,7 @@ data class Entity(
     val id: Int,
     val uuid: UUID,
     val type: EntityType,
-    val location: LocationBuilder,
+    val location: Location,
     val data: Int,
     val velocityX: Short,
     val velocityY: Short,

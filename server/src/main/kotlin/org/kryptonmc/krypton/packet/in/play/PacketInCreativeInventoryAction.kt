@@ -31,27 +31,8 @@ import org.kryptonmc.krypton.util.readVarInt
  * the Notchian server deletes an item from a player's inventory, and when you place an item back
  * into your inventory, the server recreates the item.
  */
-class PacketInCreativeInventoryAction : PlayPacket(0x28) {
+class PacketInCreativeInventoryAction(buf: ByteBuf) : PlayPacket(0x28) {
 
-    /**
-     * The inventory slot that the player clicked
-     */
-    var slot: Short = 0
-        private set
-
-    /**
-     * The item that was clicked
-     */
-    lateinit var clickedItem: Slot
-        private set
-
-    override fun read(buf: ByteBuf) {
-        slot = buf.readShort()
-
-        if (!buf.readBoolean()) {
-            clickedItem = Slot(false)
-            return
-        }
-        clickedItem = Slot(true, buf.readVarInt(), buf.readByte(), buf.readNBTCompound())
-    }
+    val slot = buf.readShort()
+    val clickedItem = if (buf.readBoolean()) Slot(true, buf.readVarInt(), buf.readByte(), buf.readNBTCompound()) else Slot(false)
 }

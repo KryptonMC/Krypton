@@ -27,24 +27,14 @@ import org.kryptonmc.krypton.util.readVarInt
  * Contrary to its name, this is only for players, as it is only sent by clients.
  * This is sent when the player performs one of the actions listed in the [EntityAction] enum.
  */
-class PacketInEntityAction : PlayPacket(0x1C) {
+class PacketInEntityAction(buf: ByteBuf) : PlayPacket(0x1C) {
 
-    /**
-     * The action taken by the entity
-     */
-    lateinit var action: EntityAction
-        private set
+    val action: EntityAction
+    val data: Int
 
-    /**
-     * This is a bit magic. It's the jump boost modifier, only used with the
-     * [start jump with horse][EntityAction.START_JUMP_WITH_HORSE] action.
-     */
-    var data = -1
-        private set
-
-    override fun read(buf: ByteBuf) {
-        buf.readVarInt() // we already know the entity ID because we know where this came from, smh Mojang.
-        action = buf.readEnum()
+    init {
+        buf.readVarInt()
+        action = buf.readEnum<EntityAction>()
         data = buf.readVarInt()
     }
 }

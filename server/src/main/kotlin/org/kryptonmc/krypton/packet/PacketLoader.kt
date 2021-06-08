@@ -31,7 +31,6 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAbilities
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerBlockPlacement
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPosition
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPositionAndRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerRotation
@@ -52,7 +51,7 @@ object PacketLoader {
         PacketState.HANDSHAKE.registerPacketType(0x00, ::PacketInHandshake)
 
         // STATUS
-        PacketState.STATUS.registerPacketType(0x00, ::PacketInStatusRequest)
+        PacketState.STATUS.registerPacketType(0x00) { PacketInStatusRequest() }
         PacketState.STATUS.registerPacketType(0x01, ::PacketInPing)
 
         // LOGIN
@@ -69,7 +68,6 @@ object PacketLoader {
         PacketState.PLAY.registerPacketType(0x12, ::PacketInPlayerPosition)
         PacketState.PLAY.registerPacketType(0x13, ::PacketInPlayerPositionAndRotation)
         PacketState.PLAY.registerPacketType(0x14, ::PacketInPlayerRotation)
-        PacketState.PLAY.registerPacketType(0x15, ::PacketInPlayerMovement)
         PacketState.PLAY.registerPacketType(0x1A, ::PacketInPlayerAbilities)
         PacketState.PLAY.registerPacketType(0x1B, ::PacketInPlayerDigging)
         PacketState.PLAY.registerPacketType(0x1C, ::PacketInEntityAction)

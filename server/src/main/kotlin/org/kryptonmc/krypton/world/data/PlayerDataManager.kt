@@ -88,7 +88,7 @@ class PlayerDataManager(private val folder: Path) {
         val position = nbt.getList("Pos").map { (it as DoubleBinaryTag).value() }
         val rotation = nbt.getList("Rotation").map { (it as FloatBinaryTag).value() }
 
-        player.location = Location(world, position[0], position[1], position[2], rotation[0], rotation[1])
+        player.location = Location(position[0], position[1], position[2], rotation[0], rotation[1])
         player.oldGamemode = Gamemode.fromId(nbt.getInt("previousPlayerGameType", -1))
         player.gamemode = Gamemode.fromId(nbt.getInt("playerGameType", 0)) ?: Gamemode.SURVIVAL
         player.inventory.heldSlot = nbt.getInt("SelectedItemSlot")

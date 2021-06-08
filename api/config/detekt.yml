@@ -76,8 +76,6 @@ exceptions:
 
 formatting:
   active: true
-  AnnotationOnSeparateLine:
-    active: true
   AnnotationSpacing:
     active: true
   ArgumentListWrapping:
@@ -95,6 +93,8 @@ formatting:
     continuationIndentSize: 8
   MaximumLineLength:
     active: false
+  NoUnusedImports:
+    active: false # Detected by style
   ParameterListWrapping:
     active: false
   SpacingAroundAngleBrackets:

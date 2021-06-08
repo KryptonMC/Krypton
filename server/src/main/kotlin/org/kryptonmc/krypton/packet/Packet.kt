@@ -32,13 +32,6 @@ interface Packet {
     val info: PacketInfo
 
     /**
-     * Read this packet's data from the given [buf]
-     */
-    fun read(buf: ByteBuf) {
-        throw UnsupportedOperationException("$javaClass does not support reading")
-    }
-
-    /**
      * Write this packet's data to the given [buf]
      */
     fun write(buf: ByteBuf) {

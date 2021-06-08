@@ -33,7 +33,7 @@ data class DummyWorld(override val name: String) : World {
     override val isHardcore = false
     override val maxHeight = 256
     override val seed = 0L
-    override val spawnLocation = Location(this, 0.0, 0.0, 0.0)
+    override val spawnLocation = Location(0.0, 0.0, 0.0)
     override val time = 0L
     override val version = WorldVersion.CURRENT
     override var isRaining = false

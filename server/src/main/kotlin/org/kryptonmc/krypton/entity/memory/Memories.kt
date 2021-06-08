@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.entity.memory
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
-import org.kryptonmc.krypton.world.LocationBuilder
+import org.kryptonmc.api.world.Location
 import java.util.UUID
 
 /**
@@ -99,5 +99,5 @@ class MeetingPointMemory(override val value: Position) : EntityMemory<Position>(
  */
 data class Position(
     val dimension: Key,
-    val position: LocationBuilder
+    val position: Location
 )

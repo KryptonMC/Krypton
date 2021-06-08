@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.packet.state
 
+import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.kryptonmc.krypton.packet.Packet
 
@@ -51,7 +52,7 @@ enum class PacketState {
      */
     PLAY;
 
-    private val packets = Int2ObjectOpenHashMap<() -> Packet>()
+    private val packets = Int2ObjectOpenHashMap<(ByteBuf) -> Packet>()
 
     /**
      * Register a packet type with the specified [id]
@@ -59,7 +60,7 @@ enum class PacketState {
      * @param id the ID of the packet
      * @param supplier a function that can be used to create instances of the packet.
      */
-    fun registerPacketType(id: Int, supplier: () -> Packet) {
+    fun registerPacketType(id: Int, supplier: (ByteBuf) -> Packet) {
         packets.putIfAbsent(id, supplier)
     }
 
@@ -70,7 +71,7 @@ enum class PacketState {
      * @return a new packet with the specified [id], or null if there is no packet
      * registered with this ID
      */
-    fun createPacket(id: Int) = packets[id]?.invoke()
+    fun createPacket(id: Int, buf: ByteBuf) = packets[id]?.invoke(buf)
 
     companion object {
 

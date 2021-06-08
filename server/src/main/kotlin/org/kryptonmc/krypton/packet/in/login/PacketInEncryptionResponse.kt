@@ -28,22 +28,8 @@ import org.kryptonmc.krypton.util.readVarIntByteArray
  * Also returns the verify token sent by the server, as verification that we are actually talking to
  * the same client we were talking to before.
  */
-class PacketInEncryptionResponse : LoginPacket(0x01) {
+class PacketInEncryptionResponse(buf: ByteBuf) : LoginPacket(0x01) {
 
-    /**
-     * The shared secret used for encryption, encrypted with the server's public key.
-     */
-    lateinit var secret: ByteArray
-        private set
-
-    /**
-     * The verify token earlier sent by the server, also encrypted with the server's public key.
-     */
-    lateinit var verifyToken: ByteArray
-        private set
-
-    override fun read(buf: ByteBuf) {
-        secret = buf.readVarIntByteArray()
-        verifyToken = buf.readVarIntByteArray()
-    }
+    val secret = buf.readVarIntByteArray()
+    val verifyToken = buf.readVarIntByteArray()
 }
