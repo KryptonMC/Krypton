@@ -13,14 +13,13 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.entity.entities.Player
-import org.kryptonmc.api.event.Event
 
 /**
  * Called when the connection to a player in the PLAY state is lost.
  *
  * @param player the player who quit
  */
-class QuitEvent(val player: Player) : Event {
+class QuitEvent(val player: Player) {
 
     /**
      * The message to send to the player when they quit.

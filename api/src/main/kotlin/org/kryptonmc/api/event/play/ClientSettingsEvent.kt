@@ -9,7 +9,6 @@
 package org.kryptonmc.api.event.play
 
 import org.kryptonmc.api.entity.entities.Player
-import org.kryptonmc.api.event.Event
 import java.util.Locale
 
 /**
@@ -27,7 +26,7 @@ class ClientSettingsEvent(
     val viewDistance: Int,
     val hasColorsEnabled: Boolean,
     val skinSettings: SkinSettings
-) : Event
+)
 
 /**
  * Holder for all the settings for a player's skin.

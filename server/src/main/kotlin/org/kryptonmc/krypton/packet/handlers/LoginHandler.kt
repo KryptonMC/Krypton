@@ -22,6 +22,7 @@ import com.velocitypowered.natives.util.Natives
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.event.login.LoginEvent
@@ -177,9 +178,10 @@ class LoginHandler(
 
     private fun callLoginEvent(name: String = session.profile.name, uuid: UUID = session.profile.uuid): Boolean {
         val event = LoginEvent(name, uuid, session.channel.remoteAddress() as InetSocketAddress)
-        server.eventBus.call(event)
-        if (event.isCancelled) {
-            session.disconnect(event.cancelledReason)
+        val result = server.eventManager.fireSync(event).result
+        if (!result.isAllowed) {
+            val reason = if (result.reason !== Component.empty()) result.reason else translatable("multiplayer.disconnect.kicked")
+            session.disconnect(reason)
             return false
         }
         return true

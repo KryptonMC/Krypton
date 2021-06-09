@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.kyori.adventure.key.Key.key
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.krypton.KryptonServer
@@ -94,13 +95,6 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutLoginSuccess(session.profile.uuid, session.profile.name))
         session.handler = PlayHandler(server, this, session)
 
-        val event = JoinEvent(session.player)
-        server.eventBus.call(event)
-        if (event.isCancelled) {
-            session.disconnect(event.cancelledReason)
-            return
-        }
-
         val world = server.worldManager.default
         if (server.config.world.forceDefaultGamemode) world.gamemode = server.config.world.gamemode
         world.players += session.player
@@ -123,6 +117,7 @@ class SessionManager(private val server: KryptonServer) {
             server.config.status.maxPlayers,
             server.config.world.viewDistance
         ))
+        session.sendPacket(PacketOutPluginMessage(key("register"), server.channels.joinToString("\u0000").encodeToByteArray()))
         session.sendPacket(PacketOutPluginMessage(BRAND_MESSAGE.first, BRAND_MESSAGE.second))
         session.sendPacket(PacketOutServerDifficulty(server.config.world.difficulty, true))
 
@@ -153,11 +148,21 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutHeldItemChange(session.player.inventory.heldSlot))
         session.sendPacket(PacketOutDeclareRecipes())
         session.sendPacket(PacketOutTags)
-        if (world.gamerules[Gamerule.REDUCED_DEBUG_INFO]?.equals("true") == true) session.sendPacket(PacketOutEntityStatus(session.id, 22))
+        val reducedDebugInfo = world.gamerules[Gamerule.REDUCED_DEBUG_INFO]?.equals("true") == true
+        session.sendPacket(PacketOutEntityStatus(session.id, if (reducedDebugInfo) 22 else 23))
         session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
+
+        val joinResult = server.eventManager.fireSync(JoinEvent(session.player)).result
+        if (!joinResult.isAllowed) {
+            // Use default reason if denied without specified reason
+            val reason = joinResult.reason.takeIf { it != Component.empty() } ?: translatable("multiplayer.disconnect.kicked")
+            session.disconnect(reason)
+            return
+        }
+        server.sendMessage(joinResult.reason)
+
         session.sendPacket(PacketOutPlayerPositionAndLook(session.player.location))
-        server.sendMessage(event.message)
         session.sendPacket(PacketOutPlayerInfo(
             PlayerAction.UPDATE_LATENCY,
             listOf(PlayerInfo(latency = session.latency, profile = session.profile))
@@ -190,7 +195,6 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutSpawnPosition(spawnLocation))
         session.sendPacket(PacketOutEntityProperties(session.id, session.player.attributes))
         session.sendPacket(PacketOutWindowItems(session.player.inventory))
-        session.sendPacket(PacketOutPluginMessage(key("register"), server.channels.joinToString("\u0000").encodeToByteArray()))
 
         ServerStorage.PLAYER_COUNT.getAndIncrement()
 
@@ -232,20 +236,16 @@ class SessionManager(private val server: KryptonServer) {
 
     fun handleDisconnection(session: Session) {
         if (session.currentState != PacketState.PLAY) return
+        server.eventManager.fire(QuitEvent(session.player)).thenAccept { event ->
+            GlobalScope.launch(Dispatchers.IO) { server.playerDataManager.save(session.player) }
 
-        val event = QuitEvent(session.player)
-        server.eventBus.call(event)
-        GlobalScope.launch(Dispatchers.IO) { server.playerDataManager.save(session.player) }
+            val destroyPacket = PacketOutEntityDestroy(listOf(session.id))
+            val infoPacket = PacketOutPlayerInfo(PlayerAction.REMOVE_PLAYER, listOf(PlayerInfo(profile = session.profile)))
 
-        val destroyPacket = PacketOutEntityDestroy(listOf(session.id))
-        val infoPacket = PacketOutPlayerInfo(
-            PlayerAction.REMOVE_PLAYER,
-            listOf(PlayerInfo(profile = session.profile))
-        )
-
-        sendPackets(destroyPacket, infoPacket) { it != session && it.currentState == PacketState.PLAY }
-        server.sendMessage(event.message)
-        ServerStorage.PLAYER_COUNT.getAndDecrement()
+            sendPackets(destroyPacket, infoPacket) { it != session && it.currentState == PacketState.PLAY }
+            server.sendMessage(event.message)
+            ServerStorage.PLAYER_COUNT.getAndDecrement()
+        }
     }
 
     fun updateLatency(session: Session, latency: Int) {

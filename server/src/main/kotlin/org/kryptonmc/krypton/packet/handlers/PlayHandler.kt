@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.packet.handlers
 
 import com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.event.ClickEvent.suggestCommand
@@ -126,14 +127,21 @@ class PlayHandler(
         }
 
         val event = ChatEvent(player, packet.message)
-        server.eventBus.call(event)
-        if (event.isCancelled) return
+        server.eventManager.fire(event).thenAccept {
+            val result = it.result
+            if (!result.isAllowed) return@thenAccept
+            if (result.reason !== Component.empty()) {
+                server.sendMessage(player, result.reason, MessageType.CHAT)
+                return@thenAccept
+            }
 
-        val message = translatable("chat.type.text", listOf(
-            text(session.profile.name).insertion(session.profile.name).clickEvent(suggestCommand("/msg ${session.profile.name}")).hoverEvent(player),
-            text(packet.message)
-        ))
-        server.sendMessage(player, message, MessageType.CHAT)
+            val name = session.profile.name
+            val message = translatable("chat.type.text", listOf(
+                text(name).insertion(name).clickEvent(suggestCommand("/msg $name")).hoverEvent(player),
+                text(packet.message)
+            ))
+            server.sendMessage(player, message, MessageType.CHAT)
+        }
     }
 
     private fun handleClientSettings(packet: PacketInClientSettings) {
@@ -144,7 +152,7 @@ class PlayHandler(
             packet.settings.chatColors,
             packet.settings.skinSettings
         )
-        server.eventBus.call(event)
+        server.eventManager.fireAndForget(event)
         session.settings = packet.settings
 
         val metadataPacket = PacketOutEntityMetadata(
@@ -233,7 +241,7 @@ class PlayHandler(
         if (newLocation == oldLocation) return
 
         session.player.location = newLocation
-        server.eventBus.call(MoveEvent(session.player, oldLocation, newLocation))
+        server.eventManager.fireAndForget(MoveEvent(session.player, oldLocation, newLocation))
 
         val positionPacket = PacketOutEntityPosition(
             session.id,
@@ -253,7 +261,7 @@ class PlayHandler(
         val newLocation = oldLocation.copy(yaw = packet.yaw, pitch = packet.pitch)
 
         session.player.location = newLocation
-        server.eventBus.call(MoveEvent(session.player, oldLocation, newLocation))
+        server.eventManager.fireAndForget(MoveEvent(session.player, oldLocation, newLocation))
 
         val rotationPacket = PacketOutEntityRotation(
             session.id,
@@ -274,7 +282,7 @@ class PlayHandler(
         if (newLocation == oldLocation) return
 
         session.player.location = newLocation
-        server.eventBus.call(MoveEvent(session.player, oldLocation, newLocation))
+        server.eventManager.fireAndForget(MoveEvent(session.player, oldLocation, newLocation))
 
         val positionAndRotationPacket = PacketOutEntityPositionAndRotation(
             session.id,
@@ -294,7 +302,7 @@ class PlayHandler(
     }
 
     private fun handlePluginMessage(packet: PacketInPluginMessage) {
-        server.eventBus.call(PluginMessageEvent(session.player, packet.channel, packet.data))
+        server.eventManager.fireAndForget(PluginMessageEvent(session.player, packet.channel, packet.data))
     }
 
     private fun handleTabComplete(packet: PacketInTabComplete) {

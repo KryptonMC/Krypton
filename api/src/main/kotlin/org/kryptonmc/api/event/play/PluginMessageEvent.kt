@@ -10,7 +10,6 @@ package org.kryptonmc.api.event.play
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.entities.Player
-import org.kryptonmc.api.event.Event
 
 /**
  * Called when a plugin message is received from a client.
@@ -23,19 +22,4 @@ class PluginMessageEvent(
     val player: Player,
     val channel: Key,
     val message: ByteArray
-) : Event {
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as PluginMessageEvent
-        return player == other.player && channel == other.channel && message.contentEquals(other.message)
-    }
-
-    override fun hashCode(): Int {
-        var result = player.hashCode()
-        result *= 31 + channel.hashCode()
-        result *= 31 + message.contentHashCode()
-        return result
-    }
-}
+)

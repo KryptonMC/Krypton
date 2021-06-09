@@ -9,7 +9,6 @@
 package org.kryptonmc.api.event.play
 
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.event.Event
 
 /**
  * Called when a permission check is made (when [Sender.hasPermission] is called, or
@@ -19,11 +18,12 @@ import org.kryptonmc.api.event.Event
  * @param permission the permission being checked, or null if there isn't a permission
  * @param has if the player has the permission
  */
+// TODO: Make this a ResultedEvent (or remove it) when the new permissions system is implemented
 class PermissionCheckEvent(
     val sender: Sender,
     val permission: String?,
     private val has: Boolean
-) : Event {
+) {
 
     /**
      * The result of the permission check

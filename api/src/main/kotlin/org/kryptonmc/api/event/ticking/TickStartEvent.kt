@@ -8,11 +8,9 @@
  */
 package org.kryptonmc.api.event.ticking
 
-import org.kryptonmc.api.event.Event
-
 /**
  * Called when a tick begins.
  *
  * @param tickNumber the tick number
  */
-data class TickStartEvent(val tickNumber: Int) : Event
+class TickStartEvent(val tickNumber: Int)

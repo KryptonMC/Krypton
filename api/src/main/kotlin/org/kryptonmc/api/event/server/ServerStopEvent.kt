@@ -6,9 +6,12 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.event
+package org.kryptonmc.api.event.server
 
 /**
- * Represents an event. These can be called, or fired, and listened to
+ * Fired by the server when it is shutting down.
  */
-interface Event
+class ServerStopEvent {
+
+    override fun toString() = "ServerStopEvent"
+}

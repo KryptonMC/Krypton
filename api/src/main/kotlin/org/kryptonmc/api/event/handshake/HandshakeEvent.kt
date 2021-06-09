@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.event.handshake
 
-import org.kryptonmc.api.event.Event
 import java.net.InetSocketAddress
 
 /**
@@ -20,4 +19,4 @@ import java.net.InetSocketAddress
  *
  * @param address the address of the connecting client
  */
-class HandshakeEvent(val address: InetSocketAddress) : Event
+class HandshakeEvent(val address: InetSocketAddress)

@@ -31,7 +31,9 @@ import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.world.Gamemode
 import java.math.BigInteger
 import java.net.InetAddress
+import java.security.AccessController
 import java.security.MessageDigest
+import java.security.PrivilegedAction
 import java.util.Locale
 import java.util.UUID
 import kotlin.math.log2
@@ -114,3 +116,10 @@ val Gamemode.canBuild: Boolean get() = this == Gamemode.SURVIVAL || this == Game
  * Digest a [MessageDigest] into a hex string. This is Yggdrasil's strange way of digesting to hex
  */
 fun MessageDigest.hexDigest(): String = BigInteger(digest()).toString(16)
+
+/**
+ * Perform the specified [action] with privileges.
+ *
+ * Analogous with [AccessController.doPrivileged].
+ */
+fun <T> doPrivileged(action: () -> T): T = AccessController.doPrivileged(PrivilegedAction(action))

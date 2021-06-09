@@ -23,7 +23,7 @@ import dev.misfitlabs.kotlinguice4.KotlinModule
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
-import org.kryptonmc.api.event.EventBus
+import org.kryptonmc.api.event.EventManager
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.scheduling.Scheduler
@@ -44,7 +44,7 @@ class GlobalModule(
         bind<CommandManager>().toInstance(server.commandManager)
         bind<PluginManager>().toInstance(server.pluginManager)
         bind<ServicesManager>().toInstance(server.servicesManager)
-        bind<EventBus>().toInstance(server.eventBus)
+        bind<EventManager>().toInstance(server.eventManager)
         bind<Scheduler>().toInstance(server.scheduler)
         bind<StatusInfo>().toInstance(server.status)
         bind<ConsoleSender>().toInstance(server.console)

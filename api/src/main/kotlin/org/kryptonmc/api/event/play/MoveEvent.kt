@@ -9,7 +9,6 @@
 package org.kryptonmc.api.event.play
 
 import org.kryptonmc.api.entity.entities.Player
-import org.kryptonmc.api.event.Event
 import org.kryptonmc.api.world.Location
 
 /**
@@ -24,4 +23,4 @@ class MoveEvent(
     val player: Player,
     val oldLocation: Location,
     val newLocation: Location
-) : Event
+)

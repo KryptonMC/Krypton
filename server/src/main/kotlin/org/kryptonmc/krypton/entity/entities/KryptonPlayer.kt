@@ -89,10 +89,10 @@ import kotlin.math.min
 class KryptonPlayer(
     override val name: String,
     override val uuid: UUID,
-    private val server: KryptonServer,
+    server: KryptonServer,
     val session: Session,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
-) : Player, KryptonSender() {
+) : Player, KryptonSender(server) {
 
     override var displayName: Component = Component.empty()
     override var abilities = Abilities()

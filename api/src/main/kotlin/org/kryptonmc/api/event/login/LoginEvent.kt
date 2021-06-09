@@ -8,9 +8,9 @@
  */
 package org.kryptonmc.api.event.login
 
-import net.kyori.adventure.extra.kotlin.translatable
-import net.kyori.adventure.text.Component
-import org.kryptonmc.api.event.CancellableEvent
+import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.event.ComponentResult
+import org.kryptonmc.api.event.ResultedEvent
 import java.net.InetSocketAddress
 import java.util.UUID
 
@@ -27,23 +27,7 @@ class LoginEvent(
     val username: String,
     val uuid: UUID,
     val address: InetSocketAddress
-) : CancellableEvent() {
+) : ResultedEvent<ComponentResult> {
 
-    /**
-     * The reason for cancelling this event.
-     */
-    @Volatile
-    var cancelledReason: Component = translatable { key("multiplayer.disconnect.kicked") }
-
-    /**
-     * Cancel this event with the specified [reason] for cancellation
-     *
-     * This reason will be the exact disconnect message sent to the client
-     *
-     * @param reason the reason for cancellation
-     */
-    fun cancel(reason: Component) {
-        isCancelled = true
-        cancelledReason = reason
-    }
+    override var result = ComponentResult.allowed(translatable("multiplayer.disconnect.kicked"))
 }

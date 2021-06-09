@@ -6,8 +6,12 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.dummy
+package org.kryptonmc.api.event.server
 
-import org.kryptonmc.api.event.CancellableEvent
+/**
+ * Fired by the server when it is starting up.
+ */
+class ServerStartEvent {
 
-class DummyCancellableEvent : CancellableEvent()
+    override fun toString() = "ServerStartEvent"
+}

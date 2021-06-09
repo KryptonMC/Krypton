@@ -17,7 +17,6 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.dummy.DummyCommand
 import org.kryptonmc.api.entity.entities.Player
-import org.kryptonmc.api.event.EventBus
 import java.net.InetSocketAddress
 import java.util.UUID
 
@@ -25,14 +24,8 @@ val commandManagerMock = mockk<CommandManager> {
     every { register(any<SimpleCommand>()) } returns Unit
 }
 
-val eventBusMock = mockk<EventBus> {
-    every { call(any()) } returns Unit
-    every { register(any()) } returns Unit
-}
-
 val server = mockk<Server> {
     every { commandManager } returns commandManagerMock
-    every { eventBus } returns eventBusMock
 }
 
 val command = DummyCommand("test", "test.test", listOf("hello", "world"))

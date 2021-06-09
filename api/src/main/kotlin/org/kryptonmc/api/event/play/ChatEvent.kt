@@ -9,7 +9,8 @@
 package org.kryptonmc.api.event.play
 
 import org.kryptonmc.api.entity.entities.Player
-import org.kryptonmc.api.event.CancellableEvent
+import org.kryptonmc.api.event.ComponentResult
+import org.kryptonmc.api.event.ResultedEvent
 
 /**
  * Called when a player sends a chat message (not a command).
@@ -20,4 +21,7 @@ import org.kryptonmc.api.event.CancellableEvent
 class ChatEvent(
     val player: Player,
     val message: String
-) : CancellableEvent()
+) : ResultedEvent<ComponentResult> {
+
+    override var result = ComponentResult.allowed()
+}

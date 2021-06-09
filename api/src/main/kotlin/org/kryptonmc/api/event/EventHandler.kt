@@ -9,23 +9,13 @@
 package org.kryptonmc.api.event
 
 /**
- * The event bus is used to register and dispatch events
- *
- * This is heavily based off of BungeeCord's EventBus
+ * Represents a handler for a given event type [E]. This makes it easier to
+ * integrate the event system in to third-party event systems.
  */
-interface EventBus {
+fun interface EventHandler<E> {
 
     /**
-     * Call an event
-     *
-     * @param event the event to call
+     * The action to take when this event is fired.
      */
-    fun call(event: Event)
-
-    /**
-     * Register a new listener
-     *
-     * @param listener the listener to register
-     */
-    fun register(listener: Any)
+    fun execute(event: E)
 }

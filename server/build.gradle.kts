@@ -15,6 +15,7 @@ application.mainClass.set("org.kryptonmc.krypton.KryptonKt")
 
 repositories {
     maven("https://repo.velocitypowered.com/snapshots/")
+    maven("https://oss.sonatype.org/content/groups/public/")
 }
 
 dependencies {
@@ -36,11 +37,9 @@ dependencies {
     implementation("io.netty", "netty-transport-native-kqueue")
     implementation("io.netty.incubator", "netty-incubator-transport-native-io_uring", Versions.NETTY_IO_URING)
 
-    // Adventure
-    implementation("net.kyori", "adventure-text-serializer-gson")
-    implementation("net.kyori", "adventure-text-serializer-legacy")
-    implementation("net.kyori", "adventure-text-serializer-plain")
-    implementation("net.kyori", "adventure-nbt")
+    // Event
+    implementation("net.kyori", "event-method-asm", "4.0.0-SNAPSHOT")
+    implementation("org.ow2.asm", "asm", "9.1")
 
     // Logging
     runtimeOnly("org.apache.logging.log4j", "log4j-core")
@@ -57,6 +56,7 @@ dependencies {
     implementation("it.unimi.dsi", "fastutil", Versions.FASTUTIL)
 
     // Miscellaneous
+    implementation("net.kyori", "adventure-nbt")
     implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
     implementation("org.bstats", "bstats-base", Versions.BSTATS)
     implementation("com.velocitypowered", "velocity-native", Versions.VELOCITY_NATIVE)

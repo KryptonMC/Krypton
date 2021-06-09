@@ -15,7 +15,7 @@ import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.entities.Player
-import org.kryptonmc.api.event.EventBus
+import org.kryptonmc.api.event.EventManager
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
@@ -66,11 +66,12 @@ interface Server : ForwardingAudience {
     val servicesManager: ServicesManager
 
     /**
-     * The event bus for this server.
+     * The event manager for this server.
      *
-     * This is used to subscribe to and call events.
+     * This is used to register/unregister listeners/handlers for specific
+     * events that may be fired, and also to fire said events.
      */
-    val eventBus: EventBus
+    val eventManager: EventManager
 
     /**
      * The scheduler for this server.

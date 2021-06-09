@@ -48,7 +48,7 @@ class HandshakeHandler(
 
     override fun handle(packet: Packet) {
         if (packet !is PacketInHandshake) return // ignore if not a handshake packet
-        server.eventBus.call(HandshakeEvent(session.channel.remoteAddress() as InetSocketAddress))
+        server.eventManager.fireAndForget(HandshakeEvent(session.channel.remoteAddress() as InetSocketAddress))
 
         if (packet.data.address.split('\u0000').size > 1 && !server.config.other.bungeecord) {
             disconnect(Messages.BUNGEE.NOTIFY())

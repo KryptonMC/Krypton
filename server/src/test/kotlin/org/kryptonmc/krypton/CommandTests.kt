@@ -33,7 +33,8 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.brigadierCommand
 import org.kryptonmc.krypton.command.KryptonCommandManager
-import org.kryptonmc.krypton.event.KryptonEventBus
+import org.kryptonmc.krypton.plugin.KryptonEventManager
+import java.util.concurrent.CompletableFuture
 import kotlin.test.Test
 
 class CommandTests {
@@ -58,8 +59,13 @@ class CommandTests {
 
     companion object {
 
+        private val eventManagerMock = mockk<KryptonEventManager> {
+            every { fireSync(any<Any>()) } returnsArgument 0
+            every { fire(any<Any>()) } answers { CompletableFuture.completedFuture(arg(0)) }
+        }
+
         private val server = mockk<KryptonServer> {
-            every { eventBus } returns KryptonEventBus
+            every { eventManager } returns eventManagerMock
             every { stop(any()) } returns Unit
             every { restart() } returns Unit
         }

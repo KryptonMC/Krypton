@@ -19,41 +19,38 @@
 package org.kryptonmc.krypton
 
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
-import io.mockk.runs
 import io.mockk.verify
 import net.kyori.adventure.identity.Identity
-import org.kryptonmc.api.event.EventBus
+import org.kryptonmc.api.event.EventManager
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.krypton.command.KryptonSender
-import org.kryptonmc.krypton.event.KryptonEventBus
 import java.util.UUID
+import java.util.concurrent.CompletableFuture
 import kotlin.test.Test
 import kotlin.test.assertFalse
 
 class SenderTests {
 
-    private val eventBusMock = mockk<KryptonEventBus> {
-        every { call(any()) } just runs
+    private val eventBusMock = mockk<EventManager> {
+        every { fire(any<Any>()) } answers { CompletableFuture.completedFuture(arg(0)) }
     }
 
     @Test
     fun `has permission calls event`() {
         val sender = DummySender(eventBusMock)
         assertFalse(sender.hasPermission("test.test"))
-        verify { eventBusMock.call(any()) }
+        verify { eventBusMock.fire(any<PermissionCheckEvent>()) }
     }
 }
 
-private class DummySender(private val eventBus: EventBus) : KryptonSender() {
+private class DummySender(private val eventManager: EventManager) : KryptonSender(mockk()) {
 
     override val name = "dummy"
 
     override fun hasPermission(permission: String): Boolean {
         val event = PermissionCheckEvent(this, permission, permission in permissions)
-        eventBus.call(event)
-        return event.result.value
+        return eventManager.fire(event).join().result.value
     }
 
     override fun identity() = Identity.identity(UUID.randomUUID())

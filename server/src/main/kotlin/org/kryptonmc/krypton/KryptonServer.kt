@@ -30,6 +30,8 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
+import org.kryptonmc.api.event.server.ServerStartEvent
+import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.ticking.TickEndEvent
 import org.kryptonmc.api.event.ticking.TickStartEvent
 import org.kryptonmc.api.status.StatusInfo
@@ -42,7 +44,6 @@ import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.console.KryptonConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
-import org.kryptonmc.krypton.event.KryptonEventBus
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.MetadataResponse
 import org.kryptonmc.krypton.locale.TranslationRepository
@@ -51,6 +52,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.session.SessionManager
 import org.kryptonmc.krypton.packet.state.PacketState
+import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.registry.json.RegistryBlock
 import org.kryptonmc.krypton.registry.json.RegistryBlockState
@@ -99,10 +101,9 @@ import kotlin.system.measureTimeMillis
 
 class KryptonServer(val mainThread: Thread) : Server {
 
-    override val info = KryptonServerInfo
-
     internal val config = loadConfig()
 
+    override val info = KryptonServerInfo
     override val status = KryptonStatusInfo(config.status.maxPlayers, config.status.motd)
 
     override val isOnline = config.server.onlineMode
@@ -126,16 +127,13 @@ class KryptonServer(val mainThread: Thread) : Server {
     internal val random: SecureRandom = SecureRandom()
 
     val sessionManager = SessionManager(this)
-
-    override val worldManager = KryptonWorldManager(this, config.world.name)
     val playerDataManager = PlayerDataManager(CURRENT_DIRECTORY.resolve(config.world.name).resolve("playerdata").createDirectory())
 
+    override val worldManager = KryptonWorldManager(this, config.world.name)
     override val commandManager = KryptonCommandManager(this)
-    override val eventBus = KryptonEventBus
-
     override val pluginManager = KryptonPluginManager(this)
+    override val eventManager = KryptonEventManager(pluginManager)
     override val servicesManager = KryptonServicesManager
-
     override val scheduler = KryptonScheduler(pluginManager)
 
     @Volatile
@@ -168,6 +166,7 @@ class KryptonServer(val mainThread: Thread) : Server {
     internal fun start(disableGUI: Boolean) = try {
         Messages.START.INITIAL.info(LOGGER, config.server.ip, config.server.port)
         val startTime = System.nanoTime()
+
         // loading these here avoids loading them when the first player joins
         Class.forName("org.kryptonmc.krypton.registry.Registries")
         Class.forName("org.kryptonmc.krypton.registry.tags.TagManager")
@@ -175,29 +174,30 @@ class KryptonServer(val mainThread: Thread) : Server {
         Class.forName("org.kryptonmc.krypton.command.argument.ArgumentTypes")
         CrashReport.preload()
 
+        // Start up the console handler
         LOGGER.debug("Starting console handler")
         Thread(KryptonConsole(this)::start, "Console Handler").apply {
             uncaughtExceptionHandler = DefaultUncaughtExceptionHandler(logger("CONSOLE"))
             isDaemon = true
         }.start()
 
+        // Load the packets
         LOGGER.debug("Loading packets...")
         PacketLoader.loadAll()
 
-        LOGGER.debug("Registering commands and console translations...")
+        // Register the commands and console translations, and schedule a refresh of the translation repository
+        // (query data.kryptonmc.org for translation metadata and download the new translations)
+        LOGGER.debug("Registering commands and translations...")
         commandManager.registerBuiltins()
         TranslationRegister.initialize()
         TranslationRepository.scheduleRefresh()
 
-        LOGGER.debug("Starting Netty...")
-        GlobalScope.launch(Dispatchers.IO) {
-            nettyProcess.run()
-        }
-
+        // Start the metrics system
         LOGGER.debug("Starting bStats metrics")
         System.setProperty("bstats.relocatecheck", "false") // Avoid relocating bStats since we want to expose it later
         KryptonMetrics.initialize(this, config.other.metrics)
 
+        // Warn about piracy being unsupported and then load plugins
         if (!config.server.onlineMode) {
             LOGGER.info("-----------------------------------------------------------------------------------")
             Messages.PIRACY_WARNING.info(LOGGER)
@@ -205,26 +205,42 @@ class KryptonServer(val mainThread: Thread) : Server {
         }
         loadPlugins()
 
+        // Fire the event that signals the server starting. We fire it here so that plugins can listen to it as part
+        // of their lifecycle, and we call it sync so plugins can finish initialising before we do
+        eventManager.fireAndForgetSync(ServerStartEvent())
+
+        // Set the last tick time (avoids initial check sending an overload warning every time) and register the JMX
+        // bean
         lastTickTime = System.currentTimeMillis()
         if (config.advanced.enableJmxMonitoring) KryptonStatistics.register(this)
 
+        // Enable and start watchdog
         if (config.watchdog.timeoutTime > 0) {
             LOGGER.debug("Starting watchdog")
             watchdog = WatchdogProcess(this)
             watchdog?.start()
         }
 
+        // Enable the GS4 query listener and open the GUI
         if (config.query.enabled) {
             Messages.START.QUERY.info(LOGGER)
             gs4QueryHandler = GS4QueryHandler.create(this)
         }
         if (!disableGUI && !GraphicsEnvironment.isHeadless()) KryptonServerGUI.open(this)
 
+        // Start accepting connections
+        LOGGER.debug("Starting Netty...")
+        GlobalScope.launch(Dispatchers.IO) {
+            nettyProcess.run()
+        }
+
+        // Add the shutdown hook to stop the server
         Runtime.getRuntime().addShutdownHook(Thread(::stop, "Shutdown Handler").apply { isDaemon = false })
 
         Messages.START.DONE.info(LOGGER, "%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9))
-        watchdog?.tick(System.currentTimeMillis())
+        watchdog?.tick(System.currentTimeMillis()) // Initial watchdog tick
 
+        // Start ticking the server
         while (isRunning) {
             val nextTickTime = System.currentTimeMillis() - lastTickTime
             if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15_000L) {
@@ -240,7 +256,7 @@ class KryptonServer(val mainThread: Thread) : Server {
 
             // start tick
             profiler.push("tick start event")
-            eventBus.call(TickStartEvent(tickCount))
+            eventManager.fireAndForgetSync(TickStartEvent(tickCount))
             profiler.pop()
 
             profiler.push("tick")
@@ -256,7 +272,7 @@ class KryptonServer(val mainThread: Thread) : Server {
 
             // end tick
             profiler.push("tick end event")
-            eventBus.call(TickEndEvent(tickCount, tickTime, finishTime))
+            eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
             profiler.pop()
             lastTickTime = finishTime
             watchdog?.tick(finishTime)
@@ -412,7 +428,8 @@ class KryptonServer(val mainThread: Thread) : Server {
 
         // shut down plugins and unregister listeners
         Messages.STOP.PLUGINS.info(LOGGER)
-        eventBus.unregisterAll()
+        eventManager.fireAndForgetSync(ServerStopEvent())
+        eventManager.shutdown()
 
         // shut down scheduler
         scheduler.shutdown()

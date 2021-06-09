@@ -28,13 +28,12 @@ import org.kryptonmc.api.plugin.ap.SerializedDependency
 import org.kryptonmc.api.plugin.ap.SerializedPluginDescription
 import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.plugin.PluginClassLoader
+import org.kryptonmc.krypton.util.doPrivileged
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.file.Path
-import java.security.AccessController
-import java.security.PrivilegedAction
 import java.util.jar.JarInputStream
 import kotlin.io.path.inputStream
 
@@ -95,5 +94,3 @@ class PluginLoader {
         main
     )
 }
-
-private fun <T> doPrivileged(action: () -> T): T = AccessController.doPrivileged(PrivilegedAction(action))

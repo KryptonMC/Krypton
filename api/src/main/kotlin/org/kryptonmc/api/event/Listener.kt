@@ -16,4 +16,4 @@ package org.kryptonmc.api.event
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Listener(val priority: Byte = ListenerPriority.MEDIUM)
+annotation class Listener(val priority: ListenerPriority = ListenerPriority.MEDIUM)
