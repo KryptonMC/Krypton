@@ -35,15 +35,12 @@ import org.kryptonmc.krypton.world.HeightmapBuilder
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.BitStorage
 import org.kryptonmc.krypton.world.region.RegionFileManager
-import java.nio.file.Path
 import java.util.LinkedList
 import java.util.concurrent.TimeUnit
 
 class ChunkManager(private val world: KryptonWorld) {
 
-    private val worldFolder = Path.of(world.name)
-    private val regionFileManager = RegionFileManager(worldFolder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
-
+    private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
     private val chunkCache: Cache<ChunkPosition, KryptonChunk> = Caffeine.newBuilder()
         .maximumSize(512)
         .expireAfterWrite(10, TimeUnit.MINUTES)
