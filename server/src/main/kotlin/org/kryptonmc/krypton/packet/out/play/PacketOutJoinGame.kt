@@ -57,7 +57,7 @@ class PacketOutJoinGame(
     private val dimension: Key,
     private val maxPlayers: Int = 20,
     private val viewDistance: Int = 10
-) : PlayPacket(0x24) {
+) : PlayPacket(0x26) {
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(entityId)

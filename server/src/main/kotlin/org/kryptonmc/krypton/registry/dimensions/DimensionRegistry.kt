@@ -60,7 +60,9 @@ data class DimensionEntrySettings(
     @SerializedName("logical_height") val logicalHeight: Int = 256,
     @SerializedName("coordinate_scale") val coordinateScale: Double = 0.0,
     val ultrawarm: Boolean = false,
-    @SerializedName("has_ceiling") val hasCeiling: Boolean = false
+    @SerializedName("has_ceiling") val hasCeiling: Boolean = false,
+    @SerializedName("min_y") val minY: Int,
+    val height: Int
 ) {
 
     fun toNBT() = CompoundBinaryTag.builder()
@@ -78,5 +80,7 @@ data class DimensionEntrySettings(
         .putDouble("coordinate_scale", coordinateScale)
         .putBoolean("ultrawarm", ultrawarm)
         .putBoolean("has_ceiling", hasCeiling)
+        .putInt("min_y", minY)
+        .putInt("height", height)
         .build()
 }

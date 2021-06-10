@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.world.bossbar.BossBarManager
 class PacketOutBossBar(
     private val action: BossBarAction,
     private val bar: BossBarManager.BossBarHolder
-) : PlayPacket(0x0C) {
+) : PlayPacket(0x0D) {
 
     override fun write(buf: ByteBuf) {
         buf.writeUUID(bar.id)

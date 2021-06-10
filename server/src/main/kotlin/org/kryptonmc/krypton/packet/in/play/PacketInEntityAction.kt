@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.util.readVarInt
  * Contrary to its name, this is only for players, as it is only sent by clients.
  * This is sent when the player performs one of the actions listed in the [EntityAction] enum.
  */
-class PacketInEntityAction(buf: ByteBuf) : PlayPacket(0x1C) {
+class PacketInEntityAction(buf: ByteBuf) : PlayPacket(0x1B) {
 
     val action: EntityAction
     val data: Int

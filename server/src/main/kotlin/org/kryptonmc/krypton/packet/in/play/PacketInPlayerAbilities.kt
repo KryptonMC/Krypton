@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  * This is another poorly named packet. This packet is only for indicating when the client begins/ends
  * flying. That's literally it.
  */
-class PacketInPlayerAbilities(buf: ByteBuf) : PlayPacket(0x1A) {
+class PacketInPlayerAbilities(buf: ByteBuf) : PlayPacket(0x19) {
 
     val isFlying = buf.readByte().toInt() and 2 != 0
 }

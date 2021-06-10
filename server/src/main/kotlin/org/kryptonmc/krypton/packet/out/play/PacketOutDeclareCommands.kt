@@ -39,7 +39,7 @@ import org.kryptonmc.krypton.util.writeVarInt
  *
  * @param root the root command node
  */
-class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : PlayPacket(0x10) {
+class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : PlayPacket(0x12) {
 
     override fun write(buf: ByteBuf) {
         val enumerations = root.enumerate()

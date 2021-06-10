@@ -55,10 +55,11 @@ data class TagData(
     val values: List<String>
 )
 
-enum class TagType {
+enum class TagType(val identifier: String) {
 
-    BLOCKS,
-    ITEMS,
-    FLUIDS,
-    ENTITY_TYPES
+    BLOCKS("minecraft:block"),
+    ITEMS("minecraft:item"),
+    FLUIDS("minecraft:fluid"),
+    ENTITY_TYPES("minecraft:entity_type"),
+    GAME_EVENTS("minecraft:game_event")
 }

@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.util.writeUByte
 class PacketOutChangeGameState(
     private val reason: GameState,
     private val value: Float = 0.0F
-) : PlayPacket(0x1D) {
+) : PlayPacket(0x1E) {
 
     override fun write(buf: ByteBuf) {
         buf.writeUByte(reason.ordinal.toUByte())

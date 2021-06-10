@@ -25,12 +25,12 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  * Sent when the client moves. Not actually sure what this base packet is used for, but we don't
  * use it in Krypton, it's only used as a base packet.
  */
-open class PacketInPlayerMovement(id: Int = 0x15) : PlayPacket(id) {
+open class PacketInPlayerMovement(id: Int = 0x14) : PlayPacket(id) {
 
     /**
      * Sent when the player changes their position without changing their rotation
      */
-    class PacketInPlayerPosition(buf: ByteBuf) : PacketInPlayerMovement(0x12) {
+    class PacketInPlayerPosition(buf: ByteBuf) : PacketInPlayerMovement(0x11) {
 
         val x = buf.readDouble()
         val y = buf.readDouble()
@@ -41,7 +41,7 @@ open class PacketInPlayerMovement(id: Int = 0x15) : PlayPacket(id) {
     /**
      * Sent when the player changes their rotation without changing their position
      */
-    class PacketInPlayerRotation(buf: ByteBuf) : PacketInPlayerMovement(0x14) {
+    class PacketInPlayerRotation(buf: ByteBuf) : PacketInPlayerMovement(0x13) {
 
         val yaw = buf.readFloat()
         val pitch = buf.readFloat()
@@ -51,7 +51,7 @@ open class PacketInPlayerMovement(id: Int = 0x15) : PlayPacket(id) {
     /**
      * Sent when the player changes both their rotation and their position
      */
-    class PacketInPlayerPositionAndRotation(buf: ByteBuf) : PacketInPlayerMovement(0x13) {
+    class PacketInPlayerPositionAndRotation(buf: ByteBuf) : PacketInPlayerMovement(0x12) {
 
         val x = buf.readDouble()
         val y = buf.readDouble()

@@ -43,8 +43,6 @@ complexity:
     ignoreAnnotated: ['Inject']
   MethodOverloading:
     active: true
-  StringLiteralDuplication:
-    active: true
   TooManyFunctions:
     active: true
     thresholdInClasses: 15

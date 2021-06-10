@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.packet.state.PlayPacket
 
 /**
  * Unlocks recipes in the recipe book
@@ -51,7 +51,7 @@ class PacketOutUnlockRecipes(
     private val isSmokerBookFiltered: Boolean = false,
     private val recipes: List<Key> = emptyList(),
     private val newRecipes: List<Key> = emptyList()
-) : PlayPacket(0x35) {
+) : PlayPacket(0x39) {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(action.ordinal)

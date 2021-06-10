@@ -18,20 +18,20 @@
  */
 package org.kryptonmc.krypton.world
 
-import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldBorder
+import org.spongepowered.math.vector.Vector2d
 
 data class KryptonWorldBorder(
     override val world: World,
     override val size: Double,
-    override val center: Location,
+    override val center: Vector2d,
     override val damageMultiplier: Double,
     val safeZone: Double,
     val sizeLerpTarget: Double,
     val sizeLerpTime: Long,
-    val warningBlocks: Double,
-    val warningTime: Double
+    val warningBlocks: Int,
+    val warningTime: Int
 ) : WorldBorder
 
 /**
@@ -45,6 +45,6 @@ data class BorderBuilder(
     val safeZone: Double,
     val sizeLerpTarget: Double,
     val sizeLerpTime: Long,
-    val warningBlocks: Double,
-    val warningTime: Double
+    val warningBlocks: Int,
+    val warningTime: Int
 )

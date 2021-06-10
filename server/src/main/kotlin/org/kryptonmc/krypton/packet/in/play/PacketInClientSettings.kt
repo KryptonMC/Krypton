@@ -36,6 +36,7 @@ class PacketInClientSettings(buf: ByteBuf) : PlayPacket(0x05) {
         buf.readEnum(),
         buf.readBoolean(),
         buf.readUnsignedByte().toSkinSettings(),
-        buf.readEnum()
+        buf.readEnum(),
+        buf.readBoolean()
     )
 }

@@ -38,6 +38,7 @@ import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
+import org.spongepowered.math.vector.Vector2d
 import java.io.Writer
 import java.nio.file.Files
 import java.nio.file.Path
@@ -94,7 +95,7 @@ data class KryptonWorld(
     override val border = KryptonWorldBorder(
         this,
         borderBuilder.size,
-        Location(borderBuilder.centerX, 0.0, borderBuilder.centerZ),
+        Vector2d(borderBuilder.centerX, borderBuilder.centerZ),
         borderBuilder.damagePerBlock,
         borderBuilder.safeZone,
         borderBuilder.sizeLerpTarget,
@@ -194,15 +195,15 @@ data class KryptonWorld(
 
         BinaryTagIO.writer().write(CompoundBinaryTag.builder().put("Data", CompoundBinaryTag.builder()
             .putBoolean("allowCommands", false)
-            .putDouble("BorderCenterX", border.center.x)
-            .putDouble("BorderCenterZ", border.center.z)
+            .putDouble("BorderCenterX", border.center.x())
+            .putDouble("BorderCenterZ", border.center.y())
             .putDouble("BorderDamagePerBlock", border.damageMultiplier)
             .putDouble("BorderSize", border.size)
             .putDouble("BorderSafeZone", border.safeZone)
             .putDouble("BorderSizeLerpTarget", border.sizeLerpTarget)
             .putLong("BorderSizeLerpTime", border.sizeLerpTime)
-            .putDouble("BorderWarningBlocks", border.warningBlocks)
-            .putDouble("BorderWarningTime", border.warningTime)
+            .putDouble("BorderWarningBlocks", border.warningBlocks.toDouble())
+            .putDouble("BorderWarningTime", border.warningTime.toDouble())
             .putInt("clearWeatherTime", clearWeatherTime)
             .put("CustomBossEvents", CompoundBinaryTag.empty())
             .put("DataPacks", CompoundBinaryTag.builder()

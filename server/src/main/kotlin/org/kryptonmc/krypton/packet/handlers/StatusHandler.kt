@@ -61,7 +61,7 @@ class StatusHandler(
             .toSet()
 
         session.sendPacket(PacketOutStatusResponse(StatusResponse(
-            ServerVersion(ServerInfo.VERSION, ServerInfo.PROTOCOL),
+            ServerVersion(KryptonServer.KryptonServerInfo.minecraftVersion, ServerInfo.PROTOCOL),
             Players(server.status.maxPlayers, ServerStorage.PLAYER_COUNT.get(), players),
             server.status.motd
         )))

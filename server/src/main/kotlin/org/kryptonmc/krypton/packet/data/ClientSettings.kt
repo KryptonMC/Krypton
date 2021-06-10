@@ -33,7 +33,8 @@ data class ClientSettings(
     val chatMode: ChatMode,
     val chatColors: Boolean,
     val skinSettings: SkinSettings,
-    val mainHand: MainHand
+    val mainHand: MainHand,
+    val disableTextFiltering: Boolean
 )
 
 /**

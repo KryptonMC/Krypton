@@ -51,24 +51,27 @@ import org.kryptonmc.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
+import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
+import org.kryptonmc.krypton.packet.out.play.PacketOutChat
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerListHeaderFooter
+import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
-import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
-import org.kryptonmc.krypton.packet.out.play.chat.PacketOutChat
-import org.kryptonmc.krypton.packet.out.play.chat.PacketOutPlayerListHeaderFooter
-import org.kryptonmc.krypton.packet.out.play.chat.PacketOutTitle
-import org.kryptonmc.krypton.packet.out.play.chat.TitleAction
-import org.kryptonmc.krypton.packet.out.play.chunk.PacketOutChunkData
-import org.kryptonmc.krypton.packet.out.play.chunk.PacketOutUnloadChunk
-import org.kryptonmc.krypton.packet.out.play.chunk.PacketOutUpdateLight
-import org.kryptonmc.krypton.packet.out.play.chunk.PacketOutUpdateViewPosition
-import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMovement.PacketOutEntityPosition
-import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
-import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityTeleport
-import org.kryptonmc.krypton.packet.out.play.sound.PacketOutNamedSoundEffect
-import org.kryptonmc.krypton.packet.out.play.sound.PacketOutSoundEffect
-import org.kryptonmc.krypton.packet.out.play.sound.PacketOutStopSound
-import org.kryptonmc.krypton.packet.out.play.window.PacketOutSetSlot
+import org.kryptonmc.krypton.packet.out.play.PacketOutTitle
+import org.kryptonmc.krypton.packet.out.play.PacketOutChunkData
+import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
+import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityTeleport
+import org.kryptonmc.krypton.packet.out.play.PacketOutNamedSoundEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
+import org.kryptonmc.krypton.packet.out.play.PacketOutSubTitle
+import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
 import org.kryptonmc.krypton.packet.session.Session
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.canBuild
@@ -171,7 +174,7 @@ class KryptonPlayer(
     }
 
     override fun sendActionBar(message: Component) {
-        session.sendPacket(PacketOutTitle(TitleAction.SET_ACTION_BAR, actionBar = message))
+        session.sendPacket(PacketOutActionBar(message))
     }
 
     override fun sendPlayerListHeaderAndFooter(header: Component, footer: Component) {
@@ -179,17 +182,17 @@ class KryptonPlayer(
     }
 
     override fun showTitle(title: Title) {
-        session.sendPacket(PacketOutTitle(TitleAction.SET_TITLE, title))
-        session.sendPacket(PacketOutTitle(TitleAction.SET_SUBTITLE, title))
-        session.sendPacket(PacketOutTitle(TitleAction.SET_TIMES_AND_DISPLAY, title))
+        session.sendPacket(PacketOutTitle(title.title()))
+        session.sendPacket(PacketOutSubTitle(title.subtitle()))
+        title.times()?.let { session.sendPacket(PacketOutTitleTimes(it)) }
     }
 
     override fun clearTitle() {
-        session.sendPacket(PacketOutTitle(TitleAction.HIDE))
+        session.sendPacket(PacketOutClearTitles(false))
     }
 
     override fun resetTitle() {
-        session.sendPacket(PacketOutTitle(TitleAction.RESET))
+        session.sendPacket(PacketOutClearTitles(true))
     }
 
     override fun showBossBar(bar: BossBar) = BossBarManager.addBar(bar, this)

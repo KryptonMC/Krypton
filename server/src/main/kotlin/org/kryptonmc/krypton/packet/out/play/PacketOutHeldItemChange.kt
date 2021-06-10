@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  *
  * @param slot the slot to change to
  */
-class PacketOutHeldItemChange(private val slot: Int) : PlayPacket(0x3F) {
+class PacketOutHeldItemChange(private val slot: Int) : PlayPacket(0x48) {
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(slot)

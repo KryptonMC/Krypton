@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.toVector
 import org.kryptonmc.krypton.world.block.BlockFace
 
-class PacketInPlayerDigging(buf: ByteBuf) : PlayPacket(0x1B) {
+class PacketInPlayerDigging(buf: ByteBuf) : PlayPacket(0x1A) {
 
     val status = buf.readEnum<DiggingStatus>()
     val location = buf.readLong().toVector()

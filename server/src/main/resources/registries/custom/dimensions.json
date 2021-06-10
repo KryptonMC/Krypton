@@ -17,7 +17,9 @@
         "logical_height": 256,
         "coordinate_scale": 1.0,
         "ultrawarm": false,
-        "has_ceiling": false
+        "has_ceiling": false,
+        "min_y": 0,
+        "height": 256
       }
     },
     {
@@ -36,7 +38,9 @@
         "logical_height": 256,
         "coordinate_scale": 1.0,
         "ultrawarm": false,
-        "has_ceiling": true
+        "has_ceiling": true,
+        "min_y": 0,
+        "height": 256
       }
     },
     {
@@ -56,7 +60,9 @@
         "logical_height": 128,
         "coordinate_scale": 8.0,
         "ultrawarm": true,
-        "has_ceiling": true
+        "has_ceiling": true,
+        "min_y": 0,
+        "height": 256
       }
     },
     {
@@ -76,7 +82,9 @@
         "logical_height": 256,
         "coordinate_scale": 1.0,
         "ultrawarm": false,
-        "has_ceiling": false
+        "has_ceiling": false,
+        "min_y": 0,
+        "height": 256
       }
     }
   ]

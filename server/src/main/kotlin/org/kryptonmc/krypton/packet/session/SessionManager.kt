@@ -35,7 +35,6 @@ import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
-import org.kryptonmc.krypton.packet.out.play.BorderAction
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
@@ -52,17 +51,17 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnlockRecipes
-import org.kryptonmc.krypton.packet.out.play.PacketOutWorldBorder
 import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
-import org.kryptonmc.krypton.packet.out.play.chunk.PacketOutUpdateViewPosition
-import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityDestroy
-import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMetadata
-import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityMovement.PacketOutEntityHeadLook
-import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties
-import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
-import org.kryptonmc.krypton.packet.out.play.entity.PacketOutEntityStatus
-import org.kryptonmc.krypton.packet.out.play.entity.spawn.PacketOutSpawnPlayer
-import org.kryptonmc.krypton.packet.out.play.window.PacketOutWindowItems
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityDestroy
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityMetadata
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityHeadLook
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityProperties
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
+import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
+import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
+import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.util.Angle
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
@@ -190,7 +189,7 @@ class SessionManager(private val server: KryptonServer) {
         session.player.updateChunks() // Initial stream
 
         session.sendPacket(PacketOutEntityMetadata(session.id, metadata))
-        session.sendPacket(PacketOutWorldBorder(BorderAction.INITIALIZE, world.border))
+        session.sendPacket(PacketOutInitializeWorldBorder(world.border))
         session.sendPacket(PacketOutTimeUpdate(world.time, world.dayTime))
         session.sendPacket(PacketOutSpawnPosition(spawnLocation))
         session.sendPacket(PacketOutEntityProperties(session.id, session.player.attributes))
@@ -239,7 +238,7 @@ class SessionManager(private val server: KryptonServer) {
         server.eventManager.fire(QuitEvent(session.player)).thenAccept { event ->
             GlobalScope.launch(Dispatchers.IO) { server.playerDataManager.save(session.player) }
 
-            val destroyPacket = PacketOutEntityDestroy(listOf(session.id))
+            val destroyPacket = PacketOutEntityDestroy(session.id)
             val infoPacket = PacketOutPlayerInfo(PlayerAction.REMOVE_PLAYER, listOf(PlayerInfo(profile = session.profile)))
 
             sendPackets(destroyPacket, infoPacket) { it != session && it.currentState == PacketState.PLAY }

@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.util.writeParticle
 class PacketOutParticles(
     private val particleEffect: ParticleEffect,
     private val location: Location
-) : PlayPacket(0x22) {
+) : PlayPacket(0x24) {
 
     override fun write(buf: ByteBuf) {
         buf.writeParticle(particleEffect, location)

@@ -31,7 +31,7 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 class PacketOutTimeUpdate(
     private val worldAge: Long,
     private val timeOfDay: Long
-) : PlayPacket(0x4E) {
+) : PlayPacket(0x58) {
 
     override fun write(buf: ByteBuf) {
         buf.writeLong(worldAge)

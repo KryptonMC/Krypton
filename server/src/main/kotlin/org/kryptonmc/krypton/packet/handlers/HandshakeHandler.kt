@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.packet.handlers
 
-import net.kyori.adventure.extra.kotlin.text
 import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.Component.text
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.ServerStorage
@@ -96,7 +96,7 @@ class HandshakeHandler(
             }
             val reason = translatable {
                 key(key)
-                args(text { content(ServerInfo.VERSION) })
+                args(text(KryptonServer.KryptonServerInfo.minecraftVersion))
             }
             session.disconnect(reason)
             return

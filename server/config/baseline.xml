@@ -51,13 +51,6 @@
     <ID>UnderscoresInNumericLiterals:Metrics.kt$KryptonMetrics$11197</ID>
     <ID>UnderscoresInNumericLiterals:QueryCategory.kt$QueryCategory$25566</ID>
     <ID>UnderscoresInNumericLiterals:ServerCategory.kt$ServerCategory$25565</ID>
-    <ID>StringLiteralDuplication:BiomeRegistry.kt$BiomeEffectSound$"sound"</ID>
-    <ID>StringLiteralDuplication:FlatGenerator.kt$FlatGeneratorSettings$"structures"</ID>
-    <ID>StringLiteralDuplication:KryptonServerGUI.kt$KryptonServerGUI$"Center"</ID>
-    <ID>StringLiteralDuplication:Messages.kt$"krypton.$key"</ID>
-    <ID>StringLiteralDuplication:PacketOutScoreboardTeam.kt$PacketOutScoreboardTeam$"always"</ID>
-    <ID>StringLiteralDuplication:RegionFile.kt$RegionFile$"c.${position.x}.${position.z}.mcc"</ID>
-    <ID>StringLiteralDuplication:TranslationRepository.kt$TranslationRepository$"lastRefresh"</ID>
     <ID>TooManyFunctions:KryptonCommandManager.kt$KryptonCommandManager : CommandManager</ID>
     <ID>TooManyFunctions:KryptonPlayer.kt$KryptonPlayer : PlayerKryptonSender</ID>
     <ID>TooManyFunctions:KryptonServer.kt$KryptonServer : Server</ID>

@@ -30,7 +30,7 @@ class PacketOutAcknowledgePlayerDigging(
     private val stateId: Int,
     private val status: DiggingStatus,
     private val successful: Boolean
-) : PlayPacket(0x07) {
+) : PlayPacket(0x09) {
 
     override fun write(buf: ByteBuf) {
         buf.writeLong(location.toProtocol())

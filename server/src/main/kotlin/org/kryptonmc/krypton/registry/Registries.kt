@@ -40,6 +40,7 @@ object Registries {
     val ITEMS = MappedRegistry(REGISTRIES.getValue(key("item")).entries.mapValues { it.value.id })
     val ENTITY_TYPES = MappedRegistry(REGISTRIES.getValue(key("entity_type")).entries.mapValues { it.value.id })
     val SOUND_EVENTS = MappedRegistry(REGISTRIES.getValue(key("sound_event")).entries.mapValues { it.value.id })
+    val GAME_EVENTS = MappedRegistry(REGISTRIES.getValue(key("game_event")).entries.mapValues { it.value.id })
 
     val BIOMES = GSON.fromJson<BiomeRegistry>(registryData("registries/custom/biomes.json"))
     val DIMENSIONS = GSON.fromJson<DimensionRegistry>(registryData("registries/custom/dimensions.json"))

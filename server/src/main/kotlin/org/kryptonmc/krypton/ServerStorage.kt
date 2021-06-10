@@ -28,9 +28,5 @@ object ServerStorage {
 
 object ServerInfo {
 
-    const val VERSION = "1.16.5"
-    const val PROTOCOL = 754
-
-    // always empty in the modern protocol
-    const val SERVER_ID = ""
+    const val PROTOCOL = 755
 }

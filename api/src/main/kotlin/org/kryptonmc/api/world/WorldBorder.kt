@@ -8,6 +8,8 @@
  */
 package org.kryptonmc.api.world
 
+import org.spongepowered.math.vector.Vector2d
+
 /**
  * The area around a world that prevents players from venturing too far into the wilderness.
  */
@@ -28,7 +30,7 @@ interface WorldBorder {
      *
      * Note: This position's Y will always be -1.
      */
-    val center: Location
+    val center: Vector2d
 
     /**
      * The damage multiplier for this border.

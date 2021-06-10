@@ -20,17 +20,18 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.Registries
 import org.kryptonmc.krypton.registry.tags.Tag
 import org.kryptonmc.krypton.registry.tags.TagManager
+import org.kryptonmc.krypton.registry.tags.TagType
+import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeVarInt
 
 /**
  * Tells the client all the tags present on the server. This is an object as it only needs to be instantiated once
  */
-object PacketOutTags : PlayPacket(0x5B) {
+object PacketOutTags : PlayPacket(0x66) {
 
     private val blockRegistry: (Key) -> Int? = {
         Registries.BLOCKS.idOf(it)
@@ -44,15 +45,27 @@ object PacketOutTags : PlayPacket(0x5B) {
     private val entityRegistry: (Key) -> Int? = {
         Registries.ENTITY_TYPES.idOf(it)
     }
-
-    override fun write(buf: ByteBuf) {
-        buf.writeTags(TagManager.blockTags, blockRegistry)
-        buf.writeTags(TagManager.itemTags, itemRegistry)
-        buf.writeTags(TagManager.fluidTags, fluidRegistry)
-        buf.writeTags(TagManager.entityTags, entityRegistry)
+    private val gameEventRegistry: (Key) -> Int? = {
+        Registries.GAME_EVENTS.idOf(it)
     }
 
-    private fun ByteBuf.writeTags(tags: Set<Tag>, registry: (Key) -> Int?) {
+    private val registries = mapOf(
+        TagType.BLOCKS.identifier to blockRegistry,
+        TagType.ITEMS.identifier to itemRegistry,
+        TagType.FLUIDS.identifier to fluidRegistry,
+        TagType.ENTITY_TYPES.identifier to entityRegistry,
+        TagType.GAME_EVENTS.identifier to gameEventRegistry
+    )
+
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(TagManager.tags.size)
+        TagManager.tags.forEach { (id, tags) ->
+            buf.writeString(id)
+            buf.writeTags(tags, registries.getValue(id))
+        }
+    }
+
+    private fun ByteBuf.writeTags(tags: List<Tag>, registry: (Key) -> Int?) {
         writeVarInt(tags.size)
         tags.forEach { tag ->
             writeString(tag.name.asString())

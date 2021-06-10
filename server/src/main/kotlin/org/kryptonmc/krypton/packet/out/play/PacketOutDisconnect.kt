@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeChat
 
 /**
  * Sent to indicate that the client should close the connection to the server for the specified [reason].
@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  *
  * @param reason the reason for disconnection
  */
-class PacketOutDisconnect(private val reason: Component) : PlayPacket(0x19) {
+class PacketOutDisconnect(private val reason: Component) : PlayPacket(0x1A) {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(reason)

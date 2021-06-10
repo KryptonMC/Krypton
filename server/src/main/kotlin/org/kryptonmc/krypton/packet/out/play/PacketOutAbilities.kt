@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  *
  * @param abilities the abilities to set
  */
-class PacketOutAbilities(private val abilities: Abilities) : PlayPacket(0x30) {
+class PacketOutAbilities(private val abilities: Abilities) : PlayPacket(0x32) {
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(abilities.flagsToProtocol())

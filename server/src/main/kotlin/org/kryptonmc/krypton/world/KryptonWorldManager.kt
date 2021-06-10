@@ -148,8 +148,8 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
                 nbt.getDouble("BorderSafeZone"),
                 nbt.getDouble("BorderSizeLerpTarget"),
                 nbt.getLong("BorderSizeLerpTime"),
-                nbt.getDouble("BorderWarningBlocks"),
-                nbt.getDouble("BorderWarningTime")
+                nbt.getDouble("BorderWarningBlocks").toInt(),
+                nbt.getDouble("BorderWarningTime").toInt()
             ),
             nbt.getInt("clearWeatherTime"),
             nbt.getLong("DayTime"),

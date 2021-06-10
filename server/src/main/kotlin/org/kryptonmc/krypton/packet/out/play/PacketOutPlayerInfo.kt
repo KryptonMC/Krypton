@@ -22,11 +22,11 @@ import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.packet.state.PlayPacket
 
 /**
  * Updates information on the tab list (called the player list by vanilla).
@@ -37,7 +37,7 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 class PacketOutPlayerInfo(
     private val action: PlayerAction,
     private val players: List<PlayerInfo> = emptyList()
-) : PlayPacket(0x32) {
+) : PlayPacket(0x36) {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(action.ordinal)

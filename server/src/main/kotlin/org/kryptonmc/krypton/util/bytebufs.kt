@@ -48,6 +48,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.Duration
+import java.util.BitSet
 import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.ceil
@@ -365,6 +366,8 @@ fun ByteBuf.writeDuration(duration: Duration) {
 }
 
 inline fun <reified T : Enum<T>> ByteBuf.readEnum(): T = T::class.java.enumConstants[readVarInt()]
+
+fun ByteBuf.writeBitSet(set: BitSet) = writeLongArray(set.toLongArray())
 
 fun Int.varIntSize(): Int {
     for (i in 1 until 5) {

@@ -36,7 +36,7 @@ import org.kryptonmc.krypton.util.writeKey
 class PacketOutPluginMessage(
     private val channelName: Key,
     private val content: ByteArray
-) : PlayPacket(0x17) {
+) : PlayPacket(0x18) {
 
     override fun write(buf: ByteBuf) {
         buf.writeKey(channelName)
