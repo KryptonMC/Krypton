@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.event.play
 
+import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.command.Sender
 
 /**
@@ -29,32 +30,9 @@ class PermissionCheckEvent(
      * The result of the permission check
      */
     var result = when {
-        permission == null -> PermissionCheckResult.TRUE
-        has -> PermissionCheckResult.TRUE
-        permission in sender.permissions -> PermissionCheckResult.FALSE
-        else -> PermissionCheckResult.UNSET
+        permission == null -> TriState.TRUE
+        has -> TriState.TRUE
+        permission in sender.permissions -> TriState.FALSE
+        else -> TriState.NOT_SET
     }
-}
-
-/**
- * The result of a permission check
- *
- * @param value the value as a boolean
- */
-enum class PermissionCheckResult(val value: Boolean) {
-
-    /**
-     * Indicates this permission is set and true
-     */
-    TRUE(true),
-
-    /**
-     * Indicates this permission is set and false
-     */
-    FALSE(false),
-
-    /**
-     * Indicates this permission is unset
-     */
-    UNSET(false)
 }

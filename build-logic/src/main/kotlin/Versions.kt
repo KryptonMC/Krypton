@@ -10,8 +10,8 @@ object Versions {
     const val KOTLIN_GUICE = "1.5.0"
     const val COMMONS_LANG = "3.12.0"
     const val COMMONS_TEXT = "1.9"
-    const val ADVENTURE = "4.7.0"
-    const val COROUTINES = "1.4.3"
+    const val ADVENTURE = "4.8.0"
+    const val COROUTINES = "1.5.0"
     const val CONFIGURATE = "4.1.1"
     const val BRIGADIER = "1.0.17"
     const val MATH = "2.0.0"
@@ -28,7 +28,7 @@ object Versions {
     const val FASTUTIL = "8.5.4"
     const val CLIKT = "3.2.0"
     const val BSTATS = "2.2.1"
-    const val VELOCITY_NATIVE = "1.1.6-SNAPSHOT"
+    const val VELOCITY_NATIVE = "1.1.8"
 
     // Test
     const val JUNIT_PLATFORM_RUNNER = "1.7.2"

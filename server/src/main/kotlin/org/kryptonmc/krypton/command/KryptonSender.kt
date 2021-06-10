@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.command
 
+import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.krypton.KryptonServer
@@ -28,7 +29,10 @@ abstract class KryptonSender(val server: KryptonServer) : Sender {
 
     override fun hasPermission(permission: String): Boolean {
         val event = PermissionCheckEvent(this, permission, permission in permissions)
-        return server.eventManager.fireSync(event).result.value
+        return when (server.eventManager.fireSync(event).result) {
+            TriState.TRUE -> true
+            TriState.FALSE, TriState.NOT_SET -> false
+        }
     }
 
     override fun grant(permission: String) {

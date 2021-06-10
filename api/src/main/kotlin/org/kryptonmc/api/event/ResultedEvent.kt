@@ -9,7 +9,7 @@
 package org.kryptonmc.api.event
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 
 /**
  * An event that can return a result from its execution.
@@ -68,7 +68,7 @@ class ComponentResult(override val isAllowed: Boolean, val reason: Component) : 
 
     override fun toString(): String {
         if (isAllowed) return "allowed"
-        if (reason != Component.empty()) return "denied: ${PlainComponentSerializer.plain().serialize(reason)}"
+        if (reason != Component.empty()) return "denied: ${PlainTextComponentSerializer.plainText().serialize(reason)}"
         return "denied"
     }
 

@@ -10,9 +10,9 @@ package org.kryptonmc.api
 
 import io.mockk.every
 import io.mockk.mockk
+import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.play.PermissionCheckEvent
-import org.kryptonmc.api.event.play.PermissionCheckResult
 import org.kryptonmc.api.event.ticking.TickEndEvent
 import org.kryptonmc.api.event.ticking.TickStartEvent
 import kotlin.test.Test
@@ -32,7 +32,7 @@ class PermissionTests {
         val event = PermissionCheckEvent(sender, null, false)
         assertEquals(sender, event.sender)
         assertEquals(null, event.permission)
-        assertEquals(PermissionCheckResult.TRUE, event.result)
+        assertEquals(TriState.TRUE, event.result)
     }
 
     @Test
@@ -40,7 +40,7 @@ class PermissionTests {
         val event = PermissionCheckEvent(sender, "test.test", false)
         assertEquals(sender, event.sender)
         assertEquals("test.test", event.permission)
-        assertEquals(PermissionCheckResult.UNSET, event.result)
+        assertEquals(TriState.NOT_SET, event.result)
     }
 
     @Test
@@ -51,7 +51,7 @@ class PermissionTests {
         val event = PermissionCheckEvent(sender, "test.test", false)
         assertEquals(sender, event.sender)
         assertEquals("test.test", event.permission)
-        assertEquals(PermissionCheckResult.FALSE, event.result)
+        assertEquals(TriState.FALSE, event.result)
     }
 
     @Test
@@ -62,14 +62,7 @@ class PermissionTests {
         val event = PermissionCheckEvent(sender, "test.test", true)
         assertEquals(sender, event.sender)
         assertEquals("test.test", event.permission)
-        assertEquals(PermissionCheckResult.TRUE, event.result)
-    }
-
-    @Test
-    fun `test permission check result boolean values`() {
-        assertEquals(true, PermissionCheckResult.TRUE.value)
-        assertEquals(false, PermissionCheckResult.FALSE.value)
-        assertEquals(false, PermissionCheckResult.UNSET.value)
+        assertEquals(TriState.TRUE, event.result)
     }
 
     @Test

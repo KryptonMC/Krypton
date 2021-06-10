@@ -33,6 +33,8 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.util.TriState
+import org.apache.commons.lang3.StringUtils
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.command.SimpleCommand
@@ -40,7 +42,6 @@ import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.RawCommand
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.play.PermissionCheckEvent
-import org.kryptonmc.api.event.play.PermissionCheckResult
 import org.kryptonmc.krypton.command.commands.DebugCommand
 import org.kryptonmc.krypton.command.commands.RestartCommand
 import org.kryptonmc.krypton.command.commands.StopCommand
@@ -102,7 +103,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         return 1
     }
 
-    private fun dispatchPermissionCheck(sender: Sender, permission: String?): PermissionCheckResult {
+    private fun dispatchPermissionCheck(sender: Sender, permission: String?): TriState {
         val event = PermissionCheckEvent(sender, permission, permission?.let { sender.hasPermission(it) } ?: true)
         return server.eventManager.fireSync(event).result
     }
@@ -117,9 +118,9 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         }
 
         return when (dispatchPermissionCheck(sender, command.permission)) {
-            PermissionCheckResult.TRUE -> dispatchCommand(command, sender, args)
-            PermissionCheckResult.FALSE -> 0
-            PermissionCheckResult.UNSET -> 0
+            TriState.TRUE -> dispatchCommand(command, sender, args)
+            TriState.FALSE -> 0
+            TriState.NOT_SET -> 0
         }
     }
 
@@ -177,5 +178,5 @@ private val CommandContext<Sender>.rawArguments: String
 private val CommandContext<Sender>.splitArguments: Array<String>
     get() {
         val raw = rawArguments
-        return if (raw.isEmpty()) emptyArray() else raw.split(" ").toTypedArray()
+        return if (raw.isEmpty()) emptyArray() else StringUtils.split(raw)
     }
