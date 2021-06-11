@@ -22,6 +22,7 @@ import org.apache.logging.log4j.core.Filter
 import org.apache.logging.log4j.core.Layout
 import org.apache.logging.log4j.core.LogEvent
 import org.apache.logging.log4j.core.appender.AbstractAppender
+import org.apache.logging.log4j.core.config.Property
 import org.apache.logging.log4j.core.config.plugins.Plugin
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute
 import org.apache.logging.log4j.core.config.plugins.PluginElement
@@ -41,8 +42,9 @@ class QueueLogAppender(
     filter: Filter?,
     layout: Layout<out Serializable>,
     ignoreExceptions: Boolean,
+    properties: Array<Property>,
     private val queue: BlockingQueue<String>
-) : AbstractAppender(name, filter, layout, ignoreExceptions) {
+) : AbstractAppender(name, filter, layout, ignoreExceptions, properties) {
 
     override fun append(event: LogEvent) {
         if (queue.size >= MAXIMUM_CAPACITY) queue.clear()
@@ -64,7 +66,8 @@ class QueueLogAppender(
             @PluginAttribute("ignoreExceptions") ignore: String?,
             @PluginElement("Layout") layout: Layout<out Serializable>?,
             @PluginElement("Filters") filter: Filter?,
-            @PluginAttribute("target") target: String?
+            @PluginAttribute("target") target: String?,
+            @PluginAttribute("properties") properties: Array<Property>
         ): QueueLogAppender? {
             val ignoreExceptions = ignore.toBoolean()
             if (name == null) {
@@ -76,7 +79,7 @@ class QueueLogAppender(
             val queue = QUEUES.getOrPut(target ?: name) { LinkedBlockingQueue() }
             QUEUE_LOCK.writeLock().unlock()
 
-            return QueueLogAppender(name, filter, layout ?: NULL_PATTERN_LAYOUT, ignoreExceptions, queue)
+            return QueueLogAppender(name, filter, layout ?: NULL_PATTERN_LAYOUT, ignoreExceptions, properties, queue)
         }
 
         fun nextLogEvent(name: String): String? {

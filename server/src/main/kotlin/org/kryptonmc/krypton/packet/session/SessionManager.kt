@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.packet.session
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component
@@ -29,6 +27,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.api.event.login.JoinEvent
 import org.kryptonmc.api.event.play.QuitEvent
+import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.entity.metadata.MovementFlags
 import org.kryptonmc.krypton.entity.metadata.Optional
 import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
@@ -172,7 +171,7 @@ class SessionManager(private val server: KryptonServer) {
         }
         if (playerInfos.isNotEmpty()) session.sendPacket(PacketOutPlayerInfo(PlayerAction.ADD_PLAYER, playerInfos))
 
-        GlobalScope.launch(Dispatchers.IO) { handlePlayStateBegin(session) }
+        IOScope.launch { handlePlayStateBegin(session) }
 
         sessions.asSequence()
             .filter { it != session }
@@ -236,7 +235,7 @@ class SessionManager(private val server: KryptonServer) {
     fun handleDisconnection(session: Session) {
         if (session.currentState != PacketState.PLAY) return
         server.eventManager.fire(QuitEvent(session.player)).thenAccept { event ->
-            GlobalScope.launch(Dispatchers.IO) { server.playerDataManager.save(session.player) }
+            IOScope.launch { server.playerDataManager.save(session.player) }
 
             val destroyPacket = PacketOutEntityDestroy(session.id)
             val infoPacket = PacketOutPlayerInfo(PlayerAction.REMOVE_PLAYER, listOf(PlayerInfo(profile = session.profile)))

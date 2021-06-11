@@ -22,11 +22,13 @@ import com.google.inject.Guice
 import com.google.inject.Module
 import me.bardy.gsonkt.fromJson
 import org.kryptonmc.api.plugin.InvalidPluginException
+import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDependency
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.api.plugin.ap.SerializedDependency
 import org.kryptonmc.api.plugin.ap.SerializedPluginDescription
 import org.kryptonmc.krypton.GSON
+import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import org.kryptonmc.krypton.plugin.PluginClassLoader
 import org.kryptonmc.krypton.util.doPrivileged
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
@@ -52,9 +54,15 @@ class PluginLoader {
         return description.toFull(mainClass)
     }
 
-    fun createPlugin(description: LoadedPluginDescription, vararg modules: Module): Any {
+    fun createPlugin(container: PluginContainer, vararg modules: Module) {
+        require(container is KryptonPluginContainer) { "Container provided isn't compatible with this loader!" }
+        val description = container.description
+        require(description is LoadedPluginDescription) { "Description provided isn't compatible with this loader!" }
+
         val injector = Guice.createInjector(*modules)
-        return injector.getInstance(description.mainClass) ?: error("Got nothing from injector for plugin ${description.name}!")
+        val instance = requireNotNull(injector.getInstance(description.mainClass)) { "Got nothing from injector for plugin ${description.id}!" }
+
+        container.instance = instance
     }
 
     private fun Path.findMetadata(): SerializedPluginDescription? = JarInputStream(BufferedInputStream(inputStream())).use { input ->

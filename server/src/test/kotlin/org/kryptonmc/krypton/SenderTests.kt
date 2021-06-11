@@ -22,6 +22,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.event.EventManager
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.krypton.command.KryptonSender
@@ -50,7 +51,10 @@ private class DummySender(private val eventManager: EventManager) : KryptonSende
 
     override fun hasPermission(permission: String): Boolean {
         val event = PermissionCheckEvent(this, permission, permission in permissions)
-        return eventManager.fire(event).join().result.value
+        return when (eventManager.fire(event).join().result) {
+            TriState.TRUE -> true
+            TriState.FALSE, TriState.NOT_SET -> false
+        }
     }
 
     override fun identity() = Identity.identity(UUID.randomUUID())

@@ -19,13 +19,12 @@
 package org.kryptonmc.krypton.packet.handlers
 
 import com.velocitypowered.natives.util.Natives
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.event.login.LoginEvent
+import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.auth.requests.SessionService
@@ -115,7 +114,7 @@ class LoginHandler(
         val secretKey = SecretKeySpec(sharedSecret, "AES")
         enableEncryption(secretKey)
 
-        GlobalScope.launch(Dispatchers.IO) {
+        IOScope.launch {
             try {
                 session.profile = SessionService.authenticateUser(name, sharedSecret, server.config.server.ip)
                 if (!callLoginEvent()) return@launch

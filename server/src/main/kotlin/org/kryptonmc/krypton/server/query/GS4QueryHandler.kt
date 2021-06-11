@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.server.query
 
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.locale.Messages
@@ -103,7 +103,7 @@ class GS4QueryHandler private constructor(
                 val output = NetworkDataOutputStream(1460)
                 output.write(0)
                 output.write(validChallenges[socketAddress]!!.identBytes)
-                output.write(PlainComponentSerializer.plain().serialize(server.status.motd))
+                output.write(PlainTextComponentSerializer.plainText().serialize(server.status.motd))
                 output.write("SMP")
                 output.write(server.config.world.name)
                 output.write("${server.players.size}")
@@ -142,7 +142,7 @@ class GS4QueryHandler private constructor(
         rulesResponse.write(128)
         rulesResponse.write(0)
         rulesResponse.write("hostname")
-        rulesResponse.write(PlainComponentSerializer.plain().serialize(server.status.motd))
+        rulesResponse.write(PlainTextComponentSerializer.plainText().serialize(server.status.motd))
         rulesResponse.write("gametype")
         rulesResponse.write("SMP")
         rulesResponse.write("game_id")

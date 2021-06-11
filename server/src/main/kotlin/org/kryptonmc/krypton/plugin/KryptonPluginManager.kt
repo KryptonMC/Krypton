@@ -82,8 +82,8 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
         pluginContainers.forEach { (container, module) ->
             val description = container.description as LoadedPluginDescription
 
-            val plugin = try {
-                loader.createPlugin(description, module, commonModule)
+            try {
+                loader.createPlugin(container, module, commonModule)
             } catch (exception: Exception) {
                 Messages.PLUGIN.LOAD.ERROR.CREATE_PLUGIN.error(LOGGER, description.id, exception)
                 return@forEach

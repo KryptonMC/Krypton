@@ -19,8 +19,6 @@
 package org.kryptonmc.krypton
 
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import me.bardy.gsonkt.newBuilder
 import me.bardy.gsonkt.registerTypeAdapter
@@ -230,9 +228,7 @@ class KryptonServer(val mainThread: Thread) : Server {
 
         // Start accepting connections
         LOGGER.debug("Starting Netty...")
-        GlobalScope.launch(Dispatchers.IO) {
-            nettyProcess.run()
-        }
+        IOScope.launch { nettyProcess.run() }
 
         // Add the shutdown hook to stop the server
         Runtime.getRuntime().addShutdownHook(Thread(::stop, "Shutdown Handler").apply { isDaemon = false })

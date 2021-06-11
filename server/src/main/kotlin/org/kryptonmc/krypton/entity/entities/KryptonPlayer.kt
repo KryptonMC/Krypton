@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.entity.entities
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.bossbar.BossBar
@@ -48,6 +46,7 @@ import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.scoreboard.Scoreboard
+import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
@@ -269,7 +268,7 @@ class KryptonPlayer(
         previousCentralX = centralX
         previousCentralZ = centralZ
 
-        GlobalScope.launch(Dispatchers.IO) {
+        IOScope.launch {
             val loadedChunks = world.chunkManager.load(newChunks)
             visibleChunks += newChunks
 

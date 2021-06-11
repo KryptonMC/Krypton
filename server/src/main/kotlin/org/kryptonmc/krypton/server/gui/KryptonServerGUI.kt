@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.server.gui
 
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.server.gui.stats.GuiStatsComponent
@@ -157,7 +157,7 @@ class KryptonServerGUI(private val server: KryptonServer) : JComponent(), AutoCl
                 addWindowListener(object : WindowAdapter() {
                     override fun windowClosing(event: WindowEvent) {
                         if (gui.isClosing.getAndSet(true)) return
-                        title = PlainComponentSerializer.plain().serialize(Messages.GUI.SHUTDOWN_TITLE())
+                        title = PlainTextComponentSerializer.plainText().serialize(Messages.GUI.SHUTDOWN_TITLE())
                         server.stop()
                         gui.finalizers.forEach(Runnable::run)
                     }

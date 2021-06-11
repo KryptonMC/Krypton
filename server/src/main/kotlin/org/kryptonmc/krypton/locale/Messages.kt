@@ -22,7 +22,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.command.Sender
@@ -101,7 +101,7 @@ object Messages {
 
     sealed interface Args {
 
-        fun text(component: Component) = PlainComponentSerializer.plain().serialize(TranslationManager.render(component))
+        fun text(component: Component) = PlainTextComponentSerializer.plainText().serialize(TranslationManager.render(component))
 
         fun send(sender: Sender, component: Component) = sender.sendMessage(TranslationManager.render(component))
 

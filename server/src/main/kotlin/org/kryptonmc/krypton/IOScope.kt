@@ -16,19 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity
+package org.kryptonmc.krypton
 
-import org.kryptonmc.api.world.Location
-import java.util.UUID
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
-@Deprecated("For removal, will be replaced with the API version")
-data class Entity(
-    val id: Int,
-    val uuid: UUID,
-    val type: EntityType,
-    val location: Location,
-    val data: Int,
-    val velocityX: Short,
-    val velocityY: Short,
-    val velocityZ: Short
-)
+object IOScope : CoroutineScope {
+
+    override val coroutineContext = Dispatchers.IO
+}
