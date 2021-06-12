@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <SmellBaseline>
   <ManuallySuppressedIssues>
+    <ID>CollapsibleIfStatements:SavedDataPoolElementFeatureFix.kt$if (providerType != "minecraft:simple_state_provider" &amp;&amp; providerType != "minecraft:rotated_block_provider") { if (providerType == "minecraft:weighted_state_provider") { if (providerFirstEntryName == "minecraft:packed_ice" || providerFirstEntryName == "minecraft:blue_ice") return Optional.of("minecraft:pile_ice") if (providerFirstEntryName == "minecraft:jack_o_lantern" || providerFirstEntryName == "minecraft:pumpkin") return Optional.of("minecraft:pile_pumpkin") } }</ID>
     <ID>UseIfInsteadOfWhen:KryptonCommandManager.kt$KryptonCommandManager$when (exception) { BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand() -> Messages.COMMAND.UNKNOWN(command) else -> text(exception.message ?: "") }</ID>
     <ID>UnsafeCallOnNullableType:CrashReportCategory.kt$CrashReportCategory$stackTrace[0]!!</ID>
     <ID>UnsafeCallOnNullableType:GS4QueryHandler.kt$GS4QueryHandler$validChallenges[packet.socketAddress]!!</ID>
