@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.packet
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
+import org.kryptonmc.krypton.packet.`in`.login.PacketInPluginResponse
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAnimation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChat
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientSettings
@@ -57,6 +58,7 @@ object PacketLoader {
         // LOGIN
         PacketState.LOGIN.registerPacketType(0x00, ::PacketInLoginStart)
         PacketState.LOGIN.registerPacketType(0x01, ::PacketInEncryptionResponse)
+        PacketState.LOGIN.registerPacketType(0x02, ::PacketInPluginResponse)
 
         // PLAY
         PacketState.PLAY.registerPacketType(0x00, ::PacketInTeleportConfirm)

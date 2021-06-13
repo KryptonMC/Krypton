@@ -20,13 +20,29 @@ package org.kryptonmc.krypton.config.category
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
-import org.spongepowered.configurate.objectmapping.meta.Setting
+
+private const val MODE_COMMENT = """
+The method to use for forwarding a connecting user's information on
+to Krypton from a proxy server. Supported values are:
+  - NONE - Disable forwarding support completely
+  - LEGACY - Use the BungeeCord/pre-1.13 method
+  - MODERN - Use Velocity's modern forwarding protocol
+When any mode other than NONE is used, the server will be forced offline
+and will ONLY accept connections from proxies. No users will be able to
+direct connect.
+"""
 
 @ConfigSerializable
-data class OtherCategory(
-    @Comment("If we should enable bStats metrics for the server")
-    val metrics: Boolean = true,
-    @Setting("save-threshold")
-    @Comment("The duration (in seconds) a single tick must take before the single tick profiler reports it.")
-    val saveThreshold: Int = 5
+data class ProxyCategory(
+    @Comment(MODE_COMMENT)
+    val mode: ForwardingMode = ForwardingMode.NONE,
+    @Comment("The forwarding secret from Velocity. Only used in the MODERN forwarding protocol.")
+    val secret: String = ""
 )
+
+enum class ForwardingMode {
+
+    NONE,
+    LEGACY,
+    MODERN
+}

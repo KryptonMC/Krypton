@@ -427,7 +427,7 @@ object Messages {
 
     object BungeeMessages {
 
-        // Please notify the server administrator that they are attempting to use BungeeCord IP forwarding without enabling BungeeCord support in their configuration file.
+        // Please notify the server administrator that they are attempting to use BungeeCord IP forwarding without setting their forwarding mode to LEGACY in their configuration file.
         val NOTIFY = empty("bungee.notify")
 
         // Could not decode BungeeCord handshake data! Please report this to an administrator!
@@ -441,6 +441,15 @@ object Messages {
 
         // Attempted connection from {0} not from BungeeCord when BungeeCord compatibility enabled.
         val DIRECT_WARN = singleText("bungee.direct.warn")
+    }
+
+    object VelocityMessages {
+
+        // Please notify the server administrator that they are attempting to use Velocity IP forwarding without setting their forwarding mode to MODERN in their configuration file.
+        val NOTIFY = empty("velocity.notify")
+
+        // Invalid response from Velocity!
+        val INVALID_RESPONSE = empty("velocity.invalid-response")
     }
 
     object NetworkMessages {

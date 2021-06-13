@@ -16,17 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.config.category
+package org.kryptonmc.krypton.packet.`in`.login
 
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
-import org.spongepowered.configurate.objectmapping.meta.Comment
-import org.spongepowered.configurate.objectmapping.meta.Setting
+import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.packet.state.LoginPacket
+import org.kryptonmc.krypton.util.readAllAvailableBytes
+import org.kryptonmc.krypton.util.readVarInt
 
-@ConfigSerializable
-data class OtherCategory(
-    @Comment("If we should enable bStats metrics for the server")
-    val metrics: Boolean = true,
-    @Setting("save-threshold")
-    @Comment("The duration (in seconds) a single tick must take before the single tick profiler reports it.")
-    val saveThreshold: Int = 5
-)
+class PacketInPluginResponse(buf: ByteBuf) : LoginPacket(0x02) {
+
+    val messageId = buf.readVarInt()
+    val isSuccessful = buf.readBoolean()
+    val data = if (isSuccessful) buf.readAllAvailableBytes() else ByteArray(0)
+}

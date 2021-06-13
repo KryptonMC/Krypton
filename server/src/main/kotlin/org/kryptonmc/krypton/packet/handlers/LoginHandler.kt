@@ -19,22 +19,29 @@
 package org.kryptonmc.krypton.packet.handlers
 
 import com.velocitypowered.natives.util.Natives
+import io.netty.buffer.Unpooled
 import kotlinx.coroutines.launch
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.event.login.LoginEvent
 import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.auth.requests.SessionService
+import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.entity.entities.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.handshake.BungeeCordHandshakeData
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
+import org.kryptonmc.krypton.packet.`in`.login.PacketInPluginResponse
 import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
+import org.kryptonmc.krypton.packet.out.login.PacketOutPluginRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.session.Session
 import org.kryptonmc.krypton.packet.session.SessionManager
@@ -48,10 +55,13 @@ import org.kryptonmc.krypton.packet.transformers.SizeDecoder
 import org.kryptonmc.krypton.packet.transformers.SizeEncoder
 import org.kryptonmc.krypton.util.encryption.Encryption
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.readVelocityData
+import org.kryptonmc.krypton.util.verifyIntegrity
 import java.net.InetSocketAddress
 import java.util.UUID
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
+import kotlin.random.Random
 
 /**
  * Handles all inbound packets in the [Login][org.kryptonmc.krypton.packet.state.PacketState.LOGIN] state.
@@ -69,6 +79,7 @@ class LoginHandler(
     private val bungeecordData: BungeeCordHandshakeData?
 ) : PacketHandler {
 
+    private val velocityMessageId = Random.nextInt(Short.MAX_VALUE.toInt())
     private var name = ""
 
     private val verifyToken by lazy {
@@ -80,6 +91,7 @@ class LoginHandler(
     override fun handle(packet: Packet) = when (packet) {
         is PacketInLoginStart -> handleLoginStart(packet)
         is PacketInEncryptionResponse -> handleEncryptionResponse(packet)
+        is PacketInPluginResponse -> handlePluginResponse(packet)
         else -> Unit
     }
 
@@ -88,6 +100,12 @@ class LoginHandler(
         val address = if (bungeecordData != null) InetSocketAddress(bungeecordData.forwardedIp, rawAddress.port) else rawAddress
 
         if (!server.isOnline) {
+            if (server.config.proxy.mode == ForwardingMode.MODERN) {
+                name = packet.name
+                session.sendPacket(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
+                return
+            }
+
             val uuid = if (bungeecordData != null) {
                 session.profile = GameProfile(bungeecordData.uuid, packet.name, bungeecordData.properties)
                 bungeecordData.uuid
@@ -129,6 +147,28 @@ class LoginHandler(
             session.player = KryptonPlayer(name, session.profile.uuid, server, session, address)
             sessionManager.beginPlayState(session)
         }
+    }
+
+    private fun handlePluginResponse(packet: PacketInPluginResponse) {
+        if (!packet.isSuccessful) // not successful, we don't care for now
+        if (packet.messageId != velocityMessageId || server.config.proxy.mode != ForwardingMode.MODERN) return // not Velocity, ignore (for now)
+        if (packet.data.isEmpty()) error("Velocity sent no data in its login plugin response!")
+        val secret = server.config.proxy.secret.encodeToByteArray()
+
+        val buffer = Unpooled.copiedBuffer(packet.data)
+        val isSuccess = buffer.verifyIntegrity(secret)
+        if (!isSuccess) {
+            session.disconnect(INVALID_VELOCITY_RESPONSE)
+            return
+        }
+
+        val data = buffer.readVelocityData()
+        val address = session.channel.remoteAddress() as InetSocketAddress
+
+        LOGGER.debug("Detected Velocity login for ${data.uuid}")
+        session.profile = GameProfile(data.uuid, data.username, data.properties)
+        session.player = KryptonPlayer(data.username, data.uuid, server, session, InetSocketAddress(data.remoteAddress, address.port))
+        sessionManager.beginPlayState(session)
     }
 
     private fun verifyToken(expected: ByteArray, actual: ByteArray): Boolean {
@@ -188,6 +228,8 @@ class LoginHandler(
 
     companion object {
 
+        private val VELOCITY_CHANNEL_ID = Key.key("velocity", "player_info")
+        private val INVALID_VELOCITY_RESPONSE = text("Invalid proxy response!", NamedTextColor.RED)
         private val LOGGER = logger<LoginHandler>()
     }
 }

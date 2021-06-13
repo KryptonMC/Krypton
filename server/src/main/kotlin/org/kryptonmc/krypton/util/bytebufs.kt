@@ -156,8 +156,6 @@ fun ByteBuf.readVarIntByteArray(): ByteArray {
 }
 
 fun ByteBuf.readAvailableBytes(length: Int): ByteArray {
-    if (hasArray()) return readBytes(length).array()
-
     val bytes = ByteArray(length)
     readBytes(bytes, 0, length)
     return bytes

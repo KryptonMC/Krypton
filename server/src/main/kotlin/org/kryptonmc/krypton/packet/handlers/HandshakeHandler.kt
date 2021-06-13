@@ -25,6 +25,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.api.event.handshake.HandshakeEvent
+import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.handshake.BungeeCordHandshakeData
@@ -50,12 +51,12 @@ class HandshakeHandler(
         if (packet !is PacketInHandshake) return // ignore if not a handshake packet
         server.eventManager.fireAndForget(HandshakeEvent(session.channel.remoteAddress() as InetSocketAddress))
 
-        if (packet.data.address.split('\u0000').size > 1 && !server.config.other.bungeecord) {
+        if (packet.data.address.split('\u0000').size > 1 && server.config.proxy.mode != ForwardingMode.LEGACY) {
             disconnect(Messages.BUNGEE.NOTIFY())
             return
         }
 
-        if (server.config.other.bungeecord && packet.data.nextState == PacketState.LOGIN) {
+        if (server.config.proxy.mode == ForwardingMode.LEGACY && packet.data.nextState == PacketState.LOGIN) {
             val data = try {
                 packet.data.address.splitData()
             } catch (exception: Exception) {

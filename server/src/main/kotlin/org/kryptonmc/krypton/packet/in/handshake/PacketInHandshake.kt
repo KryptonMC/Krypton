@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.packet.`in`.handshake
 
-import com.google.gson.reflect.TypeToken
 import io.netty.buffer.ByteBuf
+import me.bardy.gsonkt.fromJson
 import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.auth.ProfileProperty
 import org.kryptonmc.krypton.packet.Packet
@@ -67,6 +67,6 @@ fun String.splitData(): BungeeCordHandshakeData? {
         split[0],
         split[1],
         UUID.fromString(split[2].replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})".toRegex(), "$1-$2-$3-$4-$5")),
-        if (split.size > 3) GSON.fromJson(split[3], object : TypeToken<List<ProfileProperty>>() {}.type) else emptyList()
+        if (split.size > 3) GSON.fromJson(split[3]) else emptyList()
     )
 }

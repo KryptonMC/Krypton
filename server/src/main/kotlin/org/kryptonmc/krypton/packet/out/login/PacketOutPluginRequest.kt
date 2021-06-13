@@ -16,17 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.config.category
+package org.kryptonmc.krypton.packet.out.login
 
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
-import org.spongepowered.configurate.objectmapping.meta.Comment
-import org.spongepowered.configurate.objectmapping.meta.Setting
+import io.netty.buffer.ByteBuf
+import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.packet.state.LoginPacket
+import org.kryptonmc.krypton.util.writeKey
+import org.kryptonmc.krypton.util.writeVarInt
 
-@ConfigSerializable
-data class OtherCategory(
-    @Comment("If we should enable bStats metrics for the server")
-    val metrics: Boolean = true,
-    @Setting("save-threshold")
-    @Comment("The duration (in seconds) a single tick must take before the single tick profiler reports it.")
-    val saveThreshold: Int = 5
-)
+class PacketOutPluginRequest(
+    private val messageId: Int,
+    private val channel: Key,
+    private val data: ByteArray
+) : LoginPacket(0x04) {
+
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(messageId)
+        buf.writeKey(channel)
+        buf.writeBytes(data)
+    }
+}

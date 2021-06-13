@@ -22,6 +22,7 @@ import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerialize
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.krypton.config.category.AdvancedCategory
 import org.kryptonmc.krypton.config.category.OtherCategory
+import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.config.category.QueryCategory
 import org.kryptonmc.krypton.config.category.ServerCategory
 import org.kryptonmc.krypton.config.category.StatusCategory
@@ -37,19 +38,21 @@ import org.spongepowered.configurate.objectmapping.meta.Comment
 
 @ConfigSerializable
 data class KryptonConfig(
-    @Comment("\n\nThe main server settings.")
+    @Comment("The main server settings.")
     val server: ServerCategory = ServerCategory(),
-    @Comment("\n\nStatus configuration")
+    @Comment("Status configuration")
     val status: StatusCategory = StatusCategory(),
-    @Comment("\n\nGlobal world configuration options")
+    @Comment("Global world configuration options")
     val world: WorldCategory = WorldCategory(),
-    @Comment("\n\nAdvanced settings. Don't touch these unless you know what you're doing.")
+    @Comment("Advanced settings. Don't touch these unless you know what you're doing.")
     val advanced: AdvancedCategory = AdvancedCategory(),
-    @Comment("\n\nSettings for the GS4 query protocol listener. If you don't know what that means, don't touch these :)")
+    @Comment("Settings for the GS4 query protocol listener. If you don't know what that means, don't touch these :)")
     val query: QueryCategory = QueryCategory(),
-    @Comment("\n\nWatchdog settings. The watchdog monitors the server for freezes.")
+    @Comment("Watchdog settings. The watchdog monitors the server for freezes.")
     val watchdog: WatchdogCategory = WatchdogCategory(),
-    @Comment("\n\nOther settings that don't quite fit in anywhere else.")
+    @Comment("Proxy IP forwarding settings.")
+    val proxy: ProxyCategory = ProxyCategory(),
+    @Comment("Other settings that don't quite fit in anywhere else.")
     val other: OtherCategory = OtherCategory()
 ) {
 

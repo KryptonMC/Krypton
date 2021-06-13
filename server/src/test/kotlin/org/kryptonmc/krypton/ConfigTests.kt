@@ -78,7 +78,6 @@ class ConfigTests {
         assertEquals(10000, config.watchdog.earlyWarningDelay)
 
         // Other settings
-        assertFalse(config.other.bungeecord)
         assertTrue(config.other.metrics)
         assertEquals(5, config.other.saveThreshold)
 
@@ -88,7 +87,7 @@ class ConfigTests {
             advanced = config.advanced.copy(synchronizeChunkWrites = false, enableJmxMonitoring = false),
             query = config.query.copy(enabled = true),
             watchdog = config.watchdog.copy(restartOnCrash = false),
-            other = config.other.copy(bungeecord = true, metrics = false)
+            other = config.other.copy(metrics = false)
         )
         assertFalse(modified.server.onlineMode)
         assertTrue(modified.world.forceDefaultGamemode)
@@ -96,7 +95,6 @@ class ConfigTests {
         assertFalse(modified.advanced.synchronizeChunkWrites)
         assertFalse(modified.advanced.enableJmxMonitoring)
         assertTrue(modified.query.enabled)
-        assertTrue(modified.other.bungeecord)
         assertFalse(modified.other.metrics)
         assertFalse(modified.watchdog.restartOnCrash)
     }
@@ -140,7 +138,6 @@ class ConfigTests {
         assertEquals(10000, config.watchdog.earlyWarningDelay)
 
         // Other settings
-        assertFalse(config.other.bungeecord)
         assertTrue(config.other.metrics)
         assertEquals(5, config.other.saveThreshold)
     }
