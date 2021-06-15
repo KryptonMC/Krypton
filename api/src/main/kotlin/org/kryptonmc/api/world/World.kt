@@ -10,6 +10,8 @@ package org.kryptonmc.api.world
 
 import net.kyori.adventure.audience.ForwardingAudience
 import org.kryptonmc.api.Server
+import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.chunk.Chunk
 import java.nio.file.Path
 import java.util.UUID
@@ -122,6 +124,21 @@ interface World : ForwardingAudience {
      * to define this.
      */
     fun save()
+
+    /**
+     * Spawns an entity with the given [type] in this world at the given [location].
+     */
+    fun spawnEntity(type: EntityType, location: Vector)
+
+    /**
+     * Spawns an experience orb in this world at the given [location].
+     */
+    fun spawnExperienceOrb(location: Vector)
+
+    /**
+     * Spawns a painting in this world at the given [location].
+     */
+    fun spawnPainting(location: Vector)
 }
 
 /**

@@ -41,7 +41,7 @@ import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDE
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.console.KryptonConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.MetadataResponse
 import org.kryptonmc.krypton.locale.TranslationRepository

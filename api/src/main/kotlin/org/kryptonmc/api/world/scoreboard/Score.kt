@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.world.scoreboard
 
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
 
 /**
  * Represents the score of a player for a specific [objective].

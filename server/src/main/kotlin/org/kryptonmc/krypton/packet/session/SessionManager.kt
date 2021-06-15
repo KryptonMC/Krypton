@@ -28,9 +28,6 @@ import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.api.event.login.JoinEvent
 import org.kryptonmc.api.event.play.QuitEvent
 import org.kryptonmc.krypton.IOScope
-import org.kryptonmc.krypton.entity.metadata.MovementFlags
-import org.kryptonmc.krypton.entity.metadata.Optional
-import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
@@ -56,7 +53,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutEntityDestroy
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityProperties
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
@@ -92,26 +88,27 @@ class SessionManager(private val server: KryptonServer) {
     fun beginPlayState(session: Session) {
         session.sendPacket(PacketOutLoginSuccess(session.profile.uuid, session.profile.name))
         session.handler = PlayHandler(server, this, session)
+        val player = session.player
 
         val world = server.worldManager.default
         if (server.config.world.forceDefaultGamemode) world.gamemode = server.config.world.gamemode
-        world.players += session.player
-        server.players += session.player
+        world.players += player
+        server.players += player
 
         // load the player's data and populate the provided player with their loaded data
-        server.playerDataManager.load(world, session.player)
-        if (server.config.world.forceDefaultGamemode) session.player.gamemode = server.config.world.gamemode
-        val spawnLocation = session.player.location
-        session.player.updateAbilities()
+        server.playerDataManager.load(world, player)
+        if (server.config.world.forceDefaultGamemode) player.gamemode = server.config.world.gamemode
+        val spawnLocation = player.location
+        player.updateAbilities()
 
         session.currentState = PacketState.PLAY
         session.sendPacket(PacketOutJoinGame(
-            session.id,
+            player.id,
             server.config.world.hardcore,
             world,
-            session.player.gamemode,
-            null,
-            session.player.dimension,
+            player.gamemode,
+            player.oldGamemode,
+            player.dimension,
             server.config.status.maxPlayers,
             server.config.world.viewDistance
         ))
@@ -119,39 +116,16 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutPluginMessage(BRAND_MESSAGE.first, BRAND_MESSAGE.second))
         session.sendPacket(PacketOutServerDifficulty(server.config.world.difficulty, true))
 
-        val metadata = PlayerMetadata(
-            MovementFlags(isFlying = session.player.abilities.isFlying),
-            PlayerMetadata.airTicks,
-            PlayerMetadata.customName,
-            PlayerMetadata.isCustomNameVisible,
-            PlayerMetadata.isSilent,
-            PlayerMetadata.hasNoGravity,
-            PlayerMetadata.pose,
-            PlayerMetadata.handFlags,
-            PlayerMetadata.health,
-            PlayerMetadata.potionEffectColor,
-            PlayerMetadata.isPotionEffectAmbient,
-            PlayerMetadata.arrowsInEntity,
-            PlayerMetadata.absorptionHealth,
-            Optional(null), // setting this to null tells the client it's not sleeping
-            PlayerMetadata.additionalHearts,
-            PlayerMetadata.score,
-            PlayerMetadata.skinFlags,
-            PlayerMetadata.mainHand,
-            PlayerMetadata.leftShoulderEntityData,
-            PlayerMetadata.rightShoulderEntityData
-        )
-
-        session.sendPacket(PacketOutAbilities(session.player.abilities))
-        session.sendPacket(PacketOutHeldItemChange(session.player.inventory.heldSlot))
+        session.sendPacket(PacketOutAbilities(player.abilities))
+        session.sendPacket(PacketOutHeldItemChange(player.inventory.heldSlot))
         session.sendPacket(PacketOutDeclareRecipes())
         session.sendPacket(PacketOutTags)
         val reducedDebugInfo = world.gamerules[Gamerule.REDUCED_DEBUG_INFO]?.equals("true") == true
-        session.sendPacket(PacketOutEntityStatus(session.id, if (reducedDebugInfo) 22 else 23))
+        session.sendPacket(PacketOutEntityStatus(player.id, if (reducedDebugInfo) 22 else 23))
         session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
 
-        val joinResult = server.eventManager.fireSync(JoinEvent(session.player)).result
+        val joinResult = server.eventManager.fireSync(JoinEvent(player)).result
         if (!joinResult.isAllowed) {
             // Use default reason if denied without specified reason
             val reason = joinResult.reason.takeIf { it != Component.empty() } ?: translatable("multiplayer.disconnect.kicked")
@@ -160,7 +134,7 @@ class SessionManager(private val server: KryptonServer) {
         }
         server.sendMessage(joinResult.reason)
 
-        session.sendPacket(PacketOutPlayerPositionAndLook(session.player.location))
+        session.sendPacket(PacketOutPlayerPositionAndLook(player.location))
         session.sendPacket(PacketOutPlayerInfo(
             PlayerAction.UPDATE_LATENCY,
             listOf(PlayerInfo(latency = session.latency, profile = session.profile))
@@ -178,21 +152,21 @@ class SessionManager(private val server: KryptonServer) {
             .filter { it.currentState == PacketState.PLAY }
             .forEach {
                 session.sendPacket(PacketOutSpawnPlayer(it.player))
-                session.sendPacket(PacketOutEntityMetadata(it.id, metadata))
-                session.sendPacket(PacketOutEntityProperties(it.id, it.player.attributes))
-                session.sendPacket(PacketOutEntityHeadLook(it.id, it.player.location.yaw.toAngle()))
+                session.sendPacket(PacketOutEntityMetadata(it.player.id, player.data.all))
+                session.sendPacket(PacketOutEntityProperties(it.player.id, it.player.attributes.syncableAttributes))
+                session.sendPacket(PacketOutEntityHeadLook(it.player.id, it.player.location.yaw.toAngle()))
             }
 
         val centerChunk = ChunkPosition(floor(spawnLocation.x / 16.0).toInt(), floor(spawnLocation.z / 16.0).toInt())
         session.sendPacket(PacketOutUpdateViewPosition(centerChunk))
-        session.player.updateChunks() // Initial stream
+        player.updateChunks() // Initial stream
 
-        session.sendPacket(PacketOutEntityMetadata(session.id, metadata))
+        session.sendPacket(PacketOutEntityMetadata(player.id, player.data.all))
         session.sendPacket(PacketOutInitializeWorldBorder(world.border))
         session.sendPacket(PacketOutTimeUpdate(world.time, world.dayTime))
         session.sendPacket(PacketOutSpawnPosition(spawnLocation))
-        session.sendPacket(PacketOutEntityProperties(session.id, session.player.attributes))
-        session.sendPacket(PacketOutWindowItems(session.player.inventory))
+        session.sendPacket(PacketOutEntityProperties(player.id, player.attributes.syncableAttributes))
+        session.sendPacket(PacketOutWindowItems(player.inventory))
 
         ServerStorage.PLAYER_COUNT.getAndIncrement()
 
@@ -204,21 +178,22 @@ class SessionManager(private val server: KryptonServer) {
     }
 
     private fun handlePlayStateBegin(session: Session) {
+        val player = session.player
         val infoPacket = PacketOutPlayerInfo(
             PlayerAction.ADD_PLAYER,
             listOf(
                 PlayerInfo(
                     0,
-                    session.player.gamemode,
+                    player.gamemode,
                     session.profile,
                     text(session.profile.name)
                 )
             )
         )
-        val spawnPlayerPacket = PacketOutSpawnPlayer(session.player)
-        val metadataPacket = PacketOutEntityMetadata(session.id, PlayerMetadata)
-        val propertiesPacket = PacketOutEntityProperties(session.id, DEFAULT_PLAYER_ATTRIBUTES)
-        val headLookPacket = PacketOutEntityHeadLook(session.id, Angle.ZERO)
+        val spawnPlayerPacket = PacketOutSpawnPlayer(player)
+        val metadataPacket = PacketOutEntityMetadata(player.id, player.data.all)
+        val propertiesPacket = PacketOutEntityProperties(player.id, player.attributes.syncableAttributes)
+        val headLookPacket = PacketOutEntityHeadLook(player.id, Angle.ZERO)
 
         sessions.asSequence()
             .filter { it != session }
@@ -237,7 +212,7 @@ class SessionManager(private val server: KryptonServer) {
         server.eventManager.fire(QuitEvent(session.player)).thenAccept { event ->
             IOScope.launch { server.playerDataManager.save(session.player) }
 
-            val destroyPacket = PacketOutEntityDestroy(session.id)
+            val destroyPacket = PacketOutEntityDestroy(session.player.id)
             val infoPacket = PacketOutPlayerInfo(PlayerAction.REMOVE_PLAYER, listOf(PlayerInfo(profile = session.profile)))
 
             sendPackets(destroyPacket, infoPacket) { it != session && it.currentState == PacketState.PLAY }

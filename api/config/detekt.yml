@@ -74,40 +74,6 @@ exceptions:
   ThrowingExceptionInMain:
     active: true
 
-formatting:
-  active: true
-  AnnotationSpacing:
-    active: true
-  ArgumentListWrapping:
-    active: false
-  EnumEntryNameCase:
-    active: true
-  Filename:
-    active: true
-  ImportOrdering:
-    active: true
-    layout: '*,java.**,javax.**,kotlin.**,^'
-  Indentation:
-    active: true
-    indentSize: 4
-    continuationIndentSize: 8
-  MaximumLineLength:
-    active: false
-  NoUnusedImports:
-    active: false # Detected by style
-  ParameterListWrapping:
-    active: false
-  SpacingAroundAngleBrackets:
-    active: true
-  SpacingAroundDoubleColon:
-    active: true
-  SpacingAroundUnaryOperator:
-    active: true
-  SpacingBetweenDeclarationsWithAnnotations:
-    active: true
-  SpacingBetweenDeclarationsWithComments:
-    active: true
-
 naming:
   EnumNaming:
     active: true

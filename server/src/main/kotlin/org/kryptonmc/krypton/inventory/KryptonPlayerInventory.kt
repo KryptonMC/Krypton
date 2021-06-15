@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.inventory
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.inventory.item.ItemStack
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeldItemChange
 
 class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE), PlayerInventory {

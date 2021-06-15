@@ -16,13 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.entities.data
+package org.kryptonmc.krypton.entity.attribute
 
-/**
- * Various data for villagers. Used for entity metadata.
- */
-data class VillagerData(
-    val type: VillagerType,
-    val profession: VillagerProfession,
-    val level: Int
+import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.krypton.entity.monster.KryptonZombie
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+
+private val SUPPLIERS = mapOf(
+    EntityType.PLAYER to KryptonPlayer.createAttributes().build(),
+    EntityType.ZOMBIE to KryptonZombie.createAttributes().build()
 )
+
+val EntityType.attributeSupplier: AttributeSupplier
+    get() = SUPPLIERS.getValue(this)

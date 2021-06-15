@@ -29,11 +29,12 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.event.login.LoginEvent
 import org.kryptonmc.krypton.IOScope
+import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.config.category.ForwardingMode
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.handshake.BungeeCordHandshakeData
@@ -115,7 +116,7 @@ class LoginHandler(
                 session.profile = GameProfile(offlineUUID, packet.name, emptyList())
                 offlineUUID
             }
-            session.player = KryptonPlayer(packet.name, uuid, server, session, address)
+            session.player = KryptonPlayer(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), packet.name, uuid, server, session, address)
             if (!callLoginEvent(packet.name, uuid)) return
 
             sessionManager.beginPlayState(session)
@@ -144,7 +145,7 @@ class LoginHandler(
 
             val rawAddress = session.channel.remoteAddress() as InetSocketAddress
             val address = if (bungeecordData != null) InetSocketAddress(bungeecordData.forwardedIp, rawAddress.port) else rawAddress
-            session.player = KryptonPlayer(name, session.profile.uuid, server, session, address)
+            session.player = KryptonPlayer(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), name, session.profile.uuid, server, session, address)
             sessionManager.beginPlayState(session)
         }
     }
@@ -167,7 +168,7 @@ class LoginHandler(
 
         LOGGER.debug("Detected Velocity login for ${data.uuid}")
         session.profile = GameProfile(data.uuid, data.username, data.properties)
-        session.player = KryptonPlayer(data.username, data.uuid, server, session, InetSocketAddress(data.remoteAddress, address.port))
+        session.player = KryptonPlayer(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), data.username, data.uuid, server, session, InetSocketAddress(data.remoteAddress, address.port))
         sessionManager.beginPlayState(session)
     }
 
@@ -192,9 +193,13 @@ class LoginHandler(
     private fun enableCompression() {
         val threshold = server.config.server.compressionThreshold
         if (threshold == -1) {
-            session.channel.pipeline().remove(PacketCompressor.NETTY_NAME)
-            session.channel.pipeline().remove(PacketDecompressor.NETTY_NAME)
-            return
+            try {
+                session.channel.pipeline().remove(PacketCompressor.NETTY_NAME)
+                session.channel.pipeline().remove(PacketDecompressor.NETTY_NAME)
+                return
+            } catch (exception: NoSuchElementException) {
+                return
+            }
         }
 
         var encoder = session.channel.pipeline()[PacketCompressor.NETTY_NAME] as? PacketCompressor

@@ -20,45 +20,7 @@ comments:
     active: true
 
 complexity:
-  active: true
-  ComplexCondition:
-    active: true
-    threshold: 8
-  ComplexInterface:
-    active: true
-    threshold: 30
-  ComplexMethod:
-    active: true
-    ignoreSingleWhenExpression: true
-  LargeClass:
-    active: true
-    threshold: 500
-  LongMethod:
-    active: true
-    threshold: 150
-  LongParameterList:
-    active: true
-    functionThreshold: 10
-    constructorThreshold: 25
-    ignoreAnnotated: ['Inject']
-  MethodOverloading:
-    active: true
-  TooManyFunctions:
-    active: true
-    thresholdInClasses: 15
-    thresholdInInterfaces: 15
-    thresholdInEnums: 5
-    thresholdInObjects: 15
-    thresholdInFiles: 200 # Ensures we aren't told off for files in org.kryptonmc.krypton.util, such as bytebufs.kt
-
-coroutines:
-  active: true
-  RedundantSuspendModifier:
-    active: true
-  SleepInsteadOfDelay:
-    active: true
-  SuspendFunWithFlowReturnType:
-    active: true
+  active: false
 
 exceptions:
   active: true
@@ -72,41 +34,11 @@ exceptions:
     active: true
   TooGenericExceptionCaught:
     active: false
+  TooGenericExceptionThrown:
+    exceptionNames: ['Throwable', 'Error', 'Exception']
 
 formatting:
-  active: true
-  AnnotationOnSeparateLine:
-    active: true
-  AnnotationSpacing:
-    active: true
-  ArgumentListWrapping:
-    active: false
-  CommentSpacing:
-    active: false
-  EnumEntryNameCase:
-    active: true
-  Filename:
-    active: true
-  ImportOrdering:
-    active: false
-  Indentation:
-    active: false # Has issues with my whacky code style
-  MaximumLineLength:
-    active: false
-  MultiLineIfElse:
-    active: false
-  NoUnusedImports:
-    active: false # Detected by style
-  ParameterListWrapping:
-    active: false
-  SpacingAroundAngleBrackets:
-    active: true
-  SpacingAroundDoubleColon:
-    active: true
-  SpacingAroundUnaryOperator:
-    active: true
-  SpacingBetweenDeclarationsWithAnnotations:
-    active: true
+  active: false
 
 naming:
   EnumNaming:
@@ -119,8 +51,7 @@ naming:
   NonBooleanPropertyPrefixedWithIs:
     active: true
   VariableMaxLength:
-    active: true
-    maximumVariableNameLength: 30
+    active: false
 
 potential-bugs:
   CastToNullableType:
@@ -134,8 +65,6 @@ potential-bugs:
   HasPlatformType:
     active: true
   IgnoredReturnValue:
-    active: true
-  LateinitUsage:
     active: true
   MissingWhenCase:
     active: false
@@ -156,8 +85,7 @@ style:
   DataClassShouldBeImmutable:
     active: false
   DestructuringDeclarationWithTooManyEntries:
-    active: true
-    maxDestructuringEntries: 5
+    active: false
   EqualsOnSignatureLine:
     active: true
   ExplicitCollectionElementAccessMethod:
@@ -195,9 +123,7 @@ style:
   RedundantVisibilityModifierRule:
     active: true
   ReturnCount:
-    active: true
-    max: 4
-    excludeGuardClauses: true
+    active: false
   SpacingBetweenPackageAndImports:
     active: true
   ThrowsCount:
@@ -206,7 +132,9 @@ style:
   TrailingWhitespace:
     active: true
   UnderscoresInNumericLiterals:
-    active: true
+    active: false
+  UnnecessaryAbstractClass:
+    active: false
   UnnecessaryAnnotationUseSiteTarget:
     active: true
   UnnecessaryFilter:
@@ -219,13 +147,13 @@ style:
     active: true
   UnusedImports:
     active: true
+  UnusedPrivateMember:
+    active: false
   UseArrayLiteralsInAnnotations:
     active: true
   UseCheckNotNull:
     active: true
   UseCheckOrError:
-    active: true
-  UseDataClass:
     active: true
   UseEmptyCounterpart:
     active: true

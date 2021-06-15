@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.world.bossbar
 import com.google.common.collect.MapMaker
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.BossBarAction
 import org.kryptonmc.krypton.packet.out.play.BossBarAction.UPDATE_FLAGS
 import org.kryptonmc.krypton.packet.out.play.BossBarAction.UPDATE_HEALTH

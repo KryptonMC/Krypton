@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.effect.particle
 
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.space.Vector
 
 /**

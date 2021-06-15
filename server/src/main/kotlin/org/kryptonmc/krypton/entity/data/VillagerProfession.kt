@@ -16,16 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity
+package org.kryptonmc.krypton.entity.data
 
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import net.kyori.adventure.key.Key.key
 
 /**
- * A protocol slot. The API equivalent of this would be [org.kryptonmc.api.inventory.item.ItemStack]
+ * Professions of villagers
  */
-data class Slot(
-    val isPresent: Boolean,
-    val id: Int = 0,
-    val count: Byte = 0,
-    val nbt: CompoundBinaryTag = CompoundBinaryTag.empty()
-)
+enum class VillagerProfession(val id: Int) {
+
+    NONE(0),
+    ARMORER(1),
+    BUTCHER(2),
+    CARTOGRAPHER(3),
+    CLERIC(4),
+    FARMER(5),
+    FISHERMAN(6),
+    FLETCHER(7),
+    LEATHERWORKER(8),
+    LIBRARIAN(9),
+    MASON(10),
+    NITWIT(11),
+    SHEPHERD(12),
+    TOOLSMITH(13),
+    WEAPONSMITH(14);
+
+    val key by lazy { key(name.lowercase()) }
+}

@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.entity.Slot
+import org.kryptonmc.krypton.inventory.item.Slot
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readNBTCompound
 import org.kryptonmc.krypton.util.readVarInt

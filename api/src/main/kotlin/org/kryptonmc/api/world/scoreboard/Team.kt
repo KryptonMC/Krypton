@@ -9,7 +9,7 @@
 package org.kryptonmc.api.world.scoreboard
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
 
 /**
  * Represents a [Scoreboard] team.

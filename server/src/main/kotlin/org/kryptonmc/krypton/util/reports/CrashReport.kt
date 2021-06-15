@@ -29,6 +29,7 @@ import java.lang.management.ManagementFactory
 import java.nio.file.Path
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.CompletionException
 import kotlin.io.path.outputStream
 
 class CrashReport(val title: String, val exception: Throwable) {
@@ -126,7 +127,7 @@ class CrashReport(val title: String, val exception: Throwable) {
         return true
     }
 
-    fun addCategory(title: String, ignoredCallCount: Int = 1) {
+    fun addCategory(title: String, ignoredCallCount: Int = 1): CrashReportCategory {
         val category = CrashReportCategory(title)
         if (trackingStackTrace) {
             val callCount = category.fillStackTrace(ignoredCallCount)
@@ -151,6 +152,7 @@ class CrashReport(val title: String, val exception: Throwable) {
             }
         }
         details += category
+        return category
     }
 
     companion object {
@@ -175,6 +177,16 @@ class CrashReport(val title: String, val exception: Throwable) {
             COMMENTS[(System.nanoTime() % COMMENTS.size).toInt()]
         } catch (exception: Exception) {
             "Witty comment unavailable :("
+        }
+
+        fun of(exception: Throwable, title: String): CrashReport {
+            var temp = exception
+            while (temp is CompletionException && temp.cause != null) temp = temp.cause!!
+            return if (exception is ReportedException) {
+                exception.report
+            } else {
+                CrashReport(title, exception)
+            }
         }
 
         fun preload() {

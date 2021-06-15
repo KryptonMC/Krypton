@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.inventory
 
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.inventory.item.ItemStack
 
 /**

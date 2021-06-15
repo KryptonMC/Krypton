@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.writeAngle
@@ -34,9 +34,8 @@ import org.kryptonmc.krypton.util.writeVarInt
 class PacketOutSpawnPlayer(private val player: KryptonPlayer) : PlayPacket(0x04) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(player.session.id)
+        buf.writeVarInt(player.id)
         buf.writeUUID(player.uuid)
-
         buf.writeDouble(player.location.x)
         buf.writeDouble(player.location.y)
         buf.writeDouble(player.location.z)

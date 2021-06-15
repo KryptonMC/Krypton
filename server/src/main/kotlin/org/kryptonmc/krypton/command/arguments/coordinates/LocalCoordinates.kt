@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.command.arguments.coordinates
 
 import com.mojang.brigadier.StringReader
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.command.arguments.ERROR_MIXED_TYPE
 import org.kryptonmc.krypton.command.arguments.ERROR_NOT_COMPLETE

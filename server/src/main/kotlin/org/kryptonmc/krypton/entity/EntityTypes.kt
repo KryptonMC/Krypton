@@ -16,30 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.entities.data
+package org.kryptonmc.krypton.entity
 
-import net.kyori.adventure.key.Key.key
+import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.ServerStorage
+import org.kryptonmc.krypton.entity.monster.KryptonZombie
+import java.util.UUID
 
-/**
- * Professions of villagers
- */
-enum class VillagerProfession(val id: Int) {
+object EntityTypes {
 
-    NONE(0),
-    ARMORER(1),
-    BUTCHER(2),
-    CARTOGRAPHER(3),
-    CLERIC(4),
-    FARMER(5),
-    FISHERMAN(6),
-    FLETCHER(7),
-    LEATHERWORKER(8),
-    LIBRARIAN(9),
-    MASON(10),
-    NITWIT(11),
-    SHEPHERD(12),
-    TOOLSMITH(13),
-    WEAPONSMITH(14);
+    private val TYPE_MAP = mapOf<EntityType, (KryptonServer, UUID) -> KryptonEntity>(
+        EntityType.ZOMBIE to { server, uuid -> KryptonZombie(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), server, uuid) }
+    )
 
-    val key by lazy { key(name.lowercase()) }
+    fun create(type: EntityType, server: KryptonServer, uuid: UUID): KryptonEntity? = TYPE_MAP[type]?.invoke(server, uuid)
 }

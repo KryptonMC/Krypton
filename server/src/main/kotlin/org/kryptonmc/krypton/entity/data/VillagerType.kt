@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.entities.data
+package org.kryptonmc.krypton.entity.data
 
 import net.kyori.adventure.key.Key.key
 

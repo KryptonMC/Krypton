@@ -16,45 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.entities
+package org.kryptonmc.krypton.util
 
-import net.kyori.adventure.text.Component
-import org.kryptonmc.api.space.Vector
-import org.kryptonmc.api.world.Location
+import net.kyori.adventure.nbt.CompoundBinaryTag
 import java.util.UUID
 
-// TODO: Actually implement some entities
-abstract class Entity {
+fun CompoundBinaryTag.Builder.putUUID(name: String, uuid: UUID) = apply {
+    val most = uuid.mostSignificantBits
+    val least = uuid.leastSignificantBits
+    putIntArray(name, intArrayOf((most shr 32).toInt(), most.toInt(), (least shr 32).toInt(), least.toInt()))
+}
 
-    abstract val uuid: UUID
+private const val UNSIGNED_INT_MAX_VALUE = 4294967295L
 
-    abstract val name: Component?
-
-    abstract val isCustomNameVisible: Boolean
-
-    abstract val location: Location
-
-    abstract val isOnGround: Boolean
-
-    abstract val motion: Vector
-
-    abstract val tags: List<String>
-
-    abstract val passenger: Entity?
-
-    abstract val airTicks: Short
-
-    abstract val fallDistance: Float
-
-    abstract val fireTicks: Short
-
-    abstract val isGlowing: Boolean
-
-    abstract val isInvulnerable: Boolean
-
-    abstract val hasNoGravity: Boolean
-
-    abstract val isSilent: Boolean
-
-    abstract val portalCooldown: Int
+fun CompoundBinaryTag.getUUID(name: String): UUID {
+    val array = getIntArray(name)
+    require(array.size == 4) { "Expected UUID array to be of length 4, but was ${array.size}!" }
+    return UUID(array[0].toLong() shl 32 or (array[1].toLong() and UNSIGNED_INT_MAX_VALUE), array[2].toLong() shl 32 or (array[3].toLong() and UNSIGNED_INT_MAX_VALUE))
 }

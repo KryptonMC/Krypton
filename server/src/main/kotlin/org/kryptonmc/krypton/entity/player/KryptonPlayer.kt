@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.entities
+package org.kryptonmc.krypton.entity.player
 
 import kotlinx.coroutines.launch
 import net.kyori.adventure.audience.MessageType
@@ -25,6 +25,7 @@ import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
+import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
@@ -36,10 +37,11 @@ import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.sound.SoundType
-import org.kryptonmc.api.entity.Abilities
-import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.player.Abilities
 import org.kryptonmc.api.entity.MainHand
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.event.play.SkinSettings
 import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
@@ -48,7 +50,10 @@ import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.command.KryptonSender
+import org.kryptonmc.krypton.entity.KryptonLivingEntity
+import org.kryptonmc.krypton.entity.attribute.Attributes
+import org.kryptonmc.krypton.entity.metadata.EntityDataSerializers
+import org.kryptonmc.krypton.entity.metadata.EntityData
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
 import org.kryptonmc.krypton.packet.out.play.PacketOutChat
@@ -63,7 +68,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityProperties.Companion.DEFAULT_PLAYER_ATTRIBUTES
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityTeleport
 import org.kryptonmc.krypton.packet.out.play.PacketOutNamedSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
@@ -78,6 +82,8 @@ import org.kryptonmc.krypton.util.chunkInSpiral
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toArea
 import org.kryptonmc.krypton.util.toItemStack
+import org.kryptonmc.krypton.util.toProtocol
+import org.kryptonmc.krypton.util.toSkinSettings
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.bossbar.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -89,29 +95,18 @@ import kotlin.math.abs
 import kotlin.math.min
 
 class KryptonPlayer(
+    id: Int,
     override val name: String,
     override val uuid: UUID,
     server: KryptonServer,
     val session: Session,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
-) : Player, KryptonSender(server) {
+) : KryptonLivingEntity(id, server, uuid, EntityType.PLAYER), Player {
 
-    override var displayName: Component = Component.empty()
     override var abilities = Abilities()
-    var attributes = DEFAULT_PLAYER_ATTRIBUTES
-
-    override var location = Location.ZERO
-    override val velocity = Vector.ZERO
-
-    override var isOnGround = false
-    override var isCrouching = false
-    override var isSprinting = false
 
     override var viewDistance = 10
     override var time = 0L
-
-    override var mainHand = MainHand.RIGHT
-    var hand = Hand.MAIN
 
     override var scoreboard: Scoreboard? = null
 
@@ -130,6 +125,16 @@ class KryptonPlayer(
     private var hasLoadedChunks = false
     private val visibleChunks = mutableSetOf<ChunkPosition>()
 
+    override fun defineExtraData() {
+        super.defineExtraData()
+        data.define(DATA_PLAYER_ABSORPTION_ID, 0F)
+        data.define(DATA_SCORE_ID, 0)
+        data.define(DATA_PLAYER_MODE_CUSTOMISATION, 0)
+        data.define(DATA_PLAYER_MAIN_HAND, 1)
+        data.define(DATA_SHOULDER_LEFT, CompoundBinaryTag.empty())
+        data.define(DATA_SHOULDER_RIGHT, CompoundBinaryTag.empty())
+    }
+
     override fun spawnParticles(particleEffect: ParticleEffect, location: Location) {
         val packet = PacketOutParticles(particleEffect, location)
         when (particleEffect.data) {
@@ -145,10 +150,10 @@ class KryptonPlayer(
         location = Location(position.x, position.y, position.z)
 
         if (abs(location.x - oldLocation.x) > 8 || abs(location.y - oldLocation.y) > 8 || abs(location.z - oldLocation.z) > 8) {
-            session.sendPacket(PacketOutEntityTeleport(session.id, location, isOnGround))
+            session.sendPacket(PacketOutEntityTeleport(id, location, isOnGround))
         } else {
             session.sendPacket(PacketOutEntityPosition(
-                session.id,
+                id,
                 calculatePositionChange(location.x, oldLocation.x),
                 calculatePositionChange(location.y, oldLocation.y),
                 calculatePositionChange(location.z, oldLocation.z),
@@ -286,7 +291,34 @@ class KryptonPlayer(
         }
     }
 
+    var additionalHearts: Float
+        get() = data[DATA_PLAYER_ABSORPTION_ID]
+        set(value) = data.set(DATA_PLAYER_ABSORPTION_ID, value)
+
+    var skinSettings: SkinSettings
+        get() = data[DATA_PLAYER_MODE_CUSTOMISATION].toSkinSettings()
+        set(value) = data.set(DATA_PLAYER_MODE_CUSTOMISATION, value.toProtocol().toByte())
+
+    override var mainHand: MainHand
+        get() = if (data[DATA_PLAYER_MAIN_HAND] == 0.toByte()) MainHand.LEFT else MainHand.RIGHT
+        set(value) = data.set(DATA_PLAYER_MAIN_HAND, if (value == MainHand.LEFT) 0 else 1)
+
+    var leftShoulder: CompoundBinaryTag
+        get() = data[DATA_SHOULDER_LEFT]
+        set(value) = data.set(DATA_SHOULDER_LEFT, value)
+
+    var rightShoulder: CompoundBinaryTag
+        get() = data[DATA_SHOULDER_RIGHT]
+        set(value) = data.set(DATA_SHOULDER_RIGHT, value)
+
     companion object {
+
+        private val DATA_PLAYER_ABSORPTION_ID = EntityData.define(KryptonPlayer::class, EntityDataSerializers.FLOAT)
+        private val DATA_SCORE_ID = EntityData.define(KryptonPlayer::class, EntityDataSerializers.INT)
+        private val DATA_PLAYER_MODE_CUSTOMISATION = EntityData.define(KryptonPlayer::class, EntityDataSerializers.BYTE)
+        private val DATA_PLAYER_MAIN_HAND = EntityData.define(KryptonPlayer::class, EntityDataSerializers.BYTE)
+        private val DATA_SHOULDER_LEFT = EntityData.define(KryptonPlayer::class, EntityDataSerializers.COMPOUND_TAG)
+        private val DATA_SHOULDER_RIGHT = EntityData.define(KryptonPlayer::class, EntityDataSerializers.COMPOUND_TAG)
 
         private val DEBUG_CHANNELS = setOf(
             key("debug/paths"),
@@ -308,5 +340,11 @@ class KryptonPlayer(
         )
         private val PREREGISTERED_CHANNELS = DEBUG_CHANNELS + key("brand")
         private val SERVER_LOGGER = logger<KryptonServer>()
+
+        fun createAttributes() = KryptonLivingEntity.createAttributes()
+            .add(Attributes.ATTACK_DAMAGE, 1.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.1)
+            .add(Attributes.ATTACK_SPEED)
+            .add(Attributes.LUCK)
     }
 }

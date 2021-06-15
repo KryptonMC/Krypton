@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.server.gui
 
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import java.util.Vector
 import javax.swing.JList
 

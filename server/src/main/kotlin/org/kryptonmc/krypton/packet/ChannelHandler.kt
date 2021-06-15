@@ -22,7 +22,6 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.session.Session
 import org.kryptonmc.krypton.util.logger
@@ -42,7 +41,7 @@ class ChannelHandler(private val server: KryptonServer) : SimpleChannelInboundHa
 
     override fun handlerAdded(ctx: ChannelHandlerContext) {
         LOGGER.debug("[+] Channel Connected: ${ctx.channel().remoteAddress()}")
-        session = Session(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), server, ctx.channel())
+        session = Session(server, ctx.channel())
         server.sessionManager.sessions += session
     }
 

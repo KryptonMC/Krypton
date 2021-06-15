@@ -34,7 +34,7 @@ class PacketInEntityAction(buf: ByteBuf) : PlayPacket(0x1B) {
 
     init {
         buf.readVarInt()
-        action = buf.readEnum<EntityAction>()
+        action = buf.readEnum()
         data = buf.readVarInt()
     }
 }

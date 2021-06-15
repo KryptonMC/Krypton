@@ -56,10 +56,10 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x22) {
 
         val mask = BitSet()
         val buffer = PooledByteBufAllocator.DEFAULT.heapBuffer(MAX_BUFFER_SIZE)
-        sections.forEachIndexed { index, it ->
-            if (it.nonEmptyBlockCount == 0) return@forEachIndexed
+        sections.forEachIndexed { index, section ->
+            if (section.nonEmptyBlockCount == 0) return@forEachIndexed
             mask.set(index)
-            it.write(buffer)
+            section.write(buffer)
         }
 
         buf.writeBitSet(mask) // the primary bit mask

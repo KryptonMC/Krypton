@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.event.play
 
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.world.Location
 
 /**

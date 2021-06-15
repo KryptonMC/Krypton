@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.entity.metadata.toSkinSettings
 import org.kryptonmc.krypton.packet.data.ClientSettings
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.toSkinSettings
 
 /**
  * Sent by the client to inform the server of its local settings.

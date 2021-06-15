@@ -24,15 +24,24 @@ import net.kyori.adventure.nbt.BinaryTagTypes
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
+import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldVersion
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.entity.EntityTypes
+import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.entity.KryptonLivingEntity
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityMetadata
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityProperties
+import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
+import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
 import org.kryptonmc.krypton.util.csv.csv
 import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.chunk.ChunkManager
@@ -45,6 +54,7 @@ import java.nio.file.Path
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
@@ -80,8 +90,9 @@ data class KryptonWorld(
     override val version: WorldVersion,
     override val maxHeight: Int,
     override val seed: Long,
-    val players: MutableSet<KryptonPlayer>,
-    val serverBrands: Set<String>
+    val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet(),
+    val serverBrands: Set<String>,
+    val entities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
 ) : World {
 
     val chunkManager = ChunkManager(this)
@@ -103,6 +114,27 @@ data class KryptonWorld(
         borderBuilder.warningBlocks,
         borderBuilder.warningTime
     )
+
+    override fun spawnEntity(type: EntityType, location: Vector) {
+        require(type != EntityType.MARKER) { "Markers cannot be spawned!" }
+        when (type) {
+            EntityType.PLAYER -> return // TODO: Implement player spawning
+            EntityType.EXPERIENCE_ORB -> spawnExperienceOrb(location)
+            EntityType.PAINTING -> spawnPainting(location)
+        }
+        val entity = EntityTypes.create(type, server, uuid)?.apply { this.location = location.toLocation(0F, 0F) } ?: return
+        val packets = mutableListOf(
+            if (entity is KryptonLivingEntity) PacketOutSpawnLivingEntity(entity) else PacketOutSpawnEntity(entity),
+            PacketOutEntityMetadata(entity.id, entity.data.all)
+        )
+        if (entity is KryptonLivingEntity) packets += PacketOutEntityProperties(entity.id, entity.attributes.syncableAttributes)
+        players.forEach { player -> packets.forEach { player.session.sendPacket(it) } }
+        return
+    }
+
+    override fun spawnExperienceOrb(location: Vector) = Unit // TODO: Implement XP orb spawning
+
+    override fun spawnPainting(location: Vector) = Unit // TODO: Implement painting spawning
 
     fun tick(profiler: Profiler) {
         if (players.isEmpty()) return // don't tick the world if there's no players in it

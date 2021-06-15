@@ -1,28 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <SmellBaseline>
   <ManuallySuppressedIssues>
-    <ID>ComplexMethod:KryptonServer.kt$KryptonServer$internal fun start(disableGUI: Boolean)</ID>
-    <ID>ComplexMethod:KryptonWorld.kt$KryptonWorld$fun tick(profiler: Profiler)</ID>
-    <ID>ComplexMethod:WatchdogProcess.kt$WatchdogProcess$override fun run()</ID>
-    <ID>ComplexMethod:bytebufs.kt$fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location)</ID>
-    <ID>MethodOverloading:metadata.kt$org.kryptonmc.krypton.util.metadata.kt</ID>
-    <ID>TooManyFunctions:KryptonCommandManager.kt$KryptonCommandManager : CommandManager</ID>
-    <ID>TooManyFunctions:KryptonPlayer.kt$KryptonPlayer : PlayerKryptonSender</ID>
-    <ID>TooManyFunctions:KryptonServer.kt$KryptonServer : Server</ID>
-    <ID>TooManyFunctions:PlayHandler.kt$PlayHandler : PacketHandler</ID>
-    <ID>TooManyFunctions:RegionFile.kt$RegionFile : AutoCloseable</ID>
-    <ID>Deprecation:PacketOutSpawnEntity.kt$Entity</ID>
-    <ID>Deprecation:PacketOutSpawnEntity.kt$PacketOutSpawnEntity$Entity</ID>
-    <ID>Deprecation:bytebufs.kt$Rotation</ID>
-    <ID>Deprecation:metadata.kt$Rotation</ID>
-    <ID>ComplexMethod:bytebufs.kt$fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location)</ID>
-    <ID>ExplicitItLambdaParameter:PacketOutChunkData.kt$PacketOutChunkData${ index, it -> if (it.nonEmptyBlockCount == 0) return@forEachIndexed mask = mask or (1 shl index) it.write(buffer) }</ID>
-    <ID>UseDataClass:CrashReportCategory.kt$CrashReportCategory$Entry</ID>
     <ID>UseIfInsteadOfWhen:KryptonCommandManager.kt$KryptonCommandManager$when (exception) { BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand() -> Messages.COMMAND.UNKNOWN(command) else -> text(exception.message ?: "") }</ID>
     <ID>UnsafeCallOnNullableType:CrashReportCategory.kt$CrashReportCategory$stackTrace[0]!!</ID>
     <ID>UnsafeCallOnNullableType:GS4QueryHandler.kt$GS4QueryHandler$validChallenges[packet.socketAddress]!!</ID>
     <ID>UnsafeCallOnNullableType:GS4QueryHandler.kt$GS4QueryHandler$validChallenges[socketAddress]!!</ID>
-    <ID>UnnecessaryParentheses:FilledProfileResults.kt$FilledProfileResults$(value.duration * 100.0)</ID>
     <ID>UnsafeCallOnNullableType:GenericThread.kt$GenericThread$thread!!</ID>
     <ID>UnsafeCallOnNullableType:KryptonChunk.kt$KryptonChunk$Material.KEYS.value(name)!!</ID>
     <ID>UnsafeCallOnNullableType:KryptonScheduler.kt$KryptonScheduler.KryptonTask$future!!</ID>
@@ -39,69 +21,15 @@
     <ID>UnsafeCallOnNullableType:TranslationService.kt$response.body()!!</ID>
     <ID>UnusedPrivateMember:Messages.kt$private fun quadText(key: String)</ID>
     <ID>UnusedPrivateMember:Messages.kt$private fun sixText(key: String)</ID>
-    <ID>UnusedPrivateMember:SessionManager.kt$SessionManager.Companion$private val LOGGER = logger&lt;SessionManager>()</ID>
     <ID>UnusedPrivateMember:WorldCoordinates.kt$WorldCoordinates.Companion$correctCenter: Boolean</ID>
     <ID>UnusedPrivateMember:utils.kt$locale: Locale</ID>
-    <ID>UseDataClass:CrashReportCategory.kt$CrashReportCategory$Entry</ID>
     <ID>VariableMaxLength:PacketCompressor.kt$PacketCompressor.Companion$// From Velocity private val MUST_USE_SAFE_AND_SLOW_COMPRESSION_HANDLING = java.lang.Boolean.getBoolean("krypton.increased-compression-cap")</ID>
-    <ID>UnnecessaryAbstractClass:Entity.kt$Entity</ID>
-    <ID>UnnecessaryAbstractClass:GeneratorSettings.kt$GeneratorSettings</ID>
-    <ID>UnnecessaryAbstractClass:KryptonInventory.kt$KryptonInventory : Inventory</ID>
-    <ID>UnnecessaryAbstractClass:StructureData.kt$Structure</ID>
-    <ID>UnderscoresInNumericLiterals:Metrics.kt$KryptonMetrics$11197</ID>
-    <ID>UnderscoresInNumericLiterals:QueryCategory.kt$QueryCategory$25566</ID>
-    <ID>UnderscoresInNumericLiterals:ServerCategory.kt$ServerCategory$25565</ID>
-    <ID>TooManyFunctions:KryptonCommandManager.kt$KryptonCommandManager : CommandManager</ID>
-    <ID>TooManyFunctions:KryptonPlayer.kt$KryptonPlayer : PlayerKryptonSender</ID>
-    <ID>TooManyFunctions:KryptonServer.kt$KryptonServer : Server</ID>
-    <ID>TooManyFunctions:PlayHandler.kt$PlayHandler : PacketHandler</ID>
-    <ID>TooManyFunctions:RegionFile.kt$RegionFile : AutoCloseable</ID>
     <ID>SpreadOperator:utils.kt$(bytes.size.toByte(), *bytes)</ID>
     <ID>ReturnFromFinally:KryptonServer.kt$KryptonServer$finally { restart() }</ID>
     <ID>ReturnFromFinally:RegionFile.kt$RegionFile$finally { file.use { it.force(true) } }</ID>
-    <ID>ReturnCount:GS4QueryHandler.kt$GS4QueryHandler$private fun DatagramPacket.process(): Boolean</ID>
-    <ID>ReturnCount:Heightmap.kt$Heightmap$fun update(x: Int, y: Int, z: Int, material: Material): Boolean</ID>
-    <ID>ReturnCount:RegionFile.kt$RegionFile$ @Synchronized fun getChunkDataInputStream(position: ChunkPosition): DataInputStream?</ID>
-    <ID>MethodOverloading:metadata.kt$org.kryptonmc.krypton.util.metadata.kt</ID>
-    <ID>NestedBlockDepth:KryptonWorld.kt$KryptonWorld$fun tick(profiler: Profiler)</ID>
-    <ID>NestedBlockDepth:PluginLoader.kt$PluginLoader$private fun Path.findMetadata(): SerializedPluginDescription?</ID>
-    <ID>UnderscoresInNumericLiterals:ConfigTests.kt$ConfigTests$10000</ID>
-    <ID>UnderscoresInNumericLiterals:ConfigTests.kt$ConfigTests$25565</ID>
-    <ID>UnderscoresInNumericLiterals:ConfigTests.kt$ConfigTests$25566</ID>
     <ID>UnsafeCallOnNullableType:ConfigTests.kt$ConfigTests$loader.load().get&lt;KryptonConfig>()!!</ID>
     <ID>UseOrEmpty:JSONBlocks.kt$RegistryBlock.Companion$json["properties"]?.let { context.deserialize(it) } ?: emptyMap&lt;String, List&lt;String>>()</ID>
     <ID>UseOrEmpty:JSONBlocks.kt$RegistryBlock.Companion$json["states"]?.let { context.deserialize(it) } ?: emptyList&lt;RegistryBlockState>()</ID>
     <ID>UseOrEmpty:JSONBlocks.kt$RegistryBlockState.Companion$json["properties"]?.let { context.deserialize(it) } ?: emptyMap&lt;String, String>()</ID>
   </ManuallySuppressedIssues>
-  <CurrentIssues>
-    <ID>LateinitUsage:ChannelHandler.kt$ChannelHandler$/** * The session this handler handles */ internal lateinit var session: Session</ID>
-    <ID>LateinitUsage:CrashReport.kt$CrashReport$private lateinit var saveFile: Path</ID>
-    <ID>LateinitUsage:GS4QueryHandler.kt$GS4QueryHandler$private lateinit var socket: DatagramSocket</ID>
-    <ID>LateinitUsage:KryptonPlayer.kt$KryptonPlayer$override lateinit var dimension: Key</ID>
-    <ID>LateinitUsage:KryptonPlayer.kt$KryptonPlayer$override lateinit var world: KryptonWorld</ID>
-    <ID>LateinitUsage:KryptonServerGUI.kt$KryptonServerGUI$private lateinit var logAppenderThread: Thread</ID>
-    <ID>LateinitUsage:PacketInAnimation.kt$PacketInAnimation$/** * The hand that was swung. */ lateinit var hand: Hand private set</ID>
-    <ID>LateinitUsage:PacketInChat.kt$PacketInChat$/** * The chat message */ lateinit var message: String private set</ID>
-    <ID>LateinitUsage:PacketInClientSettings.kt$PacketInClientSettings$/** * The client's settings */ lateinit var settings: ClientSettings private set</ID>
-    <ID>LateinitUsage:PacketInCreativeInventoryAction.kt$PacketInCreativeInventoryAction$/** * The item that was clicked */ lateinit var clickedItem: Slot private set</ID>
-    <ID>LateinitUsage:PacketInEncryptionResponse.kt$PacketInEncryptionResponse$/** * The shared secret used for encryption, encrypted with the server's public key. */ lateinit var secret: ByteArray private set</ID>
-    <ID>LateinitUsage:PacketInEncryptionResponse.kt$PacketInEncryptionResponse$/** * The verify token earlier sent by the server, also encrypted with the server's public key. */ lateinit var verifyToken: ByteArray private set</ID>
-    <ID>LateinitUsage:PacketInEntityAction.kt$PacketInEntityAction$/** * The action taken by the entity */ lateinit var action: EntityAction private set</ID>
-    <ID>LateinitUsage:PacketInHandshake.kt$PacketInHandshake$/** * The data in the handshake. */ lateinit var data: HandshakeData private set</ID>
-    <ID>LateinitUsage:PacketInLoginStart.kt$PacketInLoginStart$/** * The username of the player logging in. */ lateinit var name: String private set</ID>
-    <ID>LateinitUsage:PacketInPlayerBlockPlacement.kt$PacketInPlayerBlockPlacement$/** * The face of the block that has been placed that is facing the player */ lateinit var face: BlockFace private set</ID>
-    <ID>LateinitUsage:PacketInPlayerBlockPlacement.kt$PacketInPlayerBlockPlacement$/** * The hand the player used to place the block */ lateinit var hand: Hand private set</ID>
-    <ID>LateinitUsage:PacketInPlayerBlockPlacement.kt$PacketInPlayerBlockPlacement$/** * The location of the __block__ being placed */ lateinit var location: Vector private set</ID>
-    <ID>LateinitUsage:PacketInPlayerDigging.kt$PacketInPlayerDigging$lateinit var face: BlockFace private set</ID>
-    <ID>LateinitUsage:PacketInPlayerDigging.kt$PacketInPlayerDigging$lateinit var location: Vector private set</ID>
-    <ID>LateinitUsage:PacketInPlayerDigging.kt$PacketInPlayerDigging$lateinit var status: DiggingStatus private set</ID>
-    <ID>LateinitUsage:PacketInPluginMessage.kt$PacketInPluginMessage$/** * The channel the plugin message was sent on */ lateinit var channel: Key private set</ID>
-    <ID>LateinitUsage:PacketInPluginMessage.kt$PacketInPluginMessage$/** * The raw data sent on the channel. Could be a string, could be a number, could just * be raw bytes, we don't know, it's context-related. */ lateinit var data: ByteArray private set</ID>
-    <ID>LateinitUsage:PacketInTabComplete.kt$PacketInTabComplete$/** * The command to tab complete. May or may not include '/'. */ lateinit var command: String private set</ID>
-    <ID>LateinitUsage:Session.kt$Session$lateinit var player: KryptonPlayer</ID>
-    <ID>LateinitUsage:Session.kt$Session$lateinit var profile: GameProfile</ID>
-    <ID>LateinitUsage:Session.kt$Session$lateinit var settings: ClientSettings</ID>
-    <ID>LateinitUsage:SingleTickProfiler.kt$SingleTickProfiler$private lateinit var profiler: CollectibleProfiler</ID>
-    <ID>LateinitUsage:TranslationManager.kt$TranslationManager$private lateinit var registry: TranslationRegistry</ID>
-  </CurrentIssues>
 </SmellBaseline>

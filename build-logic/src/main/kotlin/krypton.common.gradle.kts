@@ -15,8 +15,6 @@ repositories {
 }
 
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt", "detekt-formatting", "1.17.1")
-
     testImplementation(kotlin("test-junit5"))
     testImplementation("org.junit.platform", "junit-platform-runner", Versions.JUNIT_PLATFORM_RUNNER)
     testImplementation("io.mockk", "mockk", Versions.MOCKK)

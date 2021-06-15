@@ -16,7 +16,7 @@ import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.dummy.DummyCommand
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
 import java.net.InetSocketAddress
 import java.util.UUID
 

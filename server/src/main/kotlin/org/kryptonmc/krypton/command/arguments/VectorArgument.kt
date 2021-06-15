@@ -27,10 +27,11 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.adventure.toMessage
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.LocalCoordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.WorldCoordinates
+import org.kryptonmc.krypton.command.suggestCoordinates
 import java.util.concurrent.CompletableFuture
 
 class VectorArgument(private val correctCenter: Boolean) : ArgumentType<Coordinates> {
@@ -70,62 +71,4 @@ data class TextCoordinates(val x: String, val y: String, val z: String) {
         val CENTER_LOCAL = TextCoordinates("^", "^", "^")
         val CENTER_GLOBAL = TextCoordinates("~", "~", "~")
     }
-}
-
-fun SuggestionsBuilder.suggestCoordinates(
-    text: String,
-    coordinates: Collection<TextCoordinates>,
-    predicate: (String) -> Boolean
-): CompletableFuture<Suggestions> {
-    if (text.isEmpty()) {
-        val results = mutableListOf<String>()
-        coordinates.forEach {
-            val suggestion = "${it.x} ${it.y} ${it.z}"
-            if (!predicate(suggestion)) return@forEach
-            results += it.x
-            results += "${it.x} ${it.y}"
-            results += suggestion
-        }
-        return suggest(results)
-    }
-    val components = text.split(" ")
-    if (components.size == 1) {
-        val results = mutableListOf<String>()
-        coordinates.forEach {
-            val suggestion = "${components[0]} ${it.y} ${it.z}"
-            if (!predicate(suggestion)) return@forEach
-            results += "${components[0]} ${it.y}"
-            results += suggestion
-        }
-        return suggest(results)
-    }
-    if (components.size == 2) {
-        val results = mutableListOf<String>()
-        coordinates.forEach {
-            val suggestion = "${components[0]} ${components[1]} ${it.z}"
-            if (!predicate(suggestion)) return@forEach
-            results += suggestion
-        }
-        return suggest(results)
-    }
-    return suggest(emptyList())
-}
-
-fun SuggestionsBuilder.suggest(suggestions: Iterable<String>): CompletableFuture<Suggestions> {
-    val remaining = remaining.lowercase()
-    suggestions.forEach {
-        if (!remaining.matchesSubString(it.lowercase())) return@forEach
-        suggest(it)
-    }
-    return buildFuture()
-}
-
-fun String.matchesSubString(other: String): Boolean {
-    var i = 0
-    while (!other.startsWith(this, i)) {
-        i = other.indexOf(Char(95), i)
-        if (i < 0) return false
-        i++
-    }
-    return true
 }

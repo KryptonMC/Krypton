@@ -6,9 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.entity
-
-import org.kryptonmc.api.entity.entities.Player
+package org.kryptonmc.api.entity.player
 
 /**
  * Represents a [Player]'s abilities.

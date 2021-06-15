@@ -10,6 +10,8 @@ package org.kryptonmc.api.dummy
 
 import io.mockk.mockk
 import net.kyori.adventure.audience.Audience
+import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Location
@@ -41,6 +43,9 @@ data class DummyWorld(override val name: String) : World {
     override var rainLevel = 0F
     override var thunderLevel = 0F
     override fun save() = Unit
+    override fun spawnEntity(type: EntityType, location: Vector) = Unit
+    override fun spawnExperienceOrb(location: Vector) = Unit
+    override fun spawnPainting(location: Vector) = Unit
     override fun audiences() = emptySet<Audience>()
 
     override fun equals(other: Any?): Boolean {

@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api
 
-import org.kryptonmc.api.entity.Abilities
+import org.kryptonmc.api.entity.player.Abilities
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

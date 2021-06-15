@@ -11,7 +11,7 @@ package org.kryptonmc.api.event.login
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.format.NamedTextColor
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.ComponentResult
 import org.kryptonmc.api.event.ResultedEvent
 

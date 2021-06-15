@@ -12,7 +12,7 @@ import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
 
 /**
  * Called when the connection to a player in the PLAY state is lost.

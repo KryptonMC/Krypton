@@ -38,9 +38,8 @@ import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Location
-import org.kryptonmc.krypton.entity.Slot
-import org.kryptonmc.krypton.entity.entities.data.VillagerData
-import org.kryptonmc.krypton.entity.metadata.Optional
+import org.kryptonmc.krypton.inventory.item.Slot
+import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.locale.TranslationManager
 import org.kryptonmc.krypton.registry.Registries
 import java.io.ByteArrayOutputStream
@@ -168,27 +167,9 @@ fun ByteBuf.writeLongArray(array: LongArray) {
     array.forEach { writeLong(it) }
 }
 
-fun ByteBuf.writeOptionalVarInt(varInt: Optional<Int>) {
-    if (varInt.value != null) {
-        writeBoolean(true)
-        writeVarInt(varInt.value)
-    } else {
-        writeBoolean(false)
-    }
-}
-
 fun ByteBuf.writeUUID(uuid: UUID) {
     writeLong(uuid.mostSignificantBits)
     writeLong(uuid.leastSignificantBits)
-}
-
-fun ByteBuf.writeOptionalUUID(uuid: Optional<UUID>) {
-    if (uuid.value != null) {
-        writeBoolean(true)
-        writeUUID(uuid.value)
-    } else {
-        writeBoolean(false)
-    }
 }
 
 fun ByteBuf.writeNBTCompound(tag: CompoundBinaryTag) {
@@ -212,15 +193,6 @@ fun ByteBuf.readNBTCompound(): CompoundBinaryTag {
 
 fun ByteBuf.writeChat(component: Component) {
     writeString(GsonComponentSerializer.gson().serialize(TranslationManager.render(component)))
-}
-
-fun ByteBuf.writeOptionalChat(component: Optional<Component>) {
-    if (component.value != null) {
-        writeBoolean(true)
-        writeChat(component.value)
-    } else {
-        writeBoolean(false)
-    }
 }
 
 fun ByteBuf.writeSlot(slot: Slot) {
@@ -251,15 +223,6 @@ fun ByteBuf.writeRotation(rotation: Rotation) {
 
 fun ByteBuf.writePosition(position: Position) {
     writeLong(position.toProtocol())
-}
-
-fun ByteBuf.writeOptionalPosition(position: Optional<Vector>) {
-    if (position.value != null) {
-        writeBoolean(true)
-        writePosition(position.value)
-    } else {
-        writeBoolean(false)
-    }
 }
 
 fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
@@ -365,7 +328,19 @@ fun ByteBuf.writeDuration(duration: Duration) {
 
 inline fun <reified T : Enum<T>> ByteBuf.readEnum(): T = T::class.java.enumConstants[readVarInt()]
 
+fun ByteBuf.writeEnum(enum: Enum<*>) = writeVarInt(enum.ordinal)
+
 fun ByteBuf.writeBitSet(set: BitSet) = writeLongArray(set.toLongArray())
+
+fun <T> ByteBuf.writeOptional(optional: java.util.Optional<T>, presentAction: (T) -> Unit) {
+    writeBoolean(optional.isPresent)
+    if (optional.isPresent) presentAction(optional.get())
+}
+
+fun <E> ByteBuf.writeCollection(collection: Collection<E>, action: (E) -> Unit) {
+    writeVarInt(collection.size)
+    collection.forEach { action(it) }
+}
 
 fun Int.varIntSize(): Int {
     for (i in 1 until 5) {

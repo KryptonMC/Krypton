@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.world.scoreboard
 
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
 
 /**
  * A [Scoreboard] is a method of keeping track of scores.

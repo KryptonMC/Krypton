@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.packet.data
 
+import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.event.play.SkinSettings
-import org.kryptonmc.krypton.entity.MainHand
 
 /**
  * Holder for various settings sent by clients. Some of these settings, like [viewDistance],

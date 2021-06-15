@@ -16,18 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.metadata
+package org.kryptonmc.krypton.entity.data
 
 /**
- * A pose that an entity may be in.
+ * Various data for villagers. Used for entity metadata.
  */
-enum class Pose {
-
-    STANDING,
-    FALL_FLYING,
-    SLEEPING,
-    SWIMMING,
-    SPIN_ATTACK,
-    SNEAKING,
-    DYING
-}
+data class VillagerData(
+    val type: VillagerType,
+    val profession: VillagerProfession,
+    val level: Int
+)

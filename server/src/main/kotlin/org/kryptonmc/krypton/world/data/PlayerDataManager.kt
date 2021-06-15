@@ -29,16 +29,14 @@ import net.kyori.adventure.nbt.ListBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.kryptonmc.api.entity.Abilities
+import org.kryptonmc.api.entity.player.Abilities
 import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.inventory.item.meta.ItemMeta
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Location
-import org.kryptonmc.krypton.entity.Attribute
-import org.kryptonmc.krypton.entity.AttributeKey
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.memory.EmptyBrain
 import org.kryptonmc.krypton.util.serialize
 import org.kryptonmc.krypton.util.createFile
@@ -69,11 +67,7 @@ class PlayerDataManager(private val folder: Path) {
             return
         }
 
-        player.attributes = nbt.getList("Attributes").map { attribute ->
-            (attribute as CompoundBinaryTag).let {
-                Attribute(AttributeKey.fromKey(it.getString("Name").toKey()), it.getDouble("Base"))
-            }
-        }.toSet()
+        player.attributes.load(nbt.getList("Attributes"))
 
         val inventoryItems = nbt.getList("Inventory").associate { item ->
             (item as CompoundBinaryTag).let {
@@ -99,13 +93,6 @@ class PlayerDataManager(private val folder: Path) {
     fun save(player: KryptonPlayer) {
         val playerFile = folder.resolve("${player.uuid}.dat").createFile()
 
-        val attributes = player.attributes.map {
-            CompoundBinaryTag.builder()
-                .putDouble("Base", it.value)
-                .putString("Name", it.key.key.toString())
-                .build()
-        }
-
         val helmet = player.inventory.helmet
         val chestplate = player.inventory.chestplate
         val leggings = player.inventory.leggings
@@ -127,7 +114,7 @@ class PlayerDataManager(private val folder: Path) {
             .put(EmptyBrain.write())
             .putShort("SleepTimer", 0)
             .putBoolean("SpawnForced", false)
-            .put("Attributes", ListBinaryTag.from(attributes))
+            .put("Attributes", player.attributes.save())
             .putBoolean("Invulnerable", player.abilities.isInvulnerable)
             .putFloat("AbsorptionAmount", 0F)
             .put("abilities", CompoundBinaryTag.builder()

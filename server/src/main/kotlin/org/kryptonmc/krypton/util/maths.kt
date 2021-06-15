@@ -19,11 +19,28 @@
 package org.kryptonmc.krypton.util
 
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.spongepowered.math.GenericMath
+import java.util.UUID
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 fun Double.floor(): Int {
     val result = toInt()
     return if (this < result.toFloat()) result - 1 else result
+}
+private val MULTIPLY_DE_BRUIJN_BIT_POSITION = intArrayOf(0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8, 31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9)
+
+fun Int.ceillog2(): Int {
+    val temp = if (GenericMath.isPowerOfTwo(this)) this else GenericMath.roundUpPow2(this)
+    return MULTIPLY_DE_BRUIJN_BIT_POSITION[(temp.toLong() * 125613361L shr 27 and 31).toInt()]
+}
+
+fun Int.log2() = ceillog2() - if (GenericMath.isPowerOfTwo(this)) 0 else 1
+
+fun Random.nextUUID(): UUID {
+    val most = nextLong() and -61441L or 16384L
+    val least = nextLong() and 4611686018427387903L or Long.MIN_VALUE
+    return UUID(most, least)
 }
 
 /**

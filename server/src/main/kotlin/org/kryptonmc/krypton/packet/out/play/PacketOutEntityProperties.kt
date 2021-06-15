@@ -19,10 +19,12 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.entity.Attribute
-import org.kryptonmc.krypton.entity.AttributeKey
+import org.kryptonmc.krypton.entity.attribute.Attribute
+import org.kryptonmc.krypton.entity.attribute.AttributeInstance
+import org.kryptonmc.krypton.entity.attribute.AttributeModifier
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.writeKey
+import org.kryptonmc.krypton.util.writeCollection
+import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -31,35 +33,27 @@ import org.kryptonmc.krypton.util.writeVarInt
  * all of the existing attributes and reapply them.
  *
  * @param entityId the ID of the entity to set the attributes of
- * @param properties the attributes to set
+ * @param attributes the attributes to set
  */
 class PacketOutEntityProperties(
     private val entityId: Int,
-    private val properties: Collection<Attribute> = emptyList()
+    attributes: Collection<AttributeInstance>
 ) : PlayPacket(0x63) {
+
+    private val attributes = attributes.map { AttributeSnapshot(it.attribute, it.baseValue, it.modifiers) }
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
-        buf.writeVarInt(properties.size)
-
-        properties.forEach { property ->
-            buf.writeKey(property.key.key)
-            buf.writeDouble(property.value)
-
-            buf.writeVarInt(property.modifiers.size)
-            property.modifiers.forEach {
-                buf.writeUUID(it.uuid)
+        buf.writeCollection(attributes) { attribute ->
+            buf.writeString("minecraft:${attribute.attribute.description.removePrefix("attribute.name.")}") // TODO: Attribute registry
+            buf.writeDouble(attribute.base)
+            buf.writeCollection(attribute.modifiers) {
+                buf.writeUUID(it.id)
                 buf.writeDouble(it.amount)
                 buf.writeByte(it.operation.ordinal)
             }
         }
     }
 
-    companion object {
-
-        val DEFAULT_PLAYER_ATTRIBUTES = setOf(
-            Attribute(AttributeKey.GENERIC_MAX_HEALTH, 20.0),
-            Attribute(AttributeKey.GENERIC_MOVEMENT_SPEED, 0.1)
-        )
-    }
+    data class AttributeSnapshot(val attribute: Attribute, val base: Double, val modifiers: Collection<AttributeModifier>)
 }

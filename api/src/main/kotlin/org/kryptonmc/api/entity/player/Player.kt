@@ -6,42 +6,29 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.entity.entities
+package org.kryptonmc.api.entity.player
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.entity.Abilities
+import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.plugin.PluginMessageRecipient
 import org.kryptonmc.api.space.Position
-import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.scoreboard.Scoreboard
 import java.net.InetSocketAddress
 import java.util.Locale
-import java.util.UUID
 
 /**
  * Represents a player.
  */
-interface Player : Sender, InventoryHolder, PluginMessageRecipient, HoverEventSource<HoverEvent.ShowEntity> {
-
-    /**
-     * The player's UUID.
-     */
-    val uuid: UUID
-
-    /**
-     * The player's display name.
-     */
-    var displayName: Component
+interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient, HoverEventSource<HoverEvent.ShowEntity> {
 
     /**
      * The address that the player is currently connected from.
@@ -62,31 +49,6 @@ interface Player : Sender, InventoryHolder, PluginMessageRecipient, HoverEventSo
      * The dimension the player is currently in.
      */
     val dimension: Key
-
-    /**
-     * The current location of the player.
-     */
-    val location: Location
-
-    /**
-     * The velocity of the player. Unused at the moment.
-     */
-    val velocity: Vector
-
-    /**
-     * If this player is on terra firma (solid earth).
-     */
-    val isOnGround: Boolean
-
-    /**
-     * If this player is crouching.
-     */
-    val isCrouching: Boolean
-
-    /**
-     * If this player is sprinting.
-     */
-    val isSprinting: Boolean
 
     /**
      * The view distance of this player.

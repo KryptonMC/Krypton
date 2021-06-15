@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.scoreboard
 
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.world.scoreboard.Objective
 import org.kryptonmc.api.world.scoreboard.Score
 import org.kryptonmc.api.world.scoreboard.Scoreboard

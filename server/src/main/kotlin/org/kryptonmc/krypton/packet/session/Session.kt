@@ -22,7 +22,7 @@ import io.netty.channel.Channel
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.GameProfile
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.data.ClientSettings
 import org.kryptonmc.krypton.packet.handlers.HandshakeHandler
@@ -34,12 +34,10 @@ import org.kryptonmc.krypton.packet.state.PacketState
 /**
  * Represents a session, which is a connection between the server and a client.
  *
- * @param id the entity ID of this session
  * @param server the server this session is connected to
  * @param channel the backing Netty channel that does all the IO stuff
  */
 class Session(
-    val id: Int,
     server: KryptonServer,
     internal val channel: Channel
 ) {

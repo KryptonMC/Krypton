@@ -41,11 +41,14 @@ import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.RawCommand
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.command.brigadierCommand
+import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.krypton.command.commands.DebugCommand
 import org.kryptonmc.krypton.command.commands.RestartCommand
 import org.kryptonmc.krypton.command.commands.StopCommand
 import org.kryptonmc.krypton.command.commands.TeleportCommand
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 import java.util.concurrent.CompletableFuture
 
@@ -161,6 +164,13 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         register(RestartCommand(server))
         DebugCommand(server).register(dispatcher)
         TeleportCommand.register(dispatcher)
+        register(brigadierCommand("zombie") {
+            executes {
+                val player = it.source as? KryptonPlayer ?: return@executes 1
+                player.world.spawnEntity(EntityType.ZOMBIE, player.location.toVector())
+                1
+            }
+        })
     }
 
     companion object {

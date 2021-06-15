@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.world.scoreboard.Option
 import org.kryptonmc.api.world.scoreboard.OptionApplication
 import org.kryptonmc.api.world.scoreboard.Team
-import org.kryptonmc.krypton.entity.entities.KryptonPlayer
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeString

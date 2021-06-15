@@ -22,7 +22,7 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.entity.entities.Player
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates

@@ -18,17 +18,23 @@
  */
 package org.kryptonmc.krypton.util
 
+import com.mojang.brigadier.StringReader
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.inventory.Book
+import net.kyori.adventure.key.InvalidKeyException
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.IntArrayBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.krypton.adventure.toMessage
 import java.math.BigInteger
 import java.net.InetAddress
 import java.security.AccessController
@@ -123,3 +129,24 @@ fun MessageDigest.hexDigest(): String = BigInteger(digest()).toString(16)
  * Analogous with [AccessController.doPrivileged].
  */
 fun <T> doPrivileged(action: () -> T): T = AccessController.doPrivileged(PrivilegedAction(action))
+
+private val ERROR_INVALID = SimpleCommandExceptionType(Component.translatable("argument.id.invalid").toMessage())
+
+fun StringReader.readKey(): Key {
+    val cursor = cursor
+    while (canRead() && peek().isAllowedInKey) skip()
+    return try {
+        Key.key(string.substring(cursor, this.cursor))
+    } catch (exception: InvalidKeyException) {
+        setCursor(cursor)
+        throw ERROR_INVALID.createWithContext(this)
+    }
+}
+
+private val ZERO_TO_NINE_RANGE = '0'..'9'
+private val A_TO_Z_RANGE = 'a'..'z'
+
+private val Char.isAllowedInKey: Boolean
+    get() = this in ZERO_TO_NINE_RANGE || this in A_TO_Z_RANGE || this == '_' || this == ':' || this == '/' || this == '.' || this == '-'
+
+fun notSupported(message: String): Nothing = throw UnsupportedOperationException(message)

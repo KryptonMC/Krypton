@@ -33,9 +33,6 @@ import org.kryptonmc.api.event.play.PluginMessageEvent
 import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.world.Gamemode
-import org.kryptonmc.krypton.entity.metadata.MovementFlags
-import org.kryptonmc.krypton.entity.metadata.Optional
-import org.kryptonmc.krypton.entity.metadata.PlayerMetadata
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.play.DiggingStatus
@@ -89,6 +86,8 @@ class PlayHandler(
     override val session: Session
 ) : PacketHandler {
 
+    private val player = session.player
+
     override fun handle(packet: Packet) = when (packet) {
         is PacketInAnimation -> handleAnimation(packet)
         is PacketInChat -> handleChat(packet)
@@ -114,7 +113,7 @@ class PlayHandler(
             Hand.OFF -> EntityAnimation.SWING_OFFHAND
         }
 
-        val animationPacket = PacketOutEntityAnimation(session.id, animation)
+        val animationPacket = PacketOutEntityAnimation(player.id, animation)
         sessionManager.sendPackets(animationPacket) {
             it != session && it.currentState == PacketState.PLAY
         }
@@ -155,9 +154,11 @@ class PlayHandler(
         server.eventManager.fireAndForget(event)
         session.settings = packet.settings
 
+        player.mainHand = packet.settings.mainHand
+        player.skinSettings = packet.settings.skinSettings
         val metadataPacket = PacketOutEntityMetadata(
-            session.id,
-            PlayerMetadata(mainHand = packet.settings.mainHand, skinFlags = packet.settings.skinSettings)
+            player.id,
+            player.data.dirty
         )
         session.sendPacket(metadataPacket)
         sessionManager.sendPackets(metadataPacket) {
@@ -173,17 +174,17 @@ class PlayHandler(
     }
 
     private fun handleEntityAction(packet: PacketInEntityAction) {
-        val metadata = when (packet.action) {
-            EntityAction.START_SNEAKING -> PlayerMetadata(movementFlags = MovementFlags(isCrouching = true))
-            EntityAction.STOP_SNEAKING -> PlayerMetadata(movementFlags = MovementFlags(isCrouching = false))
-            EntityAction.LEAVE_BED -> PlayerMetadata(bedPosition = Optional(null))
-            EntityAction.START_SPRINTING -> PlayerMetadata(movementFlags = MovementFlags(isSprinting = true))
-            EntityAction.STOP_SPRINTING -> PlayerMetadata(movementFlags = MovementFlags(isSprinting = false))
-            EntityAction.START_FLYING_WITH_ELYTRA -> PlayerMetadata(movementFlags = MovementFlags(isFlying = true))
-            else -> return // the rest of these are unsupported
+        when (packet.action) {
+            EntityAction.START_SNEAKING -> player.isCrouching = true
+            EntityAction.STOP_SNEAKING -> player.isCrouching = false
+            EntityAction.START_SPRINTING -> player.isSprinting = true
+            EntityAction.STOP_SPRINTING -> player.isSprinting = false
+            EntityAction.LEAVE_BED -> Unit // TODO: Sleeping
+            EntityAction.START_JUMP_WITH_HORSE, EntityAction.STOP_JUMP_WITH_HORSE, EntityAction.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
+            EntityAction.START_FLYING_WITH_ELYTRA -> Unit // TODO: Elytra
         }
 
-        val metadataPacket = PacketOutEntityMetadata(session.id, metadata)
+        val metadataPacket = PacketOutEntityMetadata(player.id, player.data.dirty)
         sessionManager.sendPackets(metadataPacket) {
             it != session && it.currentState == PacketState.PLAY
         }
@@ -244,7 +245,7 @@ class PlayHandler(
         server.eventManager.fireAndForget(MoveEvent(session.player, oldLocation, newLocation))
 
         val positionPacket = PacketOutEntityPosition(
-            session.id,
+            player.id,
             calculatePositionChange(newLocation.x, oldLocation.x),
             calculatePositionChange(newLocation.y, oldLocation.y),
             calculatePositionChange(newLocation.z, oldLocation.z),
@@ -264,12 +265,12 @@ class PlayHandler(
         server.eventManager.fireAndForget(MoveEvent(session.player, oldLocation, newLocation))
 
         val rotationPacket = PacketOutEntityRotation(
-            session.id,
+            player.id,
             packet.yaw.toAngle(),
             packet.pitch.toAngle(),
             packet.onGround
         )
-        val headLookPacket = PacketOutEntityHeadLook(session.id, packet.yaw.toAngle())
+        val headLookPacket = PacketOutEntityHeadLook(player.id, packet.yaw.toAngle())
 
         sessionManager.sendPackets(rotationPacket, headLookPacket) {
             it != session && it.currentState == PacketState.PLAY
@@ -285,7 +286,7 @@ class PlayHandler(
         server.eventManager.fireAndForget(MoveEvent(session.player, oldLocation, newLocation))
 
         val positionAndRotationPacket = PacketOutEntityPositionAndRotation(
-            session.id,
+            player.id,
             calculatePositionChange(newLocation.x, oldLocation.x),
             calculatePositionChange(newLocation.y, oldLocation.y),
             calculatePositionChange(newLocation.z, oldLocation.z),
@@ -293,7 +294,7 @@ class PlayHandler(
             newLocation.pitch.toAngle(),
             packet.onGround
         )
-        val headLookPacket = PacketOutEntityHeadLook(session.id, newLocation.yaw.toAngle())
+        val headLookPacket = PacketOutEntityHeadLook(player.id, newLocation.yaw.toAngle())
 
         sessionManager.sendPackets(positionAndRotationPacket, headLookPacket) {
             it != session && it.currentState == PacketState.PLAY
@@ -314,8 +315,6 @@ class PlayHandler(
             session.sendPacket(PacketOutTabComplete(packet.id, it))
         }
     }
-
-    private val player = session.player
 
     companion object {
 

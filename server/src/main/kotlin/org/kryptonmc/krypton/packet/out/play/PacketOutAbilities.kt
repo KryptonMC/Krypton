@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.entity.Abilities
+import org.kryptonmc.api.entity.player.Abilities
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
 /**
