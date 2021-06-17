@@ -23,8 +23,9 @@ import org.kryptonmc.krypton.entity.attribute.Attribute
 import org.kryptonmc.krypton.entity.attribute.AttributeInstance
 import org.kryptonmc.krypton.entity.attribute.AttributeModifier
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeCollection
-import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -45,7 +46,7 @@ class PacketOutEntityProperties(
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
         buf.writeCollection(attributes) { attribute ->
-            buf.writeString("minecraft:${attribute.attribute.description.removePrefix("attribute.name.")}") // TODO: Attribute registry
+            buf.writeKey(InternalRegistries.ATTRIBUTE.getKey(attribute.attribute)!!)
             buf.writeDouble(attribute.base)
             buf.writeCollection(attribute.modifiers) {
                 buf.writeUUID(it.id)

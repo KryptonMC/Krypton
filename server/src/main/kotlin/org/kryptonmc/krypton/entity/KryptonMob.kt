@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.entity.metadata.EntityDataSerializers
 import org.kryptonmc.krypton.entity.metadata.EntityData
 import java.util.UUID
 
-abstract class KryptonMob(id: Int, server: KryptonServer, uuid: UUID, type: EntityType) : KryptonLivingEntity(id, server, uuid, type), Mob {
+abstract class KryptonMob(id: Int, server: KryptonServer, uuid: UUID, type: EntityType<out Mob>) : KryptonLivingEntity(id, server, uuid, type), Mob {
 
     override fun defineExtraData() {
         super.defineExtraData()

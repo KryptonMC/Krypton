@@ -18,7 +18,7 @@ import java.util.EnumSet
  *
  * @param id the internal ID of this biome
  */
-// TODO: Maybe use code generation for this?
+// TODO: Use the new registry system
 enum class Biome(val id: Int) : Keyed {
 
     /**

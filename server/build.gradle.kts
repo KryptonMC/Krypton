@@ -38,8 +38,8 @@ dependencies {
     implementation("io.netty.incubator", "netty-incubator-transport-native-io_uring", Versions.NETTY_IO_URING)
 
     // Event
-    implementation("net.kyori", "event-method-asm", "4.0.0-SNAPSHOT")
-    implementation("org.ow2.asm", "asm", "9.1")
+    implementation("net.kyori", "event-method-asm", Versions.EVENT)
+    implementation("org.ow2.asm", "asm", Versions.ASM)
 
     // Logging
     runtimeOnly("org.apache.logging.log4j", "log4j-core")
@@ -56,14 +56,11 @@ dependencies {
     implementation("it.unimi.dsi", "fastutil", Versions.FASTUTIL)
 
     // Miscellaneous
-    implementation("com.mojang", "datafixerupper", "4.0.26")
+    implementation("com.mojang", "datafixerupper", Versions.DFU)
     implementation("net.kyori", "adventure-nbt")
     implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
     implementation("org.bstats", "bstats-base", Versions.BSTATS)
     implementation("com.velocitypowered", "velocity-native", Versions.VELOCITY_NATIVE)
-
-    // Detekt formatting
-    detektPlugins("io.gitlab.arturbosch.detekt", "detekt-formatting", "1.17.1")
 }
 
 tasks {

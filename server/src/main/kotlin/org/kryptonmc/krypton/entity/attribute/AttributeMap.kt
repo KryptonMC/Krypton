@@ -19,11 +19,14 @@
 package org.kryptonmc.krypton.entity.attribute
 
 import com.google.common.collect.Multimap
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
+import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.util.logger
 import java.util.UUID
 
-class AttributeMap(private val supplier: AttributeSupplier) : MutableIterable<MutableMap.MutableEntry<Attribute, AttributeInstance?>> {
+class AttributeMap(private val supplier: AttributeSupplier) : Iterable<Map.Entry<Attribute, AttributeInstance?>> {
 
     private val attributes = mutableMapOf<Attribute, AttributeInstance?>()
     val dirtyAttributes = mutableSetOf<AttributeInstance>()
@@ -63,7 +66,8 @@ class AttributeMap(private val supplier: AttributeSupplier) : MutableIterable<Mu
 
     fun load(tag: ListBinaryTag) = tag.asSequence().filterIsInstance<CompoundBinaryTag>().forEach {
         val name = it.getString("Name")
-        // TODO: Attribute registry
+        val attribute = InternalRegistries.ATTRIBUTE[Key.key(name)] ?: return@forEach LOGGER.warn("Ignoring unknown attribute $name")
+        get(attribute)?.load(it)
     }
 
     private fun onModify(instance: AttributeInstance) {
@@ -75,4 +79,9 @@ class AttributeMap(private val supplier: AttributeSupplier) : MutableIterable<Mu
 
     val syncableAttributes: Collection<AttributeInstance>
         get() = attributes.values.asSequence().filterNotNull().filter { it.attribute.isSyncable }.toList()
+
+    companion object {
+
+        private val LOGGER = logger<AttributeMap>()
+    }
 }

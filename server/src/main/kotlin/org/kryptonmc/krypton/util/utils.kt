@@ -150,3 +150,9 @@ private val Char.isAllowedInKey: Boolean
     get() = this in ZERO_TO_NINE_RANGE || this in A_TO_Z_RANGE || this == '_' || this == ':' || this == '/' || this == '.' || this == '-'
 
 fun notSupported(message: String): Nothing = throw UnsupportedOperationException(message)
+
+fun String.parseKey(): Key? = try {
+    Key.key(this)
+} catch (exception: InvalidKeyException) {
+    null
+}

@@ -10,6 +10,7 @@ package org.kryptonmc.api.world
 
 import net.kyori.adventure.audience.ForwardingAudience
 import org.kryptonmc.api.Server
+import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.chunk.Chunk
@@ -128,7 +129,7 @@ interface World : ForwardingAudience {
     /**
      * Spawns an entity with the given [type] in this world at the given [location].
      */
-    fun spawnEntity(type: EntityType, location: Vector)
+    fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector)
 
     /**
      * Spawns an experience orb in this world at the given [location].

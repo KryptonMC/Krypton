@@ -18,14 +18,16 @@
  */
 package org.kryptonmc.krypton.entity.attribute
 
+import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
-private val SUPPLIERS = mapOf(
-    EntityType.PLAYER to KryptonPlayer.createAttributes().build(),
-    EntityType.ZOMBIE to KryptonZombie.createAttributes().build()
+private val SUPPLIERS = mapOf<EntityType<out Entity>, AttributeSupplier>(
+    EntityTypes.PLAYER to KryptonPlayer.createAttributes().build(),
+    EntityTypes.ZOMBIE to KryptonZombie.createAttributes().build()
 )
 
-val EntityType.attributeSupplier: AttributeSupplier
+val <T : Entity> EntityType<T>.attributeSupplier: AttributeSupplier
     get() = SUPPLIERS.getValue(this)

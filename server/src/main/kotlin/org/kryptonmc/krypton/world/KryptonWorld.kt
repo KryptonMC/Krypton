@@ -24,6 +24,7 @@ import net.kyori.adventure.nbt.BinaryTagTypes
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
+import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.KryptonServer
@@ -32,7 +33,7 @@ import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldVersion
-import org.kryptonmc.krypton.entity.EntityTypes
+import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -115,14 +116,15 @@ data class KryptonWorld(
         borderBuilder.warningTime
     )
 
-    override fun spawnEntity(type: EntityType, location: Vector) {
-        require(type != EntityType.MARKER) { "Markers cannot be spawned!" }
-        when (type) {
-            EntityType.PLAYER -> return // TODO: Implement player spawning
-            EntityType.EXPERIENCE_ORB -> spawnExperienceOrb(location)
-            EntityType.PAINTING -> spawnPainting(location)
-        }
-        val entity = EntityTypes.create(type, server, uuid)?.apply { this.location = location.toLocation(0F, 0F) } ?: return
+    override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector) {
+        // TODO: Fix this when the rest of the entity types exist again
+//        require(type != EntityType.MARKER) { "Markers cannot be spawned!" }
+//        when (type) {
+//            EntityType.PLAYER -> return // TODO: Implement player spawning
+//            EntityType.EXPERIENCE_ORB -> spawnExperienceOrb(location)
+//            EntityType.PAINTING -> spawnPainting(location)
+//        }
+        val entity = EntityFactory.create(type, server, uuid)?.apply { this.location = location.toLocation(0F, 0F) } ?: return
         val packets = mutableListOf(
             if (entity is KryptonLivingEntity) PacketOutSpawnLivingEntity(entity) else PacketOutSpawnEntity(entity),
             PacketOutEntityMetadata(entity.id, entity.data.all)

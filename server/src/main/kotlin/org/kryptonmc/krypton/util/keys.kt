@@ -16,19 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.monster
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.monster.Monster
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.entity.KryptonMob
-import org.kryptonmc.krypton.entity.attribute.Attributes
-import java.util.UUID
+import com.mojang.serialization.Codec
+import com.mojang.serialization.DataResult
+import net.kyori.adventure.key.InvalidKeyException
+import net.kyori.adventure.key.Key
 
-abstract class KryptonMonster(id: Int, server: KryptonServer, uuid: UUID, type: EntityType<out Monster>) : KryptonMob(id, server, uuid, type), Monster {
+val KEY_CODEC: Codec<Key> = Codec.STRING.comapFlatMap(::readKey, Key::asString).stable()
 
-    companion object {
-
-        fun createAttributes() = KryptonMob.createAttributes().add(Attributes.ATTACK_DAMAGE)
-    }
+private fun readKey(text: String) = try {
+    DataResult.success(Key.key(text))
+} catch (exception: InvalidKeyException) {
+    DataResult.error("Not a valid resource location: $text ${exception.message}")
 }

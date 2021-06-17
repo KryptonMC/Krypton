@@ -18,17 +18,19 @@
  */
 package org.kryptonmc.krypton.entity
 
+import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
 import java.util.UUID
 
-object EntityTypes {
+object EntityFactory {
 
-    private val TYPE_MAP = mapOf<EntityType, (KryptonServer, UUID) -> KryptonEntity>(
-        EntityType.ZOMBIE to { server, uuid -> KryptonZombie(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), server, uuid) }
+    private val TYPE_MAP = mapOf<EntityType<out Entity>, (KryptonServer, UUID) -> KryptonEntity>(
+        EntityTypes.ZOMBIE to { server, uuid -> KryptonZombie(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), server, uuid) }
     )
 
-    fun create(type: EntityType, server: KryptonServer, uuid: UUID): KryptonEntity? = TYPE_MAP[type]?.invoke(server, uuid)
+    fun create(type: EntityType<out Entity>, server: KryptonServer, uuid: UUID): KryptonEntity? = TYPE_MAP[type]?.invoke(server, uuid)
 }

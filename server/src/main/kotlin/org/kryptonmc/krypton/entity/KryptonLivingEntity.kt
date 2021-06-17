@@ -36,11 +36,15 @@ abstract class KryptonLivingEntity(
     id: Int,
     server: KryptonServer,
     uuid: UUID,
-    type: EntityType
+    type: EntityType<out LivingEntity>
 ) : KryptonEntity(id, server, uuid, type), LivingEntity {
 
     override var absorption = 0F
     val attributes = AttributeMap(type.attributeSupplier)
+
+    init {
+        println("Attributes for type ${type.key} is ${attributes.syncableAttributes}, supplier is ${type.attributeSupplier}")
+    }
 
     override fun defineExtraData() {
         data.define(DATA_LIVING_ENTITY_FLAGS, 0)

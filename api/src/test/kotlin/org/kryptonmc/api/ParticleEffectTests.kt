@@ -32,7 +32,6 @@ class ParticleEffectTests {
 
     private val particle = mockk<Particle> {
         every { key } returns Key.key("krypton", "test")
-        every { id } returns 0
     }
 
     @Test

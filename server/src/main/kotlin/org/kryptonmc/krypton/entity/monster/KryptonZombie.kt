@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.monster
 
-import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.monster.Zombie
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.attribute.Attributes
@@ -26,9 +26,7 @@ import org.kryptonmc.krypton.entity.metadata.EntityData
 import org.kryptonmc.krypton.entity.metadata.EntityDataSerializers
 import java.util.UUID
 
-class KryptonZombie(id: Int, server: KryptonServer, uuid: UUID) : KryptonMonster(id, server, uuid, EntityType.ZOMBIE), Zombie {
-
-    override val name = "Zombie" // TODO: Figure out what to do with sender naming for entities
+class KryptonZombie(id: Int, server: KryptonServer, uuid: UUID) : KryptonMonster(id, server, uuid, EntityTypes.ZOMBIE), Zombie {
 
     override fun defineExtraData() {
         super.defineExtraData()

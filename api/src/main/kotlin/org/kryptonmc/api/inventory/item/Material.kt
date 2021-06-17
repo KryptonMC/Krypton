@@ -19,7 +19,7 @@ import net.kyori.adventure.util.Index
  *
  * @param blocksMotion whether this enum value blocks motion or not
  */
-// TODO: Maybe use code generation for this?
+// TODO: Make this a registry and split it off into item and block types
 @Suppress("unused")
 enum class Material(
     private val internalKey: String? = null,

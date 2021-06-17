@@ -58,6 +58,7 @@ dependencies {
     api("com.mojang", "brigadier", Versions.BRIGADIER)
     api("org.spongepowered", "math", Versions.MATH)
     api("org.apache.logging.log4j", "log4j-api")
+    implementation("it.unimi.dsi", "fastutil-core", Versions.FASTUTIL) // No guarantees that all the classes from this will exist at runtime
 }
 
 pitest {

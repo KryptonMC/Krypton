@@ -36,13 +36,13 @@ import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
 import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.effect.sound.SoundType
-import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.player.Abilities
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.play.SkinSettings
 import org.kryptonmc.api.inventory.item.ItemStack
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Gamemode
@@ -101,7 +101,7 @@ class KryptonPlayer(
     server: KryptonServer,
     val session: Session,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
-) : KryptonLivingEntity(id, server, uuid, EntityType.PLAYER), Player {
+) : KryptonLivingEntity(id, server, uuid, EntityTypes.PLAYER), Player {
 
     override var abilities = Abilities()
 
@@ -206,9 +206,8 @@ class KryptonPlayer(
     override fun playSound(sound: Sound) = playSound(sound, location.x, location.y, location.z)
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
-        val soundName = sound.name()
-        val event = SoundType.NAMES.value(soundName)
-        session.sendPacket(if (event != null) PacketOutSoundEffect(sound, Vector(x, y, z)) else PacketOutNamedSoundEffect(sound, Vector(x, y, z)))
+        val type = Registries.SOUND_EVENT[sound.name()]
+        session.sendPacket(if (type != null) PacketOutSoundEffect(sound, type, Vector(x, y, z)) else PacketOutNamedSoundEffect(sound, Vector(x, y, z)))
     }
 
     override fun stopSound(stop: SoundStop) {

@@ -18,11 +18,11 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.kryptonmc.krypton.registry.Registry
+import org.kryptonmc.api.util.IdMap
 import kotlin.math.max
 
 @Suppress("UNCHECKED_CAST") // Our casts are fine and should always succeed
-class IntIdentityHashBiMap<K>(private val type: Class<K>, initialCapacity: Int) : Registry<K> {
+class IntIdentityHashBiMap<K>(private val type: Class<K>, initialCapacity: Int) : IdMap<K> {
 
     private var keys: Array<K?>
     private var values: IntArray

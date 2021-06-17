@@ -16,10 +16,6 @@ output-reports:
 
 comments:
   active: true
-  CommentOverPrivateFunction:
-    active: true
-  CommentOverPrivateProperty:
-    active: true
   DeprecatedBlockTag:
     active: true
   UndocumentedPublicClass:
@@ -31,22 +27,14 @@ comments:
 
 complexity:
   active: true
-  ComplexInterface:
-    active: true
-    threshold: 30
-  LabeledExpression:
-    active: true
   LargeClass:
     active: true
-    threshold: 500
   LongParameterList:
     active: true
     functionThreshold: 6
     constructorThreshold: 8
     ignoreAnnotated: ['Inject']
     ignoreDefaultParameters: true
-  MethodOverloading:
-    active: true
   StringLiteralDuplication:
     active: true
   TooManyFunctions:
@@ -76,15 +64,7 @@ exceptions:
 
 naming:
   EnumNaming:
-    active: true
     enumEntryPattern: '[A-Z0-9_]+'
-  NoNameShadowing:
-    active: true
-  NonBooleanPropertyPrefixedWithIs:
-    active: true
-  VariableMaxLength:
-    active: true
-    maximumVariableNameLength: 30
 
 potential-bugs:
   CastToNullableType:

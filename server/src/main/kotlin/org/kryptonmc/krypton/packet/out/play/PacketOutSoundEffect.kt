@@ -20,18 +20,20 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.sound.Sound
+import org.kryptonmc.api.effect.sound.SoundType
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.registry.Registries
 import org.kryptonmc.krypton.util.writeVarInt
 
 class PacketOutSoundEffect(
     private val sound: Sound,
+    private val type: SoundType,
     private val location: Position
 ) : PlayPacket(0x5B) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(Registries.SOUND_EVENTS.idOf(sound.name()))
+        buf.writeVarInt(Registries.SOUND_EVENT.idOf(type))
         buf.writeVarInt(sound.source().ordinal)
         buf.writeInt((location.x * 8.0).toInt())
         buf.writeInt((location.y * 8.0).toInt())

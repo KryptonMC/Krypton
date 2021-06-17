@@ -25,6 +25,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArraySet
 import net.kyori.adventure.nbt.BinaryTagTypes
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.nbt.ListBinaryTag
+import org.kryptonmc.krypton.registry.InternalRegistries
 import java.util.EnumMap
 import java.util.UUID
 
@@ -101,7 +102,7 @@ class AttributeInstance(
     }
 
     fun save() = CompoundBinaryTag.builder()
-        .putString("Name", attribute.description.removePrefix("attribute.name.")) // TODO: Attribute registry
+        .putString("Name", InternalRegistries.ATTRIBUTE.getKey(attribute)!!.toString())
         .putDouble("Base", baseValue)
         .apply {
             if (permanentModifiers.isEmpty()) return@apply

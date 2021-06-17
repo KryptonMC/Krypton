@@ -9,11 +9,12 @@
 package org.kryptonmc.api.effect.particle
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Keyed
 
 /**
  * Interface for a particle. Contains the [Key] and internal ID of the particle type.
  */
-sealed interface Particle {
+sealed interface Particle : Keyed {
 
     /**
      * The namespaced key of this particle.
@@ -21,91 +22,93 @@ sealed interface Particle {
     val key: Key
 
     /**
-     * The internal ID. Should not need to be used.
+     * The builder to use to build a [ParticleEffect] of this type.
      */
-    val id: Int
+    val builder: ParticleEffectBuilder
+
+    override fun key() = key
 }
 
 /**
  * Represents a particle that has basic options available.
  */
-class SimpleParticle internal constructor(override val key: Key, override val id: Int) : Particle {
+class SimpleParticle internal constructor(override val key: Key) : Particle {
 
     /**
      * Create a new builder from this particle type.
      */
-    val builder: ParticleEffectBuilder
+    override val builder: ParticleEffectBuilder
         get() = ParticleEffectBuilder(this)
 }
 
 /**
  * Represents a particle that can have velocity applied in a direction.
  */
-class DirectionalParticle internal constructor(override val key: Key, override val id: Int) : Particle {
+class DirectionalParticle internal constructor(override val key: Key) : Particle {
 
     /**
      * Create a new builder from this particle type.
      */
-    val builder: DirectionalParticleEffectBuilder
+    override val builder: DirectionalParticleEffectBuilder
         get() = DirectionalParticleEffectBuilder(this)
 }
 
 /**
  * Represents a particle that uses a block texture for its appearance.
  */
-class BlockParticle internal constructor(override val key: Key, override val id: Int) : Particle {
+class BlockParticle internal constructor(override val key: Key) : Particle {
 
     /**
      * Create a new builder from this particle type.
      */
-    val builder: BlockParticleEffectBuilder
+    override val builder: BlockParticleEffectBuilder
         get() = BlockParticleEffectBuilder(this)
 }
 
 /**
  * Represents a particle that uses an item texture for its appearance.
  */
-class ItemParticle internal constructor(override val key: Key, override val id: Int) : Particle {
+class ItemParticle internal constructor(override val key: Key) : Particle {
 
     /**
      * Create a new builder from this particle type.
      */
-    val builder: ItemParticleEffectBuilder
+    override val builder: ItemParticleEffectBuilder
         get() = ItemParticleEffectBuilder(this)
 }
 
 /**
  * Represents a particle that uses a color for its appearance.
  */
-class ColorParticle internal constructor(override val key: Key, override val id: Int) : Particle {
+class ColorParticle internal constructor(override val key: Key) : Particle {
 
     /**
      * Create a new builder from this particle type.
      */
-    val builder: ColorParticleEffectBuilder
+    override val builder: ColorParticleEffectBuilder
         get() = ColorParticleEffectBuilder(this)
 }
 
 /**
  * Represents a particle that uses a color and scale for its appearance.
  */
-class DustParticle internal constructor(override val key: Key, override val id: Int) : Particle {
+class DustParticle internal constructor(override val key: Key) : Particle {
 
     /**
      * Create a new builder from this particle type.
      */
-    val builder: DustParticleEffectBuilder
+    override val builder: DustParticleEffectBuilder
         get() = DustParticleEffectBuilder(this)
 }
 
 /**
  * Represents a particle that uses a specific note value for its color appearance.
  */
-class NoteParticle internal constructor(override val key: Key, override val id: Int) : Particle {
+class NoteParticle internal constructor(override val key: Key) : Particle {
 
     /**
      * Create a new builder from this particle type.
      */
-    val builder: NoteParticleEffectBuilder
+    override val builder: NoteParticleEffectBuilder
         get() = NoteParticleEffectBuilder(this)
 }

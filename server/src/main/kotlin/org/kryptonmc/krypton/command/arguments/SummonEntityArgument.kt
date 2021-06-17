@@ -26,7 +26,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.adventure.toMessage
-import org.kryptonmc.krypton.registry.Registries
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.util.readKey
 
 class SummonEntityArgument : ArgumentType<Key> {
@@ -47,6 +47,4 @@ fun CommandContext<Sender>.summonableEntity(argumentName: String) = getArgument(
 
 private val ERROR_UNKNOWN_ENTITY = DynamicCommandExceptionType { Component.translatable("entity.notFound", listOf(Component.text(it.toString()))).toMessage() }
 
-private fun Key.verifyCanSummon() = apply {
-    Registries.ENTITY_TYPES.idOf(this).takeIf { it != -1 } ?: throw ERROR_UNKNOWN_ENTITY.create(this)
-}
+private fun Key.verifyCanSummon() = apply { Registries.ENTITY_TYPE[this] }

@@ -124,7 +124,7 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
     /**
      * The type of this entity.
      */
-    val type: EntityType
+    val type: EntityType<out Entity>
 
     /**
      * Marks this entity to be removed in the very near future, preferably within

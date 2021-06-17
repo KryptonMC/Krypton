@@ -42,7 +42,7 @@ import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.RawCommand
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.brigadierCommand
-import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.krypton.command.commands.DebugCommand
 import org.kryptonmc.krypton.command.commands.RestartCommand
@@ -167,7 +167,8 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         register(brigadierCommand("zombie") {
             executes {
                 val player = it.source as? KryptonPlayer ?: return@executes 1
-                player.world.spawnEntity(EntityType.ZOMBIE, player.location.toVector())
+                player.sendMessage(text("Spawning Zombie..."))
+                player.world.spawnEntity(EntityTypes.ZOMBIE, player.location.toVector())
                 1
             }
         })

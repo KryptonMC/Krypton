@@ -16,19 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.monster
+package org.kryptonmc.krypton.registry
 
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.monster.Monster
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.entity.KryptonMob
-import org.kryptonmc.krypton.entity.attribute.Attributes
-import java.util.UUID
+import org.kryptonmc.api.registry.Registries
 
-abstract class KryptonMonster(id: Int, server: KryptonServer, uuid: UUID, type: EntityType<out Monster>) : KryptonMob(id, server, uuid, type), Monster {
+object InternalRegistries {
 
-    companion object {
-
-        fun createAttributes() = KryptonMob.createAttributes().add(Attributes.ATTACK_DAMAGE)
-    }
+    val ATTRIBUTE = Registries.create(InternalRegistryKeys.ATTRIBUTE)
 }

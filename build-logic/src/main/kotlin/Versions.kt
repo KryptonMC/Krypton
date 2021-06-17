@@ -29,6 +29,9 @@ object Versions {
     const val CLIKT = "3.2.0"
     const val BSTATS = "2.2.1"
     const val VELOCITY_NATIVE = "1.1.8"
+    const val DFU = "4.0.26"
+    const val EVENT = "4.0.0-SNAPSHOT"
+    const val ASM = "9.1"
 
     // Test
     const val JUNIT_PLATFORM_RUNNER = "1.7.2"

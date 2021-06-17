@@ -60,6 +60,7 @@ import org.kryptonmc.krypton.serializers.GamemodeSerializer
 import org.kryptonmc.krypton.server.gui.KryptonServerGUI
 import org.kryptonmc.krypton.server.query.GS4QueryHandler
 import org.kryptonmc.krypton.service.KryptonServicesManager
+import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.TranslationRegister
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.createDirectories
@@ -165,12 +166,9 @@ class KryptonServer(val mainThread: Thread) : Server {
         Messages.START.INITIAL.info(LOGGER, config.server.ip, config.server.port)
         val startTime = System.nanoTime()
 
-        // loading these here avoids loading them when the first player joins
-        Class.forName("org.kryptonmc.krypton.registry.Registries")
-        Class.forName("org.kryptonmc.krypton.registry.tags.TagManager")
-        Class.forName("org.kryptonmc.krypton.world.block.palette.GlobalPalette")
-        Class.forName("org.kryptonmc.krypton.command.argument.ArgumentTypes")
+        // Preload crash report and run bootstrap
         CrashReport.preload()
+        Bootstrap.init()
 
         // Start up the console handler
         LOGGER.debug("Starting console handler")

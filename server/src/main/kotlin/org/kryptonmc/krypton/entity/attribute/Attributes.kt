@@ -18,19 +18,24 @@
  */
 package org.kryptonmc.krypton.entity.attribute
 
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.registry.InternalRegistries
+
 object Attributes {
 
-    val MAX_HEALTH = BoundedAttribute("attribute.name.generic.max_health", 20.0, 1.0, 1024.0).syncable()
-    val FOLLOW_RANGE = BoundedAttribute("attribute.name.generic.follow_range", 32.0, 0.0, 2048.0)
-    val KNOCKBACK_RESISTANCE = BoundedAttribute("attribute.name.generic.knockback_resistance", 0.0, 0.0, 1.0)
-    val MOVEMENT_SPEED = BoundedAttribute("attribute.name.generic.movement_speed", 0.7, 0.0, 1024.0).syncable()
-    val FLYING_SPEED = BoundedAttribute("attribute.name.generic.flying_speed", 0.4, 0.0, 1024.0).syncable()
-    val ATTACK_DAMAGE = BoundedAttribute("attribute.name.generic.attack_damage", 2.0, 0.0, 2048.0)
-    val ATTACK_KNOCKBACK = BoundedAttribute("attribute.name.generic.attack_knockback", 0.0, 0.0, 5.0)
-    val ATTACK_SPEED = BoundedAttribute("attribute.name.generic.attack_speed", 4.0, 0.0, 1024.0).syncable()
-    val ARMOR = BoundedAttribute("attribute.name.generic.armor", 0.0, 0.0, 30.0).syncable()
-    val ARMOR_TOUGHNESS = BoundedAttribute("attribute.name.generic.armor_toughness", 0.0, 0.0, 20.0).syncable()
-    val LUCK = BoundedAttribute("attribute.name.generic.luck", 0.0, -1024.0, 1024.0).syncable()
-    val SPAWN_REINFORCEMENTS_CHANCE = BoundedAttribute("attribute.name.zombie.spawn_reinforcements", 0.0, 0.0, 1.0)
-    val JUMP_STRENGTH = BoundedAttribute("attribute.name.horse.jump_strength", 0.7, 0.0, 2.0).syncable()
+    val MAX_HEALTH = register("generic.max_health", BoundedAttribute("attribute.name.generic.max_health", 20.0, 1.0, 1024.0).syncable())
+    val FOLLOW_RANGE = register("generic.follow_range", BoundedAttribute("attribute.name.generic.follow_range", 32.0, 0.0, 2048.0))
+    val KNOCKBACK_RESISTANCE = register("generic.knockback_resistance", BoundedAttribute("attribute.name.generic.knockback_resistance", 0.0, 0.0, 1.0))
+    val MOVEMENT_SPEED = register("generic.movement_speed", BoundedAttribute("attribute.name.generic.movement_speed", 0.7, 0.0, 1024.0).syncable())
+    val FLYING_SPEED = register("generic.flying_speed", BoundedAttribute("attribute.name.generic.flying_speed", 0.4, 0.0, 1024.0).syncable())
+    val ATTACK_DAMAGE = register("generic.attack_damage", BoundedAttribute("attribute.name.generic.attack_damage", 2.0, 0.0, 2048.0))
+    val ATTACK_KNOCKBACK = register("generic.attack_knockback", BoundedAttribute("attribute.name.generic.attack_knockback", 0.0, 0.0, 5.0))
+    val ATTACK_SPEED = register("generic.attack_speed", BoundedAttribute("attribute.name.generic.attack_speed", 4.0, 0.0, 1024.0).syncable())
+    val ARMOR = register("generic.armor", BoundedAttribute("attribute.name.generic.armor", 0.0, 0.0, 30.0).syncable())
+    val ARMOR_TOUGHNESS = register("generic.armor_toughness", BoundedAttribute("attribute.name.generic.armor_toughness", 0.0, 0.0, 20.0).syncable())
+    val LUCK = register("generic.luck", BoundedAttribute("attribute.name.generic.luck", 0.0, -1024.0, 1024.0).syncable())
+    val SPAWN_REINFORCEMENTS_CHANCE = register("zombie.spawn_reinforcements", BoundedAttribute("attribute.name.zombie.spawn_reinforcements", 0.0, 0.0, 1.0))
+    val JUMP_STRENGTH = register("horse.jump_strength", BoundedAttribute("attribute.name.horse.jump_strength", 0.7, 0.0, 2.0).syncable())
+
+    private fun register(key: String, attribute: Attribute): Attribute = Registries.register(InternalRegistries.ATTRIBUTE, key, attribute)
 }

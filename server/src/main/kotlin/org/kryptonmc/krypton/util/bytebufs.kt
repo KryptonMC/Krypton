@@ -226,7 +226,7 @@ fun ByteBuf.writePosition(position: Position) {
 }
 
 fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
-    writeInt(particle.type.id)
+    writeInt(org.kryptonmc.api.registry.Registries.PARTICLE_TYPE.idOf(particle.type))
     writeBoolean(particle.longDistance)
 
     val data = particle.data

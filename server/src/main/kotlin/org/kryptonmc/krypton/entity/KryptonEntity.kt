@@ -41,14 +41,14 @@ abstract class KryptonEntity(
     val id: Int,
     server: KryptonServer,
     override val uuid: UUID,
-    override val type: EntityType
+    override val type: EntityType<out Entity>
 ) : KryptonSender(server), Entity {
 
     val data = EntityData(this)
 
     override var location = Location.ZERO
     override var velocity = Vector.ZERO
-    override var isOnGround = false
+    override var isOnGround = true
     override var isDead = false
     override var isPersistent = false
     override var ticksLived = 0
@@ -90,7 +90,7 @@ abstract class KryptonEntity(
 
     override fun identity() = Identity.identity(uuid)
 
-    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(ShowEntity.of(type.key(), uuid, displayName.takeIf { it !== Component.empty() }))
+    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(ShowEntity.of(type.key, uuid, displayName.takeIf { it !== Component.empty() }))
 
     override var isOnFire: Boolean
         get() = getSharedFlag(0)
