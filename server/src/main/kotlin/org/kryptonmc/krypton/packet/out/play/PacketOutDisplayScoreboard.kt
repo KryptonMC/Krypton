@@ -31,7 +31,7 @@ import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 class PacketOutDisplayScoreboard(
     private val scoreboard: KryptonScoreboard,
     private val team: Team? = null // used for team specific positioning
-) : PlayPacket(0x4B) {
+) : PlayPacket(0x4C) {
 
     override fun write(buf: ByteBuf) {
         when (scoreboard.position) {

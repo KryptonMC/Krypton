@@ -30,7 +30,7 @@ class PacketOutSoundEffect(
     private val sound: Sound,
     private val type: SoundType,
     private val location: Position
-) : PlayPacket(0x5B) {
+) : PlayPacket(0x5C) {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(Registries.SOUND_EVENT.idOf(type))

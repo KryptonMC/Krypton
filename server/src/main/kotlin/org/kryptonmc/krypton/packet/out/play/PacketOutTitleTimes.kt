@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf
 import net.kyori.adventure.title.Title
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
-class PacketOutTitleTimes(private val times: Title.Times) : PlayPacket(0x59) {
+class PacketOutTitleTimes(private val times: Title.Times) : PlayPacket(0x5A) {
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(times.fadeIn().toSeconds().toInt() * 20)

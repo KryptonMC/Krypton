@@ -36,7 +36,7 @@ class PacketOutTeams(
     private val team: Team,
     private val addedMembers: List<KryptonPlayer> = emptyList(), // only applies for add players
     private val removedMembers: List<KryptonPlayer> = emptyList() // only applies for remove players
-) : PlayPacket(0x54) {
+) : PlayPacket(0x55) {
 
     override fun write(buf: ByteBuf) {
         buf.writeString(team.name, 16)

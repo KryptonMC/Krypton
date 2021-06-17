@@ -29,7 +29,7 @@ class PacketOutEntityTeleport(
     private val entityId: Int,
     private val location: Location,
     private val isOnGround: Boolean
-) : PlayPacket(0x56) {
+) : PlayPacket(0x61) {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

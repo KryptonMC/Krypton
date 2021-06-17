@@ -31,7 +31,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 class PacketOutScoreboardObjective(
     private val action: ObjectiveAction,
     private val objective: Objective
-) : PlayPacket(0x52) {
+) : PlayPacket(0x53) {
 
     override fun write(buf: ByteBuf) {
         buf.writeString(objective.name, 16)

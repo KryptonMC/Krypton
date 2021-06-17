@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 class PacketOutUpdateScore(
     private val score: Score,
     private val action: ScoreAction
-) : PlayPacket(0x55) {
+) : PlayPacket(0x56) {
 
     override fun write(buf: ByteBuf) {
         buf.writeString(score.player.name, 40)

@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.util.writeChat
 class PacketOutPlayerListHeaderFooter(
     private val header: Component,
     private val footer: Component
-) : PlayPacket(0x5D) {
+) : PlayPacket(0x5E) {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(header)

@@ -23,7 +23,7 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeChat
 
-class PacketOutActionBar(private val bar: Component) : PlayPacket(0x40) {
+class PacketOutActionBar(private val bar: Component) : PlayPacket(0x41) {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(bar)

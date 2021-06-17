@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutStopSound(private val soundStop: SoundStop) : PlayPacket(0x5C) {
+class PacketOutStopSound(private val soundStop: SoundStop) : PlayPacket(0x5D) {
 
     override fun write(buf: ByteBuf) {
         val source = soundStop.source()

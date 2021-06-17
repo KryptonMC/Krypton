@@ -44,7 +44,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInCreativeInventoryAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInHeldItemChange
 import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerAbilities
+import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerBlockPlacement
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPosition
@@ -96,7 +96,7 @@ class PlayHandler(
         is PacketInEntityAction -> handleEntityAction(packet)
         is PacketInHeldItemChange -> handleHeldItemChange(packet)
         is PacketInKeepAlive -> handleKeepAlive(packet)
-        is PacketInPlayerAbilities -> handleAbilities(packet)
+        is PacketInAbilities -> handleAbilities(packet)
         is PacketInPlayerBlockPlacement -> handleBlockPlacement(packet)
         is PacketInPlayerDigging -> handlePlayerDigging(packet)
         is PacketInPlayerPosition -> handlePositionUpdate(packet)
@@ -206,7 +206,7 @@ class PlayHandler(
         session.disconnect(translatable("disconnect.timeout"))
     }
 
-    private fun handleAbilities(packet: PacketInPlayerAbilities) {
+    private fun handleAbilities(packet: PacketInAbilities) {
         player.abilities.isFlying = packet.isFlying && player.abilities.canFly
     }
 

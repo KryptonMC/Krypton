@@ -60,7 +60,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
-import org.kryptonmc.krypton.packet.out.play.PacketOutParticles
+import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
 import org.kryptonmc.krypton.packet.out.play.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkData
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
@@ -136,7 +136,7 @@ class KryptonPlayer(
     }
 
     override fun spawnParticles(particleEffect: ParticleEffect, location: Location) {
-        val packet = PacketOutParticles(particleEffect, location)
+        val packet = PacketOutParticle(particleEffect, location)
         when (particleEffect.data) {
             // Send multiple packets based on the quantity
             is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(particleEffect.quantity) { session.sendPacket(packet) }

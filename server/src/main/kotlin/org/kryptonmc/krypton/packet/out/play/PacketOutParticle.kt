@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.util.writeParticle
 /**
  * Tells the client to spawn some particles around it
  */
-class PacketOutParticles(
+class PacketOutParticle(
     private val particleEffect: ParticleEffect,
     private val location: Location
 ) : PlayPacket(0x24) {
