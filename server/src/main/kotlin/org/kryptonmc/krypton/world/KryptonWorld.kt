@@ -33,6 +33,8 @@ import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldVersion
+import org.kryptonmc.api.world.rule.GameRuleHolder
+import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
@@ -73,7 +75,7 @@ data class KryptonWorld(
     override val difficulty: Difficulty,
     val difficultyLocked: Boolean,
     //val endDimensionData: EndDimensionData, // for the end, when it is supported
-    val gamerules: Map<Gamerule, String>, // everything is a string because Mojang :fingerguns:
+    override val gameRules: GameRuleHolder,
     val generationSettings: WorldGenerationSettings,
     override var gamemode: Gamemode,
     override val isHardcore: Boolean,
@@ -151,7 +153,7 @@ data class KryptonWorld(
         // TODO: Actually add in some probabilities and calculations for rain and thunder storms
         profiler.push("weather")
         val raining = isRaining
-        if (gamerules[Gamerule.DO_WEATHER_CYCLE]?.equals("true") == true) {
+        if (gameRules[GameRules.DO_WEATHER_CYCLE]) {
             if (clearWeatherTime > 0) {
                 --clearWeatherTime
                 thunderTime = if (isThundering) 0 else 1
@@ -224,7 +226,7 @@ data class KryptonWorld(
     override fun save() {
         val dataPath = folder.resolve("level.dat")
 
-        val gamerules = gamerules.transform { (rule, value) -> rule.rule to StringBinaryTag.of(value) }
+        val gamerules = gameRules.rules.transform { (rule, value) -> rule.name to StringBinaryTag.of(value.toString()) }
         val dimensions = generationSettings.dimensions.transform { (key, value) -> key.toString() to value.toNBT() }
 
         BinaryTagIO.writer().write(CompoundBinaryTag.builder().put("Data", CompoundBinaryTag.builder()

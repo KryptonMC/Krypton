@@ -122,6 +122,9 @@ style:
     ignoreEnums: true
     ignoreRanges: true
     ignoreNamedArgument: true
+    ignorePropertyDeclaration: true
+    ignoreLocalVariableDeclaration: true
+    ignoreAnnotation: true
   MandatoryBracesIfStatements:
     active: true
   MandatoryBracesLoops:
@@ -156,8 +159,6 @@ style:
     active: true
     max: 4
   TrailingWhitespace:
-    active: true
-  UnderscoresInNumericLiterals:
     active: true
   UnnecessaryAnnotationUseSiteTarget:
     active: true

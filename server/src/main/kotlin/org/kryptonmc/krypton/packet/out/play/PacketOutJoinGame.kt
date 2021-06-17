@@ -23,12 +23,12 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.Registries
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeNBTCompound
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.Gamerule
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.krypton.world.generation.FlatGenerator
@@ -92,8 +92,8 @@ class PacketOutJoinGame(
         buf.writeVarInt(maxPlayers)
         buf.writeVarInt(viewDistance)
 
-        buf.writeBoolean(world.gamerules[Gamerule.REDUCED_DEBUG_INFO].toBoolean()) // reduced debug info
-        buf.writeBoolean(!world.gamerules[Gamerule.DO_IMMEDIATE_RESPAWN].toBoolean()) // enable respawn screen
+        buf.writeBoolean(world.gameRules[GameRules.REDUCED_DEBUG_INFO])
+        buf.writeBoolean(world.gameRules[GameRules.DO_IMMEDIATE_RESPAWN])
 
         val generator = world.generationSettings.dimensions.getValue(dimension).generator
         buf.writeBoolean(generator is DebugGenerator) // is debug world

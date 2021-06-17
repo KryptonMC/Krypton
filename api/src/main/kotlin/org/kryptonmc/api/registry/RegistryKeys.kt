@@ -12,6 +12,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.particle.Particle
 import org.kryptonmc.api.effect.sound.SoundType
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.world.rule.GameRule
 
 /**
  * All the built-in registry keys for various registries.
@@ -19,10 +20,19 @@ import org.kryptonmc.api.entity.EntityType
 object RegistryKeys {
 
     // @formatter:off
-    @JvmField val SOUND_EVENT = create<SoundType>("sound_event")
-    @JvmField val ENTITY_TYPE = create<EntityType<*>>("entity_type")
-    @JvmField val PARTICLE_TYPE = create<Particle>("particle_type")
+    /**
+     * Built-in vanilla registries
+     */
+    @JvmField val SOUND_EVENT = minecraft<SoundType>("sound_event")
+    @JvmField val ENTITY_TYPE = minecraft<EntityType<*>>("entity_type")
+    @JvmField val PARTICLE_TYPE = minecraft<Particle>("particle_type")
+
+    /**
+     * Custom built-in registries
+     */
+    @JvmField val GAMERULES = krypton<GameRule<Any>>("gamerules")
     // @formatter:on
+
     /**
      * Creates a new registry key with the given [key] as its base key.
      *
@@ -31,5 +41,15 @@ object RegistryKeys {
      * @param key the key
      * @return a new registry key
      */
-    fun <T> create(key: String) = RegistryKey.of<T>(Key.key(key))
+    fun <T> minecraft(key: String) = RegistryKey.of<T>(Key.key(key))
+
+    /**
+     * Creates a new registry key with the given [key] as its base key.
+     *
+     * This will use [RegistryRoots.KRYPTON] as its root.
+     *
+     * @param key the key
+     * @return a new registry key
+     */
+    fun <T> krypton(key: String): RegistryKey<out Registry<T>> = RegistryKey(RegistryRoots.KRYPTON, Key.key("krypton", key))
 }

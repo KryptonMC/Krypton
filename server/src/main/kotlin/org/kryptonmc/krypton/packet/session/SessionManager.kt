@@ -27,6 +27,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.api.event.login.JoinEvent
 import org.kryptonmc.api.event.play.QuitEvent
+import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.handlers.PlayHandler
@@ -62,7 +63,6 @@ import org.kryptonmc.krypton.util.Angle
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.toProtocol
-import org.kryptonmc.krypton.world.Gamerule
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
@@ -120,8 +120,7 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutHeldItemChange(player.inventory.heldSlot))
         session.sendPacket(PacketOutDeclareRecipes())
         session.sendPacket(PacketOutTags)
-        val reducedDebugInfo = world.gamerules[Gamerule.REDUCED_DEBUG_INFO]?.equals("true") == true
-        session.sendPacket(PacketOutEntityStatus(player.id, if (reducedDebugInfo) 22 else 23))
+        session.sendPacket(PacketOutEntityStatus(player.id, if (world.gameRules[GameRules.REDUCED_DEBUG_INFO]) 22 else 23))
         session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
 

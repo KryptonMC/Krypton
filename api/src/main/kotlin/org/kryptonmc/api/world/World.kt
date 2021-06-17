@@ -14,6 +14,7 @@ import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.chunk.Chunk
+import org.kryptonmc.api.world.rule.GameRuleHolder
 import java.nio.file.Path
 import java.util.UUID
 
@@ -119,6 +120,11 @@ interface World : ForwardingAudience {
      * The level of the current rain.
      */
     var rainLevel: Float
+
+    /**
+     * The game rules for this world.
+     */
+    val gameRules: GameRuleHolder
 
     /**
      * Saves this world to disk. Exposed as a function of [World] to allow for custom world implementations

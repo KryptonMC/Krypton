@@ -15,7 +15,7 @@ import net.kyori.adventure.key.Key
  */
 object Registries {
 
-    private val WRITABLE_REGISTRY: WritableRegistry<WritableRegistry<*>> = MappedRegistry(RegistryKeys.create("root"))
+    private val WRITABLE_REGISTRY: WritableRegistry<WritableRegistry<*>> = MappedRegistry(RegistryKeys.minecraft("root"))
 
     /**
      * The root registry, which is the parent of all other registries.
@@ -40,6 +40,12 @@ object Registries {
      */
     @JvmField
     val PARTICLE_TYPE = create(RegistryKeys.PARTICLE_TYPE)
+
+    /**
+     * The registry of all gamerules in the game.
+     */
+    @JvmField
+    val GAMERULES = create(RegistryKeys.GAMERULES)
 
     /**
      * Registers a new entry to the given [registry], with the given [key] mapped to

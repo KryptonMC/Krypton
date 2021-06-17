@@ -155,7 +155,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
             nbt.getLong("DayTime"),
             Difficulty.fromId(nbt.getByte("Difficulty").toInt()),
             nbt.getBoolean("DifficultyLocked"),
-            nbt.getCompound("GameRules").associate { Gamerule.fromName(it.key) to (it.value as StringBinaryTag).value() },
+            KryptonGameRuleHolder(nbt.getCompound("GameRules")),
             worldGenSettings,
             requireNotNull(Gamemode.fromId(nbt.getInt("GameType"))),
             nbt.getBoolean("hardcore"),

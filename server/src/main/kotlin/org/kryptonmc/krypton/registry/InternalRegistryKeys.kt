@@ -23,5 +23,5 @@ import org.kryptonmc.krypton.entity.attribute.Attribute
 
 object InternalRegistryKeys {
 
-    val ATTRIBUTE = RegistryKeys.create<Attribute>("attribute")
+    val ATTRIBUTE = RegistryKeys.minecraft<Attribute>("attribute")
 }
