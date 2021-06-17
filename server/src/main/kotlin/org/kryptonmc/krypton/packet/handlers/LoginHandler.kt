@@ -215,7 +215,6 @@ class LoginHandler(
         encoder = PacketCompressor(compressor, threshold)
         decoder = PacketDecompressor(compressor, threshold)
 
-        session.channel.pipeline().remove(SizeEncoder.NETTY_NAME) // The compressor does this itself
         session.channel.pipeline().addBefore(PacketDecoder.NETTY_NAME, PacketDecompressor.NETTY_NAME, decoder)
         session.channel.pipeline().addBefore(PacketEncoder.NETTY_NAME, PacketCompressor.NETTY_NAME, encoder)
     }

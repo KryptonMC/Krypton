@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.transformers
 
 import io.netty.buffer.ByteBuf
+import io.netty.channel.ChannelHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToByteEncoder
 import org.kryptonmc.krypton.packet.Packet
@@ -29,7 +30,11 @@ import org.kryptonmc.krypton.util.writeVarInt
  * Encodes packets into raw packet data by writing the packet's ID as a varint followed by calling the packet's
  * [write][org.kryptonmc.krypton.packet.Packet.write] function
  */
-class PacketEncoder : MessageToByteEncoder<Packet>() {
+@ChannelHandler.Sharable
+object PacketEncoder : MessageToByteEncoder<Packet>() {
+
+    const val NETTY_NAME = "encoder"
+    private val LOGGER = logger<PacketEncoder>()
 
     override fun encode(ctx: ChannelHandlerContext, msg: Packet, out: ByteBuf) = try {
         LOGGER.debug("Outgoing packet of type ${msg.javaClass} id ${msg.info.id}")
@@ -37,11 +42,5 @@ class PacketEncoder : MessageToByteEncoder<Packet>() {
         msg.write(out)
     } catch (exception: Exception) {
         LOGGER.error("Exception trying to send packet ${msg.javaClass} with id ${msg.info.id}", exception)
-    }
-
-    companion object {
-
-        const val NETTY_NAME = "encoder"
-        private val LOGGER = logger<PacketEncoder>()
     }
 }

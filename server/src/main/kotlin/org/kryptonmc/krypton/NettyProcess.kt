@@ -72,8 +72,8 @@ class NettyProcess(private val server: KryptonServer) {
                             .addLast(LegacyQueryHandler.NETTY_NAME, LegacyQueryHandler(server.config.status))
                             .addLast(SizeDecoder.NETTY_NAME, SizeDecoder())
                             .addLast(PacketDecoder.NETTY_NAME, PacketDecoder())
-                            .addLast(SizeEncoder.NETTY_NAME, SizeEncoder())
-                            .addLast(PacketEncoder.NETTY_NAME, PacketEncoder())
+                            .addLast(SizeEncoder.NETTY_NAME, SizeEncoder)
+                            .addLast(PacketEncoder.NETTY_NAME, PacketEncoder)
                             .addLast(ChannelHandler.NETTY_NAME, ChannelHandler(server))
                     }
                 })
