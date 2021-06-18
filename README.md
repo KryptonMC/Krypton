@@ -115,6 +115,10 @@ and know the best practices.
 ### Credits
 
 - The project's [contributors](https://github.com/KryptonMC/Krypton/graphs/contributors) (of course)
+- [The Velocity project](https://velocitypowered.com/), for providing the fast networking and amazing plugin loading and
+  event systems.
+- [The Sponge Project](https://spongepowered.org), for providing the registry system that ours is partially derived
+  from.
 - [The Minecraft Coalition](https://wiki.vg) and [`#mcdevs`](https://github.com/mcdevs), for their hard work and effort
   documenting the protocol, allowing these projects to exist, and their amazing support.
 - [The Minecraft Wiki](https://minecraft.gamepedia.com)

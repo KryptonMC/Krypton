@@ -150,6 +150,21 @@ signing {
 license {
     header.set(project.resources.text.fromFile("HEADER.txt"))
     newLine.set(false)
+    exclude(
+        // Velocity derivatives, with a special header
+        "**/event/EventHandler.kt",
+        "**/event/EventManager.kt",
+        "**/event/ResultedEvent.kt",
+        "**/plugin/InvalidPluginException.kt",
+        "**/plugin/PluginContainer.kt",
+        "**/plugin/PluginDescription.kt",
+        "**/plugin/PluginManager.kt",
+        "**/plugin/annotation/DataFolder.kt",
+        "**/plugin/annotation/Dependency.kt",
+        "**/plugin/annotation/Plugin.kt",
+        // Sponge derivatives, with a special header
+        "**/world/rule/GameRules.kt"
+    )
 }
 
 tasks {

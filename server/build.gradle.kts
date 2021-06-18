@@ -100,5 +100,19 @@ pitest {
 license {
     header.set(project.rootProject.resources.text.fromFile("HEADER.txt"))
     newLine.set(false)
-    exclude("**/*.properties", "**/*.conf", "**/*.json")
+    exclude(
+        "**/*.properties",
+        "**/*.conf",
+        "**/*.json",
+        // Velocity derivatives, with a special header
+        "**/plugin/KryptonEventManager.kt",
+        "**/plugin/KryptonPluginContainer.kt",
+        "**/plugin/KryptonPluginManager.kt",
+        "**/plugin/PluginClassLoader.kt",
+        "**/plugin/dependencies.kt",
+        "**/plugin/loader/KryptonPluginDescription.kt",
+        "**/plugin/loader/PluginLoader.kt",
+        "**/scheduling/KryptonScheduler.kt",
+        "**/util/bytebufs.kt"
+    )
 }

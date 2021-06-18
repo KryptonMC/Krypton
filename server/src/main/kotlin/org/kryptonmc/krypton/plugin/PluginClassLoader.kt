@@ -1,7 +1,8 @@
 /*
- * This file is part of the Krypton project, licensed under the GNU General Public License v3.0
+ * This file is part of the Krypton project, and originates from the Velocity project,
+ * licensed under the GNU General Public License v3.0
  *
- * Copyright (C) 2021 KryptonMC and the contributors of the Krypton project
+ * Copyright (C) 2018 Velocity Contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +25,8 @@ import java.nio.file.Path
 import java.util.concurrent.CopyOnWriteArraySet
 
 /**
- * The class loader used to load plugins. This is only so we can expose addURL for internal use
+ * The class loader used to load plugins. This is to allow shared resources across
+ * multiple loaded plugins.
  */
 class PluginClassLoader(vararg urls: URL) : URLClassLoader(urls) {
 
@@ -67,7 +69,7 @@ class PluginClassLoader(vararg urls: URL) : URLClassLoader(urls) {
         private val loaders = CopyOnWriteArraySet<PluginClassLoader>()
 
         init {
-            ClassLoader.registerAsParallelCapable()
+            registerAsParallelCapable()
         }
     }
 }

@@ -10,9 +10,6 @@ package org.kryptonmc.api.event
 
 /**
  * Represents priorities of a listener.
- *
- * This is an object with const values as opposed to an enum
- * because BungeeCord.
  */
 enum class ListenerPriority {
 

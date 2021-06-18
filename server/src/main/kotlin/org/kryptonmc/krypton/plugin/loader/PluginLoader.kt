@@ -1,6 +1,8 @@
 /*
- * This file is part of the Krypton project, licensed under the GNU General Public License v3.0
+ * This file is part of the Krypton project, and originates from the Velocity project,
+ * licensed under the GNU General Public License v3.0
  *
+ * Copyright (C) 2018 Velocity Contributors
  * Copyright (C) 2021 KryptonMC and the contributors of the Krypton project
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,6 +17,9 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * For the original file that this file is derived from, see here:
+ * https://github.com/VelocityPowered/Velocity/blob/dev/1.1.0/proxy/src/main/java/com/velocitypowered/proxy/plugin/loader/java/JavaPluginLoader.java
  */
 package org.kryptonmc.krypton.plugin.loader
 
