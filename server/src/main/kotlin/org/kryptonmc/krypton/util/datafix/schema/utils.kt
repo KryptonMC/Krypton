@@ -18,15 +18,62 @@
  */
 package org.kryptonmc.krypton.util.datafix.schema
 
-import com.mojang.datafixers.DSL
+import com.mojang.datafixers.DSL.constType
+import com.mojang.datafixers.DSL.list
+import com.mojang.datafixers.DSL.optionalFields
+import com.mojang.datafixers.DSL.string
 import com.mojang.datafixers.schemas.Schema
 import com.mojang.datafixers.types.templates.TypeTemplate
+import com.mojang.serialization.Dynamic
 import org.kryptonmc.krypton.util.datafix.References
 import java.util.function.Supplier
 
-fun Schema.equipment(): TypeTemplate = DSL.optionalFields(
-    "ArmorItems", DSL.list(References.ITEM_STACK.`in`(this)),
-    "HandItems", DSL.list(References.ITEM_STACK.`in`(this))
+fun Schema.equipment(): TypeTemplate = optionalFields(
+    "ArmorItems", list(References.ITEM_STACK.`in`(this)),
+    "HandItems", list(References.ITEM_STACK.`in`(this))
 )
 
-fun Schema.registerEntity(map: Map<String, Supplier<TypeTemplate>>, name: String) = register(map, name) { _ -> equipment() }
+fun Schema.registerItem(map: Map<String, Supplier<TypeTemplate>>, name: String) = register(map, name) { _ ->
+    optionalFields("Item", References.ITEM_STACK.`in`(this))
+}
+
+fun Schema.registerMob(map: Map<String, Supplier<TypeTemplate>>, name: String) = register(map, name) { _ -> equipment() }
+
+fun Schema.registerProjectile(map: Map<String, Supplier<TypeTemplate>>, name: String) = register(map, name) { _ ->
+    optionalFields("inTile", References.BLOCK_NAME.`in`(this))
+}
+
+fun Schema.registerMinecart(map: Map<String, Supplier<TypeTemplate>>, name: String) = register(map, name) { _ ->
+    optionalFields("DisplayTile", References.BLOCK_NAME.`in`(this))
+}
+
+fun Schema.registerContainer(map: Map<String, Supplier<TypeTemplate>>, name: String) = register(map, name) { _ ->
+    optionalFields("Items", list(References.ITEM_STACK.`in`(this)))
+}
+
+fun Schema.createCriterionTypes(): Map<String, Supplier<TypeTemplate>> {
+    val item = Supplier { optionalFields("id", References.ITEM_NAME.`in`(this)) }
+    val block = Supplier { optionalFields("id", References.BLOCK_NAME.`in`(this)) }
+    val entity = Supplier { optionalFields("id", References.ENTITY_NAME.`in`(this)) }
+    return mapOf(
+        "minecraft:mined" to block,
+        "minecraft:crafted" to item,
+        "minecraft:used" to item,
+        "minecraft:broken" to item,
+        "minecraft:picked_up" to item,
+        "minecraft:dropped" to item,
+        "minecraft:killed" to entity,
+        "minecraft:killed_by" to entity,
+        "minecraft:custom" to Supplier { optionalFields("id", constType(NamespacedSchema.NAMESPACED_STRING)) },
+        "_special" to Supplier { optionalFields("id", constType(string())) }
+    )
+}
+
+fun <T> Dynamic<T>.addNames(names: Map<String, String>, armorStandId: String): T = update("tag") { dynamic ->
+    dynamic.update("BlockEntityTag") { dynamic1 ->
+        val blockId = dynamic1["id"].asString().result().map(String::ensureNamespaced).orElse("minecraft:air")
+        if (blockId == "minecraft:air") dynamic1 else names[blockId]?.let { dynamic1.set("id", createString(it)) }
+    }.update("EntityTag") {
+        if (it["id"].asString("").ensureNamespaced() == "minecraft:armor_stand") it.set("id", createString(armorStandId)) else it
+    }
+}.value

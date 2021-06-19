@@ -27,7 +27,7 @@ import com.mojang.serialization.codecs.PrimitiveCodec
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 
-open class NamespacedSchema(versionKey: Int, parent: Schema) : Schema(versionKey, parent) {
+open class NamespacedSchema(versionKey: Int, parent: Schema?) : Schema(versionKey, parent) {
 
     override fun getChoiceType(type: DSL.TypeReference, choiceName: String): Type<*> = super.getChoiceType(type, choiceName.ensureNamespaced())
 
