@@ -26,7 +26,6 @@ object References {
     val PLAYER = DSL.TypeReference { "player" }
     val CHUNK = DSL.TypeReference { "chunk" }
     val HOTBAR = DSL.TypeReference { "hotbar" }
-    val OPTIONS = DSL.TypeReference { "options" }
     val STRUCTURE = DSL.TypeReference { "structure" }
     val STATS = DSL.TypeReference { "stats" }
     val SAVED_DATA = DSL.TypeReference { "saved_data" }
