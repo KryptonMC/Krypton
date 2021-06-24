@@ -15,6 +15,7 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.api.world.rule.GameRuleHolder
+import org.spongepowered.math.vector.Vector3i
 import java.nio.file.Path
 import java.util.UUID
 
@@ -54,7 +55,7 @@ interface World : ForwardingAudience {
      * Spawn locations also do not possess any rotational components, so
      * the pitch and yaw of this [Location] will always be set to 0.
      */
-    val spawnLocation: Location
+    val spawnLocation: Vector3i
 
     /**
      * The set of chunks currently loaded in this world.
@@ -94,7 +95,7 @@ interface World : ForwardingAudience {
     /**
      * The version information of this world.
      */
-    val version: WorldVersion
+    val version: GameVersion
 
     /**
      * The maximum build height of this world. Also known as the build limit.
@@ -156,24 +157,15 @@ interface World : ForwardingAudience {
  * @param name the name of the Minecraft version
  * @param isSnapshot whether this world version is a snapshot version or not
  */
-class WorldVersion(
+class GameVersion(
     val id: Int,
     val name: String,
     val isSnapshot: Boolean
 ) {
 
-    override fun equals(other: Any?) = other is WorldVersion && id == other.id && isSnapshot == other.isSnapshot
+    override fun equals(other: Any?) = other is GameVersion && id == other.id && isSnapshot == other.isSnapshot
 
     override fun hashCode() = id + if (isSnapshot) 1231 else 1237 // java.lang.Boolean.hashCode implementation
 
     override fun toString() = "WorldVersion(id=$id, name=$name, isSnapshot=$isSnapshot)"
-
-    companion object {
-
-        /**
-         * The current world version.
-         */
-        @JvmField
-        val CURRENT = WorldVersion(2568, "1.16.5", false)
-    }
 }

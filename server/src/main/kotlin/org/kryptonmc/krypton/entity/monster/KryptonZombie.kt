@@ -45,9 +45,9 @@ class KryptonZombie(id: Int, server: KryptonServer, uuid: UUID) : KryptonMonster
 
     companion object {
 
-        private val DATA_BABY_ID = EntityData.define(KryptonZombie::class, EntityDataSerializers.BOOLEAN)
-        private val DATA_SPECIAL_TYPE_ID = EntityData.define(KryptonZombie::class, EntityDataSerializers.INT)
-        private val DATA_DROWNED_CONVERSION_ID = EntityData.define(KryptonZombie::class, EntityDataSerializers.BOOLEAN)
+        private val DATA_BABY_ID = EntityData.define(KryptonZombie::class.java, EntityDataSerializers.BOOLEAN)
+        private val DATA_SPECIAL_TYPE_ID = EntityData.define(KryptonZombie::class.java, EntityDataSerializers.INT)
+        private val DATA_DROWNED_CONVERSION_ID = EntityData.define(KryptonZombie::class.java, EntityDataSerializers.BOOLEAN)
 
         fun createAttributes() = KryptonMonster.createAttributes()
             .add(Attributes.FOLLOW_RANGE, 35.0)

@@ -26,7 +26,7 @@ import com.mojang.datafixers.schemas.Schema
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.datafix.schema.NamespacedSchema
 
-class BlockCustomNameFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
+class BlockEntityCustomNameFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
 
     override fun makeRule(): TypeRewriteRule {
         val idFinder = fieldFinder("id", NamespacedSchema.NAMESPACED_STRING)

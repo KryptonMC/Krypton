@@ -41,6 +41,7 @@ import java.security.AccessController
 import java.security.MessageDigest
 import java.security.PrivilegedAction
 import java.util.Locale
+import java.util.Optional
 import java.util.UUID
 import kotlin.math.log2
 import kotlin.math.max
@@ -156,3 +157,7 @@ fun String.parseKey(): Key? = try {
 } catch (exception: InvalidKeyException) {
     null
 }
+
+fun <T> Optional<T>.getIfPresent(): T? = takeIf { it.isPresent }?.get()
+
+fun <T : Map<K, V>, K, V> Optional<T>.forEachPresent(action: (K, V) -> Unit) = ifPresent { it.forEach(action) }

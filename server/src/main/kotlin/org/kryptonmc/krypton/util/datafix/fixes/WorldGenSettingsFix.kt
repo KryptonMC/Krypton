@@ -34,7 +34,7 @@ import java.util.Optional
 import java.util.stream.Stream
 import kotlin.math.max
 
-class WorldGenSettingsFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
+class WorldGenSettingsFix(outputSchema: Schema) : DataFix(outputSchema, true) {
 
     override fun makeRule(): TypeRewriteRule = fixTypeEverywhereTyped("WorldGenSettings building", inputSchema.getType(References.WORLD_GEN_SETTINGS)) { typed -> typed.update(remainderFinder()) { it.fix() } }
 
@@ -134,7 +134,7 @@ class WorldGenSettingsFix(outputSchema: Schema, changesType: Boolean) : DataFix(
                         } else {
                             biomeSource
                         }
-                        noise(randomSeed, settings, biomeSource)
+                        noise(randomSeed, settings, modified)
                     }
                     else -> {
                         val isDefault = generatorName.get() == "default"

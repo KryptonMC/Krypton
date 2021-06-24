@@ -24,15 +24,7 @@ import java.util.function.Supplier
 
 class V2571(versionKey: Int, parent: Schema?) : NamespacedSchema(versionKey, parent) {
 
-    override fun registerEntities(schema: Schema): Map<String, Supplier<TypeTemplate>> = mutableMapOf<String, Supplier<TypeTemplate>>().apply {
+    override fun registerEntities(schema: Schema): Map<String, Supplier<TypeTemplate>> = super.registerEntities(schema).apply {
         schema.registerMob(this, "minecraft:goat")
     }
-
-    override fun registerBlockEntities(schema: Schema?): Map<String, Supplier<TypeTemplate>> = emptyMap()
-
-    override fun registerTypes(
-        schema: Schema?,
-        entityTypes: MutableMap<String, Supplier<TypeTemplate>>?,
-        blockEntityTypes: MutableMap<String, Supplier<TypeTemplate>>?
-    ) = Unit
 }

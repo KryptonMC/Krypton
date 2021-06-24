@@ -25,7 +25,7 @@ import com.mojang.datafixers.TypeRewriteRule
 import com.mojang.datafixers.Typed
 import com.mojang.datafixers.schemas.Schema
 
-sealed class NamedEntityFix(
+abstract class NamedEntityFix(
     outputSchema: Schema,
     changesType: Boolean,
     private val name: String,

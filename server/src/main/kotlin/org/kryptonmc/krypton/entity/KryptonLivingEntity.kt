@@ -99,13 +99,13 @@ abstract class KryptonLivingEntity(
 
     companion object {
 
-        private val DATA_LIVING_ENTITY_FLAGS = EntityData.define(KryptonLivingEntity::class, EntityDataSerializers.BYTE)
-        private val DATA_HEALTH_ID = EntityData.define(KryptonLivingEntity::class, EntityDataSerializers.FLOAT)
-        private val DATA_EFFECT_COLOR_ID = EntityData.define(KryptonLivingEntity::class, EntityDataSerializers.INT)
-        private val DATA_EFFECT_AMBIENCE_ID = EntityData.define(KryptonLivingEntity::class, EntityDataSerializers.BOOLEAN)
-        private val DATA_ARROW_COUNT_ID = EntityData.define(KryptonLivingEntity::class, EntityDataSerializers.INT)
-        private val DATA_STINGER_COUNT_ID = EntityData.define(KryptonLivingEntity::class, EntityDataSerializers.INT)
-        private val SLEEPING_POS_ID = EntityData.define(KryptonLivingEntity::class, EntityDataSerializers.OPTIONAL_BLOCK_POS)
+        private val DATA_LIVING_ENTITY_FLAGS = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.BYTE)
+        private val DATA_HEALTH_ID = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.FLOAT)
+        private val DATA_EFFECT_COLOR_ID = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.INT)
+        private val DATA_EFFECT_AMBIENCE_ID = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.BOOLEAN)
+        private val DATA_ARROW_COUNT_ID = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.INT)
+        private val DATA_STINGER_COUNT_ID = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.INT)
+        private val SLEEPING_POS_ID = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.OPTIONAL_BLOCK_POS)
 
         fun createAttributes() = AttributeSupplier.builder()
             .add(Attributes.MAX_HEALTH)

@@ -63,7 +63,7 @@ class BedInjectorFix(outputSchema: Schema, changesType: Boolean) : DataFix(outpu
                     val blocks = section["Blocks"].asStream().map { it.asInt(0) }
                     var i = 0
                     blocks.forEach blocks@{
-                        if ((it and 255) shl 4 != 416) {
+                        if (it and 255 shl 4 != 416) {
                             i++
                             return@blocks
                         }

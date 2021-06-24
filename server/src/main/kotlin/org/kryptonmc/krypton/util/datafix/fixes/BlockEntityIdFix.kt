@@ -27,6 +27,7 @@ import java.util.function.Function
 
 class BlockEntityIdFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
 
+    @Suppress("UNCHECKED_CAST") // This is fine
     override fun makeRule(): TypeRewriteRule {
         val oldStackType = inputSchema.getType(References.ITEM_STACK)
         val newStackType = outputSchema.getType(References.ITEM_STACK)

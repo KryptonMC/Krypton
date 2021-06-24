@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.util.datafix.schema
 
-import com.google.common.collect.ImmutableMap
 import com.mojang.datafixers.DSL
 import com.mojang.datafixers.DSL.compoundList
 import com.mojang.datafixers.DSL.constType

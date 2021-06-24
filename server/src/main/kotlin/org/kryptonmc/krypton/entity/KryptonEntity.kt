@@ -146,13 +146,13 @@ abstract class KryptonEntity(
 
     companion object {
 
-        @JvmStatic protected val DATA_SHARED_FLAGS_ID = EntityData.define(KryptonEntity::class, EntityDataSerializers.BYTE)
-        private val DATA_AIR_SUPPLY_ID = EntityData.define(KryptonEntity::class, EntityDataSerializers.INT)
-        private val DATA_CUSTOM_NAME = EntityData.define(KryptonEntity::class, EntityDataSerializers.OPTIONAL_COMPONENT)
-        private val DATA_CUSTOM_NAME_VISIBLE = EntityData.define(KryptonEntity::class, EntityDataSerializers.BOOLEAN)
-        private val DATA_SILENT = EntityData.define(KryptonEntity::class, EntityDataSerializers.BOOLEAN)
-        private val DATA_NO_GRAVITY = EntityData.define(KryptonEntity::class, EntityDataSerializers.BOOLEAN)
-        @JvmStatic protected val DATA_POSE = EntityData.define(KryptonEntity::class, EntityDataSerializers.POSE)
-        private val DATA_TICKS_FROZEN = EntityData.define(KryptonEntity::class, EntityDataSerializers.INT)
+        @JvmStatic protected val DATA_SHARED_FLAGS_ID = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.BYTE)
+        private val DATA_AIR_SUPPLY_ID = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.INT)
+        private val DATA_CUSTOM_NAME = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.OPTIONAL_COMPONENT)
+        private val DATA_CUSTOM_NAME_VISIBLE = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.BOOLEAN)
+        private val DATA_SILENT = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.BOOLEAN)
+        private val DATA_NO_GRAVITY = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.BOOLEAN)
+        @JvmStatic protected val DATA_POSE = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.POSE)
+        private val DATA_TICKS_FROZEN = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.INT)
     }
 }

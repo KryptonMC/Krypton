@@ -16,14 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util.datafix.fixes.entity
+package org.kryptonmc.krypton.util.nbt
 
-import com.mojang.datafixers.DSL.remainderFinder
-import com.mojang.datafixers.Typed
-import com.mojang.datafixers.schemas.Schema
-import org.kryptonmc.krypton.util.datafix.References
+import net.kyori.adventure.nbt.CompoundBinaryTag
+import java.util.UUID
 
-class ShulkerBoxColorFix(outputSchema: Schema, changesType: Boolean) : NamedEntityFix(outputSchema, changesType, "ShulkerBoxColorFix", References.BLOCK_ENTITY, "minecraft:shulker_box") {
+fun CompoundBinaryTag.Builder.putUUID(name: String, uuid: UUID) = apply {
+    val most = uuid.mostSignificantBits
+    val least = uuid.leastSignificantBits
+    putIntArray(name, intArrayOf((most shr 32).toInt(), most.toInt(), (least shr 32).toInt(), least.toInt()))
+}
 
-    override fun fix(typed: Typed<*>): Typed<*> = typed.update(remainderFinder()) { it.remove("Color") }
+private const val UNSIGNED_INT_MAX_VALUE = 4294967295L
+
+fun CompoundBinaryTag.getUUID(name: String): UUID {
+    val array = getIntArray(name)
+    require(array.size == 4) { "Expected UUID array to be of length 4, but was ${array.size}!" }
+    return UUID(array[0].toLong() shl 32 or (array[1].toLong() and UNSIGNED_INT_MAX_VALUE), array[2].toLong() shl 32 or (array[3].toLong() and UNSIGNED_INT_MAX_VALUE))
 }

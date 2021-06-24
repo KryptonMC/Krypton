@@ -27,7 +27,7 @@ import com.mojang.datafixers.schemas.Schema
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.datafix.schema.NamespacedSchema
 
-class MapIdFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
+class MapItemIdFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
 
     override fun makeRule(): TypeRewriteRule {
         val itemType = inputSchema.getType(References.ITEM_STACK)

@@ -28,7 +28,6 @@ import org.kryptonmc.krypton.util.reports.CrashReport
 import org.kryptonmc.krypton.util.reports.ReportedException
 import org.kryptonmc.krypton.util.writeVarInt
 import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.reflect.KClass
 
 class EntityData(private val entity: KryptonEntity) {
 
@@ -55,6 +54,7 @@ class EntityData(private val entity: KryptonEntity) {
         val item = getItem(accessor)
         if (value == item.value) return
         item.value = value
+        entity.onDataUpdate(accessor)
         item.isDirty = true
         isDirty = true
     }
@@ -151,8 +151,6 @@ class EntityData(private val entity: KryptonEntity) {
             ENTITY_ID_POOL.put(entityClass, id)
             return serializer.createAccessor(id)
         }
-
-        fun <T> define(entityClass: KClass<out KryptonEntity>, serializer: EntityDataSerializer<T>) = define(entityClass.java, serializer)
     }
 }
 

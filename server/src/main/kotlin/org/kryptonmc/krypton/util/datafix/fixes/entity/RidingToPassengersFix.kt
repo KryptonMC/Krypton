@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.util.datafix.fixes.entity
 
-import com.google.common.collect.ImmutableList
 import com.mojang.datafixers.DSL.and
 import com.mojang.datafixers.DSL.field
 import com.mojang.datafixers.DSL.list
@@ -47,6 +46,7 @@ class RidingToPassengersFix(outputSchema: Schema, changesType: Boolean) : DataFi
         return cap(oldTreeType, newTreeType, entityType)
     }
 
+    @Suppress("UNREACHABLE_CODE") // See note below
     private fun <O, N, E> cap(ridingType: Type<O>, passengerType: Type<N>, entityType: Type<E>): TypeRewriteRule {
         val oldType: Type<Pair<String, Pair<Either<O, Unit>, E>>> = named(References.ENTITY_TREE.typeName(), and(optional(field("Riding", ridingType)), entityType))
         val newType: Type<Pair<String, Pair<Either<List<N>, Unit>, E>>> = named(References.ENTITY_TREE.typeName(), and(optional(field("Passengers", list(passengerType))), entityType))
@@ -56,7 +56,6 @@ class RidingToPassengersFix(outputSchema: Schema, changesType: Boolean) : DataFi
         check(outputTreeType.equals(newType, true, true)) { "New entity type is not what was expected! Expected $newType, got $outputTreeType" }
         val oldTypeFinder = oldType.finder()
         val newTypeFinder = newType.finder()
-        val passengerFinder = passengerType.finder()
         return TypeRewriteRule.seq(
             fixTypeEverywhere("RidingToPassengersFix", oldType, newType) { ops ->
                 Function { pair ->

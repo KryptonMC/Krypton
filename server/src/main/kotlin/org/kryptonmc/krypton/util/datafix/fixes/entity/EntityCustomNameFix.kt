@@ -23,9 +23,6 @@ import com.mojang.datafixers.DSL.remainderFinder
 import com.mojang.datafixers.DataFix
 import com.mojang.datafixers.TypeRewriteRule
 import com.mojang.datafixers.schemas.Schema
-import com.mojang.serialization.Dynamic
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.datafix.fixes.fixCustomNameTag
 import org.kryptonmc.krypton.util.datafix.schema.NamespacedSchema

@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util
 
+import org.kryptonmc.api.world.Location
 import org.spongepowered.math.GenericMath
 import org.spongepowered.math.vector.Vector3i
 
@@ -41,3 +42,5 @@ fun asLong(x: Int, y: Int, z: Int): Long {
     temp = temp or (y.toLong() and PACKED_Y_MASK) shl Y_OFFSET
     return temp or (z.toLong() and PACKED_Z_MASK) shl Z_OFFSET
 }
+
+fun Vector3i.toLocation(yaw: Float = 0F, pitch: Float = 0F) = Location(x().toDouble(), y().toDouble(), z().toDouble(), yaw, pitch)

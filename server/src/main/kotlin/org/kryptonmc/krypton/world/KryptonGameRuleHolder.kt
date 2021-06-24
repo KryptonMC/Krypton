@@ -18,8 +18,7 @@
  */
 package org.kryptonmc.krypton.world
 
-import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.StringBinaryTag
+import com.mojang.serialization.DynamicLike
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.rule.GameRuleHolder
@@ -32,18 +31,23 @@ class KryptonGameRuleHolder : GameRuleHolder {
         Registries.GAMERULES.values.forEach { rules[it] = it.default }
     }
 
-    constructor(tag: CompoundBinaryTag) {
-        tag.forEach {
-            val rule = GAME_RULES[it.key] ?: return@forEach
-            val value = it.value as? StringBinaryTag ?: return@forEach
-            if (value.value().toBooleanStrictOrNull() != null) return@forEach set(rule, value.value().toBooleanStrict())
-            if (value.value().toIntOrNull() != null) return@forEach set(rule, value.value().toInt())
+    constructor(tag: DynamicLike<*>) : this() {
+        rules.forEach { (key, _) ->
+            val rule = tag[key.name].asString().result()
+            rule.ifPresent { rules[key] = deserialize(it) }
         }
     }
 
+    @Suppress("UNCHECKED_CAST") // This should be fine
     override fun <V : Any> get(rule: GameRule<V>) = rules.getOrDefault(rule, rule.default) as V
 
     override fun <V : Any> set(rule: GameRule<V>, value: V) = rules.set(rule, value)
 }
 
 private val GAME_RULES = Registries.GAMERULES.values.associateBy { it.name }
+
+private fun deserialize(input: String): Any {
+    if (input.toBooleanStrictOrNull() != null) return input.toBooleanStrict()
+    if (input.toIntOrNull() != null) return input.toInt()
+    error("Game rules must be either booleans or integers, $input couldn't be parsed to either!")
+}

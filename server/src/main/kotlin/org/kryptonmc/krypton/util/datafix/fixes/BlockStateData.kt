@@ -66,11 +66,8 @@ object BlockStateData {
 
     fun Int.tag(): Dynamic<*>? = if (this in MAP.indices) MAP[this] else MAP[0]
 
-    /*
-     * Opcode count of 30443 triggered aggressive code reduction.  Override with --aggressivesizethreshold.
-     */
-    init {
-        ID_BY_OLD.defaultReturnValue(-1)
+    @JvmStatic
+    private fun bootstrap0() {
         rewrite(0, "{Name:'minecraft:air'}", "{Name:'minecraft:air'}")
         rewrite(16, "{Name:'minecraft:stone'}", "{Name:'minecraft:stone',Properties:{variant:'stone'}}")
         rewrite(17, "{Name:'minecraft:granite'}", "{Name:'minecraft:stone',Properties:{variant:'granite'}}")
@@ -200,6 +197,10 @@ object BlockStateData {
         rewrite(208, "{Name:'minecraft:gravel'}", "{Name:'minecraft:gravel'}")
         rewrite(224, "{Name:'minecraft:gold_ore'}", "{Name:'minecraft:gold_ore'}")
         rewrite(240, "{Name:'minecraft:iron_ore'}", "{Name:'minecraft:iron_ore'}")
+    }
+
+    @JvmStatic
+    private fun bootstrap1() {
         rewrite(256, "{Name:'minecraft:coal_ore'}", "{Name:'minecraft:coal_ore'}")
         rewrite(272, "{Name:'minecraft:oak_log',Properties:{axis:'y'}}", "{Name:'minecraft:log',Properties:{axis:'y',variant:'oak'}}")
         rewrite(273, "{Name:'minecraft:spruce_log',Properties:{axis:'y'}}", "{Name:'minecraft:log',Properties:{axis:'y',variant:'spruce'}}")
@@ -614,6 +615,10 @@ object BlockStateData {
         rewrite(496, "{Name:'minecraft:dead_bush'}", "{Name:'minecraft:tallgrass',Properties:{type:'dead_bush'}}")
         rewrite(497, "{Name:'minecraft:grass'}", "{Name:'minecraft:tallgrass',Properties:{type:'tall_grass'}}")
         rewrite(498, "{Name:'minecraft:fern'}", "{Name:'minecraft:tallgrass',Properties:{type:'fern'}}")
+    }
+
+    @JvmStatic
+    private fun bootstrap2() {
         rewrite(512, "{Name:'minecraft:dead_bush'}", "{Name:'minecraft:deadbush'}")
         rewrite(
             528,
@@ -989,6 +994,10 @@ object BlockStateData {
         rewrite(736, "{Name:'minecraft:tnt',Properties:{unstable:'false'}}", "{Name:'minecraft:tnt',Properties:{explode:'false'}}")
         rewrite(737, "{Name:'minecraft:tnt',Properties:{unstable:'true'}}", "{Name:'minecraft:tnt',Properties:{explode:'true'}}")
         rewrite(752, "{Name:'minecraft:bookshelf'}", "{Name:'minecraft:bookshelf'}")
+    }
+
+    @JvmStatic
+    private fun bootstrap3() {
         rewrite(768, "{Name:'minecraft:mossy_cobblestone'}", "{Name:'minecraft:mossy_cobblestone'}")
         rewrite(784, "{Name:'minecraft:obsidian'}", "{Name:'minecraft:obsidian'}")
         rewrite(801, "{Name:'minecraft:wall_torch',Properties:{facing:'east'}}", "{Name:'minecraft:torch',Properties:{facing:'east'}}")
@@ -3060,6 +3069,10 @@ object BlockStateData {
         rewrite(1021, "{Name:'minecraft:sign',Properties:{rotation:'13'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'13'}}")
         rewrite(1022, "{Name:'minecraft:sign',Properties:{rotation:'14'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'14'}}")
         rewrite(1023, "{Name:'minecraft:sign',Properties:{rotation:'15'}}", "{Name:'minecraft:standing_sign',Properties:{rotation:'15'}}")
+    }
+
+    @JvmStatic
+    private fun bootstrap4() {
         rewrite(
             1024,
             "{Name:'minecraft:oak_door',Properties:{facing:'east',half:'lower',hinge:'right',open:'false',powered:'false'}}",
@@ -3623,6 +3636,10 @@ object BlockStateData {
         rewrite(1254, "{Name:'minecraft:snow',Properties:{layers:'7'}}", "{Name:'minecraft:snow_layer',Properties:{layers:'7'}}")
         rewrite(1255, "{Name:'minecraft:snow',Properties:{layers:'8'}}", "{Name:'minecraft:snow_layer',Properties:{layers:'8'}}")
         rewrite(1264, "{Name:'minecraft:ice'}", "{Name:'minecraft:ice'}")
+    }
+
+    @JvmStatic
+    private fun bootstrap5() {
         rewrite(1280, "{Name:'minecraft:snow_block'}", "{Name:'minecraft:snow'}")
         rewrite(1296, "{Name:'minecraft:cactus',Properties:{age:'0'}}", "{Name:'minecraft:cactus',Properties:{age:'0'}}")
         rewrite(1297, "{Name:'minecraft:cactus',Properties:{age:'1'}}", "{Name:'minecraft:cactus',Properties:{age:'1'}}")
@@ -3907,6 +3924,10 @@ object BlockStateData {
         rewrite(1533, "{Name:'minecraft:green_stained_glass'}", "{Name:'minecraft:stained_glass',Properties:{color:'green'}}")
         rewrite(1534, "{Name:'minecraft:red_stained_glass'}", "{Name:'minecraft:stained_glass',Properties:{color:'red'}}")
         rewrite(1535, "{Name:'minecraft:black_stained_glass'}", "{Name:'minecraft:stained_glass',Properties:{color:'black'}}")
+    }
+
+    @JvmStatic
+    private fun bootstrap6() {
         rewrite(
             1536,
             "{Name:'minecraft:oak_trapdoor',Properties:{facing:'north',half:'bottom',open:'false'}}",
@@ -4679,6 +4700,10 @@ object BlockStateData {
             "{Name:'minecraft:mycelium',Properties:{snowy:'true'}}"
         )
         rewrite(1776, "{Name:'minecraft:lily_pad'}", "{Name:'minecraft:waterlily'}")
+    }
+
+    @JvmStatic
+    private fun bootstrap7() {
         rewrite(1792, "{Name:'minecraft:nether_bricks'}", "{Name:'minecraft:nether_brick'}")
         rewrite(
             1808,
@@ -4960,6 +4985,10 @@ object BlockStateData {
         rewrite(2041, "{Name:'minecraft:cocoa',Properties:{age:'2',facing:'west'}}", "{Name:'minecraft:cocoa',Properties:{age:'2',facing:'west'}}")
         rewrite(2042, "{Name:'minecraft:cocoa',Properties:{age:'2',facing:'north'}}", "{Name:'minecraft:cocoa',Properties:{age:'2',facing:'north'}}")
         rewrite(2043, "{Name:'minecraft:cocoa',Properties:{age:'2',facing:'east'}}", "{Name:'minecraft:cocoa',Properties:{age:'2',facing:'east'}}")
+    }
+
+    @JvmStatic
+    private fun bootstrap8() {
         rewrite(
             2048,
             "{Name:'minecraft:sandstone_stairs',Properties:{facing:'east',half:'bottom',shape:'straight'}}",
@@ -6147,6 +6176,10 @@ object BlockStateData {
             "{Name:'minecraft:oak_button',Properties:{face:'floor',facing:'north',powered:'true'}}",
             "{Name:'minecraft:wooden_button',Properties:{facing:'up',powered:'true'}}"
         )
+    }
+
+    @JvmStatic
+    private fun bootstrap9() {
         rewrite(
             2304,
             "{Name:'%%FILTER_ME%%',Properties:{facing:'down',nodrop:'false'}}",
@@ -6936,6 +6969,10 @@ object BlockStateData {
         rewrite(2557, "{Name:'minecraft:green_terracotta'}", "{Name:'minecraft:stained_hardened_clay',Properties:{color:'green'}}")
         rewrite(2558, "{Name:'minecraft:red_terracotta'}", "{Name:'minecraft:stained_hardened_clay',Properties:{color:'red'}}")
         rewrite(2559, "{Name:'minecraft:black_terracotta'}", "{Name:'minecraft:stained_hardened_clay',Properties:{color:'black'}}")
+    }
+
+    @JvmStatic
+    private fun bootstrap10() {
         rewrite(
             2560,
             "{Name:'minecraft:white_stained_glass_pane',Properties:{east:'false',north:'false',south:'false',west:'false'}}",
@@ -7644,6 +7681,10 @@ object BlockStateData {
             "{Name:'minecraft:double_plant',Properties:{facing:'east',half:'upper',variant:'sunflower'}}",
             "{Name:'minecraft:double_plant',Properties:{facing:'east',half:'upper',variant:'syringa'}}"
         )
+    }
+
+    @JvmStatic
+    private fun bootstrap11() {
         rewrite(2816, "{Name:'minecraft:white_banner',Properties:{rotation:'0'}}", "{Name:'minecraft:standing_banner',Properties:{rotation:'0'}}")
         rewrite(2817, "{Name:'minecraft:white_banner',Properties:{rotation:'1'}}", "{Name:'minecraft:standing_banner',Properties:{rotation:'1'}}")
         rewrite(2818, "{Name:'minecraft:white_banner',Properties:{rotation:'2'}}", "{Name:'minecraft:standing_banner',Properties:{rotation:'2'}}")
@@ -8407,6 +8448,10 @@ object BlockStateData {
             "{Name:'minecraft:dark_oak_fence',Properties:{east:'true',north:'true',south:'true',west:'false'}}",
             "{Name:'minecraft:dark_oak_fence',Properties:{east:'true',north:'true',south:'true',west:'true'}}"
         )
+    }
+
+    @JvmStatic
+    private fun bootstrap12() {
         rewrite(
             3072,
             "{Name:'minecraft:acacia_fence',Properties:{east:'false',north:'false',south:'false',west:'false'}}",
@@ -9163,6 +9208,10 @@ object BlockStateData {
         rewrite(3313, "{Name:'minecraft:beetroots',Properties:{age:'1'}}", "{Name:'minecraft:beetroots',Properties:{age:'1'}}")
         rewrite(3314, "{Name:'minecraft:beetroots',Properties:{age:'2'}}", "{Name:'minecraft:beetroots',Properties:{age:'2'}}")
         rewrite(3315, "{Name:'minecraft:beetroots',Properties:{age:'3'}}", "{Name:'minecraft:beetroots',Properties:{age:'3'}}")
+    }
+
+    @JvmStatic
+    private fun bootstrap13() {
         rewrite(3328, "{Name:'minecraft:grass_path'}", "{Name:'minecraft:grass_path'}")
         rewrite(3344, "{Name:'minecraft:end_gateway'}", "{Name:'minecraft:end_gateway'}")
         rewrite(
@@ -9506,6 +9555,10 @@ object BlockStateData {
             "{Name:'minecraft:yellow_shulker_box',Properties:{facing:'east'}}",
             "{Name:'minecraft:yellow_shulker_box',Properties:{facing:'east'}}"
         )
+    }
+
+    @JvmStatic
+    private fun bootstrap14() {
         rewrite(
             3584,
             "{Name:'minecraft:lime_shulker_box',Properties:{facing:'down'}}",
@@ -9912,6 +9965,10 @@ object BlockStateData {
             "{Name:'minecraft:yellow_glazed_terracotta',Properties:{facing:'east'}}",
             "{Name:'minecraft:yellow_glazed_terracotta',Properties:{facing:'east'}}"
         )
+    }
+
+    @JvmStatic
+    private fun bootstrap15() {
         rewrite(
             3840,
             "{Name:'minecraft:lime_glazed_terracotta',Properties:{facing:'south'}}",
@@ -10172,8 +10229,28 @@ object BlockStateData {
             "{Name:'minecraft:structure_block',Properties:{mode:'corner'}}"
         )
         rewrite(4083, "{Name:'minecraft:structure_block',Properties:{mode:'data'}}", "{Name:'minecraft:structure_block',Properties:{mode:'data'}}")
-        MAP.forEachIndexed { index, value ->
-            if (value != null) MAP[index] = BLOCK_DEFAULTS[index shr 4]
+    }
+
+    init {
+        ID_BY_OLD.defaultReturnValue(-1)
+        bootstrap0()
+        bootstrap1()
+        bootstrap2()
+        bootstrap3()
+        bootstrap4()
+        bootstrap5()
+        bootstrap6()
+        bootstrap7()
+        bootstrap8()
+        bootstrap9()
+        bootstrap10()
+        bootstrap11()
+        bootstrap12()
+        bootstrap13()
+        bootstrap14()
+        bootstrap15()
+        for (i in MAP.indices) {
+            if (MAP[i] == null) MAP[i] = BLOCK_DEFAULTS[i shr 4]
         }
     }
 }

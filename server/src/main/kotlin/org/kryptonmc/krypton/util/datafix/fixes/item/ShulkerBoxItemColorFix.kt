@@ -28,7 +28,7 @@ import com.mojang.datafixers.util.Pair
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.datafix.schema.NamespacedSchema
 
-class ShulkerBoxColorFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
+class ShulkerBoxItemColorFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
 
     override fun makeRule(): TypeRewriteRule {
         val itemType = inputSchema.getType(References.ITEM_STACK)

@@ -16,23 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util.datafix.fixes.name
+package org.kryptonmc.krypton.util.datafix
 
-import com.mojang.datafixers.schemas.Schema
+import com.mojang.datafixers.DSL
 
-class RenameCodSalmonFix(outputSchema: Schema, changesType: Boolean) : RenameEntityFix("RenameSalmonFix", outputSchema, changesType) {
+enum class FixType(val type: DSL.TypeReference) {
 
-    override fun rename(name: String) = RENAMED_IDS.getOrDefault(name, name)
-
-    companion object {
-
-        val RENAMED_IDS = mapOf(
-            "minecraft:salmon_mob" to "minecraft:salmon",
-            "minecraft:cod_mob" to "minecraft:cod"
-        )
-        val RENAMED_EGGS = mapOf(
-            "minecraft:salmon_mob_spawn_egg" to "minecraft:salmon_spawn_egg",
-            "minecraft:cod_mob_spawn_egg" to "minecraft:cod_spawn_egg"
-        )
-    }
+    LEVEL(References.LEVEL),
+    PLAYER(References.PLAYER),
+    CHUNK(References.CHUNK),
+    HOTBAR(References.HOTBAR),
+    STRUCTURE(References.STRUCTURE),
+    STATS(References.STATS),
+    SAVED_DATA(References.SAVED_DATA),
+    ADVANCEMENTS(References.ADVANCEMENTS),
+    POI_CHUNK(References.POI_CHUNK),
+    WORLD_GEN_SETTINGS(References.WORLD_GEN_SETTINGS),
+    ENTITY_CHUNK(References.ENTITY_CHUNK)
 }

@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.util.datafix.fixes.name
 
-val DYE_ITEM_RENAMED_IDS = mapOf(
+val RENAMED_DYE_ITEMS = mapOf(
     "minecraft:cactus_green" to "minecraft:green_dye",
     "minecraft:rose_red" to "minecraft:red_dye",
     "minecraft:dandelion_yellow" to "minecraft:yellow_dye"

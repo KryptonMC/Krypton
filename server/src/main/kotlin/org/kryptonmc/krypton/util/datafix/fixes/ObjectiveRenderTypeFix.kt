@@ -29,8 +29,8 @@ class ObjectiveRenderTypeFix(outputSchema: Schema, changesType: Boolean) : DataF
 
     override fun makeRule(): TypeRewriteRule = fixTypeEverywhereTyped("ObjectiveRenderTypeFix", inputSchema.getType(References.OBJECTIVE)) { typed ->
         typed.update(remainderFinder()) {
-            val renderType = it["RenderType"].asString().result()
-            if (renderType.isEmpty) {
+            val optionalRenderType = it["RenderType"].asString().result()
+            if (optionalRenderType.isEmpty) {
                 val criteriaName = it["CriteriaName"].asString("")
                 val renderType = criteriaName.toRenderType()
                 it.set("RenderType", it.createString(renderType.name.lowercase()))

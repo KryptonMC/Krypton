@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.util.datafix.fixes.entity
 import com.mojang.datafixers.DSL.remainderFinder
 import com.mojang.datafixers.Typed
 import com.mojang.datafixers.schemas.Schema
-import com.mojang.serialization.Dynamic
 import org.kryptonmc.krypton.util.datafix.References
 
 class CatTypeFix(outputSchema: Schema, changesType: Boolean) : NamedEntityFix(outputSchema, changesType, "CatTypeFix", References.ENTITY, "minecraft:cat") {

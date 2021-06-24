@@ -62,7 +62,7 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
         }
 
         operator fun get(x: Int, y: Int, z: Int): Int {
-            val packed = (y shl 8) or (x shl 4) or z
+            val packed = y shl 8 or (x shl 4) or z
             val position = packed shl 1
             return if (packed and 1 == 0) data[position].toInt() and 15 else data[position].toInt() shr NIBBLE_SIZE and 15
         }
@@ -129,7 +129,7 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
                 val x = i and 15
                 val y = i shr 8 and 15
                 val z = i shr 4 and 15
-                val total = (addLayer[x, y, z] shl 12) or ((blocks[i].toInt() and 255) shl 4) or dataLayer[x, y, z]
+                val total = addLayer[x, y, z] shl 12 or (blocks[i].toInt() and 255 shl 4) or dataLayer[x, y, z]
                 if (FIX[total shr 4]) toFix.getOrPut(total shr 4) { IntArrayList() } += i
                 if (VIRTUAL[total shr 4]) {
                     val sideMask = sideMask(x == 0, x == 15, z == 0, z == 15)
@@ -499,7 +499,6 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
                 val amount = (this shr 4 and 15) + direction.axisDirection.step
                 if (amount in 0..15) this and -241 or (amount shl 4) else -1
             }
-            else -> -1
         }
     }
 }

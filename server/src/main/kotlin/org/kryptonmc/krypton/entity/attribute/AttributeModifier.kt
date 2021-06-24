@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.entity.attribute
 
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import org.kryptonmc.krypton.util.getUUID
+import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nextUUID
-import org.kryptonmc.krypton.util.putUUID
+import org.kryptonmc.krypton.util.nbt.putUUID
 import java.util.UUID
 import kotlin.random.Random
 

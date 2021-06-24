@@ -26,7 +26,6 @@ import com.mojang.serialization.Dynamic
 import com.mojang.serialization.DynamicOps
 import com.mojang.serialization.JsonOps
 import me.bardy.gsonkt.parseToJson
-import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.util.datafix.References
 import java.util.stream.Collectors
 
@@ -34,19 +33,15 @@ class GeneratorOptionsFix(outputSchema: Schema, changesType: Boolean) : DataFix(
 
     override fun makeRule(): TypeRewriteRule {
         val levelType = outputSchema.getType(References.LEVEL)
-        return fixTypeEverywhereTyped("LevelDataGeneratorOptionsFix", inputSchema.getType(References.LEVEL), levelType) { typed ->
+        return fixTypeEverywhereTyped("GeneratorOptionsFix", inputSchema.getType(References.LEVEL), levelType) { typed ->
             typed.write().flatMap {
                 val options = it[GENERATOR_OPTIONS].asString().result()
                 val data = when (it["generatorName"].asString("").lowercase()) {
                     "flat" -> it.set(GENERATOR_OPTIONS, options.orElse("").convert(it.ops))
-                    "buffet" -> {
-                        if (options.isPresent) {
-                            val dynamic = Dynamic(JsonOps.INSTANCE, options.get().parseToJson())
-                            it.set("generatorOptions", dynamic.convert(it.ops))
-                        } else {
-                            it
-                        }
-                    }
+                    "buffet" -> if (options.isPresent) {
+                        val dynamic = Dynamic(JsonOps.INSTANCE, options.get().parseToJson())
+                        it.set("generatorOptions", dynamic.convert(it.ops))
+                    } else it
                     else -> it
                 }
                 levelType.readTyped(data)

@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton
 
+import org.kryptonmc.api.world.GameVersion
 import java.util.concurrent.atomic.AtomicInteger
 
 object ServerStorage {
@@ -30,4 +31,5 @@ object ServerInfo {
 
     const val PROTOCOL = 755
     const val WORLD_VERSION = 2724
+    val GAME_VERSION = GameVersion(WORLD_VERSION, KryptonServer.KryptonServerInfo.minecraftVersion, false)
 }

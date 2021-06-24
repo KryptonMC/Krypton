@@ -56,7 +56,7 @@ abstract class KryptonMob(id: Int, server: KryptonServer, uuid: UUID, type: Enti
 
     companion object {
 
-        private val DATA_MOB_FLAGS_ID = EntityData.define(KryptonMob::class, EntityDataSerializers.BYTE)
+        private val DATA_MOB_FLAGS_ID = EntityData.define(KryptonMob::class.java, EntityDataSerializers.BYTE)
 
         fun createAttributes() = KryptonLivingEntity.createAttributes()
             .add(Attributes.FOLLOW_RANGE, 16.0)

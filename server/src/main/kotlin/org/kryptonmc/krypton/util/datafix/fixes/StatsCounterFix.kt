@@ -31,6 +31,7 @@ import org.kryptonmc.krypton.util.getIfPresent
 
 class StatsCounterFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
 
+    @Suppress("UNREACHABLE_CODE") // See note below
     override fun makeRule(): TypeRewriteRule {
         val statsType = outputSchema.getType(References.STATS)
         return fixTypeEverywhereTyped("StatsCounterFix", inputSchema.getType(References.STATS), statsType) {

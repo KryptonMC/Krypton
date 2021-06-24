@@ -37,6 +37,10 @@ fun Int.ceillog2(): Int {
 
 fun Int.log2() = ceillog2() - if (GenericMath.isPowerOfTwo(this)) 0 else 1
 
+fun Int.isPowerOfTwo() = GenericMath.isPowerOfTwo(this)
+
+fun Int.roundToward(toward: Int) = (this + toward - 1) / toward * toward
+
 fun Random.nextUUID(): UUID {
     val most = nextLong() and -61441L or 16384L
     val least = nextLong() and 4611686018427387903L or Long.MIN_VALUE

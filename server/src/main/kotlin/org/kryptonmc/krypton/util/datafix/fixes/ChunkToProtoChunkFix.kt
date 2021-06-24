@@ -56,7 +56,6 @@ class ChunkToProtoChunkFix(outputSchema: Schema, changesType: Boolean) : DataFix
                             }
                             data = data.set("Biomes", data.createIntList(Arrays.stream(biomesArray)))
                         }
-                        var temp = data
                         val toBeTicked = (0..15).map { ShortArrayList() }
                         if (tileTicks.isPresent) {
                             tileTicks.get().forEach {
@@ -66,7 +65,7 @@ class ChunkToProtoChunkFix(outputSchema: Schema, changesType: Boolean) : DataFix
                                 val packed = packOffsetCoordinates(x, y, z)
                                 toBeTicked[y shr 4] += packed
                             }
-                            data = data.set("ToBeTicked", data.createList(toBeTicked.stream().map { temp.createList(it.stream().map(temp::createShort)) }))
+                            data = data.set("ToBeTicked", data.createList(toBeTicked.stream().map { data.createList(it.stream().map(data::createShort)) }))
                         }
                         DataFixUtils.orElse(level.set(remainderFinder(), data).write().result(), data)
                     } else {
@@ -80,4 +79,4 @@ class ChunkToProtoChunkFix(outputSchema: Schema, changesType: Boolean) : DataFix
     }
 }
 
-private fun packOffsetCoordinates(x: Int, y: Int, z: Int) = (x and 15 or ((y and 15) shl 4) or ((z and 15) shl 8)).toShort()
+private fun packOffsetCoordinates(x: Int, y: Int, z: Int) = (x and 15 or (y and 15 shl 4) or (z and 15 shl 8)).toShort()

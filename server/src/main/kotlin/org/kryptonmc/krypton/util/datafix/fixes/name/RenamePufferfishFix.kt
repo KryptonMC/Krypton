@@ -23,4 +23,9 @@ import com.mojang.datafixers.schemas.Schema
 class RenamePufferfishFix(outputSchema: Schema, changesType: Boolean) : RenameEntityFix("RenamePufferfishFix", outputSchema, changesType) {
 
     override fun rename(name: String) = if (name == "minecraft:puffer_fish") "minecraft:pufferfish" else name
+
+    companion object {
+
+        val RENAMED_IDS = mapOf("minecraft:puffer_fish_spawn_egg" to "minecraft:pufferfish_spawn_egg")
+    }
 }

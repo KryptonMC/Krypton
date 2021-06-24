@@ -18,26 +18,30 @@
  */
 package org.kryptonmc.krypton.world
 
+import com.mojang.serialization.Dynamic
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.BinaryTagIO.Compression.GZIP
-import net.kyori.adventure.nbt.ByteBinaryTag
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.StringBinaryTag
-import org.kryptonmc.krypton.CURRENT_DIRECTORY
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.api.world.Difficulty
+import org.kryptonmc.api.world.GameVersion
 import org.kryptonmc.api.world.Gamemode
-import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
-import org.kryptonmc.api.world.WorldVersion
+import org.kryptonmc.krypton.CURRENT_DIRECTORY
+import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
+import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
+import org.kryptonmc.krypton.util.datafix.DATA_FIXER
+import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.nbt.BinaryTagOps
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.generation.toGenerator
+import org.spongepowered.math.vector.Vector3i
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.nio.file.Path
@@ -46,9 +50,10 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.UUID
 import java.util.concurrent.Callable
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.stream.Collectors
+import java.util.stream.Stream
 import kotlin.io.path.exists
 import kotlin.io.path.inputStream
 import kotlin.io.path.outputStream
@@ -94,32 +99,10 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
         val dataFile = folder.resolve("level.dat")
         val nbt = BinaryTagIO.unlimitedReader().read(dataFile, GZIP).getCompound("Data")
 
-//        val bossbars = nbt.getCompound("CustomBossEvents").map { (key, bossbar) ->
-//            bossbar as CompoundBinaryTag
-//            val players = bossbar.getList("Players").map {
-//                it as CompoundBinaryTag
-//                UUID(it.getLong("M"), it.getLong("L"))
-//            }
-//
-//            val flags = mutableSetOf<BossBar.Flag>()
-//            if (bossbar.getBoolean("CreateWorldFog")) flags += BossBar.Flag.CREATE_WORLD_FOG
-//            if (bossbar.getBoolean("DarkenScreen")) flags += BossBar.Flag.DARKEN_SCREEN
-//            if (bossbar.getBoolean("PlayBossMusic")) flags += BossBar.Flag.PLAY_BOSS_MUSIC
-//
-//            Bossbar(
-//                BossBar.bossBar(
-//                    GsonComponentSerializer.gson().deserialize(bossbar.getString("Name")),
-//                    bossbar.getInt("Value").toFloat() / bossbar.getInt("Max").toFloat(),
-//                    BossBar.Color.NAMES.value(bossbar.getString("Color")) ?: BossBar.Color.WHITE,
-//                    BossBar.Overlay.NAMES.value(bossbar.getString("Overlay")) ?: BossBar.Overlay.PROGRESS,
-//                    flags
-//                ),
-//                UUID.randomUUID(),
-//                key.toNamespacedKey(),
-//                bossbar.getBoolean("Visible")
-//            )
-//        }
+        val version = nbt.getInt("DataVersion", -1)
+        val data = DATA_FIXER.update(References.LEVEL, Dynamic(BinaryTagOps, nbt), version, ServerInfo.WORLD_VERSION)
 
+        // TODO: Make the world gen settings also use the updated data from the DFU
         val worldGenSettings = nbt.getCompound("WorldGenSettings").let { settings ->
             val dimensions = settings.getCompound("dimensions").associate { (key, value) ->
                 key.toKey() to (value as CompoundBinaryTag).let {
@@ -129,53 +112,50 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
             WorldGenerationSettings(settings.getLong("seed"), settings.getBoolean("generate_features"), dimensions)
         }
 
-        val spawnX = nbt.getInt("SpawnX")
-        val spawnZ = nbt.getInt("SpawnZ")
-        val spawnLocation = Location(spawnX.toDouble(), nbt.getInt("SpawnY").toDouble(), spawnZ.toDouble())
+        val gamemode = Gamemode.fromId(data["GameType"].asInt(0)) ?: Gamemode.SURVIVAL
+        val time = data["Time"].asLong(0L)
 
         KryptonWorld(
             server,
             folder,
             loadUUID(folder),
-            nbt.getString("LevelName"),
-            ConcurrentHashMap.newKeySet(),
-            nbt.getBoolean("allowCommands"),
+            data["LevelName"].asString(""),
+            data["allowCommands"].asBoolean(gamemode == Gamemode.CREATIVE),
             BorderBuilder(
-                nbt.getDouble("BorderCenterX"),
-                nbt.getDouble("BorderCenterZ"),
-                nbt.getDouble("BorderDamagePerBlock"),
-                nbt.getDouble("BorderSize"),
-                nbt.getDouble("BorderSafeZone"),
-                nbt.getDouble("BorderSizeLerpTarget"),
-                nbt.getLong("BorderSizeLerpTime"),
-                nbt.getDouble("BorderWarningBlocks").toInt(),
-                nbt.getDouble("BorderWarningTime").toInt()
+                data["BorderCenterX"].asDouble(0.0),
+                data["BorderCenterZ"].asDouble(0.0),
+                data["BorderDamagePerBlock"].asDouble(0.2),
+                data["BorderSize"].asDouble(5.9999968E7),
+                data["BorderSafeZone"].asDouble(5.0),
+                data["BorderSizeLerpTarget"].asDouble(0.0),
+                data["BorderSizeLerpTime"].asLong(0L),
+                data["BorderWarningBlocks"].asInt(5),
+                data["BorderWarningTime"].asInt(15)
             ),
-            nbt.getInt("clearWeatherTime"),
-            nbt.getLong("DayTime"),
-            Difficulty.fromId(nbt.getByte("Difficulty").toInt()),
-            nbt.getBoolean("DifficultyLocked"),
-            KryptonGameRuleHolder(nbt.getCompound("GameRules")),
+            data["clearWeatherTime"].asInt(0),
+            data["DayTime"].asLong(time),
+            data["Difficulty"].asNumber().map { Difficulty.fromId(it.toInt()) }.result().orElse(Difficulty.NORMAL),
+            KryptonGameRuleHolder(data["GameRules"]),
             worldGenSettings,
-            requireNotNull(Gamemode.fromId(nbt.getInt("GameType"))),
-            nbt.getBoolean("hardcore"),
-            LocalDateTime.ofInstant(Instant.ofEpochMilli(nbt.getLong("LastPlayed")), ZoneOffset.UTC),
-            nbt.getBoolean("raining"),
-            nbt.getBoolean("MapFeatures"),
-            nbt.getInt("rainTime"),
-            nbt.getLong("RandomSeed"),
-            spawnLocation,
-            nbt.getBoolean("thundering"),
-            nbt.getInt("thunderTime"),
-            nbt.getLong("Time"),
-            nbt.getInt("version"),
-            nbt.getCompound("Version").let {
-                WorldVersion(it.getInt("Id"), it.getString("Name"), it.getBoolean("Snapshot"))
+            gamemode,
+            data["hardcore"].asBoolean(false),
+            LocalDateTime.ofInstant(Instant.ofEpochMilli(data["LastPlayed"].asLong(System.currentTimeMillis())), ZoneOffset.UTC),
+            data["raining"].asBoolean(false),
+            data["MapFeatures"].asBoolean(false),
+            data["rainTime"].asInt(0),
+            Vector3i(data["SpawnX"].asInt(0), data["SpawnY"].asInt(0), data["SpawnZ"].asInt(0)),
+            data["SpawnAngle"].asFloat(0F),
+            data["thundering"].asBoolean(false),
+            data["thunderTime"].asInt(0),
+            time,
+            version,
+            data["Version"].let {
+                GameVersion(it["Id"].asInt(ServerInfo.WORLD_VERSION), it["Name"].asString(KryptonServerInfo.minecraftVersion), data["Snapshot"].asBoolean(false))
             },
             DEFAULT_BUILD_LIMIT,
-            nbt.getLong("RandomSeed"),
-            ConcurrentHashMap.newKeySet(),
-            nbt.getList("ServerBrands").add(StringBinaryTag.of("Krypton")).map { (it as StringBinaryTag).value() }.toSet()
+            data["ServerBrands"].asStream().flatMap { dynamic ->
+                dynamic.asString().result().map { Stream.of(it) }.orElseGet { Stream.empty() }
+            }.collect(Collectors.toSet())
         )
     })
 
@@ -202,16 +182,6 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
         private val LOGGER = logger<KryptonWorldManager>()
     }
 }
-
-// I know this looks stupid, and it probably is stupid, but this avoids me having to use toByte()
-// also means I don't declare extra unnecessary integers on the stack
-private const val ONE: Byte = 1
-
-val ByteBinaryTag.boolean: Boolean
-    get() {
-        require(value() <= ONE) { "Boolean value cannot be greater than 1!" }
-        return value() == ONE
-    }
 
 fun <K, V, K1, V1> Map<K, V>.transform(function: (Map.Entry<K, V>) -> Pair<K1, V1>): Map<K1, V1> {
     val temp = mutableMapOf<K1, V1>()

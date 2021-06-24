@@ -30,11 +30,12 @@ import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
-import org.kryptonmc.api.world.WorldVersion
+import org.kryptonmc.api.world.GameVersion
 import org.kryptonmc.api.world.rule.GameRuleHolder
 import org.kryptonmc.api.world.rule.GameRules
+import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
+import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
@@ -45,12 +46,14 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityProperties
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
+import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.csv.csv
 import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.spongepowered.math.vector.Vector2d
+import org.spongepowered.math.vector.Vector3i
 import java.io.Writer
 import java.nio.file.Files
 import java.nio.file.Path
@@ -58,6 +61,10 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.io.path.copyTo
+import kotlin.io.path.deleteIfExists
+import kotlin.io.path.exists
+import kotlin.io.path.moveTo
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
@@ -67,13 +74,11 @@ data class KryptonWorld(
     override val folder: Path,
     override val uuid: UUID,
     override val name: String,
-    override val chunks: MutableSet<KryptonChunk>,
     val allowCheats: Boolean,
     private val borderBuilder: BorderBuilder,
     var clearWeatherTime: Int,
     var dayTime: Long,
     override val difficulty: Difficulty,
-    val difficultyLocked: Boolean,
     //val endDimensionData: EndDimensionData, // for the end, when it is supported
     override val gameRules: GameRuleHolder,
     val generationSettings: WorldGenerationSettings,
@@ -84,19 +89,22 @@ data class KryptonWorld(
     val mapFeatures: Boolean,
     override var isRaining: Boolean,
     var rainTime: Int,
-    val randomSeed: Long,
-    override val spawnLocation: Location,
+    override val spawnLocation: Vector3i,
+    val spawnAngle: Float,
     override var isThundering: Boolean,
     var thunderTime: Int,
     override var time: Long,
     val nbtVersion: Int,
-    override val version: WorldVersion,
+    override val version: GameVersion,
     override val maxHeight: Int,
-    override val seed: Long,
-    val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet(),
-    val serverBrands: Set<String>,
-    val entities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
+    val serverBrands: MutableSet<String>,
 ) : World {
+
+    override val seed = generationSettings.seed
+
+    override val chunks: MutableSet<KryptonChunk> = ConcurrentHashMap.newKeySet()
+    val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
+    val entities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
 
     val chunkManager = ChunkManager(this)
     val dimension = key("overworld")
@@ -133,6 +141,7 @@ data class KryptonWorld(
         )
         if (entity is KryptonLivingEntity) packets += PacketOutEntityProperties(entity.id, entity.attributes.syncableAttributes)
         players.forEach { player -> packets.forEach { player.session.sendPacket(it) } }
+        entities += entity
         return
     }
 
@@ -224,12 +233,10 @@ data class KryptonWorld(
     }
 
     override fun save() {
-        val dataPath = folder.resolve("level.dat")
-
         val gamerules = gameRules.rules.transform { (rule, value) -> rule.name to StringBinaryTag.of(value.toString()) }
         val dimensions = generationSettings.dimensions.transform { (key, value) -> key.toString() to value.toNBT() }
 
-        BinaryTagIO.writer().write(CompoundBinaryTag.builder().put("Data", CompoundBinaryTag.builder()
+        val data = CompoundBinaryTag.builder().put("Data", CompoundBinaryTag.builder()
             .putBoolean("allowCommands", false)
             .putDouble("BorderCenterX", border.center.x())
             .putDouble("BorderCenterZ", border.center.y())
@@ -246,10 +253,9 @@ data class KryptonWorld(
                 .put("Enabled", ListBinaryTag.of(BinaryTagTypes.STRING, listOf(StringBinaryTag.of("vanilla"))))
                 .put("Disabled", ListBinaryTag.empty())
                 .build())
-            .putInt("DataVersion", version.id)
+            .putInt("DataVersion", ServerInfo.WORLD_VERSION)
             .putLong("DayTime", dayTime)
             .putByte("Difficulty", difficulty.ordinal.toByte())
-            .putBoolean("DifficultyLocked", difficultyLocked)
             .put("GameRules", CompoundBinaryTag.from(gamerules))
             .put("WorldGenSettings", CompoundBinaryTag.builder()
                 .putLong("seed", generationSettings.seed)
@@ -259,28 +265,39 @@ data class KryptonWorld(
             .putInt("GameType", gamemode.ordinal)
             .putBoolean("hardcore", isHardcore)
             .putBoolean("initialized", true)
-            .putString("Krypton.Version", KryptonServer.KryptonServerInfo.version)
+            .putString("Krypton.Version", KryptonServerInfo.version)
             .putLong("LastPlayed", lastPlayed.toInstant(ZoneOffset.UTC).toEpochMilli())
             .putString("LevelName", name)
             .putBoolean("MapFeatures", mapFeatures)
             .putBoolean("raining", isRaining)
             .putInt("rainTime", rainTime)
-            .putLong("RandomSeed", randomSeed)
-            .put("ServerBrands", ListBinaryTag.from(serverBrands.map { StringBinaryTag.of(it) }))
-            .putInt("SpawnX", spawnLocation.x.toInt())
-            .putInt("SpawnY", spawnLocation.y.toInt())
-            .putInt("SpawnZ", spawnLocation.z.toInt())
+            .put("ServerBrands", ListBinaryTag.from(serverBrands.apply { add(KryptonServerInfo.name) }.map(StringBinaryTag::of)))
+            .putInt("SpawnX", spawnLocation.x())
+            .putInt("SpawnY", spawnLocation.y())
+            .putInt("SpawnZ", spawnLocation.z())
             .putBoolean("thundering", isThundering)
             .putLong("Time", time)
             .putInt("version", NBT_VERSION)
             .put("Version", CompoundBinaryTag.builder()
-                .putInt("Id", version.id)
-                .putString("Name", version.name)
-                .putBoolean("Snapshot", version.isSnapshot)
+                .putInt("Id", ServerInfo.GAME_VERSION.id)
+                .putString("Name", ServerInfo.GAME_VERSION.name)
+                .putBoolean("Snapshot", ServerInfo.GAME_VERSION.isSnapshot)
                 .build())
             .putInt("WanderingTraderSpawnChance", 25)
             .putInt("WanderingTraderSpawnDelay", 24_000)
-            .build()).build(), dataPath, BinaryTagIO.Compression.GZIP)
+            .build()).build()
+
+        val temp = folder.createTempFile("level", ".dat")
+        BinaryTagIO.writer().write(data, temp, BinaryTagIO.Compression.GZIP)
+        val dataPath = folder.resolve("level.dat")
+        if (!dataPath.exists()) {
+            temp.copyTo(dataPath)
+            return
+        }
+        val oldDataPath = folder.resolve("level.dat_old").apply { deleteIfExists() }
+        dataPath.moveTo(oldDataPath)
+        dataPath.deleteIfExists()
+        temp.moveTo(dataPath)
     }
 
     override fun audiences() = players
@@ -301,5 +318,4 @@ data class KryptonWorld(
     }
 }
 
-const val NBT_DATA_VERSION = 2584
 const val NBT_VERSION = 19_133

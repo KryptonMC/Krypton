@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.data
 
+import com.mojang.serialization.Dynamic
 import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.nbt.BinaryTagIO
 import net.kyori.adventure.nbt.BinaryTagIO.Compression.GZIP
@@ -36,12 +37,16 @@ import org.kryptonmc.api.inventory.item.meta.ItemMeta
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Location
+import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.entity.memory.EmptyBrain
 import org.kryptonmc.krypton.util.serialize
 import org.kryptonmc.krypton.util.createFile
+import org.kryptonmc.krypton.util.datafix.DATA_FIXER
+import org.kryptonmc.krypton.util.datafix.FixType
+import org.kryptonmc.krypton.util.nbt.BinaryTagOps
+import org.kryptonmc.krypton.util.toLocation
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.NBT_DATA_VERSION
 import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -67,9 +72,12 @@ class PlayerDataManager(private val folder: Path) {
             return
         }
 
-        player.attributes.load(nbt.getList("Attributes"))
+        val version = nbt.getInt("DataVersion", -1)
+        val data = DATA_FIXER.update(FixType.PLAYER.type, Dynamic(BinaryTagOps, nbt), version, ServerInfo.WORLD_VERSION).value as CompoundBinaryTag
 
-        val inventoryItems = nbt.getList("Inventory").associate { item ->
+        player.attributes.load(data.getList("Attributes"))
+
+        val inventoryItems = data.getList("Inventory").associate { item ->
             (item as CompoundBinaryTag).let {
                 val type = Material.KEYS.value(it.getString("id").toKey())!!
                 val slot = it.getByte("Slot")
@@ -79,15 +87,15 @@ class PlayerDataManager(private val folder: Path) {
         }
         player.inventory.populate(inventoryItems)
 
-        val position = nbt.getList("Pos").map { (it as DoubleBinaryTag).value() }
-        val rotation = nbt.getList("Rotation").map { (it as FloatBinaryTag).value() }
+        val position = data.getList("Pos").map { (it as DoubleBinaryTag).value() }
+        val rotation = data.getList("Rotation").map { (it as FloatBinaryTag).value() }
 
         player.location = Location(position[0], position[1], position[2], rotation[0], rotation[1])
-        player.oldGamemode = Gamemode.fromId(nbt.getInt("previousPlayerGameType", -1))
-        player.gamemode = Gamemode.fromId(nbt.getInt("playerGameType", 0)) ?: Gamemode.SURVIVAL
-        player.inventory.heldSlot = nbt.getInt("SelectedItemSlot")
-        player.dimension = nbt.getString("Dimension").toKey()
-        player.isOnGround = nbt.getBoolean("OnGround")
+        player.oldGamemode = Gamemode.fromId(data.getInt("previousPlayerGameType", -1))
+        player.gamemode = Gamemode.fromId(data.getInt("playerGameType", 0)) ?: Gamemode.SURVIVAL
+        player.inventory.heldSlot = data.getInt("SelectedItemSlot")
+        player.dimension = data.getString("Dimension").toKey()
+        player.isOnGround = data.getBoolean("OnGround")
     }
 
     fun save(player: KryptonPlayer) {
@@ -132,7 +140,7 @@ class PlayerDataManager(private val folder: Path) {
             .putInt("SpawnY", 0)
             .putInt("SpawnZ", 0)
             .putFloat("SpawnAngle", 0F)
-            .putShort("Air", 300)
+            .putShort("Air", player.airSupply.toShort())
             .putInt("Score", 0)
             .put("Pos", ListBinaryTag.builder()
                 .add(DoubleBinaryTag.of(player.location.x))
@@ -140,14 +148,14 @@ class PlayerDataManager(private val folder: Path) {
                 .add(DoubleBinaryTag.of(player.location.z))
                 .build())
             .putInt("previousPlayerGameType", player.oldGamemode?.ordinal ?: -1)
-            .putInt("DataVersion", NBT_DATA_VERSION)
+            .putInt("DataVersion", ServerInfo.WORLD_VERSION)
             .putInt("SelectedItemSlot", player.inventory.heldSlot)
             .putShort("HurtTime", 0)
             .put("Inventory", ListBinaryTag.from(inventory))
-            .putBoolean("FallFlying", false)
+            .putBoolean("FallFlying", player.isFlying)
             .putInt("playerGameType", player.gamemode.ordinal)
             .putString("SpawnDimension", player.dimension.toString())
-            .putFloat("Health", 1F)
+            .putFloat("Health", player.health)
             .putBoolean("OnGround", player.isOnGround)
             .putString("Dimension", player.dimension.toString())
             .put("Rotation", ListBinaryTag.builder()
@@ -160,7 +168,7 @@ class PlayerDataManager(private val folder: Path) {
     // this ensures player data is always set, even when the player doesn't have any
     // persisted data
     private fun applyDefaults(world: KryptonWorld, player: KryptonPlayer) {
-        player.location = world.spawnLocation
+        player.location = world.spawnLocation.toLocation(world.spawnAngle)
         player.gamemode = world.gamemode
         player.dimension = OVERWORLD
 

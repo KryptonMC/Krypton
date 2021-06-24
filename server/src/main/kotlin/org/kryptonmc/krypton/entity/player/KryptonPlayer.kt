@@ -312,12 +312,12 @@ class KryptonPlayer(
 
     companion object {
 
-        private val DATA_PLAYER_ABSORPTION_ID = EntityData.define(KryptonPlayer::class, EntityDataSerializers.FLOAT)
-        private val DATA_SCORE_ID = EntityData.define(KryptonPlayer::class, EntityDataSerializers.INT)
-        private val DATA_PLAYER_MODE_CUSTOMISATION = EntityData.define(KryptonPlayer::class, EntityDataSerializers.BYTE)
-        private val DATA_PLAYER_MAIN_HAND = EntityData.define(KryptonPlayer::class, EntityDataSerializers.BYTE)
-        private val DATA_SHOULDER_LEFT = EntityData.define(KryptonPlayer::class, EntityDataSerializers.COMPOUND_TAG)
-        private val DATA_SHOULDER_RIGHT = EntityData.define(KryptonPlayer::class, EntityDataSerializers.COMPOUND_TAG)
+        private val DATA_PLAYER_ABSORPTION_ID = EntityData.define(KryptonPlayer::class.java, EntityDataSerializers.FLOAT)
+        private val DATA_SCORE_ID = EntityData.define(KryptonPlayer::class.java, EntityDataSerializers.INT)
+        private val DATA_PLAYER_MODE_CUSTOMISATION = EntityData.define(KryptonPlayer::class.java, EntityDataSerializers.BYTE)
+        private val DATA_PLAYER_MAIN_HAND = EntityData.define(KryptonPlayer::class.java, EntityDataSerializers.BYTE)
+        private val DATA_SHOULDER_LEFT = EntityData.define(KryptonPlayer::class.java, EntityDataSerializers.COMPOUND_TAG)
+        private val DATA_SHOULDER_RIGHT = EntityData.define(KryptonPlayer::class.java, EntityDataSerializers.COMPOUND_TAG)
 
         private val DEBUG_CHANNELS = setOf(
             key("debug/paths"),

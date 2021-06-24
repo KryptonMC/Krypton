@@ -36,14 +36,14 @@ class PackedBitStorage(
     operator fun get(index: Int): Int {
         require(index in 0 until size)
         val timesBits = index * bits
-        val cellIndex = (index * bits) shr BIT_TO_LONG_SHIFT
-        val oldCellIndex = ((index + 1) * bits - 1) shr BIT_TO_LONG_SHIFT
+        val cellIndex = index * bits shr BIT_TO_LONG_SHIFT
+        val oldCellIndex = (index + 1) * bits - 1 shr BIT_TO_LONG_SHIFT
         val xor = timesBits xor (cellIndex shl BIT_TO_LONG_SHIFT)
         return if (cellIndex == oldCellIndex) {
             (data[cellIndex] ushr xor and mask).toInt()
         } else {
             val var4 = 64 - xor
-            return ((data[cellIndex] ushr xor) or (data[oldCellIndex] shl var4) and mask).toInt()
+            return (data[cellIndex] ushr xor or (data[oldCellIndex] shl var4) and mask).toInt()
         }
     }
 
@@ -52,13 +52,13 @@ class PackedBitStorage(
         require(value in 0..mask)
         val timesBits = index * bits
         val cellIndex = timesBits shr BIT_TO_LONG_SHIFT
-        val oldCellIndex = ((index + 1) * bits - 1) shr BIT_TO_LONG_SHIFT
+        val oldCellIndex = (index + 1) * bits - 1 shr BIT_TO_LONG_SHIFT
         val xor = timesBits xor (cellIndex shl BIT_TO_LONG_SHIFT)
-        data[cellIndex] = data[cellIndex] and (mask shl xor or ((value.toLong() and mask) shl xor))
+        data[cellIndex] = data[cellIndex] and mask shl xor or (value.toLong() and mask shl xor)
         if (cellIndex != oldCellIndex) {
             val var4 = 64 - xor
             val var5 = bits - var4
-            data[oldCellIndex] = data[oldCellIndex] ushr var5 shl var5 or ((value.toLong() and mask) shr var4)
+            data[oldCellIndex] = data[oldCellIndex] ushr var5 shl var5 or (value.toLong() and mask shr var4)
         }
     }
 

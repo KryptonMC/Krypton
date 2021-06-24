@@ -38,7 +38,6 @@ import net.kyori.adventure.nbt.LongArrayBinaryTag
 import net.kyori.adventure.nbt.LongBinaryTag
 import net.kyori.adventure.nbt.ShortBinaryTag
 import net.kyori.adventure.nbt.StringBinaryTag
-import net.kyori.adventure.nbt.TagStringIO
 import java.nio.ByteBuffer
 import java.util.Arrays
 import java.util.function.BiConsumer
@@ -48,6 +47,7 @@ import java.util.stream.LongStream
 import java.util.stream.Stream
 import kotlin.streams.asSequence
 
+@Suppress("SpreadOperator") // TODO: Probably replace Adventure NBT because it's just not what we want
 object BinaryTagOps : DynamicOps<BinaryTag> {
 
     override fun empty() = EndBinaryTag.get()

@@ -40,8 +40,8 @@ class StrictJsonWrittenBookPagesFix(outputSchema: Schema, changesType: Boolean) 
 
     private fun Dynamic<*>.fixTag(): Dynamic<*> = update("pages") { pages ->
         val result = pages.asStreamOpt().map { stream ->
-            stream.map {
-                if (it.asString().result().isEmpty) return@map it
+            stream.map stream@{
+                if (it.asString().result().isEmpty) return@stream it
                 val string = it.asString("")
                 val component = if (string != "null" && string.isNotEmpty()) {
                     if (string.startsWith("\"") && string.endsWith("\"") || string.startsWith("{") && string.endsWith("}")) {

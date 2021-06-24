@@ -36,7 +36,7 @@ class ItemFramePaintingDirectionFix(outputSchema: Schema, changesType: Boolean) 
         val entityType = inputSchema.getType(References.ENTITY)
         return TypeRewriteRule.seq(
             fixTypeEverywhereTyped("PaintingFix", entityType) { typed -> typed.updateTyped(paintingFinder, paintingType) { painting -> painting.update(remainderFinder()) { it.fix(isPainting = true, isFrame = false) } } },
-            fixTypeEverywhereTyped("ItemFrameFix", entityType) { typed -> typed.updateTyped(paintingFinder, paintingType) { painting -> painting.update(remainderFinder()) { it.fix(isPainting = false, isFrame = true) } } }
+            fixTypeEverywhereTyped("ItemFrameFix", entityType) { typed -> typed.updateTyped(frameFinder, frameType) { frame -> frame.update(remainderFinder()) { it.fix(isPainting = false, isFrame = true) } } }
         )
     }
 
