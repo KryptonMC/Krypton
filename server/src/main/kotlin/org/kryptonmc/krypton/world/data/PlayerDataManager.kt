@@ -148,7 +148,7 @@ class PlayerDataManager(private val folder: Path) {
             .setInt("SpawnY", 0)
             .setInt("SpawnZ", 0)
             .setFloat("SpawnAngle", 0F)
-            .setShort("Air", player.airSupply.toShort())
+            .setShort("Air", player.airTicks.toShort())
             .setInt("Score", 0)
             .set("Pos", NBTList<NBTDouble>(NBTTypes.TAG_Double).apply {
                 add(NBTDouble(player.location.x))

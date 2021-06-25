@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.entity.metadata.EntityData
-import org.kryptonmc.krypton.entity.metadata.pack
+import org.kryptonmc.krypton.entity.metadata.MetadataHolder
+import org.kryptonmc.krypton.entity.metadata.write
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -31,15 +31,15 @@ import org.kryptonmc.krypton.util.writeVarInt
  * This packet informs the client of all the metadata it should assign to the specified [entityId]
  *
  * @param entityId the ID of the entity to set metadata for
- * @param packedItems the list of packed metadata items to send
+ * @param packedEntries the list of packed metadata items to send
  */
 class PacketOutEntityMetadata(
     private val entityId: Int,
-    private val packedItems: List<EntityData.Item<*>>?
+    private val packedEntries: List<MetadataHolder.Entry<*>>
 ) : PlayPacket(0x4D) {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
-        packedItems.pack(buf)
+        packedEntries.write(buf)
     }
 }

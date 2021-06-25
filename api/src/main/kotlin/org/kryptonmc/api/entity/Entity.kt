@@ -119,7 +119,7 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
     /**
      * The current air supply of this entity.
      */
-    val airSupply: Int
+    val airTicks: Int
 
     /**
      * The type of this entity.

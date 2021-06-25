@@ -22,41 +22,37 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Mob
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.attribute.Attributes
-import org.kryptonmc.krypton.entity.metadata.EntityDataSerializers
-import org.kryptonmc.krypton.entity.metadata.EntityData
+import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import java.util.UUID
 
 abstract class KryptonMob(id: Int, server: KryptonServer, uuid: UUID, type: EntityType<out Mob>) : KryptonLivingEntity(id, server, uuid, type), Mob {
 
-    override fun defineExtraData() {
-        super.defineExtraData()
-        data.define(DATA_MOB_FLAGS_ID, 0)
+    init {
+        data += MetadataKeys.MOB.FLAGS
     }
 
     var hasAI: Boolean
-        get() = data[DATA_MOB_FLAGS_ID].toInt() and 1 == 0
+        get() = data[MetadataKeys.MOB.FLAGS].toInt() and 1 == 0
         set(value) {
-            val flags = data[DATA_MOB_FLAGS_ID].toInt()
-            data[DATA_MOB_FLAGS_ID] = (if (value) flags or 1 else flags and -2).toByte()
+            val flags = data[MetadataKeys.MOB.FLAGS].toInt()
+            data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 1 else flags and -2).toByte()
         }
 
     var isLeftHanded: Boolean
-        get() = data[DATA_MOB_FLAGS_ID].toInt() and 2 != 0
+        get() = data[MetadataKeys.MOB.FLAGS].toInt() and 2 != 0
         set(value) {
-            val flags = data[DATA_MOB_FLAGS_ID].toInt()
-            data[DATA_MOB_FLAGS_ID] = (if (value) flags or 2 else flags and -3).toByte()
+            val flags = data[MetadataKeys.MOB.FLAGS].toInt()
+            data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 2 else flags and -3).toByte()
         }
 
     var isAgressive: Boolean
-        get() = data[DATA_MOB_FLAGS_ID].toInt() and 4 != 0
+        get() = data[MetadataKeys.MOB.FLAGS].toInt() and 4 != 0
         set(value) {
-            val flags = data[DATA_MOB_FLAGS_ID].toInt()
-            data[DATA_MOB_FLAGS_ID] = (if (value) flags or 4 else flags and -5).toByte()
+            val flags = data[MetadataKeys.MOB.FLAGS].toInt()
+            data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 4 else flags and -5).toByte()
         }
 
     companion object {
-
-        private val DATA_MOB_FLAGS_ID = EntityData.define(KryptonMob::class.java, EntityDataSerializers.BYTE)
 
         fun createAttributes() = KryptonLivingEntity.createAttributes()
             .add(Attributes.FOLLOW_RANGE, 16.0)

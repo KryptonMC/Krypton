@@ -22,32 +22,25 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.monster.Zombie
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.attribute.Attributes
-import org.kryptonmc.krypton.entity.metadata.EntityData
-import org.kryptonmc.krypton.entity.metadata.EntityDataSerializers
+import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import java.util.UUID
 
 class KryptonZombie(id: Int, server: KryptonServer, uuid: UUID) : KryptonMonster(id, server, uuid, EntityTypes.ZOMBIE), Zombie {
 
-    override fun defineExtraData() {
-        super.defineExtraData()
-        data.define(DATA_BABY_ID, false)
-        data.define(DATA_SPECIAL_TYPE_ID, 0)
-        data.define(DATA_DROWNED_CONVERSION_ID, false)
+    init {
+        data += MetadataKeys.ZOMBIE.BABY
+        data += MetadataKeys.ZOMBIE.CONVERTING
     }
 
     override var isBaby: Boolean
-        get() = data[DATA_BABY_ID]
-        set(value) = data.set(DATA_BABY_ID, value)
+        get() = data[MetadataKeys.ZOMBIE.BABY]
+        set(value) = data.set(MetadataKeys.ZOMBIE.BABY, value)
 
     override var isConverting: Boolean
-        get() = data[DATA_DROWNED_CONVERSION_ID]
-        set(value) = data.set(DATA_DROWNED_CONVERSION_ID, value)
+        get() = data[MetadataKeys.ZOMBIE.CONVERTING]
+        set(value) = data.set(MetadataKeys.ZOMBIE.CONVERTING, value)
 
     companion object {
-
-        private val DATA_BABY_ID = EntityData.define(KryptonZombie::class.java, EntityDataSerializers.BOOLEAN)
-        private val DATA_SPECIAL_TYPE_ID = EntityData.define(KryptonZombie::class.java, EntityDataSerializers.INT)
-        private val DATA_DROWNED_CONVERSION_ID = EntityData.define(KryptonZombie::class.java, EntityDataSerializers.BOOLEAN)
 
         fun createAttributes() = KryptonMonster.createAttributes()
             .add(Attributes.FOLLOW_RANGE, 35.0)

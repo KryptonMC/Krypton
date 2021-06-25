@@ -29,9 +29,9 @@ import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.KryptonSender
-import org.kryptonmc.krypton.entity.metadata.EntityDataSerializers
-import org.kryptonmc.krypton.entity.metadata.EntityData
-import org.kryptonmc.krypton.entity.metadata.EntityDataAccessor
+import org.kryptonmc.krypton.entity.metadata.MetadataHolder
+import org.kryptonmc.krypton.entity.metadata.MetadataKey
+import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import java.util.Optional
 import java.util.UUID
 import java.util.function.UnaryOperator
@@ -44,7 +44,7 @@ abstract class KryptonEntity(
     override val type: EntityType<out Entity>
 ) : KryptonSender(server), Entity {
 
-    val data = EntityData(this)
+    val data = MetadataHolder(this)
 
     override var location = Location.ZERO
     override var velocity = Vector.ZERO
@@ -58,32 +58,25 @@ abstract class KryptonEntity(
     open val maxAirTicks = 300
 
     init {
-        data.define(DATA_SHARED_FLAGS_ID, 0)
-        data.define(DATA_AIR_SUPPLY_ID, maxAirTicks)
-        data.define(DATA_CUSTOM_NAME_VISIBLE, false)
-        data.define(DATA_CUSTOM_NAME, Optional.empty())
-        data.define(DATA_SILENT, false)
-        data.define(DATA_NO_GRAVITY, false)
-        data.define(DATA_POSE, Pose.STANDING)
-        data.define(DATA_TICKS_FROZEN, 0)
-        defineExtraData()
+        data += MetadataKeys.FLAGS
+        data.add(MetadataKeys.AIR_TICKS, maxAirTicks)
+        data += MetadataKeys.DISPLAY_NAME
+        data += MetadataKeys.DISPLAY_NAME_VISIBILITY
+        data += MetadataKeys.SILENT
+        data += MetadataKeys.NO_GRAVITY
+        data += MetadataKeys.POSE
+        data += MetadataKeys.FROZEN_TICKS
     }
 
-    protected abstract fun defineExtraData()
-
-    open fun onDataUpdate(accessor: EntityDataAccessor<*>) {
+    open fun onDataUpdate(key: MetadataKey<*>) {
         // TODO: Data updating
     }
 
-    private fun getSharedFlag(flag: Int) = data[DATA_SHARED_FLAGS_ID].toInt() and (1 shl flag) != 0
+    private fun getSharedFlag(flag: Int) = data[MetadataKeys.FLAGS].toInt() and (1 shl flag) != 0
 
     private fun setSharedFlag(flag: Int, state: Boolean) {
-        val flags = data[DATA_SHARED_FLAGS_ID]
-        data[DATA_SHARED_FLAGS_ID] = if (state) {
-            flags.toInt() or (1 shl flag)
-        } else {
-            flags.toInt() and (1 shl flag).inv()
-        }.toByte()
+        val flags = data[MetadataKeys.FLAGS].toInt()
+        data[MetadataKeys.FLAGS] = (if (state) flags or (1 shl flag) else flags and (1 shl flag).inv()).toByte()
     }
 
     override fun remove() = Unit // TODO: Make this do something
@@ -120,39 +113,27 @@ abstract class KryptonEntity(
         get() = getSharedFlag(7)
         set(value) = setSharedFlag(7, value)
 
-    override var airSupply: Int
-        get() = data[DATA_AIR_SUPPLY_ID]
-        set(value) = data.set(DATA_AIR_SUPPLY_ID, value)
+    override var airTicks: Int
+        get() = data[MetadataKeys.AIR_TICKS]
+        set(value) = data.set(MetadataKeys.AIR_TICKS, value)
 
     override var displayName: Component
-        get() = data[DATA_CUSTOM_NAME].orElse(Component.empty())
-        set(value) = data.set(DATA_CUSTOM_NAME, Optional.ofNullable(value.takeIf { it != Component.empty() }))
+        get() = data[MetadataKeys.DISPLAY_NAME].orElse(Component.empty())
+        set(value) = data.set(MetadataKeys.DISPLAY_NAME, Optional.ofNullable(value.takeIf { it != Component.empty() }))
 
     override var isDisplayNameVisible: Boolean
-        get() = data[DATA_CUSTOM_NAME_VISIBLE]
-        set(value) = data.set(DATA_CUSTOM_NAME_VISIBLE, value)
+        get() = data[MetadataKeys.DISPLAY_NAME_VISIBILITY]
+        set(value) = data.set(MetadataKeys.DISPLAY_NAME_VISIBILITY, value)
 
     override var isSilent: Boolean
-        get() = data[DATA_SILENT]
-        set(value) = data.set(DATA_SILENT, value)
+        get() = data[MetadataKeys.SILENT]
+        set(value) = data.set(MetadataKeys.SILENT, value)
 
     override var hasGravity: Boolean
-        get() = !data[DATA_NO_GRAVITY]
-        set(value) = data.set(DATA_NO_GRAVITY, !value)
+        get() = !data[MetadataKeys.NO_GRAVITY]
+        set(value) = data.set(MetadataKeys.NO_GRAVITY, !value)
 
     var pose: Pose
-        get() = data[DATA_POSE]
-        set(value) = data.set(DATA_POSE, value)
-
-    companion object {
-
-        @JvmStatic protected val DATA_SHARED_FLAGS_ID = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.BYTE)
-        private val DATA_AIR_SUPPLY_ID = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.INT)
-        private val DATA_CUSTOM_NAME = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.OPTIONAL_COMPONENT)
-        private val DATA_CUSTOM_NAME_VISIBLE = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.BOOLEAN)
-        private val DATA_SILENT = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.BOOLEAN)
-        private val DATA_NO_GRAVITY = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.BOOLEAN)
-        @JvmStatic protected val DATA_POSE = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.POSE)
-        private val DATA_TICKS_FROZEN = EntityData.define(KryptonEntity::class.java, EntityDataSerializers.INT)
-    }
+        get() = data[MetadataKeys.POSE]
+        set(value) = data.set(MetadataKeys.POSE, value)
 }

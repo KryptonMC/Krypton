@@ -26,8 +26,7 @@ import org.kryptonmc.krypton.entity.attribute.AttributeMap
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.attribute.attributeSupplier
-import org.kryptonmc.krypton.entity.metadata.EntityDataSerializers
-import org.kryptonmc.krypton.entity.metadata.EntityData
+import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.spongepowered.math.vector.Vector3i
 import java.util.Optional
 import java.util.UUID
@@ -43,69 +42,57 @@ abstract class KryptonLivingEntity(
     val attributes = AttributeMap(type.attributeSupplier)
 
     init {
-        println("Attributes for type ${type.key} is ${attributes.syncableAttributes}, supplier is ${type.attributeSupplier}")
+        data += MetadataKeys.LIVING.FLAGS
+        data += MetadataKeys.LIVING.HEALTH
+        data += MetadataKeys.LIVING.POTION_EFFECT_COLOR
+        data += MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE
+        data += MetadataKeys.LIVING.ARROWS
+        data += MetadataKeys.LIVING.STINGERS
+        data += MetadataKeys.LIVING.BED_LOCATION
     }
 
-    override fun defineExtraData() {
-        data.define(DATA_LIVING_ENTITY_FLAGS, 0)
-        data.define(DATA_EFFECT_COLOR_ID, 0)
-        data.define(DATA_EFFECT_AMBIENCE_ID, false)
-        data.define(DATA_ARROW_COUNT_ID, 0)
-        data.define(DATA_STINGER_COUNT_ID, 0)
-        data.define(DATA_HEALTH_ID, 1F)
-        data.define(SLEEPING_POS_ID, Optional.empty())
-    }
-
-    private fun setLivingSharedFlag(flag: Int, state: Boolean) {
-        val flags = data[DATA_LIVING_ENTITY_FLAGS].toInt()
-        data[DATA_LIVING_ENTITY_FLAGS] = (if (state) flags or flag else flags and flag.inv()).toByte()
+    private fun setLivingFlag(flag: Int, state: Boolean) {
+        val flags = data[MetadataKeys.LIVING.FLAGS].toInt()
+        data[MetadataKeys.LIVING.FLAGS] = (if (state) flags or flag else flags and flag.inv()).toByte()
     }
 
     override var isUsingItem: Boolean
-        get() = data[DATA_LIVING_ENTITY_FLAGS].toInt() and 1 > 0
-        set(value) = setLivingSharedFlag(1, value)
+        get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 1 > 0
+        set(value) = setLivingFlag(1, value)
 
     override var hand: Hand
-        get() = if (data[DATA_LIVING_ENTITY_FLAGS].toInt() and 2 > 0) Hand.OFF else Hand.MAIN
-        set(value) = setLivingSharedFlag(2, value == Hand.OFF)
+        get() = if (data[MetadataKeys.LIVING.FLAGS].toInt() and 2 > 0) Hand.OFF else Hand.MAIN
+        set(value) = setLivingFlag(2, value == Hand.OFF)
 
-    override var isAutoSpinAttack: Boolean
-        get() = data[DATA_LIVING_ENTITY_FLAGS].toInt() and 4 > 0
-        set(value) = setLivingSharedFlag(4, value)
+    override var inSpinAttack: Boolean
+        get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 4 > 0
+        set(value) = setLivingFlag(4, value)
 
     override var health: Float
-        get() = data[DATA_HEALTH_ID]
-        set(value) = data.set(DATA_HEALTH_ID, value)
+        get() = data[MetadataKeys.LIVING.HEALTH]
+        set(value) = data.set(MetadataKeys.LIVING.HEALTH, value)
 
     var potionEffectColor: Int
-        get() = data[DATA_EFFECT_COLOR_ID]
-        set(value) = data.set(DATA_EFFECT_COLOR_ID, value)
+        get() = data[MetadataKeys.LIVING.POTION_EFFECT_COLOR]
+        set(value) = data.set(MetadataKeys.LIVING.POTION_EFFECT_COLOR, value)
 
     var isPotionEffectAmbient: Boolean
-        get() = data[DATA_EFFECT_AMBIENCE_ID]
-        set(value) = data.set(DATA_EFFECT_AMBIENCE_ID, value)
+        get() = data[MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE]
+        set(value) = data.set(MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE, value)
 
     var arrowCount: Int
-        get() = data[DATA_ARROW_COUNT_ID]
-        set(value) = data.set(DATA_ARROW_COUNT_ID, value)
+        get() = data[MetadataKeys.LIVING.ARROWS]
+        set(value) = data.set(MetadataKeys.LIVING.ARROWS, value)
 
     var stingerCount: Int
-        get() = data[DATA_STINGER_COUNT_ID]
-        set(value) = data.set(DATA_STINGER_COUNT_ID, value)
+        get() = data[MetadataKeys.LIVING.STINGERS]
+        set(value) = data.set(MetadataKeys.LIVING.STINGERS, value)
 
     var bedPosition: Optional<Vector3i>
-        get() = data[SLEEPING_POS_ID]
-        set(value) = data.set(SLEEPING_POS_ID, value)
+        get() = data[MetadataKeys.LIVING.BED_LOCATION]
+        set(value) = data.set(MetadataKeys.LIVING.BED_LOCATION, value)
 
     companion object {
-
-        private val DATA_LIVING_ENTITY_FLAGS = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.BYTE)
-        private val DATA_HEALTH_ID = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.FLOAT)
-        private val DATA_EFFECT_COLOR_ID = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.INT)
-        private val DATA_EFFECT_AMBIENCE_ID = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.BOOLEAN)
-        private val DATA_ARROW_COUNT_ID = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.INT)
-        private val DATA_STINGER_COUNT_ID = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.INT)
-        private val SLEEPING_POS_ID = EntityData.define(KryptonLivingEntity::class.java, EntityDataSerializers.OPTIONAL_BLOCK_POS)
 
         fun createAttributes() = AttributeSupplier.builder()
             .add(Attributes.MAX_HEALTH)

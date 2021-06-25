@@ -52,8 +52,7 @@ import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.attribute.Attributes
-import org.kryptonmc.krypton.entity.metadata.EntityDataSerializers
-import org.kryptonmc.krypton.entity.metadata.EntityData
+import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
 import org.kryptonmc.krypton.packet.out.play.PacketOutChat
@@ -125,14 +124,13 @@ class KryptonPlayer(
     private var hasLoadedChunks = false
     private val visibleChunks = mutableSetOf<ChunkPosition>()
 
-    override fun defineExtraData() {
-        super.defineExtraData()
-        data.define(DATA_PLAYER_ABSORPTION_ID, 0F)
-        data.define(DATA_SCORE_ID, 0)
-        data.define(DATA_PLAYER_MODE_CUSTOMISATION, 0)
-        data.define(DATA_PLAYER_MAIN_HAND, 1)
-        data.define(DATA_SHOULDER_LEFT, NBTCompound())
-        data.define(DATA_SHOULDER_RIGHT, NBTCompound())
+    init {
+        data += MetadataKeys.PLAYER.ADDITIONAL_HEARTS
+        data += MetadataKeys.PLAYER.SCORE
+        data += MetadataKeys.PLAYER.SKIN_FLAGS
+        data += MetadataKeys.PLAYER.MAIN_HAND
+        data += MetadataKeys.PLAYER.LEFT_SHOULDER
+        data += MetadataKeys.PLAYER.RIGHT_SHOULDER
     }
 
     override fun spawnParticles(particleEffect: ParticleEffect, location: Location) {
@@ -291,33 +289,26 @@ class KryptonPlayer(
     }
 
     var additionalHearts: Float
-        get() = data[DATA_PLAYER_ABSORPTION_ID]
-        set(value) = data.set(DATA_PLAYER_ABSORPTION_ID, value)
+        get() = data[MetadataKeys.PLAYER.ADDITIONAL_HEARTS]
+        set(value) = data.set(MetadataKeys.PLAYER.ADDITIONAL_HEARTS, value)
 
     var skinSettings: SkinSettings
-        get() = data[DATA_PLAYER_MODE_CUSTOMISATION].toSkinSettings()
-        set(value) = data.set(DATA_PLAYER_MODE_CUSTOMISATION, value.toProtocol().toByte())
+        get() = data[MetadataKeys.PLAYER.SKIN_FLAGS].toSkinSettings()
+        set(value) = data.set(MetadataKeys.PLAYER.SKIN_FLAGS, value.toProtocol().toByte())
 
     override var mainHand: MainHand
-        get() = if (data[DATA_PLAYER_MAIN_HAND] == 0.toByte()) MainHand.LEFT else MainHand.RIGHT
-        set(value) = data.set(DATA_PLAYER_MAIN_HAND, if (value == MainHand.LEFT) 0 else 1)
+        get() = if (data[MetadataKeys.PLAYER.MAIN_HAND] == 0.toByte()) MainHand.LEFT else MainHand.RIGHT
+        set(value) = data.set(MetadataKeys.PLAYER.MAIN_HAND, if (value == MainHand.LEFT) 0 else 1)
 
     var leftShoulder: NBTCompound
-        get() = data[DATA_SHOULDER_LEFT]
-        set(value) = data.set(DATA_SHOULDER_LEFT, value)
+        get() = data[MetadataKeys.PLAYER.LEFT_SHOULDER]
+        set(value) = data.set(MetadataKeys.PLAYER.LEFT_SHOULDER, value)
 
     var rightShoulder: NBTCompound
-        get() = data[DATA_SHOULDER_RIGHT]
-        set(value) = data.set(DATA_SHOULDER_RIGHT, value)
+        get() = data[MetadataKeys.PLAYER.RIGHT_SHOULDER]
+        set(value) = data.set(MetadataKeys.PLAYER.RIGHT_SHOULDER, value)
 
     companion object {
-
-        private val DATA_PLAYER_ABSORPTION_ID = EntityData.define(KryptonPlayer::class.java, EntityDataSerializers.FLOAT)
-        private val DATA_SCORE_ID = EntityData.define(KryptonPlayer::class.java, EntityDataSerializers.INT)
-        private val DATA_PLAYER_MODE_CUSTOMISATION = EntityData.define(KryptonPlayer::class.java, EntityDataSerializers.BYTE)
-        private val DATA_PLAYER_MAIN_HAND = EntityData.define(KryptonPlayer::class.java, EntityDataSerializers.BYTE)
-        private val DATA_SHOULDER_LEFT = EntityData.define(KryptonPlayer::class.java, EntityDataSerializers.COMPOUND_TAG)
-        private val DATA_SHOULDER_RIGHT = EntityData.define(KryptonPlayer::class.java, EntityDataSerializers.COMPOUND_TAG)
 
         private val DEBUG_CHANNELS = setOf(
             key("debug/paths"),

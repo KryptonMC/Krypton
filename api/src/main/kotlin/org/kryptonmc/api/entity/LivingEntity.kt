@@ -26,7 +26,7 @@ interface LivingEntity : Entity {
     /**
      * If this entity is in a riptide spin attack
      */
-    val isAutoSpinAttack: Boolean
+    val inSpinAttack: Boolean
 
     /**
      * The health of this entity
