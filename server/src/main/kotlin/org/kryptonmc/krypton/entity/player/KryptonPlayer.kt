@@ -25,13 +25,13 @@ import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
-import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.title.Title
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
@@ -131,8 +131,8 @@ class KryptonPlayer(
         data.define(DATA_SCORE_ID, 0)
         data.define(DATA_PLAYER_MODE_CUSTOMISATION, 0)
         data.define(DATA_PLAYER_MAIN_HAND, 1)
-        data.define(DATA_SHOULDER_LEFT, CompoundBinaryTag.empty())
-        data.define(DATA_SHOULDER_RIGHT, CompoundBinaryTag.empty())
+        data.define(DATA_SHOULDER_LEFT, NBTCompound())
+        data.define(DATA_SHOULDER_RIGHT, NBTCompound())
     }
 
     override fun spawnParticles(particleEffect: ParticleEffect, location: Location) {
@@ -302,11 +302,11 @@ class KryptonPlayer(
         get() = if (data[DATA_PLAYER_MAIN_HAND] == 0.toByte()) MainHand.LEFT else MainHand.RIGHT
         set(value) = data.set(DATA_PLAYER_MAIN_HAND, if (value == MainHand.LEFT) 0 else 1)
 
-    var leftShoulder: CompoundBinaryTag
+    var leftShoulder: NBTCompound
         get() = data[DATA_SHOULDER_LEFT]
         set(value) = data.set(DATA_SHOULDER_LEFT, value)
 
-    var rightShoulder: CompoundBinaryTag
+    var rightShoulder: NBTCompound
         get() = data[DATA_SHOULDER_RIGHT]
         set(value) = data.set(DATA_SHOULDER_RIGHT, value)
 

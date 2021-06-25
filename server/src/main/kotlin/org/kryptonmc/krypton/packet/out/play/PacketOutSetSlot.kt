@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeItem
@@ -28,7 +28,7 @@ class PacketOutSetSlot(
     private val id: Int,
     private val slot: Int,
     private val item: ItemStack,
-    private val nbt: CompoundBinaryTag? = null
+    private val nbt: NBTCompound? = null
 ) : PlayPacket(0x16) {
 
     override fun write(buf: ByteBuf) {

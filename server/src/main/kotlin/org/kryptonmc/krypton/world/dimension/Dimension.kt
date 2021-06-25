@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.world.dimension
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.krypton.world.generation.Generator
 
 data class Dimension(
@@ -27,8 +27,7 @@ data class Dimension(
     val generator: Generator
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putString("type", type.toString())
-        .put("generator", generator.toNBT())
-        .build()
+    fun toNBT() = NBTCompound()
+        .setString("type", type.toString())
+        .set("generator", generator.toNBT())
 }

@@ -19,18 +19,19 @@
 package org.kryptonmc.krypton.registry.biomes
 
 import com.google.gson.annotations.SerializedName
-import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.ListBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTList
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
+import org.kryptonmc.krypton.util.nbt.setBoolean
 
 data class BiomeRegistry(
     val type: String,
     @SerializedName("value") val values: List<BiomeEntry>
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putString("type", type)
-        .put("value", ListBinaryTag.builder().add(values.map { it.toNBT() }).build())
-        .build()
+    fun toNBT() = NBTCompound()
+        .setString("type", type)
+        .set("value", NBTList<NBTCompound>(NBTTypes.TAG_Compound).apply { values.forEach { add(it.toNBT()) } })
 }
 
 data class BiomeEntry(
@@ -39,11 +40,10 @@ data class BiomeEntry(
     @SerializedName("element") val settings: BiomeEntrySettings
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putString("name", name)
-        .putInt("id", id)
-        .put("element", settings.toNBT())
-        .build()
+    fun toNBT() = NBTCompound()
+        .setString("name", name)
+        .setInt("id", id)
+        .set("element", settings.toNBT())
 }
 
 data class BiomeEntrySettings(
@@ -57,16 +57,15 @@ data class BiomeEntrySettings(
     @SerializedName("temperature_modifier") val temperatureModifier: String? = null
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putString("precipitation", precipitation)
-        .put("effects", effects.toNBT())
-        .putFloat("depth", depth)
-        .putFloat("temperature", temperature)
-        .putFloat("scale", scale)
-        .putFloat("downfall", downfall)
-        .putString("category", category)
-        .apply { if (temperatureModifier != null) putString("temperature_modifier", temperatureModifier) }
-        .build()
+    fun toNBT() = NBTCompound()
+        .setString("precipitation", precipitation)
+        .set("effects", effects.toNBT())
+        .setFloat("depth", depth)
+        .setFloat("temperature", temperature)
+        .setFloat("scale", scale)
+        .setFloat("downfall", downfall)
+        .setString("category", category)
+        .apply { temperatureModifier?.let { setString("temperature_modifier", it) } }
 }
 
 data class BiomeEntryEffects(
@@ -84,24 +83,21 @@ data class BiomeEntryEffects(
     @SerializedName("mood_sound") val moodSound: BiomeEffectSound
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
+    fun toNBT() = NBTCompound()
         .apply {
-            if (music != null) put("music", music.toNBT())
-            if (grassColorModifier != null) putString("grass_color_modifier", grassColorModifier)
+            music?.let { set("music", it.toNBT()) }
+            grassColorModifier?.let { setString("grass_color_modifier", it) }
+            grassColor?.let { setInt("grass_color", it) }
+            ambientSound?.let { setString("ambient_sound", it) }
+            additionsSound?.let { set("additions_sound", it.toNBT()) }
+            foliageColor?.let { setInt("foliage_color", it) }
+            particle?.let { set("particle", it.toNBT()) }
         }
-        .putInt("sky_color", skyColor)
-        .apply {
-            if (grassColor != null) putInt("grass_color", grassColor)
-            if (ambientSound != null) putString("ambient_sound", ambientSound)
-            if (additionsSound != null) put("additions_sound", additionsSound.toNBT())
-            if (foliageColor != null) putInt("foliage_color", foliageColor)
-            if (particle != null) put("particle", particle.toNBT())
-        }
-        .putInt("water_fog_color", waterFogColor)
-        .putInt("fog_color", fogColor)
-        .putInt("water_color", waterColor)
-        .put("mood_sound", moodSound.toNBT())
-        .build()
+        .setInt("sky_color", skyColor)
+        .setInt("water_fog_color", waterFogColor)
+        .setInt("fog_color", fogColor)
+        .setInt("water_color", waterColor)
+        .set("mood_sound", moodSound.toNBT())
 }
 
 data class BiomeEffectSound(
@@ -111,12 +107,11 @@ data class BiomeEffectSound(
     @SerializedName("block_search_extent") val blockSearchExtent: Int
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putInt("tick_delay", tickDelay)
-        .putDouble("offset", offset)
-        .putString("sound", sound)
-        .putInt("block_search_extent", blockSearchExtent)
-        .build()
+    fun toNBT() = NBTCompound()
+        .setInt("tick_delay", tickDelay)
+        .setDouble("offset", offset)
+        .setString("sound", sound)
+        .setInt("block_search_extent", blockSearchExtent)
 }
 
 data class BiomeEntryMusic(
@@ -126,12 +121,11 @@ data class BiomeEntryMusic(
     @SerializedName("min_delay") val minDelay: Int
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putBoolean("replace_current_music", replaceCurrentMusic)
-        .putInt("max_delay", maxDelay)
-        .putString("sound", sound)
-        .putInt("min_delay", minDelay)
-        .build()
+    fun toNBT() = NBTCompound()
+        .setBoolean("replace_current_music", replaceCurrentMusic)
+        .setInt("max_delay", maxDelay)
+        .setString("sound", sound)
+        .setInt("min_delay", minDelay)
 }
 
 data class BiomeEntrySound(
@@ -139,10 +133,9 @@ data class BiomeEntrySound(
     @SerializedName("tick_chance") val tickChance: Double
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putString("sound", sound)
-        .putDouble("tick_chance", tickChance)
-        .build()
+    fun toNBT() = NBTCompound()
+        .setString("sound", sound)
+        .setDouble("tick_chance", tickChance)
 }
 
 data class BiomeEntryParticle(
@@ -150,15 +143,12 @@ data class BiomeEntryParticle(
     val options: BiomeEntryParticleOptions
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putFloat("probability", probability)
-        .put("options", options.toNBT())
-        .build()
+    fun toNBT() = NBTCompound()
+        .setFloat("probability", probability)
+        .set("options", options.toNBT())
 }
 
 data class BiomeEntryParticleOptions(val type: String) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putString("type", type)
-        .build()
+    fun toNBT() = NBTCompound().setString("type", type)
 }

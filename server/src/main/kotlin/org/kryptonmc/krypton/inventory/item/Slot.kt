@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.inventory.item
 
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 
 /**
  * A protocol slot. The API equivalent of this would be [org.kryptonmc.api.inventory.item.ItemStack]
@@ -27,5 +27,5 @@ data class Slot(
     val isPresent: Boolean,
     val id: Int = 0,
     val count: Byte = 0,
-    val nbt: CompoundBinaryTag = CompoundBinaryTag.empty()
+    val nbt: NBTCompound = NBTCompound()
 )

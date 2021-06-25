@@ -19,18 +19,19 @@
 package org.kryptonmc.krypton.registry.dimensions
 
 import com.google.gson.annotations.SerializedName
-import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.ListBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTList
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
+import org.kryptonmc.krypton.util.nbt.setBoolean
 
 data class DimensionRegistry(
     val type: String,
     @SerializedName("value") val values: List<DimensionEntry>
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putString("type", type)
-        .put("value", ListBinaryTag.builder().add(values.map { it.toNBT() }).build())
-        .build()
+    fun toNBT() = NBTCompound()
+        .setString("type", type)
+        .set("value", NBTList<NBTCompound>(NBTTypes.TAG_Compound).apply { values.forEach { add(it.toNBT()) } })
 }
 
 data class DimensionEntry(
@@ -39,11 +40,10 @@ data class DimensionEntry(
     @SerializedName("element") val settings: DimensionEntrySettings
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putString("name", name)
-        .putInt("id", id)
-        .put("element", settings.toNBT())
-        .build()
+    fun toNBT() = NBTCompound()
+        .setString("name", name)
+        .setInt("id", id)
+        .set("element", settings.toNBT())
 }
 
 data class DimensionEntrySettings(
@@ -65,22 +65,21 @@ data class DimensionEntrySettings(
     val height: Int
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putBoolean("piglin_safe", piglinSafe)
-        .putBoolean("natural", natural)
-        .putFloat("ambient_light", ambientLight)
-        .putString("infiniburn", infiniburn)
-        .putBoolean("respawn_anchor_works", respawnAnchorWorks)
-        .putBoolean("has_skylight", hasSkylight)
-        .putBoolean("bed_works", bedWorks)
-        .putString("effects", effects)
-        .apply { if (fixedTime != -1L) putLong("fixed_time", fixedTime) }
-        .putBoolean("has_raids", hasRaids)
-        .putInt("logical_height", logicalHeight)
-        .putDouble("coordinate_scale", coordinateScale)
-        .putBoolean("ultrawarm", ultrawarm)
-        .putBoolean("has_ceiling", hasCeiling)
-        .putInt("min_y", minY)
-        .putInt("height", height)
-        .build()
+    fun toNBT() = NBTCompound()
+        .setBoolean("piglin_safe", piglinSafe)
+        .setBoolean("natural", natural)
+        .setFloat("ambient_light", ambientLight)
+        .setString("infiniburn", infiniburn)
+        .setBoolean("respawn_anchor_works", respawnAnchorWorks)
+        .setBoolean("has_skylight", hasSkylight)
+        .setBoolean("bed_works", bedWorks)
+        .setString("effects", effects)
+        .apply { if (fixedTime != -1L) setLong("fixed_time", fixedTime) }
+        .setBoolean("has_raids", hasRaids)
+        .setInt("logical_height", logicalHeight)
+        .setDouble("coordinate_scale", coordinateScale)
+        .setBoolean("ultrawarm", ultrawarm)
+        .setBoolean("has_ceiling", hasCeiling)
+        .setInt("min_y", minY)
+        .setInt("height", height)
 }

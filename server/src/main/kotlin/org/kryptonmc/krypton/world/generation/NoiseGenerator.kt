@@ -20,12 +20,17 @@ package org.kryptonmc.krypton.world.generation
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
-import net.kyori.adventure.nbt.BinaryTagTypes
-import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.IntBinaryTag
-import net.kyori.adventure.nbt.ListBinaryTag
-import net.kyori.adventure.nbt.StringBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTInt
+import org.jglrxavpok.hephaistos.nbt.NBTList
+import org.jglrxavpok.hephaistos.nbt.NBTString
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.util.toKey
+import org.kryptonmc.krypton.util.nbt.getBoolean
+import org.kryptonmc.krypton.util.nbt.getInt
+import org.kryptonmc.krypton.util.nbt.getList
+import org.kryptonmc.krypton.util.nbt.getString
+import org.kryptonmc.krypton.util.nbt.setBoolean
 
 data class NoiseGenerator(
     val seed: Int,
@@ -33,12 +38,11 @@ data class NoiseGenerator(
     val biomeSource: BiomeGenerator
 ) : Generator(ID) {
 
-    override fun toNBT() = CompoundBinaryTag.builder()
-        .putString("type", ID.toString())
-        .putInt("seed", seed)
-        .putString("settings", settings.toString())
-        .put("biome_source", biomeSource.toNBT())
-        .build()
+    override fun toNBT() = NBTCompound()
+        .setString("type", ID.toString())
+        .setInt("seed", seed)
+        .setString("settings", settings.toString())
+        .set("biome_source", biomeSource.toNBT())
 
     companion object {
 
@@ -57,16 +61,15 @@ data class NoiseGeneratorSettings(
     val noise: NoiseGeneratorConfig
 ) : GeneratorSettings() {
 
-    override fun toNBT() = CompoundBinaryTag.builder()
-        .putInt("bedrock_roof_position", bedrockRoofPosition)
-        .putInt("bedrock_floor_position", bedrockFloorPosition)
-        .putInt("sea_level", seaLevel)
-        .putBoolean("disable_mob_generation", disableMobGeneration)
-        .put("default_block", defaultBlock.toNBT())
-        .put("default_fluid", defaultFluid.toNBT())
-        .put("structures", structures.toNBT())
-        .put("noise", noise.toNBT())
-        .build()
+    override fun toNBT() = NBTCompound()
+        .setInt("bedrock_roof_position", bedrockRoofPosition)
+        .setInt("bedrock_floor_position", bedrockFloorPosition)
+        .setInt("sea_level", seaLevel)
+        .setBoolean("disable_mob_generation", disableMobGeneration)
+        .set("default_block", defaultBlock.toNBT())
+        .set("default_fluid", defaultFluid.toNBT())
+        .set("structures", structures.toNBT())
+        .set("noise", noise.toNBT())
 }
 
 data class NoiseBlockState(
@@ -74,10 +77,9 @@ data class NoiseBlockState(
     val properties: Map<String, String>
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putString("Name", name.toString())
-        .put("Properties", CompoundBinaryTag.from(properties.mapValues { StringBinaryTag.of(it.value) }))
-        .build()
+    fun toNBT() = NBTCompound()
+        .setString("Name", name.toString())
+        .set("Properties", NBTCompound().apply { properties.mapValues { NBTString(it.value) }.forEach { set(it.key, it.value) } })
 }
 
 data class NoiseGeneratorConfig(
@@ -95,20 +97,19 @@ data class NoiseGeneratorConfig(
     val bottomSlide: NoiseSlide
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putInt("height", height)
-        .putInt("size_horizontal", horizontalSize)
-        .putInt("size_vertical", verticalSize)
-        .putDouble("density_factor", densityFactor)
-        .putDouble("density_offset", densityOffset)
-        .putBoolean("simplex_surface_noise", simplexSurfaceNoise)
-        .apply { if (randomDensityOffset) putBoolean("random_density_offset", randomDensityOffset) }
-        .apply { if (islandNoiseOverride) putBoolean("island_noise_override", islandNoiseOverride) }
-        .apply { if (amplified) putBoolean("amplified", amplified) }
-        .put("sampling", sampling.toNBT())
-        .put("top_slide", topSlide.toNBT())
-        .put("bottom_slide", bottomSlide.toNBT())
-        .build()
+    fun toNBT() = NBTCompound()
+        .setInt("height", height)
+        .setInt("size_horizontal", horizontalSize)
+        .setInt("size_vertical", verticalSize)
+        .setDouble("density_factor", densityFactor)
+        .setDouble("density_offset", densityOffset)
+        .setBoolean("simplex_surface_noise", simplexSurfaceNoise)
+        .apply { if (randomDensityOffset) setBoolean("random_density_offset", randomDensityOffset) }
+        .apply { if (islandNoiseOverride) setBoolean("island_noise_override", islandNoiseOverride) }
+        .apply { if (amplified) setBoolean("amplified", amplified) }
+        .set("sampling", sampling.toNBT())
+        .set("top_slide", topSlide.toNBT())
+        .set("bottom_slide", bottomSlide.toNBT())
 }
 
 data class NoiseSampling(
@@ -118,12 +119,11 @@ data class NoiseSampling(
     val yFactor: Double
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putDouble("xz_scale", xzScale)
-        .putDouble("xz_factor", xzFactor)
-        .putDouble("y_scale", yScale)
-        .putDouble("y_factor", yFactor)
-        .build()
+    fun toNBT() = NBTCompound()
+        .setDouble("xz_scale", xzScale)
+        .setDouble("xz_factor", xzFactor)
+        .setDouble("y_scale", yScale)
+        .setDouble("y_factor", yFactor)
 }
 
 data class NoiseSlide(
@@ -132,18 +132,17 @@ data class NoiseSlide(
     val offset: Int
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putInt("target", target)
-        .putInt("size", size)
-        .putInt("offset", offset)
-        .build()
+    fun toNBT() = NBTCompound()
+        .setInt("target", target)
+        .setInt("size", size)
+        .setInt("offset", offset)
 }
 
 sealed class BiomeGenerator(val type: Key) {
 
     abstract val seed: Int
 
-    abstract fun toNBT(): CompoundBinaryTag
+    abstract fun toNBT(): NBTCompound
 
     companion object {
 
@@ -153,24 +152,24 @@ sealed class BiomeGenerator(val type: Key) {
         internal val FIXED = key("fixed")
         internal val CHECKERBOARD = key("checkerboard")
 
-        fun fromNBT(nbt: CompoundBinaryTag) = when (val type = nbt.getString("type").toKey()) {
+        fun fromNBT(nbt: NBTCompound) = when (val type = nbt.getString("type")?.toKey() ?: VANILLA_LAYERED) {
             VANILLA_LAYERED -> VanillaLayeredBiomeGenerator(
-                nbt.getInt("seed"),
-                nbt.getBoolean("large_biomes")
+                nbt.getInt("seed", 0),
+                nbt.getBoolean("large_biomes", false)
             )
             MULTI_NOISE -> MultiNoiseBiomeGenerator(
-                nbt.getInt("seed"),
-                nbt.getString("preset").toKey()
+                nbt.getInt("seed", 0),
+                nbt.getString("preset")?.toKey() ?: key("overworld")
             )
-            THE_END -> TheEndBiomeGenerator(nbt.getInt("seed"))
+            THE_END -> TheEndBiomeGenerator(nbt.getInt("seed", 0))
             FIXED -> FixedBiomeGenerator(
-                nbt.getInt("seed"),
-                nbt.getString("biome")
+                nbt.getInt("seed", 0),
+                nbt.getString("biome", "minecraft:plains")
             )
             CHECKERBOARD -> CheckerboardBiomeGenerator(
-                nbt.getInt("seed"),
-                nbt.getList("biomes").map { (it as IntBinaryTag).value() }.toIntArray(),
-                nbt.getInt("scale")
+                nbt.getInt("seed", 0),
+                nbt.getList<NBTInt>("biomes", NBTList(NBTTypes.TAG_Int)).map { it.value }.toIntArray(),
+                nbt.getInt("scale", 0)
             )
             else -> throw UnsupportedOperationException("Unsupported biome generator type $type")
         }
@@ -182,11 +181,10 @@ data class VanillaLayeredBiomeGenerator(
     val largeBiomes: Boolean,
 ) : BiomeGenerator(VANILLA_LAYERED) {
 
-    override fun toNBT() = CompoundBinaryTag.builder()
-        .putString("type", VANILLA_LAYERED.toString())
-        .putInt("seed", seed)
-        .putBoolean("large_biomes", largeBiomes)
-        .build()
+    override fun toNBT() = NBTCompound()
+        .setString("type", VANILLA_LAYERED.toString())
+        .setInt("seed", seed)
+        .setBoolean("large_biomes", largeBiomes)
 }
 
 data class MultiNoiseBiomeGenerator(
@@ -194,19 +192,17 @@ data class MultiNoiseBiomeGenerator(
     val preset: Key
 ) : BiomeGenerator(MULTI_NOISE) {
 
-    override fun toNBT() = CompoundBinaryTag.builder()
-        .putString("type", MULTI_NOISE.toString())
-        .putInt("seed", seed)
-        .putString("preset", preset.toString())
-        .build()
+    override fun toNBT() = NBTCompound()
+        .setString("type", MULTI_NOISE.toString())
+        .setInt("seed", seed)
+        .setString("preset", preset.toString())
 }
 
 data class TheEndBiomeGenerator(override val seed: Int) : BiomeGenerator(THE_END) {
 
-    override fun toNBT() = CompoundBinaryTag.builder()
-        .putString("type", THE_END.toString())
-        .putInt("seed", seed)
-        .build()
+    override fun toNBT() = NBTCompound()
+        .setString("type", THE_END.toString())
+        .setInt("seed", seed)
 }
 
 data class FixedBiomeGenerator(
@@ -214,11 +210,10 @@ data class FixedBiomeGenerator(
     val biome: String
 ) : BiomeGenerator(FIXED) {
 
-    override fun toNBT() = CompoundBinaryTag.builder()
-        .putString("type", FIXED.toString())
-        .putInt("seed", seed)
-        .putString("biome", biome)
-        .build()
+    override fun toNBT() = NBTCompound()
+        .setString("type", FIXED.toString())
+        .setInt("seed", seed)
+        .setString("biome", biome)
 }
 
 data class CheckerboardBiomeGenerator(
@@ -227,12 +222,11 @@ data class CheckerboardBiomeGenerator(
     val scale: Int
 ) : BiomeGenerator(CHECKERBOARD) {
 
-    override fun toNBT() = CompoundBinaryTag.builder()
-        .putString("type", CHECKERBOARD.toString())
-        .putInt("seed", seed)
-        .put("biomes", ListBinaryTag.of(BinaryTagTypes.INT, biomes.toList().map { IntBinaryTag.of(it) }))
-        .putInt("scale", scale)
-        .build()
+    override fun toNBT() = NBTCompound()
+        .setString("type", CHECKERBOARD.asString())
+        .setInt("seed", seed)
+        .set("biomes", NBTList<NBTInt>(NBTTypes.TAG_Int).apply { biomes.forEach { add(NBTInt(it)) } })
+        .setInt("scale", scale)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

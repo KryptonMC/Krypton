@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.PooledByteBufAllocator
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.calculateBits
 import org.kryptonmc.krypton.util.writeBitSet
@@ -43,10 +43,9 @@ import java.util.BitSet
  */
 class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x22) {
 
-    private val heightmaps = CompoundBinaryTag.builder()
-        .put("MOTION_BLOCKING", chunk.heightmaps[Heightmap.Type.MOTION_BLOCKING]!!.nbt)
-        .put("WORLD_SURFACE", chunk.heightmaps[Heightmap.Type.WORLD_SURFACE]!!.nbt)
-        .build()
+    private val heightmaps = NBTCompound()
+        .set("MOTION_BLOCKING", chunk.heightmaps[Heightmap.Type.MOTION_BLOCKING]!!.nbt)
+        .set("WORLD_SURFACE", chunk.heightmaps[Heightmap.Type.WORLD_SURFACE]!!.nbt)
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(chunk.position.x)

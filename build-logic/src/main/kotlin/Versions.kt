@@ -32,6 +32,7 @@ object Versions {
     const val DFU = "4.0.26"
     const val EVENT = "4.0.0-SNAPSHOT"
     const val ASM = "9.1"
+    const val HEPHAISTOS = "1.1.8"
 
     // Test
     const val JUNIT_PLATFORM_RUNNER = "1.7.2"

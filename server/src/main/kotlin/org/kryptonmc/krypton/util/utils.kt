@@ -23,14 +23,15 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.IntArrayBinaryTag
-import net.kyori.adventure.nbt.ListBinaryTag
-import net.kyori.adventure.nbt.StringBinaryTag
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTIntArray
+import org.jglrxavpok.hephaistos.nbt.NBTList
+import org.jglrxavpok.hephaistos.nbt.NBTString
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.world.Gamemode
@@ -95,20 +96,19 @@ fun String.toProtocol(): ByteArray {
  * This isn't related to the above, this turns a UUID into 4 integers sorted by significance descending
  * (most significant first, least significant last)
  */
-fun UUID.serialize() = IntArrayBinaryTag.of(
+fun UUID.serialize() = NBTIntArray(intArrayOf(
     (mostSignificantBits shr 32).toInt(),
     (mostSignificantBits and Int.MAX_VALUE.toLong()).toInt(),
     (leastSignificantBits shr 32).toInt(),
     (leastSignificantBits and Int.MAX_VALUE.toLong()).toInt()
-)
+))
 
-fun Book.toItemStack(locale: Locale): Pair<ItemStack, CompoundBinaryTag> {
+fun Book.toItemStack(locale: Locale): Pair<ItemStack, NBTCompound> {
     val item = ItemStack(Material.WRITTEN_BOOK, 1)
-    val tag = CompoundBinaryTag.builder()
-        .putString("title", GsonComponentSerializer.gson().serialize(title()))
-        .putString("author", GsonComponentSerializer.gson().serialize(author()))
-        .put("pages", ListBinaryTag.from(pages().map { StringBinaryTag.of(GsonComponentSerializer.gson().serialize(it)) }))
-        .build()
+    val tag = NBTCompound()
+        .setString("title", GsonComponentSerializer.gson().serialize(title()))
+        .setString("author", GsonComponentSerializer.gson().serialize(author()))
+        .set("pages", NBTList<NBTString>(NBTTypes.TAG_String).apply { pages().forEach { add(NBTString(GsonComponentSerializer.gson().serialize(it))) } })
     return item to tag
 }
 

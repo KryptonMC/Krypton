@@ -22,10 +22,12 @@ import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Multimaps
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap
 import it.unimi.dsi.fastutil.objects.ObjectArraySet
-import net.kyori.adventure.nbt.BinaryTagTypes
-import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.ListBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTList
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.util.nbt.getDouble
+import org.kryptonmc.krypton.util.nbt.getList
 import java.util.EnumMap
 import java.util.UUID
 
@@ -101,23 +103,23 @@ class AttributeInstance(
         makeDirty()
     }
 
-    fun save() = CompoundBinaryTag.builder()
-        .putString("Name", InternalRegistries.ATTRIBUTE.getKey(attribute)!!.toString())
-        .putDouble("Base", baseValue)
+    fun save() = NBTCompound()
+        .setString("Name", InternalRegistries.ATTRIBUTE.getKey(attribute)!!.toString())
+        .setDouble("Base", baseValue)
         .apply {
             if (permanentModifiers.isEmpty()) return@apply
-            put("Modifiers", ListBinaryTag.of(BinaryTagTypes.COMPOUND, permanentModifiers.map(AttributeModifier::save)))
-        }.build()
+            set("Modifiers", NBTList<NBTCompound>(NBTTypes.TAG_Compound).apply { permanentModifiers.forEach { add(it.save()) } })
+        }
 
-    fun load(tag: CompoundBinaryTag) {
-        baseValue = tag.getDouble("Base")
+    fun load(tag: NBTCompound) {
+        baseValue = tag.getDouble("Base", 0.0)
 
-        val modifiers = tag.getList("Modifiers", BinaryTagTypes.COMPOUND)
-        if (modifiers.size() == 0) {
+        val modifiers = tag.getList<NBTCompound>("Modifiers", NBTList(NBTTypes.TAG_Compound))
+        if (modifiers.length == 0) {
             makeDirty()
             return
         }
-        modifiers.asSequence().filterIsInstance<CompoundBinaryTag>().forEach {
+        modifiers.forEach {
             val modifier = AttributeModifier.load(it) ?: return@forEach
             modifiersById[modifier.id] = modifier
             getModifiers(modifier.operation) += modifier

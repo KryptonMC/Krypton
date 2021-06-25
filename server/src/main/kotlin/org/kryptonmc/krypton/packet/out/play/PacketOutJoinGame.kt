@@ -21,11 +21,12 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.Registries
+import org.kryptonmc.krypton.util.nbt.setBoolean
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeNBTCompound
 import org.kryptonmc.krypton.util.writeVarInt
@@ -72,10 +73,9 @@ class PacketOutJoinGame(
         buf.writeKey(END)
 
         // dimension codec (dimension/biome type registry)
-        buf.writeNBTCompound(CompoundBinaryTag.builder()
-            .put("minecraft:dimension_type", Registries.DIMENSIONS.toNBT())
-            .put("minecraft:worldgen/biome", Registries.BIOMES.toNBT())
-            .build())
+        buf.writeNBTCompound(NBTCompound()
+            .set("minecraft:dimension_type", Registries.DIMENSIONS.toNBT())
+            .set("minecraft:worldgen/biome", Registries.BIOMES.toNBT()))
 
         // dimension info
         val dimensionData = Registries.DIMENSIONS.values.firstOrNull {
@@ -108,18 +108,17 @@ class PacketOutJoinGame(
     }
 }
 
-private val OVERWORLD_NBT = CompoundBinaryTag.builder()
-    .putBoolean("piglin_safe", false)
-    .putBoolean("natural", true)
-    .putFloat("ambient_light", 0.0f)
-    .putString("infiniburn", "minecraft:infiniburn_overworld")
-    .putBoolean("respawn_anchor_works", false)
-    .putBoolean("has_skylight", true)
-    .putBoolean("bed_works", true)
-    .putString("effects", "minecraft:overworld")
-    .putBoolean("has_raids", true)
-    .putInt("logical_height", 256)
-    .putDouble("coordinate_scale", 1.0)
-    .putBoolean("ultrawarm", false)
-    .putBoolean("has_ceiling", false)
-    .build()
+private val OVERWORLD_NBT = NBTCompound()
+    .setBoolean("piglin_safe", false)
+    .setBoolean("natural", true)
+    .setFloat("ambient_light", 0F)
+    .setString("infiniburn", "minecraft:infiniburn_overworld")
+    .setBoolean("respawn_anchor_works", false)
+    .setBoolean("has_skylight", true)
+    .setBoolean("bed_works", true)
+    .setString("effects", "minecraft:overworld")
+    .setBoolean("has_raids", true)
+    .setInt("logical_height", 256)
+    .setDouble("coordinate_scale", 1.0)
+    .setBoolean("ultrawarm", false)
+    .setBoolean("has_ceiling", false)

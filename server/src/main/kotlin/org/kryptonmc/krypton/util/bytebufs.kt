@@ -25,13 +25,15 @@ package org.kryptonmc.krypton.util
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.ByteBufInputStream
+import io.netty.buffer.ByteBufOutputStream
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.nbt.BinaryTagIO
-import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTReader
+import org.jglrxavpok.hephaistos.nbt.NBTWriter
 import org.kryptonmc.api.effect.particle.BlockParticleData
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
@@ -47,9 +49,7 @@ import org.kryptonmc.krypton.inventory.item.Slot
 import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.locale.TranslationManager
 import org.kryptonmc.krypton.registry.Registries
-import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.io.InputStream
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.Duration
 import java.util.BitSet
@@ -177,20 +177,19 @@ fun ByteBuf.writeUUID(uuid: UUID) {
     writeLong(uuid.leastSignificantBits)
 }
 
-fun ByteBuf.writeNBTCompound(tag: CompoundBinaryTag) {
-    val outputStream = ByteArrayOutputStream()
-    BinaryTagIO.writer().write(tag, outputStream)
-    writeBytes(outputStream.toByteArray())
+fun ByteBuf.writeNBTCompound(tag: NBTCompound) {
+    val outputStream = ByteBufOutputStream(this)
+    NBTWriter(outputStream, false).use { it.writeNamed("", tag) }
 }
 
-fun ByteBuf.readNBTCompound(): CompoundBinaryTag {
+fun ByteBuf.readNBTCompound(): NBTCompound {
     val index = readerIndex()
     val type = readByte()
-    if (type == 0.toByte()) return CompoundBinaryTag.empty()
+    if (type == 0.toByte()) return NBTCompound()
     readerIndex(index) // reset the head if it's not an end tag
 
     try {
-        return BinaryTagIO.unlimitedReader().read(ByteBufInputStream(this) as InputStream)
+        return NBTReader(ByteBufInputStream(this), false).use { it.read() as NBTCompound }
     } catch (exception: IOException) {
         throw DecoderException(exception)
     }
@@ -209,7 +208,7 @@ fun ByteBuf.writeSlot(slot: Slot) {
     }
 }
 
-fun ByteBuf.writeItem(item: ItemStack?, nbt: CompoundBinaryTag?) {
+fun ByteBuf.writeItem(item: ItemStack?, nbt: NBTCompound?) {
     if (item == null) {
         writeBoolean(false)
         return

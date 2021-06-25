@@ -18,14 +18,14 @@
  */
 package org.kryptonmc.krypton.world
 
-import net.kyori.adventure.nbt.LongArrayBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTLongArray
 import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.data.BitStorage
 
-class Heightmap(private val chunk: KryptonChunk, val nbt: LongArrayBinaryTag, val type: Type) {
+class Heightmap(private val chunk: KryptonChunk, val nbt: NBTLongArray, val type: Type) {
 
-    val data = BitStorage(9, 256, nbt.value())
+    val data = BitStorage(9, 256, nbt.value)
 
     fun update(x: Int, y: Int, z: Int, material: Material): Boolean {
         val firstAvailable = data[indexOf(x, z)]
@@ -67,6 +67,6 @@ class Heightmap(private val chunk: KryptonChunk, val nbt: LongArrayBinaryTag, va
 }
 
 data class HeightmapBuilder(
-    val nbt: LongArrayBinaryTag,
+    val nbt: NBTLongArray,
     val type: Heightmap.Type
 )

@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.memory
 
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 
 /**
  * Represents an entity's brain. For most entities, this will use [EmptyBrain].
@@ -29,7 +29,7 @@ sealed class Brain<T : EntityMemories> {
 
     abstract val memories: T
 
-    open fun write(): CompoundBinaryTag = CompoundBinaryTag.empty()
+    open fun write(): NBTCompound = NBTCompound()
 }
 
 /**
@@ -39,11 +39,7 @@ object EmptyBrain : Brain<EmptyMemories>() {
 
     override val memories = EmptyMemories
 
-    override fun write() = CompoundBinaryTag.builder()
-        .put("Brain", CompoundBinaryTag.builder()
-            .put("memories", CompoundBinaryTag.empty())
-            .build())
-        .build()
+    override fun write() = NBTCompound().set("Brain", NBTCompound().set("memories", NBTCompound()))
 }
 
 /**

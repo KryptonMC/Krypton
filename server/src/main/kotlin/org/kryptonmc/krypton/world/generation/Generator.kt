@@ -20,12 +20,13 @@ package org.kryptonmc.krypton.world.generation
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.util.toKey
+import org.kryptonmc.krypton.util.nbt.getCompound
 
 abstract class Generator(val id: Key) {
 
-    abstract fun toNBT(): CompoundBinaryTag
+    abstract fun toNBT(): NBTCompound
 }
 
 // we want to use this in the constructor, but if we use a property, it's not initialised
@@ -34,18 +35,16 @@ private val DEBUG_GENERATOR_ID = key("debug")
 
 object DebugGenerator : Generator(DEBUG_GENERATOR_ID) {
 
-    override fun toNBT() = CompoundBinaryTag.builder()
-        .putString("type", DEBUG_GENERATOR_ID.toString())
-        .build()
+    override fun toNBT() = NBTCompound().setString("type", DEBUG_GENERATOR_ID.toString())
 }
 
 // TODO: Add support for generators when world generation exists
-fun CompoundBinaryTag.toGenerator() = when (val type = getString("type").toKey()) {
-    FlatGenerator.ID -> FlatGenerator(FlatGeneratorSettings.fromNBT(getCompound("settings")))
+fun NBTCompound.toGenerator() = when (val type = getString("type")?.toKey() ?: key("")) {
+    FlatGenerator.ID -> FlatGenerator(FlatGeneratorSettings.fromNBT(getCompound("settings", NBTCompound())))
     NoiseGenerator.ID -> NoiseGenerator(
-        getInt("seed"),
-        getString("settings").toKey(),
-        BiomeGenerator.fromNBT(getCompound("biome_source"))
+        getInt("seed") ?: 0,
+        getString("settings")?.toKey() ?: key(""),
+        BiomeGenerator.fromNBT(getCompound("biome_source", NBTCompound()))
     )
     DEBUG_GENERATOR_ID -> DebugGenerator
     else -> throw IllegalArgumentException("Unsupported generator type $type")

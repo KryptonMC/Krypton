@@ -20,17 +20,20 @@ package org.kryptonmc.krypton.world.generation
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
-import net.kyori.adventure.nbt.BinaryTagTypes
-import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.ListBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTList
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.util.toKey
+import org.kryptonmc.krypton.util.nbt.getCompound
+import org.kryptonmc.krypton.util.nbt.getInt
+import org.kryptonmc.krypton.util.nbt.getList
+import org.kryptonmc.krypton.util.nbt.getString
 
 data class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(ID) {
 
-    override fun toNBT() = CompoundBinaryTag.builder()
-        .putString("type", ID.toString())
-        .put("settings", settings.toNBT())
-        .build()
+    override fun toNBT() = NBTCompound()
+        .setString("type", ID.toString())
+        .set("settings", settings.toNBT())
 
     companion object {
 
@@ -44,38 +47,33 @@ data class FlatGeneratorSettings(
     override val structures: GeneratorStructures
 ) : GeneratorSettings() {
 
-    override fun toNBT(): CompoundBinaryTag {
-        return CompoundBinaryTag.builder()
-            .put("layers", ListBinaryTag.of(BinaryTagTypes.COMPOUND, layers.map(FlatLayer::toNBT)))
-            .putString("biome", biome.toString())
-            .put("structures", structures.toNBT())
-            .build()
-    }
+    override fun toNBT() = NBTCompound()
+        .set("layers", NBTList<NBTCompound>(NBTTypes.TAG_Compound).apply { layers.forEach { add(it.toNBT()) } })
+        .setString("biome", biome.toString())
+        .set("structures", structures.toNBT())
 
     companion object {
 
-        fun fromNBT(nbt: CompoundBinaryTag) = FlatGeneratorSettings(
-            nbt.getList("layers").map { layer ->
-                (layer as CompoundBinaryTag).let {
-                    FlatLayer(it.getString("block").toKey(), it.getInt("height"))
-                }
+        fun fromNBT(nbt: NBTCompound) = FlatGeneratorSettings(
+            nbt.getList<NBTCompound>("layers", NBTList(NBTTypes.TAG_Compound)).map {
+                FlatLayer(it.getString("block", "").toKey(), it.getInt("height", 0))
             },
-            nbt.getString("biome").toKey(),
-            nbt.getCompound("structures").let { nbtStructures ->
-                val stronghold = nbtStructures.getCompound("stronghold")
-                val structures = nbtStructures.getCompound("structures")
+            nbt.getString("biome", "minecraft:plains").toKey(),
+            nbt.getCompound("structures", NBTCompound()).let { nbtStructures ->
+                val stronghold = nbtStructures.getCompound("stronghold", NBTCompound())
+                val structures = nbtStructures.getCompound("structures", NBTCompound())
                 GeneratorStructures(
                     GeneratorStronghold(
-                        stronghold.getInt("distance"),
-                        stronghold.getInt("count"),
-                        stronghold.getInt("spread")
+                        stronghold.getInt("distance", 0),
+                        stronghold.getInt("count", 0),
+                        stronghold.getInt("spread", 0)
                     ),
-                    structures.associate { (key, value) ->
-                        key.toKey() to (value as CompoundBinaryTag).let {
+                    structures.iterator().asSequence().associate { (key, value) ->
+                        key.toKey() to (value as NBTCompound).let {
                             GeneratorStructure(
-                                it.getInt("spacing"),
-                                it.getInt("separation"),
-                                it.getInt("salt")
+                                it.getInt("spacing", 0),
+                                it.getInt("separation", 0),
+                                it.getInt("salt", 0)
                             )
                         }
                     }
@@ -90,8 +88,7 @@ data class FlatLayer(
     val height: Int
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putInt("height", height)
-        .putString("block", block.toString())
-        .build()
+    fun toNBT() = NBTCompound()
+        .setInt("height", height)
+        .setString("block", block.toString())
 }

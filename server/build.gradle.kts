@@ -16,6 +16,7 @@ application.mainClass.set("org.kryptonmc.krypton.KryptonKt")
 repositories {
     maven("https://repo.velocitypowered.com/snapshots/")
     maven("https://oss.sonatype.org/content/groups/public/")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -57,7 +58,8 @@ dependencies {
 
     // Miscellaneous
     implementation("com.mojang", "datafixerupper", Versions.DFU)
-    implementation("net.kyori", "adventure-nbt")
+//    implementation("net.kyori", "adventure-nbt")
+    implementation("com.github.jglrxavpok", "Hephaistos", Versions.HEPHAISTOS)
     implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
     implementation("org.bstats", "bstats-base", Versions.BSTATS)
     implementation("com.velocitypowered", "velocity-native", Versions.VELOCITY_NATIVE)

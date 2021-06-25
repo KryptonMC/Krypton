@@ -18,11 +18,14 @@
  */
 package org.kryptonmc.krypton.entity.attribute
 
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.nbt.getDouble
+import org.kryptonmc.krypton.util.nbt.getInt
+import org.kryptonmc.krypton.util.nbt.getString
 import org.kryptonmc.krypton.util.nextUUID
-import org.kryptonmc.krypton.util.nbt.putUUID
+import org.kryptonmc.krypton.util.nbt.setUUID
 import java.util.UUID
 import kotlin.random.Random
 
@@ -37,12 +40,11 @@ class AttributeModifier(
 
     constructor(id: UUID, name: String, amount: Double, operation: Operation) : this(id, { name }, amount, operation)
 
-    fun save(): CompoundBinaryTag = CompoundBinaryTag.builder()
-        .putString("Name", name)
-        .putDouble("Amount", amount)
-        .putInt("Operation", operation.ordinal)
-        .putUUID("UUID", id)
-        .build()
+    fun save() = NBTCompound()
+        .setString("Name", name)
+        .setDouble("Amount", amount)
+        .setInt("Operation", operation.ordinal)
+        .setUUID("UUID", id)
 
     val name: String
         get() = nameGetter()
@@ -79,10 +81,10 @@ class AttributeModifier(
 
         private val LOGGER = logger<AttributeModifier>()
 
-        fun load(tag: CompoundBinaryTag): AttributeModifier? = try {
+        fun load(tag: NBTCompound): AttributeModifier? = try {
             val id = tag.getUUID("UUID")
-            val operation = Operation.fromId(tag.getInt("Operation"))
-            AttributeModifier(id, tag.getString("Name"), tag.getDouble("Amount"), operation)
+            val operation = Operation.fromId(tag.getInt("Operation", 0))
+            AttributeModifier(id, tag.getString("Name", ""), tag.getDouble("Amount", 0.0), operation)
         } catch (exception: Exception) {
             LOGGER.warn("Unable to create attribute: ${exception.message}")
             null

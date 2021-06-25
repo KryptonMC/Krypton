@@ -19,13 +19,14 @@
 package org.kryptonmc.krypton.world.generation
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.kryptonmc.krypton.world.transform
 
 abstract class GeneratorSettings {
 
     abstract val structures: GeneratorStructures
 
-    abstract fun toNBT(): CompoundBinaryTag
+    abstract fun toNBT(): NBTCompound
 }
 
 data class GeneratorStructures(
@@ -33,10 +34,9 @@ data class GeneratorStructures(
     val structures: Map<Key, GeneratorStructure>
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .put("stronghold", stronghold.toNBT())
-        .put("structures", CompoundBinaryTag.from(structures.mapKeys { it.key.toString() }.mapValues { it.value.toNBT() }))
-        .build()
+    fun toNBT() = NBTCompound()
+        .set("stronghold", stronghold.toNBT())
+        .set("structures", NBTCompound().apply { structures.transform { it.key.toString() to it.value.toNBT() }.forEach { set(it.key, it.value) } })
 }
 
 data class GeneratorStronghold(
@@ -45,11 +45,10 @@ data class GeneratorStronghold(
     val spread: Int
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putInt("distance", distance)
-        .putInt("count", count)
-        .putInt("spread", spread)
-        .build()
+    fun toNBT() = NBTCompound()
+        .setInt("distance", distance)
+        .setInt("count", count)
+        .setInt("spread", spread)
 }
 
 data class GeneratorStructure(
@@ -58,9 +57,8 @@ data class GeneratorStructure(
     val salt: Int
 ) {
 
-    fun toNBT() = CompoundBinaryTag.builder()
-        .putInt("spacing", spacing)
-        .putInt("separation", separation)
-        .putInt("salt", salt)
-        .build()
+    fun toNBT() = NBTCompound()
+        .setInt("spacing", spacing)
+        .setInt("separation", separation)
+        .setInt("salt", salt)
 }

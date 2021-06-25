@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.space.Position
@@ -42,7 +42,7 @@ data class KryptonChunk(
     override var inhabitedTime: Long,
     private val builderHeightmaps: List<HeightmapBuilder>,
     val carvingMasks: Pair<ByteArray, ByteArray>,
-    val structures: CompoundBinaryTag
+    val structures: NBTCompound
 ) : Chunk {
 
     val heightmaps = builderHeightmaps.map { Heightmap(this, it.nbt, it.type) }.associateBy { it.type }

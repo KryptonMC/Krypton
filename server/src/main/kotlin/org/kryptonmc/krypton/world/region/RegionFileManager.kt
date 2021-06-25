@@ -19,11 +19,10 @@
 package org.kryptonmc.krypton.world.region
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap
-import net.kyori.adventure.nbt.BinaryTagIO
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTReader
+import org.jglrxavpok.hephaistos.nbt.NBTWriter
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
-import java.io.InputStream
-import java.io.OutputStream
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 
@@ -36,14 +35,13 @@ class RegionFileManager(
 ) : AutoCloseable {
 
     fun read(position: ChunkPosition) = getRegionFile(position).getChunkDataInputStream(position).use {
-        if (it == null) return CompoundBinaryTag.empty()
-        BinaryTagIO.unlimitedReader().read(it as InputStream) // avoid overload resolution ambiguity by casting
+        if (it == null) return NBTCompound()
+        NBTReader(it, false).read() as NBTCompound
     }
 
-    fun write(position: ChunkPosition, tag: CompoundBinaryTag) =
-        getRegionFile(position).getChunkDataOutputStream(position).use {
-            BinaryTagIO.writer().write(tag, it as OutputStream) // avoiding overload resolution ambiguity again
-        }
+    fun write(position: ChunkPosition, tag: NBTCompound) = getRegionFile(position).getChunkDataOutputStream(position).use {
+        NBTWriter(it, false).writeNamed("", tag)
+    }
 
     private fun getRegionFile(position: ChunkPosition): RegionFile {
         val serialized = position.regionX combine position.regionZ

@@ -20,14 +20,23 @@ package org.kryptonmc.krypton.world.chunk
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
-import net.kyori.adventure.nbt.BinaryTagTypes
-import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.kyori.adventure.nbt.ListBinaryTag
-import net.kyori.adventure.nbt.LongArrayBinaryTag
-import net.kyori.adventure.nbt.StringBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBT
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTList
+import org.jglrxavpok.hephaistos.nbt.NBTLongArray
+import org.jglrxavpok.hephaistos.nbt.NBTString
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.api.world.Biome
 import org.kryptonmc.krypton.util.calculateBits
+import org.kryptonmc.krypton.util.nbt.getByte
+import org.kryptonmc.krypton.util.nbt.getByteArray
+import org.kryptonmc.krypton.util.nbt.getCompound
+import org.kryptonmc.krypton.util.nbt.getIntArray
+import org.kryptonmc.krypton.util.nbt.getList
+import org.kryptonmc.krypton.util.nbt.getLong
+import org.kryptonmc.krypton.util.nbt.getLongArray
+import org.kryptonmc.krypton.util.nbt.getString
 import org.kryptonmc.krypton.world.Heightmap.Type.MOTION_BLOCKING
 import org.kryptonmc.krypton.world.Heightmap.Type.OCEAN_FLOOR
 import org.kryptonmc.krypton.world.Heightmap.Type.WORLD_SURFACE
@@ -57,47 +66,46 @@ class ChunkManager(private val world: KryptonWorld) {
         val cachedChunk = chunkCache.getIfPresent(position)
         if (cachedChunk != null) return cachedChunk
 
-        val nbt = regionFileManager.read(position).getCompound("Level")
-        if (nbt == CompoundBinaryTag.empty()) return null
-        val heightmaps = nbt.getCompound("Heightmaps")
+        val nbt = regionFileManager.read(position).getCompound("Level") ?: return null
+        val heightmaps = nbt.getCompound("Heightmaps", NBTCompound())
 
-        val sections = nbt.getList("Sections").map { section ->
-            section as CompoundBinaryTag
-
-            val palette = LinkedList(section.getList("Palette").map { block ->
-                block as CompoundBinaryTag
-                val name = block.getString("Name").toKey()
+        val sections = nbt.getList<NBTCompound>("Sections", NBTList(NBTTypes.TAG_Compound)).map { section ->
+            val palette = LinkedList(section.getList<NBTCompound>("Palette", NBTList(NBTTypes.TAG_Compound)).map { block ->
+                val name = block.getString("Name", "").toKey()
                 if (name == ChunkBlock.AIR.name) {
                     ChunkBlock.AIR
                 } else {
-                    ChunkBlock(name, block.getCompound("Properties").associate { it.key to (it.value as StringBinaryTag).value() })
+                    ChunkBlock(name, block.getCompound("Properties", NBTCompound()).iterator().asSequence()
+                        .associate { it.first to (it.second as NBTString).value })
                 }
             })
 
             ChunkSection(
-                section.getByte("Y").toInt(),
-                section.getByteArray("BlockLight"),
-                section.getByteArray("SkyLight"),
+                section.getByte("Y", 0).toInt(),
+                section.getByteArray("BlockLight", ByteArray(0)),
+                section.getByteArray("SkyLight", ByteArray(0)),
                 palette,
-                BitStorage(palette.size.calculateBits(), 4096, section.getLongArray("BlockStates"))
+                BitStorage(palette.size.calculateBits(), 4096, section.getLongArray("BlockStates", LongArray(0)))
             )
         } as MutableList<ChunkSection>
 
-        val carvingMasks = nbt.getCompound("CarvingMasks").let { it.getByteArray("AIR") to it.getByteArray("LIQUID") }
+        val carvingMasks = nbt.getCompound("CarvingMasks", NBTCompound()).let {
+            it.getByteArray("AIR", ByteArray(0)) to it.getByteArray("LIQUID", ByteArray(0))
+        }
         return KryptonChunk(
             world,
             position,
             sections,
-            nbt.getIntArray("Biomes").map { Biome.fromId(it) },
-            nbt.getLong("LastUpdate"),
-            nbt.getLong("inhabitedTime"),
+            nbt.getIntArray("Biomes", IntArray(0)).map { Biome.fromId(it) },
+            nbt.getLong("LastUpdate", 0L),
+            nbt.getLong("inhabitedTime", 0L),
             listOf(
-                HeightmapBuilder(heightmaps.get("MOTION_BLOCKING") as LongArrayBinaryTag, MOTION_BLOCKING),
-                HeightmapBuilder(heightmaps.get("OCEAN_FLOOR") as LongArrayBinaryTag, OCEAN_FLOOR),
-                HeightmapBuilder(heightmaps.get("WORLD_SURFACE") as LongArrayBinaryTag, WORLD_SURFACE)
+                HeightmapBuilder(heightmaps["MOTION_BLOCKING"] as NBTLongArray, MOTION_BLOCKING),
+                HeightmapBuilder(heightmaps["OCEAN_FLOOR"] as NBTLongArray, OCEAN_FLOOR),
+                HeightmapBuilder(heightmaps["WORLD_SURFACE"] as NBTLongArray, WORLD_SURFACE)
             ),
             carvingMasks,
-            nbt.getCompound("Structures")
+            nbt.getCompound("Structures", NBTCompound())
         ).apply { chunkCache.put(position, this) }
     }
 
@@ -111,59 +119,54 @@ class ChunkManager(private val world: KryptonWorld) {
     }
 }
 
-private fun KryptonChunk.serialize(): CompoundBinaryTag {
+private fun KryptonChunk.serialize(): NBTCompound {
     val sections = sections.map { section ->
         val palette = section.palette.map { entry ->
-            val properties = CompoundBinaryTag.builder().apply { entry.properties.forEach { putString(it.key, it.value) } }.build()
-            CompoundBinaryTag.builder()
-                .putString("Name", entry.name.toString())
-                .put("Properties", properties)
-                .build()
+            val properties = NBTCompound().apply { entry.properties.forEach { setString(it.key, it.value) } }
+            NBTCompound()
+                .setString("Name", entry.name.toString())
+                .set("Properties", properties)
         }
 
-        CompoundBinaryTag.builder()
-            .putByte("Y", section.y.toByte())
+        NBTCompound()
+            .setByte("Y", section.y.toByte())
             .apply {
-                if (section.blockLight.isNotEmpty()) putByteArray("BlockLight", section.blockLight)
-                if (section.skyLight.isNotEmpty()) putByteArray("SkyLight", section.skyLight)
-                if (section.blockStates.isNotEmpty()) putLongArray("BlockStates", section.blockStates.data)
-                if (palette.isNotEmpty()) put("Palette", ListBinaryTag.of(BinaryTagTypes.COMPOUND, palette))
+                if (section.blockLight.isNotEmpty()) setByteArray("BlockLight", section.blockLight)
+                if (section.skyLight.isNotEmpty()) setByteArray("SkyLight", section.skyLight)
+                if (section.blockStates.isNotEmpty()) setLongArray("BlockStates", section.blockStates.data)
+                if (palette.isNotEmpty()) set("Palette", NBTList<NBTCompound>(NBTTypes.TAG_Compound).apply { palette.forEach { add(it) } })
             }
-            .build()
     }
 
-    return CompoundBinaryTag.builder()
-        .putInt("DataVersion", CHUNK_DATA_VERSION)
-        .put("Level", CompoundBinaryTag.builder()
-            .putIntArray("Biomes", biomes.map { it.id }.toIntArray())
-            .put("CarvingMasks", CompoundBinaryTag.builder()
-                .putByteArray("AIR", carvingMasks.first)
-                .putByteArray("LIQUID", carvingMasks.second)
-                .build())
-            .put("Heightmaps", CompoundBinaryTag.builder()
-                .putLongArray("MOTION_BLOCKING", heightmaps.getValue(MOTION_BLOCKING).data.data)
-                .putLongArray("MOTION_BLOCKING_NO_LEAVES", LongArray(0))
-                .putLongArray("OCEAN_FLOOR", heightmaps.getValue(OCEAN_FLOOR).data.data)
-                .putLongArray("OCEAN_FLOOR_WG", LongArray(0))
-                .putLongArray("WORLD_SURFACE", heightmaps.getValue(WORLD_SURFACE).data.data)
-                .putLongArray("WORLD_SURFACE_WG", LongArray(0))
-                .build())
-            .putLong("LastUpdate", lastUpdate)
-            .put("Lights", ListBinaryTag.empty())
-            .put("LiquidsToBeTicked", ListBinaryTag.empty())
-            .put("LiquidTicks", ListBinaryTag.empty())
-            .putLong("InhabitedTime", inhabitedTime)
-            .put("PostProcessing", ListBinaryTag.empty())
-            .put("Sections", ListBinaryTag.of(BinaryTagTypes.COMPOUND, sections))
-            .putString("Status", "full")
-            .put("TileEntities", ListBinaryTag.empty())
-            .put("TileTicks", ListBinaryTag.empty())
-            .put("ToBeTicked", ListBinaryTag.empty())
-            .put("Structures", structures)
-            .putInt("xPos", position.x)
-            .putInt("zPos", position.z)
-            .build())
-        .build()
+    return NBTCompound()
+        .setInt("DataVersion", CHUNK_DATA_VERSION)
+        .set("Level", NBTCompound()
+            .setIntArray("Biomes", biomes.map { it.id }.toIntArray())
+            .set("CarvingMasks", NBTCompound()
+                .setByteArray("AIR", carvingMasks.first)
+                .setByteArray("LIQUID", carvingMasks.second))
+            .set("Heightmaps", NBTCompound()
+                .setLongArray("MOTION_BLOCKING", heightmaps.getValue(MOTION_BLOCKING).data.data)
+                .setLongArray("MOTION_BLOCKING_NO_LEAVES", LongArray(0))
+                .setLongArray("OCEAN_FLOOR", heightmaps.getValue(OCEAN_FLOOR).data.data)
+                .setLongArray("OCEAN_FLOOR_WG", LongArray(0))
+                .setLongArray("WORLD_SURFACE", heightmaps.getValue(WORLD_SURFACE).data.data)
+                .setLongArray("WORLD_SURFACE_WG", LongArray(0)))
+            .setLong("LastUpdate", lastUpdate)
+            .set("Lights", NBTList<NBT>(NBTTypes.TAG_List))
+            .set("LiquidsToBeTicked", NBTList<NBT>(NBTTypes.TAG_List))
+            .set("LiquidTicks", NBTList<NBT>(NBTTypes.TAG_List))
+            .setLong("InhabitedTime", inhabitedTime)
+            .set("PostProcessing", NBTList<NBT>(NBTTypes.TAG_List))
+            .set("Sections", NBTList<NBTCompound>(NBTTypes.TAG_Compound).apply { sections.forEach { add(it) } })
+            .setString("Status", "full")
+            .set("TileEntities", NBTList<NBT>(NBTTypes.TAG_Compound))
+            .set("TileTicks", NBTList<NBT>(NBTTypes.TAG_Compound))
+            .set("ToBeTicked", NBTList<NBT>(NBTTypes.TAG_List))
+            .set("Structures", structures)
+            .setInt("xPos", position.x)
+            .setInt("zPos", position.z)
+        )
 }
 
 const val CHUNK_DATA_VERSION = 2578

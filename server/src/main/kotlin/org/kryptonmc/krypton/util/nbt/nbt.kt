@@ -18,19 +18,23 @@
  */
 package org.kryptonmc.krypton.util.nbt
 
-import net.kyori.adventure.nbt.CompoundBinaryTag
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import java.util.UUID
 
-fun CompoundBinaryTag.Builder.putUUID(name: String, uuid: UUID) = apply {
+fun NBTCompound.setUUID(name: String, uuid: UUID) = apply {
     val most = uuid.mostSignificantBits
     val least = uuid.leastSignificantBits
-    putIntArray(name, intArrayOf((most shr 32).toInt(), most.toInt(), (least shr 32).toInt(), least.toInt()))
+    setIntArray(name, intArrayOf((most shr 32).toInt(), most.toInt(), (least shr 32).toInt(), least.toInt()))
 }
 
 private const val UNSIGNED_INT_MAX_VALUE = 4294967295L
 
-fun CompoundBinaryTag.getUUID(name: String): UUID {
-    val array = getIntArray(name)
+fun NBTCompound.getUUID(name: String): UUID {
+    val array = getIntArray(name) ?: IntArray(0)
     require(array.size == 4) { "Expected UUID array to be of length 4, but was ${array.size}!" }
     return UUID(array[0].toLong() shl 32 or (array[1].toLong() and UNSIGNED_INT_MAX_VALUE), array[2].toLong() shl 32 or (array[3].toLong() and UNSIGNED_INT_MAX_VALUE))
 }
+
+fun NBTCompound.getBoolean(key: String) = getByte(key)?.let { it > 0 }
+
+fun NBTCompound.setBoolean(key: String, value: Boolean) = setByte(key, if (value) 1 else 0)

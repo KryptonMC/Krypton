@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.entity.metadata
 
 import io.netty.buffer.ByteBuf
-import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.text.Component
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.effect.particle.Particle
 import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.space.Direction
@@ -135,8 +135,8 @@ object EntityDataSerializers {
     }
 
     @JvmField
-    val COMPOUND_TAG = object : EntityDataSerializer<CompoundBinaryTag> {
-        override fun write(buf: ByteBuf, item: CompoundBinaryTag) = buf.writeNBTCompound(item)
+    val COMPOUND_TAG = object : EntityDataSerializer<NBTCompound> {
+        override fun write(buf: ByteBuf, item: NBTCompound) = buf.writeNBTCompound(item)
     }
 
     @JvmField
