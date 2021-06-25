@@ -18,10 +18,28 @@
  */
 package org.kryptonmc.krypton.registry
 
-import org.kryptonmc.api.registry.Registries
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.DefaultedRegistry
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.registry.RegistryKey
 
-object InternalRegistries {
+class KryptonDefaultedRegistry<T : Any>(
+    key: RegistryKey<out Registry<T>>,
+    override val defaultKey: Key
+) : KryptonRegistry<T>(key), DefaultedRegistry<T> {
 
-    val ATTRIBUTE = Registries.create(InternalRegistryKeys.ATTRIBUTE)
-    val METADATA = Registries.create(InternalRegistryKeys.METADATA)
+    override lateinit var defaultValue: T
+
+    override fun <V : T> register(key: RegistryKey<T>, value: V): V {
+        if (key.location == defaultKey) defaultValue = value
+        return super.register(key, value)
+    }
+
+    override fun get(key: Key) = super.get(key) ?: defaultValue
+
+    override fun get(id: Int) = super.get(id) ?: defaultValue
+
+    override fun get(key: RegistryKey<T>) = super.get(key) ?: defaultValue
+
+    override fun get(value: T) = super.get(value) ?: defaultKey
 }

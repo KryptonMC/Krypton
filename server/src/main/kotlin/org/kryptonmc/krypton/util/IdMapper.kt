@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.util.IdMap
-
 class IdMapper<T>(values: Map<out T, Int>? = null) : IdMap<T> {
 
     private val byT = mutableMapOf<T, Int>()

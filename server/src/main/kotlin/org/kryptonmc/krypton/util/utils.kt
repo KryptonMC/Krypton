@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.util
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
+import it.unimi.dsi.fastutil.Hash
 import net.kyori.adventure.inventory.Book
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
@@ -161,3 +162,12 @@ fun String.parseKey(): Key? = try {
 fun <T> Optional<T>.getIfPresent(): T? = takeIf { it.isPresent }?.get()
 
 fun <T : Map<K, V>, K, V> Optional<T>.forEachPresent(action: (K, V) -> Unit) = ifPresent { it.forEach(action) }
+
+@Suppress("UNCHECKED_CAST")
+fun <K> identityStrategy(): Hash.Strategy<K> = IdentityStrategy as Hash.Strategy<K>
+
+private object IdentityStrategy : Hash.Strategy<Any> {
+
+    override fun hashCode(o: Any?) = System.identityHashCode(o)
+    override fun equals(a: Any?, b: Any?) = a === b
+}

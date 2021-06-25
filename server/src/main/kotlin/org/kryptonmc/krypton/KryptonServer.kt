@@ -26,12 +26,14 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.kyori.adventure.util.Services
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.ticking.TickEndEvent
 import org.kryptonmc.api.event.ticking.TickStartEvent
+import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.status.StatusInfo
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
@@ -133,6 +135,7 @@ class KryptonServer(val mainThread: Thread) : Server {
     override val pluginManager = KryptonPluginManager(this)
     override val eventManager = KryptonEventManager(pluginManager)
     override val servicesManager = KryptonServicesManager
+    override val registryManager = Services.service(RegistryManager::class.java).get()
     override val scheduler = KryptonScheduler(pluginManager)
 
     @Volatile

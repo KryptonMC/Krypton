@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.util.IdMap
 import kotlin.math.max
 
 @Suppress("UNCHECKED_CAST") // Our casts are fine and should always succeed

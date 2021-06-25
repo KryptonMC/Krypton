@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.registry.Registries
-
 object Bootstrap {
 
     @Volatile
@@ -37,10 +35,7 @@ object Bootstrap {
         Class.forName("org.kryptonmc.api.effect.sound.SoundTypes")
         Class.forName("org.kryptonmc.api.entity.EntityTypes")
 
-        // Make sure the registries were loaded properly
-        if (Registries.REGISTRY.keys.isEmpty()) error("Unable to load registries!")
-
-        // Preload the old registry (is done after the check because it doesn't affect the check)
+        // Preload the old registry
         Class.forName("org.kryptonmc.krypton.registry.Registries")
 
         // Preload some other frequently used objects so they aren't loaded on first player join

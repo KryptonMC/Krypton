@@ -17,6 +17,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.EventManager
 import org.kryptonmc.api.plugin.PluginManager
+import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
 import org.kryptonmc.api.status.StatusInfo
@@ -72,6 +73,13 @@ interface Server : ForwardingAudience {
      * events that may be fired, and also to fire said events.
      */
     val eventManager: EventManager
+
+    /**
+     * The registry manager for this server.
+     *
+     * This is used to create new registries and register values to them.
+     */
+    val registryManager: RegistryManager
 
     /**
      * The scheduler for this server.

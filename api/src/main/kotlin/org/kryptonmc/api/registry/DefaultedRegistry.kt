@@ -9,36 +9,25 @@
 package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
-import java.util.Optional
-import kotlin.random.Random
 
 /**
- * A registry with a default key and value.
+ * A registry with a default key-value pair.
  */
-class DefaultedRegistry<T>(defaultKey: String, key: RegistryKey<out Registry<T>>) : MappedRegistry<T>(key) {
+interface DefaultedRegistry<T : Any> : Registry<T> {
 
     /**
-     * The default key for this defaulted registry
+     * The default key for this defaulted registry.
      */
-    @Suppress("MemberVisibilityCanBePrivate")
-    val defaultKey = Key.key(defaultKey)
+    val defaultKey: Key
 
-    private var defaultValue: T? = null
+    /**
+     * The default value for this defaulted registry.
+     */
+    val defaultValue: T
 
-    override fun <V : T> registerMapping(id: Int, key: RegistryKey<T>, value: V): V {
-        if (defaultKey == key.location) defaultValue = value
-        return super.registerMapping(id, key, value)
-    }
+    override fun get(key: Key): T
 
-    override fun idOf(value: T) = super.idOf(value).takeIf { it != -1 } ?: super.idOf(defaultValue!!)
+    override fun get(value: T): Key
 
-    override fun getKey(value: T) = super.getKey(value) ?: defaultKey
-
-    override fun get(key: Key) = super.get(key) ?: defaultValue!!
-
-    override fun getOptional(key: Key) = Optional.ofNullable(super.get(key))
-
-    override fun get(id: Int) = super.get(id) ?: defaultValue!!
-
-    override fun getRandom(random: Random) = super.getRandom(random) ?: defaultValue!!
+    override fun get(key: RegistryKey<T>): T
 }

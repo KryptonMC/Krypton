@@ -41,7 +41,8 @@ object RegistryKeys {
      * @param key the key
      * @return a new registry key
      */
-    fun <T> minecraft(key: String) = RegistryKey.of<T>(Key.key(key))
+    @JvmStatic
+    fun <T : Any> minecraft(key: String): RegistryKey<out Registry<T>> = RegistryKey(Key.key(key))
 
     /**
      * Creates a new registry key with the given [key] as its base key.
@@ -51,5 +52,6 @@ object RegistryKeys {
      * @param key the key
      * @return a new registry key
      */
-    fun <T> krypton(key: String): RegistryKey<out Registry<T>> = RegistryKey(RegistryRoots.KRYPTON, Key.key("krypton", key))
+    @JvmStatic
+    fun <T : Any> krypton(key: String): RegistryKey<out Registry<T>> = RegistryKey(RegistryRoots.KRYPTON, Key.key("krypton", key))
 }

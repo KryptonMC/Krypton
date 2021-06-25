@@ -46,7 +46,7 @@ class PacketOutEntityProperties(
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
         buf.writeCollection(attributes) { attribute ->
-            buf.writeKey(InternalRegistries.ATTRIBUTE.getKey(attribute.attribute)!!)
+            buf.writeKey(InternalRegistries.ATTRIBUTE[attribute.attribute]!!)
             buf.writeDouble(attribute.base)
             buf.writeCollection(attribute.modifiers) {
                 buf.writeUUID(it.id)

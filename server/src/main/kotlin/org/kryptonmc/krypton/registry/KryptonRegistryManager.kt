@@ -16,6 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.metadata
+package org.kryptonmc.krypton.registry
 
-data class EntityDataAccessor<T>(val id: Int, val serializer: EntityDataSerializer<T>)
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.registry.RegistryKey
+import org.kryptonmc.api.registry.RegistryManager
+
+class KryptonRegistryManager : RegistryManager {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Any> register(registry: Registry<T>, key: Key, value: T) = registry.register(RegistryKey(registry.key, key), value)
+
+    override fun <T : Any> create(key: RegistryKey<out Registry<T>>) = KryptonRegistry(key)
+
+    override fun <T : Any> createDefaulted(
+        key: RegistryKey<out Registry<T>>,
+        defaultKey: Key
+    ) = KryptonDefaultedRegistry(key, defaultKey)
+}

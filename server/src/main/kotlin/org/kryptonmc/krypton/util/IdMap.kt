@@ -16,15 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.metadata
+package org.kryptonmc.krypton.util
 
-import io.netty.buffer.ByteBuf
+/**
+ * A bi-map of Int <-> T
+ */
+interface IdMap<T> : Iterable<T> {
 
-interface EntityDataSerializer<T> {
+    /**
+     * Gets the id for the specified [value], or -1 if the specified value is not in this map
+     *
+     * @param value the value
+     * @return the ID of the [value], or -1 if the value isn't registered
+     */
+    fun idOf(value: T): Int
 
-    fun write(buf: ByteBuf, item: T)
-
-    fun createAccessor(id: Int) = EntityDataAccessor(id, this)
-
-    fun copy(item: T): T = item
+    /**
+     * Gets the value for the specified [id], or null if there is no value with the specified [id]
+     *
+     * @param id the ID
+     * @return the value with this [id], or null if there is no value with this [id]
+     */
+    operator fun get(id: Int): T?
 }

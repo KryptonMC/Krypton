@@ -104,7 +104,7 @@ class AttributeInstance(
     }
 
     fun save() = NBTCompound()
-        .setString("Name", InternalRegistries.ATTRIBUTE.getKey(attribute)!!.toString())
+        .setString("Name", InternalRegistries.ATTRIBUTE[attribute]!!.toString())
         .setDouble("Base", baseValue)
         .apply {
             if (permanentModifiers.isEmpty()) return@apply

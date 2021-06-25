@@ -9,19 +9,12 @@
 package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.util.Services
 
 /**
  * Holder of all of the built-in registries
  */
 object Registries {
-
-    private val WRITABLE_REGISTRY: WritableRegistry<WritableRegistry<*>> = MappedRegistry(RegistryKeys.minecraft("root"))
-
-    /**
-     * The root registry, which is the parent of all other registries.
-     */
-    @JvmField
-    val REGISTRY: Registry<*> = WRITABLE_REGISTRY
 
     /**
      * The registry of all sound events in the game.
@@ -33,7 +26,7 @@ object Registries {
      * The registry of all types of entities in the game.
      */
     @JvmField
-    val ENTITY_TYPE = createDefaulted(RegistryKeys.ENTITY_TYPE, "pig")
+    val ENTITY_TYPE = createDefaulted(RegistryKeys.ENTITY_TYPE, Key.key("pig"))
 
     /**
      * The registry of all types of particles in the game.
@@ -55,7 +48,8 @@ object Registries {
      * @param key the key
      * @param value the value
      */
-    fun <T> register(registry: Registry<T>, key: String, value: T): T = register(registry, Key.key(key), value)
+    @JvmStatic
+    fun <T : Any> register(registry: Registry<T>, key: String, value: T): T = register(registry, Key.key(key), value)
 
     /**
      * Registers a new entry to the given [registry], with the given [key] mapped to
@@ -65,8 +59,8 @@ object Registries {
      * @param key the key
      * @param value the value
      */
-    fun <T> register(registry: Registry<T>, key: Key, value: T): T =
-        (registry as WritableRegistry<T>).register(RegistryKey.of(registry.key, key), value)
+    @JvmStatic
+    fun <T : Any> register(registry: Registry<T>, key: Key, value: T): T = MANAGER.register(registry, key, value)
 
     /**
      * Creates a new registry with the given registry [key].
@@ -75,24 +69,24 @@ object Registries {
      * @return a registry for the given [key]
      */
     @JvmStatic
-    fun <T> create(key: RegistryKey<out Registry<T>>) = internalRegister(key, MappedRegistry(key))
+    fun <T : Any> create(key: RegistryKey<out Registry<T>>) = MANAGER.create(key)
 
     /**
      * Creates a new registry with the given registry [key], with a [defaultKey].
+     *
+     * The default value for this registry will be the first value registered that has
+     * a key that matches the given [defaultKey].
      *
      * @param key the registry key
      * @param defaultKey the default key
      * @return a defaulted registry for the given [key]
      */
     @JvmStatic
-    fun <T> createDefaulted(
-        key: RegistryKey<out Registry<T>>,
-        defaultKey: String
-    ): DefaultedRegistry<T> = internalRegister(key, DefaultedRegistry(defaultKey, key))
+    fun <T : Any> createDefaulted(key: RegistryKey<out Registry<T>>, defaultKey: Key) = MANAGER.createDefaulted(key, defaultKey)
+}
 
-    @Suppress("UNCHECKED_CAST") // This is fine
-    private fun <T, R : WritableRegistry<T>> internalRegister(
-        key: RegistryKey<out Registry<T>>,
-        registry: R
-    ): R = (WRITABLE_REGISTRY as WritableRegistry<R>).register(key as RegistryKey<R>, registry)
+// This is to allow access to the registry manager statically for the built-in registries.
+// This is NOT for public use.
+private val MANAGER: RegistryManager = Services.service(RegistryManager::class.java).orElseThrow {
+    IllegalStateException("No candidate for the registry manager was found! If you are a server owner, contact the creator of your server software")
 }
