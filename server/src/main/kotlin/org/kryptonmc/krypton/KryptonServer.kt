@@ -59,7 +59,6 @@ import org.kryptonmc.krypton.registry.json.RegistryBlockState
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.serializers.DifficultySerializer
 import org.kryptonmc.krypton.serializers.GamemodeSerializer
-import org.kryptonmc.krypton.server.gui.KryptonServerGUI
 import org.kryptonmc.krypton.server.query.GS4QueryHandler
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.util.Bootstrap
@@ -82,7 +81,6 @@ import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
-import java.awt.GraphicsEnvironment
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.nio.file.Path
@@ -165,7 +163,7 @@ class KryptonServer(val mainThread: Thread) : Server {
     private var gs4QueryHandler: GS4QueryHandler? = null
     private var watchdog: WatchdogProcess? = null
 
-    internal fun start(disableGUI: Boolean) = try {
+    internal fun start() = try {
         Messages.START.INITIAL.info(LOGGER, config.server.ip, config.server.port)
         val startTime = System.nanoTime()
 
@@ -225,7 +223,6 @@ class KryptonServer(val mainThread: Thread) : Server {
             Messages.START.QUERY.info(LOGGER)
             gs4QueryHandler = GS4QueryHandler.create(this)
         }
-        if (!disableGUI && !GraphicsEnvironment.isHeadless()) KryptonServerGUI.open(this)
 
         // Start accepting connections
         LOGGER.debug("Starting Netty...")

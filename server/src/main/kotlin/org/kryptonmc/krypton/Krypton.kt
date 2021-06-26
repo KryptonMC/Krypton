@@ -41,7 +41,6 @@ fun main(args: Array<String>) = KryptonCLI().main(args)
  */
 class KryptonCLI : CliktCommand() {
 
-    private val disableGUI by option("-nogui", "--disable-gui").flag()
     private val version by option("-v", "--version").flag()
     private val locale by option("-l", "--locale").convert {
         val split = it.split("[_-]".toRegex())
@@ -61,7 +60,7 @@ class KryptonCLI : CliktCommand() {
         if (MAX_MEMORY < MEMORY_WARNING_THRESHOLD) Messages.LOAD_LOW_MEMORY.warn(logger, MEMORY_WARNING_THRESHOLD.toString(), KryptonServerInfo.version)
 
         val reference = AtomicReference<KryptonServer>()
-        val mainThread = Thread({ reference.get().start(disableGUI) }, "Server Thread").apply {
+        val mainThread = Thread({ reference.get().start() }, "Server Thread").apply {
             setUncaughtExceptionHandler { _, exception -> logger<KryptonServer>().error("Caught previously unhandled exception", exception) }
         }
         val server = KryptonServer(mainThread)

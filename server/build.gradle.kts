@@ -6,12 +6,9 @@ plugins {
     id("krypton.common")
     id("com.github.johnrengelman.shadow") version Versions.SHADOW
     `java-library`
-    application
 }
 
 evaluationDependsOn(":krypton-api")
-
-application.mainClass.set("org.kryptonmc.krypton.KryptonKt")
 
 repositories {
     maven("https://repo.velocitypowered.com/snapshots/")
@@ -58,7 +55,6 @@ dependencies {
 
     // Miscellaneous
     implementation("com.mojang", "datafixerupper", Versions.DFU)
-//    implementation("net.kyori", "adventure-nbt")
     implementation("com.github.jglrxavpok", "Hephaistos", Versions.HEPHAISTOS)
     implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
     implementation("org.bstats", "bstats-base", Versions.BSTATS)
@@ -66,6 +62,15 @@ dependencies {
 }
 
 tasks {
+    jar {
+        manifest {
+            attributes("Main-Class" to "org.kryptonmc.krypton.KryptonKt")
+            attributes("Implementation-Title" to "Krypton")
+            attributes("Implementation-Version" to project.version.toString())
+            attributes("Implementation-Vendor" to "KryptonMC")
+            attributes("Multi-Release" to "true")
+        }
+    }
     withType<ShadowJar> {
         val buildNumberProperty = System.getenv("BUILD_NUMBER")
         val buildNumber = if (buildNumberProperty != null) "-$buildNumberProperty" else ""
