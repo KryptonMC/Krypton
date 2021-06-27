@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world
 
 import com.mojang.serialization.Dynamic
+import net.kyori.adventure.key.Key
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTReader
 import org.kryptonmc.api.util.toKey
@@ -52,9 +53,8 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.UUID
-import java.util.concurrent.Callable
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
-import java.util.concurrent.Future
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import kotlin.io.path.exists
@@ -81,24 +81,24 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
         Messages.WORLD.LOADED.info(LOGGER)
     }
 
-    override fun load(name: String): Future<KryptonWorld> {
+    override fun load(name: String): CompletableFuture<KryptonWorld> {
         val folder = CURRENT_DIRECTORY.resolve(name)
         require(folder.exists()) {
             Messages.WORLD.NOT_FOUND.error(LOGGER, name)
-            "World with name $name does not exist!"
+            "World with key $name does not exist!"
         }
         return loadWorld(folder)
     }
 
-    override fun save(world: World): Future<*> = worldExecutor.submit {
+    override fun save(world: World): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
         world.save()
         if (world is KryptonWorld) world.chunkManager.saveAll()
-    }
+    }, worldExecutor)
 
     override fun contains(name: String) = worlds.containsKey(name)
 
     // TODO: Possibly also make this preload spawn chunks
-    private fun loadWorld(folder: Path): Future<KryptonWorld> = worldExecutor.submit(Callable {
+    private fun loadWorld(folder: Path): CompletableFuture<KryptonWorld> = CompletableFuture.supplyAsync({
         val dataFile = folder.resolve("level.dat")
         val nbt = NBTReader(dataFile.inputStream()).use { it.read() as NBTCompound }.getCompound("Data", NBTCompound())
 
@@ -160,7 +160,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
                 dynamic.asString().result().map { Stream.of(it) }.orElseGet { Stream.empty() }
             }.collect(Collectors.toSet())
         )
-    })
+    }, worldExecutor)
 
     private fun loadUUID(folder: Path): UUID {
         val uuidFile = folder.resolve("uid.dat")
