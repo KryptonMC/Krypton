@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.world.data
 
 import com.mojang.serialization.Dynamic
-import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
@@ -104,7 +103,6 @@ class PlayerDataManager(private val folder: Path) {
         player.oldGamemode = Gamemode.fromId(data.getInt("previousPlayerGameType", -1))
         player.gamemode = Gamemode.fromId(data.getInt("playerGameType", 0)) ?: Gamemode.SURVIVAL
         player.inventory.heldSlot = data.getInt("SelectedItemSlot", 0)
-        player.dimension = data.getString("Dimension", "minecraft:overworld").toKey()
         player.isOnGround = data.getBoolean("OnGround", true)
     }
 
@@ -162,10 +160,9 @@ class PlayerDataManager(private val folder: Path) {
             .set("Inventory", NBTList<NBTCompound>(NBTTypes.TAG_Compound).apply { inventory.forEach { add(it) } })
             .setBoolean("FallFlying", player.isFlying)
             .setInt("playerGameType", player.gamemode.ordinal)
-            .setString("SpawnDimension", player.dimension.toString())
             .setFloat("Health", player.health)
             .setBoolean("OnGround", player.isOnGround)
-            .setString("Dimension", player.dimension.toString())
+            .setString("Dimension", player.world.dimension.toString())
             .set("Rotation", NBTList<NBTFloat>(NBTTypes.TAG_Float).apply {
                 add(NBTFloat(player.location.yaw))
                 add(NBTFloat(player.location.pitch))
@@ -189,18 +186,12 @@ class PlayerDataManager(private val folder: Path) {
     private fun applyDefaults(world: KryptonWorld, player: KryptonPlayer) {
         player.location = world.spawnLocation.toLocation(world.spawnAngle)
         player.gamemode = world.gamemode
-        player.dimension = OVERWORLD
 
         player.abilities = when (world.gamemode) {
             Gamemode.SURVIVAL, Gamemode.ADVENTURE -> Abilities()
             Gamemode.CREATIVE -> Abilities(isInvulnerable = true, isFlying = true, canInstantlyBuild = true)
             Gamemode.SPECTATOR -> Abilities(isInvulnerable = true, canFly = true, isFlying = true)
         }
-    }
-
-    companion object {
-
-        private val OVERWORLD = key("overworld")
     }
 }
 

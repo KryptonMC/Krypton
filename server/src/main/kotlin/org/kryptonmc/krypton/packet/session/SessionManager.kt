@@ -108,7 +108,7 @@ class SessionManager(private val server: KryptonServer) {
             world,
             player.gamemode,
             player.oldGamemode,
-            player.dimension,
+            world.dimension,
             server.config.status.maxPlayers,
             server.config.world.viewDistance
         ))

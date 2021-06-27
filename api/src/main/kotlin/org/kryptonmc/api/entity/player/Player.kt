@@ -21,6 +21,7 @@ import org.kryptonmc.api.plugin.PluginMessageRecipient
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard
 import java.net.InetSocketAddress
 import java.util.Locale
@@ -48,7 +49,7 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
     /**
      * The dimension the player is currently in.
      */
-    val dimension: Key
+    val dimension: DimensionType
 
     /**
      * The view distance of this player.

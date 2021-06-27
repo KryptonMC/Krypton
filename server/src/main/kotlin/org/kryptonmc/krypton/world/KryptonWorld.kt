@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world
 
-import net.kyori.adventure.key.Key.key
+import net.kyori.adventure.key.Key
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTString
@@ -26,6 +26,7 @@ import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.jglrxavpok.hephaistos.nbt.NBTWriter
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.registry.RegistryKey
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.world.Gamemode
@@ -52,6 +53,8 @@ import org.kryptonmc.krypton.util.nbt.setBoolean
 import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
+import org.kryptonmc.api.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.registry.InternalRegistryKeys
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.spongepowered.math.vector.Vector2d
 import org.spongepowered.math.vector.Vector3i
@@ -109,7 +112,7 @@ data class KryptonWorld(
     val entities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
 
     val chunkManager = ChunkManager(this)
-    val dimension = key("overworld")
+    override val dimension = DimensionTypes.OVERWORLD
 
     private var oldRainLevel = 0F
     override var rainLevel = 0F
@@ -314,6 +317,13 @@ data class KryptonWorld(
             plus("world")
         }
         chunks.forEach { output.writeRow(it.position.x, it.position.z, it.world) }
+    }
+
+    companion object {
+
+        val OVERWORLD = RegistryKey(InternalRegistryKeys.DIMENSION, Key.key("overworld"))
+        val THE_NETHER = RegistryKey(InternalRegistryKeys.DIMENSION, Key.key("the_nether"))
+        val THE_END = RegistryKey(InternalRegistryKeys.DIMENSION, Key.key("the_end"))
     }
 }
 

@@ -41,6 +41,12 @@ object Registries {
     val GAMERULES = create(RegistryKeys.GAMERULES)
 
     /**
+     * The registry of all types of dimensions in the game.
+     */
+    @JvmField
+    val DIMENSION_TYPE = create(RegistryKeys.DIMENSION_TYPE)
+
+    /**
      * Registers a new entry to the given [registry], with the given [key] mapped to
      * the given [value].
      *

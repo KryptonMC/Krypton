@@ -14,6 +14,7 @@ import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.chunk.Chunk
+import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRuleHolder
 import org.spongepowered.math.vector.Vector3i
 import java.nio.file.Path
@@ -43,6 +44,11 @@ interface World : ForwardingAudience {
      * The folder of this world on disk.
      */
     val folder: Path
+
+    /**
+     * The dimension that this world is.
+     */
+    val dimension: DimensionType
 
     /**
      * The spawn location of this world.

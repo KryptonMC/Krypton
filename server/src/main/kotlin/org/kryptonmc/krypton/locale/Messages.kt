@@ -53,7 +53,6 @@ object Messages {
     val BUNGEE = BungeeMessages
     val NETWORK = NetworkMessages
     val PLUGIN = PluginMessages
-    val GUI = GUIMessages
     val QUERY = QueryMessages
     val JMX = JMXMessages
     val PROFILER = ProfilerMessages
@@ -521,36 +520,6 @@ object Messages {
 
                 // Can't create plugin {0}!
                 val CREATE_PLUGIN = singleText("plugin.load.error.create-plugin")
-            }
-        }
-    }
-
-    object GUIMessages {
-
-        val STATS = StatsMessages
-
-        // Krypton - shutting down...
-        val SHUTDOWN_TITLE = empty("gui.shutdown-title")
-
-        // Could not build server GUI!
-        val CANNOT_BUILD = empty("gui.cannot-build")
-
-        object StatsMessages {
-
-            // Memory use: {0} MB ({1}% free)
-            val MEMORY = Args2<Long, Long> { used, percentageFree ->
-                translatable("krypton.gui.stats.memory", listOf(text(used), text(percentageFree)))
-            }
-
-            // Heap: {0} / {1} MB
-            val HEAP = Args2<Long, Long> { used, max -> translatable("krypton.gui.stats.heap", listOf(text(used), text(max))) }
-
-            // Average tick: {0} ms
-            val TICK = singleText("gui.stats.tick")
-
-            // <html><body>Used: {0} MB ({1}%)<br/>{2}</body></html>
-            val TOOLTIP = Args3<Int, Int, String> { used, percentage, time ->
-                translatable("krypton.gui.stats.tooltip", listOf(text(used), text(percentage), text(time)))
             }
         }
     }

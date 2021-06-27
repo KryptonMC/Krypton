@@ -47,6 +47,7 @@ import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.KryptonServer
@@ -117,7 +118,8 @@ class KryptonPlayer(
     var gamemode = Gamemode.SURVIVAL
 
     override lateinit var world: KryptonWorld
-    override var dimension = key("overworld")
+    override val dimension: DimensionType
+        get() = world.dimension
 
     private var previousCentralX = 0
     private var previousCentralZ = 0

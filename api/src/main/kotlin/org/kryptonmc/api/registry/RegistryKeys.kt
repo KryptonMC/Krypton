@@ -12,6 +12,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.particle.Particle
 import org.kryptonmc.api.effect.sound.SoundType
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 
 /**
@@ -26,6 +27,7 @@ object RegistryKeys {
     @JvmField val SOUND_EVENT = minecraft<SoundType>("sound_event")
     @JvmField val ENTITY_TYPE = minecraft<EntityType<*>>("entity_type")
     @JvmField val PARTICLE_TYPE = minecraft<Particle>("particle_type")
+    @JvmField val DIMENSION_TYPE = minecraft<DimensionType>("dimension_type")
 
     /**
      * Custom built-in registries

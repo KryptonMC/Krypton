@@ -18,23 +18,22 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
+import com.google.common.hash.Hashing
 import io.netty.buffer.ByteBuf
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Key.key
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.dimension.DimensionType
+import org.kryptonmc.api.world.dimension.DimensionTypes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.Registries
-import org.kryptonmc.krypton.util.nbt.setBoolean
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeNBTCompound
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.dimension.toNBT
 import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.krypton.world.generation.FlatGenerator
-import java.nio.ByteBuffer
-import java.security.MessageDigest
 
 /**
  * This packet is used to initialise some things that the client needs to know so that it can join the game
@@ -55,22 +54,22 @@ class PacketOutJoinGame(
     private val world: KryptonWorld,
     private val gamemode: Gamemode,
     private val previousGamemode: Gamemode? = null,
-    private val dimension: Key,
+    private val dimension: DimensionType,
     private val maxPlayers: Int = 20,
     private val viewDistance: Int = 10
 ) : PlayPacket(0x26) {
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(entityId)
-        buf.writeBoolean(isHardcore) // is hardcore
-        buf.writeByte(gamemode.ordinal) // gamemode
-        buf.writeByte(previousGamemode?.ordinal ?: -1) // previous gamemode
+        buf.writeBoolean(isHardcore)
+        buf.writeByte(gamemode.ordinal)
+        buf.writeByte(previousGamemode?.ordinal ?: -1)
 
         // worlds that exist
         buf.writeVarInt(3)
-        buf.writeKey(OVERWORLD)
-        buf.writeKey(NETHER)
-        buf.writeKey(END)
+        buf.writeKey(DimensionTypes.OVERWORLD.key)
+        buf.writeKey(DimensionTypes.THE_NETHER.key)
+        buf.writeKey(DimensionTypes.THE_END.key)
 
         // dimension codec (dimension/biome type registry)
         buf.writeNBTCompound(NBTCompound()
@@ -78,16 +77,12 @@ class PacketOutJoinGame(
             .set("minecraft:worldgen/biome", Registries.BIOMES.toNBT()))
 
         // dimension info
-        val dimensionData = Registries.DIMENSIONS.values.firstOrNull {
-            it.name == dimension.toString()
-        }?.settings?.toNBT() ?: OVERWORLD_NBT
-        buf.writeNBTCompound(dimensionData)
+        buf.writeNBTCompound(dimension.toNBT())
 
-        val messageDigest = MessageDigest.getInstance("SHA-256")
-        val seedBytes = ByteBuffer.allocate(Long.SIZE_BYTES).putLong(world.generationSettings.seed).array()
-        val hashedSeed = ByteBuffer.wrap(messageDigest.digest(seedBytes)).getLong(0)
+        val hashedSeed = Hashing.sha256().hashLong(world.generationSettings.seed).asLong()
+        val dimensionKey = org.kryptonmc.api.registry.Registries.DIMENSION_TYPE[dimension] ?: DimensionTypes.OVERWORLD_KEY
 
-        buf.writeKey(dimension) // world spawning into
+        buf.writeKey(dimensionKey) // world spawning into
         buf.writeLong(hashedSeed)
         buf.writeVarInt(maxPlayers)
         buf.writeVarInt(viewDistance)
@@ -95,30 +90,8 @@ class PacketOutJoinGame(
         buf.writeBoolean(world.gameRules[GameRules.REDUCED_DEBUG_INFO])
         buf.writeBoolean(world.gameRules[GameRules.DO_IMMEDIATE_RESPAWN])
 
-        val generator = world.generationSettings.dimensions.getValue(dimension).generator
+        val generator = world.generationSettings.dimensions.getValue(dimensionKey).generator
         buf.writeBoolean(generator is DebugGenerator) // is debug world
         buf.writeBoolean(generator is FlatGenerator) // is flat world
     }
-
-    companion object {
-
-        private val OVERWORLD = key("overworld")
-        private val NETHER = key("the_nether")
-        private val END = key("the_end")
-    }
 }
-
-private val OVERWORLD_NBT = NBTCompound()
-    .setBoolean("piglin_safe", false)
-    .setBoolean("natural", true)
-    .setFloat("ambient_light", 0F)
-    .setString("infiniburn", "minecraft:infiniburn_overworld")
-    .setBoolean("respawn_anchor_works", false)
-    .setBoolean("has_skylight", true)
-    .setBoolean("bed_works", true)
-    .setString("effects", "minecraft:overworld")
-    .setBoolean("has_raids", true)
-    .setInt("logical_height", 256)
-    .setDouble("coordinate_scale", 1.0)
-    .setBoolean("ultrawarm", false)
-    .setBoolean("has_ceiling", false)
