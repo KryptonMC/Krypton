@@ -10,8 +10,10 @@ package org.kryptonmc.api.world.dimension
 
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.registry.Registries
-import java.util.OptionalLong
 
+/**
+ * All of the built-in dimension types.
+ */
 object DimensionTypes {
 
     // @formatter:off
@@ -22,11 +24,7 @@ object DimensionTypes {
     @JvmField val OVERWORLD_KEY = key("overworld")
     @JvmField val THE_NETHER_KEY = key("the_nether")
     @JvmField val THE_END_KEY = key("the_end")
-    // @formatter:on
 
-    /**
-     * The built-in overworld dimension type.
-     */
     @JvmField
     val OVERWORLD = register("overworld", DimensionType(
         OVERWORLD_KEY,
@@ -48,9 +46,6 @@ object DimensionTypes {
         1.0
     ))
 
-    /**
-     * The built-in overworld caves dimension type.
-     */
     @JvmField
     val OVERWORLD_CAVES = register("overworld_caves", DimensionType(
         OVERWORLD_KEY,
@@ -112,5 +107,6 @@ object DimensionTypes {
         1.0
     ))
 
+    // @formatter:on
     private fun register(key: String, value: DimensionType) = Registries.register(Registries.DIMENSION_TYPE, key, value)
 }
