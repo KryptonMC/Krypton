@@ -16,18 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.monster
+package org.kryptonmc.krypton.util.nbt
 
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.monster.Monster
-import org.kryptonmc.krypton.entity.KryptonMob
-import org.kryptonmc.krypton.entity.attribute.Attributes
-import org.kryptonmc.krypton.world.KryptonWorld
+import org.jglrxavpok.hephaistos.nbt.NBT
+import org.jglrxavpok.hephaistos.nbt.NBTList
 
-abstract class KryptonMonster(world: KryptonWorld, type: EntityType<out Monster>) : KryptonMob(world, type), Monster {
+fun <T : NBT> NBTList<T>.getOrNull(index: Int) = if (index in 0 until length) get(index) else null
 
-    companion object {
-
-        fun createAttributes() = KryptonMob.createAttributes().add(Attributes.ATTACK_DAMAGE)
-    }
-}
+fun <T : NBT> NBTList<T>.getOrElse(index: Int, default: T) = getOrNull(index) ?: default

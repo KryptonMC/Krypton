@@ -51,6 +51,7 @@ import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -89,19 +90,19 @@ import org.kryptonmc.krypton.world.bossbar.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.net.InetSocketAddress
 import java.util.Locale
-import java.util.UUID
 import java.util.function.UnaryOperator
 import kotlin.math.abs
 import kotlin.math.min
 
 class KryptonPlayer(
-    id: Int,
-    override val name: String,
-    override val uuid: UUID,
-    server: KryptonServer,
     val session: Session,
+    val profile: GameProfile,
+    world: KryptonWorld,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
-) : KryptonLivingEntity(id, server, uuid, EntityTypes.PLAYER), Player {
+) : KryptonLivingEntity(world, EntityTypes.PLAYER), Player {
+
+    override val name = profile.name
+    override var uuid = profile.uuid
 
     override var abilities = Abilities()
 
@@ -117,7 +118,6 @@ class KryptonPlayer(
     var oldGamemode: Gamemode? = null
     var gamemode = Gamemode.SURVIVAL
 
-    override lateinit var world: KryptonWorld
     override val dimension: DimensionType
         get() = world.dimension
 
@@ -133,6 +133,11 @@ class KryptonPlayer(
         data += MetadataKeys.PLAYER.MAIN_HAND
         data += MetadataKeys.PLAYER.LEFT_SHOULDER
         data += MetadataKeys.PLAYER.RIGHT_SHOULDER
+    }
+
+    override fun load(tag: NBTCompound) {
+        super.load(tag)
+        uuid = profile.uuid
     }
 
     override fun spawnParticles(particleEffect: ParticleEffect, location: Location) {

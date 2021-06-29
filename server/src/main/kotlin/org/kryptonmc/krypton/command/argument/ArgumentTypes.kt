@@ -30,6 +30,9 @@ import org.kryptonmc.krypton.command.argument.serializer.brigadier.FloatArgument
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.IntegerArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.LongArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.StringArgumentSerializer
+import org.kryptonmc.krypton.command.arguments.NBTArgument
+import org.kryptonmc.krypton.command.arguments.NBTCompoundArgument
+import org.kryptonmc.krypton.command.arguments.SummonEntityArgument
 import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
@@ -58,7 +61,10 @@ object ArgumentTypes {
         register("brigadier:string", StringArgumentSerializer())
 
         // Vanilla serializers
-        register<VectorArgument>("minecraft:vec3", EmptyArgumentSerializer())
+        register<NBTArgument>("nbt_tag", EmptyArgumentSerializer())
+        register<NBTCompoundArgument>("nbt_compound_tag", EmptyArgumentSerializer())
+        register<SummonEntityArgument>("entity_summon", EmptyArgumentSerializer())
+        register<VectorArgument>("vec3", EmptyArgumentSerializer())
     }
 
     operator fun get(key: Key) = BY_NAME[key]

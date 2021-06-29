@@ -23,6 +23,7 @@ import net.kyori.adventure.text.Component
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.effect.particle.Particle
 import org.kryptonmc.api.inventory.item.ItemStack
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.entity.data.VillagerData
@@ -137,7 +138,9 @@ object MetadataSerializers {
 
     @JvmField
     val PARTICLE = object : MetadataSerializer<Particle> {
-        override fun write(buf: ByteBuf, item: Particle) = Unit // TODO: Support particle metadata writing
+        override fun write(buf: ByteBuf, item: Particle) {
+            buf.writeVarInt(Registries.PARTICLE_TYPE.idOf(item))
+        }
     }
 
     @JvmField

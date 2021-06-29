@@ -25,8 +25,10 @@ import com.mojang.brigadier.tree.RootCommandNode
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.command.SuggestionProviders
 import org.kryptonmc.krypton.command.argument.ArgumentTypes.writeArgumentType
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
@@ -49,22 +51,22 @@ class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : Play
         buf.writeVarInt(enumerations.getValue(root))
     }
 
-    private fun ByteBuf.writeNode(node: CommandNode<*>, enumerations: Map<CommandNode<*>, Int>) {
+    private fun ByteBuf.writeNode(node: CommandNode<Sender>, enumerations: Map<CommandNode<Sender>, Int>) {
         writeFlags(node)
-        writeVarInt(node.children.size)
-        node.children.forEach { writeVarInt(enumerations.getValue(it)) }
+        writeCollection(node.children) { writeVarInt(enumerations.getValue(it)) }
         if (node.redirect != null) writeVarInt(enumerations.getValue(node.redirect))
 
         if (node is ArgumentCommandNode<*, *>) {
+            node as ArgumentCommandNode<Sender, *>
             writeString(node.name)
             writeArgumentType(node.type)
-            if (node.customSuggestions != null) writeKey(key("ask_server"))
+            if (node.customSuggestions != null) writeKey(SuggestionProviders.name(node.customSuggestions))
         } else if (node is LiteralCommandNode<*>) {
             writeString(node.name)
         }
     }
 
-    private fun ByteBuf.writeFlags(node: CommandNode<*>) {
+    private fun ByteBuf.writeFlags(node: CommandNode<Sender>) {
         var byte = 0
         if (node.redirect != null) byte = byte or 8
         if (node.command != null) byte = byte or 4
@@ -80,9 +82,9 @@ class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : Play
     }
 
     // a breadth-first search algorithm to enumerate a root node
-    private fun RootCommandNode<*>.enumerate(): Map<CommandNode<*>, Int> {
-        val result = mutableMapOf<CommandNode<*>, Int>()
-        val queue = ArrayDeque<CommandNode<*>>()
+    private fun RootCommandNode<Sender>.enumerate(): Map<CommandNode<Sender>, Int> {
+        val result = mutableMapOf<CommandNode<Sender>, Int>()
+        val queue = ArrayDeque<CommandNode<Sender>>()
         queue += this
 
         while (queue.isNotEmpty()) {

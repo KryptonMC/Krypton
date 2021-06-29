@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.util
 
 import com.mojang.brigadier.StringReader
+import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import it.unimi.dsi.fastutil.Hash
 import net.kyori.adventure.inventory.Book
@@ -33,6 +34,7 @@ import org.jglrxavpok.hephaistos.nbt.NBTIntArray
 import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTString
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
+import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.world.Gamemode
@@ -171,3 +173,5 @@ private object IdentityStrategy : Hash.Strategy<Any> {
     override fun hashCode(o: Any?) = System.identityHashCode(o)
     override fun equals(a: Any?, b: Any?) = a === b
 }
+
+inline fun <reified T> CommandContext<Sender>.argument(name: String): T = getArgument(name, T::class.java)

@@ -25,7 +25,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
-import com.mojang.brigadier.exceptions.CommandSyntaxException.BUILT_IN_EXCEPTIONS
 import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
@@ -41,14 +40,13 @@ import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.RawCommand
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.command.brigadierCommand
-import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.event.play.PermissionCheckEvent
+import org.kryptonmc.krypton.adventure.AdventureMessage
 import org.kryptonmc.krypton.command.commands.DebugCommand
 import org.kryptonmc.krypton.command.commands.RestartCommand
 import org.kryptonmc.krypton.command.commands.StopCommand
+import org.kryptonmc.krypton.command.commands.SummonCommand
 import org.kryptonmc.krypton.command.commands.TeleportCommand
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 import java.util.concurrent.CompletableFuture
 
@@ -87,11 +85,8 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         try {
             if (dispatcher.execute(command.removePrefix("/"), sender) != 1) sender.sendMessage(DEFAULT_NO_PERMISSION)
         } catch (exception: CommandSyntaxException) {
-            val message = when (exception) {
-                BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand() -> Messages.COMMAND.UNKNOWN(command)
-                else -> text(exception.message.orEmpty())
-            }
-            sender.sendMessage(message)
+            val message = exception.rawMessage
+            sender.sendMessage(if (message is AdventureMessage) message.wrapped else text(exception.message.orEmpty()))
         }
     }
 
@@ -164,14 +159,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         register(RestartCommand(server))
         DebugCommand(server).register(dispatcher)
         TeleportCommand.register(dispatcher)
-        register(brigadierCommand("zombie") {
-            executes {
-                val player = it.source as? KryptonPlayer ?: return@executes 1
-                player.sendMessage(text("Spawning Zombie..."))
-                player.world.spawnEntity(EntityTypes.ZOMBIE, player.location.toVector())
-                1
-            }
-        })
+        SummonCommand.register(dispatcher)
     }
 
     companion object {

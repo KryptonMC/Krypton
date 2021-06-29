@@ -35,7 +35,7 @@ fun Int.ceillog2(): Int {
     return MULTIPLY_DE_BRUIJN_BIT_POSITION[(temp.toLong() * 125613361L shr 27 and 31).toInt()]
 }
 
-fun Int.log2() = ceillog2() - if (GenericMath.isPowerOfTwo(this)) 0 else 1
+fun Int.log2() = ceillog2() - if (isPowerOfTwo()) 0 else 1
 
 fun Int.isPowerOfTwo() = GenericMath.isPowerOfTwo(this)
 
@@ -46,6 +46,10 @@ fun Random.nextUUID(): UUID {
     val least = nextLong() and 4611686018427387903L or Long.MIN_VALUE
     return UUID(most, least)
 }
+
+fun Int.clamp(low: Int, high: Int) = if (this < low) low else if (this > high) high else this
+
+fun Double.clamp(low: Double, high: Double) = if (this < low) low else if (this > high) high else this
 
 /**
  * Calculates a chunk position from a given [id] in a spiral pattern.
@@ -100,5 +104,3 @@ fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): ChunkPosition {
         else -> ChunkPosition.ZERO
     }
 }
-
-fun Int.clamp(low: Int, high: Int) = if (this < low) low else if (this > high) high else this

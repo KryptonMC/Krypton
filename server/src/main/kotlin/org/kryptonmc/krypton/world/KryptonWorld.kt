@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world
 
-import net.kyori.adventure.key.Key
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTString
@@ -26,7 +25,6 @@ import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.jglrxavpok.hephaistos.nbt.NBTWriter
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.registry.RegistryKey
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.world.Gamemode
@@ -54,7 +52,6 @@ import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.api.world.dimension.DimensionTypes
-import org.kryptonmc.krypton.registry.InternalRegistryKeys
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.spongepowered.math.vector.Vector2d
 import org.spongepowered.math.vector.Vector3i
@@ -132,14 +129,18 @@ data class KryptonWorld(
     )
 
     override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector) {
+        if (!type.isSummonable) return
         // TODO: Fix this when the rest of the entity types exist again
-//        require(type != EntityType.MARKER) { "Markers cannot be spawned!" }
 //        when (type) {
 //            EntityType.PLAYER -> return // TODO: Implement player spawning
 //            EntityType.EXPERIENCE_ORB -> spawnExperienceOrb(location)
 //            EntityType.PAINTING -> spawnPainting(location)
 //        }
-        val entity = EntityFactory.create(type, server, uuid)?.apply { this.location = location.toLocation(0F, 0F) } ?: return
+        val entity = EntityFactory.create(type, this)?.apply { this.location = location.toLocation(0F, 0F) } ?: return
+        spawnEntity(entity)
+    }
+
+    fun spawnEntity(entity: KryptonEntity) {
         val packets = mutableListOf(
             if (entity is KryptonLivingEntity) PacketOutSpawnLivingEntity(entity) else PacketOutSpawnEntity(entity),
             PacketOutEntityMetadata(entity.id, entity.data.all)
@@ -147,7 +148,6 @@ data class KryptonWorld(
         if (entity is KryptonLivingEntity) packets += PacketOutEntityProperties(entity.id, entity.attributes.syncableAttributes)
         players.forEach { player -> packets.forEach { player.session.sendPacket(it) } }
         entities += entity
-        return
     }
 
     override fun spawnExperienceOrb(location: Vector) = Unit // TODO: Implement XP orb spawning
@@ -317,13 +317,6 @@ data class KryptonWorld(
             plus("world")
         }
         chunks.forEach { output.writeRow(it.position.x, it.position.z, it.world) }
-    }
-
-    companion object {
-
-        val OVERWORLD = RegistryKey(InternalRegistryKeys.DIMENSION, Key.key("overworld"))
-        val THE_NETHER = RegistryKey(InternalRegistryKeys.DIMENSION, Key.key("the_nether"))
-        val THE_END = RegistryKey(InternalRegistryKeys.DIMENSION, Key.key("the_end"))
     }
 }
 

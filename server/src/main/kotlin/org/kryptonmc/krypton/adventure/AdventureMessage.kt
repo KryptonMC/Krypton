@@ -22,7 +22,7 @@ import com.mojang.brigadier.Message
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 
-class AdventureMessage(private val wrapped: Component) : Message {
+class AdventureMessage(val wrapped: Component) : Message {
 
     override fun getString() = PlainTextComponentSerializer.plainText().serialize(wrapped)
 }

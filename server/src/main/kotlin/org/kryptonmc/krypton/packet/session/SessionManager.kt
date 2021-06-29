@@ -86,7 +86,7 @@ class SessionManager(private val server: KryptonServer) {
     }
 
     fun beginPlayState(session: Session) {
-        session.sendPacket(PacketOutLoginSuccess(session.profile.uuid, session.profile.name))
+        session.sendPacket(PacketOutLoginSuccess(session.player.uuid, session.player.name))
         session.handler = PlayHandler(server, this, session)
         val player = session.player
 
@@ -136,11 +136,11 @@ class SessionManager(private val server: KryptonServer) {
         session.sendPacket(PacketOutPlayerPositionAndLook(player.location))
         session.sendPacket(PacketOutPlayerInfo(
             PlayerAction.UPDATE_LATENCY,
-            listOf(PlayerInfo(latency = session.latency, profile = session.profile))
+            listOf(PlayerInfo(latency = session.latency, profile = session.player.profile))
         ))
 
         val playerInfos = sessions.filter { it.currentState == PacketState.PLAY }.map {
-            PlayerInfo(0, it.player.gamemode, it.profile, text(it.profile.name))
+            PlayerInfo(0, it.player.gamemode, it.player.profile, text(it.player.name))
         }
         if (playerInfos.isNotEmpty()) session.sendPacket(PacketOutPlayerInfo(PlayerAction.ADD_PLAYER, playerInfos))
 
@@ -184,8 +184,8 @@ class SessionManager(private val server: KryptonServer) {
                 PlayerInfo(
                     0,
                     player.gamemode,
-                    session.profile,
-                    text(session.profile.name)
+                    session.player.profile,
+                    text(session.player.name)
                 )
             )
         )
@@ -212,7 +212,7 @@ class SessionManager(private val server: KryptonServer) {
             IOScope.launch { server.playerDataManager.save(session.player) }
 
             val destroyPacket = PacketOutEntityDestroy(session.player.id)
-            val infoPacket = PacketOutPlayerInfo(PlayerAction.REMOVE_PLAYER, listOf(PlayerInfo(profile = session.profile)))
+            val infoPacket = PacketOutPlayerInfo(PlayerAction.REMOVE_PLAYER, listOf(PlayerInfo(profile = session.player.profile)))
 
             sendPackets(destroyPacket, infoPacket) { it != session && it.currentState == PacketState.PLAY }
             server.sendMessage(event.message)
@@ -224,7 +224,7 @@ class SessionManager(private val server: KryptonServer) {
         session.latency = latency
         val infoPacket = PacketOutPlayerInfo(
             PlayerAction.UPDATE_LATENCY,
-            listOf(PlayerInfo(latency, profile = session.profile))
+            listOf(PlayerInfo(latency, profile = session.player.profile))
         )
 
         sessions.asSequence()

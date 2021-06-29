@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.packet.session
 import io.netty.channel.Channel
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.data.ClientSettings
@@ -42,9 +41,7 @@ class Session(
     internal val channel: Channel
 ) {
 
-    lateinit var profile: GameProfile
     lateinit var settings: ClientSettings
-
     lateinit var player: KryptonPlayer
 
     var lastKeepAliveId = 0L

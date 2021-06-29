@@ -16,18 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.monster
+package org.kryptonmc.krypton.command.arguments
 
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.monster.Monster
-import org.kryptonmc.krypton.entity.KryptonMob
-import org.kryptonmc.krypton.entity.attribute.Attributes
-import org.kryptonmc.krypton.world.KryptonWorld
+import com.mojang.brigadier.StringReader
+import com.mojang.brigadier.arguments.ArgumentType
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.kryptonmc.krypton.util.nbt.BrigadierSNBTParser
 
-abstract class KryptonMonster(world: KryptonWorld, type: EntityType<out Monster>) : KryptonMob(world, type), Monster {
+class NBTCompoundArgument : ArgumentType<NBTCompound> {
+
+    override fun parse(reader: StringReader) = BrigadierSNBTParser(reader).readCompound()
+
+    override fun getExamples() = EXAMPLES
 
     companion object {
 
-        fun createAttributes() = KryptonMob.createAttributes().add(Attributes.ATTACK_DAMAGE)
+        private val EXAMPLES = listOf("{}", "{foo=bar}")
     }
 }

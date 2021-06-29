@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.entity.player
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
 import org.kryptonmc.api.command.Sender
@@ -20,7 +19,6 @@ import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.plugin.PluginMessageRecipient
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.world.Location
-import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard
 import java.net.InetSocketAddress
@@ -40,11 +38,6 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      * The player's abilities.
      */
     val abilities: Abilities
-
-    /**
-     * The world this player is currently in.
-     */
-    val world: World
 
     /**
      * The dimension the player is currently in.

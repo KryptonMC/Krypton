@@ -20,12 +20,11 @@ package org.kryptonmc.krypton.entity.monster
 
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.monster.Zombie
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import java.util.UUID
+import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonZombie(id: Int, server: KryptonServer, uuid: UUID) : KryptonMonster(id, server, uuid, EntityTypes.ZOMBIE), Zombie {
+class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOMBIE), Zombie {
 
     init {
         data += MetadataKeys.ZOMBIE.BABY

@@ -18,17 +18,24 @@
  */
 package org.kryptonmc.krypton.entity
 
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Mob
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import java.util.UUID
+import org.kryptonmc.krypton.util.nbt.getBoolean
+import org.kryptonmc.krypton.world.KryptonWorld
 
-abstract class KryptonMob(id: Int, server: KryptonServer, uuid: UUID, type: EntityType<out Mob>) : KryptonLivingEntity(id, server, uuid, type), Mob {
+abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : KryptonLivingEntity(world, type), Mob {
 
     init {
         data += MetadataKeys.MOB.FLAGS
+    }
+
+    override fun load(tag: NBTCompound) {
+        super.load(tag)
+        isLeftHanded = tag.getBoolean("LeftHanded", false)
+        hasAI = !tag.getBoolean("NoAI", false)
     }
 
     var hasAI: Boolean

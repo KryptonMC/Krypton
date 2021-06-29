@@ -26,15 +26,17 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.adventure.toMessage
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.LocalCoordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.WorldCoordinates
 import org.kryptonmc.krypton.command.suggestCoordinates
+import org.kryptonmc.krypton.util.argument
 import java.util.concurrent.CompletableFuture
 
-class VectorArgument(private val correctCenter: Boolean) : ArgumentType<Coordinates> {
+class VectorArgument(private val correctCenter: Boolean = true) : ArgumentType<Coordinates> {
 
     override fun parse(reader: StringReader) =
         if (reader.canRead() && reader.peek() == '^') LocalCoordinates.parse(reader) else WorldCoordinates.parseDouble(reader, correctCenter)
@@ -57,9 +59,11 @@ class VectorArgument(private val correctCenter: Boolean) : ArgumentType<Coordina
 
     companion object {
 
-        private val EXAMPLES = listOf("0 0 0", "0.1 -0.5 .9")
+        private val EXAMPLES = listOf("0 0 0", "~ ~ ~", "^ ^ ^", "^1 ^ ^-5", "0.1 -0.5 .9", "~0.5 ~1 ~-5")
     }
 }
+
+fun CommandContext<Sender>.vectorArgument(name: String) = argument<Coordinates>(name).position(source as Player)
 
 val ERROR_NOT_COMPLETE = SimpleCommandExceptionType(Component.translatable("argument.pos3d.incomplete").toMessage())
 val ERROR_MIXED_TYPE = SimpleCommandExceptionType(Component.translatable("argument.pos.mixed").toMessage())

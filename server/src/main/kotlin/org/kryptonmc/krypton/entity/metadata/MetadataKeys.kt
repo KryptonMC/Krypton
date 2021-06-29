@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.entity.metadata
 
 import net.kyori.adventure.key.Key
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.registry.InternalRegistries
@@ -31,6 +32,7 @@ object MetadataKeys {
     val MOB = MobKeys
     val ZOMBIE = ZombieKeys
     val PLAYER = PlayerKeys
+    val AREA_EFFECT_CLOUD = AreaEffectCloudKeys
 
     val FLAGS = register("flags", 0, MetadataSerializers.BYTE, 0)
     val AIR_TICKS = register("air_ticks", 1, MetadataSerializers.VAR_INT, 300)
@@ -71,6 +73,14 @@ object MetadataKeys {
         val MAIN_HAND = register("player/main_hand", 18, MetadataSerializers.BYTE, 1)
         val LEFT_SHOULDER = register("player/left_shoulder", 19, MetadataSerializers.NBT, NBTCompound())
         val RIGHT_SHOULDER = register("player/right_shoulder", 20, MetadataSerializers.NBT, NBTCompound())
+    }
+
+    object AreaEffectCloudKeys {
+
+        val RADIUS = register("area_effect_cloud/radius", 8, MetadataSerializers.FLOAT, 0.5F)
+        val COLOR = register("area_effect_cloud/color", 9, MetadataSerializers.VAR_INT, 0)
+        val IGNORE_RADIUS = register("area_effect_cloud/ignore_radius", 10, MetadataSerializers.BOOLEAN, false)
+        val PARTICLE = register("area_effect_cloud/particle", 11, MetadataSerializers.PARTICLE, ParticleType.EFFECT)
     }
 
     @Suppress("UNCHECKED_CAST")

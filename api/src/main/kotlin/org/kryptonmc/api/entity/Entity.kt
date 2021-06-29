@@ -16,12 +16,18 @@ import net.kyori.adventure.text.event.HoverEventSource
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.world.World
 import java.util.UUID
 
 /**
  * Represents an entity in a world.
  */
 interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter {
+
+    /**
+     * The world this entity is currently in.
+     */
+    val world: World
 
     /**
      * The unique ID of this entity.

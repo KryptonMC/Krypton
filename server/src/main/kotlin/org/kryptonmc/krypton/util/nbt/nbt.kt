@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.util.nbt
 
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTIntArray
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import java.util.UUID
 
 fun NBTCompound.setUUID(name: String, uuid: UUID) = apply {
@@ -33,6 +35,11 @@ fun NBTCompound.getUUID(name: String): UUID {
     val array = getIntArray(name) ?: IntArray(0)
     require(array.size == 4) { "Expected UUID array to be of length 4, but was ${array.size}!" }
     return UUID(array[0].toLong() shl 32 or (array[1].toLong() and UNSIGNED_INT_MAX_VALUE), array[2].toLong() shl 32 or (array[3].toLong() and UNSIGNED_INT_MAX_VALUE))
+}
+
+fun NBTCompound.containsUUID(key: String): Boolean {
+    val tag = get(key)
+    return tag != null && tag.ID == NBTTypes.TAG_Int_Array && (tag as NBTIntArray).value.size == 4
 }
 
 fun NBTCompound.getBoolean(key: String) = getByte(key)?.let { it > 0 }

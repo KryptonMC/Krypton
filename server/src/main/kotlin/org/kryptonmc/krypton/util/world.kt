@@ -16,18 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.monster
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.monster.Monster
-import org.kryptonmc.krypton.entity.KryptonMob
-import org.kryptonmc.krypton.entity.attribute.Attributes
-import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.api.space.Position
 
-abstract class KryptonMonster(world: KryptonWorld, type: EntityType<out Monster>) : KryptonMob(world, type), Monster {
+val Position.isInSpawnableBounds: Boolean
+    get() = !blockX.isOutsideSpawnableHeight && isInHorizontalWorldBounds
 
-    companion object {
+val Int.isOutsideSpawnableHeight: Boolean
+    get() = this < -20000000 || this >= 20000000
 
-        fun createAttributes() = KryptonMob.createAttributes().add(Attributes.ATTACK_DAMAGE)
-    }
-}
+val Position.isInHorizontalWorldBounds: Boolean
+    get() = blockX >= -30000000 && blockZ >= -30000000 && blockX < 30000000 && blockZ < 30000000

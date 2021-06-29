@@ -51,3 +51,12 @@ fun NBTCompound.getString(key: String, default: String) = getString(key) ?: defa
 fun <T : NBT> NBTCompound.getList(key: String, default: NBTList<T>) = getList(key) ?: default
 
 fun NBTCompound.getBoolean(key: String, default: Boolean) = getBoolean(key) ?: default
+
+fun NBTCompound.contains(key: String, type: Int): Boolean {
+    val tagType = get(key)?.ID ?: return false
+    return when {
+        tagType == type -> true
+        type != 99 -> false
+        else -> tagType in 1..6
+    }
+}

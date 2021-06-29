@@ -18,19 +18,36 @@
  */
 package org.kryptonmc.krypton.entity
 
+import net.kyori.adventure.key.Key
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.ServerStorage
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
-import java.util.UUID
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.nbt.getString
+import org.kryptonmc.krypton.world.KryptonWorld
 
 object EntityFactory {
 
-    private val TYPE_MAP = mapOf<EntityType<out Entity>, (KryptonServer, UUID) -> KryptonEntity>(
-        EntityTypes.ZOMBIE to { server, uuid -> KryptonZombie(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), server, uuid) }
+    private val LOGGER = logger<EntityFactory>()
+    private val TYPE_MAP = mapOf<EntityType<out Entity>, (KryptonWorld) -> KryptonEntity>(
+        EntityTypes.ZOMBIE to ::KryptonZombie
     )
 
-    fun create(type: EntityType<out Entity>, server: KryptonServer, uuid: UUID): KryptonEntity? = TYPE_MAP[type]?.invoke(server, uuid)
+    fun create(type: EntityType<out Entity>, world: KryptonWorld): KryptonEntity? = TYPE_MAP[type]?.invoke(world)
+
+    fun create(
+        world: KryptonWorld,
+        nbt: NBTCompound
+    ): KryptonEntity? = try {
+        create(Registries.ENTITY_TYPE[Key.key(nbt.getString("id", ""))], world)?.apply { load(nbt) } ?: run {
+            LOGGER.warn("No entity found with ID ${nbt.getString("id", "")}")
+            return null
+        }
+    } catch (exception: RuntimeException) {
+        LOGGER.warn("Exception loading entity", exception)
+        null
+    }
 }

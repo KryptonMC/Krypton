@@ -141,6 +141,9 @@ interface World : ForwardingAudience {
 
     /**
      * Spawns an entity with the given [type] in this world at the given [location].
+     *
+     * @param type the type of the entity
+     * @param location the location to spawn the entity at
      */
     fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector)
 

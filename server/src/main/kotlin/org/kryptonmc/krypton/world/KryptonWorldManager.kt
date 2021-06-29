@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.world
 
 import com.mojang.serialization.Dynamic
-import net.kyori.adventure.key.Key
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTReader
 import org.kryptonmc.api.util.toKey

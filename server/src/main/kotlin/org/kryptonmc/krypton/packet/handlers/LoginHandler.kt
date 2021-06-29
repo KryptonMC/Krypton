@@ -29,7 +29,6 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.event.login.LoginEvent
 import org.kryptonmc.krypton.IOScope
-import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.auth.requests.SessionService
@@ -107,17 +106,12 @@ class LoginHandler(
                 return
             }
 
-            val uuid = if (bungeecordData != null) {
-                session.profile = GameProfile(bungeecordData.uuid, packet.name, bungeecordData.properties)
-                bungeecordData.uuid
-            } else {
-                // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
-                val offlineUUID = UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
-                session.profile = GameProfile(offlineUUID, packet.name, emptyList())
-                offlineUUID
-            }
-            session.player = KryptonPlayer(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), packet.name, uuid, server, session, address)
-            if (!callLoginEvent(packet.name, uuid)) return
+            // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
+            val uuid = bungeecordData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
+            val profile = GameProfile(uuid, packet.name, bungeecordData?.properties ?: emptyList())
+
+            session.player = KryptonPlayer(session, profile, server.worldManager.default, address)
+            if (!callLoginEvent(profile)) return
 
             sessionManager.beginPlayState(session)
             return
@@ -134,9 +128,10 @@ class LoginHandler(
         enableEncryption(secretKey)
 
         IOScope.launch {
-            try {
-                session.profile = SessionService.authenticateUser(name, sharedSecret, server.config.server.ip)
-                if (!callLoginEvent()) return@launch
+            val profile = try {
+                val value = SessionService.authenticateUser(name, sharedSecret, server.config.server.ip)
+                if (!callLoginEvent(value)) return@launch
+                value
             } catch (exception: AuthenticationException) {
                 session.disconnect(translatable("multiplayer.disconnect.unverified_username"))
                 return@launch
@@ -145,7 +140,7 @@ class LoginHandler(
 
             val rawAddress = session.channel.remoteAddress() as InetSocketAddress
             val address = if (bungeecordData != null) InetSocketAddress(bungeecordData.forwardedIp, rawAddress.port) else rawAddress
-            session.player = KryptonPlayer(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), name, session.profile.uuid, server, session, address)
+            session.player = KryptonPlayer(session, profile, server.worldManager.default, address)
             sessionManager.beginPlayState(session)
         }
     }
@@ -167,8 +162,8 @@ class LoginHandler(
         val address = session.channel.remoteAddress() as InetSocketAddress
 
         LOGGER.debug("Detected Velocity login for ${data.uuid}")
-        session.profile = GameProfile(data.uuid, data.username, data.properties)
-        session.player = KryptonPlayer(ServerStorage.NEXT_ENTITY_ID.getAndIncrement(), data.username, data.uuid, server, session, InetSocketAddress(data.remoteAddress, address.port))
+        val profile = GameProfile(data.uuid, data.username, data.properties)
+        session.player = KryptonPlayer(session, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port))
         sessionManager.beginPlayState(session)
     }
 
@@ -219,8 +214,8 @@ class LoginHandler(
         session.channel.pipeline().addBefore(PacketEncoder.NETTY_NAME, PacketCompressor.NETTY_NAME, encoder)
     }
 
-    private fun callLoginEvent(name: String = session.profile.name, uuid: UUID = session.profile.uuid): Boolean {
-        val event = LoginEvent(name, uuid, session.channel.remoteAddress() as InetSocketAddress)
+    private fun callLoginEvent(profile: GameProfile): Boolean {
+        val event = LoginEvent(profile.name, profile.uuid, session.channel.remoteAddress() as InetSocketAddress)
         val result = server.eventManager.fireSync(event).result
         if (!result.isAllowed) {
             val reason = if (result.reason !== Component.empty()) result.reason else translatable("multiplayer.disconnect.kicked")

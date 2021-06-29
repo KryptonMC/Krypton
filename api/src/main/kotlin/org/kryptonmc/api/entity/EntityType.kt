@@ -9,11 +9,20 @@
 package org.kryptonmc.api.entity
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.TranslatableComponent
 
 /**
  * A type of entity.
  *
  * @param T the type of entity
  * @param key the key for this entity type
+ * @param isSummonable if this entity type can be summoned, for example, with
+ *        the /summon command or [org.kryptonmc.api.world.World.spawnEntity]
+ * @param name the name of this entity type
  */
-data class EntityType<T : Entity>(val key: Key)
+data class EntityType<T : Entity> @JvmOverloads constructor(
+    val key: Key,
+    val isSummonable: Boolean,
+    val name: TranslatableComponent = translatable("entity.${key.namespace()}.${key.value().replace("/", ".")}"),
+)

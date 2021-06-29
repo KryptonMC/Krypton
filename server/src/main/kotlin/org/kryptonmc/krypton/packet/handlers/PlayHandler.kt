@@ -134,7 +134,7 @@ class PlayHandler(
                 return@thenAccept
             }
 
-            val name = session.profile.name
+            val name = player.name
             val message = translatable("chat.type.text", listOf(
                 text(name).insertion(name).clickEvent(suggestCommand("/msg $name")).hoverEvent(player),
                 text(packet.message)

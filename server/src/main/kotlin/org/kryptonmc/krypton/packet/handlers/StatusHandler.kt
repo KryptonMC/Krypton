@@ -57,7 +57,7 @@ class StatusHandler(
         val players = server.sessionManager.sessions.asSequence()
             .filter { it != session }
             .filter { it.currentState == PacketState.PLAY }
-            .map { PlayerInfo(it.profile.name, it.profile.uuid) }
+            .map { PlayerInfo(it.player.name, it.player.uuid) }
             .toSet()
 
         session.sendPacket(PacketOutStatusResponse(StatusResponse(
