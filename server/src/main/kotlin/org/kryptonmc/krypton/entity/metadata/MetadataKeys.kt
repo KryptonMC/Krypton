@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.metadata
 import net.kyori.adventure.key.Key
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.effect.particle.ParticleType
+import org.kryptonmc.api.effect.particle.particleEffect
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.registry.InternalRegistries
@@ -80,7 +81,7 @@ object MetadataKeys {
         val RADIUS = register("area_effect_cloud/radius", 8, MetadataSerializers.FLOAT, 0.5F)
         val COLOR = register("area_effect_cloud/color", 9, MetadataSerializers.VAR_INT, 0)
         val IGNORE_RADIUS = register("area_effect_cloud/ignore_radius", 10, MetadataSerializers.BOOLEAN, false)
-        val PARTICLE = register("area_effect_cloud/particle", 11, MetadataSerializers.PARTICLE, ParticleType.EFFECT)
+        val PARTICLE = register("area_effect_cloud/particle", 11, MetadataSerializers.PARTICLE, particleEffect(ParticleType.EFFECT))
     }
 
     @Suppress("UNCHECKED_CAST")

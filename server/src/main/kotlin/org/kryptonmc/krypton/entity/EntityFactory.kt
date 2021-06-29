@@ -33,6 +33,7 @@ object EntityFactory {
 
     private val LOGGER = logger<EntityFactory>()
     private val TYPE_MAP = mapOf<EntityType<out Entity>, (KryptonWorld) -> KryptonEntity>(
+        EntityTypes.AREA_EFFECT_CLOUD to ::KryptonAreaEffectCloud,
         EntityTypes.ZOMBIE to ::KryptonZombie
     )
 

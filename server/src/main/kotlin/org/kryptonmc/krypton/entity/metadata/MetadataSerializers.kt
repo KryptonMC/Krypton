@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.metadata
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.kryptonmc.api.effect.particle.Particle
+import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Direction
@@ -30,6 +30,7 @@ import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.Rotation
 import org.kryptonmc.krypton.util.asLong
+import org.kryptonmc.krypton.util.write
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeNBTCompound
@@ -137,9 +138,10 @@ object MetadataSerializers {
     }
 
     @JvmField
-    val PARTICLE = object : MetadataSerializer<Particle> {
-        override fun write(buf: ByteBuf, item: Particle) {
-            buf.writeVarInt(Registries.PARTICLE_TYPE.idOf(item))
+    val PARTICLE = object : MetadataSerializer<ParticleEffect> {
+        override fun write(buf: ByteBuf, item: ParticleEffect) {
+            buf.writeVarInt(Registries.PARTICLE_TYPE.idOf(item.type))
+            item.write(buf)
         }
     }
 

@@ -51,6 +51,8 @@ fun Int.clamp(low: Int, high: Int) = if (this < low) low else if (this > high) h
 
 fun Double.clamp(low: Double, high: Double) = if (this < low) low else if (this > high) high else this
 
+fun Float.clamp(low: Float, high: Float) = if (this < low) low else if (this > high) high else this
+
 /**
  * Calculates a chunk position from a given [id] in a spiral pattern.
  *

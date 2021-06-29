@@ -9,6 +9,7 @@
 package org.kryptonmc.api.effect.particle
 
 import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 
 /**
@@ -96,6 +97,19 @@ data class DustParticleData @JvmOverloads constructor(
 ) : ParticleData
 
 /**
+ * Holds data for dust color transition [ParticleEffect]s.
+ *
+ * @param from the color to transition from
+ * @param scale the scale
+ * @param to the color to transition to
+ */
+data class DustTransitionParticleData @JvmOverloads constructor(
+    val from: ColorParticleData = ColorParticleData(0u, 0u, 0u),
+    val scale: Float = 1F,
+    val to: ColorParticleData = ColorParticleData(0u, 0u, 0u)
+) : ParticleData
+
+/**
  * Holds data for note [ParticleEffect]s.
  *
  * @param note the note of this particle, must be between 0 and 24 (inclusive)
@@ -107,3 +121,17 @@ data class NoteParticleData(val note: UByte) : ParticleData {
         require(note in 0u..24u) { "Note must be between 0 and 24!" }
     }
 }
+
+/**
+ * Holds data for vibration [ParticleEffect]s.
+ *
+ * @param origin the origin location
+ * @param destination the destination location
+ * @param ticks the amount of ticks it takes for this particle to vibrate from
+ * the [origin] to the [destination]
+ */
+data class VibrationParticleData @JvmOverloads constructor(
+    val origin: Position = Vector.ZERO,
+    val destination: Position = Vector.ZERO,
+    val ticks: Int = 0
+) : ParticleData

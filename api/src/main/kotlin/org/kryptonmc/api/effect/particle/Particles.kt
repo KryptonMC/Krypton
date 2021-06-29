@@ -100,6 +100,18 @@ class DustParticle internal constructor(override val key: Key) : Particle {
     override val builder: DustParticleEffectBuilder
         get() = DustParticleEffectBuilder(this)
 }
+/**
+ * Represents a particle that uses a color and scale for its appearance, and
+ * transitions from one color to another.
+ */
+class DustTransitionParticle internal constructor(override val key: Key) : Particle {
+
+    /**
+     * Create a new builder from this particle type.
+     */
+    override val builder: DustTransitionParticleEffectBuilder
+        get() = DustTransitionParticleEffectBuilder(this)
+}
 
 /**
  * Represents a particle that uses a specific note value for its color appearance.
@@ -111,4 +123,17 @@ class NoteParticle internal constructor(override val key: Key) : Particle {
      */
     override val builder: NoteParticleEffectBuilder
         get() = NoteParticleEffectBuilder(this)
+}
+
+/**
+ * Represents a particle that vibrates from one location to another in a specified
+ * amount of ticks.
+ */
+class VibrationParticle internal constructor(override val key: Key) : Particle {
+
+    /**
+     * Create a new builder from this particle type.
+     */
+    override val builder: VibrationParticleEffectBuilder
+        get() = VibrationParticleEffectBuilder(this)
 }

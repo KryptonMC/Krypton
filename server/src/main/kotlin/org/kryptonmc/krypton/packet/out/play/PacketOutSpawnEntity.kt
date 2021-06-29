@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeUUID
@@ -38,9 +39,9 @@ class PacketOutSpawnEntity(private val entity: KryptonEntity) : PlayPacket(0x00)
         buf.writeDouble(entity.location.z)
         buf.writeAngle(entity.location.pitch.toAngle())
         buf.writeAngle(entity.location.yaw.toAngle())
-        buf.writeVarInt(0)
-        buf.writeShort(entity.velocity.x.toInt())
-        buf.writeShort(entity.velocity.y.toInt())
-        buf.writeShort(entity.velocity.z.toInt())
+        buf.writeInt(0)
+        buf.writeShort((entity.velocity.x.clamp(-3.9, 3.9) * 8000.0).toInt())
+        buf.writeShort((entity.velocity.y.clamp(-3.9, 3.9) * 8000.0).toInt())
+        buf.writeShort((entity.velocity.z.clamp(-3.9, 3.9) * 8000.0).toInt())
     }
 }

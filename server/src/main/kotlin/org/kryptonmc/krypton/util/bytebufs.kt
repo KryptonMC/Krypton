@@ -34,11 +34,8 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTReader
 import org.jglrxavpok.hephaistos.nbt.NBTWriter
-import org.kryptonmc.api.effect.particle.BlockParticleData
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
-import org.kryptonmc.api.effect.particle.DustParticleData
-import org.kryptonmc.api.effect.particle.ItemParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.inventory.item.ItemStack
@@ -56,7 +53,6 @@ import java.util.BitSet
 import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.ceil
-import kotlin.math.max
 import kotlin.math.min
 
 // Allows us to write a byte without having to convert it to an integer every time
@@ -263,13 +259,13 @@ fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
         }
         // Particle is colorable, the offset fields are used to define the color
         is ColorParticleData -> {
-            writeFloat(data.red.toFloat() / 255.0F)
-            writeFloat(data.green.toFloat() / 255.0F)
-            writeFloat(data.blue.toFloat() / 255.0F)
+            writeFloat(data.red.toFloat() / 255F)
+            writeFloat(data.green.toFloat() / 255F)
+            writeFloat(data.blue.toFloat() / 255F)
         }
         // Particle is a note, the offset fields are used to define the note value (only the x field)
         is NoteParticleData -> {
-            writeFloat(data.note.toFloat() / 24.0F)
+            writeFloat(data.note.toFloat() / 24F)
             writeFloat(0.0F)
             writeFloat(0.0F)
         }
@@ -298,18 +294,7 @@ fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
     }
 
     // Write the data, if applicable
-    when (data) {
-        is DustParticleData -> {
-            // If the red value is exactly 0, it will be displayed as 255 in the client. We can use a really small value
-            // to bypass this.
-            writeFloat(if (data.color.red == 0.toUByte()) Float.MIN_VALUE else data.color.red.toFloat() / 255.0F)
-            writeFloat(data.color.green.toFloat() / 255.0F)
-            writeFloat(data.color.blue.toFloat() / 255.0F)
-            writeFloat(max(0.01F, min(4.0F, data.scale)))
-        }
-        is BlockParticleData -> writeVarInt(data.id)
-        is ItemParticleData -> writeSlot(Slot(true, data.id, 1)) // TODO: Item
-    }
+    particle.write(this)
 }
 
 fun ByteBuf.writeVillagerData(data: VillagerData) {

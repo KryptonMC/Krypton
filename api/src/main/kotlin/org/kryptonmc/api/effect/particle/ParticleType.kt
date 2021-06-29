@@ -25,6 +25,7 @@ object ParticleType {
     @JvmField val AMBIENT_ENTITY_EFFECT = simple("ambient_entity_effect")
     @JvmField val ANGRY_VILLAGER = simple("angry_villager")
     @JvmField val BARRIER = simple("barrier")
+    @JvmField val LIGHT = simple("light")
     @JvmField val BLOCK = block("block")
     @JvmField val BUBBLE = directional("bubble")
     @JvmField val CLOUD = directional("cloud")
@@ -37,6 +38,7 @@ object ParticleType {
     @JvmField val DRIPPING_WATER = simple("dripping_water")
     @JvmField val FALLING_WATER = simple("falling_water")
     @JvmField val DUST = dust("dust")
+    @JvmField val DUST_COLOR_TRANSITION = transition("dust_color_transition")
     @JvmField val EFFECT = simple("effect")
     @JvmField val ELDER_GUARDIAN = simple("elder_guardian")
     @JvmField val ENCHANTED_HIT = directional("enchanted_hit")
@@ -96,13 +98,14 @@ object ParticleType {
     @JvmField val WHITE_ASH = simple("white_ash")
     // @formatter: on
 
-    private fun simple(name: String) = register(SimpleParticle(Key.key(Key.MINECRAFT_NAMESPACE, name)))
-    private fun directional(name: String) = register(DirectionalParticle(Key.key(Key.MINECRAFT_NAMESPACE, name)))
-    private fun block(name: String) = register(BlockParticle(Key.key(Key.MINECRAFT_NAMESPACE, name)))
-    private fun item(name: String) = register(ItemParticle(Key.key(Key.MINECRAFT_NAMESPACE, name)))
-    private fun dust(name: String) = register(DustParticle(Key.key(Key.MINECRAFT_NAMESPACE, name)))
-    private fun color(name: String) = register(ColorParticle(Key.key(Key.MINECRAFT_NAMESPACE, name)))
-    private fun note(name: String) = register(NoteParticle(Key.key(Key.MINECRAFT_NAMESPACE, name)))
+    private fun simple(name: String) = register(SimpleParticle(Key.key(name)))
+    private fun directional(name: String) = register(DirectionalParticle(Key.key(name)))
+    private fun block(name: String) = register(BlockParticle(Key.key(name)))
+    private fun item(name: String) = register(ItemParticle(Key.key(name)))
+    private fun dust(name: String) = register(DustParticle(Key.key(name)))
+    private fun transition(name: String) = register(DustTransitionParticle(Key.key(name)))
+    private fun color(name: String) = register(ColorParticle(Key.key(name)))
+    private fun note(name: String) = register(NoteParticle(Key.key(name)))
 
     @Suppress("UNCHECKED_CAST") // This is fine
     private fun <T : Particle> register(particle: T): T = Registries.register(Registries.PARTICLE_TYPE, particle.key, particle) as T

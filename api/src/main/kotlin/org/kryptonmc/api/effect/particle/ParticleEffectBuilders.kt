@@ -6,10 +6,11 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-@file:JvmName("ParticleUtils")
+@file:JvmName("ParticleFactory")
 package org.kryptonmc.api.effect.particle
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 
 /**
@@ -118,7 +119,7 @@ class ItemParticleEffectBuilder internal constructor(
      */
     @Contract("_ -> new", pure = true)
     @JvmSynthetic
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = ItemParticleData(itemId))
+    override fun build() = ParticleEffect(type, quantity, offset, longDistance, ItemParticleData(itemId))
 }
 
 /**
@@ -145,7 +146,7 @@ class BlockParticleEffectBuilder internal constructor(
      */
     @Contract("_ -> new", pure = true)
     @JvmSynthetic
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = BlockParticleData(blockId))
+    override fun build() = ParticleEffect(type, quantity, offset, longDistance, BlockParticleData(blockId))
 }
 
 /**
@@ -180,13 +181,13 @@ open class ColorParticleEffectBuilder internal constructor(
      */
     @Contract("_ -> new")
     @JvmSynthetic
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = ColorParticleData(red, green, blue))
+    override fun build() = ParticleEffect(type, quantity, offset, longDistance, ColorParticleData(red, green, blue))
 }
 
 /**
  * Allows building a [ParticleEffect] for dust particle effects using method chaining.
  */
-class DustParticleEffectBuilder internal constructor(
+open class DustParticleEffectBuilder internal constructor(
     type: Particle,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
@@ -194,7 +195,7 @@ class DustParticleEffectBuilder internal constructor(
     red: UByte = 255u,
     green: UByte = 0u,
     blue: UByte = 0u,
-    private var scale: Float = 0.0F
+    protected var scale: Float = 0F
 ) : ColorParticleEffectBuilder(type, quantity, offset, longDistance, red, green, blue) {
 
     /**
@@ -213,6 +214,49 @@ class DustParticleEffectBuilder internal constructor(
     @JvmSynthetic
     override fun build() =
         ParticleEffect(type, quantity, offset, longDistance, DustParticleData(ColorParticleData(red, green, blue), scale))
+}
+
+/**
+ * Allows building a [ParticleEffect] for dust color transitionparticle effects using method chaining.
+ */
+class DustTransitionParticleEffectBuilder internal constructor(
+    type: Particle,
+    quantity: Int = 1,
+    offset: Vector = Vector.ZERO,
+    longDistance: Boolean = false,
+    fromRed: UByte = 0u,
+    fromGreen: UByte = 0u,
+    fromBlue: UByte = 0u,
+    scale: Float = 0F,
+    private var toRed: UByte = 0u,
+    private var toGreen: UByte = 0u,
+    private var toBlue: UByte = 0u
+) : DustParticleEffectBuilder(type, quantity, offset, longDistance, fromRed, fromGreen, fromBlue, scale) {
+
+    /**
+     * Sets the color to transition to.
+     *
+     * @param red the red to transition to
+     * @param green the green to transition to
+     * @param blue the blue to transition to
+     */
+    @Contract("_ -> this")
+    fun toColor(red: UByte, green: UByte, blue: UByte) = apply {
+        toRed = red
+        toGreen = green
+        toBlue = blue
+    }
+
+    /**
+     * @return a new [ParticleEffect] created from this builder
+     */
+    override fun build() = ParticleEffect(
+        type,
+        quantity,
+        offset,
+        longDistance,
+        DustTransitionParticleData(ColorParticleData(red, green, blue), scale, ColorParticleData(toRed, toGreen, toBlue))
+    )
 }
 
 /**
@@ -241,6 +285,51 @@ class NoteParticleEffectBuilder internal constructor(
     @Contract("_ -> new")
     @JvmSynthetic
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = NoteParticleData(note))
+}
+
+/**
+ * Allows building a [ParticleEffect] for vibration particle effects using method chaining.
+ */
+class VibrationParticleEffectBuilder(
+    type: Particle,
+    quantity: Int = 1,
+    offset: Vector = Vector.ZERO,
+    longDistance: Boolean = false,
+    private var origin: Position = Vector.ZERO,
+    private var destination: Position = Vector.ZERO,
+    private var ticks: Int = 0
+) : ParticleEffectBuilder(type, quantity, offset, longDistance) {
+
+    /**
+     * Sets the origin location from the given [position].
+     *
+     * @param position the origin position
+     */
+    @Contract("_ -> this")
+    fun origin(position: Position) = apply { origin = position }
+
+    /**
+     * Sets the destination location from the given [position].
+     *
+     * @param position the destination position
+     */
+    @Contract("_ -> this")
+    fun destination(position: Position) = apply { origin = position }
+
+    /**
+     * Sets the amount of ticks it will take to vibrate from the
+     * origin to the destination.
+     *
+     * @param ticks the amount of ticks
+     */
+    @Contract("_ -> this")
+    fun ticks(ticks: Int) = apply { this.ticks = ticks }
+
+    /**
+     * @return a new [ParticleEffect] created from this builder
+     */
+    override fun build() =
+        ParticleEffect(type, quantity, offset, longDistance, VibrationParticleData(origin, destination, ticks))
 }
 
 /**
@@ -310,6 +399,17 @@ fun particleEffect(particleType: DustParticle, lambda: DustParticleEffectBuilder
     DustParticleEffectBuilder(particleType).apply(lambda).build()
 
 /**
+ * DSL to create dust transition [ParticleEffect]s.
+ *
+ * @param particleType the type of particle in [ParticleType]
+ * @param builder function to allow configuring the [ParticleEffect] using a [DustTransitionParticleEffectBuilder]
+ * @return a new [ParticleEffect] based on the given settings
+ */
+@JvmName("of")
+fun particleEffect(particleType: DustTransitionParticle, builder: DustTransitionParticleEffectBuilder.() -> Unit = {}) =
+    DustTransitionParticleEffectBuilder(particleType).apply(builder).build()
+
+/**
  * DSL to create note [ParticleEffect]s.
  *
  * @param particleType type of particle in [ParticleType]
@@ -319,3 +419,14 @@ fun particleEffect(particleType: DustParticle, lambda: DustParticleEffectBuilder
 @JvmName("of")
 fun particleEffect(particleType: NoteParticle, lambda: NoteParticleEffectBuilder.() -> Unit = {}) =
     NoteParticleEffectBuilder(particleType).apply(lambda).build()
+
+/**
+ * DSL to create vibration [ParticleEffect]s.
+ *
+ * @param particleType the type of particle in [ParticleType]
+ * @param builder function to allow configuring the [ParticleEffect] using a [VibrationParticleEffectBuilder]
+ * @return a new [ParticleEffect] based on the given settings
+ */
+@JvmName("of")
+fun particleEffect(particleType: VibrationParticle, builder: VibrationParticleEffectBuilder.() -> Unit = {}) =
+    VibrationParticleEffectBuilder(particleType).apply(builder).build()
