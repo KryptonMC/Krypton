@@ -16,13 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.krypton.world.block
 
-import org.kryptonmc.api.registry.Registries
+data class BlockAlternative @JvmOverloads constructor(
+    val id: Short,
+    val properties: List<String> = emptyList()
+) {
 
-object InternalRegistries {
+    fun property(key: String): String? = properties.find {
+        val parts = it.split("=")
+        parts.size > 1 && parts[0] == key
+    }
 
-    val ATTRIBUTE = Registries.create(InternalRegistryKeys.ATTRIBUTE)
-    val METADATA = Registries.create(InternalRegistryKeys.METADATA)
-    val BLOCK = Registries.create(InternalRegistryKeys.BLOCK)
+    val propertiesMap: Map<String, String>
+        get() = properties.associate {
+            val parts = it.split("=")
+            parts[0] to parts[1]
+        }
 }

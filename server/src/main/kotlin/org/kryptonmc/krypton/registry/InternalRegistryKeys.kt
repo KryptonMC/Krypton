@@ -21,9 +21,11 @@ package org.kryptonmc.krypton.registry
 import org.kryptonmc.api.registry.RegistryKeys
 import org.kryptonmc.krypton.entity.attribute.Attribute
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
+import org.kryptonmc.krypton.world.block.BlockData
 
 object InternalRegistryKeys {
 
     val ATTRIBUTE = RegistryKeys.minecraft<Attribute>("attribute")
     val METADATA = RegistryKeys.krypton<MetadataKey<*>>("metadata")
+    val BLOCK = RegistryKeys.minecraft<BlockData>("block")
 }

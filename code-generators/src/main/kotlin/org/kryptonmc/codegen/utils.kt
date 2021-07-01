@@ -16,13 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.codegen
 
-import org.kryptonmc.api.registry.Registries
-
-object InternalRegistries {
-
-    val ATTRIBUTE = Registries.create(InternalRegistryKeys.ATTRIBUTE)
-    val METADATA = Registries.create(InternalRegistryKeys.METADATA)
-    val BLOCK = Registries.create(InternalRegistryKeys.BLOCK)
+fun String.camelCase(): String {
+    val builder = StringBuilder(this)
+    var i = 0
+    while (i < builder.length) {
+        if (builder[i] == '_') {
+            builder.deleteCharAt(i)
+            builder.replace(i, i + 1, builder[i].uppercase())
+        }
+        i++
+    }
+    builder.setCharAt(0, builder[0].uppercaseChar())
+    return builder.toString()
 }

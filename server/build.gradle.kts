@@ -10,6 +10,14 @@ plugins {
 
 evaluationDependsOn(":krypton-api")
 
+sourceSets.main {
+    java {
+        srcDir("src/main/kotlin")
+        srcDir("src/generated/java")
+        srcDir("src/generated/kotlin")
+    }
+}
+
 repositories {
     maven("https://repo.velocitypowered.com/snapshots/")
     maven("https://oss.sonatype.org/content/groups/public/")

@@ -34,6 +34,11 @@ object Versions {
     const val ASM = "9.1"
     const val HEPHAISTOS = "1.1.8"
 
+    // Generators
+    const val JAVAPOET = "1.13.0"
+    const val KOTLINPOET = "1.9.0"
+    const val MINECRAFT = "1.17"
+
     // Test
     const val JUNIT_PLATFORM_RUNNER = "1.7.2"
     const val MOCKK = "1.11.0"
