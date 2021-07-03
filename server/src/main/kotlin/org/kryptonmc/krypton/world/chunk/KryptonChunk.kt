@@ -63,6 +63,8 @@ data class KryptonChunk(
 
     override fun getBlock(position: Position) = getBlock(position.blockX, position.blockY, position.blockZ)
 
+    override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
+
     override fun setBlock(block: Block): Boolean {
         if (block !is KryptonBlock) return false
 

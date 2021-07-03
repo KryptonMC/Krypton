@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.world.chunk
 
 import org.kryptonmc.api.space.Position
+import org.spongepowered.math.GenericMath
+import org.spongepowered.math.vector.Vector3i
 import kotlin.math.floor
 
 /**
@@ -39,6 +41,8 @@ data class ChunkPosition(val x: Int, val z: Int) {
     val regionLocalZ = z and 0x1F
 
     operator fun contains(location: Position) = floor(location.x / 16.0).toInt() == x && floor(location.z / 16.0).toInt() == z
+
+    operator fun contains(position: Vector3i) = GenericMath.floor(position.x() / 16.0) == x && GenericMath.floor(position.z() / 16.0) == z
 
     companion object {
 

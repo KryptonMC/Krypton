@@ -24,6 +24,7 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
 import org.kryptonmc.krypton.util.toVector
+import org.kryptonmc.krypton.util.toVector3i
 import org.kryptonmc.krypton.world.block.BlockFace
 
 /**
@@ -32,7 +33,7 @@ import org.kryptonmc.krypton.world.block.BlockFace
 class PacketInPlayerBlockPlacement(buf: ByteBuf) : PlayPacket(0x2E) {
 
     val hand = buf.readEnum<Hand>()
-    val location = buf.readLong().toVector()
+    val location = buf.readLong().toVector3i()
     val face = BlockFace.fromId(buf.readVarInt())
     val cursorX = buf.readFloat()
     val cursorY = buf.readFloat()

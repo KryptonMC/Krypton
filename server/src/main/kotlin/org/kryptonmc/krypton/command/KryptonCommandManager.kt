@@ -43,6 +43,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.krypton.adventure.AdventureMessage
 import org.kryptonmc.krypton.command.commands.DebugCommand
+import org.kryptonmc.krypton.command.commands.GamemodeCommand
 import org.kryptonmc.krypton.command.commands.RestartCommand
 import org.kryptonmc.krypton.command.commands.StopCommand
 import org.kryptonmc.krypton.command.commands.SummonCommand
@@ -160,6 +161,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         DebugCommand(server).register(dispatcher)
         TeleportCommand.register(dispatcher)
         SummonCommand.register(dispatcher)
+        GamemodeCommand(server).register(dispatcher)
     }
 
     companion object {

@@ -52,11 +52,16 @@ import org.kryptonmc.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
+import org.kryptonmc.krypton.packet.out.play.GameState
+import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
+import org.kryptonmc.krypton.packet.out.play.PacketOutCamera
+import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
@@ -65,6 +70,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
 import org.kryptonmc.krypton.packet.out.play.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkData
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
@@ -115,8 +121,27 @@ class KryptonPlayer(
 
     override var locale: Locale? = null
 
+    private var camera: KryptonEntity = this
+        set(value) {
+            val old = field
+            field = value
+            if (old != field) {
+                session.sendPacket(PacketOutCamera(field.id))
+                teleport(field.location)
+            }
+        }
+
     var oldGamemode: Gamemode? = null
     var gamemode = Gamemode.SURVIVAL
+        set(value) {
+            if (value == field) return
+            oldGamemode = field
+            field = value
+            updateAbilities()
+            onAbilitiesUpdate()
+            session.sendPacket(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, value.ordinal.toFloat()))
+            if (value != Gamemode.SPECTATOR) camera = this
+        }
 
     override val dimension: DimensionType
         get() = world.dimension
@@ -293,6 +318,17 @@ class KryptonPlayer(
             }
             previousChunks?.clear()
         }
+    }
+
+    private fun onAbilitiesUpdate() {
+        session.sendPacket(PacketOutAbilities(abilities))
+        updateInvisibility()
+        server.sessionManager.sendPackets(PacketOutEntityMetadata(id, data.dirty))
+    }
+
+    private fun updateInvisibility() {
+        removeEffectParticles()
+        isInvisible = gamemode == Gamemode.SPECTATOR
     }
 
     var additionalHearts: Float

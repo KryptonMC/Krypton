@@ -71,6 +71,11 @@ abstract class KryptonLivingEntity(
         data[MetadataKeys.LIVING.FLAGS] = (if (state) flags or flag else flags and flag.inv()).toByte()
     }
 
+    protected fun removeEffectParticles() {
+        isPotionEffectAmbient = false
+        potionEffectColor = 0
+    }
+
     override var isUsingItem: Boolean
         get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 1 > 0
         set(value) = setLivingFlag(1, value)

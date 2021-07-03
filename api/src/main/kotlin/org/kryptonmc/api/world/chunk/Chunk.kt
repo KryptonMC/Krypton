@@ -12,6 +12,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.world.Biome
 import org.kryptonmc.api.world.World
+import org.spongepowered.math.vector.Vector3i
 
 /**
  * Represents a chunk, or a 16 x 16 x 256 area of blocks.
@@ -77,6 +78,14 @@ interface Chunk {
      * @return the block at that position
      */
     fun getBlock(position: Position): Block
+
+    /**
+     * Gets a block from this chunk at the specified [position].
+     *
+     * @param position the position of the block to retrieve
+     * @return the block at that position
+     */
+    fun getBlock(position: Vector3i): Block
 
     /**
      * Set the block at this [block]'s position to the specified [block].

@@ -22,13 +22,13 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.toVector
+import org.kryptonmc.krypton.util.toVector3i
 import org.kryptonmc.krypton.world.block.BlockFace
 
 class PacketInPlayerDigging(buf: ByteBuf) : PlayPacket(0x1A) {
 
     val status = buf.readEnum<DiggingStatus>()
-    val location = buf.readLong().toVector()
+    val location = buf.readLong().toVector3i()
     val face = BlockFace.fromId(buf.readVarInt())
 }
 
