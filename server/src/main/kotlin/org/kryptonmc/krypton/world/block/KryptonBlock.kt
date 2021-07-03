@@ -19,19 +19,14 @@
 package org.kryptonmc.krypton.world.block
 
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.BoundingBox
 import org.kryptonmc.api.inventory.item.Material
-import org.kryptonmc.api.space.Vector
-import org.kryptonmc.api.world.chunk.Chunk
+import org.spongepowered.math.vector.Vector3i
 
 data class KryptonBlock(
     override val type: Material,
-    override val chunk: Chunk,
-    override val location: Vector
+    override val location: Vector3i
 ) : Block {
 
     override val isEmpty = type == Material.AIR
     override val isLiquid = type == Material.WATER || type == Material.LAVA
-    override val world = chunk.world
-    override val boundingBox = BoundingBox.EMPTY
 }

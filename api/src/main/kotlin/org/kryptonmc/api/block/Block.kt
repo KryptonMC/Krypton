@@ -9,9 +9,7 @@
 package org.kryptonmc.api.block
 
 import org.kryptonmc.api.inventory.item.Material
-import org.kryptonmc.api.space.Vector
-import org.kryptonmc.api.world.World
-import org.kryptonmc.api.world.chunk.Chunk
+import org.spongepowered.math.vector.Vector3i
 
 /**
  * Represents a block.
@@ -24,19 +22,9 @@ interface Block {
     val type: Material
 
     /**
-     * The world this block is in
-     */
-    val world: World
-
-    /**
-     * The chunk this block is in
-     */
-    val chunk: Chunk
-
-    /**
      * The location of this block
      */
-    val location: Vector
+    val location: Vector3i
 
     /**
      * If this block is empty
@@ -51,9 +39,4 @@ interface Block {
      * A block is defined as being a liquid if its type is [Material.WATER] or [Material.LAVA]
      */
     val isLiquid: Boolean
-
-    /**
-     * This block's bounding box
-     */
-    val boundingBox: BoundingBox
 }

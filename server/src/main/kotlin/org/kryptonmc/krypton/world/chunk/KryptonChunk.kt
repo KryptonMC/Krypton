@@ -22,7 +22,6 @@ import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.space.Position
-import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Biome
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.chunk.Chunk
@@ -32,6 +31,7 @@ import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.HeightmapBuilder
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.data.BitStorage
+import org.spongepowered.math.vector.Vector3i
 
 data class KryptonChunk(
     override val world: World,
@@ -55,10 +55,10 @@ data class KryptonChunk(
         val localY = y and 0xF
         val localZ = z and 0xF
         val section = sections.firstOrNull { it.y == y shr 4 }
-            ?: return KryptonBlock(Material.AIR, this, Vector(x.toDouble(), y.toDouble(), z.toDouble()))
+            ?: return KryptonBlock(Material.AIR, Vector3i(x, y, z))
 
         val name = section[localX, localY, localZ]
-        return KryptonBlock(Material.KEYS.value(name)!!, this, Vector(x.toDouble(), y.toDouble(), z.toDouble()))
+        return KryptonBlock(Material.KEYS.value(name)!!, Vector3i(x, y, z))
     }
 
     override fun getBlock(position: Position) = getBlock(position.blockX, position.blockY, position.blockZ)
@@ -66,9 +66,9 @@ data class KryptonChunk(
     override fun setBlock(block: Block): Boolean {
         if (block !is KryptonBlock) return false
 
-        val x = block.location.blockX and 0xF
-        val y = block.location.blockY
-        val z = block.location.blockZ and 0xF
+        val x = block.location.x() and 0xF
+        val y = block.location.y()
+        val z = block.location.z() and 0xF
 
         val sectionY = y shr 4
         if (sectionY !in 0..15) {

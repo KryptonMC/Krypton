@@ -47,9 +47,9 @@ data class ChunkSection(
     fun set(block: Block): Boolean {
         if (block.type != Material.AIR) nonEmptyBlockCount++
 
-        val x = block.location.blockX
-        val y = block.location.blockY
-        val z = block.location.blockZ
+        val x = block.location.x()
+        val y = block.location.y()
+        val z = block.location.z()
         val index = indexOf(x and 0xF, y and 0xF, z and 0xF)
         blockStates[index] = palette.getOrUpdate(block.type.key())
         return true

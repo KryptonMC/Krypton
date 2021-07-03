@@ -219,7 +219,7 @@ class PlayHandler(
         if (existingBlock.type != Material.AIR) return
 
         val item = session.player.inventory.mainHand ?: return
-        val block = KryptonBlock(item.type, chunk, packet.location)
+        val block = KryptonBlock(item.type, packet.location)
 
         sessionManager.sendPackets(PacketOutBlockChange(if (chunk.setBlock(block)) block else existingBlock)) { it.currentState == PacketState.PLAY }
     }
@@ -229,7 +229,7 @@ class PlayHandler(
         if (packet.status != DiggingStatus.STARTED) return
 
         val chunk = player.world.chunks.firstOrNull { packet.location in it.position } ?: return
-        val block = KryptonBlock(Material.AIR, chunk, packet.location)
+        val block = KryptonBlock(Material.AIR, packet.location)
         chunk.setBlock(block)
 
         session.sendPacket(PacketOutAcknowledgePlayerDigging(packet.location, 0, DiggingStatus.FINISHED, true))

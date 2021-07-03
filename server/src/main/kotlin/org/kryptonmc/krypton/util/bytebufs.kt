@@ -46,6 +46,7 @@ import org.kryptonmc.krypton.inventory.item.Slot
 import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.locale.TranslationManager
 import org.kryptonmc.krypton.registry.Registries
+import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
 import java.nio.charset.StandardCharsets.UTF_8
 import java.time.Duration
@@ -223,6 +224,10 @@ fun ByteBuf.writeRotation(rotation: Rotation) {
 
 fun ByteBuf.writePosition(position: Position) {
     writeLong(position.toProtocol())
+}
+
+fun ByteBuf.writeVector(vector: Vector3i) {
+    writeLong(vector.x().toLong() and 0x3FFFFFF shl 38 or (vector.z().toLong() and 0x3FFFFFF shl 12) or (vector.y().toLong() and 0xFFF))
 }
 
 fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
