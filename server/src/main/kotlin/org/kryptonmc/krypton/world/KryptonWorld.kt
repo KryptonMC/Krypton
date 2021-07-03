@@ -293,7 +293,7 @@ data class KryptonWorld(
         NBTWriter(temp.outputStream()).use { it.writeNamed("", data) }
         val dataPath = folder.resolve("level.dat")
         if (!dataPath.exists()) {
-            temp.copyTo(dataPath)
+            temp.moveTo(dataPath)
             return
         }
         val oldDataPath = folder.resolve("level.dat_old").apply { deleteIfExists() }
