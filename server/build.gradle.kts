@@ -63,7 +63,7 @@ dependencies {
 
     // Miscellaneous
     implementation("com.mojang", "datafixerupper", Versions.DFU)
-    implementation("com.github.jglrxavpok", "Hephaistos", Versions.HEPHAISTOS)
+    implementation("org.jglrxavpok.nbt", "Hephaistos", Versions.HEPHAISTOS)
     implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
     implementation("org.bstats", "bstats-base", Versions.BSTATS)
     implementation("com.velocitypowered", "velocity-native", Versions.VELOCITY_NATIVE)

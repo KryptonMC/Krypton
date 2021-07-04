@@ -26,11 +26,6 @@ import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTString
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.util.toKey
-import org.kryptonmc.krypton.util.nbt.getBoolean
-import org.kryptonmc.krypton.util.nbt.getInt
-import org.kryptonmc.krypton.util.nbt.getList
-import org.kryptonmc.krypton.util.nbt.getString
-import org.kryptonmc.krypton.util.nbt.setBoolean
 
 data class NoiseGenerator(
     val seed: Int,
@@ -152,24 +147,24 @@ sealed class BiomeGenerator(val type: Key) {
         internal val FIXED = key("fixed")
         internal val CHECKERBOARD = key("checkerboard")
 
-        fun fromNBT(nbt: NBTCompound) = when (val type = nbt.getString("type")?.toKey() ?: VANILLA_LAYERED) {
+        fun fromNBT(nbt: NBTCompound) = when (val type = nbt.getString("type").toKey()) {
             VANILLA_LAYERED -> VanillaLayeredBiomeGenerator(
-                nbt.getInt("seed", 0),
-                nbt.getBoolean("large_biomes", false)
+                nbt.getInt("seed"),
+                nbt.getBoolean("large_biomes")
             )
             MULTI_NOISE -> MultiNoiseBiomeGenerator(
-                nbt.getInt("seed", 0),
-                nbt.getString("preset")?.toKey() ?: key("overworld")
+                nbt.getInt("seed"),
+                nbt.getString("preset").toKey()
             )
-            THE_END -> TheEndBiomeGenerator(nbt.getInt("seed", 0))
+            THE_END -> TheEndBiomeGenerator(nbt.getInt("seed"))
             FIXED -> FixedBiomeGenerator(
-                nbt.getInt("seed", 0),
-                nbt.getString("biome", "minecraft:plains")
+                nbt.getInt("seed"),
+                nbt.getString("biome").ifEmpty { "minecraft:plains" }
             )
             CHECKERBOARD -> CheckerboardBiomeGenerator(
-                nbt.getInt("seed", 0),
-                nbt.getList<NBTInt>("biomes", NBTList(NBTTypes.TAG_Int)).map { it.value }.toIntArray(),
-                nbt.getInt("scale", 0)
+                nbt.getInt("seed"),
+                nbt.getList<NBTInt>("biomes").map { it.value }.toIntArray(),
+                nbt.getInt("scale")
             )
             else -> throw UnsupportedOperationException("Unsupported biome generator type $type")
         }

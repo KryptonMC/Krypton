@@ -49,7 +49,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
 import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.csv.csv
-import org.kryptonmc.krypton.util.nbt.setBoolean
 import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk

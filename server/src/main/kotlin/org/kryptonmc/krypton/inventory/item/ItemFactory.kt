@@ -22,13 +22,12 @@ import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.util.toKey
-import org.kryptonmc.krypton.util.nbt.getByte
 
 object ItemFactory {
 
     fun create(tag: NBTCompound): ItemStack {
-        val type = tag.getString("id")?.toKey()?.let { Material.KEYS.value(it) } ?: error("Invalid item stack ${tag.getString("id")}")
-        val amount = tag.getByte("Count", 0).toInt()
+        val type = Material.KEYS.value(tag.getString("id").toKey()) ?: error("Invalid item ID \"${tag.getString("id")}\"")
+        val amount = tag.getByte("Count").toInt()
         return ItemStack(type, amount)
     }
 }

@@ -38,7 +38,6 @@ import org.kryptonmc.krypton.util.datafix.DATA_FIXER
 import org.kryptonmc.krypton.util.datafix.FixType
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
-import org.kryptonmc.krypton.util.nbt.getInt
 import org.kryptonmc.krypton.util.threadFactory
 import java.io.IOException
 import java.nio.file.Path
@@ -75,7 +74,7 @@ class PlayerDataManager(private val folder: Path) {
             return@supplyAsync
         }
 
-        val version = nbt.getInt("DataVersion", -1)
+        val version = if (nbt.contains("DataVersion", NBTTypes.PRIMITIVE)) nbt.getInt("DataVersion") else -1
         player.load(DATA_FIXER.update(FixType.PLAYER.type, Dynamic(NBTOps, nbt), version, ServerInfo.WORLD_VERSION).value as NBTCompound)
     }, executor)
 

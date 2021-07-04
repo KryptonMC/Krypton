@@ -29,14 +29,6 @@ import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.api.world.Biome
 import org.kryptonmc.krypton.util.calculateBits
-import org.kryptonmc.krypton.util.nbt.getByte
-import org.kryptonmc.krypton.util.nbt.getByteArray
-import org.kryptonmc.krypton.util.nbt.getCompound
-import org.kryptonmc.krypton.util.nbt.getIntArray
-import org.kryptonmc.krypton.util.nbt.getList
-import org.kryptonmc.krypton.util.nbt.getLong
-import org.kryptonmc.krypton.util.nbt.getLongArray
-import org.kryptonmc.krypton.util.nbt.getString
 import org.kryptonmc.krypton.world.Heightmap.Type.MOTION_BLOCKING
 import org.kryptonmc.krypton.world.Heightmap.Type.OCEAN_FLOOR
 import org.kryptonmc.krypton.world.Heightmap.Type.WORLD_SURFACE
@@ -44,6 +36,7 @@ import org.kryptonmc.krypton.world.HeightmapBuilder
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.BitStorage
 import org.kryptonmc.krypton.world.region.RegionFileManager
+import org.kryptonmc.krypton.world.transform
 import java.util.LinkedList
 import java.util.concurrent.TimeUnit
 
@@ -57,55 +50,54 @@ class ChunkManager(private val world: KryptonWorld) {
 
     fun load(positions: List<ChunkPosition>): List<KryptonChunk> {
         val chunks = mutableListOf<KryptonChunk>()
-        positions.forEach { position -> load(position)?.let { chunks += it } }
+        positions.forEach { chunks.add(load(it)) }
         world.chunks += chunks
         return chunks
     }
 
-    fun load(position: ChunkPosition): KryptonChunk? {
+    fun load(position: ChunkPosition): KryptonChunk {
         val cachedChunk = chunkCache.getIfPresent(position)
         if (cachedChunk != null) return cachedChunk
 
-        val nbt = regionFileManager.read(position).getCompound("Level") ?: return null
-        val heightmaps = nbt.getCompound("Heightmaps", NBTCompound())
+        val nbt = regionFileManager.read(position).getCompound("Level")
+        val heightmaps = nbt.getCompound("Heightmaps")
 
-        val sections = nbt.getList<NBTCompound>("Sections", NBTList(NBTTypes.TAG_Compound)).map { section ->
-            val palette = LinkedList(section.getList<NBTCompound>("Palette", NBTList(NBTTypes.TAG_Compound)).map { block ->
-                val name = block.getString("Name", "").toKey()
+        val sections = nbt.getList<NBTCompound>("Sections").map { section ->
+            val palette = LinkedList(section.getList<NBTCompound>("Palette").map { block ->
+                val name = block.getString("Name").toKey()
                 if (name == ChunkBlock.AIR.name) {
                     ChunkBlock.AIR
                 } else {
-                    ChunkBlock(name, block.getCompound("Properties", NBTCompound()).iterator().asSequence()
-                        .associate { it.first to (it.second as NBTString).value })
+                    ChunkBlock(name, block.getCompound("Properties").transform { it.key to (it.value as NBTString).value })
                 }
             })
 
             ChunkSection(
-                section.getByte("Y", 0).toInt(),
-                section.getByteArray("BlockLight", ByteArray(0)),
-                section.getByteArray("SkyLight", ByteArray(0)),
+                section.getByte("Y").toInt(),
+                section.getByteArray("BlockLight"),
+                section.getByteArray("SkyLight"),
                 palette,
-                BitStorage(palette.size.calculateBits(), 4096, section.getLongArray("BlockStates", LongArray(0)))
+                BitStorage(palette.size.calculateBits(), 4096, section.getLongArray("BlockStates"))
             )
         } as MutableList<ChunkSection>
 
-        val carvingMasks = nbt.getCompound("CarvingMasks", NBTCompound()).let {
-            it.getByteArray("AIR", ByteArray(0)) to it.getByteArray("LIQUID", ByteArray(0))
+        val carvingMasks = nbt.getCompound("CarvingMasks").let {
+            it.getByteArray("AIR") to it.getByteArray("LIQUID")
         }
         return KryptonChunk(
             world,
             position,
             sections,
-            nbt.getIntArray("Biomes", IntArray(0)).map { Biome.fromId(it) },
-            nbt.getLong("LastUpdate", 0L),
-            nbt.getLong("inhabitedTime", 0L),
+            nbt.getIntArray("Biomes").map { Biome.fromId(it) },
+            nbt.getLong("LastUpdate"),
+            nbt.getLong("inhabitedTime"),
             listOf(
                 HeightmapBuilder(heightmaps["MOTION_BLOCKING"] as NBTLongArray, MOTION_BLOCKING),
                 HeightmapBuilder(heightmaps["OCEAN_FLOOR"] as NBTLongArray, OCEAN_FLOOR),
                 HeightmapBuilder(heightmaps["WORLD_SURFACE"] as NBTLongArray, WORLD_SURFACE)
             ),
             carvingMasks,
-            nbt.getCompound("Structures", NBTCompound())
+            nbt.getCompound("Structures")
         ).apply { chunkCache.put(position, this) }
     }
 

@@ -26,8 +26,6 @@ import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.nbt.getDouble
-import org.kryptonmc.krypton.util.nbt.getList
 import java.util.EnumMap
 import java.util.UUID
 
@@ -112,9 +110,9 @@ class AttributeInstance(
         }
 
     fun load(tag: NBTCompound) {
-        baseValue = tag.getDouble("Base", 0.0)
+        baseValue = tag.getDouble("Base")
 
-        val modifiers = tag.getList<NBTCompound>("Modifiers", NBTList(NBTTypes.TAG_Compound))
+        val modifiers = tag.getList<NBTCompound>("Modifiers")
         if (modifiers.length == 0) {
             makeDirty()
             return

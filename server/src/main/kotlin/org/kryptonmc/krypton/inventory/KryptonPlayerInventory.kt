@@ -31,7 +31,6 @@ import org.kryptonmc.krypton.inventory.item.ItemFactory
 import org.kryptonmc.krypton.inventory.item.save
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeldItemChange
 import org.kryptonmc.krypton.util.nbt.Serializable
-import org.kryptonmc.krypton.util.nbt.getByte
 
 class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory, Serializable<NBTList<NBTCompound>> {
 
@@ -71,7 +70,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
     override fun load(tag: NBTList<NBTCompound>) {
         clear()
         tag.forEach {
-            val slot = it.getByte("Slot", 0).toInt() and 255
+            val slot = it.getByte("Slot").toInt() and 255
             val stack = ItemFactory.create(it)
             if (stack.type == Material.AIR) return@forEach
             when (slot) {

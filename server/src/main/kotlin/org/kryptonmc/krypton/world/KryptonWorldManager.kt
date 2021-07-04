@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world
 import com.mojang.serialization.Dynamic
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTReader
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameVersion
@@ -37,10 +38,6 @@ import org.kryptonmc.krypton.util.datafix.DATA_FIXER
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
-import org.kryptonmc.krypton.util.nbt.getBoolean
-import org.kryptonmc.krypton.util.nbt.getCompound
-import org.kryptonmc.krypton.util.nbt.getInt
-import org.kryptonmc.krypton.util.nbt.getLong
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.generation.toGenerator
@@ -99,20 +96,20 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
     // TODO: Possibly also make this preload spawn chunks
     private fun loadWorld(folder: Path): CompletableFuture<KryptonWorld> = CompletableFuture.supplyAsync({
         val dataFile = folder.resolve("level.dat")
-        val nbt = NBTReader(dataFile.inputStream()).use { it.read() as NBTCompound }.getCompound("Data", NBTCompound())
+        val nbt = NBTReader(dataFile.inputStream()).use { it.read() as NBTCompound }.getCompound("Data")
 
-        val version = nbt.getInt("DataVersion", -1)
+        val version = if (nbt.contains("DataVersion", NBTTypes.PRIMITIVE)) nbt.getInt("DataVersion") else -1
         val data = DATA_FIXER.update(References.LEVEL, Dynamic(NBTOps, nbt), version, ServerInfo.WORLD_VERSION)
 
         // TODO: Make the world gen settings also use the updated data from the DFU
-        val worldGenSettings = nbt.getCompound("WorldGenSettings")?.let { settings ->
-            val dimensions = settings.getCompound("dimensions", NBTCompound()).iterator().asSequence()
+        val worldGenSettings = nbt.getCompound("WorldGenSettings").let { settings ->
+            val dimensions = settings.getCompound("dimensions").iterator().asSequence()
                 .filterIsInstance<Pair<String, NBTCompound>>()
                 .associate { (key, value) ->
-                    key.toKey() to Dimension((value.getString("type") ?: "").toKey(), (value.getCompound("generator") ?: NBTCompound()).toGenerator())
+                    key.toKey() to Dimension((value.getString("type")).toKey(), (value.getCompound("generator")).toGenerator())
                 }
-            WorldGenerationSettings(settings.getLong("seed", 0L), settings.getBoolean("generate_features", false), dimensions)
-        } ?: WorldGenerationSettings(0L, false, emptyMap())
+            WorldGenerationSettings(settings.getLong("seed"), settings.getBoolean("generate_features"), dimensions)
+        }
 
         val gamemode = Gamemode.fromId(data["GameType"].asInt(0)) ?: Gamemode.SURVIVAL
         val time = data["Time"].asLong(0L)

@@ -23,8 +23,6 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Mob
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.util.nbt.getBoolean
-import org.kryptonmc.krypton.util.nbt.setBoolean
 import org.kryptonmc.krypton.world.KryptonWorld
 
 abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : KryptonLivingEntity(world, type), Mob {
@@ -35,8 +33,8 @@ abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : Kryp
 
     override fun load(tag: NBTCompound) {
         super.load(tag)
-        isLeftHanded = tag.getBoolean("LeftHanded", false)
-        hasAI = !tag.getBoolean("NoAI", false)
+        isLeftHanded = tag.getBoolean("LeftHanded")
+        hasAI = !tag.getBoolean("NoAI")
     }
 
     override fun save() = super.save()

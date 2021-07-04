@@ -21,12 +21,7 @@ package org.kryptonmc.krypton.world.block.blocks
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.krypton.util.nbt.getInt
-import org.kryptonmc.krypton.util.nbt.getList
-import org.kryptonmc.krypton.util.nbt.getString
 import org.kryptonmc.krypton.world.block.tile.BlockEntity
 
 // TODO: Add this
@@ -43,13 +38,12 @@ data class BannerEntity(
     companion object {
 
         fun fromNBT(position: Vector, keepPacked: Boolean, nbt: NBTCompound): BannerEntity {
-            val customName = nbt.getString("CustomName", "").takeIf { it.isNotEmpty() }
+            val customName = nbt.getString("CustomName").takeIf { it.isNotEmpty() }
                 ?.let { GsonComponentSerializer.gson().deserialize(it) }
-            val patterns = nbt.getList("Patterns", NBTList(NBTTypes.TAG_Compound)).map {
-                val nbtPattern = it as NBTCompound
+            val patterns = nbt.getList<NBTCompound>("Patterns").map {
                 BannerPattern(
-                    BannerPatternType.fromCode(nbtPattern.getString("Pattern", "")),
-                    BannerPatternColor.fromId(nbtPattern.getInt("Color", 0))
+                    BannerPatternType.fromCode(it.getString("Pattern")),
+                    BannerPatternColor.fromId(it.getInt("Color"))
                 )
             }
             return BannerEntity(position, keepPacked, customName, patterns)

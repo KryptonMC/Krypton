@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.entity
 
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.LivingEntity
@@ -27,11 +28,6 @@ import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.attribute.attributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.util.nbt.contains
-import org.kryptonmc.krypton.util.nbt.getBoolean
-import org.kryptonmc.krypton.util.nbt.getFloat
-import org.kryptonmc.krypton.util.nbt.getInt
-import org.kryptonmc.krypton.util.nbt.setBoolean
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 import java.util.Optional
@@ -56,12 +52,12 @@ abstract class KryptonLivingEntity(
 
     override fun load(tag: NBTCompound) {
         super.load(tag)
-        absorption = tag.getFloat("AbsorptionAmount", 0F)
-        if (tag.contains("Attributes", 9)) attributes.load(tag.getList("Attributes")!!)
-        if (tag.contains("Health", 99)) health = tag.getFloat("Health", 0F)
-        if (tag.getBoolean("FallFlying", false)) isFlying = true
-        if (tag.contains("SleepingX", 99) && tag.contains("SleepingY", 99) && tag.contains("SleepingZ", 99)) {
-            val position = Vector3i(tag.getInt("SleepingX", 0), tag.getInt("SleepingY", 0), tag.getInt("SleepingZ", 0))
+        absorption = tag.getFloat("AbsorptionAmount")
+        if (tag.contains("Attributes", NBTTypes.TAG_List)) attributes.load(tag.getList("Attributes"))
+        if (tag.contains("Health", NBTTypes.PRIMITIVE)) health = tag.getFloat("Health")
+        if (tag.getBoolean("FallFlying")) isFlying = true
+        if (tag.contains("SleepingX", NBTTypes.PRIMITIVE) && tag.contains("SleepingY", NBTTypes.PRIMITIVE) && tag.contains("SleepingZ", NBTTypes.PRIMITIVE)) {
+            val position = Vector3i(tag.getInt("SleepingX"), tag.getInt("SleepingY"), tag.getInt("SleepingZ"))
             bedPosition = Optional.of(position)
             pose = Pose.SLEEPING
         }

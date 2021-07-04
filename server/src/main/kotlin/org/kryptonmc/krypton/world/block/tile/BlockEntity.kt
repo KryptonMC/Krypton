@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.world.block.tile
 
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.krypton.util.nbt.getBoolean
-import org.kryptonmc.krypton.util.nbt.getInt
 import org.kryptonmc.krypton.world.block.blocks.BannerEntity
 
 abstract class BlockEntity(val id: String) {
@@ -32,8 +30,8 @@ abstract class BlockEntity(val id: String) {
 }
 
 fun NBTCompound.toBlockEntity(): BlockEntity {
-    val position = Vector(getInt("x", 0).toDouble(), getInt("y", 0).toDouble(), getInt("z", 0).toDouble())
-    val keepPacked = getBoolean("keepPacked", false)
+    val position = Vector(getInt("x").toDouble(), getInt("y").toDouble(), getInt("z").toDouble())
+    val keepPacked = getBoolean("keepPacked")
     when (val id = getString("id")) {
         "banner" -> return BannerEntity.fromNBT(position, keepPacked, this)
         else -> throw IllegalArgumentException("Unknown block entity with id $id")

@@ -21,20 +21,16 @@ package org.kryptonmc.krypton.entity.player
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.entity.player.Abilities
-import org.kryptonmc.krypton.util.nbt.contains
-import org.kryptonmc.krypton.util.nbt.getBoolean
-import org.kryptonmc.krypton.util.nbt.getFloat
-import org.kryptonmc.krypton.util.nbt.setBoolean
 
 fun Abilities.load(tag: NBTCompound) {
-    isInvulnerable = tag.getBoolean("invulnerable", false)
-    canFly = tag.getBoolean("mayFly", false)
-    isFlying = tag.getBoolean("flying", false)
-    canBuild = tag.getBoolean("mayBuild", false)
-    if (tag.contains("mayBuild", NBTTypes.TAG_Byte)) canInstantlyBuild = tag.getBoolean("instabuild", false)
+    isInvulnerable = tag.getBoolean("invulnerable")
+    canFly = tag.getBoolean("mayFly")
+    isFlying = tag.getBoolean("flying")
+    canBuild = tag.getBoolean("mayBuild")
+    if (tag.contains("mayBuild", NBTTypes.TAG_Byte)) canInstantlyBuild = tag.getBoolean("instabuild")
     if (tag.contains("flySpeed", 99)) {
-        walkSpeed = tag.getFloat("walkSpeed", 0F)
-        flyingSpeed = tag.getFloat("flySpeed", 0F)
+        walkSpeed = tag.getFloat("walkSpeed")
+        flyingSpeed = tag.getFloat("flySpeed")
     }
 }
 

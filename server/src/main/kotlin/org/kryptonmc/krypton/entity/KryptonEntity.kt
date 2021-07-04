@@ -40,15 +40,8 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.nbt.Serializable
-import org.kryptonmc.krypton.util.nbt.contains
 import org.kryptonmc.krypton.util.nbt.containsUUID
-import org.kryptonmc.krypton.util.nbt.getBoolean
-import org.kryptonmc.krypton.util.nbt.getList
-import org.kryptonmc.krypton.util.nbt.getOrNull
-import org.kryptonmc.krypton.util.nbt.getShort
-import org.kryptonmc.krypton.util.nbt.getString
 import org.kryptonmc.krypton.util.nbt.getUUID
-import org.kryptonmc.krypton.util.nbt.setBoolean
 import org.kryptonmc.krypton.util.nbt.setUUID
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -94,9 +87,9 @@ abstract class KryptonEntity(
     }
 
     override fun load(tag: NBTCompound) {
-        val position = tag.getList<NBTDouble>("Pos", NBTList(NBTTypes.TAG_Double))
-        val motion = tag.getList<NBTDouble>("Motion", NBTList(NBTTypes.TAG_Double))
-        val rotation = tag.getList<NBTFloat>("Rotation", NBTList(NBTTypes.TAG_Double))
+        val position = tag.getList<NBTDouble>("Pos")
+        val motion = tag.getList<NBTDouble>("Motion")
+        val rotation = tag.getList<NBTFloat>("Rotation")
         val motionX = motion.getOrNull(0)?.value?.takeIf { abs(it) <= 10.0 } ?: 0.0
         val motionY = motion.getOrNull(1)?.value?.takeIf { abs(it) <= 10.0 } ?: 0.0
         val motionZ = motion.getOrNull(2)?.value?.takeIf { abs(it) <= 10.0 } ?: 0.0
@@ -108,17 +101,17 @@ abstract class KryptonEntity(
             rotation.getOrNull(0)?.value ?: 0F,
             rotation.getOrNull(0)?.value ?: 0F
         )
-        if (tag.containsKey("Air")) airTicks = tag.getShort("Air", 0).toInt()
-        isOnGround = tag.getBoolean("OnGround", false)
+        if (tag.containsKey("Air")) airTicks = tag.getShort("Air").toInt()
+        isOnGround = tag.getBoolean("OnGround")
         if (tag.containsUUID("UUID")) uuid = tag.getUUID("UUID")
 
         if (!location.x.isFinite() || !location.y.isFinite() || !location.z.isFinite()) error("Entity has invalid coordinates! Coordinates must be finite!")
         if (!location.yaw.isFinite() || !location.pitch.isFinite()) error("Entity has invalid rotation!")
-        if (tag.contains("CustomName", NBTTypes.TAG_String)) displayName = GsonComponentSerializer.gson().deserialize(tag.getString("CustomName", ""))
-        isDisplayNameVisible = tag.getBoolean("CustomNameVisible", false)
-        isSilent = tag.getBoolean("Silent", false)
-        hasGravity = !tag.getBoolean("NoGravity", false)
-        isGlowing = tag.getBoolean("Glowing", false)
+        if (tag.contains("CustomName", NBTTypes.TAG_String)) displayName = GsonComponentSerializer.gson().deserialize(tag.getString("CustomName"))
+        isDisplayNameVisible = tag.getBoolean("CustomNameVisible")
+        isSilent = tag.getBoolean("Silent")
+        hasGravity = !tag.getBoolean("NoGravity")
+        isGlowing = tag.getBoolean("Glowing")
     }
 
     override fun save() = NBTCompound()

@@ -22,7 +22,6 @@ import com.google.gson.annotations.SerializedName
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
-import org.kryptonmc.krypton.util.nbt.setBoolean
 
 data class BiomeRegistry(
     val type: String,

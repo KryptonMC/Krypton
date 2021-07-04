@@ -46,16 +46,14 @@ import java.util.function.Consumer
 import java.util.stream.IntStream
 import java.util.stream.LongStream
 import java.util.stream.Stream
-import kotlin.streams.asSequence
 import kotlin.streams.asStream
 
-@Suppress("SpreadOperator") // TODO: Probably replace Adventure NBT because it's just not what we want
 object NBTOps : DynamicOps<NBT> {
 
-    override fun empty() = NBTEnd()
+    override fun empty() = NBTEnd
 
     override fun <U> convertTo(outOps: DynamicOps<U>, input: NBT): U = when (input) {
-        is NBTEnd -> outOps.empty()
+        NBTEnd -> outOps.empty()
         is NBTByte -> outOps.createByte(input.value)
         is NBTShort -> outOps.createShort(input.value)
         is NBTInt -> outOps.createInt(input.value)
@@ -102,7 +100,7 @@ object NBTOps : DynamicOps<NBT> {
             is NBTByte -> NBTByteArray(iterator.asSequence().map { (it as NBTByte).value }.toList().toByteArray())
             is NBTInt -> NBTIntArray(iterator.asSequence().map { (it as NBTInt).value }.toList().toIntArray())
             is NBTLong -> NBTLongArray(iterator.asSequence().map { (it as NBTLong).value }.toList().toLongArray())
-            else -> NBTList<NBT>(0).apply { iterator.asSequence().forEach { add(it) } }
+            else -> NBTList<NBT>(0).apply { iterator.asSequence().filter { it !== NBTEnd }.forEach { add(it) } }
         }
     }
 

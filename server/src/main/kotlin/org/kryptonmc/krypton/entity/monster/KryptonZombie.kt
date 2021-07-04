@@ -19,14 +19,11 @@
 package org.kryptonmc.krypton.entity.monster
 
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.monster.Zombie
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.util.nbt.contains
-import org.kryptonmc.krypton.util.nbt.getBoolean
-import org.kryptonmc.krypton.util.nbt.getInt
-import org.kryptonmc.krypton.util.nbt.setBoolean
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOMBIE), Zombie {
@@ -40,9 +37,9 @@ class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOM
 
     override fun load(tag: NBTCompound) {
         super.load(tag)
-        isBaby = tag.getBoolean("IsBaby", false)
-        if (tag.contains("DrownedConversionTime", 99) && tag.getInt("DrownedConversionTime", 0) > -1) {
-            conversionTime = tag.getInt("DrownedConversionTime", 0)
+        isBaby = tag.getBoolean("IsBaby")
+        if (tag.contains("DrownedConversionTime", NBTTypes.PRIMITIVE) && tag.getInt("DrownedConversionTime") > -1) {
+            conversionTime = tag.getInt("DrownedConversionTime")
             isConverting = true
         }
     }

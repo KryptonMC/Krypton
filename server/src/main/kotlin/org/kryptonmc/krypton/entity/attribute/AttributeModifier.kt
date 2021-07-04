@@ -21,9 +21,6 @@ package org.kryptonmc.krypton.entity.attribute
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.nbt.getDouble
-import org.kryptonmc.krypton.util.nbt.getInt
-import org.kryptonmc.krypton.util.nbt.getString
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.util.nbt.setUUID
 import java.util.UUID
@@ -83,8 +80,8 @@ class AttributeModifier(
 
         fun load(tag: NBTCompound): AttributeModifier? = try {
             val id = tag.getUUID("UUID")
-            val operation = Operation.fromId(tag.getInt("Operation", 0))
-            AttributeModifier(id, tag.getString("Name", ""), tag.getDouble("Amount", 0.0), operation)
+            val operation = Operation.fromId(tag.getInt("Operation"))
+            AttributeModifier(id, tag.getString("Name"), tag.getDouble("Amount"), operation)
         } catch (exception: Exception) {
             LOGGER.warn("Unable to create attribute: ${exception.message}")
             null

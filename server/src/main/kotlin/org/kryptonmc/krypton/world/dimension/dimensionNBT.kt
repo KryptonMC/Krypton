@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.world.dimension
 
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.krypton.util.nbt.setBoolean
 
 fun DimensionType.toNBT() = NBTCompound()
     .setBoolean("piglin_safe", isPiglinSafe)

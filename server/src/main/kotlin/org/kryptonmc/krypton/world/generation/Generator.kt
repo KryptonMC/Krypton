@@ -22,7 +22,6 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.util.toKey
-import org.kryptonmc.krypton.util.nbt.getCompound
 
 abstract class Generator(val id: Key) {
 
@@ -39,12 +38,12 @@ object DebugGenerator : Generator(DEBUG_GENERATOR_ID) {
 }
 
 // TODO: Add support for generators when world generation exists
-fun NBTCompound.toGenerator() = when (val type = getString("type")?.toKey() ?: key("")) {
-    FlatGenerator.ID -> FlatGenerator(FlatGeneratorSettings.fromNBT(getCompound("settings", NBTCompound())))
+fun NBTCompound.toGenerator() = when (val type = getString("type").toKey()) {
+    FlatGenerator.ID -> FlatGenerator(FlatGeneratorSettings.fromNBT(getCompound("settings")))
     NoiseGenerator.ID -> NoiseGenerator(
-        getInt("seed") ?: 0,
-        getString("settings")?.toKey() ?: key(""),
-        BiomeGenerator.fromNBT(getCompound("biome_source", NBTCompound()))
+        getInt("seed"),
+        getString("settings").toKey(),
+        BiomeGenerator.fromNBT(getCompound("biome_source"))
     )
     DEBUG_GENERATOR_ID -> DebugGenerator
     else -> throw IllegalArgumentException("Unsupported generator type $type")

@@ -24,10 +24,7 @@ import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.util.toKey
-import org.kryptonmc.krypton.util.nbt.getCompound
-import org.kryptonmc.krypton.util.nbt.getInt
-import org.kryptonmc.krypton.util.nbt.getList
-import org.kryptonmc.krypton.util.nbt.getString
+import org.kryptonmc.krypton.world.transform
 
 data class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(ID) {
 
@@ -55,26 +52,22 @@ data class FlatGeneratorSettings(
     companion object {
 
         fun fromNBT(nbt: NBTCompound) = FlatGeneratorSettings(
-            nbt.getList<NBTCompound>("layers", NBTList(NBTTypes.TAG_Compound)).map {
-                FlatLayer(it.getString("block", "").toKey(), it.getInt("height", 0))
+            nbt.getList<NBTCompound>("layers").map {
+                FlatLayer(it.getString("block").toKey(), it.getInt("height"))
             },
-            nbt.getString("biome", "minecraft:plains").toKey(),
-            nbt.getCompound("structures", NBTCompound()).let { nbtStructures ->
-                val stronghold = nbtStructures.getCompound("stronghold", NBTCompound())
-                val structures = nbtStructures.getCompound("structures", NBTCompound())
+            nbt.getString("biome").ifEmpty { "minecraft:plains" }.toKey(),
+            nbt.getCompound("structures").let { nbtStructures ->
+                val stronghold = nbtStructures.getCompound("stronghold")
+                val structures = nbtStructures.getCompound("structures")
                 GeneratorStructures(
                     GeneratorStronghold(
-                        stronghold.getInt("distance", 0),
-                        stronghold.getInt("count", 0),
-                        stronghold.getInt("spread", 0)
+                        stronghold.getInt("distance"),
+                        stronghold.getInt("count"),
+                        stronghold.getInt("spread")
                     ),
-                    structures.iterator().asSequence().associate { (key, value) ->
+                    structures.transform { (key, value) ->
                         key.toKey() to (value as NBTCompound).let {
-                            GeneratorStructure(
-                                it.getInt("spacing", 0),
-                                it.getInt("separation", 0),
-                                it.getInt("salt", 0)
-                            )
+                            GeneratorStructure(it.getInt("spacing"), it.getInt("separation"), it.getInt("salt"))
                         }
                     }
                 )
