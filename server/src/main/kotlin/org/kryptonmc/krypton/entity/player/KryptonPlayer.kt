@@ -42,7 +42,6 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.player.Abilities
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.play.SkinSettings
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.RegistryKey
 import org.kryptonmc.api.space.Position
@@ -85,7 +84,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
-import org.kryptonmc.krypton.packet.session.Session
+import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.canBuild
 import org.kryptonmc.krypton.util.chunkInSpiral
@@ -99,8 +98,6 @@ import org.kryptonmc.krypton.util.nbt.getList
 import org.kryptonmc.krypton.util.nbt.setBoolean
 import org.kryptonmc.krypton.util.toArea
 import org.kryptonmc.krypton.util.toItemStack
-import org.kryptonmc.krypton.util.toProtocol
-import org.kryptonmc.krypton.util.toSkinSettings
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.bossbar.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -405,9 +402,9 @@ class KryptonPlayer(
         get() = data[MetadataKeys.PLAYER.SCORE]
         set(value) = data.set(MetadataKeys.PLAYER.SCORE, value)
 
-    var skinSettings: SkinSettings
-        get() = data[MetadataKeys.PLAYER.SKIN_FLAGS].toSkinSettings()
-        set(value) = data.set(MetadataKeys.PLAYER.SKIN_FLAGS, value.toProtocol().toByte())
+    var skinSettings: Byte
+        get() = data[MetadataKeys.PLAYER.SKIN_FLAGS]
+        set(value) = data.set(MetadataKeys.PLAYER.SKIN_FLAGS, value)
 
     override var mainHand: MainHand
         get() = if (data[MetadataKeys.PLAYER.MAIN_HAND] == 0.toByte()) MainHand.LEFT else MainHand.RIGHT

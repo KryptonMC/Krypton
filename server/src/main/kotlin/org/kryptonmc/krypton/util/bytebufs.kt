@@ -42,7 +42,6 @@ import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Location
-import org.kryptonmc.krypton.inventory.item.Slot
 import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.locale.TranslationManager
 import org.kryptonmc.krypton.registry.Registries
@@ -194,15 +193,6 @@ fun ByteBuf.readNBTCompound(): NBTCompound {
 
 fun ByteBuf.writeChat(component: Component) {
     writeString(GsonComponentSerializer.gson().serialize(TranslationManager.render(component)))
-}
-
-fun ByteBuf.writeSlot(slot: Slot) {
-    writeBoolean(slot.isPresent)
-    if (slot.isPresent) {
-        writeVarInt(slot.id)
-        writeByte(slot.count)
-        writeNBTCompound(slot.nbt)
-    }
 }
 
 fun ByteBuf.writeItem(item: ItemStack?, nbt: NBTCompound?) {

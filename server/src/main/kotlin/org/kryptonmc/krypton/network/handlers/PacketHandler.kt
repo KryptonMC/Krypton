@@ -16,13 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity
+package org.kryptonmc.krypton.network.handlers
+
+import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.network.Session
 
 /**
- * Represents a player's main hand, either left or right.
+ * The base interface for packet handlers. This exists primarily to abstract away the [handle]
+ * function, so we can call it without actually knowing which handler will handle it. :wesmart:
  */
-enum class MainHand {
+interface PacketHandler {
 
-    LEFT,
-    RIGHT
+    /**
+     * The server that this handler is running on
+     */
+    val server: KryptonServer
+
+    /**
+     * The session that this handler handles packets for
+     */
+    val session: Session
+
+    /**
+     * Handle the specified [packet]
+     *
+     * @param packet the packet to handle
+     */
+    fun handle(packet: Packet)
+
+    @Suppress("OptionalUnit")
+    fun onDisconnect() = Unit
 }

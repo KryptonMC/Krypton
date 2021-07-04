@@ -22,7 +22,6 @@ import io.netty.buffer.ByteBuf
 import me.bardy.gsonkt.newBuilder
 import me.bardy.gsonkt.registerTypeAdapter
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.kryptonmc.krypton.packet.data.ServerStatus
 import org.kryptonmc.krypton.packet.state.StatusPacket
 import org.kryptonmc.krypton.util.writeString
 

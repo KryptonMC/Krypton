@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.transformers
+package org.kryptonmc.krypton.network.netty
 
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
-import org.kryptonmc.krypton.packet.ChannelHandler
-import org.kryptonmc.krypton.packet.session.Session
+import org.kryptonmc.krypton.network.ChannelHandler
+import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readVarInt
 

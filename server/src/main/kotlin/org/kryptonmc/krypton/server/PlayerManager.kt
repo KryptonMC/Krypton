@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.data.ServerStatus
+import org.kryptonmc.krypton.packet.out.status.ServerStatus
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
@@ -56,7 +56,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUnlockRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
-import org.kryptonmc.krypton.packet.session.Session
+import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nextInt
 import org.kryptonmc.krypton.util.threadFactory

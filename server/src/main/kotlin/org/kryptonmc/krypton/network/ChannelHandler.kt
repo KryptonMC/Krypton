@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet
+package org.kryptonmc.krypton.network
 
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.packet.session.Session
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.logger
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeoutException

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.handlers
+package org.kryptonmc.krypton.network.handlers
 
 import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.text.Component
@@ -32,8 +32,8 @@ import org.kryptonmc.krypton.packet.`in`.handshake.BungeeCordHandshakeData
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.`in`.handshake.splitData
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
-import org.kryptonmc.krypton.packet.session.Session
-import org.kryptonmc.krypton.packet.state.PacketState
+import org.kryptonmc.krypton.network.Session
+import org.kryptonmc.krypton.network.PacketState
 import org.kryptonmc.krypton.util.logger
 import java.net.InetSocketAddress
 
@@ -51,14 +51,14 @@ class HandshakeHandler(
         if (packet !is PacketInHandshake) return // ignore if not a handshake packet
         server.eventManager.fireAndForget(HandshakeEvent(session.channel.remoteAddress() as InetSocketAddress))
 
-        if (packet.data.address.split('\u0000').size > 1 && server.config.proxy.mode != ForwardingMode.LEGACY) {
+        if (packet.address.split('\u0000').size > 1 && server.config.proxy.mode != ForwardingMode.LEGACY) {
             disconnect(Messages.BUNGEE.NOTIFY())
             return
         }
 
-        if (server.config.proxy.mode == ForwardingMode.LEGACY && packet.data.nextState == PacketState.LOGIN) {
+        if (server.config.proxy.mode == ForwardingMode.LEGACY && packet.nextState == PacketState.LOGIN) {
             val data = try {
-                packet.data.address.splitData()
+                packet.address.splitData()
             } catch (exception: Exception) {
                 disconnect(Messages.BUNGEE.FAIL_DECODE())
                 Messages.BUNGEE.FAIL_DECODE_ERROR.error(LOGGER, exception)
@@ -67,15 +67,15 @@ class HandshakeHandler(
 
             if (data != null) {
                 LOGGER.debug("Detected BungeeCord login for ${data.uuid}")
-                changeState(packet, packet.data.nextState, data)
+                changeState(packet, packet.nextState, data)
             } else {
                 disconnect(Messages.BUNGEE.DIRECT())
-                Messages.BUNGEE.DIRECT_WARN.warn(LOGGER, packet.data.address)
+                Messages.BUNGEE.DIRECT_WARN.warn(LOGGER, packet.address)
                 return
             }
         }
 
-        changeState(packet, packet.data.nextState)
+        changeState(packet, packet.nextState)
     }
 
     private fun changeState(packet: PacketInHandshake, state: PacketState, data: BungeeCordHandshakeData? = null) = when (state) {
@@ -89,10 +89,10 @@ class HandshakeHandler(
      */
     private fun handleLogin(packet: PacketInHandshake, data: BungeeCordHandshakeData? = null) {
         session.currentState = PacketState.LOGIN
-        if (packet.data.protocol != ServerInfo.PROTOCOL) {
+        if (packet.protocol != ServerInfo.PROTOCOL) {
             val key = when {
-                packet.data.protocol < ServerInfo.PROTOCOL -> "multiplayer.disconnect.outdated_client"
-                packet.data.protocol > ServerInfo.PROTOCOL -> "multiplayer.disconnect.outdated_server"
+                packet.protocol < ServerInfo.PROTOCOL -> "multiplayer.disconnect.outdated_client"
+                packet.protocol > ServerInfo.PROTOCOL -> "multiplayer.disconnect.outdated_server"
                 else -> "multiplayer.disconnect.incompatible"
             }
             val reason = translatable {

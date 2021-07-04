@@ -46,7 +46,7 @@ import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.MetadataResponse
 import org.kryptonmc.krypton.locale.TranslationRepository
-import org.kryptonmc.krypton.packet.PacketLoader
+import org.kryptonmc.krypton.network.PacketLoader
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager

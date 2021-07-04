@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PacketState
+import org.kryptonmc.krypton.network.PacketState
 
 /**
  * Super interface for all inbound and outbound packets.

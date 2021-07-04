@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.inventory
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
+import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.inventory.item.ItemStack
@@ -34,16 +35,17 @@ import org.kryptonmc.krypton.util.nbt.getByte
 
 class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory, Serializable<NBTList<NBTCompound>> {
 
+    override val crafting = Array(5) { ItemStack.EMPTY }
     override val armor = Array(4) { ItemStack.EMPTY }
 
     override val helmet: ItemStack
-        get() = armor[0]
+        get() = armor[ArmorSlot.HELMET.ordinal]
     override val chestplate: ItemStack
-        get() = armor[1]
+        get() = armor[ArmorSlot.CHESTPLATE.ordinal]
     override val leggings: ItemStack
-        get() = armor[2]
+        get() = armor[ArmorSlot.LEGGINGS.ordinal]
     override val boots: ItemStack
-        get() = armor[3]
+        get() = armor[ArmorSlot.BOOTS.ordinal]
 
     override var heldSlot = 0
 
@@ -51,9 +53,17 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         get() = items[heldSlot]
     override var offHand = ItemStack.EMPTY
 
-    override fun set(index: Int, item: ItemStack) {
-        super.set(index, item)
+    override fun armor(slot: ArmorSlot) = armor[slot.ordinal]
 
+    override fun set(index: Int, item: ItemStack) {
+        when (index) {
+            0 -> crafting[4] = item
+            in 1..4 -> crafting[index - 1] = item
+            in 5..8 -> armor[index - 5] = item
+            in 9..35 -> items[index] = item
+            in 36..44 -> items[index - 36] = item
+            45 -> offHand = item
+        }
         if (index == heldSlot) return
         owner.session.sendPacket(PacketOutHeldItemChange(index))
     }

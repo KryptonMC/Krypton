@@ -29,17 +29,3 @@ fun Short.toSkinSettings() = SkinSettings(
     toInt() and 0x20 != 0,
     toInt() and 0x40 != 0
 )
-
-fun Byte.toSkinSettings() = toShort().toSkinSettings()
-
-fun SkinSettings.toProtocol(): Int {
-    var mask = 0
-    if (cape) mask = mask or 0x01
-    if (jacket) mask = mask or 0x02
-    if (leftSleeve) mask = mask or 0x04
-    if (rightSleeve) mask = mask or 0x08
-    if (leftPants) mask = mask or 0x10
-    if (rightPants) mask = mask or 0x20
-    if (hat) mask = mask or 0x40
-    return mask
-}

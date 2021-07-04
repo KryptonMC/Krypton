@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.transformers
+package org.kryptonmc.krypton.network.netty
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled

@@ -29,5 +29,5 @@ import org.kryptonmc.krypton.util.readVarInt
 class PacketInTabComplete(buf: ByteBuf) : PlayPacket(0x06) {
 
     val id = buf.readVarInt()
-    val command = buf.readString(32_500)
+    val command = buf.readString(32500)
 }

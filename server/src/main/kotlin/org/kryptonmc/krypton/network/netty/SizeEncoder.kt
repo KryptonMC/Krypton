@@ -16,35 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.handlers
+package org.kryptonmc.krypton.network.netty
 
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.session.Session
+import io.netty.buffer.ByteBuf
+import io.netty.channel.ChannelHandler
+import io.netty.channel.ChannelHandlerContext
+import io.netty.handler.codec.MessageToByteEncoder
+import org.kryptonmc.krypton.util.writeVarInt
 
 /**
- * The base interface for packet handlers. This exists primarily to abstract away the [handle]
- * function, so we can call it without actually knowing which handler will handle it. :wesmart:
+ * Writes a packet size in an appropriate VarInt before the data is written
  */
-interface PacketHandler {
+@ChannelHandler.Sharable
+object SizeEncoder : MessageToByteEncoder<ByteBuf>() {
 
-    /**
-     * The server that this handler is running on
-     */
-    val server: KryptonServer
+    const val NETTY_NAME = "prepender"
 
-    /**
-     * The session that this handler handles packets for
-     */
-    val session: Session
-
-    /**
-     * Handle the specified [packet]
-     *
-     * @param packet the packet to handle
-     */
-    fun handle(packet: Packet)
-
-    @Suppress("OptionalUnit")
-    fun onDisconnect() = Unit
+    override fun encode(ctx: ChannelHandlerContext, msg: ByteBuf, out: ByteBuf) {
+        out.writeVarInt(msg.readableBytes())
+        out.writeBytes(msg)
+    }
 }

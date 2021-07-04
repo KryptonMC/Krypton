@@ -19,24 +19,22 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.data.ClientSettings
+import org.kryptonmc.api.entity.MainHand
+import org.kryptonmc.krypton.entity.player.ChatMode
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.toSkinSettings
 
 /**
  * Sent by the client to inform the server of its local settings.
  */
 class PacketInClientSettings(buf: ByteBuf) : PlayPacket(0x05) {
 
-    val settings = ClientSettings(
-        buf.readString(16),
-        buf.readByte(),
-        buf.readEnum(),
-        buf.readBoolean(),
-        buf.readUnsignedByte().toSkinSettings(),
-        buf.readEnum(),
-        buf.readBoolean()
-    )
+    val locale = buf.readString(16)
+    val viewDistance = buf.readByte()
+    val chatMode = buf.readEnum<ChatMode>()
+    val chatColors = buf.readBoolean()
+    val skinSettings = buf.readUnsignedByte()
+    val mainHand = buf.readEnum<MainHand>()
+    val disableTextFiltering = buf.readBoolean()
 }

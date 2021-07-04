@@ -38,10 +38,10 @@ class PacketOutAbilities(private val abilities: Abilities) : PlayPacket(0x32) {
 }
 
 private fun Abilities.flagsToProtocol(): Int {
-    var flagsByte = 0x0
-    if (isInvulnerable) flagsByte += 0x01
-    if (isFlying) flagsByte += 0x02
-    if (canFly) flagsByte += 0x04
-    if (canInstantlyBuild) flagsByte += 0x08
-    return flagsByte
+    var flags = 0
+    if (isInvulnerable) flags = flags or 1
+    if (isFlying) flags = flags or 2
+    if (canFly) flags = flags or 4
+    if (canInstantlyBuild) flags = flags or 8
+    return flags
 }

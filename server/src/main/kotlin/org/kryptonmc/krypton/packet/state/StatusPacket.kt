@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.packet.state
 
+import org.kryptonmc.krypton.network.PacketState
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketInfo
 

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.handlers
+package org.kryptonmc.krypton.network.handlers
 
 import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.Unpooled
@@ -44,16 +44,16 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutPluginRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
-import org.kryptonmc.krypton.packet.session.Session
-import org.kryptonmc.krypton.packet.state.PacketState
-import org.kryptonmc.krypton.packet.transformers.PacketCompressor
-import org.kryptonmc.krypton.packet.transformers.PacketDecoder
-import org.kryptonmc.krypton.packet.transformers.PacketDecompressor
-import org.kryptonmc.krypton.packet.transformers.PacketDecrypter
-import org.kryptonmc.krypton.packet.transformers.PacketEncoder
-import org.kryptonmc.krypton.packet.transformers.PacketEncrypter
-import org.kryptonmc.krypton.packet.transformers.SizeDecoder
-import org.kryptonmc.krypton.packet.transformers.SizeEncoder
+import org.kryptonmc.krypton.network.Session
+import org.kryptonmc.krypton.network.PacketState
+import org.kryptonmc.krypton.network.netty.PacketCompressor
+import org.kryptonmc.krypton.network.netty.PacketDecoder
+import org.kryptonmc.krypton.network.netty.PacketDecompressor
+import org.kryptonmc.krypton.network.netty.PacketDecrypter
+import org.kryptonmc.krypton.network.netty.PacketEncoder
+import org.kryptonmc.krypton.network.netty.PacketEncrypter
+import org.kryptonmc.krypton.network.netty.SizeDecoder
+import org.kryptonmc.krypton.network.netty.SizeEncoder
 import org.kryptonmc.krypton.util.encryption.Encryption
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readVelocityData
@@ -234,7 +234,7 @@ class LoginHandler(
 
     companion object {
 
-        private val VELOCITY_CHANNEL_ID = Key.key("velocity", "player_info")
+        private const val VELOCITY_CHANNEL_ID = "velocity:player_info"
         private val INVALID_VELOCITY_RESPONSE = text("Invalid proxy response!", NamedTextColor.RED)
         private val LOGGER = logger<LoginHandler>()
     }

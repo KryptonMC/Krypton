@@ -41,13 +41,7 @@ class PacketOutChat(
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(message)
-        buf.writeByte(type.id)
+        buf.writeByte(type.ordinal)
         buf.writeUUID(senderUUID)
     }
-
-    private val MessageType.id: Int
-        get() = when (this) {
-            MessageType.CHAT -> 0
-            MessageType.SYSTEM -> 1
-        }
 }

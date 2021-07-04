@@ -29,14 +29,9 @@ import org.kryptonmc.krypton.util.readVarInt
  */
 class PacketInEntityAction(buf: ByteBuf) : PlayPacket(0x1B) {
 
-    val action: EntityAction
-    val data: Int
-
-    init {
-        buf.readVarInt()
-        action = buf.readEnum()
-        data = buf.readVarInt()
-    }
+    val id = buf.readVarInt()
+    val action = buf.readEnum<EntityAction>()
+    val data = buf.readVarInt()
 }
 
 /**

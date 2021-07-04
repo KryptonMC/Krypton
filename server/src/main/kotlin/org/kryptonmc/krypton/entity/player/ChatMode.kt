@@ -16,26 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.data
-
-import org.kryptonmc.api.entity.MainHand
-import org.kryptonmc.api.event.play.SkinSettings
-
-/**
- * Holder for various settings sent by clients. Some of these settings, like [viewDistance],
- * [chatMode], [skinSettings] and [mainHand], we make use of. [locale] and [chatColors] are
- * currently unused, and merely there because the client sends these, and we will make use
- * of them later.
- */
-data class ClientSettings(
-    val locale: String,
-    val viewDistance: Byte,
-    val chatMode: ChatMode,
-    val chatColors: Boolean,
-    val skinSettings: SkinSettings,
-    val mainHand: MainHand,
-    val disableTextFiltering: Boolean
-)
+package org.kryptonmc.krypton.entity.player
 
 /**
  * The status of the client's chat mode. Enabled indicates that the client is happy to receive any

@@ -22,17 +22,18 @@ import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.packet.state.LoginPacket
 import org.kryptonmc.krypton.util.writeKey
+import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 class PacketOutPluginRequest(
     private val messageId: Int,
-    private val channel: Key,
+    private val channel: String,
     private val data: ByteArray
 ) : LoginPacket(0x04) {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(messageId)
-        buf.writeKey(channel)
+        buf.writeString(channel)
         buf.writeBytes(data)
     }
 }

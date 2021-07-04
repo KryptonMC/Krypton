@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.data
+package org.kryptonmc.krypton.packet.out.status
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement

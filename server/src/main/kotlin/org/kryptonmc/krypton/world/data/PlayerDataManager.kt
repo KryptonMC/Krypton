@@ -33,11 +33,13 @@ import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.createFile
 import org.kryptonmc.krypton.util.createTempFile
+import org.kryptonmc.krypton.util.daemon
 import org.kryptonmc.krypton.util.datafix.DATA_FIXER
 import org.kryptonmc.krypton.util.datafix.FixType
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.nbt.getInt
+import org.kryptonmc.krypton.util.threadFactory
 import java.io.IOException
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
@@ -54,7 +56,10 @@ import kotlin.io.path.outputStream
  */
 class PlayerDataManager(private val folder: Path) {
 
-    private val executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2)
+    private val executor = Executors.newFixedThreadPool(
+        Runtime.getRuntime().availableProcessors() / 2,
+        threadFactory("Player Data IO %d") { daemon() }
+    )
 
     fun load(player: KryptonPlayer): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
         val playerFile = folder.resolve("${player.uuid}.dat")

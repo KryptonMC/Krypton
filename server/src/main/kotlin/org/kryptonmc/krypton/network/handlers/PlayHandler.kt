@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.handlers
+package org.kryptonmc.krypton.network.handlers
 
 import com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
@@ -64,13 +64,15 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityRotation
+import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
-import org.kryptonmc.krypton.packet.session.Session
+import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.registry.Registries
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toAngle
+import org.kryptonmc.krypton.util.toSkinSettings
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import java.util.Locale
 import kotlin.math.max
@@ -89,6 +91,21 @@ class PlayHandler(
 ) : PacketHandler {
 
     private val playerManager = server.playerManager
+    private var lastKeepAlive = 0L
+    private var pendingKeepAlive = false
+
+    fun tick() {
+        val time = System.currentTimeMillis()
+        if (time - lastKeepAlive >= KEEP_ALIVE_INTERVAL) {
+            if (pendingKeepAlive) {
+                session.disconnect(translatable("disconnect.timeout"))
+            } else {
+                pendingKeepAlive = true
+                lastKeepAlive = time
+                session.sendPacket(PacketOutKeepAlive(time))
+            }
+        }
+    }
 
     override fun handle(packet: Packet) = when (packet) {
         is PacketInAnimation -> handleAnimation(packet)
@@ -115,7 +132,7 @@ class PlayHandler(
             Hand.OFF -> EntityAnimation.SWING_OFFHAND
         }
 
-        playerManager.sendToAll(PacketOutEntityAnimation(player.id, animation))
+        playerManager.sendToAll(PacketOutEntityAnimation(player.id, animation), player)
     }
 
     private fun handleChat(packet: PacketInChat) {
@@ -145,21 +162,19 @@ class PlayHandler(
     private fun handleClientSettings(packet: PacketInClientSettings) {
         val event = ClientSettingsEvent(
             player,
-            Locale(packet.settings.locale),
-            packet.settings.viewDistance.toInt(),
-            packet.settings.chatColors,
-            packet.settings.skinSettings
+            Locale(packet.locale),
+            packet.viewDistance.toInt(),
+            packet.chatColors,
+            packet.skinSettings.toSkinSettings()
         )
         server.eventManager.fireAndForget(event)
 
-        player.mainHand = packet.settings.mainHand
-        player.skinSettings = packet.settings.skinSettings
-        val metadataPacket = PacketOutEntityMetadata(
+        player.mainHand = packet.mainHand
+        player.skinSettings = packet.skinSettings.toByte()
+        playerManager.sendToAll(PacketOutEntityMetadata(
             player.id,
             player.data.dirty
-        )
-        session.sendPacket(metadataPacket)
-        playerManager.sendToAll(metadataPacket)
+        ))
     }
 
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
@@ -306,6 +321,8 @@ class PlayHandler(
 
     companion object {
 
+        private const val LATENCY_CHECK_INTERVAL = 15000
+        private const val KEEP_ALIVE_INTERVAL = 400
         private val LOGGER = logger<PlayHandler>()
     }
 }

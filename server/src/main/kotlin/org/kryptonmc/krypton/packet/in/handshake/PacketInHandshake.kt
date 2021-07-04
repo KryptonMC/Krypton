@@ -24,8 +24,7 @@ import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.auth.ProfileProperty
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketInfo
-import org.kryptonmc.krypton.packet.data.HandshakeData
-import org.kryptonmc.krypton.packet.state.PacketState
+import org.kryptonmc.krypton.network.PacketState
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
@@ -41,7 +40,10 @@ class PacketInHandshake(buf: ByteBuf) : Packet {
 
     override val info = PacketInfo(0x00, PacketState.HANDSHAKE)
 
-    val data = HandshakeData(buf.readVarInt(), buf.readString(), buf.readUnsignedShort().toUShort(), buf.readEnum())
+    val protocol = buf.readVarInt()
+    val address = buf.readString()
+    val port = buf.readUnsignedShort().toUShort()
+    val nextState = buf.readEnum<PacketState>()
 }
 
 /**

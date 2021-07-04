@@ -16,17 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.session
+package org.kryptonmc.krypton.network
 
 import io.netty.channel.Channel
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.handlers.HandshakeHandler
-import org.kryptonmc.krypton.packet.handlers.PacketHandler
+import org.kryptonmc.krypton.network.handlers.HandshakeHandler
+import org.kryptonmc.krypton.network.handlers.PacketHandler
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
-import org.kryptonmc.krypton.packet.state.PacketState
 
 /**
  * Represents a session, which is a connection between the server and a client.

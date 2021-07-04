@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.handlers
+package org.kryptonmc.krypton.network.handlers
 
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.packet.Packet
@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.packet.`in`.status.PacketInPing
 import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
 import org.kryptonmc.krypton.packet.out.status.PacketOutPong
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
-import org.kryptonmc.krypton.packet.session.Session
+import org.kryptonmc.krypton.network.Session
 
 /**
  * Handles all inbound packets in the [Status][org.kryptonmc.krypton.packet.state.PacketState.STATUS] state.
