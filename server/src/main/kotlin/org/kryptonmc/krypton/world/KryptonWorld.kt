@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world
 
+import com.mojang.serialization.Codec
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTString
@@ -25,6 +26,7 @@ import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.jglrxavpok.hephaistos.nbt.NBTWriter
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.registry.RegistryKey
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.world.Gamemode
@@ -52,6 +54,8 @@ import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.api.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.registry.InternalRegistryKeys
+import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.spongepowered.math.vector.Vector2d
 import org.spongepowered.math.vector.Vector3i
@@ -62,7 +66,6 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.io.path.copyTo
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 import kotlin.io.path.moveTo
@@ -109,7 +112,8 @@ data class KryptonWorld(
     val entities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
 
     val chunkManager = ChunkManager(this)
-    override val dimension = DimensionTypes.OVERWORLD
+    val dimension = OVERWORLD
+    override val dimensionType = DimensionTypes.OVERWORLD
 
     private var oldRainLevel = 0F
     override var rainLevel = 0F
@@ -145,7 +149,7 @@ data class KryptonWorld(
             if (entity is KryptonLivingEntity) PacketOutSpawnLivingEntity(entity) else PacketOutSpawnEntity(entity),
             PacketOutEntityMetadata(entity.id, entity.data.all)
         )
-        if (entity is KryptonLivingEntity) packets += PacketOutEntityProperties(entity.id, entity.attributes.syncableAttributes)
+        if (entity is KryptonLivingEntity) packets += PacketOutEntityProperties(entity.id, entity.attributes.syncable)
         players.forEach { player -> packets.forEach { player.session.sendPacket(it) } }
         entities += entity
     }
@@ -317,6 +321,14 @@ data class KryptonWorld(
             plus("world")
         }
         chunks.forEach { output.writeRow(it.position.x, it.position.z, it.world) }
+    }
+
+    companion object {
+
+        val REGISTRY_KEY_CODEC: Codec<RegistryKey<KryptonWorld>> = KEY_CODEC.xmap({ RegistryKey(InternalRegistryKeys.DIMENSION, it) }, RegistryKey<KryptonWorld>::location)
+        val OVERWORLD = RegistryKey(InternalRegistryKeys.DIMENSION, DimensionTypes.OVERWORLD_KEY)
+        val THE_NETHER = RegistryKey(InternalRegistryKeys.DIMENSION, DimensionTypes.THE_NETHER_KEY)
+        val THE_END = RegistryKey(InternalRegistryKeys.DIMENSION, DimensionTypes.THE_END_KEY)
     }
 }
 

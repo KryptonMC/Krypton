@@ -14,7 +14,7 @@ import org.kryptonmc.api.inventory.item.ItemStack
  * Represents an inventory that holds [ItemStack]s
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-interface Inventory : Iterable<ItemStack?> {
+interface Inventory : Iterable<ItemStack> {
 
     /**
      * The size of this inventory
@@ -32,20 +32,20 @@ interface Inventory : Iterable<ItemStack?> {
     val type: InventoryType
 
     /**
-     * The items in this inventory. The size of this collection should always
-     * be [size]
+     * The items in this inventory.
      */
-    val items: Array<ItemStack?>
+    val items: Array<ItemStack>
 
     /**
      * Retrieve an item from this inventory at the specified [index]
      *
      * @param index the index (slot, starts from 0) of the item to retrieve
-     * @return the item at that slot, or null if there is no item at that slot
+     * @return the item at that slot, or [ItemStack.EMPTY] if there is no item
+     * at that slot
      * @throws ArrayIndexOutOfBoundsException if [index] is out of bounds
      * (not in 0 <= [index] < [size])
      */
-    operator fun get(index: Int): ItemStack?
+    operator fun get(index: Int): ItemStack
 
     /**
      * Set the item at the specified [index] to the specified [item]

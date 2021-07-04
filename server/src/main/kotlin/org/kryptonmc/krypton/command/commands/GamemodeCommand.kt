@@ -1,3 +1,21 @@
+/*
+ * This file is part of the Krypton project, licensed under the GNU General Public License v3.0
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors of the Krypton project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package org.kryptonmc.krypton.command.commands
 
 import com.mojang.brigadier.CommandDispatcher
@@ -10,14 +28,8 @@ import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.out.play.GameState
-import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
-import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo.PlayerAction.UPDATE_GAMEMODE
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo.PlayerInfo
-import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.util.argument
 
 class GamemodeCommand(private val server: KryptonServer) : InternalCommand {
@@ -36,9 +48,7 @@ class GamemodeCommand(private val server: KryptonServer) : InternalCommand {
 
     private fun updateGameMode(player: KryptonPlayer, mode: Gamemode) {
         player.gamemode = mode
-        server.sessionManager.sendPackets(PacketOutPlayerInfo(UPDATE_GAMEMODE, listOf(PlayerInfo(gamemode = mode, profile = player.profile)))) {
-            it.currentState == PacketState.PLAY
-        }
+        server.playerManager.sendToAll(PacketOutPlayerInfo(UPDATE_GAMEMODE, player))
         player.sendMessage(translatable("commands.gamemode.success.self", listOf(translatable("gameMode.${mode.name.lowercase()}"))))
     }
 }

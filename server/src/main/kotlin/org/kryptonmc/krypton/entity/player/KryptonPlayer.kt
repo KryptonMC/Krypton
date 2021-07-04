@@ -32,17 +32,19 @@ import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.title.Title
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTList
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.player.Abilities
 import org.kryptonmc.api.entity.MainHand
+import org.kryptonmc.api.entity.player.Abilities
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.play.SkinSettings
-import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.RegistryKey
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Gamemode
@@ -51,6 +53,7 @@ import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
@@ -63,30 +66,37 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
 import org.kryptonmc.krypton.packet.out.play.PacketOutCamera
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChat
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerListHeaderFooter
-import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
-import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
-import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
-import org.kryptonmc.krypton.packet.out.play.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkData
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityMetadata
-import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityTeleport
 import org.kryptonmc.krypton.packet.out.play.PacketOutNamedSoundEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
+import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerListHeaderFooter
+import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
 import org.kryptonmc.krypton.packet.out.play.PacketOutSubTitle
+import org.kryptonmc.krypton.packet.out.play.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
+import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.session.Session
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.canBuild
 import org.kryptonmc.krypton.util.chunkInSpiral
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.nbt.NBTOps
+import org.kryptonmc.krypton.util.nbt.contains
+import org.kryptonmc.krypton.util.nbt.getBoolean
+import org.kryptonmc.krypton.util.nbt.getFloat
+import org.kryptonmc.krypton.util.nbt.getInt
+import org.kryptonmc.krypton.util.nbt.getList
+import org.kryptonmc.krypton.util.nbt.setBoolean
 import org.kryptonmc.krypton.util.toArea
 import org.kryptonmc.krypton.util.toItemStack
 import org.kryptonmc.krypton.util.toProtocol
@@ -94,6 +104,7 @@ import org.kryptonmc.krypton.util.toSkinSettings
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.bossbar.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
 import java.util.Locale
 import java.util.function.UnaryOperator
@@ -143,8 +154,15 @@ class KryptonPlayer(
             if (value != Gamemode.SPECTATOR) camera = this
         }
 
-    override val dimension: DimensionType
+    override val dimensionType: DimensionType
+        get() = world.dimensionType
+    val dimension: RegistryKey<KryptonWorld>
         get() = world.dimension
+
+    private var respawnPosition: Vector3i? = null
+    private var respawnForced = false
+    private var respawnAngle = 0F
+    private var respawnDimension = KryptonWorld.OVERWORLD
 
     private var previousCentralX = 0
     private var previousCentralZ = 0
@@ -163,7 +181,55 @@ class KryptonPlayer(
     override fun load(tag: NBTCompound) {
         super.load(tag)
         uuid = profile.uuid
+        oldGamemode = Gamemode.fromId(tag.getInt("previousPlayerGameType", -1))
+        gamemode = Gamemode.fromId(tag.getInt("playerGameType", 0)) ?: Gamemode.SURVIVAL
+        isOnGround = tag.getBoolean("OnGround", true)
+        inventory.load(tag.getList("Inventory", NBTList(NBTTypes.TAG_Compound)))
+        inventory.heldSlot = tag.getInt("SelectedItemSlot", 0)
+        score = tag.getInt("Score", 0)
+        if (tag.contains("abilities", NBTTypes.TAG_Compound)) abilities.load(tag.getCompound("abilities")!!)
+        attributes[Attributes.MOVEMENT_SPEED]?.baseValue = abilities.walkSpeed.toDouble()
+
+        // NBT data for entities sitting on the player's shoulders, e.g. parrots
+        if (tag.contains("ShoulderEntityLeft", NBTTypes.TAG_Compound)) leftShoulder = tag.getCompound("ShoulderEntityLeft")!!
+        if (tag.contains("ShoulderEntityRight", NBTTypes.TAG_Compound)) rightShoulder = tag.getCompound("ShoulderEntityRight")!!
+
+        // Respawn data
+        if (tag.contains("SpawnX", 99) && tag.contains("SpawnY", 99) && tag.contains("SpawnZ", 99)) {
+            respawnPosition = Vector3i(tag.getInt("SpawnX", 0), tag.getInt("SpawnY", 0), tag.getInt("SpawnZ", 0))
+            respawnForced = tag.getBoolean("SpawnForced", false)
+            respawnAngle = tag.getFloat("SpawnAngle", 0F)
+            if (tag.containsKey("SpawnDimension")) {
+                val dimension = KryptonWorld.REGISTRY_KEY_CODEC.parse(NBTOps, tag["SpawnDimension"]!!)
+                respawnDimension = dimension.resultOrPartial(LOGGER::error).orElse(KryptonWorld.OVERWORLD)
+            }
+        }
     }
+
+    override fun save() = super.save()
+        .setInt("DataVersion", ServerInfo.WORLD_VERSION)
+        .set("Inventory", inventory.save())
+        .setInt("SelectedItemSlot", inventory.heldSlot)
+        .setInt("Score", score)
+        .set("abilities", abilities.save())
+        .apply {
+            if (leftShoulder.size != 0) set("ShoulderEntityLeft", leftShoulder)
+            if (rightShoulder.size != 0) set("ShoulderEntityRight", rightShoulder)
+        }
+        .setInt("playerGameType", gamemode.ordinal)
+        .apply { oldGamemode?.let { setInt("previousPlayerGameType", it.ordinal) } }
+        .setString("Dimension", dimensionType.key.asString())
+        .apply {
+            val respawnPosition = respawnPosition
+            if (respawnPosition != null) {
+                setInt("SpawnX", respawnPosition.x())
+                setInt("SpawnY", respawnPosition.y())
+                setInt("SpawnZ", respawnPosition.z())
+                setBoolean("SpawnForced", respawnForced)
+                setFloat("SpawnAngle", respawnAngle)
+                KryptonWorld.REGISTRY_KEY_CODEC.encodeStart(NBTOps, respawnDimension).resultOrPartial(LOGGER::error).ifPresent { set("SpawnDimension", it) }
+            }
+        }
 
     override fun spawnParticles(particleEffect: ParticleEffect, location: Location) {
         val packet = PacketOutParticle(particleEffect, location)
@@ -246,10 +312,10 @@ class KryptonPlayer(
 
     override fun openBook(book: Book) {
         val (item, nbt) = book.toItemStack(locale ?: Locale.ENGLISH)
-        val slot = inventory.mainHand?.let { inventory.items.indexOf(it) } ?: return
+        val slot = inventory.heldSlot
         session.sendPacket(PacketOutSetSlot(inventory.id, slot, item, nbt))
         session.sendPacket(PacketOutOpenBook(hand))
-        session.sendPacket(PacketOutSetSlot(inventory.id, slot, inventory.mainHand ?: ItemStack.EMPTY))
+        session.sendPacket(PacketOutSetSlot(inventory.id, slot, inventory.mainHand))
     }
 
     override fun identity() = Identity.identity(uuid)
@@ -323,7 +389,7 @@ class KryptonPlayer(
     private fun onAbilitiesUpdate() {
         session.sendPacket(PacketOutAbilities(abilities))
         updateInvisibility()
-        server.sessionManager.sendPackets(PacketOutEntityMetadata(id, data.dirty))
+        server.playerManager.sendToAll(PacketOutEntityMetadata(id, data.dirty), world)
     }
 
     private fun updateInvisibility() {
@@ -331,9 +397,13 @@ class KryptonPlayer(
         isInvisible = gamemode == Gamemode.SPECTATOR
     }
 
-    var additionalHearts: Float
+    override var absorption: Float
         get() = data[MetadataKeys.PLAYER.ADDITIONAL_HEARTS]
         set(value) = data.set(MetadataKeys.PLAYER.ADDITIONAL_HEARTS, value)
+
+    var score: Int
+        get() = data[MetadataKeys.PLAYER.SCORE]
+        set(value) = data.set(MetadataKeys.PLAYER.SCORE, value)
 
     var skinSettings: SkinSettings
         get() = data[MetadataKeys.PLAYER.SKIN_FLAGS].toSkinSettings()
@@ -372,6 +442,7 @@ class KryptonPlayer(
             key("debug/raids")
         )
         private val PREREGISTERED_CHANNELS = DEBUG_CHANNELS + key("brand")
+        private val LOGGER = logger<KryptonPlayer>()
         private val SERVER_LOGGER = logger<KryptonServer>()
 
         fun createAttributes() = KryptonLivingEntity.createAttributes()

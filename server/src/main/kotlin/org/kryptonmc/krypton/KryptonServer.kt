@@ -43,15 +43,12 @@ import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDE
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.console.KryptonConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.MetadataResponse
 import org.kryptonmc.krypton.locale.TranslationRepository
 import org.kryptonmc.krypton.packet.PacketLoader
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
-import org.kryptonmc.krypton.packet.session.SessionManager
-import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.registry.json.RegistryBlock
@@ -59,6 +56,7 @@ import org.kryptonmc.krypton.registry.json.RegistryBlockState
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.serializers.DifficultySerializer
 import org.kryptonmc.krypton.serializers.GamemodeSerializer
+import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.server.query.GS4QueryHandler
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.util.Bootstrap
@@ -77,7 +75,6 @@ import org.kryptonmc.krypton.util.profiling.decorate
 import org.kryptonmc.krypton.util.reports.CrashReport
 import org.kryptonmc.krypton.util.reports.ReportedException
 import org.kryptonmc.krypton.world.KryptonWorldManager
-import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
@@ -112,21 +109,21 @@ class KryptonServer(val mainThread: Thread) : Server {
 
     override val address = InetSocketAddress(config.server.ip, config.server.port)
 
-    override val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
+    val playerManager = PlayerManager(this)
+
+    override val players = playerManager.players
     override val channels: MutableSet<Key> = ConcurrentHashMap.newKeySet()
 
-    override fun player(uuid: UUID) = players.firstOrNull { it.uuid == uuid }
-    override fun player(name: String) = players.firstOrNull { it.name == name }
+    override fun player(uuid: UUID) = playerManager.playersByUUID[uuid]
+    override fun player(name: String) = playerManager.playersByName[name]
 
     override val console = KryptonConsoleSender
 
-    override var scoreboard: KryptonScoreboard? = null; private set
+    override var scoreboard: KryptonScoreboard? = null
+        private set
 
     private val nettyProcess = NettyProcess(this)
     internal val random: SecureRandom = SecureRandom()
-
-    val sessionManager = SessionManager(this)
-    val playerDataManager = PlayerDataManager(CURRENT_DIRECTORY.resolve(config.world.name).resolve("playerdata").createDirectory())
 
     override val worldManager = KryptonWorldManager(this, config.world.name)
     override val commandManager = KryptonCommandManager(this)
@@ -151,8 +148,6 @@ class KryptonServer(val mainThread: Thread) : Server {
     internal val tickTimes = LongArray(100)
     internal var averageTickTime = 0F
         private set
-
-    val tickables = mutableListOf<Runnable>()
 
     val continuousProfiler = ServerProfiler(this::tickCount)
     private var profiler: Profiler = DeadProfiler
@@ -306,22 +301,20 @@ class KryptonServer(val mainThread: Thread) : Server {
 
     private fun tick() {
         tickCount++
-        if (players.isEmpty()) return // don't tick if there are no players on the server
+        if (playerManager.players.isEmpty()) return // don't tick if there are no players on the server
+        val time = System.currentTimeMillis()
 
         worldManager.worlds.forEach { (_, world) ->
-            profiler.push { "$world in ${world.dimension}" }
+            profiler.push { "$world in ${world.dimensionType}" }
             if (tickCount % 20 == 0) {
                 profiler.push("time sync")
-                val timePacket = PacketOutTimeUpdate(world.time, world.dayTime)
-                sessionManager.sessions.asSequence()
-                    .filter { it.currentState == PacketState.PLAY }
-                    .filter { it.player.world == world }
-                    .forEach { it.sendPacket(timePacket) }
+                playerManager.sendToAll(PacketOutTimeUpdate(world.time, world.dayTime), world)
                 profiler.pop()
             }
             world.tick(profiler)
             profiler.pop()
         }
+        playerManager.tick(time)
         if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
             profiler.push("autosave")
             Messages.AUTOSAVE.STARTED.info(LOGGER)
@@ -329,7 +322,6 @@ class KryptonServer(val mainThread: Thread) : Server {
             Messages.AUTOSAVE.FINISHED.info(LOGGER)
             profiler.pop()
         }
-        tickables.forEach { it.run() }
     }
 
     fun startProfiling() {
@@ -367,22 +359,18 @@ class KryptonServer(val mainThread: Thread) : Server {
     override fun registerChannel(channel: Key) {
         require(channel !in RESERVED_CHANNELS) { "Cannot register reserved channel with name \"minecraft:register\" or \"minecraft:unregister\"!" }
         channels += channel
-        sessionManager.sendPackets(PacketOutPluginMessage(key("register"), channel.asString().encodeToByteArray())) {
-            it.currentState == PacketState.PLAY
-        }
+        playerManager.sendToAll(PacketOutPluginMessage(REGISTER_CHANNEL_KEY, channel.asString().encodeToByteArray()))
     }
 
     override fun unregisterChannel(channel: Key) {
         channels -= channel
         require(channel !in RESERVED_CHANNELS) { "Cannot unregister reserved channels with name \"minecraft:register\" or \"minecraft:unregister\"!" }
-        sessionManager.sendPackets(PacketOutPluginMessage(key("unregister"), channel.asString().encodeToByteArray())) {
-            it.currentState == PacketState.PLAY
-        }
+        playerManager.sendToAll(PacketOutPluginMessage(UNREGISTER_CHANNEL_KEY, channel.asString().encodeToByteArray()))
     }
 
     override fun broadcast(message: Component, permission: String?) {
         if (permission != null) {
-            players.filter { it.hasPermission(permission) }.forEach { it.sendMessage(message) }
+            playerManager.players.filter { it.hasPermission(permission) }.forEach { it.sendMessage(message) }
             console.sendMessage(message)
             return
         }
@@ -410,7 +398,7 @@ class KryptonServer(val mainThread: Thread) : Server {
         // stop server and shut down session manager (disconnecting all players)
         Messages.STOP.INITIAL.info(LOGGER)
         isRunning = false
-        sessionManager.shutdown()
+        playerManager.disconnectAll()
         nettyProcess.shutdown()
         gs4QueryHandler?.stop()
         watchdog?.shutdown()
@@ -418,7 +406,7 @@ class KryptonServer(val mainThread: Thread) : Server {
         // save player, world and region data
         Messages.STOP.SAVE.info(LOGGER)
         worldManager.saveAll()
-        players.forEach { playerDataManager.save(it) }
+        playerManager.shutdown()
 
         // shut down plugins and unregister listeners
         Messages.STOP.PLUGINS.info(LOGGER)
@@ -452,7 +440,7 @@ class KryptonServer(val mainThread: Thread) : Server {
     }
 
     private fun fillReport(report: CrashReport): CrashReport = report.apply {
-        systemDetails["Player Count"] = { "${players.size} / ${status.maxPlayers}" }
+        systemDetails["Player Count"] = { "${playerManager.players.size} / ${status.maxPlayers}" }
     }
 
     object KryptonServerInfo : Server.ServerInfo {
@@ -472,7 +460,9 @@ class KryptonServer(val mainThread: Thread) : Server {
 
     companion object {
 
-        private val RESERVED_CHANNELS = setOf(key("register"), key("unregister"))
+        val REGISTER_CHANNEL_KEY = key("register")
+        private val UNREGISTER_CHANNEL_KEY = key("unregister")
+        private val RESERVED_CHANNELS = setOf(REGISTER_CHANNEL_KEY, UNREGISTER_CHANNEL_KEY)
 
         private val DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")
         private val TIME_NOW: String get() = LocalDateTime.now().format(DATE_FORMAT)

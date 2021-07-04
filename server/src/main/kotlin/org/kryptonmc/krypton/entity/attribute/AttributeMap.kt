@@ -31,7 +31,7 @@ import java.util.UUID
 class AttributeMap(private val supplier: AttributeSupplier) : Iterable<Map.Entry<Attribute, AttributeInstance?>> {
 
     private val attributes = mutableMapOf<Attribute, AttributeInstance?>()
-    val dirtyAttributes = mutableSetOf<AttributeInstance>()
+    val dirty = mutableSetOf<AttributeInstance>()
 
     operator fun get(attribute: Attribute) = attributes.getOrPut(attribute) { supplier.create(::onModify, attribute) }
 
@@ -74,12 +74,12 @@ class AttributeMap(private val supplier: AttributeSupplier) : Iterable<Map.Entry
 
     private fun onModify(instance: AttributeInstance) {
         if (!instance.attribute.isSyncable) return
-        dirtyAttributes += instance
+        dirty += instance
     }
 
     override fun iterator() = attributes.iterator()
 
-    val syncableAttributes: Collection<AttributeInstance>
+    val syncable: Collection<AttributeInstance>
         get() = attributes.values.asSequence().filterNotNull().filter { it.attribute.isSyncable }.toList()
 
     companion object {

@@ -59,6 +59,13 @@ class MetadataHolder(private val entity: KryptonEntity) {
         isDirty = true
     }
 
+    fun invalidateDirty() {
+        isDirty = false
+        lock.readLock().lock()
+        itemsById.values.forEach { it.isDirty = false }
+        lock.readLock().unlock()
+    }
+
     @Suppress("ReplacePutWithAssignment") // Specialised fastutil put
     private fun <T> createItem(key: MetadataKey<T>, value: T) {
         val item = Entry(key, value)
@@ -87,7 +94,7 @@ class MetadataHolder(private val entity: KryptonEntity) {
             lock.readLock().lock()
             val entries = itemsById.values.map { it.copy() }
             lock.readLock().unlock()
-            return entries
+            return entries.apply { invalidateDirty() }
         }
 
     val dirty: List<Entry<*>>
@@ -123,7 +130,7 @@ private const val EOF_MARKER = 255
 
 fun List<MetadataHolder.Entry<*>>.write(buf: ByteBuf) {
     forEach { buf.writeEntry(it) }
-    if (isNotEmpty()) buf.writeByte(EOF_MARKER)
+    buf.writeByte(EOF_MARKER)
 }
 
 private fun <T> ByteBuf.writeEntry(entry: MetadataHolder.Entry<T>) {

@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.util.writeVarInt
  * Declares available crafting recipes. Or, it would if there were recipes to declare.
  */
 // TODO: Add some recipes here
-class PacketOutDeclareRecipes : PlayPacket(0x65) {
+object PacketOutDeclareRecipes : PlayPacket(0x65) {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(0)

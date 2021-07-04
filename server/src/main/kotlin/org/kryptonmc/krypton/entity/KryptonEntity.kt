@@ -38,6 +38,8 @@ import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.util.nbt.Serializable
 import org.kryptonmc.krypton.util.nbt.contains
 import org.kryptonmc.krypton.util.nbt.containsUUID
 import org.kryptonmc.krypton.util.nbt.getBoolean
@@ -46,6 +48,8 @@ import org.kryptonmc.krypton.util.nbt.getOrNull
 import org.kryptonmc.krypton.util.nbt.getShort
 import org.kryptonmc.krypton.util.nbt.getString
 import org.kryptonmc.krypton.util.nbt.getUUID
+import org.kryptonmc.krypton.util.nbt.setBoolean
+import org.kryptonmc.krypton.util.nbt.setUUID
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.Optional
@@ -57,7 +61,7 @@ import kotlin.random.Random
 abstract class KryptonEntity(
     override var world: KryptonWorld,
     override val type: EntityType<out Entity>
-) : KryptonSender(world.server), Entity {
+) : KryptonSender(world.server), Entity, Serializable<NBTCompound> {
 
     val id = ServerStorage.NEXT_ENTITY_ID.incrementAndGet()
     val data = MetadataHolder(this)
@@ -89,7 +93,7 @@ abstract class KryptonEntity(
         // TODO: Data updating
     }
 
-    open fun load(tag: NBTCompound) {
+    override fun load(tag: NBTCompound) {
         val position = tag.getList<NBTDouble>("Pos", NBTList(NBTTypes.TAG_Double))
         val motion = tag.getList<NBTDouble>("Motion", NBTList(NBTTypes.TAG_Double))
         val rotation = tag.getList<NBTFloat>("Rotation", NBTList(NBTTypes.TAG_Double))
@@ -116,6 +120,36 @@ abstract class KryptonEntity(
         hasGravity = !tag.getBoolean("NoGravity", false)
         isGlowing = tag.getBoolean("Glowing", false)
     }
+
+    override fun save() = NBTCompound()
+        .setShort("Air", airTicks.toShort())
+        .apply {
+            if (isDisplayNameVisible) {
+                setBoolean("CustomNameVisible", true)
+                setString("CustomName", GsonComponentSerializer.gson().serialize(displayName))
+            }
+            if (isSilent) setBoolean("Silent", true)
+            if (!hasGravity) setBoolean("NoGravity", true)
+            if (isGlowing) setBoolean("Glowing", true)
+            if (frozenTicks > 0) setInt("TicksFrozen", frozenTicks)
+            if (this@KryptonEntity !is KryptonPlayer) setString("id", type.key.asString())
+        }
+        .set("Motion", NBTList<NBTDouble>(NBTTypes.TAG_Double).apply {
+            add(NBTDouble(velocity.x))
+            add(NBTDouble(velocity.y))
+            add(NBTDouble(velocity.z))
+        })
+        .setBoolean("OnGround", isOnGround)
+        .set("Pos", NBTList<NBTDouble>(NBTTypes.TAG_Double).apply {
+            add(NBTDouble(location.x))
+            add(NBTDouble(location.y))
+            add(NBTDouble(location.z))
+        })
+        .set("Rotation", NBTList<NBTFloat>(NBTTypes.TAG_Float).apply {
+            add(NBTFloat(location.yaw))
+            add(NBTFloat(location.pitch))
+        })
+        .setUUID("UUID", uuid)
 
     private fun getSharedFlag(flag: Int) = data[MetadataKeys.FLAGS].toInt() and (1 shl flag) != 0
 
@@ -181,4 +215,8 @@ abstract class KryptonEntity(
     var pose: Pose
         get() = data[MetadataKeys.POSE]
         set(value) = data.set(MetadataKeys.POSE, value)
+
+    var frozenTicks: Int
+        get() = data[MetadataKeys.FROZEN_TICKS]
+        set(value) = data.set(MetadataKeys.FROZEN_TICKS, value)
 }

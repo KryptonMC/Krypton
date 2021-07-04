@@ -48,7 +48,7 @@ interface World : ForwardingAudience {
     /**
      * The dimension that this world is.
      */
-    val dimension: DimensionType
+    val dimensionType: DimensionType
 
     /**
      * The spawn location of this world.

@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeString
@@ -36,8 +37,10 @@ import org.kryptonmc.krypton.util.writeVarInt
  */
 class PacketOutPlayerInfo(
     private val action: PlayerAction,
-    private val players: List<PlayerInfo> = emptyList()
+    private val players: Collection<KryptonPlayer> = emptyList()
 ) : PlayPacket(0x36) {
+
+    constructor(action: PlayerAction, vararg players: KryptonPlayer) : this(action, players.toList())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(action.ordinal)
@@ -58,12 +61,12 @@ class PacketOutPlayerInfo(
                     }
 
                     buf.writeVarInt(update.gamemode.ordinal)
-                    buf.writeVarInt(update.latency)
+                    buf.writeVarInt(update.session.latency)
                     buf.writeBoolean(true)
                     buf.writeChat(update.displayName)
                 }
                 PlayerAction.UPDATE_GAMEMODE -> buf.writeVarInt(update.gamemode.ordinal)
-                PlayerAction.UPDATE_LATENCY -> buf.writeVarInt(update.latency)
+                PlayerAction.UPDATE_LATENCY -> buf.writeVarInt(update.session.latency)
                 PlayerAction.UPDATE_DISPLAY_NAME -> {
                     buf.writeBoolean(true)
                     buf.writeChat(update.displayName)

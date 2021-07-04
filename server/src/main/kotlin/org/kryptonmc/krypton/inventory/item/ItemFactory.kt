@@ -16,35 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.handlers
+package org.kryptonmc.krypton.inventory.item
 
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.session.Session
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.kryptonmc.api.inventory.item.ItemStack
+import org.kryptonmc.api.inventory.item.Material
+import org.kryptonmc.api.util.toKey
+import org.kryptonmc.krypton.util.nbt.getByte
 
-/**
- * The base interface for packet handlers. This exists primarily to abstract away the [handle]
- * function, so we can call it without actually knowing which handler will handle it. :wesmart:
- */
-interface PacketHandler {
+object ItemFactory {
 
-    /**
-     * The server that this handler is running on
-     */
-    val server: KryptonServer
-
-    /**
-     * The session that this handler handles packets for
-     */
-    val session: Session
-
-    /**
-     * Handle the specified [packet]
-     *
-     * @param packet the packet to handle
-     */
-    fun handle(packet: Packet)
-
-    @Suppress("OptionalUnit")
-    fun onDisconnect() = Unit
+    fun create(tag: NBTCompound): ItemStack {
+        val type = tag.getString("id")?.toKey()?.let { Material.KEYS.value(it) } ?: error("Invalid item stack ${tag.getString("id")}")
+        val amount = tag.getByte("Count", 0).toInt()
+        return ItemStack(type, amount)
+    }
 }

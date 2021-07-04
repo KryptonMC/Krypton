@@ -53,6 +53,8 @@ fun Double.clamp(low: Double, high: Double) = if (this < low) low else if (this 
 
 fun Float.clamp(low: Float, high: Float) = if (this < low) low else if (this > high) high else this
 
+fun nextInt(random: Random, lower: Int, upper: Int) = if (lower >= upper) lower else random.nextInt(upper - lower + 1) + lower
+
 /**
  * Calculates a chunk position from a given [id] in a spiral pattern.
  *

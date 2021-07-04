@@ -71,7 +71,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
     init {
         default = try {
             Messages.WORLD.LOAD.info(LOGGER, name)
-            load(name).get()
+            load(name).get().apply { if (server.config.world.forceDefaultGamemode) gamemode = server.gamemode }
         } catch (exception: Exception) {
             if (exception !is IllegalArgumentException) Messages.WORLD.LOAD_ERROR.error(LOGGER, name, exception)
             exitProcess(0)

@@ -122,7 +122,7 @@ interface Server : ForwardingAudience {
     /**
      * The list of online players.
      */
-    val players: Set<Player>
+    val players: List<Player>
 
     /**
      * Get a player by their [uuid].

@@ -21,9 +21,7 @@ package org.kryptonmc.krypton.packet.session
 import io.netty.channel.Channel
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.data.ClientSettings
 import org.kryptonmc.krypton.packet.handlers.HandshakeHandler
 import org.kryptonmc.krypton.packet.handlers.PacketHandler
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
@@ -40,9 +38,6 @@ class Session(
     server: KryptonServer,
     internal val channel: Channel
 ) {
-
-    lateinit var settings: ClientSettings
-    lateinit var player: KryptonPlayer
 
     var lastKeepAliveId = 0L
     var latency = 0

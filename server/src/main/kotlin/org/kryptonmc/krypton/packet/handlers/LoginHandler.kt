@@ -41,10 +41,11 @@ import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
 import org.kryptonmc.krypton.packet.`in`.login.PacketInPluginResponse
 import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
+import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutPluginRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.packet.session.Session
-import org.kryptonmc.krypton.packet.session.SessionManager
+import org.kryptonmc.krypton.packet.state.PacketState
 import org.kryptonmc.krypton.packet.transformers.PacketCompressor
 import org.kryptonmc.krypton.packet.transformers.PacketDecoder
 import org.kryptonmc.krypton.packet.transformers.PacketDecompressor
@@ -74,10 +75,11 @@ import kotlin.random.Random
  */
 class LoginHandler(
     override val server: KryptonServer,
-    private val sessionManager: SessionManager,
     override val session: Session,
     private val bungeecordData: BungeeCordHandshakeData?
 ) : PacketHandler {
+
+    private val playerManager = server.playerManager
 
     private val velocityMessageId = Random.nextInt(Short.MAX_VALUE.toInt())
     private var name = ""
@@ -99,9 +101,9 @@ class LoginHandler(
         val rawAddress = session.channel.remoteAddress() as InetSocketAddress
         val address = if (bungeecordData != null) InetSocketAddress(bungeecordData.forwardedIp, rawAddress.port) else rawAddress
 
+        name = packet.name
         if (!server.isOnline) {
             if (server.config.proxy.mode == ForwardingMode.MODERN) {
-                name = packet.name
                 session.sendPacket(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
                 return
             }
@@ -110,14 +112,12 @@ class LoginHandler(
             val uuid = bungeecordData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
             val profile = GameProfile(uuid, packet.name, bungeecordData?.properties ?: emptyList())
 
-            session.player = KryptonPlayer(session, profile, server.worldManager.default, address)
+            val player = KryptonPlayer(session, profile, server.worldManager.default, address)
             if (!callLoginEvent(profile)) return
-
-            sessionManager.beginPlayState(session)
+            finishLogin(player)
             return
         }
 
-        name = packet.name
         session.sendPacket(PacketOutEncryptionRequest(Encryption.publicKey, verifyToken))
     }
 
@@ -140,8 +140,8 @@ class LoginHandler(
 
             val rawAddress = session.channel.remoteAddress() as InetSocketAddress
             val address = if (bungeecordData != null) InetSocketAddress(bungeecordData.forwardedIp, rawAddress.port) else rawAddress
-            session.player = KryptonPlayer(session, profile, server.worldManager.default, address)
-            sessionManager.beginPlayState(session)
+            val player = KryptonPlayer(session, profile, server.worldManager.default, address)
+            finishLogin(player)
         }
     }
 
@@ -163,14 +163,21 @@ class LoginHandler(
 
         LOGGER.debug("Detected Velocity login for ${data.uuid}")
         val profile = GameProfile(data.uuid, data.username, data.properties)
-        session.player = KryptonPlayer(session, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port))
-        sessionManager.beginPlayState(session)
+        val player = KryptonPlayer(session, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port))
+        finishLogin(player)
+    }
+
+    private fun finishLogin(player: KryptonPlayer) {
+        session.sendPacket(PacketOutLoginSuccess(player.uuid, player.name))
+        session.handler = PlayHandler(server, session, player)
+        session.currentState = PacketState.PLAY
+        playerManager.add(player, session)
     }
 
     private fun verifyToken(expected: ByteArray, actual: ByteArray): Boolean {
         val decryptedActual = Encryption.decrypt(actual)
         require(decryptedActual.contentEquals(expected)) {
-            Messages.NETWORK.LOGIN.FAIL_VERIFY_ERROR.error(LOGGER, session.player.name, expected.contentToString(), decryptedActual.contentToString())
+            Messages.NETWORK.LOGIN.FAIL_VERIFY_ERROR.error(LOGGER, name, expected.contentToString(), decryptedActual.contentToString())
             session.disconnect(translatable("disconnect.loginFailedInfo", listOf(Messages.NETWORK.LOGIN.FAIL_VERIFY())))
             return false
         }

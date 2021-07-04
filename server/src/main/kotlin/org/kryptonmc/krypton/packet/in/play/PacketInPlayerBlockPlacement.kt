@@ -23,7 +23,6 @@ import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.toVector
 import org.kryptonmc.krypton.util.toVector3i
 import org.kryptonmc.krypton.world.block.BlockFace
 

@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.world.Location
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.toProtocol
+import org.spongepowered.math.vector.Vector3i
 
 class PacketOutSpawnPosition(
-    private val position: Location,
+    private val position: Vector3i,
     private val angle: Float = 0F
 ) : PlayPacket(0x4B) {
 

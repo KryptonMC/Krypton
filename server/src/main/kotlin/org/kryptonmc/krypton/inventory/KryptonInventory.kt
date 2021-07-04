@@ -27,10 +27,11 @@ abstract class KryptonInventory(
     val id: Int,
     override val type: InventoryType,
     override val owner: InventoryHolder,
-    final override val size: Int
+    final override val size: Int,
+    totalItems: Int = size
 ) : Inventory {
 
-    override val items = arrayOfNulls<ItemStack>(size)
+    override val items = Array(totalItems) { ItemStack.EMPTY }
 
     override fun get(index: Int) = items[index]
 
@@ -41,7 +42,7 @@ abstract class KryptonInventory(
     override fun contains(item: ItemStack) = item in items
 
     override fun plusAssign(item: ItemStack) = items.forEachIndexed { index, element ->
-        if (element == null) {
+        if (element === ItemStack.EMPTY) {
             items[index] = item
             return
         }
@@ -49,12 +50,12 @@ abstract class KryptonInventory(
 
     override fun minusAssign(item: ItemStack) = items.forEachIndexed { index, element ->
         if (element == item) {
-            items[index] = null
+            items[index] = ItemStack.EMPTY
             return
         }
     }
 
-    override fun clear() = items.forEachIndexed { index, _ -> items[index] = null }
+    override fun clear() = items.forEachIndexed { index, _ -> items[index] = ItemStack.EMPTY }
 
     override fun iterator() = items.iterator()
 }

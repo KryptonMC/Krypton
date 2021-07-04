@@ -39,6 +39,6 @@ data class Abilities @JvmOverloads constructor(
         /**
          * The default flying speed for players.
          */
-        const val DEFAULT_FLYING_SPEED = 0.05f
+        const val DEFAULT_FLYING_SPEED = 0.05F
     }
 }

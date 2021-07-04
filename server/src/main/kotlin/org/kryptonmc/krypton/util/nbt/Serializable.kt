@@ -16,35 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.handlers
+package org.kryptonmc.krypton.util.nbt
 
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.session.Session
+import org.jglrxavpok.hephaistos.nbt.NBT
 
-/**
- * The base interface for packet handlers. This exists primarily to abstract away the [handle]
- * function, so we can call it without actually knowing which handler will handle it. :wesmart:
- */
-interface PacketHandler {
+interface Serializable<T : NBT> {
 
-    /**
-     * The server that this handler is running on
-     */
-    val server: KryptonServer
+    fun load(tag: T)
 
-    /**
-     * The session that this handler handles packets for
-     */
-    val session: Session
-
-    /**
-     * Handle the specified [packet]
-     *
-     * @param packet the packet to handle
-     */
-    fun handle(packet: Packet)
-
-    @Suppress("OptionalUnit")
-    fun onDisconnect() = Unit
+    fun save(): T
 }

@@ -106,7 +106,7 @@ class HandshakeHandler(
             session.disconnect(translatable { key("multiplayer.disconnect.server_full") })
             return
         }
-        session.handler = LoginHandler(server, server.sessionManager, session, data)
+        session.handler = LoginHandler(server, session, data)
     }
 
     /**

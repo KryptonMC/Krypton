@@ -18,28 +18,38 @@
  */
 package org.kryptonmc.krypton.inventory
 
+import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTList
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.inventory.item.ItemStack
+import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.inventory.item.ItemFactory
+import org.kryptonmc.krypton.inventory.item.save
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeldItemChange
+import org.kryptonmc.krypton.util.nbt.Serializable
+import org.kryptonmc.krypton.util.nbt.getByte
 
-class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE), PlayerInventory {
+class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory, Serializable<NBTList<NBTCompound>> {
 
-    override val crafting: Array<ItemStack?> get() = items.copyOfRange(0, 5)
-    override val armor: Array<ItemStack?> get() = items.copyOfRange(5, 9)
-    override val main: Array<ItemStack?> get() = items.copyOfRange(9, 36)
-    override val hotbar: Array<ItemStack?> get() = items.copyOfRange(36, 45)
+    override val armor = Array(4) { ItemStack.EMPTY }
 
-    override val helmet: ItemStack? get() = armor[0]
-    override val chestplate: ItemStack? get() = armor[1]
-    override val leggings: ItemStack? get() = armor[2]
-    override val boots: ItemStack? get() = armor[3]
+    override val helmet: ItemStack
+        get() = armor[0]
+    override val chestplate: ItemStack
+        get() = armor[1]
+    override val leggings: ItemStack
+        get() = armor[2]
+    override val boots: ItemStack
+        get() = armor[3]
 
     override var heldSlot = 0
 
-    override val mainHand: ItemStack? get() = hotbar[heldSlot]
-    override val offHand: ItemStack? get() = items[45]
+    override val mainHand: ItemStack
+        get() = items[heldSlot]
+    override var offHand = ItemStack.EMPTY
 
     override fun set(index: Int, item: ItemStack) {
         super.set(index, item)
@@ -48,15 +58,32 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         owner.session.sendPacket(PacketOutHeldItemChange(index))
     }
 
-    internal fun populate(itemMap: Map<Int, ItemStack>) {
-        // set hotbar items
-        for (i in 0..8) {
-            if (itemMap[i] != null) items[i + 36] = itemMap[i]
+    override fun load(tag: NBTList<NBTCompound>) {
+        clear()
+        tag.forEach {
+            val slot = it.getByte("Slot", 0).toInt() and 255
+            val stack = ItemFactory.create(it)
+            if (stack.type == Material.AIR) return@forEach
+            when (slot) {
+                in items.indices -> items[slot] = stack
+                in 100..103 -> armor[slot - 100] = stack
+                -106 -> offHand = stack
+            }
         }
-        // set main inventory items
-        for (i in 9..35) {
-            if (itemMap[i] != null) items[i + 9] = itemMap[i]
+    }
+
+    override fun save(): NBTList<NBTCompound> {
+        val list = NBTList<NBTCompound>(NBTTypes.TAG_Compound)
+        items.forEachIndexed { index, item ->
+            if (item == ItemStack.EMPTY) return@forEachIndexed
+            list.add(NBTCompound().setByte("Slot", index.toByte()).apply { item.save(this) })
         }
+        armor.forEachIndexed { index, item ->
+            if (item == ItemStack.EMPTY) return@forEachIndexed
+            list.add(NBTCompound().setByte("Slot", (index + 100).toByte()).apply { item.save(this) })
+        }
+        list.add(NBTCompound().setByte("Slot", -106).apply { offHand.save(this) })
+        return list
     }
 
     companion object {

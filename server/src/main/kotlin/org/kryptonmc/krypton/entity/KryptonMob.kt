@@ -24,6 +24,7 @@ import org.kryptonmc.api.entity.Mob
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.util.nbt.getBoolean
+import org.kryptonmc.krypton.util.nbt.setBoolean
 import org.kryptonmc.krypton.world.KryptonWorld
 
 abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : KryptonLivingEntity(world, type), Mob {
@@ -37,6 +38,10 @@ abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : Kryp
         isLeftHanded = tag.getBoolean("LeftHanded", false)
         hasAI = !tag.getBoolean("NoAI", false)
     }
+
+    override fun save() = super.save()
+        .setBoolean("LeftHanded", isLeftHanded)
+        .apply { if (!hasAI) setBoolean("NoAI", true) }
 
     var hasAI: Boolean
         get() = data[MetadataKeys.MOB.FLAGS].toInt() and 1 == 0

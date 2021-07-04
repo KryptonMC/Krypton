@@ -1,0 +1,261 @@
+/*
+ * This file is part of the Krypton project, licensed under the GNU General Public License v3.0
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors of the Krypton project
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package org.kryptonmc.krypton.server
+
+import net.kyori.adventure.audience.ForwardingAudience
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
+import org.kryptonmc.api.event.login.JoinEvent
+import org.kryptonmc.api.event.play.QuitEvent
+import org.kryptonmc.api.world.rule.GameRules
+import org.kryptonmc.krypton.CURRENT_DIRECTORY
+import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.ServerStorage
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.data.ServerStatus
+import org.kryptonmc.krypton.packet.out.play.GameState
+import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
+import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
+import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
+import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityDestroy
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityHeadLook
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityMetadata
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityProperties
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
+import org.kryptonmc.krypton.packet.out.play.PacketOutHeldItemChange
+import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
+import org.kryptonmc.krypton.packet.out.play.PacketOutJoinGame
+import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerPositionAndLook
+import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
+import org.kryptonmc.krypton.packet.out.play.PacketOutServerDifficulty
+import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
+import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutTags
+import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
+import org.kryptonmc.krypton.packet.out.play.PacketOutUnlockRecipes
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
+import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
+import org.kryptonmc.krypton.packet.session.Session
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.nextInt
+import org.kryptonmc.krypton.util.threadFactory
+import org.kryptonmc.krypton.util.toAngle
+import org.kryptonmc.krypton.util.toProtocol
+import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.data.PlayerDataManager
+import org.spongepowered.math.GenericMath
+import java.util.UUID
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import kotlin.math.min
+import kotlin.random.Random
+
+class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
+
+    private val dataManager = PlayerDataManager(CURRENT_DIRECTORY.resolve(server.config.world.name).resolve("playerdata"))
+    private val keepAliveExecutor = Executors.newScheduledThreadPool(4, threadFactory("Keep Alive Scheduler"))
+    val players = CopyOnWriteArrayList<KryptonPlayer>()
+    val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
+    val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
+
+    private val maxPlayers = server.status.maxPlayers
+    private val viewDistance = server.config.world.viewDistance
+
+    val status = ServerStatus(server.status.motd, ServerStatus.Players(server.status.maxPlayers, players.size), null)
+    private var lastStatus = 0L
+
+    fun add(player: KryptonPlayer, session: Session): CompletableFuture<Void> = dataManager.load(player).thenRun {
+        val profile = player.profile
+
+        // Load the data
+        val world = server.worldManager.default
+        world.players += player
+        player.world = world
+
+        LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at (${player.location.x}, ${player.location.y}, ${player.location.z})")
+
+        // Join the game
+        player.updateAbilities()
+        session.sendPacket(PacketOutJoinGame(
+            player.id,
+            server.config.world.hardcore,
+            world,
+            player.gamemode,
+            player.oldGamemode,
+            world.dimensionType,
+            maxPlayers,
+            viewDistance
+        ))
+        session.sendPacket(PacketOutPluginMessage(KryptonServer.REGISTER_CHANNEL_KEY, server.channels.joinToString("\u0000").encodeToByteArray()))
+        session.sendPacket(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
+        session.sendPacket(PacketOutServerDifficulty(server.difficulty, true))
+
+        // Player data stuff
+        session.sendPacket(PacketOutAbilities(player.abilities))
+        session.sendPacket(PacketOutHeldItemChange(player.inventory.heldSlot))
+        session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
+        session.sendPacket(PacketOutDeclareRecipes)
+        session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
+        session.sendPacket(PacketOutTags)
+        session.sendPacket(PacketOutEntityStatus(player.id, if (world.gameRules[GameRules.REDUCED_DEBUG_INFO]) 22 else 23))
+        sendOperatorStatus(player)
+        invalidateStatus()
+
+        // Fire join event and send result message
+        val joinResult = server.eventManager.fireSync(JoinEvent(player)).result
+        if (!joinResult.isAllowed) {
+            // Use default reason if denied without specified reason
+            val reason = joinResult.reason.takeIf { it != Component.empty() } ?: Component.translatable("multiplayer.disconnect.kicked")
+            session.disconnect(reason)
+            return@thenRun
+        }
+        server.sendMessage(joinResult.reason)
+        session.sendPacket(PacketOutPlayerPositionAndLook(player.location))
+
+        // Update player list
+        sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, player))
+        session.sendPacket(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, player))
+        session.sendPacket(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, players))
+
+        // Send entity data
+        // TODO: Move this all to an entity manager
+        sendToAll(PacketOutSpawnPlayer(player))
+        players.forEach { session.sendPacket(PacketOutSpawnPlayer(it)) }
+        sendToAll(PacketOutEntityMetadata(player.id, player.data.all))
+        players.forEach { session.sendPacket(PacketOutEntityMetadata(it.id, it.data.all)) }
+        sendToAll(PacketOutEntityProperties(player.id, player.attributes.syncable))
+        players.forEach { session.sendPacket(PacketOutEntityProperties(it.id, it.attributes.syncable)) }
+        sendToAll(PacketOutEntityHeadLook(player.id, player.location.yaw.toAngle()))
+        players.forEach { session.sendPacket(PacketOutEntityHeadLook(it.id, it.location.yaw.toAngle())) }
+
+        // Add the player to the list and cache maps
+        players += player
+        playersByName[player.name] = player
+        playersByUUID[player.uuid] = player
+
+        // Send the initial chunk stream
+        val location = player.location
+        val centerChunk = ChunkPosition(GenericMath.floor(location.x / 16.0), GenericMath.floor(location.z / 16.0))
+        session.sendPacket(PacketOutUpdateViewPosition(centerChunk))
+        player.updateChunks()
+
+        // Send the world data
+        session.sendPacket(PacketOutInitializeWorldBorder(world.border))
+        session.sendPacket(PacketOutTimeUpdate(world.time, world.dayTime))
+        session.sendPacket(PacketOutSpawnPosition(world.spawnLocation, world.spawnAngle))
+        if (world.isRaining) {
+            session.sendPacket(PacketOutChangeGameState(GameState.BEGIN_RAINING))
+            session.sendPacket(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, world.rainLevel))
+            session.sendPacket(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, world.thunderLevel))
+        }
+
+        // Send inventory data
+        session.sendPacket(PacketOutWindowItems(player.inventory))
+
+        ServerStorage.PLAYER_COUNT.getAndIncrement()
+
+        keepAliveExecutor.scheduleAtFixedRate({
+            val keepAliveId = System.currentTimeMillis()
+            session.lastKeepAliveId = keepAliveId
+            session.sendPacket(PacketOutKeepAlive(keepAliveId))
+        }, 0, 20, TimeUnit.SECONDS)
+    }
+
+    fun remove(player: KryptonPlayer) {
+        server.eventManager.fire(QuitEvent(player)).thenAccept {
+            dataManager.save(player)
+
+            // Remove from caches
+            players.remove(player)
+            playersByName.remove(player.name)
+            playersByUUID.remove(player.uuid)
+
+            // Send destroy and info
+            sendToAll(PacketOutEntityDestroy(player.id))
+            sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER, player))
+
+            // Send quit message and decrement overall count
+            server.sendMessage(it.message)
+            ServerStorage.PLAYER_COUNT.getAndDecrement()
+        }
+    }
+
+    fun sendToAll(packet: Packet) = players.forEach { it.session.sendPacket(packet) }
+
+    fun sendToAll(packet: Packet, except: KryptonPlayer) = players.forEach {
+        if (it != except) it.session.sendPacket(packet)
+    }
+
+    fun sendToAll(packet: Packet, world: KryptonWorld) = players.forEach {
+        if (it.world == world) it.session.sendPacket(packet)
+    }
+
+    fun disconnectAll() = players.forEach {
+        it.session.disconnect(Component.translatable("multiplayer.disconnect.server_shutdown"))
+    }
+
+    private fun saveAll(block: Boolean = false) = players.forEach {
+        val future = dataManager.save(it)
+        if (block) future.get()
+    }
+
+    fun shutdown() {
+        saveAll(true)
+        keepAliveExecutor.shutdown()
+    }
+
+    fun tick(time: Long) {
+        if (time - lastStatus >= UPDATE_STATUS_INTERVAL) {
+            lastStatus = time
+            status.players.online = players.size
+            val sampleSize = min(players.size, MAXIMUM_SAMPLED_PLAYERS)
+            val playerOffset = nextInt(Random, 0, players.size - sampleSize)
+            val sample = Array(sampleSize) { players[it + playerOffset].profile }.apply { shuffle() }
+            status.players.sample = sample
+        }
+    }
+
+    fun invalidateStatus() {
+        lastStatus = 0L
+    }
+
+    private fun sendOperatorStatus(player: KryptonPlayer) {
+        // TODO: Get status from ops.json and send it to the client
+    }
+
+    override fun audiences() = players
+
+    companion object {
+
+        private const val UPDATE_STATUS_INTERVAL = 5000L
+        private const val MAXIMUM_SAMPLED_PLAYERS = 12
+        private val LOGGER = logger<PlayerManager>()
+        private val BRAND_KEY = Key.key("brand")
+        private val BRAND_MESSAGE = "Krypton".toProtocol()
+    }
+}

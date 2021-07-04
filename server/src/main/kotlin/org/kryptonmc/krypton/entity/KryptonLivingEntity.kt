@@ -31,6 +31,7 @@ import org.kryptonmc.krypton.util.nbt.contains
 import org.kryptonmc.krypton.util.nbt.getBoolean
 import org.kryptonmc.krypton.util.nbt.getFloat
 import org.kryptonmc.krypton.util.nbt.getInt
+import org.kryptonmc.krypton.util.nbt.setBoolean
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 import java.util.Optional
@@ -65,6 +66,19 @@ abstract class KryptonLivingEntity(
             pose = Pose.SLEEPING
         }
     }
+
+    override fun save() = super.save()
+        .setFloat("Health", health)
+        .setFloat("AbsorptionAmount", absorption)
+        .set("Attributes", attributes.save())
+        .setBoolean("FallFlying", isFlying)
+        .apply {
+            bedPosition.ifPresent {
+                setInt("SleepingX", it.x())
+                setInt("SleepingY", it.y())
+                setInt("SleepingZ", it.z())
+            }
+        }
 
     private fun setLivingFlag(flag: Int, state: Boolean) {
         val flags = data[MetadataKeys.LIVING.FLAGS].toInt()

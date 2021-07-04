@@ -42,7 +42,7 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
     /**
      * The dimension the player is currently in.
      */
-    val dimension: DimensionType
+    val dimensionType: DimensionType
 
     /**
      * The view distance of this player.

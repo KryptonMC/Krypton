@@ -19,17 +19,27 @@
 package org.kryptonmc.krypton.packet.out.status
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.GSON
-import org.kryptonmc.krypton.packet.data.StatusResponse
+import me.bardy.gsonkt.newBuilder
+import me.bardy.gsonkt.registerTypeAdapter
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import org.kryptonmc.krypton.packet.data.ServerStatus
 import org.kryptonmc.krypton.packet.state.StatusPacket
 import org.kryptonmc.krypton.util.writeString
 
 /**
  * Response to the client's earlier [status request][org.kryptonmc.krypton.packet.in.status.PacketInStatusRequest] packet.
  */
-class PacketOutStatusResponse(private val response: StatusResponse) : StatusPacket(0x00) {
+class PacketOutStatusResponse(private val status: ServerStatus) : StatusPacket(0x00) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeString(GSON.toJson(response))
+        buf.writeString(GSON.toJson(status))
+    }
+
+    companion object {
+
+        private val GSON = GsonComponentSerializer.gson().serializer().newBuilder {
+            registerTypeAdapter<ServerStatus.Players>(ServerStatus.Players)
+            registerTypeAdapter<ServerStatus>(ServerStatus)
+        }
     }
 }

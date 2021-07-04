@@ -42,13 +42,11 @@ class ChannelHandler(private val server: KryptonServer) : SimpleChannelInboundHa
     override fun handlerAdded(ctx: ChannelHandlerContext) {
         LOGGER.debug("[+] Channel Connected: ${ctx.channel().remoteAddress()}")
         session = Session(server, ctx.channel())
-        server.sessionManager.sessions += session
     }
 
     override fun handlerRemoved(ctx: ChannelHandlerContext) {
         LOGGER.debug("[-] Channel Disconnected: ${ctx.channel().remoteAddress()}")
-        server.sessionManager.handleDisconnection(session)
-        server.sessionManager.sessions -= session
+        session.handler.onDisconnect()
     }
 
     override fun channelRead0(ctx: ChannelHandlerContext, msg: Packet) {
