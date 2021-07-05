@@ -211,7 +211,7 @@ class KryptonPlayer(
         }
         .setInt("playerGameType", gamemode.ordinal)
         .apply { oldGamemode?.let { setInt("previousPlayerGameType", it.ordinal) } }
-        .setString("Dimension", dimensionType.key.asString())
+        .setString("Dimension", dimension.location.asString())
         .apply {
             val respawnPosition = respawnPosition
             if (respawnPosition != null) {

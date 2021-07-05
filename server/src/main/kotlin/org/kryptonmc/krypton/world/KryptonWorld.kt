@@ -79,7 +79,7 @@ data class KryptonWorld(
     override val uuid: UUID,
     override val name: String,
     val allowCheats: Boolean,
-    private val borderBuilder: BorderBuilder,
+    override val border: KryptonWorldBorder,
     var clearWeatherTime: Int,
     var dayTime: Long,
     override val difficulty: Difficulty,
@@ -118,18 +118,6 @@ data class KryptonWorld(
     override var rainLevel = 0F
     private var oldThunderLevel = 0F
     override var thunderLevel = 0F
-
-    override val border = KryptonWorldBorder(
-        this,
-        borderBuilder.size,
-        Vector2d(borderBuilder.centerX, borderBuilder.centerZ),
-        borderBuilder.damagePerBlock,
-        borderBuilder.safeZone,
-        borderBuilder.sizeLerpTarget,
-        borderBuilder.sizeLerpTime,
-        borderBuilder.warningBlocks,
-        borderBuilder.warningTime
-    )
 
     override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector) {
         if (!type.isSummonable) return
@@ -271,7 +259,8 @@ data class KryptonWorld(
             .setInt("GameType", gamemode.ordinal)
             .setBoolean("hardcore", isHardcore)
             .setBoolean("initialized", true)
-            .setString("Krypton.Version", KryptonServerInfo.version)
+            .set("Krypton", NBTCompound()
+                .setString("version", KryptonServerInfo.version))
             .setLong("LastPlayed", lastPlayed.toInstant(ZoneOffset.UTC).toEpochMilli())
             .setString("LevelName", name)
             .setBoolean("MapFeatures", mapFeatures)

@@ -41,6 +41,7 @@ import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.generation.toGenerator
+import org.spongepowered.math.vector.Vector2d
 import org.spongepowered.math.vector.Vector3i
 import java.io.DataInputStream
 import java.io.DataOutputStream
@@ -101,16 +102,6 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
         val version = if (nbt.contains("DataVersion", NBTTypes.PRIMITIVE)) nbt.getInt("DataVersion") else -1
         val data = DATA_FIXER.update(References.LEVEL, Dynamic(NBTOps, nbt), version, ServerInfo.WORLD_VERSION)
 
-        // TODO: Make the world gen settings also use the updated data from the DFU
-        val worldGenSettings = nbt.getCompound("WorldGenSettings").let { settings ->
-            val dimensions = settings.getCompound("dimensions").iterator().asSequence()
-                .filterIsInstance<Pair<String, NBTCompound>>()
-                .associate { (key, value) ->
-                    key.toKey() to Dimension((value.getString("type")).toKey(), (value.getCompound("generator")).toGenerator())
-                }
-            WorldGenerationSettings(settings.getLong("seed"), settings.getBoolean("generate_features"), dimensions)
-        }
-
         val gamemode = Gamemode.fromId(data["GameType"].asInt(0)) ?: Gamemode.SURVIVAL
         val time = data["Time"].asLong(0L)
 
@@ -120,11 +111,10 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
             loadUUID(folder),
             data["LevelName"].asString(""),
             data["allowCommands"].asBoolean(gamemode == Gamemode.CREATIVE),
-            BorderBuilder(
-                data["BorderCenterX"].asDouble(0.0),
-                data["BorderCenterZ"].asDouble(0.0),
-                data["BorderDamagePerBlock"].asDouble(0.2),
+            KryptonWorldBorder(
                 data["BorderSize"].asDouble(5.9999968E7),
+                Vector2d(data["BorderCenterX"].asDouble(0.0), data["BorderCenterZ"].asDouble(0.0)),
+                data["BorderDamagePerBlock"].asDouble(0.2),
                 data["BorderSafeZone"].asDouble(5.0),
                 data["BorderSizeLerpTarget"].asDouble(0.0),
                 data["BorderSizeLerpTime"].asLong(0L),
@@ -135,7 +125,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
             data["DayTime"].asLong(time),
             data["Difficulty"].asNumber().map { Difficulty.fromId(it.toInt()) }.result().orElse(Difficulty.NORMAL),
             KryptonGameRuleHolder(data["GameRules"]),
-            worldGenSettings,
+            readWorldGenSettings(data["WorldGenSettings"].orElseEmptyMap(), version),
             gamemode,
             data["hardcore"].asBoolean(false),
             LocalDateTime.ofInstant(Instant.ofEpochMilli(data["LastPlayed"].asLong(System.currentTimeMillis())), ZoneOffset.UTC),
@@ -172,12 +162,35 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
         }
     }
 
+    private fun <T> readWorldGenSettings(settings: Dynamic<T>, version: Int): WorldGenerationSettings {
+        var temp = settings
+        OLD_WORLD_GEN_SETTINGS_KEYS.forEach { key -> temp[key].result().ifPresent { temp = temp.set(key, it) } }
+
+        val data = DATA_FIXER.update(References.WORLD_GEN_SETTINGS, temp, version, ServerInfo.WORLD_VERSION)
+        val dimensions = data["dimensions"].asMap({ it.asString("").toKey() }, {
+            Dimension(it["type"].asString("").toKey(), it["generator"].orElseEmptyMap().toGenerator())
+        })
+        return WorldGenerationSettings(
+            data["seed"].asLong(0L),
+            data["generate_features"].asBoolean(false),
+            dimensions
+        )
+    }
+
     fun saveAll() = worlds.forEach { (_, world) -> save(world).get() }
 
     companion object {
 
         private const val DEFAULT_BUILD_LIMIT = 256
-
+        private val OLD_WORLD_GEN_SETTINGS_KEYS = listOf(
+            "RandomSeed",
+            "generatorName",
+            "generatorOptions",
+            "generatorVersion",
+            "legacy_custom_options",
+            "MapFeatures",
+            "BonusChest"
+        )
         private val LOGGER = logger<KryptonWorldManager>()
     }
 }

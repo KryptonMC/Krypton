@@ -62,8 +62,8 @@ dependencies {
     implementation("it.unimi.dsi", "fastutil", Versions.FASTUTIL)
 
     // Miscellaneous
-    implementation("com.mojang", "datafixerupper", Versions.DFU)
-    implementation("org.jglrxavpok.nbt", "Hephaistos", Versions.HEPHAISTOS)
+    implementation("org.kryptonmc", "datafixerupper", Versions.DFU) // Slight performance enhanced version, courtesy of Paper
+    implementation("org.jglrxavpok.nbt", "Hephaistos", Versions.HEPHAISTOS) // Custom fork with nice improvements
     implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
     implementation("org.bstats", "bstats-base", Versions.BSTATS)
     implementation("com.velocitypowered", "velocity-native", Versions.VELOCITY_NATIVE)

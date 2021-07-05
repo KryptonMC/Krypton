@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.generation
 
+import com.mojang.serialization.Dynamic
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
@@ -133,48 +134,46 @@ data class NoiseSlide(
         .setInt("offset", offset)
 }
 
-sealed class BiomeGenerator(val type: Key) {
-
-    abstract val seed: Int
+sealed class BiomeGenerator(val type: Key, val seed: Int) {
 
     abstract fun toNBT(): NBTCompound
 
     companion object {
 
-        internal val VANILLA_LAYERED = key("vanilla_layered")
-        internal val MULTI_NOISE = key("multi_noise")
-        internal val THE_END = key("the_end")
-        internal val FIXED = key("fixed")
-        internal val CHECKERBOARD = key("checkerboard")
+        val VANILLA_LAYERED = key("vanilla_layered")
+        val MULTI_NOISE = key("multi_noise")
+        val THE_END = key("the_end")
+        val FIXED = key("fixed")
+        val CHECKERBOARD = key("checkerboard")
 
-        fun fromNBT(nbt: NBTCompound) = when (val type = nbt.getString("type").toKey()) {
+        fun of(data: Dynamic<*>) = when (val type = data["type"].asString("").toKey()) {
             VANILLA_LAYERED -> VanillaLayeredBiomeGenerator(
-                nbt.getInt("seed"),
-                nbt.getBoolean("large_biomes")
+                data["seed"].asInt(0),
+                data["large_biomes"].asBoolean(false)
             )
             MULTI_NOISE -> MultiNoiseBiomeGenerator(
-                nbt.getInt("seed"),
-                nbt.getString("preset").toKey()
+                data["seed"].asInt(0),
+                data["preset"].asString("").toKey()
             )
-            THE_END -> TheEndBiomeGenerator(nbt.getInt("seed"))
+            THE_END -> TheEndBiomeGenerator(data["seed"].asInt(0))
             FIXED -> FixedBiomeGenerator(
-                nbt.getInt("seed"),
-                nbt.getString("biome").ifEmpty { "minecraft:plains" }
+                data["seed"].asInt(0),
+                data["biome"].asString("minecraft:plains")
             )
             CHECKERBOARD -> CheckerboardBiomeGenerator(
-                nbt.getInt("seed"),
-                nbt.getList<NBTInt>("biomes").map { it.value }.toIntArray(),
-                nbt.getInt("scale")
+                data["seed"].asInt(0),
+                data["biomes"].asList { it.asInt(0) }.toIntArray(),
+                data["scale"].asInt(0)
             )
             else -> throw UnsupportedOperationException("Unsupported biome generator type $type")
         }
     }
 }
 
-data class VanillaLayeredBiomeGenerator(
-    override val seed: Int,
+class VanillaLayeredBiomeGenerator(
+    seed: Int,
     val largeBiomes: Boolean,
-) : BiomeGenerator(VANILLA_LAYERED) {
+) : BiomeGenerator(VANILLA_LAYERED, seed) {
 
     override fun toNBT() = NBTCompound()
         .setString("type", VANILLA_LAYERED.toString())
@@ -182,10 +181,10 @@ data class VanillaLayeredBiomeGenerator(
         .setBoolean("large_biomes", largeBiomes)
 }
 
-data class MultiNoiseBiomeGenerator(
-    override val seed: Int,
+class MultiNoiseBiomeGenerator(
+    seed: Int,
     val preset: Key
-) : BiomeGenerator(MULTI_NOISE) {
+) : BiomeGenerator(MULTI_NOISE, seed) {
 
     override fun toNBT() = NBTCompound()
         .setString("type", MULTI_NOISE.toString())
@@ -193,17 +192,17 @@ data class MultiNoiseBiomeGenerator(
         .setString("preset", preset.toString())
 }
 
-data class TheEndBiomeGenerator(override val seed: Int) : BiomeGenerator(THE_END) {
+class TheEndBiomeGenerator(seed: Int) : BiomeGenerator(THE_END, seed) {
 
     override fun toNBT() = NBTCompound()
         .setString("type", THE_END.toString())
         .setInt("seed", seed)
 }
 
-data class FixedBiomeGenerator(
-    override val seed: Int,
+class FixedBiomeGenerator(
+    seed: Int,
     val biome: String
-) : BiomeGenerator(FIXED) {
+) : BiomeGenerator(FIXED, seed) {
 
     override fun toNBT() = NBTCompound()
         .setString("type", FIXED.toString())
@@ -211,48 +210,20 @@ data class FixedBiomeGenerator(
         .setString("biome", biome)
 }
 
-data class CheckerboardBiomeGenerator(
-    override val seed: Int,
+class CheckerboardBiomeGenerator(
+    seed: Int,
     val biomes: IntArray,
     val scale: Int
-) : BiomeGenerator(CHECKERBOARD) {
+) : BiomeGenerator(CHECKERBOARD, seed) {
 
     override fun toNBT() = NBTCompound()
         .setString("type", CHECKERBOARD.asString())
         .setInt("seed", seed)
         .set("biomes", NBTList<NBTInt>(NBTTypes.TAG_Int).apply { biomes.forEach { add(NBTInt(it)) } })
         .setInt("scale", scale)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as CheckerboardBiomeGenerator
-        return seed == other.seed && biomes.contentEquals(other.biomes) && scale == other.scale
-    }
-
-    override fun hashCode(): Int {
-        var result = seed
-        result = 31 * result + biomes.contentHashCode()
-        result = 31 * result + scale
-        return result
-    }
 }
 
-data class NoiseSettings(
+class NoiseSettings(
     val firstOctave: Int,
     val amplitudes: FloatArray
-) {
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        other as NoiseSettings
-        return firstOctave == other.firstOctave && amplitudes.contentEquals(other.amplitudes)
-    }
-
-    override fun hashCode(): Int {
-        var result = firstOctave
-        result = 31 * result + amplitudes.contentHashCode()
-        return result
-    }
-}
+)

@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.generation
 
+import com.mojang.serialization.Dynamic
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
@@ -37,13 +38,12 @@ object DebugGenerator : Generator(DEBUG_GENERATOR_ID) {
     override fun toNBT() = NBTCompound().setString("type", DEBUG_GENERATOR_ID.toString())
 }
 
-// TODO: Add support for generators when world generation exists
-fun NBTCompound.toGenerator() = when (val type = getString("type").toKey()) {
-    FlatGenerator.ID -> FlatGenerator(FlatGeneratorSettings.fromNBT(getCompound("settings")))
+fun Dynamic<*>.toGenerator() = when (val type = get("type").asString("").toKey()) {
+    FlatGenerator.ID -> FlatGenerator(FlatGeneratorSettings.of(get("settings").orElseEmptyMap()))
     NoiseGenerator.ID -> NoiseGenerator(
-        getInt("seed"),
-        getString("settings").toKey(),
-        BiomeGenerator.fromNBT(getCompound("biome_source"))
+        get("seed").asInt(0),
+        get("settings").asString("").toKey(),
+        BiomeGenerator.of(get("biome_source").orElseEmptyMap())
     )
     DEBUG_GENERATOR_ID -> DebugGenerator
     else -> throw IllegalArgumentException("Unsupported generator type $type")

@@ -18,12 +18,10 @@
  */
 package org.kryptonmc.krypton.world
 
-import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldBorder
 import org.spongepowered.math.vector.Vector2d
 
 data class KryptonWorldBorder(
-    override val world: World,
     override val size: Double,
     override val center: Vector2d,
     override val damageMultiplier: Double,
@@ -33,18 +31,3 @@ data class KryptonWorldBorder(
     val warningBlocks: Int,
     val warningTime: Int
 ) : WorldBorder
-
-/**
- * This is to avoid cyclic dependencies by allowing a world to build its own border
- */
-data class BorderBuilder(
-    val centerX: Double,
-    val centerZ: Double,
-    val damagePerBlock: Double,
-    val size: Double,
-    val safeZone: Double,
-    val sizeLerpTarget: Double,
-    val sizeLerpTime: Long,
-    val warningBlocks: Int,
-    val warningTime: Int
-)
