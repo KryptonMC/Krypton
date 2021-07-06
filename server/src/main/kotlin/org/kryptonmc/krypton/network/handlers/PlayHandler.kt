@@ -26,6 +26,7 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.event.ClickEvent.suggestCommand
 import net.kyori.adventure.text.format.NamedTextColor
+import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.play.ChatEvent
 import org.kryptonmc.api.event.play.ClientSettingsEvent
@@ -68,11 +69,12 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
 import org.kryptonmc.krypton.network.Session
-import org.kryptonmc.krypton.registry.Registries
+import org.kryptonmc.krypton.registry.FileRegistries
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.toSkinSettings
+import org.kryptonmc.krypton.world.block.BLOCK_LOADER
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import java.util.Locale
 import kotlin.math.max
@@ -179,7 +181,7 @@ class PlayHandler(
 
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
         if (packet.clickedItem.id == 0) return // ignore air
-        val type = Material.KEYS.value(Registries.ITEMS[packet.clickedItem.id] ?: return)
+        val type = Material.KEYS.value(FileRegistries.ITEMS[packet.clickedItem.id] ?: return)
         val item = type?.let { ItemStack(it, packet.clickedItem.count.toInt()) } ?: ItemStack.EMPTY
         player.inventory[packet.slot.toInt()] = item
     }
@@ -224,12 +226,16 @@ class PlayHandler(
         val world = player.world
         val chunk = world.chunks.firstOrNull { player.location in it.position } ?: return
         val existingBlock = chunk.getBlock(packet.location)
-        if (existingBlock.type != Material.AIR) return
+        if (existingBlock != Blocks.AIR) return
 
         val item = player.inventory.mainHand
-        val block = KryptonBlock(item.type, packet.location)
+        val block = BLOCK_LOADER.fromKey(item.type.key()) ?: return
+        val x = packet.location.x()
+        val y = packet.location.y()
+        val z = packet.location.z()
+        chunk.setBlock(x, y, z, block)
 
-        playerManager.sendToAll(PacketOutBlockChange(if (chunk.setBlock(block)) block else existingBlock))
+        playerManager.sendToAll(PacketOutBlockChange(block, packet.location))
     }
 
     private fun handlePlayerDigging(packet: PacketInPlayerDigging) {
@@ -237,11 +243,13 @@ class PlayHandler(
         if (packet.status != DiggingStatus.STARTED) return
 
         val chunk = player.world.chunks.firstOrNull { packet.location in it.position } ?: return
-        val block = KryptonBlock(Material.AIR, packet.location)
-        chunk.setBlock(block)
+        val x = packet.location.x()
+        val y = packet.location.y()
+        val z = packet.location.z()
+        chunk.setBlock(x, y, z, Blocks.AIR)
 
         session.sendPacket(PacketOutAcknowledgePlayerDigging(packet.location, 0, DiggingStatus.FINISHED, true))
-        playerManager.sendToAll(PacketOutBlockChange(block))
+        playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
     }
 
     private fun handlePositionUpdate(packet: PacketInPlayerPosition) {

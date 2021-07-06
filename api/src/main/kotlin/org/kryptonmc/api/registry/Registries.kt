@@ -47,6 +47,12 @@ object Registries {
     val DIMENSION_TYPE = create(RegistryKeys.DIMENSION_TYPE)
 
     /**
+     * The registry of all blocks in the game
+     */
+    @JvmField
+    val BLOCK = create(RegistryKeys.BLOCK)
+
+    /**
      * Registers a new entry to the given [registry], with the given [key] mapped to
      * the given [value].
      *
@@ -94,5 +100,5 @@ object Registries {
 // This is to allow access to the registry manager statically for the built-in registries.
 // This is NOT for public use.
 private val MANAGER: RegistryManager = Services.service(RegistryManager::class.java).orElseThrow {
-    IllegalStateException("No candidate for the registry manager was found! If you are a server owner, contact the creator of your server software")
+    IllegalStateException("No candidate for the registry manager was found! If you are a server owner, contact the creator of your server software.")
 }

@@ -79,6 +79,19 @@ class BitStorage(
         return (cell shr magic and mask).toInt()
     }
 
+    fun count(consumer: (Int) -> Unit) {
+        var count = 0
+        data.forEach {
+            var temp = it
+            for (i in 0 until valuesPerLong) {
+                consumer((temp and mask).toInt())
+                temp = temp shr bits
+                count++
+                if (count >= size) return
+            }
+        }
+    }
+
     private fun cellIndex(index: Int) = (index.toLong() * divideMultiply + divideAdd shr 32 shr divideShift).toInt()
 
     fun isEmpty() = data.isEmpty()

@@ -102,7 +102,7 @@ data class KryptonWorld(
     override val version: GameVersion,
     override val maxHeight: Int,
     val serverBrands: MutableSet<String>,
-) : World {
+) : World, WorldHeightAccessor {
 
     override val seed = generationSettings.seed
 
@@ -113,6 +113,9 @@ data class KryptonWorld(
     val chunkManager = ChunkManager(this)
     val dimension = OVERWORLD
     override val dimensionType = DimensionTypes.OVERWORLD
+
+    override val height = dimensionType.height
+    override val minimumBuildHeight = dimensionType.minimumY
 
     private var oldRainLevel = 0F
     override var rainLevel = 0F

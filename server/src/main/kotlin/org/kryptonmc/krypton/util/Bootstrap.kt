@@ -36,7 +36,7 @@ object Bootstrap {
         Class.forName("org.kryptonmc.api.entity.EntityTypes")
 
         // Preload the old registry
-        Class.forName("org.kryptonmc.krypton.registry.Registries")
+        Class.forName("org.kryptonmc.krypton.registry.FileRegistries")
 
         // Preload some other frequently used objects so they aren't loaded on first player join
         Class.forName("org.kryptonmc.krypton.registry.tags.TagManager")

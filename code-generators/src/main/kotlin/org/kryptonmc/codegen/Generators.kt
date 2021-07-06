@@ -19,9 +19,7 @@
 package org.kryptonmc.codegen
 
 import org.apache.logging.log4j.LogManager
-import org.kryptonmc.codegen.blocks.BlockGenerator
 import java.io.File
-import java.io.FileInputStream
 
 private val LOGGER = LogManager.getLogger("Main")
 
@@ -33,17 +31,7 @@ fun main(args: Array<String>) {
     val targetVersion = args[0].replace('.', '_')
     val resourceMode = args[1] == "resources"
     val inputFolder = File(args[1])
-    val kotlinOutput = File(args[2], "kotlin")
-    val javaOutput = File(args[2], "java")
+    val output = File(args[2])
     val classLoader = Thread.currentThread().contextClassLoader
-
-    // Generate blocks
-    BlockGenerator(
-        if (resourceMode) classLoader.getResourceAsStream("${targetVersion}_blocks.json") else FileInputStream(File(inputFolder, "${targetVersion}_blocks.json")),
-        if (resourceMode) classLoader.getResourceAsStream("${targetVersion}_block_properties.json") else FileInputStream(File(inputFolder, "${targetVersion}_block_properties.json")),
-        kotlinOutput,
-        javaOutput
-    ).generate()
-
     LOGGER.info("Generators finished!")
 }

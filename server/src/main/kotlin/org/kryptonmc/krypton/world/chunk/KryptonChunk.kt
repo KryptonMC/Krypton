@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.world.chunk
 
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.world.Biome
@@ -29,73 +30,91 @@ import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.HeightmapBuilder
+import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.WorldHeightAccessor
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.data.BitStorage
 import org.spongepowered.math.vector.Vector3i
+import java.util.EnumMap
 
-data class KryptonChunk(
-    override val world: World,
+class KryptonChunk(
+    override val world: KryptonWorld,
     val position: ChunkPosition,
-    val sections: MutableList<ChunkSection>,
+    val sections: Array<ChunkSection?>,
     override val biomes: List<Biome>,
     override var lastUpdate: Long,
     override var inhabitedTime: Long,
-    private val builderHeightmaps: List<HeightmapBuilder>,
     val carvingMasks: Pair<ByteArray, ByteArray>,
     val structures: NBTCompound
-) : Chunk {
+) : Chunk, WorldHeightAccessor {
 
-    val heightmaps = builderHeightmaps.map { Heightmap(this, it.nbt, it.type) }.associateBy { it.type }
+    val heightmaps = EnumMap<Heightmap.Type, Heightmap>(Heightmap.Type::class.java)
 
-    override val x: Int get() = position.x
-    override val z: Int get() = position.z
+    override val height = world.height
+    override val minimumBuildHeight = world.minimumBuildHeight
 
-    override fun getBlock(x: Int, y: Int, z: Int): KryptonBlock {
-        val localX = x and 0xF
-        val localY = y and 0xF
-        val localZ = z and 0xF
-        val section = sections.firstOrNull { it.y == y shr 4 }
-            ?: return KryptonBlock(Material.AIR, Vector3i(x, y, z))
+    val lightSectionCount = sectionCount + 2
+    val minimumLightSection = minimumSection - 1
+    val maximumLightSection = minimumLightSection + lightSectionCount
 
-        val name = section[localX, localY, localZ]
-        return KryptonBlock(Material.KEYS.value(name)!!, Vector3i(x, y, z))
+    override val x = position.x
+    override val z = position.z
+
+    override fun getBlock(x: Int, y: Int, z: Int): Block {
+        val sectionIndex = sectionIndex(y)
+        if (sectionIndex in sections.indices) {
+            val section = sections[sectionIndex]
+            if (section != null && !section.isEmpty()) return section[x and 15, y and 15, z and 15]
+        }
+        return Blocks.AIR
     }
 
     override fun getBlock(position: Position) = getBlock(position.blockX, position.blockY, position.blockZ)
 
     override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
 
-    override fun setBlock(block: Block): Boolean {
-        if (block !is KryptonBlock) return false
-
-        val x = block.location.x() and 0xF
-        val y = block.location.y()
-        val z = block.location.z() and 0xF
-
-        val sectionY = y shr 4
-        if (sectionY !in 0..15) {
-            Messages.BLOCK_UNDER_WORLD.warn(LOGGER, block, sectionY)
-            return false
+    override fun setBlock(x: Int, y: Int, z: Int, block: Block): Block? {
+        // Get the section
+        val sectionIndex = sectionIndex(y)
+        var section = sections[sectionIndex]
+        if (section == null) {
+            if (block.isAir) return null
+            section = ChunkSection(y shr 4)
+            sections[sectionIndex] = section
         }
 
-        val section = sections.firstOrNull { it.y == sectionY } ?: ChunkSection(sectionY).apply {
-            sections += this
-            palette += ChunkBlock.AIR
-            palette += ChunkBlock(block.type.key())
-        }
-        if (ChunkBlock.AIR !in section.palette) section.palette.addFirst(ChunkBlock.AIR)
-        if (section.blockStates.data.isEmpty()) section.blockStates = BitStorage(4, 4096)
-        if (!section.set(block)) return false
+        // Get the local coordinates and set the new state in the section
+        val localX = x and 15
+        val localY = y and 15
+        val localZ = z and 15
+        val oldState = section.set(localX, localY, localZ, block)
+        if (oldState == block) return null
 
-        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING).update(x, y, z, block.type)
-        heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(x, y, z, block.type)
-        heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(x, y, z, block.type)
-        return true
+        // Update the heightmaps
+        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING).update(localX, y, localZ, block)
+        heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, block)
+        heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(localX, y, localZ, block)
+        heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(localX, y, localZ, block)
+        return oldState
     }
 
     fun tick(playerCount: Int) {
         inhabitedTime += playerCount
     }
+
+    fun setHeightmap(type: Heightmap.Type, data: LongArray) = heightmaps.getOrPut(type) { Heightmap(this, type) }.setData(this, type, data)
+
+    val highestSection: ChunkSection?
+        get() {
+            for (i in sections.size - 1 downTo 0) {
+                val section = sections[i]
+                if (section != null && !section.isEmpty()) return section
+            }
+            return null
+        }
+
+    val highestSectionPosition: Int
+        get() = highestSection?.y ?: minimumBuildHeight
 
     companion object {
 

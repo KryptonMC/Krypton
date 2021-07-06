@@ -15,7 +15,6 @@ repositories {
 dependencies {
     implementation("com.google.code.gson", "gson", Versions.GSON)
     implementation("me.bardy", "gson-kt", Versions.GSON_KT)
-    implementation("com.squareup", "javapoet", Versions.JAVAPOET)
     implementation("com.squareup", "kotlinpoet", Versions.KOTLINPOET)
     implementation("org.apache.logging.log4j", "log4j-core", Versions.LOG4J)
     implementation("de.articdive", "articdata", Versions.MINECRAFT)
@@ -31,7 +30,7 @@ tasks {
         args = listOf(
             Versions.MINECRAFT,
             "resources",
-            "${project.rootDir}${separator}server${separator}src${separator}generated"
+            "${project.rootDir}${separator}api${separator}src${separator}generated${separator}kotlin"
         )
     }
     compileKotlin {

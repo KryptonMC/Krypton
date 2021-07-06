@@ -30,13 +30,14 @@ import java.util.BitSet
  *
  * @param chunk the chunk to update the light levels for
  */
+// TODO: Fix light when we add the new engine
 class PacketOutUpdateLight(private val chunk: KryptonChunk) : PlayPacket(0x25) {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(chunk.position.x)
         buf.writeVarInt(chunk.position.z)
         buf.writeBoolean(true)
-        val sections = chunk.sections.sortedBy { it.y }
+        val sections = chunk.sections
 
         val skyLightMask = BitSet()
         val blockLightMask = BitSet()
@@ -44,6 +45,13 @@ class PacketOutUpdateLight(private val chunk: KryptonChunk) : PlayPacket(0x25) {
         val emptyBlockLightMask = BitSet()
         for (i in sections.indices) {
             val section = sections[i]
+            if (section == null) {
+                skyLightMask.set(i, false)
+                emptySkyLightMask.set(i, true)
+                blockLightMask.set(i, false)
+                emptyBlockLightMask.set(i, true)
+                continue
+            }
 
             val hasSkyLight = section.skyLight.any { it != 0.toByte() }
             skyLightMask.set(i, hasSkyLight)
@@ -58,11 +66,11 @@ class PacketOutUpdateLight(private val chunk: KryptonChunk) : PlayPacket(0x25) {
         buf.writeBitSet(emptySkyLightMask)
         buf.writeBitSet(emptyBlockLightMask)
 
-        sections.filter { section -> !section.skyLight.all { it == 0.toByte() } }.apply { buf.writeVarInt(size) }.forEach {
+        sections.asSequence().filterNotNull().filter { section -> !section.skyLight.all { it == 0.toByte() } }.apply { buf.writeVarInt(count()) }.forEach {
             buf.writeVarInt(2048)
             buf.writeBytes(it.skyLight)
         }
-        sections.filter { section -> !section.blockLight.all { it == 0.toByte() } }.apply { buf.writeVarInt(size) }.forEach {
+        sections.asSequence().filterNotNull().filter { section -> !section.blockLight.all { it == 0.toByte() } }.apply { buf.writeVarInt(count()) }.forEach {
             buf.writeVarInt(2048)
             buf.writeBytes(it.blockLight)
         }

@@ -9,6 +9,7 @@
 package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.Particle
 import org.kryptonmc.api.effect.sound.SoundType
 import org.kryptonmc.api.entity.EntityType
@@ -28,6 +29,7 @@ object RegistryKeys {
     @JvmField val ENTITY_TYPE = minecraft<EntityType<*>>("entity_type")
     @JvmField val PARTICLE_TYPE = minecraft<Particle>("particle_type")
     @JvmField val DIMENSION_TYPE = minecraft<DimensionType>("dimension_type")
+    @JvmField val BLOCK = minecraft<Block>("block")
 
     /**
      * Custom built-in registries

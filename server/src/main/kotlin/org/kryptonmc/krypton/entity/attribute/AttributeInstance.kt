@@ -113,7 +113,7 @@ class AttributeInstance(
         baseValue = tag.getDouble("Base")
 
         val modifiers = tag.getList<NBTCompound>("Modifiers")
-        if (modifiers.length == 0) {
+        if (modifiers.size == 0) {
             makeDirty()
             return
         }

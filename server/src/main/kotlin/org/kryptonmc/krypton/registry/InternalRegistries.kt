@@ -24,5 +24,4 @@ object InternalRegistries {
 
     val ATTRIBUTE = Registries.create(InternalRegistryKeys.ATTRIBUTE)
     val METADATA = Registries.create(InternalRegistryKeys.METADATA)
-    val BLOCK = Registries.create(InternalRegistryKeys.BLOCK)
 }

@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.registry.Registries
+import org.kryptonmc.krypton.registry.FileRegistries
 import org.kryptonmc.krypton.registry.tags.Tag
 import org.kryptonmc.krypton.registry.tags.TagManager
 import org.kryptonmc.krypton.registry.tags.TagType
@@ -34,19 +34,19 @@ import org.kryptonmc.krypton.util.writeVarInt
 object PacketOutTags : PlayPacket(0x66) {
 
     private val blockRegistry: (Key) -> Int? = {
-        Registries.BLOCKS.idOf(it)
+        FileRegistries.BLOCKS.idOf(it)
     }
     private val fluidRegistry: (Key) -> Int? = {
-        Registries.FLUIDS.idOf(it)
+        FileRegistries.FLUIDS.idOf(it)
     }
     private val itemRegistry: (Key) -> Int? = {
-        Registries.ITEMS.idOf(it)
+        FileRegistries.ITEMS.idOf(it)
     }
     private val entityRegistry: (Key) -> Int? = {
-        Registries.ENTITY_TYPES.idOf(it)
+        FileRegistries.ENTITY_TYPES.idOf(it)
     }
     private val gameEventRegistry: (Key) -> Int? = {
-        Registries.GAME_EVENTS.idOf(it)
+        FileRegistries.GAME_EVENTS.idOf(it)
     }
 
     private val registries = mapOf(

@@ -67,6 +67,7 @@ dependencies {
     implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
     implementation("org.bstats", "bstats-base", Versions.BSTATS)
     implementation("com.velocitypowered", "velocity-native", Versions.VELOCITY_NATIVE)
+    implementation("de.articdive", "articdata", Versions.MINECRAFT)
 }
 
 tasks {

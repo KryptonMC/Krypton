@@ -11,6 +11,13 @@ val ap by sourceSets.registering {
     compileClasspath += sourceSets.main.get().compileClasspath + sourceSets.main.get().output
 }
 
+sourceSets.main {
+    java {
+        srcDir("src/main/kotlin")
+        srcDir("src/generated/kotlin")
+    }
+}
+
 dependencies {
     api(platform("net.kyori:adventure-bom:${Versions.ADVENTURE}"))
     api(platform("org.spongepowered:configurate-bom:${Versions.CONFIGURATE}"))

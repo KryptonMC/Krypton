@@ -28,7 +28,8 @@ class IntIdentityHashBiMap<K>(private val type: Class<K>, initialCapacity: Int) 
     private var byId: Array<K?>
 
     private var nextId = 0
-    private var size = 0
+    var size = 0
+        private set
 
     init {
         val capacity = (initialCapacity.toFloat() / LOAD_FACTOR).toInt()

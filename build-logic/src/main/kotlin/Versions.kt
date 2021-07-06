@@ -32,10 +32,9 @@ object Versions {
     const val DFU = "4.0"
     const val EVENT = "4.0.0-SNAPSHOT"
     const val ASM = "9.1"
-    const val HEPHAISTOS = "1.2.1"
+    const val HEPHAISTOS = "1.2.2"
 
     // Generators
-    const val JAVAPOET = "1.13.0"
     const val KOTLINPOET = "1.9.0"
     const val MINECRAFT = "1.17"
 

@@ -44,7 +44,7 @@ import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.locale.TranslationManager
-import org.kryptonmc.krypton.registry.Registries
+import org.kryptonmc.krypton.registry.FileRegistries
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
 import java.nio.charset.StandardCharsets.UTF_8
@@ -201,7 +201,7 @@ fun ByteBuf.writeItem(item: ItemStack?, nbt: NBTCompound?) {
         return
     }
     writeBoolean(true)
-    writeVarInt(Registries.ITEMS.idOf(item.type.key()))
+    writeVarInt(FileRegistries.ITEMS.idOf(item.type.key()))
     writeByte(item.amount)
     nbt?.let { writeNBTCompound(it) } ?: writeByte(0)
 }

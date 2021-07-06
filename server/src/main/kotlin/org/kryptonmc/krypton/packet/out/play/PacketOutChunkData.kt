@@ -20,16 +20,12 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.PooledByteBufAllocator
+import io.netty.buffer.Unpooled
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.calculateBits
 import org.kryptonmc.krypton.util.writeBitSet
-import org.kryptonmc.krypton.util.writeLongArray
 import org.kryptonmc.krypton.util.writeNBTCompound
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.Heightmap
-import org.kryptonmc.krypton.world.block.palette.GlobalPalette
-import org.kryptonmc.krypton.world.chunk.ChunkSection
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import java.util.BitSet
 
@@ -43,51 +39,51 @@ import java.util.BitSet
  */
 class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x22) {
 
-    private val heightmaps = NBTCompound()
-        .set("MOTION_BLOCKING", chunk.heightmaps[Heightmap.Type.MOTION_BLOCKING]!!.nbt)
-        .set("WORLD_SURFACE", chunk.heightmaps[Heightmap.Type.WORLD_SURFACE]!!.nbt)
+    private val buffer = ByteArray(chunk.calculateSize())
+    private val sectionMask = chunk.extract(Unpooled.wrappedBuffer(buffer).apply { writerIndex(0) })
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(chunk.position.x)
         buf.writeInt(chunk.position.z)
 
-        val sections = chunk.sections.filter { it.blockStates.isNotEmpty() }.sortedBy { it.y }
+        // Mask
+        buf.writeBitSet(sectionMask)
 
-        val mask = BitSet()
-        val buffer = PooledByteBufAllocator.DEFAULT.heapBuffer(MAX_BUFFER_SIZE)
-        sections.forEachIndexed { index, section ->
-            if (section.nonEmptyBlockCount == 0) return@forEachIndexed
-            mask.set(index)
-            section.write(buffer)
-        }
-
-        buf.writeBitSet(mask) // the primary bit mask
-        buf.writeNBTCompound(heightmaps) // heightmaps
+        // Heightmaps
+        val heightmaps = NBTCompound()
+        chunk.heightmaps.forEach { if (it.key.sendToClient) heightmaps.setLongArray(it.key.name, it.value.data.data) }
+        buf.writeNBTCompound(heightmaps)
 
         buf.writeVarInt(chunk.biomes.size)
         chunk.biomes.forEach { buf.writeVarInt(it.id) }
 
-        buf.writeVarInt(buffer.writerIndex())
+        // Actual chunk data
+        buf.writeVarInt(buffer.size)
         buf.writeBytes(buffer)
-        buffer.release()
 
         // TODO: When block entities are added, make use of this here
         buf.writeVarInt(0) // number of block entities
     }
 
-    private fun ChunkSection.write(buf: ByteBuf) {
-        buf.writeShort(nonEmptyBlockCount)
-
-        val paletteSize = palette.size
-        val bitsPerBlock = paletteSize.calculateBits()
-        buf.writeByte(bitsPerBlock)
-
-        if (bitsPerBlock < 9) { // Write palette
-            buf.writeVarInt(paletteSize)
-            palette.forEach { block -> buf.writeVarInt(GlobalPalette[block.name].states.first { it.properties == block.properties }.id) }
+    private fun KryptonChunk.extract(buf: ByteBuf): BitSet {
+        val mask = BitSet()
+        for (i in sections.indices) {
+            val section = sections[i]
+            if (section != null && !section.isEmpty()) {
+                mask.set(i)
+                section.write(buf)
+            }
         }
+        return mask
+    }
 
-        buf.writeLongArray(blockStates.data)
+    private fun KryptonChunk.calculateSize(): Int {
+        var size = 0
+        for (i in sections.indices) {
+            val section = sections[i]
+            if (section != null && !section.isEmpty()) size += section.serializedSize
+        }
+        return size
     }
 
     companion object {

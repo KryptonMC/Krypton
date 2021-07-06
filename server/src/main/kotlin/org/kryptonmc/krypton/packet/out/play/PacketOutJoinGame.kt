@@ -26,7 +26,7 @@ import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.dimension.DimensionTypes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.registry.Registries
+import org.kryptonmc.krypton.registry.FileRegistries
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeNBTCompound
 import org.kryptonmc.krypton.util.writeVarInt
@@ -73,8 +73,8 @@ class PacketOutJoinGame(
 
         // dimension codec (dimension/biome type registry)
         buf.writeNBTCompound(NBTCompound()
-            .set("minecraft:dimension_type", Registries.DIMENSIONS.toNBT())
-            .set("minecraft:worldgen/biome", Registries.BIOMES.toNBT()))
+            .set("minecraft:dimension_type", FileRegistries.DIMENSIONS.toNBT())
+            .set("minecraft:worldgen/biome", FileRegistries.BIOMES.toNBT()))
 
         // dimension info
         buf.writeNBTCompound(dimension.toNBT())

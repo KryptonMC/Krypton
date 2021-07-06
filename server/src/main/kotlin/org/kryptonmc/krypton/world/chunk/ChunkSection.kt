@@ -18,72 +18,51 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
+import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.inventory.item.Material
-import org.kryptonmc.krypton.world.data.BitStorage
-import java.util.LinkedList
+import org.kryptonmc.krypton.world.block.palette.GlobalPalette
+import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 
 /**
  * A section of a chunk (*nah*). These are 16x16x16 areas that hold the actual block states and palette information
  */
-data class ChunkSection(
+class ChunkSection(
     val y: Int,
     val blockLight: ByteArray = ByteArray(2048),
-    val skyLight: ByteArray = ByteArray(2048),
-    val palette: LinkedList<ChunkBlock> = LinkedList(),
-    var blockStates: BitStorage = BitStorage(4, 4096)
+    val skyLight: ByteArray = ByteArray(2048)
 ) {
 
-    var nonEmptyBlockCount = 0; private set
+    val palette = PaletteHolder(GlobalPalette)
+    var nonEmptyBlockCount = 0
+        private set
 
-    init {
-        recount()
+    operator fun get(x: Int, y: Int, z: Int) = palette[x, y, z]
+
+    operator fun set(x: Int, y: Int, z: Int, block: Block): Block {
+        val oldBlock = palette.getAndSet(x, y, z, block)
+        if (!oldBlock.isAir) nonEmptyBlockCount--
+        if (!block.isAir) nonEmptyBlockCount++
+        return oldBlock
     }
 
-    operator fun get(x: Int, y: Int, z: Int) = palette[blockStates[indexOf(x, y, z)]].name
+    fun isEmpty() = nonEmptyBlockCount == 0
 
-    fun set(block: Block): Boolean {
-        if (block.type != Material.AIR) nonEmptyBlockCount++
-
-        val x = block.location.x()
-        val y = block.location.y()
-        val z = block.location.z()
-        val index = indexOf(x and 0xF, y and 0xF, z and 0xF)
-        blockStates[index] = palette.getOrUpdate(block.type.key())
-        return true
-    }
-
-    private fun recount() {
-        if (blockStates.isEmpty()) return
+    fun recount() {
         nonEmptyBlockCount = 0
-        for (i in 0 until 4096) {
-            try {
-                if (blockStates[i] != 0) nonEmptyBlockCount++
-            } catch (ignored: ArrayIndexOutOfBoundsException) {}
+        palette.count { block, counter ->
+            if (!block.isAir) nonEmptyBlockCount += counter
         }
     }
 
-    private fun indexOf(x: Int, y: Int, z: Int) = y shl 8 or (z shl 4) or x
+    fun write(buf: ByteBuf) {
+        buf.writeShort(nonEmptyBlockCount)
+        palette.write(buf)
+    }
 
-    private fun LinkedList<ChunkBlock>.getOrUpdate(name: Key): Int =
-        indexOfFirst { it.name == name }.takeIf { it != -1 }?.let { return it } ?: palette.let {
-            val block = ChunkBlock(name)
-            it.addLast(block)
-            it.indexOf(block)
-        }
-
-    override fun equals(other: Any?) = other is ChunkSection &&
-        y == other.y &&
-        blockLight.contentEquals(other.blockLight) &&
-        skyLight.contentEquals(other.skyLight) &&
-        palette == other.palette &&
-        blockStates == other.blockStates
-
-    override fun hashCode() = arrayOf(y, blockLight, skyLight, palette, blockStates).contentDeepHashCode()
-
-    override fun toString() = "ChunkSection(y=$y, blockLight=$blockLight, skyLight=$skyLight, palette=$palette, blockStates=$blockStates)"
+    val serializedSize: Int
+        get() = 2 + palette.serializedSize
 }
 
 data class ChunkBlock(

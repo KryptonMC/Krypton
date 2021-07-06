@@ -20,7 +20,6 @@ package org.kryptonmc.codegen
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.squareup.javapoet.JavaFile
 import com.squareup.kotlinpoet.FileSpec
 import org.apache.logging.log4j.LogManager
 import java.io.File
@@ -30,20 +29,11 @@ abstract class Generator {
 
     abstract fun generate()
 
-    protected fun writeFiles(files: List<FileSpec>, output: File) = files.forEach {
+    protected fun List<FileSpec>.writeTo(output: File) = forEach {
         try {
             it.writeTo(output)
         } catch (exception: IOException) {
             LOGGER.error("An error occurred while writing source files to the file system!", exception)
-        }
-    }
-
-    @JvmName("writeJavaFiles")
-    protected fun writeFiles(files: List<JavaFile>, output: File) = files.forEach {
-        try {
-            it.writeTo(output)
-        } catch (exception: IOException) {
-
         }
     }
 
