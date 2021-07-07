@@ -63,7 +63,9 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
         return palette[newId] ?: DEFAULT
     }
 
-    operator fun get(x: Int, y: Int, z: Int) = palette[storage[indexOf(x, y, z)]] ?: DEFAULT
+    operator fun get(x: Int, y: Int, z: Int) = get(indexOf(x, y, z))
+
+    operator fun get(index: Int) = palette[storage[index]] ?: DEFAULT
 
     @Synchronized
     operator fun set(x: Int, y: Int, z: Int, value: Block) = set(indexOf(x, y, z), value)
@@ -125,8 +127,6 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
         storage.count { map[it] = map[it] + 1 }
         map.int2IntEntrySet().fastForEach { consumer(palette[it.intKey]!!, it.intValue) }
     }
-
-    private fun get(index: Int) = palette[storage[index]] ?: DEFAULT
 
     private fun set(index: Int, value: Block) = storage.set(index, palette[value])
 

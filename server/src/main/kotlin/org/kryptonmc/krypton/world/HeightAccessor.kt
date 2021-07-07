@@ -35,6 +35,15 @@ interface HeightAccessor {
     val sectionCount: Int
         get() = maximumSection - minimumSection
 
+    val totalSections: Int
+        get() = (maximumSection - 1) - minimumSection + 1
+    val totalLightSections: Int
+        get() = maximumSection - (minimumSection - 1) + 1
+    val minimumBlockY: Int
+        get() = minimumSection shl 4
+    val maximumBlockY: Int
+        get() = ((maximumSection - 1) shl 4) or 15
+
     fun sectionIndexFromY(y: Int) = y - minimumSection
 
     fun sectionYFromIndex(index: Int) = index + minimumSection

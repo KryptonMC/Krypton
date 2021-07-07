@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.world.block
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.block.BoundingBox
+import org.kryptonmc.api.space.Direction
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.registry.block.BlockData
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
@@ -32,6 +32,7 @@ class KryptonBlock(
 ) : KryptonPropertyHolder<Block>(), Block {
 
     override val key = data.key
+    override val name = data.name
     override val id = data.id
     override val stateId = data.stateId
     override val hardness = data.hardness
@@ -61,6 +62,9 @@ class KryptonBlock(
     override val requiresCorrectTool = data.toolRequired
     override val translation = Component.translatable(data.translationKey)
     private val itemKey = data.itemKey
+    private val occlusionShapes = data.occlusionShapes
+
+    override fun faceOcclusionShape(direction: Direction) = occlusionShapes.getOrNull(direction.ordinal) ?: BoundingBox.BLOCK
 
     override fun copy(key: String, value: String): Block {
         val newProperties = properties + (key to value)

@@ -16,23 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world
+package org.kryptonmc.krypton.world.light
 
-import org.kryptonmc.api.block.Block
-import org.spongepowered.math.vector.Vector3i
+enum class LightLayer(val surrounding: Int) {
 
-interface BlockAccessor : HeightAccessor {
-
-    val maximumLightLevel: Int
-        get() = 15
-
-    fun getBlock(x: Int, y: Int, z: Int): Block
-
-    fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
-
-    fun setBlock(x: Int, y: Int, z: Int, block: Block)
-
-    fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
-
-    fun lightEmission(x: Int, y: Int, z: Int): Int = getBlock(x, y, z).lightEmission
+    SKY(15),
+    BLOCK(0)
 }

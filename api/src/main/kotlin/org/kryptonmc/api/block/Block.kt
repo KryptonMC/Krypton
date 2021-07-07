@@ -12,6 +12,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.property.PropertyHolder
 import org.kryptonmc.api.item.ItemLike
+import org.kryptonmc.api.space.Direction
 
 /**
  * Represents a block with certain properties.
@@ -22,12 +23,21 @@ import org.kryptonmc.api.item.ItemLike
  * technical standpoint, reduces allocations, but also makes
  * them much more thread-safe.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 interface Block : PropertyHolder<Block>, ItemLike, Comparable<Block> {
 
     /**
      * The key associated with this block.
      */
     val key: Key
+
+    /**
+     * The enum name of this block.
+     *
+     * For example, if the [key] was "minecraft:air", the
+     * name would likely be "AIR".
+     */
+    val name: String
 
     /**
      * The block ID of this block.
@@ -98,26 +108,31 @@ interface Block : PropertyHolder<Block>, ItemLike, Comparable<Block> {
     /**
      * If this block has an associated block entity.
      */
+    @get:JvmName("hasBlockEntity")
     val hasBlockEntity: Boolean
 
     /**
      * If light cannot pass through this block.
      */
+    @get:JvmName("occludes")
     val occludes: Boolean
 
     /**
      * If this block has a dynamic shape.
      */
+    @get:JvmName("hasDynamicShape")
     val hasDynamicShape: Boolean
 
     /**
      * If the shape of this block should be used to calculate light occlusion.
      */
+    @get:JvmName("useShapeForOcclusion")
     val useShapeForOcclusion: Boolean
 
     /**
      * If this block propagates skylight down.
      */
+    @get:JvmName("propagatesSkylightDown")
     val propagatesSkylightDown: Boolean
 
     /**
@@ -143,26 +158,31 @@ interface Block : PropertyHolder<Block>, ItemLike, Comparable<Block> {
     /**
      * If this block cannot be moved through.
      */
+    @get:JvmName("blocksMotion")
     val blocksMotion: Boolean
 
     /**
      * If this block has gravity.
      */
+    @get:JvmName("hasGravity")
     val hasGravity: Boolean
 
     /**
      * If this block can be respawned inside of.
      */
+    @get:JvmName("canRespawnIn")
     val canRespawnIn: Boolean
 
     /**
      * If the shape used for collision is very large.
      */
+    @get:JvmName("hasLargeCollisionShape")
     val hasLargeCollisionShape: Boolean
 
     /**
      * If this block requires the correct tool to be used to break it.
      */
+    @get:JvmName("requiresCorrectTool")
     val requiresCorrectTool: Boolean
 
     /**
@@ -170,4 +190,9 @@ interface Block : PropertyHolder<Block>, ItemLike, Comparable<Block> {
      * of this block.
      */
     val translation: TranslatableComponent
+
+    /**
+     * Gets the occlusion shape of the face for the specified [direction].
+     */
+    fun faceOcclusionShape(direction: Direction): BoundingBox
 }

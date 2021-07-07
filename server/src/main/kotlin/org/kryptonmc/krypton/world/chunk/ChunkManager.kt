@@ -18,6 +18,11 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
+import ca.spottedleaf.starlight.SWMRNibbleArray
+import ca.spottedleaf.starlight.StarLightEngine
+import ca.spottedleaf.starlight.StarLightManager
+import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.Caffeine
 import com.mojang.serialization.Dynamic
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.registry.InternalResourceKeys
@@ -28,7 +33,9 @@ import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.KryptonBiome
+import org.kryptonmc.krypton.world.light.LightLayer
 import org.kryptonmc.krypton.world.region.RegionFileManager
+import org.kryptonmc.nbt.ByteArrayTag
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.LongArrayTag
@@ -36,13 +43,20 @@ import org.kryptonmc.nbt.buildCompound
 import org.kryptonmc.nbt.compound
 import java.util.EnumSet
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
 
-class ChunkManager(private val world: KryptonWorld) {
+class ChunkManager(val world: KryptonWorld) {
 
     val chunkMap = ConcurrentHashMap<Long, KryptonChunk>()
+    val lightEngine = StarLightManager(this, world.dimensionType.hasSkylight)
     private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
 
-    operator fun get(x: Int, z: Int): KryptonChunk? = chunkMap[ChunkPosition.toLong(x, z)]
+    private val chunkCache: Cache<ChunkPosition, KryptonChunk> = Caffeine.newBuilder()
+        .maximumSize(512)
+        .expireAfterWrite(10, TimeUnit.MINUTES)
+        .build()
+
+    operator fun get(x: Int, z: Int): KryptonChunk? = chunkCache.getIfPresent(ChunkPosition(x, z))
 
     fun load(positions: List<ChunkPosition>): List<KryptonChunk> {
         val chunks = mutableListOf<KryptonChunk>()
@@ -63,6 +77,12 @@ class ChunkManager(private val world: KryptonWorld) {
         val data = (DATA_FIXER.update(References.CHUNK, Dynamic(NBTOps, nbt), version, KryptonPlatform.worldVersion).value as CompoundTag).getCompound("Level")
         val heightmaps = data.getCompound("Heightmaps")
 
+        // Light data
+        val blockNibbles = StarLightEngine.getFilledEmptyLight(world)
+        val skyNibbles = StarLightEngine.getFilledEmptyLight(world)
+        val minSection = world.minimumSection - 1
+        val hasSkyLight = world.dimensionType.hasSkylight
+
         val sectionList = data.getList("Sections", CompoundTag.ID)
         val sections = arrayOfNulls<ChunkSection>(world.sectionCount)
         for (i in sectionList.indices) {
@@ -70,14 +90,22 @@ class ChunkManager(private val world: KryptonWorld) {
             val y = sectionData.getByte("Y").toInt()
             if (y == -1 || y == 16) continue
             if (sectionData.contains("Palette", ListTag.ID) && sectionData.contains("BlockStates", LongArrayTag.ID)) {
-                val section = ChunkSection(
-                    y,
-                    sectionData.getByteArray("BlockLight"),
-                    sectionData.getByteArray("SkyLight")
-                )
+                val section = ChunkSection(y)
                 section.palette.load(sectionData.getList("Palette", CompoundTag.ID), sectionData.getLongArray("BlockStates"))
                 section.recount()
                 if (!section.isEmpty()) sections[world.sectionIndexFromY(y)] = section
+            }
+            if (nbt["isLightOn"] != null) {
+                blockNibbles[y - minSection] = if (sectionData.contains("BlockLight", ByteArrayTag.ID)) {
+                    SWMRNibbleArray(sectionData.getByteArray("BlockLight").clone(), sectionData.getInt("starlight.blocklight_state"))
+                } else {
+                    SWMRNibbleArray(null, sectionData.getInt("starlight.blocklight_state"))
+                }
+                if (hasSkyLight) skyNibbles[y - minSection] = if (sectionData.contains("SkyLight", ByteArrayTag.ID)) {
+                    SWMRNibbleArray(sectionData.getByteArray("SkyLight").clone(), sectionData.getInt("starlight.skylight_state"))
+                } else {
+                    SWMRNibbleArray(null, sectionData.getInt("starlight.skylight_state"))
+                }
             }
         }
 
@@ -97,11 +125,15 @@ class ChunkManager(private val world: KryptonWorld) {
         )
         chunkMap[position.toLong()] = chunk
 
+        chunk.blockNibbles = blockNibbles
+        chunk.skyNibbles = skyNibbles
+
         val noneOf = EnumSet.noneOf(Heightmap.Type::class.java)
         Heightmap.Type.POST_FEATURES.forEach {
             if (heightmaps.contains(it.name, LongArrayTag.ID)) chunk.setHeightmap(it, heightmaps.getLongArray(it.name)) else noneOf.add(it)
         }
         Heightmap.prime(chunk, noneOf)
+        lightEngine.lightChunk(chunk, true)
         return chunk
     }
 
@@ -112,6 +144,8 @@ class ChunkManager(private val world: KryptonWorld) {
         chunk.lastUpdate = lastUpdate
         regionFileManager.write(chunk.position, chunk.serialize())
     }
+
+    fun onLightUpdate(layer: LightLayer, x: Int, y: Int, z: Int) = chunkCache.getIfPresent(ChunkPosition(x, z))?.onLightUpdate(layer, y)
 }
 
 private fun KryptonChunk.serialize(): CompoundTag {
@@ -136,15 +170,25 @@ private fun KryptonChunk.serialize(): CompoundTag {
         int("zPos", position.z)
     }
 
+    val lightEngine = world.chunkManager.lightEngine
     val sectionList = ListTag(elementType = CompoundTag.ID)
-    for (i in minimumLightSection until maximumLightSection) {
-        val section = sections.asSequence().filter { it != null && it.y shr 4 == i }.firstOrNull() ?: continue
-        sectionList.add(compound {
-            byte("Y", (i and 255).toByte())
-            section.palette.save(this)
-            if (section.blockLight.isNotEmpty()) byteArray("BlockLight", section.blockLight)
-            if (section.skyLight.isNotEmpty()) byteArray("SkyLight", section.skyLight)
-        })
+    for (i in lightEngine.minLightSection until lightEngine.maxLightSection) {
+        val section = sections.asSequence().filter { it != null && it.y shr 4 == i }.firstOrNull()
+        val blockNibble = blockNibbles[i - lightEngine.minLightSection].saveState
+        val skyNibble = skyNibbles[i - lightEngine.minLightSection].saveState
+        if (section != null || blockNibble != null || skyNibble != null) {
+            val sectionData = buildCompound { byte("Y", (i and 255).toByte()) }
+            section?.palette?.save(sectionData)
+            if (blockNibble != null) {
+                blockNibble.data?.let { sectionData.byteArray("BlockLight", it) }
+                sectionData.int("starlight.blocklight_state", blockNibble.state)
+            }
+            if (skyNibble != null) {
+                skyNibble.data?.let { sectionData.byteArray("SkyLight", it) }
+                sectionData.int("starlight.skylight_state", skyNibble.state)
+            }
+            sectionList.add(sectionData.build())
+        }
     }
     data.put("Sections", sectionList)
 

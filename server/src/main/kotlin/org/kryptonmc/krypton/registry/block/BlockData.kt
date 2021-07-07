@@ -18,9 +18,11 @@
  */
 package org.kryptonmc.krypton.registry.block
 
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.util.toKey
+import org.kryptonmc.krypton.util.toBoundingBoxList
 
 class BlockData(
     val key: Key,
@@ -29,6 +31,7 @@ class BlockData(
 ) {
 
     val id = int("id")
+    val name = string("mojangName")
     val stateId = int("stateId")
     val hardness = double("hardness")
     val resistance = double("explosionResistance")
@@ -44,6 +47,8 @@ class BlockData(
     val blocksMotion = boolean("blocksMotion")
     val flammable = boolean("flammable")
     val gravity = boolean("gravity")
+    val shapes = string("shape").toBoundingBoxList()
+    val occlusionShapes = string("occlusionShape").toBoundingBoxList()
     val translationKey = string("translationKey")
     val replaceable = boolean("replaceable")
     val dynamicShape = boolean("dynamicShape")
@@ -58,9 +63,9 @@ class BlockData(
     val toolRequired = boolean("toolRequired")
     val itemKey = (override["correspondingItem"] ?: main["correspondingItem"])?.asString?.toKey()
 
-    private fun string(name: String) = element(name).asString
+    private fun string(name: String): String = element(name).asString
     private fun double(name: String) = element(name).asDouble
     private fun int(name: String) = element(name).asInt
     private fun boolean(name: String) = element(name).asBoolean
-    private fun element(name: String) = override[name] ?: main[name]!!
+    private fun element(name: String): JsonElement = override[name] ?: main[name]!!
 }
