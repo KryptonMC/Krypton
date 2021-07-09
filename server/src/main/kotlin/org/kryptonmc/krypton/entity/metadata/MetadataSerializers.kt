@@ -22,17 +22,18 @@ import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.inventory.item.ItemStack
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.entity.data.VillagerData
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.Rotation
 import org.kryptonmc.krypton.util.asLong
 import org.kryptonmc.krypton.util.write
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeEnum
+import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeNBTCompound
 import org.kryptonmc.krypton.util.writeOptional
 import org.kryptonmc.krypton.util.writeString
@@ -82,8 +83,10 @@ object MetadataSerializers {
     }
 
     @JvmField
-    val SLOT = object : MetadataSerializer<ItemStack> {
-        override fun write(buf: ByteBuf, item: ItemStack) = Unit // TODO: Support item metadata writing
+    val SLOT = object : MetadataSerializer<KryptonItemStack> {
+        override fun write(buf: ByteBuf, item: KryptonItemStack) = buf.writeItem(item)
+
+        override fun copy(item: KryptonItemStack) = item.copy()
     }
 
     @JvmField

@@ -24,18 +24,18 @@ import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.inventory.PlayerInventory
-import org.kryptonmc.api.inventory.item.ItemStack
-import org.kryptonmc.api.inventory.item.Material
+import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.inventory.item.ItemFactory
-import org.kryptonmc.krypton.inventory.item.save
+import org.kryptonmc.krypton.item.EmptyItemStack
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeldItemChange
 import org.kryptonmc.krypton.util.nbt.Serializable
 
 class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory, Serializable<NBTList<NBTCompound>> {
 
-    override val crafting = Array(5) { ItemStack.EMPTY }
-    override val armor = Array(4) { ItemStack.EMPTY }
+    override val crafting = Array<KryptonItemStack>(5) { EmptyItemStack }
+    override val armor = Array<KryptonItemStack>(4) { EmptyItemStack }
 
     override val helmet: ItemStack
         get() = armor[ArmorSlot.HELMET.ordinal]
@@ -48,13 +48,14 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
 
     override var heldSlot = 0
 
-    override val mainHand: ItemStack
+    override val mainHand: KryptonItemStack
         get() = items[heldSlot]
-    override var offHand = ItemStack.EMPTY
+    override var offHand: KryptonItemStack = EmptyItemStack
 
     override fun armor(slot: ArmorSlot) = armor[slot.ordinal]
 
     override fun set(index: Int, item: ItemStack) {
+        if (item !is KryptonItemStack) return
         when (index) {
             0 -> crafting[4] = item
             in 1..4 -> crafting[index - 1] = item
@@ -71,8 +72,8 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         clear()
         tag.forEach {
             val slot = it.getByte("Slot").toInt() and 255
-            val stack = ItemFactory.create(it)
-            if (stack.type == Material.AIR) return@forEach
+            val stack = KryptonItemStack(it)
+            if (stack.type === ItemTypes.AIR) return@forEach
             when (slot) {
                 in items.indices -> items[slot] = stack
                 in 100..103 -> armor[slot - 100] = stack
@@ -84,16 +85,26 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
     override fun save(): NBTList<NBTCompound> {
         val list = NBTList<NBTCompound>(NBTTypes.TAG_Compound)
         items.forEachIndexed { index, item ->
-            if (item == ItemStack.EMPTY) return@forEachIndexed
+            if (item.type === ItemTypes.AIR) return@forEachIndexed
             list.add(NBTCompound().setByte("Slot", index.toByte()).apply { item.save(this) })
         }
         armor.forEachIndexed { index, item ->
-            if (item == ItemStack.EMPTY) return@forEachIndexed
+            if (item.type === ItemTypes.AIR) return@forEachIndexed
             list.add(NBTCompound().setByte("Slot", (index + 100).toByte()).apply { item.save(this) })
         }
         list.add(NBTCompound().setByte("Slot", -106).apply { offHand.save(this) })
         return list
     }
+
+    override val networkItems: List<KryptonItemStack>
+        get() {
+            val list = mutableListOf<KryptonItemStack>()
+            crafting.forEach { list.add(it) }
+            armor.forEach { list.add(it) }
+            items.forEach { list.add(it) }
+            list.add(offHand)
+            return list
+        }
 
     companion object {
 

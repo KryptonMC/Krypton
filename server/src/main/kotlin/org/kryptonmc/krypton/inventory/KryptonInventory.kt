@@ -21,7 +21,9 @@ package org.kryptonmc.krypton.inventory
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.inventory.InventoryType
-import org.kryptonmc.api.inventory.item.ItemStack
+import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.krypton.item.EmptyItemStack
+import org.kryptonmc.krypton.item.KryptonItemStack
 
 abstract class KryptonInventory(
     val id: Int,
@@ -31,31 +33,37 @@ abstract class KryptonInventory(
     totalItems: Int = size
 ) : Inventory {
 
-    override val items = Array(totalItems) { ItemStack.EMPTY }
+    abstract val networkItems: List<KryptonItemStack>
+
+    override val items = Array<KryptonItemStack>(totalItems) { EmptyItemStack }
 
     override fun get(index: Int) = items[index]
 
     override fun set(index: Int, item: ItemStack) {
+        if (item !is KryptonItemStack) return
         items[index] = item
     }
 
     override fun contains(item: ItemStack) = item in items
 
-    override fun plusAssign(item: ItemStack) = items.forEachIndexed { index, element ->
-        if (element === ItemStack.EMPTY) {
+    override fun plusAssign(item: ItemStack) {
+        if (item !is KryptonItemStack) return
+        items.forEachIndexed { index, element ->
+            if (element !== EmptyItemStack) return@forEachIndexed
             items[index] = item
             return
         }
     }
 
-    override fun minusAssign(item: ItemStack) = items.forEachIndexed { index, element ->
-        if (element == item) {
-            items[index] = ItemStack.EMPTY
+    override fun minusAssign(item: ItemStack) {
+        items.forEachIndexed { index, element ->
+            if (element != item) return@forEachIndexed
+            items[index] = EmptyItemStack
             return
         }
     }
 
-    override fun clear() = items.forEachIndexed { index, _ -> items[index] = ItemStack.EMPTY }
+    override fun clear() = items.forEachIndexed { index, _ -> items[index] = EmptyItemStack }
 
     override fun iterator() = items.iterator()
 }

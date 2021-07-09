@@ -21,19 +21,13 @@ package org.kryptonmc.krypton.world.chunk
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.inventory.item.Material
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.world.Biome
-import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.chunk.Chunk
-import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.Heightmap
-import org.kryptonmc.krypton.world.HeightmapBuilder
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.WorldHeightAccessor
-import org.kryptonmc.krypton.world.block.KryptonBlock
-import org.kryptonmc.krypton.world.data.BitStorage
 import org.spongepowered.math.vector.Vector3i
 import java.util.EnumMap
 

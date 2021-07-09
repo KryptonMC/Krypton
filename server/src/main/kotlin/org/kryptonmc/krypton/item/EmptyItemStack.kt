@@ -16,22 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.item
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.writeItem
+import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.item.meta.EmptyMetaHolder
 
-class PacketOutSetSlot(
-    private val id: Int,
-    private val slot: Int,
-    private val item: KryptonItemStack
-) : PlayPacket(0x16) {
+object EmptyItemStack : KryptonItemStack(ItemTypes.AIR, 1, EmptyMetaHolder) {
 
-    override fun write(buf: ByteBuf) {
-        buf.writeByte(id)
-        buf.writeShort(slot)
-        buf.writeItem(item)
-    }
+    override fun toString() = "EmptyItemStack"
 }

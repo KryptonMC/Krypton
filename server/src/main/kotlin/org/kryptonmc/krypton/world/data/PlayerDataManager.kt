@@ -19,16 +19,10 @@
 package org.kryptonmc.krypton.world.data
 
 import com.mojang.serialization.Dynamic
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTReader
-import org.jglrxavpok.hephaistos.nbt.NBTString
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.jglrxavpok.hephaistos.nbt.NBTWriter
-import org.kryptonmc.api.inventory.item.ItemStack
-import org.kryptonmc.api.inventory.item.meta.ItemMeta
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.createFile
@@ -43,7 +37,6 @@ import java.io.IOException
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
-import java.util.concurrent.Future
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 import kotlin.io.path.inputStream
@@ -78,7 +71,7 @@ class PlayerDataManager(private val folder: Path) {
         player.load(DATA_FIXER.update(FixType.PLAYER.type, Dynamic(NBTOps, nbt), version, ServerInfo.WORLD_VERSION).value as NBTCompound)
     }, executor)
 
-    fun save(player: KryptonPlayer): Future<*> = executor.submit {
+    fun save(player: KryptonPlayer) {
         val data = player.save()
 
         // Create temp file and write data
@@ -89,7 +82,7 @@ class PlayerDataManager(private val folder: Path) {
         val dataPath = folder.resolve("${player.uuid}.dat")
         if (!dataPath.exists()) {
             temp.moveTo(dataPath)
-            return@submit
+            return
         }
 
         // Save the old data and then save the new data
@@ -103,18 +96,4 @@ class PlayerDataManager(private val folder: Path) {
 
         private val LOGGER = logger<PlayerDataManager>()
     }
-}
-
-private fun ItemStack.toNBT(slot: Int) = NBTCompound()
-    .setString("id", type.key().toString())
-    .setByte("Slot", slot.toByte())
-    .setByte("Count", amount.toByte())
-    .apply { if (meta != null) set("display", meta!!.toNBT()) }
-
-private fun ItemMeta.toNBT() = NBTCompound()
-    .apply { if (displayName != null) setString("Name", GsonComponentSerializer.gson().serialize(displayName!!)) }
-    .apply { if (lore.isNotEmpty()) set("Lore", lore.toNBT()) }
-
-private fun List<Component>.toNBT() = NBTList<NBTString>(NBTTypes.TAG_String).apply {
-    this@toNBT.map { add(NBTString(GsonComponentSerializer.gson().serialize(it))) }
 }

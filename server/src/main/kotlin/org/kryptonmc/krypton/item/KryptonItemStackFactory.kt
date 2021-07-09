@@ -16,18 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.inventory.item
+package org.kryptonmc.krypton.item
 
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.kryptonmc.api.inventory.item.ItemStack
-import org.kryptonmc.api.inventory.item.Material
-import org.kryptonmc.api.util.toKey
+import org.kryptonmc.api.item.ItemStackFactory
 
-object ItemFactory {
+class KryptonItemStackFactory : ItemStackFactory {
 
-    fun create(tag: NBTCompound): ItemStack {
-        val type = Material.KEYS.value(tag.getString("id").toKey()) ?: error("Invalid item ID \"${tag.getString("id")}\"")
-        val amount = tag.getByte("Count").toInt()
-        return ItemStack(type, amount)
-    }
+    private val empty = EmptyItemStack
+
+    override fun builder() = KryptonItemStack.Builder()
+
+    override fun empty() = empty
 }

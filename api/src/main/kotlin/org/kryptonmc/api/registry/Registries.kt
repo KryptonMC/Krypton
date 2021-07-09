@@ -9,7 +9,9 @@
 package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.util.Services
+import net.kyori.adventure.key.Key.key
+import org.kryptonmc.api.util.orThrowNamed
+import org.kryptonmc.api.util.service
 
 /**
  * Holder of all of the built-in registries
@@ -26,7 +28,7 @@ object Registries {
      * The registry of all types of entities in the game.
      */
     @JvmField
-    val ENTITY_TYPE = createDefaulted(RegistryKeys.ENTITY_TYPE, Key.key("pig"))
+    val ENTITY_TYPE = createDefaulted(RegistryKeys.ENTITY_TYPE, key("pig"))
 
     /**
      * The registry of all types of particles in the game.
@@ -44,13 +46,25 @@ object Registries {
      * The registry of all types of dimensions in the game.
      */
     @JvmField
-    val DIMENSION_TYPE = create(RegistryKeys.DIMENSION_TYPE)
+    val DIMENSION_TYPE = createDefaulted(RegistryKeys.DIMENSION_TYPE, key("air"))
 
     /**
-     * The registry of all blocks in the game
+     * The registry of all blocks in the game.
      */
     @JvmField
     val BLOCK = create(RegistryKeys.BLOCK)
+
+    /**
+     * The registry of all item types in the game.
+     */
+    @JvmField
+    val ITEM = createDefaulted(RegistryKeys.ITEM, key("air"))
+
+    /**
+     * The registry of all item rarities in the game.
+     */
+    @JvmField
+    val ITEM_RARITIES = create(RegistryKeys.ITEM_RARITIES)
 
     /**
      * Registers a new entry to the given [registry], with the given [key] mapped to
@@ -61,7 +75,7 @@ object Registries {
      * @param value the value
      */
     @JvmStatic
-    fun <T : Any> register(registry: Registry<T>, key: String, value: T): T = register(registry, Key.key(key), value)
+    fun <T : Any> register(registry: Registry<T>, key: String, value: T): T = register(registry, key(key), value)
 
     /**
      * Registers a new entry to the given [registry], with the given [key] mapped to
@@ -99,6 +113,4 @@ object Registries {
 
 // This is to allow access to the registry manager statically for the built-in registries.
 // This is NOT for public use.
-private val MANAGER: RegistryManager = Services.service(RegistryManager::class.java).orElseThrow {
-    IllegalStateException("No candidate for the registry manager was found! If you are a server owner, contact the creator of your server software.")
-}
+private val MANAGER = service<RegistryManager>().orThrowNamed("registry manager")

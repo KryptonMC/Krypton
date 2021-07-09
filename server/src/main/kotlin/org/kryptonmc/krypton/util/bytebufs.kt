@@ -38,11 +38,16 @@ import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
 import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.inventory.item.ItemStack
+import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.api.item.ItemStack.Companion
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.krypton.entity.data.VillagerData
+import org.kryptonmc.krypton.item.EmptyItemStack
+import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.locale.TranslationManager
 import org.kryptonmc.krypton.registry.FileRegistries
 import org.spongepowered.math.vector.Vector3i
@@ -195,15 +200,23 @@ fun ByteBuf.writeChat(component: Component) {
     writeString(GsonComponentSerializer.gson().serialize(TranslationManager.render(component)))
 }
 
-fun ByteBuf.writeItem(item: ItemStack?, nbt: NBTCompound?) {
-    if (item == null) {
+fun ByteBuf.readItem(): KryptonItemStack {
+    if (!readBoolean()) return EmptyItemStack
+    val id = readVarInt()
+    val count = readByte()
+    val nbt = readNBTCompound()
+    return KryptonItemStack(Registries.ITEM[id]!!, count.toInt(), KryptonMetaHolder(nbt))
+}
+
+fun ByteBuf.writeItem(item: KryptonItemStack) {
+    if (item === EmptyItemStack) {
         writeBoolean(false)
         return
     }
     writeBoolean(true)
-    writeVarInt(FileRegistries.ITEMS.idOf(item.type.key()))
+    writeVarInt(Registries.ITEM.idOf(item.type))
     writeByte(item.amount)
-    nbt?.let { writeNBTCompound(it) } ?: writeByte(0)
+    writeNBTCompound(item.meta.nbt)
 }
 
 fun ByteBuf.writeRotation(rotation: Rotation) {
@@ -221,7 +234,7 @@ fun ByteBuf.writeVector(vector: Vector3i) {
 }
 
 fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
-    writeInt(org.kryptonmc.api.registry.Registries.PARTICLE_TYPE.idOf(particle.type))
+    writeInt(Registries.PARTICLE_TYPE.idOf(particle.type))
     writeBoolean(particle.longDistance)
 
     val data = particle.data
@@ -324,14 +337,6 @@ fun <T> ByteBuf.writeOptional(optional: java.util.Optional<T>, presentAction: (T
 fun <E> ByteBuf.writeCollection(collection: Collection<E>, action: (E) -> Unit) {
     writeVarInt(collection.size)
     collection.forEach { action(it) }
-}
-
-fun Int.varIntSize(): Int {
-    for (i in 1 until 5) {
-        if (this and (-1 shl i * 7) != 0) continue
-        return i
-    }
-    return 5
 }
 
 private val VARINT_EXACT_BYTE_LENGTHS = IntArray(33) { ceil((31.0 - (it - 1)) / 7.0).toInt() }.apply { this[32] = 1 }

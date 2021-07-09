@@ -16,12 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.inventory.item
+package org.kryptonmc.krypton.item.meta
 
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.kryptonmc.api.inventory.item.ItemStack
+import org.kryptonmc.api.item.meta.MetaKey
 
-// TODO: Serialize item meta too
-fun ItemStack.save(tag: NBTCompound) = tag
-    .setString("id", type.key().asString())
-    .setByte("Count", amount.toByte())
+object EmptyMetaHolder : KryptonMetaHolder() {
+
+    override fun <V : Any> get(key: MetaKey<V>): V? = null
+
+    override fun <V : Any> set(key: MetaKey<V>, value: V) = Unit
+
+    override fun <V : Any> contains(key: MetaKey<V>) = false
+
+    override fun copy() = EmptyMetaHolder
+
+    override fun toString() = "EmptyMetaHolder"
+}

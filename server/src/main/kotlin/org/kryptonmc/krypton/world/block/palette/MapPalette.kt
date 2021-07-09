@@ -24,7 +24,7 @@ import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
-import org.kryptonmc.krypton.util.varIntSize
+import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.block.BLOCKS
 import org.kryptonmc.krypton.world.block.toBlock
@@ -64,8 +64,8 @@ class MapPalette(private val bits: Int, private val resizer: (Int, Block) -> Int
 
     override val serializedSize: Int
         get() {
-            var temp = size.varIntSize()
-            for (i in 0 until size) temp += BLOCKS.idOf(values[i]!!).varIntSize()
+            var temp = size.varIntBytes
+            for (i in 0 until size) temp += BLOCKS.idOf(values[i]!!).varIntBytes
             return temp
         }
 }

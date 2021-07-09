@@ -23,13 +23,13 @@ import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.krypton.util.varIntSize
+import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.world.block.BLOCKS
 
 object GlobalPalette : Palette {
 
     override val size = BLOCKS.size
-    override val serializedSize = 0.varIntSize()
+    override val serializedSize = 0.varIntBytes
 
     override fun get(value: Block) = BLOCKS.idOf(value).takeIf { it != -1 } ?: 0
 

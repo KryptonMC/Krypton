@@ -32,8 +32,9 @@ import org.kryptonmc.api.event.play.ChatEvent
 import org.kryptonmc.api.event.play.ClientSettingsEvent
 import org.kryptonmc.api.event.play.MoveEvent
 import org.kryptonmc.api.event.play.PluginMessageEvent
-import org.kryptonmc.api.inventory.item.ItemStack
-import org.kryptonmc.api.inventory.item.Material
+import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.api.item.ItemStack.Companion
+import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -69,13 +70,11 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
 import org.kryptonmc.krypton.network.Session
-import org.kryptonmc.krypton.registry.FileRegistries
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.toSkinSettings
 import org.kryptonmc.krypton.world.block.BLOCK_LOADER
-import org.kryptonmc.krypton.world.block.KryptonBlock
 import java.util.Locale
 import kotlin.math.max
 
@@ -180,10 +179,8 @@ class PlayHandler(
     }
 
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
-        if (packet.clickedItem.id == 0) return // ignore air
-        val type = Material.KEYS.value(FileRegistries.ITEMS[packet.clickedItem.id] ?: return)
-        val item = type?.let { ItemStack(it, packet.clickedItem.count.toInt()) } ?: ItemStack.EMPTY
-        player.inventory[packet.slot.toInt()] = item
+        if (packet.clickedItem.type === ItemTypes.AIR) return // ignore air
+        player.inventory[packet.slot.toInt()] = packet.clickedItem
     }
 
     private fun handleEntityAction(packet: PacketInEntityAction) {
@@ -229,7 +226,7 @@ class PlayHandler(
         if (existingBlock != Blocks.AIR) return
 
         val item = player.inventory.mainHand
-        val block = BLOCK_LOADER.fromKey(item.type.key()) ?: return
+        val block = BLOCK_LOADER.fromKey(item.type.key) ?: return
         val x = packet.location.x()
         val y = packet.location.y()
         val z = packet.location.z()

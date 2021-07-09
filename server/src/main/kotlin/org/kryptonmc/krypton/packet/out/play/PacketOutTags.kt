@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.FileRegistries
 import org.kryptonmc.krypton.registry.tags.Tag
@@ -40,7 +41,7 @@ object PacketOutTags : PlayPacket(0x66) {
         FileRegistries.FLUIDS.idOf(it)
     }
     private val itemRegistry: (Key) -> Int? = {
-        FileRegistries.ITEMS.idOf(it)
+        Registries.ITEM.idOf(Registries.ITEM[it])
     }
     private val entityRegistry: (Key) -> Int? = {
         FileRegistries.ENTITY_TYPES.idOf(it)

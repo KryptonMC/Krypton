@@ -304,9 +304,9 @@ class KryptonPlayer(
     }
 
     override fun openBook(book: Book) {
-        val (item, nbt) = book.toItemStack(locale ?: Locale.ENGLISH)
+        val item = book.toItemStack(locale ?: Locale.ENGLISH)
         val slot = inventory.heldSlot
-        session.sendPacket(PacketOutSetSlot(inventory.id, slot, item, nbt))
+        session.sendPacket(PacketOutSetSlot(inventory.id, slot, item))
         session.sendPacket(PacketOutOpenBook(hand))
         session.sendPacket(PacketOutSetSlot(inventory.id, slot, inventory.mainHand))
     }

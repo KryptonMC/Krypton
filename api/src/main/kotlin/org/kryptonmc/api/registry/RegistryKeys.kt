@@ -13,6 +13,8 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.Particle
 import org.kryptonmc.api.effect.sound.SoundType
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.item.ItemRarity
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 
@@ -30,11 +32,13 @@ object RegistryKeys {
     @JvmField val PARTICLE_TYPE = minecraft<Particle>("particle_type")
     @JvmField val DIMENSION_TYPE = minecraft<DimensionType>("dimension_type")
     @JvmField val BLOCK = minecraft<Block>("block")
+    @JvmField val ITEM = minecraft<ItemType>("item")
 
     /**
      * Custom built-in registries
      */
     @JvmField val GAMERULES = krypton<GameRule<Any>>("gamerules")
+    @JvmField val ITEM_RARITIES = krypton<ItemRarity>("item_rarities")
     // @formatter:on
 
     /**

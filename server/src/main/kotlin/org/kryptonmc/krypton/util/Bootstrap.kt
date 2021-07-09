@@ -34,6 +34,7 @@ object Bootstrap {
         Class.forName("org.kryptonmc.api.effect.particle.ParticleType")
         Class.forName("org.kryptonmc.api.effect.sound.SoundTypes")
         Class.forName("org.kryptonmc.api.entity.EntityTypes")
+        Class.forName("org.kryptonmc.api.item.ItemTypes")
 
         // Preload the old registry
         Class.forName("org.kryptonmc.krypton.registry.FileRegistries")

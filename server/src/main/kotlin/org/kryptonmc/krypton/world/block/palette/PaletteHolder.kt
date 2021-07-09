@@ -25,7 +25,7 @@ import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.util.ceillog2
-import org.kryptonmc.krypton.util.varIntSize
+import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
 import org.kryptonmc.krypton.world.block.BLOCKS
 import org.kryptonmc.krypton.world.data.BitStorage
@@ -154,7 +154,7 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
     }
 
     val serializedSize: Int
-        get() = 1 + palette.serializedSize + storage.size.varIntSize() + storage.data.size * 8
+        get() = 1 + palette.serializedSize + storage.size.varIntBytes + storage.data.size * 8
 
     companion object {
 

@@ -8,12 +8,14 @@
  */
 package org.kryptonmc.api.block
 
-import org.kryptonmc.api.block.internal.BLOCK_LOADER
+import org.kryptonmc.api.block.internal.BlockLoader
+import org.kryptonmc.api.util.orThrowNamed
+import org.kryptonmc.api.util.service
 
 /**
- * A pseudo-enum containing all the built-in vanilla
- * blocks.
+ * An object containing all the built-in vanilla blocks.
  */
+@Suppress("LargeClass")
 object Blocks {
 
     // @formatter:off
@@ -920,3 +922,5 @@ object Blocks {
     @JvmStatic
     private fun get(key: String) = BLOCK_LOADER.fromKey(key)
 }
+
+private val BLOCK_LOADER = service<BlockLoader>().orThrowNamed("BlockLoader")

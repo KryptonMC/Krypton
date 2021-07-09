@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.inventory
 
-import org.kryptonmc.api.inventory.item.ItemStack
+import org.kryptonmc.api.item.ItemStack
 
 /**
  * Represents an inventory that holds [ItemStack]s
@@ -34,7 +34,7 @@ interface Inventory : Iterable<ItemStack> {
     /**
      * The items in this inventory.
      */
-    val items: Array<ItemStack>
+    val items: Array<out ItemStack>
 
     /**
      * Retrieve an item from this inventory at the specified [index]

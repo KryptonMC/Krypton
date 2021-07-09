@@ -32,8 +32,9 @@ import org.kryptonmc.krypton.util.writeVarInt
 class PacketOutWindowItems(private val inventory: KryptonInventory) : PlayPacket(0x14) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(inventory.id)
-        buf.writeShort(inventory.items.size)
-        inventory.items.forEach { buf.writeItem(it, null) }
+        buf.writeByte(inventory.id)
+        val networkItems = inventory.networkItems
+        buf.writeShort(networkItems.size)
+        networkItems.forEach { buf.writeItem(it) }
     }
 }

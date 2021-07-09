@@ -19,10 +19,8 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.inventory.item.Slot
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.readNBTCompound
-import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.readItem
 
 /**
  * Sent by the client to indicate that they have performed an action in the creative inventory.
@@ -34,5 +32,5 @@ import org.kryptonmc.krypton.util.readVarInt
 class PacketInCreativeInventoryAction(buf: ByteBuf) : PlayPacket(0x28) {
 
     val slot = buf.readShort()
-    val clickedItem = if (buf.readBoolean()) Slot(true, buf.readVarInt(), buf.readByte(), buf.readNBTCompound()) else Slot(false)
+    val clickedItem = buf.readItem()
 }

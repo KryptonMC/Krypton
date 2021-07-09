@@ -16,16 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.inventory.item
+package org.kryptonmc.krypton.item
 
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
+enum class ItemFlag {
 
-/**
- * A protocol slot. The API equivalent of this would be [org.kryptonmc.api.inventory.item.ItemStack]
- */
-data class Slot(
-    val isPresent: Boolean,
-    val id: Int = 0,
-    val count: Byte = 0,
-    val nbt: NBTCompound = NBTCompound()
-)
+    ENCHANTMENTS,
+    ATTRIBUTES,
+    UNBREAKABLE,
+    CAN_DESTROY,
+    CAN_PLACE,
+    MISCELLANEOUS,
+    DYE;
+
+    val mask = 1 shl ordinal
+}

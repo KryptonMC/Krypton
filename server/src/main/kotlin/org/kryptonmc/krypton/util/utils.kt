@@ -35,10 +35,12 @@ import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTString
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.inventory.item.ItemStack
-import org.kryptonmc.api.inventory.item.Material
+import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.adventure.toMessage
+import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import java.math.BigInteger
 import java.net.InetAddress
 import java.security.AccessController
@@ -106,13 +108,12 @@ fun UUID.serialize() = NBTIntArray(intArrayOf(
     (leastSignificantBits and Int.MAX_VALUE.toLong()).toInt()
 ))
 
-fun Book.toItemStack(locale: Locale): Pair<ItemStack, NBTCompound> {
-    val item = ItemStack(Material.WRITTEN_BOOK, 1)
+fun Book.toItemStack(locale: Locale): KryptonItemStack {
     val tag = NBTCompound()
         .setString("title", GsonComponentSerializer.gson().serialize(title()))
         .setString("author", GsonComponentSerializer.gson().serialize(author()))
         .set("pages", NBTList<NBTString>(NBTTypes.TAG_String).apply { pages().forEach { add(NBTString(GsonComponentSerializer.gson().serialize(it))) } })
-    return item to tag
+    return KryptonItemStack(ItemTypes.WRITTEN_BOOK, 1, KryptonMetaHolder(tag))
 }
 
 fun calculatePositionChange(new: Double, old: Double) = ((new * 32 - old * 32) * 128).toInt().toShort()

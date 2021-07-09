@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.krypton.util.varIntSize
+import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.block.BLOCKS
 import org.kryptonmc.krypton.world.block.toBlock
@@ -58,8 +58,8 @@ class ArrayPalette(private val bits: Int, private val resizer: (Int, Block) -> I
 
     override val serializedSize: Int
         get() {
-            var temp = size.varIntSize()
-            for (i in 0 until size) temp += BLOCKS.idOf(values[i]!!).varIntSize()
+            var temp = size.varIntBytes
+            for (i in 0 until size) temp += BLOCKS.idOf(values[i]!!).varIntBytes
             return temp
         }
 }

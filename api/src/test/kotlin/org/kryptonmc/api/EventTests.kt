@@ -9,8 +9,6 @@
 package org.kryptonmc.api
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.event.login.LoginEvent
-import org.kryptonmc.api.event.play.ChatEvent
 import org.kryptonmc.api.event.play.QuitEvent
 import kotlin.test.Test
 import kotlin.test.assertEquals
