@@ -29,45 +29,45 @@ dependencies {
     implementation(project(":krypton-api").dependencyProject.sourceSets["ap"].output)
     implementation(platform("io.netty:netty-bom:${Versions.NETTY}"))
 
-    // Extra Kotlin stuff for the JVM
+    // Extra Kotlin stuff
     implementation(kotlin("stdlib-jdk7"))
     implementation(kotlin("stdlib-jdk8"))
 
-    // Netty
+    // Networking
     implementation("io.netty", "netty-buffer")
     implementation("io.netty", "netty-handler")
     implementation("io.netty", "netty-transport")
 
-    // Netty native transport
+    // Extra natives for networking
     implementation("io.netty", "netty-transport-native-epoll")
     implementation("io.netty", "netty-transport-native-kqueue")
     implementation("io.netty.incubator", "netty-incubator-transport-native-io_uring", Versions.NETTY_IO_URING)
+    implementation("com.velocitypowered", "velocity-native", Versions.VELOCITY_NATIVE)
 
-    // Event
+    // Events
     implementation("net.kyori", "event-method-asm", Versions.EVENT)
     implementation("org.ow2.asm", "asm", Versions.ASM)
 
-    // Logging
+    // Logging and console
     runtimeOnly("org.apache.logging.log4j", "log4j-core")
     implementation("net.minecrell", "terminalconsoleappender", Versions.TCA)
     runtimeOnly("org.jline", "jline-terminal-jansi", Versions.JANSI)
 
-    // HTTP
+    // Caching & HTTP
+    implementation("com.github.ben-manes.caffeine", "caffeine", Versions.CAFFEINE)
     implementation("com.squareup.retrofit2", "retrofit", Versions.RETROFIT)
     implementation("com.squareup.retrofit2", "converter-gson", Versions.RETROFIT)
     implementation("com.squareup.okhttp3", "okhttp", Versions.OKHTTP)
 
-    // Caching
-    implementation("com.github.ben-manes.caffeine", "caffeine", Versions.CAFFEINE)
-    implementation("it.unimi.dsi", "fastutil", Versions.FASTUTIL)
-
-    // Miscellaneous
+    // Data
     implementation("org.kryptonmc", "datafixerupper", Versions.DFU) // Slight performance enhanced version, courtesy of Paper
     implementation("org.jglrxavpok.nbt", "Hephaistos", Versions.HEPHAISTOS) // Custom fork with nice improvements
+    implementation("de.articdive", "articdata", Versions.MINECRAFT)
+
+    // Miscellaneous
+    implementation("it.unimi.dsi", "fastutil", Versions.FASTUTIL)
     implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
     implementation("org.bstats", "bstats-base", Versions.BSTATS)
-    implementation("com.velocitypowered", "velocity-native", Versions.VELOCITY_NATIVE)
-    implementation("de.articdive", "articdata", Versions.MINECRAFT)
 }
 
 tasks {

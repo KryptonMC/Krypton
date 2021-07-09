@@ -19,6 +19,7 @@ sourceSets.main {
 }
 
 dependencies {
+    // BOMs
     api(platform("net.kyori:adventure-bom:${Versions.ADVENTURE}"))
     api(platform("org.spongepowered:configurate-bom:${Versions.CONFIGURATE}"))
     api(platform("org.apache.logging.log4j:log4j-bom:${Versions.LOG4J}"))

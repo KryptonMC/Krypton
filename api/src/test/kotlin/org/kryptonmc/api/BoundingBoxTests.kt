@@ -32,7 +32,6 @@ class BoundingBoxTests {
     @Test
     fun `test center calculation`() {
         val box = BoundingBox(Vector(-3, -3, -3), Vector(3, 3, 3))
-        //
         val expectedCentre = Vector(-3.0 + 6.0 * 0.5, -3.0 + 6.0 * 0.5, -3.0 + 6.0 * 0.5)
         assertEquals(box.center, expectedCentre)
     }

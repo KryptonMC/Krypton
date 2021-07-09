@@ -1,8 +1,19 @@
+/*
+ * This file is part of the Krypton API, licensed under the MIT license.
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
+ *
+ * This project is licensed under the terms of the MIT license.
+ * For more details, please reference the LICENSE file in the api top-level directory.
+ */
 package org.kryptonmc.api.block
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.internal.BLOCK_LOADER
 
+/**
+ * A pseudo-enum containing all the built-in vanilla
+ * blocks.
+ */
 object Blocks {
 
     // @formatter:off
@@ -907,8 +918,5 @@ object Blocks {
 
     // @formatter:on
     @JvmStatic
-    operator fun get(key: Key) = BLOCK_LOADER.fromKey(key)
-
-    @JvmStatic
-    operator fun get(key: String) = BLOCK_LOADER.fromKey(key)
+    private fun get(key: String) = BLOCK_LOADER.fromKey(key)
 }

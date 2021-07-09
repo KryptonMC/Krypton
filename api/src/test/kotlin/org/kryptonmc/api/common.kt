@@ -12,23 +12,10 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
-import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.command.SimpleCommand
-import org.kryptonmc.api.dummy.DummyCommand
 import org.kryptonmc.api.entity.player.Player
 import java.net.InetSocketAddress
 import java.util.UUID
-
-val commandManagerMock = mockk<CommandManager> {
-    every { register(any<SimpleCommand>()) } returns Unit
-}
-
-val server = mockk<Server> {
-    every { commandManager } returns commandManagerMock
-}
-
-val command = DummyCommand("test", "test.test", listOf("hello", "world"))
 
 val sender = mockk<Sender> {
     every { name } returns "Dave"

@@ -34,7 +34,7 @@ import org.kryptonmc.api.effect.particle.VibrationParticleData
 @Suppress("UNCHECKED_CAST")
 fun ParticleEffect.write(buf: ByteBuf) {
     when (type) {
-        is BlockParticle -> buf.writeVarInt((data as BlockParticleData).id)
+        is BlockParticle -> buf.writeVarInt((data as BlockParticleData).block.stateId)
         is DustParticle -> {
             val data = data as DustParticleData
             buf.writeFloat(if (data.color.red == 0.toUByte()) Float.MIN_VALUE else data.color.red.toFloat() / 255F)

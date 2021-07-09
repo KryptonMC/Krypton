@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.effect.particle
 
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
@@ -45,6 +46,30 @@ data class ParticleEffect internal constructor(
          */
         @JvmStatic
         fun builder(type: Particle) = ParticleEffectBuilder(type)
+
+        @JvmStatic
+        fun builder(type: DirectionalParticle) = DirectionalParticleEffectBuilder(type)
+
+        @JvmStatic
+        fun builder(type: BlockParticle) = DirectionalParticleEffectBuilder(type)
+
+        @JvmStatic
+        fun builder(type: ItemParticle) = ItemParticleEffectBuilder(type)
+
+        @JvmStatic
+        fun builder(type: ColorParticle) = ColorParticleEffectBuilder(type)
+
+        @JvmStatic
+        fun builder(type: DustParticle) = DustParticleEffectBuilder(type)
+
+        @JvmStatic
+        fun builder(type: DustTransitionParticle) = DustTransitionParticleEffectBuilder(type)
+
+        @JvmStatic
+        fun builder(type: NoteParticle) = NoteParticleEffectBuilder(type)
+
+        @JvmStatic
+        fun builder(type: VibrationParticle) = VibrationParticleEffectBuilder(type)
     }
 }
 
@@ -66,15 +91,19 @@ data class DirectionalParticleData(
 
 /**
  * Holds data for item [ParticleEffect]s.
+ *
+ * @param id the item ID
  */
 // TODO: Properly add support for item particles
 data class ItemParticleData(val id: Int) : ParticleData
 
 /**
  * Holds data for block [ParticleEffect]s.
+ *
+ * @param block the block
  */
 // TODO: Properly add support for block particles
-data class BlockParticleData(val id: Int) : ParticleData
+data class BlockParticleData(val block: Block) : ParticleData
 
 /**
  * Holds data for colored [ParticleEffect]s.

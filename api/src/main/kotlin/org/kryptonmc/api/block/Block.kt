@@ -1,9 +1,26 @@
+/*
+ * This file is part of the Krypton API, licensed under the MIT license.
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
+ *
+ * This project is licensed under the terms of the MIT license.
+ * For more details, please reference the LICENSE file in the api top-level directory.
+ */
 package org.kryptonmc.api.block
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.TranslatableComponent
 import org.jetbrains.annotations.Contract
 
+/**
+ * Represents a block with certain properties.
+ *
+ * These are immutable and do not contain any state-specific
+ * information, such as the world or location they are in, so
+ * they can be easily reused in many places, which from a
+ * technical standpoint, reduces allocations, but also makes
+ * them much more thread-safe.
+ */
 interface Block : Comparable<Block> {
 
     /**
