@@ -75,6 +75,7 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.toSkinSettings
 import org.kryptonmc.krypton.world.block.BLOCK_LOADER
+import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.util.Locale
 import kotlin.math.max
 
@@ -221,7 +222,9 @@ class PlayHandler(
         if (!player.abilities.canBuild) return // if they can't place blocks, they are irrelevant :)
 
         val world = player.world
-        val chunk = world.chunks.firstOrNull { player.location in it.position } ?: return
+        val chunkX = player.location.blockX shr 4
+        val chunkZ = player.location.blockZ shr 4
+        val chunk = world.chunkMap[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
         val existingBlock = chunk.getBlock(packet.location)
         if (existingBlock != Blocks.AIR) return
 
@@ -239,7 +242,9 @@ class PlayHandler(
         if (player.gamemode != Gamemode.CREATIVE) return
         if (packet.status != DiggingStatus.STARTED) return
 
-        val chunk = player.world.chunks.firstOrNull { packet.location in it.position } ?: return
+        val chunkX = packet.location.x() shr 4
+        val chunkZ = packet.location.z() shr 4
+        val chunk = player.world.chunkMap[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
         val x = packet.location.x()
         val y = packet.location.y()
         val z = packet.location.z()

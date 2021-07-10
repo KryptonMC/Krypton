@@ -10,12 +10,16 @@ package org.kryptonmc.api.world
 
 import net.kyori.adventure.audience.ForwardingAudience
 import org.kryptonmc.api.Server
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRuleHolder
+import org.spongepowered.math.vector.Vector2i
 import org.spongepowered.math.vector.Vector3i
 import java.nio.file.Path
 import java.util.UUID
@@ -66,7 +70,7 @@ interface World : ForwardingAudience {
     /**
      * The set of chunks currently loaded in this world.
      */
-    val chunks: Set<Chunk>
+    val chunks: Collection<Chunk>
 
     /**
      * This world's border.
@@ -132,6 +136,128 @@ interface World : ForwardingAudience {
      * The game rules for this world.
      */
     val gameRules: GameRuleHolder
+
+    /**
+     * Gets the block at the given coordinates.
+     *
+     * This function will return the following in specific cases:
+     * - If the given [y] coordinate is greater than the maximum height of this world,
+     * this will return [Blocks.VOID_AIR].
+     * - If there is no chunk loaded at the given coordinates (`getChunkAt` was null),
+     * this will return [Blocks.AIR].
+     * - Else it will return the block at the given coordinates.
+     *
+     * @param x the X coordinate
+     * @param y the Y coordinate
+     * @param z the Z coordinate
+     * @return see above
+     */
+    fun getBlock(x: Int, y: Int, z: Int): Block
+
+    /**
+     * Gets the block at the given coordinates.
+     *
+     * This function will return the following in specific cases:
+     * - If the given [position]'s [Vector3i.y] coordinate is greater than the
+     * maximum height of this world, this will return [Blocks.VOID_AIR].
+     * - If there is no chunk loaded at the given coordinates (`getChunkAt` was null),
+     * this will return [Blocks.AIR].
+     * - Else it will return the block at the given coordinates.
+     *
+     * @param position the position of the block
+     * @return see above
+     */
+    fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
+
+    /**
+     * Gets the block at the given coordinates.
+     *
+     * This function will return the following in specific cases:
+     * - If the given [position]'s [Position.blockY] coordinate is greater than the
+     * maximum height of this world, this will return [Blocks.VOID_AIR].
+     * - If there is no chunk loaded at the given coordinates (`getChunkAt` was null),
+     * this will return [Blocks.AIR]
+     * - Else it will return the block at the given coordinates
+     *
+     * @param position the position
+     * @return see above
+     */
+    fun getBlock(position: Position): Block = getBlock(position.blockX, position.blockY, position.blockZ)
+
+    /**
+     * Sets the block at the given coordinates to the given [block].
+     *
+     * @param x the X coordinate
+     * @param y the Y coordinate
+     * @param z the Z coordinate
+     * @param block the new block
+     */
+    fun setBlock(x: Int, y: Int, z: Int, block: Block)
+
+    /**
+     * Gets a chunk from its **chunk** coordinates, or returns null if there is
+     * no chunk **loaded** at the given coordinates.
+     *
+     * That is, to calculate the chunk coordinate from a given block coordinate,
+     * the block coordinate is shifted right by 4 (divided by 16 and floored).
+     *
+     * @param x the chunk X coordinate
+     * @param z the chunk Z coordinate
+     * @return the chunk at the given coordinates, or null if there isn't one loaded
+     */
+    fun getChunkAt(x: Int, z: Int): Chunk?
+
+    /**
+     * Gets a chunk from its **chunk** coordinates, or returns null if there is
+     * no chunk **loaded** at the given coordinates.
+     *
+     * That is, to calculate the chunk coordinate from a given block coordinate,
+     * the block coordinate is shifted right by 4 (divided by 16 and floored).
+     *
+     * @param position the chunk position
+     * @return the chunk at the given position, or null if there isn't one loaded
+     */
+    fun getChunkAt(position: Vector2i): Chunk? = getChunkAt(position.x(), position.y())
+
+    /**
+     * Gets a chunk from its **block** coordinates, or returns null if there is
+     * no chunk **loaded** at the given coordinates.
+     *
+     * @param x the block X coordinate
+     * @param y the block Y coordinate
+     * @param z the block Z coordinate
+     * @return the chunk at the given coordinates, or null if there isn't one loaded
+     */
+    fun getChunk(x: Int, y: Int, z: Int): Chunk?
+
+    /**
+     * Gets a chunk from its **block** coordinates, or returns null if there is
+     * no chunk **loaded** at the given coordinates.
+     *
+     * @param position the block position
+     * @return the chunk at the given coordinates, or null if there isn't one loaded
+     */
+    fun getChunk(position: Vector3i): Chunk? = getChunk(position.x(), position.y(), position.z())
+
+    /**
+     * Gets a chunk from its **block** coordinates, or returns null if there is
+     * no chunk **loaded** at the given coordinates.
+     *
+     * @param position the position
+     * @return the chunk at the given coordinates, or null if there isn't one loaded
+     */
+    fun getChunk(position: Position): Chunk? = getChunk(position.blockX, position.blockY, position.blockZ)
+
+    /**
+     * Gets or loads the chunk at the given **chunk** coordinates.
+     *
+     * That is, to calculate the chunk coordinate from a given block coordinate,
+     * the block coordinate is shifted right by 4 (divided by 16 and floored).
+     *
+     * @param x the X coordinate
+     * @param z the Z coordinate
+     */
+    fun loadChunk(x: Int, z: Int): Chunk
 
     /**
      * Saves this world to disk. Exposed as a function of [World] to allow for custom world implementations

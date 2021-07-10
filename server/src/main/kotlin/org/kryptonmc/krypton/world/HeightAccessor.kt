@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world
 
-interface WorldHeightAccessor {
+interface HeightAccessor {
 
     val height: Int
     val minimumBuildHeight: Int
@@ -40,4 +40,7 @@ interface WorldHeightAccessor {
     fun sectionYFromIndex(index: Int) = index + minimumSection
 
     fun sectionIndex(y: Int) = sectionIndexFromY(y shr 4)
+
+    val Int.outsideBuildHeight: Boolean
+        get() = this < minimumBuildHeight || this >= maximumBuildHeight
 }

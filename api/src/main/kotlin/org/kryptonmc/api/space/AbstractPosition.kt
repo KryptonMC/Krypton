@@ -8,9 +8,9 @@
  */
 package org.kryptonmc.api.space
 
+import org.kryptonmc.api.util.floor
+import org.spongepowered.math.GenericMath
 import kotlin.math.abs
-import kotlin.math.floor
-import kotlin.math.sqrt
 
 /**
  * This abstract class defines common defaults between both of its expected implementations,
@@ -30,11 +30,11 @@ abstract class AbstractPosition(
     final override val z: Double
 ) : Position {
 
-    final override val length by lazy { sqrt(lengthSquared) }
+    final override val length by lazy { GenericMath.sqrt(lengthSquared) }
     final override val lengthSquared = x * x + y * y + z * z
-    final override val blockX = floor(x).toInt()
-    final override val blockY = floor(y).toInt()
-    final override val blockZ = floor(z).toInt()
+    final override val blockX = x.floor()
+    final override val blockY = y.floor()
+    final override val blockZ = z.floor()
     final override val isNormalized = abs(lengthSquared - 1) < Position.EPSILON
 
     /**

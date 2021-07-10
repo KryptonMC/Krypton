@@ -47,22 +47,28 @@ import java.util.concurrent.TimeUnit
 class ChunkManager(private val world: KryptonWorld) {
 
     private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
-    private val chunkCache: Cache<ChunkPosition, KryptonChunk> = Caffeine.newBuilder()
+    private val chunkCache: Cache<Long, KryptonChunk> = Caffeine.newBuilder()
         .maximumSize(512)
         .expireAfterWrite(10, TimeUnit.MINUTES)
         .build()
 
+    operator fun get(x: Int, z: Int): KryptonChunk? = chunkCache.getIfPresent(ChunkPosition.toLong(x, z))
+
     fun load(positions: List<ChunkPosition>): List<KryptonChunk> {
         val chunks = mutableListOf<KryptonChunk>()
-        positions.forEach { chunks.add(load(it)) }
-        world.chunks += chunks
+        positions.forEach {
+            val chunk = load(it.x, it.z)
+            world.chunkMap[it.toLong()] = chunk
+            chunks += chunk
+        }
         return chunks
     }
 
-    fun load(position: ChunkPosition): KryptonChunk {
-        val cachedChunk = chunkCache.getIfPresent(position)
+    fun load(x: Int, z: Int): KryptonChunk {
+        val cachedChunk = chunkCache.getIfPresent(ChunkPosition.toLong(x, z))
         if (cachedChunk != null) return cachedChunk
 
+        val position = ChunkPosition(x, z)
         val nbt = regionFileManager.read(position).getCompound("Level")
         val heightmaps = nbt.getCompound("Heightmaps")
 
@@ -97,7 +103,7 @@ class ChunkManager(private val world: KryptonWorld) {
             carvingMasks,
             nbt.getCompound("Structures")
         )
-        chunkCache.put(position, chunk)
+        chunkCache.put(position.toLong(), chunk)
 
         val noneOf = EnumSet.noneOf(Heightmap.Type::class.java)
         Heightmap.Type.POST_FEATURES.forEach {
@@ -107,11 +113,11 @@ class ChunkManager(private val world: KryptonWorld) {
         return chunk
     }
 
-    fun saveAll() = world.chunks.forEach { save(it) }
+    fun saveAll() = world.chunkMap.values.forEach { save(it) }
 
     fun save(chunk: KryptonChunk) {
         val lastUpdate = world.time
-        chunkCache.invalidate(chunk.position)
+        chunkCache.invalidate(chunk.position.toLong())
         chunk.lastUpdate = lastUpdate
         regionFileManager.write(chunk.position, chunk.serialize())
     }

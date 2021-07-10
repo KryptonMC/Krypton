@@ -21,14 +21,13 @@ package org.kryptonmc.krypton.world.chunk
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.world.Biome
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.world.BlockAccessor
+import org.kryptonmc.krypton.world.HeightAccessor
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.WorldHeightAccessor
-import org.spongepowered.math.vector.Vector3i
 import java.util.EnumMap
 
 class KryptonChunk(
@@ -40,7 +39,7 @@ class KryptonChunk(
     override var inhabitedTime: Long,
     val carvingMasks: Pair<ByteArray, ByteArray>,
     val structures: NBTCompound
-) : Chunk, WorldHeightAccessor {
+) : Chunk, BlockAccessor {
 
     val heightmaps = EnumMap<Heightmap.Type, Heightmap>(Heightmap.Type::class.java)
 
@@ -63,16 +62,12 @@ class KryptonChunk(
         return Blocks.AIR
     }
 
-    override fun getBlock(position: Position) = getBlock(position.blockX, position.blockY, position.blockZ)
-
-    override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
-
-    override fun setBlock(x: Int, y: Int, z: Int, block: Block): Block? {
+    override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
         // Get the section
         val sectionIndex = sectionIndex(y)
         var section = sections[sectionIndex]
         if (section == null) {
-            if (block.isAir) return null
+            if (block.isAir) return
             section = ChunkSection(y shr 4)
             sections[sectionIndex] = section
         }
@@ -82,14 +77,14 @@ class KryptonChunk(
         val localY = y and 15
         val localZ = z and 15
         val oldState = section.set(localX, localY, localZ, block)
-        if (oldState == block) return null
+        if (oldState == block) return
 
         // Update the heightmaps
         heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(localX, y, localZ, block)
-        return oldState
+        return
     }
 
     fun tick(playerCount: Int) {

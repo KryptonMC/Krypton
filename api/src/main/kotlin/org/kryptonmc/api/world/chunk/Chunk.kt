@@ -77,7 +77,7 @@ interface Chunk {
      * @param position the position of the block to retrieve
      * @return the block at that position
      */
-    fun getBlock(position: Position): Block
+    fun getBlock(position: Position): Block = getBlock(position.blockX, position.blockY, position.blockZ)
 
     /**
      * Gets a block from this chunk at the specified [position].
@@ -85,7 +85,7 @@ interface Chunk {
      * @param position the position of the block to retrieve
      * @return the block at that position
      */
-    fun getBlock(position: Vector3i): Block
+    fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
 
     /**
      * Set the block at this [block]'s position to the specified [block].
