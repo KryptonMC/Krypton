@@ -119,7 +119,7 @@ object MetadataSerializers {
 
     @JvmField
     val DIRECTION = object : MetadataSerializer<Direction> {
-        override fun write(buf: ByteBuf, item: Direction) = buf.writeVarInt(item.id)
+        override fun write(buf: ByteBuf, item: Direction) = buf.writeEnum(item)
     }
 
     @JvmField

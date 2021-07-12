@@ -27,7 +27,7 @@ interface ItemStack {
     /**
      * The amount of items in this stack.
      */
-    val amount: Int
+    var amount: Int
 
     /**
      * The holder for the stack's metadata.

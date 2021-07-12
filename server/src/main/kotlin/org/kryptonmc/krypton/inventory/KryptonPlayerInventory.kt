@@ -22,6 +22,7 @@ import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.entity.ArmorSlot
+import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.item.ItemStack
@@ -53,6 +54,11 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
     override var offHand: KryptonItemStack = EmptyItemStack
 
     override fun armor(slot: ArmorSlot) = armor[slot.ordinal]
+
+    override fun heldItem(hand: Hand): KryptonItemStack = when (hand) {
+        Hand.MAIN -> mainHand
+        Hand.OFF -> offHand
+    }
 
     override fun set(index: Int, item: ItemStack) {
         if (item !is KryptonItemStack) return

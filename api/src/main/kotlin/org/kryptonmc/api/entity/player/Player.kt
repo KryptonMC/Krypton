@@ -17,7 +17,9 @@ import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.plugin.PluginMessageRecipient
+import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Position
+import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard
@@ -55,6 +57,16 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      * Will always be the time of the server.
      */
     val time: Long
+
+    /**
+     * This player's current gamemode.
+     */
+    val gamemode: Gamemode
+
+    /**
+     * The direction this player is currently facing.
+     */
+    val direction: Direction
 
     /**
      * The scoreboard currently being shown to this player.

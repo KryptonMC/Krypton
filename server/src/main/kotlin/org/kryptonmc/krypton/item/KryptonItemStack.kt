@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.item
 
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
+import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
@@ -29,7 +30,7 @@ import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 
 open class KryptonItemStack(
     override val type: ItemType,
-    override val amount: Int,
+    override var amount: Int,
     override val meta: KryptonMetaHolder = KryptonMetaHolder()
 ) : ItemStack {
 
@@ -38,6 +39,11 @@ open class KryptonItemStack(
         nbt.getInt("Count"),
         KryptonMetaHolder(nbt.getCompound("tag"))
     )
+
+    fun getOrCreateTag(key: String): NBTCompound {
+        if (meta.nbt.contains(key, NBTTypes.TAG_Compound)) return meta.nbt.getCompound(key)
+        return NBTCompound().apply { meta.nbt[key] = this }
+    }
 
     fun save(tag: NBTCompound) = tag
         .setString("id", Registries.ITEM[type].asString())

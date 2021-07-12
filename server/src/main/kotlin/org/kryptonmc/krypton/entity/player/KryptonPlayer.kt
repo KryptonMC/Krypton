@@ -44,6 +44,7 @@ import org.kryptonmc.api.entity.player.Abilities
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.RegistryKey
+import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Gamemode
@@ -134,7 +135,7 @@ class KryptonPlayer(
         }
 
     var oldGamemode: Gamemode? = null
-    var gamemode = Gamemode.SURVIVAL
+    override var gamemode = Gamemode.SURVIVAL
         set(value) {
             if (value == field) return
             oldGamemode = field
@@ -144,6 +145,8 @@ class KryptonPlayer(
             session.sendPacket(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, value.ordinal.toFloat()))
             if (value != Gamemode.SPECTATOR) camera = this
         }
+    override val direction: Direction
+        get() = Direction.fromPitch(location.pitch.toDouble())
 
     override val dimensionType: DimensionType
         get() = world.dimensionType

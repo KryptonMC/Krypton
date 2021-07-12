@@ -29,10 +29,12 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.Services
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
+import org.kryptonmc.api.block.BlockManager
 import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.ticking.TickEndEvent
 import org.kryptonmc.api.event.ticking.TickStartEvent
+import org.kryptonmc.api.item.ItemManager
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.status.StatusInfo
 import org.kryptonmc.api.world.Difficulty
@@ -43,6 +45,7 @@ import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDE
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.console.KryptonConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
+import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.MetadataResponse
 import org.kryptonmc.krypton.locale.TranslationRepository
@@ -75,6 +78,7 @@ import org.kryptonmc.krypton.util.profiling.decorate
 import org.kryptonmc.krypton.util.reports.CrashReport
 import org.kryptonmc.krypton.util.reports.ReportedException
 import org.kryptonmc.krypton.world.KryptonWorldManager
+import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
@@ -131,6 +135,8 @@ class KryptonServer(val mainThread: Thread) : Server {
     override val eventManager = KryptonEventManager(pluginManager)
     override val servicesManager = KryptonServicesManager
     override val registryManager = Services.service(RegistryManager::class.java).get()
+    override val blockManager = KryptonBlockManager
+    override val itemManager = KryptonItemManager
     override val scheduler = KryptonScheduler(pluginManager)
 
     @Volatile

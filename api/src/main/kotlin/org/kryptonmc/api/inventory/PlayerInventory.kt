@@ -9,6 +9,7 @@
 package org.kryptonmc.api.inventory
 
 import org.kryptonmc.api.entity.ArmorSlot
+import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.ItemStack
 
@@ -79,7 +80,16 @@ interface PlayerInventory : Inventory {
     /**
      * Gets the armor item in the specified [slot].
      *
+     * @param slot the armor slot
      * @return the armor item in the specified [slot]
      */
     fun armor(slot: ArmorSlot): ItemStack
+
+    /**
+     * Gets the item the player is holding in the specified [hand].
+     *
+     * @param hand the hand
+     * @return the item held in that hand
+     */
+    fun heldItem(hand: Hand): ItemStack
 }

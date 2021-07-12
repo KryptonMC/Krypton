@@ -11,11 +11,13 @@ package org.kryptonmc.api
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.block.BlockManager
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.EventManager
+import org.kryptonmc.api.item.ItemManager
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
@@ -80,6 +82,20 @@ interface Server : ForwardingAudience {
      * This is used to create new registries and register values to them.
      */
     val registryManager: RegistryManager
+
+    /**
+     * The block manager for this server.
+     *
+     * This is used to retrieve and register block handlers for blocks.
+     */
+    val blockManager: BlockManager
+
+    /**
+     * The item manager for this server.
+     *
+     * This is used to retrieve and register item handlers for item types.
+     */
+    val itemManager: ItemManager
 
     /**
      * The scheduler for this server.
