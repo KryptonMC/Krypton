@@ -45,6 +45,16 @@ class KryptonBlock(
     override val isFlammable = data.flammable
     override val lightEmission = data.lightEmission
     override val occludes = data.occludes
+    override val canRespawnIn = data.canRespawnIn
+    override val isReplaceable = data.replaceable
+    override val hasDynamicShape = data.dynamicShape
+    override val useShapeForOcclusion = data.useShapeForOcclusion
+    override val propagatesSkylightDown = data.propagatesLightDown
+    override val hasLargeCollisionShape = data.largeCollisionShape
+    override val isConditionallyFullyOpaque = data.conditionallyFullyOpaque
+    override val isSolidRender = data.solidRender
+    override val lightBlock = data.lightBlock
+    override val opacity = data.opacity
     override val translation = Component.translatable(data.translationKey)
 
     init {

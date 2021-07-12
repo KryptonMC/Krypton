@@ -44,6 +44,16 @@ class BlockData(
     val flammable = boolean("flammable")
     val gravity = boolean("gravity")
     val translationKey = string("translationKey")
+    val replaceable = boolean("replaceable")
+    val dynamicShape = boolean("dynamicShape")
+    val useShapeForOcclusion = boolean("useShapeForLightOcclusion")
+    val propagatesLightDown = boolean("propagatesSkylightDown")
+    val lightBlock = int("lightBlock")
+    val conditionallyFullyOpaque = boolean("conditionallyFullyOpaque")
+    val solidRender = boolean("solidRender")
+    val opacity = int("opacity")
+    val largeCollisionShape = boolean("largeCollisionShape")
+    val canRespawnIn = boolean("canRespawnIn")
 
     private fun string(name: String) = element(name).asString
     private fun double(name: String) = element(name).asDouble

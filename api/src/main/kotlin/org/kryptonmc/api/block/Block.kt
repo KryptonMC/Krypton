@@ -90,6 +90,11 @@ interface Block : Comparable<Block> {
     val isFlammable: Boolean
 
     /**
+     * If this block can be replaced.
+     */
+    val isReplaceable: Boolean
+
+    /**
      * If this block has an associated block entity.
      */
     val hasBlockEntity: Boolean
@@ -100,6 +105,41 @@ interface Block : Comparable<Block> {
     val occludes: Boolean
 
     /**
+     * If this block has a dynamic shape.
+     */
+    val hasDynamicShape: Boolean
+
+    /**
+     * If the shape of this block should be used to calculate light occlusion.
+     */
+    val useShapeForOcclusion: Boolean
+
+    /**
+     * If this block propagates skylight down.
+     */
+    val propagatesSkylightDown: Boolean
+
+    /**
+     * The amount of light that this block will block from passing through it.
+     */
+    val lightBlock: Int
+
+    /**
+     * If this block is sometimes fully opaque.
+     */
+    val isConditionallyFullyOpaque: Boolean
+
+    /**
+     * If this block is rendered solid.
+     */
+    val isSolidRender: Boolean
+
+    /**
+     * The opacity of this block.
+     */
+    val opacity: Int
+
+    /**
      * If this block cannot be moved through.
      */
     val blocksMotion: Boolean
@@ -108,6 +148,16 @@ interface Block : Comparable<Block> {
      * If this block has gravity.
      */
     val hasGravity: Boolean
+
+    /**
+     * If this block can be respawned inside of.
+     */
+    val canRespawnIn: Boolean
+
+    /**
+     * If the shape used for collision is very large.
+     */
+    val hasLargeCollisionShape: Boolean
 
     /**
      * The translation component for translating the name
