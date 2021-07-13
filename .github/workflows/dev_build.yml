@@ -2,7 +2,7 @@ name: "Development Build"
 
 on:
   push:
-    branches: [dev]
+    branches: ["dev"]
 
 jobs:
   build:
@@ -18,8 +18,8 @@ jobs:
         with:
           java-version: "16"
       - name: "build"
-        run: "./gradlew clean test build"
+        run: "./gradlew clean build"
       - name: "upload to packages"
         uses: "actions/upload-artifact@v2"
         with:
-          path: "server/build/libs"
+          path: "server/build/libs/Krypton-*.jar"

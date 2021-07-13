@@ -2,11 +2,11 @@ name: "Branch Validation Build"
 
 on:
   push:
-    branches-ignore: [master, dev]
+    branches-ignore: ["master", "dev"]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: "ubuntu-latest"
     steps:
       - name: "checkout repository"
         uses: "actions/checkout@v2"
@@ -15,4 +15,4 @@ jobs:
         with:
           java-version: "16"
       - name: "build"
-        run: "./gradlew build"
+        run: "./gradlew clean build"

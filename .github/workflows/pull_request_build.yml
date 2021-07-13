@@ -14,4 +14,4 @@ jobs:
         with:
           java-version: "16"
       - name: "build"
-        run: "./gradlew clean test :krypton-bootstrap:shadowJar"
+        run: "./gradlew clean build"
