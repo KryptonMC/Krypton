@@ -26,6 +26,9 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
+import org.kryptonmc.krypton.effect.Effect
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 
 open class KryptonBlockHandler : BlockHandler {
@@ -43,5 +46,16 @@ open class KryptonBlockHandler : BlockHandler {
 
     override fun onPlace(player: Player, block: Block, position: Vector3i, face: BlockFace) = Unit
 
-    override fun onDestroy(player: Player, block: Block, position: Vector3i, item: ItemStack) = Unit
+    override fun preDestroy(player: Player, world: World, block: Block, position: Vector3i) {
+        if (player !is KryptonPlayer || world !is KryptonWorld) return
+        spawnDestroyParticles(world, player, position, block)
+    }
+
+    open fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, position: Vector3i, block: Block) {
+        world.playEffect(Effect.DESTROY_BLOCK, position, block.stateId, player)
+    }
+
+    override fun onDestroy(player: Player, block: Block, position: Vector3i, item: ItemStack) {
+        // TODO: Award block mined statistic, cause exhaustion, and drop items
+    }
 }

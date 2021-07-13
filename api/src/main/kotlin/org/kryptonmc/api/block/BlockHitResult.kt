@@ -10,6 +10,7 @@ package org.kryptonmc.api.block
 
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.util.HitResult
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 
 /**
@@ -22,7 +23,7 @@ import org.spongepowered.math.vector.Vector3i
  * @param isInside if the player is inside of this block
  */
 class BlockHitResult(
-    clickLocation: Vector3i,
+    clickLocation: Vector3d,
     val position: Vector3i,
     val direction: Direction,
     private val missed: Boolean,

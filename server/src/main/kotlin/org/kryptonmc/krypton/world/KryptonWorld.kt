@@ -59,6 +59,7 @@ import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.api.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.effect.Effect
+import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.registry.InternalRegistryKeys
@@ -119,6 +120,7 @@ data class KryptonWorld(
     val entities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
 
     val chunkManager = ChunkManager(this)
+    val playerManager = server.playerManager
     val dimension = OVERWORLD
     override val dimensionType = DimensionTypes.OVERWORLD
 
@@ -156,7 +158,7 @@ data class KryptonWorld(
 
     override fun spawnPainting(location: Vector) = Unit // TODO: Implement painting spawning
 
-    fun playEffect(effect: Effect, position: Vector3i, data: Int, except: KryptonPlayer) = server.playerManager.broadcast(PacketOutEffect(effect, position, data, false), this, position, 64.0, except)
+    fun playEffect(effect: Effect, position: Vector3i, data: Int, except: KryptonPlayer) = playerManager.broadcast(PacketOutEffect(effect, position, data, false), this, position, 64.0, except)
 
     fun playSound(
         position: Vector3i,
@@ -172,7 +174,7 @@ data class KryptonWorld(
         sound: Sound,
         event: SoundEvent,
         except: KryptonPlayer
-    ) = server.playerManager.broadcast(PacketOutSoundEffect(sound, event, x, y, z), this, x, y, z, if (sound.volume() > 1F) (16F * sound.volume()).toDouble() else 16.0, except)
+    ) = playerManager.broadcast(PacketOutSoundEffect(sound, event, x, y, z), this, x, y, z, if (sound.volume() > 1F) (16F * sound.volume()).toDouble() else 16.0, except)
 
     override fun getBlock(x: Int, y: Int, z: Int): Block {
         if (y.outsideBuildHeight) return Blocks.VOID_AIR
@@ -188,7 +190,9 @@ data class KryptonWorld(
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
         if (y.outsideBuildHeight) return
-        getChunkAt(x shr 4, z shr 4)?.setBlock(x, y, z, block)
+        getChunkAt(x shr 4, z shr 4)?.setBlock(x, y, z, block)?.run {
+            playerManager.sendToAll(PacketOutBlockChange(block, x, y, z), this@KryptonWorld)
+        }
     }
 
     fun tick(profiler: Profiler) {
@@ -232,12 +236,12 @@ data class KryptonWorld(
             rainLevel = min(max(rainLevel, 0F), 1F)
         }
 
-        if (oldRainLevel != rainLevel) server.playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel), this)
-        if (oldThunderLevel != thunderLevel) server.playerManager.sendToAll(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel), this)
+        if (oldRainLevel != rainLevel) playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel), this)
+        if (oldThunderLevel != thunderLevel) playerManager.sendToAll(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel), this)
         if (raining != isRaining) {
-            server.playerManager.sendToAll(PacketOutChangeGameState(if (raining) GameState.END_RAINING else GameState.BEGIN_RAINING))
-            server.playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel))
-            server.playerManager.sendToAll(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel))
+            playerManager.sendToAll(PacketOutChangeGameState(if (raining) GameState.END_RAINING else GameState.BEGIN_RAINING))
+            playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel))
+            playerManager.sendToAll(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel))
         }
 
         profiler.push("chunk tick")

@@ -15,7 +15,7 @@ import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3i
 
 /**
- * Represents a chunk, or a 16 x 16 x 256 area of blocks.
+ * Represents a chunk, or a 16 x 16 x world height area of blocks.
  */
 interface Chunk {
 
@@ -62,7 +62,7 @@ interface Chunk {
     val lastUpdate: Long
 
     /**
-     * Get a block from this chunk at the specified [x], [y] and [z] coordinates.
+     * Gets a block from this chunk at the specified [x], [y] and [z] coordinates.
      *
      * @param x the x coordinate of the block
      * @param y the y coordinate of the block
@@ -72,7 +72,7 @@ interface Chunk {
     fun getBlock(x: Int, y: Int, z: Int): Block
 
     /**
-     * Get a block from this chunk at the specified [position].
+     * Gets a block from this chunk at the specified [position].
      *
      * @param position the position of the block to retrieve
      * @return the block at that position
@@ -88,10 +88,28 @@ interface Chunk {
     fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
 
     /**
-     * Set the block at this [block]'s position to the specified [block].
+     * Sets the block at the given coordinates to the given [block]
      *
-     * @param block the block to set this block's position to
-     * @return if the set was successful. This is implementation specific
+     * @param x the X coordinate
+     * @param y the Y coordinate
+     * @param z the Z coordinate
+     * @param block the block
      */
     fun setBlock(x: Int, y: Int, z: Int, block: Block)
+
+    /**
+     * Sets the block at the given [position] to the given [block]
+     *
+     * @param position the position
+     * @param block the block
+     */
+    fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
+
+    /**
+     * Sets the block at the given [position] to the given [block]
+     *
+     * @param position the position
+     * @param block the block
+     */
+    fun setBlock(position: Position, block: Block) = setBlock(position.blockX, position.blockY, position.blockZ, block)
 }

@@ -34,19 +34,23 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTReader
 import org.jglrxavpok.hephaistos.nbt.NBTWriter
+import org.kryptonmc.api.block.BlockHitResult
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.util.toVector
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.locale.TranslationManager
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
 import java.nio.charset.StandardCharsets.UTF_8
@@ -226,8 +230,14 @@ fun ByteBuf.writePosition(position: Position) {
     writeLong(position.toProtocol())
 }
 
+fun ByteBuf.readVector() = readLong().toVector()
+
 fun ByteBuf.writeVector(vector: Vector3i) {
-    writeLong(vector.x().toLong() and 0x3FFFFFF shl 38 or (vector.z().toLong() and 0x3FFFFFF shl 12) or (vector.y().toLong() and 0xFFF))
+    writeVector(vector.x(), vector.y(), vector.z())
+}
+
+fun ByteBuf.writeVector(x: Int, y: Int, z: Int) {
+    writeLong(x.toLong() and 0x3FFFFFF shl 38 or (z.toLong() and 0x3FFFFFF shl 12) or (y.toLong() and 0xFFF))
 }
 
 fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
@@ -334,6 +344,17 @@ fun <T> ByteBuf.writeOptional(optional: java.util.Optional<T>, presentAction: (T
 fun <E> ByteBuf.writeCollection(collection: Collection<E>, action: (E) -> Unit) {
     writeVarInt(collection.size)
     collection.forEach { action(it) }
+}
+
+fun ByteBuf.readBlockHitResult(): BlockHitResult {
+    val position = readVector()
+    val direction = readEnum<Direction>()
+    val cursorX = readFloat()
+    val cursorY = readFloat()
+    val cursorZ = readFloat()
+    val inside = readBoolean()
+    val clickedPosition = Vector3d(position.x() + cursorX, position.y() + cursorY, position.z() + cursorZ)
+    return BlockHitResult(clickedPosition, position, direction, false, inside)
 }
 
 private val VARINT_EXACT_BYTE_LENGTHS = IntArray(33) { ceil((31.0 - (it - 1)) / 7.0).toInt() }.apply { this[32] = 1 }

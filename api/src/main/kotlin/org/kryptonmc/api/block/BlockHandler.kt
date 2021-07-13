@@ -49,6 +49,17 @@ interface BlockHandler {
     fun onPlace(player: Player, block: Block, position: Vector3i, face: BlockFace)
 
     /**
+     * Called when the given [player] is about to break the given [block] at the given [position]
+     * in the given [world], but hasn't yet.
+     *
+     * @param player the player who is about to destroy the block
+     * @param world the world the block is in
+     * @param block the block about to be destroyed
+     * @param position the position of the block
+     */
+    fun preDestroy(player: Player, world: World, block: Block, position: Vector3i)
+
+    /**
      * Called when the given [block] is destroyed by the given [player] at the given [position],
      * with the given [item].
      *

@@ -195,6 +195,22 @@ interface World : ForwardingAudience {
     fun setBlock(x: Int, y: Int, z: Int, block: Block)
 
     /**
+     * Sets the block at the given [position] to the given [block].
+     *
+     * @param position the position
+     * @param block the new block
+     */
+    fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
+
+    /**
+     * Sets the block at the given [position] to the given [block].
+     *
+     * @param position the position
+     * @param block the block
+     */
+    fun setBlock(position: Position, block: Block) = setBlock(position.blockX, position.blockY, position.blockZ, block)
+
+    /**
      * Gets a chunk from its **chunk** coordinates, or returns null if there is
      * no chunk **loaded** at the given coordinates.
      *

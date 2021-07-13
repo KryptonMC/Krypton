@@ -21,21 +21,14 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.readBlockHitResult
 import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.readVarInt
-import org.kryptonmc.krypton.util.toVector3i
-import org.kryptonmc.krypton.world.block.BlockFace
 
 /**
  * Sent to indicate the player has placed a block.
  */
-class PacketInPlayerBlockPlacement(buf: ByteBuf) : PlayPacket(0x2E) {
+class PacketInBlockPlace(buf: ByteBuf) : PlayPacket(0x2E) {
 
     val hand = buf.readEnum<Hand>()
-    val location = buf.readLong().toVector3i()
-    val face = BlockFace.fromId(buf.readVarInt())
-    val cursorX = buf.readFloat()
-    val cursorY = buf.readFloat()
-    val cursorZ = buf.readFloat()
-    val insideBlock = buf.readBoolean()
+    val hitResult = buf.readBlockHitResult()
 }

@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInHeldItemChange
 import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerBlockPlacement
+import org.kryptonmc.krypton.packet.`in`.play.PacketInBlockPlace
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPosition
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPositionAndRotation
@@ -75,6 +75,6 @@ object PacketLoader {
         PacketState.PLAY.registerPacketType(0x25, ::PacketInHeldItemChange)
         PacketState.PLAY.registerPacketType(0x28, ::PacketInCreativeInventoryAction)
         PacketState.PLAY.registerPacketType(0x2C, ::PacketInAnimation)
-        PacketState.PLAY.registerPacketType(0x2E, ::PacketInPlayerBlockPlacement)
+        PacketState.PLAY.registerPacketType(0x2E, ::PacketInBlockPlace)
     }
 }

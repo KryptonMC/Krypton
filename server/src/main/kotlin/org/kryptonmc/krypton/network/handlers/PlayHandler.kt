@@ -48,7 +48,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInCreativeInventoryAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInHeldItemChange
 import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerBlockPlacement
+import org.kryptonmc.krypton.packet.`in`.play.PacketInBlockPlace
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPosition
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPositionAndRotation
@@ -116,7 +116,7 @@ class PlayHandler(
         is PacketInHeldItemChange -> handleHeldItemChange(packet)
         is PacketInKeepAlive -> handleKeepAlive(packet)
         is PacketInAbilities -> handleAbilities(packet)
-        is PacketInPlayerBlockPlacement -> handleBlockPlacement(packet)
+        is PacketInBlockPlace -> handleBlockPlacement(packet)
         is PacketInPlayerDigging -> handlePlayerDigging(packet)
         is PacketInPlayerPosition -> handlePositionUpdate(packet)
         is PacketInPlayerRotation -> handleRotationUpdate(packet)
@@ -216,24 +216,19 @@ class PlayHandler(
         player.abilities.isFlying = packet.isFlying && player.abilities.canFly
     }
 
-    private fun handleBlockPlacement(packet: PacketInPlayerBlockPlacement) {
+    private fun handleBlockPlacement(packet: PacketInBlockPlace) {
         if (!player.abilities.canBuild) return // if they can't place blocks, they are irrelevant :)
 
         val world = player.world
         val chunkX = player.location.blockX shr 4
         val chunkZ = player.location.blockZ shr 4
         val chunk = world.chunkMap[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
-        val existingBlock = chunk.getBlock(packet.location)
+        val existingBlock = chunk.getBlock(packet.hitResult.position)
         if (existingBlock != Blocks.AIR) return
 
         val item = player.inventory.mainHand
         val block = BLOCK_LOADER.fromKey(item.type.key) ?: return
-        val x = packet.location.x()
-        val y = packet.location.y()
-        val z = packet.location.z()
-        chunk.setBlock(x, y, z, block)
-
-        playerManager.sendToAll(PacketOutBlockChange(block, packet.location))
+        chunk.setBlock(packet.hitResult.position, block)
     }
 
     private fun handlePlayerDigging(packet: PacketInPlayerDigging) {

@@ -9,6 +9,7 @@
 package org.kryptonmc.api.util
 
 import org.kryptonmc.api.entity.Entity
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 
 /**
@@ -16,7 +17,7 @@ import org.spongepowered.math.vector.Vector3i
  *
  * @param clickLocation the location where the player clicked
  */
-abstract class HitResult(val clickLocation: Vector3i) {
+abstract class HitResult(val clickLocation: Vector3d) {
 
     /**
      * The type of hit result this is.

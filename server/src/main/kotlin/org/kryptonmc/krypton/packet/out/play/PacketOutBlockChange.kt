@@ -28,10 +28,17 @@ import org.spongepowered.math.vector.Vector3i
 /**
  * Update a block in a chunk
  */
-class PacketOutBlockChange(private val block: Block, private val location: Vector3i) : PlayPacket(0x0C) {
+class PacketOutBlockChange(
+    private val block: Block,
+    private val x: Int,
+    private val y: Int,
+    private val z: Int
+) : PlayPacket(0x0C) {
+
+    constructor(block: Block, location: Vector3i) : this(block, location.x(), location.y(), location.z())
 
     override fun write(buf: ByteBuf) {
-        buf.writeVector(location)
+        buf.writeVector(x, y, z)
         buf.writeVarInt(block.stateId)
     }
 }
