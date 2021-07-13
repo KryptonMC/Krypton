@@ -54,6 +54,7 @@ class BlockData(
     val opacity = int("opacity")
     val largeCollisionShape = boolean("largeCollisionShape")
     val canRespawnIn = boolean("canRespawnIn")
+    val requiresCorrectToolForDrops = boolean("requiresCorrectToolForDrops")
 
     private fun string(name: String) = element(name).asString
     private fun double(name: String) = element(name).asDouble

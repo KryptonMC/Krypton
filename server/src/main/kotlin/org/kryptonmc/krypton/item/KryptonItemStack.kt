@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.item
 
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
@@ -55,6 +56,8 @@ open class KryptonItemStack(
         if (type !== ItemTypes.AIR) return amount <= 0
         return true
     }
+
+    fun getDestroySpeed(block: Block) = type.handler.getDestroySpeed(this, block)
 
     override fun copy(): KryptonItemStack {
         if (isEmpty()) return EmptyItemStack

@@ -11,9 +11,9 @@ interface BlockHandler {
 
     fun getDestroyProgress(player: Player, world: World, block: Block, position: Vector3i): Float
 
-    fun onPlace(player: Player, block: Block, position: Vector3i, face: BlockFace) = Unit
+    fun onPlace(player: Player, block: Block, position: Vector3i, face: BlockFace)
 
-    fun onDestroy(player: Player, block: Block, position: Vector3i, item: ItemStack) = Unit
+    fun onDestroy(player: Player, block: Block, position: Vector3i, item: ItemStack)
 
     fun interact(player: Player, world: World, block: Block, position: Vector3i, hand: Hand): InteractionResult
 

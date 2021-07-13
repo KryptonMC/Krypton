@@ -34,6 +34,7 @@ import net.kyori.adventure.title.Title
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTInt
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
@@ -60,6 +61,7 @@ import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
+import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
@@ -378,6 +380,14 @@ class KryptonPlayer(
             }
             previousChunks?.clear()
         }
+    }
+
+    override fun hasCorrectTool(block: Block): Boolean = !block.requiresCorrectTool || inventory.mainHand.type.handler.isCorrectTool(block)
+
+    override fun getDestroySpeed(block: Block): Float {
+        var speed = inventory.mainHand.getDestroySpeed(block)
+        if (!isOnGround) speed /= 5F
+        return speed
     }
 
     private fun onAbilitiesUpdate() {

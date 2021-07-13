@@ -10,6 +10,7 @@ package org.kryptonmc.api.entity.player
 
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.entity.LivingEntity
@@ -107,4 +108,22 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      * Teleport this player to the specified other [player].
      */
     fun teleport(player: Player)
+
+    /**
+     * Returns true if this player has the correct tool to be able to break
+     * the given [block].
+     *
+     * @param block the block to check
+     * @return true if the player can break it, false otherwise
+     */
+    fun hasCorrectTool(block: Block): Boolean
+
+    /**
+     * Gets the speed at which this player can destroy the given
+     * [block].
+     *
+     * @param block the block the player is destroying
+     * @return the destroy speed
+     */
+    fun getDestroySpeed(block: Block): Float
 }

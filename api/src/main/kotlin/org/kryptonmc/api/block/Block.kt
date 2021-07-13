@@ -160,6 +160,11 @@ interface Block : Comparable<Block> {
     val hasLargeCollisionShape: Boolean
 
     /**
+     * If this block requires the correct tool to be used to break it.
+     */
+    val requiresCorrectTool: Boolean
+
+    /**
      * The translation component for translating the name
      * of this block.
      */
