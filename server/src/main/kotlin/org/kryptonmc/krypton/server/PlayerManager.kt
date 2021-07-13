@@ -66,6 +66,8 @@ import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.spongepowered.math.GenericMath
+import org.spongepowered.math.vector.Vector3d
+import org.spongepowered.math.vector.Vector3i
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
@@ -214,6 +216,18 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     fun sendToAll(packet: Packet, world: KryptonWorld) = players.forEach {
         if (it.world == world) it.session.sendPacket(packet)
     }
+
+    fun broadcast(packet: Packet, world: KryptonWorld, x: Double, y: Double, z: Double, radius: Double, except: KryptonPlayer) = players.forEach {
+        if (it == except || it.world != world) return@forEach
+        val offsetX = x - it.location.x
+        val offsetY = y - it.location.y
+        val offsetZ = z - it.location.z
+        if (offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ < radius * radius) it.session.sendPacket(packet)
+    }
+
+    fun broadcast(packet: Packet, world: KryptonWorld, position: Vector3d, radius: Double, except: KryptonPlayer) = broadcast(packet, world, position.x(), position.y(), position.z(), radius, except)
+
+    fun broadcast(packet: Packet, world: KryptonWorld, position: Vector3i, radius: Double, except: KryptonPlayer) = broadcast(packet, world, position.x().toDouble(), position.y().toDouble(), position.z().toDouble(), radius, except)
 
     fun disconnectAll() = players.forEach {
         it.session.disconnect(Component.translatable("multiplayer.disconnect.server_shutdown"))

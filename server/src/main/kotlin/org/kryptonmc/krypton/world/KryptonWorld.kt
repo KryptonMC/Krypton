@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.world
 
 import com.mojang.serialization.Codec
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
+import net.kyori.adventure.sound.Sound
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.jglrxavpok.hephaistos.nbt.NBTString
@@ -27,6 +28,7 @@ import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.jglrxavpok.hephaistos.nbt.NBTWriter
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.registry.RegistryKey
@@ -36,7 +38,6 @@ import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.GameVersion
-import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.api.world.rule.GameRuleHolder
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
@@ -57,6 +58,9 @@ import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.api.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.effect.Effect
+import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.registry.InternalRegistryKeys
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.synchronize
@@ -151,6 +155,24 @@ data class KryptonWorld(
     override fun spawnExperienceOrb(location: Vector) = Unit // TODO: Implement XP orb spawning
 
     override fun spawnPainting(location: Vector) = Unit // TODO: Implement painting spawning
+
+    fun playEffect(effect: Effect, position: Vector3i, data: Int, except: KryptonPlayer) = server.playerManager.broadcast(PacketOutEffect(effect, position, data, false), this, position, 64.0, except)
+
+    fun playSound(
+        position: Vector3i,
+        sound: Sound,
+        event: SoundEvent,
+        except: KryptonPlayer
+    ) = playSound(position.x().toDouble() + 0.5, position.y().toDouble() + 0.5, position.z().toDouble() + 0.5, sound, event, except)
+
+    private fun playSound(
+        x: Double,
+        y: Double,
+        z: Double,
+        sound: Sound,
+        event: SoundEvent,
+        except: KryptonPlayer
+    ) = server.playerManager.broadcast(PacketOutSoundEffect(sound, event, x, y, z), this, x, y, z, if (sound.volume() > 1F) (16F * sound.volume()).toDouble() else 16.0, except)
 
     override fun getBlock(x: Int, y: Int, z: Int): Block {
         if (y.outsideBuildHeight) return Blocks.VOID_AIR

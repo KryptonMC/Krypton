@@ -17,7 +17,7 @@ import net.kyori.adventure.sound.Sound
  *
  * @param key the key for this sound type
  */
-class SoundType(val key: Key) : Sound.Type, Keyed {
+class SoundEvent(val key: Key) : Sound.Type, Keyed {
 
     override fun key() = key
 }
