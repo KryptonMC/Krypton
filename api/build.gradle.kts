@@ -88,7 +88,7 @@ publishing {
     }
 
     publications {
-        create<MavenPublication>("mavenKotlin") {
+        create<MavenPublication>("kryptonApi") {
             artifactId = "api"
 
             from(components["kotlin"])
@@ -141,7 +141,7 @@ publishing {
 }
 
 signing {
-    sign(publishing.publications["mavenKotlin"])
+    sign(publishing.publications["kryptonApi"])
 }
 
 license {

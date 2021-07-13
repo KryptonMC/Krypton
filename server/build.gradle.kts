@@ -8,15 +8,7 @@ plugins {
     `java-library`
 }
 
-evaluationDependsOn(":krypton-api")
-
-sourceSets.main {
-    java {
-        srcDir("src/main/kotlin")
-        srcDir("src/generated/java")
-        srcDir("src/generated/kotlin")
-    }
-}
+evaluationDependsOn(":api")
 
 repositories {
     maven("https://repo.velocitypowered.com/snapshots/")
@@ -25,8 +17,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":krypton-api"))
-    implementation(project(":krypton-api").dependencyProject.sourceSets["ap"].output)
+    implementation(project(":api"))
+    implementation(project(":api").dependencyProject.sourceSets["ap"].output)
     implementation(platform("io.netty:netty-bom:${Versions.NETTY}"))
 
     // Extra Kotlin stuff
@@ -99,6 +91,8 @@ tasks {
         filter<ReplaceTokens>("tokens" to mapOf("version" to project.version.toString()))
     }
 }
+
+tasks["build"].dependsOn(tasks["shadowJar"])
 
 pitest {
     excludedClasses.set(setOf(
