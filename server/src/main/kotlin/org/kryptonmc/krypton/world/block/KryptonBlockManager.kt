@@ -5,11 +5,11 @@ import org.kryptonmc.api.block.BlockManager
 
 object KryptonBlockManager : BlockManager {
 
-    override val handlers = mutableMapOf<String, () -> BlockHandler>()
+    override val handlers = mutableMapOf<String, BlockHandler>()
 
-    override fun handler(key: String) = handlers[key]?.invoke()
+    override fun handler(key: String) = handlers[key]
 
-    override fun register(key: String, handler: () -> BlockHandler) {
+    override fun register(key: String, handler: BlockHandler) {
         handlers[key] = handler
     }
 }
