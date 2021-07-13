@@ -11,7 +11,7 @@ package org.kryptonmc.api
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.inventory.InventoryType
-import org.kryptonmc.api.inventory.item.dsl.item
+import org.kryptonmc.api.item.item
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
