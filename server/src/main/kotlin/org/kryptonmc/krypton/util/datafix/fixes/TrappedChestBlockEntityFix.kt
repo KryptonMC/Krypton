@@ -27,8 +27,8 @@ import com.mojang.datafixers.types.templates.List.ListType
 import com.mojang.datafixers.types.templates.TaggedChoice.TaggedChoiceType
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import it.unimi.dsi.fastutil.ints.IntSet
+import org.kryptonmc.api.util.getIfPresent
 import org.kryptonmc.krypton.util.datafix.References
-import org.kryptonmc.krypton.util.getIfPresent
 
 class TrappedChestBlockEntityFix(outputSchema: Schema, changesType: Boolean) : SectionFix(outputSchema, changesType) {
 

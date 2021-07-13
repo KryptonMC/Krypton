@@ -32,8 +32,6 @@ import org.kryptonmc.api.event.play.ChatEvent
 import org.kryptonmc.api.event.play.ClientSettingsEvent
 import org.kryptonmc.api.event.play.MoveEvent
 import org.kryptonmc.api.event.play.PluginMessageEvent
-import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.item.ItemStack.Companion
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonServer

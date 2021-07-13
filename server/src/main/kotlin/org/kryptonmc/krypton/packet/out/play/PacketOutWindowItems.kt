@@ -22,7 +22,6 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.inventory.KryptonInventory
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeItem
-import org.kryptonmc.krypton.util.writeVarInt
 
 /**
  * Set the items for an inventory with an ID. Currently only supports player inventories.

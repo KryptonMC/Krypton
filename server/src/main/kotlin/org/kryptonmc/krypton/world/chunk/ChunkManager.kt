@@ -23,25 +23,12 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import org.jglrxavpok.hephaistos.nbt.NBT
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTLongArray
-import org.jglrxavpok.hephaistos.nbt.NBTString
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
-import org.kryptonmc.api.util.toKey
 import org.kryptonmc.api.world.Biome
-import org.kryptonmc.krypton.util.calculateBits
-import org.kryptonmc.krypton.util.chunkInSpiral
 import org.kryptonmc.krypton.world.Heightmap
-import org.kryptonmc.krypton.world.Heightmap.Type.MOTION_BLOCKING
-import org.kryptonmc.krypton.world.Heightmap.Type.MOTION_BLOCKING_NO_LEAVES
-import org.kryptonmc.krypton.world.Heightmap.Type.OCEAN_FLOOR
-import org.kryptonmc.krypton.world.Heightmap.Type.WORLD_SURFACE
-import org.kryptonmc.krypton.world.HeightmapBuilder
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.data.BitStorage
 import org.kryptonmc.krypton.world.region.RegionFileManager
-import org.kryptonmc.krypton.world.transform
 import java.util.EnumSet
-import java.util.LinkedList
 import java.util.concurrent.TimeUnit
 
 class ChunkManager(private val world: KryptonWorld) {

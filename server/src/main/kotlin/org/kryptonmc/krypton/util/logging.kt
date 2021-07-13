@@ -16,22 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.login
+package org.kryptonmc.krypton.util
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.LoginPacket
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeVarInt
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 
-class PacketOutPluginRequest(
-    private val messageId: Int,
-    private val channel: String,
-    private val data: ByteArray
-) : LoginPacket(0x04) {
+inline fun <reified T> logger(): Logger = LogManager.getLogger(T::class.java)
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(messageId)
-        buf.writeString(channel)
-        buf.writeBytes(data)
-    }
-}
+fun logger(name: String): Logger = LogManager.getLogger(name)

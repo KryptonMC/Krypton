@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.effect.particle
 
+import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
@@ -22,10 +23,10 @@ open class ParticleEffectBuilder(
     protected var quantity: Int = 1,
     protected var offset: Vector = Vector.ZERO,
     protected var longDistance: Boolean = false
-) {
+) : Buildable.Builder<ParticleEffect> {
 
     /**
-     * Set the number of particles to be spawned by the [ParticleEffect].
+     * Sets the number of particles to be spawned by the [ParticleEffect].
      *
      * @param quantity the number of particles, must be between 1 and 16384 inclusively
      */
@@ -33,7 +34,7 @@ open class ParticleEffectBuilder(
     fun quantity(quantity: Int) = apply { this.quantity = quantity }
 
     /**
-     * Set the offset the particles can be from the origin.
+     * Sets the offset the particles can be from the origin.
      *
      * @param offset the offset from the origin
      */
@@ -41,7 +42,7 @@ open class ParticleEffectBuilder(
     fun offset(offset: Vector) = apply { this.offset = offset }
 
     /**
-     * Set if particles can be viewed from a further distance than normal.
+     * Sets if particles can be viewed from a further distance than normal.
      *
      * When false, the view distance is 256.
      * When true, the view distance is 65536.
@@ -52,10 +53,10 @@ open class ParticleEffectBuilder(
     fun longDistance(longDistance: Boolean) = apply { this.longDistance = longDistance }
 
     /**
-     * @return a new [ParticleEffect] created from this builder
+     * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
-    open fun build() = ParticleEffect(type, quantity, offset, longDistance)
+    override fun build() = ParticleEffect(type, quantity, offset, longDistance)
 }
 
 /**
@@ -71,7 +72,7 @@ class DirectionalParticleEffectBuilder(
 ) : ParticleEffectBuilder(type, quantity, offset, longDistance) {
 
     /**
-     * Set the direction of the particles.
+     * Sets the direction of the particles.
      *
      * @param direction the direction of the particles
      */
@@ -79,8 +80,10 @@ class DirectionalParticleEffectBuilder(
     fun direction(direction: Vector) = apply { this.direction = direction }
 
     /**
-     * Set the velocity of the particles.
-     * The actual velocity tends to vary largely for each particle type, so it's quite arbitrary what this means.
+     * Sets the velocity of the particles.
+     *
+     * The actual velocity tends to vary largely for each particle type, so it's
+     * quite arbitrary what this means.
      *
      * @param velocity the velocity of the particles
      */
@@ -88,7 +91,7 @@ class DirectionalParticleEffectBuilder(
     fun velocity(velocity: Float) = apply { this.velocity = velocity }
 
     /**
-     * @return a new [ParticleEffect] created from this builder
+     * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, DirectionalParticleData(direction, velocity))
@@ -106,7 +109,7 @@ class ItemParticleEffectBuilder(
 ) : ParticleEffectBuilder(type, quantity, offset, longDistance) {
 
     /**
-     * Set the item data of the texture to be used.
+     * Sets the item data of the texture to be used.
      *
      * @param itemId the item ID to use
      */
@@ -114,7 +117,7 @@ class ItemParticleEffectBuilder(
     fun item(itemId: Int) = apply { this.itemId = itemId }
 
     /**
-     * @return a new [ParticleEffect] created from this builder
+     * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, ItemParticleData(itemId))
@@ -132,7 +135,7 @@ class BlockParticleEffectBuilder(
 ) : ParticleEffectBuilder(type, quantity, offset, longDistance) {
 
     /**
-     * Set the block state of the texture to be used.
+     * Sets the block state of the texture to be used.
      *
      * @param block the block
      */
@@ -140,7 +143,7 @@ class BlockParticleEffectBuilder(
     fun block(block: Block) = apply { this.block = block }
 
     /**
-     * @return a new [ParticleEffect] created from this builder
+     * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, BlockParticleData(block))
@@ -160,7 +163,7 @@ open class ColorParticleEffectBuilder(
 ) : ParticleEffectBuilder(type, quantity, offset, longDistance) {
 
     /**
-     * Set the color of the particle.
+     * Sets the color of the particle.
      *
      * @param red the red value
      * @param green the green value
@@ -174,9 +177,9 @@ open class ColorParticleEffectBuilder(
     }
 
     /**
-     * @return a new [ParticleEffect] created from this builder
+     * Builds a new [ParticleEffect] from the settings of this builder.
      */
-    @Contract("_ -> new")
+    @Contract("_ -> new", pure = true)
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, ColorParticleData(red, green, blue))
 }
 
@@ -195,7 +198,7 @@ open class DustParticleEffectBuilder(
 ) : ColorParticleEffectBuilder(type, quantity, offset, longDistance, red, green, blue) {
 
     /**
-     * Set the scale of the dust particles.
+     * Sets the scale of the dust particles.
      * Clamped between 0.1 and 4.0.
      *
      * @param scale the scale of the particles
@@ -204,9 +207,9 @@ open class DustParticleEffectBuilder(
     fun scale(scale: Float) = apply { this.scale = scale }
 
     /**
-     * @return a new [ParticleEffect] created from this builder
+     * Builds a new [ParticleEffect] from the settings of this builder.
      */
-    @Contract("_ -> new")
+    @Contract("_ -> new", pure = true)
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, DustParticleData(ColorParticleData(red, green, blue), scale))
 }
 
@@ -242,8 +245,9 @@ class DustTransitionParticleEffectBuilder(
     }
 
     /**
-     * @return a new [ParticleEffect] created from this builder
+     * Builds a new [ParticleEffect] from the settings of this builder.
      */
+    @Contract("_ -> new", pure = true)
     override fun build() = ParticleEffect(
         type,
         quantity,
@@ -265,7 +269,7 @@ class NoteParticleEffectBuilder(
 ) : ParticleEffectBuilder(type, quantity, offset, longDistance) {
 
     /**
-     * Set the type of note to use.
+     * Sets the type of note to use.
      * Must be between 0 and 24 inclusively.
      *
      * @param note the note value
@@ -274,11 +278,10 @@ class NoteParticleEffectBuilder(
     fun note(note: UByte) = apply { this.note = note }
 
     /**
-     * @return a new [ParticleEffect] created from this builder
+     * Builds a new [ParticleEffect] from the settings of this builder.
      */
-    @Contract("_ -> new")
-    @JvmSynthetic
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance, data = NoteParticleData(note))
+    @Contract("_ -> new", pure = true)
+    override fun build() = ParticleEffect(type, quantity, offset, longDistance, NoteParticleData(note))
 }
 
 /**
@@ -320,7 +323,8 @@ class VibrationParticleEffectBuilder(
     fun ticks(ticks: Int) = apply { this.ticks = ticks }
 
     /**
-     * @return a new [ParticleEffect] created from this builder
+     * Builds a new [ParticleEffect] from the settings of this builder.
      */
+    @Contract("_ -> new", pure = true)
     override fun build() = ParticleEffect(type, quantity, offset, longDistance, VibrationParticleData(origin, destination, ticks))
 }

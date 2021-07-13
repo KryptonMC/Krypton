@@ -80,7 +80,7 @@ class PacketOutJoinGame(
         buf.writeNBTCompound(dimension.toNBT())
 
         val hashedSeed = Hashing.sha256().hashLong(world.generationSettings.seed).asLong()
-        val dimensionKey = org.kryptonmc.api.registry.Registries.DIMENSION_TYPE[dimension] ?: DimensionTypes.OVERWORLD_KEY
+        val dimensionKey = org.kryptonmc.api.registry.Registries.DIMENSION_TYPE[dimension]
 
         buf.writeKey(dimensionKey) // world spawning into
         buf.writeLong(hashedSeed)

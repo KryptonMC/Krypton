@@ -16,22 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.login
+package org.kryptonmc.krypton.util
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.LoginPacket
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeVarInt
+import me.bardy.gsonkt.fromJson
+import org.kryptonmc.krypton.GSON
+import org.kryptonmc.krypton.auth.ProfileProperty
+import java.util.UUID
 
-class PacketOutPluginRequest(
-    private val messageId: Int,
-    private val channel: String,
-    private val data: ByteArray
-) : LoginPacket(0x04) {
-
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(messageId)
-        buf.writeString(channel)
-        buf.writeBytes(data)
-    }
+fun String.splitData(): BungeeCordHandshakeData? {
+    val split = split('\u0000')
+    if (split.size <= 2) return null
+    return BungeeCordHandshakeData(
+        split[0],
+        split[1],
+        UUID.fromString(split[2].replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})".toRegex(), "$1-$2-$3-$4-$5")),
+        if (split.size > 3) GSON.fromJson(split[3]) else emptyList()
+    )
 }
+
+data class BungeeCordHandshakeData(
+    val originalIp: String,
+    val forwardedIp: String,
+    val uuid: UUID,
+    val properties: List<ProfileProperty>
+)

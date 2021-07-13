@@ -233,10 +233,10 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         it.session.disconnect(Component.translatable("multiplayer.disconnect.server_shutdown"))
     }
 
-    private fun saveAll(block: Boolean = false) = players.forEach { dataManager.save(it) }
+    private fun saveAll() = players.forEach { dataManager.save(it) }
 
     fun shutdown() {
-        saveAll(true)
+        saveAll()
         keepAliveExecutor.shutdown()
     }
 

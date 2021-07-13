@@ -3,19 +3,13 @@ import org.jetbrains.dokka.gradle.DokkaTask
 plugins {
     id("krypton.common")
     id("org.jetbrains.dokka")
+    id("io.gitlab.arturbosch.detekt")
     `maven-publish`
     signing
 }
 
 val ap by sourceSets.registering {
     compileClasspath += sourceSets.main.get().compileClasspath + sourceSets.main.get().output
-}
-
-sourceSets.main {
-    java {
-        srcDir("src/main/kotlin")
-        srcDir("src/generated/kotlin")
-    }
 }
 
 dependencies {
@@ -66,10 +60,6 @@ dependencies {
     api("com.mojang", "brigadier", Versions.BRIGADIER)
     api("org.spongepowered", "math", Versions.MATH)
     api("org.apache.logging.log4j", "log4j-api")
-}
-
-pitest {
-    excludedClasses.set(setOf("org.kryptonmc.krypton.api.effect.particle.*ParticleEffectBuilder"))
 }
 
 task<Jar>("sourcesJar") {
@@ -172,6 +162,17 @@ license {
         // Sponge derivatives, with a special header
         "**/world/rule/GameRules.kt"
     )
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    config = files("$projectDir/config/detekt.yml")
+    baseline = file("$projectDir/config/baseline.xml")
+
+    reports {
+        html.enabled = true
+        xml.enabled = true
+    }
 }
 
 tasks {

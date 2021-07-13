@@ -10,11 +10,12 @@ package org.kryptonmc.api.effect.particle
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
+import net.kyori.adventure.util.Buildable
 
 /**
  * Interface for a particle. Contains the [Key] and internal ID of the particle type.
  */
-sealed interface Particle : Keyed {
+sealed interface Particle : Buildable<ParticleEffect, ParticleEffectBuilder>, Keyed {
 
     /**
      * The namespaced key of this particle.
@@ -27,6 +28,8 @@ sealed interface Particle : Keyed {
     val builder: ParticleEffectBuilder
 
     override fun key() = key
+
+    override fun toBuilder() = builder
 }
 
 /**

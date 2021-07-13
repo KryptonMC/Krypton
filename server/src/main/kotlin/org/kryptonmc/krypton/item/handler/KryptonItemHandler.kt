@@ -25,6 +25,7 @@ import org.kryptonmc.api.item.InteractionContext
 import org.kryptonmc.api.item.ItemHandler
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.UseItemResult
 import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3i
@@ -35,11 +36,11 @@ open class KryptonItemHandler(override val type: ItemType) : ItemHandler {
 
     override fun getDestroySpeed(item: ItemStack, block: Block) = 1F
 
-    override fun interact(player: Player, world: World, hand: Hand) = InteractionResult.PASS to player.inventory.heldItem(hand)
+    override fun use(player: Player, hand: Hand) = UseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
 
-    override fun interactWith(context: InteractionContext) = InteractionResult.PASS
+    override fun interact(context: InteractionContext) = InteractionResult.PASS
 
     override fun isCorrectTool(block: Block) = false
 
-    override fun mineBlock(item: ItemStack, player: Player, world: World, block: Block, position: Vector3i) = false
+    override fun mineBlock(player: Player, item: ItemStack, world: World, block: Block, position: Vector3i) = false
 }

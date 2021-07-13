@@ -12,6 +12,15 @@ import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.util.HitResult
 import org.spongepowered.math.vector.Vector3i
 
+/**
+ * Represents the result of a player hitting/attacking a block.
+ *
+ * @param clickLocation the location that the player clicked
+ * @param position the position of the block
+ * @param direction the direction the block was hit from
+ * @param missed if the block was missed or not
+ * @param isInside if the player is inside of this block
+ */
 class BlockHitResult(
     clickLocation: Vector3i,
     val position: Vector3i,
@@ -21,8 +30,4 @@ class BlockHitResult(
 ) : HitResult(clickLocation) {
 
     override val type = if (missed) Type.MISS else Type.BLOCK
-
-    fun withPosition(position: Vector3i) = BlockHitResult(clickLocation, position, direction, missed, isInside)
-
-    fun withDirection(direction: Direction) = BlockHitResult(clickLocation, position, direction, missed, isInside)
 }

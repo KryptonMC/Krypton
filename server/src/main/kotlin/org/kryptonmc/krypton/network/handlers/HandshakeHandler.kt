@@ -28,13 +28,13 @@ import org.kryptonmc.api.event.handshake.HandshakeEvent
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.`in`.handshake.BungeeCordHandshakeData
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
-import org.kryptonmc.krypton.packet.`in`.handshake.splitData
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.network.PacketState
+import org.kryptonmc.krypton.util.BungeeCordHandshakeData
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.splitData
 import java.net.InetSocketAddress
 
 /**

@@ -16,22 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.login
+package org.kryptonmc.krypton.util
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.LoginPacket
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeVarInt
+import org.jglrxavpok.hephaistos.nbt.NBTIntArray
+import java.util.UUID
 
-class PacketOutPluginRequest(
-    private val messageId: Int,
-    private val channel: String,
-    private val data: ByteArray
-) : LoginPacket(0x04) {
-
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(messageId)
-        buf.writeString(channel)
-        buf.writeBytes(data)
-    }
+/**
+ * Convert an ordinary string to a protocol string, with its length prefixed.
+ */
+@Suppress("SpreadOperator")
+fun String.toProtocol(): ByteArray {
+    val bytes = encodeToByteArray()
+    return byteArrayOf(bytes.size.toByte(), *bytes)
 }
+
+fun UUID.serialize() = NBTIntArray(intArrayOf(
+    (mostSignificantBits shr 32).toInt(),
+    (mostSignificantBits and Int.MAX_VALUE.toLong()).toInt(),
+    (leastSignificantBits shr 32).toInt(),
+    (leastSignificantBits and Int.MAX_VALUE.toLong()).toInt()
+))

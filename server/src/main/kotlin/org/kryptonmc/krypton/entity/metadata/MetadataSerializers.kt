@@ -24,12 +24,12 @@ import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.asLong
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.Rotation
-import org.kryptonmc.krypton.util.asLong
 import org.kryptonmc.krypton.util.write
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeEnum

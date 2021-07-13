@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.item
 
+import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.item.meta.MetaHolder
@@ -17,7 +18,7 @@ import org.kryptonmc.api.util.service
 /**
  * A stack of items in an inventory.
  */
-interface ItemStack {
+interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
 
     /**
      * The type of item in this stack.
@@ -43,7 +44,7 @@ interface ItemStack {
     /**
      * For building new [ItemStack]s.
      */
-    interface Builder {
+    interface Builder : Buildable.Builder<ItemStack> {
 
         /**
          * Sets the type of the [ItemStack] being built.
@@ -79,7 +80,7 @@ interface ItemStack {
          * this builder.
          */
         @Contract("_ -> new")
-        fun build(): ItemStack
+        override fun build(): ItemStack
     }
 
     companion object {

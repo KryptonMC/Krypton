@@ -110,7 +110,6 @@ pitest {
         "org.kryptonmc.krypton.auth.MojangUUIDSerializer*",
         "org.kryptonmc.krypton.auth.requests.SessionService*"
     ))
-    excludedMethods.set(setOf("write\$Self"))
 }
 
 license {

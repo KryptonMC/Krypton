@@ -93,5 +93,5 @@ interface Chunk {
      * @param block the block to set this block's position to
      * @return if the set was successful. This is implementation specific
      */
-    fun setBlock(x: Int, y: Int, z: Int, block: Block): Block?
+    fun setBlock(x: Int, y: Int, z: Int, block: Block)
 }

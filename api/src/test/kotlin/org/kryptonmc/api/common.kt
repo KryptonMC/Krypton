@@ -22,7 +22,6 @@ val sender = mockk<Sender> {
     every { permissions } returns emptyMap()
 }
 
-@Suppress("UnderscoresInNumericLiterals")
 val player = mockk<Player> {
     every { name } returns "Dorothy"
     every { permissions } returns emptyMap()

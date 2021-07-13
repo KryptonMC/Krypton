@@ -24,10 +24,10 @@ import com.mojang.datafixers.TypeRewriteRule
 import com.mojang.datafixers.schemas.Schema
 import com.mojang.serialization.Dynamic
 import org.apache.commons.lang3.StringUtils
+import org.kryptonmc.api.util.getIfPresent
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.datafix.fixes.BlockStateData.upgradeBlock
 import org.kryptonmc.krypton.util.datafix.fixes.item.updateItem
-import org.kryptonmc.krypton.util.getIfPresent
 
 class StatsCounterFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
 

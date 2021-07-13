@@ -18,10 +18,14 @@
  */
 package org.kryptonmc.krypton.util
 
+import com.mojang.brigadier.StringReader
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.adventure.toMessage
 
 val KEY_CODEC: Codec<Key> = Codec.STRING.comapFlatMap(::readKey, Key::asString).stable()
 
@@ -29,4 +33,29 @@ private fun readKey(text: String) = try {
     DataResult.success(Key.key(text))
 } catch (exception: InvalidKeyException) {
     DataResult.error("Not a valid resource location: $text ${exception.message}")
+}
+
+private val ERROR_INVALID = SimpleCommandExceptionType(Component.translatable("argument.id.invalid").toMessage())
+
+fun StringReader.readKey(): Key {
+    val cursor = cursor
+    while (canRead() && peek().isAllowedInKey) skip()
+    return try {
+        Key.key(string.substring(cursor, this.cursor))
+    } catch (exception: InvalidKeyException) {
+        setCursor(cursor)
+        throw ERROR_INVALID.createWithContext(this)
+    }
+}
+
+private val ZERO_TO_NINE_RANGE = '0'..'9'
+private val A_TO_Z_RANGE = 'a'..'z'
+
+private val Char.isAllowedInKey: Boolean
+    get() = this in ZERO_TO_NINE_RANGE || this in A_TO_Z_RANGE || this == '_' || this == ':' || this == '/' || this == '.' || this == '-'
+
+fun String.parseKey(): Key? = try {
+    Key.key(this)
+} catch (exception: InvalidKeyException) {
+    null
 }

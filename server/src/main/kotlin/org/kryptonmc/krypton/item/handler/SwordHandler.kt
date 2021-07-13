@@ -44,7 +44,7 @@ sealed class SwordHandler(type: ItemType) : KryptonItemHandler(type) {
 
     override fun isCorrectTool(block: Block) = block.id == Blocks.COBWEB.id
 
-    override fun mineBlock(item: ItemStack, player: Player, world: World, block: Block, position: Vector3i) = true
+    override fun mineBlock(player: Player, item: ItemStack, world: World, block: Block, position: Vector3i) = true
 }
 
 object WoodenSwordHandler : SwordHandler(ItemTypes.WOODEN_SWORD)

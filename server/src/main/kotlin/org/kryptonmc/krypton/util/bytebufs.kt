@@ -38,8 +38,6 @@ import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
 import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.item.ItemStack.Companion
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
@@ -49,7 +47,6 @@ import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.locale.TranslationManager
-import org.kryptonmc.krypton.registry.FileRegistries
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
 import java.nio.charset.StandardCharsets.UTF_8

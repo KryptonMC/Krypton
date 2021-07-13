@@ -53,6 +53,16 @@ fun Float.clamp(low: Float, high: Float) = if (this < low) low else if (this > h
 fun nextInt(random: Random, lower: Int, upper: Int) = if (lower >= upper) lower else random.nextInt(upper - lower + 1) + lower
 
 /**
+ * Gets the area from this view distance [Int]
+ */
+fun Int.toArea() = (this * 2 + 1).square()
+
+/**
+ * Square an integer. This avoids us having to use [Math.pow], which is inefficient for this.
+ */
+fun Int.square() = this * this
+
+/**
  * Calculates a chunk position from a given [id] in a spiral pattern.
  *
  * This algorithm was previously part of Krypton (https://github.com/KryptonMC/Krypton), however it was removed after

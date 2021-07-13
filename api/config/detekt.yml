@@ -20,21 +20,20 @@ comments:
     active: true
   UndocumentedPublicClass:
     active: true
+    excludes: ["**/test/**"]
   UndocumentedPublicFunction:
     active: true
+    excludes: ["**/test/**"]
   UndocumentedPublicProperty:
     active: true
+    excludes: ["**/test/**"]
 
 complexity:
   active: true
   LargeClass:
     active: true
   LongParameterList:
-    active: true
-    functionThreshold: 6
-    constructorThreshold: 8
-    ignoreAnnotated: ['Inject']
-    ignoreDefaultParameters: true
+    active: false
   StringLiteralDuplication:
     active: true
   TooManyFunctions:
@@ -125,6 +124,8 @@ style:
     ignorePropertyDeclaration: true
     ignoreLocalVariableDeclaration: true
     ignoreAnnotation: true
+    ignoreNumbers: ["-3", "-2", "-1", "-0.5", "0", "0.5", "1", "2", "3", "64", "90", "180", "360"]
+    excludes: ["**/test/**"]
   MandatoryBracesIfStatements:
     active: true
   MandatoryBracesLoops:

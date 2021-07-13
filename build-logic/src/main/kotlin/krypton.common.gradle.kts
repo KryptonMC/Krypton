@@ -4,7 +4,6 @@ plugins {
     kotlin("jvm")
     id("org.cadixdev.licenser")
     id("info.solidsoft.pitest")
-    id("io.gitlab.arturbosch.detekt")
 }
 
 repositories {
@@ -58,17 +57,6 @@ pitest {
     threads.set(Runtime.getRuntime().availableProcessors())
     outputFormats.set(setOf("HTML", "XML"))
     excludedMethods.set(setOf("equals", "hashCode", "toString", "emptyList"))
-}
-
-detekt {
-    buildUponDefaultConfig = true
-    config = files("$projectDir/config/detekt.yml")
-    baseline = file("$projectDir/config/baseline.xml")
-
-    reports {
-        html.enabled = true
-        xml.enabled = true
-    }
 }
 
 val compiler: Provider<JavaCompiler> = javaToolchains.compilerFor {

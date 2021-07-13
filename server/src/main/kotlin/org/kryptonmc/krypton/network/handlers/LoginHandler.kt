@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.network.handlers
 import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.Unpooled
 import kotlinx.coroutines.launch
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
@@ -36,7 +35,6 @@ import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.`in`.handshake.BungeeCordHandshakeData
 import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
 import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
 import org.kryptonmc.krypton.packet.`in`.login.PacketInPluginResponse
@@ -54,6 +52,7 @@ import org.kryptonmc.krypton.network.netty.PacketEncoder
 import org.kryptonmc.krypton.network.netty.PacketEncrypter
 import org.kryptonmc.krypton.network.netty.SizeDecoder
 import org.kryptonmc.krypton.network.netty.SizeEncoder
+import org.kryptonmc.krypton.util.BungeeCordHandshakeData
 import org.kryptonmc.krypton.util.encryption.Encryption
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readVelocityData

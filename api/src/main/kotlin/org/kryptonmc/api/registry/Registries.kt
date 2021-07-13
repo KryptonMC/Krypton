@@ -46,7 +46,7 @@ object Registries {
      * The registry of all types of dimensions in the game.
      */
     @JvmField
-    val DIMENSION_TYPE = createDefaulted(RegistryKeys.DIMENSION_TYPE, key("air"))
+    val DIMENSION_TYPE = createDefaulted(RegistryKeys.DIMENSION_TYPE, key("overworld"))
 
     /**
      * The registry of all blocks in the game.

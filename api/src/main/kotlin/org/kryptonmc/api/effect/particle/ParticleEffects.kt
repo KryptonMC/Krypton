@@ -39,35 +39,91 @@ data class ParticleEffect internal constructor(
     companion object {
 
         /**
-         * Create a new particle effect builder for the given particle [type].
+         * Creates a new particle effect builder for the given particle [type].
          *
          * @param type the type of the particle
-         * @return a new builder for this particle effect
+         * @return a new particle effect builder for the given type
          */
         @JvmStatic
         fun builder(type: Particle) = ParticleEffectBuilder(type)
 
+        /**
+         * Creates a new directional particle effect builder for the given directional
+         * particle [type].
+         *
+         * @param type the type of the directional particle
+         * @return a new directional particle effect builder for the given type
+         */
         @JvmStatic
         fun builder(type: DirectionalParticle) = DirectionalParticleEffectBuilder(type)
 
+        /**
+         * Creates a new block particle effect builder for the given block particle
+         * [type].
+         *
+         * @param type the type of the block particle
+         * @return a new block particle effect builder for the given type
+         */
         @JvmStatic
         fun builder(type: BlockParticle) = DirectionalParticleEffectBuilder(type)
 
+        /**
+         * Creates a new item particle effect builder for the given item particle
+         * [type].
+         *
+         * @param type the type of the item particle
+         * @return a new item particle effect builder for the given type
+         */
         @JvmStatic
         fun builder(type: ItemParticle) = ItemParticleEffectBuilder(type)
 
+        /**
+         * Creates a new color particle effect builder for the given color particle
+         * [type].
+         *
+         * @param type the type of the color particle
+         * @return a new color particle effect builder for the given type
+         */
         @JvmStatic
         fun builder(type: ColorParticle) = ColorParticleEffectBuilder(type)
 
+        /**
+         * Creates a new dust particle effect builder for the given dust particle
+         * [type].
+         *
+         * @param type the type of the directional particle
+         * @return a new dust particle effect builder for the given type
+         */
         @JvmStatic
         fun builder(type: DustParticle) = DustParticleEffectBuilder(type)
 
+        /**
+         * Creates a new dust transition particle effect builder for the given dust
+         * transition particle [type].
+         *
+         * @param type the type of the dust transition particle
+         * @return a new dust transition particle effect builder for the given type
+         */
         @JvmStatic
         fun builder(type: DustTransitionParticle) = DustTransitionParticleEffectBuilder(type)
 
+        /**
+         * Creates a new note particle effect builder for the given note particle
+         * [type].
+         *
+         * @param type the type of the note particle
+         * @return a new note particle effect builder for the given type
+         */
         @JvmStatic
         fun builder(type: NoteParticle) = NoteParticleEffectBuilder(type)
 
+        /**
+         * Creates a new vibration particle effect builder for the given vibration
+         * particle [type].
+         *
+         * @param type the type of the vibration particle
+         * @return a new vibration particle effect builder for the given type
+         */
         @JvmStatic
         fun builder(type: VibrationParticle) = VibrationParticleEffectBuilder(type)
     }

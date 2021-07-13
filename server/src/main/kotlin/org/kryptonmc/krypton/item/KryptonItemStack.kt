@@ -64,6 +64,8 @@ open class KryptonItemStack(
         return KryptonItemStack(type, amount, meta.copy())
     }
 
+    override fun toBuilder() = Builder()
+
     class Builder(
         private var type: ItemType = ItemTypes.AIR,
         private var amount: Int = 1,
@@ -72,7 +74,10 @@ open class KryptonItemStack(
 
         override fun type(type: ItemType) = apply { this.type = type }
 
-        override fun amount(amount: Int) = apply { this.amount = amount }
+        override fun amount(amount: Int) = apply {
+            require(amount in 1..type.maximumAmount) { "Item amount must be between 1 and ${type.maximumAmount}, was $amount!" }
+            this.amount = amount
+        }
 
         override fun meta(builder: MetaHolder.() -> Unit) = apply { meta.apply(builder) }
 

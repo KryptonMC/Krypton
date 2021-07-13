@@ -24,8 +24,8 @@ import com.mojang.datafixers.DataFixUtils
 import com.mojang.datafixers.TypeRewriteRule
 import com.mojang.datafixers.schemas.Schema
 import com.mojang.serialization.Dynamic
+import org.kryptonmc.api.util.getIfPresent
 import org.kryptonmc.krypton.util.datafix.References
-import org.kryptonmc.krypton.util.getIfPresent
 
 class MobSpawnerIdentifiersFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
 

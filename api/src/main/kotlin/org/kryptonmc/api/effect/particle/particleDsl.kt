@@ -8,6 +8,8 @@
  */
 package org.kryptonmc.api.effect.particle
 
+import org.jetbrains.annotations.Contract
+
 @DslMarker
 private annotation class ParticleDsl
 
@@ -18,8 +20,9 @@ private annotation class ParticleDsl
  * @param builder the builder to configure the particle effect with
  * @return a new [ParticleEffect] based on the given settings
  */
-@JvmSynthetic
 @ParticleDsl
+@JvmSynthetic
+@Contract("_ -> new", pure = true)
 inline fun particleEffect(
     type: SimpleParticle,
     builder: ParticleEffectBuilder.() -> Unit = {}
@@ -32,8 +35,9 @@ inline fun particleEffect(
  * @param builder the builder to configure the particle effect with
  * @return a new [ParticleEffect] based on the given settings
  */
-@JvmSynthetic
 @ParticleDsl
+@JvmSynthetic
+@Contract("_ -> new", pure = true)
 inline fun particleEffect(
     type: DirectionalParticle,
     builder: DirectionalParticleEffectBuilder.() -> Unit = {}
@@ -46,8 +50,9 @@ inline fun particleEffect(
  * @param builder the builder to configure the particle effect with
  * @return a new [ParticleEffect] based on the given settings
  */
-@JvmSynthetic
 @ParticleDsl
+@JvmSynthetic
+@Contract("_ -> new", pure = true)
 inline fun particleEffect(
     type: BlockParticle,
     builder: BlockParticleEffectBuilder.() -> Unit = {}
@@ -60,8 +65,9 @@ inline fun particleEffect(
  * @param builder the builder to configure the particle effect with
  * @return a new [ParticleEffect] based on the given settings
  */
-@JvmSynthetic
 @ParticleDsl
+@JvmSynthetic
+@Contract("_ -> new", pure = true)
 inline fun particleEffect(
     type: ItemParticle,
     builder: ItemParticleEffectBuilder.() -> Unit = {}
@@ -74,8 +80,9 @@ inline fun particleEffect(
  * @param builder the builder to configure the particle effect with
  * @return a new [ParticleEffect] based on the given settings
  */
-@JvmSynthetic
 @ParticleDsl
+@JvmSynthetic
+@Contract("_ -> new", pure = true)
 inline fun particleEffect(
     type: ColorParticle,
     builder: ColorParticleEffectBuilder.() -> Unit = {}
@@ -88,8 +95,9 @@ inline fun particleEffect(
  * @param builder the builder to configure the particle effect with
  * @return a new [ParticleEffect] based on the given settings
  */
-@JvmSynthetic
 @ParticleDsl
+@JvmSynthetic
+@Contract("_ -> new", pure = true)
 inline fun particleEffect(
     type: DustParticle,
     builder: DustParticleEffectBuilder.() -> Unit = {}
@@ -102,8 +110,9 @@ inline fun particleEffect(
  * @param builder the builder to configure the particle effect with
  * @return a new [ParticleEffect] based on the given settings
  */
-@JvmSynthetic
 @ParticleDsl
+@JvmSynthetic
+@Contract("_ -> new", pure = true)
 inline fun particleEffect(
     type: DustTransitionParticle,
     builder: DustTransitionParticleEffectBuilder.() -> Unit = {}
@@ -116,8 +125,9 @@ inline fun particleEffect(
  * @param builder the builder to configure the particle effect with
  * @return a new [ParticleEffect] based on the given settings
  */
-@JvmSynthetic
 @ParticleDsl
+@JvmSynthetic
+@Contract("_ -> new", pure = true)
 inline fun particleEffect(
     type: NoteParticle,
     builder: NoteParticleEffectBuilder.() -> Unit = {}
@@ -130,8 +140,9 @@ inline fun particleEffect(
  * @param builder the builder to configure the particle effect with
  * @return a new [ParticleEffect] based on the given settings
  */
-@JvmSynthetic
 @ParticleDsl
+@JvmSynthetic
+@Contract("_ -> new", pure = true)
 inline fun particleEffect(
     type: VibrationParticle,
     builder: VibrationParticleEffectBuilder.() -> Unit = {}

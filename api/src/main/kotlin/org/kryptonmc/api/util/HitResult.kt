@@ -11,10 +11,28 @@ package org.kryptonmc.api.util
 import org.kryptonmc.api.entity.Entity
 import org.spongepowered.math.vector.Vector3i
 
+/**
+ * Represents the result of a player hitting/attacking something.
+ *
+ * @param clickLocation the location where the player clicked
+ */
 abstract class HitResult(val clickLocation: Vector3i) {
 
+    /**
+     * The type of hit result this is.
+     */
     abstract val type: Type
 
+    /**
+     * Gets the distance squared from the [clickLocation] to the given
+     * [entity]'s location, where the distance squared is calculated as
+     * the following:
+     *
+     * `(clickedX - entityX) ^ 2 + (clickedY - entityY) ^ 2 + (clickedZ - entityZ) ^ 2`
+     *
+     * @param entity the entity to calculate the distance to
+     * @return the distance squared from the click location to the given entity
+     */
     fun distanceTo(entity: Entity): Double {
         val distanceX = clickLocation.x() - entity.location.x
         val distanceY = clickLocation.y() - entity.location.y
@@ -22,6 +40,9 @@ abstract class HitResult(val clickLocation: Vector3i) {
         return distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ
     }
 
+    /**
+     * The type of hit result this is.
+     */
     enum class Type {
 
         MISS,

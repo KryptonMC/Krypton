@@ -45,6 +45,12 @@ enum class Gamemode {
      */
     SPECTATOR;
 
+    /**
+     * If this gamemode can build.
+     */
+    val canBuild: Boolean
+        get() = this == SURVIVAL || this == CREATIVE
+
     override fun toString() = name.lowercase()
 
     companion object {

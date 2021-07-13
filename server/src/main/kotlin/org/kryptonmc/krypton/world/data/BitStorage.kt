@@ -79,6 +79,7 @@ class BitStorage(
         return (cell shr magic and mask).toInt()
     }
 
+    @Suppress("UNUSED_VALUE") // Kotlin is definitely going crazy here
     fun count(consumer: (Int) -> Unit) {
         var count = 0
         data.forEach {

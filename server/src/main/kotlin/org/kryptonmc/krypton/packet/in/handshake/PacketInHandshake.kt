@@ -19,23 +19,13 @@
 package org.kryptonmc.krypton.packet.`in`.handshake
 
 import io.netty.buffer.ByteBuf
-import me.bardy.gsonkt.fromJson
-import org.kryptonmc.krypton.GSON
-import org.kryptonmc.krypton.auth.ProfileProperty
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.PacketInfo
 import org.kryptonmc.krypton.network.PacketState
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
-import java.util.UUID
 
-/**
- * This is the only packet in the [Handshake][PacketState.HANDSHAKE] state.
- *
- * The client uses this packet to inform the server of its intention for the connection (either
- * login or status).
- */
 class PacketInHandshake(buf: ByteBuf) : Packet {
 
     override val info = PacketInfo(0x00, PacketState.HANDSHAKE)
@@ -44,31 +34,4 @@ class PacketInHandshake(buf: ByteBuf) : Packet {
     val address = buf.readString()
     val port = buf.readUnsignedShort().toUShort()
     val nextState = buf.readEnum<PacketState>()
-}
-
-/**
- * Represents handshake data for a BungeeCord IP forwarded connection.
- */
-data class BungeeCordHandshakeData(
-    val originalIp: String,
-    val forwardedIp: String,
-    val uuid: UUID,
-    val properties: List<ProfileProperty>
-)
-
-/**
- * Used to split the handshake address into its BungeeCord IP forwarded components.
- *
- * Namely, BungeeCord encodes its data as a null-separated string, in the order of the
- * [BungeeCordHandshakeData] class.
- */
-fun String.splitData(): BungeeCordHandshakeData? {
-    val split = split('\u0000')
-    if (split.size <= 2) return null
-    return BungeeCordHandshakeData(
-        split[0],
-        split[1],
-        UUID.fromString(split[2].replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})".toRegex(), "$1-$2-$3-$4-$5")),
-        if (split.size > 3) GSON.fromJson(split[3]) else emptyList()
-    )
 }

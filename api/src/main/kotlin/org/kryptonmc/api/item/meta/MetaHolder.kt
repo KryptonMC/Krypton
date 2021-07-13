@@ -47,6 +47,6 @@ interface MetaHolder : Pointers {
     /**
      * Creates a copy of this meta holder.
      */
-    @Contract("_ -> new")
+    @Contract("_ -> new", pure = true)
     fun copy(): MetaHolder
 }

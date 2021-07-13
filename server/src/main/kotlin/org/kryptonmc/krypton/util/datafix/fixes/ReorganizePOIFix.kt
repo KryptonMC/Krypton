@@ -24,8 +24,8 @@ import com.mojang.datafixers.DataFix
 import com.mojang.datafixers.TypeRewriteRule
 import com.mojang.datafixers.schemas.Schema
 import com.mojang.serialization.Dynamic
+import org.kryptonmc.api.util.getIfPresent
 import org.kryptonmc.krypton.util.datafix.References
-import org.kryptonmc.krypton.util.getIfPresent
 import java.util.function.Function
 
 class ReorganizePOIFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
