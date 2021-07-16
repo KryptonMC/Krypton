@@ -13,5 +13,19 @@ jobs:
         uses: "actions/setup-java@v1"
         with:
           java-version: "16"
+          distribution: "adopt"
+      - name: "cache gradle"
+        uses: "actions/cache@v2"
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}"
+          restore-keys: |
+            ${{ runner.os }}-gradle-
       - name: "build"
-        run: "./gradlew clean build"
+        run: "./gradlew build"
+      - name: "cleanup gradle cache"
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
