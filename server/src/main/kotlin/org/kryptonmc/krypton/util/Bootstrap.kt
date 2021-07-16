@@ -32,7 +32,7 @@ object Bootstrap {
         Class.forName("org.kryptonmc.api.registry.RegistryKeys")
         Class.forName("org.kryptonmc.api.registry.Registries")
         Class.forName("org.kryptonmc.api.effect.particle.ParticleType")
-        Class.forName("org.kryptonmc.api.effect.sound.SoundTypes")
+        Class.forName("org.kryptonmc.api.effect.sound.SoundEvents")
         Class.forName("org.kryptonmc.api.entity.EntityTypes")
         Class.forName("org.kryptonmc.api.item.ItemTypes")
 
@@ -41,6 +41,8 @@ object Bootstrap {
 
         // Preload some other frequently used objects so they aren't loaded on first player join
         Class.forName("org.kryptonmc.krypton.registry.tags.TagManager")
+        Class.forName("org.kryptonmc.krypton.tags.KryptonTagManager")
+        Class.forName("org.kryptonmc.krypton.tags.BlockTags")
         Class.forName("org.kryptonmc.krypton.world.block.palette.GlobalPalette")
         Class.forName("org.kryptonmc.krypton.command.argument.ArgumentTypes")
     }

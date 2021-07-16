@@ -10,7 +10,6 @@ package org.kryptonmc.api.util
 
 import org.kryptonmc.api.entity.Entity
 import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
 
 /**
  * Represents the result of a player hitting/attacking something.
