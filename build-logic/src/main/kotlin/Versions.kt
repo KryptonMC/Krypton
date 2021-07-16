@@ -5,7 +5,7 @@ object Versions {
     // API
     const val GUAVA = "30.1.1-jre"
     const val GSON = "2.8.7"
-    const val GSON_KT = "1.1"
+    const val GSON_KT = "1.3"
     const val GUICE = "5.0.1"
     const val KOTLIN_GUICE = "1.5.0"
     const val COMMONS_LANG = "3.12.0"

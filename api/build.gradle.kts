@@ -76,8 +76,8 @@ task<Jar>("javadocJar") {
 publishing {
     repositories {
         maven {
-            val snapshots = uri("https://repo.bristermitten.me/repository/maven-snapshots/")
-            val releases = uri("https://repo.bristermitten.me/repository/maven-releases/")
+            val snapshots = uri("https://repo.kryptonmc.org/snapshots")
+            val releases = uri("https://repo.kryptonmc.org/releases")
             url = if (version.toString().endsWith("SNAPSHOT")) snapshots else releases
 
             credentials {
