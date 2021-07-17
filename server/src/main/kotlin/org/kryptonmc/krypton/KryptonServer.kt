@@ -64,7 +64,6 @@ import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.createDirectory
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.monitoring.jmx.KryptonStatistics
 import org.kryptonmc.krypton.util.profiling.ServerProfiler
 import org.kryptonmc.krypton.util.profiling.DeadProfiler
 import org.kryptonmc.krypton.util.profiling.Profiler
@@ -200,10 +199,8 @@ class KryptonServer : Server {
         // of their lifecycle, and we call it sync so plugins can finish initialising before we do
         eventManager.fireAndForgetSync(ServerStartEvent())
 
-        // Set the last tick time (avoids initial check sending an overload warning every time) and register the JMX
-        // bean
+        // Set the last tick time (avoids initial check sending an overload warning every time)
         lastTickTime = System.currentTimeMillis()
-        if (config.advanced.enableJmxMonitoring) KryptonStatistics.register(this)
 
         // Start accepting connections
         LOGGER.debug("Starting Netty...")

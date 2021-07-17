@@ -65,7 +65,6 @@ class ConfigTests {
 
         // Advanced settings
         assertTrue(config.advanced.synchronizeChunkWrites)
-        assertTrue(config.advanced.enableJmxMonitoring)
 
         // Query settings
         assertFalse(config.query.enabled)
@@ -74,21 +73,6 @@ class ConfigTests {
         // Other settings
         assertTrue(config.other.metrics)
         assertEquals(5, config.other.saveThreshold)
-
-        val modified = config.copy(
-            server = config.server.copy(onlineMode = false),
-            world = config.world.copy(forceDefaultGamemode = true, hardcore = true),
-            advanced = config.advanced.copy(synchronizeChunkWrites = false, enableJmxMonitoring = false),
-            query = config.query.copy(enabled = true),
-            other = config.other.copy(metrics = false)
-        )
-        assertFalse(modified.server.onlineMode)
-        assertTrue(modified.world.forceDefaultGamemode)
-        assertTrue(modified.world.hardcore)
-        assertFalse(modified.advanced.synchronizeChunkWrites)
-        assertFalse(modified.advanced.enableJmxMonitoring)
-        assertTrue(modified.query.enabled)
-        assertFalse(modified.other.metrics)
     }
 
     @Test
@@ -116,7 +100,6 @@ class ConfigTests {
 
         // Advanced settings
         assertTrue(config.advanced.synchronizeChunkWrites)
-        assertTrue(config.advanced.enableJmxMonitoring)
 
         // Query settings
         assertFalse(config.query.enabled)
