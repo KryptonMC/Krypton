@@ -381,7 +381,6 @@ class KryptonServer : Server {
         Messages.STOP.INITIAL.info(LOGGER)
         isRunning = false
         playerManager.disconnectAll()
-        nettyProcess.shutdown()
 
         // save player, world and region data
         Messages.STOP.SAVE.info(LOGGER)

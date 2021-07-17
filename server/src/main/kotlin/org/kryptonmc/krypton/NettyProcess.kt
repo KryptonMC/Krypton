@@ -54,7 +54,6 @@ class NettyProcess(private val server: KryptonServer) {
 
     private val bossGroup: EventLoopGroup = bestLoopGroup()
     private val workerGroup: EventLoopGroup = bestLoopGroup()
-    private lateinit var future: ChannelFuture
 
     suspend fun run() {
         LOGGER.debug("${bossGroup::class.simpleName} is the chosen one")
@@ -80,7 +79,6 @@ class NettyProcess(private val server: KryptonServer) {
             withContext(Dispatchers.IO) {
                 val future = bootstrap.bind(server.config.server.ip, server.config.server.port).syncUninterruptibly()
                 future.channel().closeFuture().syncUninterruptibly()
-                this@NettyProcess.future = future
             }
         } catch (exception: IOException) {
             LOGGER.error("-------------------------------------------------")
@@ -92,10 +90,9 @@ class NettyProcess(private val server: KryptonServer) {
         }
     }
 
-    fun shutdown() {
+    private fun shutdown() {
         workerGroup.shutdownGracefully()
         bossGroup.shutdownGracefully()
-        future.channel().close().sync()
     }
 
     // Determines the best loop group to use based on what is available on the current operating system
