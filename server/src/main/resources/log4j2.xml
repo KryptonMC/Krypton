@@ -22,9 +22,6 @@
         <TerminalConsole name="CONSOLE">
             <PatternLayout noConsoleNoAnsi="true" pattern="%red{%d{yyyy-MM-dd HH:mm:ss}} %green{[%thread]} %highlight{%level}{STYLE=Logback} %cyan{%logger{0}} - %minecraftFormatting{%msg}%n" />
         </TerminalConsole>
-        <Queue name="ServerGuiConsole">
-            <PatternLayout pattern="%red{%d{yyyy-MM-dd HH:mm:ss}} %green{[%thread]} %highlight{%level}{STYLE=Logback} %cyan{%logger{0}} - %minecraftFormatting{%msg}%n" />
-        </Queue>
         <RollingRandomAccessFile name="File" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz" fileName="logs/latest.log">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%thread] %level %logger{0} - %minecraftFormatting{%msg}{strip}%n" />
             <Policies>
@@ -38,7 +35,6 @@
         <Root level="debug">
             <AppenderRef ref="CONSOLE" />
             <AppenderRef ref="File" />
-            <AppenderRef ref="ServerGuiConsole" />
         </Root>
     </Loggers>
 </Configuration>
