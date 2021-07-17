@@ -57,7 +57,6 @@ import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.serializers.DifficultySerializer
 import org.kryptonmc.krypton.serializers.GamemodeSerializer
 import org.kryptonmc.krypton.server.PlayerManager
-import org.kryptonmc.krypton.server.query.GS4QueryHandler
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.TranslationRegister
@@ -158,8 +157,6 @@ class KryptonServer : Server {
     @Volatile
     private var delayProfilerStart = false
 
-    private var gs4QueryHandler: GS4QueryHandler? = null
-
     internal fun start() = try {
         Messages.START.INITIAL.info(LOGGER, config.server.ip, config.server.port)
         val startTime = System.nanoTime()
@@ -207,12 +204,6 @@ class KryptonServer : Server {
         // bean
         lastTickTime = System.currentTimeMillis()
         if (config.advanced.enableJmxMonitoring) KryptonStatistics.register(this)
-
-        // Enable the GS4 query listener and open the GUI
-        if (config.query.enabled) {
-            Messages.START.QUERY.info(LOGGER)
-            gs4QueryHandler = GS4QueryHandler.create(this)
-        }
 
         // Start accepting connections
         LOGGER.debug("Starting Netty...")
@@ -391,7 +382,6 @@ class KryptonServer : Server {
         isRunning = false
         playerManager.disconnectAll()
         nettyProcess.shutdown()
-        gs4QueryHandler?.stop()
 
         // save player, world and region data
         Messages.STOP.SAVE.info(LOGGER)
