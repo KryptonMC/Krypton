@@ -34,61 +34,54 @@ import kotlin.math.max
 
 class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
 
-    private val lock = Semaphore(1)
     private lateinit var storage: BitStorage
     private var bits = 0
         set(value) {
             if (field == value) return
             field = value
             palette = when {
-                field <= 4 -> {
-                    field = 4
+                field <= MINIMUM_PALETTE_SIZE -> {
+                    field = MINIMUM_PALETTE_SIZE
                     ArrayPalette(field, this)
                 }
-                field < 9 -> MapPalette(field, this)
+                field < GLOBAL_PALETTE_SIZE -> MapPalette(field, this)
                 else -> {
                     field = BLOCKS.size.ceillog2()
                     GlobalPalette
                 }
             }
-            storage = BitStorage(field, 4096)
+            storage = BitStorage(field, SIZE)
         }
 
     init {
-        bits = 4
+        bits = MINIMUM_PALETTE_SIZE
     }
 
-    fun getAndSet(x: Int, y: Int, z: Int, value: Block) = try {
-        lock.acquire()
-        getAndSet(indexOf(x, y, z), value)
-    } finally {
-        lock.release()
+    @Synchronized
+    fun getAndSet(x: Int, y: Int, z: Int, value: Block): Block {
+        val id = palette[value]
+        val newId = storage.getAndSet(indexOf(x, y, z), id)
+        return palette[newId] ?: DEFAULT
     }
 
     operator fun get(x: Int, y: Int, z: Int) = palette[storage[indexOf(x, y, z)]] ?: DEFAULT
 
-    operator fun set(x: Int, y: Int, z: Int, value: Block) = try {
-        lock.acquire()
-        set(indexOf(x, y, z), value)
-    } finally {
-        lock.release()
-    }
+    @Synchronized
+    operator fun set(x: Int, y: Int, z: Int, value: Block) = set(indexOf(x, y, z), value)
 
-    fun write(buf: ByteBuf) = try {
-        lock.acquire()
+    @Synchronized
+    fun write(buf: ByteBuf) {
         buf.writeByte(bits)
         palette.write(buf)
         buf.writeLongArray(storage.data)
-    } finally {
-        lock.release()
     }
 
-    fun load(paletteData: NBTList<NBTCompound>, states: LongArray) = try {
-        lock.acquire()
-        val bits = max(4, paletteData.size.ceillog2())
+    @Synchronized
+    fun load(paletteData: NBTList<NBTCompound>, states: LongArray) {
+        val bits = max(MINIMUM_PALETTE_SIZE, paletteData.size.ceillog2())
         if (bits != this.bits) this.bits = bits
         palette.load(paletteData)
-        val storageBits = states.size * 64 / 4096
+        val storageBits = states.size * Long.SIZE_BITS / SIZE
         when {
             palette === GlobalPalette -> {
                 val newPalette = MapPalette(bits, DUMMY_RESIZER).apply { load(paletteData) }
@@ -101,16 +94,14 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
                 for (i in 0 until SIZE) storage[i] = bitStorage[i]
             }
         }
-    } finally {
-        lock.release()
     }
 
-    fun save(tag: NBTCompound) = try {
-        lock.acquire()
+    @Synchronized
+    fun save(tag: NBTCompound) {
         val newPalette = MapPalette(bits, DUMMY_RESIZER)
         var default = DEFAULT
         var defaultId = newPalette[DEFAULT]
-        val states = IntArray(4096)
+        val states = IntArray(SIZE)
 
         for (i in 0 until SIZE) {
             val value = palette[storage[i]] ?: DEFAULT
@@ -122,25 +113,17 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
         }
 
         val paletteData = newPalette.save()
-        tag[PALETTE_TAG] = paletteData
-        val bits = max(4, paletteData.size.ceillog2())
+        tag["Palette"] = paletteData
+        val bits = max(MINIMUM_PALETTE_SIZE, paletteData.size.ceillog2())
         val storage = BitStorage(bits, SIZE)
         for (i in states.indices) storage[i] = states[i]
-        tag.setLongArray(STATES_TAG, storage.data)
-    } finally {
-        lock.release()
+        tag.setLongArray("BlockStates", storage.data)
     }
 
     fun count(consumer: (Block, Int) -> Unit) {
         val map = Int2IntOpenHashMap()
         storage.count { map[it] = map[it] + 1 }
         map.int2IntEntrySet().fastForEach { consumer(palette[it.intKey]!!, it.intValue) }
-    }
-
-    private fun getAndSet(index: Int, value: Block): Block {
-        val id = palette[value]
-        val newId = storage.getAndSet(index, id)
-        return palette[newId] ?: DEFAULT
     }
 
     private fun set(index: Int, value: Block) = storage.set(index, palette[value])
@@ -154,15 +137,13 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
     }
 
     val serializedSize: Int
-        get() = 1 + palette.serializedSize + storage.size.varIntBytes + storage.data.size * 8
+        get() = 1 + palette.serializedSize + storage.size.varIntBytes + storage.data.size * Long.SIZE_BYTES
 
     companion object {
 
         const val GLOBAL_PALETTE_SIZE = 9
         const val MINIMUM_PALETTE_SIZE = 4
         private const val SIZE = 4096
-        private const val PALETTE_TAG = "Palette"
-        private const val STATES_TAG = "BlockStates"
         private val DEFAULT = Blocks.AIR
         private val DUMMY_RESIZER: (Int, Block) -> Int = { _, _ -> 0 }
     }

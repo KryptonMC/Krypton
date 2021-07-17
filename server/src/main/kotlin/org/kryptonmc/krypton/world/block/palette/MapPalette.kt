@@ -32,7 +32,7 @@ import org.kryptonmc.krypton.world.block.toNBT
 
 class MapPalette(private val bits: Int, private val resizer: (Int, Block) -> Int) : Palette {
 
-    private val values = IntIdentityHashBiMap(Block::class.java, 1 shl bits)
+    private val values = IntIdentityHashBiMap<Block>(1 shl bits)
 
     override fun get(value: Block): Int {
         var id = values.idOf(value)

@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.util
 import kotlin.math.max
 
 @Suppress("UNCHECKED_CAST") // Our casts are fine and should always succeed
-class IntIdentityHashBiMap<K>(private val type: Class<K>, initialCapacity: Int) : IdMap<K> {
+class IntIdentityHashBiMap<K>(initialCapacity: Int) : IdMap<K> {
 
     private var keys: Array<K?>
     private var values: IntArray
@@ -33,9 +33,9 @@ class IntIdentityHashBiMap<K>(private val type: Class<K>, initialCapacity: Int) 
 
     init {
         val capacity = (initialCapacity.toFloat() / LOAD_FACTOR).toInt()
-        keys = java.lang.reflect.Array.newInstance(type, capacity) as Array<K?>
+        keys = arrayOfNulls<Any>(capacity) as Array<K?>
         values = IntArray(capacity)
-        byId = java.lang.reflect.Array.newInstance(type, capacity) as Array<K?>
+        byId = arrayOfNulls<Any>(capacity) as Array<K?>
     }
 
     override fun idOf(value: K) = getValue(indexOf(value, hash(value)))
@@ -76,9 +76,9 @@ class IntIdentityHashBiMap<K>(private val type: Class<K>, initialCapacity: Int) 
     private fun grow(newSize: Int) {
         val oldKeys = keys
         val oldValues = values
-        this.keys = java.lang.reflect.Array.newInstance(type, newSize) as Array<K?>
+        this.keys = arrayOfNulls<Any>(newSize) as Array<K?>
         this.values = IntArray(newSize)
-        this.byId = java.lang.reflect.Array.newInstance(type, newSize) as Array<K?>
+        this.byId = arrayOfNulls<Any>(newSize) as Array<K?>
         nextId = 0
         size = 0
         for (i in oldKeys.indices) oldKeys[i]?.let { set(it, oldValues[i]) }

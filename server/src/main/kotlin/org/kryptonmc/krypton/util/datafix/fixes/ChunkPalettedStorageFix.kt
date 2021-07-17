@@ -99,7 +99,7 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
 
     class Section(private val section: Dynamic<*>) {
 
-        private val palette = IntIdentityHashBiMap(Dynamic::class.java, 32)
+        private val palette = IntIdentityHashBiMap<Dynamic<*>>(32)
         private val listTag = mutableListOf<Dynamic<*>>()
         private val hasData = section["Blocks"].result().isPresent
         val y = section["Y"].asInt(0)

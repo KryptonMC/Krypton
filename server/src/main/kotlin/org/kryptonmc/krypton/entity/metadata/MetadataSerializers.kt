@@ -46,7 +46,7 @@ import java.util.UUID
 
 object MetadataSerializers {
 
-    private val SERIALIZERS = IntIdentityHashBiMap(MetadataSerializer::class.java, 16)
+    private val SERIALIZERS = IntIdentityHashBiMap<MetadataSerializer<*>>(16)
 
     @JvmField
     val BYTE = object : MetadataSerializer<Byte> {
