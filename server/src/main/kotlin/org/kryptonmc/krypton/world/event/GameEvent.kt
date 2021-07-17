@@ -16,18 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.krypton.world.event
 
-import org.kryptonmc.api.registry.RegistryKeys
-import org.kryptonmc.krypton.entity.attribute.Attribute
-import org.kryptonmc.krypton.entity.metadata.MetadataKey
-import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.event.GameEvent
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Keyed
 
-object InternalRegistryKeys {
+class GameEvent(val key: Key) : Keyed {
 
-    val ATTRIBUTE = RegistryKeys.minecraft<Attribute>("attribute")
-    val METADATA = RegistryKeys.krypton<MetadataKey<*>>("metadata")
-    val DIMENSION = RegistryKeys.minecraft<KryptonWorld>("dimension")
-    val GAME_EVENT = RegistryKeys.minecraft<GameEvent>("game_event")
+    override fun key() = key
 }

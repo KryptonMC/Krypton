@@ -16,18 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.krypton.tags
 
-import org.kryptonmc.api.registry.RegistryKeys
-import org.kryptonmc.krypton.entity.attribute.Attribute
-import org.kryptonmc.krypton.entity.metadata.MetadataKey
-import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.event.GameEvent
+import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.registry.InternalRegistryKeys
 
-object InternalRegistryKeys {
+object GameEventTags {
 
-    val ATTRIBUTE = RegistryKeys.minecraft<Attribute>("attribute")
-    val METADATA = RegistryKeys.krypton<MetadataKey<*>>("metadata")
-    val DIMENSION = RegistryKeys.minecraft<KryptonWorld>("dimension")
-    val GAME_EVENT = RegistryKeys.minecraft<GameEvent>("game_event")
+    val VIBRATIONS = get("vibrations")
+    val IGNORE_VIBRATIONS_SNEAKING = get("ignore_vibrations_sneaking")
+
+    private fun get(name: String) = KryptonTagManager.load(
+        Key.key(name),
+        InternalRegistryKeys.GAME_EVENT.location,
+        "game_events",
+        InternalRegistries.GAME_EVENT
+    )
 }

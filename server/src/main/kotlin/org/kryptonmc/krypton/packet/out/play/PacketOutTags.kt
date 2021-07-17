@@ -23,6 +23,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.FileRegistries
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.tags.Tag
 import org.kryptonmc.krypton.registry.tags.TagManager
 import org.kryptonmc.krypton.registry.tags.TagType
@@ -46,8 +47,8 @@ object PacketOutTags : PlayPacket(0x66) {
     private val entityRegistry: (Key) -> Int? = {
         FileRegistries.ENTITY_TYPES.idOf(it)
     }
-    private val gameEventRegistry: (Key) -> Int? = {
-        FileRegistries.GAME_EVENTS.idOf(it)
+    private val gameEventRegistry: (Key) -> Int? = { key ->
+        InternalRegistries.GAME_EVENT[key]?.let { InternalRegistries.GAME_EVENT.idOf(it) }
     }
 
     private val registries = mapOf(
