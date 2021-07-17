@@ -28,5 +28,8 @@ data class OtherCategory(
     val metrics: Boolean = true,
     @Setting("save-threshold")
     @Comment("The duration (in seconds) a single tick must take before the single tick profiler reports it.")
-    val saveThreshold: Int = 5
+    val saveThreshold: Int = 5,
+    @Setting("restart-script")
+    @Comment("The script we should use to attempt to restart the server.")
+    val restartScript: String = "./start.sh"
 )

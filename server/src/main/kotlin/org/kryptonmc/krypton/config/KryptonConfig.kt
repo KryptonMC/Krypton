@@ -26,7 +26,6 @@ import org.kryptonmc.krypton.config.category.ProxyCategory
 import org.kryptonmc.krypton.config.category.QueryCategory
 import org.kryptonmc.krypton.config.category.ServerCategory
 import org.kryptonmc.krypton.config.category.StatusCategory
-import org.kryptonmc.krypton.config.category.WatchdogCategory
 import org.kryptonmc.krypton.config.category.WorldCategory
 import org.kryptonmc.krypton.config.serializer.DifficultyTypeSerializer
 import org.kryptonmc.krypton.config.serializer.GamemodeTypeSerializer
@@ -48,8 +47,6 @@ data class KryptonConfig(
     val advanced: AdvancedCategory = AdvancedCategory(),
     @Comment("Settings for the GS4 query protocol listener. If you don't know what that means, don't touch these :)")
     val query: QueryCategory = QueryCategory(),
-    @Comment("Watchdog settings. The watchdog monitors the server for freezes.")
-    val watchdog: WatchdogCategory = WatchdogCategory(),
     @Comment("Proxy IP forwarding settings.")
     val proxy: ProxyCategory = ProxyCategory(),
     @Comment("Other settings that don't quite fit in anywhere else.")

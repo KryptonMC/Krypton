@@ -63,7 +63,7 @@ class KryptonCLI : CliktCommand() {
         val mainThread = Thread({ reference.get().start() }, "Server Thread").apply {
             setUncaughtExceptionHandler { _, exception -> logger<KryptonServer>().error("Caught previously unhandled exception", exception) }
         }
-        val server = KryptonServer(mainThread)
+        val server = KryptonServer()
         reference.set(server)
         mainThread.start()
     }

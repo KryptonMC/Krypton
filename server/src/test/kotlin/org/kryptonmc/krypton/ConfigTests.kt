@@ -21,6 +21,7 @@ package org.kryptonmc.krypton
 import com.google.gson.JsonParseException
 import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.world.Difficulty
@@ -70,13 +71,6 @@ class ConfigTests {
         assertFalse(config.query.enabled)
         assertEquals(25566, config.query.port)
 
-        // Watchdog settings
-        assertEquals(60, config.watchdog.timeoutTime)
-        assertTrue(config.watchdog.restartOnCrash)
-        assertEquals("./start.sh", config.watchdog.restartScript)
-        assertEquals(5000, config.watchdog.earlyWarningInterval)
-        assertEquals(10000, config.watchdog.earlyWarningDelay)
-
         // Other settings
         assertTrue(config.other.metrics)
         assertEquals(5, config.other.saveThreshold)
@@ -86,7 +80,6 @@ class ConfigTests {
             world = config.world.copy(forceDefaultGamemode = true, hardcore = true),
             advanced = config.advanced.copy(synchronizeChunkWrites = false, enableJmxMonitoring = false),
             query = config.query.copy(enabled = true),
-            watchdog = config.watchdog.copy(restartOnCrash = false),
             other = config.other.copy(metrics = false)
         )
         assertFalse(modified.server.onlineMode)
@@ -96,7 +89,6 @@ class ConfigTests {
         assertFalse(modified.advanced.enableJmxMonitoring)
         assertTrue(modified.query.enabled)
         assertFalse(modified.other.metrics)
-        assertFalse(modified.watchdog.restartOnCrash)
     }
 
     @Test
@@ -130,16 +122,10 @@ class ConfigTests {
         assertFalse(config.query.enabled)
         assertEquals(25566, config.query.port)
 
-        // Watchdog settings
-        assertEquals(60, config.watchdog.timeoutTime)
-        assertTrue(config.watchdog.restartOnCrash)
-        assertEquals("./start.sh", config.watchdog.restartScript)
-        assertEquals(5000, config.watchdog.earlyWarningInterval)
-        assertEquals(10000, config.watchdog.earlyWarningDelay)
-
         // Other settings
         assertTrue(config.other.metrics)
         assertEquals(5, config.other.saveThreshold)
+        assertEquals("./start.sh", config.other.restartScript)
     }
 
     @Test

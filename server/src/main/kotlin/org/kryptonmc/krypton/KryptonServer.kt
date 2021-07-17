@@ -96,7 +96,7 @@ import kotlin.io.path.isRegularFile
 import kotlin.math.max
 import kotlin.system.measureTimeMillis
 
-class KryptonServer(val mainThread: Thread) : Server {
+class KryptonServer : Server {
 
     internal val config = loadConfig()
 
@@ -159,7 +159,6 @@ class KryptonServer(val mainThread: Thread) : Server {
     private var delayProfilerStart = false
 
     private var gs4QueryHandler: GS4QueryHandler? = null
-    private var watchdog: WatchdogProcess? = null
 
     internal fun start() = try {
         Messages.START.INITIAL.info(LOGGER, config.server.ip, config.server.port)
@@ -209,13 +208,6 @@ class KryptonServer(val mainThread: Thread) : Server {
         lastTickTime = System.currentTimeMillis()
         if (config.advanced.enableJmxMonitoring) KryptonStatistics.register(this)
 
-        // Enable and start watchdog
-        if (config.watchdog.timeoutTime > 0) {
-            LOGGER.debug("Starting watchdog")
-            watchdog = WatchdogProcess(this)
-            watchdog?.start()
-        }
-
         // Enable the GS4 query listener and open the GUI
         if (config.query.enabled) {
             Messages.START.QUERY.info(LOGGER)
@@ -230,7 +222,6 @@ class KryptonServer(val mainThread: Thread) : Server {
         Runtime.getRuntime().addShutdownHook(Thread(::stop, "Shutdown Handler").apply { isDaemon = false })
 
         Messages.START.DONE.info(LOGGER, "%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9))
-        watchdog?.tick(System.currentTimeMillis()) // Initial watchdog tick
 
         // Start ticking the server
         while (isRunning) {
@@ -267,7 +258,6 @@ class KryptonServer(val mainThread: Thread) : Server {
             eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
             profiler.pop()
             lastTickTime = finishTime
-            watchdog?.tick(finishTime)
             profiler.end()
             endProfilerTick(singleTickProfiler)
 
@@ -402,7 +392,6 @@ class KryptonServer(val mainThread: Thread) : Server {
         playerManager.disconnectAll()
         nettyProcess.shutdown()
         gs4QueryHandler?.stop()
-        watchdog?.shutdown()
 
         // save player, world and region data
         Messages.STOP.SAVE.info(LOGGER)
@@ -427,7 +416,7 @@ class KryptonServer(val mainThread: Thread) : Server {
 
     internal fun restart() {
         stop(false) // avoid halting there because we halt here
-        val split = config.watchdog.restartScript.split(" ")
+        val split = config.other.restartScript.split(" ")
         if (split.isNotEmpty()) {
             if (!Path.of(split[0]).isRegularFile()) {
                 Messages.RESTART.NO_SCRIPT.print(split[0])
@@ -435,7 +424,7 @@ class KryptonServer(val mainThread: Thread) : Server {
             }
             Messages.RESTART.ATTEMPT.print(split[0])
             val os = System.getProperty("os.name").lowercase()
-            Runtime.getRuntime().exec((if ("win" in os) "cmd /c start " else "sh ") + config.watchdog.restartScript)
+            Runtime.getRuntime().exec((if ("win" in os) "cmd /c start " else "sh ") + config.other.restartScript)
         }
         Runtime.getRuntime().halt(0)
     }
