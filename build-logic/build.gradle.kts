@@ -8,8 +8,8 @@ repositories {
 
 object PluginVersions {
 
-    const val LICENSER = "0.6.0"
-    const val KOTLIN = "1.5.10"
+    const val LICENSER = "0.6.1"
+    const val KOTLIN = "1.5.21"
     const val DOKKA = "1.4.30"
     const val PITEST = "1.6.0"
     const val DETEKT = "1.17.1"
