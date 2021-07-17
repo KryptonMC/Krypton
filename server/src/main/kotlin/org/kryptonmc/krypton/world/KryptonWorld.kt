@@ -48,8 +48,8 @@ import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityMetadata
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityProperties
+import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
+import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
 import org.kryptonmc.krypton.util.createTempFile
@@ -147,9 +147,9 @@ data class KryptonWorld(
     fun spawnEntity(entity: KryptonEntity) {
         val packets = mutableListOf(
             if (entity is KryptonLivingEntity) PacketOutSpawnLivingEntity(entity) else PacketOutSpawnEntity(entity),
-            PacketOutEntityMetadata(entity.id, entity.data.all)
+            PacketOutMetadata(entity.id, entity.data.all)
         )
-        if (entity is KryptonLivingEntity) packets += PacketOutEntityProperties(entity.id, entity.attributes.syncable)
+        if (entity is KryptonLivingEntity) packets += PacketOutAttributes(entity.id, entity.attributes.syncable)
         players.forEach { player -> packets.forEach { player.session.sendPacket(it) } }
         entities += entity
     }

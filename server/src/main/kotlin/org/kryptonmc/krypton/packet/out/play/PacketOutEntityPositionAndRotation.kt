@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.util.writeShort
 import org.kryptonmc.krypton.util.writeVarInt
 
 class PacketOutEntityPositionAndRotation(
-    private val entityId: Int,
+    private val id: Int,
     private val deltaX: Short,
     private val deltaY: Short,
     private val deltaZ: Short,
@@ -36,7 +36,7 @@ class PacketOutEntityPositionAndRotation(
 ) : PlayPacket(0x2A) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
+        buf.writeVarInt(id)
         buf.writeShort(deltaX)
         buf.writeShort(deltaY)
         buf.writeShort(deltaZ)

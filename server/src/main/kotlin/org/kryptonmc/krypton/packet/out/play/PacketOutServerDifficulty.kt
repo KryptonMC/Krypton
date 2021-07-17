@@ -22,19 +22,10 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
-/**
- * Sets the current difficulty of the server. Note that the difficulty is always locked in multiplayer.
- *
- * @param difficulty the difficulty of the server
- * @param isLocked if the difficulty is locked. Should always be true in multiplayer
- */
-class PacketOutServerDifficulty(
-    private val difficulty: Difficulty,
-    private val isLocked: Boolean = true
-) : PlayPacket(0x0E) {
+class PacketOutServerDifficulty(private val difficulty: Difficulty) : PlayPacket(0x0E) {
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(difficulty.ordinal)
-        buf.writeBoolean(isLocked)
+        buf.writeBoolean(true) // Always locked in multiplayer
     }
 }

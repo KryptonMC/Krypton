@@ -16,17 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.`in`.play
+package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.packet.`in`.play.DiggingStatus
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.toProtocol
+import org.kryptonmc.krypton.util.writeVarInt
+import org.spongepowered.math.vector.Vector3i
 
-/**
- * Sent when the player changes the item that they are currently holding in their hand, such
- * as when the player scrolls across their hotbar, presses one of the number keys, or switches
- * out the item they have in their hand.
- */
-class PacketInHeldItemChange(buf: ByteBuf) : PlayPacket(0x25) {
+class PacketOutDiggingResponse(
+    private val position: Vector3i,
+    private val stateId: Int,
+    private val status: DiggingStatus,
+    private val successful: Boolean
+) : PlayPacket(0x08) {
 
-    val slot = buf.readShort()
+    override fun write(buf: ByteBuf) {
+        buf.writeLong(position.toProtocol())
+        buf.writeVarInt(stateId)
+        buf.writeVarInt(status.ordinal)
+        buf.writeBoolean(successful)
+    }
 }

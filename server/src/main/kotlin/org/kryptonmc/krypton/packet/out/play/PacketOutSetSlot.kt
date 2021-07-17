@@ -25,6 +25,7 @@ import org.kryptonmc.krypton.util.writeItem
 
 class PacketOutSetSlot(
     private val id: Int,
+    private val stateId: Int,
     private val slot: Int,
     private val item: KryptonItemStack
 ) : PlayPacket(0x16) {

@@ -23,9 +23,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
 
-/**
- * Sent when the client attempts to tab complete a command
- */
 class PacketInTabComplete(buf: ByteBuf) : PlayPacket(0x06) {
 
     val id = buf.readVarInt()

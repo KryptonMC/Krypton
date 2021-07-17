@@ -35,12 +35,12 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityDestroy
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityHeadLook
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityMetadata
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityProperties
+import org.kryptonmc.krypton.packet.out.play.PacketOutDestroyEntities
+import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
+import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
+import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
-import org.kryptonmc.krypton.packet.out.play.PacketOutHeldItemChange
+import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
 import org.kryptonmc.krypton.packet.out.play.PacketOutJoinGame
 import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
@@ -113,13 +113,12 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             maxPlayers,
             viewDistance
         ))
-        session.sendPacket(PacketOutPluginMessage(KryptonServer.REGISTER_CHANNEL_KEY, server.channels.joinToString("\u0000").encodeToByteArray()))
         session.sendPacket(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
-        session.sendPacket(PacketOutServerDifficulty(server.difficulty, true))
+        session.sendPacket(PacketOutServerDifficulty(server.difficulty))
 
         // Player data stuff
         session.sendPacket(PacketOutAbilities(player.abilities))
-        session.sendPacket(PacketOutHeldItemChange(player.inventory.heldSlot))
+        session.sendPacket(PacketOutChangeHeldItem(player.inventory.heldSlot))
         session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
         session.sendPacket(PacketOutDeclareRecipes)
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
@@ -148,12 +147,12 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         // TODO: Move this all to an entity manager
         sendToAll(PacketOutSpawnPlayer(player))
         players.forEach { session.sendPacket(PacketOutSpawnPlayer(it)) }
-        sendToAll(PacketOutEntityMetadata(player.id, player.data.all))
-        players.forEach { session.sendPacket(PacketOutEntityMetadata(it.id, it.data.all)) }
-        sendToAll(PacketOutEntityProperties(player.id, player.attributes.syncable))
-        players.forEach { session.sendPacket(PacketOutEntityProperties(it.id, it.attributes.syncable)) }
-        sendToAll(PacketOutEntityHeadLook(player.id, player.location.yaw.toAngle()))
-        players.forEach { session.sendPacket(PacketOutEntityHeadLook(it.id, it.location.yaw.toAngle())) }
+        sendToAll(PacketOutMetadata(player.id, player.data.all))
+        players.forEach { session.sendPacket(PacketOutMetadata(it.id, it.data.all)) }
+        sendToAll(PacketOutAttributes(player.id, player.attributes.syncable))
+        players.forEach { session.sendPacket(PacketOutAttributes(it.id, it.attributes.syncable)) }
+        sendToAll(PacketOutHeadLook(player.id, player.location.yaw.toAngle()))
+        players.forEach { session.sendPacket(PacketOutHeadLook(it.id, it.location.yaw.toAngle())) }
 
         // Add the player to the list and cache maps
         players += player
@@ -177,7 +176,8 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         }
 
         // Send inventory data
-        session.sendPacket(PacketOutWindowItems(player.inventory))
+        val items = player.inventory.networkItems
+        session.sendPacket(PacketOutWindowItems(player.inventory.id, player.inventory.incrementStateId(), items, player.inventory.mainHand))
 
         ServerStorage.PLAYER_COUNT.getAndIncrement()
 
@@ -198,7 +198,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             playersByUUID.remove(player.uuid)
 
             // Send destroy and info
-            sendToAll(PacketOutEntityDestroy(player.id))
+            sendToAll(PacketOutDestroyEntities(player.id))
             sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER, player))
 
             // Send quit message and decrement overall count

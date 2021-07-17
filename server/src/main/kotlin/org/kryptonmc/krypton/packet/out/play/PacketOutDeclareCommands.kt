@@ -33,14 +33,6 @@ import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
-/**
- * Declares commands that exist on the server to the client.
- *
- * This is done by transforming the [root]'s children into a tree, then using a breadth first search
- * to put all of the nodes into an ordered list, which is then sent to the client.
- *
- * @param root the root command node
- */
 class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : PlayPacket(0x12) {
 
     override fun write(buf: ByteBuf) {

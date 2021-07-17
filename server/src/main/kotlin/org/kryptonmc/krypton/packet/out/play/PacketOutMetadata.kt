@@ -19,16 +19,27 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.entity.metadata.MetadataHolder
+import org.kryptonmc.krypton.entity.metadata.write
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeVarInt
 
 /**
- * Tells the client to change the item it's currently holding to the specified [slot]
+ * The way we construct and use metadata in Krypton is a bit strange, as unlike vanilla, we do not store a
+ * reference to this data from within the entities, it is constructed manually when a player joins.
  *
- * @param slot the slot to change to
+ * This packet informs the client of all the metadata it should assign to the specified [entityId]
+ *
+ * @param entityId the ID of the entity to set metadata for
+ * @param packedEntries the list of packed metadata items to send
  */
-class PacketOutHeldItemChange(private val slot: Int) : PlayPacket(0x48) {
+class PacketOutMetadata(
+    private val entityId: Int,
+    private val packedEntries: List<MetadataHolder.Entry<*>>
+) : PlayPacket(0x4D) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeByte(slot)
+        buf.writeVarInt(entityId)
+        packedEntries.write(buf)
     }
 }

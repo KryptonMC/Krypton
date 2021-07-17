@@ -18,8 +18,10 @@
  */
 package org.kryptonmc.krypton.util.nbt
 
+import org.jglrxavpok.hephaistos.nbt.NBT
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTIntArray
+import org.jglrxavpok.hephaistos.nbt.NBTString
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import java.util.UUID
 
@@ -41,3 +43,6 @@ fun NBTCompound.containsUUID(key: String): Boolean {
     val tag = get(key)
     return tag != null && tag.ID == NBTTypes.TAG_Int_Array && (tag as NBTIntArray).value.size == 4
 }
+
+// Fixes a bug where quotes are escaped for the DFU's keys, which causes strange issues
+fun NBT.asString(): String = if (this is NBTString) value else toString()

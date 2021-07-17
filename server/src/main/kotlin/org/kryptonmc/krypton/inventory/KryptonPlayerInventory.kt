@@ -30,7 +30,7 @@ import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.packet.out.play.PacketOutHeldItemChange
+import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.util.nbt.Serializable
 
 class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory, Serializable<NBTList<NBTCompound>> {
@@ -71,7 +71,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
             45 -> offHand = item
         }
         if (index == heldSlot) return
-        owner.session.sendPacket(PacketOutHeldItemChange(index))
+        owner.session.sendPacket(PacketOutChangeHeldItem(index))
     }
 
     override fun load(tag: NBTList<NBTCompound>) {

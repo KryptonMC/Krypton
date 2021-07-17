@@ -14,6 +14,7 @@ repositories {
     maven("https://repo.velocitypowered.com/snapshots/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://jitpack.io")
+    maven("https://repo.minestom.net/repository/maven-public/")
 }
 
 dependencies {
@@ -88,7 +89,10 @@ tasks {
         exclude("it/unimi/dsi/fastutil/shorts/**")
     }
     withType<ProcessResources> {
-        filter<ReplaceTokens>("tokens" to mapOf("version" to project.version.toString()))
+        filter<ReplaceTokens>("tokens" to mapOf(
+            "version" to project.version.toString(),
+            "minecraft" to Versions.MINECRAFT
+        ))
     }
 }
 

@@ -76,13 +76,6 @@ class PacketOutPlayerInfo(
         }
     }
 
-    data class PlayerInfo(
-        val latency: Int = 0,
-        val gamemode: Gamemode = Gamemode.SURVIVAL,
-        val profile: GameProfile,
-        val displayName: Component = Component.text("")
-    )
-
     enum class PlayerAction {
 
         ADD_PLAYER,

@@ -16,26 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.`in`.play.DiggingStatus
+import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.toProtocol
-import org.kryptonmc.krypton.util.writeVarInt
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.krypton.util.readBlockHitResult
+import org.kryptonmc.krypton.util.readEnum
 
-class PacketOutAcknowledgePlayerDigging(
-    private val position: Vector3i,
-    private val stateId: Int,
-    private val status: DiggingStatus,
-    private val successful: Boolean
-) : PlayPacket(0x08) {
+class PacketInPlaceBlock(buf: ByteBuf) : PlayPacket(0x2E) {
 
-    override fun write(buf: ByteBuf) {
-        buf.writeLong(position.toProtocol())
-        buf.writeVarInt(stateId)
-        buf.writeVarInt(status.ordinal)
-        buf.writeBoolean(successful)
-    }
+    val hand = buf.readEnum<Hand>()
+    val hitResult = buf.readBlockHitResult()
 }

@@ -22,12 +22,6 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.player.Abilities
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
-/**
- * Sets the current abilities for the client. Note that this is not incremental (all values are updated to
- * the values present in the new [abilities])
- *
- * @param abilities the abilities to set
- */
 class PacketOutAbilities(private val abilities: Abilities) : PlayPacket(0x32) {
 
     override fun write(buf: ByteBuf) {

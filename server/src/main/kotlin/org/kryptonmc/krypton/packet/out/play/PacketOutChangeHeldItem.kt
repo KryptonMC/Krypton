@@ -20,11 +20,15 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutEntityDestroy(private val entityId: Int) : PlayPacket(0x39) {
+/**
+ * Tells the client to change the item it's currently holding to the specified [slot]
+ *
+ * @param slot the slot to change to
+ */
+class PacketOutChangeHeldItem(private val slot: Int) : PlayPacket(0x48) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
+        buf.writeByte(slot)
     }
 }

@@ -19,27 +19,17 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.entity.metadata.MetadataHolder
-import org.kryptonmc.krypton.entity.metadata.write
+import it.unimi.dsi.fastutil.ints.IntArrayList
+import it.unimi.dsi.fastutil.ints.IntList
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeIntList
 import org.kryptonmc.krypton.util.writeVarInt
 
-/**
- * The way we construct and use metadata in Krypton is a bit strange, as unlike vanilla, we do not store a
- * reference to this data from within the entities, it is constructed manually when a player joins.
- *
- * This packet informs the client of all the metadata it should assign to the specified [entityId]
- *
- * @param entityId the ID of the entity to set metadata for
- * @param packedEntries the list of packed metadata items to send
- */
-class PacketOutEntityMetadata(
-    private val entityId: Int,
-    private val packedEntries: List<MetadataHolder.Entry<*>>
-) : PlayPacket(0x4D) {
+class PacketOutDestroyEntities(private val ids: IntList) : PlayPacket(0x39) {
+
+    constructor(vararg ids: Int) : this(IntArrayList(ids))
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
-        packedEntries.write(buf)
+        buf.writeIntList(ids)
     }
 }

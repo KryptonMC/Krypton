@@ -35,7 +35,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 object PacketOutTags : PlayPacket(0x66) {
 
     private val blockRegistry: (Key) -> Int? = {
-        FileRegistries.BLOCKS.idOf(it)
+        Registries.BLOCK[it]?.id
     }
     private val fluidRegistry: (Key) -> Int? = {
         FileRegistries.FLUIDS.idOf(it)

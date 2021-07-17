@@ -25,9 +25,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 
-/**
- * Tells the client to display the given scoreboard to the user
- */
 class PacketOutDisplayScoreboard(
     private val scoreboard: KryptonScoreboard,
     private val team: Team? = null // used for team specific positioning

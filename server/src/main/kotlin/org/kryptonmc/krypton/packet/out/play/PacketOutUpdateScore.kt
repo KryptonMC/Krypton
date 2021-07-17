@@ -24,9 +24,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
-/**
- * Tells the client to perform an action to the score of some entity
- */
 class PacketOutUpdateScore(
     private val score: Score,
     private val action: ScoreAction

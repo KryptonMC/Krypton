@@ -19,21 +19,23 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.inventory.KryptonInventory
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeItem
+import org.kryptonmc.krypton.util.writeVarInt
 
-/**
- * Set the items for an inventory with an ID. Currently only supports player inventories.
- *
- * @param inventory the inventory to get the items to send from
- */
-class PacketOutWindowItems(private val inventory: KryptonInventory) : PlayPacket(0x14) {
+class PacketOutWindowItems(
+    private val id: Int,
+    private val stateId: Int,
+    private val items: List<KryptonItemStack>,
+    private val heldItem: KryptonItemStack
+) : PlayPacket(0x14) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeByte(inventory.id)
-        val networkItems = inventory.networkItems
-        buf.writeShort(networkItems.size)
-        networkItems.forEach { buf.writeItem(it) }
+        buf.writeByte(id)
+        buf.writeVarInt(stateId)
+        buf.writeCollection(items) { buf.writeItem(it) }
+        buf.writeItem(heldItem)
     }
 }

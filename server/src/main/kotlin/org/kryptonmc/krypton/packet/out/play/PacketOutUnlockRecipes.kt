@@ -24,21 +24,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
 
-/**
- * Unlocks recipes in the recipe book
- *
- * @param action the action of this packet
- * @param isCraftingBookOpen if the crafting book is open
- * @param isCraftingBookFiltered if the crafting book is filtered
- * @param isSmeltingBookOpen if the smelting book is open
- * @param isSmeltingBookFiltered if the smelting book is filtered
- * @param isBlastFurnaceBookOpen if the blast furnace book is open
- * @param isBlastFurnaceBookFiltered if the blast furnace book is filtered
- * @param isSmokerBookOpen if the smoker book is open
- * @param isSmokerBookFiltered if the smoker book is filtered
- * @param recipes the recipes unlocked in the book
- * @param newRecipes the new recipes that should be highlighted in the book
- */
 class PacketOutUnlockRecipes(
     private val action: UnlockRecipesAction,
     private val isCraftingBookOpen: Boolean = false,

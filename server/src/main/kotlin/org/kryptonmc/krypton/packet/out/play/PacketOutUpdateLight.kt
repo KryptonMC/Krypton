@@ -25,11 +25,6 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import java.util.BitSet
 
-/**
- * Update the light levels for the specified [chunk]
- *
- * @param chunk the chunk to update the light levels for
- */
 // TODO: Fix light when we add the new engine
 class PacketOutUpdateLight(private val chunk: KryptonChunk) : PlayPacket(0x25) {
 

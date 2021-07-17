@@ -29,7 +29,7 @@ object ServerStorage {
 
 object ServerInfo {
 
-    const val PROTOCOL = 755
-    const val WORLD_VERSION = 2724
+    const val PROTOCOL = 756
+    const val WORLD_VERSION = 2730
     val GAME_VERSION = GameVersion(WORLD_VERSION, KryptonServer.KryptonServerInfo.minecraftVersion, false)
 }

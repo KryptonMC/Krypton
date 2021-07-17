@@ -22,10 +22,6 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readString
 
-/**
- * Sent when the client either sends a chat message, or when they run a command (indicated by the
- * [message] beginning with a `/`)
- */
 class PacketInChat(buf: ByteBuf) : PlayPacket(0x03) {
 
     val message = buf.readString(256)

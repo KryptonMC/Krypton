@@ -70,7 +70,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkData
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityMetadata
+import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityTeleport
 import org.kryptonmc.krypton.packet.out.play.PacketOutNamedSoundEffect
@@ -308,9 +308,9 @@ class KryptonPlayer(
     override fun openBook(book: Book) {
         val item = book.toItemStack(locale ?: Locale.ENGLISH)
         val slot = inventory.heldSlot
-        session.sendPacket(PacketOutSetSlot(inventory.id, slot, item))
+        session.sendPacket(PacketOutSetSlot(inventory.id, inventory.incrementStateId(), slot, item))
         session.sendPacket(PacketOutOpenBook(hand))
-        session.sendPacket(PacketOutSetSlot(inventory.id, slot, inventory.mainHand))
+        session.sendPacket(PacketOutSetSlot(inventory.id, inventory.incrementStateId(), slot, inventory.mainHand))
     }
 
     override fun identity() = Identity.identity(uuid)
@@ -392,7 +392,7 @@ class KryptonPlayer(
     private fun onAbilitiesUpdate() {
         session.sendPacket(PacketOutAbilities(abilities))
         updateInvisibility()
-        server.playerManager.sendToAll(PacketOutEntityMetadata(id, data.dirty), world)
+        server.playerManager.sendToAll(PacketOutMetadata(id, data.dirty), world)
     }
 
     private fun updateInvisibility() {

@@ -104,7 +104,7 @@ object NBTOps : DynamicOps<NBT> {
         }
     }
 
-    override fun createMap(map: Stream<Pair<NBT, NBT>>) = NBTCompound().apply { map.forEach { set(it.first.toString(), it.second) } }
+    override fun createMap(map: Stream<Pair<NBT, NBT>>) = NBTCompound().apply { map.forEach { set(it.first.asString(), it.second) } }
 
     override fun getNumberValue(input: NBT): DataResult<Number> = if (input is NBTNumber<*>) DataResult.success(input.value) else DataResult.error("Not a number!")
 

@@ -28,14 +28,6 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import java.util.BitSet
 
-/**
- * This packet is very strange and really weird to compute, so don't expect to understand it straight away.
- *
- * I recommend reading [wiki.vg](https://wiki.vg/Chunk_Format) for more information on this, as they can do
- * a much better job at explaining it than I can.
- *
- * @param chunk the chunk to send the data of
- */
 class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x22) {
 
     private val buffer = ByteArray(chunk.calculateSize())

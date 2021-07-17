@@ -126,7 +126,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
             data["DayTime"].asLong(time),
             data["Difficulty"].asNumber().map { Difficulty.fromId(it.toInt()) }.result().orElse(Difficulty.NORMAL),
             KryptonGameRuleHolder(data["GameRules"]),
-            readWorldGenSettings(data["WorldGenSettings"].orElseEmptyMap(), version),
+            readWorldGenSettings(data, version),
             gamemode,
             data["hardcore"].asBoolean(false),
             LocalDateTime.ofInstant(Instant.ofEpochMilli(data["LastPlayed"].asLong(System.currentTimeMillis())), ZoneOffset.UTC),
@@ -164,8 +164,8 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
     }
 
     private fun <T> readWorldGenSettings(settings: Dynamic<T>, version: Int): WorldGenerationSettings {
-        var temp = settings
-        OLD_WORLD_GEN_SETTINGS_KEYS.forEach { key -> temp[key].result().ifPresent { temp = temp.set(key, it) } }
+        var temp = settings["WorldGenSettings"].orElseEmptyMap()
+        OLD_WORLD_GEN_SETTINGS_KEYS.forEach { key -> settings[key].result().ifPresent { temp = temp.set(key, it) } }
 
         val data = DATA_FIXER.update(References.WORLD_GEN_SETTINGS, temp, version, ServerInfo.WORLD_VERSION)
         val dimensions = data["dimensions"].asMap({ it.asString("").toKey() }, {

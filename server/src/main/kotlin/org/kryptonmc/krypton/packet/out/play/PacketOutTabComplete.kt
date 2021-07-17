@@ -24,6 +24,7 @@ import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeChat
+import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -44,8 +45,7 @@ class PacketOutTabComplete(
         buf.writeVarInt(matches.range.start)
         buf.writeVarInt(matches.range.length)
 
-        buf.writeVarInt(matches.list.size)
-        matches.list.forEach {
+        buf.writeCollection(matches.list) {
             buf.writeString(it.text)
             buf.writeBoolean(it.tooltip != null)
             if (it.tooltip != null) buf.writeChat(it.tooltip.toAdventure())

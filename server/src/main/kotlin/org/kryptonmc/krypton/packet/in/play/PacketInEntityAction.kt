@@ -23,10 +23,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
 
-/**
- * Contrary to its name, this is only for players, as it is only sent by clients.
- * This is sent when the player performs one of the actions listed in the [EntityAction] enum.
- */
 class PacketInEntityAction(buf: ByteBuf) : PlayPacket(0x1B) {
 
     val id = buf.readVarInt()
@@ -34,9 +30,6 @@ class PacketInEntityAction(buf: ByteBuf) : PlayPacket(0x1B) {
     val data = buf.readVarInt()
 }
 
-/**
- * Represents possible entity actions for the client
- */
 enum class EntityAction {
 
     START_SNEAKING,

@@ -33,7 +33,7 @@ object Versions {
     const val EVENT = "4.0.0-SNAPSHOT"
     const val ASM = "9.2"
     const val HEPHAISTOS = "1.2.2"
-    const val MINECRAFT = "1.17"
+    const val MINECRAFT = "1.17.1"
 
     // Test
     const val JUNIT_PLATFORM_RUNNER = "1.7.2"

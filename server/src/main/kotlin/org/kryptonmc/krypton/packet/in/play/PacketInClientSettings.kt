@@ -25,9 +25,6 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readString
 
-/**
- * Sent by the client to inform the server of its local settings.
- */
 class PacketInClientSettings(buf: ByteBuf) : PlayPacket(0x05) {
 
     val locale = buf.readString(16)

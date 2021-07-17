@@ -25,9 +25,6 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
 
-/**
- * Update a block in a chunk
- */
 class PacketOutBlockChange(
     private val block: Block,
     private val x: Int,

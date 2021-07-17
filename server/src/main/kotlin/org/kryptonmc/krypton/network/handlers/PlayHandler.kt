@@ -46,9 +46,9 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInChat
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientSettings
 import org.kryptonmc.krypton.packet.`in`.play.PacketInCreativeInventoryAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityAction
-import org.kryptonmc.krypton.packet.`in`.play.PacketInHeldItemChange
+import org.kryptonmc.krypton.packet.`in`.play.PacketInChangeHeldItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
-import org.kryptonmc.krypton.packet.`in`.play.PacketInBlockPlace
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlaceBlock
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPosition
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPositionAndRotation
@@ -56,11 +56,11 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPla
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.out.play.EntityAnimation
-import org.kryptonmc.krypton.packet.out.play.PacketOutAcknowledgePlayerDigging
+import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityAnimation
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityHeadLook
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityMetadata
+import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
+import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
+import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityRotation
@@ -113,10 +113,10 @@ class PlayHandler(
         is PacketInClientSettings -> handleClientSettings(packet)
         is PacketInCreativeInventoryAction -> handleCreativeInventoryAction(packet)
         is PacketInEntityAction -> handleEntityAction(packet)
-        is PacketInHeldItemChange -> handleHeldItemChange(packet)
+        is PacketInChangeHeldItem -> handleHeldItemChange(packet)
         is PacketInKeepAlive -> handleKeepAlive(packet)
         is PacketInAbilities -> handleAbilities(packet)
-        is PacketInBlockPlace -> handleBlockPlacement(packet)
+        is PacketInPlaceBlock -> handleBlockPlacement(packet)
         is PacketInPlayerDigging -> handlePlayerDigging(packet)
         is PacketInPlayerPosition -> handlePositionUpdate(packet)
         is PacketInPlayerRotation -> handleRotationUpdate(packet)
@@ -132,7 +132,7 @@ class PlayHandler(
             Hand.OFF -> EntityAnimation.SWING_OFFHAND
         }
 
-        playerManager.sendToAll(PacketOutEntityAnimation(player.id, animation), player)
+        playerManager.sendToAll(PacketOutAnimation(player.id, animation), player)
     }
 
     private fun handleChat(packet: PacketInChat) {
@@ -171,7 +171,7 @@ class PlayHandler(
 
         player.mainHand = packet.mainHand
         player.skinSettings = packet.skinSettings.toByte()
-        playerManager.sendToAll(PacketOutEntityMetadata(
+        playerManager.sendToAll(PacketOutMetadata(
             player.id,
             player.data.dirty
         ))
@@ -192,10 +192,10 @@ class PlayHandler(
             EntityAction.START_JUMP_WITH_HORSE, EntityAction.STOP_JUMP_WITH_HORSE, EntityAction.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
             EntityAction.START_FLYING_WITH_ELYTRA -> Unit // TODO: Elytra
         }
-        playerManager.sendToAll(PacketOutEntityMetadata(player.id, player.data.dirty))
+        playerManager.sendToAll(PacketOutMetadata(player.id, player.data.dirty))
     }
 
-    private fun handleHeldItemChange(packet: PacketInHeldItemChange) {
+    private fun handleHeldItemChange(packet: PacketInChangeHeldItem) {
         if (packet.slot !in 0..9) {
             Messages.NETWORK.INVALID_HELD_SLOT.warn(LOGGER, player.name)
             return
@@ -216,7 +216,7 @@ class PlayHandler(
         player.abilities.isFlying = packet.isFlying && player.abilities.canFly
     }
 
-    private fun handleBlockPlacement(packet: PacketInBlockPlace) {
+    private fun handleBlockPlacement(packet: PacketInPlaceBlock) {
         if (!player.abilities.canBuild) return // if they can't place blocks, they are irrelevant :)
 
         val world = player.world
@@ -243,7 +243,7 @@ class PlayHandler(
         val z = packet.location.z()
         chunk.setBlock(x, y, z, Blocks.AIR)
 
-        session.sendPacket(PacketOutAcknowledgePlayerDigging(packet.location, 0, DiggingStatus.FINISHED, true))
+        session.sendPacket(PacketOutDiggingResponse(packet.location, 0, DiggingStatus.FINISHED, true))
         playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
     }
 
@@ -278,7 +278,7 @@ class PlayHandler(
             packet.pitch.toAngle(),
             packet.onGround
         ), player)
-        playerManager.sendToAll(PacketOutEntityHeadLook(player.id, packet.yaw.toAngle()), player)
+        playerManager.sendToAll(PacketOutHeadLook(player.id, packet.yaw.toAngle()), player)
     }
 
     private fun handlePositionAndRotationUpdate(packet: PacketInPlayerPositionAndRotation) {
@@ -298,7 +298,7 @@ class PlayHandler(
             newLocation.pitch.toAngle(),
             packet.onGround
         ), player)
-        playerManager.sendToAll(PacketOutEntityHeadLook(player.id, newLocation.yaw.toAngle()), player)
+        playerManager.sendToAll(PacketOutHeadLook(player.id, newLocation.yaw.toAngle()), player)
         player.updateChunks()
     }
 

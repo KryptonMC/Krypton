@@ -48,7 +48,6 @@ import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.MetadataResponse
 import org.kryptonmc.krypton.locale.TranslationRepository
 import org.kryptonmc.krypton.network.PacketLoader
-import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
@@ -363,13 +362,11 @@ class KryptonServer(val mainThread: Thread) : Server {
     override fun registerChannel(channel: Key) {
         require(channel !in RESERVED_CHANNELS) { "Cannot register reserved channel with name \"minecraft:register\" or \"minecraft:unregister\"!" }
         channels += channel
-        playerManager.sendToAll(PacketOutPluginMessage(REGISTER_CHANNEL_KEY, channel.asString().encodeToByteArray()))
     }
 
     override fun unregisterChannel(channel: Key) {
         channels -= channel
         require(channel !in RESERVED_CHANNELS) { "Cannot unregister reserved channels with name \"minecraft:register\" or \"minecraft:unregister\"!" }
-        playerManager.sendToAll(PacketOutPluginMessage(UNREGISTER_CHANNEL_KEY, channel.asString().encodeToByteArray()))
     }
 
     override fun broadcast(message: Component, permission: String?) {

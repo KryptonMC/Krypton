@@ -24,6 +24,7 @@ import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
+import java.util.concurrent.atomic.AtomicInteger
 
 abstract class KryptonInventory(
     val id: Int,
@@ -33,9 +34,17 @@ abstract class KryptonInventory(
     totalItems: Int = size
 ) : Inventory {
 
+    var stateId = 0
+        private set
+
     abstract val networkItems: List<KryptonItemStack>
 
     override val items = Array<KryptonItemStack>(totalItems) { EmptyItemStack }
+
+    fun incrementStateId(): Int {
+        stateId = stateId + 1 and 32767
+        return stateId
+    }
 
     override fun get(index: Int) = items[index]
 

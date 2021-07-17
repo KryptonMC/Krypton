@@ -55,7 +55,7 @@ class KryptonBlock(
     override val isSolidRender = data.solidRender
     override val lightBlock = data.lightBlock
     override val opacity = data.opacity
-    override val requiresCorrectTool = data.requiresCorrectToolForDrops
+    override val requiresCorrectTool = data.toolRequired
     override val translation = Component.translatable(data.translationKey)
 
     init {

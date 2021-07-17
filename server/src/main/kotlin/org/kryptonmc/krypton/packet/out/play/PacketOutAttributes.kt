@@ -29,22 +29,15 @@ import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 
-/**
- * Set entity attributes. Note that this packet is not incremental, and sending it with data will reset
- * all of the existing attributes and reapply them.
- *
- * @param entityId the ID of the entity to set the attributes of
- * @param attributes the attributes to set
- */
-class PacketOutEntityProperties(
-    private val entityId: Int,
+class PacketOutAttributes(
+    private val id: Int,
     attributes: Collection<AttributeInstance>
 ) : PlayPacket(0x63) {
 
     private val attributes = attributes.map { AttributeSnapshot(it.attribute, it.baseValue, it.modifiers) }
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
+        buf.writeVarInt(id)
         buf.writeCollection(attributes) { attribute ->
             buf.writeKey(InternalRegistries.ATTRIBUTE[attribute.attribute]!!)
             buf.writeDouble(attribute.base)

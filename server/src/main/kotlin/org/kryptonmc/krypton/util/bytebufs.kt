@@ -28,6 +28,7 @@ import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.ByteBufOutputStream
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
+import it.unimi.dsi.fastutil.ints.IntList
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
@@ -53,22 +54,13 @@ import org.kryptonmc.krypton.locale.TranslationManager
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
-import java.nio.charset.StandardCharsets.UTF_8
 import java.time.Duration
 import java.util.BitSet
+import java.util.Optional
 import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.ceil
 import kotlin.math.min
-
-// Allows us to write a byte without having to convert it to an integer every time
-fun ByteBuf.writeByte(byte: Byte) {
-    writeByte(byte.toInt())
-}
-
-fun ByteBuf.writeUByte(byte: UByte) {
-    writeByte(byte.toInt())
-}
 
 fun ByteBuf.writeShort(short: Short) {
     writeShort(short.toInt())
@@ -90,18 +82,6 @@ fun ByteBuf.writeVarInt(value: Int) {
     when {
         value.toLong() and (0xFFFFFFFF shl 7) == 0L -> writeByte(value)
         value.toLong() and (0xFFFFFFFF shl 14) == 0L -> writeShort(value and 0x7F or 0x80 shl 8 or (value ushr 7))
-        else -> writeVarIntFull(value)
-    }
-}
-
-// This came from Velocity. See https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
-fun ByteBuf.write21BitVarInt(value: Int) {
-    writeMedium(value and 0x7F or 0x80 shl 16 or (value ushr 7 and 0x7F or 0x80 shl 8) or (value ushr 14))
-}
-
-// This came from Velocity. See https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
-private fun ByteBuf.writeVarIntFull(value: Int) {
-    when {
         value.toLong() and (0xFFFFFFFF shl 21) == 0L -> writeMedium(value and 0x7F or 0x80 shl 16 or (value ushr 7 and 0x7F or 0x80 shl 8) or (value ushr 14))
         value.toLong() and (0xFFFFFFFF shl 28) == 0L -> writeInt(value and 0x7F or 0x80 shl 24 or (value ushr 7 and 0x7F or 0x80 shl 16) or (value ushr 14 and 0x7F or 0x80 shl 8) or (value ushr 21))
         else -> {
@@ -111,45 +91,52 @@ private fun ByteBuf.writeVarIntFull(value: Int) {
     }
 }
 
-fun ByteBuf.writeVarLong(varLong: Long) {
-    var i = varLong
-    while (i and -128 != 0L) {
-        writeByte((i and 127 or 128).toInt())
-        i = i ushr 7
-    }
-
-    writeByte(i.toInt())
-}
-
-fun ByteBuf.readString(maxLength: Short = Short.MAX_VALUE): String {
-    val length = readVarInt()
-
-    return when {
-        length > maxLength * 4 ->
-            throw IOException("The received encoded string buffer length is longer than maximum allowed (" + length + " > " + maxLength * 4 + ")")
-        length < 0 ->
-            throw IOException("The received encoded string buffer length is less than zero! Weird string!")
-        else -> {
-            val array = ByteArray(length)
-            readBytes(array)
-            val s = String(array, UTF_8)
-            if (s.length > maxLength) {
-                throw IOException("The received string length is longer than maximum allowed ($length > $maxLength)")
-            } else {
-                s
-            }
+fun ByteBuf.writeVarLong(value: Long) {
+    when {
+        value and (0xFFFFFFFF shl 7) == 0L -> writeByte(value.toInt())
+        value and (0xFFFFFFFF shl 14) == 0L -> writeShort((value and 0x7F or 0x80 shl 8 or (value ushr 7)).toInt())
+        value and (0xFFFFFFFF shl 21) == 0L -> writeMedium((value and 0x7F or 0x80 shl 16 or (value ushr 7 and 0x7F or 0x80 shl 8) or (value ushr 14)).toInt())
+        value and (0xFFFFFFFF shl 28) == 0L -> writeInt((value and 0x7F or 0x80 shl 24 or (value ushr 7 and 0x7F or 0x80 shl 16) or (value ushr 14 and 0x7F or 0x80 shl 8) or (value ushr 21)).toInt())
+        value and (0xFFFFFFFF shl 35) == 0L -> {
+            writeInt((value and 0x7F or 0x80 shl 24 or (value ushr 7 and 0x7F or 0x80 shl 16) or (value ushr 14 and 0x7F or 0x80 shl 8) or (value ushr 21 and 0x7F or 0x80)).toInt())
+            writeByte((value ushr 28).toInt())
+        }
+        value and (0xFFFFFFFF shl 42) == 0L -> {
+            writeInt((value and 0x7F or 0x80 shl 24 or (value ushr 7 and 0x7F or 0x80 shl 16) or (value ushr 14 and 0x7F or 0x80 shl 8) or (value ushr 21 and 0x7F or 0x80)).toInt())
+            writeShort((value ushr 28 and 0x7F or 0x80 shl 8 or (value ushr 35)).toInt())
+        }
+        value and (0xFFFFFFFF shl 49) == 0L -> {
+            writeInt((value and 0x7F or 0x80 shl 24 or (value ushr 7 and 0x7F or 0x80 shl 16) or (value ushr 14 and 0x7F or 0x80 shl 8) or (value ushr 21 and 0x7F or 0x80)).toInt())
+            writeMedium((value ushr 28 and 0x7F or 0x80 shl 16 or (value ushr 35 and 0x7F or 0x80 shl 8) or (value ushr 42)).toInt())
+        }
+        value and (0xFFFFFFFF shl 56) == 0L -> writeLong((value and 0x7F or 0x80 shl 56 or (value ushr 7 and 0x7F or 0x80 shl 48) or (value ushr 14 and 0x7F or 0x80 shl 40) or (value ushr 21 and 0x7F or 0x80 shl 32) or (value ushr 28 and 0x7F or 0x80 shl 24) or (value ushr 35 and 0x7F or 0x80 shl 16) or (value ushr 42 and 0x7F or 0x80 shl 8) or (value ushr 49)))
+        value and (0xFFFFFFFF shl 63) == 0L -> {
+            writeLong((value and 0x7F or 0x80 shl 56 or (value ushr 7 and 0x7F or 0x80 shl 48) or (value ushr 14 and 0x7F or 0x80 shl 40) or (value ushr 21 and 0x7F or 0x80 shl 32) or (value ushr 28 and 0x7F or 0x80 shl 24) or (value ushr 35 and 0x7F or 0x80 shl 16) or (value ushr 42 and 0x7F or 0x80 shl 8) or (value ushr 49 and 0x7F or 0x80)))
+            writeByte((value ushr 56).toInt())
+        }
+        value and (0xFFFFFFFF shl 70) == 0L -> {
+            writeLong((value and 0x7F or 0x80 shl 56 or (value ushr 7 and 0x7F or 0x80 shl 48) or (value ushr 14 and 0x7F or 0x80 shl 40) or (value ushr 21 and 0x7F or 0x80 shl 32) or (value ushr 28 and 0x7F or 0x80 shl 24) or (value ushr 35 and 0x7F or 0x80 shl 16) or (value ushr 42 and 0x7F or 0x80 shl 8) or (value ushr 49 and 0x7F or 0x80)))
+            writeShort((value ushr 56 and 0x7F or 0x80 shl 8 or (value ushr 63)).toInt())
         }
     }
 }
 
-fun ByteBuf.writeString(string: String, maxLength: Short = Short.MAX_VALUE) {
-    val bytes = string.toByteArray(Charsets.UTF_8)
-    if (bytes.size > maxLength) {
-        throw EncoderException("String too big (was " + bytes.size + " bytes encoded, max " + maxLength + ")")
-    } else {
-        writeVarInt(bytes.size)
-        writeBytes(bytes)
+fun ByteBuf.readString(max: Short = Short.MAX_VALUE): String {
+    val length = readVarInt()
+    return when {
+        length > max * 4 -> throw IOException("String too long! Expected maximum length of $max, got length of $length!")
+        length < 0 -> throw IOException("String cannot be less than 0 in length!")
+        else -> {
+            val string = String(readAvailableBytes(length))
+            if (string.length > max) throw IOException("String too long! Expected maximum length of $max, got length of ${string.length}") else string
+        }
     }
+}
+
+fun ByteBuf.writeString(value: String, max: Short = Short.MAX_VALUE) {
+    val bytes = value.encodeToByteArray().takeIf { it.size <= max } ?: throw EncoderException("String too long! Expected maximum size of $max, got length ${value.length}!")
+    writeVarInt(bytes.size)
+    writeBytes(bytes)
 }
 
 fun ByteBuf.readVarIntByteArray(): ByteArray {
@@ -319,7 +306,7 @@ fun ByteBuf.writeVillagerData(data: VillagerData) {
 }
 
 fun ByteBuf.writeAngle(angle: Angle) {
-    writeUByte(angle.value)
+    writeByte(angle.value.toInt())
 }
 
 fun ByteBuf.writeKey(key: Key) {
@@ -336,7 +323,7 @@ fun ByteBuf.writeEnum(enum: Enum<*>) = writeVarInt(enum.ordinal)
 
 fun ByteBuf.writeBitSet(set: BitSet) = writeLongArray(set.toLongArray())
 
-fun <T> ByteBuf.writeOptional(optional: java.util.Optional<T>, presentAction: (T) -> Unit) {
+fun <T> ByteBuf.writeOptional(optional: Optional<T>, presentAction: (T) -> Unit) {
     writeBoolean(optional.isPresent)
     if (optional.isPresent) presentAction(optional.get())
 }
@@ -344,6 +331,11 @@ fun <T> ByteBuf.writeOptional(optional: java.util.Optional<T>, presentAction: (T
 fun <E> ByteBuf.writeCollection(collection: Collection<E>, action: (E) -> Unit) {
     writeVarInt(collection.size)
     collection.forEach { action(it) }
+}
+
+fun ByteBuf.writeIntList(list: IntList) {
+    writeVarInt(list.size)
+    list.forEach { writeVarInt(it) }
 }
 
 fun ByteBuf.readBlockHitResult(): BlockHitResult {

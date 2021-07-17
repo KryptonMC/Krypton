@@ -23,10 +23,6 @@ import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readEnum
 
-/**
- * Sent to indicate that the client swung their arm. I know, you would expect this to do more but no,
- * it really doesn't.
- */
 class PacketInAnimation(buf: ByteBuf) : PlayPacket(0x2C) {
 
     val hand = buf.readEnum<Hand>()

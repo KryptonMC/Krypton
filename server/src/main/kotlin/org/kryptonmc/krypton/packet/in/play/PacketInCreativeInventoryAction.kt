@@ -22,13 +22,6 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readItem
 
-/**
- * Sent by the client to indicate that they have performed an action in the creative inventory.
- *
- * The creative inventory works very different to the survival inventory, mainly that in vanilla,
- * the Notchian server deletes an item from a player's inventory, and when you place an item back
- * into your inventory, the server recreates the item.
- */
 class PacketInCreativeInventoryAction(buf: ByteBuf) : PlayPacket(0x28) {
 
     val slot = buf.readShort()

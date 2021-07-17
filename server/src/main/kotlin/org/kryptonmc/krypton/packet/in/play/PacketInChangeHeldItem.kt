@@ -19,16 +19,9 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.readBlockHitResult
-import org.kryptonmc.krypton.util.readEnum
 
-/**
- * Sent to indicate the player has placed a block.
- */
-class PacketInBlockPlace(buf: ByteBuf) : PlayPacket(0x2E) {
+class PacketInChangeHeldItem(buf: ByteBuf) : PlayPacket(0x25) {
 
-    val hand = buf.readEnum<Hand>()
-    val hitResult = buf.readBlockHitResult()
+    val slot = buf.readShort()
 }

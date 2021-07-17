@@ -28,11 +28,11 @@ import org.kryptonmc.krypton.util.writeParticle
  * Tells the client to spawn some particles around it
  */
 class PacketOutParticle(
-    private val particleEffect: ParticleEffect,
+    private val effect: ParticleEffect,
     private val location: Location
 ) : PlayPacket(0x24) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeParticle(particleEffect, location)
+        buf.writeParticle(effect, location)
     }
 }

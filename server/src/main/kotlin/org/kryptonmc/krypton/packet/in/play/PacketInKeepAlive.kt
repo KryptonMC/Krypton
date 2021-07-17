@@ -21,9 +21,6 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
-/**
- * Sent by the client to confirm to the server that it's still alive.
- */
 class PacketInKeepAlive(buf: ByteBuf) : PlayPacket(0x0F) {
 
     val keepAliveId = buf.readLong()

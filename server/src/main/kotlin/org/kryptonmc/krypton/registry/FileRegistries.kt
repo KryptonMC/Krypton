@@ -37,7 +37,6 @@ private val REGISTRIES: Map<Key, RegistryEntry> = GSON.fromJson(registryData("re
 // TODO: Replace with new registry system
 object FileRegistries {
 
-    val BLOCKS = IdMapper(REGISTRIES.getValue(key("block")).entries.mapValues { it.value.id })
     val FLUIDS = IdMapper(REGISTRIES.getValue(key("fluid")).entries.mapValues { it.value.id })
     val ENTITY_TYPES = IdMapper(REGISTRIES.getValue(key("entity_type")).entries.mapValues { it.value.id })
     val GAME_EVENTS = IdMapper(REGISTRIES.getValue(key("game_event")).entries.mapValues { it.value.id })

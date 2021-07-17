@@ -22,12 +22,6 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.state.LoginPacket
 import org.kryptonmc.krypton.util.readVarIntByteArray
 
-/**
- * Sent by the client to inform the server of the shared secret to be used for encryption.
- *
- * Also returns the verify token sent by the server, as verification that we are actually talking to
- * the same client we were talking to before.
- */
 class PacketInEncryptionResponse(buf: ByteBuf) : LoginPacket(0x01) {
 
     val secret = buf.readVarIntByteArray()

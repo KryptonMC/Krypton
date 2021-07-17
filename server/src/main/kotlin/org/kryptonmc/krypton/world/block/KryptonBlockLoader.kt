@@ -27,6 +27,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.internal.BlockLoader
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.GSON
+import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.registry.block.BlockData
 import java.util.concurrent.ConcurrentHashMap
 
@@ -47,7 +48,11 @@ class KryptonBlockLoader : BlockLoader {
         val STATE_MAP = Int2ObjectOpenHashMap<Block>()
 
         init {
-            val blocks = GSON.fromJson<JsonObject>(Thread.currentThread().contextClassLoader.getResourceAsStream("1_17_blocks.json")!!.reader(Charsets.UTF_8))
+            val blocks = GSON.fromJson<JsonObject>(
+                Thread.currentThread().contextClassLoader
+                    .getResourceAsStream("${KryptonServerInfo.minecraftVersion.replace(".", "_")}_blocks.json")!!
+                    .reader()
+            )
             blocks.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
                 val propertyEntry = PropertyEntry()
                 value.remove("states").asJsonArray.forEach {

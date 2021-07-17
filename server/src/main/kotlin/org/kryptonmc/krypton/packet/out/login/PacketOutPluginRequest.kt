@@ -24,13 +24,13 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 class PacketOutPluginRequest(
-    private val messageId: Int,
+    private val id: Int,
     private val channel: String,
     private val data: ByteArray
 ) : LoginPacket(0x04) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(messageId)
+        buf.writeVarInt(id)
         buf.writeString(channel)
         buf.writeBytes(data)
     }

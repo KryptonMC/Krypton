@@ -22,10 +22,6 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readVarInt
 
-/**
- * Sent to confirm a [position and look][org.kryptonmc.krypton.packet.out.play.PacketOutPlayerPositionAndLook] packet.
- * Currently ignored by us due to my reluctance to store a value we don't need for no reason.
- */
 class PacketInTeleportConfirm(buf: ByteBuf) : PlayPacket(0x00) {
 
     val teleportId = buf.readVarInt()

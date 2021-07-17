@@ -20,17 +20,25 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.Angle
-import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutEntityHeadLook(
-    private val entityId: Int,
-    private val headYaw: Angle
-) : PlayPacket(0x3D) {
+class PacketOutAnimation(
+    private val id: Int,
+    private val animation: EntityAnimation
+) : PlayPacket(0x06) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
-        buf.writeAngle(headYaw)
+        buf.writeVarInt(id)
+        buf.writeByte(animation.ordinal)
     }
+}
+
+enum class EntityAnimation {
+
+    SWING_MAIN_ARM,
+    TAKE_DAMAGE,
+    LEAVE_BED,
+    SWING_OFFHAND,
+    CRITICAL_EFFECT,
+    MAGIC_CRITICAL_EFFECT
 }
