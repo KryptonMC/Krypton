@@ -19,7 +19,6 @@ object Versions {
 
     // Server
     const val NETTY = "4.1.66.Final"
-    const val NETTY_IO_URING = "0.0.8.Final"
     const val TCA = "1.2.0"
     const val JANSI = "3.20.0"
     const val RETROFIT = "2.9.0"

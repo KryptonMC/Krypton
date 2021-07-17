@@ -34,7 +34,6 @@ dependencies {
     // Extra natives for networking
     implementation("io.netty", "netty-transport-native-epoll")
     implementation("io.netty", "netty-transport-native-kqueue")
-    implementation("io.netty.incubator", "netty-incubator-transport-native-io_uring", Versions.NETTY_IO_URING)
     implementation("com.velocitypowered", "velocity-native", Versions.VELOCITY_NATIVE)
 
     // Events

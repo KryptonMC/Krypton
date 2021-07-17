@@ -34,9 +34,6 @@ import io.netty.channel.socket.ServerSocketChannel
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.handler.timeout.ReadTimeoutHandler
-import io.netty.incubator.channel.uring.IOUring
-import io.netty.incubator.channel.uring.IOUringEventLoopGroup
-import io.netty.incubator.channel.uring.IOUringServerSocketChannel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.kryptonmc.krypton.locale.Messages
@@ -103,7 +100,6 @@ class NettyProcess(private val server: KryptonServer) {
 
     // Determines the best loop group to use based on what is available on the current operating system
     private fun bestLoopGroup() = when {
-        IOUring.isAvailable() -> IOUringEventLoopGroup(0, NamedThreadFactory("Netty IO Uring Worker #%d"))
         Epoll.isAvailable() -> EpollEventLoopGroup(0, NamedThreadFactory("Netty Epoll Worker #%d"))
         KQueue.isAvailable() -> KQueueEventLoopGroup(0, NamedThreadFactory("Netty KQueue Worker #%d"))
         else -> NioEventLoopGroup(0, NamedThreadFactory("Netty NIO Worker #%d"))
@@ -111,7 +107,6 @@ class NettyProcess(private val server: KryptonServer) {
 
     // Determines the best socket channel to use based on what is available on the current operating system
     private fun bestChannel(): Class<out ServerSocketChannel> = when {
-        IOUring.isAvailable() -> IOUringServerSocketChannel::class.java
         Epoll.isAvailable() -> EpollServerSocketChannel::class.java
         KQueue.isAvailable() -> KQueueServerSocketChannel::class.java
         else -> NioServerSocketChannel::class.java
