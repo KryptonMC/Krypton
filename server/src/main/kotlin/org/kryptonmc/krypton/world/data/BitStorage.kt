@@ -67,7 +67,6 @@ class BitStorage(
         val cell = data[cellIndex]
         val magic = (index - cellIndex * valuesPerLong) * bits
         data[cellIndex] = cell and (mask shl magic).inv() or (value.toLong() and mask shl magic)
-        println("Cell index $cellIndex updated to ${data[cellIndex]} (was $cell)")
     }
 
     operator fun get(index: Int): Int {
@@ -79,12 +78,11 @@ class BitStorage(
         return (cell shr magic and mask).toInt()
     }
 
-    @Suppress("UNUSED_VALUE") // Kotlin is definitely going crazy here
     fun count(consumer: (Int) -> Unit) {
         var count = 0
-        data.forEach {
-            var temp = it
-            for (i in 0 until valuesPerLong) {
+        for (i in data.indices) {
+            var temp = data[i]
+            for (j in 0 until valuesPerLong) {
                 consumer((temp and mask).toInt())
                 temp = temp shr bits
                 count++

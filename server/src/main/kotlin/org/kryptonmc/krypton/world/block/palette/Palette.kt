@@ -36,5 +36,5 @@ interface Palette {
 
     fun write(buf: ByteBuf)
 
-    fun load(tag: NBTList<NBTCompound>)
+    fun load(data: NBTList<NBTCompound>)
 }

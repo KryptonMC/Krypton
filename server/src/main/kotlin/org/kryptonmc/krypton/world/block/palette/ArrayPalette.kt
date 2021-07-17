@@ -51,9 +51,9 @@ class ArrayPalette(private val bits: Int, private val resizer: (Int, Block) -> I
         for (i in 0 until size) buf.writeVarInt(BLOCKS.idOf(values[i]!!))
     }
 
-    override fun load(tag: NBTList<NBTCompound>) {
-        tag.forEachIndexed { index, entry -> values[index] = entry.toBlock() }
-        size = tag.size
+    override fun load(data: NBTList<NBTCompound>) {
+        data.forEachIndexed { index, entry -> values[index] = entry.toBlock() }
+        size = data.size
     }
 
     override val serializedSize: Int

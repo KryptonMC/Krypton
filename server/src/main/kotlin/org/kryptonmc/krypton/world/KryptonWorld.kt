@@ -64,6 +64,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.registry.InternalRegistryKeys
 import org.kryptonmc.krypton.util.KEY_CODEC
+import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.synchronize
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.spongepowered.math.vector.Vector3i
@@ -198,8 +199,7 @@ data class KryptonWorld(
     fun tick(profiler: Profiler) {
         if (players.isEmpty()) return // don't tick the world if there's no players in it
 
-        profiler.push("time tick")
-        // tick time
+        profiler.push("increment time")
         time++
         dayTime++
         profiler.pop()
@@ -219,21 +219,21 @@ data class KryptonWorld(
                     if (thunderTime > 0) {
                         if (thunderTime-- == 0) isThundering = !isThundering
                     } else {
-                        thunderTime = if (isThundering) Random.nextInt(12_000) + 3600 else Random.nextInt(168_000) + 12_000
+                        thunderTime = if (isThundering) Random.nextInt(12000) + 3600 else Random.nextInt(168000) + 12000
                     }
                     if (rainTime > 0) {
                         if (rainTime-- == 0) isRaining = !isRaining
                     } else {
-                        rainTime = Random.nextInt(if (isRaining) 12_000 else 168_000) + 12_000
+                        rainTime = Random.nextInt(if (isRaining) 12000 else 168000) + 12000
                     }
                 }
             }
             oldThunderLevel = thunderLevel
             thunderLevel = if (isThundering) (thunderLevel + 0.01).toFloat() else (thunderLevel - 0.01).toFloat()
-            thunderLevel = min(max(thunderLevel, 0F), 1F)
+            thunderLevel = thunderLevel.clamp(0F, 1F)
             oldRainLevel = rainLevel
             rainLevel = if (isRaining) (rainLevel + 0.01).toFloat() else (rainLevel - 0.01).toFloat()
-            rainLevel = min(max(rainLevel, 0F), 1F)
+            rainLevel = rainLevel.clamp(0F, 1F)
         }
 
         if (oldRainLevel != rainLevel) playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel), this)
@@ -243,6 +243,7 @@ data class KryptonWorld(
             playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel))
             playerManager.sendToAll(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel))
         }
+        profiler.pop()
 
         profiler.push("chunk tick")
         chunkMap.values.forEach { chunk -> chunk.tick(players.count { it.location in chunk.position }) }

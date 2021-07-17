@@ -50,9 +50,9 @@ class MapPalette(private val bits: Int, private val resizer: (Int, Block) -> Int
         for (i in 0 until size) buf.writeVarInt(BLOCKS.idOf(values[i]!!))
     }
 
-    override fun load(tag: NBTList<NBTCompound>) {
+    override fun load(data: NBTList<NBTCompound>) {
         values.clear()
-        for (i in tag.indices) values.add(tag[i].toBlock())
+        for (i in data.indices) values.add(data[i].toBlock())
     }
 
     fun save() = NBTList<NBTCompound>(NBTTypes.TAG_Compound).apply {

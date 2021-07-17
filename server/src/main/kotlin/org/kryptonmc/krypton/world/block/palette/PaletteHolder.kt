@@ -29,7 +29,6 @@ import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
 import org.kryptonmc.krypton.world.block.BLOCKS
 import org.kryptonmc.krypton.world.data.BitStorage
-import java.util.concurrent.Semaphore
 import kotlin.math.max
 
 class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
@@ -77,14 +76,14 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
     }
 
     @Synchronized
-    fun load(paletteData: NBTList<NBTCompound>, states: LongArray) {
-        val bits = max(MINIMUM_PALETTE_SIZE, paletteData.size.ceillog2())
+    fun load(data: NBTList<NBTCompound>, states: LongArray) {
+        val bits = max(MINIMUM_PALETTE_SIZE, data.size.ceillog2())
         if (bits != this.bits) this.bits = bits
-        palette.load(paletteData)
+        palette.load(data)
         val storageBits = states.size * Long.SIZE_BITS / SIZE
         when {
             palette === GlobalPalette -> {
-                val newPalette = MapPalette(bits, DUMMY_RESIZER).apply { load(paletteData) }
+                val newPalette = MapPalette(bits, DUMMY_RESIZER).apply { load(data) }
                 val bitStorage = BitStorage(storageBits, SIZE, states)
                 for (i in 0 until SIZE) storage[i] = GlobalPalette[newPalette[bitStorage[i]]!!]
             }

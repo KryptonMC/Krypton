@@ -37,5 +37,5 @@ object GlobalPalette : Palette {
 
     override fun write(buf: ByteBuf) = Unit
 
-    override fun load(tag: NBTList<NBTCompound>) = Unit
+    override fun load(data: NBTList<NBTCompound>) = Unit
 }

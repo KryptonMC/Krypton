@@ -104,11 +104,6 @@ class KryptonChunk(
 
     val highestSectionPosition: Int
         get() = highestSection?.y ?: minimumBuildHeight
-
-    companion object {
-
-        private val LOGGER = logger<KryptonChunk>()
-    }
 }
 
 // TODO: Do things with these
