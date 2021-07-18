@@ -15,6 +15,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 
@@ -33,6 +34,7 @@ object RegistryKeys {
     @JvmField val DIMENSION_TYPE = minecraft<DimensionType>("dimension_type")
     @JvmField val BLOCK = minecraft<Block>("block")
     @JvmField val ITEM = minecraft<ItemType>("item")
+    @JvmField val BIOME = minecraft<Biome>("worldgen/biome")
 
     /**
      * Custom built-in registries
