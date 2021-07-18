@@ -16,21 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.fluid
+package org.kryptonmc.krypton.tags
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.api.registry.RegistryKeys
 
-object Fluids {
+object EntityTypeTags {
 
-    val EMPTY = register("empty", ItemTypes.AIR)
-    val FLOWING_WATER = register("flowing_water", ItemTypes.WATER_BUCKET)
-    val WATER = register("water", ItemTypes.WATER_BUCKET)
-    val FLOWING_LAVA = register("flowing_lava", ItemTypes.LAVA_BUCKET)
-    val LAVA = register("lava", ItemTypes.LAVA_BUCKET)
+    val SKELETONS = get("skeletons")
+    val RAIDERS = get("raiders")
+    val BEEHIVE_INHABITORS = get("beehive_inhabitors")
+    val ARROWS = get("arrows")
+    val IMPACT_PROJECTILES = get("impact_projectiles")
+    val POWDER_SNOW_WALKABLE_MOBS = get("powder_snow_walkable_mobs")
+    val AXOLOTL_ALWAYS_HOSTILES = get("axolotl_always_hostiles")
+    val AXOLOTL_HUNT_TARGETS = get("axolotl_hunt_targets")
+    val FREEZE_IMMUNE_ENTITY_TYPES = get("freeze_immune_entity_types")
+    val FREEZE_HURTS_EXTRA_TYPES = get("freeze_hurts_extra_types")
 
-    private fun register(key: String, bucket: ItemType) = Registries.register(InternalRegistries.FLUID, key, Fluid(Key.key(key), bucket))
+    private fun get(name: String) = KryptonTagManager.load(Key.key(name), RegistryKeys.ENTITY_TYPE.location, "entity_types", Registries.ENTITY_TYPE)
 }
