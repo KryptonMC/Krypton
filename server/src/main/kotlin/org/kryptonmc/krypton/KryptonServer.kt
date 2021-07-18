@@ -59,7 +59,6 @@ import org.kryptonmc.krypton.serializers.GamemodeSerializer
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.util.Bootstrap
-import org.kryptonmc.krypton.util.TranslationRegister
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.createDirectory
@@ -161,8 +160,8 @@ class KryptonServer : Server {
         val startTime = System.nanoTime()
 
         // Preload crash report and run bootstrap
-        CrashReport.preload()
-        Bootstrap.init()
+        Bootstrap.preload()
+        Bootstrap.validate()
 
         // Start up the console handler
         LOGGER.debug("Starting console handler")
@@ -179,7 +178,6 @@ class KryptonServer : Server {
         // (query data.kryptonmc.org for translation metadata and download the new translations)
         LOGGER.debug("Registering commands and translations...")
         commandManager.registerBuiltins()
-        TranslationRegister.initialize()
         TranslationRepository.scheduleRefresh()
 
         // Start the metrics system
