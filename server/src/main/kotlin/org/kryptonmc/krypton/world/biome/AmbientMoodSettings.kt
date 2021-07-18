@@ -19,17 +19,10 @@
 package org.kryptonmc.krypton.world.biome
 
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.effect.sound.SoundEvents
 
 data class AmbientMoodSettings(
     val sound: SoundEvent,
     val tickDelay: Int,
     val blockSearchExtent: Int,
     val soundPositionOffset: Double
-) {
-
-    companion object {
-
-        val CAVE = AmbientMoodSettings(SoundEvents.AMBIENT_CAVE, 6000, 8, 2.0)
-    }
-}
+)

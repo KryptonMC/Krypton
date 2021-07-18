@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.world.biome
 
 import org.kryptonmc.krypton.effect.Music
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.util.StringSerializable
 import java.awt.Color
 
 data class BiomeEffects(
@@ -37,11 +38,16 @@ data class BiomeEffects(
     val backgroundMusic: Music? = null
 )
 
-enum class GrassColorModifier {
+enum class GrassColorModifier(override val serialized: String) : StringSerializable {
 
-    NONE,
-    DARK_FOREST,
-    SWAMP;
+    NONE("none"),
+    DARK_FOREST("dark_forest"),
+    SWAMP("swamp");
 
-    override fun toString() = name.lowercase()
+    companion object {
+
+        private val BY_NAME = values().associateBy { it.serialized }
+
+        fun fromName(name: String) = BY_NAME.getValue(name)
+    }
 }

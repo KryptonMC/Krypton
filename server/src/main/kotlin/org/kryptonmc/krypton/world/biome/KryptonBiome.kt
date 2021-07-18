@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world.biome
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.world.biome.Biome
 
 data class KryptonBiome(
@@ -30,26 +31,31 @@ data class KryptonBiome(
     val effects: BiomeEffects
 ) : Biome
 
-enum class BiomeCategory {
+enum class BiomeCategory(override val serialized: String) : StringSerializable {
 
-    NONE,
-    TAIGA,
-    EXTREME_HILLS,
-    JUNGLE,
-    MESA,
-    PLAINS,
-    SAVANNA,
-    ICY,
-    THE_END,
-    BEACH,
-    FOREST,
-    OCEAN,
-    DESERT,
-    RIVER,
-    SWAMP,
-    MUSHROOM,
-    NETHER,
-    UNDERGROUND;
+    NONE("none"),
+    TAIGA("taiga"),
+    EXTREME_HILLS("extreme_hills"),
+    JUNGLE("jungle"),
+    MESA("mesa"),
+    PLAINS("plains"),
+    SAVANNA("savanna"),
+    ICY("icy"),
+    THE_END("the_end"),
+    BEACH("beach"),
+    FOREST("forest"),
+    OCEAN("ocean"),
+    DESERT("desert"),
+    RIVER("river"),
+    SWAMP("swamp"),
+    MUSHROOM("mushroom"),
+    NETHER("nether"),
+    UNDERGROUND("underground");
 
-    override fun toString() = name.lowercase()
+    companion object {
+
+        private val BY_NAME = values().associateBy { it.serialized }
+
+        fun fromName(name: String) = BY_NAME.getValue(name)
+    }
 }

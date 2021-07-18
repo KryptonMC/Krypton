@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.world.biome
 
+import org.kryptonmc.api.util.StringSerializable
+
 data class ClimateSettings(
     val precipitation: Precipitation,
     val temperature: Float,
@@ -25,19 +27,29 @@ data class ClimateSettings(
     val temperatureModifier: TemperatureModifier = TemperatureModifier.NONE
 )
 
-enum class Precipitation {
+enum class Precipitation(override val serialized: String) : StringSerializable {
 
-    NONE,
-    RAIN,
-    SNOW;
+    NONE("none"),
+    RAIN("rain"),
+    SNOW("snow");
 
-    override fun toString() = name.lowercase()
+    companion object {
+
+        private val BY_NAME = values().associateBy { it.serialized }
+
+        fun fromName(name: String) = BY_NAME.getValue(name)
+    }
 }
 
-enum class TemperatureModifier {
+enum class TemperatureModifier(override val serialized: String) : StringSerializable {
 
-    NONE,
-    FROZEN;
+    NONE("none"),
+    FROZEN("frozen");
 
-    override fun toString() = name.lowercase()
+    companion object {
+
+        private val BY_NAME = values().associateBy { it.serialized }
+
+        fun fromName(name: String) = BY_NAME.getValue(name)
+    }
 }
