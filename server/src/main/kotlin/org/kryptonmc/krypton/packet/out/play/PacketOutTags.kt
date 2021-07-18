@@ -19,15 +19,11 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.registry.FileRegistries
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.tags.Tag
-import org.kryptonmc.krypton.registry.tags.TagManager
-import org.kryptonmc.krypton.registry.tags.TagType
-import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.tags.KryptonTagManager
+import org.kryptonmc.krypton.util.writeCollection
+import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
 
 /**
@@ -35,46 +31,22 @@ import org.kryptonmc.krypton.util.writeVarInt
  */
 object PacketOutTags : PlayPacket(0x66) {
 
-    private val blockRegistry: (Key) -> Int? = {
-        Registries.BLOCK[it]?.id
-    }
-    private val fluidRegistry: (Key) -> Int? = {
-        InternalRegistries.FLUID.idOf(InternalRegistries.FLUID[it])
-    }
-    private val itemRegistry: (Key) -> Int? = {
-        Registries.ITEM.idOf(Registries.ITEM[it])
-    }
-    private val entityRegistry: (Key) -> Int? = {
-        Registries.ENTITY_TYPE.idOf(Registries.ENTITY_TYPE[it])
-    }
-    private val gameEventRegistry: (Key) -> Int? = { key ->
-        InternalRegistries.GAME_EVENT[key]?.let { InternalRegistries.GAME_EVENT.idOf(it) }
-    }
-
-    private val registries = mapOf(
-        TagType.BLOCKS.identifier to blockRegistry,
-        TagType.ITEMS.identifier to itemRegistry,
-        TagType.FLUIDS.identifier to fluidRegistry,
-        TagType.ENTITY_TYPES.identifier to entityRegistry,
-        TagType.GAME_EVENTS.identifier to gameEventRegistry
-    )
-
+    @Suppress("UNCHECKED_CAST")
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(TagManager.tags.size)
-        TagManager.tags.forEach { (id, tags) ->
-            buf.writeString(id)
-            buf.writeTags(tags, registries.getValue(id))
+        buf.writeVarInt(KryptonTagManager.tags.size)
+        KryptonTagManager.tags.forEach { (id, tags) ->
+            if (tags.isEmpty()) return@forEach
+            buf.writeKey(id)
+            buf.writeTags(tags as List<Tag<Any>>)
         }
     }
 
-    private fun ByteBuf.writeTags(tags: List<Tag>, registry: (Key) -> Int?) {
+    private fun ByteBuf.writeTags(tags: List<Tag<Any>>) {
         writeVarInt(tags.size)
+        val registry = tags.firstOrNull()?.type?.registry ?: return
         tags.forEach { tag ->
-            writeString(tag.name.asString())
-
-            val values = tag.values.filter { registry(it) != null }
-            writeVarInt(values.size)
-            values.forEach { writeVarInt(registry(it)!!) }
+            writeKey(tag.name)
+            writeCollection(tag.values) { writeVarInt(registry.idOf(it)) }
         }
     }
 }

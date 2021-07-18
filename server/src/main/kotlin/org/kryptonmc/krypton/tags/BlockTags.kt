@@ -19,10 +19,6 @@
 package org.kryptonmc.krypton.tags
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.registry.RegistryKeys
-import org.kryptonmc.api.tags.Tag
 
 object BlockTags {
 
@@ -145,5 +141,5 @@ object BlockTags {
     val WOODEN_TRAPDOORS = get("wooden_trapdoors")
     val WOOL = get("wool")
 
-    private fun get(name: String) = KryptonTagManager.load(Key.key(name), RegistryKeys.BLOCK.location, "blocks", Registries.BLOCK)
+    private fun get(name: String) = KryptonTagManager.load(Key.key(name), TagTypes.BLOCK)
 }

@@ -19,24 +19,24 @@
 package org.kryptonmc.krypton.tags
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.tags.Tag
+import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.api.util.toKey
-import org.kryptonmc.krypton.registry.tags.TagData
 
 class KryptonTag<T : Any>(
     override val name: Key,
+    override val type: TagType<T>,
     override val values: MutableList<T> = mutableListOf(),
 ) : Tag<T> {
 
-    constructor(manager: KryptonTagManager, name: Key, type: Key, typeName: String, registry: Registry<T>, previous: Tag<T>, data: TagData) : this(name) {
+    constructor(manager: KryptonTagManager, name: Key, type: TagType<T>, previous: Tag<T>, data: TagData) : this(name, type) {
         if (!data.replace) values += previous.values
         data.values.forEach { key ->
             if (key.startsWith('#')) {
-                val subTag = manager.load(key.drop(1).toKey(), type, typeName, registry)
+                val subTag = manager.load(key.drop(1).toKey(), type)
                 values += subTag.values
             } else {
-                registry[key.toKey()]?.let { values += it }
+                type.registry[key.toKey()]?.let { values += it }
             }
         }
     }
@@ -47,6 +47,6 @@ class KryptonTag<T : Any>(
 
         private val EMPTY_KEY = Key.key("krypton", "empty")
 
-        fun <T : Any> empty() = KryptonTag<T>(EMPTY_KEY)
+        fun <T : Any> empty(type: TagType<T>) = KryptonTag(EMPTY_KEY, type)
     }
 }

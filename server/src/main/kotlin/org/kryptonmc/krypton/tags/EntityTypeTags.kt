@@ -19,8 +19,6 @@
 package org.kryptonmc.krypton.tags
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.registry.RegistryKeys
 
 object EntityTypeTags {
 
@@ -35,5 +33,5 @@ object EntityTypeTags {
     val FREEZE_IMMUNE_ENTITY_TYPES = get("freeze_immune_entity_types")
     val FREEZE_HURTS_EXTRA_TYPES = get("freeze_hurts_extra_types")
 
-    private fun get(name: String) = KryptonTagManager.load(Key.key(name), RegistryKeys.ENTITY_TYPE.location, "entity_types", Registries.ENTITY_TYPE)
+    private fun get(name: String) = KryptonTagManager.load(Key.key(name), TagTypes.ENTITY_TYPE)
 }

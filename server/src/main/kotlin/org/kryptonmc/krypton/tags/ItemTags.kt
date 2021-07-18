@@ -19,8 +19,6 @@
 package org.kryptonmc.krypton.tags
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.registry.RegistryKeys
 
 object ItemTags {
 
@@ -94,5 +92,5 @@ object ItemTags {
     val OCCLUDES_VIBRATION_SIGNALS = get("occludes_vibration_signals")
     val CLUSTER_MAX_HARVESTABLES = get("cluster_max_harvestables")
 
-    private fun get(name: String) = KryptonTagManager.load(Key.key(name), RegistryKeys.ITEM.location, "items", Registries.ITEM)
+    private fun get(name: String) = KryptonTagManager.load(Key.key(name), TagTypes.ITEM)
 }

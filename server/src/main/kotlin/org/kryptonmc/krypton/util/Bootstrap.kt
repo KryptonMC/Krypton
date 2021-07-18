@@ -18,6 +18,12 @@
  */
 package org.kryptonmc.krypton.util
 
+import org.kryptonmc.krypton.tags.BlockTags
+import org.kryptonmc.krypton.tags.EntityTypeTags
+import org.kryptonmc.krypton.tags.FluidTags
+import org.kryptonmc.krypton.tags.GameEventTags
+import org.kryptonmc.krypton.tags.ItemTags
+import org.kryptonmc.krypton.tags.TagTypes
 import org.kryptonmc.krypton.world.event.GameEvents
 import org.kryptonmc.krypton.world.fluid.Fluids
 
@@ -26,6 +32,7 @@ object Bootstrap {
     @Volatile
     private var bootstrapped = false
 
+    // TODO: Rewrite the preloading
     fun init() {
         if (bootstrapped) return
         bootstrapped = true
@@ -40,12 +47,17 @@ object Bootstrap {
         Class.forName("org.kryptonmc.api.item.ItemTypes")
         Fluids
         GameEvents
+        TagTypes
+        BlockTags
+        EntityTypeTags
+        FluidTags
+        GameEventTags
+        ItemTags
 
         // Preload the old registry
         Class.forName("org.kryptonmc.krypton.registry.FileRegistries")
 
         // Preload some other frequently used objects so they aren't loaded on first player join
-        Class.forName("org.kryptonmc.krypton.registry.tags.TagManager")
         Class.forName("org.kryptonmc.krypton.tags.KryptonTagManager")
         Class.forName("org.kryptonmc.krypton.tags.BlockTags")
         Class.forName("org.kryptonmc.krypton.world.block.palette.GlobalPalette")

@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.tags
 
-import com.google.common.collect.Multimap
 import net.kyori.adventure.key.Key
 
 /**
@@ -19,7 +18,7 @@ interface TagManager {
     /**
      * The tags this manager is currently managing.
      */
-    val tags: Multimap<Key, Tag<out Any>>
+    val tags: Map<Key, List<Tag<out Any>>>
 
     /**
      * Gets the tag for the given [key].

@@ -17,12 +17,17 @@ import kotlin.random.Random
  *
  * @param T the type of the tag
  */
-interface Tag<T : Any> {
+interface Tag<T : Any> : Keyed {
 
     /**
      * The name of this tag.
      */
     val name: Key
+
+    /**
+     * The type of this tag.
+     */
+    val type: TagType<T>
 
     /**
      * The values of this tag.
@@ -54,16 +59,5 @@ interface Tag<T : Any> {
      */
     fun random() = random(Random.Default)
 
-    /**
-     * Represents a tag with a name.
-     */
-    interface Named<T : Any> : Tag<T>, Keyed {
-
-        /**
-         * This tag's key.
-         */
-        val key: Key
-
-        override fun key() = key
-    }
+    override fun key() = name
 }

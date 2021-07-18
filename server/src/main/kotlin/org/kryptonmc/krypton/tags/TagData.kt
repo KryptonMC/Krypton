@@ -18,14 +18,7 @@
  */
 package org.kryptonmc.krypton.tags
 
-import net.kyori.adventure.key.Key
-
-object FluidTags {
-
-    val WATER = get("water")
-    val LAVA = get("lava")
-
-    val TAGS = listOf(WATER, LAVA)
-
-    private fun get(name: String) = KryptonTagManager.load(Key.key(name), TagTypes.FLUID)
-}
+data class TagData(
+    val replace: Boolean,
+    val values: List<String>
+)

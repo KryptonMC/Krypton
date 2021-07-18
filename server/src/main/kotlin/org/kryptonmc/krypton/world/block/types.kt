@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.world.block
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.krypton.registry.tags.TagManager
-import org.kryptonmc.krypton.registry.tags.TagType
 
 private val PLANTS = intArrayOf(
     Blocks.OAK_SAPLING.id,
