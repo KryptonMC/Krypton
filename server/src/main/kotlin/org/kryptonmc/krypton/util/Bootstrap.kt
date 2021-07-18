@@ -18,6 +18,9 @@
  */
 package org.kryptonmc.krypton.util
 
+import org.kryptonmc.krypton.world.event.GameEvents
+import org.kryptonmc.krypton.world.fluid.Fluids
+
 object Bootstrap {
 
     @Volatile
@@ -35,6 +38,8 @@ object Bootstrap {
         Class.forName("org.kryptonmc.api.effect.sound.SoundEvents")
         Class.forName("org.kryptonmc.api.entity.EntityTypes")
         Class.forName("org.kryptonmc.api.item.ItemTypes")
+        Fluids
+        GameEvents
 
         // Preload the old registry
         Class.forName("org.kryptonmc.krypton.registry.FileRegistries")

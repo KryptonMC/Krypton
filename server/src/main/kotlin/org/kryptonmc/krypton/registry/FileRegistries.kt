@@ -19,15 +19,9 @@
 package org.kryptonmc.krypton.registry
 
 import me.bardy.gsonkt.fromJson
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Key.key
 import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.registry.biomes.BiomeRegistry
 import org.kryptonmc.krypton.registry.dimensions.DimensionRegistry
-import org.kryptonmc.krypton.registry.json.RegistryEntry
-import org.kryptonmc.krypton.util.IdMapper
-
-private val REGISTRIES: Map<Key, RegistryEntry> = GSON.fromJson(registryData("registries/registries.json"))
 
 /**
  * Singleton for all of the registries that we load from files. This is a singleton for ease of use
@@ -36,10 +30,6 @@ private val REGISTRIES: Map<Key, RegistryEntry> = GSON.fromJson(registryData("re
  */
 // TODO: Replace with new registry system
 object FileRegistries {
-
-    val FLUIDS = IdMapper(REGISTRIES.getValue(key("fluid")).entries.mapValues { it.value.id })
-    val ENTITY_TYPES = IdMapper(REGISTRIES.getValue(key("entity_type")).entries.mapValues { it.value.id })
-    val GAME_EVENTS = IdMapper(REGISTRIES.getValue(key("game_event")).entries.mapValues { it.value.id })
 
     val BIOMES = GSON.fromJson<BiomeRegistry>(registryData("registries/custom/biomes.json"))
     val DIMENSIONS = GSON.fromJson<DimensionRegistry>(registryData("registries/custom/dimensions.json"))

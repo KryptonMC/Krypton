@@ -39,13 +39,13 @@ object PacketOutTags : PlayPacket(0x66) {
         Registries.BLOCK[it]?.id
     }
     private val fluidRegistry: (Key) -> Int? = {
-        FileRegistries.FLUIDS.idOf(it)
+        InternalRegistries.FLUID.idOf(InternalRegistries.FLUID[it])
     }
     private val itemRegistry: (Key) -> Int? = {
         Registries.ITEM.idOf(Registries.ITEM[it])
     }
     private val entityRegistry: (Key) -> Int? = {
-        FileRegistries.ENTITY_TYPES.idOf(it)
+        Registries.ENTITY_TYPE.idOf(Registries.ENTITY_TYPE[it])
     }
     private val gameEventRegistry: (Key) -> Int? = { key ->
         InternalRegistries.GAME_EVENT[key]?.let { InternalRegistries.GAME_EVENT.idOf(it) }
