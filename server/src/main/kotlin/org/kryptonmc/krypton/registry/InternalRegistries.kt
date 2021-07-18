@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.registry
 
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 
 object InternalRegistries {
@@ -25,4 +26,5 @@ object InternalRegistries {
     val ATTRIBUTE = Registries.create(InternalRegistryKeys.ATTRIBUTE)
     val METADATA = Registries.create(InternalRegistryKeys.METADATA)
     val GAME_EVENT = Registries.create(InternalRegistryKeys.GAME_EVENT)
+    val FLUID = Registries.createDefaulted(InternalRegistryKeys.FLUID, Key.key("empty"))
 }

@@ -23,6 +23,7 @@ import org.kryptonmc.krypton.entity.attribute.Attribute
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.event.GameEvent
+import org.kryptonmc.krypton.world.fluid.Fluid
 
 object InternalRegistryKeys {
 
@@ -30,4 +31,5 @@ object InternalRegistryKeys {
     val METADATA = RegistryKeys.krypton<MetadataKey<*>>("metadata")
     val DIMENSION = RegistryKeys.minecraft<KryptonWorld>("dimension")
     val GAME_EVENT = RegistryKeys.minecraft<GameEvent>("game_event")
+    val FLUID = RegistryKeys.minecraft<Fluid>("fluid")
 }
