@@ -61,12 +61,6 @@ object Registries {
     val ITEM = createDefaulted(RegistryKeys.ITEM, key("air"))
 
     /**
-     * The registry of all item rarities in the game.
-     */
-    @JvmField
-    val ITEM_RARITIES = create(RegistryKeys.ITEM_RARITIES)
-
-    /**
      * The registry of all biomes in the game.
      */
     @JvmField

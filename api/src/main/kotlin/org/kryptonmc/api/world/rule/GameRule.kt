@@ -23,6 +23,9 @@ class GameRule<V : Any>(
     val default: V
 ) : ComponentLike {
 
+    /**
+     * The translation for this gamerule.
+     */
     val translation = Component.translatable("gamerule.$name")
 
     override fun asComponent() = translation

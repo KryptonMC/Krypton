@@ -50,6 +50,7 @@ import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.tags.TagTypes
 import org.kryptonmc.krypton.util.encryption.Encryption
 import org.kryptonmc.krypton.util.reports.CrashReport
+import org.kryptonmc.krypton.world.block.BLOCK_LOADER
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.event.GameEvents
@@ -76,13 +77,14 @@ object Bootstrap {
         Registries
         InternalRegistryKeys
         InternalRegistries
+        BLOCK_LOADER
         Blocks
-        Fluids
         GameEvents
         ParticleType
         SoundEvents
         EntityTypes
         ItemTypes
+        Fluids
         Biomes
         DimensionTypes
         GameRules
@@ -128,9 +130,9 @@ object Bootstrap {
             val missing = TreeSet<String>()
             InternalRegistries.ATTRIBUTE.values.checkTranslations(missing) { it.description }
             Registries.ENTITY_TYPE.values.checkTranslations(missing) { it.name.key() }
-            Registries.ITEM.values.checkTranslations(missing) { it.translation.key() }
             Registries.BLOCK.values.checkTranslations(missing) { it.translation.key() }
-            Registries.GAMERULES.values.checkTranslations(missing) { it.name }
+            Registries.ITEM.values.checkTranslations(missing) { it.translation.key() }
+            Registries.GAMERULES.values.checkTranslations(missing) { it.translation.key() }
             return missing
         }
 }

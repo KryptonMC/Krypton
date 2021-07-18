@@ -159,10 +159,6 @@ class KryptonServer : Server {
         Messages.START.INITIAL.info(LOGGER, config.server.ip, config.server.port)
         val startTime = System.nanoTime()
 
-        // Preload crash report and run bootstrap
-        Bootstrap.preload()
-        Bootstrap.validate()
-
         // Start up the console handler
         LOGGER.debug("Starting console handler")
         Thread(KryptonConsole(this)::start, "Console Handler").apply {
