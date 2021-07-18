@@ -9,49 +9,17 @@
 package org.kryptonmc.api.world.biome
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Keyed
 
 /**
- * Holds data for a biome.
- *
- * @param key the key of this biome
- * @param climate the climate settings for this biome
- * @param depth the depth of this biome
- * @param scale the scale of this biome
- * @param category the category of this biome
- * @param effects the effects settings for this biome
+ * Represents a biome.
  */
-data class Biome(
-    val key: Key,
-    val climate: ClimateSettings,
-    val depth: Float,
-    val scale: Float,
-    val category: BiomeCategory,
-    val effects: BiomeEffects
-)
+interface Biome : Keyed {
 
-/**
- * Categories of biomes that biomes may fall under.
- */
-enum class BiomeCategory {
+    /**
+     * The key of this biome.
+     */
+    val key: Key
 
-    NONE,
-    TAIGA,
-    EXTREME_HILLS,
-    JUNGLE,
-    MESA,
-    PLAINS,
-    SAVANNA,
-    ICY,
-    THE_END,
-    BEACH,
-    FOREST,
-    OCEAN,
-    DESERT,
-    RIVER,
-    SWAMP,
-    MUSHROOM,
-    NETHER,
-    UNDERGROUND;
-
-    override fun toString() = name.lowercase()
+    override fun key() = key
 }
