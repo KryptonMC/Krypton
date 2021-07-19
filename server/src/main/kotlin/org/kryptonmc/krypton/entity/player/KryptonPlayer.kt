@@ -94,12 +94,14 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.toArea
 import org.kryptonmc.krypton.item.toItemStack
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.bossbar.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
 import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
 import java.util.function.UnaryOperator
 import kotlin.math.abs
 import kotlin.math.min
@@ -115,15 +117,12 @@ class KryptonPlayer(
     override var uuid = profile.uuid
 
     override var abilities = Abilities()
+    override val inventory = KryptonPlayerInventory(this)
+    override var scoreboard: Scoreboard? = null
+    override var locale: Locale? = null
 
     override var viewDistance = 10
     override var time = 0L
-
-    override var scoreboard: Scoreboard? = null
-
-    override val inventory = KryptonPlayerInventory(this)
-
-    override var locale: Locale? = null
 
     private var camera: KryptonEntity = this
         set(value) {
@@ -153,6 +152,8 @@ class KryptonPlayer(
         get() = world.dimensionType
     val dimension: RegistryKey<KryptonWorld>
         get() = world.dimension
+
+    val viewableEntities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
 
     private var respawnPosition: Vector3i? = null
     private var respawnForced = false
@@ -225,6 +226,18 @@ class KryptonPlayer(
                 KryptonWorld.REGISTRY_KEY_CODEC.encodeStart(NBTOps, respawnDimension).resultOrPartial(LOGGER::error).ifPresent { set("SpawnDimension", it) }
             }
         }
+
+    override fun addViewer(player: KryptonPlayer): Boolean {
+        if (player === this) return false
+        player.session.sendPacket(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, this))
+        return super.addViewer(player)
+    }
+
+    override fun removeViewer(player: KryptonPlayer): Boolean {
+        if (player === this || !super.removeViewer(player)) return false
+        player.session.sendPacket(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER, this))
+        return true
+    }
 
     override fun spawnParticles(particleEffect: ParticleEffect, location: Location) {
         val packet = PacketOutParticle(particleEffect, location)
