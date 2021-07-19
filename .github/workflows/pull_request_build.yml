@@ -1,7 +1,6 @@
 name: "Pull Request Validation Build"
 
-on:
-  pull_request: null
+on: [pull_request]
 
 jobs:
   build:
