@@ -22,10 +22,10 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.adventure.toMessage
 
 // TODO: Use this later
 object SuggestionProviders {

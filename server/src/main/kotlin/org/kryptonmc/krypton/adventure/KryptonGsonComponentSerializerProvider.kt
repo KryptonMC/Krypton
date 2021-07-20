@@ -16,27 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command.arguments.coordinates
+package org.kryptonmc.krypton.adventure
 
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toMessage
-import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.space.Vector
-import org.spongepowered.math.vector.Vector2d
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import java.util.function.Consumer
 
-sealed interface Coordinates {
+class KryptonGsonComponentSerializerProvider : GsonComponentSerializer.Provider {
 
-    val relativeX: Boolean get() = true
+    override fun gson() = GsonComponentSerializer.builder()
+        .legacyHoverEventSerializer(NBTLegacyHoverEventSerializer)
+        .build()
 
-    val relativeY: Boolean get() = true
+    override fun gsonLegacy() = GsonComponentSerializer.builder()
+        .legacyHoverEventSerializer(NBTLegacyHoverEventSerializer)
+        .downsampleColors()
+        .build()
 
-    val relativeZ: Boolean get() = true
-
-    fun position(player: Player): Vector
-
-    fun rotation(player: Player): Vector2d
+    // Do nothing to the builder
+    override fun builder() = Consumer<GsonComponentSerializer.Builder> {}
 }
-
-val ERROR_EXPECTED_DOUBLE = SimpleCommandExceptionType(Component.translatable("argument.pos.missing.double").toMessage())
-val ERROR_EXPECTED_INTEGER = SimpleCommandExceptionType(Component.translatable("argument.pos.missing.int").toMessage())

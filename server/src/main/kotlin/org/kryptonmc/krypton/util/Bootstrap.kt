@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvents
@@ -31,6 +32,7 @@ import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.dimension.DimensionTypes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.requests.SessionService
+import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.command.argument.ArgumentTypes
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.attribute.Attributes
@@ -113,6 +115,7 @@ object Bootstrap {
         MetaFactory
         KryptonBlockManager
         GlobalPalette
+        CommandSyntaxException.BUILT_IN_EXCEPTIONS = BrigadierExceptions
     }
 
     fun validate() {

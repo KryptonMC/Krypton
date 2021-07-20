@@ -18,13 +18,19 @@
  */
 package org.kryptonmc.krypton.adventure
 
-import com.mojang.brigadier.Message
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import net.kyori.adventure.util.Codec
+import org.jglrxavpok.hephaistos.nbt.NBT
+import org.jglrxavpok.hephaistos.nbt.NBTException
+import org.jglrxavpok.hephaistos.nbt.SNBTParser
+import java.io.StringReader
 
-class AdventureMessage(val wrapped: Component) : Message {
+val ADVENTURE_SNBT_CODEC: Codec<NBT, String, NBTException, RuntimeException> = Codec.of({ SNBTParser(StringReader(it)).parse() }, NBT::toSNBT)
 
-    override fun getString() = PlainTextComponentSerializer.plainText().serialize(wrapped)
-}
+fun String.toJsonComponent(): Component = GsonComponentSerializer.gson().deserialize(this)
 
-fun Component.toMessage() = AdventureMessage(this)
+fun Component.toSectionText(): String = LegacyComponentSerializer.legacySection().serialize(this)
+
+fun Component.toAmpersandText(): String = LegacyComponentSerializer.legacyAmpersand().serialize(this)
