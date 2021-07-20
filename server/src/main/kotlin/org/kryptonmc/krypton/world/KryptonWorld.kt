@@ -33,7 +33,7 @@ import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.event.entity.EntityRemoveEvent
 import org.kryptonmc.api.event.entity.EntitySpawnEvent
-import org.kryptonmc.api.registry.RegistryKey
+import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.KryptonServer
@@ -55,13 +55,13 @@ import org.kryptonmc.krypton.util.csv.csv
 import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
-import org.kryptonmc.api.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.effect.Effect
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
-import org.kryptonmc.krypton.registry.InternalRegistryKeys
+import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.forEachInRange
@@ -376,10 +376,10 @@ data class KryptonWorld(
 
     companion object {
 
-        val REGISTRY_KEY_CODEC: Codec<RegistryKey<KryptonWorld>> = KEY_CODEC.xmap({ RegistryKey(InternalRegistryKeys.DIMENSION, it) }, RegistryKey<KryptonWorld>::location)
-        val OVERWORLD = RegistryKey(InternalRegistryKeys.DIMENSION, DimensionTypes.OVERWORLD_KEY)
-        val THE_NETHER = RegistryKey(InternalRegistryKeys.DIMENSION, DimensionTypes.THE_NETHER_KEY)
-        val THE_END = RegistryKey(InternalRegistryKeys.DIMENSION, DimensionTypes.THE_END_KEY)
+        val RESOURCE_KEY_CODEC: Codec<ResourceKey<KryptonWorld>> = KEY_CODEC.xmap({ ResourceKey(InternalResourceKeys.DIMENSION, it) }, ResourceKey<KryptonWorld>::location)
+        val OVERWORLD = ResourceKey(InternalResourceKeys.DIMENSION, DimensionTypes.OVERWORLD_KEY.location)
+        val THE_NETHER = ResourceKey(InternalResourceKeys.DIMENSION, DimensionTypes.NETHER_KEY.location)
+        val THE_END = ResourceKey(InternalResourceKeys.DIMENSION, DimensionTypes.END_KEY.location)
     }
 }
 

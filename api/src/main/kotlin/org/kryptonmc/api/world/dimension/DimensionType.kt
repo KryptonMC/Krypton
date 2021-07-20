@@ -13,7 +13,6 @@ import net.kyori.adventure.key.Key
 /**
  * Represents data for a dimension.
  *
- * @param key the key for this dimension
  * @param isPiglinSafe if [Piglin]s will transform into [ZombifiedPiglin]s
  *        over time
  * @param isNatural if portals created will spawn [ZombifiedPiglin]s
@@ -44,7 +43,6 @@ import net.kyori.adventure.key.Key
  *        for the nether is 8.0
  */
 data class DimensionType(
-    val key: Key,
     val isPiglinSafe: Boolean,
     val isNatural: Boolean,
     val isUltrawarm: Boolean,

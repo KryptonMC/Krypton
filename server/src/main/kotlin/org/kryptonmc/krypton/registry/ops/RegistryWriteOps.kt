@@ -16,30 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.krypton.registry.ops
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.DefaultedRegistry
+import com.mojang.serialization.Codec
+import com.mojang.serialization.DataResult
+import com.mojang.serialization.DynamicOps
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.krypton.registry.RegistryHolder
+import org.kryptonmc.krypton.util.DelegatingOps
+import org.kryptonmc.krypton.util.KEY_CODEC
 
-class KryptonDefaultedRegistry<T : Any>(
-    key: ResourceKey<out Registry<T>>,
-    override val defaultKey: Key
-) : KryptonRegistry<T>(key), DefaultedRegistry<T> {
+class RegistryWriteOps<T : Any>(
+    delegate: DynamicOps<T>,
+    private val registryHolder: RegistryHolder
+) : DelegatingOps<T>(delegate) {
 
-    override lateinit var defaultValue: T
-
-    override fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V {
-        if (key.location == defaultKey) defaultValue = value
-        return super.register(id, key, value)
+    fun <E : Any> encode(input: E, prefix: T, key: ResourceKey<out Registry<E>>, elementCodec: Codec<E>): DataResult<T> {
+        val registry = registryHolder.ownedRegistry(key) ?: return elementCodec.encode(input, this, prefix)
+        val ownedKey = registry.resourceKey(input) ?: return elementCodec.encode(input, this, prefix)
+        return KEY_CODEC.encode(ownedKey.location, delegate, prefix)
     }
-
-    override fun get(key: Key) = super.get(key) ?: defaultValue
-
-    override fun get(id: Int) = super.get(id) ?: defaultValue
-
-    override fun get(key: ResourceKey<T>) = super.get(key) ?: defaultValue
-
-    override fun get(value: T) = super.get(value) ?: defaultKey
 }

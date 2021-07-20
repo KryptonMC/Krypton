@@ -23,25 +23,26 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.api.registry.RegistryKey
+import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.util.IdMap
 import org.kryptonmc.krypton.util.identityStrategy
+import java.util.OptionalInt
 import kotlin.math.max
 
-open class KryptonRegistry<T : Any>(override val key: RegistryKey<out Registry<T>>) : Registry<T>, IdMap<T> {
+open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, IdMap<T> {
 
     @Suppress("MagicNumber")
     private val byId = ObjectArrayList<T>(256)
     private val toId = Object2IntOpenCustomHashMap<T>(identityStrategy())
     private val storage = HashBiMap.create<Key, T>()
-    private val keyStorage = HashBiMap.create<RegistryKey<T>, T>()
+    private val keyStorage = HashBiMap.create<ResourceKey<T>, T>()
 
     private var nextId = 0
 
-    override fun <V : T> register(key: RegistryKey<T>, value: V) = register(nextId, key, value)
+    override fun <V : T> register(key: ResourceKey<T>, value: V) = register(nextId, key, value)
 
     @Suppress("ReplacePutWithAssignment") // We want to use fastutil's specialised no unboxing put
-    override fun <V : T> register(id: Int, key: RegistryKey<T>, value: V): V {
+    override fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V {
         byId.size(max(byId.size, id + 1))
         byId[id] = value
         toId.put(value, id)
@@ -51,21 +52,34 @@ open class KryptonRegistry<T : Any>(override val key: RegistryKey<out Registry<T
         return value
     }
 
+    fun <V : T> registerOrOverride(optionalId: OptionalInt, key: ResourceKey<T>, value: V): V {
+        val existing = keyStorage[key]
+        val id = if (existing == null) {
+            if (optionalId.isPresent) optionalId.asInt else nextId
+        } else {
+            toId.getInt(existing).apply {
+                if (optionalId.isPresent && optionalId.asInt != this) error("ID mismatch")
+                toId.removeInt(this)
+            }
+        }
+        return register(id, key, value)
+    }
+
     override fun get(key: Key) = storage[key]
 
     override fun get(id: Int) = if (id in byId.indices) byId[id] else null
 
     override fun get(value: T) = storage.inverse()[value]
 
-    override fun get(key: RegistryKey<T>) = keyStorage[key]
+    override fun get(key: ResourceKey<T>) = keyStorage[key]
 
-    override fun registryKey(value: T) = keyStorage.inverse()[value]
+    override fun resourceKey(value: T) = keyStorage.inverse()[value]
 
     override fun idOf(value: T) = toId.getInt(value)
 
     override fun contains(key: Key) = key in storage
 
-    override fun containsKey(key: RegistryKey<T>) = key in keyStorage
+    override fun containsKey(key: ResourceKey<T>) = key in keyStorage
 
     override fun containsValue(value: T) = storage.containsValue(value)
 
@@ -76,10 +90,10 @@ open class KryptonRegistry<T : Any>(override val key: RegistryKey<out Registry<T
     override val keySet: Set<Key>
         get() = storage.keys
 
-    override val entries: Set<Map.Entry<RegistryKey<T>, T>>
+    override val entries: Set<Map.Entry<ResourceKey<T>, T>>
         get() = keyStorage.entries
 
-    override val keys: Set<RegistryKey<T>>
+    override val keys: Set<ResourceKey<T>>
         get() = keyStorage.keys
 
     override val values: Collection<T>

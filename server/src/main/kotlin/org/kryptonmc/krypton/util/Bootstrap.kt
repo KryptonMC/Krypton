@@ -26,10 +26,10 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.registry.RegistryKeys
+import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.world.biome.Biomes
-import org.kryptonmc.api.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.command.BrigadierExceptions
@@ -42,7 +42,7 @@ import org.kryptonmc.krypton.item.meta.MetaFactory
 import org.kryptonmc.krypton.locale.TranslationBootstrap
 import org.kryptonmc.krypton.registry.FileRegistries
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.InternalRegistryKeys
+import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.tags.BlockTags
 import org.kryptonmc.krypton.tags.EntityTypeTags
 import org.kryptonmc.krypton.tags.FluidTags
@@ -75,9 +75,9 @@ object Bootstrap {
 
         // Preload all the registry classes to ensure everything is properly registered
         RegistryRoots
-        RegistryKeys
+        ResourceKeys
         Registries
-        InternalRegistryKeys
+        InternalResourceKeys
         InternalRegistries
         BLOCK_LOADER
         Blocks

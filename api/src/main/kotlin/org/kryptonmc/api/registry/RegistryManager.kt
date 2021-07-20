@@ -9,11 +9,17 @@
 package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.resource.ResourceKey
 
 /**
  * The manager for registries
  */
 interface RegistryManager {
+
+    /**
+     * The parent registry. All registries are a child of this.
+     */
+    val parent: Registry<out Registry<out Any>>
 
     /**
      * Registers a new entry to the given [registry], with the given [key] mapped to
@@ -63,7 +69,7 @@ interface RegistryManager {
      * @param key the registry key
      * @return a registry for the given [key]
      */
-    fun <T : Any> create(key: RegistryKey<out Registry<T>>): Registry<T>
+    fun <T : Any> create(key: ResourceKey<out Registry<T>>): Registry<T>
 
     /**
      * Creates a new registry with the given registry [key], with a [defaultKey].
@@ -74,5 +80,5 @@ interface RegistryManager {
      * @param defaultKey the default key
      * @return a defaulted registry for the given [key]
      */
-    fun <T : Any> createDefaulted(key: RegistryKey<out Registry<T>>, defaultKey: Key): DefaultedRegistry<T>
+    fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): DefaultedRegistry<T>
 }

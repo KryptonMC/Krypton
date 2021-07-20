@@ -44,7 +44,7 @@ import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.player.Abilities
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.registry.RegistryKey
+import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
@@ -150,7 +150,7 @@ class KryptonPlayer(
 
     override val dimensionType: DimensionType
         get() = world.dimensionType
-    val dimension: RegistryKey<KryptonWorld>
+    val dimension: ResourceKey<KryptonWorld>
         get() = world.dimension
 
     val viewableEntities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
@@ -196,7 +196,7 @@ class KryptonPlayer(
             respawnForced = tag.getBoolean("SpawnForced")
             respawnAngle = tag.getFloat("SpawnAngle")
             if (tag.containsKey("SpawnDimension")) {
-                val dimension = KryptonWorld.REGISTRY_KEY_CODEC.parse(NBTOps, tag["SpawnDimension"]!!)
+                val dimension = KryptonWorld.RESOURCE_KEY_CODEC.parse(NBTOps, tag["SpawnDimension"]!!)
                 respawnDimension = dimension.resultOrPartial(LOGGER::error).orElse(KryptonWorld.OVERWORLD)
             }
         }
@@ -223,7 +223,7 @@ class KryptonPlayer(
                 setInt("SpawnZ", respawnPosition.z())
                 setBoolean("SpawnForced", respawnForced)
                 setFloat("SpawnAngle", respawnAngle)
-                KryptonWorld.REGISTRY_KEY_CODEC.encodeStart(NBTOps, respawnDimension).resultOrPartial(LOGGER::error).ifPresent { set("SpawnDimension", it) }
+                KryptonWorld.RESOURCE_KEY_CODEC.encodeStart(NBTOps, respawnDimension).resultOrPartial(LOGGER::error).ifPresent { set("SpawnDimension", it) }
             }
         }
 

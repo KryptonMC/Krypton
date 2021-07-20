@@ -18,13 +18,18 @@
  */
 package org.kryptonmc.krypton.registry
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.krypton.entity.attribute.Attribute
+import org.kryptonmc.krypton.entity.metadata.MetadataKey
+import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.event.GameEvent
+import org.kryptonmc.krypton.world.fluid.Fluid
 
-object InternalRegistries {
+object InternalResourceKeys {
 
-    val ATTRIBUTE = Registries.create(InternalResourceKeys.ATTRIBUTE)
-    val METADATA = Registries.create(InternalResourceKeys.METADATA)
-    val GAME_EVENT = Registries.create(InternalResourceKeys.GAME_EVENT)
-    val FLUID = Registries.createDefaulted(InternalResourceKeys.FLUID, Key.key("empty"))
+    val ATTRIBUTE = ResourceKeys.minecraft<Attribute>("attribute")
+    val METADATA = ResourceKeys.krypton<MetadataKey<*>>("metadata")
+    val DIMENSION = ResourceKeys.minecraft<KryptonWorld>("dimension")
+    val GAME_EVENT = ResourceKeys.minecraft<GameEvent>("game_event")
+    val FLUID = ResourceKeys.minecraft<Fluid>("fluid")
 }

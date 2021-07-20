@@ -6,7 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.registry
+package org.kryptonmc.api.resource
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
@@ -14,6 +14,8 @@ import org.kryptonmc.api.effect.particle.Particle
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
@@ -21,9 +23,14 @@ import org.kryptonmc.api.world.rule.GameRule
 /**
  * All the built-in registry keys for various registries.
  */
-object RegistryKeys {
+object ResourceKeys {
 
     // @formatter:off
+    /**
+     * The key of the parent registry.
+     */
+    @JvmField val PARENT = minecraft<Registry<out Any>>("root")
+
     /**
      * Built-in vanilla registries
      */
@@ -50,7 +57,7 @@ object RegistryKeys {
      * @return a new registry key
      */
     @JvmStatic
-    fun <T : Any> minecraft(key: String): RegistryKey<out Registry<T>> = RegistryKey(Key.key(key))
+    fun <T : Any> minecraft(key: String): ResourceKey<out Registry<T>> = ResourceKey(Key.key(key))
 
     /**
      * Creates a new registry key with the given [key] as its base key.
@@ -61,5 +68,5 @@ object RegistryKeys {
      * @return a new registry key
      */
     @JvmStatic
-    fun <T : Any> krypton(key: String): RegistryKey<out Registry<T>> = RegistryKey(RegistryRoots.KRYPTON, Key.key("krypton", key))
+    fun <T : Any> krypton(key: String): ResourceKey<out Registry<T>> = ResourceKey(RegistryRoots.KRYPTON, Key.key("krypton", key))
 }

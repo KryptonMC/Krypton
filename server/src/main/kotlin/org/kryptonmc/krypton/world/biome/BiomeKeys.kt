@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.world.biome
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.RegistryKey
-import org.kryptonmc.api.registry.RegistryKeys
+import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.resource.ResourceKeys
 
 object BiomeKeys {
 
@@ -106,5 +106,5 @@ object BiomeKeys {
     val DRIPSTONE_CAVES = register("dripstone_caves")
     val LUSH_CAVES = register("lush_caves")
 
-    private fun register(key: String) = RegistryKey(RegistryKeys.BIOME, Key.key(key))
+    private fun register(key: String) = ResourceKey(ResourceKeys.BIOME, Key.key(key))
 }

@@ -23,7 +23,7 @@ import io.netty.buffer.ByteBuf
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.api.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.FileRegistries
@@ -67,11 +67,13 @@ class PacketOutJoinGame(
 
         // worlds that exist
         buf.writeVarInt(3)
-        buf.writeKey(DimensionTypes.OVERWORLD.key)
-        buf.writeKey(DimensionTypes.THE_NETHER.key)
-        buf.writeKey(DimensionTypes.THE_END.key)
+        // FIXME: Use the resource management system
+        buf.writeKey(DimensionTypes.OVERWORLD_KEY.location)
+        buf.writeKey(DimensionTypes.NETHER_KEY.location)
+        buf.writeKey(DimensionTypes.END_KEY.location)
 
         // dimension codec (dimension/biome type registry)
+        // TODO: Replace with new data pack system
         buf.writeNBTCompound(NBTCompound()
             .set("minecraft:dimension_type", FileRegistries.DIMENSIONS.toNBT())
             .set("minecraft:worldgen/biome", FileRegistries.BIOMES.toNBT()))
@@ -80,7 +82,7 @@ class PacketOutJoinGame(
         buf.writeNBTCompound(dimension.toNBT())
 
         val hashedSeed = Hashing.sha256().hashLong(world.generationSettings.seed).asLong()
-        val dimensionKey = org.kryptonmc.api.registry.Registries.DIMENSION_TYPE[dimension]
+        val dimensionKey = world.dimension.location
 
         buf.writeKey(dimensionKey) // world spawning into
         buf.writeLong(hashedSeed)

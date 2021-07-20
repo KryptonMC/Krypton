@@ -9,6 +9,7 @@
 package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.resource.ResourceKey
 
 /**
  * A registry with a default key-value pair.
@@ -29,5 +30,5 @@ interface DefaultedRegistry<T : Any> : Registry<T> {
 
     override fun get(value: T): Key
 
-    override fun get(key: RegistryKey<T>): T
+    override fun get(key: ResourceKey<T>): T
 }

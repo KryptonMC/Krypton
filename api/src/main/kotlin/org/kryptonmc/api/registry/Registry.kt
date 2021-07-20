@@ -9,16 +9,17 @@
 package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.resource.ResourceKey
 
 /**
  * A holder for registry entries.
  */
-interface Registry<T : Any> : Map<RegistryKey<T>, T> {
+interface Registry<T : Any> : Map<ResourceKey<T>, T> {
 
     /**
      * The registry key for this registry.
      */
-    val key: RegistryKey<out Registry<T>>
+    val key: ResourceKey<out Registry<T>>
 
     /**
      * The set of child keys.
@@ -60,7 +61,7 @@ interface Registry<T : Any> : Map<RegistryKey<T>, T> {
      * @param value the value
      * @return the value
      */
-    fun <V : T> register(key: RegistryKey<T>, value: V): V
+    fun <V : T> register(key: ResourceKey<T>, value: V): V
 
     /**
      * Registers a new value to this registry with the given registry [key]
@@ -71,7 +72,7 @@ interface Registry<T : Any> : Map<RegistryKey<T>, T> {
      * @param value the value
      * @return the value
      */
-    fun <V : T> register(id: Int, key: RegistryKey<T>, value: V): V
+    fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V
 
     /**
      * Returns true if the given [key] is registered, false otherwise.
@@ -82,13 +83,13 @@ interface Registry<T : Any> : Map<RegistryKey<T>, T> {
     operator fun contains(key: Key): Boolean
 
     /**
-     * Gets the [RegistryKey] for the given [value], or null if
+     * Gets the [ResourceKey] for the given [value], or null if
      * there is no key associated with the given [value].
      *
      * @param value the value
-     * @return the registry key, or null if not present
+     * @return the resource key, or null if not present
      */
-    fun registryKey(value: T): RegistryKey<T>?
+    fun resourceKey(value: T): ResourceKey<T>?
 
     /**
      * Gets the ID for the given [value], or returns -1 if the

@@ -10,6 +10,8 @@ package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
+import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.util.orThrowNamed
 import org.kryptonmc.api.util.service
 
@@ -19,52 +21,52 @@ import org.kryptonmc.api.util.service
 object Registries {
 
     /**
+     * The parent registry. All registries are a child of this.
+     */
+    @JvmField
+    val PARENT = MANAGER.parent
+
+    /**
      * The registry of all sound events in the game.
      */
     @JvmField
-    val SOUND_EVENT = create(RegistryKeys.SOUND_EVENT)
+    val SOUND_EVENT = create(ResourceKeys.SOUND_EVENT)
 
     /**
      * The registry of all types of entities in the game.
      */
     @JvmField
-    val ENTITY_TYPE = createDefaulted(RegistryKeys.ENTITY_TYPE, key("pig"))
+    val ENTITY_TYPE = createDefaulted(ResourceKeys.ENTITY_TYPE, key("pig"))
 
     /**
      * The registry of all types of particles in the game.
      */
     @JvmField
-    val PARTICLE_TYPE = create(RegistryKeys.PARTICLE_TYPE)
+    val PARTICLE_TYPE = create(ResourceKeys.PARTICLE_TYPE)
 
     /**
      * The registry of all gamerules in the game.
      */
     @JvmField
-    val GAMERULES = create(RegistryKeys.GAMERULES)
-
-    /**
-     * The registry of all types of dimensions in the game.
-     */
-    @JvmField
-    val DIMENSION_TYPE = createDefaulted(RegistryKeys.DIMENSION_TYPE, key("overworld"))
+    val GAMERULES = create(ResourceKeys.GAMERULES)
 
     /**
      * The registry of all blocks in the game.
      */
     @JvmField
-    val BLOCK = create(RegistryKeys.BLOCK)
+    val BLOCK = create(ResourceKeys.BLOCK)
 
     /**
      * The registry of all item types in the game.
      */
     @JvmField
-    val ITEM = createDefaulted(RegistryKeys.ITEM, key("air"))
+    val ITEM = createDefaulted(ResourceKeys.ITEM, key("air"))
 
     /**
      * The registry of all biomes in the game.
      */
     @JvmField
-    val BIOME = create(RegistryKeys.BIOME)
+    val BIOME = create(ResourceKeys.BIOME)
 
     /**
      * Registers a new entry to the given [registry], with the given [key] mapped to
@@ -119,7 +121,7 @@ object Registries {
      * @return a registry for the given [key]
      */
     @JvmStatic
-    fun <T : Any> create(key: RegistryKey<out Registry<T>>) = MANAGER.create(key)
+    fun <T : Any> create(key: ResourceKey<out Registry<T>>) = MANAGER.create(key)
 
     /**
      * Creates a new registry with the given registry [key], with a [defaultKey].
@@ -132,7 +134,7 @@ object Registries {
      * @return a defaulted registry for the given [key]
      */
     @JvmStatic
-    fun <T : Any> createDefaulted(key: RegistryKey<out Registry<T>>, defaultKey: Key) = MANAGER.createDefaulted(key, defaultKey)
+    fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key) = MANAGER.createDefaulted(key, defaultKey)
 }
 
 // This is to allow access to the registry manager statically for the built-in registries.

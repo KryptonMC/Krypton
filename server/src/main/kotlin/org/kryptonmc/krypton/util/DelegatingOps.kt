@@ -16,15 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.krypton.util
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
+import com.mojang.serialization.DynamicOps
 
-object InternalRegistries {
-
-    val ATTRIBUTE = Registries.create(InternalResourceKeys.ATTRIBUTE)
-    val METADATA = Registries.create(InternalResourceKeys.METADATA)
-    val GAME_EVENT = Registries.create(InternalResourceKeys.GAME_EVENT)
-    val FLUID = Registries.createDefaulted(InternalResourceKeys.FLUID, Key.key("empty"))
-}
+abstract class DelegatingOps<T>(protected val delegate: DynamicOps<T>) : DynamicOps<T> by delegate

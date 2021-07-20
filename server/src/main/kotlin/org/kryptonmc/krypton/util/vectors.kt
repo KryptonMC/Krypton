@@ -16,20 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.registry.RegistryKeys
-import org.kryptonmc.krypton.entity.attribute.Attribute
-import org.kryptonmc.krypton.entity.metadata.MetadataKey
-import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.event.GameEvent
-import org.kryptonmc.krypton.world.fluid.Fluid
+import org.kryptonmc.api.util.log2
+import org.kryptonmc.api.util.roundUpPow2
 
-object InternalRegistryKeys {
-
-    val ATTRIBUTE = RegistryKeys.minecraft<Attribute>("attribute")
-    val METADATA = RegistryKeys.krypton<MetadataKey<*>>("metadata")
-    val DIMENSION = RegistryKeys.minecraft<KryptonWorld>("dimension")
-    val GAME_EVENT = RegistryKeys.minecraft<GameEvent>("game_event")
-    val FLUID = RegistryKeys.minecraft<Fluid>("fluid")
-}
+val PACKED_X_Z = 1 + 30000000.roundUpPow2().log2()
+val PACKED_Y = 64 - PACKED_X_Z * 2
