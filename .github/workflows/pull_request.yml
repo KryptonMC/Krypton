@@ -1,4 +1,4 @@
-name: "Pull Request Validation Build"
+name: "Pull Request Build"
 
 on: [pull_request]
 
