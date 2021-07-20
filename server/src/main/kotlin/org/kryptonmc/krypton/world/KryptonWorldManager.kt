@@ -28,12 +28,10 @@ import org.kryptonmc.api.world.GameVersion
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
-import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.util.chunkInSpiral
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.datafix.DATA_FIXER
 import org.kryptonmc.krypton.util.datafix.References
@@ -61,13 +59,17 @@ import kotlin.io.path.outputStream
 import kotlin.system.exitProcess
 
 @Suppress("MemberVisibilityCanBePrivate")
-class KryptonWorldManager(override val server: KryptonServer, name: String) : WorldManager {
+class KryptonWorldManager(
+    override val server: KryptonServer,
+    private val rootFolder: Path
+) : WorldManager {
 
     private val worldExecutor = Executors.newCachedThreadPool(NamedThreadFactory("World Handler %d"))
     override val worlds = mutableMapOf<String, KryptonWorld>()
     override val default: KryptonWorld
 
     init {
+        val name = server.config.world.name
         default = try {
             Messages.WORLD.LOAD.info(LOGGER, name)
             load(name).get().apply { if (server.config.world.forceDefaultGamemode) gamemode = server.gamemode }
@@ -80,7 +82,7 @@ class KryptonWorldManager(override val server: KryptonServer, name: String) : Wo
     }
 
     override fun load(name: String): CompletableFuture<KryptonWorld> {
-        val folder = CURRENT_DIRECTORY.resolve(name)
+        val folder = rootFolder.resolve(name)
         require(folder.exists()) {
             Messages.WORLD.NOT_FOUND.error(LOGGER, name)
             "World with key $name does not exist!"

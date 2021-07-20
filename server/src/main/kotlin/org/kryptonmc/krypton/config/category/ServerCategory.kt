@@ -25,13 +25,20 @@ import org.spongepowered.configurate.objectmapping.meta.Setting
 @ConfigSerializable
 data class ServerCategory(
     @Comment("The IP used by players to connect. 0.0.0.0 means listen on all interfaces.")
-    val ip: String = "0.0.0.0",
+    val ip: String = DEFAULT_IP,
     @Comment("The port used by players to connect.")
-    val port: Int = 25565,
+    val port: Int = DEFAULT_PORT,
     @Setting("online-mode")
     @Comment("Whether the server authenticates users with Mojang.")
     val onlineMode: Boolean = true,
     @Setting("compression-threshold")
     @Comment("The threshold at which packets larger will be compressed. Set to -1 to disable.")
     val compressionThreshold: Int = 256
-)
+) {
+
+    companion object {
+
+        const val DEFAULT_IP = "0.0.0.0"
+        const val DEFAULT_PORT = 25565
+    }
+}

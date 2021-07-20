@@ -31,9 +31,13 @@ import org.kryptonmc.krypton.config.serializer.DifficultyTypeSerializer
 import org.kryptonmc.krypton.config.serializer.GamemodeTypeSerializer
 import org.kryptonmc.krypton.config.serializer.LocaleTypeSerializer
 import org.spongepowered.configurate.ConfigurationOptions
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader
+import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
+import java.io.IOException
+import java.nio.file.Path
 
 @ConfigSerializable
 data class KryptonConfig(
@@ -81,5 +85,16 @@ data class KryptonConfig(
                     .register(LocaleTypeSerializer)
                     .registerAnnotatedObjects(objectMapperFactory())
             }
+
+        fun load(path: Path): KryptonConfig {
+            val loader = HoconConfigurationLoader.builder()
+                .path(path)
+                .defaultOptions(OPTIONS)
+                .build()
+            val node = loader.load()
+            val config = node.get<KryptonConfig>() ?: throw IOException("Unable to load configuration!")
+            loader.save(node)
+            return config
+        }
     }
 }

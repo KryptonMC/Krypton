@@ -26,7 +26,6 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import net.kyori.adventure.util.Services
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.event.server.ServerStartEvent
@@ -35,6 +34,7 @@ import org.kryptonmc.api.event.ticking.TickEndEvent
 import org.kryptonmc.api.event.ticking.TickStartEvent
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.status.StatusInfo
+import org.kryptonmc.api.util.service
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.auth.MojangUUIDSerializer
@@ -58,7 +58,6 @@ import org.kryptonmc.krypton.serializers.DifficultySerializer
 import org.kryptonmc.krypton.serializers.GamemodeSerializer
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
-import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.createDirectory
@@ -74,9 +73,6 @@ import org.kryptonmc.krypton.util.reports.ReportedException
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader
-import org.spongepowered.configurate.kotlin.extensions.get
-import java.io.IOException
 import java.net.InetSocketAddress
 import java.nio.file.Path
 import java.security.SecureRandom
@@ -93,9 +89,10 @@ import kotlin.io.path.isRegularFile
 import kotlin.math.max
 import kotlin.system.measureTimeMillis
 
-class KryptonServer : Server {
-
-    internal val config = loadConfig()
+class KryptonServer(
+    val config: KryptonConfig,
+    worldFolder: Path
+) : Server {
 
     override val info = KryptonServerInfo
     override val status = KryptonStatusInfo(config.status.maxPlayers, config.status.motd)
@@ -108,27 +105,25 @@ class KryptonServer : Server {
     override val address = InetSocketAddress(config.server.ip, config.server.port)
 
     val playerManager = PlayerManager(this)
-
     override val players = playerManager.players
-    override val channels: MutableSet<Key> = ConcurrentHashMap.newKeySet()
 
     override fun player(uuid: UUID) = playerManager.playersByUUID[uuid]
     override fun player(name: String) = playerManager.playersByName[name]
 
+    override val channels: MutableSet<Key> = ConcurrentHashMap.newKeySet()
     override val console = KryptonConsoleSender
-
     override var scoreboard: KryptonScoreboard? = null
         private set
 
     private val nettyProcess = NettyProcess(this)
-    internal val random: SecureRandom = SecureRandom()
+    val random = SecureRandom()
 
-    override val worldManager = KryptonWorldManager(this, config.world.name)
+    override val worldManager = KryptonWorldManager(this, worldFolder)
     override val commandManager = KryptonCommandManager(this)
     override val pluginManager = KryptonPluginManager(this)
     override val eventManager = KryptonEventManager(pluginManager)
     override val servicesManager = KryptonServicesManager
-    override val registryManager = Services.service(RegistryManager::class.java).get()
+    override val registryManager = service<RegistryManager>().get()
     override val blockManager = KryptonBlockManager
     override val itemManager = KryptonItemManager
     override val scheduler = KryptonScheduler(pluginManager)
@@ -145,17 +140,13 @@ class KryptonServer : Server {
     private var tickCount = 0
     private var oversleepFactor = 0L
 
-    internal val tickTimes = LongArray(100)
-    internal var averageTickTime = 0F
-        private set
-
-    val continuousProfiler = ServerProfiler(this::tickCount)
+    val continuousProfiler = ServerProfiler(::tickCount)
     private var profiler: Profiler = DeadProfiler
 
     @Volatile
     private var delayProfilerStart = false
 
-    internal fun start() = try {
+    fun start() {
         Messages.START.INITIAL.info(LOGGER, config.server.ip, config.server.port)
         val startTime = System.nanoTime()
 
@@ -204,8 +195,10 @@ class KryptonServer : Server {
         Runtime.getRuntime().addShutdownHook(Thread(::stop, "Shutdown Handler").apply { isDaemon = false })
 
         Messages.START.DONE.info(LOGGER, "%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9))
+        run()
+    }
 
-        // Start ticking the server
+    fun run() = try {
         while (isRunning) {
             val nextTickTime = System.currentTimeMillis() - lastTickTime
             if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15_000L) {
@@ -219,26 +212,15 @@ class KryptonServer : Server {
             startProfilerTick(singleTickProfiler)
             profiler.start()
 
-            // start tick
-            profiler.push("tick start event")
-            eventManager.fireAndForgetSync(TickStartEvent(tickCount))
-            profiler.pop()
-
+            // tick
             profiler.push("tick")
+            eventManager.fireAndForgetSync(TickStartEvent(tickCount))
             val tickTime = measureTimeMillis(::tick)
             profiler.pop()
 
-            // store historical tick time and update average
-            profiler.push("tallying")
-            val finishTime = System.currentTimeMillis()
-            tickTimes[tickCount % 100] = tickTime
-            averageTickTime = averageTickTime * 0.8F + tickTime * 0.19999999F
-            profiler.pop()
-
             // end tick
-            profiler.push("tick end event")
+            val finishTime = System.currentTimeMillis()
             eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
-            profiler.pop()
             lastTickTime = finishTime
             profiler.end()
             endProfilerTick(singleTickProfiler)
@@ -352,20 +334,7 @@ class KryptonServer : Server {
 
     override fun audiences() = players + console
 
-    private fun loadConfig(): KryptonConfig {
-        val configFile = CURRENT_DIRECTORY.resolve(KryptonConfig.FILE_NAME)
-        val loader = HoconConfigurationLoader.builder()
-            .path(configFile)
-            .defaultOptions(KryptonConfig.OPTIONS)
-            .build()
-
-        val node = loader.load()
-        val config = node.get<KryptonConfig>() ?: throw IOException("Unable to load configuration!")
-        loader.save(node)
-        return config
-    }
-
-    internal fun stop(halt: Boolean = true) {
+    fun stop(halt: Boolean = true) {
         if (!isRunning) return // Ensure we cannot accidentally run this twice
 
         // stop server and shut down session manager (disconnecting all players)
@@ -394,7 +363,7 @@ class KryptonServer : Server {
         if (halt) Runtime.getRuntime().halt(0)
     }
 
-    internal fun restart() {
+    fun restart() {
         stop(false) // avoid halting there because we halt here
         val split = config.other.restartScript.split(" ")
         if (split.isNotEmpty()) {
@@ -430,7 +399,7 @@ class KryptonServer : Server {
 
     companion object {
 
-        val REGISTER_CHANNEL_KEY = key("register")
+        private val REGISTER_CHANNEL_KEY = key("register")
         private val UNREGISTER_CHANNEL_KEY = key("unregister")
         private val RESERVED_CHANNELS = setOf(REGISTER_CHANNEL_KEY, UNREGISTER_CHANNEL_KEY)
 

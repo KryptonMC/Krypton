@@ -64,7 +64,7 @@ import javax.crypto.spec.SecretKeySpec
 import kotlin.random.Random
 
 /**
- * Handles all inbound packets in the [Login][org.kryptonmc.krypton.packet.state.PacketState.LOGIN] state.
+ * Handles all inbound packets in the [Login][org.kryptonmc.krypton.network.PacketState.LOGIN] state.
  *
  * There are two inbound packets in this state that we handle:
  * - [Login Start][org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart] -
@@ -153,7 +153,7 @@ class LoginHandler(
         val buffer = Unpooled.copiedBuffer(packet.data)
         val isSuccess = buffer.verifyIntegrity(secret)
         if (!isSuccess) {
-            session.disconnect(INVALID_VELOCITY_RESPONSE)
+            session.disconnect(Messages.VELOCITY.INVALID_RESPONSE())
             return
         }
 
@@ -234,7 +234,6 @@ class LoginHandler(
     companion object {
 
         private const val VELOCITY_CHANNEL_ID = "velocity:player_info"
-        private val INVALID_VELOCITY_RESPONSE = text("Invalid proxy response!", NamedTextColor.RED)
         private val LOGGER = logger<LoginHandler>()
     }
 }

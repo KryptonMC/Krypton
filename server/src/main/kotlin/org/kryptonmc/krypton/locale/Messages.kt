@@ -44,7 +44,6 @@ object Messages {
     val START = StartMessages
     val AUTOSAVE = AutosaveMessages
     val STOP = StopMessages
-    val WATCHDOG = WatchdogMessages
     val RESTART = RestartMessages
     val WORLD = WorldMessages
     val REGION = RegionMessages
@@ -52,15 +51,15 @@ object Messages {
     val COMMAND = CommandMessages
     val COMMANDS = CommandsMessages
     val BUNGEE = BungeeMessages
+    val VELOCITY = VelocityMessages
     val NETWORK = NetworkMessages
     val PLUGIN = PluginMessages
-    val QUERY = QueryMessages
-    val JMX = JMXMessages
     val PROFILER = ProfilerMessages
     val THREAD = ThreadMessages
 
     // Starting Krypton server version {0} for Minecraft {1}
     val LOAD = doubleText("load")
+
     // You're starting the server with {0} megabytes of RAM.
     // Consider starting it with more by using \"java -Xmx1024M -Xms1024M -jar Krypton-{1}.jar\" to start it with 1 GB RAM.
     val LOAD_LOW_MEMORY = doubleText("load.low-memory")
@@ -85,16 +84,8 @@ object Messages {
     // the '/plugins/bStats/' folder and setting enabled to false.
     val METRICS_INFO = empty("metrics.info")
 
-    // Attempted to place block {0} under/over the world! The section at {1} cannot be set!
-    val BLOCK_UNDER_WORLD = Args2<KryptonBlock, Int> { block, y -> translatable("krypton.block.under-world", listOf(text(block.toString()), text(y))) }
-
     // Could not serialise {0} (Class {1})! Will not be sent to client!
     val ARGUMENT_ERROR = doubleText("argument-error")
-
-    // Method {0} in class {1} annotated with {2} does not have a single argument!
-    val EVENT_SINGLE_ARGUMENT = Args3<Method, Class<*>, Listener> { method, clazz, annotation ->
-        translatable("krypton.event-single-argument", listOf(text(method.name), text(clazz.simpleName), text(annotation.toString())))
-    }
 
     // Plugin {0} generated an exception from task {1}!
     val SCHEDULE_ERROR = Args2<String, Runnable> { name, task -> translatable("krypton.schedule-error", listOf(text(name), text(task.toString()))) }
@@ -127,13 +118,10 @@ object Messages {
 
         fun text() = text(this())
         fun send(sender: Sender) = send(sender, this())
-        fun print() = print(this())
         fun info(logger: Logger) = info(logger, this())
         fun warn(logger: Logger) = warn(logger, this())
         fun error(logger: Logger) = error(logger, this())
         fun error(logger: Logger, exception: Throwable) = error(logger, this(), exception)
-        fun fatal(logger: Logger) = fatal(logger, this())
-        fun fatal(logger: Logger, exception: Throwable) = fatal(logger, this(), exception)
     }
 
     fun interface Args1<A> : (A) -> Component, Args {
@@ -145,8 +133,6 @@ object Messages {
         fun warn(logger: Logger, arg1: A) = warn(logger, this(arg1))
         fun error(logger: Logger, arg1: A) = error(logger, this(arg1))
         fun error(logger: Logger, arg1: A, exception: Throwable) = error(logger, this(arg1), exception)
-        fun fatal(logger: Logger, arg1: A) = fatal(logger, this(arg1))
-        fun fatal(logger: Logger, arg1: A, exception: Throwable) = fatal(logger, this(arg1), exception)
     }
 
     fun interface Args2<A, B> : (A, B) -> Component, Args {
@@ -158,69 +144,22 @@ object Messages {
         fun warn(logger: Logger, arg1: A, arg2: B) = warn(logger, this(arg1, arg2))
         fun error(logger: Logger, arg1: A, arg2: B) = error(logger, this(arg1, arg2))
         fun error(logger: Logger, arg1: A, arg2: B, exception: Throwable) = error(logger, this(arg1, arg2), exception)
-        fun fatal(logger: Logger, arg1: A, arg2: B) = fatal(logger, this(arg1, arg2))
-        fun fatal(logger: Logger, arg1: A, arg2: B, exception: Throwable) = fatal(logger, this(arg1, arg2), exception)
     }
 
     fun interface Args3<A, B, C> : (A, B, C) -> Component, Args {
 
         fun text(arg1: A, arg2: B, arg3: C) = text(this(arg1, arg2, arg3))
         fun send(sender: Sender, arg1: A, arg2: B, arg3: C) = send(sender, this(arg1, arg2, arg3))
-        fun print(arg1: A, arg2: B, arg3: C) = print(this(arg1, arg2, arg3))
         fun info(logger: Logger, arg1: A, arg2: B, arg3: C) = info(logger, this(arg1, arg2, arg3))
         fun warn(logger: Logger, arg1: A, arg2: B, arg3: C) = warn(logger, this(arg1, arg2, arg3))
         fun error(logger: Logger, arg1: A, arg2: B, arg3: C) = error(logger, this(arg1, arg2, arg3))
         fun error(logger: Logger, arg1: A, arg2: B, arg3: C, exception: Throwable) = error(logger, this(arg1, arg2, arg3), exception)
-        fun fatal(logger: Logger, arg1: A, arg2: B, arg3: C) = fatal(logger, this(arg1, arg2, arg3))
-        fun fatal(logger: Logger, arg1: A, arg2: B, arg3: C, exception: Throwable) = fatal(logger, this(arg1, arg2, arg3), exception)
-    }
-
-    fun interface Args4<A, B, C, D> : (A, B, C, D) -> Component, Args {
-
-        fun text(arg1: A, arg2: B, arg3: C, arg4: D) = text(this(arg1, arg2, arg3, arg4))
-        fun send(sender: Sender, arg1: A, arg2: B, arg3: C, arg4: D) = send(sender, this(arg1, arg2, arg3, arg4))
-        fun print(arg1: A, arg2: B, arg3: C, arg4: D) = print(this(arg1, arg2, arg3, arg4))
-        fun info(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D) = info(logger, this(arg1, arg2, arg3, arg4))
-        fun warn(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D) = warn(logger, this(arg1, arg2, arg3, arg4))
-        fun error(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D) = error(logger, this(arg1, arg2, arg3, arg4))
-        fun error(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, exception: Throwable) = error(logger, this(arg1, arg2, arg3, arg4), exception)
-        fun fatal(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D) = fatal(logger, this(arg1, arg2, arg3, arg4))
-        fun fatal(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, exception: Throwable) = fatal(logger, this(arg1, arg2, arg3, arg4), exception)
-    }
-
-    fun interface Args5<A, B, C, D, E> : (A, B, C, D, E) -> Component, Args {
-
-        fun text(arg1: A, arg2: B, arg3: C, arg4: D, arg5: E) = text(this(arg1, arg2, arg3, arg4, arg5))
-        fun send(sender: Sender, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E) = send(sender, this(arg1, arg2, arg3, arg4, arg5))
-        fun print(arg1: A, arg2: B, arg3: C, arg4: D, arg5: E) = print(this(arg1, arg2, arg3, arg4, arg5))
-        fun info(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E) = info(logger, this(arg1, arg2, arg3, arg4, arg5))
-        fun warn(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E) = warn(logger, this(arg1, arg2, arg3, arg4, arg5))
-        fun error(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E) = error(logger, this(arg1, arg2, arg3, arg4, arg5))
-        fun error(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, exception: Throwable) = error(logger, this(arg1, arg2, arg3, arg4, arg5), exception)
-        fun fatal(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E) = fatal(logger, this(arg1, arg2, arg3, arg4, arg5))
-        fun fatal(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, exception: Throwable) = fatal(logger, this(arg1, arg2, arg3, arg4, arg5), exception)
-    }
-
-    fun interface Args6<A, B, C, D, E, F> : (A, B, C, D, E, F) -> Component, Args {
-
-        fun text(arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, arg6: F) = text(this(arg1, arg2, arg3, arg4, arg5, arg6))
-        fun send(sender: Sender, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, arg6: F) = send(sender, this(arg1, arg2, arg3, arg4, arg5, arg6))
-        fun print(arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, arg6: F) = print(this(arg1, arg2, arg3, arg4, arg5, arg6))
-        fun info(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, arg6: F) = info(logger, this(arg1, arg2, arg3, arg4, arg5, arg6))
-        fun warn(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, arg6: F) = warn(logger, this(arg1, arg2, arg3, arg4, arg5, arg6))
-        fun error(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, arg6: F) = error(logger, this(arg1, arg2, arg3, arg4, arg5, arg6))
-        fun error(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, arg6: F, exception: Throwable) = error(logger, this(arg1, arg2, arg3, arg4, arg5, arg6), exception)
-        fun fatal(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, arg6: F) = fatal(logger, this(arg1, arg2, arg3, arg4, arg5, arg6))
-        fun fatal(logger: Logger, arg1: A, arg2: B, arg3: C, arg4: D, arg5: E, arg6: F, exception: Throwable) = fatal(logger, this(arg1, arg2, arg3, arg4, arg5, arg6), exception)
     }
 
     object StartMessages {
 
         // Starting Krypton server on {0}:{1}...
         val INITIAL = Args2<String, Int> { ip, port -> translatable("krypton.start", listOf(text(ip), text(port))) }
-
-        // Starting GS4 status listener...
-        val QUERY = empty("start.query")
 
         // Done ({0})! Type "help" for help.
         val DONE = singleText("start.done")
@@ -257,56 +196,6 @@ object Messages {
 
         // Unable to find restart script {0}! Refusing to restart.
         val NO_SCRIPT = singleText("restart.no-script")
-    }
-
-    object WatchdogMessages {
-
-        val DUMP = DumpMessages
-
-        // ---- DO NOT REPORT THIS TO KRYPTON! THIS IS NOT A BUG OR CRASH! ----
-        val HEADER = empty("watchdog.header")
-
-        // The server has not responded for {0} seconds! Creating thread dump...
-        val WARNING = Args1<Long> { translatable("krypton.watchdog.warning", listOf(text(it))) }
-
-        // The server has stopped responding! This could be, but is not likely to be, an issue with Krypton.
-        // If you see a plugin in the server thread dump below, then please report it to that author.
-        // \t *Especially* if it looks like HTTP or MySQL operations are occurring
-        // If you see a world save or edit, then it likely means you tried to do much more than your server can handle at once
-        // \t If this is the case, consider increasing timeout-time in the main configuration file. Please note, however, that this will replace this crash with LARGE lag spikes
-        // If you are still unsure, or you think that this actually a Krypton issue, especially if you see org.kryptonmc at the top of the trace, please report this to https://github.com/KryptonMC/Krypton/issues
-        // When reporting to Krypton, please ensure that you include all relevant console errors and thread dumps, as this will help us diagnose your issue easier.
-        // Krypton version: {0} (for Minecraft {1})
-        val STOPPED = doubleText("watchdog.stopped")
-
-        object DumpMessages {
-
-            // Server thread dump (look for plugins here before reporting this to Krypton):
-            val SERVER = empty("watchdog.dump.server")
-
-            // Entire Thread Dump:
-            val ALL = empty("watchdog.dump.all")
-
-            // Current Thread: {0}
-            val THREAD = singleText("watchdog.dump.thread")
-
-            // \tPID: {0} | Suspended: {1} | Native: {2} | State: {3}
-            val INFO = Args4<Long, Boolean, Boolean, Thread.State> { pid, suspended, native, state ->
-                translatable("krypton.watchdog.dump.info", listOf(text(pid), text(suspended), text(native), text(state.toString())))
-            }
-
-            // \tThread is waiting on monitor(s):
-            val MONITORS = empty("watchdog.dump.monitors")
-
-            // \t\tLocked on: {0}
-            val MONITOR = Args1<StackTraceElement> { translatable("krypton.watchdog.dump.monitor", listOf(text(it.toString()))) }
-
-            // \tStack:
-            val STACK = empty("watchdog.dump.stack")
-
-            // \t\t{0}
-            val STACK_ELEMENT = Args1<StackTraceElement> { translatable("krypton.watchdog.dump.stack.element", listOf(text(it.toString()))) }
-        }
     }
 
     object WorldMessages {
@@ -404,9 +293,6 @@ object Messages {
 
         // You do not have permission to execute this command!
         val NO_PERMISSION = empty("command.no-permission")
-
-        // Unknown command {0}.
-        val UNKNOWN = singleText("command.unknown")
     }
 
     object CommandsMessages {
@@ -440,9 +326,6 @@ object Messages {
     }
 
     object VelocityMessages {
-
-        // Please notify the server administrator that they are attempting to use Velocity IP forwarding without setting their forwarding mode to MODERN in their configuration file.
-        val NOTIFY = empty("velocity.notify")
 
         // Invalid response from Velocity!
         val INVALID_RESPONSE = empty("velocity.invalid-response")
@@ -521,36 +404,6 @@ object Messages {
         }
     }
 
-    object QueryMessages {
-
-        // Query running on {0}:{1}
-        val RUNNING = Args2<String, Int> { ip, port -> translatable("krypton.query.running", listOf(text(ip), text(port))) }
-
-        // Failed to recover from exception! Shutting down...
-        val CANNOT_RECOVER = empty("query.cannot-recover")
-
-        // Unable to initialise query system on {0}:{1}
-        val INITIALIZE = Args2<String, Int> { ip, port -> translatable("krypton.query.initialize", listOf(text(ip), text(port))) }
-
-        // Invalid query port! Should be between 0 and 65535, was {0}. Querying disabled.
-        val INVALID_PORT = Args1<Int> { translatable("krypton.query.invalid-port", listOf(text(it))) }
-    }
-
-    object JMXMessages {
-
-        // Historical tick times in ms
-        val HISTORICAL = empty("jmx.historical")
-
-        // Average tick time in ms
-        val AVERAGE = empty("jmx.average")
-
-        // Simple metrics for Krypton
-        val DESCRIPTION = empty("jmx.description")
-
-        // Failed to register server as a JMX bean!
-        val REGISTER_ERROR = empty("jmx.register-error")
-    }
-
     object ProfilerMessages {
 
         val ERROR = ErrorMessages
@@ -612,12 +465,4 @@ private fun doubleText(key: String) = Messages.Args2<String, String> { a, b -> t
 
 private fun tripleText(key: String) = Messages.Args3<String, String, String> { a, b, c ->
     translatable("krypton.$key", listOf(text(a), text(b), text(c)))
-}
-
-private fun quadText(key: String) = Messages.Args4<String, String, String, String> { a, b, c, d ->
-    translatable("krypton.$key", listOf(text(a), text(b), text(c), text(d)))
-}
-
-private fun sixText(key: String) = Messages.Args6<String, String, String, String, String, String> { a, b, c, d, e, f ->
-    translatable("krypton.$key", listOf(text(a), text(b), text(c), text(d), text(e), text(f)))
 }

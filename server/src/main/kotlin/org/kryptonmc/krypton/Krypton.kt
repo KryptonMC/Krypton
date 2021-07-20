@@ -22,12 +22,21 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
+import com.github.ajalt.clikt.parameters.options.help
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.int
+import com.github.ajalt.clikt.parameters.types.path
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
+import org.kryptonmc.krypton.config.KryptonConfig
+import org.kryptonmc.krypton.config.category.ServerCategory
+import org.kryptonmc.krypton.config.category.StatusCategory
+import org.kryptonmc.krypton.config.category.WorldCategory
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.TranslationManager
 import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.logger
+import java.nio.file.Path
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicReference
 
@@ -37,12 +46,39 @@ private const val MEMORY_WARNING_THRESHOLD = 512
 
 fun main(args: Array<String>) = KryptonCLI().main(args)
 
-/**
- * The CLI handler for Krypton
- */
 class KryptonCLI : CliktCommand() {
 
-    private val version by option("-v", "--version").flag()
+    // Flags
+    private val version by option("-v", "--version").flag().help("Prints the version and exits")
+    private val configOnly by option("--init", "--config-only", "--init-settings").flag()
+        .help("Creates the config file and exits")
+
+    // Config options
+    private val ip by option("-ip", "--ip").help("The IP to listen on").default(ServerCategory.DEFAULT_IP)
+    private val port by option("-p", "--port").int().help("The port to bind to").default(ServerCategory.DEFAULT_PORT)
+    private val online by option("-o", "--online-mode").flag(default = true)
+        .help("Whether users should be authenticated with Mojang")
+    private val maxPlayers by option("-p", "--players", "--max-players").int()
+        .help("The maximum amount of players")
+        .default(StatusCategory.DEFAULT_MAX_PLAYERS)
+    private val motd by option("--motd").convert { LegacyComponentSerializer.legacyAmpersand().deserialize(it) }
+        .help("The message of the day sent to players")
+        .default(StatusCategory.DEFAULT_MOTD)
+    private val worldName by option("-w", "--world", "--world-name")
+        .help("The name of the world folder for the default world")
+        .default(WorldCategory.DEFAULT_NAME)
+
+    // Folders
+    private val configFile by option("-c", "--config")
+        .path(canBeDir = false, canBeSymlink = false, mustBeReadable = true, mustBeWritable = true)
+        .default(Path.of("config.conf"))
+        .help("Configuration file path for the server")
+    private val worldFolder by option("--world-folder", "--world-directory", "--world-dir", "--universe")
+        .path(canBeFile = false, canBeSymlink = false, mustBeReadable = true, mustBeWritable = true)
+        .default(Path.of("."))
+        .help("Folder where worlds are stored")
+
+    // Other settings
     private val locale by option("-l", "--locale").convert {
         val split = it.split("[_-]".toRegex())
         if (split.isEmpty()) return@convert Locale.ENGLISH
@@ -64,11 +100,24 @@ class KryptonCLI : CliktCommand() {
         Bootstrap.preload()
         Bootstrap.validate()
 
+        // Load the config
+        val loadedConfig = KryptonConfig.load(configFile)
+        if (configOnly) {
+            logger.info("Successfully initialized config file located at $configFile.")
+            return
+        }
+        // Populate the config with CLI parameters
+        val config = loadedConfig.copy(
+            server = loadedConfig.server.copy(ip = ip, port = port, onlineMode = online),
+            status = loadedConfig.status.copy(motd = motd, maxPlayers = maxPlayers),
+            world = loadedConfig.world.copy(name = worldName)
+        )
+
         val reference = AtomicReference<KryptonServer>()
         val mainThread = Thread({ reference.get().start() }, "Server Thread").apply {
             setUncaughtExceptionHandler { _, exception -> logger<KryptonServer>().error("Caught previously unhandled exception", exception) }
         }
-        val server = KryptonServer()
+        val server = KryptonServer(config, worldFolder)
         reference.set(server)
         mainThread.start()
     }

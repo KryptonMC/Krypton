@@ -28,8 +28,15 @@ import org.spongepowered.configurate.objectmapping.meta.Setting
 @ConfigSerializable
 data class StatusCategory(
     @Comment("The message of the day. Supports legacy and hex codes (using &#).")
-    val motd: TextComponent = Component.text("Krypton is a Minecraft server written in Kotlin!", TextColor.color(128, 0, 255)),
+    val motd: TextComponent = DEFAULT_MOTD,
     @Setting("max-players")
     @Comment("The upper limit of the player count. Any players that try to join when this is reached will be kicked.")
-    val maxPlayers: Int = 20
-)
+    val maxPlayers: Int = DEFAULT_MAX_PLAYERS
+) {
+
+    companion object {
+
+        const val DEFAULT_MAX_PLAYERS = 20
+        val DEFAULT_MOTD = Component.text("Krypton is a Minecraft server written in Kotlin!", TextColor.color(128, 0, 255))
+    }
+}
