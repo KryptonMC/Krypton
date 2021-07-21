@@ -26,11 +26,13 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.util.getIfPresent
 import org.kryptonmc.api.world.dimension.DimensionType
+import org.kryptonmc.krypton.registry.RegistryFileCodec
 import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.tags.BlockTags
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.PACKED_Y
 import java.util.Optional
+import java.util.function.Supplier
 
 object DimensionTypes {
 
@@ -143,6 +145,8 @@ object DimensionTypes {
             Codec.doubleRange(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE).fieldOf("coordinate_scale").forGetter(DimensionType::coordinateScale)
         ).apply(instance, ::DimensionType)
     }.comapFlatMap({ it.checkY() }, { it })
+
+    val CODEC: Codec<Supplier<DimensionType>> = RegistryFileCodec(ResourceKeys.DIMENSION_TYPE, DIRECT_CODEC)
 
     private fun DimensionType.checkY(): DataResult<DimensionType> {
         if (height < MINIMUM_HEIGHT) return DataResult.error("Height has to be at least $MINIMUM_HEIGHT!")

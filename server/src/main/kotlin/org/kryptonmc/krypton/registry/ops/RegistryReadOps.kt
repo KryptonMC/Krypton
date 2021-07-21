@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.registry.ops
 
-import com.google.common.base.Supplier
 import com.google.common.base.Suppliers
 import com.google.gson.JsonElement
 import com.mojang.datafixers.util.Pair
@@ -39,6 +38,7 @@ import org.kryptonmc.krypton.util.DelegatingOps
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.logger
 import java.util.IdentityHashMap
+import java.util.function.Supplier
 
 /**
  * Please feel free to blame Java generics for the amount of UNCHECKED_CAST
@@ -106,7 +106,7 @@ class RegistryReadOps<T : Any> private constructor(
         readCache.values[resourceKey] = DataResult.success(supplier) as DataResult<Supplier<Any>>
         val optionalParsed = resources.parseJson(jsonOps, registryKey, resourceKey as ResourceKey<E>, elementCodec)
         val result = if (!optionalParsed.isPresent) DataResult.success(object : Supplier<E> {
-            override fun get() = registry[resourceKey]
+            override fun get() = registry[resourceKey]!!
             override fun toString() = resourceKey.toString()
         }) else {
             val parsedResult = optionalParsed.get()
