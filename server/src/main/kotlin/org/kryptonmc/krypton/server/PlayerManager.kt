@@ -85,6 +85,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
 
+    private val registryHolder = server.registryHolder
     private val maxPlayers = server.status.maxPlayers
     private val viewDistance = server.config.world.viewDistance
 
@@ -122,7 +123,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
         session.sendPacket(PacketOutDeclareRecipes)
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
-//        session.sendPacket(PacketOutTags()) // TODO: Fix tags
+        session.sendPacket(PacketOutTags(server.resources.tags.write(registryHolder)))
         session.sendPacket(PacketOutEntityStatus(player.id, if (world.gameRules[GameRules.REDUCED_DEBUG_INFO]) 22 else 23))
         sendOperatorStatus(player)
         invalidateStatus()

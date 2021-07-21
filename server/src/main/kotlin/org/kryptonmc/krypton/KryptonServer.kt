@@ -48,15 +48,18 @@ import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.MetadataResponse
 import org.kryptonmc.krypton.locale.TranslationRepository
 import org.kryptonmc.krypton.network.PacketLoader
+import org.kryptonmc.krypton.pack.repository.PackRepository
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
+import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.registry.json.RegistryBlock
 import org.kryptonmc.krypton.registry.json.RegistryBlockState
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.serializers.DifficultySerializer
 import org.kryptonmc.krypton.serializers.GamemodeSerializer
 import org.kryptonmc.krypton.server.PlayerManager
+import org.kryptonmc.krypton.server.ServerResources
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.createDirectories
@@ -90,6 +93,9 @@ import kotlin.math.max
 import kotlin.system.measureTimeMillis
 
 class KryptonServer(
+    val registryHolder: RegistryHolder,
+    val packRepository: PackRepository,
+    val resources: ServerResources,
     val config: KryptonConfig,
     worldFolder: Path
 ) : Server {

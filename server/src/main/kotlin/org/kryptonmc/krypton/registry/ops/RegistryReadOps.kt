@@ -33,6 +33,7 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.RegistryHolder
+import org.kryptonmc.krypton.resource.ResourceManager
 import org.kryptonmc.krypton.resource.Resources
 import org.kryptonmc.krypton.util.DelegatingOps
 import org.kryptonmc.krypton.util.KEY_CODEC
@@ -41,7 +42,7 @@ import java.util.IdentityHashMap
 
 /**
  * Please feel free to blame Java generics for the amount of UNCHECKED_CAST
- * suppressions in this class.
+ * suppression in this class.
  *
  * I probably could have reduced it, but there comes a point where one has
  * just had enough.
@@ -126,6 +127,12 @@ class RegistryReadOps<T : Any> private constructor(
 
         private const val JSON_SUFFIX = ".json"
         private val LOGGER = logger<RegistryReadOps<*>>()
+
+        fun <T : Any> createAndLoad(delegate: DynamicOps<T>, manager: ResourceManager, holder: RegistryHolder) = createAndLoad(delegate, Resources.forManager(manager), holder)
+
+        fun <T : Any> createAndLoad(delegate: DynamicOps<T>, resources: Resources, holder: RegistryHolder) = RegistryReadOps(delegate, resources, holder).apply {
+            holder.load(this)
+        }
     }
 }
 

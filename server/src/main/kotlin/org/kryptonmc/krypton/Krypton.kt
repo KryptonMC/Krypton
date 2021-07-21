@@ -34,8 +34,18 @@ import org.kryptonmc.krypton.config.category.StatusCategory
 import org.kryptonmc.krypton.config.category.WorldCategory
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.TranslationManager
+import org.kryptonmc.krypton.pack.repository.FolderRepositorySource
+import org.kryptonmc.krypton.pack.repository.KryptonRepositorySource
+import org.kryptonmc.krypton.pack.repository.PackRepository
+import org.kryptonmc.krypton.pack.repository.PackSource
+import org.kryptonmc.krypton.registry.RegistryHolder
+import org.kryptonmc.krypton.registry.ops.RegistryReadOps
+import org.kryptonmc.krypton.server.ServerResources
+import org.kryptonmc.krypton.util.BACKGROUND_EXECUTOR
 import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.nbt.NBTOps
+import org.kryptonmc.krypton.world.DataPackConfig
 import java.nio.file.Path
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicReference
@@ -52,6 +62,7 @@ class KryptonCLI : CliktCommand() {
     private val version by option("-v", "--version").flag().help("Prints the version and exits")
     private val configOnly by option("--init", "--config-only", "--init-settings").flag()
         .help("Creates the config file and exits")
+    private val safeMode by option("-s", "--safe", "--safe-mode").flag().help("If set, only the built-in data pack is loaded")
 
     // Config options
     private val ip by option("-ip", "--ip").help("The IP to listen on").default(ServerCategory.DEFAULT_IP)
@@ -113,12 +124,36 @@ class KryptonCLI : CliktCommand() {
             world = loadedConfig.world.copy(name = worldName)
         )
 
-        val reference = AtomicReference<KryptonServer>()
-        val mainThread = Thread({ reference.get().start() }, "Server Thread").apply {
-            setUncaughtExceptionHandler { _, exception -> logger<KryptonServer>().error("Caught previously unhandled exception", exception) }
-        }
-        val server = KryptonServer(config, worldFolder)
-        reference.set(server)
-        mainThread.start()
+        // Load the resources
+        val registryHolder = RegistryHolder.builtin()
+        val previousPacks = DataPackConfig.DEFAULT // TODO: Actually load the data packs properly
+        if (safeMode) logger.warn("Safe mode active, only the built-in data pack will be loaded.")
+
+        val packRepository = PackRepository(KryptonRepositorySource(), FolderRepositorySource(CURRENT_DIRECTORY.resolve("datapacks"), PackSource.WORLD))
+        val packConfig = packRepository.configure(previousPacks, safeMode) // TODO: Use this with the new world data
+
+        val resources = try {
+            ServerResources.load(packRepository.openAllSelected(), registryHolder, BACKGROUND_EXECUTOR, Runnable::run).get()
+        } catch (exception: Exception) {
+            logger.warn("Failed to load data packs! Cannot proceed with server load! To run the server with only the built-in data packs, set the safe mode flag on start up.")
+            return
+        }.apply { updateGlobals() }
+
+        // TODO: Use this to load world generation settings
+        val ops = RegistryReadOps.createAndLoad(NBTOps, resources.manager, registryHolder)
+
+        spin { KryptonServer(registryHolder, packRepository, resources, config, worldFolder) }
     }
+}
+
+// I could not resist
+private fun spin(creator: (Thread) -> KryptonServer): KryptonServer {
+    val reference = AtomicReference<KryptonServer>()
+    val serverThread = Thread({ reference.get().start() }, "Server Thread").apply {
+        setUncaughtExceptionHandler { _, exception -> logger<KryptonServer>().error(exception) }
+    }
+    val server = creator(serverThread)
+    reference.set(server)
+    serverThread.start()
+    return server
 }

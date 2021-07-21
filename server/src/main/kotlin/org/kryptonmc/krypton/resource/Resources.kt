@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.resource
 
 import com.google.gson.JsonElement
+import com.google.gson.JsonIOException
+import com.google.gson.JsonSyntaxException
 import com.mojang.datafixers.util.Pair
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.Decoder
@@ -26,6 +28,7 @@ import com.mojang.serialization.DynamicOps
 import com.mojang.serialization.Encoder
 import com.mojang.serialization.JsonOps
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
+import me.bardy.gsonkt.parseToJson
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
@@ -34,6 +37,7 @@ import org.kryptonmc.krypton.registry.ops.RegistryReadOps
 import org.kryptonmc.krypton.registry.ops.RegistryWriteOps
 import org.kryptonmc.krypton.util.identityStrategy
 import org.kryptonmc.krypton.util.logger
+import java.io.IOException
 import java.util.IdentityHashMap
 import java.util.Optional
 import java.util.OptionalInt
@@ -48,6 +52,35 @@ interface Resources {
         key: ResourceKey<E>,
         decoder: Decoder<E>
     ): Optional<DataResult<Pair<E, OptionalInt>>>
+
+    companion object {
+
+        private const val JSON = ".json"
+
+        fun forManager(manager: ResourceManager) = object : Resources {
+
+            override fun list(key: ResourceKey<out Registry<*>>) = manager.list(key.location.value()) { it.endsWith(JSON) }
+
+            override fun <E : Any> parseJson(ops: DynamicOps<JsonElement>, registryKey: ResourceKey<out Registry<E>>, key: ResourceKey<E>, decoder: Decoder<E>): Optional<DataResult<Pair<E, OptionalInt>>> {
+                val location = key.location
+                val resourceKey = Key.key(location.namespace(), "${registryKey.location.value()}/${location.value()}$JSON")
+                if (resourceKey !in manager) return Optional.empty()
+                try {
+                    manager(resourceKey).use { resource ->
+                        resource.inputStream.reader().use { reader ->
+                            val json = reader.parseToJson()
+                            return Optional.of(decoder.parse(ops, json).map { Pair.of(it, OptionalInt.empty()) })
+                        }
+                    }
+                } catch (exception: Exception) {
+                    if (exception !is JsonIOException && exception !is JsonSyntaxException && exception !is IOException) throw exception
+                    return Optional.of(DataResult.error("Failed to parse $resourceKey file: ${exception.message}"))
+                }
+            }
+
+            override fun toString() = "Resources($manager)"
+        }
+    }
 }
 
 class MemoryResources : Resources {

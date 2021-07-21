@@ -48,6 +48,8 @@ class PackRepository private constructor(
         selectedPacks = rebuildSelected(selection)
     }
 
+    fun isAvailable(id: String) = available.containsKey(id)
+
     private fun findAvailable(): Map<String, Pack> {
         val available = TreeMap<String, Pack>()
         sources.forEach { source -> source.loadPacks(constructor) { available[it.id] = it } }
