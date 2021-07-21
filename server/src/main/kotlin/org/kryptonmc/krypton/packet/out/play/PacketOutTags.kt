@@ -19,34 +19,16 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.tags.Tag
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.tags.KryptonTagManager
-import org.kryptonmc.krypton.util.writeCollection
+import org.kryptonmc.krypton.tags.TagCollection
 import org.kryptonmc.krypton.util.writeKey
-import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.writeMap
 
-/**
- * Tells the client all the tags present on the server. This is an object as it only needs to be instantiated once
- */
-object PacketOutTags : PlayPacket(0x66) {
+class PacketOutTags(private val tags: Map<ResourceKey<out Registry<*>>, TagCollection.NetworkPayload>) : PlayPacket(0x66) {
 
-    @Suppress("UNCHECKED_CAST")
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(KryptonTagManager.tags.size)
-        KryptonTagManager.tags.forEach { (id, tags) ->
-            if (tags.isEmpty()) return@forEach
-            buf.writeKey(id)
-            buf.writeTags(tags as List<Tag<Any>>)
-        }
-    }
-
-    private fun ByteBuf.writeTags(tags: List<Tag<Any>>) {
-        writeVarInt(tags.size)
-        val registry = tags.firstOrNull()?.type?.registry ?: return
-        tags.forEach { tag ->
-            writeKey(tag.name)
-            writeCollection(tag.values) { writeVarInt(registry.idOf(it)) }
-        }
+        buf.writeMap(tags, { _, key -> buf.writeKey(key.location) }, { _, value -> value.write(buf) })
     }
 }

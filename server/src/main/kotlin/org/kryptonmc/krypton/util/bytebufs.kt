@@ -333,6 +333,20 @@ fun <E> ByteBuf.writeCollection(collection: Collection<E>, action: (E) -> Unit) 
     collection.forEach { action(it) }
 }
 
+fun <K, V> ByteBuf.writeMap(map: Map<K, V>, keyAction: (ByteBuf, K) -> Unit, valueAction: (ByteBuf, V) -> Unit) {
+    writeVarInt(map.size)
+    map.forEach { (key, value) ->
+        keyAction(this, key)
+        valueAction(this, value)
+    }
+}
+
+fun <K, V> ByteBuf.writeMap(map: Map<K, V>, keyAction: (K) -> Unit, valueAction: (ByteBuf, V) -> Unit) = writeMap(map, { _, k -> keyAction(k) }, valueAction)
+
+fun <K, V> ByteBuf.writeMap(map: Map<K, V>, keyAction: (ByteBuf, K) -> Unit, valueAction: (V) -> Unit) = writeMap(map, keyAction) { _, v -> valueAction(v) }
+
+fun <K, V> ByteBuf.writeMap(map: Map<K, V>, keyAction: (K) -> Unit, valueAction: (V) -> Unit) = writeMap(map, { _, k -> keyAction(k) }) { _, v -> valueAction(v) }
+
 fun ByteBuf.writeIntList(list: IntList) {
     writeVarInt(list.size)
     list.forEach { writeVarInt(it) }

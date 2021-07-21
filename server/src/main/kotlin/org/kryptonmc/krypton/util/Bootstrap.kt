@@ -48,8 +48,6 @@ import org.kryptonmc.krypton.tags.EntityTypeTags
 import org.kryptonmc.krypton.tags.FluidTags
 import org.kryptonmc.krypton.tags.GameEventTags
 import org.kryptonmc.krypton.tags.ItemTags
-import org.kryptonmc.krypton.tags.KryptonTagManager
-import org.kryptonmc.krypton.tags.TagTypes
 import org.kryptonmc.krypton.util.encryption.Encryption
 import org.kryptonmc.krypton.util.reports.CrashReport
 import org.kryptonmc.krypton.world.block.BLOCK_LOADER
@@ -92,11 +90,9 @@ object Bootstrap {
         GameRules
         Attributes
         MetadataKeys
-        TagTypes
         MetaKeys // Not technically a registry, but quite close to one
 
         // Preload tags (which use registries)
-        KryptonTagManager
         BlockTags
         EntityTypeTags
         FluidTags

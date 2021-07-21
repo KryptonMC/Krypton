@@ -18,14 +18,19 @@
  */
 package org.kryptonmc.krypton.tags
 
-import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.world.fluid.Fluid
 
 object FluidTags {
 
-    val WATER = get("water")
-    val LAVA = get("lava")
+    val HELPER = StaticTags.create(InternalResourceKeys.FLUID, "tags/fluids")
+    private val KNOWN_TAGS = mutableListOf<Tag<Fluid>>()
 
-    val TAGS = listOf(WATER, LAVA)
+    val WATER = bind("water")
+    val LAVA = bind("lava")
 
-    private fun get(name: String) = KryptonTagManager.load(Key.key(name), TagTypes.FLUID)
+    private fun bind(name: String) = HELPER.bind(name).apply { KNOWN_TAGS.add(this) }
+
+    val staticTags: List<Tag<Fluid>>
+        get() = KNOWN_TAGS
 }

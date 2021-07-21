@@ -18,23 +18,51 @@
  */
 package org.kryptonmc.krypton.tags
 
-import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.registry.RegistryHolder
+import org.kryptonmc.krypton.resource.ResourceManager
+import org.kryptonmc.krypton.resource.reload.ReloadListener
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.profiling.Profiler
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
 
-/**
- * The manager of tags.
- */
-interface TagManager {
+class TagManager(private val registryHolder: RegistryHolder) : ReloadListener {
 
-    /**
-     * The tags this manager is currently managing.
-     */
-    val tags: Map<Key, List<Tag<out Any>>>
+    var tags = TagContainer.EMPTY
+        private set
 
-    /**
-     * Gets the tag for the given [key].
-     *
-     * @param key the key
-     * @return the tags for the given key
-     */
-    operator fun <T : Any> get(key: Key): List<Tag<T>>
+    override fun reload(barrier: ReloadListener.Barrier, manager: ResourceManager, preparationProfiler: Profiler, reloadProfiler: Profiler, executor: Executor, syncExecutor: Executor): CompletableFuture<Void> {
+        val infos = mutableListOf<LoaderInfo<*>>()
+        StaticTags.visitHelpers { helper -> createLoader(manager, executor, helper)?.let { infos.add(it) } }
+        return CompletableFuture.allOf(*infos.map { it.pendingLoad }.toTypedArray()).thenCompose(barrier::wait).thenAcceptAsync({
+            val builder = TagContainer.Builder()
+            infos.forEach { it.addToBuilder(builder) }
+            val container = builder.build()
+            val missingTags = StaticTags.missing(container)
+            check(missingTags.isEmpty) { "Missing required tags: ${missingTags.entries().asSequence().map { "${it.key}:${it.value}" }.sorted().joinToString()}" }
+            tags = container
+        }, syncExecutor)
+    }
+
+    private fun <T : Any> createLoader(manager: ResourceManager, executor: Executor, helper: StaticTagHelper<T>): LoaderInfo<T>? {
+        val registry = registryHolder.registry(helper.key) ?: kotlin.run {
+            LOGGER.warn("Failed to find registry for ${helper.key}!")
+            return null
+        }
+        val loader = TagLoader(registry::get, helper.directory)
+        val pendingLoad = CompletableFuture.supplyAsync({ loader.loadAndBuild(manager) }, executor)
+        return LoaderInfo(helper, pendingLoad)
+    }
+
+    class LoaderInfo<T : Any>(val helper: StaticTagHelper<T>, val pendingLoad: CompletableFuture<out TagCollection<T>>) {
+
+        fun addToBuilder(builder: TagContainer.Builder) {
+            builder.add(helper.key, pendingLoad.join())
+        }
+    }
+
+    companion object {
+
+        private val LOGGER = logger<TagManager>()
+    }
 }
