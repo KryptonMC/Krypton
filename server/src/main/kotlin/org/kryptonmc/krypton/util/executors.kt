@@ -22,26 +22,22 @@ import com.google.common.util.concurrent.MoreExecutors
 import org.kryptonmc.krypton.util.reports.ReportedException
 import java.util.concurrent.CompletionException
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.ForkJoinPool
-import java.util.concurrent.ForkJoinWorkerThread
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ThreadFactory
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.system.exitProcess
 
 private val WORKER_COUNT = AtomicInteger(1)
 private val LOGGER = logger("Krypton")
-val BOOTSTRAP_EXECUTOR = createExecutor("Bootstrap")
+val BOOTSTRAP_EXECUTOR = createExecutor("Bootstrap", -2)
+val BACKGROUND_EXECUTOR = createExecutor("Main", -1)
 
-private fun createExecutor(name: String): ExecutorService {
+private fun createExecutor(name: String, priority: Int): ExecutorService {
     val parallelism = (Runtime.getRuntime().availableProcessors() - 1).clamp(1, 7)
     if (parallelism <= 0) return MoreExecutors.newDirectExecutorService()
-    return ForkJoinPool(parallelism, {
-        object : ForkJoinWorkerThread(it) {
-            override fun onTermination(exception: Throwable) {
-                LOGGER.warn("${getName()} died", exception)
-                super.onTermination(exception)
-            }
-        }.apply { setName("Worker-$name-${WORKER_COUNT.getAndIncrement()}") }
-    }, ::onThreadException, true)
+    return ThreadPoolExecutor(parallelism, parallelism, 0L, TimeUnit.MILLISECONDS, LinkedBlockingQueue(), ThreadFactory { ServerWorkerThread(name, priority, it) })
 }
 
 private fun onThreadException(thread: Thread, throwable: Throwable) {
@@ -52,4 +48,22 @@ private fun onThreadException(thread: Thread, throwable: Throwable) {
         exitProcess(-1)
     }
     LOGGER.error("Caught exception in thread $thread!", exception)
+}
+
+private class ServerWorkerThread(
+    poolName: String,
+    priorityModifier: Int,
+    target: Runnable
+) : Thread(target, "Worker-$poolName-${THREAD_ID.getAndIncrement()}") {
+
+    init {
+        priority = NORM_PRIORITY + priorityModifier
+        isDaemon = true
+        uncaughtExceptionHandler = UncaughtExceptionHandler(::onThreadException)
+    }
+
+    companion object {
+
+        private val THREAD_ID = AtomicInteger(1)
+    }
 }
