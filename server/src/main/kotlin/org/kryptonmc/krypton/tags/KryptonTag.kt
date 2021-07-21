@@ -19,8 +19,6 @@
 package org.kryptonmc.krypton.tags
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.tags.Tag
-import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.api.util.toKey
 
 class KryptonTag<T : Any>(

@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.tags.Tag
+import org.kryptonmc.krypton.tags.Tag
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.util.writeCollection

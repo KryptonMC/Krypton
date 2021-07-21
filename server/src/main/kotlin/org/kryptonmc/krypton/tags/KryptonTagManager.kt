@@ -20,9 +20,6 @@ package org.kryptonmc.krypton.tags
 
 import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.tags.Tag
-import org.kryptonmc.api.tags.TagManager
-import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.krypton.GSON
 import java.io.FileNotFoundException
 import java.io.Reader

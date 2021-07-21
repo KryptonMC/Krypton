@@ -18,14 +18,23 @@
  */
 package org.kryptonmc.krypton.tags
 
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.registry.InternalRegistries
+import net.kyori.adventure.key.Key
 
-object TagTypes {
+/**
+ * The manager of tags.
+ */
+interface TagManager {
 
-    val BLOCK = TagType(Registries.BLOCK, "blocks")
-    val ENTITY_TYPE = TagType(Registries.ENTITY_TYPE, "entity_types")
-    val ITEM = TagType(Registries.ITEM, "items")
-    val GAME_EVENT = TagType(InternalRegistries.GAME_EVENT, "game_events")
-    val FLUID = TagType(InternalRegistries.FLUID, "fluids")
+    /**
+     * The tags this manager is currently managing.
+     */
+    val tags: Map<Key, List<Tag<out Any>>>
+
+    /**
+     * Gets the tag for the given [key].
+     *
+     * @param key the key
+     * @return the tags for the given key
+     */
+    operator fun <T : Any> get(key: Key): List<Tag<T>>
 }

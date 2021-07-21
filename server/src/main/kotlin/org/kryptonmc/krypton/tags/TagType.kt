@@ -18,14 +18,24 @@
  */
 package org.kryptonmc.krypton.tags
 
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.registry.InternalRegistries
+import net.kyori.adventure.key.Keyed
+import org.kryptonmc.api.registry.Registry
 
-object TagTypes {
+/**
+ * The type of a [Tag].
+ *
+ * @param registry the registry the tag uses to lookup IDs
+ * @param name the name of the tags directory on disk
+ */
+data class TagType<T : Any>(
+    val registry: Registry<T>,
+    val name: String
+) : Keyed {
 
-    val BLOCK = TagType(Registries.BLOCK, "blocks")
-    val ENTITY_TYPE = TagType(Registries.ENTITY_TYPE, "entity_types")
-    val ITEM = TagType(Registries.ITEM, "items")
-    val GAME_EVENT = TagType(InternalRegistries.GAME_EVENT, "game_events")
-    val FLUID = TagType(InternalRegistries.FLUID, "fluids")
+    /**
+     * The key of this tag type.
+     */
+    val key = registry.key.location
+
+    override fun key() = key
 }
