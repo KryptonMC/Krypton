@@ -66,7 +66,7 @@ class ProfiledReloadInstance(
         total.stop()
         var totalBlockingTime = 0
         LOGGER.info("Resources reloaded in ${total.elapsed(TimeUnit.MILLISECONDS)}ms!")
-        states.forEach { (name, preparationResults, reloadResults, preparationNanos, reloadNanos) ->
+        states.forEach { (name, _, _, preparationNanos, reloadNanos) ->
             val preparationMillis = (preparationNanos.get().toDouble() / 1000000.0).toInt()
             val reloadMillis = (reloadNanos.get().toDouble() / 1000000.0).toInt()
             val total = preparationMillis + reloadMillis

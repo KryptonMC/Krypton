@@ -16,22 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.resource.reload
+package org.kryptonmc.krypton.pack.repository
 
-import org.kryptonmc.krypton.resource.ResourceManager
-import org.kryptonmc.krypton.util.profiling.Profiler
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executor
+import net.kyori.adventure.text.Component
+import org.kryptonmc.krypton.ServerInfo
+import org.kryptonmc.krypton.pack.KryptonPackResources
+import org.kryptonmc.krypton.pack.PackMetadata
+import org.kryptonmc.krypton.pack.PackResources
 
-interface ReloadListener {
+class KryptonRepositorySource : RepositorySource {
 
-    val name: String
-        get() = javaClass.simpleName
+    private val pack = KryptonPackResources(METADATA, setOf("minecraft"))
 
-    fun reload(barrier: Barrier, manager: ResourceManager, preparationProfiler: Profiler, reloadProfiler: Profiler, executor: Executor, syncExecutor: Executor): CompletableFuture<Void>
+    override fun loadPacks(constructor: (String, () -> PackResources, Pack.Position, Boolean, PackSource) -> Pack, action: (Pack) -> Unit) {
+        Pack.of(ID, { pack }, Pack.Position.BOTTOM, false, PackSource.BUILT_IN, constructor)?.let(action)
+    }
 
-    interface Barrier {
+    companion object {
 
-        fun <T> wait(value: T): CompletableFuture<T>
+        const val ID = "vanilla"
+        val METADATA = PackMetadata(Component.translatable("dataPack.vanilla.description"), ServerInfo.PACK_VERSION)
     }
 }

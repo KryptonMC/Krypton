@@ -16,22 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.resource.reload
+package org.kryptonmc.krypton.pack.repository
 
-import org.kryptonmc.krypton.resource.ResourceManager
-import org.kryptonmc.krypton.util.profiling.Profiler
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executor
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 
-interface ReloadListener {
+fun interface PackSource : (Component) -> Component {
 
-    val name: String
-        get() = javaClass.simpleName
+    fun decorate(component: Component): Component
 
-    fun reload(barrier: Barrier, manager: ResourceManager, preparationProfiler: Profiler, reloadProfiler: Profiler, executor: Executor, syncExecutor: Executor): CompletableFuture<Void>
+    override fun invoke(p1: Component) = decorate(p1)
 
-    interface Barrier {
+    companion object {
 
-        fun <T> wait(value: T): CompletableFuture<T>
+        val DEFAULT = PackSource { it }
+        val BUILT_IN = decorating("pack.source.builtin")
+        val WORLD = decorating("pack.source.world")
+        val SERVER = decorating("pack.source.server")
+
+        private fun decorating(key: String): PackSource {
+            val component = Component.translatable(key)
+            return PackSource { Component.translatable("pack.nameAndSource", NamedTextColor.GRAY, it, component) }
+        }
     }
 }

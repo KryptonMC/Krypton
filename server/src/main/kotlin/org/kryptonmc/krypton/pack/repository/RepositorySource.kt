@@ -16,22 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.resource.reload
+package org.kryptonmc.krypton.pack.repository
 
-import org.kryptonmc.krypton.resource.ResourceManager
-import org.kryptonmc.krypton.util.profiling.Profiler
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executor
+import org.kryptonmc.krypton.pack.PackResources
 
-interface ReloadListener {
+interface RepositorySource {
 
-    val name: String
-        get() = javaClass.simpleName
-
-    fun reload(barrier: Barrier, manager: ResourceManager, preparationProfiler: Profiler, reloadProfiler: Profiler, executor: Executor, syncExecutor: Executor): CompletableFuture<Void>
-
-    interface Barrier {
-
-        fun <T> wait(value: T): CompletableFuture<T>
-    }
+    fun loadPacks(constructor: (String, () -> PackResources, Pack.Position, Boolean, PackSource) -> Pack, action: (Pack) -> Unit)
 }

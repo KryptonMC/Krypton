@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.pack
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.pack.repository.KryptonRepositorySource
 import org.kryptonmc.krypton.resource.Resource
 import org.kryptonmc.krypton.resource.ResourceProvider
 import org.kryptonmc.krypton.util.logger
@@ -36,16 +37,15 @@ import kotlin.io.path.isRegularFile
 
 class KryptonPackResources(
     override val metadata: PackMetadata,
-    private val directory: Path?
+    override val namespaces: Set<String>
 ) : PackResources, ResourceProvider {
 
     override val name = "Default"
-    override val namespaces = setOf("minecraft")
 
     override fun root(path: String): InputStream? {
         require("/" !in path && "\\" !in path) { "Root resources can only be file names!" }
-        if (directory != null) {
-            val relative = directory.resolve(path)
+        if (generatedDirectory != null) {
+            val relative = generatedDirectory!!.resolve(path)
             if (relative.exists()) return relative.inputStream()
         }
         return javaClass.getResourceAsStream("/$path")
@@ -55,8 +55,8 @@ class KryptonPackResources(
 
     override fun resources(namespace: String, key: String, maxDepth: Int, predicate: (String) -> Boolean): Collection<Key> {
         val resources = mutableSetOf<Key>()
-        if (directory != null) try {
-            resources += directory.resolve("data").getResources(maxDepth, namespace, key, predicate)
+        if (generatedDirectory != null) try {
+            resources += generatedDirectory!!.resolve("data").getResources(maxDepth, namespace, key, predicate)
         } catch (ignored: IOException) {}
         try {
             resources += EMBEDDED_PATH.getResources(maxDepth, namespace, key, predicate)
@@ -70,7 +70,7 @@ class KryptonPackResources(
 
     override fun contains(key: Key): Boolean {
         val path = "/data/${key.namespace()}/${key.value()}"
-        if (directory != null && directory.resolve("data/${key.namespace()}/${key.value()}").exists()) return true
+        if (generatedDirectory != null && generatedDirectory!!.resolve("data/${key.namespace()}/${key.value()}").exists()) return true
         return try {
             javaClass.getResource(path).isValid(path)
         } catch (exception: IOException) {
@@ -93,8 +93,8 @@ class KryptonPackResources(
 
     private fun getResource(key: Key): InputStream? {
         val path = "/data/${key.namespace()}/${key.value()}"
-        if (directory != null) {
-            val relative = directory.resolve("data/${key.namespace()}/${key.value()}")
+        if (generatedDirectory != null) {
+            val relative = generatedDirectory!!.resolve("data/${key.namespace()}/${key.value()}")
             if (relative.exists()) try {
                 return relative.inputStream()
             } catch (ignored: IOException) {}
@@ -109,6 +109,7 @@ class KryptonPackResources(
 
     companion object {
 
+        var generatedDirectory: Path? = null
         private val LOGGER = logger<KryptonPackResources>()
         private val EMBEDDED_PATH: Path = kotlin.run {
             val markerPath = "/data/.krypton"
@@ -123,7 +124,7 @@ private fun URL?.isValid(ending: String) = this != null && (protocol == "jar" ||
 private fun Path.getResources(maxDepth: Int, namespace: String, key: String, predicate: (String) -> Boolean): Collection<Key> {
     val path = resolve(namespace)
     return Files.walk(path.resolve(key), maxDepth).use { stream ->
-        stream.filter { !it.endsWith(PackResources.METADATA_EXTENSION) && it.isRegularFile() && predicate(it.fileName.toString()) }
+        stream.filter { !it.toString().endsWith(PackResources.METADATA_EXTENSION) && it.isRegularFile() && predicate(it.fileName.toString()) }
             .map { Key.key(namespace, path.relativize(it).toString().replace("\\\\", "/")) }
             .collect(Collectors.toList())
     }

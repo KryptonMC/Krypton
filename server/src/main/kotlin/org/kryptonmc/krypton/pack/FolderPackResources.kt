@@ -33,10 +33,10 @@ class FolderPackResources(path: Path) : AbstractPackResources(path) {
 
     override fun resource(path: String) = resolve(path)?.inputStream() ?: throw PackFileNotFoundException(root, path)
 
-    override fun resources(namespace: String, path: String, maxDepth: Int, predicate: (String) -> Boolean): Collection<Key> {
+    override fun resources(namespace: String, value: String, maxDepth: Int, predicate: (String) -> Boolean): Collection<Key> {
         val relative = root.resolve("data")
         val output = mutableListOf<Key>()
-        listResources(relative.resolve(namespace).resolve(path), maxDepth, namespace, "$path/", predicate, output)
+        listResources(relative.resolve(namespace).resolve(value), maxDepth, namespace, "$value/", predicate, output)
         return output
     }
 
@@ -56,7 +56,7 @@ class FolderPackResources(path: Path) : AbstractPackResources(path) {
                 if (amount > 0) listResources(it, amount - 1, namespace, "$key$it/", predicate, output)
                 return@forEach
             }
-            if (!it.endsWith(".mcmeta") && predicate(it.toString())) try {
+            if (!it.toString().endsWith(".mcmeta") && predicate(it.toString())) try {
                 output.add(Key.key(namespace, key + it.toString()))
             } catch (exception: InvalidKeyException) {
                 LOGGER.error(exception.message)

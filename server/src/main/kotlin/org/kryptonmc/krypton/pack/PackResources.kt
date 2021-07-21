@@ -31,7 +31,7 @@ interface PackResources : AutoCloseable {
 
     fun resource(key: Key): InputStream?
 
-    fun resources(path: String, name: String, maxDepth: Int, predicate: (String) -> Boolean): Collection<Key>
+    fun resources(namespace: String, value: String, maxDepth: Int, predicate: (String) -> Boolean): Collection<Key>
 
     operator fun contains(key: Key): Boolean
 

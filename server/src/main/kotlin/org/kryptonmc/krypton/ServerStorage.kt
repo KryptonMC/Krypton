@@ -31,5 +31,6 @@ object ServerInfo {
 
     const val PROTOCOL = 756
     const val WORLD_VERSION = 2730
+    const val PACK_VERSION = 7
     val GAME_VERSION = GameVersion(WORLD_VERSION, KryptonServer.KryptonServerInfo.minecraftVersion, false)
 }

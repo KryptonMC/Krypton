@@ -23,15 +23,20 @@ import org.kryptonmc.krypton.util.profiling.Profiler
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
-interface ReloadListener {
+abstract class SimpleReloadListener<R> : ReloadListener {
 
-    val name: String
-        get() = javaClass.simpleName
+    protected abstract fun prepare(manager: ResourceManager, profiler: Profiler): R
 
-    fun reload(barrier: Barrier, manager: ResourceManager, preparationProfiler: Profiler, reloadProfiler: Profiler, executor: Executor, syncExecutor: Executor): CompletableFuture<Void>
+    protected abstract fun apply(resources: R, manager: ResourceManager, profiler: Profiler)
 
-    interface Barrier {
-
-        fun <T> wait(value: T): CompletableFuture<T>
-    }
+    override fun reload(
+        barrier: ReloadListener.Barrier,
+        manager: ResourceManager,
+        preparationProfiler: Profiler,
+        reloadProfiler: Profiler,
+        executor: Executor,
+        syncExecutor: Executor
+    ): CompletableFuture<Void> = CompletableFuture.supplyAsync({ prepare(manager, preparationProfiler) }, executor)
+        .thenCompose(barrier::wait)
+        .thenAcceptAsync({ apply(it, manager, reloadProfiler) }, syncExecutor)
 }
