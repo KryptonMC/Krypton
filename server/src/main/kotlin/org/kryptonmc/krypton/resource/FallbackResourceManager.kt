@@ -28,7 +28,6 @@ import java.io.FilterInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.PrintStream
-import java.util.Collections
 
 class FallbackResourceManager(private val namespace: String) : ResourceManager {
 
