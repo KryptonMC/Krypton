@@ -22,11 +22,47 @@ object EntityArguments {
 
     val SELECTOR_ALL = listOf("@p", "@r", "@a", "@e", "@s")
     val SELECTOR_PLAYERS = listOf("@p", "@r", "@a", "@s")
+    val SELECTOR_PLAYERS_SINGLE = listOf("@p", "@r", "@s")
     val ARGUMENTS = listOf(
         "x", "y", "z",
         "distance", "dx", "dy", "dz",
         "scores", "tag", "team", "limit", "sort", "level", "gamemode", "name",
         "x_rotation", "y_rotation", "type", "nbt", "advancements", "predicate"
     )
+    val EXLUDE_ARGUMENTS = listOf(
+        "team", "tag", "gamemode", "name", "predicate"
+    )
+
+    enum class Sorter {
+
+        /**
+         * Sort by increasing distance
+         */
+        NEAREST,
+
+        /**
+         * Sort by decreasing distance
+         */
+        FURTHEST,
+
+        /**
+         * Sort randomly
+         */
+        RANDOM,
+
+        /**
+         * Sort by time created
+         */
+        ARBITRARY;
+
+        companion object {
+
+            /**
+             * Get the sort candidate from the name
+             */
+            fun fromName(name: String) = values().firstOrNull { it.name == name.uppercase() }
+
+        }
+    }
 
 }
