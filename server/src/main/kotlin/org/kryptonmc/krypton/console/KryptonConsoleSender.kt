@@ -21,11 +21,10 @@ package org.kryptonmc.krypton.console
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextComponent
-import net.kyori.adventure.text.TranslatableComponent
-import net.kyori.adventure.translation.GlobalTranslator
+import net.kyori.adventure.text.renderer.TranslatableComponentRenderer
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.krypton.adventure.toSectionText
+import org.kryptonmc.krypton.locale.TranslationBootstrap
 import org.kryptonmc.krypton.util.logger
 import java.util.Locale
 
@@ -35,13 +34,9 @@ import java.util.Locale
 object KryptonConsoleSender : ConsoleSender {
 
     private val LOGGER = logger("CONSOLE")
+    private val RENDERER = TranslatableComponentRenderer.usingTranslationSource(TranslationBootstrap.REGISTRY)
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        val component = when (message) {
-            is TranslatableComponent -> GlobalTranslator.render(message, Locale.ENGLISH)
-            is TextComponent -> message
-            else -> return
-        }
-        LOGGER.info(component.toSectionText())
+        LOGGER.info(RENDERER.render(message, Locale.ENGLISH).toSectionText())
     }
 }

@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.locale
 import com.google.gson.JsonObject
 import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.translation.GlobalTranslator
 import net.kyori.adventure.translation.TranslationRegistry
 import org.kryptonmc.krypton.GSON
 import java.text.MessageFormat
@@ -41,7 +40,6 @@ object TranslationBootstrap {
             val value = it.value.asString.replace(UNSUPPORTED_FORMAT_REGEX, "%\$1s").replaceMinecraftPattern()
             REGISTRY.register(key, Locale.US, MessageFormat(value, Locale.US))
         }
-        GlobalTranslator.get().addSource(REGISTRY)
     }
 }
 
@@ -52,5 +50,5 @@ private fun String.replaceMinecraftPattern(): String {
     return UNSUPPORTED_MINECRAFT_PATTERN.replace(this) {
         index++
         "{$index}"
-    }
+    }.replace("'", "''") // Escape single quotes
 }
