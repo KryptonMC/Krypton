@@ -34,19 +34,19 @@ class ProfiledReloadInstance(
     executor: Executor,
     syncExecutor: Executor,
     task: CompletableFuture<Unit>
-) : SimpleReloadInstance<ProfiledReloadInstance.State>(executor, syncExecutor, resourceManager, listeners, task, { barrier, manager, listener, exec, syncExec ->
+) : SimpleReloadInstance<ProfiledReloadInstance.State>(executor, syncExecutor, resourceManager, listeners, task, { barrier, manager, listener, _, _ ->
     val preparationNanos = AtomicLong()
     val reloadNanos = AtomicLong()
     val preparationProfiler = LiveProfiler({ 0 }, false)
     val reloadProfiler = LiveProfiler({ 0 }, false)
     val reload = listener.reload(barrier, manager, preparationProfiler, reloadProfiler, {
-        exec.execute {
+        executor.execute {
             val startTime = System.nanoTime()
             it.run()
             preparationNanos.addAndGet(System.nanoTime() - startTime)
         }
     }, {
-        syncExec.execute {
+        syncExecutor.execute {
             val startTime = System.nanoTime()
             it.run()
             reloadNanos.addAndGet(System.nanoTime() - startTime)

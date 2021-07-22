@@ -37,7 +37,7 @@ class TagLoader<T : Any>(
             val path = resourceKey.value()
             val key = Key.key(resourceKey.namespace(), path.substring(directory.length + 1, path.length - PATH_SUFFIX_LENGTH))
             try {
-                manager.resources(key).forEach { resource ->
+                manager.resources(resourceKey).forEach { resource ->
                     resource.inputStream.reader().use {
                         val json = GSON.fromJson(it, JsonObject::class.java)
                         if (json == null) {
@@ -48,7 +48,7 @@ class TagLoader<T : Any>(
                     }
                 }
             } catch (exception: Exception) {
-                LOGGER.error("Failed to read tag list $key from $resourceKey")
+                LOGGER.error("Failed to read tag list $key from $resourceKey", exception)
             }
         }
         return map

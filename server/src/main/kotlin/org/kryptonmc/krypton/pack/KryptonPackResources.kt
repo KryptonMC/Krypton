@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.pack
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.pack.repository.KryptonRepositorySource
 import org.kryptonmc.krypton.resource.Resource
 import org.kryptonmc.krypton.resource.ResourceProvider
 import org.kryptonmc.krypton.util.logger
@@ -53,13 +52,13 @@ class KryptonPackResources(
 
     override fun resource(key: Key) = getResource(key) ?: throw FileNotFoundException(key.value())
 
-    override fun resources(namespace: String, key: String, maxDepth: Int, predicate: (String) -> Boolean): Collection<Key> {
+    override fun resources(namespace: String, value: String, maxDepth: Int, predicate: (String) -> Boolean): Collection<Key> {
         val resources = mutableSetOf<Key>()
         if (generatedDirectory != null) try {
-            resources += generatedDirectory!!.resolve("data").getResources(maxDepth, namespace, key, predicate)
+            resources += generatedDirectory!!.resolve("data").getResources(maxDepth, namespace, value, predicate)
         } catch (ignored: IOException) {}
         try {
-            resources += EMBEDDED_PATH.getResources(maxDepth, namespace, key, predicate)
+            resources += EMBEDDED_PATH.getResources(maxDepth, namespace, value, predicate)
         } catch (exception: NoSuchFileException) {
         } catch (exception: FileNotFoundException) {
         } catch (exception: IOException) {
@@ -113,8 +112,16 @@ class KryptonPackResources(
         private val LOGGER = logger<KryptonPackResources>()
         private val EMBEDDED_PATH: Path = kotlin.run {
             val markerPath = "/data/.krypton"
-            Thread.currentThread().contextClassLoader.getResource(markerPath) ?: error("Krypton data missing from JAR file!")
-            Path.of(markerPath).parent
+            val url = KryptonPackResources::class.java.getResource(markerPath) ?: error("Krypton data missing from JAR file!")
+            try {
+                val uri = url.toURI()
+                val scheme = uri.scheme
+                if (scheme != "jar" && scheme != "file") LOGGER.warn("Data URL $uri uses unexpected scheme $scheme, should be either jar or file")
+                Path.of(uri).parent
+            } catch (exception: Exception) {
+                LOGGER.error("Failed to resolve path to built-in data!")
+                throw exception
+            }
         }
     }
 }

@@ -25,9 +25,10 @@ fun <V> List<CompletableFuture<V>>.sequenceFailFast(): CompletableFuture<List<V>
     val futures = arrayOfNulls<CompletableFuture<*>>(size)
     val voidFuture = CompletableFuture<Void>()
     forEach {
+        val listSize = list.size
         list.add(null)
-        futures[list.size] = it.whenComplete { value, exception ->
-            if (exception != null) voidFuture.completeExceptionally(exception) else list[list.size] = value
+        futures[listSize] = it.whenComplete { value, exception ->
+            if (exception != null) voidFuture.completeExceptionally(exception) else list[listSize] = value
         }
     }
     return CompletableFuture.allOf(*futures).applyToEither(voidFuture) { list.filterNotNull() }

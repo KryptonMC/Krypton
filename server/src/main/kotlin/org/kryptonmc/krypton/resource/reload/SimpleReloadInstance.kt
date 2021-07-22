@@ -53,13 +53,14 @@ open class SimpleReloadInstance<S> protected constructor(
         preparingListeners = listeners.toMutableSet()
 
         listeners.forEach { listener ->
+            val taskFinal = future
             val futureTask = factory.create(object : ReloadListener.Barrier {
                 override fun <T> wait(value: T): CompletableFuture<T> {
                     syncExecutor.execute {
                         preparingListeners.remove(listener)
                         if (preparingListeners.isEmpty()) allPreparations.complete(Unit)
                     }
-                    return allPreparations.thenCombine(future) { _, _ -> value }
+                    return allPreparations.thenCombine(taskFinal) { _, _ -> value }
                 }
             }, resourceManager, listener, {
                 startedTaskCounter.incrementAndGet()

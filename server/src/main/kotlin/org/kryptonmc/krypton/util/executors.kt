@@ -29,13 +29,12 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.system.exitProcess
 
-private val WORKER_COUNT = AtomicInteger(1)
 private val LOGGER = logger("Krypton")
 val BOOTSTRAP_EXECUTOR = createExecutor("Bootstrap", -2)
 val BACKGROUND_EXECUTOR = createExecutor("Main", -1)
 
 private fun createExecutor(name: String, priority: Int): ExecutorService {
-    val parallelism = (Runtime.getRuntime().availableProcessors() - 1).clamp(1, 7)
+    val parallelism = (Runtime.getRuntime().availableProcessors() - 2).clamp(1, 8)
     if (parallelism <= 0) return MoreExecutors.newDirectExecutorService()
     return ThreadPoolExecutor(parallelism, parallelism, 0L, TimeUnit.MILLISECONDS, LinkedBlockingQueue(), ThreadFactory { ServerWorkerThread(name, priority, it) })
 }
