@@ -24,7 +24,7 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.resource.ResourceKeys
 
-class KryptonRegistryManager : RegistryManager {
+object KryptonRegistryManager : RegistryManager {
 
     override val parent = KryptonRegistry(ResourceKeys.PARENT)
 

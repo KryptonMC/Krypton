@@ -32,9 +32,7 @@ import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.ticking.TickEndEvent
 import org.kryptonmc.api.event.ticking.TickStartEvent
-import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.status.StatusInfo
-import org.kryptonmc.api.util.service
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.auth.MojangUUIDSerializer
@@ -52,6 +50,7 @@ import org.kryptonmc.krypton.pack.repository.PackRepository
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
+import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.registry.json.RegistryBlock
 import org.kryptonmc.krypton.registry.json.RegistryBlockState
@@ -129,7 +128,7 @@ class KryptonServer(
     override val pluginManager = KryptonPluginManager(this)
     override val eventManager = KryptonEventManager(pluginManager)
     override val servicesManager = KryptonServicesManager
-    override val registryManager = service<RegistryManager>().get()
+    override val registryManager = KryptonRegistryManager
     override val blockManager = KryptonBlockManager
     override val itemManager = KryptonItemManager
     override val scheduler = KryptonScheduler(pluginManager)

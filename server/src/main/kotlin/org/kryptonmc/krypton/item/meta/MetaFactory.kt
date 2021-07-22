@@ -28,7 +28,7 @@ import org.kryptonmc.api.item.meta.MetaKey
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.krypton.adventure.toJsonComponent
 import org.kryptonmc.krypton.item.ItemFlag
-import org.kryptonmc.krypton.world.block.BLOCK_LOADER
+import org.kryptonmc.krypton.world.block.KryptonBlockLoader
 import java.awt.Color
 
 object MetaFactory {
@@ -97,7 +97,7 @@ private val BLOCK_LIST_META_SERIALIZER = ItemMetaSerializer(
     { nbt ->
         val blocks = mutableListOf<Block>()
         nbt.getList<NBTString>("CanDestroy").forEach {
-            val block = BLOCK_LOADER.fromKey(it.value)
+            val block = KryptonBlockLoader.fromKey(it.value)
             if (block != null) blocks.add(block)
         }
         blocks

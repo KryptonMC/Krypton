@@ -33,7 +33,7 @@ val BLOCKS = IdMapper<Block>().apply {
 
 fun NBTCompound.toBlock(): Block {
     if (!contains("Name", NBTTypes.TAG_String)) return Blocks.AIR
-    var block = BLOCK_LOADER.fromKey(getString("Name").toKey()) ?: error("No block found with key ${getString("Name")}!")
+    var block = KryptonBlockLoader.fromKey(getString("Name").toKey()) ?: error("No block found with key ${getString("Name")}!")
     if (contains("Properties", NBTTypes.TAG_Compound)) {
         block = block.withProperties(getCompound("Properties").transform { it.key to (it.value as NBTString).value })
     }

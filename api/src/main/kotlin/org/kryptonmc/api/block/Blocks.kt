@@ -9,8 +9,8 @@
 package org.kryptonmc.api.block
 
 import org.kryptonmc.api.block.internal.BlockLoader
-import org.kryptonmc.api.util.orThrowNamed
-import org.kryptonmc.api.util.service
+import org.kryptonmc.api.util.FACTORY_PROVIDER
+import org.kryptonmc.api.util.provide
 
 /**
  * An object containing all the built-in vanilla blocks.
@@ -923,4 +923,4 @@ object Blocks {
     private fun get(key: String) = BLOCK_LOADER.fromKey(key)
 }
 
-private val BLOCK_LOADER = service<BlockLoader>().orThrowNamed("BlockLoader")
+private val BLOCK_LOADER = FACTORY_PROVIDER.provide<BlockLoader>()

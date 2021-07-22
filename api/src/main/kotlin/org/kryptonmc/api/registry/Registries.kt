@@ -12,8 +12,8 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.api.util.orThrowNamed
-import org.kryptonmc.api.util.service
+import org.kryptonmc.api.util.FACTORY_PROVIDER
+import org.kryptonmc.api.util.provide
 
 /**
  * Holder of all of the built-in registries
@@ -137,6 +137,4 @@ object Registries {
     fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key) = MANAGER.createDefaulted(key, defaultKey)
 }
 
-// This is to allow access to the registry manager statically for the built-in registries.
-// This is NOT for public use.
-private val MANAGER = service<RegistryManager>().orThrowNamed("registry manager")
+private val MANAGER = FACTORY_PROVIDER.provide<RegistryManager>()

@@ -12,8 +12,8 @@ import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.item.meta.MetaHolder
-import org.kryptonmc.api.util.orThrowNamed
-import org.kryptonmc.api.util.service
+import org.kryptonmc.api.util.FACTORY_PROVIDER
+import org.kryptonmc.api.util.provide
 
 /**
  * A stack of items in an inventory.
@@ -83,7 +83,19 @@ interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
         override fun build(): ItemStack
     }
 
+    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+    @ApiStatus.OverrideOnly
+    @ApiStatus.Internal
+    interface Factory {
+
+        fun builder(): Builder
+
+        fun empty(): ItemStack
+    }
+
     companion object {
+
+        private val FACTORY = FACTORY_PROVIDER.provide<Factory>()
 
         /**
          * Creates a new builder for building [ItemStack] instances.
@@ -136,15 +148,3 @@ interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
         fun empty() = FACTORY.empty()
     }
 }
-
-@Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
-@ApiStatus.OverrideOnly
-@ApiStatus.Internal
-interface ItemStackFactory {
-
-    fun builder(): ItemStack.Builder
-
-    fun empty(): ItemStack
-}
-
-private val FACTORY = service<ItemStackFactory>().orThrowNamed("ItemStack factory")

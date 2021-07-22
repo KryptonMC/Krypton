@@ -31,7 +31,34 @@ import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.registry.block.BlockData
 import java.util.concurrent.ConcurrentHashMap
 
-class KryptonBlockLoader : BlockLoader {
+object KryptonBlockLoader : BlockLoader {
+
+    private val KEY_MAP = mutableMapOf<String, Block>()
+    private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
+    private val ID_MAP = Int2ObjectOpenHashMap<Block>()
+    val STATE_MAP = Int2ObjectOpenHashMap<Block>()
+
+    init {
+        val blocks = GSON.fromJson<JsonObject>(
+            Thread.currentThread().contextClassLoader
+                .getResourceAsStream("${KryptonServerInfo.minecraftVersion.replace(".", "_")}_blocks.json")!!
+                .reader()
+        )
+        blocks.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
+            val propertyEntry = PropertyEntry()
+            value.remove("states").asJsonArray.forEach {
+                val (properties, block) = it.asJsonObject.retrieveState(key, value)
+                propertyEntry.properties[properties] = block
+            }
+            val defaultState = value["defaultStateId"].asInt
+            val defaultBlock = fromState(defaultState)!!
+            val id = value["id"].asInt
+            ID_MAP[id] = defaultBlock
+            KEY_MAP[key] = defaultBlock
+            PROPERTY_MAP[key] = propertyEntry
+            Registries.register(Registries.BLOCK, key, defaultBlock)
+        }
+    }
 
     override fun fromKey(key: String): Block? {
         val id = if (key.indexOf(':') == -1) "minecraft:$key" else key
@@ -40,52 +67,20 @@ class KryptonBlockLoader : BlockLoader {
 
     override fun fromKey(key: Key) = fromKey(key.asString())
 
-    companion object {
+    fun fromId(id: Int): Block? = ID_MAP[id]
 
-        private val KEY_MAP = mutableMapOf<String, Block>()
-        private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
-        private val ID_MAP = Int2ObjectOpenHashMap<Block>()
-        val STATE_MAP = Int2ObjectOpenHashMap<Block>()
+    private fun fromState(stateId: Int): Block? = STATE_MAP[stateId]
 
-        init {
-            val blocks = GSON.fromJson<JsonObject>(
-                Thread.currentThread().contextClassLoader
-                    .getResourceAsStream("${KryptonServerInfo.minecraftVersion.replace(".", "_")}_blocks.json")!!
-                    .reader()
-            )
-            blocks.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
-                val propertyEntry = PropertyEntry()
-                value.remove("states").asJsonArray.forEach {
-                    val (properties, block) = it.asJsonObject.retrieveState(key, value)
-                    propertyEntry.properties[properties] = block
-                }
-                val defaultState = value["defaultStateId"].asInt
-                val defaultBlock = fromState(defaultState)!!
-                val id = value["id"].asInt
-                ID_MAP[id] = defaultBlock
-                KEY_MAP[key] = defaultBlock
-                PROPERTY_MAP[key] = propertyEntry
-                Registries.register(Registries.BLOCK, key, defaultBlock)
-            }
-        }
+    fun properties(key: String, properties: Map<String, String>): Block? = PROPERTY_MAP[key]?.properties?.get(properties)
 
-        fun fromId(id: Int): Block? = ID_MAP[id]
-
-        private fun fromState(stateId: Int): Block? = STATE_MAP[stateId]
-
-        fun properties(key: String, properties: Map<String, String>): Block? = PROPERTY_MAP[key]?.properties?.get(properties)
-
-        private fun JsonObject.retrieveState(key: String, blockObject: JsonObject): Pair<Map<String, String>, Block> {
-            val stateId = get("stateId").asInt
-            val propertyMap = get("properties").asJsonObject.entrySet().associate { it.key to it.value.asString.lowercase() }
-            val block = KryptonBlock(BlockData(Key.key(key), blockObject, this), propertyMap)
-            STATE_MAP[stateId] = block
-            return propertyMap to block
-        }
+    private fun JsonObject.retrieveState(key: String, blockObject: JsonObject): Pair<Map<String, String>, Block> {
+        val stateId = get("stateId").asInt
+        val propertyMap = get("properties").asJsonObject.entrySet().associate { it.key to it.value.asString.lowercase() }
+        val block = KryptonBlock(BlockData(Key.key(key), blockObject, this), propertyMap)
+        STATE_MAP[stateId] = block
+        return propertyMap to block
     }
 }
-
-val BLOCK_LOADER = Services.service(BlockLoader::class.java).get()
 
 private class PropertyEntry {
 

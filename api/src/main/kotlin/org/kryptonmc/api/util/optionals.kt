@@ -14,7 +14,7 @@ import java.util.Optional
  * Gets the value of this [Optional] if present, else returns null.
  *
  * Useful for converting [Optional] values from other Java-based libraries
- * in to proper nullable types.
+ * in to nullable types.
  */
 fun <T> Optional<T>.getIfPresent(): T? = if (isPresent) get() else null
 
@@ -25,7 +25,3 @@ fun <T> Optional<T>.getIfPresent(): T? = if (isPresent) get() else null
  * @param message the message for the exception if thrown
  */
 fun <T> Optional<T>.orThrow(message: String): T = if (isPresent) get() else error(message)
-
-@JvmSynthetic
-internal fun <T> Optional<T>.orThrowNamed(name: String) =
-    orThrow("No candidate for $name was found! If you are a server owner, contact the creator of your server software.")

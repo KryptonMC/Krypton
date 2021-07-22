@@ -28,6 +28,7 @@ import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.registry.RegistryRoots
+import org.kryptonmc.api.util.FACTORY_PROVIDER
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.api.world.rule.GameRules
@@ -50,7 +51,6 @@ import org.kryptonmc.krypton.tags.GameEventTags
 import org.kryptonmc.krypton.tags.ItemTags
 import org.kryptonmc.krypton.util.encryption.Encryption
 import org.kryptonmc.krypton.util.reports.CrashReport
-import org.kryptonmc.krypton.world.block.BLOCK_LOADER
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.event.GameEvents
@@ -72,12 +72,12 @@ object Bootstrap {
         TranslationBootstrap.init()
 
         // Preload all the registry classes to ensure everything is properly registered
+        (FACTORY_PROVIDER as KryptonFactoryProvider).bootstrap()
         RegistryRoots
         ResourceKeys
         Registries
         InternalResourceKeys
         InternalRegistries
-        BLOCK_LOADER
         Blocks
         GameEvents
         ParticleType

@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.item
 
-import org.kryptonmc.api.item.ItemStackFactory
+import org.kryptonmc.api.item.ItemStack
 
-class KryptonItemStackFactory : ItemStackFactory {
+object KryptonItemStackFactory : ItemStack.Factory {
 
     private val empty = EmptyItemStack
 
