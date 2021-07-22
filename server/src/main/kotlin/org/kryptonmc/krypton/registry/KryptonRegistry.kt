@@ -19,12 +19,17 @@
 package org.kryptonmc.krypton.registry
 
 import com.google.common.collect.HashBiMap
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.krypton.resource.elementKey
 import org.kryptonmc.krypton.util.IdMap
+import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.identityStrategy
 import java.util.OptionalInt
 import kotlin.math.max
@@ -102,3 +107,22 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
     override val size: Int
         get() = storage.size
 }
+
+fun <T : Any> ResourceKey<out Registry<T>>.networkCodec(elementCodec: Codec<T>): Codec<KryptonRegistry<T>> = withNameAndId(elementCodec.fieldOf("element")).codec().listOf().xmap(
+    { list -> KryptonRegistry(this).apply { list.forEach { register(it.id, it.key, it.value) } } },
+    { registry -> registry.values.map { RegistryEntry(registry.resourceKey(it)!!, registry.idOf(it), it) } }
+)
+
+private fun <T : Any> ResourceKey<out Registry<T>>.withNameAndId(elementCodec: MapCodec<T>): MapCodec<RegistryEntry<T>> = RecordCodecBuilder.mapCodec {
+    it.group(
+        KEY_CODEC.xmap(elementKey(), ResourceKey<*>::location).fieldOf("name").forGetter(RegistryEntry<T>::key),
+        Codec.INT.fieldOf("id").forGetter(RegistryEntry<T>::id),
+        elementCodec.forGetter(RegistryEntry<T>::value)
+    ).apply(it, ::RegistryEntry)
+}
+
+data class RegistryEntry<T : Any>(
+    val key: ResourceKey<T>,
+    val id: Int,
+    val value: T
+)

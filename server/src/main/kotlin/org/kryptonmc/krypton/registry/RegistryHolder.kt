@@ -20,17 +20,23 @@ package org.kryptonmc.krypton.registry
 
 import com.google.gson.JsonParseException
 import com.mojang.serialization.Codec
+import com.mojang.serialization.DataResult
 import com.mojang.serialization.JsonOps
+import com.mojang.serialization.codecs.UnboundedMapCodec
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.registry.ops.RegistryReadOps
 import org.kryptonmc.krypton.resource.MemoryResources
+import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
+import java.util.Optional
 
-class RegistryHolder(private val registries: Map<out ResourceKey<out Registry<*>>, KryptonRegistry<*>>) {
+class RegistryHolder(val registries: Map<out ResourceKey<out Registry<*>>, KryptonRegistry<*>>) {
 
     @Suppress("UNCHECKED_CAST")
     constructor() : this(REGISTRIES.keys.associateWith { KryptonRegistry(it as ResourceKey<out Registry<Any>>) })
@@ -71,7 +77,7 @@ class RegistryHolder(private val registries: Map<out ResourceKey<out Registry<*>
     companion object {
 
         private val LOGGER = logger<RegistryHolder>()
-        private val REGISTRIES: Map<ResourceKey<out Registry<*>>, RegistryData<*>> = mapOf(
+        val REGISTRIES: Map<ResourceKey<out Registry<*>>, RegistryData<*>> = mapOf(
             ResourceKeys.DIMENSION_TYPE to RegistryData(ResourceKeys.DIMENSION_TYPE, DimensionTypes.DIRECT_CODEC, DimensionTypes.DIRECT_CODEC),
             // TODO: Add biomes to this list
         )
@@ -79,16 +85,40 @@ class RegistryHolder(private val registries: Map<out ResourceKey<out Registry<*>
             DimensionTypes.registerBuiltins(this)
             REGISTRIES.keys.asSequence().filter { it != ResourceKeys.DIMENSION_TYPE }.forEach { copyBuiltin(it) }
         }
+        val NETWORK_CODEC: Codec<RegistryHolder> = networkCodec<Any>()
 
         fun builtin(): RegistryHolder = RegistryHolder().apply {
             val resources = MemoryResources()
             REGISTRIES.values.forEach { addBuiltins(resources, it) }
             RegistryReadOps.createAndLoad(JsonOps.INSTANCE, resources, this)
         }
+
+        private fun <E : Any> networkCodec(): Codec<RegistryHolder> {
+            val registryKeyCodec: Codec<ResourceKey<out Registry<E>>> = KEY_CODEC.xmap(::createKey, ResourceKey<*>::location)
+            val registryCodec: Codec<KryptonRegistry<E>> = registryKeyCodec.partialDispatch(
+                "type",
+                { DataResult.success(it.key) },
+                { key -> key.networkCodec().map { key.networkCodec(it) } }
+            )
+            return Codec.unboundedMap(registryKeyCodec, registryCodec).capture()
+        }
     }
 }
 
-private data class RegistryData<E : Any>(
+private fun <T : Any> createKey(key: Key): ResourceKey<out Registry<T>> = ResourceKey(RegistryRoots.MINECRAFT, key)
+
+@Suppress("UNCHECKED_CAST")
+private fun <K : ResourceKey<out Registry<*>>, V : KryptonRegistry<*>> UnboundedMapCodec<K, V>.capture() = xmap(::RegistryHolder) { holder ->
+    holder.registries.entries.filter { RegistryHolder.REGISTRIES[it.key]!!.shouldSend }.associate { (it.key to it.value as V) as Pair<K, V> }
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun <E : Any> ResourceKey<out Registry<E>>.networkCodec(): DataResult<out Codec<E>> = Optional.ofNullable(RegistryHolder.REGISTRIES[this])
+    .map { it.networkCodec }
+    .map { DataResult.success(it) }
+    .orElseGet { DataResult.error("Unknown or not serializable registry $this!") } as DataResult<out Codec<E>>
+
+data class RegistryData<E : Any>(
     val key: ResourceKey<out Registry<E>>,
     val codec: Codec<E>,
     val networkCodec: Codec<E>?

@@ -23,6 +23,7 @@
  */
 package org.kryptonmc.krypton.util
 
+import com.mojang.serialization.Codec
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.ByteBufOutputStream
@@ -31,6 +32,7 @@ import io.netty.handler.codec.EncoderException
 import it.unimi.dsi.fastutil.ints.IntList
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import org.jglrxavpok.hephaistos.nbt.NBT
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTReader
 import org.jglrxavpok.hephaistos.nbt.NBTWriter
@@ -51,6 +53,7 @@ import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.locale.TranslationManager
+import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
@@ -169,6 +172,18 @@ fun ByteBuf.writeUUID(uuid: UUID) {
 fun ByteBuf.writeNBTCompound(tag: NBTCompound) {
     val outputStream = ByteBufOutputStream(this)
     NBTWriter(outputStream, false).use { it.writeNamed("", tag) }
+}
+
+fun ByteBuf.writeNBT(tag: NBT?) {
+    if (tag == null) {
+        writeByte(0)
+        return
+    }
+    try {
+        NBTWriter(ByteBufOutputStream(this), false).use { it.writeNamed("", tag) }
+    } catch (exception: IOException) {
+        throw EncoderException(exception)
+    }
 }
 
 fun ByteBuf.readNBTCompound(): NBTCompound {
@@ -350,6 +365,12 @@ fun <K, V> ByteBuf.writeMap(map: Map<K, V>, keyAction: (K) -> Unit, valueAction:
 fun ByteBuf.writeIntList(list: IntList) {
     writeVarInt(list.size)
     list.forEach { writeVarInt(it) }
+}
+
+fun <T> ByteBuf.encode(value: T, codec: Codec<T>) {
+    val result = codec.encodeStart(NBTOps, value)
+    result.error().ifPresent { throw EncoderException("Failed to encode value $value with codec $codec! Reason: ${it.message()}") }
+    writeNBT(result.result().get())
 }
 
 fun ByteBuf.readBlockHitResult(): BlockHitResult {
