@@ -19,7 +19,11 @@
 package org.kryptonmc.krypton.registry
 
 import com.google.common.collect.HashBiMap
+import com.mojang.datafixers.util.Pair
 import com.mojang.serialization.Codec
+import com.mojang.serialization.DataResult
+import com.mojang.serialization.DynamicOps
+import com.mojang.serialization.Keyable
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
@@ -32,9 +36,10 @@ import org.kryptonmc.krypton.util.IdMap
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.identityStrategy
 import java.util.OptionalInt
+import java.util.stream.Stream
 import kotlin.math.max
 
-open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, IdMap<T> {
+open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, Codec<T>, Keyable, IdMap<T> {
 
     @Suppress("MagicNumber")
     private val byId = ObjectArrayList<T>(256)
@@ -91,6 +96,19 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
     override fun isEmpty() = storage.isEmpty()
 
     override fun iterator() = storage.values.iterator()
+
+    override fun <U> encode(input: T, ops: DynamicOps<U>, prefix: U): DataResult<U> {
+        val key = get(input) ?: return DataResult.error("Unknown registry element $input!")
+        return ops.mergeToPrimitive(prefix, if (ops.compressMaps()) ops.createInt(idOf(input)) else ops.createString(key.asString()))
+    }
+
+    override fun <U> decode(ops: DynamicOps<U>, input: U): DataResult<Pair<T, U>> = if (ops.compressMaps()) ops.getNumberValue(input).flatMap { id ->
+        get(id.toInt())?.let { DataResult.success(it) } ?: DataResult.error("Unknown registry ID $id!")
+    }.map { Pair.of(it, ops.empty()) } else KEY_CODEC.decode(ops, input).flatMap { pair ->
+        get(pair.first)?.let { DataResult.success(Pair.of(it, pair.second)) } ?: DataResult.error("Unknown registry key ${pair.first}")
+    }
+
+    override fun <U> keys(ops: DynamicOps<U>): Stream<U> = keySet.stream().map { ops.createString(it.asString()) }
 
     override val keySet: Set<Key>
         get() = storage.keys
