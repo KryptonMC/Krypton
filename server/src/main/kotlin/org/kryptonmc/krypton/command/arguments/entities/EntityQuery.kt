@@ -173,9 +173,9 @@ class EntityQuery(
                 }
                 "y_rotation" -> {
                     entities = if (arg.value.toString().startsWith("..")) {
-                        val pitch = arg.value.toString().replace("..", "").toInt()
+                        val yaw = arg.value.toString().replace("..", "").toInt()
                         entities.filter {
-                            it.location.yaw <= pitch
+                            it.location.yaw <= yaw
                         }
                     } else if (!arg.value.toString().contains("..")) {
                         entities.filter {
