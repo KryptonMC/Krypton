@@ -27,11 +27,9 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.jglrxavpok.hephaistos.mca.pack
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.config.KryptonConfig
-import org.kryptonmc.krypton.config.category.ServerCategory
-import org.kryptonmc.krypton.config.category.StatusCategory
-import org.kryptonmc.krypton.config.category.WorldCategory
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.TranslationManager
 import org.kryptonmc.krypton.pack.repository.FolderRepositorySource
@@ -56,7 +54,13 @@ private const val MEMORY_WARNING_THRESHOLD = 512
 
 fun main(args: Array<String>) = KryptonCLI().main(args)
 
-class KryptonCLI : CliktCommand() {
+class KryptonCLI : CliktCommand(
+    """
+        All of the command-line options for configuring Krypton. Useful for use in scripts.
+        Note: All options provided here will OVERRIDE those provided in the config!
+    """.trimIndent(),
+    name = "Krypton"
+) {
 
     // Flags
     private val version by option("-v", "--version").flag().help("Prints the version and exits")
@@ -65,29 +69,27 @@ class KryptonCLI : CliktCommand() {
     private val safeMode by option("-s", "--safe", "--safe-mode").flag().help("If set, only the built-in data pack is loaded")
 
     // Config options
-    private val ip by option("-ip", "--ip").help("The IP to listen on").default(ServerCategory.DEFAULT_IP)
-    private val port by option("-p", "--port").int().help("The port to bind to").default(ServerCategory.DEFAULT_PORT)
-    private val online by option("-o", "--online-mode").flag(default = true)
+    private val ip by option().help("The IP to listen on")
+    private val port by option("-p", "--port").int().help("The port to bind to")
+    private val online by option("-o", "--online", "--online-mode").flag(default = true)
         .help("Whether users should be authenticated with Mojang")
-    private val maxPlayers by option("-p", "--players", "--max-players").int()
+    private val maxPlayers by option("-P", "--players", "--max-players").int()
         .help("The maximum amount of players")
-        .default(StatusCategory.DEFAULT_MAX_PLAYERS)
-    private val motd by option("--motd").convert { LegacyComponentSerializer.legacyAmpersand().deserialize(it) }
+    private val motd by option("--motd", metavar = "COMPONENT")
+        .convert { LegacyComponentSerializer.legacyAmpersand().deserialize(it) }
         .help("The message of the day sent to players")
-        .default(StatusCategory.DEFAULT_MOTD)
     private val worldName by option("-w", "--world", "--world-name")
         .help("The name of the world folder for the default world")
-        .default(WorldCategory.DEFAULT_NAME)
 
     // Folders
     private val configFile by option("-c", "--config")
+        .help("Configuration file path for the server")
         .path(canBeDir = false, canBeSymlink = false, mustBeReadable = true, mustBeWritable = true)
         .default(Path.of("config.conf"))
-        .help("Configuration file path for the server")
-    private val worldFolder by option("--world-folder", "--world-directory", "--world-dir", "--universe")
+    private val worldFolder by option("-W", "--world-folder", "--world-directory", "--world-dir", "--universe")
+        .help("Folder where worlds are stored")
         .path(canBeFile = false, canBeSymlink = false, mustBeReadable = true, mustBeWritable = true)
         .default(Path.of("."))
-        .help("Folder where worlds are stored")
 
     // Other settings
     private val locale by option("-l", "--locale").convert {
@@ -119,9 +121,9 @@ class KryptonCLI : CliktCommand() {
         }
         // Populate the config with CLI parameters
         val config = loadedConfig.copy(
-            server = loadedConfig.server.copy(ip = ip, port = port, onlineMode = online),
-            status = loadedConfig.status.copy(motd = motd, maxPlayers = maxPlayers),
-            world = loadedConfig.world.copy(name = worldName)
+            server = loadedConfig.server.copy(ip = ip ?: loadedConfig.server.ip, port = port ?: loadedConfig.server.port, onlineMode = online),
+            status = loadedConfig.status.copy(motd = motd ?: loadedConfig.status.motd, maxPlayers = maxPlayers ?: loadedConfig.status.maxPlayers),
+            world = loadedConfig.world.copy(name = worldName ?: loadedConfig.world.name)
         )
 
         // Load the resources
@@ -142,18 +144,12 @@ class KryptonCLI : CliktCommand() {
         // TODO: Use this to load world generation settings
         val ops = RegistryReadOps.createAndLoad(NBTOps, resources.manager, registryHolder)
 
-        spin { KryptonServer(registryHolder, packRepository, resources, config, worldFolder) }
+        val reference = AtomicReference<KryptonServer>()
+        val serverThread = Thread({ reference.get().start() }, "Server Thread").apply {
+            setUncaughtExceptionHandler { _, exception -> logger<KryptonServer>().error(exception) }
+        }
+        val server = KryptonServer(registryHolder, packRepository, resources, config, worldFolder)
+        reference.set(server)
+        serverThread.start()
     }
-}
-
-// I could not resist
-private fun spin(creator: (Thread) -> KryptonServer): KryptonServer {
-    val reference = AtomicReference<KryptonServer>()
-    val serverThread = Thread({ reference.get().start() }, "Server Thread").apply {
-        setUncaughtExceptionHandler { _, exception -> logger<KryptonServer>().error(exception) }
-    }
-    val server = creator(serverThread)
-    reference.set(server)
-    serverThread.start()
-    return server
 }

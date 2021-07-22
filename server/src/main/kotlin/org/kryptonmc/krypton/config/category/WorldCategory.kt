@@ -43,10 +43,4 @@ data class WorldCategory(
     @Setting("autosave-interval")
     @Comment("The amount of time (in ticks) between automatic world saves.")
     val autosaveInterval: Int = 6000
-) {
-
-    companion object {
-
-        const val DEFAULT_NAME = "world"
-    }
-}
+)
