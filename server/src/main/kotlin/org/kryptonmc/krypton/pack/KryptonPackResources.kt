@@ -26,6 +26,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
+import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
 import java.nio.file.Path
@@ -117,6 +118,7 @@ class KryptonPackResources(
                 val uri = url.toURI()
                 val scheme = uri.scheme
                 if (scheme != "jar" && scheme != "file") LOGGER.warn("Data URL $uri uses unexpected scheme $scheme, should be either jar or file")
+                if (scheme == "jar" || scheme == "zip") FileSystems.newFileSystem(uri, mapOf("create" to "true"))
                 Path.of(uri).parent
             } catch (exception: Exception) {
                 LOGGER.error("Failed to resolve path to built-in data!")
