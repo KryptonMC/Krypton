@@ -47,10 +47,10 @@ object DimensionTypes {
     private val THE_NETHER_EFFECTS = key("the_nether")
     private val THE_END_EFFECTS = key("the_end")
 
-    val OVERWORLD_KEY = ResourceKey(ResourceKeys.DIMENSION_TYPE, key("overworld"))
-    private val OVERWORLD_CAVES_LOCATION = ResourceKey(ResourceKeys.DIMENSION_TYPE, key("overworld_caves"))
-    val NETHER_KEY = ResourceKey(ResourceKeys.DIMENSION_TYPE, key("the_nether"))
-    val END_KEY = ResourceKey(ResourceKeys.DIMENSION_TYPE, key("the_end"))
+    val OVERWORLD_KEY = ResourceKey.of(ResourceKeys.DIMENSION_TYPE, key("overworld"))
+    private val OVERWORLD_CAVES_LOCATION = ResourceKey.of(ResourceKeys.DIMENSION_TYPE, key("overworld_caves"))
+    val NETHER_KEY = ResourceKey.of(ResourceKeys.DIMENSION_TYPE, key("the_nether"))
+    val END_KEY = ResourceKey.of(ResourceKeys.DIMENSION_TYPE, key("the_end"))
 
     val OVERWORLD = DimensionType(
         false,

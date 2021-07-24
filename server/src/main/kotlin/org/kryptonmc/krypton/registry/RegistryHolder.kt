@@ -32,7 +32,7 @@ import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.registry.ops.RegistryReadOps
 import org.kryptonmc.krypton.resource.MemoryResources
 import org.kryptonmc.krypton.util.KEY_CODEC
-import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import java.util.Optional
 
@@ -70,16 +70,15 @@ class RegistryHolder(val registries: Map<out ResourceKey<out Registry<*>>, Krypt
         val key = data.key
         val shouldAdd = key != ResourceKeys.DIMENSION_TYPE
         val registry = BUILTIN.registryOrThrow(key)
-        val owned = BUILTIN.ownedRegistryOrThrow(key)
-        registry.forEach { (key, value) -> if (shouldAdd) resources.add(this, key, data.codec, registry.idOf(value), value) else owned.register(registry.idOf(value), key, value) }
+        val owned = ownedRegistryOrThrow(key)
+        registry.forEach { (key, value) -> if (shouldAdd) resources.add(BUILTIN, key, data.codec, registry.idOf(value), value) else owned.register(registry.idOf(value), key, value) }
     }
 
     companion object {
 
-        private val LOGGER = logger<RegistryHolder>()
         val REGISTRIES: Map<ResourceKey<out Registry<*>>, RegistryData<*>> = mapOf(
             ResourceKeys.DIMENSION_TYPE to RegistryData(ResourceKeys.DIMENSION_TYPE, DimensionTypes.DIRECT_CODEC, DimensionTypes.DIRECT_CODEC),
-            // TODO: Add biomes to this list
+            InternalResourceKeys.BIOME to RegistryData(InternalResourceKeys.BIOME, KryptonBiome.DIRECT_CODEC, KryptonBiome.DIRECT_CODEC)
         )
         private val BUILTIN = RegistryHolder().apply {
             DimensionTypes.registerBuiltins(this)
@@ -105,7 +104,7 @@ class RegistryHolder(val registries: Map<out ResourceKey<out Registry<*>>, Krypt
     }
 }
 
-private fun <T : Any> createKey(key: Key): ResourceKey<out Registry<T>> = ResourceKey(RegistryRoots.MINECRAFT, key)
+private fun <T : Any> createKey(key: Key): ResourceKey<out Registry<T>> = ResourceKey.of(RegistryRoots.MINECRAFT, key)
 
 @Suppress("UNCHECKED_CAST")
 private fun <K : ResourceKey<out Registry<*>>, V : KryptonRegistry<*>> UnboundedMapCodec<K, V>.capture() = xmap(::RegistryHolder) { holder ->

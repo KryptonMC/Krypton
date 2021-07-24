@@ -37,9 +37,8 @@ class RegistryFileCodec<E : Any>(
     override fun <T> encode(input: Supplier<E>, ops: DynamicOps<T>, prefix: T): DataResult<T> =
         if (ops is RegistryWriteOps) ops.encode(input.get(), prefix, registryKey, elementCodec) else elementCodec.encode(input.get(), ops, prefix)
 
-    override fun <T> decode(ops: DynamicOps<T>, input: T): DataResult<Pair<Supplier<E>, T>> {
-        return if (ops is RegistryReadOps) ops.decodeElement(input, registryKey, elementCodec, allowInline) else elementCodec.decode(ops, input).map { pair -> pair.mapFirst { Supplier { it } } }
-    }
+    override fun <T> decode(ops: DynamicOps<T>, input: T): DataResult<Pair<Supplier<E>, T>> =
+        if (ops is RegistryReadOps) ops.decodeElement(input, registryKey, elementCodec, allowInline) else elementCodec.decode(ops, input).map { pair -> pair.mapFirst { Supplier { it } } }
 
     override fun toString() = "RegistryFileCodec($registryKey, $elementCodec)"
 }

@@ -8,18 +8,7 @@
  */
 package org.kryptonmc.api.world.biome
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Keyed
-
 /**
  * Represents a biome.
  */
-interface Biome : Keyed {
-
-    /**
-     * The key of this biome.
-     */
-    val key: Key
-
-    override fun key() = key
-}
+interface Biome

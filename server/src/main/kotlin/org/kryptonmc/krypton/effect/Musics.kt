@@ -20,25 +20,20 @@ package org.kryptonmc.krypton.effect
 
 import org.kryptonmc.api.effect.sound.SoundEvents
 
-/**
- * All built-in music types.
- */
 object Musics {
 
-    // @formatter:off
-    @JvmField val MENU = Music(SoundEvents.MUSIC_MENU, ONE_SECOND, THIRTY_SECONDS, true)
-    @JvmField val CREATIVE = Music(SoundEvents.MUSIC_CREATIVE, TEN_MINUTES, TWENTY_MINUTES, false)
-    @JvmField val CREDITS = Music(SoundEvents.MUSIC_CREDITS, 0, 0, true)
-    @JvmField val END_BOSS = Music(SoundEvents.MUSIC_DRAGON, 0, 0, true)
-    @JvmField val END = Music(SoundEvents.MUSIC_END, FIVE_MINUTES, TWENTY_MINUTES, true)
-    @JvmField val UNDER_WATER = Music(SoundEvents.MUSIC_UNDER_WATER, TEN_MINUTES, TWENTY_MINUTES, false)
-    @JvmField val GAME = Music(SoundEvents.MUSIC_GAME, TEN_MINUTES, TWENTY_MINUTES, false)
-    @JvmField val NETHER_WASTES = Music(SoundEvents.MUSIC_BIOME_NETHER_WASTES, TEN_MINUTES, TWENTY_MINUTES, false)
-    @JvmField val SOUL_SAND_VALLEY = Music(SoundEvents.MUSIC_BIOME_SOUL_SAND_VALLEY, TEN_MINUTES, TWENTY_MINUTES, false)
-    @JvmField val BASALT_DELTAS = Music(SoundEvents.MUSIC_BIOME_BASALT_DELTAS, TEN_MINUTES, TWENTY_MINUTES, false)
-    @JvmField val CRIMSON_FOREST = Music(SoundEvents.MUSIC_BIOME_CRIMSON_FOREST, TEN_MINUTES, TWENTY_MINUTES, false)
-    @JvmField val WARPED_FOREST = Music(SoundEvents.MUSIC_BIOME_WARPED_FOREST, TEN_MINUTES, TWENTY_MINUTES, false)
-    // @formatter:on
+    val MENU = Music(SoundEvents.MUSIC_MENU, ONE_SECOND, THIRTY_SECONDS, true)
+    val CREATIVE = Music(SoundEvents.MUSIC_CREATIVE, TEN_MINUTES, TWENTY_MINUTES, false)
+    val CREDITS = Music(SoundEvents.MUSIC_CREDITS, 0, 0, true)
+    val END_BOSS = Music(SoundEvents.MUSIC_DRAGON, 0, 0, true)
+    val END = Music(SoundEvents.MUSIC_END, FIVE_MINUTES, TWENTY_MINUTES, true)
+    val UNDER_WATER = Music(SoundEvents.MUSIC_UNDER_WATER, TEN_MINUTES, TWENTY_MINUTES, false)
+    val GAME = Music(SoundEvents.MUSIC_GAME, TEN_MINUTES, TWENTY_MINUTES, false)
+    val NETHER_WASTES = Music(SoundEvents.MUSIC_BIOME_NETHER_WASTES, TEN_MINUTES, TWENTY_MINUTES, false)
+    val SOUL_SAND_VALLEY = Music(SoundEvents.MUSIC_BIOME_SOUL_SAND_VALLEY, TEN_MINUTES, TWENTY_MINUTES, false)
+    val BASALT_DELTAS = Music(SoundEvents.MUSIC_BIOME_BASALT_DELTAS, TEN_MINUTES, TWENTY_MINUTES, false)
+    val CRIMSON_FOREST = Music(SoundEvents.MUSIC_BIOME_CRIMSON_FOREST, TEN_MINUTES, TWENTY_MINUTES, false)
+    val WARPED_FOREST = Music(SoundEvents.MUSIC_BIOME_WARPED_FOREST, TEN_MINUTES, TWENTY_MINUTES, false)
 }
 
 // Time in ticks constants

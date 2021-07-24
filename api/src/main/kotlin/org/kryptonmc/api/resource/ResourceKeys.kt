@@ -40,7 +40,6 @@ object ResourceKeys {
     @JvmField val DIMENSION_TYPE = minecraft<DimensionType>("dimension_type")
     @JvmField val BLOCK = minecraft<Block>("block")
     @JvmField val ITEM = minecraft<ItemType>("item")
-    @JvmField val BIOME = minecraft<Biome>("worldgen/biome")
 
     /**
      * Custom built-in registries
@@ -57,7 +56,7 @@ object ResourceKeys {
      * @return a new registry key
      */
     @JvmStatic
-    fun <T : Any> minecraft(key: String): ResourceKey<out Registry<T>> = ResourceKey(Key.key(key))
+    fun <T : Any> minecraft(key: String): ResourceKey<out Registry<T>> = ResourceKey.of(RegistryRoots.MINECRAFT, Key.key(key))
 
     /**
      * Creates a new registry key with the given [key] as its base key.
@@ -68,5 +67,5 @@ object ResourceKeys {
      * @return a new registry key
      */
     @JvmStatic
-    fun <T : Any> krypton(key: String): ResourceKey<out Registry<T>> = ResourceKey(RegistryRoots.KRYPTON, Key.key("krypton", key))
+    fun <T : Any> krypton(key: String): ResourceKey<out Registry<T>> = ResourceKey.of(RegistryRoots.KRYPTON, Key.key("krypton", key))
 }

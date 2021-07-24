@@ -8,8 +8,8 @@
  */
 package org.kryptonmc.api.world.biome
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.FACTORY_PROVIDER
+import org.kryptonmc.api.util.provide
 
 /**
  * All the built-in biomes.
@@ -100,5 +100,7 @@ object Biomes {
     @JvmField val LUSH_CAVES = get("lush_caves")
 
     // @formatter:on
-    private fun get(name: String) = Registries.BIOME[Key.key(name)]
+    private fun get(name: String) = FACTORY[name]
 }
+
+private val FACTORY = FACTORY_PROVIDER.provide<BiomeFactory>()

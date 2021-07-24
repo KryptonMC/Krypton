@@ -63,12 +63,6 @@ object Registries {
     val ITEM = createDefaulted(ResourceKeys.ITEM, key("air"))
 
     /**
-     * The registry of all biomes in the game.
-     */
-    @JvmField
-    val BIOME = create(ResourceKeys.BIOME)
-
-    /**
      * Registers a new entry to the given [registry], with the given [key] mapped to
      * the given [value].
      *

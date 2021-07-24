@@ -74,8 +74,6 @@ interface RegistryManager {
     /**
      * Creates a new registry with the given registry [key], with a [defaultKey].
      *
-     *
-     *
      * @param key the registry key
      * @param defaultKey the default key
      * @return a defaulted registry for the given [key]

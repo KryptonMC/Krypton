@@ -51,7 +51,7 @@ class RegistryReadOps<T : Any> private constructor(
     delegate: DynamicOps<T>,
     private val resources: Resources,
     private val registryHolder: RegistryHolder,
-    private val readCache: IdentityHashMap<ResourceKey<out Registry<Any>>, ReadCache<Any>> = IdentityHashMap()
+    private val readCache: IdentityHashMap<ResourceKey<out Registry<*>>, ReadCache<*>> = IdentityHashMap()
 ) : DelegatingOps<T>(delegate) {
 
     @Suppress("UNCHECKED_CAST")
@@ -79,17 +79,18 @@ class RegistryReadOps<T : Any> private constructor(
         var result = DataResult.success(registry, Lifecycle.stable())
         val prefix = registryKey.location.value() + "/"
         resourceList.forEach {
-            if (!it.value().endsWith(".json")) {
+            val value = it.value()
+            if (!value.endsWith(JSON_SUFFIX)) {
                 LOGGER.warn("Resource $it is not a JSON file! Skipping...")
                 return@forEach
             }
-            if (!it.value().startsWith(prefix)) {
+            if (!value.startsWith(prefix)) {
                 LOGGER.warn("Resource $it does not start with a registry name prefix! Skipping...")
                 return@forEach
             }
-            val path = it.value().substring(prefix.length, it.value().length - JSON_SUFFIX.length)
+            val path = value.substring(prefix.length, value.length - JSON_SUFFIX.length)
             val key = key(it.namespace(), path)
-            result = result.flatMap { registry -> readAndRegister(registryKey, registry, elementCodec, key).map { registry } }
+            result = result.flatMap { resultRegistry -> readAndRegister(registryKey, resultRegistry, elementCodec, key).map { resultRegistry } }
         }
         return result.setPartial(registry)
     }
@@ -98,13 +99,13 @@ class RegistryReadOps<T : Any> private constructor(
     // just know that it works and move on, because this way lies madness...
     @Suppress("UNCHECKED_CAST")
     private fun <E : Any> readAndRegister(registryKey: ResourceKey<out Registry<E>>, registry: Registry<E>, elementCodec: Codec<E>, key: Key): DataResult<Supplier<E>> {
-        val resourceKey = ResourceKey(registryKey, key)
+        val resourceKey = ResourceKey.of(registryKey, key)
         val readCache = readCache(registryKey)
-        val dataResult = readCache.values[resourceKey as ResourceKey<Any>] as? DataResult<Supplier<E>>
+        val dataResult = readCache.values[resourceKey]
         if (dataResult != null) return dataResult
         val supplier = Suppliers.memoize { registry[resourceKey] ?: throw RuntimeException("Error during recursive registry parsing, element $resourceKey resolved too early!") }
-        readCache.values[resourceKey] = DataResult.success(supplier) as DataResult<Supplier<Any>>
-        val optionalParsed = resources.parseJson(jsonOps, registryKey, resourceKey as ResourceKey<E>, elementCodec)
+        readCache.values[resourceKey] = DataResult.success(supplier)
+        val optionalParsed = resources.parseJson(jsonOps, registryKey, resourceKey, elementCodec)
         val result = if (!optionalParsed.isPresent) DataResult.success(object : Supplier<E> {
             override fun get() = registry[resourceKey]!!
             override fun toString() = resourceKey.toString()
@@ -114,14 +115,12 @@ class RegistryReadOps<T : Any> private constructor(
             if (parsed.isPresent) (registry as KryptonRegistry<E>).registerOrOverride(parsed.get().second, resourceKey, parsed.get().first)
             parsedResult.map { Supplier { registry[resourceKey] } }
         }
-        readCache.values[resourceKey] = result as DataResult<Supplier<Any>>
-        return result as DataResult<Supplier<E>>
+        readCache.values[resourceKey] = result as DataResult<Supplier<E>>?
+        return result
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <E : Any> readCache(key: ResourceKey<out Registry<E>>) = readCache.getOrPut(key as ResourceKey<out Registry<Any>>) {
-        ReadCache<E>() as ReadCache<Any>
-    }
+    private fun <E : Any> readCache(key: ResourceKey<out Registry<E>>) = readCache.getOrPut(key) { ReadCache<E>() } as ReadCache<E>
 
     companion object {
 

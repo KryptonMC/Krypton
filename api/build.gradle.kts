@@ -104,7 +104,6 @@ publishing {
 
                 developers {
                     developer("bombardygamer", "Callum Seabrook", "callum.seabrook@prevarinite.com", "Europe/London", "Lead Developer")
-                    developer("esophose", "Nicole Barningham", "esophose@gmail.com", "America/Boise", "Developer")
                 }
 
                 contributors {

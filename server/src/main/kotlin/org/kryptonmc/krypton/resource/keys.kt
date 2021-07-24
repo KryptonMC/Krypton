@@ -23,4 +23,4 @@ import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import java.util.function.Function
 
-fun <T : Any> ResourceKey<out Registry<T>>.elementKey(): Function<Key, ResourceKey<T>> = Function { ResourceKey(location, it) }
+fun <T : Any> ResourceKey<out Registry<T>>.elementKey(): Function<Key, ResourceKey<T>> = Function { ResourceKey.of(location, it) }

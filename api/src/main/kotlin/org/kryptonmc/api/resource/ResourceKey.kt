@@ -11,6 +11,8 @@ package org.kryptonmc.api.resource
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
+import java.util.Collections
+import java.util.IdentityHashMap
 
 /**
  * A key pointing to some form of resources.
@@ -19,23 +21,36 @@ import org.kryptonmc.api.registry.RegistryRoots
  * @param location the [Key] location of the registry
  * @param T the type of this key
  */
-data class ResourceKey<T : Any>(val registry: Key, val location: Key) {
+class ResourceKey<T : Any> private constructor(val registry: Key, val location: Key) {
 
-    /**
-     * Creates a new resource key with the given [parent] registry key, and the given [location]
-     *
-     * @param parent the parent key
-     * @param location the location
-     * @return a new resource key
-     */
-    constructor(parent: ResourceKey<out Registry<T>>, location: Key) : this(parent.location, location)
+    companion object {
 
-    /**
-     * Creates a new resource key with the [minecraft][RegistryRoots.MINECRAFT] root as its root
-     * key, and the given [location].
-     *
-     * @param location the location
-     * @return a new resource key
-     */
-    constructor(location: Key) : this(RegistryRoots.MINECRAFT, location)
+        private val VALUES: MutableMap<String, ResourceKey<*>> = Collections.synchronizedMap(IdentityHashMap())
+
+        /**
+         * Creates a new resource key, or returns an existing one if one with the
+         * given parameters has already been created, with the given [registry] as
+         * its parent name, and the given [location] as the location of the resource.
+         *
+         * @param registry the parent registry name
+         * @param location the location of the resource
+         * @return a resource key
+         */
+        @Suppress("UNCHECKED_CAST")
+        fun <T : Any> of(registry: Key, location: Key): ResourceKey<T> {
+            val key = "$registry:$location".intern()
+            return VALUES.getOrPut(key) { ResourceKey<T>(registry, location) } as ResourceKey<T>
+        }
+
+        /**
+         * Creates a new resource key, or returns an existing one if one with the
+         * given parameters has already been created, with the given [parent] as
+         * its parent, and the given [location] as the location of the resource.
+         *
+         * @param parent the parent key
+         * @param location the location of the resource
+         * @return a resource key
+         */
+        fun <T : Any> of(parent: ResourceKey<out Registry<T>>, location: Key) = of<T>(parent.location, location)
+    }
 }

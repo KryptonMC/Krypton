@@ -108,6 +108,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             player.id,
             server.config.world.hardcore,
             world,
+            server.registryHolder,
             player.gamemode,
             player.oldGamemode,
             world.dimensionType,

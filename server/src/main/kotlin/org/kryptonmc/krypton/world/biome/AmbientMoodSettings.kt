@@ -18,18 +18,29 @@
  */
 package org.kryptonmc.krypton.world.biome
 
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.krypton.effect.SOUND_EVENT_CODEC
 
 data class AmbientMoodSettings(
     val sound: SoundEvent,
     val tickDelay: Int,
     val blockSearchExtent: Int,
-    val soundPositionOffset: Double
+    val offset: Double
 ) {
 
     companion object {
 
         val CAVE = AmbientMoodSettings(SoundEvents.AMBIENT_CAVE, 6000, 8, 2.0)
+        val CODEC: Codec<AmbientMoodSettings> = RecordCodecBuilder.create {
+            it.group(
+                SOUND_EVENT_CODEC.fieldOf("sound").forGetter(AmbientMoodSettings::sound),
+                Codec.INT.fieldOf("tick_delay").forGetter(AmbientMoodSettings::tickDelay),
+                Codec.INT.fieldOf("block_search_extent").forGetter(AmbientMoodSettings::blockSearchExtent),
+                Codec.DOUBLE.fieldOf("offset").forGetter(AmbientMoodSettings::offset)
+            ).apply(it, ::AmbientMoodSettings)
+        }
     }
 }

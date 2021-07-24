@@ -18,19 +18,26 @@
  */
 package org.kryptonmc.krypton.effect
 
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.sound.SoundEvent
 
-/**
- * Represents music that may be played to a client.
- *
- * @param sound the sound event to play
- * @param minimumDelay the minimum delay before the music is played
- * @param maximumDelay the maximum delay before the music is played
- * @param replace if the music should replace any currently playing music
- */
 data class Music(
     val sound: SoundEvent,
     val minimumDelay: Int,
     val maximumDelay: Int,
     val replace: Boolean
-)
+) {
+
+    companion object {
+
+        val CODEC: Codec<Music> = RecordCodecBuilder.create {
+            it.group(
+                SOUND_EVENT_CODEC.fieldOf("sound").forGetter(Music::sound),
+                Codec.INT.fieldOf("min_delay").forGetter(Music::minimumDelay),
+                Codec.INT.fieldOf("max_delay").forGetter(Music::maximumDelay),
+                Codec.BOOL.fieldOf("replace_current_music").forGetter(Music::replace)
+            ).apply(it, ::Music)
+        }
+    }
+}

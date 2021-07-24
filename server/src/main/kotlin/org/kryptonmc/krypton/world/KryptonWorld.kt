@@ -382,10 +382,10 @@ data class KryptonWorld(
 
     companion object {
 
-        val RESOURCE_KEY_CODEC: Codec<ResourceKey<KryptonWorld>> = KEY_CODEC.xmap({ ResourceKey(InternalResourceKeys.DIMENSION, it) }, ResourceKey<KryptonWorld>::location)
-        val OVERWORLD = ResourceKey(InternalResourceKeys.DIMENSION, DimensionTypes.OVERWORLD_KEY.location)
-        val THE_NETHER = ResourceKey(InternalResourceKeys.DIMENSION, DimensionTypes.NETHER_KEY.location)
-        val THE_END = ResourceKey(InternalResourceKeys.DIMENSION, DimensionTypes.END_KEY.location)
+        val RESOURCE_KEY_CODEC: Codec<ResourceKey<KryptonWorld>> = KEY_CODEC.xmap({ ResourceKey.of(InternalResourceKeys.DIMENSION, it) }, ResourceKey<KryptonWorld>::location)
+        val OVERWORLD = ResourceKey.of(InternalResourceKeys.DIMENSION, DimensionTypes.OVERWORLD_KEY.location)
+        val THE_NETHER = ResourceKey.of(InternalResourceKeys.DIMENSION, DimensionTypes.NETHER_KEY.location)
+        val THE_END = ResourceKey.of(InternalResourceKeys.DIMENSION, DimensionTypes.END_KEY.location)
     }
 }
 

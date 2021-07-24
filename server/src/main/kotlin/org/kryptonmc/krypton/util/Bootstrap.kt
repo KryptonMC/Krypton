@@ -41,7 +41,6 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.item.meta.MetaFactory
 import org.kryptonmc.krypton.locale.TranslationBootstrap
-import org.kryptonmc.krypton.registry.FileRegistries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.tags.BlockTags
@@ -51,6 +50,8 @@ import org.kryptonmc.krypton.tags.GameEventTags
 import org.kryptonmc.krypton.tags.ItemTags
 import org.kryptonmc.krypton.util.encryption.Encryption
 import org.kryptonmc.krypton.util.reports.CrashReport
+import org.kryptonmc.krypton.world.biome.BiomeKeys
+import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.event.GameEvents
@@ -60,11 +61,8 @@ import java.util.TreeSet
 object Bootstrap {
 
     private val LOGGER = logger<Bootstrap>()
+    @Volatile private var bootstrapped = false
 
-    @Volatile
-    private var bootstrapped = false
-
-    // TODO: Rewrite the preloading
     fun preload() {
         if (bootstrapped) return
         bootstrapped = true
@@ -72,9 +70,9 @@ object Bootstrap {
         TranslationBootstrap.init()
 
         // Preload all the registry classes to ensure everything is properly registered
-        (FACTORY_PROVIDER as KryptonFactoryProvider).bootstrap()
         RegistryRoots
         ResourceKeys
+        (FACTORY_PROVIDER as KryptonFactoryProvider).bootstrap()
         Registries
         InternalResourceKeys
         InternalRegistries
@@ -85,6 +83,8 @@ object Bootstrap {
         EntityTypes
         ItemTypes
         Fluids
+        KryptonBiomes
+        BiomeKeys
         Biomes
         DimensionTypes
         GameRules
@@ -98,9 +98,6 @@ object Bootstrap {
         FluidTags
         GameEventTags
         ItemTags
-
-        // Preload the old registry
-        FileRegistries
 
         // Preload some other things that would otherwise load on first player join or some other time
         Encryption

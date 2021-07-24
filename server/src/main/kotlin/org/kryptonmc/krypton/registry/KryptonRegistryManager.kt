@@ -28,9 +28,9 @@ object KryptonRegistryManager : RegistryManager {
 
     override val parent = KryptonRegistry(ResourceKeys.PARENT)
 
-    override fun <T : Any> register(registry: Registry<T>, key: Key, value: T) = registry.register(ResourceKey(registry.key, key), value)
+    override fun <T : Any> register(registry: Registry<T>, key: Key, value: T) = registry.register(ResourceKey.of(registry.key, key), value)
 
-    override fun <T : Any> register(registry: Registry<T>, id: Int, key: Key, value: T) = registry.register(id, ResourceKey(registry.key, key), value)
+    override fun <T : Any> register(registry: Registry<T>, id: Int, key: Key, value: T) = registry.register(id, ResourceKey.of(registry.key, key), value)
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> create(key: ResourceKey<out Registry<T>>) = parent.register(

@@ -27,4 +27,5 @@ object InternalRegistries {
     val METADATA = Registries.create(InternalResourceKeys.METADATA)
     val GAME_EVENT = Registries.create(InternalResourceKeys.GAME_EVENT)
     val FLUID = Registries.createDefaulted(InternalResourceKeys.FLUID, Key.key("empty"))
+    val BIOME = Registries.create(InternalResourceKeys.BIOME)
 }

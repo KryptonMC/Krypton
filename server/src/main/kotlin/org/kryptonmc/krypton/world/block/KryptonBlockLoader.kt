@@ -29,6 +29,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.registry.block.BlockData
+import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.ConcurrentHashMap
 
 object KryptonBlockLoader : BlockLoader {
@@ -38,7 +39,14 @@ object KryptonBlockLoader : BlockLoader {
     private val ID_MAP = Int2ObjectOpenHashMap<Block>()
     val STATE_MAP = Int2ObjectOpenHashMap<Block>()
 
-    init {
+    private val LOGGER = logger<KryptonBlockLoader>()
+    @JvmStatic @Volatile private var isLoaded = false
+
+    fun init() {
+        if (isLoaded) {
+            LOGGER.warn("Attempted to load block loader twice!")
+            return
+        }
         val blocks = GSON.fromJson<JsonObject>(
             Thread.currentThread().contextClassLoader
                 .getResourceAsStream("${KryptonServerInfo.minecraftVersion.replace(".", "_")}_blocks.json")!!
@@ -56,8 +64,10 @@ object KryptonBlockLoader : BlockLoader {
             ID_MAP[id] = defaultBlock
             KEY_MAP[key] = defaultBlock
             PROPERTY_MAP[key] = propertyEntry
+            if (Registries.BLOCK.contains(Key.key(key))) return@forEach
             Registries.register(Registries.BLOCK, key, defaultBlock)
         }
+        isLoaded = true
     }
 
     override fun fromKey(key: String): Block? {

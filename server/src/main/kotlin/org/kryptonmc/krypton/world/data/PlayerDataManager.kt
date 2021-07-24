@@ -75,7 +75,7 @@ class PlayerDataManager(private val folder: Path) {
 
         // Create temp file and write data
         val temp = folder.createTempFile(player.uuid.toString(), ".dat")
-        TagIO.write(temp, data, TagCompression.NONE)
+        TagIO.write(temp, data, TagCompression.GZIP)
 
         // Resolve actual file, and if it doesn't exist, rename the temp file
         val dataPath = folder.resolve("${player.uuid}.dat")

@@ -18,18 +18,38 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import net.kyori.adventure.key.Key
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.registry.RegistryFileCodec
+import org.kryptonmc.krypton.util.codec
+import java.util.function.Supplier
 
-data class KryptonBiome(
-    override val key: Key,
+class KryptonBiome(
     val climate: ClimateSettings,
     val depth: Float,
     val scale: Float,
     val category: BiomeCategory,
     val effects: BiomeEffects
-) : Biome
+) : Biome {
+
+    companion object {
+
+        // TODO: Add the network codec (when there is generation and mob spawn settings for the direct codec)
+        val DIRECT_CODEC: Codec<KryptonBiome> = RecordCodecBuilder.create {
+            it.group(
+                ClimateSettings.CODEC.forGetter(KryptonBiome::climate),
+                Codec.FLOAT.fieldOf("depth").forGetter(KryptonBiome::depth),
+                Codec.FLOAT.fieldOf("scale").forGetter(KryptonBiome::scale),
+                BiomeCategory.CODEC.fieldOf("category").forGetter(KryptonBiome::category),
+                BiomeEffects.CODEC.fieldOf("effects").forGetter(KryptonBiome::effects)
+            ).apply(it, ::KryptonBiome)
+        }
+        val CODEC: Codec<Supplier<KryptonBiome>> = RegistryFileCodec(InternalResourceKeys.BIOME, DIRECT_CODEC)
+    }
+}
 
 enum class BiomeCategory(override val serialized: String) : StringSerializable {
 
@@ -55,6 +75,7 @@ enum class BiomeCategory(override val serialized: String) : StringSerializable {
     companion object {
 
         private val BY_NAME = values().associateBy { it.serialized }
+        val CODEC = values().codec { BY_NAME[it] }
 
         fun fromName(name: String) = BY_NAME.getValue(name)
     }

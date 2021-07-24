@@ -22,6 +22,7 @@ import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.entity.attribute.Attribute
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.event.GameEvent
 import org.kryptonmc.krypton.world.fluid.Fluid
 
@@ -32,4 +33,5 @@ object InternalResourceKeys {
     val DIMENSION = ResourceKeys.minecraft<KryptonWorld>("dimension")
     val GAME_EVENT = ResourceKeys.minecraft<GameEvent>("game_event")
     val FLUID = ResourceKeys.minecraft<Fluid>("fluid")
+    val BIOME = ResourceKeys.minecraft<KryptonBiome>("worldgen/biome")
 }

@@ -18,9 +18,23 @@
  */
 package org.kryptonmc.krypton.world.biome
 
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.particle.Particle
+import org.kryptonmc.krypton.effect.PARTICLE_CODEC
 
 class AmbientParticleSettings(
     val particle: Particle,
     val probability: Float
-)
+) {
+
+    companion object {
+
+        val CODEC: Codec<AmbientParticleSettings> = RecordCodecBuilder.create {
+            it.group(
+                PARTICLE_CODEC.fieldOf("particle").forGetter(AmbientParticleSettings::particle),
+                Codec.FLOAT.fieldOf("probability").forGetter(AmbientParticleSettings::probability)
+            ).apply(it, ::AmbientParticleSettings)
+        }
+    }
+}
