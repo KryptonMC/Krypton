@@ -16,7 +16,6 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
-import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 

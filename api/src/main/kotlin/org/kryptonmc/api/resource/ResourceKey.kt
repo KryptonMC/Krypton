@@ -10,7 +10,6 @@ package org.kryptonmc.api.resource
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.api.registry.RegistryRoots
 import java.util.Collections
 import java.util.IdentityHashMap
 
