@@ -16,24 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.generation
+package org.kryptonmc.krypton.world.generation.feature
 
 import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.world.biome.KryptonBiomes
-import org.kryptonmc.krypton.world.generation.biome.FixedBiomeGenerator
-import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
+import org.kryptonmc.krypton.world.generation.feature.config.NoneFeatureConfig
 
-// FIXME: Get the biomes from the settings
-class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(
-    FixedBiomeGenerator(KryptonBiomes.PLAINS),
-    FixedBiomeGenerator(settings.biome),
-    settings.structureSettings
-) {
-
-    override val codec = CODEC
-
-    companion object {
-
-        val CODEC: Codec<FlatGenerator> = FlatGeneratorSettings.CODEC.fieldOf("settings").xmap(::FlatGenerator, FlatGenerator::settings).codec()
-    }
-}
+class NoOpFeature(codec: Codec<NoneFeatureConfig>) : Feature<NoneFeatureConfig>(codec)

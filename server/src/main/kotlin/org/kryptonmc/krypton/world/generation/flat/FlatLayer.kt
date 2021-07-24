@@ -16,24 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.generation
+package org.kryptonmc.krypton.world.generation.flat
 
 import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.world.biome.KryptonBiomes
-import org.kryptonmc.krypton.world.generation.biome.FixedBiomeGenerator
-import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.world.dimension.DimensionTypes
 
-// FIXME: Get the biomes from the settings
-class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(
-    FixedBiomeGenerator(KryptonBiomes.PLAINS),
-    FixedBiomeGenerator(settings.biome),
-    settings.structureSettings
+data class FlatLayer(
+    val block: Block,
+    val height: Int
 ) {
 
-    override val codec = CODEC
+    override fun toString() = "${if (height != 1) "$height*" else ""}${block.key}"
 
     companion object {
 
-        val CODEC: Codec<FlatGenerator> = FlatGeneratorSettings.CODEC.fieldOf("settings").xmap(::FlatGenerator, FlatGenerator::settings).codec()
+        val CODEC: Codec<FlatLayer> = RecordCodecBuilder.create {
+            it.group(
+                (Registries.BLOCK as KryptonRegistry<Block>).fieldOf("block").orElse(Blocks.AIR).forGetter(FlatLayer::block),
+                Codec.intRange(0, DimensionTypes.Y_SIZE).fieldOf("height").forGetter(FlatLayer::height)
+            ).apply(it, ::FlatLayer)
+        }
     }
 }

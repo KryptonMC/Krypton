@@ -16,24 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.generation
+package org.kryptonmc.krypton.world.generation.biome
 
 import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.world.biome.KryptonBiomes
-import org.kryptonmc.krypton.world.generation.biome.FixedBiomeGenerator
-import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import org.kryptonmc.krypton.world.biome.KryptonBiome
+import java.util.function.Supplier
 
-// FIXME: Get the biomes from the settings
-class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(
-    FixedBiomeGenerator(KryptonBiomes.PLAINS),
-    FixedBiomeGenerator(settings.biome),
-    settings.structureSettings
-) {
+class CheckerboardBiomeGenerator(
+    private val allowedBiomes: List<Supplier<KryptonBiome>>,
+    private val scale: Int
+) : BiomeGenerator(allowedBiomes.asSequence()) {
 
     override val codec = CODEC
 
     companion object {
 
-        val CODEC: Codec<FlatGenerator> = FlatGeneratorSettings.CODEC.fieldOf("settings").xmap(::FlatGenerator, FlatGenerator::settings).codec()
+        val CODEC: Codec<CheckerboardBiomeGenerator> = RecordCodecBuilder.create {
+            it.group(
+                KryptonBiome.LIST_CODEC.fieldOf("biomes").forGetter(CheckerboardBiomeGenerator::allowedBiomes),
+                Codec.intRange(0, 62).fieldOf("scale").orElse(2).forGetter(CheckerboardBiomeGenerator::scale)
+            ).apply(it, ::CheckerboardBiomeGenerator)
+        }
     }
 }

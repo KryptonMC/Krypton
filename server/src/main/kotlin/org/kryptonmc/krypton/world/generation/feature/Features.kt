@@ -16,24 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.generation
+package org.kryptonmc.krypton.world.generation.feature
 
-import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.world.biome.KryptonBiomes
-import org.kryptonmc.krypton.world.generation.biome.FixedBiomeGenerator
-import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.world.generation.feature.config.FeatureConfig
+import org.kryptonmc.krypton.world.generation.feature.config.NoneFeatureConfig
 
-// FIXME: Get the biomes from the settings
-class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(
-    FixedBiomeGenerator(KryptonBiomes.PLAINS),
-    FixedBiomeGenerator(settings.biome),
-    settings.structureSettings
-) {
+object Features {
 
-    override val codec = CODEC
+    val NO_OP: Feature<NoneFeatureConfig> = register("no_op", NoOpFeature(NoneFeatureConfig.CODEC))
 
-    companion object {
-
-        val CODEC: Codec<FlatGenerator> = FlatGeneratorSettings.CODEC.fieldOf("settings").xmap(::FlatGenerator, FlatGenerator::settings).codec()
-    }
+    @Suppress("UNCHECKED_CAST")
+    private fun <C : FeatureConfig, F : Feature<C>> register(name: String, feature: F): F =
+        Registries.register(InternalRegistries.FEATURE, name, feature) as F
 }

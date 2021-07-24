@@ -16,24 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.generation
+package org.kryptonmc.krypton.world.generation.feature.config
 
 import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.world.biome.KryptonBiomes
-import org.kryptonmc.krypton.world.generation.biome.FixedBiomeGenerator
-import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-// FIXME: Get the biomes from the settings
-class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(
-    FixedBiomeGenerator(KryptonBiomes.PLAINS),
-    FixedBiomeGenerator(settings.biome),
-    settings.structureSettings
+data class StrongholdConfig(
+    val distance: Int,
+    val spread: Int,
+    val count: Int
 ) {
-
-    override val codec = CODEC
 
     companion object {
 
-        val CODEC: Codec<FlatGenerator> = FlatGeneratorSettings.CODEC.fieldOf("settings").xmap(::FlatGenerator, FlatGenerator::settings).codec()
+        val CODEC: Codec<StrongholdConfig> = RecordCodecBuilder.create {
+            it.group(
+                Codec.intRange(0, 1023).fieldOf("distance").forGetter(StrongholdConfig::distance),
+                Codec.intRange(1, 4095).fieldOf("count").forGetter(StrongholdConfig::count),
+                Codec.intRange(0, 1023).fieldOf("spread").forGetter(StrongholdConfig::spread)
+            ).apply(it, ::StrongholdConfig)
+        }
     }
 }

@@ -18,20 +18,33 @@
  */
 package org.kryptonmc.krypton.registry
 
+import com.mojang.serialization.Codec
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.entity.attribute.Attribute
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.KryptonBiome
+import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.event.GameEvent
 import org.kryptonmc.krypton.world.fluid.Fluid
+import org.kryptonmc.krypton.world.generation.Generator
+import org.kryptonmc.krypton.world.generation.biome.BiomeGenerator
+import org.kryptonmc.krypton.world.generation.feature.ConfiguredFeature
+import org.kryptonmc.krypton.world.generation.feature.Feature
+import org.kryptonmc.krypton.world.generation.feature.Structure
 
 object InternalResourceKeys {
 
     val ATTRIBUTE = ResourceKeys.minecraft<Attribute>("attribute")
     val METADATA = ResourceKeys.krypton<MetadataKey<*>>("metadata")
-    val DIMENSION = ResourceKeys.minecraft<KryptonWorld>("dimension")
+    val WORLD = ResourceKeys.minecraft<KryptonWorld>("dimension")
+    val DIMENSION = ResourceKeys.minecraft<Dimension>("dimension")
     val GAME_EVENT = ResourceKeys.minecraft<GameEvent>("game_event")
     val FLUID = ResourceKeys.minecraft<Fluid>("fluid")
     val BIOME = ResourceKeys.minecraft<KryptonBiome>("worldgen/biome")
+    val GENERATOR = ResourceKeys.minecraft<Codec<out Generator>>("worldgen/chunk_generator")
+    val BIOME_GENERATOR = ResourceKeys.minecraft<Codec<out BiomeGenerator>>("worldgen/biome_source")
+    val FEATURE = ResourceKeys.minecraft<Feature<*>>("worldgen/feature")
+    val CONFIGURED_FEATURE = ResourceKeys.minecraft<ConfiguredFeature<*, *>>("worldgen/configured_feature")
+    val STRUCTURE = ResourceKeys.minecraft<Structure<*>>("worldgen/structure_feature")
 }

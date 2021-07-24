@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world
 
 import com.mojang.serialization.Dynamic
+import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameVersion
@@ -29,14 +30,17 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.datafix.DATA_FIXER
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
+import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.dimension.Dimension
+import org.kryptonmc.krypton.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
-import org.kryptonmc.krypton.world.generation.toGenerator
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import org.spongepowered.math.vector.Vector2d
@@ -169,8 +173,12 @@ class KryptonWorldManager(
         OLD_WORLD_GEN_SETTINGS_KEYS.forEach { key -> settings[key].result().ifPresent { temp = temp.set(key, it) } }
 
         val data = DATA_FIXER.update(References.WORLD_GEN_SETTINGS, temp, version, ServerInfo.WORLD_VERSION)
+        // FIXME: When we implement the noise generator again, and fix up the registries, sort this out
         val dimensions = data["dimensions"].asMap({ it.asString("").toKey() }, {
-            Dimension(it["type"].asString("").toKey(), it["generator"].orElseEmptyMap().toGenerator())
+            Dimension(
+                { server.registryHolder.ownedRegistryOrThrow(ResourceKeys.DIMENSION_TYPE)[it["type"].asString("").toKey()]!! },
+                DebugGenerator(server.registryHolder.ownedRegistryOrThrow(InternalResourceKeys.BIOME))
+            )
         })
         return WorldGenerationSettings(
             data["seed"].asLong(0L),

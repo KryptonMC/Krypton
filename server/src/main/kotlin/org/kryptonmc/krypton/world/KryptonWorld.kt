@@ -79,7 +79,6 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 import kotlin.io.path.moveTo
-import kotlin.io.path.outputStream
 import kotlin.random.Random
 
 data class KryptonWorld(
@@ -314,7 +313,8 @@ data class KryptonWorld(
                 compound("WorldGenSettings") {
                     long("seed", generationSettings.seed)
                     boolean("generate_features", generationSettings.generateStructures)
-                    compound("dimensions") { generationSettings.dimensions.forEach { (key, value) -> put(key.asString(), value.toNBT()) } }
+                    // FIXME when this is back to normal
+                    compound("dimensions") { generationSettings.dimensions.forEach { (key, _) -> put(key.asString(), CompoundTag()) } }
                 }
                 int("GameType", gamemode.ordinal)
                 boolean("hardcore", isHardcore)
@@ -382,10 +382,10 @@ data class KryptonWorld(
 
     companion object {
 
-        val RESOURCE_KEY_CODEC: Codec<ResourceKey<KryptonWorld>> = KEY_CODEC.xmap({ ResourceKey.of(InternalResourceKeys.DIMENSION, it) }, ResourceKey<KryptonWorld>::location)
-        val OVERWORLD = ResourceKey.of(InternalResourceKeys.DIMENSION, DimensionTypes.OVERWORLD_KEY.location)
-        val THE_NETHER = ResourceKey.of(InternalResourceKeys.DIMENSION, DimensionTypes.NETHER_KEY.location)
-        val THE_END = ResourceKey.of(InternalResourceKeys.DIMENSION, DimensionTypes.END_KEY.location)
+        val RESOURCE_KEY_CODEC: Codec<ResourceKey<KryptonWorld>> = KEY_CODEC.xmap({ ResourceKey.of(InternalResourceKeys.WORLD, it) }, ResourceKey<KryptonWorld>::location)
+        val OVERWORLD = ResourceKey.of(InternalResourceKeys.WORLD, DimensionTypes.OVERWORLD_KEY.location)
+        val THE_NETHER = ResourceKey.of(InternalResourceKeys.WORLD, DimensionTypes.NETHER_KEY.location)
+        val THE_END = ResourceKey.of(InternalResourceKeys.WORLD, DimensionTypes.END_KEY.location)
     }
 }
 

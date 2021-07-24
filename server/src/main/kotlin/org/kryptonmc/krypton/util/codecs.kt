@@ -18,23 +18,47 @@
  */
 package org.kryptonmc.krypton.util
 
+import com.mojang.datafixers.util.Either
 import com.mojang.datafixers.util.Pair
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.DynamicOps
+import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.util.getIfPresent
+import org.kryptonmc.krypton.registry.RegistryFileCodec
 import java.awt.Color
 import java.util.Optional
-import java.util.function.IntFunction
-import java.util.function.ToIntFunction
+import java.util.function.Function
+import java.util.function.Supplier
 
 val COLOR_CODEC: Codec<Color> = Codec.INT.xmap(::Color, Color::getRGB)
 
-fun <A> MapCodec<Optional<A>>.xmapOptional(): MapCodec<A?> = xmap({ it.getIfPresent() }, { Optional.ofNullable(it) })
+val NON_NEGATIVE_INT = intRange(0, Int.MAX_VALUE) { "Value $it must be non-negative!" }
 
-fun <A> Codec<A>.nullableFieldOf(name: String) = optionalFieldOf(name).xmapOptional()
+private fun intRange(lower: Int, upper: Int, message: (Int) -> String): Codec<Int> {
+    val rangeChecker = checkRange(lower, upper, message)
+    return Codec.INT.flatXmap(rangeChecker, rangeChecker)
+}
+
+private fun <N> checkRange(lower: N, upper: N, message: (N) -> String): Function<N, DataResult<N>> where N : Number, N : Comparable<N> =
+    Function { if (it in lower..upper) DataResult.success(it) else DataResult.error(message(it)) }
+
+fun <T> nonNullSupplier() = Function<Supplier<T>, DataResult<Supplier<T>>> {
+    try {
+        if (it.get() == null) DataResult.error("Missing value $it!") else DataResult.success(it, Lifecycle.stable())
+    } catch (exception: Exception) {
+        DataResult.error("Invalid value: $it, message: ${exception.message}")
+    }
+}
+
+fun <E : Any> homogenousListCodec(registryKey: ResourceKey<out Registry<E>>, elementCodec: Codec<E>): Codec<List<Supplier<E>>> = Codec.either(
+    RegistryFileCodec(registryKey, elementCodec, false).listOf(),
+    elementCodec.xmap({ Supplier { it } }, Supplier<E>::get).listOf()
+).xmap({ either -> either.map({ it }, { it }) }, { Either.left(it) })
 
 fun <E> Array<E>.codec(nameToValue: (String) -> E?): Codec<E> where E : Enum<E>, E : StringSerializable = object : Codec<E> {
 

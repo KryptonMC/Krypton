@@ -16,24 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.generation
+package org.kryptonmc.krypton.world.generation.feature
 
 import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.world.biome.KryptonBiomes
-import org.kryptonmc.krypton.world.generation.biome.FixedBiomeGenerator
-import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
+import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.registry.RegistryFileCodec
+import org.kryptonmc.krypton.world.generation.feature.config.FeatureConfig
+import java.util.function.Supplier
 
-// FIXME: Get the biomes from the settings
-class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(
-    FixedBiomeGenerator(KryptonBiomes.PLAINS),
-    FixedBiomeGenerator(settings.biome),
-    settings.structureSettings
+class ConfiguredFeature<C : FeatureConfig, F : Feature<C>>(
+    val feature: F,
+    val config: C
 ) {
-
-    override val codec = CODEC
 
     companion object {
 
-        val CODEC: Codec<FlatGenerator> = FlatGeneratorSettings.CODEC.fieldOf("settings").xmap(::FlatGenerator, FlatGenerator::settings).codec()
+        val DIRECT_CODEC: Codec<ConfiguredFeature<*, *>> = InternalRegistries.FEATURE.dispatch(ConfiguredFeature<*, *>::feature, Feature<*>::configuredCodec)
+        val CODEC: Codec<Supplier<ConfiguredFeature<*, *>>> = RegistryFileCodec(InternalResourceKeys.CONFIGURED_FEATURE, DIRECT_CODEC)
     }
 }

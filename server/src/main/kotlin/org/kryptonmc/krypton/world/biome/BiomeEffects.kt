@@ -23,11 +23,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.krypton.effect.Music
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.StringSerializable
-import org.kryptonmc.api.util.getIfPresent
 import org.kryptonmc.krypton.effect.SOUND_EVENT_CODEC
 import org.kryptonmc.krypton.util.COLOR_CODEC
 import org.kryptonmc.krypton.util.codec
-import org.kryptonmc.krypton.util.nullableFieldOf
 import java.awt.Color
 import java.util.Optional
 

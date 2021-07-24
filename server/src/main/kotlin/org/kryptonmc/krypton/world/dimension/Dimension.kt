@@ -18,17 +18,32 @@
  */
 package org.kryptonmc.krypton.world.dimension
 
-import net.kyori.adventure.key.Key
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.kyori.adventure.key.Key.key
+import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.world.dimension.DimensionType
+import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.util.nonNullSupplier
 import org.kryptonmc.krypton.world.generation.Generator
-import org.kryptonmc.nbt.compound
+import java.util.function.Supplier
 
 data class Dimension(
-    val type: Key,
+    val typeSupplier: Supplier<DimensionType>,
     val generator: Generator
 ) {
 
-    fun toNBT() = compound {
-        string("type", type.asString())
-        put("generator", generator.toNBT())
+    companion object {
+
+        val OVERWORLD = ResourceKey.of(InternalResourceKeys.DIMENSION, key("overworld"))
+        val NETHER = ResourceKey.of(InternalResourceKeys.DIMENSION, key("the_nether"))
+        val END = ResourceKey.of(InternalResourceKeys.DIMENSION, key("the_end"))
+        val CODEC: Codec<Dimension> = RecordCodecBuilder.create {
+            it.group(
+                DimensionTypes.CODEC.fieldOf("type").flatXmap(nonNullSupplier(), nonNullSupplier()).forGetter(Dimension::typeSupplier),
+                Generator.CODEC.fieldOf("generator").forGetter(Dimension::generator)
+            ).apply(it, ::Dimension)
+        }
+        private val BUILT_IN_ORDER = setOf(OVERWORLD, NETHER, END)
     }
 }

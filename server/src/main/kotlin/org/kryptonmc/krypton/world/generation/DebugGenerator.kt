@@ -19,21 +19,19 @@
 package org.kryptonmc.krypton.world.generation
 
 import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.world.biome.KryptonBiomes
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.registry.RegistryLookupCodec
+import org.kryptonmc.krypton.world.biome.BiomeKeys
+import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.generation.biome.FixedBiomeGenerator
-import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
 
-// FIXME: Get the biomes from the settings
-class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(
-    FixedBiomeGenerator(KryptonBiomes.PLAINS),
-    FixedBiomeGenerator(settings.biome),
-    settings.structureSettings
-) {
+class DebugGenerator(private val biomes: Registry<KryptonBiome>) : Generator(FixedBiomeGenerator(biomes[BiomeKeys.PLAINS]!!), StructureSettings(false)) {
 
     override val codec = CODEC
 
     companion object {
 
-        val CODEC: Codec<FlatGenerator> = FlatGeneratorSettings.CODEC.fieldOf("settings").xmap(::FlatGenerator, FlatGenerator::settings).codec()
+        val CODEC: Codec<DebugGenerator> = RegistryLookupCodec(InternalResourceKeys.BIOME).xmap(::DebugGenerator, DebugGenerator::biomes).stable().codec()
     }
 }

@@ -16,29 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.generation
+package org.kryptonmc.krypton.world.generation.feature.config
 
 import com.mojang.serialization.Codec
-import com.mojang.serialization.Dynamic
-import net.kyori.adventure.key.Key.key
-import org.kryptonmc.api.util.toKey
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.world.generation.biome.BiomeGenerator
+import com.mojang.serialization.DataResult
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import org.kryptonmc.krypton.util.NON_NEGATIVE_INT
 import java.util.function.Function
 
-abstract class Generator(
-    protected val biomeGenerator: BiomeGenerator,
-    protected val runtimeBiomeGenerator: BiomeGenerator,
-    private val settings: StructureSettings,
-    private val strongholdSeed: Long = 0L
+data class StructureConfig(
+    val spacing: Int,
+    val separation: Int,
+    val salt: Int
 ) {
-
-    constructor(biomeGenerator: BiomeGenerator, structures: StructureSettings) : this(biomeGenerator, biomeGenerator, structures, 0L)
-
-    abstract val codec: Codec<out Generator>
 
     companion object {
 
-        val CODEC: Codec<Generator> = InternalRegistries.GENERATOR.dispatchStable(Generator::codec, Function.identity())
+        val CODEC: Codec<StructureConfig> = RecordCodecBuilder.create<StructureConfig> {
+            it.group(
+                Codec.intRange(0, 4096).fieldOf("spacing").forGetter(StructureConfig::spacing),
+                Codec.intRange(0, 4096).fieldOf("separation").forGetter(StructureConfig::separation),
+                NON_NEGATIVE_INT.fieldOf("salt").forGetter(StructureConfig::salt)
+            ).apply(it, ::StructureConfig)
+        }.comapFlatMap({ if (it.spacing <= it.separation) DataResult.error("Spacing must be larger than separation!") else DataResult.success(it) }, Function.identity())
     }
 }

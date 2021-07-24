@@ -39,7 +39,7 @@ object DimensionTypes {
     private const val MINIMUM_COORDINATE_SCALE = 1.0E-5
     private const val MAXIMUM_COORDINATE_SCALE = 3.0E7
     private const val MINIMUM_HEIGHT = 16
-    private val Y_SIZE = (1 shl PACKED_Y) - 32
+    val Y_SIZE = (1 shl PACKED_Y) - 32
     private val MAX_Y = (Y_SIZE shr 1) - 1
     private val MIN_Y = MAX_Y - Y_SIZE + 1
 
