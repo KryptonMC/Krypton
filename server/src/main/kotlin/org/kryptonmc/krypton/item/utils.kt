@@ -19,25 +19,25 @@
 package org.kryptonmc.krypton.item
 
 import net.kyori.adventure.inventory.Book
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTString
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.item.ItemHandler
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.item.handler.DummyItemHandler
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
+import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.mutableCompound
 import java.util.Locale
 
 val ItemType.handler: ItemHandler
     get() = KryptonItemManager.handler(key.asString()) ?: DummyItemHandler
 
 fun Book.toItemStack(locale: Locale): KryptonItemStack {
-    val tag = NBTCompound()
-        .setString("title", title().toJsonString())
-        .setString("author", author().toJsonString())
-        .set("pages", NBTList<NBTString>(NBTTypes.TAG_String).apply { pages().forEach { add(NBTString(it.toJsonString())) } })
+    val tag = mutableCompound {
+        putString("title", title().toJsonString())
+        putString("author", author().toJsonString())
+        put("pages", ListTag(pages().mapTo(mutableListOf()) { StringTag.of(it.toJsonString()) }, StringTag.ID))
+    }
     return KryptonItemStack(ItemTypes.WRITTEN_BOOK, 1, KryptonMetaHolder(tag))
 }

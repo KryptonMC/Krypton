@@ -27,7 +27,6 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.jglrxavpok.hephaistos.mca.pack
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.locale.Messages

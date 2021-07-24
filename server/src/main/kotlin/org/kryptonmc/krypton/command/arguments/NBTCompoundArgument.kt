@@ -20,12 +20,12 @@ package org.kryptonmc.krypton.command.arguments
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.kryptonmc.krypton.util.nbt.BrigadierSNBTParser
+import org.kryptonmc.krypton.util.nbt.SNBTParser
+import org.kryptonmc.nbt.CompoundTag
 
-class NBTCompoundArgument : ArgumentType<NBTCompound> {
+class NBTCompoundArgument : ArgumentType<CompoundTag> {
 
-    override fun parse(reader: StringReader) = BrigadierSNBTParser(reader).readCompound()
+    override fun parse(reader: StringReader) = SNBTParser(reader).readCompound()
 
     override fun getExamples() = EXAMPLES
 

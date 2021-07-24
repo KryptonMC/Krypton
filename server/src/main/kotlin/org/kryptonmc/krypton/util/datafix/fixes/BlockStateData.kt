@@ -18,12 +18,12 @@
  */
 package org.kryptonmc.krypton.util.datafix.fixes
 
+import com.mojang.brigadier.StringReader
 import com.mojang.serialization.Dynamic
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import org.apache.logging.log4j.LogManager
-import org.jglrxavpok.hephaistos.nbt.SNBTParser
 import org.kryptonmc.krypton.util.nbt.NBTOps
-import java.io.StringReader
+import org.kryptonmc.krypton.util.nbt.SNBTParser
 
 object BlockStateData {
 
@@ -59,7 +59,7 @@ object BlockStateData {
     fun Int.upgradeBlock() = if (this !in MAP.indices) "minecraft:air" else MAP[this]?.get("Name")?.asString("") ?: "minecraft:air"
 
     fun String.parse() = try {
-        Dynamic(NBTOps, SNBTParser(StringReader(replace('\'', '"'))).parse())
+        Dynamic(NBTOps, SNBTParser(StringReader(replace('\'', '"'))).readValue())
     } catch (exception: Exception) {
         LOGGER.error("Error whilst attempting to parse $this", exception)
         throw RuntimeException(exception)

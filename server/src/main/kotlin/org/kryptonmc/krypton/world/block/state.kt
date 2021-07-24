@@ -18,33 +18,29 @@
  */
 package org.kryptonmc.krypton.world.block
 
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTString
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.util.IdMapper
 import org.kryptonmc.krypton.world.transform
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.compound
 
 val BLOCKS = IdMapper<Block>().apply {
     KryptonBlockLoader.STATE_MAP.forEach { set(it.value, it.key) }
 }
 
-fun NBTCompound.toBlock(): Block {
-    if (!contains("Name", NBTTypes.TAG_String)) return Blocks.AIR
+fun CompoundTag.toBlock(): Block {
+    if (!contains("Name", StringTag.ID)) return Blocks.AIR
     var block = KryptonBlockLoader.fromKey(getString("Name").toKey()) ?: error("No block found with key ${getString("Name")}!")
-    if (contains("Properties", NBTTypes.TAG_Compound)) {
-        block = block.withProperties(getCompound("Properties").transform { it.key to (it.value as NBTString).value })
+    if (contains("Properties", CompoundTag.ID)) {
+        block = block.withProperties(getCompound("Properties").transform { it.key to (it.value as StringTag).value })
     }
     return block
 }
 
-fun Block.toNBT() = NBTCompound()
-    .setString("Name", key.asString())
-    .apply {
-        if (properties.isNotEmpty()) {
-            val propertiesTag = NBTCompound().apply { properties.forEach { setString(it.key, it.value) } }
-            set("Properties", propertiesTag)
-        }
-    }
+fun Block.toNBT() = compound {
+    string("Name", key.asString())
+    if (properties.isNotEmpty()) compound("Properties") { properties.forEach { string(it.key, it.value) } }
+}

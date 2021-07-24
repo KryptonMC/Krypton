@@ -20,11 +20,10 @@ package org.kryptonmc.krypton.entity.attribute
 
 import com.google.common.collect.Multimap
 import net.kyori.adventure.key.Key
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ListTag
 import java.util.UUID
 
 class AttributeMap(private val supplier: AttributeSupplier) : Iterable<Map.Entry<Attribute, AttributeInstance?>> {
@@ -61,11 +60,9 @@ class AttributeMap(private val supplier: AttributeSupplier) : Iterable<Map.Entry
         get(it.attribute)?.replaceFrom(it)
     }
 
-    fun save() = NBTList<NBTCompound>(NBTTypes.TAG_Compound).apply {
-        attributes.values.asSequence().filterNotNull().forEach { add(it.save()) }
-    }
+    fun save() = ListTag(attributes.values.filterNotNull().mapTo(mutableListOf()) { it.save() }, CompoundTag.ID)
 
-    fun load(tag: NBTList<NBTCompound>) = tag.forEach {
+    fun load(tag: ListTag) = tag.asSequence().map { it as CompoundTag }.forEach {
         val name = it.getString("Name")
         val attribute = InternalRegistries.ATTRIBUTE[Key.key(name)] ?: return@forEach LOGGER.warn("Ignoring unknown attribute $name")
         get(attribute)?.load(it)

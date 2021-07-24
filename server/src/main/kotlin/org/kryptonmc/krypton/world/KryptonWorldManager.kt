@@ -19,9 +19,6 @@
 package org.kryptonmc.krypton.world
 
 import com.mojang.serialization.Dynamic
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTReader
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameVersion
@@ -40,6 +37,8 @@ import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.generation.toGenerator
+import org.kryptonmc.nbt.io.TagCompression
+import org.kryptonmc.nbt.io.TagIO
 import org.spongepowered.math.vector.Vector2d
 import org.spongepowered.math.vector.Vector3i
 import java.io.DataInputStream
@@ -100,9 +99,9 @@ class KryptonWorldManager(
     // TODO: Possibly also make this preload spawn chunks
     private fun loadWorld(folder: Path): CompletableFuture<KryptonWorld> = CompletableFuture.supplyAsync({
         val dataFile = folder.resolve("level.dat")
-        val nbt = NBTReader(dataFile.inputStream()).use { it.read() as NBTCompound }.getCompound("Data")
+        val nbt = TagIO.read(dataFile, TagCompression.GZIP).getCompound("Data")
 
-        val version = if (nbt.contains("DataVersion", NBTTypes.PRIMITIVE)) nbt.getInt("DataVersion") else -1
+        val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
         val data = DATA_FIXER.update(References.LEVEL, Dynamic(NBTOps, nbt), version, ServerInfo.WORLD_VERSION)
 
         val gamemode = Gamemode.fromId(data["GameType"].asInt(0)) ?: Gamemode.SURVIVAL

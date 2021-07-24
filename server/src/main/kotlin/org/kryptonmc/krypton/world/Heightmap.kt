@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.world
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
-import org.jglrxavpok.hephaistos.nbt.NBTLongArray
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.space.MutableVector3i
@@ -139,8 +138,3 @@ class Heightmap(
         }
     }
 }
-
-data class HeightmapBuilder(
-    val nbt: NBTLongArray,
-    val type: Heightmap.Type
-)

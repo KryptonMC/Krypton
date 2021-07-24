@@ -18,16 +18,14 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.world.Biome
 import org.kryptonmc.api.world.chunk.Chunk
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.BlockAccessor
-import org.kryptonmc.krypton.world.HeightAccessor
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.nbt.CompoundTag
 import java.util.EnumMap
 
 class KryptonChunk(
@@ -38,7 +36,7 @@ class KryptonChunk(
     override var lastUpdate: Long,
     override var inhabitedTime: Long,
     val carvingMasks: Pair<ByteArray, ByteArray>,
-    val structures: NBTCompound
+    val structures: CompoundTag
 ) : Chunk, BlockAccessor {
 
     val heightmaps = EnumMap<Heightmap.Type, Heightmap>(Heightmap.Type::class.java)

@@ -19,11 +19,8 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
-import org.jglrxavpok.hephaistos.nbt.NBT
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.krypton.util.nbt.Serializable
+import org.kryptonmc.nbt.ListTag
 
 interface Palette {
 
@@ -36,5 +33,5 @@ interface Palette {
 
     fun write(buf: ByteBuf)
 
-    fun load(data: NBTList<NBTCompound>)
+    fun load(data: ListTag)
 }

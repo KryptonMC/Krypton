@@ -19,13 +19,12 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.block.BLOCKS
 import org.kryptonmc.krypton.world.block.toBlock
+import org.kryptonmc.nbt.ListTag
 
 class ArrayPalette(private val bits: Int, private val resizer: (Int, Block) -> Int) : Palette {
 
@@ -51,8 +50,11 @@ class ArrayPalette(private val bits: Int, private val resizer: (Int, Block) -> I
         for (i in 0 until size) buf.writeVarInt(BLOCKS.idOf(values[i]!!))
     }
 
-    override fun load(data: NBTList<NBTCompound>) {
-        data.forEachIndexed { index, entry -> values[index] = entry.toBlock() }
+    override fun load(data: ListTag) {
+        for (i in data.indices) {
+            val tag = data.getCompound(i)
+            values[i] = tag.toBlock()
+        }
         size = data.size
     }
 

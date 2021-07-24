@@ -21,16 +21,15 @@ package org.kryptonmc.krypton.world.generation
 import com.mojang.serialization.Dynamic
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.util.toKey
+import org.kryptonmc.nbt.compound
 
 data class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(ID) {
 
-    override fun toNBT() = NBTCompound()
-        .setString("type", ID.toString())
-        .set("settings", settings.toNBT())
+    override fun toNBT() = compound {
+        string("type", ID.toString())
+        put("settings", settings.toNBT())
+    }
 
     companion object {
 
@@ -44,10 +43,11 @@ data class FlatGeneratorSettings(
     override val structures: GeneratorStructures
 ) : GeneratorSettings() {
 
-    override fun toNBT() = NBTCompound()
-        .set("layers", NBTList<NBTCompound>(NBTTypes.TAG_Compound).apply { layers.forEach { add(it.toNBT()) } })
-        .setString("biome", biome.toString())
-        .set("structures", structures.toNBT())
+    override fun toNBT() = compound {
+        list("layers") { layers.forEach { add(it.toNBT()) } }
+        string("biome", biome.toString())
+        put("structures", structures.toNBT())
+    }
 
     companion object {
 
@@ -77,7 +77,8 @@ data class FlatLayer(
     val height: Int
 ) {
 
-    fun toNBT() = NBTCompound()
-        .setInt("height", height)
-        .setString("block", block.toString())
+    fun toNBT() = compound {
+        int("height", height)
+        string("block", block.toString())
+    }
 }

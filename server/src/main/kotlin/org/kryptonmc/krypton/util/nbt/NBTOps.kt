@@ -24,225 +24,210 @@ import com.mojang.serialization.DataResult
 import com.mojang.serialization.DynamicOps
 import com.mojang.serialization.MapLike
 import com.mojang.serialization.RecordBuilder
-import org.jglrxavpok.hephaistos.nbt.NBT
-import org.jglrxavpok.hephaistos.nbt.NBTByte
-import org.jglrxavpok.hephaistos.nbt.NBTByteArray
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTDouble
-import org.jglrxavpok.hephaistos.nbt.NBTEnd
-import org.jglrxavpok.hephaistos.nbt.NBTFloat
-import org.jglrxavpok.hephaistos.nbt.NBTInt
-import org.jglrxavpok.hephaistos.nbt.NBTIntArray
-import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTLong
-import org.jglrxavpok.hephaistos.nbt.NBTLongArray
-import org.jglrxavpok.hephaistos.nbt.NBTNumber
-import org.jglrxavpok.hephaistos.nbt.NBTShort
-import org.jglrxavpok.hephaistos.nbt.NBTString
+import org.kryptonmc.nbt.ByteArrayTag
+import org.kryptonmc.nbt.ByteTag
+import org.kryptonmc.nbt.CollectionTag
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.DoubleTag
+import org.kryptonmc.nbt.EndTag
+import org.kryptonmc.nbt.FloatTag
+import org.kryptonmc.nbt.IntArrayTag
+import org.kryptonmc.nbt.IntTag
+import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.LongArrayTag
+import org.kryptonmc.nbt.LongTag
+import org.kryptonmc.nbt.MutableCompoundTag
+import org.kryptonmc.nbt.NumberTag
+import org.kryptonmc.nbt.ShortTag
+import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.Tag
+import org.kryptonmc.nbt.compound
 import java.nio.ByteBuffer
 import java.util.Arrays
 import java.util.function.BiConsumer
 import java.util.function.Consumer
+import java.util.stream.Collectors
 import java.util.stream.IntStream
 import java.util.stream.LongStream
 import java.util.stream.Stream
-import kotlin.streams.asStream
 
-object NBTOps : DynamicOps<NBT> {
+object NBTOps : DynamicOps<Tag> {
 
-    override fun empty() = NBTEnd
+    override fun empty() = EndTag
 
-    override fun <U> convertTo(outOps: DynamicOps<U>, input: NBT): U = when (input) {
-        NBTEnd -> outOps.empty()
-        is NBTByte -> outOps.createByte(input.value)
-        is NBTShort -> outOps.createShort(input.value)
-        is NBTInt -> outOps.createInt(input.value)
-        is NBTLong -> outOps.createLong(input.value)
-        is NBTFloat -> outOps.createFloat(input.value)
-        is NBTDouble -> outOps.createDouble(input.value)
-        is NBTByteArray -> outOps.createByteList(ByteBuffer.wrap(input.value))
-        is NBTString -> outOps.createString(input.value)
-        is NBTList<*> -> convertList(outOps, input)
-        is NBTCompound -> convertMap(outOps, input)
-        is NBTIntArray -> outOps.createIntList(Arrays.stream(input.value))
-        is NBTLongArray -> outOps.createLongList(Arrays.stream(input.value))
-        else -> error("Tag type ${input.ID} not recognised! Unable to convert!")
+    override fun <U> convertTo(outOps: DynamicOps<U>, input: Tag): U = when (input) {
+        EndTag -> outOps.empty()
+        is ByteTag -> outOps.createByte(input.value)
+        is ShortTag -> outOps.createShort(input.value)
+        is IntTag -> outOps.createInt(input.value)
+        is LongTag -> outOps.createLong(input.value)
+        is FloatTag -> outOps.createFloat(input.value)
+        is DoubleTag -> outOps.createDouble(input.value)
+        is ByteArrayTag -> outOps.createByteList(ByteBuffer.wrap(input.data))
+        is StringTag -> outOps.createString(input.value)
+        is ListTag -> convertList(outOps, input)
+        is CompoundTag -> convertMap(outOps, input)
+        is IntArrayTag -> outOps.createIntList(Arrays.stream(input.data))
+        is LongArrayTag -> outOps.createLongList(Arrays.stream(input.data))
+        else -> error("Tag type ${input.id} not recognised! Unable to convert!")
     }
 
-    override fun createNumeric(i: Number) = NBTDouble(i.toDouble())
+    override fun createNumeric(i: Number) = DoubleTag.of(i.toDouble())
 
-    override fun createByte(value: Byte) = NBTByte(value)
+    override fun createByte(value: Byte) = ByteTag.of(value)
 
-    override fun createShort(value: Short) = NBTShort(value)
+    override fun createShort(value: Short) = ShortTag.of(value)
 
-    override fun createInt(value: Int) = NBTInt(value)
+    override fun createInt(value: Int) = IntTag.of(value)
 
-    override fun createLong(value: Long) = NBTLong(value)
+    override fun createLong(value: Long) = LongTag.of(value)
 
-    override fun createFloat(value: Float) = NBTFloat(value)
+    override fun createFloat(value: Float) = FloatTag.of(value)
 
-    override fun createDouble(value: Double) = NBTDouble(value)
+    override fun createDouble(value: Double) = DoubleTag.of(value)
 
-    override fun createBoolean(value: Boolean) = NBTByte(value)
+    override fun createBoolean(value: Boolean) = ByteTag.of(value)
 
-    override fun createString(value: String) = NBTString(value)
+    override fun createString(value: String) = StringTag.of(value)
 
-    override fun createByteList(input: ByteBuffer) = NBTByteArray(input.array())
+    override fun createByteList(input: ByteBuffer) = ByteArrayTag(input.array())
 
-    override fun createIntList(input: IntStream) = NBTIntArray(input.toArray())
+    override fun createIntList(input: IntStream) = IntArrayTag(input.toArray())
 
-    override fun createLongList(input: LongStream) = NBTLongArray()
+    override fun createLongList(input: LongStream) = LongArrayTag(input.toArray())
 
-    override fun createList(input: Stream<NBT>): NBT {
+    override fun createList(input: Stream<Tag>): Tag {
         val iterator = Iterators.peekingIterator(input.iterator())
-        if (!iterator.hasNext()) return NBTList<NBT>(0)
+        if (!iterator.hasNext()) return ListTag()
         return when (iterator.peek()) {
-            is NBTByte -> NBTByteArray(iterator.asSequence().map { (it as NBTByte).value }.toList().toByteArray())
-            is NBTInt -> NBTIntArray(iterator.asSequence().map { (it as NBTInt).value }.toList().toIntArray())
-            is NBTLong -> NBTLongArray(iterator.asSequence().map { (it as NBTLong).value }.toList().toLongArray())
-            else -> NBTList<NBT>(0).apply { iterator.asSequence().filter { it !== NBTEnd }.forEach { add(it) } }
+            is ByteTag -> ByteArrayTag(iterator.asSequence().map { (it as ByteTag).value }.toList().toByteArray())
+            is IntTag -> IntArrayTag(iterator.asSequence().map { (it as IntTag).value }.toList().toIntArray())
+            is LongTag -> LongArrayTag(iterator.asSequence().map { (it as LongTag).value }.toList().toLongArray())
+            else -> ListTag(iterator.asSequence().filter { it !== EndTag }.toMutableList())
         }
     }
 
-    override fun createMap(map: Stream<Pair<NBT, NBT>>) = NBTCompound().apply { map.forEach { set(it.first.asString(), it.second) } }
+    override fun createMap(map: Stream<Pair<Tag, Tag>>) = CompoundTag(map.collect(Collectors.toMap({ it.first.asString() }, { it.second })))
 
-    override fun getNumberValue(input: NBT): DataResult<Number> = if (input is NBTNumber<*>) DataResult.success(input.value) else DataResult.error("Not a number!")
+    override fun getNumberValue(input: Tag): DataResult<Number> = if (input is NumberTag) DataResult.success(input.value) else DataResult.error("Not a number!")
 
-    override fun getStringValue(input: NBT): DataResult<String> = if (input is NBTString) DataResult.success(input.value) else DataResult.error("Not a string!")
+    override fun getStringValue(input: Tag): DataResult<String> = if (input is StringTag) DataResult.success(input.value) else DataResult.error("Not a string!")
 
-    override fun getMap(input: NBT): DataResult<MapLike<NBT>> = if (input is NBTCompound) {
-        DataResult.success(MapLike.forMap(input.iterator().asSequence().associate { NBTString(it.first) to it.second }, this))
+    override fun getMap(input: Tag): DataResult<MapLike<Tag>> = if (input is CompoundTag) {
+        DataResult.success(MapLike.forMap(input.iterator().asSequence().associate { StringTag.of(it.key) to it.value }, this))
     } else {
-        DataResult.error("Tag type ${input.ID} is not a compound! (required to convert to map)")
+        DataResult.error("Tag type ${input.id} is not a compound! (required to convert to map)")
     }
 
-    override fun getMapValues(input: NBT): DataResult<Stream<Pair<NBT, NBT?>>> = if (input is NBTCompound) {
-        DataResult.success(input.getKeys().map { Pair.of(createString(it) as NBT, input[it]) }.stream())
+    override fun getMapValues(input: Tag): DataResult<Stream<Pair<Tag, Tag?>>> = if (input is CompoundTag) {
+        DataResult.success(input.keys.map { Pair.of(createString(it) as Tag, input[it]) }.stream())
     } else {
-        DataResult.error("Tag type ${input.ID} is not a compound! (required to convert to map to retrieve values)")
+        DataResult.error("Tag type ${input.id} is not a compound! (required to convert to map to retrieve values)")
     }
 
-    override fun getMapEntries(input: NBT): DataResult<Consumer<BiConsumer<NBT, NBT?>>> = if (input is NBTCompound) {
-        DataResult.success(Consumer { consumer -> input.getKeys().forEach { consumer.accept(createString(it) as NBT, input[it]) } })
+    override fun getMapEntries(input: Tag): DataResult<Consumer<BiConsumer<Tag, Tag?>>> = if (input is CompoundTag) {
+        DataResult.success(Consumer { consumer -> input.keys.forEach { consumer.accept(createString(it) as Tag, input[it]) } })
     } else {
-        DataResult.error("Tag type ${input.ID} is not a compound! (required to convert to map to retrieve entries)")
+        DataResult.error("Tag type ${input.id} is not a compound! (required to convert to map to retrieve entries)")
     }
 
-    override fun getStream(input: NBT): DataResult<Stream<NBT>> = when (input) {
-        is NBTByteArray -> DataResult.success(input.value.toList().stream().map { NBTByte(it) })
-        is NBTIntArray -> DataResult.success(input.value.toList().stream().map { NBTInt(it) })
-        is NBTLongArray -> DataResult.success(input.value.toList().stream().map { NBTLong(it) })
-        is NBTList<*> -> DataResult.success(input.iterator().asSequence().asStream())
-        else -> DataResult.error("Tag type ${input.ID} is not a list! (required to convert to stream)")
-    }
+    override fun getStream(input: Tag): DataResult<Stream<Tag>> =
+        if (input is CollectionTag<*>) DataResult.success(input.stream().map { it }) else DataResult.error("Tag type ${input.id} is not a collection!")
 
-    override fun getList(input: NBT): DataResult<Consumer<Consumer<NBT>>> = when (input) {
-        is NBTByteArray -> DataResult.success(Consumer { consumer -> input.value.asSequence().map(::NBTByte).forEach { consumer.accept(it) } })
-        is NBTIntArray -> DataResult.success(Consumer { consumer -> input.value.asSequence().map(::NBTInt).forEach { consumer.accept(it) } })
-        is NBTLongArray -> DataResult.success(Consumer { consumer -> input.value.asSequence().map(::NBTLong).forEach { consumer.accept(it) } })
-        is NBTList<*> -> DataResult.success(Consumer { input.forEach(it) })
-        else -> DataResult.error("Tag type ${input.ID} is not a list! (required to convert to list)")
-    }
+    override fun getList(input: Tag): DataResult<Consumer<Consumer<Tag>>> =
+        if (input is CollectionTag<*>) DataResult.success(Consumer { input.forEach(it) }) else DataResult.error("Tag type ${input.id} is not a list!")
 
-    override fun getByteBuffer(input: NBT): DataResult<ByteBuffer> = if (input !is NBTByteArray) {
-        DataResult.error("Tag type ${input.ID} is not a byte array! (required to convert to ByteBuffer)")
+    override fun getByteBuffer(input: Tag): DataResult<ByteBuffer> = if (input !is ByteArrayTag) {
+        DataResult.error("Tag type ${input.id} is not a byte array! (required to convert to ByteBuffer)")
     } else {
-        DataResult.success(ByteBuffer.wrap(input.value))
+        DataResult.success(ByteBuffer.wrap(input.data))
     }
 
-    override fun getIntStream(input: NBT): DataResult<IntStream> = if (input !is NBTIntArray) {
-        DataResult.error("Tag type ${input.ID} is not an integer array! (required to convert to IntStream)")
+    override fun getIntStream(input: Tag): DataResult<IntStream> = if (input !is IntArrayTag) {
+        DataResult.error("Tag type ${input.id} is not an integer array! (required to convert to IntStream)")
     } else {
-        DataResult.success(Arrays.stream(input.value))
+        DataResult.success(Arrays.stream(input.data))
     }
 
-    override fun getLongStream(input: NBT): DataResult<LongStream> = if (input !is NBTLongArray) {
-        DataResult.error("Tag type ${input.ID} is not a long array! (required to convert to LongStream)")
+    override fun getLongStream(input: Tag): DataResult<LongStream> = if (input !is LongArrayTag) {
+        DataResult.error("Tag type ${input.id} is not a long array! (required to convert to LongStream)")
     } else {
-        DataResult.success(Arrays.stream(input.value))
+        DataResult.success(Arrays.stream(input.data))
     }
 
-    @Suppress("UNCHECKED_CAST") // Nothing we can do here, blame generics
-    override fun mergeToList(list: NBT, value: NBT): DataResult<NBT> {
-        return when (list) {
-            is NBTByteArray -> {
-                if (value !is NBTByte) return DataResult.error("Tag type ${value.ID} is not a byte! (required for list type ${list.ID}")
-                DataResult.success(NBTByteArray(list.value + value.value))
-            }
-            is NBTIntArray -> {
-                if (value !is NBTInt) return DataResult.error("Tag type ${value.ID} is not an integer! (required for list type ${list.ID}")
-                DataResult.success(NBTIntArray(list.value + value.value))
-            }
-            is NBTLongArray -> {
-                if (value !is NBTLong) return DataResult.error("Tag type ${value.ID} is not a long! (required for list type ${list.ID})")
-                DataResult.success(NBTLongArray(list.value + value.value))
-            }
-            is NBTList<*> -> DataResult.success((list as NBTList<NBT>).apply { add(value) })
-            else -> DataResult.error("Tag type ${list.ID} cannot be converted to a list and have $value added to it!")
-        }
+    override fun mergeToList(list: Tag, value: Tag): DataResult<Tag> {
+        if (list !is CollectionTag<*> && list !is EndTag) return DataResult.error("Tag type ${list.id} cannot have ${value.id} merged in to it as it is not a list!", list)
+        return DataResult.success(createGenericList(if (list is CollectionTag<*>) list.elementType else 0, value.id).fillOne(list, value))
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun mergeToList(list: NBT, values: List<NBT>): DataResult<NBT> {
-        if (values.isEmpty()) return DataResult.success(list)
-        return when (list) {
-            is NBTByteArray -> {
-                if (values.first() !is NBTByte) return DataResult.error("Tag type ${values.first().ID} is not a byte! (required for list type ${list.ID})")
-                DataResult.success(NBTByteArray(list.value + (values as List<NBTByte>).map(NBTByte::value).toByteArray()))
-            }
-            is NBTIntArray -> {
-                if (values.first() !is NBTInt) return DataResult.error("Tag type ${values.first().ID} is not an integer! (required for list type ${list.ID})")
-                DataResult.success(NBTIntArray(list.value + (values as List<NBTInt>).map(NBTInt::value).toIntArray()))
-            }
-            is NBTLongArray -> {
-                if (values.first() !is NBTLong) return DataResult.error("Tag type ${values.first().ID} is not a long! (required for list type ${list.ID})")
-                DataResult.success(NBTLongArray(list.value + (values as List<NBTLong>).map(NBTLong::value).toLongArray()))
-            }
-            is NBTList<*> -> DataResult.success(NBTList<NBT>(list.subtagType).apply { list.forEach { add(it) } })
-            else -> DataResult.error("Tag type ${list.ID} cannot be converted to a list and have $values added to it!")
-        }
+    override fun mergeToList(list: Tag, values: List<Tag>): DataResult<Tag> {
+        if (list !is CollectionTag<*> && list !is EndTag) return DataResult.error("Tag type ${list.id} cannot have $values merged in to it as it is not a list!", list)
+        return DataResult.success(createGenericList(if (list is CollectionTag<*>) list.elementType else 0, values.firstOrNull()?.id ?: 0).fillMany(list, values))
     }
 
-    override fun mergeToMap(map: NBT, key: NBT, value: NBT): DataResult<NBT> {
-        if (map !is NBTCompound) return DataResult.error("Tag type ${map.ID} cannot be converted to a compound and have key $key and value $value put in it!")
-        if (key !is NBTString) return DataResult.error("Key type ${key.ID} must be a string!")
-        return DataResult.success(map.set(key.value, value))
+    override fun mergeToMap(map: Tag, key: Tag, value: Tag): DataResult<Tag> {
+        if (map !is CompoundTag && map !is EndTag) return DataResult.error("Tag type ${map.id} cannot have $key, $value merged in to it as it is not a map!", map)
+        if (key !is StringTag) return DataResult.error("Tag type ${key.id} for key $key is not a string!")
+        val compound = MutableCompoundTag()
+        if (map is CompoundTag) map.forEach { compound[it.key] = it.value }
+        compound[key.asString()] = value
+        return DataResult.success(compound)
     }
 
-    override fun mergeToMap(map: NBT, values: MapLike<NBT>): DataResult<NBT> {
-        if (map !is NBTCompound) return DataResult.error("Tag type ${map.ID} cannot be converted to a compound and have $values put in it!")
-        val nonStringTags = mutableListOf<NBT>()
-        var newCompound = map
-        values.entries().forEach {
-            val key = it.first
-            if (key !is NBTString) nonStringTags += key else newCompound = map.set(key.value, it.second)
-        }
-        if (nonStringTags.isNotEmpty()) return DataResult.error("All keys in map $values must be strings, $nonStringTags were not!")
-        return DataResult.success(newCompound)
+    override fun mergeToMap(map: Tag, values: MapLike<Tag>): DataResult<Tag> {
+        if (map !is CompoundTag && map !is EndTag) return DataResult.error("Tag type ${map.id} cannot have $values merged in to it as it is not a map!", map)
+        val compound = MutableCompoundTag()
+        if (map is CompoundTag) map.forEach { compound[it.key] = it.value }
+        val invalid = mutableListOf<Tag>()
+        values.entries().forEach { if (it.first !is StringTag) invalid.add(it.first) else compound[it.first.asString()] = it.second }
+        return if (invalid.isNotEmpty()) DataResult.error("All keys in map $values must be strings, $invalid were not!") else DataResult.success(compound)
     }
 
-    override fun remove(input: NBT, key: String): NBT {
-        if (input !is NBTCompound) return input
-        return input.removeTag(key)
+    override fun remove(input: Tag, key: String): Tag {
+        if (input !is CompoundTag) return input
+        val compound = MutableCompoundTag()
+        input.asSequence().filter { it.key != key }.forEach { compound[it.key] = it.value }
+        return compound
     }
 
-    override fun mapBuilder() = BinaryTagRecordBuilder()
+    override fun mapBuilder() = NBTRecordBuilder()
 
     override fun toString() = "NBT"
 
-    class BinaryTagRecordBuilder : RecordBuilder.AbstractStringBuilder<NBT, NBTCompound>(NBTOps) {
+    class NBTRecordBuilder : RecordBuilder.AbstractStringBuilder<Tag, CompoundTag.Builder>(NBTOps) {
 
-        override fun initBuilder() = NBTCompound()
+        override fun initBuilder() = CompoundTag.builder()
 
-        override fun append(key: String, value: NBT, builder: NBTCompound) = builder.set(key, value)
+        override fun append(key: String, value: Tag, builder: CompoundTag.Builder) = builder.put(key, value)
 
-        override fun build(builder: NBTCompound, prefix: NBT?): DataResult<NBT> {
-            if (prefix == null || prefix is NBTEnd) return DataResult.success(builder)
-            if (prefix !is NBTCompound) return DataResult.error("Tag type ${prefix.ID} is not allowed for prefix of binary tag record builder!")
-            return DataResult.success(NBTCompound().apply {
-                prefix.iterator().forEach { set(it.first, it.second) }
-                builder.iterator().forEach { set(it.first, it.second) }
+        override fun build(builder: CompoundTag.Builder, prefix: Tag?): DataResult<Tag> {
+            if (prefix == null || prefix == EndTag) return DataResult.success(builder.build())
+            if (prefix !is CompoundTag) return DataResult.error("Tag type ${prefix.id} be merged in to $builder as it is not a map!", prefix)
+            return DataResult.success(compound {
+                prefix.forEach { put(it.key, it.value) }
+                builder.build().forEach { put(it.key, it.value) }
             })
         }
     }
 }
+
+private fun createGenericList(first: Int, second: Int): CollectionTag<*> {
+    if (typesMatch(first, second, LongTag.ID)) return LongArrayTag(LongArray(0))
+    if (typesMatch(first, second, ByteTag.ID)) return ByteArrayTag(ByteArray(0))
+    if (typesMatch(first, second, IntTag.ID)) return IntArrayTag(IntArray(0))
+    return ListTag()
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun <T : Tag> CollectionTag<T>.fillOne(list: Tag, value: Tag) = apply {
+    if (list is CollectionTag<*>) list.forEach { add(it as T) }
+    add(value as T)
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun <T : Tag> CollectionTag<T>.fillMany(list: Tag, values: List<Tag>) = apply {
+    if (list is CollectionTag<*>) list.forEach { add(it as T) }
+    values.forEach { add(it as T) }
+}
+
+private fun typesMatch(first: Int, second: Int, third: Int) = first == third && (second == third || second == 0)

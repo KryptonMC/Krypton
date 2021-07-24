@@ -18,16 +18,15 @@
  */
 package org.kryptonmc.krypton.entity.attribute
 
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.kryptonmc.krypton.util.nbt.getUUID
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nextUUID
-import org.kryptonmc.krypton.util.nbt.setUUID
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
 import java.util.UUID
 import kotlin.random.Random
 
 class AttributeModifier(
-    val id: UUID,
+    val uuid: UUID,
     private val nameGetter: () -> String,
     val amount: Double,
     val operation: Operation
@@ -37,11 +36,12 @@ class AttributeModifier(
 
     constructor(id: UUID, name: String, amount: Double, operation: Operation) : this(id, { name }, amount, operation)
 
-    fun save() = NBTCompound()
-        .setString("Name", name)
-        .setDouble("Amount", amount)
-        .setInt("Operation", operation.ordinal)
-        .setUUID("UUID", id)
+    fun save() = compound {
+        string("Name", name)
+        double("Amount", amount)
+        int("Operation", operation.ordinal)
+        uuid("UUID", uuid)
+    }
 
     val name: String
         get() = nameGetter()
@@ -50,12 +50,12 @@ class AttributeModifier(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as AttributeModifier
-        return id == other.id
+        return uuid == other.uuid
     }
 
-    override fun hashCode() = id.hashCode()
+    override fun hashCode() = uuid.hashCode()
 
-    override fun toString() = "AttributeModifier(amount=$amount, operation=$operation, name='${nameGetter()}', id=$id)"
+    override fun toString() = "AttributeModifier(amount=$amount, operation=$operation, name='${nameGetter()}', id=$uuid)"
 
     enum class Operation {
 
@@ -78,8 +78,8 @@ class AttributeModifier(
 
         private val LOGGER = logger<AttributeModifier>()
 
-        fun load(tag: NBTCompound): AttributeModifier? = try {
-            val id = tag.getUUID("UUID")
+        fun load(tag: CompoundTag): AttributeModifier? = try {
+            val id = tag.getUUID("UUID")!!
             val operation = Operation.fromId(tag.getInt("Operation"))
             AttributeModifier(id, tag.getString("Name"), tag.getDouble("Amount"), operation)
         } catch (exception: Exception) {

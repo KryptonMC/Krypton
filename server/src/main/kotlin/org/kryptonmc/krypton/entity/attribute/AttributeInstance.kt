@@ -22,10 +22,10 @@ import com.google.common.collect.ImmutableSet
 import com.google.common.collect.Multimaps
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap
 import it.unimi.dsi.fastutil.objects.ObjectArraySet
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.compound
 import java.util.EnumMap
 import java.util.UUID
 
@@ -54,10 +54,10 @@ class AttributeInstance(
 
     fun getModifier(id: UUID) = modifiersById[id]
 
-    operator fun contains(modifier: AttributeModifier) = modifiersById[modifier.id] != null
+    operator fun contains(modifier: AttributeModifier) = modifiersById[modifier.uuid] != null
 
     private fun addModifier(modifier: AttributeModifier) {
-        val old = modifiersById.putIfAbsent(modifier.id, modifier)
+        val old = modifiersById.putIfAbsent(modifier.uuid, modifier)
         require(old == null) { "Modifier is already applied on this attribute!" }
         getModifiers(modifier.operation) += modifier
         makeDirty()
@@ -72,7 +72,7 @@ class AttributeInstance(
 
     fun removeModifier(modifier: AttributeModifier) {
         getModifiers(modifier.operation).remove(modifier)
-        modifiersById.remove(modifier.id)
+        modifiersById.remove(modifier.uuid)
         permanentModifiers.remove(modifier)
         makeDirty()
     }
@@ -101,27 +101,22 @@ class AttributeInstance(
         makeDirty()
     }
 
-    fun save() = NBTCompound()
-        .setString("Name", InternalRegistries.ATTRIBUTE[attribute]!!.toString())
-        .setDouble("Base", baseValue)
-        .apply {
-            if (permanentModifiers.isEmpty()) return@apply
-            set("Modifiers", NBTList<NBTCompound>(NBTTypes.TAG_Compound).apply { permanentModifiers.forEach { add(it.save()) } })
-        }
+    fun save() = compound {
+        string("Name", InternalRegistries.ATTRIBUTE[attribute]!!.toString())
+        double("Base", baseValue)
+        if (permanentModifiers.isNotEmpty()) put("Modifiers", ListTag(permanentModifiers.mapTo(mutableListOf()) { it.save() }, CompoundTag.ID))
+    }
 
-    fun load(tag: NBTCompound) {
+    fun load(tag: CompoundTag) {
         baseValue = tag.getDouble("Base")
-
-        val modifiers = tag.getList<NBTCompound>("Modifiers")
-        if (modifiers.size == 0) {
-            makeDirty()
-            return
-        }
-        modifiers.forEach {
-            val modifier = AttributeModifier.load(it) ?: return@forEach
-            modifiersById[modifier.id] = modifier
-            getModifiers(modifier.operation) += modifier
-            permanentModifiers += modifier
+        if (tag.contains("Modifiers", ListTag.ID)) {
+            val modifiers = tag.getList("Modifiers", CompoundTag.ID)
+            for (i in modifiers.indices) {
+                val modifier = AttributeModifier.load(modifiers.getCompound(i)) ?: continue
+                modifiersById[modifier.uuid] = modifier
+                getModifiers(modifier.operation).add(modifier)
+                permanentModifiers.add(modifier)
+            }
         }
         makeDirty()
     }

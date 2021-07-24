@@ -31,7 +31,7 @@ object Versions {
     const val DFU = "4.0"
     const val EVENT = "4.0.0-SNAPSHOT"
     const val ASM = "9.2"
-    const val HEPHAISTOS = "1.2.2"
+    const val NBT = "1.5.5"
     const val MINECRAFT = "1.17.1"
 
     // Test

@@ -32,10 +32,6 @@ import io.netty.handler.codec.EncoderException
 import it.unimi.dsi.fastutil.ints.IntList
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import org.jglrxavpok.hephaistos.nbt.NBT
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTReader
-import org.jglrxavpok.hephaistos.nbt.NBTWriter
 import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.block.BlockHitResult
 import org.kryptonmc.api.effect.particle.ColorParticleData
@@ -54,6 +50,9 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.locale.TranslationManager
 import org.kryptonmc.krypton.util.nbt.NBTOps
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.io.TagCompression
+import org.kryptonmc.nbt.io.TagIO
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
@@ -169,31 +168,26 @@ fun ByteBuf.writeUUID(uuid: UUID) {
     writeLong(uuid.leastSignificantBits)
 }
 
-fun ByteBuf.writeNBTCompound(tag: NBTCompound) {
-    val outputStream = ByteBufOutputStream(this)
-    NBTWriter(outputStream, false).use { it.writeNamed("", tag) }
-}
-
-fun ByteBuf.writeNBT(tag: NBT?) {
+fun ByteBuf.writeNBT(tag: CompoundTag?) {
     if (tag == null) {
         writeByte(0)
         return
     }
     try {
-        NBTWriter(ByteBufOutputStream(this), false).use { it.writeNamed("", tag) }
+        TagIO.write(ByteBufOutputStream(this), tag, TagCompression.NONE)
     } catch (exception: IOException) {
         throw EncoderException(exception)
     }
 }
 
-fun ByteBuf.readNBTCompound(): NBTCompound {
+fun ByteBuf.readNBT(): CompoundTag {
     val index = readerIndex()
     val type = readByte()
-    if (type == 0.toByte()) return NBTCompound()
+    if (type == 0.toByte()) return CompoundTag()
     readerIndex(index) // reset the head if it's not an end tag
 
-    try {
-        return NBTReader(ByteBufInputStream(this), false).use { it.read() as NBTCompound }
+    return try {
+        TagIO.read(ByteBufInputStream(this), TagCompression.NONE)
     } catch (exception: IOException) {
         throw DecoderException(exception)
     }
@@ -207,7 +201,7 @@ fun ByteBuf.readItem(): KryptonItemStack {
     if (!readBoolean()) return EmptyItemStack
     val id = readVarInt()
     val count = readByte()
-    val nbt = readNBTCompound()
+    val nbt = readNBT().mutable()
     return KryptonItemStack(Registries.ITEM[id]!!, count.toInt(), KryptonMetaHolder(nbt))
 }
 
@@ -219,7 +213,7 @@ fun ByteBuf.writeItem(item: KryptonItemStack) {
     writeBoolean(true)
     writeVarInt(Registries.ITEM.idOf(item.type))
     writeByte(item.amount)
-    writeNBTCompound(item.meta.nbt)
+    writeNBT(item.meta.nbt)
 }
 
 fun ByteBuf.writeRotation(rotation: Rotation) {
@@ -370,7 +364,7 @@ fun ByteBuf.writeIntList(list: IntList) {
 fun <T> ByteBuf.encode(value: T, codec: Codec<T>) {
     val result = codec.encodeStart(NBTOps, value)
     result.error().ifPresent { throw EncoderException("Failed to encode value $value with codec $codec! Reason: ${it.message()}") }
-    writeNBT(result.result().get())
+    writeNBT(result.result().get() as? CompoundTag)
 }
 
 fun ByteBuf.readBlockHitResult(): BlockHitResult {

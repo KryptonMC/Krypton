@@ -42,7 +42,7 @@ class PacketOutAttributes(
             buf.writeKey(InternalRegistries.ATTRIBUTE[attribute.attribute]!!)
             buf.writeDouble(attribute.base)
             buf.writeCollection(attribute.modifiers) {
-                buf.writeUUID(it.id)
+                buf.writeUUID(it.uuid)
                 buf.writeDouble(it.amount)
                 buf.writeByte(it.operation.ordinal)
             }

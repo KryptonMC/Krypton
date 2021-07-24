@@ -18,13 +18,12 @@
  */
 package org.kryptonmc.krypton.entity.monster
 
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.monster.Zombie
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.nbt.CompoundTag
 
 class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOMBIE), Zombie {
 
@@ -35,18 +34,19 @@ class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOM
         data += MetadataKeys.ZOMBIE.CONVERTING
     }
 
-    override fun load(tag: NBTCompound) {
+    override fun load(tag: CompoundTag) {
         super.load(tag)
         isBaby = tag.getBoolean("IsBaby")
-        if (tag.contains("DrownedConversionTime", NBTTypes.PRIMITIVE) && tag.getInt("DrownedConversionTime") > -1) {
+        if (tag.contains("DrownedConversionTime", 99) && tag.getInt("DrownedConversionTime") > -1) {
             conversionTime = tag.getInt("DrownedConversionTime")
             isConverting = true
         }
     }
 
-    override fun save() = super.save()
-        .setBoolean("IsBaby", isBaby)
-        .setInt("DrownedConversionTime", if (isConverting) conversionTime else -1)
+    override fun save() = super.save().apply {
+        boolean("IsBaby", isBaby)
+        int("DrownedConversionTime", if (isConverting) conversionTime else -1)
+    }
 
     override var isBaby: Boolean
         get() = data[MetadataKeys.ZOMBIE.BABY]

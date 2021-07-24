@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.util.nbt
 
-import org.jglrxavpok.hephaistos.nbt.NBT
+import org.kryptonmc.nbt.Tag
 
-interface Serializable<T : NBT> {
+interface Serializable<T : Tag> {
 
     fun load(tag: T)
 

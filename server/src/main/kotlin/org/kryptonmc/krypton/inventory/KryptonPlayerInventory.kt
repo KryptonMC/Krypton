@@ -18,9 +18,6 @@
  */
 package org.kryptonmc.krypton.inventory
 
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.inventory.InventoryType
@@ -32,8 +29,11 @@ import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.util.nbt.Serializable
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.MutableCompoundTag
 
-class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory, Serializable<NBTList<NBTCompound>> {
+class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory, Serializable<ListTag> {
 
     override val crafting = Array<KryptonItemStack>(5) { EmptyItemStack }
     override val armor = Array<KryptonItemStack>(4) { EmptyItemStack }
@@ -74,12 +74,13 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         owner.session.sendPacket(PacketOutChangeHeldItem(index))
     }
 
-    override fun load(tag: NBTList<NBTCompound>) {
+    override fun load(tag: ListTag) {
         clear()
-        tag.forEach {
-            val slot = it.getByte("Slot").toInt() and 255
-            val stack = KryptonItemStack(it)
-            if (stack.type === ItemTypes.AIR) return@forEach
+        for (i in tag.indices) {
+            val compound = tag.getCompound(i)
+            val slot = compound.getByte("Slot").toInt() and 255
+            val stack = KryptonItemStack(compound)
+            if (stack.type === ItemTypes.AIR) continue
             when (slot) {
                 in items.indices -> items[slot] = stack
                 in 100..103 -> armor[slot - 100] = stack
@@ -88,17 +89,17 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         }
     }
 
-    override fun save(): NBTList<NBTCompound> {
-        val list = NBTList<NBTCompound>(NBTTypes.TAG_Compound)
+    override fun save(): ListTag {
+        val list = ListTag(elementType = CompoundTag.ID)
         items.forEachIndexed { index, item ->
             if (item.type === ItemTypes.AIR) return@forEachIndexed
-            list.add(NBTCompound().setByte("Slot", index.toByte()).apply { item.save(this) })
+            list.add(MutableCompoundTag().putByte("Slot", index.toByte()).apply { item.save(this) })
         }
         armor.forEachIndexed { index, item ->
             if (item.type === ItemTypes.AIR) return@forEachIndexed
-            list.add(NBTCompound().setByte("Slot", (index + 100).toByte()).apply { item.save(this) })
+            list.add(MutableCompoundTag().putByte("Slot", (index + 100).toByte()).apply { item.save(this) })
         }
-        list.add(NBTCompound().setByte("Slot", -106).apply { offHand.save(this) })
+        list.add(MutableCompoundTag().putByte("Slot", -106).apply { offHand.save(this) })
         return list
     }
 

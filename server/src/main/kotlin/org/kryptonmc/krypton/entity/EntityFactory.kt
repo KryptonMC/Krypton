@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.entity
 
 import net.kyori.adventure.key.Key
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
@@ -27,6 +26,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.nbt.CompoundTag
 
 object EntityFactory {
 
@@ -43,7 +43,7 @@ object EntityFactory {
 
     fun create(
         world: KryptonWorld,
-        nbt: NBTCompound
+        nbt: CompoundTag
     ): KryptonEntity? = try {
         create(Registries.ENTITY_TYPE[Key.key(nbt.getString("id"))], world)?.apply { load(nbt) } ?: run {
             LOGGER.warn("No entity found with ID ${nbt.getString("id")}")

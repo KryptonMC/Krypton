@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.entity.metadata
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Direction
@@ -34,11 +33,12 @@ import org.kryptonmc.krypton.util.write
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeItem
-import org.kryptonmc.krypton.util.writeNBTCompound
+import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeOptional
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3i
 import java.util.Optional
 import java.util.OptionalInt
@@ -136,8 +136,8 @@ object MetadataSerializers {
     }
 
     @JvmField
-    val NBT = object : MetadataSerializer<NBTCompound> {
-        override fun write(buf: ByteBuf, item: NBTCompound) = buf.writeNBTCompound(item)
+    val NBT = object : MetadataSerializer<CompoundTag> {
+        override fun write(buf: ByteBuf, item: CompoundTag) = buf.writeNBT(item)
     }
 
     @JvmField

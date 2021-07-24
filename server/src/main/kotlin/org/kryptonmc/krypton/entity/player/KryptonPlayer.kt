@@ -31,9 +31,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.title.Title
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTInt
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
@@ -98,6 +95,9 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.bossbar.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.IntTag
+import org.kryptonmc.nbt.compound
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
 import java.util.Locale
@@ -174,21 +174,21 @@ class KryptonPlayer(
         data += MetadataKeys.PLAYER.RIGHT_SHOULDER
     }
 
-    override fun load(tag: NBTCompound) {
+    override fun load(tag: CompoundTag) {
         super.load(tag)
         uuid = profile.uuid
-        oldGamemode = Gamemode.fromId((tag["previousPlayerGameType"] as? NBTInt)?.value ?: -1)
+        oldGamemode = Gamemode.fromId((tag["previousPlayerGameType"] as? IntTag)?.value ?: -1)
         gamemode = Gamemode.fromId(tag.getInt("playerGameType")) ?: Gamemode.SURVIVAL
         isOnGround = tag.getBoolean("OnGround")
-        inventory.load(tag.getList("Inventory"))
+        inventory.load(tag.getList("Inventory", CompoundTag.ID))
         inventory.heldSlot = tag.getInt("SelectedItemSlot")
         score = tag.getInt("Score")
-        if (tag.contains("abilities", NBTTypes.TAG_Compound)) abilities.load(tag.getCompound("abilities"))
+        if (tag.contains("abilities", CompoundTag.ID)) abilities.load(tag.getCompound("abilities"))
         attributes[Attributes.MOVEMENT_SPEED]?.baseValue = abilities.walkSpeed.toDouble()
 
         // NBT data for entities sitting on the player's shoulders, e.g. parrots
-        if (tag.contains("ShoulderEntityLeft", NBTTypes.TAG_Compound)) leftShoulder = tag.getCompound("ShoulderEntityLeft")
-        if (tag.contains("ShoulderEntityRight", NBTTypes.TAG_Compound)) rightShoulder = tag.getCompound("ShoulderEntityRight")
+        if (tag.contains("ShoulderEntityLeft", CompoundTag.ID)) leftShoulder = tag.getCompound("ShoulderEntityLeft")
+        if (tag.contains("ShoulderEntityRight", CompoundTag.ID)) rightShoulder = tag.getCompound("ShoulderEntityRight")
 
         // Respawn data
         if (tag.contains("SpawnX", 99) && tag.contains("SpawnY", 99) && tag.contains("SpawnZ", 99)) {
@@ -202,30 +202,26 @@ class KryptonPlayer(
         }
     }
 
-    override fun save() = super.save()
-        .setInt("DataVersion", ServerInfo.WORLD_VERSION)
-        .set("Inventory", inventory.save())
-        .setInt("SelectedItemSlot", inventory.heldSlot)
-        .setInt("Score", score)
-        .set("abilities", abilities.save())
-        .apply {
-            if (leftShoulder.size != 0) set("ShoulderEntityLeft", leftShoulder)
-            if (rightShoulder.size != 0) set("ShoulderEntityRight", rightShoulder)
+    override fun save() = super.save().apply {
+        int("DataVersion", ServerInfo.WORLD_VERSION)
+        put("Inventory", inventory.save())
+        int("SelectedItemSlot", inventory.heldSlot)
+        int("Score", score)
+        put("abilities", abilities.save())
+        if (leftShoulder.isNotEmpty()) put("ShoulderEntityLeft", leftShoulder)
+        if (rightShoulder.isNotEmpty()) put("ShoulderEntityRight", rightShoulder)
+        int("playerGameType", gamemode.ordinal)
+        oldGamemode?.let { int("previousPlayerGameType", it.ordinal) }
+        string("Dimension", dimension.location.asString())
+        respawnPosition?.let {
+            int("SpawnX", it.x())
+            int("SpawnY", it.y())
+            int("SpawnZ", it.z())
+            float("SpawnAngle", respawnAngle)
+            boolean("SpawnForced", respawnForced)
+            KryptonWorld.RESOURCE_KEY_CODEC.encodeStart(NBTOps, respawnDimension).resultOrPartial(LOGGER::error).ifPresent { put("SpawnDimension", it) }
         }
-        .setInt("playerGameType", gamemode.ordinal)
-        .apply { oldGamemode?.let { setInt("previousPlayerGameType", it.ordinal) } }
-        .setString("Dimension", dimension.location.asString())
-        .apply {
-            val respawnPosition = respawnPosition
-            if (respawnPosition != null) {
-                setInt("SpawnX", respawnPosition.x())
-                setInt("SpawnY", respawnPosition.y())
-                setInt("SpawnZ", respawnPosition.z())
-                setBoolean("SpawnForced", respawnForced)
-                setFloat("SpawnAngle", respawnAngle)
-                KryptonWorld.RESOURCE_KEY_CODEC.encodeStart(NBTOps, respawnDimension).resultOrPartial(LOGGER::error).ifPresent { set("SpawnDimension", it) }
-            }
-        }
+    }
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (player === this) return false
@@ -429,11 +425,11 @@ class KryptonPlayer(
         get() = if (data[MetadataKeys.PLAYER.MAIN_HAND] == 0.toByte()) MainHand.LEFT else MainHand.RIGHT
         set(value) = data.set(MetadataKeys.PLAYER.MAIN_HAND, if (value == MainHand.LEFT) 0 else 1)
 
-    var leftShoulder: NBTCompound
+    var leftShoulder: CompoundTag
         get() = data[MetadataKeys.PLAYER.LEFT_SHOULDER]
         set(value) = data.set(MetadataKeys.PLAYER.LEFT_SHOULDER, value)
 
-    var rightShoulder: NBTCompound
+    var rightShoulder: CompoundTag
         get() = data[MetadataKeys.PLAYER.RIGHT_SHOULDER]
         set(value) = data.set(MetadataKeys.PLAYER.RIGHT_SHOULDER, value)
 

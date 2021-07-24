@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.entity
 
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.LivingEntity
@@ -31,8 +29,9 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
-import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ListTag
 import org.spongepowered.math.vector.Vector3i
 import java.util.Optional
 
@@ -54,31 +53,30 @@ abstract class KryptonLivingEntity(
         data += MetadataKeys.LIVING.BED_LOCATION
     }
 
-    override fun load(tag: NBTCompound) {
+    override fun load(tag: CompoundTag) {
         super.load(tag)
         absorption = tag.getFloat("AbsorptionAmount")
-        if (tag.contains("Attributes", NBTTypes.TAG_List)) attributes.load(tag.getList("Attributes"))
-        if (tag.contains("Health", NBTTypes.PRIMITIVE)) health = tag.getFloat("Health")
+        if (tag.contains("Attributes", ListTag.ID)) attributes.load(tag.getList("Attributes", CompoundTag.ID))
+        if (tag.contains("Health", 99)) health = tag.getFloat("Health")
         if (tag.getBoolean("FallFlying")) isFlying = true
-        if (tag.contains("SleepingX", NBTTypes.PRIMITIVE) && tag.contains("SleepingY", NBTTypes.PRIMITIVE) && tag.contains("SleepingZ", NBTTypes.PRIMITIVE)) {
+        if (tag.contains("SleepingX", 99) && tag.contains("SleepingY", 99) && tag.contains("SleepingZ", 99)) {
             val position = Vector3i(tag.getInt("SleepingX"), tag.getInt("SleepingY"), tag.getInt("SleepingZ"))
             bedPosition = Optional.of(position)
             pose = Pose.SLEEPING
         }
     }
 
-    override fun save() = super.save()
-        .setFloat("Health", health)
-        .setFloat("AbsorptionAmount", absorption)
-        .set("Attributes", attributes.save())
-        .setBoolean("FallFlying", isFlying)
-        .apply {
-            bedPosition.ifPresent {
-                setInt("SleepingX", it.x())
-                setInt("SleepingY", it.y())
-                setInt("SleepingZ", it.z())
-            }
+    override fun save() = super.save().apply {
+        float("Health", health)
+        float("AbsorptionAmount", absorption)
+        put("Attributes", attributes.save())
+        boolean("FallFlying", isFlying)
+        bedPosition.ifPresent {
+            int("SleepingX", it.x())
+            int("SleepingY", it.y())
+            int("SleepingZ", it.z())
         }
+    }
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (!super.addViewer(player)) return false

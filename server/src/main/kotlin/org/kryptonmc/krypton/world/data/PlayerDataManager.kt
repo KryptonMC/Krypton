@@ -19,10 +19,6 @@
 package org.kryptonmc.krypton.world.data
 
 import com.mojang.serialization.Dynamic
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTReader
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
-import org.jglrxavpok.hephaistos.nbt.NBTWriter
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.createFile
@@ -33,6 +29,9 @@ import org.kryptonmc.krypton.util.datafix.FixType
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.threadFactory
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.io.TagCompression
+import org.kryptonmc.nbt.io.TagIO
 import java.io.IOException
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
@@ -61,22 +60,22 @@ class PlayerDataManager(private val folder: Path) {
         }
 
         val nbt = try {
-            NBTReader(playerFile.inputStream()).read() as NBTCompound
+            TagIO.read(playerFile, TagCompression.GZIP)
         } catch (exception: IOException) {
             LOGGER.warn("Failed to load player data for player ${player.name}!", exception)
             return@supplyAsync
         }
 
-        val version = if (nbt.contains("DataVersion", NBTTypes.PRIMITIVE)) nbt.getInt("DataVersion") else -1
-        player.load(DATA_FIXER.update(FixType.PLAYER.type, Dynamic(NBTOps, nbt), version, ServerInfo.WORLD_VERSION).value as NBTCompound)
+        val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
+        player.load(DATA_FIXER.update(FixType.PLAYER.type, Dynamic(NBTOps, nbt), version, ServerInfo.WORLD_VERSION).value as CompoundTag)
     }, executor)
 
     fun save(player: KryptonPlayer) {
-        val data = player.save()
+        val data = player.save().build()
 
         // Create temp file and write data
         val temp = folder.createTempFile(player.uuid.toString(), ".dat")
-        NBTWriter(temp.outputStream()).use { it.writeNamed("", data) }
+        TagIO.write(temp, data, TagCompression.NONE)
 
         // Resolve actual file, and if it doesn't exist, rename the temp file
         val dataPath = folder.resolve("${player.uuid}.dat")

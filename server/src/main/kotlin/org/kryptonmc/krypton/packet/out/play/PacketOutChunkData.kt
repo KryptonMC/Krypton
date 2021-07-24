@@ -20,12 +20,13 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeBitSet
-import org.kryptonmc.krypton.util.writeNBTCompound
+import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.MutableCompoundTag
 import java.util.BitSet
 
 class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x22) {
@@ -41,9 +42,9 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x22) {
         buf.writeBitSet(sectionMask)
 
         // Heightmaps
-        val heightmaps = NBTCompound()
-        chunk.heightmaps.forEach { if (it.key.sendToClient) heightmaps.setLongArray(it.key.name, it.value.data.data) }
-        buf.writeNBTCompound(heightmaps)
+        val heightmaps = CompoundTag.builder()
+        chunk.heightmaps.forEach { if (it.key.sendToClient) heightmaps.longArray(it.key.name, it.value.data.data) }
+        buf.writeNBT(heightmaps.build())
 
         buf.writeVarInt(chunk.biomes.size)
         chunk.biomes.forEach { buf.writeVarInt(it.id) }

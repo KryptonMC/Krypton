@@ -24,31 +24,31 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
-import org.jglrxavpok.hephaistos.nbt.NBT
-import org.jglrxavpok.hephaistos.nbt.NBTByte
-import org.jglrxavpok.hephaistos.nbt.NBTByteArray
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTDouble
-import org.jglrxavpok.hephaistos.nbt.NBTFloat
-import org.jglrxavpok.hephaistos.nbt.NBTInt
-import org.jglrxavpok.hephaistos.nbt.NBTIntArray
-import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTLong
-import org.jglrxavpok.hephaistos.nbt.NBTLongArray
-import org.jglrxavpok.hephaistos.nbt.NBTNumber
-import org.jglrxavpok.hephaistos.nbt.NBTShort
-import org.jglrxavpok.hephaistos.nbt.NBTString
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.nbt.ByteArrayTag
+import org.kryptonmc.nbt.ByteTag
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.DoubleTag
+import org.kryptonmc.nbt.FloatTag
+import org.kryptonmc.nbt.IntArrayTag
+import org.kryptonmc.nbt.IntTag
+import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.LongArrayTag
+import org.kryptonmc.nbt.LongTag
+import org.kryptonmc.nbt.NumberTag
+import org.kryptonmc.nbt.ShortTag
+import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.Tag
+import org.kryptonmc.nbt.toTagType
 
-class BrigadierSNBTParser(private val reader: StringReader) {
+class SNBTParser(private val reader: StringReader) {
 
     private fun readKey(): String {
         reader.skipWhitespace()
         return if (!reader.canRead()) throw ERROR_EXPECTED_KEY.createWithContext(reader) else reader.readString()
     }
 
-    fun readValue(): NBT {
+    fun readValue(): Tag {
         reader.skipWhitespace()
         if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
         return when (reader.peek()) {
@@ -58,10 +58,16 @@ class BrigadierSNBTParser(private val reader: StringReader) {
         }
     }
 
-    private fun readTypedValue(): NBT {
+    fun readSingleCompound(): CompoundTag {
+        val compound = readCompound()
+        reader.skipWhitespace()
+        return if (reader.canRead()) throw ERROR_TRAILING_DATA.createWithContext(reader) else compound
+    }
+
+    private fun readTypedValue(): Tag {
         reader.skipWhitespace()
         val cursor = reader.cursor
-        if (reader.peek().isQuotedStringStart) return NBTString(reader.readQuotedString())
+        if (reader.peek().isQuotedStringStart) return StringTag.of(reader.readQuotedString())
         val text = reader.readUnquotedString()
         if (text.isEmpty()) {
             reader.cursor = cursor
@@ -72,22 +78,22 @@ class BrigadierSNBTParser(private val reader: StringReader) {
 
     private fun readList() = if (reader.canRead(3) && !reader.peek(1).isQuotedStringStart && reader.peek(2) == ';') readArrayTag() else readListTag()
 
-    private fun readListTag(): NBT {
+    private fun readListTag(): Tag {
         expect(LIST_START)
         reader.skipWhitespace()
         if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
-        val list = NBTList<NBT>(NBTTypes.TAG_End)
+        val list = ListTag()
         var type: Int = -1
 
         while (reader.peek() != LIST_END) {
             val cursor = reader.cursor
             val tag = readValue()
-            val tagType = tag.ID
+            val tagType = tag.type
             if (type == -1) {
-                type = tagType
-            } else if (tagType != type) {
+                type = tag.id
+            } else if (tag.id != type) {
                 reader.cursor = cursor
-                throw ERROR_INSERT_MIXED_LIST.createWithContext(reader, NBTTypes.name(tagType), NBTTypes.name(type))
+                throw ERROR_INSERT_MIXED_LIST.createWithContext(reader, tagType.name, type.toTagType().name)
             }
             list += tag
             if (!reader.hasElementSeparator) break
@@ -98,7 +104,7 @@ class BrigadierSNBTParser(private val reader: StringReader) {
         return list
     }
 
-    private fun readArrayTag(): NBT {
+    private fun readArrayTag(): Tag {
         expect(LIST_START)
         val cursor = reader.cursor
         val start = reader.read()
@@ -106,9 +112,9 @@ class BrigadierSNBTParser(private val reader: StringReader) {
         reader.skipWhitespace()
         if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
         return when (start) {
-            BYTE_ARRAY_START -> NBTByteArray(readArray<Byte>(NBTTypes.TAG_Byte_Array, NBTTypes.TAG_Byte).toByteArray())
-            INT_ARRAY_START -> NBTIntArray(readArray<Int>(NBTTypes.TAG_Int_Array, NBTTypes.TAG_Int).toIntArray())
-            LONG_ARRAY_START -> NBTLongArray(readArray<Long>(NBTTypes.TAG_Long_Array, NBTTypes.TAG_Long).toLongArray())
+            BYTE_ARRAY_START -> ByteArrayTag(readArray<Byte>(ByteArrayTag.ID, ByteTag.ID).toByteArray())
+            INT_ARRAY_START -> IntArrayTag(readArray<Int>(IntArrayTag.ID, IntTag.ID).toIntArray())
+            LONG_ARRAY_START -> LongArrayTag(readArray<Long>(LongArrayTag.ID, LongTag.ID).toLongArray())
             else -> {
                 reader.cursor = cursor
                 throw ERROR_INVALID_ARRAY.createWithContext(reader, start.toString())
@@ -123,15 +129,15 @@ class BrigadierSNBTParser(private val reader: StringReader) {
             if (reader.peek() != LIST_END) {
                 val cursor = reader.cursor
                 val tag = readValue()
-                val type = tag.ID
+                val type = tag.id
                 if (type != elementType) {
                     reader.cursor = cursor
-                    throw ERROR_INSERT_MIXED_ARRAY.createWithContext(reader, NBTTypes.name(type), NBTTypes.name(arrayType))
+                    throw ERROR_INSERT_MIXED_ARRAY.createWithContext(reader, type.toTagType().name, arrayType.toTagType().name)
                 }
                 list += when (elementType) {
-                    NBTTypes.TAG_Byte -> (tag as NBTNumber<Byte>).value as T
-                    NBTTypes.TAG_Long -> (tag as NBTNumber<Long>).value as T
-                    else -> (tag as NBTNumber<Int>).value as T
+                    ByteTag.ID -> (tag as NumberTag).value as T
+                    LongTag.ID -> (tag as NumberTag).value as T
+                    else -> (tag as NumberTag).value as T
                 }
                 if (reader.hasElementSeparator) {
                     if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
@@ -144,9 +150,9 @@ class BrigadierSNBTParser(private val reader: StringReader) {
         }
     }
 
-    fun readCompound(): NBTCompound {
+    fun readCompound(): CompoundTag {
         expect(COMPOUND_START)
-        val tag = NBTCompound()
+        val builder = CompoundTag.builder()
         reader.skipWhitespace()
 
         while (reader.canRead() && reader.peek() != COMPOUND_END) {
@@ -157,25 +163,25 @@ class BrigadierSNBTParser(private val reader: StringReader) {
                 throw ERROR_EXPECTED_KEY.createWithContext(reader)
             }
             expect(KEY_SEPARATOR)
-            tag[key] = readValue()
+            builder.put(key, readValue())
             if (!reader.hasElementSeparator) break
             if (!reader.canRead()) throw ERROR_EXPECTED_KEY.createWithContext(reader)
         }
         expect(COMPOUND_END)
-        return tag
+        return builder.build()
     }
 
-    private fun convert(text: String): NBT = when {
-        text matches BYTE_REGEX -> NBTByte(text.dropLast(1).toByte())
-        text matches SHORT_REGEX -> NBTShort(text.dropLast(1).toShort())
-        text matches INT_REGEX -> NBTInt(text.toInt())
-        text matches LONG_REGEX -> NBTLong(text.dropLast(1).toLong())
-        text matches FLOAT_REGEX -> NBTFloat(text.dropLast(1).toFloat())
-        text matches DOUBLE_REGEX -> NBTDouble(text.dropLast(1).toDouble())
-        text matches DOUBLE_REGEX_NO_SUFFIX -> NBTDouble(text.toDouble())
-        text == "true" -> NBTByte(1)
-        text == "false" -> NBTByte(0)
-        else -> NBTString(text)
+    private fun convert(text: String): Tag = when {
+        text matches BYTE_REGEX -> ByteTag.of(text.dropLast(1).toByte())
+        text matches SHORT_REGEX -> ShortTag.of(text.dropLast(1).toShort())
+        text matches INT_REGEX -> IntTag.of(text.toInt())
+        text matches LONG_REGEX -> LongTag.of(text.dropLast(1).toLong())
+        text matches FLOAT_REGEX -> FloatTag.of(text.dropLast(1).toFloat())
+        text matches DOUBLE_REGEX -> DoubleTag.of(text.dropLast(1).toDouble())
+        text matches DOUBLE_REGEX_NO_SUFFIX -> DoubleTag.of(text.toDouble())
+        text == "true" -> ByteTag.ONE
+        text == "false" -> ByteTag.ZERO
+        else -> StringTag.of(text)
     }
 
     private fun expect(char: Char) {
@@ -185,7 +191,6 @@ class BrigadierSNBTParser(private val reader: StringReader) {
 
     companion object {
 
-        private const val ELEMENT_SEPARATOR = ','
         private const val KEY_SEPARATOR = ':'
         private const val LIST_START = '['
         private const val LIST_END = ']'
@@ -216,13 +221,17 @@ class BrigadierSNBTParser(private val reader: StringReader) {
     }
 }
 
+fun String.parseToNBT(): CompoundTag = SNBTParser(StringReader(this)).readSingleCompound()
+
 private val Char.isQuotedStringStart: Boolean
     get() = StringReader.isQuotedStringStart(this)
+
+private const val ELEMENT_SEPARATOR = ','
 
 private val StringReader.hasElementSeparator: Boolean
     get() {
         skipWhitespace()
-        return if (canRead() && peek() == ',') {
+        return if (canRead() && peek() == ELEMENT_SEPARATOR) {
             skip()
             skipWhitespace()
             true

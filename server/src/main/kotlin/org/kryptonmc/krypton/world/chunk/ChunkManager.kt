@@ -20,14 +20,15 @@ package org.kryptonmc.krypton.world.chunk
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
-import org.jglrxavpok.hephaistos.nbt.NBT
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.world.Biome
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.region.RegionFileManager
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.LongArrayTag
+import org.kryptonmc.nbt.buildCompound
+import org.kryptonmc.nbt.compound
 import java.util.EnumSet
 import java.util.concurrent.TimeUnit
 
@@ -59,19 +60,19 @@ class ChunkManager(private val world: KryptonWorld) {
         val nbt = regionFileManager.read(position).getCompound("Level")
         val heightmaps = nbt.getCompound("Heightmaps")
 
-        val sectionList = nbt.getList<NBTCompound>("Sections")
+        val sectionList = nbt.getList("Sections", CompoundTag.ID)
         val sections = arrayOfNulls<ChunkSection>(world.sectionCount)
         for (i in sectionList.indices) {
-            val sectionData = sectionList[i]
+            val sectionData = sectionList.getCompound(i)
             val y = sectionData.getByte("Y").toInt()
             if (y == -1 || y == 16) continue
-            if (sectionData.contains("Palette", NBTTypes.TAG_List) && sectionData.contains("BlockStates", NBTTypes.TAG_Long_Array)) {
+            if (sectionData.contains("Palette", ListTag.ID) && sectionData.contains("BlockStates", LongArrayTag.ID)) {
                 val section = ChunkSection(
                     y,
                     sectionData.getByteArray("BlockLight"),
                     sectionData.getByteArray("SkyLight")
                 )
-                section.palette.load(sectionData.getList("Palette"), sectionData.getLongArray("BlockStates"))
+                section.palette.load(sectionData.getList("Palette", CompoundTag.ID), sectionData.getLongArray("BlockStates"))
                 section.recount()
                 if (!section.isEmpty()) sections[world.sectionIndexFromY(y)] = section
             }
@@ -94,7 +95,7 @@ class ChunkManager(private val world: KryptonWorld) {
 
         val noneOf = EnumSet.noneOf(Heightmap.Type::class.java)
         Heightmap.Type.POST_FEATURES.forEach {
-            if (heightmaps.contains(it.name, NBTTypes.TAG_Long_Array)) chunk.setHeightmap(it, heightmaps.getLongArray(it.name)) else noneOf.add(it)
+            if (heightmaps.contains(it.name, LongArrayTag.ID)) chunk.setHeightmap(it, heightmaps.getLongArray(it.name)) else noneOf.add(it)
         }
         Heightmap.prime(chunk, noneOf)
         return chunk
@@ -110,47 +111,49 @@ class ChunkManager(private val world: KryptonWorld) {
     }
 }
 
-private fun KryptonChunk.serialize(): NBTCompound {
-    val data = NBTCompound()
-        .setIntArray("Biomes", biomes.map { it.id }.toIntArray())
-        .set("CarvingMasks", NBTCompound()
-            .setByteArray("AIR", carvingMasks.first)
-            .setByteArray("LIQUID", carvingMasks.second))
-        .setLong("LastUpdate", lastUpdate)
-        .set("Lights", NBTList<NBT>(NBTTypes.TAG_List))
-        .set("LiquidsToBeTicked", NBTList<NBT>(NBTTypes.TAG_List))
-        .set("LiquidTicks", NBTList<NBT>(NBTTypes.TAG_List))
-        .setLong("InhabitedTime", inhabitedTime)
-        .set("PostProcessing", NBTList<NBT>(NBTTypes.TAG_List))
-        .setString("Status", "full")
-        .set("TileEntities", NBTList<NBT>(NBTTypes.TAG_Compound))
-        .set("TileTicks", NBTList<NBT>(NBTTypes.TAG_Compound))
-        .set("ToBeTicked", NBTList<NBT>(NBTTypes.TAG_List))
-        .set("Structures", structures)
-        .setInt("xPos", position.x)
-        .setInt("zPos", position.z)
+private fun KryptonChunk.serialize(): CompoundTag {
+    val data = buildCompound {
+        intArray("Biomes", biomes.map { it.id }.toIntArray())
+        compound("CarvingMasks") {
+            byteArray("AIR", carvingMasks.first)
+            byteArray("LIQUID", carvingMasks.second)
+        }
+        long("LastUpdate", lastUpdate)
+        list("Lights", ListTag.ID)
+        list("LiquidsToBeTicked", ListTag.ID)
+        list("LiquidTicks", ListTag.ID)
+        long("InhabitedTime", inhabitedTime)
+        list("PostProcessing", ListTag.ID)
+        string("Status", "full")
+        list("TileEntities", CompoundTag.ID)
+        list("TileTicks", CompoundTag.ID)
+        list("ToBeTicked", ListTag.ID)
+        put("Structures", structures)
+        int("xPos", position.x)
+        int("zPos", position.z)
+    }
 
-    val sectionList = NBTList<NBTCompound>(NBTTypes.TAG_Compound)
+    val sectionList = ListTag(elementType = CompoundTag.ID)
     for (i in minimumLightSection until maximumLightSection) {
-        val section = sections.asSequence().filter { it != null && it.y shr 4 == i }.firstOrNull()
-        if (section != null) sectionList.add(NBTCompound()
-            .setByte("Y", (i and 255).toByte())
-            .apply {
-                section.palette.save(this)
-                if (section.blockLight.isNotEmpty()) setByteArray("BlockLight", section.blockLight)
-                if (section.skyLight.isNotEmpty()) setByteArray("SkyLight", section.skyLight)
-            })
+        val section = sections.asSequence().filter { it != null && it.y shr 4 == i }.firstOrNull() ?: continue
+        sectionList.add(compound {
+            byte("Y", (i and 255).toByte())
+            section.palette.save(this)
+            if (section.blockLight.isNotEmpty()) byteArray("BlockLight", section.blockLight)
+            if (section.skyLight.isNotEmpty()) byteArray("SkyLight", section.skyLight)
+        })
     }
-    data["Sections"] = sectionList
+    data.put("Sections", sectionList)
 
-    val heightmapData = NBTCompound()
+    val heightmapData = CompoundTag.builder()
     heightmaps.forEach {
-        if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.setLongArray(it.key.name, it.value.data.data)
+        if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.longArray(it.key.name, it.value.data.data)
     }
-    data["Heightmaps"] = heightmapData
-    return NBTCompound()
-        .setInt("DataVersion", CHUNK_DATA_VERSION)
-        .set("Level", data)
+    data.put("Heightmaps", heightmapData.build())
+    return compound {
+        int("DataVersion", CHUNK_DATA_VERSION)
+        put("Level", data.build())
+    }
 }
 
 const val CHUNK_DATA_VERSION = 2578

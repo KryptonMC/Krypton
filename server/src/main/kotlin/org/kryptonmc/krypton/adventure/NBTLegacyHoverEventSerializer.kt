@@ -18,15 +18,17 @@
  */
 package org.kryptonmc.krypton.adventure
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.api.BinaryTagHolder
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.LegacyHoverEventSerializer
 import net.kyori.adventure.util.Codec
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTException
 import org.kryptonmc.api.adventure.toPlainText
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.buildCompound
+import org.kryptonmc.nbt.compound
 import java.io.IOException
 import java.lang.RuntimeException
 import java.util.UUID
@@ -43,44 +45,49 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
     override fun deserializeShowItem(input: Component) = try {
         val raw = input.toPlainText()
         val nbt = ADVENTURE_SNBT_CODEC.decode(raw)
-        if (nbt !is NBTCompound) throw IOException("Content not parseable to an NBTCompound! Content: $raw")
+        val tag = nbt.getCompound(ITEM_TAG)
         HoverEvent.ShowItem.of(
             Key.key(nbt.getString(ITEM_TYPE)),
             nbt.getByte(ITEM_COUNT).toInt(),
-            (nbt[ITEM_TAG] as? NBTCompound)?.let { BinaryTagHolder.encode(it, ADVENTURE_SNBT_CODEC) }
+            if (tag.isEmpty()) null else BinaryTagHolder.encode(tag, ADVENTURE_SNBT_CODEC)
         )
-    } catch (exception: NBTException) {
+    } catch (exception: CommandSyntaxException) {
         throw IOException(exception)
     }
 
     override fun deserializeShowEntity(input: Component, decoder: Codec.Decoder<Component, String, out RuntimeException>) = try {
         val raw = input.toPlainText()
         val nbt = ADVENTURE_SNBT_CODEC.decode(raw)
-        if (nbt !is NBTCompound) throw IOException("Content not parseable to an NBTCompound! Content: $raw")
         HoverEvent.ShowEntity.of(
             Key.key(nbt.getString(ENTITY_TYPE)),
             UUID.fromString(nbt.getString(ENTITY_ID)),
             decoder.decode(nbt.getString(ENTITY_NAME))
         )
-    } catch (exception: NBTException) {
+    } catch (exception: CommandSyntaxException) {
         throw IOException(exception)
     }
 
     override fun serializeShowItem(input: HoverEvent.ShowItem): Component {
-        val tag = NBTCompound().setString(ITEM_TYPE, input.item().asString()).setByte(ITEM_COUNT, input.count().toByte())
+        val tag = buildCompound {
+            string(ITEM_TYPE, input.item().asString())
+            byte(ITEM_COUNT, input.count().toByte())
+        }
         input.nbt()?.let {
             try {
-                tag.set(ITEM_TAG, it[ADVENTURE_SNBT_CODEC])
-            } catch (exception: NBTException) {
+                tag.put(ITEM_TAG, it[ADVENTURE_SNBT_CODEC])
+            } catch (exception: CommandSyntaxException) {
                 throw IOException(exception)
             }
         }
-        return Component.text(ADVENTURE_SNBT_CODEC.encode(tag))
+        return Component.text(ADVENTURE_SNBT_CODEC.encode(tag.build()))
     }
 
     override fun serializeShowEntity(input: HoverEvent.ShowEntity, encoder: Codec.Encoder<Component, String, out RuntimeException>): Component {
-        val tag = NBTCompound().setString(ENTITY_ID, input.id().toString()).setString(ENTITY_TYPE, input.type().asString())
-        input.name()?.let { tag.setString(ENTITY_NAME, encoder.encode(it)) }
-        return Component.text(ADVENTURE_SNBT_CODEC.encode(tag))
+        val tag = buildCompound {
+            string(ENTITY_ID, input.id().toString())
+            string(ENTITY_TYPE, input.type().asString())
+        }
+        input.name()?.let { tag.string(ENTITY_NAME, encoder.encode(it)) }
+        return Component.text(ADVENTURE_SNBT_CODEC.encode(tag.build()))
     }
 }

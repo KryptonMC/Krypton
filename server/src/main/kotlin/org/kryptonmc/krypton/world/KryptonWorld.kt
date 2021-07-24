@@ -21,11 +21,6 @@ package org.kryptonmc.krypton.world
 import com.mojang.serialization.Codec
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
 import net.kyori.adventure.sound.Sound
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTString
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
-import org.jglrxavpok.hephaistos.nbt.NBTWriter
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.sound.SoundEvent
@@ -68,6 +63,11 @@ import org.kryptonmc.krypton.util.forEachInRange
 import org.kryptonmc.krypton.util.synchronize
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.compound
+import org.kryptonmc.nbt.io.TagCompression
+import org.kryptonmc.nbt.io.TagIO
 import org.spongepowered.math.vector.Vector3i
 import java.io.Writer
 import java.nio.file.Files
@@ -289,60 +289,66 @@ data class KryptonWorld(
     }
 
     override fun save() {
-        val gamerules = gameRules.rules.transform { (rule, value) -> rule.name to NBTString(value.toString()) }
-        val dimensions = generationSettings.dimensions.transform { (key, value) -> key.toString() to value.toNBT() }
-
-        val data = NBTCompound().set("Data", NBTCompound()
-            .setBoolean("allowCommands", false)
-            .setDouble("BorderCenterX", border.center.x())
-            .setDouble("BorderCenterZ", border.center.y())
-            .setDouble("BorderDamagePerBlock", border.damageMultiplier)
-            .setDouble("BorderSize", border.size)
-            .setDouble("BorderSafeZone", border.safeZone)
-            .setDouble("BorderSizeLerpTarget", border.sizeLerpTarget)
-            .setLong("BorderSizeLerpTime", border.sizeLerpTime)
-            .setDouble("BorderWarningBlocks", border.warningBlocks.toDouble())
-            .setDouble("BorderWarningTime", border.warningTime.toDouble())
-            .setInt("clearWeatherTime", clearWeatherTime)
-            .set("CustomBossEvents", NBTCompound())
-            .set("DataPacks", NBTCompound()
-                .set("Enabled", NBTList<NBTString>(NBTTypes.TAG_String).apply { add(NBTString("vanilla")) }))
-                .set("Disabled", NBTList<NBTString>(NBTTypes.TAG_String))
-            .setInt("DataVersion", ServerInfo.WORLD_VERSION)
-            .setLong("DayTime", dayTime)
-            .setByte("Difficulty", difficulty.ordinal.toByte())
-            .set("GameRules", NBTCompound().apply { gamerules.forEach { (key, value) -> set(key, value) } })
-            .set("WorldGenSettings", NBTCompound()
-                .setLong("seed", generationSettings.seed)
-                .setBoolean("generate_features", generationSettings.generateStructures)
-                .set("dimensions", NBTCompound().apply { dimensions.forEach { (key, value) -> set(key, value) } }))
-            .setInt("GameType", gamemode.ordinal)
-            .setBoolean("hardcore", isHardcore)
-            .setBoolean("initialized", true)
-            .set("Krypton", NBTCompound()
-                .setString("version", KryptonServerInfo.version))
-            .setLong("LastPlayed", lastPlayed.toInstant(ZoneOffset.UTC).toEpochMilli())
-            .setString("LevelName", name)
-            .setBoolean("MapFeatures", mapFeatures)
-            .setBoolean("raining", isRaining)
-            .setInt("rainTime", rainTime)
-            .set("ServerBrands", NBTList<NBTString>(NBTTypes.TAG_String).apply { serverBrands.apply { add(KryptonServerInfo.name) }.forEach { add(NBTString(it)) } })
-            .setInt("SpawnX", spawnLocation.x())
-            .setInt("SpawnY", spawnLocation.y())
-            .setInt("SpawnZ", spawnLocation.z())
-            .setBoolean("thundering", isThundering)
-            .setLong("Time", time)
-            .setInt("version", NBT_VERSION)
-            .set("Version", NBTCompound()
-                .setInt("Id", ServerInfo.GAME_VERSION.id)
-                .setString("Name", ServerInfo.GAME_VERSION.name)
-                .setBoolean("Snapshot", ServerInfo.GAME_VERSION.isSnapshot))
-            .setInt("WanderingTraderSpawnChance", 25)
-            .setInt("WanderingTraderSpawnDelay", 24_000)
-        )
+        val data = compound {
+            compound("Data") {
+                boolean("allowCommands", false)
+                double("BorderCenterX", border.center.x())
+                double("BorderCenterZ", border.center.y())
+                double("BorderDamagePerBlock", border.damageMultiplier)
+                double("BorderSize", border.size)
+                double("BorderSafeZone", border.safeZone)
+                double("BorderSizeLerpTarget", border.sizeLerpTarget)
+                long("BorderSizeLerpTime", border.sizeLerpTime)
+                double("BorderWarningBlocks", border.warningBlocks.toDouble())
+                double("BorderWarningTime", border.warningTime.toDouble())
+                int("clearWeatherTime", clearWeatherTime)
+                put("CustomBossEvents", CompoundTag())
+                compound("DataPacks") {
+                    list("Enabled", StringTag.ID, StringTag.of("vanilla"))
+                    list("Disabled", StringTag.ID)
+                }
+                int("DataVersion", ServerInfo.WORLD_VERSION)
+                long("DayTime", dayTime)
+                byte("Difficulty", difficulty.ordinal.toByte())
+                compound("GameRules") { gameRules.rules.forEach { (rule, value) -> string(rule.name, value.toString()) } }
+                compound("WorldGenSettings") {
+                    long("seed", generationSettings.seed)
+                    boolean("generate_features", generationSettings.generateStructures)
+                    compound("dimensions") { generationSettings.dimensions.forEach { (key, value) -> put(key.asString(), value.toNBT()) } }
+                }
+                int("GameType", gamemode.ordinal)
+                boolean("hardcore", isHardcore)
+                boolean("initialized", true)
+                compound("Krypton") {
+                    string("version", KryptonServerInfo.version)
+                }
+                long("LastPlayed", lastPlayed.toInstant(ZoneOffset.UTC).toEpochMilli())
+                string("LevelName", name)
+                boolean("MapFeatures", mapFeatures)
+                boolean("raining", isRaining)
+                int("rainTime", rainTime)
+                list("ServerBrands") {
+                    serverBrands.forEach { add(StringTag.of(it)) }
+                    add(StringTag.of(KryptonServerInfo.name))
+                }
+                int("SpawnX", spawnLocation.x())
+                int("SpawnY", spawnLocation.y())
+                int("SpawnZ", spawnLocation.z())
+                boolean("thundering", isThundering)
+                long("Time", time)
+                int("version", NBT_VERSION)
+                compound("Version") {
+                    int("Id", ServerInfo.GAME_VERSION.id)
+                    string("Name", ServerInfo.GAME_VERSION.name)
+                    boolean("Snapshot", ServerInfo.GAME_VERSION.isSnapshot)
+                }
+                int("WanderingTraderSpawnChance", 25)
+                int("WanderingTraderSpawnDelay", 24_000)
+            }
+        }
 
         val temp = folder.createTempFile("level", ".dat")
-        NBTWriter(temp.outputStream()).use { it.writeNamed("", data) }
+        TagIO.write(temp, data, TagCompression.GZIP)
         val dataPath = folder.resolve("level.dat")
         if (!dataPath.exists()) {
             temp.moveTo(dataPath)

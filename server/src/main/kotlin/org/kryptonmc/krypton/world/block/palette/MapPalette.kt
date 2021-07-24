@@ -19,9 +19,6 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.varIntBytes
@@ -29,6 +26,8 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.block.BLOCKS
 import org.kryptonmc.krypton.world.block.toBlock
 import org.kryptonmc.krypton.world.block.toNBT
+import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.list
 
 class MapPalette(private val bits: Int, private val resizer: (Int, Block) -> Int) : Palette {
 
@@ -50,14 +49,12 @@ class MapPalette(private val bits: Int, private val resizer: (Int, Block) -> Int
         for (i in 0 until size) buf.writeVarInt(BLOCKS.idOf(values[i]!!))
     }
 
-    override fun load(data: NBTList<NBTCompound>) {
+    override fun load(data: ListTag) {
         values.clear()
-        for (i in data.indices) values.add(data[i].toBlock())
+        for (i in data.indices) values.add(data.getCompound(i).toBlock())
     }
 
-    fun save() = NBTList<NBTCompound>(NBTTypes.TAG_Compound).apply {
-        for (i in indices) add(values[i]!!.toNBT())
-    }
+    fun save() = list { for (i in indices) add(values[i]!!.toNBT()) }
 
     override val size: Int
         get() = values.size

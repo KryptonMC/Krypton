@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.item
 
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
@@ -28,6 +26,8 @@ import org.kryptonmc.api.item.meta.MetaHolder
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.MutableCompoundTag
 
 open class KryptonItemStack(
     override val type: ItemType,
@@ -35,21 +35,21 @@ open class KryptonItemStack(
     override val meta: KryptonMetaHolder = KryptonMetaHolder()
 ) : ItemStack {
 
-    constructor(nbt: NBTCompound) : this(
+    constructor(nbt: CompoundTag) : this(
         Registries.ITEM[nbt.getString("id").toKey()],
         nbt.getInt("Count"),
-        KryptonMetaHolder(nbt.getCompound("tag"))
+        KryptonMetaHolder(nbt.getCompound("tag").let { if (it is MutableCompoundTag) it else it.mutable() })
     )
 
-    fun getOrCreateTag(key: String): NBTCompound {
-        if (meta.nbt.contains(key, NBTTypes.TAG_Compound)) return meta.nbt.getCompound(key)
-        return NBTCompound().apply { meta.nbt[key] = this }
+    fun getOrCreateTag(key: String): CompoundTag {
+        if (meta.nbt.contains(key, CompoundTag.ID)) return meta.nbt.getCompound(key)
+        return CompoundTag().apply { meta.nbt[key] = this }
     }
 
-    fun save(tag: NBTCompound) = tag
-        .setString("id", Registries.ITEM[type].asString())
-        .setInt("Count", amount)
-        .set("tag", meta.nbt)
+    fun save(tag: MutableCompoundTag) = tag
+        .putString("id", Registries.ITEM[type].asString())
+        .putInt("Count", amount)
+        .apply { put("tag", meta.nbt) }
 
     fun isEmpty(): Boolean {
         if (this === EmptyItemStack) return true

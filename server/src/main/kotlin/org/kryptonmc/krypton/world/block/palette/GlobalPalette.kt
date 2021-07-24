@@ -19,12 +19,11 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.world.block.BLOCKS
+import org.kryptonmc.nbt.ListTag
 
 object GlobalPalette : Palette {
 
@@ -37,5 +36,5 @@ object GlobalPalette : Palette {
 
     override fun write(buf: ByteBuf) = Unit
 
-    override fun load(data: NBTList<NBTCompound>) = Unit
+    override fun load(data: ListTag) = Unit
 }

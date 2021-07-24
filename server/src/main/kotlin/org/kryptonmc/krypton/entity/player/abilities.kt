@@ -18,27 +18,29 @@
  */
 package org.kryptonmc.krypton.entity.player
 
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.entity.player.Abilities
+import org.kryptonmc.nbt.ByteTag
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
 
-fun Abilities.load(tag: NBTCompound) {
+fun Abilities.load(tag: CompoundTag) {
     isInvulnerable = tag.getBoolean("invulnerable")
     canFly = tag.getBoolean("mayFly")
     isFlying = tag.getBoolean("flying")
     canBuild = tag.getBoolean("mayBuild")
-    if (tag.contains("mayBuild", NBTTypes.TAG_Byte)) canInstantlyBuild = tag.getBoolean("instabuild")
+    if (tag.contains("mayBuild", ByteTag.ID)) canInstantlyBuild = tag.getBoolean("instabuild")
     if (tag.contains("flySpeed", 99)) {
         walkSpeed = tag.getFloat("walkSpeed")
         flyingSpeed = tag.getFloat("flySpeed")
     }
 }
 
-fun Abilities.save(): NBTCompound = NBTCompound()
-    .setBoolean("invulnerable", isInvulnerable)
-    .setBoolean("mayfly", canFly)
-    .setBoolean("flying", isFlying)
-    .setBoolean("mayBuild", canBuild)
-    .setBoolean("instabuild", canInstantlyBuild)
-    .setFloat("walkSpeed", walkSpeed)
-    .setFloat("flySpeed", flyingSpeed)
+fun Abilities.save() = compound {
+    boolean("invulnerable", isInvulnerable)
+    boolean("mayfly", canFly)
+    boolean("flying", isFlying)
+    boolean("mayBuild", canBuild)
+    boolean("instabuild", canInstantlyBuild)
+    float("walkSpeed", walkSpeed)
+    float("flySpeed", flyingSpeed)
+}

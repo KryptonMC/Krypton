@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.packet.out.play
 
 import com.google.common.hash.Hashing
 import io.netty.buffer.ByteBuf
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
@@ -28,12 +27,13 @@ import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.FileRegistries
 import org.kryptonmc.krypton.util.writeKey
-import org.kryptonmc.krypton.util.writeNBTCompound
+import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.dimension.toNBT
 import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.krypton.world.generation.FlatGenerator
+import org.kryptonmc.nbt.compound
 
 /**
  * This packet is used to initialise some things that the client needs to know so that it can join the game
@@ -74,12 +74,13 @@ class PacketOutJoinGame(
 
         // dimension codec (dimension/biome type registry)
         // TODO: Replace with new data pack system
-        buf.writeNBTCompound(NBTCompound()
-            .set("minecraft:dimension_type", FileRegistries.DIMENSIONS.toNBT())
-            .set("minecraft:worldgen/biome", FileRegistries.BIOMES.toNBT()))
+        buf.writeNBT(compound {
+            put("minecraft:dimension_type", FileRegistries.DIMENSIONS.toNBT())
+            put("minecraft:worldgen/biome", FileRegistries.BIOMES.toNBT())
+        })
 
         // dimension info
-        buf.writeNBTCompound(dimension.toNBT())
+        buf.writeNBT(dimension.toNBT())
 
         val hashedSeed = Hashing.sha256().hashLong(world.generationSettings.seed).asLong()
         val dimensionKey = world.dimension.location

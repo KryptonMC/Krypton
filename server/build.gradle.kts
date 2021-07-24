@@ -53,7 +53,7 @@ dependencies {
 
     // Data
     implementation("org.kryptonmc", "datafixerupper", Versions.DFU) // Slight performance enhanced version, courtesy of Paper
-    implementation("org.jglrxavpok.nbt", "Hephaistos", Versions.HEPHAISTOS) // Custom fork with nice improvements
+    implementation("org.kryptonmc", "nbt", Versions.NBT)
     implementation("de.articdive", "articdata", Versions.MINECRAFT)
 
     // Miscellaneous

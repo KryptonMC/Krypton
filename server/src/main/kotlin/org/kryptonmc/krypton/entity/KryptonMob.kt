@@ -18,12 +18,13 @@
  */
 package org.kryptonmc.krypton.entity
 
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Mob
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
 
 abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : KryptonLivingEntity(world, type), Mob {
 
@@ -31,15 +32,16 @@ abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : Kryp
         data += MetadataKeys.MOB.FLAGS
     }
 
-    override fun load(tag: NBTCompound) {
+    override fun load(tag: CompoundTag) {
         super.load(tag)
         isLeftHanded = tag.getBoolean("LeftHanded")
         hasAI = !tag.getBoolean("NoAI")
     }
 
-    override fun save() = super.save()
-        .setBoolean("LeftHanded", isLeftHanded)
-        .apply { if (!hasAI) setBoolean("NoAI", true) }
+    override fun save() = super.save().apply {
+        boolean("LeftHanded", isLeftHanded)
+        if (!hasAI) boolean("NoAI", true)
+    }
 
     var hasAI: Boolean
         get() = data[MetadataKeys.MOB.FLAGS].toInt() and 1 == 0

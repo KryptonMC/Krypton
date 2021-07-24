@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.world.region
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTReader
-import org.jglrxavpok.hephaistos.nbt.NBTWriter
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.io.TagCompression
+import org.kryptonmc.nbt.io.TagIO
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 
@@ -35,12 +35,12 @@ class RegionFileManager(
 ) : AutoCloseable {
 
     fun read(position: ChunkPosition) = getRegionFile(position).getChunkDataInputStream(position).use {
-        if (it == null) return NBTCompound()
-        NBTReader(it, false).read() as NBTCompound
+        if (it == null) return CompoundTag()
+        TagIO.read(it, TagCompression.NONE)
     }
 
-    fun write(position: ChunkPosition, tag: NBTCompound) = getRegionFile(position).getChunkDataOutputStream(position).use {
-        NBTWriter(it, false).writeNamed("", tag)
+    fun write(position: ChunkPosition, tag: CompoundTag) {
+        TagIO.write(getRegionFile(position).getChunkDataOutputStream(position), tag, TagCompression.NONE)
     }
 
     private fun getRegionFile(position: ChunkPosition): RegionFile {
@@ -59,8 +59,6 @@ class RegionFileManager(
     }
 
     override fun close() = REGION_CACHE.values.forEach { it.close() }
-
-    fun flush() = REGION_CACHE.values.forEach { it.flush() }
 
     companion object {
 

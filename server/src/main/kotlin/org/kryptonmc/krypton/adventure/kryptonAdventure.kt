@@ -18,16 +18,16 @@
  */
 package org.kryptonmc.krypton.adventure
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.util.Codec
-import org.jglrxavpok.hephaistos.nbt.NBT
-import org.jglrxavpok.hephaistos.nbt.NBTException
-import org.jglrxavpok.hephaistos.nbt.SNBTParser
-import java.io.StringReader
+import org.kryptonmc.krypton.util.nbt.parseToNBT
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.Tag
 
-val ADVENTURE_SNBT_CODEC: Codec<NBT, String, NBTException, RuntimeException> = Codec.of({ SNBTParser(StringReader(it)).parse() }, NBT::toSNBT)
+val ADVENTURE_SNBT_CODEC: Codec<CompoundTag, String, CommandSyntaxException, RuntimeException> = Codec.of(String::parseToNBT, Tag::toString)
 
 fun String.toJsonComponent(): Component = GsonComponentSerializer.gson().deserialize(this)
 

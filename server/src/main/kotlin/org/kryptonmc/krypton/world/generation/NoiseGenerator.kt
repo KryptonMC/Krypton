@@ -21,12 +21,10 @@ package org.kryptonmc.krypton.world.generation
 import com.mojang.serialization.Dynamic
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTInt
-import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTString
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.util.toKey
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.IntTag
+import org.kryptonmc.nbt.compound
 
 data class NoiseGenerator(
     val seed: Int,
@@ -34,11 +32,12 @@ data class NoiseGenerator(
     val biomeSource: BiomeGenerator
 ) : Generator(ID) {
 
-    override fun toNBT() = NBTCompound()
-        .setString("type", ID.toString())
-        .setInt("seed", seed)
-        .setString("settings", settings.toString())
-        .set("biome_source", biomeSource.toNBT())
+    override fun toNBT() = compound {
+        string("type", ID.asString())
+        int("seed", seed)
+        string("settings", settings.asString())
+        put("biome_source", biomeSource.toNBT())
+    }
 
     companion object {
 
@@ -57,15 +56,16 @@ data class NoiseGeneratorSettings(
     val noise: NoiseGeneratorConfig
 ) : GeneratorSettings() {
 
-    override fun toNBT() = NBTCompound()
-        .setInt("bedrock_roof_position", bedrockRoofPosition)
-        .setInt("bedrock_floor_position", bedrockFloorPosition)
-        .setInt("sea_level", seaLevel)
-        .setBoolean("disable_mob_generation", disableMobGeneration)
-        .set("default_block", defaultBlock.toNBT())
-        .set("default_fluid", defaultFluid.toNBT())
-        .set("structures", structures.toNBT())
-        .set("noise", noise.toNBT())
+    override fun toNBT() = compound {
+        int("bedrock_roof_position", bedrockRoofPosition)
+        int("bedrock_floor_position", bedrockFloorPosition)
+        int("sea_level", seaLevel)
+        boolean("disable_mob_generation", disableMobGeneration)
+        put("default_block", defaultBlock.toNBT())
+        put("default_fluid", defaultFluid.toNBT())
+        put("structures", structures.toNBT())
+        put("noise", noise.toNBT())
+    }
 }
 
 data class NoiseBlockState(
@@ -73,9 +73,10 @@ data class NoiseBlockState(
     val properties: Map<String, String>
 ) {
 
-    fun toNBT() = NBTCompound()
-        .setString("Name", name.toString())
-        .set("Properties", NBTCompound().apply { properties.mapValues { NBTString(it.value) }.forEach { set(it.key, it.value) } })
+    fun toNBT() = compound {
+        string("Name", name.asString())
+        compound("Properties") { properties.forEach { string(it.key, it.value) } }
+    }
 }
 
 data class NoiseGeneratorConfig(
@@ -93,19 +94,20 @@ data class NoiseGeneratorConfig(
     val bottomSlide: NoiseSlide
 ) {
 
-    fun toNBT() = NBTCompound()
-        .setInt("height", height)
-        .setInt("size_horizontal", horizontalSize)
-        .setInt("size_vertical", verticalSize)
-        .setDouble("density_factor", densityFactor)
-        .setDouble("density_offset", densityOffset)
-        .setBoolean("simplex_surface_noise", simplexSurfaceNoise)
-        .apply { if (randomDensityOffset) setBoolean("random_density_offset", randomDensityOffset) }
-        .apply { if (islandNoiseOverride) setBoolean("island_noise_override", islandNoiseOverride) }
-        .apply { if (amplified) setBoolean("amplified", amplified) }
-        .set("sampling", sampling.toNBT())
-        .set("top_slide", topSlide.toNBT())
-        .set("bottom_slide", bottomSlide.toNBT())
+    fun toNBT() = compound {
+        int("height", height)
+        int("size_horizontal", horizontalSize)
+        int("size_vertical", verticalSize)
+        double("density_factor", densityFactor)
+        double("density_offset", densityOffset)
+        boolean("simplex_surface_noise", simplexSurfaceNoise)
+        if (randomDensityOffset) boolean("random_density_offset", true)
+        if (islandNoiseOverride) boolean("island_noise_override", true)
+        if (amplified) boolean("amplified", true)
+        put("sampling", sampling.toNBT())
+        put("top_slide", topSlide.toNBT())
+        put("bottom_slide", bottomSlide.toNBT())
+    }
 }
 
 data class NoiseSampling(
@@ -115,11 +117,12 @@ data class NoiseSampling(
     val yFactor: Double
 ) {
 
-    fun toNBT() = NBTCompound()
-        .setDouble("xz_scale", xzScale)
-        .setDouble("xz_factor", xzFactor)
-        .setDouble("y_scale", yScale)
-        .setDouble("y_factor", yFactor)
+    fun toNBT() = compound {
+        double("xz_scale", xzScale)
+        double("xz_factor", xzFactor)
+        double("y_scale", yScale)
+        double("y_factor", yFactor)
+    }
 }
 
 data class NoiseSlide(
@@ -128,15 +131,16 @@ data class NoiseSlide(
     val offset: Int
 ) {
 
-    fun toNBT() = NBTCompound()
-        .setInt("target", target)
-        .setInt("size", size)
-        .setInt("offset", offset)
+    fun toNBT() = compound {
+        int("target", target)
+        int("size", size)
+        int("offset", offset)
+    }
 }
 
 sealed class BiomeGenerator(val type: Key, val seed: Int) {
 
-    abstract fun toNBT(): NBTCompound
+    abstract fun toNBT(): CompoundTag
 
     companion object {
 
@@ -175,10 +179,11 @@ class VanillaLayeredBiomeGenerator(
     val largeBiomes: Boolean,
 ) : BiomeGenerator(VANILLA_LAYERED, seed) {
 
-    override fun toNBT() = NBTCompound()
-        .setString("type", VANILLA_LAYERED.toString())
-        .setInt("seed", seed)
-        .setBoolean("large_biomes", largeBiomes)
+    override fun toNBT() = compound {
+        string("type", VANILLA_LAYERED.asString())
+        int("seed", seed)
+        boolean("large_biomes", largeBiomes)
+    }
 }
 
 class MultiNoiseBiomeGenerator(
@@ -186,17 +191,19 @@ class MultiNoiseBiomeGenerator(
     val preset: Key
 ) : BiomeGenerator(MULTI_NOISE, seed) {
 
-    override fun toNBT() = NBTCompound()
-        .setString("type", MULTI_NOISE.toString())
-        .setInt("seed", seed)
-        .setString("preset", preset.toString())
+    override fun toNBT() = compound {
+        string("type", MULTI_NOISE.asString())
+        int("seed", seed)
+        string("preset", preset.asString())
+    }
 }
 
 class TheEndBiomeGenerator(seed: Int) : BiomeGenerator(THE_END, seed) {
 
-    override fun toNBT() = NBTCompound()
-        .setString("type", THE_END.toString())
-        .setInt("seed", seed)
+    override fun toNBT() = compound {
+        string("type", THE_END.asString())
+        int("seed", seed)
+    }
 }
 
 class FixedBiomeGenerator(
@@ -204,10 +211,11 @@ class FixedBiomeGenerator(
     val biome: String
 ) : BiomeGenerator(FIXED, seed) {
 
-    override fun toNBT() = NBTCompound()
-        .setString("type", FIXED.toString())
-        .setInt("seed", seed)
-        .setString("biome", biome)
+    override fun toNBT() = compound {
+        string("type", FIXED.asString())
+        int("seed", seed)
+        string("biome", biome)
+    }
 }
 
 class CheckerboardBiomeGenerator(
@@ -216,11 +224,12 @@ class CheckerboardBiomeGenerator(
     val scale: Int
 ) : BiomeGenerator(CHECKERBOARD, seed) {
 
-    override fun toNBT() = NBTCompound()
-        .setString("type", CHECKERBOARD.asString())
-        .setInt("seed", seed)
-        .set("biomes", NBTList<NBTInt>(NBTTypes.TAG_Int).apply { biomes.forEach { add(NBTInt(it)) } })
-        .setInt("scale", scale)
+    override fun toNBT() = compound {
+        string("type", CHECKERBOARD.asString())
+        int("seed", seed)
+        list("biomes") { biomes.forEach { add(IntTag.of(it)) } }
+        int("scale", scale)
+    }
 }
 
 class NoiseSettings(

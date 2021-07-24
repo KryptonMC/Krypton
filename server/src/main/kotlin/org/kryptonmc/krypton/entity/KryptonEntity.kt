@@ -22,11 +22,6 @@ import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTDouble
-import org.jglrxavpok.hephaistos.nbt.NBTFloat
-import org.jglrxavpok.hephaistos.nbt.NBTList
-import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
@@ -46,12 +41,15 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.nbt.Serializable
-import org.kryptonmc.krypton.util.nbt.containsUUID
-import org.kryptonmc.krypton.util.nbt.getUUID
-import org.kryptonmc.krypton.util.nbt.setUUID
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.DoubleTag
+import org.kryptonmc.nbt.FloatTag
+import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.buildCompound
+import org.kryptonmc.nbt.compound
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.UnaryOperator
@@ -62,7 +60,7 @@ import kotlin.random.Random
 abstract class KryptonEntity(
     override var world: KryptonWorld,
     override val type: EntityType<out Entity>
-) : KryptonSender(world.server), Entity, Serializable<NBTCompound> {
+) : KryptonSender(world.server), Entity {
 
     val id = ServerStorage.NEXT_ENTITY_ID.incrementAndGet()
     val data = MetadataHolder(this)
@@ -97,63 +95,51 @@ abstract class KryptonEntity(
         // TODO: Data updating
     }
 
-    override fun load(tag: NBTCompound) {
-        val position = tag.getList<NBTDouble>("Pos")
-        val motion = tag.getList<NBTDouble>("Motion")
-        val rotation = tag.getList<NBTFloat>("Rotation")
-        val motionX = motion.getOrNull(0)?.value?.takeIf { abs(it) <= 10.0 } ?: 0.0
-        val motionY = motion.getOrNull(1)?.value?.takeIf { abs(it) <= 10.0 } ?: 0.0
-        val motionZ = motion.getOrNull(2)?.value?.takeIf { abs(it) <= 10.0 } ?: 0.0
+    open fun load(tag: CompoundTag) {
+        val position = tag.getList("Pos", DoubleTag.ID)
+        val motion = tag.getList("Motion", DoubleTag.ID)
+        val rotation = tag.getList("Rotation", FloatTag.ID)
+        val motionX = motion.getDouble(0).takeIf { abs(it) <= 10.0 } ?: 0.0
+        val motionY = motion.getDouble(1).takeIf { abs(it) <= 10.0 } ?: 0.0
+        val motionZ = motion.getDouble(2).takeIf { abs(it) <= 10.0 } ?: 0.0
         velocity = Vector(motionX, motionY, motionZ)
         location = Location(
-            position.getOrNull(0)?.value ?: 0.0,
-            position.getOrNull(1)?.value ?: 0.0,
-            position.getOrNull(2)?.value ?: 0.0,
-            rotation.getOrNull(0)?.value ?: 0F,
-            rotation.getOrNull(0)?.value ?: 0F
+            position.getDouble(0),
+            position.getDouble(1),
+            position.getDouble(2),
+            rotation.getFloat(0),
+            rotation.getFloat(1)
         )
         if (tag.containsKey("Air")) airTicks = tag.getShort("Air").toInt()
         isOnGround = tag.getBoolean("OnGround")
-        if (tag.containsUUID("UUID")) uuid = tag.getUUID("UUID")
+        if (tag.hasUUID("UUID")) uuid = tag.getUUID("UUID")!!
 
         if (!location.x.isFinite() || !location.y.isFinite() || !location.z.isFinite()) error("Entity has invalid coordinates! Coordinates must be finite!")
         if (!location.yaw.isFinite() || !location.pitch.isFinite()) error("Entity has invalid rotation!")
-        if (tag.contains("CustomName", NBTTypes.TAG_String)) displayName = tag.getString("CustomName").toJsonComponent()
+        if (tag.contains("CustomName", StringTag.ID)) displayName = tag.getString("CustomName").toJsonComponent()
         isDisplayNameVisible = tag.getBoolean("CustomNameVisible")
         isSilent = tag.getBoolean("Silent")
         hasGravity = !tag.getBoolean("NoGravity")
         isGlowing = tag.getBoolean("Glowing")
     }
 
-    override fun save() = NBTCompound()
-        .setShort("Air", airTicks.toShort())
-        .apply {
-            if (isDisplayNameVisible) {
-                setBoolean("CustomNameVisible", true)
-                setString("CustomName", displayName.toJsonString())
-            }
-            if (isSilent) setBoolean("Silent", true)
-            if (!hasGravity) setBoolean("NoGravity", true)
-            if (isGlowing) setBoolean("Glowing", true)
-            if (frozenTicks > 0) setInt("TicksFrozen", frozenTicks)
-            if (this@KryptonEntity !is KryptonPlayer) setString("id", type.key.asString())
+    open fun save() = buildCompound {
+        short("Air", airTicks.toShort())
+        if (isDisplayNameVisible) {
+            boolean("CustomNameVisible", true)
+            string("CustomName", displayName.toJsonString())
         }
-        .set("Motion", NBTList<NBTDouble>(NBTTypes.TAG_Double).apply {
-            add(NBTDouble(velocity.x))
-            add(NBTDouble(velocity.y))
-            add(NBTDouble(velocity.z))
-        })
-        .setBoolean("OnGround", isOnGround)
-        .set("Pos", NBTList<NBTDouble>(NBTTypes.TAG_Double).apply {
-            add(NBTDouble(location.x))
-            add(NBTDouble(location.y))
-            add(NBTDouble(location.z))
-        })
-        .set("Rotation", NBTList<NBTFloat>(NBTTypes.TAG_Float).apply {
-            add(NBTFloat(location.yaw))
-            add(NBTFloat(location.pitch))
-        })
-        .setUUID("UUID", uuid)
+        if (isSilent) boolean("Silent", true)
+        if (!hasGravity) boolean("NoGravity", true)
+        if (isGlowing) boolean("Glowing", true)
+        if (frozenTicks > 0) int("TicksFrozen", frozenTicks)
+        if (this@KryptonEntity !is KryptonPlayer) string("id", this@KryptonEntity.type.key.asString())
+        list("Motion", DoubleTag.ID, DoubleTag.of(velocity.x), DoubleTag.of(velocity.y), DoubleTag.of(velocity.z))
+        boolean("OnGround", isOnGround)
+        list("Pos", DoubleTag.ID, DoubleTag.of(location.x), DoubleTag.of(location.y), DoubleTag.of(location.z))
+        list("Rotation", FloatTag.ID, FloatTag.of(location.yaw), FloatTag.of(location.pitch))
+        uuid("UUID", uuid)
+    }
 
     open fun addViewer(player: KryptonPlayer): Boolean {
         if (!viewers.add(player)) return false

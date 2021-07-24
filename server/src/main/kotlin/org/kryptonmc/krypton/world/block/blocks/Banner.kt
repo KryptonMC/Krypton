@@ -19,9 +19,7 @@
 package org.kryptonmc.krypton.world.block.blocks
 
 import net.kyori.adventure.text.Component
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.krypton.adventure.toJsonComponent
 import org.kryptonmc.krypton.world.block.tile.BlockEntity
 
 // TODO: Add this
@@ -33,22 +31,7 @@ data class BannerEntity(
     override val keepPacked: Boolean,
     val customName: Component?,
     val patterns: List<BannerPattern>
-) : BlockEntity("banner") {
-
-    companion object {
-
-        fun fromNBT(position: Vector, keepPacked: Boolean, nbt: NBTCompound): BannerEntity {
-            val customName = nbt.getString("CustomName").takeIf { it.isNotEmpty() }?.toJsonComponent()
-            val patterns = nbt.getList<NBTCompound>("Patterns").map {
-                BannerPattern(
-                    BannerPatternType.fromCode(it.getString("Pattern")),
-                    BannerPatternColor.fromId(it.getInt("Color"))
-                )
-            }
-            return BannerEntity(position, keepPacked, customName, patterns)
-        }
-    }
-}
+) : BlockEntity("banner")
 
 data class BannerPattern(
     val pattern: BannerPatternType,

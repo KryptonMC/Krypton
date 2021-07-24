@@ -20,12 +20,13 @@ package org.kryptonmc.krypton.item.meta
 
 import net.kyori.adventure.pointer.Pointer
 import net.kyori.adventure.pointer.Pointers
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.item.meta.MetaHolder
 import org.kryptonmc.api.item.meta.MetaKey
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.MutableCompoundTag
 import java.util.Optional
 
-open class KryptonMetaHolder(var nbt: NBTCompound = NBTCompound()) : MetaHolder {
+open class KryptonMetaHolder(var nbt: MutableCompoundTag = MutableCompoundTag()) : MetaHolder {
 
     override fun <V : Any> get(key: MetaKey<V>): V? = MetaFactory.get(key, nbt)
 
@@ -33,7 +34,7 @@ open class KryptonMetaHolder(var nbt: NBTCompound = NBTCompound()) : MetaHolder 
 
     override fun <V : Any> contains(key: MetaKey<V>) = MetaFactory.contains(key, nbt)
 
-    override fun copy() = KryptonMetaHolder(nbt.deepClone())
+    override fun copy() = KryptonMetaHolder(nbt.copy())
 
     override fun <T : Any> get(pointer: Pointer<T>): Optional<T> {
         if (pointer !is MetaKey<T>) return Optional.empty()

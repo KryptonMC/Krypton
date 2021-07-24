@@ -21,12 +21,13 @@ package org.kryptonmc.krypton.world.generation
 import com.mojang.serialization.Dynamic
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.util.toKey
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
 
 abstract class Generator(val id: Key) {
 
-    abstract fun toNBT(): NBTCompound
+    abstract fun toNBT(): CompoundTag
 }
 
 // we want to use this in the constructor, but if we use a property, it's not initialised
@@ -35,7 +36,7 @@ private val DEBUG_GENERATOR_ID = key("debug")
 
 object DebugGenerator : Generator(DEBUG_GENERATOR_ID) {
 
-    override fun toNBT() = NBTCompound().setString("type", DEBUG_GENERATOR_ID.toString())
+    override fun toNBT() = compound { string("type", DEBUG_GENERATOR_ID.toString()) }
 }
 
 fun Dynamic<*>.toGenerator() = when (val type = get("type").asString("").toKey()) {

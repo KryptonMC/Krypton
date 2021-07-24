@@ -18,9 +18,6 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.jglrxavpok.hephaistos.nbt.NBTIntArray
-import java.util.UUID
-
 /**
  * Convert an ordinary string to a protocol string, with its length prefixed.
  */
@@ -29,10 +26,3 @@ fun String.toProtocol(): ByteArray {
     val bytes = encodeToByteArray()
     return byteArrayOf(bytes.size.toByte(), *bytes)
 }
-
-fun UUID.serialize() = NBTIntArray(intArrayOf(
-    (mostSignificantBits shr 32).toInt(),
-    (mostSignificantBits and Int.MAX_VALUE.toLong()).toInt(),
-    (leastSignificantBits shr 32).toInt(),
-    (leastSignificantBits and Int.MAX_VALUE.toLong()).toInt()
-))

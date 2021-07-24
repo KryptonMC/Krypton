@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.entity.metadata
 
 import net.kyori.adventure.key.Key
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.particleEffect
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.nbt.CompoundTag
 import java.util.Optional
 
 object MetadataKeys {
@@ -72,8 +72,8 @@ object MetadataKeys {
         val SCORE = register("player/score", 16, MetadataSerializers.VAR_INT, 0)
         val SKIN_FLAGS = register("player/skin_flags", 17, MetadataSerializers.BYTE, 0)
         val MAIN_HAND = register("player/main_hand", 18, MetadataSerializers.BYTE, 1)
-        val LEFT_SHOULDER = register("player/left_shoulder", 19, MetadataSerializers.NBT, NBTCompound())
-        val RIGHT_SHOULDER = register("player/right_shoulder", 20, MetadataSerializers.NBT, NBTCompound())
+        val LEFT_SHOULDER = register("player/left_shoulder", 19, MetadataSerializers.NBT, CompoundTag())
+        val RIGHT_SHOULDER = register("player/right_shoulder", 20, MetadataSerializers.NBT, CompoundTag())
     }
 
     object AreaEffectCloudKeys {

@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
-import org.jglrxavpok.hephaistos.nbt.NBTList
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.util.ceillog2
@@ -29,6 +27,8 @@ import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
 import org.kryptonmc.krypton.world.block.BLOCKS
 import org.kryptonmc.krypton.world.data.BitStorage
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ListTag
 import kotlin.math.max
 
 class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
@@ -76,7 +76,7 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
     }
 
     @Synchronized
-    fun load(data: NBTList<NBTCompound>, states: LongArray) {
+    fun load(data: ListTag, states: LongArray) {
         val bits = max(MINIMUM_PALETTE_SIZE, data.size.ceillog2())
         if (bits != this.bits) this.bits = bits
         palette.load(data)
@@ -96,7 +96,7 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
     }
 
     @Synchronized
-    fun save(tag: NBTCompound) {
+    fun save(builder: CompoundTag.Builder) {
         val newPalette = MapPalette(bits, DUMMY_RESIZER)
         var default = DEFAULT
         var defaultId = newPalette[DEFAULT]
@@ -112,11 +112,11 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
         }
 
         val paletteData = newPalette.save()
-        tag["Palette"] = paletteData
+        builder.put("Palette", paletteData)
         val bits = max(MINIMUM_PALETTE_SIZE, paletteData.size.ceillog2())
         val storage = BitStorage(bits, SIZE)
         for (i in states.indices) storage[i] = states[i]
-        tag.setLongArray("BlockStates", storage.data)
+        builder.longArray("BlockStates", storage.data)
     }
 
     fun count(consumer: (Block, Int) -> Unit) {

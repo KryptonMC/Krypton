@@ -19,15 +19,16 @@
 package org.kryptonmc.krypton.world.dimension
 
 import net.kyori.adventure.key.Key
-import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.krypton.world.generation.Generator
+import org.kryptonmc.nbt.compound
 
 data class Dimension(
     val type: Key,
     val generator: Generator
 ) {
 
-    fun toNBT() = NBTCompound()
-        .setString("type", type.toString())
-        .set("generator", generator.toNBT())
+    fun toNBT() = compound {
+        string("type", type.asString())
+        put("generator", generator.toNBT())
+    }
 }
