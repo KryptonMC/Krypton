@@ -48,7 +48,7 @@ class KryptonBiome(
                 BiomeEffects.CODEC.fieldOf("effects").forGetter(KryptonBiome::effects)
             ).apply(it, ::KryptonBiome)
         }
-        val CODEC: Codec<Supplier<KryptonBiome>> = RegistryFileCodec(InternalResourceKeys.BIOME, DIRECT_CODEC)
+        val CODEC: Codec<() -> KryptonBiome> = RegistryFileCodec(InternalResourceKeys.BIOME, DIRECT_CODEC)
         val LIST_CODEC = homogenousListCodec(InternalResourceKeys.BIOME, DIRECT_CODEC)
     }
 }

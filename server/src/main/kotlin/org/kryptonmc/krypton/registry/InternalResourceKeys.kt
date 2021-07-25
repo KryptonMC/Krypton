@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.event.GameEvent
 import org.kryptonmc.krypton.world.fluid.Fluid
 import org.kryptonmc.krypton.world.generation.Generator
-import org.kryptonmc.krypton.world.generation.biome.BiomeGenerator
+import org.kryptonmc.krypton.world.biome.BiomeGenerator
 import org.kryptonmc.krypton.world.generation.feature.ConfiguredFeature
 import org.kryptonmc.krypton.world.generation.feature.Feature
 import org.kryptonmc.krypton.world.generation.feature.Structure

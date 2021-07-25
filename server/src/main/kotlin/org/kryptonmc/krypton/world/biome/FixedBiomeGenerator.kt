@@ -16,17 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.generation.biome
+package org.kryptonmc.krypton.world.biome
 
 import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.world.biome.KryptonBiome
-import java.util.function.Supplier
 
-class FixedBiomeGenerator(private val biome: Supplier<KryptonBiome>) : BiomeGenerator(listOf(biome.get())) {
+class FixedBiomeGenerator(private val biome: () -> KryptonBiome) : BiomeGenerator(listOf(biome())) {
 
     override val codec = CODEC
 
-    constructor(biome: KryptonBiome) : this(Supplier { biome })
+    constructor(biome: KryptonBiome) : this({ biome })
 
     companion object {
 

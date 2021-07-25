@@ -32,13 +32,13 @@ class RegistryFileCodec<E : Any>(
     private val registryKey: ResourceKey<out Registry<E>>,
     private val elementCodec: Codec<E>,
     private val allowInline: Boolean = true
-) : Codec<Supplier<E>> {
+) : Codec<() -> E> {
 
-    override fun <T> encode(input: Supplier<E>, ops: DynamicOps<T>, prefix: T): DataResult<T> =
-        if (ops is RegistryWriteOps) ops.encode(input.get(), prefix, registryKey, elementCodec) else elementCodec.encode(input.get(), ops, prefix)
+    override fun <T> encode(input: () -> E, ops: DynamicOps<T>, prefix: T): DataResult<T> =
+        if (ops is RegistryWriteOps) ops.encode(input(), prefix, registryKey, elementCodec) else elementCodec.encode(input(), ops, prefix)
 
-    override fun <T> decode(ops: DynamicOps<T>, input: T): DataResult<Pair<Supplier<E>, T>> =
-        if (ops is RegistryReadOps) ops.decodeElement(input, registryKey, elementCodec, allowInline) else elementCodec.decode(ops, input).map { pair -> pair.mapFirst { Supplier { it } } }
+    override fun <T> decode(ops: DynamicOps<T>, input: T): DataResult<Pair<() -> E, T>> =
+        if (ops is RegistryReadOps) ops.decodeElement(input, registryKey, elementCodec, allowInline) else elementCodec.decode(ops, input).map { pair -> pair.mapFirst { { it } } }
 
     override fun toString() = "RegistryFileCodec($registryKey, $elementCodec)"
 }

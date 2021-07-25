@@ -42,7 +42,7 @@ class FlatGeneratorSettings(
 
     val layers = mutableListOf<FlatLayer>()
     val blockLayers = mutableListOf<Block>()
-    private var biomeSupplier = Supplier { biomes[BiomeKeys.PLAINS]!! }
+    private var biomeSupplier = { biomes[BiomeKeys.PLAINS]!! }
     private var generateVoid = false
     var decorate = false
     var addLakes = false
@@ -53,15 +53,14 @@ class FlatGeneratorSettings(
         layers: List<FlatLayer>,
         addLakes: Boolean,
         decorate: Boolean,
-        biome: Optional<Supplier<KryptonBiome>>
+        biome: Optional<() -> KryptonBiome>
     ) : this(biomes, structureSettings) {
         if (addLakes) this.addLakes = true
         if (decorate) this.decorate = true
         this.layers.addAll(layers)
         updateLayers()
         this.biomeSupplier = if (!biome.isPresent) {
-            LOGGER.warn("Unknown biome, defaulting to plains...")
-            Supplier { biomes[BiomeKeys.PLAINS]!! }
+            { biomes[BiomeKeys.PLAINS]!! }
         } else biome.get()
     }
 
@@ -72,11 +71,10 @@ class FlatGeneratorSettings(
     }
 
     val biome: KryptonBiome
-        get() = biomeSupplier.get()
+        get() = biomeSupplier()
 
     companion object {
 
-        private val LOGGER = logger<FlatGeneratorSettings>()
         val CODEC: Codec<FlatGeneratorSettings> = RecordCodecBuilder.create<FlatGeneratorSettings> { instance ->
             instance.group(
                 RegistryLookupCodec(InternalResourceKeys.BIOME).forGetter(FlatGeneratorSettings::biomes),

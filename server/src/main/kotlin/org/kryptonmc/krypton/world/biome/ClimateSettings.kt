@@ -24,6 +24,28 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.krypton.util.codec
 
+data class ClimateParameters(
+    val temperature: Float,
+    val humidity: Float,
+    val altitude: Float,
+    val weirdness: Float,
+    val offset: Float
+) {
+
+    companion object {
+
+        val CODEC: Codec<ClimateParameters> = RecordCodecBuilder.create {
+            it.group(
+                Codec.floatRange(-2F, 2F).fieldOf("temperature").forGetter(ClimateParameters::temperature),
+                Codec.floatRange(-2F, 2F).fieldOf("humidity").forGetter(ClimateParameters::humidity),
+                Codec.floatRange(-2F, 2F).fieldOf("altitude").forGetter(ClimateParameters::altitude),
+                Codec.floatRange(-2F, 2F).fieldOf("weirdness").forGetter(ClimateParameters::weirdness),
+                Codec.floatRange(0F, 1F).fieldOf("offset").forGetter(ClimateParameters::offset)
+            ).apply(it, ::ClimateParameters)
+        }
+    }
+}
+
 data class ClimateSettings(
     val precipitation: Precipitation,
     val temperature: Float,

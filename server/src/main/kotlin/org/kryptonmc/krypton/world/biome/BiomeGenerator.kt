@@ -16,22 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.generation.biome
+package org.kryptonmc.krypton.world.biome
 
 import com.mojang.serialization.Codec
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import java.util.function.Function
-import java.util.function.Supplier
 
 sealed class BiomeGenerator(val possibleBiomes: List<KryptonBiome>) {
 
     abstract val codec: Codec<out BiomeGenerator>
 
-    constructor(possibleBiomes: Sequence<Supplier<KryptonBiome>>) : this(possibleBiomes.map { it.get() }.toList())
+    constructor(possibleBiomes: Sequence<() -> KryptonBiome>) : this(possibleBiomes.map { it() }.toList())
 
     companion object {
 
         val CODEC: Codec<BiomeGenerator> = InternalRegistries.BIOME_GENERATOR.dispatchStable(BiomeGenerator::codec, Function.identity())
+
+        init {
+            Registries.register(InternalRegistries.BIOME_GENERATOR, "fixed", FixedBiomeGenerator.CODEC)
+            Registries.register(InternalRegistries.BIOME_GENERATOR, "multi_noise", MultiNoiseBiomeGenerator.CODEC)
+            Registries.register(InternalRegistries.BIOME_GENERATOR, "checkerboard", CheckerboardBiomeGenerator.CODEC)
+            Registries.register(InternalRegistries.BIOME_GENERATOR, "vanilla_layered", VanillaLayeredBiomeGenerator.CODEC)
+            Registries.register(InternalRegistries.BIOME_GENERATOR, "the_end", TheEndBiomeGenerator.CODEC)
+        }
     }
 }

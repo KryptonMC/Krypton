@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.generation
 
 import com.mojang.serialization.Codec
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
-import org.kryptonmc.krypton.world.generation.biome.FixedBiomeGenerator
+import org.kryptonmc.krypton.world.biome.FixedBiomeGenerator
 import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
 
 // FIXME: Get the biomes from the settings

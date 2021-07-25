@@ -19,11 +19,8 @@
 package org.kryptonmc.krypton.world.generation
 
 import com.mojang.serialization.Codec
-import com.mojang.serialization.Dynamic
-import net.kyori.adventure.key.Key.key
-import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.world.generation.biome.BiomeGenerator
+import org.kryptonmc.krypton.world.biome.BiomeGenerator
 import java.util.function.Function
 
 abstract class Generator(

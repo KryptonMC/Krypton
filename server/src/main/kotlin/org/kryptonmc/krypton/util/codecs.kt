@@ -47,17 +47,17 @@ private fun intRange(lower: Int, upper: Int, message: (Int) -> String): Codec<In
 private fun <N> checkRange(lower: N, upper: N, message: (N) -> String): Function<N, DataResult<N>> where N : Number, N : Comparable<N> =
     Function { if (it in lower..upper) DataResult.success(it) else DataResult.error(message(it)) }
 
-fun <T> nonNullSupplier() = Function<Supplier<T>, DataResult<Supplier<T>>> {
+fun <T> nonNullSupplier() = Function<() -> T, DataResult<() -> T>> {
     try {
-        if (it.get() == null) DataResult.error("Missing value $it!") else DataResult.success(it, Lifecycle.stable())
+        if (it() == null) DataResult.error("Missing value $it!") else DataResult.success(it, Lifecycle.stable())
     } catch (exception: Exception) {
         DataResult.error("Invalid value: $it, message: ${exception.message}")
     }
 }
 
-fun <E : Any> homogenousListCodec(registryKey: ResourceKey<out Registry<E>>, elementCodec: Codec<E>): Codec<List<Supplier<E>>> = Codec.either(
+fun <E : Any> homogenousListCodec(registryKey: ResourceKey<out Registry<E>>, elementCodec: Codec<E>): Codec<List<() -> E>> = Codec.either(
     RegistryFileCodec(registryKey, elementCodec, false).listOf(),
-    elementCodec.xmap({ Supplier { it } }, Supplier<E>::get).listOf()
+    elementCodec.xmap({ { it } }, { it() }).listOf()
 ).xmap({ either -> either.map({ it }, { it }) }, { Either.left(it) })
 
 fun <E> Array<E>.codec(nameToValue: (String) -> E?): Codec<E> where E : Enum<E>, E : StringSerializable = object : Codec<E> {

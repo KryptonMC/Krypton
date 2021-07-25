@@ -16,11 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.generation.biome
+package org.kryptonmc.krypton.world.biome
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import java.util.function.Supplier
 
 class CheckerboardBiomeGenerator(

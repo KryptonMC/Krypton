@@ -146,7 +146,7 @@ object DimensionTypes {
         ).apply(instance, ::DimensionType)
     }.comapFlatMap({ it.checkY() }, { it })
 
-    val CODEC: Codec<Supplier<DimensionType>> = RegistryFileCodec(ResourceKeys.DIMENSION_TYPE, DIRECT_CODEC)
+    val CODEC: Codec<() -> DimensionType> = RegistryFileCodec(ResourceKeys.DIMENSION_TYPE, DIRECT_CODEC)
 
     private fun DimensionType.checkY(): DataResult<DimensionType> {
         if (height < MINIMUM_HEIGHT) return DataResult.error("Height has to be at least $MINIMUM_HEIGHT!")

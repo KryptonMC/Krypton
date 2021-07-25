@@ -64,13 +64,13 @@ class RegistryReadOps<T : Any> private constructor(
     fun <E : Any> registry(key: ResourceKey<out Registry<E>>): DataResult<Registry<E>> = registryHolder.ownedRegistry(key)?.let { DataResult.success(it) } ?: DataResult.error("Unknown registry $key!")
 
     @Suppress("UNCHECKED_CAST")
-    fun <E : Any> decodeElement(input: T, registryKey: ResourceKey<out Registry<E>>, elementCodec: Codec<E>, allowInline: Boolean): DataResult<Pair<Supplier<E>, T>> {
+    fun <E : Any> decodeElement(input: T, registryKey: ResourceKey<out Registry<E>>, elementCodec: Codec<E>, allowInline: Boolean): DataResult<Pair<() -> E, T>> {
         val registry = registryHolder.ownedRegistry(registryKey) ?: return DataResult.error("Unknown registry $registryKey!")
         val dataResult = KEY_CODEC.decode(delegate, input)
-        if (!dataResult.result().isPresent) return if (!allowInline) DataResult.error("Inline definitions are not allowed here!") else elementCodec.decode(this, input).map { pair -> pair.mapFirst { Supplier { it } } }
+        if (!dataResult.result().isPresent) return if (!allowInline) DataResult.error("Inline definitions are not allowed here!") else elementCodec.decode(this, input).map { pair -> pair.mapFirst { { it } } }
         val result = dataResult.result().get()
         val key = result.first
-        return readAndRegister(registryKey, registry, elementCodec, key).map { Pair.of(it, result.second) as Pair<Supplier<E>, T> }
+        return readAndRegister(registryKey, registry, elementCodec, key).map { Pair.of(it, result.second) as Pair<() -> E, T> }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -98,12 +98,12 @@ class RegistryReadOps<T : Any> private constructor(
     // Do not even begin to even look at this, or try to understand what it does,
     // just know that it works and move on, because this way lies madness...
     @Suppress("UNCHECKED_CAST")
-    private fun <E : Any> readAndRegister(registryKey: ResourceKey<out Registry<E>>, registry: Registry<E>, elementCodec: Codec<E>, key: Key): DataResult<Supplier<E>> {
+    private fun <E : Any> readAndRegister(registryKey: ResourceKey<out Registry<E>>, registry: Registry<E>, elementCodec: Codec<E>, key: Key): DataResult<() -> E> {
         val resourceKey = ResourceKey.of(registryKey, key)
         val readCache = readCache(registryKey)
         val dataResult = readCache.values[resourceKey]
         if (dataResult != null) return dataResult
-        val supplier = Suppliers.memoize { registry[resourceKey] ?: throw RuntimeException("Error during recursive registry parsing, element $resourceKey resolved too early!") }
+        val supplier = { Suppliers.memoize { registry[resourceKey] ?: throw RuntimeException("Error during recursive registry parsing, element $resourceKey resolved too early!") }.get() }
         readCache.values[resourceKey] = DataResult.success(supplier)
         val optionalParsed = resources.parseJson(jsonOps, registryKey, resourceKey, elementCodec)
         val result = if (!optionalParsed.isPresent) DataResult.success(object : Supplier<E> {
@@ -115,7 +115,7 @@ class RegistryReadOps<T : Any> private constructor(
             if (parsed.isPresent) (registry as KryptonRegistry<E>).registerOrOverride(parsed.get().second, resourceKey, parsed.get().first)
             parsedResult.map { Supplier { registry[resourceKey] } }
         }
-        readCache.values[resourceKey] = result as DataResult<Supplier<E>>?
+        readCache.values[resourceKey] = result as DataResult<() -> E>?
         return result
     }
 
@@ -137,5 +137,5 @@ class RegistryReadOps<T : Any> private constructor(
 
 private class ReadCache<E : Any> {
 
-    val values = IdentityHashMap<ResourceKey<E>, DataResult<Supplier<E>>>()
+    val values = IdentityHashMap<ResourceKey<E>, DataResult<() -> E>>()
 }
