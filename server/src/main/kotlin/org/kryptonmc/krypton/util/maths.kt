@@ -27,6 +27,11 @@ import kotlin.random.Random
 
 private val MULTIPLY_DE_BRUIJN_BIT_POSITION = intArrayOf(0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8, 31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9)
 
+fun Double.floorl(): Long {
+    val value = toLong()
+    return if (this < value) value - 1L else value
+}
+
 fun Int.ceillog2(): Int {
     val temp = if (isPowerOfTwo()) this else GenericMath.roundUpPow2(this)
     return MULTIPLY_DE_BRUIJN_BIT_POSITION[(temp.toLong() * 125613361L shr 27 and 31).toInt()]
@@ -52,21 +57,27 @@ fun Float.clamp(low: Float, high: Float) = if (this < low) low else if (this > h
 
 fun nextInt(random: Random, lower: Int, upper: Int) = if (lower >= upper) lower else random.nextInt(upper - lower + 1) + lower
 
-/**
- * Gets the area from this view distance [Int]
- */
 fun Int.toArea() = (this * 2 + 1).square()
 
-/**
- * Square an integer. This avoids us having to use [Math.pow], which is inefficient for this.
- */
 fun Int.square() = this * this
+
+fun Double.fade() = this * this * this * (this * (this * 6 - 15) + 10)
+
+fun lerp(delta: Double, start: Double, end: Double) = start + delta * (end - start)
+
+fun biLerp(deltaX: Double, deltaY: Double, x0y0: Double, x1y0: Double, x0y1: Double, x1y1: Double) = lerp(deltaY, lerp(deltaX, x0y0, x1y0), lerp(deltaX, x0y1, x1y1))
+
+fun triLerp(deltaX: Double, deltaY: Double, deltaZ: Double, x0y0z0: Double, x1y0z0: Double, x0y1z0: Double, x1y1z0: Double, x0y0z1: Double, x1y0z1: Double, x0y1z1: Double, x1y1z1: Double) =
+    lerp(deltaZ, biLerp(deltaX, deltaY, x0y0z0, x1y0z0, x0y1z0, x1y1z0), biLerp(deltaX, deltaY, x0y0z1, x1y0z1, x0y1z1, x1y1z1))
+
+fun Double.clampedLerp(lower: Double, upper: Double): Double {
+    if (this < lower) return lower
+    if (this > upper) return upper
+    return lerp(this, lower, upper)
+}
 
 /**
  * Calculates a chunk position from a given [id] in a spiral pattern.
- *
- * This algorithm was previously part of Krypton (https://github.com/KryptonMC/Krypton), however it was removed after
- * it was no longer used.
  *
  * **Algorithm:**
  *
