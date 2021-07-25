@@ -16,22 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.generation.feature
+package org.kryptonmc.krypton.world.generation.noise
 
 import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.RegistryFileCodec
-import org.kryptonmc.krypton.world.generation.feature.config.FeatureConfig
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-class ConfiguredFeature<C : FeatureConfig, F : Feature<C>>(
-    val feature: F,
-    val config: C
+class NoiseSampling(
+    val xzScale: Double,
+    val yScale: Double,
+    val xzFactor: Double,
+    val yFactor: Double
 ) {
 
     companion object {
 
-        val DIRECT_CODEC: Codec<ConfiguredFeature<*, *>> = InternalRegistries.FEATURE.dispatch(ConfiguredFeature<*, *>::feature, Feature<*>::configuredCodec)
-        val CODEC: Codec<() -> ConfiguredFeature<*, *>> = RegistryFileCodec(InternalResourceKeys.CONFIGURED_FEATURE, DIRECT_CODEC)
+        private val SCALE_RANGE = Codec.doubleRange(0.001, 1000.0)
+        val CODEC: Codec<NoiseSampling> = RecordCodecBuilder.create {
+            it.group(
+                SCALE_RANGE.fieldOf("xz_scale").forGetter(NoiseSampling::xzScale),
+                SCALE_RANGE.fieldOf("y_scale").forGetter(NoiseSampling::yScale),
+                SCALE_RANGE.fieldOf("xz_factor").forGetter(NoiseSampling::xzFactor),
+                SCALE_RANGE.fieldOf("y_factor").forGetter(NoiseSampling::yFactor)
+            ).apply(it, ::NoiseSampling)
+        }
     }
 }

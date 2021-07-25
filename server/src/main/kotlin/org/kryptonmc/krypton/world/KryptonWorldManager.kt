@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world
 
 import com.mojang.serialization.Dynamic
 import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.api.util.toKey
+import org.kryptonmc.api.util.orThrow
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameVersion
 import org.kryptonmc.api.world.Gamemode
@@ -31,15 +31,12 @@ import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.registry.RegistryLookupCodec
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.datafix.DATA_FIXER
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
-import org.kryptonmc.krypton.world.biome.KryptonBiomes
-import org.kryptonmc.krypton.world.dimension.Dimension
-import org.kryptonmc.krypton.world.dimension.DimensionTypes
-import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
@@ -171,20 +168,13 @@ class KryptonWorldManager(
     private fun <T> readWorldGenSettings(settings: Dynamic<T>, version: Int): WorldGenerationSettings {
         var temp = settings["WorldGenSettings"].orElseEmptyMap()
         OLD_WORLD_GEN_SETTINGS_KEYS.forEach { key -> settings[key].result().ifPresent { temp = temp.set(key, it) } }
-
         val data = DATA_FIXER.update(References.WORLD_GEN_SETTINGS, temp, version, ServerInfo.WORLD_VERSION)
-        // FIXME: When we implement the noise generator again, and fix up the registries, sort this out
-        val dimensions = data["dimensions"].asMap({ it.asString("").toKey() }, {
-            Dimension(
-                { server.registryHolder.ownedRegistryOrThrow(ResourceKeys.DIMENSION_TYPE)[it["type"].asString("").toKey()]!! },
-                DebugGenerator(server.registryHolder.ownedRegistryOrThrow(InternalResourceKeys.BIOME))
-            )
-        })
-        return WorldGenerationSettings(
-            data["seed"].asLong(0L),
-            data["generate_features"].asBoolean(false),
-            dimensions
-        )
+        return WorldGenerationSettings.CODEC.parse(data).resultOrPartial { LOGGER.error("WorldGenSettings: $it") }.orElseGet {
+            val dimensionTypes = RegistryLookupCodec(ResourceKeys.DIMENSION_TYPE).codec().parse(data).resultOrPartial { LOGGER.error("Dimension type registry: $it") }.orThrow("Failed to get dimension registry!")
+            val biomes = RegistryLookupCodec(InternalResourceKeys.BIOME).codec().parse(data).resultOrPartial { LOGGER.error("Biome registry: $it") }.orThrow("Failed to get biome registry")
+            val noiseSettings = RegistryLookupCodec(InternalResourceKeys.NOISE_GENERATOR_SETTINGS).codec().parse(data).resultOrPartial { LOGGER.error("Noise settings registry: $it") }.orThrow("Failed to get noise settings registry")
+            WorldGenerationSettings.makeDefault(dimensionTypes, biomes, noiseSettings)
+        }
     }
 
     fun saveAll() = worlds.forEach { (_, world) -> save(world).get() }

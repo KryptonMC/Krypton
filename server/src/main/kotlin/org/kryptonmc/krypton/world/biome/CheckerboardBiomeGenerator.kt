@@ -20,10 +20,9 @@ package org.kryptonmc.krypton.world.biome
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import java.util.function.Supplier
 
 class CheckerboardBiomeGenerator(
-    private val allowedBiomes: List<Supplier<KryptonBiome>>,
+    private val allowedBiomes: List<() -> KryptonBiome>,
     private val scale: Int
 ) : BiomeGenerator(allowedBiomes.asSequence()) {
 

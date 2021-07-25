@@ -24,6 +24,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.DynamicOps
 import com.mojang.serialization.Keyable
+import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
@@ -124,6 +125,14 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
 
     override val size: Int
         get() = storage.size
+
+    companion object {
+
+        fun <T : Any> ResourceKey<out Registry<T>>.directCodec(elementCodec: Codec<T>): Codec<KryptonRegistry<T>> = Codec.unboundedMap(KEY_CODEC.xmap({ ResourceKey.of(this, it) }, ResourceKey<*>::location), elementCodec).xmap(
+            { map -> KryptonRegistry(this).apply { map.forEach { (k, v) -> register(k as ResourceKey<T>, v) } } },
+            { it.keyStorage.toMap() }
+        )
+    }
 }
 
 fun <T : Any> ResourceKey<out Registry<T>>.networkCodec(elementCodec: Codec<T>): Codec<KryptonRegistry<T>> = withNameAndId(elementCodec.fieldOf("element")).codec().listOf().xmap(

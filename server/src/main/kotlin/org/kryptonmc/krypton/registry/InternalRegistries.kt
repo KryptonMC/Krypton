@@ -33,8 +33,11 @@ object InternalRegistries {
     val GAME_EVENT = Registries.create(InternalResourceKeys.GAME_EVENT)
     val FLUID = Registries.createDefaulted(InternalResourceKeys.FLUID, Key.key("empty"))
     val BIOME = Registries.create(InternalResourceKeys.BIOME)
+
+    // World generation registries
     val GENERATOR = Registries.create(InternalResourceKeys.GENERATOR) as KryptonRegistry<Codec<out Generator>>
     val BIOME_GENERATOR = Registries.create(InternalResourceKeys.BIOME_GENERATOR) as KryptonRegistry<Codec<out BiomeGenerator>>
     val FEATURE = Registries.create(InternalResourceKeys.FEATURE) as KryptonRegistry<Feature<*>>
     val STRUCTURE = Registries.create(InternalResourceKeys.STRUCTURE) as KryptonRegistry<Structure<*>>
+    val NOISE_GENERATOR_SETTINGS = Registries.create(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
 }

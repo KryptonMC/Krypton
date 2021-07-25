@@ -312,9 +312,9 @@ data class KryptonWorld(
                 compound("GameRules") { gameRules.rules.forEach { (rule, value) -> string(rule.name, value.toString()) } }
                 compound("WorldGenSettings") {
                     long("seed", generationSettings.seed)
-                    boolean("generate_features", generationSettings.generateStructures)
+                    boolean("generate_features", generationSettings.generateFeatures)
                     // FIXME when this is back to normal
-                    compound("dimensions") { generationSettings.dimensions.forEach { (key, _) -> put(key.asString(), CompoundTag()) } }
+//                    compound("dimensions") { generationSettings.dimensions.forEach { (key, _) -> put(key.asString(), CompoundTag()) } }
                 }
                 int("GameType", gamemode.ordinal)
                 boolean("hardcore", isHardcore)

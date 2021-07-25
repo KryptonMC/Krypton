@@ -29,6 +29,7 @@ import org.kryptonmc.krypton.util.encode
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.krypton.world.generation.FlatGenerator
@@ -66,21 +67,15 @@ class PacketOutJoinGame(
         buf.writeByte(previousGamemode?.ordinal ?: -1)
 
         // worlds that exist
+        // FIXME: Use a key-based system for indexing levels
         buf.writeVarInt(3)
-        // FIXME: Use the resource management system
         buf.writeKey(DimensionTypes.OVERWORLD_KEY.location)
         buf.writeKey(DimensionTypes.NETHER_KEY.location)
         buf.writeKey(DimensionTypes.END_KEY.location)
 
-        // dimension codec (dimension/biome type registry)
+        // network codec (dimension type and worldgen/biome resources) and info about current dimension type
         buf.encode(registryHolder, RegistryHolder.NETWORK_CODEC)
-//        buf.writeNBTCompound(NBTCompound()
-//            .set("minecraft:dimension_type", FileRegistries.DIMENSIONS.toNBT())
-//            .set("minecraft:worldgen/biome", FileRegistries.BIOMES.toNBT()))
-
-        // dimension info
-        buf.encode(Supplier { dimension }, DimensionTypes.CODEC)
-//        buf.writeNBTCompound(dimension.toNBT())
+        buf.encode({ dimension }, DimensionTypes.CODEC)
 
         val hashedSeed = Hashing.sha256().hashLong(world.generationSettings.seed).asLong()
         val dimensionKey = world.dimension.location
@@ -93,7 +88,7 @@ class PacketOutJoinGame(
         buf.writeBoolean(world.gameRules[GameRules.REDUCED_DEBUG_INFO])
         buf.writeBoolean(world.gameRules[GameRules.DO_IMMEDIATE_RESPAWN])
 
-        val generator = world.generationSettings.dimensions.getValue(dimensionKey).generator
+        val generator = world.generationSettings.dimensions[Dimension.OVERWORLD]!!.generator
         buf.writeBoolean(generator is DebugGenerator) // is debug world
         buf.writeBoolean(generator is FlatGenerator) // is flat world
     }

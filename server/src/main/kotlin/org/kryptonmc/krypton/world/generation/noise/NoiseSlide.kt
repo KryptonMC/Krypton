@@ -16,25 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block
+package org.kryptonmc.krypton.world.generation.noise
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.BlockHandler
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.registry.KryptonRegistry
-import org.kryptonmc.krypton.util.KEY_CODEC
-import org.kryptonmc.krypton.world.block.handler.DummyBlockHandler
+import org.kryptonmc.krypton.util.NON_NEGATIVE_INT
 
-val Block.handler: BlockHandler
-    get() = KryptonBlockManager.handler(key.asString()) ?: DummyBlockHandler
+class NoiseSlide(
+    val target: Int,
+    val size: Int,
+    val offset: Int
+) {
 
-private val DIRECT_BLOCK_CODEC: Codec<Block> = RecordCodecBuilder.create {
-    it.group(
-        KEY_CODEC.fieldOf("Name").forGetter(Block::key),
-        Codec.unboundedMap(Codec.STRING, Codec.STRING).fieldOf("Properties").forGetter(Block::properties)
-    ).apply(it) { key, properties -> KryptonBlockLoader.fromKey(key)!!.withProperties(properties) }
+    companion object {
+
+        val CODEC: Codec<NoiseSlide> = RecordCodecBuilder.create {
+            it.group(
+                Codec.INT.fieldOf("target").forGetter(NoiseSlide::target),
+                NON_NEGATIVE_INT.fieldOf("size").forGetter(NoiseSlide::size),
+                Codec.INT.fieldOf("offset").forGetter(NoiseSlide::offset)
+            ).apply(it, ::NoiseSlide)
+        }
+    }
 }
-
-val BLOCK_CODEC: Codec<Block> = (Registries.BLOCK as KryptonRegistry<Block>).dispatch("Name", { it }) { DIRECT_BLOCK_CODEC }.stable()

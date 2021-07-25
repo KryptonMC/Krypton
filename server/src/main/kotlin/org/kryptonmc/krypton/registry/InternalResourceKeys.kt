@@ -32,6 +32,7 @@ import org.kryptonmc.krypton.world.biome.BiomeGenerator
 import org.kryptonmc.krypton.world.generation.feature.ConfiguredFeature
 import org.kryptonmc.krypton.world.generation.feature.Feature
 import org.kryptonmc.krypton.world.generation.feature.Structure
+import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 
 object InternalResourceKeys {
 
@@ -41,10 +42,13 @@ object InternalResourceKeys {
     val DIMENSION = ResourceKeys.minecraft<Dimension>("dimension")
     val GAME_EVENT = ResourceKeys.minecraft<GameEvent>("game_event")
     val FLUID = ResourceKeys.minecraft<Fluid>("fluid")
+
+    // World generation resources
     val BIOME = ResourceKeys.minecraft<KryptonBiome>("worldgen/biome")
     val GENERATOR = ResourceKeys.minecraft<Codec<out Generator>>("worldgen/chunk_generator")
     val BIOME_GENERATOR = ResourceKeys.minecraft<Codec<out BiomeGenerator>>("worldgen/biome_source")
     val FEATURE = ResourceKeys.minecraft<Feature<*>>("worldgen/feature")
     val CONFIGURED_FEATURE = ResourceKeys.minecraft<ConfiguredFeature<*, *>>("worldgen/configured_feature")
     val STRUCTURE = ResourceKeys.minecraft<Structure<*>>("worldgen/structure_feature")
+    val NOISE_GENERATOR_SETTINGS = ResourceKeys.minecraft<NoiseGeneratorSettings>("worldgen/noise_settings")
 }

@@ -24,14 +24,17 @@ import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.nonNullSupplier
 import org.kryptonmc.krypton.world.generation.Generator
-import java.util.function.Supplier
 
 data class Dimension(
-    val typeSupplier: Supplier<DimensionType>,
+    val typeSupplier: () -> DimensionType,
     val generator: Generator
 ) {
+
+    val type: DimensionType
+        get() = typeSupplier()
 
     companion object {
 
@@ -45,5 +48,26 @@ data class Dimension(
             ).apply(it, ::Dimension)
         }
         private val BUILT_IN_ORDER = setOf(OVERWORLD, NETHER, END)
+
+        fun KryptonRegistry<Dimension>.sort(): KryptonRegistry<Dimension> {
+            val registry = KryptonRegistry(InternalResourceKeys.DIMENSION)
+            BUILT_IN_ORDER.forEach { key -> get(key)?.let { registry.register(key, it) } }
+            entries.forEach { (key, value) -> if (key !in BUILT_IN_ORDER) registry.register(key, value) }
+            return registry
+        }
+
+        fun KryptonRegistry<Dimension>.stable(seed: Long): Boolean {
+            val entries = entries.toList()
+            if (entries.size != BUILT_IN_ORDER.size) return false
+            val overworld = entries[0]
+            val nether = entries[1]
+            val end = entries[2]
+            if (overworld.key != OVERWORLD || nether.key != NETHER || end.key != END) return false
+            if (!overworld.value.type.equalTo(DimensionTypes.OVERWORLD) && !overworld.value.type.equalTo(DimensionTypes.OVERWORLD_CAVES)) return false
+            if (!nether.value.type.equalTo(DimensionTypes.THE_NETHER)) return false
+            if (!end.value.type.equalTo(DimensionTypes.THE_END)) return false
+            // TODO: Generator checking
+            return true
+        }
     }
 }

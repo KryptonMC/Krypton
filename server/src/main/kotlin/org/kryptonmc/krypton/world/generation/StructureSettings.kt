@@ -31,7 +31,7 @@ class StructureSettings(
     stronghold: Optional<StrongholdConfig>
 ) {
 
-    val stronghold = stronghold.orElse(null)
+    val stronghold: StrongholdConfig? = stronghold.orElse(null)
 
     constructor(default: Boolean) : this(DEFAULTS, if (default) Optional.of(DEFAULT_STRONGHOLD) else Optional.empty())
 

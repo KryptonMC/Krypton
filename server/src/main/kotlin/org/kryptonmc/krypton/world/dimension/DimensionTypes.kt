@@ -32,7 +32,6 @@ import org.kryptonmc.krypton.tags.BlockTags
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.PACKED_Y
 import java.util.Optional
-import java.util.function.Supplier
 
 object DimensionTypes {
 
@@ -40,8 +39,8 @@ object DimensionTypes {
     private const val MAXIMUM_COORDINATE_SCALE = 3.0E7
     private const val MINIMUM_HEIGHT = 16
     val Y_SIZE = (1 shl PACKED_Y) - 32
-    private val MAX_Y = (Y_SIZE shr 1) - 1
-    private val MIN_Y = MAX_Y - Y_SIZE + 1
+    val MAX_Y = (Y_SIZE shr 1) - 1
+    val MIN_Y = MAX_Y - Y_SIZE + 1
 
     private val OVERWORLD_EFFECTS = key("overworld")
     private val THE_NETHER_EFFECTS = key("the_nether")
