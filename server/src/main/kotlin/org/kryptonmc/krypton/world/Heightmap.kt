@@ -24,12 +24,12 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.space.MutableVector3i
 import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.world.chunk.KryptonChunk
+import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.data.BitStorage
 import java.util.EnumSet
 
 class Heightmap(
-    private val chunk: KryptonChunk,
+    private val chunk: ChunkAccessor,
     val type: Type
 ) {
 
@@ -60,7 +60,7 @@ class Heightmap(
         return false
     }
 
-    fun setData(chunk: KryptonChunk, type: Type, rawData: LongArray) {
+    fun setData(chunk: ChunkAccessor, type: Type, rawData: LongArray) {
         val current = data.data
         if (current.size == rawData.size) {
             System.arraycopy(rawData, 0, current, 0, rawData.size)
@@ -111,15 +111,15 @@ class Heightmap(
         }
         private val LOGGER = logger<Heightmap>()
 
-        fun prime(chunk: KryptonChunk, noneOf: Set<Type>) {
+        fun prime(chunk: ChunkAccessor, noneOf: Set<Type>) {
             val size = noneOf.size
             val heightmaps = ObjectArrayList<Heightmap>(size)
             val iterator = heightmaps.iterator()
-            val highest = chunk.highestSectionPosition + 16
+            val highest = chunk.highestSectionY + 16
             val position = MutableVector3i()
             for (x in 0 until 16) {
                 for (z in 0 until 16) {
-                    noneOf.forEach { heightmaps.add(chunk.heightmaps.getOrPut(it) { Heightmap(chunk, it) }) }
+                    noneOf.forEach { heightmaps.add(chunk.getOrCreateHeightmap(it)) }
                     y@ for (y in highest - 1 downTo chunk.minimumBuildHeight) {
                         position.set(x, y, z)
                         val block = chunk.getBlock(position.x, position.y, position.z)

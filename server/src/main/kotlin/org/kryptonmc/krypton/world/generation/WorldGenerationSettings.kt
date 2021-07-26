@@ -55,10 +55,10 @@ data class WorldGenerationSettings(
     val generateFeatures: Boolean,
     val bonusChest: Boolean,
     val dimensions: KryptonRegistry<Dimension>,
-    val legacyCustomOptions: Optional<String> = Optional.empty()
+    val legacyCustomOptions: Optional<String>
 ) {
 
-    init {
+    constructor(seed: Long, generateFeatures: Boolean, bonusChest: Boolean, dimensions: KryptonRegistry<Dimension>) : this(seed, generateFeatures, bonusChest, dimensions, Optional.empty()) {
         checkNotNull(dimensions[Dimension.OVERWORLD]) { "Missing overworld settings!" }
     }
 

@@ -37,8 +37,6 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x22) {
     override fun write(buf: ByteBuf) {
         buf.writeInt(chunk.position.x)
         buf.writeInt(chunk.position.z)
-
-        // Mask
         buf.writeBitSet(sectionMask)
 
         // Heightmaps

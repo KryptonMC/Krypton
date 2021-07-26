@@ -71,7 +71,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.math.cos
 
 class KryptonWorld(
     override val server: KryptonServer,
@@ -215,6 +214,8 @@ class KryptonWorld(
         return chunk.getBlock(x, y, z)
     }
 
+    override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
+
     override fun getChunkAt(x: Int, z: Int) = chunkManager[x, z]
 
     override fun getChunk(x: Int, y: Int, z: Int) = getChunkAt(x shr 4, z shr 4)
@@ -233,6 +234,8 @@ class KryptonWorld(
             playerManager.sendToAll(PacketOutBlockChange(block, x, y, z), this@KryptonWorld)
         }
     }
+
+    override fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
 
     fun tick(profiler: Profiler) {
         if (players.isEmpty()) return // don't tick the world if there's no players in it

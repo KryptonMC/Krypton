@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world
 
 import org.kryptonmc.api.block.Block
+import org.spongepowered.math.vector.Vector3i
 
 interface BlockAccessor : HeightAccessor {
 
@@ -27,5 +28,9 @@ interface BlockAccessor : HeightAccessor {
 
     fun getBlock(x: Int, y: Int, z: Int): Block
 
+    fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
+
     fun setBlock(x: Int, y: Int, z: Int, block: Block)
+
+    fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
 }

@@ -83,8 +83,9 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
         val storageBits = states.size * Long.SIZE_BITS / SIZE
         when {
             palette === GlobalPalette -> {
-                val newPalette = MapPalette(bits, DUMMY_RESIZER).apply { load(data) }
-                val bitStorage = BitStorage(storageBits, SIZE, states)
+                val newPalette = MapPalette(bits, DUMMY_RESIZER)
+                newPalette.load(data)
+                val bitStorage = BitStorage(bits, SIZE, states)
                 for (i in 0 until SIZE) storage[i] = GlobalPalette[newPalette[bitStorage[i]]!!]
             }
             storageBits == this.bits -> System.arraycopy(states, 0, storage.data, 0, states.size)
@@ -103,7 +104,7 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
         val states = IntArray(SIZE)
 
         for (i in 0 until SIZE) {
-            val value = palette[storage[i]] ?: DEFAULT
+            val value = get(i)
             if (value != default) {
                 default = value
                 defaultId = newPalette[value]
@@ -125,13 +126,15 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
         map.int2IntEntrySet().fastForEach { consumer(palette[it.intKey]!!, it.intValue) }
     }
 
+    private fun get(index: Int) = palette[storage[index]] ?: DEFAULT
+
     private fun set(index: Int, value: Block) = storage.set(index, palette[value])
 
     override fun invoke(newBits: Int, value: Block): Int {
-        val storage = storage
-        val palette = palette
+        val oldStorage = storage
+        val oldPalette = palette
         bits = newBits
-        for (i in 0 until storage.size) palette[storage[i]]?.let { set(i, it) }
+        for (i in 0 until oldStorage.size) oldPalette[oldStorage[i]]?.let { set(i, it) }
         return palette[value]
     }
 

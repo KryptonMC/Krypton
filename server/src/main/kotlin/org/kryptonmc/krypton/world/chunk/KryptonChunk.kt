@@ -26,21 +26,25 @@ import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
+import org.spongepowered.math.vector.Vector3i
 import java.util.EnumMap
 
 class KryptonChunk(
     override val world: KryptonWorld,
-    val position: ChunkPosition,
-    val sections: Array<ChunkSection?>,
+    override val position: ChunkPosition,
+    override val sections: Array<ChunkSection?>,
     override val biomes: List<Biome>,
     override var lastUpdate: Long,
     override var inhabitedTime: Long,
     val carvingMasks: Pair<ByteArray, ByteArray>,
     val structures: CompoundTag
-) : Chunk, BlockAccessor {
+) : Chunk, ChunkAccessor {
 
-    val heightmaps = EnumMap<Heightmap.Type, Heightmap>(Heightmap.Type::class.java)
+    override val heightmaps = EnumMap<Heightmap.Type, Heightmap>(Heightmap.Type::class.java)
 
+    override val status = ChunkStatus.FULL
+    override var isLightCorrect = false
+    override var isUnsaved = false
     override val height = world.height
     override val minimumBuildHeight = world.minimumBuildHeight
 
@@ -59,6 +63,8 @@ class KryptonChunk(
         }
         return Blocks.AIR
     }
+
+    override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
         // Get the section
@@ -85,23 +91,15 @@ class KryptonChunk(
         return
     }
 
+    override fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
+
     fun tick(playerCount: Int) {
         inhabitedTime += playerCount
     }
 
-    fun setHeightmap(type: Heightmap.Type, data: LongArray) = heightmaps.getOrPut(type) { Heightmap(this, type) }.setData(this, type, data)
+    override fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap = heightmaps.getOrPut(type) { Heightmap(this, type) }
 
-    val highestSection: ChunkSection?
-        get() {
-            for (i in sections.size - 1 downTo 0) {
-                val section = sections[i]
-                if (section != null && !section.isEmpty()) return section
-            }
-            return null
-        }
-
-    val highestSectionPosition: Int
-        get() = highestSection?.y ?: minimumBuildHeight
+    override fun setHeightmap(type: Heightmap.Type, data: LongArray) = heightmaps.getOrPut(type) { Heightmap(this, type) }.setData(this, type, data)
 }
 
 // TODO: Do things with these

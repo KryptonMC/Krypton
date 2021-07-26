@@ -40,4 +40,5 @@ object InternalRegistries {
     val FEATURE = Registries.create(InternalResourceKeys.FEATURE) as KryptonRegistry<Feature<*>>
     val STRUCTURE = Registries.create(InternalResourceKeys.STRUCTURE) as KryptonRegistry<Structure<*>>
     val NOISE_GENERATOR_SETTINGS = Registries.create(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
+    val CHUNK_STATUS = Registries.createDefaulted(InternalResourceKeys.CHUNK_STATUS, Key.key("empty"))
 }
