@@ -84,3 +84,5 @@ class ChunkStatus private constructor(
             Registries.register(InternalRegistries.CHUNK_STATUS, name, ChunkStatus(name, parent, range, heightmapsAfter, type))
     }
 }
+
+fun Int.statusAroundFull() = if (this >= ChunkStatus.STATUS_BY_RANGE.size) ChunkStatus.EMPTY else if (this < 0) ChunkStatus.FULL else ChunkStatus.STATUS_BY_RANGE[this]

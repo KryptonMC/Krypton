@@ -109,6 +109,11 @@ class ChunkManager(private val world: KryptonWorld) {
         chunk.lastUpdate = lastUpdate
         regionFileManager.write(chunk.position, chunk.serialize())
     }
+
+    companion object {
+
+        val MAX_DISTANCE = 33 + ChunkStatus.MAX_DISTANCE
+    }
 }
 
 private fun KryptonChunk.serialize(): CompoundTag {
