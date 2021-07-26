@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world.chunk
 
 import it.unimi.dsi.fastutil.ints.IntArrayList
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.Heightmap
@@ -80,6 +81,8 @@ class ChunkStatus private constructor(
         val STATUS_BY_RANGE = listOf(FULL, FEATURES, LIQUID_CARVERS, STRUCTURE_STARTS, STRUCTURE_STARTS, STRUCTURE_STARTS, STRUCTURE_STARTS, STRUCTURE_STARTS, STRUCTURE_STARTS, STRUCTURE_STARTS, STRUCTURE_STARTS)
         val RANGE_BY_STATUS = IntArrayList()
         val MAX_DISTANCE = STATUS_BY_RANGE.size
+
+        fun fromName(name: String) = InternalRegistries.CHUNK_STATUS[Key.key(name)]
 
         private fun register(name: String, parent: ChunkStatus?, range: Int, heightmapsAfter: EnumSet<Heightmap.Type>, type: Type): ChunkStatus =
             Registries.register(InternalRegistries.CHUNK_STATUS, name, ChunkStatus(name, parent, range, heightmapsAfter, type))

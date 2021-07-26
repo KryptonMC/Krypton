@@ -84,6 +84,7 @@ class KryptonWorld(
 ) : World, BlockAccessor {
 
     private val random = Random()
+    val registryHolder = server.registryHolder
 
     override val border = KryptonWorldBorder(0.0, Vector2d(0.0, 0.0), 0.0, 0.0, 0.0, 0L, 0, 0) // FIXME
     override val gamemode: Gamemode

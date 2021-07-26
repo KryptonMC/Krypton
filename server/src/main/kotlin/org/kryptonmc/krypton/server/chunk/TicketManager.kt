@@ -38,8 +38,7 @@ import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import java.util.concurrent.Executor
 
 abstract class TicketManager(
-    executor: Executor,
-    private val syncExecutor: Executor,
+    private val executor: Executor,
     private val viewDistance: Int
 ) {
 
@@ -59,7 +58,7 @@ abstract class TicketManager(
         get() = naturalSpawnChunkCounter.apply { runUpdates() }.chunks.size
 
     init {
-        val throttler = Scheduler.create<Runnable>("player ticket throttler", syncExecutor::execute)
+        val throttler = Scheduler.create<Runnable>("player ticket throttler", executor::execute)
         val sorter = ChunkTaskPriorityQueueSorter(listOf(throttler), executor, 4)
         ticketThrottler = sorter
         ticketThrottlerInput = sorter.getScheduler(throttler, true)
@@ -189,7 +188,7 @@ abstract class TicketManager(
                     ticketThrottlerReleaser.submit(ChunkTaskPriorityQueueSorter.Release(position, false) {})
                 }
             }) else ticketThrottlerReleaser.submit(ChunkTaskPriorityQueueSorter.Release(position, true) {
-                syncExecutor.execute { removeTicket(position, ticket) }
+                executor.execute { removeTicket(position, ticket) }
             })
         }
 

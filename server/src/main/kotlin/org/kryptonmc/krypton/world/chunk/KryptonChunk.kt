@@ -34,13 +34,11 @@ class KryptonChunk(
     override val position: ChunkPosition,
     override val sections: Array<ChunkSection?>,
     override val biomes: List<Biome>,
-    override var lastUpdate: Long,
-    override var inhabitedTime: Long,
-    val carvingMasks: Pair<ByteArray, ByteArray>,
-    val structures: CompoundTag
+    override var inhabitedTime: Long
 ) : Chunk, ChunkAccessor {
 
     override val heightmaps = EnumMap<Heightmap.Type, Heightmap>(Heightmap.Type::class.java)
+    var fullStatus: (() -> FullChunkStatus)? = null
 
     override val status = ChunkStatus.FULL
     override var isLightCorrect = false
@@ -54,6 +52,13 @@ class KryptonChunk(
 
     override val x = position.x
     override val z = position.z
+
+    constructor(world: KryptonWorld, protoChunk: ProtoChunk) : this(world, protoChunk.position, protoChunk.sections, /* TODO */ emptyList(), protoChunk.inhabitedTime) {
+        // TODO: Block entities, post processing, and structures
+        protoChunk.heightmaps.forEach { if (ChunkStatus.FULL.heightmapsAfter.contains(it.key)) setHeightmap(it.key, it.value.data.data) }
+        isLightCorrect = protoChunk.isLightCorrect
+        isUnsaved = true
+    }
 
     override fun getBlock(x: Int, y: Int, z: Int): Block {
         val sectionIndex = sectionIndex(y)

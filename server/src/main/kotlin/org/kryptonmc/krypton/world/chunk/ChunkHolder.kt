@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world.chunk
 import com.mojang.datafixers.util.Either
 import it.unimi.dsi.fastutil.shorts.ShortSet
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.server.chunk.ChunkMap
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.world.KryptonWorld
 import java.util.BitSet
@@ -79,6 +80,35 @@ class ChunkHolder(
 
     fun refreshAccessibility() {
         wasAccessibleSinceLastSave = ticketLevel.toFullStatus().isOrAfter(FullChunkStatus.BORDER)
+    }
+
+    fun getOrScheduleFuture(status: ChunkStatus, map: ChunkMap): CompletableFuture<Either<ChunkAccessor, ChunkLoadFailure>> {
+        val index = status.index
+        val future = futures[index]
+        if (future != null) {
+            val either = future.getNow(null)
+            val present = either != null && either.right().isPresent
+            if (!present) return future
+        }
+        return if (ticketLevel.toChunkStatus().isOrAfter(status)) {
+            val scheduled = map.schedule(this, status)
+            updateToSave(scheduled)
+            futures.set(index, scheduled)
+            scheduled
+        } else future ?: UNLOADED_CHUNK_FUTURE
+    }
+
+    fun replaceProto(protoKryptonChunk: ProtoKryptonChunk) {
+        for (i in 0 until futures.length()) {
+            val future = futures[i] ?: continue
+            val access = future.getNow(UNLOADED_CHUNK).left()
+            if (access.isPresent && access.get() is ProtoChunk) futures.set(i, CompletableFuture.completedFuture(Either.left(protoKryptonChunk)))
+        }
+        updateToSave(CompletableFuture.completedFuture(Either.left(protoKryptonChunk.wrapped)))
+    }
+
+    private fun updateToSave(future: CompletableFuture<Either<ChunkAccessor, ChunkLoadFailure>>) {
+        toSave = toSave.thenCombine(future) { accessor, either -> either.map({ it }, { accessor }) }
     }
 
     companion object {

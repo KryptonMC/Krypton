@@ -34,8 +34,8 @@ class RegionFileManager(
     private val synchronizeWrites: Boolean
 ) : AutoCloseable {
 
-    fun read(position: ChunkPosition) = getRegionFile(position).getChunkDataInputStream(position).use {
-        if (it == null) return CompoundTag()
+    fun read(position: ChunkPosition): CompoundTag? = getRegionFile(position).getChunkDataInputStream(position).use {
+        if (it == null) return null
         TagIO.read(it, TagCompression.NONE)
     }
 

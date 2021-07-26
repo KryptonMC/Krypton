@@ -161,8 +161,8 @@ class KryptonPlayer(
     private var respawnAngle = 0F
     private var respawnDimension = World.OVERWORLD
 
-    private var previousCentralX = 0
-    private var previousCentralZ = 0
+    var previousCentralX = 0
+    var previousCentralZ = 0
     private var hasLoadedChunks = false
     private val visibleChunks = mutableSetOf<ChunkPosition>()
 

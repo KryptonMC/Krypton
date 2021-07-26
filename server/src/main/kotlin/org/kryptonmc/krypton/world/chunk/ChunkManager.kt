@@ -23,6 +23,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import org.kryptonmc.api.world.Biome
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.chunk.data.ChunkReader
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
@@ -55,58 +56,15 @@ class ChunkManager(private val world: KryptonWorld) {
     fun load(x: Int, z: Int): KryptonChunk {
         val cachedChunk = chunkCache.getIfPresent(ChunkPosition.toLong(x, z))
         if (cachedChunk != null) return cachedChunk
-
         val position = ChunkPosition(x, z)
-        val nbt = regionFileManager.read(position).getCompound("Level")
-        val heightmaps = nbt.getCompound("Heightmaps")
-
-        val sectionList = nbt.getList("Sections", CompoundTag.ID)
-        val sections = arrayOfNulls<ChunkSection>(world.sectionCount)
-        for (i in sectionList.indices) {
-            val sectionData = sectionList.getCompound(i)
-            val y = sectionData.getByte("Y").toInt()
-            if (y == -1 || y == 16) continue
-            if (sectionData.contains("Palette", ListTag.ID) && sectionData.contains("BlockStates", LongArrayTag.ID)) {
-                val section = ChunkSection(
-                    y,
-                    sectionData.getByteArray("BlockLight"),
-                    sectionData.getByteArray("SkyLight")
-                )
-                section.palette.load(sectionData.getList("Palette", CompoundTag.ID), sectionData.getLongArray("BlockStates"))
-                section.recount()
-                if (!section.isEmpty()) sections[world.sectionIndexFromY(y)] = section
-            }
-        }
-
-        val carvingMasks = nbt.getCompound("CarvingMasks").let {
-            it.getByteArray("AIR") to it.getByteArray("LIQUID")
-        }
-        val chunk =  KryptonChunk(
-            world,
-            position,
-            sections,
-            nbt.getIntArray("Biomes").map { Biome.fromId(it) },
-            nbt.getLong("LastUpdate"),
-            nbt.getLong("inhabitedTime"),
-            carvingMasks,
-            nbt.getCompound("Structures")
-        )
-        chunkCache.put(position.toLong(), chunk)
-
-        val noneOf = EnumSet.noneOf(Heightmap.Type::class.java)
-        Heightmap.Type.POST_FEATURES.forEach {
-            if (heightmaps.contains(it.name, LongArrayTag.ID)) chunk.setHeightmap(it, heightmaps.getLongArray(it.name)) else noneOf.add(it)
-        }
-        Heightmap.prime(chunk, noneOf)
-        return chunk
+        val tag = regionFileManager.read(position)?.getCompound("Level") ?: CompoundTag()
+        return (ChunkReader.read(world, position, tag) as? ProtoKryptonChunk)?.wrapped ?: error("Cannot load proto chunks yet!")
     }
 
     fun saveAll() = world.chunkMap.values.forEach { save(it) }
 
     fun save(chunk: KryptonChunk) {
-        val lastUpdate = world.time
         chunkCache.invalidate(chunk.position.toLong())
-        chunk.lastUpdate = lastUpdate
         regionFileManager.write(chunk.position, chunk.serialize())
     }
 
@@ -119,11 +77,6 @@ class ChunkManager(private val world: KryptonWorld) {
 private fun KryptonChunk.serialize(): CompoundTag {
     val data = buildCompound {
         intArray("Biomes", biomes.map { it.id }.toIntArray())
-        compound("CarvingMasks") {
-            byteArray("AIR", carvingMasks.first)
-            byteArray("LIQUID", carvingMasks.second)
-        }
-        long("LastUpdate", lastUpdate)
         list("Lights", ListTag.ID)
         list("LiquidsToBeTicked", ListTag.ID)
         list("LiquidTicks", ListTag.ID)
@@ -133,7 +86,6 @@ private fun KryptonChunk.serialize(): CompoundTag {
         list("TileEntities", CompoundTag.ID)
         list("TileTicks", CompoundTag.ID)
         list("ToBeTicked", ListTag.ID)
-        put("Structures", structures)
         int("xPos", position.x)
         int("zPos", position.z)
     }
