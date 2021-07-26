@@ -49,6 +49,7 @@ data class ChunkPosition(val x: Int, val z: Int) {
     companion object {
 
         val ZERO = ChunkPosition(0, 0)
+        val INVALID = toLong(1875016, 1875016)
 
         fun toLong(x: Int, z: Int) = x.toLong() and 4294967295L or (z.toLong() and 4294967295L shl 32)
     }

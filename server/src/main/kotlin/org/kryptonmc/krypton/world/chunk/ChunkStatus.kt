@@ -35,7 +35,8 @@ class ChunkStatus private constructor(
     val parent = parent ?: this
     val index: Int = if (parent == null) 0 else parent.index + 1
 
-    val distance by lazy { RANGE_BY_STATUS.getInt(index) }
+    val distance: Int
+        get() = RANGE_BY_STATUS.getInt(index)
 
     fun isOrAfter(other: ChunkStatus) = index >= other.index
 
