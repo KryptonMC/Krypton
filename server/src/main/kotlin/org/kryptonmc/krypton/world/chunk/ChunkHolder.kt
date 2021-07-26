@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.world.chunk
 
 import com.mojang.datafixers.util.Either
-import it.unimi.dsi.fastutil.shorts.ShortArraySet
 import it.unimi.dsi.fastutil.shorts.ShortSet
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.clamp
@@ -29,7 +28,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReferenceArray
 
 class ChunkHolder(
-    private val position: ChunkPosition,
+    val position: ChunkPosition,
     ticketLevel: Int,
     private val world: KryptonWorld,
     private val onLevelChange: (ChunkPosition, () -> Int, Int, (Int) -> Unit) -> Unit,

@@ -27,7 +27,7 @@ interface Scheduler<T> : AutoCloseable {
 
     fun submit(task: T)
 
-    fun <S> submit(producer: (Scheduler<S>) -> T): CompletableFuture<S> {
+    fun <S> submitFuture(producer: (Scheduler<S>) -> T): CompletableFuture<S> {
         val future = CompletableFuture<S>()
         val task = producer(create("Submit future scheduler", future::complete))
         submit(task)

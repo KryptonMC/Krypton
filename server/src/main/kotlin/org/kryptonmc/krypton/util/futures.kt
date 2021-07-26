@@ -20,6 +20,15 @@ package org.kryptonmc.krypton.util
 
 import java.util.concurrent.CompletableFuture
 
+fun <V> List<CompletableFuture<V>>.sequence(): CompletableFuture<List<V>> = asSequence().fold(CompletableFuture.completedFuture(mutableListOf())) { acc, future ->
+    future.thenCombine(acc) { value, list ->
+        ArrayList<V>(list.size + 1).apply {
+            addAll(list)
+            add(value)
+        }
+    }
+}
+
 fun <V> List<CompletableFuture<V>>.sequenceFailFast(): CompletableFuture<List<V>> {
     val list = ArrayList<V?>(size)
     val futures = arrayOfNulls<CompletableFuture<*>>(size)
