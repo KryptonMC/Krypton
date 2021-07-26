@@ -63,6 +63,8 @@ fun Int.square() = this * this
 
 fun Double.fade() = this * this * this * (this * (this * 6 - 15) + 10)
 
+fun lerp(delta: Float, start: Float, end: Float) = start + delta * (end - start)
+
 fun lerp(delta: Double, start: Double, end: Double) = start + delta * (end - start)
 
 fun biLerp(deltaX: Double, deltaY: Double, x0y0: Double, x1y0: Double, x0y1: Double, x1y1: Double) = lerp(deltaY, lerp(deltaX, x0y0, x1y0), lerp(deltaX, x0y1, x1y1))

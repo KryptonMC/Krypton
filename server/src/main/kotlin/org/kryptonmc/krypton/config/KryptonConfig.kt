@@ -30,6 +30,8 @@ import org.kryptonmc.krypton.config.category.WorldCategory
 import org.kryptonmc.krypton.config.serializer.DifficultyTypeSerializer
 import org.kryptonmc.krypton.config.serializer.GamemodeTypeSerializer
 import org.kryptonmc.krypton.config.serializer.LocaleTypeSerializer
+import org.kryptonmc.krypton.registry.RegistryHolder
+import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
@@ -56,6 +58,13 @@ data class KryptonConfig(
     @Comment("Other settings that don't quite fit in anywhere else.")
     val other: OtherCategory = OtherCategory()
 ) {
+
+    private var worldGenSettings: WorldGenerationSettings? = null
+
+    fun worldGenerationSettings(holder: RegistryHolder): WorldGenerationSettings {
+        if (worldGenSettings == null) worldGenSettings = WorldGenerationSettings.fromConfig(holder, this)
+        return worldGenSettings!!
+    }
 
     companion object {
 

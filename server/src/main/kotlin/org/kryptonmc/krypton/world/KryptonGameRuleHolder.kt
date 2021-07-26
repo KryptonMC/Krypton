@@ -22,6 +22,7 @@ import com.mojang.serialization.DynamicLike
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.rule.GameRuleHolder
+import org.kryptonmc.nbt.compound
 
 class KryptonGameRuleHolder : GameRuleHolder {
 
@@ -36,6 +37,10 @@ class KryptonGameRuleHolder : GameRuleHolder {
             val rule = tag[key.name].asString().result()
             rule.ifPresent { rules[key] = deserialize(it) }
         }
+    }
+
+    fun save() = compound {
+        rules.forEach { (rule, value) -> string(rule.name, value.toString()) }
     }
 
     @Suppress("UNCHECKED_CAST") // This should be fine

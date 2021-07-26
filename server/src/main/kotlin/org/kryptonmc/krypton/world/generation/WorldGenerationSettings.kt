@@ -18,21 +18,33 @@
  */
 package org.kryptonmc.krypton.world.generation
 
+import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
+import com.mojang.serialization.Dynamic
+import com.mojang.serialization.JsonOps
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import me.bardy.gsonkt.fromJson
 import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.dimension.DimensionType
+import org.kryptonmc.krypton.GSON
+import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.RegistryDataPackCodec
+import org.kryptonmc.krypton.registry.RegistryHolder
+import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.biome.KryptonBiome
+import org.kryptonmc.krypton.world.biome.VanillaLayeredBiomeGenerator
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.Dimension.Companion.sort
 import org.kryptonmc.krypton.world.dimension.Dimension.Companion.stable
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.world.dimension.defaults
+import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 import java.util.Optional
 import java.util.function.Function
@@ -50,8 +62,17 @@ data class WorldGenerationSettings(
         checkNotNull(dimensions[Dimension.OVERWORLD]) { "Missing overworld settings!" }
     }
 
+    val isDebug: Boolean
+        get() = overworld() is DebugGenerator
+    val isFlat: Boolean
+        get() = overworld() is FlatGenerator
+    val isOldCustomized: Boolean
+        get() = legacyCustomOptions.isPresent
+
+    fun overworld() = checkNotNull(dimensions[Dimension.OVERWORLD]) { "Missing overworld settings!" }.generator
+
     private fun checkStable(): DataResult<WorldGenerationSettings> {
-        val overworld = dimensions[Dimension.OVERWORLD] ?: return DataResult.error("Missing overworld settings!")
+        dimensions[Dimension.OVERWORLD] ?: return DataResult.error("Missing overworld settings!")
         return if (stable()) DataResult.success(this, Lifecycle.stable()) else DataResult.success(this)
     }
 
@@ -59,21 +80,50 @@ data class WorldGenerationSettings(
 
     companion object {
 
+        private val LOGGER = logger<WorldGenerationSettings>()
         val CODEC: Codec<WorldGenerationSettings> = RecordCodecBuilder.create<WorldGenerationSettings> { instance ->
             instance.group(
                 Codec.LONG.fieldOf("seed").stable().forGetter(WorldGenerationSettings::seed),
                 Codec.BOOL.fieldOf("generate_features").orElse(true).stable().forGetter(WorldGenerationSettings::generateFeatures),
                 Codec.BOOL.fieldOf("bonus_chest").orElse(false).stable().forGetter(WorldGenerationSettings::bonusChest),
-                RegistryDataPackCodec(InternalResourceKeys.DIMENSION, Lifecycle.stable(), Dimension.CODEC).xmap({ it.sort() }, Function.identity()).fieldOf("dimensions").forGetter(WorldGenerationSettings::dimensions),
+                RegistryDataPackCodec(InternalResourceKeys.DIMENSION, Dimension.CODEC).xmap({ it.sort() }, Function.identity()).fieldOf("dimensions").forGetter(WorldGenerationSettings::dimensions),
                 Codec.STRING.optionalFieldOf("legacy_custom_options").stable().forGetter(WorldGenerationSettings::legacyCustomOptions)
             ).apply(instance, ::WorldGenerationSettings)
         }.comapFlatMap(WorldGenerationSettings::checkStable, Function.identity())
 
         fun makeDefault(dimensionTypes: Registry<DimensionType>, biomes: Registry<KryptonBiome>, noiseSettings: Registry<NoiseGeneratorSettings>): WorldGenerationSettings {
             val seed = Random.nextLong()
-            // TODO: Use withOverworld to add the overworld generator
-            return WorldGenerationSettings(seed, true, false, dimensionTypes.defaults(biomes, noiseSettings))
+            return WorldGenerationSettings(seed, true, false, dimensionTypes.defaults(biomes, noiseSettings, seed).withOverworld(dimensionTypes, defaultOverworld(biomes, noiseSettings, seed)))
         }
+
+        fun fromConfig(holder: RegistryHolder, config: KryptonConfig): WorldGenerationSettings {
+            val generatorSettings = config.world.generator
+            val settings = generatorSettings.settings
+            val seed = generatorSettings.seed.takeIf { it.isNotBlank() }?.let { it.toLongOrNull() ?: it.hashCode().toLong() } ?: Random.nextLong()
+            val type = generatorSettings.type
+            val structures = generatorSettings.structures
+            val dimensionTypes = holder.registryOrThrow(ResourceKeys.DIMENSION_TYPE)
+            val biomes = holder.registryOrThrow(InternalResourceKeys.BIOME)
+            val noiseSettings = holder.registryOrThrow(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
+            val dimensions = dimensionTypes.defaults(biomes, noiseSettings, seed)
+            return when (type) {
+                "flat" -> {
+                    val json = if (settings.isNotEmpty()) GSON.fromJson(settings) else JsonObject()
+                    val dynamic = Dynamic(JsonOps.INSTANCE, json)
+                    val parsed = FlatGeneratorSettings.CODEC.parse(dynamic)
+                    return WorldGenerationSettings(seed, structures, false, dimensions.withOverworld(dimensionTypes, FlatGenerator(parsed.resultOrPartial(LOGGER::error).orElseGet { FlatGeneratorSettings.default(biomes) })))
+                }
+                "debug_all_block_states" -> WorldGenerationSettings(seed, structures, false, dimensions.withOverworld(dimensionTypes, DebugGenerator(biomes)))
+                "amplified" -> WorldGenerationSettings(seed, structures, false, dimensions.withOverworld(dimensionTypes, NoiseGenerator(VanillaLayeredBiomeGenerator(seed, false, false, biomes), seed) { noiseSettings[NoiseGeneratorSettings.AMPLIFIED]!! }))
+                "largebiomes" -> WorldGenerationSettings(seed, structures, false, dimensions.withOverworld(dimensionTypes, NoiseGenerator(VanillaLayeredBiomeGenerator(seed, false, true, biomes), seed) { noiseSettings[NoiseGeneratorSettings.OVERWORLD]!! }))
+                else -> WorldGenerationSettings(seed, structures, false, dimensions.withOverworld(dimensionTypes, defaultOverworld(biomes, noiseSettings, seed)))
+            }
+        }
+
+        fun defaultOverworld(biomes: Registry<KryptonBiome>, noiseSettings: Registry<NoiseGeneratorSettings>, seed: Long) = NoiseGenerator(
+            VanillaLayeredBiomeGenerator(seed, false, false, biomes),
+            seed
+        ) { noiseSettings[NoiseGeneratorSettings.OVERWORLD]!! }
     }
 }
 

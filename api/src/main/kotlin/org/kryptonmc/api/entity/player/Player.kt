@@ -18,10 +18,12 @@ import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.plugin.PluginMessageRecipient
+import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard
 import java.net.InetSocketAddress
@@ -41,6 +43,11 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      * The player's abilities.
      */
     val abilities: Abilities
+
+    /**
+     * The dimension resource key for the world the player is currently in.
+     */
+    val dimension: ResourceKey<World>
 
     /**
      * The dimension the player is currently in.

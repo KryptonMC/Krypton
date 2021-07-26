@@ -16,24 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.config.category
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.spongepowered.configurate.objectmapping.ConfigSerializable
+import org.spongepowered.configurate.objectmapping.meta.Comment
 
-class PacketOutTimeUpdate(private val time: Long, dayTime: Long, doDaylightCycle: Boolean) : PlayPacket(0x58) {
-
-    private val dayTime = kotlin.run {
-        var time = dayTime
-        if (!doDaylightCycle) {
-            time = -dayTime
-            if (time == 0L) time = -1L
-        }
-        time
-    }
-
-    override fun write(buf: ByteBuf) {
-        buf.writeLong(time)
-        buf.writeLong(dayTime)
-    }
-}
+@ConfigSerializable
+data class GeneratorCategory(
+    @Comment("The world generation settings as a JSON string")
+    val settings: String = "",
+    @Comment("The seed for the world. Leave blank for random")
+    val seed: String = "",
+    @Comment("The type of world to generate")
+    val type: String = "default",
+    @Comment("If structures should be generated")
+    val structures: Boolean = true
+)

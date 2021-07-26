@@ -16,24 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.util
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import com.mojang.serialization.Codec
+import java.util.Arrays
+import java.util.UUID
 
-class PacketOutTimeUpdate(private val time: Long, dayTime: Long, doDaylightCycle: Boolean) : PlayPacket(0x58) {
+val UUID_CODEC: Codec<UUID> = Codec.INT_STREAM.comapFlatMap({ stream -> stream.fixedSize(4).map { it.toUUID() } }, { Arrays.stream(it.toIntArray()) })
 
-    private val dayTime = kotlin.run {
-        var time = dayTime
-        if (!doDaylightCycle) {
-            time = -dayTime
-            if (time == 0L) time = -1L
-        }
-        time
-    }
-
-    override fun write(buf: ByteBuf) {
-        buf.writeLong(time)
-        buf.writeLong(dayTime)
-    }
+fun UUID.toIntArray(): IntArray {
+    val most = mostSignificantBits
+    val least = leastSignificantBits
+    return intArrayOf((most shr 32).toInt(), most.toInt(), (least shr 32).toInt(), least.toInt())
 }
+
+fun IntArray.toUUID(): UUID = UUID(
+    this[0].toLong() shl 32 or this[1].toLong() and 4294967295L,
+    this[2].toLong() shl 32 or this[3].toLong() and 4294967295L
+)

@@ -36,6 +36,8 @@ data class Dimension(
     val type: DimensionType
         get() = typeSupplier()
 
+    constructor(generator: Generator, typeSupplier: () -> DimensionType) : this(typeSupplier, generator)
+
     companion object {
 
         val OVERWORLD = ResourceKey.of(InternalResourceKeys.DIMENSION, key("overworld"))

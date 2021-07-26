@@ -35,18 +35,21 @@ import org.kryptonmc.api.event.ticking.TickStartEvent
 import org.kryptonmc.api.status.StatusInfo
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.MojangUUIDSerializer
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDER
 import org.kryptonmc.krypton.config.KryptonConfig
-import org.kryptonmc.krypton.console.KryptonConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
+import org.kryptonmc.krypton.console.KryptonConsoleSender
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.MetadataResponse
 import org.kryptonmc.krypton.locale.TranslationRepository
 import org.kryptonmc.krypton.network.PacketLoader
 import org.kryptonmc.krypton.pack.repository.PackRepository
+import org.kryptonmc.krypton.packet.out.play.PacketOutServerDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
@@ -54,6 +57,7 @@ import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.registry.json.RegistryBlock
 import org.kryptonmc.krypton.registry.json.RegistryBlockState
+import org.kryptonmc.krypton.registry.ops.RegistryReadOps
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.serializers.DifficultySerializer
 import org.kryptonmc.krypton.serializers.GamemodeSerializer
@@ -64,17 +68,20 @@ import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.createDirectory
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.profiling.ServerProfiler
 import org.kryptonmc.krypton.util.profiling.DeadProfiler
 import org.kryptonmc.krypton.util.profiling.Profiler
+import org.kryptonmc.krypton.util.profiling.ServerProfiler
 import org.kryptonmc.krypton.util.profiling.SingleTickProfiler
-import org.kryptonmc.krypton.util.profiling.results.ProfileResults
 import org.kryptonmc.krypton.util.profiling.decorate
+import org.kryptonmc.krypton.util.profiling.results.ProfileResults
 import org.kryptonmc.krypton.util.reports.CrashReport
 import org.kryptonmc.krypton.util.reports.ReportedException
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
+import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
+import org.kryptonmc.krypton.world.storage.WorldDataAccess
+import org.kryptonmc.nbt.Tag
 import java.net.InetSocketAddress
 import java.nio.file.Path
 import java.security.SecureRandom
@@ -93,9 +100,12 @@ import kotlin.system.measureTimeMillis
 
 class KryptonServer(
     val registryHolder: RegistryHolder,
+    val storageSource: WorldDataAccess,
+    val worldData: PrimaryWorldData,
     val packRepository: PackRepository,
     val resources: ServerResources,
     val config: KryptonConfig,
+    ops: RegistryReadOps<Tag>,
     worldFolder: Path
 ) : Server {
 
@@ -103,9 +113,19 @@ class KryptonServer(
     override val status = KryptonStatusInfo(config.status.maxPlayers, config.status.motd)
 
     override val isOnline = config.server.onlineMode
-    override val isHardcore = config.world.hardcore
-    override val difficulty = config.world.difficulty
-    override val gamemode = config.world.gamemode
+    override var isHardcore: Boolean
+        get() = worldData.isHardcore
+        set(value) { worldData.isHardcore = value }
+    override var difficulty: Difficulty
+        get() = worldData.difficulty
+        set(value) {
+            worldData.difficulty = value
+            // TODO: Update mob spawning flags
+            playerManager.players.forEach { it.session.sendPacket(PacketOutServerDifficulty(it.world.difficulty)) }
+        }
+    override var gamemode: Gamemode
+        get() = worldData.gamemode
+        set(value) { worldData.gamemode = value }
 
     override val address = InetSocketAddress(config.server.ip, config.server.port)
 
@@ -123,7 +143,7 @@ class KryptonServer(
     private val nettyProcess = NettyProcess(this)
     val random = SecureRandom()
 
-    override val worldManager = KryptonWorldManager(this, worldFolder)
+    override val worldManager = KryptonWorldManager(this, worldData, ops, worldFolder)
     override val commandManager = KryptonCommandManager(this)
     override val pluginManager = KryptonPluginManager(this)
     override val eventManager = KryptonEventManager(pluginManager)
@@ -183,6 +203,10 @@ class KryptonServer(
             Messages.PIRACY_WARNING.info(LOGGER)
             LOGGER.info("-----------------------------------------------------------------------------------")
         }
+
+        LOGGER.info("Preparing world ${config.world.name}...")
+        worldManager.loadWorlds()
+
         loadPlugins()
 
         // Fire the event that signals the server starting. We fire it here so that plugins can listen to it as part
@@ -266,17 +290,24 @@ class KryptonServer(
         if (playerManager.players.isEmpty()) return // don't tick if there are no players on the server
         val time = System.currentTimeMillis()
 
+        profiler.push("worlds")
         worldManager.worlds.forEach { (_, world) ->
-            profiler.push { "$world in ${world.dimensionType}" }
+            profiler.push { "$world in ${world.dimension.location}" }
             if (tickCount % 20 == 0) {
                 profiler.push("time sync")
-                playerManager.sendToAll(PacketOutTimeUpdate(world.time, world.dayTime), world)
+                playerManager.sendToAll(PacketOutTimeUpdate(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
                 profiler.pop()
             }
+
+            profiler.push("tick")
             world.tick(profiler)
             profiler.pop()
+            profiler.pop()
         }
+        profiler.pop()
+        profiler.push("players")
         playerManager.tick(time)
+        profiler.pop()
         if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
             profiler.push("autosave")
             Messages.AUTOSAVE.STARTED.info(LOGGER)
@@ -298,12 +329,14 @@ class KryptonServer(
 
     fun saveDebugReport(path: Path) {
         val worldsPath = path.resolve("worlds")
-        worldManager.worlds.forEach { (name, world) ->
-            val worldPath = worldsPath.resolve("krypton").resolve(name)
-            worldPath.createDirectories()
+        worldManager.worlds.forEach { (key, world) ->
+            val location = key.location
+            val worldPath = worldsPath.resolve("krypton").resolve(location.value()).createDirectories()
             world.saveDebugReport(worldPath)
         }
     }
+
+    fun overworld() = worldManager.worlds[World.OVERWORLD]!!
 
     private fun startProfilerTick(profiler: SingleTickProfiler?) {
         if (delayProfilerStart) {

@@ -85,6 +85,17 @@ class FlatGeneratorSettings(
                 KryptonBiome.CODEC.optionalFieldOf("biome").orElseGet { Optional.empty() }.forGetter { Optional.of(it.biomeSupplier) },
             ).apply(instance, ::FlatGeneratorSettings)
         }.comapFlatMap(FlatGeneratorSettings::validateHeight, Function.identity()).stable()
+
+        fun default(biomes: Registry<KryptonBiome>): FlatGeneratorSettings {
+            val structureSettings = StructureSettings(mapOf(), Optional.of(StructureSettings.DEFAULT_STRONGHOLD)) // TODO: Add village structure to the map
+            return FlatGeneratorSettings(biomes, structureSettings).apply {
+                biomeSupplier = { biomes[BiomeKeys.PLAINS]!! }
+                layers.add(FlatLayer(Blocks.BEDROCK, 1))
+                layers.add(FlatLayer(Blocks.DIRT, 2))
+                layers.add(FlatLayer(Blocks.GRASS_BLOCK, 1))
+                updateLayers()
+            }
+        }
     }
 }
 

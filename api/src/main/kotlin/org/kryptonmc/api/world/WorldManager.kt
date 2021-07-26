@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.world
 
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.Server
 import java.util.concurrent.CompletableFuture
 
@@ -30,33 +31,36 @@ interface WorldManager {
     val default: World
 
     /**
-     * A map of currently loaded worlds by name.
-     */
-    val worlds: Map<String, World>
-
-    /**
-     * Load a world by its namespaced key (asynchronously).
+     * Gets the loaded world with the given resource [key], or null if there is
+     * no world loaded with the given resource [key].
      *
-     * @param name
-     * @return the world with the specified name
-     * @throws IllegalArgumentException if there is no world folder with
-     * the specified name in the current directory
+     * @param key the resource key
+     * @return the loaded world with the key, or null if not present
      */
-    fun load(name: String): CompletableFuture<out World>
+    operator fun get(key: Key): World?
 
     /**
-     * Save a world to disk.
+     * Returns true if there is currently a world loaded with the given [key],
+     * or false otherwise.
+     *
+     * @param key the resource key for the world
+     * @return true if there is a world loaded with the given [key], false otherwise
+     */
+    operator fun contains(key: Key): Boolean
+
+    /**
+     * Loads a world by its resource key.
+     *
+     * @param key the resource key for the world
+     * @return a future representing the result of loading the world with the
+     * specified [key]
+     */
+    fun load(key: Key): CompletableFuture<out World>
+
+    /**
+     * Saves the given [world] to disk.
      *
      * @param world the world to save
      */
     fun save(world: World): CompletableFuture<Unit>
-
-    /**
-     * If the specified world [name] is loaded into the server.
-     *
-     * @param name the name of the world
-     * @return if there is a world with this [name] loaded
-     */
-    operator fun contains(name: String): Boolean
-
 }

@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.config.category
 
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.krypton.registry.RegistryHolder
+import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.objectmapping.meta.Setting
@@ -28,6 +30,8 @@ import org.spongepowered.configurate.objectmapping.meta.Setting
 data class WorldCategory(
     @Comment("The name of the folder with the world to load in it.")
     val name: String = "world",
+    @Comment("Settings for world generation")
+    val generator: GeneratorCategory = GeneratorCategory(),
     @Comment("The gamemode for this world. Valid values are: 0-3 (legacy), survival, creative, adventure and spectator (case insensitive).")
     val gamemode: Gamemode = Gamemode.SURVIVAL,
     @Setting("force-default-gamemode")

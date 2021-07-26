@@ -18,11 +18,14 @@
  */
 package org.kryptonmc.krypton.server
 
+import com.google.common.hash.Hashing
+import com.mojang.serialization.Dynamic
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.event.login.JoinEvent
 import org.kryptonmc.api.event.play.QuitEvent
+import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
@@ -58,6 +61,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
 import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.nextInt
 import org.kryptonmc.krypton.util.threadFactory
 import org.kryptonmc.krypton.util.toAngle
@@ -65,6 +69,7 @@ import org.kryptonmc.krypton.util.toProtocol
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.data.PlayerDataManager
+import org.kryptonmc.krypton.world.dimension.parseDimension
 import org.spongepowered.math.GenericMath
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
@@ -86,37 +91,45 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
 
     private val registryHolder = server.registryHolder
-    private val maxPlayers = server.status.maxPlayers
-    private val viewDistance = server.config.world.viewDistance
 
     val status = ServerStatus(server.status.motd, ServerStatus.Players(server.status.maxPlayers, players.size), null)
     private var lastStatus = 0L
 
-    fun add(player: KryptonPlayer, session: Session): CompletableFuture<Void> = dataManager.load(player).thenRun {
+    fun add(player: KryptonPlayer, session: Session): CompletableFuture<Void> = dataManager.load(player).thenAccept { nbt ->
         val profile = player.profile
 
-        // Load the data
-        val world = server.worldManager.default
-        world.players += player
+        val dimension = if (nbt != null) Dynamic(NBTOps, nbt["Dimension"]).parseDimension().resultOrPartial(LOGGER::error).orElse(World.OVERWORLD) else World.OVERWORLD
+        val world = server.worldManager.worlds[dimension] ?: kotlin.run {
+            LOGGER.warn("Unknown respawn dimension $dimension! Defaulting to overworld...")
+            server.overworld()
+        }
         player.world = world
-
+        world.players += player
         LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at (${player.location.x}, ${player.location.y}, ${player.location.z})")
 
         // Join the game
         player.updateAbilities()
+        val reducedDebugInfo = world.gameRules[GameRules.REDUCED_DEBUG_INFO]
+        val doImmediateRespawn = world.gameRules[GameRules.DO_IMMEDIATE_RESPAWN]
         session.sendPacket(PacketOutJoinGame(
             player.id,
-            server.config.world.hardcore,
-            world,
-            server.registryHolder,
+            world.data.isHardcore,
             player.gamemode,
             player.oldGamemode,
+            server.worldManager.worlds.keys,
+            registryHolder,
             world.dimensionType,
-            maxPlayers,
-            viewDistance
+            world.dimension,
+            Hashing.sha256().hashLong(server.worldData.worldGenerationSettings.seed).asLong(),
+            server.status.maxPlayers,
+            server.config.world.viewDistance,
+            reducedDebugInfo,
+            doImmediateRespawn,
+            world.isDebug,
+            server.worldData.worldGenerationSettings.isFlat
         ))
         session.sendPacket(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
-        session.sendPacket(PacketOutServerDifficulty(server.difficulty))
+        session.sendPacket(PacketOutServerDifficulty(world.difficulty))
 
         // Player data stuff
         session.sendPacket(PacketOutAbilities(player.abilities))
@@ -135,7 +148,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             // Use default reason if denied without specified reason
             val reason = joinResult.reason.takeIf { it != Component.empty() } ?: Component.translatable("multiplayer.disconnect.kicked")
             session.disconnect(reason)
-            return@thenRun
+            return@thenAccept
         }
         server.sendMessage(joinResult.reason)
         session.sendPacket(PacketOutPlayerPositionAndLook(player.location))
@@ -167,15 +180,8 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         session.sendPacket(PacketOutUpdateViewPosition(centerChunk))
         player.updateChunks()
 
-        // Send the world data
-        session.sendPacket(PacketOutInitializeWorldBorder(world.border))
-        session.sendPacket(PacketOutTimeUpdate(world.time, world.dayTime))
-        session.sendPacket(PacketOutSpawnPosition(world.spawnLocation, world.spawnAngle))
-        if (world.isRaining) {
-            session.sendPacket(PacketOutChangeGameState(GameState.BEGIN_RAINING))
-            session.sendPacket(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, world.rainLevel))
-            session.sendPacket(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, world.thunderLevel))
-        }
+        // TODO: Custom boss events, texture pack, mob effects
+        sendWorldInfo(world, player)
 
         // Send inventory data
         val items = player.inventory.networkItems
@@ -259,6 +265,17 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     private fun sendOperatorStatus(player: KryptonPlayer) {
         // TODO: Get status from ops.json and send it to the client
+    }
+
+    private fun sendWorldInfo(world: KryptonWorld, player: KryptonPlayer) {
+        player.session.sendPacket(PacketOutInitializeWorldBorder(world.border))
+        player.session.sendPacket(PacketOutTimeUpdate(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
+        player.session.sendPacket(PacketOutSpawnPosition(world.data.spawnX, world.data.spawnY, world.data.spawnZ, world.data.spawnAngle))
+        if (world.isRaining) {
+            player.session.sendPacket(PacketOutChangeGameState(GameState.BEGIN_RAINING))
+            player.session.sendPacket(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, world.getRainLevel(1F)))
+            player.session.sendPacket(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, world.getThunderLevel(1F)))
+        }
     }
 
     override fun audiences() = players

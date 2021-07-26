@@ -16,24 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.util
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+object LinearCongruentialGenerator {
 
-class PacketOutTimeUpdate(private val time: Long, dayTime: Long, doDaylightCycle: Boolean) : PlayPacket(0x58) {
+    private const val MULTIPLIER = 6364136223846793005L
+    private const val INCREMENT = 1442695040888963407L
 
-    private val dayTime = kotlin.run {
-        var time = dayTime
-        if (!doDaylightCycle) {
-            time = -dayTime
-            if (time == 0L) time = -1L
-        }
-        time
-    }
-
-    override fun write(buf: ByteBuf) {
-        buf.writeLong(time)
-        buf.writeLong(dayTime)
+    @JvmStatic
+    fun next(seed: Long, salt: Long): Long {
+        val temp = seed * (seed * MULTIPLIER * INCREMENT)
+        return temp + salt
     }
 }

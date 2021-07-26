@@ -18,76 +18,98 @@
  */
 package org.kryptonmc.krypton.world
 
-import com.mojang.serialization.Dynamic
+import com.google.common.hash.Hashing
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.api.util.orThrow
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.GameVersion
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
-import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.RegistryLookupCodec
+import org.kryptonmc.krypton.registry.ops.RegistryReadOps
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
-import org.kryptonmc.krypton.util.datafix.DATA_FIXER
-import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.nbt.NBTOps
-import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
-import org.kryptonmc.nbt.io.TagCompression
-import org.kryptonmc.nbt.io.TagIO
-import org.spongepowered.math.vector.Vector2d
-import org.spongepowered.math.vector.Vector3i
-import java.io.DataInputStream
-import java.io.DataOutputStream
+import org.kryptonmc.krypton.world.data.DerivedWorldData
+import org.kryptonmc.krypton.world.data.PrimaryWorldData
+import org.kryptonmc.krypton.world.data.WorldResource
+import org.kryptonmc.krypton.world.dimension.Dimension
+import org.kryptonmc.krypton.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.dimension.storageFolder
+import org.kryptonmc.krypton.world.storage.WorldDataStorage
+import org.kryptonmc.nbt.Tag
+import java.io.File
+import java.io.IOException
 import java.nio.file.Path
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
-import java.util.stream.Collectors
-import java.util.stream.Stream
 import kotlin.io.path.exists
-import kotlin.io.path.inputStream
-import kotlin.io.path.outputStream
-import kotlin.system.exitProcess
 
 @Suppress("MemberVisibilityCanBePrivate")
 class KryptonWorldManager(
     override val server: KryptonServer,
-    private val rootFolder: Path
+    private val worldData: PrimaryWorldData,
+    private val ops: RegistryReadOps<Tag>,
+    val worldFolder: Path
 ) : WorldManager {
 
     private val worldExecutor = Executors.newCachedThreadPool(NamedThreadFactory("World Handler %d"))
-    override val worlds = mutableMapOf<String, KryptonWorld>()
+    private val customWorldFolder = worldFolder.resolve("dimensions")
+    val worlds = mutableMapOf<ResourceKey<World>, KryptonWorld>()
     override val default: KryptonWorld
+        get() = worlds[World.OVERWORLD] ?: error("The default world has not yet been loaded!")
 
     init {
         val name = server.config.world.name
-        default = try {
-            Messages.WORLD.LOAD.info(LOGGER, name)
-            load(name).get().apply { if (server.config.world.forceDefaultGamemode) gamemode = server.gamemode }
-        } catch (exception: Exception) {
-            if (exception !is IllegalArgumentException) Messages.WORLD.LOAD_ERROR.error(LOGGER, name, exception)
-            exitProcess(0)
-        }
-        worlds[name] = default
         Messages.WORLD.LOADED.info(LOGGER)
     }
 
-    override fun load(name: String): CompletableFuture<KryptonWorld> {
-        val folder = rootFolder.resolve(name)
-        require(folder.exists()) {
-            Messages.WORLD.NOT_FOUND.error(LOGGER, name)
-            "World with key $name does not exist!"
+    fun loadWorlds() {
+        createWorlds()
+        // TODO: Prepare worlds
+    }
+
+    fun <T> readData(folder: Path, reader: (Path) -> T): T? {
+        if (!folder.exists()) return null
+        var levelFile = folder.resolve(WorldResource.LEVEL_DATA_FILE.path)
+        if (levelFile.exists()) reader(levelFile)?.let { return it }
+        levelFile = folder.resolve("${WorldResource.LEVEL_DATA_FILE.path}_old")
+        return if (levelFile.exists()) reader(levelFile) else null
+    }
+
+    override fun get(key: Key) = worlds[ResourceKey.of(ResourceKeys.DIMENSION, key)]
+
+    override fun load(key: Key): CompletableFuture<KryptonWorld> {
+        val resourceKey = ResourceKey.of(ResourceKeys.DIMENSION, key)
+        if (resourceKey === World.OVERWORLD) return CompletableFuture.failedFuture(IllegalArgumentException("The default world cannot be loaded!"))
+        val loaded = worlds[resourceKey]
+        if (loaded != null) return CompletableFuture.completedFuture(loaded)
+        val dimensionType = server.registryHolder.registryOrThrow(ResourceKeys.DIMENSION_TYPE)[key]
+            ?: return CompletableFuture.failedFuture(IllegalStateException("No dimension type found for given key $key!"))
+        val defaultData = server.worldData
+        Messages.WORLD.LOAD.info(LOGGER, key.asString())
+        val folderName = key.storageFolder
+        val isSubWorld = folderName == "DIM-1" || folderName == "DIM1"
+        val storage = try {
+            WorldDataStorage(if (isSubWorld) worldFolder else customWorldFolder).createAccess(if (isSubWorld) folderName else key.namespace() + File.separator + key.value())
+        } catch (exception: IOException) {
+            return CompletableFuture.failedFuture(RuntimeException("Failed to create world data for world $key!", exception))
         }
-        return loadWorld(folder)
+        return CompletableFuture.supplyAsync({
+            val worldData = storage.loadData(ops, defaultData.dataPackConfig) ?: kotlin.run {
+                val gamemode = server.config.world.gamemode
+                val difficulty = server.config.world.difficulty
+                val hardcore = server.config.world.hardcore
+                val rules = KryptonGameRuleHolder()
+                PrimaryWorldData(folderName, gamemode, difficulty, hardcore, rules, defaultData.dataPackConfig, defaultData.worldGenerationSettings)
+            }
+            worldData.setModdedInfo(KryptonServerInfo.name, true)
+            val isDebug = worldData.worldGenerationSettings.isDebug
+            val seed = Hashing.sha256().hashLong(worldData.worldGenerationSettings.seed).asLong()
+            KryptonWorld(server, storage, worldData, resourceKey, dimensionType, isDebug, seed, true)
+        }, worldExecutor)
     }
 
     override fun save(world: World): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
@@ -95,86 +117,39 @@ class KryptonWorldManager(
         if (world is KryptonWorld) world.chunkManager.saveAll()
     }, worldExecutor)
 
-    override fun contains(name: String) = worlds.containsKey(name)
+    override fun contains(key: Key) = worlds.containsKey(ResourceKey.of(ResourceKeys.DIMENSION, key))
 
-    // TODO: Possibly also make this preload spawn chunks
-    private fun loadWorld(folder: Path): CompletableFuture<KryptonWorld> = CompletableFuture.supplyAsync({
-        val dataFile = folder.resolve("level.dat")
-        val nbt = TagIO.read(dataFile, TagCompression.GZIP).getCompound("Data")
-
-        val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
-        val data = DATA_FIXER.update(References.LEVEL, Dynamic(NBTOps, nbt), version, ServerInfo.WORLD_VERSION)
-
-        val gamemode = Gamemode.fromId(data["GameType"].asInt(0)) ?: Gamemode.SURVIVAL
-        val time = data["Time"].asLong(0L)
-
-        KryptonWorld(
-            server,
-            folder,
-            loadUUID(folder),
-            data["LevelName"].asString(""),
-            data["allowCommands"].asBoolean(gamemode == Gamemode.CREATIVE),
-            KryptonWorldBorder(
-                data["BorderSize"].asDouble(5.9999968E7),
-                Vector2d(data["BorderCenterX"].asDouble(0.0), data["BorderCenterZ"].asDouble(0.0)),
-                data["BorderDamagePerBlock"].asDouble(0.2),
-                data["BorderSafeZone"].asDouble(5.0),
-                data["BorderSizeLerpTarget"].asDouble(0.0),
-                data["BorderSizeLerpTime"].asLong(0L),
-                data["BorderWarningBlocks"].asInt(5),
-                data["BorderWarningTime"].asInt(15)
-            ),
-            data["clearWeatherTime"].asInt(0),
-            data["DayTime"].asLong(time),
-            data["Difficulty"].asNumber().map { Difficulty.fromId(it.toInt()) }.result().orElse(Difficulty.NORMAL),
-            KryptonGameRuleHolder(data["GameRules"]),
-            readWorldGenSettings(data, version),
-            gamemode,
-            data["hardcore"].asBoolean(false),
-            LocalDateTime.ofInstant(Instant.ofEpochMilli(data["LastPlayed"].asLong(System.currentTimeMillis())), ZoneOffset.UTC),
-            data["raining"].asBoolean(false),
-            data["MapFeatures"].asBoolean(false),
-            data["rainTime"].asInt(0),
-            Vector3i(data["SpawnX"].asInt(0), data["SpawnY"].asInt(0), data["SpawnZ"].asInt(0)),
-            data["SpawnAngle"].asFloat(0F),
-            data["thundering"].asBoolean(false),
-            data["thunderTime"].asInt(0),
-            time,
-            version,
-            data["Version"].let {
-                GameVersion(it["Id"].asInt(ServerInfo.WORLD_VERSION), it["Name"].asString(KryptonServerInfo.minecraftVersion), data["Snapshot"].asBoolean(false))
-            },
-            DEFAULT_BUILD_LIMIT,
-            data["ServerBrands"].asStream().flatMap { dynamic ->
-                dynamic.asString().result().map { Stream.of(it) }.orElseGet { Stream.empty() }
-            }.collect(Collectors.toSet())
-        )
-    }, worldExecutor)
-
-    private fun loadUUID(folder: Path): UUID {
-        val uuidFile = folder.resolve("uid.dat")
-        return if (uuidFile.exists()) {
-            DataInputStream(uuidFile.inputStream()).use { UUID(it.readLong(), it.readLong()) }
-        } else {
-            val uuid = UUID.randomUUID()
-            DataOutputStream(uuidFile.outputStream()).use {
-                it.writeLong(uuid.mostSignificantBits)
-                it.writeLong(uuid.leastSignificantBits)
-            }
-            return uuid
+    private fun createWorlds() {
+        val generationSettings = worldData.worldGenerationSettings
+        val isDebug = generationSettings.isDebug
+        val seed = Hashing.sha256().hashLong(generationSettings.seed).asLong()
+        val dimensions = generationSettings.dimensions
+        val overworld = dimensions[Dimension.OVERWORLD]
+        val dimensionType = overworld?.type ?: server.registryHolder.registryOrThrow(ResourceKeys.DIMENSION_TYPE)[DimensionTypes.OVERWORLD_KEY]!!
+        val world = KryptonWorld(server, server.storageSource, worldData, World.OVERWORLD, dimensionType, isDebug, seed, true)
+        worlds[World.OVERWORLD] = world
+        if (!worldData.isInitialized) {
+            world.setInitialSpawn(worldData, isDebug)
+            worldData.isInitialized = true
+            if (isDebug) setupDebugWorld(worldData)
         }
+        dimensions.entries.forEach { (key, dimension) ->
+            if (key === Dimension.OVERWORLD) return@forEach
+            val resourceKey = ResourceKey.of(ResourceKeys.DIMENSION, key.location)
+            val type = dimension.type
+            val data = DerivedWorldData(worldData)
+            worlds[resourceKey] = KryptonWorld(server, server.storageSource, data, resourceKey, type, isDebug, seed, false)
+        }
+        // TODO: Update mob spawning flags
     }
 
-    private fun <T> readWorldGenSettings(settings: Dynamic<T>, version: Int): WorldGenerationSettings {
-        var temp = settings["WorldGenSettings"].orElseEmptyMap()
-        OLD_WORLD_GEN_SETTINGS_KEYS.forEach { key -> settings[key].result().ifPresent { temp = temp.set(key, it) } }
-        val data = DATA_FIXER.update(References.WORLD_GEN_SETTINGS, temp, version, ServerInfo.WORLD_VERSION)
-        return WorldGenerationSettings.CODEC.parse(data).resultOrPartial { LOGGER.error("WorldGenSettings: $it") }.orElseGet {
-            val dimensionTypes = RegistryLookupCodec(ResourceKeys.DIMENSION_TYPE).codec().parse(data).resultOrPartial { LOGGER.error("Dimension type registry: $it") }.orThrow("Failed to get dimension registry!")
-            val biomes = RegistryLookupCodec(InternalResourceKeys.BIOME).codec().parse(data).resultOrPartial { LOGGER.error("Biome registry: $it") }.orThrow("Failed to get biome registry")
-            val noiseSettings = RegistryLookupCodec(InternalResourceKeys.NOISE_GENERATOR_SETTINGS).codec().parse(data).resultOrPartial { LOGGER.error("Noise settings registry: $it") }.orThrow("Failed to get noise settings registry")
-            WorldGenerationSettings.makeDefault(dimensionTypes, biomes, noiseSettings)
-        }
+    private fun setupDebugWorld(data: PrimaryWorldData) {
+        data.difficulty = Difficulty.PEACEFUL
+        data.isRaining = false
+        data.isThundering = false
+        data.clearWeatherTime = 1000000000
+        data.dayTime = 6000L
+        data.gamemode = Gamemode.SPECTATOR
     }
 
     fun saveAll() = worlds.forEach { (_, world) -> save(world).get() }

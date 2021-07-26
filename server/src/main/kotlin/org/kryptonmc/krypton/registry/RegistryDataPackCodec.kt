@@ -30,7 +30,6 @@ import org.kryptonmc.krypton.registry.ops.RegistryReadOps
 
 class RegistryDataPackCodec<E : Any>(
     private val registryKey: ResourceKey<out Registry<E>>,
-    lifecycle: Lifecycle,
     private val elementCodec: Codec<E>
 ) : Codec<KryptonRegistry<E>> {
 

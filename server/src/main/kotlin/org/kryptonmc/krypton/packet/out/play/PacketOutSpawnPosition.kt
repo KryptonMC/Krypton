@@ -20,16 +20,17 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.toProtocol
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.krypton.util.writeVector
 
 class PacketOutSpawnPosition(
-    private val position: Vector3i,
+    private val x: Int,
+    private val y: Int,
+    private val z: Int,
     private val angle: Float = 0F
 ) : PlayPacket(0x4B) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeLong(position.toProtocol())
+        buf.writeVector(x, y, z)
         buf.writeFloat(angle)
     }
 }

@@ -29,23 +29,22 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.event.entity.EntityRemoveEvent
 import org.kryptonmc.api.event.entity.EntitySpawnEvent
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.GameVersion
-import org.kryptonmc.api.world.rule.GameRuleHolder
+import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRules
-import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
-import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.csv.csv
 import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.chunk.ChunkManager
@@ -60,61 +59,59 @@ import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.forEachInRange
+import org.kryptonmc.krypton.util.lerp
 import org.kryptonmc.krypton.util.synchronize
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
-import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.StringTag
-import org.kryptonmc.nbt.compound
-import org.kryptonmc.nbt.io.TagCompression
-import org.kryptonmc.nbt.io.TagIO
+import org.kryptonmc.krypton.world.data.WorldData
+import org.kryptonmc.krypton.world.storage.WorldDataAccess
+import org.spongepowered.math.vector.Vector2d
 import org.spongepowered.math.vector.Vector3i
 import java.io.Writer
 import java.nio.file.Files
 import java.nio.file.Path
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.util.UUID
+import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.io.path.deleteIfExists
-import kotlin.io.path.exists
-import kotlin.io.path.moveTo
-import kotlin.random.Random
+import kotlin.math.cos
 
-data class KryptonWorld(
+class KryptonWorld(
     override val server: KryptonServer,
-    override val folder: Path,
-    override val uuid: UUID,
-    override val name: String,
-    val allowCheats: Boolean,
-    override val border: KryptonWorldBorder,
-    var clearWeatherTime: Int,
-    var dayTime: Long,
-    override val difficulty: Difficulty,
-    //val endDimensionData: EndDimensionData, // for the end, when it is supported
-    override val gameRules: GameRuleHolder,
-    val generationSettings: WorldGenerationSettings,
-    override var gamemode: Gamemode,
-    override val isHardcore: Boolean,
-    //val isInitialized: Boolean, // we always assume this is a complete world
-    val lastPlayed: LocalDateTime,
-    val mapFeatures: Boolean,
-    override var isRaining: Boolean,
-    var rainTime: Int,
-    override val spawnLocation: Vector3i,
-    val spawnAngle: Float,
-    override var isThundering: Boolean,
-    var thunderTime: Int,
-    override var time: Long,
-    val nbtVersion: Int,
-    override val version: GameVersion,
-    override val maxHeight: Int,
-    val serverBrands: MutableSet<String>,
+    private val storageAccess: WorldDataAccess,
+    val data: WorldData,
+    override val dimension: ResourceKey<World>,
+    override val dimensionType: DimensionType,
+    val isDebug: Boolean,
+    override val seed: Long,
+    private val tickTime: Boolean
 ) : World, BlockAccessor {
 
-    override val seed = generationSettings.seed
+    private val random = Random()
+
+    override val border = KryptonWorldBorder(0.0, Vector2d(0.0, 0.0), 0.0, 0.0, 0.0, 0L, 0, 0) // FIXME
+    override val gamemode: Gamemode
+        get() = data.gamemode
+    override val difficulty: Difficulty
+        get() = data.difficulty
+    override val gameRules: KryptonGameRuleHolder
+        get() = data.gameRules
+    override val isHardcore: Boolean
+        get() = data.isHardcore
+    override val isRaining: Boolean
+        get() = getRainLevel(1F) > 0.2F
+    override val isThundering: Boolean
+        get() = if (dimensionType.hasSkylight && !dimensionType.hasCeiling) getThunderLevel(1F) > 0.9F else false
+    override val name: String
+        get() = data.name
+    override val spawnLocation: Vector3i
+        get() = Vector3i(data.spawnX, data.spawnY, data.spawnZ)
+    override val time: Long
+        get() = data.time
+    override val version: GameVersion
+        get() = ServerInfo.GAME_VERSION
+    override val folder = storageAccess.path
 
     val chunkMap = Long2ObjectOpenHashMap<KryptonChunk>().synchronize()
+    override val chunks: Collection<KryptonChunk>
+        get() = chunkMap.values
     val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
     val entities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
     private val entitiesByChunk = object : ConcurrentHashMap<Long, MutableSet<KryptonEntity>>() {
@@ -124,16 +121,25 @@ data class KryptonWorld(
 
     val chunkManager = ChunkManager(this)
     val playerManager = server.playerManager
-    val dimension = OVERWORLD
-    override val dimensionType = DimensionTypes.OVERWORLD
 
     override val height = dimensionType.height
     override val minimumBuildHeight = dimensionType.minimumY
 
     private var oldRainLevel = 0F
     override var rainLevel = 0F
+        set(value) {
+            val clamped = value.clamp(0F, 1F)
+            oldRainLevel = clamped
+            field = clamped
+        }
     private var oldThunderLevel = 0F
     override var thunderLevel = 0F
+        set(value) {
+            val clamped = value.clamp(0F, 1F)
+            oldRainLevel = clamped
+            field = clamped
+        }
+    private var skyDarken = 0
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector): T? {
@@ -157,7 +163,7 @@ data class KryptonWorld(
 
             if (entity is KryptonPlayer) {
                 // TODO: World border
-                entity.session.sendPacket(PacketOutTimeUpdate(time, dayTime))
+                entity.session.sendPacket(PacketOutTimeUpdate(data.time, data.dayTime, data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
             }
             forEachInRange(location, server.config.world.viewDistance) {
                 if (entity is KryptonPlayer) it.addViewer(entity)
@@ -231,55 +237,76 @@ data class KryptonWorld(
     fun tick(profiler: Profiler) {
         if (players.isEmpty()) return // don't tick the world if there's no players in it
 
-        profiler.push("increment time")
-        time++
-        dayTime++
-        profiler.pop()
-
         // tick rain
         profiler.push("weather")
-        val raining = isRaining
+        val wasRaining = isRaining
         if (dimensionType.hasSkylight) {
             if (gameRules[GameRules.DO_WEATHER_CYCLE]) {
+                var clearWeatherTime = data.clearWeatherTime
+                var thunderTime = data.thunderTime
+                var rainTime = data.rainTime
+                var thundering = data.isThundering
+                var isRaining = data.isRaining
                 if (clearWeatherTime > 0) {
                     --clearWeatherTime
-                    thunderTime = if (isThundering) 0 else 1
+                    thunderTime = if (thundering) 0 else 1
                     rainTime = if (isRaining) 0 else 1
-                    isThundering = false
+                    thundering = false
                     isRaining = false
                 } else {
                     if (thunderTime > 0) {
-                        if (thunderTime-- == 0) isThundering = !isThundering
+                        thunderTime--
+                        if (thunderTime == 0) thundering = !thundering
+                    } else if (thundering) {
+                        thunderTime = random.nextInt(12000) + 3600
                     } else {
-                        thunderTime = if (isThundering) Random.nextInt(12000) + 3600 else Random.nextInt(168000) + 12000
+                        thunderTime = random.nextInt(168000) + 12000
                     }
                     if (rainTime > 0) {
-                        if (rainTime-- == 0) isRaining = !isRaining
+                        rainTime--
+                        if (rainTime == 0) isRaining = !isRaining
+                    } else if (isRaining) {
+                        rainTime = random.nextInt(12000) + 12000
                     } else {
-                        rainTime = Random.nextInt(if (isRaining) 12000 else 168000) + 12000
+                        rainTime = random.nextInt(168000) + 12000
                     }
                 }
+                data.thunderTime = thunderTime
+                data.rainTime = rainTime
+                data.clearWeatherTime = clearWeatherTime
+                data.isThundering = thundering
+                data.isRaining = isRaining
             }
             oldThunderLevel = thunderLevel
-            thunderLevel = if (isThundering) (thunderLevel + 0.01).toFloat() else (thunderLevel - 0.01).toFloat()
+            thunderLevel = if (data.isThundering) thunderLevel + 0.01F else thunderLevel - 0.01F
             thunderLevel = thunderLevel.clamp(0F, 1F)
             oldRainLevel = rainLevel
-            rainLevel = if (isRaining) (rainLevel + 0.01).toFloat() else (rainLevel - 0.01).toFloat()
+            rainLevel = if (data.isRaining) rainLevel + 0.01F else rainLevel - 0.01F
             rainLevel = rainLevel.clamp(0F, 1F)
         }
 
         if (oldRainLevel != rainLevel) playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel), this)
         if (oldThunderLevel != thunderLevel) playerManager.sendToAll(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel), this)
-        if (raining != isRaining) {
-            playerManager.sendToAll(PacketOutChangeGameState(if (raining) GameState.END_RAINING else GameState.BEGIN_RAINING))
+        if (wasRaining != isRaining) {
+            playerManager.sendToAll(PacketOutChangeGameState(if (wasRaining) GameState.END_RAINING else GameState.BEGIN_RAINING))
             playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel))
             playerManager.sendToAll(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel))
         }
         profiler.pop()
 
+        // TODO: Sky brightness
+        tickTime()
+
         profiler.push("chunk tick")
         chunkMap.values.forEach { chunk -> chunk.tick(players.count { it.location in chunk.position }) }
         profiler.pop()
+    }
+
+    private fun tickTime() {
+        if (!tickTime) return
+        data.time++
+        // TODO: Tick scheduled events
+        if (data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]) data.dayTime++
     }
 
     fun saveDebugReport(path: Path) {
@@ -287,86 +314,9 @@ data class KryptonWorld(
         Files.newBufferedWriter(chunksPath).use { it.dumpChunks() }
     }
 
-    override fun save() {
-        val data = compound {
-            compound("Data") {
-                boolean("allowCommands", false)
-                double("BorderCenterX", border.center.x())
-                double("BorderCenterZ", border.center.y())
-                double("BorderDamagePerBlock", border.damageMultiplier)
-                double("BorderSize", border.size)
-                double("BorderSafeZone", border.safeZone)
-                double("BorderSizeLerpTarget", border.sizeLerpTarget)
-                long("BorderSizeLerpTime", border.sizeLerpTime)
-                double("BorderWarningBlocks", border.warningBlocks.toDouble())
-                double("BorderWarningTime", border.warningTime.toDouble())
-                int("clearWeatherTime", clearWeatherTime)
-                put("CustomBossEvents", CompoundTag())
-                compound("DataPacks") {
-                    list("Enabled", StringTag.ID, StringTag.of("vanilla"))
-                    list("Disabled", StringTag.ID)
-                }
-                int("DataVersion", ServerInfo.WORLD_VERSION)
-                long("DayTime", dayTime)
-                byte("Difficulty", difficulty.ordinal.toByte())
-                compound("GameRules") { gameRules.rules.forEach { (rule, value) -> string(rule.name, value.toString()) } }
-                compound("WorldGenSettings") {
-                    long("seed", generationSettings.seed)
-                    boolean("generate_features", generationSettings.generateFeatures)
-                    // FIXME when this is back to normal
-//                    compound("dimensions") { generationSettings.dimensions.forEach { (key, _) -> put(key.asString(), CompoundTag()) } }
-                }
-                int("GameType", gamemode.ordinal)
-                boolean("hardcore", isHardcore)
-                boolean("initialized", true)
-                compound("Krypton") {
-                    string("version", KryptonServerInfo.version)
-                }
-                long("LastPlayed", lastPlayed.toInstant(ZoneOffset.UTC).toEpochMilli())
-                string("LevelName", name)
-                boolean("MapFeatures", mapFeatures)
-                boolean("raining", isRaining)
-                int("rainTime", rainTime)
-                list("ServerBrands") {
-                    serverBrands.forEach { add(StringTag.of(it)) }
-                    add(StringTag.of(KryptonServerInfo.name))
-                }
-                int("SpawnX", spawnLocation.x())
-                int("SpawnY", spawnLocation.y())
-                int("SpawnZ", spawnLocation.z())
-                boolean("thundering", isThundering)
-                long("Time", time)
-                int("version", NBT_VERSION)
-                compound("Version") {
-                    int("Id", ServerInfo.GAME_VERSION.id)
-                    string("Name", ServerInfo.GAME_VERSION.name)
-                    boolean("Snapshot", ServerInfo.GAME_VERSION.isSnapshot)
-                }
-                int("WanderingTraderSpawnChance", 25)
-                int("WanderingTraderSpawnDelay", 24_000)
-            }
-        }
-
-        val temp = folder.createTempFile("level", ".dat")
-        TagIO.write(temp, data, TagCompression.GZIP)
-        val dataPath = folder.resolve("level.dat")
-        if (!dataPath.exists()) {
-            temp.moveTo(dataPath)
-            return
-        }
-        val oldDataPath = folder.resolve("level.dat_old").apply { deleteIfExists() }
-        dataPath.moveTo(oldDataPath)
-        dataPath.deleteIfExists()
-        temp.moveTo(dataPath)
-    }
+    override fun save() = chunkManager.saveAll()
 
     override fun audiences() = players
-
-    override fun equals(other: Any?) = other is KryptonWorld && uuid == other.uuid
-
-    override fun hashCode() = uuid.hashCode()
-
-    override fun toString() = "KryptonWorld(uuid=$uuid,name=$name)"
 
     private fun Writer.dumpChunks() {
         val output = csv(this) {
@@ -377,12 +327,13 @@ data class KryptonWorld(
         chunkMap.values.forEach { output.writeRow(it.position.x, it.position.z, it.world) }
     }
 
-    override val chunks: Collection<KryptonChunk>
-        get() = chunkMap.values
+    fun getRainLevel(delta: Float) = lerp(delta, oldRainLevel, rainLevel)
+
+    fun getThunderLevel(delta: Float) = lerp(delta, oldThunderLevel, thunderLevel) * getRainLevel(delta)
 
     companion object {
 
-        val RESOURCE_KEY_CODEC: Codec<ResourceKey<KryptonWorld>> = KEY_CODEC.xmap({ ResourceKey.of(InternalResourceKeys.WORLD, it) }, ResourceKey<KryptonWorld>::location)
+        val RESOURCE_KEY_CODEC: Codec<ResourceKey<World>> = KEY_CODEC.xmap({ ResourceKey.of(ResourceKeys.DIMENSION, it) }, ResourceKey<World>::location)
         val OVERWORLD = ResourceKey.of(InternalResourceKeys.WORLD, DimensionTypes.OVERWORLD_KEY.location)
         val THE_NETHER = ResourceKey.of(InternalResourceKeys.WORLD, DimensionTypes.NETHER_KEY.location)
         val THE_END = ResourceKey.of(InternalResourceKeys.WORLD, DimensionTypes.END_KEY.location)

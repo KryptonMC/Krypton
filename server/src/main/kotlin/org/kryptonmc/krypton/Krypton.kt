@@ -43,6 +43,11 @@ import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.DataPackConfig
+import org.kryptonmc.krypton.world.KryptonGameRuleHolder
+import org.kryptonmc.krypton.world.data.PrimaryWorldData
+import org.kryptonmc.krypton.world.data.WorldResource
+import org.kryptonmc.krypton.world.storage.WorldDataAccess
+import org.kryptonmc.krypton.world.storage.WorldDataStorage
 import java.nio.file.Path
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicReference
@@ -125,13 +130,16 @@ class KryptonCLI : CliktCommand(
             world = loadedConfig.world.copy(name = worldName ?: loadedConfig.world.name)
         )
 
-        // Load the resources
+        // Setup registries and create world storage access
         val registryHolder = RegistryHolder.builtin()
-        val previousPacks = DataPackConfig.DEFAULT // TODO: Actually load the data packs properly
+        val storageAccess = WorldDataStorage(worldFolder).createAccess(config.world.name)
+
+        // Load the resources
+        val previousPacks = storageAccess.dataPacks
         if (safeMode) logger.warn("Safe mode active, only the built-in data pack will be loaded.")
 
-        val packRepository = PackRepository(KryptonRepositorySource(), FolderRepositorySource(CURRENT_DIRECTORY.resolve("datapacks"), PackSource.WORLD))
-        val packConfig = packRepository.configure(previousPacks, safeMode) // TODO: Use this with the new world data
+        val packRepository = PackRepository(KryptonRepositorySource(), FolderRepositorySource(storageAccess.resourcePath(WorldResource.DATA_PACK_FOLDER), PackSource.WORLD))
+        val packConfig = packRepository.configure(previousPacks ?: DataPackConfig.DEFAULT, safeMode)
 
         val resources = try {
             ServerResources.load(packRepository.openAllSelected(), registryHolder, BACKGROUND_EXECUTOR, Runnable::run).get()
@@ -140,14 +148,24 @@ class KryptonCLI : CliktCommand(
             return
         }.apply { updateGlobals() }
 
-        // TODO: Use this to load world generation settings
         val ops = RegistryReadOps.createAndLoad(NBTOps, resources.manager, registryHolder)
+        config.worldGenerationSettings(registryHolder)
+        val worldData = storageAccess.loadData(ops, packConfig) ?: PrimaryWorldData(
+            config.world.name,
+            config.world.gamemode,
+            config.world.difficulty,
+            config.world.hardcore,
+            KryptonGameRuleHolder(),
+            packConfig,
+            config.worldGenerationSettings(registryHolder)
+        )
 
+        storageAccess.saveData(registryHolder, worldData)
         val reference = AtomicReference<KryptonServer>()
         val serverThread = Thread({ reference.get().start() }, "Server Thread").apply {
             setUncaughtExceptionHandler { _, exception -> logger<KryptonServer>().error(exception) }
         }
-        val server = KryptonServer(registryHolder, packRepository, resources, config, worldFolder)
+        val server = KryptonServer(registryHolder, storageAccess, worldData, packRepository, resources, config, ops, worldFolder)
         reference.set(server)
         serverThread.start()
     }

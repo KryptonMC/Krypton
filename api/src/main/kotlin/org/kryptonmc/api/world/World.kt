@@ -9,11 +9,14 @@
 package org.kryptonmc.api.world
 
 import net.kyori.adventure.audience.ForwardingAudience
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.chunk.Chunk
@@ -42,12 +45,19 @@ interface World : ForwardingAudience {
     /**
      * The unique ID of this world.
      */
+    @Deprecated("Worlds are no longer identified by this, so it is no longer necessary", ReplaceWith(""))
     val uuid: UUID
+        get() = UUID(0, 0)
 
     /**
      * The folder of this world on disk.
      */
     val folder: Path
+
+    /**
+     * The dimension resource key for this world.
+     */
+    val dimension: ResourceKey<World>
 
     /**
      * The dimension that this world is.
@@ -110,12 +120,14 @@ interface World : ForwardingAudience {
     /**
      * The maximum build height of this world. Also known as the build limit.
      */
+    @Deprecated("Unnecessary, use DimensionType#height", ReplaceWith("dimensionType.height"))
     val maxHeight: Int
+        get() = dimensionType.height
 
     /**
      * If this world is currently thundering (has an ongoing thunderstorm).
      */
-    var isThundering: Boolean
+    val isThundering: Boolean
 
     /**
      * The level of the current thunderstorm (0 if there is no thunderstorm going on).
@@ -125,7 +137,7 @@ interface World : ForwardingAudience {
     /**
      * If this world is currently raining.
      */
-    var isRaining: Boolean
+    val isRaining: Boolean
 
     /**
      * The level of the current rain.
@@ -298,6 +310,24 @@ interface World : ForwardingAudience {
      * Spawns a painting in this world at the given [location].
      */
     fun spawnPainting(location: Vector)
+
+    companion object {
+
+        /**
+         * The resource key for the overworld dimension.
+         */
+        val OVERWORLD = ResourceKey.of(ResourceKeys.DIMENSION, Key.key("overworld"))
+
+        /**
+         * The resource key for the nether dimension.
+         */
+        val NETHER = ResourceKey.of(ResourceKeys.DIMENSION, Key.key("the_nether"))
+
+        /**
+         * The resource key for the end dimension.
+         */
+        val END = ResourceKey.of(ResourceKeys.DIMENSION, Key.key("the_end"))
+    }
 }
 
 /**

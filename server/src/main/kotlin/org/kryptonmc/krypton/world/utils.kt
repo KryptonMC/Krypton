@@ -16,24 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.world
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.world.data.WorldData
+import org.spongepowered.math.vector.Vector3i
+import java.util.Random
 
-class PacketOutTimeUpdate(private val time: Long, dayTime: Long, doDaylightCycle: Boolean) : PlayPacket(0x58) {
-
-    private val dayTime = kotlin.run {
-        var time = dayTime
-        if (!doDaylightCycle) {
-            time = -dayTime
-            if (time == 0L) time = -1L
-        }
-        time
+fun KryptonWorld.setInitialSpawn(data: WorldData, isDebug: Boolean) {
+    if (isDebug) {
+        data.setSpawn(Vector3i(0, 80, 0), 0F)
+        return
     }
-
-    override fun write(buf: ByteBuf) {
-        buf.writeLong(time)
-        buf.writeLong(dayTime)
-    }
+    // TODO: Set spawn with biome stuff from generator
 }

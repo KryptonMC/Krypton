@@ -106,14 +106,11 @@ class RegistryReadOps<T : Any> private constructor(
         val supplier = { Suppliers.memoize { registry[resourceKey] ?: throw RuntimeException("Error during recursive registry parsing, element $resourceKey resolved too early!") }.get() }
         readCache.values[resourceKey] = DataResult.success(supplier)
         val optionalParsed = resources.parseJson(jsonOps, registryKey, resourceKey, elementCodec)
-        val result = if (!optionalParsed.isPresent) DataResult.success(object : Supplier<E> {
-            override fun get() = registry[resourceKey]!!
-            override fun toString() = resourceKey.toString()
-        }) else {
+        val result = if (!optionalParsed.isPresent) DataResult.success { registry[resourceKey]!! } else {
             val parsedResult = optionalParsed.get()
             val parsed = parsedResult.result()
             if (parsed.isPresent) (registry as KryptonRegistry<E>).registerOrOverride(parsed.get().second, resourceKey, parsed.get().first)
-            parsedResult.map { Supplier { registry[resourceKey] } }
+            parsedResult.map { { registry[resourceKey] } }
         }
         readCache.values[resourceKey] = result as DataResult<() -> E>?
         return result

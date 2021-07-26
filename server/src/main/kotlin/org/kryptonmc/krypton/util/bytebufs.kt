@@ -361,7 +361,7 @@ fun ByteBuf.writeIntList(list: IntList) {
     list.forEach { writeVarInt(it) }
 }
 
-fun <T> ByteBuf.encode(value: T, codec: Codec<T>) {
+fun <T> ByteBuf.encode(codec: Codec<T>, value: T) {
     val result = codec.encodeStart(NBTOps, value)
     result.error().ifPresent { throw EncoderException("Failed to encode value $value with codec $codec! Reason: ${it.message()}") }
     writeNBT(result.result().get() as? CompoundTag)

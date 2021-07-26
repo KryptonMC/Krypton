@@ -85,6 +85,13 @@ class MultiNoiseBiomeGenerator private constructor(
         companion object {
 
             val BY_NAME = mutableMapOf<Key, Preset>()
+            val NETHER = Preset(Key.key("nether")) { preset, biomes, seed -> MultiNoiseBiomeGenerator(seed, listOf(
+                ClimateParameters(0F, 0F, 0F, 0F, 0F) to { biomes[BiomeKeys.NETHER_WASTES]!!},
+                ClimateParameters(0F, -0.5F, 0F, 0F, 0F) to { biomes[BiomeKeys.SOUL_SAND_VALLEY]!! },
+                ClimateParameters(0.4F, 0F, 0F, 0F, 0F) to { biomes[BiomeKeys.CRIMSON_FOREST]!! },
+                ClimateParameters(0F, 0.5F, 0F, 0F, 0.375F) to { biomes[BiomeKeys.WARPED_FOREST]!! },
+                ClimateParameters(-0.5F, 0F, 0F, 0F, 0.175F) to { biomes[BiomeKeys.BASALT_DELTAS]!! }
+            ), preset = biomes to preset) }
         }
     }
 

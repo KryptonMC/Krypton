@@ -18,12 +18,22 @@
  */
 package org.kryptonmc.krypton.world.dimension
 
+import com.mojang.serialization.DataResult
+import com.mojang.serialization.Dynamic
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.KryptonBiome
+import org.kryptonmc.krypton.world.biome.MultiNoiseBiomeGenerator
+import org.kryptonmc.krypton.world.biome.TheEndBiomeGenerator
+import org.kryptonmc.krypton.world.generation.NoiseGenerator
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
+import java.nio.file.Path
 
 fun DimensionType.equalTo(other: DimensionType): Boolean {
     if (this === other) return true
@@ -35,6 +45,42 @@ fun DimensionType.equalTo(other: DimensionType): Boolean {
             effects == other.effects
 }
 
-fun Registry<DimensionType>.defaults(biomes: Registry<KryptonBiome>, noiseSettings: Registry<NoiseGeneratorSettings>) = KryptonRegistry(InternalResourceKeys.DIMENSION).apply {
-    // TODO: When noise generator exists, add nether and end dimensions
+fun Registry<DimensionType>.defaults(biomes: Registry<KryptonBiome>, noiseSettings: Registry<NoiseGeneratorSettings>, seed: Long) = KryptonRegistry(InternalResourceKeys.DIMENSION).apply {
+    register(Dimension.NETHER, Dimension(defaultNether(biomes, noiseSettings, seed)) { this@defaults[DimensionTypes.NETHER_KEY]!! })
+    register(Dimension.END, Dimension(defaultEnd(biomes, noiseSettings, seed)) { this@defaults[DimensionTypes.END_KEY]!! })
 }
+
+val Key.storageFolder: String
+    get() = when (this) {
+        World.OVERWORLD -> ""
+        World.NETHER -> "DIM-1"
+        World.END -> "DIM1"
+        else -> value()
+    }
+
+fun ResourceKey<World>.storageFolder(path: Path): Path = when (this) {
+    World.OVERWORLD -> path
+    World.END -> path.resolve("DIM1")
+    World.NETHER -> path.resolve("DIM-1")
+    else -> path.resolve("dimensions/${location.namespace()}/${location.value()}")
+}
+
+fun Dynamic<*>.parseDimension(): DataResult<ResourceKey<World>> {
+    val id = asNumber().result()
+    if (id.isPresent) when (id.get().toInt()) {
+        -1 -> return DataResult.success(World.NETHER)
+        0 -> return DataResult.success(World.OVERWORLD)
+        1 -> return DataResult.success(World.END)
+    }
+    return KryptonWorld.RESOURCE_KEY_CODEC.parse(this)
+}
+
+private fun defaultNether(biomes: Registry<KryptonBiome>, noiseSettings: Registry<NoiseGeneratorSettings>, seed: Long) = NoiseGenerator(
+    MultiNoiseBiomeGenerator.Preset.NETHER.generator(biomes, seed),
+    seed
+) { noiseSettings[NoiseGeneratorSettings.NETHER]!! }
+
+private fun defaultEnd(biomes: Registry<KryptonBiome>, noiseSettings: Registry<NoiseGeneratorSettings>, seed: Long) = NoiseGenerator(
+    TheEndBiomeGenerator(biomes, seed),
+    seed
+) { noiseSettings[NoiseGeneratorSettings.END]!! }

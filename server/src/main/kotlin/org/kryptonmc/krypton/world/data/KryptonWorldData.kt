@@ -16,24 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.world.data
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import com.mojang.serialization.Dynamic
+import org.kryptonmc.krypton.KryptonServer
 
-class PacketOutTimeUpdate(private val time: Long, dayTime: Long, doDaylightCycle: Boolean) : PlayPacket(0x58) {
+data class KryptonWorldData(val version: String = KryptonServer.KryptonServerInfo.version) {
 
-    private val dayTime = kotlin.run {
-        var time = dayTime
-        if (!doDaylightCycle) {
-            time = -dayTime
-            if (time == 0L) time = -1L
-        }
-        time
-    }
+    companion object {
 
-    override fun write(buf: ByteBuf) {
-        buf.writeLong(time)
-        buf.writeLong(dayTime)
+        val DEFAULT = KryptonWorldData(KryptonServer.KryptonServerInfo.version)
     }
 }
+
+fun Dynamic<*>.toKryptonWorldData() = KryptonWorldData(get("version").asString(KryptonServer.KryptonServerInfo.version))

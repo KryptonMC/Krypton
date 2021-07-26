@@ -47,6 +47,7 @@ import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.IOScope
@@ -150,7 +151,7 @@ class KryptonPlayer(
 
     override val dimensionType: DimensionType
         get() = world.dimensionType
-    val dimension: ResourceKey<KryptonWorld>
+    override val dimension: ResourceKey<World>
         get() = world.dimension
 
     val viewableEntities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
@@ -158,7 +159,7 @@ class KryptonPlayer(
     private var respawnPosition: Vector3i? = null
     private var respawnForced = false
     private var respawnAngle = 0F
-    private var respawnDimension = KryptonWorld.OVERWORLD
+    private var respawnDimension = World.OVERWORLD
 
     private var previousCentralX = 0
     private var previousCentralZ = 0
@@ -197,7 +198,7 @@ class KryptonPlayer(
             respawnAngle = tag.getFloat("SpawnAngle")
             if (tag.containsKey("SpawnDimension")) {
                 val dimension = KryptonWorld.RESOURCE_KEY_CODEC.parse(NBTOps, tag["SpawnDimension"]!!)
-                respawnDimension = dimension.resultOrPartial(LOGGER::error).orElse(KryptonWorld.OVERWORLD)
+                respawnDimension = dimension.resultOrPartial(LOGGER::error).orElse(World.OVERWORLD)
             }
         }
     }

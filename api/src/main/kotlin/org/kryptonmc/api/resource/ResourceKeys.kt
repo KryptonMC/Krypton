@@ -16,6 +16,7 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
+import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 
@@ -39,6 +40,7 @@ object ResourceKeys {
     @JvmField val DIMENSION_TYPE = minecraft<DimensionType>("dimension_type")
     @JvmField val BLOCK = minecraft<Block>("block")
     @JvmField val ITEM = minecraft<ItemType>("item")
+    @JvmField val DIMENSION = minecraft<World>("dimension")
 
     /**
      * Custom built-in registries

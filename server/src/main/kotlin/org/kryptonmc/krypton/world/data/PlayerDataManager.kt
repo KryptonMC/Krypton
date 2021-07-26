@@ -52,22 +52,23 @@ class PlayerDataManager(private val folder: Path) {
         threadFactory("Player Data IO %d") { daemon() }
     )
 
-    fun load(player: KryptonPlayer): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
+    fun load(player: KryptonPlayer): CompletableFuture<CompoundTag?> = CompletableFuture.supplyAsync({
         val playerFile = folder.resolve("${player.uuid}.dat")
         if (!playerFile.exists()) {
             playerFile.createFile()
-            return@supplyAsync
+            return@supplyAsync null
         }
 
         val nbt = try {
             TagIO.read(playerFile, TagCompression.GZIP)
         } catch (exception: IOException) {
             LOGGER.warn("Failed to load player data for player ${player.name}!", exception)
-            return@supplyAsync
+            return@supplyAsync null
         }
 
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
         player.load(DATA_FIXER.update(FixType.PLAYER.type, Dynamic(NBTOps, nbt), version, ServerInfo.WORLD_VERSION).value as CompoundTag)
+        nbt
     }, executor)
 
     fun save(player: KryptonPlayer) {

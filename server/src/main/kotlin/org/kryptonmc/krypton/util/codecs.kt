@@ -24,20 +24,26 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.DynamicOps
 import com.mojang.serialization.Lifecycle
-import com.mojang.serialization.MapCodec
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.StringSerializable
-import org.kryptonmc.api.util.getIfPresent
 import org.kryptonmc.krypton.registry.RegistryFileCodec
 import java.awt.Color
-import java.util.Optional
+import java.util.UUID
 import java.util.function.Function
-import java.util.function.Supplier
+import java.util.stream.IntStream
 
 val COLOR_CODEC: Codec<Color> = Codec.INT.xmap(::Color, Color::getRGB)
 
 val NON_NEGATIVE_INT = intRange(0, Int.MAX_VALUE) { "Value $it must be non-negative!" }
+
+fun IntStream.fixedSize(size: Int): DataResult<IntArray> {
+    val limited = limit((size + 1).toLong()).toArray()
+    return if (limited.size != size) {
+        val message = "Input is not a list of $size ints!"
+        if (limited.size >= size) DataResult.error(message, limited.copyOf(size)) else DataResult.error(message)
+    } else DataResult.success(limited)
+}
 
 private fun intRange(lower: Int, upper: Int, message: (Int) -> String): Codec<Int> {
     val rangeChecker = checkRange(lower, upper, message)
