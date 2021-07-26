@@ -96,7 +96,7 @@ class ChunkTaskPriorityQueueSorter(
 
     companion object {
 
-        fun message(position: Long, level: () -> Int, task: Runnable) = Message(position, level) { {
+        fun message(position: Long, level: () -> Int, task: Runnable): Message<Runnable> = Message(position, level) { Runnable {
             task.run()
             it.submit(Unit)
         } }
