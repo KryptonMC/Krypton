@@ -32,6 +32,9 @@ import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.registry.ops.RegistryReadOps
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.progress.ChunkProgressListener
+import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.DerivedWorldData
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.data.WorldResource
@@ -67,8 +70,9 @@ class KryptonWorldManager(
     }
 
     fun loadWorlds() {
-        createWorlds()
-        // TODO: Prepare worlds
+        val progressListener = ChunkProgressListener(11)
+        createWorlds(progressListener)
+        prepareWorlds(ChunkProgressListener(11))
     }
 
     fun <T> readData(folder: Path, reader: (Path) -> T): T? {
@@ -108,25 +112,25 @@ class KryptonWorldManager(
             worldData.setModdedInfo(KryptonServerInfo.name, true)
             val isDebug = worldData.worldGenerationSettings.isDebug
             val seed = Hashing.sha256().hashLong(worldData.worldGenerationSettings.seed).asLong()
-            KryptonWorld(server, storage, worldData, resourceKey, dimensionType, isDebug, seed, true)
+            KryptonWorld(server, storage, worldData, resourceKey, dimensionType, ChunkProgressListener(11), isDebug, seed, true)
         }, worldExecutor)
     }
 
     override fun save(world: World): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
         world.save()
-        if (world is KryptonWorld) world.chunkManager.saveAll()
+        if (world is KryptonWorld) world.chunkCache.save()
     }, worldExecutor)
 
     override fun contains(key: Key) = worlds.containsKey(ResourceKey.of(ResourceKeys.DIMENSION, key))
 
-    private fun createWorlds() {
+    private fun createWorlds(progressListener: ChunkProgressListener) {
         val generationSettings = worldData.worldGenerationSettings
         val isDebug = generationSettings.isDebug
         val seed = Hashing.sha256().hashLong(generationSettings.seed).asLong()
         val dimensions = generationSettings.dimensions
         val overworld = dimensions[Dimension.OVERWORLD]
         val dimensionType = overworld?.type ?: server.registryHolder.registryOrThrow(ResourceKeys.DIMENSION_TYPE)[DimensionTypes.OVERWORLD_KEY]!!
-        val world = KryptonWorld(server, server.storageSource, worldData, World.OVERWORLD, dimensionType, isDebug, seed, true)
+        val world = KryptonWorld(server, server.storageSource, worldData, World.OVERWORLD, dimensionType, progressListener, isDebug, seed, true)
         worlds[World.OVERWORLD] = world
         if (!worldData.isInitialized) {
             world.setInitialSpawn(worldData, isDebug)
@@ -138,9 +142,16 @@ class KryptonWorldManager(
             val resourceKey = ResourceKey.of(ResourceKeys.DIMENSION, key.location)
             val type = dimension.type
             val data = DerivedWorldData(worldData)
-            worlds[resourceKey] = KryptonWorld(server, server.storageSource, data, resourceKey, type, isDebug, seed, false)
+            worlds[resourceKey] = KryptonWorld(server, server.storageSource, data, resourceKey, type, progressListener, isDebug, seed, false)
         }
         // TODO: Update mob spawning flags
+    }
+
+    private fun prepareWorlds(progressListener: ChunkProgressListener) {
+        val overworld = worlds[World.OVERWORLD] ?: error("The overworld was not loaded! But... this is impossible... :thonking:")
+        LOGGER.info("Preparing start region for dimension ${overworld.dimension.location}...")
+        overworld.chunkCache.init()
+        overworld.chunkCache.addRegionTicket(TicketTypes.START, ChunkPosition(overworld.data.spawnX shr 4, overworld.data.spawnZ shr 4), 11, Unit)
     }
 
     private fun setupDebugWorld(data: PrimaryWorldData) {

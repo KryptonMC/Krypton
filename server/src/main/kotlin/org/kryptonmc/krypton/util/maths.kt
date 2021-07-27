@@ -63,6 +63,17 @@ fun Int.square() = this * this
 
 fun Double.fade() = this * this * this * (this * (this * 6 - 15) + 10)
 
+fun Int.branchlessAbs(): Int {
+    // -n = -1 ^ n + 1
+    val mask = this shr (Int.SIZE_BITS - 1) // -1 if < 0, 0 if >= 0
+    return (mask xor this) - mask // if val < 0, then (0 ^ val) - 0 else (-1 ^ val) + 1
+}
+
+/**
+ * Sign function, except 0 returns 1.
+ */
+fun Int.sign() = 1 or (this shr (Int.SIZE_BITS - 1))
+
 fun lerp(delta: Float, start: Float, end: Float) = start + delta * (end - start)
 
 fun lerp(delta: Double, start: Double, end: Double) = start + delta * (end - start)
@@ -71,6 +82,15 @@ fun biLerp(deltaX: Double, deltaY: Double, x0y0: Double, x1y0: Double, x0y1: Dou
 
 fun triLerp(deltaX: Double, deltaY: Double, deltaZ: Double, x0y0z0: Double, x1y0z0: Double, x0y1z0: Double, x1y1z0: Double, x0y0z1: Double, x1y0z1: Double, x0y1z1: Double, x1y1z1: Double) =
     lerp(deltaZ, biLerp(deltaX, deltaY, x0y0z0, x1y0z0, x0y1z0, x1y1z0), biLerp(deltaX, deltaY, x0y0z1, x1y0z1, x0y1z1, x1y1z1))
+
+fun distance(x1: Double, y1: Double, z1: Double, x2: Double, y2: Double, z2: Double) = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2))
+
+fun Float.normalizeYaw(): Float {
+    var f1 = this % 360F
+    if (f1 >= 180F) f1 -= 360F
+    if (f1 < -180F) f1 += 360F
+    return f1
+}
 
 fun Double.clampedLerp(lower: Double, upper: Double): Double {
     if (this < lower) return lower

@@ -20,17 +20,14 @@ package org.kryptonmc.krypton.world.chunk
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
-import org.kryptonmc.api.world.Biome
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.chunk.data.ChunkReader
+import org.kryptonmc.krypton.world.chunk.data.ChunkSerializer
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
-import org.kryptonmc.nbt.LongArrayTag
 import org.kryptonmc.nbt.buildCompound
 import org.kryptonmc.nbt.compound
-import java.util.EnumSet
 import java.util.concurrent.TimeUnit
 
 class ChunkManager(private val world: KryptonWorld) {
@@ -58,7 +55,7 @@ class ChunkManager(private val world: KryptonWorld) {
         if (cachedChunk != null) return cachedChunk
         val position = ChunkPosition(x, z)
         val tag = regionFileManager.read(position)?.getCompound("Level") ?: CompoundTag()
-        return (ChunkReader.read(world, position, tag) as? ProtoKryptonChunk)?.wrapped ?: error("Cannot load proto chunks yet!")
+        return (ChunkSerializer.read(world, position, tag) as? ProtoKryptonChunk)?.wrapped ?: error("Cannot load proto chunks yet!")
     }
 
     fun saveAll() = world.chunkMap.values.forEach { save(it) }

@@ -262,7 +262,7 @@ class PlayHandler(
             calculatePositionChange(newLocation.z, oldLocation.z),
             packet.onGround
         ), player)
-        player.updateChunks()
+        player.world.chunkCache.move(player)
     }
 
     private fun handleRotationUpdate(packet: PacketInPlayerRotation) {
@@ -299,7 +299,7 @@ class PlayHandler(
             packet.onGround
         ), player)
         playerManager.sendToAll(PacketOutHeadLook(player.id, newLocation.yaw.toAngle()), player)
-        player.updateChunks()
+        player.world.chunkCache.move(player)
     }
 
     private fun handlePluginMessage(packet: PacketInPluginMessage) {

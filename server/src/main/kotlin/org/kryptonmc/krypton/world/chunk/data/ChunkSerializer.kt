@@ -22,6 +22,7 @@ import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.chunk.ChunkSection
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
@@ -31,12 +32,15 @@ import org.kryptonmc.krypton.world.chunk.ProtoKryptonChunk
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.LongArrayTag
+import org.kryptonmc.nbt.buildCompound
+import org.kryptonmc.nbt.compound
+import org.kryptonmc.nbt.mutableCompound
 import java.util.EnumSet
 import kotlin.system.exitProcess
 
-object ChunkReader {
+object ChunkSerializer {
 
-    private val LOGGER = logger<ChunkReader>()
+    private val LOGGER = logger<ChunkSerializer>()
 
     fun read(world: KryptonWorld, position: ChunkPosition, tag: CompoundTag): ProtoChunk {
         // Yeah probably a bad idea if we allow this
@@ -58,7 +62,7 @@ object ChunkReader {
             val y = it.getByte("Y").toInt()
             if (it.contains("Palette", ListTag.ID) && it.contains("BlockStates", LongArrayTag.ID)) {
                 val section = ChunkSection(y)
-                section.palette.load(it.getList("Palette", ListTag.ID), it.getLongArray("BlockStates"))
+                section.palette.load(it.getList("Palette", CompoundTag.ID), it.getLongArray("BlockStates"))
                 section.recount()
                 if (!section.isEmpty()) sections[world.sectionIndexFromY(y)] = section
             }
@@ -88,6 +92,31 @@ object ChunkReader {
         if (type == ChunkStatus.Type.FULL) return ProtoKryptonChunk(chunkAccessor as KryptonChunk)
         // TODO: Entities, tile entities, lights, and carving masks
         return chunkAccessor as ProtoChunk
+    }
+
+    fun write(world: KryptonWorld, chunk: ChunkAccessor) = compound {
+        int("DataVersion", ServerInfo.WORLD_VERSION)
+        compound("Level") {
+            int("xPos", chunk.position.x)
+            int("zPos", chunk.position.z)
+            long("LastUpdate", world.data.time)
+            long("InhabitedTime", chunk.inhabitedTime)
+            string("Status", chunk.status.name)
+            val sections = chunk.sections
+            val sectionData = ListTag()
+            for (i in world.minimumSection - 1..world.maximumSection + 1) {
+                val section = sections.asSequence().firstOrNull { it != null && it.y == i } ?: continue
+                val tag = buildCompound {
+                    byte("Y", (i and 255).toByte())
+                    if (section.blockLight.isNotEmpty()) byteArray("BlockLight", section.blockLight)
+                    if (section.skyLight.isNotEmpty()) byteArray("SkyLight", section.skyLight)
+                }
+                section.palette.save(tag)
+                sectionData.add(tag.build())
+            }
+            put("Sections", sectionData)
+            compound("Heightmaps") { chunk.heightmaps.forEach { if (chunk.status.heightmapsAfter.contains(it.key)) put(it.key.name, LongArrayTag(it.value.data.data)) } }
+        }
     }
 }
 

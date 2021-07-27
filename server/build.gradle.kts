@@ -125,6 +125,12 @@ license {
         "**/plugin/loader/KryptonPluginDescription.kt",
         "**/plugin/loader/PluginLoader.kt",
         "**/scheduling/KryptonScheduler.kt",
-        "**/util/bytebufs.kt"
+        "**/util/bytebufs.kt",
+        // Paper patch derivatives, with another special header
+        "**/server/chunk/ChunkCache.kt",
+        "**/server/chunk/ChunkManager.kt",
+        "**/util/AreaMap.kt",
+        "**/util/PlayerAreaMap.kt",
+        "**/util/PooledLinkedHashSets.kt"
     )
 }

@@ -39,7 +39,7 @@ class SortedArraySet<T>(
     fun addOrGet(element: T): T? {
         val index = findIndex(element)
         if (index >= 0) return contents[index]
-        addInternal(element, -index + 1)
+        addInternal(element, -index - 1)
         return element
     }
 
@@ -51,8 +51,7 @@ class SortedArraySet<T>(
     override fun add(element: T): Boolean {
         val index = findIndex(element)
         if (index >= 0) return false
-        val insertPosition = -index - 1
-        addInternal(element, insertPosition)
+        addInternal(element, -index - 1)
         return true
     }
 

@@ -36,6 +36,7 @@ import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameVersion
 import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
@@ -47,7 +48,6 @@ import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.util.csv.csv
 import org.kryptonmc.krypton.util.profiling.Profiler
-import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.effect.Effect
@@ -56,12 +56,17 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.server.chunk.ChunkCache
+import org.kryptonmc.krypton.util.BACKGROUND_EXECUTOR
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.forEachInRange
 import org.kryptonmc.krypton.util.lerp
+import org.kryptonmc.krypton.util.progress.ChunkProgressListener
 import org.kryptonmc.krypton.util.synchronize
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.chunk.FullChunkStatus
+import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.spongepowered.math.vector.Vector2d
@@ -78,6 +83,7 @@ class KryptonWorld(
     val data: WorldData,
     override val dimension: ResourceKey<World>,
     override val dimensionType: DimensionType,
+    private val progressListener: ChunkProgressListener,
     val isDebug: Boolean,
     override val seed: Long,
     private val tickTime: Boolean
@@ -119,7 +125,7 @@ class KryptonWorld(
         operator fun get(chunk: KryptonChunk) = get(ChunkPosition.toLong(chunk.position.x, chunk.position.z))
     }
 
-    val chunkManager = ChunkManager(this)
+    val chunkCache = ChunkCache(this, storageAccess, BACKGROUND_EXECUTOR, progressListener, { _, _ -> }, server.config.world.viewDistance, server.config.advanced.synchronizeChunkWrites)
     val playerManager = server.playerManager
 
     override val height = dimensionType.height
@@ -171,8 +177,9 @@ class KryptonWorld(
             }
 
             val chunk = getChunk(entity.location) ?: return@thenAccept
-            entitiesByChunk[chunk.position.toLong()].add(entity)
-            entities.add(entity)
+            // TODO: Improve entity tracking
+//            entitiesByChunk[chunk.position.toLong()].add(entity)
+//            entities.add(entity)
         }
     }
 
@@ -182,8 +189,9 @@ class KryptonWorld(
             if (!it.result.isAllowed) return@thenAccept
             entity.viewers.forEach(entity::removeViewer)
             val chunk = getChunk(entity.location) ?: return@thenAccept
-            entitiesByChunk[chunk.position.toLong()].remove(entity)
-            entities.remove(entity)
+            // TODO: Improve entity tracking
+//            entitiesByChunk[chunk.position.toLong()].remove(entity)
+//            entities.remove(entity)
         }
     }
 
@@ -217,7 +225,7 @@ class KryptonWorld(
 
     override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
 
-    override fun getChunkAt(x: Int, z: Int) = chunkManager[x, z]
+    override fun getChunkAt(x: Int, z: Int) = chunkCache.getLoadedNow(x, z)
 
     override fun getChunk(x: Int, y: Int, z: Int) = getChunkAt(x shr 4, z shr 4)
 
@@ -227,7 +235,13 @@ class KryptonWorld(
 
     fun getEntitiesInChunk(chunk: KryptonChunk) = entitiesByChunk[chunk.position.toLong()]
 
-    override fun loadChunk(x: Int, z: Int) = chunkManager.load(x, z)
+    override fun loadChunk(x: Int, z: Int): Chunk? {
+        val cached = chunkCache.getLoadedNow(x, z)
+        if (cached != null) return cached
+        val position = ChunkPosition(x, z)
+        chunkCache.addRegionTicket(TicketTypes.TEMPORARY, position, 33, position)
+        return null // FIXME
+    }
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
         if (y.outsideBuildHeight) return
@@ -318,7 +332,13 @@ class KryptonWorld(
         Files.newBufferedWriter(chunksPath).use { it.dumpChunks() }
     }
 
-    override fun save() = chunkManager.saveAll()
+    fun updateChunkStatus(position: ChunkPosition, status: FullChunkStatus) {
+        // TODO: Replace the entity tracking system and make this work properly
+    }
+
+    override fun save() {
+        chunkCache.save()
+    }
 
     override fun audiences() = players
 

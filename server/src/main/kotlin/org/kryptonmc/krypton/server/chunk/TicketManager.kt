@@ -29,25 +29,31 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.SortedArraySet
 import org.kryptonmc.krypton.util.thread.Scheduler
 import org.kryptonmc.krypton.world.chunk.ChunkHolder
-import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.chunk.ticket.ChunkTicket
 import org.kryptonmc.krypton.world.chunk.ticket.TicketType
 import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
+import java.util.ArrayDeque
 import java.util.concurrent.Executor
 
 abstract class TicketManager(
     private val executor: Executor,
-    private val viewDistance: Int
+    private val chunkManager: ChunkManager
 ) {
 
     private val playersByChunk = Long2ObjectOpenHashMap<ObjectSet<KryptonPlayer>>()
     private val tickets = Long2ObjectOpenHashMap<SortedArraySet<ChunkTicket<*>>>()
     private val ticketTracker = ChunkTicketTracker()
-    private val naturalSpawnChunkCounter = FixedPlayerDistanceChunkTracker(MOB_SPAWN_RANGE)
-    private val playerTicketManager = PlayerTicketTracker(viewDistance, PLAYER_TICKET_LEVEL)
-    private val pendingChunkUpdates = mutableSetOf<ChunkHolder>()
+    private val playerTicketManager = PlayerTicketTracker(PLAYER_TICKET_LEVEL)
+    private val pendingChunkUpdates = object : ArrayDeque<ChunkHolder>() {
+        override fun add(element: ChunkHolder): Boolean {
+            if (element.isUpdateQueued) return true
+            element.isUpdateQueued = true
+            return super.add(element)
+        }
+    }
+    private var pollingPendingChunkUpdates = false
     private val ticketThrottler: ChunkTaskPriorityQueueSorter
     private val ticketThrottlerInput: Scheduler<ChunkTaskPriorityQueueSorter.Message<Runnable>>
     private val ticketThrottlerReleaser: Scheduler<ChunkTaskPriorityQueueSorter.Release>
@@ -55,7 +61,7 @@ abstract class TicketManager(
     private var tickCount = 0L
 
     val naturalSpawnChunkCount: Int
-        get() = naturalSpawnChunkCounter.apply { runUpdates() }.chunks.size
+        get() = chunkManager.playerDistanceMap.size
 
     init {
         val throttler = Scheduler.create<Runnable>("player ticket throttler", executor::execute)
@@ -73,28 +79,26 @@ abstract class TicketManager(
 
     fun addPlayer(position: Long, player: KryptonPlayer) {
         playersByChunk.getOrPut(position) { ObjectOpenHashSet() }.add(player)
-        naturalSpawnChunkCounter.update(position, 0, true)
         playerTicketManager.update(position, 0, true)
     }
 
     fun removePlayer(position: Long, player: KryptonPlayer) {
-        val list = playersByChunk[position].apply { remove(player) }
+        val list = playersByChunk[position]?.apply { remove(player) } ?: return
         if (list.isEmpty()) {
             playersByChunk.remove(position)
-            naturalSpawnChunkCounter.update(position, Int.MAX_VALUE, false)
             playerTicketManager.update(position, Int.MAX_VALUE, false)
         }
     }
 
-    fun hasPlayersNearby(position: Long) = naturalSpawnChunkCounter.apply { runUpdates() }.chunks.containsKey(position)
+    fun hasPlayersNearby(position: Long) = chunkManager.playerDistanceMap.inRange(position) != null
 
     fun <T> addTicket(type: TicketType<T>, position: ChunkPosition, level: Int, key: T) = addTicket(position.toLong(), ChunkTicket(type, level, key))
 
     fun <T> removeTicket(type: TicketType<T>, position: ChunkPosition, level: Int, key: T) = removeTicket(position.toLong(), ChunkTicket(type, level, key))
 
-    fun <T> addRegionTicket(type: TicketType<T>, position: ChunkPosition, level: Int, key: T) = addTicket(position.toLong(), ChunkTicket(type, PLAYER_TICKET_LEVEL - level, key))
+    fun <T> addRegionTicket(type: TicketType<T>, position: ChunkPosition, radius: Int, key: T) = addTicket(position.toLong(), ChunkTicket(type, PLAYER_TICKET_LEVEL - radius, key))
 
-    fun <T> removeRegionTicket(type: TicketType<T>, position: ChunkPosition, level: Int, key: T) = removeTicket(position.toLong(), ChunkTicket(type, PLAYER_TICKET_LEVEL - level, key))
+    fun <T> removeRegionTicket(type: TicketType<T>, position: ChunkPosition, radius: Int, key: T) = removeTicket(position.toLong(), ChunkTicket(type, PLAYER_TICKET_LEVEL - radius, key))
 
     fun purge() {
         tickCount++
@@ -106,6 +110,33 @@ abstract class TicketManager(
         }
     }
 
+    fun update(): Boolean {
+        playerTicketManager.runUpdates()
+        val hasUpdates = Int.MAX_VALUE - ticketTracker.update(Int.MAX_VALUE) != 0
+        if (!pendingChunkUpdates.isEmpty()) {
+            while (!pendingChunkUpdates.isEmpty()) {
+                val remove = pendingChunkUpdates.remove()
+                remove.isUpdateQueued = false
+                remove.updateFutures(chunkManager, executor)
+            }
+            return true
+        }
+        if (pendingReleases.isEmpty()) return hasUpdates
+        val iterator = pendingReleases.iterator()
+        while (iterator.hasNext()) {
+            val next = iterator.nextLong()
+            if (!tickets.getOrPut(next) { SortedArraySet.create(4) }.any { it.type === TicketTypes.PLAYER }) continue
+            val chunk = chunkManager.getChunkIfPresent(next) ?: error("")
+            chunk.entityTickingFuture.thenAccept {
+                executor.execute { ticketThrottlerReleaser.submit(ChunkTaskPriorityQueueSorter.Release(next, false) {}) }
+            }
+        }
+        pendingReleases.clear()
+        return hasUpdates
+    }
+
+    fun setViewDistance(distance: Int) = playerTicketManager.updateViewDistance(distance)
+
     private fun addTicket(position: Long, ticket: ChunkTicket<*>) {
         val list = tickets.getOrPut(position) { SortedArraySet.create(4) }
         val level = list.level()
@@ -115,12 +146,32 @@ abstract class TicketManager(
 
     private fun removeTicket(position: Long, ticket: ChunkTicket<*>) {
         val list = tickets.getOrPut(position) { SortedArraySet.create(4) }
-        list.remove(ticket)
+        val oldLevel = list.level()
+        if (list.remove(ticket) && ticket.type == TicketTypes.PLAYER) {
+            var hasPlayer = false
+            for (element in list) {
+                if (element.type !== TicketTypes.PLAYER) continue
+                hasPlayer = true
+                break
+            }
+            val playerChunk = chunkManager.getChunkIfPresent(position)
+            if (!hasPlayer && playerChunk != null && playerChunk.isFullChunkReady) {
+                val delayUnload = ChunkTicket(TicketTypes.DELAYED_UNLOAD, 33, position).apply {
+                    delayUnloadBy = DELAY_UNLOADS_BY
+                    createdTick = tickCount
+                }
+                list.remove(delayUnload)
+                list.add(delayUnload)
+            }
+        }
         if (list.isEmpty()) tickets.remove(position)
-        ticketTracker.update(position, list.level(), false)
+        val newLevel = list.level()
+        if (newLevel > oldLevel) ticketTracker.update(position, list.level(), false)
     }
 
-    private inner class ChunkTicketTracker : ChunkTracker(ChunkManager.MAX_DISTANCE + 2, 16, 256) {
+    private inner class ChunkTicketTracker : ChunkTracker(ChunkManager.MAX_CHUNK_DISTANCE + 2, 16, 256) {
+
+        fun update(distance: Int) = runUpdates(distance)
 
         override fun getLevelFromSource(id: Long): Int {
             val list = tickets[id] ?: return Int.MAX_VALUE
@@ -129,12 +180,12 @@ abstract class TicketManager(
 
         override fun getLevel(id: Long): Int {
             if (!isChunkToRemove(id)) getChunk(id)?.let { return it.ticketLevel }
-            return ChunkManager.MAX_DISTANCE + 1
+            return ChunkManager.MAX_CHUNK_DISTANCE + 1
         }
 
         override fun setLevel(id: Long, level: Int) {
             var holder = getChunk(id)
-            val ticketLevel = holder?.ticketLevel ?: ChunkManager.MAX_DISTANCE + 1
+            val ticketLevel = holder?.ticketLevel ?: ChunkManager.MAX_CHUNK_DISTANCE + 1
             if (ticketLevel != level) {
                 holder = updateChunkScheduling(id, level, holder, ticketLevel)
                 if (holder != null) pendingChunkUpdates.add(holder)
@@ -165,16 +216,26 @@ abstract class TicketManager(
         }
     }
 
-    private inner class PlayerTicketTracker(
-        private val viewDistance: Int,
-        maxDistance: Int
-    ) : FixedPlayerDistanceChunkTracker(maxDistance) {
+    private inner class PlayerTicketTracker(maxDistance: Int) : FixedPlayerDistanceChunkTracker(maxDistance) {
 
+        private var viewDistance = 0
         val queueLevels = Long2IntMaps.synchronize(Long2IntOpenHashMap()).apply { defaultReturnValue(maxDistance + 2) }
         val toUpdate = LongOpenHashSet()
 
         override fun onLevelChange(position: Long, oldLevel: Int, newLevel: Int) {
             toUpdate.add(position)
+        }
+
+        fun updateViewDistance(viewDistance: Int) {
+            val iterator = chunks.long2ByteEntrySet().iterator()
+            val lastViewDistance = this.viewDistance
+            this.viewDistance = viewDistance
+            while (iterator.hasNext()) {
+                val next = iterator.next()
+                val key = next.longKey
+                val value = next.byteValue.toInt()
+                onLevelChange(key, value, value <= lastViewDistance - 2, haveTicketFor(value))
+            }
         }
 
         private fun onLevelChange(position: Long, level: Int, previouslyInView: Boolean, inView: Boolean) {
@@ -199,9 +260,10 @@ abstract class TicketManager(
 
         private const val ENTITY_TICKING_RANGE = 2
         private const val INITIAL_TICKET_LIST_CAPACITY = 4
-        private const val MOB_SPAWN_RANGE = 8
+        const val MOB_SPAWN_RANGE = 8
+        private const val DELAY_UNLOADS_BY = 20L
         private val PLAYER_TICKET_LEVEL = 33 + ChunkStatus.FULL.distance - 2
     }
 }
 
-private fun SortedArraySet<ChunkTicket<*>>.level(): Int = if (isNotEmpty()) first!!.level else ChunkManager.MAX_DISTANCE + 1
+private fun SortedArraySet<ChunkTicket<*>>.level(): Int = if (isNotEmpty()) first!!.level else ChunkManager.MAX_CHUNK_DISTANCE + 1

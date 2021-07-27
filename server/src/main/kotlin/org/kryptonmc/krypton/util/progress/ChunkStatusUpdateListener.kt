@@ -16,18 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.util.progress
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.chunk.FullChunkStatus
 
-class PacketOutUnloadChunk(private val x: Int, private val z: Int) : PlayPacket(0x1D) {
+fun interface ChunkStatusUpdateListener {
 
-    constructor(position: ChunkPosition) : this(position.x, position.z)
+    fun onUpdate(position: ChunkPosition, status: FullChunkStatus)
 
-    override fun write(buf: ByteBuf) {
-        buf.writeInt(x)
-        buf.writeInt(z)
-    }
+    operator fun invoke(position: ChunkPosition, status: FullChunkStatus) = onUpdate(position, status)
 }

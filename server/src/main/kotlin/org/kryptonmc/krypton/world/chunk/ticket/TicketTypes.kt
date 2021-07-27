@@ -32,7 +32,6 @@ object TicketTypes {
     val POST_TELEPORT = TicketType<Int>("post_teleport", 5, Int::compareTo)
     val ASYNC_LOAD = TicketType<Long>("async_load", Long::compareTo)
     val DELAYED_UNLOAD = TicketType<Long>("delayed_unload", 300, Long::compareTo)
-    val PRIORITY = TicketType("priority", 300, POSITION_COMPARATOR)
     val URGENT = TicketType("urgent", 300, POSITION_COMPARATOR)
     val TEMPORARY = TicketType("temporary", 1, POSITION_COMPARATOR)
 }

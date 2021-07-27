@@ -39,6 +39,7 @@ class KryptonChunk(
 
     override val heightmaps = EnumMap<Heightmap.Type, Heightmap>(Heightmap.Type::class.java)
     var fullStatus: (() -> FullChunkStatus)? = null
+    var isLoaded = false
 
     override val status = ChunkStatus.FULL
     override var isLightCorrect = false

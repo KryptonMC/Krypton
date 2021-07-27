@@ -153,14 +153,12 @@ class KryptonServer(
     override val itemManager = KryptonItemManager
     override val scheduler = KryptonScheduler(pluginManager)
 
-    @Volatile
-    internal var isRunning = true
+    @Volatile var isRunning = true
         private set
-
-    @Volatile
-    internal var lastTickTime = 0L
+    @Volatile var lastTickTime = 0L
         private set
-
+    @Volatile var currentTick = 0L
+        private set
     private var lastOverloadWarning = 0L
     private var tickCount = 0
     private var oversleepFactor = 0L
@@ -234,6 +232,7 @@ class KryptonServer(
                 Messages.TICK_OVERLOAD_WARNING.warn(LOGGER, nextTickTime, nextTickTime / 50)
                 lastOverloadWarning = lastTickTime
             }
+            currentTick++
             // start profiler
             val singleTickProfiler = if (config.other.saveThreshold > 0) {
                 SingleTickProfiler(config.other.saveThreshold * 1_000_000_000L, DEBUG_FOLDER.createDirectory())

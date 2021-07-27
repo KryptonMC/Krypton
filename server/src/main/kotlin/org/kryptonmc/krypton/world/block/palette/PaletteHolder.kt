@@ -91,7 +91,10 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
             storageBits == this.bits -> System.arraycopy(states, 0, storage.data, 0, states.size)
             else -> {
                 val bitStorage = BitStorage(storageBits, SIZE, states)
-                for (i in 0 until SIZE) storage[i] = bitStorage[i]
+                for (i in 0 until SIZE) {
+                    if (bitStorage[i] > (1 shl storage.bits) - 1) println("Index $i (value ${bitStorage[i]}) > mask ${(1 shl storage.bits) - 1}")
+                    storage[i] = bitStorage[i]
+                }
             }
         }
     }

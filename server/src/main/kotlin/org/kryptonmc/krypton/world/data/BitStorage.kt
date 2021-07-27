@@ -26,14 +26,14 @@ package org.kryptonmc.krypton.world.data
  * there are always a maximum of 4096 blocks in a chunk section (16^3 = 4096)
  */
 class BitStorage(
-    private val bits: Int,
+    val bits: Int,
     val size: Int,
     data: LongArray? = null
 ) {
 
     private val mask = (1L shl bits) - 1L
-    private val valuesPerLong = 64 / bits
-    val data = data ?: LongArray((size + valuesPerLong - 1) / valuesPerLong)
+    private val valuesPerLong = Long.SIZE_BITS / bits
+    val data: LongArray
 
     // magic operations
     private val divideMultiply: Long
@@ -41,10 +41,18 @@ class BitStorage(
     private val divideShift: Int
 
     init {
+        check(bits in 1..32)
         val threeTimesMask = 3 * (valuesPerLong - 1)
         divideMultiply = Integer.toUnsignedLong(MAGIC[threeTimesMask])
         divideAdd = Integer.toUnsignedLong(MAGIC[threeTimesMask + 1])
         divideShift = MAGIC[threeTimesMask + 2]
+        val length = (size + valuesPerLong - 1) / valuesPerLong
+        if (data != null) {
+            if (data.size != length) throw RuntimeException("Invalid length given for storage! Expected $length, got ${data.size}!")
+            this.data = data
+        } else {
+            this.data = LongArray(length)
+        }
     }
 
     fun getAndSet(index: Int, value: Int): Int {

@@ -285,7 +285,7 @@ interface World : ForwardingAudience {
      * @param x the X coordinate
      * @param z the Z coordinate
      */
-    fun loadChunk(x: Int, z: Int): Chunk
+    fun loadChunk(x: Int, z: Int): Chunk?
 
     /**
      * Saves this world to disk. Exposed as a function of [World] to allow for custom world implementations

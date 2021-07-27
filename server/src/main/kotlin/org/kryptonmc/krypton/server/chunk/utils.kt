@@ -19,13 +19,14 @@
 package org.kryptonmc.krypton.server.chunk
 
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.space.MutableVector3i
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import kotlin.math.abs
 import kotlin.math.max
 
 fun ChunkPosition.checkerboardDistance(player: KryptonPlayer, useWatched: Boolean): Int {
-    val x = if (useWatched) player.previousCentralX else player.location.blockX shr 4
-    val z = if (useWatched) player.previousCentralZ else player.location.blockZ shr 4
+    val x = if (useWatched) player.lastChunkPosition.toInt() else player.location.blockX shr 4
+    val z = if (useWatched) (player.lastChunkPosition shr 32).toInt() else player.location.blockZ shr 4
     return checkerboardDistance(x, z)
 }
 
@@ -33,4 +34,18 @@ fun ChunkPosition.checkerboardDistance(x: Int, z: Int): Int {
     val diffX = this.x - x
     val diffZ = this.z - z
     return max(abs(diffX), abs(diffZ))
+}
+
+fun MutableVector3i.spiralOutChunks(radius: Int): List<ChunkPosition> {
+    val list = mutableListOf(ChunkPosition(x shr 4, z shr 4))
+    for (r in 1..radius) {
+        var rx = -r
+        var rz = r
+        while (rx <= r && rz > -r) {
+            list.add(ChunkPosition((x + (rx shl 4)) shr 4, (z + (rz shl 4)) shr 4))
+            list.add(ChunkPosition((x - (rx shl 4)) shr 4, (z - (rz shl 4)) shr 4))
+            if (rx < r) rx++ else rz--
+        }
+    }
+    return list
 }

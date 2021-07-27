@@ -92,13 +92,14 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.toArea
 import org.kryptonmc.krypton.item.toItemStack
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
+import org.kryptonmc.krypton.util.PooledObjectLinkedOpenHashSet
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.bossbar.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
-import org.kryptonmc.nbt.compound
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
 import java.util.Locale
@@ -161,10 +162,11 @@ class KryptonPlayer(
     private var respawnAngle = 0F
     private var respawnDimension = World.OVERWORLD
 
+    val cachedSingleHashSet = PooledObjectLinkedOpenHashSet(this)
+    var lastChunkPosition = 0L
     var previousCentralX = 0
     var previousCentralZ = 0
-    private var hasLoadedChunks = false
-    private val visibleChunks = mutableSetOf<ChunkPosition>()
+    @Volatile var awaitingCenterUpdate = false
 
     init {
         data += MetadataKeys.PLAYER.ADDITIONAL_HEARTS
@@ -261,7 +263,7 @@ class KryptonPlayer(
                 isOnGround
             ))
         }
-        updateChunks()
+        world.chunkCache.move(this)
     }
 
     override fun teleport(player: Player) = teleport(player.location)
@@ -346,49 +348,13 @@ class KryptonPlayer(
         abilities.canBuild = gamemode.canBuild
     }
 
-    fun updateChunks() {
-        var previousChunks: MutableSet<ChunkPosition>? = null
-        val newChunks = mutableListOf<ChunkPosition>()
+    fun trackChunk(dataPacket: Packet, lightPacket: Packet) {
+        session.sendPacket(lightPacket)
+        session.sendPacket(dataPacket)
+    }
 
-        val centralX = location.blockX shr 4
-        val centralZ = location.blockZ shr 4
-        val radius = min(server.config.world.viewDistance, 1 + viewDistance)
-
-        if (!hasLoadedChunks) {
-            hasLoadedChunks = true
-            repeat(server.config.world.viewDistance.toArea()) { newChunks += chunkInSpiral(it, centralX, centralZ) }
-        } else if (abs(centralX - previousCentralX) > radius || abs(centralZ - previousCentralZ) > radius) {
-            visibleChunks.clear()
-            repeat(server.config.world.viewDistance.toArea()) { newChunks += chunkInSpiral(it, centralX, centralZ) }
-        } else if (previousCentralX != centralX || previousCentralZ != centralZ) {
-            previousChunks = HashSet(visibleChunks)
-            repeat(server.config.world.viewDistance.toArea()) {
-                val position = chunkInSpiral(it, centralX, centralZ)
-                if (position in visibleChunks) previousChunks.remove(position) else newChunks += position
-            }
-        } else {
-            return
-        }
-
-        previousCentralX = centralX
-        previousCentralZ = centralZ
-
-        IOScope.launch {
-            val loadedChunks = world.chunkManager.load(newChunks)
-            visibleChunks += newChunks
-
-            session.sendPacket(PacketOutUpdateViewPosition(ChunkPosition(centralX, centralZ)))
-            loadedChunks.forEach {
-                session.sendPacket(PacketOutUpdateLight(it))
-                session.sendPacket(PacketOutChunkData(it))
-            }
-
-            previousChunks?.forEach {
-                session.sendPacket(PacketOutUnloadChunk(it))
-                visibleChunks -= it
-            }
-            previousChunks?.clear()
-        }
+    fun untrackChunk(x: Int, z: Int) {
+        session.sendPacket(PacketOutUnloadChunk(x, z))
     }
 
     override fun hasCorrectTool(block: Block): Boolean = !block.requiresCorrectTool || inventory.mainHand.type.handler.isCorrectTool(block)

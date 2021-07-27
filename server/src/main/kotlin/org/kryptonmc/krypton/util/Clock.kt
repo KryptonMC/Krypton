@@ -16,18 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.util
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import java.time.Instant
 
-class PacketOutUnloadChunk(private val x: Int, private val z: Int) : PlayPacket(0x1D) {
+object Clock {
 
-    constructor(position: ChunkPosition) : this(position.x, position.z)
+    fun nanos() = System.nanoTime()
 
-    override fun write(buf: ByteBuf) {
-        buf.writeInt(x)
-        buf.writeInt(z)
-    }
+    fun millis() = nanos() / 1000000L
+
+    fun epochMillis() = Instant.now().toEpochMilli()
 }

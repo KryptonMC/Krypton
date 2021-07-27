@@ -25,6 +25,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.event.login.JoinEvent
 import org.kryptonmc.api.event.play.QuitEvent
+import org.kryptonmc.api.util.floor
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
@@ -68,6 +69,7 @@ import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.toProtocol
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.parseDimension
 import org.spongepowered.math.GenericMath
@@ -176,24 +178,31 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
         // Send the initial chunk stream
         val location = player.location
-        val centerChunk = ChunkPosition(GenericMath.floor(location.x / 16.0), GenericMath.floor(location.z / 16.0))
-        session.sendPacket(PacketOutUpdateViewPosition(centerChunk))
-        player.updateChunks()
+        val chunkX = location.blockX shr 4
+        val chunkZ = location.blockZ shr 4
+        val chunkPosition = ChunkPosition(chunkX, chunkZ)
+        session.sendPacket(PacketOutUpdateViewPosition(chunkX, chunkZ))
+        world.chunkCache.addRegionTicket(TicketTypes.LOGIN, chunkPosition, 31, chunkPosition.toLong())
+        world.chunkCache[chunkX, chunkZ].thenApply {
+            world.chunkCache.chunkManager.getChunkIfPresent(ChunkPosition.toLong(chunkX, chunkZ))?.entityTickingFuture ?: CompletableFuture.completedFuture(it)
+        }.thenAccept {
+            world.chunkCache.trackPlayer(player)
 
-        // TODO: Custom boss events, texture pack, mob effects
-        sendWorldInfo(world, player)
+            // TODO: Custom boss events, texture pack, mob effects
+            sendWorldInfo(world, player)
 
-        // Send inventory data
-        val items = player.inventory.networkItems
-        session.sendPacket(PacketOutWindowItems(player.inventory.id, player.inventory.incrementStateId(), items, player.inventory.mainHand))
+            // Send inventory data
+            val items = player.inventory.networkItems
+            session.sendPacket(PacketOutWindowItems(player.inventory.id, player.inventory.incrementStateId(), items, player.inventory.mainHand))
 
-        ServerStorage.PLAYER_COUNT.getAndIncrement()
+            ServerStorage.PLAYER_COUNT.getAndIncrement()
 
-        keepAliveExecutor.scheduleAtFixedRate({
-            val keepAliveId = System.currentTimeMillis()
-            session.lastKeepAliveId = keepAliveId
-            session.sendPacket(PacketOutKeepAlive(keepAliveId))
-        }, 0, 20, TimeUnit.SECONDS)
+            keepAliveExecutor.scheduleAtFixedRate({
+                val keepAliveId = System.currentTimeMillis()
+                session.lastKeepAliveId = keepAliveId
+                session.sendPacket(PacketOutKeepAlive(keepAliveId))
+            }, 0, 20, TimeUnit.SECONDS)
+        }
     }
 
     fun remove(player: KryptonPlayer) {

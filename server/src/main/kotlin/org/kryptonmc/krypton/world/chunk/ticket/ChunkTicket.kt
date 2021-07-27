@@ -25,8 +25,13 @@ data class ChunkTicket<T>(
 ) : Comparable<ChunkTicket<*>> {
 
     var createdTick = 0L
+    var delayUnloadBy = type.timeout
+    var priority = 0
 
-    fun hasTimedOut(currentTick: Long) = type.timeout != 0L && currentTick - createdTick > type.timeout
+    fun hasTimedOut(currentTick: Long): Boolean {
+        val delayUnload = delayUnloadBy
+        return delayUnload != 0L && currentTick - createdTick > delayUnload
+    }
 
     @Suppress("UNCHECKED_CAST")
     override fun compareTo(other: ChunkTicket<*>): Int {

@@ -23,10 +23,10 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 
-class PacketOutUpdateViewPosition(private val position: ChunkPosition) : PlayPacket(0x49) {
+class PacketOutUpdateViewPosition(private val x: Int, private val z: Int) : PlayPacket(0x49) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(position.x)
-        buf.writeVarInt(position.z)
+        buf.writeVarInt(x)
+        buf.writeVarInt(z)
     }
 }
