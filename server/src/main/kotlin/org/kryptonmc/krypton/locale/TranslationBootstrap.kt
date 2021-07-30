@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.locale
 import com.google.gson.JsonObject
 import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.renderer.TranslatableComponentRenderer
 import net.kyori.adventure.translation.TranslationRegistry
 import org.kryptonmc.krypton.GSON
 import java.text.MessageFormat
@@ -29,6 +30,7 @@ import java.util.Locale
 object TranslationBootstrap {
 
     val REGISTRY = TranslationRegistry.create(Key.key("krypton", "minecraft_translations"))
+    val RENDERER = TranslatableComponentRenderer.usingTranslationSource(REGISTRY)
     private val UNSUPPORTED_FORMAT_REGEX = "%(\\d+\\\$)?[\\d.]*[df]".toRegex()
 
     fun init() {

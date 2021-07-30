@@ -34,9 +34,8 @@ import java.util.Locale
 object KryptonConsoleSender : ConsoleSender {
 
     private val LOGGER = logger("CONSOLE")
-    private val RENDERER = TranslatableComponentRenderer.usingTranslationSource(TranslationBootstrap.REGISTRY)
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        LOGGER.info(RENDERER.render(message, Locale.ENGLISH).toSectionText())
+        LOGGER.info(TranslationBootstrap.RENDERER.render(message, Locale.ENGLISH).toSectionText())
     }
 }

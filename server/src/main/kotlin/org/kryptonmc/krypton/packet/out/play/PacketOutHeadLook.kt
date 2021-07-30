@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 class PacketOutHeadLook(
     private val entityId: Int,
     private val headYaw: Angle
-) : PlayPacket(0x3D) {
+) : PlayPacket(0x3E) {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

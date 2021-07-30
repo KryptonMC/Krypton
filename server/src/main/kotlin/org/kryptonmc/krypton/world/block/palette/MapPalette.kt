@@ -54,7 +54,7 @@ class MapPalette(private val bits: Int, private val resizer: (Int, Block) -> Int
         for (i in data.indices) values.add(data.getCompound(i).toBlock())
     }
 
-    fun save() = list { for (i in indices) add(values[i]!!.toNBT()) }
+    fun save() = list { for (i in 0 until this@MapPalette.size) add(values[i]!!.toNBT()) }
 
     override val size: Int
         get() = values.size

@@ -100,7 +100,7 @@ import kotlin.system.measureTimeMillis
 
 class KryptonServer(
     val registryHolder: RegistryHolder,
-    val storageSource: WorldDataAccess,
+    val dataAccess: WorldDataAccess,
     val worldData: PrimaryWorldData,
     val packRepository: PackRepository,
     val resources: ServerResources,
@@ -143,7 +143,7 @@ class KryptonServer(
     private val nettyProcess = NettyProcess(this)
     val random = SecureRandom()
 
-    override val worldManager = KryptonWorldManager(this, worldData, ops, worldFolder)
+    override val worldManager = KryptonWorldManager(this, dataAccess, worldData, ops, worldFolder)
     override val commandManager = KryptonCommandManager(this)
     override val pluginManager = KryptonPluginManager(this)
     override val eventManager = KryptonEventManager(pluginManager)
@@ -205,7 +205,7 @@ class KryptonServer(
         }
 
         LOGGER.info("Preparing world ${config.world.name}...")
-        worldManager.loadWorlds()
+        worldManager.init()
 
         loadPlugins()
 
@@ -295,7 +295,7 @@ class KryptonServer(
             profiler.push { "$world in ${world.dimension.location}" }
             if (tickCount % 20 == 0) {
                 profiler.push("time sync")
-                playerManager.sendToAll(PacketOutTimeUpdate(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
+                playerManager.sendToAll(PacketOutTimeUpdate(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]), world)
                 profiler.pop()
             }
 
@@ -380,10 +380,12 @@ class KryptonServer(
         isRunning = false
         playerManager.disconnectAll()
 
-        // save player, world and region data
+        // save data
         Messages.STOP.SAVE.info(LOGGER)
         worldManager.saveAll()
-        playerManager.shutdown()
+        resources.close()
+        dataAccess.close()
+        playerManager.saveAll()
 
         // shut down plugins and unregister listeners
         Messages.STOP.PLUGINS.info(LOGGER)

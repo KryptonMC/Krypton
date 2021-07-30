@@ -47,7 +47,7 @@ import java.nio.file.Path
 class WorldDataAccess(
     private val storage: WorldDataStorage,
     val id: String,
-) {
+) : AutoCloseable {
 
     val path: Path = storage.baseFolder.resolve(id)
     private val lock = path.lock()
@@ -69,6 +69,8 @@ class WorldDataAccess(
     }
 
     fun saveData(registryHolder: RegistryHolder, data: PrimaryWorldData) = storage.saveData(registryHolder, path, data)
+
+    override fun close() = lock.close()
 
     private fun checkLock() {
         check(lock.isValid) { "Lock is no longer valid!" }

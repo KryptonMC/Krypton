@@ -75,7 +75,6 @@ import org.kryptonmc.krypton.util.toSkinSettings
 import org.kryptonmc.krypton.world.block.KryptonBlockLoader
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.util.Locale
-import kotlin.math.max
 
 /**
  * This is the largest and most important of the four packet handlers, as the play state is where the
@@ -92,6 +91,7 @@ class PlayHandler(
 
     private val playerManager = server.playerManager
     private var lastKeepAlive = 0L
+    private var keepAliveChallenge = 0L
     private var pendingKeepAlive = false
 
     fun tick() {
@@ -102,7 +102,8 @@ class PlayHandler(
             } else {
                 pendingKeepAlive = true
                 lastKeepAlive = time
-                session.sendPacket(PacketOutKeepAlive(time))
+                keepAliveChallenge = time
+                session.sendPacket(PacketOutKeepAlive(keepAliveChallenge))
             }
         }
     }
@@ -204,8 +205,10 @@ class PlayHandler(
     }
 
     private fun handleKeepAlive(packet: PacketInKeepAlive) {
-        if (session.lastKeepAliveId == packet.keepAliveId) {
-            session.latency = max(packet.keepAliveId - session.lastKeepAliveId, 0L).toInt()
+        if (pendingKeepAlive && packet.id == keepAliveChallenge) {
+            val latency = (System.currentTimeMillis() - lastKeepAlive).toInt()
+            session.latency = (session.latency * 3 + latency) / 3
+            pendingKeepAlive = false
             playerManager.sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.UPDATE_LATENCY, player))
             return
         }
@@ -222,7 +225,7 @@ class PlayHandler(
         val world = player.world
         val chunkX = player.location.blockX shr 4
         val chunkZ = player.location.blockZ shr 4
-        val chunk = world.chunkMap[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
+        val chunk = world.chunkManager.chunkMap[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
         val existingBlock = chunk.getBlock(packet.hitResult.position)
         if (existingBlock != Blocks.AIR) return
 
@@ -237,7 +240,7 @@ class PlayHandler(
 
         val chunkX = packet.location.x() shr 4
         val chunkZ = packet.location.z() shr 4
-        val chunk = player.world.chunkMap[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
+        val chunk = player.world.chunkManager.chunkMap[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
         val x = packet.location.x()
         val y = packet.location.y()
         val z = packet.location.z()
@@ -325,7 +328,7 @@ class PlayHandler(
     companion object {
 
         private const val LATENCY_CHECK_INTERVAL = 15000
-        private const val KEEP_ALIVE_INTERVAL = 400
+        private const val KEEP_ALIVE_INTERVAL = 15000L
         private val LOGGER = logger<PlayHandler>()
     }
 }

@@ -60,6 +60,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
 import org.kryptonmc.krypton.network.Session
+import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.nextInt
@@ -85,7 +86,6 @@ import kotlin.random.Random
 class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     private val dataManager = PlayerDataManager(CURRENT_DIRECTORY.resolve(server.config.world.name).resolve("playerdata"))
-    private val keepAliveExecutor = Executors.newScheduledThreadPool(4, threadFactory("Keep Alive Scheduler"))
     val players = CopyOnWriteArrayList<KryptonPlayer>()
     val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
@@ -173,6 +173,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         players += player
         playersByName[player.name] = player
         playersByUUID[player.uuid] = player
+        world.addEntity(player)
 
         // Send the initial chunk stream
         val location = player.location
@@ -188,12 +189,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         session.sendPacket(PacketOutWindowItems(player.inventory.id, player.inventory.incrementStateId(), items, player.inventory.mainHand))
 
         ServerStorage.PLAYER_COUNT.getAndIncrement()
-
-        keepAliveExecutor.scheduleAtFixedRate({
-            val keepAliveId = System.currentTimeMillis()
-            session.lastKeepAliveId = keepAliveId
-            session.sendPacket(PacketOutKeepAlive(keepAliveId))
-        }, 0, 20, TimeUnit.SECONDS)
     }
 
     fun remove(player: KryptonPlayer) {
@@ -241,12 +236,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         it.session.disconnect(Component.translatable("multiplayer.disconnect.server_shutdown"))
     }
 
-    private fun saveAll() = players.forEach { dataManager.save(it) }
-
-    fun shutdown() {
-        saveAll()
-        keepAliveExecutor.shutdown()
-    }
+    fun saveAll() = players.forEach { dataManager.save(it) }
 
     fun tick(time: Long) {
         if (time - lastStatus >= UPDATE_STATUS_INTERVAL) {
@@ -257,6 +247,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             val sample = Array(sampleSize) { players[it + playerOffset].profile }.apply { shuffle() }
             status.players.sample = sample
         }
+        players.forEach { (it.session.handler as? PlayHandler)?.tick() }
     }
 
     fun invalidateStatus() {

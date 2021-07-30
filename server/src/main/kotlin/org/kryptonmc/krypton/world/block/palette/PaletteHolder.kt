@@ -105,7 +105,7 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
 
         for (i in 0 until SIZE) {
             val value = get(i)
-            if (value != default) {
+            if (value !== default) {
                 default = value
                 defaultId = newPalette[value]
             }

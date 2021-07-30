@@ -38,7 +38,6 @@ class Session(
     internal val channel: Channel
 ) {
 
-    var lastKeepAliveId = 0L
     var latency = 0
 
     @Volatile

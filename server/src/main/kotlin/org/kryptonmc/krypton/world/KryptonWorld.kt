@@ -64,7 +64,6 @@ import org.kryptonmc.krypton.util.synchronize
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
-import org.spongepowered.math.vector.Vector2d
 import org.spongepowered.math.vector.Vector3i
 import java.io.Writer
 import java.nio.file.Files
@@ -85,7 +84,7 @@ class KryptonWorld(
 
     private val random = Random()
 
-    override val border = KryptonWorldBorder(0.0, Vector2d(0.0, 0.0), 0.0, 0.0, 0.0, 0L, 0, 0) // FIXME
+    override val border = KryptonWorldBorder.DEFAULT // FIXME
     override val gamemode: Gamemode
         get() = data.gamemode
     override val difficulty: Difficulty
@@ -138,7 +137,6 @@ class KryptonWorld(
             oldRainLevel = clamped
             field = clamped
         }
-    private var skyDarken = 0
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector): T? {
@@ -174,6 +172,8 @@ class KryptonWorld(
             entities.add(entity)
         }
     }
+
+    fun addEntity(entity: KryptonEntity) = entitiesByChunk[ChunkPosition.toLong(entity.location.blockX shr 4, entity.location.blockZ shr 4)].add(entity)
 
     fun removeEntity(entity: KryptonEntity) {
         if (entity.world != this) return
@@ -342,5 +342,3 @@ class KryptonWorld(
         val THE_END = ResourceKey.of(InternalResourceKeys.WORLD, DimensionTypes.END_KEY.location)
     }
 }
-
-const val NBT_VERSION = 19_133

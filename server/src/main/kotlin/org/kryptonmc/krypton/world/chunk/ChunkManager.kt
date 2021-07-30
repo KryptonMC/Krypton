@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import com.github.benmanes.caffeine.cache.Cache
-import com.github.benmanes.caffeine.cache.Caffeine
 import com.mojang.serialization.Dynamic
 import org.kryptonmc.api.world.Biome
 import org.kryptonmc.krypton.ServerInfo
@@ -35,31 +33,27 @@ import org.kryptonmc.nbt.LongArrayTag
 import org.kryptonmc.nbt.buildCompound
 import org.kryptonmc.nbt.compound
 import java.util.EnumSet
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.ConcurrentHashMap
 
 class ChunkManager(private val world: KryptonWorld) {
 
+    val chunkMap = ConcurrentHashMap<Long, KryptonChunk>()
     private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
-    private val chunkCache: Cache<Long, KryptonChunk> = Caffeine.newBuilder()
-        .maximumSize(512)
-        .expireAfterWrite(10, TimeUnit.MINUTES)
-        .build()
 
-    operator fun get(x: Int, z: Int): KryptonChunk? = chunkCache.getIfPresent(ChunkPosition.toLong(x, z))
+    operator fun get(x: Int, z: Int): KryptonChunk? = chunkMap[ChunkPosition.toLong(x, z)]
 
     fun load(positions: List<ChunkPosition>): List<KryptonChunk> {
         val chunks = mutableListOf<KryptonChunk>()
         positions.forEach {
             val chunk = load(it.x, it.z)
-            world.chunkMap[it.toLong()] = chunk
+            chunkMap[it.toLong()] = chunk
             chunks += chunk
         }
         return chunks
     }
 
     fun load(x: Int, z: Int): KryptonChunk {
-        val cachedChunk = chunkCache.getIfPresent(ChunkPosition.toLong(x, z))
-        if (cachedChunk != null) return cachedChunk
+        chunkMap[ChunkPosition.toLong(x, z)]?.let { return it }
 
         val position = ChunkPosition(x, z)
         val nbt = regionFileManager.read(position)
@@ -98,7 +92,7 @@ class ChunkManager(private val world: KryptonWorld) {
             carvingMasks,
             data.getCompound("Structures")
         )
-        chunkCache.put(position.toLong(), chunk)
+        chunkMap[position.toLong()] = chunk
 
         val noneOf = EnumSet.noneOf(Heightmap.Type::class.java)
         Heightmap.Type.POST_FEATURES.forEach {
@@ -108,11 +102,10 @@ class ChunkManager(private val world: KryptonWorld) {
         return chunk
     }
 
-    fun saveAll() = world.chunkMap.values.forEach { save(it) }
+    fun saveAll() = chunkMap.values.forEach { save(it) }
 
     fun save(chunk: KryptonChunk) {
         val lastUpdate = world.time
-        chunkCache.invalidate(chunk.position.toLong())
         chunk.lastUpdate = lastUpdate
         regionFileManager.write(chunk.position, chunk.serialize())
     }

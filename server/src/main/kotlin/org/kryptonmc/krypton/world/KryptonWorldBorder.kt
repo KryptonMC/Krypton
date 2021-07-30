@@ -30,4 +30,19 @@ data class KryptonWorldBorder(
     val sizeLerpTime: Long,
     val warningBlocks: Int,
     val warningTime: Int
-) : WorldBorder
+) : WorldBorder {
+
+    companion object {
+
+        val DEFAULT = KryptonWorldBorder(
+            5.9999968E7,
+            Vector2d(0.0, 0.0),
+            0.2,
+            5.0,
+            0.0,
+            0L,
+            5,
+            15
+        )
+    }
+}

@@ -23,5 +23,5 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 
 class PacketInKeepAlive(buf: ByteBuf) : PlayPacket(0x0F) {
 
-    val keepAliveId = buf.readLong()
+    val id = buf.readLong()
 }
