@@ -20,7 +20,12 @@ package org.kryptonmc.krypton.world.chunk
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
+import com.mojang.serialization.Dynamic
 import org.kryptonmc.api.world.Biome
+import org.kryptonmc.krypton.ServerInfo
+import org.kryptonmc.krypton.util.datafix.DATA_FIXER
+import org.kryptonmc.krypton.util.datafix.References
+import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.region.RegionFileManager
@@ -57,10 +62,12 @@ class ChunkManager(private val world: KryptonWorld) {
         if (cachedChunk != null) return cachedChunk
 
         val position = ChunkPosition(x, z)
-        val nbt = regionFileManager.read(position).getCompound("Level")
-        val heightmaps = nbt.getCompound("Heightmaps")
+        val nbt = regionFileManager.read(position)
+        val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
+        val data = (DATA_FIXER.update(References.CHUNK, Dynamic(NBTOps, nbt), version, ServerInfo.WORLD_VERSION).value as CompoundTag).getCompound("Level")
+        val heightmaps = data.getCompound("Heightmaps")
 
-        val sectionList = nbt.getList("Sections", CompoundTag.ID)
+        val sectionList = data.getList("Sections", CompoundTag.ID)
         val sections = arrayOfNulls<ChunkSection>(world.sectionCount)
         for (i in sectionList.indices) {
             val sectionData = sectionList.getCompound(i)
@@ -78,18 +85,18 @@ class ChunkManager(private val world: KryptonWorld) {
             }
         }
 
-        val carvingMasks = nbt.getCompound("CarvingMasks").let {
+        val carvingMasks = data.getCompound("CarvingMasks").let {
             it.getByteArray("AIR") to it.getByteArray("LIQUID")
         }
         val chunk =  KryptonChunk(
             world,
             position,
             sections,
-            nbt.getIntArray("Biomes").map { Biome.fromId(it) },
-            nbt.getLong("LastUpdate"),
-            nbt.getLong("inhabitedTime"),
+            data.getIntArray("Biomes").map { Biome.fromId(it) },
+            data.getLong("LastUpdate"),
+            data.getLong("inhabitedTime"),
             carvingMasks,
-            nbt.getCompound("Structures")
+            data.getCompound("Structures")
         )
         chunkCache.put(position.toLong(), chunk)
 
