@@ -16,38 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.server.ban
+package org.kryptonmc.krypton.server.whitelist
 
 import com.google.gson.JsonObject
 import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.server.ServerConfigEntry
 import org.kryptonmc.krypton.util.toGameProfile
-import java.time.OffsetDateTime
 
-class BannedPlayerEntry(
-    profile: GameProfile,
-    creationDate: OffsetDateTime = OffsetDateTime.now(),
-    source: String = "(Unknown)",
-    expiryDate: OffsetDateTime? = null,
-    reason: String = "Banned by operator."
-) : BanEntry<GameProfile>(profile, creationDate, source, expiryDate, reason) {
+class WhitelistEntry(key: GameProfile) : ServerConfigEntry<GameProfile>(key) {
 
     override fun writeToJson(data: JsonObject) {
-        data.addProperty("uuid", key.uuid.toString())
         data.addProperty("name", key.name)
-        super.writeToJson(data)
-    }
-
-    override fun toString(): String {
-        return "BannedPlayerEntry(name=${key.name}, creationDate=${creationDate}, source=${source}, expires=${expiryDate}, reason=$reason)"
+        data.addProperty("uuid", key.uuid.toString())
     }
 
     companion object {
 
-        internal fun fromJson(data: JsonObject): BannedPlayerEntry {
-            val entry = BanEntry.fromJson(data.toGameProfile(), data) //Get better null checking
-            return BannedPlayerEntry(entry.key!!, entry.creationDate, entry.source, entry.expiryDate, entry.reason)
-        }
-
+        internal fun fromJson(data: JsonObject) = WhitelistEntry(data.toGameProfile()!!)
     }
 
 }

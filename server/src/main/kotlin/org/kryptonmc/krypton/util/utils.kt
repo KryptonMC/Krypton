@@ -19,14 +19,17 @@
 package org.kryptonmc.krypton.util
 
 import com.google.common.net.InetAddresses
+import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.Hash
 import net.kyori.adventure.text.Component.text
+import org.kryptonmc.krypton.auth.GameProfile
 import java.math.BigInteger
 import java.net.InetAddress
 import java.security.AccessController
 import java.security.MessageDigest
 import java.security.PrivilegedAction
 import java.util.Optional
+import java.util.UUID
 
 // Avoid lookups
 fun String.toInetAddress(): InetAddress = InetAddresses.forString(this)
@@ -53,6 +56,19 @@ fun notSupported(message: String): Nothing = throw UnsupportedOperationException
 fun <T : Map<K, V>, K, V> Optional<T>.forEachPresent(action: (K, V) -> Unit) = ifPresent { it.forEach(action) }
 
 fun String.toComponent() = text(this)
+
+fun JsonObject.toGameProfile(): GameProfile? {
+    if (has("name") && has("uuid")) {
+        val name = get("name").asString
+        val uuid = try {
+            UUID.fromString(get("uuid").asString)
+        } catch (_: IllegalArgumentException) {
+            return null
+        }
+        return GameProfile(uuid, name, listOf())
+    }
+    return null
+}
 
 @Suppress("UNCHECKED_CAST")
 fun <K> identityStrategy(): Hash.Strategy<K> = IdentityStrategy as Hash.Strategy<K>

@@ -75,8 +75,11 @@ import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
+<<<<<<< HEAD
 import org.spongepowered.configurate.kotlin.extensions.get
 import java.io.IOException
+=======
+>>>>>>> ad59838 (Added Whitelist System)
 import java.net.InetSocketAddress
 import java.nio.file.Path
 import java.security.SecureRandom
@@ -93,9 +96,15 @@ import kotlin.io.path.isRegularFile
 import kotlin.math.max
 import kotlin.system.measureTimeMillis
 
-class KryptonServer : Server {
+class KryptonServer(
+    val registryHolder: RegistryHolder,
+    val packRepository: PackRepository,
+    val resources: ServerResources,
+    val config: KryptonConfig,
+    private val configPath: Path,
+    worldFolder: Path
+) : Server {
 
-    internal val config = loadConfig()
 
     override val info = KryptonServerInfo
     override val status = KryptonStatusInfo(config.status.maxPlayers, config.status.motd)
@@ -176,8 +185,10 @@ class KryptonServer : Server {
         TranslationRepository.scheduleRefresh()
 
         //Create server config lists
+        LOGGER.debug("Loading server config lists...")
         playerManager.bannedPlayers.validatePath()
         playerManager.userCache.validatePath()
+        playerManager.whitelist.validatePath()
 
         // Start the metrics system
         LOGGER.debug("Starting bStats metrics")
@@ -300,6 +311,16 @@ class KryptonServer : Server {
             Messages.AUTOSAVE.FINISHED.info(LOGGER)
             profiler.pop()
         }
+    }
+
+    internal fun updateConfig() {
+        val config = HoconConfigurationLoader.builder()
+            .path(configPath)
+            .defaultOptions(KryptonConfig.OPTIONS)
+            .build()
+        val node = config.load()
+            .set(this.config)
+        config.save(node)
     }
 
     fun startProfiling() {

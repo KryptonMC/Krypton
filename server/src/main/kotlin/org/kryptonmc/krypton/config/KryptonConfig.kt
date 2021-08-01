@@ -50,7 +50,7 @@ data class KryptonConfig(
     @Comment("Proxy IP forwarding settings.")
     val proxy: ProxyCategory = ProxyCategory(),
     @Comment("Other settings that don't quite fit in anywhere else.")
-    val other: OtherCategory = OtherCategory()
+    val other: OtherCategory = OtherCategory(),
 ) {
 
     companion object {

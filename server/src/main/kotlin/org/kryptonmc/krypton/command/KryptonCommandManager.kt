@@ -60,6 +60,7 @@ import org.kryptonmc.krypton.command.commands.TeleportCommand
 import org.kryptonmc.krypton.command.commands.TitleCommand
 import org.kryptonmc.krypton.command.commands.UnbanCommand
 import org.kryptonmc.krypton.command.commands.VersionCommand
+import org.kryptonmc.krypton.command.commands.WhitelistCommand
 import org.kryptonmc.krypton.locale.Messages
 import java.util.concurrent.CompletableFuture
 
@@ -186,6 +187,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         KickCommand().register(dispatcher)
         BanCommand().register(dispatcher)
         UnbanCommand().register(dispatcher)
+        WhitelistCommand().register(dispatcher)
     }
 
     companion object {

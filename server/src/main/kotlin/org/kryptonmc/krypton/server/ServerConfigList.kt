@@ -33,6 +33,8 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
 
     private val map = hashMapOf<String, V>()
     private val gson = Gson()
+    val size get() = map.values.size
+
 
     operator fun get(key: K) = map[key.toString()]
 
@@ -45,6 +47,7 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
     fun contains(key: K) = map.containsKey(key.toString())
 
     fun isEmpty() = map.isEmpty()
+
 
     fun add(entry: V) {
         map[entry.key.toString()] = entry

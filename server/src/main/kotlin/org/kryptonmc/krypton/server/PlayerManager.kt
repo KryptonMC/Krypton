@@ -58,6 +58,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
+import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nextInt
 import org.kryptonmc.krypton.util.threadFactory
@@ -91,8 +92,15 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     private val maxPlayers = server.status.maxPlayers
     private val viewDistance = server.config.world.viewDistance
+    var whitelistEnabled = server.config.server.whitelistEnabled
+        set(value) {
+            field = value
+            server.config.server.whitelistEnabled = value
+            server.updateConfig()
+        }
 
     val bannedPlayers = BannedPlayerList(Path.of("banned-players.json"))
+    val whitelist = Whitelist(Path.of("whitelist.json"))
 
     val status = ServerStatus(server.status.motd, ServerStatus.Players(server.status.maxPlayers, players.size), null)
     private var lastStatus = 0L

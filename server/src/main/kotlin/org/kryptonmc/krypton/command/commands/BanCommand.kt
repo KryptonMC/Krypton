@@ -39,22 +39,23 @@ import org.kryptonmc.krypton.server.ban.BannedPlayerEntry
 import org.kryptonmc.krypton.util.argument
 import org.kryptonmc.krypton.util.toComponent
 
-class BanCommand : InternalCommand {
+internal class BanCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
             literal<Sender>("ban")
-                .then(argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
-                    .executes {
-                        if ((it.source as? KryptonPlayer) == null) {
-                            val sender = it.source as KryptonConsoleSender
-                            val targets = it.gameProfileArgument("targets").getProfile(sender.server)
-                            ban(targets, server = sender.server, sender = sender)
-                        } else {
-                            val sender = it.source as KryptonPlayer
-                            val targets = it.gameProfileArgument("targets").getProfiles(sender)
-                            ban(targets, server = sender.server, sender = sender)
-                        }
+                .then(
+                    argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
+                        .executes {
+                            if (it.source !is KryptonPlayer) {
+                                val sender = it.source as KryptonConsoleSender
+                                val targets = it.gameProfileArgument("targets").getProfile(sender.server)
+                                ban(listOf(targets), server = sender.server, sender = sender)
+                            } else {
+                                val sender = it.source as KryptonPlayer
+                                val targets = it.gameProfileArgument("targets").getProfiles(sender)
+                                ban(targets, server = sender.server, sender = sender)
+                            }
                         1
                     }
                     .then(argument<Sender, String>("reason", string())
@@ -63,7 +64,7 @@ class BanCommand : InternalCommand {
                             if ((it.source as? KryptonPlayer) == null) {
                                 val sender = it.source as KryptonConsoleSender
                                 val targets = it.gameProfileArgument("targets").getProfile(sender.server)
-                                ban(targets, server = sender.server, reason = reason, sender = sender)
+                                ban(listOf(targets), server = sender.server, reason = reason, sender = sender)
                             } else {
                                 val sender = it.source as KryptonPlayer
                                 val targets = it.gameProfileArgument("targets").getProfiles(sender)

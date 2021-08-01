@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.console.KryptonConsoleSender
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.toComponent
 
-class UnbanCommand : InternalCommand {
+internal class UnbanCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
@@ -41,10 +41,10 @@ class UnbanCommand : InternalCommand {
                 .then(
                     argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
                         .executes {
-                            if ((it.source as? KryptonPlayer) == null) {
+                            if (it.source !is KryptonPlayer) {
                                 val sender = it.source as KryptonConsoleSender
                                 val targets = it.gameProfileArgument("targets").getProfile(sender.server)
-                                unban(targets, sender, sender.server)
+                                unban(listOf(targets), sender, sender.server)
                             } else {
                                 val sender = it.source as KryptonPlayer
                                 val targets = it.gameProfileArgument("targets").getProfiles(sender)

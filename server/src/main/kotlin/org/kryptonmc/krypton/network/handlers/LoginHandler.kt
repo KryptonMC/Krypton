@@ -261,6 +261,9 @@ class LoginHandler(
             )
             session.disconnect(text)
             return false
+        } else if (playerManager.whitelistEnabled && !playerManager.whitelist.contains(profile)) {
+            session.disconnect(translatable("multiplayer.disconnect.not_whitelisted"))
+            return false
         }
         return true
     }

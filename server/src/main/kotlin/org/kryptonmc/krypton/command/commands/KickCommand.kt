@@ -31,17 +31,19 @@ import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 
-class KickCommand : InternalCommand {
+internal class KickCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("kick")
-            .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
-                .executes {
-                    if (it.source is KryptonPlayer) {
-                        val players = it.entityArgument("targets").getPlayers(it.source as KryptonPlayer)
-                        for (player in players) {
-                            player.kick()
-                        }
+        dispatcher.register(
+            literal<Sender>("kick")
+                .then(
+                    argument<Sender, EntityQuery>("targets", EntityArgument.players())
+                        .executes {
+                            if (it.source is KryptonPlayer) {
+                                val players = it.entityArgument("targets").getPlayers(it.source as KryptonPlayer)
+                                for (player in players) {
+                                    player.kick()
+                                }
                     } else {
                         val player = it.entityArgument("targets").getPlayer(it.source.server as KryptonServer)
                             player.kick()

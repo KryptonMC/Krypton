@@ -91,9 +91,9 @@ class EntityQuery(
     }
 
     fun getProfile(server: KryptonServer) = if (playerName.isNotEmpty()) {
-        listOf(server.playerManager.userCache.getProfileByName(playerName) ?: throw PLAYER_NOT_FOUND.create())
+        server.playerManager.userCache.getProfileByName(playerName) ?: throw PLAYER_NOT_FOUND.create()
     } else {
-        listOf()
+        throw PLAYER_NOT_FOUND.create()
     }
 
     private fun applyArguments(originalEntities: List<KryptonEntity>, source: KryptonPlayer): List<KryptonEntity> {
