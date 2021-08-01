@@ -28,7 +28,6 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.gameprofile.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.gameprofile.gameProfileArgument
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.server.whitelist.WhitelistEntry
 import org.kryptonmc.krypton.util.toComponent
 
@@ -40,8 +39,9 @@ internal class WhitelistCommand : InternalCommand {
                 .then(literal<Sender>("on")
                     .executes {
                         val sender = it.source
-                        if (!(sender.server as KryptonServer).playerManager.whitelistEnabled) {
-                            (sender.server as KryptonServer).playerManager.whitelistEnabled = true
+                        val server = sender.server as KryptonServer
+                        if (!server.playerManager.whitelistEnabled) {
+                            server.playerManager.whitelistEnabled = true
                             sender.sendMessage(translatable("commands.whitelist.enabled"))
                         } else {
                             sender.sendMessage(translatable("commands.whitelist.alreadyOn"))
@@ -51,8 +51,9 @@ internal class WhitelistCommand : InternalCommand {
                 .then(literal<Sender>("off")
                     .executes {
                         val sender = it.source
-                        if ((sender.server as KryptonServer).playerManager.whitelistEnabled) {
-                            (sender.server as KryptonServer).playerManager.whitelistEnabled = false
+                        val server = sender.server as KryptonServer
+                        if (server.playerManager.whitelistEnabled) {
+                            server.playerManager.whitelistEnabled = false
                             sender.sendMessage(translatable("commands.whitelist.disabled"))
                         } else {
                             sender.sendMessage(translatable("commands.whitelist.alreadyOff"))
@@ -62,7 +63,8 @@ internal class WhitelistCommand : InternalCommand {
                 .then(literal<Sender>("list")
                     .executes {
                         val sender = it.source
-                        val whitelist = (sender.server as KryptonServer).playerManager.whitelist
+                        val server = it.source.server as KryptonServer
+                        val whitelist = server.playerManager.whitelist
                         if (whitelist.isEmpty()) {
                             sender.sendMessage(translatable("commands.whitelist.none"))
                         } else {
@@ -84,24 +86,8 @@ internal class WhitelistCommand : InternalCommand {
                             .executes {
                                 val sender = it.source
                                 val server = sender.server as KryptonServer
-                                if (sender is KryptonPlayer) {
-                                    val targets = it.gameProfileArgument("targets").getProfiles(sender)
-                                    for (target in targets) {
-                                        val whitelist = server.playerManager.whitelist
-                                        if (!whitelist.contains(target)) {
-                                            whitelist += WhitelistEntry(target)
-                                            sender.sendMessage(
-                                                translatable(
-                                                    "commands.whitelist.add.success",
-                                                    listOf(target.name.toComponent())
-                                                )
-                                            )
-                                        } else {
-                                            sender.sendMessage(translatable("commands.whitelist.add.failed"))
-                                        }
-                                    }
-                                } else {
-                                    val target = it.gameProfileArgument("targets").getProfile(server)
+                                val targets = it.gameProfileArgument("targets").getProfiles(sender)
+                                for (target in targets) {
                                     val whitelist = server.playerManager.whitelist
                                     if (!whitelist.contains(target)) {
                                         whitelist += WhitelistEntry(target)
@@ -124,24 +110,8 @@ internal class WhitelistCommand : InternalCommand {
                             .executes {
                                 val sender = it.source
                                 val server = sender.server as KryptonServer
-                                if (sender is KryptonPlayer) {
-                                    val targets = it.gameProfileArgument("targets").getProfiles(sender)
-                                    for (target in targets) {
-                                        val whitelist = server.playerManager.whitelist
-                                        if (whitelist.contains(target)) {
-                                            whitelist -= target
-                                            sender.sendMessage(
-                                                translatable(
-                                                    "commands.whitelist.remove.success",
-                                                    listOf(target.name.toComponent())
-                                                )
-                                            )
-                                        } else {
-                                            sender.sendMessage(translatable("commands.whitelist.remove.failed"))
-                                        }
-                                    }
-                                } else {
-                                    val target = it.gameProfileArgument("targets").getProfile(server)
+                                val targets = it.gameProfileArgument("targets").getProfiles(sender)
+                                for (target in targets) {
                                     val whitelist = server.playerManager.whitelist
                                     if (whitelist.contains(target)) {
                                         whitelist -= target

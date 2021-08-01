@@ -23,12 +23,10 @@ import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 
 internal class KickCommand : InternalCommand {
@@ -39,34 +37,22 @@ internal class KickCommand : InternalCommand {
                 .then(
                     argument<Sender, EntityQuery>("targets", EntityArgument.players())
                         .executes {
-                            if (it.source is KryptonPlayer) {
-                                val players = it.entityArgument("targets").getPlayers(it.source as KryptonPlayer)
-                                for (player in players) {
-                                    player.kick()
-                                }
-                    } else {
-                        val player = it.entityArgument("targets").getPlayer(it.source.server as KryptonServer)
-                            player.kick()
-
-                    }
-                    1
-                }
-                .then(argument<Sender, String>("reason", string())
-                    .executes {
-                        val reason = it.argument<String>("reason")
-                        if (it.source is KryptonPlayer) {
-                            val players = it.entityArgument("targets").getPlayers(it.source as KryptonPlayer)
+                            val players = it.entityArgument("targets").getPlayers(it.source)
                             for (player in players) {
-                                player.kick(reason)
+                                player.kick()
                             }
-                        } else {
-                            val player = it.entityArgument("targets").getPlayer(it.source.server as KryptonServer)
-                                player.kick(reason)
-
+                            1
                         }
-                        1
-                    })
-            )
+                        .then(argument<Sender, String>("reason", string())
+                            .executes {
+                                val reason = it.argument<String>("reason")
+                                val players = it.entityArgument("targets").getPlayers(it.source)
+                                for (player in players) {
+                                    player.kick(reason)
+                                }
+                                1
+                            })
+                )
         )
     }
 }

@@ -23,8 +23,10 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -75,25 +77,31 @@ class EntityQuery(
 
     fun getEntity(source: KryptonPlayer): KryptonEntity = getEntities(source)[0]
 
-    fun getPlayers(source: KryptonPlayer) =
-        getEntities(source).map { if (it !is KryptonPlayer) throw UnsupportedOperationException("You cannot call .getPlayers() if there is an entity in the arguments") else it }
-
-    fun getPlayer(server: KryptonServer) = if (playerName.isNotEmpty()) {
-        server.player(playerName) ?: throw PLAYER_NOT_FOUND.create()
-    } else {
-        throw PLAYER_NOT_FOUND.create()
+    fun getPlayers(sender: Sender): List<KryptonPlayer> {
+        val server = sender.server as KryptonServer
+        if (sender is KryptonPlayer) {
+            if (playerName.isNotEmpty()) return listOf(server.player(playerName) ?: throw PLAYER_NOT_FOUND.create())
+            return getEntities(sender).map { if (it !is KryptonPlayer) throw UnsupportedOperationException("You cannot call .getPlayers() if there is an entity in the arguments") else it }
+        } else {
+            return listOf(server.player(playerName) ?: throw PLAYER_NOT_FOUND.create())
+        }
     }
 
-    fun getProfiles(source: KryptonPlayer) = if (playerName.isNotEmpty()) {
-        listOf(source.server.playerManager.userCache.getProfileByName(playerName) ?: throw PLAYER_NOT_FOUND.create())
-    } else {
-        getPlayers(source).map { it.profile }
-    }
-
-    fun getProfile(server: KryptonServer) = if (playerName.isNotEmpty()) {
-        server.playerManager.userCache.getProfileByName(playerName) ?: throw PLAYER_NOT_FOUND.create()
-    } else {
-        throw PLAYER_NOT_FOUND.create()
+    fun getProfiles(sender: Sender): List<GameProfile> {
+        val server = sender.server as KryptonServer
+        return if (sender is KryptonPlayer) {
+            if (playerName.isNotEmpty()) {
+                listOf(server.playerManager.userCache.getProfileByName(playerName) ?: throw PLAYER_NOT_FOUND.create())
+            } else {
+                getPlayers(sender).map { it.profile }
+            }
+        } else {
+            if (playerName.isNotEmpty()) {
+                listOf(server.playerManager.userCache.getProfileByName(playerName) ?: throw PLAYER_NOT_FOUND.create())
+            } else {
+                listOf()
+            }
+        }
     }
 
     private fun applyArguments(originalEntities: List<KryptonEntity>, source: KryptonPlayer): List<KryptonEntity> {

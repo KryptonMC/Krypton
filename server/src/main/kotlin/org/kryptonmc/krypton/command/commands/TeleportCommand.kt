@@ -63,7 +63,7 @@ internal object TeleportCommand : InternalCommand {
                     .executes {
                         val sender = it.source as? KryptonPlayer ?: return@executes 1
                         val players = it.entityArgument("players").getPlayers(sender)
-                        val target = it.entityArgument("target").getPlayer(sender.server)
+                        val target = it.entityArgument("target").getPlayers(sender)[0]
                         for (player in players) {
                             teleport(player, target.location)
                         }

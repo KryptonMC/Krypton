@@ -30,8 +30,6 @@ import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.gameprofile.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.gameprofile.gameProfileArgument
 import org.kryptonmc.krypton.command.suggest
-import org.kryptonmc.krypton.console.KryptonConsoleSender
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.toComponent
 
 internal class PardonCommand : InternalCommand {
@@ -45,15 +43,11 @@ internal class PardonCommand : InternalCommand {
                             builder.suggest((context.source.server as KryptonServer).playerManager.bannedPlayers.map { it.key.name })
                         }
                         .executes {
-                            if (it.source !is KryptonPlayer) {
-                                val sender = it.source as KryptonConsoleSender
-                                val targets = it.gameProfileArgument("targets").getProfile(sender.server)
-                                unban(listOf(targets), sender, sender.server)
-                            } else {
-                                val sender = it.source as KryptonPlayer
-                                val targets = it.gameProfileArgument("targets").getProfiles(sender)
-                                unban(targets, server = sender.server, sender = sender)
-                            }
+                            unban(
+                                it.gameProfileArgument("targets").getProfiles(it.source),
+                                server = it.source.server as KryptonServer,
+                                sender = it.source
+                            )
                             1
                         })
         )
