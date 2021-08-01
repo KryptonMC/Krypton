@@ -42,7 +42,6 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.adventure.AdventureMessage
 import org.kryptonmc.krypton.command.commands.DebugCommand
 import org.kryptonmc.krypton.command.commands.GamemodeCommand
 import org.kryptonmc.krypton.command.commands.ListCommand
