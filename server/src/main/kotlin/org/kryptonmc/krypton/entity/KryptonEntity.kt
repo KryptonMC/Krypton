@@ -190,6 +190,13 @@ abstract class KryptonEntity(
 
     override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(ShowEntity.of(type.key, uuid, displayName.takeIf { it !== Component.empty() }))
 
+    fun distanceSquared(entity: KryptonEntity): Double {
+        val d = location.x - entity.location.x
+        val e = location.y - entity.location.y
+        val f = location.z - entity.location.z
+        return d * d + e * e + f * f
+    }
+
     override var isOnFire: Boolean
         get() = getSharedFlag(0)
         set(value) = setSharedFlag(0, value)
