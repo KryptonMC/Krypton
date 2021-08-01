@@ -19,10 +19,8 @@
 package org.kryptonmc.krypton.command.arguments.entities
 
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
-import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component.text
 import org.kryptonmc.api.adventure.toMessage
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -82,50 +80,53 @@ class EntityQuery(
 
     private fun applyArguments(originalEntities: List<KryptonEntity>, source: KryptonPlayer): List<KryptonEntity> {
         var entities = originalEntities
-        for (arg in args) {
-            when (arg.name) {
+        var differenceX = 0
+        var differenceY = 0
+        var differenceZ = 0
+        for ((option, value, exclude) in args) {
+            when (option) {
+                "dx" -> {
+                    differenceX = value.toString().toInt()
+                }
+                "dy" -> {
+                    differenceY = value.toString().toInt()
+                }
+                "dz" -> {
+                    differenceZ = value.toString().toInt()
+                }
                 "x" -> {
                     entities = entities.filter {
-                        it.location.blockX == arg.value.toString().toInt()
+                        applyDifference(differenceX, value, it.location.blockX)
                     }
                 }
                 "y" -> {
                     entities = entities.filter {
-                        it.location.blockY == arg.value.toString().toInt()
+                        applyDifference(differenceY, value, it.location.blockY)
                     }
                 }
                 "z" -> {
                     entities = entities.filter {
-                        it.location.blockY == arg.value.toString().toInt()
+                        applyDifference(differenceZ, value, it.location.blockZ)
                     }
                 }
                 "distance" -> {
-                    entities = if (arg.value.toString().startsWith("..")) {
-                        val distance = arg.value.toString().replace("..", "").toInt()
+                    entities = if (value.toString().startsWith("..")) {
+                        val distance = value.toString().replace("..", "").toInt()
                         entities.filter {
                             it.distance(source) <= distance
                         }
-                    } else if (!arg.value.toString().contains("..")) {
+                    } else if (!value.toString().contains("..")) {
                         entities.filter {
                             val int = it.distance(source).toInt()
                             if (int < 0) throw DISTANCE_NEGATIVE.create()
-                            int == arg.value.toString().toInt()
+                            int == value.toString().toInt()
                         }
                     } else {
-                        val range = arg.value.toString().toIntRange()
+                        val range = value.toString().toIntRange()
                         entities.filter {
                             it.distance(source) >= range.first && it.distance(source) <= range.last
                         }
                     }
-                }
-                "dx" -> {
-                    notImplemented("dx")
-                }
-                "dy" -> {
-                    notImplemented("dy")
-                }
-                "dz" -> {
-                    notImplemented("dz")
                 }
                 "scores" -> {
                     notImplemented("scores")
@@ -142,56 +143,54 @@ class EntityQuery(
                 "gamemode" -> {
                     entities = entities.filter {
                         if (it !is KryptonPlayer) return@filter true
-                        if (arg.exclude) {
-                            it.gamemode != Gamemode.fromName(arg.value.toString())
+                        if (exclude) {
+                            it.gamemode != Gamemode.fromName(value.toString())
                         } else {
-                            it.gamemode == Gamemode.fromName(arg.value.toString())
+                            it.gamemode == Gamemode.fromName(value.toString())
                         }
                     }
                 }
                 "name" -> {
                     entities = entities.filter {
-                        if (arg.exclude) it.name != arg.value else it.name == arg.value
+                        if (exclude) it.name != value else it.name == value
                     }
                 }
                 "x_rotation" -> {
-                    entities = if (arg.value.toString().startsWith("..")) {
-                        val pitch = arg.value.toString().replace("..", "").toFloat()
+                    entities = if (value.toString().startsWith("..")) {
+                        val pitch = value.toString().replace("..", "").toFloat()
                         entities.filter {
                             it.location.pitch <= pitch
                         }
-                    } else if (!arg.value.toString().contains("..")) {
+                    } else if (!value.toString().contains("..")) {
                         entities.filter {
-                            it.location.pitch == arg.value.toString().toFloat()
+                            it.location.pitch == value.toString().toFloat()
                         }
                     } else {
-                        val range = arg.value.toString().toIntRange()
+                        val range = value.toString().toIntRange()
                         entities.filter {
                             it.location.pitch.toInt() >= range.first && it.location.pitch <= range.last
                         }
                     }
                 }
                 "y_rotation" -> {
-                    entities = if (arg.value.toString().startsWith("..")) {
-                        val yaw = arg.value.toString().replace("..", "").toInt()
+                    entities = if (value.toString().startsWith("..")) {
+                        val yaw = value.toString().replace("..", "").toInt()
                         entities.filter {
                             it.location.yaw <= yaw
                         }
-                    } else if (!arg.value.toString().contains("..")) {
+                    } else if (!value.toString().contains("..")) {
                         entities.filter {
-                            it.location.yaw == arg.value.toString().toFloat()
+                            it.location.yaw == value.toString().toFloat()
                         }
                     } else {
-                        val range = arg.value.toString().toIntRange()
+                        val range = value.toString().toIntRange()
                         entities.filter {
                             it.location.yaw >= range.first && it.location.yaw <= range.last
                         }
                     }
                 }
                 "type" -> {
-                    entities = entities.filter {
-                        it.type == Registries.ENTITY_TYPE[key(arg.value.toString())]
-                    }
+                    notImplemented("type")
                 }
                 "nbt" -> {
                     notImplemented("nbt")
@@ -203,8 +202,8 @@ class EntityQuery(
                     notImplemented("predicate")
                 }
                 "sort" -> {
-                    val sorter = EntityArguments.Sorter.fromName(arg.value.toString())
-                        ?: throw INVALID_SORT_TYPE.create(arg.value)
+                    val sorter = EntityArguments.Sorter.fromName(value.toString())
+                        ?: throw INVALID_SORT_TYPE.create(value)
                     entities = when (sorter) {
                         EntityArguments.Sorter.NEAREST -> entities.sortedBy { it.distanceSquared(source) }
                         EntityArguments.Sorter.FURTHEST -> entities.sortedByDescending { it.distanceSquared(source) }
@@ -213,7 +212,7 @@ class EntityQuery(
                     }
                 }
                 "limit" -> {
-                    val limit = arg.value.toString().toInt()
+                    val limit = value.toString().toInt()
                     if (limit <= 0) throw LIMIT_NULL.create()
                     entities = if (entities.size > limit) entities.subList(0, limit - 1) else entities
                 }
@@ -223,6 +222,14 @@ class EntityQuery(
             }
         }
         return entities
+    }
+
+    private fun applyDifference(difference: Int, value: Any, blockCoordinate: Int) = if (difference != 0) {
+        val min = value.toString().toInt()
+        val max = min + difference
+        blockCoordinate in min..max
+    } else {
+        blockCoordinate == value.toString().toInt()
     }
 
     private fun notImplemented(option: String) {
