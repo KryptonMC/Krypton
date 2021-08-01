@@ -28,6 +28,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.ticking.TickEndEvent
@@ -35,12 +36,13 @@ import org.kryptonmc.api.event.ticking.TickStartEvent
 import org.kryptonmc.api.status.StatusInfo
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.MojangUUIDSerializer
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDER
 import org.kryptonmc.krypton.config.KryptonConfig
-import org.kryptonmc.krypton.console.KryptonConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
+import org.kryptonmc.krypton.console.KryptonConsoleSender
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.MetadataResponse
@@ -64,17 +66,18 @@ import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.createDirectory
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.profiling.ServerProfiler
 import org.kryptonmc.krypton.util.profiling.DeadProfiler
 import org.kryptonmc.krypton.util.profiling.Profiler
+import org.kryptonmc.krypton.util.profiling.ServerProfiler
 import org.kryptonmc.krypton.util.profiling.SingleTickProfiler
-import org.kryptonmc.krypton.util.profiling.results.ProfileResults
 import org.kryptonmc.krypton.util.profiling.decorate
+import org.kryptonmc.krypton.util.profiling.results.ProfileResults
 import org.kryptonmc.krypton.util.reports.CrashReport
 import org.kryptonmc.krypton.util.reports.ReportedException
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.net.InetSocketAddress
 import java.nio.file.Path
 import java.security.SecureRandom
@@ -96,6 +99,7 @@ class KryptonServer(
     val packRepository: PackRepository,
     val resources: ServerResources,
     val config: KryptonConfig,
+    private val configPath: Path,
     worldFolder: Path
 ) : Server {
 
@@ -116,7 +120,7 @@ class KryptonServer(
     override fun player(name: String) = playerManager.playersByName[name]
 
     override val channels: MutableSet<Key> = ConcurrentHashMap.newKeySet()
-    override val console = KryptonConsoleSender
+    override val console = KryptonConsoleSender(this)
     override var scoreboard: KryptonScoreboard? = null
         private set
 
@@ -171,6 +175,15 @@ class KryptonServer(
         LOGGER.debug("Registering commands and translations...")
         commandManager.registerBuiltins()
         TranslationRepository.scheduleRefresh()
+
+        //Create server config lists
+        LOGGER.debug("Loading server config lists...")
+        playerManager.bannedPlayers.validatePath()
+        playerManager.userCache.validatePath()
+        playerManager.whitelist.validatePath()
+        playerManager.bannedIps.validatePath()
+        playerManager.ops.validatePath()
+        playerManager.whitlistedIps.validatePath()
 
         // Start the metrics system
         LOGGER.debug("Starting bStats metrics")
@@ -286,6 +299,16 @@ class KryptonServer(
         }
     }
 
+    internal fun updateConfig() {
+        val config = HoconConfigurationLoader.builder()
+            .path(configPath)
+            .defaultOptions(KryptonConfig.OPTIONS)
+            .build()
+        val node = config.load()
+            .set(this.config)
+        config.save(node)
+    }
+
     fun startProfiling() {
         delayProfilerStart = true
     }
@@ -338,6 +361,10 @@ class KryptonServer(
     }
 
     override fun audiences() = players + console
+
+    fun getPermissionLevel(profile: GameProfile) =
+        if (playerManager.ops.contains(profile)) PermissionLevel.fromId(playerManager.ops[profile]!!.permissionLevel)
+            ?: PermissionLevel.LEVEL_1 else PermissionLevel.LEVEL_1
 
     fun stop(halt: Boolean = true) {
         if (!isRunning) return // Ensure we cannot accidentally run this twice

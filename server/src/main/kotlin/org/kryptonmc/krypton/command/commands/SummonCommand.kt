@@ -25,6 +25,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.krypton.command.InternalCommand
@@ -33,8 +34,9 @@ import org.kryptonmc.krypton.command.arguments.NBTCompoundArgument
 import org.kryptonmc.krypton.command.arguments.SummonEntityArgument
 import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
-import org.kryptonmc.krypton.command.arguments.entityArgument
+import org.kryptonmc.krypton.command.arguments.summonableEntity
 import org.kryptonmc.krypton.command.arguments.vectorArgument
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
@@ -48,26 +50,28 @@ object SummonCommand : InternalCommand {
     private val ERROR_INVALID_POSITION = SimpleCommandExceptionType(Component.translatable("commands.summon.invalidPosition").toMessage())
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("summon")
-            .then(argument<Sender, Key>("entity", SummonEntityArgument())
-                .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
-                .executes {
-                    val sender = it.source as? KryptonPlayer ?: return@executes 1
-                    spawnEntity(sender, it.entityArgument("entity"), sender.location, MutableCompoundTag())
-                    1
-                }
-                .then(argument<Sender, Coordinates>("position", VectorArgument())
+        dispatcher.register(
+            literal<Sender>("summon")
+                .permission("krypton.command.summon", PermissionLevel.LEVEL_2)
+                .then(argument<Sender, Key>("entity", SummonEntityArgument())
+                    .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                     .executes {
                         val sender = it.source as? KryptonPlayer ?: return@executes 1
-                        spawnEntity(sender, it.entityArgument("entity"), it.vectorArgument("position"), MutableCompoundTag())
+                        spawnEntity(sender, it.summonableEntity("entity"), sender.location, MutableCompoundTag())
                         1
                     }
-                    .then(argument<Sender, CompoundTag>("nbt", NBTCompoundArgument())
+                    .then(argument<Sender, Coordinates>("position", VectorArgument())
                         .executes {
                             val sender = it.source as? KryptonPlayer ?: return@executes 1
-                            spawnEntity(sender, it.entityArgument("entity"), it.vectorArgument("position"), it.argument<CompoundTag>("nbt").mutable())
+                            spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), MutableCompoundTag())
                             1
-                        })))
+                        }
+                        .then(argument<Sender, CompoundTag>("nbt", NBTCompoundArgument())
+                            .executes {
+                                val sender = it.source as? KryptonPlayer ?: return@executes 1
+                                spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), it.argument<CompoundTag>("nbt").mutable())
+                                1
+                            })))
         )
     }
 

@@ -23,6 +23,8 @@ import org.kryptonmc.api.registry.Registries
 @Suppress("MagicNumber")
 object GameRules {
 
+    val rules = hashMapOf<String, GameRule<*>>()
+
     // @formatter:off
     /**
      * If advancements should be announced to the server.
@@ -309,9 +311,14 @@ object GameRules {
 
     // @formatter:on
     @Suppress("UNCHECKED_CAST")
-    private fun <V : Any> register(key: String, name: String, default: V): GameRule<V> = Registries.register(
-        Registries.GAMERULES,
-        key,
-        GameRule(name, default)
-    ) as GameRule<V>
+    private fun <V : Any> register(key: String, name: String, default: V): GameRule<V> {
+        val rule = Registries.register(
+            Registries.GAMERULES,
+            key,
+            GameRule(name, default)
+        )
+        rules[key] = rule
+        return rule as GameRule<V>
+    }
+
 }

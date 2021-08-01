@@ -91,7 +91,7 @@ data class KryptonWorld(
     override val border: KryptonWorldBorder,
     var clearWeatherTime: Int,
     var dayTime: Long,
-    override val difficulty: Difficulty,
+    override var difficulty: Difficulty,
     //val endDimensionData: EndDimensionData, // for the end, when it is supported
     override val gameRules: GameRuleHolder,
     val generationSettings: WorldGenerationSettings,

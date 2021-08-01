@@ -33,5 +33,11 @@ data class ServerCategory(
     val onlineMode: Boolean = true,
     @Setting("compression-threshold")
     @Comment("The threshold at which packets larger will be compressed. Set to -1 to disable.")
-    val compressionThreshold: Int = 256
+    val compressionThreshold: Int = 256,
+    @Setting("whitelist-enabled")
+    @Comment("Whether only specific users can join the server or not")
+    var whitelistEnabled: Boolean = false,
+    @Setting("op-permission-level")
+    @Comment("The permission level operators will get")
+    val opPermissionLevel: Int = 4
 )

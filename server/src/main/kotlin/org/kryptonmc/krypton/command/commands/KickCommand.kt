@@ -22,6 +22,9 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
@@ -42,7 +45,7 @@ object KickCommand : InternalCommand {
                         .executes {
                             val players = it.entityArgument("targets").getPlayers(it.source)
                             for (player in players) {
-                                player.kick()
+                                player.disconnect(translatable("multiplayer.disconnect.kicked"))
                             }
                             1
                         }
@@ -51,7 +54,7 @@ object KickCommand : InternalCommand {
                                 val reason = it.argument<String>("reason")
                                 val players = it.entityArgument("targets").getPlayers(it.source)
                                 for (player in players) {
-                                    player.kick(reason)
+                                    player.disconnect(translatable("multiplayer.disconnect.kicked").append(text(" Reason: $reason")))
                                 }
                                 1
                             })
