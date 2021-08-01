@@ -31,11 +31,11 @@ import org.kryptonmc.krypton.command.argument.serializer.brigadier.IntegerArgume
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.LongArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.brigadier.StringArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.minecraft.EntityArgumentSerializer
+import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.NBTArgument
 import org.kryptonmc.krypton.command.arguments.NBTCompoundArgument
 import org.kryptonmc.krypton.command.arguments.SummonEntityArgument
 import org.kryptonmc.krypton.command.arguments.VectorArgument
-import org.kryptonmc.krypton.command.arguments.gameprofile.GameProfileArgument
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.writeKey

@@ -29,9 +29,9 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
-import org.kryptonmc.krypton.command.arguments.gameprofile.GameProfileArgument
-import org.kryptonmc.krypton.command.arguments.gameprofile.gameProfileArgument
+import org.kryptonmc.krypton.command.arguments.gameProfileArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.server.ban.BanEntry
