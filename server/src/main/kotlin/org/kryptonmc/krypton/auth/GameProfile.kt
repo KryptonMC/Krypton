@@ -40,7 +40,10 @@ data class GameProfile(
     @SerializedName("id") val uuid: UUID,
     val name: String,
     val properties: List<ProfileProperty>
-)
+) {
+
+    override fun toString() = "GameProfile(id=$uuid, name=$name)"
+}
 
 /**
  * Used to (de)serialize the UUID format that Yggdrasil uses (has no dashes in it)

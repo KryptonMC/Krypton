@@ -24,6 +24,7 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -77,9 +78,23 @@ class EntityQuery(
     fun getPlayers(source: KryptonPlayer) =
         getEntities(source).map { if (it !is KryptonPlayer) throw UnsupportedOperationException("You cannot call .getPlayers() if there is an entity in the arguments") else it }
 
-    fun getPlayer(source: KryptonPlayer) =
-        getEntities(source).map { if (it !is KryptonPlayer) throw UnsupportedOperationException("You cannot call .getPlayer() if there is an entity in the arguments") else it }[0]
+    fun getPlayer(server: KryptonServer) = if (playerName.isNotEmpty()) {
+        listOf(server.player(playerName) ?: throw PLAYER_NOT_FOUND.create())
+    } else {
+        listOf()
+    }
 
+    fun getProfiles(source: KryptonPlayer) = if (playerName.isNotEmpty()) {
+        listOf(source.server.playerManager.userCache.getProfileByName(playerName) ?: throw PLAYER_NOT_FOUND.create())
+    } else {
+        getPlayers(source).map { it.profile }
+    }
+
+    fun getProfile(server: KryptonServer) = if (playerName.isNotEmpty()) {
+        listOf(server.playerManager.userCache.getProfileByName(playerName) ?: throw PLAYER_NOT_FOUND.create())
+    } else {
+        listOf()
+    }
 
     private fun applyArguments(originalEntities: List<KryptonEntity>, source: KryptonPlayer): List<KryptonEntity> {
         var entities = originalEntities
@@ -218,8 +233,8 @@ class EntityQuery(
                     val sorter = EntityArguments.Sorter.fromName(value.toString())
                         ?: throw INVALID_SORT_TYPE.create(value)
                     entities = when (sorter) {
-                        EntityArguments.Sorter.NEAREST -> entities.sortedBy { it.distanceSquared(source) }
-                        EntityArguments.Sorter.FURTHEST -> entities.sortedByDescending { it.distanceSquared(source) }
+                        EntityArguments.Sorter.NEAREST -> entities.sortedBy { it.distance(source) }
+                        EntityArguments.Sorter.FURTHEST -> entities.sortedByDescending { it.distance(source) }
                         EntityArguments.Sorter.RANDOM -> entities.shuffled()
                         EntityArguments.Sorter.ARBITRARY -> entities.sortedBy { it.ticksLived }
                     }

@@ -25,6 +25,7 @@ import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.translation.GlobalTranslator
 import org.kryptonmc.api.command.ConsoleSender
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.toSectionText
 import org.kryptonmc.krypton.util.logger
 import java.util.Locale
@@ -32,7 +33,7 @@ import java.util.Locale
 /**
  * Our implementation of the API's [ConsoleSender].
  */
-object KryptonConsoleSender : ConsoleSender {
+class KryptonConsoleSender(override val server: KryptonServer) : ConsoleSender {
 
     private val LOGGER = logger("CONSOLE")
 

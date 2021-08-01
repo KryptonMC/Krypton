@@ -42,6 +42,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.command.commands.BanCommand
 import org.kryptonmc.krypton.command.commands.DebugCommand
 import org.kryptonmc.krypton.command.commands.DifficultyCommand
 import org.kryptonmc.krypton.command.commands.GamemodeCommand
@@ -57,6 +58,7 @@ import org.kryptonmc.krypton.command.commands.StopCommand
 import org.kryptonmc.krypton.command.commands.SummonCommand
 import org.kryptonmc.krypton.command.commands.TeleportCommand
 import org.kryptonmc.krypton.command.commands.TitleCommand
+import org.kryptonmc.krypton.command.commands.UnbanCommand
 import org.kryptonmc.krypton.command.commands.VersionCommand
 import org.kryptonmc.krypton.locale.Messages
 import java.util.concurrent.CompletableFuture
@@ -182,6 +184,8 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         GameruleCommand().register(dispatcher)
         VersionCommand().register(dispatcher)
         KickCommand().register(dispatcher)
+        BanCommand().register(dispatcher)
+        UnbanCommand().register(dispatcher)
     }
 
     companion object {

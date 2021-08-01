@@ -23,7 +23,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.krypton.KryptonServer
 
-abstract class KryptonSender(val server: KryptonServer) : Sender {
+abstract class KryptonSender(override val server: KryptonServer) : Sender {
 
     override val permissions = mutableMapOf<String, Boolean>()
 

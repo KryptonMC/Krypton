@@ -25,9 +25,10 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
+import org.kryptonmc.krypton.util.toComponent
 
 internal class SayCommand : InternalCommand {
 
@@ -37,15 +38,15 @@ internal class SayCommand : InternalCommand {
                 .then(
                     argument<Sender, String>("message", string())
                         .executes {
-                            val sender = it.source as? KryptonPlayer ?: return@executes 1
-                            sender.server.broadcast(
+                            val server = it.source.server as KryptonServer
+                            server.broadcast(
                                 translatable(
                                     "chat.type.announcement",
-                                listOf(text(sender.name), text(it.argument<String>("message")))
+                                    listOf(it.source.name.toComponent(), text(it.argument<String>("message")))
+                                )
                             )
-                        )
-                        1
-                    })
+                            1
+                        })
         )
     }
 }

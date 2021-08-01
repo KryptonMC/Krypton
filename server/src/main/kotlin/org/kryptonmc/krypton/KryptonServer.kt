@@ -41,8 +41,8 @@ import org.kryptonmc.krypton.auth.MojangUUIDSerializer
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDER
 import org.kryptonmc.krypton.config.KryptonConfig
-import org.kryptonmc.krypton.console.KryptonConsoleSender
 import org.kryptonmc.krypton.console.KryptonConsole
+import org.kryptonmc.krypton.console.KryptonConsoleSender
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.MetadataResponse
@@ -63,12 +63,12 @@ import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.createDirectory
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.profiling.ServerProfiler
 import org.kryptonmc.krypton.util.profiling.DeadProfiler
 import org.kryptonmc.krypton.util.profiling.Profiler
+import org.kryptonmc.krypton.util.profiling.ServerProfiler
 import org.kryptonmc.krypton.util.profiling.SingleTickProfiler
-import org.kryptonmc.krypton.util.profiling.results.ProfileResults
 import org.kryptonmc.krypton.util.profiling.decorate
+import org.kryptonmc.krypton.util.profiling.results.ProfileResults
 import org.kryptonmc.krypton.util.reports.CrashReport
 import org.kryptonmc.krypton.util.reports.ReportedException
 import org.kryptonmc.krypton.world.KryptonWorldManager
@@ -110,13 +110,12 @@ class KryptonServer : Server {
     val playerManager = PlayerManager(this)
 
     override val players = playerManager.players
-    override val channels: MutableSet<Key> = ConcurrentHashMap.newKeySet()
 
     override fun player(uuid: UUID) = playerManager.playersByUUID[uuid]
     override fun player(name: String) = playerManager.playersByName[name]
 
-    override val console = KryptonConsoleSender
-
+    override val channels: MutableSet<Key> = ConcurrentHashMap.newKeySet()
+    override val console = KryptonConsoleSender(this)
     override var scoreboard: KryptonScoreboard? = null
         private set
 
@@ -175,6 +174,10 @@ class KryptonServer : Server {
         LOGGER.debug("Registering commands and translations...")
         commandManager.registerBuiltins()
         TranslationRepository.scheduleRefresh()
+
+        //Create server config lists
+        playerManager.bannedPlayers.validatePath()
+        playerManager.userCache.validatePath()
 
         // Start the metrics system
         LOGGER.debug("Starting bStats metrics")

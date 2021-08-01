@@ -33,21 +33,19 @@ internal class ListCommand : InternalCommand {
         dispatcher.register(
             literal<Sender>("list")
                 .executes {
-                    val sender = it.source as? KryptonPlayer ?: return@executes 1
-                    sendNames(sender, sender.server)
+                    sendNames(it.source, it.source.server as KryptonServer)
                     1
                 }
                 .then(
                     literal<Sender>("uuids")
                     .executes {
-                        val sender = it.source as? KryptonPlayer ?: return@executes 1
-                        sendNamesWithUUID(sender, sender.server)
+                        sendNamesWithUUID(it.source, it.source.server as KryptonServer)
                         1
                     })
         )
     }
 
-    private fun sendNames(sender: KryptonPlayer, server: KryptonServer) {
+    private fun sendNames(sender: Sender, server: KryptonServer) {
         val names = server.players.map(KryptonPlayer::name)
         sender.sendMessage(
             translatable(
@@ -57,7 +55,7 @@ internal class ListCommand : InternalCommand {
         )
     }
 
-    private fun sendNamesWithUUID(sender: KryptonPlayer, server: KryptonServer) {
+    private fun sendNamesWithUUID(sender: Sender, server: KryptonServer) {
         val names = server.players.map { it.name + " (${it.uuid})" }
         sender.sendMessage(
             translatable(
