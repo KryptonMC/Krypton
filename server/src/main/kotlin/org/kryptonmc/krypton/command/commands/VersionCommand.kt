@@ -28,17 +28,18 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
-class VersionCommand : InternalCommand {
+object VersionCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        val node = dispatcher.register(literal<Sender>("version")
-            .executes {
-                val sender = it.source as? KryptonPlayer ?: return@executes 1
-                val version = sender.server.info.version
-                val minecraftVersion = sender.server.info.minecraftVersion
-                val pluginsLoaded = sender.server.pluginManager.plugins.size
-                val text = text("Krypton\n")
-                    .clickEvent(ClickEvent.openUrl("https://github.com/KryptonMC/Krypton"))
+        val node = dispatcher.register(
+            literal<Sender>("version")
+                .executes {
+                    val sender = it.source as? KryptonPlayer ?: return@executes 1
+                    val version = sender.server.info.version
+                    val minecraftVersion = sender.server.info.minecraftVersion
+                    val pluginsLoaded = sender.server.pluginManager.plugins.size
+                    val text = text("Krypton\n")
+                        .clickEvent(ClickEvent.openUrl("https://github.com/KryptonMC/Krypton"))
                     .color(TextColor.color(17, 255, 0))
                     .append(column("Version: ", version))
                     .append(column("Minecraft Version: ", minecraftVersion))

@@ -34,7 +34,7 @@ import org.kryptonmc.krypton.command.arguments.gameProfileArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.util.toComponent
 
-internal class OpCommand : InternalCommand {
+object OpCommand : InternalCommand {
 
     private val ALREADY_OPPED_EXCEPTION = SimpleCommandExceptionType(translatable("commands.op.failed").toMessage())
 
@@ -43,8 +43,9 @@ internal class OpCommand : InternalCommand {
         dispatcher.register(
             literal<Sender>("op")
                 .permission("krypton.command.op", PermissionLevel.LEVEL_3)
-                .then(argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
-                    .executes {
+                .then(
+                    argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
+                        .executes {
                         val targets = it.gameProfileArgument("targets").getProfiles(it.source)
                         val server = it.source.server as KryptonServer
                         for (target in targets) {

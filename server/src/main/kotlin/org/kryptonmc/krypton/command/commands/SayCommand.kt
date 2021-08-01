@@ -32,7 +32,7 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.util.argument
 import org.kryptonmc.krypton.util.toComponent
 
-internal class SayCommand : InternalCommand {
+object SayCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(

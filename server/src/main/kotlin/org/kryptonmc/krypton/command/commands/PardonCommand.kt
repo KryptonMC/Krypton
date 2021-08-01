@@ -34,7 +34,7 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.suggest
 import org.kryptonmc.krypton.util.toComponent
 
-internal class PardonCommand : InternalCommand {
+object PardonCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(

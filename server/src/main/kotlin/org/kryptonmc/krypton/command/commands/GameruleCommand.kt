@@ -34,7 +34,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 import org.kryptonmc.krypton.util.toComponent
 
-internal class GameruleCommand : InternalCommand {
+object GameruleCommand : InternalCommand {
 
     @Suppress("UNCHECKED_CAST")
     override fun register(dispatcher: CommandDispatcher<Sender>) {

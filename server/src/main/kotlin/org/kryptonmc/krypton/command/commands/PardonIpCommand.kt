@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.suggest
 import org.kryptonmc.krypton.util.argument
 
-internal class PardonIpCommand : InternalCommand {
+object PardonIpCommand : InternalCommand {
 
     private val INVALID_IP_EXCEPTION = SimpleCommandExceptionType(translatable("commands.pardonip.invalid").toMessage())
     private val ALREADY_UNBANNED_EXCEPTION =
@@ -43,7 +43,8 @@ internal class PardonIpCommand : InternalCommand {
         dispatcher.register(
             literal<Sender>("pardon-ip")
                 .permission("krypton.command.pardonip", PermissionLevel.LEVEL_3)
-            .then(argument<Sender, String>("target", string())
+                .then(
+                    argument<Sender, String>("target", string())
                 .suggests { context, builder ->
                     builder.suggest((context.source.server as KryptonServer).playerManager.bannedIps.map { it.key })
                 }

@@ -34,7 +34,7 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 
-internal class MessageCommand : InternalCommand {
+object MessageCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val messageCommand = dispatcher.register(

@@ -38,17 +38,18 @@ import org.kryptonmc.krypton.util.argument
 import org.kryptonmc.krypton.util.stringify
 import org.kryptonmc.krypton.util.toComponent
 
-internal class WhitelistCommand : InternalCommand {
+object WhitelistCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
             literal<Sender>("whitelist")
                 .permission("krypton.command.whitelist", PermissionLevel.LEVEL_3)
-                .then(literal<Sender>("on")
-                    .executes {
-                        val sender = it.source
-                        val server = sender.server as KryptonServer
-                        if (!server.playerManager.whitelistEnabled) {
+                .then(
+                    literal<Sender>("on")
+                        .executes {
+                            val sender = it.source
+                            val server = sender.server as KryptonServer
+                            if (!server.playerManager.whitelistEnabled) {
                             server.playerManager.whitelistEnabled = true
                             sender.sendMessage(translatable("commands.whitelist.enabled"))
                         } else {

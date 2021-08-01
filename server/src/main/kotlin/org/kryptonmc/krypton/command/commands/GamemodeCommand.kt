@@ -37,17 +37,18 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 
-internal class GamemodeCommand(private val server: KryptonServer) : InternalCommand {
+object GamemodeCommand(private val server: KryptonServer) : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal<Sender>("gamemode")
             .permission("krypton.command.gamemode", PermissionLevel.LEVEL_2)
         for (gamemode in Gamemode.values()) {
             command
-                .then(literal<Sender>(gamemode.name.lowercase())
-                    .executes {
-                        gameModeArgument(it, gamemode)
-                    }
+                .then(
+                    literal<Sender>(gamemode.name.lowercase())
+                        .executes {
+                            gameModeArgument(it, gamemode)
+                        }
                     .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
                         .executes {
                             targetArgument(it, gamemode)

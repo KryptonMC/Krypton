@@ -40,15 +40,15 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-internal class DebugCommand(private val server: KryptonServer) : InternalCommand {
+class DebugCommand(private val server: KryptonServer) : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
             literal<Sender>("debug")
                 .permission("krypton.command.debug", PermissionLevel.LEVEL_3)
-            .then(literal<Sender>("start").executes { start(it.source); 1 })
-            .then(literal<Sender>("stop").executes { stop(it.source); 1 })
-            .then(literal<Sender>("report").executes { report(it.source); 1 })
+                .then(literal<Sender>("start").executes { start(it.source); 1 })
+                .then(literal<Sender>("stop").executes { stop(it.source); 1 })
+                .then(literal<Sender>("report").executes { report(it.source); 1 })
         )
     }
 

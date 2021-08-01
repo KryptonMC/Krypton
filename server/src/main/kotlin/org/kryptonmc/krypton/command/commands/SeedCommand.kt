@@ -29,17 +29,17 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
-internal class SeedCommand : InternalCommand {
+object SeedCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
             literal<Sender>("seed")
                 .permission("krypton.command.seed", PermissionLevel.LEVEL_2)
-            .executes {
-                val sender = it.source as? KryptonPlayer ?: return@executes 1
-                val text = text("[").append(text(sender.world.seed, TextColor.color(5635925))).append(text("]"))
-                sender.sendMessage(translatable("commands.seed.success", listOf(text)))
-                1
+                .executes {
+                    val sender = it.source as? KryptonPlayer ?: return@executes 1
+                    val text = text("[").append(text(sender.world.seed, TextColor.color(5635925))).append(text("]"))
+                    sender.sendMessage(translatable("commands.seed.success", listOf(text)))
+                    1
             })
     }
 }

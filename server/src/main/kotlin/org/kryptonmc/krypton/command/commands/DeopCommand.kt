@@ -36,7 +36,7 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.suggest
 import org.kryptonmc.krypton.util.toComponent
 
-internal class DeopCommand : InternalCommand {
+object DeopCommand : InternalCommand {
 
     private val ALREADY_DEOPPED_EXCEPTION = SimpleCommandExceptionType(translatable("commands.deop.failed").toMessage())
 

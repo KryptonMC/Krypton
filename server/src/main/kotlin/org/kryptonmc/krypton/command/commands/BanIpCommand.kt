@@ -36,7 +36,7 @@ import org.kryptonmc.krypton.util.argument
 import org.kryptonmc.krypton.util.stringify
 import org.kryptonmc.krypton.util.toComponent
 
-internal class BanIpCommand : InternalCommand {
+object BanIpCommand : InternalCommand {
 
     private val ALREADY_BANNED_EXCEPTION = SimpleCommandExceptionType(translatable("commands.banip.failed").toMessage())
 

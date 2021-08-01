@@ -39,7 +39,7 @@ import org.kryptonmc.krypton.server.ban.BannedPlayerEntry
 import org.kryptonmc.krypton.util.argument
 import org.kryptonmc.krypton.util.toComponent
 
-internal class BanCommand : InternalCommand {
+object BanCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
