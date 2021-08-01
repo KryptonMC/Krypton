@@ -25,6 +25,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -33,10 +34,11 @@ import org.kryptonmc.krypton.util.toComponent
 
 internal class GameruleCommand : InternalCommand {
 
+    @Suppress("UNCHECKED_CAST")
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal<Sender>("gamerule")
         for ((_, rule) in GameRules.rules) {
-            val gameRule = command.then(literal<Sender>(rule.name))
+            val gameRule = literal<Sender>(rule.name)
                 .executes {
                     val sender = it.source as? KryptonPlayer ?: return@executes 1
                     sender.sendMessage(
@@ -48,11 +50,11 @@ internal class GameruleCommand : InternalCommand {
                     1
                 }
             if (rule.default is Boolean) {
-                gameRule.then(argument<Sender, Boolean>("value", BoolArgumentType.bool()))
+                gameRule.then(argument<Sender, Boolean>("value", BoolArgumentType.bool())
                     .executes {
                         val sender = it.source as? KryptonPlayer ?: return@executes 1
                         val value = it.argument<Boolean>("value")
-                        sender.world.gameRules[rule] = value
+                        sender.world.gameRules[rule as GameRule<Boolean>] = value
                         sender.sendMessage(
                             translatable(
                                 "commands.gamerule.set",
@@ -60,13 +62,13 @@ internal class GameruleCommand : InternalCommand {
                             )
                         )
                         1
-                    }
+                    })
             } else if (rule.default is Int) {
-                gameRule.then(argument<Sender, Int>("value", IntegerArgumentType.integer()))
+                gameRule.then(argument<Sender, Int>("value", IntegerArgumentType.integer())
                     .executes {
                         val sender = it.source as? KryptonPlayer ?: return@executes 1
                         val value = it.argument<Int>("value")
-                        sender.world.gameRules[rule] = value
+                        sender.world.gameRules[rule as GameRule<Int>] = value
                         sender.sendMessage(
                             translatable(
                                 "commands.gamerule.set",
@@ -74,8 +76,10 @@ internal class GameruleCommand : InternalCommand {
                             )
                         )
                         1
-                    }
+                    })
             }
+            command.then(gameRule)
         }
+        dispatcher.register(command)
     }
 }

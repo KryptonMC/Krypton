@@ -42,27 +42,28 @@ internal class DifficultyCommand : InternalCommand {
             }
         for (value in Difficulty.values()) {
             command
-                .then(literal(value.name.lowercase()))
-                .executes {
-                    val sender = it.source as? KryptonPlayer ?: return@executes 1
-                    if (sender.world.difficulty == value) {
-                        sender.sendMessage(
-                            translatable(
-                                "commands.difficulty.failure",
-                                listOf(translatable("options.difficulty.${value.name.lowercase()}"))
+                .then(literal<Sender>(value.name.lowercase())
+                    .executes {
+                        val sender = it.source as? KryptonPlayer ?: return@executes 1
+                        if (sender.world.difficulty == value) {
+                            sender.sendMessage(
+                                translatable(
+                                    "commands.difficulty.failure",
+                                    listOf(translatable("options.difficulty.${value.name.lowercase()}"))
+                                )
                             )
-                        )
-                    } else {
-                        sender.world.difficulty = value
-                        sender.sendMessage(
-                            translatable(
-                                "commands.difficulty.success",
-                                listOf(translatable("options.difficulty.${value.name.lowercase()}"))
-                            ),
-                        )
-                    }
-                    1
-                }
+                        } else {
+                            sender.world.difficulty = value
+                            sender.sendMessage(
+                                translatable(
+                                    "commands.difficulty.success",
+                                    listOf(translatable("options.difficulty.${value.name.lowercase()}"))
+                                ),
+                            )
+                        }
+                        1
+                    })
         }
+        dispatcher.register(command)
     }
 }

@@ -23,6 +23,8 @@ import org.kryptonmc.api.registry.Registries
 @Suppress("MagicNumber")
 object GameRules {
 
+    val rules = hashMapOf<String, GameRule<*>>()
+
     // @formatter:off
     /**
      * If advancements should be announced to the server.
@@ -306,8 +308,6 @@ object GameRules {
      */
     @JvmField
     val UNIVERSAL_ANGER = register("universal_anger", "universalAnger", false)
-
-    val rules = hashMapOf<String, GameRule<Any>>()
 
     // @formatter:on
     @Suppress("UNCHECKED_CAST")
