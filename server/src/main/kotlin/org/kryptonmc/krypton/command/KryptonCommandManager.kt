@@ -56,6 +56,7 @@ import org.kryptonmc.krypton.command.commands.StopCommand
 import org.kryptonmc.krypton.command.commands.SummonCommand
 import org.kryptonmc.krypton.command.commands.TeleportCommand
 import org.kryptonmc.krypton.command.commands.TitleCommand
+import org.kryptonmc.krypton.command.commands.VersionCommand
 import org.kryptonmc.krypton.locale.Messages
 import java.util.concurrent.CompletableFuture
 
@@ -178,6 +179,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         TitleCommand().register(dispatcher)
         DifficultyCommand().register(dispatcher)
         GameruleCommand().register(dispatcher)
+        VersionCommand().register(dispatcher)
     }
 
     companion object {
