@@ -23,6 +23,7 @@ import com.mojang.serialization.DataResult
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import java.util.function.Function
 
 class NoiseSettings(
@@ -45,8 +46,8 @@ class NoiseSettings(
 
         val CODEC: Codec<NoiseSettings> = RecordCodecBuilder.create<NoiseSettings> {
             it.group(
-                Codec.intRange(DimensionTypes.MIN_Y, DimensionTypes.MAX_Y).fieldOf("min_y").forGetter(NoiseSettings::minimumY),
-                Codec.intRange(0, DimensionTypes.Y_SIZE).fieldOf("height").forGetter(NoiseSettings::height),
+                Codec.intRange(KryptonDimensionType.MIN_Y, KryptonDimensionType.MAX_Y).fieldOf("min_y").forGetter(NoiseSettings::minimumY),
+                Codec.intRange(0, KryptonDimensionType.Y_SIZE).fieldOf("height").forGetter(NoiseSettings::height),
                 NoiseSampling.CODEC.fieldOf("sampling").forGetter(NoiseSettings::sampling),
                 NoiseSlide.CODEC.fieldOf("top_slide").forGetter(NoiseSettings::topSlide),
                 NoiseSlide.CODEC.fieldOf("bottom_slide").forGetter(NoiseSettings::bottomSlide),
@@ -64,7 +65,7 @@ class NoiseSettings(
 }
 
 private fun NoiseSettings.guardY(): DataResult<NoiseSettings> {
-    if (minimumY + height > DimensionTypes.MAX_Y + 1) return DataResult.error("Minimum Y + height cannot be greater than ${DimensionTypes.MAX_Y + 1}!")
+    if (minimumY + height > KryptonDimensionType.MAX_Y + 1) return DataResult.error("Minimum Y + height cannot be greater than ${KryptonDimensionType.MAX_Y + 1}!")
     if (height % 16 != 0) return DataResult.error("Height must be a multiple of 16!")
     if (minimumY % 16 != 0) return DataResult.error("Minimum Y must be a multiple of 16!")
     return DataResult.success(this)

@@ -29,14 +29,14 @@ import org.kryptonmc.krypton.util.nonNullSupplier
 import org.kryptonmc.krypton.world.generation.Generator
 
 data class Dimension(
-    val typeSupplier: () -> DimensionType,
+    val typeSupplier: () -> KryptonDimensionType,
     val generator: Generator
 ) {
 
-    val type: DimensionType
+    val type: KryptonDimensionType
         get() = typeSupplier()
 
-    constructor(generator: Generator, typeSupplier: () -> DimensionType) : this(typeSupplier, generator)
+    constructor(generator: Generator, typeSupplier: () -> KryptonDimensionType) : this(typeSupplier, generator)
 
     companion object {
 
@@ -45,7 +45,7 @@ data class Dimension(
         val END = ResourceKey.of(InternalResourceKeys.DIMENSION, key("the_end"))
         val CODEC: Codec<Dimension> = RecordCodecBuilder.create {
             it.group(
-                DimensionTypes.CODEC.fieldOf("type").flatXmap(nonNullSupplier(), nonNullSupplier()).forGetter(Dimension::typeSupplier),
+                KryptonDimensionType.CODEC.fieldOf("type").flatXmap(nonNullSupplier(), nonNullSupplier()).forGetter(Dimension::typeSupplier),
                 Generator.CODEC.fieldOf("generator").forGetter(Dimension::generator)
             ).apply(it, ::Dimension)
         }

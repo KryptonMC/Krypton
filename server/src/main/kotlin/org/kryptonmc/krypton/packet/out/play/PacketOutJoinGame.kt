@@ -34,6 +34,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.krypton.world.generation.FlatGenerator
 
@@ -44,7 +45,7 @@ class PacketOutJoinGame(
     private val oldGamemode: Gamemode?,
     private val worlds: Set<ResourceKey<World>>,
     private val registryHolder: RegistryHolder,
-    private val dimensionType: DimensionType,
+    private val dimensionType: KryptonDimensionType,
     private val dimension: ResourceKey<World>,
     private val seed: Long,
     private val maxPlayers: Int,
@@ -62,7 +63,7 @@ class PacketOutJoinGame(
         buf.writeByte(oldGamemode?.ordinal ?: -1)
         buf.writeCollection(worlds) { buf.writeKey(it.location) }
         buf.encode(RegistryHolder.NETWORK_CODEC, registryHolder)
-        buf.encode(DimensionTypes.CODEC) { dimensionType }
+        buf.encode(KryptonDimensionType.CODEC) { dimensionType }
         buf.writeKey(dimension.location)
         buf.writeLong(seed)
         buf.writeVarInt(maxPlayers)

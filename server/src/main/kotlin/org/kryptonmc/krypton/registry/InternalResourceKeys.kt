@@ -30,6 +30,7 @@ import org.kryptonmc.krypton.world.fluid.Fluid
 import org.kryptonmc.krypton.world.generation.Generator
 import org.kryptonmc.krypton.world.biome.BiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.feature.ConfiguredFeature
 import org.kryptonmc.krypton.world.generation.feature.Feature
 import org.kryptonmc.krypton.world.generation.feature.Structure
@@ -41,6 +42,7 @@ object InternalResourceKeys {
     val METADATA = ResourceKeys.krypton<MetadataKey<*>>("metadata")
     val WORLD = ResourceKeys.minecraft<KryptonWorld>("dimension")
     val DIMENSION = ResourceKeys.minecraft<Dimension>("dimension")
+    val DIMENSION_TYPE = ResourceKeys.minecraft<KryptonDimensionType>("dimension_type")
     val GAME_EVENT = ResourceKeys.minecraft<GameEvent>("game_event")
     val FLUID = ResourceKeys.minecraft<Fluid>("fluid")
 

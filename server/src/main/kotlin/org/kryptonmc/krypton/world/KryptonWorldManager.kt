@@ -29,6 +29,7 @@ import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.ops.RegistryReadOps
 import org.kryptonmc.krypton.util.ChunkProgressListener
 import org.kryptonmc.krypton.util.chunkInSpiral
@@ -40,6 +41,7 @@ import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.data.WorldResource
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.dimension.storageFolder
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.kryptonmc.krypton.world.storage.WorldDataStorage
@@ -86,7 +88,7 @@ class KryptonWorldManager(
         if (resourceKey === World.OVERWORLD) return CompletableFuture.failedFuture(IllegalArgumentException("The default world cannot be loaded!"))
         val loaded = worlds[resourceKey]
         if (loaded != null) return CompletableFuture.completedFuture(loaded)
-        val dimensionType = server.registryHolder.registryOrThrow(ResourceKeys.DIMENSION_TYPE)[key]
+        val dimensionType = server.registryHolder.registryOrThrow(InternalResourceKeys.DIMENSION_TYPE)[key]
             ?: return CompletableFuture.failedFuture(IllegalStateException("No dimension type found for given key $key!"))
         val defaultData = server.worldData
         Messages.WORLD.LOAD.info(LOGGER, key.asString())
@@ -122,7 +124,7 @@ class KryptonWorldManager(
         val seed = Hashing.sha256().hashLong(generationSettings.seed).asLong()
         val dimensions = generationSettings.dimensions
         val overworld = dimensions[Dimension.OVERWORLD]
-        val dimensionType = overworld?.type ?: server.registryHolder.registryOrThrow(ResourceKeys.DIMENSION_TYPE)[DimensionTypes.OVERWORLD_KEY]!!
+        val dimensionType = overworld?.type ?: server.registryHolder.registryOrThrow(InternalResourceKeys.DIMENSION_TYPE)[DimensionTypes.OVERWORLD_KEY]!!
         val world = KryptonWorld(server, server.dataAccess, worldData, World.OVERWORLD, dimensionType, isDebug, seed, true)
         worlds[World.OVERWORLD] = world
         if (!worldData.isInitialized) {

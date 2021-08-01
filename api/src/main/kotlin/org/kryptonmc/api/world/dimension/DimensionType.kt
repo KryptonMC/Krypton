@@ -12,51 +12,95 @@ import net.kyori.adventure.key.Key
 
 /**
  * Represents data for a dimension.
- *
- * @param isPiglinSafe if [Piglin]s will transform into [ZombifiedPiglin]s
- *        over time
- * @param isNatural if portals created will spawn [ZombifiedPiglin]s
- *        naturally, and if the compass works properly
- * @param isUltrawarm if water will evaporate or wet sponges will become
- *        regular sponges, and if lava will flow faster and thinner
- * @param hasSkylight if the world has global lighting (light from the sky)
- * @param hasCeiling if the world has a ceiling made of blocks
- * @param hasRaids if raids will spawn
- * @param bedWorks if beds can be slept in. If false, beds will explode when
- *        used
- * @param respawnAnchorWorks if respawn anchors can be charged and used
- * @param ambientLight the amount of lighting a client will show whilst in
- *        the dimension
- * @param fixedTime the time it will always be. If null, this means that time
- *        may progress as normal
- * @param infiniburn the settings to use to define what blocks burn infinitely
- *        in this dimension
- * @param effects the effects settings to use
- * @param minimumY the minimum Y level that can be built at
- * @param height the maximum Y level that can be built at
- * @param logicalHeight the maximum logical height that can be built at. For example,
- *        the nether is 128 blocks tall, with a roof at the top, which is why this
- *        value is set to 128. Though you can still build above the roof, it is not
- *        intended for you to do so
- * @param coordinateScale the scale of coordinates. For example, in the nether,
- *        1 block is equivalent to 8 blocks in the overworld, so the coordinate scale
- *        for the nether is 8.0
  */
-data class DimensionType(
-    val isPiglinSafe: Boolean,
-    val isNatural: Boolean,
-    val isUltrawarm: Boolean,
-    val hasSkylight: Boolean,
-    val hasCeiling: Boolean,
-    val hasRaids: Boolean,
-    val bedWorks: Boolean,
-    val respawnAnchorWorks: Boolean,
-    val ambientLight: Float,
-    val fixedTime: Long?,
-    val infiniburn: Key,
-    val effects: Key,
-    val minimumY: Int,
-    val height: Int,
-    val logicalHeight: Int,
-    val coordinateScale: Double,
-)
+@Suppress("INAPPLICABLE_JVM_NAME")
+interface DimensionType {
+
+    /**
+     * If [Piglin]s will transform in to [ZombifiedPiglin]s over time.
+     */
+    val isPiglinSafe: Boolean
+
+    /**
+     * If portals created will spawn [ZombifiedPiglin]s naturally, and if the
+     * compass works properly.
+     */
+    val isNatural: Boolean
+
+    /**
+     * If water will evaporate or wet sponges will become regular sponges when
+     * placed, and if laval will flow faster and thinner.
+     */
+    val isUltrawarm: Boolean
+
+    /**
+     * If there is global lighting (light from the sky).
+     */
+    @get:JvmName("hasSkylight")
+    val hasSkylight: Boolean
+
+    /**
+     * If there is a ceiling made of blocks.
+     */
+    @get:JvmName("hasCeiling")
+    val hasCeiling: Boolean
+
+    /**
+     * If raids will spawn naturally.
+     */
+    @get:JvmName("hasRaids")
+    val hasRaids: Boolean
+
+    /**
+     * If beds can be slept in. If false, beds will explode when used (boom).
+     */
+    @get:JvmName("bedWorks")
+    val bedWorks: Boolean
+
+    /**
+     * If respawn anchors can be charged and used.
+     */
+    @get:JvmName("respawnAnchorWorks")
+    val respawnAnchorWorks: Boolean
+
+    /**
+     * The amount of lighting clients will display when in this dimension.
+     */
+    val ambientLight: Float
+
+    /**
+     * The time it will always be. If null, the time will progress normally.
+     */
+    val fixedTime: Long?
+
+    /**
+     * The settings used to define which blocks burn infinitely.
+     */
+    val infiniburn: Key
+
+    /**
+     * The minimum Y level that can be built at.
+     */
+    val minimumY: Int
+
+    /**
+     * The maximum Y level that can be built at.
+     */
+    val height: Int
+
+    /**
+     * The maximum logical Y level that can be built at.
+     *
+     * For example, in the nether, there is a bedrock roof at 128 blocks, so the
+     * logical height for the nether is 128, as whilst you can still build above
+     * the nether roof, it is not intended for you to do so.
+     */
+    val logicalHeight: Int
+
+    /**
+     * The scale of coordinates. For example, in the nether, the coordinate scale is
+     * 8.0, as for every 1 block you walk in the nether, you will walk 8 blocks in
+     * dimensions with a coordinate scale of 1.0, such as the overworld and the end.
+     */
+    val coordinateScale: Double
+}

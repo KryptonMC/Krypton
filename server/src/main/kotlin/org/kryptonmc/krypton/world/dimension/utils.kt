@@ -35,26 +35,16 @@ import org.kryptonmc.krypton.world.generation.NoiseGenerator
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 import java.nio.file.Path
 
-fun DimensionType.equalTo(other: DimensionType): Boolean {
-    if (this === other) return true
-    return hasSkylight == other.hasSkylight && hasCeiling == other.hasCeiling && isUltrawarm == other.isUltrawarm &&
-            isNatural == other.isNatural && coordinateScale == other.coordinateScale && isPiglinSafe == other.isPiglinSafe &&
-            bedWorks == other.bedWorks && respawnAnchorWorks == other.respawnAnchorWorks && hasRaids == other.hasRaids &&
-            minimumY == other.minimumY && height == other.height && logicalHeight == other.logicalHeight &&
-            ambientLight == other.ambientLight && fixedTime == other.fixedTime && infiniburn == other.infiniburn &&
-            effects == other.effects
-}
-
-fun Registry<DimensionType>.defaults(biomes: Registry<KryptonBiome>, noiseSettings: Registry<NoiseGeneratorSettings>, seed: Long) = KryptonRegistry(InternalResourceKeys.DIMENSION).apply {
+fun Registry<KryptonDimensionType>.defaults(biomes: Registry<KryptonBiome>, noiseSettings: Registry<NoiseGeneratorSettings>, seed: Long) = KryptonRegistry(InternalResourceKeys.DIMENSION).apply {
     register(Dimension.NETHER, Dimension(defaultNether(biomes, noiseSettings, seed)) { this@defaults[DimensionTypes.NETHER_KEY]!! })
     register(Dimension.END, Dimension(defaultEnd(biomes, noiseSettings, seed)) { this@defaults[DimensionTypes.END_KEY]!! })
 }
 
 val Key.storageFolder: String
     get() = when (this) {
-        World.OVERWORLD -> ""
-        World.NETHER -> "DIM-1"
-        World.END -> "DIM1"
+        World.OVERWORLD.location -> ""
+        World.NETHER.location -> "DIM-1"
+        World.END.location -> "DIM1"
         else -> value()
     }
 

@@ -43,6 +43,7 @@ import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.Dimension.Companion.sort
 import org.kryptonmc.krypton.world.dimension.Dimension.Companion.stable
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.dimension.defaults
 import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
@@ -91,7 +92,7 @@ data class WorldGenerationSettings(
             ).apply(instance, ::WorldGenerationSettings)
         }.comapFlatMap(WorldGenerationSettings::checkStable, Function.identity())
 
-        fun makeDefault(dimensionTypes: Registry<DimensionType>, biomes: Registry<KryptonBiome>, noiseSettings: Registry<NoiseGeneratorSettings>): WorldGenerationSettings {
+        fun makeDefault(dimensionTypes: Registry<KryptonDimensionType>, biomes: Registry<KryptonBiome>, noiseSettings: Registry<NoiseGeneratorSettings>): WorldGenerationSettings {
             val seed = Random.nextLong()
             return WorldGenerationSettings(seed, true, false, dimensionTypes.defaults(biomes, noiseSettings, seed).withOverworld(dimensionTypes, defaultOverworld(biomes, noiseSettings, seed)))
         }
@@ -102,7 +103,7 @@ data class WorldGenerationSettings(
             val seed = generatorSettings.seed.takeIf { it.isNotBlank() }?.let { it.toLongOrNull() ?: it.hashCode().toLong() } ?: Random.nextLong()
             val type = generatorSettings.type
             val structures = generatorSettings.structures
-            val dimensionTypes = holder.registryOrThrow(ResourceKeys.DIMENSION_TYPE)
+            val dimensionTypes = holder.registryOrThrow(InternalResourceKeys.DIMENSION_TYPE)
             val biomes = holder.registryOrThrow(InternalResourceKeys.BIOME)
             val noiseSettings = holder.registryOrThrow(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
             val dimensions = dimensionTypes.defaults(biomes, noiseSettings, seed)
@@ -127,13 +128,13 @@ data class WorldGenerationSettings(
     }
 }
 
-private fun KryptonRegistry<Dimension>.withOverworld(dimensionTypes: Registry<DimensionType>, generator: Generator): KryptonRegistry<Dimension> {
+private fun KryptonRegistry<Dimension>.withOverworld(dimensionTypes: Registry<KryptonDimensionType>, generator: Generator): KryptonRegistry<Dimension> {
     val overworld = get(Dimension.OVERWORLD)
     val overworldType = { overworld?.type ?: dimensionTypes[DimensionTypes.OVERWORLD_KEY]!! }
     return withOverworld(overworldType, generator)
 }
 
-private fun KryptonRegistry<Dimension>.withOverworld(typeSupplier: () -> DimensionType, generator: Generator): KryptonRegistry<Dimension> {
+private fun KryptonRegistry<Dimension>.withOverworld(typeSupplier: () -> KryptonDimensionType, generator: Generator): KryptonRegistry<Dimension> {
     val registry = KryptonRegistry(InternalResourceKeys.DIMENSION).apply { register(Dimension.OVERWORLD, Dimension(typeSupplier, generator)) }
     entries.forEach { (key, value) -> if (key !== Dimension.OVERWORLD) registry.register(key, value) }
     return registry

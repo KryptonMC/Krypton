@@ -117,7 +117,7 @@ private fun <T> Dynamic<T>.readWorldGenSettings(version: Int): WorldGenerationSe
     OLD_SETTINGS_KEYS.forEach { key -> get(key).result().ifPresent { temp = temp.set(key, it) } }
     val data = DATA_FIXER.update(References.WORLD_GEN_SETTINGS, temp, version, ServerInfo.WORLD_VERSION)
     return WorldGenerationSettings.CODEC.parse(data).resultOrPartial { LOGGER.error("WorldGenSettings: $it") }.orElseGet {
-        val dimensionTypes = RegistryLookupCodec(ResourceKeys.DIMENSION_TYPE).codec().parse(data).resultOrPartial { LOGGER.error("Dimension type registry: $it") }.orThrow("Failed to get dimension registry!")
+        val dimensionTypes = RegistryLookupCodec(InternalResourceKeys.DIMENSION_TYPE).codec().parse(data).resultOrPartial { LOGGER.error("Dimension type registry: $it") }.orThrow("Failed to get dimension registry!")
         val biomes = RegistryLookupCodec(InternalResourceKeys.BIOME).codec().parse(data).resultOrPartial { LOGGER.error("Biome registry: $it") }.orThrow("Failed to get biome registry")
         val noiseSettings = RegistryLookupCodec(InternalResourceKeys.NOISE_GENERATOR_SETTINGS).codec().parse(data).resultOrPartial { LOGGER.error("Noise settings registry: $it") }.orThrow("Failed to get noise settings registry")
         WorldGenerationSettings.makeDefault(dimensionTypes, biomes, noiseSettings)

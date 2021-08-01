@@ -30,6 +30,7 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.StructureSettings
 import java.util.Optional
 import java.util.function.Function
@@ -101,5 +102,5 @@ class FlatGeneratorSettings(
 
 private fun FlatGeneratorSettings.validateHeight(): DataResult<FlatGeneratorSettings> {
     val heightSum = layers.sumOf { it.height }
-    return if (heightSum > DimensionTypes.Y_SIZE) DataResult.error("Sum of layer heights is greater than the maximum sum of heights ${DimensionTypes.Y_SIZE}!", this) else DataResult.success(this)
+    return if (heightSum > KryptonDimensionType.Y_SIZE) DataResult.error("Sum of layer heights is greater than the maximum sum of heights ${KryptonDimensionType.Y_SIZE}!", this) else DataResult.success(this)
 }

@@ -34,6 +34,7 @@ import org.kryptonmc.krypton.resource.MemoryResources
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 import java.util.Optional
 
@@ -69,7 +70,7 @@ class RegistryHolder(val registries: Map<out ResourceKey<out Registry<*>>, Krypt
 
     private fun <E : Any> addBuiltins(resources: MemoryResources, data: RegistryData<E>) {
         val key = data.key
-        val shouldAdd = key != InternalResourceKeys.NOISE_GENERATOR_SETTINGS && key != ResourceKeys.DIMENSION_TYPE
+        val shouldAdd = key != InternalResourceKeys.NOISE_GENERATOR_SETTINGS && key != InternalResourceKeys.DIMENSION_TYPE
         val registry = BUILTIN.registryOrThrow(key)
         val owned = ownedRegistryOrThrow(key)
         registry.forEach { (key, value) -> if (shouldAdd) resources.add(BUILTIN, key, data.codec, registry.idOf(value), value) else owned.register(registry.idOf(value), key, value) }
@@ -78,13 +79,13 @@ class RegistryHolder(val registries: Map<out ResourceKey<out Registry<*>>, Krypt
     companion object {
 
         val REGISTRIES: Map<ResourceKey<out Registry<*>>, RegistryData<*>> = mapOf(
-            ResourceKeys.DIMENSION_TYPE to RegistryData(ResourceKeys.DIMENSION_TYPE, DimensionTypes.DIRECT_CODEC, DimensionTypes.DIRECT_CODEC),
+            InternalResourceKeys.DIMENSION_TYPE to RegistryData(InternalResourceKeys.DIMENSION_TYPE, KryptonDimensionType.DIRECT_CODEC, KryptonDimensionType.DIRECT_CODEC),
             InternalResourceKeys.BIOME to RegistryData(InternalResourceKeys.BIOME, KryptonBiome.DIRECT_CODEC, KryptonBiome.DIRECT_CODEC),
             InternalResourceKeys.NOISE_GENERATOR_SETTINGS to RegistryData(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, NoiseGeneratorSettings.DIRECT_CODEC, null)
         )
         private val BUILTIN = RegistryHolder().apply {
             DimensionTypes.registerBuiltins(this)
-            REGISTRIES.keys.asSequence().filter { it != ResourceKeys.DIMENSION_TYPE }.forEach { copyBuiltin(it) }
+            REGISTRIES.keys.asSequence().filter { it != InternalResourceKeys.DIMENSION_TYPE }.forEach { copyBuiltin(it) }
         }
         val NETWORK_CODEC: Codec<RegistryHolder> = networkCodec<Any>()
 
