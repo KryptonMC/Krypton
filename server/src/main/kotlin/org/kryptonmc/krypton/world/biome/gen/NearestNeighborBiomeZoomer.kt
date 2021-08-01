@@ -16,25 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.structure
+package org.kryptonmc.krypton.world.biome.gen
 
-import org.kryptonmc.api.block.BoundingBox
+import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 
-abstract class Structure(open val id: String)
+object NearestNeighborBiomeZoomer : BiomeZoomer {
 
-abstract class StructurePiece(open val id: String) {
-
-    abstract val ordinal: Int
-
-    abstract val boundingBox: BoundingBox
-
-    abstract val orientation: Orientation
-}
-
-enum class Orientation {
-
-    NORTH,
-    SOUTH,
-    EAST,
-    WEST
+    override fun invoke(seed: Long, x: Int, y: Int, z: Int, source: NoiseBiomeSource) =
+        source[x shr 2, y shr 2, z shr 2]
 }

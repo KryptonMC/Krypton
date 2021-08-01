@@ -16,10 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome
+package org.kryptonmc.krypton.world.biome.gen
 
 import org.kryptonmc.api.space.square
 import org.kryptonmc.krypton.util.LinearCongruentialGenerator
+import org.kryptonmc.krypton.world.biome.KryptonBiome
+import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 
 object FuzzyOffsetBiomeZoomer : BiomeZoomer {
 

@@ -23,8 +23,8 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.tags.BlockTags
-import org.kryptonmc.krypton.world.biome.FuzzyOffsetBiomeZoomer
-import org.kryptonmc.krypton.world.biome.FuzzyOffsetConstantColumnBiomeZoomer
+import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetBiomeZoomer
+import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetConstantColumnBiomeZoomer
 
 object DimensionTypes {
 

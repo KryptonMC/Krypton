@@ -16,10 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome
+package org.kryptonmc.krypton.world.biome.gen
 
-object NearestNeighborBiomeZoomer : BiomeZoomer {
+import org.kryptonmc.krypton.world.biome.KryptonBiome
+import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 
-    override fun invoke(seed: Long, x: Int, y: Int, z: Int, source: NoiseBiomeSource) =
-        source[x shr 2, y shr 2, z shr 2]
+fun interface BiomeZoomer {
+
+    operator fun invoke(seed: Long, x: Int, y: Int, z: Int, source: NoiseBiomeSource): KryptonBiome
 }

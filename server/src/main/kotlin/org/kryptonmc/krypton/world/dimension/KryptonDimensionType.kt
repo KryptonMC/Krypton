@@ -33,8 +33,8 @@ import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.PACKED_Y
 import org.kryptonmc.krypton.util.frac
 import org.kryptonmc.krypton.util.lerp
-import org.kryptonmc.krypton.world.biome.BiomeZoomer
-import org.kryptonmc.krypton.world.biome.FuzzyOffsetBiomeZoomer
+import org.kryptonmc.krypton.world.biome.gen.BiomeZoomer
+import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetBiomeZoomer
 import java.util.Optional
 import kotlin.math.PI
 import kotlin.math.cos

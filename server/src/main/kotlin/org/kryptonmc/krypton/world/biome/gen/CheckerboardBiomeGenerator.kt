@@ -16,17 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome
+package org.kryptonmc.krypton.world.biome.gen
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import org.kryptonmc.krypton.world.biome.KryptonBiome
 
 class CheckerboardBiomeGenerator(
     private val allowedBiomes: List<() -> KryptonBiome>,
     private val scale: Int
 ) : BiomeGenerator(allowedBiomes.asSequence()) {
 
+    private val bitShift = scale + 2
     override val codec = CODEC
+
+    override fun get(x: Int, y: Int, z: Int) = allowedBiomes[Math.floorMod((x shr bitShift) + (z shr bitShift), allowedBiomes.size)]()
 
     companion object {
 

@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.RegistryLookupCodec
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiome
-import org.kryptonmc.krypton.world.biome.FixedBiomeGenerator
+import org.kryptonmc.krypton.world.biome.gen.FixedBiomeGenerator
 
 class DebugGenerator(private val biomes: Registry<KryptonBiome>) : Generator(FixedBiomeGenerator(biomes[BiomeKeys.PLAINS]!!), StructureSettings(false)) {
 

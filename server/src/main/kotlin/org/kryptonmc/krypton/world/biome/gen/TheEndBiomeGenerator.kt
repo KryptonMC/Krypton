@@ -16,15 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome
+package org.kryptonmc.krypton.world.biome.gen
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.RegistryLookupCodec
+import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.noise.SimplexNoise
 import org.kryptonmc.krypton.util.random.WorldGenRandom
+import org.kryptonmc.krypton.world.biome.BiomeKeys
+import org.kryptonmc.krypton.world.biome.KryptonBiome
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.sqrt
 
 class TheEndBiomeGenerator private constructor(
     private val biomes: Registry<KryptonBiome>,
@@ -52,6 +58,19 @@ class TheEndBiomeGenerator private constructor(
         biomes[BiomeKeys.END_BARRENS]!!
     )
 
+    override fun get(x: Int, y: Int, z: Int): KryptonBiome {
+        val quartX = x shr 2
+        val quartZ = z shr 2
+        if (quartX.toLong() * quartX.toLong() + quartZ.toLong() * quartZ.toLong() <= ISLAND_CHUNK_DISTANCE_SQ) return end
+        val heightValue = heightValue(islandNoise, quartX * 2 + 1, quartZ * 2 + 1)
+        return when {
+            heightValue > 40F -> highlands
+            heightValue >= 0F -> midlands
+            heightValue < -20F -> islands
+            else -> barrens
+        }
+    }
+
     companion object {
 
         val CODEC: Codec<TheEndBiomeGenerator> = RecordCodecBuilder.create {
@@ -61,4 +80,29 @@ class TheEndBiomeGenerator private constructor(
             ).apply(it, ::TheEndBiomeGenerator)
         }
     }
+}
+
+private const val ISLAND_THRESHOLD = -0.9
+private const val ISLAND_CHUNK_DISTANCE_SQ = 4096L
+
+private fun heightValue(noise: SimplexNoise, x: Int, z: Int): Float {
+    val divX = x / 2
+    val divZ = z / 2
+    val modX = x % 2
+    val modZ = z % 2
+    var value = (100F - sqrt((x * x + z * z).toFloat()) * 8F).clamp(-100F, 80F)
+    for (xo in -12..12) {
+        for (zo in -12..12) {
+            val offX = (divX + xo).toLong()
+            val offZ = (divZ + zo).toLong()
+            if (offX * offX + offZ * offZ > ISLAND_CHUNK_DISTANCE_SQ && noise.getValue(offX.toDouble(), offZ.toDouble()) < ISLAND_THRESHOLD) {
+                val abs = (abs(offX.toFloat()) * 3439F + abs(offZ.toFloat()) * 147F) % 13F + 9F
+                val offModX = (modX - xo * 2).toFloat()
+                val offModZ = (modZ - zo * 2).toFloat()
+                val newValue = (100F - sqrt(offModX * offModX + offModZ * offModZ) * abs).clamp(-100F, 80F)
+                value = max(value, newValue)
+            }
+        }
+    }
+    return value
 }

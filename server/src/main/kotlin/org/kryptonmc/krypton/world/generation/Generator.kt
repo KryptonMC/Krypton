@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.generation
 
 import com.mojang.serialization.Codec
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.world.biome.BiomeGenerator
+import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import java.util.function.Function
 
 abstract class Generator(

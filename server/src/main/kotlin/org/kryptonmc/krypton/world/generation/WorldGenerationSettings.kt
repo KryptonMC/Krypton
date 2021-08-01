@@ -27,9 +27,6 @@ import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import me.bardy.gsonkt.fromJson
 import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.registry.InternalResourceKeys
@@ -38,7 +35,7 @@ import org.kryptonmc.krypton.registry.RegistryDataPackCodec
 import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.biome.KryptonBiome
-import org.kryptonmc.krypton.world.biome.VanillaLayeredBiomeGenerator
+import org.kryptonmc.krypton.world.biome.gen.VanillaLayeredBiomeGenerator
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.Dimension.Companion.sort
 import org.kryptonmc.krypton.world.dimension.Dimension.Companion.stable
@@ -115,8 +112,10 @@ data class WorldGenerationSettings(
                     return WorldGenerationSettings(seed, structures, false, dimensions.withOverworld(dimensionTypes, FlatGenerator(parsed.resultOrPartial(LOGGER::error).orElseGet { FlatGeneratorSettings.default(biomes) })))
                 }
                 "debug_all_block_states" -> WorldGenerationSettings(seed, structures, false, dimensions.withOverworld(dimensionTypes, DebugGenerator(biomes)))
-                "amplified" -> WorldGenerationSettings(seed, structures, false, dimensions.withOverworld(dimensionTypes, NoiseGenerator(VanillaLayeredBiomeGenerator(seed, false, false, biomes), seed) { noiseSettings[NoiseGeneratorSettings.AMPLIFIED]!! }))
-                "largebiomes" -> WorldGenerationSettings(seed, structures, false, dimensions.withOverworld(dimensionTypes, NoiseGenerator(VanillaLayeredBiomeGenerator(seed, false, true, biomes), seed) { noiseSettings[NoiseGeneratorSettings.OVERWORLD]!! }))
+                "amplified" -> WorldGenerationSettings(seed, structures, false, dimensions.withOverworld(dimensionTypes, NoiseGenerator(
+                    VanillaLayeredBiomeGenerator(seed, false, false, biomes), seed) { noiseSettings[NoiseGeneratorSettings.AMPLIFIED]!! }))
+                "largebiomes" -> WorldGenerationSettings(seed, structures, false, dimensions.withOverworld(dimensionTypes, NoiseGenerator(
+                    VanillaLayeredBiomeGenerator(seed, false, true, biomes), seed) { noiseSettings[NoiseGeneratorSettings.OVERWORLD]!! }))
                 else -> WorldGenerationSettings(seed, structures, false, dimensions.withOverworld(dimensionTypes, defaultOverworld(biomes, noiseSettings, seed)))
             }
         }

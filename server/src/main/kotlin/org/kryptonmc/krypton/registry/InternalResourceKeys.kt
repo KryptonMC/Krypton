@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.event.GameEvent
 import org.kryptonmc.krypton.world.fluid.Fluid
 import org.kryptonmc.krypton.world.generation.Generator
-import org.kryptonmc.krypton.world.biome.BiomeGenerator
+import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.feature.ConfiguredFeature

@@ -16,15 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome
+package org.kryptonmc.krypton.world.biome.gen
 
 import com.mojang.serialization.Codec
+import org.kryptonmc.krypton.world.biome.KryptonBiome
+import org.spongepowered.math.vector.Vector3i
+import java.util.Random
 
 class FixedBiomeGenerator(private val biome: () -> KryptonBiome) : BiomeGenerator(listOf(biome())) {
 
     override val codec = CODEC
 
     constructor(biome: KryptonBiome) : this({ biome })
+
+    override fun get(x: Int, y: Int, z: Int) = biome()
+
+    override fun findBiomeHorizontal(
+        x: Int,
+        y: Int,
+        z: Int,
+        radius: Int,
+        random: Random,
+        step: Int,
+        absolute: Boolean,
+        predicate: (KryptonBiome) -> Boolean
+    ): Vector3i? = if (predicate(biome())) {
+        if (absolute) Vector3i(x, y, z) else Vector3i(x - radius + random.nextInt(radius * 2 + 1), y, z - radius + random.nextInt(radius * 2 + 1))
+    } else null
 
     companion object {
 

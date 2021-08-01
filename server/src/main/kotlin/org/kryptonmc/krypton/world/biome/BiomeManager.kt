@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world.biome
 
 import org.kryptonmc.api.util.floor
+import org.kryptonmc.krypton.world.biome.gen.BiomeZoomer
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.vector.Vector3i
 

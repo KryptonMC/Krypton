@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome
+package org.kryptonmc.krypton.world.biome.gen
 
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
@@ -32,6 +32,10 @@ import org.kryptonmc.krypton.registry.RegistryLookupCodec
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.noise.NormalNoise
 import org.kryptonmc.krypton.util.random.WorldGenRandom
+import org.kryptonmc.krypton.world.biome.BiomeKeys
+import org.kryptonmc.krypton.world.biome.ClimateParameters
+import org.kryptonmc.krypton.world.biome.KryptonBiome
+import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import java.util.function.Function
 
 class MultiNoiseBiomeGenerator private constructor(
@@ -51,6 +55,18 @@ class MultiNoiseBiomeGenerator private constructor(
     private val useY = false
 
     override val codec = CODEC
+
+    override fun get(x: Int, y: Int, z: Int): KryptonBiome {
+        val usedY = (if (useY) y else 0).toDouble()
+        val climateParameters = ClimateParameters(
+            temperatureNoise.getValue(x.toDouble(), usedY, z.toDouble()).toFloat(),
+            humidityNoise.getValue(x.toDouble(), usedY, z.toDouble()).toFloat(),
+            altitudeNoise.getValue(x.toDouble(), usedY, z.toDouble()).toFloat(),
+            weirdnessNoise.getValue(x.toDouble(), usedY, z.toDouble()).toFloat(),
+            0F
+        )
+        return parameters.minByOrNull { it.first.fitness(climateParameters) }?.second?.invoke() ?: KryptonBiomes.THE_VOID
+    }
 
     private fun preset() = preset?.let { PresetInstance(it.second, it.first, seed) }
 

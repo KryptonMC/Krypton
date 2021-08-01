@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.generation
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.krypton.world.biome.BiomeGenerator
+import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 
 class NoiseGenerator(

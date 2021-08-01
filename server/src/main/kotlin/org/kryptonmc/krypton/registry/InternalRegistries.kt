@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.registry
 import com.mojang.serialization.Codec
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.world.biome.BiomeGenerator
+import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import org.kryptonmc.krypton.world.generation.Generator
 import org.kryptonmc.krypton.world.generation.feature.Feature
 import org.kryptonmc.krypton.world.generation.feature.Structure
