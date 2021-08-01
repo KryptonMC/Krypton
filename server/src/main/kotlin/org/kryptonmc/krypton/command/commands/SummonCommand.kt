@@ -35,6 +35,7 @@ import org.kryptonmc.krypton.command.arguments.SummonEntityArgument
 import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
 import org.kryptonmc.krypton.command.arguments.entitySummonArgument
+import org.kryptonmc.krypton.command.arguments.summonableEntity
 import org.kryptonmc.krypton.command.arguments.vectorArgument
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -52,19 +53,19 @@ object SummonCommand : InternalCommand {
                 .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                 .executes {
                     val sender = it.source as? KryptonPlayer ?: return@executes 1
-                    spawnEntity(sender, it.entitySummonArgument("entity"), sender.location, MutableCompoundTag())
+                    spawnEntity(sender, it.summonableEntity("entity"), sender.location, MutableCompoundTag())
                     1
                 }
                 .then(argument<Sender, Coordinates>("position", VectorArgument())
                     .executes {
                         val sender = it.source as? KryptonPlayer ?: return@executes 1
-                        spawnEntity(sender, it.entitySummonArgument("entity"), it.vectorArgument("position"), MutableCompoundTag())
+                        spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), MutableCompoundTag())
                         1
                     }
                     .then(argument<Sender, NBTCompound>("nbt", NBTCompoundArgument())
                         .executes {
                             val sender = it.source as? KryptonPlayer ?: return@executes 1
-                            spawnEntity(sender, it.entitySummonArgument("entity"), it.vectorArgument("position"), it.argument("nbt"))
+                            spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), it.argument<CompoundTag>("nbt").mutable())
                             1
                         })))
         )
