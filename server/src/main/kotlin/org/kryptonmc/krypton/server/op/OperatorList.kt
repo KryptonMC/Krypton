@@ -27,11 +27,11 @@ import java.nio.file.Path
 
 class OperatorList(path: Path) : ServerConfigList<GameProfile, OperatorEntry>(path) {
 
-    override fun fromJson(data: JsonObject): ServerConfigEntry<GameProfile> {
-        val profile = data.toGameProfile()!!
+    override fun fromJson(data: JsonObject): ServerConfigEntry<GameProfile>? {
+        val profile = data.toGameProfile()
         val permissionLevel = data.get("level")?.asInt ?: 0
         val bypassesPlayerLimit = data.has("bypassesPlayerLimit") && data.get("bypassesPlayerLimit").asBoolean
-        return OperatorEntry(profile, permissionLevel, bypassesPlayerLimit)
+        return profile?.let { OperatorEntry(it, permissionLevel, bypassesPlayerLimit) }
     }
 
 }

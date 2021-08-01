@@ -21,7 +21,9 @@ package org.kryptonmc.krypton.server
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.google.gson.JsonSyntaxException
 import me.bardy.gsonkt.fromJson
+import org.kryptonmc.krypton.util.logger
 import java.nio.file.Path
 import kotlin.io.path.bufferedReader
 import kotlin.io.path.bufferedWriter
@@ -34,7 +36,6 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
     private val map = hashMapOf<String, V>()
     private val gson = Gson()
     val size get() = map.values.size
-
 
     open operator fun get(key: K) = map[key.toString()]
 
@@ -61,7 +62,7 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
         save()
     }
 
-    internal abstract fun fromJson(data: JsonObject): ServerConfigEntry<K>
+    internal abstract fun fromJson(data: JsonObject): ServerConfigEntry<K>?
 
     fun save() {
         val players = JsonArray()
@@ -80,11 +81,20 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
     fun load() {
         map.clear()
         path.bufferedReader(charset = Charsets.UTF_8).use {
-            val data = gson.fromJson<JsonArray>(it)
+            val data = try {
+                gson.fromJson<JsonArray>(it)
+            } catch(_: JsonSyntaxException) {
+                LOGGER.error("Couldn't parse ${path.fileName}. Delete it to reset it")
+                return
+            }
             for (jsonEntry in data) {
                 val entry = jsonEntry as JsonObject
                 val serverConfigEntry = fromJson(entry)
-                map[serverConfigEntry.key.toString()] = serverConfigEntry as V
+                if(serverConfigEntry != null) {
+                    map[serverConfigEntry.key.toString()] = serverConfigEntry as V
+                } else {
+                    LOGGER.error("Couldn't parse ${path.fileName}. Delete it to reset it")
+                }
             }
         }
     }
@@ -96,6 +106,10 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
         } else {
             load()
         }
+    }
+
+    companion object {
+        private val LOGGER = logger<ServerConfigList<*, *>>()
     }
 
 }

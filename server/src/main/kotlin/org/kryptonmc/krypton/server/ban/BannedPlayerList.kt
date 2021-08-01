@@ -27,8 +27,8 @@ import java.nio.file.Path
 class BannedPlayerList(path: Path) : ServerConfigList<GameProfile, BannedPlayerEntry>(path) {
 
     override fun fromJson(data: JsonObject): BannedPlayerEntry {
-        val entry = BanEntry.fromJson(data.toGameProfile(), data) //Get better null checking
-        return BannedPlayerEntry(entry.key!!, entry.creationDate, entry.source, entry.expiryDate, entry.reason)
+        val entry = BanEntry.fromJson(data.toGameProfile(), data)
+        return BannedPlayerEntry(entry.key, entry.creationDate, entry.source, entry.expiryDate, entry.reason)
     }
 
 }

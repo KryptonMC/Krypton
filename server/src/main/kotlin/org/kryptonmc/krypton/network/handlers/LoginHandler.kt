@@ -261,21 +261,28 @@ class LoginHandler(
                 )
             )
             session.disconnect(text)
+            LOGGER.info("${profile.name} disconnected. Reason: Banned")
             return false
-        } else if (playerManager.whitelistEnabled && !playerManager.whitelist.contains(profile) && !playerManager.whitlistedIps.isWhitelisted(
-                address
-            )
+        } else if (playerManager.whitelistEnabled && !playerManager.whitelist.contains(profile) && !playerManager.whitlistedIps.isWhitelisted(address)
         ) {
             session.disconnect(translatable("multiplayer.disconnect.not_whitelisted"))
+            LOGGER.info("${profile.name} disconnected. Reason: Not whitelisted")
             return false
         } else if (playerManager.bannedIps.isBanned(address)) {
             val entry = playerManager.bannedIps[address]!!
-            session.disconnect(
+            val text = translatable(
+                "multiplayer.disconnect.banned_ip.reason",
+                listOf(entry.reason.toComponent())
+            )
+            if (entry.expiryDate != null) text.append(
                 translatable(
-                    "multiplayer.disconnect.banned_ip.reason",
-                    listOf(entry.reason.toComponent())
+                    "multiplayer.disconnect.banned.expiration", listOf(
+                        BanEntry.DATE_FORMAT.format(entry.expiryDate).toComponent()
+                    )
                 )
             )
+            session.disconnect(text)
+            LOGGER.info("${profile.name} disconnected. Reason: IP Banned")
         }
         return true
     }

@@ -26,8 +26,8 @@ import java.nio.file.Path
 
 class Whitelist(path: Path) : ServerConfigList<GameProfile, WhitelistEntry>(path) {
 
-    override fun fromJson(data: JsonObject): WhitelistEntry {
-        return WhitelistEntry(data.toGameProfile()!!)
+    override fun fromJson(data: JsonObject): WhitelistEntry? {
+        return data.toGameProfile()?.let { WhitelistEntry(it) }
     }
 
 }
