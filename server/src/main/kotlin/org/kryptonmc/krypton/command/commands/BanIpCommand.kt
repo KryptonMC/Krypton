@@ -39,7 +39,8 @@ import org.kryptonmc.krypton.util.toComponent
 object BanIpCommand : InternalCommand {
 
     private val ALREADY_BANNED_EXCEPTION = SimpleCommandExceptionType(translatable("commands.banip.failed").toMessage())
-
+    val PATTERN =
+        Regex("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$")
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
@@ -116,10 +117,4 @@ object BanIpCommand : InternalCommand {
                 listOf(target.toComponent(), source.toComponent(), reason.toComponent())
             )
         )
-
-    companion object {
-
-        val PATTERN =
-            Regex("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$")
-    }
 }
