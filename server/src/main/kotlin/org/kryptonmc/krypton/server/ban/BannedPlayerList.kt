@@ -38,7 +38,6 @@ class BannedPlayerList(path: Path) : ServerConfigList<GameProfile, BannedPlayerE
                 if(time.isAfter(OffsetDateTime.now())) remove(it.key)
             }
         }
-        save()
     }
 
     override fun validatePath() {

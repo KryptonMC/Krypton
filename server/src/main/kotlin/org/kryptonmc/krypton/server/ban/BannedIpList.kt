@@ -40,7 +40,6 @@ class BannedIpList(path: Path) : ServerConfigList<String, BannedIpEntry>(path) {
                 if(time.isAfter(OffsetDateTime.now())) remove(it.key)
             }
         }
-        save()
     }
 
     override fun validatePath() {
