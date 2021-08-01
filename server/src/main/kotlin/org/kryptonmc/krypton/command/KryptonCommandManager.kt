@@ -164,6 +164,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         GamemodeCommand(server).register(dispatcher)
         ListCommand().register(dispatcher)
         SeedCommand().register(dispatcher)
+        SayCommand().register(dispatcher)
     }
 
     companion object {
