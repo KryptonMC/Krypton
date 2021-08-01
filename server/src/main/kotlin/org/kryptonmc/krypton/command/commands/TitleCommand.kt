@@ -25,11 +25,13 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument.Companion.players
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 import java.time.Duration
@@ -39,6 +41,7 @@ internal class TitleCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
             literal<Sender>("title")
+                .permission("krypton.command.title", PermissionLevel.LEVEL_2)
                 .then(
                     argument<Sender, EntityQuery>("targets", players())
                         .then(

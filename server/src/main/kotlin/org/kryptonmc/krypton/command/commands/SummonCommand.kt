@@ -26,6 +26,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.krypton.command.InternalCommand
@@ -37,6 +38,7 @@ import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
 import org.kryptonmc.krypton.command.arguments.entitySummonArgument
 import org.kryptonmc.krypton.command.arguments.summonableEntity
 import org.kryptonmc.krypton.command.arguments.vectorArgument
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
@@ -48,7 +50,9 @@ object SummonCommand : InternalCommand {
     private val ERROR_INVALID_POSITION = SimpleCommandExceptionType(Component.translatable("commands.summon.invalidPosition").toMessage())
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("summon")
+        dispatcher.register(
+            literal<Sender>("summon")
+                .permission("krypton.command.summon", PermissionLevel.LEVEL_2)
             .then(argument<Sender, Key>("entity", SummonEntityArgument())
                 .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                 .executes {

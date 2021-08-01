@@ -18,15 +18,25 @@
  */
 package org.kryptonmc.krypton.command.commands
 
+import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.locale.Messages
 
-internal class RestartCommand(private val server: KryptonServer) : SimpleCommand("restart", "krypton.command.restart") {
+internal class RestartCommand(private val server: KryptonServer) : InternalCommand {
 
-    override fun execute(sender: Sender, args: Array<String>) {
-        Messages.COMMANDS.RESTART.send(sender)
-        server.restart()
+    override fun register(dispatcher: CommandDispatcher<Sender>) {
+        dispatcher.register(literal<Sender>("restart")
+            .permission("krypton.command.restart", PermissionLevel.LEVEL_4)
+            .executes {
+                Messages.COMMANDS.RESTART.send(it.source)
+                server.restart()
+                1
+            })
     }
+
 }

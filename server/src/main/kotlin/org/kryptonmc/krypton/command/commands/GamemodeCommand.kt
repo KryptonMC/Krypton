@@ -25,6 +25,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.context.CommandContext
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonServer
@@ -32,6 +33,7 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 
@@ -39,6 +41,7 @@ internal class GamemodeCommand(private val server: KryptonServer) : InternalComm
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal<Sender>("gamemode")
+            .permission("krypton.command.gamemode", PermissionLevel.LEVEL_2)
         for (gamemode in Gamemode.values()) {
             command
                 .then(literal<Sender>(gamemode.name.lowercase())

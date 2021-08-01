@@ -22,11 +22,13 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.util.argument
 
 internal class KickCommand : InternalCommand {
@@ -34,6 +36,7 @@ internal class KickCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
             literal<Sender>("kick")
+                .permission("krypton.command.kick", PermissionLevel.LEVEL_3)
                 .then(
                     argument<Sender, EntityQuery>("targets", EntityArgument.players())
                         .executes {

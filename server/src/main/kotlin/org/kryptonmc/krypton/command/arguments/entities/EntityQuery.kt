@@ -40,7 +40,6 @@ class EntityQuery(
     val type: SELECTOR,
     private val playerName: String = ""
 ) {
-
     fun getEntities(source: KryptonPlayer) = when (type) {
         SELECTOR.RANDOM_PLAYER -> {
             listOf(source.server.players.random())

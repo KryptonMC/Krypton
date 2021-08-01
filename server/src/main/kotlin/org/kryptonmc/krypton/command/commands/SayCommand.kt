@@ -24,9 +24,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.util.argument
 import org.kryptonmc.krypton.util.toComponent
 
@@ -35,6 +37,7 @@ internal class SayCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
             literal<Sender>("say")
+                .permission("krypton.command.say", PermissionLevel.LEVEL_2)
                 .then(
                     argument<Sender, String>("message", string())
                         .executes {

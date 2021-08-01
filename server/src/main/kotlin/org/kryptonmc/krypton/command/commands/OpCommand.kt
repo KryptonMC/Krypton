@@ -21,47 +21,48 @@ package org.kryptonmc.krypton.command.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.gameprofile.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.gameprofile.gameProfileArgument
 import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.suggest
 import org.kryptonmc.krypton.util.toComponent
 
-internal class PardonCommand : InternalCommand {
+internal class OpCommand : InternalCommand {
+
+    private val ALREADY_OPPED_EXCEPTION = SimpleCommandExceptionType(translatable("commands.op.failed").toMessage())
+
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
-            literal<Sender>("pardon")
-                .permission("krypton.command.pardon", PermissionLevel.LEVEL_3)
-                .then(
-                    argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
-                        .suggests { context, builder ->
-                            builder.suggest((context.source.server as KryptonServer).playerManager.bannedPlayers.map { it.key.name })
+            literal<Sender>("op")
+                .permission("krypton.command.op", PermissionLevel.LEVEL_3)
+                .then(argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
+                    .executes {
+                        val targets = it.gameProfileArgument("targets").getProfiles(it.source)
+                        val server = it.source.server as KryptonServer
+                        for (target in targets) {
+                            val ops = server.playerManager.ops
+                            if (!ops.contains(target)) {
+                                server.playerManager.addToOperators(target)
+                                it.source.sendMessage(
+                                    translatable(
+                                        "commands.op.success",
+                                        listOf(target.name.toComponent())
+                                    )
+                                )
+                            } else {
+                                throw ALREADY_OPPED_EXCEPTION.create()
+                            }
                         }
-                        .executes {
-                            unban(
-                                it.gameProfileArgument("targets").getProfiles(it.source),
-                                server = it.source.server as KryptonServer,
-                                sender = it.source
-                            )
-                            1
-                        })
+                        1
+                    })
         )
-    }
-
-    private fun unban(targets: List<GameProfile>, sender: Sender, server: KryptonServer) {
-        for (target in targets) {
-            if (server.playerManager.bannedPlayers.contains(target)) {
-                server.playerManager.bannedPlayers -= target
-                sender.sendMessage(translatable("commands.pardon.success", listOf(target.name.toComponent())))
-            }
-        }
     }
 }

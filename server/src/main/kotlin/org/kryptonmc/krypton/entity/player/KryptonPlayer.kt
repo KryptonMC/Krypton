@@ -35,6 +35,7 @@ import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTInt
 import org.jglrxavpok.hephaistos.nbt.NBTTypes
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
@@ -126,6 +127,9 @@ class KryptonPlayer(
 
     override var viewDistance = 10
     override var time = 0L
+
+    override val permissionLevel: PermissionLevel
+        get() = server.getPermissionLevel(profile)
 
     private var camera: KryptonEntity = this
         set(value) {

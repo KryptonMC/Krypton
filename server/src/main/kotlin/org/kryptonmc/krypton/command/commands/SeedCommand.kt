@@ -23,14 +23,18 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.format.TextColor
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 internal class SeedCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("seed")
+        dispatcher.register(
+            literal<Sender>("seed")
+                .permission("krypton.command.seed", PermissionLevel.LEVEL_2)
             .executes {
                 val sender = it.source as? KryptonPlayer ?: return@executes 1
                 val text = text("[").append(text(sender.world.seed, TextColor.color(5635925))).append(text("]"))

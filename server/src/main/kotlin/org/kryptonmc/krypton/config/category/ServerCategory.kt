@@ -36,5 +36,8 @@ data class ServerCategory(
     val compressionThreshold: Int = 256,
     @Setting("whitelist-enabled")
     @Comment("Whether only specific users can join the server or not")
-    var whitelistEnabled: Boolean = false
+    var whitelistEnabled: Boolean = false,
+    @Setting("op-permission-level")
+    @Comment("The permission level operators will get")
+    val opPermissionLevel: Int = 4
 )

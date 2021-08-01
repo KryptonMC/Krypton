@@ -27,8 +27,8 @@ import net.kyori.adventure.util.Codec
 import org.jglrxavpok.hephaistos.nbt.NBTCompound
 import org.jglrxavpok.hephaistos.nbt.NBTException
 import org.kryptonmc.api.adventure.toPlainText
+import org.kryptonmc.nbt.buildCompound
 import java.io.IOException
-import java.lang.RuntimeException
 import java.util.UUID
 
 object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {

@@ -22,9 +22,11 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 internal class ListCommand : InternalCommand {
@@ -32,6 +34,7 @@ internal class ListCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
             literal<Sender>("list")
+                .permission("krypton.command.list", PermissionLevel.LEVEL_1)
                 .executes {
                     sendNames(it.source, it.source.server as KryptonServer)
                     1

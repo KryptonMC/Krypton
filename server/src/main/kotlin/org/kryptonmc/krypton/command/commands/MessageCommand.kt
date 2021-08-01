@@ -24,11 +24,13 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 
@@ -37,6 +39,7 @@ internal class MessageCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val messageCommand = dispatcher.register(
             literal<Sender>("msg")
+                .permission("krypton.command.msg", PermissionLevel.LEVEL_1)
                 .then(
                     argument<Sender, EntityQuery>("player", EntityArgument.player())
                         .then(

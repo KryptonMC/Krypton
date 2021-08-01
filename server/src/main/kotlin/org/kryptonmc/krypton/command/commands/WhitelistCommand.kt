@@ -22,12 +22,14 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.gameprofile.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.gameprofile.gameProfileArgument
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.server.whitelist.WhitelistEntry
 import org.kryptonmc.krypton.util.toComponent
 
@@ -36,6 +38,7 @@ internal class WhitelistCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
             literal<Sender>("whitelist")
+                .permission("krypton.command.whitelist", PermissionLevel.LEVEL_3)
                 .then(literal<Sender>("on")
                     .executes {
                         val sender = it.source

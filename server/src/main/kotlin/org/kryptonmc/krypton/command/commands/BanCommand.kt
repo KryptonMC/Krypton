@@ -24,6 +24,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.GameProfile
@@ -31,6 +32,7 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.gameprofile.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.gameprofile.gameProfileArgument
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.server.ban.BanEntry
 import org.kryptonmc.krypton.server.ban.BannedPlayerEntry
@@ -42,6 +44,7 @@ internal class BanCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
             literal<Sender>("ban")
+                .permission("krypton.command.ban", PermissionLevel.LEVEL_3)
                 .then(
                     argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
                         .executes {

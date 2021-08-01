@@ -29,6 +29,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.Services
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.ticking.TickEndEvent
@@ -37,6 +38,7 @@ import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.status.StatusInfo
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.MojangUUIDSerializer
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDER
@@ -190,6 +192,7 @@ class KryptonServer(
         playerManager.userCache.validatePath()
         playerManager.whitelist.validatePath()
         playerManager.bannedIps.validatePath()
+        playerManager.ops.validatePath()
 
         // Start the metrics system
         LOGGER.debug("Starting bStats metrics")
@@ -391,6 +394,11 @@ class KryptonServer(
     }
 
     internal fun stop(halt: Boolean = true) {
+    fun getPermissionLevel(profile: GameProfile) =
+        if (playerManager.ops.contains(profile)) PermissionLevel.fromId(playerManager.ops[profile]!!.permissionLevel)
+            ?: PermissionLevel.LEVEL_1 else PermissionLevel.LEVEL_1
+
+    fun stop(halt: Boolean = true) {
         if (!isRunning) return // Ensure we cannot accidentally run this twice
 
         // stop server and shut down session manager (disconnecting all players)

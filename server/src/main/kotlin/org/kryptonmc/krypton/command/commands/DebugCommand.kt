@@ -24,10 +24,12 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.logger
@@ -41,7 +43,9 @@ import java.util.Locale
 internal class DebugCommand(private val server: KryptonServer) : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("debug")
+        dispatcher.register(
+            literal<Sender>("debug")
+                .permission("krypton.command.debug", PermissionLevel.LEVEL_3)
             .then(literal<Sender>("start").executes { start(it.source); 1 })
             .then(literal<Sender>("stop").executes { stop(it.source); 1 })
             .then(literal<Sender>("report").executes { report(it.source); 1 })

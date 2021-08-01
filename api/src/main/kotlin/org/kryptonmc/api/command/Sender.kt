@@ -18,6 +18,11 @@ import org.kryptonmc.api.Server
 interface Sender : Audience, Identified {
 
     /**
+     * The sender's permission level
+     */
+    val permissionLevel: PermissionLevel
+
+    /**
      * The sender's name
      */
     val name: String

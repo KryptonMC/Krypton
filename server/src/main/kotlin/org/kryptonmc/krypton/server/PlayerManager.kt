@@ -28,6 +28,7 @@ import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerStorage
+import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.packet.Packet
@@ -36,7 +37,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
-import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutDestroyEntities
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
@@ -60,6 +60,8 @@ import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
 import org.kryptonmc.krypton.server.ban.BannedIpList
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
+import org.kryptonmc.krypton.server.op.OperatorEntry
+import org.kryptonmc.krypton.server.op.OperatorList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nextInt
@@ -104,6 +106,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     val bannedPlayers = BannedPlayerList(Path.of("banned-players.json"))
     val whitelist = Whitelist(Path.of("whitelist.json"))
     val bannedIps = BannedIpList(Path.of("banned-ips.json"))
+    val ops = OperatorList(Path.of("ops.json"))
 
     val status = ServerStatus(server.status.motd, ServerStatus.Players(server.status.maxPlayers, players.size), null)
     private var lastStatus = 0L
@@ -141,7 +144,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             // Player data stuff
             session.sendPacket(PacketOutAbilities(player.abilities))
             session.sendPacket(PacketOutChangeHeldItem(player.inventory.heldSlot))
-            session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
+            sendCommands(player)
             session.sendPacket(PacketOutDeclareRecipes)
             session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
             session.sendPacket(PacketOutTags(server.resources.tags.write(registryHolder)))
@@ -151,7 +154,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
                     if (world.gameRules[GameRules.REDUCED_DEBUG_INFO]) 22 else 23
                 )
             )
-            sendOperatorStatus(player)
+            //sendOperatorStatus(player)
             invalidateStatus()
 
             // Fire join event and send result message
@@ -325,6 +328,37 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     private fun saveAll() = players.forEach { dataManager.save(it) }
 
+    fun addToOperators(profile: GameProfile) {
+        ops += OperatorEntry(profile, server.config.server.opPermissionLevel, true)
+        if (server.player(profile.uuid) != null) {
+            server.commandManager.sendCommands(server.player(profile.uuid)!!)
+        }
+    }
+
+    fun removeFromOperators(profile: GameProfile) {
+        ops -= profile
+        if (server.player(profile.uuid) != null) {
+            server.commandManager.sendCommands(server.player(profile.uuid)!!)
+        }
+    }
+
+    private fun sendCommands(player: KryptonPlayer) {
+        val permissionLevel = player.server.getPermissionLevel(player.profile)
+        sendCommands(player, permissionLevel.id)
+    }
+
+    private fun sendCommands(player: KryptonPlayer, permissionLevel: Int) {
+        val d: Int = if (permissionLevel <= 0) {
+            24
+        } else if (permissionLevel >= 4) {
+            28
+        } else {
+            (24 + permissionLevel)
+        }
+        player.session.sendPacket(PacketOutEntityStatus(player.id, d))
+        server.commandManager.sendCommands(player)
+    }
+
     fun shutdown() {
         saveAll()
         keepAliveExecutor.shutdown()
@@ -343,10 +377,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     fun invalidateStatus() {
         lastStatus = 0L
-    }
-
-    private fun sendOperatorStatus(player: KryptonPlayer) {
-        // TODO: Get status from ops.json and send it to the client
     }
 
     override fun audiences() = players

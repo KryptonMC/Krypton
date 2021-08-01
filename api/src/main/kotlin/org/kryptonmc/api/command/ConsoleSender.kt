@@ -28,6 +28,10 @@ interface ConsoleSender : Sender {
     override val permissions: Map<String, Boolean>
         get() = emptyMap()
 
+    override val permissionLevel: PermissionLevel
+        get() = PermissionLevel.LEVEL_4
+
+
     override fun hasPermission(permission: String) = true
 
     override fun grant(permission: String) = Unit

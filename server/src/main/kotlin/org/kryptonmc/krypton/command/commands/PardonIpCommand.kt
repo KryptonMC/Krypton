@@ -25,9 +25,11 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.suggest
 import org.kryptonmc.krypton.util.argument
 
@@ -38,7 +40,9 @@ internal class PardonIpCommand : InternalCommand {
         SimpleCommandExceptionType(translatable("commands.pardonip.failed").toMessage())
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("pardon-ip")
+        dispatcher.register(
+            literal<Sender>("pardon-ip")
+                .permission("krypton.command.pardonip", PermissionLevel.LEVEL_3)
             .then(argument<Sender, String>("target", string())
                 .suggests { context, builder ->
                     builder.suggest((context.source.server as KryptonServer).playerManager.bannedIps.map { it.key })

@@ -42,4 +42,5 @@ class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityT
     override var color: Color
         get() = Color(data[MetadataKeys.AREA_EFFECT_CLOUD.COLOR])
         set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.COLOR, value.rgb)
+
 }

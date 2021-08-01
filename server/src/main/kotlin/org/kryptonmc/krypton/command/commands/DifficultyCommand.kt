@@ -21,15 +21,18 @@ package org.kryptonmc.krypton.command.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 internal class DifficultyCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal<Sender>("difficulty")
+            .permission("krypton.command.difficulty", PermissionLevel.LEVEL_2)
             .executes {
                 val sender = it.source as? KryptonPlayer ?: return@executes 1
                 sender.sendMessage(

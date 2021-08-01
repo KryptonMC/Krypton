@@ -24,10 +24,12 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 import org.kryptonmc.krypton.util.toComponent
@@ -37,6 +39,7 @@ internal class GameruleCommand : InternalCommand {
     @Suppress("UNCHECKED_CAST")
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal<Sender>("gamerule")
+            .permission("krypton.command.gamerule", PermissionLevel.LEVEL_2)
         for ((_, rule) in GameRules.rules) {
             val gameRule = literal<Sender>(rule.name)
                 .executes {
