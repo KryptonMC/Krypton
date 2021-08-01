@@ -23,6 +23,7 @@ import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 abstract class KryptonSender(override val server: KryptonServer) : Sender {
 
@@ -43,9 +44,11 @@ abstract class KryptonSender(override val server: KryptonServer) : Sender {
 
     override fun grant(permission: String) {
         permissions[permission] = true
+        if (this is KryptonPlayer) server.commandManager.sendCommands(this)
     }
 
     override fun revoke(permission: String) {
         permissions[permission] = false
+        if (this is KryptonPlayer) server.commandManager.sendCommands(this)
     }
 }
