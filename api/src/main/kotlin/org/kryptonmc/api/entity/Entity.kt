@@ -141,5 +141,5 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
     /**
      * This is a helper function to get the distance between two entities
      */
-    fun distance(entity: Entity): Double
+    fun distance(entity: Entity) = location.distanceSquared(location)
 }

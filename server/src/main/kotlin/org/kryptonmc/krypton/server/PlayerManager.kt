@@ -115,7 +115,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     fun add(player: KryptonPlayer, session: Session): CompletableFuture<Void> =
         dataManager.load(player).thenRun {
-            player.sendMessage(text(player.address.toString()))
             val profile = player.profile
             userCache.add(profile)
             // Load the data
