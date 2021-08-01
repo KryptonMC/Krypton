@@ -43,10 +43,9 @@ class KickCommand : InternalCommand {
                             player.kick()
                         }
                     } else {
-                        val players = it.entityArgument("targets").getPlayer(it.source.server as KryptonServer)
-                        for (player in players) {
+                        val player = it.entityArgument("targets").getPlayer(it.source.server as KryptonServer)
                             player.kick()
-                        }
+
                     }
                     1
                 }
@@ -59,10 +58,9 @@ class KickCommand : InternalCommand {
                                 player.kick(reason)
                             }
                         } else {
-                            val players = it.entityArgument("targets").getPlayer(it.source.server as KryptonServer)
-                            for (player in players) {
+                            val player = it.entityArgument("targets").getPlayer(it.source.server as KryptonServer)
                                 player.kick(reason)
-                            }
+
                         }
                         1
                     })
