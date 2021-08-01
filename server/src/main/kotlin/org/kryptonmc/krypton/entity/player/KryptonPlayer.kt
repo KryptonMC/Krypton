@@ -98,6 +98,8 @@ import org.kryptonmc.krypton.util.toArea
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.bossbar.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.IntTag
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
 import java.time.Duration
@@ -143,6 +145,7 @@ class KryptonPlayer(
             field = value
             updateAbilities()
             onAbilitiesUpdate()
+            server.playerManager.sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.UPDATE_GAMEMODE, this))
             session.sendPacket(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, value.ordinal.toFloat()))
             if (value != Gamemode.SPECTATOR) camera = this
         }
@@ -405,12 +408,17 @@ class KryptonPlayer(
         }
     }
 
-    override fun hasCorrectTool(block: Block): Boolean = !block.requiresCorrectTool || inventory.mainHand.type.handler.isCorrectTool(block)
+    override fun hasCorrectTool(block: Block): Boolean =
+        !block.requiresCorrectTool || inventory.mainHand.type.handler.isCorrectTool(block)
 
     override fun getDestroySpeed(block: Block): Float {
         var speed = inventory.mainHand.getDestroySpeed(block)
         if (!isOnGround) speed /= 5F
         return speed
+    }
+
+    override fun disconnect(text: Component) {
+        session.disconnect(text)
     }
 
     private fun onAbilitiesUpdate() {

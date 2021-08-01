@@ -46,6 +46,7 @@ import org.kryptonmc.krypton.command.commands.DebugCommand
 import org.kryptonmc.krypton.command.commands.DifficultyCommand
 import org.kryptonmc.krypton.command.commands.GamemodeCommand
 import org.kryptonmc.krypton.command.commands.GameruleCommand
+import org.kryptonmc.krypton.command.commands.KickCommand
 import org.kryptonmc.krypton.command.commands.ListCommand
 import org.kryptonmc.krypton.command.commands.MeCommand
 import org.kryptonmc.krypton.command.commands.MessageCommand
@@ -180,6 +181,7 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         DifficultyCommand().register(dispatcher)
         GameruleCommand().register(dispatcher)
         VersionCommand().register(dispatcher)
+        KickCommand().register(dispatcher)
     }
 
     companion object {

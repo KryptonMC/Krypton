@@ -33,15 +33,12 @@ import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo.PlayerAction.UPDATE_GAMEMODE
 import org.kryptonmc.krypton.util.argument
 
 internal class GamemodeCommand(private val server: KryptonServer) : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal<Sender>("gamemode")
-
         for (gamemode in Gamemode.values()) {
             command
                 .then(literal<Sender>(gamemode.name.lowercase())
@@ -94,7 +91,6 @@ internal class GamemodeCommand(private val server: KryptonServer) : InternalComm
     private fun updateGameMode(entities: List<KryptonPlayer>, mode: Gamemode, sender: KryptonPlayer) {
         for (entity in entities) {
             entity.gamemode = mode
-            server.playerManager.sendToAll(PacketOutPlayerInfo(UPDATE_GAMEMODE, entity))
             sender.sendMessage(
                 if (sender == entity) translatable(
                     "gameMode.changed",

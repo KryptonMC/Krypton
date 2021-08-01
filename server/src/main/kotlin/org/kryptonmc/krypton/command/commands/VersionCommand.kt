@@ -37,7 +37,6 @@ class VersionCommand : InternalCommand {
                 val version = sender.server.info.version
                 val minecraftVersion = sender.server.info.minecraftVersion
                 val pluginsLoaded = sender.server.pluginManager.plugins.size
-
                 val text = text("Krypton\n")
                     .clickEvent(ClickEvent.openUrl("https://github.com/KryptonMC/Krypton"))
                     .color(TextColor.color(17, 255, 0))
