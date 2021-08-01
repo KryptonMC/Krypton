@@ -27,6 +27,9 @@ interface Sender : Audience, Identified {
      */
     val permissions: Map<String, Boolean>
 
+    /**
+     * The sender's server
+     */
     val server: Server
 
     /**
