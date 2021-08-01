@@ -39,18 +39,8 @@ object TranslationBootstrap {
         val json = GSON.fromJson<JsonObject>(inputStream.reader())
         json.entrySet().forEach {
             val key = it.key
-            val value = it.value.asString.replace(UNSUPPORTED_FORMAT_REGEX, "%\$1s").replaceMinecraftPattern()
+            val value = it.value.asString.replace(UNSUPPORTED_FORMAT_REGEX, "%\$1s")
             REGISTRY.register(key, Locale.US, MessageFormat(value, Locale.US))
         }
     }
-}
-
-private val UNSUPPORTED_MINECRAFT_PATTERN = "(%+)((\\\\d+\\\$)?[\\\\d.]*[df]|s)".toRegex()
-
-private fun String.replaceMinecraftPattern(): String {
-    var index = -1
-    return UNSUPPORTED_MINECRAFT_PATTERN.replace(this) {
-        index++
-        "{$index}"
-    }.replace("'", "''") // Escape single quotes
 }
