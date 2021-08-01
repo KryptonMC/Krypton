@@ -23,12 +23,27 @@ import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.server.ServerConfigList
 import org.kryptonmc.krypton.util.toGameProfile
 import java.nio.file.Path
+import java.time.OffsetDateTime
 
 class BannedPlayerList(path: Path) : ServerConfigList<GameProfile, BannedPlayerEntry>(path) {
 
-    override fun fromJson(data: JsonObject): BannedPlayerEntry {
+    override fun fromJson(data: JsonObject): BannedPlayerEntry? {
         val entry = BanEntry.fromJson(data.toGameProfile(), data)
-        return BannedPlayerEntry(entry.key, entry.creationDate, entry.source, entry.expiryDate, entry.reason)
+        return entry.key?.let { BannedPlayerEntry(it, entry.creationDate, entry.source, entry.expiryDate, entry.reason) }
+    }
+
+    fun clear() {
+        forEach {
+            it.expiryDate?.let { time ->
+                if(time.isAfter(OffsetDateTime.now())) remove(it.key)
+            }
+        }
+        save()
+    }
+
+    override fun validatePath() {
+        super.validatePath()
+        clear()
     }
 
 }

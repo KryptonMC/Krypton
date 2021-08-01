@@ -99,7 +99,7 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
         }
     }
 
-    fun validatePath() {
+    open fun validatePath() {
         if (!path.exists()) {
             path.createFile()
             path.writeText("[]")

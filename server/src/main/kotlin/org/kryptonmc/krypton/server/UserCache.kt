@@ -122,6 +122,11 @@ class UserCache(private val path: Path) {
         }
     }
 
+    fun clear() {
+        entries.removeAll { it.expiryDate.isAfter(OffsetDateTime.now()) }
+        save()
+    }
+
     data class Entry(val profile: GameProfile, val expiryDate: OffsetDateTime = OffsetDateTime.now()) {
 
         internal fun writeToJson(data: JsonObject) {
@@ -155,6 +160,7 @@ class UserCache(private val path: Path) {
         } else {
             load()
         }
+        clear()
     }
 
     companion object {

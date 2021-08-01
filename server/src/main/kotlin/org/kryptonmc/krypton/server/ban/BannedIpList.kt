@@ -23,6 +23,7 @@ import org.kryptonmc.krypton.server.ServerConfigList
 import org.kryptonmc.krypton.util.stringify
 import java.net.SocketAddress
 import java.nio.file.Path
+import java.time.OffsetDateTime
 
 class BannedIpList(path: Path) : ServerConfigList<String, BannedIpEntry>(path) {
 
@@ -32,6 +33,20 @@ class BannedIpList(path: Path) : ServerConfigList<String, BannedIpEntry>(path) {
     }
 
     fun isBanned(adress: SocketAddress) = contains(adress.stringify())
+
+    fun clear() {
+        forEach {
+            it.expiryDate?.let { time ->
+                if(time.isAfter(OffsetDateTime.now())) remove(it.key)
+            }
+        }
+        save()
+    }
+
+    override fun validatePath() {
+        super.validatePath()
+        clear()
+    }
 
     operator fun get(key: SocketAddress) = super.get(key.stringify())
 
