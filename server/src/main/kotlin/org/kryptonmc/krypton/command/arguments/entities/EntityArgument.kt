@@ -23,15 +23,11 @@ import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import com.mojang.brigadier.suggestion.Suggestions
-import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
-import java.util.concurrent.CompletableFuture
 
 
 class EntityArgument private constructor(
@@ -57,22 +53,6 @@ class EntityArgument private constructor(
         } else {
             EntityQuery(args = listOf(), EntityQuery.SELECTOR.UNKNOWN)
         }
-    }
-
-    override fun <S : Any> listSuggestions(
-        context: CommandContext<S>,
-        builder: SuggestionsBuilder
-    ): CompletableFuture<Suggestions> {
-        if (context.source !is KryptonPlayer) return Suggestions.empty()
-        val player = context.source as KryptonPlayer
-        val reader = StringReader(builder.input)
-        reader.cursor = builder.start
-
-        for (s in EntityArguments.SELECTOR_ALL + player.server.players.map { it.name }) {
-            builder.suggest(s)
-        }
-        return builder.buildFuture()
-
     }
 
     override fun getExamples() = EXAMPLES
