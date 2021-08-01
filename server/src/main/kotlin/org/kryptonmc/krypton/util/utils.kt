@@ -32,11 +32,11 @@ fun String.toInetAddress(): InetAddress = InetAddresses.forString(this)
 
 fun String.toIntRange(): IntRange {
     return if (startsWith("..")) {
-        val string = replace("..", "").toInt()
-        IntRange(360, string)
+        val string = replace("..", "").toIntOrNull() ?: return IntRange(0, 0)
+        IntRange(0, string)
     } else {
         val values = split("..")
-        IntRange(values[0].toInt(), values[1].toInt())
+        IntRange(values[0].toInt(), values[1].toIntOrNull() ?: return IntRange(0, 0))
     }
 }
 

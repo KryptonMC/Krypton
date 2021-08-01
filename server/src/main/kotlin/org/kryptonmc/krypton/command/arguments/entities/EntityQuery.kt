@@ -18,7 +18,10 @@
  */
 package org.kryptonmc.krypton.command.arguments.entities
 
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import net.kyori.adventure.key.Key.key
+import net.kyori.adventure.text.Component.text
+import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -74,7 +77,7 @@ class EntityQuery(
         getEntities(source).map { if (it !is KryptonPlayer) throw UnsupportedOperationException("You cannot call .getPlayers() if there is an entity in the arguments") else it }
 
     fun getPlayer(source: KryptonPlayer) =
-        getEntities(source).map { if (it !is KryptonPlayer) throw UnsupportedOperationException("You cannot call .getPlayers() if there is an entity in the arguments") else it }[0]
+        getEntities(source).map { if (it !is KryptonPlayer) throw UnsupportedOperationException("You cannot call .getPlayer() if there is an entity in the arguments") else it }[0]
 
 
     private fun applyArguments(originalEntities: List<KryptonEntity>, source: KryptonPlayer): List<KryptonEntity> {
@@ -104,7 +107,9 @@ class EntityQuery(
                         }
                     } else if (!arg.value.toString().contains("..")) {
                         entities.filter {
-                            it.distance(source).toInt() == arg.value.toString().toInt()
+                            val int = it.distance(source).toInt()
+                            if (int < 0) throw DISTANCE_NEGATIVE.create()
+                            int == arg.value.toString().toInt()
                         }
                     } else {
                         val range = arg.value.toString().toIntRange()
@@ -114,41 +119,74 @@ class EntityQuery(
                     }
                 }
                 "dx" -> {
-                    TODO()
+                    notImplemented("dx")
                 }
                 "dy" -> {
-                    TODO()
+                    notImplemented("dy")
                 }
                 "dz" -> {
-                    TODO()
+                    notImplemented("dz")
                 }
                 "scores" -> {
-                    TODO()
+                    notImplemented("scores")
                 }
                 "tag" -> {
-                    TODO()
+                    notImplemented("tag")
                 }
                 "team" -> {
-                    TODO()
+                    notImplemented("team")
                 }
                 "level" -> {
-                    TODO()
+                    notImplemented("level")
                 }
                 "gamemode" -> {
                     entities = entities.filter {
-                        it is KryptonPlayer && it.gamemode == Gamemode.fromName(arg.value.toString())
+                        if (it !is KryptonPlayer) return@filter true
+                        if (arg.exclude) {
+                            it.gamemode != Gamemode.fromName(arg.value.toString())
+                        } else {
+                            it.gamemode == Gamemode.fromName(arg.value.toString())
+                        }
                     }
                 }
                 "name" -> {
                     entities = entities.filter {
-                        it.name == arg.value
+                        if (arg.exclude) it.name != arg.value else it.name == arg.value
                     }
                 }
                 "x_rotation" -> {
-                    TODO()
+                    entities = if (arg.value.toString().startsWith("..")) {
+                        val pitch = arg.value.toString().replace("..", "").toFloat()
+                        entities.filter {
+                            it.location.pitch <= pitch
+                        }
+                    } else if (!arg.value.toString().contains("..")) {
+                        entities.filter {
+                            it.location.pitch == arg.value.toString().toFloat()
+                        }
+                    } else {
+                        val range = arg.value.toString().toIntRange()
+                        entities.filter {
+                            it.location.pitch.toInt() >= range.first && it.location.pitch <= range.last
+                        }
+                    }
                 }
                 "y_rotation" -> {
-                    TODO()
+                    entities = if (arg.value.toString().startsWith("..")) {
+                        val pitch = arg.value.toString().replace("..", "").toInt()
+                        entities.filter {
+                            it.location.yaw <= pitch
+                        }
+                    } else if (!arg.value.toString().contains("..")) {
+                        entities.filter {
+                            it.location.yaw == arg.value.toString().toFloat()
+                        }
+                    } else {
+                        val range = arg.value.toString().toIntRange()
+                        entities.filter {
+                            it.location.yaw >= range.first && it.location.yaw <= range.last
+                        }
+                    }
                 }
                 "type" -> {
                     entities = entities.filter {
@@ -156,16 +194,23 @@ class EntityQuery(
                     }
                 }
                 "nbt" -> {
-                    TODO()
+                    notImplemented("nbt")
                 }
                 "advancements" -> {
-                    TODO()
+                    notImplemented("advancements")
                 }
                 "predicate" -> {
-                    TODO()
+                    notImplemented("predicate")
                 }
                 "sort" -> {
-                    TODO()
+                    val sorter = EntityArguments.Sorter.fromName(arg.value.toString())
+                        ?: throw INVALID_SORT_TYPE.create(arg.value)
+                    entities = when (sorter) {
+                        EntityArguments.Sorter.NEAREST -> entities.sortedBy { it.distanceSquared(source) }
+                        EntityArguments.Sorter.FURTHEST -> entities.sortedByDescending { it.distanceSquared(source) }
+                        EntityArguments.Sorter.RANDOM -> entities.shuffled()
+                        EntityArguments.Sorter.ARBITRARY -> entities.sortedBy { it.ticksLived }
+                    }
                 }
                 "limit" -> {
                     val limit = arg.value.toString().toInt()
@@ -178,6 +223,12 @@ class EntityQuery(
             }
         }
         return entities
+    }
+
+    private fun notImplemented(option: String) {
+        throw DynamicCommandExceptionType { a ->
+            text("Not yet implemented: ${a.toString()}").toMessage()
+        }.create(option)
     }
 
     enum class SELECTOR {

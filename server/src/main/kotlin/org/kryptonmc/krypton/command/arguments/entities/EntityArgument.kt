@@ -23,11 +23,15 @@ import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
+import com.mojang.brigadier.suggestion.Suggestions
+import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.command.suggest
 import org.kryptonmc.krypton.util.argument
+import java.util.concurrent.CompletableFuture
 
 
 class EntityArgument private constructor(
@@ -53,6 +57,13 @@ class EntityArgument private constructor(
         } else {
             EntityQuery(args = listOf(), EntityQuery.SELECTOR.UNKNOWN)
         }
+    }
+
+    override fun <S : Any> listSuggestions(
+        context: CommandContext<S>,
+        builder: SuggestionsBuilder
+    ): CompletableFuture<Suggestions> {
+        return builder.suggest(EntityArguments.SELECTOR_ALL)
     }
 
     override fun getExamples() = EXAMPLES
@@ -85,7 +96,7 @@ class EntityArgument private constructor(
         fun entities() = EntityArgument(onlyPlayers = false, singleTarget = false)
     }
 
-    data class EntityArg(val name: String, val value: Any, val not: Boolean)
+    data class EntityArg(val name: String, val value: Any, val exclude: Boolean)
 
 }
 
@@ -120,3 +131,8 @@ val TOO_MANY_PLAYERS = SimpleCommandExceptionType(translatable("argument.player.
 val ONLY_FOR_PLAYERS = SimpleCommandExceptionType(translatable("argument.player.entities").toMessage())
 val PLAYER_NOT_EXISTS = SimpleCommandExceptionType(translatable("argument.player.unknown").toMessage())
 val LIMIT_NULL = SimpleCommandExceptionType(translatable("argument.entity.options.limit.toosmall").toMessage())
+val DISTANCE_NEGATIVE =
+    SimpleCommandExceptionType(translatable("argument.entity.options.distance.negative").toMessage())
+val INVALID_SORT_TYPE = DynamicCommandExceptionType { e ->
+    translatable("argument.entity.options.sort.irreversible", listOf(text(e.toString()))).toMessage()
+}

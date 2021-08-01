@@ -85,10 +85,12 @@ object EntityArgumentParser {
             if (reader.canRead() && reader.peek() == '=') {
                 reader.skip()
                 reader.skipWhitespace()
+                val exclude = if (reader.peek() == '!') {
+                    reader.skip()
+                    true
+                } else false
                 val value = reader.readString()
-                if (value.isBlank()) throw VALUELESS_EXCEPTION.createWithContext(reader, option)
-
-                args += EntityArgument.EntityArg(option, value, false)
+                args += EntityArgument.EntityArg(option, value, exclude)
 
                 reader.skipWhitespace()
                 if (!reader.canRead()) {
