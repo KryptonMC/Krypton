@@ -63,6 +63,7 @@ import org.kryptonmc.krypton.server.ban.BannedPlayerList
 import org.kryptonmc.krypton.server.op.OperatorEntry
 import org.kryptonmc.krypton.server.op.OperatorList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
+import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nextInt
 import org.kryptonmc.krypton.util.threadFactory
@@ -107,6 +108,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     val whitelist = Whitelist(Path.of("whitelist.json"))
     val bannedIps = BannedIpList(Path.of("banned-ips.json"))
     val ops = OperatorList(Path.of("ops.json"))
+    val whitlistedIps = WhitelistedIps(Path.of("whitelisted-ips.json"))
 
     val status = ServerStatus(server.status.motd, ServerStatus.Players(server.status.maxPlayers, players.size), null)
     private var lastStatus = 0L

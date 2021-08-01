@@ -193,6 +193,7 @@ class KryptonServer(
         playerManager.whitelist.validatePath()
         playerManager.bannedIps.validatePath()
         playerManager.ops.validatePath()
+        playerManager.whitlistedIps.validatePath()
 
         // Start the metrics system
         LOGGER.debug("Starting bStats metrics")

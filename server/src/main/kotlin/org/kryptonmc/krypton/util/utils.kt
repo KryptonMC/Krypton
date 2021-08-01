@@ -25,6 +25,7 @@ import net.kyori.adventure.text.Component.text
 import org.kryptonmc.krypton.auth.GameProfile
 import java.math.BigInteger
 import java.net.InetAddress
+import java.net.SocketAddress
 import java.security.AccessController
 import java.security.MessageDigest
 import java.security.PrivilegedAction
@@ -33,6 +34,17 @@ import java.util.UUID
 
 // Avoid lookups
 fun String.toInetAddress(): InetAddress = InetAddresses.forString(this)
+
+fun SocketAddress.stringify(): String {
+    var string = toString()
+    if (string.contains("/")) {
+        string = string.substring(string.indexOf(47.toChar()) + 1)
+    }
+    if (string.contains(":")) {
+        string = string.substring(0, string.indexOf(58.toChar()))
+    }
+    return string
+}
 
 fun String.toIntRange(): IntRange? {
     return if (startsWith("..")) {

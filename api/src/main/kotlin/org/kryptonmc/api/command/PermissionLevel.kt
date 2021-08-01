@@ -14,13 +14,9 @@ package org.kryptonmc.api.command
  * The permission levels get their permissions from the previous levels. So [PermissionLevel.LEVEL_2] gets all permissions from [PermissionLevel.LEVEL_1] plus their own
  *
  * And [PermissionLevel.LEVEL_4] gets all permissions from [PermissionLevel.LEVEL_1], [PermissionLevel.LEVEL_2], [PermissionLevel.LEVEL_3] plus their own
+ * @param id The id which will be used to save the operators
  */
 enum class PermissionLevel(val id: Int) {
-
-    /**
-     * Permission level 0 - This permission level doesn't have any permission
-     */
-    LEVEL_0(0),
 
     /**
      * Permission level 1
@@ -48,11 +44,10 @@ enum class PermissionLevel(val id: Int) {
      * Whether the permission level has the specified [permission]
      */
     fun hasPermission(permission: String) = when (this) {
-        LEVEL_0 -> false
         LEVEL_1 -> permissions[permission] ?: false
-        LEVEL_2 -> (permissions + permissions)[permission] ?: false
-        LEVEL_3 -> (permissions + permissions + permissions)[permission] ?: false
-        LEVEL_4 -> (permissions + permissions + permissions + permissions)[permission] ?: false
+        LEVEL_2 -> (LEVEL_1.permissions + permissions)[permission] ?: false
+        LEVEL_3 -> (LEVEL_1.permissions + LEVEL_2.permissions + permissions)[permission] ?: false
+        LEVEL_4 -> (LEVEL_1.permissions + LEVEL_2.permissions + LEVEL_3.permissions + permissions)[permission] ?: false
     }
 
     /**
@@ -77,7 +72,6 @@ enum class PermissionLevel(val id: Int) {
      * Returns a list with all permissions the permission level has
      */
     fun permissions() = when (this) {
-        LEVEL_0 -> listOf()
         LEVEL_1 -> rawPermissions()
         LEVEL_2 -> rawPermissions() + LEVEL_1.rawPermissions()
         LEVEL_3 -> rawPermissions() + LEVEL_1.rawPermissions() + LEVEL_2.rawPermissions()

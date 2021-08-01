@@ -262,7 +262,10 @@ class LoginHandler(
             )
             session.disconnect(text)
             return false
-        } else if (playerManager.whitelistEnabled && !playerManager.whitelist.contains(profile)) {
+        } else if (playerManager.whitelistEnabled && !playerManager.whitelist.contains(profile) && !playerManager.whitlistedIps.isWhitelisted(
+                address
+            )
+        ) {
             session.disconnect(translatable("multiplayer.disconnect.not_whitelisted"))
             return false
         } else if (playerManager.bannedIps.isBanned(address)) {
