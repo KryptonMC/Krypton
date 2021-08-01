@@ -29,7 +29,7 @@ object EntityArguments {
         "scores", "tag", "team", "limit", "sort", "level", "gamemode", "name",
         "x_rotation", "y_rotation", "type", "nbt", "advancements", "predicate"
     )
-    val EXLUDE_ARGUMENTS = listOf(
+    val EXCLUDE_ARGUMENTS = listOf(
         "team", "tag", "gamemode", "name", "predicate"
     )
 
