@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.RegistryLookupCodec
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiome
-import org.kryptonmc.krypton.world.biome.KryptonBiomes
+import org.kryptonmc.krypton.world.biome.layer.Layers
 
 class VanillaLayeredBiomeGenerator(
     private val seed: Long,
@@ -35,9 +35,10 @@ class VanillaLayeredBiomeGenerator(
     private val biomes: Registry<KryptonBiome>
 ) : BiomeGenerator(POSSIBLE_BIOMES.asSequence().map { { biomes[it]!! } }) {
 
+    private val noiseBiomeLayer = Layers.default(seed, legacyBiomeInitLayer, if (largeBiomes) 6 else 4, 4)
     override val codec = CODEC
 
-    override fun get(x: Int, y: Int, z: Int) = KryptonBiomes.PLAINS // FIXME
+    override fun get(x: Int, y: Int, z: Int) = noiseBiomeLayer[biomes, x, z]
 
     companion object {
 
