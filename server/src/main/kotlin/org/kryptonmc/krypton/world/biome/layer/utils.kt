@@ -37,4 +37,4 @@ fun Int.isShallowOcean() = this == BiomeConstants.OCEAN ||
         this == BiomeConstants.LUKEWARM_OCEAN ||
         this == BiomeConstants.COLD_OCEAN
 
-fun Int.isSame(other: Int) = if (this == other) true else this == other // FIXME - should check categories
+fun Int.isSame(other: Int) = if (this == other) true else Layers.CATEGORIES[this] == Layers.CATEGORIES[other]
