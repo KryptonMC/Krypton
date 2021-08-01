@@ -31,7 +31,7 @@ import kotlin.io.path.writeText
 
 abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : Iterable<V> {
 
-    val map = hashMapOf<String, V>()
+    private val map = hashMapOf<String, V>()
     private val gson = Gson()
 
     operator fun get(key: K) = map[key.toString()]

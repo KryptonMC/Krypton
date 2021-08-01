@@ -79,9 +79,9 @@ class EntityQuery(
         getEntities(source).map { if (it !is KryptonPlayer) throw UnsupportedOperationException("You cannot call .getPlayers() if there is an entity in the arguments") else it }
 
     fun getPlayer(server: KryptonServer) = if (playerName.isNotEmpty()) {
-        listOf(server.player(playerName) ?: throw PLAYER_NOT_FOUND.create())
+        server.player(playerName) ?: throw PLAYER_NOT_FOUND.create()
     } else {
-        listOf()
+        throw PLAYER_NOT_FOUND.create()
     }
 
     fun getProfiles(source: KryptonPlayer) = if (playerName.isNotEmpty()) {

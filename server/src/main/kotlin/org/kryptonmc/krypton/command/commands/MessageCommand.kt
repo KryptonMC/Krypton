@@ -44,8 +44,8 @@ internal class MessageCommand : InternalCommand {
                                 .executes {
                                     val source =
                                         if (it.source !is KryptonPlayer) return@executes 1 else it.source as KryptonPlayer
-                                val player = it.entityArgument("player").getPlayer(source)
-                                val message = it.argument<String>("message")
+                                    val player = it.entityArgument("player").getPlayer(source.server)
+                                    val message = it.argument<String>("message")
                                 source.sendMessage(
                                     translatable(
                                         "commands.message.display.outgoing",
