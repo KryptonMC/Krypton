@@ -16,18 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.server.whitelist
+package org.kryptonmc.krypton.server.ban
 
 import com.google.gson.JsonObject
-import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.server.ServerConfigList
-import org.kryptonmc.krypton.util.toGameProfile
+import java.net.SocketAddress
 import java.nio.file.Path
 
-class Whitelist(path: Path) : ServerConfigList<GameProfile, WhitelistEntry>(path) {
+class BannedIpList(path: Path) : ServerConfigList<String, BannedIpEntry>(path) {
 
-    override fun fromJson(data: JsonObject): WhitelistEntry {
-        return WhitelistEntry(data.toGameProfile()!!)
+    override fun fromJson(data: JsonObject): BannedIpEntry {
+        val entry = BanEntry.fromJson(data.get("ip").asString, data) //Get better null checking
+        return BannedIpEntry(entry.key!!, entry.creationDate, entry.source, entry.expiryDate, entry.reason)
+    }
+
+    fun isBanned(adress: SocketAddress) = contains(stringifyAddress(adress))
+
+    operator fun get(key: SocketAddress) = super.get(stringifyAddress(key))
+
+    private fun stringifyAddress(socketAddress: SocketAddress): String {
+        var string = socketAddress.toString()
+        if (string.contains("/")) {
+            string = string.substring(string.indexOf(47.toChar()) + 1)
+        }
+        if (string.contains(":")) {
+            string = string.substring(0, string.indexOf(58.toChar()))
+        }
+        return string
     }
 
 }

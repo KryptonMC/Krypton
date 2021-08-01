@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.server
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.Component.text
 import org.kryptonmc.api.event.login.JoinEvent
 import org.kryptonmc.api.event.play.QuitEvent
 import org.kryptonmc.api.world.rule.GameRules
@@ -57,6 +58,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
+import org.kryptonmc.krypton.server.ban.BannedIpList
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.util.logger
@@ -101,12 +103,14 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     val bannedPlayers = BannedPlayerList(Path.of("banned-players.json"))
     val whitelist = Whitelist(Path.of("whitelist.json"))
+    val bannedIps = BannedIpList(Path.of("banned-ips.json"))
 
     val status = ServerStatus(server.status.motd, ServerStatus.Players(server.status.maxPlayers, players.size), null)
     private var lastStatus = 0L
 
     fun add(player: KryptonPlayer, session: Session): CompletableFuture<Void> =
         dataManager.load(player).thenRun {
+            player.sendMessage(text(player.address.toString()))
             val profile = player.profile
             userCache.add(profile)
             // Load the data

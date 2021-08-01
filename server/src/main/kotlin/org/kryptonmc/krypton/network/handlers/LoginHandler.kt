@@ -58,6 +58,7 @@ import org.kryptonmc.krypton.util.readVelocityData
 import org.kryptonmc.krypton.util.toComponent
 import org.kryptonmc.krypton.util.verifyIntegrity
 import java.net.InetSocketAddress
+import java.net.SocketAddress
 import java.util.UUID
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
@@ -112,7 +113,7 @@ class LoginHandler(
             val uuid =
                 bungeecordData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
             val profile = GameProfile(uuid, packet.name, bungeecordData?.properties ?: emptyList())
-            if (!canJoin(profile)) return
+            if (!canJoin(profile, address)) return
             val player = KryptonPlayer(session, profile, server.worldManager.default, address)
             if (!callLoginEvent(profile)) return
             finishLogin(player)
@@ -129,9 +130,14 @@ class LoginHandler(
         enableEncryption(secretKey)
 
         IOScope.launch {
+            val rawAddress = session.channel.remoteAddress() as InetSocketAddress
+            val address = if (bungeecordData != null) InetSocketAddress(
+                bungeecordData.forwardedIp,
+                rawAddress.port
+            ) else rawAddress
             val profile = try {
                 val value = SessionService.authenticateUser(name, sharedSecret, server.config.server.ip)
-                if (!canJoin(value)) return@launch
+                if (!canJoin(value, address)) return@launch
                 if (!callLoginEvent(value)) return@launch
                 value
             } catch (exception: AuthenticationException) {
@@ -140,11 +146,6 @@ class LoginHandler(
             }
             enableCompression()
 
-            val rawAddress = session.channel.remoteAddress() as InetSocketAddress
-            val address = if (bungeecordData != null) InetSocketAddress(
-                bungeecordData.forwardedIp,
-                rawAddress.port
-            ) else rawAddress
             val player = KryptonPlayer(session, profile, server.worldManager.default, address)
             finishLogin(player)
         }
@@ -248,7 +249,7 @@ class LoginHandler(
         return true
     }
 
-    private fun canJoin(profile: GameProfile): Boolean {
+    private fun canJoin(profile: GameProfile, address: SocketAddress): Boolean {
         if (playerManager.bannedPlayers.contains(profile)) {
             val entry = playerManager.bannedPlayers[profile]!!
             val text = translatable("multiplayer.disconnect.banned.reason", listOf(entry.reason.toComponent()))
@@ -264,6 +265,14 @@ class LoginHandler(
         } else if (playerManager.whitelistEnabled && !playerManager.whitelist.contains(profile)) {
             session.disconnect(translatable("multiplayer.disconnect.not_whitelisted"))
             return false
+        } else if (playerManager.bannedIps.isBanned(address)) {
+            val entry = playerManager.bannedIps[address]!!
+            session.disconnect(
+                translatable(
+                    "multiplayer.disconnect.banned_ip.reason",
+                    listOf(entry.reason.toComponent())
+                )
+            )
         }
         return true
     }

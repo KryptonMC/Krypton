@@ -36,7 +36,7 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
     val size get() = map.values.size
 
 
-    operator fun get(key: K) = map[key.toString()]
+    open operator fun get(key: K) = map[key.toString()]
 
     operator fun plusAssign(entry: V) = add(entry)
 

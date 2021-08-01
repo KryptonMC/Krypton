@@ -190,6 +190,7 @@ class KryptonServer(
         playerManager.userCache.validatePath()
         playerManager.whitelist.validatePath()
 
+
         // Start the metrics system
         LOGGER.debug("Starting bStats metrics")
         System.setProperty("bstats.relocatecheck", "false") // Avoid relocating bStats since we want to expose it later

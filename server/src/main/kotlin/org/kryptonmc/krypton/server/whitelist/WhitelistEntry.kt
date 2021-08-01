@@ -21,18 +21,12 @@ package org.kryptonmc.krypton.server.whitelist
 import com.google.gson.JsonObject
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.server.ServerConfigEntry
-import org.kryptonmc.krypton.util.toGameProfile
 
 class WhitelistEntry(key: GameProfile) : ServerConfigEntry<GameProfile>(key) {
 
     override fun writeToJson(data: JsonObject) {
         data.addProperty("name", key.name)
         data.addProperty("uuid", key.uuid.toString())
-    }
-
-    companion object {
-
-        internal fun fromJson(data: JsonObject) = WhitelistEntry(data.toGameProfile()!!)
     }
 
 }

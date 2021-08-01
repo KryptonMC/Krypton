@@ -22,7 +22,6 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.Sender
@@ -88,14 +87,15 @@ internal class BanCommand : InternalCommand {
                 server.playerManager.bannedPlayers += entry
                 if (server.player(target.uuid) != null) kick(entry, server.player(target.uuid)!!)
                 sender.sendMessage(translatable("commands.ban.success", listOf(text(target.name), text(reason))))
+                logBan(target.name, sender.name, reason, server)
             }
         }
     }
 
     private fun kick(entry: BannedPlayerEntry, player: KryptonPlayer) {
-        val text = Component.translatable("multiplayer.disconnect.banned.reason", listOf(entry.reason.toComponent()))
+        val text = translatable("multiplayer.disconnect.banned.reason", listOf(entry.reason.toComponent()))
         if (entry.expiryDate != null) text.append(
-            Component.translatable(
+            translatable(
                 "multiplayer.disconnect.banned.expiration", listOf(
                     BanEntry.DATE_FORMAT.format(entry.expiryDate).toComponent()
                 )
@@ -103,4 +103,13 @@ internal class BanCommand : InternalCommand {
         )
         player.disconnect(text)
     }
+
+    private fun logBan(target: String, source: String, reason: String, server: KryptonServer) =
+        server.console.sendMessage(
+            translatable(
+                "commands.banlist.entry",
+                listOf(target.toComponent(), source.toComponent(), reason.toComponent())
+            )
+        )
+
 }

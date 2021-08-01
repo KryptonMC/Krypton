@@ -19,20 +19,18 @@
 package org.kryptonmc.krypton.server.ban
 
 import com.google.gson.JsonObject
-import org.kryptonmc.krypton.auth.GameProfile
 import java.time.OffsetDateTime
 
-class BannedPlayerEntry(
-    profile: GameProfile,
+class BannedIpEntry(
+    ip: String,
     creationDate: OffsetDateTime = OffsetDateTime.now(),
     source: String = "(Unknown)",
     expiryDate: OffsetDateTime? = null,
     reason: String = "Banned by operator."
-) : BanEntry<GameProfile>(profile, creationDate, source, expiryDate, reason) {
+) : BanEntry<String>(ip, creationDate, source, expiryDate, reason) {
 
     override fun writeToJson(data: JsonObject) {
-        data.addProperty("uuid", key.uuid.toString())
-        data.addProperty("name", key.name)
+        data.addProperty("ip", key)
         super.writeToJson(data)
     }
 

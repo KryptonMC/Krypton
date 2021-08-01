@@ -20,12 +20,15 @@ package org.kryptonmc.krypton.server.ban
 
 import com.google.gson.JsonObject
 import org.kryptonmc.krypton.auth.GameProfile
-import org.kryptonmc.krypton.server.ServerConfigEntry
 import org.kryptonmc.krypton.server.ServerConfigList
+import org.kryptonmc.krypton.util.toGameProfile
 import java.nio.file.Path
 
 class BannedPlayerList(path: Path) : ServerConfigList<GameProfile, BannedPlayerEntry>(path) {
 
-    override fun fromJson(data: JsonObject): ServerConfigEntry<GameProfile> = BannedPlayerEntry.fromJson(data)
+    override fun fromJson(data: JsonObject): BannedPlayerEntry {
+        val entry = BanEntry.fromJson(data.toGameProfile(), data) //Get better null checking
+        return BannedPlayerEntry(entry.key!!, entry.creationDate, entry.source, entry.expiryDate, entry.reason)
+    }
 
 }

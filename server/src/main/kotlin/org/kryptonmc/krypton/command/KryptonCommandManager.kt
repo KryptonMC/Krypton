@@ -43,6 +43,7 @@ import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.commands.BanCommand
+import org.kryptonmc.krypton.command.commands.BanIpCommand
 import org.kryptonmc.krypton.command.commands.DebugCommand
 import org.kryptonmc.krypton.command.commands.DifficultyCommand
 import org.kryptonmc.krypton.command.commands.GamemodeCommand
@@ -51,6 +52,8 @@ import org.kryptonmc.krypton.command.commands.KickCommand
 import org.kryptonmc.krypton.command.commands.ListCommand
 import org.kryptonmc.krypton.command.commands.MeCommand
 import org.kryptonmc.krypton.command.commands.MessageCommand
+import org.kryptonmc.krypton.command.commands.PardonCommand
+import org.kryptonmc.krypton.command.commands.PardonIpCommand
 import org.kryptonmc.krypton.command.commands.RestartCommand
 import org.kryptonmc.krypton.command.commands.SayCommand
 import org.kryptonmc.krypton.command.commands.SeedCommand
@@ -58,7 +61,6 @@ import org.kryptonmc.krypton.command.commands.StopCommand
 import org.kryptonmc.krypton.command.commands.SummonCommand
 import org.kryptonmc.krypton.command.commands.TeleportCommand
 import org.kryptonmc.krypton.command.commands.TitleCommand
-import org.kryptonmc.krypton.command.commands.UnbanCommand
 import org.kryptonmc.krypton.command.commands.VersionCommand
 import org.kryptonmc.krypton.command.commands.WhitelistCommand
 import org.kryptonmc.krypton.locale.Messages
@@ -186,8 +188,10 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         VersionCommand().register(dispatcher)
         KickCommand().register(dispatcher)
         BanCommand().register(dispatcher)
-        UnbanCommand().register(dispatcher)
+        PardonCommand().register(dispatcher)
         WhitelistCommand().register(dispatcher)
+        BanIpCommand().register(dispatcher)
+        PardonIpCommand().register(dispatcher)
     }
 
     companion object {
