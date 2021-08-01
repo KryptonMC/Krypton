@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.util
 
 import com.google.common.net.InetAddresses
 import it.unimi.dsi.fastutil.Hash
+import net.kyori.adventure.text.Component.text
 import java.math.BigInteger
 import java.net.InetAddress
 import java.security.AccessController
@@ -50,6 +51,8 @@ fun <T> doPrivileged(action: () -> T): T = AccessController.doPrivileged(Privile
 fun notSupported(message: String): Nothing = throw UnsupportedOperationException(message)
 
 fun <T : Map<K, V>, K, V> Optional<T>.forEachPresent(action: (K, V) -> Unit) = ifPresent { it.forEach(action) }
+
+fun String.toComponent() = text(this)
 
 @Suppress("UNCHECKED_CAST")
 fun <K> identityStrategy(): Hash.Strategy<K> = IdentityStrategy as Hash.Strategy<K>

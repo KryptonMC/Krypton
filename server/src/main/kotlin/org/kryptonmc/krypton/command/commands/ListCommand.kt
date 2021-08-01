@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
-class ListCommand : InternalCommand {
+internal class ListCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
@@ -37,7 +37,8 @@ class ListCommand : InternalCommand {
                     sendNames(sender, sender.server)
                     1
                 }
-                .then(literal<Sender>("uuids")
+                .then(
+                    literal<Sender>("uuids")
                     .executes {
                         val sender = it.source as? KryptonPlayer ?: return@executes 1
                         sendNamesWithUUID(sender, sender.server)

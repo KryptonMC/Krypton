@@ -32,17 +32,18 @@ import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 
-class MessageCommand : InternalCommand {
+internal class MessageCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val messageCommand = dispatcher.register(
             literal<Sender>("msg")
                 .then(
                     argument<Sender, EntityQuery>("player", EntityArgument.player())
-                        .then(argument<Sender, String>("message", string())
-                            .executes {
-                                val source =
-                                    if (it.source !is KryptonPlayer) return@executes 1 else it.source as KryptonPlayer
+                        .then(
+                            argument<Sender, String>("message", string())
+                                .executes {
+                                    val source =
+                                        if (it.source !is KryptonPlayer) return@executes 1 else it.source as KryptonPlayer
                                 val player = it.entityArgument("player").getPlayer(source)
                                 val message = it.argument<String>("message")
                                 source.sendMessage(

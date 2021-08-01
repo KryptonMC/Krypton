@@ -34,7 +34,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 import java.time.Duration
 
-class TitleCommand : InternalCommand {
+internal class TitleCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
@@ -43,8 +43,9 @@ class TitleCommand : InternalCommand {
                     argument<Sender, EntityQuery>("targets", players())
                         .then(
                             literal<Sender>("actionbar")
-                                .then(argument<Sender, String>("message", string())
-                                    .executes {
+                                .then(
+                                    argument<Sender, String>("message", string())
+                                        .executes {
                                         val sender = it.source as? KryptonPlayer ?: return@executes 1
                                         val targets = it.entityArgument("targets").getPlayers(sender)
                                         val message = it.argument<String>("message")
@@ -98,7 +99,7 @@ class TitleCommand : InternalCommand {
                                         val targets = it.entityArgument("targets").getPlayers(sender)
                                         val message = it.argument<String>("message")
                                         for (target in targets) {
-                                            target.sendSubTitle(text(message))
+                                            target.sendSubtitle(text(message))
                                         }
                                         val feedback = if (targets.size == 1) {
                                             translatable(

@@ -29,17 +29,18 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 
-class MeCommand : InternalCommand {
+internal class MeCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(
             literal<Sender>("me")
-                .then(argument<Sender, String>("action", string())
-                    .executes {
-                        val sender = it.source as? KryptonPlayer ?: return@executes 1
-                        sender.server.broadcast(
-                            translatable(
-                                "chat.type.emote",
+                .then(
+                    argument<Sender, String>("action", string())
+                        .executes {
+                            val sender = it.source as? KryptonPlayer ?: return@executes 1
+                            sender.server.broadcast(
+                                translatable(
+                                    "chat.type.emote",
                                 listOf(text(sender.name), text(it.argument<String>("action")))
                             )
                         )

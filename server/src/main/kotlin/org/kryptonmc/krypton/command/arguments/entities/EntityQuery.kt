@@ -22,6 +22,7 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import net.kyori.adventure.text.Component.text
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.toIntRange
@@ -86,25 +87,31 @@ class EntityQuery(
         for ((option, value, exclude) in args) {
             when (option) {
                 "dx" -> {
+                    checkInt(value.toString())
                     differenceX = value.toString().toInt()
                 }
                 "dy" -> {
+                    checkInt(value.toString())
                     differenceY = value.toString().toInt()
                 }
                 "dz" -> {
+                    checkInt(value.toString())
                     differenceZ = value.toString().toInt()
                 }
                 "x" -> {
+                    checkInt(value.toString())
                     entities = entities.filter {
                         applyDifference(differenceX, value, it.location.blockX)
                     }
                 }
                 "y" -> {
+                    checkInt(value.toString())
                     entities = entities.filter {
                         applyDifference(differenceY, value, it.location.blockY)
                     }
                 }
                 "z" -> {
+                    checkInt(value.toString())
                     entities = entities.filter {
                         applyDifference(differenceZ, value, it.location.blockZ)
                     }
@@ -116,6 +123,7 @@ class EntityQuery(
                             it.distance(source) <= distance
                         }
                     } else if (!value.toString().contains("..")) {
+                        checkInt(value.toString())
                         entities.filter {
                             val int = it.distance(source).toInt()
                             if (int < 0) throw DISTANCE_NEGATIVE.create()
@@ -157,18 +165,19 @@ class EntityQuery(
                 }
                 "x_rotation" -> {
                     entities = if (value.toString().startsWith("..")) {
-                        val pitch = value.toString().replace("..", "").toFloat()
+                        val pitch = value.toString().replace("..", "").toInt()
                         entities.filter {
                             it.location.pitch <= pitch
                         }
                     } else if (!value.toString().contains("..")) {
+                        checkInt(value.toString())
                         entities.filter {
-                            it.location.pitch == value.toString().toFloat()
+                            it.location.pitch.toInt() == value.toString().toInt()
                         }
                     } else {
                         val range = value.toString().toIntRange()
                         entities.filter {
-                            it.location.pitch.toInt() >= range.first && it.location.pitch <= range.last
+                            it.location.pitch >= range.first && it.location.pitch <= range.last
                         }
                     }
                 }
@@ -179,8 +188,9 @@ class EntityQuery(
                             it.location.yaw <= yaw
                         }
                     } else if (!value.toString().contains("..")) {
+                        checkInt(value.toString())
                         entities.filter {
-                            it.location.yaw == value.toString().toFloat()
+                            it.location.yaw.toInt() == value.toString().toInt()
                         }
                     } else {
                         val range = value.toString().toIntRange()
@@ -212,6 +222,7 @@ class EntityQuery(
                     }
                 }
                 "limit" -> {
+                    checkInt(value.toString())
                     val limit = value.toString().toInt()
                     if (limit <= 0) throw LIMIT_NULL.create()
                     entities = if (entities.size > limit) entities.subList(0, limit - 1) else entities
@@ -234,9 +245,12 @@ class EntityQuery(
 
     private fun notImplemented(option: String) {
         throw DynamicCommandExceptionType { a ->
-            text("Not yet implemented: ${a.toString()}").toMessage()
+            text("Not yet implemented: $a").toMessage()
         }.create(option)
     }
+
+    private fun checkInt(string: String) =
+        string.toIntOrNull() ?: throw BrigadierExceptions.readerExpectedInt().create()
 
     enum class SELECTOR {
 

@@ -294,15 +294,15 @@ class KryptonPlayer(
         session.sendPacket(PacketOutTitle(title.title()))
     }
 
-    fun sendTitle(title: Component) {
+    internal fun sendTitle(title: Component) {
         session.sendPacket(PacketOutTitle(title))
     }
 
-    fun sendSubTitle(subtitle: Component) {
+    internal fun sendSubtitle(subtitle: Component) {
         session.sendPacket(PacketOutSubTitle(subtitle))
     }
 
-    fun sendTitleTimes(fadeIn: Duration, stay: Duration, fadeOut: Duration) {
+    internal fun sendTitleTimes(fadeIn: Duration, stay: Duration, fadeOut: Duration) {
         session.sendPacket(PacketOutTitleTimes(Title.Times.of(fadeIn, stay, fadeOut)))
     }
 
