@@ -16,11 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome.layer.traits
+package org.kryptonmc.krypton.world.biome.layer
 
-interface DimensionTransformer {
+import org.kryptonmc.krypton.world.biome.context.Context
+import org.kryptonmc.krypton.world.biome.layer.traits.CastleTransformer
 
-    fun getParentX(x: Int): Int
+object SmoothLayer : CastleTransformer {
 
-    fun getParentZ(z: Int): Int
+    override fun invoke(context: Context, n: Int, e: Int, s: Int, w: Int, center: Int): Int {
+        val eastAndWestSame = e == w
+        val northAndSouthSame = n == s
+        return if (eastAndWestSame == northAndSouthSame) {
+            if (eastAndWestSame) (if (context.nextRandom(2) == 0) w else n) else center
+        } else (if (eastAndWestSame) w else n)
+    }
 }

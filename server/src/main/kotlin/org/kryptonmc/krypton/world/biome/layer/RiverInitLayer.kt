@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome.layer.traits
+package org.kryptonmc.krypton.world.biome.layer
 
-interface DimensionTransformer {
+import org.kryptonmc.krypton.world.biome.context.Context
+import org.kryptonmc.krypton.world.biome.layer.traits.C0Transformer
 
-    fun getParentX(x: Int): Int
+object RiverInitLayer : C0Transformer {
 
-    fun getParentZ(z: Int): Int
+    override fun invoke(context: Context, value: Int) = if (value.isShallowOcean()) value else context.nextRandom(299999) + 2
 }

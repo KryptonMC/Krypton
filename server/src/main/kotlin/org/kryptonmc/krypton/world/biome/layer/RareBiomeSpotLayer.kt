@@ -16,11 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome.layer.traits
+package org.kryptonmc.krypton.world.biome.layer
 
-interface DimensionTransformer {
+import org.kryptonmc.krypton.world.biome.BiomeConstants
+import org.kryptonmc.krypton.world.biome.context.Context
+import org.kryptonmc.krypton.world.biome.layer.traits.C1Transformer
 
-    fun getParentX(x: Int): Int
+object RareBiomeSpotLayer : C1Transformer {
 
-    fun getParentZ(z: Int): Int
+    override fun invoke(context: Context, value: Int) = if (context.nextRandom(57) == 0 && value == BiomeConstants.PLAINS) BiomeConstants.SUNFLOWER_PLAINS else value
 }

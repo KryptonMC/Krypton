@@ -16,11 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome.layer.traits
+package org.kryptonmc.krypton.world.biome.layer
 
-interface DimensionTransformer {
+import org.kryptonmc.krypton.world.biome.context.Context
+import org.kryptonmc.krypton.world.biome.layer.traits.BishopTransformer
 
-    fun getParentX(x: Int): Int
+object AddMushroomIslandLayer : BishopTransformer {
 
-    fun getParentZ(z: Int): Int
+    override fun invoke(context: Context, sw: Int, se: Int, ne: Int, nw: Int, center: Int) =
+        if (center.isShallowOcean() && nw.isShallowOcean() && sw.isShallowOcean() && ne.isShallowOcean() && se.isShallowOcean() && context.nextRandom(100) == 0) 14 else center
 }

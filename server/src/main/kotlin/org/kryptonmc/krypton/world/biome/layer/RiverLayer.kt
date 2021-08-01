@@ -16,11 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome.layer.traits
+package org.kryptonmc.krypton.world.biome.layer
 
-interface DimensionTransformer {
+import org.kryptonmc.krypton.world.biome.BiomeConstants
+import org.kryptonmc.krypton.world.biome.context.Context
+import org.kryptonmc.krypton.world.biome.layer.traits.CastleTransformer
 
-    fun getParentX(x: Int): Int
+object RiverLayer : CastleTransformer {
 
-    fun getParentZ(z: Int): Int
+    override fun invoke(context: Context, n: Int, e: Int, s: Int, w: Int, center: Int): Int {
+        val filter = riverFilter(center)
+        return if (filter == riverFilter(n) && filter == riverFilter(e) && filter == riverFilter(s) && filter == riverFilter(w)) -1 else BiomeConstants.RIVER
+    }
+
+    private fun riverFilter(value: Int) = if (value >= 2) 2 + (value and 1) else value
 }

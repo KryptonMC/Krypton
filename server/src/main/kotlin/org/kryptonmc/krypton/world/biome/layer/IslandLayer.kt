@@ -16,11 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome.layer.traits
+package org.kryptonmc.krypton.world.biome.layer
 
-interface DimensionTransformer {
+import org.kryptonmc.krypton.world.biome.context.Context
+import org.kryptonmc.krypton.world.biome.layer.traits.AreaTransformer0
 
-    fun getParentX(x: Int): Int
+object IslandLayer : AreaTransformer0 {
 
-    fun getParentZ(z: Int): Int
+    override fun invoke(context: Context, x: Int, z: Int): Int {
+        if (x == 0 && z == 0) return 1
+        return if (context.nextRandom(10) == 0) 1 else 0
+    }
 }

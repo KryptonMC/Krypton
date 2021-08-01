@@ -16,11 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome.layer.traits
+package org.kryptonmc.krypton.world.biome.layer
 
-interface DimensionTransformer {
+import org.kryptonmc.krypton.world.biome.context.Context
+import org.kryptonmc.krypton.world.biome.layer.traits.CastleTransformer
 
-    fun getParentX(x: Int): Int
+object RemoveTooMuchOceanLayer : CastleTransformer {
 
-    fun getParentZ(z: Int): Int
+    override fun invoke(context: Context, n: Int, e: Int, s: Int, w: Int, center: Int): Int =
+        if (center.isShallowOcean() && n.isShallowOcean() && e.isShallowOcean() && s.isShallowOcean() && w.isShallowOcean() && context.nextRandom(2) == 0) 1 else center
 }

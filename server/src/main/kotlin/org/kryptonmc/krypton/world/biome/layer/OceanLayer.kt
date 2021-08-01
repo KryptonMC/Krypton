@@ -16,11 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome.layer.traits
+package org.kryptonmc.krypton.world.biome.layer
 
-interface DimensionTransformer {
+import org.kryptonmc.krypton.world.biome.BiomeConstants
+import org.kryptonmc.krypton.world.biome.context.Context
+import org.kryptonmc.krypton.world.biome.layer.traits.AreaTransformer0
 
-    fun getParentX(x: Int): Int
+object OceanLayer : AreaTransformer0 {
 
-    fun getParentZ(z: Int): Int
+    override fun invoke(context: Context, x: Int, z: Int): Int {
+        val noise = context.biomeNoise
+        val value = noise.noise(x.toDouble() / 8.0, z.toDouble() / 8.0, 0.0)
+        return when {
+            value > 0.4 -> BiomeConstants.WARM_OCEAN
+            value > 0.2 -> BiomeConstants.LUKEWARM_OCEAN
+            value < -0.4 -> BiomeConstants.FROZEN_OCEAN
+            value < -0.2 -> BiomeConstants.COLD_OCEAN
+            else -> BiomeConstants.OCEAN
+        }
+    }
 }
