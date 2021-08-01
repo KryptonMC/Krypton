@@ -36,15 +36,16 @@ import org.kryptonmc.api.event.entity.EntitySpawnEvent
 import org.kryptonmc.api.registry.RegistryKey
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.GameVersion
+import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRuleHolder
 import org.kryptonmc.api.world.rule.GameRules
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.ServerInfo
+import org.kryptonmc.krypton.effect.Effect
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -58,15 +59,22 @@ import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.api.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.effect.Effect
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
-import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.registry.InternalRegistryKeys
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.clamp
+import org.kryptonmc.krypton.util.createTempFile
+import org.kryptonmc.krypton.util.csv.csv
 import org.kryptonmc.krypton.util.forEachInRange
+import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.util.synchronize
+import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.chunk.KryptonChunk
+import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.spongepowered.math.vector.Vector3i
 import java.io.Writer
@@ -91,7 +99,7 @@ data class KryptonWorld(
     override val border: KryptonWorldBorder,
     var clearWeatherTime: Int,
     var dayTime: Long,
-    override val difficulty: Difficulty,
+    override var difficulty: Difficulty,
     //val endDimensionData: EndDimensionData, // for the end, when it is supported
     override val gameRules: GameRuleHolder,
     val generationSettings: WorldGenerationSettings,

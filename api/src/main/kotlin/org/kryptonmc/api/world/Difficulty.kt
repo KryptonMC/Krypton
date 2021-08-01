@@ -49,5 +49,14 @@ enum class Difficulty {
          */
         @JvmStatic
         fun fromId(id: Int) = values()[id % values().size]
+
+        /**
+         * Retrieves a difficulty from its name.
+         */
+        fun fromName(name: String) = try {
+            valueOf(name.uppercase())
+        } catch (_: IllegalArgumentException) {
+            null
+        }
     }
 }

@@ -307,11 +307,18 @@ object GameRules {
     @JvmField
     val UNIVERSAL_ANGER = register("universal_anger", "universalAnger", false)
 
+    val rules = hashMapOf<String, GameRule<Any>>()
+
     // @formatter:on
     @Suppress("UNCHECKED_CAST")
-    private fun <V : Any> register(key: String, name: String, default: V): GameRule<V> = Registries.register(
-        Registries.GAMERULES,
-        key,
-        GameRule(name, default)
-    ) as GameRule<V>
+    private fun <V : Any> register(key: String, name: String, default: V): GameRule<V> {
+        val rule = Registries.register(
+            Registries.GAMERULES,
+            key,
+            GameRule(name, default)
+        )
+        rules[key] = rule
+        return rule as GameRule<V>
+    }
+
 }

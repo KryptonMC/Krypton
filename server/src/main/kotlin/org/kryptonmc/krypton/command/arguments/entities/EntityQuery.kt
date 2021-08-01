@@ -19,7 +19,9 @@
 package org.kryptonmc.krypton.command.arguments.entities
 
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.command.BrigadierExceptions
@@ -117,6 +119,7 @@ class EntityQuery(
                     }
                 }
                 "distance" -> {
+                    checkIntOrRange(value.toString())
                     entities = if (value.toString().startsWith("..")) {
                         val distance = value.toString().replace("..", "").toInt()
                         entities.filter {
@@ -132,7 +135,7 @@ class EntityQuery(
                     } else {
                         val range = value.toString().toIntRange()
                         entities.filter {
-                            it.distance(source) >= range.first && it.distance(source) <= range.last
+                            it.distance(source) >= range!!.first && it.distance(source) <= range.last
                         }
                     }
                 }
@@ -164,38 +167,38 @@ class EntityQuery(
                     }
                 }
                 "x_rotation" -> {
+                    checkIntOrRange(value.toString())
                     entities = if (value.toString().startsWith("..")) {
                         val pitch = value.toString().replace("..", "").toInt()
                         entities.filter {
                             it.location.pitch <= pitch
                         }
                     } else if (!value.toString().contains("..")) {
-                        checkInt(value.toString())
                         entities.filter {
                             it.location.pitch.toInt() == value.toString().toInt()
                         }
                     } else {
                         val range = value.toString().toIntRange()
                         entities.filter {
-                            it.location.pitch >= range.first && it.location.pitch <= range.last
+                            it.location.pitch >= range!!.first && it.location.pitch <= range.last
                         }
                     }
                 }
                 "y_rotation" -> {
+                    checkIntOrRange(value.toString())
                     entities = if (value.toString().startsWith("..")) {
                         val yaw = value.toString().replace("..", "").toInt()
                         entities.filter {
                             it.location.yaw <= yaw
                         }
                     } else if (!value.toString().contains("..")) {
-                        checkInt(value.toString())
                         entities.filter {
                             it.location.yaw.toInt() == value.toString().toInt()
                         }
                     } else {
                         val range = value.toString().toIntRange()
                         entities.filter {
-                            it.location.yaw >= range.first && it.location.yaw <= range.last
+                            it.location.yaw >= range!!.first && it.location.yaw <= range.last
                         }
                     }
                 }
@@ -228,7 +231,7 @@ class EntityQuery(
                     entities = if (entities.size > limit) entities.subList(0, limit - 1) else entities
                 }
                 else -> {
-                    throw UnsupportedOperationException("Invalid operation")
+                    throw UnsupportedOperationException("Invalid option")
                 }
             }
         }
@@ -251,6 +254,13 @@ class EntityQuery(
 
     private fun checkInt(string: String) =
         string.toIntOrNull() ?: throw BrigadierExceptions.readerExpectedInt().create()
+
+    private fun checkIntOrRange(string: String) {
+        if (string.toIntOrNull() != null) return
+        if (string.startsWith("..") && string.substring(2).toIntOrNull() != null) return
+        if (string.contains("..") && string.toIntRange() != null) return
+        throw SimpleCommandExceptionType(translatable("argument.range.empty").toMessage()).create()
+    }
 
     enum class SELECTOR {
 

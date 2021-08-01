@@ -43,7 +43,9 @@ import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.commands.DebugCommand
+import org.kryptonmc.krypton.command.commands.DifficultyCommand
 import org.kryptonmc.krypton.command.commands.GamemodeCommand
+import org.kryptonmc.krypton.command.commands.GameruleCommand
 import org.kryptonmc.krypton.command.commands.ListCommand
 import org.kryptonmc.krypton.command.commands.MeCommand
 import org.kryptonmc.krypton.command.commands.MessageCommand
@@ -174,6 +176,8 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         MeCommand().register(dispatcher)
         MessageCommand().register(dispatcher)
         TitleCommand().register(dispatcher)
+        DifficultyCommand().register(dispatcher)
+        GameruleCommand().register(dispatcher)
     }
 
     companion object {

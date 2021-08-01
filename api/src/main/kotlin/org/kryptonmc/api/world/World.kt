@@ -80,7 +80,7 @@ interface World : ForwardingAudience {
     /**
      * The difficulty of this world.
      */
-    val difficulty: Difficulty
+    var difficulty: Difficulty
 
     /**
      * The default gamemode of this world.

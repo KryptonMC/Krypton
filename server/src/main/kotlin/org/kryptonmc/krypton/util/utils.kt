@@ -31,13 +31,13 @@ import java.util.Optional
 // Avoid lookups
 fun String.toInetAddress(): InetAddress = InetAddresses.forString(this)
 
-fun String.toIntRange(): IntRange {
+fun String.toIntRange(): IntRange? {
     return if (startsWith("..")) {
-        val string = replace("..", "").toIntOrNull() ?: return IntRange(0, 0)
+        val string = replace("..", "").toIntOrNull() ?: return null
         IntRange(0, string)
     } else {
         val values = split("..")
-        IntRange(values[0].toInt(), values[1].toIntOrNull() ?: return IntRange(0, 0))
+        IntRange(values[0].toInt(), values[1].toIntOrNull() ?: return null)
     }
 }
 
