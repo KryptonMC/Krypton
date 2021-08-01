@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.locale.Messages
 
-object StopCommand(private val server: KryptonServer) : InternalCommand {
+class StopCommand(private val server: KryptonServer) : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("stop")
