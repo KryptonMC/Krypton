@@ -33,6 +33,8 @@ import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.feature.ConfiguredFeature
 import org.kryptonmc.krypton.world.generation.feature.Feature
 import org.kryptonmc.krypton.world.generation.feature.StructureFeature
+import org.kryptonmc.krypton.world.generation.feature.structures.StructurePoolElementType
+import org.kryptonmc.krypton.world.generation.feature.structures.StructureTemplatePool
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 
 object InternalResourceKeys {
@@ -51,6 +53,8 @@ object InternalResourceKeys {
     val FEATURE = ResourceKeys.minecraft<Feature<*>>("worldgen/feature")
     val CONFIGURED_FEATURE = ResourceKeys.minecraft<ConfiguredFeature<*, *>>("worldgen/configured_feature")
     val STRUCTURE = ResourceKeys.minecraft<StructureFeature<*>>("worldgen/structure_feature")
+    val STRUCTURE_POOL_ELEMENT = ResourceKeys.minecraft<StructurePoolElementType<*>>("worldgen/structure_pool_element")
+    val TEMPLATE_POOL = ResourceKeys.minecraft<StructureTemplatePool>("worldgen/template_pool")
     val NOISE_GENERATOR_SETTINGS = ResourceKeys.minecraft<NoiseGeneratorSettings>("worldgen/noise_settings")
     val CHUNK_STATUS = ResourceKeys.minecraft<ChunkStatus>("chunk_status")
 }

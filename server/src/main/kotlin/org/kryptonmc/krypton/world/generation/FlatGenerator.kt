@@ -22,6 +22,7 @@ import com.mojang.serialization.Codec
 import org.kryptonmc.krypton.space.MutableVector3i
 import org.kryptonmc.krypton.world.HeightAccessor
 import org.kryptonmc.krypton.world.Heightmap
+import org.kryptonmc.krypton.world.StructureFeatureManager
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.biome.gen.FixedBiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
@@ -42,7 +43,7 @@ class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(
 
     override fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor) = Unit
 
-    override fun fillFromNoise(executor: Executor, chunk: ChunkAccessor): CompletableFuture<ChunkAccessor> {
+    override fun fillFromNoise(executor: Executor, structureFeatureManager: StructureFeatureManager, chunk: ChunkAccessor): CompletableFuture<ChunkAccessor> {
         val layers = settings.blockLayers
         val pos = MutableVector3i()
         val oceanFloor = chunk.getOrCreateHeightmap(Heightmap.Type.OCEAN_FLOOR_WG)

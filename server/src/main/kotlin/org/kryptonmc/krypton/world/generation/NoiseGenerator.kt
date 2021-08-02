@@ -32,6 +32,7 @@ import org.kryptonmc.krypton.util.random.SimpleRandomSource
 import org.kryptonmc.krypton.util.random.WorldGenRandom
 import org.kryptonmc.krypton.world.HeightAccessor
 import org.kryptonmc.krypton.world.Heightmap
+import org.kryptonmc.krypton.world.StructureFeatureManager
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -113,7 +114,7 @@ class NoiseGenerator(
         // TODO: Set bedrock
     }
 
-    override fun fillFromNoise(executor: Executor, chunk: ChunkAccessor): CompletableFuture<ChunkAccessor> =
+    override fun fillFromNoise(executor: Executor, structureFeatureManager: StructureFeatureManager, chunk: ChunkAccessor): CompletableFuture<ChunkAccessor> =
         CompletableFuture.completedFuture(chunk) // FIXME
 
     override fun getBaseHeight(x: Int, z: Int, type: Heightmap.Type, heightAccessor: HeightAccessor) = 0 // FIXME

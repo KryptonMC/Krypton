@@ -22,6 +22,7 @@ import com.mojang.serialization.Codec
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.HeightAccessor
 import org.kryptonmc.krypton.world.Heightmap
+import org.kryptonmc.krypton.world.StructureFeatureManager
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.generation.noise.NoiseColumn
@@ -45,7 +46,7 @@ abstract class Generator(
 
     abstract fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor)
 
-    abstract fun fillFromNoise(executor: Executor, chunk: ChunkAccessor): CompletableFuture<ChunkAccessor>
+    abstract fun fillFromNoise(executor: Executor, structureFeatureManager: StructureFeatureManager, chunk: ChunkAccessor): CompletableFuture<ChunkAccessor>
 
     abstract fun getBaseHeight(x: Int, z: Int, type: Heightmap.Type, heightAccessor: HeightAccessor): Int
 
