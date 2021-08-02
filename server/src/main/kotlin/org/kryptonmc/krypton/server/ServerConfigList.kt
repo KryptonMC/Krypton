@@ -54,11 +54,13 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
     fun isEmpty() = map.isEmpty()
 
     fun add(entry: V) {
+        if(contains(entry.key)) return
         map[entry.key.toString()] = entry
         save()
     }
 
     fun remove(key: K) {
+        if(!contains(key)) return
         map.remove(key.toString())
         save()
     }
