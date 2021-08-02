@@ -31,7 +31,7 @@ class BannedIpList(path: Path) : ServerConfigList<String, BannedIpEntry>(path) {
 
     fun isBanned(address: SocketAddress) = contains(address.stringify())
 
-    fun clear() = forEach { it.expiryDate?.let { time -> if (time.isAfter(OffsetDateTime.now())) remove(it.key) } }
+    fun clear() = forEach { it.expiryDate?.let { time -> if (time.isBefore(OffsetDateTime.now())) remove(it.key) } }
 
     override fun fromJson(data: JsonObject): BannedIpEntry {
         val entry = BanEntry.fromJson(data.get("ip").asString, data) // Get better null checking

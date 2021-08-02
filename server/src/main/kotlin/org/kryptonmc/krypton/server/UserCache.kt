@@ -111,7 +111,7 @@ class UserCache(private val path: Path) {
     }
 
     fun clear() {
-        entries.removeAll { it.expiryDate.isAfter(OffsetDateTime.now()) }
+        entries.removeAll { it.expiryDate.isBefore(OffsetDateTime.now()) }
         save()
     }
 
