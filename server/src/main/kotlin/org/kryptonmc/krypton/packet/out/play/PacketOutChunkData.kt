@@ -24,6 +24,7 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeBitSet
 import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.writeVarIntArray
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
@@ -44,8 +45,8 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x22) {
         chunk.heightmaps.forEach { if (it.key.sendToClient) heightmaps.longArray(it.key.name, it.value.data.data) }
         buf.writeNBT(heightmaps.build())
 
-        buf.writeVarInt(chunk.biomes.size)
-        chunk.biomes.forEach { buf.writeVarInt(it.id) }
+        // Biomes
+        buf.writeVarIntArray(chunk.biomes.write())
 
         // Actual chunk data
         buf.writeVarInt(buffer.size)

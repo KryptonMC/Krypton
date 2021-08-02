@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import java.util.function.Function
 
 abstract class Generator(
-    protected val biomeGenerator: BiomeGenerator,
+    val biomeGenerator: BiomeGenerator,
     protected val runtimeBiomeGenerator: BiomeGenerator,
     private val settings: StructureSettings,
     private val strongholdSeed: Long = 0L

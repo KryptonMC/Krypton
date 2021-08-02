@@ -21,11 +21,14 @@ package org.kryptonmc.krypton.world.chunk
 import com.mojang.serialization.Dynamic
 import org.kryptonmc.api.world.Biome
 import org.kryptonmc.krypton.ServerInfo
+import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.datafix.DATA_FIXER
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
@@ -82,11 +85,12 @@ class ChunkManager(private val world: KryptonWorld) {
         val carvingMasks = data.getCompound("CarvingMasks").let {
             it.getByteArray("AIR") to it.getByteArray("LIQUID")
         }
+        val biomes = KryptonBiomeContainer(world.server.registryHolder.registryOrThrow(InternalResourceKeys.BIOME) as KryptonRegistry<KryptonBiome>, world, position, world.generator.biomeGenerator)
         val chunk =  KryptonChunk(
             world,
             position,
             sections,
-            data.getIntArray("Biomes").map { Biome.fromId(it) },
+            biomes,
             data.getLong("LastUpdate"),
             data.getLong("inhabitedTime"),
             carvingMasks,
@@ -113,7 +117,7 @@ class ChunkManager(private val world: KryptonWorld) {
 
 private fun KryptonChunk.serialize(): CompoundTag {
     val data = buildCompound {
-        intArray("Biomes", biomes.map { it.id }.toIntArray())
+        intArray("Biomes", biomes.write())
         compound("CarvingMasks") {
             byteArray("AIR", carvingMasks.first)
             byteArray("LIQUID", carvingMasks.second)

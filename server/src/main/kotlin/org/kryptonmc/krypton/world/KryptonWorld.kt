@@ -64,6 +64,7 @@ import org.kryptonmc.krypton.util.synchronize
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
+import org.kryptonmc.krypton.world.generation.Generator
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.spongepowered.math.vector.Vector3i
 import java.io.Writer
@@ -74,10 +75,11 @@ import java.util.concurrent.ConcurrentHashMap
 
 class KryptonWorld(
     override val server: KryptonServer,
-    private val storageAccess: WorldDataAccess,
+    storageAccess: WorldDataAccess,
     val data: WorldData,
     override val dimension: ResourceKey<World>,
     override val dimensionType: KryptonDimensionType,
+    val generator: Generator,
     val isDebug: Boolean,
     override val seed: Long,
     private val tickTime: Boolean

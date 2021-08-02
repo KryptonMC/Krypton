@@ -30,6 +30,7 @@ interface ChunkAccessor : BlockAccessor {
     var isLightCorrect: Boolean
     val sections: Array<ChunkSection?>
     val heightmaps: Map<Heightmap.Type, Heightmap>
+    val biomes: KryptonBiomeContainer?
 
     val highestSection: ChunkSection?
         get() = sections.lastOrNull { it != null && !it.isEmpty() }

@@ -123,6 +123,11 @@ fun ByteBuf.writeVarLong(value: Long) {
     }
 }
 
+fun ByteBuf.writeVarIntArray(array: IntArray) {
+    writeVarInt(array.size)
+    array.forEach { writeVarInt(it) }
+}
+
 fun ByteBuf.readString(max: Short = Short.MAX_VALUE): String {
     val length = readVarInt()
     return when {

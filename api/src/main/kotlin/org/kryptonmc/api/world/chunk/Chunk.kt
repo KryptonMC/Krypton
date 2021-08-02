@@ -10,7 +10,6 @@ package org.kryptonmc.api.world.chunk
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.space.Position
-import org.kryptonmc.api.world.Biome
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3i
 
@@ -35,9 +34,9 @@ interface Chunk {
     val z: Int
 
     /**
-     * The list of biomes in this chunk. May be empty.
+     * The container holding all the biomes in this chunk.
      */
-    val biomes: List<Biome>
+    val biomes: BiomeContainer
 
     /**
      * The cumulative number of ticks players have been in this chunk.

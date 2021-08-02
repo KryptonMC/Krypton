@@ -43,6 +43,7 @@ open class ProtoChunk(
     override var isLightCorrect = false
     override var isUnsaved = false
     override var status = ChunkStatus.EMPTY
+    override var biomes: KryptonBiomeContainer? = null
     override val heightmaps = EnumMap<Heightmap.Type, Heightmap>(Heightmap.Type::class.java)
 
     override fun getBlock(x: Int, y: Int, z: Int): Block {

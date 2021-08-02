@@ -20,9 +20,7 @@ package org.kryptonmc.krypton.world.chunk
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.world.Biome
 import org.kryptonmc.api.world.chunk.Chunk
-import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -33,7 +31,7 @@ class KryptonChunk(
     override val world: KryptonWorld,
     override val position: ChunkPosition,
     override val sections: Array<ChunkSection?>,
-    override val biomes: List<Biome>,
+    override val biomes: KryptonBiomeContainer,
     override var lastUpdate: Long,
     override var inhabitedTime: Long,
     val carvingMasks: Pair<ByteArray, ByteArray>,
