@@ -56,12 +56,17 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.forEachInRange
 import org.kryptonmc.krypton.util.lerp
 import org.kryptonmc.krypton.util.synchronize
+import org.kryptonmc.krypton.world.biome.BiomeManager
+import org.kryptonmc.krypton.world.biome.KryptonBiome
+import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.Generator
@@ -76,17 +81,19 @@ import java.util.concurrent.ConcurrentHashMap
 class KryptonWorld(
     override val server: KryptonServer,
     storageAccess: WorldDataAccess,
-    val data: WorldData,
+    override val data: WorldData,
     override val dimension: ResourceKey<World>,
     override val dimensionType: KryptonDimensionType,
     val generator: Generator,
     val isDebug: Boolean,
     override val seed: Long,
     private val tickTime: Boolean
-) : World, BlockAccessor {
+) : World, WorldAccessor {
 
-    val random = Random()
-
+    override val registryHolder = server.registryHolder
+    override val world = this
+    override val biomeManager = BiomeManager(this, seed, dimensionType.biomeZoomer)
+    override val random = Random()
     override val border = KryptonWorldBorder.DEFAULT // FIXME
     override val gamemode: Gamemode
         get() = data.gamemode
@@ -110,9 +117,8 @@ class KryptonWorld(
         get() = ServerInfo.GAME_VERSION
     override val folder = storageAccess.path
 
-    val chunkMap = Long2ObjectOpenHashMap<KryptonChunk>().synchronize()
     override val chunks: Collection<KryptonChunk>
-        get() = chunkMap.values
+        get() = chunkManager.chunkMap.values
     val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
     val entities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
     private val entitiesByChunk = object : ConcurrentHashMap<Long, MutableSet<KryptonEntity>>() {
@@ -120,11 +126,12 @@ class KryptonWorld(
         operator fun get(chunk: KryptonChunk) = get(ChunkPosition.toLong(chunk.position.x, chunk.position.z))
     }
 
-    val chunkManager = ChunkManager(this)
+    override val chunkManager = ChunkManager(this)
     val playerManager = server.playerManager
 
     override val height = dimensionType.height
     override val minimumBuildHeight = dimensionType.minimumY
+    override val seaLevel = 63 // TODO: Check on update
 
     private var oldRainLevel = 0F
     override var rainLevel = 0F
@@ -217,6 +224,14 @@ class KryptonWorld(
         return chunk.getBlock(x, y, z)
     }
 
+    override fun getChunk(x: Int, z: Int, status: ChunkStatus, shouldCreate: Boolean): ChunkAccessor? = null // FIXME
+
+    override fun getHeight(type: Heightmap.Type, x: Int, z: Int) = if (x in MINIMUM_SIZE..MAXIMUM_SIZE && z in MINIMUM_SIZE..MAXIMUM_SIZE) {
+        if (hasChunk(x shr 4, z shr 4)) getChunk(x shr 4, z shr 4)!!.getHeight(type, x and 15, z and 15) + 1 else minimumBuildHeight
+    } else seaLevel + 1
+
+    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int) = generator.biomeGenerator[x, y, z]
+
     override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
 
     override fun getChunkAt(x: Int, z: Int) = chunkManager[x, z]
@@ -304,7 +319,7 @@ class KryptonWorld(
         tickTime()
 
         profiler.push("chunk tick")
-        chunkMap.values.forEach { chunk -> chunk.tick(players.count { it.location in chunk.position }) }
+        chunkManager.chunkMap.values.forEach { chunk -> chunk.tick(players.count { it.location in chunk.position }) }
         profiler.pop()
     }
 
@@ -330,7 +345,7 @@ class KryptonWorld(
             plus("z")
             plus("world")
         }
-        chunkMap.values.forEach { output.writeRow(it.position.x, it.position.z, it.world) }
+        chunkManager.chunkMap.values.forEach { output.writeRow(it.position.x, it.position.z, it.world) }
     }
 
     fun getRainLevel(delta: Float) = lerp(delta, oldRainLevel, rainLevel)
@@ -343,5 +358,7 @@ class KryptonWorld(
         val OVERWORLD = ResourceKey.of(InternalResourceKeys.WORLD, DimensionTypes.OVERWORLD_KEY.location)
         val THE_NETHER = ResourceKey.of(InternalResourceKeys.WORLD, DimensionTypes.NETHER_KEY.location)
         val THE_END = ResourceKey.of(InternalResourceKeys.WORLD, DimensionTypes.END_KEY.location)
+        private const val MINIMUM_SIZE = -30000000
+        private const val MAXIMUM_SIZE = -MINIMUM_SIZE
     }
 }
