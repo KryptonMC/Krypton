@@ -43,7 +43,10 @@ internal object TeleportCommand : InternalCommand {
         val node = dispatcher.register(literal<Sender>("teleport")
             .permission("krypton.command.teleport", PermissionLevel.LEVEL_2)
             .then(argument<Sender, Coordinates>("location", VectorArgument(true))
-                .executes { teleport(it.source, it.getArgument("location", Coordinates::class.java)); 1 })
+                .executes {
+                    teleport(it.source, it.getArgument("location", Coordinates::class.java))
+                    1
+                })
             .then(argument<Sender, EntityQuery>("players", EntityArgument.players())
                 .executes {
                     val sender = it.source as? KryptonPlayer ?: return@executes 1
@@ -54,7 +57,8 @@ internal object TeleportCommand : InternalCommand {
                         sender.sendMessage(translatable("commands.teleport.success.entity.single", sender.name.toComponent(), player.name.toComponent()))
                     }
                     1
-                }.then(argument<Sender, EntityQuery>("target", EntityArgument.player())
+                }
+                .then(argument<Sender, EntityQuery>("target", EntityArgument.player())
                     .executes { context ->
                         val sender = context.source as? KryptonPlayer ?: return@executes 1
                         val players = context.entityArgument("players").getPlayers(sender)

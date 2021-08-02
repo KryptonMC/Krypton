@@ -40,8 +40,8 @@ class PerlinSimplexNoise private constructor(random: RandomSource, octaves: IntS
         require(total >= 1) { "Total number of octaves must be greater than or equal to 1!" }
         val noiseLevel = SimplexNoise(random)
         noiseLevels = arrayOfNulls(total)
-        if (last in 0..total && octaves.contains(0)) noiseLevels[last] = noiseLevel
-        for (i in last + 1..total) if (i >= 0 && octaves.contains(total - i)) noiseLevels[i] = SimplexNoise(random) else random.skip(262)
+        if (last in 0 until total && octaves.contains(0)) noiseLevels[last] = noiseLevel
+        for (i in last + 1 until total) if (i >= 0 && octaves.contains(total - i)) noiseLevels[i] = SimplexNoise(random) else random.skip(262)
         if (last > 0) {
             val sourceLevel = (noiseLevel.getValue(noiseLevel.xOffset, noiseLevel.yOffset, noiseLevel.zOffset) * LONG_MAX_FLOAT.toDouble()).toLong()
             val genRandom = WorldGenRandom(sourceLevel)

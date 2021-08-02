@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.command.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import net.kyori.adventure.text.Component.newline
 import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
 import org.kryptonmc.api.command.Sender
@@ -30,6 +30,10 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 object VersionCommand : InternalCommand {
 
+    private val KRYPTON_COLOR = TextColor.color(128, 0, 255)
+    private val OPTION_COLOR = TextColor.color(255, 251, 33)
+    private val VALUE_COLOR = TextColor.color(0, 196, 244)
+
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val node = dispatcher.register(literal<Sender>("version")
             .executes {
@@ -37,18 +41,20 @@ object VersionCommand : InternalCommand {
                 val version = sender.server.info.version
                 val minecraftVersion = sender.server.info.minecraftVersion
                 val pluginsLoaded = sender.server.pluginManager.plugins.size
-                val text = text("Krypton\n")
+                val text = text("Krypton", KRYPTON_COLOR)
                     .clickEvent(ClickEvent.openUrl("https://github.com/KryptonMC/Krypton"))
-                    .color(TextColor.color(17, 255, 0))
+                    .append(newline())
                     .append(column("Version: ", version))
                     .append(column("Minecraft Version: ", minecraftVersion))
-                    .append(column("Plugins Loaded: ", pluginsLoaded.toString()))
+                    .append(text("Plugins Loaded: ", OPTION_COLOR))
+                    .append(text(pluginsLoaded, VALUE_COLOR))
                 sender.sendMessage(text)
                 1
             })
         dispatcher.register(literal<Sender>("about").redirect(node))
     }
 
-    private fun column(option: String, value: String) = text(option).color(TextColor.color(255, 251, 33))
-        .append(text(value + "\n").color(TextColor.color(0, 196, 244)))
+    private fun column(option: String, value: String) = text(option, OPTION_COLOR)
+        .append(text(value, VALUE_COLOR))
+        .append(newline())
 }
