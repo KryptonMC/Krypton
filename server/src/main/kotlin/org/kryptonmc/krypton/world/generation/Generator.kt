@@ -20,8 +20,13 @@ package org.kryptonmc.krypton.world.generation
 
 import com.mojang.serialization.Codec
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.world.HeightAccessor
+import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
+import org.kryptonmc.krypton.world.generation.noise.NoiseColumn
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
 import java.util.function.Function
 
 abstract class Generator(
@@ -36,6 +41,14 @@ abstract class Generator(
     abstract val codec: Codec<out Generator>
 
     abstract fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor)
+
+    abstract fun fillFromNoise(executor: Executor, chunk: ChunkAccessor): CompletableFuture<ChunkAccessor>
+
+    abstract fun getBaseHeight(x: Int, z: Int, type: Heightmap.Type, heightAccessor: HeightAccessor): Int
+
+    abstract fun getBaseColumn(x: Int, z: Int, heightAccessor: HeightAccessor): NoiseColumn
+
+    open fun getSpawnHeight(heightAccessor: HeightAccessor): Int = 64
 
     companion object {
 

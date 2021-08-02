@@ -19,10 +19,17 @@
 package org.kryptonmc.krypton.world.generation
 
 import com.mojang.serialization.Codec
+import org.kryptonmc.krypton.space.MutableVector3i
+import org.kryptonmc.krypton.world.HeightAccessor
+import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.biome.gen.FixedBiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
+import org.kryptonmc.krypton.world.generation.noise.NoiseColumn
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
+import kotlin.math.min
 
 // FIXME: Get the biomes from the settings
 class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(
@@ -34,6 +41,42 @@ class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(
     override val codec = CODEC
 
     override fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor) = Unit
+
+    override fun fillFromNoise(executor: Executor, chunk: ChunkAccessor): CompletableFuture<ChunkAccessor> {
+        val layers = settings.blockLayers
+        val pos = MutableVector3i()
+        val oceanFloor = chunk.getOrCreateHeightmap(Heightmap.Type.OCEAN_FLOOR_WG)
+        val worldSurface = chunk.getOrCreateHeightmap(Heightmap.Type.WORLD_SURFACE_WG)
+        for (i in 0 until min(chunk.height, layers.size)) {
+            val layer = layers[i]
+            val y = chunk.minimumBuildHeight + i
+            for (x in 0 until 16) {
+                for (z in 0 until 16) {
+                    pos.set(x, y, z)
+                    chunk.setBlock(x, y, z, layer)
+                    oceanFloor.update(x, y, z, layer)
+                    worldSurface.update(x, y, z, layer)
+                }
+            }
+        }
+        return CompletableFuture.completedFuture(chunk)
+    }
+
+    override fun getBaseHeight(x: Int, z: Int, type: Heightmap.Type, heightAccessor: HeightAccessor): Int {
+        val layers = settings.blockLayers
+        for (i in min(layers.size, heightAccessor.maximumBuildHeight) - 1 downTo 0) {
+            val block = layers[i]
+            if (type.isOpaque(block)) return heightAccessor.minimumBuildHeight + i + 1
+        }
+        return heightAccessor.minimumBuildHeight
+    }
+
+    override fun getBaseColumn(x: Int, z: Int, heightAccessor: HeightAccessor) = NoiseColumn(
+        heightAccessor.minimumBuildHeight,
+        settings.blockLayers.asSequence().take(heightAccessor.height).toList().toTypedArray()
+    )
+
+    override fun getSpawnHeight(heightAccessor: HeightAccessor) = heightAccessor.minimumBuildHeight + min(heightAccessor.height, settings.layers.size)
 
     companion object {
 

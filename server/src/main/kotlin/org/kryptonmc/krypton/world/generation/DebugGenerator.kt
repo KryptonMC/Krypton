@@ -22,16 +22,28 @@ import com.mojang.serialization.Codec
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.RegistryLookupCodec
+import org.kryptonmc.krypton.world.HeightAccessor
+import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.gen.FixedBiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
+import org.kryptonmc.krypton.world.generation.noise.NoiseColumn
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
 
 class DebugGenerator(private val biomes: Registry<KryptonBiome>) : Generator(FixedBiomeGenerator(biomes[BiomeKeys.PLAINS]!!), StructureSettings(false)) {
 
     override val codec = CODEC
 
     override fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor) = Unit
+
+    override fun fillFromNoise(executor: Executor, chunk: ChunkAccessor): CompletableFuture<ChunkAccessor> =
+        CompletableFuture.completedFuture(chunk)
+
+    override fun getBaseHeight(x: Int, z: Int, type: Heightmap.Type, heightAccessor: HeightAccessor) = 0
+
+    override fun getBaseColumn(x: Int, z: Int, heightAccessor: HeightAccessor) = NoiseColumn(0, emptyArray())
 
     companion object {
 

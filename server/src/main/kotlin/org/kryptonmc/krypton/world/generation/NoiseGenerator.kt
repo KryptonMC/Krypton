@@ -30,11 +30,17 @@ import org.kryptonmc.krypton.util.noise.SimplexNoise
 import org.kryptonmc.krypton.util.noise.SurfaceNoise
 import org.kryptonmc.krypton.util.random.SimpleRandomSource
 import org.kryptonmc.krypton.util.random.WorldGenRandom
+import org.kryptonmc.krypton.world.HeightAccessor
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
+import org.kryptonmc.krypton.world.generation.noise.NoiseColumn
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 import org.kryptonmc.krypton.world.generation.noise.NoiseModifier
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
+import kotlin.math.max
+import kotlin.math.min
 
 class NoiseGenerator(
     biomeGenerator: BiomeGenerator,
@@ -103,6 +109,13 @@ class NoiseGenerator(
         }
         // TODO: Set bedrock
     }
+
+    override fun fillFromNoise(executor: Executor, chunk: ChunkAccessor): CompletableFuture<ChunkAccessor> =
+        CompletableFuture.completedFuture(chunk) // FIXME
+
+    override fun getBaseHeight(x: Int, z: Int, type: Heightmap.Type, heightAccessor: HeightAccessor) = 0 // FIXME
+
+    override fun getBaseColumn(x: Int, z: Int, heightAccessor: HeightAccessor) = NoiseColumn(0, emptyArray()) // FIXME
 
     companion object {
 
