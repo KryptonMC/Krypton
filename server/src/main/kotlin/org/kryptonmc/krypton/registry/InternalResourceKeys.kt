@@ -32,7 +32,7 @@ import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.feature.ConfiguredFeature
 import org.kryptonmc.krypton.world.generation.feature.Feature
-import org.kryptonmc.krypton.world.generation.feature.Structure
+import org.kryptonmc.krypton.world.generation.feature.StructureFeature
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 
 object InternalResourceKeys {
@@ -50,7 +50,7 @@ object InternalResourceKeys {
     val BIOME_GENERATOR = ResourceKeys.minecraft<Codec<out BiomeGenerator>>("worldgen/biome_source")
     val FEATURE = ResourceKeys.minecraft<Feature<*>>("worldgen/feature")
     val CONFIGURED_FEATURE = ResourceKeys.minecraft<ConfiguredFeature<*, *>>("worldgen/configured_feature")
-    val STRUCTURE = ResourceKeys.minecraft<Structure<*>>("worldgen/structure_feature")
+    val STRUCTURE = ResourceKeys.minecraft<StructureFeature<*>>("worldgen/structure_feature")
     val NOISE_GENERATOR_SETTINGS = ResourceKeys.minecraft<NoiseGeneratorSettings>("worldgen/noise_settings")
     val CHUNK_STATUS = ResourceKeys.minecraft<ChunkStatus>("chunk_status")
 }

@@ -21,13 +21,13 @@ package org.kryptonmc.krypton.world.generation
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.world.generation.feature.Structure
+import org.kryptonmc.krypton.world.generation.feature.StructureFeature
 import org.kryptonmc.krypton.world.generation.feature.config.StrongholdConfig
 import org.kryptonmc.krypton.world.generation.feature.config.StructureConfig
 import java.util.Optional
 
 class StructureSettings(
-    val structures: Map<Structure<*>, StructureConfig>,
+    val structures: Map<StructureFeature<*>, StructureConfig>,
     stronghold: Optional<StrongholdConfig>
 ) {
 
@@ -43,7 +43,7 @@ class StructureSettings(
                 StrongholdConfig.CODEC.optionalFieldOf("stronghold").forGetter { Optional.ofNullable(it.stronghold) }
             ).apply(instance, ::StructureSettings)
         }
-        val DEFAULTS = emptyMap<Structure<*>, StructureConfig>()
+        val DEFAULTS = emptyMap<StructureFeature<*>, StructureConfig>()
         val DEFAULT_STRONGHOLD = StrongholdConfig(32, 3, 128)
     }
 }
