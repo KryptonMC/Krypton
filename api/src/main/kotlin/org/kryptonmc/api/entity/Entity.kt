@@ -137,4 +137,9 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
      * one game tick.
      */
     fun remove()
+
+    /**
+     * A helper method to get the distance between two entities
+     */
+    fun distance(entity: Entity) = location.distanceSquared(entity.location)
 }

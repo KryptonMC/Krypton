@@ -97,8 +97,9 @@ class KryptonWorld(
     override val border = KryptonWorldBorder.DEFAULT // FIXME
     override val gamemode: Gamemode
         get() = data.gamemode
-    override val difficulty: Difficulty
+    override var difficulty: Difficulty
         get() = data.difficulty
+        set(value) { data.difficulty = value }
     override val gameRules: KryptonGameRuleHolder
         get() = data.gameRules
     override val isHardcore: Boolean
@@ -119,6 +120,7 @@ class KryptonWorld(
 
     override val chunks: Collection<KryptonChunk>
         get() = chunkManager.chunkMap.values
+
     val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
     val entities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
     private val entitiesByChunk = object : ConcurrentHashMap<Long, MutableSet<KryptonEntity>>() {

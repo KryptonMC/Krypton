@@ -19,24 +19,30 @@
 package org.kryptonmc.krypton.command.commands
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
+import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.util.argument
+import org.kryptonmc.krypton.util.toComponent
 
-class RestartCommand(private val server: KryptonServer) : InternalCommand {
+object SayCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("restart")
-            .permission("krypton.command.restart", PermissionLevel.LEVEL_4)
-            .executes {
-                Messages.COMMANDS.RESTART.send(it.source)
-                server.restart()
-                1
-            })
+        dispatcher.register(literal<Sender>("say")
+            .permission("krypton.command.say", PermissionLevel.LEVEL_2)
+            .then(argument<Sender, String>("message", string())
+                .executes {
+                    val server = it.source.server as KryptonServer
+                    server.broadcast(translatable("chat.type.announcement", it.source.name.toComponent(), text(it.argument<String>("message"))))
+                    1
+                })
+        )
     }
-
 }

@@ -32,6 +32,7 @@ import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.title.Title
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
@@ -60,6 +61,8 @@ import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
+import org.kryptonmc.krypton.item.toItemStack
+import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
@@ -68,12 +71,13 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkData
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
-import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityTeleport
+import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutNamedSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
@@ -85,22 +89,19 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
-import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.chunkInSpiral
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.toArea
-import org.kryptonmc.krypton.item.toItemStack
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.bossbar.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
-import org.kryptonmc.nbt.compound
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
+import java.time.Duration
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.UnaryOperator
@@ -125,6 +126,9 @@ class KryptonPlayer(
     override var viewDistance = 10
     override var time = 0L
 
+    override val permissionLevel: PermissionLevel
+        get() = server.getPermissionLevel(profile)
+
     private var camera: KryptonEntity = this
         set(value) {
             val old = field
@@ -143,6 +147,7 @@ class KryptonPlayer(
             field = value
             updateAbilities()
             onAbilitiesUpdate()
+            server.playerManager.sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.UPDATE_GAMEMODE, this))
             session.sendPacket(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, value.ordinal.toFloat()))
             if (value != Gamemode.SPECTATOR) camera = this
         }
@@ -288,8 +293,18 @@ class KryptonPlayer(
 
     override fun showTitle(title: Title) {
         session.sendPacket(PacketOutTitle(title.title()))
-        session.sendPacket(PacketOutSubTitle(title.subtitle()))
-        title.times()?.let { session.sendPacket(PacketOutTitleTimes(it)) }
+    }
+
+    fun sendTitle(title: Component) {
+        session.sendPacket(PacketOutTitle(title))
+    }
+
+    fun sendSubtitle(subtitle: Component) {
+        session.sendPacket(PacketOutSubTitle(subtitle))
+    }
+
+    fun sendTitleTimes(fadeIn: Duration, stay: Duration, fadeOut: Duration) {
+        session.sendPacket(PacketOutTitleTimes(Title.Times.of(fadeIn, stay, fadeOut)))
     }
 
     override fun clearTitle() {
@@ -391,12 +406,17 @@ class KryptonPlayer(
         }
     }
 
-    override fun hasCorrectTool(block: Block): Boolean = !block.requiresCorrectTool || inventory.mainHand.type.handler.isCorrectTool(block)
+    override fun hasCorrectTool(block: Block): Boolean =
+        !block.requiresCorrectTool || inventory.mainHand.type.handler.isCorrectTool(block)
 
     override fun getDestroySpeed(block: Block): Float {
         var speed = inventory.mainHand.getDestroySpeed(block)
         if (!isOnGround) speed /= 5F
         return speed
+    }
+
+    override fun disconnect(text: Component) {
+        session.disconnect(text)
     }
 
     private fun onAbilitiesUpdate() {

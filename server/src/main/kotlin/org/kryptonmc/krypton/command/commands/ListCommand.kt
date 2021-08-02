@@ -20,23 +20,39 @@ package org.kryptonmc.krypton.command.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
-class RestartCommand(private val server: KryptonServer) : InternalCommand {
+object ListCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("restart")
-            .permission("krypton.command.restart", PermissionLevel.LEVEL_4)
+        dispatcher.register(literal<Sender>("list")
+            .permission("krypton.command.list", PermissionLevel.LEVEL_1)
             .executes {
-                Messages.COMMANDS.RESTART.send(it.source)
-                server.restart()
+                sendNames(it.source, it.source.server as KryptonServer)
                 1
-            })
+            }
+            .then(literal<Sender>("uuids")
+                .executes {
+                    sendNamesWithUUID(it.source, it.source.server as KryptonServer)
+                    1
+                })
+        )
     }
 
+    private fun sendNames(sender: Sender, server: KryptonServer) {
+        val names = server.players.map(KryptonPlayer::name)
+        sender.sendMessage(translatable("commands.list.players", text(names.size), text(server.status.maxPlayers), text(names.joinToString(separator = "\n"))))
+    }
+
+    private fun sendNamesWithUUID(sender: Sender, server: KryptonServer) {
+        val names = server.players.map { it.name + " (${it.uuid})" }
+        sender.sendMessage(translatable("commands.list.players", text(names.size), text(server.status.maxPlayers), text(names.joinToString(separator = "\n"))))
+    }
 }

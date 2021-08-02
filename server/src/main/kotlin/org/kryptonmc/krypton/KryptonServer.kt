@@ -28,6 +28,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.ticking.TickEndEvent
@@ -37,6 +38,7 @@ import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
+import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.MojangUUIDSerializer
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDER
@@ -82,6 +84,7 @@ import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.kryptonmc.nbt.Tag
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.net.InetSocketAddress
 import java.nio.file.Path
 import java.security.SecureRandom
@@ -106,6 +109,7 @@ class KryptonServer(
     val resources: ServerResources,
     val config: KryptonConfig,
     ops: RegistryReadOps<Tag>,
+    private val configPath: Path,
     worldFolder: Path
 ) : Server {
 
@@ -136,7 +140,7 @@ class KryptonServer(
     override fun player(name: String) = playerManager.playersByName[name]
 
     override val channels: MutableSet<Key> = ConcurrentHashMap.newKeySet()
-    override val console = KryptonConsoleSender
+    override val console = KryptonConsoleSender(this)
     override var scoreboard: KryptonScoreboard? = null
         private set
 
@@ -191,6 +195,15 @@ class KryptonServer(
         LOGGER.debug("Registering commands and translations...")
         commandManager.registerBuiltins()
         TranslationRepository.scheduleRefresh()
+
+        //Create server config lists
+        LOGGER.debug("Loading server config lists...")
+        playerManager.bannedPlayers.validatePath()
+        playerManager.userCache.validatePath()
+        playerManager.whitelist.validatePath()
+        playerManager.bannedIps.validatePath()
+        playerManager.ops.validatePath()
+        playerManager.whitlistedIps.validatePath()
 
         // Start the metrics system
         LOGGER.debug("Starting bStats metrics")
@@ -317,6 +330,16 @@ class KryptonServer(
         }
     }
 
+    fun updateConfig() {
+        val config = HoconConfigurationLoader.builder()
+            .path(configPath)
+            .defaultOptions(KryptonConfig.OPTIONS)
+            .build()
+        val node = config.load()
+            .set(this.config)
+        config.save(node)
+    }
+
     fun startProfiling() {
         delayProfilerStart = true
     }
@@ -371,6 +394,10 @@ class KryptonServer(
     }
 
     override fun audiences() = players + console
+
+    fun getPermissionLevel(profile: GameProfile) =
+        if (playerManager.ops.contains(profile)) PermissionLevel.fromId(playerManager.ops[profile]!!.permissionLevel)
+            ?: PermissionLevel.LEVEL_1 else PermissionLevel.LEVEL_1
 
     fun stop(halt: Boolean = true) {
         if (!isRunning) return // Ensure we cannot accidentally run this twice

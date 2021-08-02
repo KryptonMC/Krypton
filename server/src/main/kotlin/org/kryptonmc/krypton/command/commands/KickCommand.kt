@@ -22,53 +22,34 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
-import com.mojang.brigadier.context.CommandContext
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 
-object GamemodeCommand : InternalCommand {
+object KickCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        val command = literal<Sender>("gamemode").permission("krypton.command.gamemode", PermissionLevel.LEVEL_2)
-        Gamemode.values().forEach { gamemode ->
-            command.then(literal<Sender>(gamemode.name.lowercase())
-                .executes { gameModeArgument(it, gamemode) }
-                .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
-                    .executes { targetArgument(it, gamemode) }))
-        }
-        dispatcher.register(command)
-    }
-
-    private fun gameModeArgument(context: CommandContext<Sender>, gamemode: Gamemode): Int {
-        val sender = context.source as? KryptonPlayer ?: return 1
-        updateGameMode(listOf(sender), gamemode, sender)
-        return 1
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun targetArgument(context: CommandContext<Sender>, gamemode: Gamemode): Int {
-        val sender = context.source as? KryptonPlayer ?: return 1
-        val entities = context.entityArgument("targets").getPlayers(sender)
-        updateGameMode(entities, gamemode, sender)
-        return 1
-    }
-
-    private fun updateGameMode(entities: List<KryptonPlayer>, mode: Gamemode, sender: KryptonPlayer) = entities.forEach {
-        it.gamemode = mode
-        sender.sendMessage(if (sender == it) {
-            translatable("gameMode.changed", translatable("gameMode.${mode.name.lowercase()}"))
-        } else {
-            translatable("commands.gamemode.success.other", text(it.name), translatable("gameMode.${mode.name.lowercase()}"))
-        })
+        dispatcher.register(literal<Sender>("kick")
+            .permission("krypton.command.kick", PermissionLevel.LEVEL_3)
+            .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
+                .executes { context ->
+                    context.entityArgument("targets").getPlayers(context.source).forEach { it.disconnect(translatable("multiplayer.disconnect.kicked")) }
+                    1
+                }.then(argument<Sender, String>("reason", string())
+                    .executes { context ->
+                        val reason = context.argument<String>("reason")
+                        context.entityArgument("targets").getPlayers(context.source).forEach { it.disconnect(translatable("multiplayer.disconnect.kicked").append(text(" Reason: $reason"))) }
+                        1
+                    })
+            )
+        )
     }
 }

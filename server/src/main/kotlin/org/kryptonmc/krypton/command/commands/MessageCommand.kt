@@ -22,12 +22,10 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
-import com.mojang.brigadier.context.CommandContext
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
@@ -36,39 +34,25 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 
-object GamemodeCommand : InternalCommand {
+object MessageCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        val command = literal<Sender>("gamemode").permission("krypton.command.gamemode", PermissionLevel.LEVEL_2)
-        Gamemode.values().forEach { gamemode ->
-            command.then(literal<Sender>(gamemode.name.lowercase())
-                .executes { gameModeArgument(it, gamemode) }
-                .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
-                    .executes { targetArgument(it, gamemode) }))
-        }
-        dispatcher.register(command)
-    }
+        val messageCommand = dispatcher.register(literal<Sender>("msg")
+            .permission("krypton.command.msg", PermissionLevel.LEVEL_1)
+            .then(argument<Sender, EntityQuery>("player", EntityArgument.player())
+                .then(argument<Sender, String>("message", string())
+                    .executes {
+                        val source = it.source as? KryptonPlayer ?: return@executes 1
+                        val player = it.entityArgument("player").getPlayers(source)[0]
+                        val message = it.argument<String>("message")
+                        source.sendMessage(translatable("commands.message.display.outgoing", text(player.name), text(message)))
+                        player.sendMessage(translatable("commands.message.display.incoming", text(source.name), text(message)))
+                        1
+                    })
+            )
+        )
 
-    private fun gameModeArgument(context: CommandContext<Sender>, gamemode: Gamemode): Int {
-        val sender = context.source as? KryptonPlayer ?: return 1
-        updateGameMode(listOf(sender), gamemode, sender)
-        return 1
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun targetArgument(context: CommandContext<Sender>, gamemode: Gamemode): Int {
-        val sender = context.source as? KryptonPlayer ?: return 1
-        val entities = context.entityArgument("targets").getPlayers(sender)
-        updateGameMode(entities, gamemode, sender)
-        return 1
-    }
-
-    private fun updateGameMode(entities: List<KryptonPlayer>, mode: Gamemode, sender: KryptonPlayer) = entities.forEach {
-        it.gamemode = mode
-        sender.sendMessage(if (sender == it) {
-            translatable("gameMode.changed", translatable("gameMode.${mode.name.lowercase()}"))
-        } else {
-            translatable("commands.gamemode.success.other", text(it.name), translatable("gameMode.${mode.name.lowercase()}"))
-        })
+        dispatcher.register(literal<Sender>("tell").redirect(messageCommand))
+        dispatcher.register(literal<Sender>("w").redirect(messageCommand))
     }
 }

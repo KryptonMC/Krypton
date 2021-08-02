@@ -165,7 +165,7 @@ class KryptonCLI : CliktCommand(
         val serverThread = Thread({ reference.get().start() }, "Server Thread").apply {
             setUncaughtExceptionHandler { _, exception -> logger<KryptonServer>().error(exception) }
         }
-        val server = KryptonServer(registryHolder, storageAccess, worldData, packRepository, resources, config, ops, worldFolder)
+        val server = KryptonServer(registryHolder, storageAccess, worldData, packRepository, resources, config, ops, configFile, worldFolder)
         reference.set(server)
         serverThread.start()
     }

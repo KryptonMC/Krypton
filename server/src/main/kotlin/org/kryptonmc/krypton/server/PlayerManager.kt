@@ -30,23 +30,21 @@ import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerStorage
+import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.status.ServerStatus
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
+import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
-import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
+import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutDestroyEntities
-import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
-import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
-import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
-import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
+import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
 import org.kryptonmc.krypton.packet.out.play.PacketOutJoinGame
-import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
+import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerPositionAndLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
@@ -61,10 +59,17 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
 import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.network.handlers.PlayHandler
+import org.kryptonmc.krypton.packet.out.status.ServerStatus
+import org.kryptonmc.krypton.server.ban.BannedIpList
+import org.kryptonmc.krypton.server.ban.BannedPlayerList
+import org.kryptonmc.krypton.server.op.OperatorEntry
+import org.kryptonmc.krypton.server.op.OperatorList
+import org.kryptonmc.krypton.server.whitelist.Whitelist
+import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
+import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.nextInt
-import org.kryptonmc.krypton.util.threadFactory
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.toProtocol
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -74,12 +79,11 @@ import org.kryptonmc.krypton.world.dimension.parseDimension
 import org.spongepowered.math.GenericMath
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
+import java.nio.file.Path
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -89,15 +93,27 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     val players = CopyOnWriteArrayList<KryptonPlayer>()
     val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
+    val userCache = UserCache(Path.of("usercache.json"))
 
     private val registryHolder = server.registryHolder
+    val bannedPlayers = BannedPlayerList(Path.of("banned-players.json"))
+    val whitelist = Whitelist(Path.of("whitelist.json"))
+    val bannedIps = BannedIpList(Path.of("banned-ips.json"))
+    val ops = OperatorList(Path.of("ops.json"))
+    val whitlistedIps = WhitelistedIps(Path.of("whitelisted-ips.json"))
+    var whitelistEnabled = server.config.server.whitelistEnabled
+        set(value) {
+            field = value
+            server.config.server.whitelistEnabled = value
+            server.updateConfig()
+        }
 
     val status = ServerStatus(server.status.motd, ServerStatus.Players(server.status.maxPlayers, players.size), null)
     private var lastStatus = 0L
 
     fun add(player: KryptonPlayer, session: Session): CompletableFuture<Void> = dataManager.load(player).thenAccept { nbt ->
         val profile = player.profile
-
+        userCache.add(profile)
         val dimension = if (nbt != null) Dynamic(NBTOps, nbt["Dimension"]).parseDimension().resultOrPartial(LOGGER::error).orElse(World.OVERWORLD) else World.OVERWORLD
         val world = server.worldManager.worlds[dimension] ?: kotlin.run {
             LOGGER.warn("Unknown respawn dimension $dimension! Defaulting to overworld...")
@@ -134,12 +150,11 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         // Player data stuff
         session.sendPacket(PacketOutAbilities(player.abilities))
         session.sendPacket(PacketOutChangeHeldItem(player.inventory.heldSlot))
-        session.sendPacket(PacketOutDeclareCommands(server.commandManager.dispatcher.root))
+        sendCommands(player)
         session.sendPacket(PacketOutDeclareRecipes)
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
         session.sendPacket(PacketOutTags(server.resources.tags.write(registryHolder)))
         session.sendPacket(PacketOutEntityStatus(player.id, if (world.gameRules[GameRules.REDUCED_DEBUG_INFO]) 22 else 23))
-        sendOperatorStatus(player)
         invalidateStatus()
 
         // Fire join event and send result message
@@ -238,6 +253,27 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     fun saveAll() = players.forEach { dataManager.save(it) }
 
+    fun addToOperators(profile: GameProfile) {
+        ops += OperatorEntry(profile, server.config.server.opPermissionLevel, true)
+        if (server.player(profile.uuid) != null) server.commandManager.sendCommands(server.player(profile.uuid)!!)
+    }
+
+    fun removeFromOperators(profile: GameProfile) {
+        ops -= profile
+        if (server.player(profile.uuid) != null) server.commandManager.sendCommands(server.player(profile.uuid)!!)
+    }
+
+    private fun sendCommands(player: KryptonPlayer) {
+        val permissionLevel = player.server.getPermissionLevel(player.profile)
+        sendCommands(player, permissionLevel.id)
+    }
+
+    private fun sendCommands(player: KryptonPlayer, permissionLevel: Int) {
+        val status = (permissionLevel + 24).clamp(24, 28)
+        player.session.sendPacket(PacketOutEntityStatus(player.id, status))
+        server.commandManager.sendCommands(player)
+    }
+
     fun tick(time: Long) {
         if (time - lastStatus >= UPDATE_STATUS_INTERVAL) {
             lastStatus = time
@@ -252,10 +288,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     fun invalidateStatus() {
         lastStatus = 0L
-    }
-
-    private fun sendOperatorStatus(player: KryptonPlayer) {
-        // TODO: Get status from ops.json and send it to the client
     }
 
     private fun sendWorldInfo(world: KryptonWorld, player: KryptonPlayer) {

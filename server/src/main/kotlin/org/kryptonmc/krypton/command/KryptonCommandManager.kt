@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.ParseResults
 import com.mojang.brigadier.arguments.StringArgumentType.greedyString
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.context.CommandContext
@@ -29,6 +30,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import com.mojang.brigadier.tree.LiteralCommandNode
+import com.mojang.brigadier.tree.RootCommandNode
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
@@ -37,18 +39,38 @@ import org.apache.commons.lang3.StringUtils
 import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.CommandManager
+import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.RawCommand
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.event.play.PermissionCheckEvent
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.command.commands.BanCommand
+import org.kryptonmc.krypton.command.commands.BanIpCommand
 import org.kryptonmc.krypton.command.commands.DebugCommand
+import org.kryptonmc.krypton.command.commands.DeopCommand
+import org.kryptonmc.krypton.command.commands.DifficultyCommand
 import org.kryptonmc.krypton.command.commands.GamemodeCommand
+import org.kryptonmc.krypton.command.commands.GameruleCommand
+import org.kryptonmc.krypton.command.commands.KickCommand
+import org.kryptonmc.krypton.command.commands.ListCommand
+import org.kryptonmc.krypton.command.commands.MeCommand
+import org.kryptonmc.krypton.command.commands.MessageCommand
+import org.kryptonmc.krypton.command.commands.OpCommand
+import org.kryptonmc.krypton.command.commands.PardonCommand
+import org.kryptonmc.krypton.command.commands.PardonIpCommand
 import org.kryptonmc.krypton.command.commands.RestartCommand
+import org.kryptonmc.krypton.command.commands.SayCommand
+import org.kryptonmc.krypton.command.commands.SeedCommand
 import org.kryptonmc.krypton.command.commands.StopCommand
 import org.kryptonmc.krypton.command.commands.SummonCommand
 import org.kryptonmc.krypton.command.commands.TeleportCommand
+import org.kryptonmc.krypton.command.commands.TitleCommand
+import org.kryptonmc.krypton.command.commands.VersionCommand
+import org.kryptonmc.krypton.command.commands.WhitelistCommand
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
 import java.util.concurrent.CompletableFuture
 
 class KryptonCommandManager(private val server: KryptonServer) : CommandManager {
@@ -96,6 +118,16 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
      */
     fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> =
         dispatcher.getCompletionSuggestions(parseResults)
+
+    fun sendCommands(player: KryptonPlayer) {
+        val node = RootCommandNode<Sender>()
+        for (child in dispatcher.root.children) {
+            if (child.requirement.test(player)) {
+                node.addChild(child)
+            }
+        }
+        player.session.sendPacket(PacketOutDeclareCommands(node))
+    }
 
     private fun dispatchCommand(command: SimpleCommand, sender: Sender, args: Array<String>): Int {
         CommandScope.launch { command.execute(sender, args) }
@@ -156,12 +188,29 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         .build()
 
     internal fun registerBuiltins() {
-        register(StopCommand(server))
-        register(RestartCommand(server))
+        StopCommand(server).register(dispatcher)
+        RestartCommand(server).register(dispatcher)
         DebugCommand(server).register(dispatcher)
         TeleportCommand.register(dispatcher)
         SummonCommand.register(dispatcher)
-        GamemodeCommand(server).register(dispatcher)
+        GamemodeCommand.register(dispatcher)
+        ListCommand.register(dispatcher)
+        SeedCommand.register(dispatcher)
+        SayCommand.register(dispatcher)
+        MeCommand.register(dispatcher)
+        MessageCommand.register(dispatcher)
+        TitleCommand.register(dispatcher)
+        DifficultyCommand.register(dispatcher)
+        GameruleCommand.register(dispatcher)
+        VersionCommand.register(dispatcher)
+        KickCommand.register(dispatcher)
+        BanCommand.register(dispatcher)
+        PardonCommand.register(dispatcher)
+        WhitelistCommand.register(dispatcher)
+        BanIpCommand.register(dispatcher)
+        PardonIpCommand.register(dispatcher)
+        OpCommand.register(dispatcher)
+        DeopCommand.register(dispatcher)
     }
 
     companion object {
@@ -181,3 +230,14 @@ private val CommandContext<Sender>.splitArguments: Array<String>
         val raw = rawArguments
         return if (raw.isEmpty()) emptyArray() else StringUtils.split(raw)
     }
+
+fun LiteralArgumentBuilder<Sender>.permission(
+    permission: String,
+    permissionLevel: PermissionLevel
+): LiteralArgumentBuilder<Sender> {
+    permissionLevel.grant(permission)
+    requires {
+        it.hasPermission(permission)
+    }
+    return this
+}

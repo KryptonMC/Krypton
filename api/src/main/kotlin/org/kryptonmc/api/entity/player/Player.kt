@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.entity.player
 
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
 import org.kryptonmc.api.block.Block
@@ -133,4 +134,9 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      * @return the destroy speed
      */
     fun getDestroySpeed(block: Block): Float
+
+    /**
+     * Kicks the player with the given text shown
+     */
+    fun disconnect(text: Component)
 }

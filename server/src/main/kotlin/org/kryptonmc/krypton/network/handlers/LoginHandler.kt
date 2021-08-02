@@ -22,28 +22,18 @@ import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.Unpooled
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
-import net.kyori.adventure.text.format.NamedTextColor
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.api.event.login.LoginEvent
 import org.kryptonmc.krypton.IOScope
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
-import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
-import org.kryptonmc.krypton.packet.`in`.login.PacketInPluginResponse
-import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
-import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
-import org.kryptonmc.krypton.packet.out.login.PacketOutPluginRequest
-import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
-import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.network.PacketState
+import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.network.netty.PacketCompressor
 import org.kryptonmc.krypton.network.netty.PacketDecoder
 import org.kryptonmc.krypton.network.netty.PacketDecompressor
@@ -52,12 +42,23 @@ import org.kryptonmc.krypton.network.netty.PacketEncoder
 import org.kryptonmc.krypton.network.netty.PacketEncrypter
 import org.kryptonmc.krypton.network.netty.SizeDecoder
 import org.kryptonmc.krypton.network.netty.SizeEncoder
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.`in`.login.PacketInEncryptionResponse
+import org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart
+import org.kryptonmc.krypton.packet.`in`.login.PacketInPluginResponse
+import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
+import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
+import org.kryptonmc.krypton.packet.out.login.PacketOutPluginRequest
+import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
+import org.kryptonmc.krypton.server.ban.BanEntry
 import org.kryptonmc.krypton.util.BungeeCordHandshakeData
 import org.kryptonmc.krypton.util.encryption.Encryption
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readVelocityData
+import org.kryptonmc.krypton.util.toComponent
 import org.kryptonmc.krypton.util.verifyIntegrity
 import java.net.InetSocketAddress
+import java.net.SocketAddress
 import java.util.UUID
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
@@ -110,7 +111,7 @@ class LoginHandler(
             // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
             val uuid = bungeecordData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
             val profile = GameProfile(uuid, packet.name, bungeecordData?.properties ?: emptyList())
-
+            if (!canJoin(profile, address)) return
             val player = KryptonPlayer(session, profile, server.worldManager.default, address)
             if (!callLoginEvent(profile)) return
             finishLogin(player)
@@ -127,8 +128,11 @@ class LoginHandler(
         enableEncryption(secretKey)
 
         IOScope.launch {
+            val rawAddress = session.channel.remoteAddress() as InetSocketAddress
+            val address = if (bungeecordData != null) InetSocketAddress(bungeecordData.forwardedIp, rawAddress.port) else rawAddress
             val profile = try {
                 val value = SessionService.authenticateUser(name, sharedSecret, server.config.server.ip)
+                if (!canJoin(value, address)) return@launch
                 if (!callLoginEvent(value)) return@launch
                 value
             } catch (exception: AuthenticationException) {
@@ -137,8 +141,6 @@ class LoginHandler(
             }
             enableCompression()
 
-            val rawAddress = session.channel.remoteAddress() as InetSocketAddress
-            val address = if (bungeecordData != null) InetSocketAddress(bungeecordData.forwardedIp, rawAddress.port) else rawAddress
             val player = KryptonPlayer(session, profile, server.worldManager.default, address)
             finishLogin(player)
         }
@@ -227,6 +229,28 @@ class LoginHandler(
             val reason = if (result.reason !== Component.empty()) result.reason else translatable("multiplayer.disconnect.kicked")
             session.disconnect(reason)
             return false
+        }
+        return true
+    }
+
+    private fun canJoin(profile: GameProfile, address: SocketAddress): Boolean {
+        if (playerManager.bannedPlayers.contains(profile)) {
+            val entry = playerManager.bannedPlayers[profile]!!
+            val text = translatable("multiplayer.disconnect.banned.reason", listOf(entry.reason.toComponent()))
+            if (entry.expiryDate != null) text.append(translatable("multiplayer.disconnect.banned.expiration", BanEntry.DATE_FORMAT.format(entry.expiryDate).toComponent()))
+            session.disconnect(text)
+            LOGGER.info("${profile.name} disconnected. Reason: Banned")
+            return false
+        } else if (playerManager.whitelistEnabled && !playerManager.whitelist.contains(profile) && !playerManager.whitlistedIps.isWhitelisted(address)) {
+            session.disconnect(translatable("multiplayer.disconnect.not_whitelisted"))
+            LOGGER.info("${profile.name} disconnected. Reason: Not whitelisted")
+            return false
+        } else if (playerManager.bannedIps.isBanned(address)) {
+            val entry = playerManager.bannedIps[address]!!
+            val text = translatable("multiplayer.disconnect.banned_ip.reason", entry.reason.toComponent())
+            if (entry.expiryDate != null) text.append(translatable("multiplayer.disconnect.banned.expiration", BanEntry.DATE_FORMAT.format(entry.expiryDate).toComponent()))
+            session.disconnect(text)
+            LOGGER.info("${profile.name} disconnected. Reason: IP Banned")
         }
         return true
     }
