@@ -64,7 +64,7 @@ class PerlinNoise private constructor(
 
     constructor(random: RandomSource, first: Int, octaves: DoubleList) : this(random, Pair(first, octaves))
 
-    constructor(random: RandomSource, octaves: IntRange) : this(random, octaves.toList())
+    constructor(random: RandomSource, octaves: IntRange) : this(random, IntRBTreeSet(octaves.toSortedSet()))
 
     constructor(random: RandomSource, octaves: List<Int>) : this(random, IntRBTreeSet(octaves))
 

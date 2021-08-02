@@ -85,7 +85,7 @@ class TheEndBiomeGenerator private constructor(
 private const val ISLAND_THRESHOLD = -0.9
 private const val ISLAND_CHUNK_DISTANCE_SQ = 4096L
 
-private fun heightValue(noise: SimplexNoise, x: Int, z: Int): Float {
+fun heightValue(noise: SimplexNoise, x: Int, z: Int): Float {
     val divX = x / 2
     val divZ = z / 2
     val modX = x % 2

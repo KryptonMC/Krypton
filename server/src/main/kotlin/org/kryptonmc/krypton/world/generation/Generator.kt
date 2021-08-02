@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world.generation
 import com.mojang.serialization.Codec
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
+import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import java.util.function.Function
 
 abstract class Generator(
@@ -33,6 +34,8 @@ abstract class Generator(
     constructor(biomeGenerator: BiomeGenerator, structures: StructureSettings) : this(biomeGenerator, biomeGenerator, structures, 0L)
 
     abstract val codec: Codec<out Generator>
+
+    abstract fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor)
 
     companion object {
 

@@ -70,13 +70,13 @@ class Heightmap(
         }
     }
 
+    fun firstAvailable(x: Int, z: Int) = firstAvailable(indexOf(x, z))
+
+    fun highestTaken(x: Int, z: Int) = firstAvailable(indexOf(x, z)) - 1
+
     private fun set(x: Int, z: Int, y: Int) = data.set(indexOf(x, z), y - chunk.minimumBuildHeight)
 
     private fun indexOf(x: Int, z: Int) = x + z * 16
-
-    private fun firstAvailable(x: Int, z: Int) = firstAvailable(indexOf(x, z))
-
-    private fun highestTaken(x: Int, z: Int) = firstAvailable(indexOf(x, z)) - 1
 
     private fun firstAvailable(index: Int) = data[index] + chunk.minimumBuildHeight
 
@@ -111,15 +111,15 @@ class Heightmap(
         }
         private val LOGGER = logger<Heightmap>()
 
-        fun prime(chunk: ChunkAccessor, noneOf: Set<Type>) {
-            val size = noneOf.size
+        fun prime(chunk: ChunkAccessor, toPrime: Set<Type>) {
+            val size = toPrime.size
             val heightmaps = ObjectArrayList<Heightmap>(size)
             val iterator = heightmaps.iterator()
             val highest = chunk.highestSectionY + 16
             val position = MutableVector3i()
             for (x in 0 until 16) {
                 for (z in 0 until 16) {
-                    noneOf.forEach { heightmaps.add(chunk.getOrCreateHeightmap(it)) }
+                    toPrime.forEach { heightmaps.add(chunk.getOrCreateHeightmap(it)) }
                     y@ for (y in highest - 1 downTo chunk.minimumBuildHeight) {
                         position.set(x, y, z)
                         val block = chunk.getBlock(position.x, position.y, position.z)

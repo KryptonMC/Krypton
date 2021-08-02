@@ -16,27 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.generation
+package org.kryptonmc.krypton.world.generation.noise
 
-import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.world.biome.KryptonBiomes
-import org.kryptonmc.krypton.world.biome.gen.FixedBiomeGenerator
-import org.kryptonmc.krypton.world.chunk.ChunkAccessor
-import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
+fun interface NoiseModifier {
 
-// FIXME: Get the biomes from the settings
-class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(
-    FixedBiomeGenerator(KryptonBiomes.PLAINS),
-    FixedBiomeGenerator(settings.biome),
-    settings.structureSettings
-) {
-
-    override val codec = CODEC
-
-    override fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor) = Unit
+    operator fun invoke(value: Double, y: Int, x: Int, z: Int): Double
 
     companion object {
 
-        val CODEC: Codec<FlatGenerator> = FlatGeneratorSettings.CODEC.fieldOf("settings").xmap(::FlatGenerator, FlatGenerator::settings).codec()
+        val PASSTHROUGH = NoiseModifier { value, _, _, _ -> value }
     }
 }

@@ -40,5 +40,7 @@ interface ChunkAccessor : BlockAccessor {
 
     fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap
 
+    fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int
+
     fun setHeightmap(type: Heightmap.Type, data: LongArray) = getOrCreateHeightmap(type).setData(this, type, data)
 }

@@ -83,7 +83,7 @@ class KryptonWorld(
     private val tickTime: Boolean
 ) : World, BlockAccessor {
 
-    private val random = Random()
+    val random = Random()
 
     override val border = KryptonWorldBorder.DEFAULT // FIXME
     override val gamemode: Gamemode

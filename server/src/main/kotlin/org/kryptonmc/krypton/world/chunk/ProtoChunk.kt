@@ -73,4 +73,13 @@ open class ProtoChunk(
     }
 
     override fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap = heightmaps.getOrPut(type) { Heightmap(this, type) }
+
+    override fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int {
+        var heightmap = heightmaps[type]
+        if (heightmap == null) {
+            Heightmap.prime(this, EnumSet.of(type))
+            heightmap = heightmaps[type]!!
+        }
+        return heightmap.firstAvailable(x and 15, z and 15) - 1
+    }
 }
