@@ -27,7 +27,7 @@ import java.time.OffsetDateTime
 
 class BannedPlayerList(path: Path) : ServerConfigList<GameProfile, BannedPlayerEntry>(path) {
 
-    fun clear() = forEach { it.expiryDate?.let { time -> if (time.isAfter(OffsetDateTime.now())) remove(it.key) } }
+    fun clear() = forEach { it.expiryDate?.let { time -> if (time.isBefore(OffsetDateTime.now())) remove(it.key) } }
 
     override fun fromJson(data: JsonObject): BannedPlayerEntry? {
         val entry = BanEntry.fromJson(data.toGameProfile(), data)

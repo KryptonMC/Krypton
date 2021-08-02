@@ -20,21 +20,15 @@ package org.kryptonmc.krypton.server.whitelist
 
 import com.google.gson.JsonObject
 import org.kryptonmc.krypton.server.ServerConfigList
+import org.kryptonmc.krypton.util.stringify
 import java.net.SocketAddress
 import java.nio.file.Path
 
 class WhitelistedIps(path: Path) : ServerConfigList<String, WhitelistIpEntry>(path) {
 
-    fun isWhitelisted(address: SocketAddress) = contains(stringifyAddress(address))
+    fun isWhitelisted(address: SocketAddress) = contains(address.stringify())
 
     override fun fromJson(data: JsonObject) = WhitelistIpEntry(data.get("ip").asString)
 
-    operator fun get(key: SocketAddress) = super.get(stringifyAddress(key))
-
-    private fun stringifyAddress(socketAddress: SocketAddress): String {
-        var string = socketAddress.toString()
-        if (string.contains("/")) string = string.substring(string.indexOf(47.toChar()) + 1)
-        if (string.contains(":")) string = string.substring(0, string.indexOf(58.toChar()))
-        return string
-    }
+    operator fun get(key: SocketAddress) = super.get(key.stringify())
 }
