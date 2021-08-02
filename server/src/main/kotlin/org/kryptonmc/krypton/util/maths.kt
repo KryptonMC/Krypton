@@ -80,6 +80,12 @@ fun Double.clampedLerp(lower: Double, upper: Double): Double {
     return lerp(this, lower, upper)
 }
 
+fun seed(x: Int, y: Int, z: Int): Long {
+    var temp = (x * 3129871).toLong() xor z.toLong() * 116129781L xor y.toLong()
+    temp = temp * temp * 42317861L + temp * 11L
+    return temp shr 16
+}
+
 /**
  * Calculates a chunk position from a given [id] in a spiral pattern.
  *

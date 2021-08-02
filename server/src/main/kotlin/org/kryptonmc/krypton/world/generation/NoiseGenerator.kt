@@ -34,13 +34,12 @@ import org.kryptonmc.krypton.world.HeightAccessor
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
+import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.generation.noise.NoiseColumn
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 import org.kryptonmc.krypton.world.generation.noise.NoiseModifier
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
-import kotlin.math.max
-import kotlin.math.min
 
 class NoiseGenerator(
     biomeGenerator: BiomeGenerator,
@@ -62,6 +61,10 @@ class NoiseGenerator(
     private val height: Int
     private val sampler: NoiseSampler
     override val codec = CODEC
+    override val seaLevel = settings().seaLevel
+    override val generationDepth: Int
+        get() = height
+    override val minimumY = settings().noiseSettings.minimumY
 
     init {
         val settings = settings()
@@ -116,6 +119,12 @@ class NoiseGenerator(
     override fun getBaseHeight(x: Int, z: Int, type: Heightmap.Type, heightAccessor: HeightAccessor) = 0 // FIXME
 
     override fun getBaseColumn(x: Int, z: Int, heightAccessor: HeightAccessor) = NoiseColumn(0, emptyArray()) // FIXME
+
+    private fun aquifer(startY: Int, deltaY: Int, position: ChunkPosition) = if (!settings().aquifiersEnabled) {
+        Aquifer.createDisabled(seaLevel, defaultFluid)
+    } else {
+        NoiseBasedAquifer(position, barrierNoise, waterLevelNoise, lavaNoise, settings(), sampler, startY * cellHeight, deltaY * cellHeight)
+    }
 
     companion object {
 

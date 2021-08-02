@@ -56,7 +56,7 @@ open class ProtoChunk(
         if (y !in minimumBuildHeight..maximumBuildHeight) return
         val sectionIndex = sectionIndex(y)
         if (sections[sectionIndex] == null && block === Blocks.AIR) return
-        if (block.lightEmission > 0) lights.add(Vector3i((x and 15) + (position.x shl 4), y, (z and 15) + (position.z shl 4)))
+        if (block.lightEmission > 0) lights.add(Vector3i((x and 15) + position.minBlockX, y, (z and 15) + position.minBlockZ))
         val section = getOrCreateSection(sectionIndex)
         val oldBlock = section.set(x and 15, y and 15, z and 15, block)
         if (status.isOrAfter(ChunkStatus.FEATURES) && block != oldBlock && (block.lightBlock != oldBlock.lightBlock || block.lightEmission != oldBlock.lightEmission || block.useShapeForOcclusion != oldBlock.useShapeForOcclusion)) {

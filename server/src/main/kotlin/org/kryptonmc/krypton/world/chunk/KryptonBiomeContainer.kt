@@ -43,9 +43,9 @@ class KryptonBiomeContainer private constructor(
         heightAccessor,
         Array((1 shl WIDTH_BITS + WIDTH_BITS) * heightAccessor.height.ceilDiv(4)) {
             if (biomeIds != null && it < biomeIds.size) {
-                biomeRegistry[biomeIds[it]] ?: generator.generateForIndex((position.x shl 4) shr 2, heightAccessor.minimumBuildHeight shr 2, (position.z shl 4) shr 2, it)
+                biomeRegistry[biomeIds[it]] ?: generator.generateForIndex(position.minBlockX shr 2, heightAccessor.minimumBuildHeight shr 2, position.minBlockZ shr 2, it)
             } else {
-                generator.generateForIndex((position.x shl 4) shr 2, heightAccessor.minimumBuildHeight shr 2, (position.z shl 4) shr 2, it)
+                generator.generateForIndex(position.minBlockX shr 2, heightAccessor.minimumBuildHeight shr 2, position.minBlockZ shr 2, it)
             }
         }
     )

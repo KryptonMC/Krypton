@@ -36,9 +36,12 @@ abstract class Generator(
     private val strongholdSeed: Long = 0L
 ) {
 
-    constructor(biomeGenerator: BiomeGenerator, structures: StructureSettings) : this(biomeGenerator, biomeGenerator, structures, 0L)
-
     abstract val codec: Codec<out Generator>
+    open val seaLevel: Int = 63
+    open val minimumY: Int = 0
+    open val generationDepth: Int = 256
+
+    constructor(biomeGenerator: BiomeGenerator, structures: StructureSettings) : this(biomeGenerator, biomeGenerator, structures, 0L)
 
     abstract fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor)
 

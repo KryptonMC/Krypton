@@ -40,6 +40,11 @@ data class ChunkPosition(val x: Int, val z: Int) {
     val regionLocalX = x and 0x1F
     val regionLocalZ = z and 0x1F
 
+    val minBlockX = x shl 4
+    val minBlockZ = z shl 4
+    val maxBlockX = (x shl 4) + 15
+    val maxBlockZ = (z shl 4) + 15
+
     operator fun contains(location: Position) = floor(location.x / 16.0).toInt() == x && floor(location.z / 16.0).toInt() == z
 
     operator fun contains(position: Vector3i) = GenericMath.floor(position.x() / 16.0) == x && GenericMath.floor(position.z() / 16.0) == z

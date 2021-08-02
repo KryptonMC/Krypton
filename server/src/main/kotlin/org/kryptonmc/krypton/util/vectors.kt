@@ -24,10 +24,30 @@ import org.kryptonmc.api.util.roundUpPow2
 import org.spongepowered.math.vector.Vector3i
 import java.util.stream.IntStream
 
-val PACKED_X_Z = 1 + 30000000.roundUpPow2().log2()
-val PACKED_Y = 64 - PACKED_X_Z * 2
-
 val VECTOR3I_CODEC: Codec<Vector3i> = Codec.INT_STREAM.comapFlatMap(
     { stream -> stream.fixedSize(3).map { Vector3i(it[0], it[1], it[2]) } },
     { IntStream.of(it.x(), it.y(), it.z()) }
 ).stable()
+
+val PACKED_X_Z = 1 + 30000000.roundUpPow2().log2()
+val PACKED_Y = 64 - PACKED_X_Z * 2
+private val PACKED_X_Z_MASK = (1L shl PACKED_X_Z) - 1L
+private val PACKED_Y_MASK = (1L shl PACKED_Y) - 1L
+private val X_OFFSET = PACKED_Y + PACKED_X_Z
+private val Z_OFFSET = PACKED_Y
+
+val Long.x: Int
+    get() = (this shl 64 - X_OFFSET - PACKED_X_Z shr 64 - PACKED_X_Z).toInt()
+
+val Long.y: Int
+    get() = (this shl 64 - PACKED_Y shr 64 - PACKED_Y).toInt()
+
+val Long.z: Int
+    get() = (this shl 64 - Z_OFFSET - PACKED_X_Z shr 64 - PACKED_X_Z).toInt()
+
+fun asLong(x: Int, y: Int, z: Int): Long {
+    var temp = 0L
+    temp = temp or (x.toLong() and PACKED_X_Z_MASK shl X_OFFSET)
+    temp = temp or (y.toLong() and PACKED_Y_MASK)
+    return temp or (z.toLong() and PACKED_X_Z_MASK shl Z_OFFSET)
+}
