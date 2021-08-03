@@ -88,14 +88,16 @@ Example usage:
 ```kotlin
 // As of 0.22.1, we now use Guice, meaning you can now inject your required dependencies
 // in any one of your classes throughout the project
-class MyPlugin @Inject constructor(commandManager: CommandManager, command: MyCommand) : Plugin() {
+class MyPlugin @Inject constructor(commandManager: CommandManager, command: MyCommand) {
 
     init {
         commandManager.register(command) // example command registration
     }
 
-    override fun initialize() {
-        // do some other things
+    @Listener
+    fun initialize() {
+        // This is called after things like your plugin's container have finished initialising,
+        // so it is safe to use them here.
     }
 }
 ```
@@ -121,9 +123,10 @@ and know the best practices.
   from.
 - [The Minecraft Coalition](https://wiki.vg) and [`#mcdevs`](https://github.com/mcdevs), for their hard work and effort
   documenting the protocol, allowing these projects to exist, and their amazing support.
-- [The Minecraft Wiki](https://minecraft.gamepedia.com)
+- [The Minecraft Wiki](https://minecraft.gamepedia.com), for their amazing efforts documenting just about everything
+  there is to know about Minecraft, and making it available for everyone to use.
 - The project's dependencies, each and every one helping to make our lives as developers easier. Notable
   mentions: [Adventure](https://github.com/KyoriPowered/Adventure), [Kotlin](https://kotlinlang.org),
   [Netty](https://netty.io), [OkHttp](https://square.github.io/okhttp/), [Log4J](https://logging.apache.org/log4j/2.x/)
-- [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html), for being kind enough to grant me an
+- [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html), for being kind enough to grant us an
   open-source license for their profiler.

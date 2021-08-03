@@ -76,6 +76,9 @@ represent data, and you also create managers for these classes that can be used 
 example of this is worlds, where you have the `World` interface that represents a loaded world, and then the `WorldManager`
 to load and save these worlds.
 
+As well as all of this, we heavily depend on registries throughout the API (and the server), so that you can add new, for
+example, item types, as an API user. Registries should be used anywhere where it is appropriate to do so.
+
 And finally, the primary goal of the API is to provide an abstraction layer for plugins that is not complicated to understand,
 and is abstract enough that it is **platform agnostic**. This means that everything, from your code to your comments, must be
 as open as possible about what the intended behaviour of a specific variable or function is. For example, you may suggest that

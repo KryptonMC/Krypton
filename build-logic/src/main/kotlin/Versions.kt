@@ -37,5 +37,5 @@ object Versions {
     // Test
     const val JUNIT_PLATFORM_RUNNER = "1.7.2"
     const val MOCKK = "1.12.0"
-    const val BYTEBUDDY = "1.11.8"
+    const val BYTEBUDDY = "1.11.9"
 }
