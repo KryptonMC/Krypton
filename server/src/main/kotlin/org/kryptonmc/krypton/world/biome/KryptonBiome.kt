@@ -26,20 +26,19 @@ import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.RegistryFileCodec
 import org.kryptonmc.krypton.util.codec
 import org.kryptonmc.krypton.util.homogenousListCodec
-import java.util.function.Supplier
 
 class KryptonBiome(
     val climate: ClimateSettings,
     val depth: Float,
     val scale: Float,
     val category: BiomeCategory,
-    val effects: BiomeEffects
+    val effects: BiomeEffects,
+    val mobSettings: MobSpawnSettings = MobSpawnSettings.EMPTY
 ) : Biome {
 
     companion object {
 
-        // TODO: Add the network codec (when there is generation and mob spawn settings for the direct codec)
-        val DIRECT_CODEC: Codec<KryptonBiome> = RecordCodecBuilder.create {
+        val NETWORK_CODEC: Codec<KryptonBiome> = RecordCodecBuilder.create {
             it.group(
                 ClimateSettings.CODEC.forGetter(KryptonBiome::climate),
                 Codec.FLOAT.fieldOf("depth").forGetter(KryptonBiome::depth),
@@ -48,8 +47,19 @@ class KryptonBiome(
                 BiomeEffects.CODEC.fieldOf("effects").forGetter(KryptonBiome::effects)
             ).apply(it, ::KryptonBiome)
         }
-        val CODEC: Codec<() -> KryptonBiome> = RegistryFileCodec(InternalResourceKeys.BIOME, DIRECT_CODEC)
-        val LIST_CODEC = homogenousListCodec(InternalResourceKeys.BIOME, DIRECT_CODEC)
+        // TODO: Add biome generation settings to this
+        val DIRECT_CODEC: Codec<KryptonBiome> = RecordCodecBuilder.create {
+            it.group(
+                ClimateSettings.CODEC.forGetter(KryptonBiome::climate),
+                Codec.FLOAT.fieldOf("depth").forGetter(KryptonBiome::depth),
+                Codec.FLOAT.fieldOf("scale").forGetter(KryptonBiome::scale),
+                BiomeCategory.CODEC.fieldOf("category").forGetter(KryptonBiome::category),
+                BiomeEffects.CODEC.fieldOf("effects").forGetter(KryptonBiome::effects),
+                MobSpawnSettings.CODEC.forGetter(KryptonBiome::mobSettings)
+            ).apply(it, ::KryptonBiome)
+        }
+        val CODEC: Codec<() -> KryptonBiome> = RegistryFileCodec(InternalResourceKeys.BIOME, NETWORK_CODEC)
+        val LIST_CODEC = homogenousListCodec(InternalResourceKeys.BIOME, NETWORK_CODEC)
     }
 }
 

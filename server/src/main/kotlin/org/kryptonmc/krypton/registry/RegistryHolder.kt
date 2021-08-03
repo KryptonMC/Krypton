@@ -28,7 +28,6 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.registry.ops.RegistryReadOps
 import org.kryptonmc.krypton.resource.MemoryResources
 import org.kryptonmc.krypton.util.KEY_CODEC
@@ -80,8 +79,8 @@ class RegistryHolder(val registries: Map<out ResourceKey<out Registry<*>>, Krypt
 
         val REGISTRIES: Map<ResourceKey<out Registry<*>>, RegistryData<*>> = mapOf(
             InternalResourceKeys.DIMENSION_TYPE to RegistryData(InternalResourceKeys.DIMENSION_TYPE, KryptonDimensionType.DIRECT_CODEC, KryptonDimensionType.DIRECT_CODEC),
-            InternalResourceKeys.BIOME to RegistryData(InternalResourceKeys.BIOME, KryptonBiome.DIRECT_CODEC, KryptonBiome.DIRECT_CODEC),
-            InternalResourceKeys.NOISE_GENERATOR_SETTINGS to RegistryData(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, NoiseGeneratorSettings.DIRECT_CODEC, null)
+            InternalResourceKeys.BIOME to RegistryData(InternalResourceKeys.BIOME, KryptonBiome.DIRECT_CODEC, KryptonBiome.NETWORK_CODEC),
+            InternalResourceKeys.NOISE_GENERATOR_SETTINGS to RegistryData(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, NoiseGeneratorSettings.DIRECT_CODEC)
         )
         private val BUILTIN = RegistryHolder().apply {
             DimensionTypes.registerBuiltins(this)
@@ -123,7 +122,7 @@ private fun <E : Any> ResourceKey<out Registry<E>>.networkCodec(): DataResult<ou
 data class RegistryData<E : Any>(
     val key: ResourceKey<out Registry<E>>,
     val codec: Codec<E>,
-    val networkCodec: Codec<E>?
+    val networkCodec: Codec<E>? = null
 ) {
 
     val shouldSend = networkCodec != null

@@ -23,6 +23,7 @@ import com.mojang.datafixers.util.Pair
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.DynamicOps
+import com.mojang.serialization.Keyable
 import com.mojang.serialization.Lifecycle
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
@@ -32,6 +33,8 @@ import java.awt.Color
 import java.util.UUID
 import java.util.function.Function
 import java.util.stream.IntStream
+import java.util.stream.Stream
+import kotlin.streams.asStream
 
 val COLOR_CODEC: Codec<Color> = Codec.INT.xmap(::Color, Color::getRGB)
 
@@ -78,4 +81,13 @@ fun <E> Array<E>.codec(nameToValue: (String) -> E?): Codec<E> where E : Enum<E>,
     }).map { Pair.of(it, ops.empty()) }
 
     override fun toString() = "Enum & StringSerializable"
+}
+
+fun Array<out StringSerializable>.keys() = object : Keyable {
+
+    override fun <T> keys(ops: DynamicOps<T>): Stream<T> = if (ops.compressMaps()) {
+        (0..size).map(ops::createInt).stream()
+    } else {
+        asSequence().map { ops.createString(it.serialized) }.asStream()
+    }
 }
