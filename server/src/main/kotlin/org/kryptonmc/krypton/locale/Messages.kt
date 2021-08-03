@@ -39,7 +39,7 @@ import java.util.UUID
 object Messages {
 
     // Krypton version {0} for Minecraft {1}
-    val VERSION_INFO = doubleText("krypton.version-info")
+    val VERSION_INFO = doubleText("version-info")
 
     val START = StartMessages
     val AUTOSAVE = AutosaveMessages
@@ -67,7 +67,7 @@ object Messages {
     // FAILED TO BIND TO PORT {0}
     // Exception: {1}
     // Perhaps a server is already running on that port?
-    val ERROR_BIND = Args2<Int, IOException> { port, exception -> translatable("krypton.error.bind", listOf(text(port), text(exception.toString()))) }
+    val ERROR_BIND = Args2<Int, IOException> { port, exception -> translatable("krypton.error.bind", text(port), text(exception.toString())) }
 
     // SERVER IS IN OFFLINE MODE! THIS SERVER WILL MAKE NO ATTEMPTS TO AUTHENTICATE USERS!
     // While this may allow players without full Minecraft accounts to connect, it also allows hackers to connect with any username they choose! Beware!
@@ -75,7 +75,7 @@ object Messages {
     val PIRACY_WARNING = empty("piracy-warning")
 
     // Woah there! Can't keep up! Running {0}ms ({1} ticks) behind!
-    val TICK_OVERLOAD_WARNING = Args2<Long, Long> { ms, ticks -> translatable("krypton.overload-warning", listOf(text(ms), text(ticks))) }
+    val TICK_OVERLOAD_WARNING = Args2<Long, Long> { ms, ticks -> translatable("krypton.overload-warning", text(ms), text(ticks)) }
 
     // Krypton and some of its plugins collect metrics and send them to bStats (https://bstats.org).
     // bStats collects some basic information for plugin authors, like how many people use
@@ -88,7 +88,7 @@ object Messages {
     val ARGUMENT_ERROR = doubleText("argument-error")
 
     // Plugin {0} generated an exception from task {1}!
-    val SCHEDULE_ERROR = Args2<String, Runnable> { name, task -> translatable("krypton.schedule-error", listOf(text(name), text(task.toString()))) }
+    val SCHEDULE_ERROR = Args2<String, Runnable> { name, task -> translatable("krypton.schedule-error", text(name), text(task.toString())) }
 
     sealed interface Args {
 
@@ -159,7 +159,7 @@ object Messages {
     object StartMessages {
 
         // Starting Krypton server on {0}:{1}...
-        val INITIAL = Args2<String, Int> { ip, port -> translatable("krypton.start", listOf(text(ip), text(port))) }
+        val INITIAL = Args2<String, Int> { ip, port -> translatable("krypton.start", text(ip), text(port)) }
 
         // Done ({0})! Type "help" for help.
         val DONE = singleText("start.done")
@@ -219,21 +219,21 @@ object Messages {
         val CHUNK = ChunkMessages
 
         // Region file {0} has truncated header: {1}
-        val TRUNCATED = Args2<Path, Int> { path, first -> translatable("krypton.region.truncated", listOf(text(path.toString()), text(first))) }
+        val TRUNCATED = Args2<Path, Int> { path, first -> translatable("krypton.region.truncated", text(path.toString()), text(first)) }
 
         object SectorMessages {
 
             // Region file {0} has an invalid sector at index {1}. Sector {2} overlaps with header
             val OVERLAP = Args3<Path, Int, Int> { path, index, sector ->
-                translatable("krypton.region.sector.overlap", listOf(text(path.toString()), text(index), text(sector)))
+                translatable("krypton.region.sector.overlap", text(path.toString()), text(index), text(sector))
             }
 
             // Region file {0} has an invalid sector at index {1}. Size has to be > 0
-            val SIZE = Args2<Path, Int> { path, index -> translatable("krypton.region.sector.size", listOf(text(path.toString()), text(index))) }
+            val SIZE = Args2<Path, Int> { path, index -> translatable("krypton.region.sector.size", text(path.toString()), text(index)) }
 
             // Region file {0} has an invalid sector at index {1}. Sector {2} is out of bounds
             val OUT_OF_BOUNDS = Args3<Path, Int, Int> { path, index, sector ->
-                translatable("krypton.region.sector.out-of-bounds", listOf(text(path.toString()), text(index), text(sector)))
+                translatable("krypton.region.sector.out-of-bounds", text(path.toString()), text(index), text(sector))
             }
         }
 
@@ -243,39 +243,39 @@ object Messages {
 
             // Chunk {0}'s header is truncated! Expected {1} but got {2}!
             val TRUNCATED = Args3<ChunkPosition, Long, Int> { position, expected, reality ->
-                translatable("krypton.region.chunk.truncated", listOf(text(position.toString()), text(expected), text(reality)))
+                translatable("krypton.region.chunk.truncated", text(position.toString()), text(expected), text(reality))
             }
 
             // Chunk {0} is allocated, but stream is missing.
-            val NO_STREAM = Args1<ChunkPosition> { position -> translatable("krypton.region.chunk.no-stream", listOf(text(position.toString()))) }
+            val NO_STREAM = Args1<ChunkPosition> { position -> translatable("krypton.region.chunk.no-stream", text(position.toString())) }
 
             // Chunk has both internal and external streams.
             val INTERNAL_EXTERNAL = empty("region.chunk.internal-external")
 
             // Chunk {0}'s stream is truncated! Expected {1} but got {2}
             val STREAM_TRUNCATED = Args3<ChunkPosition, Int, Int> { position, expected, reality ->
-                translatable("krypton.region.chunk.stream-truncated", listOf(text(position.toString()), text(expected), text(reality)))
+                translatable("krypton.region.chunk.stream-truncated", text(position.toString()), text(expected), text(reality))
             }
 
             // Declared size {0} of chunk {1} is negative!
             val NEGATIVE = Args2<Int, ChunkPosition> { size, position ->
-                translatable("krypton.region.chunk.negative", listOf(text(size), text(position.toString())))
+                translatable("krypton.region.chunk.negative", text(size), text(position.toString()))
             }
 
             // Chunk {0} has an invalid compression type! Type: {1}
             val INVALID_COMPRESSION_TYPE = Args2<ChunkPosition, Byte> { position, type ->
-                translatable("krypton.region.chunk.invalid-compression-type", listOf(text(position.toString()), text(type.toInt())))
+                translatable("krypton.region.chunk.invalid-compression-type", text(position.toString()), text(type.toInt()))
             }
 
             object ExternalMessages {
 
                 // Saving oversized chunk {0} ({1} bytes) to external file {2}.
                 val SAVE = Args3<ChunkPosition, Int, Path> { position, size, path ->
-                    translatable("krypton.region.chunk.external.save", listOf(text(position.toString()), text(size), text(path.toString())))
+                    translatable("krypton.region.chunk.external.save", text(position.toString()), text(size), text(path.toString()))
                 }
 
                 // External chunk path {0} is not a file!
-                val NOT_FILE = Args1<Path> { translatable("krypton.region.chunk.external.not-file", listOf(text(it.toString()))) }
+                val NOT_FILE = Args1<Path> { translatable("krypton.region.chunk.external.not-file", text(it.toString())) }
             }
         }
     }
@@ -286,7 +286,7 @@ object Messages {
         val FAIL = singleText("auth.fail")
 
         // UUID of player {0} is {1}
-        val SUCCESS = Args2<String, UUID> { name, uuid -> translatable("krypton.auth.success", listOf(text(name), text(uuid.toString()))) }
+        val SUCCESS = Args2<String, UUID> { name, uuid -> translatable("krypton.auth.success", text(name), text(uuid.toString())) }
     }
 
     object CommandMessages {
@@ -355,12 +355,12 @@ object Messages {
 
             // Packet badly compressed! Size of {0} is below threshold of {1}!
             val BELOW_THRESHOLD = Args2<Int, Int> { size, threshold ->
-                translatable("krypton.network.compress.below-threshold", listOf(text(size), text(threshold)))
+                translatable("krypton.network.compress.below-threshold", text(size), text(threshold))
             }
 
             // Packet badly compressed! Size of {0} is larger than protocol maximum of {1}!
             val STUPIDLY_LARGE = Args2<Int, Int> { size, maximum ->
-                translatable("krypton.network.compress.stupidly-large", listOf(text(size), text(maximum)))
+                translatable("krypton.network.compress.stupidly-large", text(size), text(maximum))
             }
         }
     }
@@ -369,7 +369,7 @@ object Messages {
 
         val LOAD = LoadMessages
 
-        val NOT_DIRECTORY = Args1<Path> { translatable("krypton.plugin.not-directory", listOf(text(it.toString()))) }
+        val NOT_DIRECTORY = Args1<Path> { translatable("krypton.plugin.not-directory", text(it.toString())) }
 
         object LoadMessages {
 
@@ -379,7 +379,7 @@ object Messages {
             val INITIAL = empty("plugin.load")
 
             // Plugin loading done! Loaded {0} plugins.
-            val DONE = Args1<Int> { translatable("krypton.plugin.load.done", listOf(text(it))) }
+            val DONE = Args1<Int> { translatable("krypton.plugin.load.done", text(it)) }
 
             // Loaded plugin {0} {1} by {2}
             val SUCCESS = tripleText("plugin.load.success")
@@ -390,7 +390,7 @@ object Messages {
             object ErrorMessages {
 
                 // Unable to load plugin {0}!
-                val UNABLE = Args1<Path> { translatable("krypton.plugin.load.error.unable", listOf(text(it.toString()))) }
+                val UNABLE = Args1<Path> { translatable("krypton.plugin.load.error.unable", text(it.toString())) }
 
                 // Can't load plugin {0} due to missing dependency {1}!
                 val MISSING_DEPENDENCY = doubleText("plugin.load.error.missing-dependency")
@@ -415,7 +415,7 @@ object Messages {
         val POP = empty("profiler.pop")
 
         // Recorded long tick -- wrote info to {0}
-        val TICK_RECORDED = Args1<Path> { translatable("krypton.profiler.tick-recorded", listOf(text(it.toString()))) }
+        val TICK_RECORDED = Args1<Path> { translatable("krypton.profiler.tick-recorded", text(it.toString())) }
 
         object ErrorMessages {
 
@@ -445,11 +445,11 @@ object Messages {
         val START = singleText("thread.start")
 
         // Waited {0} seconds, attempting to force stop.
-        val STOP_FORCE = Args1<Int> { translatable("krypton.thread.stop-force", listOf(text(it))) }
+        val STOP_FORCE = Args1<Int> { translatable("krypton.thread.stop-force", text(it)) }
 
         // Thread {0} ({1}) failed to exit after {2} second(s)
         val STOP_FORCE_ERROR = Args3<GenericThread, Thread.State, Int> { thread, state, seconds ->
-            translatable("krypton.thread.stop-force.error", listOf(text(thread.toString()), text(state.name), text(seconds)))
+            translatable("krypton.thread.stop-force.error", text(thread.toString()), text(state.name), text(seconds))
         }
 
         // Thread {0} stopped
@@ -459,10 +459,10 @@ object Messages {
 
 private fun empty(key: String) = Messages.Args0 { translatable("krypton.$key") }
 
-private fun singleText(key: String) = Messages.Args1<String> { translatable("krypton.$key", listOf(text(it))) }
+private fun singleText(key: String) = Messages.Args1<String> { translatable("krypton.$key", text(it)) }
 
-private fun doubleText(key: String) = Messages.Args2<String, String> { a, b -> translatable("krypton.$key", listOf(text(a), text(b))) }
+private fun doubleText(key: String) = Messages.Args2<String, String> { a, b -> translatable("krypton.$key", text(a), text(b)) }
 
 private fun tripleText(key: String) = Messages.Args3<String, String, String> { a, b, c ->
-    translatable("krypton.$key", listOf(text(a), text(b), text(c)))
+    translatable("krypton.$key", text(a), text(b), text(c))
 }

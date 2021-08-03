@@ -81,7 +81,6 @@ tasks {
         exclude("it/unimi/dsi/fastutil/booleans/**")
         exclude("it/unimi/dsi/fastutil/bytes/**")
         exclude("it/unimi/dsi/fastutil/chars/**")
-        exclude("it/unimi/dsi/fastutil/doubles/**")
         exclude("it/unimi/dsi/fastutil/floats/**")
         exclude("it/unimi/dsi/fastutil/io/**")
         exclude("it/unimi/dsi/fastutil/objects/*Reference*")
