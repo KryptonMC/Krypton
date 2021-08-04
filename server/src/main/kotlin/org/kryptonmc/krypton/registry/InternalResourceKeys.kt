@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.registry
 import com.mojang.serialization.Codec
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.entity.attribute.Attribute
-import org.kryptonmc.krypton.entity.metadata.MetadataKey
+import org.kryptonmc.krypton.entity.memory.MemoryKey
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.dimension.Dimension
@@ -39,7 +39,7 @@ import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 object InternalResourceKeys {
 
     val ATTRIBUTE = ResourceKeys.minecraft<Attribute>("attribute")
-    val METADATA = ResourceKeys.krypton<MetadataKey<*>>("metadata")
+    val MEMORIES = ResourceKeys.minecraft<MemoryKey<Any>>("memory_module_type")
     val WORLD = ResourceKeys.minecraft<KryptonWorld>("dimension")
     val DIMENSION = ResourceKeys.minecraft<Dimension>("dimension")
     val DIMENSION_TYPE = ResourceKeys.minecraft<KryptonDimensionType>("dimension_type")

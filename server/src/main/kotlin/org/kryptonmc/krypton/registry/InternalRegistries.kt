@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.registry
 import com.mojang.serialization.Codec
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.entity.memory.MemoryKey
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import org.kryptonmc.krypton.world.generation.Generator
 import org.kryptonmc.krypton.world.generation.feature.Feature
@@ -29,7 +30,7 @@ import org.kryptonmc.krypton.world.generation.feature.Structure
 object InternalRegistries {
 
     val ATTRIBUTE = Registries.create(InternalResourceKeys.ATTRIBUTE)
-    val METADATA = Registries.create(InternalResourceKeys.METADATA)
+    val MEMORIES = Registries.create(InternalResourceKeys.MEMORIES) as KryptonRegistry<MemoryKey<Any>>
     val GAME_EVENT = Registries.create(InternalResourceKeys.GAME_EVENT)
     val FLUID = Registries.createDefaulted(InternalResourceKeys.FLUID, Key.key("empty"))
     val BIOME = Registries.create(InternalResourceKeys.BIOME)

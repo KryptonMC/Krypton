@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.entity
 
-import com.mojang.serialization.Codec
-import org.kryptonmc.api.util.log2
-import org.kryptonmc.api.util.roundUpPow2
-import org.spongepowered.math.vector.Vector3i
-import java.util.stream.IntStream
+import org.kryptonmc.api.space.Rotation
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.FloatTag
+import org.kryptonmc.nbt.ListTag
+import java.awt.Color
 
-val PACKED_X_Z = 1 + 30000000.roundUpPow2().log2()
-val PACKED_Y = 64 - PACKED_X_Z * 2
+fun CompoundTag.getRotation(key: String): Rotation? {
+    if (!contains(key, ListTag.ID)) return null
+    val list = getList(key, FloatTag.ID)
+    return Rotation(list.getFloat(0), list.getFloat(1), list.getFloat(2))
+}
 
-val VECTOR3I_CODEC: Codec<Vector3i> = Codec.INT_STREAM.comapFlatMap(
-    { stream -> stream.fixedSize(3).map { Vector3i(it[0], it[1], it[2]) } },
-    { IntStream.of(it.x(), it.y(), it.z()) }
-).stable()
+fun CompoundTag.getColor(key: String): Color = Color(getInt(key))

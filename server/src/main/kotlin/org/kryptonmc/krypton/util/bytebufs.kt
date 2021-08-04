@@ -41,6 +41,7 @@ import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Position
+import org.kryptonmc.api.space.Rotation
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.util.toVector
 import org.kryptonmc.api.world.Location

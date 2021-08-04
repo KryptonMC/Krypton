@@ -16,18 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.space
 
 import com.mojang.serialization.Codec
-import org.kryptonmc.api.util.log2
-import org.kryptonmc.api.util.roundUpPow2
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.world.World
+import org.kryptonmc.krypton.util.VECTOR3I_CODEC
+import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
-import java.util.stream.IntStream
 
-val PACKED_X_Z = 1 + 30000000.roundUpPow2().log2()
-val PACKED_Y = 64 - PACKED_X_Z * 2
+data class GlobalPosition(
+    val dimension: ResourceKey<World>,
+    val position: Vector3i
+) {
 
-val VECTOR3I_CODEC: Codec<Vector3i> = Codec.INT_STREAM.comapFlatMap(
-    { stream -> stream.fixedSize(3).map { Vector3i(it[0], it[1], it[2]) } },
-    { IntStream.of(it.x(), it.y(), it.z()) }
-).stable()
+    companion object {
+
+        val CODEC: Codec<GlobalPosition> = RecordCodecBuilder.create {
+            it.group(
+                KryptonWorld.RESOURCE_KEY_CODEC.fieldOf("dimension").forGetter(GlobalPosition::dimension),
+                VECTOR3I_CODEC.fieldOf("pos").forGetter(GlobalPosition::position)
+            ).apply(it, ::GlobalPosition)
+        }
+    }
+}

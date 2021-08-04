@@ -21,12 +21,15 @@ package org.kryptonmc.krypton.entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Mob
 import org.kryptonmc.krypton.entity.attribute.Attributes
+import org.kryptonmc.krypton.entity.memory.Brain
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 
 abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : KryptonLivingEntity(world, type), Mob {
+
+    private val brain = Brain(mutableListOf())
 
     init {
         data += MetadataKeys.MOB.FLAGS
@@ -36,11 +39,13 @@ abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : Kryp
         super.load(tag)
         isLeftHanded = tag.getBoolean("LeftHanded")
         hasAI = !tag.getBoolean("NoAI")
+        brain.load(tag)
     }
 
     override fun save() = super.save().apply {
         boolean("LeftHanded", isLeftHanded)
         if (!hasAI) boolean("NoAI", true)
+        brain.save(this)
     }
 
     var hasAI: Boolean

@@ -22,7 +22,7 @@ object EntityTypes {
     // TODO: Make each of these be of their respective entity types when they exist
     // @formatter:off
     @JvmField val AREA_EFFECT_CLOUD = register<AreaEffectCloud>("area_effect_cloud")
-    @JvmField val ARMOR_STAND = register<Entity>("armor_stand")
+    @JvmField val ARMOR_STAND = register<ArmorStand>("armor_stand")
     @JvmField val ARROW = register<Entity>("arrow")
     @JvmField val AXOLOTL = register<Entity>("axolotl")
     @JvmField val BAT = register<Entity>("bat")

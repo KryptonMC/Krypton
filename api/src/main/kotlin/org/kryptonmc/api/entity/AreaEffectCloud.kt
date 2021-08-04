@@ -17,6 +17,11 @@ import java.awt.Color
 interface AreaEffectCloud : Entity {
 
     /**
+     * The amount of ticks this cloud has lived for.
+     */
+    val age: Int
+
+    /**
      * The duration, in ticks, that this area effect cloud will exist for.
      */
     val duration: Int

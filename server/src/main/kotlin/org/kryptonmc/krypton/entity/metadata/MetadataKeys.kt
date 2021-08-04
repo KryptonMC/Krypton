@@ -18,76 +18,82 @@
  */
 package org.kryptonmc.krypton.entity.metadata
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.particleEffect
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.space.Rotation
 import org.kryptonmc.krypton.entity.Pose
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.nbt.CompoundTag
 import java.util.Optional
 
 object MetadataKeys {
 
+    val AREA_EFFECT_CLOUD = AreaEffectCloudKeys
     val LIVING = LivingEntityKeys
+    val ARMOR_STAND = ArmorStandKeys
     val MOB = MobKeys
     val ZOMBIE = ZombieKeys
     val PLAYER = PlayerKeys
-    val AREA_EFFECT_CLOUD = AreaEffectCloudKeys
 
-    val FLAGS = register("flags", 0, MetadataSerializers.BYTE, 0)
-    val AIR_TICKS = register("air_ticks", 1, MetadataSerializers.VAR_INT, 300)
-    val DISPLAY_NAME = register("display_name", 2, MetadataSerializers.OPTIONAL_COMPONENT, Optional.empty())
-    val DISPLAY_NAME_VISIBILITY = register("display_name_visibility", 3, MetadataSerializers.BOOLEAN, false)
-    val SILENT = register("silent", 4, MetadataSerializers.BOOLEAN, false)
-    val NO_GRAVITY = register("no_gravity", 5, MetadataSerializers.BOOLEAN, false)
-    val POSE = register("pose", 6, MetadataSerializers.POSE, Pose.STANDING)
-    val FROZEN_TICKS = register("frozen_ticks", 7, MetadataSerializers.VAR_INT, 0)
+    val FLAGS = register(0, MetadataSerializers.BYTE, 0)
+    val AIR_TICKS = register(1, MetadataSerializers.VAR_INT, 300)
+    val DISPLAY_NAME = register(2, MetadataSerializers.OPTIONAL_COMPONENT, Optional.empty())
+    val DISPLAY_NAME_VISIBILITY = register(3, MetadataSerializers.BOOLEAN, false)
+    val SILENT = register(4, MetadataSerializers.BOOLEAN, false)
+    val NO_GRAVITY = register(5, MetadataSerializers.BOOLEAN, false)
+    val POSE = register(6, MetadataSerializers.POSE, Pose.STANDING)
+    val FROZEN_TICKS = register(7, MetadataSerializers.VAR_INT, 0)
 
     object LivingEntityKeys {
 
-        val FLAGS = register("living/flags", 8, MetadataSerializers.BYTE, 0)
-        val HEALTH = register("living/health", 9, MetadataSerializers.FLOAT, 1F)
-        val POTION_EFFECT_COLOR = register("living/potion_effect_color", 10, MetadataSerializers.VAR_INT, 0)
-        val POTION_EFFECT_AMBIENCE = register("living/potion_effect_ambience", 11, MetadataSerializers.BOOLEAN, false)
-        val ARROWS = register("living/arrows", 12, MetadataSerializers.VAR_INT, 0)
-        val STINGERS = register("living/stingers", 13, MetadataSerializers.VAR_INT, 0)
-        val BED_LOCATION = register("living/bed_location", 14, MetadataSerializers.OPTIONAL_POSITION, Optional.empty())
+        val FLAGS = register(8, MetadataSerializers.BYTE, 0)
+        val HEALTH = register(9, MetadataSerializers.FLOAT, 1F)
+        val POTION_EFFECT_COLOR = register(10, MetadataSerializers.VAR_INT, 0)
+        val POTION_EFFECT_AMBIENCE = register(11, MetadataSerializers.BOOLEAN, false)
+        val ARROWS = register(12, MetadataSerializers.VAR_INT, 0)
+        val STINGERS = register(13, MetadataSerializers.VAR_INT, 0)
+        val BED_LOCATION = register(14, MetadataSerializers.OPTIONAL_POSITION, Optional.empty())
+    }
+
+    object ArmorStandKeys {
+
+        val FLAGS = register(15, MetadataSerializers.BYTE, 0)
+        val HEAD_ROTATION = register(16, MetadataSerializers.ROTATION, Rotation(0F, 0F, 0F))
+        val BODY_ROTATION = register(17, MetadataSerializers.ROTATION, Rotation(0F, 0F, 0F))
+        val LEFT_ARM_ROTATION = register(18, MetadataSerializers.ROTATION, Rotation(-10F, 0F, -10F))
+        val RIGHT_ARM_ROTATION = register(19, MetadataSerializers.ROTATION, Rotation(-15F, 0F, 10F))
+        val LEFT_LEG_ROTATION = register(20, MetadataSerializers.ROTATION, Rotation(-1F, 0F, -1F))
+        val RIGHT_LEG_ROTATION = register(21, MetadataSerializers.ROTATION, Rotation(1F, 0F, 1F))
     }
 
     object MobKeys {
 
-        val FLAGS = register("mob/flags", 15, MetadataSerializers.BYTE, 0)
+        val FLAGS = register(15, MetadataSerializers.BYTE, 0)
     }
 
     object ZombieKeys {
 
-        val BABY = register("zombie/baby", 16, MetadataSerializers.BOOLEAN, false)
-        val CONVERTING = register("zombie/converting", 18, MetadataSerializers.BOOLEAN, false)
+        val BABY = register(16, MetadataSerializers.BOOLEAN, false)
+        val CONVERTING = register(18, MetadataSerializers.BOOLEAN, false)
     }
 
     object PlayerKeys {
 
-        val ADDITIONAL_HEARTS = register("player/additional_hearts", 15, MetadataSerializers.FLOAT, 0F)
-        val SCORE = register("player/score", 16, MetadataSerializers.VAR_INT, 0)
-        val SKIN_FLAGS = register("player/skin_flags", 17, MetadataSerializers.BYTE, 0)
-        val MAIN_HAND = register("player/main_hand", 18, MetadataSerializers.BYTE, 1)
-        val LEFT_SHOULDER = register("player/left_shoulder", 19, MetadataSerializers.NBT, CompoundTag())
-        val RIGHT_SHOULDER = register("player/right_shoulder", 20, MetadataSerializers.NBT, CompoundTag())
+        val ADDITIONAL_HEARTS = register(15, MetadataSerializers.FLOAT, 0F)
+        val SCORE = register(16, MetadataSerializers.VAR_INT, 0)
+        val SKIN_FLAGS = register(17, MetadataSerializers.BYTE, 0)
+        val MAIN_HAND = register(18, MetadataSerializers.BYTE, 1)
+        val LEFT_SHOULDER = register(19, MetadataSerializers.NBT, CompoundTag())
+        val RIGHT_SHOULDER = register(20, MetadataSerializers.NBT, CompoundTag())
     }
 
     object AreaEffectCloudKeys {
 
-        val RADIUS = register("area_effect_cloud/radius", 8, MetadataSerializers.FLOAT, 0.5F)
-        val COLOR = register("area_effect_cloud/color", 9, MetadataSerializers.VAR_INT, 0)
-        val IGNORE_RADIUS = register("area_effect_cloud/ignore_radius", 10, MetadataSerializers.BOOLEAN, false)
-        val PARTICLE = register("area_effect_cloud/particle", 11, MetadataSerializers.PARTICLE, particleEffect(ParticleType.EFFECT))
+        val RADIUS = register(8, MetadataSerializers.FLOAT, 0.5F)
+        val COLOR = register(9, MetadataSerializers.VAR_INT, 0)
+        val IGNORE_RADIUS = register(10, MetadataSerializers.BOOLEAN, false)
+        val PARTICLE = register(11, MetadataSerializers.PARTICLE, particleEffect(ParticleType.EFFECT))
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> register(key: String, id: Int, serializer: MetadataSerializer<T>, default: T): MetadataKey<T> = Registries.register(
-        InternalRegistries.METADATA,
-        Key.key("krypton", "metadata/$key"),
-        MetadataKey(id, serializer, default)
-    ) as MetadataKey<T>
+    private fun <T> register(id: Int, serializer: MetadataSerializer<T>, default: T): MetadataKey<T> = MetadataKey(id, serializer, default)
 }

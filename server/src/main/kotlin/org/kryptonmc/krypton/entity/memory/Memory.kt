@@ -16,10 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.entity.memory
 
-data class Rotation(
-    val x: Float,
-    val y: Float,
-    val z: Float
-)
+import org.kryptonmc.krypton.util.nbt.NBTOps
+import org.kryptonmc.nbt.CompoundTag
+
+class Memory<T : Any>(
+    val key: MemoryKey<T>,
+    val value: T,
+    var ttl: Long = 0L
+) {
+
+    fun tick() {
+        if (key.canExpire) ttl--
+    }
+
+    fun save(tag: CompoundTag.Builder) = tag.apply {
+        compound(key.key.asString()) {
+            key.codec.encodeStart(NBTOps, value).result().ifPresent { put("value", it) }
+            if (key.canExpire) long("ttl", ttl)
+        }
+    }
+}

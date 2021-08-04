@@ -22,6 +22,7 @@ import org.kryptonmc.api.entity.AreaEffectCloud
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.nbt.CompoundTag
 import java.awt.Color
 
 class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityTypes.AREA_EFFECT_CLOUD), AreaEffectCloud {
@@ -33,7 +34,23 @@ class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityT
         data += MetadataKeys.AREA_EFFECT_CLOUD.PARTICLE
     }
 
+    override var age = 0
     override var duration = 0
+
+    override fun load(tag: CompoundTag) {
+        super.load(tag)
+        age = tag.getInt("Age")
+        duration = tag.getInt("Duration")
+        radius = tag.getFloat("Radius")
+        color = tag.getColor("Color")
+    }
+
+    override fun save() = super.save().apply {
+        int("Age", age)
+        int("Duration", duration)
+        float("Radius", radius)
+        int("Color", color.rgb)
+    }
 
     override var radius: Float
         get() = data[MetadataKeys.AREA_EFFECT_CLOUD.RADIUS]
