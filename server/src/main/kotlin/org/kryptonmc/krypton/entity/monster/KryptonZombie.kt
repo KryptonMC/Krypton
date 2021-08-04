@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.entity.monster
 
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.monster.Zombie
-import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -55,14 +54,4 @@ class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOM
     override var isConverting: Boolean
         get() = data[MetadataKeys.ZOMBIE.CONVERTING]
         set(value) = data.set(MetadataKeys.ZOMBIE.CONVERTING, value)
-
-    companion object {
-
-        fun createAttributes() = KryptonMonster.createAttributes()
-            .add(Attributes.FOLLOW_RANGE, 35.0)
-            .add(Attributes.MOVEMENT_SPEED, 0.23)
-            .add(Attributes.ATTACK_DAMAGE, 3.0)
-            .add(Attributes.ARMOR, 2.0)
-            .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE)
-    }
 }

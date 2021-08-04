@@ -23,6 +23,7 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.registry.Registries
@@ -36,7 +37,6 @@ import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.command.argument.ArgumentTypes
 import org.kryptonmc.krypton.entity.EntityFactory
-import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.item.meta.MetaFactory
@@ -88,7 +88,7 @@ object Bootstrap {
         Biomes
         DimensionTypes
         GameRules
-        Attributes
+        AttributeTypes
         MetadataKeys
         MetaKeys // Not technically a registry, but quite close to one
 
@@ -124,7 +124,7 @@ object Bootstrap {
     private val missingTranslations: Set<String>
         get() {
             val missing = TreeSet<String>()
-            InternalRegistries.ATTRIBUTE.values.checkTranslations(missing) { it.description }
+            Registries.ATTRIBUTE.values.checkTranslations(missing) { it.translation.key() }
             Registries.ENTITY_TYPE.values.checkTranslations(missing) { it.name.key() }
             Registries.BLOCK.values.checkTranslations(missing) { it.translation.key() }
             Registries.ITEM.values.checkTranslations(missing) { it.translation.key() }

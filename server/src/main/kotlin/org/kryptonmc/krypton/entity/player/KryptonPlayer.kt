@@ -39,6 +39,7 @@ import org.kryptonmc.api.effect.particle.NoteParticleData
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.MainHand
+import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.player.Abilities
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.registry.Registries
@@ -57,7 +58,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
-import org.kryptonmc.krypton.entity.attribute.Attributes
+import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
@@ -185,12 +186,10 @@ class KryptonPlayer(
         uuid = profile.uuid
         oldGamemode = Gamemode.fromId((tag["previousPlayerGameType"] as? IntTag)?.value ?: -1)
         gamemode = Gamemode.fromId(tag.getInt("playerGameType")) ?: Gamemode.SURVIVAL
-        isOnGround = tag.getBoolean("OnGround")
         inventory.load(tag.getList("Inventory", CompoundTag.ID))
         inventory.heldSlot = tag.getInt("SelectedItemSlot")
         score = tag.getInt("Score")
         if (tag.contains("abilities", CompoundTag.ID)) abilities.load(tag.getCompound("abilities"))
-        attributes[Attributes.MOVEMENT_SPEED]?.baseValue = abilities.walkSpeed.toDouble()
 
         // NBT data for entities sitting on the player's shoulders, e.g. parrots
         if (tag.contains("ShoulderEntityLeft", CompoundTag.ID)) leftShoulder = tag.getCompound("ShoulderEntityLeft")
@@ -477,11 +476,5 @@ class KryptonPlayer(
         private val PREREGISTERED_CHANNELS = DEBUG_CHANNELS + key("brand")
         private val LOGGER = logger<KryptonPlayer>()
         private val SERVER_LOGGER = logger<KryptonServer>()
-
-        fun createAttributes() = KryptonLivingEntity.createAttributes()
-            .add(Attributes.ATTACK_DAMAGE, 1.0)
-            .add(Attributes.MOVEMENT_SPEED, 0.1)
-            .add(Attributes.ATTACK_SPEED)
-            .add(Attributes.LUCK)
     }
 }

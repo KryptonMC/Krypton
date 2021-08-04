@@ -32,6 +32,8 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.network.Session
+import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
@@ -57,8 +59,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUnlockRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
-import org.kryptonmc.krypton.network.Session
-import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
 import org.kryptonmc.krypton.server.ban.BannedIpList
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
@@ -176,13 +176,15 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         // Send entity data
         // TODO: Move this all to an entity manager
         sendToAll(PacketOutSpawnPlayer(player))
-        players.forEach { session.sendPacket(PacketOutSpawnPlayer(it)) }
         sendToAll(PacketOutMetadata(player.id, player.data.all))
-        players.forEach { session.sendPacket(PacketOutMetadata(it.id, it.data.all)) }
-        sendToAll(PacketOutAttributes(player.id, player.attributes.syncable))
-        players.forEach { session.sendPacket(PacketOutAttributes(it.id, it.attributes.syncable)) }
+        sendToAll(PacketOutAttributes(player.id, player.attributes.values.filter { it.type.sendToClient }))
         sendToAll(PacketOutHeadLook(player.id, player.location.yaw.toAngle()))
-        players.forEach { session.sendPacket(PacketOutHeadLook(it.id, it.location.yaw.toAngle())) }
+        players.forEach { online ->
+            session.sendPacket(PacketOutSpawnPlayer(online))
+            session.sendPacket(PacketOutMetadata(online.id, online.data.all))
+            session.sendPacket(PacketOutAttributes(online.id, online.attributes.values.filter { it.type.sendToClient }))
+            session.sendPacket(PacketOutHeadLook(online.id, online.location.yaw.toAngle()))
+        }
 
         // Add the player to the list and cache maps
         players += player

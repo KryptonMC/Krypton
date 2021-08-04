@@ -21,12 +21,9 @@ package org.kryptonmc.krypton.entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.Mob
-import org.kryptonmc.krypton.entity.attribute.Attributes
-import org.kryptonmc.krypton.entity.memory.Brain
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.compound
 
 abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : KryptonLivingEntity(world, type), Mob {
 
@@ -72,11 +69,4 @@ abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : Kryp
             val flags = data[MetadataKeys.MOB.FLAGS].toInt()
             data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 4 else flags and -5).toByte()
         }
-
-    companion object {
-
-        fun createAttributes() = KryptonLivingEntity.createAttributes()
-            .add(Attributes.FOLLOW_RANGE, 16.0)
-            .add(Attributes.ATTACK_KNOCKBACK)
-    }
 }

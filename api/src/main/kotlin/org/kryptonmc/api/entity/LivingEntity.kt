@@ -8,12 +8,13 @@
  */
 package org.kryptonmc.api.entity
 
+import org.kryptonmc.api.entity.attribute.Attributable
 import org.spongepowered.math.vector.Vector3i
 
 /**
  * Represents an entity that lives in a world.
  */
-interface LivingEntity : Entity {
+interface LivingEntity : Entity, Attributable {
 
     /**
      * The current health of this entity.

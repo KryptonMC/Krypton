@@ -18,14 +18,17 @@
  */
 package org.kryptonmc.krypton.entity
 
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.LivingEntity
+import org.kryptonmc.api.entity.attribute.AttributeModifier
+import org.kryptonmc.api.entity.attribute.AttributeType
+import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.api.entity.attribute.ModifierOperation
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.getIfPresent
-import org.kryptonmc.krypton.entity.attribute.AttributeMap
-import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
-import org.kryptonmc.krypton.entity.attribute.Attributes
-import org.kryptonmc.krypton.entity.attribute.attributeSupplier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.entity.memory.Brain
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -36,6 +39,7 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.spongepowered.math.vector.Vector3i
 import java.util.Optional
+import java.util.concurrent.ConcurrentHashMap
 
 abstract class KryptonLivingEntity(
     world: KryptonWorld,
@@ -48,7 +52,7 @@ abstract class KryptonLivingEntity(
     override var hurtTime: Short = 0
     override var isFallFlying = false
     override var lastHurtTimestamp = 0
-    val attributes = AttributeMap(type.attributeSupplier)
+    final override val attributes = ConcurrentHashMap<AttributeType, KryptonAttribute>()
     private val brain = Brain(mutableListOf())
 
     init {
@@ -59,12 +63,16 @@ abstract class KryptonLivingEntity(
         data += MetadataKeys.LIVING.ARROWS
         data += MetadataKeys.LIVING.STINGERS
         data += MetadataKeys.LIVING.BED_LOCATION
+        attributes[AttributeTypes.MAX_HEALTH]
     }
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
         // AI stuff
-        if (tag.contains("Attributes", ListTag.ID)) attributes.load(tag.getList("Attributes", CompoundTag.ID))
+        if (tag.contains("Attributes", ListTag.ID)) tag.getList("Attributes", CompoundTag.ID).forEachCompound { attribute ->
+            val type = Registries.ATTRIBUTE[Key.key(attribute.getString("Name"))] ?: return@forEachCompound
+            attributes[type] = KryptonAttribute(type).apply { load(attribute) }
+        }
         if (tag.contains("Brain", CompoundTag.ID)) brain.load(tag.getCompound("Brain"))
 
         // Values
@@ -84,7 +92,7 @@ abstract class KryptonLivingEntity(
 
     override fun save() = super.save().apply {
         float("AbsorptionAmount", absorption)
-        put("Attributes", attributes.save())
+        compound("Attributes") { attributes.values.forEach { it.save() } }
         put("Brain", brain.save())
         short("DeathTime", deathTime)
         boolean("FallFlying", isFallFlying)
@@ -100,7 +108,7 @@ abstract class KryptonLivingEntity(
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (!super.addViewer(player)) return false
-        player.session.sendPacket(PacketOutAttributes(id, attributes.syncable))
+        player.session.sendPacket(PacketOutAttributes(id, attributes.values.filter { it.type.sendToClient }))
         return true
     }
 
@@ -151,14 +159,4 @@ abstract class KryptonLivingEntity(
     override var sleepingPosition: Vector3i?
         get() = data[MetadataKeys.LIVING.BED_LOCATION].getIfPresent()
         set(value) = data.set(MetadataKeys.LIVING.BED_LOCATION, Optional.ofNullable(value))
-
-    companion object {
-
-        fun createAttributes() = AttributeSupplier.builder()
-            .add(Attributes.MAX_HEALTH)
-            .add(Attributes.KNOCKBACK_RESISTANCE)
-            .add(Attributes.MOVEMENT_SPEED)
-            .add(Attributes.ARMOR)
-            .add(Attributes.ARMOR_TOUGHNESS)
-    }
 }

@@ -29,7 +29,6 @@ import org.kryptonmc.krypton.world.generation.feature.Structure
 
 object InternalRegistries {
 
-    val ATTRIBUTE = Registries.create(InternalResourceKeys.ATTRIBUTE)
     val MEMORIES = Registries.create(InternalResourceKeys.MEMORIES) as KryptonRegistry<MemoryKey<Any>>
     val GAME_EVENT = Registries.create(InternalResourceKeys.GAME_EVENT)
     val FLUID = Registries.createDefaulted(InternalResourceKeys.FLUID, Key.key("empty"))

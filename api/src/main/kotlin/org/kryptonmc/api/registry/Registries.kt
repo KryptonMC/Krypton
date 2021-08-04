@@ -41,6 +41,19 @@ object Registries {
     @JvmField val GAMERULES = create(ResourceKeys.GAMERULES)
 
     /**
+     * The registry of all attribute types in the game.
+     */
+    @JvmField
+    val ATTRIBUTE = create(ResourceKeys.ATTRIBUTE)
+
+    /**
+     * The registry of all attribute [org.kryptonmc.api.entity.attribute.ModifierOperation]s
+     * in the game.
+     */
+    @JvmField
+    val MODIFIER_OPERATIONS = create(ResourceKeys.MODIFIER_OPERATIONS)
+
+    /**
      * Registers a new entry to the given [registry], with the given [key] mapped to
      * the given [value].
      *

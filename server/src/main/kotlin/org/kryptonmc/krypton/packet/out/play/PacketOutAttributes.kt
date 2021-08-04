@@ -19,11 +19,12 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.entity.attribute.Attribute
-import org.kryptonmc.krypton.entity.attribute.AttributeInstance
-import org.kryptonmc.krypton.entity.attribute.AttributeModifier
+import org.kryptonmc.api.entity.attribute.AttributeModifier
+import org.kryptonmc.api.entity.attribute.AttributeType
+import org.kryptonmc.api.entity.attribute.ModifierOperation
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeUUID
@@ -31,23 +32,25 @@ import org.kryptonmc.krypton.util.writeVarInt
 
 class PacketOutAttributes(
     private val id: Int,
-    attributes: Collection<AttributeInstance>
+    attributes: Collection<KryptonAttribute>
 ) : PlayPacket(0x63) {
 
-    private val attributes = attributes.map { AttributeSnapshot(it.attribute, it.baseValue, it.modifiers) }
+    private val attributes = attributes.map { AttributeSnapshot(it.type, it.baseValue, it.modifiers) }
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(id)
         buf.writeCollection(attributes) { attribute ->
-            buf.writeKey(InternalRegistries.ATTRIBUTE[attribute.attribute]!!)
+            buf.writeKey(Registries.ATTRIBUTE[attribute.type]!!)
             buf.writeDouble(attribute.base)
-            buf.writeCollection(attribute.modifiers) {
-                buf.writeUUID(it.uuid)
-                buf.writeDouble(it.amount)
-                buf.writeByte(it.operation.ordinal)
+            attribute.modifiers.forEach { (operation, modifiers) ->
+                buf.writeCollection(modifiers) {
+                    buf.writeUUID(it.uuid)
+                    buf.writeDouble(it.amount)
+                    buf.writeByte(Registries.MODIFIER_OPERATIONS.idOf(operation))
+                }
             }
         }
     }
 
-    data class AttributeSnapshot(val attribute: Attribute, val base: Double, val modifiers: Collection<AttributeModifier>)
+    data class AttributeSnapshot(val type: AttributeType, val base: Double, val modifiers: Map<ModifierOperation, List<AttributeModifier>>)
 }

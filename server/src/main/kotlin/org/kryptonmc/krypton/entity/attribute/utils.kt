@@ -18,16 +18,20 @@
  */
 package org.kryptonmc.krypton.entity.attribute
 
-import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.krypton.entity.monster.KryptonZombie
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.api.entity.attribute.AttributeModifier
+import org.kryptonmc.api.entity.attribute.ModifierOperation
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.compound
 
-private val SUPPLIERS = mapOf<EntityType<out Entity>, AttributeSupplier>(
-    EntityTypes.PLAYER to KryptonPlayer.createAttributes().build(),
-    EntityTypes.ZOMBIE to KryptonZombie.createAttributes().build()
-)
+fun AttributeModifier.save(operation: ModifierOperation) = compound {
+    string("Name", name)
+    uuid("UUID", uuid)
+    double("Amount", amount)
+    int("Operation", Registries.MODIFIER_OPERATIONS.idOf(operation))
+}
 
-val <T : Entity> EntityType<T>.attributeSupplier: AttributeSupplier
-    get() = SUPPLIERS.getValue(this)
+fun Map<ModifierOperation, List<AttributeModifier>>.save() = ListTag(elementType = CompoundTag.ID).apply {
+    this@save.forEach { (operation, modifiers) -> modifiers.forEach { add(it.save(operation)) } }
+}

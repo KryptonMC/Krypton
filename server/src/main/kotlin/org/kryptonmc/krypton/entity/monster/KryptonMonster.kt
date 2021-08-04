@@ -21,13 +21,6 @@ package org.kryptonmc.krypton.entity.monster
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.monster.Monster
 import org.kryptonmc.krypton.entity.KryptonMob
-import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.world.KryptonWorld
 
-abstract class KryptonMonster(world: KryptonWorld, type: EntityType<out Monster>) : KryptonMob(world, type), Monster {
-
-    companion object {
-
-        fun createAttributes() = KryptonMob.createAttributes().add(Attributes.ATTACK_DAMAGE)
-    }
-}
+abstract class KryptonMonster(world: KryptonWorld, type: EntityType<out Monster>) : KryptonMob(world, type), Monster
