@@ -40,7 +40,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.nbt.Serializable
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -49,7 +48,6 @@ import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.FloatTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
-import org.kryptonmc.nbt.compound
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.UnaryOperator
@@ -69,15 +67,18 @@ abstract class KryptonEntity(
     override var location = Location.ZERO
     override var velocity = Vector.ZERO
     override var isOnGround = true
-    override var isDead = false
-    override var isPersistent = false
-    override var ticksLived = 0
+    override var ticksExisted = 0
+    override var fireTicks: Short = 0
+    override var isInvulnerable = false
+    override var fallDistance = 0F
+    override val passengers = emptyList<Entity>()
     override val name: String
         get() = displayName.toSectionText()
 
     open val maxAirTicks: Int
         get() = 300
     val viewers: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
+    private var portalCooldown = 0
     private var isRemoved = false
 
     init {
@@ -96,12 +97,26 @@ abstract class KryptonEntity(
     }
 
     open fun load(tag: CompoundTag) {
-        val position = tag.getList("Pos", DoubleTag.ID)
+        air = tag.getShort("Air").toInt()
+        if (tag.contains("CustomName", StringTag.ID)) displayName = tag.getString("CustomName").toJsonComponent()
+        isDisplayNameVisible = tag.getBoolean("CustomNameVisible")
+        fallDistance = tag.getFloat("FallDistance")
+        fireTicks = tag.getShort("Fire")
+        isGlowing = tag.getBoolean("Glowing")
+        isInvulnerable = tag.getBoolean("Invulnerable")
+
         val motion = tag.getList("Motion", DoubleTag.ID)
-        val rotation = tag.getList("Rotation", FloatTag.ID)
         val motionX = motion.getDouble(0).takeIf { abs(it) <= 10.0 } ?: 0.0
         val motionY = motion.getDouble(1).takeIf { abs(it) <= 10.0 } ?: 0.0
         val motionZ = motion.getDouble(2).takeIf { abs(it) <= 10.0 } ?: 0.0
+        velocity = Vector(motionX, motionY, motionZ)
+
+        hasGravity = !tag.getBoolean("NoGravity")
+        isOnGround = tag.getBoolean("OnGround")
+        portalCooldown = tag.getInt("PortalCooldown")
+
+        val position = tag.getList("Pos", DoubleTag.ID)
+        val rotation = tag.getList("Rotation", FloatTag.ID)
         velocity = Vector(motionX, motionY, motionZ)
         location = Location(
             position.getDouble(0),
@@ -110,35 +125,38 @@ abstract class KryptonEntity(
             rotation.getFloat(0),
             rotation.getFloat(1)
         )
-        if (tag.containsKey("Air")) airTicks = tag.getShort("Air").toInt()
-        isOnGround = tag.getBoolean("OnGround")
-        if (tag.hasUUID("UUID")) uuid = tag.getUUID("UUID")!!
 
-        if (!location.x.isFinite() || !location.y.isFinite() || !location.z.isFinite()) error("Entity has invalid coordinates! Coordinates must be finite!")
-        if (!location.yaw.isFinite() || !location.pitch.isFinite()) error("Entity has invalid rotation!")
-        if (tag.contains("CustomName", StringTag.ID)) displayName = tag.getString("CustomName").toJsonComponent()
-        isDisplayNameVisible = tag.getBoolean("CustomNameVisible")
         isSilent = tag.getBoolean("Silent")
-        hasGravity = !tag.getBoolean("NoGravity")
-        isGlowing = tag.getBoolean("Glowing")
+        frozenTicks = tag.getInt("TicksFrozen")
+        if (tag.hasUUID("UUID")) uuid = tag.getUUID("UUID")!!
     }
 
     open fun save() = buildCompound {
-        short("Air", airTicks.toShort())
-        if (isDisplayNameVisible) {
-            boolean("CustomNameVisible", true)
-            string("CustomName", displayName.toJsonString())
-        }
-        if (isSilent) boolean("Silent", true)
-        if (!hasGravity) boolean("NoGravity", true)
+        // Display name
+        if (isDisplayNameVisible) boolean("CustomNameVisible", true)
+        if (displayName != Component.empty()) string("CustomName", displayName.toJsonString())
+
+        // Flags
         if (isGlowing) boolean("Glowing", true)
-        if (frozenTicks > 0) int("TicksFrozen", frozenTicks)
-        if (this@KryptonEntity !is KryptonPlayer) string("id", this@KryptonEntity.type.key.asString())
-        list("Motion", DoubleTag.ID, DoubleTag.of(velocity.x), DoubleTag.of(velocity.y), DoubleTag.of(velocity.z))
+        if (isInvulnerable) boolean("Invulnerable", true)
+        if (!hasGravity) boolean("NoGravity", true)
         boolean("OnGround", isOnGround)
+        if (isSilent) boolean("Silent", true)
+
+        // Positioning
+        list("Motion", DoubleTag.ID, DoubleTag.of(velocity.x), DoubleTag.of(velocity.y), DoubleTag.of(velocity.z))
         list("Pos", DoubleTag.ID, DoubleTag.of(location.x), DoubleTag.of(location.y), DoubleTag.of(location.z))
         list("Rotation", FloatTag.ID, FloatTag.of(location.yaw), FloatTag.of(location.pitch))
+
+        // Type & UUID
+        if (this@KryptonEntity !is KryptonPlayer) string("id", this@KryptonEntity.type.key.asString())
         uuid("UUID", uuid)
+
+        // Misc values
+        short("Air", air.toShort())
+        short("Fire", fireTicks)
+        int("TicksFrozen", frozenTicks)
+        float("FallDistance", fallDistance)
     }
 
     open fun addViewer(player: KryptonPlayer): Boolean {
@@ -164,6 +182,22 @@ abstract class KryptonEntity(
     private fun setSharedFlag(flag: Int, state: Boolean) {
         val flags = data[MetadataKeys.FLAGS].toInt()
         data[MetadataKeys.FLAGS] = (if (state) flags or (1 shl flag) else flags and (1 shl flag).inv()).toByte()
+    }
+
+    override fun move(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {
+        location = Location(location.x + x, location.y + y, location.z + z, location.yaw + yaw, location.pitch + pitch)
+    }
+
+    override fun moveTo(x: Double, y: Double, z: Double) {
+        location = Location(x, y, z, location.yaw, location.pitch)
+    }
+
+    override fun look(yaw: Float, pitch: Float) {
+        location = Location(location.x, location.y, location.z, yaw, pitch)
+    }
+
+    override fun reposition(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {
+        location = Location(x, y, z, yaw, pitch)
     }
 
     override fun remove() {
@@ -204,7 +238,7 @@ abstract class KryptonEntity(
         get() = getSharedFlag(7)
         set(value) = setSharedFlag(7, value)
 
-    override var airTicks: Int
+    override var air: Int
         get() = data[MetadataKeys.AIR_TICKS]
         set(value) = data.set(MetadataKeys.AIR_TICKS, value)
 
@@ -228,7 +262,7 @@ abstract class KryptonEntity(
         get() = data[MetadataKeys.POSE]
         set(value) = data.set(MetadataKeys.POSE, value)
 
-    var frozenTicks: Int
+    override var frozenTicks: Int
         get() = data[MetadataKeys.FROZEN_TICKS]
         set(value) = data.set(MetadataKeys.FROZEN_TICKS, value)
 

@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.Mob
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.memory.Brain
@@ -29,7 +30,8 @@ import org.kryptonmc.nbt.compound
 
 abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : KryptonLivingEntity(world, type), Mob {
 
-    private val brain = Brain(mutableListOf())
+    override var canPickUpLoot = false
+    override var isPersistent = false
 
     init {
         data += MetadataKeys.MOB.FLAGS
@@ -37,32 +39,34 @@ abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : Kryp
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        isLeftHanded = tag.getBoolean("LeftHanded")
+        canPickUpLoot = tag.getBoolean("CanPickUpLoot")
+        isPersistent = tag.getBoolean("PersistenceRequired")
+        mainHand = if (tag.getBoolean("LeftHanded")) MainHand.LEFT else MainHand.RIGHT
         hasAI = !tag.getBoolean("NoAI")
-        brain.load(tag)
     }
 
     override fun save() = super.save().apply {
-        boolean("LeftHanded", isLeftHanded)
+        boolean("CanPickUpLoot", canPickUpLoot)
+        boolean("PersistenceRequired", isPersistent)
+        boolean("LeftHanded", mainHand == MainHand.LEFT)
         if (!hasAI) boolean("NoAI", true)
-        brain.save(this)
     }
 
-    var hasAI: Boolean
+    override var hasAI: Boolean
         get() = data[MetadataKeys.MOB.FLAGS].toInt() and 1 == 0
         set(value) {
             val flags = data[MetadataKeys.MOB.FLAGS].toInt()
             data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 1 else flags and -2).toByte()
         }
 
-    var isLeftHanded: Boolean
-        get() = data[MetadataKeys.MOB.FLAGS].toInt() and 2 != 0
+    override var mainHand: MainHand
+        get() = if (data[MetadataKeys.MOB.FLAGS].toInt() and 2 != 0) MainHand.LEFT else MainHand.RIGHT
         set(value) {
             val flags = data[MetadataKeys.MOB.FLAGS].toInt()
-            data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 2 else flags and -3).toByte()
+            data[MetadataKeys.MOB.FLAGS] = (if (value == MainHand.LEFT) flags or 1 else flags and -2).toByte()
         }
 
-    var isAgressive: Boolean
+    override var isAggressive: Boolean
         get() = data[MetadataKeys.MOB.FLAGS].toInt() and 4 != 0
         set(value) {
             val flags = data[MetadataKeys.MOB.FLAGS].toInt()

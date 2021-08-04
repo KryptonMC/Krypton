@@ -31,6 +31,7 @@ object MetadataKeys {
     val LIVING = LivingEntityKeys
     val ARMOR_STAND = ArmorStandKeys
     val MOB = MobKeys
+    val CREEPER = CreeperKeys
     val ZOMBIE = ZombieKeys
     val PLAYER = PlayerKeys
 
@@ -68,6 +69,13 @@ object MetadataKeys {
     object MobKeys {
 
         val FLAGS = register(15, MetadataSerializers.BYTE, 0)
+    }
+
+    object CreeperKeys {
+
+        val STATE = register(16, MetadataSerializers.VAR_INT, -1)
+        val CHARGED = register(17, MetadataSerializers.BOOLEAN, false)
+        val IGNITED = register(18, MetadataSerializers.BOOLEAN, false)
     }
 
     object ZombieKeys {

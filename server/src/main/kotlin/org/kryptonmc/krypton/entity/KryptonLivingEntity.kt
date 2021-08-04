@@ -21,10 +21,12 @@ package org.kryptonmc.krypton.entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.LivingEntity
+import org.kryptonmc.api.util.getIfPresent
 import org.kryptonmc.krypton.entity.attribute.AttributeMap
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.attribute.Attributes
 import org.kryptonmc.krypton.entity.attribute.attributeSupplier
+import org.kryptonmc.krypton.entity.memory.Brain
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
@@ -41,7 +43,13 @@ abstract class KryptonLivingEntity(
 ) : KryptonEntity(world, type), LivingEntity {
 
     override var absorption = 0F
+    override var isDead = false
+    override var deathTime: Short = 0
+    override var hurtTime: Short = 0
+    override var isFallFlying = false
+    override var lastHurtTimestamp = 0
     val attributes = AttributeMap(type.attributeSupplier)
+    private val brain = Brain(mutableListOf())
 
     init {
         data += MetadataKeys.LIVING.FLAGS
@@ -55,23 +63,35 @@ abstract class KryptonLivingEntity(
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        absorption = tag.getFloat("AbsorptionAmount")
+        // AI stuff
         if (tag.contains("Attributes", ListTag.ID)) attributes.load(tag.getList("Attributes", CompoundTag.ID))
-        if (tag.contains("Health", 99)) health = tag.getFloat("Health")
-        if (tag.getBoolean("FallFlying")) isFlying = true
+        if (tag.contains("Brain", CompoundTag.ID)) brain.load(tag.getCompound("Brain"))
+
+        // Values
+        absorption = tag.getFloat("AbsorptionAmount")
+        deathTime = tag.getShort("DeathTime")
+        isFallFlying = tag.getBoolean("FallFlying")
+        health = tag.getFloat("Health")
+        lastHurtTimestamp = tag.getInt("HurtByTimestamp")
+        hurtTime = tag.getShort("HurtTime")
+
+        // Sleeping coordinates
         if (tag.contains("SleepingX", 99) && tag.contains("SleepingY", 99) && tag.contains("SleepingZ", 99)) {
-            val position = Vector3i(tag.getInt("SleepingX"), tag.getInt("SleepingY"), tag.getInt("SleepingZ"))
-            bedPosition = Optional.of(position)
+            sleepingPosition = Vector3i(tag.getInt("SleepingX"), tag.getInt("SleepingY"), tag.getInt("SleepingZ"))
             pose = Pose.SLEEPING
         }
     }
 
     override fun save() = super.save().apply {
-        float("Health", health)
         float("AbsorptionAmount", absorption)
         put("Attributes", attributes.save())
-        boolean("FallFlying", isFlying)
-        bedPosition.ifPresent {
+        put("Brain", brain.save())
+        short("DeathTime", deathTime)
+        boolean("FallFlying", isFallFlying)
+        float("Health", health)
+        int("HurtByTimestamp", lastHurtTimestamp)
+        short("HurtTime", hurtTime)
+        sleepingPosition?.let {
             int("SleepingX", it.x())
             int("SleepingY", it.y())
             int("SleepingZ", it.z())
@@ -104,7 +124,7 @@ abstract class KryptonLivingEntity(
         get() = if (data[MetadataKeys.LIVING.FLAGS].toInt() and 2 > 0) Hand.OFF else Hand.MAIN
         set(value) = setLivingFlag(2, value == Hand.OFF)
 
-    override var inSpinAttack: Boolean
+    override var isInRiptideSpinAttack: Boolean
         get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 4 > 0
         set(value) = setLivingFlag(4, value)
 
@@ -128,9 +148,9 @@ abstract class KryptonLivingEntity(
         get() = data[MetadataKeys.LIVING.STINGERS]
         set(value) = data.set(MetadataKeys.LIVING.STINGERS, value)
 
-    var bedPosition: Optional<Vector3i>
-        get() = data[MetadataKeys.LIVING.BED_LOCATION]
-        set(value) = data.set(MetadataKeys.LIVING.BED_LOCATION, value)
+    override var sleepingPosition: Vector3i?
+        get() = data[MetadataKeys.LIVING.BED_LOCATION].getIfPresent()
+        set(value) = data.set(MetadataKeys.LIVING.BED_LOCATION, Optional.ofNullable(value))
 
     companion object {
 

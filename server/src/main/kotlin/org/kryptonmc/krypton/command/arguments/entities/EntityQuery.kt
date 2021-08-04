@@ -66,7 +66,7 @@ class EntityQuery(
         SELECTOR.NEAREST_PLAYER -> {
             var currentNearest = source.server.players[0]
             for (player in source.server.players) {
-                if (player.distance(source) < currentNearest.distance(source)) currentNearest = player
+                if (player.distanceToSquared(source) < currentNearest.distanceToSquared(source)) currentNearest = player
             }
             listOf(currentNearest)
         }
@@ -145,19 +145,19 @@ class EntityQuery(
                     entities = if (value.toString().startsWith("..")) {
                         val distance = value.toString().replace("..", "").toInt()
                         entities.filter {
-                            it.distance(source) <= distance
+                            it.distanceToSquared(source) <= distance
                         }
                     } else if (!value.toString().contains("..")) {
                         checkInt(value.toString())
                         entities.filter {
-                            val int = it.distance(source).toInt()
+                            val int = it.distanceToSquared(source).toInt()
                             if (int < 0) throw DISTANCE_NEGATIVE.create()
                             int == value.toString().toInt()
                         }
                     } else {
                         val range = value.toString().toIntRange()
                         entities.filter {
-                            it.distance(source) >= range!!.first && it.distance(source) <= range.last
+                            it.distanceToSquared(source) >= range!!.first && it.distanceToSquared(source) <= range.last
                         }
                     }
                 }
@@ -240,10 +240,10 @@ class EntityQuery(
                     val sorter = EntityArguments.Sorter.fromName(value.toString())
                         ?: throw INVALID_SORT_TYPE.create(value)
                     entities = when (sorter) {
-                        EntityArguments.Sorter.NEAREST -> entities.sortedBy { it.distance(source) }
-                        EntityArguments.Sorter.FURTHEST -> entities.sortedByDescending { it.distance(source) }
+                        EntityArguments.Sorter.NEAREST -> entities.sortedBy { it.distanceToSquared(source) }
+                        EntityArguments.Sorter.FURTHEST -> entities.sortedByDescending { it.distanceToSquared(source) }
                         EntityArguments.Sorter.RANDOM -> entities.shuffled()
-                        EntityArguments.Sorter.ARBITRARY -> entities.sortedBy { it.ticksLived }
+                        EntityArguments.Sorter.ARBITRARY -> entities.sortedBy { it.ticksExisted }
                     }
                 }
                 "limit" -> {

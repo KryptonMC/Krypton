@@ -8,10 +8,22 @@
  */
 package org.kryptonmc.api.entity
 
+import org.spongepowered.math.vector.Vector3i
+
 /**
  * Represents an entity that lives in a world.
  */
 interface LivingEntity : Entity {
+
+    /**
+     * The current health of this entity.
+     */
+    var health: Float
+
+    /**
+     * The amount of absorption this living entity has.
+     */
+    var absorption: Float
 
     /**
      * If this entity is currently using an item
@@ -26,15 +38,50 @@ interface LivingEntity : Entity {
     /**
      * If this entity is in a riptide spin attack
      */
-    val inSpinAttack: Boolean
+    val isInRiptideSpinAttack: Boolean
 
     /**
-     * The health of this entity
+     * If this entity is fall flying.
+     *
+     * Setting this value to true for non-player entities will cause this entity
+     * to glide as long as they are wearing an elytra in their chestplate slot.
+     *
+     * This can be used to detect when the player is gliding without using
+     * scoreboard statistics.
      */
-    val health: Float
+    val isFallFlying: Boolean
 
     /**
-     * The absorption of this entity
+     * If this entity is dead or not.
      */
-    val absorption: Float
+    val isDead: Boolean
+
+    /**
+     * The number of ticks this entity has been dead for.
+     * This is used to control death animations.
+     *
+     * Will be 0 whilst this entity is alive.
+     */
+    val deathTime: Short
+
+    /**
+     * The number of ticks this entity will turn red for after being hit.
+     *
+     * Will be 0 when not recently hit.
+     */
+    val hurtTime: Short
+
+    /**
+     * The last time, in ticks, this entity was damaged.
+     *
+     * Calculated as the [number of ticks since the entity's creation][ticksExisted].
+     */
+    val lastHurtTimestamp: Int
+
+    /**
+     * The current position this entity is sleeping at.
+     *
+     * If this value is null, this entity is not currently sleeping.
+     */
+    val sleepingPosition: Vector3i?
 }

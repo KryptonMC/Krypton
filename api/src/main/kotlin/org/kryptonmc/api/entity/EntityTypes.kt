@@ -9,6 +9,7 @@
 package org.kryptonmc.api.entity
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.entity.monster.Creeper
 import org.kryptonmc.api.entity.monster.Zombie
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.registry.Registries
@@ -34,7 +35,7 @@ object EntityTypes {
     @JvmField val CHICKEN = register<Entity>("chicken")
     @JvmField val COD = register<Entity>("cod")
     @JvmField val COW = register<Entity>("cow")
-    @JvmField val CREEPER = register<Entity>("creeper")
+    @JvmField val CREEPER = register<Creeper>("creeper")
     @JvmField val DOLPHIN = register<Entity>("dolphin")
     @JvmField val DONKEY = register<Entity>("donkey")
     @JvmField val DRAGON_FIREBALL = register<Entity>("dragon_fireball")

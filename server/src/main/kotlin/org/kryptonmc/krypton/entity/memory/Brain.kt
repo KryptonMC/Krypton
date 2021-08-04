@@ -22,10 +22,11 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
 
 class Brain(val memories: MutableList<Memory<out Any>>) {
 
-    fun load(tag: CompoundTag) = tag.getCompound("Brain").getCompound("Memories").forEach {
+    fun load(tag: CompoundTag) = tag.getCompound("Memories").forEach {
         val key = InternalRegistries.MEMORIES[Key.key(it.key)] ?: return@forEach
         val value = it.value as? CompoundTag ?: return@forEach
         val decodedResult = key.codec.parse(NBTOps, value["value"] ?: return@forEach)
@@ -34,9 +35,7 @@ class Brain(val memories: MutableList<Memory<out Any>>) {
         memories += Memory(key, decoded, value.getLong("ttl"))
     }
 
-    fun save(tag: CompoundTag.Builder) = tag.apply {
-        compound("Brain") {
-            compound("memories") memories@{ memories.forEach { it.save(this@memories) } }
-        }
+    fun save() = compound {
+        compound("memories") memories@{ memories.forEach { it.save(this@memories) } }
     }
 }
