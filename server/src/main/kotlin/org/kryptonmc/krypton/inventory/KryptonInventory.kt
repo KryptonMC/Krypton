@@ -25,6 +25,7 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.max
 
 abstract class KryptonInventory(
     val id: Int,
@@ -58,9 +59,21 @@ abstract class KryptonInventory(
     override fun plusAssign(item: ItemStack) {
         if (item !is KryptonItemStack) return
         items.forEachIndexed { index, element ->
-            if (element !== EmptyItemStack) return@forEachIndexed
-            items[index] = item
-            return
+            if (element.type == item.type) {
+                val initialAmount = element.amount
+                val maxAmount = element.type.maximumAmount
+                if ((initialAmount + item.amount) <= maxAmount) {
+                    element.amount = initialAmount + item.amount
+                    return
+                } else if (element.amount != maxAmount) {
+                    element.amount = maxAmount
+                    item.amount = maxAmount - item.amount
+                    if(item.amount == 0) return
+                }
+            } else if (element == EmptyItemStack) {
+                items[index] = item
+                return
+            }
         }
     }
 

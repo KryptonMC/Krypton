@@ -37,6 +37,7 @@ import org.kryptonmc.krypton.command.arguments.NBTCompoundArgument
 import org.kryptonmc.krypton.command.arguments.SummonEntityArgument
 import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.command.arguments.itemstack.ItemStackArgumentType
+import org.kryptonmc.krypton.command.arguments.itemstack.ItemStackPredicateArgument
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.writeKey
@@ -71,6 +72,7 @@ object ArgumentTypes {
         register("entity", EntityArgumentSerializer())
         register<GameProfileArgument>("game_profile", EmptyArgumentSerializer())
         register<ItemStackArgumentType>("item_stack", EmptyArgumentSerializer())
+        register<ItemStackPredicateArgument>("item_predicate", EmptyArgumentSerializer())
     }
 
     operator fun get(key: Key) = BY_NAME[key]

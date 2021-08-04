@@ -22,18 +22,16 @@ import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.context.CommandContext
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.util.argument
+import org.kryptonmc.api.item.ItemStack
 
-class ItemStackArgumentType : ArgumentType<ItemStackArgument> {
+class ItemStackPredicateArgument : ArgumentType<ItemStackPredicate> {
 
-    override fun getExamples() = EXAMPLES
-
-    override fun parse(reader: StringReader) = ItemStackParser(reader, false).parseItem()
-
-    companion object {
-        val EXAMPLES = listOf("minecraft:cookie", "cookie", "cookie{foo=bar}")
-    }
+    override fun parse(reader: StringReader) = ItemStackParser(reader, true).parsePredicate()
 
 }
 
-fun CommandContext<Sender>.itemStackArgument(name: String) = argument<ItemStackArgument>(name)
+fun interface ItemStackPredicate {
+
+    operator fun invoke(item: ItemStack) : Boolean
+
+}

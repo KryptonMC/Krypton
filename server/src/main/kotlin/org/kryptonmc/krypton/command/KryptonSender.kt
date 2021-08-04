@@ -39,11 +39,11 @@ abstract class KryptonSender(override val server: KryptonServer) : Sender {
 
     override fun grant(permission: String) {
         permissions[permission] = true
-        if (this is KryptonPlayer) server.commandManager.sendCommands(this)
+        if (this is KryptonPlayer) server.playerManager.sendCommands(this)
     }
 
     override fun revoke(permission: String) {
         permissions[permission] = false
-        if (this is KryptonPlayer) server.commandManager.sendCommands(this)
+        if (this is KryptonPlayer) server.playerManager.sendCommands(this)
     }
 }

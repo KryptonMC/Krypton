@@ -27,6 +27,7 @@ object MetaKeys {
     @JvmField val NAME = of<Component>("display/name")
     @JvmField val LORE = of<List<Component>>("display/lore")
     @JvmField val COLOR = of<Color>("display/color")
+    @JvmField val REPAIR_COST = of<Int>("repair_cost")
 
     @JvmField val HIDE_ATTRIBUTES = of<Boolean>("hide_attributes")
     @JvmField val HIDE_CAN_DESTROY = of<Boolean>("hide_can_destroy")

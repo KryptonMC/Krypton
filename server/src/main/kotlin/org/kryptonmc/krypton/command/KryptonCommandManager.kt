@@ -37,11 +37,13 @@ import org.kryptonmc.api.command.meta.SimpleCommandMeta
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.commands.BanCommand
 import org.kryptonmc.krypton.command.commands.BanIpCommand
+import org.kryptonmc.krypton.command.commands.ClearCommand
 import org.kryptonmc.krypton.command.commands.DebugCommand
 import org.kryptonmc.krypton.command.commands.DeopCommand
 import org.kryptonmc.krypton.command.commands.DifficultyCommand
 import org.kryptonmc.krypton.command.commands.GamemodeCommand
 import org.kryptonmc.krypton.command.commands.GameruleCommand
+import org.kryptonmc.krypton.command.commands.GiveCommand
 import org.kryptonmc.krypton.command.commands.KickCommand
 import org.kryptonmc.krypton.command.commands.ListCommand
 import org.kryptonmc.krypton.command.commands.MeCommand
@@ -63,6 +65,7 @@ import org.kryptonmc.krypton.command.registrar.RawCommandRegistrar
 import org.kryptonmc.krypton.command.registrar.SimpleCommandRegistrar
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
+import org.kryptonmc.krypton.util.toComponent
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
@@ -143,6 +146,8 @@ class KryptonCommandManager(server: KryptonServer) : CommandManager {
         PardonIpCommand.register(dispatcher)
         OpCommand.register(dispatcher)
         DeopCommand.register(dispatcher)
+        GiveCommand.register(dispatcher)
+        ClearCommand.register(dispatcher)
     }
 
     private fun parse(sender: Sender, input: String): ParseResults<Sender> {

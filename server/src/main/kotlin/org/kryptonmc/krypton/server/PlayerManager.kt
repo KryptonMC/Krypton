@@ -252,15 +252,15 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     fun addToOperators(profile: KryptonGameProfile) {
         ops += OperatorEntry(profile, server.config.server.opPermissionLevel, true)
-        if (server.player(profile.uuid) != null) server.commandManager.sendCommands(server.player(profile.uuid)!!)
+        if (server.player(profile.uuid) != null) sendCommands(server.player(profile.uuid)!!)
     }
 
     fun removeFromOperators(profile: KryptonGameProfile) {
         ops -= profile
-        if (server.player(profile.uuid) != null) server.commandManager.sendCommands(server.player(profile.uuid)!!)
+        if (server.player(profile.uuid) != null) sendCommands(server.player(profile.uuid)!!)
     }
 
-    private fun sendCommands(player: KryptonPlayer) {
+    internal fun sendCommands(player: KryptonPlayer) {
         val permissionLevel = player.server.getPermissionLevel(player.profile)
         sendCommands(player, permissionLevel)
     }
