@@ -22,10 +22,8 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.LivingEntity
-import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.getIfPresent
 import org.kryptonmc.krypton.entity.attribute.KryptonAttribute

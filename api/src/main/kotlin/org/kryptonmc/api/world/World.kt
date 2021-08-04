@@ -299,12 +299,12 @@ interface World : ForwardingAudience {
     /**
      * Spawns an experience orb in this world at the given [location].
      */
-    fun spawnExperienceOrb(location: Vector)
+    fun spawnExperienceOrb(location: Vector): Entity?
 
     /**
      * Spawns a painting in this world at the given [location].
      */
-    fun spawnPainting(location: Vector)
+    fun spawnPainting(location: Vector): Entity?
 
     companion object {
 

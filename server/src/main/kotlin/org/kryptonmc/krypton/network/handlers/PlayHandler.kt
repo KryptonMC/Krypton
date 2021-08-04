@@ -80,7 +80,7 @@ import java.util.Locale
  * This is the largest and most important of the four packet handlers, as the play state is where the
  * vast majority of packets reside.
  *
- * As mentioned above, this is the packet handler for the [Play][org.kryptonmc.krypton.packet.state.PacketState.PLAY] state.
+ * As mentioned above, this is the packet handler for the [Play][org.kryptonmc.krypton.network.PacketState.PLAY] state.
  * This handles all supported inbound packets in the play state.
  */
 class PlayHandler(
@@ -216,11 +216,11 @@ class PlayHandler(
     }
 
     private fun handleAbilities(packet: PacketInAbilities) {
-        player.abilities.isFlying = packet.isFlying && player.abilities.canFly
+        player.isFlying = packet.isFlying && player.canFly
     }
 
     private fun handleBlockPlacement(packet: PacketInPlaceBlock) {
-        if (!player.abilities.canBuild) return // if they can't place blocks, they are irrelevant :)
+        if (!player.canBuild) return // if they can't place blocks, they are irrelevant :)
 
         val world = player.world
         val chunkX = player.location.blockX shr 4

@@ -40,7 +40,6 @@ import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.api.entity.player.Abilities
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
@@ -119,7 +118,11 @@ class KryptonPlayer(
     override val name = profile.name
     override var uuid = profile.uuid
 
-    override var abilities = Abilities()
+    override var canFly = false
+    override var canBuild = false
+    override var canInstantlyBuild = false
+    override var walkingSpeed = 0.1F
+    override var flyingSpeed = 0.05F
     override val inventory = KryptonPlayerInventory(this)
     override var scoreboard: Scoreboard? = null
     override var locale: Locale? = null
@@ -189,7 +192,17 @@ class KryptonPlayer(
         inventory.load(tag.getList("Inventory", CompoundTag.ID))
         inventory.heldSlot = tag.getInt("SelectedItemSlot")
         score = tag.getInt("Score")
-        if (tag.contains("abilities", CompoundTag.ID)) abilities.load(tag.getCompound("abilities"))
+        if (tag.contains("abilities", CompoundTag.ID)) {
+            val abilitiesData = tag.getCompound("abilities")
+            isInvulnerable = abilitiesData.getBoolean("invulnerable")
+            isFlying = abilitiesData.getBoolean("flying")
+            canFly = abilitiesData.getBoolean("mayfly")
+            canBuild = abilitiesData.getBoolean("mayBuild")
+            canInstantlyBuild = abilitiesData.getBoolean("instabuild")
+            walkingSpeed = abilitiesData.getFloat("walkSpeed")
+            flyingSpeed = abilitiesData.getFloat("flySpeed")
+        }
+        attributes.getOrPut(AttributeTypes.MOVEMENT_SPEED) { KryptonAttribute(AttributeTypes.MOVEMENT_SPEED) }.baseValue = walkingSpeed.toDouble()
 
         // NBT data for entities sitting on the player's shoulders, e.g. parrots
         if (tag.contains("ShoulderEntityLeft", CompoundTag.ID)) leftShoulder = tag.getCompound("ShoulderEntityLeft")
@@ -212,16 +225,24 @@ class KryptonPlayer(
         put("Inventory", inventory.save())
         int("SelectedItemSlot", inventory.heldSlot)
         int("Score", score)
-        put("abilities", abilities.save())
+        compound("abilities") {
+            boolean("flying", isFlying)
+            boolean("invulnerable", isInvulnerable)
+            boolean("mayfly", canFly)
+            boolean("mayBuild", canBuild)
+            boolean("instabuild", canInstantlyBuild)
+            float("walkSpeed", walkingSpeed)
+            float("flySpeed", flyingSpeed)
+        }
         if (leftShoulder.isNotEmpty()) put("ShoulderEntityLeft", leftShoulder)
         if (rightShoulder.isNotEmpty()) put("ShoulderEntityRight", rightShoulder)
         int("playerGameType", gamemode.ordinal)
         oldGamemode?.let { int("previousPlayerGameType", it.ordinal) }
         string("Dimension", dimension.location.asString())
-        respawnPosition?.let {
-            int("SpawnX", it.x())
-            int("SpawnY", it.y())
-            int("SpawnZ", it.z())
+        respawnPosition?.let { position ->
+            int("SpawnX", position.x())
+            int("SpawnY", position.y())
+            int("SpawnZ", position.z())
             float("SpawnAngle", respawnAngle)
             boolean("SpawnForced", respawnForced)
             KryptonWorld.RESOURCE_KEY_CODEC.encodeStart(NBTOps, respawnDimension).resultOrPartial(LOGGER::error).ifPresent { put("SpawnDimension", it) }
@@ -343,21 +364,21 @@ class KryptonPlayer(
         showEntity(ShowEntity.of(key("minecraft", "player"), uuid, displayName))
 
     fun updateAbilities() {
-        abilities = when (gamemode) {
-            Gamemode.CREATIVE -> Abilities(
-                isInvulnerable = true,
-                canFly = true,
+        when (gamemode) {
+            Gamemode.CREATIVE -> {
+                isInvulnerable = true
+                canFly = true
                 canInstantlyBuild = true
-            )
-            Gamemode.SPECTATOR -> Abilities(
-                isInvulnerable = true,
-                canFly = true,
-                isFlying = true,
+            }
+            Gamemode.SPECTATOR -> {
+                isInvulnerable = true
+                canFly = true
+                isFlying = true
                 canInstantlyBuild = false
-            )
-            else -> Abilities()
+            }
+            else -> Unit
         }
-        abilities.canBuild = gamemode.canBuild
+        canBuild = gamemode.canBuild
     }
 
     fun updateChunks() {
@@ -419,7 +440,7 @@ class KryptonPlayer(
     }
 
     private fun onAbilitiesUpdate() {
-        session.sendPacket(PacketOutAbilities(abilities))
+        session.sendPacket(PacketOutAbilities(this))
         updateInvisibility()
         server.playerManager.sendToAll(PacketOutMetadata(id, data.dirty), world)
     }

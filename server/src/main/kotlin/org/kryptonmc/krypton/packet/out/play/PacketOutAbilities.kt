@@ -19,23 +19,28 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.entity.player.Abilities
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.state.PlayPacket
 
-class PacketOutAbilities(private val abilities: Abilities) : PlayPacket(0x32) {
+class PacketOutAbilities(
+    private val isInvulnerable: Boolean,
+    private val isFlying: Boolean,
+    private val canFly: Boolean,
+    private val canInstantlyBuild: Boolean,
+    private val flyingSpeed: Float,
+    private val walkingSpeed: Float
+) : PlayPacket(0x32) {
+
+    constructor(player: KryptonPlayer) : this(player.isInvulnerable, player.isFlying, player.canFly, player.canInstantlyBuild, player.flyingSpeed, player.walkingSpeed)
 
     override fun write(buf: ByteBuf) {
-        buf.writeByte(abilities.flagsToProtocol())
-        buf.writeFloat(abilities.flyingSpeed)
-        buf.writeFloat(abilities.walkSpeed)
+        var flags = 0
+        if (isInvulnerable) flags = flags or 1
+        if (isFlying) flags = flags or 2
+        if (canFly) flags = flags or 4
+        if (canInstantlyBuild) flags = flags or 8
+        buf.writeByte(flags)
+        buf.writeFloat(flyingSpeed)
+        buf.writeFloat(walkingSpeed)
     }
-}
-
-private fun Abilities.flagsToProtocol(): Int {
-    var flags = 0
-    if (isInvulnerable) flags = flags or 1
-    if (isFlying) flags = flags or 2
-    if (canFly) flags = flags or 4
-    if (canInstantlyBuild) flags = flags or 8
-    return flags
 }

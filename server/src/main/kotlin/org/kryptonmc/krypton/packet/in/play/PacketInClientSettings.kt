@@ -20,16 +20,16 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.MainHand
-import org.kryptonmc.krypton.entity.player.ChatMode
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.readVarInt
 
 class PacketInClientSettings(buf: ByteBuf) : PlayPacket(0x05) {
 
     val locale = buf.readString(16)
     val viewDistance = buf.readByte()
-    val chatMode = buf.readEnum<ChatMode>()
+    val chatMode = buf.readVarInt()
     val chatColors = buf.readBoolean()
     val skinSettings = buf.readUnsignedByte()
     val mainHand = buf.readEnum<MainHand>()

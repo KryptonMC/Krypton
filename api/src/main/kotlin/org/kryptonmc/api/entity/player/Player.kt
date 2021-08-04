@@ -33,6 +33,7 @@ import java.util.Locale
 /**
  * Represents a player.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient, HoverEventSource<HoverEvent.ShowEntity> {
 
     /**
@@ -41,9 +42,32 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
     val address: InetSocketAddress
 
     /**
-     * The player's abilities.
+     * If this player can fly.
      */
-    val abilities: Abilities
+    @get:JvmName("canFly")
+    var canFly: Boolean
+
+    /**
+     * If this player can build (place/break blocks).
+     */
+    @get:JvmName("canBuild")
+    var canBuild: Boolean
+
+    /**
+     * If this player can place and break blocks with no delay.
+     */
+    @get:JvmName("canInstantlyBuild")
+    var canInstantlyBuild: Boolean
+
+    /**
+     * The current speed at which this player can walk at.
+     */
+    var walkingSpeed: Float
+
+    /**
+     * The current speed at which this player can fly at.
+     */
+    var flyingSpeed: Float
 
     /**
      * The dimension resource key for the world the player is currently in.

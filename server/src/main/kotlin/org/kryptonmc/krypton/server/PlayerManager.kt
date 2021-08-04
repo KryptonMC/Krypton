@@ -148,7 +148,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         session.sendPacket(PacketOutServerDifficulty(world.difficulty))
 
         // Player data stuff
-        session.sendPacket(PacketOutAbilities(player.abilities))
+        session.sendPacket(PacketOutAbilities(player))
         session.sendPacket(PacketOutChangeHeldItem(player.inventory.heldSlot))
         sendCommands(player)
         session.sendPacket(PacketOutDeclareRecipes)
