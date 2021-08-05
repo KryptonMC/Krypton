@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.pack.repository
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.ServerInfo
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.pack.KryptonPackResources
 import org.kryptonmc.krypton.pack.PackMetadata
 import org.kryptonmc.krypton.pack.PackResources
@@ -35,6 +35,6 @@ class KryptonRepositorySource : RepositorySource {
     companion object {
 
         const val ID = "vanilla"
-        val METADATA = PackMetadata(Component.translatable("dataPack.vanilla.description"), ServerInfo.PACK_VERSION)
+        val METADATA = PackMetadata(Component.translatable("dataPack.vanilla.description"), KryptonPlatform.dataPackVersion)
     }
 }

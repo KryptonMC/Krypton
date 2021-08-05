@@ -24,6 +24,7 @@ import io.netty.channel.ChannelFutureListener.CLOSE
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
 import io.netty.handler.codec.CorruptedFrameException
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.config.category.StatusCategory
@@ -40,7 +41,9 @@ import java.net.InetSocketAddress
  *
  * This handler is essentially a Kotlin converted version of the vanilla handler, which is why it is such a mess.
  */
-class LegacyQueryHandler(private val status: StatusCategory) : ChannelInboundHandlerAdapter() {
+class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHandlerAdapter() {
+
+    private val status = server.config.status
 
     override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
         if (msg !is ByteBuf) return
@@ -52,8 +55,8 @@ class LegacyQueryHandler(private val status: StatusCategory) : ChannelInboundHan
             val address = ctx.channel().remoteAddress() as InetSocketAddress
             val motd = status.motd.content()
             val maxPlayers = status.maxPlayers
-            val playerCount = ServerStorage.PLAYER_COUNT.get()
-            val version = KryptonServer.KryptonServerInfo.minecraftVersion
+            val playerCount = server.playerManager.players.size
+            val version = KryptonPlatform.minecraftVersion
 
             when (msg.readableBytes()) {
                 0 -> {

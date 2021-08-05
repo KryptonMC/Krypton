@@ -52,8 +52,8 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.IOScope
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.auth.GameProfile
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
@@ -209,7 +209,7 @@ class KryptonPlayer(
     }
 
     override fun save() = super.save().apply {
-        int("DataVersion", ServerInfo.WORLD_VERSION)
+        int("DataVersion", KryptonPlatform.worldVersion)
         put("Inventory", inventory.save())
         int("SelectedItemSlot", inventory.heldSlot)
         int("Score", score)

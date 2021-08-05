@@ -113,11 +113,6 @@ interface World : ForwardingAudience {
     val time: Long
 
     /**
-     * The version information of this world.
-     */
-    val version: GameVersion
-
-    /**
      * The maximum build height of this world. Also known as the build limit.
      */
     @Deprecated("Unnecessary, use DimensionType#height", ReplaceWith("dimensionType.height"))
@@ -331,25 +326,4 @@ interface World : ForwardingAudience {
         @JvmField
         val END = ResourceKey.of(ResourceKeys.DIMENSION, Key.key("the_end"))
     }
-}
-
-/**
- * Holder for information about the version of Minecraft this world was
- * generated in.
- *
- * @param id the ID of the world version
- * @param name the name of the Minecraft version
- * @param isSnapshot whether this world version is a snapshot version or not
- */
-class GameVersion(
-    val id: Int,
-    val name: String,
-    val isSnapshot: Boolean
-) {
-
-    override fun equals(other: Any?) = other is GameVersion && id == other.id && isSnapshot == other.isSnapshot
-
-    override fun hashCode() = id + if (isSnapshot) 1231 else 1237 // java.lang.Boolean.hashCode implementation
-
-    override fun toString() = "WorldVersion(id=$id, name=$name, isSnapshot=$isSnapshot)"
 }

@@ -38,8 +38,8 @@ object VersionCommand : InternalCommand {
         val node = dispatcher.register(literal<Sender>("version")
             .executes {
                 val sender = it.source as? KryptonPlayer ?: return@executes 1
-                val version = sender.server.info.version
-                val minecraftVersion = sender.server.info.minecraftVersion
+                val version = sender.server.platform.version
+                val minecraftVersion = sender.server.platform.minecraftVersion
                 val pluginsLoaded = sender.server.pluginManager.plugins.size
                 val text = text("Krypton", KRYPTON_COLOR)
                     .clickEvent(ClickEvent.openUrl("https://github.com/KryptonMC/Krypton"))

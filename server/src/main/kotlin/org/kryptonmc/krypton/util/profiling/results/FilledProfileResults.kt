@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.util.profiling.results
 
 import com.google.common.base.Splitter
-import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.profiling.entry.EmptyPathEntry
 import org.kryptonmc.krypton.util.profiling.entry.PathEntry
@@ -85,8 +85,8 @@ class FilledProfileResults(
                 ---- Krypton Profiler Results ----
                 // $comment
 
-                Krypton version: ${KryptonServerInfo.version}
-                Minecraft version: ${KryptonServerInfo.minecraftVersion}
+                Krypton version: ${KryptonPlatform.version}
+                Minecraft version: ${KryptonPlatform.minecraftVersion}
                 Time span: ${duration / 1_000_000} ms
                 Tick span: $durationTicks ticks
                 // This is approximately ${"%.2f".format(Locale.ROOT, durationTicks / (duration / 1.0E9))} ticks per second. It should be 20 ticks per second

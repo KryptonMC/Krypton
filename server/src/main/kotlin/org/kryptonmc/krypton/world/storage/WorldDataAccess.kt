@@ -21,10 +21,9 @@ package org.kryptonmc.krypton.world.storage
 import com.mojang.serialization.Dynamic
 import com.mojang.serialization.DynamicOps
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.util.orThrow
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.ServerInfo
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.registry.RegistryLookupCodec
@@ -92,7 +91,7 @@ private val Path.dataPacks: DataPackConfig?
     get() = try {
         val tag = TagIO.read(this, TagCompression.GZIP).getCompound("Data")
         val version = if (tag.contains("DataVersion", 99)) tag.getInt("DataVersion") else -1
-        val data = DATA_FIXER.update(References.LEVEL, Dynamic(NBTOps, tag), version, ServerInfo.WORLD_VERSION)
+        val data = DATA_FIXER.update(References.LEVEL, Dynamic(NBTOps, tag), version, KryptonPlatform.worldVersion)
         data["DataPacks"].result().map { it.toDataPackConfig() }.orElse(DataPackConfig.DEFAULT)
     } catch (exception: Exception) {
         LOGGER.error("Caught exception whilst trying to read $this!", exception)
@@ -103,7 +102,7 @@ private fun getWorldData(ops: DynamicOps<Tag>, dataPackConfig: DataPackConfig): 
     try {
         val tag = TagIO.read(it, TagCompression.GZIP).getCompound("Data")
         val version = if (tag.contains("DataVersion", 99)) tag.getInt("DataVersion") else -1
-        val data = DATA_FIXER.update(References.LEVEL, Dynamic(ops, tag), version, ServerInfo.WORLD_VERSION)
+        val data = DATA_FIXER.update(References.LEVEL, Dynamic(ops, tag), version, KryptonPlatform.worldVersion)
         val worldGenSettings = data.readWorldGenSettings(version)
         data.parseWorldData(worldGenSettings, dataPackConfig)
     } catch (exception: Exception) {
@@ -115,7 +114,7 @@ private fun getWorldData(ops: DynamicOps<Tag>, dataPackConfig: DataPackConfig): 
 private fun <T> Dynamic<T>.readWorldGenSettings(version: Int): WorldGenerationSettings {
     var temp = get("WorldGenSettings").orElseEmptyMap()
     OLD_SETTINGS_KEYS.forEach { key -> get(key).result().ifPresent { temp = temp.set(key, it) } }
-    val data = DATA_FIXER.update(References.WORLD_GEN_SETTINGS, temp, version, ServerInfo.WORLD_VERSION)
+    val data = DATA_FIXER.update(References.WORLD_GEN_SETTINGS, temp, version, KryptonPlatform.worldVersion)
     return WorldGenerationSettings.CODEC.parse(data).resultOrPartial { LOGGER.error("WorldGenSettings: $it") }.orElseGet {
         val dimensionTypes = RegistryLookupCodec(InternalResourceKeys.DIMENSION_TYPE).codec().parse(data).resultOrPartial { LOGGER.error("Dimension type registry: $it") }.orThrow("Failed to get dimension registry!")
         val biomes = RegistryLookupCodec(InternalResourceKeys.BIOME).codec().parse(data).resultOrPartial { LOGGER.error("Biome registry: $it") }.orThrow("Failed to get biome registry")

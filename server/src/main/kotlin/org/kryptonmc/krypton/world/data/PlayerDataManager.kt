@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.world.data
 
 import com.mojang.serialization.Dynamic
-import org.kryptonmc.krypton.ServerInfo
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.createFile
 import org.kryptonmc.krypton.util.createTempFile
@@ -38,9 +38,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
-import kotlin.io.path.inputStream
 import kotlin.io.path.moveTo
-import kotlin.io.path.outputStream
 
 /**
  * Responsible for loading and saving player data files
@@ -67,7 +65,7 @@ class PlayerDataManager(private val folder: Path) {
         }
 
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
-        player.load(DATA_FIXER.update(FixType.PLAYER.type, Dynamic(NBTOps, nbt), version, ServerInfo.WORLD_VERSION).value as CompoundTag)
+        player.load(DATA_FIXER.update(FixType.PLAYER.type, Dynamic(NBTOps, nbt), version, KryptonPlatform.worldVersion).value as CompoundTag)
         nbt
     }, executor)
 

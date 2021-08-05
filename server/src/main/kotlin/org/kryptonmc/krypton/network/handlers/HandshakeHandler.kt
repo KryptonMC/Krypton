@@ -22,9 +22,9 @@ import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.api.event.handshake.HandshakeEvent
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.Packet
@@ -89,20 +89,20 @@ class HandshakeHandler(
      */
     private fun handleLogin(packet: PacketInHandshake, data: BungeeCordHandshakeData? = null) {
         session.currentState = PacketState.LOGIN
-        if (packet.protocol != ServerInfo.PROTOCOL) {
+        if (packet.protocol != KryptonPlatform.protocolVersion) {
             val key = when {
-                packet.protocol < ServerInfo.PROTOCOL -> "multiplayer.disconnect.outdated_client"
-                packet.protocol > ServerInfo.PROTOCOL -> "multiplayer.disconnect.outdated_server"
+                packet.protocol < KryptonPlatform.protocolVersion -> "multiplayer.disconnect.outdated_client"
+                packet.protocol > KryptonPlatform.protocolVersion -> "multiplayer.disconnect.outdated_server"
                 else -> "multiplayer.disconnect.incompatible"
             }
             val reason = translatable {
                 key(key)
-                args(text(KryptonServer.KryptonServerInfo.minecraftVersion))
+                args(text(KryptonPlatform.minecraftVersion))
             }
             session.disconnect(reason)
             return
         }
-        if (ServerStorage.PLAYER_COUNT.get() >= server.config.status.maxPlayers) {
+        if (server.playerManager.players.size >= server.config.status.maxPlayers) {
             session.disconnect(translatable { key("multiplayer.disconnect.server_full") })
             return
         }

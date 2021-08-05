@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton
 
-import com.mojang.serialization.Dynamic
-import org.kryptonmc.api.world.GameVersion
 import org.kryptonmc.krypton.pack.repository.PackRepository
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.DataPackConfig
@@ -55,9 +53,3 @@ private fun PackRepository.selectedPacks(): DataPackConfig {
     val disabled = availableIds.filter { !ids.contains(it) }
     return DataPackConfig(enabled, disabled)
 }
-
-fun Dynamic<*>.toGameVersion(): GameVersion = GameVersion(
-    get("Id").asInt(ServerInfo.GAME_VERSION.id),
-    get("Name").asString(ServerInfo.GAME_VERSION.name),
-    get("Snapshot").asBoolean(ServerInfo.GAME_VERSION.isSnapshot)
-)

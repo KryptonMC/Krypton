@@ -24,8 +24,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
-import org.kryptonmc.krypton.ServerInfo
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.auth.GameProfile
 import java.lang.reflect.Type
 
@@ -65,8 +64,8 @@ class ServerStatus(
             if (src.motd != Component.empty()) add("description", context.serialize(src.motd))
             add("players", context.serialize(src.players))
             add("version", JsonObject().apply {
-                addProperty("name", KryptonServerInfo.minecraftVersion)
-                addProperty("protocol", ServerInfo.PROTOCOL)
+                addProperty("name", KryptonPlatform.minecraftVersion)
+                addProperty("protocol", KryptonPlatform.protocolVersion)
             })
             if (src.favicon != null) addProperty("favicon", src.favicon)
         }

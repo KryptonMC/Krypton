@@ -34,10 +34,14 @@ import java.util.Locale
  */
 class KryptonConsoleSender(override val server: KryptonServer) : ConsoleSender {
 
-    private val LOGGER = logger("CONSOLE")
     override val permissionLevel = PermissionLevel.LEVEL_4
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
         LOGGER.info(TranslationBootstrap.RENDERER.render(message, Locale.ENGLISH).toSectionText())
+    }
+
+    companion object {
+
+        private val LOGGER = logger("CONSOLE")
     }
 }

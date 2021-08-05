@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.util.reports
 
 import okhttp3.internal.closeQuietly
-import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.logger
 import java.io.OutputStreamWriter
@@ -42,9 +42,9 @@ class CrashReport(val title: String, val exception: Throwable) {
     private var uncategorizedStackTrace = emptyArray<StackTraceElement?>()
 
     init {
-        systemDetails["Implementation Name"] = { KryptonServer.KryptonServerInfo.name }
-        systemDetails["Krypton Version"] = { KryptonServer.KryptonServerInfo.version }
-        systemDetails["Minecraft Version"] = { KryptonServer.KryptonServerInfo.minecraftVersion }
+        systemDetails["Implementation Name"] = { KryptonPlatform.name }
+        systemDetails["Krypton Version"] = { KryptonPlatform.version }
+        systemDetails["Minecraft Version"] = { KryptonPlatform.minecraftVersion }
         systemDetails["Operating System"] = { "${System.getProperty("os.name")} (${System.getProperty("os.arch")}) version ${System.getProperty("os.version")}" }
         systemDetails["Java Version"] = { "${System.getProperty("java.version")}, ${System.getProperty("java.vendor")}" }
         systemDetails["Java VM Version"] = { "${System.getProperty("java.vm.name")} (${System.getProperty("java.vm.info")}), ${System.getProperty("java.vm.vendor")}" }

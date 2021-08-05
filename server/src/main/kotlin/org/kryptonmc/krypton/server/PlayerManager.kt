@@ -202,8 +202,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         // Send inventory data
         val items = player.inventory.networkItems
         session.sendPacket(PacketOutWindowItems(player.inventory.id, player.inventory.incrementStateId(), items, player.inventory.mainHand))
-
-        ServerStorage.PLAYER_COUNT.getAndIncrement()
     }
 
     fun remove(player: KryptonPlayer) {
@@ -219,9 +217,8 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             sendToAll(PacketOutDestroyEntities(player.id))
             sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER, player))
 
-            // Send quit message and decrement overall count
+            // Send quit message
             server.sendMessage(it.message)
-            ServerStorage.PLAYER_COUNT.getAndDecrement()
         }
     }
 

@@ -38,7 +38,7 @@ interface Server : ForwardingAudience {
     /**
      * Information about this server implementation.
      */
-    val info: ServerInfo
+    val platform: Platform
 
     /**
      * The world manager for this server.
@@ -194,25 +194,4 @@ interface Server : ForwardingAudience {
      * @param channel the channel to register
      */
     fun unregisterChannel(channel: Key)
-
-    /**
-     * Holder for information about the server implementing this API.
-     */
-    interface ServerInfo {
-
-        /**
-         * The name of this server implementation.
-         */
-        val name: String
-
-        /**
-         * The version string of this server implementation (not Minecraft version).
-         */
-        val version: String
-
-        /**
-         * The target Minecraft version for this implementation.
-         */
-        val minecraftVersion: String
-    }
 }

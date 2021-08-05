@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.module
 
 import com.google.inject.name.Names
 import dev.misfitlabs.kotlinguice4.KotlinModule
+import org.kryptonmc.api.Platform
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
@@ -39,7 +40,7 @@ class GlobalModule(
 
     override fun configure() {
         bind<Server>().toInstance(server)
-        bind<Server.ServerInfo>().toInstance(server.info)
+        bind<Platform>().toInstance(server.platform)
         bind<WorldManager>().toInstance(server.worldManager)
         bind<CommandManager>().toInstance(server.commandManager)
         bind<PluginManager>().toInstance(server.pluginManager)

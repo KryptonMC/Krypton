@@ -26,8 +26,8 @@ import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.ops.RegistryReadOps
@@ -41,7 +41,6 @@ import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.data.WorldResource
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
-import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.dimension.storageFolder
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
@@ -111,7 +110,7 @@ class KryptonWorldManager(
                 val rules = KryptonGameRuleHolder()
                 PrimaryWorldData(folderName, gamemode, difficulty, hardcore, rules, defaultData.dataPackConfig, defaultData.worldGenerationSettings)
             }
-            worldData.setModdedInfo(KryptonServerInfo.name, true)
+            worldData.setModdedInfo(KryptonPlatform.name, true)
             val isDebug = worldData.worldGenerationSettings.isDebug
             val seed = Hashing.sha256().hashLong(worldData.worldGenerationSettings.seed).asLong()
             KryptonWorld(server, storage, worldData, resourceKey, dimensionType, generator, isDebug, seed, true)

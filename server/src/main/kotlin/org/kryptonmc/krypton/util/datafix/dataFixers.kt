@@ -23,7 +23,7 @@ import com.mojang.datafixers.DataFixer
 import com.mojang.datafixers.DataFixerBuilder
 import com.mojang.datafixers.Typed
 import com.mojang.datafixers.schemas.Schema
-import org.kryptonmc.krypton.ServerInfo
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.util.BOOTSTRAP_EXECUTOR
 import org.kryptonmc.krypton.util.datafix.fixes.AddChoices
 import org.kryptonmc.krypton.util.datafix.fixes.AdvancementsFix
@@ -216,7 +216,7 @@ import org.kryptonmc.krypton.util.datafix.schema.ensureNamespaced
 private val SAME = ::Schema
 private val SAME_NAMESPACED: (Int, Schema) -> Schema = ::NamespacedSchema
 
-val DATA_FIXER: DataFixer = DataFixerBuilder(ServerInfo.WORLD_VERSION).apply {
+val DATA_FIXER: DataFixer = DataFixerBuilder(KryptonPlatform.worldVersion).apply {
     addSchema(99, ::InitialSchema)
     addSchema(100, ::V100).apply {
         addFixer(SplitEquipmentFix(this, true))

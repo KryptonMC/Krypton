@@ -19,14 +19,15 @@
 package org.kryptonmc.krypton.world.data
 
 import com.mojang.serialization.Dynamic
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 
-data class KryptonWorldData(val version: String = KryptonServer.KryptonServerInfo.version) {
+data class KryptonWorldData(val version: String) {
 
     companion object {
 
-        val DEFAULT = KryptonWorldData(KryptonServer.KryptonServerInfo.version)
+        val DEFAULT = KryptonWorldData(KryptonPlatform.version)
     }
 }
 
-fun Dynamic<*>.toKryptonWorldData() = KryptonWorldData(get("version").asString(KryptonServer.KryptonServerInfo.version))
+fun Dynamic<*>.toKryptonWorldData() = KryptonWorldData(get("version").asString(KryptonPlatform.version))

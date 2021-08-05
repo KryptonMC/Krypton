@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton
 
 import io.netty.bootstrap.ServerBootstrap
-import io.netty.channel.ChannelFuture
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.ChannelOption
 import io.netty.channel.EventLoopGroup
@@ -67,7 +66,7 @@ class NettyProcess(private val server: KryptonServer) {
                     override fun initChannel(ch: SocketChannel) {
                         ch.pipeline()
                             .addLast("timeout", ReadTimeoutHandler(30))
-                            .addLast(LegacyQueryHandler.NETTY_NAME, LegacyQueryHandler(server.config.status))
+                            .addLast(LegacyQueryHandler.NETTY_NAME, LegacyQueryHandler(server))
                             .addLast(SizeDecoder.NETTY_NAME, SizeDecoder())
                             .addLast(PacketDecoder.NETTY_NAME, PacketDecoder())
                             .addLast(SizeEncoder.NETTY_NAME, SizeEncoder)

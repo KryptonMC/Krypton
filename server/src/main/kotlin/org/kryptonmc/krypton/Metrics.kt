@@ -83,8 +83,8 @@ internal object KryptonMetrics {
 
         metrics += SingleLineChart("players", server.players::size)
         metrics += SimplePie("online_mode") { if (server.config.server.onlineMode) "online" else "offline" }
-        metrics += SimplePie("krypton_version", KryptonServer.KryptonServerInfo::version)
-        metrics += SimplePie("minecraft_version", KryptonServer.KryptonServerInfo::minecraftVersion)
+        metrics += SimplePie("krypton_version", KryptonPlatform::version)
+        metrics += SimplePie("minecraft_version", KryptonPlatform::minecraftVersion)
 
         metrics += DrilldownPie("java_version") {
             val javaVersion = System.getProperty("java.version")

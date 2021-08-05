@@ -27,6 +27,7 @@ import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.apache.logging.log4j.LogManager
+import org.kryptonmc.api.Platform
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.event.server.ServerStartEvent
@@ -113,7 +114,7 @@ class KryptonServer(
     worldFolder: Path
 ) : Server {
 
-    override val info = KryptonServerInfo
+    override val platform = KryptonPlatform
     override val status = KryptonStatusInfo(config.status.maxPlayers, config.status.motd)
 
     override val isOnline = config.server.onlineMode
@@ -447,21 +448,6 @@ class KryptonServer(
 
     private fun fillReport(report: CrashReport): CrashReport = report.apply {
         systemDetails["Player Count"] = { "${playerManager.players.size} / ${status.maxPlayers}" }
-    }
-
-    object KryptonServerInfo : Server.ServerInfo {
-
-        override val name = "Krypton"
-        override val version: String
-        override val minecraftVersion: String
-
-        init {
-            val infoProperties = Properties().apply {
-                load(Thread.currentThread().contextClassLoader.getResourceAsStream("META-INF/krypton.properties"))
-            }
-            version = infoProperties.getProperty("krypton.version")
-            minecraftVersion = infoProperties.getProperty("minecraft.version")
-        }
     }
 
     companion object {

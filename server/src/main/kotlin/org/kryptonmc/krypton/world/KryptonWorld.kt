@@ -33,11 +33,9 @@ import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.GameVersion
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.ServerInfo
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -109,8 +107,6 @@ class KryptonWorld(
         get() = Vector3i(data.spawnX, data.spawnY, data.spawnZ)
     override val time: Long
         get() = data.time
-    override val version: GameVersion
-        get() = ServerInfo.GAME_VERSION
     override val folder = storageAccess.path
 
     override val chunks: Collection<KryptonChunk>

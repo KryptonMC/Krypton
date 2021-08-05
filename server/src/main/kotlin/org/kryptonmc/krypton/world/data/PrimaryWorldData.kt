@@ -22,6 +22,7 @@ import com.mojang.datafixers.DataFixUtils
 import com.mojang.serialization.Dynamic
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.registry.ops.RegistryWriteOps
 import org.kryptonmc.krypton.util.UUID_CODEC
@@ -83,6 +84,13 @@ class PrimaryWorldData(
     fun save(registryHolder: RegistryHolder) = compound {
         compound("Krypton") {
             string("Version", kryptonData.version)
+        }
+        int("DataVersion", KryptonPlatform.worldVersion)
+        int("version", ANVIL_VERSION_ID)
+        compound("Version") {
+            int("Id", KryptonPlatform.worldVersion)
+            string("Name", KryptonPlatform.minecraftVersion)
+            boolean("Snapshot", !KryptonPlatform.isStableMinecraft)
         }
         string("LevelName", name)
         int("GameType", gamemode.ordinal)

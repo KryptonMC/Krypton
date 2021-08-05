@@ -22,12 +22,11 @@ import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.util.Services
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.internal.BlockLoader
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.GSON
-import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
+import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.registry.block.BlockData
 import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.ConcurrentHashMap
@@ -49,7 +48,7 @@ object KryptonBlockLoader : BlockLoader {
         }
         val blocks = GSON.fromJson<JsonObject>(
             Thread.currentThread().contextClassLoader
-                .getResourceAsStream("${KryptonServerInfo.minecraftVersion.replace(".", "_")}_blocks.json")!!
+                .getResourceAsStream("${KryptonPlatform.minecraftVersion.replace(".", "_")}_blocks.json")!!
                 .reader()
         )
         blocks.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->

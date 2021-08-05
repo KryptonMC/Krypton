@@ -18,19 +18,9 @@
  */
 package org.kryptonmc.krypton
 
-import org.kryptonmc.api.world.GameVersion
 import java.util.concurrent.atomic.AtomicInteger
 
 object ServerStorage {
 
-    val PLAYER_COUNT = AtomicInteger(0)
     val NEXT_ENTITY_ID = AtomicInteger(0)
-}
-
-object ServerInfo {
-
-    const val PROTOCOL = 756
-    const val WORLD_VERSION = 2730
-    const val PACK_VERSION = 7
-    val GAME_VERSION = GameVersion(WORLD_VERSION, KryptonServer.KryptonServerInfo.minecraftVersion, false)
 }

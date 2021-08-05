@@ -27,7 +27,6 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.kryptonmc.krypton.KryptonServer.KryptonServerInfo
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.TranslationManager
@@ -46,7 +45,6 @@ import org.kryptonmc.krypton.world.DataPackConfig
 import org.kryptonmc.krypton.world.KryptonGameRuleHolder
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.data.WorldResource
-import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.kryptonmc.krypton.world.storage.WorldDataStorage
 import java.nio.file.Path
 import java.util.Locale
@@ -104,14 +102,15 @@ class KryptonCLI : CliktCommand(
     }.default(Locale.ENGLISH)
 
     override fun run() {
+        KryptonPlatform // Preload the platform early
         TranslationManager.reload(locale)
         if (version) {
-            Messages.VERSION_INFO.print(KryptonServerInfo.version, KryptonServerInfo.minecraftVersion)
+            Messages.VERSION_INFO.print(KryptonPlatform.version, KryptonPlatform.minecraftVersion)
             return
         }
         val logger = logger("Krypton")
-        Messages.LOAD.info(logger, KryptonServerInfo.version, KryptonServerInfo.minecraftVersion)
-        if (MAX_MEMORY < MEMORY_WARNING_THRESHOLD) Messages.LOAD_LOW_MEMORY.warn(logger, MEMORY_WARNING_THRESHOLD.toString(), KryptonServerInfo.version)
+        Messages.LOAD.info(logger, KryptonPlatform.version, KryptonPlatform.minecraftVersion)
+        if (MAX_MEMORY < MEMORY_WARNING_THRESHOLD) Messages.LOAD_LOW_MEMORY.warn(logger, MEMORY_WARNING_THRESHOLD.toString(), KryptonPlatform.version)
 
         // Run the bootstrap
         Bootstrap.preload()
