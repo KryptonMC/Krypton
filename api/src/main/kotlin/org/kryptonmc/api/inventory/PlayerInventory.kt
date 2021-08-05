@@ -32,41 +32,31 @@ interface PlayerInventory : Inventory {
 
     /**
      * The item that this player is currently holding in their main hand.
-     *
-     * Will return [ItemStack.empty] if the player is not holding anything
-     * in their main hand.
      */
     val mainHand: ItemStack
 
     /**
      * The item that this player is currently holding in their offhand.
-     *
-     * Will return [ItemStack.empty] if the player is not holding anything
-     * in their off hand.
      */
     val offHand: ItemStack
 
     /**
-     * The helmet this player is currently wearing, or [ItemStack.empty]
-     * if this player isn't wearing a helmet
+     * The helmet this player is currently wearing.
      */
     val helmet: ItemStack
 
     /**
-     * The chestplate this player is currently wearing, or [ItemStack.empty]
-     * if this player isn't wearing a chestplate
+     * The chestplate this player is currently wearing.
      */
     val chestplate: ItemStack
 
     /**
-     * The leggings this player is currently wearing, or [ItemStack.empty]
-     * if this player isn't wearing any leggings
+     * The leggings this player is currently wearing.
      */
     val leggings: ItemStack
 
     /**
-     * The boots this player is currently wearing, or [ItemStack.empty] if
-     * this player isn't wearing any boots
+     * The boots this player is currently wearing.
      */
     val boots: ItemStack
 

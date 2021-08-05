@@ -60,6 +60,7 @@ dependencies {
     implementation("it.unimi.dsi", "fastutil", Versions.FASTUTIL)
     implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
     implementation("org.bstats", "bstats-base", Versions.BSTATS)
+    implementation("com.mojang", "javabridge", "1.1.23")
 }
 
 tasks {

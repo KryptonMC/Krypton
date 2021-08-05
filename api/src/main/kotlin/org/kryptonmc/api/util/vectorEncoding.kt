@@ -6,6 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
+@file:JvmName("VectorUtil")
 package org.kryptonmc.api.util
 
 import org.spongepowered.math.vector.Vector3i

@@ -23,44 +23,22 @@ object Registries {
     /**
      * The parent registry. All registries are a child of this.
      */
-    @JvmField
-    val PARENT = MANAGER.parent
+    @JvmField val PARENT = MANAGER.parent
 
     /**
-     * The registry of all sound events in the game.
+     * All built-in vanilla registries
      */
-    @JvmField
-    val SOUND_EVENT = create(ResourceKeys.SOUND_EVENT)
+    @JvmField val SOUND_EVENT = create(ResourceKeys.SOUND_EVENT)
+    @JvmField val ENTITY_TYPE = createDefaulted(ResourceKeys.ENTITY_TYPE, key("pig"))
+    @JvmField val PARTICLE_TYPE = create(ResourceKeys.PARTICLE_TYPE)
+    @JvmField val BLOCK = create(ResourceKeys.BLOCK)
+    @JvmField val ITEM = createDefaulted(ResourceKeys.ITEM, key("air"))
+    @JvmField val MENU = create(ResourceKeys.MENU)
 
     /**
-     * The registry of all types of entities in the game.
+     * Custom built-in registries
      */
-    @JvmField
-    val ENTITY_TYPE = createDefaulted(ResourceKeys.ENTITY_TYPE, key("pig"))
-
-    /**
-     * The registry of all types of particles in the game.
-     */
-    @JvmField
-    val PARTICLE_TYPE = create(ResourceKeys.PARTICLE_TYPE)
-
-    /**
-     * The registry of all gamerules in the game.
-     */
-    @JvmField
-    val GAMERULES = create(ResourceKeys.GAMERULES)
-
-    /**
-     * The registry of all blocks in the game.
-     */
-    @JvmField
-    val BLOCK = create(ResourceKeys.BLOCK)
-
-    /**
-     * The registry of all item types in the game.
-     */
-    @JvmField
-    val ITEM = createDefaulted(ResourceKeys.ITEM, key("air"))
+    @JvmField val GAMERULES = create(ResourceKeys.GAMERULES)
 
     /**
      * Registers a new entry to the given [registry], with the given [key] mapped to

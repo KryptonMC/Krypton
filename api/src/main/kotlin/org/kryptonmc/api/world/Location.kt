@@ -76,6 +76,7 @@ class Location @JvmOverloads constructor(
         /**
          * A constant for the location at the centre of the world with 0 yaw and 0 pitch.
          */
+        @JvmField
         val ZERO = Location(0.0, 0.0, 0.0, 0F, 0F)
     }
 }

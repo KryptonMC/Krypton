@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.inventory
 
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.inventory.InventoryType
@@ -115,7 +116,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
 
     companion object {
 
-        private val TYPE = InventoryType.PLAYER
         private const val SIZE = 46
+        private val TYPE = InventoryType(Key.key("krypton", "inventory/player"), SIZE)
     }
 }

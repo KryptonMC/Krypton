@@ -11,7 +11,10 @@ package org.kryptonmc.api.inventory
 import org.kryptonmc.api.item.ItemStack
 
 /**
- * Represents an inventory that holds [ItemStack]s
+ * Represents an inventory that holds [ItemStack]s.
+ *
+ * All get operations in [Inventory] and **all of its subtypes** will return
+ * [ItemStack.empty] to represent the absence of a value, rather than null.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 interface Inventory : Iterable<ItemStack> {
@@ -40,7 +43,7 @@ interface Inventory : Iterable<ItemStack> {
      * Retrieve an item from this inventory at the specified [index]
      *
      * @param index the index (slot, starts from 0) of the item to retrieve
-     * @return the item at that slot, or [ItemStack.EMPTY] if there is no item
+     * @return the item at that slot, or [ItemStack.empty] if there is no item
      * at that slot
      * @throws ArrayIndexOutOfBoundsException if [index] is out of bounds
      * (not in 0 <= [index] < [size])

@@ -13,6 +13,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.Particle
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
@@ -39,6 +40,7 @@ object ResourceKeys {
     @JvmField val BLOCK = minecraft<Block>("block")
     @JvmField val ITEM = minecraft<ItemType>("item")
     @JvmField val DIMENSION = minecraft<World>("dimension")
+    @JvmField val MENU = minecraft<InventoryType>("menu")
 
     /**
      * Custom built-in registries

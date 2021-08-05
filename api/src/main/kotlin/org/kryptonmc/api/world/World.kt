@@ -316,16 +316,19 @@ interface World : ForwardingAudience {
         /**
          * The resource key for the overworld dimension.
          */
+        @JvmField
         val OVERWORLD = ResourceKey.of(ResourceKeys.DIMENSION, Key.key("overworld"))
 
         /**
          * The resource key for the nether dimension.
          */
+        @JvmField
         val NETHER = ResourceKey.of(ResourceKeys.DIMENSION, Key.key("the_nether"))
 
         /**
          * The resource key for the end dimension.
          */
+        @JvmField
         val END = ResourceKey.of(ResourceKeys.DIMENSION, Key.key("the_end"))
     }
 }

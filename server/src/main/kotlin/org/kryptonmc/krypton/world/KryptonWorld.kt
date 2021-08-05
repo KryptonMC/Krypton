@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.world
 
 import com.mojang.serialization.Codec
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
@@ -36,7 +35,6 @@ import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameVersion
 import org.kryptonmc.api.world.World
-import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.ServerInfo
@@ -56,14 +54,11 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.forEachInRange
 import org.kryptonmc.krypton.util.lerp
-import org.kryptonmc.krypton.util.synchronize
 import org.kryptonmc.krypton.world.biome.BiomeManager
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.chunk.ChunkStatus

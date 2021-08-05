@@ -16,6 +16,7 @@ import java.util.ServiceLoader
 /**
  * Gets a service provider's implementation from a [service loader][java.util.ServiceLoader]
  */
+@JvmSynthetic
 inline fun <reified T> service(): T? = Services.service(T::class.java).getIfPresent()
 
 private val LOGGER = LogManager.getLogger(Server::class.java)
