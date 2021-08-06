@@ -35,7 +35,7 @@ fun CompoundTag.toBlock(): Block {
     if (!contains("Name", StringTag.ID)) return Blocks.AIR
     var block = BlockLoader.fromKey(getString("Name").toKey()) ?: error("No block found with key ${getString("Name")}!")
     if (contains("Properties", CompoundTag.ID)) {
-        block = block.withProperties(getCompound("Properties").transform { it.key to (it.value as StringTag).value })
+        block = block.copy(getCompound("Properties").transform { it.key to (it.value as StringTag).value })
     }
     return block
 }

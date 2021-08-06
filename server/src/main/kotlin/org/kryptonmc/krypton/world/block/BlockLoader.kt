@@ -33,9 +33,9 @@ import java.util.concurrent.ConcurrentHashMap
 
 object BlockLoader {
 
-    private val KEY_MAP = mutableMapOf<String, Block>()
+    private val KEY_MAP = mutableMapOf<String, KryptonBlock>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
-    val STATE_MAP = Int2ObjectOpenHashMap<Block>()
+    val STATE_MAP = Int2ObjectOpenHashMap<KryptonBlock>()
 
     private val LOGGER = logger<BlockLoader>()
     @JvmStatic @Volatile private var isLoaded = false
@@ -66,18 +66,18 @@ object BlockLoader {
         isLoaded = true
     }
 
-    fun fromKey(key: String): Block? {
+    fun fromKey(key: String): KryptonBlock? {
         val id = if (key.indexOf(':') == -1) "minecraft:$key" else key
         return KEY_MAP[id]
     }
 
     fun fromKey(key: Key) = fromKey(key.asString())
 
-    private fun fromState(stateId: Int): Block? = STATE_MAP[stateId]
+    private fun fromState(stateId: Int): KryptonBlock? = STATE_MAP[stateId]
 
-    fun properties(key: String, properties: Map<String, String>): Block? = PROPERTY_MAP[key]?.properties?.get(properties)
+    fun properties(key: String, properties: Map<String, String>): KryptonBlock? = PROPERTY_MAP[key]?.properties?.get(properties)
 
-    private fun JsonObject.retrieveState(key: String, blockObject: JsonObject): Pair<Map<String, String>, Block> {
+    private fun JsonObject.retrieveState(key: String, blockObject: JsonObject): Pair<Map<String, String>, KryptonBlock> {
         val stateId = get("stateId").asInt
         val propertyMap = get("properties").asJsonObject.entrySet().associate { it.key to it.value.asString.lowercase() }
         val block = KryptonBlock(BlockData(Key.key(key), blockObject, this), propertyMap)
@@ -88,5 +88,5 @@ object BlockLoader {
 
 private class PropertyEntry {
 
-    val properties = ConcurrentHashMap<Map<String, String>, Block>()
+    val properties = ConcurrentHashMap<Map<String, String>, KryptonBlock>()
 }

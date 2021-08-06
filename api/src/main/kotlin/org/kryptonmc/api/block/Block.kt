@@ -10,7 +10,7 @@ package org.kryptonmc.api.block
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.TranslatableComponent
-import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.block.property.PropertyHolder
 import org.kryptonmc.api.item.ItemLike
 
 /**
@@ -22,7 +22,7 @@ import org.kryptonmc.api.item.ItemLike
  * technical standpoint, reduces allocations, but also makes
  * them much more thread-safe.
  */
-interface Block : ItemLike, Comparable<Block> {
+interface Block : PropertyHolder<Block>, ItemLike, Comparable<Block> {
 
     /**
      * The key associated with this block.
@@ -170,41 +170,4 @@ interface Block : ItemLike, Comparable<Block> {
      * of this block.
      */
     val translation: TranslatableComponent
-
-    /**
-     * This block's properties.
-     */
-    val properties: Map<String, String>
-
-    /**
-     * Gets the value of the property with the specified [key],
-     * or null if there is no value associated with the given
-     * [key].
-     *
-     * @param key the key
-     * @return the value of the property, or null if not present
-     */
-    fun getProperty(key: String) = properties[key]
-
-    /**
-     * Creates a new [Block] with the property with key [key]
-     * set to the value [value].
-     *
-     * @param key the key
-     * @param value the value
-     * @return a new block with the applied property
-     */
-    @Contract("_ -> new", pure = true)
-    fun withProperty(key: String, value: String): Block
-
-    /**
-     * Creates a new [Block] with the given [properties] applied
-     * to it.
-     */
-    @Contract("_ -> new", pure = true)
-    fun withProperties(properties: Map<String, String>): Block {
-        var block = this
-        properties.forEach { block = block.withProperty(it.key, it.value) }
-        return block
-    }
 }

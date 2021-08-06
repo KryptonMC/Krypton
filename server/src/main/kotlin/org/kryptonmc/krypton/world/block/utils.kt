@@ -33,7 +33,7 @@ private val DIRECT_BLOCK_CODEC: Codec<Block> = RecordCodecBuilder.create {
     it.group(
         KEY_CODEC.fieldOf("Name").forGetter(Block::key),
         Codec.unboundedMap(Codec.STRING, Codec.STRING).fieldOf("Properties").forGetter(Block::properties)
-    ).apply(it) { key, properties -> BlockLoader.fromKey(key)!!.withProperties(properties) }
+    ).apply(it) { key, properties -> BlockLoader.fromKey(key)!!.copy(properties) }
 }
 
 val BLOCK_CODEC: Codec<Block> = InternalRegistries.BLOCK.dispatch("Name", { it }) { DIRECT_BLOCK_CODEC }.stable()

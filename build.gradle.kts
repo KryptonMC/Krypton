@@ -4,6 +4,6 @@ plugins {
 
 allprojects {
     group = "org.kryptonmc"
-    version = "0.30"
+    version = "0.31"
     description = "A fast, lightweight Minecraft server written in Kotlin"
 }

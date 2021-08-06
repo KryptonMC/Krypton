@@ -24,11 +24,12 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.registry.block.BlockData
+import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
 class KryptonBlock(
     data: BlockData,
     override val properties: Map<String, String>
-) : Block {
+) : KryptonPropertyHolder<Block>(), Block {
 
     override val key = data.key
     override val id = data.id
@@ -61,9 +62,14 @@ class KryptonBlock(
     override val translation = Component.translatable(data.translationKey)
     private val itemKey = data.itemKey
 
-    override fun withProperty(key: String, value: String): Block {
-        val properties = properties.toMutableMap().apply { put(key, value) }
-        return requireNotNull(BlockLoader.properties(this.key.asString(), properties)) { "Invalid properties: $key:$value" }
+    override fun copy(key: String, value: String): Block {
+        val newProperties = properties + (key to value)
+        return requireNotNull(BlockLoader.properties(this.key.asString(), newProperties)) { "Invalid property $key:$value for block ${this.key}!" }
+    }
+
+    override fun copy(newValues: Map<String, String>): KryptonBlock {
+        val newProperties = properties + newValues
+        return requireNotNull(BlockLoader.properties(key.asString(), newProperties)) { "Invalid properties $properties for block $key!" }
     }
 
     override fun asItem() = itemKey?.let { InternalRegistries.ITEM[it] }
