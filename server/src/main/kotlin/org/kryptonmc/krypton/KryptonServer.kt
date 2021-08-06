@@ -27,7 +27,6 @@ import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.apache.logging.log4j.LogManager
-import org.kryptonmc.api.Platform
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.event.server.ServerStartEvent
@@ -56,6 +55,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutServerDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.registry.json.RegistryBlock
@@ -92,7 +92,6 @@ import java.security.SecureRandom
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import java.util.Properties
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.absolutePathString

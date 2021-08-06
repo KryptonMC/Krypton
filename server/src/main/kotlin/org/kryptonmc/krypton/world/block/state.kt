@@ -28,12 +28,12 @@ import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
 
 val BLOCKS = IdMapper<Block>().apply {
-    KryptonBlockLoader.STATE_MAP.forEach { set(it.value, it.key) }
+    BlockLoader.STATE_MAP.forEach { set(it.value, it.key) }
 }
 
 fun CompoundTag.toBlock(): Block {
     if (!contains("Name", StringTag.ID)) return Blocks.AIR
-    var block = KryptonBlockLoader.fromKey(getString("Name").toKey()) ?: error("No block found with key ${getString("Name")}!")
+    var block = BlockLoader.fromKey(getString("Name").toKey()) ?: error("No block found with key ${getString("Name")}!")
     if (contains("Properties", CompoundTag.ID)) {
         block = block.withProperties(getCompound("Properties").transform { it.key to (it.value as StringTag).value })
     }

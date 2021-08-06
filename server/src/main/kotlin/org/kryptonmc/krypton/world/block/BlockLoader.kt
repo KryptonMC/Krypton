@@ -23,22 +23,21 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.internal.BlockLoader
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.KryptonPlatform
+import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.registry.block.BlockData
 import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.ConcurrentHashMap
 
-object KryptonBlockLoader : BlockLoader {
+object BlockLoader {
 
     private val KEY_MAP = mutableMapOf<String, Block>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
-    private val ID_MAP = Int2ObjectOpenHashMap<Block>()
     val STATE_MAP = Int2ObjectOpenHashMap<Block>()
 
-    private val LOGGER = logger<KryptonBlockLoader>()
+    private val LOGGER = logger<BlockLoader>()
     @JvmStatic @Volatile private var isLoaded = false
 
     fun init() {
@@ -59,24 +58,20 @@ object KryptonBlockLoader : BlockLoader {
             }
             val defaultState = value["defaultStateId"].asInt
             val defaultBlock = fromState(defaultState)!!
-            val id = value["id"].asInt
-            ID_MAP[id] = defaultBlock
             KEY_MAP[key] = defaultBlock
             PROPERTY_MAP[key] = propertyEntry
-            if (Registries.BLOCK.contains(Key.key(key))) return@forEach
-            Registries.register(Registries.BLOCK, key, defaultBlock)
+            if (InternalRegistries.BLOCK.contains(Key.key(key))) return@forEach
+            KryptonRegistryManager.register(InternalRegistries.BLOCK, key, defaultBlock)
         }
         isLoaded = true
     }
 
-    override fun fromKey(key: String): Block? {
+    fun fromKey(key: String): Block? {
         val id = if (key.indexOf(':') == -1) "minecraft:$key" else key
         return KEY_MAP[id]
     }
 
-    override fun fromKey(key: Key) = fromKey(key.asString())
-
-    fun fromId(id: Int): Block? = ID_MAP[id]
+    fun fromKey(key: Key) = fromKey(key.asString())
 
     private fun fromState(stateId: Int): Block? = STATE_MAP[stateId]
 

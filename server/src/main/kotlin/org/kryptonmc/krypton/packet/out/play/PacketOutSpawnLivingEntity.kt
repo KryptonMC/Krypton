@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.Angle
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.writeAngle
@@ -33,7 +34,7 @@ class PacketOutSpawnLivingEntity(private val entity: KryptonLivingEntity) : Play
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entity.id)
         buf.writeUUID(entity.uuid)
-        buf.writeVarInt(Registries.ENTITY_TYPE.idOf(entity.type))
+        buf.writeVarInt(InternalRegistries.ENTITY_TYPE.idOf(entity.type))
         buf.writeDouble(entity.location.x)
         buf.writeDouble(entity.location.y)
         buf.writeDouble(entity.location.z)

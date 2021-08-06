@@ -28,30 +28,39 @@ object Registries {
     /**
      * All built-in vanilla registries
      */
-    @JvmField val SOUND_EVENT = create(ResourceKeys.SOUND_EVENT)
-    @JvmField val ENTITY_TYPE = createDefaulted(ResourceKeys.ENTITY_TYPE, key("pig"))
-    @JvmField val PARTICLE_TYPE = create(ResourceKeys.PARTICLE_TYPE)
-    @JvmField val BLOCK = create(ResourceKeys.BLOCK)
-    @JvmField val ITEM = createDefaulted(ResourceKeys.ITEM, key("air"))
-    @JvmField val MENU = create(ResourceKeys.MENU)
+    @JvmField val SOUND_EVENT = get(ResourceKeys.SOUND_EVENT)!!
+    @JvmField val ENTITY_TYPE = getDefaulted(ResourceKeys.ENTITY_TYPE)!!
+    @JvmField val PARTICLE_TYPE = get(ResourceKeys.PARTICLE_TYPE)!!
+    @JvmField val BLOCK = get(ResourceKeys.BLOCK)!!
+    @JvmField val ITEM = getDefaulted(ResourceKeys.ITEM)!!
+    @JvmField val MENU = get(ResourceKeys.MENU)!!
+    @JvmField val ATTRIBUTE = get(ResourceKeys.ATTRIBUTE)!!
 
     /**
      * Custom built-in registries
      */
     @JvmField val GAMERULES = create(ResourceKeys.GAMERULES)
+    @JvmField val MODIFIER_OPERATIONS = create(ResourceKeys.MODIFIER_OPERATIONS)
 
     /**
-     * The registry of all attribute types in the game.
+     * Gets the existing registry with the given resource [key], or returns null
+     * if there is no existing registry with the given resource [key].
+     *
+     * @param key the key
+     * @return the existing registry, or null if not present
      */
-    @JvmField
-    val ATTRIBUTE = create(ResourceKeys.ATTRIBUTE)
+    operator fun <T : Any> get(key: ResourceKey<out Registry<T>>): Registry<T>? = MANAGER[key]
 
     /**
-     * The registry of all attribute [org.kryptonmc.api.entity.attribute.ModifierOperation]s
-     * in the game.
+     * Gets the existing defaulted registry with the given resource [key], or
+     * returns null if there is no existing defaulted registry with the given
+     * resource [key].
+     *
+     * @param key the key
+     * @return the existing defaulted registry, or null if not present
      */
-    @JvmField
-    val MODIFIER_OPERATIONS = create(ResourceKeys.MODIFIER_OPERATIONS)
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Any> getDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = MANAGER.getDefaulted(key)
 
     /**
      * Registers a new entry to the given [registry], with the given [key] mapped to

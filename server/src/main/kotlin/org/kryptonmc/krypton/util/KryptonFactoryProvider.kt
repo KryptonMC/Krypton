@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.util
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
-import org.kryptonmc.api.block.internal.BlockLoader
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.util.FactoryNotFoundException
@@ -28,7 +27,7 @@ import org.kryptonmc.api.world.biome.BiomeFactory
 import org.kryptonmc.krypton.item.KryptonItemStackFactory
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.world.biome.KryptonBiomeFactory
-import org.kryptonmc.krypton.world.block.KryptonBlockLoader
+import org.kryptonmc.krypton.world.block.BlockLoader
 
 class KryptonFactoryProvider : FactoryProvider {
 
@@ -44,8 +43,7 @@ class KryptonFactoryProvider : FactoryProvider {
 
     fun bootstrap() {
         register<RegistryManager>(KryptonRegistryManager)
-        KryptonBlockLoader.init()
-        register<BlockLoader>(KryptonBlockLoader)
+        BlockLoader.init()
         register<ItemStack.Factory>(KryptonItemStackFactory)
         register<BiomeFactory>(KryptonBiomeFactory)
     }

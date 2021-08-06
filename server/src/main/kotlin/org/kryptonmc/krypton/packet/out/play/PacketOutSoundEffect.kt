@@ -24,6 +24,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -42,7 +43,7 @@ class PacketOutSoundEffect(
     constructor(sound: Sound, event: SoundEvent, position: Position) : this(sound, event, position.x, position.y, position.z)
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(Registries.SOUND_EVENT.idOf(event))
+        buf.writeVarInt(InternalRegistries.SOUND_EVENT.idOf(event))
         buf.writeEnum(sound.source())
         buf.writeInt(x)
         buf.writeInt(y)

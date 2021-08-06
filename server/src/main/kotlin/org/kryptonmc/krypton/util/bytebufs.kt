@@ -50,6 +50,7 @@ import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.locale.TranslationManager
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.io.TagCompression
@@ -208,7 +209,7 @@ fun ByteBuf.readItem(): KryptonItemStack {
     val id = readVarInt()
     val count = readByte()
     val nbt = readNBT().mutable()
-    return KryptonItemStack(Registries.ITEM[id]!!, count.toInt(), KryptonMetaHolder(nbt))
+    return KryptonItemStack(InternalRegistries.ITEM[id], count.toInt(), KryptonMetaHolder(nbt))
 }
 
 fun ByteBuf.writeItem(item: KryptonItemStack) {
@@ -217,7 +218,7 @@ fun ByteBuf.writeItem(item: KryptonItemStack) {
         return
     }
     writeBoolean(true)
-    writeVarInt(Registries.ITEM.idOf(item.type))
+    writeVarInt(InternalRegistries.ITEM.idOf(item.type))
     writeByte(item.amount)
     writeNBT(item.meta.nbt)
 }
@@ -243,7 +244,7 @@ fun ByteBuf.writeVector(x: Int, y: Int, z: Int) {
 }
 
 fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
-    writeInt(Registries.PARTICLE_TYPE.idOf(particle.type))
+    writeInt(InternalRegistries.PARTICLE_TYPE.idOf(particle.type))
     writeBoolean(particle.longDistance)
 
     val data = particle.data

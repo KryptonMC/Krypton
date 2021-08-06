@@ -22,6 +22,27 @@ interface RegistryManager {
     val parent: Registry<out Registry<out Any>>
 
     /**
+     * Gets the existing registry with the given resource [key], or returns null
+     * if there is no existing registry with the given resource [key].
+     *
+     * @param key the key
+     * @return the existing registry, or null if not present
+     */
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T : Any> get(key: ResourceKey<out Registry<T>>): Registry<T>? = parent[key] as? Registry<T>
+
+    /**
+     * Gets the existing defaulted registry with the given resource [key], or
+     * returns null if there is no existing defaulted registry with the given
+     * resource [key].
+     *
+     * @param key the key
+     * @return the existing defaulted registry, or null if not present
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Any> getDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = parent[key] as? DefaultedRegistry<T>
+
+    /**
      * Registers a new entry to the given [registry], with the given [key] mapped to
      * the given [value].
      *

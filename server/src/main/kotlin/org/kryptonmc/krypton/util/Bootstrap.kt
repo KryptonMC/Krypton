@@ -27,8 +27,6 @@ import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.util.FACTORY_PROVIDER
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
@@ -42,7 +40,6 @@ import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.item.meta.MetaFactory
 import org.kryptonmc.krypton.locale.TranslationBootstrap
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.tags.BlockTags
 import org.kryptonmc.krypton.tags.EntityTypeTags
 import org.kryptonmc.krypton.tags.FluidTags
@@ -70,12 +67,9 @@ object Bootstrap {
         TranslationBootstrap.init()
 
         // Preload all the registry classes to ensure everything is properly registered
-        RegistryRoots
-        ResourceKeys
+        InternalRegistries
         (FACTORY_PROVIDER as KryptonFactoryProvider).bootstrap()
         Registries
-        InternalResourceKeys
-        InternalRegistries
         Blocks
         GameEvents
         ParticleType
@@ -124,10 +118,10 @@ object Bootstrap {
     private val missingTranslations: Set<String>
         get() {
             val missing = TreeSet<String>()
-            Registries.ATTRIBUTE.values.checkTranslations(missing) { it.translation.key() }
-            Registries.ENTITY_TYPE.values.checkTranslations(missing) { it.name.key() }
-            Registries.BLOCK.values.checkTranslations(missing) { it.translation.key() }
-            Registries.ITEM.values.checkTranslations(missing) { it.translation.key() }
+            InternalRegistries.ATTRIBUTE.values.checkTranslations(missing) { it.translation.key() }
+            InternalRegistries.ENTITY_TYPE.values.checkTranslations(missing) { it.name.key() }
+            InternalRegistries.BLOCK.values.checkTranslations(missing) { it.translation.key() }
+            InternalRegistries.ITEM.values.checkTranslations(missing) { it.translation.key() }
             Registries.GAMERULES.values.checkTranslations(missing) { it.translation.key() }
             return missing
         }

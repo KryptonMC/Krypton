@@ -72,7 +72,7 @@ import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.toSkinSettings
-import org.kryptonmc.krypton.world.block.KryptonBlockLoader
+import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.util.Locale
 
@@ -230,7 +230,7 @@ class PlayHandler(
         if (existingBlock != Blocks.AIR) return
 
         val item = player.inventory.mainHand
-        val block = KryptonBlockLoader.fromKey(item.type.key) ?: return
+        val block = BlockLoader.fromKey(item.type.key) ?: return
         chunk.setBlock(packet.hitResult.position, block)
     }
 

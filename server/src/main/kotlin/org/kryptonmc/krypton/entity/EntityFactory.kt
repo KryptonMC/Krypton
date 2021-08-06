@@ -24,6 +24,7 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -45,7 +46,7 @@ object EntityFactory {
         world: KryptonWorld,
         nbt: CompoundTag
     ): KryptonEntity? = try {
-        create(Registries.ENTITY_TYPE[Key.key(nbt.getString("id"))], world)?.apply { load(nbt) } ?: run {
+        create(InternalRegistries.ENTITY_TYPE[Key.key(nbt.getString("id"))], world)?.apply { load(nbt) } ?: run {
             LOGGER.warn("No entity found with ID ${nbt.getString("id")}")
             return null
         }

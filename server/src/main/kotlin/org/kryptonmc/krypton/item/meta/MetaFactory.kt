@@ -24,7 +24,7 @@ import org.kryptonmc.api.item.meta.MetaKey
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.krypton.adventure.toJsonComponent
 import org.kryptonmc.krypton.item.ItemFlag
-import org.kryptonmc.krypton.world.block.KryptonBlockLoader
+import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.nbt.ByteTag
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
@@ -98,7 +98,7 @@ private fun hideFlagsSerializer(flag: ItemFlag) = ItemMetaSerializer(
 private val BLOCK_LIST_META_SERIALIZER = ItemMetaSerializer(
     { nbt ->
         val blocks = mutableListOf<Block>()
-        nbt.getList("CanDestroy", StringTag.ID).forEachString { key -> KryptonBlockLoader.fromKey(key)?.let { blocks.add(it) } }
+        nbt.getList("CanDestroy", StringTag.ID).forEachString { key -> BlockLoader.fromKey(key)?.let { blocks.add(it) } }
         blocks
     },
     { nbt, blocks -> nbt["CanDestroy"] = ListTag(blocks.mapTo(mutableListOf()) { StringTag.of(it.key.asString()) }) },

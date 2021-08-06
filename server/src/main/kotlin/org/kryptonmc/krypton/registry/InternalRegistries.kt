@@ -18,27 +18,35 @@
  */
 package org.kryptonmc.krypton.registry
 
-import com.mojang.serialization.Codec
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.entity.memory.MemoryKey
-import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
-import org.kryptonmc.krypton.world.generation.Generator
-import org.kryptonmc.krypton.world.generation.feature.Feature
-import org.kryptonmc.krypton.world.generation.feature.Structure
+import net.kyori.adventure.key.Key.key
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.resource.ResourceKeys
 
 object InternalRegistries {
 
-    val MEMORIES = Registries.create(InternalResourceKeys.MEMORIES) as KryptonRegistry<MemoryKey<Any>>
-    val GAME_EVENT = Registries.create(InternalResourceKeys.GAME_EVENT)
-    val FLUID = Registries.createDefaulted(InternalResourceKeys.FLUID, Key.key("empty"))
-    val BIOME = Registries.create(InternalResourceKeys.BIOME)
+    val SOUND_EVENT = create(ResourceKeys.SOUND_EVENT)
+    val ENTITY_TYPE = createDefaulted(ResourceKeys.ENTITY_TYPE, key("pig"))
+    val PARTICLE_TYPE = create(ResourceKeys.PARTICLE_TYPE)
+    val BLOCK = create(ResourceKeys.BLOCK)
+    val ITEM = createDefaulted(ResourceKeys.ITEM, key("air"))
+    val MENU = create(ResourceKeys.MENU)
+    val ATTRIBUTE = create(ResourceKeys.ATTRIBUTE)
+    val MEMORIES = create(InternalResourceKeys.MEMORIES)
+    val GAME_EVENT = create(InternalResourceKeys.GAME_EVENT)
+    val FLUID = createDefaulted(InternalResourceKeys.FLUID, key("empty"))
+    val BIOME = create(InternalResourceKeys.BIOME)
 
     // World generation registries
-    val GENERATOR = Registries.create(InternalResourceKeys.GENERATOR) as KryptonRegistry<Codec<out Generator>>
-    val BIOME_GENERATOR = Registries.create(InternalResourceKeys.BIOME_GENERATOR) as KryptonRegistry<Codec<out BiomeGenerator>>
-    val FEATURE = Registries.create(InternalResourceKeys.FEATURE) as KryptonRegistry<Feature<*>>
-    val STRUCTURE = Registries.create(InternalResourceKeys.STRUCTURE) as KryptonRegistry<Structure<*>>
-    val NOISE_GENERATOR_SETTINGS = Registries.create(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
-    val CHUNK_STATUS = Registries.createDefaulted(InternalResourceKeys.CHUNK_STATUS, Key.key("empty"))
+    val GENERATOR = create(InternalResourceKeys.GENERATOR)
+    val BIOME_GENERATOR = create(InternalResourceKeys.BIOME_GENERATOR)
+    val FEATURE = create(InternalResourceKeys.FEATURE)
+    val STRUCTURE = create(InternalResourceKeys.STRUCTURE)
+    val NOISE_GENERATOR_SETTINGS = create(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
+    val CHUNK_STATUS = createDefaulted(InternalResourceKeys.CHUNK_STATUS, key("empty"))
+
+    private fun <T : Any> create(key: ResourceKey<out Registry<T>>) = KryptonRegistryManager.create(key)
+
+    private fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key) = KryptonRegistryManager.createDefaulted(key, defaultKey)
 }

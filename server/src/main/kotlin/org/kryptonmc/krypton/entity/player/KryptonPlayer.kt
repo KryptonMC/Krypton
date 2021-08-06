@@ -89,6 +89,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.chunkInSpiral
 import org.kryptonmc.krypton.util.logger
@@ -342,7 +343,7 @@ class KryptonPlayer(
     override fun playSound(sound: Sound) = playSound(sound, location.x, location.y, location.z)
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
-        val type = Registries.SOUND_EVENT[sound.name()]
+        val type = InternalRegistries.SOUND_EVENT[sound.name()]
         session.sendPacket(if (type != null) PacketOutSoundEffect(sound, type, Vector(x, y, z)) else PacketOutNamedSoundEffect(sound, Vector(x, y, z)))
     }
 

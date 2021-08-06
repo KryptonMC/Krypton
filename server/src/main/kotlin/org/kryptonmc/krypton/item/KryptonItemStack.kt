@@ -26,6 +26,7 @@ import org.kryptonmc.api.item.meta.MetaHolder
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
 
@@ -36,7 +37,7 @@ open class KryptonItemStack(
 ) : ItemStack {
 
     constructor(nbt: CompoundTag) : this(
-        Registries.ITEM[nbt.getString("id").toKey()],
+        InternalRegistries.ITEM[nbt.getString("id").toKey()],
         nbt.getInt("Count"),
         KryptonMetaHolder(nbt.getCompound("tag").let { if (it is MutableCompoundTag) it else it.mutable() })
     )
@@ -47,7 +48,7 @@ open class KryptonItemStack(
     }
 
     fun save(tag: MutableCompoundTag) = tag
-        .putString("id", Registries.ITEM[type].asString())
+        .putString("id", InternalRegistries.ITEM[type].asString())
         .putInt("Count", amount)
         .apply { put("tag", meta.nbt) }
 

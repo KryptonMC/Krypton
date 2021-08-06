@@ -23,6 +23,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
@@ -38,7 +39,7 @@ data class FlatLayer(
 
         val CODEC: Codec<FlatLayer> = RecordCodecBuilder.create {
             it.group(
-                (Registries.BLOCK as KryptonRegistry<Block>).fieldOf("block").orElse(Blocks.AIR).forGetter(FlatLayer::block),
+                InternalRegistries.BLOCK.fieldOf("block").orElse(Blocks.AIR).forGetter(FlatLayer::block),
                 Codec.intRange(0, KryptonDimensionType.Y_SIZE).fieldOf("height").forGetter(FlatLayer::height)
             ).apply(it, ::FlatLayer)
         }

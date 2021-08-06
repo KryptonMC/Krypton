@@ -22,8 +22,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockHandler
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.world.block.handler.DummyBlockHandler
 
@@ -34,7 +33,7 @@ private val DIRECT_BLOCK_CODEC: Codec<Block> = RecordCodecBuilder.create {
     it.group(
         KEY_CODEC.fieldOf("Name").forGetter(Block::key),
         Codec.unboundedMap(Codec.STRING, Codec.STRING).fieldOf("Properties").forGetter(Block::properties)
-    ).apply(it) { key, properties -> KryptonBlockLoader.fromKey(key)!!.withProperties(properties) }
+    ).apply(it) { key, properties -> BlockLoader.fromKey(key)!!.withProperties(properties) }
 }
 
-val BLOCK_CODEC: Codec<Block> = (Registries.BLOCK as KryptonRegistry<Block>).dispatch("Name", { it }) { DIRECT_BLOCK_CODEC }.stable()
+val BLOCK_CODEC: Codec<Block> = InternalRegistries.BLOCK.dispatch("Name", { it }) { DIRECT_BLOCK_CODEC }.stable()
