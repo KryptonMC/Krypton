@@ -29,7 +29,6 @@ import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
-import org.kryptonmc.api.status.StatusInfo
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
 
@@ -47,7 +46,6 @@ class GlobalModule(
         bind<ServicesManager>().toInstance(server.servicesManager)
         bind<EventManager>().toInstance(server.eventManager)
         bind<Scheduler>().toInstance(server.scheduler)
-        bind<StatusInfo>().toInstance(server.status)
         bind<ConsoleSender>().toInstance(server.console)
 
         pluginContainers.forEach {

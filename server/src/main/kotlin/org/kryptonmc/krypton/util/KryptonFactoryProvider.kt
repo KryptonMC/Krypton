@@ -23,10 +23,8 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.util.FactoryNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
-import org.kryptonmc.api.world.biome.BiomeFactory
 import org.kryptonmc.krypton.item.KryptonItemStackFactory
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
-import org.kryptonmc.krypton.world.biome.KryptonBiomeFactory
 import org.kryptonmc.krypton.world.block.BlockLoader
 
 class KryptonFactoryProvider : FactoryProvider {
@@ -45,7 +43,6 @@ class KryptonFactoryProvider : FactoryProvider {
         register<RegistryManager>(KryptonRegistryManager)
         BlockLoader.init()
         register<ItemStack.Factory>(KryptonItemStackFactory)
-        register<BiomeFactory>(KryptonBiomeFactory)
     }
 }
 

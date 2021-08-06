@@ -33,7 +33,6 @@ import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.ticking.TickEndEvent
 import org.kryptonmc.api.event.ticking.TickStartEvent
-import org.kryptonmc.api.status.StatusInfo
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.World
@@ -55,7 +54,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutServerDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.registry.json.RegistryBlock
@@ -114,7 +112,8 @@ class KryptonServer(
 ) : Server {
 
     override val platform = KryptonPlatform
-    override val status = KryptonStatusInfo(config.status.maxPlayers, config.status.motd)
+    override val maxPlayers = config.status.maxPlayers
+    override val motd = config.status.motd
 
     override val isOnline = config.server.onlineMode
     override var isHardcore: Boolean
@@ -446,7 +445,7 @@ class KryptonServer(
     }
 
     private fun fillReport(report: CrashReport): CrashReport = report.apply {
-        systemDetails["Player Count"] = { "${playerManager.players.size} / ${status.maxPlayers}" }
+        systemDetails["Player Count"] = { "${playerManager.players.size} / $maxPlayers" }
     }
 
     companion object {
@@ -462,11 +461,6 @@ class KryptonServer(
         private val LOGGER = logger<KryptonServer>()
     }
 }
-
-data class KryptonStatusInfo(
-    override val maxPlayers: Int,
-    override val motd: Component
-) : StatusInfo
 
 val CURRENT_DIRECTORY: Path = Path.of("").toAbsolutePath()
 

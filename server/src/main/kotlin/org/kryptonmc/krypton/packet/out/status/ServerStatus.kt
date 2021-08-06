@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.auth.GameProfile
 import java.lang.reflect.Type
 
 class ServerStatus(
-    var motd: Component,
+    val motd: Component,
     val players: Players,
     val favicon: String?
 ) {

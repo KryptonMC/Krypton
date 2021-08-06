@@ -108,7 +108,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             server.updateConfig()
         }
 
-    val status = ServerStatus(server.status.motd, ServerStatus.Players(server.status.maxPlayers, players.size), null)
+    val status = ServerStatus(server.motd, ServerStatus.Players(server.maxPlayers, players.size), null)
     private var lastStatus = 0L
 
     fun add(player: KryptonPlayer, session: Session): CompletableFuture<Void> = dataManager.load(player).thenAccept { nbt ->
@@ -137,7 +137,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             world.dimensionType,
             world.dimension,
             Hashing.sha256().hashLong(server.worldData.worldGenerationSettings.seed).asLong(),
-            server.status.maxPlayers,
+            server.maxPlayers,
             server.config.world.viewDistance,
             reducedDebugInfo,
             doImmediateRespawn,

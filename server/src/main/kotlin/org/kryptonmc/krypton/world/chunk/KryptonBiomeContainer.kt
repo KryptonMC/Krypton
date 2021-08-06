@@ -58,6 +58,14 @@ class KryptonBiomeContainer private constructor(
         val offZ = z and HORIZONTAL_MASK
         return biomes[offY shl WIDTH_BITS + WIDTH_BITS or (offZ shl WIDTH_BITS) or offX]
     }
+
+    override fun set(x: Int, y: Int, z: Int, biome: Biome) {
+        if (biome !is KryptonBiome) return
+        val offX = x and HORIZONTAL_MASK
+        val offY = (y - quartMinY).clamp(0, quartHeight)
+        val offZ = z and HORIZONTAL_MASK
+        biomes[offY shl WIDTH_BITS + WIDTH_BITS or (offZ shl WIDTH_BITS) or offX] = biome
+    }
 }
 
 private val WIDTH_BITS = 16.ceillog2() - 2

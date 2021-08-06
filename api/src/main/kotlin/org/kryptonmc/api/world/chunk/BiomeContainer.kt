@@ -29,4 +29,15 @@ interface BiomeContainer {
      * @return the biome
      */
     operator fun get(x: Int, y: Int, z: Int): Biome
+
+    /**
+     * Sets the biome located at the specified coordinates to the specified
+     * [biome].
+     *
+     * @param x the X coordinate
+     * @param y the Y coordinate
+     * @param z the Z coordinate
+     * @param biome the new biome
+     */
+    operator fun set(x: Int, y: Int, z: Int, biome: Biome)
 }

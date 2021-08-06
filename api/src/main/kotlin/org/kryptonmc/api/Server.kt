@@ -22,7 +22,6 @@ import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
-import org.kryptonmc.api.status.StatusInfo
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.WorldManager
@@ -105,9 +104,14 @@ interface Server : ForwardingAudience {
     val scheduler: Scheduler
 
     /**
-     * The status information for this server.
+     * The maximum amount of players that can be online at once.
      */
-    val status: StatusInfo
+    val maxPlayers: Int
+
+    /**
+     * The message of the day for the server.
+     */
+    val motd: Component
 
     /**
      * If this server is in online mode, meaning it authenticates
