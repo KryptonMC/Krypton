@@ -10,6 +10,7 @@ package org.kryptonmc.api.block.property
 
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.util.FACTORY_PROVIDER
+import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.util.provide
 
 /**
@@ -53,34 +54,115 @@ interface Property<T : Comparable<T>> {
     @ApiStatus.Internal
     interface Factory {
 
-        fun <T : Comparable<T>> create(name: String, type: Class<T>, values: Set<T>): Property<T>
+        fun forBoolean(name: String): Property<Boolean>
+
+        fun forInt(name: String, values: Set<Int>): Property<Int>
+
+        fun <E> forEnum(name: String, type: Class<E>, values: Set<E>): Property<E> where E : Enum<E>, E : StringSerializable
     }
 
     companion object {
 
         /**
-         * Creates a new property key with the given [name], [type], and set of
-         * accepted [values].
+         * Creates a new boolean property with the given [name].
+         *
+         * The accepted values for this property are always `true` and `false.
          *
          * @param name the name
-         * @param type the type
-         * @param values the set of accepted values
-         * @return a new property key
+         * @return a new boolean property
          */
-        fun <T : Comparable<T>> create(name: String, type: Class<T>, values: Set<T>) = FACTORY.create(name, type, values)
+        @JvmStatic
+        fun forBoolean(name: String) = FACTORY.forBoolean(name)
+
+        /**
+         * Creates a new integer property with the given [name] and the given
+         * set of accepted [values].
+         *
+         * @param name the name
+         * @param values the set of accepted values
+         * @return a new integer property
+         */
+        @JvmStatic
+        fun forInt(name: String, values: Set<Int>) = FACTORY.forInt(name, values)
+
+        /**
+         * Creates a new integer property with the given [name] and the given
+         * vararg array of accepted [values].
+         *
+         * @param name the name
+         * @param values the array of accepted values
+         * @return a new integer property
+         */
+        @JvmStatic
+        fun forInt(name: String, vararg values: Int) = forInt(name, values.toSet())
+
+        /**
+         * Creates a new integer property with the given [name] and the given
+         * [range] of accepted values.
+         *
+         * @param name the name
+         * @param range the range of accepted values
+         * @return a new integer property
+         */
+        @JvmStatic
+        fun forInt(name: String, range: IntRange) = forInt(name, range.toSet())
+
+        /**
+         * Creates a new enum property with the given [name], [type], and the given
+         * set of accepted [values].
+         *
+         * @param name the name
+         * @param type the enum class
+         * @param values the set of accepted values
+         * @return a new enum property
+         */
+        @JvmStatic
+        fun <E> forEnum(name: String, type: Class<E>, values: Set<E>) where E : Enum<E>, E : StringSerializable = FACTORY.forEnum(name, type, values)
+
+        /**
+         * Creates a new enum property with the given [name], [type], and the given
+         * array of accepted [values].
+         *
+         * @param name the name
+         * @param type the enum class
+         * @param values the array of accepted values
+         * @return a new enum property
+         */
+        @JvmStatic
+        fun <E> forEnum(
+            name: String,
+            type: Class<E>,
+            values: Array<E>
+        ) where E : Enum<E>, E : StringSerializable = FACTORY.forEnum(name, type, values.toSet())
     }
 }
 
 /**
- * Creates a new property key with the given [name], reified type [T], and
- * set of accepted [values].
+ * Creates a new enum property with the given [name] and the given set
+ * of accepted [values].
  *
  * @param name the name
  * @param values the set of accepted values
- * @param T the type
- * @return a new property key
+ * @return a new enum property
  */
 @JvmSynthetic
-inline fun <reified T : Comparable<T>> Property.Companion.create(name: String, values: Set<T>) = create(name, T::class.java, values)
+inline fun <reified E> Property.Companion.forEnum(
+    name: String,
+    values: Set<E>
+) where E : Enum<E>, E : StringSerializable = forEnum(name, E::class.java, values)
+
+/**
+ * Creates a new enum property with the given [name] and the given array
+ * of accepted [values].
+ *
+ * @param name the name
+ * @param values the array of accepted values
+ * @return a new enum property
+ */
+@JvmSynthetic
+inline fun <reified E> Property.Companion.forEnum(
+    name: String,
+    values: Array<E>
+) where E : Enum<E>, E : StringSerializable = forEnum(name, E::class.java, values)
 
 private val FACTORY = FACTORY_PROVIDER.provide<Property.Factory>()
