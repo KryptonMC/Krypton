@@ -31,7 +31,7 @@ class ItemStackArgumentType : ArgumentType<ItemStackArgument> {
     override fun parse(reader: StringReader) = ItemStackParser(reader, false).parseItem()
 
     companion object {
-        val EXAMPLES = listOf("minecraft:cookie", "cookie", "cookie{foo=bar}")
+        private val EXAMPLES = listOf("minecraft:cookie", "cookie", "cookie{foo=bar}")
     }
 
 }

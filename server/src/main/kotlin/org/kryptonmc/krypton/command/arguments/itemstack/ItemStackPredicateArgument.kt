@@ -28,6 +28,12 @@ class ItemStackPredicateArgument : ArgumentType<ItemStackPredicate> {
 
     override fun parse(reader: StringReader) = ItemStackParser(reader, true).parsePredicate()
 
+    companion object {
+
+        private val EXAMPLES = listOf("minecraft:stone", "stone", "#minecraft:boats", "stone{foo=bar}")
+
+    }
+
 }
 
 fun interface ItemStackPredicate {
