@@ -105,14 +105,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
     }
 
     override val networkItems: List<KryptonItemStack>
-        get() {
-            val list = mutableListOf<KryptonItemStack>()
-            crafting.forEach { list.add(it) }
-            armor.forEach { list.add(it) }
-            items.forEach { list.add(it) }
-            list.add(offHand)
-            return list
-        }
+        get() = (crafting + armor + items + offHand).toList()
 
     companion object {
 

@@ -61,13 +61,11 @@ object ClearCommand : InternalCommand {
     }
 
     private fun clear(targets: List<KryptonPlayer>, sender: Sender, predicate: ItemStackPredicate = ItemStackPredicate { true }, maxCount: Int = -1) {
+        val amount = if(maxCount == -1) "all" else maxCount.toString()
         if(targets.size == 1) {
             val target = targets[0]
-            for ((i, item) in target.inventory.withIndex()) {
-                if(predicate(item)) {
-                    target.inventory[i] = EmptyItemStack
-                }
-            }
+            clear(target, predicate, maxCount)
+            sender.sendMessage(translatable("commands.clear.success.single", listOf(text(amount), target.name.toComponent())))
             target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.stateId, target.inventory.networkItems, target.inventory.mainHand))
             sender.sendMessage(translatable("commands.clear.success.single", listOf(text("all"), target.name.toComponent())))
         } else {
@@ -79,7 +77,25 @@ object ClearCommand : InternalCommand {
                 }
                 target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.stateId, target.inventory.networkItems, target.inventory.mainHand))
             }
-            sender.sendMessage(translatable("commands.clear.success.multiple", listOf(text("all"), targets.size.toString().toComponent())))
+            sender.sendMessage(translatable("commands.clear.success.multiple", listOf(text(amount), targets.size.toString().toComponent())))
+        }
+    }
+
+    private fun clear(target: KryptonPlayer, predicate: ItemStackPredicate, maxCount: Int) {
+        val inv = target.inventory
+        var remaining = maxCount
+        for ((i, item) in inv.items.withIndex()) {
+            if(predicate(item)) {
+                if(remaining == -1) {
+                    inv.items[i] = EmptyItemStack
+                } else if (remaining > item.amount) {
+                    inv.items[i] = EmptyItemStack
+                    remaining -= item.amount
+                } else {
+                    item.amount -= remaining
+                    break
+                }
+            }
         }
     }
 }
