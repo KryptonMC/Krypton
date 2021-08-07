@@ -34,6 +34,7 @@ import org.kryptonmc.krypton.command.arguments.itemstack.ItemStackPredicateArgum
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.EmptyItemStack
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.util.argument
 import org.kryptonmc.krypton.util.toComponent
@@ -84,18 +85,40 @@ object ClearCommand : InternalCommand {
     private fun clear(target: KryptonPlayer, predicate: ItemStackPredicate, maxCount: Int) {
         val inv = target.inventory
         var remaining = maxCount
-        for ((i, item) in inv.items.withIndex()) {
+
+        //Clear inventory items
+        remaining = clearList(predicate, remaining, inv.items.withIndex()) { inv.items[it] = EmptyItemStack }
+        if(remaining == 0) return
+
+        //Clear armor items
+        remaining = clearList(predicate, remaining, inv.armor.withIndex()) { inv.armor[it] = EmptyItemStack }
+        if(remaining == 0) return
+
+        //Clear crafting items
+        remaining = clearList(predicate, remaining, inv.crafting.withIndex()) { inv.crafting[it] = EmptyItemStack }
+        if(remaining == 0) return
+
+        //Clear offhand
+        clearList(predicate, remaining, listOf(inv.offHand).withIndex()) { inv.offHand = EmptyItemStack }
+    }
+
+    private fun clearList(predicate: ItemStackPredicate, originalRemaining: Int, withIndex: Iterable<IndexedValue<KryptonItemStack>>, removeItem: (Int) -> Unit) : Int {
+        var remaining = originalRemaining
+        for ((i, item) in withIndex) {
             if(predicate(item)) {
                 if(remaining == -1) {
-                    inv.items[i] = EmptyItemStack
+                    removeItem(i)
                 } else if (remaining > item.amount) {
-                    inv.items[i] = EmptyItemStack
+                    removeItem(i)
                     remaining -= item.amount
                 } else {
                     item.amount -= remaining
+                    remaining = 0
                     break
                 }
             }
         }
+        return remaining
     }
+
 }
