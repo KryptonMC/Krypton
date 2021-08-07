@@ -71,7 +71,7 @@ abstract class KryptonInventory(
                     if(item.amount == 0) return
                 }
             } else if (element == EmptyItemStack) {
-                items[index] = item
+                items[index + 9] = item
                 return
             }
         }
