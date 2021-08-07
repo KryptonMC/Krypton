@@ -26,6 +26,8 @@ import org.kryptonmc.api.item.ItemStack
 
 class ItemStackPredicateArgument : ArgumentType<ItemStackPredicate> {
 
+    override fun getExamples() = EXAMPLES
+
     override fun parse(reader: StringReader) = ItemStackParser(reader, true).parsePredicate()
 
     companion object {
