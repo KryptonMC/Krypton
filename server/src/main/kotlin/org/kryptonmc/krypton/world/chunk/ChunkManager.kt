@@ -51,12 +51,7 @@ class ChunkManager(val world: KryptonWorld) {
     val lightEngine = StarLightManager(this, world.dimensionType.hasSkylight)
     private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
 
-    private val chunkCache: Cache<ChunkPosition, KryptonChunk> = Caffeine.newBuilder()
-        .maximumSize(512)
-        .expireAfterWrite(10, TimeUnit.MINUTES)
-        .build()
-
-    operator fun get(x: Int, z: Int): KryptonChunk? = chunkCache.getIfPresent(ChunkPosition(x, z))
+    operator fun get(x: Int, z: Int): KryptonChunk? = chunkMap[ChunkPosition.toLong(x, z)]
 
     fun load(positions: List<ChunkPosition>): List<KryptonChunk> {
         val chunks = mutableListOf<KryptonChunk>()
@@ -145,7 +140,7 @@ class ChunkManager(val world: KryptonWorld) {
         regionFileManager.write(chunk.position, chunk.serialize())
     }
 
-    fun onLightUpdate(layer: LightLayer, x: Int, y: Int, z: Int) = chunkCache.getIfPresent(ChunkPosition(x, z))?.onLightUpdate(layer, y)
+    fun onLightUpdate(layer: LightLayer, x: Int, y: Int, z: Int) = get(x, z)?.onLightUpdate(layer, y)
 }
 
 private fun KryptonChunk.serialize(): CompoundTag {

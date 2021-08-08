@@ -52,6 +52,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.clamp
@@ -64,6 +65,7 @@ import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.Generator
+import org.kryptonmc.krypton.world.light.LightLayer
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.spongepowered.math.vector.Vector3i
 import java.io.Writer
@@ -89,6 +91,8 @@ class KryptonWorld(
     override val biomeManager = BiomeManager(this, seed, dimensionType.biomeZoomer)
     override val random = Random()
     override val border = KryptonWorldBorder.DEFAULT // FIXME
+    override val height = dimensionType.height
+    override val minimumBuildHeight = dimensionType.minimumY
     override val gamemode: Gamemode
         get() = data.gamemode
     override var difficulty: Difficulty
@@ -122,9 +126,6 @@ class KryptonWorld(
 
     override val chunkManager = ChunkManager(this)
     val playerManager = server.playerManager
-
-    override val height = dimensionType.height
-    override val minimumBuildHeight = dimensionType.minimumY
     override val seaLevel = 63 // TODO: Check on update
 
     private var oldRainLevel = 0F
@@ -239,11 +240,16 @@ class KryptonWorld(
 
     override fun loadChunk(x: Int, z: Int) = chunkManager.load(x, z)
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
-        if (y.outsideBuildHeight) return
-        getChunkAt(x shr 4, z shr 4)?.setBlock(x, y, z, block)?.run {
-            playerManager.sendToAll(PacketOutBlockChange(block, x, y, z), this@KryptonWorld)
+    override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
+        if (y.outsideBuildHeight || isDebug) return false
+        val chunk = getChunkAt(x shr 4, z shr 4) ?: return false
+        val old = chunk.setBlock(x, y, z, block) ?: return false
+        val current = chunk.getBlock(x, y, z)
+        if (current !== old && (current.lightBlock != old.lightBlock || current.lightEmission != old.lightEmission || current.useShapeForOcclusion || old.useShapeForOcclusion)) {
+            chunkManager.lightEngine.blockChange(Vector3i(x, y, z))
         }
+        playerManager.sendToAll(PacketOutBlockChange(block, x, y, z))
+        return true
     }
 
     override fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
@@ -311,8 +317,12 @@ class KryptonWorld(
         // TODO: Sky brightness
         tickTime()
 
+        profiler.push("light update")
+        chunkManager.lightEngine.scheduleUpdates()
+        profiler.pop()
+
         profiler.push("chunk tick")
-        chunkManager.chunkMap.values.forEach { chunk -> chunk.tick(players.count { it.location in chunk.position }) }
+        chunkManager.chunkMap.values.forEach { chunk -> chunk.tick(players.filter { it.location in chunk.position }) }
         profiler.pop()
     }
 

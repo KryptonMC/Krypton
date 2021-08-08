@@ -22,6 +22,8 @@ import ca.spottedleaf.starlight.StarLightEngine
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.world.chunk.Chunk
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.light.LightLayer
@@ -73,35 +75,45 @@ class KryptonChunk(
 
     override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
+    override fun setBlock(x: Int, y: Int, z: Int, block: Block): Block? {
         // Get the section
         val sectionIndex = sectionIndex(y)
         var section = sections[sectionIndex]
         if (section == null) {
-            if (block.isAir) return
+            if (block.isAir) return null
             section = ChunkSection(y shr 4)
             sections[sectionIndex] = section
         }
 
         // Get the local coordinates and set the new state in the section
+        val isEmpty = section.isEmpty()
         val localX = x and 15
         val localY = y and 15
         val localZ = z and 15
         val oldState = section.set(localX, localY, localZ, block)
-        if (oldState == block) return
+        if (oldState === block) return null
 
         // Update the heightmaps
         heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(localX, y, localZ, block)
-        return
+        val isStillEmpty = section.isEmpty()
+        if (isEmpty != isStillEmpty) world.chunkManager.lightEngine.sectionChange(x, y, z, isStillEmpty)
+        if (section[localX, localY, localZ] !== block) return null
+        isUnsaved = true
+        return oldState
     }
 
     override fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
 
-    fun tick(playerCount: Int) {
-        inhabitedTime += playerCount
+    fun tick(players: List<KryptonPlayer>) {
+        inhabitedTime += players.size
+        if (!skyChangedLightSectionFilter.isEmpty || !blockChangedLightSectionFilter.isEmpty) {
+            players.forEach { it.session.sendPacket(PacketOutUpdateLight(this, skyChangedLightSectionFilter, blockChangedLightSectionFilter)) }
+            skyChangedLightSectionFilter.clear()
+            blockChangedLightSectionFilter.clear()
+        }
     }
 
     override fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap = heightmaps.getOrPut(type) { Heightmap(this, type) }

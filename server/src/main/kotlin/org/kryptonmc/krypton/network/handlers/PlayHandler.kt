@@ -68,6 +68,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
 import org.kryptonmc.krypton.network.Session
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toAngle
@@ -221,33 +222,16 @@ class PlayHandler(
 
     private fun handleBlockPlacement(packet: PacketInPlaceBlock) {
         if (!player.canBuild) return // if they can't place blocks, they are irrelevant :)
-
-        val world = player.world
-        val chunkX = player.location.blockX shr 4
-        val chunkZ = player.location.blockZ shr 4
-        val chunk = world.chunkManager.chunkMap[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
-        val existingBlock = chunk.getBlock(packet.hitResult.position)
-        if (existingBlock != Blocks.AIR) return
-
         val item = player.inventory.mainHand
-        val block = BlockLoader.fromKey(item.type.key) ?: return
-        chunk.setBlock(packet.hitResult.position, block)
+        val block = item.type.asBlock() ?: return
+        player.world.setBlock(packet.hitResult.position, block)
     }
 
     private fun handlePlayerDigging(packet: PacketInPlayerDigging) {
         if (player.gamemode != Gamemode.CREATIVE) return
         if (packet.status != DiggingStatus.STARTED) return
-
-        val chunkX = packet.location.x() shr 4
-        val chunkZ = packet.location.z() shr 4
-        val chunk = player.world.chunkManager.chunkMap[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
-        val x = packet.location.x()
-        val y = packet.location.y()
-        val z = packet.location.z()
-        chunk.setBlock(x, y, z, Blocks.AIR)
-
+        player.world.setBlock(packet.location, Blocks.AIR)
         session.sendPacket(PacketOutDiggingResponse(packet.location, 0, DiggingStatus.FINISHED, true))
-        playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
     }
 
     private fun handlePositionUpdate(packet: PacketInPlayerPosition) {

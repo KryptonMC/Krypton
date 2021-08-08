@@ -127,7 +127,7 @@ public final class BlockStarLightEngine extends StarLightEngine {
 
         if (opacity == -1) {
             this.recalcCenterPos.set(worldX, worldY, worldZ);
-            opacity = centerState.getBlockedLight();
+            opacity = centerState.getLightBlock();
             if (centerState.isConditionallyFullyOpaque()) {
                 conditionallyOpaqueState = centerState;
             } else {

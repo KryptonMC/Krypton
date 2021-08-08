@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
+import ca.spottedleaf.starlight.StarLightManager
 import it.unimi.dsi.fastutil.shorts.ShortArrayList
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
@@ -38,6 +39,7 @@ open class ProtoChunk(
     private val entities = mutableListOf<CompoundTag>()
     private val lights = mutableListOf<Vector3i>()
     private val postProcessing = ShortArrayList(heightAccessor.sectionCount)
+    var lightEngine: StarLightManager? = null
 
     override var inhabitedTime = 0L
     override var isLightCorrect = false
@@ -52,15 +54,15 @@ open class ProtoChunk(
         return if (section == null || section.isEmpty()) Blocks.AIR else section[x and 15, y and 15, z and 15]
     }
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
-        if (y !in minimumBuildHeight..maximumBuildHeight) return
+    override fun setBlock(x: Int, y: Int, z: Int, block: Block): Block? {
+        if (y !in minimumBuildHeight..maximumBuildHeight) return Blocks.VOID_AIR
         val sectionIndex = sectionIndex(y)
-        if (sections[sectionIndex] == null && block === Blocks.AIR) return
+        if (sections[sectionIndex] == null && block === Blocks.AIR) return block
         if (block.lightEmission > 0) lights.add(Vector3i((x and 15) + (position.x shl 4), y, (z and 15) + (position.z shl 4)))
         val section = getOrCreateSection(sectionIndex)
         val oldBlock = section.set(x and 15, y and 15, z and 15, block)
-        if (status.isOrAfter(ChunkStatus.FEATURES) && block != oldBlock && (block.lightBlock != oldBlock.lightBlock || block.lightEmission != oldBlock.lightEmission || block.useShapeForOcclusion != oldBlock.useShapeForOcclusion)) {
-            // TODO: Inform light engine to check block
+        if (status.isOrAfter(ChunkStatus.FEATURES) && block !== oldBlock && (block.lightBlock != oldBlock.lightBlock || block.lightEmission != oldBlock.lightEmission || block.useShapeForOcclusion != oldBlock.useShapeForOcclusion)) {
+            lightEngine?.blockChange(Vector3i(x, y, z))
         }
         val typesAfter = status.heightmapsAfter
         var types: EnumSet<Heightmap.Type>? = null
@@ -71,6 +73,7 @@ open class ProtoChunk(
         }
         types?.let { Heightmap.prime(this, it) }
         typesAfter.forEach { heightmaps[it]?.update(x and 15, y, z and 15, block) }
+        return oldBlock
     }
 
     override fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap = heightmaps.getOrPut(type) { Heightmap(this, type) }

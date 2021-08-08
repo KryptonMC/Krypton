@@ -1172,9 +1172,9 @@ public abstract class StarLightEngine {
 
                     final BoundingBox fromShape = fromBlock.isConditionallyFullyOpaque() ? fromBlock.faceOcclusionShape(propagate.krypton) : BoundingBox.EMPTY;
 
-//                    if (fromShape != BoundingBox.EMPTY) {
-//                        continue;
-//                    }
+                    if (fromShape != BoundingBox.EMPTY) {
+                        continue;
+                    }
 
                     final int sectionIndex = (offX >> 4) + 5 * (offZ >> 4) + (5 * 5) * (offY >> 4) + sectionOffset;
                     final int localIndex = (offX & 15) | ((offZ & 15) << 4) | ((offY & 15) << 8);
@@ -1247,7 +1247,6 @@ public abstract class StarLightEngine {
     }
 
     protected final void performLightDecrease(final ChunkManager lightAccess) {
-        final KryptonWorld world = lightAccess.getWorld();
         long[] queue = this.decreaseQueue;
         long[] increaseQueue = this.increaseQueue;
         int queueReadIndex = 0;
@@ -1401,9 +1400,9 @@ public abstract class StarLightEngine {
 
                     final BoundingBox fromShape = fromBlock.isConditionallyFullyOpaque() ? fromBlock.faceOcclusionShape(propagate.krypton) : BoundingBox.EMPTY;
 
-//                    if (fromShape != BoundingBox.EMPTY) {
-//                        continue;
-//                    }
+                    if (fromShape != BoundingBox.EMPTY) {
+                        continue;
+                    }
 
                     final SWMRNibbleArray currentNibble = this.nibbleCache[sectionIndex];
                     final int lightLevel;

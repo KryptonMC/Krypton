@@ -87,9 +87,10 @@ class GenerationRegion(
 
     override fun getBlock(x: Int, y: Int, z: Int) = getChunk(x, z)?.getBlock(x, y, z) ?: Blocks.AIR
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
-        if (!canWrite(x, y, z)) return
+    override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
+        if (!canWrite(x, y, z)) return false
         getChunk(x shr 4, z shr 4)?.setBlock(x, y, z, block)
+        return true
     }
 
     override fun getHeight(type: Heightmap.Type, x: Int, z: Int) = getChunk(x shr 4, z shr 4)!!.getHeight(type, x and 15, z and 15) + 1

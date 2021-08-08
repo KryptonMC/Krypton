@@ -41,12 +41,12 @@ public final class SkyStarLightEngine extends StarLightEngine {
       around those.
      */
 
-    protected final int[] heightMapBlockChange = new int[16 * 16];
+    private final int[] heightMapBlockChange = new int[16 * 16];
     {
-        Arrays.fill(heightMapBlockChange, Integer.MAX_VALUE);
+        Arrays.fill(heightMapBlockChange, Integer.MIN_VALUE);
     }
 
-    protected final boolean[] nullPropagationCheckCache;
+    private final boolean[] nullPropagationCheckCache;
 
     public SkyStarLightEngine(final KryptonWorld world) {
         super(true, world);
@@ -77,7 +77,7 @@ public final class SkyStarLightEngine extends StarLightEngine {
         }
     }
 
-    protected final void initNibble(final SWMRNibbleArray currNibble, final int chunkX, final int chunkY, final int chunkZ, final boolean extrude) {
+    private void initNibble(final SWMRNibbleArray currNibble, final int chunkX, final int chunkY, final int chunkZ, final boolean extrude) {
         if (!currNibble.isNullNibbleUpdating()) {
             // already initialised
             return;
@@ -129,7 +129,7 @@ public final class SkyStarLightEngine extends StarLightEngine {
         }
     }
 
-    protected final void rewriteNibbleCacheForSkylight(final KryptonChunk chunk) {
+    private void rewriteNibbleCacheForSkylight(final KryptonChunk chunk) {
         for (int index = 0, max = this.nibbleCache.length; index < max; ++index) {
             final SWMRNibbleArray nibble = this.nibbleCache[index];
             if (nibble != null && nibble.isNullNibbleUpdating()) {
@@ -142,7 +142,7 @@ public final class SkyStarLightEngine extends StarLightEngine {
 
     // rets whether neighbours were init'd
 
-    protected final boolean checkNullSection(final int chunkX, final int chunkY, final int chunkZ,
+    private boolean checkNullSection(final int chunkX, final int chunkY, final int chunkZ,
                                              final boolean extrudeInitialised) {
         // null chunk sections may have nibble neighbours in the horizontal 1 radius that are
         // non-null. Propagation to these neighbours is necessary.
@@ -179,7 +179,7 @@ public final class SkyStarLightEngine extends StarLightEngine {
         return needInitNeighbours;
     }
 
-    protected final int getLightLevelExtruded(final int worldX, final int worldY, final int worldZ) {
+    private int getLightLevelExtruded(final int worldX, final int worldY, final int worldZ) {
         final int chunkX = worldX >> 4;
         int chunkY = worldY >> 4;
         final int chunkZ = worldZ >> 4;
@@ -280,8 +280,8 @@ public final class SkyStarLightEngine extends StarLightEngine {
         );
     }
 
-    protected final MutableVector3i recalcCenterPos = new MutableVector3i();
-    protected final MutableVector3i recalcNeighbourPos = new MutableVector3i();
+    private final MutableVector3i recalcCenterPos = new MutableVector3i();
+    private final MutableVector3i recalcNeighbourPos = new MutableVector3i();
 
     @Override
     protected int calculateLightValue(final ChunkManager lightAccess, final int worldX, final int worldY, final int worldZ,
@@ -441,7 +441,7 @@ public final class SkyStarLightEngine extends StarLightEngine {
         this.performLightDecrease(lightAccess);
     }
 
-    protected final int[] heightMapGen = new int[32 * 32];
+    private final int[] heightMapGen = new int[32 * 32];
 
     @Override
     protected void lightChunk(final ChunkManager lightAccess, final KryptonChunk chunk, final boolean needsEdgeChecks) {
@@ -558,7 +558,7 @@ public final class SkyStarLightEngine extends StarLightEngine {
         }
     }
 
-    protected final void processDelayedIncreases() {
+    private void processDelayedIncreases() {
         // copied from performLightIncrease
         final long[] queue = this.increaseQueue;
         final int decodeOffsetX = -this.encodeOffsetX;
@@ -577,7 +577,7 @@ public final class SkyStarLightEngine extends StarLightEngine {
         }
     }
 
-    protected final void processDelayedDecreases() {
+    private void processDelayedDecreases() {
         // copied from performLightDecrease
         final long[] queue = this.decreaseQueue;
         final int decodeOffsetX = -this.encodeOffsetX;
@@ -598,7 +598,7 @@ public final class SkyStarLightEngine extends StarLightEngine {
     // delaying the light set is useful for block changes since they need to worry about initialising nibblearrays
     // while also queueing light at the same time (initialising nibblearrays might depend on nibbles above, so
     // clobbering the light values will result in broken propagation)
-    protected final int tryPropagateSkylight(final BlockAccessor world, final int worldX, int startY, final int worldZ,
+    private int tryPropagateSkylight(final BlockAccessor world, final int worldX, int startY, final int worldZ,
                                              final boolean extrudeInitialised, final boolean delayLightSet) {
         final MutableVector3i mutablePos = this.mutablePos3;
         final int encodeOffset = this.coordinateOffset;

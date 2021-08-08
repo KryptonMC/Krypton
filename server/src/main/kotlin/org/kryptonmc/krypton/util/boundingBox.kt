@@ -22,9 +22,10 @@ import com.mojang.brigadier.StringReader
 import org.kryptonmc.api.block.BoundingBox
 
 fun String.toBoundingBoxList(): List<BoundingBox> {
+    if (isEmpty()) return emptyList()
     val boxes = mutableListOf<BoundingBox>()
     val reader = StringReader(this)
-    if (reader.read() != '[') return emptyList()
+    if (reader.read() != '[' || reader.peek() == ']') return emptyList()
     while (reader.canRead()) {
         boxes += reader.readBoundingBox()
         if (reader.peek() == ']') break

@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world
 
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.world.biome.BiomeManager
@@ -79,4 +80,8 @@ interface WorldAccessor : BlockAccessor, NoiseBiomeSource {
     }
 
     fun canWrite(x: Int, y: Int, z: Int): Boolean = true
+
+    fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean
+
+    fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
 }

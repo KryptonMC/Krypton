@@ -9,13 +9,10 @@ import org.kryptonmc.krypton.world.KryptonWorld;
 import org.kryptonmc.krypton.world.chunk.ChunkManager;
 import org.kryptonmc.krypton.world.chunk.ChunkPosition;
 import org.kryptonmc.krypton.world.chunk.KryptonChunk;
-import org.spongepowered.math.GenericMath;
 import org.spongepowered.math.vector.Vector3i;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
@@ -23,21 +20,20 @@ import java.util.function.IntConsumer;
 public final class StarLightManager {
 
     private static final int MAXIMUM_LIGHT_LEVEL = 15;
-    private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(GenericMath.clamp(Runtime.getRuntime().availableProcessors() - 2, 1, 8));
 
-    protected final KryptonWorld world;
-    protected final ChunkManager chunkManager;
+    private final KryptonWorld world;
+    private final ChunkManager chunkManager;
 
-    protected final ArrayDeque<SkyStarLightEngine> cachedSkyPropagators;
-    protected final ArrayDeque<BlockStarLightEngine> cachedBlockPropagators;
+    private final ArrayDeque<SkyStarLightEngine> cachedSkyPropagators;
+    private final ArrayDeque<BlockStarLightEngine> cachedBlockPropagators;
 
-    protected final LightQueue lightQueue = new LightQueue(this);
+    private final LightQueue lightQueue = new LightQueue(this);
     private final AtomicBoolean scheduled = new AtomicBoolean();
 
-    protected final int minSection;
-    protected final int maxSection;
-    protected final int minLightSection;
-    protected final int maxLightSection;
+    private final int minSection;
+    private final int maxSection;
+    private final int minLightSection;
+    private final int maxLightSection;
 
     public StarLightManager(final @NotNull ChunkManager chunkManager, final boolean hasSkyLight) {
         this.chunkManager = chunkManager;
@@ -135,7 +131,7 @@ public final class StarLightManager {
         return !lightQueue.isEmpty();
     }
 
-    public final @Nullable SkyStarLightEngine getSkyEngine() {
+    public @Nullable SkyStarLightEngine getSkyEngine() {
         if (cachedSkyPropagators == null) return null;
         final SkyStarLightEngine ret;
         synchronized (cachedSkyPropagators) {
@@ -145,14 +141,14 @@ public final class StarLightManager {
         return ret;
     }
 
-    public final void releaseSkyEngine(final @NotNull SkyStarLightEngine engine) {
+    public void releaseSkyEngine(final @NotNull SkyStarLightEngine engine) {
         if (cachedSkyPropagators == null) return;
         synchronized (cachedSkyPropagators) {
             cachedSkyPropagators.addFirst(engine);
         }
     }
 
-    public final @NotNull BlockStarLightEngine getBlockEngine() {
+    public @NotNull BlockStarLightEngine getBlockEngine() {
         final BlockStarLightEngine ret;
         synchronized (cachedBlockPropagators) {
             ret = cachedBlockPropagators.pollFirst();
@@ -161,7 +157,7 @@ public final class StarLightManager {
         return ret;
     }
 
-    public final void releaseBlockEngine(final @NotNull BlockStarLightEngine engine) {
+    public void releaseBlockEngine(final @NotNull BlockStarLightEngine engine) {
         synchronized (cachedBlockPropagators) {
             cachedBlockPropagators.addFirst(engine);
         }
@@ -249,10 +245,8 @@ public final class StarLightManager {
 
     public void scheduleUpdates() {
         if (hasUpdates() && scheduled.compareAndSet(false, true)) {
-            EXECUTOR.submit(() -> {
-                propagateChanges();
-                scheduled.set(false);
-            });
+            propagateChanges();
+            scheduled.set(false);
         }
     }
 
@@ -314,9 +308,7 @@ public final class StarLightManager {
             }
             totalChunks++;
         }
-        EXECUTOR.submit(() -> {
-            relightChunks(chunks, callback, onComplete);
-        });
+        relightChunks(chunks, callback, onComplete);
         scheduleUpdates();
         return totalChunks;
     }

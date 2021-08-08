@@ -198,16 +198,18 @@ interface World : ForwardingAudience {
      * @param y the Y coordinate
      * @param z the Z coordinate
      * @param block the new block
+     * @return true if the block was set successfully, false otherwise
      */
-    fun setBlock(x: Int, y: Int, z: Int, block: Block)
+    fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean
 
     /**
      * Sets the block at the given [position] to the given [block].
      *
      * @param position the position
      * @param block the new block
+     * @return true if the block was set successfully, false otherwise
      */
-    fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
+    fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
 
     /**
      * Sets the block at the given [position] to the given [block].

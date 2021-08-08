@@ -76,6 +76,5 @@ class PacketOutUpdateLight(
                 updates.add(data.storageVisible)
             }
         }
-        if (data == null) println("Light data for layer $layer in chunk $x, $z at y $index was null!")
     }
 }
