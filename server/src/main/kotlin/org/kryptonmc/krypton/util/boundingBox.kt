@@ -24,9 +24,10 @@ import org.kryptonmc.api.block.BoundingBox
 fun String.toBoundingBoxList(): List<BoundingBox> {
     val boxes = mutableListOf<BoundingBox>()
     val reader = StringReader(this)
-    if (reader.peek() != '[') return emptyList()
-    while (reader.canRead() && reader.peek() != ']') {
+    if (reader.read() != '[') return emptyList()
+    while (reader.canRead()) {
         boxes += reader.readBoundingBox()
+        if (reader.peek() == ']') break
         reader.expect(", ")
     }
     return boxes
