@@ -29,7 +29,11 @@ data class KryptonGameProfile(
     @SerializedName("id") override val uuid: UUID,
     override val name: String,
     override val properties: List<KryptonProfileProperty>
-) : GameProfile
+) : GameProfile {
+
+    override fun toString() = "GameProfile(name=$name,uuid=$uuid)"
+
+}
 
 object MojangUUIDTypeAdapter : TypeAdapter<UUID>() {
 
