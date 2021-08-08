@@ -27,6 +27,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.TranslationManager
@@ -39,6 +40,7 @@ import org.kryptonmc.krypton.registry.ops.RegistryReadOps
 import org.kryptonmc.krypton.server.ServerResources
 import org.kryptonmc.krypton.util.BACKGROUND_EXECUTOR
 import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.util.createFile
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.DataPackConfig
@@ -92,6 +94,10 @@ class KryptonCLI : CliktCommand(
         .help("Folder where worlds are stored")
         .path(canBeFile = false, canBeSymlink = false, mustBeReadable = true, mustBeWritable = true)
         .default(Path.of("."))
+    private val userCacheFile by option("--usercache-file", "-ucf")
+        .help("The file where authenticated users have their details cached")
+        .path(canBeDir = false, canBeSymlink = false, mustBeReadable = true, mustBeWritable = true)
+        .default(Path.of("usercache.json"))
 
     // Other settings
     private val locale by option("-l", "--locale").convert {
@@ -132,6 +138,7 @@ class KryptonCLI : CliktCommand(
         // Setup registries and create world storage access
         val registryHolder = RegistryHolder.builtin()
         val storageAccess = WorldDataStorage(worldFolder).createAccess(config.world.name)
+        val profileCache = KryptonProfileCache(userCacheFile)
 
         // Load the resources
         val previousPacks = storageAccess.dataPacks
@@ -164,7 +171,18 @@ class KryptonCLI : CliktCommand(
         val serverThread = Thread({ reference.get().start() }, "Server Thread").apply {
             setUncaughtExceptionHandler { _, exception -> logger<KryptonServer>().error(exception) }
         }
-        val server = KryptonServer(registryHolder, storageAccess, worldData, packRepository, resources, config, ops, configFile, worldFolder)
+        val server = KryptonServer(
+            registryHolder,
+            storageAccess,
+            worldData,
+            packRepository,
+            resources,
+            config,
+            profileCache,
+            ops,
+            configFile,
+            worldFolder
+        )
         reference.set(server)
         serverThread.start()
     }

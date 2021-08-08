@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.auth.requests
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import org.kryptonmc.krypton.GSON
-import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.encryption.Encryption
@@ -30,6 +30,7 @@ import org.kryptonmc.krypton.util.logger
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Query
 import java.security.MessageDigest
@@ -63,7 +64,7 @@ interface MojangSessionService {
         @Query("username") username: String,
         @Query("serverId") serverId: String,
         @Query("ip") ip: String
-    ): Call<GameProfile>
+    ): Call<KryptonGameProfile>
 }
 
 /**
@@ -77,9 +78,9 @@ object SessionService {
         .baseUrl(SESSION_SERVER_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create(GSON))
         .build()
-        .create(MojangSessionService::class.java)
+        .create<MojangSessionService>()
 
-    private val profiles: Cache<String, GameProfile> = Caffeine.newBuilder()
+    private val profiles: Cache<String, KryptonGameProfile> = Caffeine.newBuilder()
         .expireAfterWrite(6, TimeUnit.HOURS)
         .build()
 
@@ -89,10 +90,10 @@ object SessionService {
      * @param username the username to authenticate
      * @param secret the shared secret
      * @param ip the server's IP address (string format)
-     * @return a new [GameProfile] for the user
+     * @return a new [KryptonGameProfile] for the user
      * @throws AuthenticationException if the response from Mojang was unsuccessful (authentication failed)
      */
-    fun authenticateUser(username: String, secret: ByteArray, ip: String): GameProfile {
+    fun hasJoined(username: String, secret: ByteArray, ip: String): KryptonGameProfile {
         val cachedProfile = profiles.getIfPresent(username)
         if (cachedProfile != null) return cachedProfile
 
@@ -103,7 +104,7 @@ object SessionService {
         val serverId = shaDigest.hexDigest()
 
         val response = sessionService.hasJoined(username, serverId, ip).execute()
-        if (!response.isSuccessful) {
+        if (response.code() != 200) { // Ensures no content responses are also a failure.
             LOGGER.debug("Error authenticating $username! Code: ${response.code()}, body: ${response.errorBody()}")
             Messages.AUTH.FAIL.error(LOGGER, username)
             throw AuthenticationException()

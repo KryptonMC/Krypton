@@ -16,27 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.auth
 
-import me.bardy.gsonkt.fromJson
-import org.kryptonmc.krypton.GSON
-import org.kryptonmc.krypton.auth.KryptonProfileProperty
+import com.google.gson.TypeAdapter
+import com.google.gson.annotations.SerializedName
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
+import org.kryptonmc.api.auth.GameProfile
 import java.util.UUID
 
-fun String.splitData(): BungeeCordHandshakeData? {
-    val split = split('\u0000')
-    if (split.size <= 2) return null
-    return BungeeCordHandshakeData(
-        split[0],
-        split[1],
-        UUID.fromString(split[2].replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})".toRegex(), "$1-$2-$3-$4-$5")),
-        if (split.size > 3) GSON.fromJson(split[3]) else emptyList()
+data class KryptonGameProfile(
+    @SerializedName("id") override val uuid: UUID,
+    override val name: String,
+    override val properties: List<KryptonProfileProperty>
+) : GameProfile
+
+object MojangUUIDTypeAdapter : TypeAdapter<UUID>() {
+
+    override fun read(reader: JsonReader): UUID = UUID.fromString(
+        reader.nextString().replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})".toRegex(), "$1-$2-$3-$4-$5")
     )
+
+    override fun write(out: JsonWriter, value: UUID) {
+        out.value(value.toString().replace("-", ""))
+    }
 }
 
-data class BungeeCordHandshakeData(
-    val originalIp: String,
-    val forwardedIp: String,
-    val uuid: UUID,
-    val properties: List<KryptonProfileProperty>
-)

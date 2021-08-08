@@ -22,7 +22,7 @@ import com.google.common.net.InetAddresses
 import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.Hash
 import net.kyori.adventure.text.Component.text
-import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.auth.KryptonGameProfile
 import java.math.BigInteger
 import java.net.InetAddress
 import java.net.SocketAddress
@@ -65,7 +65,7 @@ fun <T : Map<K, V>, K, V> Optional<T>.forEachPresent(action: (K, V) -> Unit) = i
 
 fun String.toComponent() = text(this)
 
-fun JsonObject.toGameProfile(): GameProfile? {
+fun JsonObject.toGameProfile(): KryptonGameProfile? {
     if (has("name") && has("uuid")) {
         val name = get("name").asString
         val uuid = try {
@@ -73,7 +73,7 @@ fun JsonObject.toGameProfile(): GameProfile? {
         } catch (_: IllegalArgumentException) {
             return null
         }
-        return GameProfile(uuid, name, listOf())
+        return KryptonGameProfile(uuid, name, listOf())
     }
     return null
 }

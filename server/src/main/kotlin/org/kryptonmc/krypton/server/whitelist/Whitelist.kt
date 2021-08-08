@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.server.whitelist
 
 import com.google.gson.JsonObject
-import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.server.ServerConfigList
 import org.kryptonmc.krypton.util.toGameProfile
 import java.nio.file.Path
 
-class Whitelist(path: Path) : ServerConfigList<GameProfile, WhitelistEntry>(path) {
+class Whitelist(path: Path) : ServerConfigList<KryptonGameProfile, WhitelistEntry>(path) {
 
     override fun fromJson(data: JsonObject) = data.toGameProfile()?.let { WhitelistEntry(it) }
 }

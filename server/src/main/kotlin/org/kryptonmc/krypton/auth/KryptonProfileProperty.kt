@@ -18,17 +18,10 @@
  */
 package org.kryptonmc.krypton.auth
 
-/**
- * Represents a property of a [GameProfile]
- *
- * Only used for skin data
- *
- * @param name the name of the property
- * @param value the value of the property
- * @param signature the Yggdrasil signed hash for this property
- */
-data class ProfileProperty(
-    val name: String,
-    val value: String,
-    val signature: String
-)
+import org.kryptonmc.api.auth.ProfileProperty
+
+data class KryptonProfileProperty(
+    override val name: String,
+    override val value: String,
+    override val signature: String
+) : ProfileProperty

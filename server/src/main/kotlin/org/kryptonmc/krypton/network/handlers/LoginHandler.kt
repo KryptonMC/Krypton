@@ -23,10 +23,11 @@ import io.netty.buffer.Unpooled
 import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.event.auth.AuthenticationEvent
 import org.kryptonmc.api.event.login.LoginEvent
 import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.config.category.ForwardingMode
@@ -110,7 +111,7 @@ class LoginHandler(
 
             // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
             val uuid = bungeecordData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
-            val profile = GameProfile(uuid, packet.name, bungeecordData?.properties ?: emptyList())
+            val profile = KryptonGameProfile(uuid, packet.name, bungeecordData?.properties ?: emptyList())
             if (!canJoin(profile, address)) return
             val player = KryptonPlayer(session, profile, server.worldManager.default, address)
             if (!callLoginEvent(profile)) return
@@ -130,8 +131,10 @@ class LoginHandler(
         IOScope.launch {
             val rawAddress = session.channel.remoteAddress() as InetSocketAddress
             val address = if (bungeecordData != null) InetSocketAddress(bungeecordData.forwardedIp, rawAddress.port) else rawAddress
+            val result = server.eventManager.fireSync(AuthenticationEvent(name)).result
+            if (!result.isAllowed) return@launch
             val profile = try {
-                val value = SessionService.authenticateUser(name, sharedSecret, server.config.server.ip)
+                val value = SessionService.hasJoined(name, sharedSecret, server.config.server.ip)
                 if (!canJoin(value, address)) return@launch
                 if (!callLoginEvent(value)) return@launch
                 value
@@ -141,7 +144,8 @@ class LoginHandler(
             }
             enableCompression()
 
-            val player = KryptonPlayer(session, profile, server.worldManager.default, address)
+            val eventProfile = if (result.profile != null && result.profile is KryptonGameProfile) result.profile as KryptonGameProfile else profile
+            val player = KryptonPlayer(session, eventProfile, server.worldManager.default, address)
             finishLogin(player)
         }
     }
@@ -163,7 +167,7 @@ class LoginHandler(
         val address = session.channel.remoteAddress() as InetSocketAddress
 
         LOGGER.debug("Detected Velocity login for ${data.uuid}")
-        val profile = GameProfile(data.uuid, data.username, data.properties)
+        val profile = KryptonGameProfile(data.uuid, data.username, data.properties)
         val player = KryptonPlayer(session, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port))
         finishLogin(player)
     }
@@ -222,7 +226,7 @@ class LoginHandler(
         session.channel.pipeline().addBefore(PacketEncoder.NETTY_NAME, PacketCompressor.NETTY_NAME, encoder)
     }
 
-    private fun callLoginEvent(profile: GameProfile): Boolean {
+    private fun callLoginEvent(profile: KryptonGameProfile): Boolean {
         val event = LoginEvent(profile.name, profile.uuid, session.channel.remoteAddress() as InetSocketAddress)
         val result = server.eventManager.fireSync(event).result
         if (!result.isAllowed) {
@@ -233,7 +237,7 @@ class LoginHandler(
         return true
     }
 
-    private fun canJoin(profile: GameProfile, address: SocketAddress): Boolean {
+    private fun canJoin(profile: KryptonGameProfile, address: SocketAddress): Boolean {
         if (playerManager.bannedPlayers.contains(profile)) {
             val entry = playerManager.bannedPlayers[profile]!!
             val text = translatable("multiplayer.disconnect.banned.reason", listOf(entry.reason.toComponent()))

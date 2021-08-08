@@ -37,8 +37,9 @@ import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
-import org.kryptonmc.krypton.auth.GameProfile
-import org.kryptonmc.krypton.auth.MojangUUIDSerializer
+import org.kryptonmc.krypton.auth.KryptonGameProfile
+import org.kryptonmc.krypton.auth.KryptonProfileCache
+import org.kryptonmc.krypton.auth.MojangUUIDTypeAdapter
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDER
 import org.kryptonmc.krypton.config.KryptonConfig
@@ -106,6 +107,7 @@ class KryptonServer(
     val packRepository: PackRepository,
     val resources: ServerResources,
     val config: KryptonConfig,
+    val profileCache: KryptonProfileCache,
     ops: RegistryReadOps<Tag>,
     private val configPath: Path,
     worldFolder: Path
@@ -198,7 +200,6 @@ class KryptonServer(
         //Create server config lists
         LOGGER.debug("Loading server config lists...")
         playerManager.bannedPlayers.validatePath()
-        playerManager.userCache.validatePath()
         playerManager.whitelist.validatePath()
         playerManager.bannedIps.validatePath()
         playerManager.ops.validatePath()
@@ -394,7 +395,7 @@ class KryptonServer(
 
     override fun audiences() = players + console
 
-    fun getPermissionLevel(profile: GameProfile) =
+    fun getPermissionLevel(profile: KryptonGameProfile) =
         if (playerManager.ops.contains(profile)) PermissionLevel.fromId(playerManager.ops[profile]!!.permissionLevel)
             ?: PermissionLevel.LEVEL_1 else PermissionLevel.LEVEL_1
 
@@ -465,7 +466,7 @@ class KryptonServer(
 val CURRENT_DIRECTORY: Path = Path.of("").toAbsolutePath()
 
 val GSON: Gson = GsonComponentSerializer.gson().serializer().newBuilder {
-    registerTypeAdapter<UUID>(MojangUUIDSerializer)
+    registerTypeAdapter<UUID>(MojangUUIDTypeAdapter)
     registerTypeAdapter<RegistryBlock>(RegistryBlock.Companion)
     registerTypeAdapter<RegistryBlockState>(RegistryBlockState.Companion)
     registerTypeAdapter<Gamemode>(GamemodeSerializer)

@@ -41,7 +41,6 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Position
@@ -54,7 +53,7 @@ import org.kryptonmc.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
@@ -111,7 +110,7 @@ import kotlin.math.min
 
 class KryptonPlayer(
     val session: Session,
-    val profile: GameProfile,
+    override val profile: KryptonGameProfile,
     world: KryptonWorld,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
 ) : KryptonLivingEntity(world, EntityTypes.PLAYER), Player {
@@ -144,12 +143,22 @@ class KryptonPlayer(
             }
         }
 
+    /**
+     * Doing this avoids a strange issue, where loading the player data will set the game mode value,
+     * which in turn updates the abilities, and sends the abilities packet before the client has
+     * constructed a local player (done when we send the join game packet), which in turn causes
+     * a [NullPointerException] to occur client-side because it attempts to get the abilities
+     * from a null player.
+     */
+    private var internalGamemode = Gamemode.SURVIVAL
+
     var oldGamemode: Gamemode? = null
-    override var gamemode = Gamemode.SURVIVAL
+    override var gamemode: Gamemode
+        get() = internalGamemode
         set(value) {
-            if (value == field) return
-            oldGamemode = field
-            field = value
+            if (value == internalGamemode) return
+            oldGamemode = internalGamemode
+            internalGamemode = value
             updateAbilities()
             onAbilitiesUpdate()
             server.playerManager.sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.UPDATE_GAMEMODE, this))
@@ -189,7 +198,7 @@ class KryptonPlayer(
         super.load(tag)
         uuid = profile.uuid
         oldGamemode = Gamemode.fromId((tag["previousPlayerGameType"] as? IntTag)?.value ?: -1)
-        gamemode = Gamemode.fromId(tag.getInt("playerGameType")) ?: Gamemode.SURVIVAL
+        internalGamemode = Gamemode.fromId(tag.getInt("playerGameType")) ?: Gamemode.SURVIVAL
         inventory.load(tag.getList("Inventory", CompoundTag.ID))
         inventory.heldSlot = tag.getInt("SelectedItemSlot")
         score = tag.getInt("Score")
@@ -237,7 +246,7 @@ class KryptonPlayer(
         }
         if (leftShoulder.isNotEmpty()) put("ShoulderEntityLeft", leftShoulder)
         if (rightShoulder.isNotEmpty()) put("ShoulderEntityRight", rightShoulder)
-        int("playerGameType", gamemode.ordinal)
+        int("playerGameType", internalGamemode.ordinal)
         oldGamemode?.let { int("previousPlayerGameType", it.ordinal) }
         string("Dimension", dimension.location.asString())
         respawnPosition?.let { position ->
@@ -365,7 +374,7 @@ class KryptonPlayer(
         showEntity(ShowEntity.of(key("minecraft", "player"), uuid, displayName))
 
     fun updateAbilities() {
-        when (gamemode) {
+        when (internalGamemode) {
             Gamemode.CREATIVE -> {
                 isInvulnerable = true
                 canFly = true
@@ -379,7 +388,7 @@ class KryptonPlayer(
             }
             else -> Unit
         }
-        canBuild = gamemode.canBuild
+        canBuild = internalGamemode.canBuild
     }
 
     fun updateChunks() {
@@ -448,7 +457,7 @@ class KryptonPlayer(
 
     private fun updateInvisibility() {
         removeEffectParticles()
-        isInvisible = gamemode == Gamemode.SPECTATOR
+        isInvisible = internalGamemode == Gamemode.SPECTATOR
     }
 
     override var absorption: Float

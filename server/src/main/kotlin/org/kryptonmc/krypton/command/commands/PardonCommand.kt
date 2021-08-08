@@ -25,7 +25,7 @@ import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
@@ -48,7 +48,7 @@ object PardonCommand : InternalCommand {
         )
     }
 
-    private fun unban(targets: List<GameProfile>, sender: Sender, server: KryptonServer) = targets.forEach {
+    private fun unban(targets: List<KryptonGameProfile>, sender: Sender, server: KryptonServer) = targets.forEach {
         if (!server.playerManager.bannedPlayers.contains(it)) return@forEach
         server.playerManager.bannedPlayers -= it
         sender.sendMessage(translatable("commands.pardon.success", it.name.toComponent()))

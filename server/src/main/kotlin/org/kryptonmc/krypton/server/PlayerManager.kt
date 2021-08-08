@@ -29,8 +29,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.ServerStorage
-import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.network.handlers.PlayHandler
@@ -93,7 +92,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     val players = CopyOnWriteArrayList<KryptonPlayer>()
     val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
-    val userCache = UserCache(Path.of("usercache.json"))
 
     private val registryHolder = server.registryHolder
     val bannedPlayers = BannedPlayerList(Path.of("banned-players.json"))
@@ -113,7 +111,8 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     fun add(player: KryptonPlayer, session: Session): CompletableFuture<Void> = dataManager.load(player).thenAccept { nbt ->
         val profile = player.profile
-        userCache.add(profile)
+        val name = server.profileCache[profile.uuid]?.name ?: profile.name
+        server.profileCache.add(profile)
         val dimension = if (nbt != null) Dynamic(NBTOps, nbt["Dimension"]).parseDimension().resultOrPartial(LOGGER::error).orElse(World.OVERWORLD) else World.OVERWORLD
         val world = server.worldManager.worlds[dimension] ?: kotlin.run {
             LOGGER.warn("Unknown respawn dimension $dimension! Defaulting to overworld...")
@@ -124,7 +123,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at (${player.location.x}, ${player.location.y}, ${player.location.z})")
 
         // Join the game
-        player.updateAbilities()
         val reducedDebugInfo = world.gameRules[GameRules.REDUCED_DEBUG_INFO]
         val doImmediateRespawn = world.gameRules[GameRules.DO_IMMEDIATE_RESPAWN]
         session.sendPacket(PacketOutJoinGame(
@@ -158,14 +156,14 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         invalidateStatus()
 
         // Fire join event and send result message
-        val joinResult = server.eventManager.fireSync(JoinEvent(player)).result
+        val joinResult = server.eventManager.fireSync(JoinEvent(player, profile.name.equals(name, true))).result
         if (!joinResult.isAllowed) {
             // Use default reason if denied without specified reason
-            val reason = joinResult.reason.takeIf { it != Component.empty() } ?: Component.translatable("multiplayer.disconnect.kicked")
+            val reason = joinResult.message.takeIf { it != Component.empty() } ?: Component.translatable("multiplayer.disconnect.kicked")
             session.disconnect(reason)
             return@thenAccept
         }
-        server.sendMessage(joinResult.reason)
+        server.sendMessage(joinResult.message)
         session.sendPacket(PacketOutPlayerPositionAndLook(player.location))
 
         // Update player list
@@ -252,12 +250,12 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     fun saveAll() = players.forEach { dataManager.save(it) }
 
-    fun addToOperators(profile: GameProfile) {
+    fun addToOperators(profile: KryptonGameProfile) {
         ops += OperatorEntry(profile, server.config.server.opPermissionLevel, true)
         if (server.player(profile.uuid) != null) server.commandManager.sendCommands(server.player(profile.uuid)!!)
     }
 
-    fun removeFromOperators(profile: GameProfile) {
+    fun removeFromOperators(profile: KryptonGameProfile) {
         ops -= profile
         if (server.player(profile.uuid) != null) server.commandManager.sendCommands(server.player(profile.uuid)!!)
     }

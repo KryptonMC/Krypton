@@ -19,15 +19,15 @@
 package org.kryptonmc.krypton.server.op
 
 import com.google.gson.JsonObject
-import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.server.ServerConfigEntry
 import org.kryptonmc.krypton.server.ServerConfigList
 import org.kryptonmc.krypton.util.toGameProfile
 import java.nio.file.Path
 
-class OperatorList(path: Path) : ServerConfigList<GameProfile, OperatorEntry>(path) {
+class OperatorList(path: Path) : ServerConfigList<KryptonGameProfile, OperatorEntry>(path) {
 
-    override fun fromJson(data: JsonObject): ServerConfigEntry<GameProfile>? {
+    override fun fromJson(data: JsonObject): ServerConfigEntry<KryptonGameProfile>? {
         val profile = data.toGameProfile()
         val permissionLevel = data.get("level")?.asInt ?: 0
         val bypassesPlayerLimit = data.has("bypassesPlayerLimit") && data.get("bypassesPlayerLimit").asBoolean

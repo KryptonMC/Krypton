@@ -11,6 +11,7 @@ package org.kryptonmc.api.entity.player
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
+import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.effect.particle.ParticleEffect
@@ -40,6 +41,13 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      * The address that the player is currently connected from.
      */
     val address: InetSocketAddress
+
+    /**
+     * The game profile for this player.
+     *
+     * Will contain offline mode details for offline mode players.
+     */
+    val profile: GameProfile
 
     /**
      * If this player can fly.

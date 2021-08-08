@@ -29,9 +29,7 @@ object EntityArgumentParser {
         onlyPlayers: Boolean,
         singleTarget: Boolean,
     ) = when (operation) {
-        'p' -> {
-            EntityQuery(listOf(), EntityQuery.SELECTOR.NEAREST_PLAYER)
-        }
+        'p' -> EntityQuery(listOf(), EntityQuery.SELECTOR.NEAREST_PLAYER)
         'e' -> {
             if (singleTarget) {
                 reader.cursor = 0
@@ -47,9 +45,7 @@ object EntityArgumentParser {
                 EntityQuery(listOf(), EntityQuery.SELECTOR.ALL_ENTITIES)
             }
         }
-        'r' -> {
-            EntityQuery(listOf(), EntityQuery.SELECTOR.RANDOM_PLAYER)
-        }
+        'r' -> EntityQuery(listOf(), EntityQuery.SELECTOR.RANDOM_PLAYER)
         'a' -> {
             if (singleTarget) {
                 reader.cursor = 0
@@ -62,18 +58,14 @@ object EntityArgumentParser {
                 EntityQuery(listOf(), EntityQuery.SELECTOR.ALL_PLAYERS)
             }
         }
-        's' -> {
-            EntityQuery(listOf(), EntityQuery.SELECTOR.EXECUTOR)
-        }
+        's' -> EntityQuery(listOf(), EntityQuery.SELECTOR.EXECUTOR)
         else -> {
             reader.cursor = position
             throw UNKNOWN_SELECTOR_EXCEPTION.createWithContext(reader, "@$operation")
         }
     }
 
-    private fun parseArguments(
-        reader: StringReader,
-    ): List<EntityArgument.EntityArg> {
+    private fun parseArguments(reader: StringReader, ): List<EntityArgument.EntityArg> {
         reader.skipWhitespace()
         val args = mutableListOf<EntityArgument.EntityArg>()
         while (reader.canRead() && reader.peek() != ']') {
@@ -93,29 +85,21 @@ object EntityArgumentParser {
                 args += EntityArgument.EntityArg(option, value, exclude)
 
                 reader.skipWhitespace()
-                if (!reader.canRead()) {
-                    continue
-                }
+                if (!reader.canRead()) continue
 
                 if (reader.peek() == ',') {
                     reader.skip()
                     continue
                 }
 
-                if (reader.peek() != ']') {
-                    throw UNTERMINATED_EXCEPTION.createWithContext(reader)
-                }
+                if (reader.peek() != ']') throw UNTERMINATED_EXCEPTION.createWithContext(reader)
                 break
             }
 
             reader.cursor = position
             throw VALUELESS_EXCEPTION.createWithContext(reader, option)
         }
-        if (reader.canRead()) {
-            reader.skip()
-        } else {
-            throw UNTERMINATED_EXCEPTION.createWithContext(reader)
-        }
+        if (reader.canRead()) reader.skip() else throw UNTERMINATED_EXCEPTION.createWithContext(reader)
         return args.toList()
     }
 

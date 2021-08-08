@@ -25,7 +25,7 @@ import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.auth.KryptonGameProfile
 import java.lang.reflect.Type
 
 class ServerStatus(
@@ -37,7 +37,7 @@ class ServerStatus(
     class Players(
         val max: Int,
         var online: Int,
-        var sample: Array<GameProfile> = emptyArray()
+        var sample: Array<KryptonGameProfile> = emptyArray()
     ) {
 
         companion object : JsonSerializer<Players> {

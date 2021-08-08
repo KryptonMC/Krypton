@@ -27,7 +27,7 @@ import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
@@ -59,7 +59,7 @@ object BanCommand : InternalCommand {
     }
 
     private fun ban(
-        profiles: List<GameProfile>,
+        profiles: List<KryptonGameProfile>,
         reason: String = "Banned by operator.",
         server: KryptonServer,
         sender: Sender

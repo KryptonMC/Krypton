@@ -16,16 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.server.whitelist
+package org.kryptonmc.krypton.auth.requests
 
-import com.google.gson.JsonObject
+import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.auth.KryptonGameProfile
-import org.kryptonmc.krypton.server.ServerConfigEntry
+import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
+import retrofit2.http.GET
+import retrofit2.http.Path
+import java.util.concurrent.CompletableFuture
 
-class WhitelistEntry(key: KryptonGameProfile) : ServerConfigEntry<KryptonGameProfile>(key) {
+interface MojangApiService {
 
-    override fun write(data: JsonObject) {
-        data.addProperty("name", key.name)
-        data.addProperty("uuid", key.uuid.toString())
-    }
+    @GET("users/profiles/minecraft/{name}")
+    fun profile(@Path("name") name: String): Call<KryptonGameProfile>
+}
+
+object ApiService {
+
+    private const val API_BASE_URL = "https://api.mojang.com/"
+
+    private val apiService = Retrofit.Builder()
+        .baseUrl(API_BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create(GSON))
+        .build()
+        .create<MojangApiService>()
+
+    fun profile(name: String): CompletableFuture<KryptonGameProfile?> = CompletableFuture.supplyAsync { apiService.profile(name).execute().body() }
 }

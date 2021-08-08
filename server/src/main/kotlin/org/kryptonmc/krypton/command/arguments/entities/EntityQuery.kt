@@ -26,7 +26,7 @@ import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -40,10 +40,9 @@ class EntityQuery(
     val type: SELECTOR,
     private val playerName: String = ""
 ) {
+
     fun getEntities(source: KryptonPlayer) = when (type) {
-        SELECTOR.RANDOM_PLAYER -> {
-            listOf(source.server.players.random())
-        }
+        SELECTOR.RANDOM_PLAYER -> listOf(source.server.players.random())
         SELECTOR.ALL_PLAYERS -> {
             if (args.isNotEmpty()) {
                 val entities = applyArguments((source.server.players + source.world.entities).toList(), source)
@@ -86,22 +85,7 @@ class EntityQuery(
         }
     }
 
-    fun getProfiles(sender: Sender): List<GameProfile> {
-        val server = sender.server as KryptonServer
-        return if (sender is KryptonPlayer) {
-            if (playerName.isNotEmpty()) {
-                listOf(server.playerManager.userCache.getProfileByName(playerName) ?: throw PLAYER_NOT_FOUND.create())
-            } else {
-                getPlayers(sender).map { it.profile }
-            }
-        } else {
-            if (playerName.isNotEmpty()) {
-                listOf(server.playerManager.userCache.getProfileByName(playerName) ?: throw PLAYER_NOT_FOUND.create())
-            } else {
-                listOf()
-            }
-        }
-    }
+    fun getProfiles(sender: Sender) = if (sender is KryptonPlayer) getPlayers(sender).map { it.profile } else emptyList()
 
     private fun applyArguments(originalEntities: List<KryptonEntity>, source: KryptonPlayer): List<KryptonEntity> {
         var entities = originalEntities
@@ -309,9 +293,7 @@ class EntityQuery(
                 else -> UNKNOWN
             }
         }
-
     }
-
 }
 
 

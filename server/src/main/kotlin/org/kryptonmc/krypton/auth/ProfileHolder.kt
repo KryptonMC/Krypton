@@ -16,27 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.auth
 
-import me.bardy.gsonkt.fromJson
-import org.kryptonmc.krypton.GSON
-import org.kryptonmc.krypton.auth.KryptonProfileProperty
-import java.util.UUID
+import com.google.gson.JsonObject
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
-fun String.splitData(): BungeeCordHandshakeData? {
-    val split = split('\u0000')
-    if (split.size <= 2) return null
-    return BungeeCordHandshakeData(
-        split[0],
-        split[1],
-        UUID.fromString(split[2].replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})".toRegex(), "$1-$2-$3-$4-$5")),
-        if (split.size > 3) GSON.fromJson(split[3]) else emptyList()
-    )
+class ProfileHolder(
+    val profile: KryptonGameProfile,
+    val expiryDate: ZonedDateTime,
+    @Volatile var lastAccess: Long = 0L
+) {
+
+    fun toJson() = JsonObject().apply {
+        addProperty("name", profile.name)
+        addProperty("uuid", profile.uuid.toString())
+        addProperty("expiresOn", DATE_FORMATTER.format(expiryDate))
+    }
+
+    companion object {
+
+        val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")
+    }
 }
-
-data class BungeeCordHandshakeData(
-    val originalIp: String,
-    val forwardedIp: String,
-    val uuid: UUID,
-    val properties: List<KryptonProfileProperty>
-)

@@ -67,7 +67,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
             0 -> crafting[4] = item
             in 1..4 -> crafting[index - 1] = item
             in 5..8 -> armor[index - 5] = item
-            in 9..35 -> items[index] = item
+            in 9..35 -> items[index + 9] = item
             in 36..44 -> items[index - 36] = item
             45 -> offHand = item
         }

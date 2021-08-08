@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.util
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.auth.ProfileProperty
+import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import java.net.InetAddress
 import java.security.MessageDigest
 import java.util.UUID
@@ -43,13 +43,13 @@ fun ByteBuf.verifyIntegrity(secret: ByteArray): Boolean {
     return version == SUPPORTED_FORWARDING_VERSION
 }
 
-fun ByteBuf.readVelocityProperties(): List<ProfileProperty> {
-    val properties = mutableListOf<ProfileProperty>()
+fun ByteBuf.readVelocityProperties(): List<KryptonProfileProperty> {
+    val properties = mutableListOf<KryptonProfileProperty>()
     repeat(readVarInt()) {
         val name = readString()
         val value = readString()
         val signature = if (readBoolean()) readString() else ""
-        properties += ProfileProperty(name, value, signature)
+        properties += KryptonProfileProperty(name, value, signature)
     }
     return properties
 }
@@ -58,7 +58,7 @@ data class VelocityForwardedData(
     val remoteAddress: InetAddress,
     val uuid: UUID,
     val username: String,
-    val properties: List<ProfileProperty>
+    val properties: List<KryptonProfileProperty>
 )
 
 fun ByteBuf.readVelocityData() = VelocityForwardedData(

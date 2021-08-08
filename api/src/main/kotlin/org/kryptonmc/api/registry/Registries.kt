@@ -15,7 +15,6 @@ import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.util.FACTORY_PROVIDER
 import org.kryptonmc.api.util.provide
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.api.world.dimension.DimensionType
 
 /**
  * Holder of all of the built-in registries
@@ -38,7 +37,6 @@ object Registries {
     @JvmField val MENU = get(ResourceKeys.MENU)!!
     @JvmField val ATTRIBUTE = get(ResourceKeys.ATTRIBUTE)!!
     @JvmField val BIOME = get(ResourceKeys.minecraft<Biome>("worldgen/biome"))!!
-    @JvmField val DIMENSION_TYPE = get(ResourceKeys.minecraft<DimensionType>("dimension_type"))!!
 
     /**
      * Custom built-in registries

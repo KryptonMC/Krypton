@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.server.op
 
 import com.google.gson.JsonObject
-import org.kryptonmc.krypton.auth.GameProfile
+import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.server.ServerConfigEntry
 
-class OperatorEntry(profile: GameProfile, val permissionLevel: Int, val bypassPlayerLimit: Boolean) : ServerConfigEntry<GameProfile>(profile) {
+class OperatorEntry(profile: KryptonGameProfile, val permissionLevel: Int, val bypassPlayerLimit: Boolean) : ServerConfigEntry<KryptonGameProfile>(profile) {
 
     override fun write(data: JsonObject) {
         data.addProperty("uuid", key.uuid.toString())
