@@ -40,9 +40,9 @@ data class ChunkPosition(val x: Int, val z: Int) {
     val regionLocalX = x and 0x1F
     val regionLocalZ = z and 0x1F
 
-    operator fun contains(location: Position) = floor(location.x / 16.0).toInt() == x && floor(location.z / 16.0).toInt() == z
+    operator fun contains(location: Position) = location.blockX shr 4 == x && location.blockZ shr 4 == z
 
-    operator fun contains(position: Vector3i) = GenericMath.floor(position.x() / 16.0) == x && GenericMath.floor(position.z() / 16.0) == z
+    operator fun contains(position: Vector3i) = position.x() shr 4 == x && position.z() shr 4 == z
 
     fun toLong() = toLong(x, z)
 

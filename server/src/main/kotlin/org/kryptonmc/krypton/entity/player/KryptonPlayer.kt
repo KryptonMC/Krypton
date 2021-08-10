@@ -18,7 +18,9 @@
  */
 package org.kryptonmc.krypton.entity.player
 
-import kotlinx.coroutines.launch
+import it.unimi.dsi.fastutil.longs.LongArrayList
+import it.unimi.dsi.fastutil.longs.LongArraySet
+import it.unimi.dsi.fastutil.longs.LongSet
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.identity.Identity
@@ -51,7 +53,6 @@ import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard
-import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
@@ -92,10 +93,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
 import org.kryptonmc.krypton.util.calculatePositionChange
-import org.kryptonmc.krypton.util.chunkInSpiral
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
-import org.kryptonmc.krypton.util.toArea
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.bossbar.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -108,7 +107,6 @@ import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.UnaryOperator
 import kotlin.math.abs
-import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
@@ -132,7 +130,8 @@ class KryptonPlayer(
     override var locale: Locale? = null
     override val statistics = server.playerManager.getStatistics(this)
 
-    override var viewDistance = 10
+    // TODO: Per-player view distance, see issue #49
+    override val viewDistance = server.config.world.viewDistance
     override var time = 0L
 
     override val permissionLevel: Int
@@ -187,8 +186,7 @@ class KryptonPlayer(
 
     private var previousCentralX = 0
     private var previousCentralZ = 0
-    private var hasLoadedChunks = false
-    private val visibleChunks = mutableSetOf<ChunkPosition>()
+    private val visibleChunks = LongArraySet()
 
     init {
         data.add(MetadataKeys.PLAYER.ADDITIONAL_HEARTS)
@@ -396,45 +394,59 @@ class KryptonPlayer(
         canBuild = internalGamemode.canBuild
     }
 
-    fun updateChunks() {
-        var previousChunks: MutableSet<ChunkPosition>? = null
-        val newChunks = mutableListOf<ChunkPosition>()
+    fun updateChunks(firstLoad: Boolean = false) {
+        var previousChunks: LongSet? = null
+        val newChunks = LongArrayList()
 
+        val oldCentralX = previousCentralX
+        val oldCentralZ = previousCentralZ
         val centralX = location.blockX shr 4
         val centralZ = location.blockZ shr 4
-        val radius = min(server.config.world.viewDistance, 1 + viewDistance)
+        val radius = server.config.world.viewDistance
 
-        if (!hasLoadedChunks) {
-            hasLoadedChunks = true
-            repeat(server.config.world.viewDistance.toArea()) { newChunks += chunkInSpiral(it, centralX, centralZ) }
+        if (firstLoad) {
+            for (x in centralX - radius..centralX + radius) {
+                for (z in centralZ - radius..centralZ + radius) newChunks.add(ChunkPosition.toLong(x, z))
+            }
         } else if (abs(centralX - previousCentralX) > radius || abs(centralZ - previousCentralZ) > radius) {
             visibleChunks.clear()
-            repeat(server.config.world.viewDistance.toArea()) { newChunks += chunkInSpiral(it, centralX, centralZ) }
-        } else if (previousCentralX != centralX || previousCentralZ != centralZ) {
-            previousChunks = HashSet(visibleChunks)
-            repeat(server.config.world.viewDistance.toArea()) {
-                val position = chunkInSpiral(it, centralX, centralZ)
-                if (position in visibleChunks) previousChunks.remove(position) else newChunks += position
+            for (x in centralX - radius..centralX + radius) {
+                for (z in centralZ - radius..centralZ + radius) newChunks.add(ChunkPosition.toLong(x, z))
             }
-        } else {
-            return
-        }
+        } else if (previousCentralX != centralX || previousCentralZ != centralZ) {
+            previousChunks = LongArraySet(visibleChunks)
+            for (x in centralX - radius..centralX + radius) {
+                for (z in centralZ - radius..centralZ + radius) {
+                    val pos = ChunkPosition.toLong(x, z)
+                    if (visibleChunks.contains(pos)) previousChunks.remove(pos) else newChunks.add(pos)
+                }
+            }
+        } else return
 
         previousCentralX = centralX
         previousCentralZ = centralZ
 
-        IOScope.launch {
-            val loadedChunks = world.chunkManager.load(newChunks)
-            visibleChunks += newChunks
+        newChunks.sortWith { a, b ->
+            var dx = 16 * a.toInt() + 8 - location.x
+            var dz = 16 * (a shr 32).toInt() + 8 - location.z
+            val da = dx * dx + dz * dz
+            dx = 16 * b.toInt() + 8 - location.x
+            dz = 16 * (b shr 32).toInt() + 8 - location.z
+            val db = dx * dx + dz * dz
+            da.compareTo(db)
+        }
 
-            session.sendPacket(PacketOutUpdateViewPosition(ChunkPosition(centralX, centralZ)))
-            loadedChunks.forEach {
-                session.sendPacket(PacketOutUpdateLight(it))
-                session.sendPacket(PacketOutChunkData(it))
+        visibleChunks += newChunks
+        world.chunkManager.addPlayer(this, centralX, centralZ, if (firstLoad) centralX else oldCentralX, if (firstLoad) centralZ else oldCentralZ, radius).thenRun {
+            session.sendPacket(PacketOutUpdateViewPosition(centralX, centralZ))
+            newChunks.forEach {
+                val chunk = world.chunkManager[it] ?: return@forEach
+                session.sendPacket(PacketOutUpdateLight(chunk))
+                session.sendPacket(PacketOutChunkData(chunk))
             }
 
             previousChunks?.forEach {
-                session.sendPacket(PacketOutUnloadChunk(it))
+                session.sendPacket(PacketOutUnloadChunk(it.toInt(), (it shr 32).toInt()))
                 visibleChunks -= it
             }
             previousChunks?.clear()

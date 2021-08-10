@@ -277,10 +277,30 @@ interface World : ForwardingAudience {
      * That is, to calculate the chunk coordinate from a given block coordinate,
      * the block coordinate is shifted right by 4 (divided by 16 and floored).
      *
+     * Beware that chunks loaded using this function will not be automatically
+     * unloaded!
+     *
      * @param x the X coordinate
      * @param z the Z coordinate
      */
     fun loadChunk(x: Int, z: Int): Chunk
+
+    /**
+     * Unloads the chunk at the specified [x] and [z] coordinates if there is a chunk
+     * loaded. If there is no chunk loaded at the coordinates, this function simply
+     * returns.
+     *
+     * If [force] is set to false and this chunk was not loaded using [loadChunk],
+     * this will also simply return. If it is set to true, however, the chunk will
+     * always be unloaded.
+     *
+     * Like [loadChunk], these coordinates are **chunk** coordinates.
+     *
+     * @param x the X coordinate
+     * @param z the Z coordinate
+     * @param force whether to force unload the chunk or not
+     */
+    fun unloadChunk(x: Int, z: Int, force: Boolean)
 
     /**
      * Saves this world to disk. Exposed as a function of [World] to allow for custom world implementations

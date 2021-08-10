@@ -22,10 +22,13 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 
-class PacketOutUnloadChunk(private val position: ChunkPosition) : PlayPacket(0x1D) {
+class PacketOutUnloadChunk(
+    private val x: Int,
+    private val z: Int
+) : PlayPacket(0x1D) {
 
     override fun write(buf: ByteBuf) {
-        buf.writeInt(position.x)
-        buf.writeInt(position.z)
+        buf.writeInt(x)
+        buf.writeInt(z)
     }
 }

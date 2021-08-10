@@ -196,10 +196,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         world.addEntity(player)
 
         // Send the initial chunk stream
-        val location = player.location
-        val centerChunk = ChunkPosition(GenericMath.floor(location.x / 16.0), GenericMath.floor(location.z / 16.0))
-        session.sendPacket(PacketOutUpdateViewPosition(centerChunk))
-        player.updateChunks()
+        player.updateChunks(true)
 
         // TODO: Custom boss events, resource pack pack, mob effects
         sendWorldInfo(world, player)
@@ -212,6 +209,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         server.eventManager.fire(QuitEvent(player)).thenAccept {
             player.incrementStatistic(CustomStatistics.LEAVE_GAME)
             save(player)
+            player.world.chunkManager.removePlayer(player)
 
             // Remove from caches
             player.world.removeEntity(player)

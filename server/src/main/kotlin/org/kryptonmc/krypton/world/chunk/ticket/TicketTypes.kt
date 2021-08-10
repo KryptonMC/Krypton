@@ -16,20 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.world.chunk.ticket
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import java.util.UUID
 
-class PacketOutUpdateViewPosition(
-    private val x: Int,
-    private val z: Int
-) : PlayPacket(0x49) {
+object TicketTypes {
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(x)
-        buf.writeVarInt(z)
-    }
+    val START = TicketType<Unit>("start") { _, _ -> 0 }
+    val PLAYER = TicketType<UUID>("player", UUID::compareTo)
+    val API_LOAD = TicketType<Long>("api_load", Long::compareTo)
 }

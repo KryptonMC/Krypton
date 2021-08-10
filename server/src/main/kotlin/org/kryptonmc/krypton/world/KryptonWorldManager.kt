@@ -32,10 +32,10 @@ import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.ops.RegistryReadOps
 import org.kryptonmc.krypton.util.ChunkProgressListener
-import org.kryptonmc.krypton.util.chunkInSpiral
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
+import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.DerivedWorldData
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.data.WorldResource
@@ -149,9 +149,7 @@ class KryptonWorldManager(
         val listener = ChunkProgressListener(11)
         LOGGER.info("Preparing start region for dimension ${default.dimension.location}...")
         listener.tick()
-        for (i in 0 until 441) {
-            val position = chunkInSpiral(i, default.data.spawnX shr 4, default.data.spawnZ shr 4)
-            default.chunkManager.load(position.x, position.z)
+        default.chunkManager.addTicket(default.data.spawnX shr 4, default.data.spawnZ shr 4, TicketTypes.START, 22, Unit) {
             listener.updateStatus(ChunkStatus.FULL)
         }
         listener.stop()

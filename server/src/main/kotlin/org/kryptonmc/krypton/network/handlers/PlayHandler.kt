@@ -231,7 +231,7 @@ class PlayHandler(
         val world = player.world
         val chunkX = player.location.blockX shr 4
         val chunkZ = player.location.blockZ shr 4
-        val chunk = world.chunkManager.chunkMap[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
+        val chunk = world.chunkManager[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
         val existingBlock = chunk.getBlock(packet.hitResult.position)
         if (existingBlock != Blocks.AIR) return
 
@@ -246,7 +246,7 @@ class PlayHandler(
 
         val chunkX = packet.location.x() shr 4
         val chunkZ = packet.location.z() shr 4
-        val chunk = player.world.chunkManager.chunkMap[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
+        val chunk = player.world.chunkManager[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
         val x = packet.location.x()
         val y = packet.location.y()
         val z = packet.location.z()

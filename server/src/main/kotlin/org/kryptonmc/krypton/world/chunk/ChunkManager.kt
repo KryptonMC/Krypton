@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.world.chunk
 
 import com.mojang.serialization.Dynamic
 import org.kryptonmc.krypton.KryptonPlatform
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.datafix.DATA_FIXER
@@ -28,6 +29,10 @@ import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.KryptonBiome
+import org.kryptonmc.krypton.world.chunk.ticket.Ticket
+import org.kryptonmc.krypton.world.chunk.ticket.TicketManager
+import org.kryptonmc.krypton.world.chunk.ticket.TicketType
+import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
@@ -35,27 +40,37 @@ import org.kryptonmc.nbt.LongArrayTag
 import org.kryptonmc.nbt.buildCompound
 import org.kryptonmc.nbt.compound
 import java.util.EnumSet
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executors
 
 class ChunkManager(private val world: KryptonWorld) {
 
     val chunkMap = ConcurrentHashMap<Long, KryptonChunk>()
+    private val executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+    private val ticketManager = TicketManager(this)
     private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
 
     operator fun get(x: Int, z: Int): KryptonChunk? = chunkMap[ChunkPosition.toLong(x, z)]
 
-    fun load(positions: List<ChunkPosition>): List<KryptonChunk> {
-        val chunks = mutableListOf<KryptonChunk>()
-        positions.forEach {
-            val chunk = load(it.x, it.z)
-            chunkMap[it.toLong()] = chunk
-            chunks += chunk
-        }
-        return chunks
+    operator fun get(position: Long): KryptonChunk? = chunkMap[position]
+
+    fun <T> addTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T, onLoad: () -> Unit) = ticketManager.addTicket(x, z, type, level, key, onLoad)
+
+    fun <T> removeTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T) = ticketManager.removeTicket(x, z, type, level, key)
+
+    fun addPlayer(player: KryptonPlayer, x: Int, z: Int, oldX: Int, oldZ: Int, viewDistance: Int): CompletableFuture<Unit> =
+        CompletableFuture.supplyAsync({ ticketManager.addPlayer(x, z, oldX, oldZ, player.uuid, viewDistance) }, executor)
+
+    fun removePlayer(player: KryptonPlayer, viewDistance: Int = world.server.config.world.viewDistance) {
+        val x = player.location.blockX shr 4
+        val z = player.location.blockZ shr 4
+        ticketManager.removePlayer(x, z, player.uuid, viewDistance)
     }
 
-    fun load(x: Int, z: Int): KryptonChunk {
-        chunkMap[ChunkPosition.toLong(x, z)]?.let { return it }
+    fun load(x: Int, z: Int, ticket: Ticket<*>): KryptonChunk {
+        val pos = ChunkPosition.toLong(x, z)
+        if (chunkMap.containsKey(pos)) return chunkMap[pos]!!
 
         val position = ChunkPosition(x, z)
         val nbt = regionFileManager.read(position)
@@ -92,6 +107,7 @@ class ChunkManager(private val world: KryptonWorld) {
             biomes,
             data.getLong("LastUpdate"),
             data.getLong("inhabitedTime"),
+            ticket,
             carvingMasks,
             data.getCompound("Structures")
         )
@@ -103,6 +119,13 @@ class ChunkManager(private val world: KryptonWorld) {
         }
         Heightmap.prime(chunk, noneOf)
         return chunk
+    }
+
+    fun unload(x: Int, z: Int, requiredType: TicketType<*>, force: Boolean) {
+        val loaded = get(x, z) ?: return
+        if (!force && loaded.ticket.type !== requiredType) return
+        save(loaded)
+        chunkMap.remove(loaded.position.toLong())
     }
 
     fun saveAll() = chunkMap.values.forEach { save(it) }

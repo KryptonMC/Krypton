@@ -61,6 +61,8 @@ import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
+import org.kryptonmc.krypton.world.chunk.ticket.Ticket
+import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.Generator
@@ -237,7 +239,9 @@ class KryptonWorld(
 
     fun getEntitiesInChunk(chunk: KryptonChunk) = entitiesByChunk[chunk.position.toLong()]
 
-    override fun loadChunk(x: Int, z: Int) = chunkManager.load(x, z)
+    override fun loadChunk(x: Int, z: Int) = chunkManager.load(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPosition.toLong(x, z)))
+
+    override fun unloadChunk(x: Int, z: Int, force: Boolean) = chunkManager.unload(x, z, TicketTypes.API_LOAD, force)
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
         if (y.outsideBuildHeight) return

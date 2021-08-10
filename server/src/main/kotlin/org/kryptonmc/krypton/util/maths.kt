@@ -22,6 +22,8 @@ import org.kryptonmc.api.util.floor
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.GenericMath
 import java.util.UUID
+import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.sqrt
 import kotlin.random.Random
 
@@ -82,6 +84,12 @@ fun Double.clampedLerp(lower: Double, upper: Double): Double {
 
 fun java.util.Random.nextFloat(a: Float, b: Float) = if (a >= b) a else nextFloat() * (b - a) + a
 
+fun absDelta(x: Int, oldX: Int, z: Int, oldZ: Int): Int {
+    val diffX = x - oldX
+    val diffZ = z - oldZ
+    return max(abs(diffX), abs(diffZ))
+}
+
 /**
  * Calculates a chunk position from a given [id] in a spiral pattern.
  *
@@ -104,9 +112,9 @@ fun java.util.Random.nextFloat(a: Float, b: Float) = if (a >= b) a else nextFloa
  * @param zOffset an optional Z offset
  * @return a [ChunkPosition] containing the calculated position in the spiral.
  */
-fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): ChunkPosition {
+fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): Long {
     // if the id is 0 then we know we're in the centre
-    if (id == 0) return ChunkPosition(0 + xOffset, 0 + zOffset)
+    if (id == 0) return ChunkPosition.toLong(0 + xOffset, 0 + zOffset)
 
     val index = id - 1
 
@@ -125,10 +133,10 @@ fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): ChunkPosition {
 
     return when (a / (radius * 2)) {
         // find the face (0 = top, 1 = right, 2 = bottom, 3 = left)
-        0 -> ChunkPosition(a - radius + xOffset, -radius + zOffset)
-        1 -> ChunkPosition(radius + xOffset, a % en - radius + zOffset)
-        2 -> ChunkPosition(radius - a % en + xOffset, radius + zOffset)
-        3 -> ChunkPosition(-radius + xOffset, radius - a % en + zOffset)
-        else -> ChunkPosition.ZERO
+        0 -> ChunkPosition.toLong(a - radius + xOffset, -radius + zOffset)
+        1 -> ChunkPosition.toLong(radius + xOffset, a % en - radius + zOffset)
+        2 -> ChunkPosition.toLong(radius - a % en + xOffset, radius + zOffset)
+        3 -> ChunkPosition.toLong(-radius + xOffset, radius - a % en + zOffset)
+        else -> ChunkPosition.ZERO.toLong()
     }
 }

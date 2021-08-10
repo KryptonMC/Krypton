@@ -23,6 +23,7 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3i
 import java.util.EnumMap
@@ -34,6 +35,7 @@ class KryptonChunk(
     override val biomes: KryptonBiomeContainer,
     override var lastUpdate: Long,
     override var inhabitedTime: Long,
+    val ticket: Ticket<*>,
     val carvingMasks: Pair<ByteArray, ByteArray>,
     val structures: CompoundTag
 ) : Chunk, ChunkAccessor {
