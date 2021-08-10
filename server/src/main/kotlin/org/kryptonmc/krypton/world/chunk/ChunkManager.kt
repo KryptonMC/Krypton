@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.world.chunk
 
 import com.mojang.serialization.Dynamic
+import it.unimi.dsi.fastutil.objects.ObjectArraySet
+import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.registry.InternalResourceKeys
@@ -32,7 +34,6 @@ import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.chunk.ticket.TicketManager
 import org.kryptonmc.krypton.world.chunk.ticket.TicketType
-import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
@@ -47,6 +48,7 @@ import java.util.concurrent.Executors
 class ChunkManager(private val world: KryptonWorld) {
 
     val chunkMap = ConcurrentHashMap<Long, KryptonChunk>()
+    private val playersByChunk = ConcurrentHashMap<Long, ObjectSet<KryptonPlayer>>()
     private val executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
     private val ticketManager = TicketManager(this)
     private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
@@ -59,14 +61,29 @@ class ChunkManager(private val world: KryptonWorld) {
 
     fun <T> removeTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T) = ticketManager.removeTicket(x, z, type, level, key)
 
-    fun addPlayer(player: KryptonPlayer, x: Int, z: Int, oldX: Int, oldZ: Int, viewDistance: Int): CompletableFuture<Unit> =
-        CompletableFuture.supplyAsync({ ticketManager.addPlayer(x, z, oldX, oldZ, player.uuid, viewDistance) }, executor)
+    fun addPlayer(player: KryptonPlayer, x: Int, z: Int, oldX: Int, oldZ: Int, viewDistance: Int): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
+        ticketManager.addPlayer(x, z, oldX, oldZ, player.uuid, viewDistance)
+        val pos = ChunkPosition.toLong(x, z)
+        val oldPos = ChunkPosition.toLong(oldX, oldZ)
+        if (pos == oldPos) {
+            if (!playersByChunk.containsKey(pos)) playersByChunk.getOrPut(pos) { ObjectArraySet() }.add(player)
+            return@supplyAsync // They haven't changed chunks
+        }
+        val oldSet = playersByChunk[oldPos]?.apply { remove(player) }
+        if (oldSet != null && oldSet.isEmpty()) playersByChunk.remove(oldPos)
+        playersByChunk.getOrPut(pos) { ObjectArraySet() }.add(player)
+    }, executor)
 
     fun removePlayer(player: KryptonPlayer, viewDistance: Int = world.server.config.world.viewDistance) {
         val x = player.location.blockX shr 4
         val z = player.location.blockZ shr 4
         ticketManager.removePlayer(x, z, player.uuid, viewDistance)
+        val pos = ChunkPosition.toLong(x, z)
+        val set = playersByChunk[pos]?.apply { remove(player) }
+        if (set != null && set.isEmpty()) playersByChunk.remove(pos)
     }
+
+    fun players(position: Long) = playersByChunk[position] ?: emptySet()
 
     fun load(x: Int, z: Int, ticket: Ticket<*>): KryptonChunk {
         val pos = ChunkPosition.toLong(x, z)

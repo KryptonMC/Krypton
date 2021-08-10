@@ -316,7 +316,7 @@ class KryptonWorld(
         tickTime()
 
         profiler.push("chunk tick")
-        chunkManager.chunkMap.values.forEach { chunk -> chunk.tick(players.count { it.location in chunk.position }) }
+        chunkManager.chunkMap.values.forEach { it.tick(chunkManager.players(it.position.toLong()).size) }
         profiler.pop()
     }
 

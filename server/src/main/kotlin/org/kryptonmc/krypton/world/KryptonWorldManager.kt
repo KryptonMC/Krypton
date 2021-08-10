@@ -146,7 +146,7 @@ class KryptonWorldManager(
     }
 
     private fun prepare() {
-        val listener = ChunkProgressListener(11)
+        val listener = ChunkProgressListener(9)
         LOGGER.info("Preparing start region for dimension ${default.dimension.location}...")
         listener.tick()
         default.chunkManager.addTicket(default.data.spawnX shr 4, default.data.spawnZ shr 4, TicketTypes.START, 22, Unit) {
