@@ -25,16 +25,13 @@ import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 
-// TODO: Use this later
 object SuggestionProviders {
 
     private val PROVIDERS_BY_NAME = mutableMapOf<Key, SuggestionProvider<Sender>>()
     private val DEFAULT_NAME = key("ask_server")
 
-    val ASK_SERVER = register(DEFAULT_NAME) { _, _ -> null }
     val SUMMONABLE_ENTITIES = register(key("summonable_entities")) { _, builder ->
         InternalRegistries.ENTITY_TYPE.values.filter { it.isSummonable }.suggestKey(builder, EntityType<*>::key) {
             val key = InternalRegistries.ENTITY_TYPE[it]
@@ -47,8 +44,6 @@ object SuggestionProviders {
         PROVIDERS_BY_NAME[key] = provider
         return Wrapper(key, provider)
     }
-
-    fun provider(key: Key) = PROVIDERS_BY_NAME.getOrDefault(key, ASK_SERVER)
 
     fun name(provider: SuggestionProvider<Sender>) = if (provider is Wrapper) provider.name else DEFAULT_NAME
 

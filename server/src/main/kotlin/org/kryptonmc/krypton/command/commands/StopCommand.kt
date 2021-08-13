@@ -20,21 +20,21 @@ package org.kryptonmc.krypton.command.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.locale.Messages
 
-class StopCommand(private val server: KryptonServer) : InternalCommand {
+object StopCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("stop")
-            .permission("krypton.command.stop", PermissionLevel.LEVEL_4)
+            .permission("krypton.command.stop", 4)
             .executes {
-                Messages.COMMANDS.STOP.send(it.source)
-                server.stop()
+                val sender = it.source as? KryptonSender ?: return@executes 0
+                Messages.COMMANDS.STOP.send(sender)
+                sender.server.stop()
                 1
             })
     }

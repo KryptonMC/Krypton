@@ -25,9 +25,9 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.space.Position
+import org.kryptonmc.krypton.command.ERROR_MUST_BE_PLAYER
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.SuggestionProviders
 import org.kryptonmc.krypton.command.arguments.NBTCompoundArgument
@@ -51,21 +51,21 @@ object SummonCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("summon")
-            .permission("krypton.command.summon", PermissionLevel.LEVEL_2)
+            .permission("krypton.command.summon", 2)
             .then(argument<Sender, Key>("entity", SummonEntityArgument())
                 .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                 .executes {
-                    val sender = it.source as? KryptonPlayer ?: return@executes 1
+                    val sender = it.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
                     spawnEntity(sender, it.summonableEntity("entity"), sender.location, MutableCompoundTag())
                     1
                 }.then(argument<Sender, Coordinates>("position", VectorArgument())
                     .executes {
-                        val sender = it.source as? KryptonPlayer ?: return@executes 1
+                        val sender = it.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
                         spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), MutableCompoundTag())
                         1
                     }.then(argument<Sender, CompoundTag>("nbt", NBTCompoundArgument())
                         .executes {
-                            val sender = it.source as? KryptonPlayer ?: return@executes 1
+                            val sender = it.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
                             spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), it.argument<CompoundTag>("nbt").mutable())
                             1
                         })))

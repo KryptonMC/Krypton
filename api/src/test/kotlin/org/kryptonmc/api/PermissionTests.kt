@@ -12,9 +12,9 @@ import io.mockk.every
 import io.mockk.mockk
 import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.event.play.PermissionCheckEvent
-import org.kryptonmc.api.event.ticking.TickEndEvent
-import org.kryptonmc.api.event.ticking.TickStartEvent
+import org.kryptonmc.api.event.player.PermissionCheckEvent
+import org.kryptonmc.api.event.server.TickEndEvent
+import org.kryptonmc.api.event.server.TickStartEvent
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

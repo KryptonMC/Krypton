@@ -8,6 +8,7 @@ plugins {
 
 repositories {
     maven("https://repo.kryptonmc.org/releases")
+    maven("https://repo.velocitypowered.com/snapshots/")
     jcenter()
 }
 

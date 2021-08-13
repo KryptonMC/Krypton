@@ -27,7 +27,7 @@ import org.kryptonmc.api.command.Sender
 interface InternalCommand {
 
     /**
-     * Register this command with the provided [dispatcher].
+     * Registers this command with the provided [dispatcher].
      *
      * @param dispatcher the dispatcher to use to register this command
      */

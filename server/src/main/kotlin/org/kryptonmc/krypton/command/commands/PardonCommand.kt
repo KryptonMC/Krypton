@@ -22,7 +22,6 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.translatable
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
@@ -38,11 +37,15 @@ object PardonCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("pardon")
-            .permission("krypton.command.pardon", PermissionLevel.LEVEL_3)
+            .permission("krypton.command.pardon", 3)
             .then(argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
-                .suggests { context, builder -> builder.suggest((context.source.server as KryptonServer).playerManager.bannedPlayers.map { it.key.name }) }
+                .suggests { context, builder ->
+                    val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
+                    builder.suggest(server.playerManager.bannedPlayers.map { it.key.name })
+                }
                 .executes {
-                    unban(it.gameProfileArgument("targets").getProfiles(it.source), it.source, it.source.server as KryptonServer)
+                    val server = it.source.server as? KryptonServer ?: return@executes 0
+                    unban(it.gameProfileArgument("targets").getProfiles(it.source), it.source, server)
                     1
                 })
         )

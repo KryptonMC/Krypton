@@ -6,7 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.event.play
+package org.kryptonmc.api.event.player
 
 import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.text.Component

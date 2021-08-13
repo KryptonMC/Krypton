@@ -22,10 +22,8 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
@@ -42,12 +40,15 @@ object DeopCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("deop")
-            .permission("krypton.command.deop", PermissionLevel.LEVEL_3)
+            .permission("krypton.command.deop", 3)
             .then(argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
-                .suggests { context, builder -> builder.suggest((context.source.server as KryptonServer).playerManager.ops.map { it.key.name }) }
+                .suggests { context, builder ->
+                    val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
+                    builder.suggest(server.playerManager.ops.map { it.key.name })
+                }
                 .executes { context ->
                     val targets = context.gameProfileArgument("targets").getProfiles(context.source)
-                    val server = context.source.server as KryptonServer
+                    val server = context.source.server as? KryptonServer ?: return@executes 0
                     targets.forEach {
                         val ops = server.playerManager.ops
                         if (!ops.contains(it)) throw ALREADY_DEOPPED_EXCEPTION.create()

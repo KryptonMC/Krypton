@@ -9,7 +9,7 @@
 package org.kryptonmc.api
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.event.play.QuitEvent
+import org.kryptonmc.api.event.player.QuitEvent
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

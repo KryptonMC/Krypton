@@ -20,30 +20,20 @@ package org.kryptonmc.krypton.command
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.ParseResults
-import com.mojang.brigadier.arguments.StringArgumentType.greedyString
-import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
-import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
-import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
-import com.mojang.brigadier.suggestion.SuggestionsBuilder
-import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
-import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.util.TriState
-import org.apache.commons.lang3.StringUtils
 import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.api.command.BrigadierCommand
+import org.kryptonmc.api.command.Command
 import org.kryptonmc.api.command.CommandManager
-import org.kryptonmc.api.command.PermissionLevel
+import org.kryptonmc.api.command.CommandRegistrar
 import org.kryptonmc.api.command.RawCommand
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
-import org.kryptonmc.api.event.play.PermissionCheckEvent
+import org.kryptonmc.api.command.meta.CommandMeta
+import org.kryptonmc.api.command.meta.SimpleCommandMeta
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.commands.BanCommand
 import org.kryptonmc.krypton.command.commands.BanIpCommand
@@ -68,129 +58,71 @@ import org.kryptonmc.krypton.command.commands.TeleportCommand
 import org.kryptonmc.krypton.command.commands.TitleCommand
 import org.kryptonmc.krypton.command.commands.VersionCommand
 import org.kryptonmc.krypton.command.commands.WhitelistCommand
+import org.kryptonmc.krypton.command.registrar.BrigadierCommandRegistrar
+import org.kryptonmc.krypton.command.registrar.RawCommandRegistrar
+import org.kryptonmc.krypton.command.registrar.SimpleCommandRegistrar
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.locks.ReentrantReadWriteLock
 
-class KryptonCommandManager(private val server: KryptonServer) : CommandManager {
+class KryptonCommandManager(server: KryptonServer) : CommandManager {
 
     internal val dispatcher = CommandDispatcher<Sender>()
+    private val lock = ReentrantReadWriteLock()
+    private val brigadierCommandRegistrar = BrigadierCommandRegistrar(lock.writeLock())
+    private val simpleCommandRegistrar = SimpleCommandRegistrar(server, lock.writeLock())
+    private val rawCommandRegistrar = RawCommandRegistrar(lock.writeLock())
 
-    override fun register(command: BrigadierCommand) = dispatcher.root.addChild(command.node)
+    override fun register(command: BrigadierCommand) = brigadierCommandRegistrar.register(dispatcher.root, command, CommandMeta.builder(command).build())
 
-    override fun register(command: SimpleCommand) {
-        val node = buildRawArgumentsLiteral(
-            command.name,
-            { execute(command, it) },
-            { context, builder -> suggest(command, context, builder) }
-        )
-        dispatcher.root.addChild(node)
+    override fun register(command: SimpleCommand, meta: SimpleCommandMeta) = simpleCommandRegistrar.register(dispatcher.root, command, meta)
 
-        command.aliases.forEach { dispatcher.root.addChild(node.buildRedirect(it)) }
-    }
+    override fun register(command: RawCommand, meta: CommandMeta) = rawCommandRegistrar.register(dispatcher.root, command, meta)
 
-    override fun register(command: RawCommand) {
-        val node = buildRawArgumentsLiteral(
-            command.name,
-            { command.execute(it.source, it.input); 1 },
-            { context, builder ->
-                command.suggest(context.source, context.rawArguments).forEach { builder.suggest(it) }
-                builder.buildFuture()
-            }
-        )
-        dispatcher.root.addChild(node)
-
-        command.aliases.forEach { dispatcher.root.addChild(node.buildRedirect(it)) }
-    }
-
-    override fun dispatch(sender: Sender, command: String) {
+    override fun <C : Command, M : CommandMeta> register(command: C, meta: M, registrar: CommandRegistrar<C, M>) {
+        lock.writeLock().lock()
         try {
-            if (dispatcher.execute(command.removePrefix("/"), sender) != 1) sender.sendMessage(DEFAULT_NO_PERMISSION)
+            registrar.register(dispatcher.root, command, meta)
+        } finally {
+            lock.writeLock().unlock()
+        }
+    }
+
+    override fun unregister(alias: String) = dispatcher.root.removeChildByName(alias)
+
+    override fun dispatch(sender: Sender, command: String): Boolean {
+        val normalized = command.normalize(true)
+        return try {
+            val parseResults = parse(sender, normalized)
+            dispatcher.execute(parseResults) != BrigadierCommand.FORWARD
         } catch (exception: CommandSyntaxException) {
             val message = exception.rawMessage
             sender.sendMessage(if (message is AdventureMessage) message.wrapped else text(exception.message.orEmpty()))
+            false
+        } catch (exception: Throwable) {
+            // Catch Throwable because plugins like to do stupid things sometimes
+            throw RuntimeException("Unable to dispatch command $command from $sender!", exception)
         }
     }
 
-    /**
-     * Retrieves command completion suggestions from the specified parse results
-     */
-    fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> =
-        dispatcher.getCompletionSuggestions(parseResults)
+    fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(parseResults)
 
     fun sendCommands(player: KryptonPlayer) {
         val node = RootCommandNode<Sender>()
-        for (child in dispatcher.root.children) {
-            if (child.requirement.test(player)) {
-                node.addChild(child)
-            }
-        }
-        player.session.sendPacket(PacketOutDeclareCommands(node))
-    }
-
-    private fun dispatchCommand(command: SimpleCommand, sender: Sender, args: Array<String>): Int {
-        CommandScope.launch { command.execute(sender, args) }
-        return 1
-    }
-
-    private fun dispatchPermissionCheck(sender: Sender, permission: String?): TriState {
-        val event = PermissionCheckEvent(sender, permission, permission?.let { sender.hasPermission(it) } ?: true)
-        return server.eventManager.fireSync(event).result
-    }
-
-    private fun execute(command: SimpleCommand, context: CommandContext<Sender>): Int {
-        val sender = context.source
-        val args = context.splitArguments
-
-        if (command.permission == null) {
-            dispatchPermissionCheck(sender, null)
-            return dispatchCommand(command, sender, args)
-        }
-
-        return when (dispatchPermissionCheck(sender, command.permission)) {
-            TriState.TRUE -> dispatchCommand(command, sender, args)
-            TriState.FALSE -> 0
-            TriState.NOT_SET -> 0
+        lock.readLock().lock()
+        try {
+            dispatcher.root.children.forEach { if (it.requirement.test(player)) node.addChild(it) }
+            player.session.sendPacket(PacketOutDeclareCommands(node))
+        } finally {
+            lock.readLock().unlock()
         }
     }
-
-    private fun suggest(
-        command: SimpleCommand,
-        context: CommandContext<Sender>,
-        builder: SuggestionsBuilder
-    ): CompletableFuture<Suggestions> {
-        val args = context.splitArguments
-        val hasPermission = command.permission?.let(context.source::hasPermission) ?: true
-        if (!hasPermission) return builder.buildFuture()
-
-        command.suggest(context.source, args).forEach { builder.suggest(it) }
-        return builder.buildFuture()
-    }
-
-    private fun LiteralCommandNode<Sender>.buildRedirect(alias: String) =
-        literal<Sender>(alias.lowercase())
-            .requires(requirement)
-            .forward(redirect, redirectModifier, isFork)
-            .executes(command)
-            .apply { children.forEach { then(it) } }
-            .build()
-
-    private fun buildRawArgumentsLiteral(
-        alias: String,
-        brigadierCommand: com.mojang.brigadier.Command<Sender>,
-        suggestionProvider: SuggestionProvider<Sender>
-    ) = literal<Sender>(alias.lowercase())
-        .then(argument<Sender, String>("arguments", greedyString())
-            .suggests(suggestionProvider)
-            .executes(brigadierCommand))
-        .executes(brigadierCommand)
-        .build()
 
     internal fun registerBuiltins() {
-        StopCommand(server).register(dispatcher)
-        RestartCommand(server).register(dispatcher)
-        DebugCommand(server).register(dispatcher)
+        StopCommand.register(dispatcher)
+        RestartCommand.register(dispatcher)
+        DebugCommand.register(dispatcher)
         TeleportCommand.register(dispatcher)
         SummonCommand.register(dispatcher)
         GamemodeCommand.register(dispatcher)
@@ -213,31 +145,12 @@ class KryptonCommandManager(private val server: KryptonServer) : CommandManager 
         DeopCommand.register(dispatcher)
     }
 
-    companion object {
-
-        private val DEFAULT_NO_PERMISSION = Messages.COMMAND.NO_PERMISSION().color(NamedTextColor.RED)
+    private fun parse(sender: Sender, input: String): ParseResults<Sender> {
+        lock.readLock().lock()
+        return try {
+            dispatcher.parse(input, sender)
+        } finally {
+            lock.readLock().unlock()
+        }
     }
-}
-
-private val CommandContext<Sender>.rawArguments: String
-    get() {
-        val firstSpace = input.indexOf(' ')
-        return if (firstSpace == -1) "" else input.substring(firstSpace + 1)
-    }
-
-private val CommandContext<Sender>.splitArguments: Array<String>
-    get() {
-        val raw = rawArguments
-        return if (raw.isEmpty()) emptyArray() else StringUtils.split(raw)
-    }
-
-fun LiteralArgumentBuilder<Sender>.permission(
-    permission: String,
-    permissionLevel: PermissionLevel
-): LiteralArgumentBuilder<Sender> {
-    permissionLevel.grant(permission)
-    requires {
-        it.hasPermission(permission)
-    }
-    return this
 }

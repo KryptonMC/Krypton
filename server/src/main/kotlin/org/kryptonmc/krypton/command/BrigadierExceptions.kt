@@ -82,7 +82,7 @@ object BrigadierExceptions : BuiltInExceptionProvider {
     override fun readerExpectedLong() = READER_EXPECTED_LONG
     override fun readerExpectedFloat() = READER_EXPECTED_FLOAT
     override fun readerExpectedDouble() = READER_EXPECTED_DOUBLE
-    override fun readerExpectedStartOfQuote() = READER_EXPECTED_END_OF_QUOTE
+    override fun readerExpectedStartOfQuote() = READER_EXPECTED_START_OF_QUOTE
     override fun readerExpectedEndOfQuote() = READER_EXPECTED_END_OF_QUOTE
     override fun readerExpectedSymbol() = READER_EXPECTED_SYMBOL
     override fun dispatcherUnknownCommand() = DISPATCHER_UNKNOWN_COMMAND

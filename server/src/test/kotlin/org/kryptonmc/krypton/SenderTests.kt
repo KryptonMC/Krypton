@@ -24,7 +24,7 @@ import io.mockk.verify
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.event.EventManager
-import org.kryptonmc.api.event.play.PermissionCheckEvent
+import org.kryptonmc.api.event.player.PermissionCheckEvent
 import org.kryptonmc.krypton.command.KryptonSender
 import java.util.UUID
 import java.util.concurrent.CompletableFuture

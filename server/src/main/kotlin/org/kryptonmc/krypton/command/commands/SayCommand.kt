@@ -24,7 +24,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
@@ -36,10 +35,10 @@ object SayCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("say")
-            .permission("krypton.command.say", PermissionLevel.LEVEL_2)
+            .permission("krypton.command.say", 2)
             .then(argument<Sender, String>("message", string())
                 .executes {
-                    val server = it.source.server as KryptonServer
+                    val server = it.source.server as? KryptonServer ?: return@executes 0
                     server.broadcast(translatable("chat.type.announcement", it.source.name.toComponent(), text(it.argument<String>("message"))))
                     1
                 })

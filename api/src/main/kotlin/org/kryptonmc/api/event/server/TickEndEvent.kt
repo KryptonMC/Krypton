@@ -6,7 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.event.ticking
+package org.kryptonmc.api.event.server
 
 /**
  * Called when a tick ends.

@@ -28,10 +28,10 @@ import net.kyori.adventure.text.event.ClickEvent.suggestCommand
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.event.play.ChatEvent
-import org.kryptonmc.api.event.play.ClientSettingsEvent
-import org.kryptonmc.api.event.play.MoveEvent
-import org.kryptonmc.api.event.play.PluginMessageEvent
+import org.kryptonmc.api.event.player.ChatEvent
+import org.kryptonmc.api.event.player.ClientSettingsEvent
+import org.kryptonmc.api.event.player.MoveEvent
+import org.kryptonmc.api.event.player.PluginMessageEvent
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonServer

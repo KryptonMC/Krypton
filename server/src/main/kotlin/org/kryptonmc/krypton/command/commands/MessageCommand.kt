@@ -24,12 +24,13 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.command.ERROR_MUST_BE_PLAYER
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
+import org.kryptonmc.krypton.command.buildCopy
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
@@ -38,11 +39,11 @@ object MessageCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val messageCommand = dispatcher.register(literal<Sender>("msg")
-            .permission("krypton.command.msg", PermissionLevel.LEVEL_1)
+            .permission("krypton.command.msg", 1)
             .then(argument<Sender, EntityQuery>("player", EntityArgument.player())
                 .then(argument<Sender, String>("message", string())
                     .executes {
-                        val source = it.source as? KryptonPlayer ?: return@executes 1
+                        val source = it.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
                         val player = it.entityArgument("player").getPlayers(source)[0]
                         val message = it.argument<String>("message")
                         source.sendMessage(translatable("commands.message.display.outgoing", text(player.name), text(message)))
@@ -52,7 +53,7 @@ object MessageCommand : InternalCommand {
             )
         )
 
-        dispatcher.register(literal<Sender>("tell").redirect(messageCommand))
-        dispatcher.register(literal<Sender>("w").redirect(messageCommand))
+        dispatcher.register(messageCommand.buildCopy("tell"))
+        dispatcher.register(messageCommand.buildCopy("w"))
     }
 }

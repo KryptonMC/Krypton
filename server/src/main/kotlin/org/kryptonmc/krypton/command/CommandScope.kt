@@ -24,9 +24,9 @@ import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import java.util.concurrent.Executors
 
 /**
- * A custom coroutine scope for executing commands on.
- *
- * Subject to change if commands are no longer asynchronous by default
+ * A custom coroutine scope for executing commands on, as commands are asynchronous
+ * by default. This is an attempt to decrease the chance of a command holding up the
+ * entire server whilst it executes.
  */
 object CommandScope : CoroutineScope {
 

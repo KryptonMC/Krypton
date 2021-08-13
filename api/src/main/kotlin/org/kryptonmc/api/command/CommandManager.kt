@@ -8,6 +8,9 @@
  */
 package org.kryptonmc.api.command
 
+import org.kryptonmc.api.command.meta.CommandMeta
+import org.kryptonmc.api.command.meta.SimpleCommandMeta
+
 /**
  * The command manager is responsible for registering, unregistering, and
  * keeping track of [Command]s
@@ -15,32 +18,54 @@ package org.kryptonmc.api.command
 interface CommandManager {
 
     /**
-     * Register a Brigadier command with this manager.
+     * Registers a Brigadier command with this manager.
      *
      * @param command the command to register
      */
     fun register(command: BrigadierCommand)
 
     /**
-     * Register a legacy command with this manager.
+     * Registers the given simple [command] with the given [meta] to
+     * this manager.
      *
      * @param command the command to register
+     * @param meta the command metadata
      */
-    fun register(command: SimpleCommand)
+    fun register(command: SimpleCommand, meta: SimpleCommandMeta)
 
     /**
-     * Register a raw command with this manager.
+     * Registers the given raw [command] with the given [meta] to
+     * this manager.
      *
      * @param command the command to register
+     * @param meta the command metadata
      */
-    fun register(command: RawCommand)
+    fun register(command: RawCommand, meta: CommandMeta)
 
     /**
-     * Dispatch a command from the given [sender] with the given [command]
+     * Registers the given [command] with the given [meta] to this manager using
+     * the given [registrar].
+     *
+     * @param command the command to register
+     * @param meta the command metadata
+     * @param registrar the command registrar to use to register the command
+     */
+    fun <C : Command, M : CommandMeta> register(command: C, meta: M, registrar: CommandRegistrar<C, M>)
+
+    /**
+     * Unregisters the given alias from this manager, if registered.
+     *
+     * @param alias the alias to unregister
+     */
+    fun unregister(alias: String)
+
+    /**
+     * Dispatches a command from the given [sender] with the given [command]
      * as the input.
      *
      * @param sender the sender of the command
      * @param command the command to dispatch
+     * @return true if the command dispatched successfully, false otherwise
      */
-    fun dispatch(sender: Sender, command: String)
+    fun dispatch(sender: Sender, command: String): Boolean
 }

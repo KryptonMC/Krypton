@@ -22,8 +22,6 @@ import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.ServerStorage
-import org.kryptonmc.api.event.handshake.HandshakeEvent
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.locale.Messages
@@ -35,7 +33,6 @@ import org.kryptonmc.krypton.network.PacketState
 import org.kryptonmc.krypton.util.BungeeCordHandshakeData
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.splitData
-import java.net.InetSocketAddress
 
 /**
  * Handles all inbound packets in the [Handshake][PacketState.HANDSHAKE] state. Contrary to the
@@ -49,8 +46,6 @@ class HandshakeHandler(
 
     override fun handle(packet: Packet) {
         if (packet !is PacketInHandshake) return // ignore if not a handshake packet
-        server.eventManager.fireAndForget(HandshakeEvent(session.channel.remoteAddress() as InetSocketAddress))
-
         if (packet.address.split('\u0000').size > 1 && server.config.proxy.mode != ForwardingMode.LEGACY) {
             disconnect(Messages.BUNGEE.NOTIFY())
             return

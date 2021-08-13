@@ -57,7 +57,7 @@ dependencies {
     api("org.spongepowered", "configurate-extra-guice")
 
     // Miscellaneous
-    api("com.mojang", "brigadier", Versions.BRIGADIER)
+    api("com.velocitypowered", "velocity-brigadier", Versions.BRIGADIER)
     api("org.spongepowered", "math", Versions.MATH)
     api("org.apache.logging.log4j", "log4j-api")
 }

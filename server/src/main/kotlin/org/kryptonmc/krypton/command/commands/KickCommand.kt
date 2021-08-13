@@ -22,10 +22,8 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
@@ -38,7 +36,7 @@ object KickCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("kick")
-            .permission("krypton.command.kick", PermissionLevel.LEVEL_3)
+            .permission("krypton.command.kick", 3)
             .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
                 .executes { context ->
                     context.entityArgument("targets").getPlayers(context.source).forEach { it.disconnect(translatable("multiplayer.disconnect.kicked")) }

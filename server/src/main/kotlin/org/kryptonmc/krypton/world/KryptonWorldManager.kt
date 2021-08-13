@@ -65,7 +65,7 @@ class KryptonWorldManager(
 
     private val worldExecutor = Executors.newCachedThreadPool(NamedThreadFactory("World Handler %d"))
     private val customWorldFolder = worldFolder.resolve("dimensions")
-    val worlds = mutableMapOf<ResourceKey<World>, KryptonWorld>()
+    override val worlds = mutableMapOf<ResourceKey<World>, KryptonWorld>()
     override val default: KryptonWorld
         get() = worlds[World.OVERWORLD] ?: error("The default world has not yet been loaded!")
 

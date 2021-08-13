@@ -293,6 +293,9 @@ object Messages {
 
         // You do not have permission to execute this command!
         val NO_PERMISSION = empty("command.no-permission")
+
+        // Only players can execute this command!
+        val ONLY_PLAYERS = empty("command.only-players")
     }
 
     object CommandsMessages {

@@ -22,34 +22,35 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.translatable
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.world.Location
+import org.kryptonmc.krypton.command.ERROR_MUST_BE_PLAYER
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
+import org.kryptonmc.krypton.command.buildCopy
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.argument
 import org.kryptonmc.krypton.util.toComponent
 
-internal object TeleportCommand : InternalCommand {
+object TeleportCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val node = dispatcher.register(literal<Sender>("teleport")
-            .permission("krypton.command.teleport", PermissionLevel.LEVEL_2)
+            .permission("krypton.command.teleport", 2)
             .then(argument<Sender, Coordinates>("location", VectorArgument(true))
                 .executes {
-                    teleport(it.source, it.getArgument("location", Coordinates::class.java))
+                    teleport(it.source, it.argument<Coordinates>("location"))
                     1
                 })
             .then(argument<Sender, EntityQuery>("players", EntityArgument.players())
                 .executes {
-                    val sender = it.source as? KryptonPlayer ?: return@executes 1
+                    val sender = it.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
                     val players = it.entityArgument("players").getPlayers(sender)
                     if (players.size == 1) {
                         val player = players[0]
@@ -60,7 +61,7 @@ internal object TeleportCommand : InternalCommand {
                 }
                 .then(argument<Sender, EntityQuery>("target", EntityArgument.player())
                     .executes { context ->
-                        val sender = context.source as? KryptonPlayer ?: return@executes 1
+                        val sender = context.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
                         val players = context.entityArgument("players").getPlayers(sender)
                         val target = context.entityArgument("target").getPlayers(sender)[0]
                         players.forEach { teleport(it, target.location) }
@@ -69,7 +70,7 @@ internal object TeleportCommand : InternalCommand {
                     })
                 .then(argument<Sender, Coordinates>("location", VectorArgument(true))
                     .executes { context ->
-                        val sender = context.source as? KryptonPlayer ?: return@executes 1
+                        val sender = context.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
                         val players = context.entityArgument("players").getPlayers(sender)
                         val location = context.argument<Coordinates>("location")
                         players.forEach { teleport(it, location) }
@@ -83,9 +84,7 @@ internal object TeleportCommand : InternalCommand {
                     })
                 )
         )
-        dispatcher.register(literal<Sender>("tp")
-            .permission("krypton.command.teleport", PermissionLevel.LEVEL_2)
-            .redirect(node))
+        dispatcher.register(node.buildCopy("tp"))
     }
 
     private fun teleport(player: Sender, location: Coordinates) {

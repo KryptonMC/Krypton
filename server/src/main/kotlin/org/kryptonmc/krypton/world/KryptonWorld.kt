@@ -348,9 +348,6 @@ class KryptonWorld(
     companion object {
 
         val RESOURCE_KEY_CODEC: Codec<ResourceKey<World>> = KEY_CODEC.xmap({ ResourceKey.of(ResourceKeys.DIMENSION, it) }, ResourceKey<World>::location)
-        val OVERWORLD = ResourceKey.of(InternalResourceKeys.WORLD, DimensionTypes.OVERWORLD_KEY.location)
-        val THE_NETHER = ResourceKey.of(InternalResourceKeys.WORLD, DimensionTypes.NETHER_KEY.location)
-        val THE_END = ResourceKey.of(InternalResourceKeys.WORLD, DimensionTypes.END_KEY.location)
         private const val MINIMUM_SIZE = -30000000
         private const val MAXIMUM_SIZE = -MINIMUM_SIZE
     }

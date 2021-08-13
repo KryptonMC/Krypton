@@ -11,6 +11,7 @@ package org.kryptonmc.api
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.auth.ProfileCache
 import org.kryptonmc.api.block.BlockManager
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
@@ -95,6 +96,11 @@ interface Server : ForwardingAudience {
      * This is used to retrieve and register item handlers for item types.
      */
     val itemManager: ItemManager
+
+    /**
+     * The cache of [org.kryptonmc.api.auth.GameProfile]s.
+     */
+    val profileCache: ProfileCache
 
     /**
      * The scheduler for this server.

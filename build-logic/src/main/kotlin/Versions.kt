@@ -13,7 +13,7 @@ object Versions {
     const val ADVENTURE = "4.8.1"
     const val COROUTINES = "1.5.1"
     const val CONFIGURATE = "4.1.1"
-    const val BRIGADIER = "1.0.18"
+    const val BRIGADIER = "1.0.0-SNAPSHOT"
     const val MATH = "2.0.0"
     const val LOG4J = "2.14.1"
 
@@ -33,6 +33,7 @@ object Versions {
     const val ASM = "9.2"
     const val NBT = "1.5.5"
     const val MINECRAFT = "1.17.1"
+    const val JAVABRIDGE = "1.1.23"
 
     // Test
     const val JUNIT_PLATFORM_RUNNER = "1.7.2"

@@ -22,19 +22,15 @@ import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.ConsoleSender
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.toSectionText
 import org.kryptonmc.krypton.locale.TranslationBootstrap
 import org.kryptonmc.krypton.util.logger
 import java.util.Locale
 
-/**
- * Our implementation of the API's [ConsoleSender].
- */
 class KryptonConsoleSender(override val server: KryptonServer) : ConsoleSender {
 
-    override val permissionLevel = PermissionLevel.LEVEL_4
+    override val permissionLevel = 4
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
         LOGGER.info(TranslationBootstrap.RENDERER.render(message, Locale.ENGLISH).toSectionText())

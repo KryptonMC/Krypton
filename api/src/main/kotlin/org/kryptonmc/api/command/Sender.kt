@@ -18,19 +18,19 @@ import org.kryptonmc.api.Server
 interface Sender : Audience, Identified {
 
     /**
-     * The sender's permission level
-     */
-    val permissionLevel: PermissionLevel
-
-    /**
-     * The sender's name
+     * The name of the sender.
      */
     val name: String
 
     /**
-     * The sender's permissions
+     * The permission map for the sender.
      */
     val permissions: Map<String, Boolean>
+
+    /**
+     * The sender's permission level (the equivalent to Minecraft's operator level).
+     */
+    val permissionLevel: Int
 
     /**
      * The sender's server
@@ -38,49 +38,50 @@ interface Sender : Audience, Identified {
     val server: Server
 
     /**
-     * If the sender has the specified [permission]
+     * Returns true if the sender has the specified [permission], false otherwise.
      *
      * @param permission the permission to check
+     * @return true if the sender has the permission, false otherwise
      */
     fun hasPermission(permission: String): Boolean
 
     /**
-     * Grant the sender the specified [permission]
+     * Grants the sender the specified [permission].
      *
      * @param permission the permission to grant
      */
     fun grant(permission: String)
 
     /**
-     * Grant the sender the specified [permissions]
+     * Grants the sender the specified [permissions].
      *
      * @param permissions the permission to grant
      */
     fun grant(vararg permissions: String) = permissions.forEach { grant(it) }
 
     /**
-     * Grant the sender the specified [permissions]
+     * Grants the sender the specified [permissions].
      *
      * @param permissions the permissions to grant
      */
     fun grant(permissions: Iterable<String>) = permissions.forEach { grant(it) }
 
     /**
-     * Revoke the specified [permission] from the sender
+     * Revokes the specified [permission] from the sender.
      *
      * @param permission the permission to revoke
      */
     fun revoke(permission: String)
 
     /**
-     * Revoke the specified [permissions] from the sender
+     * Revokes the specified [permissions] from the sender.
      *
      * @param permissions the permissions to revoke
      */
     fun revoke(vararg permissions: String) = permissions.forEach { revoke(it) }
 
     /**
-     * Revoke the specified [permissions] from the sender
+     * Revokes the specified [permissions] from the sender.
      *
      * @param permissions the permissions to revoke
      */

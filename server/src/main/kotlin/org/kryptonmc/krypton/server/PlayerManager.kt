@@ -23,8 +23,8 @@ import com.mojang.serialization.Dynamic
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.event.login.JoinEvent
-import org.kryptonmc.api.event.play.QuitEvent
+import org.kryptonmc.api.event.player.JoinEvent
+import org.kryptonmc.api.event.player.QuitEvent
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
@@ -262,7 +262,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     private fun sendCommands(player: KryptonPlayer) {
         val permissionLevel = player.server.getPermissionLevel(player.profile)
-        sendCommands(player, permissionLevel.id)
+        sendCommands(player, permissionLevel)
     }
 
     private fun sendCommands(player: KryptonPlayer, permissionLevel: Int) {

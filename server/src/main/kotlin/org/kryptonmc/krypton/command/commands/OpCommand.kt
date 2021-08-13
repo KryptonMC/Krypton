@@ -24,7 +24,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
@@ -41,11 +40,11 @@ object OpCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("op")
-            .permission("krypton.command.op", PermissionLevel.LEVEL_3)
+            .permission("krypton.command.op", 3)
             .then(argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
                 .executes { context ->
                     val targets = context.gameProfileArgument("targets").getProfiles(context.source)
-                    val server = context.source.server as KryptonServer
+                    val server = context.source.server as? KryptonServer ?: return@executes 0
                     targets.forEach {
                         val ops = server.playerManager.ops
                         if (ops.contains(it)) throw ALREADY_OPPED_EXCEPTION.create()

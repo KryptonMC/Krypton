@@ -13,9 +13,9 @@ import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.util.Buildable
 
 /**
- * Interface for a particle. Contains the [Key] and internal ID of the particle type.
+ * A type of [ParticleEffect].
  */
-sealed interface Particle : Buildable<ParticleEffect, ParticleEffectBuilder>, Keyed {
+interface Particle : Buildable<ParticleEffect, ParticleEffectBuilder>, Keyed {
 
     /**
      * The namespaced key of this particle.

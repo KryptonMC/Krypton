@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.event.auth.AuthenticationEvent
-import org.kryptonmc.api.event.login.LoginEvent
+import org.kryptonmc.api.event.player.LoginEvent
 import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile

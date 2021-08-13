@@ -19,10 +19,12 @@
 package org.kryptonmc.krypton.util
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
+import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.util.FactoryNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
 import org.kryptonmc.krypton.item.KryptonItemStackFactory
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.world.block.BlockLoader
@@ -43,6 +45,7 @@ class KryptonFactoryProvider : FactoryProvider {
         register<RegistryManager>(KryptonRegistryManager)
         BlockLoader.init()
         register<ItemStack.Factory>(KryptonItemStackFactory)
+        register<CommandMeta.Factory>(KryptonCommandMeta.Factory)
     }
 }
 

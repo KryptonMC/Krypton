@@ -11,7 +11,6 @@ plugins {
 evaluationDependsOn(":api")
 
 repositories {
-    maven("https://repo.velocitypowered.com/snapshots/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://jitpack.io")
     maven("https://repo.minestom.net/repository/maven-public/")
@@ -60,7 +59,7 @@ dependencies {
     implementation("it.unimi.dsi", "fastutil", Versions.FASTUTIL)
     implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
     implementation("org.bstats", "bstats-base", Versions.BSTATS)
-    implementation("com.mojang", "javabridge", "1.1.23")
+    implementation("com.mojang", "javabridge", Versions.JAVABRIDGE)
 }
 
 tasks {

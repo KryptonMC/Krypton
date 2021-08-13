@@ -25,7 +25,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
@@ -41,9 +40,12 @@ object PardonIpCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("pardon-ip")
-            .permission("krypton.command.pardonip", PermissionLevel.LEVEL_3)
+            .permission("krypton.command.pardonip", 3)
             .then(argument<Sender, String>("target", string())
-                .suggests { context, builder -> builder.suggest((context.source.server as KryptonServer).playerManager.bannedIps.map { it.key }) }
+                .suggests { context, builder ->
+                    val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
+                    builder.suggest(server.playerManager.bannedIps.map { it.key })
+                }
                 .executes {
                     unbanIp(it.source, it.argument("target"))
                     1
@@ -52,7 +54,7 @@ object PardonIpCommand : InternalCommand {
     }
 
     private fun unbanIp(sender: Sender, target: String) {
-        val server = sender.server as KryptonServer
+        val server = sender.server as? KryptonServer ?: return
         if (target.matches(BanIpCommand.PATTERN)) {
             if (server.playerManager.bannedIps.contains(target)) server.playerManager.bannedIps -= target else throw ALREADY_UNBANNED_EXCEPTION.create()
         } else throw INVALID_IP_EXCEPTION.create()

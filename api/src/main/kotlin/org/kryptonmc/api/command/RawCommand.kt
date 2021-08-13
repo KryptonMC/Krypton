@@ -14,15 +14,4 @@ package org.kryptonmc.api.command
  * This is useful for attaching external command frameworks to Krypton, and allowing them
  * to do their own processing.
  */
-interface RawCommand : InvocableCommand<String> {
-
-    /**
-     * The primary name of this command
-     */
-    val name: String
-
-    /**
-     * A list of aliases that resolve to this command
-     */
-    val aliases: List<String>
-}
+interface RawCommand : InvocableCommand<String>

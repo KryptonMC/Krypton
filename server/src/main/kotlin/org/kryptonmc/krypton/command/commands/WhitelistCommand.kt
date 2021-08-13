@@ -23,7 +23,6 @@ import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.translatable
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
@@ -42,11 +41,11 @@ object WhitelistCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("whitelist")
-            .permission("krypton.command.whitelist", PermissionLevel.LEVEL_3)
+            .permission("krypton.command.whitelist", 3)
             .then(literal<Sender>("on")
                 .executes {
                     val sender = it.source
-                    val server = sender.server as KryptonServer
+                    val server = sender.server as? KryptonServer ?: return@executes 0
                     if (!server.playerManager.whitelistEnabled) {
                         server.playerManager.whitelistEnabled = true
                         sender.sendMessage(translatable("commands.whitelist.enabled"))
@@ -58,7 +57,7 @@ object WhitelistCommand : InternalCommand {
             .then(literal<Sender>("off")
                 .executes {
                     val sender = it.source
-                    val server = sender.server as KryptonServer
+                    val server = sender.server as? KryptonServer ?: return@executes 0
                     if (server.playerManager.whitelistEnabled) {
                         server.playerManager.whitelistEnabled = false
                         sender.sendMessage(translatable("commands.whitelist.disabled"))
@@ -70,7 +69,7 @@ object WhitelistCommand : InternalCommand {
             .then(literal<Sender>("list")
                 .executes {
                     val sender = it.source
-                    val server = it.source.server as KryptonServer
+                    val server = it.source.server as? KryptonServer ?: return@executes 0
                     val whitelist = server.playerManager.whitelist
                     if (whitelist.isEmpty()) {
                         sender.sendMessage(translatable("commands.whitelist.none"))
@@ -83,7 +82,7 @@ object WhitelistCommand : InternalCommand {
                 .then(argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
                     .executes {
                         val sender = it.source
-                        val server = sender.server as KryptonServer
+                        val server = sender.server as? KryptonServer ?: return@executes 0
                         val targets = it.gameProfileArgument("targets").getProfiles(sender)
                         for (target in targets) {
                             val whitelist = server.playerManager.whitelist
@@ -101,7 +100,7 @@ object WhitelistCommand : InternalCommand {
                 .then(argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
                     .executes {
                         val sender = it.source
-                        val server = sender.server as KryptonServer
+                        val server = sender.server as? KryptonServer ?: return@executes 0
                         val targets = it.gameProfileArgument("targets").getProfiles(sender)
                         for (target in targets) {
                             val whitelist = server.playerManager.whitelist
@@ -118,7 +117,7 @@ object WhitelistCommand : InternalCommand {
                 .then(argument<Sender, String>("target", string())
                     .executes {
                         val sender = it.source
-                        val server = sender.server as KryptonServer
+                        val server = sender.server as? KryptonServer ?: return@executes 0
                         val target = it.argument<String>("target")
                         whitelistIp(server, target, sender)
                         1
@@ -129,7 +128,7 @@ object WhitelistCommand : InternalCommand {
                     .suggests { context, builder -> builder.suggest((context.source.server as KryptonServer).playerManager.whitlistedIps.map { it.key }) }
                     .executes {
                         val sender = it.source
-                        val server = sender.server as KryptonServer
+                        val server = sender.server as? KryptonServer ?: return@executes 0
                         val ip = it.argument<String>("ip")
                         if (server.playerManager.whitlistedIps.contains(ip)) {
                             server.playerManager.whitlistedIps -= ip

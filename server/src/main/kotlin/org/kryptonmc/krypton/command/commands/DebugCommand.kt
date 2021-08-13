@@ -28,6 +28,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.logger
@@ -38,26 +39,49 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-internal class DebugCommand(private val server: KryptonServer) : InternalCommand {
+object DebugCommand : InternalCommand {
+
+    private val ERROR_NOT_RUNNING = SimpleCommandExceptionType(translatable("commands.debug.notRunning").toMessage())
+    private val ERROR_ALREADY_RUNNING = SimpleCommandExceptionType(translatable("commands.debug.alreadyRunning").toMessage())
+    private val ZIP_FILE_SYSTEM_PROVIDER = FileSystemProvider.installedProviders().firstOrNull { it.scheme.equals("jar", true) }
+
+    private val TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")
+    private val TIME_NOW_FORMATTED: String get() = LocalDateTime.now().format(TIME_FORMAT)
+
+    val DEBUG_FOLDER: Path = CURRENT_DIRECTORY.resolve("debug")
+    private val LOGGER = logger<DebugCommand>()
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("debug")
-            .then(literal<Sender>("start").executes { start(it.source); 1 })
-            .then(literal<Sender>("stop").executes { stop(it.source); 1 })
-            .then(literal<Sender>("report").executes { report(it.source); 1 })
+            .then(literal<Sender>("start").executes {
+                val sender = it.source as? KryptonSender ?: return@executes 0
+                start(sender)
+                1
+            })
+            .then(literal<Sender>("stop").executes {
+                val sender = it.source as? KryptonSender ?: return@executes 0
+                stop(sender)
+                1
+            })
+            .then(literal<Sender>("report").executes {
+                val sender = it.source as? KryptonSender ?: return@executes 0
+                report(sender)
+                1
+            })
         )
     }
 
-    private fun start(sender: Sender) {
+    private fun start(sender: KryptonSender) {
+        val server = sender.server
         if (server.continuousProfiler.isEnabled) throw ERROR_ALREADY_RUNNING.create()
         server.startProfiling()
         sender.sendMessage(translatable("commands.debug.started", listOf(text("Started the debug profiler. Type '/debug stop' to stop it."))))
     }
 
-    private fun stop(sender: Sender) {
+    private fun stop(sender: KryptonSender) {
+        val server = sender.server
         if (!server.continuousProfiler.isEnabled) throw ERROR_NOT_RUNNING.create()
         val results = server.finishProfiling()
-//        val file = File(DEBUG_FOLDER, "profile-results-$TIME_NOW_FORMATTED.txt")
         results.save(DEBUG_FOLDER.resolve("profile-results-$TIME_NOW_FORMATTED.txt"))
 
         val secondsDuration = results.duration / 1.0E9F
@@ -69,7 +93,8 @@ internal class DebugCommand(private val server: KryptonServer) : InternalCommand
         )))
     }
 
-    private fun report(sender: Sender) {
+    private fun report(sender: KryptonSender) {
+        val server = sender.server
         val reportFileName = "debug-report-$TIME_NOW_FORMATTED"
         try {
             val folderPath = DEBUG_FOLDER.apply { createDirectories() }
@@ -85,18 +110,5 @@ internal class DebugCommand(private val server: KryptonServer) : InternalCommand
             Messages.COMMANDS.DEBUG_SAVE_ERROR.error(LOGGER, exception)
             sender.sendMessage(translatable("commands.debug.reportFailed"))
         }
-    }
-
-    companion object {
-
-        private val ERROR_NOT_RUNNING = SimpleCommandExceptionType(translatable("commands.debug.notRunning").toMessage())
-        private val ERROR_ALREADY_RUNNING = SimpleCommandExceptionType(translatable("commands.debug.alreadyRunning").toMessage())
-        private val ZIP_FILE_SYSTEM_PROVIDER = FileSystemProvider.installedProviders().firstOrNull { it.scheme.equals("jar", true) }
-
-        private val TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")
-        private val TIME_NOW_FORMATTED: String get() = LocalDateTime.now().format(TIME_FORMAT)
-
-        val DEBUG_FOLDER: Path = CURRENT_DIRECTORY.resolve("debug")
-        private val LOGGER = logger<DebugCommand>()
     }
 }

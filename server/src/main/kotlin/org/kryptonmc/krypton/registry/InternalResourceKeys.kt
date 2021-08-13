@@ -38,7 +38,6 @@ import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 object InternalResourceKeys {
 
     val MEMORIES = ResourceKeys.minecraft<MemoryKey<Any>>("memory_module_type")
-    val WORLD = ResourceKeys.minecraft<KryptonWorld>("dimension")
     val DIMENSION = ResourceKeys.minecraft<Dimension>("dimension")
     val DIMENSION_TYPE = ResourceKeys.minecraft<KryptonDimensionType>("dimension_type")
     val GAME_EVENT = ResourceKeys.minecraft<GameEvent>("game_event")

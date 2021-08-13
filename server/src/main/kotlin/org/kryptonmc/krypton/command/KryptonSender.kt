@@ -19,19 +19,18 @@
 package org.kryptonmc.krypton.command
 
 import net.kyori.adventure.util.TriState
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.event.play.PermissionCheckEvent
+import org.kryptonmc.api.event.player.PermissionCheckEvent
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 abstract class KryptonSender(override val server: KryptonServer) : Sender {
 
     override val permissions = mutableMapOf<String, Boolean>()
-    override val permissionLevel = PermissionLevel.LEVEL_1
+    override val permissionLevel = 1
 
     override fun hasPermission(permission: String): Boolean {
-        val event = PermissionCheckEvent(this, permission, permission in permissions || permissionLevel.hasPermission(permission))
+        val event = PermissionCheckEvent(this, permission, permission in permissions)
         return when (server.eventManager.fireSync(event).result) {
             TriState.TRUE -> true
             TriState.FALSE, TriState.NOT_SET -> false

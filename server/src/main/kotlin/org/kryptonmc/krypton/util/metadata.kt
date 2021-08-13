@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.event.play.SkinSettings
+import org.kryptonmc.api.event.player.SkinSettings
 
 fun Short.toSkinSettings() = SkinSettings(
     toInt() and 0x01 != 0,

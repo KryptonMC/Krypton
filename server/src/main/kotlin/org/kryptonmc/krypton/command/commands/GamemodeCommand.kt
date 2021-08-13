@@ -19,27 +19,25 @@
 package org.kryptonmc.krypton.command.commands
 
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.context.CommandContext
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.krypton.command.ERROR_MUST_BE_PLAYER
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.argument
 
 object GamemodeCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        val command = literal<Sender>("gamemode").permission("krypton.command.gamemode", PermissionLevel.LEVEL_2)
+        val command = literal<Sender>("gamemode").permission("krypton.command.gamemode", 2)
         Gamemode.values().forEach { gamemode ->
             command.then(literal<Sender>(gamemode.name.lowercase())
                 .executes { gameModeArgument(it, gamemode) }
@@ -50,14 +48,14 @@ object GamemodeCommand : InternalCommand {
     }
 
     private fun gameModeArgument(context: CommandContext<Sender>, gamemode: Gamemode): Int {
-        val sender = context.source as? KryptonPlayer ?: return 1
+        val sender = context.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
         updateGameMode(listOf(sender), gamemode, sender)
         return 1
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun targetArgument(context: CommandContext<Sender>, gamemode: Gamemode): Int {
-        val sender = context.source as? KryptonPlayer ?: return 1
+        val sender = context.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
         val entities = context.entityArgument("targets").getPlayers(sender)
         updateGameMode(entities, gamemode, sender)
         return 1

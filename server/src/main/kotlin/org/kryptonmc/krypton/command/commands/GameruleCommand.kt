@@ -24,11 +24,9 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.translatable
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.world.rule.GameRule
-import org.kryptonmc.api.world.rule.GameRules
+import org.kryptonmc.krypton.command.ERROR_MUST_BE_PLAYER
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -39,21 +37,21 @@ object GameruleCommand : InternalCommand {
 
     @Suppress("UNCHECKED_CAST")
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        val command = literal<Sender>("gamerule").permission("krypton.command.gamerule", PermissionLevel.LEVEL_2)
+        val command = literal<Sender>("gamerule").permission("krypton.command.gamerule", 2)
         Registries.GAMERULES.values.forEach { rule ->
             val gameRule = literal<Sender>(rule.name).executes {
-                val sender = it.source as? KryptonPlayer ?: return@executes 1
+                val sender = it.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
                 sender.sendMessage(translatable("commands.gamerule.query", rule.name.toComponent(), sender.world.gameRules[rule].toString().toComponent()))
                 1
             }
             if (rule.default is Boolean) gameRule.then(argument<Sender, Boolean>("value", BoolArgumentType.bool()).executes {
-                val sender = it.source as? KryptonPlayer ?: return@executes 1
+                val sender = it.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
                 val value = it.argument<Boolean>("value")
                 sender.world.gameRules[rule] = value
                 sender.sendMessage(translatable("commands.gamerule.set", rule.name.toComponent(), value.toString().toComponent()))
                 1
             }) else if (rule.default is Int) gameRule.then(argument<Sender, Int>("value", IntegerArgumentType.integer()).executes {
-                val sender = it.source as? KryptonPlayer ?: return@executes 1
+                val sender = it.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
                 val value = it.argument<Int>("value")
                 sender.world.gameRules[rule] = value
                 sender.sendMessage(translatable("commands.gamerule.set", rule.name.toComponent(), value.toString().toComponent()))

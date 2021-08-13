@@ -13,10 +13,12 @@ package org.kryptonmc.api.command
  *
  * @param A the type of the arguments
  */
-sealed interface InvocableCommand<A> : Command {
+interface InvocableCommand<A> : Command {
 
     /**
-     * Called when this command is executed (when the [sender] runs the command)
+     * Invokes this command with the given [sender] and [args].
+     *
+     * This will be called by the command manager when this command is invoked.
      *
      * @param sender the sender who ran this command
      * @param args the arguments the sender sent
@@ -24,7 +26,10 @@ sealed interface InvocableCommand<A> : Command {
     fun execute(sender: Sender, args: A)
 
     /**
-     * Called when the [sender] sends a tab complete request.
+     * Gets the list of suggestions for the given [sender] and the given [args].
+     *
+     * This will be called by the command manager when suggestions are requested
+     * for this command.
      *
      * @param sender the sender who sent the tab completion request
      * @param args the arguments the sender sent

@@ -32,7 +32,6 @@ import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.title.Title
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
@@ -130,7 +129,7 @@ class KryptonPlayer(
     override var viewDistance = 10
     override var time = 0L
 
-    override val permissionLevel: PermissionLevel
+    override val permissionLevel: Int
         get() = server.getPermissionLevel(profile)
 
     private var camera: KryptonEntity = this

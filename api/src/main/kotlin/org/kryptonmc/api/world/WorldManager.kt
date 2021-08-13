@@ -10,6 +10,7 @@ package org.kryptonmc.api.world
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.Server
+import org.kryptonmc.api.resource.ResourceKey
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -22,6 +23,11 @@ interface WorldManager {
      * The server this [WorldManager] is bound to.
      */
     val server: Server
+
+    /**
+     * The map of all currently loaded worlds by dimension.
+     */
+    val worlds: Map<ResourceKey<World>, World>
 
     /**
      * The default world for this [Server].

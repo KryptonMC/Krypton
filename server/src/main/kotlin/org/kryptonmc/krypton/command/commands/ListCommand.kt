@@ -22,7 +22,6 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
@@ -33,7 +32,7 @@ object ListCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("list")
-            .permission("krypton.command.list", PermissionLevel.LEVEL_1)
+            .permission("krypton.command.list", 1)
             .executes {
                 sendNames(it.source, it.source.server as KryptonServer)
                 1
@@ -48,11 +47,11 @@ object ListCommand : InternalCommand {
 
     private fun sendNames(sender: Sender, server: KryptonServer) {
         val names = server.players.map(KryptonPlayer::name)
-        sender.sendMessage(translatable("commands.list.players", text(names.size), text(server.maxPlayers), text(names.joinToString(separator = "\n"))))
+        sender.sendMessage(translatable("commands.list.players", text(names.size), text(server.maxPlayers), text(names.joinToString("\n"))))
     }
 
     private fun sendNamesWithUUID(sender: Sender, server: KryptonServer) {
-        val names = server.players.map { it.name + " (${it.uuid})" }
-        sender.sendMessage(translatable("commands.list.players", text(names.size), text(server.maxPlayers), text(names.joinToString(separator = "\n"))))
+        val names = server.players.map { "${it.name} (${it.uuid})" }
+        sender.sendMessage(translatable("commands.list.players", text(names.size), text(server.maxPlayers), text(names.joinToString("\n"))))
     }
 }

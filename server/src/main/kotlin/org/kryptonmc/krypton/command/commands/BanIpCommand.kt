@@ -25,7 +25,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
@@ -43,14 +42,14 @@ object BanIpCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("ban-ip")
-            .permission("krypton.command.banip", PermissionLevel.LEVEL_3)
+            .permission("krypton.command.banip", 3)
             .then(argument<Sender, String>("target", string())
                 .executes {
-                    banIp(it.source.server as KryptonServer, it.argument("target"), it.source)
+                    banIp(it.source.server as? KryptonServer ?: return@executes 0, it.argument("target"), it.source)
                     1
                 }.then(argument<Sender, String>("reason", string())
                     .executes {
-                        banIp(it.source.server as KryptonServer, it.argument("target"), it.source, it.argument("reason"))
+                        banIp(it.source.server as? KryptonServer ?: return@executes 0, it.argument("target"), it.source, it.argument("reason"))
                         1
                     })
             )

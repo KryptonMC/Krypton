@@ -28,11 +28,10 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
-import org.kryptonmc.api.event.ticking.TickEndEvent
-import org.kryptonmc.api.event.ticking.TickStartEvent
+import org.kryptonmc.api.event.server.TickEndEvent
+import org.kryptonmc.api.event.server.TickStartEvent
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.World
@@ -41,7 +40,7 @@ import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.auth.MojangUUIDTypeAdapter
 import org.kryptonmc.krypton.command.KryptonCommandManager
-import org.kryptonmc.krypton.command.commands.DebugCommand.Companion.DEBUG_FOLDER
+import org.kryptonmc.krypton.command.commands.DebugCommand.DEBUG_FOLDER
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.console.KryptonConsoleSender
@@ -107,7 +106,7 @@ class KryptonServer(
     val packRepository: PackRepository,
     val resources: ServerResources,
     val config: KryptonConfig,
-    val profileCache: KryptonProfileCache,
+    override val profileCache: KryptonProfileCache,
     ops: RegistryReadOps<Tag>,
     private val configPath: Path,
     worldFolder: Path
@@ -395,9 +394,7 @@ class KryptonServer(
 
     override fun audiences() = players + console
 
-    fun getPermissionLevel(profile: KryptonGameProfile) =
-        if (playerManager.ops.contains(profile)) PermissionLevel.fromId(playerManager.ops[profile]!!.permissionLevel)
-            ?: PermissionLevel.LEVEL_1 else PermissionLevel.LEVEL_1
+    fun getPermissionLevel(profile: KryptonGameProfile) = if (playerManager.ops.contains(profile)) playerManager.ops[profile]?.permissionLevel ?: 1 else 1
 
     fun stop(halt: Boolean = true) {
         if (!isRunning) return // Ensure we cannot accidentally run this twice

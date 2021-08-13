@@ -21,9 +21,9 @@ package org.kryptonmc.krypton.command.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import net.kyori.adventure.text.Component.translatable
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.world.Difficulty
+import org.kryptonmc.krypton.command.ERROR_MUST_BE_PLAYER
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -32,16 +32,16 @@ object DifficultyCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal<Sender>("difficulty")
-            .permission("krypton.command.difficulty", PermissionLevel.LEVEL_2)
+            .permission("krypton.command.difficulty", 2)
             .executes {
-                val sender = it.source as? KryptonPlayer ?: return@executes 1
+                val sender = it.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
                 sender.sendMessage(translatable("commands.difficulty.query", translatable("options.difficulty.${sender.world.difficulty.name.lowercase()}")))
                 1
             }
         Difficulty.values().forEach { difficulty ->
             command.then(literal<Sender>(difficulty.name.lowercase())
                 .executes {
-                    val sender = it.source as? KryptonPlayer ?: return@executes 1
+                    val sender = it.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
                     if (sender.world.difficulty == difficulty) {
                         sender.sendMessage(translatable("commands.difficulty.failure", translatable("options.difficulty.${difficulty.name.lowercase()}")))
                     } else {

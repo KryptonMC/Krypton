@@ -24,11 +24,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.gameProfileArgument
@@ -43,15 +43,17 @@ object BanCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("ban")
-            .permission("krypton.command.ban", PermissionLevel.LEVEL_3)
+            .permission("krypton.command.ban", 3)
             .then(argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
                 .executes {
-                    ban(it.gameProfileArgument("targets").getProfiles(it.source), server = it.source.server as KryptonServer, sender = it.source)
+                    val sender = it.source as? KryptonSender ?: return@executes 0
+                    ban(it.gameProfileArgument("targets").getProfiles(it.source), sender.server, sender)
                     1
                 }.then(argument<Sender, String>("reason", string())
                     .executes {
+                        val sender = it.source as? KryptonSender ?: return@executes 0
                         val reason = it.argument<String>("reason")
-                        ban(it.gameProfileArgument("targets").getProfiles(it.source), server = it.source.server as KryptonServer, sender = it.source, reason = reason)
+                        ban(it.gameProfileArgument("targets").getProfiles(it.source), sender.server, sender, reason)
                         1
                     })
             )
@@ -60,25 +62,21 @@ object BanCommand : InternalCommand {
 
     private fun ban(
         profiles: List<KryptonGameProfile>,
-        reason: String = "Banned by operator.",
         server: KryptonServer,
-        sender: Sender
-    ) = profiles.forEach {
-        if (server.playerManager.bannedPlayers.contains(it)) return@forEach
-        val entry = BannedPlayerEntry(it, reason = reason)
+        sender: Sender,
+        reason: String = "Banned by operator.",
+    ) = profiles.forEach { profile ->
+        if (server.playerManager.bannedPlayers.contains(profile)) return@forEach
+        val entry = BannedPlayerEntry(profile, reason = reason)
         server.playerManager.bannedPlayers += entry
-        if (server.player(it.uuid) != null) kick(entry, server.player(it.uuid)!!)
-        sender.sendMessage(translatable("commands.ban.success", text(it.name), text(reason)))
-        logBan(it.name, sender.name, reason, server)
+        server.player(profile.uuid)?.let { kick(entry, it) }
+        sender.sendMessage(translatable("commands.ban.success", text(profile.name), text(reason)))
+        logBan(profile.name, sender.name, reason, server)
     }
 
     private fun kick(entry: BannedPlayerEntry, player: KryptonPlayer) {
         val text = translatable("multiplayer.disconnect.banned.reason", entry.reason.toComponent())
-        if (entry.expiryDate != null) text.append(translatable(
-            "multiplayer.disconnect.banned.expiration", listOf(
-                BanEntry.DATE_FORMAT.format(entry.expiryDate).toComponent()
-            ))
-        )
+        if (entry.expiryDate != null) text.append(translatable("multiplayer.disconnect.banned.expiration", BanEntry.DATE_FORMAT.format(entry.expiryDate).toComponent()))
         player.disconnect(text)
     }
 
