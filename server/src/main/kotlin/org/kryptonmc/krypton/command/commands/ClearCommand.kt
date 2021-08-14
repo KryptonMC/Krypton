@@ -23,7 +23,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
@@ -43,7 +42,7 @@ object ClearCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("clear")
-            .permission("krypton.command.clear", PermissionLevel.LEVEL_2)
+            .permission("krypton.command.clear", 2)
             .executes {
                 if(it.source !is KryptonPlayer) return@executes 1
                 clear(listOf(it.source as KryptonPlayer), it.source)

@@ -25,7 +25,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component.text
-import org.kryptonmc.api.command.PermissionLevel
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
@@ -44,7 +43,7 @@ object GiveCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("give")
-            .permission("krypton.command.give", PermissionLevel.LEVEL_2)
+            .permission("krypton.command.give", 2)
             .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
                 .then(argument<Sender, ItemStackArgument>("item", ItemStackArgumentType())
                     .executes {
