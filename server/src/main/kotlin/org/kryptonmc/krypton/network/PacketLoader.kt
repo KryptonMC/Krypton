@@ -30,6 +30,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChangeHeldItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
+import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlaceBlock
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPosition
@@ -62,6 +63,7 @@ object PacketLoader {
         // PLAY
         PacketState.PLAY.registerPacketType(0x00, ::PacketInTeleportConfirm)
         PacketState.PLAY.registerPacketType(0x03, ::PacketInChat)
+        PacketState.PLAY.registerPacketType(0x04, ::PacketInClientStatus)
         PacketState.PLAY.registerPacketType(0x05, ::PacketInClientSettings)
         PacketState.PLAY.registerPacketType(0x06, ::PacketInTabComplete)
         PacketState.PLAY.registerPacketType(0x0A, ::PacketInPluginMessage)

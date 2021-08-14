@@ -16,13 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.data
+package org.kryptonmc.krypton.packet.`in`.play
 
-enum class WorldResource(val path: String) {
+import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.readEnum
 
-    ROOT("."),
-    PLAYER_DATA_FOLDER("playerdata"),
-    LEVEL_DATA_FILE("level.dat"),
-    DATA_PACK_FOLDER("datapacks"),
-    STATISTICS_FOLDER("stats"),
+class PacketInClientStatus(buf: ByteBuf) : PlayPacket(0x04) {
+
+    val action = buf.readEnum<Action>()
+
+    enum class Action {
+
+        PERFORM_RESPAWN,
+        REQUEST_STATS
+    }
 }

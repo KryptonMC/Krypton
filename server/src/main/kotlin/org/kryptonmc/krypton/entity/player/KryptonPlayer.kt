@@ -44,6 +44,8 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.statistic.CustomStatistics
+import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
@@ -88,6 +90,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.chunkInSpiral
 import org.kryptonmc.krypton.util.logger
@@ -106,6 +109,8 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.function.UnaryOperator
 import kotlin.math.abs
 import kotlin.math.min
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 class KryptonPlayer(
     val session: Session,
@@ -125,6 +130,7 @@ class KryptonPlayer(
     override val inventory = KryptonPlayerInventory(this)
     override var scoreboard: Scoreboard? = null
     override var locale: Locale? = null
+    override val statistics = server.playerManager.getStatistics(this)
 
     override var viewDistance = 10
     override var time = 0L
@@ -459,6 +465,35 @@ class KryptonPlayer(
         isInvisible = internalGamemode == Gamemode.SPECTATOR
     }
 
+    override fun incrementStatistic(statistic: Statistic<*>, amount: Int) = statistics.increment(statistic, amount)
+
+    override fun incrementStatistic(key: Key, amount: Int) = incrementStatistic(KryptonStatisticTypes.CUSTOM[key], amount)
+
+    override fun decrementStatistic(statistic: Statistic<*>, amount: Int) = statistics.decrement(statistic, amount)
+
+    override fun resetStatistic(statistic: Statistic<*>) = statistics.set(statistic, 0)
+
+    fun updateMovementStatistics(deltaX: Double, deltaY: Double, deltaZ: Double) {
+        // TODO: Walking underwater, walking on water, climbing
+        if (isSwimming) {
+            val value = (sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 100F).roundToInt()
+            if (value > 0) incrementStatistic(CustomStatistics.SWIM_ONE_CM, value)
+        } else if (isOnGround) {
+            val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ) * 100F).roundToInt()
+            if (value > 0) when {
+                isSprinting -> incrementStatistic(CustomStatistics.SPRINT_ONE_CM, value)
+                isCrouching -> incrementStatistic(CustomStatistics.CROUCH_ONE_CM, value)
+                else -> incrementStatistic(CustomStatistics.WALK_ONE_CM, value)
+            }
+        } else if (isFallFlying) {
+            val value = (sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 100F).roundToInt()
+            incrementStatistic(CustomStatistics.AVIATE_ONE_CM, value)
+        } else {
+            val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ ) * 100F).roundToInt()
+            if (value > FLYING_ACHIEVEMENT_MINIMUM_SPEED) incrementStatistic(CustomStatistics.FLY_ONE_CM, value)
+        }
+    }
+
     override var absorption: Float
         get() = data[MetadataKeys.PLAYER.ADDITIONAL_HEARTS]
         set(value) = data.set(MetadataKeys.PLAYER.ADDITIONAL_HEARTS, value)
@@ -485,6 +520,7 @@ class KryptonPlayer(
 
     companion object {
 
+        private const val FLYING_ACHIEVEMENT_MINIMUM_SPEED = 25
         private val DEBUG_CHANNELS = setOf(
             key("debug/paths"),
             key("debug/neighbors_update"),

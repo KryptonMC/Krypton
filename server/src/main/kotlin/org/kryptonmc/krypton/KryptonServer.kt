@@ -81,6 +81,7 @@ import org.kryptonmc.krypton.util.reports.ReportedException
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
+import org.kryptonmc.krypton.world.data.WorldResource
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.kryptonmc.nbt.Tag
@@ -367,6 +368,8 @@ class KryptonServer(
     }
 
     fun overworld() = worldManager.worlds[World.OVERWORLD]!!
+
+    fun worldResource(resource: WorldResource) = dataAccess.resourcePath(resource)
 
     private fun startProfilerTick(profiler: SingleTickProfiler?) {
         if (delayProfilerStart) {

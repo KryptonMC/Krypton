@@ -16,13 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.data
+package org.kryptonmc.krypton.statistic
 
-enum class WorldResource(val path: String) {
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.statistic.Statistic
+import org.kryptonmc.api.statistic.StatisticFormatter
+import org.kryptonmc.api.statistic.StatisticType
+import java.util.IdentityHashMap
 
-    ROOT("."),
-    PLAYER_DATA_FOLDER("playerdata"),
-    LEVEL_DATA_FILE("level.dat"),
-    DATA_PACK_FOLDER("datapacks"),
-    STATISTICS_FOLDER("stats"),
+class KryptonStatisticType<T : Any>(
+    override val key: Key,
+    override val registry: Registry<T>
+) : StatisticType<T> {
+
+    override val statistics = IdentityHashMap<T, Statistic<T>>()
+
+    override fun get(key: T, formatter: StatisticFormatter): Statistic<T> = statistics.getOrPut(key) { KryptonStatistic(this, key, formatter) }
+
+    override fun iterator() = statistics.values.iterator()
 }

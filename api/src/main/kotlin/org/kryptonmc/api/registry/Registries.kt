@@ -37,12 +37,15 @@ object Registries {
     @JvmField val MENU = get(ResourceKeys.MENU)!!
     @JvmField val ATTRIBUTE = get(ResourceKeys.ATTRIBUTE)!!
     @JvmField val BIOME = get(ResourceKeys.minecraft<Biome>("worldgen/biome"))!!
+    @JvmField val STATISTIC_TYPE = get(ResourceKeys.STATISTIC_TYPE)!!
+    @JvmField val CUSTOM_STATISTIC = create(ResourceKeys.CUSTOM_STATISTIC)
 
     /**
      * Custom built-in registries
      */
     @JvmField val GAMERULES = create(ResourceKeys.GAMERULES)
     @JvmField val MODIFIER_OPERATIONS = create(ResourceKeys.MODIFIER_OPERATIONS)
+    @JvmField val CRITERIA = create(ResourceKeys.CRITERIA)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

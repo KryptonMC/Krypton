@@ -25,6 +25,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.event.player.JoinEvent
 import org.kryptonmc.api.event.player.QuitEvent
+import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
@@ -40,7 +41,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
-import org.kryptonmc.krypton.packet.out.play.PacketOutDestroyEntities
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
@@ -65,7 +65,9 @@ import org.kryptonmc.krypton.server.op.OperatorEntry
 import org.kryptonmc.krypton.server.op.OperatorList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
+import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.clamp
+import org.kryptonmc.krypton.util.createDirectory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.nextInt
@@ -74,6 +76,7 @@ import org.kryptonmc.krypton.util.toProtocol
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.data.PlayerDataManager
+import org.kryptonmc.krypton.world.data.WorldResource
 import org.kryptonmc.krypton.world.dimension.parseDimension
 import org.spongepowered.math.GenericMath
 import org.spongepowered.math.vector.Vector3d
@@ -92,6 +95,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     val players = CopyOnWriteArrayList<KryptonPlayer>()
     val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
+    private val statistics = ConcurrentHashMap<UUID, KryptonStatisticsTracker>()
 
     private val registryHolder = server.registryHolder
     val bannedPlayers = BannedPlayerList(Path.of("banned-players.json"))
@@ -148,11 +152,12 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         // Player data stuff
         session.sendPacket(PacketOutAbilities(player))
         session.sendPacket(PacketOutChangeHeldItem(player.inventory.heldSlot))
-        sendCommands(player)
         session.sendPacket(PacketOutDeclareRecipes)
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
         session.sendPacket(PacketOutTags(server.resources.tags.write(registryHolder)))
         session.sendPacket(PacketOutEntityStatus(player.id, if (world.gameRules[GameRules.REDUCED_DEBUG_INFO]) 22 else 23))
+        sendCommands(player)
+        player.statistics.invalidate()
         invalidateStatus()
 
         // Fire join event and send result message
@@ -196,7 +201,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         session.sendPacket(PacketOutUpdateViewPosition(centerChunk))
         player.updateChunks()
 
-        // TODO: Custom boss events, texture pack, mob effects
+        // TODO: Custom boss events, resource pack pack, mob effects
         sendWorldInfo(world, player)
 
         // Send inventory data
@@ -205,18 +210,21 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     fun remove(player: KryptonPlayer) {
         server.eventManager.fire(QuitEvent(player)).thenAccept {
-            dataManager.save(player)
+            player.incrementStatistic(CustomStatistics.LEAVE_GAME)
+            save(player)
 
             // Remove from caches
+            player.world.removeEntity(player)
             players.remove(player)
-            playersByName.remove(player.name)
-            playersByUUID.remove(player.uuid)
 
-            // Send destroy and info
-            sendToAll(PacketOutDestroyEntities(player.id))
+            if (playersByUUID[player.uuid] == player) {
+                playersByName.remove(player.name)
+                playersByUUID.remove(player.uuid)
+                statistics.remove(player.uuid)
+            }
+
+            // Send info and quit message
             sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER, player))
-
-            // Send quit message
             server.sendMessage(it.message)
         }
     }
@@ -259,7 +267,15 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         if (server.player(profile.uuid) != null) sendCommands(server.player(profile.uuid)!!)
     }
 
-    internal fun sendCommands(player: KryptonPlayer) {
+    fun getStatistics(player: KryptonPlayer): KryptonStatisticsTracker {
+        val uuid = player.uuid
+        statistics[uuid]?.let { return it }
+        val folder = server.worldResource(WorldResource.STATISTICS_FOLDER).createDirectory()
+        // TODO: Deal with the old data files
+        return KryptonStatisticsTracker(player, folder.resolve("$uuid.json")).apply { this@PlayerManager.statistics[uuid] = this }
+    }
+
+    private fun sendCommands(player: KryptonPlayer) {
         val permissionLevel = player.server.getPermissionLevel(player.profile)
         sendCommands(player, permissionLevel)
     }
@@ -268,6 +284,11 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         val status = (permissionLevel + 24).clamp(24, 28)
         player.session.sendPacket(PacketOutEntityStatus(player.id, status))
         server.commandManager.sendCommands(player)
+    }
+
+    private fun save(player: KryptonPlayer) {
+        dataManager.save(player)
+        statistics[player.uuid]?.save()
     }
 
     fun tick(time: Long) {

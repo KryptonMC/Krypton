@@ -19,8 +19,10 @@ import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
+import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRule
+import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 
 /**
  * All the built-in registry keys for various registries.
@@ -43,13 +45,16 @@ object ResourceKeys {
     @JvmField val ITEM = minecraft<ItemType>("item")
     @JvmField val DIMENSION = minecraft<World>("dimension")
     @JvmField val ATTRIBUTE = minecraft<AttributeType>("attribute")
-    @JvmField val MODIFIER_OPERATIONS = minecraft<ModifierOperation>("attribute_modifier_operations")
     @JvmField val MENU = minecraft<InventoryType>("menu")
+    @JvmField val STATISTIC_TYPE = minecraft<StatisticType<*>>("stat_type")
+    @JvmField val CUSTOM_STATISTIC = minecraft<Key>("custom_stat")
 
     /**
      * Custom built-in registries
      */
     @JvmField val GAMERULES = krypton<GameRule<Any>>("gamerules")
+    @JvmField val MODIFIER_OPERATIONS = krypton<ModifierOperation>("attribute_modifier_operations")
+    @JvmField val CRITERIA = krypton<Criterion>("criteria")
     // @formatter:on
 
     /**

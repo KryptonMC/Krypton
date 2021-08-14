@@ -69,7 +69,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
 import org.kryptonmc.krypton.network.Session
-import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
+import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toAngle
@@ -126,6 +126,7 @@ class PlayHandler(
         is PacketInPlayerPositionAndRotation -> handlePositionAndRotationUpdate(packet)
         is PacketInPluginMessage -> handlePluginMessage(packet)
         is PacketInTabComplete -> handleTabComplete(packet)
+        is PacketInClientStatus -> handleClientStatus(packet)
         else -> Unit
     }
 
@@ -271,6 +272,7 @@ class PlayHandler(
             packet.onGround
         ), player)
         player.updateChunks()
+        player.updateMovementStatistics(newLocation.x - oldLocation.x, newLocation.y - oldLocation.y, newLocation.z - oldLocation.z)
     }
 
     private fun handleRotationUpdate(packet: PacketInPlayerRotation) {
@@ -308,6 +310,7 @@ class PlayHandler(
         ), player)
         playerManager.sendToAll(PacketOutHeadLook(player.id, newLocation.yaw.toAngle()), player)
         player.updateChunks()
+        player.updateMovementStatistics(newLocation.x - oldLocation.x, newLocation.y - oldLocation.y, newLocation.z - oldLocation.z)
     }
 
     private fun handlePluginMessage(packet: PacketInPluginMessage) {
@@ -324,6 +327,13 @@ class PlayHandler(
         }
     }
 
+    private fun handleClientStatus(packet: PacketInClientStatus) {
+        when (packet.action) {
+            PacketInClientStatus.Action.PERFORM_RESPAWN -> Unit // TODO
+            PacketInClientStatus.Action.REQUEST_STATS -> player.statistics.send()
+        }
+    }
+
     override fun onDisconnect() {
         playerManager.invalidateStatus()
         playerManager.sendMessage(Identity.nil(), translatable("multiplayer.player.left", NamedTextColor.YELLOW, player.displayName), MessageType.SYSTEM)
@@ -332,7 +342,6 @@ class PlayHandler(
 
     companion object {
 
-        private const val LATENCY_CHECK_INTERVAL = 15000
         private const val KEEP_ALIVE_INTERVAL = 15000L
         private val LOGGER = logger<PlayHandler>()
     }

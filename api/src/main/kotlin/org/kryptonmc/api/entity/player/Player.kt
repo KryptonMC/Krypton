@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.entity.player
 
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
@@ -23,6 +24,8 @@ import org.kryptonmc.api.plugin.PluginMessageRecipient
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Position
+import org.kryptonmc.api.statistic.Statistic
+import org.kryptonmc.api.statistic.StatisticsTracker
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Location
 import org.kryptonmc.api.world.World
@@ -130,6 +133,74 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      * This player's locale.
      */
     val locale: Locale?
+
+    /**
+     * The statistics tracker for this player.
+     */
+    val statistics: StatisticsTracker
+
+    /**
+     * Increments the given [statistic] by 1.
+     *
+     * Note: This will increase the current value by 1, it will not set it.
+     * To set statistics, use [StatisticsTracker.set]
+     *
+     * @param statistic the statistic
+     */
+    fun incrementStatistic(statistic: Statistic<*>) = incrementStatistic(statistic, 1)
+
+    /**
+     * Increments the given [statistic] by the given [amount].
+     *
+     * Note: This will increase the current value by the amount, it will not set
+     * it. To set statistics, use [StatisticsTracker.set]
+     *
+     * @param statistic the statistic
+     * @param amount the amount
+     */
+    fun incrementStatistic(statistic: Statistic<*>, amount: Int)
+
+    /**
+     * Increments the given custom statistic [key] by 1.
+     *
+     * @param key the custom statistic key
+     */
+    fun incrementStatistic(key: Key) = incrementStatistic(key, 1)
+
+    /**
+     * Increments the given custom statistic [key] by the given [amount].
+     *
+     * @param key the custom statistic key
+     */
+    fun incrementStatistic(key: Key, amount: Int)
+
+    /**
+     * Decrements the given [statistic] by 1.
+     *
+     * Note: This will decrease the current value by 1, it will not set it.
+     * To set statistics, use [StatisticsTracker.set]
+     *
+     * @param statistic the statistic
+     */
+    fun decrementStatistic(statistic: Statistic<*>) = decrementStatistic(statistic, 1)
+
+    /**
+     * Decrements the given [statistic] by the given [amount].
+     *
+     * Note: This will decrease the current value by the amount, it will not set
+     * it. To set statistics, use [StatisticsTracker.set]
+     *
+     * @param statistic the statistic
+     * @param amount the amount
+     */
+    fun decrementStatistic(statistic: Statistic<*>, amount: Int)
+
+    /**
+     * Resets the given statistic back to a value of 0.
+     *
+     * @param statistic the statistic
+     */
+    fun resetStatistic(statistic: Statistic<*>)
 
     /**
      * Spawns particles for this player relative to a location.

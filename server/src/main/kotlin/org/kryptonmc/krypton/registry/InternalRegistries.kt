@@ -37,6 +37,7 @@ object InternalRegistries {
     val GAME_EVENT = create(InternalResourceKeys.GAME_EVENT)
     val FLUID = createDefaulted(InternalResourceKeys.FLUID, key("empty"))
     val BIOME = create(InternalResourceKeys.BIOME)
+    val STATISTIC_TYPE = create(ResourceKeys.STATISTIC_TYPE)
 
     // World generation registries
     val GENERATOR = create(InternalResourceKeys.GENERATOR)

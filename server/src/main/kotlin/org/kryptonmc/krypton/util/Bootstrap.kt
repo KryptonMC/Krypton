@@ -27,6 +27,8 @@ import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.statistic.CustomStatistics
+import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.util.FACTORY_PROVIDER
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
@@ -40,6 +42,7 @@ import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.item.meta.MetaFactory
 import org.kryptonmc.krypton.locale.TranslationBootstrap
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
 import org.kryptonmc.krypton.tags.BlockTags
 import org.kryptonmc.krypton.tags.EntityTypeTags
 import org.kryptonmc.krypton.tags.FluidTags
@@ -84,6 +87,9 @@ object Bootstrap {
         GameRules
         AttributeTypes
         MetadataKeys
+        KryptonStatisticTypes
+        StatisticTypes
+        CustomStatistics
         MetaKeys // Not technically a registry, but quite close to one
 
         // Preload tags (which use registries)

@@ -8,22 +8,34 @@
  */
 package org.kryptonmc.api.world.scoreboard.criteria
 
-/**
- * Represents a single criterion for an objective.
- *
- * See [here](https://minecraft.gamepedia.com/Scoreboard#Single_criteria) for details.
- */
-enum class Criterion(override val isMutable: Boolean) : Criteria {
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Keyed
+import org.kryptonmc.api.world.scoreboard.RenderType
 
-    DUMMY(true),
-    TRIGGER(true),
-    DEATH_COUNT(true),
-    PLAYER_KILL_COUNT(true),
-    TOTAL_KILL_COUNT(true),
-    HEALTH(false),
-    XP(false),
-    LEVEL(false),
-    FOOD(false),
-    AIR(false),
-    ARMOR(false)
+/**
+ * The criterion for a scoreboard objective to be displayed.
+ */
+interface Criterion : Keyed {
+
+    /**
+     * The key for this criterion.
+     */
+    val key: Key
+
+    /**
+     * The name of this criterion.
+     */
+    val name: String
+
+    /**
+     * If this criterion is mutable.
+     */
+    val isMutable: Boolean
+
+    /**
+     * The render type of this criterion.
+     */
+    val renderType: RenderType
+
+    override fun key() = key
 }

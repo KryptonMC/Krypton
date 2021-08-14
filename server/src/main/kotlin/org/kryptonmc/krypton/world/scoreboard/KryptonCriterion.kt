@@ -16,13 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.data
+package org.kryptonmc.krypton.world.scoreboard
 
-enum class WorldResource(val path: String) {
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.world.scoreboard.RenderType
+import org.kryptonmc.api.world.scoreboard.criteria.CompoundCriterion
+import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 
-    ROOT("."),
-    PLAYER_DATA_FOLDER("playerdata"),
-    LEVEL_DATA_FILE("level.dat"),
-    DATA_PACK_FOLDER("datapacks"),
-    STATISTICS_FOLDER("stats"),
-}
+open class KryptonCriterion(
+    override val key: Key,
+    override val name: String,
+    override val isMutable: Boolean = false,
+    override val renderType: RenderType = RenderType.INTEGER
+) : Criterion
+
+class KryptonCompoundCriterion(
+    key: Key,
+    name: String,
+    override val children: List<KryptonCriterion>,
+    isMutable: Boolean = false,
+    renderType: RenderType = RenderType.INTEGER
+) : KryptonCriterion(key, name, isMutable, renderType), CompoundCriterion
