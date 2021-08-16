@@ -78,9 +78,24 @@ enum class Direction(
      */
     enum class Axis(override val serialized: String) : (Direction?) -> Boolean, Predicate<Direction?>, StringSerializable {
 
-        X("x"),
-        Y("y"),
-        Z("z");
+        X("x") {
+
+            override fun select(x: Int, y: Int, z: Int) = x
+
+            override fun select(x: Double, y: Double, z: Double) = x
+        },
+        Y("y") {
+
+            override fun select(x: Int, y: Int, z: Int) = y
+
+            override fun select(x: Double, y: Double, z: Double) = y
+        },
+        Z("z") {
+
+            override fun select(x: Int, y: Int, z: Int) = z
+
+            override fun select(x: Double, y: Double, z: Double) = z
+        };
 
         /**
          * If this axis tiles vertically.
@@ -93,6 +108,28 @@ enum class Direction(
          */
         val isHorizontal: Boolean
             get() = this == X || this == Z
+
+        /**
+         * Selects the appropriate [x], [y], or [z] coordinate, depending on what the axis
+         * is, and returns it.
+         *
+         * @param x the X coordinate
+         * @param y the Y coordinate
+         * @param z the Z coordinate
+         * @return the chosen coordinate
+         */
+        abstract fun select(x: Int, y: Int, z: Int): Int
+
+        /**
+         * Selects the appropriate [x], [y], or [z] coordinate, depending on what the axis
+         * is, and returns it.
+         *
+         * @param x the X coordinate
+         * @param y the Y coordinate
+         * @param z the Z coordinate
+         * @return the chosen coordinate
+         */
+        abstract fun select(x: Double, y: Double, z: Double): Double
 
         override fun invoke(direction: Direction?) = direction != null && direction.axis == this
 
