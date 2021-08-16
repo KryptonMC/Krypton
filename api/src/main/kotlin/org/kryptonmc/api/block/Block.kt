@@ -166,6 +166,11 @@ interface Block : PropertyHolder<Block>, ItemLike, Comparable<Block> {
     val requiresCorrectTool: Boolean
 
     /**
+     * The render shape of this block.
+     */
+    val renderShape: RenderShape
+
+    /**
      * The translation component for translating the name
      * of this block.
      */

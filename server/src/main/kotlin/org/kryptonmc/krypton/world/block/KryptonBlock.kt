@@ -20,9 +20,8 @@ package org.kryptonmc.krypton.world.block
 
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.block.RenderShape
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.registry.block.BlockData
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
@@ -60,6 +59,7 @@ class KryptonBlock(
     override val opacity = data.opacity
     override val requiresCorrectTool = data.toolRequired
     override val translation = Component.translatable(data.translationKey)
+    override val renderShape = data.renderShape?.let { RenderShape.valueOf(it) } ?: RenderShape.MODEL
     private val itemKey = data.itemKey
 
     override fun copy(key: String, value: String): Block {

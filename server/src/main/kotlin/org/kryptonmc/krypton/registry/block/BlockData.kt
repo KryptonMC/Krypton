@@ -56,9 +56,10 @@ class BlockData(
     val largeCollisionShape = boolean("largeCollisionShape")
     val canRespawnIn = boolean("canRespawnIn")
     val toolRequired = boolean("toolRequired")
+    val renderShape = (override["renderShape"] ?: main["renderShape"])?.asString
     val itemKey = (override["correspondingItem"] ?: main["correspondingItem"])?.asString?.toKey()
 
-    private fun string(name: String) = element(name).asString
+    private fun string(name: String): String = element(name).asString
     private fun double(name: String) = element(name).asDouble
     private fun int(name: String) = element(name).asInt
     private fun boolean(name: String) = element(name).asBoolean
