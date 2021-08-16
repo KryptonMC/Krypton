@@ -125,35 +125,27 @@ abstract class KryptonLivingEntity(
     override var isUsingItem: Boolean
         get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 1 > 0
         set(value) = setLivingFlag(1, value)
-
     override var hand: Hand
         get() = if (data[MetadataKeys.LIVING.FLAGS].toInt() and 2 > 0) Hand.OFF else Hand.MAIN
         set(value) = setLivingFlag(2, value == Hand.OFF)
-
     override var isInRiptideSpinAttack: Boolean
         get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 4 > 0
         set(value) = setLivingFlag(4, value)
-
     override var health: Float
         get() = data[MetadataKeys.LIVING.HEALTH]
         set(value) = data.set(MetadataKeys.LIVING.HEALTH, value)
-
     var potionEffectColor: Int
         get() = data[MetadataKeys.LIVING.POTION_EFFECT_COLOR]
         set(value) = data.set(MetadataKeys.LIVING.POTION_EFFECT_COLOR, value)
-
     var isPotionEffectAmbient: Boolean
         get() = data[MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE]
         set(value) = data.set(MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE, value)
-
     var arrowCount: Int
         get() = data[MetadataKeys.LIVING.ARROWS]
         set(value) = data.set(MetadataKeys.LIVING.ARROWS, value)
-
     var stingerCount: Int
         get() = data[MetadataKeys.LIVING.STINGERS]
         set(value) = data.set(MetadataKeys.LIVING.STINGERS, value)
-
     override var sleepingPosition: Vector3i?
         get() = data[MetadataKeys.LIVING.BED_LOCATION].getIfPresent()
         set(value) = data.set(MetadataKeys.LIVING.BED_LOCATION, Optional.ofNullable(value))

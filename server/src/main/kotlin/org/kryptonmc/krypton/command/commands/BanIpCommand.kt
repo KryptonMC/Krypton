@@ -76,6 +76,10 @@ object BanIpCommand : InternalCommand {
         } else sender.sendMessage(translatable("commands.banip.invalid"))
     }
 
-    private fun logBan(target: String, source: String, reason: String, server: KryptonServer) =
-        server.console.sendMessage(translatable("commands.banlist.entry", target.toComponent(), source.toComponent(), reason.toComponent()))
+    private fun logBan(
+        target: String,
+        source: String,
+        reason: String,
+        server: KryptonServer
+    ) = server.console.sendMessage(translatable("commands.banlist.entry", target.toComponent(), source.toComponent(), reason.toComponent()))
 }

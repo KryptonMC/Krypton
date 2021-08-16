@@ -29,9 +29,7 @@ object EntityArguments {
         "scores", "tag", "team", "limit", "sort", "level", "gamemode", "name",
         "x_rotation", "y_rotation", "type", "nbt", "advancements", "predicate"
     )
-    val EXCLUDE_ARGUMENTS = listOf(
-        "team", "tag", "gamemode", "name", "predicate"
-    )
+    val EXCLUDE_ARGUMENTS = listOf("team", "tag", "gamemode", "name", "predicate")
 
     enum class Sorter {
 
@@ -61,8 +59,6 @@ object EntityArguments {
              * Get the sort candidate from the name
              */
             fun fromName(name: String) = values().firstOrNull { it.name == name.uppercase() }
-
         }
     }
-
 }

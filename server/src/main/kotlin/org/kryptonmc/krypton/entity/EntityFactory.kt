@@ -23,6 +23,7 @@ import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.entity.monster.KryptonCreeper
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.logger
@@ -34,6 +35,8 @@ object EntityFactory {
     private val LOGGER = logger<EntityFactory>()
     private val TYPE_MAP = mapOf<EntityType<out Entity>, (KryptonWorld) -> KryptonEntity>(
         EntityTypes.AREA_EFFECT_CLOUD to ::KryptonAreaEffectCloud,
+        EntityTypes.ARMOR_STAND to ::KryptonArmorStand,
+        EntityTypes.CREEPER to ::KryptonCreeper,
         EntityTypes.ZOMBIE to ::KryptonZombie
     )
 

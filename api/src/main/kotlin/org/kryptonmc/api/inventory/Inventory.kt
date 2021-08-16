@@ -51,26 +51,12 @@ interface Inventory : Iterable<ItemStack> {
     operator fun get(index: Int): ItemStack
 
     /**
-     * Set the item at the specified [index] to the specified [item]
-     *
-     * Will replace the item if there is already an item in that slot
-     *
-     * @param index the index to put the item
-     * @param item the item to add
-     * @throws ArrayIndexOutOfBoundsException if [index] is out of bounds
-     * (not in 0 <= [index] < [size])
-     */
-    @JvmName("put")
-    operator fun set(index: Int, item: ItemStack)
-
-    /**
      * Puts the specified item in the first available empty slot in this inventory, or
      * does nothing if the inventory is full.
      *
      * @param item the item to add
      */
-    @JvmName("add")
-    operator fun plusAssign(item: ItemStack)
+    fun add(item: ItemStack)
 
     /**
      * Removes the specified [item] from the array, or does nothing if there isn't an
@@ -78,8 +64,7 @@ interface Inventory : Iterable<ItemStack> {
      *
      * @param item the item to remove
      */
-    @JvmName("remove")
-    operator fun minusAssign(item: ItemStack)
+    fun remove(item: ItemStack)
 
     /**
      * If this inventory contains the specified [item]

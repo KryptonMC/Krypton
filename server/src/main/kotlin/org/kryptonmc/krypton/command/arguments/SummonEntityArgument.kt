@@ -26,7 +26,6 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.argument
 import org.kryptonmc.krypton.util.readKey
@@ -40,8 +39,6 @@ class SummonEntityArgument : ArgumentType<Key> {
     companion object {
 
         private val EXAMPLES = setOf("minecraft:pig", "cow")
-
-        fun id() = SummonEntityArgument()
     }
 }
 

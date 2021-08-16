@@ -1,5 +1,6 @@
 object Versions {
 
+    const val PITEST = "1.6.0"
     const val SHADOW = "7.0.0"
 
     // API
@@ -21,8 +22,6 @@ object Versions {
     const val NETTY = "4.1.66.Final"
     const val TCA = "1.2.0"
     const val JANSI = "3.20.0"
-    const val RETROFIT = "2.9.0"
-    const val OKHTTP = "4.9.1"
     const val CAFFEINE = "3.0.3"
     const val FASTUTIL = "8.5.4"
     const val CLIKT = "3.2.0"

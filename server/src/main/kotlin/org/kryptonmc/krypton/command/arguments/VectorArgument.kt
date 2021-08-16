@@ -38,8 +38,7 @@ import java.util.concurrent.CompletableFuture
 
 class VectorArgument(private val correctCenter: Boolean = true) : ArgumentType<Coordinates> {
 
-    override fun parse(reader: StringReader) =
-        if (reader.canRead() && reader.peek() == '^') LocalCoordinates.parse(reader) else WorldCoordinates.parseDouble(reader, correctCenter)
+    override fun parse(reader: StringReader) = if (reader.canRead() && reader.peek() == '^') LocalCoordinates.parse(reader) else WorldCoordinates.parseDouble(reader, correctCenter)
 
     override fun <S> listSuggestions(context: CommandContext<S>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
         if (context.source !is Player) return Suggestions.empty()

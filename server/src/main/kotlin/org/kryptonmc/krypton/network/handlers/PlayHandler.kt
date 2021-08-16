@@ -33,6 +33,7 @@ import org.kryptonmc.api.event.player.ClientSettingsEvent
 import org.kryptonmc.api.event.player.MoveEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -68,6 +69,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
 import org.kryptonmc.krypton.network.Session
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toAngle
@@ -179,8 +181,11 @@ class PlayHandler(
     }
 
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
-        if (packet.clickedItem.type === ItemTypes.AIR) return // ignore air
-        player.inventory[packet.slot.toInt()] = packet.clickedItem
+        if (player.gamemode != Gamemode.CREATIVE) return
+        val item = packet.clickedItem
+        val inRange = packet.slot in 1..45
+        val valid = item.isEmpty() || ((MetaKeys.DAMAGE in item.meta && item.meta[MetaKeys.DAMAGE]!! >= 0) && item.amount <= 64 && !item.isEmpty())
+        if (inRange && valid) player.inventory[packet.slot.toInt()] = packet.clickedItem
     }
 
     private fun handleEntityAction(packet: PacketInEntityAction) {

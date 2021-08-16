@@ -38,5 +38,4 @@ object RestartCommand : InternalCommand {
                 1
             })
     }
-
 }

@@ -68,7 +68,6 @@ data class KryptonConfig(
 
     companion object {
 
-        const val FILE_NAME = "config.conf"
         private val HEADER = """
             This is the main Krypton configuration file. All settings in this file apply globally
             across the entire server, regardless of what they are.

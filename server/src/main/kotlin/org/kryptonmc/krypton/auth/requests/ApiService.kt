@@ -16,28 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.effect.particle
+package org.kryptonmc.krypton.auth.requests
 
-import com.mojang.serialization.Codec
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.effect.particle.Particle
-import org.kryptonmc.api.effect.particle.ParticleData
-import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.registry.Registries
+import me.bardy.gsonkt.fromJson
+import org.kryptonmc.krypton.GSON
+import org.kryptonmc.krypton.auth.KryptonGameProfile
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.util.concurrent.CompletableFuture
 
-abstract class KryptonParticle : Particle {
+object ApiService {
 
-    abstract val dataCodec: Codec<ParticleData>
+    private val client = HttpClient.newHttpClient()
 
-    abstract val effectCodec: Codec<ParticleEffect>
-
-    override val key: Key
-        get() = Registries.PARTICLE_TYPE[this]!!
-
-    abstract fun write(effect: ParticleEffect)
-}
-
-class KryptonSimpleParticle(key: Key) {
-
-
+    fun profile(name: String): CompletableFuture<KryptonGameProfile?> {
+        val request = HttpRequest.newBuilder()
+            .uri(URI("https://api.mojang.com/users/profiles/minecraft/$name"))
+            .build()
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply { GSON.fromJson<KryptonGameProfile>(it.body()) }
+    }
 }

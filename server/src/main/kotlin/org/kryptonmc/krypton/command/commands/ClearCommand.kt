@@ -63,20 +63,16 @@ object ClearCommand : InternalCommand {
     //-1 means that everything should be cleared (there is no limit)
     private fun clear(targets: List<KryptonPlayer>, sender: Sender, predicate: ItemStackPredicate = ItemStackPredicate { true }, maxCount: Int = -1) {
         val amount = if(maxCount == -1) "all" else maxCount.toString()
-        if(targets.size == 1) {
+        if (targets.size == 1) {
             val target = targets[0]
             clear(target, predicate, maxCount)
             sender.sendMessage(translatable("commands.clear.success.single", listOf(text(amount), target.name.toComponent())))
-            target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.stateId, target.inventory.networkItems, target.inventory.mainHand))
+            target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.incrementStateId(), target.inventory.networkWriter, target.inventory.mainHand))
             sender.sendMessage(translatable("commands.clear.success.single", listOf(text("all"), target.name.toComponent())))
         } else {
-            for (target in targets) {
-                for ((i, item) in target.inventory.withIndex()) {
-                    if(predicate(item)) {
-                        target.inventory[i] = EmptyItemStack
-                    }
-                }
-                target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.stateId, target.inventory.networkItems, target.inventory.mainHand))
+            targets.forEach { target ->
+                target.inventory.forEachIndexed { index, item -> if (predicate(item)) target.inventory[index] = EmptyItemStack }
+                target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.incrementStateId(), target.inventory.networkWriter, target.inventory.mainHand))
             }
             sender.sendMessage(translatable("commands.clear.success.multiple", listOf(text(amount), targets.size.toString().toComponent())))
         }
@@ -87,38 +83,38 @@ object ClearCommand : InternalCommand {
         var remaining = maxCount
 
         //Clear inventory items
-        remaining = clearList(predicate, remaining, inv.items.withIndex()) { inv.items[it] = EmptyItemStack }
-        if(remaining == 0) return
+        remaining = clearList(predicate, remaining, inv.items) { inv.items[it] = EmptyItemStack }
+        if (remaining == 0) return
 
         //Clear armor items
-        remaining = clearList(predicate, remaining, inv.armor.withIndex()) { inv.armor[it] = EmptyItemStack }
-        if(remaining == 0) return
+        remaining = clearList(predicate, remaining, inv.armor) { inv.armor[it] = EmptyItemStack }
+        if (remaining == 0) return
 
         //Clear crafting items
-        remaining = clearList(predicate, remaining, inv.crafting.withIndex()) { inv.crafting[it] = EmptyItemStack }
-        if(remaining == 0) return
+        remaining = clearList(predicate, remaining, inv.crafting) { inv.crafting[it] = EmptyItemStack }
+        if (remaining == 0) return
 
         //Clear offhand
-        clearList(predicate, remaining, listOf(inv.offHand).withIndex()) { inv.offHand = EmptyItemStack }
+        clearList(predicate, remaining, arrayOf(inv.offHand)) { inv.offHand = EmptyItemStack }
     }
 
-    private fun clearList(predicate: ItemStackPredicate, originalRemaining: Int, withIndex: Iterable<IndexedValue<KryptonItemStack>>, removeItem: (Int) -> Unit) : Int {
+    private fun clearList(predicate: ItemStackPredicate, originalRemaining: Int, items: Array<KryptonItemStack>, removeItem: (Int) -> Unit) : Int {
         var remaining = originalRemaining
-        for ((i, item) in withIndex) {
-            if(predicate(item)) {
-                if(remaining == -1) {
-                    removeItem(i)
-                } else if (remaining > item.amount) {
-                    removeItem(i)
+        items.forEachIndexed { index, item ->
+            if (!predicate(item)) return@forEachIndexed
+            when {
+                remaining == -1 -> removeItem(index)
+                remaining > item.amount -> {
+                    removeItem(index)
                     remaining -= item.amount
-                } else {
+                }
+                else -> {
                     item.amount -= remaining
                     remaining = 0
-                    break
+                    return remaining
                 }
             }
         }
         return remaining
     }
-
 }

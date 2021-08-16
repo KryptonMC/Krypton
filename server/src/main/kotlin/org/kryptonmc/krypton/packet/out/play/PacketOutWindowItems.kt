@@ -28,14 +28,14 @@ import org.kryptonmc.krypton.util.writeVarInt
 class PacketOutWindowItems(
     private val id: Int,
     private val stateId: Int,
-    private val items: List<KryptonItemStack>,
+    private val itemWriter: (ByteBuf) -> Unit,
     private val heldItem: KryptonItemStack
 ) : PlayPacket(0x14) {
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(id)
         buf.writeVarInt(stateId)
-        buf.writeCollection(items) { buf.writeItem(it) }
+        itemWriter(buf)
         buf.writeItem(heldItem)
     }
 }

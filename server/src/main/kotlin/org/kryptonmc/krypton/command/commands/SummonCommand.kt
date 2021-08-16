@@ -76,9 +76,8 @@ object SummonCommand : InternalCommand {
         if (!position.isInSpawnableBounds) throw ERROR_INVALID_POSITION.create()
         val tag = nbt.copy().putString("id", entityType.asString())
         val world = player.world
-        val entity = EntityFactory.create(world, tag)?.apply {
-            location = location.copy(position.x, position.y, position.z)
-        } ?: throw ERROR_FAILED.create()
+        val entity = EntityFactory.create(world, tag)?.apply { location = location.copy(position.x, position.y, position.z) } ?: throw ERROR_FAILED.create()
+
         world.spawnEntity(entity)
         player.sendMessage(Component.translatable("commands.summon.success", entity.displayName))
     }

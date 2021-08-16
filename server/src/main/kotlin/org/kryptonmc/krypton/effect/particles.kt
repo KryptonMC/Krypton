@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.effect
 
 import com.mojang.serialization.Codec
 import org.kryptonmc.api.effect.particle.Particle
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.KEY_CODEC
 

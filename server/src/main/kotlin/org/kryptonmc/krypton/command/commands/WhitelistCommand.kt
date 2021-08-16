@@ -79,7 +79,7 @@ object WhitelistCommand : InternalCommand {
                     1
                 })
             .then(literal<Sender>("add")
-                .then(argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
+                .then(argument<Sender, EntityQuery>("targets", GameProfileArgument())
                     .executes {
                         val sender = it.source
                         val server = sender.server as? KryptonServer ?: return@executes 0
@@ -97,7 +97,7 @@ object WhitelistCommand : InternalCommand {
                     })
             )
             .then(literal<Sender>("remove")
-                .then(argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
+                .then(argument<Sender, EntityQuery>("targets", GameProfileArgument())
                     .executes {
                         val sender = it.source
                         val server = sender.server as? KryptonServer ?: return@executes 0
@@ -160,8 +160,6 @@ object WhitelistCommand : InternalCommand {
                 server.playerManager.whitlistedIps += entry
                 sender.sendMessage(translatable("commands.whitelist.add.success", target.toComponent()))
             }
-        } else {
-            sender.sendMessage(translatable("commands.banip.invalid"))
-        }
+        } else sender.sendMessage(translatable("commands.banip.invalid"))
     }
 }

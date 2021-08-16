@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.command.arguments.itemstack
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
-import com.mojang.brigadier.context.CommandContext
-import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.item.ItemStack
 
 class ItemStackPredicateArgument : ArgumentType<ItemStackPredicate> {
@@ -33,13 +31,10 @@ class ItemStackPredicateArgument : ArgumentType<ItemStackPredicate> {
     companion object {
 
         private val EXAMPLES = listOf("minecraft:stone", "stone", "#minecraft:boats", "stone{foo=bar}")
-
     }
-
 }
 
 fun interface ItemStackPredicate {
 
     operator fun invoke(item: ItemStack) : Boolean
-
 }

@@ -22,11 +22,9 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
-import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.sound.Sound
-import net.kyori.adventure.text.Component.text
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
@@ -38,6 +36,8 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.util.argument
+import org.kryptonmc.krypton.util.writeItem
+import org.kryptonmc.krypton.util.writeVarInt
 
 object GiveCommand : InternalCommand {
 
@@ -49,7 +49,7 @@ object GiveCommand : InternalCommand {
                     .executes {
                         val targets = it.entityArgument("targets").getPlayers(it.source)
                         val item = it.itemStackArgument("item")
-                        give(targets, item, 1, it.source.server as KryptonServer)
+                        give(targets, item, 1)
                         1
                     }
                     .then(argument<Sender, Int>("count", IntegerArgumentType.integer(1))
@@ -57,17 +57,18 @@ object GiveCommand : InternalCommand {
                             val targets = it.entityArgument("targets").getPlayers(it.source)
                             val item = it.itemStackArgument("item")
                             val count = it.argument<Int>("count")
-                            give(targets, item, count, it.source.server as KryptonServer)
+                            give(targets, item, count)
                             1
                         }))))
     }
 
-    private fun give(targets: List<KryptonPlayer>, item: ItemStackArgument, count: Int = 1, server: KryptonServer) {
-        for (target in targets) {
-            val items = item.createItemStacks(count, server)
-            items.forEach { target.inventory += it }
-            target.playSound(Sound.sound(key("entity.item.pickup"), Sound.Source.PLAYER, 0.2f, 2f))
-            target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.stateId, target.inventory.networkItems, target.inventory.mainHand))
-        }
+    private fun give(targets: List<KryptonPlayer>, item: ItemStackArgument, count: Int) = targets.forEach { target ->
+        val items = item.createItemStacks(count)
+        items.forEach { target.inventory.add(it) }
+        target.playSound(Sound.sound(SoundEvents.ITEM_PICKUP, Sound.Source.PLAYER, 0.2F, 2F))
+        target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.incrementStateId(), { buf ->
+            buf.writeVarInt(items.size)
+            items.forEach { buf.writeItem(it) }
+        }, target.inventory.mainHand))
     }
 }

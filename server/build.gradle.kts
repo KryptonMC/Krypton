@@ -4,6 +4,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id("krypton.common")
+    id("info.solidsoft.pitest") version Versions.PITEST
     id("com.github.johnrengelman.shadow") version Versions.SHADOW
     `java-library`
 }
@@ -12,7 +13,6 @@ evaluationDependsOn(":api")
 
 repositories {
     maven("https://oss.sonatype.org/content/groups/public/")
-    maven("https://jitpack.io")
     maven("https://repo.minestom.net/repository/maven-public/")
 }
 
@@ -44,22 +44,16 @@ dependencies {
     implementation("net.minecrell", "terminalconsoleappender", Versions.TCA)
     runtimeOnly("org.jline", "jline-terminal-jansi", Versions.JANSI)
 
-    // Caching & HTTP
-    implementation("com.github.ben-manes.caffeine", "caffeine", Versions.CAFFEINE)
-    implementation("com.squareup.retrofit2", "retrofit", Versions.RETROFIT)
-    implementation("com.squareup.retrofit2", "converter-gson", Versions.RETROFIT)
-    implementation("com.squareup.okhttp3", "okhttp", Versions.OKHTTP)
-
     // Data
     implementation("org.kryptonmc", "datafixerupper", Versions.DFU) // Slight performance enhanced version, courtesy of Paper
     implementation("org.kryptonmc", "nbt", Versions.NBT)
     implementation("de.articdive", "articdata", Versions.MINECRAFT)
 
     // Miscellaneous
+    implementation("com.github.ben-manes.caffeine", "caffeine", Versions.CAFFEINE)
     implementation("it.unimi.dsi", "fastutil", Versions.FASTUTIL)
     implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
     implementation("org.bstats", "bstats-base", Versions.BSTATS)
-    implementation("com.mojang", "javabridge", Versions.JAVABRIDGE)
 }
 
 tasks {
@@ -97,6 +91,31 @@ tasks {
 tasks["build"].dependsOn(tasks["shadowJar"])
 
 pitest {
+    junit5PluginVersion.set("0.12")
+    pitestVersion.set("1.6.7")
+    avoidCallsTo.set(setOf(
+        "kotlin.jvm.internal",
+        "java.util.logging",
+        "org.slf4j",
+        "org.apache.logging.log4j"
+    ))
+    mutators.set(setOf(
+        "CONDITIONALS_BOUNDARY",
+        "INCREMENTS",
+        "INVERT_NEGS",
+        "MATH",
+        "NEGATE_CONDITIONALS",
+        "VOID_METHOD_CALLS",
+        "EMPTY_RETURNS",
+        "FALSE_RETURNS",
+        "TRUE_RETURNS",
+        "PRIMITIVE_RETURNS"
+    ))
+    targetClasses.set(setOf("org.kryptonmc.*"))
+    targetTests.set(setOf("org.kryptonmc.*"))
+    threads.set(Runtime.getRuntime().availableProcessors())
+    outputFormats.set(setOf("HTML", "XML"))
+    excludedMethods.set(setOf("equals", "hashCode", "toString", "emptyList"))
     excludedClasses.set(setOf(
         "org.kryptonmc.krypton.KryptonKt*",
         "org.kryptonmc.krypton.KryptonCLI*",

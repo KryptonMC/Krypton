@@ -28,10 +28,10 @@ import java.awt.Color
 class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityTypes.AREA_EFFECT_CLOUD), AreaEffectCloud {
 
     init {
-        data += MetadataKeys.AREA_EFFECT_CLOUD.RADIUS
-        data += MetadataKeys.AREA_EFFECT_CLOUD.COLOR
-        data += MetadataKeys.AREA_EFFECT_CLOUD.IGNORE_RADIUS
-        data += MetadataKeys.AREA_EFFECT_CLOUD.PARTICLE
+        data.add(MetadataKeys.AREA_EFFECT_CLOUD.RADIUS)
+        data.add(MetadataKeys.AREA_EFFECT_CLOUD.COLOR)
+        data.add(MetadataKeys.AREA_EFFECT_CLOUD.IGNORE_RADIUS)
+        data.add(MetadataKeys.AREA_EFFECT_CLOUD.PARTICLE)
     }
 
     override var age = 0
@@ -55,7 +55,6 @@ class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityT
     override var radius: Float
         get() = data[MetadataKeys.AREA_EFFECT_CLOUD.RADIUS]
         set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.RADIUS, value)
-
     override var color: Color
         get() = Color(data[MetadataKeys.AREA_EFFECT_CLOUD.COLOR])
         set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.COLOR, value.rgb)

@@ -213,59 +213,45 @@ abstract class KryptonEntity(
     override var isOnFire: Boolean
         get() = getSharedFlag(0)
         set(value) = setSharedFlag(0, value)
-
     override var isCrouching: Boolean
         get() = getSharedFlag(1)
         set(value) = setSharedFlag(1, value)
-
     override var isSprinting: Boolean
         get() = getSharedFlag(3)
         set(value) = setSharedFlag(3, value)
-
     override var isSwimming: Boolean
         get() = getSharedFlag(4)
         set(value) = setSharedFlag(4, value)
-
     override var isInvisible: Boolean
         get() = getSharedFlag(5)
         set(value) = setSharedFlag(5, value)
-
     override var isGlowing: Boolean
         get() = getSharedFlag(6)
         set(value) = setSharedFlag(6, value)
-
     override var isFlying: Boolean
         get() = getSharedFlag(7)
         set(value) = setSharedFlag(7, value)
-
     override var air: Int
         get() = data[MetadataKeys.AIR_TICKS]
         set(value) = data.set(MetadataKeys.AIR_TICKS, value)
-
     override var displayName: Component
         get() = data[MetadataKeys.DISPLAY_NAME].orElse(type.name)
         set(value) = data.set(MetadataKeys.DISPLAY_NAME, Optional.ofNullable(value.takeIf { it != Component.empty() }))
-
     override var isDisplayNameVisible: Boolean
         get() = data[MetadataKeys.DISPLAY_NAME_VISIBILITY]
         set(value) = data.set(MetadataKeys.DISPLAY_NAME_VISIBILITY, value)
-
     override var isSilent: Boolean
         get() = data[MetadataKeys.SILENT]
         set(value) = data.set(MetadataKeys.SILENT, value)
-
     override var hasGravity: Boolean
         get() = !data[MetadataKeys.NO_GRAVITY]
         set(value) = data.set(MetadataKeys.NO_GRAVITY, !value)
-
     var pose: Pose
         get() = data[MetadataKeys.POSE]
         set(value) = data.set(MetadataKeys.POSE, value)
-
     override var frozenTicks: Int
         get() = data[MetadataKeys.FROZEN_TICKS]
         set(value) = data.set(MetadataKeys.FROZEN_TICKS, value)
-
     val hasVelocity: Boolean
         get() = velocity.x != 0.0 && velocity.y != 0.0 && velocity.z != 0.0
 }

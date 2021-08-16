@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.config.category
 
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
-import org.kryptonmc.krypton.registry.RegistryHolder
-import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.objectmapping.meta.Setting

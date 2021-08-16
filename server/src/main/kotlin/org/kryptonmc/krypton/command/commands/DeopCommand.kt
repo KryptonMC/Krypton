@@ -41,7 +41,7 @@ object DeopCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("deop")
             .permission("krypton.command.deop", 3)
-            .then(argument<Sender, EntityQuery>("targets", GameProfileArgument.gameProfile())
+            .then(argument<Sender, EntityQuery>("targets", GameProfileArgument())
                 .suggests { context, builder ->
                     val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
                     builder.suggest(server.playerManager.ops.map { it.key.name })

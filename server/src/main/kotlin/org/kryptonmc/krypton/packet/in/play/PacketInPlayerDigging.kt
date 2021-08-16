@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.block.BlockFace
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.toVector3i
-import org.kryptonmc.krypton.world.block.BlockFace
 
 class PacketInPlayerDigging(buf: ByteBuf) : PlayPacket(0x1A) {
 

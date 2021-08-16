@@ -28,12 +28,6 @@ import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 class EntityArgumentSerializer : ArgumentSerializer<EntityArgument> {
 
     override fun write(argument: EntityArgument, buf: ByteBuf) {
-        var mask = 0
-
-        if (argument.singleTarget) mask = mask or 0x01
-        if (argument.onlyPlayers) mask = mask or 0x02
-
-        buf.writeByte(mask)
+        buf.writeByte(createFlags(argument.singleTarget, argument.onlyPlayers))
     }
-
 }

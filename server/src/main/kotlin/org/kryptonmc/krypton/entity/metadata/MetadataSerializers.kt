@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.entity.metadata
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Rotation
 import org.kryptonmc.api.util.asLong

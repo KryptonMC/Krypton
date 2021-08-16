@@ -29,33 +29,15 @@ import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.tags.ItemTags
-import org.kryptonmc.krypton.tags.Tag
 import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.krypton.util.toComponent
 import org.kryptonmc.nbt.CompoundTag
 
 class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO: Tags for ItemStackPredicate etc.
 
-    val ID_INVALID_EXCEPTION = DynamicCommandExceptionType { e ->
-        translatable(
-            "argument.item.id.invalid",
-            listOf(e.toString().toComponent())
-        ).toMessage()
-    }
-    val TAG_DISALLOWED_EXCEPTION = SimpleCommandExceptionType(translatable("argument.item.tag.disallowed").toMessage())
-    val UNKNOWN_ITEM_TAG = DynamicCommandExceptionType { e ->
-        translatable(
-            "arguments.item.tag.unknown",
-            listOf(e.toString().toComponent())
-        ).toMessage()
-    }
-
     private fun readItem(reader: StringReader): ItemType {
         val i = reader.cursor
-
-        while (reader.canRead() && isCharValid(reader.peek())) {
-            reader.skip()
-        }
+        while (reader.canRead() && isCharValid(reader.peek())) reader.skip()
         val string = reader.string.substring(i, reader.cursor)
         val item = Registries.ITEM[key(string)]
         if (item == ItemTypes.AIR) throw ID_INVALID_EXCEPTION.createWithContext(reader, string)
@@ -66,16 +48,9 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO
         if (allowTags) {
             reader.expect('#')
             val i = reader.cursor
-
-            while (reader.canRead() && isCharValid(reader.peek())) {
-                reader.skip()
-            }
-
-            val string = reader.string.substring(i, reader.cursor)
-            return string
-        } else {
-            throw TAG_DISALLOWED_EXCEPTION.createWithContext(reader)
-        }
+            while (reader.canRead() && isCharValid(reader.peek())) reader.skip()
+            return reader.string.substring(i, reader.cursor)
+        } else throw TAG_DISALLOWED_EXCEPTION.createWithContext(reader)
     }
 
     private fun readNBT(reader: StringReader) = if (reader.peek() == '{') SNBTParser(reader).readCompound() else null
@@ -87,33 +62,24 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO
         var item: ItemType? = null
         var nbt: CompoundTag? = null
 
-        if (reader.peek() == '#') {
-            tag = readTag(reader)
-        } else {
-            item = readItem(reader)
-        }
-
-        if (reader.peek() == '{') {
-            nbt = readNBT(reader)
-        }
+        if (reader.peek() == '#') tag = readTag(reader) else item = readItem(reader)
+        if (reader.peek() == '{') nbt = readNBT(reader)
 
         return ItemStackPredicate {
             if (item != null) {
-                if (nbt != null) {
-                    TODO("Compare NBT DATA")
-                } else {
-                    it.type == item
-                }
+                if (nbt != null) TODO("Compare NBT DATA") else it.type == item
             } else if (tag != null) {
                 (ItemTags.tags[tag.toKey()] ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())).contains(it.type)
-            } else {
-                false
-            }
+            } else false
         }
     }
 
-    private fun isCharValid(c: Char): Boolean {
-        return c in '0'..'9' || c in 'a'..'z' || c == '_' || c == ':' || c == '/' || c == '.' || c == '-'
-    }
+    private fun isCharValid(c: Char) = c in '0'..'9' || c in 'a'..'z' || c == '_' || c == ':' || c == '/' || c == '.' || c == '-'
 
+    companion object {
+
+        val ID_INVALID_EXCEPTION = DynamicCommandExceptionType { translatable("argument.item.id.invalid", it.toString().toComponent()).toMessage() }
+        val TAG_DISALLOWED_EXCEPTION = SimpleCommandExceptionType(translatable("argument.item.tag.disallowed").toMessage())
+        val UNKNOWN_ITEM_TAG = DynamicCommandExceptionType { translatable("arguments.item.tag.unknown", it.toString().toComponent()).toMessage() }
+    }
 }

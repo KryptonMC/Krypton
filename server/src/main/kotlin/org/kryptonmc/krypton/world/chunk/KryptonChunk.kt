@@ -101,15 +101,3 @@ class KryptonChunk(
 
     override fun setHeightmap(type: Heightmap.Type, data: LongArray) = heightmaps.getOrPut(type) { Heightmap(this, type) }.setData(this, type, data)
 }
-
-// TODO: Do things with these
-//data class TileTick(
-//    val block: Block,
-//    val priority: Int,
-//    val delay: Int
-//)
-//
-//data class StructureData(
-//    val references: Map<String, Vector>,
-//    val starts: List<Structure>
-//)

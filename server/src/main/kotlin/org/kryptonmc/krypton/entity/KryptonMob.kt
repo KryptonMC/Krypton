@@ -55,14 +55,12 @@ abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : Kryp
             val flags = data[MetadataKeys.MOB.FLAGS].toInt()
             data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 1 else flags and -2).toByte()
         }
-
     override var mainHand: MainHand
         get() = if (data[MetadataKeys.MOB.FLAGS].toInt() and 2 != 0) MainHand.LEFT else MainHand.RIGHT
         set(value) {
             val flags = data[MetadataKeys.MOB.FLAGS].toInt()
             data[MetadataKeys.MOB.FLAGS] = (if (value == MainHand.LEFT) flags or 1 else flags and -2).toByte()
         }
-
     override var isAggressive: Boolean
         get() = data[MetadataKeys.MOB.FLAGS].toInt() and 4 != 0
         set(value) {

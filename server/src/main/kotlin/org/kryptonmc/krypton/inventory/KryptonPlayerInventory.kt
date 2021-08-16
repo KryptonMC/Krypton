@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.inventory
 
+import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.Hand
@@ -29,24 +30,31 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
 import org.kryptonmc.krypton.util.nbt.Serializable
+import org.kryptonmc.krypton.util.writeItem
+import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
-import org.kryptonmc.nbt.MutableCompoundTag
+import org.kryptonmc.nbt.compound
 
 class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory, Serializable<ListTag> {
 
     override val crafting = Array<KryptonItemStack>(5) { EmptyItemStack }
     override val armor = Array<KryptonItemStack>(4) { EmptyItemStack }
 
-    override val helmet: ItemStack
-        get() = armor[ArmorSlot.HELMET.ordinal]
-    override val chestplate: ItemStack
-        get() = armor[ArmorSlot.CHESTPLATE.ordinal]
-    override val leggings: ItemStack
-        get() = armor[ArmorSlot.LEGGINGS.ordinal]
-    override val boots: ItemStack
-        get() = armor[ArmorSlot.BOOTS.ordinal]
+    override var helmet: ItemStack
+        get() = armor(ArmorSlot.HELMET)
+        set(value) = armor(ArmorSlot.HELMET, value)
+    override var chestplate: ItemStack
+        get() = armor(ArmorSlot.CHESTPLATE)
+        set(value) = armor(ArmorSlot.CHESTPLATE, value)
+    override var leggings: ItemStack
+        get() = armor(ArmorSlot.LEGGINGS)
+        set(value) = armor(ArmorSlot.LEGGINGS, value)
+    override var boots: ItemStack
+        get() = armor(ArmorSlot.BOOTS)
+        set(value) = armor(ArmorSlot.BOOTS, value)
 
     override var heldSlot = 0
 
@@ -56,21 +64,26 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
 
     override fun armor(slot: ArmorSlot) = armor[slot.ordinal]
 
+    override fun armor(slot: ArmorSlot, item: ItemStack) {
+        if (item !is KryptonItemStack) return
+        armor[slot.ordinal] = item
+    }
+
     override fun heldItem(hand: Hand): KryptonItemStack = when (hand) {
         Hand.MAIN -> mainHand
         Hand.OFF -> offHand
     }
 
-    override fun set(index: Int, item: ItemStack) {
-        if (item !is KryptonItemStack) return
+    operator fun set(index: Int, item: KryptonItemStack) {
         when (index) {
             0 -> crafting[4] = item
             in 1..4 -> crafting[index - 1] = item
             in 5..8 -> armor[index - 5] = item
-            in 9..35 -> items[index + 9] = item
+            in 9..35 -> items[index] = item
             in 36..44 -> items[index - 36] = item
             45 -> offHand = item
         }
+        owner.session.sendPacket(PacketOutSetSlot(id, incrementStateId(), index, item))
         if (index == heldSlot) return
         owner.session.sendPacket(PacketOutChangeHeldItem(index))
     }
@@ -84,7 +97,10 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
             if (stack.type === ItemTypes.AIR) continue
             when (slot) {
                 in items.indices -> items[slot] = stack
-                in 100..103 -> armor[slot - 100] = stack
+                100 -> armor[3] = stack
+                101 -> armor[2] = stack
+                102 -> armor[1] = stack
+                103 -> armor[0] = stack
                 -106 -> offHand = stack
             }
         }
@@ -94,18 +110,35 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         val list = ListTag(elementType = CompoundTag.ID)
         items.forEachIndexed { index, item ->
             if (item.type === ItemTypes.AIR) return@forEachIndexed
-            list.add(MutableCompoundTag().putByte("Slot", index.toByte()).apply { item.save(this) })
+            list.add(compound {
+                byte("Slot", index.toByte())
+                item.save(this)
+            })
         }
-        armor.forEachIndexed { index, item ->
-            if (item.type === ItemTypes.AIR) return@forEachIndexed
-            list.add(MutableCompoundTag().putByte("Slot", (index + 100).toByte()).apply { item.save(this) })
+        var i: Byte = 103
+        armor.forEach {
+            if (it.type === ItemTypes.AIR) return@forEach
+            list.add(compound {
+                byte("Slot", i--)
+                it.save(this)
+            })
         }
-        list.add(MutableCompoundTag().putByte("Slot", -106).apply { offHand.save(this) })
+        if (offHand.type !== ItemTypes.AIR) list.add(compound {
+            byte("Slot", -106)
+            offHand.save(this)
+        })
         return list
     }
 
-    override val networkItems: List<KryptonItemStack>
-        get() = (crafting + armor + items + offHand).toList()
+    override val networkWriter: (ByteBuf) -> Unit = { buf ->
+        buf.writeVarInt(SIZE)
+        buf.writeItem(crafting[4])
+        for (i in 0..3) buf.writeItem(crafting[i])
+        armor.forEach { buf.writeItem(it) }
+        for (i in 0..26) buf.writeItem(items[i + 9])
+        for (i in 0..8) buf.writeItem(items[i])
+        buf.writeItem(offHand)
+    }
 
     companion object {
 

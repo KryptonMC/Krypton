@@ -30,6 +30,7 @@ import org.kryptonmc.api.effect.particle.ItemParticleData
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.VibrationParticle
 import org.kryptonmc.api.effect.particle.VibrationParticleData
+import org.kryptonmc.krypton.registry.InternalRegistries
 
 @Suppress("UNCHECKED_CAST")
 fun ParticleEffect.write(buf: ByteBuf) {
@@ -52,7 +53,7 @@ fun ParticleEffect.write(buf: ByteBuf) {
             buf.writeFloat(data.to.green.toFloat() / 255F)
             buf.writeFloat(data.to.blue.toFloat() / 255F)
         }
-        is ItemParticle -> buf.writeVarInt((data as ItemParticleData).id)
+        is ItemParticle -> buf.writeVarInt(InternalRegistries.ITEM.idOf((data as ItemParticleData).item))
         is VibrationParticle -> {
             val data = data as VibrationParticleData
             buf.writeDouble(data.origin.x)

@@ -81,7 +81,11 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         val holders = mutableListOf<ProfileHolder>()
         if (!path.exists()) return holders
         try {
-            path.reader().use { reader -> gson.fromJson(reader, JsonObject::class.java)?.toProfileHolder()?.let { holders += it } }
+            path.reader().use { reader ->
+                gson.fromJson(reader, JsonArray::class.java).forEach { element ->
+                    element?.toProfileHolder()?.let { holders += it }
+                }
+            }
         } catch (ignored: FileNotFoundException) {
         } catch (exception: JsonParseException) {
             LOGGER.warn("Failed to parse JSON data from $path. You can delete it to force the server to recreate it.", exception)

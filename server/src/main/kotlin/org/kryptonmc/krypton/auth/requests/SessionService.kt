@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.auth.requests
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
+import me.bardy.gsonkt.fromJson
 import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
@@ -27,59 +28,19 @@ import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.encryption.Encryption
 import org.kryptonmc.krypton.util.hexDigest
 import org.kryptonmc.krypton.util.logger
-import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
-import retrofit2.http.GET
-import retrofit2.http.Query
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 import java.security.MessageDigest
 import java.util.concurrent.TimeUnit
-
-/**
- * Retrofit interface for querying Mojang's session server.
- *
- * Luckily, the server only has to send one request.
- */
-interface MojangSessionService {
-
-    /**
-     * Notify the session server that the player with the specified [username]
-     * has joined the server.
-     *
-     * This is the only request required to authenticate a user with Mojang.
-     *
-     * The [serverId] field is calculated by hashing the [ServerInfo.SERVER_ID][server's ID]
-     * in ASCII, the shared secret and the encoded version of the server's public key,
-     * then digesting that to hex by creating a `BigInteger` from the [MessageDigest.digest]
-     * function, then converting it to a base 16 string (see [MessageDigest.hexDigest])
-     *
-     * @param username the username of the user we want to authenticate
-     * @param serverId the server ID, see above
-     * @param ip the server's IP
-     * @return a [Call] representing the result of making this request
-     */
-    @GET("session/minecraft/hasJoined")
-    fun hasJoined(
-        @Query("username") username: String,
-        @Query("serverId") serverId: String,
-        @Query("ip") ip: String
-    ): Call<KryptonGameProfile>
-}
 
 /**
  * Used for authenticating users and caching their profiles.
  */
 object SessionService {
 
-    private const val SESSION_SERVER_BASE_URL = "https://sessionserver.mojang.com/"
-
-    private val sessionService = Retrofit.Builder()
-        .baseUrl(SESSION_SERVER_BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create(GSON))
-        .build()
-        .create<MojangSessionService>()
-
+    private val client = HttpClient.newHttpClient()
     private val profiles: Cache<String, KryptonGameProfile> = Caffeine.newBuilder()
         .expireAfterWrite(6, TimeUnit.HOURS)
         .build()
@@ -103,14 +64,17 @@ object SessionService {
         shaDigest.update(Encryption.publicKey.encoded)
         val serverId = shaDigest.hexDigest()
 
-        val response = sessionService.hasJoined(username, serverId, ip).execute()
-        if (response.code() != 200) { // Ensures no content responses are also a failure.
-            LOGGER.debug("Error authenticating $username! Code: ${response.code()}, body: ${response.errorBody()}")
+        val request = HttpRequest.newBuilder()
+            .uri(URI("https://sessionserver.mojang.com/session/minecraft/hasJoined?username=$username&serverId=$serverId&ip=$ip"))
+            .build()
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+        if (response.statusCode() != 200) { // Ensures no content responses are also a failure.
+            LOGGER.debug("Error authenticating $username! Code: ${response.statusCode()}, body: ${response.body()}")
             Messages.AUTH.FAIL.error(LOGGER, username)
             throw AuthenticationException()
         }
 
-        val profile = requireNotNull(response.body())
+        val profile = GSON.fromJson<KryptonGameProfile>(response.body())
         Messages.AUTH.SUCCESS.info(LOGGER, profile.name, profile.uuid)
         profiles.put(profile.name, profile)
         return profile

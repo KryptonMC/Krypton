@@ -47,10 +47,11 @@ open class KryptonItemStack(
         return CompoundTag().apply { meta.nbt[key] = this }
     }
 
-    fun save(tag: MutableCompoundTag) = tag
-        .putString("id", InternalRegistries.ITEM[type].asString())
-        .putInt("Count", amount)
-        .apply { put("tag", meta.nbt) }
+    fun save(tag: CompoundTag.Builder) = tag.apply {
+        string("id", InternalRegistries.ITEM[type].asString())
+        int("Count", amount)
+        put("tag", meta.nbt)
+    }
 
     fun isEmpty(): Boolean {
         if (this === EmptyItemStack) return true

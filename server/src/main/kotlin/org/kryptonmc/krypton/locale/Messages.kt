@@ -21,18 +21,14 @@ package org.kryptonmc.krypton.locale
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.event.Listener
 import org.kryptonmc.krypton.adventure.toSectionText
 import org.kryptonmc.krypton.util.thread.GenericThread
-import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.io.IOException
-import java.lang.reflect.Method
 import java.nio.file.Path
 import java.util.UUID
 

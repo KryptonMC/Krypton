@@ -43,22 +43,22 @@ interface PlayerInventory : Inventory {
     /**
      * The helmet this player is currently wearing.
      */
-    val helmet: ItemStack
+    var helmet: ItemStack
 
     /**
      * The chestplate this player is currently wearing.
      */
-    val chestplate: ItemStack
+    var chestplate: ItemStack
 
     /**
      * The leggings this player is currently wearing.
      */
-    val leggings: ItemStack
+    var leggings: ItemStack
 
     /**
      * The boots this player is currently wearing.
      */
-    val boots: ItemStack
+    var boots: ItemStack
 
     /**
      * The slot of the currently held item
@@ -74,6 +74,14 @@ interface PlayerInventory : Inventory {
      * @return the armor item in the specified [slot]
      */
     fun armor(slot: ArmorSlot): ItemStack
+
+    /**
+     * Sets the armor item in the specified [slot] to the specified [item].
+     *
+     * @param slot the armor slot
+     * @param item the new item
+     */
+    fun armor(slot: ArmorSlot, item: ItemStack)
 
     /**
      * Gets the item the player is holding in the specified [hand].

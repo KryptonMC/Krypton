@@ -65,7 +65,6 @@ import org.kryptonmc.krypton.command.registrar.RawCommandRegistrar
 import org.kryptonmc.krypton.command.registrar.SimpleCommandRegistrar
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
-import org.kryptonmc.krypton.util.toComponent
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.ReentrantReadWriteLock
 

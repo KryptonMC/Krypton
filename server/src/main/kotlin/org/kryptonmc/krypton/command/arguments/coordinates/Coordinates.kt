@@ -27,11 +27,14 @@ import org.spongepowered.math.vector.Vector2d
 
 sealed interface Coordinates {
 
-    val relativeX: Boolean get() = true
+    val relativeX: Boolean
+        get() = true
 
-    val relativeY: Boolean get() = true
+    val relativeY: Boolean
+        get() = true
 
-    val relativeZ: Boolean get() = true
+    val relativeZ: Boolean
+        get() = true
 
     fun position(player: Player): Vector
 

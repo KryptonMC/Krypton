@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.util.reports
 
-import okhttp3.internal.closeQuietly
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.logger
@@ -115,14 +114,11 @@ class CrashReport(val title: String, val exception: Throwable) {
         if (this::saveFile.isInitialized) return false
         if (file.parent != null) file.parent.createDirectories()
 
-        val writer = OutputStreamWriter(file.outputStream(), Charsets.UTF_8)
         try {
-            writer.write(report)
+            OutputStreamWriter(file.outputStream(), Charsets.UTF_8).use { it.write(report) }
             saveFile = file
         } catch (exception: Exception) {
-            LOGGER.error("Could not save crash report to $file!", exception)
-        } finally {
-            writer.closeQuietly()
+            LOGGER.error("Failed to save crash report to $file!", exception)
         }
         return true
     }

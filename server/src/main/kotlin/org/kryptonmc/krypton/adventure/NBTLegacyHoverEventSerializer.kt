@@ -26,9 +26,7 @@ import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.LegacyHoverEventSerializer
 import net.kyori.adventure.util.Codec
 import org.kryptonmc.api.adventure.toPlainText
-import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.buildCompound
-import org.kryptonmc.nbt.compound
 import java.io.IOException
 import java.lang.RuntimeException
 import java.util.UUID

@@ -43,12 +43,6 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.writeKey
 import java.util.concurrent.ConcurrentHashMap
 
-/**
- * Holder for argument serializers used by Brigadier.
- *
- * An almost exact replica of the internal one made by Mojang, with a few changes like
- * the use of `KClass` over `Class` to make it easier for us.
- */
 object ArgumentTypes {
 
     private val LOGGER = logger<ArgumentTypes>()
@@ -77,22 +71,9 @@ object ArgumentTypes {
 
     operator fun get(key: Key) = BY_NAME[key]
 
-    /**
-     * Retrieve an [Entry] for the specified [type]
-     *
-     * @param T the type of the [Entry] that gets returned
-     * @param type the type of the argument
-     * @return the [Entry] for the specified [type], or null if there isn't one
-     */
     @Suppress("UNCHECKED_CAST") // this should never fail
     operator fun <T : ArgumentType<*>> get(type: ArgumentType<*>) = BY_CLASS[type::class.java] as? Entry<T>
 
-    /**
-     * Write an argument type to a [ByteBuf].
-     *
-     * @param T the type of the argument
-     * @param argument the argument
-     */
     fun <T : ArgumentType<*>> ByteBuf.writeArgumentType(argument: T) {
         val entry = get<T>(argument)
         if (entry == null) {
@@ -114,11 +95,6 @@ object ArgumentTypes {
         BY_NAME[key] = entry
     }
 
-    /**
-     * Represents an entry for an argument type and it's serializer.
-     *
-     * This holds the class, serializer and name for the argument type
-     */
     data class Entry<T : ArgumentType<*>>(
         val clazz: Class<T>,
         val serializer: ArgumentSerializer<T>,

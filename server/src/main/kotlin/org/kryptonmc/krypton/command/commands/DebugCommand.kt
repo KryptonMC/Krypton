@@ -26,7 +26,6 @@ import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.locale.Messages

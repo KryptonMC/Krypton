@@ -17,7 +17,6 @@ import org.kryptonmc.api.registry.Registries
  * See [here](https://minecraft.fandom.com/wiki/Particles) for more information on
  * all of these types.
  */
-// TODO: Maybe use code generation for this?
 @Suppress("unused")
 object ParticleType {
 

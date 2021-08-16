@@ -22,54 +22,45 @@ import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import okhttp3.ResponseBody
-import org.apache.logging.log4j.Logger
+import me.bardy.gsonkt.fromJson
 import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.util.logger
-import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Streaming
 import java.io.Closeable
 import java.io.FilterInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.lang.reflect.Type
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import java.util.Locale
 
-interface TranslationService {
-
-    @GET("data/translations")
-    fun data(): Call<MetadataResponse>
-
-    @GET("translation/{id}")
-    @Streaming
-    fun download(@Path("id") id: String): Call<ResponseBody>
-}
-
 object TranslationRequester {
 
-    private const val DATA_URL = "https://data.kryptonmc.org/"
+    private const val DATA_URL = "https://data.kryptonmc.org"
     private const val MAX_BUNDLE_SIZE = 1_048_576L // 1MB
 
-    private val service = Retrofit.Builder()
-        .baseUrl(DATA_URL)
-        .addConverterFactory(GsonConverterFactory.create(GSON))
-        .build()
-        .create<TranslationService>()
+    private val client = HttpClient.newHttpClient()
 
-    fun metadata() = service.data().executeSuccess(LOGGER)
+    fun metadata(): MetadataResponse {
+        val request = HttpRequest.newBuilder()
+            .uri(URI("$DATA_URL/data/translations"))
+            .build()
+        return GSON.fromJson(client.send(request, HttpResponse.BodyHandlers.ofString()).body())
+    }
 
-    fun download(id: String, file: java.nio.file.Path) {
+    fun download(id: String, file: Path) {
         try {
-            val request = service.download(id).execute()
-            if (!request.isSuccessful) return
-            LimitedInputStream(request.body()!!.byteStream(), MAX_BUNDLE_SIZE).use {
+            val request = HttpRequest.newBuilder()
+                .uri(URI("$DATA_URL/translation/$id"))
+                .build()
+            val response = client.send(request, HttpResponse.BodyHandlers.ofByteArray())
+            if (response.statusCode() !in 200..299) return
+            LimitedInputStream(response.body().inputStream(), MAX_BUNDLE_SIZE).use {
                 Files.copy(it, file, StandardCopyOption.REPLACE_EXISTING)
             }
         } catch (exception: IOException) {
@@ -129,10 +120,4 @@ private class LimitedInputStream(input: InputStream, private val limit: Long) : 
         }
         return result
     }
-}
-
-private fun <T> Call<T>.executeSuccess(logger: Logger): T {
-    val response = execute()
-    require(response.isSuccessful) { "${request()} unsuccessful! Code: ${response.code()}, Error body: ${response.errorBody()?.string()}".apply { logger.error(this) } }
-    return response.body()!!
 }

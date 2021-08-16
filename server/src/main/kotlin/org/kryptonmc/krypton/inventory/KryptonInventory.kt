@@ -18,14 +18,13 @@
  */
 package org.kryptonmc.krypton.inventory
 
+import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
-import java.util.concurrent.atomic.AtomicInteger
-import kotlin.math.max
 
 abstract class KryptonInventory(
     val id: Int,
@@ -35,40 +34,34 @@ abstract class KryptonInventory(
     totalItems: Int = size
 ) : Inventory {
 
+    abstract val networkWriter: (ByteBuf) -> Unit
+
     var stateId = 0
         private set
-
-    abstract val networkItems: List<KryptonItemStack>
-
     override val items = Array<KryptonItemStack>(totalItems) { EmptyItemStack }
 
     fun incrementStateId(): Int {
-        stateId = stateId + 1 and 32767
+        stateId = stateId + 1 and Short.MAX_VALUE.toInt()
         return stateId
     }
 
     override fun get(index: Int) = items[index]
 
-    override fun set(index: Int, item: ItemStack) {
-        if (item !is KryptonItemStack) return
-        items[index] = item
-    }
-
     override fun contains(item: ItemStack) = item in items
 
-    override fun plusAssign(item: ItemStack) {
+    override fun add(item: ItemStack) {
         if (item !is KryptonItemStack) return
         items.forEachIndexed { index, element ->
             if (element.type == item.type) {
                 val initialAmount = element.amount
                 val maxAmount = element.type.maximumAmount
-                if ((initialAmount + item.amount) <= maxAmount) {
+                if (initialAmount + item.amount <= maxAmount) {
                     element.amount = initialAmount + item.amount
                     return
                 } else if (element.amount != maxAmount) {
                     element.amount = maxAmount
                     item.amount = maxAmount - item.amount
-                    if(item.amount == 0) return
+                    if (item.amount == 0) return
                 }
             } else if (element == EmptyItemStack) {
                 items[index + 9] = item
@@ -77,7 +70,7 @@ abstract class KryptonInventory(
         }
     }
 
-    override fun minusAssign(item: ItemStack) {
+    override fun remove(item: ItemStack) {
         items.forEachIndexed { index, element ->
             if (element != item) return@forEachIndexed
             items[index] = EmptyItemStack

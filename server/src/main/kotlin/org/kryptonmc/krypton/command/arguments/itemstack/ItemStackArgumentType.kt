@@ -31,9 +31,9 @@ class ItemStackArgumentType : ArgumentType<ItemStackArgument> {
     override fun parse(reader: StringReader) = ItemStackParser(reader, false).parseItem()
 
     companion object {
+
         private val EXAMPLES = listOf("minecraft:cookie", "cookie", "cookie{foo=bar}")
     }
-
 }
 
 fun CommandContext<Sender>.itemStackArgument(name: String) = argument<ItemStackArgument>(name)

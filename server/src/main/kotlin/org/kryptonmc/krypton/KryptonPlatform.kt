@@ -33,7 +33,7 @@ object KryptonPlatform : Platform {
     override val version = KRYPTON_JSON["version"].asString!!
     override val isStable = KRYPTON_JSON["stable"].asBoolean
     override val minecraftVersion = MINECRAFT_JSON["name"].asString!!
-    val isStableMinecraft = true
+    const val isStableMinecraft = true
     override val worldVersion = JSON["world_version"].asInt
     override val protocolVersion = JSON["protocol_version"].asInt
     override val dataPackVersion = JSON["data_pack_version"].asInt

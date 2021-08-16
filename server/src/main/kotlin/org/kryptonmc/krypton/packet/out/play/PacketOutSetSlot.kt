@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeItem
+import org.kryptonmc.krypton.util.writeVarInt
 
 class PacketOutSetSlot(
     private val id: Int,
@@ -32,6 +33,7 @@ class PacketOutSetSlot(
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(id)
+        buf.writeVarInt(stateId)
         buf.writeShort(slot)
         buf.writeItem(item)
     }

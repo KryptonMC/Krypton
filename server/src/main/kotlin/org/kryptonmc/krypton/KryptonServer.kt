@@ -159,12 +159,10 @@ class KryptonServer(
     override val scheduler = KryptonScheduler(pluginManager)
 
     @Volatile
-    internal var isRunning = true
+    var isRunning = true
         private set
-
     @Volatile
-    internal var lastTickTime = 0L
-        private set
+    private var lastTickTime = 0L
 
     private var lastOverloadWarning = 0L
     private var tickCount = 0
@@ -279,7 +277,6 @@ class KryptonServer(
         restart()
     }
 
-    // TODO: Register plugin instances as event listeners by default
     private fun loadPlugins() {
         Messages.PLUGIN.LOAD.INITIAL.info(LOGGER)
 
@@ -295,6 +292,16 @@ class KryptonServer(
         } catch (exception: Exception) {
             Messages.PLUGIN.LOAD.FAIL.error(LOGGER, exception)
         }
+
+        pluginManager.plugins.forEach {
+            val instance = it.instance ?: return@forEach
+            try {
+                eventManager.registerUnchecked(it, instance)
+            } catch (exception: Exception) {
+                LOGGER.error("Unable to register plugin listener for plugin ${it.description.name}!", exception)
+            }
+        }
+
         Messages.PLUGIN.LOAD.DONE.info(LOGGER, pluginManager.plugins.size)
     }
 

@@ -31,12 +31,38 @@ class MetadataHolder(private val entity: KryptonEntity) {
 
     private val itemsById = Int2ObjectOpenHashMap<Entry<*>>()
     private val lock = ReentrantReadWriteLock()
+    private var isDirty = false
 
     var isEmpty = true
         private set
-
-    var isDirty = false
-        private set
+    val all: List<Entry<*>>
+        get() {
+            lock.readLock().lock()
+            try {
+                val entries = itemsById.values.map { it.copy() }
+                return entries.apply { invalidateDirty() }
+            } finally {
+                lock.readLock().unlock()
+            }
+        }
+    val dirty: List<Entry<*>>
+        get() {
+            if (!isDirty) return emptyList()
+            lock.readLock().lock()
+            try {
+                val entries = itemsById.values.asSequence()
+                    .filter { it.isDirty }
+                    .map {
+                        it.isDirty = false
+                        it.copy()
+                    }
+                    .toList()
+                isDirty = false
+                return entries
+            } finally {
+                lock.readLock().unlock()
+            }
+        }
 
     fun <T> add(key: MetadataKey<T>, value: T = key.default) {
         val id = key.id
@@ -62,17 +88,23 @@ class MetadataHolder(private val entity: KryptonEntity) {
     fun invalidateDirty() {
         isDirty = false
         lock.readLock().lock()
-        itemsById.values.forEach { it.isDirty = false }
-        lock.readLock().unlock()
+        try {
+            itemsById.values.forEach { it.isDirty = false }
+        } finally {
+            lock.readLock().unlock()
+        }
     }
 
     @Suppress("ReplacePutWithAssignment") // Specialised fastutil put
     private fun <T> createItem(key: MetadataKey<T>, value: T) {
         val item = Entry(key, value)
         lock.writeLock().lock()
-        itemsById.put(key.id, item)
-        isEmpty = false
-        lock.writeLock().unlock()
+        try {
+            itemsById.put(key.id, item)
+            isEmpty = false
+        } finally {
+            lock.writeLock().unlock()
+        }
     }
 
     @Suppress("UNCHECKED_CAST") // This should never fail
@@ -88,30 +120,6 @@ class MetadataHolder(private val entity: KryptonEntity) {
             lock.readLock().unlock()
         }
     }
-
-    val all: List<Entry<*>>
-        get() {
-            lock.readLock().lock()
-            val entries = itemsById.values.map { it.copy() }
-            lock.readLock().unlock()
-            return entries.apply { invalidateDirty() }
-        }
-
-    val dirty: List<Entry<*>>
-        get() {
-            if (!isDirty) return emptyList()
-            lock.readLock().lock()
-            val entries = itemsById.values.asSequence()
-                .filter { it.isDirty }
-                .map {
-                    it.isDirty = false
-                    it.copy()
-                }
-                .toList()
-            lock.readLock().unlock()
-            isDirty = false
-            return entries
-        }
 
     data class Entry<T>(val key: MetadataKey<T>, var value: T) {
 

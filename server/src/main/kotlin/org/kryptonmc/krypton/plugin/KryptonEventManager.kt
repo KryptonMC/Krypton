@@ -81,11 +81,15 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         service.awaitTermination(10, TimeUnit.SECONDS)
     }
 
+    fun registerUnchecked(plugin: Any, listener: Any) {
+        registeredListenersByPlugin.put(plugin, listener)
+        methodAdapter.register(listener)
+    }
+
     override fun register(plugin: Any, listener: Any) {
         checkPlugin(plugin)
         require(plugin != listener || registeredListenersByPlugin.containsEntry(plugin, listener)) { "The plugin main instance is automatically registered!" }
-        registeredListenersByPlugin.put(plugin, listener)
-        methodAdapter.register(listener)
+        registerUnchecked(plugin, listener)
     }
 
     override fun <E> register(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>) {

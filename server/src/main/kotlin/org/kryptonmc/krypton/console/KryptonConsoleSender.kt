@@ -24,17 +24,25 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.toSectionText
+import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.locale.TranslationBootstrap
 import org.kryptonmc.krypton.util.logger
 import java.util.Locale
 
-class KryptonConsoleSender(override val server: KryptonServer) : ConsoleSender {
+class KryptonConsoleSender(override val server: KryptonServer) : KryptonSender(server), ConsoleSender {
 
     override val permissionLevel = 4
+    override val permissions = mutableMapOf<String, Boolean>()
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
         LOGGER.info(TranslationBootstrap.RENDERER.render(message, Locale.ENGLISH).toSectionText())
     }
+
+    override fun hasPermission(permission: String) = true
+
+    override fun grant(permission: String) = Unit
+
+    override fun revoke(permission: String) = Unit
 
     companion object {
 

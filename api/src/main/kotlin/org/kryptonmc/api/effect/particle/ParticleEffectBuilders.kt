@@ -12,8 +12,11 @@ import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
+import java.awt.Color
 
 /**
  * Allows building a [ParticleEffect] for simple particle effects using method chaining.
@@ -30,7 +33,7 @@ open class ParticleEffectBuilder(
      *
      * @param quantity the number of particles, must be between 1 and 16384 inclusively
      */
-    @Contract("_ -> this")
+    @Contract("_ -> this", mutates = "this")
     fun quantity(quantity: Int) = apply { this.quantity = quantity }
 
     /**
@@ -38,7 +41,7 @@ open class ParticleEffectBuilder(
      *
      * @param offset the offset from the origin
      */
-    @Contract("_ -> this")
+    @Contract("_ -> this", mutates = "this")
     fun offset(offset: Vector) = apply { this.offset = offset }
 
     /**
@@ -49,7 +52,7 @@ open class ParticleEffectBuilder(
      *
      * @param longDistance true for long view distance, false for normal view distance
      */
-    @Contract("_ -> this")
+    @Contract("_ -> this", mutates = "this")
     fun longDistance(longDistance: Boolean) = apply { this.longDistance = longDistance }
 
     /**
@@ -76,7 +79,7 @@ class DirectionalParticleEffectBuilder(
      *
      * @param direction the direction of the particles
      */
-    @Contract("_ -> this")
+    @Contract("_ -> this", mutates = "this")
     fun direction(direction: Vector) = apply { this.direction = direction }
 
     /**
@@ -87,7 +90,7 @@ class DirectionalParticleEffectBuilder(
      *
      * @param velocity the velocity of the particles
      */
-    @Contract("_ -> this")
+    @Contract("_ -> this", mutates = "this")
     fun velocity(velocity: Float) = apply { this.velocity = velocity }
 
     /**
@@ -105,22 +108,22 @@ class ItemParticleEffectBuilder(
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
     longDistance: Boolean = false,
-    private var itemId: Int = 1 // TODO: Item
+    private var item: ItemType = ItemTypes.AIR
 ) : ParticleEffectBuilder(type, quantity, offset, longDistance) {
 
     /**
      * Sets the item data of the texture to be used.
      *
-     * @param itemId the item ID to use
+     * @param item the item type to use
      */
-    @Contract("_ -> this")
-    fun item(itemId: Int) = apply { this.itemId = itemId }
+    @Contract("_ -> this", mutates = "this")
+    fun item(item: ItemType) = apply { this.item = item }
 
     /**
      * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance, ItemParticleData(itemId))
+    override fun build() = ParticleEffect(type, quantity, offset, longDistance, ItemParticleData(item))
 }
 
 /**
@@ -139,7 +142,7 @@ class BlockParticleEffectBuilder(
      *
      * @param block the block
      */
-    @Contract("_ -> this")
+    @Contract("_ -> this", mutates = "this")
     fun block(block: Block) = apply { this.block = block }
 
     /**
@@ -169,11 +172,23 @@ open class ColorParticleEffectBuilder(
      * @param green the green value
      * @param blue the blue value
      */
-    @Contract("_ -> this")
+    @Contract("_ -> this", mutates = "this")
     fun color(red: UByte, green: UByte, blue: UByte) = apply {
         this.red = red
         this.green = green
         this.blue = blue
+    }
+
+    /**
+     * Sets the color of the particle.
+     *
+     * @param color the color
+     */
+    @Contract("_ -> this", mutates = "this")
+    fun color(color: Color) = apply {
+        this.red = color.red.toUByte()
+        this.green = color.green.toUByte()
+        this.blue = color.blue.toUByte()
     }
 
     /**
@@ -203,7 +218,7 @@ open class DustParticleEffectBuilder(
      *
      * @param scale the scale of the particles
      */
-    @Contract("_ -> this")
+    @Contract("_ -> this", mutates = "this")
     fun scale(scale: Float) = apply { this.scale = scale }
 
     /**
@@ -237,7 +252,7 @@ class DustTransitionParticleEffectBuilder(
      * @param green the green to transition to
      * @param blue the blue to transition to
      */
-    @Contract("_ -> this")
+    @Contract("_ -> this", mutates = "this")
     fun toColor(red: UByte, green: UByte, blue: UByte) = apply {
         toRed = red
         toGreen = green
@@ -274,7 +289,7 @@ class NoteParticleEffectBuilder(
      *
      * @param note the note value
      */
-    @Contract("_ -> this")
+    @Contract("_ -> this", mutates = "this")
     fun note(note: UByte) = apply { this.note = note }
 
     /**
@@ -302,7 +317,7 @@ class VibrationParticleEffectBuilder(
      *
      * @param position the origin position
      */
-    @Contract("_ -> this")
+    @Contract("_ -> this", mutates = "this")
     fun origin(position: Position) = apply { origin = position }
 
     /**
@@ -310,7 +325,7 @@ class VibrationParticleEffectBuilder(
      *
      * @param position the destination position
      */
-    @Contract("_ -> this")
+    @Contract("_ -> this", mutates = "this")
     fun destination(position: Position) = apply { origin = position }
 
     /**
@@ -319,7 +334,7 @@ class VibrationParticleEffectBuilder(
      *
      * @param ticks the amount of ticks
      */
-    @Contract("_ -> this")
+    @Contract("_ -> this", mutates = "this")
     fun ticks(ticks: Int) = apply { this.ticks = ticks }
 
     /**

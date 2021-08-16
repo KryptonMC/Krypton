@@ -18,9 +18,6 @@
  */
 package org.kryptonmc.krypton.entity
 
-/**
- * A pose that an entity may be in.
- */
 enum class Pose {
 
     STANDING,

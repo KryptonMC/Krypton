@@ -91,8 +91,7 @@ object BrigadierExceptions : BuiltInExceptionProvider {
     override fun dispatcherParseException() = DISPATCHER_PARSE_EXCEPTION
 }
 
-private fun translatable(key: String, vararg arguments: Any) =
-    translatable(key, arguments.map { text(it.toString()) }).toMessage()
+private fun translatable(key: String, vararg arguments: Any) = translatable(key, arguments.map { text(it.toString()) }).toMessage()
 
 private fun simpleExceptionType(key: String) = SimpleCommandExceptionType(translatable(key).toMessage())
 

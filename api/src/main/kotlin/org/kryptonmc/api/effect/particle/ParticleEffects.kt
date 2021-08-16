@@ -10,6 +10,7 @@ package org.kryptonmc.api.effect.particle
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 
@@ -148,17 +149,15 @@ data class DirectionalParticleData(
 /**
  * Holds data for item [ParticleEffect]s.
  *
- * @param id the item ID
+ * @param item the item type
  */
-// TODO: Properly add support for item particles
-data class ItemParticleData(val id: Int) : ParticleData
+data class ItemParticleData(val item: ItemType) : ParticleData
 
 /**
  * Holds data for block [ParticleEffect]s.
  *
  * @param block the block
  */
-// TODO: Properly add support for block particles
 data class BlockParticleData(val block: Block) : ParticleData
 
 /**

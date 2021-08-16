@@ -200,8 +200,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         sendWorldInfo(world, player)
 
         // Send inventory data
-        val items = player.inventory.networkItems
-        session.sendPacket(PacketOutWindowItems(player.inventory.id, player.inventory.incrementStateId(), items, player.inventory.mainHand))
+        session.sendPacket(PacketOutWindowItems(player.inventory.id, player.inventory.incrementStateId(), player.inventory.networkWriter, player.inventory.mainHand))
     }
 
     fun remove(player: KryptonPlayer) {

@@ -29,7 +29,7 @@ object EntityArgumentParser {
         onlyPlayers: Boolean,
         singleTarget: Boolean,
     ) = when (operation) {
-        'p' -> EntityQuery(listOf(), EntityQuery.SELECTOR.NEAREST_PLAYER)
+        'p' -> EntityQuery(listOf(), EntityQuery.Selector.NEAREST_PLAYER)
         'e' -> {
             if (singleTarget) {
                 reader.cursor = 0
@@ -40,12 +40,10 @@ object EntityArgumentParser {
             }
             if (reader.canRead() && reader.peek() == '[') {
                 reader.skip()
-                EntityQuery(parseArguments(reader), EntityQuery.SELECTOR.ALL_ENTITIES)
-            } else {
-                EntityQuery(listOf(), EntityQuery.SELECTOR.ALL_ENTITIES)
-            }
+                EntityQuery(parseArguments(reader), EntityQuery.Selector.ALL_ENTITIES)
+            } else EntityQuery(listOf(), EntityQuery.Selector.ALL_ENTITIES)
         }
-        'r' -> EntityQuery(listOf(), EntityQuery.SELECTOR.RANDOM_PLAYER)
+        'r' -> EntityQuery(listOf(), EntityQuery.Selector.RANDOM_PLAYER)
         'a' -> {
             if (singleTarget) {
                 reader.cursor = 0
@@ -53,12 +51,10 @@ object EntityArgumentParser {
             }
             if (reader.canRead() && reader.peek() == '[') {
                 reader.skip()
-                EntityQuery(parseArguments(reader), EntityQuery.SELECTOR.ALL_PLAYERS)
-            } else {
-                EntityQuery(listOf(), EntityQuery.SELECTOR.ALL_PLAYERS)
-            }
+                EntityQuery(parseArguments(reader), EntityQuery.Selector.ALL_PLAYERS)
+            } else EntityQuery(listOf(), EntityQuery.Selector.ALL_PLAYERS)
         }
-        's' -> EntityQuery(listOf(), EntityQuery.SELECTOR.EXECUTOR)
+        's' -> EntityQuery(listOf(), EntityQuery.Selector.EXECUTOR)
         else -> {
             reader.cursor = position
             throw UNKNOWN_SELECTOR_EXCEPTION.createWithContext(reader, "@$operation")
@@ -102,6 +98,4 @@ object EntityArgumentParser {
         if (reader.canRead()) reader.skip() else throw UNTERMINATED_EXCEPTION.createWithContext(reader)
         return args.toList()
     }
-
-
 }

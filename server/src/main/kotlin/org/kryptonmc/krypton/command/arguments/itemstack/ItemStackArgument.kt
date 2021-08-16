@@ -18,10 +18,8 @@
  */
 package org.kryptonmc.krypton.command.arguments.itemstack
 
-import com.mojang.brigadier.context.CommandContext
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
@@ -29,8 +27,8 @@ import org.kryptonmc.nbt.StringTag
 
 data class ItemStackArgument(val item: ItemType, val tag: CompoundTag? = null) {
 
-    fun createItemStacks(amount: Int, server: KryptonServer): List<ItemStack> {
-        val items = mutableListOf<ItemStack>()
+    fun createItemStacks(amount: Int): List<KryptonItemStack> {
+        val items = mutableListOf<KryptonItemStack>()
         if (amount <= item.maximumAmount) {
             items.add(KryptonItemStack(addTag(amount)))
         } else {
@@ -48,9 +46,6 @@ data class ItemStackArgument(val item: ItemType, val tag: CompoundTag? = null) {
         mutableMapOf(
             "id" to StringTag.of(item.key.toString()),
             "Count" to IntTag.of(amount),
-        ).also {
-            if (tag != null) it["tag"] = tag
-        }
+        ).also { if (tag != null) it["tag"] = tag }
     )
-
 }

@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.entity
 
-import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.space.Rotation
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.FloatTag
@@ -32,5 +31,3 @@ fun CompoundTag.getRotation(key: String): Rotation? {
 }
 
 fun CompoundTag.getColor(key: String): Color = Color(getInt(key))
-
-fun Boolean.toMainHand() = if (this) MainHand.LEFT else MainHand.RIGHT

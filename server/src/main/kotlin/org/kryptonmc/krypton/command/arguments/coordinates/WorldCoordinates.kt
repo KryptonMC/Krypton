@@ -44,12 +44,14 @@ class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: Wo
                 reader.cursor = position
                 throw ERROR_NOT_COMPLETE.createWithContext(reader)
             }
+
             reader.skip()
             val y = WorldCoordinate.parseDouble(reader, false)
             if (!reader.canRead() || reader.peek() != ' ') {
                 reader.cursor = position
                 throw ERROR_NOT_COMPLETE.createWithContext(reader)
             }
+
             reader.skip()
             val z = WorldCoordinate.parseDouble(reader, correctCenter)
             return WorldCoordinates(x, y, z)
@@ -62,12 +64,14 @@ class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: Wo
                 reader.cursor = position
                 throw ERROR_NOT_COMPLETE.createWithContext(reader)
             }
+
             reader.skip()
             val y = WorldCoordinate.parseInt(reader)
             if (!reader.canRead() || reader.peek() != ' ') {
                 reader.cursor = position
                 throw ERROR_NOT_COMPLETE.createWithContext(reader)
             }
+
             reader.skip()
             val z = WorldCoordinate.parseInt(reader)
             return WorldCoordinates(x, y, z)

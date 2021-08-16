@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.auth
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeParseException
 import java.util.UUID

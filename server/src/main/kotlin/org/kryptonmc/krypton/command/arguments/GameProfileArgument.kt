@@ -26,31 +26,18 @@ import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentParser
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.util.argument
 
-class GameProfileArgument private constructor() : ArgumentType<EntityQuery> {
+class GameProfileArgument : ArgumentType<EntityQuery> {
 
-    override fun parse(reader: StringReader): EntityQuery {
-        if (reader.canRead() && reader.peek() == '@') {
-            reader.skip()
-            val position = reader.cursor
-            return EntityArgumentParser.parse(reader, reader.read(), position, onlyPlayers = true, singleTarget = false)
-        } else {
-            val i = reader.cursor
-
-            while (reader.canRead() && reader.peek() != ' ') {
-                reader.skip()
-            }
-
-            val string: String = reader.string.substring(i, reader.cursor)
-
-            return EntityQuery(playerName = string, args = listOf(), type = EntityQuery.SELECTOR.PLAYER)
-        }
+    override fun parse(reader: StringReader) = if (reader.canRead() && reader.peek() == '@') {
+        reader.skip()
+        val position = reader.cursor
+        EntityArgumentParser.parse(reader, reader.read(), position, onlyPlayers = true, singleTarget = false)
+    } else {
+        val i = reader.cursor
+        while (reader.canRead() && reader.peek() != ' ') reader.skip()
+        val string: String = reader.string.substring(i, reader.cursor)
+        EntityQuery(listOf(), EntityQuery.Selector.PLAYER, string)
     }
-
-    companion object {
-
-        fun gameProfile() = GameProfileArgument()
-    }
-
 }
 
 fun CommandContext<Sender>.gameProfileArgument(name: String) = argument<EntityQuery>(name)
