@@ -12,6 +12,22 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.monster.Creeper
 import org.kryptonmc.api.entity.monster.Zombie
 import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.entity.projectile.Arrow
+import org.kryptonmc.api.entity.projectile.DragonFireball
+import org.kryptonmc.api.entity.projectile.Egg
+import org.kryptonmc.api.entity.projectile.EnderPearl
+import org.kryptonmc.api.entity.projectile.ExperienceBottle
+import org.kryptonmc.api.entity.projectile.FireworkRocket
+import org.kryptonmc.api.entity.projectile.FishingHook
+import org.kryptonmc.api.entity.projectile.LargeFireball
+import org.kryptonmc.api.entity.projectile.LlamaSpit
+import org.kryptonmc.api.entity.projectile.ShulkerBullet
+import org.kryptonmc.api.entity.projectile.SmallFireball
+import org.kryptonmc.api.entity.projectile.Snowball
+import org.kryptonmc.api.entity.projectile.SpectralArrow
+import org.kryptonmc.api.entity.projectile.ThrownPotion
+import org.kryptonmc.api.entity.projectile.Trident
+import org.kryptonmc.api.entity.projectile.WitherSkull
 import org.kryptonmc.api.registry.Registries
 
 /**
@@ -24,7 +40,7 @@ object EntityTypes {
     // @formatter:off
     @JvmField val AREA_EFFECT_CLOUD = register<AreaEffectCloud>("area_effect_cloud")
     @JvmField val ARMOR_STAND = register<ArmorStand>("armor_stand")
-    @JvmField val ARROW = register<Entity>("arrow")
+    @JvmField val ARROW = register<Arrow>("arrow")
     @JvmField val AXOLOTL = register<Entity>("axolotl")
     @JvmField val BAT = register<Entity>("bat")
     @JvmField val BEE = register<Entity>("bee")
@@ -38,7 +54,7 @@ object EntityTypes {
     @JvmField val CREEPER = register<Creeper>("creeper")
     @JvmField val DOLPHIN = register<Entity>("dolphin")
     @JvmField val DONKEY = register<Entity>("donkey")
-    @JvmField val DRAGON_FIREBALL = register<Entity>("dragon_fireball")
+    @JvmField val DRAGON_FIREBALL = register<DragonFireball>("dragon_fireball")
     @JvmField val DROWNED = register<Entity>("drowned")
     @JvmField val ELDER_GUARDIAN = register<Entity>("elder_guardian")
     @JvmField val END_CRYSTAL = register<Entity>("end_crystal")
@@ -50,7 +66,7 @@ object EntityTypes {
     @JvmField val EXPERIENCE_ORB = register<Entity>("experience_orb")
     @JvmField val EYE_OF_ENDER = register<Entity>("eye_of_ender")
     @JvmField val FALLING_BLOCK = register<Entity>("falling_block")
-    @JvmField val FIREWORK_ROCKET = register<Entity>("firework_rocket")
+    @JvmField val FIREWORK_ROCKET = register<FireworkRocket>("firework_rocket")
     @JvmField val FOX = register<Entity>("fox")
     @JvmField val GHAST = register<Entity>("ghast")
     @JvmField val GIANT = register<Entity>("giant")
@@ -65,13 +81,13 @@ object EntityTypes {
     @JvmField val IRON_GOLEM = register<Entity>("iron_golem")
     @JvmField val ITEM = register<Entity>("item")
     @JvmField val ITEM_FRAME = register<Entity>("item_frame")
-    @JvmField val FIREBALL = register<Entity>("fireball")
+    @JvmField val FIREBALL = register<LargeFireball>("fireball")
     @JvmField val LEASH_KNOT = register<Entity>("leash_knot")
     @JvmField val LIGHTNING_BOLT = register<Entity>("lightning_bolt")
     @JvmField val LLAMA = register<Entity>("llama")
-    @JvmField val LLAMA_SPIT = register<Entity>("llama_spit")
+    @JvmField val LLAMA_SPIT = register<LlamaSpit>("llama_spit")
     @JvmField val MAGMA_CUBE = register<Entity>("magma_cube")
-    @JvmField val MARKER = register<Entity>("marker")
+    @JvmField val MARKER = register<Entity>("marker", false)
     @JvmField val MINECART = register<Entity>("minecart")
     @JvmField val CHEST_MINECART = register<Entity>("chest_minecart")
     @JvmField val COMMAND_BLOCK_MINECART = register<Entity>("command_block_minecart")
@@ -98,24 +114,24 @@ object EntityTypes {
     @JvmField val SALMON = register<Entity>("salmon")
     @JvmField val SHEEP = register<Entity>("sheep")
     @JvmField val SHULKER = register<Entity>("shulker")
-    @JvmField val SHULKER_BULLET = register<Entity>("shulker_bullet")
+    @JvmField val SHULKER_BULLET = register<ShulkerBullet>("shulker_bullet")
     @JvmField val SILVERFISH = register<Entity>("silverfish")
     @JvmField val SKELETON = register<Entity>("skeleton")
     @JvmField val SKELETON_HORSE = register<Entity>("skeleton_horse")
     @JvmField val SLIME = register<Entity>("slime")
-    @JvmField val SMALL_FIREBALL = register<Entity>("small_fireball")
+    @JvmField val SMALL_FIREBALL = register<SmallFireball>("small_fireball")
     @JvmField val SNOW_GOLEM = register<Entity>("snow_golem")
-    @JvmField val SNOWBALL = register<Entity>("snowball")
-    @JvmField val SPECTRAL_ARROW = register<Entity>("spectral_arrow")
+    @JvmField val SNOWBALL = register<Snowball>("snowball")
+    @JvmField val SPECTRAL_ARROW = register<SpectralArrow>("spectral_arrow")
     @JvmField val SPIDER = register<Entity>("spider")
     @JvmField val SQUID = register<Entity>("squid")
     @JvmField val STRAY = register<Entity>("stray")
     @JvmField val STRIDER = register<Entity>("strider")
-    @JvmField val EGG = register<Entity>("egg")
-    @JvmField val ENDER_PEARL = register<Entity>("ender_pearl")
-    @JvmField val EXPERIENCE_BOTTLE = register<Entity>("experience_bottle")
-    @JvmField val POTION = register<Entity>("potion")
-    @JvmField val TRIDENT = register<Entity>("trident")
+    @JvmField val EGG = register<Egg>("egg")
+    @JvmField val ENDER_PEARL = register<EnderPearl>("ender_pearl")
+    @JvmField val EXPERIENCE_BOTTLE = register<ExperienceBottle>("experience_bottle")
+    @JvmField val POTION = register<ThrownPotion>("potion")
+    @JvmField val TRIDENT = register<Trident>("trident")
     @JvmField val TRADER_LLAMA = register<Entity>("trader_llama")
     @JvmField val TROPICAL_FISH = register<Entity>("tropical_fish")
     @JvmField val TURTLE = register<Entity>("turtle")
@@ -126,7 +142,7 @@ object EntityTypes {
     @JvmField val WITCH = register<Entity>("witch")
     @JvmField val WITHER = register<Entity>("wither")
     @JvmField val WITHER_SKELETON = register<Entity>("wither_skeleton")
-    @JvmField val WITHER_SKULL = register<Entity>("wither_skull")
+    @JvmField val WITHER_SKULL = register<WitherSkull>("wither_skull")
     @JvmField val WOLF = register<Entity>("wolf")
     @JvmField val ZOGLIN = register<Entity>("zoglin")
     @JvmField val ZOMBIE = register<Zombie>("zombie")
@@ -134,7 +150,7 @@ object EntityTypes {
     @JvmField val ZOMBIE_VILLAGER = register<Entity>("zombie_villager")
     @JvmField val ZOMBIFIED_PIGLIN = register<Entity>("zombified_piglin")
     @JvmField val PLAYER = register<Player>("player", false)
-    @JvmField val FISHING_HOOK = register<Entity>("fishing_bobber", false)
+    @JvmField val FISHING_HOOK = register<FishingHook>("fishing_bobber", false)
     // @formatter:on
 
     @Suppress("UNCHECKED_CAST") // This should never fail here

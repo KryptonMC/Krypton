@@ -56,27 +56,26 @@ object SummonCommand : InternalCommand {
                 .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                 .executes {
                     val sender = it.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
-                    spawnEntity(sender, it.summonableEntity("entity"), sender.location, MutableCompoundTag())
+                    spawnEntity(sender, it.summonableEntity("entity"), sender.location, CompoundTag())
                     1
                 }.then(argument<Sender, Coordinates>("position", VectorArgument())
                     .executes {
                         val sender = it.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
-                        spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), MutableCompoundTag())
+                        spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), CompoundTag())
                         1
                     }.then(argument<Sender, CompoundTag>("nbt", NBTCompoundArgument())
                         .executes {
                             val sender = it.source as? KryptonPlayer ?: throw ERROR_MUST_BE_PLAYER.create()
-                            spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), it.argument<CompoundTag>("nbt").mutable())
+                            spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), it.argument<CompoundTag>("nbt"))
                             1
                         })))
         )
     }
 
-    private fun spawnEntity(player: KryptonPlayer, entityType: Key, position: Position, nbt: MutableCompoundTag) {
+    private fun spawnEntity(player: KryptonPlayer, entityType: Key, position: Position, nbt: CompoundTag?) {
         if (!position.isInSpawnableBounds) throw ERROR_INVALID_POSITION.create()
-        val tag = nbt.copy().putString("id", entityType.asString())
         val world = player.world
-        val entity = EntityFactory.create(world, tag)?.apply { location = location.copy(position.x, position.y, position.z) } ?: throw ERROR_FAILED.create()
+        val entity = EntityFactory.create(world, entityType.asString(), nbt)?.apply { location = location.copy(position.x, position.y, position.z) } ?: throw ERROR_FAILED.create()
 
         world.spawnEntity(entity)
         player.sendMessage(Component.translatable("commands.summon.success", entity.displayName))

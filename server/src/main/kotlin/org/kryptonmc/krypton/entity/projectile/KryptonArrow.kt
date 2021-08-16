@@ -16,38 +16,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.monster
+package org.kryptonmc.krypton.entity.projectile
 
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.monster.Creeper
+import org.kryptonmc.api.entity.projectile.Arrow
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
+import java.awt.Color
 
-class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CREEPER), Creeper {
+class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.ARROW), Arrow {
 
-    override var fuse: Short = 0
-    override var explosionRadius = 0
+    override var color: Color?
+        get() {
+            val rgb = data[MetadataKeys.ARROW.COLOR]
+            return if (rgb == -1) null else Color(rgb)
+        }
+        set(value) = data.set(MetadataKeys.ARROW.COLOR, value?.rgb ?: -1)
 
     init {
-        data.add(MetadataKeys.CREEPER.STATE)
-        data.add(MetadataKeys.CREEPER.CHARGED)
-        data.add(MetadataKeys.CREEPER.IGNITED)
+        data.add(MetadataKeys.ARROW.COLOR)
     }
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        isCharged = tag.getBoolean("powered")
-        isIgnited = tag.getBoolean("ignited")
-        fuse = tag.getShort("Fuse")
-        explosionRadius = tag.getInt("ExplosionRadius")
+        if (tag.contains("Color", 99)) {
+            val rgb = tag.getInt("Color")
+            if (rgb in 0..RGB_MAX_VALUE) color = Color(tag.getInt("Color"))
+        }
     }
 
-    override var isCharged: Boolean
-        get() = data[MetadataKeys.CREEPER.CHARGED]
-        set(value) = data.set(MetadataKeys.CREEPER.CHARGED, value)
-
-    override var isIgnited: Boolean
-        get() = data[MetadataKeys.CREEPER.IGNITED]
-        set(value) = data.set(MetadataKeys.CREEPER.IGNITED, value)
+    override fun save(): CompoundTag.Builder = super.save().apply {
+        color?.let { int("Color", it.rgb) }
+    }
 }
+
+private const val RGB_MAX_VALUE = 16777215

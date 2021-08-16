@@ -54,13 +54,13 @@ abstract class KryptonLivingEntity(
     private val brain = Brain(mutableListOf())
 
     init {
-        data += MetadataKeys.LIVING.FLAGS
-        data += MetadataKeys.LIVING.HEALTH
-        data += MetadataKeys.LIVING.POTION_EFFECT_COLOR
-        data += MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE
-        data += MetadataKeys.LIVING.ARROWS
-        data += MetadataKeys.LIVING.STINGERS
-        data += MetadataKeys.LIVING.BED_LOCATION
+        data.add(MetadataKeys.LIVING.FLAGS)
+        data.add(MetadataKeys.LIVING.HEALTH)
+        data.add(MetadataKeys.LIVING.POTION_EFFECT_COLOR)
+        data.add(MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE)
+        data.add(MetadataKeys.LIVING.ARROWS)
+        data.add(MetadataKeys.LIVING.STINGERS)
+        data.add(MetadataKeys.LIVING.BED_LOCATION)
         attributes[AttributeTypes.MAX_HEALTH]
     }
 

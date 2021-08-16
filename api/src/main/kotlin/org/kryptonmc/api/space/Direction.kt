@@ -19,15 +19,18 @@ import kotlin.math.abs
  * Represents a three-dimensional
  * [Cardinal direction](https://en.wikipedia.org/wiki/Cardinal_direction).
  *
+ * @param data3D the 3D data value
+ * @param oppositeIndex the index of the opposite direction
+ * @param data2D the 2D data value
  * @param serialized the name
  * @param axis the axis of this direction
  * @param axisDirection the direction of the axis of this direction
  * @param normal the normal of this direction
  */
 enum class Direction(
-    private val data3D: Int,
+    val data3D: Int,
     private val oppositeIndex: Int,
-    private val data2D: Int,
+    val data2D: Int,
     override val serialized: String,
     val axis: Axis,
     val axisDirection: AxisDirection,
@@ -152,8 +155,20 @@ enum class Direction(
         @Suppress("MagicNumber")
         fun fromPitch(pitch: Double) = from2D((pitch / 90.0 + 0.5).floor() and 3)
 
-        private fun from2D(value: Int) = BY_2D_DATA[abs(value % BY_2D_DATA.size)]
+        /**
+         * Gets a [Direction] from its 2-dimensional data [value].
+         *
+         * @param value the value
+         * @return a direction with the given 2D data value
+         */
+        fun from2D(value: Int) = BY_2D_DATA[abs(value % BY_2D_DATA.size)]
 
-        private fun from3D(value: Int) = BY_3D_DATA[abs(value % BY_3D_DATA.size)]
+        /**
+         * Gets a [Direction] from its 3-dimensional data [value].
+         *
+         * @param value the value
+         * @return a direction with the given 3D data value
+         */
+        fun from3D(value: Int) = BY_3D_DATA[abs(value % BY_3D_DATA.size)]
     }
 }

@@ -275,7 +275,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         return KryptonStatisticsTracker(player, folder.resolve("$uuid.json")).apply { this@PlayerManager.statistics[uuid] = this }
     }
 
-    private fun sendCommands(player: KryptonPlayer) {
+    fun sendCommands(player: KryptonPlayer) {
         val permissionLevel = player.server.getPermissionLevel(player.profile)
         sendCommands(player, permissionLevel)
     }

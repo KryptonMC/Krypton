@@ -22,14 +22,24 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.particleEffect
 import org.kryptonmc.api.space.Rotation
 import org.kryptonmc.krypton.entity.Pose
+import org.kryptonmc.krypton.item.KryptonItemStackFactory
 import org.kryptonmc.nbt.CompoundTag
 import java.util.Optional
+import java.util.OptionalInt
 
 object MetadataKeys {
 
     val AREA_EFFECT_CLOUD = AreaEffectCloudKeys
     val LIVING = LivingEntityKeys
     val ARMOR_STAND = ArmorStandKeys
+    val ARROW_LIKE = ArrowLikeKeys
+    val ARROW = ArrowKeys
+    val TRIDENT = TridentKeys
+    val FIREBALL = FireballKeys
+    val FIREWORK_ROCKET = FireworkRocketKeys
+    val FISHING_HOOK = FishingHookKeys
+    val THROWABLE_PROJECTILE = ThrowableProjectileKeys
+    val WITHER_SKULL = WitherSkullKeys
     val MOB = MobKeys
     val CREEPER = CreeperKeys
     val ZOMBIE = ZombieKeys
@@ -64,6 +74,51 @@ object MetadataKeys {
         val RIGHT_ARM_ROTATION = register(19, MetadataSerializers.ROTATION, Rotation(-15F, 0F, 10F))
         val LEFT_LEG_ROTATION = register(20, MetadataSerializers.ROTATION, Rotation(-1F, 0F, -1F))
         val RIGHT_LEG_ROTATION = register(21, MetadataSerializers.ROTATION, Rotation(1F, 0F, 1F))
+    }
+
+    object ArrowLikeKeys {
+
+        val FLAGS = register(8, MetadataSerializers.BYTE, 0)
+        val PIERCING_LEVEL = register(9, MetadataSerializers.BYTE, 0)
+    }
+
+    object ArrowKeys {
+
+        val COLOR = register(10, MetadataSerializers.VAR_INT, -1)
+    }
+
+    object TridentKeys {
+
+        val LOYALTY_LEVEL = register(10, MetadataSerializers.VAR_INT, 0)
+        val ENCHANTED = register(11, MetadataSerializers.BOOLEAN, false)
+    }
+
+    object FireballKeys {
+
+        val ITEM = register(8, MetadataSerializers.SLOT, KryptonItemStackFactory.empty())
+    }
+
+    object FireworkRocketKeys {
+
+        val ITEM = register(8, MetadataSerializers.SLOT, KryptonItemStackFactory.empty())
+        val ATTACHED = register(9, MetadataSerializers.OPTIONAL_VAR_INT, OptionalInt.empty())
+        val SHOT_AT_ANGLE = register(10, MetadataSerializers.BOOLEAN, false)
+    }
+
+    object FishingHookKeys {
+
+        val HOOKED = register(8, MetadataSerializers.VAR_INT, 0)
+        val BITING = register(9, MetadataSerializers.BOOLEAN, false)
+    }
+
+    object ThrowableProjectileKeys {
+
+        val ITEM = register(8, MetadataSerializers.SLOT, KryptonItemStackFactory.empty())
+    }
+
+    object WitherSkullKeys {
+
+        val DANGEROUS = register(8, MetadataSerializers.BOOLEAN, false)
     }
 
     object MobKeys {

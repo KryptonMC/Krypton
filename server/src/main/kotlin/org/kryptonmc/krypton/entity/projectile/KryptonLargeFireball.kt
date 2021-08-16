@@ -16,38 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.monster
+package org.kryptonmc.krypton.entity.projectile
 
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.monster.Creeper
-import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.api.entity.projectile.LargeFireball
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
-class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CREEPER), Creeper {
+class KryptonLargeFireball(world: KryptonWorld) : KryptonFireball(world, EntityTypes.FIREBALL), LargeFireball {
 
-    override var fuse: Short = 0
-    override var explosionRadius = 0
-
-    init {
-        data.add(MetadataKeys.CREEPER.STATE)
-        data.add(MetadataKeys.CREEPER.CHARGED)
-        data.add(MetadataKeys.CREEPER.IGNITED)
-    }
+    override var explosionPower = 1
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        isCharged = tag.getBoolean("powered")
-        isIgnited = tag.getBoolean("ignited")
-        fuse = tag.getShort("Fuse")
-        explosionRadius = tag.getInt("ExplosionRadius")
+        if (tag.contains("ExplosionPower", 99)) explosionPower = tag.getByte("ExplosionPower").toInt()
     }
 
-    override var isCharged: Boolean
-        get() = data[MetadataKeys.CREEPER.CHARGED]
-        set(value) = data.set(MetadataKeys.CREEPER.CHARGED, value)
-
-    override var isIgnited: Boolean
-        get() = data[MetadataKeys.CREEPER.IGNITED]
-        set(value) = data.set(MetadataKeys.CREEPER.IGNITED, value)
+    override fun save(): CompoundTag.Builder = super.save().apply {
+        byte("ExplosionPower", explosionPower.toByte())
+    }
 }

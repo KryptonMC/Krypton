@@ -78,18 +78,19 @@ abstract class KryptonEntity(
     open val maxAirTicks: Int
         get() = 300
     val viewers: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
+    var noPhysics = false
     private var portalCooldown = 0
     private var isRemoved = false
 
     init {
-        data += MetadataKeys.FLAGS
+        data.add(MetadataKeys.FLAGS)
         data.add(MetadataKeys.AIR_TICKS, maxAirTicks)
-        data += MetadataKeys.DISPLAY_NAME
-        data += MetadataKeys.DISPLAY_NAME_VISIBILITY
-        data += MetadataKeys.SILENT
-        data += MetadataKeys.NO_GRAVITY
-        data += MetadataKeys.POSE
-        data += MetadataKeys.FROZEN_TICKS
+        data.add(MetadataKeys.DISPLAY_NAME)
+        data.add(MetadataKeys.DISPLAY_NAME_VISIBILITY)
+        data.add(MetadataKeys.SILENT)
+        data.add(MetadataKeys.NO_GRAVITY)
+        data.add(MetadataKeys.POSE)
+        data.add(MetadataKeys.FROZEN_TICKS)
     }
 
     open fun onDataUpdate(key: MetadataKey<*>) {

@@ -29,8 +29,8 @@ class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOM
     private var conversionTime = 0
 
     init {
-        data += MetadataKeys.ZOMBIE.BABY
-        data += MetadataKeys.ZOMBIE.CONVERTING
+        data.add(MetadataKeys.ZOMBIE.BABY)
+        data.add(MetadataKeys.ZOMBIE.CONVERTING)
     }
 
     override fun load(tag: CompoundTag) {

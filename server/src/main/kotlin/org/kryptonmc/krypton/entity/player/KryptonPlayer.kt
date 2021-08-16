@@ -191,12 +191,12 @@ class KryptonPlayer(
     private val visibleChunks = mutableSetOf<ChunkPosition>()
 
     init {
-        data += MetadataKeys.PLAYER.ADDITIONAL_HEARTS
-        data += MetadataKeys.PLAYER.SCORE
-        data += MetadataKeys.PLAYER.SKIN_FLAGS
-        data += MetadataKeys.PLAYER.MAIN_HAND
-        data += MetadataKeys.PLAYER.LEFT_SHOULDER
-        data += MetadataKeys.PLAYER.RIGHT_SHOULDER
+        data.add(MetadataKeys.PLAYER.ADDITIONAL_HEARTS)
+        data.add(MetadataKeys.PLAYER.SCORE)
+        data.add(MetadataKeys.PLAYER.SKIN_FLAGS)
+        data.add(MetadataKeys.PLAYER.MAIN_HAND)
+        data.add(MetadataKeys.PLAYER.LEFT_SHOULDER)
+        data.add(MetadataKeys.PLAYER.RIGHT_SHOULDER)
     }
 
     override fun load(tag: CompoundTag) {

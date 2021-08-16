@@ -28,13 +28,13 @@ import org.kryptonmc.nbt.CompoundTag
 class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, EntityTypes.ARMOR_STAND), ArmorStand {
 
     init {
-        data += MetadataKeys.ARMOR_STAND.FLAGS
-        data += MetadataKeys.ARMOR_STAND.HEAD_ROTATION
-        data += MetadataKeys.ARMOR_STAND.BODY_ROTATION
-        data += MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION
-        data += MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION
-        data += MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION
-        data += MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION
+        data.add(MetadataKeys.ARMOR_STAND.FLAGS)
+        data.add(MetadataKeys.ARMOR_STAND.HEAD_ROTATION)
+        data.add(MetadataKeys.ARMOR_STAND.BODY_ROTATION)
+        data.add(MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION)
+        data.add(MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION)
+        data.add(MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION)
+        data.add(MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION)
     }
 
     override fun load(tag: CompoundTag) {

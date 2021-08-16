@@ -72,8 +72,6 @@ class MetadataHolder(private val entity: KryptonEntity) {
         return createItem(key, value)
     }
 
-    operator fun <T> plusAssign(key: MetadataKey<T>) = add(key)
-
     operator fun <T> get(key: MetadataKey<T>) = getItem(key).value
 
     operator fun <T> set(key: MetadataKey<T>, value: T) {

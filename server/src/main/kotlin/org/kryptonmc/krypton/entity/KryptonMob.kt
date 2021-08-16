@@ -31,7 +31,7 @@ abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : Kryp
     override var isPersistent = false
 
     init {
-        data += MetadataKeys.MOB.FLAGS
+        data.add(MetadataKeys.MOB.FLAGS)
     }
 
     override fun load(tag: CompoundTag) {
