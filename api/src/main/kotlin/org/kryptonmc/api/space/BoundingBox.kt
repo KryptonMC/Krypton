@@ -1,3 +1,11 @@
+/*
+ * This file is part of the Krypton API, licensed under the MIT license.
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
+ *
+ * This project is licensed under the terms of the MIT license.
+ * For more details, please reference the LICENSE file in the api top-level directory.
+ */
 package org.kryptonmc.api.space
 
 import org.spongepowered.math.GenericMath
@@ -16,14 +24,45 @@ import kotlin.math.min
  * @param maximumY the maximum Y value
  * @param maximumZ the maximum Z value
  */
-data class BoundingBox(
-    val minimumX: Double,
-    val minimumY: Double,
-    val minimumZ: Double,
-    val maximumX: Double,
-    val maximumY: Double,
-    val maximumZ: Double
+@Suppress("MaxLineLength", "DataClassContainsFunctions", "UntilInsteadOfRangeTo")
+class BoundingBox(
+    minimumX: Double,
+    minimumY: Double,
+    minimumZ: Double,
+    maximumX: Double,
+    maximumY: Double,
+    maximumZ: Double
 ) {
+
+    /**
+     * The minimum X value
+     */
+    val minimumX = min(minimumX, maximumX)
+
+    /**
+     * The minimum Y value
+     */
+    val minimumY = min(minimumY, maximumY)
+
+    /**
+     * The minimum Z value
+     */
+    val minimumZ = min(minimumZ, maximumZ)
+
+    /**
+     * The maximum X value
+     */
+    val maximumX = max(minimumX, maximumX)
+
+    /**
+     * The maximum Y value
+     */
+    val maximumY = max(minimumY, maximumY)
+
+    /**
+     * The maximum Z value
+     */
+    val maximumZ = max(minimumZ, maximumZ)
 
     /**
      * The size of this bounding box on the X axis.
@@ -56,14 +95,9 @@ data class BoundingBox(
     val hasNaN = minimumX.isNaN() || minimumY.isNaN() || minimumZ.isNaN() || maximumX.isNaN() || maximumY.isNaN() || maximumZ.isNaN()
 
     /**
-     * If all values of this box are [NaN][Double.isNaN].
-     */
-    val isNaN = minimumX.isNaN() && minimumY.isNaN() && minimumZ.isNaN() && maximumX.isNaN() && maximumY.isNaN() && maximumZ.isNaN()
-
-    /**
      * The center of this bounding box.
      */
-    val center by lazy { Vector(GenericMath.lerp(0.5, minimumX, maximumX), GenericMath.lerp(0.5, minimumY, maximumY), GenericMath.lerp(0.5, minimumZ, maximumZ)) }
+    val center by lazy { Vector(GenericMath.lerp(minimumX, maximumX, 0.5), GenericMath.lerp(minimumY, maximumY, 0.5), GenericMath.lerp(minimumZ, maximumZ, 0.5)) }
 
     /**
      * Constructs a new [BoundingBox] from the given [minimum] and [maximum] vectors.
