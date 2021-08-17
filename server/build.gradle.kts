@@ -116,6 +116,10 @@ license {
 
 tasks.jacocoTestReport {
     sourceSets(project(":api").sourceSets.main.get())
+    reports {
+        xml.isEnabled = true
+        html.isEnabled = true
+    }
 }
 
 tasks.test {
