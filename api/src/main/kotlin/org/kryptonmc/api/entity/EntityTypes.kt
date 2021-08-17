@@ -9,6 +9,7 @@
 package org.kryptonmc.api.entity
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.entity.hanging.Painting
 import org.kryptonmc.api.entity.monster.Creeper
 import org.kryptonmc.api.entity.monster.Zombie
 import org.kryptonmc.api.entity.player.Player
@@ -98,7 +99,7 @@ object EntityTypes {
     @JvmField val MULE = register<Entity>("mule")
     @JvmField val MOOSHROOM = register<Entity>("mooshroom")
     @JvmField val OCELOT = register<Entity>("ocelot")
-    @JvmField val PAINTING = register<Entity>("painting")
+    @JvmField val PAINTING = register<Painting>("painting")
     @JvmField val PANDA = register<Entity>("panda")
     @JvmField val PARROT = register<Entity>("parrot")
     @JvmField val PHANTOM = register<Entity>("phantom")

@@ -39,6 +39,7 @@ object Registries {
     @JvmField val BIOME = get(ResourceKeys.minecraft<Biome>("worldgen/biome"))!!
     @JvmField val STATISTIC_TYPE = get(ResourceKeys.STATISTIC_TYPE)!!
     @JvmField val CUSTOM_STATISTIC = create(ResourceKeys.CUSTOM_STATISTIC)
+    @JvmField val CANVAS = getDefaulted(ResourceKeys.CANVAS)!!
 
     /**
      * Custom built-in registries

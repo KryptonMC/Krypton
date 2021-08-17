@@ -64,7 +64,7 @@ abstract class KryptonEntity(
     val data = MetadataHolder(this)
 
     override var uuid = Random.nextUUID()
-    override var location = Location.ZERO
+    final override var location = Location.ZERO
     override var velocity = Vector.ZERO
     override var isOnGround = true
     override var ticksExisted = 0

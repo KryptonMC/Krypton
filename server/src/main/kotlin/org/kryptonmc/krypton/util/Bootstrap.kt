@@ -24,6 +24,7 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.api.entity.hanging.Canvases
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.registry.Registries
@@ -37,6 +38,7 @@ import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.command.argument.ArgumentTypes
 import org.kryptonmc.krypton.entity.EntityFactory
+import org.kryptonmc.krypton.entity.hanging.KryptonCanvases
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.item.meta.MetaFactory
@@ -90,6 +92,8 @@ object Bootstrap {
         KryptonStatisticTypes
         StatisticTypes
         CustomStatistics
+        KryptonCanvases
+        Canvases
         MetaKeys // Not technically a registry, but quite close to one
 
         // Preload tags (which use registries)

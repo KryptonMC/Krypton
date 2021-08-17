@@ -22,6 +22,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.krypton.entity.hanging.KryptonPainting
 import org.kryptonmc.krypton.entity.monster.KryptonCreeper
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
 import org.kryptonmc.krypton.entity.projectile.KryptonArrow
@@ -57,6 +58,7 @@ object EntityFactory {
         EntityTypes.FIREWORK_ROCKET to ::KryptonFireworkRocket,
         EntityTypes.FIREBALL to ::KryptonLargeFireball,
         EntityTypes.LLAMA_SPIT to ::KryptonLlamaSpit,
+        EntityTypes.PAINTING to ::KryptonPainting,
         EntityTypes.SHULKER_BULLET to ::KryptonShulkerBullet,
         EntityTypes.SMALL_FIREBALL to ::KryptonSmallFireball,
         EntityTypes.SNOWBALL to ::KryptonSnowball,
