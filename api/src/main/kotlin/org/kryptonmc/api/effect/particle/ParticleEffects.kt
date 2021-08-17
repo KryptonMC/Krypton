@@ -25,7 +25,7 @@ import org.kryptonmc.api.space.Vector
  * @param data optional data for this particle effect
  * @throws IllegalArgumentException if the [quantity] is less than 1
  */
-data class ParticleEffect internal constructor(
+data class ParticleEffect(
     val type: Particle,
     val quantity: Int,
     val offset: Vector,

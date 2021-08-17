@@ -4,9 +4,9 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id("krypton.common")
-    id("info.solidsoft.pitest") version Versions.PITEST
     id("com.github.johnrengelman.shadow") version Versions.SHADOW
     `java-library`
+    jacoco
 }
 
 evaluationDependsOn(":api")
@@ -90,41 +90,8 @@ tasks {
 
 tasks["build"].dependsOn(tasks["shadowJar"])
 
-pitest {
-    junit5PluginVersion.set("0.12")
-    pitestVersion.set("1.6.7")
-    avoidCallsTo.set(setOf(
-        "kotlin.jvm.internal",
-        "java.util.logging",
-        "org.slf4j",
-        "org.apache.logging.log4j"
-    ))
-    mutators.set(setOf(
-        "CONDITIONALS_BOUNDARY",
-        "INCREMENTS",
-        "INVERT_NEGS",
-        "MATH",
-        "NEGATE_CONDITIONALS",
-        "VOID_METHOD_CALLS",
-        "EMPTY_RETURNS",
-        "FALSE_RETURNS",
-        "TRUE_RETURNS",
-        "PRIMITIVE_RETURNS"
-    ))
-    targetClasses.set(setOf("org.kryptonmc.*"))
-    targetTests.set(setOf("org.kryptonmc.*"))
-    threads.set(Runtime.getRuntime().availableProcessors())
-    outputFormats.set(setOf("HTML", "XML"))
-    excludedMethods.set(setOf("equals", "hashCode", "toString", "emptyList"))
-    excludedClasses.set(setOf(
-        "org.kryptonmc.krypton.KryptonKt*",
-        "org.kryptonmc.krypton.KryptonCLI*",
-        "org.kryptonmc.krypton.KryptonServer*",
-        "org.kryptonmc.krypton.NettyProcess*",
-        "org.kryptonmc.krypton.WatchdogProcess*",
-        "org.kryptonmc.krypton.auth.MojangUUIDSerializer*",
-        "org.kryptonmc.krypton.auth.requests.SessionService*"
-    ))
+jacoco {
+    toolVersion = "0.8.7"
 }
 
 license {
@@ -145,4 +112,12 @@ license {
         "**/scheduling/KryptonScheduler.kt",
         "**/util/bytebufs.kt"
     )
+}
+
+tasks.jacocoTestReport {
+    sourceSets(project(":api").sourceSets.main.get())
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
 }
