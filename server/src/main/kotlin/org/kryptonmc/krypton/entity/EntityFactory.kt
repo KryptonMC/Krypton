@@ -53,6 +53,7 @@ object EntityFactory {
         EntityTypes.ARROW to ::KryptonArrow,
         EntityTypes.CREEPER to ::KryptonCreeper,
         EntityTypes.DRAGON_FIREBALL to ::KryptonDragonFireball,
+        EntityTypes.EXPERIENCE_ORB to ::KryptonExperienceOrb,
         EntityTypes.FIREWORK_ROCKET to ::KryptonFireworkRocket,
         EntityTypes.FIREBALL to ::KryptonLargeFireball,
         EntityTypes.LLAMA_SPIT to ::KryptonLlamaSpit,

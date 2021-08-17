@@ -63,7 +63,7 @@ object EntityTypes {
     @JvmField val ENDERMTIE = register<Entity>("endermite")
     @JvmField val EVOKER = register<Entity>("evoker")
     @JvmField val EVOKER_FANGS = register<Entity>("evoker_fangs")
-    @JvmField val EXPERIENCE_ORB = register<Entity>("experience_orb")
+    @JvmField val EXPERIENCE_ORB = register<ExperienceOrb>("experience_orb")
     @JvmField val EYE_OF_ENDER = register<Entity>("eye_of_ender")
     @JvmField val FALLING_BLOCK = register<Entity>("falling_block")
     @JvmField val FIREWORK_ROCKET = register<FireworkRocket>("firework_rocket")

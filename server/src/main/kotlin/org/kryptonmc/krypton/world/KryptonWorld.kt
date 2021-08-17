@@ -146,12 +146,7 @@ class KryptonWorld(
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector): T? {
-        if (!type.isSummonable) return null
-        when (type) {
-            EntityTypes.PLAYER -> return null
-            EntityTypes.EXPERIENCE_ORB -> return spawnExperienceOrb(location) as? T
-            EntityTypes.PAINTING -> return spawnPainting(location) as? T
-        }
+        if (!type.isSummonable || type === EntityTypes.PLAYER) return null
         val entity = EntityFactory.create(type, this)?.apply { this.location = location.toLocation(0F, 0F) } ?: return null
         spawnEntity(entity)
         return entity as? T
@@ -190,10 +185,6 @@ class KryptonWorld(
             entities.remove(entity)
         }
     }
-
-    override fun spawnExperienceOrb(location: Vector): Entity? = null // TODO: Implement XP orb spawning
-
-    override fun spawnPainting(location: Vector): Entity? = null // TODO: Implement painting spawning
 
     fun playEffect(effect: Effect, position: Vector3i, data: Int, except: KryptonPlayer) = playerManager.broadcast(PacketOutEffect(effect, position, data, false), this, position, 64.0, except)
 

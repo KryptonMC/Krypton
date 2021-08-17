@@ -316,16 +316,6 @@ interface World : ForwardingAudience {
      */
     fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector): T?
 
-    /**
-     * Spawns an experience orb in this world at the given [location].
-     */
-    fun spawnExperienceOrb(location: Vector): Entity?
-
-    /**
-     * Spawns a painting in this world at the given [location].
-     */
-    fun spawnPainting(location: Vector): Entity?
-
     companion object {
 
         /**
