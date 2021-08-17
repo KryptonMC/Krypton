@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.util
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
+import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.registry.RegistryManager
@@ -28,6 +29,7 @@ import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
 import org.kryptonmc.krypton.item.KryptonItemStackFactory
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.world.block.BlockLoader
+import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 
 class KryptonFactoryProvider : FactoryProvider {
 
@@ -42,6 +44,7 @@ class KryptonFactoryProvider : FactoryProvider {
     }
 
     fun bootstrap() {
+        register<Property.Factory>(KryptonPropertyFactory)
         register<RegistryManager>(KryptonRegistryManager)
         BlockLoader.init()
         register<ItemStack.Factory>(KryptonItemStackFactory)
