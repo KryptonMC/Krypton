@@ -22,21 +22,21 @@ import org.kryptonmc.api.event.ResultedEvent
  * constructed for them (just before the state is switched to PLAY).
  *
  * @param player the player who joined
- * @param hasJoinedBefore if this player has joined before
+ * @param hasChangedName if this player has joined before
  */
 class JoinEvent(
     val player: Player,
-    val hasJoinedBefore: Boolean
+    val hasChangedName: Boolean
 ) : ResultedEvent<JoinResult> {
 
     // The message here is the default translatable component that vanilla Minecraft sends when a player joins.
     override var result = JoinResult.allowed(
         translatable(
-            if (hasJoinedBefore) "multiplayer.player.joined.renamed" else "multiplayer.player.joined",
+            if (hasChangedName) "multiplayer.player.joined.renamed" else "multiplayer.player.joined",
             NamedTextColor.YELLOW,
             text(player.name)
         ),
-        hasJoinedBefore
+        hasChangedName
     )
 }
 
@@ -44,12 +44,12 @@ class JoinEvent(
  * The result of a [JoinEvent].
  *
  * @param message the join message
- * @param hasJoinedBefore if the player joining has joined before
+ * @param hasChangedName if the player joining has joined before
  */
 class JoinResult(
     override val isAllowed: Boolean,
     val message: Component,
-    val hasJoinedBefore: Boolean
+    val hasChangedName: Boolean
 ) : Result {
 
     companion object {

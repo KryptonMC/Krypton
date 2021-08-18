@@ -161,7 +161,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         invalidateStatus()
 
         // Fire join event and send result message
-        val joinResult = server.eventManager.fireSync(JoinEvent(player, profile.name.equals(name, true))).result
+        val joinResult = server.eventManager.fireSync(JoinEvent(player, !profile.name.equals(name, true))).result
         if (!joinResult.isAllowed) {
             // Use default reason if denied without specified reason
             val reason = joinResult.message.takeIf { it != Component.empty() } ?: Component.translatable("multiplayer.disconnect.kicked")
@@ -169,6 +169,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             return@thenAccept
         }
         server.sendMessage(joinResult.message)
+        player.sendMessage(joinResult.message) // This player hasn't been added to the list yet
         session.sendPacket(PacketOutPlayerPositionAndLook(player.location))
 
         // Update player list

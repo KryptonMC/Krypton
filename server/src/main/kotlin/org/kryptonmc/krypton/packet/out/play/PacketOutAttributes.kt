@@ -25,6 +25,7 @@ import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeUUID
@@ -40,10 +41,11 @@ class PacketOutAttributes(
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(id)
         buf.writeCollection(attributes) { attribute ->
-            buf.writeKey(Registries.ATTRIBUTE[attribute.type]!!)
+            buf.writeKey(InternalRegistries.ATTRIBUTE[attribute.type]!!)
             buf.writeDouble(attribute.base)
+            buf.writeVarInt(attribute.modifiers.values.sumOf { it.size })
             attribute.modifiers.forEach { (operation, modifiers) ->
-                buf.writeCollection(modifiers) {
+                modifiers.forEach {
                     buf.writeUUID(it.uuid)
                     buf.writeDouble(it.amount)
                     buf.writeByte(Registries.MODIFIER_OPERATIONS.idOf(operation))
