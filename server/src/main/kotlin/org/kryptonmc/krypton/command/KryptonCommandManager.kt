@@ -24,6 +24,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.tree.RootCommandNode
 import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.event.ClickEvent
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.Command
@@ -67,6 +72,8 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.math.max
+import kotlin.math.min
 
 class KryptonCommandManager(server: KryptonServer) : CommandManager {
 
@@ -100,7 +107,20 @@ class KryptonCommandManager(server: KryptonServer) : CommandManager {
             dispatcher.execute(parseResults) != BrigadierCommand.FORWARD
         } catch (exception: CommandSyntaxException) {
             val message = exception.rawMessage
-            sender.sendMessage(if (message is AdventureMessage) message.wrapped else text(exception.message.orEmpty()))
+            sender.sendMessage((if (message is AdventureMessage) message.wrapped else text(exception.message.orEmpty())).color(NamedTextColor.RED))
+            if (exception.input != null && exception.cursor >= 0) {
+                val length = min(exception.input.length, exception.cursor)
+                var component = text("", Style.style(NamedTextColor.GRAY)
+                    .clickEvent(ClickEvent.suggestCommand(command)))
+                if (length > 10) component = component.append(text("..."))
+                component = component.append(text(exception.input.substring(max(0, length - 10), length)))
+                if (length < exception.input.length) {
+                    val error = text(exception.input.substring(length), NamedTextColor.RED, TextDecoration.UNDERLINED)
+                    component = component.append(error)
+                }
+                component = component.append(translatable("command.context.here", NamedTextColor.RED, TextDecoration.ITALIC))
+                sender.sendMessage(text("").append(component).color(NamedTextColor.RED))
+            }
             false
         } catch (exception: Throwable) {
             // Catch Throwable because plugins like to do stupid things sometimes
