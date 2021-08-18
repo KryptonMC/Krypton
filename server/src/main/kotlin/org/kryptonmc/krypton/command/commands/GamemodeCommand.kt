@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.command.commands
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.StringArgumentType.string
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.context.CommandContext
@@ -33,17 +34,42 @@ import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.util.argument
 
 object GamemodeCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal<Sender>("gamemode").permission("krypton.command.gamemode", 2)
-        Gamemode.values().forEach { gamemode ->
-            command.then(literal<Sender>(gamemode.name.lowercase())
-                .executes { gameModeArgument(it, gamemode) }
-                .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
-                    .executes { targetArgument(it, gamemode) }))
+        for (gamemode in Gamemode.values()) {
+            command
+                .then(
+                    literal<Sender>(gamemode.name.lowercase())
+                        .executes {
+                            gameModeArgument(it, gamemode)
+                        }
+                        .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
+                            .executes {
+                                targetArgument(it, gamemode)
+                            })
+                )
         }
+
+        command
+            .then(argument<Sender, String>("gamemode", string())
+                .executes {
+                    val gamemode = Gamemode.fromShortName(it.argument("gamemode"))
+                        ?: Gamemode.fromId(it.argument<String>("gamemode").toIntOrNull() ?: return@executes 1)
+                        ?: return@executes 1
+                    gameModeArgument(it, gamemode)
+                }
+                .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
+                    .executes {
+                        val gamemode = Gamemode.fromShortName(it.argument("gamemode")) ?: Gamemode.fromId(
+                            it.argument<String>("gamemode").toIntOrNull() ?: return@executes 1
+                        ) ?: return@executes 1
+                        targetArgument(it, gamemode)
+                    })
+            )
         dispatcher.register(command)
     }
 
