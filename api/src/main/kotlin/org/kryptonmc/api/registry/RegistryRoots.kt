@@ -20,6 +20,7 @@ object RegistryRoots {
      *
      * The key of this root is "minecraft:root"
      */
+    @JvmField
     val MINECRAFT = Key.key("root")
 
     /**
@@ -27,5 +28,6 @@ object RegistryRoots {
      *
      * The key of this root is "krypton:root"
      */
+    @JvmField
     val KRYPTON = Key.key("krypton", "root")
 }

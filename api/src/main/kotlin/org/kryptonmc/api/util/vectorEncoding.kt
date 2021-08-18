@@ -6,7 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-@file:JvmName("VectorUtil")
+@file:JvmName("Vectors")
 package org.kryptonmc.api.util
 
 import org.spongepowered.math.vector.Vector3i
@@ -31,6 +31,7 @@ fun Vector3i.asLong(): Long = asLong(x(), y(), z())
  * Useful for efficiently storing coordinates.
  */
 @Suppress("MagicNumber")
+@JvmName("fromLong")
 fun Long.toVector(): Vector3i = Vector3i(
     (this shl 64 - X_OFFSET - PACKED_X_Z shr 64 - PACKED_X_Z).toInt(),
     (this shl 64 - PACKED_Y shr 64 - PACKED_Y).toInt(),

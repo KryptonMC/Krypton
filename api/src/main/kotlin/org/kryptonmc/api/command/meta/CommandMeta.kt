@@ -66,16 +66,14 @@ interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
 
     companion object {
 
-        @JvmSynthetic
-        internal val FACTORY = FACTORY_PROVIDER.provide<Factory>()
-
         /**
          * Creates a new builder for constructing command metadata.
          *
          * @param name the name of the command
          * @return a new builder
          */
-        fun builder(name: String) = FACTORY.builder(name)
+        @JvmStatic
+        fun builder(name: String) = COMMAND_META_FACTORY.builder(name)
 
         /**
          * Creates a new builder for constructing command metadata from the given
@@ -84,6 +82,10 @@ interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
          * @param command the Brigadier command
          * @return a new builder
          */
+        @JvmStatic
         fun builder(command: BrigadierCommand) = builder(command.node.name)
     }
 }
+
+@JvmSynthetic
+internal val COMMAND_META_FACTORY = FACTORY_PROVIDER.provide<CommandMeta.Factory>()

@@ -24,7 +24,7 @@ class ClientSettingsEvent(
     val player: Player,
     val locale: Locale,
     val viewDistance: Int,
-    val hasColorsEnabled: Boolean,
+    @get:JvmName("hasColorsEnabled") val hasColorsEnabled: Boolean,
     val skinSettings: SkinSettings
 )
 
@@ -40,11 +40,11 @@ class ClientSettingsEvent(
  * @param hat whether the player has their hat shown
  */
 data class SkinSettings(
-    val cape: Boolean,
-    val jacket: Boolean,
-    val leftSleeve: Boolean,
-    val rightSleeve: Boolean,
-    val leftPants: Boolean,
-    val rightPants: Boolean,
-    val hat: Boolean
+    @get:JvmName("cape") val cape: Boolean,
+    @get:JvmName("jacket") val jacket: Boolean,
+    @get:JvmName("leftSleeve") val leftSleeve: Boolean,
+    @get:JvmName("rightSleeve") val rightSleeve: Boolean,
+    @get:JvmName("leftPants") val leftPants: Boolean,
+    @get:JvmName("rightPants") val rightPants: Boolean,
+    @get:JvmName("hat") val hat: Boolean
 )

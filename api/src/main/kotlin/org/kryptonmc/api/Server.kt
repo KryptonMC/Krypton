@@ -151,18 +151,23 @@ interface Server : ForwardingAudience {
     val players: List<Player>
 
     /**
-     * Get a player by their [uuid].
+     * Gets the online player with the given [uuid], or returns null if there is no
+     * player online with the given [uuid].
      *
-     * @param uuid the player's [UUID]
-     * @return the player with the specified [uuid], or null if there
-     * is no connected player with that [UUID]
+     * @param uuid the UUID
+     * @return the player, or null if not present
      */
     fun player(uuid: UUID): Player?
 
     /**
-     * Get a player by their [name].
+     * Gets the online player with the given [name], or returns null if there is no
+     * player online with the given [name].
+     *
+     * Warning: Usernames are not unique past a single session. Do **not** use
+     * usernames to uniquely identify users!
      *
      * @param name the player's name
+     * @return the player, or null if not present
      */
     fun player(name: String): Player?
 
@@ -177,14 +182,12 @@ interface Server : ForwardingAudience {
     val scoreboard: Scoreboard?
 
     /**
-     * Broadcast a message to every player on the server, optionally with
-     * the specified [permission].
+     * Sends a message to every player on the server with the specified [permission].
      *
      * @param message the message to send
-     * @param permission (optional) the permission that players require to receive
-     * the broadcast
+     * @param permission the permission that players require to receive the message
      */
-    fun broadcast(message: Component, permission: String? = null)
+    fun sendMessage(message: Component, permission: String)
 
     /**
      * The list of registered plugin messaging channels.
@@ -192,14 +195,14 @@ interface Server : ForwardingAudience {
     val channels: Set<Key>
 
     /**
-     * Register a plugin messaging channel.
+     * Registers a plugin messaging channel.
      *
      * @param channel the channel to register
      */
     fun registerChannel(channel: Key)
 
     /**
-     * Unregister a plugin messaging channel.
+     * Unregisters a plugin messaging channel.
      *
      * @param channel the channel to register
      */

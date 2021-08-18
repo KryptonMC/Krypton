@@ -36,10 +36,12 @@ interface ServicesManager {
  * Allows registration with the use of reified types, removing that
  * ugly class parameter
  */
+@JvmSynthetic
 inline fun <reified T> ServicesManager.register(plugin: Any, provider: T) = register(plugin, T::class.java, provider)
 
 /**
  * Allows retrieval of providers with the use of reified types,
  * removing that ugly class parameter
  */
+@JvmSynthetic
 inline fun <reified T> ServicesManager.provide() = provide(T::class.java)

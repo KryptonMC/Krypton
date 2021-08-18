@@ -25,7 +25,7 @@ import net.kyori.adventure.text.TranslatableComponent
  */
 data class AttributeType(
     val key: Key,
-    val sendToClient: Boolean,
+    @get:JvmName("sendToClient") val sendToClient: Boolean,
     val defaultBase: Double,
     val minimum: Double,
     val maximum: Double,

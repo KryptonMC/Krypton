@@ -171,6 +171,7 @@ enum class Direction(
          * @param normal the normal
          * @return the direction
          */
+        @JvmStatic
         fun fromNormal(normal: Vector3i) = BY_OFFSET[normal.asLong()]
 
         /**
@@ -181,6 +182,7 @@ enum class Direction(
          * @param z the normal Z
          * @return the direction
          */
+        @JvmStatic
         fun fromNormal(x: Int, y: Int, z: Int) = BY_OFFSET[asLong(x, y, z)]
 
         /**
@@ -190,6 +192,7 @@ enum class Direction(
          * @return the direction
          */
         @Suppress("MagicNumber")
+        @JvmStatic
         fun fromPitch(pitch: Double) = from2D((pitch / 90.0 + 0.5).floor() and 3)
 
         /**
@@ -198,6 +201,7 @@ enum class Direction(
          * @param value the value
          * @return a direction with the given 2D data value
          */
+        @JvmStatic
         fun from2D(value: Int) = BY_2D_DATA[abs(value % BY_2D_DATA.size)]
 
         /**
@@ -206,6 +210,7 @@ enum class Direction(
          * @param value the value
          * @return a direction with the given 3D data value
          */
+        @JvmStatic
         fun from3D(value: Int) = BY_3D_DATA[abs(value % BY_3D_DATA.size)]
     }
 }

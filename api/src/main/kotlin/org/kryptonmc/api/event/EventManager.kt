@@ -114,6 +114,7 @@ interface EventManager {
  * @param handler the handler to register
  * @param E the type of the event
  */
+@JvmSynthetic
 inline fun <reified E> EventManager.register(plugin: Any, handler: EventHandler<E>) = register(plugin, E::class.java, handler)
 
 /**
@@ -126,6 +127,7 @@ inline fun <reified E> EventManager.register(plugin: Any, handler: EventHandler<
  * @param handler the handler to register
  * @param E the type of the event
  */
+@JvmSynthetic
 inline fun <reified E> EventManager.register(
     plugin: Any,
     priority: ListenerPriority,

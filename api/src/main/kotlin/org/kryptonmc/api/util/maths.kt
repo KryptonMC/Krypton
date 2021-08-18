@@ -6,7 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-@file:JvmName("MathUtil")
+@file:JvmName("Mth")
 package org.kryptonmc.api.util
 
 import org.spongepowered.math.GenericMath

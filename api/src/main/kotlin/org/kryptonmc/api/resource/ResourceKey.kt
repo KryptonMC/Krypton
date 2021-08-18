@@ -36,6 +36,7 @@ class ResourceKey<T : Any> private constructor(val registry: Key, val location: 
          * @return a resource key
          */
         @Suppress("UNCHECKED_CAST")
+        @JvmStatic
         fun <T : Any> of(registry: Key, location: Key): ResourceKey<T> {
             val key = "$registry:$location".intern()
             return VALUES.getOrPut(key) { ResourceKey<T>(registry, location) } as ResourceKey<T>
@@ -50,6 +51,7 @@ class ResourceKey<T : Any> private constructor(val registry: Key, val location: 
          * @param location the location of the resource
          * @return a resource key
          */
+        @JvmStatic
         fun <T : Any> of(parent: ResourceKey<out Registry<T>>, location: Key) = of<T>(parent.location, location)
     }
 }

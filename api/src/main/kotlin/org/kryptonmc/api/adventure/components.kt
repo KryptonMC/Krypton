@@ -31,6 +31,7 @@ fun Component.toJson(): JsonElement = GsonComponentSerializer.gson().serializeTo
  * Analogous with [GsonComponentSerializer.deserializeFromTree] called with this
  * as its argument.
  */
+@JvmSynthetic
 fun JsonElement.toComponent(): Component = GsonComponentSerializer.gson().deserializeFromTree(this)
 
 /**
@@ -39,6 +40,7 @@ fun JsonElement.toComponent(): Component = GsonComponentSerializer.gson().deseri
  * Analogous with [GsonComponentSerializer.serialize] called with this
  * as its argument.
  */
+@JvmSynthetic
 fun Component.toJsonString(): String = GsonComponentSerializer.gson().serialize(this)
 
 /**
@@ -47,6 +49,7 @@ fun Component.toJsonString(): String = GsonComponentSerializer.gson().serialize(
  * Analogous with [PlainTextComponentSerializer.serialize] called with this
 as its argument.
  */
+@JvmSynthetic
 fun Component.toPlainText(): String = PlainTextComponentSerializer.plainText().serialize(this)
 
 /**
@@ -56,6 +59,7 @@ fun Component.toPlainText(): String = PlainTextComponentSerializer.plainText().s
  * Analogous with [LegacyComponentSerializer.serialize] called with this as its
  * argument.
  */
+@JvmSynthetic
 fun Component.toLegacyText(char: Char): String = LegacyComponentSerializer.legacy(char).serialize(this)
 
 /**
@@ -64,6 +68,7 @@ fun Component.toLegacyText(char: Char): String = LegacyComponentSerializer.legac
  * Analogous with [ConfigurateComponentSerializer.serialize] called with this
  * as its argument.
  */
+@JvmSynthetic
 fun Component.toConfigurationNode(): ConfigurationNode = ConfigurateComponentSerializer.configurate().serialize(this)
 
 /**
@@ -72,4 +77,5 @@ fun Component.toConfigurationNode(): ConfigurationNode = ConfigurateComponentSer
  * Analogous with [ConfigurateComponentSerializer.deserialize] called with this
  * as its argument.
  */
+@JvmSynthetic
 fun ConfigurationNode.toComponent(): Component = ConfigurateComponentSerializer.configurate().deserialize(this)

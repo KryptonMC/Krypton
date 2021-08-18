@@ -26,7 +26,7 @@ import org.kryptonmc.api.event.ResultedEvent
  */
 class JoinEvent(
     val player: Player,
-    val hasChangedName: Boolean
+    @get:JvmName("hasChangedName") val hasChangedName: Boolean
 ) : ResultedEvent<JoinResult> {
 
     // The message here is the default translatable component that vanilla Minecraft sends when a player joins.
@@ -49,7 +49,7 @@ class JoinEvent(
 class JoinResult(
     override val isAllowed: Boolean,
     val message: Component,
-    val hasChangedName: Boolean
+    @get:JvmName("hasChangedName") val hasChangedName: Boolean
 ) : Result {
 
     companion object {

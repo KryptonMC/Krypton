@@ -17,6 +17,7 @@ import net.kyori.adventure.text.flattener.ComponentFlattener
  * Analogous with [ComponentFlattener.Builder.mapper], except this uses reified
  * types to improve quality of life as a Kotlin user.
  */
+@JvmSynthetic
 inline fun <reified T : Component> ComponentFlattener.Builder.mapper(noinline converter: (T) -> String) = mapper(T::class.java, converter)
 
 /**
@@ -25,5 +26,6 @@ inline fun <reified T : Component> ComponentFlattener.Builder.mapper(noinline co
  * Analogous with [ComponentFlattener.Builder.complexMapper], except this uses reified
  * types to improve quality of life as a Kotlin user.
  */
+@JvmSynthetic
 inline fun <reified T : Component> ComponentFlattener.Builder.complexMapper(noinline converter: (T, (Component) -> Unit) -> Unit) =
     complexMapper(T::class.java) { t, u -> converter(t) { u.accept(it) } }

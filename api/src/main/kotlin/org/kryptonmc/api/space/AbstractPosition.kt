@@ -18,9 +18,9 @@ import kotlin.math.sqrt
  *
  * To keep consistency, a [Position] will always be destructured into (x, y, z), regardless
  * if the implementation has any other fields (such as [org.kryptonmc.api.world.Location] having
- * world, yaw and pitch).
+ * yaw and pitch).
  *
- * The copy function will also only world on the X, Y and Z coordinates of the location. The
+ * The copy function will also only work on the X, Y and Z coordinates of the location. The
  * implementation may also have its own copy function however that can operate on more than
  * just these three.
  */

@@ -55,6 +55,7 @@ object Registries {
      * @param key the key
      * @return the existing registry, or null if not present
      */
+    @JvmStatic
     operator fun <T : Any> get(key: ResourceKey<out Registry<T>>): Registry<T>? = MANAGER[key]
 
     /**
@@ -66,6 +67,7 @@ object Registries {
      * @return the existing defaulted registry, or null if not present
      */
     @Suppress("UNCHECKED_CAST")
+    @JvmStatic
     fun <T : Any> getDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = MANAGER.getDefaulted(key)
 
     /**

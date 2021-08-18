@@ -54,11 +54,13 @@ class GenericResult(override val isAllowed: Boolean) : Result {
         /**
          * Returns a result that represents the event being allowed.
          */
+        @JvmStatic
         fun allowed() = ALLOWED
 
         /**
          * Returns a result that represents the event being denied.
          */
+        @JvmStatic
         fun denied() = DENIED
     }
 }
@@ -72,7 +74,7 @@ class ComponentResult(override val isAllowed: Boolean, val reason: Component) : 
 
     override fun toString(): String {
         if (isAllowed) return "allowed"
-        if (reason != Component.empty()) return "denied: ${PlainTextComponentSerializer.plainText().serialize(reason)}"
+        if (reason !== Component.empty()) return "denied: ${PlainTextComponentSerializer.plainText().serialize(reason)}"
         return "denied"
     }
 
@@ -85,6 +87,7 @@ class ComponentResult(override val isAllowed: Boolean, val reason: Component) : 
          *
          * @return a result that represents the event being allowed with no reason
          */
+        @JvmStatic
         fun allowed() = ALLOWED
 
         /**
@@ -93,6 +96,7 @@ class ComponentResult(override val isAllowed: Boolean, val reason: Component) : 
          * @param reason the reason for allowing the event
          * @return a result that represents the event being allowed for the given [reason]
          */
+        @JvmStatic
         fun allowed(reason: Component) = ComponentResult(true, reason)
 
         /**
@@ -101,6 +105,7 @@ class ComponentResult(override val isAllowed: Boolean, val reason: Component) : 
          * @param reason the reason for denying the event
          * @return a result that represents the event being denied for the given [reason]
          */
+        @JvmStatic
         fun denied(reason: Component) = ComponentResult(false, reason)
     }
 }

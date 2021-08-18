@@ -54,7 +54,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutServerDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.registry.json.RegistryBlock
@@ -395,13 +394,10 @@ class KryptonServer(
         require(channel !in RESERVED_CHANNELS) { "Cannot unregister reserved channels with name \"minecraft:register\" or \"minecraft:unregister\"!" }
     }
 
-    override fun broadcast(message: Component, permission: String?) {
-        if (permission != null) {
-            playerManager.players.filter { it.hasPermission(permission) }.forEach { it.sendMessage(message) }
-            console.sendMessage(message)
-            return
-        }
-        sendMessage(message)
+    override fun sendMessage(message: Component, permission: String) {
+        playerManager.players.filter { it.hasPermission(permission) }.forEach { it.sendMessage(message) }
+        console.sendMessage(message)
+        return
     }
 
     override fun audiences() = players + console

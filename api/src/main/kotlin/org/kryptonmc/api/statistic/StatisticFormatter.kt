@@ -25,16 +25,22 @@ fun interface StatisticFormatter {
 
     companion object {
 
-        private val DECIMAL_FORMAT = DecimalFormat("########0.00").apply { decimalFormatSymbols = DecimalFormatSymbols.getInstance(Locale.ROOT) }
+        /**
+         * The decimal format used for formatting decimals in various built-in formatters.
+         */
+        @JvmField
+        val DECIMAL_FORMAT = DecimalFormat("########0.00").apply { decimalFormatSymbols = DecimalFormatSymbols.getInstance(Locale.ROOT) }
 
         /**
          * The default formatter. Simply converts the value to a number format.
          */
+        @JvmField
         val DEFAULT = StatisticFormatter(NumberFormat.getIntegerInstance(Locale.US)::format)
 
         /**
          * Divides the value by ten and formats it to a decimal.
          */
+        @JvmField
         val DIVIDE_BY_TEN = StatisticFormatter { DECIMAL_FORMAT.format(it * 0.1) }
 
         /**
@@ -46,6 +52,7 @@ fun interface StatisticFormatter {
          * - If metres is > 0.5, uses the metres part with the " m" suffix
          * - Else, uses the value with the " cm" suffix
          */
+        @JvmField
         val DISTANCE = StatisticFormatter {
             val metres = it / 100.0
             val km = metres / 1000.0
@@ -66,6 +73,7 @@ fun interface StatisticFormatter {
          * - If minutes is > 0.5, uses the minutes part with the " m" suffix
          * - Else, this ticks amount is converted to seconds and formatted with the suffix " s"
          */
+        @JvmField
         val TIME = StatisticFormatter {
             val seconds = it / 20.0
             val minutes = seconds / 60.0
