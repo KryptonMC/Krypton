@@ -46,13 +46,12 @@ import org.kryptonmc.krypton.util.csv.csv
 import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
-import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.effect.Effect
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
+import org.kryptonmc.krypton.packet.out.play.PacketOutBreakAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
-import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.forEachInRange
@@ -186,6 +185,19 @@ class KryptonWorld(
         }
     }
 
+    fun destroyBlockProgress(position: Vector3i, id: Int, progress: Int) = server.playerManager.players.forEach {
+        if (it.world !== this || it.id == id) return@forEach
+        val xDistance = position.x() - it.location.x
+        val yDistance = position.y() - it.location.y
+        val zDistance = position.z() - it.location.z
+        if (xDistance * xDistance + yDistance * yDistance + zDistance * zDistance < 1024.0) {
+            it.session.sendPacket(PacketOutBreakAnimation(id, position, progress))
+        }
+    }
+
+    // TODO: Check spawn protection and world border
+    fun canInteract(player: KryptonPlayer, position: Vector3i) = true
+
     fun playEffect(effect: Effect, position: Vector3i, data: Int, except: KryptonPlayer) = playerManager.broadcast(PacketOutEffect(effect, position, data, false), this, position, 64.0, except)
 
     fun playSound(
@@ -234,14 +246,21 @@ class KryptonWorld(
 
     override fun unloadChunk(x: Int, z: Int, force: Boolean) = chunkManager.unload(x, z, TicketTypes.API_LOAD, force)
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
-        if (y.outsideBuildHeight) return
-        getChunkAt(x shr 4, z shr 4)?.setBlock(x, y, z, block)?.run {
-            playerManager.sendToAll(PacketOutBlockChange(block, x, y, z), this@KryptonWorld)
+    // TODO: Implement a change flag system
+    override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
+        if (y.outsideBuildHeight || isDebug) return false
+        val chunk = getChunkAt(x shr 4, z shr 4) ?: return false
+        val old = chunk.setBlock(x, y, z, block) ?: return false
+        val current = chunk.getBlock(x, y, z)
+        if (current === block) {
+            playerManager.sendToAll(PacketOutBlockChange(block, x, y, z))
         }
+        return true
     }
 
-    override fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
+    override fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
+
+    fun removeBlock(position: Vector3i): Boolean = setBlock(position, Blocks.AIR)
 
     fun tick(profiler: Profiler) {
         if (players.isEmpty()) return // don't tick the world if there's no players in it
@@ -307,7 +326,7 @@ class KryptonWorld(
         tickTime()
 
         profiler.push("chunk tick")
-        chunkManager.chunkMap.values.forEach { it.tick(chunkManager.players(it.position.toLong()).size) }
+        chunkManager.chunkMap.values.forEach { it.tick(chunkManager.players(it.position.toLong())) }
         profiler.pop()
     }
 

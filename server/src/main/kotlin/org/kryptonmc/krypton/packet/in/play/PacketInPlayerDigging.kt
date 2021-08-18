@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.block.BlockFace
+import org.kryptonmc.api.space.Direction
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.toVector3i
@@ -28,7 +28,7 @@ class PacketInPlayerDigging(buf: ByteBuf) : PlayPacket(0x1A) {
 
     val status = buf.readEnum<DiggingStatus>()
     val location = buf.readLong().toVector3i()
-    val face = buf.readEnum<BlockFace>()
+    val direction = buf.readEnum<Direction>()
 }
 
 enum class DiggingStatus {

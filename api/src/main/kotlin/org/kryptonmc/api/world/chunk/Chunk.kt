@@ -93,14 +93,16 @@ interface Chunk {
      * @param y the Y coordinate
      * @param z the Z coordinate
      * @param block the block
+     * @return the block that used to be there, or null if there was no block there
      */
-    fun setBlock(x: Int, y: Int, z: Int, block: Block)
+    fun setBlock(x: Int, y: Int, z: Int, block: Block): Block?
 
     /**
      * Sets the block at the given [position] to the given [block]
      *
      * @param position the position
      * @param block the block
+     * @return the block that used to be there, or null if there was no block there
      */
     fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
 
@@ -109,6 +111,7 @@ interface Chunk {
      *
      * @param position the position
      * @param block the block
+     * @return the block that used to be there, or null if there was no block there
      */
     fun setBlock(position: Position, block: Block) = setBlock(position.blockX, position.blockY, position.blockZ, block)
 }

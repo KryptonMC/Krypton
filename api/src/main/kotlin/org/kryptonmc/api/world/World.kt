@@ -199,7 +199,7 @@ interface World : ForwardingAudience {
      * @param z the Z coordinate
      * @param block the new block
      */
-    fun setBlock(x: Int, y: Int, z: Int, block: Block)
+    fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean
 
     /**
      * Sets the block at the given [position] to the given [block].

@@ -136,6 +136,8 @@ class KryptonPlayer(
 
     override val permissionLevel: Int
         get() = server.getPermissionLevel(profile)
+    val canUseGameMasterBlocks: Boolean
+        get() = canInstantlyBuild && permissionLevel >= 2
 
     private var camera: KryptonEntity = this
         set(value) {
@@ -178,6 +180,7 @@ class KryptonPlayer(
         get() = world.dimension
 
     val viewableEntities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
+    val handler = PlayerGameHandler(this)
 
     private var respawnPosition: Vector3i? = null
     private var respawnForced = false
@@ -195,6 +198,10 @@ class KryptonPlayer(
         data.add(MetadataKeys.PLAYER.MAIN_HAND)
         data.add(MetadataKeys.PLAYER.LEFT_SHOULDER)
         data.add(MetadataKeys.PLAYER.RIGHT_SHOULDER)
+    }
+
+    fun tick() {
+        handler.tick()
     }
 
     override fun load(tag: CompoundTag) {
@@ -504,6 +511,13 @@ class KryptonPlayer(
             val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ ) * 100F).roundToInt()
             if (value > FLYING_ACHIEVEMENT_MINIMUM_SPEED) incrementStatistic(CustomStatistics.FLY_ONE_CM, value)
         }
+    }
+
+    fun blockActionRestricted(position: Vector3i): Boolean {
+        if (gamemode != Gamemode.ADVENTURE && gamemode != Gamemode.SPECTATOR) return false
+        if (gamemode == Gamemode.SPECTATOR) return true
+        if (canBuild) return false
+        return !inventory.mainHand.isEmpty() // TODO: Check adventure mode breakage
     }
 
     override var absorption: Float

@@ -32,7 +32,6 @@ import org.kryptonmc.api.event.player.ChatEvent
 import org.kryptonmc.api.event.player.ClientSettingsEvent
 import org.kryptonmc.api.event.player.MoveEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
-import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonServer
@@ -57,8 +56,6 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPla
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.out.play.EntityAnimation
-import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
-import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
@@ -241,19 +238,12 @@ class PlayHandler(
     }
 
     private fun handlePlayerDigging(packet: PacketInPlayerDigging) {
-        if (player.gamemode != Gamemode.CREATIVE) return
-        if (packet.status != DiggingStatus.STARTED) return
-
-        val chunkX = packet.location.x() shr 4
-        val chunkZ = packet.location.z() shr 4
-        val chunk = player.world.chunkManager[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
-        val x = packet.location.x()
-        val y = packet.location.y()
-        val z = packet.location.z()
-        chunk.setBlock(x, y, z, Blocks.AIR)
-
-        session.sendPacket(PacketOutDiggingResponse(packet.location, 0, DiggingStatus.FINISHED, true))
-        playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
+        val position = packet.location
+        when (val status = packet.status) {
+            DiggingStatus.STARTED, DiggingStatus.CANCELLED, DiggingStatus.FINISHED -> {
+                player.handler.handleBreak(position, status, packet.direction, player.world.maximumBuildHeight)
+            }
+        }
     }
 
     private fun handlePositionUpdate(packet: PacketInPlayerPosition) {

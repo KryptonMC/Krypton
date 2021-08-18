@@ -18,8 +18,10 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.Heightmap
+import org.spongepowered.math.vector.Vector3i
 
 interface ChunkAccessor : BlockAccessor {
 
@@ -44,4 +46,8 @@ interface ChunkAccessor : BlockAccessor {
     fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int
 
     fun setHeightmap(type: Heightmap.Type, data: LongArray) = getOrCreateHeightmap(type).setData(this, type, data)
+
+    fun setBlock(x: Int, y: Int, z: Int, block: Block): Block?
+
+    fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
 }

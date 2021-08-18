@@ -27,7 +27,6 @@ import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.WorldAccessor
 import org.kryptonmc.krypton.world.biome.BiomeManager
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
@@ -87,7 +86,7 @@ class GenerationRegion(
 
     override fun getBlock(x: Int, y: Int, z: Int) = getChunk(x, z)?.getBlock(x, y, z) ?: Blocks.AIR
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
+    fun setBlock(x: Int, y: Int, z: Int, block: Block) {
         if (!canWrite(x, y, z)) return
         getChunk(x shr 4, z shr 4)?.setBlock(x, y, z, block)
     }
