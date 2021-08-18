@@ -216,13 +216,14 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             player.world.removeEntity(player)
             players.remove(player)
 
-            if (playersByUUID[player.uuid] == player) {
+            if (playersByUUID[player.uuid] === player) {
                 playersByName.remove(player.name)
                 playersByUUID.remove(player.uuid)
                 statistics.remove(player.uuid)
             }
 
             // Send info and quit message
+            invalidateStatus()
             sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER, player))
             server.sendMessage(it.message)
         }

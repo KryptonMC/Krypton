@@ -308,8 +308,12 @@ class KryptonServer(
 
     private fun tick() {
         tickCount++
-        if (playerManager.players.isEmpty()) return // don't tick if there are no players on the server
+
+        profiler.push("players")
         val time = System.currentTimeMillis()
+        playerManager.tick(time)
+        profiler.pop()
+        if (playerManager.players.isEmpty()) return // don't tick if there are no players on the server
 
         profiler.push("worlds")
         worldManager.worlds.forEach { (_, world) ->
@@ -325,9 +329,6 @@ class KryptonServer(
             profiler.pop()
             profiler.pop()
         }
-        profiler.pop()
-        profiler.push("players")
-        playerManager.tick(time)
         profiler.pop()
         if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
             profiler.push("autosave")
