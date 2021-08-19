@@ -12,7 +12,6 @@ package org.kryptonmc.api.space
 
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.space.Position.Companion.EPSILON
-import org.kryptonmc.api.world.Location
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -30,7 +29,7 @@ import kotlin.random.Random
  * @see [Location]
  */
 @Suppress("Indentation")
-class Vector(x: Double, y: Double, z: Double) : AbstractPosition(x, y, z) {
+class Vector(x: Double, y: Double, z: Double) : AbstractPosition<Vector>(x, y, z) {
 
     constructor(x: Int, y: Int, z: Int) : this(x.toDouble(), y.toDouble(), z.toDouble())
 

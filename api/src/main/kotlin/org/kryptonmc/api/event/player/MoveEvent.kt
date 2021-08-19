@@ -9,7 +9,7 @@
 package org.kryptonmc.api.event.player
 
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.space.Location
 
 /**
  * Called when a player moves.

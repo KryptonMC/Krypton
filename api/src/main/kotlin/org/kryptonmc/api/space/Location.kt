@@ -6,12 +6,10 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.world
+package org.kryptonmc.api.space
 
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.space.AbstractPosition
 import org.kryptonmc.api.space.Position.Companion.EPSILON
-import org.kryptonmc.api.space.Vector
 import kotlin.math.abs
 
 /**
@@ -28,7 +26,7 @@ class Location @JvmOverloads constructor(
     z: Double,
     val yaw: Float = 0F,
     val pitch: Float = 0F
-) : AbstractPosition(x, y, z) {
+) : AbstractPosition<Location>(x, y, z) {
 
     /**
      * Convert this [Location] to a [Vector].

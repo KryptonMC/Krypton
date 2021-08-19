@@ -26,7 +26,7 @@ import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.space.Location
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.adventure.toJsonComponent
 import org.kryptonmc.krypton.adventure.toSectionText

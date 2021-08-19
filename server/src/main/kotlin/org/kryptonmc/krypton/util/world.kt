@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.util
 
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.util.floor
-import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.space.Location
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition

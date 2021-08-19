@@ -24,7 +24,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.space.Location
 import org.kryptonmc.krypton.command.ERROR_MUST_BE_PLAYER
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.VectorArgument

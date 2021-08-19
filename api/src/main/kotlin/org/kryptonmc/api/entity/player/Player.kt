@@ -27,7 +27,7 @@ import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticsTracker
 import org.kryptonmc.api.world.Gamemode
-import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.space.Location
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard

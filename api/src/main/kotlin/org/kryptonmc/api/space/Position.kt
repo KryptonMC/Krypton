@@ -11,7 +11,6 @@
 package org.kryptonmc.api.space
 
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.world.Location
 import kotlin.math.acos
 import kotlin.math.max
 import kotlin.math.min
@@ -64,7 +63,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("add")
-    operator fun plus(other: Position) = copy(x + other.x, y + other.y, z + other.z)
+    operator fun plus(other: Position): Position
 
     /**
      * Subtract the [other] vector from this vector.
@@ -75,7 +74,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("subtract")
-    operator fun minus(other: Position) = copy(x - other.x, y - other.y, z - other.z)
+    operator fun minus(other: Position): Position
 
     /**
      * Multiply this vector by the [other] vector.
@@ -86,7 +85,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("multiply")
-    operator fun times(other: Position) = copy(x * other.x, y * other.y, z * other.z)
+    operator fun times(other: Position): Position
 
     /**
      * Multiply this vector's coordinates by the specified [factor].
@@ -96,7 +95,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("multiply")
-    operator fun times(factor: Int) = copy(x * factor, y * factor, z * factor)
+    operator fun times(factor: Int): Position
 
     /**
      * Multiply this vector's coordinates by the specified [factor].
@@ -106,7 +105,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("multiply")
-    operator fun times(factor: Double) = copy(x * factor, y * factor, z * factor)
+    operator fun times(factor: Double): Position
 
     /**
      * Multiply this vector's coordinates by the specified [factor].
@@ -116,7 +115,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("multiply")
-    operator fun times(factor: Float) = copy(x * factor, y * factor, z * factor)
+    operator fun times(factor: Float): Position
 
     /**
      * Divide this vector by the [other] vector.
@@ -127,7 +126,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("divide")
-    operator fun div(other: Position) = copy(x / other.x, y / other.y, z / other.z)
+    operator fun div(other: Position): Position
 
     /**
      * Divide this vector's coordinates by the specified [factor].
@@ -137,7 +136,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("divide")
-    operator fun div(factor: Int) = copy(x / factor, y / factor, z / factor)
+    operator fun div(factor: Int): Position
 
     /**
      * Divide this vector's coordinates by the specified [factor].
@@ -147,7 +146,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("divide")
-    operator fun div(factor: Double) = copy(x / factor, y / factor, z / factor)
+    operator fun div(factor: Double): Position
 
     /**
      * Divide this vector's coordinates by the specified [factor].
@@ -157,7 +156,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("divide")
-    operator fun div(factor: Float) = copy(x / factor, y / factor, z / factor)
+    operator fun div(factor: Float): Position
 
     /**
      * Divide this vector by the [other] vector and use the remainder.
@@ -168,7 +167,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("mod")
-    operator fun rem(other: Position) = copy(x % other.x, y % other.y, z % other.z)
+    operator fun rem(other: Position): Position
 
     /**
      * Divide this vector's coordinates by the specified [factor] and use the remainder.
@@ -179,7 +178,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("mod")
-    operator fun rem(factor: Int) = copy(x % factor, y % factor, z % factor)
+    operator fun rem(factor: Int): Position
 
     /**
      * Divide this vector's coordinates by the specified [factor] and use the remainder.
@@ -190,7 +189,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("mod")
-    operator fun rem(factor: Double) = copy(x % factor, y % factor, z % factor)
+    operator fun rem(factor: Double): Position
 
     /**
      * Divide this vector's coordinates by the specified [factor] and use the remainder.
@@ -201,7 +200,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("mod")
-    operator fun rem(factor: Float) = copy(x % factor, y % factor, z % factor)
+    operator fun rem(factor: Float): Position
 
     /**
      * Invert this vector.
@@ -210,7 +209,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("inv")
-    operator fun unaryMinus() = copy(-x, -y, -z)
+    operator fun unaryMinus(): Position
 
     /**
      * Increment this vector by 1.
@@ -218,7 +217,7 @@ interface Position : Cloneable {
      * @return a new vector with its coordinates incremented by 1
      */
     @Contract("_ -> new", pure = true)
-    operator fun inc() = copy(x + 1, y + 1, z + 1)
+    operator fun inc(): Position
 
     /**
      * Decrement this vector by 1.
@@ -226,7 +225,7 @@ interface Position : Cloneable {
      * @return a new vector with its coordinates decremented by 1
      */
     @Contract("_ -> new", pure = true)
-    operator fun dec() = copy(x - 1, y - 1, z - 1)
+    operator fun dec(): Position
 
     /**
      * Calculates the distance between this [Vector] and the [other] vector.
@@ -268,7 +267,7 @@ interface Position : Cloneable {
      * the specified [other] vector
      */
     @Contract("_ -> new", pure = true)
-    fun midpoint(other: Position) = copy((x + other.x) / 2, (y + other.y) / 2, (z + other.z) / 2)
+    fun midpoint(other: Position): Position
 
     /**
      * Calculates the dot product of this vector with the [other] vector.
@@ -293,7 +292,7 @@ interface Position : Cloneable {
      * the specified [other] vector
      */
     @Contract("_ -> new", pure = true)
-    fun cross(other: Position) = copy(y * other.z - other.y * z, z * other.x - other.z * x, x * other.y - other.x * y)
+    fun cross(other: Position): Position
 
     /**
      * Normalises this vector to a unit vector (a vector with a length of 1).
@@ -301,7 +300,7 @@ interface Position : Cloneable {
      * @return a new unit [Vector]
      */
     @Contract("_ -> new", pure = true)
-    fun normalize() = copy(x / length, y / length, z / length)
+    fun normalize(): Position
 
     /**
      * The floored value of the X component. Used for block coordinates.

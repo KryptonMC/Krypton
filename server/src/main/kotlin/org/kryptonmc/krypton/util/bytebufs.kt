@@ -38,13 +38,12 @@ import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
 import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Rotation
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.util.toVector
-import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.space.Location
 import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack

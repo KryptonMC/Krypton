@@ -15,7 +15,7 @@ import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.api.world.Location
+import org.kryptonmc.api.space.Location
 import org.kryptonmc.api.world.World
 import java.util.UUID
 
