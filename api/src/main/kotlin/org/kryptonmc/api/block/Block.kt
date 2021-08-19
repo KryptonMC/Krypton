@@ -11,6 +11,7 @@ package org.kryptonmc.api.block
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.property.PropertyHolder
+import org.kryptonmc.api.fluid.FluidLike
 import org.kryptonmc.api.item.ItemLike
 
 /**
@@ -22,7 +23,7 @@ import org.kryptonmc.api.item.ItemLike
  * technical standpoint, reduces allocations, but also makes
  * them much more thread-safe.
  */
-interface Block : PropertyHolder<Block>, ItemLike, Comparable<Block> {
+interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Comparable<Block> {
 
     /**
      * The key associated with this block.

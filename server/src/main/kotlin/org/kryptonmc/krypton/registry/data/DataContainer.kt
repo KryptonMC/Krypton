@@ -16,21 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.fluid
+package org.kryptonmc.krypton.registry.data
 
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.registry.InternalRegistries
 
-object Fluids {
+abstract class DataContainer(
+    val key: Key,
+    private val main: JsonObject,
+    private val override: JsonObject
+) {
 
-    val EMPTY = register("empty", ItemTypes.AIR)
-    val FLOWING_WATER = register("flowing_water", ItemTypes.WATER_BUCKET)
-    val WATER = register("water", ItemTypes.WATER_BUCKET)
-    val FLOWING_LAVA = register("flowing_lava", ItemTypes.LAVA_BUCKET)
-    val LAVA = register("lava", ItemTypes.LAVA_BUCKET)
+    protected fun string(name: String): String = element(name).asString
 
-    private fun register(key: String, bucket: ItemType) = Registries.register(InternalRegistries.FLUID, key, Fluid(Key.key(key), bucket))
+    protected fun double(name: String) = element(name).asDouble
+
+    protected fun int(name: String) = element(name).asInt
+
+    protected fun boolean(name: String) = element(name).asBoolean
+
+    protected fun element(name: String): JsonElement = override[name] ?: main[name]!!
+
+    protected fun elementOrNull(name: String): JsonElement? = override[name] ?: main[name]
 }

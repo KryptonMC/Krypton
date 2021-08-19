@@ -16,6 +16,7 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.entity.hanging.Canvas
+import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registry
@@ -50,6 +51,7 @@ object ResourceKeys {
     @JvmField val STATISTIC_TYPE = minecraft<StatisticType<*>>("stat_type")
     @JvmField val CUSTOM_STATISTIC = minecraft<Key>("custom_stat")
     @JvmField val CANVAS = minecraft<Canvas>("motive")
+    @JvmField val FLUID = minecraft<Fluid>("fluid")
 
     /**
      * Custom built-in registries

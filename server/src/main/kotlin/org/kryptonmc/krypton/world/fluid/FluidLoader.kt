@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block
+package org.kryptonmc.krypton.world.fluid
 
 import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
@@ -26,17 +26,17 @@ import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
-import org.kryptonmc.krypton.registry.data.BlockData
+import org.kryptonmc.krypton.registry.data.FluidData
 import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.ConcurrentHashMap
 
-object BlockLoader {
+object FluidLoader {
 
-    private val KEY_MAP = mutableMapOf<String, KryptonBlock>()
+    private val KEY_MAP = mutableMapOf<String, KryptonFluid>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
-    val STATE_MAP = Int2ObjectOpenHashMap<KryptonBlock>()
+    private val STATE_MAP = Int2ObjectOpenHashMap<KryptonFluid>()
 
-    private val LOGGER = logger<BlockLoader>()
+    private val LOGGER = logger<FluidLoader>()
     @JvmStatic @Volatile private var isLoaded = false
 
     fun init() {
@@ -46,7 +46,7 @@ object BlockLoader {
         }
         val blocks = GSON.fromJson<JsonObject>(
             Thread.currentThread().contextClassLoader
-                .getResourceAsStream("${KryptonPlatform.minecraftVersion.replace(".", "_")}_blocks.json")!!
+                .getResourceAsStream("${KryptonPlatform.minecraftVersion.replace(".", "_")}_fluids.json")!!
                 .reader()
         )
         blocks.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
@@ -59,27 +59,20 @@ object BlockLoader {
             val defaultBlock = fromState(defaultState)!!
             KEY_MAP[key] = defaultBlock
             PROPERTY_MAP[key] = propertyEntry
-            if (InternalRegistries.BLOCK.contains(Key.key(key))) return@forEach
-            KryptonRegistryManager.register(InternalRegistries.BLOCK, key, defaultBlock)
+            if (InternalRegistries.FLUID.contains(Key.key(key))) return@forEach
+            KryptonRegistryManager.register(InternalRegistries.FLUID, key, defaultBlock)
         }
         isLoaded = true
     }
 
-    fun fromKey(key: String): KryptonBlock? {
-        val id = if (key.indexOf(':') == -1) "minecraft:$key" else key
-        return KEY_MAP[id]
-    }
+    private fun fromState(stateId: Int): KryptonFluid? = STATE_MAP[stateId]
 
-    fun fromKey(key: Key) = fromKey(key.asString())
+    fun properties(key: String, properties: Map<String, String>): KryptonFluid? = PROPERTY_MAP[key]?.properties?.get(properties)
 
-    private fun fromState(stateId: Int): KryptonBlock? = STATE_MAP[stateId]
-
-    fun properties(key: String, properties: Map<String, String>): KryptonBlock? = PROPERTY_MAP[key]?.properties?.get(properties)
-
-    private fun JsonObject.retrieveState(key: String, blockObject: JsonObject): Pair<Map<String, String>, KryptonBlock> {
+    private fun JsonObject.retrieveState(key: String, blockObject: JsonObject): Pair<Map<String, String>, KryptonFluid> {
         val stateId = get("stateId").asInt
         val propertyMap = get("properties").asJsonObject.entrySet().associate { it.key to it.value.asString.lowercase() }
-        val block = KryptonBlock(BlockData(Key.key(key), blockObject, this), propertyMap)
+        val block = KryptonFluid(FluidData(Key.key(key), blockObject, this), propertyMap)
         STATE_MAP[stateId] = block
         return propertyMap to block
     }
@@ -87,5 +80,5 @@ object BlockLoader {
 
 private class PropertyEntry {
 
-    val properties = ConcurrentHashMap<Map<String, String>, KryptonBlock>()
+    val properties = ConcurrentHashMap<Map<String, String>, KryptonFluid>()
 }

@@ -21,11 +21,9 @@ package org.kryptonmc.krypton.registry
 import com.mojang.serialization.Codec
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.entity.memory.MemoryKey
-import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.event.GameEvent
-import org.kryptonmc.krypton.world.fluid.Fluid
 import org.kryptonmc.krypton.world.generation.Generator
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
@@ -41,7 +39,6 @@ object InternalResourceKeys {
     val DIMENSION = ResourceKeys.minecraft<Dimension>("dimension")
     val DIMENSION_TYPE = ResourceKeys.minecraft<KryptonDimensionType>("dimension_type")
     val GAME_EVENT = ResourceKeys.minecraft<GameEvent>("game_event")
-    val FLUID = ResourceKeys.minecraft<Fluid>("fluid")
 
     // World generation resources
     val BIOME = ResourceKeys.minecraft<KryptonBiome>("worldgen/biome")

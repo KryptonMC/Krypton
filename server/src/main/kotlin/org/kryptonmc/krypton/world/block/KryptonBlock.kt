@@ -21,8 +21,9 @@ package org.kryptonmc.krypton.world.block
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.RenderShape
+import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.block.BlockData
+import org.kryptonmc.krypton.registry.data.BlockData
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
 class KryptonBlock(
@@ -59,8 +60,11 @@ class KryptonBlock(
     override val opacity = data.opacity
     override val requiresCorrectTool = data.toolRequired
     override val translation = Component.translatable(data.translationKey)
-    override val renderShape = data.renderShape?.let { RenderShape.valueOf(it) } ?: RenderShape.MODEL
+    override val renderShape = data.renderShape?.let {
+        if (it == "ENTITYBLOCK_ANIMATED") RenderShape.ANIMATED_ENTITY_BLOCK else RenderShape.valueOf(it)
+    } ?: RenderShape.MODEL
     private val itemKey = data.itemKey
+    private val fluidKey = data.fluidKey
 
     override fun copy(key: String, value: String): Block {
         val newProperties = properties + (key to value)
@@ -69,10 +73,12 @@ class KryptonBlock(
 
     override fun copy(newValues: Map<String, String>): KryptonBlock {
         val newProperties = properties + newValues
-        return requireNotNull(BlockLoader.properties(key.asString(), newProperties)) { "Invalid properties $properties for block $key!" }
+        return requireNotNull(BlockLoader.properties(key.asString(), newProperties)) { "Invalid properties $newValues for block $key!" }
     }
 
     override fun asItem() = itemKey?.let { InternalRegistries.ITEM[it] }
+
+    override fun asFluid() = InternalRegistries.FLUID[fluidKey]
 
     override fun compareTo(other: Block) = id.compareTo(other.id)
 }

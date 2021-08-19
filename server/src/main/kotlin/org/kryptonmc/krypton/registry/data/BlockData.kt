@@ -16,17 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.registry.block
+package org.kryptonmc.krypton.registry.data
 
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.util.toKey
 
-class BlockData(
-    val key: Key,
-    private val main: JsonObject,
-    private val override: JsonObject
-) {
+class BlockData(key: Key, main: JsonObject, override: JsonObject) : DataContainer(key, main, override) {
 
     val id = int("id")
     val stateId = int("stateId")
@@ -58,10 +54,5 @@ class BlockData(
     val toolRequired = boolean("toolRequired")
     val renderShape = (override["renderShape"] ?: main["renderShape"])?.asString
     val itemKey = (override["correspondingItem"] ?: main["correspondingItem"])?.asString?.toKey()
-
-    private fun string(name: String): String = element(name).asString
-    private fun double(name: String) = element(name).asDouble
-    private fun int(name: String) = element(name).asInt
-    private fun boolean(name: String) = element(name).asBoolean
-    private fun element(name: String) = override[name] ?: main[name]!!
+    val fluidKey = string("fluidState").toKey()
 }

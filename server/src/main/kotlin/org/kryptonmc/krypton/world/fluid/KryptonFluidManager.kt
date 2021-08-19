@@ -16,21 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.tags
+package org.kryptonmc.krypton.world.fluid
 
-import org.kryptonmc.api.fluid.Fluid
-import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.api.fluid.FluidHandler
+import org.kryptonmc.api.fluid.FluidManager
 
-object FluidTags {
+object KryptonFluidManager : FluidManager {
 
-    val HELPER = StaticTags.create(ResourceKeys.FLUID, "tags/fluids")
-    private val KNOWN_TAGS = mutableListOf<Tag<Fluid>>()
+    override val handlers = mutableMapOf<String, FluidHandler>()
 
-    val WATER = bind("water")
-    val LAVA = bind("lava")
+    override fun handler(key: String) = handlers[key]
 
-    private fun bind(name: String) = HELPER.bind(name).apply { KNOWN_TAGS.add(this) }
-
-    val staticTags: List<Tag<Fluid>>
-        get() = KNOWN_TAGS
+    override fun register(key: String, handler: FluidHandler) {
+        handlers[key] = handler
+    }
 }

@@ -40,6 +40,7 @@ object Registries {
     @JvmField val STATISTIC_TYPE = get(ResourceKeys.STATISTIC_TYPE)!!
     @JvmField val CUSTOM_STATISTIC = create(ResourceKeys.CUSTOM_STATISTIC)
     @JvmField val CANVAS = getDefaulted(ResourceKeys.CANVAS)!!
+    @JvmField val FLUID = get(ResourceKeys.FLUID)!!
 
     /**
      * Custom built-in registries

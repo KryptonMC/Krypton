@@ -25,6 +25,7 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.hanging.Canvases
+import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.registry.Registries
@@ -57,7 +58,7 @@ import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.event.GameEvents
-import org.kryptonmc.krypton.world.fluid.Fluids
+import org.kryptonmc.krypton.world.fluid.FluidLoader
 import java.util.TreeSet
 
 object Bootstrap {
@@ -81,6 +82,7 @@ object Bootstrap {
         SoundEvents
         EntityTypes
         ItemTypes
+        FluidLoader.init()
         Fluids
         KryptonBiomes
         BiomeKeys

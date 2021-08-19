@@ -16,12 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.fluid
+package org.kryptonmc.krypton.registry.data
 
+import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.util.toKey
 
-class Fluid(
-    val key: Key,
-    val bucket: ItemType
-)
+class FluidData(key: Key, main: JsonObject, override: JsonObject) : DataContainer(key, main, override) {
+
+    val id = int("id")
+    val stateId = int("stateId")
+    val bucketId = string("bucketId").toKey()
+    val empty = boolean("empty")
+    val explosionResistance = double("explosionResistance")
+    val source = boolean("source")
+    val height = int("ownHeight")
+    val level = int("amount")
+    val blockKey = string("blockState").toKey()
+}
