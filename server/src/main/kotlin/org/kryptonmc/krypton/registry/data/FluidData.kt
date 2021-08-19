@@ -30,7 +30,7 @@ class FluidData(key: Key, main: JsonObject, override: JsonObject) : DataContaine
     val empty = boolean("empty")
     val explosionResistance = double("explosionResistance")
     val source = boolean("source")
-    val height = int("ownHeight")
+    val height = float("ownHeight")
     val level = int("amount")
     val blockKey = string("blockState").toKey()
 }

@@ -59,7 +59,7 @@ interface Fluid : PropertyHolder<Fluid>, BlockLike, Comparable<Fluid> {
     /**
      * The height of this fluid.
      */
-    val height: Int
+    val height: Float
 
     /**
      * The level of this fluid.

@@ -32,6 +32,8 @@ abstract class DataContainer(
 
     protected fun double(name: String) = element(name).asDouble
 
+    protected fun float(name: String) = element(name).asFloat
+
     protected fun int(name: String) = element(name).asInt
 
     protected fun boolean(name: String) = element(name).asBoolean

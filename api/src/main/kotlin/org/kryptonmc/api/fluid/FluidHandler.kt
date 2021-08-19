@@ -31,6 +31,17 @@ interface FluidHandler {
     fun getFlow(fluid: Fluid, position: Vector3i, world: World): Vector
 
     /**
+     * Gets the height of the given [fluid] at the given [position] in the given
+     * [world].
+     *
+     * @param fluid the fluid to get the height of
+     * @param position the position of the fluid
+     * @param world the world the fluid is in
+     * @return the height of the fluid
+     */
+    fun getHeight(fluid: Fluid, position: Vector3i, world: World): Float
+
+    /**
      * Returns true if the given [fluid] at the given [position] in the given [world]
      * facing the given [direction] can be replaced with the given [replacement] fluid,
      * false otherwise.
@@ -42,7 +53,7 @@ interface FluidHandler {
      * @param replacement the fluid that could replace the current fluid
      * @return true if the fluid can be replaced with the replacement, false otherwise
      */
-    fun canReplaceWith(fluid: Fluid, position: Vector3i, world: World, direction: Direction, replacement: Fluid)
+    fun canReplaceWith(fluid: Fluid, position: Vector3i, world: World, direction: Direction, replacement: Fluid): Boolean
 
     /**
      * Called when the given [fluid] is ticked at the given [position] in the given
