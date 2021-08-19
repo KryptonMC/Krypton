@@ -65,6 +65,13 @@ object FluidLoader {
         isLoaded = true
     }
 
+    private fun fromKey(key: String): KryptonFluid? {
+        val id = if (key.indexOf(':') == -1) "minecraft:$key" else key
+        return KEY_MAP[id]
+    }
+
+    fun fromKey(key: Key) = fromKey(key.asString())
+
     private fun fromState(stateId: Int): KryptonFluid? = STATE_MAP[stateId]
 
     fun properties(key: String, properties: Map<String, String>): KryptonFluid? = PROPERTY_MAP[key]?.properties?.get(properties)
