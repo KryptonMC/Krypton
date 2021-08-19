@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.world.chunk
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -65,6 +67,17 @@ class KryptonChunk(
     }
 
     override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
+
+    override fun getFluid(x: Int, y: Int, z: Int): Fluid {
+        val sectionIndex = sectionIndex(y)
+        if (sectionIndex in sections.indices) {
+            val section = sections[sectionIndex]
+            if (section != null && !section.isEmpty()) return section[x and 15, y and 15, z and 15].asFluid()
+        }
+        return Fluids.EMPTY
+    }
+
+    override fun getFluid(position: Vector3i) = getFluid(position.x(), position.y(), position.z())
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
         // Get the section

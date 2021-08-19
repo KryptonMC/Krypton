@@ -9,6 +9,7 @@
 package org.kryptonmc.api.world.chunk
 
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3i
@@ -61,30 +62,56 @@ interface Chunk {
     val lastUpdate: Long
 
     /**
-     * Gets a block from this chunk at the specified [x], [y] and [z] coordinates.
+     * Gets the block at the given [x], [y], and [z] coordinates.
      *
-     * @param x the x coordinate of the block
-     * @param y the y coordinate of the block
-     * @param z the z coordinate of the block
-     * @return the block at the specified coordinates
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @param z the z coordinate
+     * @return the block at the given coordinates
      */
     fun getBlock(x: Int, y: Int, z: Int): Block
 
     /**
-     * Gets a block from this chunk at the specified [position].
+     * Gets the block at the given [position].
      *
-     * @param position the position of the block to retrieve
-     * @return the block at that position
+     * @param position the position
+     * @return the block at the given position
+     */
+    fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
+
+    /**
+     * Gets the block at the given [position].
+     *
+     * @param position the position
+     * @return the block at the given position
      */
     fun getBlock(position: Position): Block = getBlock(position.blockX, position.blockY, position.blockZ)
 
     /**
-     * Gets a block from this chunk at the specified [position].
+     * Gets the fluid at the given [x], [y], and [z] coordinates.
      *
-     * @param position the position of the block to retrieve
-     * @return the block at that position
+     * @param x the X coordinate
+     * @param y the Y coordinate
+     * @param z the Z coordinate
+     * @return the fluid at the given coordinates
      */
-    fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
+    fun getFluid(x: Int, y: Int, z: Int): Fluid
+
+    /**
+     * Gets the fluid at the given [position].
+     *
+     * @param position the position
+     * @return the fluid at the given position
+     */
+    fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
+
+    /**
+     * Gets the fluid at the given [position].
+     *
+     * @param position the position
+     * @return the fluid at the given position
+     */
+    fun getFluid(position: Position): Fluid = getFluid(position.blockX, position.blockY, position.blockZ)
 
     /**
      * Sets the block at the given coordinates to the given [block]

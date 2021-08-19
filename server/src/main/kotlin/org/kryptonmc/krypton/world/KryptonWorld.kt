@@ -28,6 +28,8 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.event.entity.EntityRemoveEvent
 import org.kryptonmc.api.event.entity.EntitySpawnEvent
+import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.space.Position
@@ -210,6 +212,12 @@ class KryptonWorld(
         return chunk.getBlock(x, y, z)
     }
 
+    override fun getFluid(x: Int, y: Int, z: Int): Fluid {
+        if (y.outsideBuildHeight) return Fluids.EMPTY
+        val chunk = getChunkAt(x, z) ?: return Fluids.EMPTY
+        return chunk.getFluid(x, y, z)
+    }
+
     override fun getChunk(x: Int, z: Int, status: ChunkStatus, shouldCreate: Boolean): ChunkAccessor? = null // FIXME
 
     override fun getHeight(type: Heightmap.Type, x: Int, z: Int) = if (x in MINIMUM_SIZE..MAXIMUM_SIZE && z in MINIMUM_SIZE..MAXIMUM_SIZE) {
@@ -219,6 +227,8 @@ class KryptonWorld(
     override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int) = generator.biomeGenerator[x, y, z]
 
     override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
+
+    override fun getFluid(position: Vector3i) = getFluid(position.x(), position.y(), position.z())
 
     override fun getChunkAt(x: Int, z: Int) = chunkManager[x, z]
 

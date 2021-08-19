@@ -21,6 +21,8 @@ package org.kryptonmc.krypton.world.generation
 import com.google.common.hash.Hashing
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.util.floor
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.Heightmap
@@ -86,6 +88,8 @@ class GenerationRegion(
     }
 
     override fun getBlock(x: Int, y: Int, z: Int) = getChunk(x, z)?.getBlock(x, y, z) ?: Blocks.AIR
+
+    override fun getFluid(x: Int, y: Int, z: Int) = getChunk(x, z)?.getFluid(x, y, z) ?: Fluids.EMPTY
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
         if (!canWrite(x, y, z)) return

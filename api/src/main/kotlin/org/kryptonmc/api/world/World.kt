@@ -15,6 +15,8 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.space.Position
@@ -150,7 +152,7 @@ interface World : ForwardingAudience {
      * This function will return the following in specific cases:
      * - If the given [y] coordinate is greater than the maximum height of this world,
      * this will return [Blocks.VOID_AIR].
-     * - If there is no chunk loaded at the given coordinates (`getChunkAt` was null),
+     * - If there is no chunk loaded at the given coordinates ([getChunkAt] was null),
      * this will return [Blocks.AIR].
      * - Else it will return the block at the given coordinates.
      *
@@ -162,34 +164,78 @@ interface World : ForwardingAudience {
     fun getBlock(x: Int, y: Int, z: Int): Block
 
     /**
-     * Gets the block at the given coordinates.
+     * Gets the block at the given [position].
      *
      * This function will return the following in specific cases:
      * - If the given [position]'s [Vector3i.y] coordinate is greater than the
      * maximum height of this world, this will return [Blocks.VOID_AIR].
-     * - If there is no chunk loaded at the given coordinates (`getChunkAt` was null),
+     * - If there is no chunk loaded at the given [position] ([getChunkAt] was null),
      * this will return [Blocks.AIR].
-     * - Else it will return the block at the given coordinates.
+     * - Else it will return the block at the given [position].
      *
-     * @param position the position of the block
+     * @param position the position
      * @return see above
      */
     fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
 
     /**
-     * Gets the block at the given coordinates.
+     * Gets the block at the given [position].
      *
      * This function will return the following in specific cases:
      * - If the given [position]'s [Position.blockY] coordinate is greater than the
      * maximum height of this world, this will return [Blocks.VOID_AIR].
-     * - If there is no chunk loaded at the given coordinates (`getChunkAt` was null),
+     * - If there is no chunk loaded at the given [position] ([getChunkAt] was null),
      * this will return [Blocks.AIR]
-     * - Else it will return the block at the given coordinates
+     * - Else it will return the block at the given [position]
      *
      * @param position the position
      * @return see above
      */
     fun getBlock(position: Position): Block = getBlock(position.blockX, position.blockY, position.blockZ)
+
+    /**
+     * Gets the fluid at the given coordinates.
+     *
+     * This function will return the following in specific cases:
+     * - If the given [y] coordinate is greater than the maximum height of this world,
+     * or there is no chunk loaded at the given coordinates ([getChunkAt] was null),
+     * this will return [Fluids.EMPTY].
+     * - Else it will return the fluid at the given coordinates.
+     *
+     * @param x the X coordinate
+     * @param y the Y coordinate
+     * @param z the Z coordinate
+     * @return see above
+     */
+    fun getFluid(x: Int, y: Int, z: Int): Fluid
+
+    /**
+     * Gets the fluid at the given [position].
+     *
+     * This function will return the following in specific cases:
+     * - If the given [position]'s [Vector3i.y] coordinate is greater than the
+     * maximum height of this world,  or if there is no chunk loaded at the
+     * given [position] ([getChunkAt] returns null), this will return [Fluids.EMPTY].
+     * - Else it will return the fluid at the given [position].
+     *
+     * @param position the position
+     * @return see above
+     */
+    fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
+
+    /**
+     * Gets the fluid at the given [position].
+     *
+     * This function will return the following in specific cases:
+     * - If the given [position]'s [Position.blockY] coordinate is greater than the
+     * maximum height of this world, or if there is no chunk loaded at the given
+     * [position] ([getChunkAt] was null), this will return [Fluids.EMPTY].
+     * - Else it will return the fluid at the given [position]
+     *
+     * @param position the position
+     * @return see above
+     */
+    fun getFluid(position: Position): Fluid = getFluid(position.blockX, position.blockY, position.blockZ)
 
     /**
      * Sets the block at the given coordinates to the given [block].

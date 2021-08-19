@@ -21,6 +21,8 @@ package org.kryptonmc.krypton.world.chunk
 import it.unimi.dsi.fastutil.shorts.ShortArrayList
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.krypton.world.HeightAccessor
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -50,6 +52,12 @@ open class ProtoChunk(
         if (y.outsideBuildHeight) return Blocks.VOID_AIR
         val section = sections[sectionIndex(y)]
         return if (section == null || section.isEmpty()) Blocks.AIR else section[x and 15, y and 15, z and 15]
+    }
+
+    override fun getFluid(x: Int, y: Int, z: Int): Fluid {
+        if (y.outsideBuildHeight) return Fluids.EMPTY
+        val section = sections[sectionIndex(y)]
+        return if (section == null || section.isEmpty()) Fluids.EMPTY else section[x and 15, y and 15, z and 15].asFluid()
     }
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
