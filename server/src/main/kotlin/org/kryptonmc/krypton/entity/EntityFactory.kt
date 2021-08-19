@@ -22,6 +22,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.krypton.entity.ambient.KryptonBat
 import org.kryptonmc.krypton.entity.hanging.KryptonPainting
 import org.kryptonmc.krypton.entity.monster.KryptonCreeper
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
@@ -52,6 +53,7 @@ object EntityFactory {
         EntityTypes.AREA_EFFECT_CLOUD to ::KryptonAreaEffectCloud,
         EntityTypes.ARMOR_STAND to ::KryptonArmorStand,
         EntityTypes.ARROW to ::KryptonArrow,
+        EntityTypes.BAT to ::KryptonBat,
         EntityTypes.CREEPER to ::KryptonCreeper,
         EntityTypes.DRAGON_FIREBALL to ::KryptonDragonFireball,
         EntityTypes.EXPERIENCE_ORB to ::KryptonExperienceOrb,

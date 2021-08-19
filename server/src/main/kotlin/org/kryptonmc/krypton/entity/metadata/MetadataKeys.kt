@@ -31,6 +31,7 @@ object MetadataKeys {
 
     val AREA_EFFECT_CLOUD = AreaEffectCloudKeys
     val LIVING = LivingEntityKeys
+    val BAT = BatKeys
     val ARMOR_STAND = ArmorStandKeys
     val ARROW_LIKE = ArrowLikeKeys
     val ARROW = ArrowKeys
@@ -155,6 +156,11 @@ object MetadataKeys {
         val COLOR = register(9, MetadataSerializers.VAR_INT, 0)
         val IGNORE_RADIUS = register(10, MetadataSerializers.BOOLEAN, false)
         val PARTICLE = register(11, MetadataSerializers.PARTICLE, particleEffect(ParticleType.EFFECT))
+    }
+
+    object BatKeys {
+
+        val FLAGS = register(16, MetadataSerializers.BYTE, 0)
     }
 
     @Suppress("UNCHECKED_CAST")
