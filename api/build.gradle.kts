@@ -154,6 +154,7 @@ license {
         "**/event/EventHandler.kt",
         "**/event/EventManager.kt",
         "**/event/ResultedEvent.kt",
+        "**/event/server/SetupPermissionsEvent.kt",
         "**/plugin/InvalidPluginException.kt",
         "**/plugin/PluginContainer.kt",
         "**/plugin/PluginDescription.kt",
@@ -161,6 +162,9 @@ license {
         "**/plugin/annotation/DataFolder.kt",
         "**/plugin/annotation/Dependency.kt",
         "**/plugin/annotation/Plugin.kt",
+        "**/permission/PermissionFunction.kt",
+        "**/permission/PermissionProvider.kt",
+        "**/permission/Subject.kt",
         // Sponge derivatives, with a special header
         "**/world/rule/GameRules.kt"
     )

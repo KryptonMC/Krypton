@@ -28,7 +28,6 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.InternalCommand
-import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.gameProfileArgument
@@ -46,14 +45,14 @@ object BanCommand : InternalCommand {
             .permission("krypton.command.ban", 3)
             .then(argument<Sender, EntityQuery>("targets", GameProfileArgument())
                 .executes {
-                    val sender = it.source as? KryptonSender ?: return@executes 0
-                    ban(it.gameProfileArgument("targets").getProfiles(it.source), sender.server, sender)
+                    val server = it.source.server as? KryptonServer ?: return@executes 0
+                    ban(it.gameProfileArgument("targets").getProfiles(it.source), server, it.source)
                     1
                 }.then(argument<Sender, String>("reason", string())
                     .executes {
-                        val sender = it.source as? KryptonSender ?: return@executes 0
+                        val server = it.source.server as? KryptonServer ?: return@executes 0
                         val reason = it.argument<String>("reason")
-                        ban(it.gameProfileArgument("targets").getProfiles(it.source), sender.server, sender, reason)
+                        ban(it.gameProfileArgument("targets").getProfiles(it.source), server, it.source, reason)
                         1
                     })
             )

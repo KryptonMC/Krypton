@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.command.commands
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
-import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.locale.Messages
 
@@ -32,9 +32,9 @@ object StopCommand : InternalCommand {
         dispatcher.register(literal<Sender>("stop")
             .permission("krypton.command.stop", 4)
             .executes {
-                val sender = it.source as? KryptonSender ?: return@executes 0
-                Messages.COMMANDS.STOP.send(sender)
-                sender.server.stop()
+                val server = it.source.server as? KryptonServer ?: return@executes 0
+                Messages.COMMANDS.STOP.send(it.source)
+                server.stop()
                 1
             })
     }

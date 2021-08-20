@@ -22,6 +22,7 @@ import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
+import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityDimensions
@@ -32,7 +33,6 @@ import org.kryptonmc.api.space.Location
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.adventure.toJsonComponent
 import org.kryptonmc.krypton.adventure.toSectionText
-import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -60,12 +60,17 @@ import kotlin.random.Random
 abstract class KryptonEntity(
     override var world: KryptonWorld,
     override val type: EntityType<out Entity>
-) : KryptonSender(world.server), Entity {
+) : Entity {
 
     val id = ServerStorage.NEXT_ENTITY_ID.incrementAndGet()
+    override var uuid = Random.nextUUID()
+    override val name: String
+        get() = displayName.toSectionText()
     val data = MetadataHolder(this)
 
-    override var uuid = Random.nextUUID()
+    final override val server = world.server
+    override val permissionLevel = 0
+
     final override var location = Location.ZERO
     final override var velocity = Vector.ZERO
     final override var boundingBox = BoundingBox.ZERO
@@ -76,8 +81,6 @@ abstract class KryptonEntity(
     final override var isInvulnerable = false
     final override var fallDistance = 0F
     final override val passengers = emptyList<Entity>()
-    override val name: String
-        get() = displayName.toSectionText()
 
     open val maxAirTicks: Int
         get() = 300
@@ -204,6 +207,8 @@ abstract class KryptonEntity(
     final override fun reposition(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {
         location = Location(x, y, z, yaw, pitch)
     }
+
+    override fun getPermissionValue(permission: String) = TriState.FALSE
 
     override fun remove() {
         if (isRemoved) return

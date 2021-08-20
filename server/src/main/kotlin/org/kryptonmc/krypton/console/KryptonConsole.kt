@@ -18,12 +18,36 @@
  */
 package org.kryptonmc.krypton.console
 
+import net.kyori.adventure.audience.MessageType
+import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.text.Component
 import net.minecrell.terminalconsole.SimpleTerminalConsole
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
+import org.kryptonmc.api.command.ConsoleSender
+import org.kryptonmc.api.event.server.SetupPermissionsEvent
+import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.adventure.toSectionText
+import org.kryptonmc.krypton.locale.TranslationBootstrap
+import org.kryptonmc.krypton.util.logger
+import java.util.Locale
 
-class KryptonConsole(private val server: KryptonServer) : SimpleTerminalConsole() {
+class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole(), ConsoleSender {
+
+    private var permissionFunction = PermissionFunction.ALWAYS_TRUE
+    override val permissionLevel = 4
+
+    fun setupPermissions() {
+        val event = SetupPermissionsEvent(this) { PermissionFunction.ALWAYS_TRUE }
+        permissionFunction = server.eventManager.fireSync(event).createFunction(this)
+    }
+
+    override fun sendMessage(source: Identity, message: Component, type: MessageType) {
+        LOGGER.info(TranslationBootstrap.RENDERER.render(message, Locale.ENGLISH).toSectionText())
+    }
+
+    override fun getPermissionValue(permission: String) = permissionFunction[permission]
 
     override fun isRunning() = server.isRunning
 
@@ -34,4 +58,9 @@ class KryptonConsole(private val server: KryptonServer) : SimpleTerminalConsole(
     override fun shutdown() = server.stop()
 
     override fun buildReader(builder: LineReaderBuilder): LineReader = super.buildReader(builder.appName("Krypton Console"))
+
+    companion object {
+
+        val LOGGER = logger("CONSOLE")
+    }
 }

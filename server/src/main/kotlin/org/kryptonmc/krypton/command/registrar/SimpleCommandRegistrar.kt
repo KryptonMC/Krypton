@@ -26,28 +26,19 @@ import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
-import org.kryptonmc.api.event.player.PermissionCheckEvent
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.CommandScope
 import org.kryptonmc.krypton.command.splitArguments
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.Lock
 
-class SimpleCommandRegistrar(
-    private val server: KryptonServer,
-    lock: Lock
-) : InvocableCommandRegistrar<SimpleCommand, SimpleCommandMeta, Array<String>>(lock) {
+class SimpleCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<SimpleCommand, SimpleCommandMeta, Array<String>>(lock) {
 
     override fun execute(command: SimpleCommand, meta: SimpleCommandMeta, context: CommandContext<Sender>): Int {
         val sender = context.source
         val args = context.splitArguments
+        if (meta.permission == null) return dispatch(command, sender, args)
 
-        if (meta.permission == null) {
-            dispatchPermissionCheck(sender, null)
-            return dispatch(command, sender, args)
-        }
-
-        return when (dispatchPermissionCheck(sender, meta.permission)) {
+        return when (sender.getPermissionValue(meta.permission!!)) {
             TriState.TRUE -> dispatch(command, sender, args)
             TriState.FALSE, TriState.NOT_SET -> 0
         }
@@ -70,10 +61,5 @@ class SimpleCommandRegistrar(
     private fun dispatch(command: SimpleCommand, sender: Sender, args: Array<String>): Int {
         CommandScope.launch { command.execute(sender, args) }
         return 1
-    }
-
-    private fun dispatchPermissionCheck(sender: Sender, permission: String?): TriState {
-        val event = PermissionCheckEvent(sender, permission, permission?.let { sender.hasPermission(it) } ?: true)
-        return server.eventManager.fireSync(event).result
     }
 }

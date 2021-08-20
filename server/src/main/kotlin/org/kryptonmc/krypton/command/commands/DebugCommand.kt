@@ -26,8 +26,8 @@ import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.CURRENT_DIRECTORY
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
-import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.logger
@@ -53,32 +53,29 @@ object DebugCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("debug")
             .then(literal<Sender>("start").executes {
-                val sender = it.source as? KryptonSender ?: return@executes 0
-                start(sender)
+                start(it.source)
                 1
             })
             .then(literal<Sender>("stop").executes {
-                val sender = it.source as? KryptonSender ?: return@executes 0
-                stop(sender)
+                stop(it.source)
                 1
             })
             .then(literal<Sender>("report").executes {
-                val sender = it.source as? KryptonSender ?: return@executes 0
-                report(sender)
+                report(it.source)
                 1
             })
         )
     }
 
-    private fun start(sender: KryptonSender) {
-        val server = sender.server
+    private fun start(sender: Sender) {
+        val server = sender.server as? KryptonServer ?: return
         if (server.continuousProfiler.isEnabled) throw ERROR_ALREADY_RUNNING.create()
         server.startProfiling()
         sender.sendMessage(translatable("commands.debug.started", listOf(text("Started the debug profiler. Type '/debug stop' to stop it."))))
     }
 
-    private fun stop(sender: KryptonSender) {
-        val server = sender.server
+    private fun stop(sender: Sender) {
+        val server = sender.server as? KryptonServer ?: return
         if (!server.continuousProfiler.isEnabled) throw ERROR_NOT_RUNNING.create()
         val results = server.finishProfiling()
         results.save(DEBUG_FOLDER.resolve("profile-results-$TIME_NOW_FORMATTED.txt"))
@@ -92,8 +89,8 @@ object DebugCommand : InternalCommand {
         )))
     }
 
-    private fun report(sender: KryptonSender) {
-        val server = sender.server
+    private fun report(sender: Sender) {
+        val server = sender.server as? KryptonServer ?: return
         val reportFileName = "debug-report-$TIME_NOW_FORMATTED"
         try {
             val folderPath = DEBUG_FOLDER.apply { createDirectories() }

@@ -33,6 +33,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.title.Title
+import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
@@ -42,6 +43,8 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.permission.PermissionFunction
+import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Position
@@ -83,7 +86,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
-import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
 import org.kryptonmc.krypton.packet.out.play.PacketOutSubTitle
@@ -118,6 +120,8 @@ class KryptonPlayer(
     world: KryptonWorld,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
 ) : KryptonLivingEntity(world, EntityTypes.PLAYER), Player {
+
+    var permissionFunction = PermissionFunction.ALWAYS_NOT_SET
 
     override val name = profile.name
     override var uuid = profile.uuid
@@ -305,6 +309,8 @@ class KryptonPlayer(
     }
 
     override fun teleport(player: Player) = teleport(player.location)
+
+    override fun getPermissionValue(permission: String) = permissionFunction[permission]
 
     override fun getSpawnPacket() = PacketOutSpawnPlayer(this)
 
@@ -535,6 +541,7 @@ class KryptonPlayer(
 
     companion object {
 
+        val DEFAULT_PERMISSIONS = PermissionProvider { PermissionFunction.ALWAYS_NOT_SET }
         private const val FLYING_ACHIEVEMENT_MINIMUM_SPEED = 25
         private val DEBUG_CHANNELS = setOf(
             key("debug/paths"),

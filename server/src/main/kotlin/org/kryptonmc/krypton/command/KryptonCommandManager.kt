@@ -75,12 +75,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.math.max
 import kotlin.math.min
 
-class KryptonCommandManager(server: KryptonServer) : CommandManager {
+class KryptonCommandManager : CommandManager {
 
     internal val dispatcher = CommandDispatcher<Sender>()
     private val lock = ReentrantReadWriteLock()
     private val brigadierCommandRegistrar = BrigadierCommandRegistrar(lock.writeLock())
-    private val simpleCommandRegistrar = SimpleCommandRegistrar(server, lock.writeLock())
+    private val simpleCommandRegistrar = SimpleCommandRegistrar(lock.writeLock())
     private val rawCommandRegistrar = RawCommandRegistrar(lock.writeLock())
 
     override fun register(command: BrigadierCommand) = brigadierCommandRegistrar.register(dispatcher.root, command, CommandMeta.builder(command).build())

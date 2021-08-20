@@ -43,7 +43,6 @@ import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.command.commands.DebugCommand.DEBUG_FOLDER
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.console.KryptonConsole
-import org.kryptonmc.krypton.console.KryptonConsoleSender
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.MetadataResponse
@@ -141,7 +140,7 @@ class KryptonServer(
     override fun player(name: String) = playerManager.playersByName[name]
 
     override val channels: MutableSet<Key> = ConcurrentHashMap.newKeySet()
-    override val console = KryptonConsoleSender(this)
+    override val console = KryptonConsole(this)
     override var scoreboard: KryptonScoreboard? = null
         private set
 
@@ -149,7 +148,7 @@ class KryptonServer(
     val random = SecureRandom()
 
     override val worldManager = KryptonWorldManager(this, dataAccess, worldData, ops, worldFolder)
-    override val commandManager = KryptonCommandManager(this)
+    override val commandManager = KryptonCommandManager()
     override val pluginManager = KryptonPluginManager(this)
     override val eventManager = KryptonEventManager(pluginManager)
     override val servicesManager = KryptonServicesManager
@@ -177,13 +176,6 @@ class KryptonServer(
     fun start() {
         Messages.START.INITIAL.info(LOGGER, config.server.ip, config.server.port)
         val startTime = System.nanoTime()
-
-        // Start up the console handler
-        LOGGER.debug("Starting console handler")
-        Thread(KryptonConsole(this)::start, "Console Handler").apply {
-            uncaughtExceptionHandler = DefaultUncaughtExceptionHandler(logger("CONSOLE"))
-            isDaemon = true
-        }.start()
 
         // Load the packets
         LOGGER.debug("Loading packets...")
@@ -224,6 +216,9 @@ class KryptonServer(
         // of their lifecycle, and we call it sync so plugins can finish initialising before we do
         eventManager.fireAndForgetSync(ServerStartEvent())
 
+        // Initialize console permissions after plugins are loaded
+        console.setupPermissions()
+
         // Set the last tick time (avoids initial check sending an overload warning every time)
         lastTickTime = System.currentTimeMillis()
 
@@ -235,6 +230,14 @@ class KryptonServer(
         Runtime.getRuntime().addShutdownHook(Thread(::stop, "Shutdown Handler").apply { isDaemon = false })
 
         Messages.START.DONE.info(LOGGER, "%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9))
+
+        // Start up the console handler
+        LOGGER.debug("Starting console handler")
+        Thread(console::start, "Console Handler").apply {
+            uncaughtExceptionHandler = DefaultUncaughtExceptionHandler(KryptonConsole.LOGGER)
+            isDaemon = true
+        }.start()
+
         run()
     }
 

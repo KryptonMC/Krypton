@@ -9,6 +9,7 @@
 package org.kryptonmc.api.command
 
 import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.util.TriState
 
 /**
  * The console sender represents the server source. That is, as if the server sent the command.
@@ -17,22 +18,14 @@ import net.kyori.adventure.identity.Identity
  * to more accurately see how it might work.
  *
  * The console's name should always be "CONSOLE", it should always use the special nil UUID
- * (a UUID comprised of all zeros). It should never fail permission checks, and it should not
- * store permissions, or succeed in granting or revoking them.
+ * (a UUID comprised of all zeros), and it should never fail permission checks.
  */
 interface ConsoleSender : Sender {
 
     override val name: String
         get() = "CONSOLE"
 
-    override val permissions: Map<String, Boolean>
-        get() = emptyMap()
-
-    override fun hasPermission(permission: String) = true
-
-    override fun grant(permission: String) = Unit
-
-    override fun revoke(permission: String) = Unit
+    override fun getPermissionValue(permission: String) = TriState.TRUE
 
     override fun identity() = Identity.nil()
 }

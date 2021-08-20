@@ -31,7 +31,7 @@ import java.util.concurrent.locks.Lock
 class RawCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<RawCommand, CommandMeta, String>(lock) {
 
     override fun execute(command: RawCommand, meta: CommandMeta, context: CommandContext<Sender>): Int {
-        command.execute(context.source, context.input)
+        command.execute(context.source, context.rawArguments)
         return 1
     }
 
