@@ -34,7 +34,7 @@ abstract class KryptonHangingEntity(world: KryptonWorld, type: EntityType<out Ha
 
     var centerPosition = Vector3i(location.blockX, location.blockY, location.blockZ)
         private set
-    override var direction = Direction.SOUTH
+    final override var direction = Direction.SOUTH
         set(value) {
             require(value.axis.isHorizontal)
             field = value

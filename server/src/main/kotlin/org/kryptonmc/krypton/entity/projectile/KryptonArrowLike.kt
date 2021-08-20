@@ -38,27 +38,27 @@ abstract class KryptonArrowLike(
     private val defaultHitGroundSound: SoundEvent = SoundEvents.ARROW_HIT
 ) : KryptonProjectile(world, type), ArrowLike {
 
-    override var damage = 2.0
-    override var isInGround = false
-    override var life = 0
-    override var shakeTime = 0
-    override var sound = defaultHitGroundSound
-    override var stuckInBlock: Block? = null
-    override var pickup = ArrowLike.Pickup.DISALLOWED
+    final override var damage = 2.0
+    final override var isInGround = false
+    final override var life = 0
+    final override var shakeTime = 0
+    final override var sound = defaultHitGroundSound
+    final override var stuckInBlock: Block? = null
+    final override var pickup = ArrowLike.Pickup.DISALLOWED
 
-    override var isCritical: Boolean
+    final override var isCritical: Boolean
         get() = data[MetadataKeys.ARROW_LIKE.FLAGS].toInt() and 1 != 0
         set(value) = setFlag(1, value)
-    override var ignoresPhysics: Boolean
+    final override var ignoresPhysics: Boolean
         get() = data[MetadataKeys.ARROW_LIKE.FLAGS].toInt() and 2 != 0
         set(value) {
             noPhysics = value
             setFlag(2, value)
         }
-    override var wasShotFromCrossbow: Boolean
+    final override var wasShotFromCrossbow: Boolean
         get() = data[MetadataKeys.ARROW_LIKE.FLAGS].toInt() and 4 != 0
         set(value) = setFlag(4, value)
-    override var piercingLevel: Int
+    final override var piercingLevel: Int
         get() = data[MetadataKeys.ARROW_LIKE.PIERCING_LEVEL].toInt()
         set(value) = data.set(MetadataKeys.ARROW_LIKE.PIERCING_LEVEL, value.toByte())
 

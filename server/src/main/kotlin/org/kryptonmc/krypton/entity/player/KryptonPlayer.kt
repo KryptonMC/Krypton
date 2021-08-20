@@ -83,6 +83,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
+import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
 import org.kryptonmc.krypton.packet.out.play.PacketOutSubTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutTitle
@@ -304,6 +306,8 @@ class KryptonPlayer(
 
     override fun teleport(player: Player) = teleport(player.location)
 
+    override fun getSpawnPacket() = PacketOutSpawnPlayer(this)
+
     override fun sendPluginMessage(channel: Key, message: ByteArray) {
         if (channel !in PREREGISTERED_CHANNELS) require(channel in server.channels) { "Channel must be registered with the server to have data sent over it!" }
         if (channel in DEBUG_CHANNELS) {
@@ -373,8 +377,7 @@ class KryptonPlayer(
 
     override fun identity() = Identity.identity(uuid)
 
-    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) =
-        showEntity(ShowEntity.of(key("minecraft", "player"), uuid, displayName))
+    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(ShowEntity.of(key("minecraft", "player"), uuid, displayName))
 
     fun updateAbilities() {
         when (internalGamemode) {

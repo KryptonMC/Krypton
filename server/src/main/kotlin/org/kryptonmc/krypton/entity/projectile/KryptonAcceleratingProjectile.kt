@@ -28,7 +28,7 @@ import org.kryptonmc.nbt.ListTag
 
 abstract class KryptonAcceleratingProjectile(world: KryptonWorld, type: EntityType<out AcceleratingProjectile>) : KryptonProjectile(world, type), AcceleratingProjectile {
 
-    override var acceleration = Vector.ZERO
+    final override var acceleration = Vector.ZERO
 
     override fun load(tag: CompoundTag) {
         super.load(tag)

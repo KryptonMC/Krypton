@@ -24,7 +24,9 @@ import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.entity.Entity
+import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.space.BoundingBox
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.space.Location
 import org.kryptonmc.krypton.ServerStorage
@@ -65,13 +67,15 @@ abstract class KryptonEntity(
 
     override var uuid = Random.nextUUID()
     final override var location = Location.ZERO
-    override var velocity = Vector.ZERO
-    override var isOnGround = true
-    override var ticksExisted = 0
-    override var fireTicks: Short = 0
-    override var isInvulnerable = false
-    override var fallDistance = 0F
-    override val passengers = emptyList<Entity>()
+    final override var velocity = Vector.ZERO
+    final override var boundingBox = BoundingBox.ZERO
+    final override var dimensions = EntityDimensions.fixed(1, 1) // TODO: Use type dimensions
+    final override var isOnGround = true
+    final override var ticksExisted = 0
+    final override var fireTicks: Short = 0
+    final override var isInvulnerable = false
+    final override var fallDistance = 0F
+    final override val passengers = emptyList<Entity>()
     override val name: String
         get() = displayName.toSectionText()
 
@@ -185,19 +189,19 @@ abstract class KryptonEntity(
         data[MetadataKeys.FLAGS] = (if (state) flags or (1 shl flag) else flags and (1 shl flag).inv()).toByte()
     }
 
-    override fun move(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {
+    final override fun move(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {
         location = Location(location.x + x, location.y + y, location.z + z, location.yaw + yaw, location.pitch + pitch)
     }
 
-    override fun moveTo(x: Double, y: Double, z: Double) {
+    final override fun moveTo(x: Double, y: Double, z: Double) {
         location = Location(x, y, z, location.yaw, location.pitch)
     }
 
-    override fun look(yaw: Float, pitch: Float) {
+    final override fun look(yaw: Float, pitch: Float) {
         location = Location(location.x, location.y, location.z, yaw, pitch)
     }
 
-    override fun reposition(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {
+    final override fun reposition(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {
         location = Location(x, y, z, yaw, pitch)
     }
 
@@ -211,46 +215,46 @@ abstract class KryptonEntity(
 
     override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(ShowEntity.of(type.key, uuid, displayName.takeIf { it !== Component.empty() }))
 
-    override var isOnFire: Boolean
+    final override var isOnFire: Boolean
         get() = getSharedFlag(0)
         set(value) = setSharedFlag(0, value)
-    override var isCrouching: Boolean
+    final override var isCrouching: Boolean
         get() = getSharedFlag(1)
         set(value) = setSharedFlag(1, value)
-    override var isSprinting: Boolean
+    final override var isSprinting: Boolean
         get() = getSharedFlag(3)
         set(value) = setSharedFlag(3, value)
-    override var isSwimming: Boolean
+    final override var isSwimming: Boolean
         get() = getSharedFlag(4)
         set(value) = setSharedFlag(4, value)
-    override var isInvisible: Boolean
+    final override var isInvisible: Boolean
         get() = getSharedFlag(5)
         set(value) = setSharedFlag(5, value)
-    override var isGlowing: Boolean
+    final override var isGlowing: Boolean
         get() = getSharedFlag(6)
         set(value) = setSharedFlag(6, value)
-    override var isFlying: Boolean
+    final override var isFlying: Boolean
         get() = getSharedFlag(7)
         set(value) = setSharedFlag(7, value)
-    override var air: Int
+    final override var air: Int
         get() = data[MetadataKeys.AIR_TICKS]
         set(value) = data.set(MetadataKeys.AIR_TICKS, value)
-    override var displayName: Component
+    final override var displayName: Component
         get() = data[MetadataKeys.DISPLAY_NAME].orElse(type.name)
         set(value) = data.set(MetadataKeys.DISPLAY_NAME, Optional.ofNullable(value.takeIf { it != Component.empty() }))
-    override var isDisplayNameVisible: Boolean
+    final override var isDisplayNameVisible: Boolean
         get() = data[MetadataKeys.DISPLAY_NAME_VISIBILITY]
         set(value) = data.set(MetadataKeys.DISPLAY_NAME_VISIBILITY, value)
-    override var isSilent: Boolean
+    final override var isSilent: Boolean
         get() = data[MetadataKeys.SILENT]
         set(value) = data.set(MetadataKeys.SILENT, value)
-    override var hasGravity: Boolean
+    final override var hasGravity: Boolean
         get() = !data[MetadataKeys.NO_GRAVITY]
         set(value) = data.set(MetadataKeys.NO_GRAVITY, !value)
     var pose: Pose
         get() = data[MetadataKeys.POSE]
         set(value) = data.set(MetadataKeys.POSE, value)
-    override var frozenTicks: Int
+    final override var frozenTicks: Int
         get() = data[MetadataKeys.FROZEN_TICKS]
         set(value) = data.set(MetadataKeys.FROZEN_TICKS, value)
     val hasVelocity: Boolean

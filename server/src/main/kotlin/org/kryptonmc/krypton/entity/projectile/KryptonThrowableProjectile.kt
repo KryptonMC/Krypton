@@ -37,7 +37,7 @@ abstract class KryptonThrowableProjectile(world: KryptonWorld, type: EntityType<
             if (value.type === defaultItem && value.meta.nbt.isEmpty()) return
             data[MetadataKeys.THROWABLE_PROJECTILE.ITEM] = value.copy().apply { amount = 1 }
         }
-    override val item: ItemStack
+    final override val item: ItemStack
         get() {
             val raw = rawItem
             return if (raw.isEmpty()) KryptonItemStack(defaultItem, 1) else raw

@@ -32,6 +32,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
+import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
@@ -45,11 +46,11 @@ abstract class KryptonLivingEntity(
 ) : KryptonEntity(world, type), LivingEntity {
 
     override var absorption = 0F
-    override var isDead = false
-    override var deathTime: Short = 0
-    override var hurtTime: Short = 0
-    override var isFallFlying = false
-    override var lastHurtTimestamp = 0
+    final override var isDead = false
+    final override var deathTime: Short = 0
+    final override var hurtTime: Short = 0
+    final override var isFallFlying = false
+    final override var lastHurtTimestamp = 0
     final override val attributes = ConcurrentHashMap<AttributeType, KryptonAttribute>()
     private val brain = Brain(mutableListOf())
 
@@ -110,7 +111,7 @@ abstract class KryptonLivingEntity(
         return true
     }
 
-    override fun getSpawnPacket() = PacketOutSpawnLivingEntity(this)
+    override fun getSpawnPacket(): PlayPacket = PacketOutSpawnLivingEntity(this)
 
     private fun setLivingFlag(flag: Int, state: Boolean) {
         val flags = data[MetadataKeys.LIVING.FLAGS].toInt()
@@ -122,16 +123,16 @@ abstract class KryptonLivingEntity(
         potionEffectColor = 0
     }
 
-    override var isUsingItem: Boolean
+    final override var isUsingItem: Boolean
         get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 1 > 0
         set(value) = setLivingFlag(1, value)
-    override var hand: Hand
+    final override var hand: Hand
         get() = if (data[MetadataKeys.LIVING.FLAGS].toInt() and 2 > 0) Hand.OFF else Hand.MAIN
         set(value) = setLivingFlag(2, value == Hand.OFF)
-    override var isInRiptideSpinAttack: Boolean
+    final override var isInRiptideSpinAttack: Boolean
         get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 4 > 0
         set(value) = setLivingFlag(4, value)
-    override var health: Float
+    final override var health: Float
         get() = data[MetadataKeys.LIVING.HEALTH]
         set(value) = data.set(MetadataKeys.LIVING.HEALTH, value)
     var potionEffectColor: Int
@@ -146,7 +147,7 @@ abstract class KryptonLivingEntity(
     var stingerCount: Int
         get() = data[MetadataKeys.LIVING.STINGERS]
         set(value) = data.set(MetadataKeys.LIVING.STINGERS, value)
-    override var sleepingPosition: Vector3i?
+    final override var sleepingPosition: Vector3i?
         get() = data[MetadataKeys.LIVING.BED_LOCATION].getIfPresent()
         set(value) = data.set(MetadataKeys.LIVING.BED_LOCATION, Optional.ofNullable(value))
 }

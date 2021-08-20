@@ -29,7 +29,7 @@ import java.util.UUID
 abstract class KryptonProjectile(world: KryptonWorld, type: EntityType<out Projectile>) : KryptonEntity(world, type), Projectile {
 
     private var ownerId: UUID? = null
-    override var owner: Entity? = null
+    final override var owner: Entity? = null
         get() {
             if (field != null) return field
             if (ownerId != null) {
@@ -43,8 +43,8 @@ abstract class KryptonProjectile(world: KryptonWorld, type: EntityType<out Proje
             ownerId = value.uuid
             field = value
         }
-    override var hasLeftOwner = false
-    override var hasBeenShot = false
+    final override var hasLeftOwner = false
+    final override var hasBeenShot = false
 
     override fun load(tag: CompoundTag) {
         super.load(tag)

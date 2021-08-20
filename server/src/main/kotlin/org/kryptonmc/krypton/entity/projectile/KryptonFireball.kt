@@ -35,7 +35,7 @@ abstract class KryptonFireball(world: KryptonWorld, type: EntityType<out Firebal
             if (value.type === ItemTypes.FIRE_CHARGE && value.meta.nbt.isEmpty()) return
             data[MetadataKeys.FIREBALL.ITEM] = value.copy().apply { amount = 1 }
         }
-    override val item: ItemStack
+    final override val item: ItemStack
         get() {
             val raw = rawItem
             return if (raw.isEmpty()) KryptonItemStack(ItemTypes.FIRE_CHARGE, 1) else raw

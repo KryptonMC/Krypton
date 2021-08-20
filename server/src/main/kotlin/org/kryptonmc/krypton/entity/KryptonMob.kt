@@ -27,8 +27,8 @@ import org.kryptonmc.nbt.CompoundTag
 
 abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : KryptonLivingEntity(world, type), Mob {
 
-    override var canPickUpLoot = false
-    override var isPersistent = false
+    final override var canPickUpLoot = false
+    final override var isPersistent = false
 
     init {
         data.add(MetadataKeys.MOB.FLAGS)
@@ -49,19 +49,19 @@ abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : Kryp
         if (!hasAI) boolean("NoAI", true)
     }
 
-    override var hasAI: Boolean
+    final override var hasAI: Boolean
         get() = data[MetadataKeys.MOB.FLAGS].toInt() and 1 == 0
         set(value) {
             val flags = data[MetadataKeys.MOB.FLAGS].toInt()
             data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 1 else flags and -2).toByte()
         }
-    override var mainHand: MainHand
+    final override var mainHand: MainHand
         get() = if (data[MetadataKeys.MOB.FLAGS].toInt() and 2 != 0) MainHand.LEFT else MainHand.RIGHT
         set(value) {
             val flags = data[MetadataKeys.MOB.FLAGS].toInt()
             data[MetadataKeys.MOB.FLAGS] = (if (value == MainHand.LEFT) flags or 1 else flags and -2).toByte()
         }
-    override var isAggressive: Boolean
+    final override var isAggressive: Boolean
         get() = data[MetadataKeys.MOB.FLAGS].toInt() and 4 != 0
         set(value) {
             val flags = data[MetadataKeys.MOB.FLAGS].toInt()

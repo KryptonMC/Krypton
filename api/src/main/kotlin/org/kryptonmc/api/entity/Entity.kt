@@ -14,6 +14,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.space.BoundingBox
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.space.Location
 import org.kryptonmc.api.world.World
@@ -51,18 +52,28 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
     /**
      * If the current [displayName] is visible or not.
      */
-    val isDisplayNameVisible: Boolean
+    var isDisplayNameVisible: Boolean
 
     /**
-     * The location of this entity.
+     * The current location of this entity.
      */
-    val location: Location
+    var location: Location
 
     /**
      * The current delta X, Y, and Z values of this entity,
      * in metres per tick.
      */
-    val velocity: Vector
+    var velocity: Vector
+
+    /**
+     * The current bounding box of this entity.
+     */
+    var boundingBox: BoundingBox
+
+    /**
+     * The current dimensions of this entity.
+     */
+    var dimensions: EntityDimensions
 
     /**
      * The passengers this entity currently has.
