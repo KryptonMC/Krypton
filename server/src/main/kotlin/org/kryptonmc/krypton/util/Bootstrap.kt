@@ -33,7 +33,6 @@ import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.util.FACTORY_PROVIDER
 import org.kryptonmc.api.world.biome.Biomes
-import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.command.BrigadierExceptions
@@ -57,6 +56,8 @@ import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
+import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
+import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.world.event.GameEvents
 import org.kryptonmc.krypton.world.fluid.FluidLoader
 import java.util.TreeSet

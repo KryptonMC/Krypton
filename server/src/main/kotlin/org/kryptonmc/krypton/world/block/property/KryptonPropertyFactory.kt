@@ -18,10 +18,49 @@
  */
 package org.kryptonmc.krypton.world.block.property
 
+import org.kryptonmc.api.block.property.Properties
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.util.StringSerializable
+import java.util.concurrent.ConcurrentHashMap
 
 object KryptonPropertyFactory : Property.Factory {
+
+    val PROPERTIES = ConcurrentHashMap<String, Property<*>>()
+    // Rewrites from names in the Properties object to names from Mojang
+    // TODO: Check on update
+    private val NAME_REWRITES = mapOf(
+        "HAS_FIRST_BOTTLE" to "HAS_BOTTLE_0",
+        "HAS_SECOND_BOTTLE" to "HAS_BOTTLE_1",
+        "HAS_THIRD_BOTTLE" to "HAS_BOTTLE_2",
+        "CHARGES" to "RESPAWN_ANCHOR_CHARGES",
+        "SCAFFOLD_DISTANCE" to "STABILITY_DISTANCE",
+        "CAULDRON_LEVEL" to "LEVEL_CAULDRON",
+        "COMPOSTER_LEVEL" to "LEVEL_COMPOSTER",
+        "HONEY_LEVEL" to "LEVEL_HONEY",
+        "LIQUID_LEVEL" to "LEVEL_FLOWING",
+        "ROTATION" to "ROTATION_16",
+        "REDSTONE_EAST" to "EAST_REDSTONE",
+        "REDSTONE_NORTH" to "NORTH_REDSTONE",
+        "REDSTONE_SOUTH" to "SOUTH_REDSTONE",
+        "REDSTONE_WEST" to "WEST_REDSTONE",
+        "WALL_EAST" to "EAST_WALL",
+        "WALL_NORTH" to "NORTH_WALL",
+        "WALL_SOUTH" to "SOUTH_WALL",
+        "WALL_WEST" to "WEST_WALL",
+        "HOPPER_FACING" to "FACING_HOPPER",
+        "INSTRUMENT" to "NOTEBLOCK_INSTRUMENT",
+        "COMPARATOR_MODE" to "MODE_COMPARATOR",
+        "STRUCTURE_MODE" to "STRUCTUREBLOCK_MODE",
+        "STRAIGHT_RAIL_SHAPE" to "RAIL_SHAPE_STRAIGHT",
+        "STAIR_SHAPE" to "STAIRS_SHAPE",
+    )
+
+    fun bootstrap() {
+        Properties::class.java.declaredFields.forEach {
+            if (it.name == "INSTANCE") return@forEach
+            PROPERTIES[NAME_REWRITES.getOrDefault(it.name, it.name)] = it.get(null) as Property<*>
+        }
+    }
 
     override fun forBoolean(name: String) = BooleanProperty(name)
 

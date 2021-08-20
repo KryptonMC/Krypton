@@ -18,9 +18,8 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.data.FluidData
@@ -28,6 +27,7 @@ import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
 class KryptonFluid(
     data: FluidData,
+    override val availableProperties: Set<Property<*>>,
     override val properties: Map<String, String>
 ) : KryptonPropertyHolder<Fluid>(), Fluid {
 

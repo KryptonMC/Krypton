@@ -16,6 +16,11 @@ package org.kryptonmc.api.block.property
 interface PropertyHolder<out T : PropertyHolder<T>> {
 
     /**
+     * All of the property keys available for use by this holder.
+     */
+    val availableProperties: Set<Property<*>>
+
+    /**
      * All the properties that are being held by this property holder.
      */
     val properties: Map<String, String>

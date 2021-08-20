@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world.block
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.RenderShape
+import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.data.BlockData
@@ -28,6 +29,7 @@ import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
 class KryptonBlock(
     data: BlockData,
+    override val availableProperties: Set<Property<*>>,
     override val properties: Map<String, String>
 ) : KryptonPropertyHolder<Block>(), Block {
 

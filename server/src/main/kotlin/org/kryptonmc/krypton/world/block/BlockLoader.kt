@@ -22,12 +22,14 @@ import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.registry.data.BlockData
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import java.util.concurrent.ConcurrentHashMap
 
 object BlockLoader {
@@ -44,6 +46,7 @@ object BlockLoader {
             LOGGER.warn("Attempted to load block loader twice!")
             return
         }
+        KryptonPropertyFactory.bootstrap()
         val blocks = GSON.fromJson<JsonObject>(
             Thread.currentThread().contextClassLoader
                 .getResourceAsStream("${KryptonPlatform.minecraftVersion.replace(".", "_")}_blocks.json")!!
@@ -51,8 +54,12 @@ object BlockLoader {
         )
         blocks.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
             val propertyEntry = PropertyEntry()
+            val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) { element ->
+                val string = element.asString.let { if (it == "LEVEL") "LEVEL_FLOWING" else it }
+                KryptonPropertyFactory.PROPERTIES[string]!!
+            }
             value.remove("states").asJsonArray.forEach {
-                val (properties, block) = it.asJsonObject.retrieveState(key, value)
+                val (properties, block) = it.asJsonObject.retrieveState(key, availableProperties, value)
                 propertyEntry.properties[properties] = block
             }
             val defaultState = value["defaultStateId"].asInt
@@ -76,10 +83,10 @@ object BlockLoader {
 
     fun properties(key: String, properties: Map<String, String>): KryptonBlock? = PROPERTY_MAP[key]?.properties?.get(properties)
 
-    private fun JsonObject.retrieveState(key: String, blockObject: JsonObject): Pair<Map<String, String>, KryptonBlock> {
+    private fun JsonObject.retrieveState(key: String, availableProperties: Set<Property<*>>, blockObject: JsonObject): Pair<Map<String, String>, KryptonBlock> {
         val stateId = get("stateId").asInt
         val propertyMap = get("properties").asJsonObject.entrySet().associate { it.key to it.value.asString.lowercase() }
-        val block = KryptonBlock(BlockData(Key.key(key), blockObject, this), propertyMap)
+        val block = KryptonBlock(BlockData(Key.key(key), blockObject, this), availableProperties, propertyMap)
         STATE_MAP[stateId] = block
         return propertyMap to block
     }
