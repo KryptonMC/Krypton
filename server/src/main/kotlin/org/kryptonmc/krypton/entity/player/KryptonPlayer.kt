@@ -177,6 +177,8 @@ class KryptonPlayer(
         }
     override val direction: Direction
         get() = Direction.fromPitch(location.pitch.toDouble())
+    val canUseGameMasterBlocks: Boolean
+        get() = canInstantlyBuild && permissionLevel >= 2
 
     override val dimensionType: DimensionType
         get() = world.dimensionType

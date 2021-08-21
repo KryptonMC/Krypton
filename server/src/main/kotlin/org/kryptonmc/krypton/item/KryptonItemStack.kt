@@ -42,9 +42,9 @@ open class KryptonItemStack(
         KryptonMetaHolder(nbt.getCompound("tag").let { if (it is MutableCompoundTag) it else it.mutable() })
     )
 
-    fun getOrCreateTag(key: String): CompoundTag {
-        if (meta.nbt.contains(key, CompoundTag.ID)) return meta.nbt.getCompound(key)
-        return CompoundTag().apply { meta.nbt[key] = this }
+    fun getOrCreateTag(key: String): MutableCompoundTag {
+        if (meta.nbt.contains(key, CompoundTag.ID)) return meta.nbt.getCompound(key).let { if (it is MutableCompoundTag) it else it.mutable() }
+        return MutableCompoundTag().apply { meta.nbt[key] = this }
     }
 
     fun save(tag: CompoundTag.Builder) = tag.apply {
