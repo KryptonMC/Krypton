@@ -25,6 +25,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
@@ -65,10 +66,8 @@ object GiveCommand : InternalCommand {
     private fun give(targets: List<KryptonPlayer>, item: ItemStackArgument, count: Int) = targets.forEach { target ->
         val items = item.createItemStacks(count)
         items.forEach { target.inventory.add(it) }
+
         target.playSound(Sound.sound(SoundEvents.ITEM_PICKUP, Sound.Source.PLAYER, 0.2F, 2F))
-        target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.incrementStateId(), { buf ->
-            buf.writeVarInt(items.size)
-            items.forEach { buf.writeItem(it) }
-        }, target.inventory.mainHand))
+        target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.incrementStateId(), target.inventory.networkWriter, target.inventory.mainHand))
     }
 }

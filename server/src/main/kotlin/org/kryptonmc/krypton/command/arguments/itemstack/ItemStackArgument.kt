@@ -21,8 +21,10 @@ package org.kryptonmc.krypton.command.arguments.itemstack
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
+import org.kryptonmc.nbt.MutableCompoundTag
 import org.kryptonmc.nbt.StringTag
 
 data class ItemStackArgument(val item: ItemType, val tag: CompoundTag? = null) {
@@ -30,22 +32,17 @@ data class ItemStackArgument(val item: ItemType, val tag: CompoundTag? = null) {
     fun createItemStacks(amount: Int): List<KryptonItemStack> {
         val items = mutableListOf<KryptonItemStack>()
         if (amount <= item.maximumAmount) {
-            items.add(KryptonItemStack(addTag(amount)))
+            items.add(createStack(amount))
         } else {
             var size = amount
             while (size > item.maximumAmount) {
-                items.add(KryptonItemStack(addTag(item.maximumAmount)))
+                items.add(createStack(item.maximumAmount))
                 size -= item.maximumAmount
             }
-            items.add(KryptonItemStack(addTag(amount)))
+            items.add(createStack(size))
         }
         return items
     }
 
-    private fun addTag(amount: Int) = CompoundTag(
-        mutableMapOf(
-            "id" to StringTag.of(item.key.toString()),
-            "Count" to IntTag.of(amount),
-        ).also { if (tag != null) it["tag"] = tag }
-    )
+    private fun createStack(amount: Int) = KryptonItemStack(item, amount, KryptonMetaHolder(tag?.mutable() ?: MutableCompoundTag()))
 }

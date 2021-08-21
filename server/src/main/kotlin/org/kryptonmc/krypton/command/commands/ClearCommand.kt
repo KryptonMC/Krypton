@@ -68,7 +68,6 @@ object ClearCommand : InternalCommand {
             clear(target, predicate, maxCount)
             sender.sendMessage(translatable("commands.clear.success.single", listOf(text(amount), target.name.toComponent())))
             target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.incrementStateId(), target.inventory.networkWriter, target.inventory.mainHand))
-            sender.sendMessage(translatable("commands.clear.success.single", listOf(text("all"), target.name.toComponent())))
         } else {
             targets.forEach { target ->
                 target.inventory.forEachIndexed { index, item -> if (predicate(item)) target.inventory[index] = EmptyItemStack }

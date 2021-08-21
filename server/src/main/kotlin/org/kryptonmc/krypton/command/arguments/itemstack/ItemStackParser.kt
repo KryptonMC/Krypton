@@ -28,6 +28,7 @@ import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.toKey
+import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.tags.ItemTags
 import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.krypton.util.toComponent
@@ -53,21 +54,21 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO
         } else throw TAG_DISALLOWED_EXCEPTION.createWithContext(reader)
     }
 
-    private fun readNBT(reader: StringReader) = if (reader.peek() == '{') SNBTParser(reader).readCompound() else null
+    private fun readNBT(reader: StringReader) = if (reader.canRead() && reader.peek() == '{') SNBTParser(reader).readCompound() else null
 
     fun parseItem() = ItemStackArgument(readItem(this.reader), readNBT(this.reader))
 
-    fun parsePredicate(): ItemStackPredicate { //TODO: (Not working currently)
+    fun parsePredicate(): ItemStackPredicate {
         var tag: String? = null
         var item: ItemType? = null
         var nbt: CompoundTag? = null
 
-        if (reader.peek() == '#') tag = readTag(reader) else item = readItem(reader)
-        if (reader.peek() == '{') nbt = readNBT(reader)
+        if (reader.canRead() && reader.peek() == '#') tag = readTag(reader) else item = readItem(reader)
+        if (reader.canRead() && reader.peek() == '{') nbt = readNBT(reader)
 
         return ItemStackPredicate {
             if (item != null) {
-                if (nbt != null) TODO("Compare NBT DATA") else it.type == item
+                if (nbt != null) nbt == (it.meta as KryptonMetaHolder).nbt.immutable() else it.type == item
             } else if (tag != null) {
                 (ItemTags.tags[tag.toKey()] ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())).contains(it.type)
             } else false
@@ -77,7 +78,6 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO
     private fun isCharValid(c: Char) = c in '0'..'9' || c in 'a'..'z' || c == '_' || c == ':' || c == '/' || c == '.' || c == '-'
 
     companion object {
-
         val ID_INVALID_EXCEPTION = DynamicCommandExceptionType { translatable("argument.item.id.invalid", it.toString().toComponent()).toMessage() }
         val TAG_DISALLOWED_EXCEPTION = SimpleCommandExceptionType(translatable("argument.item.tag.disallowed").toMessage())
         val UNKNOWN_ITEM_TAG = DynamicCommandExceptionType { translatable("arguments.item.tag.unknown", it.toString().toComponent()).toMessage() }
