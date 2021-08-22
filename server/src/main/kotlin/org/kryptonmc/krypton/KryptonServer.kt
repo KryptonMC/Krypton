@@ -40,7 +40,6 @@ import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.auth.MojangUUIDTypeAdapter
 import org.kryptonmc.krypton.command.KryptonCommandManager
-import org.kryptonmc.krypton.command.commands.DebugCommand.DEBUG_FOLDER
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.item.KryptonItemManager
@@ -65,17 +64,8 @@ import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.server.ServerResources
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
-import org.kryptonmc.krypton.util.createDirectories
 import org.kryptonmc.krypton.util.createDirectory
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.profiling.DeadProfiler
-import org.kryptonmc.krypton.util.profiling.Profiler
-import org.kryptonmc.krypton.util.profiling.ServerProfiler
-import org.kryptonmc.krypton.util.profiling.SingleTickProfiler
-import org.kryptonmc.krypton.util.profiling.decorate
-import org.kryptonmc.krypton.util.profiling.results.ProfileResults
-import org.kryptonmc.krypton.util.reports.CrashReport
-import org.kryptonmc.krypton.util.reports.ReportedException
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
@@ -87,12 +77,9 @@ import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.net.InetSocketAddress
 import java.nio.file.Path
 import java.security.SecureRandom
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
@@ -166,12 +153,6 @@ class KryptonServer(
     private var lastOverloadWarning = 0L
     private var tickCount = 0
     private var oversleepFactor = 0L
-
-    val continuousProfiler = ServerProfiler(::tickCount)
-    private var profiler: Profiler = DeadProfiler
-
-    @Volatile
-    private var delayProfilerStart = false
 
     fun start() {
         Messages.START.INITIAL.info(LOGGER, config.server.ip, config.server.port)
@@ -248,34 +229,20 @@ class KryptonServer(
                 Messages.TICK_OVERLOAD_WARNING.warn(LOGGER, nextTickTime, nextTickTime / 50)
                 lastOverloadWarning = lastTickTime
             }
-            // start profiler
-            val singleTickProfiler = if (config.other.saveThreshold > 0) {
-                SingleTickProfiler(config.other.saveThreshold * 1_000_000_000L, DEBUG_FOLDER.createDirectory())
-            } else null
-            startProfilerTick(singleTickProfiler)
-            profiler.start()
-
             // tick
-            profiler.push("tick")
             eventManager.fireAndForgetSync(TickStartEvent(tickCount))
             val tickTime = measureTimeMillis(::tick)
-            profiler.pop()
 
             // end tick
             val finishTime = System.currentTimeMillis()
             eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
             lastTickTime = finishTime
-            profiler.end()
-            endProfilerTick(singleTickProfiler)
 
             val sleepTime = measureTimeMillis { Thread.sleep(max(0, TICK_INTERVAL - tickTime - oversleepFactor)) }
             oversleepFactor = sleepTime - (TICK_INTERVAL - tickTime)
         }
     } catch (exception: Throwable) {
         LOGGER.error("Encountered an unexpected exception", exception)
-        val report = fillReport(if (exception is ReportedException) exception.report else CrashReport("Exception in server tick loop", exception))
-        val file = CURRENT_DIRECTORY.resolve("crash-reports").resolve("crash-$TIME_NOW-server.txt")
-        LOGGER.error(if (report.save(file)) "This crash report has been saved to ${file.absolutePathString()}" else "Unable to save crash report to disk!")
     } finally {
         restart()
     }
@@ -311,33 +278,24 @@ class KryptonServer(
     private fun tick() {
         tickCount++
 
-        profiler.push("players")
         val time = System.currentTimeMillis()
         playerManager.tick(time)
-        profiler.pop()
         if (playerManager.players.isEmpty()) return // don't tick if there are no players on the server
 
-        profiler.push("worlds")
         worldManager.worlds.forEach { (_, world) ->
-            profiler.push { "$world in ${world.dimension.location}" }
             if (tickCount % 20 == 0) {
-                profiler.push("time sync")
-                playerManager.sendToAll(PacketOutTimeUpdate(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]), world)
-                profiler.pop()
+                playerManager.sendToAll(PacketOutTimeUpdate(
+                    world.data.time,
+                    world.data.dayTime,
+                    world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]
+                ), world)
             }
-
-            profiler.push("tick")
-            world.tick(profiler)
-            profiler.pop()
-            profiler.pop()
+            world.tick()
         }
-        profiler.pop()
         if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
-            profiler.push("autosave")
             Messages.AUTOSAVE.STARTED.info(LOGGER)
             worldManager.saveAll()
             Messages.AUTOSAVE.FINISHED.info(LOGGER)
-            profiler.pop()
         }
     }
 
@@ -351,41 +309,9 @@ class KryptonServer(
         config.save(node)
     }
 
-    fun startProfiling() {
-        delayProfilerStart = true
-    }
-
-    fun finishProfiling(): ProfileResults {
-        val results = continuousProfiler.results
-        continuousProfiler.disable()
-        return results
-    }
-
-    fun saveDebugReport(path: Path) {
-        val worldsPath = path.resolve("worlds")
-        worldManager.worlds.forEach { (key, world) ->
-            val location = key.location
-            val worldPath = worldsPath.resolve("krypton").resolve(location.value()).createDirectories()
-            world.saveDebugReport(worldPath)
-        }
-    }
-
     fun overworld() = worldManager.worlds[World.OVERWORLD]!!
 
     fun worldResource(resource: WorldResource) = dataAccess.resourcePath(resource)
-
-    private fun startProfilerTick(profiler: SingleTickProfiler?) {
-        if (delayProfilerStart) {
-            delayProfilerStart = false
-            continuousProfiler.enable()
-        }
-        this.profiler = continuousProfiler.profiler.decorate(profiler)
-    }
-
-    private fun endProfilerTick(profiler: SingleTickProfiler?) {
-        profiler?.end()
-        this.profiler = continuousProfiler.profiler
-    }
 
     override fun registerChannel(channel: Key) {
         require(channel !in RESERVED_CHANNELS) { "Cannot register reserved channel with name \"minecraft:register\" or \"minecraft:unregister\"!" }
@@ -453,18 +379,11 @@ class KryptonServer(
         Runtime.getRuntime().halt(0)
     }
 
-    private fun fillReport(report: CrashReport): CrashReport = report.apply {
-        systemDetails["Player Count"] = { "${playerManager.players.size} / $maxPlayers" }
-    }
-
     companion object {
 
         private val REGISTER_CHANNEL_KEY = key("register")
         private val UNREGISTER_CHANNEL_KEY = key("unregister")
         private val RESERVED_CHANNELS = setOf(REGISTER_CHANNEL_KEY, UNREGISTER_CHANNEL_KEY)
-
-        private val DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss")
-        private val TIME_NOW: String get() = LocalDateTime.now().format(DATE_FORMAT)
 
         private const val TICK_INTERVAL = 1000L / 20L // milliseconds in a tick
         private val LOGGER = logger<KryptonServer>()

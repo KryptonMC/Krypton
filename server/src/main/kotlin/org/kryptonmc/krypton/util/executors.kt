@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.util
 
 import com.google.common.util.concurrent.MoreExecutors
-import org.kryptonmc.krypton.util.reports.ReportedException
 import java.util.concurrent.CompletionException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.LinkedBlockingQueue
@@ -27,7 +26,6 @@ import java.util.concurrent.ThreadFactory
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.system.exitProcess
 
 private val LOGGER = logger("Krypton")
 val BOOTSTRAP_EXECUTOR = createExecutor("Bootstrap", -2)
@@ -42,10 +40,6 @@ private fun createExecutor(name: String, priority: Int): ExecutorService {
 private fun onThreadException(thread: Thread, throwable: Throwable) {
     var exception = throwable
     if (exception is CompletionException) exception = exception.cause!!
-    if (exception is ReportedException) {
-        println(exception.report.report)
-        exitProcess(-1)
-    }
     LOGGER.error("Caught exception in thread $thread!", exception)
 }
 

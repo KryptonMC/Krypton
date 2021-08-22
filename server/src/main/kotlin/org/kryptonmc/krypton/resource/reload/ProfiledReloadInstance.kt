@@ -21,13 +21,12 @@ package org.kryptonmc.krypton.resource.reload
 import com.google.common.base.Stopwatch
 import org.kryptonmc.krypton.resource.ResourceManager
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.profiling.LiveProfiler
-import org.kryptonmc.krypton.util.profiling.results.ProfileResults
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 
+// TODO: Remove this class
 class ProfiledReloadInstance(
     resourceManager: ResourceManager,
     listeners: List<ReloadListener>,
@@ -37,9 +36,7 @@ class ProfiledReloadInstance(
 ) : SimpleReloadInstance<ProfiledReloadInstance.State>(executor, syncExecutor, resourceManager, listeners, task, { barrier, manager, listener, _, _ ->
     val preparationNanos = AtomicLong()
     val reloadNanos = AtomicLong()
-    val preparationProfiler = LiveProfiler({ 0 }, false)
-    val reloadProfiler = LiveProfiler({ 0 }, false)
-    val reload = listener.reload(barrier, manager, preparationProfiler, reloadProfiler, {
+    val reload = listener.reload(barrier, manager, {
         executor.execute {
             val startTime = System.nanoTime()
             it.run()
@@ -52,7 +49,7 @@ class ProfiledReloadInstance(
             reloadNanos.addAndGet(System.nanoTime() - startTime)
         }
     })
-    reload.thenApplyAsync({ State(listener.name, preparationProfiler.results, reloadProfiler.results, preparationNanos, reloadNanos) }, syncExecutor)
+    reload.thenApplyAsync({ State(listener.name, preparationNanos, reloadNanos) }, syncExecutor)
 }) {
 
     private val total = Stopwatch.createUnstarted()
@@ -66,7 +63,7 @@ class ProfiledReloadInstance(
         total.stop()
         var totalBlockingTime = 0
         LOGGER.info("Resources reloaded in ${total.elapsed(TimeUnit.MILLISECONDS)}ms!")
-        states.forEach { (name, _, _, preparationNanos, reloadNanos) ->
+        states.forEach { (name, preparationNanos, reloadNanos) ->
             val preparationMillis = (preparationNanos.get().toDouble() / 1000000.0).toInt()
             val reloadMillis = (reloadNanos.get().toDouble() / 1000000.0).toInt()
             val total = preparationMillis + reloadMillis
@@ -78,8 +75,6 @@ class ProfiledReloadInstance(
 
     data class State(
         val name: String,
-        val preparationResult: ProfileResults,
-        val reloadResult: ProfileResults,
         val preparationNanos: AtomicLong,
         val reloadNanos: AtomicLong
     )

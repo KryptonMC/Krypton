@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.resource.reload
 
 import org.kryptonmc.krypton.resource.ResourceManager
-import org.kryptonmc.krypton.util.profiling.DeadProfiler
 import org.kryptonmc.krypton.util.sequenceFailFast
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
@@ -111,8 +110,8 @@ open class SimpleReloadInstance<S> protected constructor(
             executor: Executor,
             syncExecutor: Executor,
             task: CompletableFuture<Unit>
-        ) = SimpleReloadInstance(executor, syncExecutor, manager, listeners, task) { barrier, manager1, listener, _, _ ->
-            listener.reload(barrier, manager1, DeadProfiler, DeadProfiler, executor, syncExecutor)
+        ) = SimpleReloadInstance(executor, syncExecutor, manager, listeners, task) { barrier, _, listener, _, _ ->
+            listener.reload(barrier, manager, executor, syncExecutor)
         }
     }
 }

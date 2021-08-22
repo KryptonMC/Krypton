@@ -44,17 +44,13 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
-import org.kryptonmc.krypton.util.csv.csv
-import org.kryptonmc.krypton.util.profiling.Profiler
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
-import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.effect.Effect
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
-import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.forEachInRange
@@ -70,9 +66,6 @@ import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.Generator
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.spongepowered.math.vector.Vector3i
-import java.io.Writer
-import java.nio.file.Files
-import java.nio.file.Path
 import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
 
@@ -253,11 +246,10 @@ class KryptonWorld(
 
     override fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
 
-    fun tick(profiler: Profiler) {
+    fun tick() {
         if (players.isEmpty()) return // don't tick the world if there's no players in it
 
         // tick rain
-        profiler.push("weather")
         val wasRaining = isRaining
         if (dimensionType.hasSkylight) {
             if (gameRules[GameRules.DO_WEATHER_CYCLE]) {
@@ -311,40 +303,20 @@ class KryptonWorld(
             playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel))
             playerManager.sendToAll(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel))
         }
-        profiler.pop()
 
-        // TODO: Sky brightness
         tickTime()
-
-        profiler.push("chunk tick")
         chunkManager.chunkMap.values.forEach { it.tick(chunkManager.players(it.position.toLong()).size) }
-        profiler.pop()
     }
 
     private fun tickTime() {
         if (!tickTime) return
         data.time++
-        // TODO: Tick scheduled events
         if (data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]) data.dayTime++
-    }
-
-    fun saveDebugReport(path: Path) {
-        val chunksPath = path.resolve("chunks.csv")
-        Files.newBufferedWriter(chunksPath).use { it.dumpChunks() }
     }
 
     override fun save() = chunkManager.saveAll()
 
     override fun audiences() = players
-
-    private fun Writer.dumpChunks() {
-        val output = csv(this) {
-            plus("x")
-            plus("z")
-            plus("world")
-        }
-        chunkManager.chunkMap.values.forEach { output.writeRow(it.position.x, it.position.z, it.world) }
-    }
 
     fun getRainLevel(delta: Float) = lerp(delta, oldRainLevel, rainLevel)
 

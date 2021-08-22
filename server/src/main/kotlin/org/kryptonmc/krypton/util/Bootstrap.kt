@@ -51,12 +51,10 @@ import org.kryptonmc.krypton.tags.FluidTags
 import org.kryptonmc.krypton.tags.GameEventTags
 import org.kryptonmc.krypton.tags.ItemTags
 import org.kryptonmc.krypton.util.encryption.Encryption
-import org.kryptonmc.krypton.util.reports.CrashReport
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
-import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.world.event.GameEvents
 import org.kryptonmc.krypton.world.fluid.FluidLoader
@@ -70,7 +68,6 @@ object Bootstrap {
     fun preload() {
         if (bootstrapped) return
         bootstrapped = true
-        CrashReport.preload()
         TranslationBootstrap.init()
 
         // Preload all the registry classes to ensure everything is properly registered

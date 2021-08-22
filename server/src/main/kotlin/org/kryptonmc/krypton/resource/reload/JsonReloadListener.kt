@@ -21,11 +21,9 @@ package org.kryptonmc.krypton.resource.reload
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonParseException
-import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.resource.ResourceManager
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.profiling.Profiler
 import java.io.IOException
 
 abstract class JsonReloadListener(
@@ -33,7 +31,7 @@ abstract class JsonReloadListener(
     private val directory: String
 ) : SimpleReloadListener<Map<Key, JsonElement>>() {
 
-    override fun prepare(manager: ResourceManager, profiler: Profiler): Map<Key, JsonElement> {
+    override fun prepare(manager: ResourceManager): Map<Key, JsonElement> {
         val resources = mutableMapOf<Key, JsonElement>()
         val length = directory.length + 1
         manager.list(directory) { it.endsWith(PATH_SUFFIX) }.forEach { resourceKey ->

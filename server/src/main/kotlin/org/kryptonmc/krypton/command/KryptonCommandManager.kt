@@ -39,11 +39,9 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.commands.BanCommand
 import org.kryptonmc.krypton.command.commands.BanIpCommand
 import org.kryptonmc.krypton.command.commands.ClearCommand
-import org.kryptonmc.krypton.command.commands.DebugCommand
 import org.kryptonmc.krypton.command.commands.DeopCommand
 import org.kryptonmc.krypton.command.commands.DifficultyCommand
 import org.kryptonmc.krypton.command.commands.GamemodeCommand
@@ -144,7 +142,6 @@ class KryptonCommandManager : CommandManager {
     internal fun registerBuiltins() {
         StopCommand.register(dispatcher)
         RestartCommand.register(dispatcher)
-        DebugCommand.register(dispatcher)
         TeleportCommand.register(dispatcher)
         SummonCommand.register(dispatcher)
         GamemodeCommand.register(dispatcher)

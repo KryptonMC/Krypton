@@ -22,8 +22,6 @@ import io.netty.buffer.ByteBuf
 import io.netty.handler.codec.EncoderException
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.util.reports.CrashReport
-import org.kryptonmc.krypton.util.reports.ReportedException
 import org.kryptonmc.krypton.util.writeVarInt
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
@@ -110,10 +108,6 @@ class MetadataHolder(private val entity: KryptonEntity) {
         lock.readLock().lock()
         return try {
             itemsById[key.id] as Entry<T>
-        } catch (exception: Throwable) {
-            val report = CrashReport.of(exception, "Getting entity metadata")
-            report.addCategory("Entity metadata").apply { set("Data key", key) }
-            throw ReportedException(report)
         } finally {
             lock.readLock().unlock()
         }

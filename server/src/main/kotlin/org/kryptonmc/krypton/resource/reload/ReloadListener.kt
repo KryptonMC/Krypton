@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.resource.reload
 
 import org.kryptonmc.krypton.resource.ResourceManager
-import org.kryptonmc.krypton.util.profiling.Profiler
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
@@ -28,7 +27,7 @@ interface ReloadListener {
     val name: String
         get() = javaClass.simpleName
 
-    fun reload(barrier: Barrier, manager: ResourceManager, preparationProfiler: Profiler, reloadProfiler: Profiler, executor: Executor, syncExecutor: Executor): CompletableFuture<Void>
+    fun reload(barrier: Barrier, manager: ResourceManager, executor: Executor, syncExecutor: Executor): CompletableFuture<Void>
 
     interface Barrier {
 

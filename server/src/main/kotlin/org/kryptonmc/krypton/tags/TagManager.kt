@@ -22,7 +22,6 @@ import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.resource.ResourceManager
 import org.kryptonmc.krypton.resource.reload.ReloadListener
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.profiling.Profiler
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
@@ -31,7 +30,7 @@ class TagManager(private val registryHolder: RegistryHolder) : ReloadListener {
     var tags = TagContainer.EMPTY
         private set
 
-    override fun reload(barrier: ReloadListener.Barrier, manager: ResourceManager, preparationProfiler: Profiler, reloadProfiler: Profiler, executor: Executor, syncExecutor: Executor): CompletableFuture<Void> {
+    override fun reload(barrier: ReloadListener.Barrier, manager: ResourceManager, executor: Executor, syncExecutor: Executor): CompletableFuture<Void> {
         val infos = mutableListOf<LoaderInfo<*>>()
         StaticTags.visitHelpers { helper -> createLoader(manager, executor, helper)?.let { infos.add(it) } }
         return CompletableFuture.allOf(*infos.map { it.pendingLoad }.toTypedArray()).thenCompose(barrier::wait).thenAcceptAsync({
