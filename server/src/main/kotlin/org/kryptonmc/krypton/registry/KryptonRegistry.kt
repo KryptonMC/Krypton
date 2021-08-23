@@ -46,8 +46,18 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
     private val toId = Object2IntOpenCustomHashMap<T>(identityStrategy())
     private val storage = HashBiMap.create<Key, T>()
     private val keyStorage = HashBiMap.create<ResourceKey<T>, T>()
-
     private var nextId = 0
+
+    override val keySet: Set<Key>
+        get() = storage.keys
+    override val entries: Set<Map.Entry<ResourceKey<T>, T>>
+        get() = keyStorage.entries
+    override val keys: Set<ResourceKey<T>>
+        get() = keyStorage.keys
+    override val values: Collection<T>
+        get() = storage.values
+    override val size: Int
+        get() = storage.size
 
     override fun <V : T> register(key: ResourceKey<T>, value: V) = register(nextId, key, value)
 
@@ -109,21 +119,6 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
 
     override fun <U> keys(ops: DynamicOps<U>): Stream<U> = keySet.stream().map { ops.createString(it.asString()) }
 
-    override val keySet: Set<Key>
-        get() = storage.keys
-
-    override val entries: Set<Map.Entry<ResourceKey<T>, T>>
-        get() = keyStorage.entries
-
-    override val keys: Set<ResourceKey<T>>
-        get() = keyStorage.keys
-
-    override val values: Collection<T>
-        get() = storage.values
-
-    override val size: Int
-        get() = storage.size
-
     companion object {
 
         fun <T : Any> ResourceKey<out Registry<T>>.directCodec(elementCodec: Codec<T>): Codec<KryptonRegistry<T>> = Codec.unboundedMap(KEY_CODEC.xmap({ ResourceKey.of(this, it) }, ResourceKey<*>::location), elementCodec).xmap(
@@ -133,7 +128,7 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
     }
 }
 
-fun <T : Any> ResourceKey<out Registry<T>>.networkCodec(elementCodec: Codec<T>): Codec<KryptonRegistry<T>> = withNameAndId(elementCodec.fieldOf("element")).codec().listOf().xmap(
+private fun <T : Any> ResourceKey<out Registry<T>>.networkCodec(elementCodec: Codec<T>): Codec<KryptonRegistry<T>> = withNameAndId(elementCodec.fieldOf("element")).codec().listOf().xmap(
     { list -> KryptonRegistry(this).apply { list.forEach { register(it.id, it.key, it.value) } } },
     { registry -> registry.values.map { RegistryEntry(registry.resourceKey(it)!!, registry.idOf(it), it) } }
 )

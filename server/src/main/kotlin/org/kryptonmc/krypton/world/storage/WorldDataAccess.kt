@@ -99,7 +99,7 @@ private fun getWorldData(ops: DynamicOps<Tag>, dataPackConfig: DataPackConfig): 
         val tag = TagIO.read(it, TagCompression.GZIP).getCompound("Data")
         val version = if (tag.contains("DataVersion", 99)) tag.getInt("DataVersion") else -1
         val data = DATA_FIXER.update(References.LEVEL, Dynamic(ops, tag), version, KryptonPlatform.worldVersion)
-        data.parseWorldData(WorldGenerationSettings.DEFAULT, dataPackConfig)
+        data.parseWorldData(WorldGenerationSettings.default(), dataPackConfig)
     } catch (exception: Exception) {
         LOGGER.error("Caught exception whilst trying to read $it!", exception)
         null

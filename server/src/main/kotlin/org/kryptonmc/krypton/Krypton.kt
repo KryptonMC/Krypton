@@ -137,7 +137,7 @@ class KryptonCLI : CliktCommand(
             config.world.hardcore,
             KryptonGameRuleHolder(),
             DataPackConfig.DEFAULT,
-            WorldGenerationSettings.DEFAULT
+            WorldGenerationSettings.default()
         )
 
         storageAccess.saveData(worldData)

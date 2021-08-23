@@ -23,11 +23,17 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.registry.encode
 import org.kryptonmc.krypton.util.encode
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeKey
+import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
+import org.kryptonmc.nbt.compound
 
 class PacketOutJoinGame(
     private val id: Int,
@@ -52,8 +58,10 @@ class PacketOutJoinGame(
         buf.writeByte(gamemode.ordinal)
         buf.writeByte(oldGamemode?.ordinal ?: -1)
         buf.writeCollection(worlds) { buf.writeKey(it.location) }
-        // TODO: Replace this
-//        buf.encode(RegistryHolder.NETWORK_CODEC, registryHolder)
+        buf.writeNBT(compound {
+            put(InternalResourceKeys.DIMENSION_TYPE.location.asString(), InternalRegistries.DIMENSION_TYPE.encode(KryptonDimensionType.CODEC))
+            put(InternalResourceKeys.BIOME.location.asString(), InternalRegistries.BIOME.encode(KryptonBiome.CODEC))
+        })
         buf.encode(KryptonDimensionType.CODEC, dimensionType)
         buf.writeKey(dimension.location)
         buf.writeLong(seed)

@@ -21,17 +21,9 @@ package org.kryptonmc.krypton.world.dimension
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.Dynamic
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.biome.KryptonBiome
-import org.kryptonmc.krypton.world.biome.gen.MultiNoiseBiomeGenerator
-import org.kryptonmc.krypton.world.biome.gen.TheEndBiomeGenerator
-import org.kryptonmc.krypton.world.generation.NoiseGenerator
-import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 import java.nio.file.Path
 
 val Key.storageFolder: String

@@ -77,6 +77,7 @@ class NoiseGeneratorSettings(
         }
 
         init {
+            register(OVERWORLD, overworld(StructureSettings(true), false))
             register(AMPLIFIED, overworld(StructureSettings(true), true))
             register(NETHER, netherLike(StructureSettings(false), Blocks.NETHERRACK, Blocks.LAVA))
             register(END, endLike(StructureSettings(false), Blocks.END_STONE, Blocks.AIR, true, true))

@@ -23,10 +23,8 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.Dynamic
 import com.mojang.serialization.JsonOps
-import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import me.bardy.gsonkt.fromJson
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.registry.InternalRegistries
@@ -34,10 +32,10 @@ import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.world.biome.gen.MultiNoiseBiomeGenerator
+import org.kryptonmc.krypton.world.biome.gen.TheEndBiomeGenerator
 import org.kryptonmc.krypton.world.biome.gen.VanillaLayeredBiomeGenerator
 import org.kryptonmc.krypton.world.dimension.Dimension
-import org.kryptonmc.krypton.world.dimension.Dimension.Companion.sort
-import org.kryptonmc.krypton.world.dimension.Dimension.Companion.stable
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
@@ -75,10 +73,8 @@ data class WorldGenerationSettings(
 
     private fun checkStable(): DataResult<WorldGenerationSettings> {
         dimensions[Dimension.OVERWORLD] ?: return DataResult.error("Missing overworld settings!")
-        return if (stable()) DataResult.success(this, Lifecycle.stable()) else DataResult.success(this)
+        return DataResult.success(this)
     }
-
-    private fun stable() = dimensions.stable(seed)
 
     companion object {
 
@@ -88,12 +84,15 @@ data class WorldGenerationSettings(
                 Codec.LONG.fieldOf("seed").stable().forGetter(WorldGenerationSettings::seed),
                 Codec.BOOL.fieldOf("generate_features").orElse(true).stable().forGetter(WorldGenerationSettings::generateFeatures),
                 Codec.BOOL.fieldOf("bonus_chest").orElse(false).stable().forGetter(WorldGenerationSettings::bonusChest),
-                InternalResourceKeys.DIMENSION.directCodec(Dimension.CODEC).xmap({ it.sort() }, Function.identity()).fieldOf("dimensions")
-                    .forGetter(WorldGenerationSettings::dimensions),
+                InternalResourceKeys.DIMENSION.directCodec(Dimension.CODEC).fieldOf("dimensions").forGetter(WorldGenerationSettings::dimensions),
                 Codec.STRING.optionalFieldOf("legacy_custom_options").stable().forGetter(WorldGenerationSettings::legacyCustomOptions)
             ).apply(instance, ::WorldGenerationSettings)
         }.comapFlatMap(WorldGenerationSettings::checkStable, Function.identity())
-        val DEFAULT = WorldGenerationSettings(0, true, false, KryptonRegistry(InternalResourceKeys.DIMENSION), Optional.empty())
+
+        fun default(): WorldGenerationSettings {
+            val seed = Random.nextLong()
+            return WorldGenerationSettings(seed, true, false, defaults(seed).withOverworld(defaultOverworld(seed)))
+        }
 
         fun fromConfig(config: KryptonConfig): WorldGenerationSettings {
             val generatorSettings = config.world.generator
@@ -111,21 +110,19 @@ data class WorldGenerationSettings(
                         seed,
                         structures,
                         false,
-                        dimensions.withOverworld(
-                            InternalRegistries.DIMENSION_TYPE,
-                            FlatGenerator(parsed.resultOrPartial(LOGGER::error).orElseGet { FlatGeneratorSettings.default(InternalRegistries.BIOME) })
-                        )
+                        dimensions.withOverworld(FlatGenerator(parsed.resultOrPartial(LOGGER::error)
+                            .orElseGet { FlatGeneratorSettings.default(InternalRegistries.BIOME) }))
                     )
                 }
                 "debug_all_block_states" -> WorldGenerationSettings(
                     seed,
                     structures,
                     false,
-                    dimensions.withOverworld(InternalRegistries.DIMENSION_TYPE, DebugGenerator(InternalRegistries.BIOME))
+                    dimensions.withOverworld(DebugGenerator(InternalRegistries.BIOME))
                 )
                 "amplified" -> WorldGenerationSettings(
                     seed, structures, false, dimensions.withOverworld(
-                        InternalRegistries.DIMENSION_TYPE, NoiseGenerator(
+                        NoiseGenerator(
                             VanillaLayeredBiomeGenerator(
                                 seed,
                                 false,
@@ -139,7 +136,7 @@ data class WorldGenerationSettings(
                 )
                 "largebiomes" -> WorldGenerationSettings(
                     seed, structures, false, dimensions.withOverworld(
-                        InternalRegistries.DIMENSION_TYPE, NoiseGenerator(
+                        NoiseGenerator(
                             VanillaLayeredBiomeGenerator(
                                 seed,
                                 false,
@@ -155,25 +152,40 @@ data class WorldGenerationSettings(
                     seed,
                     structures,
                     false,
-                    dimensions.withOverworld(InternalRegistries.DIMENSION_TYPE, defaultOverworld(InternalRegistries.NOISE_GENERATOR_SETTINGS, seed))
+                    dimensions.withOverworld(defaultOverworld(seed))
                 )
             }
         }
 
-        private fun defaultOverworld(noiseSettings: Registry<NoiseGeneratorSettings>, seed: Long) = NoiseGenerator(
+        private fun defaults(seed: Long) = KryptonRegistry(InternalResourceKeys.DIMENSION).apply {
+            register(Dimension.OVERWORLD, Dimension(DimensionTypes.OVERWORLD, defaultOverworld(seed)))
+            register(Dimension.NETHER, Dimension(DimensionTypes.THE_NETHER, defaultNether(seed)))
+            register(Dimension.END, Dimension(DimensionTypes.THE_END, defaultEnd(seed)))
+        }
+
+        private fun defaultOverworld(seed: Long) = NoiseGenerator(
             VanillaLayeredBiomeGenerator(seed, false, false, InternalRegistries.BIOME),
             seed,
-            noiseSettings[NoiseGeneratorSettings.OVERWORLD]!!
+            InternalRegistries.NOISE_GENERATOR_SETTINGS[NoiseGeneratorSettings.OVERWORLD]!!
+        )
+
+        private fun defaultNether(seed: Long) = NoiseGenerator(
+            MultiNoiseBiomeGenerator.Preset.NETHER.generator(InternalRegistries.BIOME, seed),
+            seed,
+            InternalRegistries.NOISE_GENERATOR_SETTINGS[NoiseGeneratorSettings.NETHER]!!
+        )
+
+        private fun defaultEnd(seed: Long) = NoiseGenerator(
+            TheEndBiomeGenerator(InternalRegistries.BIOME, seed),
+            seed,
+            InternalRegistries.NOISE_GENERATOR_SETTINGS[NoiseGeneratorSettings.END]!!
         )
     }
 }
 
-private fun KryptonRegistry<Dimension>.withOverworld(
-    dimensionTypes: Registry<KryptonDimensionType>,
-    generator: Generator
-): KryptonRegistry<Dimension> {
+private fun KryptonRegistry<Dimension>.withOverworld(generator: Generator): KryptonRegistry<Dimension> {
     val overworld = get(Dimension.OVERWORLD)
-    val overworldType = overworld?.type ?: dimensionTypes[DimensionTypes.OVERWORLD_KEY]!!
+    val overworldType = overworld?.type ?: InternalRegistries.DIMENSION_TYPE[DimensionTypes.OVERWORLD_KEY]!!
     return withOverworld(overworldType, generator)
 }
 
