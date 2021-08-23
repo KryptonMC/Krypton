@@ -55,7 +55,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnlockRecipes
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
@@ -74,11 +73,9 @@ import org.kryptonmc.krypton.util.nextInt
 import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.toProtocol
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.data.WorldResource
 import org.kryptonmc.krypton.world.dimension.parseDimension
-import org.spongepowered.math.GenericMath
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.nio.file.Path
@@ -97,7 +94,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
     private val statistics = ConcurrentHashMap<UUID, KryptonStatisticsTracker>()
 
-    private val registryHolder = server.registryHolder
     val bannedPlayers = BannedPlayerList(Path.of("banned-players.json"))
     val whitelist = Whitelist(Path.of("whitelist.json"))
     val bannedIps = BannedIpList(Path.of("banned-ips.json"))
@@ -135,7 +131,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             player.gamemode,
             player.oldGamemode,
             server.worldManager.worlds.keys,
-            registryHolder,
             world.dimensionType,
             world.dimension,
             Hashing.sha256().hashLong(server.worldData.worldGenerationSettings.seed).asLong(),
@@ -154,7 +149,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         session.sendPacket(PacketOutChangeHeldItem(player.inventory.heldSlot))
         session.sendPacket(PacketOutDeclareRecipes)
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
-        session.sendPacket(PacketOutTags(server.resources.tags.write(registryHolder)))
+        session.sendPacket(PacketOutTags)
         session.sendPacket(PacketOutEntityStatus(player.id, if (world.gameRules[GameRules.REDUCED_DEBUG_INFO]) 22 else 23))
         sendCommands(player)
         player.statistics.invalidate()

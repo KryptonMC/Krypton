@@ -29,11 +29,12 @@ import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.locale.Messages
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.ops.RegistryReadOps
 import org.kryptonmc.krypton.util.ChunkProgressListener
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.DerivedWorldData
@@ -42,10 +43,12 @@ import org.kryptonmc.krypton.world.data.WorldResource
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.world.dimension.storageFolder
+import org.kryptonmc.krypton.world.generation.DebugGenerator
+import org.kryptonmc.krypton.world.generation.FlatGenerator
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
+import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.kryptonmc.krypton.world.storage.WorldDataStorage
-import org.kryptonmc.nbt.Tag
 import java.io.File
 import java.io.IOException
 import java.nio.file.Path
@@ -59,7 +62,6 @@ class KryptonWorldManager(
     override val server: KryptonServer,
     private val dataAccess: WorldDataAccess,
     private val worldData: PrimaryWorldData,
-    private val ops: RegistryReadOps<Tag>,
     val worldFolder: Path
 ) : WorldManager {
 
@@ -89,8 +91,8 @@ class KryptonWorldManager(
         if (resourceKey === World.OVERWORLD) return CompletableFuture.failedFuture(IllegalArgumentException("The default world cannot be loaded!"))
         val loaded = worlds[resourceKey]
         if (loaded != null) return CompletableFuture.completedFuture(loaded)
-        val dimensionType = server.registryHolder.registryOrThrow(InternalResourceKeys.DIMENSION_TYPE)[key]
-            ?: return CompletableFuture.failedFuture(IllegalStateException("No dimension type found for given key $key!"))
+        val dimensionType = DimensionTypes.OVERWORLD
+//            ?: return CompletableFuture.failedFuture(IllegalStateException("No dimension type found for given key $key!"))
         val generator = server.worldData.worldGenerationSettings.dimensions[ResourceKey.of(InternalResourceKeys.DIMENSION, key)]?.generator
             ?: return CompletableFuture.failedFuture(IllegalStateException("No generator found for given key $key!"))
         val defaultData = server.worldData
@@ -103,7 +105,7 @@ class KryptonWorldManager(
             return CompletableFuture.failedFuture(RuntimeException("Failed to create world data for world $key!", exception))
         }
         return CompletableFuture.supplyAsync({
-            val worldData = storage.loadData(ops, defaultData.dataPackConfig) ?: kotlin.run {
+            val worldData = storage.loadData(NBTOps, defaultData.dataPackConfig) ?: kotlin.run {
                 val gamemode = server.config.world.gamemode
                 val difficulty = server.config.world.difficulty
                 val hardcore = server.config.world.hardcore
@@ -127,8 +129,8 @@ class KryptonWorldManager(
         val seed = Hashing.sha256().hashLong(generationSettings.seed).asLong()
         val dimensions = generationSettings.dimensions
         val overworld = dimensions[Dimension.OVERWORLD]
-        val dimensionType = overworld?.type ?: server.registryHolder.registryOrThrow(InternalResourceKeys.DIMENSION_TYPE)[DimensionTypes.OVERWORLD_KEY]!!
-        val generator = overworld?.generator ?: WorldGenerationSettings.defaultOverworld(server.registryHolder.registryOrThrow(InternalResourceKeys.BIOME), server.registryHolder.registryOrThrow(InternalResourceKeys.NOISE_GENERATOR_SETTINGS), Random().nextLong())
+        val dimensionType = overworld?.type ?: DimensionTypes.OVERWORLD
+        val generator = overworld?.generator ?: DebugGenerator(InternalRegistries.BIOME)
         val world = KryptonWorld(server, server.dataAccess, worldData, World.OVERWORLD, dimensionType, generator, isDebug, seed, true)
         worlds[World.OVERWORLD] = world
         if (!worldData.isInitialized) {
@@ -170,7 +172,7 @@ class KryptonWorldManager(
             it.save()
             successful = true
         }
-        dataAccess.saveData(server.registryHolder, worldData)
+        dataAccess.saveData(worldData)
         return successful
     }
 

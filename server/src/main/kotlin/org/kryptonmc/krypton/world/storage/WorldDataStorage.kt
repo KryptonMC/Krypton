@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.storage
 
-import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
@@ -47,10 +46,10 @@ class WorldDataStorage(val baseFolder: Path) {
         return if (dataFile.exists()) reader(dataFile) else null
     }
 
-    fun saveData(registryHolder: RegistryHolder, folder: Path, data: PrimaryWorldData) {
+    fun saveData(folder: Path, data: PrimaryWorldData) {
         try {
             val temp = folder.createTempFile("level", ".dat")
-            TagIO.write(temp, data.save(registryHolder), TagCompression.GZIP)
+            TagIO.write(temp, data.save(), TagCompression.GZIP)
             val dataPath = folder.resolve("level.dat")
             if (!dataPath.exists()) {
                 temp.moveTo(dataPath)

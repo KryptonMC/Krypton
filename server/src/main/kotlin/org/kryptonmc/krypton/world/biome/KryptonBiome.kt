@@ -22,11 +22,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.RegistryFileCodec
 import org.kryptonmc.krypton.util.codec
-import org.kryptonmc.krypton.util.homogenousListCodec
-import java.util.function.Supplier
 
 class KryptonBiome(
     val climate: ClimateSettings,
@@ -39,7 +35,7 @@ class KryptonBiome(
     companion object {
 
         // TODO: Add the network codec (when there is generation and mob spawn settings for the direct codec)
-        val DIRECT_CODEC: Codec<KryptonBiome> = RecordCodecBuilder.create {
+        val CODEC: Codec<KryptonBiome> = RecordCodecBuilder.create {
             it.group(
                 ClimateSettings.CODEC.forGetter(KryptonBiome::climate),
                 Codec.FLOAT.fieldOf("depth").forGetter(KryptonBiome::depth),
@@ -48,8 +44,6 @@ class KryptonBiome(
                 BiomeEffects.CODEC.fieldOf("effects").forGetter(KryptonBiome::effects)
             ).apply(it, ::KryptonBiome)
         }
-        val CODEC: Codec<() -> KryptonBiome> = RegistryFileCodec(InternalResourceKeys.BIOME, DIRECT_CODEC)
-        val LIST_CODEC = homogenousListCodec(InternalResourceKeys.BIOME, DIRECT_CODEC)
     }
 }
 

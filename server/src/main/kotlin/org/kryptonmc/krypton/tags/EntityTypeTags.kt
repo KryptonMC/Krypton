@@ -18,26 +18,24 @@
  */
 package org.kryptonmc.krypton.tags
 
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.resource.ResourceKeys
+import net.kyori.adventure.key.Key
 
 object EntityTypeTags {
 
-    val HELPER = StaticTags.create(ResourceKeys.ENTITY_TYPE, "tags/entity_types")
+    @JvmField val SKELETONS = get("skeletons")
+    @JvmField val RAIDERS = get("raiders")
+    @JvmField val BEEHIVE_INHABITORS = get("beehive_inhabitors")
+    @JvmField val ARROWS = get("arrows")
+    @JvmField val IMPACT_PROJECTILES = get("impact_projectiles")
+    @JvmField val POWDER_SNOW_WALKABLE_MOBS = get("powder_snow_walkable_mobs")
+    @JvmField val AXOLOTL_ALWAYS_HOSTILES = get("axolotl_always_hostiles")
+    @JvmField val AXOLOTL_HUNT_TARGETS = get("axolotl_hunt_targets")
+    @JvmField val FREEZE_IMMUNE_ENTITY_TYPES = get("freeze_immune_entity_types")
+    @JvmField val FREEZE_HURTS_EXTRA_TYPES = get("freeze_hurts_extra_types")
 
-    val SKELETONS = bind("skeletons")
-    val RAIDERS = bind("raiders")
-    val BEEHIVE_INHABITORS = bind("beehive_inhabitors")
-    val ARROWS = bind("arrows")
-    val IMPACT_PROJECTILES = bind("impact_projectiles")
-    val POWDER_SNOW_WALKABLE_MOBS = bind("powder_snow_walkable_mobs")
-    val AXOLOTL_ALWAYS_HOSTILES = bind("axolotl_always_hostiles")
-    val AXOLOTL_HUNT_TARGETS = bind("axolotl_hunt_targets")
-    val FREEZE_IMMUNE_ENTITY_TYPES = bind("freeze_immune_entity_types")
-    val FREEZE_HURTS_EXTRA_TYPES = bind("freeze_hurts_extra_types")
+    @JvmStatic
+    operator fun get(key: Key) = TagManager[TagTypes.ENTITY_TYPES, key.asString()]
 
-    private fun bind(name: String) = HELPER.bind(name)
-
-    val tags: TagCollection<EntityType<*>>
-        get() = HELPER.tags
+    @JvmStatic
+    private fun get(name: String) = TagManager[TagTypes.ENTITY_TYPES, "minecraft:$name"]!!
 }

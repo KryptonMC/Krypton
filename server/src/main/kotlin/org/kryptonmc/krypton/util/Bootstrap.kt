@@ -50,6 +50,7 @@ import org.kryptonmc.krypton.tags.EntityTypeTags
 import org.kryptonmc.krypton.tags.FluidTags
 import org.kryptonmc.krypton.tags.GameEventTags
 import org.kryptonmc.krypton.tags.ItemTags
+import org.kryptonmc.krypton.tags.TagManager
 import org.kryptonmc.krypton.util.encryption.Encryption
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
@@ -97,6 +98,7 @@ object Bootstrap {
         MetaKeys // Not technically a registry, but quite close to one
 
         // Preload tags (which use registries)
+        TagManager
         BlockTags
         EntityTypeTags
         FluidTags

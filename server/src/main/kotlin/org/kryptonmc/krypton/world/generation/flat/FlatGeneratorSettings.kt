@@ -23,45 +23,43 @@ import com.mojang.serialization.DataResult
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.RegistryLookupCodec
-import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiome
-import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.StructureSettings
 import java.util.Optional
 import java.util.function.Function
-import java.util.function.Supplier
 
 class FlatGeneratorSettings(
-    private val biomes: Registry<KryptonBiome>,
+    private val biomes: KryptonRegistry<KryptonBiome>,
     val structureSettings: StructureSettings
 ) {
 
     val layers = mutableListOf<FlatLayer>()
     val blockLayers = mutableListOf<Block>()
-    private var biomeSupplier = { biomes[BiomeKeys.PLAINS]!! }
+    var biome = biomes[BiomeKeys.PLAINS]!!
+        private set
     private var generateVoid = false
     var decorate = false
     var addLakes = false
 
     constructor(
-        biomes: Registry<KryptonBiome>,
+        biomes: KryptonRegistry<KryptonBiome>,
         structureSettings: StructureSettings,
         layers: List<FlatLayer>,
         addLakes: Boolean,
         decorate: Boolean,
-        biome: Optional<() -> KryptonBiome>
+        biome: Optional<KryptonBiome>
     ) : this(biomes, structureSettings) {
         if (addLakes) this.addLakes = true
         if (decorate) this.decorate = true
         this.layers.addAll(layers)
         updateLayers()
-        this.biomeSupplier = if (!biome.isPresent) {
-            { biomes[BiomeKeys.PLAINS]!! }
+        this.biome = if (!biome.isPresent) {
+            biomes[BiomeKeys.PLAINS]!!
         } else biome.get()
     }
 
@@ -71,26 +69,23 @@ class FlatGeneratorSettings(
         generateVoid = blockLayers.all { it === Blocks.AIR }
     }
 
-    val biome: KryptonBiome
-        get() = biomeSupplier()
-
     companion object {
 
         val CODEC: Codec<FlatGeneratorSettings> = RecordCodecBuilder.create<FlatGeneratorSettings> { instance ->
             instance.group(
-                RegistryLookupCodec(InternalResourceKeys.BIOME).forGetter(FlatGeneratorSettings::biomes),
+                InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes").forGetter(FlatGeneratorSettings::biomes),
                 StructureSettings.CODEC.fieldOf("structures").forGetter(FlatGeneratorSettings::structureSettings),
                 FlatLayer.CODEC.listOf().fieldOf("layers").forGetter(FlatGeneratorSettings::layers),
                 Codec.BOOL.fieldOf("lakes").orElse(false).forGetter(FlatGeneratorSettings::addLakes),
                 Codec.BOOL.fieldOf("features").orElse(false).forGetter(FlatGeneratorSettings::decorate),
-                KryptonBiome.CODEC.optionalFieldOf("biome").orElseGet { Optional.empty() }.forGetter { Optional.of(it.biomeSupplier) },
+                KryptonBiome.CODEC.optionalFieldOf("biome").orElseGet { Optional.empty() }.forGetter { Optional.of(it.biome) },
             ).apply(instance, ::FlatGeneratorSettings)
         }.comapFlatMap(FlatGeneratorSettings::validateHeight, Function.identity()).stable()
 
-        fun default(biomes: Registry<KryptonBiome>): FlatGeneratorSettings {
+        fun default(biomes: KryptonRegistry<KryptonBiome>): FlatGeneratorSettings {
             val structureSettings = StructureSettings(mapOf(), Optional.of(StructureSettings.DEFAULT_STRONGHOLD)) // TODO: Add village structure to the map
             return FlatGeneratorSettings(biomes, structureSettings).apply {
-                biomeSupplier = { biomes[BiomeKeys.PLAINS]!! }
+                this.biome = biomes[BiomeKeys.PLAINS]!!
                 layers.add(FlatLayer(Blocks.BEDROCK, 1))
                 layers.add(FlatLayer(Blocks.DIRT, 2))
                 layers.add(FlatLayer(Blocks.GRASS_BLOCK, 1))

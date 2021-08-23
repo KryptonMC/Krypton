@@ -21,9 +21,9 @@ package org.kryptonmc.krypton.world.biome.gen
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.RegistryLookupCodec
+import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.layer.Layers
@@ -32,8 +32,8 @@ class VanillaLayeredBiomeGenerator(
     private val seed: Long,
     private val legacyBiomeInitLayer: Boolean,
     private val largeBiomes: Boolean,
-    private val biomes: Registry<KryptonBiome>
-) : BiomeGenerator(POSSIBLE_BIOMES.asSequence().map { { biomes[it]!! } }) {
+    private val biomes: KryptonRegistry<KryptonBiome>
+) : BiomeGenerator(POSSIBLE_BIOMES.map { biomes[it]!! }) {
 
     private val noiseBiomeLayer = Layers.default(seed, legacyBiomeInitLayer, if (largeBiomes) 6 else 4, 4)
     override val codec = CODEC
@@ -47,7 +47,7 @@ class VanillaLayeredBiomeGenerator(
                 Codec.LONG.fieldOf("seed").stable().forGetter(VanillaLayeredBiomeGenerator::seed),
                 Codec.BOOL.optionalFieldOf("legacy_biome_init_layer", false, Lifecycle.stable()).forGetter(VanillaLayeredBiomeGenerator::legacyBiomeInitLayer),
                 Codec.BOOL.fieldOf("large_biomes").orElse(false).stable().forGetter(VanillaLayeredBiomeGenerator::largeBiomes),
-                RegistryLookupCodec(InternalResourceKeys.BIOME).forGetter(VanillaLayeredBiomeGenerator::biomes)
+                InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes").forGetter(VanillaLayeredBiomeGenerator::biomes)
             ).apply(it, ::VanillaLayeredBiomeGenerator)
         }
         private val POSSIBLE_BIOMES = listOf(

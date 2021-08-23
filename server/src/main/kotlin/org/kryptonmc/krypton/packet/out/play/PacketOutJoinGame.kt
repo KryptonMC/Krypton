@@ -18,25 +18,16 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import com.google.common.hash.Hashing
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.World
-import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.util.encode
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.dimension.Dimension
-import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
-import org.kryptonmc.krypton.world.generation.DebugGenerator
-import org.kryptonmc.krypton.world.generation.FlatGenerator
 
 class PacketOutJoinGame(
     private val id: Int,
@@ -44,7 +35,6 @@ class PacketOutJoinGame(
     private val gamemode: Gamemode,
     private val oldGamemode: Gamemode?,
     private val worlds: Set<ResourceKey<World>>,
-    private val registryHolder: RegistryHolder,
     private val dimensionType: KryptonDimensionType,
     private val dimension: ResourceKey<World>,
     private val seed: Long,
@@ -62,8 +52,9 @@ class PacketOutJoinGame(
         buf.writeByte(gamemode.ordinal)
         buf.writeByte(oldGamemode?.ordinal ?: -1)
         buf.writeCollection(worlds) { buf.writeKey(it.location) }
-        buf.encode(RegistryHolder.NETWORK_CODEC, registryHolder)
-        buf.encode(KryptonDimensionType.CODEC) { dimensionType }
+        // TODO: Replace this
+//        buf.encode(RegistryHolder.NETWORK_CODEC, registryHolder)
+        buf.encode(KryptonDimensionType.CODEC, dimensionType)
         buf.writeKey(dimension.location)
         buf.writeLong(seed)
         buf.writeVarInt(maxPlayers)

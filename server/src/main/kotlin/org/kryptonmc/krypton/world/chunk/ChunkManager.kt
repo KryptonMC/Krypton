@@ -23,14 +23,12 @@ import it.unimi.dsi.fastutil.objects.ObjectArraySet
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.datafix.DATA_FIXER
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.chunk.ticket.TicketManager
 import org.kryptonmc.krypton.world.chunk.ticket.TicketType
@@ -116,7 +114,7 @@ class ChunkManager(private val world: KryptonWorld) {
         val carvingMasks = data.getCompound("CarvingMasks").let {
             it.getByteArray("AIR") to it.getByteArray("LIQUID")
         }
-        val biomes = KryptonBiomeContainer(world.server.registryHolder.registryOrThrow(InternalResourceKeys.BIOME) as KryptonRegistry<KryptonBiome>, world, position, world.generator.biomeGenerator)
+        val biomes = KryptonBiomeContainer(InternalRegistries.BIOME, world, position, world.generator.biomeGenerator)
         val chunk =  KryptonChunk(
             world,
             position,

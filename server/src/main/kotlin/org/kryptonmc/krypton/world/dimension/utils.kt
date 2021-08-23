@@ -34,11 +34,6 @@ import org.kryptonmc.krypton.world.generation.NoiseGenerator
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 import java.nio.file.Path
 
-fun Registry<KryptonDimensionType>.defaults(biomes: Registry<KryptonBiome>, noiseSettings: Registry<NoiseGeneratorSettings>, seed: Long) = KryptonRegistry(InternalResourceKeys.DIMENSION).apply {
-    register(Dimension.NETHER, Dimension(defaultNether(biomes, noiseSettings, seed)) { this@defaults[DimensionTypes.NETHER_KEY]!! })
-    register(Dimension.END, Dimension(defaultEnd(biomes, noiseSettings, seed)) { this@defaults[DimensionTypes.END_KEY]!! })
-}
-
 val Key.storageFolder: String
     get() = when (this) {
         World.OVERWORLD.location -> ""
@@ -63,13 +58,3 @@ fun Dynamic<*>.parseDimension(): DataResult<ResourceKey<World>> {
     }
     return KryptonWorld.RESOURCE_KEY_CODEC.parse(this)
 }
-
-private fun defaultNether(biomes: Registry<KryptonBiome>, noiseSettings: Registry<NoiseGeneratorSettings>, seed: Long) = NoiseGenerator(
-    MultiNoiseBiomeGenerator.Preset.NETHER.generator(biomes, seed),
-    seed
-) { noiseSettings[NoiseGeneratorSettings.NETHER]!! }
-
-private fun defaultEnd(biomes: Registry<KryptonBiome>, noiseSettings: Registry<NoiseGeneratorSettings>, seed: Long) = NoiseGenerator(
-    TheEndBiomeGenerator(biomes, seed),
-    seed
-) { noiseSettings[NoiseGeneratorSettings.END]!! }

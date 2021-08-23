@@ -23,8 +23,6 @@ import com.mojang.serialization.Dynamic
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.registry.RegistryHolder
-import org.kryptonmc.krypton.registry.ops.RegistryWriteOps
 import org.kryptonmc.krypton.util.UUID_CODEC
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
@@ -81,7 +79,7 @@ class PrimaryWorldData(
         worldGenerationSettings: WorldGenerationSettings
     ) : this(KryptonWorldData.DEFAULT, name, gamemode, difficulty, isHardcore, gameRules, dataPackConfig, 0, 0, 0, 0F, 0L, 0L, 0, false, 0, false, 0, false, 0, 0, null, null, CompoundTag(), mutableSetOf(), worldGenerationSettings)
 
-    fun save(registryHolder: RegistryHolder) = compound {
+    fun save() = compound {
         compound("Krypton") {
             string("Version", kryptonData.version)
         }
@@ -118,10 +116,6 @@ class PrimaryWorldData(
         put("DragonFight", enderDragonFightData)
         list("ServerBrands", StringTag.ID, serverBrands.map { StringTag.of(it) })
         boolean("WasModded", isModded)
-        val ops = RegistryWriteOps(NBTOps, registryHolder)
-        WorldGenerationSettings.CODEC.encodeStart(ops, worldGenerationSettings)
-            .resultOrPartial { LOGGER.error("WorldGenSettings: $it") }
-            .ifPresent { put("WorldGenSettings", it) }
     }
 
     fun setModdedInfo(name: String, modded: Boolean) {

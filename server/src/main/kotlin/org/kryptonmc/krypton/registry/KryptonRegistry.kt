@@ -24,7 +24,6 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.DynamicOps
 import com.mojang.serialization.Keyable
-import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
@@ -32,7 +31,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.krypton.resource.elementKey
+import org.kryptonmc.krypton.util.elementKey
 import org.kryptonmc.krypton.util.IdMap
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.identityStrategy

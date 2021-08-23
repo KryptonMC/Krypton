@@ -18,50 +18,41 @@
  */
 package org.kryptonmc.krypton.tags
 
-import org.kryptonmc.krypton.registry.RegistryHolder
-import org.kryptonmc.krypton.resource.ResourceManager
-import org.kryptonmc.krypton.resource.reload.ReloadListener
-import org.kryptonmc.krypton.util.logger
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executor
+import com.google.gson.JsonObject
+import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.GSON
+import java.util.Collections
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
 
-class TagManager(private val registryHolder: RegistryHolder) : ReloadListener {
+object TagManager {
 
-    var tags = TagContainer.EMPTY
-        private set
+    private val tagMap = ConcurrentHashMap<TagType<out Any>, MutableList<Tag<out Any>>>()
+    val tags: Map<TagType<out Any>, List<Tag<out Any>>>
+        get() = Collections.unmodifiableMap(tagMap)
 
-    override fun reload(barrier: ReloadListener.Barrier, manager: ResourceManager, executor: Executor, syncExecutor: Executor): CompletableFuture<Void> {
-        val infos = mutableListOf<LoaderInfo<*>>()
-        StaticTags.visitHelpers { helper -> createLoader(manager, executor, helper)?.let { infos.add(it) } }
-        return CompletableFuture.allOf(*infos.map { it.pendingLoad }.toTypedArray()).thenCompose(barrier::wait).thenAcceptAsync({
-            val builder = TagContainer.Builder()
-            infos.forEach { it.addToBuilder(builder) }
-            val container = builder.build()
-            val missingTags = StaticTags.missing(container)
-            check(missingTags.isEmpty) { "Missing required tags: ${missingTags.entries().asSequence().map { "${it.key}:${it.value}" }.sorted().joinToString()}" }
-            tags = container
-        }, syncExecutor)
-    }
-
-    private fun <T : Any> createLoader(manager: ResourceManager, executor: Executor, helper: StaticTagHelper<T>): LoaderInfo<T>? {
-        val registry = registryHolder.registry(helper.key) ?: kotlin.run {
-            LOGGER.warn("Failed to find registry for ${helper.key}!")
-            return null
-        }
-        val loader = TagLoader(registry::get, helper.directory)
-        val pendingLoad = CompletableFuture.supplyAsync({ loader.loadAndBuild(manager) }, executor)
-        return LoaderInfo(helper, pendingLoad)
-    }
-
-    class LoaderInfo<T : Any>(val helper: StaticTagHelper<T>, val pendingLoad: CompletableFuture<out TagCollection<T>>) {
-
-        fun addToBuilder(builder: TagContainer.Builder) {
-            builder.add(helper.key, pendingLoad.join())
+    init {
+        TagTypes.VALUES.forEach { type ->
+            val json = ClassLoader.getSystemResourceAsStream(type.path)!!.reader().use { GSON.fromJson(it, JsonObject::class.java) }
+            val identifierMap = tagMap.getOrPut(type) { CopyOnWriteArrayList() }
+            json.keySet().forEach {
+                val tag = Tag(Key.key(it), type, keys(json, it))
+                identifierMap.add(tag)
+            }
         }
     }
 
-    companion object {
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T : Any> get(type: TagType<T>, name: String): Tag<T>? = tagMap[type]?.firstOrNull { it.name.asString() == name } as? Tag<T>
 
-        private val LOGGER = logger<TagManager>()
+    private fun keys(main: JsonObject, value: String): Set<String> {
+        val tagObject = main.getAsJsonObject(value)
+        val tagValues = tagObject.getAsJsonArray("values")
+        val result = HashSet<String>(tagValues.size())
+        tagValues.forEach {
+            val asString = it.asString
+            if (asString.startsWith("#")) result.addAll(keys(main, asString.substring(1))) else result.add(asString)
+        }
+        return result
     }
 }

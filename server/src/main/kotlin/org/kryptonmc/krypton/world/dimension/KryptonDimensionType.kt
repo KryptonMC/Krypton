@@ -25,10 +25,10 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.util.getIfPresent
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.RegistryFileCodec
 import org.kryptonmc.krypton.tags.BlockTags
 import org.kryptonmc.krypton.tags.Tag
+import org.kryptonmc.krypton.tags.TagManager
+import org.kryptonmc.krypton.tags.TagTypes
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.PACKED_Y
 import org.kryptonmc.krypton.util.frac
@@ -72,7 +72,7 @@ data class KryptonDimensionType(
 
     fun brightness(phase: Int) = brightnessRamp[phase]
 
-    fun infiniburn(): Tag<Block> = BlockTags.tags[infiniburn] ?: BlockTags.INFINIBURN_OVERWORLD
+    fun infiniburn(): Tag<Block> = TagManager[TagTypes.BLOCKS, infiniburn.asString()] ?: BlockTags.INFINIBURN_OVERWORLD
 
     fun equalTo(other: KryptonDimensionType): Boolean {
         if (this === other) return true
@@ -96,7 +96,7 @@ data class KryptonDimensionType(
         const val MOON_PHASES = 8
         val MOON_BRIGHTNESS_BY_PHASE = floatArrayOf(1F, 0.75F, 0.5F, 0.25F, 0F, 0.25F, 0.5F, 0.75F)
 
-        val DIRECT_CODEC: Codec<KryptonDimensionType> = RecordCodecBuilder.create<KryptonDimensionType> { instance ->
+        val CODEC: Codec<KryptonDimensionType> = RecordCodecBuilder.create<KryptonDimensionType> { instance ->
             instance.group(
                 Codec.BOOL.fieldOf("piglin_safe").forGetter(KryptonDimensionType::isPiglinSafe),
                 Codec.BOOL.fieldOf("natural").forGetter(KryptonDimensionType::isNatural),
@@ -116,8 +116,6 @@ data class KryptonDimensionType(
                 KEY_CODEC.fieldOf("effects").forGetter(KryptonDimensionType::effects)
             ).apply(instance, ::KryptonDimensionType)
         }.comapFlatMap({ it.checkY() }, { it })
-
-        val CODEC: Codec<() -> KryptonDimensionType> = RegistryFileCodec(InternalResourceKeys.DIMENSION_TYPE, DIRECT_CODEC)
 
         private fun KryptonDimensionType.checkY(): DataResult<KryptonDimensionType> {
             if (height < MINIMUM_HEIGHT) return DataResult.error("Height has to be at least $MINIMUM_HEIGHT!")

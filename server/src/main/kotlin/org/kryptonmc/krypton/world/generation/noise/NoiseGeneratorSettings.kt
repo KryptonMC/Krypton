@@ -27,7 +27,6 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.RegistryFileCodec
 import org.kryptonmc.krypton.world.block.BLOCK_CODEC
 import org.kryptonmc.krypton.world.generation.StructureSettings
 import java.util.Optional
@@ -57,9 +56,8 @@ class NoiseGeneratorSettings(
         val END = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("end"))
         val CAVES = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("caves"))
         val FLOATING_ISLANDS = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("floating_islands"))
-        val BUILT_IN_OVERWORLD = register(OVERWORLD, overworld(StructureSettings(true), false))
 
-        val DIRECT_CODEC: Codec<NoiseGeneratorSettings> = RecordCodecBuilder.create {
+        val CODEC: Codec<NoiseGeneratorSettings> = RecordCodecBuilder.create {
             it.group(
                 StructureSettings.CODEC.fieldOf("structures").forGetter(NoiseGeneratorSettings::structureSettings),
                 NoiseSettings.CODEC.fieldOf("noise").forGetter(NoiseGeneratorSettings::noiseSettings),
@@ -77,7 +75,6 @@ class NoiseGeneratorSettings(
                 Codec.BOOL.fieldOf("noodle_caves_enabled").forGetter(NoiseGeneratorSettings::noodleCavesEnabled)
             ).apply(it, ::NoiseGeneratorSettings)
         }
-        val CODEC: Codec<() -> NoiseGeneratorSettings> = RegistryFileCodec(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, DIRECT_CODEC)
 
         init {
             register(AMPLIFIED, overworld(StructureSettings(true), true))

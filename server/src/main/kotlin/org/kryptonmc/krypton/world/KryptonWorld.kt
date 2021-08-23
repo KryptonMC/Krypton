@@ -81,7 +81,6 @@ class KryptonWorld(
     private val tickTime: Boolean
 ) : World, WorldAccessor {
 
-    override val registryHolder = server.registryHolder
     override val world = this
     override val biomeManager = BiomeManager(this, seed, dimensionType.biomeZoomer)
     override val random = Random()

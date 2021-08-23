@@ -56,7 +56,6 @@ class GenerationRegion(
     override val chunkManager = world.chunkManager
     override val data = world.data
     override val seaLevel = world.seaLevel
-    override val registryHolder = world.registryHolder
     override val server = world.server
 
     init {

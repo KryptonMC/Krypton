@@ -31,22 +31,13 @@ import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.TranslationManager
-import org.kryptonmc.krypton.pack.repository.FolderRepositorySource
-import org.kryptonmc.krypton.pack.repository.KryptonRepositorySource
-import org.kryptonmc.krypton.pack.repository.PackRepository
-import org.kryptonmc.krypton.pack.repository.PackSource
-import org.kryptonmc.krypton.registry.RegistryHolder
-import org.kryptonmc.krypton.registry.ops.RegistryReadOps
-import org.kryptonmc.krypton.server.ServerResources
-import org.kryptonmc.krypton.util.BACKGROUND_EXECUTOR
 import org.kryptonmc.krypton.util.Bootstrap
-import org.kryptonmc.krypton.util.createFile
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.DataPackConfig
 import org.kryptonmc.krypton.world.KryptonGameRuleHolder
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
-import org.kryptonmc.krypton.world.data.WorldResource
+import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.storage.WorldDataStorage
 import java.nio.file.Path
 import java.util.Locale
@@ -136,50 +127,29 @@ class KryptonCLI : CliktCommand(
         )
 
         // Setup registries and create world storage access
-        val registryHolder = RegistryHolder.builtin()
         val storageAccess = WorldDataStorage(worldFolder).createAccess(config.world.name)
         val profileCache = KryptonProfileCache(userCacheFile)
 
-        // Load the resources
-        val previousPacks = storageAccess.dataPacks
-        if (safeMode) logger.warn("Safe mode active, only the built-in data pack will be loaded.")
-
-        val packRepository = PackRepository(KryptonRepositorySource(), FolderRepositorySource(storageAccess.resourcePath(WorldResource.DATA_PACK_FOLDER), PackSource.WORLD))
-        val packConfig = packRepository.configure(previousPacks ?: DataPackConfig.DEFAULT, safeMode)
-
-        val resources = try {
-            ServerResources.load(packRepository.openAllSelected(), registryHolder, BACKGROUND_EXECUTOR, Runnable::run).get()
-        } catch (exception: Exception) {
-            logger.warn("Failed to load data packs! Cannot proceed with server load! To run the server with only the built-in data packs, set the safe mode flag on start up.")
-            return
-        }.apply { updateGlobals() }
-
-        val ops = RegistryReadOps.createAndLoad(NBTOps, resources.manager, registryHolder)
-        config.worldGenerationSettings(registryHolder)
-        val worldData = storageAccess.loadData(ops, packConfig) ?: PrimaryWorldData(
+        val worldData = storageAccess.loadData(NBTOps, DataPackConfig.DEFAULT) ?: PrimaryWorldData(
             config.world.name,
             config.world.gamemode,
             config.world.difficulty,
             config.world.hardcore,
             KryptonGameRuleHolder(),
-            packConfig,
-            config.worldGenerationSettings(registryHolder)
+            DataPackConfig.DEFAULT,
+            WorldGenerationSettings.DEFAULT
         )
 
-        storageAccess.saveData(registryHolder, worldData)
+        storageAccess.saveData(worldData)
         val reference = AtomicReference<KryptonServer>()
         val serverThread = Thread({ reference.get().start() }, "Server Thread").apply {
             setUncaughtExceptionHandler { _, exception -> logger<KryptonServer>().error(exception) }
         }
         val server = KryptonServer(
-            registryHolder,
             storageAccess,
             worldData,
-            packRepository,
-            resources,
             config,
             profileCache,
-            ops,
             configFile,
             worldFolder
         )

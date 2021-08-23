@@ -39,8 +39,8 @@ import org.kryptonmc.krypton.world.generation.noise.NoiseModifier
 class NoiseGenerator(
     biomeGenerator: BiomeGenerator,
     private val seed: Long,
-    private val settings: () -> NoiseGeneratorSettings
-) : Generator(biomeGenerator, biomeGenerator, settings().structureSettings, seed) {
+    private val settings: NoiseGeneratorSettings
+) : Generator(biomeGenerator, biomeGenerator, settings.structureSettings, seed) {
 
     private val cellHeight: Int
     private val cellWidth: Int
@@ -58,8 +58,7 @@ class NoiseGenerator(
     override val codec = CODEC
 
     init {
-        val settings = settings()
-        val noiseSettings = settings().noiseSettings
+        val noiseSettings = settings.noiseSettings
         height = noiseSettings.height
         cellHeight = noiseSettings.verticalSize shl 2
         cellWidth = noiseSettings.horizontalSize shl 2
@@ -97,7 +96,7 @@ class NoiseGenerator(
                 val zOff = minBlockZ + zo
                 val height = chunk.getHeight(Heightmap.Type.WORLD_SURFACE_WG, xo, zo) + 1
                 val noise = surfaceNoise.getValue(xOff.toDouble() * 0.0625, zOff.toDouble() * 0.0625, 0.0625, xo.toDouble() * 0.0625) * 15.0
-                val minSurfaceLevel = settings().minimumSurfaceLevel
+                val minSurfaceLevel = settings.minimumSurfaceLevel
                 // TODO: Get biomes from region and build surface
             }
         }

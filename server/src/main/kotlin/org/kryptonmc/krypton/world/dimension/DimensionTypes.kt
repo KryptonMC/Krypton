@@ -18,11 +18,14 @@
  */
 package org.kryptonmc.krypton.world.dimension
 
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.tags.BlockTags
+import org.kryptonmc.krypton.world.biome.gen.BiomeZoomer
 import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetBiomeZoomer
 import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetConstantColumnBiomeZoomer
 
@@ -37,7 +40,7 @@ object DimensionTypes {
     val NETHER_KEY = ResourceKey.of(InternalResourceKeys.DIMENSION_TYPE, key("the_nether"))
     val END_KEY = ResourceKey.of(InternalResourceKeys.DIMENSION_TYPE, key("the_end"))
 
-    val OVERWORLD = KryptonDimensionType(
+    val OVERWORLD = register(
         false,
         true,
         false,
@@ -56,7 +59,7 @@ object DimensionTypes {
         OVERWORLD_EFFECTS,
         FuzzyOffsetConstantColumnBiomeZoomer
     )
-    val OVERWORLD_CAVES = KryptonDimensionType(
+    val OVERWORLD_CAVES = register(
         false,
         true,
         false,
@@ -75,7 +78,7 @@ object DimensionTypes {
         OVERWORLD_EFFECTS,
         FuzzyOffsetConstantColumnBiomeZoomer
     )
-    val THE_NETHER = KryptonDimensionType(
+    val THE_NETHER = register(
         true,
         false,
         true,
@@ -94,7 +97,7 @@ object DimensionTypes {
         THE_NETHER_EFFECTS,
         FuzzyOffsetBiomeZoomer
     )
-    val THE_END = KryptonDimensionType(
+    val THE_END = register(
         false,
         false,
         false,
@@ -114,12 +117,45 @@ object DimensionTypes {
         FuzzyOffsetBiomeZoomer
     )
 
-    fun registerBuiltins(holder: RegistryHolder) = holder.apply {
-        ownedRegistryOrThrow(InternalResourceKeys.DIMENSION_TYPE).apply {
-            register(OVERWORLD_KEY, OVERWORLD)
-            register(OVERWORLD_CAVES_KEY, OVERWORLD_CAVES)
-            register(NETHER_KEY, THE_NETHER)
-            register(END_KEY, THE_END)
-        }
-    }
+    private fun register(
+        isPiglinSafe: Boolean,
+        isNatural: Boolean,
+        isUltrawarm: Boolean,
+        hasSkylight: Boolean,
+        hasCeiling: Boolean,
+        hasRaids: Boolean,
+        bedWorks: Boolean,
+        respawnAnchorWorks: Boolean,
+        ambientLight: Float,
+        fixedTime: Long?,
+        infiniburn: Key,
+        minimumY: Int,
+        height: Int,
+        logicalHeight: Int,
+        coordinateScale: Double,
+        effects: Key,
+        biomeZoomer: BiomeZoomer = FuzzyOffsetBiomeZoomer
+    ) = Registries.register(
+        InternalRegistries.DIMENSION_TYPE,
+        effects,
+        KryptonDimensionType(
+            isPiglinSafe,
+            isNatural,
+            isUltrawarm,
+            hasSkylight,
+            hasCeiling,
+            hasRaids,
+            bedWorks,
+            respawnAnchorWorks,
+            ambientLight,
+            fixedTime,
+            infiniburn,
+            minimumY,
+            height,
+            logicalHeight,
+            coordinateScale,
+            effects,
+            biomeZoomer
+        )
+    )
 }

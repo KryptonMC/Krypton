@@ -16,24 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.resource.reload
+package org.kryptonmc.krypton.tags
 
-import org.kryptonmc.krypton.resource.ResourceManager
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executor
+import org.kryptonmc.api.registry.Registry
 
-abstract class SimpleReloadListener<R> : ReloadListener {
-
-    protected abstract fun prepare(manager: ResourceManager): R
-
-    protected abstract fun apply(resources: R, manager: ResourceManager)
-
-    override fun reload(
-        barrier: ReloadListener.Barrier,
-        manager: ResourceManager,
-        executor: Executor,
-        syncExecutor: Executor
-    ): CompletableFuture<Void> = CompletableFuture.supplyAsync({ prepare(manager) }, executor)
-        .thenCompose(barrier::wait)
-        .thenAcceptAsync({ apply(it, manager) }, syncExecutor)
-}
+class TagType<T : Any>(
+    val identifier: String,
+    val path: String,
+    val registry: Registry<T>
+)

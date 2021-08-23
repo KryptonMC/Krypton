@@ -18,18 +18,16 @@
  */
 package org.kryptonmc.krypton.tags
 
-import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.world.event.GameEvent
+import net.kyori.adventure.key.Key
 
 object GameEventTags {
 
-    val HELPER = StaticTags.create(InternalResourceKeys.GAME_EVENT, "tags/game_events")
+    @JvmField val VIBRATIONS = get("vibrations")
+    @JvmField val IGNORE_VIBRATIONS_SNEAKING = get("ignore_vibrations_sneaking")
 
-    val VIBRATIONS = bind("vibrations")
-    val IGNORE_VIBRATIONS_SNEAKING = bind("ignore_vibrations_sneaking")
+    @JvmStatic
+    operator fun get(key: Key) = TagManager[TagTypes.GAME_EVENTS, key.asString()]
 
-    private fun bind(name: String) = HELPER.bind(name)
-
-    val tags: TagCollection<GameEvent>
-        get() = HELPER.tags
+    @JvmStatic
+    private fun get(name: String) = TagManager[TagTypes.GAME_EVENTS, "minecraft:$name"]!!
 }

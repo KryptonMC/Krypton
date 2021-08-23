@@ -21,12 +21,8 @@ package org.kryptonmc.krypton.world.storage
 import com.mojang.serialization.Dynamic
 import com.mojang.serialization.DynamicOps
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.util.orThrow
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.RegistryHolder
-import org.kryptonmc.krypton.registry.RegistryLookupCodec
 import org.kryptonmc.krypton.util.datafix.DATA_FIXER
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.lock
@@ -67,7 +63,7 @@ class WorldDataAccess(
         return storage.loadData(path, getWorldData(ops, dataPackConfig))
     }
 
-    fun saveData(registryHolder: RegistryHolder, data: PrimaryWorldData) = storage.saveData(registryHolder, path, data)
+    fun saveData(data: PrimaryWorldData) = storage.saveData(path, data)
 
     override fun close() = lock.close()
 
@@ -103,23 +99,10 @@ private fun getWorldData(ops: DynamicOps<Tag>, dataPackConfig: DataPackConfig): 
         val tag = TagIO.read(it, TagCompression.GZIP).getCompound("Data")
         val version = if (tag.contains("DataVersion", 99)) tag.getInt("DataVersion") else -1
         val data = DATA_FIXER.update(References.LEVEL, Dynamic(ops, tag), version, KryptonPlatform.worldVersion)
-        val worldGenSettings = data.readWorldGenSettings(version)
-        data.parseWorldData(worldGenSettings, dataPackConfig)
+        data.parseWorldData(WorldGenerationSettings.DEFAULT, dataPackConfig)
     } catch (exception: Exception) {
         LOGGER.error("Caught exception whilst trying to read $it!", exception)
         null
-    }
-}
-
-private fun <T> Dynamic<T>.readWorldGenSettings(version: Int): WorldGenerationSettings {
-    var temp = get("WorldGenSettings").orElseEmptyMap()
-    OLD_SETTINGS_KEYS.forEach { key -> get(key).result().ifPresent { temp = temp.set(key, it) } }
-    val data = DATA_FIXER.update(References.WORLD_GEN_SETTINGS, temp, version, KryptonPlatform.worldVersion)
-    return WorldGenerationSettings.CODEC.parse(data).resultOrPartial { LOGGER.error("WorldGenSettings: $it") }.orElseGet {
-        val dimensionTypes = RegistryLookupCodec(InternalResourceKeys.DIMENSION_TYPE).codec().parse(data).resultOrPartial { LOGGER.error("Dimension type registry: $it") }.orThrow("Failed to get dimension registry!")
-        val biomes = RegistryLookupCodec(InternalResourceKeys.BIOME).codec().parse(data).resultOrPartial { LOGGER.error("Biome registry: $it") }.orThrow("Failed to get biome registry")
-        val noiseSettings = RegistryLookupCodec(InternalResourceKeys.NOISE_GENERATOR_SETTINGS).codec().parse(data).resultOrPartial { LOGGER.error("Noise settings registry: $it") }.orThrow("Failed to get noise settings registry")
-        WorldGenerationSettings.makeDefault(dimensionTypes, biomes, noiseSettings)
     }
 }
 

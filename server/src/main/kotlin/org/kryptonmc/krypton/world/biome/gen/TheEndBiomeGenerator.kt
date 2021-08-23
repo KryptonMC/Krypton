@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.world.biome.gen
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.RegistryLookupCodec
+import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.noise.SimplexNoise
 import org.kryptonmc.krypton.util.random.WorldGenRandom
@@ -33,7 +33,7 @@ import kotlin.math.max
 import kotlin.math.sqrt
 
 class TheEndBiomeGenerator private constructor(
-    private val biomes: Registry<KryptonBiome>,
+    private val biomes: KryptonRegistry<KryptonBiome>,
     private val seed: Long,
     private val end: KryptonBiome,
     private val highlands: KryptonBiome,
@@ -48,7 +48,7 @@ class TheEndBiomeGenerator private constructor(
     }
     override val codec = CODEC
 
-    constructor(biomes: Registry<KryptonBiome>, seed: Long) : this(
+    constructor(biomes: KryptonRegistry<KryptonBiome>, seed: Long) : this(
         biomes,
         seed,
         biomes[BiomeKeys.THE_END]!!,
@@ -75,7 +75,7 @@ class TheEndBiomeGenerator private constructor(
 
         val CODEC: Codec<TheEndBiomeGenerator> = RecordCodecBuilder.create {
             it.group(
-                RegistryLookupCodec(InternalResourceKeys.BIOME).forGetter(TheEndBiomeGenerator::biomes),
+                InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes").forGetter(TheEndBiomeGenerator::biomes),
                 Codec.LONG.fieldOf("seed").stable().forGetter(TheEndBiomeGenerator::seed)
             ).apply(it, ::TheEndBiomeGenerator)
         }

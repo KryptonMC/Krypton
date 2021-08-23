@@ -18,20 +18,9 @@
  */
 package org.kryptonmc.krypton.world.generation.feature
 
-import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.RegistryFileCodec
 import org.kryptonmc.krypton.world.generation.feature.config.FeatureConfig
 
 class ConfiguredFeature<C : FeatureConfig, F : Feature<C>>(
     val feature: F,
     val config: C
-) {
-
-    companion object {
-
-        val DIRECT_CODEC: Codec<ConfiguredFeature<*, *>> = InternalRegistries.FEATURE.dispatch(ConfiguredFeature<*, *>::feature, Feature<*>::configuredCodec)
-        val CODEC: Codec<() -> ConfiguredFeature<*, *>> = RegistryFileCodec(InternalResourceKeys.CONFIGURED_FEATURE, DIRECT_CODEC)
-    }
-}
+)

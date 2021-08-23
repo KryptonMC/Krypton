@@ -32,8 +32,6 @@ sealed class BiomeGenerator(val possibleBiomes: List<KryptonBiome>) : NoiseBiome
 
     abstract val codec: Codec<out BiomeGenerator>
 
-    constructor(possibleBiomes: Sequence<() -> KryptonBiome>) : this(possibleBiomes.map { it() }.toList())
-
     open fun findBiomeHorizontal(
         x: Int,
         y: Int,

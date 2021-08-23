@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.world
 
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
@@ -34,7 +33,6 @@ import java.util.Random
 interface WorldAccessor : BlockAccessor, NoiseBiomeSource {
 
     val server: KryptonServer
-    val registryHolder: RegistryHolder
     val world: KryptonWorld
     val data: WorldData
     val dimensionType: KryptonDimensionType

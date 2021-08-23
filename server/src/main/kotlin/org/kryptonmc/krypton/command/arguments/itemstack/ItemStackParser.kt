@@ -70,7 +70,7 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO
             if (item != null) {
                 if (nbt != null) nbt == (it.meta as KryptonMetaHolder).nbt.immutable() else it.type == item
             } else if (tag != null) {
-                (ItemTags.tags[tag.toKey()] ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())).contains(it.type)
+                (ItemTags[tag.toKey()] ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())).contains(it.type)
             } else false
         }
     }

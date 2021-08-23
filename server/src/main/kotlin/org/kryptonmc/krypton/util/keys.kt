@@ -26,6 +26,9 @@ import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.resource.ResourceKey
+import java.util.function.Function
 
 val KEY_CODEC: Codec<Key> = Codec.STRING.comapFlatMap(::readKey, Key::asString).stable()
 
@@ -59,3 +62,5 @@ fun String.parseKey(): Key? = try {
 } catch (exception: InvalidKeyException) {
     null
 }
+
+fun <T : Any> ResourceKey<out Registry<T>>.elementKey(): Function<Key, ResourceKey<T>> = Function { ResourceKey.of(location, it) }

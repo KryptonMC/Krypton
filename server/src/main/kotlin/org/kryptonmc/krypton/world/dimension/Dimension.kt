@@ -22,21 +22,16 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
-import org.kryptonmc.krypton.util.nonNullSupplier
 import org.kryptonmc.krypton.world.generation.Generator
 
 data class Dimension(
-    val typeSupplier: () -> KryptonDimensionType,
+    val type: KryptonDimensionType,
     val generator: Generator
 ) {
 
-    val type: KryptonDimensionType
-        get() = typeSupplier()
-
-    constructor(generator: Generator, typeSupplier: () -> KryptonDimensionType) : this(typeSupplier, generator)
+    constructor(generator: Generator, type: KryptonDimensionType) : this(type, generator)
 
     companion object {
 
@@ -45,7 +40,7 @@ data class Dimension(
         val END = ResourceKey.of(InternalResourceKeys.DIMENSION, key("the_end"))
         val CODEC: Codec<Dimension> = RecordCodecBuilder.create {
             it.group(
-                KryptonDimensionType.CODEC.fieldOf("type").flatXmap(nonNullSupplier(), nonNullSupplier()).forGetter(Dimension::typeSupplier),
+                KryptonDimensionType.CODEC.fieldOf("type").forGetter(Dimension::type),
                 Generator.CODEC.fieldOf("generator").forGetter(Dimension::generator)
             ).apply(it, ::Dimension)
         }

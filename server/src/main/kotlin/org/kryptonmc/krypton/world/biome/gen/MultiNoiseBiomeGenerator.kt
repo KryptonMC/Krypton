@@ -26,9 +26,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList
 import it.unimi.dsi.fastutil.doubles.DoubleList
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.registry.RegistryLookupCodec
+import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.util.KEY_CODEC
 import org.kryptonmc.krypton.util.noise.NormalNoise
 import org.kryptonmc.krypton.util.random.WorldGenRandom
@@ -40,13 +40,13 @@ import java.util.function.Function
 
 class MultiNoiseBiomeGenerator private constructor(
     private val seed: Long,
-    private val parameters: List<Pair<ClimateParameters, () -> KryptonBiome>>,
+    private val parameters: List<Pair<ClimateParameters, KryptonBiome>>,
     private val temperatureParameters: NoiseParameters = DEFAULT_PARAMETERS,
     private val humidityParameters: NoiseParameters = DEFAULT_PARAMETERS,
     private val altitudeParameters: NoiseParameters = DEFAULT_PARAMETERS,
     private val weirdnessParameters: NoiseParameters = DEFAULT_PARAMETERS,
-    private val preset: Pair<Registry<KryptonBiome>, Preset>? = null
-) : BiomeGenerator(parameters.asSequence().map { it.second }) {
+    private val preset: Pair<KryptonRegistry<KryptonBiome>, Preset>? = null
+) : BiomeGenerator(parameters.map { it.second }) {
 
     private val temperatureNoise = NormalNoise(WorldGenRandom(seed), temperatureParameters.firstOctave, temperatureParameters.amplitudes)
     private val humidityNoise = NormalNoise(WorldGenRandom(seed + 1L), humidityParameters.firstOctave, humidityParameters.amplitudes)
@@ -65,7 +65,7 @@ class MultiNoiseBiomeGenerator private constructor(
             weirdnessNoise.getValue(x.toDouble(), usedY, z.toDouble()).toFloat(),
             0F
         )
-        return parameters.minByOrNull { it.first.fitness(climateParameters) }?.second?.invoke() ?: KryptonBiomes.THE_VOID
+        return parameters.minByOrNull { it.first.fitness(climateParameters) }?.second ?: KryptonBiomes.THE_VOID
     }
 
     private fun preset() = preset?.let { PresetInstance(it.second, it.first, seed) }
@@ -89,29 +89,29 @@ class MultiNoiseBiomeGenerator private constructor(
 
     class Preset(
         val name: Key,
-        val generator: (Preset, Registry<KryptonBiome>, Long) -> MultiNoiseBiomeGenerator
+        val generator: (Preset, KryptonRegistry<KryptonBiome>, Long) -> MultiNoiseBiomeGenerator
     ) {
 
         init {
             BY_NAME[name] = this
         }
 
-        fun generator(biomes: Registry<KryptonBiome>, seed: Long) = generator(this, biomes, seed)
+        fun generator(biomes: KryptonRegistry<KryptonBiome>, seed: Long) = generator(this, biomes, seed)
 
         companion object {
 
             val BY_NAME = mutableMapOf<Key, Preset>()
             val NETHER = Preset(Key.key("nether")) { preset, biomes, seed -> MultiNoiseBiomeGenerator(seed, listOf(
-                ClimateParameters(0F, 0F, 0F, 0F, 0F) to { biomes[BiomeKeys.NETHER_WASTES]!!},
-                ClimateParameters(0F, -0.5F, 0F, 0F, 0F) to { biomes[BiomeKeys.SOUL_SAND_VALLEY]!! },
-                ClimateParameters(0.4F, 0F, 0F, 0F, 0F) to { biomes[BiomeKeys.CRIMSON_FOREST]!! },
-                ClimateParameters(0F, 0.5F, 0F, 0F, 0.375F) to { biomes[BiomeKeys.WARPED_FOREST]!! },
-                ClimateParameters(-0.5F, 0F, 0F, 0F, 0.175F) to { biomes[BiomeKeys.BASALT_DELTAS]!! }
+                ClimateParameters(0F, 0F, 0F, 0F, 0F) to biomes[BiomeKeys.NETHER_WASTES]!!,
+                ClimateParameters(0F, -0.5F, 0F, 0F, 0F) to biomes[BiomeKeys.SOUL_SAND_VALLEY]!!,
+                ClimateParameters(0.4F, 0F, 0F, 0F, 0F) to biomes[BiomeKeys.CRIMSON_FOREST]!!,
+                ClimateParameters(0F, 0.5F, 0F, 0F, 0.375F) to biomes[BiomeKeys.WARPED_FOREST]!!,
+                ClimateParameters(-0.5F, 0F, 0F, 0F, 0.175F) to biomes[BiomeKeys.BASALT_DELTAS]!!
             ), preset = biomes to preset) }
         }
     }
 
-    class PresetInstance(val preset: Preset, val biomes: Registry<KryptonBiome>, val seed: Long) {
+    class PresetInstance(val preset: Preset, val biomes: KryptonRegistry<KryptonBiome>, val seed: Long) {
 
         val generator = preset.generator(biomes, seed)
 
@@ -123,7 +123,7 @@ class MultiNoiseBiomeGenerator private constructor(
                         { key -> Preset.BY_NAME[key]?.let { DataResult.success(it) } ?: DataResult.error("Unknown generator preset $key!") },
                         { DataResult.success(it.name) }
                     ).fieldOf("preset").stable().forGetter(PresetInstance::preset),
-                    RegistryLookupCodec(InternalResourceKeys.BIOME).forGetter(PresetInstance::biomes),
+                    InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes").forGetter(PresetInstance::biomes),
                     Codec.LONG.fieldOf("seed").stable().forGetter(PresetInstance::seed)
                 ).apply(instance, MultiNoiseBiomeGenerator::PresetInstance)
             }
@@ -136,11 +136,11 @@ class MultiNoiseBiomeGenerator private constructor(
         val DIRECT_CODEC: MapCodec<MultiNoiseBiomeGenerator> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 Codec.LONG.fieldOf("seed").forGetter(MultiNoiseBiomeGenerator::seed),
-                RecordCodecBuilder.create<Pair<ClimateParameters, () -> KryptonBiome>> { instance1 ->
+                RecordCodecBuilder.create<Pair<ClimateParameters, KryptonBiome>> { instance1 ->
                     instance1.group(
                         ClimateParameters.CODEC.fieldOf("parameters").forGetter { it.first },
-                        KryptonBiome.CODEC.fieldOf("biome").forGetter { { it.second() } },
-                    ).apply(instance1) { first, second -> Pair(first) { second() } }
+                        KryptonBiome.CODEC.fieldOf("biome").forGetter { it.second },
+                    ).apply(instance1) { first, second -> Pair(first, second) }
                 }.listOf().fieldOf("biomes").forGetter(MultiNoiseBiomeGenerator::parameters),
                 NoiseParameters.CODEC.fieldOf("temperature_noise").forGetter(MultiNoiseBiomeGenerator::temperatureParameters),
                 NoiseParameters.CODEC.fieldOf("humidity_noise").forGetter(MultiNoiseBiomeGenerator::humidityParameters),

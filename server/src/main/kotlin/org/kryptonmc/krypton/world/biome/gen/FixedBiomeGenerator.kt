@@ -23,13 +23,11 @@ import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
 
-class FixedBiomeGenerator(private val biome: () -> KryptonBiome) : BiomeGenerator(listOf(biome())) {
+class FixedBiomeGenerator(private val biome: KryptonBiome) : BiomeGenerator(listOf(biome)) {
 
     override val codec = CODEC
 
-    constructor(biome: KryptonBiome) : this({ biome })
-
-    override fun get(x: Int, y: Int, z: Int) = biome()
+    override fun get(x: Int, y: Int, z: Int) = biome
 
     override fun findBiomeHorizontal(
         x: Int,
@@ -40,7 +38,7 @@ class FixedBiomeGenerator(private val biome: () -> KryptonBiome) : BiomeGenerato
         step: Int,
         absolute: Boolean,
         predicate: (KryptonBiome) -> Boolean
-    ): Vector3i? = if (predicate(biome())) {
+    ): Vector3i? = if (predicate(biome)) {
         if (absolute) Vector3i(x, y, z) else Vector3i(x - radius + random.nextInt(radius * 2 + 1), y, z - radius + random.nextInt(radius * 2 + 1))
     } else null
 

@@ -47,21 +47,17 @@ import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.MetadataResponse
 import org.kryptonmc.krypton.locale.TranslationRepository
 import org.kryptonmc.krypton.network.PacketLoader
-import org.kryptonmc.krypton.pack.repository.PackRepository
 import org.kryptonmc.krypton.packet.out.play.PacketOutServerDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
-import org.kryptonmc.krypton.registry.RegistryHolder
 import org.kryptonmc.krypton.registry.json.RegistryBlock
 import org.kryptonmc.krypton.registry.json.RegistryBlockState
-import org.kryptonmc.krypton.registry.ops.RegistryReadOps
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.serializers.DifficultySerializer
 import org.kryptonmc.krypton.serializers.GamemodeSerializer
 import org.kryptonmc.krypton.server.PlayerManager
-import org.kryptonmc.krypton.server.ServerResources
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.createDirectory
@@ -72,7 +68,6 @@ import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.data.WorldResource
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
-import org.kryptonmc.nbt.Tag
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.net.InetSocketAddress
 import java.nio.file.Path
@@ -87,14 +82,10 @@ import kotlin.math.max
 import kotlin.system.measureTimeMillis
 
 class KryptonServer(
-    val registryHolder: RegistryHolder,
     val dataAccess: WorldDataAccess,
     val worldData: PrimaryWorldData,
-    val packRepository: PackRepository,
-    val resources: ServerResources,
     val config: KryptonConfig,
     override val profileCache: KryptonProfileCache,
-    ops: RegistryReadOps<Tag>,
     private val configPath: Path,
     worldFolder: Path
 ) : Server {
@@ -134,7 +125,7 @@ class KryptonServer(
     private val nettyProcess = NettyProcess(this)
     val random = SecureRandom()
 
-    override val worldManager = KryptonWorldManager(this, dataAccess, worldData, ops, worldFolder)
+    override val worldManager = KryptonWorldManager(this, dataAccess, worldData, worldFolder)
     override val commandManager = KryptonCommandManager()
     override val pluginManager = KryptonPluginManager(this)
     override val eventManager = KryptonEventManager(pluginManager)
@@ -344,7 +335,6 @@ class KryptonServer(
         // save data
         Messages.STOP.SAVE.info(LOGGER)
         worldManager.saveAll()
-        resources.close()
         dataAccess.close()
         playerManager.saveAll()
 
