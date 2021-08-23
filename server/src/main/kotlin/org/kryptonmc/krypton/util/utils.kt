@@ -18,22 +18,17 @@
  */
 package org.kryptonmc.krypton.util
 
-import com.google.common.net.InetAddresses
 import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.Hash
 import net.kyori.adventure.text.Component.text
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import java.math.BigInteger
-import java.net.InetAddress
 import java.net.SocketAddress
 import java.security.AccessController
 import java.security.MessageDigest
 import java.security.PrivilegedAction
 import java.util.Optional
 import java.util.UUID
-
-// Avoid lookups
-fun String.toInetAddress(): InetAddress = InetAddresses.forString(this)
 
 fun SocketAddress.stringify(): String {
     var string = toString()
@@ -58,8 +53,6 @@ fun calculatePositionChange(new: Double, old: Double) = ((new * 32 - old * 32) *
 fun MessageDigest.hexDigest(): String = BigInteger(digest()).toString(16)
 
 fun <T> doPrivileged(action: () -> T): T = AccessController.doPrivileged(PrivilegedAction(action))
-
-fun notSupported(message: String): Nothing = throw UnsupportedOperationException(message)
 
 fun <T : Map<K, V>, K, V> Optional<T>.forEachPresent(action: (K, V) -> Unit) = ifPresent { it.forEach(action) }
 

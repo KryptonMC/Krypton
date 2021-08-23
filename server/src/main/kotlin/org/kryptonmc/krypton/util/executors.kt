@@ -29,7 +29,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 private val LOGGER = logger("Krypton")
 val BOOTSTRAP_EXECUTOR = createExecutor("Bootstrap", -2)
-val BACKGROUND_EXECUTOR = createExecutor("Main", -1)
 
 private fun createExecutor(name: String, priority: Int): ExecutorService {
     val parallelism = (Runtime.getRuntime().availableProcessors() - 2).clamp(1, 8)

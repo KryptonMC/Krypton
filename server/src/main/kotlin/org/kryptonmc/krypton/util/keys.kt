@@ -35,7 +35,7 @@ val KEY_CODEC: Codec<Key> = Codec.STRING.comapFlatMap(::readKey, Key::asString).
 private fun readKey(text: String) = try {
     DataResult.success(Key.key(text))
 } catch (exception: InvalidKeyException) {
-    DataResult.error("Not a valid resource location: $text ${exception.message}")
+    DataResult.error("Not a valid key: $text ${exception.message}")
 }
 
 private val ERROR_INVALID = SimpleCommandExceptionType(Component.translatable("argument.id.invalid").toMessage())

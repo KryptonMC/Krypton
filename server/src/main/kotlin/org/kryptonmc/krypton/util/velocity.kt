@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util
 
+import com.google.common.net.InetAddresses
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import java.net.InetAddress
@@ -62,7 +63,7 @@ data class VelocityForwardedData(
 )
 
 fun ByteBuf.readVelocityData() = VelocityForwardedData(
-    readString().toInetAddress(),
+    InetAddresses.forString(readString()),
     UUID(readLong(), readLong()),
     readString(16),
     readVelocityProperties()

@@ -48,14 +48,6 @@ private fun intRange(lower: Int, upper: Int, message: (Int) -> String): Codec<In
 private fun <N> checkRange(lower: N, upper: N, message: (N) -> String): Function<N, DataResult<N>> where N : Number, N : Comparable<N> =
     Function { if (it in lower..upper) DataResult.success(it) else DataResult.error(message(it)) }
 
-fun <T> nonNullSupplier() = Function<() -> T, DataResult<() -> T>> {
-    try {
-        if (it() == null) DataResult.error("Missing value $it!") else DataResult.success(it, Lifecycle.stable())
-    } catch (exception: Exception) {
-        DataResult.error("Invalid value: $it, message: ${exception.message}")
-    }
-}
-
 fun <E> Array<E>.codec(nameToValue: (String) -> E?): Codec<E> where E : Enum<E>, E : StringSerializable = object : Codec<E> {
 
     override fun <T> encode(input: E, ops: DynamicOps<T>, prefix: T) =

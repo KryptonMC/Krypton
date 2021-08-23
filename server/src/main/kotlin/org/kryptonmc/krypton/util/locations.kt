@@ -18,21 +18,8 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.space.Position
-import org.kryptonmc.api.space.Vector
 import org.spongepowered.math.vector.Vector3i
 
-/**
- * Convert a [Vector] to a single long with its X coordinate packed into the most significant 26
- * bits, its Z packed into the middle 26 bits, and its Y packed into the least significant 12 bits
- */
-fun Position.toProtocol() = x.toLong() and 0x3FFFFFF shl 38 or (z.toLong() and 0x3FFFFFF shl 12) or (y.toLong() and 0xFFF)
-
 fun Vector3i.toProtocol() = x().toLong() and 0x3FFFFFF shl 38 or (z().toLong() and 0x3FFFFFF shl 12) or (y().toLong() and 0xFFF)
-
-/**
- * Convert a single long to a [Vector]
- */
-fun Long.toVector() = Vector((this shr 38).toDouble(), (this and 0xFFF).toDouble(), (this shl 26 shr 38).toDouble())
 
 fun Long.toVector3i() = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())

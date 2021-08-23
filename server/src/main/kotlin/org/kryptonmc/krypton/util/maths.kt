@@ -84,12 +84,6 @@ fun Double.clampedLerp(lower: Double, upper: Double): Double {
 
 fun java.util.Random.nextFloat(a: Float, b: Float) = if (a >= b) a else nextFloat() * (b - a) + a
 
-fun absDelta(x: Int, oldX: Int, z: Int, oldZ: Int): Int {
-    val diffX = x - oldX
-    val diffZ = z - oldZ
-    return max(abs(diffX), abs(diffZ))
-}
-
 /**
  * Calculates a chunk position from a given [id] in a spiral pattern.
  *

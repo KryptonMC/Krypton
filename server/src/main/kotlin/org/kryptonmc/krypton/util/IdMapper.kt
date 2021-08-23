@@ -18,12 +18,15 @@
  */
 package org.kryptonmc.krypton.util
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
+
 class IdMapper<T>(values: Map<out T, Int>? = null) : IdMap<T> {
 
-    private val byT = mutableMapOf<T, Int>()
+    private val byT = Object2IntOpenHashMap<T>().apply { defaultReturnValue(-1) }
     private val byId = mutableListOf<T?>()
-
     private var nextId = 0
+    val size: Int
+        get() = byT.size
 
     init {
         if (values != null) {
@@ -39,16 +42,9 @@ class IdMapper<T>(values: Map<out T, Int>? = null) : IdMap<T> {
         if (nextId <= id) nextId = id + 1
     }
 
-    operator fun plusAssign(value: T) = set(value, nextId)
+    override fun idOf(value: T) = byT.getInt(value)
 
-    override fun idOf(value: T) = byT[value] ?: -1
-
-    override fun get(id: Int): T? = if (id in byId.indices) byId[id] else null
-
-    operator fun contains(id: Int) = get(id) != null
+    override fun get(id: Int): T? = byId.getOrNull(id)
 
     override fun iterator() = byId.iterator().asSequence().filterNotNull().iterator()
-
-    val size: Int
-        get() = byT.size
 }

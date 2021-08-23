@@ -20,9 +20,15 @@ package org.kryptonmc.krypton.util
 
 /**
  * Convert an ordinary string to a protocol string, with its length prefixed.
+ *
+ * We manually copy the bytes to avoid using the spread operator.
  */
-@Suppress("SpreadOperator")
 fun String.toProtocol(): ByteArray {
     val bytes = encodeToByteArray()
-    return byteArrayOf(bytes.size.toByte(), *bytes)
+    val array = ByteArray(bytes.size + 1)
+    array[0] = bytes.size.toByte()
+    for (i in bytes.indices) {
+        array[i + 1] = bytes[i]
+    }
+    return array
 }

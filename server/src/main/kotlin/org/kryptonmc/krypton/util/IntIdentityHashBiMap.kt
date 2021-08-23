@@ -38,12 +38,6 @@ class IntIdentityHashBiMap<K>(initialCapacity: Int) : IdMap<K> {
         byId = arrayOfNulls<Any>(capacity) as Array<K?>
     }
 
-    override fun idOf(value: K) = getValue(indexOf(value, hash(value)))
-
-    override fun get(id: Int) = if (id in 0..byId.size) byId[id] else null
-
-    private fun getValue(id: Int) = if (id == -1) -1 else values[id]
-
     fun add(key: K) = nextId().apply { set(key, this) }
 
     operator fun set(key: K, value: Int) {
@@ -67,6 +61,14 @@ class IntIdentityHashBiMap<K>(initialCapacity: Int) : IdMap<K> {
         nextId = 0
         size = 0
     }
+
+    override fun idOf(value: K) = getValue(indexOf(value, hash(value)))
+
+    override fun get(id: Int) = if (id in 0..byId.size) byId[id] else null
+
+    override fun iterator() = byId.iterator().asSequence().filterNotNull().iterator()
+
+    private fun getValue(id: Int) = if (id == -1) -1 else values[id]
 
     private fun nextId(): Int {
         while (nextId < byId.size && byId[nextId] != null) nextId++
@@ -107,8 +109,6 @@ class IntIdentityHashBiMap<K>(initialCapacity: Int) : IdMap<K> {
         }
         throw RuntimeException("Overflowed :(")
     }
-
-    override fun iterator() = byId.iterator().asSequence().filterNotNull().iterator()
 
     companion object {
 

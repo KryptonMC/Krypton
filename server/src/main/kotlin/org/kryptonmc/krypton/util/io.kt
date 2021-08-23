@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.util
 
-import java.io.InputStream
 import java.nio.channels.FileChannel
 import java.nio.file.Files
 import java.nio.file.OpenOption
@@ -46,8 +45,6 @@ fun Path.list(): Sequence<Path> = Sequence { Files.list(this).iterator() }
 fun Path.forEachDirectoryEntry(predicate: (Path) -> Boolean, action: (Path) -> Unit) {
     Files.newDirectoryStream(this, predicate).use { it.forEach(action) }
 }
-
-fun InputStream.copyTo(path: Path) = Files.copy(this, path)
 
 private fun Path.catchAndReturnSelf(action: () -> Path): Path = try {
     action()

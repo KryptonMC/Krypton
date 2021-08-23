@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.entity.metadata
 
 import io.netty.buffer.ByteBuf
 
-interface MetadataSerializer<T> {
+abstract class MetadataSerializer<T>(val id: Int) {
 
-    fun write(buf: ByteBuf, item: T)
+    abstract fun write(buf: ByteBuf, item: T)
 
-    fun copy(item: T): T = item
+    open fun copy(item: T): T = item
 }

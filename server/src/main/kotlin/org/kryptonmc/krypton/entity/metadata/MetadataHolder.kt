@@ -19,11 +19,12 @@
 package org.kryptonmc.krypton.entity.metadata
 
 import io.netty.buffer.ByteBuf
-import io.netty.handler.codec.EncoderException
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.util.writeVarInt
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 class MetadataHolder(private val entity: KryptonEntity) {
 
@@ -34,20 +35,11 @@ class MetadataHolder(private val entity: KryptonEntity) {
     var isEmpty = true
         private set
     val all: List<Entry<*>>
-        get() {
-            lock.readLock().lock()
-            try {
-                val entries = itemsById.values.map { it.copy() }
-                return entries.apply { invalidateDirty() }
-            } finally {
-                lock.readLock().unlock()
-            }
-        }
+        get() = lock.read { itemsById.values.map { it.copy() }.apply { invalidate() } }
     val dirty: List<Entry<*>>
         get() {
             if (!isDirty) return emptyList()
-            lock.readLock().lock()
-            try {
+            return lock.read {
                 val entries = itemsById.values.asSequence()
                     .filter { it.isDirty }
                     .map {
@@ -56,9 +48,7 @@ class MetadataHolder(private val entity: KryptonEntity) {
                     }
                     .toList()
                 isDirty = false
-                return entries
-            } finally {
-                lock.readLock().unlock()
+                entries
             }
         }
 
@@ -66,50 +56,33 @@ class MetadataHolder(private val entity: KryptonEntity) {
         val id = key.id
         require(id <= MAX_ID_VALUE) { "Data value id is too big! Maximum size is $MAX_ID_VALUE, value was $id!" }
         require(!itemsById.containsKey(id)) { "Duplicate id value for $id!" }
-        require(MetadataSerializers.idOf(key.serializer) >= 0) { "Unregistered serializer ${key.serializer} for $id!" }
+        require(key.serializer.id >= 0) { "Unregistered serializer ${key.serializer} for $id!" }
         return createItem(key, value)
     }
 
-    operator fun <T> get(key: MetadataKey<T>) = getItem(key).value
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T> get(key: MetadataKey<T>) = lock.read { itemsById[key.id] as Entry<T> }.value
 
+    @Suppress("UNCHECKED_CAST")
     operator fun <T> set(key: MetadataKey<T>, value: T) {
-        val item = getItem(key)
-        if (value == item.value) return
-        item.value = value
+        val existing = lock.read { itemsById[key.id] as Entry<T> }
+        if (value === existing.value) return
+        existing.value = value
         entity.onDataUpdate(key)
-        item.isDirty = true
+        existing.isDirty = true
         isDirty = true
     }
 
-    fun invalidateDirty() {
+    private fun invalidate() {
         isDirty = false
-        lock.readLock().lock()
-        try {
-            itemsById.values.forEach { it.isDirty = false }
-        } finally {
-            lock.readLock().unlock()
-        }
+        lock.read { itemsById.values.forEach { it.isDirty = false } }
     }
 
-    @Suppress("ReplacePutWithAssignment") // Specialised fastutil put
     private fun <T> createItem(key: MetadataKey<T>, value: T) {
         val item = Entry(key, value)
-        lock.writeLock().lock()
-        try {
-            itemsById.put(key.id, item)
+        lock.write {
+            itemsById[key.id] = item
             isEmpty = false
-        } finally {
-            lock.writeLock().unlock()
-        }
-    }
-
-    @Suppress("UNCHECKED_CAST") // This should never fail
-    private fun <T> getItem(key: MetadataKey<T>): Entry<T> {
-        lock.readLock().lock()
-        return try {
-            itemsById[key.id] as Entry<T>
-        } finally {
-            lock.readLock().unlock()
         }
     }
 
@@ -135,9 +108,7 @@ fun List<MetadataHolder.Entry<*>>.write(buf: ByteBuf) {
 
 private fun <T> ByteBuf.writeEntry(entry: MetadataHolder.Entry<T>) {
     val key = entry.key
-    val id = MetadataSerializers.idOf(key.serializer)
-    if (id < 0) throw EncoderException("Unknown serializer type ${key.serializer}!")
     writeByte(key.id)
-    writeVarInt(id)
+    writeVarInt(key.serializer.id)
     key.serializer.write(this, entry.value)
 }

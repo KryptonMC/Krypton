@@ -26,7 +26,6 @@ import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.adventure.toSectionText
-import org.kryptonmc.krypton.util.thread.GenericThread
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.io.IOException
 import java.nio.file.Path
@@ -51,7 +50,6 @@ object Messages {
     val NETWORK = NetworkMessages
     val PLUGIN = PluginMessages
     val PROFILER = ProfilerMessages
-    val THREAD = ThreadMessages
 
     // Starting Krypton server version {0} for Minecraft {1}
     val LOAD = doubleText("load")
@@ -436,23 +434,6 @@ object Messages {
             // Something's taking too long! {0} took approximately {1} ms
             val TOO_LONG = Args2<String, Double> { name, time -> translatable("krypton.profiler.error", text(name), text(time)) }
         }
-    }
-
-    object ThreadMessages {
-
-        // Thread {0} started
-        val START = singleText("thread.start")
-
-        // Waited {0} seconds, attempting to force stop.
-        val STOP_FORCE = Args1<Int> { translatable("krypton.thread.stop-force", text(it)) }
-
-        // Thread {0} ({1}) failed to exit after {2} second(s)
-        val STOP_FORCE_ERROR = Args3<GenericThread, Thread.State, Int> { thread, state, seconds ->
-            translatable("krypton.thread.stop-force.error", text(thread.toString()), text(state.name), text(seconds))
-        }
-
-        // Thread {0} stopped
-        val STOPPED = singleText("thread.stopped")
     }
 }
 

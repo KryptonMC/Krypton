@@ -142,7 +142,8 @@ fun ByteBuf.readString(max: Short = Short.MAX_VALUE): String {
 }
 
 fun ByteBuf.writeString(value: String, max: Short = Short.MAX_VALUE) {
-    val bytes = value.encodeToByteArray().takeIf { it.size <= max } ?: throw EncoderException("String too long! Expected maximum size of $max, got length ${value.length}!")
+    val bytes = value.encodeToByteArray().takeIf { it.size <= max }
+        ?: throw EncoderException("String too long! Expected maximum size of $max, got length ${value.length}!")
     writeVarInt(bytes.size)
     writeBytes(bytes)
 }
@@ -220,16 +221,6 @@ fun ByteBuf.writeItem(item: KryptonItemStack) {
     writeVarInt(InternalRegistries.ITEM.idOf(item.type))
     writeByte(item.amount)
     writeNBT(item.meta.nbt)
-}
-
-fun ByteBuf.writeRotation(rotation: Rotation) {
-    writeFloat(rotation.x)
-    writeFloat(rotation.y)
-    writeFloat(rotation.z)
-}
-
-fun ByteBuf.writePosition(position: Position) {
-    writeLong(position.toProtocol())
 }
 
 fun ByteBuf.readVector() = readLong().toVector()
@@ -314,22 +305,12 @@ fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
     particle.write(this)
 }
 
-fun ByteBuf.writeVillagerData(data: VillagerData) {
-    writeVarInt(data.type.id)
-    writeVarInt(data.profession.id)
-    writeVarInt(data.level)
-}
-
 fun ByteBuf.writeAngle(angle: Angle) {
     writeByte(angle.value.toInt())
 }
 
 fun ByteBuf.writeKey(key: Key) {
     writeString(key.asString())
-}
-
-fun ByteBuf.writeDuration(duration: Duration) {
-    writeInt(duration.seconds.toInt() * 20)
 }
 
 inline fun <reified T : Enum<T>> ByteBuf.readEnum(): T = T::class.java.enumConstants[readVarInt()]
@@ -355,12 +336,6 @@ fun <K, V> ByteBuf.writeMap(map: Map<K, V>, keyAction: (ByteBuf, K) -> Unit, val
         valueAction(this, value)
     }
 }
-
-fun <K, V> ByteBuf.writeMap(map: Map<K, V>, keyAction: (K) -> Unit, valueAction: (ByteBuf, V) -> Unit) = writeMap(map, { _, k -> keyAction(k) }, valueAction)
-
-fun <K, V> ByteBuf.writeMap(map: Map<K, V>, keyAction: (ByteBuf, K) -> Unit, valueAction: (V) -> Unit) = writeMap(map, keyAction) { _, v -> valueAction(v) }
-
-fun <K, V> ByteBuf.writeMap(map: Map<K, V>, keyAction: (K) -> Unit, valueAction: (V) -> Unit) = writeMap(map, { _, k -> keyAction(k) }) { _, v -> valueAction(v) }
 
 fun ByteBuf.writeIntList(list: IntList) {
     writeVarInt(list.size)
