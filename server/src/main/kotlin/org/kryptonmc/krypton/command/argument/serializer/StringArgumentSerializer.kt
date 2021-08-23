@@ -18,10 +18,11 @@
  */
 package org.kryptonmc.krypton.command.argument.serializer
 
-import com.mojang.brigadier.arguments.ArgumentType
+import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.util.writeEnum
 
-class EmptyArgumentSerializer<T : ArgumentType<*>> : ArgumentSerializer<T> {
+object StringArgumentSerializer : ArgumentSerializer<StringArgumentType> {
 
-    override fun write(argument: T, buf: ByteBuf) = Unit
+    override fun write(buf: ByteBuf, value: StringArgumentType) = buf.writeEnum(value.type)
 }

@@ -16,20 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command.argument.serializer.brigadier
+package org.kryptonmc.krypton.command.argument.serializer
 
-import com.mojang.brigadier.arguments.LongArgumentType
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
+import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 
-class LongArgumentSerializer : ArgumentSerializer<LongArgumentType> {
+object EntityArgumentSerializer : FlaggedArgumentSerializer<EntityArgument> {
 
-    override fun write(argument: LongArgumentType, buf: ByteBuf) {
-        val minimum = argument.minimum != Long.MIN_VALUE
-        val maximum = argument.maximum != Long.MAX_VALUE
-        buf.writeByte(createFlags(minimum, maximum))
-
-        if (minimum) buf.writeLong(argument.minimum)
-        if (maximum) buf.writeLong(argument.maximum)
+    override fun write(buf: ByteBuf, value: EntityArgument) {
+        buf.writeByte(createFlags(value.singleTarget, value.onlyPlayers))
     }
 }

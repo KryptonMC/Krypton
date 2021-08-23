@@ -23,6 +23,7 @@
  */
 package org.kryptonmc.krypton.util
 
+import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.serialization.Codec
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.ByteBufInputStream
@@ -39,12 +40,10 @@ import org.kryptonmc.api.effect.particle.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.NoteParticleData
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.space.Direction
-import org.kryptonmc.api.space.Position
-import org.kryptonmc.api.space.Rotation
+import org.kryptonmc.api.space.Location
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.util.toVector
-import org.kryptonmc.api.space.Location
-import org.kryptonmc.krypton.entity.data.VillagerData
+import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
@@ -57,7 +56,6 @@ import org.kryptonmc.nbt.io.TagIO
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
-import java.time.Duration
 import java.util.BitSet
 import java.util.Optional
 import java.util.UUID
@@ -311,6 +309,13 @@ fun ByteBuf.writeAngle(angle: Angle) {
 
 fun ByteBuf.writeKey(key: Key) {
     writeString(key.asString())
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T : ArgumentType<*>> ByteBuf.writeArgumentType(type: T) {
+    val entry = ArgumentSerializers[type] ?: return writeKey(Key.key(""))
+    writeKey(entry.name)
+    entry.serializer.write(this, type)
 }
 
 inline fun <reified T : Enum<T>> ByteBuf.readEnum(): T = T::class.java.enumConstants[readVarInt()]

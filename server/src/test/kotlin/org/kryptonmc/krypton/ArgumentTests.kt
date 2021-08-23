@@ -27,35 +27,21 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.LongArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.Unpooled
-import net.kyori.adventure.key.Key.key
 import org.junit.jupiter.api.BeforeAll
-import org.kryptonmc.krypton.command.argument.ArgumentTypes
-import org.kryptonmc.krypton.command.argument.ArgumentTypes.writeArgumentType
-import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
-import org.kryptonmc.krypton.command.argument.serializer.EmptyArgumentSerializer
-import org.kryptonmc.krypton.command.argument.serializer.brigadier.DoubleArgumentSerializer
-import org.kryptonmc.krypton.command.argument.serializer.brigadier.FloatArgumentSerializer
-import org.kryptonmc.krypton.command.argument.serializer.brigadier.IntegerArgumentSerializer
-import org.kryptonmc.krypton.command.argument.serializer.brigadier.LongArgumentSerializer
-import org.kryptonmc.krypton.command.argument.serializer.brigadier.StringArgumentSerializer
+import org.kryptonmc.krypton.command.argument.serializer.DoubleArgumentSerializer
+import org.kryptonmc.krypton.command.argument.serializer.FlaggedArgumentSerializer
+import org.kryptonmc.krypton.command.argument.serializer.FloatArgumentSerializer
+import org.kryptonmc.krypton.command.argument.serializer.IntArgumentSerializer
+import org.kryptonmc.krypton.command.argument.serializer.LongArgumentSerializer
+import org.kryptonmc.krypton.command.argument.serializer.StringArgumentSerializer
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeArgumentType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 
 class ArgumentTests {
-
-    @Test
-    fun `argument types get call returns not null for registered types`() {
-        assertNotNull(ArgumentTypes[key("brigadier", "bool")])
-        assertNotNull(ArgumentTypes[key("brigadier", "float")])
-        assertNotNull(ArgumentTypes[key("brigadier", "double")])
-        assertNotNull(ArgumentTypes[key("brigadier", "integer")])
-        assertNotNull(ArgumentTypes[key("brigadier", "long")])
-        assertNotNull(ArgumentTypes[key("brigadier", "string")])
-    }
 
     @Test
     fun `argument types write calls error when entry is null`() {
@@ -82,34 +68,32 @@ class ArgumentTests {
 
     @Test
     fun `serializer flag creating`() {
-        EmptyArgumentSerializer<BoolArgumentType>().checkFlags()
-        DoubleArgumentSerializer().checkFlags()
-        FloatArgumentSerializer().checkFlags()
-        IntegerArgumentSerializer().checkFlags()
-        LongArgumentSerializer().checkFlags()
-        StringArgumentSerializer().checkFlags()
+        DoubleArgumentSerializer.checkFlags()
+        FloatArgumentSerializer.checkFlags()
+        IntArgumentSerializer.checkFlags()
+        LongArgumentSerializer.checkFlags()
     }
 
     @Test
     fun `number argument serializers min and max`() {
         val buf = Unpooled.buffer()
 
-        DoubleArgumentSerializer().write(DoubleArgumentType.doubleArg(10.0, 20.0), buf)
+        DoubleArgumentSerializer.write(buf, DoubleArgumentType.doubleArg(10.0, 20.0))
         buf.readByte()
         assertEquals(10.0, buf.readDouble())
         assertEquals(20.0, buf.readDouble())
 
-        FloatArgumentSerializer().write(FloatArgumentType.floatArg(10F, 20F), buf)
+        FloatArgumentSerializer.write(buf, FloatArgumentType.floatArg(10F, 20F))
         buf.readByte()
         assertEquals(10F, buf.readFloat())
         assertEquals(20F, buf.readFloat())
 
-        IntegerArgumentSerializer().write(IntegerArgumentType.integer(10, 20), buf)
+        IntArgumentSerializer.write(buf, IntegerArgumentType.integer(10, 20))
         buf.readByte()
         assertEquals(10, buf.readInt())
         assertEquals(20, buf.readInt())
 
-        LongArgumentSerializer().write(LongArgumentType.longArg(10L, 20L), buf)
+        LongArgumentSerializer.write(buf, LongArgumentType.longArg(10L, 20L))
         buf.readByte()
         assertEquals(10L, buf.readLong())
         assertEquals(20L, buf.readLong())
@@ -118,7 +102,7 @@ class ArgumentTests {
     @Test
     fun `string argument serializer`() {
         val buf = Unpooled.buffer()
-        StringArgumentSerializer().write(StringArgumentType.greedyString(), buf)
+        StringArgumentSerializer.write(buf, StringArgumentType.greedyString())
         assertEquals(2, buf.readVarInt())
     }
 
@@ -128,10 +112,10 @@ class ArgumentTests {
         @JvmStatic
         @Suppress("unused")
         fun `preload needed classes`() {
-            Class.forName("org.kryptonmc.krypton.command.argument.ArgumentTypes")
+            Class.forName("org.kryptonmc.krypton.command.argument.ArgumentSerializers")
         }
 
-        private fun ArgumentSerializer<*>.checkFlags() {
+        private fun FlaggedArgumentSerializer<*>.checkFlags() {
             assertEquals(0b00000011, createFlags(minimum = true, maximum = true))
             assertEquals(0b00000000, createFlags(minimum = false, maximum = false))
             assertEquals(0b00000010, createFlags(minimum = false, maximum = true))

@@ -23,12 +23,10 @@ import io.netty.buffer.ByteBuf
 
 interface ArgumentSerializer<T : ArgumentType<*>> {
 
-    fun write(argument: T, buf: ByteBuf)
+    fun write(buf: ByteBuf, value: T)
 
-    fun createFlags(minimum: Boolean, maximum: Boolean): Int {
-        var byte = 0
-        if (minimum) byte = byte or 1
-        if (maximum) byte = byte or 2
-        return byte
+    companion object Empty : ArgumentSerializer<ArgumentType<*>> {
+
+        override fun write(buf: ByteBuf, value: ArgumentType<*>) = Unit
     }
 }

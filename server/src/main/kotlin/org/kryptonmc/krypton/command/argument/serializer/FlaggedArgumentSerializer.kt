@@ -16,18 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command.argument.serializer.minecraft
+package org.kryptonmc.krypton.command.argument.serializer
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
-import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
+import com.mojang.brigadier.arguments.ArgumentType
 
-/**
- * A serialiser for [EntityArgument]
- */
-class EntityArgumentSerializer : ArgumentSerializer<EntityArgument> {
+sealed interface FlaggedArgumentSerializer<T : ArgumentType<*>> : ArgumentSerializer<T> {
 
-    override fun write(argument: EntityArgument, buf: ByteBuf) {
-        buf.writeByte(createFlags(argument.singleTarget, argument.onlyPlayers))
+    fun createFlags(minimum: Boolean, maximum: Boolean): Int {
+        var flags = 0
+        if (minimum) flags = flags or 1
+        if (maximum) flags = flags or 2
+        return flags
     }
 }

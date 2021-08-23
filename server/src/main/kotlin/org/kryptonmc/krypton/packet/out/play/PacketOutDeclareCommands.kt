@@ -23,11 +23,10 @@ import com.mojang.brigadier.tree.CommandNode
 import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
 import io.netty.buffer.ByteBuf
-import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.SuggestionProviders
-import org.kryptonmc.krypton.command.argument.ArgumentTypes.writeArgumentType
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.writeArgumentType
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeString

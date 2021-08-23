@@ -36,7 +36,7 @@ import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.command.BrigadierExceptions
-import org.kryptonmc.krypton.command.argument.ArgumentTypes
+import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.hanging.KryptonCanvases
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -108,7 +108,7 @@ object Bootstrap {
         // Preload some other things that would otherwise load on first player join or some other time
         Encryption
         SessionService
-        ArgumentTypes
+        ArgumentSerializers
         EntityFactory
         KryptonItemManager
         MetaFactory

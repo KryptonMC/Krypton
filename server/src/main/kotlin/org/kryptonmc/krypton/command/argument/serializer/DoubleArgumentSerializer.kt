@@ -16,14 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command.argument.serializer.brigadier
+package org.kryptonmc.krypton.command.argument.serializer
 
-import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.arguments.DoubleArgumentType
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
-import org.kryptonmc.krypton.util.writeVarInt
 
-class StringArgumentSerializer : ArgumentSerializer<StringArgumentType> {
+object DoubleArgumentSerializer : FlaggedArgumentSerializer<DoubleArgumentType> {
 
-    override fun write(argument: StringArgumentType, buf: ByteBuf) = buf.writeVarInt(argument.type.ordinal)
+    override fun write(buf: ByteBuf, value: DoubleArgumentType) {
+        val writeMin = value.minimum != -Double.MAX_VALUE
+        val writeMax = value.maximum != Double.MAX_VALUE
+        buf.writeByte(createFlags(writeMin, writeMax))
+        if (writeMin) buf.writeDouble(value.minimum)
+        if (writeMax) buf.writeDouble(value.maximum)
+    }
 }
