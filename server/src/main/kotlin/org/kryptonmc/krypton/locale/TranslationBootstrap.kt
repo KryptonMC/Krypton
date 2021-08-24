@@ -18,12 +18,10 @@
  */
 package org.kryptonmc.krypton.locale
 
-import com.google.gson.JsonObject
-import me.bardy.gsonkt.fromJson
+import com.google.gson.stream.JsonReader
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer
 import net.kyori.adventure.translation.TranslationRegistry
-import org.kryptonmc.krypton.GSON
 import java.text.MessageFormat
 import java.util.Locale
 
@@ -36,11 +34,14 @@ object TranslationBootstrap {
     fun init() {
         val inputStream = Thread.currentThread().contextClassLoader.getResourceAsStream("en_us.json")
             ?: error("Unable to find built-in Minecraft locale file in JAR!")
-        val json = GSON.fromJson<JsonObject>(inputStream.reader())
-        json.entrySet().forEach {
-            val key = it.key
-            val value = it.value.asString.replace(UNSUPPORTED_FORMAT_REGEX, "%\$1s")
-            REGISTRY.register(key, Locale.US, MessageFormat(value, Locale.US))
+        JsonReader(inputStream.reader()).use { reader ->
+            reader.beginObject()
+            while (reader.hasNext()) {
+                val key = reader.nextName()
+                val value = reader.nextString().replace(UNSUPPORTED_FORMAT_REGEX, "%\$1s")
+                REGISTRY.register(key, Locale.US, MessageFormat(value, Locale.US))
+            }
+            reader.endObject()
         }
     }
 }

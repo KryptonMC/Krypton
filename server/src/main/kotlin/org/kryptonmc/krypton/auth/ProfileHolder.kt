@@ -18,9 +18,13 @@
  */
 package org.kryptonmc.krypton.auth
 
-import com.google.gson.JsonObject
+import com.google.gson.TypeAdapter
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
+import java.util.UUID
 
 class ProfileHolder(
     val profile: KryptonGameProfile,
@@ -28,10 +32,41 @@ class ProfileHolder(
     @Volatile var lastAccess: Long = 0L
 ) {
 
-    fun toJson() = JsonObject().apply {
-        addProperty("name", profile.name)
-        addProperty("uuid", profile.uuid.toString())
-        addProperty("expiresOn", DATE_FORMATTER.format(expiryDate))
+    object Adapter : TypeAdapter<ProfileHolder>() {
+
+        override fun read(reader: JsonReader): ProfileHolder? {
+            reader.beginObject()
+
+            var name: String? = null
+            var uuid: UUID? = null
+            var expiryDate: ZonedDateTime? = null
+            while (reader.hasNext()) {
+                when (reader.nextName()) {
+                    "name" -> name = reader.nextString()
+                    "uuid" -> uuid = UUID.fromString(reader.nextString())
+                    "expiresOn" -> expiryDate = try {
+                        ZonedDateTime.parse(reader.nextString(), DATE_FORMATTER)
+                    } catch (ignored: DateTimeParseException) {
+                        null
+                    }
+                }
+            }
+
+            reader.endObject()
+            if (name == null || uuid == null || expiryDate == null) return null
+            return ProfileHolder(KryptonGameProfile(uuid, name, emptyList()), expiryDate)
+        }
+
+        override fun write(writer: JsonWriter, value: ProfileHolder) {
+            writer.beginObject()
+            writer.name("name")
+            writer.value(value.profile.name)
+            writer.name("uuid")
+            writer.value(value.profile.uuid.toString())
+            writer.name("expiresOn")
+            writer.value(DATE_FORMATTER.format(value.expiryDate))
+            writer.endObject()
+        }
     }
 
     companion object {

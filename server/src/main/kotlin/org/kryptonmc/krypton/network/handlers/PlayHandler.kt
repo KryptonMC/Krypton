@@ -32,7 +32,6 @@ import org.kryptonmc.api.event.player.ChatEvent
 import org.kryptonmc.api.event.player.ClientSettingsEvent
 import org.kryptonmc.api.event.player.MoveEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
-import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonServer
@@ -130,6 +129,12 @@ class PlayHandler(
         else -> Unit
     }
 
+    override fun onDisconnect() {
+        playerManager.invalidateStatus()
+        playerManager.sendMessage(Identity.nil(), translatable("multiplayer.player.left", NamedTextColor.YELLOW, player.displayName), MessageType.SYSTEM)
+        playerManager.remove(player)
+    }
+
     private fun handleAnimation(packet: PacketInAnimation) {
         val animation = when (packet.hand) {
             Hand.MAIN -> EntityAnimation.SWING_MAIN_ARM
@@ -140,11 +145,12 @@ class PlayHandler(
     }
 
     private fun handleChat(packet: PacketInChat) {
-        if (packet.message.startsWith("/")) {
-            server.commandManager.dispatch(player, packet.message.removePrefix("/"))
+        if (packet.message.startsWith("/")) { // This is a command, process it as one.
+            server.commandManager.dispatch(player, packet.message.substring(1))
             return
         }
 
+        // Fire the chat event
         val event = ChatEvent(player, packet.message)
         server.eventManager.fire(event).thenAccept {
             val result = it.result
@@ -155,10 +161,11 @@ class PlayHandler(
             }
 
             val name = player.name
-            val message = translatable("chat.type.text", listOf(
+            val message = translatable(
+                "chat.type.text",
                 text(name).insertion(name).clickEvent(suggestCommand("/msg $name")).hoverEvent(player),
                 text(packet.message)
-            ))
+            )
             server.sendMessage(player, message, MessageType.CHAT)
         }
     }
@@ -184,9 +191,10 @@ class PlayHandler(
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
         if (player.gamemode != Gamemode.CREATIVE) return
         val item = packet.clickedItem
-        val inRange = packet.slot in 1..45
-        val valid = item.isEmpty() || ((MetaKeys.DAMAGE in item.meta && item.meta[MetaKeys.DAMAGE]!! >= 0) && item.amount <= 64 && !item.isEmpty())
-        if (inRange && valid) player.inventory[packet.slot.toInt()] = packet.clickedItem
+        val inValidRange = packet.slot in 1..45
+        val hasDamage = MetaKeys.DAMAGE in item.meta && item.meta[MetaKeys.DAMAGE]!! >= 0
+        val isValid = item.isEmpty() || (hasDamage && item.amount <= 64 && !item.isEmpty())
+        if (inValidRange && isValid) player.inventory[packet.slot.toInt()] = packet.clickedItem
     }
 
     private fun handleEntityAction(packet: PacketInEntityAction) {
@@ -203,7 +211,7 @@ class PlayHandler(
     }
 
     private fun handleHeldItemChange(packet: PacketInChangeHeldItem) {
-        if (packet.slot !in 0..9) {
+        if (packet.slot !in 0..8) {
             Messages.NETWORK.INVALID_HELD_SLOT.warn(LOGGER, player.name)
             return
         }
@@ -226,7 +234,7 @@ class PlayHandler(
     }
 
     private fun handleBlockPlacement(packet: PacketInPlaceBlock) {
-        if (!player.canBuild) return // if they can't place blocks, they are irrelevant :)
+        if (!player.canBuild) return // If they can't place blocks, they are irrelevant :)
 
         val world = player.world
         val chunkX = player.location.blockX shr 4
@@ -332,12 +340,6 @@ class PlayHandler(
             PacketInClientStatus.Action.PERFORM_RESPAWN -> Unit // TODO
             PacketInClientStatus.Action.REQUEST_STATS -> player.statistics.send()
         }
-    }
-
-    override fun onDisconnect() {
-        playerManager.invalidateStatus()
-        playerManager.sendMessage(Identity.nil(), translatable("multiplayer.player.left", NamedTextColor.YELLOW, player.displayName), MessageType.SYSTEM)
-        playerManager.remove(player)
     }
 
     companion object {

@@ -99,7 +99,6 @@ class KryptonCLI : CliktCommand(
     }.default(Locale.ENGLISH)
 
     override fun run() {
-        KryptonPlatform // Preload the platform early
         TranslationManager.reload(locale)
         if (version) {
             Messages.VERSION_INFO.print(KryptonPlatform.version, KryptonPlatform.minecraftVersion)

@@ -18,14 +18,18 @@
  */
 package org.kryptonmc.krypton.server.whitelist
 
-import com.google.gson.JsonObject
+import com.google.gson.stream.JsonWriter
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.server.ServerConfigEntry
 
 class WhitelistEntry(key: KryptonGameProfile) : ServerConfigEntry<KryptonGameProfile>(key) {
 
-    override fun write(data: JsonObject) {
-        data.addProperty("name", key.name)
-        data.addProperty("uuid", key.uuid.toString())
+    override fun write(writer: JsonWriter) {
+        writer.beginObject()
+        writer.name("name")
+        writer.value(key.name)
+        writer.name("uuid")
+        writer.value(key.uuid.toString())
+        writer.endObject()
     }
 }

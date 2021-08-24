@@ -18,10 +18,9 @@
  */
 package org.kryptonmc.krypton.auth
 
-import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import kotlinx.coroutines.launch
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileCache
@@ -43,7 +42,6 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
 
     private val profilesByName = ConcurrentHashMap<String, ProfileHolder>()
     private val profilesByUUID = ConcurrentHashMap<UUID, ProfileHolder>()
-    private val gson = Gson()
     private val operations = AtomicLong()
     override val profiles: Set<GameProfile>
         get() = profilesByUUID.values.mapTo(mutableSetOf()) {
@@ -81,10 +79,13 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         val holders = mutableListOf<ProfileHolder>()
         if (!path.exists()) return holders
         try {
-            path.reader().use { reader ->
-                gson.fromJson(reader, JsonArray::class.java).forEach { element ->
-                    element?.toProfileHolder()?.let { holders += it }
+            JsonReader(path.reader()).use { reader ->
+                reader.beginArray()
+                while (reader.hasNext()) {
+                    val holder = ProfileHolder.Adapter.read(reader)
+                    if (holder != null) holders.add(holder)
                 }
+                reader.endArray()
             }
         } catch (ignored: FileNotFoundException) {
         } catch (exception: JsonParseException) {
@@ -97,12 +98,17 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
 
     private fun save() {
         path.createFile()
-        val json = JsonArray()
-        profilesByUUID.values.asSequence().sortedByDescending { it.lastAccess }.take(MRU_LIMIT).forEach { json.add(it.toJson()) }
         try {
-            path.writer().use { it.write(gson.toJson(json)) }
+            JsonWriter(path.writer()).use { writer ->
+                writer.beginArray()
+                profilesByUUID.values.asSequence()
+                    .sortedByDescending { it.lastAccess }
+                    .take(MRU_LIMIT)
+                    .forEach { ProfileHolder.Adapter.write(writer, it) }
+                writer.endArray()
+            }
         } catch (exception: IOException) {
-            LOGGER.error("Error saving user cache file!", exception)
+            LOGGER.error("Error writing user cache file!", exception)
         }
     }
 

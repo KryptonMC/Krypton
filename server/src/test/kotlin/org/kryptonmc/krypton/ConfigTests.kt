@@ -18,12 +18,8 @@
  */
 package org.kryptonmc.krypton
 
-import com.google.gson.JsonParseException
-import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
-import org.junit.jupiter.api.assertThrows
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.config.KryptonConfig
@@ -109,27 +105,5 @@ class ConfigTests {
         assertTrue(config.other.metrics)
         assertEquals(5, config.other.saveThreshold)
         assertEquals("./start.sh", config.other.restartScript)
-    }
-
-    @Test
-    fun `test gamemode deserialization`() {
-        val gamemodeString = "\"adventure\""
-        val gamemodeId = "2"
-        assertEquals(Gamemode.ADVENTURE, GSON.fromJson(gamemodeString))
-        assertEquals(Gamemode.ADVENTURE, GSON.fromJson(gamemodeId))
-
-        assertThrows<JsonParseException> { GSON.fromJson<Gamemode>("\"4\"") }
-        assertThrows<JsonParseException> { GSON.fromJson<Gamemode>("\"-1\"") }
-    }
-
-    @Test
-    fun `test difficulty deserialization`() {
-        val difficultyString = "\"normal\""
-        val difficultyId = "2"
-        assertEquals(Difficulty.NORMAL, GSON.fromJson(difficultyString))
-        assertEquals(Difficulty.NORMAL, GSON.fromJson(difficultyId))
-
-        assertThrows<JsonParseException> { GSON.fromJson<Gamemode>("\"4\"") }
-        assertThrows<JsonParseException> { GSON.fromJson<Gamemode>("\"-1\"") }
     }
 }

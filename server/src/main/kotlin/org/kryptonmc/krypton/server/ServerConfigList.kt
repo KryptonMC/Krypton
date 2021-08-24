@@ -18,28 +18,23 @@
  */
 package org.kryptonmc.krypton.server
 
-import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import com.google.gson.JsonSyntaxException
-import me.bardy.gsonkt.fromJson
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import org.kryptonmc.krypton.util.logger
 import java.nio.file.Path
-import kotlin.io.path.bufferedReader
-import kotlin.io.path.bufferedWriter
 import kotlin.io.path.createFile
 import kotlin.io.path.exists
+import kotlin.io.path.reader
 import kotlin.io.path.writeText
+import kotlin.io.path.writer
 
 abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : Iterable<V> {
 
     private val map = hashMapOf<String, V>()
-    private val gson = Gson()
-
     val size: Int
         get() = map.values.size
 
-    abstract fun fromJson(data: JsonObject): ServerConfigEntry<K>?
+    abstract fun read(reader: JsonReader): ServerConfigEntry<K>?
 
     open operator fun get(key: K) = map[key.toString()]
 
@@ -66,37 +61,38 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
     }
 
     fun save() {
-        val players = JsonArray()
-        map.values.forEach {
-            val data = JsonObject()
-            it.write(data)
-            players.add(data)
+        JsonWriter(path.writer()).use { writer ->
+            writer.beginArray()
+            map.values.forEach { it.write(writer) }
+            writer.endArray()
         }
-        path.bufferedWriter(charset = Charsets.UTF_8).use { gson.toJson(players, it) }
     }
 
     @Suppress("UNCHECKED_CAST")
     fun load() {
         map.clear()
-        path.bufferedReader(charset = Charsets.UTF_8).use { reader ->
-            val data = try {
-                gson.fromJson<JsonArray>(reader)
-            } catch(_: JsonSyntaxException) {
-                LOGGER.error("Couldn't parse ${path.fileName}. Delete it to reset it")
-                return
+        JsonReader(path.reader()).use { reader ->
+            reader.beginArray()
+            while (reader.hasNext()) {
+                val entry = read(reader)
+                if (entry == null) {
+                    LOGGER.error("Failed to parse ${path.fileName}! Delete it to reset it.")
+                    continue
+                }
+                map[entry.key.toString()] = entry as V
             }
-            data.forEach {
-                val entry = it.asJsonObject
-                val serverConfigEntry = fromJson(entry) ?: return@forEach LOGGER.error("Failed to parse ${path.fileName}! Delete it to reset it.")
-                map[serverConfigEntry.key.toString()] = serverConfigEntry as V
-            }
+            reader.endArray()
         }
     }
 
-    open fun validatePath() = if (!path.exists()) {
-        path.createFile()
-        path.writeText("[]")
-    } else load()
+    open fun validatePath() {
+        if (!path.exists()) {
+            path.createFile()
+            path.writeText("[]")
+            return
+        }
+        load()
+    }
 
     companion object {
 

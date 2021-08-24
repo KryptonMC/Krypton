@@ -28,7 +28,6 @@ import org.kryptonmc.api.event.player.QuitEvent
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
-import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -88,7 +87,7 @@ import kotlin.random.Random
 
 class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
-    private val dataManager = PlayerDataManager(CURRENT_DIRECTORY.resolve(server.config.world.name).resolve("playerdata"))
+    private val dataManager = PlayerDataManager(Path.of(server.config.world.name).resolve("playerdata"))
     val players = CopyOnWriteArrayList<KryptonPlayer>()
     val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()

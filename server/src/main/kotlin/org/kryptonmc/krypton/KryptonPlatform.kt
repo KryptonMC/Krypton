@@ -18,23 +18,22 @@
  */
 package org.kryptonmc.krypton
 
-import com.google.gson.JsonObject
-import me.bardy.gsonkt.fromJson
 import org.kryptonmc.api.Platform
+import java.util.Properties
 
+// TODO: Check on update
 object KryptonPlatform : Platform {
 
-    private val JSON = GSON.fromJson<JsonObject>(Thread.currentThread().contextClassLoader.getResourceAsStream("info.json")?.reader()
-        ?: error("Could not find info.json in JAR!"))
-    private val KRYPTON_JSON = JSON["krypton"].asJsonObject
-    private val MINECRAFT_JSON = JSON["minecraft"].asJsonObject
+    private val versions = Properties().apply {
+        load(ClassLoader.getSystemResourceAsStream("META-INF/versions.properties"))
+    }
 
-    override val name = KRYPTON_JSON["name"].asString!!
-    override val version = KRYPTON_JSON["version"].asString!!
-    override val isStable = KRYPTON_JSON["stable"].asBoolean
-    override val minecraftVersion = MINECRAFT_JSON["name"].asString!!
+    override val name = "Krypton"
+    override val version: String = versions.getProperty("krypton")
+    override val isStable = false
+    override val minecraftVersion: String = versions.getProperty("minecraft")
     const val isStableMinecraft = true
-    override val worldVersion = JSON["world_version"].asInt
-    override val protocolVersion = JSON["protocol_version"].asInt
-    override val dataPackVersion = JSON["data_pack_version"].asInt
+    override val worldVersion = 2730
+    override val protocolVersion = 756
+    override val dataPackVersion = 7
 }

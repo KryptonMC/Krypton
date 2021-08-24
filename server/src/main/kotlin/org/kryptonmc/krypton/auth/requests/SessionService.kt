@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.auth.requests
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
-import me.bardy.gsonkt.fromJson
-import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.locale.Messages
@@ -40,13 +38,16 @@ import java.util.concurrent.TimeUnit
  */
 object SessionService {
 
+    private val SERVER_ID_BYTES = ByteArray(0)
+    private val LOGGER = logger<SessionService>()
+
     private val client = HttpClient.newHttpClient()
     private val profiles: Cache<String, KryptonGameProfile> = Caffeine.newBuilder()
         .expireAfterWrite(6, TimeUnit.HOURS)
         .build()
 
     /**
-     * Authenticate a user with Mojang.
+     * Authenticates a user with Mojang.
      *
      * @param username the username to authenticate
      * @param secret the shared secret
@@ -74,12 +75,9 @@ object SessionService {
             throw AuthenticationException()
         }
 
-        val profile = GSON.fromJson<KryptonGameProfile>(response.body())
+        val profile = KryptonGameProfile.fromJson(response.body())
         Messages.AUTH.SUCCESS.info(LOGGER, profile.name, profile.uuid)
         profiles.put(profile.name, profile)
         return profile
     }
-
-    private val SERVER_ID_BYTES = ByteArray(0)
-    private val LOGGER = logger<SessionService>()
 }

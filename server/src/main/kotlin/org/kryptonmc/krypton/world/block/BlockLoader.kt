@@ -18,12 +18,12 @@
  */
 package org.kryptonmc.krypton.world.block
 
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.property.Property
-import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
@@ -33,6 +33,9 @@ import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import java.util.concurrent.ConcurrentHashMap
 
 object BlockLoader {
+
+    private val FILE_LOCATION = "${KryptonPlatform.minecraftVersion.replace('.', '_')}_blocks.json"
+    private val GSON = Gson()
 
     private val KEY_MAP = mutableMapOf<String, KryptonBlock>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
@@ -46,26 +49,33 @@ object BlockLoader {
             LOGGER.warn("Attempted to load block loader twice!")
             return
         }
+
         KryptonPropertyFactory.bootstrap()
-        val blocks = GSON.fromJson<JsonObject>(
-            Thread.currentThread().contextClassLoader
-                .getResourceAsStream("${KryptonPlatform.minecraftVersion.replace(".", "_")}_blocks.json")!!
-                .reader()
-        )
+        val inputStream = ClassLoader.getSystemResourceAsStream(FILE_LOCATION)
+            ?: error("Could not find $FILE_LOCATION bundled in JAR! Please report to Krypton!")
+        val blocks = GSON.fromJson<JsonObject>(inputStream.reader())
+
         blocks.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
+            // Map properties
             val propertyEntry = PropertyEntry()
             val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) { element ->
                 val string = element.asString.let { if (it == "LEVEL") "LEVEL_FLOWING" else it }
                 KryptonPropertyFactory.PROPERTIES[string]!!
             }
+
+            // Iterate states
             value.remove("states").asJsonArray.forEach {
                 val (properties, block) = it.asJsonObject.retrieveState(key, availableProperties, value)
                 propertyEntry.properties[properties] = block
             }
+
+            // Get default state and add to map
             val defaultState = value["defaultStateId"].asInt
             val defaultBlock = fromState(defaultState)!!
             KEY_MAP[key] = defaultBlock
             PROPERTY_MAP[key] = propertyEntry
+
+            // Register to registry
             if (InternalRegistries.BLOCK.contains(Key.key(key))) return@forEach
             KryptonRegistryManager.register(InternalRegistries.BLOCK, key, defaultBlock)
         }

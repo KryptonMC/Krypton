@@ -18,10 +18,50 @@
  */
 package org.kryptonmc.krypton.auth
 
+import com.google.gson.TypeAdapter
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import org.kryptonmc.api.auth.ProfileProperty
 
 data class KryptonProfileProperty(
     override val name: String,
     override val value: String,
-    override val signature: String
-) : ProfileProperty
+    override val signature: String?
+) : ProfileProperty {
+
+    companion object : TypeAdapter<KryptonProfileProperty>() {
+
+        override fun read(reader: JsonReader): KryptonProfileProperty? {
+            reader.beginObject()
+
+            var name: String? = null
+            var value: String? = null
+            var signature: String? = null
+            while (reader.hasNext()) {
+                when (reader.nextName()) {
+                    "name" -> name = reader.nextString()
+                    "value" -> value = reader.nextString()
+                    "signature" -> signature = reader.nextString()
+                }
+            }
+
+            reader.endObject()
+            if (name == null || value == null) return null
+            return KryptonProfileProperty(name, value, signature)
+        }
+
+        override fun write(writer: JsonWriter, value: KryptonProfileProperty) {
+            writer.beginObject()
+            writer.name("name")
+            writer.value(value.name)
+            writer.name("value")
+            writer.value(value.value)
+
+            if (value.signature != null) {
+                writer.name("signature")
+                writer.value(value.signature)
+            }
+            writer.endObject()
+        }
+    }
+}

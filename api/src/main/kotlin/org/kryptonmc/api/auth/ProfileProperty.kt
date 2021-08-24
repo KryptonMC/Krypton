@@ -24,7 +24,8 @@ interface ProfileProperty {
     val value: String
 
     /**
-     * The Yggdrasil signature for this property.
+     * The Yggdrasil signature for this property. May be null if this property isn't
+     * signed.
      */
-    val signature: String
+    val signature: String?
 }

@@ -16,13 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.serializers
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.world.Gamemode
+import com.google.gson.TypeAdapter
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
+import java.util.UUID
 
-object GamemodeSerializer : IntOrStringEnumSerializer<Gamemode>() {
+object MojangUUIDTypeAdapter : TypeAdapter<UUID>() {
 
-    override fun fromInt(value: Int) = Gamemode.fromId(value)
+    private val REPLACEMENT_REGEX = "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})".toRegex()
 
-    override fun fromString(value: String) = Gamemode.valueOf(value)
+    fun fromString(string: String): UUID = UUID.fromString(string.replace(REPLACEMENT_REGEX, "$1-$2-$3-$4-$5"))
+
+    override fun read(reader: JsonReader): UUID = fromString(reader.nextString())
+
+    override fun write(out: JsonWriter, value: UUID) {
+        out.value(value.toString().replace("-", ""))
+    }
 }

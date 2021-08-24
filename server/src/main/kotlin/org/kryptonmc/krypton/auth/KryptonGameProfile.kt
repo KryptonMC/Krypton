@@ -19,30 +19,62 @@
 package org.kryptonmc.krypton.auth
 
 import com.google.gson.TypeAdapter
-import com.google.gson.annotations.SerializedName
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
 import java.util.UUID
 
 data class KryptonGameProfile(
-    @SerializedName("id") override val uuid: UUID,
+    override val uuid: UUID,
     override val name: String,
     override val properties: List<KryptonProfileProperty>
 ) : GameProfile {
 
     override fun toString() = "GameProfile(name=$name,uuid=$uuid)"
 
-}
+    companion object : TypeAdapter<KryptonGameProfile>() {
 
-object MojangUUIDTypeAdapter : TypeAdapter<UUID>() {
+        override fun read(reader: JsonReader): KryptonGameProfile? {
+            reader.beginObject()
 
-    override fun read(reader: JsonReader): UUID = UUID.fromString(
-        reader.nextString().replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})".toRegex(), "$1-$2-$3-$4-$5")
-    )
+            var uuid: UUID? = null
+            var name: String? = null
+            val properties = mutableListOf<KryptonProfileProperty>()
+            while (reader.hasNext()) {
+                when (reader.nextName()) {
+                    "id" -> uuid = MojangUUIDTypeAdapter.read(reader)
+                    "name" -> name = reader.nextString()
+                    "properties" -> {
+                        reader.beginArray()
+                        while (reader.hasNext()) {
+                            val property = KryptonProfileProperty.read(reader)
+                            if (property != null) properties.add(property)
+                        }
+                        reader.endArray()
+                    }
+                }
+            }
 
-    override fun write(out: JsonWriter, value: UUID) {
-        out.value(value.toString().replace("-", ""))
+            reader.endObject()
+            if (uuid == null || name == null) return null
+            return KryptonGameProfile(uuid, name, properties)
+        }
+
+        override fun write(writer: JsonWriter, value: KryptonGameProfile) {
+            writer.beginObject()
+            writer.name("id")
+            MojangUUIDTypeAdapter.write(writer, value.uuid)
+            writer.name("name")
+            writer.value(value.name)
+
+            if (value.properties.isNotEmpty()) {
+                writer.name("properties")
+                writer.beginArray()
+                value.properties.forEach { KryptonProfileProperty.write(writer, it) }
+                writer.endArray()
+            }
+            writer.endObject()
+        }
     }
 }
-

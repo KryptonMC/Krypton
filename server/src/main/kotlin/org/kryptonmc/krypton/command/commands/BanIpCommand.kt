@@ -69,7 +69,7 @@ object BanIpCommand : InternalCommand {
             if (server.playerManager.bannedIps.contains(entry.key)) throw ALREADY_BANNED_EXCEPTION.create()
             server.playerManager.bannedIps += entry
             val text = translatable("multiplayer.disconnect.banned_ip.reason", entry.reason.toComponent())
-            if (entry.expiryDate != null) text.append(translatable("multiplayer.disconnect.banned.expiration", BanEntry.DATE_FORMAT.format(entry.expiryDate).toComponent()))
+            if (entry.expiryDate != null) text.append(translatable("multiplayer.disconnect.banned.expiration", BanEntry.DATE_FORMATTER.format(entry.expiryDate).toComponent()))
             player.disconnect(text)
             sender.sendMessage(translatable("commands.banip.success", target.toComponent(), entry.reason.toComponent()))
             logBan(target, sender.name, reason, server)

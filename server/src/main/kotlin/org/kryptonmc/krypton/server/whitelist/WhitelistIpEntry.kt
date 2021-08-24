@@ -18,10 +18,15 @@
  */
 package org.kryptonmc.krypton.server.whitelist
 
-import com.google.gson.JsonObject
+import com.google.gson.stream.JsonWriter
 import org.kryptonmc.krypton.server.ServerConfigEntry
 
 class WhitelistIpEntry(ip: String) : ServerConfigEntry<String>(ip) {
 
-    override fun write(data: JsonObject) = data.addProperty("ip", key)
+    override fun write(writer: JsonWriter) {
+        writer.beginObject()
+        writer.name("ip")
+        writer.value(key)
+        writer.endObject()
+    }
 }

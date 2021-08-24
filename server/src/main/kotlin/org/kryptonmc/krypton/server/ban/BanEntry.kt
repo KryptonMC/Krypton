@@ -18,14 +18,12 @@
  */
 package org.kryptonmc.krypton.server.ban
 
-import com.google.gson.JsonObject
+import com.google.gson.stream.JsonWriter
 import org.kryptonmc.krypton.server.ServerConfigEntry
-import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 
-open class BanEntry<T>(
+sealed class BanEntry<T>(
     key: T,
     val creationDate: OffsetDateTime = OffsetDateTime.now(),
     val source: String = "(Unknown)",
@@ -36,37 +34,24 @@ open class BanEntry<T>(
     override val isInvalid: Boolean
         get() = expiryDate?.isBefore(OffsetDateTime.now()) ?: false
 
-    override fun write(data: JsonObject) {
-        data.addProperty("created", creationDate.format(DATE_FORMAT))
-        data.addProperty("source", source)
-        data.addProperty("expires", expiryDate?.format(DATE_FORMAT) ?: "forever")
-        data.addProperty("reason", reason)
+    abstract fun writeKey(writer: JsonWriter)
+
+    final override fun write(writer: JsonWriter) {
+        writer.beginObject()
+        writeKey(writer)
+        writer.name("created")
+        writer.value(creationDate.format(DATE_FORMATTER))
+        writer.name("source")
+        writer.value(source)
+        writer.name("expires")
+        writer.value(expiryDate?.format(DATE_FORMATTER) ?: "forever")
+        writer.name("reason")
+        writer.value(reason)
+        writer.endObject()
     }
 
     companion object {
 
-        val DATE_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")
-
-        fun <T> fromJson(key: T, data: JsonObject): BanEntry<T> {
-            val creationDate = try {
-                if (data.has("created")) DATE_FORMAT.parse(data.get("created").asString) else LocalDateTime.now()
-            } catch (_: DateTimeParseException) {
-                LocalDateTime.now()
-            }
-            val source = if (data.has("source")) data.get("source").asString else "(Unknown)"
-            val expires = try {
-                if (data.has("expires")) DATE_FORMAT.parse(data.get("expires").asString) else null
-            } catch (_: DateTimeParseException) {
-                null
-            }
-            val reason = if (data.has("reason")) data.get("reason").asString else "Banned by operator."
-            return BanEntry(
-                key,
-                OffsetDateTime.from(creationDate),
-                source,
-                if (expires == null) null else OffsetDateTime.from(expires),
-                reason
-            )
-        }
+        val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")
     }
 }

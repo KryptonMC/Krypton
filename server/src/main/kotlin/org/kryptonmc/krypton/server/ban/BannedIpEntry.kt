@@ -18,8 +18,10 @@
  */
 package org.kryptonmc.krypton.server.ban
 
-import com.google.gson.JsonObject
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import java.time.OffsetDateTime
+import java.time.format.DateTimeParseException
 
 class BannedIpEntry(
     ip: String,
@@ -29,8 +31,42 @@ class BannedIpEntry(
     reason: String = "Banned by operator."
 ) : BanEntry<String>(ip, creationDate, source, expiryDate, reason) {
 
-    override fun write(data: JsonObject) {
-        data.addProperty("ip", key)
-        super.write(data)
+    override fun writeKey(writer: JsonWriter) {
+        writer.name("ip")
+        writer.value(key)
+    }
+
+    companion object {
+
+        fun read(reader: JsonReader): BannedIpEntry? {
+            reader.beginObject()
+
+            var ip: String? = null
+            var creationDate: OffsetDateTime = OffsetDateTime.now()
+            var source = "(Unknown)"
+            var expires: OffsetDateTime? = null
+            var reason = "Banned by operator."
+            while (reader.hasNext()) {
+                when (reader.nextName()) {
+                    "ip" -> ip = reader.nextString()
+                    "created" -> creationDate = try {
+                        OffsetDateTime.parse(reader.nextString(), DATE_FORMATTER)
+                    } catch (_: DateTimeParseException) {
+                        OffsetDateTime.now()
+                    }
+                    "source" -> source = reader.nextString()
+                    "expires" -> expires = try {
+                        OffsetDateTime.parse(reader.nextString(), DATE_FORMATTER)
+                    } catch (_: DateTimeParseException) {
+                        null
+                    }
+                    "reason" -> reason = reader.nextString()
+                }
+            }
+
+            reader.endObject()
+            if (ip == null) return null
+            return BannedIpEntry(ip, creationDate, source, expires, reason)
+        }
     }
 }

@@ -18,12 +18,12 @@
  */
 package org.kryptonmc.krypton.server
 
-import com.google.gson.JsonObject
+import com.google.gson.stream.JsonWriter
 
 abstract class ServerConfigEntry<T>(val key: T) {
 
     open val isInvalid: Boolean
         get() = false
 
-    abstract fun write(data: JsonObject)
+    abstract fun write(writer: JsonWriter)
 }

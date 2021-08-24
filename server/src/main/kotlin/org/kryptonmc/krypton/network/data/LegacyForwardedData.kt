@@ -16,27 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.network.data
 
-import org.kryptonmc.krypton.auth.KryptonGameProfile
+import com.google.gson.GsonBuilder
+import me.bardy.gsonkt.fromJson
+import me.bardy.gsonkt.registerTypeAdapter
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
+import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
 import java.util.UUID
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
-class AuthenticationTests {
+class LegacyForwardedData(
+    val originalIp: String,
+    val forwardedIp: String,
+    val uuid: UUID,
+    val properties: List<KryptonProfileProperty>
+)
 
-    @Test
-    fun `test game profile property retention`() {
-        val uuid = UUID.randomUUID()
-        val profile = KryptonGameProfile(uuid, "Test", listOf(KryptonProfileProperty("hello", "world", "xxx")))
+private val GSON = GsonBuilder()
+    .registerTypeAdapter<KryptonProfileProperty>(KryptonProfileProperty)
+    .create()
 
-        assertEquals(uuid, profile.uuid)
-        assertEquals("Test", profile.name)
-        assertEquals(listOf(KryptonProfileProperty("hello", "world", "xxx")), profile.properties)
-
-        assertEquals("hello", profile.properties[0].name)
-        assertEquals("world", profile.properties[0].value)
-        assertEquals("xxx", profile.properties[0].signature!!)
-    }
+fun String.splitLegacyData(): LegacyForwardedData? {
+    val split = split('\u0000')
+    if (split.size < 3) return null // We need to have the original IP, forwarded IP, and the UUID at bare minimum.
+    return LegacyForwardedData(
+        split[0],
+        split[1],
+        MojangUUIDTypeAdapter.fromString(split[2]),
+        if (split.size > 3) GSON.fromJson(split[3]) else emptyList()
+    )
 }

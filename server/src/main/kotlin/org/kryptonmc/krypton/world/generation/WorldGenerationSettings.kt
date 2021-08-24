@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.generation
 
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
@@ -25,7 +26,6 @@ import com.mojang.serialization.Dynamic
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import me.bardy.gsonkt.fromJson
-import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.InternalResourceKeys
@@ -79,6 +79,8 @@ data class WorldGenerationSettings(
     companion object {
 
         private val LOGGER = logger<WorldGenerationSettings>()
+        private val GSON = Gson()
+
         val CODEC: Codec<WorldGenerationSettings> = RecordCodecBuilder.create<WorldGenerationSettings> { instance ->
             instance.group(
                 Codec.LONG.fieldOf("seed").stable().forGetter(WorldGenerationSettings::seed),

@@ -18,7 +18,8 @@
  */
 package org.kryptonmc.krypton.server.whitelist
 
-import com.google.gson.JsonObject
+import com.google.gson.stream.JsonReader
+import org.kryptonmc.krypton.server.ServerConfigEntry
 import org.kryptonmc.krypton.server.ServerConfigList
 import org.kryptonmc.krypton.util.stringify
 import java.net.SocketAddress
@@ -28,7 +29,13 @@ class WhitelistedIps(path: Path) : ServerConfigList<String, WhitelistIpEntry>(pa
 
     fun isWhitelisted(address: SocketAddress) = contains(address.stringify())
 
-    override fun fromJson(data: JsonObject) = WhitelistIpEntry(data.get("ip").asString)
+    override fun read(reader: JsonReader): ServerConfigEntry<String>? {
+        reader.beginObject()
+        val nextName = reader.nextName()
+        if (nextName != "ip") return null
+        val ip = reader.nextString()
+        return WhitelistIpEntry(ip)
+    }
 
     operator fun get(key: SocketAddress) = super.get(key.stringify())
 }

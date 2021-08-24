@@ -18,19 +18,33 @@
  */
 package org.kryptonmc.krypton.server.op
 
-import com.google.gson.JsonObject
+import com.google.gson.stream.JsonReader
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.server.ServerConfigEntry
 import org.kryptonmc.krypton.server.ServerConfigList
-import org.kryptonmc.krypton.util.toGameProfile
 import java.nio.file.Path
+import java.util.UUID
 
 class OperatorList(path: Path) : ServerConfigList<KryptonGameProfile, OperatorEntry>(path) {
 
-    override fun fromJson(data: JsonObject): ServerConfigEntry<KryptonGameProfile>? {
-        val profile = data.toGameProfile()
-        val permissionLevel = data.get("level")?.asInt ?: 0
-        val bypassesPlayerLimit = data.has("bypassesPlayerLimit") && data.get("bypassesPlayerLimit").asBoolean
-        return profile?.let { OperatorEntry(it, permissionLevel, bypassesPlayerLimit) }
+    override fun read(reader: JsonReader): ServerConfigEntry<KryptonGameProfile>? {
+        reader.beginObject()
+
+        var name: String? = null
+        var uuid: UUID? = null
+        var level = 0
+        var bypassesPlayerLimit = false
+        while (reader.hasNext()) {
+            when (reader.nextName()) {
+                "name" -> name = reader.nextString()
+                "uuid" -> uuid = UUID.fromString(reader.nextString())
+                "level" -> level = reader.nextInt()
+                "bypassesPlayerLimit" -> bypassesPlayerLimit = reader.nextBoolean()
+            }
+        }
+
+        reader.endObject()
+        if (name == null || uuid == null) return null
+        return OperatorEntry(KryptonGameProfile(uuid, name, emptyList()), level, bypassesPlayerLimit)
     }
 }

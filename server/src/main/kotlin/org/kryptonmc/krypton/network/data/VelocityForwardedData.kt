@@ -16,25 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.auth
+package org.kryptonmc.krypton.network.data
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import java.time.ZonedDateTime
-import java.time.format.DateTimeParseException
+import org.kryptonmc.krypton.auth.KryptonProfileProperty
+import java.net.InetAddress
 import java.util.UUID
 
-fun JsonElement.toProfileHolder(): ProfileHolder? {
-    if (!isJsonObject) return null
-    this as JsonObject
-    val name = get("name")?.asString ?: return null
-    val uuid = get("uuid")?.let { UUID.fromString(it.asString) } ?: return null
-    val expiryDate = get("expiresOn")?.let {
-        try {
-            ZonedDateTime.parse(it.asString, ProfileHolder.DATE_FORMATTER)
-        } catch (ignored: DateTimeParseException) {
-            return null
-        }
-    } ?: return null
-    return ProfileHolder(KryptonGameProfile(uuid, name, emptyList()), expiryDate)
-}
+class VelocityForwardedData(
+    val remoteAddress: InetAddress,
+    val uuid: UUID,
+    val username: String,
+    val properties: List<KryptonProfileProperty>
+)

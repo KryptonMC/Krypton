@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.auth.requests
 
-import me.bardy.gsonkt.fromJson
-import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import java.net.URI
 import java.net.http.HttpClient
@@ -35,6 +33,6 @@ object ApiService {
         val request = HttpRequest.newBuilder()
             .uri(URI("https://api.mojang.com/users/profiles/minecraft/$name"))
             .build()
-        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply { GSON.fromJson<KryptonGameProfile>(it.body()) }
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply { KryptonGameProfile.fromJson(it.body()) }
     }
 }

@@ -18,14 +18,16 @@
  */
 package org.kryptonmc.krypton.tags
 
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.GSON
 import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
 object TagManager {
+
+    private val GSON = Gson()
 
     private val tagMap = ConcurrentHashMap<TagType<out Any>, MutableList<Tag<out Any>>>()
     val tags: Map<TagType<out Any>, List<Tag<out Any>>>

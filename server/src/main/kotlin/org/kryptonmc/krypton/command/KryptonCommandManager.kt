@@ -70,30 +70,34 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import javax.annotation.concurrent.GuardedBy
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 import kotlin.math.max
 import kotlin.math.min
 
 class KryptonCommandManager : CommandManager {
 
-    internal val dispatcher = CommandDispatcher<Sender>()
+    @GuardedBy("lock") val dispatcher = CommandDispatcher<Sender>() // Reads and writes MUST be locked by the lock below!
     private val lock = ReentrantReadWriteLock()
     private val brigadierCommandRegistrar = BrigadierCommandRegistrar(lock.writeLock())
     private val simpleCommandRegistrar = SimpleCommandRegistrar(lock.writeLock())
     private val rawCommandRegistrar = RawCommandRegistrar(lock.writeLock())
 
-    override fun register(command: BrigadierCommand) = brigadierCommandRegistrar.register(dispatcher.root, command, CommandMeta.builder(command).build())
+    override fun register(command: BrigadierCommand) {
+        brigadierCommandRegistrar.register(dispatcher.root, command, CommandMeta.builder(command).build())
+    }
 
-    override fun register(command: SimpleCommand, meta: SimpleCommandMeta) = simpleCommandRegistrar.register(dispatcher.root, command, meta)
+    override fun register(command: SimpleCommand, meta: SimpleCommandMeta) {
+        simpleCommandRegistrar.register(dispatcher.root, command, meta)
+    }
 
-    override fun register(command: RawCommand, meta: CommandMeta) = rawCommandRegistrar.register(dispatcher.root, command, meta)
+    override fun register(command: RawCommand, meta: CommandMeta) {
+        rawCommandRegistrar.register(dispatcher.root, command, meta)
+    }
 
     override fun <C : Command, M : CommandMeta> register(command: C, meta: M, registrar: CommandRegistrar<C, M>) {
-        lock.writeLock().lock()
-        try {
-            registrar.register(dispatcher.root, command, meta)
-        } finally {
-            lock.writeLock().unlock()
-        }
+        lock.write { registrar.register(dispatcher.root, command, meta) }
     }
 
     override fun unregister(alias: String) = dispatcher.root.removeChildByName(alias)
@@ -104,24 +108,31 @@ class KryptonCommandManager : CommandManager {
             val parseResults = parse(sender, normalized)
             dispatcher.execute(parseResults) != BrigadierCommand.FORWARD
         } catch (exception: CommandSyntaxException) {
-            val message = exception.rawMessage
-            sender.sendMessage((if (message is AdventureMessage) message.wrapped else text(exception.message.orEmpty())).color(NamedTextColor.RED))
+            val rawMessage = exception.rawMessage
+            val message = if (rawMessage is AdventureMessage) rawMessage.wrapped else text(exception.message.orEmpty())
+            sender.sendMessage(message.color(NamedTextColor.RED))
+
+            // This will process extra stuff that we want for proper error reporting to clients.
             if (exception.input != null && exception.cursor >= 0) {
-                val length = min(exception.input.length, exception.cursor)
-                var component = text("", Style.style(NamedTextColor.GRAY)
+                val inputLength = min(exception.input.length, exception.cursor)
+                var errorMessage = text("", Style.style(NamedTextColor.GRAY)
                     .clickEvent(ClickEvent.suggestCommand(command)))
-                if (length > 10) component = component.append(text("..."))
-                component = component.append(text(exception.input.substring(max(0, length - 10), length)))
-                if (length < exception.input.length) {
-                    val error = text(exception.input.substring(length), NamedTextColor.RED, TextDecoration.UNDERLINED)
-                    component = component.append(error)
+
+                // If the length of the input is too long, we shorten it by appending ... at the beginning.
+                if (inputLength > 10) errorMessage = errorMessage.append(text("..."))
+                errorMessage = errorMessage.append(text(exception.input.substring(max(0, inputLength - 10), inputLength)))
+
+                if (inputLength < exception.input.length) {
+                    val error = text(exception.input.substring(inputLength), NamedTextColor.RED, TextDecoration.UNDERLINED)
+                    errorMessage = errorMessage.append(error)
                 }
-                component = component.append(translatable("command.context.here", NamedTextColor.RED, TextDecoration.ITALIC))
-                sender.sendMessage(text("").append(component).color(NamedTextColor.RED))
+
+                // Append the "[HERE]" text (locale-specific) to the end, just like vanilla.
+                errorMessage = errorMessage.append(translatable("command.context.here", NamedTextColor.RED, TextDecoration.ITALIC))
+                sender.sendMessage(text("").append(errorMessage).color(NamedTextColor.RED))
             }
             false
-        } catch (exception: Throwable) {
-            // Catch Throwable because plugins like to do stupid things sometimes
+        } catch (exception: Throwable) { // We catch Throwable because plugins like to do stupid things sometimes.
             throw RuntimeException("Unable to dispatch command $command from $sender!", exception)
         }
     }
@@ -130,16 +141,14 @@ class KryptonCommandManager : CommandManager {
 
     fun sendCommands(player: KryptonPlayer) {
         val node = RootCommandNode<Sender>()
-        lock.readLock().lock()
-        try {
+        lock.read {
             dispatcher.root.children.forEach { if (it.requirement.test(player)) node.addChild(it) }
             player.session.sendPacket(PacketOutDeclareCommands(node))
-        } finally {
-            lock.readLock().unlock()
         }
     }
 
-    internal fun registerBuiltins() {
+    // Registers all the built-in commands.
+    fun registerBuiltins() {
         StopCommand.register(dispatcher)
         RestartCommand.register(dispatcher)
         TeleportCommand.register(dispatcher)
@@ -166,12 +175,5 @@ class KryptonCommandManager : CommandManager {
         ClearCommand.register(dispatcher)
     }
 
-    private fun parse(sender: Sender, input: String): ParseResults<Sender> {
-        lock.readLock().lock()
-        return try {
-            dispatcher.parse(input, sender)
-        } finally {
-            lock.readLock().unlock()
-        }
-    }
+    private fun parse(sender: Sender, input: String): ParseResults<Sender> = lock.read { dispatcher.parse(input, sender) }
 }

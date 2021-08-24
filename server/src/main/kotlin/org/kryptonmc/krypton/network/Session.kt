@@ -42,7 +42,6 @@ class Session(
 
     @Volatile
     internal var currentState: PacketState = PacketState.HANDSHAKE
-
     @Volatile
     internal var handler: PacketHandler = HandshakeHandler(server, this)
 

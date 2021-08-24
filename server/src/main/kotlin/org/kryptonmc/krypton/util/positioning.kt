@@ -18,25 +18,11 @@
  */
 package org.kryptonmc.krypton.util
 
-import me.bardy.gsonkt.fromJson
-import org.kryptonmc.krypton.GSON
-import org.kryptonmc.krypton.auth.KryptonProfileProperty
-import java.util.UUID
-
-fun String.splitData(): BungeeCordHandshakeData? {
-    val split = split('\u0000')
-    if (split.size <= 2) return null
-    return BungeeCordHandshakeData(
-        split[0],
-        split[1],
-        UUID.fromString(split[2].replaceFirst("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})".toRegex(), "$1-$2-$3-$4-$5")),
-        if (split.size > 3) GSON.fromJson(split[3]) else emptyList()
-    )
-}
-
-data class BungeeCordHandshakeData(
-    val originalIp: String,
-    val forwardedIp: String,
-    val uuid: UUID,
-    val properties: List<KryptonProfileProperty>
-)
+/**
+ * Calculates the change in position between the given [new] and [old] coordinates.
+ * No idea why Mojang thought having player coordinates be absolute and entity
+ * coordinates be relative.
+ *
+ * This calculation comes from https://wiki.vg/Protocol#Entity_Position
+ */
+fun calculatePositionChange(new: Double, old: Double) = ((new * 32 - old * 32) * 128).toInt().toShort()

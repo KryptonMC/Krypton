@@ -75,7 +75,7 @@ object BanCommand : InternalCommand {
 
     private fun kick(entry: BannedPlayerEntry, player: KryptonPlayer) {
         val text = translatable("multiplayer.disconnect.banned.reason", entry.reason.toComponent())
-        if (entry.expiryDate != null) text.append(translatable("multiplayer.disconnect.banned.expiration", BanEntry.DATE_FORMAT.format(entry.expiryDate).toComponent()))
+        if (entry.expiryDate != null) text.append(translatable("multiplayer.disconnect.banned.expiration", BanEntry.DATE_FORMATTER.format(entry.expiryDate).toComponent()))
         player.disconnect(text)
     }
 

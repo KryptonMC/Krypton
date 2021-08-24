@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.network.data
 
 import com.google.common.net.InetAddresses
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
-import java.net.InetAddress
+import org.kryptonmc.krypton.util.readAvailableBytes
+import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.readVarInt
 import java.security.MessageDigest
 import java.util.UUID
 import javax.crypto.Mac
@@ -29,7 +31,7 @@ import javax.crypto.spec.SecretKeySpec
 
 private const val SUPPORTED_FORWARDING_VERSION = 1
 
-fun ByteBuf.verifyIntegrity(secret: ByteArray): Boolean {
+fun ByteBuf.verifyVelocityIntegrity(secret: ByteArray): Boolean {
     val signature = readAvailableBytes(32)
 
     val data = ByteArray(readableBytes())
@@ -54,13 +56,6 @@ fun ByteBuf.readVelocityProperties(): List<KryptonProfileProperty> {
     }
     return properties
 }
-
-data class VelocityForwardedData(
-    val remoteAddress: InetAddress,
-    val uuid: UUID,
-    val username: String,
-    val properties: List<KryptonProfileProperty>
-)
 
 fun ByteBuf.readVelocityData() = VelocityForwardedData(
     InetAddresses.forString(readString()),

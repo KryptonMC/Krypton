@@ -18,12 +18,12 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.property.Property
-import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
@@ -33,6 +33,9 @@ import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import java.util.concurrent.ConcurrentHashMap
 
 object FluidLoader {
+
+    private val FILE_LOCATION = "${KryptonPlatform.minecraftVersion.replace('.', '_')}_fluids.json"
+    private val GSON = Gson()
 
     private val KEY_MAP = mutableMapOf<String, KryptonFluid>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
@@ -46,31 +49,38 @@ object FluidLoader {
             LOGGER.warn("Attempted to load block loader twice!")
             return
         }
-        val blocks = GSON.fromJson<JsonObject>(
-            Thread.currentThread().contextClassLoader
-                .getResourceAsStream("${KryptonPlatform.minecraftVersion.replace(".", "_")}_fluids.json")!!
-                .reader()
-        )
+
+        val inputStream = ClassLoader.getSystemResourceAsStream(FILE_LOCATION)
+            ?: error("Could not find $FILE_LOCATION bundled in JAR! Please report to Krypton!")
+        val blocks = GSON.fromJson<JsonObject>(inputStream.reader())
+
         blocks.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
+            // Map properties
             val propertyEntry = PropertyEntry()
             val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) {
                 KryptonPropertyFactory.PROPERTIES[it.asString]!!
             }
+
+            // Iterate states
             value.remove("states").asJsonArray.forEach {
                 val (properties, block) = it.asJsonObject.retrieveState(key, availableProperties, value)
                 propertyEntry.properties[properties] = block
             }
+
+            // Get default state and add to maps
             val defaultState = value["defaultStateId"].asInt
             val defaultBlock = fromState(defaultState)!!
             KEY_MAP[key] = defaultBlock
             PROPERTY_MAP[key] = propertyEntry
+
+            // Register to registry
             if (InternalRegistries.FLUID.contains(Key.key(key))) return@forEach
             KryptonRegistryManager.register(InternalRegistries.FLUID, key, defaultBlock)
         }
         isLoaded = true
     }
 
-    fun fromKey(key: String): KryptonFluid? {
+    private fun fromKey(key: String): KryptonFluid? {
         val id = if (key.indexOf(':') == -1) "minecraft:$key" else key
         return KEY_MAP[id]
     }

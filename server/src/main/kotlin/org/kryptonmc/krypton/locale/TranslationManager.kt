@@ -24,7 +24,6 @@ import net.kyori.adventure.translation.GlobalTranslator
 import net.kyori.adventure.translation.TranslationRegistry
 import net.kyori.adventure.translation.Translator
 import net.kyori.adventure.util.UTF8ResourceBundleControl
-import org.kryptonmc.krypton.CURRENT_DIRECTORY
 import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 import java.nio.file.Files
@@ -38,7 +37,7 @@ import java.util.stream.Collectors
 object TranslationManager {
 
     private val DEFAULT_LOCALE: Locale = Locale.ENGLISH
-    val TRANSLATIONS_DIRECTORY: Path = CURRENT_DIRECTORY.resolve("translations")
+    val TRANSLATIONS_DIRECTORY: Path = Path.of("translations")
     private val LOGGER = logger<TranslationManager>()
 
     private val installed = ConcurrentHashMap.newKeySet<Locale>()

@@ -18,9 +18,12 @@
  */
 package org.kryptonmc.krypton.server.ban
 
-import com.google.gson.JsonObject
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import java.time.OffsetDateTime
+import java.time.format.DateTimeParseException
+import java.util.UUID
 
 class BannedPlayerEntry(
     profile: KryptonGameProfile,
@@ -30,9 +33,46 @@ class BannedPlayerEntry(
     reason: String = "Banned by operator."
 ) : BanEntry<KryptonGameProfile>(profile, creationDate, source, expiryDate, reason) {
 
-    override fun write(data: JsonObject) {
-        data.addProperty("uuid", key.uuid.toString())
-        data.addProperty("name", key.name)
-        super.write(data)
+    override fun writeKey(writer: JsonWriter) {
+        writer.name("uuid")
+        writer.value(key.uuid.toString())
+        writer.name("name")
+        writer.value(key.name)
+    }
+
+    companion object {
+
+        fun read(reader: JsonReader): BannedPlayerEntry? {
+            reader.beginObject()
+
+            var name: String? = null
+            var uuid: UUID? = null
+            var creationDate: OffsetDateTime = OffsetDateTime.now()
+            var source = "(Unknown)"
+            var expires: OffsetDateTime? = null
+            var reason = "Banned by operator."
+            while (reader.hasNext()) {
+                when (reader.nextName()) {
+                    "name" -> name = reader.nextString()
+                    "uuid" -> uuid = UUID.fromString(reader.nextString())
+                    "created" -> creationDate = try {
+                        OffsetDateTime.parse(reader.nextString(), DATE_FORMATTER)
+                    } catch (_: DateTimeParseException) {
+                        OffsetDateTime.now()
+                    }
+                    "source" -> source = reader.nextString()
+                    "expires" -> expires = try {
+                        OffsetDateTime.parse(reader.nextString(), DATE_FORMATTER)
+                    } catch (_: DateTimeParseException) {
+                        null
+                    }
+                    "reason" -> reason = reader.nextString()
+                }
+            }
+
+            reader.endObject()
+            if (name == null || uuid == null) return null
+            return BannedPlayerEntry(KryptonGameProfile(uuid, name, emptyList()), creationDate, source, expires, reason)
+        }
     }
 }

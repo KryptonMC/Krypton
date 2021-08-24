@@ -8,9 +8,8 @@
  */
 package org.kryptonmc.api.plugin.ap
 
-import com.google.gson.Gson
+import com.google.gson.stream.JsonWriter
 import org.kryptonmc.api.plugin.annotation.Plugin
-import java.io.BufferedWriter
 import java.io.IOException
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Messager
@@ -59,7 +58,7 @@ class PluginAnnotationProcessor : AbstractProcessor() {
             val description = plugin.toDescription(qualifiedName)
             try {
                 val fileObject = processingEnv.filer.createResource(StandardLocation.CLASS_OUTPUT, "", "krypton-plugin-meta.json")
-                BufferedWriter(fileObject.openWriter()).use { Gson().toJson(description, it) }
+                JsonWriter(fileObject.openWriter()).use { SerializedPluginDescription.write(it, description) }
                 pluginClassFound = qualifiedName
             } catch (exception: IOException) {
                 processingEnv.messager.error("Unable to generate plugin metadata file!")

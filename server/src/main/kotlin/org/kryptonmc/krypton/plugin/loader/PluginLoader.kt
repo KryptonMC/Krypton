@@ -23,23 +23,20 @@
  */
 package org.kryptonmc.krypton.plugin.loader
 
+import com.google.gson.stream.JsonReader
 import com.google.inject.Guice
 import com.google.inject.Module
-import me.bardy.gsonkt.fromJson
 import org.kryptonmc.api.plugin.InvalidPluginException
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDependency
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.api.plugin.ap.SerializedDependency
 import org.kryptonmc.api.plugin.ap.SerializedPluginDescription
-import org.kryptonmc.krypton.GSON
 import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import org.kryptonmc.krypton.plugin.PluginClassLoader
 import org.kryptonmc.krypton.util.doPrivileged
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
-import java.io.BufferedInputStream
 import java.io.InputStream
-import java.io.InputStreamReader
 import java.nio.file.Path
 import java.util.jar.JarInputStream
 import kotlin.io.path.inputStream
@@ -70,12 +67,12 @@ object PluginLoader {
         container.instance = instance
     }
 
-    private fun Path.findMetadata(): SerializedPluginDescription? = JarInputStream(BufferedInputStream(inputStream())).use { input ->
+    private fun Path.findMetadata(): SerializedPluginDescription? = JarInputStream(inputStream()).use { input ->
         var foundBungeeBukkitPluginFile = false
         generateSequence { input.nextJarEntry }.forEach { entry ->
             if (entry.name == "plugin.yml" || entry.name == "bungee.yml") foundBungeeBukkitPluginFile = true
             if (entry.name == "plugin.conf") return input.readPluginConfig()
-            if (entry.name == "krypton-plugin-meta.json") InputStreamReader(input, Charsets.UTF_8).use { return GSON.fromJson(it) }
+            if (entry.name == "krypton-plugin-meta.json") JsonReader(input.reader()).use { return SerializedPluginDescription.read(it) }
         }
 
         if (foundBungeeBukkitPluginFile) throw InvalidPluginException("The plugin file $fileName appears to be a Bukkit or BungeeCord plugin. Krypton does not support Bukkit or BungeeCord plugins.")
@@ -83,7 +80,11 @@ object PluginLoader {
     }
 
     private fun InputStream.readPluginConfig(): SerializedPluginDescription = reader().use {
-        val node = HoconConfigurationLoader.builder().source { it.buffered() }.build().load()
+        val node = HoconConfigurationLoader.builder()
+            .source { it.buffered() }
+            .build()
+            .load()
+
         val id = node.node("id").string ?: throw InvalidPluginException("No ID specified in plugin.conf!")
         val name = node.node("name").getString("")
         val main = node.node("main").string ?: throw InvalidPluginException("No main key found in plugin.conf!")
@@ -93,16 +94,17 @@ object PluginLoader {
         val dependencies = node.node("dependencies")
         val required = dependencies.node("required").getList(String::class.java, emptyList()).map { SerializedDependency(it, false) }
         val optional = dependencies.node("optional").getList(String::class.java, emptyList()).map { SerializedDependency(it, true) }
+
         return SerializedPluginDescription(id, name, version, description, authors, required + optional, main)
     }
 
     private fun SerializedPluginDescription.toCandidate(source: Path) = LoadedPluginDescriptionCandidate(
         id,
-        name ?: "",
-        version ?: "<UNDEFINED>",
-        description ?: "",
-        authors ?: emptyList(),
-        dependencies?.map { PluginDependency(it.id, it.optional) } ?: emptyList(),
+        name,
+        version,
+        description,
+        authors,
+        dependencies.map { PluginDependency(it.id, it.optional) },
         source,
         main
     )

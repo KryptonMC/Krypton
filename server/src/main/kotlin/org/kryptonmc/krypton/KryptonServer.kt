@@ -18,14 +18,10 @@
  */
 package org.kryptonmc.krypton
 
-import com.google.gson.Gson
 import kotlinx.coroutines.launch
-import me.bardy.gsonkt.newBuilder
-import me.bardy.gsonkt.registerTypeAdapter
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.event.server.ServerStartEvent
@@ -38,13 +34,11 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileCache
-import org.kryptonmc.krypton.auth.MojangUUIDTypeAdapter
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.locale.MetadataResponse
 import org.kryptonmc.krypton.locale.TranslationRepository
 import org.kryptonmc.krypton.network.PacketLoader
 import org.kryptonmc.krypton.packet.out.play.PacketOutServerDifficulty
@@ -52,11 +46,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
-import org.kryptonmc.krypton.registry.json.RegistryBlock
-import org.kryptonmc.krypton.registry.json.RegistryBlockState
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
-import org.kryptonmc.krypton.serializers.DifficultySerializer
-import org.kryptonmc.krypton.serializers.GamemodeSerializer
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
@@ -378,15 +368,4 @@ class KryptonServer(
         private const val TICK_INTERVAL = 1000L / 20L // milliseconds in a tick
         private val LOGGER = logger<KryptonServer>()
     }
-}
-
-val CURRENT_DIRECTORY: Path = Path.of("").toAbsolutePath()
-
-val GSON: Gson = GsonComponentSerializer.gson().serializer().newBuilder {
-    registerTypeAdapter<UUID>(MojangUUIDTypeAdapter)
-    registerTypeAdapter<RegistryBlock>(RegistryBlock.Companion)
-    registerTypeAdapter<RegistryBlockState>(RegistryBlockState.Companion)
-    registerTypeAdapter<Gamemode>(GamemodeSerializer)
-    registerTypeAdapter<Difficulty>(DifficultySerializer)
-    registerTypeAdapter<MetadataResponse>(MetadataResponse)
 }

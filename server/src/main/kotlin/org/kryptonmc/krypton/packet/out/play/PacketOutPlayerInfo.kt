@@ -53,8 +53,8 @@ class PacketOutPlayerInfo(
                     update.profile.properties.forEach {
                         buf.writeString(it.name)
                         buf.writeString(it.value)
-                        buf.writeBoolean(true)
-                        buf.writeString(it.signature)
+                        buf.writeBoolean(it.signature != null)
+                        if (it.signature != null) buf.writeString(it.signature)
                     }
 
                     buf.writeVarInt(update.gamemode.ordinal)

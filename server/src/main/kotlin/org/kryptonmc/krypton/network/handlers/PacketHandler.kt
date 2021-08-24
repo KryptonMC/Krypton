@@ -29,22 +29,19 @@ import org.kryptonmc.krypton.network.Session
 interface PacketHandler {
 
     /**
-     * The server that this handler is running on
+     * The server that this handler is running on.
      */
     val server: KryptonServer
 
     /**
-     * The session that this handler handles packets for
+     * The session that this handler handles packets for.
      */
     val session: Session
 
     /**
-     * Handle the specified [packet]
-     *
-     * @param packet the packet to handle
+     * Handles the given [packet].
      */
     fun handle(packet: Packet)
 
-    @Suppress("OptionalUnit")
     fun onDisconnect() = Unit
 }

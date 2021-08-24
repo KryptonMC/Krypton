@@ -18,17 +18,14 @@
  */
 package org.kryptonmc.krypton.util
 
-import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.Hash
 import net.kyori.adventure.text.Component.text
-import org.kryptonmc.krypton.auth.KryptonGameProfile
 import java.math.BigInteger
 import java.net.SocketAddress
 import java.security.AccessController
 import java.security.MessageDigest
 import java.security.PrivilegedAction
 import java.util.Optional
-import java.util.UUID
 
 fun SocketAddress.stringify(): String {
     var string = toString()
@@ -47,8 +44,6 @@ fun String.toIntRange(): IntRange? {
     }
 }
 
-fun calculatePositionChange(new: Double, old: Double) = ((new * 32 - old * 32) * 128).toInt().toShort()
-
 // This is Yggdrasil's strange way of digesting to hex
 fun MessageDigest.hexDigest(): String = BigInteger(digest()).toString(16)
 
@@ -57,19 +52,6 @@ fun <T> doPrivileged(action: () -> T): T = AccessController.doPrivileged(Privile
 fun <T : Map<K, V>, K, V> Optional<T>.forEachPresent(action: (K, V) -> Unit) = ifPresent { it.forEach(action) }
 
 fun String.toComponent() = text(this)
-
-fun JsonObject.toGameProfile(): KryptonGameProfile? {
-    if (has("name") && has("uuid")) {
-        val name = get("name").asString
-        val uuid = try {
-            UUID.fromString(get("uuid").asString)
-        } catch (_: IllegalArgumentException) {
-            return null
-        }
-        return KryptonGameProfile(uuid, name, listOf())
-    }
-    return null
-}
 
 @Suppress("UNCHECKED_CAST")
 fun <K> identityStrategy(): Hash.Strategy<K> = IdentityStrategy as Hash.Strategy<K>

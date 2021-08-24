@@ -18,18 +18,20 @@
  */
 package org.kryptonmc.krypton.locale
 
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
-import org.kryptonmc.krypton.GSON
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import org.kryptonmc.krypton.util.createDirectories
 import java.util.concurrent.ForkJoinPool
-import kotlin.io.path.bufferedReader
-import kotlin.io.path.bufferedWriter
 import kotlin.io.path.exists
+import kotlin.io.path.reader
+import kotlin.io.path.writer
 
 object TranslationRepository {
 
     private const val CACHE_MAX_AGE = 900_000 // 15 minutes in milliseconds
+
+    val metadata: MetadataResponse
+        get() = TranslationRequester.metadata()
 
     fun scheduleRefresh() = ForkJoinPool.commonPool().execute { refresh() }
 
@@ -38,11 +40,16 @@ object TranslationRepository {
 
         val repoStatusFile = translationsDirectory.resolve("repository.json")
         val lastRefresh = if (repoStatusFile.exists()) {
-            repoStatusFile.bufferedReader().use {
-                val status = GSON.fromJson(it, JsonObject::class.java)
-                if (status.has("lastRefresh")) status["lastRefresh"].asLong else 0L
+            JsonReader(repoStatusFile.reader()).use { reader ->
+                reader.beginObject()
+                if (reader.nextName() != "lastRefresh") return@use 0L
+                val lastRefresh = reader.nextLong()
+                reader.endObject()
+                lastRefresh
             }
-        } else 0L
+        } else {
+            0L
+        }
 
         val timeSinceLastRefresh = System.currentTimeMillis() - lastRefresh
         if (timeSinceLastRefresh <= CACHE_MAX_AGE) return
@@ -50,24 +57,21 @@ object TranslationRepository {
         val metadata = metadata
         if (timeSinceLastRefresh <= metadata.cacheMaxAge) return
 
-        downloadAndInstall(metadata.languages, true)
+        downloadAndInstall(metadata.languages)
     }
 
-    fun downloadAndInstall(languages: List<LanguageInfo>, updateStatus: Boolean) {
+    private fun downloadAndInstall(languages: List<LanguageInfo>) {
         val translationsDirectory = TranslationManager.TRANSLATIONS_DIRECTORY.apply { createDirectories() }
         languages.forEach { TranslationRequester.download(it.locale.toString(), translationsDirectory.resolve("${it.locale}.properties")) }
 
-        if (updateStatus) {
-            val repoStatusFile = translationsDirectory.resolve("repository.json")
-            repoStatusFile.bufferedWriter().use {
-                val status = JsonObject().apply { add("lastRefresh", JsonPrimitive(System.currentTimeMillis())) }
-                GSON.toJson(status, it)
-            }
+        val repoStatusFile = translationsDirectory.resolve("repository.json")
+        JsonWriter(repoStatusFile.writer()).use { writer ->
+            writer.beginObject()
+            writer.name("lastRefresh")
+            writer.value(System.currentTimeMillis())
+            writer.endObject()
         }
 
         TranslationManager.reload()
     }
-
-    val metadata: MetadataResponse
-        get() = TranslationRequester.metadata()
 }

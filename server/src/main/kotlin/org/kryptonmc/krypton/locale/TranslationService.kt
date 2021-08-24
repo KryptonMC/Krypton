@@ -18,18 +18,14 @@
  */
 package org.kryptonmc.krypton.locale
 
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import me.bardy.gsonkt.fromJson
-import org.kryptonmc.krypton.GSON
+import com.google.gson.TypeAdapter
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import org.kryptonmc.krypton.util.logger
 import java.io.Closeable
 import java.io.FilterInputStream
 import java.io.IOException
 import java.io.InputStream
-import java.lang.reflect.Type
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -50,7 +46,7 @@ object TranslationRequester {
         val request = HttpRequest.newBuilder()
             .uri(URI("$DATA_URL/data/translations"))
             .build()
-        return GSON.fromJson(client.send(request, HttpResponse.BodyHandlers.ofString()).body())
+        return MetadataResponse.fromJson(client.send(request, HttpResponse.BodyHandlers.ofString()).body())
     }
 
     fun download(id: String, file: Path) {
@@ -73,26 +69,90 @@ object TranslationRequester {
 
 data class MetadataResponse(val cacheMaxAge: Long, val languages: List<LanguageInfo>) {
 
-    companion object : JsonDeserializer<MetadataResponse> {
+    companion object : TypeAdapter<MetadataResponse>() {
 
-        override fun deserialize(src: JsonElement, type: Type, context: JsonDeserializationContext): MetadataResponse {
-            src as JsonObject
-            val cacheMaxAge = src["cacheMaxAge"].asLong
-            val languages = src["languages"].asJsonArray.map { LanguageInfo(it.asJsonObject) }
+        override fun read(reader: JsonReader): MetadataResponse {
+            reader.beginObject()
+
+            var cacheMaxAge = -1L
+            val languages = mutableListOf<LanguageInfo>()
+            while (reader.hasNext()) {
+                when (reader.nextName()) {
+                    "cacheMaxAge" -> cacheMaxAge = reader.nextLong()
+                    "languages" -> {
+                        reader.beginArray()
+                        while (reader.hasNext()) {
+                            val language = LanguageInfo.read(reader)
+                            if (language != null) languages.add(language)
+                        }
+                        reader.endArray()
+                    }
+                }
+            }
+
+            reader.endObject()
             return MetadataResponse(cacheMaxAge, languages)
+        }
+
+        override fun write(writer: JsonWriter, value: MetadataResponse) {
+            error("MetadataResponse objects should never be written!")
         }
     }
 }
 
 data class LanguageInfo(val id: String, val name: String, val locale: Locale, val progress: Int, val contributors: List<String>) {
 
-    constructor(data: JsonObject) : this(
-        data["id"].asString,
-        data["name"].asString,
-        data["tag"].asString.toLocale()!!,
-        data["progress"].asInt,
-        data["contributors"].asJsonArray.map { it.asJsonObject["name"].asString }
-    )
+    companion object : TypeAdapter<LanguageInfo>() {
+
+        override fun read(reader: JsonReader): LanguageInfo? {
+            reader.beginObject()
+
+            var id: String? = null
+            var name: String? = null
+            var tag: String? = null
+            var progress = -1
+            val contributors = mutableListOf<String>()
+            while (reader.hasNext()) {
+                when (reader.nextName()) {
+                    "id" -> id = reader.nextString()
+                    "name" -> name = reader.nextString()
+                    "tag" -> tag = reader.nextString()
+                    "progress" -> progress = reader.nextInt()
+                    "contributors" -> readContributors(reader, contributors)
+                }
+            }
+
+            reader.endObject()
+            if (id == null || name == null || tag == null || progress == -1) return null
+            return LanguageInfo(id, name, Locale.forLanguageTag(tag), progress, contributors)
+        }
+
+        override fun write(writer: JsonWriter, value: LanguageInfo) {
+            error("LanguageInfo objects should never be written!")
+        }
+
+        private fun readContributors(reader: JsonReader, result: MutableList<String>) {
+            reader.beginArray()
+            while (reader.hasNext()) {
+                val name = readContributor(reader)
+                if (name != null) result.add(name)
+            }
+            reader.endArray()
+        }
+
+        private fun readContributor(reader: JsonReader): String? {
+            reader.beginObject()
+            var name: String? = null
+            while (reader.hasNext()) {
+                when (reader.nextName()) {
+                    "name" -> name = reader.nextString()
+                    "translated" -> reader.nextInt()
+                }
+            }
+            reader.endObject()
+            return name
+        }
+    }
 }
 
 private class LimitedInputStream(input: InputStream, private val limit: Long) : FilterInputStream(input), Closeable {

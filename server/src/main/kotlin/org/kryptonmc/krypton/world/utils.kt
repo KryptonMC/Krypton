@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.world
 
 import org.kryptonmc.krypton.world.data.WorldData
 import org.spongepowered.math.vector.Vector3i
-import java.util.Random
 
 fun KryptonWorld.setInitialSpawn(data: WorldData, isDebug: Boolean) {
     if (isDebug) {

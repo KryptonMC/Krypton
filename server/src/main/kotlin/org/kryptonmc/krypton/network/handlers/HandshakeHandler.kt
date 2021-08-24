@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.network.handlers
 
-import net.kyori.adventure.extra.kotlin.translatable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import org.kryptonmc.krypton.KryptonServer
@@ -30,9 +29,9 @@ import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.network.PacketState
-import org.kryptonmc.krypton.util.BungeeCordHandshakeData
+import org.kryptonmc.krypton.network.data.LegacyForwardedData
+import org.kryptonmc.krypton.network.data.splitLegacyData
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.splitData
 
 /**
  * Handles all inbound packets in the [Handshake][PacketState.HANDSHAKE] state. Contrary to the
@@ -45,7 +44,10 @@ class HandshakeHandler(
 ) : PacketHandler {
 
     override fun handle(packet: Packet) {
-        if (packet !is PacketInHandshake) return // ignore if not a handshake packet
+        if (packet !is PacketInHandshake) return // Ignore if not a handshake packet
+
+        // This split here is checking for a null splitted list of strings, which will be sent by BungeeCord
+        // (and Velocity pre-1.13) as part of their legacy forwarding mechanisms.
         if (packet.address.split('\u0000').size > 1 && server.config.proxy.mode != ForwardingMode.LEGACY) {
             disconnect(Messages.BUNGEE.NOTIFY())
             return
@@ -53,7 +55,7 @@ class HandshakeHandler(
 
         if (server.config.proxy.mode == ForwardingMode.LEGACY && packet.nextState == PacketState.LOGIN) {
             val data = try {
-                packet.address.splitData()
+                packet.address.splitLegacyData()
             } catch (exception: Exception) {
                 disconnect(Messages.BUNGEE.FAIL_DECODE())
                 Messages.BUNGEE.FAIL_DECODE_ERROR.error(LOGGER, exception)
@@ -62,52 +64,46 @@ class HandshakeHandler(
 
             if (data != null) {
                 LOGGER.debug("Detected BungeeCord login for ${data.uuid}")
-                changeState(packet, packet.nextState, data)
+                handleStateChange(packet, packet.nextState, data)
             } else {
+                // If the data was null then we weren't sent what we needed
                 disconnect(Messages.BUNGEE.DIRECT())
                 Messages.BUNGEE.DIRECT_WARN.warn(LOGGER, packet.address)
                 return
             }
         }
 
-        changeState(packet, packet.nextState)
+        handleStateChange(packet, packet.nextState)
     }
 
-    private fun changeState(packet: PacketInHandshake, state: PacketState, data: BungeeCordHandshakeData? = null) = when (state) {
-        PacketState.LOGIN -> handleLogin(packet, data)
-        PacketState.STATUS -> handleStatus()
-        else -> throw UnsupportedOperationException("Invalid next state $state!")
+    private fun handleStateChange(packet: PacketInHandshake, state: PacketState, data: LegacyForwardedData? = null) = when (state) {
+        PacketState.LOGIN -> handleLoginRequest(packet, data)
+        PacketState.STATUS -> handleStatusRequest()
+        else -> throw UnsupportedOperationException("Invalid next login state $state sent in handshake!")
     }
 
-    /**
-     * Handles when next state is [PacketState.LOGIN]
-     */
-    private fun handleLogin(packet: PacketInHandshake, data: BungeeCordHandshakeData? = null) {
+    private fun handleLoginRequest(packet: PacketInHandshake, data: LegacyForwardedData? = null) {
         session.currentState = PacketState.LOGIN
+        // This method of determining what to send is from vanilla Minecraft.
         if (packet.protocol != KryptonPlatform.protocolVersion) {
             val key = when {
                 packet.protocol < KryptonPlatform.protocolVersion -> "multiplayer.disconnect.outdated_client"
                 packet.protocol > KryptonPlatform.protocolVersion -> "multiplayer.disconnect.outdated_server"
-                else -> "multiplayer.disconnect.incompatible"
+                else -> "multiplayer.disconnect.incompatible" // This should be impossible
             }
-            val reason = translatable {
-                key(key)
-                args(text(KryptonPlatform.minecraftVersion))
-            }
-            session.disconnect(reason)
+            val reason = Component.translatable(key, text(KryptonPlatform.minecraftVersion))
+            disconnect(reason)
             return
         }
+
         if (server.playerManager.players.size >= server.config.status.maxPlayers) {
-            session.disconnect(translatable { key("multiplayer.disconnect.server_full") })
+            disconnect(Component.translatable("multiplayer.disconnect.server_full"))
             return
         }
         session.handler = LoginHandler(server, session, data)
     }
 
-    /**
-     * Handles when next state is [PacketState.STATUS]
-     */
-    private fun handleStatus() {
+    private fun handleStatusRequest() {
         session.currentState = PacketState.STATUS
         session.handler = StatusHandler(server, session)
     }
