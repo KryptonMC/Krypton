@@ -100,9 +100,9 @@ object BlockLoader {
         STATE_MAP[stateId] = block
         return propertyMap to block
     }
-}
 
-private class PropertyEntry {
+    private class PropertyEntry {
 
-    val properties = ConcurrentHashMap<Map<String, String>, KryptonBlock>()
+        val properties = ConcurrentHashMap<Map<String, String>, KryptonBlock>()
+    }
 }

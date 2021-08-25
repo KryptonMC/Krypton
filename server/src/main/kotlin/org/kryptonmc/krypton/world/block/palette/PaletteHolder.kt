@@ -25,7 +25,7 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
-import org.kryptonmc.krypton.world.block.BLOCKS
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.data.BitStorage
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
@@ -33,8 +33,8 @@ import kotlin.math.max
 
 class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
 
-    private lateinit var storage: BitStorage
-    private var bits = 0
+    private var storage = BitStorage(MINIMUM_PALETTE_SIZE, SIZE)
+    private var bits = MINIMUM_PALETTE_SIZE
         set(value) {
             if (field == value) return
             field = value
@@ -43,18 +43,14 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
                     field = MINIMUM_PALETTE_SIZE
                     ArrayPalette(field, this)
                 }
-                field < GLOBAL_PALETTE_SIZE -> MapPalette(field, this)
+                field < GLOBAL_PALETTE_THRESHOLD -> MapPalette(field, this)
                 else -> {
-                    field = BLOCKS.size.ceillog2()
+                    field = GLOBAL_PALETTE_SIZE
                     GlobalPalette
                 }
             }
             storage = BitStorage(field, SIZE)
         }
-
-    init {
-        bits = MINIMUM_PALETTE_SIZE
-    }
 
     @Synchronized
     fun getAndSet(x: Int, y: Int, z: Int, value: Block): Block {
@@ -143,12 +139,14 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
 
     companion object {
 
-        const val GLOBAL_PALETTE_SIZE = 9
+        const val GLOBAL_PALETTE_THRESHOLD = 9
         const val MINIMUM_PALETTE_SIZE = 4
+        private val GLOBAL_PALETTE_SIZE = KryptonBlock.STATES.size.ceillog2()
+
         private const val SIZE = 4096
         private val DEFAULT = Blocks.AIR
         private val DUMMY_RESIZER: (Int, Block) -> Int = { _, _ -> 0 }
+
+        private fun indexOf(x: Int, y: Int, z: Int) = y shl 8 or (z shl 4) or x
     }
 }
-
-private fun indexOf(x: Int, y: Int, z: Int) = y shl 8 or (z shl 4) or x

@@ -23,9 +23,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.krypton.effect.Music
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.StringSerializable
-import org.kryptonmc.krypton.effect.SOUND_EVENT_CODEC
-import org.kryptonmc.krypton.util.COLOR_CODEC
-import org.kryptonmc.krypton.util.codec
+import org.kryptonmc.krypton.util.Codecs
 import java.awt.Color
 import java.util.Optional
 
@@ -48,15 +46,15 @@ data class BiomeEffects(
 
         val CODEC: Codec<BiomeEffects> = RecordCodecBuilder.create { instance ->
             instance.group(
-                COLOR_CODEC.fieldOf("fog_color").forGetter(BiomeEffects::fogColor),
-                COLOR_CODEC.fieldOf("water_color").forGetter(BiomeEffects::waterColor),
-                COLOR_CODEC.fieldOf("water_fog_color").forGetter(BiomeEffects::waterFogColor),
-                COLOR_CODEC.fieldOf("sky_color").forGetter(BiomeEffects::skyColor),
+                Codecs.COLOR.fieldOf("fog_color").forGetter(BiomeEffects::fogColor),
+                Codecs.COLOR.fieldOf("water_color").forGetter(BiomeEffects::waterColor),
+                Codecs.COLOR.fieldOf("water_fog_color").forGetter(BiomeEffects::waterFogColor),
+                Codecs.COLOR.fieldOf("sky_color").forGetter(BiomeEffects::skyColor),
                 GrassColorModifier.CODEC.optionalFieldOf("grass_color_modifier", GrassColorModifier.NONE).forGetter(BiomeEffects::grassColorModifier),
-                COLOR_CODEC.optionalFieldOf("foliage_color").forGetter(BiomeEffects::foliageColor),
-                COLOR_CODEC.optionalFieldOf("grass_color").forGetter(BiomeEffects::grassColor),
+                Codecs.COLOR.optionalFieldOf("foliage_color").forGetter(BiomeEffects::foliageColor),
+                Codecs.COLOR.optionalFieldOf("grass_color").forGetter(BiomeEffects::grassColor),
                 AmbientParticleSettings.CODEC.optionalFieldOf("particle").forGetter(BiomeEffects::ambientParticleSettings),
-                SOUND_EVENT_CODEC.optionalFieldOf("ambient_sound").forGetter(BiomeEffects::ambientLoopSound),
+                Codecs.SOUND_EVENT.optionalFieldOf("ambient_sound").forGetter(BiomeEffects::ambientLoopSound),
                 AmbientMoodSettings.CODEC.optionalFieldOf("mood_sound").forGetter(BiomeEffects::ambientMoodSettings),
                 AmbientAdditionsSettings.CODEC.optionalFieldOf("additions_sound").forGetter(BiomeEffects::ambientAdditionsSettings),
                 Music.CODEC.optionalFieldOf("music").forGetter(BiomeEffects::backgroundMusic)
@@ -74,8 +72,6 @@ enum class GrassColorModifier(override val serialized: String) : StringSerializa
     companion object {
 
         private val BY_NAME = values().associateBy { it.serialized }
-        val CODEC = values().codec { BY_NAME[it] }
-
-        fun fromName(name: String) = BY_NAME.getValue(name)
+        val CODEC = Codecs.forEnum(values()) { BY_NAME[it] }
     }
 }

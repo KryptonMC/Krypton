@@ -26,7 +26,8 @@ import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 
 /**
- * A section of a chunk (*nah*). These are 16x16x16 areas that hold the actual block states and palette information
+ * A section of a chunk. These are 16x16x16 areas that hold the actual block
+ * states and palette information.
  */
 class ChunkSection(
     val y: Int,
@@ -35,8 +36,9 @@ class ChunkSection(
 ) {
 
     val palette = PaletteHolder(GlobalPalette)
-    var nonEmptyBlockCount = 0
-        private set
+    private var nonEmptyBlockCount = 0
+    val serializedSize: Int
+        get() = 2 + palette.serializedSize
 
     operator fun get(x: Int, y: Int, z: Int) = palette[x, y, z]
 
@@ -59,19 +61,5 @@ class ChunkSection(
     fun write(buf: ByteBuf) {
         buf.writeShort(nonEmptyBlockCount)
         palette.write(buf)
-    }
-
-    val serializedSize: Int
-        get() = 2 + palette.serializedSize
-}
-
-data class ChunkBlock(
-    val name: Key,
-    val properties: Map<String, String> = emptyMap()
-) {
-
-    companion object {
-
-        val AIR = ChunkBlock(key("air"))
     }
 }

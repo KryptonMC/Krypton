@@ -47,12 +47,13 @@ class KryptonGameRuleHolder : GameRuleHolder {
     override fun <V : Any> get(rule: GameRule<V>) = rules.getOrDefault(rule, rule.default) as V
 
     override fun <V : Any> set(rule: GameRule<V>, value: V) = rules.set(rule, value)
-}
 
-private val GAME_RULES = Registries.GAMERULES.values.associateBy { it.name }
+    companion object {
 
-private fun deserialize(input: String): Any {
-    if (input.toBooleanStrictOrNull() != null) return input.toBooleanStrict()
-    if (input.toIntOrNull() != null) return input.toInt()
-    error("Game rules must be either booleans or integers, $input couldn't be parsed to either!")
+        private fun deserialize(input: String): Any {
+            if (input.toBooleanStrictOrNull() != null) return input.toBooleanStrict()
+            if (input.toIntOrNull() != null) return input.toInt()
+            error("Game rules must be either booleans or integers, $input couldn't be parsed to either!")
+        }
+    }
 }

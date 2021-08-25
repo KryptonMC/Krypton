@@ -20,19 +20,15 @@ package org.kryptonmc.krypton.world.dimension
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
+import com.mojang.serialization.Dynamic
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.util.getIfPresent
+import org.kryptonmc.api.util.log2
+import org.kryptonmc.api.util.roundUpPow2
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.krypton.tags.BlockTags
-import org.kryptonmc.krypton.tags.Tag
-import org.kryptonmc.krypton.tags.TagManager
-import org.kryptonmc.krypton.tags.TagTypes
-import org.kryptonmc.krypton.util.KEY_CODEC
-import org.kryptonmc.krypton.util.PACKED_Y
+import org.kryptonmc.krypton.util.Codecs
 import org.kryptonmc.krypton.util.frac
-import org.kryptonmc.krypton.util.lerp
 import org.kryptonmc.krypton.world.biome.gen.BiomeZoomer
 import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetBiomeZoomer
 import java.util.Optional
@@ -59,9 +55,6 @@ data class KryptonDimensionType(
     val biomeZoomer: BiomeZoomer = FuzzyOffsetBiomeZoomer
 ) : DimensionType {
 
-    private val brightnessRamp = fillBrightnessRamp(ambientLight)
-    val hasFixedTime = fixedTime != null
-
     fun timeOfDay(time: Long): Float {
         val frac = ((fixedTime ?: time).toDouble() / 24000.0 - 0.25).frac()
         val cos = 0.5 - cos(frac * PI) / 2.0
@@ -70,25 +63,13 @@ data class KryptonDimensionType(
 
     fun moonPhase(time: Long) = (time / 24000L % MOON_PHASES + MOON_PHASES).toInt() % MOON_PHASES
 
-    fun brightness(phase: Int) = brightnessRamp[phase]
-
-    fun infiniburn(): Tag<Block> = TagManager[TagTypes.BLOCKS, infiniburn.asString()] ?: BlockTags.INFINIBURN_OVERWORLD
-
-    fun equalTo(other: KryptonDimensionType): Boolean {
-        if (this === other) return true
-        return hasSkylight == other.hasSkylight && hasCeiling == other.hasCeiling && isUltrawarm == other.isUltrawarm &&
-                isNatural == other.isNatural && coordinateScale == other.coordinateScale && isPiglinSafe == other.isPiglinSafe &&
-                bedWorks == other.bedWorks && respawnAnchorWorks == other.respawnAnchorWorks && hasRaids == other.hasRaids &&
-                minimumY == other.minimumY && height == other.height && logicalHeight == other.logicalHeight &&
-                ambientLight == other.ambientLight && fixedTime == other.fixedTime && infiniburn == other.infiniburn &&
-                effects == other.effects
-    }
-
     companion object {
 
         private const val MINIMUM_COORDINATE_SCALE = 1.0E-5
         private const val MAXIMUM_COORDINATE_SCALE = 3.0E7
         private const val MINIMUM_HEIGHT = 16
+
+        private val PACKED_Y = 64 - (1 + 30000000.roundUpPow2().log2()) * 2
         val Y_SIZE = (1 shl PACKED_Y) - 32
         val MAX_Y = (Y_SIZE shr 1) - 1
         val MIN_Y = MAX_Y - Y_SIZE + 1
@@ -108,32 +89,22 @@ data class KryptonDimensionType(
                 Codec.BOOL.fieldOf("respawn_anchor_works").forGetter(KryptonDimensionType::respawnAnchorWorks),
                 Codec.FLOAT.fieldOf("ambient_light").forGetter(KryptonDimensionType::ambientLight),
                 Codec.LONG.optionalFieldOf("fixed_time").xmap(Optional<Long>::getIfPresent) { Optional.ofNullable(it) }.forGetter(KryptonDimensionType::fixedTime),
-                KEY_CODEC.fieldOf("infiniburn").forGetter(KryptonDimensionType::infiniburn),
+                Codecs.KEY.fieldOf("infiniburn").forGetter(KryptonDimensionType::infiniburn),
                 Codec.intRange(MIN_Y, MAX_Y).fieldOf("min_y").forGetter(KryptonDimensionType::minimumY),
                 Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).fieldOf("height").forGetter(KryptonDimensionType::height),
                 Codec.intRange(0, Y_SIZE).fieldOf("logical_height").forGetter(KryptonDimensionType::logicalHeight),
                 Codec.doubleRange(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE).fieldOf("coordinate_scale").forGetter(KryptonDimensionType::coordinateScale),
-                KEY_CODEC.fieldOf("effects").forGetter(KryptonDimensionType::effects)
+                Codecs.KEY.fieldOf("effects").forGetter(KryptonDimensionType::effects)
             ).apply(instance, ::KryptonDimensionType)
-        }.comapFlatMap({ it.checkY() }, { it })
+        }.comapFlatMap(::checkY) { it }
 
-        private fun KryptonDimensionType.checkY(): DataResult<KryptonDimensionType> {
-            if (height < MINIMUM_HEIGHT) return DataResult.error("Height has to be at least $MINIMUM_HEIGHT!")
-            if (minimumY + height > MAX_Y + 1) return DataResult.error("Minimum Y + height cannot be greater than ${MAX_Y + 1}!")
-            if (logicalHeight > height) return DataResult.error("Logical height cannot be greater than height!")
-            if (height % 16 != 0) return DataResult.error("Height must be a multiple of 16!")
-            if (minimumY % 16 != 0) return DataResult.error("Minimum Y must be a multiple of 16!")
-            return DataResult.success(this)
+        private fun checkY(type: KryptonDimensionType): DataResult<KryptonDimensionType> {
+            if (type.height < MINIMUM_HEIGHT) return DataResult.error("Height has to be at least $MINIMUM_HEIGHT!")
+            if (type.minimumY + type.height > MAX_Y + 1) return DataResult.error("Minimum Y + height cannot be greater than ${MAX_Y + 1}!")
+            if (type.logicalHeight > type.height) return DataResult.error("Logical height cannot be greater than height!")
+            if (type.height % 16 != 0) return DataResult.error("Height must be a multiple of 16!")
+            if (type.minimumY % 16 != 0) return DataResult.error("Minimum Y must be a multiple of 16!")
+            return DataResult.success(type)
         }
     }
-}
-
-private fun fillBrightnessRamp(ambientLight: Float): FloatArray {
-    val array = FloatArray(16)
-    for (i in 0..15) {
-        val scaled = i.toFloat() / 15F
-        val value = scaled / (4F - 3F * scaled)
-        array[i] = lerp(ambientLight, value, 1F)
-    }
-    return array
 }

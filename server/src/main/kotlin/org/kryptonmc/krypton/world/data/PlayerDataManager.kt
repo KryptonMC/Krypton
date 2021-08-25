@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.world.data
 import com.mojang.serialization.Dynamic
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.createFile
+import org.kryptonmc.krypton.util.tryCreateFile
 import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.daemon
 import org.kryptonmc.krypton.util.datafix.DATA_FIXER
@@ -53,7 +53,7 @@ class PlayerDataManager(private val folder: Path) {
     fun load(player: KryptonPlayer): CompletableFuture<CompoundTag?> = CompletableFuture.supplyAsync({
         val playerFile = folder.resolve("${player.uuid}.dat")
         if (!playerFile.exists()) {
-            playerFile.createFile()
+            playerFile.tryCreateFile()
             return@supplyAsync null
         }
 

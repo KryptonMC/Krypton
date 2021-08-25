@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.effect
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.krypton.util.Codecs
 
 data class Music(
     val sound: SoundEvent,
@@ -33,7 +34,7 @@ data class Music(
 
         val CODEC: Codec<Music> = RecordCodecBuilder.create {
             it.group(
-                SOUND_EVENT_CODEC.fieldOf("sound").forGetter(Music::sound),
+                Codecs.SOUND_EVENT.fieldOf("sound").forGetter(Music::sound),
                 Codec.INT.fieldOf("min_delay").forGetter(Music::minimumDelay),
                 Codec.INT.fieldOf("max_delay").forGetter(Music::maximumDelay),
                 Codec.BOOL.fieldOf("replace_current_music").forGetter(Music::replace)

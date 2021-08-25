@@ -22,8 +22,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.util.VECTOR3I_CODEC
-import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.util.Codecs
 import org.spongepowered.math.vector.Vector3i
 
 data class GlobalPosition(
@@ -35,8 +34,8 @@ data class GlobalPosition(
 
         val CODEC: Codec<GlobalPosition> = RecordCodecBuilder.create {
             it.group(
-                KryptonWorld.RESOURCE_KEY_CODEC.fieldOf("dimension").forGetter(GlobalPosition::dimension),
-                VECTOR3I_CODEC.fieldOf("pos").forGetter(GlobalPosition::position)
+                Codecs.DIMENSION.fieldOf("dimension").forGetter(GlobalPosition::dimension),
+                Codecs.VECTOR3I_STREAM.fieldOf("pos").forGetter(GlobalPosition::position)
             ).apply(it, ::GlobalPosition)
         }
     }

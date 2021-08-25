@@ -64,16 +64,15 @@ import org.kryptonmc.krypton.server.op.OperatorList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
+import org.kryptonmc.krypton.util.Angle
 import org.kryptonmc.krypton.util.clamp
-import org.kryptonmc.krypton.util.createDirectory
+import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.nextInt
-import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.toProtocol
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
-import org.kryptonmc.krypton.world.data.WorldResource
 import org.kryptonmc.krypton.world.dimension.parseDimension
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
@@ -176,12 +175,12 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         sendToAll(PacketOutSpawnPlayer(player))
         sendToAll(PacketOutMetadata(player.id, player.data.all))
         sendToAll(PacketOutAttributes(player.id, player.attributes.values.filter { it.type.sendToClient }))
-        sendToAll(PacketOutHeadLook(player.id, player.location.yaw.toAngle()))
+        sendToAll(PacketOutHeadLook(player.id, Angle.fromDegrees(player.location.yaw)))
         players.forEach { online ->
             session.sendPacket(PacketOutSpawnPlayer(online))
             session.sendPacket(PacketOutMetadata(online.id, online.data.all))
             session.sendPacket(PacketOutAttributes(online.id, online.attributes.values.filter { it.type.sendToClient }))
-            session.sendPacket(PacketOutHeadLook(online.id, online.location.yaw.toAngle()))
+            session.sendPacket(PacketOutHeadLook(online.id, Angle.fromDegrees(online.location.yaw)))
         }
 
         // Add the player to the list and cache maps
@@ -264,12 +263,12 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     fun getStatistics(player: KryptonPlayer): KryptonStatisticsTracker {
         val uuid = player.uuid
         statistics[uuid]?.let { return it }
-        val folder = server.worldResource(WorldResource.STATISTICS_FOLDER).createDirectory()
+        val folder = server.resolve("stats").tryCreateDirectory()
         // TODO: Deal with the old data files
         return KryptonStatisticsTracker(player, folder.resolve("$uuid.json")).apply { this@PlayerManager.statistics[uuid] = this }
     }
 
-    fun sendCommands(player: KryptonPlayer) {
+    private fun sendCommands(player: KryptonPlayer) {
         val permissionLevel = player.server.getPermissionLevel(player.profile)
         sendCommands(player, permissionLevel)
     }

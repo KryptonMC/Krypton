@@ -29,7 +29,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
-import org.kryptonmc.krypton.util.KEY_CODEC
+import org.kryptonmc.krypton.util.Codecs
 import org.kryptonmc.krypton.util.noise.NormalNoise
 import org.kryptonmc.krypton.util.random.WorldGenRandom
 import org.kryptonmc.krypton.world.biome.BiomeKeys
@@ -119,7 +119,7 @@ class MultiNoiseBiomeGenerator private constructor(
 
             val CODEC: MapCodec<PresetInstance> = RecordCodecBuilder.mapCodec { instance ->
                 instance.group(
-                    KEY_CODEC.flatXmap(
+                    Codecs.KEY.flatXmap(
                         { key -> Preset.BY_NAME[key]?.let { DataResult.success(it) } ?: DataResult.error("Unknown generator preset $key!") },
                         { DataResult.success(it.name) }
                     ).fieldOf("preset").stable().forGetter(PresetInstance::preset),
@@ -133,7 +133,7 @@ class MultiNoiseBiomeGenerator private constructor(
     companion object {
 
         private val DEFAULT_PARAMETERS = NoiseParameters(-7, listOf(1.0, 1.0))
-        val DIRECT_CODEC: MapCodec<MultiNoiseBiomeGenerator> = RecordCodecBuilder.mapCodec { instance ->
+        private val DIRECT_CODEC: MapCodec<MultiNoiseBiomeGenerator> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(
                 Codec.LONG.fieldOf("seed").forGetter(MultiNoiseBiomeGenerator::seed),
                 RecordCodecBuilder.create<Pair<ClimateParameters, KryptonBiome>> { instance1 ->

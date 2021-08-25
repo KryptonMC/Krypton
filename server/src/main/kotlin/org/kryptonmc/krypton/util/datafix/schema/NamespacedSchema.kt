@@ -33,7 +33,7 @@ open class NamespacedSchema(versionKey: Int, parent: Schema?) : Schema(versionKe
 
     companion object {
 
-        val NAMESPACED_STRING_CODEC = object : PrimitiveCodec<String> {
+        private val NAMESPACED_STRING_CODEC = object : PrimitiveCodec<String> {
 
             override fun <T> read(ops: DynamicOps<T>, input: T) = ops.getStringValue(input).map(String::ensureNamespaced)
             override fun <T> write(ops: DynamicOps<T>, value: String) = ops.createString(value)
@@ -44,8 +44,7 @@ open class NamespacedSchema(versionKey: Int, parent: Schema?) : Schema(versionKe
 }
 
 fun String.ensureNamespaced() = try {
-    val key = Key.key(this)
-    key.asString()
+    Key.key(this).asString()
 } catch (exception: InvalidKeyException) {
     this
 }

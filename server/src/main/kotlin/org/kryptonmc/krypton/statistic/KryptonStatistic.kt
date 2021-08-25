@@ -35,7 +35,10 @@ class KryptonStatistic<T : Any>(
     override fun hashCode() = name.hashCode()
 
     override fun toString() = "Statistic(name=$name, formatter=$formatter)"
-}
 
-private fun <T : Any> StatisticType<T>.criterionName(value: T) =
-    "${key.asString().replace(':', '.')}:${registry[value]?.asString()?.replace(':', '.')}"
+    companion object {
+
+        private fun <T : Any> StatisticType<T>.criterionName(value: T) =
+            "${key.asString().replace(':', '.')}:${registry[value]?.asString()?.replace(':', '.')}"
+    }
+}

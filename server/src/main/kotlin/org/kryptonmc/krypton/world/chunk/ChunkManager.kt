@@ -150,51 +150,54 @@ class ChunkManager(private val world: KryptonWorld) {
         chunk.lastUpdate = lastUpdate
         regionFileManager.write(chunk.position, chunk.serialize())
     }
-}
 
-private fun KryptonChunk.serialize(): CompoundTag {
-    val data = buildCompound {
-        intArray("Biomes", biomes.write())
-        compound("CarvingMasks") {
-            byteArray("AIR", carvingMasks.first)
-            byteArray("LIQUID", carvingMasks.second)
+    companion object {
+
+        private const val CHUNK_DATA_VERSION = 2578
+
+        private fun KryptonChunk.serialize(): CompoundTag {
+            val data = buildCompound {
+                intArray("Biomes", biomes.write())
+                compound("CarvingMasks") {
+                    byteArray("AIR", carvingMasks.first)
+                    byteArray("LIQUID", carvingMasks.second)
+                }
+                long("LastUpdate", lastUpdate)
+                list("Lights", ListTag.ID)
+                list("LiquidsToBeTicked", ListTag.ID)
+                list("LiquidTicks", ListTag.ID)
+                long("InhabitedTime", inhabitedTime)
+                list("PostProcessing", ListTag.ID)
+                string("Status", "full")
+                list("TileEntities", CompoundTag.ID)
+                list("TileTicks", CompoundTag.ID)
+                list("ToBeTicked", ListTag.ID)
+                put("Structures", structures)
+                int("xPos", position.x)
+                int("zPos", position.z)
+            }
+
+            val sectionList = ListTag(elementType = CompoundTag.ID)
+            for (i in minimumLightSection until maximumLightSection) {
+                val section = sections.asSequence().filter { it != null && it.y shr 4 == i }.firstOrNull() ?: continue
+                sectionList.add(compound {
+                    byte("Y", (i and 255).toByte())
+                    section.palette.save(this)
+                    if (section.blockLight.isNotEmpty()) byteArray("BlockLight", section.blockLight)
+                    if (section.skyLight.isNotEmpty()) byteArray("SkyLight", section.skyLight)
+                })
+            }
+            data.put("Sections", sectionList)
+
+            val heightmapData = CompoundTag.builder()
+            heightmaps.forEach {
+                if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.longArray(it.key.name, it.value.data.data)
+            }
+            data.put("Heightmaps", heightmapData.build())
+            return compound {
+                int("DataVersion", CHUNK_DATA_VERSION)
+                put("Level", data.build())
+            }
         }
-        long("LastUpdate", lastUpdate)
-        list("Lights", ListTag.ID)
-        list("LiquidsToBeTicked", ListTag.ID)
-        list("LiquidTicks", ListTag.ID)
-        long("InhabitedTime", inhabitedTime)
-        list("PostProcessing", ListTag.ID)
-        string("Status", "full")
-        list("TileEntities", CompoundTag.ID)
-        list("TileTicks", CompoundTag.ID)
-        list("ToBeTicked", ListTag.ID)
-        put("Structures", structures)
-        int("xPos", position.x)
-        int("zPos", position.z)
-    }
-
-    val sectionList = ListTag(elementType = CompoundTag.ID)
-    for (i in minimumLightSection until maximumLightSection) {
-        val section = sections.asSequence().filter { it != null && it.y shr 4 == i }.firstOrNull() ?: continue
-        sectionList.add(compound {
-            byte("Y", (i and 255).toByte())
-            section.palette.save(this)
-            if (section.blockLight.isNotEmpty()) byteArray("BlockLight", section.blockLight)
-            if (section.skyLight.isNotEmpty()) byteArray("SkyLight", section.skyLight)
-        })
-    }
-    data.put("Sections", sectionList)
-
-    val heightmapData = CompoundTag.builder()
-    heightmaps.forEach {
-        if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.longArray(it.key.name, it.value.data.data)
-    }
-    data.put("Heightmaps", heightmapData.build())
-    return compound {
-        int("DataVersion", CHUNK_DATA_VERSION)
-        put("Level", data.build())
     }
 }
-
-const val CHUNK_DATA_VERSION = 2578

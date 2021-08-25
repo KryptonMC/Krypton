@@ -29,7 +29,6 @@ import com.mojang.serialization.DynamicOps
 import com.mojang.serialization.OptionalDynamic
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.krypton.util.datafix.References
-import org.kryptonmc.krypton.util.forEachPresent
 import java.util.Optional
 import java.util.stream.Stream
 import kotlin.math.max
@@ -168,8 +167,8 @@ class WorldGenSettingsFix(outputSchema: Schema) : DataFix(outputSchema, true) {
                 isStronghold = true
                 configurations[VILLAGE] = DEFAULTS[VILLAGE]
             }
-            get("structures").flatMap { it.mapValues }.result().forEachPresent { nameData, structureData ->
-                structureData.mapValues.result().forEachPresent structures@{ parameterData, valueData ->
+            get("structures").flatMap { it.mapValues }.result().forEachIfPresent { nameData, structureData ->
+                structureData.mapValues.result().forEachIfPresent structures@{ parameterData, valueData ->
                     val name = nameData.asString("")
                     val parameterName = parameterData.asString("")
                     val value = valueData.asString("")
@@ -284,3 +283,5 @@ private fun <T> Dynamic<T>.vanillaBiomeSource(seed: Long, legacyInitLayer: Boole
     createString("seed") to createLong(seed),
     createString("large_biomes") to createBoolean(largeBiomes)
 ).let { if (legacyInitLayer) it.plus(createString("legacy_biome_int_layer") to createBoolean(true)) else it })
+
+private fun <T : Map<K, V>, K, V> Optional<T>.forEachIfPresent(action: (K, V) -> Unit) = ifPresent { it.forEach(action) }

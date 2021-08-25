@@ -96,11 +96,8 @@ private val VEGETABLES = intArrayOf(
     Blocks.MELON.id
 )
 
-val Block.isPlant: Boolean
-    get() = id in PLANTS
+fun Block.isPlant() = id in PLANTS
 
-val Block.isReplaceablePlant: Boolean
-    get() = id in REPLACEABLE_PLANTS
+fun Block.isReplaceablePlant() = id in REPLACEABLE_PLANTS
 
-val Block.isVegetable: Boolean
-    get() = id in VEGETABLES
+fun Block.isVegetable() = id in VEGETABLES

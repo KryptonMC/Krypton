@@ -51,7 +51,6 @@ import org.kryptonmc.krypton.tags.FluidTags
 import org.kryptonmc.krypton.tags.GameEventTags
 import org.kryptonmc.krypton.tags.ItemTags
 import org.kryptonmc.krypton.tags.TagManager
-import org.kryptonmc.krypton.util.encryption.Encryption
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.block.KryptonBlockManager

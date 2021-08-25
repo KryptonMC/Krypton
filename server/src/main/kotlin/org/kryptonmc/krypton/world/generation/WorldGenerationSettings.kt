@@ -66,8 +66,6 @@ data class WorldGenerationSettings(
         get() = overworld() is DebugGenerator
     val isFlat: Boolean
         get() = overworld() is FlatGenerator
-    val isOldCustomized: Boolean
-        get() = legacyCustomOptions.isPresent
 
     fun overworld() = checkNotNull(dimensions[Dimension.OVERWORLD]) { "Missing overworld settings!" }.generator
 
@@ -182,17 +180,17 @@ data class WorldGenerationSettings(
             seed,
             InternalRegistries.NOISE_GENERATOR_SETTINGS[NoiseGeneratorSettings.END]!!
         )
+
+        private fun KryptonRegistry<Dimension>.withOverworld(generator: Generator): KryptonRegistry<Dimension> {
+            val overworld = get(Dimension.OVERWORLD)
+            val overworldType = overworld?.type ?: DimensionTypes.OVERWORLD
+            return withOverworld(overworldType, generator)
+        }
+
+        private fun KryptonRegistry<Dimension>.withOverworld(type: KryptonDimensionType, generator: Generator): KryptonRegistry<Dimension> {
+            val registry = KryptonRegistry(InternalResourceKeys.DIMENSION).apply { register(Dimension.OVERWORLD, Dimension(type, generator)) }
+            entries.forEach { (key, value) -> if (key !== Dimension.OVERWORLD) registry.register(key, value) }
+            return registry
+        }
     }
-}
-
-private fun KryptonRegistry<Dimension>.withOverworld(generator: Generator): KryptonRegistry<Dimension> {
-    val overworld = get(Dimension.OVERWORLD)
-    val overworldType = overworld?.type ?: InternalRegistries.DIMENSION_TYPE[DimensionTypes.OVERWORLD_KEY]!!
-    return withOverworld(overworldType, generator)
-}
-
-private fun KryptonRegistry<Dimension>.withOverworld(type: KryptonDimensionType, generator: Generator): KryptonRegistry<Dimension> {
-    val registry = KryptonRegistry(InternalResourceKeys.DIMENSION).apply { register(Dimension.OVERWORLD, Dimension(type, generator)) }
-    entries.forEach { (key, value) -> if (key !== Dimension.OVERWORLD) registry.register(key, value) }
-    return registry
 }

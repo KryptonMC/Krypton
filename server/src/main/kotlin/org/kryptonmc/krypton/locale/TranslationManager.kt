@@ -100,7 +100,7 @@ object TranslationManager {
     private fun loadCustomTranslationFile(file: Path): Pair<Locale, ResourceBundle>? {
         val fileName = file.fileName.toString()
         val localeString = fileName.substring(0, fileName.length - ".properties".length)
-        val locale = localeString.toLocale()
+        val locale = Translator.parseLocale(localeString)
 
         if (locale == null) {
             LOGGER.warn("Unknown locale '$localeString' - unable to register.")
@@ -125,5 +125,3 @@ object TranslationManager {
 
     fun render(component: Component) = GlobalTranslator.render(component, locale)
 }
-
-fun String.toLocale() = Translator.parseLocale(this)

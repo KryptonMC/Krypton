@@ -23,13 +23,13 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.space.GlobalPosition
-import org.kryptonmc.krypton.util.UUID_CODEC
+import org.kryptonmc.krypton.util.Codecs
 
 object MemoryKeys {
 
     val ADMIRING_DISABLED = register<Boolean>("admiring_disabled", Codec.BOOL, true)
     val ADMIRING_ITEM = register<Boolean>("admiring_item", Codec.BOOL, true)
-    val ANGRY_AT = register("angry_at", UUID_CODEC, true)
+    val ANGRY_AT = register("angry_at", Codecs.UUID, true)
     val GOLEM_DETECTED_RECENTLY = register<Boolean>("golem_detected_recently", Codec.BOOL, true)
     val HAS_HUNTING_COOLDOWN = register<Boolean>("has_hunting_cooldown", Codec.BOOL, true)
     val HOME = register("home", GlobalPosition.CODEC, false)

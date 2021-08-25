@@ -30,7 +30,6 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.network.PacketState
 import org.kryptonmc.krypton.network.data.LegacyForwardedData
-import org.kryptonmc.krypton.network.data.splitLegacyData
 import org.kryptonmc.krypton.util.logger
 
 /**
@@ -55,7 +54,7 @@ class HandshakeHandler(
 
         if (server.config.proxy.mode == ForwardingMode.LEGACY && packet.nextState == PacketState.LOGIN) {
             val data = try {
-                packet.address.splitLegacyData()
+                LegacyForwardedData.parse(packet.address)
             } catch (exception: Exception) {
                 disconnect(Messages.BUNGEE.FAIL_DECODE())
                 Messages.BUNGEE.FAIL_DECODE_ERROR.error(LOGGER, exception)

@@ -20,4 +20,10 @@ package org.kryptonmc.krypton.space
 
 import org.kryptonmc.api.space.Direction
 
-fun String.toDirection(): Direction = Direction.valueOf(uppercase())
+fun Direction.antiClockwise() = when (this) {
+    Direction.NORTH -> Direction.WEST
+    Direction.SOUTH -> Direction.EAST
+    Direction.WEST -> Direction.SOUTH
+    Direction.EAST -> Direction.NORTH
+    else -> error("Unable to get anti clockwise direction for given direction $this!")
+}

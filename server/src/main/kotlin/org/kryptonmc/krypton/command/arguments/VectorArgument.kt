@@ -22,23 +22,20 @@ import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
-import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.LocalCoordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.WorldCoordinates
 import org.kryptonmc.krypton.command.suggestCoordinates
-import org.kryptonmc.krypton.util.argument
+import org.kryptonmc.krypton.command.argument.argument
 import java.util.concurrent.CompletableFuture
 
 class VectorArgument(private val correctCenter: Boolean = true) : ArgumentType<Coordinates> {
 
-    override fun parse(reader: StringReader) = if (reader.canRead() && reader.peek() == '^') LocalCoordinates.parse(reader) else WorldCoordinates.parseDouble(reader, correctCenter)
+    override fun parse(reader: StringReader) = if (reader.canRead() && reader.peek() == '^') LocalCoordinates.parse(reader) else WorldCoordinates.parse(reader, correctCenter)
 
     override fun <S> listSuggestions(context: CommandContext<S>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
         if (context.source !is Player) return Suggestions.empty()
@@ -63,9 +60,6 @@ class VectorArgument(private val correctCenter: Boolean = true) : ArgumentType<C
 }
 
 fun CommandContext<Sender>.vectorArgument(name: String) = argument<Coordinates>(name).position(source as Player)
-
-val ERROR_NOT_COMPLETE = SimpleCommandExceptionType(Component.translatable("argument.pos3d.incomplete").toMessage())
-val ERROR_MIXED_TYPE = SimpleCommandExceptionType(Component.translatable("argument.pos.mixed").toMessage())
 
 data class TextCoordinates(val x: String, val y: String, val z: String) {
 

@@ -50,12 +50,11 @@ import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
-import org.kryptonmc.krypton.util.createDirectory
+import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
-import org.kryptonmc.krypton.world.data.WorldResource
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
@@ -233,7 +232,7 @@ class KryptonServer(
 
         try {
             val pluginPath = Path.of("plugins")
-            if (!pluginPath.exists()) pluginPath.createDirectory()
+            if (!pluginPath.exists()) pluginPath.tryCreateDirectory()
             if (!pluginPath.isDirectory()) {
                 Messages.PLUGIN.NOT_DIRECTORY.warn(LOGGER, pluginPath)
                 return
@@ -292,7 +291,7 @@ class KryptonServer(
 
     fun overworld() = worldManager.worlds[World.OVERWORLD]!!
 
-    fun worldResource(resource: WorldResource) = dataAccess.resourcePath(resource)
+    fun resolve(path: String) = dataAccess.resolve(path)
 
     override fun registerChannel(channel: Key) {
         require(channel !in RESERVED_CHANNELS) { "Cannot register reserved channel with name \"minecraft:register\" or \"minecraft:unregister\"!" }

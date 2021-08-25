@@ -104,12 +104,12 @@ class TicketManager(private val chunkManager: ChunkManager) {
         private const val PLAYER_TICKET_LEVEL = 31
         private const val MAXIMUM_TICKET_LEVEL = 44
         private const val OFFSET = (MAXIMUM_TICKET_LEVEL - PLAYER_TICKET_LEVEL) * 2 + 1
+
+        private fun absDelta(deltaX: Int, deltaZ: Int): Int {
+            if (deltaX == 0 && deltaZ == 0) return 0
+            return max(abs(deltaX), abs(deltaZ))
+        }
+
+        private fun calculateLevel(absDelta: Int, center: Int): Int = if (absDelta >= 0) center + absDelta else center - absDelta
     }
 }
-
-private fun absDelta(deltaX: Int, deltaZ: Int): Int {
-    if (deltaX == 0 && deltaZ == 0) return 0
-    return max(abs(deltaX), abs(deltaZ))
-}
-
-private fun calculateLevel(absDelta: Int, center: Int): Int = if (absDelta >= 0) center + absDelta else center - absDelta

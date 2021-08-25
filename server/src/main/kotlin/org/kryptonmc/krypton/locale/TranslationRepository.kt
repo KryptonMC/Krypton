@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.locale
 
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import org.kryptonmc.krypton.util.createDirectories
+import org.kryptonmc.krypton.util.tryCreateDirectories
 import java.util.concurrent.ForkJoinPool
 import kotlin.io.path.exists
 import kotlin.io.path.reader
@@ -36,7 +36,7 @@ object TranslationRepository {
     fun scheduleRefresh() = ForkJoinPool.commonPool().execute { refresh() }
 
     private fun refresh() {
-        val translationsDirectory = TranslationManager.TRANSLATIONS_DIRECTORY.apply { createDirectories() }
+        val translationsDirectory = TranslationManager.TRANSLATIONS_DIRECTORY.apply { tryCreateDirectories() }
 
         val repoStatusFile = translationsDirectory.resolve("repository.json")
         val lastRefresh = if (repoStatusFile.exists()) {
@@ -61,7 +61,7 @@ object TranslationRepository {
     }
 
     private fun downloadAndInstall(languages: List<LanguageInfo>) {
-        val translationsDirectory = TranslationManager.TRANSLATIONS_DIRECTORY.apply { createDirectories() }
+        val translationsDirectory = TranslationManager.TRANSLATIONS_DIRECTORY.apply { tryCreateDirectories() }
         languages.forEach { TranslationRequester.download(it.locale.toString(), translationsDirectory.resolve("${it.locale}.properties")) }
 
         val repoStatusFile = translationsDirectory.resolve("repository.json")

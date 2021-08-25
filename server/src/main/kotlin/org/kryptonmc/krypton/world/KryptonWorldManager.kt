@@ -39,20 +39,14 @@ import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.DerivedWorldData
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
-import org.kryptonmc.krypton.world.data.WorldResource
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
-import org.kryptonmc.krypton.world.dimension.storageFolder
 import org.kryptonmc.krypton.world.generation.DebugGenerator
-import org.kryptonmc.krypton.world.generation.FlatGenerator
-import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
-import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.kryptonmc.krypton.world.storage.WorldDataStorage
 import java.io.File
 import java.io.IOException
 import java.nio.file.Path
-import java.util.Random
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import kotlin.io.path.exists
@@ -78,9 +72,9 @@ class KryptonWorldManager(
 
     fun <T> readData(folder: Path, reader: (Path) -> T): T? {
         if (!folder.exists()) return null
-        var levelFile = folder.resolve(WorldResource.LEVEL_DATA_FILE.path)
+        var levelFile = folder.resolve("level.dat")
         if (levelFile.exists()) reader(levelFile)?.let { return it }
-        levelFile = folder.resolve("${WorldResource.LEVEL_DATA_FILE.path}_old")
+        levelFile = folder.resolve("level.dat_old")
         return if (levelFile.exists()) reader(levelFile) else null
     }
 
@@ -97,7 +91,7 @@ class KryptonWorldManager(
             ?: return CompletableFuture.failedFuture(IllegalStateException("No generator found for given key $key!"))
         val defaultData = server.worldData
         Messages.WORLD.LOAD.info(LOGGER, key.asString())
-        val folderName = key.storageFolder
+        val folderName = key.storageFolder()
         val isSubWorld = folderName == "DIM-1" || folderName == "DIM1"
         val storage = try {
             WorldDataStorage(if (isSubWorld) worldFolder else customWorldFolder).createAccess(if (isSubWorld) folderName else key.namespace() + File.separator + key.value())
@@ -134,7 +128,6 @@ class KryptonWorldManager(
         val world = KryptonWorld(server, server.dataAccess, worldData, World.OVERWORLD, dimensionType, generator, isDebug, seed, true)
         worlds[World.OVERWORLD] = world
         if (!worldData.isInitialized) {
-            world.setInitialSpawn(worldData, isDebug)
             worldData.isInitialized = true
             if (isDebug) setupDebugWorld(worldData)
         }
@@ -179,13 +172,12 @@ class KryptonWorldManager(
     companion object {
 
         private val LOGGER = logger<KryptonWorldManager>()
-    }
-}
 
-fun <K, V, K1, V1> Map<K, V>.transform(function: (Map.Entry<K, V>) -> Pair<K1, V1>): Map<K1, V1> {
-    val temp = mutableMapOf<K1, V1>()
-    for (entry in this) {
-        temp += function(entry)
+        private fun Key.storageFolder() = when (this) {
+            World.OVERWORLD.location -> ""
+            World.NETHER.location -> "DIM-1"
+            World.END.location -> "DIM1"
+            else -> value()
+        }
     }
-    return temp
 }

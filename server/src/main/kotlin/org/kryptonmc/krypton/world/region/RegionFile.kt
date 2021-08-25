@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.world.region
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.openChannel
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
@@ -59,7 +58,7 @@ class RegionFile(
     private val compression: RegionFileCompression
 ) : AutoCloseable {
 
-    private val file: FileChannel
+    private val channel: FileChannel
     private val header = ByteBuffer.allocateDirect(8192)
     private val offsets: IntBuffer
     private val timestamps: IntBuffer
@@ -70,11 +69,11 @@ class RegionFile(
         offsets = header.asIntBuffer().limit(1024)
         header.position(4096)
         timestamps = header.asIntBuffer()
-        file = path.openChannel(if (synchronizeWrites) SHARED_FLAGS + StandardOpenOption.DSYNC else SHARED_FLAGS)
+        channel = FileChannel.open(path, if (synchronizeWrites) SHARED_FLAGS + StandardOpenOption.DSYNC else SHARED_FLAGS)
         usedSectors.force(0, 2)
         header.position(0)
 
-        val first = file.read(header, 0L)
+        val first = channel.read(header, 0L)
         if (first != -1) {
             if (first != 8192) Messages.REGION.TRUNCATED.warn(LOGGER, path, first)
             for (i in 0 until 1024) {
@@ -119,7 +118,7 @@ class RegionFile(
         val size = sectorCount * 4096L
 
         val buffer = ByteBuffer.allocate(sectorCount * 4096)
-        file.read(buffer, sectorNumber * 4096L)
+        channel.read(buffer, sectorNumber * 4096L)
         buffer.flip()
 
         if (buffer.remaining() < 5) {
@@ -183,11 +182,11 @@ class RegionFile(
             sectors = usedSectors.allocate(length)
             action = writeExternal(path, buffer)
             val externalStub = createExternalStub()
-            file.write(externalStub, sectors * 4096L)
+            channel.write(externalStub, sectors * 4096L)
         } else {
             sectors = usedSectors.allocate(requiredSectors)
             action = { externalDirectory.resolve("c.${position.x}.${position.z}.mcc").deleteIfExists() }
-            file.write(buffer, sectors * 4096L)
+            channel.write(buffer, sectors * 4096L)
         }
         val timestamp = (Instant.now().toEpochMilli() / 1000).toInt()
         offsets[offsetIndex] = sectors shl 8 or requiredSectors
@@ -217,7 +216,7 @@ class RegionFile(
 
     private fun writeExternal(path: Path, buffer: ByteBuffer): () -> Unit {
         val temp = externalDirectory.createTempFile("tmp")
-        path.openChannel(StandardOpenOption.CREATE, StandardOpenOption.WRITE).use {
+        FileChannel.open(path, StandardOpenOption.CREATE, StandardOpenOption.WRITE).use {
             buffer.position(5)
             it.write(buffer)
         }
@@ -226,28 +225,28 @@ class RegionFile(
 
     private fun writeHeader() {
         header.position(0)
-        file.write(header, 0)
+        channel.write(header, 0)
     }
 
     private fun createExternalStub() =
         ByteBuffer.allocate(5).putInt(1).put((compression.ordinal or 0x80).toByte()).flip()
 
     private fun padToFullSector() {
-        val size = file.size()
+        val size = channel.size()
         val sectors = size + 4096 - 1
         if (size != sectors) {
             val buffer = PADDING_BUFFER.duplicate()
             buffer.position(0)
-            file.write(buffer, sectors - 1)
+            channel.write(buffer, sectors - 1)
         }
     }
 
-    fun flush() = file.force(true)
+    fun flush() = channel.force(true)
 
     override fun close() = try {
         padToFullSector()
     } finally {
-        file.use { it.force(true) }
+        channel.use { it.force(true) }
     }
 
     private inner class ChunkBuffer(private val position: ChunkPosition) : ByteArrayOutputStream(8096) {
@@ -264,16 +263,34 @@ class RegionFile(
         }
     }
 
+    private class RegionBitmap {
+
+        private val used = BitSet()
+
+        fun force(from: Int, to: Int) = used.set(from, from + to)
+
+        fun free(from: Int, to: Int) = used.clear(from, from + to)
+
+        fun allocate(bits: Int): Int {
+            var i = 0
+            while (true) {
+                val nextClearBit = used.nextClearBit(i)
+                val nextSetBit = used.nextSetBit(nextClearBit)
+                if (nextSetBit == -1 || nextSetBit - nextClearBit >= bits) return nextClearBit.apply { force(this, bits) }
+                i = nextSetBit
+            }
+        }
+    }
+
     companion object {
 
+        private val LOGGER = logger<RegionFile>()
         private val SHARED_FLAGS = setOf(
             StandardOpenOption.CREATE,
             StandardOpenOption.READ,
             StandardOpenOption.WRITE
         )
         private val PADDING_BUFFER = ByteBuffer.allocateDirect(1)
-
-        private val LOGGER = logger<RegionFile>()
 
         private val Int.sectorNumber: Int
             get() = shr(8) and 0xFFFFFF
@@ -282,33 +299,14 @@ class RegionFile(
             get() = and(0xFF)
 
         private val ChunkPosition.offsetIndex: Int
-            get() = regionLocalX + regionLocalZ * 32
+            get() = (x and 0x1F) + (z and 0x1F) * 32
 
         private val Byte.isExternalStreamChunk: Boolean
             get() = toInt() and 0x80 != 0
 
         private val Byte.externalChunkVersion: Byte
             get() = (toInt() and 0xFFFFFF7F.toInt()).toByte()
+
+        private operator fun IntBuffer.set(index: Int, value: Int): IntBuffer = put(index, value)
     }
 }
-
-class RegionBitmap {
-
-    private val used = BitSet()
-
-    fun force(from: Int, to: Int) = used.set(from, from + to)
-
-    fun free(from: Int, to: Int) = used.clear(from, from + to)
-
-    fun allocate(bits: Int): Int {
-        var i = 0
-        while (true) {
-            val nextClearBit = used.nextClearBit(i)
-            val nextSetBit = used.nextSetBit(nextClearBit)
-            if (nextSetBit == -1 || nextSetBit - nextClearBit >= bits) return nextClearBit.apply { force(this, bits) }
-            i = nextSetBit
-        }
-    }
-}
-
-operator fun IntBuffer.set(index: Int, value: Int): IntBuffer = put(index, value)

@@ -23,7 +23,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.block.BLOCKS
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.toBlock
 import org.kryptonmc.krypton.world.block.toNBT
 import org.kryptonmc.nbt.ListTag
@@ -46,7 +46,7 @@ class MapPalette(private val bits: Int, private val resizer: (Int, Block) -> Int
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(size)
-        for (i in 0 until size) buf.writeVarInt(BLOCKS.idOf(values[i]!!))
+        for (i in 0 until size) buf.writeVarInt(KryptonBlock.STATES.idOf(values[i]!!))
     }
 
     override fun load(data: ListTag) {
@@ -62,7 +62,7 @@ class MapPalette(private val bits: Int, private val resizer: (Int, Block) -> Int
     override val serializedSize: Int
         get() {
             var temp = size.varIntBytes
-            for (i in 0 until size) temp += BLOCKS.idOf(values[i]!!).varIntBytes
+            for (i in 0 until size) temp += KryptonBlock.STATES.idOf(values[i]!!).varIntBytes
             return temp
         }
 }

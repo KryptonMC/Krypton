@@ -33,7 +33,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.title.Title
-import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ColorParticleData
 import org.kryptonmc.api.effect.particle.DirectionalParticleData
@@ -96,6 +95,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
+import org.kryptonmc.krypton.util.Codecs
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
@@ -235,7 +235,7 @@ class KryptonPlayer(
             respawnForced = tag.getBoolean("SpawnForced")
             respawnAngle = tag.getFloat("SpawnAngle")
             if (tag.containsKey("SpawnDimension")) {
-                val dimension = KryptonWorld.RESOURCE_KEY_CODEC.parse(NBTOps, tag["SpawnDimension"]!!)
+                val dimension = Codecs.DIMENSION.parse(NBTOps, tag["SpawnDimension"]!!)
                 respawnDimension = dimension.resultOrPartial(LOGGER::error).orElse(World.OVERWORLD)
             }
         }
@@ -266,7 +266,7 @@ class KryptonPlayer(
             int("SpawnZ", position.z())
             float("SpawnAngle", respawnAngle)
             boolean("SpawnForced", respawnForced)
-            KryptonWorld.RESOURCE_KEY_CODEC.encodeStart(NBTOps, respawnDimension).resultOrPartial(LOGGER::error).ifPresent { put("SpawnDimension", it) }
+            Codecs.DIMENSION.encodeStart(NBTOps, respawnDimension).resultOrPartial(LOGGER::error).ifPresent { put("SpawnDimension", it) }
         }
     }
 

@@ -26,7 +26,7 @@ import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.world.block.isLeaves
+import org.kryptonmc.krypton.tags.BlockTags
 import org.kryptonmc.krypton.world.block.isPlant
 import org.kryptonmc.krypton.world.block.isReplaceablePlant
 import org.kryptonmc.krypton.world.block.isVegetable
@@ -38,7 +38,7 @@ sealed class SwordHandler(type: ItemType) : KryptonItemHandler(type) {
 
     override fun getDestroySpeed(item: ItemStack, block: Block): Float {
         if (block.id == Blocks.COBWEB.id) return 15F
-        if (block.isPlant || block.isReplaceablePlant || block.isLeaves || block.isVegetable) return 1.5F
+        if (block.isPlant() || block.isReplaceablePlant() || BlockTags.LEAVES.contains(block) || block.isVegetable()) return 1.5F
         return 1F
     }
 

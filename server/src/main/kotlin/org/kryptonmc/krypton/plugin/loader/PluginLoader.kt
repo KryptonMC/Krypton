@@ -34,10 +34,11 @@ import org.kryptonmc.api.plugin.ap.SerializedDependency
 import org.kryptonmc.api.plugin.ap.SerializedPluginDescription
 import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import org.kryptonmc.krypton.plugin.PluginClassLoader
-import org.kryptonmc.krypton.util.doPrivileged
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.io.InputStream
 import java.nio.file.Path
+import java.security.AccessController
+import java.security.PrivilegedAction
 import java.util.jar.JarInputStream
 import kotlin.io.path.inputStream
 
@@ -51,7 +52,7 @@ object PluginLoader {
 
     fun loadPlugin(description: PluginDescription): LoadedPluginDescription {
         require(description is LoadedPluginDescriptionCandidate) { "Description provided isn't a loaded candidate!" }
-        val loader = doPrivileged { PluginClassLoader(description.source) }.apply { addToLoaders() }
+        val loader = AccessController.doPrivileged(PrivilegedAction { PluginClassLoader(description.source) }).apply { addToLoaders() }
         val mainClass = loader.loadClass(description.mainClass)
         return description.toFull(mainClass)
     }

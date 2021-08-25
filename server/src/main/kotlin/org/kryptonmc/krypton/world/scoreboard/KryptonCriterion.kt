@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.world.scoreboard.RenderType
-import org.kryptonmc.api.world.scoreboard.criteria.CompoundCriterion
 import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 
 open class KryptonCriterion(
@@ -29,11 +28,3 @@ open class KryptonCriterion(
     override val isMutable: Boolean = false,
     override val renderType: RenderType = RenderType.INTEGER
 ) : Criterion
-
-class KryptonCompoundCriterion(
-    key: Key,
-    name: String,
-    override val children: List<KryptonCriterion>,
-    isMutable: Boolean = false,
-    renderType: RenderType = RenderType.INTEGER
-) : KryptonCriterion(key, name, isMutable, renderType), CompoundCriterion

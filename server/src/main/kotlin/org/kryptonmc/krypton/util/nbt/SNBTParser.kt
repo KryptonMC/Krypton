@@ -67,7 +67,7 @@ class SNBTParser(private val reader: StringReader) {
     private fun readTypedValue(): Tag {
         reader.skipWhitespace()
         val cursor = reader.cursor
-        if (reader.peek().isQuotedStringStart) return StringTag.of(reader.readQuotedString())
+        if (StringReader.isQuotedStringStart(reader.peek())) return StringTag.of(reader.readQuotedString())
         val text = reader.readUnquotedString()
         if (text.isEmpty()) {
             reader.cursor = cursor
@@ -76,7 +76,17 @@ class SNBTParser(private val reader: StringReader) {
         return convert(text)
     }
 
-    private fun readList() = if (reader.canRead(3) && !reader.peek(1).isQuotedStringStart && reader.peek(2) == ';') readArrayTag() else readListTag()
+    private fun readList(): Tag {
+        return if (
+            reader.canRead(3) &&
+            !StringReader.isQuotedStringStart(reader.peek(1)) &&
+            reader.peek(2) == ';'
+        ) {
+            readArrayTag()
+        } else {
+            readListTag()
+        }
+    }
 
     private fun readListTag(): Tag {
         expect(LIST_START)
@@ -96,7 +106,7 @@ class SNBTParser(private val reader: StringReader) {
                 throw ERROR_INSERT_MIXED_LIST.createWithContext(reader, tagType.name, type.toTagType().name)
             }
             list += tag
-            if (!reader.hasElementSeparator) break
+            if (!reader.hasElementSeparator()) break
             if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
         }
 
@@ -139,7 +149,7 @@ class SNBTParser(private val reader: StringReader) {
                     LongTag.ID -> (tag as NumberTag).value as T
                     else -> (tag as NumberTag).value as T
                 }
-                if (reader.hasElementSeparator) {
+                if (reader.hasElementSeparator()) {
                     if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
                     continue
                 }
@@ -164,7 +174,7 @@ class SNBTParser(private val reader: StringReader) {
             }
             expect(KEY_SEPARATOR)
             builder.put(key, readValue())
-            if (!reader.hasElementSeparator) break
+            if (!reader.hasElementSeparator()) break
             if (!reader.canRead()) throw ERROR_EXPECTED_KEY.createWithContext(reader)
         }
         expect(COMPOUND_END)
@@ -212,28 +222,27 @@ class SNBTParser(private val reader: StringReader) {
         private val ERROR_EXPECTED_KEY = SimpleCommandExceptionType(translatable("argument.nbt.expected.key").toMessage())
         private val ERROR_EXPECTED_VALUE = SimpleCommandExceptionType(translatable("argument.nbt.expected.value").toMessage())
         private val ERROR_INSERT_MIXED_LIST = Dynamic2CommandExceptionType { a, b ->
-            translatable("argument.nbt.list.mixed", listOf(text(a.toString()), text(b.toString()))).toMessage()
+            translatable("argument.nbt.list.mixed", text(a.toString()), text(b.toString())).toMessage()
         }
         private val ERROR_INSERT_MIXED_ARRAY = Dynamic2CommandExceptionType { a, b ->
-            translatable("argument.nbt.array.mixed", listOf(text(a.toString()), text(b.toString()))).toMessage()
+            translatable("argument.nbt.array.mixed", text(a.toString()), text(b.toString())).toMessage()
         }
-        private val ERROR_INVALID_ARRAY = DynamicCommandExceptionType { translatable("argument.nbt.array.invalid", listOf(text(it.toString()))).toMessage() }
+        private val ERROR_INVALID_ARRAY = DynamicCommandExceptionType {
+            translatable("argument.nbt.array.invalid", text(it.toString())).toMessage()
+        }
     }
 }
 
 fun String.parseToNBT(): CompoundTag = SNBTParser(StringReader(this)).readSingleCompound()
 
-private val Char.isQuotedStringStart: Boolean
-    get() = StringReader.isQuotedStringStart(this)
-
 private const val ELEMENT_SEPARATOR = ','
 
-private val StringReader.hasElementSeparator: Boolean
-    get() {
+private fun StringReader.hasElementSeparator(): Boolean {
+    skipWhitespace()
+    val hasSeparator = canRead() && peek() == ELEMENT_SEPARATOR
+    if (hasSeparator) {
+        skip()
         skipWhitespace()
-        return if (canRead() && peek() == ELEMENT_SEPARATOR) {
-            skip()
-            skipWhitespace()
-            true
-        } else false
     }
+    return hasSeparator
+}

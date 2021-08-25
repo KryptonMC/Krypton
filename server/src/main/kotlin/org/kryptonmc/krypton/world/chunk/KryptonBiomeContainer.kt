@@ -21,8 +21,7 @@ package org.kryptonmc.krypton.world.chunk
 import org.kryptonmc.api.util.ceillog2
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.chunk.BiomeContainer
-import org.kryptonmc.krypton.util.IdMap
-import org.kryptonmc.krypton.util.PACKED_Y
+import org.kryptonmc.krypton.util.IntBiMap
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.world.HeightAccessor
 import org.kryptonmc.krypton.world.biome.KryptonBiome
@@ -30,7 +29,7 @@ import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 
 class KryptonBiomeContainer private constructor(
-    private val biomeRegistry: IdMap<KryptonBiome>,
+    private val biomeRegistry: IntBiMap<KryptonBiome>,
     heightAccessor: HeightAccessor,
     override val biomes: Array<KryptonBiome>
 ) : BiomeContainer, NoiseBiomeSource {
@@ -38,7 +37,7 @@ class KryptonBiomeContainer private constructor(
     private val quartMinY = heightAccessor.minimumBuildHeight shr 2
     private val quartHeight = (heightAccessor.height shr 2) - 1
 
-    constructor(biomeRegistry: IdMap<KryptonBiome>, heightAccessor: HeightAccessor, position: ChunkPosition, generator: BiomeGenerator, biomeIds: IntArray? = null) : this(
+    constructor(biomeRegistry: IntBiMap<KryptonBiome>, heightAccessor: HeightAccessor, position: ChunkPosition, generator: BiomeGenerator, biomeIds: IntArray? = null) : this(
         biomeRegistry,
         heightAccessor,
         Array((1 shl WIDTH_BITS + WIDTH_BITS) * heightAccessor.height.ceilDiv(4)) {
@@ -66,16 +65,19 @@ class KryptonBiomeContainer private constructor(
         val offZ = z and HORIZONTAL_MASK
         biomes[offY shl WIDTH_BITS + WIDTH_BITS or (offZ shl WIDTH_BITS) or offX] = biome
     }
-}
 
-private val WIDTH_BITS = 16.ceillog2() - 2
-private val HORIZONTAL_MASK = (1 shl WIDTH_BITS) - 1
+    companion object {
 
-private fun Int.ceilDiv(other: Int) = (this + other - 1) / other
+        private val WIDTH_BITS = 16.ceillog2() - 2
+        private val HORIZONTAL_MASK = (1 shl WIDTH_BITS) - 1
 
-private fun BiomeGenerator.generateForIndex(x: Int, y: Int, z: Int, index: Int): KryptonBiome {
-    val offX = index and HORIZONTAL_MASK
-    val offY = index shr WIDTH_BITS + WIDTH_BITS
-    val offZ = index shr WIDTH_BITS and HORIZONTAL_MASK
-    return get(x + offX, y + offY, z + offZ)
+        private fun Int.ceilDiv(other: Int) = (this + other - 1) / other
+
+        private fun BiomeGenerator.generateForIndex(x: Int, y: Int, z: Int, index: Int): KryptonBiome {
+            val offX = index and HORIZONTAL_MASK
+            val offY = index shr WIDTH_BITS + WIDTH_BITS
+            val offZ = index shr WIDTH_BITS and HORIZONTAL_MASK
+            return get(x + offX, y + offY, z + offZ)
+        }
+    }
 }

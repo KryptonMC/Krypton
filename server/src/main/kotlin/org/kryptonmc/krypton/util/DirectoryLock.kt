@@ -22,55 +22,46 @@ import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
 import java.nio.channels.FileLock
-import java.nio.file.AccessDeniedException
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 import kotlin.io.path.isDirectory
 
 class DirectoryLock private constructor(
-    private val lockChannel: FileChannel,
+    private val channel: FileChannel,
     private val lock: FileLock
 ) : AutoCloseable {
+
+    val isValid: Boolean
+        get() = lock.isValid
 
     override fun close() {
         try {
             if (lock.isValid) lock.release()
         } finally {
-            if (lockChannel.isOpen) lockChannel.close()
+            if (channel.isOpen) channel.close()
         }
     }
 
-    val isValid: Boolean
-        get() = lock.isValid
-
     companion object {
 
-        const val FILE = "session.lock"
+        private const val FILE_NAME = "session.lock"
         private val CONTENT = kotlin.run {
             val bytes = "☃".encodeToByteArray()
             ByteBuffer.allocateDirect(bytes.size).put(bytes).flip()
         }
 
         fun create(folder: Path): DirectoryLock {
-            val lockFile = folder.resolve(FILE)
-            if (!folder.isDirectory()) folder.createDirectories()
-            val channel = lockFile.openChannel(StandardOpenOption.CREATE, StandardOpenOption.WRITE)
+            val lockFile = folder.resolve(FILE_NAME)
+            if (!folder.isDirectory()) folder.tryCreateDirectories()
+
+            val channel = FileChannel.open(lockFile, StandardOpenOption.CREATE, StandardOpenOption.WRITE)
             channel.write(CONTENT.duplicate())
             channel.force(true)
+
             val lock = channel.tryLock() ?: throw LockException(lockFile)
             return DirectoryLock(channel, lock)
         }
     }
-}
-
-fun Path.lock() = DirectoryLock.create(this)
-
-fun Path.isLocked() = try {
-    resolve(DirectoryLock.FILE).openChannel(StandardOpenOption.WRITE).use { it.tryLock() != null }
-} catch (exception: AccessDeniedException) {
-    true
-} catch (exception: NoSuchFieldException) {
-    false
 }
 
 class LockException(path: Path, reason: String) : IOException("${path.toAbsolutePath()} $reason") {

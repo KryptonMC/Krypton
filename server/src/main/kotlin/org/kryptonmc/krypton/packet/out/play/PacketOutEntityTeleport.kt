@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.space.Location
 import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.toAngle
+import org.kryptonmc.krypton.util.Angle
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -36,8 +36,8 @@ class PacketOutEntityTeleport(
         buf.writeDouble(location.x)
         buf.writeDouble(location.y)
         buf.writeDouble(location.z)
-        buf.writeAngle(location.yaw.toAngle())
-        buf.writeAngle(location.pitch.toAngle())
+        buf.writeAngle(Angle.fromDegrees(location.yaw))
+        buf.writeAngle(Angle.fromDegrees(location.pitch))
         buf.writeBoolean(isOnGround)
     }
 }

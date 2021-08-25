@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.world.biome
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.krypton.effect.SOUND_EVENT_CODEC
+import org.kryptonmc.krypton.util.Codecs
 
 data class AmbientAdditionsSettings(
     val sound: SoundEvent,
@@ -32,7 +32,7 @@ data class AmbientAdditionsSettings(
 
         val CODEC: Codec<AmbientAdditionsSettings> = RecordCodecBuilder.create {
             it.group(
-                SOUND_EVENT_CODEC.fieldOf("sound").forGetter(AmbientAdditionsSettings::sound),
+                Codecs.SOUND_EVENT.fieldOf("sound").forGetter(AmbientAdditionsSettings::sound),
                 Codec.DOUBLE.fieldOf("probability").forGetter(AmbientAdditionsSettings::probability)
             ).apply(it, ::AmbientAdditionsSettings)
         }

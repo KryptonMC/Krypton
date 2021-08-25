@@ -46,15 +46,15 @@ object FluidLoader {
 
     fun init() {
         if (isLoaded) {
-            LOGGER.warn("Attempted to load block loader twice!")
+            LOGGER.warn("Attempted to load fluid loader twice!")
             return
         }
 
         val inputStream = ClassLoader.getSystemResourceAsStream(FILE_LOCATION)
             ?: error("Could not find $FILE_LOCATION bundled in JAR! Please report to Krypton!")
-        val blocks = GSON.fromJson<JsonObject>(inputStream.reader())
+        val fluids = GSON.fromJson<JsonObject>(inputStream.reader())
 
-        blocks.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
+        fluids.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
             // Map properties
             val propertyEntry = PropertyEntry()
             val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) {
@@ -63,44 +63,41 @@ object FluidLoader {
 
             // Iterate states
             value.remove("states").asJsonArray.forEach {
-                val (properties, block) = it.asJsonObject.retrieveState(key, availableProperties, value)
-                propertyEntry.properties[properties] = block
+                val (properties, fluid) = it.asJsonObject.retrieveState(key, availableProperties, value)
+                propertyEntry.properties[properties] = fluid
             }
 
             // Get default state and add to maps
             val defaultState = value["defaultStateId"].asInt
-            val defaultBlock = fromState(defaultState)!!
-            KEY_MAP[key] = defaultBlock
+            val defaultFluid = fromState(defaultState)!!
+            KEY_MAP[key] = defaultFluid
             PROPERTY_MAP[key] = propertyEntry
 
             // Register to registry
             if (InternalRegistries.FLUID.contains(Key.key(key))) return@forEach
-            KryptonRegistryManager.register(InternalRegistries.FLUID, key, defaultBlock)
+            KryptonRegistryManager.register(InternalRegistries.FLUID, key, defaultFluid)
         }
         isLoaded = true
     }
-
-    private fun fromKey(key: String): KryptonFluid? {
-        val id = if (key.indexOf(':') == -1) "minecraft:$key" else key
-        return KEY_MAP[id]
-    }
-
-    fun fromKey(key: Key) = fromKey(key.asString())
 
     private fun fromState(stateId: Int): KryptonFluid? = STATE_MAP[stateId]
 
     fun properties(key: String, properties: Map<String, String>): KryptonFluid? = PROPERTY_MAP[key]?.properties?.get(properties)
 
-    private fun JsonObject.retrieveState(key: String, availableProperties: Set<Property<*>>, blockObject: JsonObject): Pair<Map<String, String>, KryptonFluid> {
+    private fun JsonObject.retrieveState(
+        key: String,
+        availableProperties: Set<Property<*>>,
+        fluidObject: JsonObject
+    ): Pair<Map<String, String>, KryptonFluid> {
         val stateId = get("stateId").asInt
         val propertyMap = get("properties").asJsonObject.entrySet().associate { it.key to it.value.asString.lowercase() }
-        val block = KryptonFluid(FluidData(Key.key(key), blockObject, this), availableProperties, propertyMap)
+        val block = KryptonFluid(FluidData(Key.key(key), fluidObject, this), availableProperties, propertyMap)
         STATE_MAP[stateId] = block
         return propertyMap to block
     }
-}
 
-private class PropertyEntry {
+    private class PropertyEntry {
 
-    val properties = ConcurrentHashMap<Map<String, String>, KryptonFluid>()
+        val properties = ConcurrentHashMap<Map<String, String>, KryptonFluid>()
+    }
 }

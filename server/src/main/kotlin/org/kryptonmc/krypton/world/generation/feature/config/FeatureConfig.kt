@@ -25,9 +25,9 @@ interface FeatureConfig {
 
     val features: Sequence<ConfiguredFeature<*, *>>
         get() = emptySequence()
-}
 
-object NoneFeatureConfig : FeatureConfig {
+    companion object Empty : FeatureConfig {
 
-    val CODEC: Codec<NoneFeatureConfig> = Codec.unit { NoneFeatureConfig }
+        val CODEC: Codec<Empty> = Codec.unit { Empty }
+    }
 }

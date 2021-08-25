@@ -30,19 +30,23 @@ class LegacyForwardedData(
     val forwardedIp: String,
     val uuid: UUID,
     val properties: List<KryptonProfileProperty>
-)
+) {
 
-private val GSON = GsonBuilder()
-    .registerTypeAdapter<KryptonProfileProperty>(KryptonProfileProperty)
-    .create()
+    companion object {
 
-fun String.splitLegacyData(): LegacyForwardedData? {
-    val split = split('\u0000')
-    if (split.size < 3) return null // We need to have the original IP, forwarded IP, and the UUID at bare minimum.
-    return LegacyForwardedData(
-        split[0],
-        split[1],
-        MojangUUIDTypeAdapter.fromString(split[2]),
-        if (split.size > 3) GSON.fromJson(split[3]) else emptyList()
-    )
+        private val GSON = GsonBuilder()
+            .registerTypeAdapter<KryptonProfileProperty>(KryptonProfileProperty)
+            .create()
+
+        fun parse(string: String): LegacyForwardedData? {
+            val split = string.split('\u0000')
+            if (split.size < 3) return null // We need to have the original IP, forwarded IP, and the UUID at bare minimum.
+            return LegacyForwardedData(
+                split[0],
+                split[1],
+                MojangUUIDTypeAdapter.fromString(split[2]),
+                if (split.size > 3) GSON.fromJson(split[3]) else emptyList()
+            )
+        }
+    }
 }

@@ -22,6 +22,7 @@ import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.key.Key.key
+import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.item.ItemType
@@ -31,7 +32,6 @@ import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.tags.ItemTags
 import org.kryptonmc.krypton.util.nbt.SNBTParser
-import org.kryptonmc.krypton.util.toComponent
 import org.kryptonmc.nbt.CompoundTag
 
 class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO: Tags for ItemStackPredicate etc.
@@ -78,8 +78,8 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO
     private fun isCharValid(c: Char) = c in '0'..'9' || c in 'a'..'z' || c == '_' || c == ':' || c == '/' || c == '.' || c == '-'
 
     companion object {
-        val ID_INVALID_EXCEPTION = DynamicCommandExceptionType { translatable("argument.item.id.invalid", it.toString().toComponent()).toMessage() }
+        val ID_INVALID_EXCEPTION = DynamicCommandExceptionType { translatable("argument.item.id.invalid", text(it.toString())).toMessage() }
         val TAG_DISALLOWED_EXCEPTION = SimpleCommandExceptionType(translatable("argument.item.tag.disallowed").toMessage())
-        val UNKNOWN_ITEM_TAG = DynamicCommandExceptionType { translatable("arguments.item.tag.unknown", it.toString().toComponent()).toMessage() }
+        val UNKNOWN_ITEM_TAG = DynamicCommandExceptionType { translatable("arguments.item.tag.unknown", text(it.toString())).toMessage() }
     }
 }

@@ -60,13 +60,15 @@ class NoiseSettings(
                 Codec.BOOL.optionalFieldOf("island_noise_override", false, Lifecycle.experimental()).forGetter(NoiseSettings::islandNoiseOverride),
                 Codec.BOOL.optionalFieldOf("amplified", false, Lifecycle.experimental()).forGetter(NoiseSettings::isAmplified)
             ).apply(it, ::NoiseSettings)
-        }.comapFlatMap(NoiseSettings::guardY, Function.identity())
-    }
-}
+        }.comapFlatMap(::guardY, Function.identity())
 
-private fun NoiseSettings.guardY(): DataResult<NoiseSettings> {
-    if (minimumY + height > KryptonDimensionType.MAX_Y + 1) return DataResult.error("Minimum Y + height cannot be greater than ${KryptonDimensionType.MAX_Y + 1}!")
-    if (height % 16 != 0) return DataResult.error("Height must be a multiple of 16!")
-    if (minimumY % 16 != 0) return DataResult.error("Minimum Y must be a multiple of 16!")
-    return DataResult.success(this)
+        private fun guardY(settings: NoiseSettings): DataResult<NoiseSettings> {
+            if (settings.minimumY + settings.height > KryptonDimensionType.MAX_Y + 1) {
+                return DataResult.error("Minimum Y + height cannot be greater than ${KryptonDimensionType.MAX_Y + 1}!")
+            }
+            if (settings.height % 16 != 0) return DataResult.error("Height must be a multiple of 16!")
+            if (settings.minimumY % 16 != 0) return DataResult.error("Minimum Y must be a multiple of 16!")
+            return DataResult.success(settings)
+        }
+    }
 }

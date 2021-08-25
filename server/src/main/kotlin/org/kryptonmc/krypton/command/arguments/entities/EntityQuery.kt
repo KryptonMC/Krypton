@@ -29,7 +29,6 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.toIntRange
 
 /**
  * Documentation [TODO]
@@ -224,6 +223,19 @@ class EntityQuery(
                 'e' -> ALL_ENTITIES
                 's' -> EXECUTOR
                 else -> UNKNOWN
+            }
+        }
+    }
+
+    companion object {
+
+        private fun String.toIntRange(): IntRange? {
+            return if (startsWith("..")) {
+                val string = replace("..", "").toIntOrNull() ?: return null
+                IntRange(0, string)
+            } else {
+                val values = split("..")
+                IntRange(values[0].toInt(), values[1].toIntOrNull() ?: return null)
             }
         }
     }

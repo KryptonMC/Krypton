@@ -26,28 +26,23 @@ import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import kotlin.math.abs
 
-val Position.isInSpawnableBounds: Boolean
-    get() = !blockX.isOutsideSpawnableHeight && isInHorizontalWorldBounds
+fun Position.isInSpawnableBounds() = !blockX.isOutsideSpawnableHeight() && isInHorizontalWorldBounds()
 
-val Int.isOutsideSpawnableHeight: Boolean
-    get() = this < -20000000 || this >= 20000000
+private fun Int.isOutsideSpawnableHeight() = this < -20000000 || this >= 20000000
 
-val Position.isInHorizontalWorldBounds: Boolean
-    get() = blockX >= -30000000 && blockZ >= -30000000 && blockX < 30000000 && blockZ < 30000000
+private fun Position.isInHorizontalWorldBounds() = blockX >= -30000000 && blockZ >= -30000000 && blockX < 30000000 && blockZ < 30000000
 
-fun KryptonWorld.forEachInRange(location: Location, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
+fun KryptonWorld.forEachEntityInRange(location: Location, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
     val chunksInRange = location.chunksInRange(viewDistance)
     chunksInRange.forEach {
-        val chunk = getChunkAt(it.chunkX, it.chunkZ) ?: return@forEach
+        val chunk = getChunkAt(it.chunkX(), it.chunkZ()) ?: return@forEach
         getEntitiesInChunk(chunk).forEach(callback)
     }
 }
 
-val Long.chunkX: Int
-    get() = (this and 4294967295L).toInt()
+private fun Long.chunkX() = (this and 4294967295L).toInt()
 
-val Long.chunkZ: Int
-    get() = (this ushr 32 and 4294967295L).toInt()
+private fun Long.chunkZ() = (this ushr 32 and 4294967295L).toInt()
 
 private fun Location.chunksInRange(range: Int): LongArray {
     val visible = LongArray(range.toArea())

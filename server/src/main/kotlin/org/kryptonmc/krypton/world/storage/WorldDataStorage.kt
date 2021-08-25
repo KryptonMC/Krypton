@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.world.storage
 import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
-import org.kryptonmc.krypton.world.data.WorldResource
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import java.nio.file.Path
@@ -40,9 +39,9 @@ class WorldDataStorage(val baseFolder: Path) {
 
     fun <T> loadData(folder: Path, reader: (Path) -> T): T? {
         if (!folder.exists()) return null
-        var dataFile = folder.resolve(WorldResource.LEVEL_DATA_FILE.path)
+        var dataFile = folder.resolve("level.dat")
         if (dataFile.exists()) reader(dataFile)?.let { return it }
-        dataFile = folder.resolve("${WorldResource.LEVEL_DATA_FILE.path}_old")
+        dataFile = folder.resolve("level.dat_old")
         return if (dataFile.exists()) reader(dataFile) else null
     }
 

@@ -27,7 +27,7 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.util.argument
+import org.kryptonmc.krypton.command.argument.argument
 
 class EntityArgument private constructor(
     val onlyPlayers: Boolean,

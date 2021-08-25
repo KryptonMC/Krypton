@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.util
 import kotlin.math.max
 
 @Suppress("UNCHECKED_CAST") // Our casts are fine and should always succeed
-class IntIdentityHashBiMap<K>(initialCapacity: Int) : IdMap<K> {
+class IntIdentityHashBiMap<K>(initialCapacity: Int) : IntBiMap<K> {
 
     private var keys: Array<K?>
     private var values: IntArray

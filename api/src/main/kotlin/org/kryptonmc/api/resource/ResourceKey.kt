@@ -22,6 +22,8 @@ import java.util.IdentityHashMap
  */
 class ResourceKey<T : Any> private constructor(val registry: Key, val location: Key) {
 
+    override fun toString() = "ResourceKey(registry=$registry, location=$location)"
+
     companion object {
 
         private val VALUES: MutableMap<String, ResourceKey<*>> = Collections.synchronizedMap(IdentityHashMap())

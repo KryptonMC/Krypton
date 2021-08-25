@@ -54,10 +54,3 @@ class BiomeManager(
         const val CENTER_QUART = 8 shr 2
     }
 }
-
-fun interface NoiseBiomeSource {
-
-    operator fun get(x: Int, y: Int, z: Int): KryptonBiome
-
-    fun primary(position: ChunkPosition) = get((position.x shl 2) + BiomeManager.CENTER_QUART, 0, (position.z shl 2) + BiomeManager.CENTER_QUART)
-}

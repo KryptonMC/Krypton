@@ -22,6 +22,13 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 
 object Musics {
 
+    // Time in ticks constants
+    private const val ONE_SECOND = 20
+    private const val THIRTY_SECONDS = 600
+    private const val FIVE_MINUTES = 6000
+    private const val TEN_MINUTES = 12000
+    private const val TWENTY_MINUTES = 24000
+
     val MENU = Music(SoundEvents.MUSIC_MENU, ONE_SECOND, THIRTY_SECONDS, true)
     val CREATIVE = Music(SoundEvents.MUSIC_CREATIVE, TEN_MINUTES, TWENTY_MINUTES, false)
     val CREDITS = Music(SoundEvents.MUSIC_CREDITS, 0, 0, true)
@@ -36,9 +43,3 @@ object Musics {
     val WARPED_FOREST = Music(SoundEvents.MUSIC_BIOME_WARPED_FOREST, TEN_MINUTES, TWENTY_MINUTES, false)
 }
 
-// Time in ticks constants
-private const val ONE_SECOND = 20
-private const val THIRTY_SECONDS = 600
-private const val FIVE_MINUTES = 6000
-private const val TEN_MINUTES = 12000
-private const val TWENTY_MINUTES = 24000

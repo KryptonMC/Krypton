@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileCache
 import org.kryptonmc.krypton.IOScope
-import org.kryptonmc.krypton.util.createFile
+import org.kryptonmc.krypton.util.tryCreateFile
 import org.kryptonmc.krypton.util.logger
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -97,7 +97,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     }
 
     private fun save() {
-        path.createFile()
+        path.tryCreateFile()
         try {
             JsonWriter(path.writer()).use { writer ->
                 writer.beginArray()

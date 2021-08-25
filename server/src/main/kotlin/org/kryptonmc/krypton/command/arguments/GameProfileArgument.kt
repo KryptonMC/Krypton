@@ -24,7 +24,7 @@ import com.mojang.brigadier.context.CommandContext
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentParser
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
-import org.kryptonmc.krypton.util.argument
+import org.kryptonmc.krypton.command.argument.argument
 
 class GameProfileArgument : ArgumentType<EntityQuery> {
 

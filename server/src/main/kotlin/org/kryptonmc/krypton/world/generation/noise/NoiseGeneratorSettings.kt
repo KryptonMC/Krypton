@@ -27,7 +27,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.InternalResourceKeys
-import org.kryptonmc.krypton.world.block.BLOCK_CODEC
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.generation.StructureSettings
 import java.util.Optional
 
@@ -61,8 +61,8 @@ class NoiseGeneratorSettings(
             it.group(
                 StructureSettings.CODEC.fieldOf("structures").forGetter(NoiseGeneratorSettings::structureSettings),
                 NoiseSettings.CODEC.fieldOf("noise").forGetter(NoiseGeneratorSettings::noiseSettings),
-                BLOCK_CODEC.fieldOf("default_block").forGetter(NoiseGeneratorSettings::defaultBlock),
-                BLOCK_CODEC.fieldOf("default_fluid").forGetter(NoiseGeneratorSettings::defaultFluid),
+                KryptonBlock.CODEC.fieldOf("default_block").forGetter(NoiseGeneratorSettings::defaultBlock),
+                KryptonBlock.CODEC.fieldOf("default_fluid").forGetter(NoiseGeneratorSettings::defaultFluid),
                 Codec.INT.fieldOf("bedrock_roof_position").forGetter(NoiseGeneratorSettings::bedrockRoofPosition),
                 Codec.INT.fieldOf("bedrock_floor_position").forGetter(NoiseGeneratorSettings::bedrockFloorPosition),
                 Codec.INT.fieldOf("sea_level").forGetter(NoiseGeneratorSettings::seaLevel),

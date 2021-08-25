@@ -74,7 +74,7 @@ class Metrics(logger: Logger, serviceId: Int, enabled: Boolean) {
     }
 }
 
-internal object KryptonMetrics {
+object KryptonMetrics {
 
     private val LOGGER = logger<Metrics>()
 

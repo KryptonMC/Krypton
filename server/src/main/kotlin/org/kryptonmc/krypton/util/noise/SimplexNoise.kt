@@ -193,7 +193,7 @@ class SimplexNoise(random: RandomSource) {
             0.0
         } else {
             distOff *= distOff
-            distOff * distOff * SIMPLEX_GRADIENT[hash].dot(x, y, z)
+            distOff * distOff * GRADIENT[hash].dot(x, y, z)
         }
     }
 
@@ -206,5 +206,24 @@ class SimplexNoise(random: RandomSource) {
         private val G2 = (3.0 - SQRT_3) / 6.0
         private const val F3 = 1.0 / 3.0
         const val G3 = 1.0 / 6.0
+
+        val GRADIENT = arrayOf(
+            intArrayOf(1, 1, 0),
+            intArrayOf(-1, 1, 0),
+            intArrayOf(1, -1, 0),
+            intArrayOf(-1, -1, 0),
+            intArrayOf(1, 0, 1),
+            intArrayOf(-1, 0, 1),
+            intArrayOf(1, 0, -1),
+            intArrayOf(-1, 0, -1),
+            intArrayOf(0, 1, 1),
+            intArrayOf(0, -1, 1),
+            intArrayOf(0, 1, -1),
+            intArrayOf(0, -1, -1),
+            intArrayOf(1, 1, 0),
+            intArrayOf(0, -1, 1),
+            intArrayOf(-1, 1, 0),
+            intArrayOf(0, -1, -1)
+        )
     }
 }

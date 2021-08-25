@@ -44,15 +44,16 @@ class RegionFileManager(
     }
 
     private fun getRegionFile(position: ChunkPosition): RegionFile {
-        val serialized = position.regionX combine position.regionZ
+        val regionX = position.x shr 5
+        val regionZ = position.z shr 5
+        val serialized = ChunkPosition.toLong(regionX, regionZ)
         val cachedFile = REGION_CACHE.getAndMoveToFirst(serialized)
         if (cachedFile != null) return cachedFile
 
         if (REGION_CACHE.size >= 256) REGION_CACHE.removeLast().close()
         folder.createDirectories()
 
-//        val file = File(folder, "r.${position.regionX}.${position.regionZ}.mca")
-        val path = folder.resolve("r.${position.regionX}.${position.regionZ}.mca")
+        val path = folder.resolve("r.$regionX.$regionZ.mca")
         val regionFile = RegionFile(path, synchronizeWrites, folder, RegionFileCompression.ZLIB)
         REGION_CACHE.putAndMoveToFirst(serialized, regionFile)
         return regionFile
@@ -65,6 +66,3 @@ class RegionFileManager(
         private val REGION_CACHE = Long2ObjectLinkedOpenHashMap<RegionFile>()
     }
 }
-
-// this & 0xFFFFFFFFL | (other & 0xFFFFFFFFL) << 32
-private infix fun Int.combine(other: Int) = toLong() and 0xFFFFFFFFL or (other.toLong() and 0xFFFFFFFFL shl 32)

@@ -22,7 +22,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.krypton.effect.SOUND_EVENT_CODEC
+import org.kryptonmc.krypton.util.Codecs
 
 data class AmbientMoodSettings(
     val sound: SoundEvent,
@@ -36,7 +36,7 @@ data class AmbientMoodSettings(
         val CAVE = AmbientMoodSettings(SoundEvents.AMBIENT_CAVE, 6000, 8, 2.0)
         val CODEC: Codec<AmbientMoodSettings> = RecordCodecBuilder.create {
             it.group(
-                SOUND_EVENT_CODEC.fieldOf("sound").forGetter(AmbientMoodSettings::sound),
+                Codecs.SOUND_EVENT.fieldOf("sound").forGetter(AmbientMoodSettings::sound),
                 Codec.INT.fieldOf("tick_delay").forGetter(AmbientMoodSettings::tickDelay),
                 Codec.INT.fieldOf("block_search_extent").forGetter(AmbientMoodSettings::blockSearchExtent),
                 Codec.DOUBLE.fieldOf("offset").forGetter(AmbientMoodSettings::offset)

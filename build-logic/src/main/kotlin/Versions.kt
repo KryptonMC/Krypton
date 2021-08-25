@@ -1,6 +1,5 @@
 object Versions {
 
-    const val PITEST = "1.6.0"
     const val SHADOW = "7.0.0"
 
     // API
@@ -32,7 +31,6 @@ object Versions {
     const val ASM = "9.2"
     const val NBT = "1.5.5"
     const val MINECRAFT = "1.17.1"
-    const val JAVABRIDGE = "1.1.23"
 
     // Test
     const val JUNIT_PLATFORM_RUNNER = "1.7.2"

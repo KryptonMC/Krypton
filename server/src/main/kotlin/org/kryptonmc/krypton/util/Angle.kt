@@ -22,20 +22,19 @@ package org.kryptonmc.krypton.util
  * Represents a protocol angle, measured in 256ths of a full turn
  */
 @JvmInline
+@Deprecated("For removal, with no replacement. This class isn't necessary.")
 value class Angle(val value: UByte) : Comparable<Angle> {
 
     override fun compareTo(other: Angle) = if (value == other.value) 0 else if (value < other.value) -1 else 1
 
-    fun toDegrees() = value.toFloat() / 256.0f * 360.0f
-
     companion object {
 
         val ZERO = Angle(0u)
+
+        /**
+         * Converts the given [degrees] value to an angle measured in 256ths of a
+         * full turn.
+         */
+        fun fromDegrees(degrees: Float) = Angle(((degrees / 360F) * 256F).toInt().toUByte())
     }
 }
-
-/**
- * Convert a float value (in degrees) to a protocol [Angle] by dividing its value by 360 and multiplying
- * the result by 256, then rounding to an integer
- */
-fun Float.toAngle() = Angle((div(360.0f) * 256.0f).toInt().toUByte())

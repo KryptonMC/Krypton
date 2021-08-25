@@ -62,7 +62,7 @@ class TheEndBiomeGenerator private constructor(
         val quartX = x shr 2
         val quartZ = z shr 2
         if (quartX.toLong() * quartX.toLong() + quartZ.toLong() * quartZ.toLong() <= ISLAND_CHUNK_DISTANCE_SQ) return end
-        val heightValue = heightValue(islandNoise, quartX * 2 + 1, quartZ * 2 + 1)
+        val heightValue = islandNoise.getHeightValue(quartX * 2 + 1, quartZ * 2 + 1)
         return when {
             heightValue > 40F -> highlands
             heightValue >= 0F -> midlands
@@ -85,7 +85,7 @@ class TheEndBiomeGenerator private constructor(
 private const val ISLAND_THRESHOLD = -0.9
 private const val ISLAND_CHUNK_DISTANCE_SQ = 4096L
 
-fun heightValue(noise: SimplexNoise, x: Int, z: Int): Float {
+fun SimplexNoise.getHeightValue(x: Int, z: Int): Float {
     val divX = x / 2
     val divZ = z / 2
     val modX = x % 2
@@ -95,7 +95,7 @@ fun heightValue(noise: SimplexNoise, x: Int, z: Int): Float {
         for (zo in -12..12) {
             val offX = (divX + xo).toLong()
             val offZ = (divZ + zo).toLong()
-            if (offX * offX + offZ * offZ > ISLAND_CHUNK_DISTANCE_SQ && noise.getValue(offX.toDouble(), offZ.toDouble()) < ISLAND_THRESHOLD) {
+            if (offX * offX + offZ * offZ > ISLAND_CHUNK_DISTANCE_SQ && getValue(offX.toDouble(), offZ.toDouble()) < ISLAND_THRESHOLD) {
                 val abs = (abs(offX.toFloat()) * 3439F + abs(offZ.toFloat()) * 147F) % 13F + 9F
                 val offModX = (modX - xo * 2).toFloat()
                 val offModZ = (modZ - zo * 2).toFloat()

@@ -19,12 +19,10 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.Angle
-import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
@@ -38,8 +36,8 @@ class PacketOutSpawnLivingEntity(private val entity: KryptonLivingEntity) : Play
         buf.writeDouble(entity.location.x)
         buf.writeDouble(entity.location.y)
         buf.writeDouble(entity.location.z)
-        buf.writeAngle(entity.location.yaw.toAngle())
-        buf.writeAngle(entity.location.pitch.toAngle())
+        buf.writeAngle(Angle.fromDegrees(entity.location.yaw))
+        buf.writeAngle(Angle.fromDegrees(entity.location.pitch))
         buf.writeAngle(Angle.ZERO)
         buf.writeShort(entity.velocity.x.toInt())
         buf.writeShort(entity.velocity.y.toInt())

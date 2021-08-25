@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.generation.noise
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.krypton.util.NON_NEGATIVE_INT
+import org.kryptonmc.krypton.util.Codecs
 
 class NoiseSlide(
     val target: Int,
@@ -33,7 +33,7 @@ class NoiseSlide(
         val CODEC: Codec<NoiseSlide> = RecordCodecBuilder.create {
             it.group(
                 Codec.INT.fieldOf("target").forGetter(NoiseSlide::target),
-                NON_NEGATIVE_INT.fieldOf("size").forGetter(NoiseSlide::size),
+                Codecs.NON_NEGATIVE_INT.fieldOf("size").forGetter(NoiseSlide::size),
                 Codec.INT.fieldOf("offset").forGetter(NoiseSlide::offset)
             ).apply(it, ::NoiseSlide)
         }

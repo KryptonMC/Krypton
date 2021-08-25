@@ -23,7 +23,7 @@ import org.kryptonmc.krypton.util.noise.BlendedNoise
 import org.kryptonmc.krypton.util.noise.PerlinNoise
 import org.kryptonmc.krypton.util.noise.SimplexNoise
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
-import org.kryptonmc.krypton.world.biome.gen.heightValue
+import org.kryptonmc.krypton.world.biome.gen.getHeightValue
 import org.kryptonmc.krypton.world.generation.noise.NoiseModifier
 import org.kryptonmc.krypton.world.generation.noise.NoiseSettings
 import kotlin.math.min
@@ -54,7 +54,7 @@ class NoiseSampler(
         val height: Double
         val factor: Double
         if (islandNoise != null) {
-            height = heightValue(islandNoise, x, z).toDouble()
+            height = islandNoise.getHeightValue(x, z).toDouble()
             factor = if (height > 0.0) 0.25 else 1.0
         } else {
             var weightedScale = 0F

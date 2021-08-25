@@ -21,8 +21,7 @@ package org.kryptonmc.krypton.command.arguments.coordinates
 import com.mojang.brigadier.StringReader
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.krypton.command.arguments.ERROR_MIXED_TYPE
-import org.kryptonmc.krypton.command.arguments.ERROR_NOT_COMPLETE
+import org.kryptonmc.krypton.command.CommandExceptions
 import org.spongepowered.math.vector.Vector2d
 import kotlin.math.cos
 import kotlin.math.sin
@@ -58,30 +57,32 @@ class LocalCoordinates(
     companion object {
 
         fun parse(reader: StringReader): LocalCoordinates {
-            val position = reader.cursor
-            val left = reader.readDouble(position)
+            val resetPosition = reader.cursor
+            val left = reader.readPositionalDouble(resetPosition)
             if (!reader.canRead() || reader.peek() != ' ') {
-                reader.cursor = position
-                throw ERROR_NOT_COMPLETE.createWithContext(reader)
+                reader.cursor = resetPosition
+                throw CommandExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
             }
             reader.skip()
-            val up = reader.readDouble(position)
+
+            val up = reader.readPositionalDouble(resetPosition)
             if (!reader.canRead() || reader.peek() != ' ') {
-                reader.cursor = position
-                throw ERROR_NOT_COMPLETE.createWithContext(reader)
+                reader.cursor = resetPosition
+                throw CommandExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
             }
             reader.skip()
-            val forwards = reader.readDouble(position)
+
+            val forwards = reader.readPositionalDouble(resetPosition)
             return LocalCoordinates(left, up, forwards)
         }
     }
 }
 
-private fun StringReader.readDouble(position: Int): Double {
-    if (!canRead()) throw ERROR_EXPECTED_DOUBLE.createWithContext(this)
+private fun StringReader.readPositionalDouble(resetPosition: Int): Double {
+    if (!canRead()) throw CommandExceptions.POSITION_EXPECTED_DOUBLE.createWithContext(this)
     if (peek() != '^') {
-        cursor = position
-        throw ERROR_MIXED_TYPE.createWithContext(this)
+        cursor = resetPosition
+        throw CommandExceptions.POSITION_MIXED_TYPE.createWithContext(this)
     }
     skip()
     return if (canRead() && peek() != ' ') readDouble() else 0.0

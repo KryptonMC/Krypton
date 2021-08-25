@@ -42,8 +42,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.util.Angle
 import org.kryptonmc.krypton.util.nextUUID
-import org.kryptonmc.krypton.util.toAngle
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
@@ -172,7 +172,7 @@ abstract class KryptonEntity(
         player.viewableEntities.add(this)
         player.session.sendPacket(getSpawnPacket())
         player.session.sendPacket(PacketOutMetadata(id, data.all))
-        player.session.sendPacket(PacketOutHeadLook(id, location.yaw.toAngle()))
+        player.session.sendPacket(PacketOutHeadLook(id, Angle.fromDegrees(location.yaw)))
         return true
     }
 

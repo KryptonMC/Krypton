@@ -51,7 +51,7 @@ object FuzzyOffsetBiomeZoomer : BiomeZoomer {
             val currentZoomedX = if (hasA) zoomedX else zoomedX - 1.0
             val currentZoomedY = if (hasB) zoomedY else zoomedY - 1.0
             val currentZoomedZ = if (hasC) zoomedZ else zoomedZ - 1.0
-            val fiddledDistance = fiddledDistance(seed, currentX, currentY, currentZ, currentZoomedX, currentZoomedY, currentZoomedZ)
+            val fiddledDistance = getFiddledDistance(seed, currentX, currentY, currentZ, currentZoomedX, currentZoomedY, currentZoomedZ)
             if (lowestFiddled > fiddledDistance) {
                 lowestFiddledIndex = i
                 lowestFiddled = fiddledDistance
@@ -62,24 +62,24 @@ object FuzzyOffsetBiomeZoomer : BiomeZoomer {
         val c = if (lowestFiddledIndex and 1 == 0) zBits else zBits + 1
         return source[a, b, c]
     }
-}
 
-private fun fiddledDistance(seed: Long, x: Int, y: Int, z: Int, maskedX: Double, maskedY: Double, maskedZ: Double): Double {
-    var random = LinearCongruentialGenerator.next(seed, x.toLong())
-    random = LinearCongruentialGenerator.next(random, y.toLong())
-    random = LinearCongruentialGenerator.next(random, z.toLong())
-    random = LinearCongruentialGenerator.next(random, x.toLong())
-    random = LinearCongruentialGenerator.next(random, y.toLong())
-    random = LinearCongruentialGenerator.next(random, z.toLong())
-    val fiddleOne = fiddle(random)
-    random = LinearCongruentialGenerator.next(random, seed)
-    val fiddleTwo = fiddle(random)
-    random = LinearCongruentialGenerator.next(random, seed)
-    val fiddleThree = fiddle(random)
-    return (maskedZ + fiddleThree).square() + (maskedY + fiddleTwo).square() + (maskedX + fiddleThree).square()
-}
+    private fun getFiddledDistance(seed: Long, x: Int, y: Int, z: Int, maskedX: Double, maskedY: Double, maskedZ: Double): Double {
+        var random = LinearCongruentialGenerator.next(seed, x.toLong())
+        random = LinearCongruentialGenerator.next(random, y.toLong())
+        random = LinearCongruentialGenerator.next(random, z.toLong())
+        random = LinearCongruentialGenerator.next(random, x.toLong())
+        random = LinearCongruentialGenerator.next(random, y.toLong())
+        random = LinearCongruentialGenerator.next(random, z.toLong())
+        val fiddleOne = fiddle(random)
+        random = LinearCongruentialGenerator.next(random, seed)
+        val fiddleTwo = fiddle(random)
+        random = LinearCongruentialGenerator.next(random, seed)
+        val fiddleThree = fiddle(random)
+        return (maskedZ + fiddleThree).square() + (maskedY + fiddleTwo).square() + (maskedX + fiddleOne).square()
+    }
 
-private fun fiddle(seed: Long): Double {
-    val floorMod = Math.floorMod(seed shr 24, 1024) / 1024.0
-    return (floorMod - 0.5) * 0.9
+    private fun fiddle(seed: Long): Double {
+        val floorMod = Math.floorMod(seed shr 24, 1024) / 1024.0
+        return (floorMod - 0.5) * 0.9
+    }
 }

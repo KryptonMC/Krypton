@@ -18,31 +18,11 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import org.kryptonmc.api.space.Position
-import org.spongepowered.math.GenericMath
-import org.spongepowered.math.vector.Vector3i
-import kotlin.math.floor
-
 /**
  * Holds a pair of chunk coordinates (x and z)
  */
+// TODO: Look in to removing this class
 data class ChunkPosition(val x: Int, val z: Int) {
-
-    /**
-     * Region coordinates for this chunk coordinate pair
-     */
-    val regionX = x shr 5
-    val regionZ = z shr 5
-
-    /**
-     * Region local values are the coordinates relative to the region they are in
-     */
-    val regionLocalX = x and 0x1F
-    val regionLocalZ = z and 0x1F
-
-    operator fun contains(location: Position) = location.blockX shr 4 == x && location.blockZ shr 4 == z
-
-    operator fun contains(position: Vector3i) = position.x() shr 4 == x && position.z() shr 4 == z
 
     fun toLong() = toLong(x, z)
 
@@ -50,6 +30,6 @@ data class ChunkPosition(val x: Int, val z: Int) {
 
         val ZERO = ChunkPosition(0, 0)
 
-        fun toLong(x: Int, z: Int) = x.toLong() and 4294967295L or (z.toLong() and 4294967295L shl 32)
+        fun toLong(x: Int, z: Int) = x.toLong() and 0xFFFFFFFFL or (z.toLong() and 0xFFFFFFFFL shl 32)
     }
 }

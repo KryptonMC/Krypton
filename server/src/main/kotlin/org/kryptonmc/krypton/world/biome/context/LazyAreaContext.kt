@@ -62,14 +62,14 @@ class LazyAreaContext(private val maxCache: Int, seed: Long, salt: Long) : BigCo
     companion object {
 
         private const val MAXIMUM_CACHE = 1024
-    }
-}
 
-private fun mixSeed(seed: Long, salt: Long): Long {
-    var mixedSalt = LinearCongruentialGenerator.next(salt, salt)
-    mixedSalt = LinearCongruentialGenerator.next(mixedSalt, salt)
-    mixedSalt = LinearCongruentialGenerator.next(mixedSalt, salt)
-    var mixedSeed = LinearCongruentialGenerator.next(seed, mixedSalt)
-    mixedSeed = LinearCongruentialGenerator.next(mixedSeed, mixedSalt)
-    return LinearCongruentialGenerator.next(mixedSeed, mixedSalt)
+        private fun mixSeed(seed: Long, salt: Long): Long {
+            var mixedSalt = LinearCongruentialGenerator.next(salt, salt)
+            mixedSalt = LinearCongruentialGenerator.next(mixedSalt, salt)
+            mixedSalt = LinearCongruentialGenerator.next(mixedSalt, salt)
+            var mixedSeed = LinearCongruentialGenerator.next(seed, mixedSalt)
+            mixedSeed = LinearCongruentialGenerator.next(mixedSeed, mixedSalt)
+            return LinearCongruentialGenerator.next(mixedSeed, mixedSalt)
+        }
+    }
 }

@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.util
 
+import org.spongepowered.math.vector.Vector3i
+
 /**
  * Calculates the change in position between the given [new] and [old] coordinates.
  * No idea why Mojang thought having player coordinates be absolute and entity
@@ -26,3 +28,5 @@ package org.kryptonmc.krypton.util
  * This calculation comes from https://wiki.vg/Protocol#Entity_Position
  */
 fun calculatePositionChange(new: Double, old: Double) = ((new * 32 - old * 32) * 128).toInt().toShort()
+
+fun Long.toVector3i() = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())

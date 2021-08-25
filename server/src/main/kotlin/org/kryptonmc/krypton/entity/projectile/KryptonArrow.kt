@@ -49,6 +49,9 @@ class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.AR
     override fun save(): CompoundTag.Builder = super.save().apply {
         color?.let { int("Color", it.rgb) }
     }
-}
 
-private const val RGB_MAX_VALUE = 16777215
+    companion object {
+
+        private const val RGB_MAX_VALUE = 16777215
+    }
+}

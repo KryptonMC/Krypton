@@ -22,7 +22,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.util.codec
+import org.kryptonmc.krypton.util.Codecs
 
 class KryptonBiome(
     val climate: ClimateSettings,
@@ -71,8 +71,6 @@ enum class BiomeCategory(override val serialized: String) : StringSerializable {
     companion object {
 
         private val BY_NAME = values().associateBy { it.serialized }
-        val CODEC = values().codec { BY_NAME[it] }
-
-        fun fromName(name: String) = BY_NAME.getValue(name)
+        val CODEC = Codecs.forEnum(values()) { BY_NAME[it] }
     }
 }

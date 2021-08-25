@@ -22,6 +22,7 @@
  */
 package org.kryptonmc.krypton.plugin
 
+import com.google.common.collect.Multimap
 import com.google.common.collect.Multimaps
 import net.kyori.event.EventSubscriber
 import net.kyori.event.SimpleEventBus
@@ -35,10 +36,11 @@ import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.ListenerPriority
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.krypton.util.daemon
-import org.kryptonmc.krypton.util.doPrivileged
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.threadFactory
 import java.lang.reflect.Method
+import java.security.AccessController
+import java.security.PrivilegedAction
 import java.util.IdentityHashMap
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutorService
@@ -47,8 +49,12 @@ import java.util.concurrent.TimeUnit
 
 class KryptonEventManager(private val pluginManager: PluginManager) : EventManager {
 
-    private val registeredListenersByPlugin = IdentityHashMap<Any, List<Any>>().toSynchronizedListMultimap(::ArrayList)
-    private val registeredHandlersByPlugin = IdentityHashMap<Any, List<EventHandler<*>>>().toSynchronizedListMultimap(::ArrayList)
+    private val registeredListenersByPlugin: Multimap<Any, Any> = Multimaps.synchronizedListMultimap(
+        Multimaps.newListMultimap(IdentityHashMap<Any, Collection<Any>>(), ::ArrayList)
+    )
+    private val registeredHandlersByPlugin: Multimap<Any, EventHandler<*>> = Multimaps.synchronizedListMultimap(
+        Multimaps.newListMultimap(IdentityHashMap<Any, Collection<EventHandler<*>>>(), ::ArrayList)
+    )
     private val bus: SimpleEventBus<Any>
     private val methodAdapter: MethodSubscriptionAdapter<Any>
     private val service: ExecutorService = Executors.newFixedThreadPool(
@@ -57,7 +63,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
     )
 
     init {
-        val loader = doPrivileged { PluginClassLoader() }.apply { addToLoaders() }
+        val loader = AccessController.doPrivileged(PrivilegedAction { PluginClassLoader() }).apply { addToLoaders() }
 
         bus = object : SimpleEventBus<Any>(Any::class.java) {
             // No cancellable or generic events (from event) in Krypton, so we don't need to perform those checks
@@ -143,27 +149,24 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
 
     private fun checkPlugin(plugin: Any) = require(pluginManager.fromInstance(plugin) != null) { "The specified plugin is not loaded!" }
 
+    private class KryptonMethodScanner : MethodScanner<Any> {
+
+        override fun shouldRegister(listener: Any, method: Method) = method.isAnnotationPresent(Listener::class.java)
+        override fun postOrder(listener: Any, method: Method) = method.getAnnotation(Listener::class.java).priority.ordinal
+        override fun consumeCancelledEvents(listener: Any, method: Method) = true
+    }
+
+    private class KyoriToKryptonHandler<E>(
+        val handler: EventHandler<E>,
+        val priority: ListenerPriority
+    ) : EventSubscriber<E> {
+
+        override fun invoke(event: E) = handler.execute(event)
+        override fun postOrder() = priority.ordinal
+    }
+
     companion object {
 
         private val LOGGER = logger<KryptonEventManager>()
     }
 }
-
-private class KryptonMethodScanner : MethodScanner<Any> {
-
-    override fun shouldRegister(listener: Any, method: Method) = method.isAnnotationPresent(Listener::class.java)
-    override fun postOrder(listener: Any, method: Method) = method.getAnnotation(Listener::class.java).priority.ordinal
-    override fun consumeCancelledEvents(listener: Any, method: Method) = true
-}
-
-private class KyoriToKryptonHandler<E>(
-    val handler: EventHandler<E>,
-    val priority: ListenerPriority
-) : EventSubscriber<E> {
-
-    override fun invoke(event: E) = handler.execute(event)
-    override fun postOrder() = priority.ordinal
-}
-
-private fun <K, V> Map<K, List<V>>.toSynchronizedListMultimap(factory: () -> List<V>) =
-    Multimaps.synchronizedMultimap(Multimaps.newListMultimap(this, factory))

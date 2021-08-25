@@ -21,11 +21,10 @@ package org.kryptonmc.krypton.world.generation.feature
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.generation.feature.config.FeatureConfig
-import org.kryptonmc.krypton.world.generation.feature.config.NoneFeatureConfig
 
 object Features {
 
-    val NO_OP: Feature<NoneFeatureConfig> = register("no_op", NoOpFeature(NoneFeatureConfig.CODEC))
+    val NO_OP: Feature<FeatureConfig.Empty> = register("no_op", NoOpFeature(FeatureConfig.CODEC))
 
     @Suppress("UNCHECKED_CAST")
     private fun <C : FeatureConfig, F : Feature<C>> register(name: String, feature: F): F =

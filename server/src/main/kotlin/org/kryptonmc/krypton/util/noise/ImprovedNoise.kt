@@ -80,5 +80,7 @@ class ImprovedNoise(random: RandomSource) {
     companion object {
 
         private const val SHIFT_UP_EPSILON = 1.0E-7F
+
+        private fun Int.gradDot(x: Double, y: Double, z: Double) = SimplexNoise.GRADIENT[this and 15].dot(x, y, z)
     }
 }

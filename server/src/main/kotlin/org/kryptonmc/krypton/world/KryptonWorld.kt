@@ -51,9 +51,9 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
-import org.kryptonmc.krypton.util.KEY_CODEC
+import org.kryptonmc.krypton.util.Codecs
 import org.kryptonmc.krypton.util.clamp
-import org.kryptonmc.krypton.util.forEachInRange
+import org.kryptonmc.krypton.util.forEachEntityInRange
 import org.kryptonmc.krypton.util.lerp
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
@@ -156,7 +156,7 @@ class KryptonWorld(
                 // TODO: World border
                 entity.session.sendPacket(PacketOutTimeUpdate(data.time, data.dayTime, data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
             }
-            forEachInRange(location, server.config.world.viewDistance) {
+            forEachEntityInRange(location, server.config.world.viewDistance) {
                 if (entity is KryptonPlayer) it.addViewer(entity)
                 if (it is KryptonPlayer) entity.addViewer(it)
             }
@@ -323,7 +323,7 @@ class KryptonWorld(
 
     companion object {
 
-        val RESOURCE_KEY_CODEC: Codec<ResourceKey<World>> = KEY_CODEC.xmap({ ResourceKey.of(ResourceKeys.DIMENSION, it) }, ResourceKey<World>::location)
+        val RESOURCE_KEY_CODEC: Codec<ResourceKey<World>> = Codecs.KEY.xmap({ ResourceKey.of(ResourceKeys.DIMENSION, it) }, ResourceKey<World>::location)
         private const val MINIMUM_SIZE = -30000000
         private const val MAXIMUM_SIZE = -MINIMUM_SIZE
     }

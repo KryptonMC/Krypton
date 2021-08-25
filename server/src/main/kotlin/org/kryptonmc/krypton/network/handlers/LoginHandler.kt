@@ -56,9 +56,8 @@ import org.kryptonmc.krypton.packet.out.login.PacketOutLoginSuccess
 import org.kryptonmc.krypton.packet.out.login.PacketOutPluginRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutSetCompression
 import org.kryptonmc.krypton.server.ban.BanEntry
-import org.kryptonmc.krypton.util.encryption.Encryption
+import org.kryptonmc.krypton.util.Encryption
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.toComponent
 import java.net.InetSocketAddress
 import java.net.SocketAddress
 import java.util.UUID
@@ -275,7 +274,7 @@ class LoginHandler(
     private fun canJoin(profile: KryptonGameProfile, address: SocketAddress): Boolean {
         if (playerManager.bannedPlayers.contains(profile)) { // We are banned
             val entry = playerManager.bannedPlayers[profile]!!
-            val text = translatable("multiplayer.disconnect.banned.reason", listOf(entry.reason.toComponent()))
+            val text = translatable("multiplayer.disconnect.banned.reason", text(entry.reason))
             // Add the
             if (entry.expiryDate != null) text.append(translatable(
                 "multiplayer.disconnect.banned.expiration",
@@ -296,8 +295,8 @@ class LoginHandler(
             return false
         } else if (playerManager.bannedIps.isBanned(address)) { // Their IP is banned.
             val entry = playerManager.bannedIps[address]!!
-            val text = translatable("multiplayer.disconnect.banned_ip.reason", entry.reason.toComponent())
-            if (entry.expiryDate != null) text.append(translatable(
+            var text = translatable("multiplayer.disconnect.banned_ip.reason", text(entry.reason))
+            if (entry.expiryDate != null) text = text.append(translatable(
                 "multiplayer.disconnect.banned.expiration",
                 text(BanEntry.DATE_FORMATTER.format(entry.expiryDate))
             ))

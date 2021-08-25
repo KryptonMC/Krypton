@@ -80,7 +80,7 @@ class FlatGeneratorSettings(
                 Codec.BOOL.fieldOf("features").orElse(false).forGetter(FlatGeneratorSettings::decorate),
                 KryptonBiome.CODEC.optionalFieldOf("biome").orElseGet { Optional.empty() }.forGetter { Optional.of(it.biome) },
             ).apply(instance, ::FlatGeneratorSettings)
-        }.comapFlatMap(FlatGeneratorSettings::validateHeight, Function.identity()).stable()
+        }.comapFlatMap(::validateHeight, Function.identity()).stable()
 
         fun default(biomes: KryptonRegistry<KryptonBiome>): FlatGeneratorSettings {
             val structureSettings = StructureSettings(mapOf(), Optional.of(StructureSettings.DEFAULT_STRONGHOLD)) // TODO: Add village structure to the map
@@ -92,10 +92,14 @@ class FlatGeneratorSettings(
                 updateLayers()
             }
         }
-    }
-}
 
-private fun FlatGeneratorSettings.validateHeight(): DataResult<FlatGeneratorSettings> {
-    val heightSum = layers.sumOf { it.height }
-    return if (heightSum > KryptonDimensionType.Y_SIZE) DataResult.error("Sum of layer heights is greater than the maximum sum of heights ${KryptonDimensionType.Y_SIZE}!", this) else DataResult.success(this)
+        private fun validateHeight(settings: FlatGeneratorSettings): DataResult<FlatGeneratorSettings> {
+            val heightSum = settings.layers.sumOf { it.height }
+            return if (heightSum > KryptonDimensionType.Y_SIZE) {
+                DataResult.error("Sum of layer heights is greater than the maximum sum of heights ${KryptonDimensionType.Y_SIZE}!", settings)
+            } else {
+                DataResult.success(settings)
+            }
+        }
+    }
 }

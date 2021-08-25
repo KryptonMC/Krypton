@@ -37,11 +37,11 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutStatistics
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.createFile
+import org.kryptonmc.krypton.util.tryCreateFile
 import org.kryptonmc.krypton.util.datafix.DATA_FIXER
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.parseKey
+import org.kryptonmc.krypton.util.toKeyOrNull
 import java.io.IOException
 import java.io.Reader
 import java.nio.file.Path
@@ -71,7 +71,7 @@ class KryptonStatisticsTracker(
 
     init {
         if (file.isRegularFile()) load(file.reader())
-        if (!file.exists()) file.createFile()
+        if (!file.exists()) file.tryCreateFile()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -150,7 +150,7 @@ class KryptonStatisticsTracker(
     }
 
     private fun <T : Any> stat(type: StatisticType<T>, name: String): Statistic<T>? {
-        val key = name.parseKey() ?: return null
+        val key = name.toKeyOrNull() ?: return null
         return type.registry[key]?.let { type[it] }
     }
 

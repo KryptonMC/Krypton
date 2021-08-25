@@ -27,12 +27,12 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.argument
-import org.kryptonmc.krypton.util.readKey
+import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.util.nextKey
 
 class SummonEntityArgument : ArgumentType<Key> {
 
-    override fun parse(reader: StringReader) = reader.readKey().ensureSummonable()
+    override fun parse(reader: StringReader) = reader.nextKey().ensureSummonable()
 
     override fun getExamples() = EXAMPLES
 

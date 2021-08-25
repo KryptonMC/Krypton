@@ -23,9 +23,9 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.util.encryption.Encryption
-import org.kryptonmc.krypton.util.hexDigest
+import org.kryptonmc.krypton.util.Encryption
 import org.kryptonmc.krypton.util.logger
+import java.math.BigInteger
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -80,4 +80,7 @@ object SessionService {
         profiles.put(profile.name, profile)
         return profile
     }
+
+    // This is Yggdrasil's strange way of digesting to hex
+    private fun MessageDigest.hexDigest(): String = BigInteger(digest()).toString(16)
 }

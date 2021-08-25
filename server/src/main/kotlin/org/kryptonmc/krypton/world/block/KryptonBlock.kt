@@ -18,13 +18,16 @@
  */
 package org.kryptonmc.krypton.world.block
 
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.RenderShape
 import org.kryptonmc.api.block.property.Property
-import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.data.BlockData
+import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.IntHashBiMap
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
 class KryptonBlock(
@@ -65,6 +68,7 @@ class KryptonBlock(
     override val renderShape = data.renderShape?.let {
         if (it == "ENTITYBLOCK_ANIMATED") RenderShape.ANIMATED_ENTITY_BLOCK else RenderShape.valueOf(it)
     } ?: RenderShape.MODEL
+
     private val itemKey = data.itemKey
     private val fluidKey = data.fluidKey
 
@@ -83,4 +87,16 @@ class KryptonBlock(
     override fun asFluid() = InternalRegistries.FLUID[fluidKey]
 
     override fun compareTo(other: Block) = id.compareTo(other.id)
+
+    companion object {
+
+        val CODEC: Codec<Block> = RecordCodecBuilder.create {
+            it.group(
+                Codecs.KEY.fieldOf("Name").forGetter(Block::key),
+                Codec.unboundedMap(Codec.STRING, Codec.STRING).fieldOf("Properties").forGetter(Block::properties)
+            ).apply(it) { key, properties -> BlockLoader.fromKey(key)!!.copy(properties) }
+        }
+
+        val STATES = IntHashBiMap<Block>().apply { BlockLoader.STATE_MAP.forEach { set(it.value, it.key) } }
+    }
 }

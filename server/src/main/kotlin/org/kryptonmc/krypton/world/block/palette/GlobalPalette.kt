@@ -22,17 +22,17 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.util.varIntBytes
-import org.kryptonmc.krypton.world.block.BLOCKS
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.nbt.ListTag
 
 object GlobalPalette : Palette {
 
-    override val size = BLOCKS.size
+    override val size = KryptonBlock.STATES.size
     override val serializedSize = 0.varIntBytes
 
-    override fun get(value: Block) = BLOCKS.idOf(value).takeIf { it != -1 } ?: 0
+    override fun get(value: Block) = KryptonBlock.STATES.idOf(value).takeIf { it != -1 } ?: 0
 
-    override fun get(id: Int) = BLOCKS[id] ?: Blocks.AIR
+    override fun get(id: Int) = KryptonBlock.STATES[id] ?: Blocks.AIR
 
     override fun write(buf: ByteBuf) = Unit
 

@@ -26,12 +26,11 @@ import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.InteractionContext
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.item.UseItemResult
 import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.util.relative
+import org.kryptonmc.krypton.util.findRelative
 import org.spongepowered.math.vector.Vector3i
 
 object DebugStickHandler : KryptonItemHandler(ItemTypes.DEBUG_STICK) {
@@ -59,16 +58,18 @@ object DebugStickHandler : KryptonItemHandler(ItemTypes.DEBUG_STICK) {
             player.sendActionBar(translatable("${type.translation.key()}.empty", text(key)))
             return false
         }
+
         val tag = item.getOrCreateTag("DebugProperty")
         val propertyKey = tag.getString(key)
         var property = properties.firstOrNull { tag.getString(propertyKey) == it.name } as? Property<Comparable<Any>>
+
         if (isUse) {
             if (property == null) property = properties.first() as Property<Comparable<Any>>
             val cycled = block.cycle(property, player.isCrouching)
             world.setBlock(position, cycled)
             player.sendMessage(translatable("${type.translation.key()}.update", text(property.name), text(property.toString(cycled[property]!!))))
         } else {
-            property = properties.relative(property, player.isCrouching) as Property<Comparable<Any>>
+            property = properties.findRelative(property, player.isCrouching) as Property<Comparable<Any>>
             val name = property.name
             tag.putString(key, name)
             player.sendMessage(translatable("${type.translation.key()}.select", text(name), text(property.toString(block[property]!!))))
@@ -78,4 +79,4 @@ object DebugStickHandler : KryptonItemHandler(ItemTypes.DEBUG_STICK) {
 }
 
 private fun <T : Comparable<T>> Block.cycle(property: Property<T>, reversed: Boolean) =
-    set(property, property.values.relative(get(property), reversed)!!)
+    set(property, property.values.findRelative(get(property), reversed)!!)

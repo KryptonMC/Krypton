@@ -22,7 +22,7 @@ import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.context.CommandContext
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.util.argument
+import org.kryptonmc.krypton.command.argument.argument
 
 class ItemStackArgumentType : ArgumentType<ItemStackArgument> {
 

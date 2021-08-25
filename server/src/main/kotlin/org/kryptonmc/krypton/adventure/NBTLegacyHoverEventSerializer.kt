@@ -26,12 +26,17 @@ import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.LegacyHoverEventSerializer
 import net.kyori.adventure.util.Codec
 import org.kryptonmc.api.adventure.toPlainText
+import org.kryptonmc.krypton.util.nbt.parseToNBT
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.Tag
 import org.kryptonmc.nbt.buildCompound
 import java.io.IOException
 import java.lang.RuntimeException
 import java.util.UUID
 
 object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
+
+    private val SNBT_CODEC: Codec<CompoundTag, String, CommandSyntaxException, RuntimeException> = Codec.of(String::parseToNBT, Tag::toString)
 
     private const val ITEM_TYPE = "id"
     private const val ITEM_COUNT = "Count"
@@ -42,12 +47,12 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
 
     override fun deserializeShowItem(input: Component) = try {
         val raw = input.toPlainText()
-        val nbt = ADVENTURE_SNBT_CODEC.decode(raw)
+        val nbt = SNBT_CODEC.decode(raw)
         val tag = nbt.getCompound(ITEM_TAG)
         HoverEvent.ShowItem.of(
             Key.key(nbt.getString(ITEM_TYPE)),
             nbt.getByte(ITEM_COUNT).toInt(),
-            if (tag.isEmpty()) null else BinaryTagHolder.encode(tag, ADVENTURE_SNBT_CODEC)
+            if (tag.isEmpty()) null else BinaryTagHolder.encode(tag, SNBT_CODEC)
         )
     } catch (exception: CommandSyntaxException) {
         throw IOException(exception)
@@ -55,7 +60,7 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
 
     override fun deserializeShowEntity(input: Component, decoder: Codec.Decoder<Component, String, out RuntimeException>) = try {
         val raw = input.toPlainText()
-        val nbt = ADVENTURE_SNBT_CODEC.decode(raw)
+        val nbt = SNBT_CODEC.decode(raw)
         HoverEvent.ShowEntity.of(
             Key.key(nbt.getString(ENTITY_TYPE)),
             UUID.fromString(nbt.getString(ENTITY_ID)),
@@ -72,12 +77,12 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
         }
         input.nbt()?.let {
             try {
-                tag.put(ITEM_TAG, it[ADVENTURE_SNBT_CODEC])
+                tag.put(ITEM_TAG, it[SNBT_CODEC])
             } catch (exception: CommandSyntaxException) {
                 throw IOException(exception)
             }
         }
-        return Component.text(ADVENTURE_SNBT_CODEC.encode(tag.build()))
+        return Component.text(SNBT_CODEC.encode(tag.build()))
     }
 
     override fun serializeShowEntity(input: HoverEvent.ShowEntity, encoder: Codec.Encoder<Component, String, out RuntimeException>): Component {
@@ -86,6 +91,6 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
             string(ENTITY_TYPE, input.type().asString())
         }
         input.name()?.let { tag.string(ENTITY_NAME, encoder.encode(it)) }
-        return Component.text(ADVENTURE_SNBT_CODEC.encode(tag.build()))
+        return Component.text(SNBT_CODEC.encode(tag.build()))
     }
 }

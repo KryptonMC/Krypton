@@ -22,7 +22,7 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.hanging.HangingEntity
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.util.antiClockwise
+import org.kryptonmc.krypton.space.antiClockwise
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 
@@ -51,7 +51,7 @@ abstract class KryptonHangingEntity(world: KryptonWorld, type: EntityType<out Ha
         x -= direction.normalX * 0.46875
         z -= direction.normalZ * 0.46875
         y += offHeight
-        val antiClockwise = direction.antiClockwise
+        val antiClockwise = direction.antiClockwise()
         x += offWidth * antiClockwise.normalX
         z += offWidth * antiClockwise.normalZ
         location = location.copy(x, y, z)

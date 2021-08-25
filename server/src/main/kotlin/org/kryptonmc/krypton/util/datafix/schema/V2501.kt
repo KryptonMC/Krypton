@@ -35,8 +35,11 @@ class V2501(versionKey: Int, parent: Schema?) : NamespacedSchema(versionKey, par
         schema.registerFurnace(this, "minecraft:smoker")
         schema.registerFurnace(this, "minecraft:blast_furnace")
     }
-}
 
-private fun Schema.registerFurnace(map: Map<String, Supplier<TypeTemplate>>, name: String) = register(map, name) { _ ->
-    optionalFields("Items", list(References.ITEM_STACK.`in`(this)), "RecipesUsed", compoundList(References.RECIPE.`in`(this)), constType(intType()))
+    companion object {
+
+        private fun Schema.registerFurnace(map: Map<String, Supplier<TypeTemplate>>, name: String) = register(map, name) { _ ->
+            optionalFields("Items", list(References.ITEM_STACK.`in`(this)), "RecipesUsed", compoundList(References.RECIPE.`in`(this)), constType(intType()))
+        }
+    }
 }

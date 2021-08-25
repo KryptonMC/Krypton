@@ -21,16 +21,16 @@ package org.kryptonmc.krypton.server.ban
 import com.google.gson.stream.JsonReader
 import org.kryptonmc.krypton.server.ServerConfigEntry
 import org.kryptonmc.krypton.server.ServerConfigList
-import org.kryptonmc.krypton.util.stringify
+import org.kryptonmc.krypton.util.asString
 import java.net.SocketAddress
 import java.nio.file.Path
 import java.time.OffsetDateTime
 
 class BannedIpList(path: Path) : ServerConfigList<String, BannedIpEntry>(path) {
 
-    operator fun get(key: SocketAddress) = super.get(key.stringify())
+    operator fun get(key: SocketAddress) = super.get(key.asString())
 
-    fun isBanned(address: SocketAddress) = contains(address.stringify())
+    fun isBanned(address: SocketAddress) = contains(address.asString())
 
     fun clear() = forEach { it.expiryDate?.let { time -> if (time.isBefore(OffsetDateTime.now())) remove(it.key) } }
 

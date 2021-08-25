@@ -19,6 +19,6 @@
 package org.kryptonmc.krypton.world.generation.feature
 
 import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.world.generation.feature.config.NoneFeatureConfig
+import org.kryptonmc.krypton.world.generation.feature.config.FeatureConfig
 
-class NoOpFeature(codec: Codec<NoneFeatureConfig>) : Feature<NoneFeatureConfig>(codec)
+class NoOpFeature(codec: Codec<FeatureConfig.Empty>) : Feature<FeatureConfig.Empty>(codec)
