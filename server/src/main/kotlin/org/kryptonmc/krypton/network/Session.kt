@@ -24,6 +24,7 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.network.handlers.HandshakeHandler
 import org.kryptonmc.krypton.network.handlers.PacketHandler
+import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
 

@@ -20,15 +20,12 @@ package org.kryptonmc.krypton.packet.`in`.handshake
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.PacketInfo
-import org.kryptonmc.krypton.network.PacketState
+import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
 
 class PacketInHandshake(buf: ByteBuf) : Packet {
-
-    override val info = PacketInfo(0x00, PacketState.HANDSHAKE)
 
     val protocol = buf.readVarInt()
     val address = buf.readString()

@@ -20,14 +20,14 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.world.scoreboard.Score
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 class PacketOutUpdateScore(
     private val score: Score,
     private val action: ScoreAction
-) : PlayPacket(0x56) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeString(score.player.name, 40)

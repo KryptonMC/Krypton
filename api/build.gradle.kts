@@ -9,7 +9,8 @@ plugins {
 }
 
 val ap by sourceSets.registering {
-    compileClasspath += sourceSets.main.get().compileClasspath + sourceSets.main.get().output
+    compileClasspath += sourceSets.main.get().compileClasspath
+    compileClasspath += sourceSets.main.get().output
 }
 
 dependencies {

@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.packet.`in`.status
 
-import org.kryptonmc.krypton.packet.state.StatusPacket
+import org.kryptonmc.krypton.packet.Packet
 
 /**
  * Sent by the client to request the server's status information
  */
-class PacketInStatusRequest : StatusPacket(0x00)
+class PacketInStatusRequest : Packet

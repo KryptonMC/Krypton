@@ -20,14 +20,13 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.tags.TagManager
 import org.kryptonmc.krypton.util.writeKey
-import org.kryptonmc.krypton.util.writeMap
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
-object PacketOutTags : PlayPacket(0x66) {
+object PacketOutTags : Packet {
 
     @Suppress("UNCHECKED_CAST")
     override fun write(buf: ByteBuf) {

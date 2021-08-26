@@ -16,16 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.state
+package org.kryptonmc.krypton.packet.`in`.play
 
-import org.kryptonmc.krypton.network.PacketState
+import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.PacketInfo
 
-/**
- * Represents a packet in the [status][PacketState.STATUS] state.
- */
-open class StatusPacket(id: Int) : Packet {
+class PacketInPlayerPosition(buf: ByteBuf) : Packet {
 
-    override val info = PacketInfo(id, PacketState.STATUS)
+    val x = buf.readDouble()
+    val y = buf.readDouble()
+    val z = buf.readDouble()
+    val onGround = buf.readBoolean()
 }

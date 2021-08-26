@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 
 /**
  * Sent to indicate a status for an entity.
@@ -29,7 +29,10 @@ import org.kryptonmc.krypton.packet.state.PlayPacket
  * @param id the ID of the entity to set the status for
  */
 // TODO: Add the rest of the entity statuses into this
-class PacketOutEntityStatus(private val id: Int, private val action: Int) : PlayPacket(0x1B) {
+class PacketOutEntityStatus(
+    private val id: Int,
+    private val action: Int
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(id)

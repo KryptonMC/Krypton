@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 
-class PacketInChangeHeldItem(buf: ByteBuf) : PlayPacket(0x25) {
+class PacketInChangeHeldItem(buf: ByteBuf) : Packet {
 
     val slot = buf.readShort()
 }

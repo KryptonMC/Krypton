@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readItem
 
-class PacketInCreativeInventoryAction(buf: ByteBuf) : PlayPacket(0x28) {
+class PacketInCreativeInventoryAction(buf: ByteBuf) : Packet {
 
     val slot = buf.readShort()
     val clickedItem = buf.readItem()

@@ -19,15 +19,14 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.Angle
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 
 class PacketOutHeadLook(
     private val entityId: Int,
-    private val headYaw: Angle
-) : PlayPacket(0x3E) {
+    private val headYaw: Float
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

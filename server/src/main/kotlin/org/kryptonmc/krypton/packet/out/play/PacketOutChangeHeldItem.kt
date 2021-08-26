@@ -19,14 +19,14 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 
 /**
  * Tells the client to change the item it's currently holding to the specified [slot]
  *
  * @param slot the slot to change to
  */
-class PacketOutChangeHeldItem(private val slot: Int) : PlayPacket(0x48) {
+class PacketOutChangeHeldItem(private val slot: Int) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(slot)

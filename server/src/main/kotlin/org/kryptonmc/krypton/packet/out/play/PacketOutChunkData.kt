@@ -20,17 +20,16 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeBitSet
+import org.kryptonmc.krypton.util.writeIntArray
 import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.util.writeVarIntArray
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.MutableCompoundTag
 import java.util.BitSet
 
-class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x22) {
+class PacketOutChunkData(private val chunk: KryptonChunk) : Packet {
 
     private val buffer = ByteArray(chunk.calculateSize())
     private val sectionMask = chunk.extract(Unpooled.wrappedBuffer(buffer).apply { writerIndex(0) })
@@ -46,7 +45,7 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x22) {
         buf.writeNBT(heightmaps.build())
 
         // Biomes
-        buf.writeVarIntArray(chunk.biomes.write())
+        buf.writeIntArray(chunk.biomes.write())
 
         // Actual chunk data
         buf.writeVarInt(buffer.size)
@@ -75,13 +74,5 @@ class PacketOutChunkData(private val chunk: KryptonChunk) : PlayPacket(0x22) {
             if (section != null && !section.isEmpty()) size += section.serializedSize
         }
         return size
-    }
-
-    companion object {
-
-        // Thanks Minestom :) (https://github.com/Minestom/Minestom/blob/master/src/main/java/net/minestom/server/network/packet/server/play/ChunkDataPacket.java#L50-52)
-        private const val CHUNK_SECTION_COUNT = 16
-        private const val MAX_BITS_PER_ENTRY = 16
-        private const val MAX_BUFFER_SIZE = (Short.SIZE_BYTES + Byte.SIZE_BYTES + 5 * Byte.SIZE_BYTES + 4096 * MAX_BITS_PER_ENTRY / Long.SIZE_BITS * Long.SIZE_BYTES) * CHUNK_SECTION_COUNT + 256 * Int.SIZE_BYTES
     }
 }

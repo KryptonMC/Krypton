@@ -30,9 +30,9 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.entity.memory.Brain
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
-import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
@@ -111,7 +111,7 @@ abstract class KryptonLivingEntity(
         return true
     }
 
-    override fun getSpawnPacket(): PlayPacket = PacketOutSpawnLivingEntity(this)
+    override fun getSpawnPacket(): Packet = PacketOutSpawnLivingEntity(this)
 
     private fun setLivingFlag(flag: Int, state: Boolean) {
         val flags = data[MetadataKeys.LIVING.FLAGS].toInt()

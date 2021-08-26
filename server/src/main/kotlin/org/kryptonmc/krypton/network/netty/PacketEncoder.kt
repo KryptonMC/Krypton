@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToByteEncoder
+import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.writeVarInt
@@ -36,11 +37,14 @@ object PacketEncoder : MessageToByteEncoder<Packet>() {
     const val NETTY_NAME = "encoder"
     private val LOGGER = logger<PacketEncoder>()
 
-    override fun encode(ctx: ChannelHandlerContext, msg: Packet, out: ByteBuf) = try {
-        LOGGER.debug("Outgoing packet of type ${msg.javaClass} id ${msg.info.id}")
-        out.writeVarInt(msg.info.id)
-        msg.write(out)
-    } catch (exception: Exception) {
-        LOGGER.error("Exception trying to send packet ${msg.javaClass} with id ${msg.info.id}", exception)
+    override fun encode(ctx: ChannelHandlerContext, msg: Packet, out: ByteBuf) {
+        val id = PacketRegistry[msg.javaClass]
+        try {
+            LOGGER.debug("Outgoing packet of type ${msg.javaClass} with id $id")
+            out.writeVarInt(id)
+            msg.write(out)
+        } catch (exception: Exception) {
+            LOGGER.error("Exception trying to send packet ${msg.javaClass} with id $id", exception)
+        }
     }
 }

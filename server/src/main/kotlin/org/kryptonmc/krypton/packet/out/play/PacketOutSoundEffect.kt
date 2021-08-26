@@ -21,9 +21,8 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.space.Position
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
@@ -34,7 +33,7 @@ class PacketOutSoundEffect(
     x: Double,
     y: Double,
     z: Double
-) : PlayPacket(0x5C) {
+) : Packet {
 
     private val x = (x * 8.0).toInt()
     private val y = (y * 8.0).toInt()

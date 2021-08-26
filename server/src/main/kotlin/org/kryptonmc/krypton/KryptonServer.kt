@@ -40,8 +40,8 @@ import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.locale.TranslationRepository
-import org.kryptonmc.krypton.network.PacketLoader
-import org.kryptonmc.krypton.packet.out.play.PacketOutServerDifficulty
+import org.kryptonmc.krypton.packet.PacketRegistry
+import org.kryptonmc.krypton.packet.out.play.PacketOutDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
@@ -92,7 +92,7 @@ class KryptonServer(
         set(value) {
             worldData.difficulty = value
             // TODO: Update mob spawning flags
-            playerManager.players.forEach { it.session.sendPacket(PacketOutServerDifficulty(it.world.difficulty)) }
+            playerManager.players.forEach { it.session.sendPacket(PacketOutDifficulty(it.world.difficulty)) }
         }
     override var gamemode: Gamemode
         get() = worldData.gamemode
@@ -140,7 +140,7 @@ class KryptonServer(
 
         // Load the packets
         LOGGER.debug("Loading packets...")
-        PacketLoader.loadAll()
+        PacketRegistry.bootstrap()
 
         // Register the commands and console translations, and schedule a refresh of the translation repository
         // (query data.kryptonmc.org for translation metadata and download the new translations)

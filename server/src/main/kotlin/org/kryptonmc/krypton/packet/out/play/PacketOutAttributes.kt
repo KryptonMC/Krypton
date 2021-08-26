@@ -24,7 +24,7 @@ import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeKey
@@ -34,7 +34,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 class PacketOutAttributes(
     private val id: Int,
     attributes: Collection<KryptonAttribute>
-) : PlayPacket(0x63) {
+) : Packet {
 
     private val attributes = attributes.map { AttributeSnapshot(it.type, it.baseValue, it.modifiers) }
 

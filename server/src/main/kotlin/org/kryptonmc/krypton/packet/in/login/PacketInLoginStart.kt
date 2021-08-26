@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.packet.`in`.login
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.LoginPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readString
 
-class PacketInLoginStart(buf: ByteBuf) : LoginPacket(0x00) {
+class PacketInLoginStart(buf: ByteBuf) : Packet {
 
     val name = buf.readString(16)
 }

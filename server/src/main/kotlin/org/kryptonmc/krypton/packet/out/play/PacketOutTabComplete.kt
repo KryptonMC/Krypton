@@ -22,7 +22,7 @@ import com.mojang.brigadier.Message
 import com.mojang.brigadier.suggestion.Suggestions
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeString
@@ -38,7 +38,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 class PacketOutTabComplete(
     private val id: Int,
     private val matches: Suggestions
-) : PlayPacket(0x11) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(id)

@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.login
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.LoginPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -27,7 +27,7 @@ class PacketOutPluginRequest(
     private val id: Int,
     private val channel: String,
     private val data: ByteArray
-) : LoginPacket(0x04) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(id)

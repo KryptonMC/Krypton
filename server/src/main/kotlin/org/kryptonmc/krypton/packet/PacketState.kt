@@ -16,11 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.network
-
-import io.netty.buffer.ByteBuf
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import org.kryptonmc.krypton.packet.Packet
+package org.kryptonmc.krypton.packet
 
 /**
  * Represents one of the four packet states in the Minecraft protocol. Each one of these states has
@@ -52,31 +48,10 @@ enum class PacketState {
      */
     PLAY;
 
-    private val packets = Int2ObjectOpenHashMap<(ByteBuf) -> Packet>()
-
-    /**
-     * Register a packet type with the specified [id]
-     *
-     * @param id the ID of the packet
-     * @param supplier a function that can be used to create instances of the packet.
-     */
-    fun registerPacketType(id: Int, supplier: (ByteBuf) -> Packet) {
-        packets.putIfAbsent(id, supplier)
-    }
-
-    /**
-     * Create a new packet from the specified [id]
-     *
-     * @param id the packet ID
-     * @return a new packet with the specified [id], or null if there is no packet
-     * registered with this ID
-     */
-    fun createPacket(id: Int, buf: ByteBuf) = packets[id]?.invoke(buf)
-
     companion object {
 
         /**
-         * Get a packet state from its protocol ID
+         * Gets a packet state from its protocol ID.
          */
         fun fromId(id: Int) = values()[id]
     }

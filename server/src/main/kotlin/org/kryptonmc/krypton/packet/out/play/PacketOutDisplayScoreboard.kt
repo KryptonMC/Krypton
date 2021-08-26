@@ -21,14 +21,14 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.world.scoreboard.ScoreboardPosition
 import org.kryptonmc.api.world.scoreboard.Team
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 
 class PacketOutDisplayScoreboard(
     private val scoreboard: KryptonScoreboard,
     private val team: Team? = null // used for team specific positioning
-) : PlayPacket(0x4C) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         when (scoreboard.position) {

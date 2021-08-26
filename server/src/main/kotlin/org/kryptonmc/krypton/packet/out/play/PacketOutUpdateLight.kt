@@ -19,55 +19,81 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.writeBitSet
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.writeSingletonLongArray
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
-import java.util.BitSet
 
-// TODO: Fix light when we add the new engine
-class PacketOutUpdateLight(private val chunk: KryptonChunk) : PlayPacket(0x25) {
+class PacketOutUpdateLight(
+    private val chunk: KryptonChunk,
+    private val trustEdges: Boolean = true
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(chunk.position.x)
         buf.writeVarInt(chunk.position.z)
-        buf.writeBoolean(true)
+        buf.writeBoolean(trustEdges)
         val sections = chunk.sections
 
-        val skyLightMask = BitSet()
-        val blockLightMask = BitSet()
-        val emptySkyLightMask = BitSet()
-        val emptyBlockLightMask = BitSet()
+        var skyMask = 0L
+        var blockMask = 0L
+        var emptySkyMask = 0L
+        var emptyBlockMask = 0L
+        val skyLights = ArrayList<ByteArray>()
+        val blockLights = ArrayList<ByteArray>()
+
         for (i in sections.indices) {
             val section = sections[i]
             if (section == null) {
-                skyLightMask.set(i, false)
-                emptySkyLightMask.set(i, true)
-                blockLightMask.set(i, false)
-                emptyBlockLightMask.set(i, true)
+                emptySkyMask = emptySkyMask or (1L shl i)
+                emptyBlockMask = emptyBlockMask or (1L shl i)
                 continue
             }
 
-            val hasSkyLight = section.skyLight.any { it != 0.toByte() }
-            skyLightMask.set(i, hasSkyLight)
-            emptySkyLightMask.set(i, !hasSkyLight)
+            // Deal with sky light data
+            if (section.skyLight.hasNonZeroData()) {
+                skyMask = skyMask or (1L shl i)
+                skyLights.add(section.skyLight)
+            } else {
+                emptySkyMask = emptySkyMask or (1L shl i)
+            }
 
-            val hasBlockLight = section.blockLight.any { it != 0.toByte() }
-            blockLightMask.set(i, hasBlockLight)
-            emptyBlockLightMask.set(i, !hasBlockLight)
+            // Deal with block light data
+            if (section.blockLight.hasNonZeroData()) {
+                blockMask = blockMask or (1L shl i)
+                blockLights.add(section.blockLight)
+            } else {
+                emptyBlockMask = emptyBlockMask or (1L shl i)
+            }
         }
-        buf.writeBitSet(skyLightMask)
-        buf.writeBitSet(blockLightMask)
-        buf.writeBitSet(emptySkyLightMask)
-        buf.writeBitSet(emptyBlockLightMask)
 
-        sections.asSequence().filterNotNull().filter { section -> !section.skyLight.all { it == 0.toByte() } }.apply { buf.writeVarInt(count()) }.forEach {
-            buf.writeVarInt(2048)
-            buf.writeBytes(it.skyLight)
+        buf.writeSingletonLongArray(skyMask)
+        buf.writeSingletonLongArray(blockMask)
+        buf.writeSingletonLongArray(emptySkyMask)
+        buf.writeSingletonLongArray(emptyBlockMask)
+
+        buf.writeVarInt(skyLights.size)
+        for (i in skyLights.indices) {
+            val light = skyLights[i]
+            buf.writeVarInt(2048) // Always 2048 in length (for now)
+            buf.writeBytes(light)
         }
-        sections.asSequence().filterNotNull().filter { section -> !section.blockLight.all { it == 0.toByte() } }.apply { buf.writeVarInt(count()) }.forEach {
+
+        buf.writeVarInt(blockLights.size)
+        for (i in blockLights.indices) {
+            val light = blockLights[i]
             buf.writeVarInt(2048)
-            buf.writeBytes(it.blockLight)
+            buf.writeBytes(light)
+        }
+    }
+
+    companion object {
+
+        private fun ByteArray.hasNonZeroData(): Boolean {
+            for (i in indices) {
+                if (get(i) != 0.toByte()) return true
+            }
+            return false
         }
     }
 }

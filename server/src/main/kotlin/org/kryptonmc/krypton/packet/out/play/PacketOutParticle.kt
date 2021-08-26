@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.space.Location
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeParticle
 
 /**
@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.util.writeParticle
 class PacketOutParticle(
     private val effect: ParticleEffect,
     private val location: Location
-) : PlayPacket(0x24) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeParticle(effect, location)

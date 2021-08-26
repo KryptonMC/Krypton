@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 
 class PacketOutChangeGameState(
     private val state: GameState,
     private val value: Float = 0.0F
-) : PlayPacket(0x1E) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(state.ordinal)

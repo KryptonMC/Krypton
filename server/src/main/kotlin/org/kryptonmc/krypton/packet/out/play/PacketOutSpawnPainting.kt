@@ -20,19 +20,25 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.hanging.KryptonPainting
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
 
-class PacketOutSpawnPainting(private val painting: KryptonPainting) : PlayPacket(0x03) {
+class PacketOutSpawnPainting(private val painting: KryptonPainting) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(painting.id)
         buf.writeUUID(painting.uuid)
-        buf.writeVarInt(painting.canvas?.let { InternalRegistries.CANVAS.idOf(it) } ?: InternalRegistries.CANVAS.idOf(InternalRegistries.CANVAS.defaultValue))
+        val canvas = painting.canvas
+        buf.writeVarInt(if (canvas != null) InternalRegistries.CANVAS.idOf(canvas) else DEFAULT_CANVAS_ID)
         buf.writeVector(painting.centerPosition)
         buf.writeByte(painting.direction.data2D)
+    }
+
+    companion object {
+
+        private val DEFAULT_CANVAS_ID = InternalRegistries.CANVAS.idOf(InternalRegistries.CANVAS.defaultValue)
     }
 }

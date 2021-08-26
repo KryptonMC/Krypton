@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 
-class PacketOutServerDifficulty(private val difficulty: Difficulty) : PlayPacket(0x0E) {
+class PacketOutDifficulty(private val difficulty: Difficulty) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(difficulty.ordinal)

@@ -22,13 +22,13 @@ import io.netty.buffer.ByteBuf
 import me.bardy.gsonkt.newBuilder
 import me.bardy.gsonkt.registerTypeAdapter
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.kryptonmc.krypton.packet.state.StatusPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 
 /**
  * Response to the client's earlier [status request][org.kryptonmc.krypton.packet.in.status.PacketInStatusRequest] packet.
  */
-class PacketOutStatusResponse(private val status: ServerStatus) : StatusPacket(0x00) {
+class PacketOutStatusResponse(private val status: ServerStatus) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeString(GSON.toJson(status))

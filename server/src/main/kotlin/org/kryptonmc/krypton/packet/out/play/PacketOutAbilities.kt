@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 
 class PacketOutAbilities(
     private val isInvulnerable: Boolean,
@@ -29,7 +29,7 @@ class PacketOutAbilities(
     private val canInstantlyBuild: Boolean,
     private val flyingSpeed: Float,
     private val walkingSpeed: Float
-) : PlayPacket(0x32) {
+) : Packet {
 
     constructor(player: KryptonPlayer) : this(player.isInvulnerable, player.isFlying, player.canFly, player.canInstantlyBuild, player.flyingSpeed, player.walkingSpeed)
 

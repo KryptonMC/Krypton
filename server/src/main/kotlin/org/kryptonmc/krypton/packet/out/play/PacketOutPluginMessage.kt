@@ -20,13 +20,13 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeKey
 
 class PacketOutPluginMessage(
     private val channel: Key,
     private val content: ByteArray
-) : PlayPacket(0x18) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeKey(channel)

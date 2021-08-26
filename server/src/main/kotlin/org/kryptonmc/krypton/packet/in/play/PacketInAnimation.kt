@@ -20,10 +20,10 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
 
-class PacketInAnimation(buf: ByteBuf) : PlayPacket(0x2C) {
+class PacketInAnimation(buf: ByteBuf) : Packet {
 
     val hand = buf.readEnum<Hand>()
 }

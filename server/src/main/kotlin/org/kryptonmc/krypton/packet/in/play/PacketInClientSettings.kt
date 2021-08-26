@@ -20,12 +20,12 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.MainHand
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
 
-class PacketInClientSettings(buf: ByteBuf) : PlayPacket(0x05) {
+class PacketInClientSettings(buf: ByteBuf) : Packet {
 
     val locale = buf.readString(16)
     val viewDistance = buf.readByte()

@@ -22,12 +22,12 @@ import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.objects.Object2IntMap
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticType
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeMap
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutStatistics(private val statistics: Object2IntMap<Statistic<*>>) : PlayPacket(0x07) {
+class PacketOutStatistics(private val statistics: Object2IntMap<Statistic<*>>) : Packet {
 
     @Suppress("UNCHECKED_CAST")
     override fun write(buf: ByteBuf) {

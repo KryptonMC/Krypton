@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
 
-class PacketInTabComplete(buf: ByteBuf) : PlayPacket(0x06) {
+class PacketInTabComplete(buf: ByteBuf) : Packet {
 
     val id = buf.readVarInt()
     val command = buf.readString(32500)

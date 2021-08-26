@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.login
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.LoginPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import java.util.UUID
@@ -31,7 +31,7 @@ import java.util.UUID
 class PacketOutLoginSuccess(
     private val uuid: UUID,
     private val username: String
-) : LoginPacket(0x02) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeUUID(uuid)

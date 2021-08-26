@@ -21,14 +21,14 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.space.Position
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
 
 class PacketOutNamedSoundEffect(
     private val sound: Sound,
     private val location: Position
-) : PlayPacket(0x19) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeKey(sound.name())

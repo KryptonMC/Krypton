@@ -20,15 +20,14 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.Angle
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutSpawnEntity(private val entity: KryptonEntity) : PlayPacket(0x00) {
+class PacketOutSpawnEntity(private val entity: KryptonEntity) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entity.id)
@@ -37,8 +36,8 @@ class PacketOutSpawnEntity(private val entity: KryptonEntity) : PlayPacket(0x00)
         buf.writeDouble(entity.location.x)
         buf.writeDouble(entity.location.y)
         buf.writeDouble(entity.location.z)
-        buf.writeAngle(Angle.fromDegrees(entity.location.pitch))
-        buf.writeAngle(Angle.fromDegrees(entity.location.yaw))
+        buf.writeAngle(entity.location.pitch)
+        buf.writeAngle(entity.location.yaw)
         buf.writeInt(0)
         buf.writeShort((entity.velocity.x.clamp(-3.9, 3.9) * 8000.0).toInt())
         buf.writeShort((entity.velocity.y.clamp(-3.9, 3.9) * 8000.0).toInt())

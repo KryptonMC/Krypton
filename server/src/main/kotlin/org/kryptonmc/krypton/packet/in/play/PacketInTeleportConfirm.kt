@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readVarInt
 
-class PacketInTeleportConfirm(buf: ByteBuf) : PlayPacket(0x00) {
+class PacketInTeleportConfirm(buf: ByteBuf) : Packet {
 
     val teleportId = buf.readVarInt()
 }

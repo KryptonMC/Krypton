@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.world.scoreboard.Objective
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
@@ -31,7 +31,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 class PacketOutScoreboardObjective(
     private val action: ObjectiveAction,
     private val objective: Objective
-) : PlayPacket(0x53) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeString(objective.name, 16)

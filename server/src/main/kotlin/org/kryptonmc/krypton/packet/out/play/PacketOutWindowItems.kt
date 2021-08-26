@@ -20,8 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.writeCollection
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -30,7 +29,7 @@ class PacketOutWindowItems(
     private val stateId: Int,
     private val itemWriter: (ByteBuf) -> Unit,
     private val heldItem: KryptonItemStack
-) : PlayPacket(0x14) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(id)

@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
 import org.kryptonmc.krypton.network.ChannelHandler
+import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readVarInt
@@ -39,7 +40,7 @@ class PacketDecoder : ByteToMessageDecoder() {
         val id = buf.readVarInt()
         val session = this.session ?: ctx.pipeline().get(ChannelHandler::class.java).session.apply { this@PacketDecoder.session = this }
 
-        val packet = session.currentState.createPacket(id, buf)
+        val packet = PacketRegistry.get(session.currentState, id, buf)
         if (packet == null) {
             LOGGER.debug("Skipping packet with state ${session.currentState} and ID $id because a packet object was not found")
             buf.skipBytes(buf.readableBytes())

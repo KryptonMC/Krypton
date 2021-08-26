@@ -19,8 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.Angle
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeShort
 import org.kryptonmc.krypton.util.writeVarInt
@@ -30,10 +29,10 @@ class PacketOutEntityPositionAndRotation(
     private val deltaX: Short,
     private val deltaY: Short,
     private val deltaZ: Short,
-    private val yaw: Angle,
-    private val pitch: Angle,
+    private val yaw: Float,
+    private val pitch: Float,
     private val onGround: Boolean
-) : PlayPacket(0x2A) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(id)

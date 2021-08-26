@@ -24,7 +24,6 @@ import org.kryptonmc.api.entity.hanging.Painting
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPainting
-import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag

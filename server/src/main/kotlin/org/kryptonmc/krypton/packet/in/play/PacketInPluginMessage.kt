@@ -20,11 +20,11 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readString
 
-class PacketInPluginMessage(buf: ByteBuf) : PlayPacket(0x0A) {
+class PacketInPluginMessage(buf: ByteBuf) : Packet {
 
     val channel = Key.key(buf.readString())
     val data = buf.readAllAvailableBytes()

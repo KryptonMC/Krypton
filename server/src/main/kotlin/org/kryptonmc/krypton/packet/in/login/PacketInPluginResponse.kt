@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.packet.`in`.login
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.LoginPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readVarInt
 
-class PacketInPluginResponse(buf: ByteBuf) : LoginPacket(0x02) {
+class PacketInPluginResponse(buf: ByteBuf) : Packet {
 
     val messageId = buf.readVarInt()
     val isSuccessful = buf.readBoolean()

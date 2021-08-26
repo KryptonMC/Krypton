@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.packet.`in`.status
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.StatusPacket
+import org.kryptonmc.krypton.packet.Packet
 
 /**
  * Sent when the client pings the server.
  */
-class PacketInPing(buf: ByteBuf) : StatusPacket(0x01) {
+class PacketInPing(buf: ByteBuf) : Packet {
 
     val payload = buf.readLong()
 }

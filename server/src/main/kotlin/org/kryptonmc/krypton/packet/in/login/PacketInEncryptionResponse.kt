@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.packet.`in`.login
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.LoginPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readVarIntByteArray
 
-class PacketInEncryptionResponse(buf: ByteBuf) : LoginPacket(0x01) {
+class PacketInEncryptionResponse(buf: ByteBuf) : Packet {
 
     val secret = buf.readVarIntByteArray()
     val verifyToken = buf.readVarIntByteArray()

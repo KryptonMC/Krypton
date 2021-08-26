@@ -50,9 +50,9 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInChangeHeldItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlaceBlock
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPosition
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerPositionAndRotation
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement.PacketInPlayerRotation
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerPosition
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerPositionAndRotation
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.out.play.EntityAnimation
@@ -69,7 +69,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
 import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
-import org.kryptonmc.krypton.util.Angle
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toSkinSettings
@@ -292,11 +291,11 @@ class PlayHandler(
 
         playerManager.sendToAll(PacketOutEntityRotation(
             player.id,
-            Angle.fromDegrees(packet.yaw),
-            Angle.fromDegrees(packet.pitch),
+            packet.yaw,
+            packet.pitch,
             packet.onGround
         ), player)
-        playerManager.sendToAll(PacketOutHeadLook(player.id, Angle.fromDegrees(packet.yaw)), player)
+        playerManager.sendToAll(PacketOutHeadLook(player.id, packet.yaw), player)
     }
 
     private fun handlePositionAndRotationUpdate(packet: PacketInPlayerPositionAndRotation) {
@@ -312,11 +311,11 @@ class PlayHandler(
             calculatePositionChange(newLocation.x, oldLocation.x),
             calculatePositionChange(newLocation.y, oldLocation.y),
             calculatePositionChange(newLocation.z, oldLocation.z),
-            Angle.fromDegrees(newLocation.yaw),
-            Angle.fromDegrees(newLocation.pitch),
+            newLocation.yaw,
+            newLocation.pitch,
             packet.onGround
         ), player)
-        playerManager.sendToAll(PacketOutHeadLook(player.id, Angle.fromDegrees(newLocation.yaw)), player)
+        playerManager.sendToAll(PacketOutHeadLook(player.id, newLocation.yaw), player)
         player.updateChunks()
         player.updateMovementStatistics(newLocation.x - oldLocation.x, newLocation.y - oldLocation.y, newLocation.z - oldLocation.z)
     }

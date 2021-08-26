@@ -25,14 +25,14 @@ import com.mojang.brigadier.tree.RootCommandNode
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.SuggestionProviders
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeArgumentType
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : PlayPacket(0x12) {
+class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : Packet {
 
     override fun write(buf: ByteBuf) {
         val enumerations = root.enumerate()

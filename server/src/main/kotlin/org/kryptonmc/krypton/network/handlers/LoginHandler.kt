@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.network.PacketState
+import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.network.data.LegacyForwardedData
 import org.kryptonmc.krypton.network.data.readVelocityData

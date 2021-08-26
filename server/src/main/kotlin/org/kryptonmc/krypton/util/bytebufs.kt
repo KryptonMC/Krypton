@@ -30,7 +30,6 @@ import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.ByteBufOutputStream
 import io.netty.handler.codec.DecoderException
 import io.netty.handler.codec.EncoderException
-import it.unimi.dsi.fastutil.ints.IntList
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toJsonString
@@ -71,9 +70,9 @@ fun ByteBuf.readVarInt(): Int {
     var i = 0
     val maxRead = min(5, readableBytes())
     for (j in 0 until maxRead) {
-        val k = readByte()
-        i = i or (k.toInt() and 0x7F shl j * 7)
-        if (k.toInt() and 0x80 != 128) return i
+        val next = readByte()
+        i = i or (next.toInt() and 0x7F shl j * 7)
+        if (next.toInt() and 0x80 != 128) return i // If there's no more var int bytes after this, we're done
     }
     return Int.MAX_VALUE
 }
@@ -122,11 +121,6 @@ fun ByteBuf.writeVarLong(value: Long) {
     }
 }
 
-fun ByteBuf.writeVarIntArray(array: IntArray) {
-    writeVarInt(array.size)
-    array.forEach { writeVarInt(it) }
-}
-
 fun ByteBuf.readString(max: Short = Short.MAX_VALUE): String {
     val length = readVarInt()
     return when {
@@ -140,8 +134,8 @@ fun ByteBuf.readString(max: Short = Short.MAX_VALUE): String {
 }
 
 fun ByteBuf.writeString(value: String, max: Short = Short.MAX_VALUE) {
-    val bytes = value.encodeToByteArray().takeIf { it.size <= max }
-        ?: throw EncoderException("String too long! Expected maximum size of $max, got length ${value.length}!")
+    val bytes = value.encodeToByteArray()
+    if (bytes.size > max) throw EncoderException("String too long! Expected maximum size of $max, got length ${value.length}!")
     writeVarInt(bytes.size)
     writeBytes(bytes)
 }
@@ -149,9 +143,7 @@ fun ByteBuf.writeString(value: String, max: Short = Short.MAX_VALUE) {
 fun ByteBuf.readVarIntByteArray(): ByteArray {
     val length = readVarInt()
     val readable = readableBytes()
-    if (length > readable) {
-        throw DecoderException("Not enough bytes to read. Expected Length: $length, actual length: $readable")
-    }
+    if (length > readable) throw DecoderException("Not enough bytes to read. Expected Length: $length, actual length: $readable")
     return readAvailableBytes(length)
 }
 
@@ -165,7 +157,14 @@ fun ByteBuf.readAllAvailableBytes() = readAvailableBytes(readableBytes())
 
 fun ByteBuf.writeLongArray(array: LongArray) {
     writeVarInt(array.size)
-    array.forEach { writeLong(it) }
+    for (i in array.indices) {
+        writeLong(array[i])
+    }
+}
+
+fun ByteBuf.writeSingletonLongArray(element: Long) {
+    writeVarInt(1)
+    writeLong(element)
 }
 
 fun ByteBuf.writeUUID(uuid: UUID) {
@@ -303,8 +302,8 @@ fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
     particle.write(this)
 }
 
-fun ByteBuf.writeAngle(angle: Angle) {
-    writeByte(angle.value.toInt())
+fun ByteBuf.writeAngle(angle: Float) {
+    writeByte(((angle / 360F) * 256F).toInt())
 }
 
 fun ByteBuf.writeKey(key: Key) {
@@ -342,9 +341,11 @@ fun <K, V> ByteBuf.writeMap(map: Map<K, V>, keyAction: (ByteBuf, K) -> Unit, val
     }
 }
 
-fun ByteBuf.writeIntList(list: IntList) {
-    writeVarInt(list.size)
-    list.forEach { writeVarInt(it) }
+fun ByteBuf.writeIntArray(array: IntArray) {
+    writeVarInt(array.size)
+    for (i in array.indices) {
+        writeVarInt(array[i])
+    }
 }
 
 fun <T> ByteBuf.encode(codec: Codec<T>, value: T) {

@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 
 /**
@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.util.writeChat
 class PacketOutPlayerListHeaderFooter(
     private val header: Component,
     private val footer: Component
-) : PlayPacket(0x5E) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(header)

@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 
 // TODO: Add some recipes here
-object PacketOutDeclareRecipes : PlayPacket(0x65) {
+object PacketOutDeclareRecipes : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(0)

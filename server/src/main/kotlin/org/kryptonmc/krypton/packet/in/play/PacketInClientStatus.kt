@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
 
-class PacketInClientStatus(buf: ByteBuf) : PlayPacket(0x04) {
+class PacketInClientStatus(buf: ByteBuf) : Packet {
 
     val action = buf.readEnum<Action>()
 

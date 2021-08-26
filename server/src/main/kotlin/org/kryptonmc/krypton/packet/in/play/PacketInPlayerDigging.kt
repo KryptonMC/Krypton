@@ -20,11 +20,11 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.block.BlockFace
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.toVector3i
 
-class PacketInPlayerDigging(buf: ByteBuf) : PlayPacket(0x1A) {
+class PacketInPlayerDigging(buf: ByteBuf) : Packet {
 
     val status = buf.readEnum<DiggingStatus>()
     val location = buf.readLong().toVector3i()

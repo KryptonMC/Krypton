@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.encode
@@ -50,7 +50,7 @@ class PacketOutJoinGame(
     private val doImmediateRespawn: Boolean,
     private val isDebug: Boolean,
     private val isFlat: Boolean
-) : PlayPacket(0x26) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(id)

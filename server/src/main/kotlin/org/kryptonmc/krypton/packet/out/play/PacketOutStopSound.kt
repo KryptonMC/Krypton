@@ -20,11 +20,11 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.sound.SoundStop
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeKey
 
-class PacketOutStopSound(private val stop: SoundStop) : PlayPacket(0x5D) {
+class PacketOutStopSound(private val stop: SoundStop) : Packet {
 
     override fun write(buf: ByteBuf) {
         val source = stop.source()

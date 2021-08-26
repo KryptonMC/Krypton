@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
-<Configuration xmlns="http://logging.apache.org/log4j/2.0/config" status="DEBUG" packages="org.kryptonmc.krypton.util" shutdownHook="disable">
+<Configuration xmlns="http://logging.apache.org/log4j/2.0/config" status="DEBUG" packages="net.minecrell.terminalconsole" shutdownHook="disable">
     <Appenders>
         <TerminalConsole name="CONSOLE">
             <PatternLayout noConsoleNoAnsi="true" pattern="%red{%d{yyyy-MM-dd HH:mm:ss}} %green{[%thread]} %highlight{%level}{STYLE=Logback} %cyan{%logger{0}} - %minecraftFormatting{%msg}%n" />

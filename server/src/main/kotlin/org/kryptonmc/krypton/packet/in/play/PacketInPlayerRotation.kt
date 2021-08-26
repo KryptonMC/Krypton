@@ -16,25 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.packet.`in`.play
 
-/**
- * Represents a protocol angle, measured in 256ths of a full turn
- */
-@JvmInline
-@Deprecated("For removal, with no replacement. This class isn't necessary.")
-value class Angle(val value: UByte) : Comparable<Angle> {
+import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.packet.Packet
 
-    override fun compareTo(other: Angle) = if (value == other.value) 0 else if (value < other.value) -1 else 1
+class PacketInPlayerRotation(buf: ByteBuf) : Packet {
 
-    companion object {
-
-        val ZERO = Angle(0u)
-
-        /**
-         * Converts the given [degrees] value to an angle measured in 256ths of a
-         * full turn.
-         */
-        fun fromDegrees(degrees: Float) = Angle(((degrees / 360F) * 256F).toInt().toUByte())
-    }
+    val yaw = buf.readFloat()
+    val pitch = buf.readFloat()
+    val onGround = buf.readBoolean()
 }

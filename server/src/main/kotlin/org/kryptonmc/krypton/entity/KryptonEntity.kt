@@ -28,8 +28,8 @@ import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.space.BoundingBox
-import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.space.Location
+import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.ServerStorage
 import org.kryptonmc.krypton.adventure.toJsonComponent
 import org.kryptonmc.krypton.adventure.toSectionText
@@ -37,12 +37,11 @@ import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutDestroyEntities
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
-import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.Angle
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -172,7 +171,7 @@ abstract class KryptonEntity(
         player.viewableEntities.add(this)
         player.session.sendPacket(getSpawnPacket())
         player.session.sendPacket(PacketOutMetadata(id, data.all))
-        player.session.sendPacket(PacketOutHeadLook(id, Angle.fromDegrees(location.yaw)))
+        player.session.sendPacket(PacketOutHeadLook(id, location.yaw))
         return true
     }
 
@@ -183,7 +182,7 @@ abstract class KryptonEntity(
         return true
     }
 
-    protected open fun getSpawnPacket(): PlayPacket = PacketOutSpawnEntity(this)
+    protected open fun getSpawnPacket(): Packet = PacketOutSpawnEntity(this)
 
     private fun getSharedFlag(flag: Int) = data[MetadataKeys.FLAGS].toInt() and (1 shl flag) != 0
 

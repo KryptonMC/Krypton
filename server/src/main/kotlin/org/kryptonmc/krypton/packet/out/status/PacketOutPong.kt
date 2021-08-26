@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.packet.out.status
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.StatusPacket
+import org.kryptonmc.krypton.packet.Packet
 
 /**
  * Response to the client's [ping][org.kryptonmc.krypton.packet.in.status.PacketInPing] packet
  */
-class PacketOutPong(private val value: Long) : StatusPacket(0x01) {
+class PacketOutPong(private val value: Long) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeLong(value)

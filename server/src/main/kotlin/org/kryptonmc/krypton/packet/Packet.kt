@@ -19,17 +19,11 @@
 package org.kryptonmc.krypton.packet
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.network.PacketState
 
 /**
  * Super interface for all inbound and outbound packets.
  */
 interface Packet {
-
-    /**
-     * This packet's info
-     */
-    val info: PacketInfo
 
     /**
      * Write this packet's data to the given [buf]

@@ -20,10 +20,10 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.KryptonExperienceOrb
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutSpawnExperienceOrb(private val orb: KryptonExperienceOrb) : PlayPacket(0x01) {
+class PacketOutSpawnExperienceOrb(private val orb: KryptonExperienceOrb) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(orb.id)

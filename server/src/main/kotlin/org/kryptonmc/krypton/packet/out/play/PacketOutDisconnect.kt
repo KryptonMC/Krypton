@@ -20,10 +20,10 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 
-class PacketOutDisconnect(private val reason: Component) : PlayPacket(0x1A) {
+class PacketOutDisconnect(private val reason: Component) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(reason)

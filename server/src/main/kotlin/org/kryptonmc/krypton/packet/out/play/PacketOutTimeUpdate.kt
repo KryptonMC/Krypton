@@ -19,9 +19,13 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 
-class PacketOutTimeUpdate(private val time: Long, dayTime: Long, doDaylightCycle: Boolean) : PlayPacket(0x58) {
+class PacketOutTimeUpdate(
+    private val time: Long,
+    dayTime: Long,
+    doDaylightCycle: Boolean
+) : Packet {
 
     private val dayTime = kotlin.run {
         var time = dayTime

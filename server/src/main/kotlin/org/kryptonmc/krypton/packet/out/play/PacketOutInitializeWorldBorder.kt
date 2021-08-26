@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarLong
 import org.kryptonmc.krypton.world.KryptonWorldBorder
 
-class PacketOutInitializeWorldBorder(private val border: KryptonWorldBorder) : PlayPacket(0x20) {
+class PacketOutInitializeWorldBorder(private val border: KryptonWorldBorder) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeDouble(border.center.x())

@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.play.DiggingStatus
-import org.kryptonmc.krypton.packet.state.PlayPacket
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
@@ -30,7 +30,7 @@ class PacketOutDiggingResponse(
     private val stateId: Int,
     private val status: DiggingStatus,
     private val successful: Boolean
-) : PlayPacket(0x08) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVector(position)

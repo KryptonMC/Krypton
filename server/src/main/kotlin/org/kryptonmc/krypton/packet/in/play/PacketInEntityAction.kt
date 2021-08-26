@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
 
-class PacketInEntityAction(buf: ByteBuf) : PlayPacket(0x1B) {
+class PacketInEntityAction(buf: ByteBuf) : Packet {
 
     val id = buf.readVarInt()
     val action = buf.readEnum<EntityAction>()

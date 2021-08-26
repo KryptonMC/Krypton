@@ -23,7 +23,7 @@ import org.kryptonmc.api.world.scoreboard.Option
 import org.kryptonmc.api.world.scoreboard.OptionApplication
 import org.kryptonmc.api.world.scoreboard.Team
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
@@ -36,7 +36,7 @@ class PacketOutTeams(
     private val team: Team,
     private val addedMembers: List<KryptonPlayer> = emptyList(), // only applies for add players
     private val removedMembers: List<KryptonPlayer> = emptyList() // only applies for remove players
-) : PlayPacket(0x55) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeString(team.name, 16)

@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeShort
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -29,7 +29,7 @@ class PacketOutEntityPosition(
     private val deltaY: Short,
     private val deltaZ: Short,
     private val onGround: Boolean
-) : PlayPacket(0x29) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

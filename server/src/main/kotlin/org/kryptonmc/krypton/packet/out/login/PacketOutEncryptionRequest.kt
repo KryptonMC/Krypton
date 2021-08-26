@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.login
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.LoginPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 import java.security.PublicKey
@@ -32,7 +32,7 @@ import java.security.PublicKey
 class PacketOutEncryptionRequest(
     private val publicKey: PublicKey,
     private val verifyToken: ByteArray
-) : LoginPacket(0x01) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeString("", 20)

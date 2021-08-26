@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVector
 
 class PacketOutSpawnPosition(
@@ -27,7 +27,7 @@ class PacketOutSpawnPosition(
     private val y: Int,
     private val z: Int,
     private val angle: Float = 0F
-) : PlayPacket(0x4B) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVector(x, y, z)

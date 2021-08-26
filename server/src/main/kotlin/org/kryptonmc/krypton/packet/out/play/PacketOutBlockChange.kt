@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
@@ -30,7 +30,7 @@ class PacketOutBlockChange(
     private val x: Int,
     private val y: Int,
     private val z: Int
-) : PlayPacket(0x0C) {
+) : Packet {
 
     constructor(block: Block, location: Vector3i) : this(block, location.x(), location.y(), location.z())
 

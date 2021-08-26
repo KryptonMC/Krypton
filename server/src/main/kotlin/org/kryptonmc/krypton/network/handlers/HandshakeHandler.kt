@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
 import org.kryptonmc.krypton.network.Session
-import org.kryptonmc.krypton.network.PacketState
+import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.network.data.LegacyForwardedData
 import org.kryptonmc.krypton.util.logger
 

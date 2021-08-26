@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
@@ -35,7 +35,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 class PacketOutPlayerInfo(
     private val action: PlayerAction,
     private val players: Collection<KryptonPlayer> = emptyList()
-) : PlayPacket(0x36) {
+) : Packet {
 
     constructor(action: PlayerAction, vararg players: KryptonPlayer) : this(action, players.toList())
 

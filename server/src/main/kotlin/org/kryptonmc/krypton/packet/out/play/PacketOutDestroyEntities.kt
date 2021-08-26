@@ -19,17 +19,12 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import it.unimi.dsi.fastutil.ints.IntArrayList
-import it.unimi.dsi.fastutil.ints.IntList
-import org.kryptonmc.krypton.packet.state.PlayPacket
-import org.kryptonmc.krypton.util.writeIntList
-import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.writeIntArray
 
-class PacketOutDestroyEntities(private val ids: IntList) : PlayPacket(0x39) {
-
-    constructor(vararg ids: Int) : this(IntArrayList(ids))
+class PacketOutDestroyEntities(private vararg val ids: Int) : Packet {
 
     override fun write(buf: ByteBuf) {
-        buf.writeIntList(ids)
+        buf.writeIntArray(ids)
     }
 }

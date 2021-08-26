@@ -19,14 +19,13 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.state.PlayPacket
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
 
 class PacketOutUpdateViewPosition(
     private val x: Int,
     private val z: Int
-) : PlayPacket(0x49) {
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(x)
