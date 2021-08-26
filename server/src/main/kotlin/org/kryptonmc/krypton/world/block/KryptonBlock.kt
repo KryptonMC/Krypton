@@ -97,6 +97,6 @@ class KryptonBlock(
             ).apply(it) { key, properties -> BlockLoader.fromKey(key)!!.copy(properties) }
         }
 
-        val STATES = IntHashBiMap<Block>().apply { BlockLoader.STATE_MAP.forEach { set(it.value, it.key) } }
+        val STATES = IntHashBiMap<Block>()
     }
 }

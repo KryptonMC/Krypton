@@ -33,8 +33,8 @@ import kotlin.math.max
 
 class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
 
-    private var storage = BitStorage(MINIMUM_PALETTE_SIZE, SIZE)
-    private var bits = MINIMUM_PALETTE_SIZE
+    private lateinit var storage: BitStorage
+    private var bits = 0
         set(value) {
             if (field == value) return
             field = value
@@ -51,6 +51,10 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
             }
             storage = BitStorage(field, SIZE)
         }
+
+    init {
+        bits = MINIMUM_PALETTE_SIZE
+    }
 
     @Synchronized
     fun getAndSet(x: Int, y: Int, z: Int, value: Block): Block {

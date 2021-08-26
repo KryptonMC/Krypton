@@ -39,7 +39,7 @@ object BlockLoader {
 
     private val KEY_MAP = mutableMapOf<String, KryptonBlock>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
-    val STATE_MAP = Int2ObjectOpenHashMap<KryptonBlock>()
+    private val STATE_MAP = Int2ObjectOpenHashMap<KryptonBlock>()
 
     private val LOGGER = logger<BlockLoader>()
     @JvmStatic @Volatile private var isLoaded = false
@@ -79,6 +79,7 @@ object BlockLoader {
             if (InternalRegistries.BLOCK.contains(Key.key(key))) return@forEach
             KryptonRegistryManager.register(InternalRegistries.BLOCK, key, defaultBlock)
         }
+        STATE_MAP.int2ObjectEntrySet().fastForEach { KryptonBlock.STATES[it.value] = it.intKey }
         isLoaded = true
     }
 

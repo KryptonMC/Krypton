@@ -58,17 +58,24 @@ class KryptonCLI : CliktCommand(
 ) {
 
     // Flags
-    private val version by option("-v", "--version").flag().help("Prints the version and exits")
-    private val configOnly by option("--init", "--config-only", "--init-settings").flag()
+    private val version by option("-v", "--version")
+        .flag()
+        .help("Prints the version and exits")
+    private val configOnly by option("--init", "--config-only", "--init-settings")
+        .flag()
         .help("Creates the config file and exits")
-    private val safeMode by option("-s", "--safe", "--safe-mode").flag().help("If set, only the built-in data pack is loaded")
 
     // Config options
-    private val ip by option().help("The IP to listen on")
-    private val port by option("-p", "--port").int().help("The port to bind to")
-    private val online by option("-o", "--online", "--online-mode").flag(default = true)
+    private val ip by option()
+        .help("The IP to listen on")
+    private val port by option("-p", "--port")
+        .int()
+        .help("The port to bind to")
+    private val online by option("-o", "--online", "--online-mode")
+        .flag(default = true)
         .help("Whether users should be authenticated with Mojang")
-    private val maxPlayers by option("-P", "--players", "--max-players").int()
+    private val maxPlayers by option("-P", "--players", "--max-players")
+        .int()
         .help("The maximum amount of players")
     private val motd by option("--motd", metavar = "COMPONENT")
         .convert { LegacyComponentSerializer.legacyAmpersand().deserialize(it) }
@@ -142,7 +149,9 @@ class KryptonCLI : CliktCommand(
         storageAccess.saveData(worldData)
         val reference = AtomicReference<KryptonServer>()
         val serverThread = Thread({ reference.get().start() }, "Server Thread").apply {
-            setUncaughtExceptionHandler { _, exception -> logger<KryptonServer>().error(exception) }
+            setUncaughtExceptionHandler { _, exception ->
+                logger<KryptonServer>().error("Caught an uncaught exception whilst ticking", exception)
+            }
         }
         val server = KryptonServer(
             storageAccess,
