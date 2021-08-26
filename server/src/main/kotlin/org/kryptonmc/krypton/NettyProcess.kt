@@ -35,7 +35,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.handler.timeout.ReadTimeoutHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.network.ChannelHandler
 import org.kryptonmc.krypton.network.netty.LegacyQueryHandler
 import org.kryptonmc.krypton.network.netty.PacketDecoder
@@ -80,9 +79,7 @@ class NettyProcess(private val server: KryptonServer) {
                 future.channel().closeFuture().syncUninterruptibly()
             }
         } catch (exception: IOException) {
-            LOGGER.error("-------------------------------------------------")
-            Messages.ERROR_BIND.info(LOGGER, server.config.server.port, exception)
-            LOGGER.error("-------------------------------------------------")
+            LOGGER.error("FAILED TO BIND TO PORT ${server.config.server.port}!", exception)
             server.stop()
         } finally {
             shutdown()

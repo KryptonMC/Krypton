@@ -27,7 +27,6 @@ import com.google.common.collect.Multimaps
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.scheduling.Task
 import org.kryptonmc.api.scheduling.TaskState
-import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.logger
@@ -105,7 +104,7 @@ class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Schedu
                     return@execute
                 }
                 val name = pluginManager.fromInstance(plugin)?.description?.name ?: "UNKNOWN"
-                Messages.SCHEDULE_ERROR.error(LOGGER, name, runnable)
+                LOGGER.error("Plugin $name generated an exception whilst trying to execute task $runnable!", exception)
             } finally {
                 if (period == 0L) finish()
                 currentTaskThread = null

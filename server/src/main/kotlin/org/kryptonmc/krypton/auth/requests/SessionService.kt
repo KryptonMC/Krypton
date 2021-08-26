@@ -22,7 +22,6 @@ import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
-import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.Encryption
 import org.kryptonmc.krypton.util.logger
 import java.math.BigInteger
@@ -39,6 +38,7 @@ import java.util.concurrent.TimeUnit
 object SessionService {
 
     private val SERVER_ID_BYTES = ByteArray(0)
+    private const val BASE_URL = "https://sessionserver.mojang.com/session/minecraft/hasJoined"
     private val LOGGER = logger<SessionService>()
 
     private val client = HttpClient.newHttpClient()
@@ -66,17 +66,17 @@ object SessionService {
         val serverId = shaDigest.hexDigest()
 
         val request = HttpRequest.newBuilder()
-            .uri(URI("https://sessionserver.mojang.com/session/minecraft/hasJoined?username=$username&serverId=$serverId&ip=$ip"))
+            .uri(URI("$BASE_URL?username=$username&serverId=$serverId&ip=$ip"))
             .build()
         val response = client.send(request, HttpResponse.BodyHandlers.ofString())
         if (response.statusCode() != 200) { // Ensures no content responses are also a failure.
             LOGGER.debug("Error authenticating $username! Code: ${response.statusCode()}, body: ${response.body()}")
-            Messages.AUTH.FAIL.error(LOGGER, username)
+            LOGGER.error("Failed to verify username $username!")
             throw AuthenticationException()
         }
 
         val profile = KryptonGameProfile.fromJson(response.body())
-        Messages.AUTH.SUCCESS.info(LOGGER, profile.name, profile.uuid)
+        LOGGER.info("UUID of player ${profile.name} is ${profile.uuid}.")
         profiles.put(profile.name, profile)
         return profile
     }

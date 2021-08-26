@@ -50,7 +50,7 @@ object TeleportCommand : InternalCommand {
                 })
             .then(argument<Sender, EntityQuery>("players", EntityArgument.players())
                 .executes {
-                    val sender = it.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                    val sender = it.source as? KryptonPlayer ?: return@executes 0
                     val players = it.entityArgument("players").getPlayers(sender)
                     if (players.size == 1) {
                         val player = players[0]
@@ -61,7 +61,7 @@ object TeleportCommand : InternalCommand {
                 }
                 .then(argument<Sender, EntityQuery>("target", EntityArgument.player())
                     .executes { context ->
-                        val sender = context.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                        val sender = context.source as? KryptonPlayer ?: return@executes 0
                         val players = context.entityArgument("players").getPlayers(sender)
                         val target = context.entityArgument("target").getPlayers(sender)[0]
                         players.forEach { teleport(it, target.location) }
@@ -70,7 +70,7 @@ object TeleportCommand : InternalCommand {
                     })
                 .then(argument<Sender, Coordinates>("location", VectorArgument(true))
                     .executes { context ->
-                        val sender = context.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                        val sender = context.source as? KryptonPlayer ?: return@executes 0
                         val players = context.entityArgument("players").getPlayers(sender)
                         val location = context.argument<Coordinates>("location")
                         players.forEach { teleport(it, location) }

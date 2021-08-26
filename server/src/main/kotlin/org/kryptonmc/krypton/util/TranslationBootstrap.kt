@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.locale
+package org.kryptonmc.krypton.util
 
 import com.google.gson.stream.JsonReader
 import net.kyori.adventure.key.Key

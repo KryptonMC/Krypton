@@ -46,7 +46,6 @@ import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
-import org.kryptonmc.krypton.locale.TranslationManager
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.nbt.CompoundTag
@@ -198,7 +197,7 @@ fun ByteBuf.readNBT(): CompoundTag {
 }
 
 fun ByteBuf.writeChat(component: Component) {
-    writeString(TranslationManager.render(component).toJsonString())
+    writeString(component.toJsonString())
 }
 
 fun ByteBuf.readItem(): KryptonItemStack {

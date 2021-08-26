@@ -32,7 +32,6 @@ import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.network.data.LegacyForwardedData
@@ -172,18 +171,18 @@ class LoginHandler(
     }
 
     private fun handlePluginResponse(packet: PacketInPluginResponse) {
-        if (!packet.isSuccessful) // Not successful, we don't care.
-        if (packet.messageId != velocityMessageId || server.config.proxy.mode != ForwardingMode.MODERN) return // Not Velocity, ignore.
-        if (packet.data.isEmpty()) { // For whatever reason, there was no data sent by Velocity.
+        if (!packet.isSuccessful) // Not successful, we don't care
+        if (packet.messageId != velocityMessageId || server.config.proxy.mode != ForwardingMode.MODERN) return // Not Velocity, ignore
+        if (packet.data.isEmpty()) { // For whatever reason, there was no data sent by Velocity
             LOGGER.error("Velocity sent no data in its login plugin response!")
             return
         }
 
-        // Verify integrity.
+        // Verify integrity
         val buffer = Unpooled.copiedBuffer(packet.data)
         val hasValidIntegrity = buffer.verifyVelocityIntegrity(forwardingSecret)
         if (!hasValidIntegrity) {
-            disconnect(Messages.VELOCITY.INVALID_RESPONSE())
+            disconnect(text("Response received from Velocity could not be verified!"))
             return
         }
 
@@ -195,7 +194,7 @@ class LoginHandler(
         val profile = KryptonGameProfile(data.uuid, data.username, data.properties)
         val player = KryptonPlayer(session, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port))
 
-        // Setup permissions for the player.
+        // Setup permissions for the player
         server.eventManager.fire(SetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS)).thenApplyAsync({
             val function = it.createFunction(player)
             player.permissionFunction = function
@@ -217,8 +216,11 @@ class LoginHandler(
     private fun verifyToken(expected: ByteArray, actual: ByteArray): Boolean {
         val decryptedActual = Encryption.decrypt(actual)
         if (!decryptedActual.contentEquals(expected)) {
-            Messages.NETWORK.LOGIN.FAIL_VERIFY_ERROR.error(LOGGER, name, expected.contentToString(), decryptedActual.contentToString())
-            disconnect(translatable("disconnect.loginFailedInfo", Messages.NETWORK.LOGIN.FAIL_VERIFY()))
+            LOGGER.error("Verify tokens for $name did not match! Their connection may have been intercepted.")
+            disconnect(translatable(
+                "disconnect.loginFailedInfo",
+                text("Verify tokens did not match! Your connection may have been intercepted.")
+            ))
             return false
         }
         return true

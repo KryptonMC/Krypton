@@ -29,7 +29,7 @@ import org.kryptonmc.api.event.server.SetupPermissionsEvent
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.toSectionText
-import org.kryptonmc.krypton.locale.TranslationBootstrap
+import org.kryptonmc.krypton.util.TranslationBootstrap
 import org.kryptonmc.krypton.util.logger
 import java.util.Locale
 

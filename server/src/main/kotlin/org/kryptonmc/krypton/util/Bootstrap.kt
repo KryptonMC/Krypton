@@ -42,7 +42,6 @@ import org.kryptonmc.krypton.entity.hanging.KryptonCanvases
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.item.meta.MetaFactory
-import org.kryptonmc.krypton.locale.TranslationBootstrap
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
 import org.kryptonmc.krypton.tags.BlockTags

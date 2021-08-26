@@ -26,7 +26,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.CommandExceptions
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument.Companion.players
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
@@ -45,7 +44,7 @@ object TitleCommand : InternalCommand {
                 .then(literal<Sender>("actionbar")
                     .then(argument<Sender, String>("message", string())
                         .executes { context ->
-                            val sender = context.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                            val sender = context.source as? KryptonPlayer ?: return@executes 0
                             val targets = context.entityArgument("targets").getPlayers(sender)
                             val message = context.argument<String>("message")
                             targets.forEach { it.sendActionBar(text(message)) }
@@ -60,7 +59,7 @@ object TitleCommand : InternalCommand {
                 ).then(literal<Sender>("title")
                     .then(argument<Sender, String>("message", string())
                         .executes { context ->
-                            val sender = context.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                            val sender = context.source as? KryptonPlayer ?: return@executes 0
                             val targets = context.entityArgument("targets").getPlayers(sender)
                             val message = context.argument<String>("message")
                             targets.forEach { it.sendTitle(text(message)) }
@@ -75,7 +74,7 @@ object TitleCommand : InternalCommand {
                 ).then(literal<Sender>("subtitle")
                     .then(argument<Sender, String>("message", string())
                         .executes { context ->
-                            val sender = context.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                            val sender = context.source as? KryptonPlayer ?: return@executes 0
                             val targets = context.entityArgument("targets").getPlayers(sender)
                             val message = context.argument<String>("message")
                             targets.forEach { it.sendSubtitle(text(message)) }
@@ -89,7 +88,7 @@ object TitleCommand : InternalCommand {
                         })
                 ).then(literal<Sender>("clear")
                     .executes { context ->
-                        val sender = context.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                        val sender = context.source as? KryptonPlayer ?: return@executes 0
                         val targets = context.entityArgument("targets").getPlayers(sender)
                         targets.forEach { it.clearTitle() }
                         val feedback = if (targets.size == 1) {
@@ -102,7 +101,7 @@ object TitleCommand : InternalCommand {
                     }
                 ).then(literal<Sender>("reset")
                     .executes { context ->
-                        val sender = context.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                        val sender = context.source as? KryptonPlayer ?: return@executes 0
                         val targets = context.entityArgument("targets").getPlayers(sender)
                         targets.forEach { it.resetTitle() }
                         val feedback = if (targets.size == 1) {
@@ -118,7 +117,7 @@ object TitleCommand : InternalCommand {
                         .then(argument<Sender, Int>("stay", integer())
                             .then(argument<Sender, Int>("fadeOut", integer())
                                 .executes { context ->
-                                    val sender = context.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                                    val sender = context.source as? KryptonPlayer ?: return@executes 0
                                     val targets = context.entityArgument("targets").getPlayers(sender)
                                     val fadeIn = context.argument<Int>("fadeIn")
                                     val stay = context.argument<Int>("stay")

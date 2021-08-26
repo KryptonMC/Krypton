@@ -36,10 +36,9 @@ import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.config.KryptonConfig
+import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.item.KryptonItemManager
-import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.locale.TranslationRepository
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.out.play.PacketOutDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
@@ -135,18 +134,16 @@ class KryptonServer(
     private var oversleepFactor = 0L
 
     fun start() {
-        Messages.START.INITIAL.info(LOGGER, config.server.ip, config.server.port)
+        LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
         val startTime = System.nanoTime()
 
         // Load the packets
         LOGGER.debug("Loading packets...")
         PacketRegistry.bootstrap()
 
-        // Register the commands and console translations, and schedule a refresh of the translation repository
-        // (query data.kryptonmc.org for translation metadata and download the new translations)
-        LOGGER.debug("Registering commands and translations...")
+        // Register the built-in commands
+        LOGGER.debug("Registering commands...")
         commandManager.registerBuiltins()
-        TranslationRepository.scheduleRefresh()
 
         //Create server config lists
         LOGGER.debug("Loading server config lists...")
@@ -161,11 +158,16 @@ class KryptonServer(
         System.setProperty("bstats.relocatecheck", "false") // Avoid relocating bStats since we want to expose it later
         KryptonMetrics.initialize(this, config.other.metrics)
 
-        // Warn about piracy being unsupported and then load plugins
-        if (!config.server.onlineMode) {
-            LOGGER.info("-----------------------------------------------------------------------------------")
-            Messages.PIRACY_WARNING.info(LOGGER)
-            LOGGER.info("-----------------------------------------------------------------------------------")
+        // Warn about piracy being unsupported if proxy forwarding is not enabled
+        if (!config.server.onlineMode && config.proxy.mode == ForwardingMode.NONE) {
+            LOGGER.warn("-----------------------------------------------------------------------------------")
+            LOGGER.warn("THIS SERVER IS IN OFFLINE MODE! NO ATTEMPTS WILL BE MADE TO AUTHENTICATE USERS!")
+            LOGGER.warn("While this may allow players without full Minecraft accounts to connect," +
+                    "it also allows hackers to connect with any username they choose! Beware!")
+            LOGGER.warn("Please beware that connections made to the server will not be encrypted, meaning hackers could " +
+                    "potentially intercept sensitive data!")
+            LOGGER.warn("To get rid of this message, change \"online-mode\" to true in the configuration file")
+            LOGGER.warn("-----------------------------------------------------------------------------------")
         }
 
         LOGGER.info("Preparing world ${config.world.name}...")
@@ -190,7 +192,7 @@ class KryptonServer(
         // Add the shutdown hook to stop the server
         Runtime.getRuntime().addShutdownHook(Thread(::stop, "Shutdown Handler").apply { isDaemon = false })
 
-        Messages.START.DONE.info(LOGGER, "%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9))
+        LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type \"help\" for help.")
 
         // Start up the console handler
         LOGGER.debug("Starting console handler")
@@ -206,7 +208,7 @@ class KryptonServer(
         while (isRunning) {
             val nextTickTime = System.currentTimeMillis() - lastTickTime
             if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15_000L) {
-                Messages.TICK_OVERLOAD_WARNING.warn(LOGGER, nextTickTime, nextTickTime / 50)
+                LOGGER.warn("Can't keep up! Running $nextTickTime ms (${nextTickTime / 50} ticks) behind!")
                 lastOverloadWarning = lastTickTime
             }
             // tick
@@ -228,19 +230,19 @@ class KryptonServer(
     }
 
     private fun loadPlugins() {
-        Messages.PLUGIN.LOAD.INITIAL.info(LOGGER)
+        LOGGER.info("Loading plugins...")
 
         try {
             val pluginPath = Path.of("plugins")
             if (!pluginPath.exists()) pluginPath.tryCreateDirectory()
             if (!pluginPath.isDirectory()) {
-                Messages.PLUGIN.NOT_DIRECTORY.warn(LOGGER, pluginPath)
+                LOGGER.warn("Plugin path $pluginPath is not a directory! Plugins will not be loaded!")
                 return
             }
 
             pluginManager.loadPlugins(pluginPath)
         } catch (exception: Exception) {
-            Messages.PLUGIN.LOAD.FAIL.error(LOGGER, exception)
+            LOGGER.error("Failed to load plugins!", exception)
         }
 
         pluginManager.plugins.forEach {
@@ -252,7 +254,7 @@ class KryptonServer(
             }
         }
 
-        Messages.PLUGIN.LOAD.DONE.info(LOGGER, pluginManager.plugins.size)
+        LOGGER.info("Finished plugin loading! Loaded ${pluginManager.plugins.size} plugins.")
     }
 
     private fun tick() {
@@ -273,9 +275,9 @@ class KryptonServer(
             world.tick()
         }
         if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
-            Messages.AUTOSAVE.STARTED.info(LOGGER)
+            LOGGER.info("Auto save started.")
             worldManager.saveAll()
-            Messages.AUTOSAVE.FINISHED.info(LOGGER)
+            LOGGER.info("Auto save finished.")
         }
     }
 
@@ -316,27 +318,27 @@ class KryptonServer(
     fun stop(halt: Boolean = true) {
         if (!isRunning) return // Ensure we cannot accidentally run this twice
 
-        // stop server and shut down session manager (disconnecting all players)
-        Messages.STOP.INITIAL.info(LOGGER)
+        // Stop server and shut down session manager (disconnecting all players)
+        LOGGER.info("Starting shutdown for Krypton version ${KryptonPlatform.version}...")
         isRunning = false
         playerManager.disconnectAll()
 
-        // save data
-        Messages.STOP.SAVE.info(LOGGER)
+        // Save data
+        LOGGER.info("Saving player, world, and region data...")
         worldManager.saveAll()
         dataAccess.close()
         playerManager.saveAll()
 
-        // shut down plugins and unregister listeners
-        Messages.STOP.PLUGINS.info(LOGGER)
+        // Shut down plugins and unregister listeners
+        LOGGER.info("Shutting down plugins and unregistering listeners...")
         eventManager.fireAndForgetSync(ServerStopEvent())
         eventManager.shutdown()
 
-        // shut down scheduler
+        // Shut down scheduler
         scheduler.shutdown()
-        Messages.STOP.GOODBYE.info(LOGGER)
+        LOGGER.info("Goodbye")
 
-        // manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
+        // Manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
         LogManager.shutdown()
 
         // Finally, halt the JVM if we should (avoids shutdown hooks running)
@@ -348,10 +350,10 @@ class KryptonServer(
         val split = config.other.restartScript.split(" ")
         if (split.isNotEmpty()) {
             if (!Path.of(split[0]).isRegularFile()) {
-                Messages.RESTART.NO_SCRIPT.print(split[0])
+                println("Unable to find restart script ${split[0]}! Refusing to restart!")
                 Runtime.getRuntime().halt(0)
             }
-            Messages.RESTART.ATTEMPT.print(split[0])
+            println("Attempting to restart the server with script ${split[0]}...")
             val os = System.getProperty("os.name").lowercase()
             Runtime.getRuntime().exec((if ("win" in os) "cmd /c start " else "sh ") + config.other.restartScript)
         }

@@ -27,7 +27,6 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.space.Position
-import org.kryptonmc.krypton.command.CommandExceptions
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.SuggestionProviders
 import org.kryptonmc.krypton.command.arguments.NBTCompoundArgument
@@ -54,17 +53,17 @@ object SummonCommand : InternalCommand {
             .then(argument<Sender, Key>("entity", SummonEntityArgument())
                 .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                 .executes {
-                    val sender = it.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                    val sender = it.source as? KryptonPlayer ?: return@executes 0
                     spawnEntity(sender, it.summonableEntity("entity"), sender.location, CompoundTag())
                     1
                 }.then(argument<Sender, Coordinates>("position", VectorArgument())
                     .executes {
-                        val sender = it.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                        val sender = it.source as? KryptonPlayer ?: return@executes 0
                         spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), CompoundTag())
                         1
                     }.then(argument<Sender, CompoundTag>("nbt", NBTCompoundArgument())
                         .executes {
-                            val sender = it.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                            val sender = it.source as? KryptonPlayer ?: return@executes 0
                             spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), it.argument<CompoundTag>("nbt"))
                             1
                         })))

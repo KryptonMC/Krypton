@@ -25,7 +25,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.CommandExceptions
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
@@ -43,7 +42,7 @@ object MessageCommand : InternalCommand {
             .then(argument<Sender, EntityQuery>("player", EntityArgument.player())
                 .then(argument<Sender, String>("message", string())
                     .executes {
-                        val source = it.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                        val source = it.source as? KryptonPlayer ?: return@executes 0
                         val player = it.entityArgument("player").getPlayers(source)[0]
                         val message = it.argument<String>("message")
                         source.sendMessage(translatable("commands.message.display.outgoing", text(player.name), text(message)))

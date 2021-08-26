@@ -25,7 +25,6 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.CommandExceptions
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
@@ -38,7 +37,7 @@ object VersionCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val node = dispatcher.register(literal<Sender>("version")
             .executes {
-                val sender = it.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                val sender = it.source as? KryptonPlayer ?: return@executes 0
                 val version = sender.server.platform.version
                 val minecraftVersion = sender.server.platform.minecraftVersion
                 val pluginsLoaded = sender.server.pluginManager.plugins.size

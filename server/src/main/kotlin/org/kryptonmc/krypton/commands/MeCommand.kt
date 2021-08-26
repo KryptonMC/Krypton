@@ -25,7 +25,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.CommandExceptions
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -38,7 +37,7 @@ object MeCommand : InternalCommand {
             .permission("krypton.command.list", 1)
             .then(argument<Sender, String>("action", string())
                 .executes {
-                    val sender = it.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                    val sender = it.source as? KryptonPlayer ?: return@executes 0
                     sender.server.sendMessage(translatable("chat.type.emote", text(sender.name), text(it.argument<String>("action"))))
                     1
                 })

@@ -27,7 +27,6 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.world.Gamemode
-import org.kryptonmc.krypton.command.CommandExceptions
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
@@ -74,14 +73,14 @@ object GamemodeCommand : InternalCommand {
     }
 
     private fun gameModeArgument(context: CommandContext<Sender>, gamemode: Gamemode): Int {
-        val sender = context.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+        val sender = context.source as? KryptonPlayer ?: return 0
         updateGameMode(listOf(sender), gamemode, sender)
         return 1
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun targetArgument(context: CommandContext<Sender>, gamemode: Gamemode): Int {
-        val sender = context.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+        val sender = context.source as? KryptonPlayer ?: return 0
         val entities = context.entityArgument("targets").getPlayers(sender)
         updateGameMode(entities, gamemode, sender)
         return 1

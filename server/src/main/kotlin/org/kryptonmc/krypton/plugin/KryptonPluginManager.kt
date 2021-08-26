@@ -27,7 +27,6 @@ import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.module.GlobalModule
 import org.kryptonmc.krypton.module.PluginModule
 import org.kryptonmc.krypton.plugin.loader.LoadedPluginDescription
@@ -53,7 +52,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
             try {
                 found += PluginLoader.loadDescription(it)
             } catch (exception: Exception) {
-                Messages.PLUGIN.LOAD.ERROR.UNABLE.error(LOGGER, it, exception)
+                LOGGER.error("Failed to load plugin at $it!", exception)
             }
         })
         if (found.isEmpty()) return // no plugins
@@ -67,7 +66,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
             // Verify dependencies
             candidate.dependencies.forEach {
                 if (it.isOptional || it.id in loadedPluginsById) return@forEach
-                Messages.PLUGIN.LOAD.ERROR.MISSING_DEPENDENCY.error(LOGGER, candidate.id, it.id)
+                LOGGER.error("Failed to load plugin ${candidate.id} due to missing dependency on plugin ${it.id}!")
                 return@pluginLoad
             }
 
@@ -77,7 +76,7 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
                 pluginContainers[container] = PluginModule(description, container, directory)
                 loadedPluginsById += description.id
             } catch (exception: Exception) {
-                Messages.PLUGIN.LOAD.ERROR.CREATE_MODULE.error(LOGGER, candidate.id, exception)
+                LOGGER.error("Failed to create Guice module for plugin ${candidate.id}!", exception)
             }
         }
         val commonModule = GlobalModule(server, pluginContainers.keys)
@@ -88,11 +87,11 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
             try {
                 PluginLoader.createPlugin(container, module, commonModule)
             } catch (exception: Exception) {
-                Messages.PLUGIN.LOAD.ERROR.CREATE_PLUGIN.error(LOGGER, description.id, exception)
+                LOGGER.error("Attempting to load plugin ${description.id} generated an exception!", exception)
                 return@forEach
             }
 
-            Messages.PLUGIN.LOAD.SUCCESS.info(LOGGER, description.id, description.version, description.authors.joinToString())
+            LOGGER.info("Successfully loaded plugin ${description.id} version ${description.version} by ${description.authors.joinToString()}")
             registerPlugin(container)
         }
     }

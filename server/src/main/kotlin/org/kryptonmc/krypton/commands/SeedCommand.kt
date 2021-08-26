@@ -35,7 +35,7 @@ object SeedCommand : InternalCommand {
         dispatcher.register(literal<Sender>("seed")
             .permission("krypton.command.seed", 2)
             .executes {
-                val sender = it.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                val sender = it.source as? KryptonPlayer ?: return@executes 0
                 val text = text("[").append(text(sender.world.seed, TextColor.color(5635925))).append(text("]"))
                 sender.sendMessage(translatable("commands.seed.success", text))
                 1

@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.region
 
-import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -52,7 +51,7 @@ import kotlin.io.path.fileSize
  * me, Callum Seabrook.
  */
 class RegionFile(
-    path: Path,
+    private val path: Path,
     synchronizeWrites: Boolean,
     private val externalDirectory: Path,
     private val compression: RegionFileCompression
@@ -75,7 +74,7 @@ class RegionFile(
 
         val first = channel.read(header, 0L)
         if (first != -1) {
-            if (first != 8192) Messages.REGION.TRUNCATED.warn(LOGGER, path, first)
+            if (first != 8192) LOGGER.error("Region file $path has truncated header! Expected 8192 bytes, was $first")
             for (i in 0 until 1024) {
                 val offset = offsets[i]
                 if (offset == 0) continue
@@ -83,17 +82,17 @@ class RegionFile(
                 val sectorNumber = offset.sectorNumber
                 val sectorCount = offset.sectorCount
                 if (sectorNumber < 2) {
-                    Messages.REGION.SECTOR.OVERLAP.warn(LOGGER, path, i, sectorNumber)
+                    LOGGER.error("Region file $path has an invalid sector at index $i! Sector $sectorNumber overlaps with header!")
                     offsets[i] = 0
                     continue
                 }
                 if (sectorCount == 0) {
-                    Messages.REGION.SECTOR.SIZE.warn(LOGGER, path, i)
+                    LOGGER.error("Region file $path has an invalid sector at index $i! Sector count was less than 1!")
                     offsets[i] = 0
                     continue
                 }
                 if (sectorNumber * 4096L > path.fileSize()) {
-                    Messages.REGION.SECTOR.OUT_OF_BOUNDS.warn(LOGGER, path, i, sectorNumber)
+                    LOGGER.error("Region file $path has an invalid sector at index $i! Sector $sectorNumber is out of bounds!")
                     offsets[i] = 0
                     continue
                 }
@@ -122,28 +121,28 @@ class RegionFile(
         buffer.flip()
 
         if (buffer.remaining() < 5) {
-            Messages.REGION.CHUNK.TRUNCATED.error(LOGGER, position, size, buffer.remaining())
+            LOGGER.error("Chunk at $position in region file $path has truncated header! Expected $size, but was ${buffer.remaining()}!")
             return null
         }
 
         val length = buffer.int
         val compressionType = buffer.get()
         if (length == 0) {
-            Messages.REGION.CHUNK.NO_STREAM.warn(LOGGER, position)
+            LOGGER.error("Chunk at $position in region file $path is allocated, but has no stream!")
             return null
         }
 
         val dataLength = length - 1
         if (compressionType.isExternalStreamChunk) {
-            if (dataLength != 0) Messages.REGION.CHUNK.INTERNAL_EXTERNAL.warn(LOGGER)
+            if (dataLength != 0) LOGGER.error("Chunk at $position in region file $path has both internal and external streams!")
             return createExternalChunkInputStream(position, compressionType.externalChunkVersion)
         }
         if (dataLength > buffer.remaining()) {
-            Messages.REGION.CHUNK.STREAM_TRUNCATED.error(LOGGER, position, dataLength, buffer.remaining())
+            LOGGER.error("Chunk at $position in region file $path has a truncated stream! Expected $dataLength, but was ${buffer.remaining()}!")
             return null
         }
         if (dataLength < 0) {
-            Messages.REGION.CHUNK.NEGATIVE.error(LOGGER, length, position)
+            LOGGER.error("Chunk at $position in region file $path has a negative declared size!")
             return null
         }
         return createChunkInputStream(position, compressionType, ByteArrayInputStream(buffer.array(), buffer.position(), dataLength))
@@ -177,7 +176,7 @@ class RegionFile(
 
         if (requiredSectors >= 256) {
             val path = externalDirectory.resolve("c.${position.x}.${position.z}.mcc")
-            Messages.REGION.CHUNK.EXTERNAL.SAVE.warn(LOGGER, position, length, path)
+            LOGGER.warn("Saving oversized chunk at $position in file $path, due to it being $length bytes.")
             requiredSectors = 1
             sectors = usedSectors.allocate(length)
             action = writeExternal(path, buffer)
@@ -188,6 +187,7 @@ class RegionFile(
             action = { externalDirectory.resolve("c.${position.x}.${position.z}.mcc").deleteIfExists() }
             channel.write(buffer, sectors * 4096L)
         }
+
         val timestamp = (Instant.now().toEpochMilli() / 1000).toInt()
         offsets[offsetIndex] = sectors shl 8 or requiredSectors
         timestamps[offsetIndex] = timestamp
@@ -199,7 +199,7 @@ class RegionFile(
     private fun createExternalChunkInputStream(position: ChunkPosition, compressionType: Byte): DataInputStream? {
         val path = externalDirectory.resolve("c.${position.x}.${position.z}.mcc")
         if (!path.isRegularFile()) {
-            Messages.REGION.CHUNK.EXTERNAL.NOT_FILE.error(LOGGER, path)
+            LOGGER.error("External path $path for chunk at $position is not a file!")
             return null
         }
         return createChunkInputStream(position, compressionType, path.inputStream())
@@ -208,7 +208,7 @@ class RegionFile(
     private fun createChunkInputStream(position: ChunkPosition, compressionType: Byte, input: InputStream): DataInputStream? {
         val compression = RegionFileCompression.fromId(compressionType)
         if (compression == null) {
-            Messages.REGION.CHUNK.INVALID_COMPRESSION_TYPE.error(LOGGER, position, compressionType)
+            LOGGER.error("Chunk at $position in region file $path has an invalid compression type! Type: $compressionType")
             return null
         }
         return DataInputStream(BufferedInputStream(compression.decompress(input)))
@@ -241,12 +241,12 @@ class RegionFile(
         }
     }
 
-    fun flush() = channel.force(true)
-
-    override fun close() = try {
-        padToFullSector()
-    } finally {
-        channel.use { it.force(true) }
+    override fun close() {
+        try {
+            padToFullSector()
+        } finally {
+            channel.use { it.force(true) }
+        }
     }
 
     private inner class ChunkBuffer(private val position: ChunkPosition) : ByteArrayOutputStream(8096) {

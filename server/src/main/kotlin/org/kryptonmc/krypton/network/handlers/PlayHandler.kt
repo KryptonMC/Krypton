@@ -36,7 +36,6 @@ import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.play.DiggingStatus
 import org.kryptonmc.krypton.packet.`in`.play.EntityAction
@@ -211,7 +210,7 @@ class PlayHandler(
 
     private fun handleHeldItemChange(packet: PacketInChangeHeldItem) {
         if (packet.slot !in 0..8) {
-            Messages.NETWORK.INVALID_HELD_SLOT.warn(LOGGER, player.name)
+            LOGGER.warn("${player.name} tried to change their held item slot to an invalid value!")
             return
         }
         player.inventory.heldSlot = packet.slot.toInt()

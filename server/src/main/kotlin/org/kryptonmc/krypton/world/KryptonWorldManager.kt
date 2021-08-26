@@ -28,7 +28,6 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.locale.Messages
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.util.ChunkProgressListener
@@ -90,14 +89,17 @@ class KryptonWorldManager(
         val generator = server.worldData.worldGenerationSettings.dimensions[ResourceKey.of(InternalResourceKeys.DIMENSION, key)]?.generator
             ?: return CompletableFuture.failedFuture(IllegalStateException("No generator found for given key $key!"))
         val defaultData = server.worldData
-        Messages.WORLD.LOAD.info(LOGGER, key.asString())
+
+        LOGGER.info("Loading world ${key.asString()}...")
         val folderName = key.storageFolder()
         val isSubWorld = folderName == "DIM-1" || folderName == "DIM1"
+
         val storage = try {
             WorldDataStorage(if (isSubWorld) worldFolder else customWorldFolder).createAccess(if (isSubWorld) folderName else key.namespace() + File.separator + key.value())
         } catch (exception: IOException) {
             return CompletableFuture.failedFuture(RuntimeException("Failed to create world data for world $key!", exception))
         }
+
         return CompletableFuture.supplyAsync({
             val worldData = storage.loadData(NBTOps, defaultData.dataPackConfig) ?: kotlin.run {
                 val gamemode = server.config.world.gamemode
@@ -106,6 +108,7 @@ class KryptonWorldManager(
                 val rules = KryptonGameRuleHolder()
                 PrimaryWorldData(folderName, gamemode, difficulty, hardcore, rules, defaultData.dataPackConfig, defaultData.worldGenerationSettings)
             }
+
             worldData.setModdedInfo(KryptonPlatform.name, true)
             val isDebug = worldData.worldGenerationSettings.isDebug
             val seed = Hashing.sha256().hashLong(worldData.worldGenerationSettings.seed).asLong()

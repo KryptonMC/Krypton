@@ -27,7 +27,6 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.command.CommandExceptions
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -40,13 +39,13 @@ object GameruleCommand : InternalCommand {
         val command = literal<Sender>("gamerule").permission("krypton.command.gamerule", 2)
         Registries.GAMERULES.values.forEach { rule ->
             val gameRule = literal<Sender>(rule.name).executes {
-                val sender = it.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                val sender = it.source as? KryptonPlayer ?: return@executes 0
                 sender.sendMessage(translatable("commands.gamerule.query", text(rule.name), text(sender.world.gameRules[rule].toString())))
                 1
             }
             if (rule.default is Boolean) {
                 gameRule.then(argument<Sender, Boolean>("value", BoolArgumentType.bool()).executes {
-                    val sender = it.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                    val sender = it.source as? KryptonPlayer ?: return@executes 0
                     val value = it.argument<Boolean>("value")
                     sender.world.gameRules[rule] = value
                     sender.sendMessage(translatable("commands.gamerule.set", text(rule.name), text(value.toString())))
@@ -54,7 +53,7 @@ object GameruleCommand : InternalCommand {
                 })
             } else if (rule.default is Int) {
                 gameRule.then(argument<Sender, Int>("value", IntegerArgumentType.integer()).executes {
-                    val sender = it.source as? KryptonPlayer ?: throw CommandExceptions.MUST_BE_PLAYER.create()
+                    val sender = it.source as? KryptonPlayer ?: return@executes 0
                     val value = it.argument<Int>("value")
                     sender.world.gameRules[rule] = value
                     sender.sendMessage(translatable("commands.gamerule.set", text(rule.name), text(value.toString())))

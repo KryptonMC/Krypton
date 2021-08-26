@@ -20,11 +20,11 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import net.kyori.adventure.text.Component.text
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.locale.Messages
 
 object RestartCommand : InternalCommand {
 
@@ -33,7 +33,7 @@ object RestartCommand : InternalCommand {
             .permission("krypton.command.restart", 4)
             .executes {
                 val server = it.source.server as? KryptonServer ?: return@executes 0
-                Messages.COMMANDS.RESTART.send(it.source)
+                it.source.sendMessage(text("Attempting to restart Krypton..."))
                 server.restart()
                 1
             })

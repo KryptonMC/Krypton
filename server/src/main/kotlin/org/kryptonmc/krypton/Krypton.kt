@@ -29,8 +29,6 @@ import com.github.ajalt.clikt.parameters.types.path
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.config.KryptonConfig
-import org.kryptonmc.krypton.locale.Messages
-import org.kryptonmc.krypton.locale.TranslationManager
 import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
@@ -40,12 +38,7 @@ import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.storage.WorldDataStorage
 import java.nio.file.Path
-import java.util.Locale
 import java.util.concurrent.atomic.AtomicReference
-
-// max memory in megabytes (bytes / 1024 / 1024)
-private val MAX_MEMORY = Runtime.getRuntime().maxMemory() / 1024L / 1024L
-private const val MEMORY_WARNING_THRESHOLD = 512
 
 fun main(args: Array<String>) = KryptonCLI().main(args)
 
@@ -97,23 +90,14 @@ class KryptonCLI : CliktCommand(
         .path(canBeDir = false, canBeSymlink = false, mustBeReadable = true, mustBeWritable = true)
         .default(Path.of("usercache.json"))
 
-    // Other settings
-    private val locale by option("-l", "--locale").convert {
-        val split = it.split("[_-]".toRegex())
-        if (split.isEmpty()) return@convert Locale.ENGLISH
-        if (split.size == 2) return@convert Locale(split[0], split[1])
-        Locale(split[0])
-    }.default(Locale.ENGLISH)
-
     override fun run() {
-        TranslationManager.reload(locale)
         if (version) {
-            Messages.VERSION_INFO.print(KryptonPlatform.version, KryptonPlatform.minecraftVersion)
+            println("Krypton version ${KryptonPlatform.version} for Minecraft ${KryptonPlatform.minecraftVersion}")
             return
         }
+
         val logger = logger("Krypton")
-        Messages.LOAD.info(logger, KryptonPlatform.version, KryptonPlatform.minecraftVersion)
-        if (MAX_MEMORY < MEMORY_WARNING_THRESHOLD) Messages.LOAD_LOW_MEMORY.warn(logger, MEMORY_WARNING_THRESHOLD.toString(), KryptonPlatform.version)
+        logger.info("Starting Krypton server version ${KryptonPlatform.version} for Minecraft ${KryptonPlatform.minecraftVersion}...")
 
         // Run the bootstrap
         Bootstrap.preload()
