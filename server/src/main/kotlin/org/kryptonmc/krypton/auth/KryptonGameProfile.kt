@@ -22,13 +22,14 @@ import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
 import java.util.UUID
 
 data class KryptonGameProfile(
     override val uuid: UUID,
     override val name: String,
-    override val properties: List<KryptonProfileProperty>
+    override val properties: List<ProfileProperty>
 ) : GameProfile {
 
     override fun toString() = "GameProfile(name=$name,uuid=$uuid)"

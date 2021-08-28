@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.scheduling
 
-import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
 /**
@@ -17,22 +16,16 @@ import java.util.concurrent.TimeUnit
 interface Scheduler {
 
     /**
-     * The backing executor for this [Scheduler]. Don't use this unless you
-     * really need to.
-     */
-    val executor: Executor
-
-    /**
-     * Run the given [task] asynchronously once with no delay.
+     * Runs the given [task] asynchronously once with no delay.
      *
      * @param plugin the plugin that requested to run the task
      * @param task the task to be ran
      * @return a scheduled [Task] that can be [cancelled][Task.cancel]
      */
-    fun run(plugin: Any, task: Runnable): Task
+    fun run(plugin: Any, task: TaskRunnable): Task
 
     /**
-     * Schedule the given [task] asynchronously once with the given [delay]
+     * Schedules the given [task] asynchronously once with the given [delay]
      * in the given [unit] of time.
      *
      * @param plugin the plugin that requested to run the task
@@ -41,10 +34,10 @@ interface Scheduler {
      * @param task the task to be ran
      * @return a scheduled [Task] that can be [cancelled][Task.cancel]
      */
-    fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: Runnable): Task
+    fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: TaskRunnable): Task
 
     /**
-     * Schedule the given [task] asynchronously repeatedly, with a [period] in between each
+     * Schedules the given [task] asynchronously repeatedly, with a [period] in between each
      * execution of the task, and starting after the given [delay], both in the given [unit]
      * of time.
      *
@@ -55,5 +48,5 @@ interface Scheduler {
      * @param task the task to be ran
      * @return a scheduled [Task] that can be [cancelled][Task.cancel]
      */
-    fun schedule(plugin: Any, delay: Long, period: Long, unit: TimeUnit, task: Runnable): Task
+    fun schedule(plugin: Any, delay: Long, period: Long, unit: TimeUnit, task: TaskRunnable): Task
 }

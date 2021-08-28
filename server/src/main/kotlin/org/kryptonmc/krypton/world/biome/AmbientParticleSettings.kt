@@ -20,11 +20,11 @@ package org.kryptonmc.krypton.world.biome
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.api.effect.particle.Particle
+import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.krypton.util.Codecs
 
 class AmbientParticleSettings(
-    val particle: Particle,
+    val particle: ParticleType,
     val probability: Float
 ) {
 

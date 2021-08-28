@@ -45,6 +45,6 @@ interface SimpleCommandMeta : CommandMeta {
          * @return a new builder
          */
         @JvmStatic
-        fun builder(name: String) = COMMAND_META_FACTORY.simpleBuilder(name)
+        fun builder(name: String) = CommandMeta.FACTORY.simpleBuilder(name)
     }
 }

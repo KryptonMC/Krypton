@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture
 interface WorldManager {
 
     /**
-     * The server this [WorldManager] is bound to.
+     * The server this world manager is bound to.
      */
     val server: Server
 
@@ -30,15 +30,15 @@ interface WorldManager {
     val worlds: Map<ResourceKey<World>, World>
 
     /**
-     * The default world for this [Server].
+     * The default world for this server.
      *
      * What the default world is will be defined by the implementation.
      */
     val default: World
 
     /**
-     * Gets the loaded world with the given resource [key], or null if there is
-     * no world loaded with the given resource [key].
+     * Gets the loaded world with the given resource [key], or null if there is no
+     * world loaded with the given resource [key].
      *
      * @param key the resource key
      * @return the loaded world with the key, or null if not present
@@ -46,11 +46,11 @@ interface WorldManager {
     operator fun get(key: Key): World?
 
     /**
-     * Returns true if there is currently a world loaded with the given [key],
-     * or false otherwise.
+     * Returns true if there is currently a world loaded with the given [key], or
+     * false otherwise.
      *
      * @param key the resource key for the world
-     * @return true if there is a world loaded with the given [key], false otherwise
+     * @return true if there is a world loaded with the given key, false otherwise
      */
     operator fun contains(key: Key): Boolean
 
@@ -58,8 +58,8 @@ interface WorldManager {
      * Loads a world by its resource key.
      *
      * @param key the resource key for the world
-     * @return a future representing the result of loading the world with the
-     * specified [key]
+     * @return a future representing the result of loading the world with the given
+     * key
      */
     fun load(key: Key): CompletableFuture<out World>
 

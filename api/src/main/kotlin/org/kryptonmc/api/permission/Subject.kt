@@ -34,7 +34,7 @@ fun interface Subject : PermissionChecker {
      * @param permission the permission
      * @return true if this subject has the permission, false otherwise
      */
-    fun hasPermission(permission: String) = getPermissionValue(permission).toBoolean()
+    fun hasPermission(permission: String) = getPermissionValue(permission) == TriState.TRUE
 
     override fun value(permission: String) = getPermissionValue(permission)
 }

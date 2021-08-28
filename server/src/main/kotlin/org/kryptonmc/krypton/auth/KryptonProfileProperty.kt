@@ -29,7 +29,7 @@ data class KryptonProfileProperty(
     override val signature: String?
 ) : ProfileProperty {
 
-    companion object : TypeAdapter<KryptonProfileProperty>() {
+    companion object : TypeAdapter<ProfileProperty>() {
 
         override fun read(reader: JsonReader): KryptonProfileProperty? {
             reader.beginObject()
@@ -50,7 +50,7 @@ data class KryptonProfileProperty(
             return KryptonProfileProperty(name, value, signature)
         }
 
-        override fun write(writer: JsonWriter, value: KryptonProfileProperty) {
+        override fun write(writer: JsonWriter, value: ProfileProperty) {
             writer.beginObject()
             writer.name("name")
             writer.value(value.name)

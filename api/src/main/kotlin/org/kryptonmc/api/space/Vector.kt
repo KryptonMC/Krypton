@@ -36,12 +36,10 @@ class Vector(x: Double, y: Double, z: Double) : AbstractPosition<Vector>(x, y, z
     constructor(x: Float, y: Float, z: Float) : this(x.toDouble(), y.toDouble(), z.toDouble())
 
     /**
-     * Convert this [Vector] to a [Location] with the specified
-     * [world], [pitch] and [yaw].
+     * Convert this [Vector] to a [Location] with the given [pitch] and [yaw].
      *
-     * @param world the world of the new [Location]
-     * @param yaw the yaw of the new [Location]
-     * @param pitch the pitch of the new [Location]
+     * @param yaw the yaw
+     * @param pitch the pitch
      * @return the new location from this vector
      */
     @Contract("_ -> new", pure = true)
@@ -85,8 +83,3 @@ class Vector(x: Double, y: Double, z: Double) : AbstractPosition<Vector>(x, y, z
         fun random() = Vector(Random.nextDouble(), Random.nextDouble(), Random.nextDouble())
     }
 }
-
-/**
- * Square a double
- */
-fun Double.square() = this * this

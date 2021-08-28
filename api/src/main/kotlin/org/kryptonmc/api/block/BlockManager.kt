@@ -36,7 +36,7 @@ interface BlockManager {
      * @param key the key
      * @return the handler for the key, if present
      */
-    fun handler(key: Key): BlockHandler? = handler(key.asString())
+    fun handler(key: Key): BlockHandler?
 
     /**
      * Gets the handler for the given [block], or returns null if there is no
@@ -45,7 +45,7 @@ interface BlockManager {
      * @param block the block
      * @return the handler for the block, if present
      */
-    fun handler(block: Block): BlockHandler? = handler(block.key.asString())
+    fun handler(block: Block): BlockHandler?
 
     /**
      * Registers the given [handler] for the given [key].
@@ -61,7 +61,7 @@ interface BlockManager {
      * @param key the key
      * @param handler the handler
      */
-    fun register(key: Key, handler: BlockHandler) = register(key.asString(), handler)
+    fun register(key: Key, handler: BlockHandler)
 
     /**
      * Registers the given [handler] for the given [block].
@@ -69,5 +69,5 @@ interface BlockManager {
      * @param block the block
      * @param handler the handler
      */
-    fun register(block: Block, handler: BlockHandler) = register(block.key.asString(), handler)
+    fun register(block: Block, handler: BlockHandler)
 }

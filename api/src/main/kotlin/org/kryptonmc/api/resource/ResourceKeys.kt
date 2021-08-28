@@ -10,7 +10,7 @@ package org.kryptonmc.api.resource
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.effect.particle.Particle
+import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.attribute.AttributeType
@@ -38,11 +38,11 @@ object ResourceKeys {
     @JvmField val PARENT = minecraft<Registry<out Any>>("root")
 
     /**
-     * Built-in vanilla registries
+     * Built-in vanilla registries.
      */
     @JvmField val SOUND_EVENT = minecraft<SoundEvent>("sound_event")
     @JvmField val ENTITY_TYPE = minecraft<EntityType<*>>("entity_type")
-    @JvmField val PARTICLE_TYPE = minecraft<Particle>("particle_type")
+    @JvmField val PARTICLE_TYPE = minecraft<ParticleType>("particle_type")
     @JvmField val BLOCK = minecraft<Block>("block")
     @JvmField val ITEM = minecraft<ItemType>("item")
     @JvmField val DIMENSION = minecraft<World>("dimension")
@@ -54,7 +54,7 @@ object ResourceKeys {
     @JvmField val FLUID = minecraft<Fluid>("fluid")
 
     /**
-     * Custom built-in registries
+     * Custom built-in registries.
      */
     @JvmField val GAMERULES = krypton<GameRule<Any>>("gamerules")
     @JvmField val MODIFIER_OPERATIONS = krypton<ModifierOperation>("attribute_modifier_operations")

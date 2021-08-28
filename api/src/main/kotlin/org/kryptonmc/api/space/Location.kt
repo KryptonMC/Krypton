@@ -16,8 +16,6 @@ import kotlin.math.abs
  * A [Location] is a three-dimensional space in a world. That is, it possesses
  * an x, y and z coordinate, as well as angles of rotation in [pitch] and [yaw].
  *
- * As opposed to a [Vector], a [Location] is bound to a world.
- *
  * @see [Vector]
  */
 class Location @JvmOverloads constructor(

@@ -6,13 +6,15 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.util
-
-import net.kyori.adventure.key.Key.key
+package org.kryptonmc.api.world.scoreboard
 
 /**
- * Convert this string to a [net.kyori.adventure.key.Key]. Must be in the format namespace:key,
- * or if the namespace is absent, it will default to "minecraft".
+ * Represents positions that a [Scoreboard] may appear in.
  */
-@JvmSynthetic
-fun String.toKey() = key(this)
+enum class ScoreboardPosition {
+
+    LIST,
+    SIDEBAR,
+    BELOW_NAME,
+    TEAM_SPECIFIC
+}

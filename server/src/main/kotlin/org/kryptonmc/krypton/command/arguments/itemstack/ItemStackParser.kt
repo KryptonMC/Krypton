@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.command.arguments.itemstack
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
@@ -28,7 +29,6 @@ import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.tags.ItemTags
 import org.kryptonmc.krypton.util.nbt.SNBTParser
@@ -70,7 +70,7 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO
             if (item != null) {
                 if (nbt != null) nbt == (it.meta as KryptonMetaHolder).nbt.immutable() else it.type == item
             } else if (tag != null) {
-                (ItemTags[tag.toKey()] ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())).contains(it.type)
+                (ItemTags[key(tag)] ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())).contains(it.type)
             } else false
         }
     }

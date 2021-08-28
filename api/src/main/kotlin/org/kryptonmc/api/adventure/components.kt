@@ -9,12 +9,10 @@
 package org.kryptonmc.api.adventure
 
 import com.google.gson.JsonElement
-import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
-import org.spongepowered.configurate.ConfigurationNode
 
 /**
  * Converts this [Component] to a [JsonElement].
@@ -44,15 +42,6 @@ fun JsonElement.toComponent(): Component = GsonComponentSerializer.gson().deseri
 fun Component.toJsonString(): String = GsonComponentSerializer.gson().serialize(this)
 
 /**
- * Converts this [Component] to its plain text representation.
- *
- * Analogous with [PlainTextComponentSerializer.serialize] called with this
-as its argument.
- */
-@JvmSynthetic
-fun Component.toPlainText(): String = PlainTextComponentSerializer.plainText().serialize(this)
-
-/**
  * Converts this [Component] to its legacy text representation, using the given
  * [char] as the translation character for the legacy text.
  *
@@ -63,19 +52,32 @@ fun Component.toPlainText(): String = PlainTextComponentSerializer.plainText().s
 fun Component.toLegacyText(char: Char): String = LegacyComponentSerializer.legacy(char).serialize(this)
 
 /**
- * Converts this [Component] to a [ConfigurationNode].
+ * Converts this [Component] to its legacy section text representation, using the
+ * [section sign][LegacyComponentSerializer.SECTION_CHAR] as the translation character
+ * for the legacy text.
  *
- * Analogous with [ConfigurateComponentSerializer.serialize] called with this
- * as its argument.
+ * Analogous with [LegacyComponentSerializer.serialize] called on the
+ * [section serializer][LegacyComponentSerializer.legacySection].
  */
 @JvmSynthetic
-fun Component.toConfigurationNode(): ConfigurationNode = ConfigurateComponentSerializer.configurate().serialize(this)
+fun Component.toLegacySectionText(): String = LegacyComponentSerializer.legacySection().serialize(this)
 
 /**
- * Converts this [ConfigurationNode] to a [Component].
+ * Converts this [Component] to its legacy ampersand text representation, using the
+ * [section sign][LegacyComponentSerializer.AMPERSAND_CHAR] as the translation character
+ * for the legacy text.
  *
- * Analogous with [ConfigurateComponentSerializer.deserialize] called with this
+ * Analogous with [LegacyComponentSerializer.serialize] called on the
+ * [section serializer][LegacyComponentSerializer.legacyAmpersand].
+ */
+@JvmSynthetic
+fun Component.toLegacyAmpersandText(): String = LegacyComponentSerializer.legacyAmpersand().serialize(this)
+
+/**
+ * Converts this [Component] to its plain text representation.
+ *
+ * Analogous with [PlainTextComponentSerializer.serialize] called with this
  * as its argument.
  */
 @JvmSynthetic
-fun ConfigurationNode.toComponent(): Component = ConfigurateComponentSerializer.configurate().deserialize(this)
+fun Component.toPlainText(): String = PlainTextComponentSerializer.plainText().serialize(this)

@@ -20,17 +20,16 @@ package org.kryptonmc.krypton.registry.data
 
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.util.toKey
 
 class FluidData(key: Key, main: JsonObject, override: JsonObject) : DataContainer(key, main, override) {
 
     val id = int("id")
     val stateId = int("stateId")
-    val bucketId = string("bucketId").toKey()
+    val bucketId = Key.key(string("bucketId"))
     val empty = boolean("empty")
     val explosionResistance = double("explosionResistance")
     val source = boolean("source")
     val height = float("ownHeight")
     val level = int("amount")
-    val blockKey = string("blockState").toKey()
+    val blockKey = Key.key(string("blockState"))
 }

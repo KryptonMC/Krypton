@@ -24,7 +24,7 @@ private annotation class ParticleDsl
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
 inline fun particleEffect(
-    type: SimpleParticle,
+    type: SimpleParticleType,
     builder: ParticleEffectBuilder.() -> Unit = {}
 ) = ParticleEffectBuilder(type).apply(builder).build()
 
@@ -39,7 +39,7 @@ inline fun particleEffect(
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
 inline fun particleEffect(
-    type: DirectionalParticle,
+    type: DirectionalParticleType,
     builder: DirectionalParticleEffectBuilder.() -> Unit = {}
 ) = DirectionalParticleEffectBuilder(type).apply(builder).build()
 
@@ -54,7 +54,7 @@ inline fun particleEffect(
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
 inline fun particleEffect(
-    type: BlockParticle,
+    type: BlockParticleType,
     builder: BlockParticleEffectBuilder.() -> Unit = {}
 ) = BlockParticleEffectBuilder(type).apply(builder).build()
 
@@ -69,7 +69,7 @@ inline fun particleEffect(
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
 inline fun particleEffect(
-    type: ItemParticle,
+    type: ItemParticleType,
     builder: ItemParticleEffectBuilder.() -> Unit = {}
 ) = ItemParticleEffectBuilder(type).apply(builder).build()
 
@@ -84,7 +84,7 @@ inline fun particleEffect(
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
 inline fun particleEffect(
-    type: ColorParticle,
+    type: ColorParticleType,
     builder: ColorParticleEffectBuilder.() -> Unit = {}
 ) = ColorParticleEffectBuilder(type).apply(builder).build()
 
@@ -99,7 +99,7 @@ inline fun particleEffect(
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
 inline fun particleEffect(
-    type: DustParticle,
+    type: DustParticleType,
     builder: DustParticleEffectBuilder.() -> Unit = {}
 ) = DustParticleEffectBuilder(type).apply(builder).build()
 
@@ -114,7 +114,7 @@ inline fun particleEffect(
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
 inline fun particleEffect(
-    type: DustTransitionParticle,
+    type: DustTransitionParticleType,
     builder: DustTransitionParticleEffectBuilder.() -> Unit = {}
 ) = DustTransitionParticleEffectBuilder(type).apply(builder).build()
 
@@ -129,7 +129,7 @@ inline fun particleEffect(
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
 inline fun particleEffect(
-    type: NoteParticle,
+    type: NoteParticleType,
     builder: NoteParticleEffectBuilder.() -> Unit = {}
 ) = NoteParticleEffectBuilder(type).apply(builder).build()
 
@@ -144,6 +144,6 @@ inline fun particleEffect(
 @JvmSynthetic
 @Contract("_ -> new", pure = true)
 inline fun particleEffect(
-    type: VibrationParticle,
+    type: VibrationParticleType,
     builder: VibrationParticleEffectBuilder.() -> Unit = {}
 ) = VibrationParticleEffectBuilder(type).apply(builder).build()

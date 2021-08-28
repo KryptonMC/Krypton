@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.entity.metadata
 
-import org.kryptonmc.api.effect.particle.ParticleType
+import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.particle.particleEffect
 import org.kryptonmc.api.space.Rotation
 import org.kryptonmc.krypton.entity.Pose
@@ -155,7 +155,7 @@ object MetadataKeys {
         val RADIUS = register(8, MetadataSerializers.FLOAT, 0.5F)
         val COLOR = register(9, MetadataSerializers.VAR_INT, 0)
         val IGNORE_RADIUS = register(10, MetadataSerializers.BOOLEAN, false)
-        val PARTICLE = register(11, MetadataSerializers.PARTICLE, particleEffect(ParticleType.EFFECT))
+        val PARTICLE = register(11, MetadataSerializers.PARTICLE, particleEffect(ParticleTypes.EFFECT))
     }
 
     object BatKeys {

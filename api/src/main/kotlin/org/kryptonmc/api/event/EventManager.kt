@@ -40,7 +40,7 @@ interface EventManager {
      * @param handler the handler to register
      * @param E the type of the event
      */
-    fun <E> register(plugin: Any, eventClass: Class<E>, handler: EventHandler<E>) = register(plugin, eventClass, ListenerPriority.MEDIUM, handler)
+    fun <E> register(plugin: Any, eventClass: Class<E>, handler: EventHandler<E>)
 
     /**
      * Requests that the specified [handler] be registered with this manager to
@@ -74,9 +74,7 @@ interface EventManager {
      *
      * @param event the event to fire
      */
-    fun fireAndForget(event: Any) {
-        fire(event)
-    }
+    fun fireAndForget(event: Any)
 
     /**
      * Unregisters all registered listeners for the specified [plugin]

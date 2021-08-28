@@ -44,7 +44,6 @@ dependencies {
     // Adventure
     api("net.kyori", "adventure-api")
     api("net.kyori", "adventure-extra-kotlin")
-    api("net.kyori", "adventure-serializer-configurate4")
     api("net.kyori", "adventure-text-serializer-gson")
     api("net.kyori", "adventure-text-serializer-legacy")
     api("net.kyori", "adventure-text-serializer-plain")

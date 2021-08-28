@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.util
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.effect.particle.ParticleType
+import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
@@ -31,7 +31,7 @@ import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.StatisticTypes
-import org.kryptonmc.api.util.FACTORY_PROVIDER
+import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.requests.SessionService
@@ -71,11 +71,11 @@ object Bootstrap {
 
         // Preload all the registry classes to ensure everything is properly registered
         InternalRegistries
-        (FACTORY_PROVIDER as KryptonFactoryProvider).bootstrap()
+        (FactoryProvider.INSTANCE as KryptonFactoryProvider).bootstrap()
         Registries
         Blocks
         GameEvents
-        ParticleType
+        ParticleTypes
         SoundEvents
         EntityTypes
         ItemTypes

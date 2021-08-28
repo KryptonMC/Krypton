@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.registry.data
 
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.util.toKey
 
 class BlockData(key: Key, main: JsonObject, override: JsonObject) : DataContainer(key, main, override) {
 
@@ -53,6 +52,6 @@ class BlockData(key: Key, main: JsonObject, override: JsonObject) : DataContaine
     val canRespawnIn = boolean("canRespawnIn")
     val toolRequired = boolean("toolRequired")
     val renderShape = (override["renderShape"] ?: main["renderShape"])?.asString
-    val itemKey = (override["correspondingItem"] ?: main["correspondingItem"])?.asString?.toKey()
-    val fluidKey = string("fluidState").toKey()
+    val itemKey = (override["correspondingItem"] ?: main["correspondingItem"])?.asString?.let { Key.key(it) }
+    val fluidKey = Key.key(string("fluidState"))
 }

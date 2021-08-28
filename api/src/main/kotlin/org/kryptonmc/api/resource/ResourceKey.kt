@@ -14,7 +14,7 @@ import java.util.Collections
 import java.util.IdentityHashMap
 
 /**
- * A key pointing to some form of resources.
+ * A key pointing to some form of resource.
  *
  * @param registry the [Key] name of the parent registry
  * @param location the [Key] location of the registry

@@ -9,7 +9,7 @@
 package org.kryptonmc.api.block.property
 
 import org.jetbrains.annotations.ApiStatus
-import org.kryptonmc.api.util.FACTORY_PROVIDER
+import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.util.provide
 
@@ -62,6 +62,8 @@ interface Property<T : Comparable<T>> {
     }
 
     companion object {
+
+        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
 
         /**
          * Creates a new boolean property with the given [name].
@@ -164,5 +166,3 @@ inline fun <reified E> Property.Companion.forEnum(
     name: String,
     values: Array<E>
 ) where E : Enum<E>, E : StringSerializable = forEnum(name, E::class.java, values)
-
-private val FACTORY = FACTORY_PROVIDER.provide<Property.Factory>()

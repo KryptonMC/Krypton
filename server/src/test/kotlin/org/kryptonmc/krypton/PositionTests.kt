@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton
 
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.api.space.square
 import kotlin.math.acos
 import kotlin.math.floor
 import kotlin.math.max
@@ -38,7 +37,7 @@ class PositionTests {
 
     @Test
     fun `test lengths`() {
-        val lengthSquared = position.x.square() + position.y.square() + position.z.square()
+        val lengthSquared = position.x * position.x + position.y * position.y + position.z * position.z
         assertEquals(lengthSquared, position.lengthSquared)
         assertEquals(sqrt(lengthSquared), position.length)
     }
@@ -79,7 +78,10 @@ class PositionTests {
 
     @Test
     fun `test distance and distance squared`() {
-        val distanceSquared = (position.x - other.x).square() + (position.y - other.y).square() + (position.z - other.z).square()
+        val distanceX = position.x - other.x
+        val distanceY = position.y - other.y
+        val distanceZ = position.z - other.z
+        val distanceSquared = distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ
         assertEquals(sqrt(distanceSquared), position.distance(other))
         assertEquals(distanceSquared, position.distanceSquared(other))
     }

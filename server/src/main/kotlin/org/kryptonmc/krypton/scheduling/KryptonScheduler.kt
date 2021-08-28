@@ -26,6 +26,7 @@ package org.kryptonmc.krypton.scheduling
 import com.google.common.collect.Multimaps
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.scheduling.Task
+import org.kryptonmc.api.scheduling.TaskRunnable
 import org.kryptonmc.api.scheduling.TaskState
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
@@ -39,22 +40,22 @@ import java.util.concurrent.TimeUnit
 
 class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Scheduler {
 
-    override val executor: ExecutorService = Executors.newCachedThreadPool(NamedThreadFactory("Krypton Scheduler #%d"))
+    private val executor: ExecutorService = Executors.newCachedThreadPool(NamedThreadFactory("Krypton Scheduler #%d"))
     private val timedExecutor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(NamedThreadFactory("Krypton Timed Scheduler"))
     private val tasksByPlugin = Multimaps.newMultimap(ConcurrentHashMap<Any, MutableCollection<KryptonTask>>()) { ConcurrentHashMap.newKeySet() }
 
-    override fun run(plugin: Any, task: Runnable) = schedule(plugin, 0, TimeUnit.MILLISECONDS, task)
+    override fun run(plugin: Any, task: TaskRunnable) = schedule(plugin, 0, TimeUnit.MILLISECONDS, task)
 
-    override fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: Runnable) = schedule(plugin, delay, 0, unit, task)
+    override fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: TaskRunnable) = schedule(plugin, delay, 0, unit, task)
 
-    override fun schedule(plugin: Any, delay: Long, period: Long, unit: TimeUnit, task: Runnable): Task {
+    override fun schedule(plugin: Any, delay: Long, period: Long, unit: TimeUnit, task: TaskRunnable): Task {
         val scheduledTask = KryptonTask(plugin, task, delay, period, unit)
         tasksByPlugin.put(plugin, scheduledTask)
         scheduledTask.schedule()
         return scheduledTask
     }
 
-    internal fun shutdown(): Boolean {
+    fun shutdown(): Boolean {
         synchronized(tasksByPlugin) { tasksByPlugin.values() }.forEach { it.cancel() }
         timedExecutor.shutdown()
         executor.shutdown()
@@ -63,7 +64,7 @@ class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Schedu
 
     private inner class KryptonTask(
         override val plugin: Any,
-        val runnable: Runnable,
+        val callable: TaskRunnable,
         val delay: Long,
         val period: Long,
         val unit: TimeUnit
@@ -97,14 +98,14 @@ class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Schedu
         override fun run() = executor.execute {
             currentTaskThread = Thread.currentThread()
             try {
-                runnable.run()
+                callable.run(this)
             } catch (exception: Exception) {
                 if (exception is InterruptedException) {
                     Thread.currentThread().interrupt()
                     return@execute
                 }
                 val name = pluginManager.fromInstance(plugin)?.description?.name ?: "UNKNOWN"
-                LOGGER.error("Plugin $name generated an exception whilst trying to execute task $runnable!", exception)
+                LOGGER.error("Plugin $name generated an exception whilst trying to execute task $callable!", exception)
             } finally {
                 if (period == 0L) finish()
                 currentTaskThread = null

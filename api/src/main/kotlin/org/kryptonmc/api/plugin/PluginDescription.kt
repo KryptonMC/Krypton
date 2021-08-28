@@ -32,31 +32,26 @@ interface PluginDescription {
      * The name of this plugin. Defaults to empty.
      */
     val name: String
-        get() = ""
 
     /**
      * The version of this plugin. Defaults to <UNDEFINED>.
      */
     val version: String
-        get() = "<UNDEFINED>"
 
     /**
      * A short description of this plugin.
      */
     val description: String
-        get() = ""
 
     /**
      * The list of people who created this plugin.
      */
     val authors: List<String>
-        get() = emptyList()
 
     /**
      * The list of dependencies of this plugin.
      */
     val dependencies: Collection<PluginDependency>
-        get() = emptyList()
 
     /**
      * The source path that this plugin was loaded from.

@@ -12,7 +12,7 @@ import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.item.meta.MetaHolder
-import org.kryptonmc.api.util.FACTORY_PROVIDER
+import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 
 /**
@@ -95,7 +95,7 @@ interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
 
     companion object {
 
-        private val FACTORY = FACTORY_PROVIDER.provide<Factory>()
+        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
 
         /**
          * Creates a new builder for building [ItemStack] instances.

@@ -12,22 +12,24 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.api.util.FACTORY_PROVIDER
+import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 import org.kryptonmc.api.world.biome.Biome
 
 /**
- * Holder of all of the built-in registries
+ * Holder of all of the built-in registries.
  */
 object Registries {
 
+    private val MANAGER = FactoryProvider.INSTANCE.provide<RegistryManager>()
+
     /**
-     * The parent registry. All registries are a child of this.
+     * The parent registry. All registries should be a child of this registry.
      */
     @JvmField val PARENT = MANAGER.parent
 
     /**
-     * All built-in vanilla registries
+     * All built-in vanilla registries.
      */
     @JvmField val SOUND_EVENT = get(ResourceKeys.SOUND_EVENT)!!
     @JvmField val ENTITY_TYPE = getDefaulted(ResourceKeys.ENTITY_TYPE)!!
@@ -43,7 +45,7 @@ object Registries {
     @JvmField val FLUID = get(ResourceKeys.FLUID)!!
 
     /**
-     * Custom built-in registries
+     * Custom built-in registries.
      */
     @JvmField val GAMERULES = create(ResourceKeys.GAMERULES)
     @JvmField val MODIFIER_OPERATIONS = create(ResourceKeys.MODIFIER_OPERATIONS)
@@ -139,5 +141,3 @@ object Registries {
     @JvmStatic
     fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key) = MANAGER.createDefaulted(key, defaultKey)
 }
-
-private val MANAGER = FACTORY_PROVIDER.provide<RegistryManager>()

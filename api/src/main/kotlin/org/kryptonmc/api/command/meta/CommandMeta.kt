@@ -11,7 +11,7 @@ package org.kryptonmc.api.command.meta
 import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.command.BrigadierCommand
-import org.kryptonmc.api.util.FACTORY_PROVIDER
+import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 
 /**
@@ -66,6 +66,9 @@ interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
 
     companion object {
 
+        @JvmSynthetic
+        internal val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+
         /**
          * Creates a new builder for constructing command metadata.
          *
@@ -73,7 +76,7 @@ interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
          * @return a new builder
          */
         @JvmStatic
-        fun builder(name: String) = COMMAND_META_FACTORY.builder(name)
+        fun builder(name: String) = FACTORY.builder(name)
 
         /**
          * Creates a new builder for constructing command metadata from the given
@@ -86,6 +89,3 @@ interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
         fun builder(command: BrigadierCommand) = builder(command.node.name)
     }
 }
-
-@JvmSynthetic
-internal val COMMAND_META_FACTORY = FACTORY_PROVIDER.provide<CommandMeta.Factory>()

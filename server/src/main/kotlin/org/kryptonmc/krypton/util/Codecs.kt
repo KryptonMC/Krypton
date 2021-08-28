@@ -24,7 +24,7 @@ import com.mojang.serialization.DataResult
 import com.mojang.serialization.DynamicOps
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.effect.particle.Particle
+import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
@@ -54,7 +54,7 @@ object Codecs {
         { IntStream.of(it.x(), it.y(), it.z()) }
     ).stable()
     val SOUND_EVENT: Codec<SoundEvent> = KEY.xmap(::SoundEvent) { it.key }.stable()
-    val PARTICLE: Codec<Particle> = KEY.xmap({ InternalRegistries.PARTICLE_TYPE[it]!! }, { it.key }).stable()
+    val PARTICLE: Codec<ParticleType> = KEY.xmap({ InternalRegistries.PARTICLE_TYPE[it]!! }, { it.key }).stable()
     val DIMENSION: Codec<ResourceKey<World>> = KEY.xmap({ ResourceKey.of(ResourceKeys.DIMENSION, it) }, ResourceKey<World>::location).stable()
 
     /**

@@ -18,13 +18,12 @@
  */
 package org.kryptonmc.krypton.item
 
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.MetaHolder
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.nbt.CompoundTag
@@ -37,7 +36,7 @@ open class KryptonItemStack(
 ) : ItemStack {
 
     constructor(nbt: CompoundTag) : this(
-        InternalRegistries.ITEM[nbt.getString("id").toKey()],
+        InternalRegistries.ITEM[Key.key(nbt.getString("id"))],
         nbt.getInt("Count"),
         KryptonMetaHolder(nbt.getCompound("tag").let { if (it is MutableCompoundTag) it else it.mutable() })
     )

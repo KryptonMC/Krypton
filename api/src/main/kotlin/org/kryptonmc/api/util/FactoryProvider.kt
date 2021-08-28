@@ -27,7 +27,7 @@ interface FactoryProvider {
          * The singleton instance.
          */
         @JvmField
-        val INSTANCE = FACTORY_PROVIDER
+        val INSTANCE = serviceOrError<FactoryProvider>("factory provider")
     }
 }
 
@@ -38,9 +38,3 @@ interface FactoryProvider {
  */
 @JvmSynthetic
 inline fun <reified T> FactoryProvider.provide(): T = provide(T::class.java)
-
-/**
- * The singleton factory provider instance.
- */
-@JvmSynthetic
-val FACTORY_PROVIDER = serviceOrError<FactoryProvider>("factory provider")

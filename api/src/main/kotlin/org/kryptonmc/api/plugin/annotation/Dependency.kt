@@ -17,9 +17,9 @@ package org.kryptonmc.api.plugin.annotation
  *
  * @param id the plugin ID of the dependency
  * @param optional if this dependency is optional or not. This is false by default,
- *        meaning that this dependency is required for this plugin to enable. If
- *        set to true, the dependency will be soft, and the plugin will still load
- *        without it just fine
+ * meaning that this dependency is required for this plugin to enable. If
+ * set to true, the dependency will be soft, and the plugin will still load
+ * without it just fine
  */
 @Target
 @Retention(AnnotationRetention.SOURCE)

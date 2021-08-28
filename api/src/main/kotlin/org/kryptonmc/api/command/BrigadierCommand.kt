@@ -43,7 +43,8 @@ class BrigadierCommand(val node: LiteralCommandNode<Sender>) : Command {
  * @param builder the builder to build the command with
  * @return the built Brigadier command
  */
-fun brigadierCommand(
+@JvmSynthetic
+inline fun brigadierCommand(
     literal: String,
     builder: LiteralArgumentBuilder<Sender>.() -> Unit
 ): BrigadierCommand = BrigadierCommand(LiteralArgumentBuilder.literal<Sender>(literal).apply(builder).build())

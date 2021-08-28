@@ -8,24 +8,10 @@
  */
 package org.kryptonmc.api.command
 
-import net.kyori.adventure.identity.Identity
-import net.kyori.adventure.util.TriState
-
 /**
- * The console sender represents the server source. That is, as if the server sent the command.
+ * The sender for the [org.kryptonmc.api.Server]. This is the sender that is used by
+ * the console.
  *
- * There are some defaults set in here to make it easier for implementations, and also to allow users
- * to more accurately see how it might work.
- *
- * The console's name should always be "CONSOLE", it should always use the special nil UUID
- * (a UUID comprised of all zeros), and it should never fail permission checks.
+ * This purely exists so it can be `is` checked if necessary.
  */
-interface ConsoleSender : Sender {
-
-    override val name: String
-        get() = "CONSOLE"
-
-    override fun getPermissionValue(permission: String) = TriState.TRUE
-
-    override fun identity() = Identity.nil()
-}
+interface ConsoleSender : Sender

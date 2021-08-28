@@ -18,11 +18,11 @@
  */
 package org.kryptonmc.krypton.entity.hanging
 
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.hanging.Canvas
 import org.kryptonmc.api.entity.hanging.Painting
 import org.kryptonmc.api.space.Direction
-import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPainting
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -37,7 +37,7 @@ class KryptonPainting(world: KryptonWorld) : KryptonHangingEntity(world, EntityT
         get() = canvas?.height ?: 1
 
     override fun load(tag: CompoundTag) {
-        canvas = InternalRegistries.CANVAS[tag.getString("Motive").toKey()]
+        canvas = InternalRegistries.CANVAS[Key.key(tag.getString("Motive"))]
         direction = Direction.from2D(tag.getByte("Facing").toInt())
         super.load(tag)
     }

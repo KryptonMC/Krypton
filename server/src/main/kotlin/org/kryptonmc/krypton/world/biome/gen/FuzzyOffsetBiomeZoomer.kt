@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.biome.gen
 
-import org.kryptonmc.api.space.square
 import org.kryptonmc.krypton.util.LinearCongruentialGenerator
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
@@ -75,7 +74,10 @@ object FuzzyOffsetBiomeZoomer : BiomeZoomer {
         val fiddleTwo = fiddle(random)
         random = LinearCongruentialGenerator.next(random, seed)
         val fiddleThree = fiddle(random)
-        return (maskedZ + fiddleThree).square() + (maskedY + fiddleTwo).square() + (maskedX + fiddleOne).square()
+        val fiddledX = maskedX + fiddleOne
+        val fiddledY = maskedY + fiddleTwo
+        val fiddledZ = maskedZ + fiddleThree
+        return fiddledZ * fiddledZ + fiddledY * fiddledY + fiddledX * fiddledX
     }
 
     private fun fiddle(seed: Long): Double {

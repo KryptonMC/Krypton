@@ -36,7 +36,7 @@ class PacketOutDisplayScoreboard(
                 requireNotNull(team) { "Team must be supplied if position is team specific!" }
                 buf.writeByte(3 + team.color.ordinal)
             }
-            else -> buf.writeByte(scoreboard.position.id)
+            else -> buf.writeByte(scoreboard.position.ordinal)
         }
         buf.writeString(scoreboard.name, 16)
     }

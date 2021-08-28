@@ -9,7 +9,6 @@
 package org.kryptonmc.api.world.scoreboard
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 
 /**
@@ -20,25 +19,9 @@ import org.kryptonmc.api.world.scoreboard.criteria.Criterion
  * @param criterion optional criteria for the scoreboard
  * @param renderType how this objective is rendered to the client
  */
-data class Objective @JvmOverloads constructor(
+class Objective @JvmOverloads constructor(
     val name: String,
     val displayName: Component,
     val criterion: Criterion? = null,
     val renderType: RenderType = RenderType.INTEGER
 )
-
-/**
- * Controls how an [Objective] is rendered to the client.
- */
-enum class RenderType(override val serialized: String) : StringSerializable {
-
-    /**
-     * Display an integer value.
-     */
-    INTEGER("integer"),
-
-    /**
-     * Display a number of hearts corresponding to the value.
-     */
-    HEARTS("hearts")
-}

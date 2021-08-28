@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import org.kryptonmc.api.effect.particle.ParticleType
+import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.krypton.effect.Music
@@ -330,7 +330,7 @@ object BuiltInBiomes {
         SoundEvents.AMBIENT_SOUL_SAND_VALLEY_MOOD,
         SoundEvents.AMBIENT_SOUL_SAND_VALLEY_ADDITIONS,
         Musics.SOUL_SAND_VALLEY,
-        AmbientParticleSettings(ParticleType.ASH, 0.00625F)
+        AmbientParticleSettings(ParticleTypes.ASH, 0.00625F)
     )
 
     fun basaltDeltas() = nether(
@@ -340,7 +340,7 @@ object BuiltInBiomes {
         SoundEvents.AMBIENT_BASALT_DELTAS_MOOD,
         SoundEvents.AMBIENT_BASALT_DELTAS_ADDITIONS,
         Musics.BASALT_DELTAS,
-        AmbientParticleSettings(ParticleType.WHITE_ASH, 0.118093334F)
+        AmbientParticleSettings(ParticleTypes.WHITE_ASH, 0.118093334F)
     )
 
     fun crimsonForest() = nether(
@@ -350,7 +350,7 @@ object BuiltInBiomes {
         SoundEvents.AMBIENT_CRIMSON_FOREST_MOOD,
         SoundEvents.AMBIENT_CRIMSON_FOREST_ADDITIONS,
         Musics.CRIMSON_FOREST,
-        AmbientParticleSettings(ParticleType.CRIMSON_SPORE, 0.025F)
+        AmbientParticleSettings(ParticleTypes.CRIMSON_SPORE, 0.025F)
     )
 
     fun warpedForest() = nether(
@@ -360,7 +360,7 @@ object BuiltInBiomes {
         SoundEvents.AMBIENT_WARPED_FOREST_MOOD,
         SoundEvents.AMBIENT_WARPED_FOREST_ADDITIONS,
         Musics.WARPED_FOREST,
-        AmbientParticleSettings(ParticleType.WARPED_SPORE, 0.01428F)
+        AmbientParticleSettings(ParticleTypes.WARPED_SPORE, 0.01428F)
     )
 
     private fun nether(

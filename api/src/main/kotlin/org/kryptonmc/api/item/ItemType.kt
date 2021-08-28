@@ -35,7 +35,8 @@ data class ItemType(
     /**
      * The translation for this item.
      */
-    val translation = Registries.BLOCK[key]?.translation ?: Component.translatable("item.${key.asString().replace(':', '.')}")
+    val translation = Registries.BLOCK[key]?.translation
+        ?: Component.translatable("item.${key.asString().replace(':', '.')}")
 
     override fun asBlock() = Registries.BLOCK[key]
 

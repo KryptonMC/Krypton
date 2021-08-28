@@ -41,7 +41,7 @@ import org.kryptonmc.api.space.Direction
 object Properties {
 
     /**
-     * Boolean values
+     * Boolean properties.
      */
     @JvmField val ATTACHED = Property.forBoolean("attached")
     @JvmField val BERRIES = Property.forBoolean("berries")
@@ -82,7 +82,7 @@ object Properties {
     @JvmField val WEST = Property.forBoolean("west")
 
     /**
-     * Integer values.
+     * Integer properties.
      */
     @JvmField val AGE_1 = Property.forInt("age", 0..1)
     @JvmField val AGE_2 = Property.forInt("age", 0..2)
@@ -113,7 +113,7 @@ object Properties {
     @JvmField val STAGE = Property.forInt("stage", 0..1)
 
     /**
-     * Enum properties
+     * Enum properties.
      */
     @JvmField val BELL_ATTACHMENT = Property.forEnum("attachment", BellAttachment.values())
     @JvmField val AXIS = Property.forEnum("axis", Direction.Axis.values())

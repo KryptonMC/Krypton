@@ -18,15 +18,15 @@ object RegistryRoots {
     /**
      * The built-in Minecraft root, used for all of the vanilla registries.
      *
-     * The key of this root is "minecraft:root"
+     * The key of this root is "minecraft:root".
      */
     @JvmField
-    val MINECRAFT = Key.key("root")
+    val MINECRAFT = Key.key("minecraft", "root")
 
     /**
      * The Krypton root, designed to be used for custom registries.
      *
-     * The key of this root is "krypton:root"
+     * The key of this root is "krypton:root".
      */
     @JvmField
     val KRYPTON = Key.key("krypton", "root")

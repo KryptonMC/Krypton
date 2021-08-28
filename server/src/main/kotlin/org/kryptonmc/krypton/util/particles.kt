@@ -19,42 +19,42 @@
 package org.kryptonmc.krypton.util
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.effect.particle.BlockParticle
+import org.kryptonmc.api.effect.particle.BlockParticleType
 import org.kryptonmc.api.effect.particle.BlockParticleData
-import org.kryptonmc.api.effect.particle.DustParticle
+import org.kryptonmc.api.effect.particle.DustParticleType
 import org.kryptonmc.api.effect.particle.DustParticleData
-import org.kryptonmc.api.effect.particle.DustTransitionParticle
+import org.kryptonmc.api.effect.particle.DustTransitionParticleType
 import org.kryptonmc.api.effect.particle.DustTransitionParticleData
-import org.kryptonmc.api.effect.particle.ItemParticle
+import org.kryptonmc.api.effect.particle.ItemParticleType
 import org.kryptonmc.api.effect.particle.ItemParticleData
 import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.effect.particle.VibrationParticle
+import org.kryptonmc.api.effect.particle.VibrationParticleType
 import org.kryptonmc.api.effect.particle.VibrationParticleData
 import org.kryptonmc.krypton.registry.InternalRegistries
 
 @Suppress("UNCHECKED_CAST")
 fun ParticleEffect.write(buf: ByteBuf) {
     when (type) {
-        is BlockParticle -> buf.writeVarInt((data as BlockParticleData).block.stateId)
-        is DustParticle -> {
+        is BlockParticleType -> buf.writeVarInt((data as BlockParticleData).block.stateId)
+        is DustParticleType -> {
             val data = data as DustParticleData
-            buf.writeFloat(if (data.color.red == 0.toUByte()) Float.MIN_VALUE else data.color.red.toFloat() / 255F)
+            buf.writeFloat(if (data.color.red == 0.toShort()) Float.MIN_VALUE else data.color.red.toFloat() / 255F)
             buf.writeFloat(data.color.green.toFloat() / 255F)
             buf.writeFloat(data.color.blue.toFloat() / 255F)
             buf.writeFloat(data.scale)
         }
-        is DustTransitionParticle -> {
+        is DustTransitionParticleType -> {
             val data = data as DustTransitionParticleData
-            buf.writeFloat(if (data.from.red == 0.toUByte()) Float.MIN_VALUE else data.from.red.toFloat() / 255F)
+            buf.writeFloat(if (data.from.red == 0.toShort()) Float.MIN_VALUE else data.from.red.toFloat() / 255F)
             buf.writeFloat(data.from.green.toFloat() / 255F)
             buf.writeFloat(data.from.blue.toFloat() / 255F)
             buf.writeFloat(data.scale)
-            buf.writeFloat(if (data.to.red == 0.toUByte()) Float.MIN_VALUE else data.to.red.toFloat() / 255F)
+            buf.writeFloat(if (data.to.red == 0.toShort()) Float.MIN_VALUE else data.to.red.toFloat() / 255F)
             buf.writeFloat(data.to.green.toFloat() / 255F)
             buf.writeFloat(data.to.blue.toFloat() / 255F)
         }
-        is ItemParticle -> buf.writeVarInt(InternalRegistries.ITEM.idOf((data as ItemParticleData).item))
-        is VibrationParticle -> {
+        is ItemParticleType -> buf.writeVarInt(InternalRegistries.ITEM.idOf((data as ItemParticleData).item))
+        is VibrationParticleType -> {
             val data = data as VibrationParticleData
             buf.writeDouble(data.origin.x)
             buf.writeDouble(data.origin.y)

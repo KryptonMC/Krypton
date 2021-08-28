@@ -94,9 +94,14 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
 
     override fun register(plugin: Any, listener: Any) {
         checkPlugin(plugin)
-        require(plugin != listener || registeredListenersByPlugin.containsEntry(plugin, listener)) { "The plugin main instance is automatically registered!" }
+        require(plugin != listener || registeredListenersByPlugin.containsEntry(plugin, listener)) {
+            "The plugin main instance is automatically registered!"
+        }
         registerUnchecked(plugin, listener)
     }
+
+    override fun <E> register(plugin: Any, eventClass: Class<E>, handler: EventHandler<E>) =
+        register(plugin, eventClass, ListenerPriority.MEDIUM, handler)
 
     override fun <E> register(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>) {
         checkPlugin(plugin)
@@ -140,14 +145,18 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         val result = bus.post(event)
         if (result.exceptions().isEmpty()) return
         LOGGER.error("Some errors occurred whilst posting event $event!")
-        result.exceptions().values.forEachIndexed { index, exception -> LOGGER.error("#${index + 1}: \n", exception) }
+        result.exceptions().values.forEachIndexed { index, exception ->
+            LOGGER.error("#${index + 1}: \n", exception)
+        }
     }
 
     private fun unregisterHandler(handler: EventHandler<*>) = bus.unregister { it: EventSubscriber<*> ->
         it is KyoriToKryptonHandler && it.handler == handler
     }
 
-    private fun checkPlugin(plugin: Any) = require(pluginManager.fromInstance(plugin) != null) { "The specified plugin is not loaded!" }
+    private fun checkPlugin(plugin: Any) = require(pluginManager.fromInstance(plugin) != null) {
+        "The specified plugin is not loaded!"
+    }
 
     private class KryptonMethodScanner : MethodScanner<Any> {
 

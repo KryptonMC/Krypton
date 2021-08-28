@@ -16,28 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block
+package org.kryptonmc.krypton.auth
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.BlockHandler
-import org.kryptonmc.api.block.BlockManager
+import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.api.auth.ProfileProperty
+import java.util.UUID
 
-object KryptonBlockManager : BlockManager {
+object KryptonGameProfileFactory : GameProfile.Factory {
 
-    override val handlers = mutableMapOf<String, BlockHandler>()
-
-    override fun handler(key: String) = handlers[key]
-
-    override fun handler(key: Key) = handlers[key.asString()]
-
-    override fun handler(block: Block) = handlers[block.key.asString()]
-
-    override fun register(key: String, handler: BlockHandler) {
-        handlers[key] = handler
-    }
-
-    override fun register(key: Key, handler: BlockHandler) = register(key.asString(), handler)
-
-    override fun register(block: Block, handler: BlockHandler) = register(block.key.asString(), handler)
+    override fun of(name: String, uuid: UUID, properties: List<ProfileProperty>) = KryptonGameProfile(uuid, name, properties)
 }

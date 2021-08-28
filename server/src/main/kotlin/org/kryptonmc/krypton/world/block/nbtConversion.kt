@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.world.block
 
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.util.toKey
 import org.kryptonmc.krypton.util.transform
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.StringTag
@@ -28,7 +28,7 @@ import org.kryptonmc.nbt.compound
 
 fun CompoundTag.toBlock(): Block {
     if (!contains("Name", StringTag.ID)) return Blocks.AIR
-    var block = BlockLoader.fromKey(getString("Name").toKey()) ?: error("No block found with key ${getString("Name")}!")
+    var block = BlockLoader.fromKey(Key.key(getString("Name"))) ?: error("No block found with key ${getString("Name")}!")
     if (contains("Properties", CompoundTag.ID)) {
         block = block.copy(getCompound("Properties").transform { it.key to (it.value as StringTag).value })
     }

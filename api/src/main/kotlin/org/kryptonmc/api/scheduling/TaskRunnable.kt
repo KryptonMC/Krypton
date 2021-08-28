@@ -6,11 +6,16 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.permission
-
-import net.kyori.adventure.util.TriState
+package org.kryptonmc.api.scheduling
 
 /**
- * Converts this [TriState] in to its boolean representation.
+ * A functional interface used as a runnable for tasks that provides the executing
+ * task as a parameter so that it can be cancelled.
  */
-fun TriState.toBoolean(): Boolean = this == TriState.TRUE
+fun interface TaskRunnable {
+
+    /**
+     * Runs this task runnable with the given [task].
+     */
+    fun run(task: Task)
+}

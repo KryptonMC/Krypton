@@ -27,7 +27,6 @@ import org.kryptonmc.api.world.rule.GameRuleHolder
 import org.spongepowered.math.vector.Vector2i
 import org.spongepowered.math.vector.Vector3i
 import java.nio.file.Path
-import java.util.UUID
 
 /**
  * Represents a loaded world.
@@ -43,13 +42,6 @@ interface World : ForwardingAudience {
      * The name of this world.
      */
     val name: String
-
-    /**
-     * The unique ID of this world.
-     */
-    @Deprecated("Worlds are no longer identified by this, so it is no longer necessary", ReplaceWith(""))
-    val uuid: UUID
-        get() = UUID(0, 0)
 
     /**
      * The folder of this world on disk.
@@ -68,14 +60,6 @@ interface World : ForwardingAudience {
 
     /**
      * The spawn location of this world.
-     *
-     * As spawn locations do not allow for coordinates with fractional
-     * precision, the x, y and z values of this [Location] will always
-     * be whole numbers (integers). They will never possess a decimal
-     * component.
-     *
-     * Spawn locations also do not possess any rotational components, so
-     * the pitch and yaw of this [Location] will always be set to 0.
      */
     val spawnLocation: Vector3i
 
@@ -113,13 +97,6 @@ interface World : ForwardingAudience {
      * The current time in this world.
      */
     val time: Long
-
-    /**
-     * The maximum build height of this world. Also known as the build limit.
-     */
-    @Deprecated("Unnecessary, use DimensionType#height", ReplaceWith("dimensionType.height"))
-    val maxHeight: Int
-        get() = dimensionType.height
 
     /**
      * If this world is currently thundering (has an ongoing thunderstorm).

@@ -80,16 +80,3 @@ interface Scoreboard {
      */
     fun resetScores(player: Player)
 }
-
-/**
- * Represents positions that a [Scoreboard] may appear in.
- *
- * @param id the ID of this position, should only need to be used internally
- */
-enum class ScoreboardPosition(val id: Int) {
-
-    LIST(0),
-    SIDEBAR(1),
-    BELOW_NAME(2),
-    TEAM_SPECIFIC(-1)
-}

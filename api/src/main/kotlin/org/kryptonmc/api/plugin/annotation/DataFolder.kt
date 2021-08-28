@@ -17,11 +17,6 @@ import com.google.inject.BindingAnnotation
 /**
  * This is a marker annotation to signal that you want to inject the [java.nio.file.Path]
  * object for your plugin's folder.
- *
- * Example usage:
- * ```kotlin
- * class MyPlugin @Inject constructor(@DataFolder folder: Path)
- * ```
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @BindingAnnotation

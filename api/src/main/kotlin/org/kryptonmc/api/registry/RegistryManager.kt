@@ -12,12 +12,12 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.resource.ResourceKey
 
 /**
- * The manager for registries
+ * The manager for registries.
  */
 interface RegistryManager {
 
     /**
-     * The parent registry. All registries are a child of this.
+     * The parent registry. All registries should be a child of this registry.
      */
     val parent: Registry<out Registry<out Any>>
 
