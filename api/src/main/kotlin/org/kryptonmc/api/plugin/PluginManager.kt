@@ -17,12 +17,12 @@ import java.nio.file.Path
 /**
  * The plugin manager.
  */
-interface PluginManager {
+public interface PluginManager {
 
     /**
      * The list of currently loaded plugins.
      */
-    val plugins: Collection<PluginContainer>
+    public val plugins: Collection<PluginContainer>
 
     /**
      * Get the plugin container for the specified plugin [instance], or null if there
@@ -31,7 +31,7 @@ interface PluginManager {
      * @param instance the plugin instance
      * @return the container for the instance, or null if there isn't one
      */
-    fun fromInstance(instance: Any): PluginContainer?
+    public fun fromInstance(instance: Any): PluginContainer?
 
     /**
      * Get a plugin's container by its [id], or null if there isn't a plugin loaded
@@ -40,7 +40,7 @@ interface PluginManager {
      * @param id the id of the plugin
      * @return the plugin container with the specified [id], or null if there isn't one
      */
-    fun plugin(id: String): PluginContainer?
+    public fun plugin(id: String): PluginContainer?
 
     /**
      * Check if a plugin with the specified [id] is currently loaded.
@@ -48,7 +48,7 @@ interface PluginManager {
      * @param id the unique id of the plugin
      * @return true if there is a plugin with the name and it is loaded, false otherwise
      */
-    fun isLoaded(id: String): Boolean
+    public fun isLoaded(id: String): Boolean
 
     /**
      * Add the specified [path] to the server's classpath using the given
@@ -57,5 +57,5 @@ interface PluginManager {
      * @param plugin the plugin who's loader to load the [path] with
      * @param path the path to load
      */
-    fun addToClasspath(plugin: Any, path: Path)
+    public fun addToClasspath(plugin: Any, path: Path)
 }

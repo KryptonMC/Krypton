@@ -27,14 +27,14 @@ import kotlin.math.abs
  * @param axisDirection the direction of the axis of this direction
  * @param normal the normal of this direction
  */
-enum class Direction(
-    val data3D: Int,
+public enum class Direction(
+    public val data3D: Int,
     private val oppositeIndex: Int,
-    val data2D: Int,
+    public val data2D: Int,
     override val serialized: String,
-    val axis: Axis,
-    val axisDirection: AxisDirection,
-    val normal: Vector3i
+    public val axis: Axis,
+    public val axisDirection: AxisDirection,
+    public val normal: Vector3i
 ) : StringSerializable {
 
     DOWN(0, 1, -1, "down", Axis.Y, AxisDirection.NEGATIVE, Vector3i(0, -1, 0)),
@@ -47,66 +47,66 @@ enum class Direction(
     /**
      * The normal on the X axis.
      */
-    val normalX = normal.x()
+    public val normalX: Int = normal.x()
 
     /**
      * The normal on the Y axis.
      */
-    val normalY = normal.y()
+    public val normalY: Int = normal.y()
 
     /**
      * The normal on the Z axis.
      */
-    val normalZ = normal.z()
+    public val normalZ: Int = normal.z()
 
     /**
      * This direction converted to a pitch value.
      */
-    val pitch = ((data2D and 3) * 90).toFloat()
+    public val pitch: Float = ((data2D and 3) * 90).toFloat()
 
     /**
      * The opposite of this direction.
      *
      * Initialized lazily to avoid a circular dependency.
      */
-    val opposite by lazy { from3D(oppositeIndex) }
+    public val opposite: Direction by lazy { from3D(oppositeIndex) }
 
     /**
      * Axes that a direction may be on.
      *
      * @param serialized the name
      */
-    enum class Axis(override val serialized: String) : (Direction?) -> Boolean, Predicate<Direction?>, StringSerializable {
+    public enum class Axis(override val serialized: String) : (Direction?) -> Boolean, Predicate<Direction?>, StringSerializable {
 
         X("x") {
 
-            override fun select(x: Int, y: Int, z: Int) = x
+            override fun select(x: Int, y: Int, z: Int): Int = x
 
-            override fun select(x: Double, y: Double, z: Double) = x
+            override fun select(x: Double, y: Double, z: Double): Double = x
         },
         Y("y") {
 
-            override fun select(x: Int, y: Int, z: Int) = y
+            override fun select(x: Int, y: Int, z: Int): Int = y
 
-            override fun select(x: Double, y: Double, z: Double) = y
+            override fun select(x: Double, y: Double, z: Double): Double = y
         },
         Z("z") {
 
-            override fun select(x: Int, y: Int, z: Int) = z
+            override fun select(x: Int, y: Int, z: Int): Int = z
 
-            override fun select(x: Double, y: Double, z: Double) = z
+            override fun select(x: Double, y: Double, z: Double): Double = z
         };
 
         /**
          * If this axis tiles vertically.
          */
-        val isVertical: Boolean
+        public val isVertical: Boolean
             get() = this == Y
 
         /**
          * If this axis tiles horizontally.
          */
-        val isHorizontal: Boolean
+        public val isHorizontal: Boolean
             get() = this == X || this == Z
 
         /**
@@ -118,7 +118,7 @@ enum class Direction(
          * @param z the Z coordinate
          * @return the chosen coordinate
          */
-        abstract fun select(x: Int, y: Int, z: Int): Int
+        public abstract fun select(x: Int, y: Int, z: Int): Int
 
         /**
          * Selects the appropriate [x], [y], or [z] coordinate, depending on what the axis
@@ -129,11 +129,11 @@ enum class Direction(
          * @param z the Z coordinate
          * @return the chosen coordinate
          */
-        abstract fun select(x: Double, y: Double, z: Double): Double
+        public abstract fun select(x: Double, y: Double, z: Double): Double
 
-        override fun invoke(direction: Direction?) = direction != null && direction.axis == this
+        override fun invoke(direction: Direction?): Boolean = direction?.axis === this
 
-        override fun test(t: Direction?) = invoke(t)
+        override fun test(t: Direction?): Boolean = invoke(t)
     }
 
     /**
@@ -142,7 +142,10 @@ enum class Direction(
      * @param step the step
      * @param serialized the name
      */
-    enum class AxisDirection(val step: Int, override val serialized: String) : StringSerializable {
+    public enum class AxisDirection(
+        public val step: Int,
+        override val serialized: String
+    ) : StringSerializable {
 
         POSITIVE(1, "Towards positive"),
         NEGATIVE(-1, "Towards negative");
@@ -152,10 +155,10 @@ enum class Direction(
          *
          * Initialized lazily to avoid circular dependencies.
          */
-        val opposite by lazy { if (this == POSITIVE) NEGATIVE else POSITIVE }
+        public val opposite: AxisDirection by lazy { if (this == POSITIVE) NEGATIVE else POSITIVE }
     }
 
-    companion object {
+    public companion object {
 
         private val BY_3D_DATA = values().sortedArrayWith { o1, o2 -> o1.data3D.compareTo(o2.data3D) }
         private val BY_2D_DATA: Array<Direction> = values().asSequence()
@@ -172,7 +175,7 @@ enum class Direction(
          * @return the direction
          */
         @JvmStatic
-        fun fromNormal(normal: Vector3i) = BY_OFFSET[normal.asLong()]
+        public fun fromNormal(normal: Vector3i): Direction? = BY_OFFSET[normal.asLong()]
 
         /**
          * Gets the [Direction] from the given [x], [y], and [z] normal coordinates.
@@ -183,7 +186,7 @@ enum class Direction(
          * @return the direction
          */
         @JvmStatic
-        fun fromNormal(x: Int, y: Int, z: Int) = BY_OFFSET[asLong(x, y, z)]
+        public fun fromNormal(x: Int, y: Int, z: Int): Direction? = BY_OFFSET[asLong(x, y, z)]
 
         /**
          * Gets the [Direction] from the given [pitch].
@@ -193,7 +196,7 @@ enum class Direction(
          */
         @Suppress("MagicNumber")
         @JvmStatic
-        fun fromPitch(pitch: Double) = from2D((pitch / 90.0 + 0.5).floor() and 3)
+        public fun fromPitch(pitch: Double): Direction = from2D((pitch / 90.0 + 0.5).floor() and 3)
 
         /**
          * Gets a [Direction] from its 2-dimensional data [value].
@@ -202,7 +205,7 @@ enum class Direction(
          * @return a direction with the given 2D data value
          */
         @JvmStatic
-        fun from2D(value: Int) = BY_2D_DATA[abs(value % BY_2D_DATA.size)]
+        public fun from2D(value: Int): Direction = BY_2D_DATA[abs(value % BY_2D_DATA.size)]
 
         /**
          * Gets a [Direction] from its 3-dimensional data [value].
@@ -211,6 +214,6 @@ enum class Direction(
          * @return a direction with the given 3D data value
          */
         @JvmStatic
-        fun from3D(value: Int) = BY_3D_DATA[abs(value % BY_3D_DATA.size)]
+        public fun from3D(value: Int): Direction = BY_3D_DATA[abs(value % BY_3D_DATA.size)]
     }
 }

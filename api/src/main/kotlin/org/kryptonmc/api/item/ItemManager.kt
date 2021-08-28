@@ -13,12 +13,12 @@ import net.kyori.adventure.key.Key
 /**
  * Manages item handlers for item types.
  */
-interface ItemManager {
+public interface ItemManager {
 
     /**
      * The map of item type keys (e.g. "minecraft:air") to handlers.
      */
-    val handlers: Map<String, ItemHandler>
+    public val handlers: Map<String, ItemHandler>
 
     /**
      * Gets the handler for the given [key], or returns null if there is no
@@ -27,7 +27,7 @@ interface ItemManager {
      * @param key the key
      * @return the handler for the key, if present
      */
-    fun handler(key: String): ItemHandler?
+    public fun handler(key: String): ItemHandler?
 
     /**
      * Gets the handler for the given [key], or returns null if there is no
@@ -36,7 +36,7 @@ interface ItemManager {
      * @param key the key
      * @return the handler for the key, if present
      */
-    fun handler(key: Key): ItemHandler? = handler(key.asString())
+    public fun handler(key: Key): ItemHandler?
 
     /**
      * Gets the handler for the given item [type], or returns null if there is
@@ -45,7 +45,7 @@ interface ItemManager {
      * @param type the item type
      * @return the handler for the type, if present
      */
-    fun handler(type: ItemType): ItemHandler? = handler(type.key.asString())
+    public fun handler(type: ItemType): ItemHandler?
 
     /**
      * Registers the given [handler] for the given [key].
@@ -53,7 +53,7 @@ interface ItemManager {
      * @param key the key
      * @param handler the handler
      */
-    fun register(key: String, handler: ItemHandler)
+    public fun register(key: String, handler: ItemHandler)
 
     /**
      * Registers the given [handler] for the given [key].
@@ -61,7 +61,7 @@ interface ItemManager {
      * @param key the key
      * @param handler the handler
      */
-    fun register(key: Key, handler: ItemHandler) = register(key.asString(), handler)
+    public fun register(key: Key, handler: ItemHandler)
 
     /**
      * Registers the given [handler] for the given item [type].
@@ -69,5 +69,5 @@ interface ItemManager {
      * @param type the item type
      * @param handler the handler
      */
-    fun register(type: ItemType, handler: ItemHandler) = register(type.key.asString(), handler)
+    public fun register(type: ItemType, handler: ItemHandler)
 }

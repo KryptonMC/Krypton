@@ -14,22 +14,22 @@ import org.kryptonmc.api.registry.Registries
 /**
  * All of the built-in criteria for scoreboards.
  */
-object Criteria {
+public object Criteria {
 
     // @formatter:off
-    @JvmField val DUMMY = get("dummy")
-    @JvmField val TRIGGER = get("trigger")
-    @JvmField val DEATH_COUNT = get("death_count")
-    @JvmField val PLAYER_KILL_COUNT = get("player_kill_count")
-    @JvmField val TOTAL_KILL_COUNT = get("kill_count")
-    @JvmField val HEALTH = get("health")
-    @JvmField val FOOD = get("food")
-    @JvmField val AIR = get("air")
-    @JvmField val ARMOR = get("armor")
-    @JvmField val EXPERIENCE = get("experience")
-    @JvmField val LEVEL = get("level")
-    @JvmField val TEAM_KILL = get("team_kill") as CompoundCriterion
-    @JvmField val KILLED_BY_TEAM = get("killed_by_team") as CompoundCriterion
+    @JvmField public val DUMMY: Criterion = get("dummy")
+    @JvmField public val TRIGGER: Criterion = get("trigger")
+    @JvmField public val DEATH_COUNT: Criterion = get("death_count")
+    @JvmField public val PLAYER_KILL_COUNT: Criterion = get("player_kill_count")
+    @JvmField public val TOTAL_KILL_COUNT: Criterion = get("kill_count")
+    @JvmField public val HEALTH: Criterion = get("health")
+    @JvmField public val FOOD: Criterion = get("food")
+    @JvmField public val AIR: Criterion = get("air")
+    @JvmField public val ARMOR: Criterion = get("armor")
+    @JvmField public val EXPERIENCE: Criterion = get("experience")
+    @JvmField public val LEVEL: Criterion = get("level")
+    @JvmField public val TEAM_KILL: CompoundCriterion = get("team_kill") as CompoundCriterion
+    @JvmField public val KILLED_BY_TEAM: CompoundCriterion = get("killed_by_team") as CompoundCriterion
 
     // @formatter:on
     private fun get(name: String) = Registries.CRITERIA[Key.key("krypton", name)]!!

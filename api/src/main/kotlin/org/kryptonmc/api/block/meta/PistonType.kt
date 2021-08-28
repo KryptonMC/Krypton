@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The type of a piston.
  */
-enum class PistonType(override val serialized: String) : StringSerializable {
+public enum class PistonType(override val serialized: String) : StringSerializable {
 
     NORMAL("normal"),
     STICKY("sticky")

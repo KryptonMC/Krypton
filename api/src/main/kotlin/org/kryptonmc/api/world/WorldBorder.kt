@@ -13,22 +13,22 @@ import org.spongepowered.math.vector.Vector2d
 /**
  * The area around a world that prevents players from venturing too far into the wilderness.
  */
-interface WorldBorder {
+public interface WorldBorder {
 
     /**
      * The size, or diameter, of the world border.
      */
-    val size: Double
+    public val size: Double
 
     /**
      * The center position of the world border.
      *
      * Note: This position's Y will always be -1.
      */
-    val center: Vector2d
+    public val center: Vector2d
 
     /**
      * The damage multiplier for this border.
      */
-    val damageMultiplier: Double
+    public val damageMultiplier: Double
 }

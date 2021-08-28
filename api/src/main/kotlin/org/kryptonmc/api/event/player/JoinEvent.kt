@@ -14,8 +14,8 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.event.Result
 import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.ResultedEvent.Result
 
 /**
  * Called when a player logs in and a player object has been
@@ -24,13 +24,13 @@ import org.kryptonmc.api.event.ResultedEvent
  * @param player the player who joined
  * @param hasChangedName if this player has joined before
  */
-class JoinEvent(
-    val player: Player,
-    @get:JvmName("hasChangedName") val hasChangedName: Boolean
+public class JoinEvent(
+    public val player: Player,
+    @get:JvmName("hasChangedName") public val hasChangedName: Boolean
 ) : ResultedEvent<JoinResult> {
 
     // The message here is the default translatable component that vanilla Minecraft sends when a player joins.
-    override var result = JoinResult.allowed(
+    override var result: JoinResult = JoinResult.allowed(
         translatable(
             if (hasChangedName) "multiplayer.player.joined.renamed" else "multiplayer.player.joined",
             NamedTextColor.YELLOW,
@@ -46,13 +46,13 @@ class JoinEvent(
  * @param message the join message
  * @param hasChangedName if the player joining has joined before
  */
-class JoinResult(
+public class JoinResult(
     override val isAllowed: Boolean,
-    val message: Component,
-    @get:JvmName("hasChangedName") val hasChangedName: Boolean
+    public val message: Component,
+    @get:JvmName("hasChangedName") public val hasChangedName: Boolean
 ) : Result {
 
-    companion object {
+    public companion object {
 
         /**
          * Creates a new join result that allows the player to join, optionally
@@ -63,7 +63,7 @@ class JoinResult(
          */
         @JvmStatic
         @JvmOverloads
-        fun allowed(hasJoinedBefore: Boolean = false) = JoinResult(true, empty(), hasJoinedBefore)
+        public fun allowed(hasJoinedBefore: Boolean = false): JoinResult = JoinResult(true, empty(), hasJoinedBefore)
 
         /**
          * Creates a new join result that allows the player to join with the given
@@ -75,7 +75,10 @@ class JoinResult(
          */
         @JvmStatic
         @JvmOverloads
-        fun allowed(message: Component, hasJoinedBefore: Boolean = false) = JoinResult(true, message, hasJoinedBefore)
+        public fun allowed(
+            message: Component,
+            hasJoinedBefore: Boolean = false
+        ): JoinResult = JoinResult(true, message, hasJoinedBefore)
 
         /**
          * Creates a new join result that denies the player from joining, optionally
@@ -86,7 +89,7 @@ class JoinResult(
          */
         @JvmStatic
         @JvmOverloads
-        fun denied(hasJoinedBefore: Boolean = false) = JoinResult(false, empty(), hasJoinedBefore)
+        public fun denied(hasJoinedBefore: Boolean = false): JoinResult = JoinResult(false, empty(), hasJoinedBefore)
 
         /**
          * Creates a new join result that denies the player from joining with the
@@ -98,6 +101,9 @@ class JoinResult(
          */
         @JvmStatic
         @JvmOverloads
-        fun denied(message: Component, hasJoinedBefore: Boolean = false) = JoinResult(false, message, hasJoinedBefore)
+        public fun denied(
+            message: Component,
+            hasJoinedBefore: Boolean = false
+        ): JoinResult = JoinResult(false, message, hasJoinedBefore)
     }
 }

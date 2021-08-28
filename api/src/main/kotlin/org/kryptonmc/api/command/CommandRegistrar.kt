@@ -18,7 +18,7 @@ import org.kryptonmc.api.command.meta.CommandMeta
  * @param C the command type
  * @param M the metadata type
  */
-fun interface CommandRegistrar<C : Command, M : CommandMeta> {
+public fun interface CommandRegistrar<C : Command, M : CommandMeta> {
 
     /**
      * Registers the given [command] with the given [meta] to the given
@@ -28,5 +28,5 @@ fun interface CommandRegistrar<C : Command, M : CommandMeta> {
      * @param command the command to register
      * @param meta the command metadata
      */
-    fun register(root: RootCommandNode<Sender>, command: C, meta: M)
+    public fun register(root: RootCommandNode<Sender>, command: C, meta: M)
 }

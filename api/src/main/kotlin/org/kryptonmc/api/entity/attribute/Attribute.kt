@@ -11,23 +11,22 @@ package org.kryptonmc.api.entity.attribute
 /**
  * Represents an attribute that can be applied to a living entity.
  */
-interface Attribute {
+public interface Attribute {
 
     /**
      * The name of this attribute
      */
-    val name: String
-        get() = type.key.value()
+    public val name: String
 
     /**
      * The type of this attribute.
      */
-    val type: AttributeType
+    public val type: AttributeType
 
     /**
      * The base value of this attribute.
      */
-    var baseValue: Double
+    public var baseValue: Double
 
     /**
      * The cached calculated value of this attribute.
@@ -35,13 +34,13 @@ interface Attribute {
      * Use [recalculate] to recalculate this value.
      * Adding modifiers will
      */
-    val value: Double
+    public val value: Double
 
     /**
      * The modifiers used to modify the [baseValue] in calculation to get the
      * [value].
      */
-    val modifiers: Map<ModifierOperation, List<AttributeModifier>>
+    public val modifiers: Map<ModifierOperation, List<AttributeModifier>>
 
     /**
      * Gets all modifiers stored under the given [operation].
@@ -49,7 +48,7 @@ interface Attribute {
      * @param operation the operation
      * @return all modifiers for the given operation
      */
-    fun getModifiers(operation: ModifierOperation): List<AttributeModifier>
+    public fun getModifiers(operation: ModifierOperation): List<AttributeModifier>
 
     /**
      * Adds the given [modifier] to the list of modifiers under the given
@@ -58,7 +57,7 @@ interface Attribute {
      * @param operation the operation
      * @param modifier the modifier to add
      */
-    fun addModifier(operation: ModifierOperation, modifier: AttributeModifier)
+    public fun addModifier(operation: ModifierOperation, modifier: AttributeModifier)
 
     /**
      * Removes the given [modifier] from the list of modifiers under the given
@@ -67,17 +66,17 @@ interface Attribute {
      * @param operation the operation
      * @param modifier the modifier to remove
      */
-    fun removeModifier(operation: ModifierOperation, modifier: AttributeModifier)
+    public fun removeModifier(operation: ModifierOperation, modifier: AttributeModifier)
 
     /**
      * Removes all modifiers under the given [operation].
      *
      * @param operation the operation
      */
-    fun removeModifiers(operation: ModifierOperation)
+    public fun removeModifiers(operation: ModifierOperation)
 
     /**
      * Forces this attribute's [value] to be recalculated.
      */
-    fun recalculate()
+    public fun recalculate()
 }

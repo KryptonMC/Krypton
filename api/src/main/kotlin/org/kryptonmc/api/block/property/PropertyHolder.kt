@@ -13,17 +13,17 @@ package org.kryptonmc.api.block.property
  *
  * @param T the recursive type of this holder, used to morph return types
  */
-interface PropertyHolder<out T : PropertyHolder<T>> {
+public interface PropertyHolder<out T : PropertyHolder<T>> {
 
     /**
      * All of the property keys available for use by this holder.
      */
-    val availableProperties: Set<Property<*>>
+    public val availableProperties: Set<Property<*>>
 
     /**
      * All the properties that are being held by this property holder.
      */
-    val properties: Map<String, String>
+    public val properties: Map<String, String>
 
     /**
      * Returns true if the specified [key] is in this holder, false otherwise.
@@ -31,7 +31,7 @@ interface PropertyHolder<out T : PropertyHolder<T>> {
      * @param key the key
      * @return true if the key is in this holder, false otherwise
      */
-    operator fun contains(key: Property<*>): Boolean
+    public operator fun contains(key: Property<*>): Boolean
 
     /**
      * Gets the value associated with the given property [key], or returns null if
@@ -41,7 +41,7 @@ interface PropertyHolder<out T : PropertyHolder<T>> {
      * @param key the key
      * @return the value for the key, or null if not present
      */
-    operator fun <V : Comparable<V>> get(key: Property<V>): V?
+    public operator fun <V : Comparable<V>> get(key: Property<V>): V?
 
     /**
      * Sets the value associated with the given property [key] to the given
@@ -53,5 +53,5 @@ interface PropertyHolder<out T : PropertyHolder<T>> {
      * @param key the property key
      * @return a new holder with the value of the key set to the given value
      */
-    operator fun <V : Comparable<V>> set(key: Property<V>, value: V): T
+    public operator fun <V : Comparable<V>> set(key: Property<V>, value: V): T
 }

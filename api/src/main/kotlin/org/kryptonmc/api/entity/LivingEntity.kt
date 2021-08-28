@@ -14,32 +14,32 @@ import org.spongepowered.math.vector.Vector3i
 /**
  * Represents an entity that lives in a world.
  */
-interface LivingEntity : Entity, Attributable {
+public interface LivingEntity : Entity, Attributable {
 
     /**
      * The current health of this entity.
      */
-    var health: Float
+    public var health: Float
 
     /**
      * The amount of absorption this living entity has.
      */
-    var absorption: Float
+    public var absorption: Float
 
     /**
      * If this entity is currently using an item
      */
-    val isUsingItem: Boolean
+    public val isUsingItem: Boolean
 
     /**
      * The hand the entity is currently using
      */
-    val hand: Hand
+    public val hand: Hand
 
     /**
      * If this entity is in a riptide spin attack
      */
-    val isInRiptideSpinAttack: Boolean
+    public val isInRiptideSpinAttack: Boolean
 
     /**
      * If this entity is fall flying.
@@ -50,12 +50,12 @@ interface LivingEntity : Entity, Attributable {
      * This can be used to detect when the player is gliding without using
      * scoreboard statistics.
      */
-    val isFallFlying: Boolean
+    public val isFallFlying: Boolean
 
     /**
      * If this entity is dead or not.
      */
-    val isDead: Boolean
+    public val isDead: Boolean
 
     /**
      * The number of ticks this entity has been dead for.
@@ -63,26 +63,26 @@ interface LivingEntity : Entity, Attributable {
      *
      * Will be 0 whilst this entity is alive.
      */
-    val deathTime: Short
+    public val deathTime: Short
 
     /**
      * The number of ticks this entity will turn red for after being hit.
      *
      * Will be 0 when not recently hit.
      */
-    val hurtTime: Short
+    public val hurtTime: Short
 
     /**
      * The last time, in ticks, this entity was damaged.
      *
      * Calculated as the [number of ticks since the entity's creation][ticksExisted].
      */
-    val lastHurtTimestamp: Int
+    public val lastHurtTimestamp: Int
 
     /**
      * The current position this entity is sleeping at.
      *
      * If this value is null, this entity is not currently sleeping.
      */
-    val sleepingPosition: Vector3i?
+    public val sleepingPosition: Vector3i?
 }

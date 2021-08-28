@@ -13,4 +13,4 @@ import org.kryptonmc.api.item.ItemSupplier
 /**
  * A fireball.
  */
-interface Fireball : AcceleratingProjectile, ItemSupplier
+public interface Fireball : AcceleratingProjectile, ItemSupplier

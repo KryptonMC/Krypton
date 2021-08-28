@@ -17,18 +17,18 @@ import org.kryptonmc.api.registry.Registries
 /**
  * All of the built-in statistic types.
  */
-object StatisticTypes {
+public object StatisticTypes {
 
     // @formatter:off
-    @JvmField val BLOCK_MINED = get<Block>("mined")
-    @JvmField val ITEM_CRAFTED = get<ItemType>("crafted")
-    @JvmField val ITEM_USED = get<ItemType>("used")
-    @JvmField val ITEM_BROKEN = get<ItemType>("broken")
-    @JvmField val ITEM_PICKED_UP = get<ItemType>("picked_up")
-    @JvmField val ITEM_DROPPED = get<ItemType>("dropped")
-    @JvmField val ENTITY_KILLED = get<EntityType<*>>("killed")
-    @JvmField val ENTITY_KILLED_BY = get<EntityType<*>>("killed_by")
-    @JvmField val CUSTOM = get<Key>("custom")
+    @JvmField public val BLOCK_MINED: StatisticType<Block> = get("mined")
+    @JvmField public val ITEM_CRAFTED: StatisticType<ItemType> = get("crafted")
+    @JvmField public val ITEM_USED: StatisticType<ItemType> = get("used")
+    @JvmField public val ITEM_BROKEN: StatisticType<ItemType> = get("broken")
+    @JvmField public val ITEM_PICKED_UP: StatisticType<ItemType> = get("picked_up")
+    @JvmField public val ITEM_DROPPED: StatisticType<ItemType> = get("dropped")
+    @JvmField public val ENTITY_KILLED: StatisticType<EntityType<*>> = get("killed")
+    @JvmField public val ENTITY_KILLED_BY: StatisticType<EntityType<*>> = get("killed_by")
+    @JvmField public val CUSTOM: StatisticType<Key> = get("custom")
 
     // @formatter:on
     @Suppress("UNCHECKED_CAST")

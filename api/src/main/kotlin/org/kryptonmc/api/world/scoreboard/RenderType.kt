@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * Controls how an [Objective] is rendered to the client.
  */
-enum class RenderType(override val serialized: String) : StringSerializable {
+public enum class RenderType(override val serialized: String) : StringSerializable {
 
     /**
      * Display an integer value.

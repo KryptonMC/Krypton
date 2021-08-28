@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The thickness of a dripstone block.
  */
-enum class DripstoneThickness(override val serialized: String) : StringSerializable {
+public enum class DripstoneThickness(override val serialized: String) : StringSerializable {
 
     TIP_MERGE("tip_merge"),
     TIP("tip"),

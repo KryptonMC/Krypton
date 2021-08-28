@@ -11,12 +11,12 @@ package org.kryptonmc.api.entity.attribute
 /**
  * Represents something that holds attributes.
  */
-interface Attributable {
+public interface Attributable {
 
     /**
      * All attributes currently stored for this attributable.
      */
-    val attributes: Map<AttributeType, Attribute>
+    public val attributes: Map<AttributeType, Attribute>
 
     /**
      * Gets the attribute for the specified [type], or returns null if there
@@ -25,5 +25,5 @@ interface Attributable {
      * @param type the type of the attribute
      * @return the attribute, or null if not present
      */
-    fun getAttribute(type: AttributeType): Attribute? = attributes[type]
+    public fun getAttribute(type: AttributeType): Attribute? = attributes[type]
 }

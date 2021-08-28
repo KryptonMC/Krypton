@@ -15,7 +15,7 @@ import org.kryptonmc.api.space.Direction
  *
  * @param direction the direction this block face corresponds to
  */
-enum class BlockFace(val direction: Direction) {
+public enum class BlockFace(public val direction: Direction) {
 
     BOTTOM(Direction.DOWN),
     TOP(Direction.UP),
@@ -29,7 +29,7 @@ enum class BlockFace(val direction: Direction) {
      *
      * Lazily computed to avoid circular dependencies.
      */
-    val opposite by lazy {
+    public val opposite: BlockFace by lazy {
         when (this) {
             BOTTOM -> TOP
             TOP -> BOTTOM

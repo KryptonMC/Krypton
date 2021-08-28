@@ -17,8 +17,9 @@ import org.kryptonmc.api.entity.player.Player
  * @param objective the objective that's tracking this score
  * @param score the actual score value
  */
-data class Score(
-    val player: Player,
-    val objective: Objective,
-    val score: Int
+@JvmRecord
+public data class Score(
+    public val player: Player,
+    public val objective: Objective,
+    public val score: Int
 )

@@ -15,4 +15,4 @@ package org.kryptonmc.api.command
  *
  * @see BrigadierCommand
  */
-interface SimpleCommand : InvocableCommand<Array<String>>
+public interface SimpleCommand : InvocableCommand<Array<String>>

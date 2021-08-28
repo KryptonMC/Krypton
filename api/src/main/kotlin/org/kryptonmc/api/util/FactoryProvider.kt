@@ -11,7 +11,7 @@ package org.kryptonmc.api.util
 /**
  * Used to provide various factories from the backend for static factory functions.
  */
-interface FactoryProvider {
+public interface FactoryProvider {
 
     /**
      * Provides the factory with the given type [type], or throws a
@@ -19,15 +19,15 @@ interface FactoryProvider {
      * type.
      */
     @Throws(TypeNotPresentException::class)
-    fun <T> provide(type: Class<T>): T
+    public fun <T> provide(type: Class<T>): T
 
-    companion object {
+    public companion object {
 
         /**
          * The singleton instance.
          */
         @JvmField
-        val INSTANCE = serviceOrError<FactoryProvider>("factory provider")
+        public val INSTANCE: FactoryProvider = serviceOrError("factory provider")
     }
 }
 
@@ -37,4 +37,4 @@ interface FactoryProvider {
  * type.
  */
 @JvmSynthetic
-inline fun <reified T> FactoryProvider.provide(): T = provide(T::class.java)
+public inline fun <reified T> FactoryProvider.provide(): T = provide(T::class.java)

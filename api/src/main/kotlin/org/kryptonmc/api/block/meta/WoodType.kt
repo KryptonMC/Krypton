@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The available types of wood.
  */
-enum class WoodType(override val serialized: String) : StringSerializable {
+public enum class WoodType(override val serialized: String) : StringSerializable {
 
     OAK("oak"),
     SPRUCE("spruce"),

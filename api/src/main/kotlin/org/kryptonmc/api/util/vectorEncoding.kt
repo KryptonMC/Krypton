@@ -23,7 +23,7 @@ private val Z_OFFSET = PACKED_Y
  *
  * Useful for efficiently storing coordinates.
  */
-fun Vector3i.asLong(): Long = asLong(x(), y(), z())
+public fun Vector3i.asLong(): Long = asLong(x(), y(), z())
 
 /**
  * Decodes this long to an integer vector.
@@ -32,7 +32,7 @@ fun Vector3i.asLong(): Long = asLong(x(), y(), z())
  */
 @Suppress("MagicNumber")
 @JvmName("fromLong")
-fun Long.toVector(): Vector3i = Vector3i(
+public fun Long.toVector(): Vector3i = Vector3i(
     (this shl 64 - X_OFFSET - PACKED_X_Z shr 64 - PACKED_X_Z).toInt(),
     (this shl 64 - PACKED_Y shr 64 - PACKED_Y).toInt(),
     (this shl 64 - Z_OFFSET - PACKED_X_Z shr 64 - PACKED_X_Z).toInt()

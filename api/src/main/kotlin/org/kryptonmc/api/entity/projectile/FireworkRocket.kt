@@ -14,12 +14,13 @@ import org.kryptonmc.api.item.ItemSupplier
 /**
  * A fired firework rocket.
  */
-interface FireworkRocket : Projectile, ItemSupplier {
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface FireworkRocket : Projectile, ItemSupplier {
 
     /**
      * The number of ticks this rocket has been flying for.
      */
-    var life: Int
+    public var life: Int
 
     /**
      * The number of ticks until this rocket explodes.
@@ -29,13 +30,14 @@ interface FireworkRocket : Projectile, ItemSupplier {
      * (flight + 1) * 10 + random(0 to 5) + random(0 to 6)
      * ```
      */
-    var lifetime: Int
+    public var lifetime: Int
 
     /**
      * If this rocket was shot at an angle, which occurs when shot from a crossbow
      * or dispenser.
      */
-    var wasShotAtAngle: Boolean
+    @get:JvmName("wasShotAtAngle")
+    public var wasShotAtAngle: Boolean
 
     /**
      * The entity that is attached to this rocket, or null if this rocket is not attached
@@ -43,5 +45,5 @@ interface FireworkRocket : Projectile, ItemSupplier {
      *
      * This is used for elytra boosting.
      */
-    val attachedEntity: Entity?
+    public val attachedEntity: Entity?
 }

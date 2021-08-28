@@ -11,32 +11,32 @@ package org.kryptonmc.api.command.meta
 /**
  * Command metadata for a [org.kryptonmc.api.command.SimpleCommand].
  */
-interface SimpleCommandMeta : CommandMeta {
+public interface SimpleCommandMeta : CommandMeta {
 
     /**
      * The permission required to execute the command, or null if no permission
      * is required.
      */
-    val permission: String?
+    public val permission: String?
 
     override fun toBuilder(): Builder
 
     /**
      * A builder for [SimpleCommandMeta].
      */
-    interface Builder : CommandMeta.Builder {
+    public interface Builder : CommandMeta.Builder {
 
         /**
          * Sets the permission required to use the command to the given [permission].
          *
          * @param permission the permission
          */
-        fun permission(permission: String?): Builder
+        public fun permission(permission: String?): Builder
 
         override fun build(): SimpleCommandMeta
     }
 
-    companion object {
+    public companion object {
 
         /**
          * Creates a new builder for constructing simple command metadata.
@@ -45,6 +45,6 @@ interface SimpleCommandMeta : CommandMeta {
          * @return a new builder
          */
         @JvmStatic
-        fun builder(name: String) = CommandMeta.FACTORY.simpleBuilder(name)
+        public fun builder(name: String): Builder = CommandMeta.FACTORY.simpleBuilder(name)
     }
 }

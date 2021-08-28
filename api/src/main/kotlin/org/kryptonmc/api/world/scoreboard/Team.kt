@@ -26,22 +26,23 @@ import org.kryptonmc.api.entity.player.Player
  * @param suffix this team's suffix
  * @param members this team's members
  */
-class Team(
-    val name: String,
-    val displayName: Component,
-    @get:JvmName("allowFriendlyFire") val allowFriendlyFire: Boolean,
-    @get:JvmName("areInvisibleMembersVisible") val canSeeInvisibleMembers: Boolean,
-    val options: Map<Option, OptionApplication>,
-    val color: TeamColor,
-    val prefix: Component,
-    val suffix: Component,
-    val members: List<Player>
+@JvmRecord
+public data class Team(
+    public val name: String,
+    public val displayName: Component,
+    @get:JvmName("allowFriendlyFire") public val allowFriendlyFire: Boolean,
+    @get:JvmName("areInvisibleMembersVisible") public val canSeeInvisibleMembers: Boolean,
+    public val options: Map<Option, OptionApplication>,
+    public val color: TeamColor,
+    public val prefix: Component,
+    public val suffix: Component,
+    public val members: List<Player>
 )
 
 /**
  * Represents options for teams.
  */
-enum class Option {
+public enum class Option {
 
     /**
      * Whether or not name tags are visible.
@@ -62,7 +63,7 @@ enum class Option {
 /**
  * Represents how an [Option] is applied.
  */
-enum class OptionApplication {
+public enum class OptionApplication {
 
     /**
      * Always apply this option.
@@ -89,7 +90,7 @@ enum class OptionApplication {
  * Represents the colour of a team. This is used because team colours are
  * legacy colours, and because they have special IDs.
  */
-enum class TeamColor {
+public enum class TeamColor {
 
     /**
      * Colours

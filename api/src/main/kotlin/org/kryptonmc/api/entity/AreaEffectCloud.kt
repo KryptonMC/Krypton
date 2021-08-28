@@ -14,25 +14,25 @@ import java.awt.Color
  * Represents an area effect cloud, such as that of the lingering effect
  * that appears when a lingering potion is thrown.
  */
-interface AreaEffectCloud : Entity {
+public interface AreaEffectCloud : Entity {
 
     /**
      * The amount of ticks this cloud has lived for.
      */
-    val age: Int
+    public val age: Int
 
     /**
      * The duration, in ticks, that this area effect cloud will exist for.
      */
-    val duration: Int
+    public val duration: Int
 
     /**
      * The radius of this area effect cloud.
      */
-    val radius: Float
+    public val radius: Float
 
     /**
      * The color of this area effect cloud.
      */
-    val color: Color
+    public val color: Color
 }

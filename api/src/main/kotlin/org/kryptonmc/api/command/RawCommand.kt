@@ -14,4 +14,4 @@ package org.kryptonmc.api.command
  * This is useful for attaching external command frameworks to Krypton, and allowing them
  * to do their own processing.
  */
-interface RawCommand : InvocableCommand<String>
+public interface RawCommand : InvocableCommand<String>

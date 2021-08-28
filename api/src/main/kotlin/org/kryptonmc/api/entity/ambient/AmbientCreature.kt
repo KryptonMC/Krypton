@@ -13,4 +13,4 @@ import org.kryptonmc.api.entity.Mob
 /**
  * An ambient creature, such as a [Bat].
  */
-interface AmbientCreature : Mob
+public interface AmbientCreature : Mob

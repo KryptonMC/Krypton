@@ -11,10 +11,10 @@ package org.kryptonmc.api.entity.ambient
 /**
  * A bat.
  */
-interface Bat : AmbientCreature {
+public interface Bat : AmbientCreature {
 
     /**
      * If this bat is currently resting (hanging from the ceiling).
      */
-    val isResting: Boolean
+    public val isResting: Boolean
 }

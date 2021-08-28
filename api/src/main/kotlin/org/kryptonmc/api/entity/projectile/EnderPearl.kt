@@ -11,4 +11,4 @@ package org.kryptonmc.api.entity.projectile
 /**
  * A thrown ender pearl.
  */
-interface EnderPearl : ThrowableProjectile
+public interface EnderPearl : ThrowableProjectile

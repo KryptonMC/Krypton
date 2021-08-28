@@ -14,22 +14,22 @@ import net.kyori.adventure.key.Keyed
 /**
  * The canvas of a painting.
  */
-interface Canvas : Keyed {
+public interface Canvas : Keyed {
 
     /**
      * The key of this motive.
      */
-    val key: Key
+    public val key: Key
 
     /**
      * The width of this motive.
      */
-    val width: Int
+    public val width: Int
 
     /**
      * The height of this motive.
      */
-    val height: Int
+    public val height: Int
 
-    override fun key() = key
+    override fun key(): Key = key
 }

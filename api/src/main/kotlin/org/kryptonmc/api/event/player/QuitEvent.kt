@@ -19,13 +19,13 @@ import org.kryptonmc.api.entity.player.Player
  *
  * @param player the player who quit
  */
-class QuitEvent(val player: Player) {
+public class QuitEvent(public val player: Player) {
 
     /**
      * The message to send to the player when they quit.
      */
     @Volatile
-    var message: Component = translatable {
+    public var message: Component = translatable {
         key("multiplayer.player.left")
         color(NamedTextColor.YELLOW)
         args(text(player.name))

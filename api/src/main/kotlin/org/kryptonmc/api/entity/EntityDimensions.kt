@@ -18,10 +18,10 @@ import org.kryptonmc.api.space.Vector
  * @param height the height of the entity
  * @param isFixed if these dimensions are fixed
  */
-class EntityDimensions(
-    val width: Float,
-    val height: Float,
-    val isFixed: Boolean
+public data class EntityDimensions(
+    public val width: Float,
+    public val height: Float,
+    public val isFixed: Boolean
 ) {
 
     /**
@@ -32,7 +32,7 @@ class EntityDimensions(
      * @param center the centre position
      * @return a new bounding box from the centre coordinates
      */
-    fun toBoundingBox(center: Vector): BoundingBox = toBoundingBox(center.x, center.y, center.z)
+    public fun toBoundingBox(center: Vector): BoundingBox = toBoundingBox(center.x, center.y, center.z)
 
     /**
      * Creates a new bounding box from the given **centre** [x], [y], and [z]
@@ -44,7 +44,7 @@ class EntityDimensions(
      * @param z the centre Z coordinate
      * @return a new bounding box from the centre coordinates
      */
-    fun toBoundingBox(x: Double, y: Double, z: Double): BoundingBox {
+    public fun toBoundingBox(x: Double, y: Double, z: Double): BoundingBox {
         val width = width / 2.0
         val height = height
         return BoundingBox(x - width, y, z - width, x + width, y + height, z + width)
@@ -59,7 +59,7 @@ class EntityDimensions(
      * @param factor the factor to scale the width and height by
      * @return see above
      */
-    fun scale(factor: Float) = scale(factor, factor)
+    public fun scale(factor: Float): EntityDimensions = scale(factor, factor)
 
     /**
      * Scales the dimensions of this object by the given [factor], returning a new
@@ -70,7 +70,7 @@ class EntityDimensions(
      * @param factor the factor to scale the width and height by
      * @return see above
      */
-    fun scale(factor: Double) = scale(factor.toFloat())
+    public fun scale(factor: Double): EntityDimensions = scale(factor.toFloat())
 
     /**
      * Scales the dimensions of this object by the given [factor], returning a new
@@ -81,7 +81,7 @@ class EntityDimensions(
      * @param factor the factor to scale the width and height by
      * @return see above
      */
-    fun scale(factor: Int) = scale(factor.toFloat())
+    public fun scale(factor: Int): EntityDimensions = scale(factor.toFloat())
 
     /**
      * Scales the dimensions of this object by the given [factor], returning a new
@@ -92,7 +92,7 @@ class EntityDimensions(
      * @param factor the factor to scale the width and height by
      * @return see above
      */
-    fun scale(factor: Long) = scale(factor.toFloat())
+    public fun scale(factor: Long): EntityDimensions = scale(factor.toFloat())
 
     /**
      * Scales the dimensions of this object by the given [width] and [height] factors,
@@ -105,9 +105,10 @@ class EntityDimensions(
      * @param height the height factor to scale the height by
      * @return see above
      */
-    fun scale(width: Float, height: Float) = if (!isFixed && (width != 1F || height != 1F)) {
-        scalable(this.width * width, this.height * height)
-    } else this
+    public fun scale(width: Float, height: Float): EntityDimensions {
+        if (isFixed || width == 1F && height == 1F) return this
+        return scalable(this.width * width, this.height * height)
+    }
 
     /**
      * Scales the dimensions of this object by the given [width] and [height] factors,
@@ -120,7 +121,7 @@ class EntityDimensions(
      * @param height the height factor to scale the height by
      * @return see above
      */
-    fun scale(width: Double, height: Double) = scale(width.toFloat(), height.toFloat())
+    public fun scale(width: Double, height: Double): EntityDimensions = scale(width.toFloat(), height.toFloat())
 
     /**
      * Scales the dimensions of this object by the given [width] and [height] factors,
@@ -133,7 +134,7 @@ class EntityDimensions(
      * @param height the height factor to scale the height by
      * @return see above
      */
-    fun scale(width: Int, height: Int) = scale(width.toFloat(), height.toFloat())
+    public fun scale(width: Int, height: Int): EntityDimensions = scale(width.toFloat(), height.toFloat())
 
     /**
      * Scales the dimensions of this object by the given [width] and [height] factors,
@@ -146,22 +147,11 @@ class EntityDimensions(
      * @param height the height factor to scale the height by
      * @return see above
      */
-    fun scale(width: Long, height: Long) = scale(width.toFloat(), height.toFloat())
+    public fun scale(width: Long, height: Long): EntityDimensions = scale(width.toFloat(), height.toFloat())
 
-    override fun toString() = "EntityDimensions(width=$width, height=$height, isFixed=$isFixed)"
+    override fun toString(): String = "EntityDimensions(width=$width, height=$height, isFixed=$isFixed)"
 
-    companion object {
-
-        /**
-         * Creates new entity dimensions that can be scaled with [scale], with the
-         * given [width] and [height].
-         *
-         * @param width the width
-         * @param height the height
-         * @return new scalable entity dimensions
-         */
-        @JvmStatic
-        fun scalable(width: Float, height: Float) = EntityDimensions(width, height, false)
+    public companion object {
 
         /**
          * Creates new entity dimensions that can be scaled with [scale], with the
@@ -172,7 +162,7 @@ class EntityDimensions(
          * @return new scalable entity dimensions
          */
         @JvmStatic
-        fun scalable(width: Double, height: Double) = scalable(width.toFloat(), height.toFloat())
+        public fun scalable(width: Float, height: Float): EntityDimensions = EntityDimensions(width, height, false)
 
         /**
          * Creates new entity dimensions that can be scaled with [scale], with the
@@ -183,7 +173,7 @@ class EntityDimensions(
          * @return new scalable entity dimensions
          */
         @JvmStatic
-        fun scalable(width: Int, height: Int) = scalable(width.toFloat(), height.toFloat())
+        public fun scalable(width: Double, height: Double): EntityDimensions = scalable(width.toFloat(), height.toFloat())
 
         /**
          * Creates new entity dimensions that can be scaled with [scale], with the
@@ -194,7 +184,18 @@ class EntityDimensions(
          * @return new scalable entity dimensions
          */
         @JvmStatic
-        fun scalable(width: Long, height: Long) = scalable(width.toFloat(), height.toFloat())
+        public fun scalable(width: Int, height: Int): EntityDimensions = scalable(width.toFloat(), height.toFloat())
+
+        /**
+         * Creates new entity dimensions that can be scaled with [scale], with the
+         * given [width] and [height].
+         *
+         * @param width the width
+         * @param height the height
+         * @return new scalable entity dimensions
+         */
+        @JvmStatic
+        public fun scalable(width: Long, height: Long): EntityDimensions = scalable(width.toFloat(), height.toFloat())
 
         /**
          * Creates new entity dimensions that cannot scaled with [scale], with the
@@ -205,7 +206,7 @@ class EntityDimensions(
          * @return new fixed entity dimensions
          */
         @JvmStatic
-        fun fixed(width: Float, height: Float) = EntityDimensions(width, height, true)
+        public fun fixed(width: Float, height: Float): EntityDimensions = EntityDimensions(width, height, true)
 
         /**
          * Creates new entity dimensions that cannot scaled with [scale], with the
@@ -216,7 +217,7 @@ class EntityDimensions(
          * @return new fixed entity dimensions
          */
         @JvmStatic
-        fun fixed(width: Double, height: Double) = fixed(width.toFloat(), height.toFloat())
+        public fun fixed(width: Double, height: Double): EntityDimensions = fixed(width.toFloat(), height.toFloat())
 
         /**
          * Creates new entity dimensions that cannot scaled with [scale], with the
@@ -227,7 +228,7 @@ class EntityDimensions(
          * @return new fixed entity dimensions
          */
         @JvmStatic
-        fun fixed(width: Int, height: Int) = fixed(width.toFloat(), height.toFloat())
+        public fun fixed(width: Int, height: Int): EntityDimensions = fixed(width.toFloat(), height.toFloat())
 
         /**
          * Creates new entity dimensions that cannot scaled with [scale], with the
@@ -238,6 +239,6 @@ class EntityDimensions(
          * @return new fixed entity dimensions
          */
         @JvmStatic
-        fun fixed(width: Long, height: Long) = fixed(width.toFloat(), height.toFloat())
+        public fun fixed(width: Long, height: Long): EntityDimensions = fixed(width.toFloat(), height.toFloat())
     }
 }

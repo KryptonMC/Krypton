@@ -17,7 +17,7 @@ import net.kyori.adventure.text.format.TextColor
  *
  * @param color the colour the lore text will appear
  */
-enum class ItemRarity(val color: TextColor) {
+public enum class ItemRarity(public val color: TextColor) {
 
     COMMON(NamedTextColor.WHITE),
     UNCOMMON(NamedTextColor.YELLOW),

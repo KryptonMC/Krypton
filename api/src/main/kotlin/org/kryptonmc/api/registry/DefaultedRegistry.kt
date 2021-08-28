@@ -14,17 +14,17 @@ import org.kryptonmc.api.resource.ResourceKey
 /**
  * A registry with a default key-value pair.
  */
-interface DefaultedRegistry<T : Any> : Registry<T> {
+public interface DefaultedRegistry<T : Any> : Registry<T> {
 
     /**
      * The default key for this defaulted registry.
      */
-    val defaultKey: Key
+    public val defaultKey: Key
 
     /**
      * The default value for this defaulted registry.
      */
-    val defaultValue: T
+    public val defaultValue: T
 
     override fun get(key: Key): T
 

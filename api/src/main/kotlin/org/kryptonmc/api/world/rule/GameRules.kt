@@ -13,6 +13,7 @@
  */
 package org.kryptonmc.api.world.rule
 
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.Mob
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.registry.Registries
@@ -21,7 +22,7 @@ import org.kryptonmc.api.registry.Registries
  * All the built-in game rules.
  */
 @Suppress("MagicNumber")
-object GameRules {
+public object GameRules {
 
     // @formatter:off
     /**
@@ -30,7 +31,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val ANNOUNCE_ADVANCEMENTS = register("announce_advancements", "announceAdvancements", true)
+    public val ANNOUNCE_ADVANCEMENTS: GameRule<Boolean> = register("announce_advancements", "announceAdvancements", true)
 
     /**
      * Whether command blocks should notify admins when they perform commands.
@@ -38,7 +39,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val COMMAND_BLOCK_OUTPUT = register("command_block_output", "commandBlockOutput", true)
+    public val COMMAND_BLOCK_OUTPUT: GameRule<Boolean> = register("command_block_output", "commandBlockOutput", true)
 
     /**
      * Whether the server should skip checking player speed when the player is wearing
@@ -47,7 +48,11 @@ object GameRules {
      * This is a boolean game rule, with a default value of `false`.
      */
     @JvmField
-    val DISABLE_ELYTRA_MOVEMENT_CHECK = register("disable_elytra_movement_check", "disableElytraMovementCheck", false)
+    public val DISABLE_ELYTRA_MOVEMENT_CHECK: GameRule<Boolean> = register(
+        "disable_elytra_movement_check",
+        "disableElytraMovementCheck",
+        false
+    )
 
     /**
      * Whether raids are disabled.
@@ -57,7 +62,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `false`.
      */
     @JvmField
-    val DISABLE_RAIDS = register("disable_raids", "disableRaids", false)
+    public val DISABLE_RAIDS: GameRule<Boolean> = register("disable_raids", "disableRaids", false)
 
     /**
      * Whether the day-night cycle and moon phases progress.
@@ -65,7 +70,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val DO_DAYLIGHT_CYCLE = register("do_daylight_cycle", "doDaylightCycle", true)
+    public val DO_DAYLIGHT_CYCLE: GameRule<Boolean> = register("do_daylight_cycle", "doDaylightCycle", true)
 
     /**
      * Whether entities that are not mobs should have drops.
@@ -73,7 +78,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val DO_ENTITY_DROPS = register("do_entity_drops", "doEntityDrops", true)
+    public val DO_ENTITY_DROPS: GameRule<Boolean> = register("do_entity_drops", "doEntityDrops", true)
 
     /**
      * Whether fire should spread and naturally extinguish.
@@ -81,7 +86,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val DO_FIRE_TICK = register("do_fire_tick", "doFireTick", true)
+    public val DO_FIRE_TICK: GameRule<Boolean> = register("do_fire_tick", "doFireTick", true)
 
     /**
      * Whether phantoms can spawn in the night-time.
@@ -89,7 +94,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val DO_INSOMNIA = register("do_insomnia", "doInsomnia", true)
+    public val DO_INSOMNIA: GameRule<Boolean> = register("do_insomnia", "doInsomnia", true)
 
     /**
      * Whether [Player]s should respawn immediately without showing the death screen.
@@ -97,7 +102,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `false`.
      */
     @JvmField
-    val DO_IMMEDIATE_RESPAWN = register("do_immediate_respawn", "doImmediateRespawn", false)
+    public val DO_IMMEDIATE_RESPAWN: GameRule<Boolean> = register("do_immediate_respawn", "doImmediateRespawn", false)
 
     /**
      * Whether [Player]s can only craft recipes they have unlocked.
@@ -105,7 +110,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `false`.
      */
     @JvmField
-    val DO_LIMITED_CRAFTING = register("do_limited_crafting", "doLimitedCrafting", false)
+    public val DO_LIMITED_CRAFTING: GameRule<Boolean> = register("do_limited_crafting", "doLimitedCrafting", false)
 
     /**
      * Whether [Mob]s should drop items.
@@ -113,7 +118,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val DO_MOB_LOOT = register("do_mob_loot", "doMobLoot", true)
+    public val DO_MOB_LOOT: GameRule<Boolean> = register("do_mob_loot", "doMobLoot", true)
 
     /**
      * Whether [Mob]s should naturally spawn.
@@ -121,7 +126,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val DO_MOB_SPAWNING = register("do_mob_spawning", "doMobSpawning", true)
+    public val DO_MOB_SPAWNING: GameRule<Boolean> = register("do_mob_spawning", "doMobSpawning", true)
 
     /**
      * Whether patrollers will go out on patrol (typically in a raid).
@@ -129,7 +134,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val DO_PATROL_SPAWNING = register("do_patrol_spawning", "doPatrolSpawning", true)
+    public val DO_PATROL_SPAWNING: GameRule<Boolean> = register("do_patrol_spawning", "doPatrolSpawning", true)
 
     /**
      * Whether blocks should have drops.
@@ -137,7 +142,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val DO_TILE_DROPS = register("do_tile_drops", "doTileDrops", true)
+    public val DO_TILE_DROPS: GameRule<Boolean> = register("do_tile_drops", "doTileDrops", true)
 
     /**
      * Whether wandering traders will naturally spawn.
@@ -145,7 +150,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val DO_TRADER_SPAWNING = register("do_trader_spawning", "doTraderSpawning", true)
+    public val DO_TRADER_SPAWNING: GameRule<Boolean> = register("do_trader_spawning", "doTraderSpawning", true)
 
     /**
      * Whether the weather will change.
@@ -153,7 +158,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val DO_WEATHER_CYCLE = register("do_weather_cycle", "doWeatherCycle", true)
+    public val DO_WEATHER_CYCLE: GameRule<Boolean> = register("do_weather_cycle", "doWeatherCycle", true)
 
     /**
      * Whether entities should take drowning damage.
@@ -161,7 +166,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val DROWNING_DAMAGE = register("drowning_damage", "drowningDamage", true)
+    public val DROWNING_DAMAGE: GameRule<Boolean> = register("drowning_damage", "drowningDamage", true)
 
     /**
      * Whether entities should take fall damage.
@@ -169,7 +174,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val FALL_DAMAGE = register("fall_damage", "fallDamage", true)
+    public val FALL_DAMAGE: GameRule<Boolean> = register("fall_damage", "fallDamage", true)
 
     /**
      * Whether entities should take fire damage.
@@ -177,7 +182,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val FIRE_DAMAGE = register("fire_damage", "fireDamage", true)
+    public val FIRE_DAMAGE: GameRule<Boolean> = register("fire_damage", "fireDamage", true)
 
     /**
      * Makes angered neutral mobs stop being angry when the targeted player dies nearby.
@@ -185,7 +190,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val FORGIVE_DEAD_PLAYERS = register("forgive_dead_players", "forgiveDeadPlayers", true)
+    public val FORGIVE_DEAD_PLAYERS: GameRule<Boolean> = register("forgive_dead_players", "forgiveDeadPlayers", true)
 
     /**
      * Whether [Player]s should keep items in their inventory after death.
@@ -193,7 +198,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `false`.
      */
     @JvmField
-    val KEEP_INVENTORY = register("keep_inventory", "keepInventory", false)
+    public val KEEP_INVENTORY: GameRule<Boolean> = register("keep_inventory", "keepInventory", false)
 
     /**
      * Whether to log admin commands to server log.
@@ -201,7 +206,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val LOG_ADMIN_COMMANDS = register("log_admin_commands", "logAdminCommands", true)
+    public val LOG_ADMIN_COMMANDS: GameRule<Boolean> = register("log_admin_commands", "logAdminCommands", true)
 
     /**
      * The total number of chain commands that can run during a single tick.
@@ -209,7 +214,11 @@ object GameRules {
      * This is a numerical game rule, with a default value of `65536`.
      */
     @JvmField
-    val MAX_COMMAND_CHAIN_LENGTH = register("max_command_chain_length", "maxCommandChainLength", 65536)
+    public val MAX_COMMAND_CHAIN_LENGTH: GameRule<Int> = register(
+        "max_command_chain_length",
+        "maxCommandChainLength",
+        65536
+    )
 
     /**
      * The maximum number of other pushable entities a mob or player can push, before taking 3 suffocation
@@ -224,7 +233,7 @@ object GameRules {
      * This is a numerical game rule, with a default value of `24`.
      */
     @JvmField
-    val MAX_ENTITY_CRAMMING = register("max_entity_cramming", "maxEntityCramming", 24)
+    public val MAX_ENTITY_CRAMMING: GameRule<Int> = register("max_entity_cramming", "maxEntityCramming", 24)
 
     /**
      * Whether [Mob]s should be able to change blocks and pick up items.
@@ -232,7 +241,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val MOB_GRIEFING = register("mob_griefing", "mobGriefing", true)
+    public val MOB_GRIEFING: GameRule<Boolean> = register("mob_griefing", "mobGriefing", true)
 
     /**
      * Whether [Player]s can regenerate health naturally if their hunger is full enough (doesn't affect
@@ -241,7 +250,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val NATURAL_REGENERATION = register("natural_regeneration", "naturalRegeneration", true)
+    public val NATURAL_REGENERATION: GameRule<Boolean> = register("natural_regeneration", "naturalRegeneration", true)
 
     /**
      * How often a random block tick occurs (such as plant growth, leaf decay, etc.) per chunk section
@@ -252,7 +261,7 @@ object GameRules {
      * This is a numerical game rule, with a default value of `3`.
      */
     @JvmField
-    val RANDOM_TICK_SPEED = register("random_tick_speed", "randomTickSpeed", 3)
+    public val RANDOM_TICK_SPEED: GameRule<Int> = register("random_tick_speed", "randomTickSpeed", 3)
 
     /**
      * Whether the debug screen shows all or reduced information.
@@ -260,7 +269,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `false`.
      */
     @JvmField
-    val REDUCED_DEBUG_INFO = register("reduced_debug_info", "reducedDebugInfo", false)
+    public val REDUCED_DEBUG_INFO: GameRule<Boolean> = register("reduced_debug_info", "reducedDebugInfo", false)
 
     /**
      * Whether the feedback from commands executed by a [Player] should show up in chat.
@@ -271,7 +280,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val SEND_COMMAND_FEEDBACK = register("send_command_feedback", "sendCommandFeedback", true)
+    public val SEND_COMMAND_FEEDBACK: GameRule<Boolean> = register("send_command_feedback", "sendCommandFeedback", true)
 
     /**
      * Whether a message appears in chat when a [Player] dies.
@@ -279,7 +288,7 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val SHOW_DEATH_MESSAGES = register("show_death_messages", "showDeathMessages", true)
+    public val SHOW_DEATH_MESSAGES: GameRule<Boolean> = register("show_death_messages", "showDeathMessages", true)
 
     /**
      * The number of blocks outward from the world spawn coordinates that a player will spawn in
@@ -288,7 +297,7 @@ object GameRules {
      * This is a numerical game rule, with a default value of `10`.
      */
     @JvmField
-    val SPAWN_RADIUS = register("spawn_radius", "spawnRadius", 10)
+    public val SPAWN_RADIUS: GameRule<Int> = register("spawn_radius", "spawnRadius", 10)
 
     /**
      * Whether players in [spectator mode][org.kryptonmc.api.world.Gamemode.SPECTATOR] can
@@ -297,7 +306,11 @@ object GameRules {
      * This is a boolean game rule, with a default value of `true`.
      */
     @JvmField
-    val SPECTATORS_GENERATE_CHUNKS = register("spectators_generate_chunks", "spectatorsGenerateChunks", true)
+    public val SPECTATORS_GENERATE_CHUNKS: GameRule<Boolean> = register(
+        "spectators_generate_chunks",
+        "spectatorsGenerateChunks",
+        true
+    )
 
     /**
      * Makes angered neutral mobs attack any nearby player, not just the player that angered them.
@@ -305,13 +318,13 @@ object GameRules {
      * This is a boolean game rule, with a default value of `false`.
      */
     @JvmField
-    val UNIVERSAL_ANGER = register("universal_anger", "universalAnger", false)
+    public val UNIVERSAL_ANGER: GameRule<Boolean> = register("universal_anger", "universalAnger", false)
 
     // @formatter:on
     @Suppress("UNCHECKED_CAST")
     private fun <V : Any> register(key: String, name: String, default: V): GameRule<V> = Registries.register(
         Registries.GAMERULES,
         key,
-        GameRule(name, default)
+        GameRule(name, default, Component.translatable("gamerule.$name"))
     ) as GameRule<V>
 }

@@ -13,4 +13,4 @@ import org.kryptonmc.api.entity.Mob
 /**
  * An entity that is always hostile towards the player.
  */
-interface Monster : Mob
+public interface Monster : Mob

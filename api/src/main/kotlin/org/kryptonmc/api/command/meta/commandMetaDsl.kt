@@ -20,10 +20,10 @@ private annotation class CommandMetaDsl
  */
 @CommandMetaDsl
 @JvmSynthetic
-inline fun commandMeta(
+public inline fun commandMeta(
     name: String,
     builder: CommandMeta.Builder.() -> Unit
-) = CommandMeta.builder(name).apply(builder).build()
+): CommandMeta = CommandMeta.builder(name).apply(builder).build()
 
 /**
  * Constructs new [SimpleCommandMeta] with the given [name] and [builder] function.
@@ -34,7 +34,7 @@ inline fun commandMeta(
  */
 @CommandMetaDsl
 @JvmSynthetic
-inline fun simpleCommandMeta(
+public inline fun simpleCommandMeta(
     name: String,
     builder: SimpleCommandMeta.Builder.() -> Unit
-) = SimpleCommandMeta.builder(name).apply(builder).build()
+): SimpleCommandMeta = SimpleCommandMeta.builder(name).apply(builder).build()

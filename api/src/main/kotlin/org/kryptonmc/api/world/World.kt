@@ -31,97 +31,97 @@ import java.nio.file.Path
 /**
  * Represents a loaded world.
  */
-interface World : ForwardingAudience {
+public interface World : ForwardingAudience {
 
     /**
      * The server this world was loaded on.
      */
-    val server: Server
+    public val server: Server
 
     /**
      * The name of this world.
      */
-    val name: String
+    public val name: String
 
     /**
      * The folder of this world on disk.
      */
-    val folder: Path
+    public val folder: Path
 
     /**
      * The dimension resource key for this world.
      */
-    val dimension: ResourceKey<World>
+    public val dimension: ResourceKey<World>
 
     /**
      * The dimension that this world is.
      */
-    val dimensionType: DimensionType
+    public val dimensionType: DimensionType
 
     /**
      * The spawn location of this world.
      */
-    val spawnLocation: Vector3i
+    public val spawnLocation: Vector3i
 
     /**
      * The set of chunks currently loaded in this world.
      */
-    val chunks: Collection<Chunk>
+    public val chunks: Collection<Chunk>
 
     /**
      * This world's border.
      */
-    val border: WorldBorder
+    public val border: WorldBorder
 
     /**
      * The difficulty of this world.
      */
-    val difficulty: Difficulty
+    public val difficulty: Difficulty
 
     /**
      * The default gamemode of this world.
      */
-    val gamemode: Gamemode
+    public val gamemode: Gamemode
 
     /**
      * If the world is a hardcore world.
      */
-    val isHardcore: Boolean
+    public val isHardcore: Boolean
 
     /**
      * The seed of this world.
      */
-    val seed: Long
+    public val seed: Long
 
     /**
      * The current time in this world.
      */
-    val time: Long
+    public val time: Long
 
     /**
      * If this world is currently thundering (has an ongoing thunderstorm).
      */
-    val isThundering: Boolean
+    public val isThundering: Boolean
 
     /**
      * The level of the current thunderstorm (0 if there is no thunderstorm going on).
      */
-    var thunderLevel: Float
+    public var thunderLevel: Float
 
     /**
      * If this world is currently raining.
      */
-    val isRaining: Boolean
+    public val isRaining: Boolean
 
     /**
      * The level of the current rain.
      */
-    var rainLevel: Float
+    public var rainLevel: Float
 
     /**
      * The game rules for this world.
      */
-    val gameRules: GameRuleHolder
+    public val gameRules: GameRuleHolder
 
     /**
      * Gets the block at the given coordinates.
@@ -138,7 +138,7 @@ interface World : ForwardingAudience {
      * @param z the Z coordinate
      * @return see above
      */
-    fun getBlock(x: Int, y: Int, z: Int): Block
+    public fun getBlock(x: Int, y: Int, z: Int): Block
 
     /**
      * Gets the block at the given [position].
@@ -153,7 +153,7 @@ interface World : ForwardingAudience {
      * @param position the position
      * @return see above
      */
-    fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
+    public fun getBlock(position: Vector3i): Block
 
     /**
      * Gets the block at the given [position].
@@ -168,7 +168,7 @@ interface World : ForwardingAudience {
      * @param position the position
      * @return see above
      */
-    fun getBlock(position: Position): Block = getBlock(position.blockX, position.blockY, position.blockZ)
+    public fun getBlock(position: Position): Block = getBlock(position.blockX, position.blockY, position.blockZ)
 
     /**
      * Gets the fluid at the given coordinates.
@@ -184,7 +184,7 @@ interface World : ForwardingAudience {
      * @param z the Z coordinate
      * @return see above
      */
-    fun getFluid(x: Int, y: Int, z: Int): Fluid
+    public fun getFluid(x: Int, y: Int, z: Int): Fluid
 
     /**
      * Gets the fluid at the given [position].
@@ -198,7 +198,7 @@ interface World : ForwardingAudience {
      * @param position the position
      * @return see above
      */
-    fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
+    public fun getFluid(position: Vector3i): Fluid
 
     /**
      * Gets the fluid at the given [position].
@@ -212,7 +212,7 @@ interface World : ForwardingAudience {
      * @param position the position
      * @return see above
      */
-    fun getFluid(position: Position): Fluid = getFluid(position.blockX, position.blockY, position.blockZ)
+    public fun getFluid(position: Position): Fluid = getFluid(position.blockX, position.blockY, position.blockZ)
 
     /**
      * Sets the block at the given coordinates to the given [block].
@@ -222,7 +222,7 @@ interface World : ForwardingAudience {
      * @param z the Z coordinate
      * @param block the new block
      */
-    fun setBlock(x: Int, y: Int, z: Int, block: Block)
+    public fun setBlock(x: Int, y: Int, z: Int, block: Block)
 
     /**
      * Sets the block at the given [position] to the given [block].
@@ -230,7 +230,7 @@ interface World : ForwardingAudience {
      * @param position the position
      * @param block the new block
      */
-    fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
+    public fun setBlock(position: Vector3i, block: Block)
 
     /**
      * Sets the block at the given [position] to the given [block].
@@ -238,7 +238,7 @@ interface World : ForwardingAudience {
      * @param position the position
      * @param block the block
      */
-    fun setBlock(position: Position, block: Block) = setBlock(position.blockX, position.blockY, position.blockZ, block)
+    public fun setBlock(position: Position, block: Block): Unit = setBlock(position.blockX, position.blockY, position.blockZ, block)
 
     /**
      * Gets a chunk from its **chunk** coordinates, or returns null if there is
@@ -251,7 +251,7 @@ interface World : ForwardingAudience {
      * @param z the chunk Z coordinate
      * @return the chunk at the given coordinates, or null if there isn't one loaded
      */
-    fun getChunkAt(x: Int, z: Int): Chunk?
+    public fun getChunkAt(x: Int, z: Int): Chunk?
 
     /**
      * Gets a chunk from its **chunk** coordinates, or returns null if there is
@@ -263,7 +263,7 @@ interface World : ForwardingAudience {
      * @param position the chunk position
      * @return the chunk at the given position, or null if there isn't one loaded
      */
-    fun getChunkAt(position: Vector2i): Chunk? = getChunkAt(position.x(), position.y())
+    public fun getChunkAt(position: Vector2i): Chunk? = getChunkAt(position.x(), position.y())
 
     /**
      * Gets a chunk from its **block** coordinates, or returns null if there is
@@ -274,7 +274,7 @@ interface World : ForwardingAudience {
      * @param z the block Z coordinate
      * @return the chunk at the given coordinates, or null if there isn't one loaded
      */
-    fun getChunk(x: Int, y: Int, z: Int): Chunk?
+    public fun getChunk(x: Int, y: Int, z: Int): Chunk?
 
     /**
      * Gets a chunk from its **block** coordinates, or returns null if there is
@@ -283,7 +283,7 @@ interface World : ForwardingAudience {
      * @param position the block position
      * @return the chunk at the given coordinates, or null if there isn't one loaded
      */
-    fun getChunk(position: Vector3i): Chunk? = getChunk(position.x(), position.y(), position.z())
+    public fun getChunk(position: Vector3i): Chunk?
 
     /**
      * Gets a chunk from its **block** coordinates, or returns null if there is
@@ -292,7 +292,7 @@ interface World : ForwardingAudience {
      * @param position the position
      * @return the chunk at the given coordinates, or null if there isn't one loaded
      */
-    fun getChunk(position: Position): Chunk? = getChunk(position.blockX, position.blockY, position.blockZ)
+    public fun getChunk(position: Position): Chunk?
 
     /**
      * Gets or loads the chunk at the given **chunk** coordinates.
@@ -306,7 +306,7 @@ interface World : ForwardingAudience {
      * @param x the X coordinate
      * @param z the Z coordinate
      */
-    fun loadChunk(x: Int, z: Int): Chunk
+    public fun loadChunk(x: Int, z: Int): Chunk
 
     /**
      * Unloads the chunk at the specified [x] and [z] coordinates if there is a chunk
@@ -323,13 +323,13 @@ interface World : ForwardingAudience {
      * @param z the Z coordinate
      * @param force whether to force unload the chunk or not
      */
-    fun unloadChunk(x: Int, z: Int, force: Boolean)
+    public fun unloadChunk(x: Int, z: Int, force: Boolean)
 
     /**
      * Saves this world to disk. Exposed as a function of [World] to allow for custom world implementations
      * to define this.
      */
-    fun save()
+    public fun save()
 
     /**
      * Spawns an entity with the given [type] in this world at the given [location].
@@ -337,26 +337,26 @@ interface World : ForwardingAudience {
      * @param type the type of the entity
      * @param location the location to spawn the entity at
      */
-    fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector): T?
+    public fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector): T?
 
-    companion object {
+    public companion object {
 
         /**
          * The resource key for the overworld dimension.
          */
         @JvmField
-        val OVERWORLD = ResourceKey.of(ResourceKeys.DIMENSION, Key.key("overworld"))
+        public val OVERWORLD: ResourceKey<World> = ResourceKey.of(ResourceKeys.DIMENSION, Key.key("overworld"))
 
         /**
          * The resource key for the nether dimension.
          */
         @JvmField
-        val NETHER = ResourceKey.of(ResourceKeys.DIMENSION, Key.key("the_nether"))
+        public val NETHER: ResourceKey<World> = ResourceKey.of(ResourceKeys.DIMENSION, Key.key("the_nether"))
 
         /**
          * The resource key for the end dimension.
          */
         @JvmField
-        val END = ResourceKey.of(ResourceKeys.DIMENSION, Key.key("the_end"))
+        public val END: ResourceKey<World> = ResourceKey.of(ResourceKeys.DIMENSION, Key.key("the_end"))
     }
 }

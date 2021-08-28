@@ -11,15 +11,15 @@ package org.kryptonmc.api.entity.monster
 /**
  * A zombie
  */
-interface Zombie : Monster {
+public interface Zombie : Monster {
 
     /**
      * If this zombie is a baby
      */
-    val isBaby: Boolean
+    public val isBaby: Boolean
 
     /**
      * If this zombie is currently converting to a drowned
      */
-    val isConverting: Boolean
+    public val isConverting: Boolean
 }

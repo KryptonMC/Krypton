@@ -19,49 +19,49 @@ import kotlin.math.sqrt
 /**
  * A neat abstraction layer between both [Vector] and [Location].
  */
-interface Position : Cloneable {
+public interface Position : Cloneable {
 
     /**
      * The X coordinate of this [Position].
      */
     @get:JvmName("x")
-    val x: Double
+    public val x: Double
 
     /**
      * The Y coordinate of this [Position].
      */
     @get:JvmName("y")
-    val y: Double
+    public val y: Double
 
     /**
      * The Z coordinate of this [Position].
      */
     @get:JvmName("z")
-    val z: Double
+    public val z: Double
 
     /**
      * The floored value of the [x] component. Used for block coordinates.
      */
     @get:JvmName("blockX")
-    val blockX: Int
+    public val blockX: Int
 
     /**
      * The floored value of the [y] component. Used for block coordinates.
      */
     @get:JvmName("blockY")
-    val blockY: Int
+    public val blockY: Int
 
     /**
      * The floored value of the [z] component. Used for block coordinates.
      */
     @get:JvmName("blockZ")
-    val blockZ: Int
+    public val blockZ: Int
 
     /**
      * If this position is normalized or not. A position is defined as being normalised
      * if it has a length of 1.
      */
-    val isNormalized: Boolean
+    public val isNormalized: Boolean
 
     /**
      * The magnitude of this position, defined as sqrt(x^2 + y^2 + z^2).
@@ -73,13 +73,13 @@ interface Position : Cloneable {
      * long.
      */
     @get:JvmName("length")
-    val length: Double
+    public val length: Double
 
     /**
      * The magnitude of this position, squared. Defined as x^2 + y^2 + z^2
      */
     @get:JvmName("lengthSquared")
-    val lengthSquared: Double
+    public val lengthSquared: Double
 
     /**
      * Adds the given [other] position to this position and returns a new position
@@ -90,7 +90,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("add")
-    operator fun plus(other: Position): Position
+    public operator fun plus(other: Position): Position
 
     /**
      * Subtracts the given [other] position from this position and returns a new
@@ -101,7 +101,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("subtract")
-    operator fun minus(other: Position): Position
+    public operator fun minus(other: Position): Position
 
     /**
      * Multiplies this position by the given [other] position and returns a new
@@ -112,7 +112,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("multiply")
-    operator fun times(other: Position): Position
+    public operator fun times(other: Position): Position
 
     /**
      * Multiplies this position's [x], [y], and [z] coordinates by the given [factor],
@@ -123,7 +123,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("multiply")
-    operator fun times(factor: Int): Position
+    public operator fun times(factor: Int): Position
 
     /**
      * Multiplies this position's [x], [y], and [z] coordinates by the given [factor],
@@ -134,7 +134,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("multiply")
-    operator fun times(factor: Double): Position
+    public operator fun times(factor: Double): Position
 
     /**
      * Multiplies this position's [x], [y], and [z] coordinates by the given [factor],
@@ -145,7 +145,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("multiply")
-    operator fun times(factor: Float): Position
+    public operator fun times(factor: Float): Position
 
     /**
      * Divides this position by the given [other] position and returns a new position
@@ -156,7 +156,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("divide")
-    operator fun div(other: Position): Position
+    public operator fun div(other: Position): Position
 
     /**
      * Divides this position's [x], [y], and [z] coordinates by the given [factor],
@@ -167,7 +167,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("divide")
-    operator fun div(factor: Int): Position
+    public operator fun div(factor: Int): Position
 
     /**
      * Divides this position's [x], [y], and [z] coordinates by the given [factor],
@@ -178,7 +178,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("divide")
-    operator fun div(factor: Double): Position
+    public operator fun div(factor: Double): Position
 
     /**
      * Divides this position's [x], [y], and [z] coordinates by the given [factor],
@@ -189,7 +189,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("divide")
-    operator fun div(factor: Float): Position
+    public operator fun div(factor: Float): Position
 
     /**
      * Divides this position by the given [other] position and uses the remainders
@@ -200,7 +200,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("mod")
-    operator fun rem(other: Position): Position
+    public operator fun rem(other: Position): Position
 
     /**
      * Divides this position's [x], [y], and [z] coordinates by the given [factor]
@@ -211,7 +211,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("mod")
-    operator fun rem(factor: Int): Position
+    public operator fun rem(factor: Int): Position
 
     /**
      * Divides this position's [x], [y], and [z] coordinates by the given [factor]
@@ -222,7 +222,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("mod")
-    operator fun rem(factor: Double): Position
+    public operator fun rem(factor: Double): Position
 
     /**
      * Divides this position's [x], [y], and [z] coordinates by the given [factor]
@@ -233,7 +233,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("mod")
-    operator fun rem(factor: Float): Position
+    public operator fun rem(factor: Float): Position
 
     /**
      * Inverts this position and returns a new position with the result.
@@ -242,7 +242,7 @@ interface Position : Cloneable {
      */
     @Contract("_ -> new", pure = true)
     @JvmName("inv")
-    operator fun unaryMinus(): Position
+    public operator fun unaryMinus(): Position
 
     /**
      * Increments this position by 1 and returns a new position with the result.
@@ -250,7 +250,7 @@ interface Position : Cloneable {
      * @return a new position that is the result of the increment
      */
     @Contract("_ -> new", pure = true)
-    operator fun inc(): Position
+    public operator fun inc(): Position
 
     /**
      * Decrements this position by 1 and returns a new position with the result.
@@ -258,7 +258,7 @@ interface Position : Cloneable {
      * @return a new position that is the result of the decrement
      */
     @Contract("_ -> new", pure = true)
-    operator fun dec(): Position
+    public operator fun dec(): Position
 
     /**
      * Calculates the distance between this position and the given [other] position.
@@ -272,7 +272,7 @@ interface Position : Cloneable {
      * @return the distance between this position and the given other position
      */
     @Contract(pure = true)
-    fun distance(other: Position) = sqrt(distanceSquared(other))
+    public fun distance(other: Position): Double = sqrt(distanceSquared(other))
 
     /**
      * Calculates the squared distance between this position and the given [other]
@@ -282,7 +282,9 @@ interface Position : Cloneable {
      * @return the distance between this position and the other position
      */
     @Contract(pure = true)
-    fun distanceSquared(other: Position) = (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y) + (z - other.z) * (z - other.z)
+    public fun distanceSquared(other: Position): Double = (x - other.x) * (x - other.x) +
+            (y - other.y) * (y - other.y) +
+            (z - other.z) * (z - other.z)
 
     /**
      * Calculates the angle between this position and the given [other] position, in
@@ -293,7 +295,7 @@ interface Position : Cloneable {
      * position
      */
     @Contract(pure = true)
-    fun angle(other: Position) = acos(min(max(dot(other) / (length * other.length), -1.0), 1.0))
+    public fun angle(other: Position): Double = acos(min(max(dot(other) / (length * other.length), -1.0), 1.0))
 
     /**
      * Creates a new position that is the midpoint between this position and the
@@ -304,7 +306,7 @@ interface Position : Cloneable {
      * given other position
      */
     @Contract("_ -> new", pure = true)
-    fun midpoint(other: Position): Position
+    public fun midpoint(other: Position): Position
 
     /**
      * Calculates the dot product of this position with the [other] position.
@@ -315,7 +317,7 @@ interface Position : Cloneable {
      * @return the dot product of this position and the given other position
      */
     @Contract(pure = true)
-    fun dot(other: Position) = x * other.x + y * other.y + z * other.z
+    public fun dot(other: Position): Double = x * other.x + y * other.y + z * other.z
 
     /**
      * Calculates the cross product of this position with the [other] position.
@@ -330,7 +332,7 @@ interface Position : Cloneable {
      * the given [other] position
      */
     @Contract("_ -> new", pure = true)
-    fun cross(other: Position): Position
+    public fun cross(other: Position): Position
 
     /**
      * Normalises this position to a unit position (a position with a length of 1).
@@ -338,7 +340,7 @@ interface Position : Cloneable {
      * @return a new unit position
      */
     @Contract("_ -> new", pure = true)
-    fun normalize(): Position
+    public fun normalize(): Position
 
     /**
      * Copies this object and returns a new object with the given [x], [y] and [z] values.
@@ -348,14 +350,14 @@ interface Position : Cloneable {
      * of the functions in this class.
      */
     @Contract("_ -> new", pure = true)
-    fun copy(x: Double = this.x, y: Double = this.y, z: Double = this.z): Position
+    public fun copy(x: Double = this.x, y: Double = this.y, z: Double = this.z): Position
 
-    companion object {
+    public companion object {
 
         /**
          * Error correction term for fuzzy [org.kryptonmc.api.space.Vector.equals] method, to account
          * for floating point errors.
          */
-        const val EPSILON = 0.000001
+        public const val EPSILON: Double = 0.000001
     }
 }

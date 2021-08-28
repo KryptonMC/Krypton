@@ -17,7 +17,10 @@ import net.kyori.adventure.sound.Sound
  *
  * @param key the key for this sound type
  */
-class SoundEvent(val key: Key) : Sound.Type, Keyed {
+@JvmRecord
+public data class SoundEvent(
+    @get:JvmName("_get-key") @JvmSynthetic public val key: Key
+) : Sound.Type, Keyed {
 
-    override fun key() = key
+    override fun key(): Key = key
 }

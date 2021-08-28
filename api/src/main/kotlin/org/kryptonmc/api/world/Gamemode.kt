@@ -21,7 +21,7 @@ import org.kryptonmc.api.world.Gamemode.SURVIVAL
  * @param shortName Represents the short name of the given gamemode
  */
 @Suppress("MemberVisibilityCanBePrivate")
-enum class Gamemode(val shortName: String) {
+public enum class Gamemode(public val shortName: String) {
 
     /**
      * Plain old survival mode. In this mode, you have a finite amount of health,
@@ -51,24 +51,23 @@ enum class Gamemode(val shortName: String) {
     /**
      * If this gamemode can build.
      */
-    val canBuild: Boolean
+    public val canBuild: Boolean
         get() = this == SURVIVAL || this == CREATIVE
 
     /**
      *  Represents the key of the gamemode
      */
-    val key: Key
-        get() = key("gameMode.${this.name.lowercase()}")
+    public val key: Key by lazy { key("gameMode.${name.lowercase()}") }
 
-    override fun toString() = name.lowercase()
+    override fun toString(): String = name.lowercase()
 
-    companion object {
+    public companion object {
 
         /**
          * Retrieves a game mode from its legacy ID. Should only need to be used internally.
          */
         @JvmStatic
-        fun fromId(id: Int): Gamemode? {
+        public fun fromId(id: Int): Gamemode? {
             if (id !in 0 until values().size) return null
             return values()[id]
         }
@@ -77,7 +76,7 @@ enum class Gamemode(val shortName: String) {
          * Retrieves a game mode from its name.
          */
         @JvmStatic
-        fun fromName(name: String) = try {
+        public fun fromName(name: String): Gamemode? = try {
             valueOf(name.uppercase())
         } catch (_: IllegalArgumentException) {
             null
@@ -87,6 +86,6 @@ enum class Gamemode(val shortName: String) {
          * Retrieves a game mode from its short name
          */
         @JvmStatic
-        fun fromShortName(shortName: String) = values().firstOrNull { it.shortName == shortName }
+        public fun fromShortName(shortName: String): Gamemode? = values().firstOrNull { it.shortName == shortName }
     }
 }

@@ -19,10 +19,10 @@ import org.kryptonmc.api.event.ResultedEvent
  * @param player the player that damaged the block
  * @param block the block being broken
  */
-class BlockDamageEvent(
-    val player: Player,
-    val block: Block
+public class BlockDamageEvent(
+    public val player: Player,
+    public val block: Block
 ) : ResultedEvent<GenericResult> {
 
-    override var result = GenericResult.allowed()
+    override var result: GenericResult = GenericResult.allowed()
 }

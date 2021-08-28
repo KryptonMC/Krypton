@@ -34,11 +34,11 @@ import org.intellij.lang.annotations.Pattern
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
-annotation class Plugin(
-    @Pattern("[A-Za-z0-9-_]+") val id: String,
-    val name: String = "",
-    val version: String = "",
-    val description: String = "",
-    val authors: Array<String> = [],
-    val dependencies: Array<Dependency> = []
+public annotation class Plugin(
+    @Pattern("[A-Za-z0-9-_]+") public val id: String,
+    public val name: String = "",
+    public val version: String = "",
+    public val description: String = "",
+    public val authors: Array<String> = [],
+    public val dependencies: Array<Dependency> = []
 )

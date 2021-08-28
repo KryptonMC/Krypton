@@ -33,7 +33,7 @@ object SuggestionProviders {
     private val DEFAULT_NAME = key("ask_server")
 
     val SUMMONABLE_ENTITIES = register(key("summonable_entities")) { _, builder ->
-        InternalRegistries.ENTITY_TYPE.values.filter { it.isSummonable }.suggestKey(builder, EntityType<*>::key) {
+        InternalRegistries.ENTITY_TYPE.values.filter { it.isSummonable }.suggestKey(builder, { it.key }) {
             val key = InternalRegistries.ENTITY_TYPE[it]
             translatable("entity.${key.namespace()}.${key.value().replace("/", ".")}").toMessage()
         }

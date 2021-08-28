@@ -15,22 +15,22 @@ import org.kryptonmc.api.registry.Registry
 /**
  * A type of a statistic.
  */
-interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
+public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
 
     /**
      * The key for this statistic type.
      */
-    val key: Key
+    public val key: Key
 
     /**
      * All of the statistics for this type.
      */
-    val statistics: Map<T, Statistic<T>>
+    public val statistics: Map<T, Statistic<T>>
 
     /**
      * The registry for this statistic type.
      */
-    val registry: Registry<T>
+    public val registry: Registry<T>
 
     /**
      * Returns true if this type contains a statistic for the given [key], false
@@ -39,7 +39,7 @@ interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
      * @param key the key
      * @return true if this type contains a statistic for the key, false otherwise
      */
-    operator fun contains(key: T) = statistics.containsKey(key)
+    public operator fun contains(key: T): Boolean
 
     /**
      * Gets the statistic for the given [key], creating it if it does not already
@@ -48,7 +48,7 @@ interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
      * @param key the key
      * @return the statistic for the key
      */
-    operator fun get(key: T): Statistic<T> = get(key, StatisticFormatter.DEFAULT)
+    public operator fun get(key: T): Statistic<T>
 
     /**
      * Gets the statistic for the given [key] with the given [formatter], creating it
@@ -58,7 +58,7 @@ interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
      * @param formatter the formatter
      * @return the statistic for the key
      */
-    operator fun get(key: T, formatter: StatisticFormatter): Statistic<T>
+    public operator fun get(key: T, formatter: StatisticFormatter): Statistic<T>
 
-    override fun key() = key
+    override fun key(): Key = key
 }

@@ -16,10 +16,10 @@ package org.kryptonmc.api.event
  * Represents a handler for a given event type [E]. This makes it easier to
  * integrate the event system in to third-party event systems.
  */
-fun interface EventHandler<E> {
+public fun interface EventHandler<E> {
 
     /**
      * The action to take when this event is fired.
      */
-    fun execute(event: E)
+    public fun execute(event: E)
 }

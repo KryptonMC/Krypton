@@ -11,7 +11,7 @@ package org.kryptonmc.api.event.server
 /**
  * Fired by the server when it is starting up.
  */
-class ServerStartEvent {
+public class ServerStartEvent {
 
-    override fun toString() = "ServerStartEvent"
+    override fun toString(): String = "ServerStartEvent"
 }

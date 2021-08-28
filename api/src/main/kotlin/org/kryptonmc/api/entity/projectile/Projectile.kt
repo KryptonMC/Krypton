@@ -13,21 +13,24 @@ import org.kryptonmc.api.entity.Entity
 /**
  * A projectile.
  */
-interface Projectile : Entity {
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface Projectile : Entity {
 
     /**
      * The owner of this projectile, or null if this projectile does not have an owner
      * yet.
      */
-    val owner: Entity?
+    public val owner: Entity?
 
     /**
      * If this projectile has left its owner's hitbox.
      */
-    val hasLeftOwner: Boolean
+    @get:JvmName("hasLeftOwner")
+    public val hasLeftOwner: Boolean
 
     /**
      * If this projectile has been shot.
      */
-    val hasBeenShot: Boolean
+    @get:JvmName("hasBeenShot")
+    public val hasBeenShot: Boolean
 }

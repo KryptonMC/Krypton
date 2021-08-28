@@ -18,7 +18,9 @@ import net.kyori.adventure.text.flattener.ComponentFlattener
  * types to improve quality of life as a Kotlin user.
  */
 @JvmSynthetic
-inline fun <reified T : Component> ComponentFlattener.Builder.mapper(noinline converter: (T) -> String) = mapper(T::class.java, converter)
+public inline fun <reified T : Component> ComponentFlattener.Builder.mapper(
+    noinline converter: (T) -> String
+): ComponentFlattener.Builder = mapper(T::class.java, converter)
 
 /**
  * Register a type of component that needs to be flattened to an intermediate stage.
@@ -27,5 +29,6 @@ inline fun <reified T : Component> ComponentFlattener.Builder.mapper(noinline co
  * types to improve quality of life as a Kotlin user.
  */
 @JvmSynthetic
-inline fun <reified T : Component> ComponentFlattener.Builder.complexMapper(noinline converter: (T, (Component) -> Unit) -> Unit) =
-    complexMapper(T::class.java) { t, u -> converter(t) { u.accept(it) } }
+public inline fun <reified T : Component> ComponentFlattener.Builder.complexMapper(
+    noinline converter: (T, (Component) -> Unit) -> Unit
+): ComponentFlattener.Builder = complexMapper(T::class.java) { t, u -> converter(t) { u.accept(it) } }

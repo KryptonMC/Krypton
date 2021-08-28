@@ -13,12 +13,12 @@ import net.kyori.adventure.key.Key
 /**
  * Manages block handlers for blocks.
  */
-interface BlockManager {
+public interface BlockManager {
 
     /**
      * The map of block type keys (e.g. "minecraft:air") to handlers.
      */
-    val handlers: Map<String, BlockHandler>
+    public val handlers: Map<String, BlockHandler>
 
     /**
      * Gets the handler for the given [key], or returns null if there is no
@@ -27,7 +27,7 @@ interface BlockManager {
      * @param key the key
      * @return the handler for the key, if present
      */
-    fun handler(key: String): BlockHandler?
+    public fun handler(key: String): BlockHandler?
 
     /**
      * Gets the handler for the given [key], or returns null if there is no
@@ -36,7 +36,7 @@ interface BlockManager {
      * @param key the key
      * @return the handler for the key, if present
      */
-    fun handler(key: Key): BlockHandler?
+    public fun handler(key: Key): BlockHandler?
 
     /**
      * Gets the handler for the given [block], or returns null if there is no
@@ -45,7 +45,7 @@ interface BlockManager {
      * @param block the block
      * @return the handler for the block, if present
      */
-    fun handler(block: Block): BlockHandler?
+    public fun handler(block: Block): BlockHandler?
 
     /**
      * Registers the given [handler] for the given [key].
@@ -53,7 +53,7 @@ interface BlockManager {
      * @param key the key
      * @param handler the handler
      */
-    fun register(key: String, handler: BlockHandler)
+    public fun register(key: String, handler: BlockHandler)
 
     /**
      * Registers the given [handler] for the given [key].
@@ -61,7 +61,7 @@ interface BlockManager {
      * @param key the key
      * @param handler the handler
      */
-    fun register(key: Key, handler: BlockHandler)
+    public fun register(key: Key, handler: BlockHandler)
 
     /**
      * Registers the given [handler] for the given [block].
@@ -69,5 +69,5 @@ interface BlockManager {
      * @param block the block
      * @param handler the handler
      */
-    fun register(block: Block, handler: BlockHandler)
+    public fun register(block: Block, handler: BlockHandler)
 }

@@ -22,7 +22,7 @@ private annotation class ItemDsl
 @ItemDsl
 @JvmSynthetic
 @Contract("_ -> new")
-inline fun item(builder: ItemStack.Builder.() -> Unit) = ItemStack.builder().apply(builder).build()
+public inline fun item(builder: ItemStack.Builder.() -> Unit): ItemStack = ItemStack.builder().apply(builder).build()
 
 /**
  * Constructs a new [ItemStack] using the provided item [type] and [builder] function.
@@ -34,7 +34,10 @@ inline fun item(builder: ItemStack.Builder.() -> Unit) = ItemStack.builder().app
 @ItemDsl
 @JvmSynthetic
 @Contract("_ -> new")
-inline fun item(type: ItemType, builder: ItemStack.Builder.() -> Unit = {}) = ItemStack.builder().type(type).apply(builder).build()
+public inline fun item(
+    type: ItemType,
+    builder: ItemStack.Builder.() -> Unit = {}
+): ItemStack = ItemStack.builder().type(type).apply(builder).build()
 
 /**
  * Constructs a new [ItemStack] using the provided item [type], [amount], and
@@ -48,8 +51,8 @@ inline fun item(type: ItemType, builder: ItemStack.Builder.() -> Unit = {}) = It
 @ItemDsl
 @JvmSynthetic
 @Contract("_ -> new")
-inline fun item(
+public inline fun item(
     type: ItemType,
     amount: Int,
     builder: ItemStack.Builder.() -> Unit = {}
-) = ItemStack.builder().type(type).amount(amount).apply(builder).build()
+): ItemStack = ItemStack.builder().type(type).amount(amount).apply(builder).build()

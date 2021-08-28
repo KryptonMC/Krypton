@@ -23,14 +23,15 @@ import net.kyori.adventure.text.TranslatableComponent
  * @param maximum the maximum base value
  * @param translation the translation
  */
-data class AttributeType(
-    val key: Key,
-    @get:JvmName("sendToClient") val sendToClient: Boolean,
-    val defaultBase: Double,
-    val minimum: Double,
-    val maximum: Double,
-    val translation: TranslatableComponent = Component.translatable("attribute.name.${key.value()}")
+@JvmRecord
+public data class AttributeType(
+    @get:JvmName("_get-key") @JvmSynthetic public val key: Key,
+    @get:JvmName("sendToClient") public val sendToClient: Boolean,
+    public val defaultBase: Double,
+    public val minimum: Double,
+    public val maximum: Double,
+    public val translation: TranslatableComponent = Component.translatable("attribute.name.${key.value()}")
 ) : Keyed {
 
-    override fun key() = key
+    override fun key(): Key = key
 }

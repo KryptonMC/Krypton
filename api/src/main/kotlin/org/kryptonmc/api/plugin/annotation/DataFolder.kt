@@ -21,4 +21,4 @@ import com.google.inject.BindingAnnotation
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @BindingAnnotation
 @MustBeDocumented
-annotation class DataFolder
+public annotation class DataFolder

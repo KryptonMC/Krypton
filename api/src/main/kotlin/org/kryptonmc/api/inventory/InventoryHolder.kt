@@ -11,10 +11,10 @@ package org.kryptonmc.api.inventory
 /**
  * Represents any object that can hold an inventory (e.g. entities, players, etc.)
  */
-interface InventoryHolder {
+public interface InventoryHolder {
 
     /**
      * The inventory that is being held by this holder
      */
-    val inventory: Inventory
+    public val inventory: Inventory
 }

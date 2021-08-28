@@ -15,15 +15,15 @@ package org.kryptonmc.api.plugin
 /**
  * A wrapper around a loaded plugin.
  */
-interface PluginContainer {
+public interface PluginContainer {
 
     /**
      * The description of this plugin.
      */
-    val description: PluginDescription
+    public val description: PluginDescription
 
     /**
      * The instance of this loaded plugin if it is available, null otherwise.
      */
-    val instance: Any?
+    public val instance: Any?
 }

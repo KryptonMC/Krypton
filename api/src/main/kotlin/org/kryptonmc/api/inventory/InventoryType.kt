@@ -16,9 +16,9 @@ import net.kyori.adventure.key.Key
  * @param key the key
  * @param size the size of the inventory
  */
-open class InventoryType(
-    val key: Key,
-    val size: Int
+public open class InventoryType(
+    public val key: Key,
+    public val size: Int
 )
 
 /**
@@ -29,8 +29,8 @@ open class InventoryType(
  * @param rows the number of rows
  */
 @Suppress("MemberVisibilityCanBePrivate")
-class GridInventoryType(
+public class GridInventoryType(
     key: Key,
-    val columns: Int,
-    val rows: Int,
+    public val columns: Int,
+    public val rows: Int,
 ) : InventoryType(key, rows * columns)

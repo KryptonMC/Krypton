@@ -23,157 +23,168 @@ import org.kryptonmc.api.item.ItemLike
  * technical standpoint, reduces allocations, but also makes
  * them much more thread-safe.
  */
-interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Comparable<Block> {
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Comparable<Block> {
 
     /**
      * The key associated with this block.
      */
-    val key: Key
+    public val key: Key
 
     /**
      * The block ID of this block.
      */
-    val id: Int
+    public val id: Int
 
     /**
      * The ID of the block state this block represents.
      */
-    val stateId: Int
+    public val stateId: Int
 
     /**
      * The hardness of this block.
      */
-    val hardness: Double
+    public val hardness: Double
 
     /**
      * How resistant this block is to explosions. Higher
      * means more resistant.
      */
-    val explosionResistance: Double
+    public val explosionResistance: Double
 
     /**
      * The amount of light this block emits, in levels.
      */
-    val lightEmission: Int
+    public val lightEmission: Int
 
     /**
      * The friction of this block.
      */
-    val friction: Double
+    public val friction: Double
 
     /**
      * The speed factor of this block.
      */
-    val speedFactor: Double
+    public val speedFactor: Double
 
     /**
      * The jump factor of this block.
      */
-    val jumpFactor: Double
+    public val jumpFactor: Double
 
     /**
      * If this block is air.
      */
-    val isAir: Boolean
+    public val isAir: Boolean
 
     /**
      * If this block is solid.
      */
-    val isSolid: Boolean
+    public val isSolid: Boolean
 
     /**
      * If this block is liquid.
      */
-    val isLiquid: Boolean
+    public val isLiquid: Boolean
 
     /**
      * If this block is flammable (can be set on fire).
      */
-    val isFlammable: Boolean
+    public val isFlammable: Boolean
 
     /**
      * If this block can be replaced.
      */
-    val isReplaceable: Boolean
+    public val isReplaceable: Boolean
 
     /**
      * If this block has an associated block entity.
      */
-    val hasBlockEntity: Boolean
+    @get:JvmName("hasBlockEntity")
+    public val hasBlockEntity: Boolean
 
     /**
      * If light cannot pass through this block.
      */
-    val occludes: Boolean
+    @get:JvmName("occludes")
+    public val occludes: Boolean
 
     /**
      * If this block has a dynamic shape.
      */
-    val hasDynamicShape: Boolean
+    @get:JvmName("hasDynamicShape")
+    public val hasDynamicShape: Boolean
 
     /**
      * If the shape of this block should be used to calculate light occlusion.
      */
-    val useShapeForOcclusion: Boolean
+    @get:JvmName("useShapeForOcclusion")
+    public val useShapeForOcclusion: Boolean
 
     /**
      * If this block propagates skylight down.
      */
-    val propagatesSkylightDown: Boolean
+    @get:JvmName("propagatesSkylightDown")
+    public val propagatesSkylightDown: Boolean
 
     /**
      * The amount of light that this block will block from passing through it.
      */
-    val lightBlock: Int
+    public val lightBlock: Int
 
     /**
      * If this block is sometimes fully opaque.
      */
-    val isConditionallyFullyOpaque: Boolean
+    public val isConditionallyFullyOpaque: Boolean
 
     /**
      * If this block is rendered solid.
      */
-    val isSolidRender: Boolean
+    public val isSolidRender: Boolean
 
     /**
      * The opacity of this block.
      */
-    val opacity: Int
+    public val opacity: Int
 
     /**
      * If this block cannot be moved through.
      */
-    val blocksMotion: Boolean
+    @get:JvmName("blocksMotion")
+    public val blocksMotion: Boolean
 
     /**
      * If this block has gravity.
      */
-    val hasGravity: Boolean
+    @get:JvmName("hasGravity")
+    public val hasGravity: Boolean
 
     /**
      * If this block can be respawned inside of.
      */
-    val canRespawnIn: Boolean
+    @get:JvmName("canRespawnIn")
+    public val canRespawnIn: Boolean
 
     /**
      * If the shape used for collision is very large.
      */
-    val hasLargeCollisionShape: Boolean
+    @get:JvmName("hasLargeCollisionShape")
+    public val hasLargeCollisionShape: Boolean
 
     /**
      * If this block requires the correct tool to be used to break it.
      */
-    val requiresCorrectTool: Boolean
+    @get:JvmName("requiresCorrectTool")
+    public val requiresCorrectTool: Boolean
 
     /**
      * The render shape of this block.
      */
-    val renderShape: RenderShape
+    public val renderShape: RenderShape
 
     /**
      * The translation component for translating the name
      * of this block.
      */
-    val translation: TranslatableComponent
+    public val translation: TranslatableComponent
 }

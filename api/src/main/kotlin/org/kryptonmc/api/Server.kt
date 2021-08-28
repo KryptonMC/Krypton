@@ -33,12 +33,12 @@ import java.util.UUID
 /**
  * The server.
  */
-interface Server : ForwardingAudience {
+public interface Server : ForwardingAudience {
 
     /**
      * Information about this server implementation.
      */
-    val platform: Platform
+    public val platform: Platform
 
     /**
      * The world manager for this server.
@@ -46,14 +46,14 @@ interface Server : ForwardingAudience {
      * The world manager is used to load, save, create and update
      * worlds.
      */
-    val worldManager: WorldManager
+    public val worldManager: WorldManager
 
     /**
      * The command manager for this server.
      *
      * This is used to register and unregister commands.
      */
-    val commandManager: CommandManager
+    public val commandManager: CommandManager
 
     /**
      * The plugin manager for this server.
@@ -61,12 +61,12 @@ interface Server : ForwardingAudience {
      * This is used to retrieve plugins and check whether they have
      * been initialised or not.
      */
-    val pluginManager: PluginManager
+    public val pluginManager: PluginManager
 
     /**
      * The services manager for this server.
      */
-    val servicesManager: ServicesManager
+    public val servicesManager: ServicesManager
 
     /**
      * The event manager for this server.
@@ -74,81 +74,96 @@ interface Server : ForwardingAudience {
      * This is used to register/unregister listeners/handlers for specific
      * events that may be fired, and also to fire said events.
      */
-    val eventManager: EventManager
+    public val eventManager: EventManager
 
     /**
      * The registry manager for this server.
      *
      * This is used to create new registries and register values to them.
      */
-    val registryManager: RegistryManager
+    public val registryManager: RegistryManager
 
     /**
      * The block manager for this server.
      *
      * This is used to retrieve and register block handlers for blocks.
      */
-    val blockManager: BlockManager
+    public val blockManager: BlockManager
 
     /**
      * The item manager for this server.
      *
      * This is used to retrieve and register item handlers for item types.
      */
-    val itemManager: ItemManager
+    public val itemManager: ItemManager
 
     /**
      * The cache of [org.kryptonmc.api.auth.GameProfile]s.
      */
-    val profileCache: ProfileCache
+    public val profileCache: ProfileCache
 
     /**
      * The scheduler for this server.
      *
      * This can be used to run and schedule asynchronous tasks.
      */
-    val scheduler: Scheduler
+    public val scheduler: Scheduler
 
     /**
      * The maximum amount of players that can be online at once.
      */
-    val maxPlayers: Int
+    public val maxPlayers: Int
 
     /**
      * The message of the day for the server.
      */
-    val motd: Component
+    public val motd: Component
 
     /**
      * If this server is in online mode, meaning it authenticates
      * players through Mojang.
      */
-    val isOnline: Boolean
+    public val isOnline: Boolean
 
     /**
      * If this server has hardcore mode enabled.
      */
-    val isHardcore: Boolean
+    public val isHardcore: Boolean
 
     /**
      * The default difficulty of this server.
      */
-    val difficulty: Difficulty
+    public val difficulty: Difficulty
 
     /**
      * The default gamemode of this server.
      */
-    val gamemode: Gamemode
+    public val gamemode: Gamemode
 
     /**
      * The address that this server is currently bound to.
      */
-    val address: InetSocketAddress
+    public val address: InetSocketAddress
 
     /**
      * The list of online players.
      */
-    val players: List<Player>
+    public val players: List<Player>
+
+    /**
+     * The console's [Sender] object.
+     */
+    public val console: ConsoleSender
+
+    /**
+     * The server's [Scoreboard], or null if there isn't one.
+     */
+    public val scoreboard: Scoreboard?
+
+    /**
+     * The list of registered plugin messaging channels.
+     */
+    public val channels: Set<Key>
 
     /**
      * Gets the online player with the given [uuid], or returns null if there is no
@@ -157,7 +172,7 @@ interface Server : ForwardingAudience {
      * @param uuid the UUID
      * @return the player, or null if not present
      */
-    fun player(uuid: UUID): Player?
+    public fun player(uuid: UUID): Player?
 
     /**
      * Gets the online player with the given [name], or returns null if there is no
@@ -169,17 +184,7 @@ interface Server : ForwardingAudience {
      * @param name the player's name
      * @return the player, or null if not present
      */
-    fun player(name: String): Player?
-
-    /**
-     * The console's [Sender] object.
-     */
-    val console: ConsoleSender
-
-    /**
-     * The server's [Scoreboard], or null if there isn't one.
-     */
-    val scoreboard: Scoreboard?
+    public fun player(name: String): Player?
 
     /**
      * Sends a message to every player on the server with the specified [permission].
@@ -187,24 +192,19 @@ interface Server : ForwardingAudience {
      * @param message the message to send
      * @param permission the permission that players require to receive the message
      */
-    fun sendMessage(message: Component, permission: String)
-
-    /**
-     * The list of registered plugin messaging channels.
-     */
-    val channels: Set<Key>
+    public fun sendMessage(message: Component, permission: String)
 
     /**
      * Registers a plugin messaging channel.
      *
      * @param channel the channel to register
      */
-    fun registerChannel(channel: Key)
+    public fun registerChannel(channel: Key)
 
     /**
      * Unregisters a plugin messaging channel.
      *
      * @param channel the channel to register
      */
-    fun unregisterChannel(channel: Key)
+    public fun unregisterChannel(channel: Key)
 }

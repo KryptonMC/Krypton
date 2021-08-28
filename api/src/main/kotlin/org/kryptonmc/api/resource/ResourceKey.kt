@@ -20,11 +20,14 @@ import java.util.IdentityHashMap
  * @param location the [Key] location of the registry
  * @param T the type of this key
  */
-class ResourceKey<T : Any> private constructor(val registry: Key, val location: Key) {
+public class ResourceKey<T : Any> private constructor(
+    public val registry: Key,
+    public val location: Key
+) {
 
-    override fun toString() = "ResourceKey(registry=$registry, location=$location)"
+    override fun toString(): String = "ResourceKey(registry=$registry, location=$location)"
 
-    companion object {
+    public companion object {
 
         private val VALUES: MutableMap<String, ResourceKey<*>> = Collections.synchronizedMap(IdentityHashMap())
 
@@ -39,7 +42,7 @@ class ResourceKey<T : Any> private constructor(val registry: Key, val location: 
          */
         @Suppress("UNCHECKED_CAST")
         @JvmStatic
-        fun <T : Any> of(registry: Key, location: Key): ResourceKey<T> {
+        public fun <T : Any> of(registry: Key, location: Key): ResourceKey<T> {
             val key = "$registry:$location".intern()
             return VALUES.getOrPut(key) { ResourceKey<T>(registry, location) } as ResourceKey<T>
         }
@@ -54,6 +57,9 @@ class ResourceKey<T : Any> private constructor(val registry: Key, val location: 
          * @return a resource key
          */
         @JvmStatic
-        fun <T : Any> of(parent: ResourceKey<out Registry<T>>, location: Key) = of<T>(parent.location, location)
+        public fun <T : Any> of(
+            parent: ResourceKey<out Registry<T>>,
+            location: Key
+        ): ResourceKey<T> = of(parent.location, location)
     }
 }

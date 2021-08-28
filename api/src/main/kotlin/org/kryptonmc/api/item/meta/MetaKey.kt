@@ -17,12 +17,13 @@ import net.kyori.adventure.pointer.Pointer
  * @param key the namespaced key for this key
  * @param type the type of this key
  */
-class MetaKey<V : Any>(
-    val key: Key,
-    val type: Class<V>
+@JvmRecord
+public data class MetaKey<V : Any>(
+    @get:JvmName("_get-key") @JvmSynthetic public val key: Key,
+    @get:JvmName("_get-type") @JvmSynthetic public val type: Class<V>
 ) : Pointer<V> {
 
-    override fun key() = key
+    override fun key(): Key = key
 
-    override fun type() = type
+    override fun type(): Class<V> = type
 }

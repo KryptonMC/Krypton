@@ -11,7 +11,7 @@ package org.kryptonmc.api.util
 /**
  * Represents the result of an interaction.
  */
-enum class InteractionResult {
+public enum class InteractionResult {
 
     SUCCESS,
     CONSUME,

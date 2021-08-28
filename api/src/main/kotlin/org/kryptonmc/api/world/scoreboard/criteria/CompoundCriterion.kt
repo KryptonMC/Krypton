@@ -11,10 +11,10 @@ package org.kryptonmc.api.world.scoreboard.criteria
 /**
  * A criterion that is the parent of other sub-criterion.
  */
-interface CompoundCriterion : Criterion {
+public interface CompoundCriterion : Criterion {
 
     /**
      * The children of this compound criterion.
      */
-    val children: List<Criterion>
+    public val children: List<Criterion>
 }

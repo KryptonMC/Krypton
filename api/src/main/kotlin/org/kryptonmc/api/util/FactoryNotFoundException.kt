@@ -11,15 +11,15 @@ package org.kryptonmc.api.util
 /**
  * Thrown when a factory requested from the [FactoryProvider] was not found.
  */
-class FactoryNotFoundException : RuntimeException {
+public class FactoryNotFoundException : RuntimeException {
 
-    constructor(message: String?) : super(message)
+    public constructor(message: String?) : super(message)
 
-    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
 
-    constructor(cause: Throwable?) : super(cause)
+    public constructor(cause: Throwable?) : super(cause)
 
-    companion object {
+    public companion object {
 
         private const val serialVersionUID = 7032005516854864359L
     }

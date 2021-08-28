@@ -22,13 +22,13 @@ import org.spongepowered.math.vector.Vector3i
  * @param missed if the block was missed or not
  * @param isInside if the player is inside of this block
  */
-class BlockHitResult(
+public class BlockHitResult(
     clickLocation: Vector3d,
-    val position: Vector3i,
-    val direction: Direction,
+    public val position: Vector3i,
+    public val direction: Direction,
     private val missed: Boolean,
-    val isInside: Boolean
+    public val isInside: Boolean
 ) : HitResult(clickLocation) {
 
-    override val type = if (missed) Type.MISS else Type.BLOCK
+    override val type: Type = if (missed) Type.MISS else Type.BLOCK
 }

@@ -25,7 +25,7 @@ import kotlin.math.min
  * @param maximumZ the maximum Z value
  */
 @Suppress("MaxLineLength", "DataClassContainsFunctions", "UntilInsteadOfRangeTo")
-class BoundingBox(
+public class BoundingBox(
     minimumX: Double,
     minimumY: Double,
     minimumZ: Double,
@@ -37,67 +37,75 @@ class BoundingBox(
     /**
      * The minimum X value
      */
-    val minimumX = min(minimumX, maximumX)
+    public val minimumX: Double = min(minimumX, maximumX)
 
     /**
      * The minimum Y value
      */
-    val minimumY = min(minimumY, maximumY)
+    public val minimumY: Double = min(minimumY, maximumY)
 
     /**
      * The minimum Z value
      */
-    val minimumZ = min(minimumZ, maximumZ)
+    public val minimumZ: Double = min(minimumZ, maximumZ)
 
     /**
      * The maximum X value
      */
-    val maximumX = max(minimumX, maximumX)
+    public val maximumX: Double = max(minimumX, maximumX)
 
     /**
      * The maximum Y value
      */
-    val maximumY = max(minimumY, maximumY)
+    public val maximumY: Double = max(minimumY, maximumY)
 
     /**
      * The maximum Z value
      */
-    val maximumZ = max(minimumZ, maximumZ)
+    public val maximumZ: Double = max(minimumZ, maximumZ)
 
     /**
      * The size of this bounding box on the X axis.
      */
-    val xSize = maximumX - minimumX
+    public val xSize: Double = maximumX - minimumX
 
     /**
      * The size of this bounding box on the Y axis.
      */
-    val ySize = maximumY - minimumY
+    public val ySize: Double = maximumY - minimumY
 
     /**
      * The size of this bounding box on the Z axis.
      */
-    val zSize = maximumZ - minimumZ
+    public val zSize: Double = maximumZ - minimumZ
 
     /**
      * The total size of this bounding box.
      */
-    val size = (xSize + ySize + zSize) / 3.0
+    public val size: Double = (xSize + ySize + zSize) / 3.0
 
     /**
      * The total volume of this bounding box.
      */
-    val volume = xSize * ySize * zSize
+    public val volume: Double = xSize * ySize * zSize
 
     /**
      * If this box contains a value that is [NaN][Double.isNaN].
      */
-    val hasNaN = minimumX.isNaN() || minimumY.isNaN() || minimumZ.isNaN() || maximumX.isNaN() || maximumY.isNaN() || maximumZ.isNaN()
+    public val hasNaN: Boolean = minimumX.isNaN() || minimumY.isNaN() ||
+            minimumZ.isNaN() || maximumX.isNaN() ||
+            maximumY.isNaN() || maximumZ.isNaN()
 
     /**
      * The center of this bounding box.
      */
-    val center by lazy { Vector(GenericMath.lerp(minimumX, maximumX, 0.5), GenericMath.lerp(minimumY, maximumY, 0.5), GenericMath.lerp(minimumZ, maximumZ, 0.5)) }
+    public val center: Vector by lazy {
+        Vector(
+            GenericMath.lerp(minimumX, maximumX, 0.5),
+            GenericMath.lerp(minimumY, maximumY, 0.5),
+            GenericMath.lerp(minimumZ, maximumZ, 0.5)
+        )
+    }
 
     /**
      * Constructs a new [BoundingBox] from the given [minimum] and [maximum] vectors.
@@ -105,7 +113,7 @@ class BoundingBox(
      * @param minimum the minimum vector
      * @param maximum the maximum vector
      */
-    constructor(minimum: Vector, maximum: Vector) : this(minimum.x, minimum.y, minimum.z, maximum.x, maximum.y, maximum.z)
+    public constructor(minimum: Vector, maximum: Vector) : this(minimum.x, minimum.y, minimum.z, maximum.x, maximum.y, maximum.z)
 
     /**
      * Constructs a new [BoundingBox] from the given [minimum] and [maximum] positions.
@@ -113,7 +121,7 @@ class BoundingBox(
      * @param minimum the minimum position
      * @param maximum the maximum position
      */
-    constructor(minimum: Vector3i, maximum: Vector3i) : this(
+    public constructor(minimum: Vector3i, maximum: Vector3i) : this(
         minimum.x().toDouble(),
         minimum.y().toDouble(),
         minimum.z().toDouble(),
@@ -128,7 +136,7 @@ class BoundingBox(
      *
      * @param minimum the minimum position
      */
-    constructor(minimum: Vector3i) : this(
+    public constructor(minimum: Vector3i) : this(
         minimum.x().toDouble(),
         minimum.y().toDouble(),
         minimum.z().toDouble(),
@@ -149,7 +157,7 @@ class BoundingBox(
      * @param axis the axis
      * @return the minimum value for the axis
      */
-    fun minimum(axis: Direction.Axis) = axis.select(minimumX, minimumY, minimumZ)
+    public fun minimum(axis: Direction.Axis): Double = axis.select(minimumX, minimumY, minimumZ)
 
     /**
      * Gets the maximum value for the given [axis].
@@ -157,7 +165,7 @@ class BoundingBox(
      * @param axis the axis
      * @return the maximum value for the axis
      */
-    fun maximum(axis: Direction.Axis) = axis.select(maximumX, maximumY, maximumZ)
+    public fun maximum(axis: Direction.Axis): Double = axis.select(maximumX, maximumY, maximumZ)
 
     /**
      * Inflates the border of this bounding box by the given [xFactor], [yFactor], and
@@ -168,7 +176,7 @@ class BoundingBox(
      * @param xFactor the Z factor to inflate the border by
      * @return a new bounding box with its border inflated by the given factors
      */
-    fun inflate(xFactor: Double, yFactor: Double, zFactor: Double): BoundingBox {
+    public fun inflate(xFactor: Double, yFactor: Double, zFactor: Double): BoundingBox {
         val newMinX = minimumX - xFactor
         val newMinY = minimumY - yFactor
         val newMinZ = minimumZ - zFactor
@@ -185,7 +193,7 @@ class BoundingBox(
      * @param factor the factor to inflate the border by
      * @return a new bounding box with its border inflated by the given factor
      */
-    fun inflate(factor: Double) = inflate(factor, factor, factor)
+    public fun inflate(factor: Double): BoundingBox = inflate(factor, factor, factor)
 
     /**
      * Deflates the border of this bounding box by the given [xFactor], [yFactor], and
@@ -198,7 +206,7 @@ class BoundingBox(
      * @param xFactor the Z factor to deflate the border by
      * @return a new bounding box with its border deflated by the given factors
      */
-    fun deflate(xFactor: Double, yFactor: Double, zFactor: Double) = inflate(-xFactor, -yFactor, -zFactor)
+    public fun deflate(xFactor: Double, yFactor: Double, zFactor: Double): BoundingBox = inflate(-xFactor, -yFactor, -zFactor)
 
     /**
      * Deflates the border of this bounding box by the given [factor], and returns a
@@ -209,7 +217,7 @@ class BoundingBox(
      * @param factor the factor to deflate the border by
      * @return a new bounding box with its border deflated by the given factor
      */
-    fun deflate(factor: Double) = inflate(-factor)
+    public fun deflate(factor: Double): BoundingBox = inflate(-factor)
 
     /**
      * Intersects this bounding box with the given [other] bounding box, and returns a
@@ -218,7 +226,7 @@ class BoundingBox(
      * @param other the other box to intersect with
      * @return a new bounding box with the resulting intersection
      */
-    fun intersect(other: BoundingBox): BoundingBox {
+    public fun intersect(other: BoundingBox): BoundingBox {
         val newMinX = max(minimumX, other.minimumX)
         val newMinY = max(minimumY, other.minimumY)
         val newMinZ = max(minimumZ, other.minimumZ)
@@ -237,7 +245,14 @@ class BoundingBox(
      * @param z the Z amount
      * @return a new bounding box with the result of the move
      */
-    fun move(x: Double, y: Double, z: Double) = BoundingBox(minimumX + x, minimumY + y, minimumZ + z, maximumX + x, maximumY + y, maximumZ + z)
+    public fun move(x: Double, y: Double, z: Double): BoundingBox = BoundingBox(
+        minimumX + x,
+        minimumY + y,
+        minimumZ + z,
+        maximumX + x,
+        maximumY + y,
+        maximumZ + z
+    )
 
     /**
      * Moves this bounding box by the specified [amount], and returns a new bounding box
@@ -246,7 +261,7 @@ class BoundingBox(
      * @param amount the amount
      * @return a new bounding box with the result of the move
      */
-    fun move(amount: Vector) = move(amount.x, amount.y, amount.z)
+    public fun move(amount: Vector): BoundingBox = move(amount.x, amount.y, amount.z)
 
     /**
      * Expands this bounding box out by the given [x], [y], and [z] amounts, and returns a
@@ -257,7 +272,7 @@ class BoundingBox(
      * @param z the Z amount
      * @return a new bounding box with the result of the expansion
      */
-    fun expand(x: Double, y: Double, z: Double): BoundingBox {
+    public fun expand(x: Double, y: Double, z: Double): BoundingBox {
         var minX = minimumX
         var minY = minimumY
         var minZ = minimumZ
@@ -277,7 +292,7 @@ class BoundingBox(
      * @param amount the amount
      * @return a new bounding box with the result of the expansion
      */
-    fun expand(amount: Vector) = expand(amount.x, amount.y, amount.z)
+    public fun expand(amount: Vector): BoundingBox = expand(amount.x, amount.y, amount.z)
 
     /**
      * Contracts this bounding box by the given [x], [y], and [z] amounts, and returns a
@@ -288,7 +303,7 @@ class BoundingBox(
      * @param z the Z amount
      * @return a new bounding box with the result of the contraction
      */
-    fun contract(x: Double, y: Double, z: Double): BoundingBox {
+    public fun contract(x: Double, y: Double, z: Double): BoundingBox {
         var minX = minimumX
         var minY = minimumY
         var minZ = minimumZ
@@ -313,10 +328,16 @@ class BoundingBox(
      * @param maximumZ the maximum Z value
      * @return true if this box intersects with the values, false otherwise
      */
-    fun intersects(minimumX: Double, minimumY: Double, minimumZ: Double, maximumX: Double, maximumY: Double, maximumZ: Double) =
-        this.minimumX < maximumX && this.maximumX > minimumX &&
-                this.minimumY < maximumY && this.maximumY > minimumY &&
-                this.minimumZ < maximumZ && this.maximumZ > minimumZ
+    public fun intersects(
+        minimumX: Double,
+        minimumY: Double,
+        minimumZ: Double,
+        maximumX: Double,
+        maximumY: Double,
+        maximumZ: Double
+    ): Boolean = this.minimumX < maximumX && this.maximumX > minimumX &&
+            this.minimumY < maximumY && this.maximumY > minimumY &&
+            this.minimumZ < maximumZ && this.maximumZ > minimumZ
 
     /**
      * Returns true if this bounding box intersects with the given [other] bounding box,
@@ -325,7 +346,14 @@ class BoundingBox(
      * @param other the other bounding box
      * @return true if this box intersects with the other box, false otherwise
      */
-    fun intersects(other: BoundingBox) = intersects(other.minimumX, other.minimumY, other.minimumZ, other.maximumX, other.maximumY, other.maximumZ)
+    public fun intersects(other: BoundingBox): Boolean = intersects(
+        other.minimumX,
+        other.minimumY,
+        other.minimumZ,
+        other.maximumX,
+        other.maximumY,
+        other.maximumZ
+    )
 
     /**
      * Returns true if the given [x], [y], and [z] values are inside the bounds of this
@@ -336,7 +364,9 @@ class BoundingBox(
      * @param z the Z value
      * @return true if this box contains the values, false otherwise
      */
-    fun contains(x: Double, y: Double, z: Double) = x in minimumX..maximumX - 1 && y in minimumY..maximumY - 1 && z in minimumZ..maximumZ - 1
+    public fun contains(x: Double, y: Double, z: Double): Boolean = x in minimumX..maximumX - 1 &&
+            y in minimumY..maximumY - 1 &&
+            z in minimumZ..maximumZ - 1
 
     /**
      * Returns true if the given [position] is inside the bounds of this box, false
@@ -345,21 +375,21 @@ class BoundingBox(
      * @param position the position
      * @return true if this box contains the position, false otherwise
      */
-    operator fun contains(position: Position) = contains(position.x, position.y, position.z)
+    public operator fun contains(position: Position): Boolean = contains(position.x, position.y, position.z)
 
-    companion object {
+    public companion object {
 
         /**
          * A bounding box with 0 for all of its values.
          */
         @JvmField
-        val ZERO = BoundingBox(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        public val ZERO: BoundingBox = BoundingBox(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
         /**
          * A bounding box with 0 for all of its minimum values, and 1 for all of its maximum
          * values.
          */
         @JvmField
-        val UNIT = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+        public val UNIT: BoundingBox = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
     }
 }

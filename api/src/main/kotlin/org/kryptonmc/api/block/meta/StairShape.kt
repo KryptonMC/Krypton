@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The shape of a stair.
  */
-enum class StairShape(override val serialized: String) : StringSerializable {
+public enum class StairShape(override val serialized: String) : StringSerializable {
 
     STRAIGHT("straight"),
     INNER_LEFT("inner_left"),

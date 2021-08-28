@@ -17,24 +17,24 @@ import java.util.concurrent.CompletableFuture
  * The world manager for this server. Can be used to retrieve loaded worlds,
  * or to load, save and update existing worlds.
  */
-interface WorldManager {
+public interface WorldManager {
 
     /**
      * The server this world manager is bound to.
      */
-    val server: Server
+    public val server: Server
 
     /**
      * The map of all currently loaded worlds by dimension.
      */
-    val worlds: Map<ResourceKey<World>, World>
+    public val worlds: Map<ResourceKey<World>, World>
 
     /**
      * The default world for this server.
      *
      * What the default world is will be defined by the implementation.
      */
-    val default: World
+    public val default: World
 
     /**
      * Gets the loaded world with the given resource [key], or null if there is no
@@ -43,7 +43,7 @@ interface WorldManager {
      * @param key the resource key
      * @return the loaded world with the key, or null if not present
      */
-    operator fun get(key: Key): World?
+    public operator fun get(key: Key): World?
 
     /**
      * Returns true if there is currently a world loaded with the given [key], or
@@ -52,7 +52,7 @@ interface WorldManager {
      * @param key the resource key for the world
      * @return true if there is a world loaded with the given key, false otherwise
      */
-    operator fun contains(key: Key): Boolean
+    public operator fun contains(key: Key): Boolean
 
     /**
      * Loads a world by its resource key.
@@ -61,12 +61,12 @@ interface WorldManager {
      * @return a future representing the result of loading the world with the given
      * key
      */
-    fun load(key: Key): CompletableFuture<out World>
+    public fun load(key: Key): CompletableFuture<out World>
 
     /**
      * Saves the given [world] to disk.
      *
      * @param world the world to save
      */
-    fun save(world: World): CompletableFuture<Unit>
+    public fun save(world: World): CompletableFuture<Unit>
 }

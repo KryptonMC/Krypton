@@ -11,7 +11,7 @@ package org.kryptonmc.api.world.scoreboard
 /**
  * Represents positions that a [Scoreboard] may appear in.
  */
-enum class ScoreboardPosition {
+public enum class ScoreboardPosition {
 
     LIST,
     SIDEBAR,

@@ -17,27 +17,27 @@ import org.kryptonmc.api.item.ItemStack
  * [ItemStack.empty] to represent the absence of a value, rather than null.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-interface Inventory : Iterable<ItemStack> {
+public interface Inventory : Iterable<ItemStack> {
 
     /**
      * The size of this inventory
      */
-    val size: Int
+    public val size: Int
 
     /**
      * The holder that owns this inventory
      */
-    val owner: InventoryHolder
+    public val owner: InventoryHolder
 
     /**
      * The type of this inventory
      */
-    val type: InventoryType
+    public val type: InventoryType
 
     /**
      * The items in this inventory.
      */
-    val items: Array<out ItemStack>
+    public val items: Array<out ItemStack>
 
     /**
      * Retrieve an item from this inventory at the specified [index]
@@ -48,7 +48,7 @@ interface Inventory : Iterable<ItemStack> {
      * @throws ArrayIndexOutOfBoundsException if [index] is out of bounds
      * (not in 0 <= [index] < [size])
      */
-    operator fun get(index: Int): ItemStack
+    public operator fun get(index: Int): ItemStack
 
     /**
      * Puts the specified item in the first available empty slot in this inventory, or
@@ -56,7 +56,7 @@ interface Inventory : Iterable<ItemStack> {
      *
      * @param item the item to add
      */
-    fun add(item: ItemStack)
+    public fun add(item: ItemStack)
 
     /**
      * Removes the specified [item] from the array, or does nothing if there isn't an
@@ -64,7 +64,7 @@ interface Inventory : Iterable<ItemStack> {
      *
      * @param item the item to remove
      */
-    fun remove(item: ItemStack)
+    public fun remove(item: ItemStack)
 
     /**
      * If this inventory contains the specified [item]
@@ -72,10 +72,10 @@ interface Inventory : Iterable<ItemStack> {
      * @param item the item
      * @return true if the [item] is in this inventory, false otherwise
      */
-    operator fun contains(item: ItemStack): Boolean
+    public operator fun contains(item: ItemStack): Boolean
 
     /**
      * Clears this inventory
      */
-    fun clear()
+    public fun clear()
 }

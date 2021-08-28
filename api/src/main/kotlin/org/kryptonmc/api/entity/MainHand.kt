@@ -11,7 +11,7 @@ package org.kryptonmc.api.entity
 /**
  * Represents values for the primary hand of some object (e.g. a player)
  */
-enum class MainHand {
+public enum class MainHand {
 
     LEFT,
     RIGHT

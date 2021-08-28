@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture
  * The event manager. Used to register listeners/handlers and dispatch
  * events.
  */
-interface EventManager {
+public interface EventManager {
 
     /**
      * Requests that the specified [listener] be registered with this manager to
@@ -28,7 +28,7 @@ interface EventManager {
      * @param plugin the plugin to associate with the listener
      * @param listener the listener to register
      */
-    fun register(plugin: Any, listener: Any)
+    public fun register(plugin: Any, listener: Any)
 
     /**
      * Requests that the specified [handler] be registered with this manager to
@@ -40,7 +40,7 @@ interface EventManager {
      * @param handler the handler to register
      * @param E the type of the event
      */
-    fun <E> register(plugin: Any, eventClass: Class<E>, handler: EventHandler<E>)
+    public fun <E> register(plugin: Any, eventClass: Class<E>, handler: EventHandler<E>)
 
     /**
      * Requests that the specified [handler] be registered with this manager to
@@ -53,7 +53,7 @@ interface EventManager {
      * @param handler the handler to register
      * @param E the type of the event
      */
-    fun <E> register(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>)
+    public fun <E> register(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>)
 
     /**
      * Fires the specified [event] to the event bus asynchronously, and returns its
@@ -66,7 +66,7 @@ interface EventManager {
      * @param event the event to fire
      * @return the result of firing this event, as a [CompletableFuture]
      */
-    fun <E> fire(event: E): CompletableFuture<E>
+    public fun <E> fire(event: E): CompletableFuture<E>
 
     /**
      * Fires the specified [event] to the event bus asynchronously and discards
@@ -74,7 +74,7 @@ interface EventManager {
      *
      * @param event the event to fire
      */
-    fun fireAndForget(event: Any)
+    public fun fireAndForget(event: Any)
 
     /**
      * Unregisters all registered listeners for the specified [plugin]
@@ -82,7 +82,7 @@ interface EventManager {
      *
      * @param plugin the plugin to unregister all listeners for
      */
-    fun unregisterListeners(plugin: Any)
+    public fun unregisterListeners(plugin: Any)
 
     /**
      * Unregisters the specified [listener] for the specified [plugin]
@@ -91,7 +91,7 @@ interface EventManager {
      * @param plugin the plugin the listener is associated with
      * @param listener the listener to unregister
      */
-    fun unregisterListener(plugin: Any, listener: Any)
+    public fun unregisterListener(plugin: Any, listener: Any)
 
     /**
      * Unregisters the specified [handler] for the specified [plugin]
@@ -100,7 +100,7 @@ interface EventManager {
      * @param plugin the plugin this handler is associated with
      * @param handler the handler to unregister
      */
-    fun <E> unregister(plugin: Any, handler: EventHandler<E>)
+    public fun <E> unregister(plugin: Any, handler: EventHandler<E>)
 }
 
 /**
@@ -113,7 +113,10 @@ interface EventManager {
  * @param E the type of the event
  */
 @JvmSynthetic
-inline fun <reified E> EventManager.register(plugin: Any, handler: EventHandler<E>) = register(plugin, E::class.java, handler)
+public inline fun <reified E> EventManager.register(
+    plugin: Any,
+    handler: EventHandler<E>
+): Unit = register(plugin, E::class.java, handler)
 
 /**
  * Requests that the specified [handler] be registered with this manager to
@@ -126,8 +129,8 @@ inline fun <reified E> EventManager.register(plugin: Any, handler: EventHandler<
  * @param E the type of the event
  */
 @JvmSynthetic
-inline fun <reified E> EventManager.register(
+public inline fun <reified E> EventManager.register(
     plugin: Any,
     priority: ListenerPriority,
     handler: EventHandler<E>
-) = register(plugin, E::class.java, priority, handler)
+): Unit = register(plugin, E::class.java, priority, handler)

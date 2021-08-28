@@ -16,32 +16,34 @@ import java.util.Locale
 /**
  * A formatter used to format statistics in to string representations.
  */
-fun interface StatisticFormatter {
+public fun interface StatisticFormatter {
 
     /**
      * Formats the given [value] in to its string representation.
      */
-    fun format(value: Int): String
+    public fun format(value: Int): String
 
-    companion object {
+    public companion object {
 
         /**
          * The decimal format used for formatting decimals in various built-in formatters.
          */
         @JvmField
-        val DECIMAL_FORMAT = DecimalFormat("########0.00").apply { decimalFormatSymbols = DecimalFormatSymbols.getInstance(Locale.ROOT) }
+        public val DECIMAL_FORMAT: DecimalFormat = DecimalFormat("########0.00").apply {
+            decimalFormatSymbols = DecimalFormatSymbols.getInstance(Locale.ROOT)
+        }
 
         /**
          * The default formatter. Simply converts the value to a number format.
          */
         @JvmField
-        val DEFAULT = StatisticFormatter(NumberFormat.getIntegerInstance(Locale.US)::format)
+        public val DEFAULT: StatisticFormatter = StatisticFormatter(NumberFormat.getIntegerInstance(Locale.US)::format)
 
         /**
          * Divides the value by ten and formats it to a decimal.
          */
         @JvmField
-        val DIVIDE_BY_TEN = StatisticFormatter { DECIMAL_FORMAT.format(it * 0.1) }
+        public val DIVIDE_BY_TEN: StatisticFormatter = StatisticFormatter { DECIMAL_FORMAT.format(it * 0.1) }
 
         /**
          * Formats distance amounts in centimetres to distance amounts in other
@@ -53,7 +55,7 @@ fun interface StatisticFormatter {
          * - Else, uses the value with the " cm" suffix
          */
         @JvmField
-        val DISTANCE = StatisticFormatter {
+        public val DISTANCE: StatisticFormatter = StatisticFormatter {
             val metres = it / 100.0
             val km = metres / 1000.0
             when {
@@ -74,7 +76,7 @@ fun interface StatisticFormatter {
          * - Else, this ticks amount is converted to seconds and formatted with the suffix " s"
          */
         @JvmField
-        val TIME = StatisticFormatter {
+        public val TIME: StatisticFormatter = StatisticFormatter {
             val seconds = it / 20.0
             val minutes = seconds / 60.0
             val hours = minutes / 60.0

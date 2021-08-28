@@ -11,10 +11,10 @@ package org.kryptonmc.api.entity.projectile
 /**
  * A large fireball.
  */
-interface LargeFireball : Fireball {
+public interface LargeFireball : Fireball {
 
     /**
      * The power of the explosion that will be produced by this large fireball.
      */
-    val explosionPower: Int
+    public val explosionPower: Int
 }

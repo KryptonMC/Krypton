@@ -21,4 +21,4 @@ package org.kryptonmc.api.command
  * You can also create your own command types and register them using your own
  * [CommandRegistrar].
  */
-interface Command
+public interface Command

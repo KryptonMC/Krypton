@@ -28,73 +28,74 @@ import kotlin.math.sqrt
  * of the functions inherited from [Position], so that assignment works as it should.
  */
 @Suppress("UNCHECKED_CAST")
-sealed class AbstractPosition<T : AbstractPosition<T>>(
+public sealed class AbstractPosition<T : AbstractPosition<T>>(
     final override val x: Double,
     final override val y: Double,
     final override val z: Double
 ) : Position {
 
-    final override val length by lazy { sqrt(lengthSquared) }
-    final override val lengthSquared = x * x + y * y + z * z
-    final override val blockX = x.floor()
-    final override val blockY = y.floor()
-    final override val blockZ = z.floor()
-    final override val isNormalized = abs(lengthSquared - 1) < Position.EPSILON
+    final override val length: Double by lazy { sqrt(lengthSquared) }
+    final override val lengthSquared: Double = x * x + y * y + z * z
+    final override val blockX: Int = x.floor()
+    final override val blockY: Int = y.floor()
+    final override val blockZ: Int = z.floor()
+    final override val isNormalized: Boolean = abs(lengthSquared - 1) < Position.EPSILON
 
     abstract override fun copy(x: Double, y: Double, z: Double): T
 
     /**
      * The X component of this position, for destructuring
      */
-    operator fun component1() = x
+    public operator fun component1(): Double = x
 
     /**
      * The Y component of this position, for destructuring
      */
-    operator fun component2() = y
+    public operator fun component2(): Double = y
 
     /**
      * The Z component of this position, for destructuring
      */
-    operator fun component3() = z
+    public operator fun component3(): Double = z
 
-    final override fun plus(other: Position) = copy(x + other.x, y + other.y, z + other.z)
+    final override fun plus(other: Position): T = copy(x + other.x, y + other.y, z + other.z)
 
-    final override fun minus(other: Position) = copy(x - other.x, y - other.y, z - other.z)
+    final override fun minus(other: Position): T = copy(x - other.x, y - other.y, z - other.z)
 
-    final override fun times(other: Position) = copy(x * other.x, y * other.y, z * other.z)
+    final override fun times(other: Position): T = copy(x * other.x, y * other.y, z * other.z)
 
-    final override fun times(factor: Int) = copy(x * factor, y * factor, z * factor)
+    final override fun times(factor: Int): T = copy(x * factor, y * factor, z * factor)
 
-    final override fun times(factor: Double) = copy(x * factor, y * factor, z * factor)
+    final override fun times(factor: Double): T = copy(x * factor, y * factor, z * factor)
 
-    final override fun times(factor: Float) = copy(x * factor, y * factor, z * factor)
+    final override fun times(factor: Float): T = copy(x * factor, y * factor, z * factor)
 
-    final override fun div(other: Position) = copy(x / other.x, y / other.y, z / other.z)
+    final override fun div(other: Position): T = copy(x / other.x, y / other.y, z / other.z)
 
-    final override fun div(factor: Int) = copy(x / factor, y / factor, z / factor)
+    final override fun div(factor: Int): T = copy(x / factor, y / factor, z / factor)
 
-    final override fun div(factor: Double) = copy(x / factor, y / factor, z / factor)
+    final override fun div(factor: Double): T = copy(x / factor, y / factor, z / factor)
 
-    final override fun div(factor: Float) = copy(x / factor, y / factor, z / factor)
+    final override fun div(factor: Float): T = copy(x / factor, y / factor, z / factor)
 
-    final override fun rem(other: Position) = copy(x % other.x, y % other.y, z % other.z)
+    final override fun rem(other: Position): T = copy(x % other.x, y % other.y, z % other.z)
 
-    final override fun rem(factor: Int) = copy(x % factor, y % factor, z % factor)
+    final override fun rem(factor: Int): T = copy(x % factor, y % factor, z % factor)
 
-    final override fun rem(factor: Double) = copy(x % factor, y % factor, z % factor)
+    final override fun rem(factor: Double): T = copy(x % factor, y % factor, z % factor)
 
-    final override fun rem(factor: Float) = copy(x % factor, y % factor, z % factor)
+    final override fun rem(factor: Float): T = copy(x % factor, y % factor, z % factor)
 
-    final override fun unaryMinus() = copy(-x, -y, -z)
+    final override fun unaryMinus(): T = copy(-x, -y, -z)
 
-    final override fun inc() = copy(x + 1, y + 1, z + 1)
+    final override fun inc(): T = copy(x + 1, y + 1, z + 1)
 
-    final override fun dec() = copy(x - 1, y - 1, z - 1)
+    final override fun dec(): T = copy(x - 1, y - 1, z - 1)
 
-    final override fun midpoint(other: Position) = copy((x + other.x) / 2, (y + other.y) / 2, (z + other.z) / 2)
+    final override fun midpoint(other: Position): T = copy((x + other.x) / 2, (y + other.y) / 2, (z + other.z) / 2)
 
-    final override fun cross(other: Position) = copy(y * other.z - other.y * z, z * other.x - other.z * x, x * other.y - other.x * y)
+    final override fun cross(other: Position): T =
+        copy(y * other.z - other.y * z, z * other.x - other.z * x, x * other.y - other.x * y)
 
-    final override fun normalize() = copy(x / length, y / length, z / length)
+    final override fun normalize(): T = copy(x / length, y / length, z / length)
 }

@@ -15,13 +15,13 @@ package org.kryptonmc.api.plugin
 /**
  * Thrown when a plugin is invalid in some way.
  */
-class InvalidPluginException : Exception {
+public class InvalidPluginException : Exception {
 
-    constructor() : super()
+    public constructor() : super()
 
-    constructor(message: String) : super(message)
+    public constructor(message: String) : super(message)
 
-    constructor(cause: Throwable) : super(cause)
+    public constructor(cause: Throwable) : super(cause)
 
-    constructor(message: String, cause: Throwable) : super(message, cause)
+    public constructor(message: String, cause: Throwable) : super(message, cause)
 }

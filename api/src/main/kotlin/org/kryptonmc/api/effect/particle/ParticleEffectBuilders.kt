@@ -23,7 +23,7 @@ import java.awt.Color
 /**
  * Allows building a [ParticleEffect] for simple particle effects using method chaining.
  */
-open class ParticleEffectBuilder @JvmOverloads constructor(
+public open class ParticleEffectBuilder @JvmOverloads constructor(
     protected val type: ParticleType,
     protected var quantity: Int = 1,
     protected var offset: Vector = Vector.ZERO,
@@ -36,7 +36,7 @@ open class ParticleEffectBuilder @JvmOverloads constructor(
      * @param quantity the number of particles, must be between 1 and 16384 inclusively
      */
     @Contract("_ -> this", mutates = "this")
-    open fun quantity(quantity: Int) = apply { this.quantity = quantity }
+    public open fun quantity(quantity: Int): ParticleEffectBuilder = apply { this.quantity = quantity }
 
     /**
      * Sets the offset the particles can be from the origin.
@@ -44,7 +44,7 @@ open class ParticleEffectBuilder @JvmOverloads constructor(
      * @param offset the offset from the origin
      */
     @Contract("_ -> this", mutates = "this")
-    open fun offset(offset: Vector) = apply { this.offset = offset }
+    public open fun offset(offset: Vector): ParticleEffectBuilder = apply { this.offset = offset }
 
     /**
      * Sets if particles can be viewed from a further distance than normal.
@@ -55,19 +55,19 @@ open class ParticleEffectBuilder @JvmOverloads constructor(
      * @param longDistance true for long view distance, false for normal view distance
      */
     @Contract("_ -> this", mutates = "this")
-    open fun longDistance(longDistance: Boolean) = apply { this.longDistance = longDistance }
+    public open fun longDistance(longDistance: Boolean): ParticleEffectBuilder = apply { this.longDistance = longDistance }
 
     /**
      * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance)
+    override fun build(): ParticleEffect = ParticleEffect(type, quantity, offset, longDistance)
 }
 
 /**
  * Allows building a [ParticleEffect] for directional particle effects using method chaining.
  */
-class DirectionalParticleEffectBuilder @JvmOverloads constructor(
+public class DirectionalParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
@@ -82,7 +82,7 @@ class DirectionalParticleEffectBuilder @JvmOverloads constructor(
      * @param direction the direction of the particles
      */
     @Contract("_ -> this", mutates = "this")
-    fun direction(direction: Vector) = apply { this.direction = direction }
+    public fun direction(direction: Vector): DirectionalParticleEffectBuilder = apply { this.direction = direction }
 
     /**
      * Sets the velocity of the particles.
@@ -93,25 +93,34 @@ class DirectionalParticleEffectBuilder @JvmOverloads constructor(
      * @param velocity the velocity of the particles
      */
     @Contract("_ -> this", mutates = "this")
-    fun velocity(velocity: Float) = apply { this.velocity = velocity }
+    public fun velocity(velocity: Float): DirectionalParticleEffectBuilder = apply { this.velocity = velocity }
 
-    override fun quantity(quantity: Int) = super.quantity(quantity) as DirectionalParticleEffectBuilder
+    override fun quantity(quantity: Int): DirectionalParticleEffectBuilder =
+        super.quantity(quantity) as DirectionalParticleEffectBuilder
 
-    override fun offset(offset: Vector) = super.offset(offset) as DirectionalParticleEffectBuilder
+    override fun offset(offset: Vector): DirectionalParticleEffectBuilder =
+        super.offset(offset) as DirectionalParticleEffectBuilder
 
-    override fun longDistance(longDistance: Boolean) = super.longDistance(longDistance) as DirectionalParticleEffectBuilder
+    override fun longDistance(longDistance: Boolean): DirectionalParticleEffectBuilder =
+        super.longDistance(longDistance) as DirectionalParticleEffectBuilder
 
     /**
      * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance, DirectionalParticleData(direction, velocity))
+    override fun build(): ParticleEffect = ParticleEffect(
+        type,
+        quantity,
+        offset,
+        longDistance,
+        DirectionalParticleData(direction, velocity)
+    )
 }
 
 /**
  * Allows building a [ParticleEffect] for item particle effects using method chaining.
  */
-class ItemParticleEffectBuilder @JvmOverloads constructor(
+public class ItemParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
@@ -125,25 +134,28 @@ class ItemParticleEffectBuilder @JvmOverloads constructor(
      * @param item the item type to use
      */
     @Contract("_ -> this", mutates = "this")
-    fun item(item: ItemType) = apply { this.item = item }
+    public fun item(item: ItemType): ItemParticleEffectBuilder = apply { this.item = item }
 
-    override fun quantity(quantity: Int) = super.quantity(quantity) as ItemParticleEffectBuilder
+    override fun quantity(quantity: Int): ItemParticleEffectBuilder =
+        super.quantity(quantity) as ItemParticleEffectBuilder
 
-    override fun offset(offset: Vector) = super.offset(offset) as ItemParticleEffectBuilder
+    override fun offset(offset: Vector): ItemParticleEffectBuilder =
+        super.offset(offset) as ItemParticleEffectBuilder
 
-    override fun longDistance(longDistance: Boolean) = super.longDistance(longDistance) as ItemParticleEffectBuilder
+    override fun longDistance(longDistance: Boolean): ItemParticleEffectBuilder =
+        super.longDistance(longDistance) as ItemParticleEffectBuilder
 
     /**
      * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance, ItemParticleData(item))
+    override fun build(): ParticleEffect = ParticleEffect(type, quantity, offset, longDistance, ItemParticleData(item))
 }
 
 /**
  * Allows building a [ParticleEffect] for block particle effects using method chaining.
  */
-class BlockParticleEffectBuilder @JvmOverloads constructor(
+public class BlockParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
@@ -157,25 +169,28 @@ class BlockParticleEffectBuilder @JvmOverloads constructor(
      * @param block the block
      */
     @Contract("_ -> this", mutates = "this")
-    fun block(block: Block) = apply { this.block = block }
+    public fun block(block: Block): BlockParticleEffectBuilder = apply { this.block = block }
 
-    override fun quantity(quantity: Int) = super.quantity(quantity) as BlockParticleEffectBuilder
+    override fun quantity(quantity: Int): BlockParticleEffectBuilder =
+        super.quantity(quantity) as BlockParticleEffectBuilder
 
-    override fun offset(offset: Vector) = super.offset(offset) as BlockParticleEffectBuilder
+    override fun offset(offset: Vector): BlockParticleEffectBuilder =
+        super.offset(offset) as BlockParticleEffectBuilder
 
-    override fun longDistance(longDistance: Boolean) = super.longDistance(longDistance) as BlockParticleEffectBuilder
+    override fun longDistance(longDistance: Boolean): BlockParticleEffectBuilder =
+        super.longDistance(longDistance) as BlockParticleEffectBuilder
 
     /**
      * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance, BlockParticleData(block))
+    override fun build(): ParticleEffect = ParticleEffect(type, quantity, offset, longDistance, BlockParticleData(block))
 }
 
 /**
  * Allows building a [ParticleEffect] for colored particle effects using method chaining.
  */
-open class ColorParticleEffectBuilder @JvmOverloads constructor(
+public open class ColorParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
@@ -191,7 +206,7 @@ open class ColorParticleEffectBuilder @JvmOverloads constructor(
      * @param color the color
      */
     @Contract("_ -> this", mutates = "this")
-    open fun color(color: Color) = apply {
+    public open fun color(color: Color): ColorParticleEffectBuilder = apply {
         this.red = color.red.toShort()
         this.green = color.green.toShort()
         this.blue = color.blue.toShort()
@@ -209,7 +224,7 @@ open class ColorParticleEffectBuilder @JvmOverloads constructor(
      */
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
-    open fun rgb(red: Int, green: Int, blue: Int) = apply {
+    public open fun rgb(red: Int, green: Int, blue: Int): ColorParticleEffectBuilder = apply {
         this.red = (red and 0xFF).toShort()
         this.green = (green and 0xFF).toShort()
         this.blue = (blue and 0xFF).toShort()
@@ -224,7 +239,7 @@ open class ColorParticleEffectBuilder @JvmOverloads constructor(
      */
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
-    open fun rgb(rgb: Int) = rgb(rgb shr 16, rgb shr 8, rgb)
+    public open fun rgb(rgb: Int): ColorParticleEffectBuilder = rgb(rgb shr 16, rgb shr 8, rgb)
 
     /**
      * Sets the color of the particle to the given [rgb] like object.
@@ -234,7 +249,7 @@ open class ColorParticleEffectBuilder @JvmOverloads constructor(
      * @param rgb the RGB like object
      */
     @Contract("_ -> this", mutates = "this")
-    open fun rgb(rgb: RGBLike) = rgb(rgb.red(), rgb.green(), rgb.blue())
+    public open fun rgb(rgb: RGBLike): ColorParticleEffectBuilder = rgb(rgb.red(), rgb.green(), rgb.blue())
 
     /**
      * Sets the color of the particle to the given [hue], [saturation], and
@@ -248,7 +263,7 @@ open class ColorParticleEffectBuilder @JvmOverloads constructor(
      * @param value the value
      */
     @Contract("_ -> this", mutates = "this")
-    open fun hsv(hue: Float, saturation: Float, value: Float): ColorParticleEffectBuilder {
+    public open fun hsv(hue: Float, saturation: Float, value: Float): ColorParticleEffectBuilder {
         require(hue in 0F..1F) { "Hue must be between 0 and 1!" }
         require(saturation in 0F..1F) { "Saturation must be between 0 and 1!" }
         require(value in 0F..1F) { "Value must be between 0 and 1!" }
@@ -263,25 +278,28 @@ open class ColorParticleEffectBuilder @JvmOverloads constructor(
      * @param hsv the HSV value
      */
     @Contract("_ -> this", mutates = "this")
-    open fun hsv(hsv: HSVLike) = hsv(hsv.h(), hsv.s(), hsv.v())
+    public open fun hsv(hsv: HSVLike): ColorParticleEffectBuilder = hsv(hsv.h(), hsv.s(), hsv.v())
 
-    override fun quantity(quantity: Int) = super.quantity(quantity) as ColorParticleEffectBuilder
+    override fun quantity(quantity: Int): ColorParticleEffectBuilder =
+        super.quantity(quantity) as ColorParticleEffectBuilder
 
-    override fun offset(offset: Vector) = super.offset(offset) as ColorParticleEffectBuilder
+    override fun offset(offset: Vector): ColorParticleEffectBuilder =
+        super.offset(offset) as ColorParticleEffectBuilder
 
-    override fun longDistance(longDistance: Boolean) = super.longDistance(longDistance) as ColorParticleEffectBuilder
+    override fun longDistance(longDistance: Boolean): ColorParticleEffectBuilder =
+        super.longDistance(longDistance) as ColorParticleEffectBuilder
 
     /**
      * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance, ColorParticleData(red, green, blue))
+    override fun build(): ParticleEffect = ParticleEffect(type, quantity, offset, longDistance, ColorParticleData(red, green, blue))
 }
 
 /**
  * Allows building a [ParticleEffect] for dust particle effects using method chaining.
  */
-open class DustParticleEffectBuilder @JvmOverloads constructor(
+public open class DustParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
@@ -299,37 +317,52 @@ open class DustParticleEffectBuilder @JvmOverloads constructor(
      * @param scale the scale of the particles
      */
     @Contract("_ -> this", mutates = "this")
-    open fun scale(scale: Float) = apply { this.scale = scale }
+    public open fun scale(scale: Float): DustParticleEffectBuilder = apply { this.scale = scale }
 
-    override fun quantity(quantity: Int) = super.quantity(quantity) as DustParticleEffectBuilder
+    override fun quantity(quantity: Int): DustParticleEffectBuilder =
+        super.quantity(quantity) as DustParticleEffectBuilder
 
-    override fun offset(offset: Vector) = super.offset(offset) as DustParticleEffectBuilder
+    override fun offset(offset: Vector): DustParticleEffectBuilder =
+        super.offset(offset) as DustParticleEffectBuilder
 
-    override fun longDistance(longDistance: Boolean) = super.longDistance(longDistance) as DustParticleEffectBuilder
+    override fun longDistance(longDistance: Boolean): DustParticleEffectBuilder =
+        super.longDistance(longDistance) as DustParticleEffectBuilder
 
-    override fun color(color: Color) = super.color(color) as DustParticleEffectBuilder
+    override fun color(color: Color): DustParticleEffectBuilder =
+        super.color(color) as DustParticleEffectBuilder
 
-    override fun rgb(red: Int, green: Int, blue: Int) = super.rgb(red, green, blue) as DustParticleEffectBuilder
+    override fun rgb(red: Int, green: Int, blue: Int): DustParticleEffectBuilder =
+        super.rgb(red, green, blue) as DustParticleEffectBuilder
 
-    override fun rgb(rgb: Int) = super.rgb(rgb) as DustParticleEffectBuilder
+    override fun rgb(rgb: Int): DustParticleEffectBuilder =
+        super.rgb(rgb) as DustParticleEffectBuilder
 
-    override fun rgb(rgb: RGBLike) = super.rgb(rgb) as DustParticleEffectBuilder
+    override fun rgb(rgb: RGBLike): DustParticleEffectBuilder =
+        super.rgb(rgb) as DustParticleEffectBuilder
 
-    override fun hsv(hue: Float, saturation: Float, value: Float) = super.hsv(hue, saturation, value) as DustParticleEffectBuilder
+    override fun hsv(hue: Float, saturation: Float, value: Float): DustParticleEffectBuilder =
+        super.hsv(hue, saturation, value) as DustParticleEffectBuilder
 
-    override fun hsv(hsv: HSVLike) = super.hsv(hsv) as DustParticleEffectBuilder
+    override fun hsv(hsv: HSVLike): DustParticleEffectBuilder =
+        super.hsv(hsv) as DustParticleEffectBuilder
 
     /**
      * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance, DustParticleData(ColorParticleData(red, green, blue), scale))
+    override fun build(): ParticleEffect = ParticleEffect(
+        type,
+        quantity,
+        offset,
+        longDistance,
+        DustParticleData(ColorParticleData(red, green, blue), scale)
+    )
 }
 
 /**
  * Allows building a [ParticleEffect] for dust color transition particle effects using method chaining.
  */
-class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
+public class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
@@ -349,7 +382,7 @@ class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
      * @param color the color
      */
     @Contract("_ -> this", mutates = "this")
-    fun toColor(color: Color) = toRGB(color.red, color.green, color.blue)
+    public fun toColor(color: Color): DustTransitionParticleEffectBuilder = toRGB(color.red, color.green, color.blue)
 
     /**
      * Sets the color to transition the particle to to the given [red], [green], and
@@ -364,7 +397,7 @@ class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
      */
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
-    fun toRGB(red: Int, green: Int, blue: Int) = apply {
+    public fun toRGB(red: Int, green: Int, blue: Int): DustTransitionParticleEffectBuilder = apply {
         toRed = (red and 0xFF).toShort()
         toGreen = (green and 0xFF).toShort()
         toBlue = (blue and 0xFF).toShort()
@@ -379,7 +412,7 @@ class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
      */
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
-    fun toRGB(rgb: Int) = rgb(rgb shr 16, rgb shr 8, rgb)
+    public fun toRGB(rgb: Int): DustTransitionParticleEffectBuilder = rgb(rgb shr 16, rgb shr 8, rgb)
 
     /**
      * Sets the color to transition the particle to to the given [rgb] like object.
@@ -389,7 +422,7 @@ class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
      * @param rgb the RGB like object
      */
     @Contract("_ -> this", mutates = "this")
-    fun toRGB(rgb: RGBLike) = rgb(rgb.red(), rgb.green(), rgb.blue())
+    public fun toRGB(rgb: RGBLike): DustTransitionParticleEffectBuilder = rgb(rgb.red(), rgb.green(), rgb.blue())
 
     /**
      * Sets the color to transition the particle to to the given [hsv] like object.
@@ -399,7 +432,7 @@ class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
      * @param hsv the HSV value
      */
     @Contract("_ -> this", mutates = "this")
-    fun toHSV(hsv: HSVLike) = hsv(hsv.h(), hsv.s(), hsv.v())
+    public fun toHSV(hsv: HSVLike): DustTransitionParticleEffectBuilder = hsv(hsv.h(), hsv.s(), hsv.v())
 
     /**
      * Sets the color to transition the particle to to the given [hue], [saturation], and
@@ -413,38 +446,48 @@ class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
      * @param value the value
      */
     @Contract("_ -> this", mutates = "this")
-    fun toHSV(hue: Float, saturation: Float, value: Float): ColorParticleEffectBuilder {
+    public fun toHSV(hue: Float, saturation: Float, value: Float): DustTransitionParticleEffectBuilder {
         require(hue in 0F..1F) { "Hue must be between 0 and 1!" }
         require(saturation in 0F..1F) { "Saturation must be between 0 and 1!" }
         require(value in 0F..1F) { "Value must be between 0 and 1!" }
         return rgb(Color.HSBtoRGB(hue, saturation, value))
     }
 
-    override fun quantity(quantity: Int) = super.quantity(quantity) as DustTransitionParticleEffectBuilder
+    override fun quantity(quantity: Int): DustTransitionParticleEffectBuilder =
+        super.quantity(quantity) as DustTransitionParticleEffectBuilder
 
-    override fun offset(offset: Vector) = super.offset(offset) as DustTransitionParticleEffectBuilder
+    override fun offset(offset: Vector): DustTransitionParticleEffectBuilder =
+        super.offset(offset) as DustTransitionParticleEffectBuilder
 
-    override fun longDistance(longDistance: Boolean) = super.longDistance(longDistance) as DustTransitionParticleEffectBuilder
+    override fun longDistance(longDistance: Boolean): DustTransitionParticleEffectBuilder =
+        super.longDistance(longDistance) as DustTransitionParticleEffectBuilder
 
-    override fun color(color: Color) = super.color(color) as DustTransitionParticleEffectBuilder
+    override fun color(color: Color): DustTransitionParticleEffectBuilder =
+        super.color(color) as DustTransitionParticleEffectBuilder
 
-    override fun rgb(red: Int, green: Int, blue: Int) = super.rgb(red, green, blue) as DustTransitionParticleEffectBuilder
+    override fun rgb(red: Int, green: Int, blue: Int): DustTransitionParticleEffectBuilder =
+        super.rgb(red, green, blue) as DustTransitionParticleEffectBuilder
 
-    override fun rgb(rgb: Int) = super.rgb(rgb) as DustTransitionParticleEffectBuilder
+    override fun rgb(rgb: Int): DustTransitionParticleEffectBuilder =
+        super.rgb(rgb) as DustTransitionParticleEffectBuilder
 
-    override fun rgb(rgb: RGBLike) = super.rgb(rgb) as DustTransitionParticleEffectBuilder
+    override fun rgb(rgb: RGBLike): DustTransitionParticleEffectBuilder =
+        super.rgb(rgb) as DustTransitionParticleEffectBuilder
 
-    override fun hsv(hue: Float, saturation: Float, value: Float) = super.hsv(hue, saturation, value) as DustTransitionParticleEffectBuilder
+    override fun hsv(hue: Float, saturation: Float, value: Float): DustTransitionParticleEffectBuilder =
+        super.hsv(hue, saturation, value) as DustTransitionParticleEffectBuilder
 
-    override fun hsv(hsv: HSVLike) = super.hsv(hsv) as DustTransitionParticleEffectBuilder
+    override fun hsv(hsv: HSVLike): DustTransitionParticleEffectBuilder =
+        super.hsv(hsv) as DustTransitionParticleEffectBuilder
 
-    override fun scale(scale: Float) = super.scale(scale) as DustTransitionParticleEffectBuilder
+    override fun scale(scale: Float): DustTransitionParticleEffectBuilder =
+        super.scale(scale) as DustTransitionParticleEffectBuilder
 
     /**
      * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
-    override fun build() = ParticleEffect(
+    override fun build(): ParticleEffect = ParticleEffect(
         type,
         quantity,
         offset,
@@ -456,7 +499,7 @@ class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
 /**
  * Allows building a [ParticleEffect] for note particle effects using method chaining.
  */
-class NoteParticleEffectBuilder @JvmOverloads constructor(
+public class NoteParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
@@ -472,28 +515,31 @@ class NoteParticleEffectBuilder @JvmOverloads constructor(
      * @param note the note value
      */
     @Contract("_ -> this", mutates = "this")
-    fun note(note: Int) = apply {
+    public fun note(note: Int): NoteParticleEffectBuilder = apply {
         require(note in 0..24) { "Note must be between 0 and 24!" }
         this.note = note.toByte()
     }
 
-    override fun quantity(quantity: Int) = super.quantity(quantity) as NoteParticleEffectBuilder
+    override fun quantity(quantity: Int): NoteParticleEffectBuilder =
+        super.quantity(quantity) as NoteParticleEffectBuilder
 
-    override fun offset(offset: Vector) = super.offset(offset) as NoteParticleEffectBuilder
+    override fun offset(offset: Vector): NoteParticleEffectBuilder =
+        super.offset(offset) as NoteParticleEffectBuilder
 
-    override fun longDistance(longDistance: Boolean) = super.longDistance(longDistance) as NoteParticleEffectBuilder
+    override fun longDistance(longDistance: Boolean): NoteParticleEffectBuilder =
+        super.longDistance(longDistance) as NoteParticleEffectBuilder
 
     /**
      * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance, NoteParticleData(note))
+    override fun build(): ParticleEffect = ParticleEffect(type, quantity, offset, longDistance, NoteParticleData(note))
 }
 
 /**
  * Allows building a [ParticleEffect] for vibration particle effects using method chaining.
  */
-class VibrationParticleEffectBuilder @JvmOverloads constructor(
+public class VibrationParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
     quantity: Int = 1,
     offset: Vector = Vector.ZERO,
@@ -509,7 +555,7 @@ class VibrationParticleEffectBuilder @JvmOverloads constructor(
      * @param position the origin position
      */
     @Contract("_ -> this", mutates = "this")
-    fun origin(position: Position) = apply { origin = position }
+    public fun origin(position: Position): VibrationParticleEffectBuilder = apply { origin = position }
 
     /**
      * Sets the destination location from the given [position].
@@ -517,7 +563,7 @@ class VibrationParticleEffectBuilder @JvmOverloads constructor(
      * @param position the destination position
      */
     @Contract("_ -> this", mutates = "this")
-    fun destination(position: Position) = apply { origin = position }
+    public fun destination(position: Position): VibrationParticleEffectBuilder = apply { origin = position }
 
     /**
      * Sets the amount of ticks it will take to vibrate from the
@@ -526,17 +572,26 @@ class VibrationParticleEffectBuilder @JvmOverloads constructor(
      * @param ticks the amount of ticks
      */
     @Contract("_ -> this", mutates = "this")
-    fun ticks(ticks: Int) = apply { this.ticks = ticks }
+    public fun ticks(ticks: Int): VibrationParticleEffectBuilder = apply { this.ticks = ticks }
 
-    override fun quantity(quantity: Int) = super.quantity(quantity) as VibrationParticleEffectBuilder
+    override fun quantity(quantity: Int): VibrationParticleEffectBuilder =
+        super.quantity(quantity) as VibrationParticleEffectBuilder
 
-    override fun offset(offset: Vector) = super.offset(offset) as VibrationParticleEffectBuilder
+    override fun offset(offset: Vector): VibrationParticleEffectBuilder =
+        super.offset(offset) as VibrationParticleEffectBuilder
 
-    override fun longDistance(longDistance: Boolean) = super.longDistance(longDistance) as VibrationParticleEffectBuilder
+    override fun longDistance(longDistance: Boolean): VibrationParticleEffectBuilder =
+        super.longDistance(longDistance) as VibrationParticleEffectBuilder
 
     /**
      * Builds a new [ParticleEffect] from the settings of this builder.
      */
     @Contract("_ -> new", pure = true)
-    override fun build() = ParticleEffect(type, quantity, offset, longDistance, VibrationParticleData(origin, destination, ticks))
+    override fun build(): ParticleEffect = ParticleEffect(
+        type,
+        quantity,
+        offset,
+        longDistance,
+        VibrationParticleData(origin, destination, ticks)
+    )
 }

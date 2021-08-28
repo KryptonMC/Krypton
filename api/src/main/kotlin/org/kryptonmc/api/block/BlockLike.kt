@@ -11,10 +11,10 @@ package org.kryptonmc.api.block
 /**
  * Something that could be representable as a block.
  */
-interface BlockLike {
+public interface BlockLike {
 
     /**
      * Gets the block representation, or null if there is no item representation.
      */
-    fun asBlock(): Block?
+    public fun asBlock(): Block?
 }

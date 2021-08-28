@@ -18,12 +18,12 @@ import kotlin.math.abs
  *
  * @see [Vector]
  */
-class Location @JvmOverloads constructor(
+public class Location @JvmOverloads constructor(
     x: Double,
     y: Double,
     z: Double,
-    val yaw: Float = 0F,
-    val pitch: Float = 0F
+    public val yaw: Float = 0F,
+    public val pitch: Float = 0F
 ) : AbstractPosition<Location>(x, y, z) {
 
     /**
@@ -33,9 +33,9 @@ class Location @JvmOverloads constructor(
      */
     @Contract("_ -> new", pure = true)
     @Suppress("unused")
-    fun toVector() = Vector(x, y, z)
+    public fun toVector(): Vector = Vector(x, y, z)
 
-    override fun equals(other: Any?) = other is Location &&
+    override fun equals(other: Any?): Boolean = other is Location &&
             abs(x - other.x) < EPSILON &&
             abs(y - other.y) < EPSILON &&
             abs(z - other.z) < EPSILON &&
@@ -52,27 +52,27 @@ class Location @JvmOverloads constructor(
         return hash
     }
 
-    override fun toString() = "Location(x=$x, y=$y, z=$z, yaw=$yaw, pitch=$pitch)"
+    override fun toString(): String = "Location(x=$x, y=$y, z=$z, yaw=$yaw, pitch=$pitch)"
 
-    override fun copy(x: Double, y: Double, z: Double) = Location(x, y, z, yaw, pitch)
+    override fun copy(x: Double, y: Double, z: Double): Location = Location(x, y, z, yaw, pitch)
 
     /**
      * Create a copy of this location with the specified values applied to it.
      */
-    fun copy(
+    public fun copy(
         x: Double = this.x,
         y: Double = this.y,
         z: Double = this.z,
         yaw: Float = this.yaw,
         pitch: Float = this.pitch
-    ) = Location(x, y, z, yaw, pitch)
+    ): Location = Location(x, y, z, yaw, pitch)
 
-    companion object {
+    public companion object {
 
         /**
          * A constant for the location at the centre of the world with 0 yaw and 0 pitch.
          */
         @JvmField
-        val ZERO = Location(0.0, 0.0, 0.0, 0F, 0F)
+        public val ZERO: Location = Location(0.0, 0.0, 0.0, 0F, 0F)
     }
 }

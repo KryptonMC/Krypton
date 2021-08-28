@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The type of a slab.
  */
-enum class SlabType(override val serialized: String) : StringSerializable {
+public enum class SlabType(override val serialized: String) : StringSerializable {
 
     TOP("top"),
     BOTTOM("bottom"),

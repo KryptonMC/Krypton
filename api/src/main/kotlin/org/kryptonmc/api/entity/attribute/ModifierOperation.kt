@@ -11,7 +11,7 @@ package org.kryptonmc.api.entity.attribute
 /**
  * Represents an operation that can be [applied][apply] to [AttributeModifier]s.
  */
-fun interface ModifierOperation {
+public fun interface ModifierOperation {
 
     /**
      * Applies this operation to the specified [values] and returns the result.
@@ -19,9 +19,9 @@ fun interface ModifierOperation {
      * @param values the values to apply
      * @return the result of applying this operation to the specified values
      */
-    fun apply(base: Double, values: List<AttributeModifier>): Double
+    public fun apply(base: Double, values: List<AttributeModifier>): Double
 
-    companion object {
+    public companion object {
 
         /**
          * Adds each modifier's amount to the base value.
@@ -30,7 +30,7 @@ fun interface ModifierOperation {
          * respectively, the total would be 9, because 3 + 2 + 4 = 9.
          */
         @JvmField
-        val ADD = ModifierOperation { base, values -> values.fold(base) { acc, value -> acc + value.amount } }
+        public val ADD: ModifierOperation = ModifierOperation { base, values -> values.fold(base) { acc, value -> acc + value.amount } }
 
         /**
          * Multiplies the base value by 1 + the sum of all the modifier amounts.
@@ -39,7 +39,9 @@ fun interface ModifierOperation {
          * respectively, the total would be 21, because 3 * (1 + 2 + 4) = 21.
          */
         @JvmField
-        val MULTIPLY_BASE = ModifierOperation { base, values -> base * values.fold(1.0) { acc, value -> acc + value.amount } }
+        public val MULTIPLY_BASE: ModifierOperation = ModifierOperation { base, values ->
+            base * values.fold(1.0) { acc, value -> acc + value.amount }
+        }
 
         /**
          * Multiplies the base by each value + 1.
@@ -48,6 +50,8 @@ fun interface ModifierOperation {
          * respectively, the total would be 45, as 3 * (1 + 2) * (1 + 4) = 45.
          */
         @JvmField
-        val MULTIPLY_TOTAL = ModifierOperation { base, values -> values.fold(base) { acc, value -> acc * (1 + value.amount) } }
+        public val MULTIPLY_TOTAL: ModifierOperation = ModifierOperation { base, values ->
+            values.fold(base) { acc, value -> acc * (1 + value.amount) }
+        }
     }
 }

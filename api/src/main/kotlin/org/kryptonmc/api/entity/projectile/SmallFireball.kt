@@ -11,4 +11,4 @@ package org.kryptonmc.api.entity.projectile
 /**
  * A small fireball.
  */
-interface SmallFireball : Fireball
+public interface SmallFireball : Fireball

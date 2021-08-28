@@ -16,7 +16,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode
  *
  * @param node the node that backs this command
  */
-class BrigadierCommand(val node: LiteralCommandNode<Sender>) : Command {
+public class BrigadierCommand(public val node: LiteralCommandNode<Sender>) : Command {
 
     /**
      * Constructs a command that is backed by a Brigadier [LiteralCommandNode] from
@@ -24,15 +24,15 @@ class BrigadierCommand(val node: LiteralCommandNode<Sender>) : Command {
      *
      * @param builder the builder to build the backing node from
      */
-    constructor(builder: LiteralArgumentBuilder<Sender>) : this(builder.build())
+    public constructor(builder: LiteralArgumentBuilder<Sender>) : this(builder.build())
 
-    companion object {
+    public companion object {
 
         /**
          * The return code used by Brigadier to indicate that command execution
          * should be forwarded to the backend server.
          */
-        const val FORWARD = 0xF6287429.toInt()
+        public const val FORWARD: Int = 0xF6287429.toInt()
     }
 }
 
@@ -44,7 +44,7 @@ class BrigadierCommand(val node: LiteralCommandNode<Sender>) : Command {
  * @return the built Brigadier command
  */
 @JvmSynthetic
-inline fun brigadierCommand(
+public inline fun brigadierCommand(
     literal: String,
     builder: LiteralArgumentBuilder<Sender>.() -> Unit
 ): BrigadierCommand = BrigadierCommand(LiteralArgumentBuilder.literal<Sender>(literal).apply(builder).build())

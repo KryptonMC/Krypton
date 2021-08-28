@@ -8,25 +8,23 @@
  */
 package org.kryptonmc.api.world.rule
 
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
+import net.kyori.adventure.text.TranslatableComponent
 
 /**
  * A rule dictating how a specific aspect of the game functions.
  *
  * @param name the name of the rule
  * @param default the default value of this rule
+ * @param translation the client-side translation for the rule
  * @param V the type of the value
  */
-class GameRule<V : Any>(
-    val name: String,
-    val default: V
+@JvmRecord
+public data class GameRule<V : Any>(
+    public val name: String,
+    public val default: V,
+    public val translation: TranslatableComponent
 ) : ComponentLike {
 
-    /**
-     * The translation for this gamerule.
-     */
-    val translation = Component.translatable("gamerule.$name")
-
-    override fun asComponent() = translation
+    override fun asComponent(): TranslatableComponent = translation
 }

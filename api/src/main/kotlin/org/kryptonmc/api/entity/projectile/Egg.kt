@@ -11,4 +11,4 @@ package org.kryptonmc.api.entity.projectile
 /**
  * A thrown egg.
  */
-interface Egg : ThrowableProjectile
+public interface Egg : ThrowableProjectile

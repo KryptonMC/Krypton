@@ -23,11 +23,11 @@ import java.util.UUID
  * @param uuid the UUID of the player logging in
  * @param address the address of the player logging in
  */
-class LoginEvent(
-    val username: String,
-    val uuid: UUID,
-    val address: InetSocketAddress
+public class LoginEvent(
+    public val username: String,
+    public val uuid: UUID,
+    public val address: InetSocketAddress
 ) : ResultedEvent<ComponentResult> {
 
-    override var result = ComponentResult.allowed(translatable("multiplayer.disconnect.kicked"))
+    override var result: ComponentResult = ComponentResult.allowed(translatable("multiplayer.disconnect.kicked"))
 }

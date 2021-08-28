@@ -15,7 +15,7 @@ package org.kryptonmc.api.permission
 /**
  * Provides [PermissionFunction]s for [Subject]s.
  */
-fun interface PermissionProvider : (Subject) -> PermissionFunction {
+public fun interface PermissionProvider {
 
     /**
      * Creates a [PermissionFunction] for the given [subject].
@@ -23,7 +23,5 @@ fun interface PermissionProvider : (Subject) -> PermissionFunction {
      * @param subject the subject
      * @return the permission function for the given subject
      */
-    fun createFunction(subject: Subject): PermissionFunction
-
-    override fun invoke(p1: Subject) = createFunction(p1)
+    public fun createFunction(subject: Subject): PermissionFunction
 }

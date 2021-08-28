@@ -16,12 +16,12 @@ import org.spongepowered.math.vector.Vector3d
  *
  * @param clickLocation the location where the player clicked
  */
-abstract class HitResult(val clickLocation: Vector3d) {
+public abstract class HitResult(public val clickLocation: Vector3d) {
 
     /**
      * The type of hit result this is.
      */
-    abstract val type: Type
+    public abstract val type: Type
 
     /**
      * Gets the distance squared from the [clickLocation] to the given
@@ -33,7 +33,7 @@ abstract class HitResult(val clickLocation: Vector3d) {
      * @param entity the entity to calculate the distance to
      * @return the distance squared from the click location to the given entity
      */
-    fun distanceTo(entity: Entity): Double {
+    public fun distanceTo(entity: Entity): Double {
         val distanceX = clickLocation.x() - entity.location.x
         val distanceY = clickLocation.y() - entity.location.y
         val distanceZ = clickLocation.z() - entity.location.z
@@ -43,7 +43,7 @@ abstract class HitResult(val clickLocation: Vector3d) {
     /**
      * The type of hit result this is.
      */
-    enum class Type {
+    public enum class Type {
 
         MISS,
         BLOCK,

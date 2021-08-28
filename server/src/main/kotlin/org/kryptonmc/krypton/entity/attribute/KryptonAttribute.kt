@@ -32,6 +32,7 @@ class KryptonAttribute(
     override val modifiers: MutableMap<ModifierOperation, MutableList<AttributeModifier>> = mutableMapOf()
 ) : Attribute {
 
+    override val name = type.key.asString()
     override var baseValue = type.defaultBase
         set(value) {
             field = value

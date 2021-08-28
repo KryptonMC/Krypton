@@ -15,9 +15,9 @@ import org.kryptonmc.api.util.StringSerializable
  *
  * @param causesVibrations if this tilt causes vibrations
  */
-enum class Tilt(
+public enum class Tilt(
     override val serialized: String,
-    val causesVibrations: Boolean
+    public val causesVibrations: Boolean
 ) : StringSerializable {
 
     NONE("none", true),

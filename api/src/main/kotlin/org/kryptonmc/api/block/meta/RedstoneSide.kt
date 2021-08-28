@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The side of redstone.
  */
-enum class RedstoneSide(override val serialized: String) : StringSerializable {
+public enum class RedstoneSide(override val serialized: String) : StringSerializable {
 
     UP("up"),
     SIDE("side"),
@@ -22,6 +22,6 @@ enum class RedstoneSide(override val serialized: String) : StringSerializable {
     /**
      * If this redstone side is connected.
      */
-    val isConnected: Boolean
+    public val isConnected: Boolean
         get() = this != NONE
 }

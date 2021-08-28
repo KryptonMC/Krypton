@@ -17,22 +17,22 @@ import java.util.Objects
  * 360. If a value larger than 360 degrees is provided, it will be
  * clamped to 360 degrees.
  */
-class Rotation(x: Float, y: Float, z: Float) {
+public class Rotation(x: Float, y: Float, z: Float) {
 
     /**
      * The X rotation, in degrees.
      */
-    val x = if (x.isFinite()) x % 360F else 0F
+    public val x: Float = if (x.isFinite()) x % 360F else 0F
 
     /**
      * The Y rotation, in degrees.
      */
-    val y = if (y.isFinite()) y % 360F else 0F
+    public val y: Float = if (y.isFinite()) y % 360F else 0F
 
     /**
      * The Z rotation, in degrees.
      */
-    val z = if (z.isFinite()) z % 360F else 0F
+    public val z: Float = if (z.isFinite()) z % 360F else 0F
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -41,7 +41,7 @@ class Rotation(x: Float, y: Float, z: Float) {
         return x == other.x && y == other.y && z == other.z
     }
 
-    override fun hashCode() = Objects.hash(x, y, z)
+    override fun hashCode(): Int = Objects.hash(x, y, z)
 
-    override fun toString() = "Rotation(x=$x, y=$y, z=$z)"
+    override fun toString(): String = "Rotation(x=$x, y=$y, z=$z)"
 }

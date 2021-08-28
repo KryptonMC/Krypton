@@ -16,7 +16,7 @@ import org.kryptonmc.api.space.Vector
 /**
  * Interface used to denote that a class can be used as a [ParticleEffect]'s data.
  */
-sealed interface ParticleData
+public sealed interface ParticleData
 
 /**
  * Holds data for directional [ParticleEffect]s.
@@ -24,9 +24,10 @@ sealed interface ParticleData
  * @param direction the direction of the particle, random if null
  * @param velocity the velocity of this directional particle in the direction it's moving
  */
-data class DirectionalParticleData(
-    val direction: Vector?,
-    val velocity: Float
+@JvmRecord
+public data class DirectionalParticleData(
+    public val direction: Vector?,
+    public val velocity: Float
 ) : ParticleData
 
 /**
@@ -34,14 +35,16 @@ data class DirectionalParticleData(
  *
  * @param item the item type
  */
-data class ItemParticleData(val item: ItemType) : ParticleData
+@JvmRecord
+public data class ItemParticleData(public val item: ItemType) : ParticleData
 
 /**
  * Holds data for block [ParticleEffect]s.
  *
  * @param block the block
  */
-data class BlockParticleData(val block: Block) : ParticleData
+@JvmRecord
+public data class BlockParticleData(public val block: Block) : ParticleData
 
 /**
  * Holds data for colored [ParticleEffect]s.
@@ -50,7 +53,12 @@ data class BlockParticleData(val block: Block) : ParticleData
  * @param green the green component of this RGB color
  * @param blue the blue component of this RGB color
  */
-data class ColorParticleData(val red: Short, val green: Short, val blue: Short) : ParticleData
+@JvmRecord
+public data class ColorParticleData(
+    public val red: Short,
+    public val green: Short,
+    public val blue: Short
+) : ParticleData
 
 /**
  * Holds data for dust [ParticleEffect]s.
@@ -58,9 +66,10 @@ data class ColorParticleData(val red: Short, val green: Short, val blue: Short) 
  * @param color the color of the dust particle
  * @param scale the scale
  */
-data class DustParticleData(
-    val color: ColorParticleData,
-    val scale: Float
+@JvmRecord
+public data class DustParticleData(
+    public val color: ColorParticleData,
+    public val scale: Float
 ) : ParticleData
 
 /**
@@ -70,10 +79,11 @@ data class DustParticleData(
  * @param scale the scale
  * @param to the color to transition to
  */
-data class DustTransitionParticleData(
-    val from: ColorParticleData,
-    val scale: Float,
-    val to: ColorParticleData
+@JvmRecord
+public data class DustTransitionParticleData(
+    public val from: ColorParticleData,
+    public val scale: Float,
+    public val to: ColorParticleData
 ) : ParticleData
 
 /**
@@ -82,7 +92,8 @@ data class DustTransitionParticleData(
  * @param note the note of this particle, must be between 0 and 24 (inclusive)
  * @throws IllegalArgumentException if the [note] is not between 0 and 24 (inclusive)
  */
-data class NoteParticleData(val note: Byte) : ParticleData {
+@JvmRecord
+public data class NoteParticleData(public val note: Byte) : ParticleData {
 
     init {
         require(note in 0..24) { "Note must be between 0 and 24!" }
@@ -97,8 +108,9 @@ data class NoteParticleData(val note: Byte) : ParticleData {
  * @param ticks the amount of ticks it takes for this particle to vibrate from
  * the [origin] to the [destination]
  */
-data class VibrationParticleData(
-    val origin: Position,
-    val destination: Position,
-    val ticks: Int
+@JvmRecord
+public data class VibrationParticleData(
+    public val origin: Position,
+    public val destination: Position,
+    public val ticks: Int
 ) : ParticleData

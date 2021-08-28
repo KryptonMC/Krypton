@@ -16,31 +16,31 @@ import java.util.UUID
 /**
  * Represents a player's authenticated Mojang game profile.
  */
-interface GameProfile {
+public interface GameProfile {
 
     /**
      * The name of the profile.
      */
-    val name: String
+    public val name: String
 
     /**
      * The UUID of the profile.
      */
-    val uuid: UUID
+    public val uuid: UUID
 
     /**
      * The list of properties for this profile.
      */
-    val properties: List<ProfileProperty>
+    public val properties: List<ProfileProperty>
 
     @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
-    interface Factory {
+    public interface Factory {
 
-        fun of(name: String, uuid: UUID, properties: List<ProfileProperty> = emptyList()): GameProfile
+        public fun of(name: String, uuid: UUID, properties: List<ProfileProperty> = emptyList()): GameProfile
     }
 
-    companion object {
+    public companion object {
 
         private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
 
@@ -51,7 +51,7 @@ interface GameProfile {
          * @param uuid the UUID of the profile
          * @return a new profile with the given name and uuid
          */
-        fun of(name: String, uuid: UUID): GameProfile = FACTORY.of(name, uuid)
+        public fun of(name: String, uuid: UUID): GameProfile = FACTORY.of(name, uuid)
 
         /**
          * Creates a new [GameProfile] with the given [name], [uuid], and list of
@@ -62,6 +62,6 @@ interface GameProfile {
          * @param properties the list of profile properties
          * @return a new profile with the given name, uuid, and list of profile properties
          */
-        fun of(name: String, uuid: UUID, properties: List<ProfileProperty>): GameProfile = FACTORY.of(name, uuid, properties)
+        public fun of(name: String, uuid: UUID, properties: List<ProfileProperty>): GameProfile = FACTORY.of(name, uuid, properties)
     }
 }

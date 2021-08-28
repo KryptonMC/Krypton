@@ -11,12 +11,12 @@ package org.kryptonmc.api.statistic
 /**
  * A tracker of statistics.
  */
-interface StatisticsTracker {
+public interface StatisticsTracker {
 
     /**
      * All of the statistics being tracked by this tracker.
      */
-    val statistics: Map<Statistic<*>, Int>
+    public val statistics: Map<Statistic<*>, Int>
 
     /**
      * Gets the value for the given [statistic].
@@ -24,7 +24,7 @@ interface StatisticsTracker {
      * @param statistic the statistic
      * @return the value
      */
-    operator fun get(statistic: Statistic<*>): Int
+    public operator fun get(statistic: Statistic<*>): Int
 
     /**
      * Sets the value for the given [statistic] to the given [value].
@@ -32,7 +32,7 @@ interface StatisticsTracker {
      * @param statistic the statistic
      * @param value the value
      */
-    operator fun set(statistic: Statistic<*>, value: Int)
+    public operator fun set(statistic: Statistic<*>, value: Int)
 
     /**
      * Increments the given [statistic] by the given [amount].
@@ -40,7 +40,7 @@ interface StatisticsTracker {
      * @param statistic the statistic
      * @param amount the amount
      */
-    fun increment(statistic: Statistic<*>, amount: Int)
+    public fun increment(statistic: Statistic<*>, amount: Int)
 
     /**
      * Decrements the given [statistic] by the given [amount].
@@ -48,12 +48,12 @@ interface StatisticsTracker {
      * @param statistic the statistic
      * @param amount the amount
      */
-    fun decrement(statistic: Statistic<*>, amount: Int)
+    public fun decrement(statistic: Statistic<*>, amount: Int)
 
     /**
      * Invalidates all currently tracked statistics, forcing the server to re-send
      * all statistics when the player next requests them, even if none of them have
      * actually been updated.
      */
-    fun invalidate()
+    public fun invalidate()
 }

@@ -19,10 +19,10 @@ import org.kryptonmc.api.world.World
  * @param entity the entity that was removed
  * @param world the world the entity was removed from
  */
-class EntityRemoveEvent(
-    val entity: Entity,
-    val world: World
+public class EntityRemoveEvent(
+    public val entity: Entity,
+    public val world: World
 ) : ResultedEvent<GenericResult> {
 
-    override var result = GenericResult.allowed()
+    override var result: GenericResult = GenericResult.allowed()
 }

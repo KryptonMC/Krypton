@@ -13,12 +13,12 @@ import java.util.UUID
 /**
  * A simple cache of [GameProfile]s.
  */
-interface ProfileCache : Iterable<GameProfile> {
+public interface ProfileCache : Iterable<GameProfile> {
 
     /**
      * All the currently cached profiles.
      */
-    val profiles: Set<GameProfile>
+    public val profiles: Set<GameProfile>
 
     /**
      * Gets the cached [GameProfile] with the specified [name], or returns null
@@ -30,7 +30,7 @@ interface ProfileCache : Iterable<GameProfile> {
      * @param name the name
      * @return the cached profile, or null if not present
      */
-    operator fun get(name: String): GameProfile?
+    public operator fun get(name: String): GameProfile?
 
     /**
      * Gets the cached [GameProfile] with the specified [uuid], or returns null
@@ -39,5 +39,5 @@ interface ProfileCache : Iterable<GameProfile> {
      * @param uuid the uuid
      * @return the cached profile, or null if not present
      */
-    operator fun get(uuid: UUID): GameProfile?
+    public operator fun get(uuid: UUID): GameProfile?
 }

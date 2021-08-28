@@ -12,7 +12,7 @@ package org.kryptonmc.api.entity
  * Represents possible slots for armor pieces in
  * an entity's inventory.
  */
-enum class ArmorSlot {
+public enum class ArmorSlot {
 
     HELMET,
     CHESTPLATE,

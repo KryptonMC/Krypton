@@ -11,7 +11,7 @@ package org.kryptonmc.api.event.server
 /**
  * Fired by the server when it is shutting down.
  */
-class ServerStopEvent {
+public class ServerStopEvent {
 
-    override fun toString() = "ServerStopEvent"
+    override fun toString(): String = "ServerStopEvent"
 }

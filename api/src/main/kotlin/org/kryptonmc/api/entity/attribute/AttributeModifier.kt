@@ -17,8 +17,8 @@ import java.util.UUID
  * @param uuid the unique ID of the modifier
  * @param amount the amount of the modifier
  */
-data class AttributeModifier(
-    val name: String,
-    val uuid: UUID,
-    val amount: Double
+public data class AttributeModifier(
+    public val name: String,
+    public val uuid: UUID,
+    public val amount: Double
 )

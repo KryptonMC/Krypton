@@ -14,10 +14,10 @@ import org.kryptonmc.api.space.Direction
 /**
  * An entity that hangs from something, usually an item.
  */
-interface HangingEntity : Entity {
+public interface HangingEntity : Entity {
 
     /**
      * The direction this hanging entity is facing.
      */
-    val direction: Direction
+    public val direction: Direction
 }

@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The side of a door that it is hinged to.
  */
-enum class DoorHingeSide(override val serialized: String) : StringSerializable {
+public enum class DoorHingeSide(override val serialized: String) : StringSerializable {
 
     LEFT("left"),
     RIGHT("right")

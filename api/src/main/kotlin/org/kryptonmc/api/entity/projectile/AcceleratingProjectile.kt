@@ -14,10 +14,10 @@ import org.kryptonmc.api.space.Vector
  * A projectile that will accelerate at constant velocity until it hits something, when
  * it will explode.
  */
-interface AcceleratingProjectile : Projectile {
+public interface AcceleratingProjectile : Projectile {
 
     /**
      * The acceleration values of this projectile.
      */
-    val acceleration: Vector
+    public val acceleration: Vector
 }

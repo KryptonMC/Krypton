@@ -12,10 +12,10 @@ package org.kryptonmc.api.scheduling
  * A functional interface used as a runnable for tasks that provides the executing
  * task as a parameter so that it can be cancelled.
  */
-fun interface TaskRunnable {
+public fun interface TaskRunnable {
 
     /**
      * Runs this task runnable with the given [task].
      */
-    fun run(task: Task)
+    public fun run(task: Task)
 }

@@ -13,4 +13,4 @@ import org.kryptonmc.api.item.ItemSupplier
 /**
  * A projectile that was thrown from an item.
  */
-interface ThrowableProjectile : Projectile, ItemSupplier
+public interface ThrowableProjectile : Projectile, ItemSupplier

@@ -18,8 +18,10 @@
  */
 package org.kryptonmc.krypton.item
 
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.item.ItemHandler
 import org.kryptonmc.api.item.ItemManager
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.item.handler.DebugStickHandler
 import org.kryptonmc.krypton.item.handler.DiamondSwordHandler
@@ -47,7 +49,15 @@ object KryptonItemManager : ItemManager {
 
     override fun handler(key: String) = handlers[key]
 
+    override fun handler(key: Key) = handler(key.asString())
+
+    override fun handler(type: ItemType) = handler(type.key.asString())
+
     override fun register(key: String, handler: ItemHandler) {
         handlers[key] = handler
     }
+
+    override fun register(key: Key, handler: ItemHandler) = register(key.asString(), handler)
+
+    override fun register(type: ItemType, handler: ItemHandler) = register(type.key.asString(), handler)
 }

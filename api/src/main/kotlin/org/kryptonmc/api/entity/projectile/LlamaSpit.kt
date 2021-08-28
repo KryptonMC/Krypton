@@ -11,4 +11,4 @@ package org.kryptonmc.api.entity.projectile
 /**
  * Spit fired from a [Llama].
  */
-interface LlamaSpit : Projectile
+public interface LlamaSpit : Projectile

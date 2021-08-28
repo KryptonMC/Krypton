@@ -11,32 +11,35 @@ package org.kryptonmc.api.entity
 /**
  * An entity with a simple artificial intelligence that can drop items.
  */
-interface Mob : LivingEntity {
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface Mob : LivingEntity {
 
     /**
      * If this mob is persistent (will have its data saved on removal).
      */
-    val isPersistent: Boolean
+    public val isPersistent: Boolean
 
     /**
      * If this mob can pick up loot.
      *
      * For example, if this mob can wear armour/use weapons it picks up.
      */
-    val canPickUpLoot: Boolean
+    @get:JvmName("canPickUpLoot")
+    public val canPickUpLoot: Boolean
 
     /**
      * If this mob has artificial intelligence.
      */
-    val hasAI: Boolean
+    @get:JvmName("hasAI")
+    public val hasAI: Boolean
 
     /**
      * If this mob is hostile.
      */
-    val isAggressive: Boolean
+    public val isAggressive: Boolean
 
     /**
      * The main hand of this mob.
      */
-    val mainHand: MainHand
+    public val mainHand: MainHand
 }

@@ -11,14 +11,14 @@ package org.kryptonmc.api.entity.monster
 /**
  * A creeper.
  */
-interface Creeper : Monster {
+public interface Creeper : Monster {
 
     /**
      * The fuse timer (time until the creeper will explode).
      *
      * Will be 0 if this creeper is not [ignited][isIgnited].
      */
-    var fuse: Short
+    public var fuse: Short
 
     /**
      * The radius of the explosion this creeper will produce when it
@@ -26,15 +26,15 @@ interface Creeper : Monster {
      *
      * Defaults to 3 for regular creepers and 6 for charged creepers.
      */
-    val explosionRadius: Int
+    public val explosionRadius: Int
 
     /**
      * If this creeper is charged (has been struck by lightning).
      */
-    var isCharged: Boolean
+    public var isCharged: Boolean
 
     /**
      * If this creeper has been ignited.
      */
-    var isIgnited: Boolean
+    public var isIgnited: Boolean
 }

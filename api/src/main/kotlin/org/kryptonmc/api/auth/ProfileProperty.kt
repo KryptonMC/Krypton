@@ -15,32 +15,32 @@ import org.kryptonmc.api.util.provide
 /**
  * A property of a [GameProfile].
  */
-interface ProfileProperty {
+public interface ProfileProperty {
 
     /**
      * The name of the property.
      */
-    val name: String
+    public val name: String
 
     /**
      * The value of the property.
      */
-    val value: String
+    public val value: String
 
     /**
      * The Yggdrasil signature for this property. May be null if this property isn't
      * signed.
      */
-    val signature: String?
+    public val signature: String?
 
     @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
-    interface Factory {
+    public interface Factory {
 
-        fun of(name: String, value: String, signature: String? = null): ProfileProperty
+        public fun of(name: String, value: String, signature: String? = null): ProfileProperty
     }
 
-    companion object {
+    public companion object {
 
         private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
 
@@ -52,7 +52,7 @@ interface ProfileProperty {
          * @param value the value
          * @return a new profile property with the given name and value
          */
-        fun of(name: String, value: String) = FACTORY.of(name, value)
+        public fun of(name: String, value: String): ProfileProperty = FACTORY.of(name, value)
 
         /**
          * Creates a new profile property with the given [name] and [value], and
@@ -63,6 +63,6 @@ interface ProfileProperty {
          * @param signature the signature, or null for no signature
          * @return a new profile property with the given name and value
          */
-        fun of(name: String, value: String, signature: String?) = FACTORY.of(name, value, signature)
+        public fun of(name: String, value: String, signature: String?): ProfileProperty = FACTORY.of(name, value, signature)
     }
 }

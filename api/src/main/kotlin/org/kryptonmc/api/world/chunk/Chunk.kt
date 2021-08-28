@@ -17,27 +17,27 @@ import org.spongepowered.math.vector.Vector3i
 /**
  * Represents a chunk, or a 16 x 16 x world height area of blocks.
  */
-interface Chunk {
+public interface Chunk {
 
     /**
      * The world this chunk is in.
      */
-    val world: World
+    public val world: World
 
     /**
      * The X position of this chunk.
      */
-    val x: Int
+    public val x: Int
 
     /**
      * The Z position of this chunk.
      */
-    val z: Int
+    public val z: Int
 
     /**
      * The container holding all the biomes in this chunk.
      */
-    val biomes: BiomeContainer
+    public val biomes: BiomeContainer
 
     /**
      * The cumulative number of ticks players have been in this chunk.
@@ -54,12 +54,12 @@ interface Chunk {
      *
      * See [here](https://minecraft.gamepedia.com/Chunk_format#NBT_structure) for more details.
      */
-    val inhabitedTime: Long
+    public val inhabitedTime: Long
 
     /**
      * The time that this chunk was last updated. This is set when the chunk is saved to disk.
      */
-    val lastUpdate: Long
+    public val lastUpdate: Long
 
     /**
      * Gets the block at the given [x], [y], and [z] coordinates.
@@ -69,7 +69,7 @@ interface Chunk {
      * @param z the z coordinate
      * @return the block at the given coordinates
      */
-    fun getBlock(x: Int, y: Int, z: Int): Block
+    public fun getBlock(x: Int, y: Int, z: Int): Block
 
     /**
      * Gets the block at the given [position].
@@ -77,7 +77,7 @@ interface Chunk {
      * @param position the position
      * @return the block at the given position
      */
-    fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
+    public fun getBlock(position: Vector3i): Block
 
     /**
      * Gets the block at the given [position].
@@ -85,7 +85,7 @@ interface Chunk {
      * @param position the position
      * @return the block at the given position
      */
-    fun getBlock(position: Position): Block = getBlock(position.blockX, position.blockY, position.blockZ)
+    public fun getBlock(position: Position): Block = getBlock(position.blockX, position.blockY, position.blockZ)
 
     /**
      * Gets the fluid at the given [x], [y], and [z] coordinates.
@@ -95,7 +95,7 @@ interface Chunk {
      * @param z the Z coordinate
      * @return the fluid at the given coordinates
      */
-    fun getFluid(x: Int, y: Int, z: Int): Fluid
+    public fun getFluid(x: Int, y: Int, z: Int): Fluid
 
     /**
      * Gets the fluid at the given [position].
@@ -103,7 +103,7 @@ interface Chunk {
      * @param position the position
      * @return the fluid at the given position
      */
-    fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
+    public fun getFluid(position: Vector3i): Fluid
 
     /**
      * Gets the fluid at the given [position].
@@ -111,7 +111,7 @@ interface Chunk {
      * @param position the position
      * @return the fluid at the given position
      */
-    fun getFluid(position: Position): Fluid = getFluid(position.blockX, position.blockY, position.blockZ)
+    public fun getFluid(position: Position): Fluid = getFluid(position.blockX, position.blockY, position.blockZ)
 
     /**
      * Sets the block at the given coordinates to the given [block]
@@ -121,7 +121,7 @@ interface Chunk {
      * @param z the Z coordinate
      * @param block the block
      */
-    fun setBlock(x: Int, y: Int, z: Int, block: Block)
+    public fun setBlock(x: Int, y: Int, z: Int, block: Block)
 
     /**
      * Sets the block at the given [position] to the given [block]
@@ -129,7 +129,7 @@ interface Chunk {
      * @param position the position
      * @param block the block
      */
-    fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
+    public fun setBlock(position: Vector3i, block: Block)
 
     /**
      * Sets the block at the given [position] to the given [block]
@@ -137,5 +137,5 @@ interface Chunk {
      * @param position the position
      * @param block the block
      */
-    fun setBlock(position: Position, block: Block) = setBlock(position.blockX, position.blockY, position.blockZ, block)
+    public fun setBlock(position: Position, block: Block): Unit = setBlock(position.blockX, position.blockY, position.blockZ, block)
 }

@@ -13,7 +13,7 @@ import net.kyori.adventure.key.Key
 /**
  * All the built-in registry roots.
  */
-object RegistryRoots {
+public object RegistryRoots {
 
     /**
      * The built-in Minecraft root, used for all of the vanilla registries.
@@ -21,7 +21,7 @@ object RegistryRoots {
      * The key of this root is "minecraft:root".
      */
     @JvmField
-    val MINECRAFT = Key.key("minecraft", "root")
+    public val MINECRAFT: Key = Key.key("minecraft", "root")
 
     /**
      * The Krypton root, designed to be used for custom registries.
@@ -29,5 +29,5 @@ object RegistryRoots {
      * The key of this root is "krypton:root".
      */
     @JvmField
-    val KRYPTON = Key.key("krypton", "root")
+    public val KRYPTON: Key = Key.key("krypton", "root")
 }

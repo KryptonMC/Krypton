@@ -11,4 +11,4 @@ package org.kryptonmc.api.entity.projectile
 /**
  * A thrown potion.
  */
-interface ThrownPotion : ThrowableProjectile
+public interface ThrownPotion : ThrowableProjectile

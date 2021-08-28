@@ -11,40 +11,40 @@ package org.kryptonmc.api
 /**
  * Information about the current platform this is running on.
  */
-interface Platform {
+public interface Platform {
 
     /**
      * The name of the platform.
      */
-    val name: String
+    public val name: String
 
     /**
      * The version of the platform.
      */
-    val version: String
+    public val version: String
 
     /**
      * If the platform is considered "stable".
      */
-    val isStable: Boolean
+    public val isStable: Boolean
 
     /**
      * The Minecraft version of the platform.
      */
-    val minecraftVersion: String
+    public val minecraftVersion: String
 
     /**
      * The world version.
      */
-    val worldVersion: Int
+    public val worldVersion: Int
 
     /**
      * The protocol version.
      */
-    val protocolVersion: Int
+    public val protocolVersion: Int
 
     /**
      * The data pack version.
      */
-    val dataPackVersion: Int
+    public val dataPackVersion: Int
 }

@@ -9,16 +9,16 @@
 package org.kryptonmc.api.event.auth
 
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.event.Result
 import org.kryptonmc.api.event.ResultedEvent
+import org.kryptonmc.api.event.ResultedEvent.Result
 
 /**
  * An event that is called when a request is made to authenticate a player with
  * the given [username].
  */
-class AuthenticationEvent(val username: String) : ResultedEvent<AuthenticationResult> {
+public class AuthenticationEvent(public val username: String) : ResultedEvent<AuthenticationResult> {
 
-    override var result = AuthenticationResult.allowed(null)
+    override var result: AuthenticationResult = AuthenticationResult.allowed(null)
 }
 
 /**
@@ -26,12 +26,12 @@ class AuthenticationEvent(val username: String) : ResultedEvent<AuthenticationRe
  *
  * @param profile the optional profile for a successful result
  */
-class AuthenticationResult private constructor(
+public class AuthenticationResult private constructor(
     override val isAllowed: Boolean,
-    val profile: GameProfile?
+    public val profile: GameProfile?
 ) : Result {
 
-    companion object {
+    public companion object {
 
         /**
          * Creates a result that allows the authenticating player to join the
@@ -42,13 +42,13 @@ class AuthenticationResult private constructor(
          */
         @JvmStatic
         @JvmOverloads
-        fun allowed(profile: GameProfile? = null) = AuthenticationResult(true, profile)
+        public fun allowed(profile: GameProfile? = null): AuthenticationResult = AuthenticationResult(true, profile)
 
         /**
          * Creates a result that denies the authenticating player from joining
          * the server.
          */
         @JvmStatic
-        fun denied() = AuthenticationResult(false, null)
+        public fun denied(): AuthenticationResult = AuthenticationResult(false, null)
     }
 }

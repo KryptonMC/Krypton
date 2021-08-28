@@ -24,22 +24,22 @@ import java.util.UUID
  * Represents an entity in a world.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter {
+public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter {
 
     /**
      * The world this entity is currently in.
      */
-    val world: World
+    public val world: World
 
     /**
      * The type of this entity.
      */
-    val type: EntityType<out Entity>
+    public val type: EntityType<out Entity>
 
     /**
      * The unique ID of this entity.
      */
-    val uuid: UUID
+    public val uuid: UUID
 
     /**
      * The custom display name of this entity, as a component.
@@ -47,40 +47,40 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
      * May be [empty][Component.empty], indicating this entity does not
      * have a custom display name set.
      */
-    var displayName: Component
+    public var displayName: Component
 
     /**
      * If the current [displayName] is visible or not.
      */
-    var isDisplayNameVisible: Boolean
+    public var isDisplayNameVisible: Boolean
 
     /**
      * The current location of this entity.
      */
-    var location: Location
+    public var location: Location
 
     /**
      * The current delta X, Y, and Z values of this entity,
      * in metres per tick.
      */
-    var velocity: Vector
+    public var velocity: Vector
 
     /**
      * The current bounding box of this entity.
      */
-    var boundingBox: BoundingBox
+    public var boundingBox: BoundingBox
 
     /**
      * The current dimensions of this entity.
      */
-    var dimensions: EntityDimensions
+    public var dimensions: EntityDimensions
 
     /**
      * The passengers this entity currently has.
      *
      * Will be empty if the entity has no passengers.
      */
-    val passengers: List<Entity>
+    public val passengers: List<Entity>
 
     /**
      * If this entity should not take damage from any source.
@@ -96,53 +96,53 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
      * Setting this to true, however, will not prevent this entity from
      * being damaged by a player in creative mode.
      */
-    val isInvulnerable: Boolean
+    public val isInvulnerable: Boolean
 
     /**
      * If this entity is currently on fire.
      */
-    val isOnFire: Boolean
+    public val isOnFire: Boolean
 
     /**
      * If this entity is on terra firma.
      */
-    val isOnGround: Boolean
+    public val isOnGround: Boolean
 
     /**
      * If this entity is crouching/sneaking.
      */
-    val isCrouching: Boolean
+    public val isCrouching: Boolean
 
     /**
      * If this entity is sprinting.
      */
-    val isSprinting: Boolean
+    public val isSprinting: Boolean
 
     /**
      * If this entity is swimming.
      */
-    val isSwimming: Boolean
+    public val isSwimming: Boolean
 
     /**
      * If this entity is invisible.
      */
-    val isInvisible: Boolean
+    public val isInvisible: Boolean
 
     /**
      * If this entity has a glowing outline.
      */
-    val isGlowing: Boolean
+    public val isGlowing: Boolean
 
     /**
      * If this entity is currently flying with an
      * [elytra][org.kryptonmc.api.item.ItemTypes.ELYTRA].
      */
-    val isFlying: Boolean
+    public val isFlying: Boolean
 
     /**
      * If this entity is silenced, meaning it does not produce any sounds.
      */
-    val isSilent: Boolean
+    public val isSilent: Boolean
 
     /**
      * If this entity is affected by gravity.
@@ -151,14 +151,14 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
      * has no blocks under its feet to support it.
      */
     @get:JvmName("hasGravity")
-    val hasGravity: Boolean
+    public val hasGravity: Boolean
 
     /**
      * The amount of ticks this entity has existed for.
      *
      * This will be increased by 1 for every tick this entity exists for.
      */
-    val ticksExisted: Int
+    public val ticksExisted: Int
 
     /**
      * How much air this entity has, in ticks.
@@ -170,7 +170,7 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
      * take 1 health point (half a heart) of damage for every second
      * it remains underwater.
      */
-    val air: Int
+    public val air: Int
 
     /**
      * This value can mean one of two things, depending on if the value is positive
@@ -182,7 +182,7 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
      * When the value is negative, this represents the number of ticks this entity can
      * survive in fire for before burning.
      */
-    val fireTicks: Short
+    public val fireTicks: Short
 
     /**
      * The amount of ticks this entity has been freezing for.
@@ -194,7 +194,7 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
      * snow, to a maximum of 300, and decrease by 2 for every tick this entity
      * is not in powder snow.
      */
-    val frozenTicks: Int
+    public val frozenTicks: Int
 
     /**
      * The distance this entity has fallen.
@@ -202,7 +202,7 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
      * The larger the value of this, the more damage the entity will take when
      * it lands.
      */
-    val fallDistance: Float
+    public val fallDistance: Float
 
     /**
      * Moves this entity by the specified x, y, z, yaw, and pitch amounts.
@@ -216,7 +216,7 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
      * @param yaw the yaw amount
      * @param pitch the pitch amount
      */
-    fun move(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, yaw: Float = 0F, pitch: Float = 0F)
+    public fun move(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, yaw: Float = 0F, pitch: Float = 0F)
 
     /**
      * Moves this entity to the specified x, y, and z coordinates.
@@ -228,7 +228,7 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
      * @param y the Y coordinate
      * @param z the Z coordinate
      */
-    fun moveTo(x: Double = location.x, y: Double = location.y, z: Double = location.z)
+    public fun moveTo(x: Double = location.x, y: Double = location.y, z: Double = location.z)
 
     /**
      * Makes this entity look to the specified yaw and pitch.
@@ -236,7 +236,7 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
      * The values provided to this function are **absolute**, meaning they
      * will replace the existing yaw and pitch values.
      */
-    fun look(yaw: Float = location.yaw, pitch: Float = location.pitch)
+    public fun look(yaw: Float = location.yaw, pitch: Float = location.pitch)
 
     /**
      * Repositions this entity to be at the specified x, y, and z coordinates,
@@ -251,7 +251,13 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
      * @param yaw the yaw value
      * @param pitch the pitch value
      */
-    fun reposition(x: Double = location.x, y: Double = location.y, z: Double = location.z, yaw: Float = location.yaw, pitch: Float = location.pitch)
+    public fun reposition(
+        x: Double = location.x,
+        y: Double = location.y,
+        z: Double = location.z,
+        yaw: Float = location.yaw,
+        pitch: Float = location.pitch
+    )
 
     /**
      * Gets the distance to the specified [entity] squared.
@@ -259,11 +265,11 @@ interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, 
      * @param entity the entity to calculate the distance to
      * @return the distance to the other entity squared
      */
-    fun distanceToSquared(entity: Entity) = location.distanceSquared(entity.location)
+    public fun distanceToSquared(entity: Entity): Double = location.distanceSquared(entity.location)
 
     /**
      * Marks this entity to be removed in the very near future, preferably within
      * one game tick.
      */
-    fun remove()
+    public fun remove()
 }

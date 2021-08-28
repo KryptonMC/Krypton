@@ -96,8 +96,6 @@ potential-bugs:
 style:
   CollapsibleIfStatements:
     active: true
-  DataClassContainsFunctions:
-    active: true
   # Us using mutable data classes gives us the benefit of the generated stuff whilst also keeping allocations down
   DataClassShouldBeImmutable:
     active: false
@@ -138,8 +136,6 @@ style:
     active: true
   ObjectLiteralToLambda:
     active: true
-  OptionalUnit:
-    active: true
   OptionalWhenBraces:
     active: true
   PreferToOverPairSyntax:
@@ -147,8 +143,6 @@ style:
   RedundantExplicitType:
     active: true
   RedundantHigherOrderMapUsage:
-    active: true
-  RedundantVisibilityModifierRule:
     active: true
   ReturnCount:
     active: true

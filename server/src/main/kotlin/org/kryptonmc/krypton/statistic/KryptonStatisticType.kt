@@ -32,7 +32,13 @@ class KryptonStatisticType<T : Any>(
 
     override val statistics = IdentityHashMap<T, Statistic<T>>()
 
-    override fun get(key: T, formatter: StatisticFormatter): Statistic<T> = statistics.getOrPut(key) { KryptonStatistic(this, key, formatter) }
+    override fun contains(key: T) = statistics.containsKey(key)
+
+    override fun get(key: T): Statistic<T> = get(key, StatisticFormatter.DEFAULT)
+
+    override fun get(key: T, formatter: StatisticFormatter): Statistic<T> = statistics.getOrPut(key) {
+        KryptonStatistic(this, key, formatter)
+    }
 
     override fun iterator() = statistics.values.iterator()
 }

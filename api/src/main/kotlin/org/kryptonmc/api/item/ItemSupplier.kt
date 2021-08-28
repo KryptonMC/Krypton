@@ -11,10 +11,10 @@ package org.kryptonmc.api.item
 /**
  * Something that can supply items.
  */
-interface ItemSupplier {
+public interface ItemSupplier {
 
     /**
      * The supplied item.
      */
-    val item: ItemStack
+    public val item: ItemStack
 }

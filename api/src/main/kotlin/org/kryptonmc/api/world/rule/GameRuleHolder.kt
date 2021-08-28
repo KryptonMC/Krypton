@@ -11,12 +11,12 @@ package org.kryptonmc.api.world.rule
 /**
  * A holder of game rules. Used to get and set game rule values.
  */
-interface GameRuleHolder {
+public interface GameRuleHolder {
 
     /**
      * All the rules this holder is holding
      */
-    val rules: Map<GameRule<out Any>, Any>
+    public val rules: Map<GameRule<out Any>, Any>
 
     /**
      * Gets the value of the provided [rule].
@@ -25,7 +25,7 @@ interface GameRuleHolder {
      * @param V the value type
      * @return the value
      */
-    operator fun <V : Any> get(rule: GameRule<V>): V
+    public operator fun <V : Any> get(rule: GameRule<V>): V
 
     /**
      * Sets the value of the given [rule] to the given [value].
@@ -33,5 +33,5 @@ interface GameRuleHolder {
      * @param rule the rule
      * @param value the new value
      */
-    operator fun <V : Any> set(rule: GameRule<V>, value: V)
+    public operator fun <V : Any> set(rule: GameRule<V>, value: V)
 }

@@ -12,8 +12,10 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockHitResult
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 
 /**
@@ -24,12 +26,12 @@ import org.spongepowered.math.vector.Vector3i
  *
  * You can register these with [ItemManager.register].
  */
-interface ItemHandler {
+public interface ItemHandler {
 
     /**
      * The type of item this is a handler for.
      */
-    val type: ItemType
+    public val type: ItemType
 
     /**
      * Gets the destroy speed of the given [block] when destroyed with the
@@ -38,7 +40,7 @@ interface ItemHandler {
      * @param item the item being used to destroy the block
      * @param block the block being destroyed
      */
-    fun getDestroySpeed(item: ItemStack, block: Block): Float
+    public fun getDestroySpeed(item: ItemStack, block: Block): Float
 
     /**
      * Returns true if this item type is the correct tool to break the
@@ -47,7 +49,7 @@ interface ItemHandler {
      * @param block the block to check
      * @return true if this type is the correct tool, false otherwise
      */
-    fun isCorrectTool(block: Block): Boolean
+    public fun isCorrectTool(block: Block): Boolean
 
     /**
      * Returns true if the given [player] can attack the given [block] at the
@@ -59,7 +61,7 @@ interface ItemHandler {
      * @param position the position of the block
      * @return true if the block can be attacked, false otherwise
      */
-    fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i): Boolean
+    public fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i): Boolean
 
     /**
      * Called when a player interacts with a specific block, usually when they are
@@ -68,7 +70,7 @@ interface ItemHandler {
      * @param context the context of which the interaction is taking place in
      * @return the result of the interaction
      */
-    fun interact(context: InteractionContext): InteractionResult
+    public fun interact(context: InteractionContext): InteractionResult
 
     /**
      * Called when the given [player] uses the item they are holding in the given
@@ -78,7 +80,7 @@ interface ItemHandler {
      * @param hand the hand used
      * @return the result of using the item
      */
-    fun use(player: Player, hand: Hand): UseItemResult
+    public fun use(player: Player, hand: Hand): UseItemResult
 
     /**
      * Called when the given [player] finishes destroying the given [block] at the
@@ -91,7 +93,7 @@ interface ItemHandler {
      * @param position the position of the block
      * @return if the mining was successful or not
      */
-    fun mineBlock(player: Player, item: ItemStack, world: World, block: Block, position: Vector3i): Boolean
+    public fun mineBlock(player: Player, item: ItemStack, world: World, block: Block, position: Vector3i): Boolean
 }
 
 /**
@@ -103,38 +105,38 @@ interface ItemHandler {
  * @param hand the hand that was used to interact with
  * @param hitResult the result of the player attempting to hit the block
  */
-data class InteractionContext(
-    val player: Player,
-    val world: World,
-    val heldItem: ItemStack,
-    val hand: Hand,
-    val hitResult: BlockHitResult
+public data class InteractionContext(
+    public val player: Player,
+    public val world: World,
+    public val heldItem: ItemStack,
+    public val hand: Hand,
+    public val hitResult: BlockHitResult
 ) {
 
     /**
      * The position of the block that was interacted with.
      */
-    val position = hitResult.position
+    public val position: Vector3i = hitResult.position
 
     /**
      * The face of the block that the player clicked.
      */
-    val clickedFace = hitResult.direction
+    public val clickedFace: Direction = hitResult.direction
 
     /**
      * The location where the player clicked.
      */
-    val clickLocation = hitResult.clickLocation
+    public val clickLocation: Vector3d = hitResult.clickLocation
 
     /**
      * If the player is inside the block.
      */
-    val isInside = hitResult.isInside
+    public val isInside: Boolean = hitResult.isInside
 
     /**
      * The player's pitch.
      */
-    val pitch = player.location.pitch
+    public val pitch: Float = player.location.pitch
 }
 
 /**
@@ -143,7 +145,7 @@ data class InteractionContext(
  * @param result the result
  * @param item the item
  */
-class UseItemResult(
-    val result: InteractionResult,
-    val item: ItemStack
+public class UseItemResult(
+    public val result: InteractionResult,
+    public val item: ItemStack
 )

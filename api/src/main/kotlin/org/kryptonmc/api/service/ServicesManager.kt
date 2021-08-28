@@ -11,7 +11,7 @@ package org.kryptonmc.api.service
 /**
  * Manager of services
  */
-interface ServicesManager {
+public interface ServicesManager {
 
     /**
      * Register a new service to this services manager
@@ -20,7 +20,7 @@ interface ServicesManager {
      * @param clazz the class of the service to register
      * @param service the service being provided
      */
-    fun <T> register(plugin: Any, clazz: Class<T>, service: T)
+    public fun <T> register(plugin: Any, clazz: Class<T>, service: T)
 
     /**
      * Retrieve a provider for a given class
@@ -29,7 +29,7 @@ interface ServicesManager {
      * @return a [ServiceProvider] containing the service to be provided, or null if
      * there is no service registered with the given class [clazz]
      */
-    fun <T> provide(clazz: Class<T>): ServiceProvider<T>?
+    public fun <T> provide(clazz: Class<T>): ServiceProvider<T>?
 }
 
 /**
@@ -37,11 +37,11 @@ interface ServicesManager {
  * ugly class parameter
  */
 @JvmSynthetic
-inline fun <reified T> ServicesManager.register(plugin: Any, provider: T) = register(plugin, T::class.java, provider)
+public inline fun <reified T> ServicesManager.register(plugin: Any, provider: T): Unit = register(plugin, T::class.java, provider)
 
 /**
  * Allows retrieval of providers with the use of reified types,
  * removing that ugly class parameter
  */
 @JvmSynthetic
-inline fun <reified T> ServicesManager.provide() = provide(T::class.java)
+public inline fun <reified T> ServicesManager.provide(): ServiceProvider<T>? = provide(T::class.java)

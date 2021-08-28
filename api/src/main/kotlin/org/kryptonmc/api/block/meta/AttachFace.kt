@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * Faces of a block that another block can be attached to.
  */
-enum class AttachFace(override val serialized: String) : StringSerializable {
+public enum class AttachFace(override val serialized: String) : StringSerializable {
 
     FLOOR("floor"),
     WALL("wall"),

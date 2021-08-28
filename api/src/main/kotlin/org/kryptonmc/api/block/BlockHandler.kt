@@ -23,7 +23,7 @@ import org.spongepowered.math.vector.Vector3i
  *
  * You can register these with [BlockManager.register].
  */
-interface BlockHandler {
+public interface BlockHandler {
 
     /**
      * Gets the destroy progress of the given [block] at the given [position], being
@@ -35,7 +35,7 @@ interface BlockHandler {
      * @param position the position of the block
      * @return the destroy progress of the block
      */
-    fun getDestroyProgress(player: Player, world: World, block: Block, position: Vector3i): Float
+    public fun getDestroyProgress(player: Player, world: World, block: Block, position: Vector3i): Float
 
     /**
      * Called when the given [block] is placed by the given [player] at the given [position],
@@ -46,7 +46,7 @@ interface BlockHandler {
      * @param position the position of the block
      * @param face the face that the block was placed on
      */
-    fun onPlace(player: Player, block: Block, position: Vector3i, face: BlockFace)
+    public fun onPlace(player: Player, block: Block, position: Vector3i, face: BlockFace)
 
     /**
      * Called when the given [player] is about to break the given [block] at the given [position]
@@ -57,7 +57,7 @@ interface BlockHandler {
      * @param block the block about to be destroyed
      * @param position the position of the block
      */
-    fun preDestroy(player: Player, world: World, block: Block, position: Vector3i)
+    public fun preDestroy(player: Player, world: World, block: Block, position: Vector3i)
 
     /**
      * Called when the given [block] is destroyed by the given [player] at the given [position],
@@ -68,7 +68,7 @@ interface BlockHandler {
      * @param position the position of the block
      * @param item the item used to destroy the block
      */
-    fun onDestroy(player: Player, block: Block, position: Vector3i, item: ItemStack)
+    public fun onDestroy(player: Player, block: Block, position: Vector3i, item: ItemStack)
 
     /**
      * Called when the given [player] interacts with the given [block] at the given [position]
@@ -81,7 +81,7 @@ interface BlockHandler {
      * @param hand the hand used to interact with the block
      * @return the result of the interaction
      */
-    fun interact(player: Player, world: World, block: Block, position: Vector3i, hand: Hand): InteractionResult
+    public fun interact(player: Player, world: World, block: Block, position: Vector3i, hand: Hand): InteractionResult
 
     /**
      * Called when the given [player] attacks the given [block] at the given [position] in
@@ -92,5 +92,5 @@ interface BlockHandler {
      * @param block the block that was attacked
      * @param position the position of the block
      */
-    fun attack(player: Player, world: World, block: Block, position: Vector3i)
+    public fun attack(player: Player, world: World, block: Block, position: Vector3i)
 }

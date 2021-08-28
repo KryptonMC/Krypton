@@ -38,89 +38,89 @@ import java.util.Locale
  * Represents a player.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient, HoverEventSource<HoverEvent.ShowEntity> {
+public interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient, HoverEventSource<HoverEvent.ShowEntity> {
 
     /**
      * The address that the player is currently connected from.
      */
-    val address: InetSocketAddress
+    public val address: InetSocketAddress
 
     /**
      * The game profile for this player.
      *
      * Will contain offline mode details for offline mode players.
      */
-    val profile: GameProfile
+    public val profile: GameProfile
 
     /**
      * If this player can fly.
      */
     @get:JvmName("canFly")
-    var canFly: Boolean
+    public var canFly: Boolean
 
     /**
      * If this player can build (place/break blocks).
      */
     @get:JvmName("canBuild")
-    var canBuild: Boolean
+    public var canBuild: Boolean
 
     /**
      * If this player can place and break blocks with no delay.
      */
     @get:JvmName("canInstantlyBuild")
-    var canInstantlyBuild: Boolean
+    public var canInstantlyBuild: Boolean
 
     /**
      * The current speed at which this player can walk at.
      */
-    var walkingSpeed: Float
+    public var walkingSpeed: Float
 
     /**
      * The current speed at which this player can fly at.
      */
-    var flyingSpeed: Float
+    public var flyingSpeed: Float
 
     /**
      * The dimension resource key for the world the player is currently in.
      */
-    val dimension: ResourceKey<World>
+    public val dimension: ResourceKey<World>
 
     /**
      * The dimension the player is currently in.
      */
-    val dimensionType: DimensionType
+    public val dimensionType: DimensionType
 
     /**
      * The view distance of this player.
      */
-    val viewDistance: Int
+    public val viewDistance: Int
 
     /**
      * The current time of this player.
      *
      * Will always be the time of the server.
      */
-    val time: Long
+    public val time: Long
 
     /**
-     * This player's current gamemode.
+     * This player's current game mode.
      */
-    val gamemode: Gamemode
+    public val gamemode: Gamemode
 
     /**
      * The direction this player is currently facing.
      */
-    val direction: Direction
+    public val direction: Direction
 
     /**
      * The scoreboard currently being shown to this player.
      */
-    var scoreboard: Scoreboard?
+    public var scoreboard: Scoreboard?
 
     /**
      * This player's main hand.
      */
-    val mainHand: MainHand
+    public val mainHand: MainHand
 
     /**
      * The player's inventory.
@@ -132,12 +132,12 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
     /**
      * This player's locale.
      */
-    val locale: Locale?
+    public val locale: Locale?
 
     /**
      * The statistics tracker for this player.
      */
-    val statistics: StatisticsTracker
+    public val statistics: StatisticsTracker
 
     /**
      * Increments the given [statistic] by 1.
@@ -147,7 +147,7 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      *
      * @param statistic the statistic
      */
-    fun incrementStatistic(statistic: Statistic<*>) = incrementStatistic(statistic, 1)
+    public fun incrementStatistic(statistic: Statistic<*>): Unit = incrementStatistic(statistic, 1)
 
     /**
      * Increments the given [statistic] by the given [amount].
@@ -158,21 +158,21 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      * @param statistic the statistic
      * @param amount the amount
      */
-    fun incrementStatistic(statistic: Statistic<*>, amount: Int)
+    public fun incrementStatistic(statistic: Statistic<*>, amount: Int)
 
     /**
      * Increments the given custom statistic [key] by 1.
      *
      * @param key the custom statistic key
      */
-    fun incrementStatistic(key: Key) = incrementStatistic(key, 1)
+    public fun incrementStatistic(key: Key): Unit = incrementStatistic(key, 1)
 
     /**
      * Increments the given custom statistic [key] by the given [amount].
      *
      * @param key the custom statistic key
      */
-    fun incrementStatistic(key: Key, amount: Int)
+    public fun incrementStatistic(key: Key, amount: Int)
 
     /**
      * Decrements the given [statistic] by 1.
@@ -182,7 +182,7 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      *
      * @param statistic the statistic
      */
-    fun decrementStatistic(statistic: Statistic<*>) = decrementStatistic(statistic, 1)
+    public fun decrementStatistic(statistic: Statistic<*>): Unit = decrementStatistic(statistic, 1)
 
     /**
      * Decrements the given [statistic] by the given [amount].
@@ -193,14 +193,14 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      * @param statistic the statistic
      * @param amount the amount
      */
-    fun decrementStatistic(statistic: Statistic<*>, amount: Int)
+    public fun decrementStatistic(statistic: Statistic<*>, amount: Int)
 
     /**
      * Resets the given statistic back to a value of 0.
      *
      * @param statistic the statistic
      */
-    fun resetStatistic(statistic: Statistic<*>)
+    public fun resetStatistic(statistic: Statistic<*>)
 
     /**
      * Spawns particles for this player relative to a location.
@@ -208,17 +208,17 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      * @param particleEffect the [ParticleEffect] used to describe the particles' appearance
      * @param location the central location to spawn the particles at
      */
-    fun spawnParticles(particleEffect: ParticleEffect, location: Location)
+    public fun spawnParticles(particleEffect: ParticleEffect, location: Location)
 
     /**
      * Teleport this player to the specified position.
      */
-    fun teleport(position: Position)
+    public fun teleport(position: Position)
 
     /**
      * Teleport this player to the specified other [player].
      */
-    fun teleport(player: Player)
+    public fun teleport(player: Player)
 
     /**
      * Returns true if this player has the correct tool to be able to break
@@ -227,7 +227,7 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      * @param block the block to check
      * @return true if the player can break it, false otherwise
      */
-    fun hasCorrectTool(block: Block): Boolean
+    public fun hasCorrectTool(block: Block): Boolean
 
     /**
      * Gets the speed at which this player can destroy the given
@@ -236,10 +236,10 @@ interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient
      * @param block the block the player is destroying
      * @return the destroy speed
      */
-    fun getDestroySpeed(block: Block): Float
+    public fun getDestroySpeed(block: Block): Float
 
     /**
      * Kicks the player with the given text shown
      */
-    fun disconnect(text: Component)
+    public fun disconnect(text: Component)
 }

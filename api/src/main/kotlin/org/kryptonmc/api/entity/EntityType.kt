@@ -9,6 +9,7 @@
 package org.kryptonmc.api.entity
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.TranslatableComponent
 
@@ -21,8 +22,12 @@ import net.kyori.adventure.text.TranslatableComponent
  *        the /summon command or [org.kryptonmc.api.world.World.spawnEntity]
  * @param name the name of this entity type
  */
-data class EntityType<T : Entity>(
-    val key: Key,
-    val isSummonable: Boolean,
-    val name: TranslatableComponent = translatable("entity.${key.namespace()}.${key.value().replace("/", ".")}"),
-)
+@JvmRecord
+public data class EntityType<T : Entity>(
+    @get:JvmName("_get-key") @JvmSynthetic public val key: Key,
+    public val isSummonable: Boolean,
+    public val name: TranslatableComponent = translatable("entity.${key.namespace()}.${key.value().replace("/", ".")}"),
+) : Keyed {
+
+    override fun key(): Key = key
+}

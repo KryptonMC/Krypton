@@ -17,54 +17,54 @@ import org.kryptonmc.api.util.provide
 /**
  * Holds metadata for a [org.kryptonmc.api.command.Command].
  */
-interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
+public interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
 
     /**
      * The name of the command.
      */
-    val name: String
+    public val name: String
 
     /**
      * The set of aliases of the command.
      */
-    val aliases: Set<String>
+    public val aliases: Set<String>
 
     /**
      * A builder for [CommandMeta].
      */
-    interface Builder : Buildable.Builder<CommandMeta> {
+    public interface Builder : Buildable.Builder<CommandMeta> {
 
         /**
          * Sets the name of the command to the given [name].
          */
-        fun name(name: String): Builder
+        public fun name(name: String): Builder
 
         /**
          * Adds the given [alias] to the list of aliases.
          */
-        fun alias(alias: String): Builder
+        public fun alias(alias: String): Builder
 
         /**
          * Adds the given [aliases] to the list of aliases.
          */
-        fun aliases(vararg aliases: String): Builder
+        public fun aliases(vararg aliases: String): Builder
 
         /**
          * Adds the given [aliases] to the list of aliases.
          */
-        fun aliases(aliases: Iterable<String>): Builder
+        public fun aliases(aliases: Iterable<String>): Builder
     }
 
     @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
-    interface Factory {
+    public interface Factory {
 
-        fun builder(name: String): Builder
+        public fun builder(name: String): Builder
 
-        fun simpleBuilder(name: String): SimpleCommandMeta.Builder
+        public fun simpleBuilder(name: String): SimpleCommandMeta.Builder
     }
 
-    companion object {
+    public companion object {
 
         @JvmSynthetic
         internal val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
@@ -76,7 +76,7 @@ interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
          * @return a new builder
          */
         @JvmStatic
-        fun builder(name: String) = FACTORY.builder(name)
+        public fun builder(name: String): Builder = FACTORY.builder(name)
 
         /**
          * Creates a new builder for constructing command metadata from the given
@@ -86,6 +86,6 @@ interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
          * @return a new builder
          */
         @JvmStatic
-        fun builder(command: BrigadierCommand) = builder(command.node.name)
+        public fun builder(command: BrigadierCommand): Builder = builder(command.node.name)
     }
 }

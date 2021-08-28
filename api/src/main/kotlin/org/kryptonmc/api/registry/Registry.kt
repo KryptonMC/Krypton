@@ -14,17 +14,17 @@ import org.kryptonmc.api.resource.ResourceKey
 /**
  * A holder for registry entries.
  */
-interface Registry<T : Any> : Map<ResourceKey<T>, T> {
+public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
 
     /**
      * The registry key for this registry.
      */
-    val key: ResourceKey<out Registry<T>>
+    public val key: ResourceKey<out Registry<T>>
 
     /**
      * The set of child keys.
      */
-    val keySet: Set<Key>
+    public val keySet: Set<Key>
 
     /**
      * Gets a value by its namespaced [key], or null if there is
@@ -33,7 +33,7 @@ interface Registry<T : Any> : Map<ResourceKey<T>, T> {
      * @param key the key
      * @return the value, or null if not present
      */
-    operator fun get(key: Key): T?
+    public operator fun get(key: Key): T?
 
     /**
      * Gets a value by its [id], or null if there is no value
@@ -42,7 +42,7 @@ interface Registry<T : Any> : Map<ResourceKey<T>, T> {
      * @param id the ID
      * @return the value, or null if not present
      */
-    operator fun get(id: Int): T?
+    public operator fun get(id: Int): T?
 
     /**
      * Gets a namespaced [Key] by its [value], or null if there is
@@ -51,7 +51,7 @@ interface Registry<T : Any> : Map<ResourceKey<T>, T> {
      * @param value the value
      * @return the key, or null if not present
      */
-    operator fun get(value: T): Key?
+    public operator fun get(value: T): Key?
 
     /**
      * Registers a new value to this registry with the given registry [key]
@@ -61,7 +61,7 @@ interface Registry<T : Any> : Map<ResourceKey<T>, T> {
      * @param value the value
      * @return the value
      */
-    fun <V : T> register(key: ResourceKey<T>, value: V): V
+    public fun <V : T> register(key: ResourceKey<T>, value: V): V
 
     /**
      * Registers a new value to this registry with the given registry [key]
@@ -72,7 +72,7 @@ interface Registry<T : Any> : Map<ResourceKey<T>, T> {
      * @param value the value
      * @return the value
      */
-    fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V
+    public fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V
 
     /**
      * Returns true if the given [key] is registered, false otherwise.
@@ -80,7 +80,7 @@ interface Registry<T : Any> : Map<ResourceKey<T>, T> {
      * @param key the key
      * @return true if registered, false otherwise
      */
-    operator fun contains(key: Key): Boolean
+    public operator fun contains(key: Key): Boolean
 
     /**
      * Gets the [ResourceKey] for the given [value], or null if
@@ -89,7 +89,7 @@ interface Registry<T : Any> : Map<ResourceKey<T>, T> {
      * @param value the value
      * @return the resource key, or null if not present
      */
-    fun resourceKey(value: T): ResourceKey<T>?
+    public fun resourceKey(value: T): ResourceKey<T>?
 
     /**
      * Gets the ID for the given [value], or returns -1 if the
@@ -98,5 +98,5 @@ interface Registry<T : Any> : Map<ResourceKey<T>, T> {
      * @param value the value
      * @return the ID, or -1 if the [value] is not registered
      */
-    fun idOf(value: T): Int
+    public fun idOf(value: T): Int
 }

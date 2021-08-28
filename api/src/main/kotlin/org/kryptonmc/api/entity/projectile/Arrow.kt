@@ -13,10 +13,10 @@ import java.awt.Color
 /**
  * An arrow or tipped arrow.
  */
-interface Arrow : ArrowLike {
+public interface Arrow : ArrowLike {
 
     /**
      * The colour of this arrow, or null if this arrow does not have a colour.
      */
-    var color: Color?
+    public var color: Color?
 }

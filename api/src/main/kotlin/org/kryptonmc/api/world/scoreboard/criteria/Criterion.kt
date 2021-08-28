@@ -15,27 +15,27 @@ import org.kryptonmc.api.world.scoreboard.RenderType
 /**
  * The criterion for a scoreboard objective to be displayed.
  */
-interface Criterion : Keyed {
+public interface Criterion : Keyed {
 
     /**
      * The key for this criterion.
      */
-    val key: Key
+    public val key: Key
 
     /**
      * The name of this criterion.
      */
-    val name: String
+    public val name: String
 
     /**
      * If this criterion is mutable.
      */
-    val isMutable: Boolean
+    public val isMutable: Boolean
 
     /**
      * The render type of this criterion.
      */
-    val renderType: RenderType
+    public val renderType: RenderType
 
-    override fun key() = key
+    override fun key(): Key = key
 }

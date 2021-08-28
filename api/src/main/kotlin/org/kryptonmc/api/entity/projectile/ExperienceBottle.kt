@@ -11,4 +11,4 @@ package org.kryptonmc.api.entity.projectile
 /**
  * A thrown experience bottle.
  */
-interface ExperienceBottle : ThrowableProjectile
+public interface ExperienceBottle : ThrowableProjectile

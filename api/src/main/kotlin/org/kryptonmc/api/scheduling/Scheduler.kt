@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 /**
  * The scheduler. This can be used to run or schedule tasks (a)synchronously
  */
-interface Scheduler {
+public interface Scheduler {
 
     /**
      * Runs the given [task] asynchronously once with no delay.
@@ -22,7 +22,7 @@ interface Scheduler {
      * @param task the task to be ran
      * @return a scheduled [Task] that can be [cancelled][Task.cancel]
      */
-    fun run(plugin: Any, task: TaskRunnable): Task
+    public fun run(plugin: Any, task: TaskRunnable): Task
 
     /**
      * Schedules the given [task] asynchronously once with the given [delay]
@@ -34,7 +34,7 @@ interface Scheduler {
      * @param task the task to be ran
      * @return a scheduled [Task] that can be [cancelled][Task.cancel]
      */
-    fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: TaskRunnable): Task
+    public fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: TaskRunnable): Task
 
     /**
      * Schedules the given [task] asynchronously repeatedly, with a [period] in between each
@@ -48,5 +48,5 @@ interface Scheduler {
      * @param task the task to be ran
      * @return a scheduled [Task] that can be [cancelled][Task.cancel]
      */
-    fun schedule(plugin: Any, delay: Long, period: Long, unit: TimeUnit, task: TaskRunnable): Task
+    public fun schedule(plugin: Any, delay: Long, period: Long, unit: TimeUnit, task: TaskRunnable): Task
 }

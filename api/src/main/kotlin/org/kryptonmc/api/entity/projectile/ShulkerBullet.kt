@@ -14,7 +14,7 @@ import org.kryptonmc.api.space.Direction
 /**
  * A bullet fired from a [Shulker].
  */
-interface ShulkerBullet : Projectile {
+public interface ShulkerBullet : Projectile {
 
     /**
      * How many steps the bullet will take to attack the target.
@@ -24,31 +24,31 @@ interface ShulkerBullet : Projectile {
      * If this value is 0, the bullet makes no attempt to attack the target, and instead
      * uses
      */
-    val steps: Int
+    public val steps: Int
 
     /**
      * The target of this bullet, or null if this bullet does not have a target established.
      */
-    val target: Entity?
+    public val target: Entity?
 
     /**
      * The current direction that this bullet is moving, or null if this bullet is not
      * moving.
      */
-    val movingDirection: Direction?
+    public val movingDirection: Direction?
 
     /**
      * The X offset of the target from the location of this bullet.
      */
-    val targetDeltaX: Double
+    public val targetDeltaX: Double
 
     /**
      * The Y offset of the target from the location of this bullet.
      */
-    val targetDeltaY: Double
+    public val targetDeltaY: Double
 
     /**
      * The Z offset of the target from the location of this bullet.
      */
-    val targetDeltaZ: Double
+    public val targetDeltaZ: Double
 }

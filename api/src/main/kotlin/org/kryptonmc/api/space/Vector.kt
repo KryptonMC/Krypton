@@ -29,11 +29,11 @@ import kotlin.random.Random
  * @see [Location]
  */
 @Suppress("Indentation")
-class Vector(x: Double, y: Double, z: Double) : AbstractPosition<Vector>(x, y, z) {
+public class Vector(x: Double, y: Double, z: Double) : AbstractPosition<Vector>(x, y, z) {
 
-    constructor(x: Int, y: Int, z: Int) : this(x.toDouble(), y.toDouble(), z.toDouble())
+    public constructor(x: Int, y: Int, z: Int) : this(x.toDouble(), y.toDouble(), z.toDouble())
 
-    constructor(x: Float, y: Float, z: Float) : this(x.toDouble(), y.toDouble(), z.toDouble())
+    public constructor(x: Float, y: Float, z: Float) : this(x.toDouble(), y.toDouble(), z.toDouble())
 
     /**
      * Convert this [Vector] to a [Location] with the given [pitch] and [yaw].
@@ -43,10 +43,12 @@ class Vector(x: Double, y: Double, z: Double) : AbstractPosition<Vector>(x, y, z
      * @return the new location from this vector
      */
     @Contract("_ -> new", pure = true)
-    fun toLocation(yaw: Float, pitch: Float) = Location(x, y, z, yaw, pitch)
+    public fun toLocation(yaw: Float, pitch: Float): Location = Location(x, y, z, yaw, pitch)
 
-    override fun equals(other: Any?) =
-        other is Vector && abs(x - other.x) < EPSILON && abs(y - other.y) < EPSILON && abs(z - other.z) < EPSILON
+    override fun equals(other: Any?): Boolean = other is Vector &&
+            abs(x - other.x) < EPSILON &&
+            abs(y - other.y) < EPSILON &&
+            abs(z - other.z) < EPSILON
 
     override fun hashCode(): Int {
         var hash = 7 * 79 + (x.toRawBits() xor (x.toRawBits() shr 32)).toInt()
@@ -55,23 +57,23 @@ class Vector(x: Double, y: Double, z: Double) : AbstractPosition<Vector>(x, y, z
         return hash
     }
 
-    override fun toString() = "Vector(x=$x, y=$y, z=$z)"
+    override fun toString(): String = "Vector(x=$x, y=$y, z=$z)"
 
-    override fun copy(x: Double, y: Double, z: Double) = Vector(x, y, z)
+    override fun copy(x: Double, y: Double, z: Double): Vector = Vector(x, y, z)
 
-    companion object {
+    public companion object {
 
         /**
          * Constant for the zero vector.
          */
         @JvmField
-        val ZERO = Vector(0, 0, 0)
+        public val ZERO: Vector = Vector(0, 0, 0)
 
         /**
          * Constant for a unit vector (one with its coordinates all being 1).
          */
         @JvmField
-        val UNIT = Vector(1, 1, 1)
+        public val UNIT: Vector = Vector(1, 1, 1)
 
         /**
          * Retrieve a random [Vector] that has coordinates with completely random
@@ -80,6 +82,6 @@ class Vector(x: Double, y: Double, z: Double) : AbstractPosition<Vector>(x, y, z
          * Just a roll of the dice
          */
         @JvmStatic
-        fun random() = Vector(Random.nextDouble(), Random.nextDouble(), Random.nextDouble())
+        public fun random(): Vector = Vector(Random.nextDouble(), Random.nextDouble(), Random.nextDouble())
     }
 }

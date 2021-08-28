@@ -20,12 +20,12 @@ import java.util.Locale
  * @param hasColorsEnabled if the player has chat colours enabled
  * @param skinSettings the player's skin settings
  */
-class ClientSettingsEvent(
-    val player: Player,
-    val locale: Locale,
-    val viewDistance: Int,
-    @get:JvmName("hasColorsEnabled") val hasColorsEnabled: Boolean,
-    val skinSettings: SkinSettings
+public class ClientSettingsEvent(
+    public val player: Player,
+    public val locale: Locale,
+    public val viewDistance: Int,
+    @get:JvmName("hasColorsEnabled") public val hasColorsEnabled: Boolean,
+    public val skinSettings: SkinSettings
 )
 
 /**
@@ -39,12 +39,12 @@ class ClientSettingsEvent(
  * @param rightPants whether the player has the right part of their trousers shown
  * @param hat whether the player has their hat shown
  */
-data class SkinSettings(
-    @get:JvmName("cape") val cape: Boolean,
-    @get:JvmName("jacket") val jacket: Boolean,
-    @get:JvmName("leftSleeve") val leftSleeve: Boolean,
-    @get:JvmName("rightSleeve") val rightSleeve: Boolean,
-    @get:JvmName("leftPants") val leftPants: Boolean,
-    @get:JvmName("rightPants") val rightPants: Boolean,
-    @get:JvmName("hat") val hat: Boolean
+public data class SkinSettings(
+    @get:JvmName("cape") public val cape: Boolean,
+    @get:JvmName("jacket") public val jacket: Boolean,
+    @get:JvmName("leftSleeve") public val leftSleeve: Boolean,
+    @get:JvmName("rightSleeve") public val rightSleeve: Boolean,
+    @get:JvmName("leftPants") public val leftPants: Boolean,
+    @get:JvmName("rightPants") public val rightPants: Boolean,
+    @get:JvmName("hat") public val hat: Boolean
 )

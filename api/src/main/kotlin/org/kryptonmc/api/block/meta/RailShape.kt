@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The shape of a minecart rail.
  */
-enum class RailShape(override val serialized: String) : StringSerializable {
+public enum class RailShape(override val serialized: String) : StringSerializable {
 
     NORTH_SOUTH("north_south"),
     EAST_WEST("east_west"),
@@ -29,6 +29,6 @@ enum class RailShape(override val serialized: String) : StringSerializable {
     /**
      * If this rail shape is ascending.
      */
-    val isAscending: Boolean
+    public val isAscending: Boolean
         get() = this == ASCENDING_NORTH || this == ASCENDING_SOUTH || this == ASCENDING_EAST || this == ASCENDING_WEST
 }

@@ -11,4 +11,4 @@ package org.kryptonmc.api.entity.projectile
 /**
  * A dragon fireball.
  */
-interface DragonFireball : AcceleratingProjectile
+public interface DragonFireball : AcceleratingProjectile

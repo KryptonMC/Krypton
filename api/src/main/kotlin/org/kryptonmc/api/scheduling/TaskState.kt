@@ -11,7 +11,7 @@ package org.kryptonmc.api.scheduling
 /**
  * The current state of a scheduled [Task].
  */
-enum class TaskState {
+public enum class TaskState {
 
     /**
      * This task is scheduled to be executed.

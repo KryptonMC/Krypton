@@ -14,4 +14,4 @@ package org.kryptonmc.api.command
  *
  * This purely exists so it can be `is` checked if necessary.
  */
-interface ConsoleSender : Sender
+public interface ConsoleSender : Sender

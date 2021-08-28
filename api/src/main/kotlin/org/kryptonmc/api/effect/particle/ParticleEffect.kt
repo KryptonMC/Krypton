@@ -22,19 +22,20 @@ import org.kryptonmc.api.space.Vector
  * @param data optional data for this particle effect
  * @throws IllegalArgumentException if the [quantity] is less than 1
  */
-data class ParticleEffect @JvmOverloads constructor(
-    val type: ParticleType,
-    val quantity: Int,
-    val offset: Vector,
-    val longDistance: Boolean,
-    val data: ParticleData? = null
+@JvmRecord
+public data class ParticleEffect @JvmOverloads constructor(
+    public val type: ParticleType,
+    public val quantity: Int,
+    public val offset: Vector,
+    public val longDistance: Boolean,
+    public val data: ParticleData? = null
 ) {
 
     init {
         require(quantity > 0) { "Quantity must be at least 1!" }
     }
 
-    companion object {
+    public companion object {
 
         /**
          * Creates a new particle effect builder for the given particle [type].
@@ -43,7 +44,7 @@ data class ParticleEffect @JvmOverloads constructor(
          * @return a new particle effect builder for the given type
          */
         @JvmStatic
-        fun builder(type: ParticleType) = ParticleEffectBuilder(type)
+        public fun builder(type: ParticleType): ParticleEffectBuilder = ParticleEffectBuilder(type)
 
         /**
          * Creates a new directional particle effect builder for the given directional
@@ -53,7 +54,8 @@ data class ParticleEffect @JvmOverloads constructor(
          * @return a new directional particle effect builder for the given type
          */
         @JvmStatic
-        fun builder(type: DirectionalParticleType) = DirectionalParticleEffectBuilder(type)
+        public fun builder(type: DirectionalParticleType): DirectionalParticleEffectBuilder =
+            DirectionalParticleEffectBuilder(type)
 
         /**
          * Creates a new block particle effect builder for the given block particle
@@ -63,7 +65,7 @@ data class ParticleEffect @JvmOverloads constructor(
          * @return a new block particle effect builder for the given type
          */
         @JvmStatic
-        fun builder(type: BlockParticleType) = DirectionalParticleEffectBuilder(type)
+        public fun builder(type: BlockParticleType): BlockParticleEffectBuilder = BlockParticleEffectBuilder(type)
 
         /**
          * Creates a new item particle effect builder for the given item particle
@@ -73,7 +75,7 @@ data class ParticleEffect @JvmOverloads constructor(
          * @return a new item particle effect builder for the given type
          */
         @JvmStatic
-        fun builder(type: ItemParticleType) = ItemParticleEffectBuilder(type)
+        public fun builder(type: ItemParticleType): ItemParticleEffectBuilder = ItemParticleEffectBuilder(type)
 
         /**
          * Creates a new color particle effect builder for the given color particle
@@ -83,7 +85,7 @@ data class ParticleEffect @JvmOverloads constructor(
          * @return a new color particle effect builder for the given type
          */
         @JvmStatic
-        fun builder(type: ColorParticleType) = ColorParticleEffectBuilder(type)
+        public fun builder(type: ColorParticleType): ColorParticleEffectBuilder = ColorParticleEffectBuilder(type)
 
         /**
          * Creates a new dust particle effect builder for the given dust particle
@@ -93,7 +95,7 @@ data class ParticleEffect @JvmOverloads constructor(
          * @return a new dust particle effect builder for the given type
          */
         @JvmStatic
-        fun builder(type: DustParticleType) = DustParticleEffectBuilder(type)
+        public fun builder(type: DustParticleType): DustParticleEffectBuilder = DustParticleEffectBuilder(type)
 
         /**
          * Creates a new dust transition particle effect builder for the given dust
@@ -103,7 +105,8 @@ data class ParticleEffect @JvmOverloads constructor(
          * @return a new dust transition particle effect builder for the given type
          */
         @JvmStatic
-        fun builder(type: DustTransitionParticleType) = DustTransitionParticleEffectBuilder(type)
+        public fun builder(type: DustTransitionParticleType): DustTransitionParticleEffectBuilder =
+            DustTransitionParticleEffectBuilder(type)
 
         /**
          * Creates a new note particle effect builder for the given note particle
@@ -113,7 +116,7 @@ data class ParticleEffect @JvmOverloads constructor(
          * @return a new note particle effect builder for the given type
          */
         @JvmStatic
-        fun builder(type: NoteParticleType) = NoteParticleEffectBuilder(type)
+        public fun builder(type: NoteParticleType): NoteParticleEffectBuilder = NoteParticleEffectBuilder(type)
 
         /**
          * Creates a new vibration particle effect builder for the given vibration
@@ -123,6 +126,6 @@ data class ParticleEffect @JvmOverloads constructor(
          * @return a new vibration particle effect builder for the given type
          */
         @JvmStatic
-        fun builder(type: VibrationParticleType) = VibrationParticleEffectBuilder(type)
+        public fun builder(type: VibrationParticleType): VibrationParticleEffectBuilder = VibrationParticleEffectBuilder(type)
     }
 }

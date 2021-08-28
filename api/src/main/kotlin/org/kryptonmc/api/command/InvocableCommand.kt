@@ -13,7 +13,7 @@ package org.kryptonmc.api.command
  *
  * @param A the type of the arguments
  */
-interface InvocableCommand<A> : Command {
+public interface InvocableCommand<A> : Command {
 
     /**
      * Invokes this command with the given [sender] and [args].
@@ -23,7 +23,7 @@ interface InvocableCommand<A> : Command {
      * @param sender the sender who ran this command
      * @param args the arguments the sender sent
      */
-    fun execute(sender: Sender, args: A)
+    public fun execute(sender: Sender, args: A)
 
     /**
      * Gets the list of suggestions for the given [sender] and the given [args].
@@ -35,5 +35,5 @@ interface InvocableCommand<A> : Command {
      * @param args the arguments the sender sent
      * @return a list of possible tab completions
      */
-    fun suggest(sender: Sender, args: A): List<String> = emptyList()
+    public fun suggest(sender: Sender, args: A): List<String> = emptyList()
 }

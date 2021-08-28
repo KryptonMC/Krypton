@@ -11,20 +11,20 @@ package org.kryptonmc.api.scheduling
 /**
  * A scheduled task.
  */
-interface Task {
+public interface Task {
 
     /**
      * The plugin that scheduled this task.
      */
-    val plugin: Any
+    public val plugin: Any
 
     /**
      * The current state of the scheduled task.
      */
-    val state: TaskState
+    public val state: TaskState
 
     /**
      * Attempts to cancel this scheduled task.
      */
-    fun cancel()
+    public fun cancel()
 }

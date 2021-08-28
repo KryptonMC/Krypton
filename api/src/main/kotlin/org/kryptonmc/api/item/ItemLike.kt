@@ -11,10 +11,10 @@ package org.kryptonmc.api.item
 /**
  * Something that could be representable as an item.
  */
-interface ItemLike {
+public interface ItemLike {
 
     /**
      * Gets the item representation, or null if there is no item representation.
      */
-    fun asItem(): ItemType?
+    public fun asItem(): ItemType?
 }

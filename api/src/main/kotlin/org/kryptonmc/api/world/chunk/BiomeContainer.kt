@@ -13,12 +13,12 @@ import org.kryptonmc.api.world.biome.Biome
 /**
  * Represents a container that holds biomes
  */
-interface BiomeContainer {
+public interface BiomeContainer {
 
     /**
      * The array of biomes in this chunk
      */
-    val biomes: Array<out Biome>
+    public val biomes: Array<out Biome>
 
     /**
      * Gets the biome located at the specified coordinates.
@@ -28,7 +28,7 @@ interface BiomeContainer {
      * @param z the Z coordinate
      * @return the biome
      */
-    operator fun get(x: Int, y: Int, z: Int): Biome
+    public operator fun get(x: Int, y: Int, z: Int): Biome
 
     /**
      * Sets the biome located at the specified coordinates to the specified
@@ -39,5 +39,5 @@ interface BiomeContainer {
      * @param z the Z coordinate
      * @param biome the new biome
      */
-    operator fun set(x: Int, y: Int, z: Int, biome: Biome)
+    public operator fun set(x: Int, y: Int, z: Int, biome: Biome)
 }

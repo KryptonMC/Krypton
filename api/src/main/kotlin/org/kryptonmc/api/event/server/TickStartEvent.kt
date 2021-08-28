@@ -13,4 +13,5 @@ package org.kryptonmc.api.event.server
  *
  * @param tickNumber the tick number
  */
-class TickStartEvent(val tickNumber: Int)
+@JvmRecord
+public data class TickStartEvent(public val tickNumber: Int)

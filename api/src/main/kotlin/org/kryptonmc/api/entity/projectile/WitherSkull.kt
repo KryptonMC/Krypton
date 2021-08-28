@@ -11,10 +11,10 @@ package org.kryptonmc.api.entity.projectile
 /**
  * A skull launched from a [Wither].
  */
-interface WitherSkull : AcceleratingProjectile {
+public interface WitherSkull : AcceleratingProjectile {
 
     /**
      * If this skull is dangerous (invulnerable).
      */
-    var isDangerous: Boolean
+    public var isDangerous: Boolean
 }

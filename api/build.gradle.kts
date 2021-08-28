@@ -3,7 +3,7 @@ import org.jetbrains.dokka.gradle.DokkaTask
 plugins {
     id("krypton.common")
     id("org.jetbrains.dokka")
-    id("io.gitlab.arturbosch.detekt")
+    id("io.gitlab.arturbosch.detekt") version "1.17.1"
     `maven-publish`
     signing
 }
@@ -151,8 +151,10 @@ license {
     newLine.set(false)
     exclude(
         // Velocity derivatives, with a special header
+        "**/event/ComponentResult.kt",
         "**/event/EventHandler.kt",
         "**/event/EventManager.kt",
+        "**/event/GenericResult.kt",
         "**/event/ResultedEvent.kt",
         "**/event/server/SetupPermissionsEvent.kt",
         "**/plugin/InvalidPluginException.kt",
@@ -179,6 +181,10 @@ detekt {
         html.enabled = true
         xml.enabled = true
     }
+}
+
+kotlin {
+    explicitApi()
 }
 
 tasks {

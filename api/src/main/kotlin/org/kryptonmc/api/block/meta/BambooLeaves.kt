@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * Types of bamboo leaves.
  */
-enum class BambooLeaves(override val serialized: String) : StringSerializable {
+public enum class BambooLeaves(override val serialized: String) : StringSerializable {
 
     NONE("none"),
     SMALL("small"),

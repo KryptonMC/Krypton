@@ -11,4 +11,4 @@ package org.kryptonmc.api.world.biome
 /**
  * Represents a biome.
  */
-interface Biome
+public interface Biome

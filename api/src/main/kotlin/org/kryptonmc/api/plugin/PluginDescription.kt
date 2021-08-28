@@ -21,42 +21,42 @@ import java.nio.file.Path
  * This holds details about the plugin, for example it's name, main class, version, description,
  * authors and dependencies.
  */
-interface PluginDescription {
+public interface PluginDescription {
 
     /**
      * The unique ID of this plugin.
      */
-    val id: String
+    public val id: String
 
     /**
      * The name of this plugin. Defaults to empty.
      */
-    val name: String
+    public val name: String
 
     /**
      * The version of this plugin. Defaults to <UNDEFINED>.
      */
-    val version: String
+    public val version: String
 
     /**
      * A short description of this plugin.
      */
-    val description: String
+    public val description: String
 
     /**
      * The list of people who created this plugin.
      */
-    val authors: List<String>
+    public val authors: List<String>
 
     /**
      * The list of dependencies of this plugin.
      */
-    val dependencies: Collection<PluginDependency>
+    public val dependencies: Collection<PluginDependency>
 
     /**
      * The source path that this plugin was loaded from.
      */
-    val source: Path
+    public val source: Path
 }
 
 /**
@@ -65,4 +65,7 @@ interface PluginDescription {
  * @param id the ID of the dependency
  * @param isOptional if this dependency is optional
  */
-data class PluginDependency(val id: String, val isOptional: Boolean)
+public data class PluginDependency(
+    public val id: String,
+    public val isOptional: Boolean
+)

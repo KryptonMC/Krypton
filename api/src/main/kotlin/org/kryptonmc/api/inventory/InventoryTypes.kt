@@ -17,33 +17,33 @@ import org.kryptonmc.api.registry.Registries
  * Note: The player inventory is not included in this list as it is not a valid
  * menu type, and cannot be created, or opened client-side.
  */
-object InventoryTypes {
+public object InventoryTypes {
 
     // @formatter:off
-    @JvmField val GENERIC_9x1 = register("generic_9x1", 9, 1)
-    @JvmField val GENERIC_9x2 = register("generic_9x2", 9, 2)
-    @JvmField val GENERIC_9x3 = register("generic_9x3", 9, 3)
-    @JvmField val GENERIC_9x4 = register("generic_9x4", 9, 4)
-    @JvmField val GENERIC_9x5 = register("generic_9x5", 9, 5)
-    @JvmField val GENERIC_9x6 = register("generic_9x6", 9, 6)
-    @JvmField val GENERIC_3x3 = register("generic_3x3", 9, 3)
-    @JvmField val ANVIL = register("anvil", 3)
-    @JvmField val BEACON = register("beacon", 1)
-    @JvmField val BLAST_FURNACE = register("blast_furnace", 3)
-    @JvmField val BREWING_STAND = register("brewing_stand", 5)
-    @JvmField val CRAFTING_TABLE = register("crafting", 10)
-    @JvmField val ENCHANTING_TABLE = register("enchantment", 2)
-    @JvmField val FURNACE = register("furnace", 3)
-    @JvmField val GRINDSTONE = register("grindstone", 3)
-    @JvmField val HOPPER = register("hopper", 5, 1)
-    @JvmField val LECTERN = register("lectern", 1)
-    @JvmField val LOOM = register("loom", 4)
-    @JvmField val MERCHANT = register("merchant", 3)
-    @JvmField val SHULKER_BOX = register("shulker_box", 9, 3)
-    @JvmField val SMITHING_TABLE = register("smithing", 3)
-    @JvmField val SMOKER = register("smoker", 3)
-    @JvmField val CARTOGRAPHY_TABLE = register("cartography_table", 3)
-    @JvmField val STONECUTTER = register("stonecutter", 2)
+    @JvmField public val GENERIC_9x1: GridInventoryType = register("generic_9x1", 9, 1)
+    @JvmField public val GENERIC_9x2: GridInventoryType = register("generic_9x2", 9, 2)
+    @JvmField public val GENERIC_9x3: GridInventoryType = register("generic_9x3", 9, 3)
+    @JvmField public val GENERIC_9x4: GridInventoryType = register("generic_9x4", 9, 4)
+    @JvmField public val GENERIC_9x5: GridInventoryType = register("generic_9x5", 9, 5)
+    @JvmField public val GENERIC_9x6: GridInventoryType = register("generic_9x6", 9, 6)
+    @JvmField public val GENERIC_3x3: GridInventoryType = register("generic_3x3", 9, 3)
+    @JvmField public val ANVIL: InventoryType = register("anvil", 3)
+    @JvmField public val BEACON: InventoryType = register("beacon", 1)
+    @JvmField public val BLAST_FURNACE: InventoryType = register("blast_furnace", 3)
+    @JvmField public val BREWING_STAND: InventoryType = register("brewing_stand", 5)
+    @JvmField public val CRAFTING_TABLE: InventoryType = register("crafting", 10)
+    @JvmField public val ENCHANTING_TABLE: InventoryType = register("enchantment", 2)
+    @JvmField public val FURNACE: InventoryType = register("furnace", 3)
+    @JvmField public val GRINDSTONE: InventoryType = register("grindstone", 3)
+    @JvmField public val HOPPER: GridInventoryType = register("hopper", 5, 1)
+    @JvmField public val LECTERN: InventoryType = register("lectern", 1)
+    @JvmField public val LOOM: InventoryType = register("loom", 4)
+    @JvmField public val MERCHANT: InventoryType = register("merchant", 3)
+    @JvmField public val SHULKER_BOX: GridInventoryType = register("shulker_box", 9, 3)
+    @JvmField public val SMITHING_TABLE: InventoryType = register("smithing", 3)
+    @JvmField public val SMOKER: InventoryType = register("smoker", 3)
+    @JvmField public val CARTOGRAPHY_TABLE: InventoryType = register("cartography_table", 3)
+    @JvmField public val STONECUTTER: InventoryType = register("stonecutter", 2)
 
     // @formatter:on
     private fun register(name: String, size: Int): InventoryType {

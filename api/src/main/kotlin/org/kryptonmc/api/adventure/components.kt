@@ -21,7 +21,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
  * as its argument.
  */
 @JvmSynthetic
-fun Component.toJson(): JsonElement = GsonComponentSerializer.gson().serializeToTree(this)
+public fun Component.toJson(): JsonElement = GsonComponentSerializer.gson().serializeToTree(this)
 
 /**
  * Converts this [JsonElement] to a [Component].
@@ -30,7 +30,7 @@ fun Component.toJson(): JsonElement = GsonComponentSerializer.gson().serializeTo
  * as its argument.
  */
 @JvmSynthetic
-fun JsonElement.toComponent(): Component = GsonComponentSerializer.gson().deserializeFromTree(this)
+public fun JsonElement.toComponent(): Component = GsonComponentSerializer.gson().deserializeFromTree(this)
 
 /**
  * Converts this [Component] to its JSON representation, as a string.
@@ -39,7 +39,7 @@ fun JsonElement.toComponent(): Component = GsonComponentSerializer.gson().deseri
  * as its argument.
  */
 @JvmSynthetic
-fun Component.toJsonString(): String = GsonComponentSerializer.gson().serialize(this)
+public fun Component.toJsonString(): String = GsonComponentSerializer.gson().serialize(this)
 
 /**
  * Converts this [Component] to its legacy text representation, using the given
@@ -49,7 +49,7 @@ fun Component.toJsonString(): String = GsonComponentSerializer.gson().serialize(
  * argument.
  */
 @JvmSynthetic
-fun Component.toLegacyText(char: Char): String = LegacyComponentSerializer.legacy(char).serialize(this)
+public fun Component.toLegacyText(char: Char): String = LegacyComponentSerializer.legacy(char).serialize(this)
 
 /**
  * Converts this [Component] to its legacy section text representation, using the
@@ -60,7 +60,7 @@ fun Component.toLegacyText(char: Char): String = LegacyComponentSerializer.legac
  * [section serializer][LegacyComponentSerializer.legacySection].
  */
 @JvmSynthetic
-fun Component.toLegacySectionText(): String = LegacyComponentSerializer.legacySection().serialize(this)
+public fun Component.toLegacySectionText(): String = LegacyComponentSerializer.legacySection().serialize(this)
 
 /**
  * Converts this [Component] to its legacy ampersand text representation, using the
@@ -71,7 +71,7 @@ fun Component.toLegacySectionText(): String = LegacyComponentSerializer.legacySe
  * [section serializer][LegacyComponentSerializer.legacyAmpersand].
  */
 @JvmSynthetic
-fun Component.toLegacyAmpersandText(): String = LegacyComponentSerializer.legacyAmpersand().serialize(this)
+public fun Component.toLegacyAmpersandText(): String = LegacyComponentSerializer.legacyAmpersand().serialize(this)
 
 /**
  * Converts this [Component] to its plain text representation.
@@ -80,4 +80,4 @@ fun Component.toLegacyAmpersandText(): String = LegacyComponentSerializer.legacy
  * as its argument.
  */
 @JvmSynthetic
-fun Component.toPlainText(): String = PlainTextComponentSerializer.plainText().serialize(this)
+public fun Component.toPlainText(): String = PlainTextComponentSerializer.plainText().serialize(this)

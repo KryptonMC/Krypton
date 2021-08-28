@@ -19,9 +19,10 @@ import org.kryptonmc.api.world.scoreboard.criteria.Criterion
  * @param criterion optional criteria for the scoreboard
  * @param renderType how this objective is rendered to the client
  */
-class Objective @JvmOverloads constructor(
-    val name: String,
-    val displayName: Component,
-    val criterion: Criterion? = null,
-    val renderType: RenderType = RenderType.INTEGER
+@JvmRecord
+public data class Objective @JvmOverloads constructor(
+    public val name: String,
+    public val displayName: Component,
+    public val criterion: Criterion? = null,
+    public val renderType: RenderType = RenderType.INTEGER
 )

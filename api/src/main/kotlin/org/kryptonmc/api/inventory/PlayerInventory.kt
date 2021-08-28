@@ -16,54 +16,54 @@ import org.kryptonmc.api.item.ItemStack
 /**
  * Represents a player's inventory.
  */
-interface PlayerInventory : Inventory {
+public interface PlayerInventory : Inventory {
 
     /**
      * The array of crafting slots in this inventory, where the first
      * 4 elements of this array are the input, and the last slot is
      * the output.
      */
-    val crafting: Array<out ItemStack>
+    public val crafting: Array<out ItemStack>
 
     /**
      * The array of armor pieces in this inventory.
      */
-    val armor: Array<out ItemStack>
+    public val armor: Array<out ItemStack>
 
     /**
      * The item that this player is currently holding in their main hand.
      */
-    val mainHand: ItemStack
+    public val mainHand: ItemStack
 
     /**
      * The item that this player is currently holding in their offhand.
      */
-    val offHand: ItemStack
+    public val offHand: ItemStack
 
     /**
      * The helmet this player is currently wearing.
      */
-    var helmet: ItemStack
+    public var helmet: ItemStack
 
     /**
      * The chestplate this player is currently wearing.
      */
-    var chestplate: ItemStack
+    public var chestplate: ItemStack
 
     /**
      * The leggings this player is currently wearing.
      */
-    var leggings: ItemStack
+    public var leggings: ItemStack
 
     /**
      * The boots this player is currently wearing.
      */
-    var boots: ItemStack
+    public var boots: ItemStack
 
     /**
      * The slot of the currently held item
      */
-    val heldSlot: Int
+    public val heldSlot: Int
 
     override val owner: Player
 
@@ -73,7 +73,7 @@ interface PlayerInventory : Inventory {
      * @param slot the armor slot
      * @return the armor item in the specified [slot]
      */
-    fun armor(slot: ArmorSlot): ItemStack
+    public fun armor(slot: ArmorSlot): ItemStack
 
     /**
      * Sets the armor item in the specified [slot] to the specified [item].
@@ -81,7 +81,7 @@ interface PlayerInventory : Inventory {
      * @param slot the armor slot
      * @param item the new item
      */
-    fun armor(slot: ArmorSlot, item: ItemStack)
+    public fun armor(slot: ArmorSlot, item: ItemStack)
 
     /**
      * Gets the item the player is holding in the specified [hand].
@@ -89,5 +89,5 @@ interface PlayerInventory : Inventory {
      * @param hand the hand
      * @return the item held in that hand
      */
-    fun heldItem(hand: Hand): ItemStack
+    public fun heldItem(hand: Hand): ItemStack
 }

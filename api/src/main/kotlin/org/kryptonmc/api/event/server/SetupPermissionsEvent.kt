@@ -12,6 +12,7 @@
  */
 package org.kryptonmc.api.event.server
 
+import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.permission.Subject
 
@@ -21,15 +22,15 @@ import org.kryptonmc.api.permission.Subject
  * @param subject the subject
  * @param defaultProvider the default permission provider
  */
-class SetupPermissionsEvent(
-    val subject: Subject,
-    val defaultProvider: PermissionProvider
+public class SetupPermissionsEvent(
+    public val subject: Subject,
+    public val defaultProvider: PermissionProvider
 ) {
 
     /**
      * The permission provider to use for the subject.
      */
-    var provider = defaultProvider
+    public var provider: PermissionProvider = defaultProvider
 
     /**
      * Creates a [org.kryptonmc.api.permission.PermissionFunction] for the given [subject] using the [provider]
@@ -38,7 +39,7 @@ class SetupPermissionsEvent(
      * @param subject the subject
      * @return a permission function for the given subject
      */
-    fun createFunction(subject: Subject) = provider.createFunction(subject)
+    public fun createFunction(subject: Subject): PermissionFunction = provider.createFunction(subject)
 
-    override fun toString() = "SetupPermissionsEvent(subject=$subject, defaultProvider=$defaultProvider, provider=$provider)"
+    override fun toString(): String = "SetupPermissionsEvent(subject=$subject, defaultProvider=$defaultProvider, provider=$provider)"
 }

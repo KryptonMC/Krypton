@@ -17,7 +17,7 @@ import net.kyori.adventure.util.TriState
 /**
  * A function that calculates the permission settings for a given [Subject].
  */
-fun interface PermissionFunction : (String) -> TriState {
+public fun interface PermissionFunction {
 
     /**
      * Gets the value for the given [permission].
@@ -25,28 +25,26 @@ fun interface PermissionFunction : (String) -> TriState {
      * @param permission the permission
      * @return the value for the given permission
      */
-    operator fun get(permission: String): TriState
+    public operator fun get(permission: String): TriState
 
-    override fun invoke(p1: String) = get(p1)
-
-    companion object {
+    public companion object {
 
         /**
          * A permission function that always returns [TriState.TRUE].
          */
         @JvmField
-        val ALWAYS_TRUE = PermissionFunction { TriState.TRUE }
+        public val ALWAYS_TRUE: PermissionFunction = PermissionFunction { TriState.TRUE }
 
         /**
          * A permission function that always returns [TriState.FALSE].
          */
         @JvmField
-        val ALWAYS_FALSE = PermissionFunction { TriState.FALSE }
+        public val ALWAYS_FALSE: PermissionFunction = PermissionFunction { TriState.FALSE }
 
         /**
          * A permission function that always returns [TriState.NOT_SET].
          */
         @JvmField
-        val ALWAYS_NOT_SET = PermissionFunction { TriState.NOT_SET }
+        public val ALWAYS_NOT_SET: PermissionFunction = PermissionFunction { TriState.NOT_SET }
     }
 }

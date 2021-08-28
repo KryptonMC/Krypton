@@ -11,7 +11,7 @@ package org.kryptonmc.api.event
 /**
  * Represents priorities of a listener.
  */
-enum class ListenerPriority {
+public enum class ListenerPriority {
 
     MAXIMUM,
     VERY_HIGH,

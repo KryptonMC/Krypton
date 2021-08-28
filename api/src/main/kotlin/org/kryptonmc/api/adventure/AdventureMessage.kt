@@ -19,12 +19,12 @@ import net.kyori.adventure.text.Component
  * manager when a command syntax exception is thrown, so that the [wrapped]
  * component is correctly serialized in to JSON.
  */
-class AdventureMessage(val wrapped: Component) : Message {
+public class AdventureMessage(public val wrapped: Component) : Message {
 
-    override fun getString() = wrapped.toPlainText()
+    override fun getString(): String = wrapped.toPlainText()
 }
 
 /**
  * Converts this component to a wrapper for a Brigadier [Message].
  */
-fun Component.toMessage() = AdventureMessage(this)
+public fun Component.toMessage(): AdventureMessage = AdventureMessage(this)

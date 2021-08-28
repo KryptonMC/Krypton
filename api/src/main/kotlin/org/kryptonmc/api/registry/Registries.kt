@@ -10,46 +10,59 @@ package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.effect.particle.ParticleType
+import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.attribute.AttributeType
+import org.kryptonmc.api.entity.attribute.ModifierOperation
+import org.kryptonmc.api.entity.hanging.Canvas
+import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.api.inventory.InventoryType
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.api.world.rule.GameRule
+import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 
 /**
  * Holder of all of the built-in registries.
  */
-object Registries {
+public object Registries {
 
     private val MANAGER = FactoryProvider.INSTANCE.provide<RegistryManager>()
 
     /**
      * The parent registry. All registries should be a child of this registry.
      */
-    @JvmField val PARENT = MANAGER.parent
+    @JvmField public val PARENT: Registry<out Registry<out Any>> = MANAGER.parent
 
     /**
      * All built-in vanilla registries.
      */
-    @JvmField val SOUND_EVENT = get(ResourceKeys.SOUND_EVENT)!!
-    @JvmField val ENTITY_TYPE = getDefaulted(ResourceKeys.ENTITY_TYPE)!!
-    @JvmField val PARTICLE_TYPE = get(ResourceKeys.PARTICLE_TYPE)!!
-    @JvmField val BLOCK = get(ResourceKeys.BLOCK)!!
-    @JvmField val ITEM = getDefaulted(ResourceKeys.ITEM)!!
-    @JvmField val MENU = get(ResourceKeys.MENU)!!
-    @JvmField val ATTRIBUTE = get(ResourceKeys.ATTRIBUTE)!!
-    @JvmField val BIOME = get(ResourceKeys.minecraft<Biome>("worldgen/biome"))!!
-    @JvmField val STATISTIC_TYPE = get(ResourceKeys.STATISTIC_TYPE)!!
-    @JvmField val CUSTOM_STATISTIC = create(ResourceKeys.CUSTOM_STATISTIC)
-    @JvmField val CANVAS = getDefaulted(ResourceKeys.CANVAS)!!
-    @JvmField val FLUID = get(ResourceKeys.FLUID)!!
+    @JvmField public val SOUND_EVENT: Registry<SoundEvent> = get(ResourceKeys.SOUND_EVENT)!!
+    @JvmField public val ENTITY_TYPE: DefaultedRegistry<EntityType<*>> = getDefaulted(ResourceKeys.ENTITY_TYPE)!!
+    @JvmField public val PARTICLE_TYPE: Registry<ParticleType> = get(ResourceKeys.PARTICLE_TYPE)!!
+    @JvmField public val BLOCK: Registry<Block> = get(ResourceKeys.BLOCK)!!
+    @JvmField public val ITEM: DefaultedRegistry<ItemType> = getDefaulted(ResourceKeys.ITEM)!!
+    @JvmField public val MENU: Registry<InventoryType> = get(ResourceKeys.MENU)!!
+    @JvmField public val ATTRIBUTE: Registry<AttributeType> = get(ResourceKeys.ATTRIBUTE)!!
+    @JvmField public val BIOME: Registry<Biome> = get(ResourceKeys.minecraft("worldgen/biome"))!!
+    @JvmField public val STATISTIC_TYPE: Registry<StatisticType<*>> = get(ResourceKeys.STATISTIC_TYPE)!!
+    @JvmField public val CUSTOM_STATISTIC: Registry<Key> = create(ResourceKeys.CUSTOM_STATISTIC)
+    @JvmField public val CANVAS: DefaultedRegistry<Canvas> = getDefaulted(ResourceKeys.CANVAS)!!
+    @JvmField public val FLUID: Registry<Fluid> = get(ResourceKeys.FLUID)!!
 
     /**
      * Custom built-in registries.
      */
-    @JvmField val GAMERULES = create(ResourceKeys.GAMERULES)
-    @JvmField val MODIFIER_OPERATIONS = create(ResourceKeys.MODIFIER_OPERATIONS)
-    @JvmField val CRITERIA = create(ResourceKeys.CRITERIA)
+    @JvmField public val GAMERULES: Registry<GameRule<Any>> = create(ResourceKeys.GAMERULES)
+    @JvmField public val MODIFIER_OPERATIONS: Registry<ModifierOperation> = create(ResourceKeys.MODIFIER_OPERATIONS)
+    @JvmField public val CRITERIA: Registry<Criterion> = create(ResourceKeys.CRITERIA)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null
@@ -59,7 +72,7 @@ object Registries {
      * @return the existing registry, or null if not present
      */
     @JvmStatic
-    operator fun <T : Any> get(key: ResourceKey<out Registry<T>>): Registry<T>? = MANAGER[key]
+    public operator fun <T : Any> get(key: ResourceKey<out Registry<T>>): Registry<T>? = MANAGER[key]
 
     /**
      * Gets the existing defaulted registry with the given resource [key], or
@@ -71,7 +84,7 @@ object Registries {
      */
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    fun <T : Any> getDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = MANAGER.getDefaulted(key)
+    public fun <T : Any> getDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = MANAGER.getDefaulted(key)
 
     /**
      * Registers a new entry to the given [registry], with the given [key] mapped to
@@ -82,7 +95,7 @@ object Registries {
      * @param value the value
      */
     @JvmStatic
-    fun <T : Any> register(registry: Registry<T>, key: String, value: T): T = register(registry, key(key), value)
+    public fun <T : Any> register(registry: Registry<T>, key: String, value: T): T = register(registry, key(key), value)
 
     /**
      * Registers a new entry to the given [registry], with the given [key] mapped to
@@ -93,19 +106,7 @@ object Registries {
      * @param value the value
      */
     @JvmStatic
-    fun <T : Any> register(registry: Registry<T>, key: Key, value: T): T = MANAGER.register(registry, key, value)
-
-    /**
-     * Registers a new entry to the given [registry], with the given [key] mapped to
-     * the given [value].
-     *
-     * @param registry the registry to register to
-     * @param id the ID of the entry in the registry
-     * @param key the key
-     * @param value the value
-     */
-    @JvmStatic
-    fun <T : Any> register(registry: Registry<T>, id: Int, key: String, value: T): T = register(registry, id, key, value)
+    public fun <T : Any> register(registry: Registry<T>, key: Key, value: T): T = MANAGER.register(registry, key, value)
 
     /**
      * Registers a new entry to the given [registry], with the given [key] mapped to
@@ -117,7 +118,19 @@ object Registries {
      * @param value the value
      */
     @JvmStatic
-    fun <T : Any> register(registry: Registry<T>, id: Int, key: Key, value: T): T = MANAGER.register(registry, id, key, value)
+    public fun <T : Any> register(registry: Registry<T>, id: Int, key: String, value: T): T = register(registry, id, key, value)
+
+    /**
+     * Registers a new entry to the given [registry], with the given [key] mapped to
+     * the given [value].
+     *
+     * @param registry the registry to register to
+     * @param id the ID of the entry in the registry
+     * @param key the key
+     * @param value the value
+     */
+    @JvmStatic
+    public fun <T : Any> register(registry: Registry<T>, id: Int, key: Key, value: T): T = MANAGER.register(registry, id, key, value)
 
     /**
      * Creates a new registry with the given registry [key].
@@ -126,7 +139,7 @@ object Registries {
      * @return a registry for the given [key]
      */
     @JvmStatic
-    fun <T : Any> create(key: ResourceKey<out Registry<T>>) = MANAGER.create(key)
+    public fun <T : Any> create(key: ResourceKey<out Registry<T>>): Registry<T> = MANAGER.create(key)
 
     /**
      * Creates a new registry with the given registry [key], with a [defaultKey].
@@ -139,5 +152,8 @@ object Registries {
      * @return a defaulted registry for the given [key]
      */
     @JvmStatic
-    fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key) = MANAGER.createDefaulted(key, defaultKey)
+    public fun <T : Any> createDefaulted(
+        key: ResourceKey<out Registry<T>>,
+        defaultKey: Key
+    ): DefaultedRegistry<T> = MANAGER.createDefaulted(key, defaultKey)
 }

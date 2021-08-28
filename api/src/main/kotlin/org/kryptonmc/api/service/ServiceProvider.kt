@@ -15,20 +15,20 @@ package org.kryptonmc.api.service
  * allows them to not need to know who they are actually providing the service
  * to (if anyone), which is a neat abstraction layer
  */
-interface ServiceProvider<T> {
+public interface ServiceProvider<T> {
 
     /**
      * The plugin that provided this service
      */
-    val plugin: Any
+    public val plugin: Any
 
     /**
      * The class of the service being provided
      */
-    val serviceClass: Class<T>
+    public val serviceClass: Class<T>
 
     /**
      * The service provided
      */
-    val service: T
+    public val service: T
 }

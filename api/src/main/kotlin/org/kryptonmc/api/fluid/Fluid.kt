@@ -19,47 +19,47 @@ import org.kryptonmc.api.item.ItemType
  *
  * The design of this is very similar to that of the [Block].
  */
-interface Fluid : PropertyHolder<Fluid>, BlockLike, Comparable<Fluid> {
+public interface Fluid : PropertyHolder<Fluid>, BlockLike, Comparable<Fluid> {
 
     /**
      * The key of this fluid.
      */
-    val key: Key
+    public val key: Key
 
     /**
      * The ID of this fluid.
      */
-    val id: Int
+    public val id: Int
 
     /**
      * The ID of the fluid state this fluid represents.
      */
-    val stateId: Int
+    public val stateId: Int
 
     /**
      * The type of the bucket this fluid can be held in.
      */
-    val bucket: ItemType
+    public val bucket: ItemType
 
     /**
      * If this fluid is an empty fluid.
      */
-    val isEmpty: Boolean
+    public val isEmpty: Boolean
 
     /**
      * The value for this fluid's resistance to explosions.
      */
-    val explosionResistance: Double
+    public val explosionResistance: Double
 
     /**
      * If this fluid is a source fluid.
      */
-    val isSource: Boolean
+    public val isSource: Boolean
 
     /**
      * The height of this fluid.
      */
-    val height: Float
+    public val height: Float
 
     /**
      * The level of this fluid.
@@ -68,7 +68,7 @@ interface Fluid : PropertyHolder<Fluid>, BlockLike, Comparable<Fluid> {
      * fluids, or the value of the [level][org.kryptonmc.api.block.property.Properties.LIQUID_LEVEL]
      * property for flowing fluids.
      */
-    val level: Int
+    public val level: Int
 
     /**
      * Converts this fluid in to its equivalent [Block].

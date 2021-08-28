@@ -11,4 +11,4 @@ package org.kryptonmc.api.entity.projectile
 /**
  * A thrown snowball.
  */
-interface Snowball : ThrowableProjectile
+public interface Snowball : ThrowableProjectile

@@ -11,10 +11,10 @@ package org.kryptonmc.api.entity.hanging
 /**
  * A painting.
  */
-interface Painting : HangingEntity {
+public interface Painting : HangingEntity {
 
     /**
      * The canvas displayed on this painting, or null if this painting is blank.
      */
-    val canvas: Canvas?
+    public val canvas: Canvas?
 }

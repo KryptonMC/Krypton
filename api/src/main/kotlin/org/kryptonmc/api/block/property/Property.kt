@@ -16,22 +16,22 @@ import org.kryptonmc.api.util.provide
 /**
  * Represents a property key.
  */
-interface Property<T : Comparable<T>> {
+public interface Property<T : Comparable<T>> {
 
     /**
      * The name of the property key.
      */
-    val name: String
+    public val name: String
 
     /**
      * The set of values this property key allows.
      */
-    val values: Set<T>
+    public val values: Set<T>
 
     /**
      * The type of this property key.
      */
-    val type: Class<T>
+    public val type: Class<T>
 
     /**
      * Parses the given string [value] to a value this property key allows,
@@ -40,7 +40,7 @@ interface Property<T : Comparable<T>> {
      * @param value the string value
      * @return the parsed value, or null if the value cannot be parsed to [T]
      */
-    fun fromString(value: String): T?
+    public fun fromString(value: String): T?
 
     /**
      * Converts the given [value] to its string equivalent.
@@ -48,20 +48,20 @@ interface Property<T : Comparable<T>> {
      * @param value the value
      * @return the string equivalent of the value
      */
-    fun toString(value: T): String
+    public fun toString(value: T): String
 
     @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
-    interface Factory {
+    public interface Factory {
 
-        fun forBoolean(name: String): Property<Boolean>
+        public fun forBoolean(name: String): Property<Boolean>
 
-        fun forInt(name: String, values: Set<Int>): Property<Int>
+        public fun forInt(name: String, values: Set<Int>): Property<Int>
 
-        fun <E> forEnum(name: String, type: Class<E>, values: Set<E>): Property<E> where E : Enum<E>, E : StringSerializable
+        public fun <E> forEnum(name: String, type: Class<E>, values: Set<E>): Property<E> where E : Enum<E>, E : StringSerializable
     }
 
-    companion object {
+    public companion object {
 
         private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
 
@@ -74,7 +74,7 @@ interface Property<T : Comparable<T>> {
          * @return a new boolean property
          */
         @JvmStatic
-        fun forBoolean(name: String) = FACTORY.forBoolean(name)
+        public fun forBoolean(name: String): Property<Boolean> = FACTORY.forBoolean(name)
 
         /**
          * Creates a new integer property with the given [name] and the given
@@ -85,7 +85,7 @@ interface Property<T : Comparable<T>> {
          * @return a new integer property
          */
         @JvmStatic
-        fun forInt(name: String, values: Set<Int>) = FACTORY.forInt(name, values)
+        public fun forInt(name: String, values: Set<Int>): Property<Int> = FACTORY.forInt(name, values)
 
         /**
          * Creates a new integer property with the given [name] and the given
@@ -96,7 +96,7 @@ interface Property<T : Comparable<T>> {
          * @return a new integer property
          */
         @JvmStatic
-        fun forInt(name: String, vararg values: Int) = forInt(name, values.toSet())
+        public fun forInt(name: String, vararg values: Int): Property<Int> = forInt(name, values.toSet())
 
         /**
          * Creates a new integer property with the given [name] and the given
@@ -107,7 +107,7 @@ interface Property<T : Comparable<T>> {
          * @return a new integer property
          */
         @JvmStatic
-        fun forInt(name: String, range: IntRange) = forInt(name, range.toSet())
+        public fun forInt(name: String, range: IntRange): Property<Int> = forInt(name, range.toSet())
 
         /**
          * Creates a new enum property with the given [name], [type], and the given
@@ -119,7 +119,11 @@ interface Property<T : Comparable<T>> {
          * @return a new enum property
          */
         @JvmStatic
-        fun <E> forEnum(name: String, type: Class<E>, values: Set<E>) where E : Enum<E>, E : StringSerializable = FACTORY.forEnum(name, type, values)
+        public fun <E> forEnum(
+            name: String,
+            type: Class<E>,
+            values: Set<E>
+        ): Property<E> where E : Enum<E>, E : StringSerializable = FACTORY.forEnum(name, type, values)
 
         /**
          * Creates a new enum property with the given [name], [type], and the given
@@ -131,11 +135,11 @@ interface Property<T : Comparable<T>> {
          * @return a new enum property
          */
         @JvmStatic
-        fun <E> forEnum(
+        public fun <E> forEnum(
             name: String,
             type: Class<E>,
             values: Array<E>
-        ) where E : Enum<E>, E : StringSerializable = FACTORY.forEnum(name, type, values.toSet())
+        ): Property<E> where E : Enum<E>, E : StringSerializable = FACTORY.forEnum(name, type, values.toSet())
     }
 }
 
@@ -148,10 +152,10 @@ interface Property<T : Comparable<T>> {
  * @return a new enum property
  */
 @JvmSynthetic
-inline fun <reified E> Property.Companion.forEnum(
+public inline fun <reified E> Property.Companion.forEnum(
     name: String,
     values: Set<E>
-) where E : Enum<E>, E : StringSerializable = forEnum(name, E::class.java, values)
+): Property<E> where E : Enum<E>, E : StringSerializable = forEnum(name, E::class.java, values)
 
 /**
  * Creates a new enum property with the given [name] and the given array
@@ -162,7 +166,7 @@ inline fun <reified E> Property.Companion.forEnum(
  * @return a new enum property
  */
 @JvmSynthetic
-inline fun <reified E> Property.Companion.forEnum(
+public inline fun <reified E> Property.Companion.forEnum(
     name: String,
     values: Array<E>
-) where E : Enum<E>, E : StringSerializable = forEnum(name, E::class.java, values)
+): Property<E> where E : Enum<E>, E : StringSerializable = forEnum(name, E::class.java, values)

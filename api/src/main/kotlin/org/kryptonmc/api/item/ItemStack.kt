@@ -18,33 +18,33 @@ import org.kryptonmc.api.util.provide
 /**
  * A stack of items in an inventory.
  */
-interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
+public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
 
     /**
      * The type of item in this stack.
      */
-    val type: ItemType
+    public val type: ItemType
 
     /**
      * The amount of items in this stack.
      */
-    var amount: Int
+    public var amount: Int
 
     /**
      * The holder for the stack's metadata.
      */
-    val meta: MetaHolder
+    public val meta: MetaHolder
 
     /**
      * Creates a copy of this item stack.
      */
     @Contract("_ -> new")
-    fun copy(): ItemStack
+    public fun copy(): ItemStack
 
     /**
      * For building new [ItemStack]s.
      */
-    interface Builder : Buildable.Builder<ItemStack> {
+    public interface Builder : Buildable.Builder<ItemStack> {
 
         /**
          * Sets the type of the [ItemStack] being built.
@@ -53,7 +53,7 @@ interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
          * @return this builder
          */
         @Contract("_ -> this")
-        fun type(type: ItemType): Builder
+        public fun type(type: ItemType): Builder
 
         /**
          * Sets the amount of items in the [ItemStack] being built.
@@ -62,7 +62,7 @@ interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
          * @return this builder
          */
         @Contract("_ -> this")
-        fun amount(amount: Int): Builder
+        public fun amount(amount: Int): Builder
 
         /**
          * Applies the given [builder] function to the meta holder
@@ -73,7 +73,7 @@ interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
          * @return this builder
          */
         @Contract("_ -> this")
-        fun meta(builder: MetaHolder.() -> Unit): Builder
+        public fun meta(builder: MetaHolder.() -> Unit): Builder
 
         /**
          * Builds a new [ItemStack] with the settings retrieved from
@@ -86,14 +86,14 @@ interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
     @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.OverrideOnly
     @ApiStatus.Internal
-    interface Factory {
+    public interface Factory {
 
-        fun builder(): Builder
+        public fun builder(): Builder
 
-        fun empty(): ItemStack
+        public fun empty(): ItemStack
     }
 
-    companion object {
+    public companion object {
 
         private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
 
@@ -102,14 +102,14 @@ interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
          */
         @Contract("_ -> new")
         @JvmStatic
-        fun builder() = FACTORY.builder()
+        public fun builder(): Builder = FACTORY.builder()
 
         /**
          * Creates a new [ItemStack] with the given [type].
          */
         @Contract("_ -> new")
         @JvmStatic
-        fun of(type: ItemType) = FACTORY.builder().type(type).build()
+        public fun of(type: ItemType): ItemStack = FACTORY.builder().type(type).build()
 
         /**
          * Creates a new [ItemStack] with the given [type] and [amount].
@@ -120,7 +120,7 @@ interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
          */
         @Contract("_ -> new")
         @JvmStatic
-        fun of(type: ItemType, amount: Int) = FACTORY.builder().type(type).amount(amount).build()
+        public fun of(type: ItemType, amount: Int): ItemStack = FACTORY.builder().type(type).amount(amount).build()
 
         /**
          * Creates a new [ItemStack] with the given [type], [amount],
@@ -133,7 +133,7 @@ interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
          */
         @Contract("_ -> new")
         @JvmStatic
-        fun of(type: ItemType, amount: Int, metaBuilder: MetaHolder.() -> Unit) =
+        public fun of(type: ItemType, amount: Int, metaBuilder: MetaHolder.() -> Unit): ItemStack =
             FACTORY.builder().type(type).amount(amount).meta(metaBuilder).build()
 
         /**
@@ -145,6 +145,6 @@ interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
          * be retrieved or set on this object.
          */
         @JvmStatic
-        fun empty() = FACTORY.empty()
+        public fun empty(): ItemStack = FACTORY.empty()
     }
 }

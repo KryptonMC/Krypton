@@ -11,10 +11,10 @@ package org.kryptonmc.api.util
 /**
  * Something that can be serialized to a string.
  */
-interface StringSerializable {
+public interface StringSerializable {
 
     /**
      * The serialized value.
      */
-    val serialized: String
+    public val serialized: String
 }

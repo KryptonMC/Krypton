@@ -14,14 +14,14 @@ import org.kryptonmc.api.registry.Registries
 /**
  * All of the built-in fluids.
  */
-object Fluids {
+public object Fluids {
 
     // @formatter:off
-    @JvmField val EMPTY = get("empty")
-    @JvmField val WATER = get("water")
-    @JvmField val FLOWING_WATER = get("flowing_water")
-    @JvmField val LAVA = get("lava")
-    @JvmField val FLOWING_LAVA = get("flowing_lava")
+    @JvmField public val EMPTY: Fluid = get("empty")
+    @JvmField public val WATER: Fluid = get("water")
+    @JvmField public val FLOWING_WATER: Fluid = get("flowing_water")
+    @JvmField public val LAVA: Fluid = get("lava")
+    @JvmField public val FLOWING_LAVA: Fluid = get("flowing_lava")
 
     // @formatter:on
     private fun get(name: String): Fluid = Registries.FLUID[Key.key(name)]!!

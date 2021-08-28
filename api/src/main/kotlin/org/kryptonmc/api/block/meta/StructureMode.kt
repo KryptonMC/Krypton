@@ -9,12 +9,13 @@
 package org.kryptonmc.api.block.meta
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.util.StringSerializable
 
 /**
  * The mode of a structure block.
  */
-enum class StructureMode(override val serialized: String) : StringSerializable {
+public enum class StructureMode(override val serialized: String) : StringSerializable {
 
     LOAD("load"),
     SAVE("save"),
@@ -24,5 +25,5 @@ enum class StructureMode(override val serialized: String) : StringSerializable {
     /**
      * The client-side translation for this structure mode.
      */
-    val translation = Component.translatable("structure_block.mode_info.$serialized")
+    public val translation: TranslatableComponent = Component.translatable("structure_block.mode_info.$serialized")
 }

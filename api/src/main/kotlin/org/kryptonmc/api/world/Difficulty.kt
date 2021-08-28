@@ -12,7 +12,7 @@ package org.kryptonmc.api.world
  * Represents the difficulty of a world. That being a measure of how difficult
  * it is to play the game (though this is not always accurate).
  */
-enum class Difficulty {
+public enum class Difficulty {
 
     /**
      * In peaceful mode, no hostile monsters will spawn in the world.
@@ -42,12 +42,12 @@ enum class Difficulty {
      */
     HARD;
 
-    companion object {
+    public companion object {
 
         /**
          * Retrieves a difficulty from its legacy ID. Should only need to be used internally.
          */
         @JvmStatic
-        fun fromId(id: Int) = values()[id % values().size]
+        public fun fromId(id: Int): Difficulty = values()[id % values().size]
     }
 }

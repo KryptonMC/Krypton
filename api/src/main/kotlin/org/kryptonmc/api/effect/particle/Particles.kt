@@ -16,119 +16,119 @@ import net.kyori.adventure.util.Buildable
  * A type of [ParticleEffect].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-interface ParticleType : Buildable<ParticleEffect, ParticleEffectBuilder>, Keyed {
+public interface ParticleType : Buildable<ParticleEffect, ParticleEffectBuilder>, Keyed {
 
     /**
      * The namespaced key of this particle.
      */
-    val key: Key
+    public val key: Key
 
     /**
      * Constructs a new builder to build a new [ParticleEffect] of this type.
      */
-    fun builder(): ParticleEffectBuilder
+    public fun builder(): ParticleEffectBuilder
 
-    override fun key() = key
+    override fun key(): Key = key
 
-    override fun toBuilder() = builder()
+    override fun toBuilder(): ParticleEffectBuilder = builder()
 }
 
 /**
  * Represents a particle that has basic options available.
  */
-class SimpleParticleType(override val key: Key) : ParticleType {
+public class SimpleParticleType(override val key: Key) : ParticleType {
 
     /**
      * Create a new builder from this particle type.
      */
-    override fun builder() = ParticleEffectBuilder(this)
+    override fun builder(): ParticleEffectBuilder = ParticleEffectBuilder(this)
 }
 
 /**
  * Represents a particle that can have velocity applied in a direction.
  */
-class DirectionalParticleType(override val key: Key) : ParticleType {
+public class DirectionalParticleType(override val key: Key) : ParticleType {
 
     /**
      * Create a new builder from this particle type.
      */
-    override fun builder() = DirectionalParticleEffectBuilder(this)
+    override fun builder(): DirectionalParticleEffectBuilder = DirectionalParticleEffectBuilder(this)
 }
 
 /**
  * Represents a particle that uses a block texture for its appearance.
  */
-class BlockParticleType(override val key: Key) : ParticleType {
+public class BlockParticleType(override val key: Key) : ParticleType {
 
     /**
      * Create a new builder from this particle type.
      */
-    override fun builder() = BlockParticleEffectBuilder(this)
+    override fun builder(): BlockParticleEffectBuilder = BlockParticleEffectBuilder(this)
 }
 
 /**
  * Represents a particle that uses an item texture for its appearance.
  */
-class ItemParticleType(override val key: Key) : ParticleType {
+public class ItemParticleType(override val key: Key) : ParticleType {
 
     /**
      * Create a new builder from this particle type.
      */
-    override fun builder() = ItemParticleEffectBuilder(this)
+    override fun builder(): ItemParticleEffectBuilder = ItemParticleEffectBuilder(this)
 }
 
 /**
  * Represents a particle that uses a color for its appearance.
  */
-class ColorParticleType(override val key: Key) : ParticleType {
+public class ColorParticleType(override val key: Key) : ParticleType {
 
     /**
      * Create a new builder from this particle type.
      */
-    override fun builder() = ColorParticleEffectBuilder(this)
+    override fun builder(): ColorParticleEffectBuilder = ColorParticleEffectBuilder(this)
 }
 
 /**
  * Represents a particle that uses a color and scale for its appearance.
  */
-class DustParticleType(override val key: Key) : ParticleType {
+public class DustParticleType(override val key: Key) : ParticleType {
 
     /**
      * Create a new builder from this particle type.
      */
-    override fun builder() = DustParticleEffectBuilder(this)
+    override fun builder(): DustParticleEffectBuilder = DustParticleEffectBuilder(this)
 }
 /**
  * Represents a particle that uses a color and scale for its appearance, and
  * transitions from one color to another.
  */
-class DustTransitionParticleType(override val key: Key) : ParticleType {
+public class DustTransitionParticleType(override val key: Key) : ParticleType {
 
     /**
      * Create a new builder from this particle type.
      */
-    override fun builder() = DustTransitionParticleEffectBuilder(this)
+    override fun builder(): DustTransitionParticleEffectBuilder = DustTransitionParticleEffectBuilder(this)
 }
 
 /**
  * Represents a particle that uses a specific note value for its color appearance.
  */
-class NoteParticleType(override val key: Key) : ParticleType {
+public class NoteParticleType(override val key: Key) : ParticleType {
 
     /**
      * Create a new builder from this particle type.
      */
-    override fun builder() = NoteParticleEffectBuilder(this)
+    override fun builder(): NoteParticleEffectBuilder = NoteParticleEffectBuilder(this)
 }
 
 /**
  * Represents a particle that vibrates from one location to another in a specified
  * amount of ticks.
  */
-class VibrationParticleType(override val key: Key) : ParticleType {
+public class VibrationParticleType(override val key: Key) : ParticleType {
 
     /**
      * Create a new builder from this particle type.
      */
-    override fun builder() = VibrationParticleEffectBuilder(this)
+    override fun builder(): VibrationParticleEffectBuilder = VibrationParticleEffectBuilder(this)
 }

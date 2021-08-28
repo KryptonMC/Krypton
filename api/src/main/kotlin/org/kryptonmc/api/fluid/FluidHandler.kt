@@ -17,7 +17,7 @@ import java.util.Random
 /**
  * A handler for one (or multiple) [Fluid]s.
  */
-interface FluidHandler {
+public interface FluidHandler {
 
     /**
      * Gets the movement vector for the current flow of the given [fluid] at the
@@ -28,7 +28,7 @@ interface FluidHandler {
      * @param world the world the fluid is in
      * @return the flow movement of the fluid
      */
-    fun getFlow(fluid: Fluid, position: Vector3i, world: World): Vector
+    public fun getFlow(fluid: Fluid, position: Vector3i, world: World): Vector
 
     /**
      * Gets the height of the given [fluid] at the given [position] in the given
@@ -39,7 +39,7 @@ interface FluidHandler {
      * @param world the world the fluid is in
      * @return the height of the fluid
      */
-    fun getHeight(fluid: Fluid, position: Vector3i, world: World): Float
+    public fun getHeight(fluid: Fluid, position: Vector3i, world: World): Float
 
     /**
      * Returns true if the given [fluid] at the given [position] in the given [world]
@@ -53,7 +53,7 @@ interface FluidHandler {
      * @param replacement the fluid that could replace the current fluid
      * @return true if the fluid can be replaced with the replacement, false otherwise
      */
-    fun canReplaceWith(fluid: Fluid, position: Vector3i, world: World, direction: Direction, replacement: Fluid): Boolean
+    public fun canReplaceWith(fluid: Fluid, position: Vector3i, world: World, direction: Direction, replacement: Fluid): Boolean
 
     /**
      * Called when the given [fluid] is ticked at the given [position] in the given
@@ -63,7 +63,7 @@ interface FluidHandler {
      * @param position the position the fluid is at
      * @param world the world the fluid is in
      */
-    fun tick(fluid: Fluid, position: Vector3i, world: World)
+    public fun tick(fluid: Fluid, position: Vector3i, world: World)
 
     /**
      * Called when the given [fluid] is randomly ticked at the given [position] in the
@@ -74,5 +74,5 @@ interface FluidHandler {
      * @param world the world the fluid is in
      * @param random the random number generator to use to generate randomness for the tick
      */
-    fun randomTick(fluid: Fluid, position: Vector3i, world: World, random: Random)
+    public fun randomTick(fluid: Fluid, position: Vector3i, world: World, random: Random)
 }

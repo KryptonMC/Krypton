@@ -18,8 +18,8 @@ import org.kryptonmc.api.entity.player.Player
  * @param channel the channel the message came from
  * @param message the message received
  */
-class PluginMessageEvent(
-    val player: Player,
-    val channel: Key,
-    val message: ByteArray
+public class PluginMessageEvent(
+    public val player: Player,
+    public val channel: Key,
+    public val message: ByteArray
 )
