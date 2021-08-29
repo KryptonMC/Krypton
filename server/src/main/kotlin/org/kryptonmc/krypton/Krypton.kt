@@ -64,9 +64,6 @@ private class KryptonCLI : CliktCommand(
     private val port by option("-p", "--port")
         .int()
         .help("The port to bind to")
-    private val online by option("-o", "--online", "--online-mode")
-        .flag(default = true)
-        .help("Whether users should be authenticated with Mojang")
     private val maxPlayers by option("-P", "--players", "--max-players")
         .int()
         .help("The maximum amount of players")
@@ -87,6 +84,7 @@ private class KryptonCLI : CliktCommand(
         .default(Path.of("."))
 
     override fun run() {
+        this.toString()
         if (version) {
             println("Krypton version ${KryptonPlatform.version} for Minecraft ${KryptonPlatform.minecraftVersion}")
             return
@@ -107,7 +105,7 @@ private class KryptonCLI : CliktCommand(
         }
         // Populate the config with CLI parameters
         val config = loadedConfig.copy(
-            server = loadedConfig.server.copy(ip = ip ?: loadedConfig.server.ip, port = port ?: loadedConfig.server.port, onlineMode = online),
+            server = loadedConfig.server.copy(ip = ip ?: loadedConfig.server.ip, port = port ?: loadedConfig.server.port),
             status = loadedConfig.status.copy(motd = motd ?: loadedConfig.status.motd, maxPlayers = maxPlayers ?: loadedConfig.status.maxPlayers),
             world = loadedConfig.world.copy(name = worldName ?: loadedConfig.world.name)
         )

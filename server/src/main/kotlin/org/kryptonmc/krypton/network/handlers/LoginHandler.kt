@@ -103,7 +103,7 @@ class LoginHandler(
         val address = if (legacyForwardedData != null) InetSocketAddress(legacyForwardedData.forwardedIp, rawAddress.port) else rawAddress
 
         name = packet.name
-        if (!server.isOnline) {
+        if (!server.isOnline || server.config.proxy.mode != ForwardingMode.NONE) { // Ignore online mode if we want forwarding
             if (server.config.proxy.mode == ForwardingMode.MODERN) {
                 session.sendPacket(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
                 return
