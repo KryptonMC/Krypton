@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.adventure
 
+import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.api.BinaryTagHolder
@@ -26,7 +27,7 @@ import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.LegacyHoverEventSerializer
 import net.kyori.adventure.util.Codec
 import org.kryptonmc.api.adventure.toPlainText
-import org.kryptonmc.krypton.util.nbt.parseToNBT
+import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.Tag
 import org.kryptonmc.nbt.buildCompound
@@ -36,7 +37,8 @@ import java.util.UUID
 
 object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
 
-    private val SNBT_CODEC: Codec<CompoundTag, String, CommandSyntaxException, RuntimeException> = Codec.of(String::parseToNBT, Tag::toString)
+    private val SNBT_CODEC: Codec<CompoundTag, String, CommandSyntaxException, RuntimeException> =
+        Codec.of({ SNBTParser(StringReader(it)).readSingleCompound() }, Tag::asString)
 
     private const val ITEM_TYPE = "id"
     private const val ITEM_COUNT = "Count"
@@ -58,7 +60,10 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
         throw IOException(exception)
     }
 
-    override fun deserializeShowEntity(input: Component, decoder: Codec.Decoder<Component, String, out RuntimeException>) = try {
+    override fun deserializeShowEntity(
+        input: Component,
+        decoder: Codec.Decoder<Component, String, out RuntimeException>
+    ) = try {
         val raw = input.toPlainText()
         val nbt = SNBT_CODEC.decode(raw)
         HoverEvent.ShowEntity.of(
@@ -85,7 +90,10 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
         return Component.text(SNBT_CODEC.encode(tag.build()))
     }
 
-    override fun serializeShowEntity(input: HoverEvent.ShowEntity, encoder: Codec.Encoder<Component, String, out RuntimeException>): Component {
+    override fun serializeShowEntity(
+        input: HoverEvent.ShowEntity,
+        encoder: Codec.Encoder<Component, String, out RuntimeException>
+    ): Component {
         val tag = buildCompound {
             string(ENTITY_ID, input.id().toString())
             string(ENTITY_TYPE, input.type().asString())

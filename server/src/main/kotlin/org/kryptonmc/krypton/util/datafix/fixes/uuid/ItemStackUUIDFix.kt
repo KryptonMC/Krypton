@@ -35,7 +35,9 @@ class ItemStackUUIDFix(outputSchema: Schema) : UUIDFix(outputSchema, References.
             typed.updateTyped(typed.type.findField("tag")) { tagTyped ->
                 tagTyped.update(remainderFinder()) { tag ->
                     var temp = tag.updateAttributeModifiers()
-                    if (typed.getOptional(idFinder).map { it.second == "minecraft:player_head" }.orElse(false)) temp = temp.updateSkullOwner()
+                    if (typed.getOptional(idFinder).map { it.second == "minecraft:player_head" }.orElse(false)) {
+                        temp = temp.updateSkullOwner()
+                    }
                     temp
                 }
             }

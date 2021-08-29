@@ -90,13 +90,13 @@ object Codecs {
     } catch (exception: InvalidKeyException) {
         DataResult.error("$key is not a valid key! Exception: ${exception.message}")
     }
-}
 
-private fun IntStream.fixedSizeIntArray(size: Int): DataResult<IntArray> {
-    val limited = limit(size + 1L).toArray()
-    return when {
-        limited.size == size -> DataResult.success(limited)
-        limited.size >= size -> DataResult.error("Input is not an array of integers with size $size!", limited.copyOf(size))
-        else -> DataResult.error("Input is not an array of integers with size $size!")
+    private fun IntStream.fixedSizeIntArray(size: Int): DataResult<IntArray> {
+        val limited = limit(size + 1L).toArray()
+        return when {
+            limited.size == size -> DataResult.success(limited)
+            limited.size >= size -> DataResult.error("Input is not an array of integers with size $size!", limited.copyOf(size))
+            else -> DataResult.error("Input is not an array of integers with size $size!")
+        }
     }
 }

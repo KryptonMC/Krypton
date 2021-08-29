@@ -44,8 +44,11 @@ class SummonEntityArgument : ArgumentType<Key> {
 
 fun CommandContext<Sender>.summonableEntity(argumentName: String) = getArgument(argumentName, Key::class.java).ensureSummonable()
 
-private val ERROR_UNKNOWN_ENTITY = DynamicCommandExceptionType { Component.translatable("entity.notFound", listOf(Component.text(it.toString()))).toMessage() }
+private val ERROR_UNKNOWN_ENTITY = DynamicCommandExceptionType {
+    Component.translatable("entity.notFound", listOf(Component.text(it.toString()))).toMessage()
+}
 
-private fun Key.ensureSummonable() = InternalRegistries.ENTITY_TYPE[this].takeIf { it.isSummonable }?.key ?: throw ERROR_UNKNOWN_ENTITY.create(this)
+private fun Key.ensureSummonable() = InternalRegistries.ENTITY_TYPE[this].takeIf { it.isSummonable }?.key
+    ?: throw ERROR_UNKNOWN_ENTITY.create(this)
 
 fun CommandContext<Sender>.entityArgument(name: String) = argument<Key>(name).ensureSummonable()

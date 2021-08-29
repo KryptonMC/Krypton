@@ -20,7 +20,8 @@ package org.kryptonmc.krypton.tags
 
 import org.kryptonmc.api.registry.Registry
 
-class TagType<T : Any>(
+@JvmRecord
+data class TagType<T : Any>(
     val identifier: String,
     val path: String,
     val registry: Registry<T>

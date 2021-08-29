@@ -28,7 +28,7 @@ class BannedPlayerList(path: Path) : ServerConfigList<KryptonGameProfile, Banned
 
     fun clear() = forEach { it.expiryDate?.let { time -> if (time.isBefore(OffsetDateTime.now())) remove(it.key) } }
 
-    override fun read(reader: JsonReader) = BannedPlayerEntry.read(reader)
+    override fun read(reader: JsonReader): BannedPlayerEntry? = BannedPlayerEntry.read(reader)
 
     override fun validatePath() {
         super.validatePath()

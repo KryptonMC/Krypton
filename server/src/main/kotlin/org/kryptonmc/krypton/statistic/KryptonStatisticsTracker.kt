@@ -37,11 +37,11 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutStatistics
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.tryCreateFile
-import org.kryptonmc.krypton.util.datafix.DATA_FIXER
+import org.kryptonmc.krypton.util.datafix.DataFixers
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toKeyOrNull
+import org.kryptonmc.krypton.util.tryCreateFile
 import java.io.IOException
 import java.io.Reader
 import java.nio.file.Path
@@ -57,9 +57,8 @@ class KryptonStatisticsTracker(
     private val file: Path
 ) : StatisticsTracker {
 
-    override val statistics: Object2IntMap<Statistic<*>> = Object2IntMaps.synchronize<Statistic<*>>(Object2IntOpenHashMap()).apply {
-        defaultReturnValue(0)
-    }
+    override val statistics: Object2IntMap<Statistic<*>> =
+        Object2IntMaps.synchronize<Statistic<*>>(Object2IntOpenHashMap()).apply { defaultReturnValue(0) }
     private val pendingUpdate = mutableSetOf<Statistic<*>>()
 
     private val pendingUpdating: Set<Statistic<*>>
@@ -78,7 +77,8 @@ class KryptonStatisticsTracker(
     fun save() = try {
         val map = mutableMapOf<StatisticType<*>, JsonObject>()
         statistics.object2IntEntrySet().forEach {
-            map.getOrPut(it.key.type) { JsonObject() }.addProperty((it.key.type.registry as Registry<Any>)[it.key.value]!!.toString(), it.intValue)
+            val registry = it.key.type.registry as Registry<Any>
+            map.getOrPut(it.key.type) { JsonObject() }.addProperty(registry[it.key.value]!!.toString(), it.intValue)
         }
 
         val statsJson = JsonObject()
@@ -110,9 +110,11 @@ class KryptonStatisticsTracker(
         pendingUpdate.add(statistic)
     }
 
-    override fun increment(statistic: Statistic<*>, amount: Int) = set(statistic, min(get(statistic).toLong() + amount.toLong(), Int.MAX_VALUE.toLong()).toInt())
+    override fun increment(statistic: Statistic<*>, amount: Int) =
+        set(statistic, min(get(statistic).toLong() + amount.toLong(), Int.MAX_VALUE.toLong()).toInt())
 
-    override fun decrement(statistic: Statistic<*>, amount: Int) = set(statistic, max(get(statistic).toLong() - amount.toLong(), Int.MIN_VALUE.toLong()).toInt())
+    override fun decrement(statistic: Statistic<*>, amount: Int) =
+        set(statistic, max(get(statistic).toLong() - amount.toLong(), Int.MIN_VALUE.toLong()).toInt())
 
     private fun load(reader: Reader) {
         try {
@@ -123,19 +125,33 @@ class KryptonStatisticsTracker(
             }
 
             json as JsonObject
-            if (!json.has("DataVersion") || !json["DataVersion"].isJsonPrimitive) json.addProperty("DataVersion", OLD_VERSION)
+            if (!json.has("DataVersion") || !json["DataVersion"].isJsonPrimitive) {
+                json.addProperty("DataVersion", OLD_VERSION)
+            }
 
-            val data = DATA_FIXER.update(References.STATS, Dynamic(JsonOps.INSTANCE, json), json["DataVersion"].asInt, KryptonPlatform.worldVersion)
+            val data = DataFixers.get().update(
+                References.STATS,
+                Dynamic(JsonOps.INSTANCE, json),
+                json["DataVersion"].asInt,
+                KryptonPlatform.worldVersion
+            )
             if (data["stats"].asMapOpt().result().isEmpty) return
 
             val stats = data["stats"].orElseEmptyMap().value.asJsonObject
             stats.keys.forEach { key ->
                 if (!stats[key].isJsonObject) return@forEach
+
                 InternalRegistries.STATISTIC_TYPE[Key.key(key)]?.let { type ->
                     val values = stats[key].asJsonObject
+
                     values.keys.forEach { k ->
                         if (values[k].isJsonPrimitive) {
-                            stat(type, k)?.let { statistics[it] = values[k].asInt } ?: LOGGER.warn("Invalid statistic found in $file! Could not recognise key $k!")
+                            val statistic = stat(type, k)
+                            if (statistic != null) {
+                                statistics[statistic] = values[k].asInt
+                            } else {
+                                LOGGER.warn("Invalid statistic found in $file! Could not recognise key $k!")
+                            }
                         } else {
                             LOGGER.warn("Invalid statistic found in $file! Could not recognise value ${values[k]} for key $k")
                         }

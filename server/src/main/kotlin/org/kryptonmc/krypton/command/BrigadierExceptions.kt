@@ -22,8 +22,8 @@ import com.mojang.brigadier.exceptions.BuiltInExceptionProvider
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 
 // Built-in types using vanilla's translation keys
@@ -63,38 +63,65 @@ object BrigadierExceptions : BuiltInExceptionProvider {
     private val DISPATCHER_PARSE_EXCEPTION = dynamicExceptionType("command.exception")
 
     override fun integerTooLow() = INTEGER_TOO_SMALL
+
     override fun integerTooHigh() = INTEGER_TOO_LARGE
+
     override fun longTooLow() = LONG_TOO_SMALL
+
     override fun longTooHigh() = LONG_TOO_LARGE
+
     override fun floatTooLow() = FLOAT_TOO_SMALL
+
     override fun floatTooHigh() = FLOAT_TOO_LARGE
+
     override fun doubleTooLow() = DOUBLE_TOO_SMALL
+
     override fun doubleTooHigh() = DOUBLE_TOO_LARGE
+
     override fun literalIncorrect() = LITERAL_INCORRECT
+
     override fun readerInvalidEscape() = READER_INVALID_ESCAPE
+
     override fun readerInvalidBool() = READER_INVALID_BOOLEAN
+
     override fun readerInvalidInt() = READER_INVALID_INTEGER
+
     override fun readerInvalidLong() = READER_INVALID_LONG
+
     override fun readerInvalidFloat() = READER_INVALID_FLOAT
+
     override fun readerInvalidDouble() = READER_INVALID_DOUBLE
+
     override fun readerExpectedBool() = READER_EXPECTED_BOOLEAN
+
     override fun readerExpectedInt() = READER_EXPECTED_INTEGER
+
     override fun readerExpectedLong() = READER_EXPECTED_LONG
+
     override fun readerExpectedFloat() = READER_EXPECTED_FLOAT
+
     override fun readerExpectedDouble() = READER_EXPECTED_DOUBLE
+
     override fun readerExpectedStartOfQuote() = READER_EXPECTED_START_OF_QUOTE
+
     override fun readerExpectedEndOfQuote() = READER_EXPECTED_END_OF_QUOTE
+
     override fun readerExpectedSymbol() = READER_EXPECTED_SYMBOL
+
     override fun dispatcherUnknownCommand() = DISPATCHER_UNKNOWN_COMMAND
+
     override fun dispatcherUnknownArgument() = DISPATCHER_UNKNOWN_ARGUMENT
+
     override fun dispatcherExpectedArgumentSeparator() = DISPATCHER_EXPECTED_SEPARATOR
+
     override fun dispatcherParseException() = DISPATCHER_PARSE_EXCEPTION
+
+    private fun translatable(key: String, vararg arguments: Any) =
+        Component.translatable(key, arguments.map { text(it.toString()) }).toMessage()
+
+    private fun simpleExceptionType(key: String) = SimpleCommandExceptionType(Component.translatable(key).toMessage())
+
+    private fun dynamicExceptionType(key: String) = DynamicCommandExceptionType { translatable(key, it) }
+
+    private fun dynamic2ExceptionType(key: String) = Dynamic2CommandExceptionType { a, b -> translatable(key, a, b) }
 }
-
-private fun translatable(key: String, vararg arguments: Any) = translatable(key, arguments.map { text(it.toString()) }).toMessage()
-
-private fun simpleExceptionType(key: String) = SimpleCommandExceptionType(translatable(key).toMessage())
-
-private fun dynamicExceptionType(key: String) = DynamicCommandExceptionType { translatable(key, it) }
-
-private fun dynamic2ExceptionType(key: String) = Dynamic2CommandExceptionType { a, b -> translatable(key, a, b) }

@@ -74,6 +74,9 @@ class ProjectileOwnerFix(outputSchema: Schema) : DataFix(outputSchema, false) {
         val outputType = outputSchema.getChoiceType(References.ENTITY, name)
         return updateTyped(namedChoice(name, inputType), outputType) { it.update(remainderFinder(), updater) }
     }
-}
 
-private fun createUUID(most: Long, least: Long) = intArrayOf((most shr 32).toInt(), most.toInt(), (least shr 32).toInt(), least.toInt())
+    companion object {
+
+        private fun createUUID(most: Long, least: Long) = intArrayOf((most shr 32).toInt(), most.toInt(), (least shr 32).toInt(), least.toInt())
+    }
+}

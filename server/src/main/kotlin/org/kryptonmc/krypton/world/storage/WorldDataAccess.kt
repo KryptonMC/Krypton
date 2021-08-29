@@ -22,7 +22,7 @@ import com.mojang.serialization.Dynamic
 import com.mojang.serialization.DynamicOps
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.util.DirectoryLock
-import org.kryptonmc.krypton.util.datafix.DATA_FIXER
+import org.kryptonmc.krypton.util.datafix.DataFixers
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.DataPackConfig
@@ -64,7 +64,7 @@ class WorldDataAccess(
             try {
                 val tag = TagIO.read(it, TagCompression.GZIP).getCompound("Data")
                 val version = if (tag.contains("DataVersion", 99)) tag.getInt("DataVersion") else -1
-                val data = DATA_FIXER.update(References.LEVEL, Dynamic(ops, tag), version, KryptonPlatform.worldVersion)
+                val data = DataFixers.get().update(References.LEVEL, Dynamic(ops, tag), version, KryptonPlatform.worldVersion)
                 PrimaryWorldData.parse(data, WorldGenerationSettings.default(), dataPackConfig)
             } catch (exception: Exception) {
                 LOGGER.error("Caught exception whilst trying to read $it!", exception)

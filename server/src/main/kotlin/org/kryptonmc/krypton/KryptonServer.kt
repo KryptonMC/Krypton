@@ -48,7 +48,6 @@ import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
-import org.kryptonmc.krypton.util.concurrent.DefaultUncaughtExceptionHandler
 import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorldManager
@@ -101,9 +100,6 @@ class KryptonServer(
 
     val playerManager = PlayerManager(this)
     override val players = playerManager.players
-
-    override fun player(uuid: UUID) = playerManager.playersByUUID[uuid]
-    override fun player(name: String) = playerManager.playersByName[name]
 
     override val channels: MutableSet<Key> = ConcurrentHashMap.newKeySet()
     override val console = KryptonConsole(this)
@@ -197,7 +193,9 @@ class KryptonServer(
         // Start up the console handler
         LOGGER.debug("Starting console handler")
         Thread(console::start, "Console Handler").apply {
-            uncaughtExceptionHandler = DefaultUncaughtExceptionHandler(KryptonConsole.LOGGER)
+            uncaughtExceptionHandler = Thread.UncaughtExceptionHandler { _, exception ->
+                KryptonConsole.LOGGER.error("Caught previously unhandled exception ", exception)
+            }
             isDaemon = true
         }.start()
 
@@ -220,8 +218,8 @@ class KryptonServer(
             eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
             lastTickTime = finishTime
 
-            val sleepTime = measureTimeMillis { Thread.sleep(max(0, TICK_INTERVAL - tickTime - oversleepFactor)) }
-            oversleepFactor = sleepTime - (TICK_INTERVAL - tickTime)
+            val sleepTime = measureTimeMillis { Thread.sleep(max(0, MILLISECONDS_PER_TICK - tickTime - oversleepFactor)) }
+            oversleepFactor = sleepTime - (MILLISECONDS_PER_TICK - tickTime)
         }
     } catch (exception: Throwable) {
         LOGGER.error("Encountered an unexpected exception", exception)
@@ -286,8 +284,7 @@ class KryptonServer(
             .path(configPath)
             .defaultOptions(KryptonConfig.OPTIONS)
             .build()
-        val node = config.load()
-            .set(this.config)
+        val node = config.load().set(this.config)
         config.save(node)
     }
 
@@ -295,14 +292,22 @@ class KryptonServer(
 
     fun resolve(path: String) = dataAccess.resolve(path)
 
+    override fun player(uuid: UUID) = playerManager.playersByUUID[uuid]
+
+    override fun player(name: String) = playerManager.playersByName[name]
+
     override fun registerChannel(channel: Key) {
-        require(channel !in RESERVED_CHANNELS) { "Cannot register reserved channel with name \"minecraft:register\" or \"minecraft:unregister\"!" }
-        channels += channel
+        require(channel !in RESERVED_CHANNELS) {
+            "Cannot register reserved channel with name \"minecraft:register\" or \"minecraft:unregister\"!"
+        }
+        channels.add(channel)
     }
 
     override fun unregisterChannel(channel: Key) {
-        channels -= channel
-        require(channel !in RESERVED_CHANNELS) { "Cannot unregister reserved channels with name \"minecraft:register\" or \"minecraft:unregister\"!" }
+        channels.remove(channel)
+        require(channel !in RESERVED_CHANNELS) {
+            "Cannot unregister reserved channels with name \"minecraft:register\" or \"minecraft:unregister\"!"
+        }
     }
 
     override fun sendMessage(message: Component, permission: String) {
@@ -313,7 +318,10 @@ class KryptonServer(
 
     override fun audiences() = players + console
 
-    fun getPermissionLevel(profile: KryptonGameProfile) = if (playerManager.ops.contains(profile)) playerManager.ops[profile]?.permissionLevel ?: 1 else 1
+    fun getPermissionLevel(profile: KryptonGameProfile): Int {
+        if (playerManager.ops.contains(profile)) return playerManager.ops[profile]?.permissionLevel ?: 1
+        return 1
+    }
 
     fun stop(halt: Boolean = true) {
         if (!isRunning) return // Ensure we cannot accidentally run this twice
@@ -362,11 +370,8 @@ class KryptonServer(
 
     companion object {
 
-        private val REGISTER_CHANNEL_KEY = key("register")
-        private val UNREGISTER_CHANNEL_KEY = key("unregister")
-        private val RESERVED_CHANNELS = setOf(REGISTER_CHANNEL_KEY, UNREGISTER_CHANNEL_KEY)
-
-        private const val TICK_INTERVAL = 1000L / 20L // milliseconds in a tick
+        private val RESERVED_CHANNELS = setOf(key("register"), key("unregister"))
+        private const val MILLISECONDS_PER_TICK = 50L // milliseconds in a tick
         private val LOGGER = logger<KryptonServer>()
     }
 }

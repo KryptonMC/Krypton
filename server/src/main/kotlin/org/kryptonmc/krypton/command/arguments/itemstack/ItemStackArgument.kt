@@ -18,14 +18,11 @@
  */
 package org.kryptonmc.krypton.command.arguments.itemstack
 
-import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.MutableCompoundTag
-import org.kryptonmc.nbt.StringTag
 
 data class ItemStackArgument(val item: ItemType, val tag: CompoundTag? = null) {
 

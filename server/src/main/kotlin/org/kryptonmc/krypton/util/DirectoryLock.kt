@@ -42,6 +42,11 @@ class DirectoryLock private constructor(
         }
     }
 
+    private class LockException(path: Path, reason: String) : IOException("${path.toAbsolutePath()} $reason") {
+
+        constructor(path: Path) : this(path, "already locked!")
+    }
+
     companion object {
 
         private const val FILE_NAME = "session.lock"
@@ -62,9 +67,4 @@ class DirectoryLock private constructor(
             return DirectoryLock(channel, lock)
         }
     }
-}
-
-class LockException(path: Path, reason: String) : IOException("${path.toAbsolutePath()} $reason") {
-
-    constructor(path: Path) : this(path, "already locked!")
 }

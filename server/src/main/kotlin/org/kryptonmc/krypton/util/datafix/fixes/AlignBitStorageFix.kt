@@ -73,55 +73,58 @@ class AlignBitStorageFix(outputSchema: Schema) : DataFix(outputSchema, false) {
         val newArray = currentArray.addPadding(size, bits)
         return createLongList(Arrays.stream(newArray))
     }
-}
 
-private const val BIT_TO_LONG_SHIFT = 6
-private const val SECTION_SIZE = 4096
-private const val HEIGHTMAP_BITS = 9
-private const val HEIGHTMAP_SIZE = 256
+    companion object {
 
-fun LongArray.addPadding(size: Int, bits: Int): LongArray {
-    if (isEmpty()) return this
-    val mask = (1L shl bits) - 1L
-    val valuesPerLong = 64 / bits
-    val array = LongArray((size + valuesPerLong - 1) / valuesPerLong)
-    var var5 = 0
-    var currentBitOffset = 0
-    var var7 = 0L
-    var currentLongOffset = 0
-    var current = this[0]
-    var next = if (size > 1) this[1] else 0L
+        private const val BIT_TO_LONG_SHIFT = 6
+        private const val SECTION_SIZE = 4096
+        private const val HEIGHTMAP_BITS = 9
+        private const val HEIGHTMAP_SIZE = 256
 
-    for (i in 0 until size) {
-        val bitOffset = i * bits
-        val longOffset = bitOffset shr BIT_TO_LONG_SHIFT
-        val nextLongOffset = (i + 1) * bits - 1 shr BIT_TO_LONG_SHIFT // maybe?
-        val var15 = bitOffset xor (longOffset shl BIT_TO_LONG_SHIFT)
-        if (longOffset != currentLongOffset) {
-            current = next
-            next = if (longOffset + 1 < size) this[longOffset + 1] else 0L
-            currentLongOffset = longOffset
+        fun LongArray.addPadding(size: Int, bits: Int): LongArray {
+            if (isEmpty()) return this
+            val mask = (1L shl bits) - 1L
+            val valuesPerLong = 64 / bits
+            val array = LongArray((size + valuesPerLong - 1) / valuesPerLong)
+            var var5 = 0
+            var currentBitOffset = 0
+            var var7 = 0L
+            var currentLongOffset = 0
+            var current = this[0]
+            var next = if (size > 1) this[1] else 0L
+
+            for (i in 0 until size) {
+                val bitOffset = i * bits
+                val longOffset = bitOffset shr BIT_TO_LONG_SHIFT
+                val nextLongOffset = (i + 1) * bits - 1 shr BIT_TO_LONG_SHIFT // maybe?
+                val var15 = bitOffset xor (longOffset shl BIT_TO_LONG_SHIFT)
+                if (longOffset != currentLongOffset) {
+                    current = next
+                    next = if (longOffset + 1 < size) this[longOffset + 1] else 0L
+                    currentLongOffset = longOffset
+                }
+
+                val var16 = if (longOffset == nextLongOffset) {
+                    current ushr var15 and mask
+                } else {
+                    val var17 = 64 - var15
+                    current ushr var15 or (next shl var17) and mask
+                }
+
+                val nextBitOffset = currentBitOffset + bits
+                if (nextBitOffset >= 64) {
+                    array[var5++] = var7
+                    var7 = var16
+                    currentBitOffset = bits
+                } else {
+                    var7 = var7 or (var16 shl currentBitOffset)
+                    currentBitOffset = nextBitOffset
+                }
+
+                if (var7 != 0L) array[var5] = var7
+            }
+
+            return array
         }
-
-        val var16 = if (longOffset == nextLongOffset) {
-            current ushr var15 and mask
-        } else {
-            val var17 = 64 - var15
-            current ushr var15 or (next shl var17) and mask
-        }
-
-        val nextBitOffset = currentBitOffset + bits
-        if (nextBitOffset >= 64) {
-            array[var5++] = var7
-            var7 = var16
-            currentBitOffset = bits
-        } else {
-            var7 = var7 or (var16 shl currentBitOffset)
-            currentBitOffset = nextBitOffset
-        }
-
-        if (var7 != 0L) array[var5] = var7
     }
-
-    return array
 }

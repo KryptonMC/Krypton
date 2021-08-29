@@ -39,6 +39,8 @@ import com.mojang.datafixers.util.Either
 import com.mojang.datafixers.util.Unit
 import com.mojang.serialization.Dynamic
 import org.kryptonmc.krypton.util.datafix.References
+import org.kryptonmc.krypton.util.datafix.fixes.WorldGenSettingsFix.Companion.defaultOverworld
+import org.kryptonmc.krypton.util.datafix.fixes.WorldGenSettingsFix.Companion.vanillaLevels
 import org.kryptonmc.krypton.util.datafix.schema.NamespacedSchema
 
 class MissingDimensionFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
@@ -87,14 +89,17 @@ class MissingDimensionFix(outputSchema: Schema, changesType: Boolean) : DataFix(
         val seed = get("seed").asLong(0L)
         return Dynamic(ops, vanillaLevels(seed, defaultOverworld(seed), false))
     }
+
+    companion object {
+
+        private fun <A> fields(pair: Pair<String, Type<A>>) = and(field(pair.first, pair.second), remainderType())
+
+        private fun <A> optionalFields(pair: Pair<String, Type<A>>): Type<com.mojang.datafixers.util.Pair<Either<A, Unit>, Dynamic<*>>> =
+            and(optional(field(pair.first, pair.second)), remainderType())
+
+        private fun <A1, A2> optionalFields(
+            first: Pair<String, Type<A1>>,
+            second: Pair<String, Type<A2>>
+        ) = and(optional(field(first.first, first.second)), optional(field(second.first, second.second)), remainderType())
+    }
 }
-
-private fun <A> fields(pair: Pair<String, Type<A>>) = and(field(pair.first, pair.second), remainderType())
-
-private fun <A> optionalFields(pair: Pair<String, Type<A>>): Type<com.mojang.datafixers.util.Pair<Either<A, Unit>, Dynamic<*>>> =
-    and(optional(field(pair.first, pair.second)), remainderType())
-
-private fun <A1, A2> optionalFields(
-    first: Pair<String, Type<A1>>,
-    second: Pair<String, Type<A2>>
-) = and(optional(field(first.first, first.second)), optional(field(second.first, second.second)), remainderType())

@@ -35,7 +35,9 @@ object TagManager {
 
     init {
         TagTypes.VALUES.forEach { type ->
-            val json = ClassLoader.getSystemResourceAsStream(type.path)!!.reader().use { GSON.fromJson(it, JsonObject::class.java) }
+            val json = ClassLoader.getSystemResourceAsStream(type.path)!!.reader().use {
+                GSON.fromJson(it, JsonObject::class.java)
+            }
             val identifierMap = tagMap.getOrPut(type) { CopyOnWriteArrayList() }
             json.keySet().forEach {
                 val tag = Tag(Key.key(it), type, keys(json, it))
@@ -45,7 +47,8 @@ object TagManager {
     }
 
     @Suppress("UNCHECKED_CAST")
-    operator fun <T : Any> get(type: TagType<T>, name: String): Tag<T>? = tagMap[type]?.firstOrNull { it.name.asString() == name } as? Tag<T>
+    operator fun <T : Any> get(type: TagType<T>, name: String): Tag<T>? =
+        tagMap[type]?.firstOrNull { it.name.asString() == name } as? Tag<T>
 
     private fun keys(main: JsonObject, value: String): Set<String> {
         val tagObject = main.getAsJsonObject(value)
@@ -53,7 +56,11 @@ object TagManager {
         val result = HashSet<String>(tagValues.size())
         tagValues.forEach {
             val asString = it.asString
-            if (asString.startsWith("#")) result.addAll(keys(main, asString.substring(1))) else result.add(asString)
+            if (asString.startsWith("#")) {
+                result.addAll(keys(main, asString.substring(1)))
+            } else {
+                result.add(asString)
+            }
         }
         return result
     }

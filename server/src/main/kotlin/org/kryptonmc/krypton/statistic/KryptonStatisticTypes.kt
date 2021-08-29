@@ -38,6 +38,10 @@ object KryptonStatisticTypes {
     @Suppress("UNCHECKED_CAST")
     private fun <T : Any> register(name: String, registry: Registry<T>): KryptonStatisticType<T> {
         val key = Key.key(name)
-        return Registries.register(InternalRegistries.STATISTIC_TYPE, key, KryptonStatisticType(key, registry)) as KryptonStatisticType<T>
+        return Registries.register(
+            InternalRegistries.STATISTIC_TYPE,
+            key,
+            KryptonStatisticType(key, registry)
+        ) as KryptonStatisticType<T>
     }
 }

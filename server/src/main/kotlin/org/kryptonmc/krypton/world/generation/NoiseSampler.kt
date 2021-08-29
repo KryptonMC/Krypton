@@ -23,7 +23,7 @@ import org.kryptonmc.krypton.util.noise.BlendedNoise
 import org.kryptonmc.krypton.util.noise.PerlinNoise
 import org.kryptonmc.krypton.util.noise.SimplexNoise
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
-import org.kryptonmc.krypton.world.biome.gen.getHeightValue
+import org.kryptonmc.krypton.world.biome.gen.TheEndBiomeGenerator.Companion.getHeightValue
 import org.kryptonmc.krypton.world.generation.noise.NoiseModifier
 import org.kryptonmc.krypton.world.generation.noise.NoiseSettings
 import kotlin.math.min

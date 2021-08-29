@@ -79,30 +79,29 @@ class TheEndBiomeGenerator private constructor(
                 Codec.LONG.fieldOf("seed").stable().forGetter(TheEndBiomeGenerator::seed)
             ).apply(it, ::TheEndBiomeGenerator)
         }
-    }
-}
+        private const val ISLAND_THRESHOLD = -0.9
+        private const val ISLAND_CHUNK_DISTANCE_SQ = 4096L
 
-private const val ISLAND_THRESHOLD = -0.9
-private const val ISLAND_CHUNK_DISTANCE_SQ = 4096L
-
-fun SimplexNoise.getHeightValue(x: Int, z: Int): Float {
-    val divX = x / 2
-    val divZ = z / 2
-    val modX = x % 2
-    val modZ = z % 2
-    var value = (100F - sqrt((x * x + z * z).toFloat()) * 8F).clamp(-100F, 80F)
-    for (xo in -12..12) {
-        for (zo in -12..12) {
-            val offX = (divX + xo).toLong()
-            val offZ = (divZ + zo).toLong()
-            if (offX * offX + offZ * offZ > ISLAND_CHUNK_DISTANCE_SQ && getValue(offX.toDouble(), offZ.toDouble()) < ISLAND_THRESHOLD) {
-                val abs = (abs(offX.toFloat()) * 3439F + abs(offZ.toFloat()) * 147F) % 13F + 9F
-                val offModX = (modX - xo * 2).toFloat()
-                val offModZ = (modZ - zo * 2).toFloat()
-                val newValue = (100F - sqrt(offModX * offModX + offModZ * offModZ) * abs).clamp(-100F, 80F)
-                value = max(value, newValue)
+        fun SimplexNoise.getHeightValue(x: Int, z: Int): Float {
+            val divX = x / 2
+            val divZ = z / 2
+            val modX = x % 2
+            val modZ = z % 2
+            var value = (100F - sqrt((x * x + z * z).toFloat()) * 8F).clamp(-100F, 80F)
+            for (xo in -12..12) {
+                for (zo in -12..12) {
+                    val offX = (divX + xo).toLong()
+                    val offZ = (divZ + zo).toLong()
+                    if (offX * offX + offZ * offZ > ISLAND_CHUNK_DISTANCE_SQ && getValue(offX.toDouble(), offZ.toDouble()) < ISLAND_THRESHOLD) {
+                        val abs = (abs(offX.toFloat()) * 3439F + abs(offZ.toFloat()) * 147F) % 13F + 9F
+                        val offModX = (modX - xo * 2).toFloat()
+                        val offModZ = (modZ - zo * 2).toFloat()
+                        val newValue = (100F - sqrt(offModX * offModX + offModZ * offModZ) * abs).clamp(-100F, 80F)
+                        value = max(value, newValue)
+                    }
+                }
             }
+            return value
         }
     }
-    return value
 }

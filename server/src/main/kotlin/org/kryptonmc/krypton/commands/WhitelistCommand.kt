@@ -87,7 +87,7 @@ object WhitelistCommand : InternalCommand {
                         for (target in targets) {
                             val whitelist = server.playerManager.whitelist
                             if (!whitelist.contains(target)) {
-                                whitelist += WhitelistEntry(target)
+                                whitelist.add(WhitelistEntry(target))
                                 sender.sendMessage(translatable("commands.whitelist.add.success", text(target.name)))
                             } else {
                                 sender.sendMessage(translatable("commands.whitelist.add.failed"))
@@ -105,7 +105,7 @@ object WhitelistCommand : InternalCommand {
                         for (target in targets) {
                             val whitelist = server.playerManager.whitelist
                             if (whitelist.contains(target)) {
-                                whitelist -= target
+                                whitelist.remove(target)
                                 sender.sendMessage(translatable("commands.whitelist.remove.success", text(target.name)))
                             } else {
                                 sender.sendMessage(translatable("commands.whitelist.remove.failed"))
@@ -125,13 +125,15 @@ object WhitelistCommand : InternalCommand {
             )
             .then(literal<Sender>("remove-ip")
                 .then(argument<Sender, String>("ip", string())
-                    .suggests { context, builder -> builder.suggest((context.source.server as KryptonServer).playerManager.whitlistedIps.map { it.key }) }
+                    .suggests { context, builder ->
+                        builder.suggest((context.source.server as KryptonServer).playerManager.whitlistedIps.map { it.key })
+                    }
                     .executes {
                         val sender = it.source
                         val server = sender.server as? KryptonServer ?: return@executes 0
                         val ip = it.argument<String>("ip")
                         if (server.playerManager.whitlistedIps.contains(ip)) {
-                            server.playerManager.whitlistedIps -= ip
+                            server.playerManager.whitlistedIps.remove(ip)
                             sender.sendMessage(translatable("commands.whitelist.remove.success", text(ip)))
                         } else {
                             sender.sendMessage(translatable("commands.whitelist.remove.failed"))
@@ -148,7 +150,7 @@ object WhitelistCommand : InternalCommand {
                 sender.sendMessage(translatable("commands.whitelist.add.failed"))
             } else {
                 val entry = WhitelistIpEntry(target)
-                server.playerManager.whitlistedIps += entry
+                server.playerManager.whitlistedIps.add(entry)
                 sender.sendMessage(translatable("commands.whitelist.add.success", text(target)))
             }
         } else if (server.player(target) != null) {
@@ -157,7 +159,7 @@ object WhitelistCommand : InternalCommand {
                 sender.sendMessage(translatable("commands.whitelist.add.failed"))
             } else {
                 val entry = WhitelistIpEntry(address)
-                server.playerManager.whitlistedIps += entry
+                server.playerManager.whitlistedIps.add(entry)
                 sender.sendMessage(translatable("commands.whitelist.add.success", text(target)))
             }
         } else sender.sendMessage(translatable("commands.banip.invalid"))

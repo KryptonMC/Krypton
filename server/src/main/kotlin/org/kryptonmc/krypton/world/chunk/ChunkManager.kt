@@ -24,7 +24,7 @@ import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.datafix.DATA_FIXER
+import org.kryptonmc.krypton.util.datafix.DataFixers
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.Heightmap
@@ -90,7 +90,7 @@ class ChunkManager(private val world: KryptonWorld) {
         val position = ChunkPosition(x, z)
         val nbt = regionFileManager.read(position)
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
-        val data = (DATA_FIXER.update(References.CHUNK, Dynamic(NBTOps, nbt), version, KryptonPlatform.worldVersion).value as CompoundTag).getCompound("Level")
+        val data = (DataFixers.get().update(References.CHUNK, Dynamic(NBTOps, nbt), version, KryptonPlatform.worldVersion).value as CompoundTag).getCompound("Level")
         val heightmaps = data.getCompound("Heightmaps")
 
         val sectionList = data.getList("Sections", CompoundTag.ID)

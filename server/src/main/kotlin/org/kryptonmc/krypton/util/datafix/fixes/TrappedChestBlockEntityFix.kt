@@ -99,5 +99,7 @@ class TrappedChestBlockEntityFix(outputSchema: Schema, changesType: Boolean) : S
     companion object {
 
         private const val SIZE = 4096
+
+        private fun indexOf(x: Int, y: Int, z: Int) = y shl 8 or (z shl 4) or x
     }
 }

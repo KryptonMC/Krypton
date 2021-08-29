@@ -36,19 +36,21 @@ class RedstoneWireConnectionsFix(outputSchema: Schema) : DataFix(outputSchema, f
             val west = properties["west"].asString("none")
             val north = properties["north"].asString("none")
             val south = properties["south"].asString("none")
-            val isEastOrWest = east.isConnected || west.isConnected
-            val isNorthOrSouth = north.isConnected || south.isConnected
-            val newEast = if (!east.isConnected && !isNorthOrSouth) "side" else east
-            val newWest = if (!west.isConnected && !isNorthOrSouth) "side" else west
-            val newNorth = if (!north.isConnected && !isEastOrWest) "side" else north
-            val newSouth = if (!south.isConnected && !isEastOrWest) "side" else south
+            val isEastOrWest = east.isConnected() || west.isConnected()
+            val isNorthOrSouth = north.isConnected() || south.isConnected()
+            val newEast = if (!east.isConnected() && !isNorthOrSouth) "side" else east
+            val newWest = if (!west.isConnected() && !isNorthOrSouth) "side" else west
+            val newNorth = if (!north.isConnected() && !isEastOrWest) "side" else north
+            val newSouth = if (!south.isConnected() && !isEastOrWest) "side" else south
             properties.update("east") { it.createString(newEast) }
                 .update("west") { it.createString(newWest) }
                 .update("north") { it.createString(newNorth) }
                 .update("south") { it.createString(newSouth) }
         }
     }
-}
 
-private val String.isConnected: Boolean
-    get() = this != "none"
+    companion object {
+
+        private fun String.isConnected() = this != "none"
+    }
+}

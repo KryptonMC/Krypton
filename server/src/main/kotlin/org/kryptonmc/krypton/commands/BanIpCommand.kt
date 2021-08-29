@@ -63,7 +63,7 @@ object BanIpCommand : InternalCommand {
             // Check player is not already banned
             if (server.playerManager.bannedIps.contains(target)) throw ALREADY_BANNED.create()
             val entry = BannedIpEntry(target, reason = reason)
-            server.playerManager.bannedIps += entry
+            server.playerManager.bannedIps.add(entry)
 
             // Send success
             sender.sendMessage(translatable("commands.banip.success", text(target), text(reason)))
@@ -74,7 +74,7 @@ object BanIpCommand : InternalCommand {
 
             // Check player is not already banned
             if (server.playerManager.bannedIps.contains(entry.key)) throw ALREADY_BANNED.create()
-            server.playerManager.bannedIps += entry
+            server.playerManager.bannedIps.add(entry)
 
             // Construct banned message and disconnect target
             val text = translatable("multiplayer.disconnect.banned_ip.reason", text(entry.reason))

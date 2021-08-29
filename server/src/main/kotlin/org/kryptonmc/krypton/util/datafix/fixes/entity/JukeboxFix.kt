@@ -23,8 +23,8 @@ import com.mojang.datafixers.DSL.remainderFinder
 import com.mojang.datafixers.Typed
 import com.mojang.datafixers.schemas.Schema
 import org.kryptonmc.krypton.util.datafix.References
-import org.kryptonmc.krypton.util.datafix.fixes.item.toName
-import org.kryptonmc.krypton.util.datafix.fixes.item.updateItem
+import org.kryptonmc.krypton.util.datafix.fixes.item.ItemFlatteningFix.Companion.updateItem
+import org.kryptonmc.krypton.util.datafix.fixes.item.ItemIdFix.Companion.toName
 
 class JukeboxFix(outputSchema: Schema, changesType: Boolean) : NamedEntityFix(outputSchema, changesType, "BlockEntityJukeboxFix", References.BLOCK_ENTITY, "minecraft:jukebox") {
 

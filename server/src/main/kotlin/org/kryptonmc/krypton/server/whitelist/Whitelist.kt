@@ -20,14 +20,13 @@ package org.kryptonmc.krypton.server.whitelist
 
 import com.google.gson.stream.JsonReader
 import org.kryptonmc.krypton.auth.KryptonGameProfile
-import org.kryptonmc.krypton.server.ServerConfigEntry
 import org.kryptonmc.krypton.server.ServerConfigList
 import java.nio.file.Path
 import java.util.UUID
 
 class Whitelist(path: Path) : ServerConfigList<KryptonGameProfile, WhitelistEntry>(path) {
 
-    override fun read(reader: JsonReader): ServerConfigEntry<KryptonGameProfile>? {
+    override fun read(reader: JsonReader): WhitelistEntry? {
         reader.beginObject()
 
         var name: String? = null

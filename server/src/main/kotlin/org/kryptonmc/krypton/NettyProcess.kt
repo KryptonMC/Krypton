@@ -41,12 +41,12 @@ import org.kryptonmc.krypton.network.netty.PacketDecoder
 import org.kryptonmc.krypton.network.netty.PacketEncoder
 import org.kryptonmc.krypton.network.netty.SizeDecoder
 import org.kryptonmc.krypton.network.netty.SizeEncoder
-import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.threadFactory
 import java.io.IOException
 
 /**
- * The base Netty connection handler initialiser.
+ * The base Netty connection handler initializer.
  */
 class NettyProcess(private val server: KryptonServer) {
 
@@ -93,9 +93,9 @@ class NettyProcess(private val server: KryptonServer) {
 
     // Determines the best loop group to use based on what is available on the current operating system
     private fun bestLoopGroup() = when {
-        Epoll.isAvailable() -> EpollEventLoopGroup(0, NamedThreadFactory("Netty Epoll Worker #%d"))
-        KQueue.isAvailable() -> KQueueEventLoopGroup(0, NamedThreadFactory("Netty KQueue Worker #%d"))
-        else -> NioEventLoopGroup(0, NamedThreadFactory("Netty NIO Worker #%d"))
+        Epoll.isAvailable() -> EpollEventLoopGroup(0, threadFactory("Netty Epoll Worker #%d"))
+        KQueue.isAvailable() -> KQueueEventLoopGroup(0, threadFactory("Netty KQueue Worker #%d"))
+        else -> NioEventLoopGroup(0, threadFactory("Netty NIO Worker #%d"))
     }
 
     // Determines the best socket channel to use based on what is available on the current operating system

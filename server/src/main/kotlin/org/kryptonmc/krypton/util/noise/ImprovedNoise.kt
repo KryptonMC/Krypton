@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.util.noise
 
 import org.kryptonmc.api.util.floor
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.fade
-import org.kryptonmc.krypton.util.triLerp
 import org.kryptonmc.krypton.util.random.RandomSource
 
 class ImprovedNoise(random: RandomSource) {
@@ -72,7 +72,7 @@ class ImprovedNoise(random: RandomSource) {
         val fadeX = relX.fade()
         val fadeY = fadeRelX.fade()
         val fadeZ = relZ.fade()
-        return triLerp(fadeX, fadeY, fadeZ, d, e, f, g, h, i, j, k)
+        return Maths.triLerp(fadeX, fadeY, fadeZ, d, e, f, g, h, i, j, k)
     }
 
     private fun permute(hash: Int) = permutations[hash and 255].toInt() and 255

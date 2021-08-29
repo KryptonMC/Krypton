@@ -93,15 +93,18 @@ class PerlinNoise private constructor(
     }
 
     override fun getValue(x: Double, y: Double, yScale: Double, yMax: Double) = getValue(x, y, 0.0, yScale, yMax, false)
-}
 
-private fun IntSortedSet.makeAmplitudes(): Pair<Int, DoubleList> {
-    require(isNotEmpty()) { "No octaves provided! Octaves must be provided for the noise generator!" }
-    val invFirst = -firstInt()
-    val last = lastInt()
-    val total = invFirst + last + 1
-    require(total >= 1) { "Total number of octaves must be greater than or equal to 1!" }
-    val amplitudes = DoubleArrayList(DoubleArray(total))
-    iterator().forEachRemaining(IntConsumer { amplitudes.set(it + invFirst, 1.0) })
-    return Pair(-invFirst, amplitudes)
+    companion object {
+
+        private fun IntSortedSet.makeAmplitudes(): Pair<Int, DoubleList> {
+            require(isNotEmpty()) { "No octaves provided! Octaves must be provided for the noise generator!" }
+            val invFirst = -firstInt()
+            val last = lastInt()
+            val total = invFirst + last + 1
+            require(total >= 1) { "Total number of octaves must be greater than or equal to 1!" }
+            val amplitudes = DoubleArrayList(DoubleArray(total))
+            iterator().forEachRemaining(IntConsumer { amplitudes.set(it + invFirst, 1.0) })
+            return Pair(-invFirst, amplitudes)
+        }
+    }
 }

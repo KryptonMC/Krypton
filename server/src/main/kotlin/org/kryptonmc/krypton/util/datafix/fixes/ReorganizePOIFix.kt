@@ -35,16 +35,19 @@ class ReorganizePOIFix(outputSchema: Schema, changesType: Boolean) : DataFix(out
         check(type == inputSchema.getType(References.POI_CHUNK)) { "POI type is not what was expected!" }
         return fixTypeEverywhere("POI reorganization", type) { Function { pair -> pair.mapSecond { it.cap() } } }
     }
-}
 
-private fun <T> Dynamic<T>.cap(): Dynamic<T> {
-    var temp = this
-    val map = mutableMapOf<Dynamic<T>, Dynamic<T>>()
-    for (i in 0..15) {
-        val dynamic = get(i.toString()).result().getIfPresent() ?: continue
-        val records = temp.createMap(mapOf(temp.createString("Records") to dynamic))
-        map[temp.createInt(i)] = records
-        temp = temp.remove(i.toString())
+    companion object {
+
+        private fun <T> Dynamic<T>.cap(): Dynamic<T> {
+            var temp = this
+            val map = mutableMapOf<Dynamic<T>, Dynamic<T>>()
+            for (i in 0..15) {
+                val dynamic = get(i.toString()).result().getIfPresent() ?: continue
+                val records = temp.createMap(mapOf(temp.createString("Records") to dynamic))
+                map[temp.createInt(i)] = records
+                temp = temp.remove(i.toString())
+            }
+            return temp.set("Sections", temp.createMap(map))
+        }
     }
-    return temp.set("Sections", temp.createMap(map))
 }

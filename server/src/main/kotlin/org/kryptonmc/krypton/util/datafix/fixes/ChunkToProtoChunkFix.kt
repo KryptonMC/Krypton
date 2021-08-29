@@ -77,6 +77,9 @@ class ChunkToProtoChunkFix(outputSchema: Schema, changesType: Boolean) : DataFix
             writeAndRead("Structure biome inject", inputSchema.getType(References.STRUCTURE_FEATURE), outputSchema.getType(References.STRUCTURE_FEATURE))
         )
     }
-}
 
-private fun packOffsetCoordinates(x: Int, y: Int, z: Int) = (x and 15 or (y and 15 shl 4) or (z and 15 shl 8)).toShort()
+    companion object {
+
+        private fun packOffsetCoordinates(x: Int, y: Int, z: Int) = (x and 15 or (y and 15 shl 4) or (z and 15 shl 8)).toShort()
+    }
+}

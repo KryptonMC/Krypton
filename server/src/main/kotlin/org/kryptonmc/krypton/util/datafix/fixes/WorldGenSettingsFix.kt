@@ -77,6 +77,48 @@ class WorldGenSettingsFix(outputSchema: Schema) : DataFix(outputSchema, true) {
             override fun get(key: String) = getValue(key)
         }
 
+        fun <T> Dynamic<T>.vanillaLevels(seed: Long, generator: Dynamic<T>, isCaves: Boolean): T = with(ops) {
+            createMap(mapOf(
+                createString("minecraft:overworld") to createMap(mapOf(
+                    createString("type") to createString("minecraft:overworld${if (isCaves) "_caves" else ""}"),
+                    createString("generator") to generator.value
+                )),
+                createString("minecraft:the_nether") to createMap(mapOf(
+                    createString("type") to createString("minecraft:the_nether"),
+                    createString("generator") to with(this@vanillaLevels) { noise(seed, createString("minecraft:nether"), createMap(mapOf(
+                        createString("type") to createString("multi_noise"),
+                        createString("seed") to createLong(seed),
+                        createString("preset") to createString("minecraft:nether")
+                    ))) }.value
+                )),
+                createString("minecraft:the_end") to createMap(mapOf(
+                    createString("type") to createString("minecraft:the_end"),
+                    createString("generator") to with(this@vanillaLevels) { noise(seed, createString("minecraft:the_end"), createMap(mapOf(
+                        createString("type") to createString("minecraft:the_end"),
+                        createString("seed") to createLong(seed)
+                    ))) }.value
+                )
+                )))
+        }
+
+        fun <T> Dynamic<T>.defaultOverworld(seed: Long): Dynamic<T> =
+            noise(seed, createString("minecraft:overworld"), vanillaBiomeSource(seed, legacyInitLayer = false, largeBiomes = false))
+
+        private fun <T> DynamicLike<T>.noise(seed: Long, settings: Dynamic<T>, biomeSource: Dynamic<T>) = createMap(mapOf(
+            createString("type") to createString("minecraft:noise"),
+            createString("biome_source") to biomeSource,
+            createString("seed") to createLong(seed),
+            createString("settings") to settings
+        ))
+
+        private fun <T> Dynamic<T>.vanillaBiomeSource(seed: Long, legacyInitLayer: Boolean, largeBiomes: Boolean) = createMap(mapOf(
+            createString("type") to createString("minecraft:vanilla_layered"),
+            createString("seed") to createLong(seed),
+            createString("large_biomes") to createBoolean(largeBiomes)
+        ).let { if (legacyInitLayer) it.plus(createString("legacy_biome_int_layer") to createBoolean(true)) else it })
+
+        private fun <T : Map<K, V>, K, V> Optional<T>.forEachIfPresent(action: (K, V) -> Unit) = ifPresent { it.forEach(action) }
+
         @JvmStatic
         private fun <T> Dynamic<T>.fix(): Dynamic<T> {
             val randomSeed = get("RandomSeed").asLong(0L)
@@ -243,45 +285,3 @@ class WorldGenSettingsFix(outputSchema: Schema) : DataFix(outputSchema, true) {
         }
     }
 }
-
-fun <T> Dynamic<T>.vanillaLevels(seed: Long, generator: Dynamic<T>, isCaves: Boolean): T = with(ops) {
-    createMap(mapOf(
-        createString("minecraft:overworld") to createMap(mapOf(
-            createString("type") to createString("minecraft:overworld${if (isCaves) "_caves" else ""}"),
-            createString("generator") to generator.value
-        )),
-        createString("minecraft:the_nether") to createMap(mapOf(
-            createString("type") to createString("minecraft:the_nether"),
-            createString("generator") to with(this@vanillaLevels) { noise(seed, createString("minecraft:nether"), createMap(mapOf(
-                createString("type") to createString("multi_noise"),
-                createString("seed") to createLong(seed),
-                createString("preset") to createString("minecraft:nether")
-            ))) }.value
-        )),
-        createString("minecraft:the_end") to createMap(mapOf(
-            createString("type") to createString("minecraft:the_end"),
-            createString("generator") to with(this@vanillaLevels) { noise(seed, createString("minecraft:the_end"), createMap(mapOf(
-                createString("type") to createString("minecraft:the_end"),
-                createString("seed") to createLong(seed)
-            ))) }.value
-        )
-    )))
-}
-
-fun <T> Dynamic<T>.defaultOverworld(seed: Long): Dynamic<T> =
-    noise(seed, createString("minecraft:overworld"), vanillaBiomeSource(seed, legacyInitLayer = false, largeBiomes = false))
-
-private fun <T> DynamicLike<T>.noise(seed: Long, settings: Dynamic<T>, biomeSource: Dynamic<T>) = createMap(mapOf(
-    createString("type") to createString("minecraft:noise"),
-    createString("biome_source") to biomeSource,
-    createString("seed") to createLong(seed),
-    createString("settings") to settings
-))
-
-private fun <T> Dynamic<T>.vanillaBiomeSource(seed: Long, legacyInitLayer: Boolean, largeBiomes: Boolean) = createMap(mapOf(
-    createString("type") to createString("minecraft:vanilla_layered"),
-    createString("seed") to createLong(seed),
-    createString("large_biomes") to createBoolean(largeBiomes)
-).let { if (legacyInitLayer) it.plus(createString("legacy_biome_int_layer") to createBoolean(true)) else it })
-
-private fun <T : Map<K, V>, K, V> Optional<T>.forEachIfPresent(action: (K, V) -> Unit) = ifPresent { it.forEach(action) }

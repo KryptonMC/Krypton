@@ -201,7 +201,7 @@ class LeavesFix(outputSchema: Schema, changesType: Boolean) : SectionFix(outputS
             "minecraft:stripped_oak_log",
             "minecraft:stripped_spruce_log"
         )
+
+        private fun indexOf(x: Int, y: Int, z: Int) = y shl 8 or (z shl 4) or x
     }
 }
-
-fun indexOf(x: Int, y: Int, z: Int) = y shl 8 or (z shl 4) or x

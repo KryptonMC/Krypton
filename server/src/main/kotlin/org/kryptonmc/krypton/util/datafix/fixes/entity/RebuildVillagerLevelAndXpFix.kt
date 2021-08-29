@@ -43,7 +43,8 @@ class RebuildVillagerLevelAndXpFix(outputSchema: Schema, changesType: Boolean) :
                 var level = data["VillagerData"]["level"].asInt(0)
                 var temp = villager
                 if (level == 0 || level == 1) {
-                    val recipeCount = villager.getOptionalTyped(offersFinder).flatMap { it.getOptionalTyped(recipeFinder) }.map { it.getAllTyped(recipeFinder).size }.orElse(0)
+                    val recipeCount = villager.getOptionalTyped(offersFinder).flatMap { it.getOptionalTyped(recipeFinder) }
+                        .map { it.getAllTyped(recipeFinder).size }.orElse(0)
                     level = (recipeCount / TRADES_PER_LEVEL).clamp(1, 5)
                     if (level > 1) temp = temp.addLevel(level)
                 }
@@ -60,9 +61,13 @@ class RebuildVillagerLevelAndXpFix(outputSchema: Schema, changesType: Boolean) :
         private val LEVEL_XP_THRESHOLDS = intArrayOf(0, 10, 50, 100, 150)
 
         fun Int.minXpPerLevel() = LEVEL_XP_THRESHOLDS[(this - 1).clamp(0, LEVEL_XP_THRESHOLDS.lastIndex)]
+
+        private fun Typed<*>.addLevel(level: Int): Typed<*> = update(remainderFinder()) { villager ->
+            villager.update("VillagerData") { it.set("level", it.createInt(level)) }
+        }
+
+        private fun Typed<*>.addXpFromLevel(level: Int): Typed<*> = update(remainderFinder()) {
+            it.set("Xp", it.createInt(level.minXpPerLevel()))
+        }
     }
 }
-
-private fun Typed<*>.addLevel(level: Int): Typed<*> = update(remainderFinder()) { villager -> villager.update("VillagerData") { it.set("level", it.createInt(level)) } }
-
-private fun Typed<*>.addXpFromLevel(level: Int): Typed<*> = update(remainderFinder()) { it.set("Xp", it.createInt(level.minXpPerLevel())) }

@@ -52,7 +52,11 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
 
     private fun Dynamic<*>.fix(): Dynamic<*> {
         val level = get("Level").result()
-        return if (level.isPresent && level.get()["Sections"].asStreamOpt().result().isPresent) set("Level", UpgradeChunk(level.get()).write()) else this
+        return if (level.isPresent && level.get()["Sections"].asStreamOpt().result().isPresent) {
+            set("Level", UpgradeChunk(level.get()).write())
+        } else {
+            this
+        }
     }
 
     class DataLayer(private val data: ByteArray = ByteArray(SIZE)) {
@@ -111,7 +115,7 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
         fun getBlock(index: Int) = if (index in 0..SIZE) palette[buffer[index]] ?: AIR else AIR
 
         fun setBlock(index: Int, block: Dynamic<*>) {
-            if (seen.add(block)) listTag.add(if (block.name == "%%FILTER_ME%%") AIR else block)
+            if (seen.add(block)) listTag.add(if (block.name() == "%%FILTER_ME%%") AIR else block)
             buffer[index] = palette.idFor(block)
         }
 
@@ -119,8 +123,10 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
             if (!hasData) return value
             var temp = value
             val blocks = section["Blocks"].asByteBufferOpt().result().get()
-            val dataLayer = section["Data"].asByteBufferOpt().map { DataLayer(DataFixUtils.toArray(it)) }.result().orElseGet(ChunkPalettedStorageFix::DataLayer)
-            val addLayer = section["Add"].asByteBufferOpt().map { DataLayer(DataFixUtils.toArray(it)) }.result().orElseGet(ChunkPalettedStorageFix::DataLayer)
+            val dataLayer = section["Data"].asByteBufferOpt().map { DataLayer(DataFixUtils.toArray(it)) }.result()
+                .orElseGet(ChunkPalettedStorageFix::DataLayer)
+            val addLayer = section["Add"].asByteBufferOpt().map { DataLayer(DataFixUtils.toArray(it)) }.result()
+                .orElseGet(ChunkPalettedStorageFix::DataLayer)
             seen += AIR
             palette.idFor(AIR)
             listTag += AIR
@@ -170,7 +176,8 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
                     val y = it["y"].asInt(0)
                     val z = it["z"].asInt(0) - z and 15
                     val packed = y shl 8 or (z shl 4) or x
-                    if (blockEntities.put(packed, it) != null) LOGGER.error("Duplicate block entity found in chunk (${this.x}, ${this.z}) at position ($x, $y, $z)")
+                    if (blockEntities.put(packed, it) != null) LOGGER.error("Duplicate block entity found in chunk" +
+                            "(${this.x}, ${this.z}) at position ($x, $y, $z)")
                 }
             }
             val isConvertedFromAlpha = level["convertedFromAlphaFormat"].asBoolean(false)
@@ -188,21 +195,22 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
                         2 -> entry.value.forEach entries@{
                             val temp = it or var3
                             val block = getBlock(temp)
-                            if (block.name != "minecraft:grass_block") return@entries
-                            val name = getBlock(temp.relativeTo(Direction.UP)).name
+                            if (block.name() != "minecraft:grass_block") return@entries
+                            val name = getBlock(temp.relativeTo(Direction.UP)).name()
                             if (name == "minecraft:snow" || name == "minecraft:snow_layer") setBlock(temp, SNOWY_GRASS)
                         }
                         3 -> entry.value.forEach entries@{
                             val temp = it or var3
                             val block = getBlock(temp)
-                            if (block.name != "minecraft:podzol") return@entries
-                            val name = getBlock(temp.relativeTo(Direction.UP)).name
+                            if (block.name() != "minecraft:podzol") return@entries
+                            val name = getBlock(temp.relativeTo(Direction.UP)).name()
                             if (name == "minecraft:snow" || name == "minecraft:snow_layer") setBlock(temp, SNOWY_GRASS)
                         }
                         25 -> entry.value.forEach entries@{
                             val temp = it or var3
                             val blockEntity = blockEntities.remove(temp) ?: return@entries
-                            val data = blockEntity["powered"].asBoolean(false).toString() + blockEntity["note"].asInt(0).clamp(0, 24)
+                            val data = blockEntity["powered"].asBoolean(false).toString() +
+                                    blockEntity["note"].asInt(0).clamp(0, 24)
                             setBlock(temp, NOTE_BLOCK_REMAP.getOrDefault(data, NOTE_BLOCK_REMAP.getValue("false0")))
                         }
                         26 -> entry.value.forEach entries@ {
@@ -211,18 +219,19 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
                             val block = getBlock(temp)
                             val color = blockEntity["color"].asInt(0)
                             if (color == 14 || color !in 0..15) return@entries
-                            val data = block.property("facing") + block.property("occupied") + block.property("part") + color
+                            val data = block.property("facing") + block.property("occupied") +
+                                    block.property("part") + color
                             if (data in BED_BLOCK_REMAP) setBlock(temp, BED_BLOCK_REMAP.getValue(data))
                         }
                         64, 71, 193, 194, 195, 196, 197 -> entry.value.forEach entries@{ int ->
                             val temp = int or var3
                             val block = getBlock(temp)
-                            if (!block.name.endsWith("_door")) return@entries
+                            if (!block.name().endsWith("_door")) return@entries
                             if (block.property("half") != "lower") return@entries
                             val relative = temp.relativeTo(Direction.UP)
                             val topHalf = getBlock(relative)
-                            val name = block.name
-                            if (name != topHalf.name) return@entries
+                            val name = block.name()
+                            if (name != topHalf.name()) return@entries
                             val facing = block.property("facing")
                             val open = block.property("open")
                             val hinge = if (isConvertedFromAlpha) "left" else topHalf.property("hinge")
@@ -233,29 +242,35 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
                         86 -> entry.value.forEach entries@{
                             val temp = it or var3
                             val block = getBlock(temp)
-                            if (block.name != "minecraft:carved_pumpkin") return@entries
-                            val name = getBlock(temp.relativeTo(Direction.DOWN)).name
+                            if (block.name() != "minecraft:carved_pumpkin") return@entries
+                            val name = getBlock(temp.relativeTo(Direction.DOWN)).name()
                             if (name == "minecraft:grass_block" || name == "minecraft:dirt") setBlock(temp, PUMPKIN)
                         }
                         110 -> entry.value.forEach entries@{
                             val temp = it or var3
                             val block = getBlock(temp)
-                            if (block.name != "minecraft:mycelium") return@entries
-                            val name = getBlock(temp.relativeTo(Direction.UP)).name
+                            if (block.name() != "minecraft:mycelium") return@entries
+                            val name = getBlock(temp.relativeTo(Direction.UP)).name()
                             if (name == "minecraft:snow" || name == "minecraft:snow_layer") setBlock(temp, SNOWY_MYCELIUM)
                         }
-                        140 -> entry.value.forEach entries@{
-                            val temp = it or var3
+                        140 -> entry.value.forEach entries@{ int ->
+                            val temp = int or var3
                             val blockEntity = blockEntities.remove(temp) ?: return@entries
                             val data = blockEntity["Item"].asString("") + blockEntity["Data"].asInt(0)
-                            FLOWER_POT_REMAP.getOrDefault(data, FLOWER_POT_REMAP.getValue("minecraft:air0"))?.let { setBlock(temp, it) }
+                            FLOWER_POT_REMAP.getOrDefault(data, FLOWER_POT_REMAP.getValue("minecraft:air0"))?.let {
+                                setBlock(temp, it)
+                            }
                         }
                         144 -> entry.value.forEach entries@{
                             val temp = it or var3
                             val blockEntity = blockEntities[temp] ?: return@entries
                             val skullType = blockEntity["SkullType"].asInt(0).toString()
                             val facing = getBlock(temp).property("facing")
-                            val data = if (facing != "up" && facing != "down") skullType + facing else skullType + blockEntity["Rot"].asInt(0)
+                            val data = if (facing != "up" && facing != "down") {
+                                skullType + facing
+                            } else {
+                                skullType + blockEntity["Rot"].asInt(0)
+                            }
                             blockEntity.remove("SkullType")
                             blockEntity.remove("facing")
                             blockEntity.remove("Rot")
@@ -266,7 +281,7 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
                             val block = getBlock(temp)
                             if (block.property("half") != "upper") return@entries
                             val relative = getBlock(temp.relativeTo(Direction.DOWN))
-                            when (relative.name) {
+                            when (relative.name()) {
                                 "minecraft:sunflower" -> setBlock(temp, UPPER_SUNFLOWER)
                                 "minecraft:lilac" -> setBlock(temp, UPPER_LILAC)
                                 "minecraft:tall_grass" -> setBlock(temp, UPPER_TALL_GRASS)
@@ -291,7 +306,11 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
 
 
 
-        private fun getBlock(index: Int) = if (index in 0..65535) sections.getOrNull(index shr 12)?.getBlock(index and 4095) ?: AIR else AIR
+        private fun getBlock(index: Int) = if (index in 0..65535) {
+            sections.getOrNull(index shr 12)?.getBlock(index and 4095) ?: AIR
+        } else {
+            AIR
+        }
 
         private fun setBlock(index: Int, block: Dynamic<*>) {
             if (index !in 0..65535) return
@@ -300,7 +319,11 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
 
         fun write(): Dynamic<*> {
             var temp = level
-            temp = if (blockEntities.isEmpty()) temp.remove("TileEntities") else temp.set("TileEntities", temp.createList(blockEntities.values.stream()))
+            temp = if (blockEntities.isEmpty()) {
+                temp.remove("TileEntities")
+            } else {
+                temp.set("TileEntities", temp.createList(blockEntities.values.stream()))
+            }
 
             var sectionMap = temp.emptyMap()
             val sectionStream = sections.asSequence().filterNotNull().map {
@@ -500,118 +523,181 @@ class ChunkPalettedStorageFix(outputSchema: Schema, changesType: Boolean) : Data
                 if (amount in 0..15) this and -241 or (amount shl 4) else -1
             }
         }
+
+        private fun MutableMap<String, Dynamic<*>>.mapSkull(index: Int, entityName: String, skullName: String) {
+            put("${index}north", "{Name:'minecraft:${entityName}_wall_${skullName}',Properties:{facing:'north'}}".parse())
+            put("${index}east", "{Name:'minecraft:${entityName}_wall_${skullName}',Properties:{facing:'east'}}".parse())
+            put("${index}south", "{Name:'minecraft:${entityName}_wall_${skullName}',Properties:{facing:'south'}}".parse())
+            put("${index}west", "{Name:'minecraft:${entityName}_wall_${skullName}',Properties:{facing:'west'}}".parse())
+            for (i in 0 until 16) {
+                put("$index$i", "{Name:'minecraft:${entityName}_${skullName}',Properties:{rotation:'$i'}}".parse())
+            }
+        }
+
+        private fun MutableMap<String, Dynamic<*>?>.mapDoor(doorName: String, index: Int) {
+            put("minecraft:${doorName}eastlowerleftfalsefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'east',half:'lower',hinge:'left',open:'false',powered:'false'}}").parse())
+            put("minecraft:${doorName}eastlowerleftfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'east',half:'lower',hinge:'left',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}eastlowerlefttruefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'east',half:'lower',hinge:'left',open:'true',powered:'false'}}").parse())
+            put("minecraft:${doorName}eastlowerlefttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'east',half:'lower',hinge:'left',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}eastlowerrightfalsefalse", index.tag())
+            put("minecraft:${doorName}eastlowerrightfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'east',half:'lower',hinge:'right',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}eastlowerrighttruefalse", 4.tag())
+            put("minecraft:${doorName}eastlowerrighttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'east',half:'lower',hinge:'right',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}eastupperleftfalsefalse", 8.tag())
+            put("minecraft:${doorName}eastupperleftfalsetrue", 10.tag())
+            put("minecraft:${doorName}eastupperlefttruefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'east',half:'upper',hinge:'left',open:'true',powered:'false'}}").parse())
+            put("minecraft:${doorName}eastupperlefttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'east',half:'upper',hinge:'left',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}eastupperrightfalsefalse", 9.tag())
+            put("minecraft:${doorName}eastupperrightfalsetrue", 11.tag())
+            put("minecraft:${doorName}eastupperrighttruefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'east',half:'upper',hinge:'right',open:'true',powered:'false'}}").parse())
+            put("minecraft:${doorName}eastupperrighttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'east',half:'upper',hinge:'right',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}northlowerleftfalsefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'lower',hinge:'left',open:'false',powered:'false'}}").parse())
+            put("minecraft:${doorName}northlowerleftfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'lower',hinge:'left',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}northlowerlefttruefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'lower',hinge:'left',open:'true',powered:'false'}}").parse())
+            put("minecraft:${doorName}northlowerlefttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'lower',hinge:'left',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}northlowerrightfalsefalse", 3.tag())
+            put("minecraft:${doorName}northlowerrightfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'lower',hinge:'right',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}northlowerrighttruefalse", 7.tag())
+            put("minecraft:${doorName}northlowerrighttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'lower',hinge:'right',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}northupperleftfalsefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'upper',hinge:'left',open:'false',powered:'false'}}").parse())
+            put("minecraft:${doorName}northupperleftfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'upper',hinge:'left',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}northupperlefttruefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'upper',hinge:'left',open:'true',powered:'false'}}").parse())
+            put("minecraft:${doorName}northupperlefttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'upper',hinge:'left',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}northupperrightfalsefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'upper',hinge:'right',open:'false',powered:'false'}}").parse())
+            put("minecraft:${doorName}northupperrightfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'upper',hinge:'right',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}northupperrighttruefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'upper',hinge:'right',open:'true',powered:'false'}}").parse())
+            put("minecraft:${doorName}northupperrighttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'north',half:'upper',hinge:'right',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}southlowerleftfalsefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'lower',hinge:'left',open:'false',powered:'false'}}").parse())
+            put("minecraft:${doorName}southlowerleftfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'lower',hinge:'left',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}southlowerlefttruefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'lower',hinge:'left',open:'true',powered:'false'}}").parse())
+            put("minecraft:${doorName}southlowerlefttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'lower',hinge:'left',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}southlowerrightfalsefalse", 1.tag())
+            put("minecraft:${doorName}southlowerrightfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'lower',hinge:'right',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}southlowerrighttruefalse", 5.tag())
+            put("minecraft:${doorName}southlowerrighttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'lower',hinge:'right',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}southupperleftfalsefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'upper',hinge:'left',open:'false',powered:'false'}}").parse())
+            put("minecraft:${doorName}southupperleftfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'upper',hinge:'left',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}southupperlefttruefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'upper',hinge:'left',open:'true',powered:'false'}}").parse())
+            put("minecraft:${doorName}southupperlefttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'upper',hinge:'left',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}southupperrightfalsefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'upper',hinge:'right',open:'false',powered:'false'}}").parse())
+            put("minecraft:${doorName}southupperrightfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'upper',hinge:'right',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}southupperrighttruefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'upper',hinge:'right',open:'true',powered:'false'}}").parse())
+            put("minecraft:${doorName}southupperrighttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'south',half:'upper',hinge:'right',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}westlowerleftfalsefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'lower',hinge:'left',open:'false',powered:'false'}}").parse())
+            put("minecraft:${doorName}westlowerleftfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'lower',hinge:'left',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}westlowerlefttruefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'lower',hinge:'left',open:'true',powered:'false'}}").parse())
+            put("minecraft:${doorName}westlowerlefttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'lower',hinge:'left',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}westlowerrightfalsefalse", 2.tag())
+            put("minecraft:${doorName}westlowerrightfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'lower',hinge:'right',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}westlowerrighttruefalse", 6.tag())
+            put("minecraft:${doorName}westlowerrighttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'lower',hinge:'right',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}westupperleftfalsefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'upper',hinge:'left',open:'false',powered:'false'}}").parse())
+            put("minecraft:${doorName}westupperleftfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'upper',hinge:'left',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}westupperlefttruefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'upper',hinge:'left',open:'true',powered:'false'}}").parse())
+            put("minecraft:${doorName}westupperlefttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'upper',hinge:'left',open:'true',powered:'true'}}").parse())
+            put("minecraft:${doorName}westupperrightfalsefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'upper',hinge:'right',open:'false',powered:'false'}}").parse())
+            put("minecraft:${doorName}westupperrightfalsetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'upper',hinge:'right',open:'false',powered:'true'}}").parse())
+            put("minecraft:${doorName}westupperrighttruefalse", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'upper',hinge:'right',open:'true',powered:'false'}}").parse())
+            put("minecraft:${doorName}westupperrighttruetrue", ("{Name:'minecraft:${doorName}'," +
+                    "Properties:{facing:'west',half:'upper',hinge:'right',open:'true',powered:'true'}}").parse())
+        }
+
+        private fun MutableMap<String, Dynamic<*>>.addBeds(id: Int, colorName: String) {
+            put("southfalsefoot$id", ("{Name:'minecraft:${colorName}_bed'," +
+                    "Properties:{facing:'south',occupied:'false',part:'foot'}}").parse())
+            put("westfalsefoot$id", ("{Name:'minecraft:${colorName}_bed'," +
+                    "Properties:{facing:'west',occupied:'false',part:'foot'}}").parse())
+            put("northfalsefoot$id", ("{Name:'minecraft:${colorName}_bed'," +
+                    "Properties:{facing:'north',occupied:'false',part:'foot'}}").parse())
+            put("eastfalsefoot$id", ("{Name:'minecraft:${colorName}_bed'," +
+                    "Properties:{facing:'east',occupied:'false',part:'foot'}}").parse())
+            put("southfalsehead$id", ("{Name:'minecraft:${colorName}_bed'," +
+                    "Properties:{facing:'south',occupied:'false',part:'head'}}").parse())
+            put("westfalsehead$id", ("{Name:'minecraft:${colorName}_bed'," +
+                    "Properties:{facing:'west',occupied:'false',part:'head'}}").parse())
+            put("northfalsehead$id", ("{Name:'minecraft:${colorName}_bed'," +
+                    "Properties:{facing:'north',occupied:'false',part:'head'}}").parse())
+            put("eastfalsehead$id", ("{Name:'minecraft:${colorName}_bed'," +
+                    "Properties:{facing:'east',occupied:'false',part:'head'}}").parse())
+            put("southtruehead$id", ("{Name:'minecraft:${colorName}_bed'," +
+                    "Properties:{facing:'south',occupied:'true',part:'head'}}").parse())
+            put("westtruehead$id", ("{Name:'minecraft:${colorName}_bed'," +
+                    "Properties:{facing:'west',occupied:'true',part:'head'}}").parse())
+            put("northtruehead$id", ("{Name:'minecraft:${colorName}_bed'," +
+                    "Properties:{facing:'north',occupied:'true',part:'head'}}").parse())
+            put("easttruehead$id", ("{Name:'minecraft:${colorName}_bed'," +
+                    "Properties:{facing:'east',occupied:'true',part:'head'}}").parse())
+        }
+
+        private fun MutableMap<String, Dynamic<*>>.addBanners(id: Int, patternName: String) {
+            for (i in 0 until 16) {
+                put("${i}_$id", "{Name:'minecraft:${patternName}_banner',Properties:{rotation:'$i'}}".parse())
+            }
+            put("north_$id", "{Name:'minecraft:${patternName}_wall_banner',Properties:{facing:'north'}}".parse())
+            put("south_$id", "{Name:'minecraft:${patternName}_wall_banner',Properties:{facing:'south'}}".parse())
+            put("west_$id", "{Name:'minecraft:${patternName}_wall_banner',Properties:{facing:'west'}}".parse())
+            put("east_$id", "{Name:'minecraft:${patternName}_wall_banner',Properties:{facing:'east'}}".parse())
+        }
+
+        private fun Dynamic<*>.name(): String = get("Name").asString("")
+
+        private fun Dynamic<*>.property(name: String): String = get("Properties")[name].asString("")
+
+        private fun IntIdentityHashBiMap<Dynamic<*>>.idFor(data: Dynamic<*>): Int {
+            var id = idOf(data)
+            if (id == -1) id = add(data)
+            return id
+        }
     }
-}
-
-private fun MutableMap<String, Dynamic<*>>.mapSkull(index: Int, entityName: String, skullName: String) {
-    put("${index}north", "{Name:'minecraft:${entityName}_wall_${skullName}',Properties:{facing:'north'}}".parse())
-    put("${index}east", "{Name:'minecraft:${entityName}_wall_${skullName}',Properties:{facing:'east'}}".parse())
-    put("${index}south", "{Name:'minecraft:${entityName}_wall_${skullName}',Properties:{facing:'south'}}".parse())
-    put("${index}west", "{Name:'minecraft:${entityName}_wall_${skullName}',Properties:{facing:'west'}}".parse())
-    for (i in 0 until 16) {
-        put("$index$i", "{Name:'minecraft:${entityName}_${skullName}',Properties:{rotation:'$i'}}".parse())
-    }
-}
-
-private fun MutableMap<String, Dynamic<*>?>.mapDoor(doorName: String, index: Int) {
-    put("minecraft:${doorName}eastlowerleftfalsefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'east',half:'lower',hinge:'left',open:'false',powered:'false'}}".parse())
-    put("minecraft:${doorName}eastlowerleftfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'east',half:'lower',hinge:'left',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}eastlowerlefttruefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'east',half:'lower',hinge:'left',open:'true',powered:'false'}}".parse())
-    put("minecraft:${doorName}eastlowerlefttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'east',half:'lower',hinge:'left',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}eastlowerrightfalsefalse", index.tag())
-    put("minecraft:${doorName}eastlowerrightfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'east',half:'lower',hinge:'right',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}eastlowerrighttruefalse", 4.tag())
-    put("minecraft:${doorName}eastlowerrighttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'east',half:'lower',hinge:'right',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}eastupperleftfalsefalse", 8.tag())
-    put("minecraft:${doorName}eastupperleftfalsetrue", 10.tag())
-    put("minecraft:${doorName}eastupperlefttruefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'east',half:'upper',hinge:'left',open:'true',powered:'false'}}".parse())
-    put("minecraft:${doorName}eastupperlefttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'east',half:'upper',hinge:'left',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}eastupperrightfalsefalse", 9.tag())
-    put("minecraft:${doorName}eastupperrightfalsetrue", 11.tag())
-    put("minecraft:${doorName}eastupperrighttruefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'east',half:'upper',hinge:'right',open:'true',powered:'false'}}".parse())
-    put("minecraft:${doorName}eastupperrighttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'east',half:'upper',hinge:'right',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}northlowerleftfalsefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'lower',hinge:'left',open:'false',powered:'false'}}".parse())
-    put("minecraft:${doorName}northlowerleftfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'lower',hinge:'left',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}northlowerlefttruefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'lower',hinge:'left',open:'true',powered:'false'}}".parse())
-    put("minecraft:${doorName}northlowerlefttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'lower',hinge:'left',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}northlowerrightfalsefalse", 3.tag())
-    put("minecraft:${doorName}northlowerrightfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'lower',hinge:'right',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}northlowerrighttruefalse", 7.tag())
-    put("minecraft:${doorName}northlowerrighttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'lower',hinge:'right',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}northupperleftfalsefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'upper',hinge:'left',open:'false',powered:'false'}}".parse())
-    put("minecraft:${doorName}northupperleftfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'upper',hinge:'left',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}northupperlefttruefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'upper',hinge:'left',open:'true',powered:'false'}}".parse())
-    put("minecraft:${doorName}northupperlefttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'upper',hinge:'left',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}northupperrightfalsefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'upper',hinge:'right',open:'false',powered:'false'}}".parse())
-    put("minecraft:${doorName}northupperrightfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'upper',hinge:'right',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}northupperrighttruefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'upper',hinge:'right',open:'true',powered:'false'}}".parse())
-    put("minecraft:${doorName}northupperrighttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'north',half:'upper',hinge:'right',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}southlowerleftfalsefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'lower',hinge:'left',open:'false',powered:'false'}}".parse())
-    put("minecraft:${doorName}southlowerleftfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'lower',hinge:'left',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}southlowerlefttruefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'lower',hinge:'left',open:'true',powered:'false'}}".parse())
-    put("minecraft:${doorName}southlowerlefttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'lower',hinge:'left',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}southlowerrightfalsefalse", 1.tag())
-    put("minecraft:${doorName}southlowerrightfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'lower',hinge:'right',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}southlowerrighttruefalse", 5.tag())
-    put("minecraft:${doorName}southlowerrighttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'lower',hinge:'right',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}southupperleftfalsefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'upper',hinge:'left',open:'false',powered:'false'}}".parse())
-    put("minecraft:${doorName}southupperleftfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'upper',hinge:'left',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}southupperlefttruefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'upper',hinge:'left',open:'true',powered:'false'}}".parse())
-    put("minecraft:${doorName}southupperlefttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'upper',hinge:'left',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}southupperrightfalsefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'upper',hinge:'right',open:'false',powered:'false'}}".parse())
-    put("minecraft:${doorName}southupperrightfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'upper',hinge:'right',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}southupperrighttruefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'upper',hinge:'right',open:'true',powered:'false'}}".parse())
-    put("minecraft:${doorName}southupperrighttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'south',half:'upper',hinge:'right',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}westlowerleftfalsefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'lower',hinge:'left',open:'false',powered:'false'}}".parse())
-    put("minecraft:${doorName}westlowerleftfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'lower',hinge:'left',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}westlowerlefttruefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'lower',hinge:'left',open:'true',powered:'false'}}".parse())
-    put("minecraft:${doorName}westlowerlefttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'lower',hinge:'left',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}westlowerrightfalsefalse", 2.tag())
-    put("minecraft:${doorName}westlowerrightfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'lower',hinge:'right',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}westlowerrighttruefalse", 6.tag())
-    put("minecraft:${doorName}westlowerrighttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'lower',hinge:'right',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}westupperleftfalsefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'upper',hinge:'left',open:'false',powered:'false'}}".parse())
-    put("minecraft:${doorName}westupperleftfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'upper',hinge:'left',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}westupperlefttruefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'upper',hinge:'left',open:'true',powered:'false'}}".parse())
-    put("minecraft:${doorName}westupperlefttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'upper',hinge:'left',open:'true',powered:'true'}}".parse())
-    put("minecraft:${doorName}westupperrightfalsefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'upper',hinge:'right',open:'false',powered:'false'}}".parse())
-    put("minecraft:${doorName}westupperrightfalsetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'upper',hinge:'right',open:'false',powered:'true'}}".parse())
-    put("minecraft:${doorName}westupperrighttruefalse", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'upper',hinge:'right',open:'true',powered:'false'}}".parse())
-    put("minecraft:${doorName}westupperrighttruetrue", "{Name:'minecraft:${doorName}',Properties:{facing:'west',half:'upper',hinge:'right',open:'true',powered:'true'}}".parse())
-}
-
-private fun MutableMap<String, Dynamic<*>>.addBeds(id: Int, colorName: String) {
-    put("southfalsefoot$id", "{Name:'minecraft:${colorName}_bed',Properties:{facing:'south',occupied:'false',part:'foot'}}".parse())
-    put("westfalsefoot$id", "{Name:'minecraft:${colorName}_bed',Properties:{facing:'west',occupied:'false',part:'foot'}}".parse())
-    put("northfalsefoot$id", "{Name:'minecraft:${colorName}_bed',Properties:{facing:'north',occupied:'false',part:'foot'}}".parse())
-    put("eastfalsefoot$id", "{Name:'minecraft:${colorName}_bed',Properties:{facing:'east',occupied:'false',part:'foot'}}".parse())
-    put("southfalsehead$id", "{Name:'minecraft:${colorName}_bed',Properties:{facing:'south',occupied:'false',part:'head'}}".parse())
-    put("westfalsehead$id", "{Name:'minecraft:${colorName}_bed',Properties:{facing:'west',occupied:'false',part:'head'}}".parse())
-    put("northfalsehead$id", "{Name:'minecraft:${colorName}_bed',Properties:{facing:'north',occupied:'false',part:'head'}}".parse())
-    put("eastfalsehead$id", "{Name:'minecraft:${colorName}_bed',Properties:{facing:'east',occupied:'false',part:'head'}}".parse())
-    put("southtruehead$id", "{Name:'minecraft:${colorName}_bed',Properties:{facing:'south',occupied:'true',part:'head'}}".parse())
-    put("westtruehead$id", "{Name:'minecraft:${colorName}_bed',Properties:{facing:'west',occupied:'true',part:'head'}}".parse())
-    put("northtruehead$id", "{Name:'minecraft:${colorName}_bed',Properties:{facing:'north',occupied:'true',part:'head'}}".parse())
-    put("easttruehead$id", "{Name:'minecraft:${colorName}_bed',Properties:{facing:'east',occupied:'true',part:'head'}}".parse())
-}
-
-private fun MutableMap<String, Dynamic<*>>.addBanners(id: Int, patternName: String) {
-    for (i in 0 until 16) {
-        put("${i}_$id", "{Name:'minecraft:${patternName}_banner',Properties:{rotation:'$i'}}".parse())
-    }
-    put("north_$id", "{Name:'minecraft:${patternName}_wall_banner',Properties:{facing:'north'}}".parse())
-    put("south_$id", "{Name:'minecraft:${patternName}_wall_banner',Properties:{facing:'south'}}".parse())
-    put("west_$id", "{Name:'minecraft:${patternName}_wall_banner',Properties:{facing:'west'}}".parse())
-    put("east_$id", "{Name:'minecraft:${patternName}_wall_banner',Properties:{facing:'east'}}".parse())
-}
-
-private val Dynamic<*>.name: String
-    get() = get("Name").asString("")
-
-fun Dynamic<*>.property(name: String): String = get("Properties")[name].asString("")
-
-fun IntIdentityHashBiMap<Dynamic<*>>.idFor(data: Dynamic<*>): Int {
-    var id = idOf(data)
-    if (id == -1) id = add(data)
-    return id
 }

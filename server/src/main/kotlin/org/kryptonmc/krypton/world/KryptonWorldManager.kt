@@ -31,9 +31,9 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.util.ChunkProgressListener
-import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
+import org.kryptonmc.krypton.util.threadFactory
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.DerivedWorldData
@@ -58,7 +58,7 @@ class KryptonWorldManager(
     val worldFolder: Path
 ) : WorldManager {
 
-    private val worldExecutor = Executors.newCachedThreadPool(NamedThreadFactory("World Handler %d"))
+    private val worldExecutor = Executors.newCachedThreadPool(threadFactory("World Handler %d"))
     private val customWorldFolder = worldFolder.resolve("dimensions")
     override val worlds = mutableMapOf<ResourceKey<World>, KryptonWorld>()
     override val default: KryptonWorld

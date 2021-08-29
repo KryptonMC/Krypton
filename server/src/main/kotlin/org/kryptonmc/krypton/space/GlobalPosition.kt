@@ -25,6 +25,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.util.Codecs
 import org.spongepowered.math.vector.Vector3i
 
+@JvmRecord
 data class GlobalPosition(
     val dimension: ResourceKey<World>,
     val position: Vector3i

@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.world.chunk.ticket
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.SortedArraySet
-import org.kryptonmc.krypton.util.chunkInSpiral
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.util.UUID
@@ -56,7 +56,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
     private fun <T> propagate(x: Int, z: Int, ticket: Ticket<T>, onLoad: () -> Unit) {
         var i = 0
         while (true) {
-            val pos = chunkInSpiral(i, x, z)
+            val pos = Maths.chunkInSpiral(i, x, z)
             val xo = pos.toInt()
             val zo = (pos shr 32).toInt()
             val calculatedLevel = calculateLevel(absDelta(xo - x, zo - z), ticket.level)
@@ -74,7 +74,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
     private fun propagateView(x: Int, z: Int, uuid: UUID, viewDistance: Int) {
         var i = 0
         while (true) {
-            val pos = chunkInSpiral(i, x, z)
+            val pos = Maths.chunkInSpiral(i, x, z)
             val xo = pos.toInt()
             val zo = (pos shr 32).toInt()
             val absDelta = absDelta(xo - x, zo - z)
@@ -89,7 +89,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
 
     private fun <T, K> reset(x: Int, z: Int, type: TicketType<T>, key: K, radius: Int, offset: Int = 0, shouldUnload: Boolean = true) {
         for (i in 0 until (radius * 2 + offset) * (radius * 2 + offset)) {
-            val pos = chunkInSpiral(i, x, z)
+            val pos = Maths.chunkInSpiral(i, x, z)
             val list = tickets[pos] ?: continue
             list.removeIf { it.type === type && it.key === key }
             if (list.isEmpty()) {

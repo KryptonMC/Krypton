@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 fun main(args: Array<String>) = KryptonCLI().main(args)
 
-class KryptonCLI : CliktCommand(
+private class KryptonCLI : CliktCommand(
     """
         All of the command-line options for configuring Krypton. Useful for use in scripts.
         Note: All options provided here will OVERRIDE those provided in the config!
@@ -85,10 +85,6 @@ class KryptonCLI : CliktCommand(
         .help("Folder where worlds are stored")
         .path(canBeFile = false, canBeSymlink = false, mustBeReadable = true, mustBeWritable = true)
         .default(Path.of("."))
-    private val userCacheFile by option("--usercache-file", "-ucf")
-        .help("The file where authenticated users have their details cached")
-        .path(canBeDir = false, canBeSymlink = false, mustBeReadable = true, mustBeWritable = true)
-        .default(Path.of("usercache.json"))
 
     override fun run() {
         if (version) {
@@ -118,7 +114,7 @@ class KryptonCLI : CliktCommand(
 
         // Setup registries and create world storage access
         val storageAccess = WorldDataStorage(worldFolder).createAccess(config.world.name)
-        val profileCache = KryptonProfileCache(userCacheFile)
+        val profileCache = KryptonProfileCache(Path.of("usercache.json"))
 
         val worldData = storageAccess.loadData(NBTOps, DataPackConfig.DEFAULT) ?: PrimaryWorldData(
             config.world.name,

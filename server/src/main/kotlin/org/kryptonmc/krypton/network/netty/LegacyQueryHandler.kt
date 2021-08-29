@@ -26,8 +26,6 @@ import io.netty.channel.ChannelInboundHandlerAdapter
 import io.netty.handler.codec.CorruptedFrameException
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.ServerStorage
-import org.kryptonmc.krypton.config.category.StatusCategory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readAvailableBytes
 import java.net.InetSocketAddress

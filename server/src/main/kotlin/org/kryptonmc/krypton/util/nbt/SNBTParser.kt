@@ -209,6 +209,7 @@ class SNBTParser(private val reader: StringReader) {
         private const val BYTE_ARRAY_START = 'B'
         private const val LONG_ARRAY_START = 'L'
         private const val INT_ARRAY_START = 'I'
+        private const val ELEMENT_SEPARATOR = ','
 
         private val DOUBLE_REGEX_NO_SUFFIX = "[-+]?(?:[0-9]+[.]|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?".toRegex(RegexOption.IGNORE_CASE)
         private val DOUBLE_REGEX = "[-+]?(?:[0-9]+[.]?|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?d".toRegex(RegexOption.IGNORE_CASE)
@@ -230,19 +231,15 @@ class SNBTParser(private val reader: StringReader) {
         private val ERROR_INVALID_ARRAY = DynamicCommandExceptionType {
             translatable("argument.nbt.array.invalid", text(it.toString())).toMessage()
         }
+
+        private fun StringReader.hasElementSeparator(): Boolean {
+            skipWhitespace()
+            val hasSeparator = canRead() && peek() == ELEMENT_SEPARATOR
+            if (hasSeparator) {
+                skip()
+                skipWhitespace()
+            }
+            return hasSeparator
+        }
     }
-}
-
-fun String.parseToNBT(): CompoundTag = SNBTParser(StringReader(this)).readSingleCompound()
-
-private const val ELEMENT_SEPARATOR = ','
-
-private fun StringReader.hasElementSeparator(): Boolean {
-    skipWhitespace()
-    val hasSeparator = canRead() && peek() == ELEMENT_SEPARATOR
-    if (hasSeparator) {
-        skip()
-        skipWhitespace()
-    }
-    return hasSeparator
 }

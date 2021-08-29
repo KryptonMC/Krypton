@@ -66,7 +66,7 @@ object BanCommand : InternalCommand {
     ) = profiles.forEach { profile ->
         if (server.playerManager.bannedPlayers.contains(profile)) return@forEach
         val entry = BannedPlayerEntry(profile, reason = reason)
-        server.playerManager.bannedPlayers += entry
+        server.playerManager.bannedPlayers.add(entry)
         server.player(profile.uuid)?.let { kick(entry, it) }
         sender.sendMessage(translatable("commands.ban.success", text(profile.name), text(reason)))
         logBan(profile.name, sender.name, reason, server)

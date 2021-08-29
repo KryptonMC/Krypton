@@ -31,13 +31,16 @@ class RenameCauldronFix(outputSchema: Schema, changesType: Boolean) : DataFix(ou
     override fun makeRule(): TypeRewriteRule = fixTypeEverywhereTyped(
         "cauldron_rename_fix",
         inputSchema.getType(References.BLOCK_STATE)
-    ) { it.update(DSL.remainderFinder(), Dynamic<*>::fix) }
-}
+    ) { it.update(DSL.remainderFinder(), ::fix) }
 
-private fun Dynamic<*>.fix() = apply {
-    val name = get("Name").asString().result()
-    if (name != Optional.of("minecraft:cauldron")) return@apply
-    val properties = get("Properties").orElseEmptyMap()
-    if (properties.get("level").asString("0") == "0") return remove("Properties")
-    return set("Name", createString("minecraft:water_cauldron"))
+    companion object {
+
+        private fun fix(data: Dynamic<*>): Dynamic<*> {
+            val name = data["Name"].asString().result()
+            if (name != Optional.of("minecraft:cauldron")) return data
+            val properties = data["Properties"].orElseEmptyMap()
+            if (properties["level"].asString("0") == "0") return data.remove("Properties")
+            return data.set("Name", data.createString("minecraft:water_cauldron"))
+        }
+    }
 }

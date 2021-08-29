@@ -16,18 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util.concurrent
+package org.kryptonmc.krypton.world.biome
 
-import org.apache.logging.log4j.Logger
+import org.kryptonmc.api.util.StringSerializable
+import org.kryptonmc.krypton.util.Codecs
 
-/**
- * Used for catching uncaught exceptions in [Thread]s and logging them to a Log4J [Logger],
- * using the name of the [Thread].
- */
-class NamedUncaughtExceptionHandler(private val logger: Logger) : Thread.UncaughtExceptionHandler {
+enum class TemperatureModifier(override val serialized: String) : StringSerializable {
 
-    override fun uncaughtException(thread: Thread, exception: Throwable) {
-        logger.error("Caught previously unhandled exception:")
-        logger.error(thread.name, exception)
+    NONE("none"),
+    FROZEN("frozen");
+
+    companion object {
+
+        private val BY_NAME = values().associateBy { it.serialized }
+        val CODEC = Codecs.forEnum(values()) { BY_NAME[it] }
     }
 }

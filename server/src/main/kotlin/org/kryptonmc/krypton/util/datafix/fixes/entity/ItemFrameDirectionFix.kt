@@ -28,11 +28,14 @@ class ItemFrameDirectionFix(outputSchema: Schema, changesType: Boolean) : NamedE
     override fun fix(typed: Typed<*>): Typed<*> = typed.update(remainderFinder()) { frame ->
         frame.set("Facing", frame.createByte(frame["Facing"].asByte(0).to3DDirection()))
     }
-}
 
-private fun Byte.to3DDirection(): Byte = when (this) {
-    0.toByte() -> 3
-    1.toByte() -> 4
-    3.toByte() -> 5
-    else -> 2
+    companion object {
+
+        private fun Byte.to3DDirection(): Byte = when (this) {
+            0.toByte() -> 3
+            1.toByte() -> 4
+            3.toByte() -> 5
+            else -> 2
+        }
+    }
 }

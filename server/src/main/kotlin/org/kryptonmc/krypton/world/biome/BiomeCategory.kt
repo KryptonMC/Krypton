@@ -16,16 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util.concurrent
+package org.kryptonmc.krypton.world.biome
 
-import org.apache.logging.log4j.Logger
+import org.kryptonmc.api.util.StringSerializable
+import org.kryptonmc.krypton.util.Codecs
 
-/**
- * Used for catching uncaught exceptions in [Thread]s and logging them to a Log4J [Logger]
- */
-class DefaultUncaughtExceptionHandler(private val logger: Logger) : Thread.UncaughtExceptionHandler {
+enum class BiomeCategory(override val serialized: String) : StringSerializable {
 
-    override fun uncaughtException(thread: Thread, exception: Throwable) {
-        logger.error("Caught previously unhandled exception ", exception)
+    NONE("none"),
+    TAIGA("taiga"),
+    EXTREME_HILLS("extreme_hills"),
+    JUNGLE("jungle"),
+    MESA("mesa"),
+    PLAINS("plains"),
+    SAVANNA("savanna"),
+    ICY("icy"),
+    THE_END("the_end"),
+    BEACH("beach"),
+    FOREST("forest"),
+    OCEAN("ocean"),
+    DESERT("desert"),
+    RIVER("river"),
+    SWAMP("swamp"),
+    MUSHROOM("mushroom"),
+    NETHER("nether"),
+    UNDERGROUND("underground");
+
+    companion object {
+
+        private val BY_NAME = values().associateBy { it.serialized }
+        val CODEC = Codecs.forEnum(values()) { BY_NAME[it] }
     }
 }

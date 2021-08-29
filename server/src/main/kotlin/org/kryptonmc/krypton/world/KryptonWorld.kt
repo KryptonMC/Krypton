@@ -51,10 +51,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
-import org.kryptonmc.krypton.util.Codecs
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.forEachEntityInRange
-import org.kryptonmc.krypton.util.lerp
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -65,6 +63,7 @@ import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.Generator
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
+import org.spongepowered.math.GenericMath
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
@@ -317,13 +316,12 @@ class KryptonWorld(
 
     override fun audiences() = players
 
-    fun getRainLevel(delta: Float) = lerp(delta, oldRainLevel, rainLevel)
+    fun getRainLevel(delta: Float) = GenericMath.lerp(oldRainLevel, rainLevel, delta)
 
-    fun getThunderLevel(delta: Float) = lerp(delta, oldThunderLevel, thunderLevel) * getRainLevel(delta)
+    fun getThunderLevel(delta: Float) = GenericMath.lerp(oldThunderLevel, thunderLevel, delta) * getRainLevel(delta)
 
     companion object {
 
-        val RESOURCE_KEY_CODEC: Codec<ResourceKey<World>> = Codecs.KEY.xmap({ ResourceKey.of(ResourceKeys.DIMENSION, it) }, ResourceKey<World>::location)
         private const val MINIMUM_SIZE = -30000000
         private const val MAXIMUM_SIZE = -MINIMUM_SIZE
     }

@@ -25,7 +25,7 @@ import java.time.format.DateTimeFormatter
 
 sealed class BanEntry<T>(
     key: T,
-    val creationDate: OffsetDateTime = OffsetDateTime.now(),
+    private val creationDate: OffsetDateTime = OffsetDateTime.now(),
     val source: String = "(Unknown)",
     val expiryDate: OffsetDateTime? = null,
     val reason: String = "Banned by operator."

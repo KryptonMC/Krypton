@@ -55,7 +55,13 @@ object PardonIpCommand : InternalCommand {
     private fun unbanIp(sender: Sender, target: String) {
         val server = sender.server as? KryptonServer ?: return
         if (target.matches(BanIpCommand.IP_ADDRESS_PATTERN)) {
-            if (server.playerManager.bannedIps.contains(target)) server.playerManager.bannedIps -= target else throw ALREADY_UNBANNED_EXCEPTION.create()
-        } else throw INVALID_IP_EXCEPTION.create()
+            if (server.playerManager.bannedIps.contains(target)) {
+                server.playerManager.bannedIps.remove(target)
+            } else {
+                throw ALREADY_UNBANNED_EXCEPTION.create()
+            }
+        } else {
+            throw INVALID_IP_EXCEPTION.create()
+        }
     }
 }

@@ -36,7 +36,7 @@ class EntityArgument private constructor(
 
     override fun parse(reader: StringReader) = if (reader.canRead() && reader.peek() == '@') {
         reader.skip()
-        if (!reader.canRead()) throw MISSING_SELECTOR.createWithContext(reader)
+        if (!reader.canRead()) throw EntityArgumentExceptions.MISSING_SELECTOR.createWithContext(reader)
         val position = reader.cursor
         EntityArgumentParser.parse(reader, reader.read(), position, onlyPlayers, singleTarget)
     } else {
@@ -76,18 +76,3 @@ class EntityArgument private constructor(
 }
 
 fun CommandContext<Sender>.entityArgument(name: String) = argument<EntityQuery>(name)
-
-val MISSING_SELECTOR = SimpleCommandExceptionType(translatable("argument.entity.selector.missing").toMessage())
-val UNKNOWN_SELECTOR_EXCEPTION = DynamicCommandExceptionType { translatable("argument.entity.selector.unknown", text(it.toString())).toMessage() }
-val UNTERMINATED_EXCEPTION = SimpleCommandExceptionType(translatable("argument.entity.options.unterminated").toMessage())
-val VALUELESS_EXCEPTION = DynamicCommandExceptionType { translatable("argument.entity.options.valueless", text(it.toString())).toMessage() }
-val INVALID_OPTION = DynamicCommandExceptionType { translatable("argument.entity.options.unknown", text(it.toString())).toMessage() }
-val PLAYER_NOT_FOUND = SimpleCommandExceptionType(translatable("argument.entity.notfound.player").toMessage())
-val ENTITY_NOT_FOUND = SimpleCommandExceptionType(translatable("argument.entity.notfound.entity").toMessage())
-val TOO_MANY_ENTITIES = SimpleCommandExceptionType(translatable("argument.entity.toomany").toMessage())
-val TOO_MANY_PLAYERS = SimpleCommandExceptionType(translatable("argument.player.toomany").toMessage())
-val ONLY_FOR_PLAYERS = SimpleCommandExceptionType(translatable("argument.player.entities").toMessage())
-val PLAYER_NOT_EXISTS = SimpleCommandExceptionType(translatable("argument.player.unknown").toMessage())
-val LIMIT_NULL = SimpleCommandExceptionType(translatable("argument.entity.options.limit.toosmall").toMessage())
-val DISTANCE_NEGATIVE = SimpleCommandExceptionType(translatable("argument.entity.options.distance.negative").toMessage())
-val INVALID_SORT_TYPE = DynamicCommandExceptionType { translatable("argument.entity.options.sort.irreversible", text(it.toString())).toMessage() }

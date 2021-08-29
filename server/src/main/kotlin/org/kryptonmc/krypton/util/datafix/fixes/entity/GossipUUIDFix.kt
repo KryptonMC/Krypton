@@ -23,7 +23,7 @@ import com.mojang.datafixers.DataFixUtils
 import com.mojang.datafixers.Typed
 import com.mojang.datafixers.schemas.Schema
 import org.kryptonmc.krypton.util.datafix.References
-import org.kryptonmc.krypton.util.datafix.fixes.uuid.replaceUUIDLeastMost
+import org.kryptonmc.krypton.util.datafix.fixes.uuid.UUIDFix.Companion.replaceUUIDLeastMost
 
 class GossipUUIDFix(outputSchema: Schema, name: String) : NamedEntityFix(outputSchema, false, "Gossip for $name", References.ENTITY, name) {
 

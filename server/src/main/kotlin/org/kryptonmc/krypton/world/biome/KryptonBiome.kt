@@ -46,31 +46,3 @@ class KryptonBiome(
         }
     }
 }
-
-enum class BiomeCategory(override val serialized: String) : StringSerializable {
-
-    NONE("none"),
-    TAIGA("taiga"),
-    EXTREME_HILLS("extreme_hills"),
-    JUNGLE("jungle"),
-    MESA("mesa"),
-    PLAINS("plains"),
-    SAVANNA("savanna"),
-    ICY("icy"),
-    THE_END("the_end"),
-    BEACH("beach"),
-    FOREST("forest"),
-    OCEAN("ocean"),
-    DESERT("desert"),
-    RIVER("river"),
-    SWAMP("swamp"),
-    MUSHROOM("mushroom"),
-    NETHER("nether"),
-    UNDERGROUND("underground");
-
-    companion object {
-
-        private val BY_NAME = values().associateBy { it.serialized }
-        val CODEC = Codecs.forEnum(values()) { BY_NAME[it] }
-    }
-}

@@ -16,10 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util.datafix.fixes.name
+package org.kryptonmc.krypton.world.biome
 
-val RENAMED_DYE_ITEMS = mapOf(
-    "minecraft:cactus_green" to "minecraft:green_dye",
-    "minecraft:rose_red" to "minecraft:red_dye",
-    "minecraft:dandelion_yellow" to "minecraft:yellow_dye"
-)
+import org.kryptonmc.api.util.StringSerializable
+import org.kryptonmc.krypton.util.Codecs
+
+enum class Precipitation(override val serialized: String) : StringSerializable {
+
+    NONE("none"),
+    RAIN("rain"),
+    SNOW("snow");
+
+    companion object {
+
+        private val BY_NAME = values().associateBy { it.serialized }
+        val CODEC = Codecs.forEnum(values()) { BY_NAME[it] }
+    }
+}

@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.server.ban
 
 import com.google.gson.stream.JsonReader
-import org.kryptonmc.krypton.server.ServerConfigEntry
 import org.kryptonmc.krypton.server.ServerConfigList
 import org.kryptonmc.krypton.util.asString
 import java.net.SocketAddress
@@ -34,7 +33,7 @@ class BannedIpList(path: Path) : ServerConfigList<String, BannedIpEntry>(path) {
 
     fun clear() = forEach { it.expiryDate?.let { time -> if (time.isBefore(OffsetDateTime.now())) remove(it.key) } }
 
-    override fun read(reader: JsonReader): ServerConfigEntry<String>? = BannedIpEntry.read(reader)
+    override fun read(reader: JsonReader): BannedIpEntry? = BannedIpEntry.read(reader)
 
     override fun validatePath() {
         super.validatePath()

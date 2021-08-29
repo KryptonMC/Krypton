@@ -22,10 +22,15 @@ import com.mojang.datafixers.DSL.remainderFinder
 import com.mojang.datafixers.TypeRewriteRule
 import com.mojang.datafixers.schemas.Schema
 import org.kryptonmc.krypton.util.datafix.References
+import org.kryptonmc.krypton.util.datafix.fixes.uuid.EntityUUIDFix.Companion.updateEntityUUID
+import org.kryptonmc.krypton.util.datafix.fixes.uuid.EntityUUIDFix.Companion.updateLivingEntity
 
 class PlayerUUIDFix(outputSchema: Schema) : UUIDFix(outputSchema, References.PLAYER) {
 
-    override fun makeRule(): TypeRewriteRule = fixTypeEverywhereTyped("PlayerUUIDFix", inputSchema.getType(typeReference)) { typed ->
+    override fun makeRule(): TypeRewriteRule = fixTypeEverywhereTyped(
+        "PlayerUUIDFix",
+        inputSchema.getType(typeReference)
+    ) { typed ->
         val vehicleFinder = typed.type.findField("RootVehicle")
         typed.updateTyped(vehicleFinder, vehicleFinder.type()) { vehicle ->
             vehicle.update(remainderFinder()) { it.replaceUUIDLeastMost("Attach", "Attach").orElse(it) }

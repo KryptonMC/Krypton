@@ -154,6 +154,8 @@ object Layers {
         return temp
     }
 
+    private fun Int2IntMap.put(category: Layers.Category, biome: Int) = put(biome, category.ordinal)
+
     enum class Category {
 
         NONE,
@@ -174,5 +176,3 @@ object Layers {
         MUSHROOM
     }
 }
-
-private fun Int2IntMap.put(category: Layers.Category, biome: Int) = put(biome, category.ordinal)

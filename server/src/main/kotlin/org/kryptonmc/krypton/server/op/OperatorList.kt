@@ -27,13 +27,14 @@ import java.util.UUID
 
 class OperatorList(path: Path) : ServerConfigList<KryptonGameProfile, OperatorEntry>(path) {
 
-    override fun read(reader: JsonReader): ServerConfigEntry<KryptonGameProfile>? {
+    override fun read(reader: JsonReader): OperatorEntry? {
         reader.beginObject()
 
         var name: String? = null
         var uuid: UUID? = null
         var level = 0
         var bypassesPlayerLimit = false
+
         while (reader.hasNext()) {
             when (reader.nextName()) {
                 "name" -> name = reader.nextString()

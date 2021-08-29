@@ -28,7 +28,10 @@ import org.kryptonmc.krypton.util.datafix.References
 
 class RedundantChanceTagsFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
 
-    override fun makeRule(): TypeRewriteRule = fixTypeEverywhereTyped("RedundantChanceTagsFix", inputSchema.getType(References.ENTITY)) { typed ->
+    override fun makeRule(): TypeRewriteRule = fixTypeEverywhereTyped(
+        "RedundantChanceTagsFix",
+        inputSchema.getType(References.ENTITY)
+    ) { typed ->
         typed.update(remainderFinder()) {
             var temp = it
             if (it["HandDropChances"].isZeroList(2)) temp = temp.remove("HandDropChances")
@@ -36,10 +39,13 @@ class RedundantChanceTagsFix(outputSchema: Schema, changesType: Boolean) : DataF
             temp
         }
     }
+
+    companion object {
+
+        private val FLOAT_LIST_CODEC = Codec.FLOAT.listOf()
+
+        private fun OptionalDynamic<*>.isZeroList(size: Int) = flatMap { FLOAT_LIST_CODEC.parse(it) }.map { list ->
+            list.size == size && list.all { it == 0F }
+        }.result().orElse(false)
+    }
 }
-
-private val FLOAT_LIST_CODEC = Codec.FLOAT.listOf()
-
-private fun OptionalDynamic<*>.isZeroList(size: Int) = flatMap { FLOAT_LIST_CODEC.parse(it) }.map { list ->
-    list.size == size && list.all { it == 0F }
-}.result().orElse(false)

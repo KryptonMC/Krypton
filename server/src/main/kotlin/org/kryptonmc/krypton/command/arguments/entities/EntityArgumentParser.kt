@@ -29,35 +29,41 @@ object EntityArgumentParser {
         onlyPlayers: Boolean,
         singleTarget: Boolean,
     ) = when (operation) {
-        'p' -> EntityQuery(listOf(), EntityQuery.Selector.NEAREST_PLAYER)
+        'p' -> EntityQuery(emptyList(), EntityQuery.Selector.NEAREST_PLAYER)
         'e' -> {
             if (singleTarget) {
                 reader.cursor = 0
-                throw TOO_MANY_ENTITIES.createWithContext(reader)
+                throw EntityArgumentExceptions.TOO_MANY_ENTITIES.createWithContext(reader)
             } else if (onlyPlayers) {
                 reader.cursor = 0
-                throw ONLY_FOR_PLAYERS.createWithContext(reader)
+                throw EntityArgumentExceptions.ONLY_FOR_PLAYERS.createWithContext(reader)
             }
+
             if (reader.canRead() && reader.peek() == '[') {
                 reader.skip()
                 EntityQuery(parseArguments(reader), EntityQuery.Selector.ALL_ENTITIES)
-            } else EntityQuery(listOf(), EntityQuery.Selector.ALL_ENTITIES)
+            } else {
+                EntityQuery(emptyList(), EntityQuery.Selector.ALL_ENTITIES)
+            }
         }
-        'r' -> EntityQuery(listOf(), EntityQuery.Selector.RANDOM_PLAYER)
+        'r' -> EntityQuery(emptyList(), EntityQuery.Selector.RANDOM_PLAYER)
         'a' -> {
             if (singleTarget) {
                 reader.cursor = 0
-                throw TOO_MANY_PLAYERS.createWithContext(reader)
+                throw EntityArgumentExceptions.TOO_MANY_PLAYERS.createWithContext(reader)
             }
+
             if (reader.canRead() && reader.peek() == '[') {
                 reader.skip()
                 EntityQuery(parseArguments(reader), EntityQuery.Selector.ALL_PLAYERS)
-            } else EntityQuery(listOf(), EntityQuery.Selector.ALL_PLAYERS)
+            } else {
+                EntityQuery(emptyList(), EntityQuery.Selector.ALL_PLAYERS)
+            }
         }
-        's' -> EntityQuery(listOf(), EntityQuery.Selector.EXECUTOR)
+        's' -> EntityQuery(emptyList(), EntityQuery.Selector.EXECUTOR)
         else -> {
             reader.cursor = position
-            throw UNKNOWN_SELECTOR_EXCEPTION.createWithContext(reader, "@$operation")
+            throw EntityArgumentExceptions.UNKNOWN_SELECTOR.createWithContext(reader, "@$operation")
         }
     }
 
@@ -68,17 +74,18 @@ object EntityArgumentParser {
             reader.skipWhitespace()
             val position = reader.cursor
             val option = reader.readString()
-            if (option !in EntityArguments.ARGUMENTS) throw INVALID_OPTION.createWithContext(reader, option)
+            if (option !in EntityArguments.ARGUMENTS) throw EntityArgumentExceptions.INVALID_OPTION.createWithContext(reader, option)
+
             reader.skipWhitespace()
             if (reader.canRead() && reader.peek() == '=') {
                 reader.skip()
                 reader.skipWhitespace()
-                val exclude = if (reader.peek() == '!') {
-                    reader.skip()
-                    true
-                } else false
+
+                val exclude = reader.peek() == '!'
+                if (exclude) reader.skip()
+
                 val value = reader.readString()
-                args += EntityArgument.EntityArg(option, value, exclude)
+                args.add(EntityArgument.EntityArg(option, value, exclude))
 
                 reader.skipWhitespace()
                 if (!reader.canRead()) continue
@@ -88,14 +95,14 @@ object EntityArgumentParser {
                     continue
                 }
 
-                if (reader.peek() != ']') throw UNTERMINATED_EXCEPTION.createWithContext(reader)
+                if (reader.peek() != ']') throw EntityArgumentExceptions.UNTERMINATED.createWithContext(reader)
                 break
             }
 
             reader.cursor = position
-            throw VALUELESS_EXCEPTION.createWithContext(reader, option)
+            throw EntityArgumentExceptions.VALUELESS.createWithContext(reader, option)
         }
-        if (reader.canRead()) reader.skip() else throw UNTERMINATED_EXCEPTION.createWithContext(reader)
+        if (reader.canRead()) reader.skip() else throw EntityArgumentExceptions.UNTERMINATED.createWithContext(reader)
         return args.toList()
     }
 }

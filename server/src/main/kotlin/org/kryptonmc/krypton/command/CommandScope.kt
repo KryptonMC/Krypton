@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.command
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
-import org.kryptonmc.krypton.util.concurrent.NamedThreadFactory
+import org.kryptonmc.krypton.util.threadFactory
 import java.util.concurrent.Executors
 
 /**
@@ -32,6 +32,6 @@ object CommandScope : CoroutineScope {
 
     override val coroutineContext = Executors.newFixedThreadPool(
         2,
-        NamedThreadFactory("Command Handler #%d")
+        threadFactory("Command Handler #%d")
     ).asCoroutineDispatcher()
 }

@@ -38,11 +38,14 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
 
     open operator fun get(key: K) = map[key.toString()]
 
-    operator fun plusAssign(entry: V) = add(entry)
-
-    operator fun minusAssign(key: K) = remove(key)
-
-    override fun iterator(): Iterator<V> = map.values.iterator()
+    open fun validatePath() {
+        if (!path.exists()) {
+            path.createFile()
+            path.writeText("[]")
+            return
+        }
+        load()
+    }
 
     fun contains(key: K) = map.containsKey(key.toString())
 
@@ -85,14 +88,7 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
         }
     }
 
-    open fun validatePath() {
-        if (!path.exists()) {
-            path.createFile()
-            path.writeText("[]")
-            return
-        }
-        load()
-    }
+    override fun iterator(): Iterator<V> = map.values.iterator()
 
     companion object {
 

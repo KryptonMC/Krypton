@@ -29,18 +29,28 @@ class RemoveIglooMetadataFix(outputSchema: Schema, changesType: Boolean) : DataF
     override fun makeRule(): TypeRewriteRule {
         val inputType = inputSchema.getType(References.STRUCTURE_FEATURE)
         val outputType = outputSchema.getType(References.STRUCTURE_FEATURE)
-        return writeFixAndRead("RemoveIglooMetadataFix", inputType, outputType, Dynamic<*>::fixTag)
+        return writeFixAndRead("RemoveIglooMetadataFix", inputType, outputType) { fixTag(it) }
+    }
+
+    companion object {
+
+        private fun <T> fixTag(data: Dynamic<T>): Dynamic<T> {
+            val hasChildren = data["Children"].asStreamOpt().map { it.allMatch(::isIglooPiece) }
+                .result()
+                .orElse(false)
+            return if (hasChildren) {
+                data.set("id", data.createString("Igloo")).remove("Children")
+            } else {
+                data.update("Children") { removeIglooPieces(it) }
+            }
+        }
+
+        private fun <T> removeIglooPieces(data: Dynamic<T>) = data.asStreamOpt()
+            .map { stream -> stream.filter { !isIglooPiece(data) } }
+            .map(data::createList)
+            .result()
+            .orElse(data)
+
+        private fun isIglooPiece(data: Dynamic<*>) = data["Id"].asString("") == "Iglu"
     }
 }
-
-private fun <T> Dynamic<T>.fixTag(): Dynamic<T> {
-    val hasChildren = get("Children").asStreamOpt().map { it.allMatch(Dynamic<*>::isIglooPiece) }.result().orElse(false)
-    return if (hasChildren) set("id", createString("Igloo")).remove("Children") else update("Children", Dynamic<*>::removeIglooPieces)
-}
-
-private fun <T> Dynamic<T>.removeIglooPieces() = asStreamOpt().map { stream -> stream.filter { !it.isIglooPiece() } }
-    .map(::createList)
-    .result()
-    .orElse(this)
-
-private fun Dynamic<*>.isIglooPiece() = get("Id").asString("") == "Iglu"

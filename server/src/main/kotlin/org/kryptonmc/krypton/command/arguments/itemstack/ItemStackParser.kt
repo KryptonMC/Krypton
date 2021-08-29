@@ -51,7 +51,9 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO
             val i = reader.cursor
             while (reader.canRead() && isCharValid(reader.peek())) reader.skip()
             return reader.string.substring(i, reader.cursor)
-        } else throw TAG_DISALLOWED_EXCEPTION.createWithContext(reader)
+        } else {
+            throw TAG_DISALLOWED_EXCEPTION.createWithContext(reader)
+        }
     }
 
     private fun readNBT(reader: StringReader) = if (reader.canRead() && reader.peek() == '{') SNBTParser(reader).readCompound() else null
@@ -71,15 +73,22 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO
                 if (nbt != null) nbt == (it.meta as KryptonMetaHolder).nbt.immutable() else it.type == item
             } else if (tag != null) {
                 (ItemTags[key(tag)] ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())).contains(it.type)
-            } else false
+            } else {
+                false
+            }
         }
     }
 
     private fun isCharValid(c: Char) = c in '0'..'9' || c in 'a'..'z' || c == '_' || c == ':' || c == '/' || c == '.' || c == '-'
 
     companion object {
-        val ID_INVALID_EXCEPTION = DynamicCommandExceptionType { translatable("argument.item.id.invalid", text(it.toString())).toMessage() }
+
+        val ID_INVALID_EXCEPTION = DynamicCommandExceptionType {
+            translatable("argument.item.id.invalid", text(it.toString())).toMessage()
+        }
         val TAG_DISALLOWED_EXCEPTION = SimpleCommandExceptionType(translatable("argument.item.tag.disallowed").toMessage())
-        val UNKNOWN_ITEM_TAG = DynamicCommandExceptionType { translatable("arguments.item.tag.unknown", text(it.toString())).toMessage() }
+        val UNKNOWN_ITEM_TAG = DynamicCommandExceptionType {
+            translatable("arguments.item.tag.unknown", text(it.toString())).toMessage()
+        }
     }
 }

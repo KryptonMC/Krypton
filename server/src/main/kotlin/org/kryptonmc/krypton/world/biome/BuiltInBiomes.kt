@@ -415,9 +415,9 @@ object BuiltInBiomes {
             ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
         )
     )
-}
 
-private fun Float.calculateSkyColor(): Color {
-    val temp = (this / 3F).clamp(-1F, 1F)
-    return Color.getHSBColor(0.62222224F - temp * 0.05F, 0.5F + temp * 0.1F, 1F)
+    private fun Float.calculateSkyColor(): Color {
+        val temp = (this / 3F).clamp(-1F, 1F)
+        return Color.getHSBColor(0.62222224F - temp * 0.05F, 0.5F + temp * 0.1F, 1F)
+    }
 }

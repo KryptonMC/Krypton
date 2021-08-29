@@ -46,10 +46,13 @@ class ItemLoreFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSc
             }
         }
     }
-}
 
-private fun <T> Stream<out Dynamic<out T>>.fixLoreList() = map {
-    DataFixUtils.orElse(it.asString().map(String::fixLoreEntry).map(it::createString).result(), it)
-}
+    companion object {
 
-private fun String.fixLoreEntry() = Component.text(this).toJsonString()
+        private fun <T> Stream<out Dynamic<out T>>.fixLoreList() = map {
+            DataFixUtils.orElse(it.asString().map(::fixLoreEntry).map(it::createString).result(), it)
+        }
+
+        private fun fixLoreEntry(text: String) = Component.text(text).toJsonString()
+    }
+}

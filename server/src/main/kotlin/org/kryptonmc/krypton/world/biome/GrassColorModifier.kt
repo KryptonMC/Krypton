@@ -16,14 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.adventure
+package org.kryptonmc.krypton.world.biome
 
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.kryptonmc.api.util.StringSerializable
+import org.kryptonmc.krypton.util.Codecs
 
-fun String.toJsonComponent(): Component = GsonComponentSerializer.gson().deserialize(this)
+enum class GrassColorModifier(override val serialized: String) : StringSerializable {
 
-fun Component.toSectionText(): String = LegacyComponentSerializer.legacySection().serialize(this)
+    NONE("none"),
+    DARK_FOREST("dark_forest"),
+    SWAMP("swamp");
 
-fun Component.toAmpersandText(): String = LegacyComponentSerializer.legacyAmpersand().serialize(this)
+    companion object {
+
+        private val BY_NAME = values().associateBy { it.serialized }
+        val CODEC = Codecs.forEnum(values()) { BY_NAME[it] }
+    }
+}

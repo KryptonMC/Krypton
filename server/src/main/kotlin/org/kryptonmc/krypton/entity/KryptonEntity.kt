@@ -22,17 +22,16 @@ import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.adventure.toJsonString
+import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.space.BoundingBox
 import org.kryptonmc.api.space.Location
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.krypton.ServerStorage
-import org.kryptonmc.krypton.adventure.toJsonComponent
-import org.kryptonmc.krypton.adventure.toSectionText
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -51,6 +50,7 @@ import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.UnaryOperator
 import kotlin.math.abs
 import kotlin.random.Random
@@ -61,10 +61,10 @@ abstract class KryptonEntity(
     override val type: EntityType<out Entity>
 ) : Entity {
 
-    val id = ServerStorage.NEXT_ENTITY_ID.incrementAndGet()
+    val id = NEXT_ENTITY_ID.incrementAndGet()
     override var uuid = Random.nextUUID()
     override val name: String
-        get() = displayName.toSectionText()
+        get() = displayName.toLegacySectionText()
     val data = MetadataHolder(this)
 
     final override val server = world.server
@@ -105,7 +105,9 @@ abstract class KryptonEntity(
 
     open fun load(tag: CompoundTag) {
         air = tag.getShort("Air").toInt()
-        if (tag.contains("CustomName", StringTag.ID)) displayName = tag.getString("CustomName").toJsonComponent()
+        if (tag.contains("CustomName", StringTag.ID)) {
+            displayName = GsonComponentSerializer.gson().deserialize(tag.getString("CustomName"))
+        }
         isDisplayNameVisible = tag.getBoolean("CustomNameVisible")
         fallDistance = tag.getFloat("FallDistance")
         fireTicks = tag.getShort("Fire")
@@ -263,4 +265,9 @@ abstract class KryptonEntity(
         set(value) = data.set(MetadataKeys.FROZEN_TICKS, value)
     val hasVelocity: Boolean
         get() = velocity.x != 0.0 && velocity.y != 0.0 && velocity.z != 0.0
+
+    companion object {
+
+        private val NEXT_ENTITY_ID = AtomicInteger(0)
+    }
 }

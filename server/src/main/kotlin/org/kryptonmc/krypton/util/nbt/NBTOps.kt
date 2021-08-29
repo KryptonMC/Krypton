@@ -107,11 +107,22 @@ object NBTOps : DynamicOps<Tag> {
         }
     }
 
-    override fun createMap(map: Stream<Pair<Tag, Tag>>) = CompoundTag(map.collect(Collectors.toMap({ it.first.asString() }, { it.second })))
+    override fun createMap(map: Stream<Pair<Tag, Tag>>) = CompoundTag(map.collect(Collectors.toMap(
+        { it.first.asString() },
+        { it.second }
+    )))
 
-    override fun getNumberValue(input: Tag): DataResult<Number> = if (input is NumberTag) DataResult.success(input.value) else DataResult.error("Not a number!")
+    override fun getNumberValue(input: Tag): DataResult<Number> = if (input is NumberTag) {
+        DataResult.success(input.value)
+    } else {
+        DataResult.error("Not a number!")
+    }
 
-    override fun getStringValue(input: Tag): DataResult<String> = if (input is StringTag) DataResult.success(input.value) else DataResult.error("Not a string!")
+    override fun getStringValue(input: Tag): DataResult<String> = if (input is StringTag) {
+        DataResult.success(input.value)
+    } else {
+        DataResult.error("Not a string!")
+    }
 
     override fun getMap(input: Tag): DataResult<MapLike<Tag>> = if (input is CompoundTag) {
         DataResult.success(MapLike.forMap(input.iterator().asSequence().associate { StringTag.of(it.key) to it.value }, this))
@@ -131,11 +142,17 @@ object NBTOps : DynamicOps<Tag> {
         DataResult.error("Tag type ${input.id} is not a compound! (required to convert to map to retrieve entries)")
     }
 
-    override fun getStream(input: Tag): DataResult<Stream<Tag>> =
-        if (input is CollectionTag<*>) DataResult.success(input.stream().map { it }) else DataResult.error("Tag type ${input.id} is not a collection!")
+    override fun getStream(input: Tag): DataResult<Stream<Tag>> = if (input is CollectionTag<*>) {
+        DataResult.success(input.stream().map { it })
+    } else {
+        DataResult.error("Tag type ${input.id} is not a collection!")
+    }
 
-    override fun getList(input: Tag): DataResult<Consumer<Consumer<Tag>>> =
-        if (input is CollectionTag<*>) DataResult.success(Consumer { input.forEach(it) }) else DataResult.error("Tag type ${input.id} is not a list!")
+    override fun getList(input: Tag): DataResult<Consumer<Consumer<Tag>>> = if (input is CollectionTag<*>) {
+        DataResult.success(Consumer { input.forEach(it) })
+    } else {
+        DataResult.error("Tag type ${input.id} is not a list!")
+    }
 
     override fun getByteBuffer(input: Tag): DataResult<ByteBuffer> = if (input !is ByteArrayTag) {
         DataResult.error("Tag type ${input.id} is not a byte array! (required to convert to ByteBuffer)")
@@ -156,17 +173,26 @@ object NBTOps : DynamicOps<Tag> {
     }
 
     override fun mergeToList(list: Tag, value: Tag): DataResult<Tag> {
-        if (list !is CollectionTag<*> && list !is EndTag) return DataResult.error("Tag type ${list.id} cannot have ${value.id} merged in to it as it is not a list!", list)
-        return DataResult.success(createGenericList(if (list is CollectionTag<*>) list.elementType else 0, value.id).fillOne(list, value))
+        if (list !is CollectionTag<*> && list !is EndTag) {
+            return DataResult.error("Tag type ${list.id} cannot have ${value.id} merged in to it as it is not a list!", list)
+        }
+        return DataResult.success(createGenericList(if (list is CollectionTag<*>) list.elementType else 0, value.id)
+            .fillOne(list, value))
     }
 
     override fun mergeToList(list: Tag, values: List<Tag>): DataResult<Tag> {
-        if (list !is CollectionTag<*> && list !is EndTag) return DataResult.error("Tag type ${list.id} cannot have $values merged in to it as it is not a list!", list)
-        return DataResult.success(createGenericList(if (list is CollectionTag<*>) list.elementType else 0, values.firstOrNull()?.id ?: 0).fillMany(list, values))
+        if (list !is CollectionTag<*> && list !is EndTag) {
+            return DataResult.error("Tag type ${list.id} cannot have $values merged in to it as it is not a list!", list)
+        }
+        return DataResult.success(createGenericList(
+            if (list is CollectionTag<*>) list.elementType else 0, values.firstOrNull()?.id ?: 0
+        ).fillMany(list, values))
     }
 
     override fun mergeToMap(map: Tag, key: Tag, value: Tag): DataResult<Tag> {
-        if (map !is CompoundTag && map !is EndTag) return DataResult.error("Tag type ${map.id} cannot have $key, $value merged in to it as it is not a map!", map)
+        if (map !is CompoundTag && map !is EndTag) {
+            return DataResult.error("Tag type ${map.id} cannot have $key, $value merged in to it as it is not a map!", map)
+        }
         if (key !is StringTag) return DataResult.error("Tag type ${key.id} for key $key is not a string!")
         val compound = MutableCompoundTag()
         if (map is CompoundTag) map.forEach { compound[it.key] = it.value }
@@ -175,12 +201,18 @@ object NBTOps : DynamicOps<Tag> {
     }
 
     override fun mergeToMap(map: Tag, values: MapLike<Tag>): DataResult<Tag> {
-        if (map !is CompoundTag && map !is EndTag) return DataResult.error("Tag type ${map.id} cannot have $values merged in to it as it is not a map!", map)
+        if (map !is CompoundTag && map !is EndTag) {
+            return DataResult.error("Tag type ${map.id} cannot have $values merged in to it as it is not a map!", map)
+        }
         val compound = MutableCompoundTag()
         if (map is CompoundTag) map.forEach { compound[it.key] = it.value }
         val invalid = mutableListOf<Tag>()
         values.entries().forEach { if (it.first !is StringTag) invalid.add(it.first) else compound[it.first.asString()] = it.second }
-        return if (invalid.isNotEmpty()) DataResult.error("All keys in map $values must be strings, $invalid were not!") else DataResult.success(compound)
+        return if (invalid.isNotEmpty()) {
+            DataResult.error("All keys in map $values must be strings, $invalid were not!")
+        } else {
+            DataResult.success(compound)
+        }
     }
 
     override fun remove(input: Tag, key: String): Tag {
@@ -194,6 +226,27 @@ object NBTOps : DynamicOps<Tag> {
 
     override fun toString() = "NBT"
 
+    private fun createGenericList(first: Int, second: Int): CollectionTag<*> {
+        if (typesMatch(first, second, LongTag.ID)) return LongArrayTag(LongArray(0))
+        if (typesMatch(first, second, ByteTag.ID)) return ByteArrayTag(ByteArray(0))
+        if (typesMatch(first, second, IntTag.ID)) return IntArrayTag(IntArray(0))
+        return ListTag()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T : Tag> CollectionTag<T>.fillOne(list: Tag, value: Tag) = apply {
+        if (list is CollectionTag<*>) list.forEach { add(it as T) }
+        add(value as T)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T : Tag> CollectionTag<T>.fillMany(list: Tag, values: List<Tag>) = apply {
+        if (list is CollectionTag<*>) list.forEach { add(it as T) }
+        values.forEach { add(it as T) }
+    }
+
+    private fun typesMatch(first: Int, second: Int, third: Int) = first == third && (second == third || second == 0)
+
     class NBTRecordBuilder : RecordBuilder.AbstractStringBuilder<Tag, CompoundTag.Builder>(NBTOps) {
 
         override fun initBuilder() = CompoundTag.builder()
@@ -202,7 +255,9 @@ object NBTOps : DynamicOps<Tag> {
 
         override fun build(builder: CompoundTag.Builder, prefix: Tag?): DataResult<Tag> {
             if (prefix == null || prefix == EndTag) return DataResult.success(builder.build())
-            if (prefix !is CompoundTag) return DataResult.error("Tag type ${prefix.id} be merged in to $builder as it is not a map!", prefix)
+            if (prefix !is CompoundTag) {
+                return DataResult.error("Tag type ${prefix.id} be merged in to $builder as it is not a map!", prefix)
+            }
             return DataResult.success(compound {
                 prefix.forEach { put(it.key, it.value) }
                 builder.build().forEach { put(it.key, it.value) }
@@ -210,24 +265,3 @@ object NBTOps : DynamicOps<Tag> {
         }
     }
 }
-
-private fun createGenericList(first: Int, second: Int): CollectionTag<*> {
-    if (typesMatch(first, second, LongTag.ID)) return LongArrayTag(LongArray(0))
-    if (typesMatch(first, second, ByteTag.ID)) return ByteArrayTag(ByteArray(0))
-    if (typesMatch(first, second, IntTag.ID)) return IntArrayTag(IntArray(0))
-    return ListTag()
-}
-
-@Suppress("UNCHECKED_CAST")
-private fun <T : Tag> CollectionTag<T>.fillOne(list: Tag, value: Tag) = apply {
-    if (list is CollectionTag<*>) list.forEach { add(it as T) }
-    add(value as T)
-}
-
-@Suppress("UNCHECKED_CAST")
-private fun <T : Tag> CollectionTag<T>.fillMany(list: Tag, values: List<Tag>) = apply {
-    if (list is CollectionTag<*>) list.forEach { add(it as T) }
-    values.forEach { add(it as T) }
-}
-
-private fun typesMatch(first: Int, second: Int, third: Int) = first == third && (second == third || second == 0)

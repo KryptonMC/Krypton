@@ -110,14 +110,22 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         val profile = player.profile
         val name = server.profileCache[profile.uuid]?.name ?: profile.name
         server.profileCache.add(profile)
-        val dimension = if (nbt != null) Dynamic(NBTOps, nbt["Dimension"]).parseDimension().resultOrPartial(LOGGER::error).orElse(World.OVERWORLD) else World.OVERWORLD
+        val dimension = if (nbt != null) {
+            Dynamic(NBTOps, nbt["Dimension"]).parseDimension()
+                .resultOrPartial(LOGGER::error)
+                .orElse(World.OVERWORLD)
+        } else {
+            World.OVERWORLD
+        }
+
         val world = server.worldManager.worlds[dimension] ?: kotlin.run {
             LOGGER.warn("Unknown respawn dimension $dimension! Defaulting to overworld...")
             server.overworld()
         }
         player.world = world
         world.players += player
-        LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at (${player.location.x}, ${player.location.y}, ${player.location.z})")
+        LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at" +
+                "(${player.location.x}, ${player.location.y}, ${player.location.z})")
 
         // Join the game
         val reducedDebugInfo = world.gameRules[GameRules.REDUCED_DEBUG_INFO]
@@ -156,7 +164,8 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         val joinResult = server.eventManager.fireSync(JoinEvent(player, !profile.name.equals(name, true))).result
         if (!joinResult.isAllowed) {
             // Use default reason if denied without specified reason
-            val reason = joinResult.message.takeIf { it != Component.empty() } ?: Component.translatable("multiplayer.disconnect.kicked")
+            val reason = joinResult.message.takeIf { it != Component.empty() }
+                ?: Component.translatable("multiplayer.disconnect.kicked")
             session.disconnect(reason)
             return@thenAccept
         }
@@ -195,7 +204,12 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         sendWorldInfo(world, player)
 
         // Send inventory data
-        session.sendPacket(PacketOutWindowItems(player.inventory.id, player.inventory.incrementStateId(), player.inventory.networkWriter, player.inventory.mainHand))
+        session.sendPacket(PacketOutWindowItems(
+            player.inventory.id,
+            player.inventory.incrementStateId(),
+            player.inventory.networkWriter,
+            player.inventory.mainHand
+        ))
     }
 
     fun remove(player: KryptonPlayer) {
@@ -231,7 +245,15 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         if (it.world == world) it.session.sendPacket(packet)
     }
 
-    fun broadcast(packet: Packet, world: KryptonWorld, x: Double, y: Double, z: Double, radius: Double, except: KryptonPlayer) = players.forEach {
+    fun broadcast(
+        packet: Packet,
+        world: KryptonWorld,
+        x: Double,
+        y: Double,
+        z: Double,
+        radius: Double,
+        except: KryptonPlayer
+    ) = players.forEach {
         if (it == except || it.world != world) return@forEach
         val offsetX = x - it.location.x
         val offsetY = y - it.location.y
@@ -239,9 +261,8 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         if (offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ < radius * radius) it.session.sendPacket(packet)
     }
 
-    fun broadcast(packet: Packet, world: KryptonWorld, position: Vector3d, radius: Double, except: KryptonPlayer) = broadcast(packet, world, position.x(), position.y(), position.z(), radius, except)
-
-    fun broadcast(packet: Packet, world: KryptonWorld, position: Vector3i, radius: Double, except: KryptonPlayer) = broadcast(packet, world, position.x().toDouble(), position.y().toDouble(), position.z().toDouble(), radius, except)
+    fun broadcast(packet: Packet, world: KryptonWorld, position: Vector3i, radius: Double, except: KryptonPlayer) =
+        broadcast(packet, world, position.x().toDouble(), position.y().toDouble(), position.z().toDouble(), radius, except)
 
     fun disconnectAll() = players.forEach {
         it.session.disconnect(Component.translatable("multiplayer.disconnect.server_shutdown"))
@@ -250,12 +271,12 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     fun saveAll() = players.forEach { dataManager.save(it) }
 
     fun addToOperators(profile: KryptonGameProfile) {
-        ops += OperatorEntry(profile, server.config.server.opPermissionLevel, true)
+        ops.add(OperatorEntry(profile, server.config.server.opPermissionLevel, true))
         if (server.player(profile.uuid) != null) sendCommands(server.player(profile.uuid)!!)
     }
 
     fun removeFromOperators(profile: KryptonGameProfile) {
-        ops -= profile
+        ops.remove(profile)
         if (server.player(profile.uuid) != null) sendCommands(server.player(profile.uuid)!!)
     }
 
@@ -264,7 +285,9 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         statistics[uuid]?.let { return it }
         val folder = server.resolve("stats").tryCreateDirectory()
         // TODO: Deal with the old data files
-        return KryptonStatisticsTracker(player, folder.resolve("$uuid.json")).apply { this@PlayerManager.statistics[uuid] = this }
+        return KryptonStatisticsTracker(player, folder.resolve("$uuid.json")).apply {
+            this@PlayerManager.statistics[uuid] = this
+        }
     }
 
     private fun sendCommands(player: KryptonPlayer) {
@@ -301,8 +324,17 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     private fun sendWorldInfo(world: KryptonWorld, player: KryptonPlayer) {
         player.session.sendPacket(PacketOutInitializeWorldBorder(world.border))
-        player.session.sendPacket(PacketOutTimeUpdate(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
-        player.session.sendPacket(PacketOutSpawnPosition(world.data.spawnX, world.data.spawnY, world.data.spawnZ, world.data.spawnAngle))
+        player.session.sendPacket(PacketOutTimeUpdate(
+            world.data.time,
+            world.data.dayTime,
+            world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]
+        ))
+        player.session.sendPacket(PacketOutSpawnPosition(
+            world.data.spawnX,
+            world.data.spawnY,
+            world.data.spawnZ,
+            world.data.spawnAngle
+        ))
         if (world.isRaining) {
             player.session.sendPacket(PacketOutChangeGameState(GameState.BEGIN_RAINING))
             player.session.sendPacket(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, world.getRainLevel(1F)))

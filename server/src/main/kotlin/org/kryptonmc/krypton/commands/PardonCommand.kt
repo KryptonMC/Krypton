@@ -53,7 +53,7 @@ object PardonCommand : InternalCommand {
 
     private fun unban(targets: List<KryptonGameProfile>, sender: Sender, server: KryptonServer) = targets.forEach {
         if (!server.playerManager.bannedPlayers.contains(it)) return@forEach
-        server.playerManager.bannedPlayers -= it
+        server.playerManager.bannedPlayers.remove(it)
         sender.sendMessage(translatable("commands.pardon.success", text(it.name)))
     }
 }

@@ -180,15 +180,15 @@ class EntityUUIDFix(outputSchema: Schema) : UUIDFix(outputSchema, References.ENT
             "minecraft:trident",
             "minecraft:wither_skull"
         )
-    }
-}
 
-fun Dynamic<*>.updateEntityUUID(): Dynamic<*> = replaceUUIDLeastMost("UUID", "UUID").orElse(this)
+        fun Dynamic<*>.updateEntityUUID(): Dynamic<*> = replaceUUIDLeastMost("UUID", "UUID").orElse(this)
 
-fun Dynamic<*>.updateLivingEntity(): Dynamic<*> = update("Attributes") { attributes ->
-    createList(attributes.asStream().map { instance ->
-        instance.update("Modifiers") { modifiers ->
-            instance.createList(modifiers.asStream().map { it.replaceUUIDLeastMost("UUID", "UUID").orElse(it) })
+        fun Dynamic<*>.updateLivingEntity(): Dynamic<*> = update("Attributes") { attributes ->
+            createList(attributes.asStream().map { instance ->
+                instance.update("Modifiers") { modifiers ->
+                    instance.createList(modifiers.asStream().map { it.replaceUUIDLeastMost("UUID", "UUID").orElse(it) })
+                }
+            })
         }
-    })
+    }
 }

@@ -58,7 +58,7 @@ class NormalNoise(random: RandomSource, firstOctave: Int, amplitudes: DoubleList
 
         private const val INPUT_FACTOR = 1.0181268882175227
         private const val TARGET_DEVIATION = 0.3333333333333333
+
+        private fun Int.expectedDeviation() = 0.1 * (1.0 + 1.0 / (this + 1).toDouble())
     }
 }
-
-private fun Int.expectedDeviation() = 0.1 * (1.0 + 1.0 / (this + 1).toDouble())

@@ -59,7 +59,9 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         IOScope.launch { save() }
     }
 
-    override fun get(name: String) = profilesByName[name.lowercase()]?.apply { lastAccess = operations.incrementAndGet() }?.profile
+    override fun get(name: String) = profilesByName[name.lowercase()]?.apply {
+        lastAccess = operations.incrementAndGet()
+    }?.profile
 
     override fun get(uuid: UUID) = profilesByUUID[uuid]?.apply { lastAccess = operations.incrementAndGet() }?.profile
 

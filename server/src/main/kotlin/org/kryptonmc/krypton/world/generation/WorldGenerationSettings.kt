@@ -97,7 +97,8 @@ data class WorldGenerationSettings(
         fun fromConfig(config: KryptonConfig): WorldGenerationSettings {
             val generatorSettings = config.world.generator
             val settings = generatorSettings.settings
-            val seed = generatorSettings.seed.takeIf { it.isNotBlank() }?.let { it.toLongOrNull() ?: it.hashCode().toLong() } ?: Random.nextLong()
+            val seed = generatorSettings.seed.takeIf { it.isNotBlank() }
+                ?.let { it.toLongOrNull() ?: it.hashCode().toLong() } ?: Random.nextLong()
             val type = generatorSettings.type
             val structures = generatorSettings.structures
             val dimensions = KryptonRegistry(InternalResourceKeys.DIMENSION)

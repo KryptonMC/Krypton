@@ -27,7 +27,7 @@ import org.apache.commons.lang3.StringUtils
 import org.kryptonmc.api.util.getIfPresent
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.datafix.fixes.BlockStateData.upgradeBlock
-import org.kryptonmc.krypton.util.datafix.fixes.item.updateItem
+import org.kryptonmc.krypton.util.datafix.fixes.item.ItemFlatteningFix.Companion.updateItem
 
 class StatsCounterFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
 

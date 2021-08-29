@@ -51,6 +51,7 @@ class BannedPlayerEntry(
             var source = "(Unknown)"
             var expires: OffsetDateTime? = null
             var reason = "Banned by operator."
+
             while (reader.hasNext()) {
                 when (reader.nextName()) {
                     "name" -> name = reader.nextString()

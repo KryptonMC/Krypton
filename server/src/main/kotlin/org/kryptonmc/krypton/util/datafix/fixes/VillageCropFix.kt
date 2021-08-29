@@ -28,31 +28,43 @@ import java.util.stream.Stream
 
 class VillageCropFix(outputSchema: Schema, changesType: Boolean) : DataFix(outputSchema, changesType) {
 
-    override fun makeRule(): TypeRewriteRule = writeFixAndRead("VillageCropFix", inputSchema.getType(References.STRUCTURE_FEATURE), outputSchema.getType(References.STRUCTURE_FEATURE)) { typed ->
-        typed.update("Children") { it.updateChildren() }
+    override fun makeRule(): TypeRewriteRule = writeFixAndRead(
+        "VillageCropFix",
+        inputSchema.getType(References.STRUCTURE_FEATURE),
+        outputSchema.getType(References.STRUCTURE_FEATURE)
+    ) { typed -> typed.update("Children") { it.updateChildren() } }
+
+    companion object {
+
+        private fun <T> Dynamic<T>.updateChildren() = asStreamOpt().map { it.updateChildren() }
+            .map(::createList)
+            .result()
+            .orElse(this)
+
+        private fun Stream<out Dynamic<*>>.updateChildren() = map {
+            when (it["id"].asString("")) {
+                "ViF" -> it.updateSingleField()
+                "ViDF" -> it.updateDoubleField()
+                else -> it
+            }
+        }
+
+        private fun <T> Dynamic<T>.updateSingleField(): Dynamic<T> {
+            val temp = updateCrop("CA")
+            return temp.updateCrop("CB")
+        }
+
+        private fun <T> Dynamic<T>.updateDoubleField(): Dynamic<T> {
+            var temp = updateCrop("CA")
+            temp = temp.updateCrop("CB")
+            temp = temp.updateCrop("CC")
+            return temp.updateCrop("CD")
+        }
+
+        private fun <T> Dynamic<T>.updateCrop(name: String) = if (get(name).asNumber().result().isPresent) {
+            set(name, (get(name).asInt(0) shr 4).tag())
+        } else {
+            this
+        }
     }
 }
-
-private fun <T> Dynamic<T>.updateChildren() = asStreamOpt().map { it.updateChildren() }.map(::createList).result().orElse(this)
-
-private fun Stream<out Dynamic<*>>.updateChildren() = map {
-    when (it["id"].asString("")) {
-        "ViF" -> it.updateSingleField()
-        "ViDF" -> it.updateDoubleField()
-        else -> it
-    }
-}
-
-private fun <T> Dynamic<T>.updateSingleField(): Dynamic<T> {
-    val temp = updateCrop("CA")
-    return temp.updateCrop("CB")
-}
-
-private fun <T> Dynamic<T>.updateDoubleField(): Dynamic<T> {
-    var temp = updateCrop("CA")
-    temp = temp.updateCrop("CB")
-    temp = temp.updateCrop("CC")
-    return temp.updateCrop("CD")
-}
-
-private fun <T> Dynamic<T>.updateCrop(name: String) = if (get(name).asNumber().result().isPresent) set(name, (get(name).asInt(0) shr 4).tag()) else this

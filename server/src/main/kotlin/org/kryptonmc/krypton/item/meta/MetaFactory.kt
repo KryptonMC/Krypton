@@ -18,11 +18,11 @@
  */
 package org.kryptonmc.krypton.item.meta
 
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.meta.MetaKey
 import org.kryptonmc.api.item.meta.MetaKeys
-import org.kryptonmc.krypton.adventure.toJsonComponent
 import org.kryptonmc.krypton.item.ItemFlag
 import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.nbt.ByteTag
@@ -54,13 +54,19 @@ object MetaFactory {
         ),
         MetaKeys.CAN_PLACE_ON to BLOCK_LIST_META_SERIALIZER,
         MetaKeys.NAME to ItemMetaSerializer(
-            { it.getCompound("display").getString("Name").toJsonComponent() },
+            { GsonComponentSerializer.gson().deserialize(it.getCompound("display").getString("Name")) },
             { nbt, name -> nbt.update("display") { putString("Name", name.toJsonString()) } },
             { it.contains("display", CompoundTag.ID) && it.getCompound("display").contains("Name", StringTag.ID) }
         ),
         MetaKeys.LORE to ItemMetaSerializer(
-            { nbt -> nbt.getCompound("display").getList("Lore", StringTag.ID).map { (it as StringTag).value.toJsonComponent() } },
-            { nbt, lore -> nbt.update("display") { put("Lore", ListTag(lore.mapTo(mutableListOf()) { StringTag.of(it.toJsonString()) }, StringTag.ID)) } },
+            { nbt -> nbt.getCompound("display").getList("Lore", StringTag.ID)
+                .map { GsonComponentSerializer.gson().deserialize((it as StringTag).value) }
+            },
+            { nbt, lore ->
+                nbt.update("display") {
+                    put("Lore", ListTag(lore.mapTo(mutableListOf()) { StringTag.of(it.toJsonString()) }, StringTag.ID))
+                }
+            },
             { it.contains("display", CompoundTag.ID) && it.getCompound("display").contains("Lore", StringTag.ID) }
         ),
         MetaKeys.COLOR to ItemMetaSerializer(
@@ -105,7 +111,8 @@ private val BLOCK_LIST_META_SERIALIZER = ItemMetaSerializer(
     { it.contains("CanDestroy", ListTag.ID) }
 )
 
-private fun CompoundTag.getFlag(flag: ItemFlag) = contains("HideFlags", 99) && getInt("HideFlags") and flag.mask == 0
+private fun CompoundTag.getFlag(flag: ItemFlag) =
+    contains("HideFlags", 99) && getInt("HideFlags") and flag.mask == 0
 
 private fun MutableCompoundTag.setFlag(flag: ItemFlag, value: Boolean) {
     var flags = getInt("HideFlags")

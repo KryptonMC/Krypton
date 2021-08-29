@@ -50,28 +50,17 @@ data class BiomeEffects(
                 Codecs.COLOR.fieldOf("water_color").forGetter(BiomeEffects::waterColor),
                 Codecs.COLOR.fieldOf("water_fog_color").forGetter(BiomeEffects::waterFogColor),
                 Codecs.COLOR.fieldOf("sky_color").forGetter(BiomeEffects::skyColor),
-                GrassColorModifier.CODEC.optionalFieldOf("grass_color_modifier", GrassColorModifier.NONE).forGetter(BiomeEffects::grassColorModifier),
+                GrassColorModifier.CODEC.optionalFieldOf("grass_color_modifier", GrassColorModifier.NONE)
+                    .forGetter(BiomeEffects::grassColorModifier),
                 Codecs.COLOR.optionalFieldOf("foliage_color").forGetter(BiomeEffects::foliageColor),
                 Codecs.COLOR.optionalFieldOf("grass_color").forGetter(BiomeEffects::grassColor),
                 AmbientParticleSettings.CODEC.optionalFieldOf("particle").forGetter(BiomeEffects::ambientParticleSettings),
                 Codecs.SOUND_EVENT.optionalFieldOf("ambient_sound").forGetter(BiomeEffects::ambientLoopSound),
                 AmbientMoodSettings.CODEC.optionalFieldOf("mood_sound").forGetter(BiomeEffects::ambientMoodSettings),
-                AmbientAdditionsSettings.CODEC.optionalFieldOf("additions_sound").forGetter(BiomeEffects::ambientAdditionsSettings),
+                AmbientAdditionsSettings.CODEC.optionalFieldOf("additions_sound")
+                    .forGetter(BiomeEffects::ambientAdditionsSettings),
                 Music.CODEC.optionalFieldOf("music").forGetter(BiomeEffects::backgroundMusic)
             ).apply(instance, ::BiomeEffects)
         }
-    }
-}
-
-enum class GrassColorModifier(override val serialized: String) : StringSerializable {
-
-    NONE("none"),
-    DARK_FOREST("dark_forest"),
-    SWAMP("swamp");
-
-    companion object {
-
-        private val BY_NAME = values().associateBy { it.serialized }
-        val CODEC = Codecs.forEnum(values()) { BY_NAME[it] }
     }
 }

@@ -21,14 +21,14 @@ package org.kryptonmc.krypton.world.data
 import com.mojang.serialization.Dynamic
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.tryCreateFile
 import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.daemon
-import org.kryptonmc.krypton.util.datafix.DATA_FIXER
+import org.kryptonmc.krypton.util.datafix.DataFixers
 import org.kryptonmc.krypton.util.datafix.FixType
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.threadFactory
+import org.kryptonmc.krypton.util.tryCreateFile
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
@@ -65,7 +65,7 @@ class PlayerDataManager(private val folder: Path) {
         }
 
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
-        player.load(DATA_FIXER.update(FixType.PLAYER.type, Dynamic(NBTOps, nbt), version, KryptonPlatform.worldVersion).value as CompoundTag)
+        player.load(DataFixers.get().update(FixType.PLAYER.type, Dynamic(NBTOps, nbt), version, KryptonPlatform.worldVersion).value as CompoundTag)
         nbt
     }, executor)
 

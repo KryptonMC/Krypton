@@ -24,11 +24,11 @@ import net.kyori.adventure.text.Component
 import net.minecrell.terminalconsole.SimpleTerminalConsole
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
+import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.event.server.SetupPermissionsEvent
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.adventure.toSectionText
 import org.kryptonmc.krypton.util.TranslationBootstrap
 import org.kryptonmc.krypton.util.logger
 import java.util.Locale
@@ -45,7 +45,7 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     }
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        LOGGER.info(TranslationBootstrap.RENDERER.render(message, Locale.ENGLISH).toSectionText())
+        LOGGER.info(TranslationBootstrap.RENDERER.render(message, Locale.ENGLISH).toLegacySectionText())
     }
 
     override fun getPermissionValue(permission: String) = permissionFunction[permission]

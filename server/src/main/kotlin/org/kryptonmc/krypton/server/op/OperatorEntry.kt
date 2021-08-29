@@ -22,7 +22,11 @@ import com.google.gson.stream.JsonWriter
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.server.ServerConfigEntry
 
-class OperatorEntry(profile: KryptonGameProfile, val permissionLevel: Int, val bypassPlayerLimit: Boolean) : ServerConfigEntry<KryptonGameProfile>(profile) {
+class OperatorEntry(
+    profile: KryptonGameProfile,
+    val permissionLevel: Int,
+    private val bypassesPlayerLimit: Boolean
+) : ServerConfigEntry<KryptonGameProfile>(profile) {
 
     override fun write(writer: JsonWriter) {
         writer.beginObject()
@@ -30,10 +34,10 @@ class OperatorEntry(profile: KryptonGameProfile, val permissionLevel: Int, val b
         writer.value(key.uuid.toString())
         writer.name("name")
         writer.value(key.name)
-        writer.name("leve")
+        writer.name("level")
         writer.value(permissionLevel)
         writer.name("bypassesPlayerLimit")
-        writer.value(bypassPlayerLimit)
+        writer.value(bypassesPlayerLimit)
         writer.endObject()
     }
 }
