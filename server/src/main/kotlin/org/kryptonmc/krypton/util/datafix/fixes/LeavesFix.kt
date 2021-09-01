@@ -31,7 +31,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import it.unimi.dsi.fastutil.ints.IntSet
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
-import org.kryptonmc.krypton.util.datafix.PackedBitStorage
+import org.kryptonmc.krypton.util.converter.PackedBitStorage
 import org.kryptonmc.krypton.util.datafix.References
 
 class LeavesFix(outputSchema: Schema, changesType: Boolean) : SectionFix(outputSchema, changesType) {

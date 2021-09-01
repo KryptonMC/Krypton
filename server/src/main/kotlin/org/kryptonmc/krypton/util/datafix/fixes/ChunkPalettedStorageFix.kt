@@ -30,7 +30,7 @@ import it.unimi.dsi.fastutil.ints.IntList
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.clamp
-import org.kryptonmc.krypton.util.datafix.PackedBitStorage
+import org.kryptonmc.krypton.util.converter.PackedBitStorage
 import org.kryptonmc.krypton.util.datafix.References
 import org.kryptonmc.krypton.util.datafix.fixes.BlockStateData.parse
 import org.kryptonmc.krypton.util.datafix.fixes.BlockStateData.tag

@@ -12,6 +12,7 @@ evaluationDependsOn(":api")
 
 repositories {
     maven("https://oss.sonatype.org/content/groups/public/")
+    maven("https://repo.kryptonmc.org/snapshots")
 }
 
 dependencies {
@@ -43,6 +44,7 @@ dependencies {
     runtimeOnly("org.jline", "jline-terminal-jansi", Versions.JANSI)
 
     // Data
+    implementation("ca.spottedleaf", "data-converter", Versions.DATA_CONVERTER)
     implementation("org.kryptonmc", "datafixerupper", Versions.DFU) // Slight performance enhanced version, courtesy of Paper
     implementation("org.kryptonmc", "nbt", Versions.NBT)
     implementation("org.kryptonmc", "articdata", Versions.MINECRAFT)

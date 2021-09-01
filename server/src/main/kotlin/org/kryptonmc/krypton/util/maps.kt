@@ -18,10 +18,12 @@
  */
 package org.kryptonmc.krypton.util
 
-fun <K, V, K1, V1> Map<K, V>.transform(function: (Map.Entry<K, V>) -> Pair<K1, V1>): Map<K1, V1> {
-    val temp = mutableMapOf<K1, V1>()
+fun <K, V, K1, V1> Map<K, V>.transform(transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): Map<K1, V1> =
+    transformTo(mutableMapOf(), transformer)
+
+fun <C : MutableMap<K1, V1>, K, V, K1, V1> Map<K, V>.transformTo(destination: C, transformer: (Map.Entry<K, V>) -> Pair<K1, V1>): C {
     for (entry in this) {
-        temp += function(entry)
+        destination += transformer(entry)
     }
-    return temp
+    return destination
 }

@@ -27,6 +27,7 @@ object Versions {
     const val BSTATS = "2.2.1"
     const val VELOCITY_NATIVE = "1.1.9"
     const val DFU = "4.0"
+    const val DATA_CONVERTER = "1.0.0-SNAPSHOT"
     const val EVENT = "4.0.0-SNAPSHOT"
     const val ASM = "9.2"
     const val NBT = "1.5.5"

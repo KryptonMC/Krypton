@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util.datafix
+package org.kryptonmc.krypton.util.converter
 
 import org.kryptonmc.krypton.util.roundToward
 

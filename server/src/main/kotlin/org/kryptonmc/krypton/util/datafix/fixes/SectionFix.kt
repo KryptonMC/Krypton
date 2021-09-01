@@ -29,7 +29,7 @@ import com.mojang.datafixers.schemas.Schema
 import com.mojang.datafixers.util.Pair
 import com.mojang.serialization.Dynamic
 import org.kryptonmc.krypton.util.ceillog2
-import org.kryptonmc.krypton.util.datafix.PackedBitStorage
+import org.kryptonmc.krypton.util.converter.PackedBitStorage
 import org.kryptonmc.krypton.util.datafix.References
 import java.util.Arrays
 import java.util.stream.Collectors
