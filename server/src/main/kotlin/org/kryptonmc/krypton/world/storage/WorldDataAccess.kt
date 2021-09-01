@@ -18,17 +18,14 @@
  */
 package org.kryptonmc.krypton.world.storage
 
-import com.mojang.serialization.Dynamic
-import com.mojang.serialization.DynamicOps
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.util.DirectoryLock
-import org.kryptonmc.krypton.util.datafix.DataFixers
-import org.kryptonmc.krypton.util.datafix.References
+import org.kryptonmc.krypton.util.converter.MCDataConverter.convertDataTyped
+import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.DataPackConfig
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
-import org.kryptonmc.nbt.Tag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import java.nio.file.Path
@@ -43,9 +40,9 @@ class WorldDataAccess(
 
     fun resolve(path: String): Path = this.path.resolve(path)
 
-    fun loadData(ops: DynamicOps<Tag>, dataPackConfig: DataPackConfig): PrimaryWorldData? {
+    fun loadData(dataPackConfig: DataPackConfig): PrimaryWorldData? {
         checkLock()
-        return storage.loadData(path, getWorldData(ops, dataPackConfig))
+        return storage.loadData(path, getWorldData(dataPackConfig))
     }
 
     fun saveData(data: PrimaryWorldData) = storage.saveData(path, data)
@@ -60,11 +57,11 @@ class WorldDataAccess(
 
         private val LOGGER = logger<WorldDataAccess>()
 
-        private fun getWorldData(ops: DynamicOps<Tag>, dataPackConfig: DataPackConfig): (Path) -> PrimaryWorldData? = {
+        private fun getWorldData(dataPackConfig: DataPackConfig): (Path) -> PrimaryWorldData? = {
             try {
                 val tag = TagIO.read(it, TagCompression.GZIP).getCompound("Data")
                 val version = if (tag.contains("DataVersion", 99)) tag.getInt("DataVersion") else -1
-                val data = DataFixers.get().update(References.LEVEL, Dynamic(ops, tag), version, KryptonPlatform.worldVersion)
+                val data = tag.convertDataTyped(MCTypeRegistry.LEVEL, version, KryptonPlatform.worldVersion)
                 PrimaryWorldData.parse(data, WorldGenerationSettings.default(), dataPackConfig)
             } catch (exception: Exception) {
                 LOGGER.error("Caught exception whilst trying to read $it!", exception)

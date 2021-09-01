@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world
 
+import ca.spottedleaf.dataconverter.types.MapType
 import com.mojang.serialization.DynamicLike
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.rule.GameRule
@@ -37,6 +38,10 @@ class KryptonGameRuleHolder : GameRuleHolder {
             val rule = tag[key.name].asString().result()
             rule.ifPresent { rules[key] = deserialize(it) }
         }
+    }
+
+    constructor(tag: MapType<String>) : this() {
+        rules.forEach { (key, _) -> tag.getString(key.name)?.let { rules[key] = deserialize(it) } }
     }
 
     fun save() = compound {

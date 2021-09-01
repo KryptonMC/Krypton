@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.util.converter
 
 import ca.spottedleaf.dataconverter.converters.DataConverter
 import ca.spottedleaf.dataconverter.converters.datatypes.DataType
+import ca.spottedleaf.dataconverter.types.MapType
 import com.google.gson.JsonObject
 import org.kryptonmc.krypton.util.converter.types.MCDataType
 import org.kryptonmc.krypton.util.converter.types.json.JsonMapType
@@ -31,19 +32,22 @@ object MCDataConverter {
 
     private val BREAKPOINTS = MCVersionRegistry.BREAKPOINTS
 
-    fun CompoundTag.convertData(type: MCDataType, fromVersion: Int, toVersion: Int): CompoundTag {
+    fun CompoundTag.convertData(type: MCDataType, fromVersion: Int, toVersion: Int) =
+        (convertDataTyped(type, fromVersion, toVersion) as NBTMapType).map
+
+    fun CompoundTag.convertDataTyped(type: MCDataType, fromVersion: Int, toVersion: Int): MapType<String> {
         val wrapped = NBTMapType(this)
-        return (convert(type, wrapped, fromVersion, toVersion) as? NBTMapType)?.map ?: wrapped.map
+        return convert(type, wrapped, fromVersion, toVersion) ?: wrapped
     }
 
-    fun JsonObject.convertData(type: MCDataType, fromVersion: Int, toVersion: Int, compressed: Boolean): JsonObject {
+    fun JsonObject.convertData(type: MCDataType, fromVersion: Int, toVersion: Int, compressed: Boolean = false): JsonObject {
         val wrapped = JsonMapType(this, compressed)
         return (convert(type, wrapped, fromVersion, toVersion) as? JsonMapType)?.map ?: wrapped.map
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T, R> convert(type: DataType<T, R>, data: T, fromVersion: Int, toVersion: Int): R {
-        var ret: Any = data as Any
+    fun <T : Any, R> convert(type: DataType<T, R>, data: T, fromVersion: Int, toVersion: Int): R? {
+        var ret: Any = data
         var currentVersion = DataConverter.encodeVersions(if (fromVersion < 99) 99 else fromVersion, Int.MAX_VALUE)
         val nextVersion = DataConverter.encodeVersions(toVersion, Int.MAX_VALUE)
 
@@ -60,6 +64,6 @@ object MCDataConverter {
             val converted = type.convert(ret as T, currentVersion, nextVersion)
             if (converted != null) ret = converted
         }
-        return ret as R
+        return ret as? R
     }
 }

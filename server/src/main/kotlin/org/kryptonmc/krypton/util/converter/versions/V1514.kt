@@ -30,8 +30,8 @@ object V1514 {
     private const val VERSION = MCVersions.V1_13_PRE7 + 1
 
     fun register() {
-        MCTypeRegistry.OBJECTIVE.addStructureConverter(VERSION, 0, ::updateDisplayName)
-        MCTypeRegistry.TEAM.addStructureConverter(VERSION, 0, ::updateDisplayName)
+        MCTypeRegistry.OBJECTIVE.addStructureConverter(VERSION) { data, _, _ -> updateDisplayName(data) }
+        MCTypeRegistry.TEAM.addStructureConverter(VERSION) { data, _, _ -> updateDisplayName(data) }
         MCTypeRegistry.OBJECTIVE.addStructureConverter(VERSION) { data, _, _ ->
             data.getString("RenderType")?.let { return@addStructureConverter null }
             val criteriaName = data.getString("CriteriaName", "")!!
@@ -40,7 +40,7 @@ object V1514 {
         }
     }
 
-    private fun updateDisplayName(data: MapType<String>, sourceVersion: Long, toVersion: Long): MapType<String>? {
+    private fun updateDisplayName(data: MapType<String>): MapType<String>? {
         val displayName = data.getString("DisplayName") ?: return null
         val update = GsonComponentSerializer.gson().serialize(Component.text(displayName))
         data.setString("DisplayName", update)

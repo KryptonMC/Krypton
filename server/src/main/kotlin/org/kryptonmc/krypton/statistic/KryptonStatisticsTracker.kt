@@ -22,8 +22,6 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import com.google.gson.internal.Streams
 import com.google.gson.stream.JsonReader
-import com.mojang.serialization.Dynamic
-import com.mojang.serialization.JsonOps
 import it.unimi.dsi.fastutil.objects.Object2IntMap
 import it.unimi.dsi.fastutil.objects.Object2IntMaps
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
@@ -37,8 +35,8 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutStatistics
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.datafix.DataFixers
-import org.kryptonmc.krypton.util.datafix.References
+import org.kryptonmc.krypton.util.converter.MCDataConverter.convertData
+import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toKeyOrNull
 import org.kryptonmc.krypton.util.tryCreateFile
@@ -129,15 +127,10 @@ class KryptonStatisticsTracker(
                 json.addProperty("DataVersion", OLD_VERSION)
             }
 
-            val data = DataFixers.get().update(
-                References.STATS,
-                Dynamic(JsonOps.INSTANCE, json),
-                json["DataVersion"].asInt,
-                KryptonPlatform.worldVersion
-            )
-            if (data["stats"].asMapOpt().result().isEmpty) return
+            val data = json.convertData(MCTypeRegistry.STATS, json["DataVersion"].asInt, KryptonPlatform.worldVersion)
+            if (data["stats"].asJsonObject.size() == 0) return
 
-            val stats = data["stats"].orElseEmptyMap().value.asJsonObject
+            val stats = data["stats"]?.asJsonObject ?: JsonObject()
             stats.keys.forEach { key ->
                 if (!stats[key].isJsonObject) return@forEach
 

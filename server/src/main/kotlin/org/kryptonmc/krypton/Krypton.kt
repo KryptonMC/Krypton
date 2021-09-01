@@ -114,7 +114,7 @@ private class KryptonCLI : CliktCommand(
         val storageAccess = WorldDataStorage(worldFolder).createAccess(config.world.name)
         val profileCache = KryptonProfileCache(Path.of("usercache.json"))
 
-        val worldData = storageAccess.loadData(NBTOps, DataPackConfig.DEFAULT) ?: PrimaryWorldData(
+        val worldData = storageAccess.loadData(DataPackConfig.DEFAULT) ?: PrimaryWorldData(
             config.world.name,
             config.world.gamemode,
             config.world.difficulty,

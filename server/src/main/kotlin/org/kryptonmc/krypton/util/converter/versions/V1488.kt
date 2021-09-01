@@ -45,7 +45,7 @@ object V1488 {
 
         MCTypeRegistry.STRUCTURE_FEATURE.addStructureConverter(VERSION) { data, _, _ ->
             val children = data.getList("Children", ObjectType.MAP)
-            var isIgloo = false
+            var isIgloo: Boolean
             if (children != null) {
                 isIgloo = true
                 for (i in 0 until children.size()) {

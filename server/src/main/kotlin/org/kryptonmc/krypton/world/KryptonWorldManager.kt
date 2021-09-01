@@ -101,7 +101,7 @@ class KryptonWorldManager(
         }
 
         return CompletableFuture.supplyAsync({
-            val worldData = storage.loadData(NBTOps, defaultData.dataPackConfig) ?: kotlin.run {
+            val worldData = storage.loadData(defaultData.dataPackConfig) ?: kotlin.run {
                 val gamemode = server.config.world.gamemode
                 val difficulty = server.config.world.difficulty
                 val hardcore = server.config.world.hardcore

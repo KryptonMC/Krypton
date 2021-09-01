@@ -18,17 +18,22 @@
  */
 package org.kryptonmc.krypton.world.data
 
+import ca.spottedleaf.dataconverter.types.MapType
+import ca.spottedleaf.dataconverter.types.ObjectType
 import com.mojang.datafixers.DataFixUtils
 import com.mojang.serialization.Dynamic
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.converter.types.nbt.NBTMapType
 import org.kryptonmc.krypton.util.nbt.NBTOps
+import org.kryptonmc.krypton.util.toUUID
 import org.kryptonmc.krypton.world.DataPackConfig
 import org.kryptonmc.krypton.world.KryptonGameRuleHolder
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.MutableCompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.Tag
 import org.kryptonmc.nbt.compound
@@ -150,6 +155,47 @@ class PrimaryWorldData(
     companion object {
 
         private const val ANVIL_VERSION_ID = 19133
+
+        fun parse(data: MapType<String>, generationSettings: WorldGenerationSettings, dataPackConfig: DataPackConfig): PrimaryWorldData {
+            val time = data.getLong("Time", 0L)
+            val dragonFightData = data.getMap<String>(
+                "DragonFightData",
+                data.getMap<String>("DimensionData")?.getMap<String>("1")?.getMap("DragonFight") ?: NBTMapType(MutableCompoundTag())
+            )
+            return PrimaryWorldData(
+                data.getString("LevelName", "")!!,
+                Gamemode.fromId(data.getInt("GameType", 0)) ?: Gamemode.SURVIVAL,
+                data.getNumber("Difficulty")?.let { Difficulty.fromId(it.toInt()) } ?: Difficulty.NORMAL,
+                data.getBoolean("hardcore", false),
+                KryptonGameRuleHolder(data.getMap("GameRules") ?: NBTMapType(MutableCompoundTag())),
+                dataPackConfig,
+                data.getInt("SpawnX", 0),
+                data.getInt("SpawnY", 0),
+                data.getInt("SpawnZ", 0),
+                data.getFloat("SpawnAngle", 0F),
+                time,
+                data.getLong("DayTime", time),
+                data.getInt("clearWeatherTime", 0),
+                data.getBoolean("raining", false),
+                data.getInt("rainTime", 0),
+                data.getBoolean("thundering", false),
+                data.getInt("thunderTime", 0),
+                data.getBoolean("initialized", false),
+                data.getInt("WanderingTraderSpawnChance", 0),
+                data.getInt("WanderingTraderSpawnDelay", 0),
+                data.getInts("WanderingTraderId")?.toUUID(),
+                (data.getMap<String>("CustomBossEvents") as NBTMapType).map,
+                (dragonFightData as NBTMapType).map,
+                data.getList("ServerBrands", ObjectType.STRING)?.let {
+                    val set = mutableSetOf<String>()
+                    for (i in 0 until it.size()) {
+                        set.add(it.getString(i))
+                    }
+                    set
+                } ?: mutableSetOf(),
+                generationSettings
+            )
+        }
 
         fun parse(dynamic: Dynamic<Tag>, generationSettings: WorldGenerationSettings, dataPackConfig: DataPackConfig): PrimaryWorldData {
             val time = dynamic["Time"].asLong(0L)
