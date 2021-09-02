@@ -24,6 +24,7 @@ import org.kryptonmc.api.block.BlockHandler
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.effect.Effect
@@ -58,4 +59,13 @@ open class KryptonBlockHandler : BlockHandler {
     override fun onDestroy(player: Player, block: Block, position: Vector3i, item: ItemStack) {
         // TODO: Award block mined statistic, cause exhaustion, and drop items
     }
+
+    override fun updateShape(
+        block: Block,
+        position: Vector3i,
+        direction: Direction,
+        neighbour: Block,
+        neighbourPosition: Vector3i,
+        world: World
+    ): Block = block
 }

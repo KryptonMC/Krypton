@@ -37,7 +37,7 @@ import java.io.StringReader
 
 object V1506 {
 
-    private const val VERSION = MCVersions.V1_12_PRE4 + 2
+    private const val VERSION = MCVersions.V1_13_PRE4 + 2
     private val MAP = mapOf(
         "0" to "minecraft:ocean",
         "1" to "minecraft:plains",

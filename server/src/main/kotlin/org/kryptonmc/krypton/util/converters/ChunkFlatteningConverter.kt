@@ -41,7 +41,6 @@ import kotlin.math.min
 object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
 
     private val LOGGER = logger<ChunkFlatteningConverter>()
-
     private val VIRTUAL_SET = BitSet(256).apply {
         set(54)
         set(146)
@@ -209,13 +208,7 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
             noLeft -> 32
             noRight -> 8
             else -> 16
-        } else if (noRight) {
-            4
-        } else if (noLeft) {
-            64
-        } else {
-            0
-        }
+        } else if (noRight) 4 else if (noLeft) 64 else 0
     }
 
     override fun convert(data: MapType<String>, sourceVersion: Long, toVersion: Long): MapType<String>? {
@@ -362,7 +355,7 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
 
             // if we are an even index, we want lower 4 bits
             // if we are an odd index, we want upper 4 bits
-            return ((value ushr ((index and 1) shl 2)) and 0xF)
+            return value ushr (index and 1 shl 2) and 0xF
         }
 
         operator fun get(x: Int, y: Int, z: Int): Int {
@@ -371,7 +364,7 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
 
             // if we are an even index, we want lower 4 bits
             // if we are an odd index, we want upper 4 bits
-            return ((value ushr ((index and 1) shl 2)) and 0xF)
+            return value ushr (index and 1 shl 2) and 0xF
         }
 
         companion object {
@@ -411,11 +404,11 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
                     val section = Section(sectionData)
 
                     if (section.y !in 0..15) {
-                        LOGGER.warn("In chunk: ${blockX}x$blockZ found an invalid chunk section y (ConverterFlattenChunk): ${section.y}")
+                        LOGGER.warn("In chunk: ${blockX}x$blockZ found an invalid chunk section y: ${section.y} (ChunkFlatteningConverter)")
                         continue
                     }
                     if (sections[section.y] != null) {
-                        LOGGER.warn("In chunk: ${blockX}x$blockZ found a duplicate chunk section (ConverterFlattenChunk): ${section.y}")
+                        LOGGER.warn("In chunk: ${blockX}x$blockZ found a duplicate chunk section: ${section.y} (ChunkFlatteningConverter)")
                     }
 
                     sides = section.upgrade(sides)
@@ -425,7 +418,7 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
 
             sections.forEach { section ->
                 if (section == null) return@forEach
-                val yIndex = section.y shl (8 + 4)
+                val yIndex = section.y shl 12
 
                 section.toFix.int2ObjectEntrySet().fastForEach { entry ->
                     val positionIterator = entry.value.intIterator()
@@ -452,7 +445,7 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
                             val position = positionIterator.nextInt() or yIndex
                             val tile = removeBlockEntity(position)
                             if (tile != null) {
-                                val state = "${tile.getBoolean("powered")}${min(max(tile.getInt("note"), 0), 24)}"
+                                val state = "${tile.getBoolean("powered")}${min(max(tile.getInt("note"), 0), 24).toByte()}"
                                 setBlock(position, NOTE_BLOCK_MAP.getOrDefault(state, NOTE_BLOCK_MAP["false0"]!!))
                             }
                         }
@@ -637,7 +630,7 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
         val update = IntArrayList()
         private val buffer = IntArray(4096)
 
-        fun getBlock(index: Int): MapType<String> = palette.byId.getOrNull(index) ?: AIR
+        fun getBlock(index: Int): MapType<String> = palette.byId.getOrNull(buffer[index]) ?: AIR
 
         fun setBlock(index: Int, blockState: MapType<String>) {
             buffer[index] = palette.getOrCreateId(blockState)
@@ -667,7 +660,7 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
                 }
                 setBlock(i, BlockFlatteningHelper.getNBTForId(blockStateId))
             }
-            return sides
+            return temp
         }
 
         // Note: modifies the current section and returns it.
@@ -717,23 +710,25 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
 
             override fun getOrDefault(key: MapType<String>?, defaultValue: Int?): Int = super.getOrDefault(key, defaultValue)
 
+            @Suppress("UNCHECKED_CAST")
             private fun find(k: MapType<String>?): Int {
-                if (k === null) return if (containsNullKey) n else -(n + 1)
-                val key = key
+                if (k == null) return if (containsNullKey) n else -(n + 1)
+                val key = key as Array<Any>
                 var pos = HashCommon.mix(System.identityHashCode(k)) and mask
-                var curr: MapType<String>? = key[pos] ?: return -(pos + 1)
+                var curr: MapType<String>? = key[pos] as? MapType<String> ?: return -(pos + 1)
                 if (k === curr) return pos
                 while (true) {
                     pos = (pos + 1) and mask
-                    curr = key[pos]
+                    curr = key[pos] as? MapType<String>
                     if (curr == null) return -(pos + 1)
                     if (k === curr) return pos
                 }
             }
 
+            @Suppress("UNCHECKED_CAST")
             private fun insert(pos: Int, k: MapType<String>, v: Int) {
                 if (pos == n) containsNullKey = true
-                key[pos] = k
+                (key as Array<Any>)[pos] = k
                 value[pos] = v
                 if (size++ >= maxFill) rehash(HashCommon.arraySize(size + 1, f))
             }

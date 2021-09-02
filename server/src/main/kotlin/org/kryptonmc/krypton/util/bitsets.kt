@@ -22,6 +22,8 @@ import java.util.BitSet
 
 fun BitSet.toBooleanArray(): BooleanArray {
     val array = BooleanArray(4096)
-    for (i in 0 until 4096) array[i] = get(i)
+    for (i in 0 until 4096) {
+        array[i] = get(i)
+    }
     return array
 }

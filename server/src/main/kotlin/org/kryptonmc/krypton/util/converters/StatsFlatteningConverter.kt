@@ -19,9 +19,11 @@
 package org.kryptonmc.krypton.util.converters
 
 import ca.spottedleaf.dataconverter.types.MapType
+import com.google.gson.internal.LazilyParsedNumber
 import org.apache.commons.lang3.StringUtils
 import org.kryptonmc.krypton.util.converter.MCVersions
 import org.kryptonmc.krypton.util.converter.StringDataConverter
+import org.kryptonmc.krypton.util.converter.types.json.JsonTypeUtil
 import org.kryptonmc.krypton.util.converter.types.nbt.NBTTypeUtil
 import org.kryptonmc.krypton.util.converters.helpers.BlockFlatteningHelper
 
@@ -144,7 +146,7 @@ object StatsFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 6) {
     )
 
     override fun convert(data: MapType<String>, sourceVersion: Long, toVersion: Long): MapType<String>? {
-        val stats = NBTTypeUtil.createEmptyMap<String>()
+        val stats = JsonTypeUtil.createEmptyMap<String>()
         data.keys().forEach {
             val value = data.getNumber(it) ?: return@forEach
             if (SKIP.contains(it)) return@forEach
@@ -179,8 +181,9 @@ object StatsFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 6) {
                 }
             }
 
-            val statTypeMap = stats.getMap(statType) ?: NBTTypeUtil.createEmptyMap<String>().apply { stats.setMap(statType, this) }
-            statTypeMap.setGeneric(newStatKey, value)
+            val statTypeMap = stats.getMap(statType) ?: JsonTypeUtil.createEmptyMap<String>().apply { stats.setMap(statType, this) }
+            // thanks very much for your terrible JSON library, Google
+            statTypeMap.setGeneric(newStatKey, if (value is LazilyParsedNumber) value.toInt() else value)
         }
 
         data.clear()

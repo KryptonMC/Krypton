@@ -22,6 +22,7 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.util.DirectoryLock
 import org.kryptonmc.krypton.util.converter.MCDataConverter.convertDataTyped
 import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
+import org.kryptonmc.krypton.util.converter.types.nbt.NBTMapType
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.DataPackConfig
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
@@ -33,6 +34,7 @@ import java.nio.file.Path
 class WorldDataAccess(
     private val storage: WorldDataStorage,
     val id: String,
+    private val useDataConverter: Boolean
 ) : AutoCloseable {
 
     val path: Path = storage.baseFolder.resolve(id)
@@ -42,7 +44,7 @@ class WorldDataAccess(
 
     fun loadData(dataPackConfig: DataPackConfig): PrimaryWorldData? {
         checkLock()
-        return storage.loadData(path, getWorldData(dataPackConfig))
+        return storage.loadData(path, getWorldData(useDataConverter, dataPackConfig))
     }
 
     fun saveData(data: PrimaryWorldData) = storage.saveData(path, data)
@@ -57,11 +59,27 @@ class WorldDataAccess(
 
         private val LOGGER = logger<WorldDataAccess>()
 
-        private fun getWorldData(dataPackConfig: DataPackConfig): (Path) -> PrimaryWorldData? = {
+        private fun getWorldData(useDataConverter: Boolean, dataPackConfig: DataPackConfig): (Path) -> PrimaryWorldData? = {
             try {
                 val tag = TagIO.read(it, TagCompression.GZIP).getCompound("Data")
                 val version = if (tag.contains("DataVersion", 99)) tag.getInt("DataVersion") else -1
-                val data = tag.convertDataTyped(MCTypeRegistry.LEVEL, version, KryptonPlatform.worldVersion)
+                // We won't upgrade data if use of the data converter is disabled.
+                if (version < KryptonPlatform.worldVersion && !useDataConverter) {
+                    LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data" +
+                            "conversion is disabled!")
+                    LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or --use-data-converter" +
+                            "flag(s) to the JAR on startup.")
+                    LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
+                    LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
+                    error("Tried to load old world data from version $version when data conversion is disabled!")
+                }
+
+                // Don't use data converter if the data isn't older than our version.
+                val data = if (useDataConverter && version < KryptonPlatform.worldVersion) {
+                    tag.convertDataTyped(MCTypeRegistry.LEVEL, version, KryptonPlatform.worldVersion)
+                } else {
+                    NBTMapType(tag)
+                }
                 PrimaryWorldData.parse(data, WorldGenerationSettings.default(), dataPackConfig)
             } catch (exception: Exception) {
                 LOGGER.error("Caught exception whilst trying to read $it!", exception)

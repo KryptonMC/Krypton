@@ -72,6 +72,7 @@ class KryptonServer(
     val dataAccess: WorldDataAccess,
     val worldData: PrimaryWorldData,
     val config: KryptonConfig,
+    val useDataConverter: Boolean,
     override val profileCache: KryptonProfileCache,
     private val configPath: Path,
     worldFolder: Path
@@ -372,6 +373,6 @@ class KryptonServer(
 
         private val RESERVED_CHANNELS = setOf(key("register"), key("unregister"))
         private const val MILLISECONDS_PER_TICK = 50L // milliseconds in a tick
-        private val LOGGER = logger<KryptonServer>()
+        val LOGGER = logger<KryptonServer>()
     }
 }

@@ -91,7 +91,7 @@ abstract class KryptonLivingEntity(
 
     override fun save() = super.save().apply {
         float("AbsorptionAmount", absorption)
-        compound("Attributes") { attributes.values.forEach { it.save() } }
+        list("Attributes", CompoundTag.ID, attributes.values.map { it.save() })
         put("Brain", brain.save())
         short("DeathTime", deathTime)
         boolean("FallFlying", isFallFlying)

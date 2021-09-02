@@ -126,8 +126,23 @@ class KryptonStatisticsTracker(
             if (!json.has("DataVersion") || !json["DataVersion"].isJsonPrimitive) {
                 json.addProperty("DataVersion", OLD_VERSION)
             }
+            val version = json["DataVersion"].asInt
+            // We won't upgrade data if use of the data converter is old.
+            if (version < KryptonPlatform.worldVersion && !player.server.useDataConverter) {
+                LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data conversion is disabled!")
+                LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or --use-data-converter flag(s) to the " +
+                        "JAR on startup.")
+                LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
+                LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
+                error("Tried to load old statistics from version $version when data conversion is disabled!")
+            }
 
-            val data = json.convertData(MCTypeRegistry.STATS, json["DataVersion"].asInt, KryptonPlatform.worldVersion)
+            // Don't use data converter if the version isn't older than our version.
+            val data = if (player.server.useDataConverter && json["DataVersion"].asInt < KryptonPlatform.worldVersion) {
+                json.convertData(MCTypeRegistry.STATS, json["DataVersion"].asInt, KryptonPlatform.worldVersion)
+            } else {
+                json
+            }
             if (data["stats"].asJsonObject.size() == 0) return
 
             val stats = data["stats"]?.asJsonObject ?: JsonObject()

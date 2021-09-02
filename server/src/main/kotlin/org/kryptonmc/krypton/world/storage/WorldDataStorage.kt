@@ -35,7 +35,7 @@ class WorldDataStorage(val baseFolder: Path) {
         (if (baseFolder.exists()) baseFolder.toRealPath() else baseFolder).createDirectories()
     }
 
-    fun createAccess(id: String) = WorldDataAccess(this, id)
+    fun createAccess(id: String, useDataConverter: Boolean) = WorldDataAccess(this, id, useDataConverter)
 
     fun <T> loadData(folder: Path, reader: (Path) -> T): T? {
         if (!folder.exists()) return null

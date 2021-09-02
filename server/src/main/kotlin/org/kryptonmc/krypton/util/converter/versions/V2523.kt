@@ -53,7 +53,7 @@ object V2523 {
             override fun convert(data: MapType<String>, sourceVersion: Long, toVersion: Long): MapType<String>? {
                 val attributes = data.getList("Attributes", ObjectType.MAP) ?: return null
                 for (i in 0 until attributes.size()) {
-                    attributes.getMap<String>(i).updateName("Name")
+                    updateName(attributes.getMap(i), "Name")
                 }
                 return null
             }
@@ -65,13 +65,18 @@ object V2523 {
         MCTypeRegistry.ITEM_STACK.addStructureConverter(VERSION) { data, _, _ ->
             val attributes = data.getList("AttributeModifiers", ObjectType.MAP) ?: return@addStructureConverter null
             for (i in 0 until attributes.size()) {
-                attributes.getMap<String>(i).updateName("AttributeName")
+                updateName(attributes.getMap(i), "AttributeName")
             }
             null
         }
     }
 
-    private fun MapType<String>.updateName(path: String) {
-        getString(path)?.let { name -> RENAMES[name]?.let { setString(path, it) } }
+    private fun updateName(data: MapType<String>?, path: String) {
+        if (data == null) return
+        val name = data.getString(path)
+        if (name != null) {
+            val renamed = RENAMES[name]
+            if (renamed != null) data.setString(path, renamed)
+        }
     }
 }

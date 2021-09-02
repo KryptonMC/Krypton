@@ -37,7 +37,7 @@ object V1466 {
             val level = data.getMap<String>("Level") ?: return@addStructureConverter null
             val terrainPopulated = level.getBoolean("TerrainPopulated")
             val lightPopulated = level.getBoolean("LightPopulated") || level.getNumber("LightPopulated") == null
-            val newStatus = if (!terrainPopulated) "carved" else if (!lightPopulated) "mobs_spawned" else "decorated"
+            val newStatus = if (!terrainPopulated) "carved" else if (lightPopulated) "mobs_spawned" else "decorated"
 
             level.setString("Status", newStatus)
             level.setBoolean("hasLegacyStructureData", true)

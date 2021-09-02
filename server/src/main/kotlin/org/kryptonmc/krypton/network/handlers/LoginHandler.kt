@@ -207,7 +207,11 @@ class LoginHandler(
         session.sendPacket(PacketOutLoginSuccess(player.uuid, player.name))
         session.handler = PlayHandler(server, session, player)
         session.currentState = PacketState.PLAY
-        playerManager.add(player, session)
+        playerManager.add(player, session).whenComplete { _, exception ->
+            if (exception == null) return@whenComplete
+            LOGGER.error("Disconnecting player ${player.name} due to exception caught whilst attempting to load them in...", exception)
+            player.disconnect(text("An unexpected exception occurred. Please contact the system administrator."))
+        }
     }
 
     /**

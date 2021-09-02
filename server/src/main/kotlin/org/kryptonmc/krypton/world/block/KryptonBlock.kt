@@ -22,13 +22,16 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.RenderShape
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.data.BlockData
 import org.kryptonmc.krypton.util.Codecs
 import org.kryptonmc.krypton.util.IntHashBiMap
+import org.kryptonmc.krypton.world.WorldAccessor
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
+import org.spongepowered.math.vector.Vector3i
 
 class KryptonBlock(
     data: BlockData,
@@ -98,5 +101,14 @@ class KryptonBlock(
         }
 
         val STATES = IntHashBiMap<Block>()
+
+        fun updateOrDestroy(block: Block, otherBlock: Block, world: WorldAccessor, position: Vector3i) {
+            if (block === otherBlock) return
+            if (otherBlock.isAir) {
+                world.setBlock(position, Blocks.AIR)
+            } else {
+                world.setBlock(position, otherBlock)
+            }
+        }
     }
 }

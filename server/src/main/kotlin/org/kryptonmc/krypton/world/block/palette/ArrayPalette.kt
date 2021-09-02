@@ -30,13 +30,22 @@ class ArrayPalette(private val bits: Int, private val resizer: (Int, Block) -> I
 
     private val values = arrayOfNulls<Block>(1 shl bits)
     override var size = 0
+    override val serializedSize: Int
+        get() {
+            var temp = size.varIntBytes
+            for (i in 0 until size) temp += KryptonBlock.STATES.idOf(values[i]!!).varIntBytes
+            return temp
+        }
 
     override fun get(value: Block): Int {
-        for (i in 0 until size) if (values[i] == value) return i
+        for (i in 0 until size) {
+            if (values[i] === value) return i
+        }
+
         val size = size
         return if (size < values.size) {
             values[size] = value
-            this.size++
+            ++this.size
             size
         } else {
             resizer(bits + 1, value)
@@ -52,16 +61,8 @@ class ArrayPalette(private val bits: Int, private val resizer: (Int, Block) -> I
 
     override fun load(data: ListTag) {
         for (i in data.indices) {
-            val tag = data.getCompound(i)
-            values[i] = tag.toBlock()
+            values[i] = data.getCompound(i).toBlock()
         }
         size = data.size
     }
-
-    override val serializedSize: Int
-        get() {
-            var temp = size.varIntBytes
-            for (i in 0 until size) temp += KryptonBlock.STATES.idOf(values[i]!!).varIntBytes
-            return temp
-        }
 }

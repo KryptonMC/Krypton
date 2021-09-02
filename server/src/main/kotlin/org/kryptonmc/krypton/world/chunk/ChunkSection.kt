@@ -53,8 +53,10 @@ class ChunkSection(
 
     fun recount() {
         nonEmptyBlockCount = 0
-        palette.count { block, counter ->
-            if (!block.isAir) nonEmptyBlockCount += counter
+        palette.forEachLocation { block, _ ->
+            val fluid = block.asFluid()
+            if (!block.isAir) nonEmptyBlockCount++
+            if (!fluid.isEmpty) nonEmptyBlockCount++
         }
     }
 

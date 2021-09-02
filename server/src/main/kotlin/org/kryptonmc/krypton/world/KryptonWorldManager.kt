@@ -31,9 +31,11 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.util.ChunkProgressListener
+import org.kryptonmc.krypton.util.daemon
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.threadFactory
+import org.kryptonmc.krypton.util.uncaughtExceptionHandler
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.DerivedWorldData
@@ -58,7 +60,15 @@ class KryptonWorldManager(
     val worldFolder: Path
 ) : WorldManager {
 
-    private val worldExecutor = Executors.newCachedThreadPool(threadFactory("World Handler %d"))
+    private val worldExecutor = Executors.newCachedThreadPool(
+        threadFactory("World Handler %d") {
+            daemon()
+            uncaughtExceptionHandler { thread, exception ->
+                LOGGER.error("Caught unhandled exception in thread ${thread.name}!", exception)
+                server.stop()
+            }
+        }
+    )
     private val customWorldFolder = worldFolder.resolve("dimensions")
     override val worlds = mutableMapOf<ResourceKey<World>, KryptonWorld>()
     override val default: KryptonWorld
@@ -95,7 +105,10 @@ class KryptonWorldManager(
         val isSubWorld = folderName == "DIM-1" || folderName == "DIM1"
 
         val storage = try {
-            WorldDataStorage(if (isSubWorld) worldFolder else customWorldFolder).createAccess(if (isSubWorld) folderName else key.namespace() + File.separator + key.value())
+            WorldDataStorage(if (isSubWorld) worldFolder else customWorldFolder).createAccess(
+                if (isSubWorld) folderName else key.namespace() + File.separator + key.value(),
+                server.useDataConverter
+            )
         } catch (exception: IOException) {
             return CompletableFuture.failedFuture(RuntimeException("Failed to create world data for world $key!", exception))
         }

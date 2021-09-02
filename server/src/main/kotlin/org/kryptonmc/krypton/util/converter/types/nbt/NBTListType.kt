@@ -116,7 +116,12 @@ data class NBTListType(val list: ListTag = ListTag()) : ListType {
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T> getMap(index: Int): MapType<T> = NBTMapType(list[index] as? MutableCompoundTag ?: error("")) as MapType<T>
+    override fun <T> getMap(index: Int): MapType<T> {
+        val element = list[index]
+        if (element is MutableCompoundTag) return NBTMapType(element) as MapType<T>
+        if (element is CompoundTag) return NBTMapType(element.mutable()) as MapType<T>
+        error("Element at $index was not a map!")
+    }
 
     override fun setMap(index: Int, to: MapType<*>) {
         list[index] = (to as NBTMapType).map

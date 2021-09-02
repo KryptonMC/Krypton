@@ -11,6 +11,7 @@ package org.kryptonmc.api.block
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3i
@@ -93,4 +94,26 @@ public interface BlockHandler {
      * @param position the position of the block
      */
     public fun attack(player: Player, world: World, block: Block, position: Vector3i)
+
+    /**
+     * Called when the shape of the given [block] at the given [position] facing the
+     * given [direction] needs its face updated, with the given [neighbour] at the
+     * given [neighbourPosition] being.
+     *
+     * @param block the block that needs its shape updating
+     * @param position the position of the block
+     * @param direction the direction the block is facing
+     * @param neighbour the neighbouring block in the direction
+     * @param neighbourPosition the position of the neighbouring block
+     * @param world the world the blocks are in
+     * @return the new block that should now be at the position
+     */
+    public fun updateShape(
+        block: Block,
+        position: Vector3i,
+        direction: Direction,
+        neighbour: Block,
+        neighbourPosition: Vector3i,
+        world: World
+    ): Block
 }

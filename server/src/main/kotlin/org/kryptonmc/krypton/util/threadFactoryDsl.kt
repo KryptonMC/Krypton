@@ -21,22 +21,33 @@ package org.kryptonmc.krypton.util
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import java.util.concurrent.ThreadFactory
 
+@DslMarker
+private annotation class ThreadFactoryDsl
+
+@ThreadFactoryDsl
 inline fun threadFactory(builder: ThreadFactoryBuilder.() -> Unit): ThreadFactory = ThreadFactoryBuilder().apply(builder).build()
 
+@ThreadFactoryDsl
 inline fun threadFactory(
     nameFormat: String,
     builder: ThreadFactoryBuilder.() -> Unit = {}
 ): ThreadFactory = ThreadFactoryBuilder().setNameFormat(nameFormat).apply(builder).build()
 
+@ThreadFactoryDsl
 fun ThreadFactoryBuilder.nameFormat(format: String): ThreadFactoryBuilder = setNameFormat(format)
 
+@ThreadFactoryDsl
 fun ThreadFactoryBuilder.daemon(daemon: Boolean): ThreadFactoryBuilder = setDaemon(daemon)
 
+@ThreadFactoryDsl
 fun ThreadFactoryBuilder.daemon(): ThreadFactoryBuilder = setDaemon(true)
 
+@ThreadFactoryDsl
 fun ThreadFactoryBuilder.priority(priority: Int): ThreadFactoryBuilder = setPriority(priority)
 
+@ThreadFactoryDsl
 fun ThreadFactoryBuilder.uncaughtExceptionHandler(handler: Thread.UncaughtExceptionHandler): ThreadFactoryBuilder =
     setUncaughtExceptionHandler(handler)
 
+@ThreadFactoryDsl
 fun ThreadFactoryBuilder.factory(factory: ThreadFactory): ThreadFactoryBuilder = setThreadFactory(factory)

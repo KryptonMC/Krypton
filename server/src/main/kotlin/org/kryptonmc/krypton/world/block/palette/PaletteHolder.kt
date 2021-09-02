@@ -19,13 +19,11 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.krypton.util.ceillog2
+import org.kryptonmc.api.util.ceillog2
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
-import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.data.BitStorage
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
@@ -49,8 +47,11 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
                     GlobalPalette
                 }
             }
+            palette[Blocks.AIR]
             storage = BitStorage(field, SIZE)
         }
+    val serializedSize: Int
+        get() = 1 + palette.serializedSize + storage.size.varIntBytes + storage.data.size * Long.SIZE_BYTES
 
     init {
         bits = MINIMUM_PALETTE_SIZE
@@ -64,6 +65,8 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
     }
 
     operator fun get(x: Int, y: Int, z: Int) = palette[storage[indexOf(x, y, z)]] ?: DEFAULT
+
+    operator fun get(index: Int) = palette[storage[index]] ?: DEFAULT
 
     @Synchronized
     operator fun set(x: Int, y: Int, z: Int, value: Block) = set(indexOf(x, y, z), value)
@@ -83,8 +86,7 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
         val storageBits = states.size * Long.SIZE_BITS / SIZE
         when {
             palette === GlobalPalette -> {
-                val newPalette = MapPalette(bits, DUMMY_RESIZER)
-                newPalette.load(data)
+                val newPalette = MapPalette(bits, DUMMY_RESIZER).apply { load(data) }
                 val bitStorage = BitStorage(bits, SIZE, states)
                 for (i in 0 until SIZE) storage[i] = GlobalPalette[newPalette[bitStorage[i]]!!]
             }
@@ -120,15 +122,9 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
         builder.longArray("BlockStates", storage.data)
     }
 
-    fun count(consumer: (Block, Int) -> Unit) {
-        val map = Int2IntOpenHashMap()
-        storage.count { map[it] = map[it] + 1 }
-        map.int2IntEntrySet().fastForEach { consumer(palette[it.intKey]!!, it.intValue) }
+    fun forEachLocation(consumer: (Block, Int) -> Unit) = storage.forEach { location, data ->
+        consumer(palette[data]!!, location)
     }
-
-    private fun get(index: Int) = palette[storage[index]] ?: DEFAULT
-
-    private fun set(index: Int, value: Block) = storage.set(index, palette[value])
 
     override fun invoke(newBits: Int, value: Block): Int {
         val oldStorage = storage
@@ -138,14 +134,13 @@ class PaletteHolder(private var palette: Palette) : (Int, Block) -> Int {
         return palette[value]
     }
 
-    val serializedSize: Int
-        get() = 1 + palette.serializedSize + storage.size.varIntBytes + storage.data.size * Long.SIZE_BYTES
+    private fun set(index: Int, value: Block) = storage.set(index, palette[value])
 
     companion object {
 
         const val GLOBAL_PALETTE_THRESHOLD = 9
         const val MINIMUM_PALETTE_SIZE = 4
-        private val GLOBAL_PALETTE_SIZE = KryptonBlock.STATES.size.ceillog2()
+        private val GLOBAL_PALETTE_SIZE = GlobalPalette.size.ceillog2()
 
         private const val SIZE = 4096
         private val DEFAULT = Blocks.AIR

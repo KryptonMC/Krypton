@@ -28,6 +28,7 @@ import it.unimi.dsi.fastutil.ints.IntRBTreeSet
 import it.unimi.dsi.fastutil.longs.LongArrayList
 import it.unimi.dsi.fastutil.longs.LongLinkedOpenHashSet
 import org.kryptonmc.krypton.util.logger
+import java.lang.reflect.Modifier
 
 object MCVersionRegistry {
 
@@ -221,6 +222,7 @@ object MCVersionRegistry {
 
     init {
         MCVersions::class.java.declaredFields.forEach {
+            if (!it.type.isAssignableFrom(Int::class.javaPrimitiveType!!)) return@forEach
             val name = it.name
             val value = try {
                 it.getInt(null)

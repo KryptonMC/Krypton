@@ -184,7 +184,7 @@ class PrimaryWorldData(
                 data.getInt("WanderingTraderSpawnChance", 0),
                 data.getInt("WanderingTraderSpawnDelay", 0),
                 data.getInts("WanderingTraderId")?.toUUID(),
-                (data.getMap<String>("CustomBossEvents") as NBTMapType).map,
+                (data.getMap<String>("CustomBossEvents") as? NBTMapType)?.map ?: MutableCompoundTag(),
                 (dragonFightData as NBTMapType).map,
                 data.getList("ServerBrands", ObjectType.STRING)?.let {
                     val set = mutableSetOf<String>()

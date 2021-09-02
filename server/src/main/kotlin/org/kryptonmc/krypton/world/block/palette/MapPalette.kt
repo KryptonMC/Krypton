@@ -32,6 +32,16 @@ import org.kryptonmc.nbt.list
 class MapPalette(private val bits: Int, private val resizer: (Int, Block) -> Int) : Palette {
 
     private val values = IntIdentityHashBiMap<Block>(1 shl bits)
+    override val size: Int
+        get() = values.size
+    override val serializedSize: Int
+        get() {
+            var temp = size.varIntBytes
+            for (i in 0 until size) temp += KryptonBlock.STATES.idOf(values[i]!!).varIntBytes
+            return temp
+        }
+
+    fun save() = list { for (i in 0 until this@MapPalette.size) add(values[i]!!.toNBT()) }
 
     override fun get(value: Block): Int {
         var id = values.idOf(value)
@@ -51,18 +61,8 @@ class MapPalette(private val bits: Int, private val resizer: (Int, Block) -> Int
 
     override fun load(data: ListTag) {
         values.clear()
-        for (i in data.indices) values.add(data.getCompound(i).toBlock())
-    }
-
-    fun save() = list { for (i in 0 until this@MapPalette.size) add(values[i]!!.toNBT()) }
-
-    override val size: Int
-        get() = values.size
-
-    override val serializedSize: Int
-        get() {
-            var temp = size.varIntBytes
-            for (i in 0 until size) temp += KryptonBlock.STATES.idOf(values[i]!!).varIntBytes
-            return temp
+        for (i in data.indices) {
+            values.add(data.getCompound(i).toBlock())
         }
+    }
 }

@@ -187,6 +187,10 @@ object V1496 {
         val isSkippable: Boolean
             get() = storage == null
 
+        init {
+            readStorage(section)
+        }
+
         protected abstract fun initSkippable(): Boolean
 
         fun getBlock(index: Int) = storage!![index]
@@ -199,7 +203,7 @@ object V1496 {
             section.setLongs("BlockStates", storage!!.data)
         }
 
-        protected fun readStorage(section: MapType<String>) {
+        private fun readStorage(section: MapType<String>) {
             storage = if (initSkippable()) {
                 null
             } else {

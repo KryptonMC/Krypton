@@ -78,15 +78,17 @@ class BitStorage(
         return (cell shr magic and mask).toInt()
     }
 
-    fun count(consumer: (Int) -> Unit) {
-        var count = 0
-        for (i in data.indices) {
-            var temp = data[i]
-            for (j in 0 until valuesPerLong) {
-                consumer((temp and mask).toInt())
-                temp = temp shr bits
-                count++
-                if (count >= size) return
+    fun forEach(consumer: (Int, Int) -> Unit) {
+        var i = 0
+        val along = data
+        val j = along.size
+        for (k in 0 until j) {
+            var l = along[k]
+            for (i1 in 0 until valuesPerLong) {
+                consumer(i, (l and mask).toInt())
+                l = l shr bits
+                ++i
+                if (i >= size) return
             }
         }
     }

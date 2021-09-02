@@ -45,7 +45,7 @@ object V1125 {
                 val blocks = section.getBytes("Blocks") ?: continue
 
                 for (blockIndex in blocks.indices) {
-                    if (blocks[blockIndex].toInt() and 255 shl 4 != BED_BLOCK_ID) continue
+                    if ((blocks[blockIndex].toInt() and 255) shl 4 != BED_BLOCK_ID) continue
                     val localX = blockIndex and 15
                     val localZ = (blockIndex shr 4) and 15
                     val localY = (blockIndex shr 8) and 15

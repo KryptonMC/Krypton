@@ -57,6 +57,9 @@ private class KryptonCLI : CliktCommand(
     private val configOnly by option("--init", "--config-only", "--init-settings")
         .flag()
         .help("Creates the config file and exits")
+    private val useDataConverter by option("--upgrade-data", "--use-data-converter")
+        .flag()
+        .help("Whether data from older versions of Minecraft should be automatically upgraded or not.")
 
     // Config options
     private val ip by option()
@@ -84,7 +87,6 @@ private class KryptonCLI : CliktCommand(
         .default(Path.of("."))
 
     override fun run() {
-        this.toString()
         if (version) {
             println("Krypton version ${KryptonPlatform.version} for Minecraft ${KryptonPlatform.minecraftVersion}")
             return
@@ -110,8 +112,14 @@ private class KryptonCLI : CliktCommand(
             world = loadedConfig.world.copy(name = worldName ?: loadedConfig.world.name)
         )
 
-        // Setup registries and create world storage access
-        val storageAccess = WorldDataStorage(worldFolder).createAccess(config.world.name)
+        // Warn about experimental data converter, setup registries, and create world storage access
+        if (useDataConverter) {
+            logger.warn("You have opted in to use the data converter to automatically convert old data to the current version.")
+            logger.warn("Beware that this is an experimental tool, and has known issues with pre-1.13 worlds, and may cause")
+            logger.warn("issues with newer worlds as well.")
+            logger.warn("USE THIS TOOL AT YOUR OWN RISK! If this tool corrupts your data, that is YOUR responsibility!")
+        }
+        val storageAccess = WorldDataStorage(worldFolder).createAccess(config.world.name, useDataConverter)
         val profileCache = KryptonProfileCache(Path.of("usercache.json"))
 
         val worldData = storageAccess.loadData(DataPackConfig.DEFAULT) ?: PrimaryWorldData(
@@ -126,15 +134,17 @@ private class KryptonCLI : CliktCommand(
 
         storageAccess.saveData(worldData)
         val reference = AtomicReference<KryptonServer>()
-        val serverThread = Thread({ reference.get().start() }, "Server Thread").apply {
+        val serverThread = Thread({ reference.get().start() }, "Tick Thread").apply {
             setUncaughtExceptionHandler { _, exception ->
-                logger<KryptonServer>().error("Caught an uncaught exception whilst ticking", exception)
+                KryptonServer.LOGGER.error("Caught unhandled exception in ticking thread!", exception)
+                reference.get().stop()
             }
         }
         val server = KryptonServer(
             storageAccess,
             worldData,
             config,
+            useDataConverter,
             profileCache,
             configFile,
             worldFolder

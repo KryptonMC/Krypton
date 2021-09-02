@@ -25,6 +25,10 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.converter.MCDataConverter.convertData
 import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
+import org.kryptonmc.krypton.util.daemon
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.threadFactory
+import org.kryptonmc.krypton.util.uncaughtExceptionHandler
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
@@ -45,7 +49,16 @@ class ChunkManager(private val world: KryptonWorld) {
 
     val chunkMap = ConcurrentHashMap<Long, KryptonChunk>()
     private val playersByChunk = ConcurrentHashMap<Long, ObjectSet<KryptonPlayer>>()
-    private val executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
+    private val executor = Executors.newFixedThreadPool(
+        Runtime.getRuntime().availableProcessors(),
+        threadFactory("Chunk Loader #%d") {
+            daemon()
+            uncaughtExceptionHandler { thread, exception ->
+                LOGGER.error("Caught unhandled exception in thread ${thread.name}!", exception)
+                world.server.stop()
+            }
+        }
+    )
     private val ticketManager = TicketManager(this)
     private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
 
@@ -88,7 +101,22 @@ class ChunkManager(private val world: KryptonWorld) {
         val position = ChunkPosition(x, z)
         val nbt = regionFileManager.read(position)
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
-        val data = nbt.convertData(MCTypeRegistry.CHUNK, version, KryptonPlatform.worldVersion).getCompound("Level")
+        // We won't upgrade data if use of the data converter is disabled.
+        if (version < KryptonPlatform.worldVersion && !world.server.useDataConverter) {
+            LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data conversion is disabled!")
+            LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or --use-data-converter flag(s) to" +
+                    "the JAR on startup.")
+            LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
+            LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
+            error("Tried to load old chunk from version $version when data conversion is disabled!")
+        }
+
+        // Don't upgrade if the version is not older than our version.
+        val data = if (world.server.useDataConverter && version < KryptonPlatform.worldVersion) {
+            nbt.convertData(MCTypeRegistry.CHUNK, version, KryptonPlatform.worldVersion).getCompound("Level")
+        } else {
+            nbt.getCompound("Level")
+        }
         val heightmaps = data.getCompound("Heightmaps")
 
         val sectionList = data.getList("Sections", CompoundTag.ID)
@@ -151,6 +179,7 @@ class ChunkManager(private val world: KryptonWorld) {
 
     companion object {
 
+        private val LOGGER = logger<ChunkManager>()
         private const val CHUNK_DATA_VERSION = 2578
 
         private fun KryptonChunk.serialize(): CompoundTag {

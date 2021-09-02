@@ -27,3 +27,11 @@ fun Direction.antiClockwise() = when (this) {
     Direction.EAST -> Direction.NORTH
     else -> error("Unable to get anti clockwise direction for given direction $this!")
 }
+
+fun Direction.clockWise() = when (this) {
+    Direction.NORTH -> Direction.EAST
+    Direction.SOUTH -> Direction.WEST
+    Direction.WEST -> Direction.NORTH
+    Direction.EAST -> Direction.SOUTH
+    else -> error("Unable to get clockwise direction for given direction $this!")
+}
