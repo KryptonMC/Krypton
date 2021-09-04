@@ -69,5 +69,6 @@ fun LiteralArgumentBuilder<Sender>.permission(permission: String, level: Int) = 
 fun String.normalize(trim: Boolean): String {
     val command = if (trim) trim() else this
     val firstSeparator = command.indexOf(CommandDispatcher.ARGUMENT_SEPARATOR_CHAR)
-    return if (firstSeparator != -1) command.substring(0, firstSeparator).lowercase() + command.substring(firstSeparator) else command.lowercase()
+    if (firstSeparator != -1) return command.substring(0, firstSeparator).lowercase() + command.substring(firstSeparator)
+    return command.lowercase()
 }

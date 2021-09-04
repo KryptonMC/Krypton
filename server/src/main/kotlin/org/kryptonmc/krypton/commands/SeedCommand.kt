@@ -31,12 +31,14 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 object SeedCommand : InternalCommand {
 
+    private val GREEN = TextColor.color(5635925)
+
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("seed")
             .permission("krypton.command.seed", 2)
             .executes {
                 val sender = it.source as? KryptonPlayer ?: return@executes 0
-                val text = text("[").append(text(sender.world.seed, TextColor.color(5635925))).append(text("]"))
+                val text = text("[").append(text(sender.world.seed, GREEN)).append(text("]"))
                 sender.sendMessage(translatable("commands.seed.success", text))
                 1
             })

@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
@@ -70,6 +71,7 @@ tasks {
     withType<ShadowJar> {
         val buildNumber = System.getenv("BUILD_NUMBER")?.let { "-$it" }.orEmpty()
         archiveFileName.set("Krypton-${project.version}$buildNumber.jar")
+        transform(Log4j2PluginsCacheFileTransformer::class.java)
 
         exclude("it/unimi/dsi/fastutil/booleans/**")
         exclude("it/unimi/dsi/fastutil/bytes/**")

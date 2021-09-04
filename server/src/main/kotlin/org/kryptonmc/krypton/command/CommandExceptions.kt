@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.command
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 
 object CommandExceptions {
 
-    val POSITION_EXPECTED_DOUBLE = SimpleCommandExceptionType(Component.translatable("argument.pos.missing.double").toMessage())
-    val POSITION_3D_INCOMPLETE = SimpleCommandExceptionType(Component.translatable("argument.pos3d.incomplete").toMessage())
-    val POSITION_MIXED_TYPE = SimpleCommandExceptionType(Component.translatable("argument.pos.mixed").toMessage())
+    val POSITION_EXPECTED_DOUBLE = SimpleCommandExceptionType(translatable("argument.pos.missing.double").toMessage())
+    val POSITION_3D_INCOMPLETE = SimpleCommandExceptionType(translatable("argument.pos3d.incomplete").toMessage())
+    val POSITION_MIXED_TYPE = SimpleCommandExceptionType(translatable("argument.pos.mixed").toMessage())
 }

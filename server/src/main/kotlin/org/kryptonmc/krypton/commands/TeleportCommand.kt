@@ -55,7 +55,11 @@ object TeleportCommand : InternalCommand {
                     if (players.size == 1) {
                         val player = players[0]
                         teleport(sender, player.location)
-                        sender.sendMessage(translatable("commands.teleport.success.entity.single", text(sender.name), text(player.name)))
+                        sender.sendMessage(translatable(
+                            "commands.teleport.success.entity.single",
+                            text(sender.name),
+                            text(player.name)
+                        ))
                     }
                     1
                 }
@@ -65,7 +69,11 @@ object TeleportCommand : InternalCommand {
                         val players = context.entityArgument("players").getPlayers(sender)
                         val target = context.entityArgument("target").getPlayers(sender)[0]
                         players.forEach { teleport(it, target.location) }
-                        sender.sendMessage(translatable("commands.teleport.success.entity.multiple", text(players.size.toString()), text(target.name)))
+                        sender.sendMessage(translatable(
+                            "commands.teleport.success.entity.multiple",
+                            text(players.size.toString()),
+                            text(target.name)
+                        ))
                         1
                     })
                 .then(argument<Sender, Coordinates>("location", VectorArgument(true))
@@ -74,7 +82,8 @@ object TeleportCommand : InternalCommand {
                         val players = context.entityArgument("players").getPlayers(sender)
                         val location = context.argument<Coordinates>("location")
                         players.forEach { teleport(it, location) }
-                        sender.sendMessage(translatable("commands.teleport.success.location.multiple",
+                        sender.sendMessage(translatable(
+                            "commands.teleport.success.location.multiple",
                             text(players.size.toString()),
                             text(location.position(sender).blockX.toString()),
                             text(location.position(sender).blockY.toString()),

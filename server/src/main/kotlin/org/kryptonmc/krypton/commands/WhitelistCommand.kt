@@ -74,7 +74,11 @@ object WhitelistCommand : InternalCommand {
                     if (whitelist.isEmpty()) {
                         sender.sendMessage(translatable("commands.whitelist.none"))
                     } else {
-                        sender.sendMessage(translatable("commands.whitelist.list", text(whitelist.size.toString()), text(whitelist.joinToString())))
+                        sender.sendMessage(translatable(
+                            "commands.whitelist.list",
+                            text(whitelist.size.toString()),
+                            text(whitelist.joinToString())
+                        ))
                     }
                     1
                 })
@@ -148,20 +152,23 @@ object WhitelistCommand : InternalCommand {
         if (target.matches(BanIpCommand.IP_ADDRESS_PATTERN)) {
             if (server.playerManager.whitlistedIps.contains(target)) {
                 sender.sendMessage(translatable("commands.whitelist.add.failed"))
-            } else {
-                val entry = WhitelistIpEntry(target)
-                server.playerManager.whitlistedIps.add(entry)
-                sender.sendMessage(translatable("commands.whitelist.add.success", text(target)))
+                return
             }
+            val entry = WhitelistIpEntry(target)
+            server.playerManager.whitlistedIps.add(entry)
+            sender.sendMessage(translatable("commands.whitelist.add.success", text(target)))
+            return
         } else if (server.player(target) != null) {
             val address = server.player(target)!!.address.asString()
             if (server.playerManager.whitlistedIps.contains(address)) {
                 sender.sendMessage(translatable("commands.whitelist.add.failed"))
-            } else {
-                val entry = WhitelistIpEntry(address)
-                server.playerManager.whitlistedIps.add(entry)
-                sender.sendMessage(translatable("commands.whitelist.add.success", text(target)))
+                return
             }
-        } else sender.sendMessage(translatable("commands.banip.invalid"))
+            val entry = WhitelistIpEntry(address)
+            server.playerManager.whitlistedIps.add(entry)
+            sender.sendMessage(translatable("commands.whitelist.add.success", text(target)))
+            return
+        }
+        sender.sendMessage(translatable("commands.banip.invalid"))
     }
 }

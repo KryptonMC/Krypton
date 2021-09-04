@@ -40,5 +40,9 @@ abstract class KryptonCommandRegistrar<C : Command, M : CommandMeta>(private val
     }
 
     // This shallow copies the node to get around https://github.com/Mojang/brigadier/issues/46
-    protected fun register(root: RootCommandNode<Sender>, node: LiteralCommandNode<Sender>, alias: String) = register(root, node.copy(alias))
+    protected fun register(
+        root: RootCommandNode<Sender>,
+        node: LiteralCommandNode<Sender>,
+        alias: String
+    ) = register(root, node.copy(alias))
 }

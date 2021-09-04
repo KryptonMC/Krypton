@@ -29,9 +29,9 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
-import org.kryptonmc.krypton.command.arguments.itemstack.ItemStackArgument
-import org.kryptonmc.krypton.command.arguments.itemstack.ItemStackArgumentType
-import org.kryptonmc.krypton.command.arguments.itemstack.itemStackArgument
+import org.kryptonmc.krypton.command.arguments.item.ItemStackArgument
+import org.kryptonmc.krypton.command.arguments.item.ItemStackArgumentType
+import org.kryptonmc.krypton.command.arguments.item.itemStackArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
@@ -65,6 +65,11 @@ object GiveCommand : InternalCommand {
         items.forEach { target.inventory.add(it) }
 
         target.playSound(Sound.sound(SoundEvents.ITEM_PICKUP, Sound.Source.PLAYER, 0.2F, 2F))
-        target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.incrementStateId(), target.inventory.networkWriter, target.inventory.mainHand))
+        target.session.sendPacket(PacketOutWindowItems(
+            target.inventory.id,
+            target.inventory.incrementStateId(),
+            target.inventory.networkWriter,
+            target.inventory.mainHand
+        ))
     }
 }

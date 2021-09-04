@@ -32,8 +32,3 @@ interface Packet {
         throw UnsupportedOperationException("$javaClass does not support writing")
     }
 }
-
-/**
- * Holder for packet information
- */
-data class PacketInfo(val id: Int, val state: PacketState)

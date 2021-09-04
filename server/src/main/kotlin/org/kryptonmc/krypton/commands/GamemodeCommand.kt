@@ -40,35 +40,28 @@ object GamemodeCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal<Sender>("gamemode").permission("krypton.command.gamemode", 2)
         for (gamemode in Gamemode.values()) {
-            command
-                .then(
-                    literal<Sender>(gamemode.name.lowercase())
-                        .executes {
-                            gameModeArgument(it, gamemode)
-                        }
-                        .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
-                            .executes {
-                                targetArgument(it, gamemode)
-                            })
-                )
+            command.then(literal<Sender>(gamemode.name.lowercase())
+                .executes { gameModeArgument(it, gamemode) }
+                .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
+                    .executes { targetArgument(it, gamemode) })
+            )
         }
 
-        command
-            .then(argument<Sender, String>("gamemode", string())
+        command.then(argument<Sender, String>("gamemode", string())
+            .executes {
+                val gamemode = Gamemode.fromShortName(it.argument("gamemode"))
+                    ?: Gamemode.fromId(it.argument<String>("gamemode").toIntOrNull() ?: return@executes 1)
+                    ?: return@executes 1
+                gameModeArgument(it, gamemode)
+            }
+            .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
                 .executes {
                     val gamemode = Gamemode.fromShortName(it.argument("gamemode"))
                         ?: Gamemode.fromId(it.argument<String>("gamemode").toIntOrNull() ?: return@executes 1)
                         ?: return@executes 1
-                    gameModeArgument(it, gamemode)
-                }
-                .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
-                    .executes {
-                        val gamemode = Gamemode.fromShortName(it.argument("gamemode")) ?: Gamemode.fromId(
-                            it.argument<String>("gamemode").toIntOrNull() ?: return@executes 1
-                        ) ?: return@executes 1
-                        targetArgument(it, gamemode)
-                    })
-            )
+                    targetArgument(it, gamemode)
+                })
+        )
         dispatcher.register(command)
     }
 
@@ -88,10 +81,14 @@ object GamemodeCommand : InternalCommand {
 
     private fun updateGameMode(entities: List<KryptonPlayer>, mode: Gamemode, sender: KryptonPlayer) = entities.forEach {
         it.gamemode = mode
-        sender.sendMessage(if (sender == it) {
-            translatable("gameMode.changed", translatable("gameMode.${mode.name.lowercase()}"))
-        } else {
-            translatable("commands.gamemode.success.other", text(it.name), translatable("gameMode.${mode.name.lowercase()}"))
-        })
+        if (sender == it) {
+            sender.sendMessage(translatable("gameMode.changed", translatable("gameMode.${mode.name.lowercase()}")))
+            return@forEach
+        }
+        sender.sendMessage(translatable(
+            "commands.gamemode.success.other",
+            text(it.name),
+            translatable("gameMode.${mode.name.lowercase()}")
+        ))
     }
 }

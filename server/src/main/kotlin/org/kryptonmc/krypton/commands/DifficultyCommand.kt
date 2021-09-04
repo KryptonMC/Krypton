@@ -34,7 +34,10 @@ object DifficultyCommand : InternalCommand {
             .permission("krypton.command.difficulty", 2)
             .executes {
                 val sender = it.source as? KryptonPlayer ?: return@executes 0
-                sender.sendMessage(translatable("commands.difficulty.query", translatable("options.difficulty.${sender.world.difficulty.name.lowercase()}")))
+                sender.sendMessage(translatable(
+                    "commands.difficulty.query",
+                    translatable("options.difficulty.${sender.world.difficulty.name.lowercase()}")
+                ))
                 1
             }
         Difficulty.values().forEach { difficulty ->
@@ -42,10 +45,16 @@ object DifficultyCommand : InternalCommand {
                 .executes {
                     val sender = it.source as? KryptonPlayer ?: return@executes 0
                     if (sender.world.difficulty == difficulty) {
-                        sender.sendMessage(translatable("commands.difficulty.failure", translatable("options.difficulty.${difficulty.name.lowercase()}")))
+                        sender.sendMessage(translatable(
+                            "commands.difficulty.failure",
+                            translatable("options.difficulty.${difficulty.name.lowercase()}")
+                        ))
                     } else {
                         sender.world.difficulty = difficulty
-                        sender.sendMessage(translatable("commands.difficulty.success", translatable("options.difficulty.${difficulty.name.lowercase()}")),)
+                        sender.sendMessage(translatable(
+                            "commands.difficulty.success",
+                            translatable("options.difficulty.${difficulty.name.lowercase()}")
+                        ))
                     }
                     1
                 })

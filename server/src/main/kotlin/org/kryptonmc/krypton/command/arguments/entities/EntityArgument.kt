@@ -21,11 +21,6 @@ package org.kryptonmc.krypton.command.arguments.entities
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
-import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.argument.argument
 
@@ -34,14 +29,16 @@ class EntityArgument private constructor(
     val singleTarget: Boolean,
 ) : ArgumentType<EntityQuery> {
 
-    override fun parse(reader: StringReader) = if (reader.canRead() && reader.peek() == '@') {
-        reader.skip()
-        if (!reader.canRead()) throw EntityArgumentExceptions.MISSING_SELECTOR.createWithContext(reader)
-        val position = reader.cursor
-        EntityArgumentParser.parse(reader, reader.read(), position, onlyPlayers, singleTarget)
-    } else {
+    override fun parse(reader: StringReader): EntityQuery {
+        if (reader.canRead() && reader.peek() == '@') {
+            reader.skip()
+            if (!reader.canRead()) throw EntityArgumentExceptions.MISSING_SELECTOR.createWithContext(reader)
+            val position = reader.cursor
+            return EntityArgumentParser.parse(reader, reader.read(), position, onlyPlayers, singleTarget)
+        }
         val input = reader.readString()
-        if (input.matches(PLAYER_NAME_REGEX)) EntityQuery(listOf(), EntityQuery.Selector.PLAYER, input) else EntityQuery(listOf(), EntityQuery.Selector.UNKNOWN)
+        if (input matches PLAYER_NAME_REGEX) return EntityQuery(emptyList(), EntityQuery.Selector.PLAYER, input)
+        return EntityQuery(emptyList(), EntityQuery.Selector.UNKNOWN)
     }
 
     override fun getExamples() = EXAMPLES

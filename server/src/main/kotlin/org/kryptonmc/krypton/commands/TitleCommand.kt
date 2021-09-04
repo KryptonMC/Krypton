@@ -122,7 +122,13 @@ object TitleCommand : InternalCommand {
                                     val fadeIn = context.argument<Int>("fadeIn")
                                     val stay = context.argument<Int>("stay")
                                     val fadeOut = context.argument<Int>("fadeOut")
-                                    targets.forEach { it.sendTitleTimes(Duration.ofSeconds(fadeIn.toLong()), Duration.ofSeconds(stay.toLong()), Duration.ofSeconds(fadeOut.toLong())) }
+                                    targets.forEach {
+                                        it.sendTitleTimes(
+                                            Duration.ofSeconds(fadeIn.toLong()),
+                                            Duration.ofSeconds(stay.toLong()),
+                                            Duration.ofSeconds(fadeOut.toLong())
+                                        )
+                                    }
                                     val feedback = if (targets.size == 1) {
                                         translatable("commands.title.times.single", text(sender.name))
                                     } else {

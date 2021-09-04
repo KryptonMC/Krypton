@@ -40,12 +40,17 @@ object SuggestionProviders {
     }
 
     fun register(key: Key, provider: SuggestionProvider<Sender>): SuggestionProvider<Sender> {
-        require(key !in PROVIDERS_BY_NAME) { "A command suggestion provider is already registered with the given key $key!" }
+        require(key !in PROVIDERS_BY_NAME) {
+            "A command suggestion provider is already registered with the given key $key!"
+        }
         PROVIDERS_BY_NAME[key] = provider
         return Wrapper(key, provider)
     }
 
     fun name(provider: SuggestionProvider<Sender>) = if (provider is Wrapper) provider.name else DEFAULT_NAME
 
-    private class Wrapper(val name: Key, private val delegate: SuggestionProvider<Sender>) : SuggestionProvider<Sender> by delegate
+    private class Wrapper(
+        val name: Key,
+        private val delegate: SuggestionProvider<Sender>
+    ) : SuggestionProvider<Sender> by delegate
 }

@@ -120,7 +120,9 @@ class KryptonCommandManager : CommandManager {
 
                 // If the length of the input is too long, we shorten it by appending ... at the beginning.
                 if (inputLength > 10) errorMessage = errorMessage.append(text("..."))
-                errorMessage = errorMessage.append(text(exception.input.substring(max(0, inputLength - 10), inputLength)))
+                errorMessage = errorMessage.append(
+                    text(exception.input.substring(max(0, inputLength - 10), inputLength))
+                )
 
                 if (inputLength < exception.input.length) {
                     val error = text(exception.input.substring(inputLength), NamedTextColor.RED, TextDecoration.UNDERLINED)
@@ -128,7 +130,11 @@ class KryptonCommandManager : CommandManager {
                 }
 
                 // Append the "[HERE]" text (locale-specific) to the end, just like vanilla.
-                errorMessage = errorMessage.append(translatable("command.context.here", NamedTextColor.RED, TextDecoration.ITALIC))
+                errorMessage = errorMessage.append(translatable(
+                    "command.context.here",
+                    NamedTextColor.RED,
+                    TextDecoration.ITALIC
+                ))
                 sender.sendMessage(text("").append(errorMessage).color(NamedTextColor.RED))
             }
             false
@@ -137,7 +143,8 @@ class KryptonCommandManager : CommandManager {
         }
     }
 
-    fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(parseResults)
+    fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> =
+        dispatcher.getCompletionSuggestions(parseResults)
 
     fun sendCommands(player: KryptonPlayer) {
         val node = RootCommandNode<Sender>()

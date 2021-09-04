@@ -37,10 +37,9 @@ object VersionCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val node = dispatcher.register(literal<Sender>("version")
             .executes {
-                val sender = it.source as? KryptonPlayer ?: return@executes 0
-                val version = sender.server.platform.version
-                val minecraftVersion = sender.server.platform.minecraftVersion
-                val pluginsLoaded = sender.server.pluginManager.plugins.size
+                val version = it.source.server.platform.version
+                val minecraftVersion = it.source.server.platform.minecraftVersion
+                val pluginsLoaded = it.source.server.pluginManager.plugins.size
                 val text = text("Krypton", KRYPTON_COLOR)
                     .clickEvent(ClickEvent.openUrl("https://github.com/KryptonMC/Krypton"))
                     .append(newline())
@@ -48,7 +47,7 @@ object VersionCommand : InternalCommand {
                     .append(column("Minecraft Version: ", minecraftVersion))
                     .append(text("Plugins Loaded: ", OPTION_COLOR))
                     .append(text(pluginsLoaded, VALUE_COLOR))
-                sender.sendMessage(text)
+                it.source.sendMessage(text)
                 1
             })
         dispatcher.register(literal<Sender>("about").redirect(node))

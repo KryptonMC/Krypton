@@ -33,7 +33,12 @@ sealed class InvocableCommandRegistrar<C : InvocableCommand<A>, M : CommandMeta,
 
     abstract fun execute(command: C, meta: M, context: CommandContext<Sender>): Int
 
-    abstract fun suggest(command: C, meta: M, context: CommandContext<Sender>, builder: SuggestionsBuilder): CompletableFuture<Suggestions>
+    abstract fun suggest(
+        command: C,
+        meta: M,
+        context: CommandContext<Sender>,
+        builder: SuggestionsBuilder
+    ): CompletableFuture<Suggestions>
 
     override fun register(root: RootCommandNode<Sender>, command: C, meta: M) {
         val name = meta.name.lowercase()

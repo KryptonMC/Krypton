@@ -47,11 +47,21 @@ object ListCommand : InternalCommand {
 
     private fun sendNames(sender: Sender, server: KryptonServer) {
         val names = server.players.map(KryptonPlayer::name)
-        sender.sendMessage(translatable("commands.list.players", text(names.size), text(server.maxPlayers), text(names.joinToString("\n"))))
+        sender.sendMessage(translatable(
+            "commands.list.players",
+            text(names.size),
+            text(server.maxPlayers),
+            text(names.joinToString("\n"))
+        ))
     }
 
     private fun sendNamesWithUUID(sender: Sender, server: KryptonServer) {
         val names = server.players.map { "${it.name} (${it.uuid})" }
-        sender.sendMessage(translatable("commands.list.players", text(names.size), text(server.maxPlayers), text(names.joinToString("\n"))))
+        sender.sendMessage(translatable(
+            "commands.list.players",
+            text(names.size),
+            text(server.maxPlayers),
+            text(names.joinToString("\n"))
+        ))
     }
 }

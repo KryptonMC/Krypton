@@ -28,8 +28,8 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
-import org.kryptonmc.krypton.command.arguments.itemstack.ItemStackPredicate
-import org.kryptonmc.krypton.command.arguments.itemstack.ItemStackPredicateArgument
+import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicate
+import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicateArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.EmptyItemStack

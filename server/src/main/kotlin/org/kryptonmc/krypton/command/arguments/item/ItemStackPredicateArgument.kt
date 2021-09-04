@@ -16,24 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command.arguments.itemstack
+package org.kryptonmc.krypton.command.arguments.item
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
-import com.mojang.brigadier.context.CommandContext
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.api.item.ItemStack
 
-class ItemStackArgumentType : ArgumentType<ItemStackArgument> {
+class ItemStackPredicateArgument : ArgumentType<ItemStackPredicate> {
 
     override fun getExamples() = EXAMPLES
 
-    override fun parse(reader: StringReader) = ItemStackParser(reader, false).parseItem()
+    override fun parse(reader: StringReader) = ItemStackParser(reader, true).parsePredicate()
 
     companion object {
 
-        private val EXAMPLES = listOf("minecraft:cookie", "cookie", "cookie{foo=bar}")
+        private val EXAMPLES = listOf("minecraft:stone", "stone", "#minecraft:boats", "stone{foo=bar}")
     }
 }
 
-fun CommandContext<Sender>.itemStackArgument(name: String) = argument<ItemStackArgument>(name)
+fun interface ItemStackPredicate {
+
+    operator fun invoke(item: ItemStack) : Boolean
+}

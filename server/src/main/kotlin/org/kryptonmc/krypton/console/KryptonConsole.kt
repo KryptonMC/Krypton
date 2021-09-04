@@ -60,7 +60,12 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
 
     override fun shutdown() = server.stop()
 
-    override fun buildReader(builder: LineReaderBuilder): LineReader = super.buildReader(builder.appName("Krypton Console"))
+    override fun buildReader(builder: LineReaderBuilder): LineReader = super.buildReader(
+        builder.appName("Krypton")
+            .completer(BrigadierCompleter(this, server.commandManager.dispatcher))
+            .highlighter(BrigadierHighlighter(this, server.commandManager.dispatcher))
+            .option(LineReader.Option.COMPLETE_IN_WORD, true)
+    )
 
     companion object {
 

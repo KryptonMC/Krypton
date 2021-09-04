@@ -31,7 +31,14 @@ class PacketOutAbilities(
     private val walkingSpeed: Float
 ) : Packet {
 
-    constructor(player: KryptonPlayer) : this(player.isInvulnerable, player.isFlying, player.canFly, player.canInstantlyBuild, player.flyingSpeed, player.walkingSpeed)
+    constructor(player: KryptonPlayer) : this(
+        player.isInvulnerable,
+        player.isFlying,
+        player.canFly,
+        player.canInstantlyBuild,
+        player.flyingSpeed,
+        player.walkingSpeed
+    )
 
     override fun write(buf: ByteBuf) {
         var flags = 0

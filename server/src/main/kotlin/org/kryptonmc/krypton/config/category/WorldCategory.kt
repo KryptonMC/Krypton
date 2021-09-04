@@ -30,7 +30,8 @@ data class WorldCategory(
     val name: String = "world",
     @Comment("Settings for world generation")
     val generator: GeneratorCategory = GeneratorCategory(),
-    @Comment("The gamemode for this world. Valid values are: 0-3 (legacy), survival, creative, adventure and spectator (case insensitive).")
+    @Comment("The gamemode for this world. " +
+            "Valid values are: 0-3 (legacy), survival, creative, adventure and spectator (case insensitive).")
     val gamemode: Gamemode = Gamemode.SURVIVAL,
     @Setting("force-default-gamemode")
     @Comment("Forces the above gamemode for all players in all worlds.")
@@ -40,7 +41,8 @@ data class WorldCategory(
     @Comment("If this server is in hardcore mode. Currently does nothing.")
     val hardcore: Boolean = false,
     @Setting("view-distance")
-    @Comment("The render distance of the server. This is how many chunks you can see in front of you, excluding the one you are in.")
+    @Comment("The render distance of the server. " +
+            "This is how many chunks you can see in front of you, excluding the one you are in.")
     val viewDistance: Int = 10,
     @Setting("autosave-interval")
     @Comment("The amount of time (in ticks) between automatic world saves.")

@@ -75,15 +75,15 @@ class LocalCoordinates(
             val forwards = reader.readPositionalDouble(resetPosition)
             return LocalCoordinates(left, up, forwards)
         }
-    }
-}
 
-private fun StringReader.readPositionalDouble(resetPosition: Int): Double {
-    if (!canRead()) throw CommandExceptions.POSITION_EXPECTED_DOUBLE.createWithContext(this)
-    if (peek() != '^') {
-        cursor = resetPosition
-        throw CommandExceptions.POSITION_MIXED_TYPE.createWithContext(this)
+        private fun StringReader.readPositionalDouble(resetPosition: Int): Double {
+            if (!canRead()) throw CommandExceptions.POSITION_EXPECTED_DOUBLE.createWithContext(this)
+            if (peek() != '^') {
+                cursor = resetPosition
+                throw CommandExceptions.POSITION_MIXED_TYPE.createWithContext(this)
+            }
+            skip()
+            return if (canRead() && peek() != ' ') readDouble() else 0.0
+        }
     }
-    skip()
-    return if (canRead() && peek() != ' ') readDouble() else 0.0
 }

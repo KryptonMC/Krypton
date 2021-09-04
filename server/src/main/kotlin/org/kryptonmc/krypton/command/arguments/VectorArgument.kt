@@ -28,6 +28,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.LocalCoordinates
+import org.kryptonmc.krypton.command.arguments.coordinates.TextCoordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.WorldCoordinates
 import org.kryptonmc.krypton.command.suggestCoordinates
 import org.kryptonmc.krypton.command.argument.argument
@@ -35,21 +36,20 @@ import java.util.concurrent.CompletableFuture
 
 class VectorArgument(private val correctCenter: Boolean = true) : ArgumentType<Coordinates> {
 
-    override fun parse(reader: StringReader) = if (reader.canRead() && reader.peek() == '^') {
-        LocalCoordinates.parse(reader)
-    } else {
-        WorldCoordinates.parse(reader, correctCenter)
+    override fun parse(reader: StringReader): Coordinates {
+        if (reader.canRead() && reader.peek() == '^') return LocalCoordinates.parse(reader)
+        return WorldCoordinates.parse(reader, correctCenter)
     }
 
     override fun <S> listSuggestions(context: CommandContext<S>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
         if (context.source !is Player) return Suggestions.empty()
         val remaining = builder.remaining
-        val suggestions = listOf(if (remaining.isNotEmpty() && remaining[0] == '^') {
+        val suggestion = if (remaining.isNotEmpty() && remaining[0] == '^') {
             TextCoordinates.CENTER_LOCAL
         } else {
             TextCoordinates.CENTER_GLOBAL
-        })
-        return builder.suggestCoordinates(remaining, suggestions) {
+        }
+        return builder.suggestCoordinates(remaining, listOf(suggestion)) {
             try {
                 parse(StringReader(it))
                 true
@@ -68,12 +68,3 @@ class VectorArgument(private val correctCenter: Boolean = true) : ArgumentType<C
 }
 
 fun CommandContext<Sender>.vectorArgument(name: String) = argument<Coordinates>(name).position(source as Player)
-
-data class TextCoordinates(val x: String, val y: String, val z: String) {
-
-    companion object {
-
-        val CENTER_LOCAL = TextCoordinates("^", "^", "^")
-        val CENTER_GLOBAL = TextCoordinates("~", "~", "~")
-    }
-}

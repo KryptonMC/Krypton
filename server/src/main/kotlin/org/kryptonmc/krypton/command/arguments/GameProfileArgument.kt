@@ -28,15 +28,18 @@ import org.kryptonmc.krypton.command.argument.argument
 
 class GameProfileArgument : ArgumentType<EntityQuery> {
 
-    override fun parse(reader: StringReader) = if (reader.canRead() && reader.peek() == '@') {
-        reader.skip()
+    override fun parse(reader: StringReader): EntityQuery {
+        if (reader.canRead() && reader.peek() == '@') {
+            reader.skip()
+            val position = reader.cursor
+            return EntityArgumentParser.parse(reader, reader.read(), position, true, false)
+        }
         val position = reader.cursor
-        EntityArgumentParser.parse(reader, reader.read(), position, onlyPlayers = true, singleTarget = false)
-    } else {
-        val i = reader.cursor
-        while (reader.canRead() && reader.peek() != ' ') reader.skip()
-        val string: String = reader.string.substring(i, reader.cursor)
-        EntityQuery(listOf(), EntityQuery.Selector.PLAYER, string)
+        while (reader.canRead() && reader.peek() != ' ') {
+            reader.skip()
+        }
+        val string = reader.string.substring(position, reader.cursor)
+        return EntityQuery(emptyList(), EntityQuery.Selector.PLAYER, string)
     }
 }
 

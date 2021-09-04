@@ -57,11 +57,10 @@ object PardonIpCommand : InternalCommand {
         if (target.matches(BanIpCommand.IP_ADDRESS_PATTERN)) {
             if (server.playerManager.bannedIps.contains(target)) {
                 server.playerManager.bannedIps.remove(target)
-            } else {
-                throw ALREADY_UNBANNED_EXCEPTION.create()
+                return
             }
-        } else {
-            throw INVALID_IP_EXCEPTION.create()
+            throw ALREADY_UNBANNED_EXCEPTION.create()
         }
+        throw INVALID_IP_EXCEPTION.create()
     }
 }

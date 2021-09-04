@@ -22,7 +22,7 @@ import com.mojang.brigadier.Message
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.kyori.adventure.key.Key
-import org.kryptonmc.krypton.command.arguments.TextCoordinates
+import org.kryptonmc.krypton.command.arguments.coordinates.TextCoordinates
 import java.util.concurrent.CompletableFuture
 
 fun SuggestionsBuilder.suggestCoordinates(

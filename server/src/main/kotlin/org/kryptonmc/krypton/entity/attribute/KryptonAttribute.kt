@@ -59,7 +59,9 @@ class KryptonAttribute(
         put("Modifiers", modifiers.save())
     }
 
-    override fun getModifiers(operation: ModifierOperation) = modifiers.getOrPut(operation) { mutableListOf() }.apply { recalculate() }
+    override fun getModifiers(operation: ModifierOperation) = modifiers.getOrPut(operation) { mutableListOf() }.apply {
+        recalculate()
+    }
 
     override fun addModifier(operation: ModifierOperation, modifier: AttributeModifier) {
         modifiers.getOrPut(operation) { mutableListOf() } += modifier
