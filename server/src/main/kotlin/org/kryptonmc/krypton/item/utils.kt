@@ -26,6 +26,7 @@ import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.item.handler.DummyItemHandler
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.mutableCompound
 import java.util.Locale
@@ -37,7 +38,7 @@ fun Book.toItemStack(locale: Locale): KryptonItemStack {
     val tag = mutableCompound {
         putString("title", title().toJsonString())
         putString("author", author().toJsonString())
-        put("pages", ListTag(pages().mapTo(mutableListOf()) { StringTag.of(it.toJsonString()) }, StringTag.ID))
+        put("pages", MutableListTag(pages().mapTo(mutableListOf()) { StringTag.of(it.toJsonString()) }, StringTag.ID))
     }
     return KryptonItemStack(ItemTypes.WRITTEN_BOOK, 1, KryptonMetaHolder(tag))
 }

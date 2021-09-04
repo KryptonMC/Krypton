@@ -33,11 +33,12 @@ import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.LongArrayTag
 import org.kryptonmc.nbt.LongTag
 import org.kryptonmc.nbt.MutableCompoundTag
+import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.NumberTag
 import org.kryptonmc.nbt.ShortTag
 import org.kryptonmc.nbt.StringTag
 
-data class NBTListType(val list: ListTag = ListTag()) : ListType {
+data class NBTListType(val list: MutableListTag = MutableListTag()) : ListType {
 
     override fun copy() = NBTListType(list.copy())
 
@@ -109,7 +110,7 @@ data class NBTListType(val list: ListTag = ListTag()) : ListType {
         list[index] = LongArrayTag(to)
     }
 
-    override fun getList(index: Int) = NBTListType(list[index] as? ListTag ?: error(""))
+    override fun getList(index: Int) = NBTListType(list[index] as? MutableListTag ?: error(""))
 
     override fun setList(index: Int, list: ListType) {
         this.list[index] = (list as NBTListType).list

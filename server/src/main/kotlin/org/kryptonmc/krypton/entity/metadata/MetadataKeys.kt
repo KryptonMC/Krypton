@@ -24,6 +24,7 @@ import org.kryptonmc.api.space.Rotation
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.item.KryptonItemStackFactory
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.MutableCompoundTag
 import java.util.Optional
 import java.util.OptionalInt
 
@@ -146,8 +147,8 @@ object MetadataKeys {
         val SCORE = register(16, MetadataSerializers.VAR_INT, 0)
         val SKIN_FLAGS = register(17, MetadataSerializers.BYTE, 0)
         val MAIN_HAND = register(18, MetadataSerializers.BYTE, 1)
-        val LEFT_SHOULDER = register(19, MetadataSerializers.NBT, CompoundTag())
-        val RIGHT_SHOULDER = register(20, MetadataSerializers.NBT, CompoundTag())
+        val LEFT_SHOULDER = register(19, MetadataSerializers.NBT, MutableCompoundTag())
+        val RIGHT_SHOULDER = register(20, MetadataSerializers.NBT, MutableCompoundTag())
     }
 
     object AreaEffectCloudKeys {

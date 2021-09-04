@@ -31,7 +31,6 @@ import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.DataPackConfig
 import org.kryptonmc.krypton.world.KryptonGameRuleHolder
 import org.kryptonmc.krypton.world.data.PrimaryWorldData

@@ -32,6 +32,7 @@ import org.kryptonmc.krypton.util.transformTo
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.MutableCompoundTag
+import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.StringTag
 import java.io.StringReader
 
@@ -159,7 +160,7 @@ object V1506 {
             structures["village"] = mutableMapOf()
         }
 
-        val layerTag = ListTag(layers.mapTo(mutableListOf()) {
+        val layerTag = MutableListTag(layers.mapTo(mutableListOf()) {
             MutableCompoundTag(mutableMapOf(
                 "height" to IntTag.of(it.first),
                 "block" to StringTag.of(it.second)

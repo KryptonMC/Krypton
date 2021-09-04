@@ -30,6 +30,7 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.MutableCompoundTag
+import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.StringTag
 import java.awt.Color
 
@@ -64,7 +65,7 @@ object MetaFactory {
             },
             { nbt, lore ->
                 nbt.update("display") {
-                    put("Lore", ListTag(lore.mapTo(mutableListOf()) { StringTag.of(it.toJsonString()) }, StringTag.ID))
+                    put("Lore", MutableListTag(lore.mapTo(mutableListOf()) { StringTag.of(it.toJsonString()) }, StringTag.ID))
                 }
             },
             { it.contains("display", CompoundTag.ID) && it.getCompound("display").contains("Lore", StringTag.ID) }
@@ -107,7 +108,7 @@ private val BLOCK_LIST_META_SERIALIZER = ItemMetaSerializer(
         nbt.getList("CanDestroy", StringTag.ID).forEachString { key -> BlockLoader.fromKey(key)?.let { blocks.add(it) } }
         blocks
     },
-    { nbt, blocks -> nbt["CanDestroy"] = ListTag(blocks.mapTo(mutableListOf()) { StringTag.of(it.key.asString()) }) },
+    { nbt, blocks -> nbt["CanDestroy"] = MutableListTag(blocks.mapTo(mutableListOf()) { StringTag.of(it.key.asString()) }) },
     { it.contains("CanDestroy", ListTag.ID) }
 )
 

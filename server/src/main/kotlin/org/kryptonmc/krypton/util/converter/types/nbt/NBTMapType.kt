@@ -32,13 +32,14 @@ import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.LongArrayTag
 import org.kryptonmc.nbt.LongTag
 import org.kryptonmc.nbt.MutableCompoundTag
+import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.NumberTag
 import org.kryptonmc.nbt.ShortTag
 import org.kryptonmc.nbt.StringTag
 
 data class NBTMapType(val map: MutableCompoundTag = MutableCompoundTag()) : MapType<String> {
 
-    constructor(tag: CompoundTag) : this(if (tag is MutableCompoundTag) tag else tag.mutable())
+    constructor(tag: CompoundTag) : this(tag as MutableCompoundTag)
 
     override fun size() = map.size
 
@@ -67,7 +68,7 @@ data class NBTMapType(val map: MutableCompoundTag = MutableCompoundTag()) : MapT
         return when (entry.id) {
             ByteTag.ID, ShortTag.ID, IntTag.ID, LongTag.ID, FloatTag.ID, DoubleTag.ID -> (entry as NumberTag).value
             CompoundTag.ID -> NBTMapType(entry as CompoundTag)
-            ListTag.ID -> NBTListType(entry as ListTag)
+            ListTag.ID -> NBTListType(entry as MutableListTag)
             StringTag.ID -> (entry as StringTag).value
             ByteArrayTag.ID -> (entry as ByteArrayTag).data
             IntArrayTag.ID -> (entry as IntArrayTag).data
@@ -154,7 +155,7 @@ data class NBTMapType(val map: MutableCompoundTag = MutableCompoundTag()) : MapT
         map.putLongArray(key, value)
     }
 
-    override fun getListUnchecked(key: String, dfl: ListType?) = (map[key] as? ListTag)?.let { NBTListType(it) } ?: dfl
+    override fun getListUnchecked(key: String, dfl: ListType?) = (map[key] as? MutableListTag)?.let { NBTListType(it) } ?: dfl
 
     override fun setList(key: String, value: ListType) {
         map[key] = (value as NBTListType).list

@@ -49,6 +49,7 @@ import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.MutableCompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import org.spongepowered.math.vector.Vector3d
@@ -186,7 +187,7 @@ fun ByteBuf.writeNBT(tag: CompoundTag?) {
 fun ByteBuf.readNBT(): CompoundTag {
     val index = readerIndex()
     val type = readByte()
-    if (type == 0.toByte()) return CompoundTag()
+    if (type == 0.toByte()) return MutableCompoundTag()
     readerIndex(index) // reset the head if it's not an end tag
 
     return try {

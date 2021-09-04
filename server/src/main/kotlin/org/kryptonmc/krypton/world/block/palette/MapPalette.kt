@@ -41,7 +41,11 @@ class MapPalette(private val bits: Int, private val resizer: (Int, Block) -> Int
             return temp
         }
 
-    fun save() = list { for (i in 0 until this@MapPalette.size) add(values[i]!!.toNBT()) }
+    fun save() = list {
+        for (i in 0 until this@MapPalette.size) {
+            add(values[i]!!.toNBT())
+        }
+    }
 
     override fun get(value: Block): Int {
         var id = values.idOf(value)

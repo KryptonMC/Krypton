@@ -38,6 +38,7 @@ import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.LongArrayTag
+import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.buildCompound
 import org.kryptonmc.nbt.compound
 import java.util.EnumSet
@@ -204,7 +205,7 @@ class ChunkManager(private val world: KryptonWorld) {
                 int("zPos", position.z)
             }
 
-            val sectionList = ListTag(elementType = CompoundTag.ID)
+            val sectionList = MutableListTag(elementType = CompoundTag.ID)
             for (i in minimumLightSection until maximumLightSection) {
                 val section = sections.asSequence().filter { it != null && it.y shr 4 == i }.firstOrNull() ?: continue
                 sectionList.add(compound {

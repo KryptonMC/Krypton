@@ -36,6 +36,7 @@ import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.compound
 
 class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory, Serializable<ListTag> {
@@ -107,7 +108,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
     }
 
     override fun save(): ListTag {
-        val list = ListTag(elementType = CompoundTag.ID)
+        val list = MutableListTag(elementType = CompoundTag.ID)
         items.forEachIndexed { index, item ->
             if (item.type === ItemTypes.AIR) return@forEachIndexed
             list.add(compound {

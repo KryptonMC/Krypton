@@ -9,7 +9,7 @@ repositories {
 object PluginVersions {
 
     const val LICENSER = "0.6.1"
-    const val KOTLIN = "1.5.21"
+    const val KOTLIN = "1.5.30"
     const val DOKKA = "1.4.30"
 }
 

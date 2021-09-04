@@ -36,7 +36,9 @@ import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.LongArrayTag
 import org.kryptonmc.nbt.LongTag
+import org.kryptonmc.nbt.MutableCollectionTag
 import org.kryptonmc.nbt.MutableCompoundTag
+import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.NumberTag
 import org.kryptonmc.nbt.ShortTag
 import org.kryptonmc.nbt.StringTag
@@ -98,16 +100,16 @@ object NBTOps : DynamicOps<Tag> {
 
     override fun createList(input: Stream<Tag>): Tag {
         val iterator = Iterators.peekingIterator(input.iterator())
-        if (!iterator.hasNext()) return ListTag()
+        if (!iterator.hasNext()) return MutableListTag()
         return when (iterator.peek()) {
             is ByteTag -> ByteArrayTag(iterator.asSequence().map { (it as ByteTag).value }.toList().toByteArray())
             is IntTag -> IntArrayTag(iterator.asSequence().map { (it as IntTag).value }.toList().toIntArray())
             is LongTag -> LongArrayTag(iterator.asSequence().map { (it as LongTag).value }.toList().toLongArray())
-            else -> ListTag(iterator.asSequence().filter { it !== EndTag }.toMutableList())
+            else -> MutableListTag(iterator.asSequence().filter { it !== EndTag }.toMutableList())
         }
     }
 
-    override fun createMap(map: Stream<Pair<Tag, Tag>>) = CompoundTag(map.collect(Collectors.toMap(
+    override fun createMap(map: Stream<Pair<Tag, Tag>>) = MutableCompoundTag(map.collect(Collectors.toMap(
         { it.first.asString() },
         { it.second }
     )))
@@ -226,22 +228,22 @@ object NBTOps : DynamicOps<Tag> {
 
     override fun toString() = "NBT"
 
-    private fun createGenericList(first: Int, second: Int): CollectionTag<*> {
+    private fun createGenericList(first: Int, second: Int): MutableCollectionTag<*> {
         if (typesMatch(first, second, LongTag.ID)) return LongArrayTag(LongArray(0))
         if (typesMatch(first, second, ByteTag.ID)) return ByteArrayTag(ByteArray(0))
         if (typesMatch(first, second, IntTag.ID)) return IntArrayTag(IntArray(0))
-        return ListTag()
+        return MutableListTag()
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T : Tag> CollectionTag<T>.fillOne(list: Tag, value: Tag) = apply {
-        if (list is CollectionTag<*>) list.forEach { add(it as T) }
+    private fun <T : Tag> MutableCollectionTag<T>.fillOne(list: Tag, value: Tag) = apply {
+        if (list is MutableCollectionTag<*>) list.forEach { add(it as T) }
         add(value as T)
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T : Tag> CollectionTag<T>.fillMany(list: Tag, values: List<Tag>) = apply {
-        if (list is CollectionTag<*>) list.forEach { add(it as T) }
+    private fun <T : Tag> MutableCollectionTag<T>.fillMany(list: Tag, values: List<Tag>) = apply {
+        if (list is MutableCollectionTag<*>) list.forEach { add(it as T) }
         values.forEach { add(it as T) }
     }
 

@@ -46,7 +46,7 @@ dependencies {
     // Data
     implementation("ca.spottedleaf", "data-converter", Versions.DATA_CONVERTER)
     implementation("org.kryptonmc", "datafixerupper", Versions.DFU) // Slight performance enhanced version, courtesy of Paper
-    implementation("org.kryptonmc", "nbt", Versions.NBT)
+    implementation("org.kryptonmc", "nbt-common-jvm", Versions.NBT)
     implementation("org.kryptonmc", "articdata", Versions.MINECRAFT)
 
     // Miscellaneous
@@ -55,8 +55,6 @@ dependencies {
     implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
     implementation("org.bstats", "bstats-base", Versions.BSTATS)
     implementation("net.kyori", "adventure-serializer-configurate4")
-
-    testImplementation("org.reflections", "reflections", "0.9.12")
 }
 
 tasks {

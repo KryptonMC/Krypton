@@ -103,48 +103,50 @@ class PrimaryWorldData(
         0,
         null,
         null,
-        CompoundTag(),
+        MutableCompoundTag(),
         mutableSetOf(),
         worldGenerationSettings
     )
 
     fun save() = compound {
-        compound("Krypton") {
-            string("Version", KryptonPlatform.version)
+        compound("Data") {
+            compound("Krypton") {
+                string("Version", KryptonPlatform.version)
+            }
+            int("DataVersion", KryptonPlatform.worldVersion)
+            int("version", ANVIL_VERSION_ID)
+            compound("Version") {
+                int("Id", KryptonPlatform.worldVersion)
+                string("Name", KryptonPlatform.minecraftVersion)
+                boolean("Snapshot", !KryptonPlatform.isStableMinecraft)
+            }
+            string("LevelName", name)
+            int("GameType", gamemode.ordinal)
+            byte("Difficulty", difficulty.ordinal.toByte())
+            boolean("hardcore", isHardcore)
+            put("GameRules", gameRules.save())
+            DataPackConfig.CODEC.encodeStart(NBTOps, dataPackConfig).result().ifPresent { put("DataPacks", it) }
+            int("SpawnX", spawnX)
+            int("SpawnY", spawnY)
+            int("SpawnZ", spawnZ)
+            float("SpawnAngle", spawnAngle)
+            long("Time", time)
+            long("DayTime", dayTime)
+            long("LastPlayed", Instant.now().toEpochMilli())
+            int("clearWeatherTime", clearWeatherTime)
+            boolean("raining", isRaining)
+            int("rainTime", rainTime)
+            boolean("thundering", isThundering)
+            int("thunderTime", thunderTime)
+            boolean("initialized", isInitialized)
+            int("WanderingTraderSpawnChance", wanderingTraderSpawnChance)
+            int("WanderingTraderSpawnDelay", wanderingTraderSpawnDelay)
+            wanderingTraderId?.let { uuid("WanderingTraderId", it) }
+            customBossEvents?.let { put("CustomBossEvents", it) }
+            put("DragonFight", enderDragonFightData)
+            list("ServerBrands", StringTag.ID, serverBrands.map { StringTag.of(it) })
+            boolean("WasModded", isModded)
         }
-        int("DataVersion", KryptonPlatform.worldVersion)
-        int("version", ANVIL_VERSION_ID)
-        compound("Version") {
-            int("Id", KryptonPlatform.worldVersion)
-            string("Name", KryptonPlatform.minecraftVersion)
-            boolean("Snapshot", !KryptonPlatform.isStableMinecraft)
-        }
-        string("LevelName", name)
-        int("GameType", gamemode.ordinal)
-        byte("Difficulty", difficulty.ordinal.toByte())
-        boolean("hardcore", isHardcore)
-        put("GameRules", gameRules.save())
-        DataPackConfig.CODEC.encodeStart(NBTOps, dataPackConfig).result().ifPresent { put("DataPacks", it) }
-        int("SpawnX", spawnX)
-        int("SpawnY", spawnY)
-        int("SpawnZ", spawnZ)
-        float("SpawnAngle", spawnAngle)
-        long("Time", time)
-        long("DayTime", dayTime)
-        long("LastPlayed", Instant.now().toEpochMilli())
-        int("clearWeatherTime", clearWeatherTime)
-        boolean("raining", isRaining)
-        int("rainTime", rainTime)
-        boolean("thundering", isThundering)
-        int("thunderTime", thunderTime)
-        boolean("initialized", isInitialized)
-        int("WanderingTraderSpawnChance", wanderingTraderSpawnChance)
-        int("WanderingTraderSpawnDelay", wanderingTraderSpawnDelay)
-        wanderingTraderId?.let { uuid("WanderingTraderId", it) }
-        customBossEvents?.let { put("CustomBossEvents", it) }
-        put("DragonFight", enderDragonFightData)
-        list("ServerBrands", StringTag.ID, serverBrands.map { StringTag.of(it) })
-        boolean("WasModded", isModded)
     }
 
     fun setModdedInfo(name: String, modded: Boolean) {

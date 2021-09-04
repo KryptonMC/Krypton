@@ -41,6 +41,7 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.util.isInSpawnableBounds
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.MutableCompoundTag
 
 object SummonCommand : InternalCommand {
 
@@ -54,17 +55,27 @@ object SummonCommand : InternalCommand {
                 .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                 .executes {
                     val sender = it.source as? KryptonPlayer ?: return@executes 0
-                    spawnEntity(sender, it.summonableEntity("entity"), sender.location, CompoundTag())
+                    spawnEntity(sender, it.summonableEntity("entity"), sender.location, MutableCompoundTag())
                     1
                 }.then(argument<Sender, Coordinates>("position", VectorArgument())
                     .executes {
                         val sender = it.source as? KryptonPlayer ?: return@executes 0
-                        spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), CompoundTag())
+                        spawnEntity(
+                            sender,
+                            it.summonableEntity("entity"),
+                            it.vectorArgument("position"),
+                            MutableCompoundTag()
+                        )
                         1
                     }.then(argument<Sender, CompoundTag>("nbt", NBTCompoundArgument())
                         .executes {
                             val sender = it.source as? KryptonPlayer ?: return@executes 0
-                            spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"), it.argument<CompoundTag>("nbt"))
+                            spawnEntity(
+                                sender,
+                                it.summonableEntity("entity"),
+                                it.vectorArgument("position"),
+                                it.argument<CompoundTag>("nbt")
+                            )
                             1
                         })))
         )
@@ -73,7 +84,9 @@ object SummonCommand : InternalCommand {
     private fun spawnEntity(player: KryptonPlayer, entityType: Key, position: Position, nbt: CompoundTag?) {
         if (!position.isInSpawnableBounds()) throw ERROR_INVALID_POSITION.create()
         val world = player.world
-        val entity = EntityFactory.create(world, entityType.asString(), nbt)?.apply { location = location.copy(position.x, position.y, position.z) } ?: throw ERROR_FAILED.create()
+        val entity = EntityFactory.create(world, entityType.asString(), nbt)?.apply {
+            location = location.copy(position.x, position.y, position.z)
+        } ?: throw ERROR_FAILED.create()
 
         world.spawnEntity(entity)
         player.sendMessage(Component.translatable("commands.summon.success", entity.displayName))

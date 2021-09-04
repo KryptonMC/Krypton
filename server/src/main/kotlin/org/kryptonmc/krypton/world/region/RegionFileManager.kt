@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world.region
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.MutableCompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import java.nio.file.Path
@@ -35,7 +36,7 @@ class RegionFileManager(
 ) : AutoCloseable {
 
     fun read(position: ChunkPosition) = getRegionFile(position).getChunkDataInputStream(position).use {
-        if (it == null) return CompoundTag()
+        if (it == null) return MutableCompoundTag()
         TagIO.read(it, TagCompression.NONE)
     }
 

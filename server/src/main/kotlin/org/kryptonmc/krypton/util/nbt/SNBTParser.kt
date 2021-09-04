@@ -32,14 +32,14 @@ import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.FloatTag
 import org.kryptonmc.nbt.IntArrayTag
 import org.kryptonmc.nbt.IntTag
-import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.LongArrayTag
 import org.kryptonmc.nbt.LongTag
+import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.NumberTag
 import org.kryptonmc.nbt.ShortTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.Tag
-import org.kryptonmc.nbt.toTagType
+import org.kryptonmc.nbt.io.Types
 
 class SNBTParser(private val reader: StringReader) {
 
@@ -92,7 +92,7 @@ class SNBTParser(private val reader: StringReader) {
         expect(LIST_START)
         reader.skipWhitespace()
         if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
-        val list = ListTag()
+        val list = MutableListTag()
         var type: Int = -1
 
         while (reader.peek() != LIST_END) {
@@ -103,7 +103,7 @@ class SNBTParser(private val reader: StringReader) {
                 type = tag.id
             } else if (tag.id != type) {
                 reader.cursor = cursor
-                throw ERROR_INSERT_MIXED_LIST.createWithContext(reader, tagType.name, type.toTagType().name)
+                throw ERROR_INSERT_MIXED_LIST.createWithContext(reader, tagType.name, Types.of(type).name)
             }
             list += tag
             if (!reader.hasElementSeparator()) break
@@ -142,7 +142,7 @@ class SNBTParser(private val reader: StringReader) {
                 val type = tag.id
                 if (type != elementType) {
                     reader.cursor = cursor
-                    throw ERROR_INSERT_MIXED_ARRAY.createWithContext(reader, type.toTagType().name, arrayType.toTagType().name)
+                    throw ERROR_INSERT_MIXED_ARRAY.createWithContext(reader, Types.of(type).name, Types.of(arrayType).name)
                 }
                 list += when (elementType) {
                     ByteTag.ID -> (tag as NumberTag).value as T
