@@ -17,6 +17,7 @@ import org.kryptonmc.api.registry.Registries
 /**
  * All of the built-in statistic types.
  */
+@Suppress("UndocumentedPublicProperty")
 public object StatisticTypes {
 
     // @formatter:off

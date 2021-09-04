@@ -17,7 +17,7 @@ import org.kryptonmc.api.registry.Registries
  * See [here](https://minecraft.fandom.com/wiki/Particles) for more information on
  * all of these types.
  */
-@Suppress("unused")
+@Suppress("unused", "UndocumentedPublicProperty")
 public object ParticleTypes {
 
     // @formatter: off

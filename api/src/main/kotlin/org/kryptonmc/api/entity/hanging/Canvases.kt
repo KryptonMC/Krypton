@@ -14,6 +14,7 @@ import org.kryptonmc.api.registry.Registries
 /**
  * All of the built-in painting canvases.
  */
+@Suppress("UndocumentedPublicProperty")
 public object Canvases {
 
     // @formatter:off

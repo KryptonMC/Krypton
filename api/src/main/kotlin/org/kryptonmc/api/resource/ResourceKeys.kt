@@ -29,6 +29,7 @@ import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 /**
  * All the built-in registry keys for various registries.
  */
+@Suppress("UndocumentedPublicProperty")
 public object ResourceKeys {
 
     // @formatter:off

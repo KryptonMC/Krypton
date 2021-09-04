@@ -37,7 +37,7 @@ import org.kryptonmc.api.space.Direction
  * See [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Block_states)
  * for information on what types of blocks each property is applicable to.
  */
-@Suppress("StringLiteralDuplication", "MaxLineLength")
+@Suppress("StringLiteralDuplication", "MaxLineLength", "UndocumentedPublicProperty")
 public object Properties {
 
     /**

@@ -14,6 +14,7 @@ import org.kryptonmc.api.registry.Registries
 /**
  * All of the built-in criteria for scoreboards.
  */
+@Suppress("UndocumentedPublicProperty")
 public object Criteria {
 
     // @formatter:off

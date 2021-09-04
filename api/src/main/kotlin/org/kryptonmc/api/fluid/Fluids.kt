@@ -14,6 +14,7 @@ import org.kryptonmc.api.registry.Registries
 /**
  * All of the built-in fluids.
  */
+@Suppress("UndocumentedPublicProperty")
 public object Fluids {
 
     // @formatter:off

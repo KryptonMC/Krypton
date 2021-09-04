@@ -14,6 +14,7 @@ import org.kryptonmc.api.registry.Registries
 /**
  * All of the built-in custom statistics.
  */
+@Suppress("UndocumentedPublicProperty")
 public object CustomStatistics {
 
     // @formatter:off

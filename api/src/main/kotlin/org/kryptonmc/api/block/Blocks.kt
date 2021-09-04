@@ -14,7 +14,7 @@ import org.kryptonmc.api.registry.Registries
 /**
  * An object containing all the built-in vanilla blocks.
  */
-@Suppress("LargeClass")
+@Suppress("LargeClass", "UndocumentedPublicProperty")
 public object Blocks {
 
     // @formatter:off

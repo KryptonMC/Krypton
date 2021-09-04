@@ -14,6 +14,7 @@ import org.kryptonmc.api.registry.Registries
 /**
  * All the built-in biomes.
  */
+@Suppress("UndocumentedPublicProperty")
 public object Biomes {
 
     // @formatter:off

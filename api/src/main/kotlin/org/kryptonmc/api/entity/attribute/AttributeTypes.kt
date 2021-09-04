@@ -14,6 +14,7 @@ import org.kryptonmc.api.registry.Registries
 /**
  * All of the built-in attribute types.
  */
+@Suppress("UndocumentedPublicProperty")
 public object AttributeTypes {
 
     // @formatter:off

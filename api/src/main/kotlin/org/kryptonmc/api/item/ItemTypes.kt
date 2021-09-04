@@ -15,7 +15,7 @@ import org.kryptonmc.api.registry.Registries
 /**
  * An object containing all built-in item types.
  */
-@Suppress("LargeClass")
+@Suppress("LargeClass", "UndocumentedPublicProperty")
 public object ItemTypes {
 
     // @formatter:off

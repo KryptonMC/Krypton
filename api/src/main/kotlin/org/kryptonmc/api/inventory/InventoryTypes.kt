@@ -17,6 +17,7 @@ import org.kryptonmc.api.registry.Registries
  * Note: The player inventory is not included in this list as it is not a valid
  * menu type, and cannot be created, or opened client-side.
  */
+@Suppress("UndocumentedPublicProperty")
 public object InventoryTypes {
 
     // @formatter:off

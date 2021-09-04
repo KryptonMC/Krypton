@@ -16,6 +16,7 @@ import java.awt.Color
 /**
  * An object containing all the currently supported built-in item metadata keys.
  */
+@Suppress("UndocumentedPublicProperty")
 public object MetaKeys {
 
     // @formatter:off

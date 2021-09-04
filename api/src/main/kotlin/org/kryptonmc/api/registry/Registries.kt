@@ -32,6 +32,7 @@ import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 /**
  * Holder of all of the built-in registries.
  */
+@Suppress("UndocumentedPublicProperty")
 public object Registries {
 
     private val MANAGER = FactoryProvider.INSTANCE.provide<RegistryManager>()
