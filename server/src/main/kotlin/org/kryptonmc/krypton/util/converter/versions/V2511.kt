@@ -80,7 +80,12 @@ object V2511 {
         MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:potion", ItemsDataWalker("Item"))
     }
 
-    private fun createUUIDArray(most: Long, least: Long) = intArrayOf((most ushr 32).toInt(), most.toInt(), (least ushr 32).toInt(), least.toInt())
+    private fun createUUIDArray(most: Long, least: Long) = intArrayOf(
+        (most ushr 32).toInt(),
+        most.toInt(),
+        (least ushr 32).toInt(),
+        least.toInt()
+    )
 
     private fun MapType<String>.setUUID(most: Long, least: Long) {
         if (most != 0L && least != 0L) setInts("OwnerUUID", createUUIDArray(most, least))

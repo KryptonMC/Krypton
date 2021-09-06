@@ -37,7 +37,7 @@ object V165 {
         for (i in 0 until pages.size()) {
             val page = pages.getString(i)
             val component = if (page != "null" && page.isNotEmpty()) {
-                if (page.first() == '"' && page.last() == '"' || page.first() == '{' && page.last() == '}') {
+                if (page.isSurroundedBy('"') || page.isSurroundedBy('{', '}')) {
                     try {
                         V101.GSON.fromJson<Component>(page)
                     } catch (exception: JsonParseException) {
@@ -53,4 +53,9 @@ object V165 {
         }
         null
     }
+
+    private fun String.isSurroundedBy(
+        start: Char,
+        end: Char = start
+    ): Boolean = first() == start && last() == end
 }

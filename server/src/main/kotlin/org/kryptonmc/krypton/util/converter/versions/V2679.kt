@@ -28,7 +28,11 @@ object V2679 {
     fun register() = MCTypeRegistry.BLOCK_STATE.addStructureConverter(VERSION) { data, _, _ ->
         if (data.getString("Name") != "minecraft:cauldron") return@addStructureConverter null
         val properties = data.getMap<String>("Properties") ?: return@addStructureConverter  null
-        if (properties.getString("level", "0") == "0") data.remove("Properties") else data.setString("Name", "minecraft:water_cauldron")
+        if (properties.getString("level", "0") == "0") {
+            data.remove("Properties")
+        } else {
+            data.setString("Name", "minecraft:water_cauldron")
+        }
         null
     }
 }

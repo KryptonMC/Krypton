@@ -171,7 +171,10 @@ class KryptonPlayer(
             internalGamemode = value
             updateAbilities()
             onAbilitiesUpdate()
-            server.playerManager.sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.UPDATE_GAMEMODE, this))
+            server.playerManager.sendToAll(PacketOutPlayerInfo(
+                PacketOutPlayerInfo.PlayerAction.UPDATE_GAMEMODE,
+                this
+            ))
             session.sendPacket(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, value.ordinal.toFloat()))
             if (value != Gamemode.SPECTATOR) camera = this
         }
@@ -223,7 +226,9 @@ class KryptonPlayer(
             walkingSpeed = abilitiesData.getFloat("walkSpeed")
             flyingSpeed = abilitiesData.getFloat("flySpeed")
         }
-        attributes.getOrPut(AttributeTypes.MOVEMENT_SPEED) { KryptonAttribute(AttributeTypes.MOVEMENT_SPEED) }.baseValue = walkingSpeed.toDouble()
+        attributes.getOrPut(AttributeTypes.MOVEMENT_SPEED) {
+            KryptonAttribute(AttributeTypes.MOVEMENT_SPEED)
+        }.baseValue = walkingSpeed.toDouble()
 
         // NBT data for entities sitting on the player's shoulders, e.g. parrots
         if (tag.contains("ShoulderEntityLeft", CompoundTag.ID)) leftShoulder = tag.getCompound("ShoulderEntityLeft")
@@ -266,7 +271,9 @@ class KryptonPlayer(
             int("SpawnZ", position.z())
             float("SpawnAngle", respawnAngle)
             boolean("SpawnForced", respawnForced)
-            Codecs.DIMENSION.encodeStart(NBTOps, respawnDimension).resultOrPartial(LOGGER::error).ifPresent { put("SpawnDimension", it) }
+            Codecs.DIMENSION.encodeStart(NBTOps, respawnDimension)
+                .resultOrPartial(LOGGER::error)
+                .ifPresent { put("SpawnDimension", it) }
         }
     }
 
@@ -286,7 +293,9 @@ class KryptonPlayer(
         val packet = PacketOutParticle(particleEffect, location)
         when (particleEffect.data) {
             // Send multiple packets based on the quantity
-            is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(particleEffect.quantity) { session.sendPacket(packet) }
+            is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(particleEffect.quantity) {
+                session.sendPacket(packet)
+            }
             // Send particles to player at location
             else -> session.sendPacket(packet)
         }
@@ -296,7 +305,11 @@ class KryptonPlayer(
         val oldLocation = location
         location = Location(position.x, position.y, position.z)
 
-        if (abs(location.x - oldLocation.x) > 8 || abs(location.y - oldLocation.y) > 8 || abs(location.z - oldLocation.z) > 8) {
+        if (
+            abs(location.x - oldLocation.x) > 8 ||
+            abs(location.y - oldLocation.y) > 8 ||
+            abs(location.z - oldLocation.z) > 8
+        ) {
             session.sendPacket(PacketOutEntityTeleport(id, location, isOnGround))
         } else {
             session.sendPacket(PacketOutEntityPosition(
@@ -317,9 +330,12 @@ class KryptonPlayer(
     override fun getSpawnPacket() = PacketOutSpawnPlayer(this)
 
     override fun sendPluginMessage(channel: Key, message: ByteArray) {
-        if (channel !in PREREGISTERED_CHANNELS) require(channel in server.channels) { "Channel must be registered with the server to have data sent over it!" }
+        if (channel !in PREREGISTERED_CHANNELS) require(channel in server.channels) {
+            "Channel must be registered with the server to have data sent over it!"
+        }
         if (channel in DEBUG_CHANNELS) {
-            SERVER_LOGGER.warn("A plugin attempted to send a plugin message on a debug channel. These channels will only function correctly with a modified client.")
+            SERVER_LOGGER.warn("A plugin attempted to send a plugin message on a debug channel." +
+                    "These channels will only function correctly with a modified client.")
         }
         session.sendPacket(PacketOutPluginMessage(channel, message))
     }
@@ -368,7 +384,11 @@ class KryptonPlayer(
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
         val type = InternalRegistries.SOUND_EVENT[sound.name()]
-        session.sendPacket(if (type != null) PacketOutSoundEffect(sound, type, Vector(x, y, z)) else PacketOutNamedSoundEffect(sound, Vector(x, y, z)))
+        session.sendPacket(if (type != null) {
+            PacketOutSoundEffect(sound, type, Vector(x, y, z))
+        } else {
+            PacketOutNamedSoundEffect(sound, Vector(x, y, z))
+        })
     }
 
     override fun stopSound(stop: SoundStop) {
@@ -376,7 +396,7 @@ class KryptonPlayer(
     }
 
     override fun openBook(book: Book) {
-        val item = book.toItemStack(locale ?: Locale.ENGLISH)
+        val item = book.toItemStack()
         val slot = inventory.heldSlot
         session.sendPacket(PacketOutSetSlot(inventory.id, inventory.incrementStateId(), slot, item))
         session.sendPacket(PacketOutOpenBook(hand))
@@ -387,7 +407,7 @@ class KryptonPlayer(
 
     override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(ShowEntity.of(key("minecraft", "player"), uuid, displayName))
 
-    fun updateAbilities() {
+    private fun updateAbilities() {
         when (internalGamemode) {
             Gamemode.CREATIVE -> {
                 isInvulnerable = true
@@ -448,7 +468,14 @@ class KryptonPlayer(
         }
 
         visibleChunks += newChunks
-        world.chunkManager.addPlayer(this, centralX, centralZ, if (firstLoad) centralX else oldCentralX, if (firstLoad) centralZ else oldCentralZ, radius).thenRun {
+        world.chunkManager.addPlayer(
+            this,
+            centralX,
+            centralZ,
+            if (firstLoad) centralX else oldCentralX,
+            if (firstLoad) centralZ else oldCentralZ,
+            radius
+        ).thenRun {
             session.sendPacket(PacketOutUpdateViewPosition(centralX, centralZ))
             newChunks.forEach {
                 val chunk = world.chunkManager[it] ?: return@forEach

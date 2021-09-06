@@ -54,7 +54,9 @@ object MetadataSerializers {
 
     @JvmField
     val VAR_INT = object : MetadataSerializer<Int>(1) {
-        override fun write(buf: ByteBuf, item: Int) = buf.writeVarInt(item)
+        override fun write(buf: ByteBuf, item: Int) {
+            buf.writeVarInt(item)
+        }
     }
 
     @JvmField
@@ -66,22 +68,30 @@ object MetadataSerializers {
 
     @JvmField
     val STRING = object : MetadataSerializer<String>(3) {
-        override fun write(buf: ByteBuf, item: String) = buf.writeString(item)
+        override fun write(buf: ByteBuf, item: String) {
+            buf.writeString(item)
+        }
     }
 
     @JvmField
     val COMPONENT = object : MetadataSerializer<Component>(4) {
-        override fun write(buf: ByteBuf, item: Component) = buf.writeChat(item)
+        override fun write(buf: ByteBuf, item: Component) {
+            buf.writeChat(item)
+        }
     }
 
     @JvmField
     val OPTIONAL_COMPONENT = object : MetadataSerializer<Optional<Component>>(5) {
-        override fun write(buf: ByteBuf, item: Optional<Component>) = buf.writeOptional(item) { buf.writeChat(it) }
+        override fun write(buf: ByteBuf, item: Optional<Component>) {
+            buf.writeOptional(item) { buf.writeChat(it) }
+        }
     }
 
     @JvmField
     val SLOT = object : MetadataSerializer<KryptonItemStack>(6) {
-        override fun write(buf: ByteBuf, item: KryptonItemStack) = buf.writeItem(item)
+        override fun write(buf: ByteBuf, item: KryptonItemStack) {
+            buf.writeItem(item)
+        }
 
         override fun copy(item: KryptonItemStack) = item.copy()
     }
@@ -111,17 +121,23 @@ object MetadataSerializers {
 
     @JvmField
     val OPTIONAL_POSITION = object : MetadataSerializer<Optional<Vector3i>>(10) {
-        override fun write(buf: ByteBuf, item: Optional<Vector3i>) = buf.writeOptional(item) { buf.writeLong(it.asLong()) }
+        override fun write(buf: ByteBuf, item: Optional<Vector3i>) {
+            buf.writeOptional(item) { buf.writeLong(it.asLong()) }
+        }
     }
 
     @JvmField
     val DIRECTION = object : MetadataSerializer<Direction>(11) {
-        override fun write(buf: ByteBuf, item: Direction) = buf.writeEnum(item)
+        override fun write(buf: ByteBuf, item: Direction) {
+            buf.writeEnum(item)
+        }
     }
 
     @JvmField
     val OPTIONAL_UUID = object : MetadataSerializer<Optional<UUID>>(12) {
-        override fun write(buf: ByteBuf, item: Optional<UUID>) = buf.writeOptional(item) { buf.writeUUID(it) }
+        override fun write(buf: ByteBuf, item: Optional<UUID>) {
+            buf.writeOptional(item) { buf.writeUUID(it) }
+        }
     }
 
     @JvmField
@@ -134,7 +150,9 @@ object MetadataSerializers {
 
     @JvmField
     val NBT = object : MetadataSerializer<CompoundTag>(14) {
-        override fun write(buf: ByteBuf, item: CompoundTag) = buf.writeNBT(item)
+        override fun write(buf: ByteBuf, item: CompoundTag) {
+            buf.writeNBT(item)
+        }
     }
 
     @JvmField
@@ -156,11 +174,15 @@ object MetadataSerializers {
 
     @JvmField
     val OPTIONAL_VAR_INT = object : MetadataSerializer<OptionalInt>(17) {
-        override fun write(buf: ByteBuf, item: OptionalInt) = buf.writeVarInt(item.orElse(-1) + 1)
+        override fun write(buf: ByteBuf, item: OptionalInt) {
+            buf.writeVarInt(item.orElse(-1) + 1)
+        }
     }
 
     @JvmField
     val POSE = object : MetadataSerializer<Pose>(18) {
-        override fun write(buf: ByteBuf, item: Pose) = buf.writeEnum(item)
+        override fun write(buf: ByteBuf, item: Pose) {
+            buf.writeEnum(item)
+        }
     }
 }

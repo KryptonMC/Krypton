@@ -53,6 +53,7 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
+import org.kryptonmc.krypton.world.fluid.KryptonFluidManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
@@ -118,6 +119,7 @@ class KryptonServer(
     override val registryManager = KryptonRegistryManager
     override val blockManager = KryptonBlockManager
     override val itemManager = KryptonItemManager
+    override val fluidManager = KryptonFluidManager
     override val scheduler = KryptonScheduler(pluginManager)
 
     @Volatile

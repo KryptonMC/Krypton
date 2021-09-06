@@ -53,8 +53,8 @@ public fun Component.toLegacyText(char: Char): String = LegacyComponentSerialize
 
 /**
  * Converts this [Component] to its legacy section text representation, using the
- * [section sign][LegacyComponentSerializer.SECTION_CHAR] as the translation character
- * for the legacy text.
+ * [section sign][LegacyComponentSerializer.SECTION_CHAR] as the translation
+ * character for the legacy text.
  *
  * Analogous with [LegacyComponentSerializer.serialize] called on the
  * [section serializer][LegacyComponentSerializer.legacySection].
@@ -64,20 +64,21 @@ public fun Component.toLegacySectionText(): String = LegacyComponentSerializer.l
 
 /**
  * Converts this [Component] to its legacy ampersand text representation, using the
- * [section sign][LegacyComponentSerializer.AMPERSAND_CHAR] as the translation character
- * for the legacy text.
+ * [section sign][LegacyComponentSerializer.AMPERSAND_CHAR] as the translation
+ * character for the legacy text.
  *
  * Analogous with [LegacyComponentSerializer.serialize] called on the
  * [section serializer][LegacyComponentSerializer.legacyAmpersand].
  */
 @JvmSynthetic
-public fun Component.toLegacyAmpersandText(): String = LegacyComponentSerializer.legacyAmpersand().serialize(this)
+public fun Component.toLegacyAmpersandText(): String = LegacyComponentSerializer.legacyAmpersand()
+    .serialize(this)
 
 /**
  * Converts this [Component] to its plain text representation.
  *
- * Analogous with [PlainTextComponentSerializer.serialize] called with this
- * as its argument.
+ * Analogous with [PlainTextComponentSerializer.serialize] called with this as
+ * its argument.
  */
 @JvmSynthetic
 public fun Component.toPlainText(): String = PlainTextComponentSerializer.plainText().serialize(this)

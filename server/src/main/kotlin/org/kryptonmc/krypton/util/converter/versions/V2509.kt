@@ -29,8 +29,15 @@ object V2509 {
     private const val VERSION = MCVersions.V20W08A + 2
 
     fun register() {
-        RenameItemsConverter.register(VERSION, mapOf("minecraft:zombie_pigman_spawn_egg" to "minecraft:zombified_piglin_spawn_egg")::get)
+        RenameItemsConverter.register(
+            VERSION,
+            mapOf("minecraft:zombie_pigman_spawn_egg" to "minecraft:zombified_piglin_spawn_egg")::get
+        )
         RenameEntitiesConverter.register(VERSION, mapOf("minecraft:zombie_pigman" to "minecraft:zombified_piglin")::get)
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:zombified_piglin", ItemListsDataWalker("ArmorItems", "HandItems"))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:zombified_piglin",
+            ItemListsDataWalker("ArmorItems", "HandItems")
+        )
     }
 }

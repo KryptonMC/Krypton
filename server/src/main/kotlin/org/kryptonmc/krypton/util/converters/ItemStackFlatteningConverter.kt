@@ -349,13 +349,11 @@ object ItemStackFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 4)
         "minecraft:record_wait.0" to "minecraft:music_disc_wait",
         "minecraft:record_ward.0" to "minecraft:music_disc_ward",
     )
-    // maps out ids requiring flattening
-    private val IDS_REQUIRING_FLATTENING = HashSet<String>().apply { FLATTEN_MAP.keys.forEach { add(it.substring(0, it.indexOf('.'))) } }
-
-    // Damage tag is moved from the ItemStack base tag to the ItemStack tag, and we only want to migrate that
-    // for items that actually require it for damage purposes (Remember, old damage was used to differentiate item types)
-    // It should be noted that this ID set should not be included in the flattening map, because damage for these items
-    // is actual damage and not a subtype specifier
+    private val IDS_REQUIRING_FLATTENING = HashSet<String>().apply {
+        FLATTEN_MAP.keys.forEach {
+            add(it.substring(0, it.indexOf('.')))
+        }
+    }
     private val ITEMS_WITH_DAMAGE = setOf(
         "minecraft:bow",
         "minecraft:carrot_on_a_stick",
@@ -432,7 +430,6 @@ object ItemStackFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 4)
         }
 
         if (damage != 0 && ITEMS_WITH_DAMAGE.contains(id)) {
-            // migrate damage
             val tag = data.getMap("tag") ?: NBTTypeUtil.createEmptyMap<String>().apply { data.setMap("tag", this) }
             tag.setInt("Damage", damage)
         }

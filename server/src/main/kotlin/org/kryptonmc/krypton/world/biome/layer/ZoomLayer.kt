@@ -32,7 +32,8 @@ enum class ZoomLayer : AreaTransformer1 {
 
     protected open fun modeOrRandom(context: BigContext<*>, a: Int, b: Int, c: Int, d: Int): Int = when {
         b == c && c == d -> b
-        (a == b && a == c) || (a == b && a == d) || (a == c && a == d) || (a == b && c != d) || (a == c && b != d) || (a == d && b != c) -> a
+        (a == b && a == c) || (a == b && a == d) || (a == c && a == d) ||
+                (a == b && c != d) || (a == c && b != d) || (a == d && b != c) -> a
         (b == c && a != d) || (b == d && a != c) -> b
         c == d && a == b -> c
         else -> context.random(a, b, c, d)

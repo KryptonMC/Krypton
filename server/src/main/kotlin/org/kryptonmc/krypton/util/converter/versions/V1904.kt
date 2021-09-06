@@ -32,7 +32,9 @@ object V1904 {
             if (catType == 0) {
                 val owner = data.getString("Owner")
                 val ownerUUID = data.getString("OwnerUUID")
-                if ((owner != null && owner.isNotEmpty()) || (ownerUUID != null && ownerUUID.isNotEmpty())) data.setBoolean("Trusting", true)
+                if ((owner != null && owner.isNotEmpty()) || (ownerUUID != null && ownerUUID.isNotEmpty())) {
+                    data.setBoolean("Trusting", true)
+                }
             } else if (catType in 1..3) {
                 data.setString("id", "minecraft:cat")
                 data.setString("OwnerUUID", data.getString("OwnerUUID", "")!!)

@@ -43,7 +43,8 @@ open class KryptonBlockHandler : BlockHandler {
 
     override fun attack(player: Player, world: World, block: Block, position: Vector3i) = Unit
 
-    override fun interact(player: Player, world: World, block: Block, position: Vector3i, hand: Hand) = InteractionResult.PASS
+    override fun interact(player: Player, world: World, block: Block, position: Vector3i, hand: Hand) =
+        InteractionResult.PASS
 
     override fun onPlace(player: Player, block: Block, position: Vector3i, face: BlockFace) = Unit
 

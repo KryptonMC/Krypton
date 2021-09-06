@@ -29,26 +29,18 @@ object V106 {
     private const val VERSION = MCVersions.V15W32C + 2
 
     fun register() {
-        // V106 -> V15W32C + 2
-
         MCTypeRegistry.UNTAGGED_SPAWNER.addStructureConverter(VERSION) { data, _, _ ->
-            // While all converters for spawners check the id for this version, we don't because spawners exist in minecarts. ooops! Loading a chunk
-            // with a minecart spawner from 1.7.10 in 1.16.5 vanilla will fail to convert! Clearly there was a mistake in how they
-            // used and applied spawner converters. In anycase, do not check the id - we are not guaranteed to be a tile
-            // entity. We can be a regular old minecart spawner. And we know we are a spawner because this is only called from data walkers.
-
             val entityId = data.getString("EntityId")
             if (entityId != null) {
                 data.remove("EntityId")
-                val spawnData = data.getMap("SpawnData") ?: NBTTypeUtil.createEmptyMap<String>().apply { data.setMap("SpawnData", this) }
+                val spawnData = data.getMap("SpawnData")
+                    ?: NBTTypeUtil.createEmptyMap<String>().apply { data.setMap("SpawnData", this) }
                 spawnData.setString("id", entityId.ifEmpty { "Pig" })
             }
 
             val spawnPotentials = data.getList("SpawnPotentials", ObjectType.MAP)
             if (spawnPotentials != null) {
                 for (i in 0 until spawnPotentials.size()) {
-                    // convert to standard entity format (it's not a coincidence a walker for spawners is only added
-                    // in this version)
                     val spawn = spawnPotentials.getMap<String>(i)
                     val spawnType = spawn.getString("Type") ?: continue
                     spawn.remove("Type")

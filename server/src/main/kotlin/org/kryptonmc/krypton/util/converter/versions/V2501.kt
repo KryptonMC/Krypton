@@ -61,9 +61,11 @@ object V2501 {
         registerFurnace("minecraft:blast_furnace")
     }
 
-    private fun registerFurnace(id: String) = MCTypeRegistry.TILE_ENTITY.addWalker(VERSION, id) { data, fromVersion, toVersion ->
-        data.convertList(MCTypeRegistry.ITEM_STACK, "Items", fromVersion, toVersion)
-        data.convertKeys(MCTypeRegistry.RECIPE, "RecipesUsed", fromVersion, toVersion)
-        null
+    private fun registerFurnace(id: String) {
+        MCTypeRegistry.TILE_ENTITY.addWalker(VERSION, id) { data, fromVersion, toVersion ->
+            data.convertList(MCTypeRegistry.ITEM_STACK, "Items", fromVersion, toVersion)
+            data.convertKeys(MCTypeRegistry.RECIPE, "RecipesUsed", fromVersion, toVersion)
+            null
+        }
     }
 }

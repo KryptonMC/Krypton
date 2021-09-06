@@ -34,8 +34,11 @@ object TagTypes {
     val GAME_EVENTS = create("game_event", "gameplay", InternalRegistries.GAME_EVENT)
     val ITEMS = create("item", InternalRegistries.ITEM)
 
-    private fun <T : Any> create(name: String, fileName: String, registry: Registry<T>) =
-        TagType("minecraft:$name", "${PREFIX}${fileName}_tags.json", registry).apply { VALUES += this }
+    private fun <T : Any> create(
+        name: String,
+        fileName: String,
+        registry: Registry<T>
+    ) = TagType("minecraft:$name", "${PREFIX}${fileName}_tags.json", registry).apply { VALUES += this }
 
     private fun <T : Any> create(name: String, registry: Registry<T>) = create(name, name, registry)
 }

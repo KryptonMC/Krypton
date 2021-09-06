@@ -24,34 +24,72 @@ import org.kryptonmc.krypton.world.biome.layer.traits.CastleTransformer
 
 object BiomeEdgeLayer : CastleTransformer {
 
-    override fun invoke(context: Context, n: Int, e: Int, s: Int, w: Int, center: Int): Int {
+    override fun invoke(context: Context, north: Int, east: Int, south: Int, west: Int, center: Int): Int {
         val array = IntArray(1)
-        if (checkEdge(array, center) || checkEdgeStrict(array, n, e, s, w, center, 38, 37) || checkEdgeStrict(array, n, e, s, w, center, 39, 37) || checkEdgeStrict(array, n, e, s, w, center, 32, 5)) return array[0]
-        if (center != 2 || n != BiomeConstants.SNOWY_TAIGA && e != BiomeConstants.SNOWY_TAIGA && s != BiomeConstants.SNOWY_TAIGA && w != BiomeConstants.SNOWY_TAIGA) {
+        if (
+            checkEdge(array, center) ||
+            checkEdgeStrict(array, north, east, south, west, center, 38, 37) ||
+            checkEdgeStrict(array, north, east, south, west, center, 39, 37) ||
+            checkEdgeStrict(array, north, east, south, west, center, 32, 5)
+        ) {
+            return array[0]
+        }
+        if (
+            center != 2 ||
+            north != BiomeConstants.SNOWY_TAIGA &&
+            east != BiomeConstants.SNOWY_TAIGA &&
+            south != BiomeConstants.SNOWY_TAIGA &&
+            west != BiomeConstants.SNOWY_TAIGA
+        ) {
             if (center == 6) {
                 if (
-                    n == BiomeConstants.DESERT || e == BiomeConstants.DESERT || s == BiomeConstants.DESERT || w == BiomeConstants.DESERT ||
-                    n == BiomeConstants.SNOWY_TAIGA || e == BiomeConstants.SNOWY_TAIGA || s == BiomeConstants.SNOWY_TAIGA || w == BiomeConstants.SNOWY_TAIGA ||
-                    n == BiomeConstants.SNOWY_TUNDRA || e == BiomeConstants.SNOWY_TUNDRA || s == BiomeConstants.SNOWY_TUNDRA || w == BiomeConstants.SNOWY_TUNDRA
-                ) return BiomeConstants.PLAINS
+                    north == BiomeConstants.DESERT || east == BiomeConstants.DESERT ||
+                    south == BiomeConstants.DESERT || west == BiomeConstants.DESERT ||
+                    north == BiomeConstants.SNOWY_TAIGA || east == BiomeConstants.SNOWY_TAIGA ||
+                    south == BiomeConstants.SNOWY_TAIGA || west == BiomeConstants.SNOWY_TAIGA ||
+                    north == BiomeConstants.SNOWY_TUNDRA || east == BiomeConstants.SNOWY_TUNDRA ||
+                    south == BiomeConstants.SNOWY_TUNDRA || west == BiomeConstants.SNOWY_TUNDRA
+                ) {
+                    return BiomeConstants.PLAINS
+                }
                 if (
-                    n == BiomeConstants.JUNGLE || e == BiomeConstants.JUNGLE || s == BiomeConstants.JUNGLE || w == BiomeConstants.JUNGLE ||
-                    n == BiomeConstants.BAMBOO_JUNGLE || e == BiomeConstants.BAMBOO_JUNGLE || s == BiomeConstants.BAMBOO_JUNGLE || w == BiomeConstants.BAMBOO_JUNGLE
-                ) return BiomeConstants.JUNGLE_EDGE
+                    north == BiomeConstants.JUNGLE || east == BiomeConstants.JUNGLE ||
+                    south == BiomeConstants.JUNGLE || west == BiomeConstants.JUNGLE ||
+                    north == BiomeConstants.BAMBOO_JUNGLE || east == BiomeConstants.BAMBOO_JUNGLE ||
+                    south == BiomeConstants.BAMBOO_JUNGLE || west == BiomeConstants.BAMBOO_JUNGLE
+                ) {
+                    return BiomeConstants.JUNGLE_EDGE
+                }
             }
             return center
         }
         return 34
     }
 
-    private fun checkEdge(array: IntArray, value: Int) = if (value.isSame(3)) {
-        array[0] = value
-        true
-    } else false
+    private fun checkEdge(array: IntArray, value: Int): Boolean {
+        if (value.isSame(3)) {
+            array[0] = value
+            return true
+        }
+        return false
+    }
 
-    private fun checkEdgeStrict(array: IntArray, n: Int, e: Int, s: Int, w: Int, center: Int, value: Int, default: Int): Boolean {
+    private fun checkEdgeStrict(
+        array: IntArray,
+        north: Int,
+        east: Int,
+        south: Int,
+        west: Int,
+        center: Int,
+        value: Int,
+        default: Int
+    ): Boolean {
         if (center != value) return false
-        array[0] = if (n.isSame(value) && e.isSame(value) && s.isSame(value) && w.isSame(value)) center else default
+        if (north.isSame(value) && east.isSame(value) && south.isSame(value) && west.isSame(value)) {
+            array[0] = center
+        } else {
+            array[0] = default
+        }
         return true
     }
 }

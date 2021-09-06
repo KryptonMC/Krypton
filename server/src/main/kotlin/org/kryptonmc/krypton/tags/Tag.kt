@@ -26,7 +26,11 @@ class Tag<T : Any>(
     val values: Collection<T>
 ) {
 
-    constructor(name: Key, type: TagType<T>, keys: Set<String>) : this(name, type, keys.map { type.registry[Key.key(it)]!! })
+    constructor(name: Key, type: TagType<T>, keys: Set<String>) : this(
+        name,
+        type,
+        keys.map { type.registry[Key.key(it)]!! }
+    )
 
     operator fun contains(value: T) = values.contains(value)
 }

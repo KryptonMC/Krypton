@@ -27,8 +27,6 @@ object V2535 {
     private const val VERSION = MCVersions.V20W19A + 1
 
     fun register() = MCTypeRegistry.ENTITY.addConverterForId("minecraft:shulker", VERSION) { data, _, _ ->
-        // Mojang uses doubles for whatever reason... rotation is in FLOAT. by using double here
-        // the entity load will just ignore rotation and set it to 0...
         val rotation = data.getList("Rotation", ObjectType.FLOAT)
         if (rotation == null || rotation.size() == 0) return@addConverterForId null
         rotation.setFloat(0, rotation.getFloat(0) - 180F)

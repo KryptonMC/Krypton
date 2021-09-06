@@ -39,7 +39,13 @@ class PacketOutSoundEffect(
     private val y = (y * 8.0).toInt()
     private val z = (z * 8.0).toInt()
 
-    constructor(sound: Sound, event: SoundEvent, position: Position) : this(sound, event, position.x, position.y, position.z)
+    constructor(sound: Sound, event: SoundEvent, position: Position) : this(
+        sound,
+        event,
+        position.x,
+        position.y,
+        position.z
+    )
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(InternalRegistries.SOUND_EVENT.idOf(event))

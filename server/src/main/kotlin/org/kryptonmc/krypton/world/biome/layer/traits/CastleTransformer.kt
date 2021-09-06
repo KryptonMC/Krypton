@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.world.biome.context.Context
 
 interface CastleTransformer : AreaTransformer1, DimensionOffset1Transformer {
 
-    operator fun invoke(context: Context, n: Int, e: Int, s: Int, w: Int, center: Int): Int
+    operator fun invoke(context: Context, north: Int, east: Int, south: Int, west: Int, center: Int): Int
 
     override fun invoke(context: BigContext<*>, parent: Area, x: Int, z: Int) = invoke(
         context,

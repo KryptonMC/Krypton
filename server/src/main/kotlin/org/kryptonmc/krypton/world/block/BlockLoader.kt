@@ -94,7 +94,11 @@ object BlockLoader {
 
     fun properties(key: String, properties: Map<String, String>): KryptonBlock? = PROPERTY_MAP[key]?.properties?.get(properties)
 
-    private fun JsonObject.retrieveState(key: String, availableProperties: Set<Property<*>>, blockObject: JsonObject): Pair<Map<String, String>, KryptonBlock> {
+    private fun JsonObject.retrieveState(
+        key: String,
+        availableProperties: Set<Property<*>>,
+        blockObject: JsonObject
+    ): Pair<Map<String, String>, KryptonBlock> {
         val stateId = get("stateId").asInt
         val propertyMap = get("properties").asJsonObject.entrySet().associate { it.key to it.value.asString.lowercase() }
         val block = KryptonBlock(BlockData(Key.key(key), blockObject, this), availableProperties, propertyMap)

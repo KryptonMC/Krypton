@@ -36,7 +36,9 @@ import org.kryptonmc.krypton.util.IntBiMap
 import java.util.stream.Stream
 import kotlin.math.max
 
-open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, Codec<T>, Keyable, IntBiMap<T> {
+open class KryptonRegistry<T : Any>(
+    override val key: ResourceKey<out Registry<T>>
+) : Registry<T>, Codec<T>, Keyable, IntBiMap<T> {
 
     private val byId = ObjectArrayList<T>(256)
     @Suppress("UNCHECKED_CAST")
@@ -92,15 +94,18 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
 
     override fun <U> encode(input: T, ops: DynamicOps<U>, prefix: U): DataResult<U> {
         val key = get(input) ?: return DataResult.error("Unknown registry element $input!")
-        return ops.mergeToPrimitive(prefix, if (ops.compressMaps()) ops.createInt(idOf(input)) else ops.createString(key.asString()))
+        if (ops.compressMaps()) return ops.mergeToPrimitive(prefix, ops.createInt(idOf(input)))
+        return ops.mergeToPrimitive(prefix, ops.createString(key.asString()))
     }
 
     override fun <U> decode(ops: DynamicOps<U>, input: U): DataResult<Pair<T, U>> {
         if (ops.compressMaps()) return ops.getNumberValue(input).flatMap { id ->
-            get(id.toInt())?.let { DataResult.success(Pair.of(it, ops.empty())) } ?: DataResult.error("Could not find element with ID $id in registry $key!")
+            get(id.toInt())?.let { DataResult.success(Pair.of(it, ops.empty())) }
+                ?: DataResult.error("Could not find element with ID $id in registry $key!")
         }
         return Codecs.KEY.decode(ops, input).flatMap { pair ->
-            get(pair.first)?.let { DataResult.success(Pair.of(it, pair.second)) } ?: DataResult.error("Could not find element with key ${pair.first} in registry $key!")
+            get(pair.first)?.let { DataResult.success(Pair.of(it, pair.second)) }
+                ?: DataResult.error("Could not find element with key ${pair.first} in registry $key!")
         }
     }
 
@@ -108,7 +113,9 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
 
     companion object {
 
-        fun <T : Any> ResourceKey<out Registry<T>>.directCodec(elementCodec: Codec<T>): Codec<KryptonRegistry<T>> = Codec.unboundedMap(
+        fun <T : Any> ResourceKey<out Registry<T>>.directCodec(
+            elementCodec: Codec<T>
+        ): Codec<KryptonRegistry<T>> = Codec.unboundedMap(
             Codecs.KEY.xmap({ ResourceKey.of(this, it) }, ResourceKey<*>::location),
             elementCodec
         ).xmap(

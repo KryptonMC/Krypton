@@ -26,22 +26,38 @@ object V1501 {
     private const val VERSION = MCVersions.V1_13_PRE1
     private val RENAMES = mapOf(
         "minecraft:recipes/brewing/speckled_melon" to "minecraft:recipes/brewing/glistering_melon_slice",
-        "minecraft:recipes/building_blocks/black_stained_hardened_clay" to "minecraft:recipes/building_blocks/black_terracotta",
-        "minecraft:recipes/building_blocks/blue_stained_hardened_clay" to "minecraft:recipes/building_blocks/blue_terracotta",
-        "minecraft:recipes/building_blocks/brown_stained_hardened_clay" to "minecraft:recipes/building_blocks/brown_terracotta",
-        "minecraft:recipes/building_blocks/cyan_stained_hardened_clay" to "minecraft:recipes/building_blocks/cyan_terracotta",
-        "minecraft:recipes/building_blocks/gray_stained_hardened_clay" to "minecraft:recipes/building_blocks/gray_terracotta",
-        "minecraft:recipes/building_blocks/green_stained_hardened_clay" to "minecraft:recipes/building_blocks/green_terracotta",
-        "minecraft:recipes/building_blocks/light_blue_stained_hardened_clay" to "minecraft:recipes/building_blocks/light_blue_terracotta",
-        "minecraft:recipes/building_blocks/light_gray_stained_hardened_clay" to "minecraft:recipes/building_blocks/light_gray_terracotta",
-        "minecraft:recipes/building_blocks/lime_stained_hardened_clay" to "minecraft:recipes/building_blocks/lime_terracotta",
-        "minecraft:recipes/building_blocks/magenta_stained_hardened_clay" to "minecraft:recipes/building_blocks/magenta_terracotta",
-        "minecraft:recipes/building_blocks/orange_stained_hardened_clay" to "minecraft:recipes/building_blocks/orange_terracotta",
-        "minecraft:recipes/building_blocks/pink_stained_hardened_clay" to "minecraft:recipes/building_blocks/pink_terracotta",
-        "minecraft:recipes/building_blocks/purple_stained_hardened_clay" to "minecraft:recipes/building_blocks/purple_terracotta",
-        "minecraft:recipes/building_blocks/red_stained_hardened_clay" to "minecraft:recipes/building_blocks/red_terracotta",
-        "minecraft:recipes/building_blocks/white_stained_hardened_clay" to "minecraft:recipes/building_blocks/white_terracotta",
-        "minecraft:recipes/building_blocks/yellow_stained_hardened_clay" to "minecraft:recipes/building_blocks/yellow_terracotta",
+        "minecraft:recipes/building_blocks/black_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/black_terracotta",
+        "minecraft:recipes/building_blocks/blue_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/blue_terracotta",
+        "minecraft:recipes/building_blocks/brown_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/brown_terracotta",
+        "minecraft:recipes/building_blocks/cyan_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/cyan_terracotta",
+        "minecraft:recipes/building_blocks/gray_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/gray_terracotta",
+        "minecraft:recipes/building_blocks/green_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/green_terracotta",
+        "minecraft:recipes/building_blocks/light_blue_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/light_blue_terracotta",
+        "minecraft:recipes/building_blocks/light_gray_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/light_gray_terracotta",
+        "minecraft:recipes/building_blocks/lime_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/lime_terracotta",
+        "minecraft:recipes/building_blocks/magenta_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/magenta_terracotta",
+        "minecraft:recipes/building_blocks/orange_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/orange_terracotta",
+        "minecraft:recipes/building_blocks/pink_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/pink_terracotta",
+        "minecraft:recipes/building_blocks/purple_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/purple_terracotta",
+        "minecraft:recipes/building_blocks/red_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/red_terracotta",
+        "minecraft:recipes/building_blocks/white_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/white_terracotta",
+        "minecraft:recipes/building_blocks/yellow_stained_hardened_clay" to
+                "minecraft:recipes/building_blocks/yellow_terracotta",
         "minecraft:recipes/building_blocks/acacia_wooden_slab" to "minecraft:recipes/building_blocks/acacia_slab",
         "minecraft:recipes/building_blocks/birch_wooden_slab" to "minecraft:recipes/building_blocks/birch_slab",
         "minecraft:recipes/building_blocks/dark_oak_wooden_slab" to "minecraft:recipes/building_blocks/dark_oak_slab",
@@ -49,7 +65,8 @@ object V1501 {
         "minecraft:recipes/building_blocks/oak_wooden_slab" to "minecraft:recipes/building_blocks/oak_slab",
         "minecraft:recipes/building_blocks/spruce_wooden_slab" to "minecraft:recipes/building_blocks/spruce_slab",
         "minecraft:recipes/building_blocks/brick_block" to "minecraft:recipes/building_blocks/bricks",
-        "minecraft:recipes/building_blocks/chiseled_stonebrick" to "minecraft:recipes/building_blocks/chiseled_stone_bricks",
+        "minecraft:recipes/building_blocks/chiseled_stonebrick" to
+                "minecraft:recipes/building_blocks/chiseled_stone_bricks",
         "minecraft:recipes/building_blocks/end_bricks" to "minecraft:recipes/building_blocks/end_stone_bricks",
         "minecraft:recipes/building_blocks/lit_pumpkin" to "minecraft:recipes/building_blocks/jack_o_lantern",
         "minecraft:recipes/building_blocks/magma" to "minecraft:recipes/building_blocks/magma_block",

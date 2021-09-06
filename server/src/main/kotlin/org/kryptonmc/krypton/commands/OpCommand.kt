@@ -37,7 +37,6 @@ object OpCommand : InternalCommand {
 
     private val ALREADY_OPPED_EXCEPTION = SimpleCommandExceptionType(translatable("commands.op.failed").toMessage())
 
-
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("op")
             .permission("krypton.command.op", 3)

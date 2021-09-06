@@ -34,18 +34,15 @@ object MCVersionRegistry {
 
     private val LOGGER = logger<MCVersionRegistry>()
 
-    val VERSION_NAMES = Int2ObjectLinkedOpenHashMap<String>()
-    val VERSION_LIST: IntArrayList
-    val DATA_VERSION_LIST: LongArrayList
+    private val VERSION_NAMES = Int2ObjectLinkedOpenHashMap<String>()
+    private val VERSION_LIST: IntArrayList
+    private val DATA_VERSION_LIST: LongArrayList
 
-    val DATACONVERTER_VERSIONS_LIST: IntArrayList
-    val DATACONVERTER_VERSIONS_MAJOR = IntLinkedOpenHashSet()
-    val DATACONVERTER_VERSIONS = LongLinkedOpenHashSet()
-    val SUBVERSIONS = Int2ObjectLinkedOpenHashMap<IntArrayList>()
+    private val DATACONVERTER_VERSIONS_LIST: IntArrayList
+    private val DATACONVERTER_VERSIONS_MAJOR = IntLinkedOpenHashSet()
+    private val DATACONVERTER_VERSIONS = LongLinkedOpenHashSet()
+    private val SUBVERSIONS = Int2ObjectLinkedOpenHashMap<IntArrayList>()
     val BREAKPOINTS = LongArrayList()
-
-    val MAXIMUM_VERSION: Int
-        get() = VERSION_LIST.getInt(VERSION_LIST.lastIndex)
 
     init {
         // Note: Some of these are nameless.
@@ -230,8 +227,9 @@ object MCVersionRegistry {
                 throw RuntimeException(exception)
             }
 
-            if (VERSION_NAMES.containsKey(value) && value != MCVersions.V15W33B) { // Mojang registered 15w33a and 15w33b under the same id.
-                LOGGER.warn("Error registering version \"$name\", version number '$value' is already associated with \"${VERSION_NAMES[value]}\"")
+            if (VERSION_NAMES.containsKey(value) && value != MCVersions.V15W33B) {
+                LOGGER.warn("Error registering version \"$name\", version number '$value' is already associated " +
+                        "with \"${VERSION_NAMES[value]}\"")
             }
 
             VERSION_NAMES[value] = name.substring(1)
@@ -254,7 +252,11 @@ object MCVersionRegistry {
                 }
             }
 
-            VERSION_NAMES[version] = if (closestName == null) "unregistered_v$version" else "$closestName-dev${closest - version}"
+            VERSION_NAMES[version] = if (closestName == null) {
+                "unregistered_v$version"
+            } else {
+                "$closestName-dev${closest - version}"
+            }
         }
 
         // Explicit override for V99, as 99 is very special.
@@ -281,8 +283,6 @@ object MCVersionRegistry {
             }
         }
     }
-
-    fun hasConverters(version: Int) = DATACONVERTER_VERSIONS_MAJOR.contains(version)
 
     operator fun contains(version: Int) = VERSION_NAMES.containsKey(version)
 

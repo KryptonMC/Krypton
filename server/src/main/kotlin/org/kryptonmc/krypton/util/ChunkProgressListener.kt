@@ -31,7 +31,6 @@ class ChunkProgressListener(radius: Int) {
     private var count = 0
     private var startTime = 0L
     private var nextTickTime = Long.MAX_VALUE
-
     val progress: Int
         get() = (count.toFloat() * 100F / area.toFloat()).floor()
 
@@ -50,7 +49,10 @@ class ChunkProgressListener(radius: Int) {
         val progress = progress
         if (System.currentTimeMillis() > nextTickTime) {
             nextTickTime += 50L
-            LOGGER.info(TranslationBootstrap.RENDERER.render(translatable("menu.preparingSpawn", text(progress.clamp(0, 100))), Locale.ENGLISH).toPlainText())
+            LOGGER.info(TranslationBootstrap.RENDERER.render(translatable(
+                "menu.preparingSpawn",
+                text(progress.clamp(0, 100))
+            ), Locale.ENGLISH).toPlainText())
         }
     }
 

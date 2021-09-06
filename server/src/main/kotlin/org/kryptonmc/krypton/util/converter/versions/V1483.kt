@@ -29,7 +29,10 @@ object V1483 {
 
     fun register() {
         RenameEntitiesConverter.register(VERSION, mapOf("minecraft:puffer_fish" to "minecraft:pufferfish")::get)
-        RenameItemsConverter.register(VERSION, mapOf("minecraft:puffer_fish_spawn_egg" to "minecraft:pufferfish_spawn_egg")::get)
+        RenameItemsConverter.register(
+            VERSION,
+            mapOf("minecraft:puffer_fish_spawn_egg" to "minecraft:pufferfish_spawn_egg")::get
+        )
         MCTypeRegistry.ENTITY.copyWalkers(VERSION, "minecraft:puffer_fish", "minecraft:pufferfish")
     }
 }

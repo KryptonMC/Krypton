@@ -21,4 +21,6 @@ package org.kryptonmc.krypton.util.converter.walkers
 import ca.spottedleaf.dataconverter.types.MapType
 import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
 
-class ItemsDataWalker(vararg paths: String) : TypePathsDataWalker<MapType<String>, MapType<String>>(MCTypeRegistry.ITEM_STACK, paths)
+class ItemsDataWalker(
+    vararg paths: String
+) : TypePathsDataWalker<MapType<String>, MapType<String>>(MCTypeRegistry.ITEM_STACK, paths)

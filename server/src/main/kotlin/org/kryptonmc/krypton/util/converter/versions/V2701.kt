@@ -28,7 +28,6 @@ object V2701 {
 
     private const val VERSION = MCVersions.V21W10A + 2
     private val INDEX_REGEX = "\\[(\\d+)]".toRegex()
-
     private val PIECE_TYPE = setOf(
         "minecraft:jigsaw",
         "minecraft:nvi",
@@ -140,7 +139,9 @@ object V2701 {
             if (actualType == "minecraft:flower") return "minecraft:flower_plain"
             if (actualType == "minecraft:tree") {
                 if (foliageName == "minecraft:acacia_foliage_placer") return "minecraft:acacia"
-                if (foliageName == "minecraft:blob_foliage_placer" && leavesName == "minecraft:oak_leaves") return "minecraft:oak"
+                if (foliageName == "minecraft:blob_foliage_placer" && leavesName == "minecraft:oak_leaves") {
+                    return "minecraft:oak"
+                }
                 if (foliageName == "minecraft:pine_foliage_placer") return "minecraft:pine"
                 if (foliageName == "minecraft:spruce_foliage_placer") return "minecraft:spruce"
             }

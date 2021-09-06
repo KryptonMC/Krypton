@@ -143,7 +143,9 @@ object V1506 {
                     val structureInfo = structureString.split("\\(".toRegex(), 2)
                     if (structureInfo[0].isEmpty()) return@forEach
                     structures[structureInfo[0]] = mutableMapOf()
-                    if (structureInfo.size <= 1 || !structureInfo[1].endsWith(')') || structureInfo[1].length <= 1) return@forEach
+                    if (structureInfo.size <= 1 || !structureInfo[1].endsWith(')') || structureInfo[1].length <= 1) {
+                        return@forEach
+                    }
                     structureInfo[1].substring(0, structureInfo[1].length - 1).split(" ").forEach {
                         val var9 = it.split("=".toRegex(), 2)
                         if (var9.size == 2) structures[structureInfo[0]]?.put(var9[0], var9[1])
@@ -167,7 +169,9 @@ object V1506 {
             ))
         })
         val structuresTag = MutableCompoundTag(structures.entries.associateTo(mutableMapOf()) { structure ->
-            structure.key.lowercase() to MutableCompoundTag(structure.value.transformTo(mutableMapOf()) { it.key to StringTag.of(it.value) })
+            structure.key.lowercase() to MutableCompoundTag(structure.value.transformTo(mutableMapOf()) {
+                it.key to StringTag.of(it.value)
+            })
         })
         return NBTMapType(MutableCompoundTag(mutableMapOf(
             "layers" to layerTag,

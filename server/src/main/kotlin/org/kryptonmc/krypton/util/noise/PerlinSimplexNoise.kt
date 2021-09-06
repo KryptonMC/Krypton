@@ -41,11 +41,27 @@ class PerlinSimplexNoise private constructor(random: RandomSource, octaves: IntS
         val noiseLevel = SimplexNoise(random)
         noiseLevels = arrayOfNulls(total)
         if (last in 0 until total && octaves.contains(0)) noiseLevels[last] = noiseLevel
-        for (i in last + 1 until total) if (i >= 0 && octaves.contains(total - i)) noiseLevels[i] = SimplexNoise(random) else random.skip(262)
+        for (i in last + 1 until total) {
+            if (i >= 0 && octaves.contains(total - i)) {
+                noiseLevels[i] = SimplexNoise(random)
+                continue
+            }
+            random.skip(262)
+        }
         if (last > 0) {
-            val sourceLevel = (noiseLevel.getValue(noiseLevel.xOffset, noiseLevel.yOffset, noiseLevel.zOffset) * LONG_MAX_FLOAT.toDouble()).toLong()
+            val sourceLevel = (noiseLevel.getValue(
+                noiseLevel.xOffset,
+                noiseLevel.yOffset,
+                noiseLevel.zOffset
+            ) * LONG_MAX_FLOAT.toDouble()).toLong()
             val genRandom = WorldGenRandom(sourceLevel)
-            for (i in total - 1 downTo 0) if (i < total && octaves.contains(total - i)) noiseLevels[i] = SimplexNoise(genRandom) else genRandom.skip(262)
+            for (i in total - 1 downTo 0) {
+                if (i < total && octaves.contains(total - i)) {
+                    noiseLevels[i] = SimplexNoise(genRandom)
+                    continue
+                }
+                genRandom.skip(262)
+            }
         }
         highestFrequencyInputFactor = 2.0.pow(last)
         highestFrequencyValueFactor = 1.0 / (2.0.pow(total) - 1.0)
@@ -56,7 +72,10 @@ class PerlinSimplexNoise private constructor(random: RandomSource, octaves: IntS
         var highestFreqInputFactor = highestFrequencyInputFactor
         var highestFreqValueFactor = highestFrequencyValueFactor
         noiseLevels.forEach {
-            if (it != null) total += it.getValue(x * highestFreqInputFactor + if (useOrigin) it.xOffset else 0.0, y * highestFreqInputFactor + if (useOrigin) it.yOffset else 0.0) * highestFreqValueFactor
+            if (it != null) total += it.getValue(
+                x * highestFreqInputFactor + if (useOrigin) it.xOffset else 0.0,
+                y * highestFreqInputFactor + if (useOrigin) it.yOffset else 0.0
+            ) * highestFreqValueFactor
             highestFreqInputFactor /= 2.0
             highestFreqValueFactor *= 2.0
         }

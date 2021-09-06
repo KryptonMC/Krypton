@@ -23,5 +23,8 @@ import org.kryptonmc.krypton.world.biome.layer.traits.C0Transformer
 
 object RiverInitLayer : C0Transformer {
 
-    override fun invoke(context: Context, value: Int) = if (value.isShallowOcean()) value else context.nextRandom(299999) + 2
+    override fun invoke(context: Context, value: Int): Int {
+        if (value.isShallowOcean()) return value
+        return context.nextRandom(299999) + 2
+    }
 }

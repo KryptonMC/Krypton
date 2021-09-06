@@ -52,19 +52,17 @@ object V2551 {
 
                     generator.getMap<String>("biome_source")?.let { biomeSource ->
                         when (biomeSource.getString("type", "")!!) {
-                            "minecraft:fixed" -> biomeSource.convert(MCTypeRegistry.BIOME, "biome", fromVersion, toVersion)
-                            "minecraft:multi_noise" -> {
-                                // Vanilla's schema is wrong. It should be DSL.fields("biomes", DSL.list(DSL.fields("biome")))
-                                // But it just contains the list part. That obviously can never be the case, because
-                                // the root object is a compound, not a list.
-
-                                biomeSource.getList("biomes", ObjectType.MAP)?.let {
-                                    for (i in 0 until it.size()) {
-                                        it.getMap<String>(i).convert(MCTypeRegistry.BIOME, "biome", fromVersion, toVersion)
-                                    }
+                            "minecraft:fixed" -> {
+                                biomeSource.convert(MCTypeRegistry.BIOME, "biome", fromVersion, toVersion)
+                            }
+                            "minecraft:multi_noise" -> biomeSource.getList("biomes", ObjectType.MAP)?.let {
+                                for (i in 0 until it.size()) {
+                                    it.getMap<String>(i).convert(MCTypeRegistry.BIOME, "biome", fromVersion, toVersion)
                                 }
                             }
-                            "minecraft:checkerboard" -> biomeSource.convertList(MCTypeRegistry.BIOME, "biomes", fromVersion, toVersion)
+                            "minecraft:checkerboard" -> {
+                                biomeSource.convertList(MCTypeRegistry.BIOME, "biomes", fromVersion, toVersion)
+                            }
                             else -> Unit
                         }
                     }

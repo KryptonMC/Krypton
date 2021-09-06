@@ -67,7 +67,9 @@ object RegionHillsLayer : AreaTransformer2, DimensionOffset1Transformer {
                 BiomeConstants.TAIGA -> BiomeConstants.TAIGA_HILLS
                 BiomeConstants.GIANT_TREE_TAIGA -> BiomeConstants.GIANT_TREE_TAIGA_HILLS
                 BiomeConstants.SNOWY_TAIGA -> BiomeConstants.SNOWY_TAIGA_HILLS
-                BiomeConstants.PLAINS -> if (context.nextRandom(3) == 0) BiomeConstants.WOODED_HILLS else BiomeConstants.FOREST
+                BiomeConstants.PLAINS -> {
+                    if (context.nextRandom(3) == 0) BiomeConstants.WOODED_HILLS else BiomeConstants.FOREST
+                }
                 BiomeConstants.SNOWY_TUNDRA -> BiomeConstants.SNOWY_MOUNTAINS
                 BiomeConstants.JUNGLE -> BiomeConstants.JUNGLE_HILLS
                 BiomeConstants.BAMBOO_JUNGLE -> BiomeConstants.BAMBOO_JUNGLE_HILLS
@@ -80,7 +82,13 @@ object RegionHillsLayer : AreaTransformer2, DimensionOffset1Transformer {
                 else -> 0
             }
             if (firstValue.isSame(BiomeConstants.WOODED_BADLANDS_PLATEAU)) mixed = BiomeConstants.BADLANDS
-            if ((firstValue == BiomeConstants.DEEP_OCEAN || firstValue == BiomeConstants.DEEP_LUKEWARM_OCEAN || firstValue == BiomeConstants.DEEP_COLD_OCEAN || firstValue == BiomeConstants.DEEP_FROZEN_OCEAN) && context.nextRandom(3) == 0) mixed = if (context.nextRandom(2) == 0) 1 else 4
+            if (
+                (firstValue == BiomeConstants.DEEP_OCEAN || firstValue == BiomeConstants.DEEP_LUKEWARM_OCEAN ||
+                        firstValue == BiomeConstants.DEEP_COLD_OCEAN || firstValue == BiomeConstants.DEEP_FROZEN_OCEAN) &&
+                context.nextRandom(3) == 0
+            ) {
+                mixed = if (context.nextRandom(2) == 0) 1 else 4
+            }
             if (value == 0 && mixed != firstValue) mixed = MUTATIONS.getOrDefault(mixed, firstValue)
             if (mixed != firstValue) {
                 var i = 0

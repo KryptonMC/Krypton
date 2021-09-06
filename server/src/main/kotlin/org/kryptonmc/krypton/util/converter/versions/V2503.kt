@@ -54,7 +54,10 @@ object V2503 {
             properties.changeWallProperty("south")
             null
         }
-        RenameAdvancementsConverter.register(VERSION, mapOf("minecraft:recipes/misc/composter" to "minecraft:recipes/decorations/composter")::get)
+        RenameAdvancementsConverter.register(
+            VERSION,
+            mapOf("minecraft:recipes/misc/composter" to "minecraft:recipes/decorations/composter")::get
+        )
     }
 
     private fun MapType<String>.changeWallProperty(path: String) {

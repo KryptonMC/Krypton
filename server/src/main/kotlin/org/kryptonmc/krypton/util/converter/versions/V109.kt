@@ -25,7 +25,6 @@ object V109 {
 
     private const val VERSION = MCVersions.V15W32C + 5
 
-    // Converts health to be in float, and cleans up whatever the hell was going on with HealF and Health...
     fun register() = MCTypeRegistry.ENTITY.addStructureConverter(VERSION) { data, _, _ ->
         val healF = data.getNumber("HealF")
         val health = data.getNumber("Health")

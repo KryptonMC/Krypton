@@ -76,7 +76,9 @@ abstract class KryptonArrowLike(
         super.load(tag)
         isCritical = tag.getBoolean("crit")
         if (tag.contains("damage", 99)) damage = tag.getDouble("damage")
-        if (tag.contains("inBlockState", CompoundTag.ID)) stuckInBlock = tag.getCompound("inBlockState").toBlock()
+        if (tag.contains("inBlockState", CompoundTag.ID)) {
+            stuckInBlock = tag.getCompound("inBlockState").toBlock()
+        }
         isInGround = tag.getBoolean("inGround")
         life = tag.getShort("life").toInt()
 

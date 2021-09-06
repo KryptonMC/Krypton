@@ -26,17 +26,13 @@ import org.kryptonmc.api.command.CommandRegistrar
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.copy
 import java.util.concurrent.locks.Lock
+import kotlin.concurrent.withLock
 
 abstract class KryptonCommandRegistrar<C : Command, M : CommandMeta>(private val lock: Lock) : CommandRegistrar<C, M> {
 
-    protected fun register(root: RootCommandNode<Sender>, node: LiteralCommandNode<Sender>) {
-        lock.lock()
-        try {
-            root.removeChildByName(node.name)
-            root.addChild(node)
-        } finally {
-            lock.unlock()
-        }
+    protected fun register(root: RootCommandNode<Sender>, node: LiteralCommandNode<Sender>) = lock.withLock {
+        root.removeChildByName(node.name)
+        root.addChild(node)
     }
 
     // This shallow copies the node to get around https://github.com/Mojang/brigadier/issues/46

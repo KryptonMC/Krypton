@@ -49,7 +49,16 @@ class LoadedPluginDescriptionCandidate(
     val mainClass: String
 ) : KryptonPluginDescription(id, name, version, description, authors, dependencies, source) {
 
-    fun toFull(mainClass: Class<*>) = LoadedPluginDescription(id, name, version, description, authors, dependencies, source, mainClass)
+    fun toFull(mainClass: Class<*>) = LoadedPluginDescription(
+        id,
+        name,
+        version,
+        description,
+        authors,
+        dependencies,
+        source,
+        mainClass
+    )
 }
 
 class LoadedPluginDescription(

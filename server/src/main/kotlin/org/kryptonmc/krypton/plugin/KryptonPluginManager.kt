@@ -91,7 +91,8 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
                 return@forEach
             }
 
-            LOGGER.info("Successfully loaded plugin ${description.id} version ${description.version} by ${description.authors.joinToString()}")
+            LOGGER.info("Successfully loaded plugin ${description.id} version ${description.version} " +
+                    "by ${description.authors.joinToString()}")
             registerPlugin(container)
         }
     }
@@ -115,7 +116,9 @@ class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
         val instance = requireNotNull(container.instance) { "Plugin has no instance!" }
 
         val loader = instance.javaClass.classLoader
-        if (loader !is PluginClassLoader) throw UnsupportedOperationException("Operation is not supported for non-Krypton plugins!")
+        if (loader !is PluginClassLoader) {
+            throw UnsupportedOperationException("Operation is not supported for non-Krypton plugins!")
+        }
         loader.addPath(path)
     }
 

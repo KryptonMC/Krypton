@@ -24,7 +24,9 @@ import org.kryptonmc.api.adventure.toMessage
 
 object CommandExceptions {
 
-    val POSITION_EXPECTED_DOUBLE = SimpleCommandExceptionType(translatable("argument.pos.missing.double").toMessage())
+    val POSITION_EXPECTED_DOUBLE = SimpleCommandExceptionType(
+        translatable("argument.pos.missing.double").toMessage()
+    )
     val POSITION_3D_INCOMPLETE = SimpleCommandExceptionType(translatable("argument.pos3d.incomplete").toMessage())
     val POSITION_MIXED_TYPE = SimpleCommandExceptionType(translatable("argument.pos.mixed").toMessage())
 }

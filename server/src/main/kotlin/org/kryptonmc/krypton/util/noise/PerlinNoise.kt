@@ -76,14 +76,27 @@ class PerlinNoise private constructor(
 
     fun getOctaveNoise(index: Int) = noiseLevels[noiseLevels.size - 1 - index]
 
-    fun getValue(x: Double, y: Double, z: Double, yScale: Double = 0.0, yMax: Double = 0.0, useOrigin: Boolean = false): Double {
+    fun getValue(
+        x: Double,
+        y: Double,
+        z: Double,
+        yScale: Double = 0.0,
+        yMax: Double = 0.0,
+        useOrigin: Boolean = false
+    ): Double {
         var value = 0.0
         var lowestFreqInputFactor = lowestFrequencyInputFactor
         var lowestFreqValueFactor = lowestFrequencyValueFactor
         for (i in noiseLevels.indices) {
             val noiseLevel = noiseLevels[i]
             if (noiseLevel != null) {
-                val noise = noiseLevel.noise((x * lowestFreqInputFactor).wrap(), if (useOrigin) -noiseLevel.yOffset else (y * lowestFreqInputFactor).wrap(), (z * lowestFreqInputFactor).wrap(), yScale * lowestFreqInputFactor, yMax * lowestFreqInputFactor)
+                val noise = noiseLevel.noise(
+                    (x * lowestFreqInputFactor).wrap(),
+                    if (useOrigin) -noiseLevel.yOffset else (y * lowestFreqInputFactor).wrap(),
+                    (z * lowestFreqInputFactor).wrap(),
+                    yScale * lowestFreqInputFactor,
+                    yMax * lowestFreqInputFactor
+                )
                 value += amplitudes.getDouble(i) * noise * lowestFreqValueFactor
             }
             lowestFreqInputFactor *= 2.0
@@ -92,7 +105,8 @@ class PerlinNoise private constructor(
         return value
     }
 
-    override fun getValue(x: Double, y: Double, yScale: Double, yMax: Double) = getValue(x, y, 0.0, yScale, yMax, false)
+    override fun getValue(x: Double, y: Double, yScale: Double, yMax: Double) =
+        getValue(x, y, 0.0, yScale, yMax, false)
 
     companion object {
 

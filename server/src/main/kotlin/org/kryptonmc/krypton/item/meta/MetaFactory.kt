@@ -57,7 +57,8 @@ object MetaFactory {
         MetaKeys.NAME to ItemMetaSerializer(
             { GsonComponentSerializer.gson().deserialize(it.getCompound("display").getString("Name")) },
             { nbt, name -> nbt.update("display") { putString("Name", name.toJsonString()) } },
-            { it.contains("display", CompoundTag.ID) && it.getCompound("display").contains("Name", StringTag.ID) }
+            { it.contains("display", CompoundTag.ID) &&
+                    it.getCompound("display").contains("Name", StringTag.ID) }
         ),
         MetaKeys.LORE to ItemMetaSerializer(
             { nbt -> nbt.getCompound("display").getList("Lore", StringTag.ID)
@@ -68,12 +69,14 @@ object MetaFactory {
                     put("Lore", MutableListTag(lore.mapTo(mutableListOf()) { StringTag.of(it.toJsonString()) }, StringTag.ID))
                 }
             },
-            { it.contains("display", CompoundTag.ID) && it.getCompound("display").contains("Lore", StringTag.ID) }
+            { it.contains("display", CompoundTag.ID) &&
+                    it.getCompound("display").contains("Lore", StringTag.ID) }
         ),
         MetaKeys.COLOR to ItemMetaSerializer(
             { Color(it.getCompound("display").getInt("color")) },
             { nbt, color -> nbt.update("display") { putInt("color", color.rgb) } },
-            { it.contains("display", CompoundTag.ID) && it.getCompound("display").contains("color", IntTag.ID) }
+            { it.contains("display", CompoundTag.ID) &&
+                    it.getCompound("display").contains("color", IntTag.ID) }
         ),
         MetaKeys.HIDE_ATTRIBUTES to hideFlagsSerializer(ItemFlag.ATTRIBUTES),
         MetaKeys.HIDE_CAN_DESTROY to hideFlagsSerializer(ItemFlag.CAN_DESTROY),
@@ -105,10 +108,14 @@ private fun hideFlagsSerializer(flag: ItemFlag) = ItemMetaSerializer(
 private val BLOCK_LIST_META_SERIALIZER = ItemMetaSerializer(
     { nbt ->
         val blocks = mutableListOf<Block>()
-        nbt.getList("CanDestroy", StringTag.ID).forEachString { key -> BlockLoader.fromKey(key)?.let { blocks.add(it) } }
+        nbt.getList("CanDestroy", StringTag.ID).forEachString { key ->
+            BlockLoader.fromKey(key)?.let { blocks.add(it) }
+        }
         blocks
     },
-    { nbt, blocks -> nbt["CanDestroy"] = MutableListTag(blocks.mapTo(mutableListOf()) { StringTag.of(it.key.asString()) }) },
+    { nbt, blocks ->
+        nbt["CanDestroy"] = MutableListTag(blocks.mapTo(mutableListOf()) { StringTag.of(it.key.asString()) })
+    },
     { it.contains("CanDestroy", ListTag.ID) }
 )
 

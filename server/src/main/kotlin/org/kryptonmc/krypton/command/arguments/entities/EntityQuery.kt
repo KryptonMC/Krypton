@@ -67,7 +67,8 @@ class EntityQuery(
             }
             listOf(currentNearest)
         }
-        Selector.PLAYER -> listOf(source.server.player(playerName) ?: throw EntityArgumentExceptions.UNKNOWN_PLAYER.create())
+        Selector.PLAYER -> listOf(source.server.player(playerName)
+            ?: throw EntityArgumentExceptions.UNKNOWN_PLAYER.create())
         Selector.UNKNOWN -> throw EntityArgumentExceptions.UNKNOWN_SELECTOR.create("")
     }
 
@@ -79,8 +80,8 @@ class EntityQuery(
             if (playerName.isNotEmpty()) return listOf(server.player(playerName)
                 ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create())
             getEntities(sender).map {
-                it as? KryptonPlayer ?: throw UnsupportedOperationException("You cannot call .getPlayers() if there is" +
-                        "an entity in the arguments")
+                it as? KryptonPlayer ?: throw UnsupportedOperationException("You cannot call .getPlayers() if there " +
+                        "is an entity in the arguments")
             }
         } else {
             listOf(server.player(playerName) ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create())
@@ -216,7 +217,8 @@ class EntityQuery(
         throw DynamicCommandExceptionType { a -> text("Not yet implemented: $a").toMessage() }.create(option)
     }
 
-    private fun checkInt(string: String) = string.toIntOrNull() ?: throw BrigadierExceptions.readerExpectedInt().create()
+    private fun checkInt(string: String) = string.toIntOrNull()
+        ?: throw BrigadierExceptions.readerExpectedInt().create()
 
     private fun checkIntOrRange(string: String) {
         if (string.toIntOrNull() != null) return
@@ -238,7 +240,7 @@ class EntityQuery(
         companion object {
 
             /**
-             * Get the target selector from it's short name
+             * Gets the target selector from it's short name
              * you can find these at the [Minecraft Wiki](https://minecraft.fandom.com/wiki/Target_selectors)
              */
             fun fromChar(selector: Char) = when (selector) {
@@ -255,13 +257,12 @@ class EntityQuery(
     companion object {
 
         private fun String.toIntRange(): IntRange? {
-            return if (startsWith("..")) {
+            if (startsWith("...")) {
                 val string = replace("..", "").toIntOrNull() ?: return null
-                IntRange(0, string)
-            } else {
-                val values = split("..")
-                IntRange(values[0].toInt(), values[1].toIntOrNull() ?: return null)
+                return IntRange(0, string)
             }
+            val values = split("..")
+            return IntRange(values[0].toInt(), values[1].toIntOrNull() ?: return null)
         }
     }
 }

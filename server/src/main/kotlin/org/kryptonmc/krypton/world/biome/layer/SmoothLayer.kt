@@ -23,11 +23,17 @@ import org.kryptonmc.krypton.world.biome.layer.traits.CastleTransformer
 
 object SmoothLayer : CastleTransformer {
 
-    override fun invoke(context: Context, n: Int, e: Int, s: Int, w: Int, center: Int): Int {
-        val eastAndWestSame = e == w
-        val northAndSouthSame = n == s
-        return if (eastAndWestSame == northAndSouthSame) {
-            if (eastAndWestSame) (if (context.nextRandom(2) == 0) w else n) else center
-        } else (if (eastAndWestSame) w else n)
+    override fun invoke(context: Context, north: Int, east: Int, south: Int, west: Int, center: Int): Int {
+        val eastAndWestSame = east == west
+        val northAndSouthSame = north == south
+        if (eastAndWestSame == northAndSouthSame) {
+            if (eastAndWestSame) {
+                if (context.nextRandom(2) == 0) return west
+                return north
+            }
+            return center
+        }
+        if (eastAndWestSame) return west
+        return north
     }
 }

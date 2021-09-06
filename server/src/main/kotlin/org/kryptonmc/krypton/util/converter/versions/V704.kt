@@ -34,7 +34,7 @@ object V704 {
 
     private val LOGGER = logger<V704>()
     private const val VERSION = MCVersions.V1_10_2 + 192
-    val ITEM_ID_TO_TILE_ENTITY_ID = mapOf(
+    private val ITEM_ID_TO_TILE_ENTITY_ID = mapOf(
         "minecraft:furnace" to "minecraft:furnace",
         "minecraft:lit_furnace" to "minecraft:furnace",
         "minecraft:chest" to "minecraft:chest",
@@ -146,7 +146,6 @@ object V704 {
         "minecraft:bee_nest" to "minecraft:beehive",
         "minecraft:beehive" to "minecraft:beehive",
         "minecraft:sculk_sensor" to "minecraft:sculk_sensor",
-        // These are missing from Vanilla (TODO: check on update)
         "minecraft:enchanting_table" to "minecraft:enchanting_table",
         "minecraft:comparator" to "minecraft:comparator",
         "minecraft:light_gray_bed" to "minecraft:bed",
@@ -252,7 +251,9 @@ object V704 {
                     if (itemId != "minecraft:air") LOGGER.warn("Unable to resolve BlockEntity for ItemStack: $itemId (V704)")
                     false
                 } else {
-                    !blockEntityTag.hasKey("id", ObjectType.STRING).apply { if (this) blockEntityTag!!.setString("id", entityId) }
+                    !blockEntityTag.hasKey("id", ObjectType.STRING).apply {
+                        if (this) blockEntityTag!!.setString("id", entityId)
+                    }
                 }
                 val replace = MCTypeRegistry.TILE_ENTITY.convert(blockEntityTag, fromVersion, toVersion)
                 if (replace != null) {

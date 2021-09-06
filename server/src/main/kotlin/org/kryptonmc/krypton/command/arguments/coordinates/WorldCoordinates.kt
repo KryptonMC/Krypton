@@ -30,9 +30,16 @@ class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: Wo
     override val relativeY = y.isRelative
     override val relativeZ = z.isRelative
 
-    override fun position(player: Player) = Vector(x[player.location.x], y[player.location.y], z[player.location.z])
+    override fun position(player: Player) = Vector(
+        x[player.location.x],
+        y[player.location.y],
+        z[player.location.z]
+    )
 
-    override fun rotation(player: Player) = Vector2d(x[player.location.yaw.toDouble()], y[player.location.pitch.toDouble()])
+    override fun rotation(player: Player) = Vector2d(
+        x[player.location.yaw.toDouble()],
+        y[player.location.pitch.toDouble()]
+    )
 
     companion object {
 

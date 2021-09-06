@@ -23,10 +23,11 @@ public inline fun <reified T : Component> ComponentFlattener.Builder.mapper(
 ): ComponentFlattener.Builder = mapper(T::class.java, converter)
 
 /**
- * Register a type of component that needs to be flattened to an intermediate stage.
+ * Register a type of component that needs to be flattened to an intermediate
+ * stage.
  *
- * Analogous with [ComponentFlattener.Builder.complexMapper], except this uses reified
- * types to improve quality of life as a Kotlin user.
+ * Analogous with [ComponentFlattener.Builder.complexMapper], except this uses
+ * reified types to improve quality of life as a Kotlin user.
  */
 @JvmSynthetic
 public inline fun <reified T : Component> ComponentFlattener.Builder.complexMapper(

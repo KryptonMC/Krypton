@@ -82,7 +82,8 @@ object FluidLoader {
 
     private fun fromState(stateId: Int): KryptonFluid? = STATE_MAP[stateId]
 
-    fun properties(key: String, properties: Map<String, String>): KryptonFluid? = PROPERTY_MAP[key]?.properties?.get(properties)
+    fun properties(key: String, properties: Map<String, String>): KryptonFluid? =
+        PROPERTY_MAP[key]?.properties?.get(properties)
 
     private fun JsonObject.retrieveState(
         key: String,

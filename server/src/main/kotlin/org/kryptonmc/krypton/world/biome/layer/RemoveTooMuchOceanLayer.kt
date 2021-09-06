@@ -23,6 +23,17 @@ import org.kryptonmc.krypton.world.biome.layer.traits.CastleTransformer
 
 object RemoveTooMuchOceanLayer : CastleTransformer {
 
-    override fun invoke(context: Context, n: Int, e: Int, s: Int, w: Int, center: Int): Int =
-        if (center.isShallowOcean() && n.isShallowOcean() && e.isShallowOcean() && s.isShallowOcean() && w.isShallowOcean() && context.nextRandom(2) == 0) 1 else center
+    override fun invoke(context: Context, north: Int, east: Int, south: Int, west: Int, center: Int): Int {
+        if (
+            center.isShallowOcean() &&
+            north.isShallowOcean() &&
+            east.isShallowOcean() &&
+            south.isShallowOcean() &&
+            west.isShallowOcean() &&
+            context.nextRandom(2) == 0
+        ) {
+            return 1
+        }
+        return center
+    }
 }

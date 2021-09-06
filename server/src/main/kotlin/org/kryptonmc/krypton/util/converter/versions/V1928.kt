@@ -30,7 +30,14 @@ object V1928 {
 
     fun register() {
         RenameEntitiesConverter.register(VERSION, mapOf("minecraft:illager_beast" to "minecraft:ravager")::get)
-        RenameItemsConverter.register(VERSION, mapOf("minecraft:illager_beast_spawn_egg" to "minecraft:ravager_spawn_egg")::get)
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:ravager", ItemListsDataWalker("ArmorItems", "HandItems"))
+        RenameItemsConverter.register(
+            VERSION,
+            mapOf("minecraft:illager_beast_spawn_egg" to "minecraft:ravager_spawn_egg")::get
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:ravager",
+            ItemListsDataWalker("ArmorItems", "HandItems")
+        )
     }
 }

@@ -40,7 +40,9 @@ import java.util.concurrent.TimeUnit
 
 class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Scheduler {
 
-    private val executor: ExecutorService = Executors.newCachedThreadPool(threadFactory("Krypton Scheduler #%d"))
+    private val executor: ExecutorService = Executors.newCachedThreadPool(
+        threadFactory("Krypton Scheduler #%d")
+    )
     private val timedExecutor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(
         threadFactory("Krypton Timed Scheduler")
     )
@@ -50,7 +52,8 @@ class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Schedu
 
     override fun run(plugin: Any, task: TaskRunnable) = schedule(plugin, 0, TimeUnit.MILLISECONDS, task)
 
-    override fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: TaskRunnable) = schedule(plugin, delay, 0, unit, task)
+    override fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: TaskRunnable) =
+        schedule(plugin, delay, 0, unit, task)
 
     override fun schedule(plugin: Any, delay: Long, period: Long, unit: TimeUnit, task: TaskRunnable): Task {
         val scheduledTask = KryptonTask(plugin, task, delay, period, unit)
@@ -109,7 +112,10 @@ class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Schedu
                     return@execute
                 }
                 val name = pluginManager.fromInstance(plugin)?.description?.name ?: "UNKNOWN"
-                LOGGER.error("Plugin $name generated an exception whilst trying to execute task $callable!", exception)
+                LOGGER.error(
+                    "Plugin $name generated an exception whilst trying to execute task $callable!",
+                    exception
+                )
             } finally {
                 if (period == 0L) finish()
                 currentTaskThread = null

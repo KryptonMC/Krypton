@@ -92,7 +92,10 @@ object WhitelistCommand : InternalCommand {
                             val whitelist = server.playerManager.whitelist
                             if (!whitelist.contains(target)) {
                                 whitelist.add(WhitelistEntry(target))
-                                sender.sendMessage(translatable("commands.whitelist.add.success", text(target.name)))
+                                sender.sendMessage(translatable(
+                                    "commands.whitelist.add.success",
+                                    text(target.name)
+                                ))
                             } else {
                                 sender.sendMessage(translatable("commands.whitelist.add.failed"))
                             }
@@ -110,7 +113,10 @@ object WhitelistCommand : InternalCommand {
                             val whitelist = server.playerManager.whitelist
                             if (whitelist.contains(target)) {
                                 whitelist.remove(target)
-                                sender.sendMessage(translatable("commands.whitelist.remove.success", text(target.name)))
+                                sender.sendMessage(translatable(
+                                    "commands.whitelist.remove.success",
+                                    text(target.name)
+                                ))
                             } else {
                                 sender.sendMessage(translatable("commands.whitelist.remove.failed"))
                             }
@@ -130,7 +136,9 @@ object WhitelistCommand : InternalCommand {
             .then(literal<Sender>("remove-ip")
                 .then(argument<Sender, String>("ip", string())
                     .suggests { context, builder ->
-                        builder.suggest((context.source.server as KryptonServer).playerManager.whitlistedIps.map { it.key })
+                        builder.suggest((context.source.server as KryptonServer).playerManager.whitlistedIps.map {
+                            it.key
+                        })
                     }
                     .executes {
                         val sender = it.source

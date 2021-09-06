@@ -42,7 +42,7 @@ class EntityFlatteningConverter(private val paths: Array<out String>) : StringDa
         data.remove(idPath) // from type update
         data.remove(dataPath)
 
-        data.setMap(outputStatePath, BlockFlatteningHelper.getNBTForId((blockId shl 4) or blockData).copy()) // copy to avoid problems with later state datafixers
+        data.setMap(outputStatePath, BlockFlatteningHelper.getNBTForId((blockId shl 4) or blockData).copy())
         return null
     }
 
@@ -320,7 +320,7 @@ class EntityFlatteningConverter(private val paths: Array<out String>) : StringDa
                 data.remove("TileID")
                 data.remove("Tile")
 
-                data.setMap("BlockState", BlockFlatteningHelper.getNBTForId((blockId shl 4) or blockData).copy()) // copy to avoid problems with later state datafixers
+                data.setMap("BlockState", BlockFlatteningHelper.getNBTForId((blockId shl 4) or blockData).copy())
                 null
             }
             register("minecraft:enderman", "carried", "carriedData", "carriedBlockState")

@@ -42,8 +42,7 @@ class SummonEntityArgument : ArgumentType<Key> {
     }
 }
 
-fun CommandContext<Sender>.summonableEntity(argumentName: String) = getArgument(argumentName, Key::class.java)
-    .ensureSummonable()
+fun CommandContext<Sender>.summonableEntity(name: String) = argument<Key>(name).ensureSummonable()
 
 fun CommandContext<Sender>.entityArgument(name: String) = argument<Key>(name).ensureSummonable()
 

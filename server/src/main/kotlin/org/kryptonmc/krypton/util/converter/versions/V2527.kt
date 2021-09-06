@@ -51,7 +51,7 @@ object V2527 {
         null
     }
 
-    fun addPadding(indices: Int, bits: Int, old: LongArray): LongArray {
+    private fun addPadding(indices: Int, bits: Int, old: LongArray): LongArray {
         val k = old.size
         if (k == 0) return old
         val l = (1L shl bits) - 1L

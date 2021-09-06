@@ -43,7 +43,13 @@ fun StringReader.nextKey(): Key {
 private val ZERO_TO_NINE_RANGE = '0'..'9'
 private val A_TO_Z_RANGE = 'a'..'z'
 
-private fun Char.isAllowedInKey() = this in ZERO_TO_NINE_RANGE || this in A_TO_Z_RANGE || this == '_' || this == ':' || this == '/' || this == '.' || this == '-'
+private fun Char.isAllowedInKey() = this in ZERO_TO_NINE_RANGE ||
+        this in A_TO_Z_RANGE ||
+        this == '_' ||
+        this == ':' ||
+        this == '/' ||
+        this == '.' ||
+        this == '-'
 
 fun String.toKeyOrNull(): Key? = try {
     Key.key(this)

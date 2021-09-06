@@ -19,7 +19,8 @@
 package org.kryptonmc.krypton.util.converter.versions
 
 import ca.spottedleaf.dataconverter.types.MapType
-import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.util.converter.MCVersions
 import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
@@ -42,11 +43,11 @@ object V1458 {
             val name = display.getString("Name")
 
             if (name != null) {
-                display.setString("Name", GsonComponentSerializer.gson().serialize(Component.text(name)))
+                display.setString("Name", GsonComponentSerializer.gson().serialize(text(name)))
             } else {
                 val localisedName = display.getString("LocName")
                 if (localisedName != null) {
-                    display.setString("Name", GsonComponentSerializer.gson().serialize(Component.translatable(localisedName)))
+                    display.setString("Name", GsonComponentSerializer.gson().serialize(translatable(localisedName)))
                     display.remove("LocName")
                 }
             }
@@ -63,7 +64,7 @@ object V1458 {
         if (customName.isEmpty()) {
             remove("CustomName")
         } else {
-            setString("CustomName", GsonComponentSerializer.gson().serialize(Component.text(customName)))
+            setString("CustomName", GsonComponentSerializer.gson().serialize(text(customName)))
         }
         return null
     }

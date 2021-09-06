@@ -163,8 +163,10 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
     }
     private val NOTE_BLOCK_MAP = HashMap<String, MapType<String>>().apply {
         for (note in 0..25) {
-            put("true$note", BlockFlatteningHelper.parseTag("{Name:'minecraft:note_block',Properties:{powered:'true',note:'$note'}}"))
-            put("true$note", BlockFlatteningHelper.parseTag("{Name:'minecraft:note_block',Properties:{powered:'false',note:'$note'}}"))
+            put("true$note", BlockFlatteningHelper.parseTag("{Name:'minecraft:note_block',Properties:" +
+                    "{powered:'true',note:'$note'}}"))
+            put("true$note", BlockFlatteningHelper.parseTag("{Name:'minecraft:note_block',Properties:" +
+                    "{powered:'false',note:'$note'}}"))
         }
     }
     private val DYE_COLOR_MAP = Int2ObjectOpenHashMap<String>().apply {
@@ -219,106 +221,180 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
     }
 
     private fun MutableMap<String, MapType<String>>.mapSkull(oldId: Int, newId: String, skullType: String) {
-        put("${oldId}north", BlockFlatteningHelper.parseTag("{Name:'minecraft:${newId}_wall_$skullType',Properties:{facing:'north'}}"))
-        put("${oldId}east", BlockFlatteningHelper.parseTag("{Name:'minecraft:${newId}_wall_$skullType',Properties:{facing:'east'}}"))
-        put("${oldId}south", BlockFlatteningHelper.parseTag("{Name:'minecraft:${newId}_wall_$skullType',Properties:{facing:'south'}}"))
-        put("${oldId}west", BlockFlatteningHelper.parseTag("{Name:'minecraft:${newId}_wall_$skullType',Properties:{facing:'west'}}"))
+        put("${oldId}north", BlockFlatteningHelper.parseTag("{Name:'minecraft:${newId}_wall_$skullType'," +
+                "Properties:{facing:'north'}}"))
+        put("${oldId}east", BlockFlatteningHelper.parseTag("{Name:'minecraft:${newId}_wall_$skullType'," +
+                "Properties:{facing:'east'}}"))
+        put("${oldId}south", BlockFlatteningHelper.parseTag("{Name:'minecraft:${newId}_wall_$skullType'," +
+                "Properties:{facing:'south'}}"))
+        put("${oldId}west", BlockFlatteningHelper.parseTag("{Name:'minecraft:${newId}_wall_$skullType'," +
+                "Properties:{facing:'west'}}"))
 
         for (rotation in 0..15) {
-            put("$oldId$rotation", BlockFlatteningHelper.parseTag("{Name:'minecraft:${newId}_$skullType',Properties:{rotation:'$rotation'}}"))
+            put("$oldId$rotation", BlockFlatteningHelper.parseTag("{Name:'minecraft:${newId}_$skullType'," +
+                    "Properties:{rotation:'$rotation'}}"))
         }
     }
 
     private fun MutableMap<String, MapType<String>>.mapDoor(type: String, oldId: Int) {
-        put("minecraft:${type}eastlowerleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'east',half:'lower',hinge:'left',open:'false',powered:'false'}}"))
-        put("minecraft:${type}eastlowerleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'east',half:'lower',hinge:'left',open:'false',powered:'true'}}"))
-        put("minecraft:${type}eastlowerlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'east',half:'lower',hinge:'left',open:'true',powered:'false'}}"))
-        put("minecraft:${type}eastlowerlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'east',half:'lower',hinge:'left',open:'true',powered:'true'}}"))
+        put("minecraft:${type}eastlowerleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'east',half:'lower',hinge:'left',open:'false',powered:'false'}}"))
+        put("minecraft:${type}eastlowerleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'east',half:'lower',hinge:'left',open:'false',powered:'true'}}"))
+        put("minecraft:${type}eastlowerlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'east',half:'lower',hinge:'left',open:'true',powered:'false'}}"))
+        put("minecraft:${type}eastlowerlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'east',half:'lower',hinge:'left',open:'true',powered:'true'}}"))
         put("minecraft:${type}eastlowerrightfalsefalse", BlockFlatteningHelper.getNBTForId(oldId))
-        put("minecraft:${type}eastlowerrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'east',half:'lower',hinge:'right',open:'false',powered:'true'}}"))
+        put("minecraft:${type}eastlowerrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'east',half:'lower',hinge:'right',open:'false',powered:'true'}}"))
         put("minecraft:${type}eastlowerrighttruefalse", BlockFlatteningHelper.getNBTForId(oldId + 4))
-        put("minecraft:${type}eastlowerrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'east',half:'lower',hinge:'right',open:'true',powered:'true'}}"))
+        put("minecraft:${type}eastlowerrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'east',half:'lower',hinge:'right',open:'true',powered:'true'}}"))
         put("minecraft:${type}eastupperleftfalsefalse", BlockFlatteningHelper.getNBTForId(oldId + 8))
         put("minecraft:${type}eastupperleftfalsetrue", BlockFlatteningHelper.getNBTForId(oldId + 10))
-        put("minecraft:${type}eastupperlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'east',half:'upper',hinge:'left',open:'true',powered:'false'}}"))
-        put("minecraft:${type}eastupperlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'east',half:'upper',hinge:'left',open:'true',powered:'true'}}"))
+        put("minecraft:${type}eastupperlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'east',half:'upper',hinge:'left',open:'true',powered:'false'}}"))
+        put("minecraft:${type}eastupperlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'east',half:'upper',hinge:'left',open:'true',powered:'true'}}"))
         put("minecraft:${type}eastupperrightfalsefalse", BlockFlatteningHelper.getNBTForId(oldId + 9))
         put("minecraft:${type}eastupperrightfalsetrue", BlockFlatteningHelper.getNBTForId(oldId + 11))
-        put("minecraft:${type}eastupperrighttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'east',half:'upper',hinge:'right',open:'true',powered:'false'}}"))
-        put("minecraft:${type}eastupperrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'east',half:'upper',hinge:'right',open:'true',powered:'true'}}"))
-        put("minecraft:${type}northlowerleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'lower',hinge:'left',open:'false',powered:'false'}}"))
-        put("minecraft:${type}northlowerleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'lower',hinge:'left',open:'false',powered:'true'}}"))
-        put("minecraft:${type}northlowerlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'lower',hinge:'left',open:'true',powered:'false'}}"))
-        put("minecraft:${type}northlowerlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'lower',hinge:'left',open:'true',powered:'true'}}"))
+        put("minecraft:${type}eastupperrighttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'east',half:'upper',hinge:'right',open:'true',powered:'false'}}"))
+        put("minecraft:${type}eastupperrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'east',half:'upper',hinge:'right',open:'true',powered:'true'}}"))
+        put("minecraft:${type}northlowerleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'lower',hinge:'left',open:'false',powered:'false'}}"))
+        put("minecraft:${type}northlowerleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'lower',hinge:'left',open:'false',powered:'true'}}"))
+        put("minecraft:${type}northlowerlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'lower',hinge:'left',open:'true',powered:'false'}}"))
+        put("minecraft:${type}northlowerlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'lower',hinge:'left',open:'true',powered:'true'}}"))
         put("minecraft:${type}northlowerrightfalsefalse", BlockFlatteningHelper.getNBTForId(oldId + 3))
-        put("minecraft:${type}northlowerrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'lower',hinge:'right',open:'false',powered:'true'}}"))
+        put("minecraft:${type}northlowerrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'lower',hinge:'right',open:'false',powered:'true'}}"))
         put("minecraft:${type}northlowerrighttruefalse", BlockFlatteningHelper.getNBTForId(oldId + 7))
-        put("minecraft:${type}northlowerrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'lower',hinge:'right',open:'true',powered:'true'}}"))
-        put("minecraft:${type}northupperleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'upper',hinge:'left',open:'false',powered:'false'}}"))
-        put("minecraft:${type}northupperleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'upper',hinge:'left',open:'false',powered:'true'}}"))
-        put("minecraft:${type}northupperlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'upper',hinge:'left',open:'true',powered:'false'}}"))
-        put("minecraft:${type}northupperlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'upper',hinge:'left',open:'true',powered:'true'}}"))
-        put("minecraft:${type}northupperrightfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'upper',hinge:'right',open:'false',powered:'false'}}"))
-        put("minecraft:${type}northupperrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'upper',hinge:'right',open:'false',powered:'true'}}"))
-        put("minecraft:${type}northupperrighttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'upper',hinge:'right',open:'true',powered:'false'}}"))
-        put("minecraft:${type}northupperrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'north',half:'upper',hinge:'right',open:'true',powered:'true'}}"))
-        put("minecraft:${type}southlowerleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'lower',hinge:'left',open:'false',powered:'false'}}"))
-        put("minecraft:${type}southlowerleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'lower',hinge:'left',open:'false',powered:'true'}}"))
-        put("minecraft:${type}southlowerlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'lower',hinge:'left',open:'true',powered:'false'}}"))
-        put("minecraft:${type}southlowerlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'lower',hinge:'left',open:'true',powered:'true'}}"))
+        put("minecraft:${type}northlowerrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'lower',hinge:'right',open:'true',powered:'true'}}"))
+        put("minecraft:${type}northupperleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'upper',hinge:'left',open:'false',powered:'false'}}"))
+        put("minecraft:${type}northupperleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'upper',hinge:'left',open:'false',powered:'true'}}"))
+        put("minecraft:${type}northupperlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'upper',hinge:'left',open:'true',powered:'false'}}"))
+        put("minecraft:${type}northupperlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'upper',hinge:'left',open:'true',powered:'true'}}"))
+        put("minecraft:${type}northupperrightfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'upper',hinge:'right',open:'false',powered:'false'}}"))
+        put("minecraft:${type}northupperrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'upper',hinge:'right',open:'false',powered:'true'}}"))
+        put("minecraft:${type}northupperrighttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'upper',hinge:'right',open:'true',powered:'false'}}"))
+        put("minecraft:${type}northupperrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'north',half:'upper',hinge:'right',open:'true',powered:'true'}}"))
+        put("minecraft:${type}southlowerleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'lower',hinge:'left',open:'false',powered:'false'}}"))
+        put("minecraft:${type}southlowerleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'lower',hinge:'left',open:'false',powered:'true'}}"))
+        put("minecraft:${type}southlowerlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'lower',hinge:'left',open:'true',powered:'false'}}"))
+        put("minecraft:${type}southlowerlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'lower',hinge:'left',open:'true',powered:'true'}}"))
         put("minecraft:${type}southlowerrightfalsefalse", BlockFlatteningHelper.getNBTForId(oldId + 1))
-        put("minecraft:${type}southlowerrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'lower',hinge:'right',open:'false',powered:'true'}}"))
+        put("minecraft:${type}southlowerrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'lower',hinge:'right',open:'false',powered:'true'}}"))
         put("minecraft:${type}southlowerrighttruefalse", BlockFlatteningHelper.getNBTForId(oldId + 5))
-        put("minecraft:${type}southlowerrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'lower',hinge:'right',open:'true',powered:'true'}}"))
-        put("minecraft:${type}southupperleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'upper',hinge:'left',open:'false',powered:'false'}}"))
-        put("minecraft:${type}southupperleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'upper',hinge:'left',open:'false',powered:'true'}}"))
-        put("minecraft:${type}southupperlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'upper',hinge:'left',open:'true',powered:'false'}}"))
-        put("minecraft:${type}southupperlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'upper',hinge:'left',open:'true',powered:'true'}}"))
-        put("minecraft:${type}southupperrightfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'upper',hinge:'right',open:'false',powered:'false'}}"))
-        put("minecraft:${type}southupperrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'upper',hinge:'right',open:'false',powered:'true'}}"))
-        put("minecraft:${type}southupperrighttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'upper',hinge:'right',open:'true',powered:'false'}}"))
-        put("minecraft:${type}southupperrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'south',half:'upper',hinge:'right',open:'true',powered:'true'}}"))
-        put("minecraft:${type}westlowerleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'lower',hinge:'left',open:'false',powered:'false'}}"))
-        put("minecraft:${type}westlowerleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'lower',hinge:'left',open:'false',powered:'true'}}"))
-        put("minecraft:${type}westlowerlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'lower',hinge:'left',open:'true',powered:'false'}}"))
-        put("minecraft:${type}westlowerlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'lower',hinge:'left',open:'true',powered:'true'}}"))
+        put("minecraft:${type}southlowerrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'lower',hinge:'right',open:'true',powered:'true'}}"))
+        put("minecraft:${type}southupperleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'upper',hinge:'left',open:'false',powered:'false'}}"))
+        put("minecraft:${type}southupperleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'upper',hinge:'left',open:'false',powered:'true'}}"))
+        put("minecraft:${type}southupperlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'upper',hinge:'left',open:'true',powered:'false'}}"))
+        put("minecraft:${type}southupperlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'upper',hinge:'left',open:'true',powered:'true'}}"))
+        put("minecraft:${type}southupperrightfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'upper',hinge:'right',open:'false',powered:'false'}}"))
+        put("minecraft:${type}southupperrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'upper',hinge:'right',open:'false',powered:'true'}}"))
+        put("minecraft:${type}southupperrighttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'upper',hinge:'right',open:'true',powered:'false'}}"))
+        put("minecraft:${type}southupperrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'south',half:'upper',hinge:'right',open:'true',powered:'true'}}"))
+        put("minecraft:${type}westlowerleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'lower',hinge:'left',open:'false',powered:'false'}}"))
+        put("minecraft:${type}westlowerleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'lower',hinge:'left',open:'false',powered:'true'}}"))
+        put("minecraft:${type}westlowerlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'lower',hinge:'left',open:'true',powered:'false'}}"))
+        put("minecraft:${type}westlowerlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'lower',hinge:'left',open:'true',powered:'true'}}"))
         put("minecraft:${type}westlowerrightfalsefalse", BlockFlatteningHelper.getNBTForId(oldId + 2))
-        put("minecraft:${type}westlowerrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'lower',hinge:'right',open:'false',powered:'true'}}"))
+        put("minecraft:${type}westlowerrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'lower',hinge:'right',open:'false',powered:'true'}}"))
         put("minecraft:${type}westlowerrighttruefalse", BlockFlatteningHelper.getNBTForId(oldId + 6))
-        put("minecraft:${type}westlowerrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'lower',hinge:'right',open:'true',powered:'true'}}"))
-        put("minecraft:${type}westupperleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'upper',hinge:'left',open:'false',powered:'false'}}"))
-        put("minecraft:${type}westupperleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'upper',hinge:'left',open:'false',powered:'true'}}"))
-        put("minecraft:${type}westupperlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'upper',hinge:'left',open:'true',powered:'false'}}"))
-        put("minecraft:${type}westupperlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'upper',hinge:'left',open:'true',powered:'true'}}"))
-        put("minecraft:${type}westupperrightfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'upper',hinge:'right',open:'false',powered:'false'}}"))
-        put("minecraft:${type}westupperrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'upper',hinge:'right',open:'false',powered:'true'}}"))
-        put("minecraft:${type}westupperrighttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'upper',hinge:'right',open:'true',powered:'false'}}"))
-        put("minecraft:${type}westupperrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:$type',Properties:{facing:'west',half:'upper',hinge:'right',open:'true',powered:'true'}}"))
+        put("minecraft:${type}westlowerrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'lower',hinge:'right',open:'true',powered:'true'}}"))
+        put("minecraft:${type}westupperleftfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'upper',hinge:'left',open:'false',powered:'false'}}"))
+        put("minecraft:${type}westupperleftfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'upper',hinge:'left',open:'false',powered:'true'}}"))
+        put("minecraft:${type}westupperlefttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'upper',hinge:'left',open:'true',powered:'false'}}"))
+        put("minecraft:${type}westupperlefttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'upper',hinge:'left',open:'true',powered:'true'}}"))
+        put("minecraft:${type}westupperrightfalsefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'upper',hinge:'right',open:'false',powered:'false'}}"))
+        put("minecraft:${type}westupperrightfalsetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'upper',hinge:'right',open:'false',powered:'true'}}"))
+        put("minecraft:${type}westupperrighttruefalse", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'upper',hinge:'right',open:'true',powered:'false'}}"))
+        put("minecraft:${type}westupperrighttruetrue", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                "$type',Properties:{facing:'west',half:'upper',hinge:'right',open:'true',powered:'true'}}"))
     }
 
     private fun MutableMap<String, MapType<String>>.addBeds(colourId: Int, colourName: String) {
-        put("southfalsefoot$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed',Properties:{facing:'south',occupied:'false',part:'foot'}}"))
-        put("westfalsefoot$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed',Properties:{facing:'west',occupied:'false',part:'foot'}}"))
-        put("northfalsefoot$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed',Properties:{facing:'north',occupied:'false',part:'foot'}}"))
-        put("eastfalsefoot$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed',Properties:{facing:'east',occupied:'false',part:'foot'}}"))
-        put("southfalsehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed',Properties:{facing:'south',occupied:'false',part:'head'}}"))
-        put("westfalsehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed',Properties:{facing:'west',occupied:'false',part:'head'}}"))
-        put("northfalsehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed',Properties:{facing:'north',occupied:'false',part:'head'}}"))
-        put("eastfalsehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed',Properties:{facing:'east',occupied:'false',part:'head'}}"))
-        put("southtruehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed',Properties:{facing:'south',occupied:'true',part:'head'}}"))
-        put("westtruehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed',Properties:{facing:'west',occupied:'true',part:'head'}}"))
-        put("northtruehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed',Properties:{facing:'north',occupied:'true',part:'head'}}"))
-        put("easttruehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed',Properties:{facing:'east',occupied:'true',part:'head'}}"))
+        put("southfalsefoot$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed'," +
+                "Properties:{facing:'south',occupied:'false',part:'foot'}}"))
+        put("westfalsefoot$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed'," +
+                "Properties:{facing:'west',occupied:'false',part:'foot'}}"))
+        put("northfalsefoot$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed'," +
+                "Properties:{facing:'north',occupied:'false',part:'foot'}}"))
+        put("eastfalsefoot$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed'," +
+                "Properties:{facing:'east',occupied:'false',part:'foot'}}"))
+        put("southfalsehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed'," +
+                "Properties:{facing:'south',occupied:'false',part:'head'}}"))
+        put("westfalsehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed'," +
+                "Properties:{facing:'west',occupied:'false',part:'head'}}"))
+        put("northfalsehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed'," +
+                "Properties:{facing:'north',occupied:'false',part:'head'}}"))
+        put("eastfalsehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed'," +
+                "Properties:{facing:'east',occupied:'false',part:'head'}}"))
+        put("southtruehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed'," +
+                "Properties:{facing:'south',occupied:'true',part:'head'}}"))
+        put("westtruehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed'," +
+                "Properties:{facing:'west',occupied:'true',part:'head'}}"))
+        put("northtruehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed'," +
+                "Properties:{facing:'north',occupied:'true',part:'head'}}"))
+        put("easttruehead$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_bed'," +
+                "Properties:{facing:'east',occupied:'true',part:'head'}}"))
     }
 
     private fun MutableMap<String, MapType<String>>.addBanners(colourId: Int, colourName: String) {
         for (rotation in 0..15) {
-            put("${rotation}_$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_banner',Properties:{rotation:'$rotation'}}"))
+            put("${rotation}_$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:" +
+                    "${colourName}_banner',Properties:{rotation:'$rotation'}}"))
         }
-        put("north_$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_wall_banner',Properties:{facing:'north'}}"))
-        put("south_$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_wall_banner',Properties:{facing:'south'}}"))
-        put("west_$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_wall_banner',Properties:{facing:'west'}}"))
-        put("east_$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_wall_banner',Properties:{facing:'east'}}"))
+        put("north_$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_wall_banner'," +
+                "Properties:{facing:'north'}}"))
+        put("south_$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_wall_banner'," +
+                "Properties:{facing:'south'}}"))
+        put("west_$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_wall_banner'," +
+                "Properties:{facing:'west'}}"))
+        put("east_$colourId", BlockFlatteningHelper.parseTag("{Name:'minecraft:${colourName}_wall_banner'," +
+                "Properties:{facing:'east'}}"))
     }
 
     enum class Direction(val axis: Axis, val axisDirection: AxisDirection) {
@@ -352,24 +428,16 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
 
         operator fun get(index: Int): Int {
             val value = data[index ushr 1].toInt()
-
-            // if we are an even index, we want lower 4 bits
-            // if we are an odd index, we want upper 4 bits
             return value ushr (index and 1 shl 2) and 0xF
         }
 
         operator fun get(x: Int, y: Int, z: Int): Int {
             val index = y shl 8 or (z shl 4) or x
             val value = data[index ushr 1].toInt()
-
-            // if we are an even index, we want lower 4 bits
-            // if we are an odd index, we want upper 4 bits
             return value ushr (index and 1 shl 2) and 0xF
         }
 
         companion object {
-
-            fun getOrCreate(data: ByteArray?) = if (data == null) DataLayer() else DataLayer(data)
 
             fun getOrNull(data: ByteArray?) = data?.let { DataLayer(data) }
         }
@@ -392,7 +460,8 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
                     val z = (tileEntity.getInt("z") - blockZ) and 15
                     val index = y shl 8 or (z shl 4) or x
                     if (tileEntities.put(index, tileEntity) != null) {
-                        LOGGER.warn("In chunk: ${blockX}x$blockZ found a duplicate block entity at position (ConverterFlattenChunk): [$x, $y, $z]")
+                        LOGGER.warn("In chunk: ${blockX}x$blockZ found a duplicate block entity at position " +
+                                "(ConverterFlattenChunk): [$x, $y, $z]")
                     }
                 }
             }
@@ -404,11 +473,13 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
                     val section = Section(sectionData)
 
                     if (section.y !in 0..15) {
-                        LOGGER.warn("In chunk: ${blockX}x$blockZ found an invalid chunk section y: ${section.y} (ChunkFlatteningConverter)")
+                        LOGGER.warn("In chunk: ${blockX}x$blockZ found an invalid chunk section y: " +
+                                "${section.y} (ChunkFlatteningConverter)")
                         continue
                     }
                     if (sections[section.y] != null) {
-                        LOGGER.warn("In chunk: ${blockX}x$blockZ found a duplicate chunk section: ${section.y} (ChunkFlatteningConverter)")
+                        LOGGER.warn("In chunk: ${blockX}x$blockZ found a duplicate chunk section: " +
+                                "${section.y} (ChunkFlatteningConverter)")
                     }
 
                     sides = section.upgrade(sides)
@@ -423,7 +494,7 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
                 section.toFix.int2ObjectEntrySet().fastForEach { entry ->
                     val positionIterator = entry.value.intIterator()
                     when (entry.intKey) {
-                        2 -> while (positionIterator.hasNext()) { // grass block
+                        2 -> while (positionIterator.hasNext()) {
                             val position = positionIterator.nextInt() or yIndex
                             val blockState = getBlock(position)
                             if (getName(blockState) != "minecraft:grass_block") continue
@@ -432,7 +503,7 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
                                 setBlock(position, SNOWY_GRASS)
                             }
                         }
-                        3 -> while (positionIterator.hasNext()) { // dirt
+                        3 -> while (positionIterator.hasNext()) {
                             val position = positionIterator.nextInt() or yIndex
                             val blockState = getBlock(position)
                             if (getName(blockState) != "minecraft:podzol") continue
@@ -441,26 +512,28 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
                                 setBlock(position, SNOWY_PODZOL)
                             }
                         }
-                        25 -> while (positionIterator.hasNext()) { // note block
+                        25 -> while (positionIterator.hasNext()) {
                             val position = positionIterator.nextInt() or yIndex
                             val tile = removeBlockEntity(position)
                             if (tile != null) {
-                                val state = "${tile.getBoolean("powered")}${min(max(tile.getInt("note"), 0), 24).toByte()}"
+                                val state = "" + tile.getBoolean("powered") +
+                                        min(max(tile.getInt("note"), 0), 24).toByte()
                                 setBlock(position, NOTE_BLOCK_MAP.getOrDefault(state, NOTE_BLOCK_MAP["false0"]!!))
                             }
                         }
-                        26 -> while (positionIterator.hasNext()) { // bed
+                        26 -> while (positionIterator.hasNext()) {
                             val position = positionIterator.nextInt() or yIndex
                             val tile = getBlockEntity(position) ?: continue
                             val blockState = getBlock(position)
                             val colour = tile.getInt("color")
                             if (colour != 14 && colour in 0..15) {
-                                val state = getProperty(blockState, "facing") + getProperty(blockState, "occupied") + getProperty(blockState, "part") + colour
+                                val state = getProperty(blockState, "facing") +
+                                        getProperty(blockState, "occupied") +
+                                        getProperty(blockState, "part") + colour
                                 BED_BLOCK_MAP[state]?.let { setBlock(position, it) }
                             }
                         }
-                        // oak, iron, spruce, birch, jungle, acacia, dark oak door (in that order)
-                        64, 71, 193, 194, 195, 196, 197 -> while (positionIterator.hasNext()) { // a.k.a the door updater
+                        64, 71, 193, 194, 195, 196, 197 -> while (positionIterator.hasNext()) {
                             val position = positionIterator.nextInt() or yIndex
                             val blockState = getBlock(position)
                             if (!getName(blockState)!!.endsWith("_door")) continue
@@ -473,41 +546,46 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
                             if (name == getName(blockStateAbove)) {
                                 val facingBelow = getProperty(blockState, "facing")
                                 val openBelow = getProperty(blockState, "open")
-                                val hingeAbove = if (convertedFromAlphaFormat) "left" else getProperty(blockStateAbove, "hinge")
-                                val poweredAbove = if (convertedFromAlphaFormat) "false" else getProperty(blockStateAbove, "powered")
+                                val hingeAbove = if (convertedFromAlphaFormat) {
+                                    "left"
+                                } else {
+                                    getProperty(blockStateAbove, "hinge")
+                                }
+                                val poweredAbove = if (convertedFromAlphaFormat) {
+                                    "false"
+                                } else {
+                                    getProperty(blockStateAbove, "powered")
+                                }
 
                                 setBlock(position, DOOR_MAP["$name${facingBelow}lower$hingeAbove$openBelow$poweredAbove"]!!)
                                 setBlock(position, DOOR_MAP["$name${facingBelow}upper$hingeAbove$openBelow$poweredAbove"]!!)
                             }
                         }
-                        86 -> while (positionIterator.hasNext()) { // pumpkin
+                        86 -> while (positionIterator.hasNext()) {
                             val position = positionIterator.nextInt() or yIndex
                             val blockState = getBlock(position)
-
-                            // I guess this is some terrible hack to convert carved pumpkins from world gen into
-                            // regular pumpkins?
-
                             if (getName(blockState) == "minecraft:carved_pumpkin") {
                                 val downName = getName(getBlock(relative(position, Direction.DOWN)))
-                                if (downName == "minecraft:grass_block" || downName == "minecraft:dirt") setBlock(position, PUMPKIN)
+                                if (downName == "minecraft:grass_block" || downName == "minecraft:dirt") {
+                                    setBlock(position, PUMPKIN)
+                                }
                             }
                         }
-                        110 -> while (positionIterator.hasNext()) { // mycelium
+                        110 -> while (positionIterator.hasNext()) {
                             val position = positionIterator.nextInt() or yIndex
                             val blockState = getBlock(position)
                             if (getName(blockState) == "minecraft:mycelium") {
                                 val nameAbove = getName(getBlock(relative(position, Direction.UP)))
-                                if (nameAbove == "minecraft:snow" || nameAbove == "minecraft:snow_layer") setBlock(position, SNOWY_MYCELIUM)
+                                if (nameAbove == "minecraft:snow" || nameAbove == "minecraft:snow_layer") {
+                                    setBlock(position, SNOWY_MYCELIUM)
+                                }
                             }
                         }
-                        140 -> while (positionIterator.hasNext()) { // flower pot
+                        140 -> while (positionIterator.hasNext()) {
                             val position = positionIterator.nextInt() or yIndex
                             val tile = removeBlockEntity(position) ?: continue
 
                             val item = if (tile.hasKey("Item", ObjectType.NUMBER)) {
-                                // the item name converter should have migrated to number, however no legacy converter
-                                // ever did this. so we can get data with versions above v102 (old worlds, converted prior to DFU)
-                                // that didn't convert. so just do it here.
                                 ItemNameHelper.getNameFromId(tile.getInt("Item"))
                             } else {
                                 tile.getString("Item", "")!!
@@ -516,7 +594,7 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
                             val state = item + tile.getInt("Data")
                             setBlock(position, FLOWER_POT_MAP.getOrDefault(state, FLOWER_POT_MAP["minecraft:air0"]!!))
                         }
-                        144 -> while (positionIterator.hasNext()) { // mob head
+                        144 -> while (positionIterator.hasNext()) {
                             val position = positionIterator.nextInt() or yIndex
                             val tile = getBlockEntity(position) ?: continue
                             val typeString = tile.getInt("SkullType").toString()
@@ -528,7 +606,7 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
                             tile.remove("Rot")
                             setBlock(position, SKULL_MAP.getOrDefault(state, SKULL_MAP["0north"]!!))
                         }
-                        175 -> while (positionIterator.hasNext()) { // sunflower
+                        175 -> while (positionIterator.hasNext()) {
                             val position = positionIterator.nextInt() or yIndex
                             val blockState = getBlock(position)
                             if (getProperty(blockState, "half") != "upper") continue
@@ -543,7 +621,6 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
                                 "minecraft:peony" -> setBlock(position, UPPER_PEONY)
                             }
                         }
-                        // free standing banner, wall mounted banner (in that order)
                         176, 177 -> while (positionIterator.hasNext()) {
                             val position = positionIterator.nextInt() or yIndex
                             val tile = getBlockEntity(position) ?: continue

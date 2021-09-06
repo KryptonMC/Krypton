@@ -68,10 +68,14 @@ object V1125 {
         }
 
         MCTypeRegistry.ADVANCEMENTS.addStructureWalker(VERSION) { data, fromVersion, toVersion ->
-            data.getMap<String>("minecraft:adventure/adventuring_time")?.convertKeys(MCTypeRegistry.BIOME, "criteria", fromVersion, toVersion)
-            data.getMap<String>("minecraft:adventure/kill_a_mob")?.convertKeys(MCTypeRegistry.ENTITY_NAME, "criteria", fromVersion, toVersion)
-            data.getMap<String>("minecraft:adventure/kill_all_mobs")?.convertKeys(MCTypeRegistry.ENTITY_NAME, "criteria", fromVersion, toVersion)
-            data.getMap<String>("minecraft:adventure/bred_all_animals")?.convertKeys(MCTypeRegistry.ENTITY_NAME, "criteria", fromVersion, toVersion)
+            data.getMap<String>("minecraft:adventure/adventuring_time")
+                ?.convertKeys(MCTypeRegistry.BIOME, "criteria", fromVersion, toVersion)
+            data.getMap<String>("minecraft:adventure/kill_a_mob")
+                ?.convertKeys(MCTypeRegistry.ENTITY_NAME, "criteria", fromVersion, toVersion)
+            data.getMap<String>("minecraft:adventure/kill_all_mobs")
+                ?.convertKeys(MCTypeRegistry.ENTITY_NAME, "criteria", fromVersion, toVersion)
+            data.getMap<String>("minecraft:adventure/bred_all_animals")
+                ?.convertKeys(MCTypeRegistry.ENTITY_NAME, "criteria", fromVersion, toVersion)
             null
         }
 

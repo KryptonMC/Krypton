@@ -45,14 +45,19 @@ import kotlin.io.path.inputStream
 object PluginLoader {
 
     fun loadDescription(source: Path): LoadedPluginDescriptionCandidate {
-        val serialized = source.findMetadata() ?: throw InvalidPluginException("Could not find a valid krypton-plugin-meta.json or plugin.conf file!")
-        if (!serialized.id.matches(SerializedPluginDescription.ID_REGEX)) throw InvalidPluginException("Plugin ID ${serialized.id} is invalid!")
+        val serialized = source.findMetadata()
+            ?: throw InvalidPluginException("Could not find a valid krypton-plugin-meta.json or plugin.conf file!")
+        if (!serialized.id.matches(SerializedPluginDescription.ID_REGEX)) {
+            throw InvalidPluginException("Plugin ID ${serialized.id} is invalid!")
+        }
         return serialized.toCandidate(source)
     }
 
     fun loadPlugin(description: PluginDescription): LoadedPluginDescription {
         require(description is LoadedPluginDescriptionCandidate) { "Description provided isn't a loaded candidate!" }
-        val loader = AccessController.doPrivileged(PrivilegedAction { PluginClassLoader(description.source) }).apply { addToLoaders() }
+        val loader = AccessController.doPrivileged(PrivilegedAction { PluginClassLoader(description.source) }).apply {
+            addToLoaders()
+        }
         val mainClass = loader.loadClass(description.mainClass)
         return description.toFull(mainClass)
     }
@@ -63,7 +68,9 @@ object PluginLoader {
         require(description is LoadedPluginDescription) { "Description provided isn't compatible with this loader!" }
 
         val injector = Guice.createInjector(*modules)
-        val instance = requireNotNull(injector.getInstance(description.mainClass)) { "Got nothing from injector for plugin ${description.id}!" }
+        val instance = requireNotNull(injector.getInstance(description.mainClass)) {
+            "Got nothing from injector for plugin ${description.id}!"
+        }
 
         container.instance = instance
     }
@@ -72,31 +79,14 @@ object PluginLoader {
         var foundBungeeBukkitPluginFile = false
         generateSequence { input.nextJarEntry }.forEach { entry ->
             if (entry.name == "plugin.yml" || entry.name == "bungee.yml") foundBungeeBukkitPluginFile = true
-            if (entry.name == "plugin.conf") return input.readPluginConfig()
-            if (entry.name == "krypton-plugin-meta.json") JsonReader(input.reader()).use { return SerializedPluginDescription.read(it) }
+            if (entry.name == "krypton-plugin-meta.json") JsonReader(input.reader()).use {
+                return SerializedPluginDescription.read(it)
+            }
         }
 
-        if (foundBungeeBukkitPluginFile) throw InvalidPluginException("The plugin file $fileName appears to be a Bukkit or BungeeCord plugin. Krypton does not support Bukkit or BungeeCord plugins.")
+        if (foundBungeeBukkitPluginFile) throw InvalidPluginException("The plugin file $fileName appears to be a " +
+                "Bukkit or BungeeCord plugin. Krypton does not support Bukkit or BungeeCord plugins.")
         return null
-    }
-
-    private fun InputStream.readPluginConfig(): SerializedPluginDescription = reader().use {
-        val node = HoconConfigurationLoader.builder()
-            .source { it.buffered() }
-            .build()
-            .load()
-
-        val id = node.node("id").string ?: throw InvalidPluginException("No ID specified in plugin.conf!")
-        val name = node.node("name").getString("")
-        val main = node.node("main").string ?: throw InvalidPluginException("No main key found in plugin.conf!")
-        val version = node.node("version").getString("<UNDEFINED>")
-        val description = node.node("description").getString("")
-        val authors = node.node("authors").getList(String::class.java, emptyList())
-        val dependencies = node.node("dependencies")
-        val required = dependencies.node("required").getList(String::class.java, emptyList()).map { SerializedDependency(it, false) }
-        val optional = dependencies.node("optional").getList(String::class.java, emptyList()).map { SerializedDependency(it, true) }
-
-        return SerializedPluginDescription(id, name, version, description, authors, required + optional, main)
     }
 
     private fun SerializedPluginDescription.toCandidate(source: Path) = LoadedPluginDescriptionCandidate(

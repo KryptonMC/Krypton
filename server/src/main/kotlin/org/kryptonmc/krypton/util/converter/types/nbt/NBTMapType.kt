@@ -155,7 +155,9 @@ data class NBTMapType(val map: MutableCompoundTag = MutableCompoundTag()) : MapT
         map.putLongArray(key, value)
     }
 
-    override fun getListUnchecked(key: String, dfl: ListType?) = (map[key] as? MutableListTag)?.let { NBTListType(it) } ?: dfl
+    override fun getListUnchecked(key: String, dfl: ListType?) = (map[key] as? MutableListTag)?.let {
+        NBTListType(it)
+    } ?: dfl
 
     override fun setList(key: String, value: ListType) {
         map[key] = (value as NBTListType).list

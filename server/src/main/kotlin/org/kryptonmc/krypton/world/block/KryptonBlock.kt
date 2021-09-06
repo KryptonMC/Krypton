@@ -77,12 +77,16 @@ class KryptonBlock(
 
     override fun copy(key: String, value: String): Block {
         val newProperties = properties + (key to value)
-        return requireNotNull(BlockLoader.properties(this.key.asString(), newProperties)) { "Invalid property $key:$value for block ${this.key}!" }
+        return requireNotNull(BlockLoader.properties(this.key.asString(), newProperties)) {
+            "Invalid property $key:$value for block ${this.key}!"
+        }
     }
 
     override fun copy(newValues: Map<String, String>): KryptonBlock {
         val newProperties = properties + newValues
-        return requireNotNull(BlockLoader.properties(key.asString(), newProperties)) { "Invalid properties $newValues for block $key!" }
+        return requireNotNull(BlockLoader.properties(key.asString(), newProperties)) {
+            "Invalid properties $newValues for block $key!"
+        }
     }
 
     override fun asItem() = itemKey?.let { InternalRegistries.ITEM[it] }

@@ -27,11 +27,7 @@ object V1936 {
 
     fun register() = MCTypeRegistry.OPTIONS.addStructureConverter(VERSION) { data, _, _ ->
         val chatOpacity = data.getString("chatOpacity")
-        if (chatOpacity != null) {
-            // Vanilla uses createDouble here, but options is always string -> string. I presume they made
-            // a mistake with this converter.
-            data.setString("textBackgroundOpacity", calculateBackground(chatOpacity).toString())
-        }
+        if (chatOpacity != null) data.setString("textBackgroundOpacity", calculateBackground(chatOpacity).toString())
         null
     }
 

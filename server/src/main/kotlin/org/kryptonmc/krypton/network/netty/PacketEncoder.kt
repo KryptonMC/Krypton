@@ -40,7 +40,6 @@ object PacketEncoder : MessageToByteEncoder<Packet>() {
     override fun encode(ctx: ChannelHandlerContext, msg: Packet, out: ByteBuf) {
         val id = PacketRegistry[msg.javaClass]
         try {
-            LOGGER.debug("Outgoing packet of type ${msg.javaClass} with id $id")
             out.writeVarInt(id)
             msg.write(out)
         } catch (exception: Exception) {

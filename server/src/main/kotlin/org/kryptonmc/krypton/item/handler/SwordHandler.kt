@@ -34,11 +34,14 @@ import org.spongepowered.math.vector.Vector3i
 
 sealed class SwordHandler(type: ItemType) : KryptonItemHandler(type) {
 
-    override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i) = player.gamemode != Gamemode.CREATIVE
+    override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i) =
+        player.gamemode != Gamemode.CREATIVE
 
     override fun getDestroySpeed(item: ItemStack, block: Block): Float {
         if (block.id == Blocks.COBWEB.id) return 15F
-        if (block.isPlant() || block.isReplaceablePlant() || BlockTags.LEAVES.contains(block) || block.isVegetable()) return 1.5F
+        if (block.isPlant() || block.isReplaceablePlant() || BlockTags.LEAVES.contains(block) || block.isVegetable()) {
+            return 1.5F
+        }
         return 1F
     }
 

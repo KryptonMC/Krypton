@@ -35,7 +35,10 @@ object V1514 {
         MCTypeRegistry.OBJECTIVE.addStructureConverter(VERSION) { data, _, _ ->
             data.getString("RenderType")?.let { return@addStructureConverter null }
             val criteriaName = data.getString("CriteriaName", "")!!
-            data.setString("RenderType", if (criteriaName == "health") RenderType.HEARTS.serialized else RenderType.INTEGER.serialized)
+            data.setString(
+                "RenderType",
+                if (criteriaName == "health") RenderType.HEARTS.serialized else RenderType.INTEGER.serialized
+            )
             null
         }
     }

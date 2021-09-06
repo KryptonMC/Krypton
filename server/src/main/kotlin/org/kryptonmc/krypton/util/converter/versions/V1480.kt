@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.util.converters.RenameItemsConverter
 object V1480 {
 
     private const val VERSION = MCVersions.V18W14A + 1
-    val RENAMED_IDS = mapOf(
+    private val RENAMED_IDS = mapOf(
         "minecraft:blue_coral" to "minecraft:tube_coral_block",
         "minecraft:pink_coral" to "minecraft:brain_coral_block",
         "minecraft:purple_coral" to "minecraft:bubble_coral_block",

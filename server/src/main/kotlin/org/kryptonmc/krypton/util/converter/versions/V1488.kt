@@ -37,11 +37,12 @@ object V1488 {
         )::get)
         RenameItemsConverter.register(VERSION, mapOf("minecraft:kelp_top" to "minecraft:kelp")::get)
 
-        // Don't ask me why in V1458 they wrote the converter to NOT do command blocks and THEN in THIS version
-        // to ONLY do command blocks. I don't know.
-
-        MCTypeRegistry.TILE_ENTITY.addConverterForId("minecraft:command_block", VERSION) { data, _, _ -> data.updateCustomName() }
-        MCTypeRegistry.ENTITY.addConverterForId("minecraft:commandblock_minecart", VERSION) { data, _, _ -> data.updateCustomName() }
+        MCTypeRegistry.TILE_ENTITY.addConverterForId("minecraft:command_block", VERSION) { data, _, _ ->
+            data.updateCustomName()
+        }
+        MCTypeRegistry.ENTITY.addConverterForId("minecraft:commandblock_minecart", VERSION) { data, _, _ ->
+            data.updateCustomName()
+        }
 
         MCTypeRegistry.STRUCTURE_FEATURE.addStructureConverter(VERSION) { data, _, _ ->
             val children = data.getList("Children", ObjectType.MAP)

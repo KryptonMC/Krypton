@@ -33,7 +33,11 @@ object V1474 {
             null
         }
         // data hooks ensure the inputs are namespaced
-        RenameBlocksConverter.register(VERSION) { if (it == "minecraft:purple_shulker_box") "minecraft:shulker_box" else null }
-        RenameItemsConverter.register(VERSION) { if (it == "minecraft:purple_shulker_box") "minecraft:shulker_box" else null }
+        RenameBlocksConverter.register(VERSION) {
+            if (it == "minecraft:purple_shulker_box") "minecraft:shulker_box" else null
+        }
+        RenameItemsConverter.register(VERSION) {
+            if (it == "minecraft:purple_shulker_box") "minecraft:shulker_box" else null
+        }
     }
 }

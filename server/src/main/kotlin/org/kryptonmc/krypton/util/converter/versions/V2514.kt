@@ -243,7 +243,9 @@ object V2514 {
                     val newPlayers = NBTTypeUtil.createEmptyList()
                     customBossEvent.setList("Players", newPlayers)
                     for (i in 0 until players.size()) {
-                        players.getMap<String>(i).createUUIDFromLongs("M", "L")?.apply { newPlayers.addIntArray(this) }
+                        players.getMap<String>(i).createUUIDFromLongs("M", "L")?.apply {
+                            newPlayers.addIntArray(this)
+                        }
                     }
                 }
             }
@@ -286,7 +288,12 @@ object V2514 {
         }
     }
 
-    private fun createUUIDArray(most: Long, least: Long) = intArrayOf((most ushr 32).toInt(), most.toInt(), (least ushr 32).toInt(), least.toInt())
+    private fun createUUIDArray(most: Long, least: Long) = intArrayOf(
+        (most ushr 32).toInt(),
+        most.toInt(),
+        (least ushr 32).toInt(),
+        least.toInt()
+    )
 
     private fun MapType<String>.createUUIDFromString(path: String): IntArray? {
         val uuidString = getString(path) ?: return null
@@ -328,7 +335,10 @@ object V2514 {
 
     private fun MapType<String>.updateEvokerFangs() = replaceUUIDLeastMost("OwnerUUID", "Owner")
 
-    private fun MapType<String>.updateZombieVillager() = replaceUUIDLeastMost("ConversionPlayer", "ConversionPlayer")
+    private fun MapType<String>.updateZombieVillager() = replaceUUIDLeastMost(
+        "ConversionPlayer",
+        "ConversionPlayer"
+    )
 
     private fun MapType<String>.updateAreaEffectCloud() = replaceUUIDLeastMost("OwnerUUID", "Owner")
 
@@ -348,7 +358,9 @@ object V2514 {
         remove("TrustedUUIDs")
         setList("Trusted", newUUIDs)
         for (i in 0 until trustedUUIDs.size()) {
-            trustedUUIDs.getMap<String>(i).createUUIDFromLongs("M", "L")?.apply { newUUIDs.addIntArray(this) }
+            trustedUUIDs.getMap<String>(i).createUUIDFromLongs("M", "L")?.apply {
+                newUUIDs.addIntArray(this)
+            }
         }
     }
 

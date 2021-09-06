@@ -56,12 +56,16 @@ object V1955 {
         }
     }
 
-    private fun getMinXpPerLevel(level: Int) = LEVEL_XP_THRESHOLDS[(level - 1).clamp(0, LEVEL_XP_THRESHOLDS.size - 1)]
+    private fun getMinXpPerLevel(level: Int) = LEVEL_XP_THRESHOLDS[(level - 1).clamp(
+        0,
+        LEVEL_XP_THRESHOLDS.size - 1
+    )]
 
     private fun MapType<String>.addXpFromLevel(level: Int) = setInt("Xp", getMinXpPerLevel(level))
 
     private fun MapType<String>.addLevel(level: Int) {
-        val villagerData = getMap("VillagerData") ?: NBTTypeUtil.createEmptyMap<String>().apply { setMap("VillagerData", this) }
+        val villagerData = getMap("VillagerData")
+            ?: NBTTypeUtil.createEmptyMap<String>().apply { setMap("VillagerData", this) }
         villagerData.setInt("level", level)
     }
 }

@@ -36,7 +36,9 @@ import org.spongepowered.math.vector.Vector3i
 object DebugStickHandler : KryptonItemHandler(ItemTypes.DEBUG_STICK) {
 
     override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i): Boolean {
-        if (player is KryptonPlayer) handleInteraction(player, world, block, position, false, player.inventory.heldItem(Hand.MAIN))
+        if (player is KryptonPlayer) {
+            handleInteraction(player, world, block, position, false, player.inventory.heldItem(Hand.MAIN))
+        }
         return false
     }
 
@@ -45,12 +47,21 @@ object DebugStickHandler : KryptonItemHandler(ItemTypes.DEBUG_STICK) {
         val item = context.heldItem as? KryptonItemStack ?: return InteractionResult.PASS
         val world = context.world
         val position = context.position
-        if (!handleInteraction(player, world, world.getBlock(position), position, true, item)) return InteractionResult.FAIL
+        if (!handleInteraction(player, world, world.getBlock(position), position, true, item)) {
+            return InteractionResult.FAIL
+        }
         return InteractionResult.CONSUME
     }
 
     @Suppress("UNCHECKED_CAST") // Screw you too generics, no wonder you have no friends
-    private fun handleInteraction(player: KryptonPlayer, world: World, block: Block, position: Vector3i, isUse: Boolean, item: KryptonItemStack): Boolean {
+    private fun handleInteraction(
+        player: KryptonPlayer,
+        world: World,
+        block: Block,
+        position: Vector3i,
+        isUse: Boolean,
+        item: KryptonItemStack
+    ): Boolean {
         if (!player.canUseGameMasterBlocks) return false
         val properties = block.availableProperties
         val key = block.key.asString()
@@ -67,12 +78,20 @@ object DebugStickHandler : KryptonItemHandler(ItemTypes.DEBUG_STICK) {
             if (property == null) property = properties.first() as Property<Comparable<Any>>
             val cycled = block.cycle(property, player.isCrouching)
             world.setBlock(position, cycled)
-            player.sendMessage(translatable("${type.translation.key()}.update", text(property.name), text(property.toString(cycled[property]!!))))
+            player.sendMessage(translatable(
+                "${type.translation.key()}.update",
+                text(property.name),
+                text(property.toString(cycled[property]!!))
+            ))
         } else {
             property = properties.findRelative(property, player.isCrouching) as Property<Comparable<Any>>
             val name = property.name
             tag.putString(key, name)
-            player.sendMessage(translatable("${type.translation.key()}.select", text(name), text(property.toString(block[property]!!))))
+            player.sendMessage(translatable(
+                "${type.translation.key()}.select",
+                text(name),
+                text(property.toString(block[property]!!))
+            ))
         }
         return true
     }

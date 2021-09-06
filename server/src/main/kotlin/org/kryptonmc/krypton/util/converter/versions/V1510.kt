@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.util.converters.RenameStatsConverter
 object V1510 {
 
     private const val VERSION = MCVersions.V1_13_PRE4 + 6
-    val RENAMED_ENTITY_IDS = mapOf(
+    private val RENAMED_ENTITY_IDS = mapOf(
         "minecraft:commandblock_minecart" to "minecraft:command_block_minecart",
         "minecraft:ender_crystal" to "minecraft:end_crystal",
         "minecraft:snowman" to "minecraft:snow_golem",
@@ -43,7 +43,7 @@ object V1510 {
         "minecraft:eye_of_ender_signal" to "minecraft:eye_of_ender",
         "minecraft:fireworks_rocket" to "minecraft:firework_rocket"
     )
-    val RENAMED_BLOCKS = mapOf(
+    private val RENAMED_BLOCKS = mapOf(
         "minecraft:portal" to "minecraft:nether_portal",
         "minecraft:oak_bark" to "minecraft:oak_wood",
         "minecraft:spruce_bark" to "minecraft:spruce_wood",
@@ -59,13 +59,13 @@ object V1510 {
         "minecraft:stripped_dark_oak_bark" to "minecraft:stripped_dark_oak_wood",
         "minecraft:mob_spawner" to "minecraft:spawner"
     )
-    val RENAMED_ITEMS = RENAMED_BLOCKS + mapOf(
+    private val RENAMED_ITEMS = RENAMED_BLOCKS + mapOf(
         "minecraft:clownfish" to "minecraft:tropical_fish",
         "minecraft:chorus_fruit_popped" to "minecraft:popped_chorus_fruit",
         "minecraft:evocation_illager_spawn_egg" to "minecraft:evoker_spawn_egg",
         "minecraft:vindication_illager_spawn_egg" to "minecraft:vindicator_spawn_egg"
     )
-    val RECIPES_UPDATES = mapOf(
+    private val RECIPES_UPDATES = mapOf(
         "minecraft:acacia_bark" to "minecraft:acacia_wood",
         "minecraft:birch_bark" to "minecraft:birch_wood",
         "minecraft:dark_oak_bark" to "minecraft:dark_oak_wood",
@@ -88,7 +88,11 @@ object V1510 {
             "minecraft:dive_one_cm" to "minecraft:walk_under_water_one_cm"
         )::get)
 
-        MCTypeRegistry.ENTITY.copyWalkers(VERSION, "minecraft:commandblock_minecart", "minecraft:command_block_minecart")
+        MCTypeRegistry.ENTITY.copyWalkers(
+            VERSION,
+            "minecraft:commandblock_minecart",
+            "minecraft:command_block_minecart"
+        )
         MCTypeRegistry.ENTITY.copyWalkers(VERSION, "minecraft:ender_crystal", "minecraft:end_crystal")
         MCTypeRegistry.ENTITY.copyWalkers(VERSION, "minecraft:snowman", "minecraft:snow_golem")
         MCTypeRegistry.ENTITY.copyWalkers(VERSION, "minecraft:evocation_illager", "minecraft:evoker")

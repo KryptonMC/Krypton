@@ -104,7 +104,11 @@ object V2550 {
                 val default11Gen = generatorName == "default_1_1" || defaultGen && data.getInt("generatorVersion") == 0
                 val amplified = generatorName == "amplified"
                 val largeBiomes = generatorName == "largebiomes"
-                noise(seed, if (amplified) "minecraft:amplified" else "minecraft:overworld", vanillaBiomeSource(seed, default11Gen, largeBiomes))
+                noise(
+                    seed,
+                    if (amplified) "minecraft:amplified" else "minecraft:overworld",
+                    vanillaBiomeSource(seed, default11Gen, largeBiomes)
+                )
             }
         }
 
@@ -127,16 +131,22 @@ object V2550 {
         setString("settings", worldType)
     }
 
-    fun vanillaBiomeSource(seed: Long, default11Gen: Boolean, largeBiomes: Boolean) = NBTTypeUtil.createEmptyMap<String>().apply {
-        setString("type", "minecraft:vanilla_layered")
-        setLong("seed", seed)
-        setBoolean("large_biomes", largeBiomes)
-        if (default11Gen) setBoolean("legacy_biome_init_layer", default11Gen)
+    private fun vanillaBiomeSource(seed: Long, default11Gen: Boolean, largeBiomes: Boolean): MapType<String> {
+        return NBTTypeUtil.createEmptyMap<String>().apply {
+            setString("type", "minecraft:vanilla_layered")
+            setLong("seed", seed)
+            setBoolean("large_biomes", largeBiomes)
+            if (default11Gen) setBoolean("legacy_biome_init_layer", default11Gen)
+        }
     }
 
-    fun defaultOverworld(seed: Long) = noise(seed, "minecraft:overworld", vanillaBiomeSource(seed, false, false))
+    fun defaultOverworld(seed: Long) = noise(
+        seed,
+        "minecraft:overworld",
+        vanillaBiomeSource(seed, false, false)
+    )
 
-    fun fixFlatStructures(generatorOptions: MapType<String>?): MapType<String> {
+    private fun fixFlatStructures(generatorOptions: MapType<String>?): MapType<String> {
         var distance = 32
         var spread = 3
         var count = 128
@@ -161,7 +171,9 @@ object V2550 {
                         }
                     } else when (it) {
                         "distance" -> when (structureName) {
-                            "village" -> newStructures.setSpacing("minecraft:village", structureValue, 9)
+                            "village" -> {
+                                newStructures.setSpacing("minecraft:village", structureValue, 9)
+                            }
                             "biome_1" -> {
                                 newStructures.setSpacing("minecraft:desert_pyramid", structureValue, 9)
                                 newStructures.setSpacing("minecraft:igloo", structureValue, 9)
@@ -169,19 +181,27 @@ object V2550 {
                                 newStructures.setSpacing("minecraft:swamp_hut", structureValue, 9)
                                 newStructures.setSpacing("minecraft:pillager_outpost", structureValue, 9)
                             }
-                            "endcity" -> newStructures.setSpacing("minecraft:endcity", structureValue, 1)
+                            "endcity" -> {
+                                newStructures.setSpacing("minecraft:endcity", structureValue, 1)
+                            }
                             "mansion" -> newStructures.setSpacing("minecraft:mansion", structureValue, 1)
                         }
                         "separation" -> {
                             if (structureName == "oceanmonument") {
                                 val structure = newStructures.getOrDefault("minecraft:monument", DEFAULTS["minecraft:monument"]!!)
                                 val newSpacing = max(1, structureValue.toIntOrNull() ?: structure.separation)
-                                newStructures["minecraft:monument"] = StructureFeatureConfig(newSpacing, structure.separation, structure.salt)
+                                newStructures["minecraft:monument"] = StructureFeatureConfig(
+                                    newSpacing,
+                                    structure.separation,
+                                    structure.salt
+                                )
                             }
                         }
-                        "spacing" -> {
-                            if (structureName == "oceanmonument") newStructures.setSpacing("minecraft:monument", structureValue, 1)
-                        }
+                        "spacing" -> if (structureName == "oceanmonument") newStructures.setSpacing(
+                            "minecraft:monument",
+                            structureValue,
+                            1
+                        )
                     }
                 }
             }

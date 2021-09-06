@@ -21,4 +21,6 @@ package org.kryptonmc.krypton.util.converter.walkers
 import ca.spottedleaf.dataconverter.types.MapType
 import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
 
-class TileEntitiesDataWalker(vararg paths: String) : TypePathsDataWalker<MapType<String>, MapType<String>>(MCTypeRegistry.TILE_ENTITY, paths)
+class TileEntitiesDataWalker(
+    vararg paths: String
+) : TypePathsDataWalker<MapType<String>, MapType<String>>(MCTypeRegistry.TILE_ENTITY, paths)

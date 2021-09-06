@@ -165,5 +165,9 @@ object MetadataKeys {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> register(id: Int, serializer: MetadataSerializer<T>, default: T): MetadataKey<T> = MetadataKey(id, serializer, default)
+    private fun <T> register(
+        id: Int,
+        serializer: MetadataSerializer<T>,
+        default: T
+    ): MetadataKey<T> = MetadataKey(id, serializer, default)
 }

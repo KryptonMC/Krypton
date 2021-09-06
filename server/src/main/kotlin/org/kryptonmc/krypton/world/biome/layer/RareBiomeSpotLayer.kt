@@ -24,5 +24,8 @@ import org.kryptonmc.krypton.world.biome.layer.traits.C1Transformer
 
 object RareBiomeSpotLayer : C1Transformer {
 
-    override fun invoke(context: Context, value: Int) = if (context.nextRandom(57) == 0 && value == BiomeConstants.PLAINS) BiomeConstants.SUNFLOWER_PLAINS else value
+    override fun invoke(context: Context, value: Int): Int {
+        if (context.nextRandom(57) == 0 && value == BiomeConstants.PLAINS) return BiomeConstants.SUNFLOWER_PLAINS
+        return value
+    }
 }

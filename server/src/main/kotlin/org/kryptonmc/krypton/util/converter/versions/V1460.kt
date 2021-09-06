@@ -31,17 +31,12 @@ object V1460 {
         "skullandroses" to "skull_and_roses"
     )
 
-    fun register() {
-        MCTypeRegistry.ENTITY.addConverterForId("minecraft:painting", VERSION) { data, _, _ ->
-            var motive = data.getString("Motive")
-            if (motive != null) {
-                motive = motive.lowercase()
-                data.setString("Motive", Key.key(MOTIVE_REMAP.getOrDefault(motive, motive)).asString())
-            }
-            null
+    fun register() = MCTypeRegistry.ENTITY.addConverterForId("minecraft:painting", VERSION) { data, _, _ ->
+        var motive = data.getString("Motive")
+        if (motive != null) {
+            motive = motive.lowercase()
+            data.setString("Motive", Key.key(MOTIVE_REMAP.getOrDefault(motive, motive)).asString())
         }
-
-        // No idea why so many type redefines exist here in Vanilla. nothing about the data structure changed, it's literally a copy of
-        // the existing types.
+        null
     }
 }

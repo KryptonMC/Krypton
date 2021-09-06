@@ -68,9 +68,11 @@ abstract class KryptonLivingEntity(
     override fun load(tag: CompoundTag) {
         super.load(tag)
         // AI stuff
-        if (tag.contains("Attributes", ListTag.ID)) tag.getList("Attributes", CompoundTag.ID).forEachCompound { attribute ->
-            val type = Registries.ATTRIBUTE[Key.key(attribute.getString("Name"))] ?: return@forEachCompound
-            attributes[type] = KryptonAttribute(type).apply { load(attribute) }
+        if (tag.contains("Attributes", ListTag.ID)) {
+            tag.getList("Attributes", CompoundTag.ID).forEachCompound { attribute ->
+                val type = Registries.ATTRIBUTE[Key.key(attribute.getString("Name"))] ?: return@forEachCompound
+                attributes[type] = KryptonAttribute(type).apply { load(attribute) }
+            }
         }
         if (tag.contains("Brain", CompoundTag.ID)) brain.load(tag.getCompound("Brain"))
 
@@ -83,8 +85,16 @@ abstract class KryptonLivingEntity(
         hurtTime = tag.getShort("HurtTime")
 
         // Sleeping coordinates
-        if (tag.contains("SleepingX", 99) && tag.contains("SleepingY", 99) && tag.contains("SleepingZ", 99)) {
-            sleepingPosition = Vector3i(tag.getInt("SleepingX"), tag.getInt("SleepingY"), tag.getInt("SleepingZ"))
+        if (
+            tag.contains("SleepingX", 99) &&
+            tag.contains("SleepingY", 99) &&
+            tag.contains("SleepingZ", 99)
+        ) {
+            sleepingPosition = Vector3i(
+                tag.getInt("SleepingX"),
+                tag.getInt("SleepingY"),
+                tag.getInt("SleepingZ")
+            )
             pose = Pose.SLEEPING
         }
     }

@@ -24,5 +24,9 @@ import java.util.UUID
 
 object KryptonGameProfileFactory : GameProfile.Factory {
 
-    override fun of(name: String, uuid: UUID, properties: List<ProfileProperty>) = KryptonGameProfile(uuid, name, properties)
+    override fun of(
+        name: String,
+        uuid: UUID,
+        properties: List<ProfileProperty>
+    ) = KryptonGameProfile(uuid, name, properties)
 }

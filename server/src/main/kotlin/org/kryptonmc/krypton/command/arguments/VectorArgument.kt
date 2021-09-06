@@ -41,7 +41,10 @@ class VectorArgument(private val correctCenter: Boolean = true) : ArgumentType<C
         return WorldCoordinates.parse(reader, correctCenter)
     }
 
-    override fun <S> listSuggestions(context: CommandContext<S>, builder: SuggestionsBuilder): CompletableFuture<Suggestions> {
+    override fun <S> listSuggestions(
+        context: CommandContext<S>,
+        builder: SuggestionsBuilder
+    ): CompletableFuture<Suggestions> {
         if (context.source !is Player) return Suggestions.empty()
         val remaining = builder.remaining
         val suggestion = if (remaining.isNotEmpty() && remaining[0] == '^') {

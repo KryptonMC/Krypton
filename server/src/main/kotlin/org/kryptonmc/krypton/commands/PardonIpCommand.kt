@@ -34,8 +34,12 @@ import org.kryptonmc.krypton.command.argument.argument
 
 object PardonIpCommand : InternalCommand {
 
-    private val INVALID_IP_EXCEPTION = SimpleCommandExceptionType(translatable("commands.pardonip.invalid").toMessage())
-    private val ALREADY_UNBANNED_EXCEPTION = SimpleCommandExceptionType(translatable("commands.pardonip.failed").toMessage())
+    private val INVALID_IP_EXCEPTION = SimpleCommandExceptionType(
+        translatable("commands.pardonip.invalid").toMessage()
+    )
+    private val ALREADY_UNBANNED_EXCEPTION = SimpleCommandExceptionType(
+        translatable("commands.pardonip.failed").toMessage()
+    )
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("pardon-ip")

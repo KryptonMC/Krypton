@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.util.converters.RenameBlocksConverter
 object V1515 {
 
     private const val VERSION = MCVersions.V1_13_PRE7 + 2
-    val RENAMED_BLOCK_IDS = mapOf(
+    private val RENAMED_BLOCK_IDS = mapOf(
         "minecraft:tube_coral_fan" to "minecraft:tube_coral_wall_fan",
         "minecraft:brain_coral_fan" to "minecraft:brain_coral_wall_fan",
         "minecraft:bubble_coral_fan" to "minecraft:bubble_coral_wall_fan",

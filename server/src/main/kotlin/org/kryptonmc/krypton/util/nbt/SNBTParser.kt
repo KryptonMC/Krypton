@@ -211,7 +211,8 @@ class SNBTParser(private val reader: StringReader) {
         private const val INT_ARRAY_START = 'I'
         private const val ELEMENT_SEPARATOR = ','
 
-        private val DOUBLE_REGEX_NO_SUFFIX = "[-+]?(?:[0-9]+[.]|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?".toRegex(RegexOption.IGNORE_CASE)
+        private val DOUBLE_REGEX_NO_SUFFIX = "[-+]?(?:[0-9]+[.]|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?"
+            .toRegex(RegexOption.IGNORE_CASE)
         private val DOUBLE_REGEX = "[-+]?(?:[0-9]+[.]?|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?d".toRegex(RegexOption.IGNORE_CASE)
         private val FLOAT_REGEX = "[-+]?(?:[0-9]+[.]?|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?f".toRegex(RegexOption.IGNORE_CASE)
         private val BYTE_REGEX = "[-+]?(?:0|[1-9][0-9]*)b".toRegex(RegexOption.IGNORE_CASE)
@@ -220,8 +221,12 @@ class SNBTParser(private val reader: StringReader) {
         private val INT_REGEX = "[-+]?(?:0|[1-9][0-9]*)".toRegex(RegexOption.IGNORE_CASE)
 
         private val ERROR_TRAILING_DATA = SimpleCommandExceptionType(translatable("argument.nbt.trailing").toMessage())
-        private val ERROR_EXPECTED_KEY = SimpleCommandExceptionType(translatable("argument.nbt.expected.key").toMessage())
-        private val ERROR_EXPECTED_VALUE = SimpleCommandExceptionType(translatable("argument.nbt.expected.value").toMessage())
+        private val ERROR_EXPECTED_KEY = SimpleCommandExceptionType(
+            translatable("argument.nbt.expected.key").toMessage()
+        )
+        private val ERROR_EXPECTED_VALUE = SimpleCommandExceptionType(
+            translatable("argument.nbt.expected.value").toMessage()
+        )
         private val ERROR_INSERT_MIXED_LIST = Dynamic2CommandExceptionType { a, b ->
             translatable("argument.nbt.list.mixed", text(a.toString()), text(b.toString())).toMessage()
         }

@@ -90,9 +90,11 @@ object V1466 {
                 }
             }
 
-            level.getMap<String>("Structures")?.convertValues(MCTypeRegistry.STRUCTURE_FEATURE, "Starts", fromVersion, toVersion)
+            level.getMap<String>("Structures")
+                ?.convertValues(MCTypeRegistry.STRUCTURE_FEATURE, "Starts", fromVersion, toVersion)
             null
         }
+
         MCTypeRegistry.STRUCTURE_FEATURE.addStructureWalker(VERSION) { data, fromVersion, toVersion ->
             data.getList("Children", ObjectType.MAP)?.let {
                 for (i in 0 until it.size()) {
@@ -108,5 +110,6 @@ object V1466 {
         }
     }
 
-    private fun packOffsetCoordinates(x: Int, y: Int, z: Int) = ((x and 15) or ((y and 15) shl 4) or ((z and 15) shl 8)).toShort()
+    private fun packOffsetCoordinates(x: Int, y: Int, z: Int) =
+        ((x and 15) or ((y and 15) shl 4) or ((z and 15) shl 8)).toShort()
 }

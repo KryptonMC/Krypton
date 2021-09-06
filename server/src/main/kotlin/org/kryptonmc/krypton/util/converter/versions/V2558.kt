@@ -31,7 +31,8 @@ object V2558 {
     fun register() {
         RenameOptionsConverter.register(VERSION, mapOf("key_key.swapHands" to "key_key.swapOffhand")::get)
         MCTypeRegistry.WORLD_GEN_SETTINGS.addStructureConverter(VERSION) { data, _, _ ->
-            val dimensions = data.getMap("dimensions") ?: NBTTypeUtil.createEmptyMap<String>().apply { data.setMap("dimensions", this) }
+            val dimensions = data.getMap("dimensions")
+                ?: NBTTypeUtil.createEmptyMap<String>().apply { data.setMap("dimensions", this) }
             if (dimensions.isEmpty) data.setMap("dimensions", data.recreateSettings())
             null
         }

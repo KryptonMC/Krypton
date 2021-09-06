@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.util.converters.RenameItemsConverter
 object V1486 {
 
     private const val VERSION = MCVersions.V18W19B + 1
-    val RENAMED_ENTITY_IDS = mapOf(
+    private val RENAMED_ENTITY_IDS = mapOf(
         "minecraft:salmon_mob" to "minecraft:salmon",
         "minecraft:cod_mob" to "minecraft:cod"
     )

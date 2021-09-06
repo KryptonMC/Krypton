@@ -23,6 +23,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.krypton.util.Codecs
 
+@JvmRecord
 data class AmbientAdditionsSettings(
     val sound: SoundEvent,
     val probability: Double

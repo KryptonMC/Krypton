@@ -61,18 +61,17 @@ class ChannelHandler(private val server: KryptonServer) : SimpleChannelInboundHa
             val address = ctx.channel().remoteAddress() as InetSocketAddress
             LOGGER.debug("Connection from ${address.address}:${address.port} timed out!", cause)
             session.disconnect(translatable("disconnect.timeout"))
-        } else {
-            val disconnectReason = translatable("disconnect.genericReason", text("Internal Exception: $cause"))
-            LOGGER.debug("Failed to send or received invalid packet!", cause)
-            session.disconnect(disconnectReason)
-            ctx.channel().config().isAutoRead = false
+            return
         }
+        val disconnectReason = translatable("disconnect.genericReason", text("Internal Exception: $cause"))
+        LOGGER.debug("Failed to send or received invalid packet!", cause)
+        session.disconnect(disconnectReason)
+        ctx.channel().config().isAutoRead = false
     }
 
     companion object {
 
         const val NETTY_NAME = "handler"
-
         private val LOGGER = logger<ChannelHandler>()
     }
 }

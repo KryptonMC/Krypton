@@ -148,13 +148,19 @@ object Layers {
         return OceanMixerLayer.run(getter(100L), factory3, factory1)
     }
 
-    private fun <A : Area, C : BigContext<A>> zoom(seed: Long, transformer: AreaTransformer1, factory: AreaFactory<A>, iterations: Int, getter: (Long) -> C): AreaFactory<A> {
+    private fun <A : Area, C : BigContext<A>> zoom(
+        seed: Long,
+        transformer: AreaTransformer1,
+        factory: AreaFactory<A>,
+        iterations: Int,
+        getter: (Long) -> C
+    ): AreaFactory<A> {
         var temp = factory
         for (i in 0 until iterations) temp = transformer.run(getter(seed + i.toLong()), temp)
         return temp
     }
 
-    private fun Int2IntMap.put(category: Layers.Category, biome: Int) = put(biome, category.ordinal)
+    private fun Int2IntMap.put(category: Category, biome: Int) = put(biome, category.ordinal)
 
     enum class Category {
 

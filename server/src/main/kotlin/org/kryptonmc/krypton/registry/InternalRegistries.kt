@@ -51,5 +51,8 @@ object InternalRegistries {
 
     private fun <T : Any> create(key: ResourceKey<out Registry<T>>) = KryptonRegistryManager.create(key)
 
-    private fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key) = KryptonRegistryManager.createDefaulted(key, defaultKey)
+    private fun <T : Any> createDefaulted(
+        key: ResourceKey<out Registry<T>>,
+        defaultKey: Key
+    ) = KryptonRegistryManager.createDefaulted(key, defaultKey)
 }

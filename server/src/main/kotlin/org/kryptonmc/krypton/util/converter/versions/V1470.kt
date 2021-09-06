@@ -37,7 +37,11 @@ object V1470 {
         registerMob("minecraft:dolphin")
         registerMob("minecraft:drowned")
 
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:trident", TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("inBlockState")))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:trident",
+            TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("inBlockState"))
+        )
     }
 
     private fun registerMob(id: String) {

@@ -50,6 +50,9 @@ import java.io.IOException
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
+import java.util.concurrent.SynchronousQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 import kotlin.io.path.exists
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -60,7 +63,12 @@ class KryptonWorldManager(
     val worldFolder: Path
 ) : WorldManager {
 
-    private val worldExecutor = Executors.newCachedThreadPool(
+    private val worldExecutor = ThreadPoolExecutor(
+        0,
+        Runtime.getRuntime().availableProcessors() / 2,
+        60L,
+        TimeUnit.SECONDS,
+        SynchronousQueue(),
         threadFactory("World Handler %d") {
             daemon()
             uncaughtExceptionHandler { thread, exception ->
@@ -79,38 +87,33 @@ class KryptonWorldManager(
         prepare()
     }
 
-    fun <T> readData(folder: Path, reader: (Path) -> T): T? {
-        if (!folder.exists()) return null
-        var levelFile = folder.resolve("level.dat")
-        if (levelFile.exists()) reader(levelFile)?.let { return it }
-        levelFile = folder.resolve("level.dat_old")
-        return if (levelFile.exists()) reader(levelFile) else null
-    }
-
     override fun get(key: Key) = worlds[ResourceKey.of(ResourceKeys.DIMENSION, key)]
 
     override fun load(key: Key): CompletableFuture<KryptonWorld> {
         val resourceKey = ResourceKey.of(ResourceKeys.DIMENSION, key)
-        if (resourceKey === World.OVERWORLD) return CompletableFuture.failedFuture(IllegalArgumentException("The default world cannot be loaded!"))
+        if (resourceKey === World.OVERWORLD) {
+            return failFuture(IllegalArgumentException("The default world cannot be loaded!"))
+        }
         val loaded = worlds[resourceKey]
         if (loaded != null) return CompletableFuture.completedFuture(loaded)
         val dimensionType = DimensionTypes.OVERWORLD
-//            ?: return CompletableFuture.failedFuture(IllegalStateException("No dimension type found for given key $key!"))
-        val generator = server.worldData.worldGenerationSettings.dimensions[ResourceKey.of(InternalResourceKeys.DIMENSION, key)]?.generator
-            ?: return CompletableFuture.failedFuture(IllegalStateException("No generator found for given key $key!"))
+//            ?: return failFuture(IllegalStateException("No dimension type found for given key $key!"))
+        val generator = server.worldData.worldGenerationSettings.dimensions[ResourceKey.of(
+            InternalResourceKeys.DIMENSION,
+            key
+        )]?.generator ?: return failFuture(IllegalStateException("No generator found for given key $key!"))
         val defaultData = server.worldData
 
         LOGGER.info("Loading world ${key.asString()}...")
         val folderName = key.storageFolder()
         val isSubWorld = folderName == "DIM-1" || folderName == "DIM1"
-
         val storage = try {
             WorldDataStorage(if (isSubWorld) worldFolder else customWorldFolder).createAccess(
                 if (isSubWorld) folderName else key.namespace() + File.separator + key.value(),
                 server.useDataConverter
             )
         } catch (exception: IOException) {
-            return CompletableFuture.failedFuture(RuntimeException("Failed to create world data for world $key!", exception))
+            return failFuture(RuntimeException("Failed to create world data for world $key!", exception))
         }
 
         return CompletableFuture.supplyAsync({
@@ -119,7 +122,15 @@ class KryptonWorldManager(
                 val difficulty = server.config.world.difficulty
                 val hardcore = server.config.world.hardcore
                 val rules = KryptonGameRuleHolder()
-                PrimaryWorldData(folderName, gamemode, difficulty, hardcore, rules, defaultData.dataPackConfig, defaultData.worldGenerationSettings)
+                PrimaryWorldData(
+                    folderName,
+                    gamemode,
+                    difficulty,
+                    hardcore,
+                    rules,
+                    defaultData.dataPackConfig,
+                    defaultData.worldGenerationSettings
+                )
             }
 
             worldData.setModdedInfo(KryptonPlatform.name, true)
@@ -129,10 +140,10 @@ class KryptonWorldManager(
         }, worldExecutor)
     }
 
-    override fun save(world: World): CompletableFuture<Unit> = CompletableFuture.supplyAsync({ world.save() }, worldExecutor)
+    override fun save(world: World): CompletableFuture<Unit> =
+        CompletableFuture.supplyAsync({ world.save() }, worldExecutor)
 
     override fun contains(key: Key) = worlds.containsKey(ResourceKey.of(ResourceKeys.DIMENSION, key))
-
     private fun create() {
         val generationSettings = worldData.worldGenerationSettings
         val isDebug = generationSettings.isDebug
@@ -141,18 +152,41 @@ class KryptonWorldManager(
         val overworld = dimensions[Dimension.OVERWORLD]
         val dimensionType = overworld?.type ?: DimensionTypes.OVERWORLD
         val generator = overworld?.generator ?: DebugGenerator(InternalRegistries.BIOME)
-        val world = KryptonWorld(server, server.dataAccess, worldData, World.OVERWORLD, dimensionType, generator, isDebug, seed, true)
+        val world = KryptonWorld(
+            server,
+            server.dataAccess,
+            worldData,
+            World.OVERWORLD,
+            dimensionType,
+            generator,
+            isDebug,
+            seed,
+            true
+        )
+
         worlds[World.OVERWORLD] = world
         if (!worldData.isInitialized) {
             worldData.isInitialized = true
             if (isDebug) setupDebugWorld(worldData)
         }
+
         dimensions.entries.forEach { (key, dimension) ->
             if (key === Dimension.OVERWORLD) return@forEach
             val resourceKey = ResourceKey.of(ResourceKeys.DIMENSION, key.location)
             val type = dimension.type
             val data = DerivedWorldData(worldData)
-            worlds[resourceKey] = KryptonWorld(server, server.dataAccess, data, resourceKey, type, dimension.generator, isDebug, seed, false)
+
+            worlds[resourceKey] = KryptonWorld(
+                server,
+                server.dataAccess,
+                data,
+                resourceKey,
+                type,
+                dimension.generator,
+                isDebug,
+                seed,
+                false
+            )
         }
     }
 
@@ -160,9 +194,13 @@ class KryptonWorldManager(
         val listener = ChunkProgressListener(9)
         LOGGER.info("Preparing start region for dimension ${default.dimension.location}...")
         listener.tick()
-        default.chunkManager.addTicket(default.data.spawnX shr 4, default.data.spawnZ shr 4, TicketTypes.START, 22, Unit) {
-            listener.updateStatus(ChunkStatus.FULL)
-        }
+        default.chunkManager.addTicket(
+            default.data.spawnX shr 4,
+            default.data.spawnZ shr 4,
+            TicketTypes.START,
+            22,
+            Unit
+        ) { listener.updateStatus(ChunkStatus.FULL) }
         listener.stop()
     }
 
@@ -195,5 +233,8 @@ class KryptonWorldManager(
             World.END.location -> "DIM1"
             else -> value()
         }
+
+        private fun <T> failFuture(exception: Exception): CompletableFuture<T> =
+            CompletableFuture.failedFuture(exception)
     }
 }

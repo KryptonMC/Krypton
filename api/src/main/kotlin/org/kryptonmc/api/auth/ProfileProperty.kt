@@ -28,8 +28,8 @@ public interface ProfileProperty {
     public val value: String
 
     /**
-     * The Yggdrasil signature for this property. May be null if this property isn't
-     * signed.
+     * The Yggdrasil signature for this property. May be null if this property
+     * isn't signed.
      */
     public val signature: String?
 
@@ -45,8 +45,8 @@ public interface ProfileProperty {
         private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
 
         /**
-         * Creates a new profile property with the given [name] and [value], with no
-         * signature.
+         * Creates a new profile property with the given [name] and [value], with
+         * no signature.
          *
          * @param name the name
          * @param value the value
@@ -63,6 +63,10 @@ public interface ProfileProperty {
          * @param signature the signature, or null for no signature
          * @return a new profile property with the given name and value
          */
-        public fun of(name: String, value: String, signature: String?): ProfileProperty = FACTORY.of(name, value, signature)
+        public fun of(
+            name: String,
+            value: String,
+            signature: String?
+        ): ProfileProperty = FACTORY.of(name, value, signature)
     }
 }

@@ -26,5 +26,9 @@ object V2552 {
 
     private const val VERSION = MCVersions.V20W20B + 15
 
-    fun register() = RenameStringValueTypeHelper.register(VERSION, MCTypeRegistry.BIOME, mapOf("minecraft:nether" to "minecraft:nether_wastes")::get)
+    fun register() = RenameStringValueTypeHelper.register(
+        VERSION,
+        MCTypeRegistry.BIOME,
+        mapOf("minecraft:nether" to "minecraft:nether_wastes")::get
+    )
 }

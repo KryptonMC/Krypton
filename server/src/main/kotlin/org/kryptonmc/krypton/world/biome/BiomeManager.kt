@@ -45,9 +45,7 @@ class BiomeManager(
         return getNoiseBiome(quartX, quartY, quartZ)
     }
 
-    fun getNoiseBiome(x: Int, y: Int, z: Int) = source[x, y, z]
-
-    fun getPrimaryBiome(position: ChunkPosition) = source.primary(position)
+    private fun getNoiseBiome(x: Int, y: Int, z: Int) = source[x, y, z]
 
     companion object {
 

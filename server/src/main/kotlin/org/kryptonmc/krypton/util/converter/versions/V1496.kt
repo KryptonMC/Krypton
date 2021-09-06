@@ -195,7 +195,8 @@ object V1496 {
 
         fun getBlock(index: Int) = storage!![index]
 
-        fun getStateId(name: String, persistent: Boolean, distance: Int) = LEAVES_TO_ID.getInt(name) shl 5 or (if (persistent) 16 else 0) or distance
+        fun getStateId(name: String, persistent: Boolean, distance: Int) =
+            LEAVES_TO_ID.getInt(name) shl 5 or (if (persistent) 16 else 0) or distance
 
         fun writeInto(section: MapType<String>) {
             if (isSkippable) return

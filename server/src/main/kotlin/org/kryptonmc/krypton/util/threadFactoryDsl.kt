@@ -25,7 +25,8 @@ import java.util.concurrent.ThreadFactory
 private annotation class ThreadFactoryDsl
 
 @ThreadFactoryDsl
-inline fun threadFactory(builder: ThreadFactoryBuilder.() -> Unit): ThreadFactory = ThreadFactoryBuilder().apply(builder).build()
+inline fun threadFactory(builder: ThreadFactoryBuilder.() -> Unit): ThreadFactory =
+    ThreadFactoryBuilder().apply(builder).build()
 
 @ThreadFactoryDsl
 inline fun threadFactory(
@@ -46,8 +47,9 @@ fun ThreadFactoryBuilder.daemon(): ThreadFactoryBuilder = setDaemon(true)
 fun ThreadFactoryBuilder.priority(priority: Int): ThreadFactoryBuilder = setPriority(priority)
 
 @ThreadFactoryDsl
-fun ThreadFactoryBuilder.uncaughtExceptionHandler(handler: Thread.UncaughtExceptionHandler): ThreadFactoryBuilder =
-    setUncaughtExceptionHandler(handler)
+fun ThreadFactoryBuilder.uncaughtExceptionHandler(
+    handler: Thread.UncaughtExceptionHandler
+): ThreadFactoryBuilder = setUncaughtExceptionHandler(handler)
 
 @ThreadFactoryDsl
 fun ThreadFactoryBuilder.factory(factory: ThreadFactory): ThreadFactoryBuilder = setThreadFactory(factory)

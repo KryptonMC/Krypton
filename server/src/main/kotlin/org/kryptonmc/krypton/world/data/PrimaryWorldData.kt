@@ -20,12 +20,9 @@ package org.kryptonmc.krypton.world.data
 
 import ca.spottedleaf.dataconverter.types.MapType
 import ca.spottedleaf.dataconverter.types.ObjectType
-import com.mojang.datafixers.DataFixUtils
-import com.mojang.serialization.Dynamic
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.util.Codecs
 import org.kryptonmc.krypton.util.converter.types.nbt.NBTMapType
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.toUUID
@@ -35,12 +32,9 @@ import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
 import org.kryptonmc.nbt.StringTag
-import org.kryptonmc.nbt.Tag
 import org.kryptonmc.nbt.compound
 import java.time.Instant
 import java.util.UUID
-import java.util.stream.Collectors
-import java.util.stream.Stream
 
 class PrimaryWorldData(
     override val name: String,
@@ -158,11 +152,16 @@ class PrimaryWorldData(
 
         private const val ANVIL_VERSION_ID = 19133
 
-        fun parse(data: MapType<String>, generationSettings: WorldGenerationSettings, dataPackConfig: DataPackConfig): PrimaryWorldData {
+        fun parse(
+            data: MapType<String>,
+            generationSettings: WorldGenerationSettings,
+            dataPackConfig: DataPackConfig
+        ): PrimaryWorldData {
             val time = data.getLong("Time", 0L)
-            val dragonFightData = data.getMap<String>(
+            val dragonFightData = data.getMap(
                 "DragonFightData",
-                data.getMap<String>("DimensionData")?.getMap<String>("1")?.getMap("DragonFight") ?: NBTMapType(MutableCompoundTag())
+                data.getMap<String>("DimensionData")?.getMap<String>("1")?.getMap("DragonFight")
+                    ?: NBTMapType(MutableCompoundTag())
             )
             return PrimaryWorldData(
                 data.getString("LevelName", "")!!,
@@ -186,7 +185,8 @@ class PrimaryWorldData(
                 data.getInt("WanderingTraderSpawnChance", 0),
                 data.getInt("WanderingTraderSpawnDelay", 0),
                 data.getInts("WanderingTraderId")?.toUUID(),
-                (data.getMap<String>("CustomBossEvents") as? NBTMapType)?.map ?: MutableCompoundTag(),
+                (data.getMap<String>("CustomBossEvents") as? NBTMapType)?.map
+                    ?: MutableCompoundTag(),
                 (dragonFightData as NBTMapType).map,
                 data.getList("ServerBrands", ObjectType.STRING)?.let {
                     val set = mutableSetOf<String>()
@@ -195,38 +195,6 @@ class PrimaryWorldData(
                     }
                     set
                 } ?: mutableSetOf(),
-                generationSettings
-            )
-        }
-
-        fun parse(dynamic: Dynamic<Tag>, generationSettings: WorldGenerationSettings, dataPackConfig: DataPackConfig): PrimaryWorldData {
-            val time = dynamic["Time"].asLong(0L)
-            val dragonFightData = dynamic["DragonFight"].result().map(Dynamic<Tag>::getValue).orElseGet { dynamic["DimensionData"]["1"]["DragonFight"].orElseEmptyMap().value } as CompoundTag
-            return PrimaryWorldData(
-                dynamic["LevelName"].asString(""),
-                Gamemode.fromId(dynamic["GameType"].asInt(0)) ?: Gamemode.SURVIVAL,
-                dynamic["Difficulty"].asNumber().map { Difficulty.fromId(it.toInt()) }.result().orElse(Difficulty.NORMAL),
-                dynamic["hardcore"].asBoolean(false),
-                KryptonGameRuleHolder(dynamic["GameRules"]),
-                dataPackConfig,
-                dynamic["SpawnX"].asInt(0),
-                dynamic["SpawnY"].asInt(0),
-                dynamic["SpawnZ"].asInt(0),
-                dynamic["SpawnAngle"].asFloat(0F),
-                time,
-                dynamic["DayTime"].asLong(time),
-                dynamic["clearWeatherTime"].asInt(0),
-                dynamic["raining"].asBoolean(false),
-                dynamic["rainTime"].asInt(0),
-                dynamic["thundering"].asBoolean(false),
-                dynamic["thunderTime"].asInt(0),
-                dynamic["initialized"].asBoolean(false),
-                dynamic["WanderingTraderSpawnChance"].asInt(0),
-                dynamic["WanderingTraderSpawnDelay"].asInt(0),
-                dynamic["WanderingTraderId"].read(Codecs.UUID).result().orElse(null),
-                dynamic["CustomBossEvents"].orElseEmptyMap().value as CompoundTag,
-                dragonFightData,
-                dynamic["ServerBrands"].asStream().flatMap { brand -> DataFixUtils.orElseGet(brand.asString().result().map { Stream.of(it) }) { Stream.empty() } }.collect(Collectors.toCollection(::mutableSetOf)),
                 generationSettings
             )
         }

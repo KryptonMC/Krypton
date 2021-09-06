@@ -29,7 +29,11 @@ data class ClimateParameters(
     val offset: Float
 ) {
 
-    fun fitness(other: ClimateParameters) = (temperature - other.temperature) * (temperature - other.temperature) + (humidity - other.humidity) * (humidity - other.humidity) + (altitude - other.altitude) * (altitude - other.altitude) + (weirdness - other.weirdness) * (weirdness - other.weirdness) + (offset - other.offset) * (offset - other.offset)
+    fun fitness(other: ClimateParameters) = (temperature - other.temperature) * (temperature - other.temperature) +
+            (humidity - other.humidity) * (humidity - other.humidity) +
+            (altitude - other.altitude) * (altitude - other.altitude) +
+            (weirdness - other.weirdness) * (weirdness - other.weirdness) +
+            (offset - other.offset) * (offset - other.offset)
 
     companion object {
 

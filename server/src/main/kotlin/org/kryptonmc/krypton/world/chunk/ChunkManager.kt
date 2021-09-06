@@ -51,7 +51,7 @@ class ChunkManager(private val world: KryptonWorld) {
     val chunkMap = ConcurrentHashMap<Long, KryptonChunk>()
     private val playersByChunk = ConcurrentHashMap<Long, ObjectSet<KryptonPlayer>>()
     private val executor = Executors.newFixedThreadPool(
-        Runtime.getRuntime().availableProcessors(),
+        2,
         threadFactory("Chunk Loader #%d") {
             daemon()
             uncaughtExceptionHandler { thread, exception ->
@@ -61,17 +61,29 @@ class ChunkManager(private val world: KryptonWorld) {
         }
     )
     private val ticketManager = TicketManager(this)
-    private val regionFileManager = RegionFileManager(world.folder.resolve("region"), world.server.config.advanced.synchronizeChunkWrites)
+    private val regionFileManager = RegionFileManager(
+        world.folder.resolve("region"),
+        world.server.config.advanced.synchronizeChunkWrites
+    )
 
     operator fun get(x: Int, z: Int): KryptonChunk? = chunkMap[ChunkPosition.toLong(x, z)]
 
     operator fun get(position: Long): KryptonChunk? = chunkMap[position]
 
-    fun <T> addTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T, onLoad: () -> Unit) = ticketManager.addTicket(x, z, type, level, key, onLoad)
+    fun <T> addTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T, onLoad: () -> Unit) =
+        ticketManager.addTicket(x, z, type, level, key, onLoad)
 
-    fun <T> removeTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T) = ticketManager.removeTicket(x, z, type, level, key)
+    fun <T> removeTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T) =
+        ticketManager.removeTicket(x, z, type, level, key)
 
-    fun addPlayer(player: KryptonPlayer, x: Int, z: Int, oldX: Int, oldZ: Int, viewDistance: Int): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
+    fun addPlayer(
+        player: KryptonPlayer,
+        x: Int,
+        z: Int,
+        oldX: Int,
+        oldZ: Int,
+        viewDistance: Int
+    ): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
         ticketManager.addPlayer(x, z, oldX, oldZ, player.uuid, viewDistance)
         val pos = ChunkPosition.toLong(x, z)
         val oldPos = ChunkPosition.toLong(oldX, oldZ)
@@ -104,9 +116,10 @@ class ChunkManager(private val world: KryptonWorld) {
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !world.server.useDataConverter) {
-            LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data conversion is disabled!")
-            LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or --use-data-converter flag(s) to" +
-                    "the JAR on startup.")
+            LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data " +
+                    "conversion is disabled!")
+            LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or " +
+                    "--use-data-converter flag(s) to the JAR on startup.")
             LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
             LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
             error("Tried to load old chunk from version $version when data conversion is disabled!")
@@ -126,13 +139,19 @@ class ChunkManager(private val world: KryptonWorld) {
             val sectionData = sectionList.getCompound(i)
             val y = sectionData.getByte("Y").toInt()
             if (y == -1 || y == 16) continue
-            if (sectionData.contains("Palette", ListTag.ID) && sectionData.contains("BlockStates", LongArrayTag.ID)) {
+            if (
+                sectionData.contains("Palette", ListTag.ID) &&
+                sectionData.contains("BlockStates", LongArrayTag.ID)
+            ) {
                 val section = ChunkSection(
                     y,
                     sectionData.getByteArray("BlockLight"),
                     sectionData.getByteArray("SkyLight")
                 )
-                section.palette.load(sectionData.getList("Palette", CompoundTag.ID), sectionData.getLongArray("BlockStates"))
+                section.palette.load(
+                    sectionData.getList("Palette", CompoundTag.ID),
+                    sectionData.getLongArray("BlockStates")
+                )
                 section.recount()
                 if (!section.isEmpty()) sections[world.sectionIndexFromY(y)] = section
             }
@@ -157,7 +176,11 @@ class ChunkManager(private val world: KryptonWorld) {
 
         val noneOf = EnumSet.noneOf(Heightmap.Type::class.java)
         Heightmap.Type.POST_FEATURES.forEach {
-            if (heightmaps.contains(it.name, LongArrayTag.ID)) chunk.setHeightmap(it, heightmaps.getLongArray(it.name)) else noneOf.add(it)
+            if (heightmaps.contains(it.name, LongArrayTag.ID)) {
+                chunk.setHeightmap(it, heightmaps.getLongArray(it.name))
+            } else {
+                noneOf.add(it)
+            }
         }
         Heightmap.prime(chunk, noneOf)
         return chunk

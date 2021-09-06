@@ -339,37 +339,121 @@ object V1451 {
             data.setMap("blockState", BlockFlatteningHelper.getNBTForId((blockId shl 4) or blockData).copy())
             null
         }
-        MCTypeRegistry.TILE_ENTITY.addWalker(VERSION, 2, "minecraft:piston", TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("blockState")))
+        MCTypeRegistry.TILE_ENTITY.addWalker(
+            VERSION,
+            2,
+            "minecraft:piston",
+            TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("blockState"))
+        )
 
         // V3
         EntityFlatteningConverter.register()
         MCTypeRegistry.ITEM_STACK.addConverterForId("minecraft:filled_map", VERSION, 3) { data, _, _ ->
             val tag = data.getMap("tag") ?: NBTTypeUtil.createEmptyMap<String>().apply { data.setMap("tag", this) }
-            if (!tag.hasKey("map", ObjectType.NUMBER)) { // This if is from CB. as usual, no documentation from CB. I'm guessing it just wants to avoid possibly overwriting it. seems fine.
+            if (!tag.hasKey("map", ObjectType.NUMBER)) {
                 tag.setInt("map", data.getInt("Damage"))
             }
             null
         }
         MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:potion", ItemsDataWalker("Potion"))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:arrow", TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("inBlockState")))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:enderman", ItemListsDataWalker("ArmorItems", "HandItems"))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:enderman", TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("carriedBlockState")))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:falling_block", TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("BlockState")))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:falling_block", TileEntitiesDataWalker("TileEntityData"))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:spectral_arrow", TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("inBlockState")))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:chest_minecart", TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState")))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:chest_minecart", ItemListsDataWalker("Items"))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:commandblock_minecart", TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState")))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:furnace_minecart", TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState")))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:hopper_minecart", TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState")))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:hopper_minecart", ItemListsDataWalker("Items"))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:minecart", TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState")))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:spawner_minecart", TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState")))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:spawner_minecart") { data, fromVersion, toVersion ->
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:arrow",
+            TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("inBlockState"))
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:enderman",
+            ItemListsDataWalker("ArmorItems", "HandItems")
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:enderman",
+            TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("carriedBlockState"))
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:falling_block",
+            TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("BlockState"))
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:falling_block",
+            TileEntitiesDataWalker("TileEntityData")
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:spectral_arrow",
+            TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("inBlockState"))
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:chest_minecart",
+            TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState"))
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:chest_minecart",
+            ItemListsDataWalker("Items")
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:commandblock_minecart",
+            TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState"))
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:furnace_minecart",
+            TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState"))
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:hopper_minecart",
+            TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState"))
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:hopper_minecart",
+            ItemListsDataWalker("Items")
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:minecart",
+            TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState"))
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:spawner_minecart",
+            TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState"))
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:spawner_minecart"
+        ) { data, fromVersion, toVersion ->
             MCTypeRegistry.UNTAGGED_SPAWNER.convert(data, fromVersion, toVersion)
             null
         }
-        MCTypeRegistry.ENTITY.addWalker(VERSION, 3, "minecraft:tnt_minecart", TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState")))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            3,
+            "minecraft:tnt_minecart",
+            TypePathsDataWalker(MCTypeRegistry.BLOCK_STATE, arrayOf("DisplayState"))
+        )
 
         // V4
         MCTypeRegistry.BLOCK_NAME.addConverter(VERSION, 4) { data, _, _ ->
@@ -396,6 +480,7 @@ object V1451 {
             null
         }
         MCTypeRegistry.LEVEL.addStructureConverter(object : StringDataConverter(VERSION, 5) {
+
             private val SPLITTER = Splitter.on(';').limit(5)
             private val LAYER_SPLITTER = Splitter.on(',')
             private val OLD_AMOUNT_SPLITTER = Splitter.on('x').limit(2)
@@ -429,7 +514,9 @@ object V1451 {
                     val blockId = if (version == 3) "minecraft:$block".toBlockID() else block.toIntOrNull() ?: 0
                     val nextIndex = index + 1
                     val id = blocks.getOrNull(nextIndex)?.toIntOrNull() ?: 0
-                    (if (amount == 1) "" else "$amount*") + BlockFlatteningHelper.getNBTForIdRaw(blockId shl 4 or id)!!.getString("Name", "")!!
+                    val prefix = if (amount == 1) "" else "$amount*"
+                    val nbt = BlockFlatteningHelper.getNBTForIdRaw(blockId shl 4 or id)!!
+                    "$prefix${nbt.getString("Name", "")}"
                 })
                 while (iterator.hasNext()) builder.append(";").append(iterator.next())
                 return builder.toString()
@@ -442,8 +529,8 @@ object V1451 {
             val record = data.getInt("Record")
             if (record <= 0) return@addConverterForId null
             data.remove("Record")
-
-            val newItemId = ItemStackFlatteningConverter.flattenItem(ItemNameHelper.getNameFromId(record)!!, 0) ?: return@addConverterForId null
+            val newItemId = ItemStackFlatteningConverter.flattenItem(ItemNameHelper.getNameFromId(record)!!, 0)
+                ?: return@addConverterForId null
             val recordItem = NBTTypeUtil.createEmptyMap<String>()
             data.setMap("RecordItem", recordItem)
 
@@ -468,7 +555,6 @@ object V1451 {
         MCTypeRegistry.OBJECTIVE.addStructureHook(VERSION, 6, object : DataHook<MapType<String>, MapType<String>> {
 
             override fun preHook(data: MapType<String>, fromVersion: Long, toVersion: Long): MapType<String>? {
-                // unpack
                 val criteriaName = data.getString("CriteriaName")
                 var type: String?
                 var id: String?
@@ -500,9 +586,7 @@ object V1451 {
             }
 
             override fun postHook(data: MapType<String>, fromVersion: Long, toVersion: Long): MapType<String>? {
-                // repack
                 val criteriaType = data.getMap<String>("CriteriaType")
-
                 val newName = if (criteriaType == null) {
                     null
                 } else {
@@ -521,7 +605,8 @@ object V1451 {
                 return null
             }
 
-            private fun packWithDot(string: String): String = string.toKeyOrNull()?.let { "${it.namespace()}.${it.value()}" } ?: string
+            private fun packWithDot(string: String): String =
+                string.toKeyOrNull()?.let { "${it.namespace()}.${it.value()}" } ?: string
         })
         MCTypeRegistry.OBJECTIVE.addStructureWalker(VERSION, 6) { data, fromVersion, toVersion ->
             val criteriaType = data.getMap<String>("CriteriaType") ?: return@addStructureWalker null
@@ -531,7 +616,12 @@ object V1451 {
                 "minecraft:crafted", "minecraft:used", "minecraft:broken", "minecraft:picked_up", "minecraft:dropped" -> {
                     criteriaType.convert(MCTypeRegistry.BLOCK_NAME, "id", fromVersion, toVersion)
                 }
-                "minecraft:killed", "minecraft:killed_by" -> criteriaType.convert(MCTypeRegistry.ENTITY_NAME, "id", fromVersion, toVersion)
+                "minecraft:killed", "minecraft:killed_by" -> criteriaType.convert(
+                    MCTypeRegistry.ENTITY_NAME,
+                    "id",
+                    fromVersion,
+                    toVersion
+                )
             }
             null
         }
@@ -561,12 +651,13 @@ object V1451 {
 
             private fun MapType<String>.convertToBlockState(path: String) {
                 val number = getNumber(path) ?: return
-                setMap(path, BlockFlatteningHelper.getNBTForId(number.toInt() shl 4).copy()) // copy to avoid problems with later state data converters
+                setMap(
+                    path,
+                    BlockFlatteningHelper.getNBTForId(number.toInt() shl 4).copy()
+                )
             }
         })
-        // convert villagers to trade with pumpkins and not the carved pumpkin
         MCTypeRegistry.ENTITY.addConverterForId("minecraft:villager", object : StringDataConverter(VERSION, 7) {
-
             override fun convert(data: MapType<String>, sourceVersion: Long, toVersion: Long): MapType<String>? {
                 data.getMap<String>("Offers")?.let { offers ->
                     offers.getList("Recipes", ObjectType.MAP)?.let {

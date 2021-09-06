@@ -58,7 +58,11 @@ public interface Property<T : Comparable<T>> {
 
         public fun forInt(name: String, values: Set<Int>): Property<Int>
 
-        public fun <E> forEnum(name: String, type: Class<E>, values: Set<E>): Property<E> where E : Enum<E>, E : StringSerializable
+        public fun <E> forEnum(
+            name: String,
+            type: Class<E>,
+            values: Set<E>
+        ): Property<E> where E : Enum<E>, E : StringSerializable
     }
 
     public companion object {

@@ -28,6 +28,6 @@ object V1450 {
 
     fun register() = MCTypeRegistry.BLOCK_STATE.addStructureConverter(VERSION) { data, _, _ ->
         val ret = BlockFlatteningHelper.flattenNBT(data)
-        if (ret === data) null else ret?.copy() // copy to avoid problems with later state data converters
+        if (ret === data) null else ret?.copy()
     }
 }

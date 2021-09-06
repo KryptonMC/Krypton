@@ -33,7 +33,10 @@ object V2100 {
 
     fun register() {
         RenameRecipesConverter.register(VERSION, RECIPE_RENAMES::get)
-        RenameAdvancementsConverter.register(VERSION, mapOf("minecraft:recipes/misc/sugar" to "minecraft:recipes/misc/sugar_from_sugar_cane")::get)
+        RenameAdvancementsConverter.register(
+            VERSION,
+            mapOf("minecraft:recipes/misc/sugar" to "minecraft:recipes/misc/sugar_from_sugar_cane")::get
+        )
 
         registerMob("minecraft:bee")
         registerMob("minecraft:bee_stinger")

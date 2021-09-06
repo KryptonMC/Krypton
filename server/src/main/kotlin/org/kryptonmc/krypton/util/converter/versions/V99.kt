@@ -36,7 +36,6 @@ import org.kryptonmc.krypton.util.logger
 
 object V99 {
 
-    // Structure for all data before data upgrading was added to minecraft (pre 15w32a)
     private val LOGGER = logger<V99>()
     private const val VERSION = MCVersions.V15W32A - 1
     private val ITEM_ID_TO_TILE_ENTITY_ID = mapOf(
@@ -98,16 +97,12 @@ object V99 {
         MCTypeRegistry.ENTITY.addWalker(VERSION, "FallingSand", BlockNamesDataWalker("Block"))
         MCTypeRegistry.ENTITY.addWalker(VERSION, "FallingSand", TileEntitiesDataWalker("TileEntityData"))
         MCTypeRegistry.ENTITY.addWalker(VERSION, "FireworksRocketEntity", ItemsDataWalker("FireworksItem"))
-        // Note: Minecart is the generic entity. It can be subtyped via an int to become one of the specific minecarts
-        // (i.e rideable, chest, furnace, tnt, etc)
-        // Because of this, we add all walkers to the generic type, even though they might not be needed.
-        // Vanilla does not make the generic minecart convert spawners, but we do.
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "Minecart", BlockNamesDataWalker("DisplayTile")) // for all minecart types
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "Minecart", ItemListsDataWalker("Items")) // for chest types
+        MCTypeRegistry.ENTITY.addWalker(VERSION, "Minecart", BlockNamesDataWalker("DisplayTile"))
+        MCTypeRegistry.ENTITY.addWalker(VERSION, "Minecart", ItemListsDataWalker("Items"))
         MCTypeRegistry.ENTITY.addWalker(VERSION, "Minecart") { data, fromVersion, toVersion ->
             MCTypeRegistry.UNTAGGED_SPAWNER.convert(data, fromVersion, toVersion)
             null
-        } // for spawner type
+        }
         MCTypeRegistry.ENTITY.addWalker(VERSION, "MinecartChest", BlockNamesDataWalker("DisplayTile"))
         MCTypeRegistry.ENTITY.addWalker(VERSION, "MinecartChest", ItemListsDataWalker("Items"))
         MCTypeRegistry.ENTITY.addWalker(VERSION, "MinecartFurnace", BlockNamesDataWalker("DisplayTile"))
@@ -168,9 +163,6 @@ object V99 {
         }
         registerMob("Shulker")
 
-        // tile entities
-
-        // Inventory -> ItemListsDataWalker("Items")
         registerInventory("Furnace")
         registerInventory("Chest")
         MCTypeRegistry.TILE_ENTITY.addWalker(VERSION, "RecordPlayer", ItemsDataWalker("RecordItem"))
@@ -182,10 +174,7 @@ object V99 {
         }
         registerInventory("Cauldron")
         registerInventory("Hopper")
-        // Note: Vanilla does not properly handle this case, it will not convert int ids!
         MCTypeRegistry.TILE_ENTITY.addWalker(VERSION, "FlowerPot", ItemNamesDataWalker("Item"))
-
-        // rest
 
         MCTypeRegistry.ITEM_STACK.addStructureWalker(VERSION) { data, fromVersion, toVersion ->
             data.convert(MCTypeRegistry.ITEM_NAME, "id", fromVersion, toVersion)
@@ -197,22 +186,19 @@ object V99 {
             if (entityTag != null) {
                 val itemId = getStringId(data.getString("id")!!)
                 val entityId = when (itemId) {
-                    // The check for version id is removed here. For whatever reason, the legacy
-                    // data converters used entity id "minecraft:armor_stand" when version was greater-than 514,
-                    // but entity ids were not namespaced until V705! So somebody fucked up the legacy converters.
-                    // DFU agrees with my analysis here, it will only set the entityId here to the namespaced variant
-                    // with the V705 schema.
                     "minecraft:armor_stand" -> "ArmorStand"
-                    // add missing item_frame entity id
                     "minecraft:item_frame" -> "ItemFrame"
                     else -> entityTag.getString("id")
                 }
 
                 val removeId = if (entityId == null) {
-                    if (itemId != "minecraft:air") LOGGER.warn("Unable to resolve Entity for ItemStack: ${data.getGeneric("id")} (V99)")
+                    if (itemId != "minecraft:air") LOGGER.warn("Unable to resolve Entity for ItemStack: " +
+                            "${data.getGeneric("id")} (V99)")
                     false
                 } else {
-                    entityTag.hasKey("id", ObjectType.STRING).apply { if (this) entityTag!!.setString("id", entityId) }
+                    entityTag.hasKey("id", ObjectType.STRING).apply {
+                        if (this) entityTag!!.setString("id", entityId)
+                    }
                 }
 
                 val replace = MCTypeRegistry.ENTITY.convert(entityTag, fromVersion, toVersion)
@@ -228,10 +214,13 @@ object V99 {
                 val itemId = getStringId(data.getString("id")!!)
                 val entityId = ITEM_ID_TO_TILE_ENTITY_ID[itemId]
                 val removeId = if (entityId == null) {
-                    if (itemId != "minecraft:air") LOGGER.warn("Unable to resolve Entity for ItemStack: ${data.getGeneric("id")} (V99)")
+                    if (itemId != "minecraft:air") LOGGER.warn("Unable to resolve Entity for ItemStack: " +
+                            "${data.getGeneric("id")} (V99)")
                     false
                 } else {
-                    !blockEntityTag.hasKey("id", ObjectType.STRING).apply { blockEntityTag!!.setString("id", entityId) }
+                    !blockEntityTag.hasKey("id", ObjectType.STRING).apply {
+                        blockEntityTag!!.setString("id", entityId)
+                    }
                 }
                 val replace = MCTypeRegistry.TILE_ENTITY.convert(blockEntityTag, fromVersion, toVersion)
                 if (replace != null) {
@@ -246,7 +235,7 @@ object V99 {
             null
         }
 
-        MCTypeRegistry.PLAYER.addStructureWalker(VERSION, 0, ItemListsDataWalker("Inventory", "EnderItems"))
+        MCTypeRegistry.PLAYER.addStructureWalker(VERSION, ItemListsDataWalker("Inventory", "EnderItems"))
 
         MCTypeRegistry.CHUNK.addStructureWalker(VERSION) { data, fromVersion, toVersion ->
             val level = data.getMap<String>("Level") ?: return@addStructureWalker null
@@ -275,12 +264,9 @@ object V99 {
             null
         }
 
-        // enforce namespacing for ids
         MCTypeRegistry.BLOCK_NAME.addStructureHook(VERSION, EnforceNamespacedValueTypeDataHook())
         MCTypeRegistry.ITEM_NAME.addStructureHook(VERSION, EnforceNamespacedValueTypeDataHook())
         MCTypeRegistry.ITEM_STACK.addStructureHook(VERSION, EnforceNamespacedDataHook())
-
-        // Entity is absent; the String form is not yet namespaced, unlike the above.
     }
 
     private fun registerMob(id: String) {
@@ -295,5 +281,9 @@ object V99 {
         MCTypeRegistry.TILE_ENTITY.addWalker(VERSION, id, ItemListsDataWalker("Items"))
     }
 
-    private fun getStringId(id: Any) = if (id is String) id else if (id is Number) ItemNameHelper.getNameFromId(id.toInt()) else null
+    private fun getStringId(id: Any): String? {
+        if (id is String) return id
+        if (id is Number) return ItemNameHelper.getNameFromId(id.toInt())
+        return null
+    }
 }

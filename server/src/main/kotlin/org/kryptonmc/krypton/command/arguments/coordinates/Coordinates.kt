@@ -26,10 +26,8 @@ sealed interface Coordinates {
 
     val relativeX: Boolean
         get() = true
-
     val relativeY: Boolean
         get() = true
-
     val relativeZ: Boolean
         get() = true
 

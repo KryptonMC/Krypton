@@ -26,5 +26,10 @@ interface C1Transformer : AreaTransformer1, DimensionOffset1Transformer {
 
     operator fun invoke(context: Context, value: Int): Int
 
-    override fun invoke(context: BigContext<*>, parent: Area, x: Int, z: Int) = invoke(context, parent[getParentX(x + 1), getParentZ(z + 1)])
+    override fun invoke(
+        context: BigContext<*>,
+        parent: Area,
+        x: Int,
+        z: Int
+    ) = invoke(context, parent[getParentX(x + 1), getParentZ(z + 1)])
 }

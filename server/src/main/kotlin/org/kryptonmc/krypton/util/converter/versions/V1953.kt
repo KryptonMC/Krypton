@@ -27,7 +27,10 @@ object V1953 {
 
     fun register() = MCTypeRegistry.TILE_ENTITY.addConverterForId("minecraft:banner", VERSION) { data, _, _ ->
         val name = data.getString("CustomName")
-        if (name != null) data.setString("CustomName", name.replace("\"translate\":\"block.minecraft.illager_banner\"", "\"translate\":\"block.minecraft.ominous_banner\""))
+        if (name != null) data.setString("CustomName", name.replace(
+            "\"translate\":\"block.minecraft.illager_banner\"",
+            "\"translate\":\"block.minecraft.ominous_banner\"")
+        )
         null
     }
 }

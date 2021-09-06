@@ -39,10 +39,11 @@ object JsonTypeUtil : TypeUtil {
         return ret
     }
 
-    fun convertJsonToNBT(json: JsonListType): NBTListType {
+    private fun convertJsonToNBT(json: JsonListType): NBTListType {
         val ret = NBTListType()
         for (i in 0 until json.size()) {
-            ret.addGeneric(convertToGenericNBT(json.array[i], json.compressed) ?: error("Nulls are not supported in NBT!"))
+            ret.addGeneric(convertToGenericNBT(json.array[i], json.compressed)
+                ?: error("Nulls are not supported in NBT!"))
         }
         return ret
     }

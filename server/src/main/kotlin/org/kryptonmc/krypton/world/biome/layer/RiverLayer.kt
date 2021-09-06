@@ -24,9 +24,17 @@ import org.kryptonmc.krypton.world.biome.layer.traits.CastleTransformer
 
 object RiverLayer : CastleTransformer {
 
-    override fun invoke(context: Context, n: Int, e: Int, s: Int, w: Int, center: Int): Int {
+    override fun invoke(context: Context, north: Int, east: Int, south: Int, west: Int, center: Int): Int {
         val filter = riverFilter(center)
-        return if (filter == riverFilter(n) && filter == riverFilter(e) && filter == riverFilter(s) && filter == riverFilter(w)) -1 else BiomeConstants.RIVER
+        if (
+            filter == riverFilter(north) &&
+            filter == riverFilter(east) &&
+            filter == riverFilter(south) &&
+            filter == riverFilter(west)
+        ) {
+            return -1
+        }
+        return BiomeConstants.RIVER
     }
 
     private fun riverFilter(value: Int) = if (value >= 2) 2 + (value and 1) else value

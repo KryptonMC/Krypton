@@ -70,5 +70,8 @@ object GameEvents {
     val SWIM = register("swim")
     val WOLF_SHAKING = register("wolf_shaking")
 
-    private fun register(name: String) = Registries.register(InternalRegistries.GAME_EVENT, name, GameEvent(Key.key(name)))
+    private fun register(name: String): GameEvent {
+        val key = Key.key(name)
+        return Registries.register(InternalRegistries.GAME_EVENT, key, GameEvent(key))
+    }
 }

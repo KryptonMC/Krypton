@@ -219,7 +219,11 @@ abstract class KryptonEntity(
 
     override fun identity() = Identity.identity(uuid)
 
-    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(ShowEntity.of(type.key, uuid, displayName.takeIf { it !== Component.empty() }))
+    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(op.apply(ShowEntity.of(
+        type.key,
+        uuid,
+        displayName.takeIf { it !== Component.empty() }
+    )))
 
     final override var isOnFire: Boolean
         get() = getSharedFlag(0)

@@ -27,7 +27,10 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
-abstract class KryptonThrowableProjectile(world: KryptonWorld, type: EntityType<out ThrowableProjectile>) : KryptonProjectile(world, type), ThrowableProjectile {
+abstract class KryptonThrowableProjectile(
+    world: KryptonWorld,
+    type: EntityType<out ThrowableProjectile>
+) : KryptonProjectile(world, type), ThrowableProjectile {
 
     abstract val defaultItem: ItemType
 

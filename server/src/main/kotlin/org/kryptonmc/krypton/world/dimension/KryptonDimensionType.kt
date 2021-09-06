@@ -88,20 +88,27 @@ data class KryptonDimensionType(
                 Codec.BOOL.fieldOf("bed_works").forGetter(KryptonDimensionType::bedWorks),
                 Codec.BOOL.fieldOf("respawn_anchor_works").forGetter(KryptonDimensionType::respawnAnchorWorks),
                 Codec.FLOAT.fieldOf("ambient_light").forGetter(KryptonDimensionType::ambientLight),
-                Codec.LONG.optionalFieldOf("fixed_time").xmap(Optional<Long>::getIfPresent) { Optional.ofNullable(it) }.forGetter(KryptonDimensionType::fixedTime),
+                Codec.LONG.optionalFieldOf("fixed_time")
+                    .xmap(Optional<Long>::getIfPresent) { Optional.ofNullable(it) }
+                    .forGetter(KryptonDimensionType::fixedTime),
                 Codecs.KEY.fieldOf("infiniburn").forGetter(KryptonDimensionType::infiniburn),
                 Codec.intRange(MIN_Y, MAX_Y).fieldOf("min_y").forGetter(KryptonDimensionType::minimumY),
                 Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).fieldOf("height").forGetter(KryptonDimensionType::height),
                 Codec.intRange(0, Y_SIZE).fieldOf("logical_height").forGetter(KryptonDimensionType::logicalHeight),
-                Codec.doubleRange(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE).fieldOf("coordinate_scale").forGetter(KryptonDimensionType::coordinateScale),
+                Codec.doubleRange(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE).fieldOf("coordinate_scale")
+                    .forGetter(KryptonDimensionType::coordinateScale),
                 Codecs.KEY.fieldOf("effects").forGetter(KryptonDimensionType::effects)
             ).apply(instance, ::KryptonDimensionType)
         }.comapFlatMap(::checkY) { it }
 
         private fun checkY(type: KryptonDimensionType): DataResult<KryptonDimensionType> {
             if (type.height < MINIMUM_HEIGHT) return DataResult.error("Height has to be at least $MINIMUM_HEIGHT!")
-            if (type.minimumY + type.height > MAX_Y + 1) return DataResult.error("Minimum Y + height cannot be greater than ${MAX_Y + 1}!")
-            if (type.logicalHeight > type.height) return DataResult.error("Logical height cannot be greater than height!")
+            if (type.minimumY + type.height > MAX_Y + 1) {
+                return DataResult.error("Minimum Y + height cannot be greater than ${MAX_Y + 1}!")
+            }
+            if (type.logicalHeight > type.height) {
+                return DataResult.error("Logical height cannot be greater than height!")
+            }
             if (type.height % 16 != 0) return DataResult.error("Height must be a multiple of 16!")
             if (type.minimumY % 16 != 0) return DataResult.error("Minimum Y must be a multiple of 16!")
             return DataResult.success(type)

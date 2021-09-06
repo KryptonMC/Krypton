@@ -26,7 +26,10 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.ListTag
 
-abstract class KryptonAcceleratingProjectile(world: KryptonWorld, type: EntityType<out AcceleratingProjectile>) : KryptonProjectile(world, type), AcceleratingProjectile {
+abstract class KryptonAcceleratingProjectile(
+    world: KryptonWorld,
+    type: EntityType<out AcceleratingProjectile>
+) : KryptonProjectile(world, type), AcceleratingProjectile {
 
     final override var acceleration = Vector.ZERO
 
@@ -44,6 +47,10 @@ abstract class KryptonAcceleratingProjectile(world: KryptonWorld, type: EntityTy
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
-        list("power", DoubleTag.ID, DoubleTag.of(acceleration.x), DoubleTag.of(acceleration.y), DoubleTag.of(acceleration.z))
+        list("power") {
+            addDouble(acceleration.x)
+            addDouble(acceleration.y)
+            addDouble(acceleration.z)
+        }
     }
 }

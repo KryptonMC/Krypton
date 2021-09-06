@@ -69,7 +69,9 @@ object ArgumentSerializers {
 
     private inline fun <reified T : ArgumentType<*>> register(name: String, serializer: ArgumentSerializer<T>) {
         val key = Key.key(name)
-        require(!BY_CLASS.containsKey(T::class.java)) { "Serializer for class ${T::class.java} has already been registered!" }
+        require(!BY_CLASS.containsKey(T::class.java)) {
+            "Serializer for class ${T::class.java} has already been registered!"
+        }
         require(!BY_NAME.containsKey(key)) { "Serializer with name $key has already been registered!" }
         val entry = Entry(key, T::class.java, serializer)
         BY_CLASS[T::class.java] = entry

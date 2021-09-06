@@ -55,7 +55,10 @@ object Codecs {
     ).stable()
     val SOUND_EVENT: Codec<SoundEvent> = KEY.xmap(::SoundEvent) { it.key }.stable()
     val PARTICLE: Codec<ParticleType> = KEY.xmap({ InternalRegistries.PARTICLE_TYPE[it]!! }, { it.key }).stable()
-    val DIMENSION: Codec<ResourceKey<World>> = KEY.xmap({ ResourceKey.of(ResourceKeys.DIMENSION, it) }, ResourceKey<World>::location).stable()
+    val DIMENSION: Codec<ResourceKey<World>> = KEY.xmap(
+        { ResourceKey.of(ResourceKeys.DIMENSION, it) },
+        ResourceKey<World>::location
+    ).stable()
 
     /**
      * Creates an enum codec that supports both integer and string values.
@@ -70,15 +73,23 @@ object Codecs {
         crossinline nameToValue: (String) -> E?
     ): Codec<E> where E : Enum<E>, E : StringSerializable = object : Codec<E> {
 
-        override fun <T> encode(input: E, ops: DynamicOps<T>, prefix: T) =
-            ops.mergeToPrimitive(prefix, if (ops.compressMaps()) ops.createInt(input.ordinal) else ops.createString(input.serialized))
+        override fun <T> encode(input: E, ops: DynamicOps<T>, prefix: T): DataResult<T> {
+            if (ops.compressMaps()) return ops.mergeToPrimitive(prefix, ops.createInt(input.ordinal))
+            return ops.mergeToPrimitive(prefix, ops.createString(input.serialized))
+        }
 
         override fun <T> decode(ops: DynamicOps<T>, input: T): DataResult<Pair<E, T>> {
             if (ops.compressMaps()) return ops.getNumberValue(input)
-                .flatMap { id -> values.getOrNull(id.toInt())?.let { DataResult.success(it) } ?: DataResult.error("Could not find any element with ID matching $id!") }
+                .flatMap { id ->
+                    values.getOrNull(id.toInt())?.let { DataResult.success(it) }
+                        ?: DataResult.error("Could not find any element with ID matching $id!")
+                }
                 .map { Pair.of(it, ops.empty()) }
             return ops.getStringValue(input)
-                .flatMap { name -> nameToValue(name)?.let { DataResult.success(it) } ?: DataResult.error("Could not find any element with name matching $name!") }
+                .flatMap { name ->
+                    nameToValue(name)?.let { DataResult.success(it) }
+                        ?: DataResult.error("Could not find any element with name matching $name!")
+                }
                 .map { Pair.of(it, ops.empty()) }
         }
 
@@ -95,7 +106,10 @@ object Codecs {
         val limited = limit(size + 1L).toArray()
         return when {
             limited.size == size -> DataResult.success(limited)
-            limited.size >= size -> DataResult.error("Input is not an array of integers with size $size!", limited.copyOf(size))
+            limited.size >= size -> DataResult.error(
+                "Input is not an array of integers with size $size!",
+                limited.copyOf(size)
+            )
             else -> DataResult.error("Input is not an array of integers with size $size!")
         }
     }

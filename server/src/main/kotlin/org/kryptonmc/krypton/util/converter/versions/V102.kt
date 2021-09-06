@@ -31,10 +31,6 @@ object V102 {
     private const val VERSION = MCVersions.V15W32A + 2
 
     fun register() {
-        // V102 -> V15W32A + 2
-        // V102 schema only modifies ITEM_STACK to have only a string ID, but our ITEM_NAME is generic (int or String) so we don't
-        // actually need to update the walker
-
         MCTypeRegistry.ITEM_NAME.addConverter(VERSION) { data, _, _ ->
             if (data !is Number) return@addConverter null
             val id = data.toInt()

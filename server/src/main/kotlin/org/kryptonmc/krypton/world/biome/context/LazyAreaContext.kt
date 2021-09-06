@@ -51,7 +51,11 @@ class LazyAreaContext(private val maxCache: Int, seed: Long, salt: Long) : BigCo
 
     override fun createArea(transformer: PixelTransformer) = LazyArea(cache, maxCache, transformer)
 
-    override fun createArea(transformer: PixelTransformer, parent: LazyArea) = LazyArea(cache, min(MAXIMUM_CACHE, parent.maxCache * 4), transformer)
+    override fun createArea(transformer: PixelTransformer, parent: LazyArea) = LazyArea(
+        cache,
+        min(MAXIMUM_CACHE, parent.maxCache * 4),
+        transformer
+    )
 
     override fun createArea(transformer: PixelTransformer, firstParent: LazyArea, secondParent: LazyArea) = LazyArea(
         cache,

@@ -39,6 +39,10 @@ object V2505 {
             }
             null
         }
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:piglin", ItemListsDataWalker("ArmorItems", "HandItems"))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:piglin",
+            ItemListsDataWalker("ArmorItems", "HandItems")
+        )
     }
 }

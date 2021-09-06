@@ -45,9 +45,12 @@ class VanillaLayeredBiomeGenerator(
         val CODEC: Codec<VanillaLayeredBiomeGenerator> = RecordCodecBuilder.create {
             it.group(
                 Codec.LONG.fieldOf("seed").stable().forGetter(VanillaLayeredBiomeGenerator::seed),
-                Codec.BOOL.optionalFieldOf("legacy_biome_init_layer", false, Lifecycle.stable()).forGetter(VanillaLayeredBiomeGenerator::legacyBiomeInitLayer),
-                Codec.BOOL.fieldOf("large_biomes").orElse(false).stable().forGetter(VanillaLayeredBiomeGenerator::largeBiomes),
-                InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes").forGetter(VanillaLayeredBiomeGenerator::biomes)
+                Codec.BOOL.optionalFieldOf("legacy_biome_init_layer", false, Lifecycle.stable())
+                    .forGetter(VanillaLayeredBiomeGenerator::legacyBiomeInitLayer),
+                Codec.BOOL.fieldOf("large_biomes").orElse(false).stable()
+                    .forGetter(VanillaLayeredBiomeGenerator::largeBiomes),
+                InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes")
+                    .forGetter(VanillaLayeredBiomeGenerator::biomes)
             ).apply(it, ::VanillaLayeredBiomeGenerator)
         }
         private val POSSIBLE_BIOMES = listOf(

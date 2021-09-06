@@ -39,7 +39,9 @@ import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.compound
 
-class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory, Serializable<ListTag> {
+class KryptonPlayerInventory(
+    override val owner: KryptonPlayer
+) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory, Serializable<ListTag> {
 
     override val crafting = Array<KryptonItemStack>(5) { EmptyItemStack }
     override val armor = Array<KryptonItemStack>(4) { EmptyItemStack }

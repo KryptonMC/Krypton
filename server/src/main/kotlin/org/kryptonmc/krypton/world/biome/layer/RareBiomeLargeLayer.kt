@@ -24,5 +24,8 @@ import org.kryptonmc.krypton.world.biome.layer.traits.C1Transformer
 
 object RareBiomeLargeLayer : C1Transformer {
 
-    override fun invoke(context: Context, value: Int) = if (context.nextRandom(10) == 0 && value == BiomeConstants.JUNGLE) BiomeConstants.BAMBOO_JUNGLE else value
+    override fun invoke(context: Context, value: Int): Int {
+        if (context.nextRandom(10) == 0 && value == BiomeConstants.JUNGLE) return BiomeConstants.BAMBOO_JUNGLE
+        return value
+    }
 }

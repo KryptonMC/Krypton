@@ -38,11 +38,11 @@ open class KryptonItemStack(
     constructor(nbt: CompoundTag) : this(
         InternalRegistries.ITEM[Key.key(nbt.getString("id"))],
         nbt.getInt("Count"),
-        KryptonMetaHolder(nbt.getCompound("tag").let { if (it is MutableCompoundTag) it else it.mutable() })
+        KryptonMetaHolder(nbt.getCompound("tag") as MutableCompoundTag)
     )
 
     fun getOrCreateTag(key: String): MutableCompoundTag {
-        if (meta.nbt.contains(key, CompoundTag.ID)) return meta.nbt.getCompound(key).let { if (it is MutableCompoundTag) it else it.mutable() }
+        if (meta.nbt.contains(key, CompoundTag.ID)) return meta.nbt.getCompound(key) as MutableCompoundTag
         return MutableCompoundTag().apply { meta.nbt[key] = this }
     }
 
@@ -76,7 +76,9 @@ open class KryptonItemStack(
         override fun type(type: ItemType) = apply { this.type = type }
 
         override fun amount(amount: Int) = apply {
-            require(amount in 1..type.maximumAmount) { "Item amount must be between 1 and ${type.maximumAmount}, was $amount!" }
+            require(amount in 1..type.maximumAmount) {
+                "Item amount must be between 1 and ${type.maximumAmount}, was $amount!"
+            }
             this.amount = amount
         }
 

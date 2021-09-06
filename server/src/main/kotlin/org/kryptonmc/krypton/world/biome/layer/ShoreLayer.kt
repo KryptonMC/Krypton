@@ -28,23 +28,66 @@ object ShoreLayer : CastleTransformer {
     private val SNOWY = IntOpenHashSet(intArrayOf(26, 11, 12, 13, 140, 30, 31, 158, 10))
     private val JUNGLES = IntOpenHashSet(intArrayOf(168, 169, 21, 22, 23, 149, 151))
 
-    override fun invoke(context: Context, n: Int, e: Int, s: Int, w: Int, center: Int): Int {
+    override fun invoke(context: Context, north: Int, east: Int, south: Int, west: Int, center: Int): Int {
         if (center == BiomeConstants.MUSHROOM_FIELDS) {
-            if (n.isShallowOcean() || e.isShallowOcean() || s.isShallowOcean() || w.isShallowOcean()) return BiomeConstants.MUSHROOM_FIELD_SHORE
+            if (
+                north.isShallowOcean() ||
+                east.isShallowOcean() ||
+                south.isShallowOcean() ||
+                west.isShallowOcean()
+            ) {
+                return BiomeConstants.MUSHROOM_FIELD_SHORE
+            }
         } else if (JUNGLES.contains(center)) {
-            if (!n.isJungleCompatible() || !e.isJungleCompatible() || !s.isJungleCompatible() || !w.isJungleCompatible()) return BiomeConstants.JUNGLE_EDGE
-            if (n.isOcean() || e.isOcean() || s.isOcean() || w.isOcean()) return BiomeConstants.BEACH
-        } else if (center != BiomeConstants.MOUNTAINS && center != BiomeConstants.WOODED_MOUNTAINS && center != BiomeConstants.MOUNTAIN_EDGE) {
+            if (
+                !north.isJungleCompatible() ||
+                !east.isJungleCompatible() ||
+                !south.isJungleCompatible() ||
+                !west.isJungleCompatible()
+            ) {
+                return BiomeConstants.JUNGLE_EDGE
+            }
+            if (north.isOcean() || east.isOcean() || south.isOcean() || west.isOcean()) return BiomeConstants.BEACH
+        } else if (
+            center != BiomeConstants.MOUNTAINS &&
+            center != BiomeConstants.WOODED_MOUNTAINS &&
+            center != BiomeConstants.MOUNTAIN_EDGE
+        ) {
             if (SNOWY.contains(center)) {
-                if (!center.isOcean() && (n.isOcean() || e.isOcean() || s.isOcean() || w.isOcean())) return BiomeConstants.SNOWY_BEACH
+                if (!center.isOcean() && (north.isOcean() || east.isOcean() || south.isOcean() || west.isOcean())) {
+                    return BiomeConstants.SNOWY_BEACH
+                }
             } else if (center != BiomeConstants.BADLANDS && center != BiomeConstants.WOODED_BADLANDS_PLATEAU) {
-                if (!center.isOcean() && center != BiomeConstants.RIVER && center != BiomeConstants.SWAMP && (n.isOcean() || e.isOcean() || s.isOcean() || w.isOcean())) return BiomeConstants.BEACH
-            } else if (!n.isOcean() && !e.isOcean() && !s.isOcean() && !w.isOcean() && (!n.isMesa() || !e.isMesa() || !s.isMesa() || !w.isMesa())) return BiomeConstants.DESERT
-        } else if (!center.isOcean() && (n.isOcean() || e.isOcean() || s.isOcean() || w.isOcean())) return BiomeConstants.STONE_SHORE
+                if (
+                    !center.isOcean() &&
+                    center != BiomeConstants.RIVER &&
+                    center != BiomeConstants.SWAMP &&
+                    (north.isOcean() || east.isOcean() || south.isOcean() || west.isOcean())
+                ) {
+                    return BiomeConstants.BEACH
+                }
+            } else if (
+                !north.isOcean() &&
+                !east.isOcean() &&
+                !south.isOcean() &&
+                !west.isOcean() &&
+                (!north.isMesa() || !east.isMesa() || !south.isMesa() || !west.isMesa())
+            ) {
+                return BiomeConstants.DESERT
+            }
+        } else if (
+            !center.isOcean() &&
+            (north.isOcean() || east.isOcean() || south.isOcean() || west.isOcean())
+        ) {
+            return BiomeConstants.STONE_SHORE
+        }
         return center
     }
 
-    private fun Int.isJungleCompatible() = JUNGLES.contains(this) || this == BiomeConstants.FOREST || this == BiomeConstants.TAIGA || isOcean()
+    private fun Int.isJungleCompatible() = JUNGLES.contains(this) ||
+            this == BiomeConstants.FOREST ||
+            this == BiomeConstants.TAIGA ||
+            isOcean()
 
     private fun Int.isMesa() = this == BiomeConstants.BADLANDS ||
             this == BiomeConstants.WOODED_BADLANDS_PLATEAU ||

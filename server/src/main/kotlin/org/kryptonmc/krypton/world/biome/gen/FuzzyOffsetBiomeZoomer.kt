@@ -50,7 +50,15 @@ object FuzzyOffsetBiomeZoomer : BiomeZoomer {
             val currentZoomedX = if (hasA) zoomedX else zoomedX - 1.0
             val currentZoomedY = if (hasB) zoomedY else zoomedY - 1.0
             val currentZoomedZ = if (hasC) zoomedZ else zoomedZ - 1.0
-            val fiddledDistance = getFiddledDistance(seed, currentX, currentY, currentZ, currentZoomedX, currentZoomedY, currentZoomedZ)
+            val fiddledDistance = getFiddledDistance(
+                seed,
+                currentX,
+                currentY,
+                currentZ,
+                currentZoomedX,
+                currentZoomedY,
+                currentZoomedZ
+            )
             if (lowestFiddled > fiddledDistance) {
                 lowestFiddledIndex = i
                 lowestFiddled = fiddledDistance
@@ -62,7 +70,15 @@ object FuzzyOffsetBiomeZoomer : BiomeZoomer {
         return source[a, b, c]
     }
 
-    private fun getFiddledDistance(seed: Long, x: Int, y: Int, z: Int, maskedX: Double, maskedY: Double, maskedZ: Double): Double {
+    private fun getFiddledDistance(
+        seed: Long,
+        x: Int,
+        y: Int,
+        z: Int,
+        maskedX: Double,
+        maskedY: Double,
+        maskedZ: Double
+    ): Double {
         var random = LinearCongruentialGenerator.next(seed, x.toLong())
         random = LinearCongruentialGenerator.next(random, y.toLong())
         random = LinearCongruentialGenerator.next(random, z.toLong())

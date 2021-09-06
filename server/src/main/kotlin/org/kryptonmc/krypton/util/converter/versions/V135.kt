@@ -32,9 +32,6 @@ object V135 {
     private const val VERSION = MCVersions.V15W40B + 1
 
     fun register() {
-        // In this update they changed the "Riding" value to be "Passengers", which is now a list. So it added
-        // support for multiple entities riding. Of course, Riding and Passenger are opposites - so it also will
-        // switch the data layout to be from highest rider to lowest rider, in terms of depth.
         MCTypeRegistry.ENTITY.addStructureConverter(VERSION) { data, _, _ ->
             var temp = data
             var ret: MapType<String>? = null

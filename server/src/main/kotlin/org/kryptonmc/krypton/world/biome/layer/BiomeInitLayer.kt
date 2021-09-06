@@ -31,7 +31,11 @@ class BiomeInitLayer(isLegacy: Boolean) : C0Transformer {
         temp = temp and -3841
         if (temp.isOcean() || temp == 14) return temp
         return when (temp) {
-            1 -> if (shifted > 0) (if (context.nextRandom(3) == 0) 39 else 38) else warmBiomes[context.nextRandom(warmBiomes.size)]
+            1 -> if (shifted > 0) {
+                if (context.nextRandom(3) == 0) 39 else 38
+            } else {
+                warmBiomes[context.nextRandom(warmBiomes.size)]
+            }
             2 -> if (shifted > 0) 21 else MEDIUM_BIOMES[context.nextRandom(MEDIUM_BIOMES.size)]
             3 -> if (shifted > 0) 32 else COLD_BIOMES[context.nextRandom(COLD_BIOMES.size)]
             4 -> ICE_BIOMES[context.nextRandom(ICE_BIOMES.size)]

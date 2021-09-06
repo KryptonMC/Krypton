@@ -34,7 +34,7 @@ import java.util.Locale
 val ItemType.handler: ItemHandler
     get() = KryptonItemManager.handler(key.asString()) ?: DummyItemHandler
 
-fun Book.toItemStack(locale: Locale): KryptonItemStack {
+fun Book.toItemStack(): KryptonItemStack {
     val tag = mutableCompound {
         putString("title", title().toJsonString())
         putString("author", author().toJsonString())

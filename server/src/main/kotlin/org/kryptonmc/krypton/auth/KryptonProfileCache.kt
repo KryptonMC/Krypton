@@ -91,9 +91,15 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
             }
         } catch (ignored: FileNotFoundException) {
         } catch (exception: JsonParseException) {
-            LOGGER.warn("Failed to parse JSON data from $path. You can delete it to force the server to recreate it.", exception)
+            LOGGER.warn(
+                "Failed to parse JSON data from $path. You can delete it to force the server to recreate it.",
+                exception
+            )
         } catch (exception: IOException) {
-            LOGGER.warn("Failed to read $path. You can delete it to force the server to recreate it.", exception)
+            LOGGER.warn(
+                "Failed to read $path. You can delete it to force the server to recreate it.",
+                exception
+            )
         }
         return holders
     }

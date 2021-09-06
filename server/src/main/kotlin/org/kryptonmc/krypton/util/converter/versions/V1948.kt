@@ -29,7 +29,10 @@ object V1948 {
         val tag = data.getMap<String>("tag") ?: return@addConverterForId null
         val display = tag.getMap<String>("display") ?: return@addConverterForId null
         val name = display.getString("Name") ?: return@addConverterForId null
-        display.setString("Name", name.replace("\"translate\":\"block.minecraft.illager_banner\"", "\"translate\":\"block.minecraft.ominous_banner\""))
+        display.setString("Name", name.replace(
+            "\"translate\":\"block.minecraft.illager_banner\"",
+            "\"translate\":\"block.minecraft.ominous_banner\"")
+        )
         null
     }
 }

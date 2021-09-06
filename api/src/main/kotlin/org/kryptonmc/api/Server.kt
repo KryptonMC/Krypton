@@ -18,6 +18,7 @@ import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.EventManager
+import org.kryptonmc.api.fluid.FluidManager
 import org.kryptonmc.api.item.ItemManager
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
@@ -31,7 +32,11 @@ import java.net.InetSocketAddress
 import java.util.UUID
 
 /**
- * The server.
+ * The server is the centre of the API. It provides access to everything, and is
+ * the central manager for most of the server.
+ *
+ * You can use the server to retrieve information, managers for various aspects of
+ * the API, configuration options, status, and players.
  */
 public interface Server : ForwardingAudience {
 
@@ -96,6 +101,13 @@ public interface Server : ForwardingAudience {
      * This is used to retrieve and register item handlers for item types.
      */
     public val itemManager: ItemManager
+
+    /**
+     * The fluid manager for this server.
+     *
+     * This is used to retrieve and register fluid handlers for fluids.
+     */
+    public val fluidManager: FluidManager
 
     /**
      * The cache of [org.kryptonmc.api.auth.GameProfile]s.
@@ -187,7 +199,7 @@ public interface Server : ForwardingAudience {
     public fun player(name: String): Player?
 
     /**
-     * Sends a message to every player on the server with the specified [permission].
+     * Sends a message to every player on the server with the given [permission].
      *
      * @param message the message to send
      * @param permission the permission that players require to receive the message

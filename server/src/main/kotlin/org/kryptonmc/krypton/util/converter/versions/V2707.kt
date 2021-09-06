@@ -28,5 +28,9 @@ object V2707 {
 
     // Yeah I think leaf's "?????????????" in the source sums this up quite nicely.
     // Why does marker need a walker for armor and hand items Mojang?
-    fun register() = MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:marker", ItemListsDataWalker("ArmorItems", "HandItems"))
+    fun register() = MCTypeRegistry.ENTITY.addWalker(
+        VERSION,
+        "minecraft:marker",
+        ItemListsDataWalker("ArmorItems", "HandItems")
+    )
 }

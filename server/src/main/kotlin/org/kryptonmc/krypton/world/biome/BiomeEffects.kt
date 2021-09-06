@@ -27,6 +27,7 @@ import org.kryptonmc.krypton.util.Codecs
 import java.awt.Color
 import java.util.Optional
 
+@JvmRecord
 data class BiomeEffects(
     val fogColor: Color,
     val waterColor: Color,
@@ -54,9 +55,11 @@ data class BiomeEffects(
                     .forGetter(BiomeEffects::grassColorModifier),
                 Codecs.COLOR.optionalFieldOf("foliage_color").forGetter(BiomeEffects::foliageColor),
                 Codecs.COLOR.optionalFieldOf("grass_color").forGetter(BiomeEffects::grassColor),
-                AmbientParticleSettings.CODEC.optionalFieldOf("particle").forGetter(BiomeEffects::ambientParticleSettings),
+                AmbientParticleSettings.CODEC.optionalFieldOf("particle")
+                    .forGetter(BiomeEffects::ambientParticleSettings),
                 Codecs.SOUND_EVENT.optionalFieldOf("ambient_sound").forGetter(BiomeEffects::ambientLoopSound),
-                AmbientMoodSettings.CODEC.optionalFieldOf("mood_sound").forGetter(BiomeEffects::ambientMoodSettings),
+                AmbientMoodSettings.CODEC.optionalFieldOf("mood_sound")
+                    .forGetter(BiomeEffects::ambientMoodSettings),
                 AmbientAdditionsSettings.CODEC.optionalFieldOf("additions_sound")
                     .forGetter(BiomeEffects::ambientAdditionsSettings),
                 Music.CODEC.optionalFieldOf("music").forGetter(BiomeEffects::backgroundMusic)

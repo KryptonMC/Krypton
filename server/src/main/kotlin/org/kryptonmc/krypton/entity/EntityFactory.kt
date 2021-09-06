@@ -32,6 +32,7 @@ import org.kryptonmc.krypton.entity.projectile.KryptonEgg
 import org.kryptonmc.krypton.entity.projectile.KryptonEnderPearl
 import org.kryptonmc.krypton.entity.projectile.KryptonExperienceBottle
 import org.kryptonmc.krypton.entity.projectile.KryptonFireworkRocket
+import org.kryptonmc.krypton.entity.projectile.KryptonFishingHook
 import org.kryptonmc.krypton.entity.projectile.KryptonLargeFireball
 import org.kryptonmc.krypton.entity.projectile.KryptonLlamaSpit
 import org.kryptonmc.krypton.entity.projectile.KryptonShulkerBullet
@@ -71,7 +72,8 @@ object EntityFactory {
         EntityTypes.POTION to ::KryptonThrownPotion,
         EntityTypes.TRIDENT to ::KryptonTrident,
         EntityTypes.WITHER_SKULL to ::KryptonWitherSkull,
-        EntityTypes.ZOMBIE to ::KryptonZombie
+        EntityTypes.ZOMBIE to ::KryptonZombie,
+        EntityTypes.FISHING_HOOK to ::KryptonFishingHook
     )
 
     @Suppress("UNCHECKED_CAST")

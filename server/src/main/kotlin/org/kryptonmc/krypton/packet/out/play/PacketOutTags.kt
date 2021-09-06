@@ -30,7 +30,7 @@ object PacketOutTags : Packet {
 
     @Suppress("UNCHECKED_CAST")
     override fun write(buf: ByteBuf) {
-        val tags = TagManager.tags
+        val tags = TagManager.TAGS
         buf.writeVarInt(tags.size)
         tags.forEach { (type, tags) ->
             buf.writeString(type.identifier)

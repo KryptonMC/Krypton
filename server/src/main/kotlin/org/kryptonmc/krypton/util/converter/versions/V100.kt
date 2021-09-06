@@ -108,7 +108,11 @@ object V100 {
         registerMob("SnowMan")
         registerMob("Ozelot")
         registerMob("VillagerGolem")
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "EntityHorse", ItemListsDataWalker("Items", "ArmorItems", "HandItems"))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "EntityHorse",
+            ItemListsDataWalker("Items", "ArmorItems", "HandItems")
+        )
         MCTypeRegistry.ENTITY.addWalker(VERSION, "EntityHorse", ItemsDataWalker("ArmorItem", "SaddleItem"))
         registerMob("Rabbit")
         MCTypeRegistry.ENTITY.addWalker(VERSION, "Villager") { data, fromVersion, toVersion ->

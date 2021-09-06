@@ -54,23 +54,42 @@ object ClearCommand : InternalCommand {
                 }
                 .then(argument<Sender, ItemStackPredicate>("item", ItemStackPredicateArgument())
                     .executes {
-                        clear(it.entityArgument("targets").getPlayers(it.source), it.source, it.argument("item"))
+                        clear(
+                            it.entityArgument("targets").getPlayers(it.source),
+                            it.source,
+                            it.argument("item")
+                        )
                         1
                     })))
     }
 
     //-1 means that everything should be cleared (there is no limit)
-    private fun clear(targets: List<KryptonPlayer>, sender: Sender, predicate: ItemStackPredicate = ItemStackPredicate { true }, maxCount: Int = -1) {
-        val amount = if(maxCount == -1) "all" else maxCount.toString()
+    private fun clear(
+        targets: List<KryptonPlayer>,
+        sender: Sender,
+        predicate: ItemStackPredicate = ItemStackPredicate { true },
+        maxCount: Int = -1
+    ) {
+        val amount = if (maxCount == -1) "all" else maxCount.toString()
         if (targets.size == 1) {
             val target = targets[0]
             clear(target, predicate, maxCount)
             sender.sendMessage(translatable("commands.clear.success.single", text(amount), text(target.name)))
-            target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.incrementStateId(), target.inventory.networkWriter, target.inventory.mainHand))
+            target.session.sendPacket(PacketOutWindowItems(
+                target.inventory.id,
+                target.inventory.incrementStateId(),
+                target.inventory.networkWriter,
+                target.inventory.mainHand
+            ))
         } else {
             targets.forEach { target ->
                 target.inventory.forEachIndexed { index, item -> if (predicate(item)) target.inventory[index] = EmptyItemStack }
-                target.session.sendPacket(PacketOutWindowItems(target.inventory.id, target.inventory.incrementStateId(), target.inventory.networkWriter, target.inventory.mainHand))
+                target.session.sendPacket(PacketOutWindowItems(
+                    target.inventory.id,
+                    target.inventory.incrementStateId(),
+                    target.inventory.networkWriter,
+                    target.inventory.mainHand
+                ))
             }
             sender.sendMessage(translatable("commands.clear.success.multiple", text(amount), text(targets.size.toString())))
         }
@@ -80,23 +99,28 @@ object ClearCommand : InternalCommand {
         val inv = target.inventory
         var remaining = maxCount
 
-        //Clear inventory items
+        // Clear inventory items
         remaining = clearList(predicate, remaining, inv.items) { inv.items[it] = EmptyItemStack }
         if (remaining == 0) return
 
-        //Clear armor items
+        // Clear armor items
         remaining = clearList(predicate, remaining, inv.armor) { inv.armor[it] = EmptyItemStack }
         if (remaining == 0) return
 
-        //Clear crafting items
+        // Clear crafting items
         remaining = clearList(predicate, remaining, inv.crafting) { inv.crafting[it] = EmptyItemStack }
         if (remaining == 0) return
 
-        //Clear offhand
+        // Clear offhand
         clearList(predicate, remaining, arrayOf(inv.offHand)) { inv.offHand = EmptyItemStack }
     }
 
-    private fun clearList(predicate: ItemStackPredicate, originalRemaining: Int, items: Array<KryptonItemStack>, removeItem: (Int) -> Unit) : Int {
+    private fun clearList(
+        predicate: ItemStackPredicate,
+        originalRemaining: Int,
+        items: Array<KryptonItemStack>,
+        removeItem: (Int) -> Unit
+    ) : Int {
         var remaining = originalRemaining
         items.forEachIndexed { index, item ->
             if (!predicate(item)) return@forEachIndexed

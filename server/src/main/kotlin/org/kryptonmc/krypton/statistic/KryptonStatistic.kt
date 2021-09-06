@@ -38,7 +38,10 @@ class KryptonStatistic<T : Any>(
 
     companion object {
 
-        private fun <T : Any> StatisticType<T>.criterionName(value: T) =
-            "${key.asString().replace(':', '.')}:${registry[value]?.asString()?.replace(':', '.')}"
+        private fun <T : Any> StatisticType<T>.criterionName(value: T): String {
+            val key = key.asString().replace(':', '.')
+            val path = registry[value]?.asString()?.replace(':', '.')
+            return "$key:$path"
+        }
     }
 }

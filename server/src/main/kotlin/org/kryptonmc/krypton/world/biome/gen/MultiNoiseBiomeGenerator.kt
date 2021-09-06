@@ -48,10 +48,26 @@ class MultiNoiseBiomeGenerator private constructor(
     private val preset: Pair<KryptonRegistry<KryptonBiome>, Preset>? = null
 ) : BiomeGenerator(parameters.map { it.second }) {
 
-    private val temperatureNoise = NormalNoise(WorldGenRandom(seed), temperatureParameters.firstOctave, temperatureParameters.amplitudes)
-    private val humidityNoise = NormalNoise(WorldGenRandom(seed + 1L), humidityParameters.firstOctave, humidityParameters.amplitudes)
-    private val altitudeNoise = NormalNoise(WorldGenRandom(seed + 2L), altitudeParameters.firstOctave, altitudeParameters.amplitudes)
-    private val weirdnessNoise = NormalNoise(WorldGenRandom(seed + 3L), weirdnessParameters.firstOctave, weirdnessParameters.amplitudes)
+    private val temperatureNoise = NormalNoise(
+        WorldGenRandom(seed),
+        temperatureParameters.firstOctave,
+        temperatureParameters.amplitudes
+    )
+    private val humidityNoise = NormalNoise(
+        WorldGenRandom(seed + 1L),
+        humidityParameters.firstOctave,
+        humidityParameters.amplitudes
+    )
+    private val altitudeNoise = NormalNoise(
+        WorldGenRandom(seed + 2L),
+        altitudeParameters.firstOctave,
+        altitudeParameters.amplitudes
+    )
+    private val weirdnessNoise = NormalNoise(
+        WorldGenRandom(seed + 3L),
+        weirdnessParameters.firstOctave,
+        weirdnessParameters.amplitudes
+    )
     private val useY = false
 
     override val codec = CODEC
@@ -102,11 +118,16 @@ class MultiNoiseBiomeGenerator private constructor(
 
             val BY_NAME = mutableMapOf<Key, Preset>()
             val NETHER = Preset(Key.key("nether")) { preset, biomes, seed -> MultiNoiseBiomeGenerator(seed, listOf(
-                ClimateParameters(0F, 0F, 0F, 0F, 0F) to biomes[BiomeKeys.NETHER_WASTES]!!,
-                ClimateParameters(0F, -0.5F, 0F, 0F, 0F) to biomes[BiomeKeys.SOUL_SAND_VALLEY]!!,
-                ClimateParameters(0.4F, 0F, 0F, 0F, 0F) to biomes[BiomeKeys.CRIMSON_FOREST]!!,
-                ClimateParameters(0F, 0.5F, 0F, 0F, 0.375F) to biomes[BiomeKeys.WARPED_FOREST]!!,
-                ClimateParameters(-0.5F, 0F, 0F, 0F, 0.175F) to biomes[BiomeKeys.BASALT_DELTAS]!!
+                ClimateParameters(0F, 0F, 0F, 0F, 0F) to
+                        biomes[BiomeKeys.NETHER_WASTES]!!,
+                ClimateParameters(0F, -0.5F, 0F, 0F, 0F) to
+                        biomes[BiomeKeys.SOUL_SAND_VALLEY]!!,
+                ClimateParameters(0.4F, 0F, 0F, 0F, 0F) to
+                        biomes[BiomeKeys.CRIMSON_FOREST]!!,
+                ClimateParameters(0F, 0.5F, 0F, 0F, 0.375F) to
+                        biomes[BiomeKeys.WARPED_FOREST]!!,
+                ClimateParameters(-0.5F, 0F, 0F, 0F, 0.175F) to
+                        biomes[BiomeKeys.BASALT_DELTAS]!!
             ), preset = biomes to preset) }
         }
     }
@@ -120,10 +141,12 @@ class MultiNoiseBiomeGenerator private constructor(
             val CODEC: MapCodec<PresetInstance> = RecordCodecBuilder.mapCodec { instance ->
                 instance.group(
                     Codecs.KEY.flatXmap(
-                        { key -> Preset.BY_NAME[key]?.let { DataResult.success(it) } ?: DataResult.error("Unknown generator preset $key!") },
+                        { key -> Preset.BY_NAME[key]?.let { DataResult.success(it) }
+                            ?: DataResult.error("Unknown generator preset $key!") },
                         { DataResult.success(it.name) }
                     ).fieldOf("preset").stable().forGetter(PresetInstance::preset),
-                    InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes").forGetter(PresetInstance::biomes),
+                    InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes")
+                        .forGetter(PresetInstance::biomes),
                     Codec.LONG.fieldOf("seed").stable().forGetter(PresetInstance::seed)
                 ).apply(instance, MultiNoiseBiomeGenerator::PresetInstance)
             }
@@ -142,10 +165,14 @@ class MultiNoiseBiomeGenerator private constructor(
                         KryptonBiome.CODEC.fieldOf("biome").forGetter { it.second },
                     ).apply(instance1) { first, second -> Pair(first, second) }
                 }.listOf().fieldOf("biomes").forGetter(MultiNoiseBiomeGenerator::parameters),
-                NoiseParameters.CODEC.fieldOf("temperature_noise").forGetter(MultiNoiseBiomeGenerator::temperatureParameters),
-                NoiseParameters.CODEC.fieldOf("humidity_noise").forGetter(MultiNoiseBiomeGenerator::humidityParameters),
-                NoiseParameters.CODEC.fieldOf("altitude_noise").forGetter(MultiNoiseBiomeGenerator::altitudeParameters),
-                NoiseParameters.CODEC.fieldOf("weirdness_noise").forGetter(MultiNoiseBiomeGenerator::weirdnessParameters)
+                NoiseParameters.CODEC.fieldOf("temperature_noise")
+                    .forGetter(MultiNoiseBiomeGenerator::temperatureParameters),
+                NoiseParameters.CODEC.fieldOf("humidity_noise")
+                    .forGetter(MultiNoiseBiomeGenerator::humidityParameters),
+                NoiseParameters.CODEC.fieldOf("altitude_noise")
+                    .forGetter(MultiNoiseBiomeGenerator::altitudeParameters),
+                NoiseParameters.CODEC.fieldOf("weirdness_noise")
+                    .forGetter(MultiNoiseBiomeGenerator::weirdnessParameters)
             ).apply(instance, ::MultiNoiseBiomeGenerator)
         }
         val CODEC: Codec<MultiNoiseBiomeGenerator> = Codec.mapEither(PresetInstance.CODEC, DIRECT_CODEC).xmap(

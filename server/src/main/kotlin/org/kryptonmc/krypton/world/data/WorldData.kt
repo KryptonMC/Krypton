@@ -55,11 +55,4 @@ interface WorldData {
     var wanderingTraderSpawnDelay: Int
     var wanderingTraderSpawnChance: Int
     var wanderingTraderId: UUID?
-
-    fun setSpawn(position: Vector3i, angle: Float) {
-        spawnX = position.x()
-        spawnY = position.y()
-        spawnZ = position.z()
-        spawnAngle = angle
-    }
 }

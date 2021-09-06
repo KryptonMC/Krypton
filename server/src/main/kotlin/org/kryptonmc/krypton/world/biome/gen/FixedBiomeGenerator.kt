@@ -38,12 +38,23 @@ class FixedBiomeGenerator(private val biome: KryptonBiome) : BiomeGenerator(list
         step: Int,
         absolute: Boolean,
         predicate: (KryptonBiome) -> Boolean
-    ): Vector3i? = if (predicate(biome)) {
-        if (absolute) Vector3i(x, y, z) else Vector3i(x - radius + random.nextInt(radius * 2 + 1), y, z - radius + random.nextInt(radius * 2 + 1))
-    } else null
+    ): Vector3i? {
+        if (predicate(biome)) {
+            if (absolute) return Vector3i(x, y, z)
+            return Vector3i(
+                x - radius + random.nextInt(radius * 2 + 1),
+                y,
+                z - radius + random.nextInt(radius * 2 + 1)
+            )
+        }
+        return null
+    }
 
     companion object {
 
-        val CODEC: Codec<FixedBiomeGenerator> = KryptonBiome.CODEC.fieldOf("biome").xmap(::FixedBiomeGenerator, FixedBiomeGenerator::biome).stable().codec()
+        val CODEC: Codec<FixedBiomeGenerator> = KryptonBiome.CODEC.fieldOf("biome").xmap(
+            ::FixedBiomeGenerator,
+            FixedBiomeGenerator::biome
+        ).stable().codec()
     }
 }

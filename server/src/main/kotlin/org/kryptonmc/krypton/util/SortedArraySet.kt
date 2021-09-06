@@ -129,7 +129,13 @@ class SortedArraySet<T>(
 
     private fun grow(minCapacity: Int) {
         if (minCapacity <= contents.size) return
-        val capacity = if (contents.isEmpty()) max(min(contents.size.toLong() + (contents.size shr 1).toLong(), 2147483639L), minCapacity.toLong()).toInt() else if (minCapacity < 10) 10 else minCapacity
+        val capacity = if (contents.isEmpty()) {
+            max(min(contents.size.toLong() + (contents.size shr 1).toLong(), 2147483639L), minCapacity.toLong()).toInt()
+        } else if (minCapacity < 10) {
+            10
+        } else {
+            minCapacity
+        }
         val newArray = arrayOfNulls<Any>(capacity)
         System.arraycopy(contents, 0, newArray, 0, size)
         contents = newArray as Array<T?>

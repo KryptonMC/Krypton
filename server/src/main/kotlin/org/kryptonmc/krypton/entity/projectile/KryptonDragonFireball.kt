@@ -22,4 +22,6 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.DragonFireball
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonDragonFireball(world: KryptonWorld) : KryptonAcceleratingProjectile(world, EntityTypes.DRAGON_FIREBALL), DragonFireball
+class KryptonDragonFireball(
+    world: KryptonWorld
+) : KryptonAcceleratingProjectile(world, EntityTypes.DRAGON_FIREBALL), DragonFireball

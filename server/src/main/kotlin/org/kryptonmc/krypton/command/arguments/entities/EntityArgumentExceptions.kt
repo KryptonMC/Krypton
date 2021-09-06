@@ -44,7 +44,9 @@ object EntityArgumentExceptions {
     val ONLY_FOR_PLAYERS = SimpleCommandExceptionType(translatable("argument.player.entities").toMessage())
     val UNKNOWN_PLAYER = SimpleCommandExceptionType(translatable("argument.player.unknown").toMessage())
     val LIMIT_NULL = SimpleCommandExceptionType(translatable("argument.entity.options.limit.toosmall").toMessage())
-    val DISTANCE_NEGATIVE = SimpleCommandExceptionType(translatable("argument.entity.options.distance.negative").toMessage())
+    val DISTANCE_NEGATIVE = SimpleCommandExceptionType(
+        translatable("argument.entity.options.distance.negative").toMessage()
+    )
     val INVALID_SORT_TYPE = DynamicCommandExceptionType {
         translatable(
             "argument.entity.options.sort.irreversible",

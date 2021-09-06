@@ -24,6 +24,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.krypton.util.Codecs
 
+@JvmRecord
 data class AmbientMoodSettings(
     val sound: SoundEvent,
     val tickDelay: Int,

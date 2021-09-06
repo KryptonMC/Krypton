@@ -186,14 +186,18 @@ data class JsonMapType(val map: JsonObject, val compressed: Boolean) : MapType<S
         throw UnsupportedOperationException() // JSON doesn't support raw primitive arrays
     }
 
-    override fun getListUnchecked(key: String, dfl: ListType?) = (map[key] as? JsonArray)?.let { JsonListType(it, compressed) } ?: dfl
+    override fun getListUnchecked(key: String, dfl: ListType?) = (map[key] as? JsonArray)?.let {
+        JsonListType(it, compressed)
+    } ?: dfl
 
     override fun setList(key: String, value: ListType) {
         map.add(key, (value as JsonListType).array)
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T> getMap(key: String, dfl: MapType<T>?) = (map[key] as? JsonObject)?.let { JsonMapType(it, compressed) } as? MapType<T> ?: dfl
+    override fun <T> getMap(key: String, dfl: MapType<T>?) = (map[key] as? JsonObject)?.let {
+        JsonMapType(it, compressed)
+    } as? MapType<T> ?: dfl
 
     override fun setMap(key: String, value: MapType<*>) {
         map.add(key, (value as JsonMapType).map)

@@ -35,7 +35,6 @@ object V502 {
             if (data.hasKey("ZombieType")) return@addConverterForId null
 
             var type = data.getInt("VillagerProfession", -1)
-            // Vanilla doesn't remove the profession tag, so we don't!
             if (type < 0 || type >= 6) type = ThreadLocalRandom.current().nextInt(6)
             data.setInt("ZombieType", type)
             null

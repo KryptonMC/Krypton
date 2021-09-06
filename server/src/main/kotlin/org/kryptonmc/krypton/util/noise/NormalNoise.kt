@@ -45,7 +45,11 @@ class NormalNoise(random: RandomSource, firstOctave: Int, amplitudes: DoubleList
         valueFactor = (TARGET_DEVIATION / 2) / (min - max).expectedDeviation()
     }
 
-    constructor(random: RandomSource, firstOctave: Int, vararg amplitudes: Double) : this(random, firstOctave, DoubleArrayList(amplitudes))
+    constructor(random: RandomSource, firstOctave: Int, vararg amplitudes: Double) : this(
+        random,
+        firstOctave,
+        DoubleArrayList(amplitudes)
+    )
 
     fun getValue(x: Double, y: Double, z: Double): Double {
         val factorX = x * INPUT_FACTOR

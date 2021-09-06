@@ -74,7 +74,10 @@ sealed class BiomeGenerator(val possibleBiomes: List<KryptonBiome>) : NoiseBiome
 
     companion object {
 
-        val CODEC: Codec<BiomeGenerator> = InternalRegistries.BIOME_GENERATOR.dispatchStable(BiomeGenerator::codec, Function.identity())
+        val CODEC: Codec<BiomeGenerator> = InternalRegistries.BIOME_GENERATOR.dispatchStable(
+            BiomeGenerator::codec,
+            Function.identity()
+        )
 
         init {
             Registries.register(InternalRegistries.BIOME_GENERATOR, "fixed", FixedBiomeGenerator.CODEC)

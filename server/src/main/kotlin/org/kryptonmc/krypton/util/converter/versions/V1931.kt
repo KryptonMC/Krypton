@@ -26,5 +26,9 @@ object V1931 {
 
     private const val VERSION = MCVersions.V19W06A
 
-    fun register() = MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:fox", ItemListsDataWalker("ArmorItems", "HandItems"))
+    fun register() = MCTypeRegistry.ENTITY.addWalker(
+        VERSION,
+        "minecraft:fox",
+        ItemListsDataWalker("ArmorItems", "HandItems")
+    )
 }

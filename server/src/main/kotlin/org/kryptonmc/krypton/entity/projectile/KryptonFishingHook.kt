@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.entity.projectile
 
-import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.FishingHook
 import org.kryptonmc.krypton.entity.KryptonEntity

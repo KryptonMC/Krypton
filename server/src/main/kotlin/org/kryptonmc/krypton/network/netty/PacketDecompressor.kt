@@ -44,10 +44,12 @@ class PacketDecompressor(private val compressor: VelocityCompressor, var thresho
 
         // Run insanity checks
         if (dataLength < threshold) {
-            throw DecoderException("Packet badly compressed! Size of packet $dataLength is below compression threshold $threshold!")
+            throw DecoderException("Packet badly compressed! Size of packet $dataLength is below compression " +
+                    "threshold $threshold!")
         }
         if (dataLength > PROTOCOL_MAX_SIZE) {
-            throw DecoderException("Packet badly compressed! Ludicrously large size $dataLength is greater than protocol maximum of $PROTOCOL_MAX_SIZE!")
+            throw DecoderException("Packet badly compressed! Ludicrously large size $dataLength is greater than " +
+                    "protocol maximum of $PROTOCOL_MAX_SIZE!")
         }
 
         val compatibleIn = MoreByteBufUtils.ensureCompatible(ctx.alloc(), compressor, msg)
@@ -69,6 +71,7 @@ class PacketDecompressor(private val compressor: VelocityCompressor, var thresho
     companion object {
 
         const val NETTY_NAME = "decompressor"
-        private const val PROTOCOL_MAX_SIZE = 16 * 1024 * 1024 // Vanilla limit is 2 MB, but we use 16 MB because that's the maximum size we can
+        // Vanilla limit is 2 MB, but we use 16 MB because that's the maximum size we can
+        private const val PROTOCOL_MAX_SIZE = 16 * 1024 * 1024
     }
 }

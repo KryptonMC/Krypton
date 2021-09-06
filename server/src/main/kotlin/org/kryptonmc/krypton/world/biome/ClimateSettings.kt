@@ -38,7 +38,8 @@ data class ClimateSettings(
                 Precipitation.CODEC.fieldOf("precipitation").forGetter(ClimateSettings::precipitation),
                 Codec.FLOAT.fieldOf("temperature").forGetter(ClimateSettings::temperature),
                 Codec.FLOAT.fieldOf("downfall").forGetter(ClimateSettings::downfall),
-                TemperatureModifier.CODEC.optionalFieldOf("temperature_modifier", TemperatureModifier.NONE).forGetter(ClimateSettings::temperatureModifier)
+                TemperatureModifier.CODEC.optionalFieldOf("temperature_modifier", TemperatureModifier.NONE)
+                    .forGetter(ClimateSettings::temperatureModifier)
             ).apply(it, ::ClimateSettings)
         }
     }

@@ -48,7 +48,7 @@ object V101 {
         }
 
         val component = if (textString != "null" && textString.isNotEmpty()) {
-            if (textString.first() == '"' && textString.last() == '"' || textString.first() == '{' && textString.last() == '}') {
+            if (textString.isSurroundedBy('"') || textString.isSurroundedBy('{', '}')) {
                 try {
                     GSON.fromJson<Component>(textString)
                 } catch (exception: JsonParseException) {
@@ -62,4 +62,9 @@ object V101 {
         }
         setString(path, GSON.toJson(component))
     }
+
+    private fun String.isSurroundedBy(
+        start: Char,
+        end: Char = start
+    ): Boolean = first() == start && last() == end
 }

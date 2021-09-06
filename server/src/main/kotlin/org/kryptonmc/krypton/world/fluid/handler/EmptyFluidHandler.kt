@@ -28,7 +28,13 @@ import java.util.Random
 
 object EmptyFluidHandler : FluidHandler {
 
-    override fun canReplaceWith(fluid: Fluid, position: Vector3i, world: World, direction: Direction, replacement: Fluid) = true
+    override fun canReplaceWith(
+        fluid: Fluid,
+        position: Vector3i,
+        world: World,
+        direction: Direction,
+        replacement: Fluid
+    ) = true
 
     override fun getFlow(fluid: Fluid, position: Vector3i, world: World) = Vector.ZERO
 

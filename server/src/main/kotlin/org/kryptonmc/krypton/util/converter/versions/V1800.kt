@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.util.converters.RenameItemsConverter
 object V1800 {
 
     private const val VERSION = MCVersions.V1_13_2 + 169
-    val RENAMED_ITEM_IDS = mapOf(
+    private val RENAMED_ITEM_IDS = mapOf(
         "minecraft:cactus_green" to "minecraft:green_dye",
         "minecraft:rose_red" to "minecraft:red_dye",
         "minecraft:dandelion_yellow" to "minecraft:yellow_dye"
@@ -34,7 +34,15 @@ object V1800 {
 
     fun register() {
         RenameItemsConverter.register(VERSION, RENAMED_ITEM_IDS::get)
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:panda", ItemListsDataWalker("ArmorItems", "HandItems"))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:pillager", ItemListsDataWalker("Inventory", "ArmorItems", "HandItems"))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:panda",
+            ItemListsDataWalker("ArmorItems", "HandItems")
+        )
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:pillager",
+            ItemListsDataWalker("Inventory", "ArmorItems", "HandItems")
+        )
     }
 }

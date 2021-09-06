@@ -127,7 +127,10 @@ object NBTOps : DynamicOps<Tag> {
     }
 
     override fun getMap(input: Tag): DataResult<MapLike<Tag>> = if (input is CompoundTag) {
-        DataResult.success(MapLike.forMap(input.iterator().asSequence().associate { StringTag.of(it.key) to it.value }, this))
+        DataResult.success(MapLike.forMap(
+            input.iterator().asSequence().associate {StringTag.of(it.key) to it.value },
+            this
+        ))
     } else {
         DataResult.error("Tag type ${input.id} is not a compound! (required to convert to map)")
     }
@@ -139,7 +142,9 @@ object NBTOps : DynamicOps<Tag> {
     }
 
     override fun getMapEntries(input: Tag): DataResult<Consumer<BiConsumer<Tag, Tag?>>> = if (input is CompoundTag) {
-        DataResult.success(Consumer { consumer -> input.keys.forEach { consumer.accept(createString(it) as Tag, input[it]) } })
+        DataResult.success(Consumer { consumer ->
+            input.keys.forEach { consumer.accept(createString(it) as Tag, input[it]) }
+        })
     } else {
         DataResult.error("Tag type ${input.id} is not a compound! (required to convert to map to retrieve entries)")
     }
@@ -176,7 +181,10 @@ object NBTOps : DynamicOps<Tag> {
 
     override fun mergeToList(list: Tag, value: Tag): DataResult<Tag> {
         if (list !is CollectionTag<*> && list !is EndTag) {
-            return DataResult.error("Tag type ${list.id} cannot have ${value.id} merged in to it as it is not a list!", list)
+            return DataResult.error(
+                "Tag type ${list.id} cannot have ${value.id} merged in to it as it is not a list!",
+                list
+            )
         }
         return DataResult.success(createGenericList(if (list is CollectionTag<*>) list.elementType else 0, value.id)
             .fillOne(list, value))
@@ -184,7 +192,10 @@ object NBTOps : DynamicOps<Tag> {
 
     override fun mergeToList(list: Tag, values: List<Tag>): DataResult<Tag> {
         if (list !is CollectionTag<*> && list !is EndTag) {
-            return DataResult.error("Tag type ${list.id} cannot have $values merged in to it as it is not a list!", list)
+            return DataResult.error(
+                "Tag type ${list.id} cannot have $values merged in to it as it is not a list!",
+                list
+            )
         }
         return DataResult.success(createGenericList(
             if (list is CollectionTag<*>) list.elementType else 0, values.firstOrNull()?.id ?: 0
@@ -193,7 +204,10 @@ object NBTOps : DynamicOps<Tag> {
 
     override fun mergeToMap(map: Tag, key: Tag, value: Tag): DataResult<Tag> {
         if (map !is CompoundTag && map !is EndTag) {
-            return DataResult.error("Tag type ${map.id} cannot have $key, $value merged in to it as it is not a map!", map)
+            return DataResult.error(
+                "Tag type ${map.id} cannot have $key, $value merged in to it as it is not a map!",
+                map
+            )
         }
         if (key !is StringTag) return DataResult.error("Tag type ${key.id} for key $key is not a string!")
         val compound = MutableCompoundTag()
@@ -204,12 +218,17 @@ object NBTOps : DynamicOps<Tag> {
 
     override fun mergeToMap(map: Tag, values: MapLike<Tag>): DataResult<Tag> {
         if (map !is CompoundTag && map !is EndTag) {
-            return DataResult.error("Tag type ${map.id} cannot have $values merged in to it as it is not a map!", map)
+            return DataResult.error(
+                "Tag type ${map.id} cannot have $values merged in to it as it is not a map!",
+                map
+            )
         }
         val compound = MutableCompoundTag()
         if (map is CompoundTag) map.forEach { compound[it.key] = it.value }
         val invalid = mutableListOf<Tag>()
-        values.entries().forEach { if (it.first !is StringTag) invalid.add(it.first) else compound[it.first.asString()] = it.second }
+        values.entries().forEach {
+            if (it.first !is StringTag) invalid.add(it.first) else compound[it.first.asString()] = it.second
+        }
         return if (invalid.isNotEmpty()) {
             DataResult.error("All keys in map $values must be strings, $invalid were not!")
         } else {
@@ -258,7 +277,10 @@ object NBTOps : DynamicOps<Tag> {
         override fun build(builder: CompoundTag.Builder, prefix: Tag?): DataResult<Tag> {
             if (prefix == null || prefix == EndTag) return DataResult.success(builder.build())
             if (prefix !is CompoundTag) {
-                return DataResult.error("Tag type ${prefix.id} be merged in to $builder as it is not a map!", prefix)
+                return DataResult.error(
+                    "Tag type ${prefix.id} be merged in to $builder as it is not a map!",
+                    prefix
+                )
             }
             return DataResult.success(compound {
                 prefix.forEach { put(it.key, it.value) }

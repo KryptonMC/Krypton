@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.tags.ItemTags
 import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.nbt.CompoundTag
 
-class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO: Tags for ItemStackPredicate etc.
+class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { // TODO: Tags for ItemStackPredicate etc.
 
     private fun readItem(reader: StringReader): ItemType {
         val i = reader.cursor
@@ -55,7 +55,10 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO
         }
     }
 
-    private fun readNBT(reader: StringReader) = if (reader.canRead() && reader.peek() == '{') SNBTParser(reader).readCompound() else null
+    private fun readNBT(reader: StringReader): CompoundTag? {
+        if (reader.canRead() && reader.peek() == '{') return SNBTParser(reader).readCompound()
+        return null
+    }
 
     fun parseItem() = ItemStackArgument(readItem(this.reader), readNBT(this.reader))
 
@@ -78,14 +81,22 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { //TODO
         }
     }
 
-    private fun isCharValid(c: Char) = c in '0'..'9' || c in 'a'..'z' || c == '_' || c == ':' || c == '/' || c == '.' || c == '-'
+    private fun isCharValid(c: Char) = c in '0'..'9' ||
+            c in 'a'..'z' ||
+            c == '_' ||
+            c == ':' ||
+            c == '/' ||
+            c == '.' ||
+            c == '-'
 
     companion object {
 
         val ID_INVALID_EXCEPTION = DynamicCommandExceptionType {
             translatable("argument.item.id.invalid", text(it.toString())).toMessage()
         }
-        val TAG_DISALLOWED_EXCEPTION = SimpleCommandExceptionType(translatable("argument.item.tag.disallowed").toMessage())
+        val TAG_DISALLOWED_EXCEPTION = SimpleCommandExceptionType(
+            translatable("argument.item.tag.disallowed").toMessage()
+        )
         val UNKNOWN_ITEM_TAG = DynamicCommandExceptionType {
             translatable("arguments.item.tag.unknown", text(it.toString())).toMessage()
         }

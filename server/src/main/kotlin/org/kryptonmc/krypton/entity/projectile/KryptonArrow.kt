@@ -27,12 +27,9 @@ import java.awt.Color
 
 class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.ARROW), Arrow {
 
-    override var color: Color?
-        get() {
-            val rgb = data[MetadataKeys.ARROW.COLOR]
-            return if (rgb == -1) null else Color(rgb)
-        }
-        set(value) = data.set(MetadataKeys.ARROW.COLOR, value?.rgb ?: -1)
+    override var color: Int
+        get() = data[MetadataKeys.ARROW.COLOR]
+        set(value) = data.set(MetadataKeys.ARROW.COLOR, value)
 
     init {
         data.add(MetadataKeys.ARROW.COLOR)
@@ -42,12 +39,12 @@ class KryptonArrow(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.AR
         super.load(tag)
         if (tag.contains("Color", 99)) {
             val rgb = tag.getInt("Color")
-            if (rgb in 0..RGB_MAX_VALUE) color = Color(tag.getInt("Color"))
+            if (rgb in 0..RGB_MAX_VALUE) color = tag.getInt("Color")
         }
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
-        color?.let { int("Color", it.rgb) }
+        int("Color", color)
     }
 
     companion object {

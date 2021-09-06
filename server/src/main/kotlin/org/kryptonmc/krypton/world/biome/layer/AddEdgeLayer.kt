@@ -26,21 +26,53 @@ object AddEdgeLayer {
 
     object CoolWarm : CastleTransformer {
 
-        override fun invoke(context: Context, n: Int, e: Int, s: Int, w: Int, center: Int): Int =
-            if (center != 1 || n != 3 && e != 3 && s != 3 && w != 3 && n != 4 && e != 4 && s != 4 && w != 4) center else 2
+        override fun invoke(
+            context: Context,
+            north: Int,
+            east: Int,
+            south: Int,
+            west: Int,
+            center: Int
+        ): Int {
+            if (
+                center != 1 ||
+                north != 3 && east != 3 && south != 3 && west != 3 &&
+                north != 4 && east != 4 && south != 4 && west != 4
+            ) {
+                return center
+            }
+            return 2
+        }
     }
 
     object HeatIce : CastleTransformer {
 
-        override fun invoke(context: Context, n: Int, e: Int, s: Int, w: Int, center: Int): Int =
-            if (center != 4 || n != 1 && e != 1 && s != 1 && w != 1 && n != 2 && e != 2 && s != 2 && w != 2) center else 3
+        override fun invoke(
+            context: Context,
+            north: Int,
+            east: Int,
+            south: Int,
+            west: Int,
+            center: Int
+        ): Int {
+            if (
+                center != 4 ||
+                north != 1 && east != 1 && south != 1 && west != 1 &&
+                north != 2 && east != 2 && south != 2 && west != 2
+            ) {
+                return center
+            }
+            return 3
+        }
     }
 
     object IntroduceSpecial : C0Transformer {
 
         override fun invoke(context: Context, value: Int): Int {
             var temp = value
-            if (!temp.isShallowOcean() && context.nextRandom(13) == 0) temp = temp or (1 + context.nextRandom(15) shl 8 and 3840)
+            if (!temp.isShallowOcean() && context.nextRandom(13) == 0) {
+                temp = temp or (1 + context.nextRandom(15) shl 8 and 3840)
+            }
             return temp
         }
     }

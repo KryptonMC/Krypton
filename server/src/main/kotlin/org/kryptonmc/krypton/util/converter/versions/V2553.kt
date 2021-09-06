@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.util.converters.helpers.RenameStringValueTypeHelper
 object V2553 {
 
     private const val VERSION = MCVersions.V20W20B + 16
-    val BIOME_RENAMES = mapOf(
+    private val BIOME_RENAMES = mapOf(
         "minecraft:extreme_hills" to "minecraft:mountains",
         "minecraft:swampland" to "minecraft:swamp",
         "minecraft:hell" to "minecraft:nether_wastes",

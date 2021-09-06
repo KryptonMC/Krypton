@@ -23,22 +23,33 @@ import org.kryptonmc.krypton.world.biome.layer.traits.BishopTransformer
 
 object AddIslandLayer : BishopTransformer {
 
-    override fun invoke(context: Context, sw: Int, se: Int, ne: Int, nw: Int, center: Int): Int {
-        if (!center.isShallowOcean() || nw.isShallowOcean() && ne.isShallowOcean() && sw.isShallowOcean() && se.isShallowOcean()) {
-            if (!center.isShallowOcean() && (nw.isShallowOcean() || sw.isShallowOcean() || ne.isShallowOcean() || se.isShallowOcean()) && context.nextRandom(5) == 0) {
-                if (nw.isShallowOcean()) return if (center == 4) 4 else nw
-                if (sw.isShallowOcean()) return if (center == 4) 4 else sw
-                if (ne.isShallowOcean()) return if (center == 4) 4 else ne
-                if (se.isShallowOcean()) return if (center == 4) 4 else se
+    override fun invoke(context: Context, southWest: Int, southEast: Int, northEast: Int, northWest: Int, center: Int): Int {
+        if (
+            !center.isShallowOcean() ||
+            northWest.isShallowOcean() &&
+            northEast.isShallowOcean() &&
+            southWest.isShallowOcean() &&
+            southEast.isShallowOcean()
+        ) {
+            if (
+                !center.isShallowOcean() &&
+                (northWest.isShallowOcean() || southWest.isShallowOcean() ||
+                        northEast.isShallowOcean() || southEast.isShallowOcean()) &&
+                context.nextRandom(5) == 0
+            ) {
+                if (northWest.isShallowOcean()) return if (center == 4) 4 else northWest
+                if (southWest.isShallowOcean()) return if (center == 4) 4 else southWest
+                if (northEast.isShallowOcean()) return if (center == 4) 4 else northEast
+                if (southEast.isShallowOcean()) return if (center == 4) 4 else southEast
             }
             return center
         }
         var i = 1
         var selected = 1
-        if (!nw.isShallowOcean() && context.nextRandom(i++) == 0) selected = nw
-        if (!ne.isShallowOcean() && context.nextRandom(i++) == 0) selected = ne
-        if (!sw.isShallowOcean() && context.nextRandom(i++) == 0) selected = sw
-        if (!se.isShallowOcean() && context.nextRandom(i++) == 0) selected = se
+        if (!northWest.isShallowOcean() && context.nextRandom(i++) == 0) selected = northWest
+        if (!northEast.isShallowOcean() && context.nextRandom(i++) == 0) selected = northEast
+        if (!southWest.isShallowOcean() && context.nextRandom(i++) == 0) selected = southWest
+        if (!southEast.isShallowOcean() && context.nextRandom(i + 1) == 0) selected = southEast
         return when {
             context.nextRandom(3) == 0 -> selected
             selected == 4 -> 4

@@ -14,7 +14,9 @@ import org.kryptonmc.api.util.provide
 import java.util.UUID
 
 /**
- * Represents a player's authenticated Mojang game profile.
+ * Represents the profile of an authenticated player. Most of the time, this
+ * authentication will be done with Mojang, but it may not, depending on the
+ * implementation.
  */
 public interface GameProfile {
 
@@ -60,8 +62,13 @@ public interface GameProfile {
          * @param name the name of the profile
          * @param uuid the UUID of the profile
          * @param properties the list of profile properties
-         * @return a new profile with the given name, uuid, and list of profile properties
+         * @return a new profile with the given name, uuid, and list of profile
+         * properties
          */
-        public fun of(name: String, uuid: UUID, properties: List<ProfileProperty>): GameProfile = FACTORY.of(name, uuid, properties)
+        public fun of(
+            name: String,
+            uuid: UUID,
+            properties: List<ProfileProperty>
+        ): GameProfile = FACTORY.of(name, uuid, properties)
     }
 }

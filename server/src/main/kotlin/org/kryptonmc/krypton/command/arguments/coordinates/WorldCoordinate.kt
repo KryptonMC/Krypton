@@ -32,7 +32,9 @@ class WorldCoordinate(
 
         fun parse(reader: StringReader, correctCenter: Boolean): WorldCoordinate {
             // Got a caret (local coordinate) when we expected to get relative coordinates
-            if (reader.canRead() && reader.peek() == '^') throw CommandExceptions.POSITION_MIXED_TYPE.createWithContext(reader)
+            if (reader.canRead() && reader.peek() == '^') {
+                throw CommandExceptions.POSITION_MIXED_TYPE.createWithContext(reader)
+            }
             if (!reader.canRead()) throw CommandExceptions.POSITION_EXPECTED_DOUBLE.createWithContext(reader)
 
             // Check for relative positioning

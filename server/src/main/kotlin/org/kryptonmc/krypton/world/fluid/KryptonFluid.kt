@@ -44,12 +44,16 @@ class KryptonFluid(
 
     override fun copy(key: String, value: String): Fluid {
         val newProperties = properties + (key to value)
-        return requireNotNull(FluidLoader.properties(this.key.asString(), newProperties)) { "Invalid property $key:$value for block ${this.key}" }
+        return requireNotNull(FluidLoader.properties(this.key.asString(), newProperties)) {
+            "Invalid property $key:$value for block ${this.key}"
+        }
     }
 
     override fun copy(newValues: Map<String, String>): Fluid {
         val newProperties = properties + newValues
-        return requireNotNull(FluidLoader.properties(key.asString(), newProperties)) { "Invalid properties $newValues for block $key!" }
+        return requireNotNull(FluidLoader.properties(key.asString(), newProperties)) {
+            "Invalid properties $newValues for block $key!"
+        }
     }
 
     override fun asBlock() = InternalRegistries.BLOCK[blockKey] ?: Blocks.AIR

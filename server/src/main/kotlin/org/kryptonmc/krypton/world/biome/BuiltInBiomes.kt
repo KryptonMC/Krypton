@@ -38,7 +38,10 @@ object BuiltInBiomes {
     fun warmOcean(isDeep: Boolean) = ocean(isDeep, 4445678, 270131)
 
     fun frozenOcean(isDeep: Boolean) = KryptonBiome(
-        ClimateSettings(if (isDeep) Precipitation.RAIN else Precipitation.SNOW, if (isDeep) 0.5F else 0F, 0.5F, TemperatureModifier.FROZEN),
+        ClimateSettings(
+            if (isDeep) Precipitation.RAIN else Precipitation.SNOW,
+            if (isDeep) 0.5F else 0F, 0.5F, TemperatureModifier.FROZEN
+        ),
         if (isDeep) -1.8F else -1F,
         0.1F,
         BiomeCategory.OCEAN,
@@ -56,7 +59,13 @@ object BuiltInBiomes {
         if (isDeep) -1.8F else -1F,
         0.1F,
         BiomeCategory.OCEAN,
-        BiomeEffects(Color(12638463), Color(waterColor), Color(waterFogColor), 0.5F.calculateSkyColor(), ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE))
+        BiomeEffects(
+            Color(12638463),
+            Color(waterColor),
+            Color(waterFogColor),
+            0.5F.calculateSkyColor(),
+            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+        )
     )
 
     fun desert(depth: Float, scale: Float) = KryptonBiome(
@@ -64,7 +73,13 @@ object BuiltInBiomes {
         depth,
         scale,
         BiomeCategory.DESERT,
-        BiomeEffects(Color(12638463), Color(4159204), Color(329011), 2F.calculateSkyColor(), ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE))
+        BiomeEffects(
+            Color(12638463),
+            Color(4159204),
+            Color(329011),
+            2F.calculateSkyColor(),
+            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+        )
     )
 
     fun mountain(depth: Float, scale: Float) = KryptonBiome(
@@ -72,7 +87,13 @@ object BuiltInBiomes {
         depth,
         scale,
         BiomeCategory.EXTREME_HILLS,
-        BiomeEffects(Color(12638463), Color(4159204), Color(329011), 0.2F.calculateSkyColor(), ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE))
+        BiomeEffects(
+            Color(12638463),
+            Color(4159204),
+            Color(329011),
+            0.2F.calculateSkyColor(),
+            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+        )
     )
 
     fun forest(depth: Float, scale: Float) = KryptonBiome(
@@ -80,7 +101,13 @@ object BuiltInBiomes {
         depth,
         scale,
         BiomeCategory.FOREST,
-        BiomeEffects(Color(12638463), Color(4159204), Color(329011), 0.7F.calculateSkyColor(), ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE))
+        BiomeEffects(
+            Color(12638463),
+            Color(4159204),
+            Color(329011),
+            0.7F.calculateSkyColor(),
+            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+        )
     )
 
     fun birchForest(depth: Float, scale: Float) = KryptonBiome(
@@ -115,7 +142,10 @@ object BuiltInBiomes {
     )
 
     fun taiga(depth: Float, scale: Float, isSnowy: Boolean) = KryptonBiome(
-        ClimateSettings(if (isSnowy) Precipitation.SNOW else Precipitation.RAIN, if (isSnowy) -0.5F else -0.25F, if (isSnowy) 0.4F else 0.8F),
+        ClimateSettings(
+            if (isSnowy) Precipitation.SNOW else Precipitation.RAIN,
+            if (isSnowy) -0.5F else -0.25F, if (isSnowy) 0.4F else 0.8F
+        ),
         depth,
         scale,
         BiomeCategory.TAIGA,
@@ -177,10 +207,24 @@ object BuiltInBiomes {
         depth,
         scale,
         BiomeCategory.RIVER,
-        BiomeEffects(Color(12638463), Color(waterColor), Color(329011), temperature.calculateSkyColor(), ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE))
+        BiomeEffects(
+            Color(12638463),
+            Color(waterColor),
+            Color(329011),
+            temperature.calculateSkyColor(),
+            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+        )
     )
 
-    fun beach(depth: Float, scale: Float, temperature: Float, downfall: Float, waterColor: Int, isSnowy: Boolean, isShore: Boolean) = KryptonBiome(
+    fun beach(
+        depth: Float,
+        scale: Float,
+        temperature: Float,
+        downfall: Float,
+        waterColor: Int,
+        isSnowy: Boolean,
+        isShore: Boolean
+    ) = KryptonBiome(
         ClimateSettings(if (isSnowy) Precipitation.SNOW else Precipitation.RAIN, temperature, downfall),
         depth,
         scale,

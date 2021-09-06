@@ -94,9 +94,15 @@ data class NBTListType(val list: MutableListTag = MutableListTag()) : ListType {
         list[index] = ByteArrayTag(to)
     }
 
-    override fun getShorts(index: Int) = throw UnsupportedOperationException() // NBT does not support shorts
+    override fun getShorts(index: Int): ShortArray {
+        // NBT does not support shorts
+        throw UnsupportedOperationException()
+    }
 
-    override fun setShorts(index: Int, to: ShortArray?) = throw UnsupportedOperationException() // NBT does not support shorts
+    override fun setShorts(index: Int, to: ShortArray?) {
+        // NBT does not support shorts
+        throw UnsupportedOperationException()
+    }
 
     override fun getInts(index: Int) = (list[index] as? IntArrayTag ?: error("")).data
 
@@ -120,7 +126,7 @@ data class NBTListType(val list: MutableListTag = MutableListTag()) : ListType {
     override fun <T> getMap(index: Int): MapType<T> {
         val element = list[index]
         if (element is MutableCompoundTag) return NBTMapType(element) as MapType<T>
-        if (element is CompoundTag) return NBTMapType(element.mutable()) as MapType<T>
+        if (element is CompoundTag) return NBTMapType(element) as MapType<T>
         error("Element at $index was not a map!")
     }
 
@@ -190,9 +196,13 @@ data class NBTListType(val list: MutableListTag = MutableListTag()) : ListType {
         list.add(index, ByteArrayTag(arr))
     }
 
-    override fun addShortArray(arr: ShortArray?) = throw UnsupportedOperationException()
+    override fun addShortArray(arr: ShortArray?) {
+        throw UnsupportedOperationException()
+    }
 
-    override fun addShortArray(index: Int, arr: ShortArray?) = throw UnsupportedOperationException()
+    override fun addShortArray(index: Int, arr: ShortArray?) {
+        throw UnsupportedOperationException()
+    }
 
     override fun addIntArray(arr: IntArray) {
         list.add(IntArrayTag(arr))

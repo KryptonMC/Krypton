@@ -25,5 +25,8 @@ object V2710 {
 
     private const val VERSION = MCVersions.V21W15A + 1
 
-    fun register() = RenameStatsConverter.register(VERSION, mapOf("minecraft:play_one_minute" to "minecraft:play_time")::get)
+    fun register() = RenameStatsConverter.register(
+        VERSION,
+        mapOf("minecraft:play_one_minute" to "minecraft:play_time")::get
+    )
 }

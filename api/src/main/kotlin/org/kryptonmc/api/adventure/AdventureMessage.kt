@@ -18,6 +18,9 @@ import net.kyori.adventure.text.Component
  * This class is special, as it should be is checked for internally by the command
  * manager when a command syntax exception is thrown, so that the [wrapped]
  * component is correctly serialized in to JSON.
+ *
+ * You should use this class when you want to send a [Component] error message as
+ * a response to a Brigadier command.
  */
 public class AdventureMessage(public val wrapped: Component) : Message {
 

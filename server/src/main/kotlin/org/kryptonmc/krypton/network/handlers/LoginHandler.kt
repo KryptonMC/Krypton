@@ -100,7 +100,11 @@ class LoginHandler(
 
     private fun handleLoginStart(packet: PacketInLoginStart) {
         val rawAddress = session.channel.remoteAddress() as InetSocketAddress
-        val address = if (legacyForwardedData != null) InetSocketAddress(legacyForwardedData.forwardedIp, rawAddress.port) else rawAddress
+        val address = if (legacyForwardedData != null) {
+            InetSocketAddress(legacyForwardedData.forwardedIp, rawAddress.port)
+        } else {
+            rawAddress
+        }
 
         name = packet.name
         if (!server.isOnline || server.config.proxy.mode != ForwardingMode.NONE) { // Ignore online mode if we want forwarding
@@ -111,7 +115,8 @@ class LoginHandler(
 
             // Copy over the data from legacy forwarding
             // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
-            val uuid = legacyForwardedData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
+            val uuid = legacyForwardedData?.uuid
+                ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
             val profile = KryptonGameProfile(uuid, packet.name, legacyForwardedData?.properties ?: emptyList())
 
             // Check the player can join and the login event was not cancelled.
@@ -141,7 +146,11 @@ class LoginHandler(
         enableEncryption(secretKey)
 
         val rawAddress = session.channel.remoteAddress() as InetSocketAddress
-        val address = if (legacyForwardedData != null) InetSocketAddress(legacyForwardedData.forwardedIp, rawAddress.port) else rawAddress
+        val address = if (legacyForwardedData != null) {
+            InetSocketAddress(legacyForwardedData.forwardedIp, rawAddress.port)
+        } else {
+            rawAddress
+        }
 
         // Fire the authentication event.
         server.eventManager.fire(AuthenticationEvent(name)).thenApplyAsync({
@@ -158,7 +167,11 @@ class LoginHandler(
 
             // Check the profile from the event and construct the player.
             val resultProfile = it.result.profile
-            val finalProfile = if (resultProfile != null && resultProfile is KryptonGameProfile) resultProfile else profile
+            val finalProfile = if (resultProfile != null && resultProfile is KryptonGameProfile) {
+                resultProfile
+            } else {
+                profile
+            }
             KryptonPlayer(session, finalProfile, server.worldManager.default, address)
         }, session.channel.eventLoop()).thenApplyAsync({
             if (it == null) return@thenApplyAsync
@@ -192,7 +205,12 @@ class LoginHandler(
         // All good to go, let's construct our stuff
         LOGGER.debug("Detected Velocity login for ${data.uuid}")
         val profile = KryptonGameProfile(data.uuid, data.username, data.properties)
-        val player = KryptonPlayer(session, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port))
+        val player = KryptonPlayer(
+            session,
+            profile,
+            server.worldManager.default,
+            InetSocketAddress(data.remoteAddress, address.port)
+        )
 
         // Setup permissions for the player
         server.eventManager.fire(SetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS)).thenApplyAsync({
@@ -209,7 +227,8 @@ class LoginHandler(
         session.currentState = PacketState.PLAY
         playerManager.add(player, session).whenComplete { _, exception ->
             if (exception == null) return@whenComplete
-            LOGGER.error("Disconnecting player ${player.name} due to exception caught whilst attempting to load them in...", exception)
+            LOGGER.error("Disconnecting player ${player.name} due to exception caught whilst attempting to " +
+                    "load them in...", exception)
             player.disconnect(text("An unexpected exception occurred. Please contact the system administrator."))
         }
     }
@@ -270,7 +289,11 @@ class LoginHandler(
         val event = LoginEvent(profile.name, profile.uuid, session.channel.remoteAddress() as InetSocketAddress)
         val result = server.eventManager.fireSync(event).result
         if (!result.isAllowed) {
-            val reason = if (result.reason !== Component.empty()) result.reason else translatable("multiplayer.disconnect.kicked")
+            val reason = if (result.reason !== Component.empty()) {
+                result.reason
+            } else {
+                translatable("multiplayer.disconnect.kicked")
+            }
             disconnect(reason)
             return false
         }
@@ -297,7 +320,8 @@ class LoginHandler(
             !playerManager.whitlistedIps.isWhitelisted(address)
         ) { // We are whitelisted
             disconnect(translatable("multiplayer.disconnect.not_whitelisted"))
-            LOGGER.info("${profile.name} was disconnected as this server is whitelisted and they are not on the whitelist.")
+            LOGGER.info("${profile.name} was disconnected as this server is whitelisted and they are not on " +
+                    "the whitelist.")
             return false
         } else if (playerManager.bannedIps.isBanned(address)) { // Their IP is banned.
             val entry = playerManager.bannedIps[address]!!
@@ -314,7 +338,7 @@ class LoginHandler(
 
     private fun disconnect(reason: Component) {
         session.sendPacket(PacketOutLoginDisconnect(reason))
-        if (session.channel.isOpen) session.channel.closeFuture().syncUninterruptibly()
+        if (session.channel.isOpen) session.channel.close().awaitUninterruptibly()
     }
 
     companion object {

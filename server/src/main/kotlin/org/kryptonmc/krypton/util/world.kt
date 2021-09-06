@@ -30,7 +30,8 @@ fun Position.isInSpawnableBounds() = !blockX.isOutsideSpawnableHeight() && isInH
 
 private fun Int.isOutsideSpawnableHeight() = this < -20000000 || this >= 20000000
 
-private fun Position.isInHorizontalWorldBounds() = blockX >= -30000000 && blockZ >= -30000000 && blockX < 30000000 && blockZ < 30000000
+private fun Position.isInHorizontalWorldBounds() = blockX >= -30000000 && blockZ >= -30000000 &&
+        blockX < 30000000 && blockZ < 30000000
 
 fun KryptonWorld.forEachEntityInRange(location: Location, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
     val chunksInRange = location.chunksInRange(viewDistance)

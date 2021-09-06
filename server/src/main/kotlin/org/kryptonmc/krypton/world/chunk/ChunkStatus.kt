@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import it.unimi.dsi.fastutil.ints.IntArrayList
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.Heightmap
@@ -35,8 +34,6 @@ class ChunkStatus private constructor(
     val parent = parent ?: this
     val index: Int = if (parent == null) 0 else parent.index + 1
 
-    val distance by lazy { RANGE_BY_STATUS.getInt(index) }
-
     fun isOrAfter(other: ChunkStatus) = index >= other.index
 
     override fun toString() = InternalRegistries.CHUNK_STATUS[this].asString()
@@ -50,37 +47,43 @@ class ChunkStatus private constructor(
     companion object {
 
         private val PRE_FEATURES = EnumSet.of(Heightmap.Type.OCEAN_FLOOR_WG, Heightmap.Type.WORLD_SURFACE_WG)
-        private val POST_FEATURES = EnumSet.of(Heightmap.Type.OCEAN_FLOOR, Heightmap.Type.WORLD_SURFACE, Heightmap.Type.MOTION_BLOCKING, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES)
+        private val POST_FEATURES = EnumSet.of(
+            Heightmap.Type.OCEAN_FLOOR,
+            Heightmap.Type.WORLD_SURFACE,
+            Heightmap.Type.MOTION_BLOCKING,
+            Heightmap.Type.MOTION_BLOCKING_NO_LEAVES
+        )
 
         val EMPTY = register("empty", null, -1, PRE_FEATURES, Type.PROTO)
-        val STRUCTURE_STARTS = register("structure_starts", EMPTY, 0, PRE_FEATURES, Type.PROTO)
-        val STRUCTURE_REFERENCES = register("structure_references", STRUCTURE_STARTS, 8, PRE_FEATURES, Type.PROTO)
+        private val STRUCTURE_STARTS = register("structure_starts", EMPTY, 0, PRE_FEATURES, Type.PROTO)
+        private val STRUCTURE_REFERENCES = register(
+            "structure_references",
+            STRUCTURE_STARTS,
+            8,
+            PRE_FEATURES,
+            Type.PROTO
+        )
         val BIOMES = register("biomes", STRUCTURE_REFERENCES, 0, PRE_FEATURES, Type.PROTO)
-        val NOISE = register("noise", BIOMES, 8, PRE_FEATURES, Type.PROTO)
-        val SURFACE = register("surface", NOISE, 0, PRE_FEATURES, Type.PROTO)
-        val CARVERS = register("carvers", SURFACE, 0, PRE_FEATURES, Type.PROTO)
-        val LIQUID_CARVERS = register("liquid_carvers", CARVERS, 0, POST_FEATURES, Type.PROTO)
+        private val NOISE = register("noise", BIOMES, 8, PRE_FEATURES, Type.PROTO)
+        private val SURFACE = register("surface", NOISE, 0, PRE_FEATURES, Type.PROTO)
+        private val CARVERS = register("carvers", SURFACE, 0, PRE_FEATURES, Type.PROTO)
+        private val LIQUID_CARVERS = register("liquid_carvers", CARVERS, 0, POST_FEATURES, Type.PROTO)
         val FEATURES = register("features", LIQUID_CARVERS, 8, POST_FEATURES, Type.PROTO)
-        val LIGHT = register("light", FEATURES, 1, POST_FEATURES, Type.PROTO)
-        val SPAWN = register("spawn", LIGHT, 0, POST_FEATURES, Type.PROTO)
-        val HEIGHTMAPS = register("heightmaps", SPAWN, 0, POST_FEATURES, Type.PROTO)
+        private val LIGHT = register("light", FEATURES, 1, POST_FEATURES, Type.PROTO)
+        private val SPAWN = register("spawn", LIGHT, 0, POST_FEATURES, Type.PROTO)
+        private val HEIGHTMAPS = register("heightmaps", SPAWN, 0, POST_FEATURES, Type.PROTO)
         val FULL = register("full", HEIGHTMAPS, 0, POST_FEATURES, Type.FULL)
 
-        val STATUS_LIST = kotlin.run {
-            val list = mutableListOf<ChunkStatus>()
-            var current = FULL
-            while (current.parent !== current) {
-                list.add(current)
-                current = current.parent
-            }
-            list.add(current)
-            list.reversed()
-        }
-        val STATUS_BY_RANGE = listOf(FULL, FEATURES, LIQUID_CARVERS, STRUCTURE_STARTS, STRUCTURE_STARTS, STRUCTURE_STARTS, STRUCTURE_STARTS, STRUCTURE_STARTS, STRUCTURE_STARTS, STRUCTURE_STARTS, STRUCTURE_STARTS)
-        val RANGE_BY_STATUS = IntArrayList()
-        val MAX_DISTANCE = STATUS_BY_RANGE.size
-
-        private fun register(name: String, parent: ChunkStatus?, range: Int, heightmapsAfter: EnumSet<Heightmap.Type>, type: Type): ChunkStatus =
-            Registries.register(InternalRegistries.CHUNK_STATUS, name, ChunkStatus(name, parent, range, heightmapsAfter, type))
+        private fun register(
+            name: String,
+            parent: ChunkStatus?,
+            range: Int,
+            heightmapsAfter: EnumSet<Heightmap.Type>,
+            type: Type
+        ): ChunkStatus = Registries.register(
+            InternalRegistries.CHUNK_STATUS,
+            name,
+            ChunkStatus(name, parent, range, heightmapsAfter, type)
+        )
     }
 }

@@ -182,7 +182,6 @@ object StatsFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 6) {
             }
 
             val statTypeMap = stats.getMap(statType) ?: JsonTypeUtil.createEmptyMap<String>().apply { stats.setMap(statType, this) }
-            // thanks very much for your terrible JSON library, Google
             statTypeMap.setGeneric(newStatKey, if (value is LazilyParsedNumber) value.toInt() else value)
         }
 

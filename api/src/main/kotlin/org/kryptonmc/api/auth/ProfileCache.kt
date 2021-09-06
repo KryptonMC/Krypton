@@ -11,7 +11,7 @@ package org.kryptonmc.api.auth
 import java.util.UUID
 
 /**
- * A simple cache of [GameProfile]s.
+ * A simple cache that holds [GameProfile]s.
  */
 public interface ProfileCache : Iterable<GameProfile> {
 
@@ -23,9 +23,6 @@ public interface ProfileCache : Iterable<GameProfile> {
     /**
      * Gets the cached [GameProfile] with the specified [name], or returns null
      * if there is no cached [GameProfile] with the specified name.
-     *
-     * Warning: This **will** perform a **blocking** request to retrieve the
-     * profile if it is not cached!
      *
      * @param name the name
      * @return the cached profile, or null if not present

@@ -27,5 +27,6 @@ import org.spongepowered.math.vector.Vector3i
 
 object TridentHandler : KryptonItemHandler(ItemTypes.TRIDENT) {
 
-    override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i) = player.gamemode != Gamemode.CREATIVE
+    override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i) =
+        player.gamemode != Gamemode.CREATIVE
 }

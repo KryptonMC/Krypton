@@ -64,7 +64,11 @@ fun SuggestionsBuilder.suggestCoordinates(
     return suggest(emptyList())
 }
 
-fun <T> Iterable<T>.suggestKey(builder: SuggestionsBuilder, provider: (T) -> Key, messageProvider: (T) -> Message): CompletableFuture<Suggestions> {
+fun <T> Iterable<T>.suggestKey(
+    builder: SuggestionsBuilder,
+    provider: (T) -> Key,
+    messageProvider: (T) -> Message
+): CompletableFuture<Suggestions> {
     val remaining = builder.remaining.lowercase()
     filterResources(remaining, provider) { builder.suggest(provider(it).toString(), messageProvider(it)) }
     return builder.buildFuture()
@@ -76,7 +80,11 @@ fun <T> Iterable<T>.filterResources(text: String, provider: (T) -> Key, consumer
         val key = provider(it)
         if (hasColon && text.matchesSubString(key.asString())) {
             consumer(it)
-        } else if (text.matchesSubString(key.namespace()) || key.namespace() == "minecraft" && text.matchesSubString(key.value())) {
+        } else if (
+            text.matchesSubString(key.namespace()) ||
+            key.namespace() == "minecraft" &&
+            text.matchesSubString(key.value())
+        ) {
             consumer(it)
         }
     }

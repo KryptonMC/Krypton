@@ -161,7 +161,9 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
     private class KryptonMethodScanner : MethodScanner<Any> {
 
         override fun shouldRegister(listener: Any, method: Method) = method.isAnnotationPresent(Listener::class.java)
+
         override fun postOrder(listener: Any, method: Method) = method.getAnnotation(Listener::class.java).priority.ordinal
+
         override fun consumeCancelledEvents(listener: Any, method: Method) = true
     }
 
@@ -171,6 +173,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
     ) : EventSubscriber<E> {
 
         override fun invoke(event: E) = handler.execute(event)
+
         override fun postOrder() = priority.ordinal
     }
 

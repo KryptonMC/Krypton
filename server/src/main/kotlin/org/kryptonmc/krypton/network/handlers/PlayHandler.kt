@@ -129,7 +129,11 @@ class PlayHandler(
 
     override fun onDisconnect() {
         playerManager.invalidateStatus()
-        playerManager.sendMessage(Identity.nil(), translatable("multiplayer.player.left", NamedTextColor.YELLOW, player.displayName), MessageType.SYSTEM)
+        playerManager.sendMessage(
+            Identity.nil(),
+            translatable("multiplayer.player.left", NamedTextColor.YELLOW, player.displayName),
+            MessageType.SYSTEM
+        )
         playerManager.remove(player)
     }
 
@@ -278,7 +282,11 @@ class PlayHandler(
             packet.onGround
         ), player)
         player.updateChunks()
-        player.updateMovementStatistics(newLocation.x - oldLocation.x, newLocation.y - oldLocation.y, newLocation.z - oldLocation.z)
+        player.updateMovementStatistics(
+            newLocation.x - oldLocation.x,
+            newLocation.y - oldLocation.y,
+            newLocation.z - oldLocation.z
+        )
     }
 
     private fun handleRotationUpdate(packet: PacketInPlayerRotation) {
@@ -316,7 +324,11 @@ class PlayHandler(
         ), player)
         playerManager.sendToAll(PacketOutHeadLook(player.id, newLocation.yaw), player)
         player.updateChunks()
-        player.updateMovementStatistics(newLocation.x - oldLocation.x, newLocation.y - oldLocation.y, newLocation.z - oldLocation.z)
+        player.updateMovementStatistics(
+            newLocation.x - oldLocation.x,
+            newLocation.y - oldLocation.y,
+            newLocation.z - oldLocation.z
+        )
     }
 
     private fun handlePluginMessage(packet: PacketInPluginMessage) {

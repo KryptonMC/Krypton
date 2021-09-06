@@ -28,17 +28,16 @@ import java.util.concurrent.CopyOnWriteArrayList
 object TagManager {
 
     private val GSON = Gson()
-
-    private val tagMap = ConcurrentHashMap<TagType<out Any>, MutableList<Tag<out Any>>>()
-    val tags: Map<TagType<out Any>, List<Tag<out Any>>>
-        get() = Collections.unmodifiableMap(tagMap)
+    private val TAG_MAP = ConcurrentHashMap<TagType<out Any>, MutableList<Tag<out Any>>>()
+    val TAGS: Map<TagType<out Any>, List<Tag<out Any>>>
+        get() = Collections.unmodifiableMap(TAG_MAP)
 
     init {
         TagTypes.VALUES.forEach { type ->
             val json = ClassLoader.getSystemResourceAsStream(type.path)!!.reader().use {
                 GSON.fromJson(it, JsonObject::class.java)
             }
-            val identifierMap = tagMap.getOrPut(type) { CopyOnWriteArrayList() }
+            val identifierMap = TAG_MAP.getOrPut(type) { CopyOnWriteArrayList() }
             json.keySet().forEach {
                 val tag = Tag(Key.key(it), type, keys(json, it))
                 identifierMap.add(tag)
@@ -48,7 +47,7 @@ object TagManager {
 
     @Suppress("UNCHECKED_CAST")
     operator fun <T : Any> get(type: TagType<T>, name: String): Tag<T>? =
-        tagMap[type]?.firstOrNull { it.name.asString() == name } as? Tag<T>
+        TAG_MAP[type]?.firstOrNull { it.name.asString() == name } as? Tag<T>
 
     private fun keys(main: JsonObject, value: String): Set<String> {
         val tagObject = main.getAsJsonObject(value)

@@ -52,7 +52,8 @@ class ProtoChunk(
     override fun getFluid(x: Int, y: Int, z: Int): Fluid {
         if (y.outsideBuildHeight) return Fluids.EMPTY
         val section = sections[sectionIndex(y)]
-        return if (section == null || section.isEmpty()) Fluids.EMPTY else section[x and 15, y and 15, z and 15].asFluid()
+        if (section == null || section.isEmpty()) return Fluids.EMPTY
+        return section[x and 15, y and 15, z and 15].asFluid()
     }
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
@@ -63,12 +64,21 @@ class ProtoChunk(
         if (sections[sectionIndex] == null && block === Blocks.AIR) return
 
         // Add a new light source if the block emits light
-        if (block.lightEmission > 0) lights.add(Vector3i((x and 15) + (position.x shl 4), y, (z and 15) + (position.z shl 4)))
+        if (block.lightEmission > 0) lights.add(Vector3i(
+            (x and 15) + (position.x shl 4),
+            y, (z and 15) + (position.z shl 4)
+        ))
 
         // Get or create the section and set the block
         val section = getOrCreateSection(sectionIndex)
         val oldBlock = section.set(x and 15, y and 15, z and 15, block)
-        if (status.isOrAfter(ChunkStatus.FEATURES) && block != oldBlock && (block.lightBlock != oldBlock.lightBlock || block.lightEmission != oldBlock.lightEmission || block.useShapeForOcclusion != oldBlock.useShapeForOcclusion)) {
+        if (
+            status.isOrAfter(ChunkStatus.FEATURES) &&
+            block != oldBlock &&
+            (block.lightBlock != oldBlock.lightBlock ||
+                    block.lightEmission != oldBlock.lightEmission ||
+                    block.useShapeForOcclusion != oldBlock.useShapeForOcclusion)
+        ) {
             // TODO: Inform light engine to check block
         }
 
@@ -84,7 +94,8 @@ class ProtoChunk(
         typesAfter.forEach { heightmaps[it]?.update(x and 15, y, z and 15, block) }
     }
 
-    override fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap = heightmaps.getOrPut(type) { Heightmap(this, type) }
+    override fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap =
+        heightmaps.getOrPut(type) { Heightmap(this, type) }
 
     override fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int {
         var heightmap = heightmaps[type]

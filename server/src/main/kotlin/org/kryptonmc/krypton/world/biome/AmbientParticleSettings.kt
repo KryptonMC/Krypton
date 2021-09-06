@@ -23,7 +23,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.krypton.util.Codecs
 
-class AmbientParticleSettings(
+@JvmRecord
+data class AmbientParticleSettings(
     val particle: ParticleType,
     val probability: Float
 ) {

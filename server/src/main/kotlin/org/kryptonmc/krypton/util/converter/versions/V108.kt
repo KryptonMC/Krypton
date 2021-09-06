@@ -28,7 +28,6 @@ object V108 {
     private val LOGGER = logger<V108>()
     private const val VERSION = MCVersions.V15W32C + 4
 
-    // Convert String UUID into UUIDMost and UUIDLeast
     fun register() = MCTypeRegistry.ENTITY.addStructureConverter(VERSION) { data, _, _ ->
         val uuidString = data.getString("UUID") ?: return@addStructureConverter null
         data.remove("UUID")

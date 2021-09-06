@@ -58,13 +58,16 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
 
             when (msg.readableBytes()) {
                 0 -> {
-                    LOGGER.debug("Legacy server list ping (versions <=1.3.x) received from ${address.address}:${address.port}")
+                    LOGGER.debug("Legacy server list ping (versions <=1.3.x) received from " +
+                            "${address.address}:${address.port}")
                     ctx.writeAndClose("$motd\u00a7$playerCount\u00a7$maxPlayers".toReply())
                 }
                 1 -> {
                     if (msg.readUnsignedByte() != 1.toShort()) return
-                    LOGGER.debug("Legacy server list ping (versions 1.4.x-1.5.x) received from ${address.address}:${address.port}")
-                    ctx.writeAndClose("\u00a71\u0000127\u0000$version\u0000$motd\u0000$playerCount\u0000$maxPlayers".toReply())
+                    LOGGER.debug("Legacy server list ping (versions 1.4.x-1.5.x) received from " +
+                            "${address.address}:${address.port}")
+                    ctx.writeAndClose(("\u00a71\u0000127\u0000$version\u0000$motd\u0000$playerCount" +
+                            "\u0000$maxPlayers").toReply())
                 }
                 else -> {
                     var isValid = msg.readUnsignedByte() == 1.toShort()
@@ -107,7 +110,8 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
 
     private fun ByteBuf.readLegacyString(): String {
         val length = readShort() * Char.SIZE_BYTES
-        if (!isReadable(length)) throw CorruptedFrameException("String length $length is too large for available bytes ${readableBytes()}!")
+        if (!isReadable(length)) throw CorruptedFrameException("String length $length is too large for available " +
+                "bytes ${readableBytes()}!")
         val string = toString(readerIndex(), length, Charsets.UTF_16BE)
         skipBytes(length)
         return string

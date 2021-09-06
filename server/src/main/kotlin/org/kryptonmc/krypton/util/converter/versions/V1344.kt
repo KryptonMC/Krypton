@@ -157,7 +157,6 @@ object V1344 {
                 BUTTON_ID_TO_NAME.getOrDefault(code, "key.unknown")
             }
 
-            // no CMEs occur for existing entries in maps.
             data.setString(it, newEntry)
         }
         null

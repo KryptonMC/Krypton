@@ -37,11 +37,13 @@ interface ChunkAccessor : BlockAccessor {
     val highestSectionY: Int
         get() = highestSection?.y ?: minimumBuildHeight
 
-    fun getOrCreateSection(index: Int) = sections.getOrNull(index) ?: ChunkSection(sectionYFromIndex(index)).apply { sections[index] = this }
+    fun getOrCreateSection(index: Int) = sections.getOrNull(index)
+        ?: ChunkSection(sectionYFromIndex(index)).apply { sections[index] = this }
 
     fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap
 
     fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int
 
-    fun setHeightmap(type: Heightmap.Type, data: LongArray) = getOrCreateHeightmap(type).setData(this, type, data)
+    fun setHeightmap(type: Heightmap.Type, data: LongArray) =
+        getOrCreateHeightmap(type).setData(this, type, data)
 }

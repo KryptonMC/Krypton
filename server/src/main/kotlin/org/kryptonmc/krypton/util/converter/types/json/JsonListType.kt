@@ -137,7 +137,9 @@ data class JsonListType(val array: JsonArray, val compressed: Boolean) : ListTyp
     override fun getString(index: Int): String {
         val element = array[index]
         check(element is JsonPrimitive) { "Expected JSON primitive at index $index, was $element" }
-        check(element.isString || (compressed && element.isNumber)) { "Expected JSON primitive at index $index, was $element" }
+        check(element.isString || (compressed && element.isNumber)) {
+            "Expected JSON primitive at index $index, was $element"
+        }
         return element.asString
     }
 

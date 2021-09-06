@@ -74,7 +74,9 @@ object EntityArgumentParser {
             reader.skipWhitespace()
             val position = reader.cursor
             val option = reader.readString()
-            if (option !in EntityArguments.ARGUMENTS) throw EntityArgumentExceptions.INVALID_OPTION.createWithContext(reader, option)
+            if (option !in EntityArguments.ARGUMENTS) {
+                throw EntityArgumentExceptions.INVALID_OPTION.createWithContext(reader, option)
+            }
 
             reader.skipWhitespace()
             if (reader.canRead() && reader.peek() == '=') {

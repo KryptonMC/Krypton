@@ -27,7 +27,10 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
-abstract class KryptonFireball(world: KryptonWorld, type: EntityType<out Fireball>) : KryptonAcceleratingProjectile(world, type), Fireball {
+abstract class KryptonFireball(
+    world: KryptonWorld,
+    type: EntityType<out Fireball>
+) : KryptonAcceleratingProjectile(world, type), Fireball {
 
     private var rawItem: KryptonItemStack
         get() = data[MetadataKeys.FIREBALL.ITEM]

@@ -22,12 +22,9 @@ import org.kryptonmc.api.space.Rotation
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.FloatTag
 import org.kryptonmc.nbt.ListTag
-import java.awt.Color
 
 fun CompoundTag.getRotation(key: String): Rotation? {
     if (!contains(key, ListTag.ID)) return null
     val list = getList(key, FloatTag.ID)
     return Rotation(list.getFloat(0), list.getFloat(1), list.getFloat(2))
 }
-
-fun CompoundTag.getColor(key: String): Color = Color(getInt(key))

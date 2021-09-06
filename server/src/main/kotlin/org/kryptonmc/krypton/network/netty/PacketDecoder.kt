@@ -38,16 +38,18 @@ class PacketDecoder : ByteToMessageDecoder() {
     override fun decode(ctx: ChannelHandlerContext, buf: ByteBuf, out: MutableList<Any>) {
         if (buf.readableBytes() == 0) return
         val id = buf.readVarInt()
-        val session = this.session ?: ctx.pipeline().get(ChannelHandler::class.java).session.apply { this@PacketDecoder.session = this }
+        val session = this.session ?: ctx.pipeline().get(ChannelHandler::class.java).session.apply {
+            this@PacketDecoder.session = this
+        }
 
         val packet = PacketRegistry.get(session.currentState, id, buf)
         if (packet == null) {
-            LOGGER.debug("Skipping packet with state ${session.currentState} and ID $id because a packet object was not found")
+            LOGGER.debug("Skipping packet with state ${session.currentState} and ID $id because a packet object " +
+                    "was not found")
             buf.skipBytes(buf.readableBytes())
             return
         }
 
-        LOGGER.debug("Incoming packet of type ${packet.javaClass}")
         if (buf.readableBytes() != 0) LOGGER.debug("More bytes from packet $packet (${buf.readableBytes()})")
         out.add(packet)
     }

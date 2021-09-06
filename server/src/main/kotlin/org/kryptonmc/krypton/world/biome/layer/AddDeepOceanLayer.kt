@@ -24,13 +24,13 @@ import org.kryptonmc.krypton.world.biome.layer.traits.CastleTransformer
 
 object AddDeepOceanLayer : CastleTransformer {
 
-    override fun invoke(context: Context, n: Int, e: Int, s: Int, w: Int, center: Int): Int {
+    override fun invoke(context: Context, north: Int, east: Int, south: Int, west: Int, center: Int): Int {
         if (center.isShallowOcean()) {
             var i = 0
-            if (n.isShallowOcean()) i++
-            if (e.isShallowOcean()) i++
-            if (s.isShallowOcean()) i++
-            if (w.isShallowOcean()) i++
+            if (north.isShallowOcean()) i++
+            if (east.isShallowOcean()) i++
+            if (south.isShallowOcean()) i++
+            if (west.isShallowOcean()) i++
             if (i > 3) return when (center) {
                 BiomeConstants.OCEAN -> BiomeConstants.DEEP_OCEAN
                 BiomeConstants.FROZEN_OCEAN -> BiomeConstants.DEEP_FROZEN_OCEAN

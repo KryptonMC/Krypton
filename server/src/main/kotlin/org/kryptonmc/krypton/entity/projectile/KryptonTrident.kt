@@ -27,7 +27,9 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
-class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.TRIDENT, SoundEvents.TRIDENT_HIT_GROUND), Trident {
+class KryptonTrident(
+    world: KryptonWorld
+) : KryptonArrowLike(world, EntityTypes.TRIDENT, SoundEvents.TRIDENT_HIT_GROUND), Trident {
 
     override var item = KryptonItemStack(ItemTypes.TRIDENT, 1)
     override var dealtDamage = false

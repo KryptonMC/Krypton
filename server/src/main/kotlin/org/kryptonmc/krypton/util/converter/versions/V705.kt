@@ -30,11 +30,9 @@ import org.kryptonmc.krypton.util.converter.walkers.TileEntitiesDataWalker
 import org.kryptonmc.krypton.util.converter.walkers.convert
 import org.kryptonmc.krypton.util.converter.walkers.convertList
 import org.kryptonmc.krypton.util.converters.RenameEntitiesConverter
-import org.kryptonmc.krypton.util.logger
 
 object V705 {
 
-    private val LOGGER = logger<V705>()
     private const val VERSION = MCVersions.V1_10_2 + 193
     private val ENTITY_ID_UPDATE = mapOf(
         "AreaEffectCloud" to "minecraft:area_effect_cloud",
@@ -125,20 +123,36 @@ object V705 {
         MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:chest_minecart", BlockNamesDataWalker("DisplayTile"))
         MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:chest_minecart", ItemListsDataWalker("Items"))
         registerMob("minecraft:chicken")
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:commandblock_minecart", BlockNamesDataWalker("DisplayTile"))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:commandblock_minecart",
+            BlockNamesDataWalker("DisplayTile")
+        )
         registerMob("minecraft:cow")
         registerMob("minecraft:creeper")
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:donkey", ItemListsDataWalker("Items", "ArmorItems", "HandItems"))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:donkey",
+            ItemListsDataWalker("Items", "ArmorItems", "HandItems")
+        )
         MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:donkey", ItemsDataWalker("SaddleItem"))
         registerThrowableProjectile("minecraft:egg")
         registerMob("minecraft:elder_guardian")
         registerMob("minecraft:ender_dragon")
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:enderman", ItemListsDataWalker("ArmorItems", "HandItems"))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:enderman",
+            ItemListsDataWalker("ArmorItems", "HandItems")
+        )
         MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:enderman", BlockNamesDataWalker("carried"))
         registerMob("minecraft:endermite")
         registerThrowableProjectile("minecraft:ender_pearl")
         MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:falling_block", BlockNamesDataWalker("Block"))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:falling_block", TileEntitiesDataWalker("TileEntityData"))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:falling_block",
+            TileEntitiesDataWalker("TileEntityData")
+        )
         registerThrowableProjectile("minecraft:fireball")
         MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:fireworks_rocket", ItemsDataWalker("FireworksItem"))
         MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:furnace_minecart", BlockNamesDataWalker("DisplayTile"))
@@ -155,7 +169,11 @@ object V705 {
         registerMob("minecraft:magma_cube")
         MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:minecart", BlockNamesDataWalker("DisplayTile"))
         registerMob("minecraft:mooshroom")
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:mule", ItemListsDataWalker("Items", "ArmorItems", "HandItems"))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:mule",
+            ItemListsDataWalker("Items", "ArmorItems", "HandItems")
+        )
         MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:mule", ItemsDataWalker("SaddleItem"))
         registerMob("minecraft:ocelot")
         registerMob("minecraft:pig")
@@ -167,7 +185,11 @@ object V705 {
         registerMob("minecraft:shulker")
         registerMob("minecraft:silverfish")
         registerMob("minecraft:skeleton")
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:skeleton_horse", ItemListsDataWalker("ArmorItems", "HandItems"))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:skeleton_horse",
+            ItemListsDataWalker("ArmorItems", "HandItems")
+        )
         MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:skeleton_horse", ItemsDataWalker("SaddleItem"))
         registerMob("minecraft:slime")
         registerThrowableProjectile("minecraft:small_fireball")
@@ -210,18 +232,23 @@ object V705 {
         registerThrowableProjectile("minecraft:xp_bottle")
         registerMob("minecraft:zombie")
         MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:zombie_horse", ItemsDataWalker("SaddleItem"))
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:zombie_horse", ItemListsDataWalker("ArmorItems", "HandItems"))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:zombie_horse",
+            ItemListsDataWalker("ArmorItems", "HandItems")
+        )
         registerMob("minecraft:zombie_pigman")
         registerMob("minecraft:zombie_villager")
         registerMob("minecraft:evocation_illager")
-        MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:llama", ItemListsDataWalker("Items", "ArmorItems", "HandItems"))
+        MCTypeRegistry.ENTITY.addWalker(
+            VERSION,
+            "minecraft:llama",
+            ItemListsDataWalker("Items", "ArmorItems", "HandItems")
+        )
         MCTypeRegistry.ENTITY.addWalker(VERSION, "minecraft:llama", ItemsDataWalker("SaddleItem", "DecorItem"))
         registerMob("minecraft:vex")
         registerMob("minecraft:vindication_illager")
-        // Don't need to re-register itemstack walker, the V704 will correctly choose the right id for armorstand based on
-        // the source version
 
-        // Enforce namespace for ids
         MCTypeRegistry.ENTITY.addStructureHook(VERSION, EnforceNamespacedDataHook())
         MCTypeRegistry.ENTITY_NAME.addStructureHook(VERSION, EnforceNamespacedValueTypeDataHook())
     }

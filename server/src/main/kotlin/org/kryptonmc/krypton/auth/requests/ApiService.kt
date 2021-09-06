@@ -33,6 +33,8 @@ object ApiService {
         val request = HttpRequest.newBuilder()
             .uri(URI("https://api.mojang.com/users/profiles/minecraft/$name"))
             .build()
-        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply { KryptonGameProfile.fromJson(it.body()) }
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply {
+            KryptonGameProfile.fromJson(it.body())
+        }
     }
 }
