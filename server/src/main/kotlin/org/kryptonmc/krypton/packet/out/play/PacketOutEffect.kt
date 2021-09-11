@@ -24,7 +24,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
 
-class PacketOutEffect(
+@JvmRecord
+data class PacketOutEffect(
     private val effect: Effect,
     private val position: Vector3i,
     private val data: Int,

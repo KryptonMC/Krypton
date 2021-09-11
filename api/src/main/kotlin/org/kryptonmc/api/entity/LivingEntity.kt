@@ -44,8 +44,9 @@ public interface LivingEntity : Entity, Attributable {
     /**
      * If this entity is fall flying.
      *
-     * Setting this value to true for non-player entities will cause this entity
-     * to glide as long as they are wearing an elytra in their chestplate slot.
+     * Setting this value to true for non-player entities will cause this
+     * entity to glide as long as they are wearing an elytra in their
+     * chestplate slot.
      *
      * This can be used to detect when the player is gliding without using
      * scoreboard statistics.
@@ -75,7 +76,8 @@ public interface LivingEntity : Entity, Attributable {
     /**
      * The last time, in ticks, this entity was damaged.
      *
-     * Calculated as the [number of ticks since the entity's creation][ticksExisted].
+     * Calculated as the
+     * [number of ticks since the entity's creation][ticksExisted].
      */
     public val lastHurtTimestamp: Int
 

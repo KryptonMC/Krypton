@@ -11,8 +11,8 @@ package org.kryptonmc.api.entity.projectile
 import org.kryptonmc.api.space.Vector
 
 /**
- * A projectile that will accelerate at constant velocity until it hits something, when
- * it will explode.
+ * A projectile that will accelerate at constant velocity until it hits
+ * something, when it will explode.
  */
 public interface AcceleratingProjectile : Projectile {
 

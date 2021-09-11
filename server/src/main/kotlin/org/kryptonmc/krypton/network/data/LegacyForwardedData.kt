@@ -40,7 +40,8 @@ class LegacyForwardedData(
 
         fun parse(string: String): LegacyForwardedData? {
             val split = string.split('\u0000')
-            if (split.size < 3) return null // We need to have the original IP, forwarded IP, and the UUID at bare minimum.
+            // We need to have the original IP, forwarded IP, and the UUID at bare minimum.
+            if (split.size < 3) return null
             return LegacyForwardedData(
                 split[0],
                 split[1],

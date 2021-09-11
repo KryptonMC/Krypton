@@ -28,7 +28,8 @@ import org.kryptonmc.krypton.packet.Packet
  * @param keepAliveId a unique ID for the keep alive. Vanilla calls this the challenge, and this is generally
  * [System.currentTimeMillis]
  */
-class PacketOutKeepAlive(private val keepAliveId: Long) : Packet {
+@JvmRecord
+data class PacketOutKeepAlive(private val keepAliveId: Long) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeLong(keepAliveId)

@@ -64,8 +64,9 @@ public interface Fluid : PropertyHolder<Fluid>, BlockLike, Comparable<Fluid> {
     /**
      * The level of this fluid.
      *
-     * Should be either a constant value, such as 0 for the empty fluid, or 8 for source
-     * fluids, or the value of the [level][org.kryptonmc.api.block.property.Properties.LIQUID_LEVEL]
+     * Should be either a constant value, such as 0 for the empty fluid, or 8
+     * for source fluids, or the value of the
+     * [level][org.kryptonmc.api.block.property.Properties.LIQUID_LEVEL]
      * property for flowing fluids.
      */
     public val level: Int

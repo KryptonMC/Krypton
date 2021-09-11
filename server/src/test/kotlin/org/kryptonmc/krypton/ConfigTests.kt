@@ -18,11 +18,10 @@
  */
 package org.kryptonmc.krypton
 
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextColor
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.config.KryptonConfig
+import org.kryptonmc.krypton.config.category.StatusCategory
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
 import kotlin.test.Test
@@ -36,7 +35,9 @@ class ConfigTests {
     fun `test config loads properly with correct values`() {
         val loader = HoconConfigurationLoader.builder()
             .defaultOptions(KryptonConfig.OPTIONS)
-            .source { Thread.currentThread().contextClassLoader.getResourceAsStream("config.conf")!!.bufferedReader() }
+            .source {
+                Thread.currentThread().contextClassLoader.getResourceAsStream("config.conf")!!.bufferedReader()
+            }
             .build()
         val config = loader.load().get<KryptonConfig>()!!
 
@@ -47,7 +48,7 @@ class ConfigTests {
         assertEquals(256, config.server.compressionThreshold)
 
         // Status settings
-        assertEquals(Component.text("Krypton is a Minecraft server written in Kotlin!", TextColor.fromHexString("#8000ff")), config.status.motd)
+        assertEquals(StatusCategory.DEFAULT_MOTD, config.status.motd)
         assertEquals(20, config.status.maxPlayers)
 
         // World settings
@@ -82,7 +83,7 @@ class ConfigTests {
         assertEquals(256, config.server.compressionThreshold)
 
         // Status settings
-        assertEquals(Component.text("Krypton is a Minecraft server written in Kotlin!", TextColor.fromHexString("#8000ff")), config.status.motd)
+        assertEquals(StatusCategory.DEFAULT_MOTD, config.status.motd)
         assertEquals(20, config.status.maxPlayers)
 
         // World settings

@@ -23,7 +23,8 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeKey
 
-class PacketOutPluginMessage(
+@JvmRecord
+data class PacketOutPluginMessage(
     private val channel: Key,
     private val content: ByteArray
 ) : Packet {
@@ -31,5 +32,19 @@ class PacketOutPluginMessage(
     override fun write(buf: ByteBuf) {
         buf.writeKey(channel)
         buf.writeBytes(content)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass || !super.equals(other)) return false
+        other as PacketOutPluginMessage
+        return channel == other.channel && content.contentEquals(other.content)
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + channel.hashCode()
+        result = 31 * result + content.contentHashCode()
+        return result
     }
 }

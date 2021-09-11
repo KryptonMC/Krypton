@@ -44,8 +44,8 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
     /**
      * The custom display name of this entity, as a component.
      *
-     * May be [empty][Component.empty], indicating this entity does not
-     * have a custom display name set.
+     * May be [empty][Component.empty], indicating this entity does not have a
+     * custom display name set.
      */
     public var displayName: Component
 
@@ -86,12 +86,12 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * If this entity should not take damage from any source.
      *
      * When this is true, the following statements are also true:
-     * - If this entity is living, it cannot be moved by fishing rods,
-     *   attacks, explosions, or projectiles.
-     * - Objects such as vehicles and item frames cannot be destroyed
-     *   unless their support is also removed.
-     * - If this entity is a player, it will also be ignored by any
-     *   hostile mobs.
+     * - If this entity is living, it cannot be moved by fishing rods, attacks,
+     * explosions, or projectiles.
+     * - Objects such as vehicles and item frames cannot be destroyed unless
+     * their support is also removed.
+     * - If this entity is a player, it will also be ignored by any hostile
+     * mobs.
      *
      * Setting this to true, however, will not prevent this entity from
      * being damaged by a player in creative mode.
@@ -173,14 +173,14 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
     public val air: Int
 
     /**
-     * This value can mean one of two things, depending on if the value is positive
-     * or negative.
+     * This value can mean one of two things, depending on if the value is
+     * positive or negative.
      *
-     * When the value is positive, this represents the number of ticks until the entity
-     * is no longer [on fire][isOnFire].
+     * When the value is positive, this represents the number of ticks until
+     * the entity is no longer [on fire][isOnFire].
      *
-     * When the value is negative, this represents the number of ticks this entity can
-     * survive in fire for before burning.
+     * When the value is negative, this represents the number of ticks this
+     * entity can survive in fire for before burning.
      */
     public val fireTicks: Short
 
@@ -268,8 +268,8 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
     public fun distanceToSquared(entity: Entity): Double = location.distanceSquared(entity.location)
 
     /**
-     * Marks this entity to be removed in the very near future, preferably within
-     * one game tick.
+     * Marks this entity to be removed in the very near future, preferably
+     * within one game tick.
      */
     public fun remove()
 }

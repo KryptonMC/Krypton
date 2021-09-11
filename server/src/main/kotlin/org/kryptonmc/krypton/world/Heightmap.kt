@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.world
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.krypton.space.MutableVector3i
 import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
@@ -46,10 +45,8 @@ class Heightmap(
                 return true
             }
         } else if (firstAvailable - 1 == y) {
-            val position = MutableVector3i()
             for (i in y - 1 downTo chunk.minimumBuildHeight) {
-                position.set(x, i, z)
-                if (isOpaque(chunk.getBlock(position.x, position.y, position.z))) {
+                if (isOpaque(chunk.getBlock(x, i, z))) {
                     set(x, z, i + 1)
                     return true
                 }
@@ -65,7 +62,8 @@ class Heightmap(
         if (current.size == rawData.size) {
             System.arraycopy(rawData, 0, current, 0, rawData.size)
         } else {
-            LOGGER.warn("Ignoring heightmap data for chunk ${chunk.position} as the size is not what was expected. Expected ${current.size}, got ${rawData.size}.")
+            LOGGER.warn("Ignoring heightmap data for chunk ${chunk.position} as the size is not what was expected. " +
+                    "Expected ${current.size}, got ${rawData.size}.")
             prime(chunk, setOf(type))
         }
     }
@@ -91,7 +89,12 @@ class Heightmap(
 
         companion object {
 
-            val POST_FEATURES: Set<Type> = EnumSet.of(WORLD_SURFACE, OCEAN_FLOOR, MOTION_BLOCKING, MOTION_BLOCKING_NO_LEAVES)
+            val POST_FEATURES: Set<Type> = EnumSet.of(
+                WORLD_SURFACE,
+                OCEAN_FLOOR,
+                MOTION_BLOCKING,
+                MOTION_BLOCKING_NO_LEAVES
+            )
         }
     }
 
@@ -116,13 +119,11 @@ class Heightmap(
             val heightmaps = ObjectArrayList<Heightmap>(size)
             val iterator = heightmaps.iterator()
             val highest = chunk.highestSectionY + 16
-            val position = MutableVector3i()
             for (x in 0 until 16) {
                 for (z in 0 until 16) {
                     toPrime.forEach { heightmaps.add(chunk.getOrCreateHeightmap(it)) }
                     y@ for (y in highest - 1 downTo chunk.minimumBuildHeight) {
-                        position.set(x, y, z)
-                        val block = chunk.getBlock(position.x, position.y, position.z)
+                        val block = chunk.getBlock(x, y, z)
                         if (block === Blocks.AIR) continue@y
                         iterator@ while (iterator.hasNext()) {
                             val heightmap = iterator.next()

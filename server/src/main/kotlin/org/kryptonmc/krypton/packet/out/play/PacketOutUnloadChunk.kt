@@ -21,7 +21,8 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
-class PacketOutUnloadChunk(
+@JvmRecord
+data class PacketOutUnloadChunk(
     private val x: Int,
     private val z: Int
 ) : Packet {

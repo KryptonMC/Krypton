@@ -19,9 +19,8 @@ import org.kryptonmc.api.item.ItemStack
 public interface PlayerInventory : Inventory {
 
     /**
-     * The array of crafting slots in this inventory, where the first
-     * 4 elements of this array are the input, and the last slot is
-     * the output.
+     * The array of crafting slots in this inventory, where the first 4
+     * elements of this array are the input, and the last slot is the output.
      */
     public val crafting: Array<out ItemStack>
 
@@ -61,7 +60,7 @@ public interface PlayerInventory : Inventory {
     public var boots: ItemStack
 
     /**
-     * The slot of the currently held item
+     * The slot of the currently held item.
      */
     public val heldSlot: Int
 

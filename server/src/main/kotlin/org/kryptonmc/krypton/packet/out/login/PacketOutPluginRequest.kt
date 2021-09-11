@@ -23,7 +23,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutPluginRequest(
+@JvmRecord
+data class PacketOutPluginRequest(
     private val id: Int,
     private val channel: String,
     private val data: ByteArray
@@ -33,5 +34,20 @@ class PacketOutPluginRequest(
         buf.writeVarInt(id)
         buf.writeString(channel)
         buf.writeBytes(data)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass || !super.equals(other)) return false
+        other as PacketOutPluginRequest
+        return id == other.id && channel == other.channel && data.contentEquals(other.data)
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + id
+        result = 31 * result + channel.hashCode()
+        result = 31 * result + data.contentHashCode()
+        return result
     }
 }

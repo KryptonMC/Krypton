@@ -23,7 +23,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutEntityRotation(
+@JvmRecord
+data class PacketOutEntityRotation(
     private val entityId: Int,
     private val yaw: Float,
     private val pitch: Float,

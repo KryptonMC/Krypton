@@ -27,7 +27,9 @@ import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.gen.FixedBiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 
-class DebugGenerator(private val biomes: KryptonRegistry<KryptonBiome>) : Generator(FixedBiomeGenerator(biomes[BiomeKeys.PLAINS]!!), StructureSettings(false)) {
+class DebugGenerator(
+    private val biomes: KryptonRegistry<KryptonBiome>
+) : Generator(FixedBiomeGenerator(biomes[BiomeKeys.PLAINS]!!), StructureSettings(false)) {
 
     override val codec = CODEC
 

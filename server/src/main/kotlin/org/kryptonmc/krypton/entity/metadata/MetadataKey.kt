@@ -18,4 +18,5 @@
  */
 package org.kryptonmc.krypton.entity.metadata
 
+@JvmRecord
 data class MetadataKey<T>(val id: Int, val serializer: MetadataSerializer<T>, val default: T)

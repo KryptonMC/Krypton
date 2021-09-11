@@ -22,13 +22,15 @@ public object SoundEvents {
     @JvmField public val AMBIENT_BASALT_DELTAS_ADDITIONS: SoundEvent = register("ambient.basalt_deltas.additions")
     @JvmField public val AMBIENT_BASALT_DELTAS_LOOP: SoundEvent = register("ambient.basalt_deltas.loop")
     @JvmField public val AMBIENT_BASALT_DELTAS_MOOD: SoundEvent = register("ambient.basalt_deltas.mood")
-    @JvmField public val AMBIENT_CRIMSON_FOREST_ADDITIONS: SoundEvent = register("ambient.crimson_forest.additions")
+    @JvmField public val AMBIENT_CRIMSON_FOREST_ADDITIONS: SoundEvent =
+        register("ambient.crimson_forest.additions")
     @JvmField public val AMBIENT_CRIMSON_FOREST_LOOP: SoundEvent = register("ambient.crimson_forest.loop")
     @JvmField public val AMBIENT_CRIMSON_FOREST_MOOD: SoundEvent = register("ambient.crimson_forest.mood")
     @JvmField public val AMBIENT_NETHER_WASTES_ADDITIONS: SoundEvent = register("ambient.nether_wastes.additions")
     @JvmField public val AMBIENT_NETHER_WASTES_LOOP: SoundEvent = register("ambient.nether_wastes.loop")
     @JvmField public val AMBIENT_NETHER_WASTES_MOOD: SoundEvent = register("ambient.nether_wastes.mood")
-    @JvmField public val AMBIENT_SOUL_SAND_VALLEY_ADDITIONS: SoundEvent = register("ambient.soul_sand_valley.additions")
+    @JvmField public val AMBIENT_SOUL_SAND_VALLEY_ADDITIONS: SoundEvent =
+        register("ambient.soul_sand_valley.additions")
     @JvmField public val AMBIENT_SOUL_SAND_VALLEY_LOOP: SoundEvent = register("ambient.soul_sand_valley.loop")
     @JvmField public val AMBIENT_SOUL_SAND_VALLEY_MOOD: SoundEvent = register("ambient.soul_sand_valley.mood")
     @JvmField public val AMBIENT_WARPED_FOREST_ADDITIONS: SoundEvent = register("ambient.warped_forest.additions")
@@ -37,9 +39,12 @@ public object SoundEvents {
     @JvmField public val AMBIENT_UNDERWATER_ENTER: SoundEvent = register("ambient.underwater.enter")
     @JvmField public val AMBIENT_UNDERWATER_EXIT: SoundEvent = register("ambient.underwater.exit")
     @JvmField public val AMBIENT_UNDERWATER_LOOP: SoundEvent = register("ambient.underwater.loop")
-    @JvmField public val AMBIENT_UNDERWATER_LOOP_ADDITIONS: SoundEvent = register("ambient.underwater.loop.additions")
-    @JvmField public val AMBIENT_UNDERWATER_LOOP_ADDITIONS_RARE: SoundEvent = register("ambient.underwater.loop.additions.rare")
-    @JvmField public val AMBIENT_UNDERWATER_LOOP_ADDITIONS_ULTRA_RARE: SoundEvent = register("ambient.underwater.loop.additions.ultra_rare")
+    @JvmField public val AMBIENT_UNDERWATER_LOOP_ADDITIONS: SoundEvent =
+        register("ambient.underwater.loop.additions")
+    @JvmField public val AMBIENT_UNDERWATER_LOOP_ADDITIONS_RARE: SoundEvent =
+        register("ambient.underwater.loop.additions.rare")
+    @JvmField public val AMBIENT_UNDERWATER_LOOP_ADDITIONS_ULTRA_RARE: SoundEvent =
+        register("ambient.underwater.loop.additions.ultra_rare")
     @JvmField public val AMETHYST_BLOCK_BREAK: SoundEvent = register("block.amethyst_block.break")
     @JvmField public val AMETHYST_BLOCK_CHIME: SoundEvent = register("block.amethyst_block.chime")
     @JvmField public val AMETHYST_BLOCK_FALL: SoundEvent = register("block.amethyst_block.fall")
@@ -163,10 +168,13 @@ public object SoundEvents {
     @JvmField public val BOTTLE_FILL_DRAGON_BREATH: SoundEvent = register("item.bottle.fill_dragonbreath")
     @JvmField public val BREWING_STAND_BREW: SoundEvent = register("block.brewing_stand.brew")
     @JvmField public val BUBBLE_COLUMN_BUBBLE_POP: SoundEvent = register("block.bubble_column.bubble_pop")
-    @JvmField public val BUBBLE_COLUMN_UPWARDS_AMBIENT: SoundEvent = register("block.bubble_column.upwards_ambient")
+    @JvmField public val BUBBLE_COLUMN_UPWARDS_AMBIENT: SoundEvent =
+        register("block.bubble_column.upwards_ambient")
     @JvmField public val BUBBLE_COLUMN_UPWARDS_INSIDE: SoundEvent = register("block.bubble_column.upwards_inside")
-    @JvmField public val BUBBLE_COLUMN_WHIRLPOOL_AMBIENT: SoundEvent = register("block.bubble_column.whirlpool_ambient")
-    @JvmField public val BUBBLE_COLUMN_WHIRLPOOL_INSIDE: SoundEvent = register("block.bubble_column.whirlpool_inside")
+    @JvmField public val BUBBLE_COLUMN_WHIRLPOOL_AMBIENT: SoundEvent =
+        register("block.bubble_column.whirlpool_ambient")
+    @JvmField public val BUBBLE_COLUMN_WHIRLPOOL_INSIDE: SoundEvent =
+        register("block.bubble_column.whirlpool_inside")
     @JvmField public val BUCKET_EMPTY: SoundEvent = register("item.bucket.empty")
     @JvmField public val BUCKET_EMPTY_AXOLOTL: SoundEvent = register("item.bucket.empty_axolotl")
     @JvmField public val BUCKET_EMPTY_FISH: SoundEvent = register("item.bucket.empty_fish")
@@ -311,8 +319,10 @@ public object SoundEvents {
     @JvmField public val POINTED_DRIPSTONE_LAND: SoundEvent = register("block.pointed_dripstone.land")
     @JvmField public val POINTED_DRIPSTONE_DRIP_LAVA: SoundEvent = register("block.pointed_dripstone.drip_lava")
     @JvmField public val POINTED_DRIPSTONE_DRIP_WATER: SoundEvent = register("block.pointed_dripstone.drip_water")
-    @JvmField public val POINTED_DRIPSTONE_DRIP_LAVA_INTO_CAULDRON: SoundEvent = register("block.pointed_dripstone.drip_lava_into_cauldron")
-    @JvmField public val POINTED_DRIPSTONE_DRIP_WATER_INTO_CAULDRON: SoundEvent = register("block.pointed_dripstone.drip_water_into_cauldron")
+    @JvmField public val POINTED_DRIPSTONE_DRIP_LAVA_INTO_CAULDRON: SoundEvent =
+        register("block.pointed_dripstone.drip_lava_into_cauldron")
+    @JvmField public val POINTED_DRIPSTONE_DRIP_WATER_INTO_CAULDRON: SoundEvent =
+        register("block.pointed_dripstone.drip_water_into_cauldron")
     @JvmField public val BIG_DRIPLEAF_TILT_DOWN: SoundEvent = register("block.big_dripleaf.tilt_down")
     @JvmField public val BIG_DRIPLEAF_TILT_UP: SoundEvent = register("block.big_dripleaf.tilt_up")
     @JvmField public val DROWNED_AMBIENT: SoundEvent = register("entity.drowned.ambient")
@@ -378,7 +388,8 @@ public object SoundEvents {
     @JvmField public val FIREWORK_ROCKET_BLAST: SoundEvent = register("entity.firework_rocket.blast")
     @JvmField public val FIREWORK_ROCKET_BLAST_FAR: SoundEvent = register("entity.firework_rocket.blast_far")
     @JvmField public val FIREWORK_ROCKET_LARGE_BLAST: SoundEvent = register("entity.firework_rocket.large_blast")
-    @JvmField public val FIREWORK_ROCKET_LARGE_BLAST_FAR: SoundEvent = register("entity.firework_rocket.large_blast_far")
+    @JvmField public val FIREWORK_ROCKET_LARGE_BLAST_FAR: SoundEvent =
+        register("entity.firework_rocket.large_blast_far")
     @JvmField public val FIREWORK_ROCKET_LAUNCH: SoundEvent = register("entity.firework_rocket.launch")
     @JvmField public val FIREWORK_ROCKET_SHOOT: SoundEvent = register("entity.firework_rocket.shoot")
     @JvmField public val FIREWORK_ROCKET_TWINKLE: SoundEvent = register("entity.firework_rocket.twinkle")
@@ -494,7 +505,8 @@ public object SoundEvents {
     @JvmField public val HOGLIN_AMBIENT: SoundEvent = register("entity.hoglin.ambient")
     @JvmField public val HOGLIN_ANGRY: SoundEvent = register("entity.hoglin.angry")
     @JvmField public val HOGLIN_ATTACK: SoundEvent = register("entity.hoglin.attack")
-    @JvmField public val HOGLIN_CONVERTED_TO_ZOMBIFIED: SoundEvent = register("entity.hoglin.converted_to_zombified")
+    @JvmField public val HOGLIN_CONVERTED_TO_ZOMBIFIED: SoundEvent =
+        register("entity.hoglin.converted_to_zombified")
     @JvmField public val HOGLIN_DEATH: SoundEvent = register("entity.hoglin.death")
     @JvmField public val HOGLIN_HURT: SoundEvent = register("entity.hoglin.hurt")
     @JvmField public val HOGLIN_RETREAT: SoundEvent = register("entity.hoglin.retreat")
@@ -536,7 +548,8 @@ public object SoundEvents {
     @JvmField public val ILLUSIONER_DEATH: SoundEvent = register("entity.illusioner.death")
     @JvmField public val ILLUSIONER_HURT: SoundEvent = register("entity.illusioner.hurt")
     @JvmField public val ILLUSIONER_MIRROR_MOVE: SoundEvent = register("entity.illusioner.mirror_move")
-    @JvmField public val ILLUSIONER_PREPARE_BLINDNESS: SoundEvent = register("entity.illusioner.prepare_blindness")
+    @JvmField public val ILLUSIONER_PREPARE_BLINDNESS: SoundEvent =
+        register("entity.illusioner.prepare_blindness")
     @JvmField public val ILLUSIONER_PREPARE_MIRROR: SoundEvent = register("entity.illusioner.prepare_mirror")
     @JvmField public val INK_SAC_USE: SoundEvent = register("item.ink_sac.use")
     @JvmField public val IRON_DOOR_CLOSE: SoundEvent = register("block.iron_door.close")
@@ -605,8 +618,10 @@ public object SoundEvents {
     @JvmField public val METAL_FALL: SoundEvent = register("block.metal.fall")
     @JvmField public val METAL_HIT: SoundEvent = register("block.metal.hit")
     @JvmField public val METAL_PLACE: SoundEvent = register("block.metal.place")
-    @JvmField public val METAL_PRESSURE_PLATE_CLICK_OFF: SoundEvent = register("block.metal_pressure_plate.click_off")
-    @JvmField public val METAL_PRESSURE_PLATE_CLICK_ON: SoundEvent = register("block.metal_pressure_plate.click_on")
+    @JvmField public val METAL_PRESSURE_PLATE_CLICK_OFF: SoundEvent =
+        register("block.metal_pressure_plate.click_off")
+    @JvmField public val METAL_PRESSURE_PLATE_CLICK_ON: SoundEvent =
+        register("block.metal_pressure_plate.click_on")
     @JvmField public val METAL_STEP: SoundEvent = register("block.metal.step")
     @JvmField public val MINECART_INSIDE_UNDERWATER: SoundEvent = register("entity.minecart.inside.underwater")
     @JvmField public val MINECART_INSIDE: SoundEvent = register("entity.minecart.inside")
@@ -744,7 +759,8 @@ public object SoundEvents {
     @JvmField public val PARROT_IMITATE_BLAZE: SoundEvent = register("entity.parrot.imitate.blaze")
     @JvmField public val PARROT_IMITATE_CREEPER: SoundEvent = register("entity.parrot.imitate.creeper")
     @JvmField public val PARROT_IMITATE_DROWNED: SoundEvent = register("entity.parrot.imitate.drowned")
-    @JvmField public val PARROT_IMITATE_ELDER_GUARDIAN: SoundEvent = register("entity.parrot.imitate.elder_guardian")
+    @JvmField public val PARROT_IMITATE_ELDER_GUARDIAN: SoundEvent =
+        register("entity.parrot.imitate.elder_guardian")
     @JvmField public val PARROT_IMITATE_ENDER_DRAGON: SoundEvent = register("entity.parrot.imitate.ender_dragon")
     @JvmField public val PARROT_IMITATE_ENDERMITE: SoundEvent = register("entity.parrot.imitate.endermite")
     @JvmField public val PARROT_IMITATE_EVOKER: SoundEvent = register("entity.parrot.imitate.evoker")
@@ -769,10 +785,12 @@ public object SoundEvents {
     @JvmField public val PARROT_IMITATE_VINDICATOR: SoundEvent = register("entity.parrot.imitate.vindicator")
     @JvmField public val PARROT_IMITATE_WITCH: SoundEvent = register("entity.parrot.imitate.witch")
     @JvmField public val PARROT_IMITATE_WITHER: SoundEvent = register("entity.parrot.imitate.wither")
-    @JvmField public val PARROT_IMITATE_WITHER_SKELETON: SoundEvent = register("entity.parrot.imitate.wither_skeleton")
+    @JvmField public val PARROT_IMITATE_WITHER_SKELETON: SoundEvent =
+        register("entity.parrot.imitate.wither_skeleton")
     @JvmField public val PARROT_IMITATE_ZOGLIN: SoundEvent = register("entity.parrot.imitate.zoglin")
     @JvmField public val PARROT_IMITATE_ZOMBIE: SoundEvent = register("entity.parrot.imitate.zombie")
-    @JvmField public val PARROT_IMITATE_ZOMBIE_VILLAGER: SoundEvent = register("entity.parrot.imitate.zombie_villager")
+    @JvmField public val PARROT_IMITATE_ZOMBIE_VILLAGER: SoundEvent =
+        register("entity.parrot.imitate.zombie_villager")
     @JvmField public val PARROT_STEP: SoundEvent = register("entity.parrot.step")
     @JvmField public val PHANTOM_AMBIENT: SoundEvent = register("entity.phantom.ambient")
     @JvmField public val PHANTOM_BITE: SoundEvent = register("entity.phantom.bite")
@@ -794,13 +812,15 @@ public object SoundEvents {
     @JvmField public val PIGLIN_HURT: SoundEvent = register("entity.piglin.hurt")
     @JvmField public val PIGLIN_RETREAT: SoundEvent = register("entity.piglin.retreat")
     @JvmField public val PIGLIN_STEP: SoundEvent = register("entity.piglin.step")
-    @JvmField public val PIGLIN_CONVERTED_TO_ZOMBIFIED: SoundEvent = register("entity.piglin.converted_to_zombified")
+    @JvmField public val PIGLIN_CONVERTED_TO_ZOMBIFIED: SoundEvent =
+        register("entity.piglin.converted_to_zombified")
     @JvmField public val PIGLIN_BRUTE_AMBIENT: SoundEvent = register("entity.piglin_brute.ambient")
     @JvmField public val PIGLIN_BRUTE_ANGRY: SoundEvent = register("entity.piglin_brute.angry")
     @JvmField public val PIGLIN_BRUTE_DEATH: SoundEvent = register("entity.piglin_brute.death")
     @JvmField public val PIGLIN_BRUTE_HURT: SoundEvent = register("entity.piglin_brute.hurt")
     @JvmField public val PIGLIN_BRUTE_STEP: SoundEvent = register("entity.piglin_brute.step")
-    @JvmField public val PIGLIN_BRUTE_CONVERTED_TO_ZOMBIFIED: SoundEvent = register("entity.piglin_brute.converted_to_zombified")
+    @JvmField public val PIGLIN_BRUTE_CONVERTED_TO_ZOMBIFIED: SoundEvent =
+        register("entity.piglin_brute.converted_to_zombified")
     @JvmField public val PILLAGER_AMBIENT: SoundEvent = register("entity.pillager.ambient")
     @JvmField public val PILLAGER_CELEBRATE: SoundEvent = register("entity.pillager.celebrate")
     @JvmField public val PILLAGER_DEATH: SoundEvent = register("entity.pillager.death")
@@ -821,7 +841,8 @@ public object SoundEvents {
     @JvmField public val PLAYER_HURT_DROWN: SoundEvent = register("entity.player.hurt_drown")
     @JvmField public val PLAYER_HURT_FREEZE: SoundEvent = register("entity.player.hurt_freeze")
     @JvmField public val PLAYER_HURT_ON_FIRE: SoundEvent = register("entity.player.hurt_on_fire")
-    @JvmField public val PLAYER_HURT_SWEET_BERRY_BUSH: SoundEvent = register("entity.player.hurt_sweet_berry_bush")
+    @JvmField public val PLAYER_HURT_SWEET_BERRY_BUSH: SoundEvent =
+        register("entity.player.hurt_sweet_berry_bush")
     @JvmField public val PLAYER_LEVELUP: SoundEvent = register("entity.player.levelup")
     @JvmField public val PLAYER_SMALL_FALL: SoundEvent = register("entity.player.small_fall")
     @JvmField public val PLAYER_SPLASH: SoundEvent = register("entity.player.splash")
@@ -945,7 +966,8 @@ public object SoundEvents {
     @JvmField public val SKELETON_HORSE_DEATH: SoundEvent = register("entity.skeleton_horse.death")
     @JvmField public val SKELETON_HORSE_HURT: SoundEvent = register("entity.skeleton_horse.hurt")
     @JvmField public val SKELETON_HORSE_SWIM: SoundEvent = register("entity.skeleton_horse.swim")
-    @JvmField public val SKELETON_HORSE_AMBIENT_WATER: SoundEvent = register("entity.skeleton_horse.ambient_water")
+    @JvmField public val SKELETON_HORSE_AMBIENT_WATER: SoundEvent =
+        register("entity.skeleton_horse.ambient_water")
     @JvmField public val SKELETON_HORSE_GALLOP_WATER: SoundEvent = register("entity.skeleton_horse.gallop_water")
     @JvmField public val SKELETON_HORSE_JUMP_WATER: SoundEvent = register("entity.skeleton_horse.jump_water")
     @JvmField public val SKELETON_HORSE_STEP_WATER: SoundEvent = register("entity.skeleton_horse.step_water")
@@ -1029,8 +1051,10 @@ public object SoundEvents {
     @JvmField public val STONE_FALL: SoundEvent = register("block.stone.fall")
     @JvmField public val STONE_HIT: SoundEvent = register("block.stone.hit")
     @JvmField public val STONE_PLACE: SoundEvent = register("block.stone.place")
-    @JvmField public val STONE_PRESSURE_PLATE_CLICK_OFF: SoundEvent = register("block.stone_pressure_plate.click_off")
-    @JvmField public val STONE_PRESSURE_PLATE_CLICK_ON: SoundEvent = register("block.stone_pressure_plate.click_on")
+    @JvmField public val STONE_PRESSURE_PLATE_CLICK_OFF: SoundEvent =
+        register("block.stone_pressure_plate.click_off")
+    @JvmField public val STONE_PRESSURE_PLATE_CLICK_ON: SoundEvent =
+        register("block.stone_pressure_plate.click_on")
     @JvmField public val STONE_STEP: SoundEvent = register("block.stone.step")
     @JvmField public val STRAY_AMBIENT: SoundEvent = register("entity.stray.ambient")
     @JvmField public val STRAY_DEATH: SoundEvent = register("entity.stray.death")
@@ -1038,7 +1062,8 @@ public object SoundEvents {
     @JvmField public val STRAY_STEP: SoundEvent = register("entity.stray.step")
     @JvmField public val SWEET_BERRY_BUSH_BREAK: SoundEvent = register("block.sweet_berry_bush.break")
     @JvmField public val SWEET_BERRY_BUSH_PLACE: SoundEvent = register("block.sweet_berry_bush.place")
-    @JvmField public val SWEET_BERRY_BUSH_PICK_BERRIES: SoundEvent = register("block.sweet_berry_bush.pick_berries")
+    @JvmField public val SWEET_BERRY_BUSH_PICK_BERRIES: SoundEvent =
+        register("block.sweet_berry_bush.pick_berries")
     @JvmField public val THORNS_HIT: SoundEvent = register("enchant.thorns.hit")
     @JvmField public val TNT_PRIMED: SoundEvent = register("entity.tnt.primed")
     @JvmField public val TOTEM_USE: SoundEvent = register("item.totem.use")
@@ -1078,7 +1103,8 @@ public object SoundEvents {
     @JvmField public val UI_BUTTON_CLICK: SoundEvent = register("ui.button.click")
     @JvmField public val UI_LOOM_SELECT_PATTERN: SoundEvent = register("ui.loom.select_pattern")
     @JvmField public val UI_LOOM_TAKE_RESULT: SoundEvent = register("ui.loom.take_result")
-    @JvmField public val UI_CARTOGRAPHY_TABLE_TAKE_RESULT: SoundEvent = register("ui.cartography_table.take_result")
+    @JvmField public val UI_CARTOGRAPHY_TABLE_TAKE_RESULT: SoundEvent =
+        register("ui.cartography_table.take_result")
     @JvmField public val UI_STONECUTTER_TAKE_RESULT: SoundEvent = register("ui.stonecutter.take_result")
     @JvmField public val UI_STONECUTTER_SELECT_RECIPE: SoundEvent = register("ui.stonecutter.select_recipe")
     @JvmField public val UI_TOAST_CHALLENGE_COMPLETE: SoundEvent = register("ui.toast.challenge_complete")
@@ -1122,7 +1148,8 @@ public object SoundEvents {
     @JvmField public val WANDERING_TRADER_DEATH: SoundEvent = register("entity.wandering_trader.death")
     @JvmField public val WANDERING_TRADER_DISAPPEARED: SoundEvent = register("entity.wandering_trader.disappeared")
     @JvmField public val WANDERING_TRADER_DRINK_MILK: SoundEvent = register("entity.wandering_trader.drink_milk")
-    @JvmField public val WANDERING_TRADER_DRINK_POTION: SoundEvent = register("entity.wandering_trader.drink_potion")
+    @JvmField public val WANDERING_TRADER_DRINK_POTION: SoundEvent =
+        register("entity.wandering_trader.drink_potion")
     @JvmField public val WANDERING_TRADER_HURT: SoundEvent = register("entity.wandering_trader.hurt")
     @JvmField public val WANDERING_TRADER_NO: SoundEvent = register("entity.wandering_trader.no")
     @JvmField public val WANDERING_TRADER_REAPPEARED: SoundEvent = register("entity.wandering_trader.reappeared")
@@ -1171,8 +1198,10 @@ public object SoundEvents {
     @JvmField public val WOOD_FALL: SoundEvent = register("block.wood.fall")
     @JvmField public val WOOD_HIT: SoundEvent = register("block.wood.hit")
     @JvmField public val WOOD_PLACE: SoundEvent = register("block.wood.place")
-    @JvmField public val WOODEN_PRESSURE_PLATE_CLICK_OFF: SoundEvent = register("block.wooden_pressure_plate.click_off")
-    @JvmField public val WOODEN_PRESSURE_PLATE_CLICK_ON: SoundEvent = register("block.wooden_pressure_plate.click_on")
+    @JvmField public val WOODEN_PRESSURE_PLATE_CLICK_OFF: SoundEvent =
+        register("block.wooden_pressure_plate.click_off")
+    @JvmField public val WOODEN_PRESSURE_PLATE_CLICK_ON: SoundEvent =
+        register("block.wooden_pressure_plate.click_on")
     @JvmField public val WOOD_STEP: SoundEvent = register("block.wood.step")
     @JvmField public val WOOL_BREAK: SoundEvent = register("block.wool.break")
     @JvmField public val WOOL_FALL: SoundEvent = register("block.wool.fall")
@@ -1210,5 +1239,8 @@ public object SoundEvents {
     @JvmField public val ZOMBIE_VILLAGER_STEP: SoundEvent = register("entity.zombie_villager.step")
 
     // @formatter:on
-    private fun register(key: String): SoundEvent = Registries.register(Registries.SOUND_EVENT, key, SoundEvent(Key.key(key)))
+    private fun register(name: String): SoundEvent {
+        val key = Key.key(name)
+        return Registries.register(Registries.SOUND_EVENT, key, SoundEvent(key))
+    }
 }

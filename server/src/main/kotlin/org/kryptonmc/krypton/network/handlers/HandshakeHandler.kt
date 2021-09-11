@@ -67,13 +67,13 @@ class HandshakeHandler(
         // This split here is checking for a null split list of strings, which will be sent by BungeeCord
         // (and can also be sent by Velocity) as part of their legacy forwarding mechanisms.
         if (packet.address.split('\u0000').size > 1 && server.config.proxy.mode != ForwardingMode.LEGACY) {
-            LOGGER.error("User attempted legacy forwarded connection (most likely from a proxy such as BungeeCord or " +
-                    "Velocity), but this server is not configured to use legacy forwarding!")
-            LOGGER.info("If you wish to enable legacy forwarding, please do so in the configuration file by setting " +
-                    "\"mode\" to \"LEGACY\" under the \"proxy\" section.")
+            LOGGER.error("User attempted legacy forwarded connection (most likely from a proxy such as BungeeCord " +
+                    "or Velocity), but this server is not configured to use legacy forwarding!")
+            LOGGER.info("If you wish to enable legacy forwarding, please do so in the configuration file by " +
+                    "setting \"mode\" to \"LEGACY\" under the \"proxy\" section.")
             disconnect(
-                text("It appears that you have been forwarded using legacy forwarding by a proxy, but this " +
-                        "server is not configured")
+                text("It appears that you have been forwarded using legacy forwarding by a proxy, but " +
+                        "this server is not configured")
                     .append(newline())
                     .append(text("to support legacy forwarding. Please contact a server administrator."))
             )
@@ -84,7 +84,9 @@ class HandshakeHandler(
             val data = try {
                 LegacyForwardedData.parse(packet.address)
             } catch (exception: Exception) {
-                disconnect(text("Failed to decode legacy handshake data! Please report this to an administrator!"))
+                disconnect(text(
+                    "Failed to decode legacy handshake data! Please report this to an administrator!"
+                ))
                 LOGGER.error("Failed to decode legacy forwarded handshake data!", exception)
                 return
             }
@@ -94,7 +96,9 @@ class HandshakeHandler(
                 handleStateChange(packet.nextState, data)
             } else {
                 // If the data was null then we weren't sent what we needed
-                disconnect(text("This server cannot be direct connected to whilst it has proxy forwarding enabled."))
+                disconnect(text(
+                    "This server cannot be direct connected to whilst it has proxy forwarding enabled."
+                ))
                 LOGGER.warn("Attempted direct connection from ${session.channel.remoteAddress()} when legacy " +
                         "forwarding is enabled!")
                 LOGGER.info("If you wish to enable legacy forwarding, please do so in the configuration file by " +

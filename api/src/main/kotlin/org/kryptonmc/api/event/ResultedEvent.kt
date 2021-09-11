@@ -30,7 +30,8 @@ public interface ResultedEvent<R : ResultedEvent.Result> {
     public interface Result {
 
         /**
-         * If this result represents an allowed (true), or denied (false) state.
+         * If this result represents an allowed (true), or denied (false)
+         * state.
          */
         public val isAllowed: Boolean
     }

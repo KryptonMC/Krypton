@@ -16,8 +16,8 @@ import org.kryptonmc.api.entity.Entity
 public interface FishingHook : Projectile {
 
     /**
-     * The entity that is currently hooked by this hook, or null if this hook is not
-     * hooking an entity.
+     * The entity that is currently hooked by this hook, or null if this hook
+     * is not hooking an entity.
      */
     public val hooked: Entity?
 
@@ -37,7 +37,8 @@ public interface FishingHook : Projectile {
     public enum class State {
 
         /**
-         * The rod has been cast and the hook is flying in the air across the water.
+         * The rod has been cast and the hook is flying in the air across the
+         * water.
          */
         FLYING,
 

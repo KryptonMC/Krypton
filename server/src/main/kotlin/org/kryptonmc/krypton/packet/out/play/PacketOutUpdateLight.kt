@@ -24,7 +24,8 @@ import org.kryptonmc.krypton.util.writeSingletonLongArray
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 
-class PacketOutUpdateLight(
+@JvmRecord
+data class PacketOutUpdateLight(
     private val chunk: KryptonChunk,
     private val trustEdges: Boolean = true
 ) : Packet {

@@ -24,7 +24,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 import kotlin.random.Random
 
-class PacketOutPlayerPositionAndLook(
+@JvmRecord
+data class PacketOutPlayerPositionAndLook(
     private val location: Location,
     private val flags: Int = 0,
     private val teleportId: Int = Random.nextInt(1000),

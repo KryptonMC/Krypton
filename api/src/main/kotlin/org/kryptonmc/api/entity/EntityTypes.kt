@@ -38,7 +38,8 @@ import org.kryptonmc.api.registry.Registries
 @Suppress("UndocumentedPublicProperty")
 public object EntityTypes {
 
-    // TODO: Make each of these be of their respective entity types when they exist
+    // TODO: Make each of these be of their respective entity types when they
+    // exist
     // @formatter:off
     @JvmField public val AREA_EFFECT_CLOUD: EntityType<AreaEffectCloud> = register("area_effect_cloud")
     @JvmField public val ARMOR_STAND: EntityType<ArmorStand> = register("armor_stand")

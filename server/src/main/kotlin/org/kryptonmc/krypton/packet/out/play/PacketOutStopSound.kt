@@ -24,7 +24,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeKey
 
-class PacketOutStopSound(private val stop: SoundStop) : Packet {
+@JvmRecord
+data class PacketOutStopSound(private val stop: SoundStop) : Packet {
 
     override fun write(buf: ByteBuf) {
         val source = stop.source()

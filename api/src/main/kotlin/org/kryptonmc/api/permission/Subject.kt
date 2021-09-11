@@ -29,7 +29,8 @@ public fun interface Subject : PermissionChecker {
     public fun getPermissionValue(permission: String): TriState
 
     /**
-     * Returns true if this subject has the given [permission], false otherwise.
+     * Returns true if this subject has the given [permission], false
+     * otherwise.
      *
      * @param permission the permission
      * @return true if this subject has the permission, false otherwise

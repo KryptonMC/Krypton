@@ -27,7 +27,9 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar
 import java.util.Collections
 import java.util.UUID
 
-object BossBarManager : BossBar.Listener, MutableMap<BossBar, BossBarManager.BossBarHolder> by MapMaker().weakKeys().makeMap() {
+object BossBarManager :
+    BossBar.Listener,
+    MutableMap<BossBar, BossBarManager.BossBarHolder> by MapMaker().weakKeys().makeMap() {
 
     private fun getOrCreate(bar: BossBar) = getOrPut(bar) { BossBarHolder(bar) }.apply { register() }
 

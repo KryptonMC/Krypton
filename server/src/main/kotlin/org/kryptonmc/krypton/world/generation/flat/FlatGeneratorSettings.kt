@@ -73,17 +73,21 @@ class FlatGeneratorSettings(
 
         val CODEC: Codec<FlatGeneratorSettings> = RecordCodecBuilder.create<FlatGeneratorSettings> { instance ->
             instance.group(
-                InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes").forGetter(FlatGeneratorSettings::biomes),
+                InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes")
+                    .forGetter(FlatGeneratorSettings::biomes),
                 StructureSettings.CODEC.fieldOf("structures").forGetter(FlatGeneratorSettings::structureSettings),
                 FlatLayer.CODEC.listOf().fieldOf("layers").forGetter(FlatGeneratorSettings::layers),
                 Codec.BOOL.fieldOf("lakes").orElse(false).forGetter(FlatGeneratorSettings::addLakes),
                 Codec.BOOL.fieldOf("features").orElse(false).forGetter(FlatGeneratorSettings::decorate),
-                KryptonBiome.CODEC.optionalFieldOf("biome").orElseGet { Optional.empty() }.forGetter { Optional.of(it.biome) },
+                KryptonBiome.CODEC.optionalFieldOf("biome")
+                    .orElseGet { Optional.empty() }
+                    .forGetter { Optional.of(it.biome) },
             ).apply(instance, ::FlatGeneratorSettings)
         }.comapFlatMap(::validateHeight, Function.identity()).stable()
 
         fun default(biomes: KryptonRegistry<KryptonBiome>): FlatGeneratorSettings {
-            val structureSettings = StructureSettings(mapOf(), Optional.of(StructureSettings.DEFAULT_STRONGHOLD)) // TODO: Add village structure to the map
+            // TODO: Add village structure to the map
+            val structureSettings = StructureSettings(mapOf(), Optional.of(StructureSettings.DEFAULT_STRONGHOLD))
             return FlatGeneratorSettings(biomes, structureSettings).apply {
                 this.biome = biomes[BiomeKeys.PLAINS]!!
                 layers.add(FlatLayer(Blocks.BEDROCK, 1))
@@ -96,7 +100,8 @@ class FlatGeneratorSettings(
         private fun validateHeight(settings: FlatGeneratorSettings): DataResult<FlatGeneratorSettings> {
             val heightSum = settings.layers.sumOf { it.height }
             return if (heightSum > KryptonDimensionType.Y_SIZE) {
-                DataResult.error("Sum of layer heights is greater than the maximum sum of heights ${KryptonDimensionType.Y_SIZE}!", settings)
+                DataResult.error("Sum of layer heights is greater than the maximum sum of heights " +
+                        "${KryptonDimensionType.Y_SIZE}!", settings)
             } else {
                 DataResult.success(settings)
             }

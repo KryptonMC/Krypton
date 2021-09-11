@@ -56,11 +56,12 @@ public interface Scoreboard {
     public fun registerObjective(objective: Objective): Objective
 
     /**
-     * Retrieves a [Team] by its name, or null if there is no team with the specified
-     * [name].
+     * Retrieves a [Team] by its name, or null if there is no team with the
+     * specified [name].
      *
      * @param name the name of the team
-     * @return the team with the given [name], or null if there isn't a team with the [name]
+     * @return the team with the given [name], or null if there isn't a team
+     * with the [name]
      */
     public fun team(name: String): Team?
 
@@ -68,8 +69,8 @@ public interface Scoreboard {
      * Retrieves the given [player]'s [Team] in this [Scoreboard].
      *
      * @param player the player to find the team for
-     * @return the team of the given [player], or null, if the specified player is not in a
-     * [Team] in this [Scoreboard]
+     * @return the team of the given [player], or null, if the specified player
+     * is not in a [Team] in this [Scoreboard]
      */
     public fun playerTeam(player: Player): Team?
 

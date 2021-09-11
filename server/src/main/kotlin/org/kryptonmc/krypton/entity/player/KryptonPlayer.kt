@@ -154,11 +154,12 @@ class KryptonPlayer(
         }
 
     /**
-     * Doing this avoids a strange issue, where loading the player data will set the game mode value,
-     * which in turn updates the abilities, and sends the abilities packet before the client has
-     * constructed a local player (done when we send the join game packet), which in turn causes
-     * a [NullPointerException] to occur client-side because it attempts to get the abilities
-     * from a null player.
+     * Doing this avoids a strange issue, where loading the player data will
+     * set the game mode value, which in turn updates the abilities, and sends
+     * the abilities packet before the client has constructed a local player
+     * (done when we send the join game packet), which in turn causes a
+     * [NullPointerException] to occur client-side because it attempts to get
+     * the abilities from a null player.
      */
     private var internalGamemode = Gamemode.SURVIVAL
 
@@ -231,12 +232,24 @@ class KryptonPlayer(
         }.baseValue = walkingSpeed.toDouble()
 
         // NBT data for entities sitting on the player's shoulders, e.g. parrots
-        if (tag.contains("ShoulderEntityLeft", CompoundTag.ID)) leftShoulder = tag.getCompound("ShoulderEntityLeft")
-        if (tag.contains("ShoulderEntityRight", CompoundTag.ID)) rightShoulder = tag.getCompound("ShoulderEntityRight")
+        if (tag.contains("ShoulderEntityLeft", CompoundTag.ID)) {
+            leftShoulder = tag.getCompound("ShoulderEntityLeft")
+        }
+        if (tag.contains("ShoulderEntityRight", CompoundTag.ID)) {
+            rightShoulder = tag.getCompound("ShoulderEntityRight")
+        }
 
         // Respawn data
-        if (tag.contains("SpawnX", 99) && tag.contains("SpawnY", 99) && tag.contains("SpawnZ", 99)) {
-            respawnPosition = Vector3i(tag.getInt("SpawnX"), tag.getInt("SpawnY"), tag.getInt("SpawnZ"))
+        if (
+            tag.contains("SpawnX", 99) &&
+            tag.contains("SpawnY", 99) &&
+            tag.contains("SpawnZ", 99)
+        ) {
+            respawnPosition = Vector3i(
+                tag.getInt("SpawnX"),
+                tag.getInt("SpawnY"),
+                tag.getInt("SpawnZ")
+            )
             respawnForced = tag.getBoolean("SpawnForced")
             respawnAngle = tag.getFloat("SpawnAngle")
             if (tag.containsKey("SpawnDimension")) {
@@ -334,8 +347,8 @@ class KryptonPlayer(
             "Channel must be registered with the server to have data sent over it!"
         }
         if (channel in DEBUG_CHANNELS) {
-            SERVER_LOGGER.warn("A plugin attempted to send a plugin message on a debug channel." +
-                    "These channels will only function correctly with a modified client.")
+            SERVER_LOGGER.warn("A plugin attempted to send a plugin message on a debug channel. These channels will " +
+                    "only function correctly with a modified client.")
         }
         session.sendPacket(PacketOutPluginMessage(channel, message))
     }
@@ -405,7 +418,9 @@ class KryptonPlayer(
 
     override fun identity() = Identity.identity(uuid)
 
-    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(ShowEntity.of(key("minecraft", "player"), uuid, displayName))
+    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(
+        op.apply(ShowEntity.of(key("minecraft", "player"), uuid, displayName))
+    )
 
     private fun updateAbilities() {
         when (internalGamemode) {
@@ -517,7 +532,8 @@ class KryptonPlayer(
 
     override fun incrementStatistic(statistic: Statistic<*>, amount: Int) = statistics.increment(statistic, amount)
 
-    override fun incrementStatistic(key: Key, amount: Int) = incrementStatistic(KryptonStatisticTypes.CUSTOM[key], amount)
+    override fun incrementStatistic(key: Key, amount: Int) =
+        incrementStatistic(KryptonStatisticTypes.CUSTOM[key], amount)
 
     override fun decrementStatistic(statistic: Statistic<*>, amount: Int) = statistics.decrement(statistic, amount)
 

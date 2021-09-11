@@ -22,8 +22,8 @@ public interface RegistryManager {
     public val parent: Registry<out Registry<out Any>>
 
     /**
-     * Gets the existing registry with the given resource [key], or returns null
-     * if there is no existing registry with the given resource [key].
+     * Gets the existing registry with the given resource [key], or returns
+     * null if there is no existing registry with the given resource [key].
      *
      * @param key the key
      * @return the existing registry, or null if not present
@@ -43,8 +43,8 @@ public interface RegistryManager {
     public fun <T : Any> getDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = parent[key] as? DefaultedRegistry<T>
 
     /**
-     * Registers a new entry to the given [registry], with the given [key] mapped to
-     * the given [value].
+     * Registers a new entry to the given [registry], with the given [key]
+     * mapped to the given [value].
      *
      * @param registry the registry to register to
      * @param key the key
@@ -53,8 +53,8 @@ public interface RegistryManager {
     public fun <T : Any> register(registry: Registry<T>, key: String, value: T): T = register(registry, Key.key(key), value)
 
     /**
-     * Registers a new entry to the given [registry], with the given [key] mapped to
-     * the given [value].
+     * Registers a new entry to the given [registry], with the given [key]
+     * mapped to the given [value].
      *
      * @param registry the registry to register to
      * @param key the key
@@ -63,8 +63,8 @@ public interface RegistryManager {
     public fun <T : Any> register(registry: Registry<T>, key: Key, value: T): T
 
     /**
-     * Registers a new entry to the given [registry], with the given [key] mapped to
-     * the given [value].
+     * Registers a new entry to the given [registry], with the given [key]
+     * mapped to the given [value].
      *
      * @param registry the registry to register to
      * @param id the ID of the entry in the registry
@@ -74,8 +74,8 @@ public interface RegistryManager {
     public fun <T : Any> register(registry: Registry<T>, id: Int, key: String, value: T): T = register(registry, id, Key.key(key), value)
 
     /**
-     * Registers a new entry to the given [registry], with the given [key] mapped to
-     * the given [value].
+     * Registers a new entry to the given [registry], with the given [key]
+     * mapped to the given [value].
      *
      * @param registry the registry to register to
      * @param id the ID of the entry in the registry
@@ -93,7 +93,8 @@ public interface RegistryManager {
     public fun <T : Any> create(key: ResourceKey<out Registry<T>>): Registry<T>
 
     /**
-     * Creates a new registry with the given registry [key], with a [defaultKey].
+     * Creates a new registry with the given registry [key], with a
+     * [defaultKey].
      *
      * @param key the registry key
      * @param defaultKey the default key

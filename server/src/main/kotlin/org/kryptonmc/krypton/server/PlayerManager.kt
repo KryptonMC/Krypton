@@ -155,13 +155,19 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         session.sendPacket(PacketOutDeclareRecipes)
         session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
         session.sendPacket(PacketOutTags)
-        session.sendPacket(PacketOutEntityStatus(player.id, if (world.gameRules[GameRules.REDUCED_DEBUG_INFO]) 22 else 23))
+        session.sendPacket(PacketOutEntityStatus(
+            player.id,
+            if (world.gameRules[GameRules.REDUCED_DEBUG_INFO]) 22 else 23)
+        )
         sendCommands(player)
         player.statistics.invalidate()
         invalidateStatus()
 
         // Fire join event and send result message
-        val joinResult = server.eventManager.fireSync(JoinEvent(player, !profile.name.equals(name, true))).result
+        val joinResult = server.eventManager.fireSync(JoinEvent(
+            player,
+            !profile.name.equals(name, true)
+        )).result
         if (!joinResult.isAllowed) {
             // Use default reason if denied without specified reason
             val reason = joinResult.message.takeIf { it != Component.empty() }
@@ -261,8 +267,21 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         if (offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ < radius * radius) it.session.sendPacket(packet)
     }
 
-    fun broadcast(packet: Packet, world: KryptonWorld, position: Vector3i, radius: Double, except: KryptonPlayer) =
-        broadcast(packet, world, position.x().toDouble(), position.y().toDouble(), position.z().toDouble(), radius, except)
+    fun broadcast(
+        packet: Packet,
+        world: KryptonWorld,
+        position: Vector3i,
+        radius: Double,
+        except: KryptonPlayer
+    ) = broadcast(
+        packet,
+        world,
+        position.x().toDouble(),
+        position.y().toDouble(),
+        position.z().toDouble(),
+        radius,
+        except
+    )
 
     fun disconnectAll() = players.forEach {
         it.session.disconnect(Component.translatable("multiplayer.disconnect.server_shutdown"))
@@ -337,8 +356,14 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         ))
         if (world.isRaining) {
             player.session.sendPacket(PacketOutChangeGameState(GameState.BEGIN_RAINING))
-            player.session.sendPacket(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, world.getRainLevel(1F)))
-            player.session.sendPacket(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, world.getThunderLevel(1F)))
+            player.session.sendPacket(PacketOutChangeGameState(
+                GameState.RAIN_LEVEL_CHANGE,
+                world.getRainLevel(1F)
+            ))
+            player.session.sendPacket(PacketOutChangeGameState(
+                GameState.THUNDER_LEVEL_CHANGE,
+                world.getThunderLevel(1F)
+            ))
         }
     }
 

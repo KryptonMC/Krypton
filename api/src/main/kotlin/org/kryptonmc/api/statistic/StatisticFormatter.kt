@@ -26,7 +26,8 @@ public fun interface StatisticFormatter {
     public companion object {
 
         /**
-         * The decimal format used for formatting decimals in various built-in formatters.
+         * The decimal format used for formatting decimals in various built-in
+         * formatters.
          */
         @JvmField
         public val DECIMAL_FORMAT: DecimalFormat = DecimalFormat("########0.00").apply {
@@ -50,7 +51,8 @@ public fun interface StatisticFormatter {
          * metric units.
          *
          * This follows the following condition chain:
-         * - If kilometres is > 0.5, uses the kilometres part with the " km" suffix
+         * - If kilometres is > 0.5, uses the kilometres part with the " km"
+         * suffix
          * - If metres is > 0.5, uses the metres part with the " m" suffix
          * - Else, uses the value with the " cm" suffix
          */
@@ -73,7 +75,8 @@ public fun interface StatisticFormatter {
          * - If days is > 0.5, uses the days part with the " d" suffix
          * - If hours is > 0.5, uses the hours part with the " h" suffix
          * - If minutes is > 0.5, uses the minutes part with the " m" suffix
-         * - Else, this ticks amount is converted to seconds and formatted with the suffix " s"
+         * - Else, this ticks amount is converted to seconds and formatted with
+         * the suffix " s"
          */
         @JvmField
         public val TIME: StatisticFormatter = StatisticFormatter {

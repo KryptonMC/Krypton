@@ -25,7 +25,8 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
 
-class PacketOutBlockChange(
+@JvmRecord
+data class PacketOutBlockChange(
     private val block: Block,
     private val x: Int,
     private val y: Int,

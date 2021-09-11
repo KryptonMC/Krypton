@@ -9,8 +9,9 @@
 package org.kryptonmc.api
 
 /**
- * Provides information about the current platform this is running on, such as the
- * name and version, if it is considered stable, and the target Minecraft version.
+ * Provides information about the current platform this is running on, such as
+ * the name and version, if it is considered stable, and the target Minecraft
+ * version.
  */
 public interface Platform {
 

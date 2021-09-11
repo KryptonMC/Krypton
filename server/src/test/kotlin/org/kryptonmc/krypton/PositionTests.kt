@@ -44,26 +44,46 @@ class PositionTests {
 
     @Test
     fun `test addition and subtraction`() {
-        assertEquals(Vector(position.x + other.x, position.y + other.y, position.z + other.z), position + other)
-        assertEquals(Vector(position.x - other.x, position.y - other.y, position.z - other.z), position - other)
+        assertEquals(Vector(
+            position.x + other.x,
+            position.y + other.y,
+            position.z + other.z
+        ), position + other)
+        assertEquals(Vector(
+            position.x - other.x,
+            position.y - other.y,
+            position.z - other.z
+        ), position - other)
     }
 
     @Test
     fun `test multiplication and division`() {
         val multiplied = Vector(position.x * 2, position.y * 2, position.z * 2)
-        assertEquals(Vector(position.x * other.x, position.y * other.y, position.z * other.z), position * other)
+        assertEquals(Vector(
+            position.x * other.x,
+            position.y * other.y,
+            position.z * other.z
+        ), position * other)
         assertEquals(multiplied, position * 2)
         assertEquals(multiplied, position * 2.0)
         assertEquals(multiplied, position * 2F)
 
         val divided = Vector(position.x / 2, position.y / 2, position.z / 2)
-        assertEquals(Vector(position.x / other.x, position.y / other.y, position.z / other.z), position / other)
+        assertEquals(Vector(
+            position.x / other.x,
+            position.y / other.y,
+            position.z / other.z
+        ), position / other)
         assertEquals(divided, position / 2)
         assertEquals(divided, position / 2.0)
         assertEquals(divided, position / 2F)
 
         val modulo = Vector(position.x % 2, position.y % 2, position.z % 2)
-        assertEquals(Vector(position.x % other.x, position.y % other.y, position.z % other.z), position % other)
+        assertEquals(Vector(
+            position.x % other.x,
+            position.y % other.y,
+            position.z % other.z
+        ), position % other)
         assertEquals(modulo, position % 2)
         assertEquals(modulo, position % 2.0)
         assertEquals(modulo, position % 2F)
@@ -95,7 +115,11 @@ class PositionTests {
             position.x * other.y - other.x * position.y
         )
         val angle = acos(min(max(dot / (position.length * other.length), -1.0), 1.0))
-        val midpoint = Vector((position.x + other.x) / 2, (position.y + other.y) / 2, (position.z + other.z) / 2)
+        val midpoint = Vector(
+            (position.x + other.x) / 2,
+            (position.y + other.y) / 2,
+            (position.z + other.z) / 2
+        )
 
         assertEquals(angle, position.angle(other))
         assertEquals(midpoint, position.midpoint(other))
@@ -105,7 +129,11 @@ class PositionTests {
 
     @Test
     fun `test normalization`() {
-        assertEquals(Vector(position.x / position.length, position.y / position.length, position.z / position.length), position.normalize())
+        assertEquals(Vector(
+            position.x / position.length,
+            position.y / position.length,
+            position.z / position.length
+        ), position.normalize())
 
         assertFalse((Vector(1.0, 0.0, 0.0) * 1.1).isNormalized)
         assertTrue(Vector(1.0, 1.0, 1.0).normalize().isNormalized)

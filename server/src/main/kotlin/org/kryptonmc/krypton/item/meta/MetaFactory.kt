@@ -66,7 +66,10 @@ object MetaFactory {
             },
             { nbt, lore ->
                 nbt.update("display") {
-                    put("Lore", MutableListTag(lore.mapTo(mutableListOf()) { StringTag.of(it.toJsonString()) }, StringTag.ID))
+                    put(
+                        "Lore",
+                        MutableListTag(lore.mapTo(mutableListOf()) { StringTag.of(it.toJsonString()) }, StringTag.ID)
+                    )
                 }
             },
             { it.contains("display", CompoundTag.ID) &&

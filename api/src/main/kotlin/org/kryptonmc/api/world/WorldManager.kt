@@ -37,8 +37,8 @@ public interface WorldManager {
     public val default: World
 
     /**
-     * Gets the loaded world with the given resource [key], or null if there is no
-     * world loaded with the given resource [key].
+     * Gets the loaded world with the given resource [key], or null if there is
+     * no world loaded with the given resource [key].
      *
      * @param key the resource key
      * @return the loaded world with the key, or null if not present
@@ -46,11 +46,12 @@ public interface WorldManager {
     public operator fun get(key: Key): World?
 
     /**
-     * Returns true if there is currently a world loaded with the given [key], or
-     * false otherwise.
+     * Returns true if there is currently a world loaded with the given [key],
+     * or false otherwise.
      *
      * @param key the resource key for the world
-     * @return true if there is a world loaded with the given key, false otherwise
+     * @return true if there is a world loaded with the given key, false
+     * otherwise
      */
     public operator fun contains(key: Key): Boolean
 
@@ -58,8 +59,8 @@ public interface WorldManager {
      * Loads a world by its resource key.
      *
      * @param key the resource key for the world
-     * @return a future representing the result of loading the world with the given
-     * key
+     * @return a future representing the result of loading the world with the
+     * given key
      */
     public fun load(key: Key): CompletableFuture<out World>
 

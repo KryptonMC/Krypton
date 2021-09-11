@@ -30,7 +30,8 @@ import org.kryptonmc.krypton.util.writeVarInt
  *
  * @param player the player to spawn.
  */
-class PacketOutSpawnPlayer(private val player: KryptonPlayer) : Packet {
+@JvmRecord
+data class PacketOutSpawnPlayer(private val player: KryptonPlayer) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(player.id)

@@ -20,7 +20,8 @@ package org.kryptonmc.krypton.util
 
 import com.google.common.collect.Iterators
 
-fun <T> Iterable<T>.findRelative(value: T?, reversed: Boolean): T? = if (reversed) findPrevious(value) else findNext(value)
+fun <T> Iterable<T>.findRelative(value: T?, reversed: Boolean): T? =
+    if (reversed) findPrevious(value) else findNext(value)
 
 fun <T> Iterable<T>.findPrevious(value: T?): T? {
     val iterator = iterator()

@@ -38,6 +38,12 @@ data class StructureConfig(
                 Codec.intRange(0, 4096).fieldOf("separation").forGetter(StructureConfig::separation),
                 Codecs.NON_NEGATIVE_INT.fieldOf("salt").forGetter(StructureConfig::salt)
             ).apply(it, ::StructureConfig)
-        }.comapFlatMap({ if (it.spacing <= it.separation) DataResult.error("Spacing must be larger than separation!") else DataResult.success(it) }, Function.identity())
+        }.comapFlatMap({
+            if (it.spacing <= it.separation) {
+                DataResult.error("Spacing must be larger than separation!")
+            } else {
+                DataResult.success(it)
+            }
+        }, Function.identity())
     }
 }

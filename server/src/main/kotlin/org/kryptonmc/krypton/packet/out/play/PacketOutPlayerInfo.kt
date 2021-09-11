@@ -32,7 +32,8 @@ import org.kryptonmc.krypton.util.writeVarInt
  * @param action the action to perform
  * @param players a list of players, can be empty if not required by the [action]
  */
-class PacketOutPlayerInfo(
+@JvmRecord
+data class PacketOutPlayerInfo(
     private val action: PlayerAction,
     private val players: Collection<KryptonPlayer> = emptyList()
 ) : Packet {

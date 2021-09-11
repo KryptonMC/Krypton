@@ -17,17 +17,19 @@ import org.intellij.lang.annotations.Pattern
 /**
  * Annotation used to describe a plugin.
  *
- * @param id the identifier for this plugin. This ID **should be unique**, to avoid conflicts
- * with other plugins. It is recommended, though not required however, to make this
- * something that other plugins could easily be able to use and recognise, as they
- * will use this to depend on your plugin. In addition, this may contain alphanumeric
- * characters, dashes, and underscores, and it must be between 1 and 64 characters in
- * length
- * @param name the human readable name of this plugin, as to be used in descriptions and
- * similar tags. This does not have to be unique, but is recommended to be, to
- * avoid confusion for users with other plugins with the same name
+ * @param id the identifier for this plugin. This ID **should be unique**, to
+ * avoid conflicts with other plugins. It is recommended, though not required
+ * however, to make this something that other plugins could easily be able to
+ * use and recognise, as they will use this to depend on your plugin. In
+ * addition, this may contain alphanumeric characters, dashes, and underscores,
+ * and it must be between 1 and 64 characters in length
+ * @param name the human readable name of this plugin, as to be used in
+ * descriptions and similar tags. This does not have to be unique, but is
+ * recommended to be, to avoid confusion for users with other plugins with the
+ * same name
  * @param version the version of this plugin, or empty for undefined
- * @param description the description of this plugin, explaining what it can be used for
+ * @param description the description of this plugin, explaining what it can be
+ * used for
  * @param authors a list of people who helped create this plugin
  * @param dependencies a list of other plugins that this plugin depends on
  */

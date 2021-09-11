@@ -14,7 +14,8 @@ import kotlin.math.abs
 
 /**
  * A [Location] is a three-dimensional space in a world. That is, it possesses
- * an x, y and z coordinate, as well as angles of rotation in [pitch] and [yaw].
+ * an x, y and z coordinate, as well as angles of rotation in [pitch] and
+ * [yaw].
  *
  * @see [Vector]
  */
@@ -70,7 +71,8 @@ public class Location @JvmOverloads constructor(
     public companion object {
 
         /**
-         * A constant for the location at the centre of the world with 0 yaw and 0 pitch.
+         * A constant for the location at the centre of the world with 0 yaw
+         * and 0 pitch.
          */
         @JvmField
         public val ZERO: Location = Location(0.0, 0.0, 0.0, 0F, 0F)

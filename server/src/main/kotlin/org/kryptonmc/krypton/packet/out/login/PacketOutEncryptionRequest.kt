@@ -25,12 +25,13 @@ import org.kryptonmc.krypton.util.writeVarInt
 import java.security.PublicKey
 
 /**
- * Sent to instruct the client that we wish to encrypt this connection. The client
- * is provided with our public key, so they can use it to encrypt the shared secret,
- * and a verify token, to attempt to ensure the connection hasn't been tampered with
- * (no hackers listening in).
+ * Sent to instruct the client that we wish to encrypt this connection. The
+ * client is provided with our public key, so they can use it to encrypt the
+ * shared secret, and a verify token, to attempt to ensure the connection
+ * hasn't been tampered with (no hackers listening in).
  */
-class PacketOutEncryptionRequest(
+@JvmRecord
+data class PacketOutEncryptionRequest(
     private val publicKey: PublicKey,
     private val verifyToken: ByteArray
 ) : Packet {
@@ -44,5 +45,19 @@ class PacketOutEncryptionRequest(
 
         buf.writeVarInt(verifyToken.size)
         buf.writeBytes(verifyToken)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass || !super.equals(other)) return false
+        other as PacketOutEncryptionRequest
+        return publicKey == other.publicKey && verifyToken.contentEquals(other.verifyToken)
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + publicKey.hashCode()
+        result = 31 * result + verifyToken.contentHashCode()
+        return result
     }
 }

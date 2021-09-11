@@ -68,7 +68,10 @@ class RegionFile(
         offsets = header.asIntBuffer().limit(1024)
         header.position(4096)
         timestamps = header.asIntBuffer()
-        channel = FileChannel.open(path, if (synchronizeWrites) SHARED_FLAGS + StandardOpenOption.DSYNC else SHARED_FLAGS)
+        channel = FileChannel.open(
+            path,
+            if (synchronizeWrites) SHARED_FLAGS + StandardOpenOption.DSYNC else SHARED_FLAGS
+        )
         usedSectors.force(0, 2)
         header.position(0)
 
@@ -82,7 +85,8 @@ class RegionFile(
                 val sectorNumber = offset.sectorNumber
                 val sectorCount = offset.sectorCount
                 if (sectorNumber < 2) {
-                    LOGGER.error("Region file $path has an invalid sector at index $i! Sector $sectorNumber overlaps with header!")
+                    LOGGER.error("Region file $path has an invalid sector at index $i! Sector $sectorNumber overlaps " +
+                            "with header!")
                     offsets[i] = 0
                     continue
                 }
@@ -92,7 +96,8 @@ class RegionFile(
                     continue
                 }
                 if (sectorNumber * 4096L > path.fileSize()) {
-                    LOGGER.error("Region file $path has an invalid sector at index $i! Sector $sectorNumber is out of bounds!")
+                    LOGGER.error("Region file $path has an invalid sector at index $i! Sector $sectorNumber is out " +
+                            "of bounds!")
                     offsets[i] = 0
                     continue
                 }
@@ -121,7 +126,8 @@ class RegionFile(
         buffer.flip()
 
         if (buffer.remaining() < 5) {
-            LOGGER.error("Chunk at $position in region file $path has truncated header! Expected $size, but was ${buffer.remaining()}!")
+            LOGGER.error("Chunk at $position in region file $path has truncated header! Expected $size, but was " +
+                    "${buffer.remaining()}!")
             return null
         }
 
@@ -134,18 +140,24 @@ class RegionFile(
 
         val dataLength = length - 1
         if (compressionType.isExternalStreamChunk) {
-            if (dataLength != 0) LOGGER.error("Chunk at $position in region file $path has both internal and external streams!")
+            if (dataLength != 0) LOGGER.error("Chunk at $position in region file $path has both internal and " +
+                    "external streams!")
             return createExternalChunkInputStream(position, compressionType.externalChunkVersion)
         }
         if (dataLength > buffer.remaining()) {
-            LOGGER.error("Chunk at $position in region file $path has a truncated stream! Expected $dataLength, but was ${buffer.remaining()}!")
+            LOGGER.error("Chunk at $position in region file $path has a truncated stream! Expected $dataLength, but " +
+                    "was ${buffer.remaining()}!")
             return null
         }
         if (dataLength < 0) {
             LOGGER.error("Chunk at $position in region file $path has a negative declared size!")
             return null
         }
-        return createChunkInputStream(position, compressionType, ByteArrayInputStream(buffer.array(), buffer.position(), dataLength))
+        return createChunkInputStream(
+            position,
+            compressionType,
+            ByteArrayInputStream(buffer.array(), buffer.position(), dataLength)
+        )
     }
 
     /**
@@ -154,7 +166,8 @@ class RegionFile(
      * @param position the position of the chunk
      * @return a [DataOutputStream] for writing chunk data to
      */
-    fun getChunkDataOutputStream(position: ChunkPosition) = DataOutputStream(BufferedOutputStream(compression.compress(ChunkBuffer(position))))
+    fun getChunkDataOutputStream(position: ChunkPosition) =
+        DataOutputStream(BufferedOutputStream(compression.compress(ChunkBuffer(position))))
 
     /**
      * Writes chunk data for a chunk at the specified [position]
@@ -205,10 +218,15 @@ class RegionFile(
         return createChunkInputStream(position, compressionType, path.inputStream())
     }
 
-    private fun createChunkInputStream(position: ChunkPosition, compressionType: Byte, input: InputStream): DataInputStream? {
+    private fun createChunkInputStream(
+        position: ChunkPosition,
+        compressionType: Byte,
+        input: InputStream
+    ): DataInputStream? {
         val compression = RegionFileCompression.fromId(compressionType)
         if (compression == null) {
-            LOGGER.error("Chunk at $position in region file $path has an invalid compression type! Type: $compressionType")
+            LOGGER.error("Chunk at $position in region file $path has an invalid compression type! " +
+                    "Type: $compressionType")
             return null
         }
         return DataInputStream(BufferedInputStream(compression.decompress(input)))
@@ -276,7 +294,9 @@ class RegionFile(
             while (true) {
                 val nextClearBit = used.nextClearBit(i)
                 val nextSetBit = used.nextSetBit(nextClearBit)
-                if (nextSetBit == -1 || nextSetBit - nextClearBit >= bits) return nextClearBit.apply { force(this, bits) }
+                if (nextSetBit == -1 || nextSetBit - nextClearBit >= bits) {
+                    return nextClearBit.apply { force(this, bits) }
+                }
                 i = nextSetBit
             }
         }
@@ -294,16 +314,12 @@ class RegionFile(
 
         private val Int.sectorNumber: Int
             get() = shr(8) and 0xFFFFFF
-
         private val Int.sectorCount: Int
             get() = and(0xFF)
-
         private val ChunkPosition.offsetIndex: Int
             get() = (x and 0x1F) + (z and 0x1F) * 32
-
         private val Byte.isExternalStreamChunk: Boolean
             get() = toInt() and 0x80 != 0
-
         private val Byte.externalChunkVersion: Byte
             get() = (toInt() and 0xFFFFFF7F.toInt()).toByte()
 

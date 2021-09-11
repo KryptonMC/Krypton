@@ -32,7 +32,8 @@ public interface ExperienceOrb : Entity {
     /**
      * The current health of the orb.
      *
-     * Experience orbs can take damage from fire, lava, falling anvils, and explosions.
+     * Experience orbs can take damage from fire, lava, falling anvils, and
+     * explosions.
      * The orb is destroyed when this value reaches 0.
      */
     public val health: Int
@@ -43,8 +44,8 @@ public interface ExperienceOrb : Entity {
     public val value: Int
 
     /**
-     * The player this orb is currently following, or null if this orb is not currently
-     * following a player.
+     * The player this orb is currently following, or null if this orb is not
+     * currently following a player.
      */
     public val following: Player?
 }

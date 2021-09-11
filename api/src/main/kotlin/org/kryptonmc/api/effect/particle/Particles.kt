@@ -111,7 +111,8 @@ public class DustTransitionParticleType(override val key: Key) : ParticleType {
 }
 
 /**
- * Represents a particle that uses a specific note value for its color appearance.
+ * Represents a particle that uses a specific note value for its color
+ * appearance.
  */
 public class NoteParticleType(override val key: Key) : ParticleType {
 
@@ -122,8 +123,8 @@ public class NoteParticleType(override val key: Key) : ParticleType {
 }
 
 /**
- * Represents a particle that vibrates from one location to another in a specified
- * amount of ticks.
+ * Represents a particle that vibrates from one location to another in a
+ * specified amount of ticks.
  */
 public class VibrationParticleType(override val key: Key) : ParticleType {
 

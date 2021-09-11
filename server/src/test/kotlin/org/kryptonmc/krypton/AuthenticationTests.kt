@@ -29,7 +29,11 @@ class AuthenticationTests {
     @Test
     fun `test game profile property retention`() {
         val uuid = UUID.randomUUID()
-        val profile = KryptonGameProfile(uuid, "Test", listOf(KryptonProfileProperty("hello", "world", "xxx")))
+        val profile = KryptonGameProfile(
+            uuid,
+            "Test",
+            listOf(KryptonProfileProperty("hello", "world", "xxx"))
+        )
 
         assertEquals(uuid, profile.uuid)
         assertEquals("Test", profile.name)

@@ -27,17 +27,14 @@ import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutSoundEffect(
+@JvmRecord
+data class PacketOutSoundEffect(
     private val sound: Sound,
     private val event: SoundEvent,
-    x: Double,
-    y: Double,
-    z: Double
+    private val x: Double,
+    private val y: Double,
+    private val z: Double
 ) : Packet {
-
-    private val x = (x * 8.0).toInt()
-    private val y = (y * 8.0).toInt()
-    private val z = (z * 8.0).toInt()
 
     constructor(sound: Sound, event: SoundEvent, position: Position) : this(
         sound,
@@ -50,9 +47,9 @@ class PacketOutSoundEffect(
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(InternalRegistries.SOUND_EVENT.idOf(event))
         buf.writeEnum(sound.source())
-        buf.writeInt(x)
-        buf.writeInt(y)
-        buf.writeInt(z)
+        buf.writeInt((x * 8.0).toInt())
+        buf.writeInt((y * 8.0).toInt())
+        buf.writeInt((z * 8.0).toInt())
         buf.writeFloat(sound.volume())
         buf.writeFloat(sound.pitch())
     }

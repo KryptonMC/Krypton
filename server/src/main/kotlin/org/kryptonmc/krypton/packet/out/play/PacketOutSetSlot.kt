@@ -24,7 +24,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutSetSlot(
+@JvmRecord
+data class PacketOutSetSlot(
     private val id: Int,
     private val stateId: Int,
     private val slot: Int,

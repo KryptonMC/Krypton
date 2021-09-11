@@ -50,7 +50,15 @@ class NoiseSampler(
     private val dimensionDensityFactor = noiseSettings.densityFactor
     private val dimensionDensityOffset = noiseSettings.densityOffset
 
-    fun fillNoiseColumn(buffer: DoubleArray, x: Int, z: Int, settings: NoiseSettings, seaLevel: Int, minY: Int, noiseSizeY: Int) {
+    fun fillNoiseColumn(
+        buffer: DoubleArray,
+        x: Int,
+        z: Int,
+        settings: NoiseSettings,
+        seaLevel: Int,
+        minY: Int,
+        noiseSizeY: Int
+    ) {
         val height: Double
         val factor: Double
         if (islandNoise != null) {
@@ -96,7 +104,15 @@ class NoiseSampler(
         val density = if (settings.randomDensityOffset) getRandomDensity(x, z) else 0.0
         for (i in 0..noiseSizeY) {
             val y = i + minY
-            val blendedValue = blendedNoise.sampleAndClamp(x, y, z, horizontalScale, verticalScale, horizontalStretch, verticalStretch)
+            val blendedValue = blendedNoise.sampleAndClamp(
+                x,
+                y,
+                z,
+                horizontalScale,
+                verticalScale,
+                horizontalStretch,
+                verticalStretch
+            )
             var initialDensity = computeInitialDensity(y, height, factor, density) + blendedValue
             initialDensity = caveNoiseModifier(initialDensity, y * cellHeight, x * cellWidth, z * cellWidth)
             initialDensity = applySlide(initialDensity, y)
@@ -127,7 +143,11 @@ class NoiseSampler(
     }
 
     private fun getRandomDensity(x: Int, z: Int): Double {
-        val noiseValue = depthNoise.getValue((x * 200).toDouble(), 10.0, (z * 200).toDouble(), 1.0, 0.0, true)
+        val noiseValue = depthNoise.getValue(
+            (x * 200).toDouble(),
+            10.0,
+            (z * 200).toDouble(), 1.0, 0.0, true
+        )
         val scaled = if (noiseValue < 0.0) -noiseValue * 0.3 else noiseValue
         val value = scaled * 24.575625 - 2.0
         return if (value < 0.0) value * 0.009486607142857142 else min(value, 1.0) * 0.006640625

@@ -22,7 +22,8 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutAnimation(
+@JvmRecord
+data class PacketOutAnimation(
     private val id: Int,
     private val animation: EntityAnimation
 ) : Packet {

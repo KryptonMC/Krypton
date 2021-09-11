@@ -37,6 +37,8 @@ class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(
 
     companion object {
 
-        val CODEC: Codec<FlatGenerator> = FlatGeneratorSettings.CODEC.fieldOf("settings").xmap(::FlatGenerator, FlatGenerator::settings).codec()
+        val CODEC: Codec<FlatGenerator> = FlatGeneratorSettings.CODEC.fieldOf("settings")
+            .xmap(::FlatGenerator, FlatGenerator::settings)
+            .codec()
     }
 }

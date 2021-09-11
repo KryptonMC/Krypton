@@ -83,7 +83,9 @@ object ClearCommand : InternalCommand {
             ))
         } else {
             targets.forEach { target ->
-                target.inventory.forEachIndexed { index, item -> if (predicate(item)) target.inventory[index] = EmptyItemStack }
+                target.inventory.forEachIndexed { index, item ->
+                    if (predicate(item)) target.inventory[index] = EmptyItemStack
+                }
                 target.session.sendPacket(PacketOutWindowItems(
                     target.inventory.id,
                     target.inventory.incrementStateId(),
@@ -91,7 +93,11 @@ object ClearCommand : InternalCommand {
                     target.inventory.mainHand
                 ))
             }
-            sender.sendMessage(translatable("commands.clear.success.multiple", text(amount), text(targets.size.toString())))
+            sender.sendMessage(translatable(
+                "commands.clear.success.multiple",
+                text(amount),
+                text(targets.size.toString())
+            ))
         }
     }
 

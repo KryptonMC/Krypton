@@ -26,7 +26,8 @@ import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutSpawnLivingEntity(private val entity: KryptonLivingEntity) : Packet {
+@JvmRecord
+data class PacketOutSpawnLivingEntity(private val entity: KryptonLivingEntity) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entity.id)

@@ -52,7 +52,11 @@ class GenerationRegion(
     override val seed = world.seed
     override val random = world.random
     override val dimensionType = world.dimensionType
-    override val biomeManager = BiomeManager(this, Hashing.sha256().hashLong(seed).asLong(), world.dimensionType.biomeZoomer)
+    override val biomeManager = BiomeManager(
+        this,
+        Hashing.sha256().hashLong(seed).asLong(),
+        world.dimensionType.biomeZoomer
+    )
     override val chunkManager = world.chunkManager
     override val data = world.data
     override val seaLevel = world.seaLevel
@@ -69,7 +73,8 @@ class GenerationRegion(
         lastPosition = cache.last().position
     }
 
-    override fun hasChunk(x: Int, z: Int) = x >= firstPosition.x && x <= lastPosition.x && z >= firstPosition.z && z <= lastPosition.z
+    override fun hasChunk(x: Int, z: Int) = x >= firstPosition.x && x <= lastPosition.x &&
+            z >= firstPosition.z && z <= lastPosition.z
 
     override fun getChunk(x: Int, z: Int, status: ChunkStatus, shouldCreate: Boolean): ChunkAccessor? {
         val chunk = if (hasChunk(x, z)) {
@@ -78,7 +83,8 @@ class GenerationRegion(
             cache[localX + localZ * size].apply { if (this.status.isOrAfter(status)) return this }
         } else null
         if (!shouldCreate) return null
-        LOGGER.error("Requested chunk at $x, $z is out of region bounds at ${firstPosition.x}, ${firstPosition.z} to ${lastPosition.x}, ${lastPosition.z}!")
+        LOGGER.error("Requested chunk at $x, $z is out of region bounds at ${firstPosition.x}, ${firstPosition.z} " +
+                "to ${lastPosition.x}, ${lastPosition.z}!")
         throw RuntimeException(if (chunk != null) {
             "Requested chunk at $x, $z has the wrong status! Expected $status, was ${chunk.status}"
         } else {
@@ -95,7 +101,8 @@ class GenerationRegion(
         getChunk(x shr 4, z shr 4)?.setBlock(x, y, z, block)
     }
 
-    override fun getHeight(type: Heightmap.Type, x: Int, z: Int) = getChunk(x shr 4, z shr 4)!!.getHeight(type, x and 15, z and 15) + 1
+    override fun getHeight(type: Heightmap.Type, x: Int, z: Int) =
+        getChunk(x shr 4, z shr 4)!!.getHeight(type, x and 15, z and 15) + 1
 
     override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int) = world.getUncachedNoiseBiome(x, y, z)
 
@@ -107,7 +114,9 @@ class GenerationRegion(
         return if (dx <= writeRadiusCutoff && dz <= writeRadiusCutoff) {
             true
         } else {
-            LOGGER.error("Attempted to set block in chunk out of bounds! Chunk: ($chunkX, $chunkZ), position: ($x, $y, $z), status: $status${currentlyGenerating?.invoke()?.let { ", currently generating: $it" }}")
+            LOGGER.error("Attempted to set block in chunk out of bounds! Chunk: ($chunkX, $chunkZ), position: " +
+                    "($x, $y, $z), status: " + status +
+                    currentlyGenerating?.invoke()?.let { ", currently generating: $it" })
             false
         }
     }

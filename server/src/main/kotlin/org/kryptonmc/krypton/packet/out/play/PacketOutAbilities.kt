@@ -22,7 +22,8 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 
-class PacketOutAbilities(
+@JvmRecord
+data class PacketOutAbilities(
     private val isInvulnerable: Boolean,
     private val isFlying: Boolean,
     private val canFly: Boolean,

@@ -25,7 +25,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutNamedSoundEffect(
+@JvmRecord
+data class PacketOutNamedSoundEffect(
     private val sound: Sound,
     private val location: Position
 ) : Packet {

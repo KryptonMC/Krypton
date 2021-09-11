@@ -11,7 +11,7 @@ package org.kryptonmc.api.scheduling
 import java.util.concurrent.TimeUnit
 
 /**
- * The scheduler. This can be used to run or schedule tasks (a)synchronously
+ * The scheduler. This can be used to run or schedule tasks asynchronously.
  */
 public interface Scheduler {
 
@@ -37,9 +37,9 @@ public interface Scheduler {
     public fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: TaskRunnable): Task
 
     /**
-     * Schedules the given [task] asynchronously repeatedly, with a [period] in between each
-     * execution of the task, and starting after the given [delay], both in the given [unit]
-     * of time.
+     * Schedules the given [task] asynchronously repeatedly, with a [period] in
+     * between each execution of the task, and starting after the given
+     * [delay], both in the given [unit] of time.
      *
      * @param plugin the plugin requesting to schedule the task
      * @param delay the delay before this task is ran

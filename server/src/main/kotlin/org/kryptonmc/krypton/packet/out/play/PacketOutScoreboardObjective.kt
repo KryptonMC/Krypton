@@ -28,7 +28,8 @@ import org.kryptonmc.krypton.util.writeVarInt
 /**
  * Tells the client to perform an action to an objective for a scoreboard
  */
-class PacketOutScoreboardObjective(
+@JvmRecord
+data class PacketOutScoreboardObjective(
     private val action: ObjectiveAction,
     private val objective: Objective
 ) : Packet {

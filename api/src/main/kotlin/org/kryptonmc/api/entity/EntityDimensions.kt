@@ -36,8 +36,8 @@ public data class EntityDimensions(
 
     /**
      * Creates a new bounding box from the given **centre** [x], [y], and [z]
-     * coordinates, using the [width] and [height] dimensions to offset the centre
-     * coordinates to obtain the minimum and maximum values.
+     * coordinates, using the [width] and [height] dimensions to offset the
+     * centre coordinates to obtain the minimum and maximum values.
      *
      * @param x the centre X coordinate
      * @param y the centre Y coordinate
@@ -47,14 +47,21 @@ public data class EntityDimensions(
     public fun toBoundingBox(x: Double, y: Double, z: Double): BoundingBox {
         val width = width / 2.0
         val height = height
-        return BoundingBox(x - width, y, z - width, x + width, y + height, z + width)
+        return BoundingBox(
+            x - width,
+            y,
+            z - width,
+            x + width,
+            y + height,
+            z + width
+        )
     }
 
     /**
-     * Scales the dimensions of this object by the given [factor], returning a new
-     * object with the resulting changes if these dimensions are [not fixed][isFixed],
-     * else returning this object and doing nothing if these dimensions [are fixed][isFixed],
-     * or if the provided [factor] is equal to 1.
+     * Scales the dimensions of this object by the given [factor], returning a
+     * new object with the resulting changes if these dimensions are
+     * [not fixed][isFixed], else returning this object and doing nothing if
+     * these dimensions [are fixed][isFixed], or if the provided [factor] is 1.
      *
      * @param factor the factor to scale the width and height by
      * @return see above
@@ -62,10 +69,10 @@ public data class EntityDimensions(
     public fun scale(factor: Float): EntityDimensions = scale(factor, factor)
 
     /**
-     * Scales the dimensions of this object by the given [factor], returning a new
-     * object with the resulting changes if these dimensions are [not fixed][isFixed],
-     * else returning this object and doing nothing if these dimensions [are fixed][isFixed],
-     * or if the provided [factor] is equal to 1.
+     * Scales the dimensions of this object by the given [factor], returning a
+     * new object with the resulting changes if these dimensions are
+     * [not fixed][isFixed], else returning this object and doing nothing if
+     * these dimensions [are fixed][isFixed], or if the provided [factor] is 1.
      *
      * @param factor the factor to scale the width and height by
      * @return see above
@@ -73,10 +80,10 @@ public data class EntityDimensions(
     public fun scale(factor: Double): EntityDimensions = scale(factor.toFloat())
 
     /**
-     * Scales the dimensions of this object by the given [factor], returning a new
-     * object with the resulting changes if these dimensions are [not fixed][isFixed],
-     * else returning this object and doing nothing if these dimensions [are fixed][isFixed],
-     * or if the provided [factor] is equal to 1.
+     * Scales the dimensions of this object by the given [factor], returning a
+     * new object with the resulting changes if these dimensions are
+     * [not fixed][isFixed] else returning this object and doing nothing if
+     * these dimensions [are fixed][isFixed], or if the provided [factor] is 1.
      *
      * @param factor the factor to scale the width and height by
      * @return see above
@@ -84,10 +91,10 @@ public data class EntityDimensions(
     public fun scale(factor: Int): EntityDimensions = scale(factor.toFloat())
 
     /**
-     * Scales the dimensions of this object by the given [factor], returning a new
-     * object with the resulting changes if these dimensions are [not fixed][isFixed],
-     * else returning this object and doing nothing if these dimensions [are fixed][isFixed],
-     * or if the provided [factor] is equal to 1.
+     * Scales the dimensions of this object by the given [factor], returning a
+     * new object with the resulting changes if these dimensions are
+     * [not fixed][isFixed], else returning this object and doing nothing if
+     * these dimensions [are fixed][isFixed], or if the provided [factor] is 1.
      *
      * @param factor the factor to scale the width and height by
      * @return see above
@@ -95,11 +102,11 @@ public data class EntityDimensions(
     public fun scale(factor: Long): EntityDimensions = scale(factor.toFloat())
 
     /**
-     * Scales the dimensions of this object by the given [width] and [height] factors,
-     * returning a new object with the resulting changes if these dimensions are
-     * [not fixed][isFixed], else returning this object and doing nothing if these
-     * dimensions [are fixed][isFixed], or if the provided [width] and [height] values
-     * are both equal to 1.
+     * Scales the dimensions of this object by the given [width] and [height]
+     * factors, returning a new object with the resulting changes if these
+     * dimensions are [not fixed][isFixed], else returning this object and
+     * doing nothing if these dimensions [are fixed][isFixed], or if the
+     * provided [width] and [height] values are both 1.
      *
      * @param width the width factor to scale the width by
      * @param height the height factor to scale the height by
@@ -111,11 +118,11 @@ public data class EntityDimensions(
     }
 
     /**
-     * Scales the dimensions of this object by the given [width] and [height] factors,
-     * returning a new object with the resulting changes if these dimensions are
-     * [not fixed][isFixed], else returning this object and doing nothing if these
-     * dimensions [are fixed][isFixed], or if the provided [width] and [height] values
-     * are both equal to 1.
+     * Scales the dimensions of this object by the given [width] and [height]
+     * factors, returning a new object with the resulting changes if these
+     * dimensions are [not fixed][isFixed], else returning this object and
+     * doing nothing if these dimensions [are fixed][isFixed], or if the
+     * provided [width] and [height] value are both 1.
      *
      * @param width the width factor to scale the width by
      * @param height the height factor to scale the height by
@@ -124,11 +131,11 @@ public data class EntityDimensions(
     public fun scale(width: Double, height: Double): EntityDimensions = scale(width.toFloat(), height.toFloat())
 
     /**
-     * Scales the dimensions of this object by the given [width] and [height] factors,
-     * returning a new object with the resulting changes if these dimensions are
-     * [not fixed][isFixed], else returning this object and doing nothing if these
-     * dimensions [are fixed][isFixed], or if the provided [width] and [height] values
-     * are both equal to 1.
+     * Scales the dimensions of this object by the given [width] and [height]
+     * factors, returning a new object with the resulting changes if these
+     * dimensions are [not fixed][isFixed], else returning this object and
+     * doing nothing if these dimensions [are fixed][isFixed], or if the
+     * provided [width] and [height] values are both 1.
      *
      * @param width the width factor to scale the width by
      * @param height the height factor to scale the height by
@@ -137,11 +144,11 @@ public data class EntityDimensions(
     public fun scale(width: Int, height: Int): EntityDimensions = scale(width.toFloat(), height.toFloat())
 
     /**
-     * Scales the dimensions of this object by the given [width] and [height] factors,
-     * returning a new object with the resulting changes if these dimensions are
-     * [not fixed][isFixed], else returning this object and doing nothing if these
-     * dimensions [are fixed][isFixed], or if the provided [width] and [height] values
-     * are both equal to 1.
+     * Scales the dimensions of this object by the given [width] and [height]
+     * factors, returning a new object with the resulting changes if these
+     * dimensions are [not fixed][isFixed], else returning this object and
+     * doing nothing if these dimensions [are fixed][isFixed], or if the
+     * provided [width] and [height] values are both 1.
      *
      * @param width the width factor to scale the width by
      * @param height the height factor to scale the height by
@@ -154,30 +161,32 @@ public data class EntityDimensions(
     public companion object {
 
         /**
-         * Creates new entity dimensions that can be scaled with [scale], with the
-         * given [width] and [height].
+         * Creates new entity dimensions that can be scaled with [scale], with
+         * the given [width] and [height].
          *
          * @param width the width
          * @param height the height
          * @return new scalable entity dimensions
          */
         @JvmStatic
-        public fun scalable(width: Float, height: Float): EntityDimensions = EntityDimensions(width, height, false)
+        public fun scalable(width: Float, height: Float): EntityDimensions =
+            EntityDimensions(width, height, false)
 
         /**
-         * Creates new entity dimensions that can be scaled with [scale], with the
-         * given [width] and [height].
+         * Creates new entity dimensions that can be scaled with [scale], with
+         * the given [width] and [height].
          *
          * @param width the width
          * @param height the height
          * @return new scalable entity dimensions
          */
         @JvmStatic
-        public fun scalable(width: Double, height: Double): EntityDimensions = scalable(width.toFloat(), height.toFloat())
+        public fun scalable(width: Double, height: Double): EntityDimensions =
+            scalable(width.toFloat(), height.toFloat())
 
         /**
-         * Creates new entity dimensions that can be scaled with [scale], with the
-         * given [width] and [height].
+         * Creates new entity dimensions that can be scaled with [scale], with
+         * the given [width] and [height].
          *
          * @param width the width
          * @param height the height
@@ -187,8 +196,8 @@ public data class EntityDimensions(
         public fun scalable(width: Int, height: Int): EntityDimensions = scalable(width.toFloat(), height.toFloat())
 
         /**
-         * Creates new entity dimensions that can be scaled with [scale], with the
-         * given [width] and [height].
+         * Creates new entity dimensions that can be scaled with [scale], with
+         * the given [width] and [height].
          *
          * @param width the width
          * @param height the height
@@ -198,8 +207,8 @@ public data class EntityDimensions(
         public fun scalable(width: Long, height: Long): EntityDimensions = scalable(width.toFloat(), height.toFloat())
 
         /**
-         * Creates new entity dimensions that cannot scaled with [scale], with the
-         * given [width] and [height].
+         * Creates new entity dimensions that cannot scaled with [scale], with
+         * the given [width] and [height].
          *
          * @param width the width
          * @param height the height
@@ -209,8 +218,8 @@ public data class EntityDimensions(
         public fun fixed(width: Float, height: Float): EntityDimensions = EntityDimensions(width, height, true)
 
         /**
-         * Creates new entity dimensions that cannot scaled with [scale], with the
-         * given [width] and [height].
+         * Creates new entity dimensions that cannot scaled with [scale], with
+         * the given [width] and [height].
          *
          * @param width the width
          * @param height the height
@@ -220,8 +229,8 @@ public data class EntityDimensions(
         public fun fixed(width: Double, height: Double): EntityDimensions = fixed(width.toFloat(), height.toFloat())
 
         /**
-         * Creates new entity dimensions that cannot scaled with [scale], with the
-         * given [width] and [height].
+         * Creates new entity dimensions that cannot scaled with [scale], with
+         * the given [width] and [height].
          *
          * @param width the width
          * @param height the height
@@ -231,8 +240,8 @@ public data class EntityDimensions(
         public fun fixed(width: Int, height: Int): EntityDimensions = fixed(width.toFloat(), height.toFloat())
 
         /**
-         * Creates new entity dimensions that cannot scaled with [scale], with the
-         * given [width] and [height].
+         * Creates new entity dimensions that cannot scaled with [scale], with
+         * the given [width] and [height].
          *
          * @param width the width
          * @param height the height

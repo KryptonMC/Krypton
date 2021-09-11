@@ -130,7 +130,10 @@ class SortedArraySet<T>(
     private fun grow(minCapacity: Int) {
         if (minCapacity <= contents.size) return
         val capacity = if (contents.isEmpty()) {
-            max(min(contents.size.toLong() + (contents.size shr 1).toLong(), 2147483639L), minCapacity.toLong()).toInt()
+            max(min(
+                contents.size.toLong() + (contents.size shr 1).toLong(),
+                2147483639L
+            ), minCapacity.toLong()).toInt()
         } else if (minCapacity < 10) {
             10
         } else {
@@ -167,6 +170,7 @@ class SortedArraySet<T>(
 
         private const val DEFAULT_INITIAL_CAPACITY = 10
 
-        fun <T : Comparable<T>> create(initialCapacity: Int = DEFAULT_INITIAL_CAPACITY) = SortedArraySet(naturalOrder<T>(), initialCapacity)
+        fun <T : Comparable<T>> create(initialCapacity: Int = DEFAULT_INITIAL_CAPACITY) =
+            SortedArraySet(naturalOrder<T>(), initialCapacity)
     }
 }

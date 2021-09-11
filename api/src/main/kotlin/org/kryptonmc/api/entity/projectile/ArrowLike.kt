@@ -28,8 +28,8 @@ public interface ArrowLike : Projectile {
     public var damage: Double
 
     /**
-     * The block this arrow like object is currently stuck in, or null if this object is
-     * not currently stuck in a block.
+     * The block this arrow like object is currently stuck in, or null if this
+     * object is not currently stuck in a block.
      */
     public var stuckInBlock: Block?
 
@@ -47,16 +47,16 @@ public interface ArrowLike : Projectile {
     public val life: Int
 
     /**
-     * The amount of remaining times that this arrow like object can pierce through
-     * an entity.
+     * The amount of remaining times that this arrow like object can pierce
+     * through an entity.
      *
      * When this value reaches 0, it will no longer pierce through entities.
      */
     public val piercingLevel: Int
 
     /**
-     * The amount of ticks this arrow like object will shake for until it can be picked
-     * up by players.
+     * The amount of ticks this arrow like object will shake for until it can
+     * be picked up by players.
      *
      * When it hits a block, this value will be initially set to 7.
      */

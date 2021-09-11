@@ -25,7 +25,8 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
 
-class PacketOutDiggingResponse(
+@JvmRecord
+data class PacketOutDiggingResponse(
     private val position: Vector3i,
     private val stateId: Int,
     private val status: DiggingStatus,

@@ -20,8 +20,8 @@ import org.kryptonmc.api.registry.Registries
  *
  * @param key the key of the item
  * @param rarity the rarity of the item
- * @param maximumAmount the maximum amount of items that can be held in a single
- * stack
+ * @param maximumAmount the maximum amount of items that can be held in a
+ * single stack
  * @param durability the durability of the item
  * @param isFireResistant if this item is resistant to fire
  * @param translation the client-side translation for this item

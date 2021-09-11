@@ -33,7 +33,8 @@ import org.kryptonmc.krypton.util.writeVarInt
  * @param entityId the ID of the entity to set metadata for
  * @param packedEntries the list of packed metadata items to send
  */
-class PacketOutMetadata(
+@JvmRecord
+data class PacketOutMetadata(
     private val entityId: Int,
     private val packedEntries: List<MetadataHolder.Entry<*>>
 ) : Packet {

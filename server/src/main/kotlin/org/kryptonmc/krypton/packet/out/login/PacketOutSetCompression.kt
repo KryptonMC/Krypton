@@ -23,10 +23,11 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 
 /**
- * Instructs the client to set a threshold for packet compression. Any packets that
- * are >= [threshold] in size will be compressed.
+ * Instructs the client to set a threshold for packet compression. Any packets
+ * that are >= [threshold] in size will be compressed.
  */
-class PacketOutSetCompression(private val threshold: Int) : Packet {
+@JvmRecord
+data class PacketOutSetCompression(private val threshold: Int) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(threshold)

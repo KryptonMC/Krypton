@@ -9,14 +9,15 @@
 package org.kryptonmc.api.util
 
 /**
- * Used to provide various factories from the backend for static factory functions.
+ * Used to provide various factories from the backend for static factory
+ * functions.
  */
 public interface FactoryProvider {
 
     /**
      * Provides the factory with the given type [type], or throws a
-     * [FactoryNotFoundException] if there is no factory registered for the given
-     * type.
+     * [FactoryNotFoundException] if there is no factory registered for the
+     * given type.
      */
     @Throws(TypeNotPresentException::class)
     public fun <T> provide(type: Class<T>): T

@@ -26,7 +26,8 @@ import org.kryptonmc.krypton.packet.Packet
  *
  * @param slot the slot to change to
  */
-class PacketOutChangeHeldItem(private val slot: Int) : Packet {
+@JvmRecord
+data class PacketOutChangeHeldItem(private val slot: Int) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(slot)

@@ -64,8 +64,8 @@ public interface ItemHandler {
     public fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i): Boolean
 
     /**
-     * Called when a player interacts with a specific block, usually when they are
-     * attempting to dig it up (left click interaction).
+     * Called when a player interacts with a specific block, usually when they
+     * are attempting to dig it up (left click interaction).
      *
      * @param context the context of which the interaction is taking place in
      * @return the result of the interaction
@@ -73,8 +73,8 @@ public interface ItemHandler {
     public fun interact(context: InteractionContext): InteractionResult
 
     /**
-     * Called when the given [player] uses the item they are holding in the given
-     * [hand].
+     * Called when the given [player] uses the item they are holding in the
+     * given [hand].
      *
      * @param player the player using the item
      * @param hand the hand used
@@ -83,8 +83,9 @@ public interface ItemHandler {
     public fun use(player: Player, hand: Hand): UseItemResult
 
     /**
-     * Called when the given [player] finishes destroying the given [block] at the
-     * given [position] in the given [world], using the given [item] to destroy it.
+     * Called when the given [player] finishes destroying the given [block] at
+     * the given [position] in the given [world], using the given [item] to
+     * destroy it.
      *
      * @param player the player who destroyed the block
      * @param item the item used to destroy the block

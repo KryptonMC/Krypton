@@ -36,7 +36,10 @@ open class KryptonItemHandler(override val type: ItemType) : ItemHandler {
 
     override fun getDestroySpeed(item: ItemStack, block: Block) = 1F
 
-    override fun use(player: Player, hand: Hand) = UseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
+    override fun use(
+        player: Player,
+        hand: Hand
+    ) = UseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
 
     override fun interact(context: InteractionContext) = InteractionResult.PASS
 

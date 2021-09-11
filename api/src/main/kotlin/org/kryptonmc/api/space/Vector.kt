@@ -16,15 +16,16 @@ import kotlin.math.abs
 import kotlin.random.Random
 
 /**
- * A vector is an element of vector space. That is, a three dimensional space that
- * possesses [both direction and magnitude](https://www.youtube.com/watch?v=bOIe0DIMbI8&t=10s).
+ * A vector is an element of vector space. That is, a three dimensional space
+ * that possesses
+ * [both direction and magnitude](https://www.youtube.com/watch?v=bOIe0DIMbI8&t=10s).
  *
- * A [Vector] differs from a [Location] in that it is not world bound and does not
- * possess a yaw or pitch component.
+ * A [Vector] differs from a [Location] in that it is not world bound and does
+ * not possess a yaw or pitch component.
  *
- * In addition, all vectors are immutable. Any attempt to modify any properties of
- * this vector will create a new [Vector] with the changes applied (specifically,
- * through the use of the `copy` function)
+ * In addition, all vectors are immutable. Any attempt to modify any properties
+ * of this vector will create a new [Vector] with the changes applied
+ * (specifically, through the use of the `copy` function).
  *
  * @see [Location]
  */
@@ -76,10 +77,10 @@ public class Vector(x: Double, y: Double, z: Double) : AbstractPosition<Vector>(
         public val UNIT: Vector = Vector(1, 1, 1)
 
         /**
-         * Retrieve a random [Vector] that has coordinates with completely random
-         * values.
+         * Retrieve a random [Vector] that has coordinates with completely
+         * random values.
          *
-         * Just a roll of the dice
+         * Just a roll of the dice.
          */
         @JvmStatic
         public fun random(): Vector = Vector(Random.nextDouble(), Random.nextDouble(), Random.nextDouble())

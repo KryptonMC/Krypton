@@ -22,7 +22,8 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutUpdateViewPosition(
+@JvmRecord
+data class PacketOutUpdateViewPosition(
     private val x: Int,
     private val z: Int
 ) : Packet {

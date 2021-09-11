@@ -79,10 +79,17 @@ object GamemodeCommand : InternalCommand {
         return 1
     }
 
-    private fun updateGameMode(entities: List<KryptonPlayer>, mode: Gamemode, sender: KryptonPlayer) = entities.forEach {
+    private fun updateGameMode(
+        entities: List<KryptonPlayer>,
+        mode: Gamemode,
+        sender: KryptonPlayer
+    ) = entities.forEach {
         it.gamemode = mode
         if (sender == it) {
-            sender.sendMessage(translatable("gameMode.changed", translatable("gameMode.${mode.name.lowercase()}")))
+            sender.sendMessage(translatable(
+                "gameMode.changed",
+                translatable("gameMode.${mode.name.lowercase()}")
+            ))
             return@forEach
         }
         sender.sendMessage(translatable(

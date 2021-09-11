@@ -14,7 +14,8 @@ import org.kryptonmc.api.block.Block
 import java.awt.Color
 
 /**
- * An object containing all the currently supported built-in item metadata keys.
+ * An object containing all the currently supported built-in item metadata
+ * keys.
  */
 @Suppress("UndocumentedPublicProperty")
 public object MetaKeys {
@@ -38,5 +39,8 @@ public object MetaKeys {
     @JvmField public val HIDE_UNBREAKABLE: MetaKey<Boolean> = of("hide_unbreakable")
 
     // @formatter:on
-    private inline fun <reified V : Any> of(key: String) = MetaKey(Key.key("krypton", "item/meta/$key"), V::class.java)
+    private inline fun <reified V : Any> of(key: String) = MetaKey(
+        Key.key("krypton", "item/meta/$key"),
+        V::class.java
+    )
 }

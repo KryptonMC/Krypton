@@ -46,7 +46,8 @@ class NoiseSettings(
 
         val CODEC: Codec<NoiseSettings> = RecordCodecBuilder.create<NoiseSettings> {
             it.group(
-                Codec.intRange(KryptonDimensionType.MIN_Y, KryptonDimensionType.MAX_Y).fieldOf("min_y").forGetter(NoiseSettings::minimumY),
+                Codec.intRange(KryptonDimensionType.MIN_Y, KryptonDimensionType.MAX_Y).fieldOf("min_y")
+                    .forGetter(NoiseSettings::minimumY),
                 Codec.intRange(0, KryptonDimensionType.Y_SIZE).fieldOf("height").forGetter(NoiseSettings::height),
                 NoiseSampling.CODEC.fieldOf("sampling").forGetter(NoiseSettings::sampling),
                 NoiseSlide.CODEC.fieldOf("top_slide").forGetter(NoiseSettings::topSlide),
@@ -56,9 +57,12 @@ class NoiseSettings(
                 Codec.DOUBLE.fieldOf("density_factor").forGetter(NoiseSettings::densityFactor),
                 Codec.DOUBLE.fieldOf("density_offset").forGetter(NoiseSettings::densityOffset),
                 Codec.BOOL.fieldOf("simplex_surface_noise").forGetter(NoiseSettings::useSimplexSurfaceNoise),
-                Codec.BOOL.optionalFieldOf("random_density_offset", false, Lifecycle.experimental()).forGetter(NoiseSettings::randomDensityOffset),
-                Codec.BOOL.optionalFieldOf("island_noise_override", false, Lifecycle.experimental()).forGetter(NoiseSettings::islandNoiseOverride),
-                Codec.BOOL.optionalFieldOf("amplified", false, Lifecycle.experimental()).forGetter(NoiseSettings::isAmplified)
+                Codec.BOOL.optionalFieldOf("random_density_offset", false, Lifecycle.experimental())
+                    .forGetter(NoiseSettings::randomDensityOffset),
+                Codec.BOOL.optionalFieldOf("island_noise_override", false, Lifecycle.experimental())
+                    .forGetter(NoiseSettings::islandNoiseOverride),
+                Codec.BOOL.optionalFieldOf("amplified", false, Lifecycle.experimental())
+                    .forGetter(NoiseSettings::isAmplified)
             ).apply(it, ::NoiseSettings)
         }.comapFlatMap(::guardY, Function.identity())
 

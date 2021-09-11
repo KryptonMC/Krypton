@@ -23,7 +23,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeShort
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutEntityPosition(
+@JvmRecord
+data class PacketOutEntityPosition(
     private val entityId: Int,
     private val deltaX: Short,
     private val deltaY: Short,

@@ -91,7 +91,9 @@ object FluidLoader {
         fluidObject: JsonObject
     ): Pair<Map<String, String>, KryptonFluid> {
         val stateId = get("stateId").asInt
-        val propertyMap = get("properties").asJsonObject.entrySet().associate { it.key to it.value.asString.lowercase() }
+        val propertyMap = get("properties").asJsonObject.entrySet().associate {
+            it.key to it.value.asString.lowercase()
+        }
         val block = KryptonFluid(FluidData(Key.key(key), fluidObject, this), availableProperties, propertyMap)
         STATE_MAP[stateId] = block
         return propertyMap to block

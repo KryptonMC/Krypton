@@ -25,7 +25,8 @@ private annotation class ItemDsl
 public inline fun item(builder: ItemStack.Builder.() -> Unit): ItemStack = ItemStack.builder().apply(builder).build()
 
 /**
- * Constructs a new [ItemStack] using the provided item [type] and [builder] function.
+ * Constructs a new [ItemStack] using the provided item [type] and [builder]
+ * function.
  *
  * @param type the item type
  * @param builder the builder

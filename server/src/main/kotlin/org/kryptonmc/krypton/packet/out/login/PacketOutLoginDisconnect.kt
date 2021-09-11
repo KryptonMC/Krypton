@@ -24,10 +24,14 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 
 /**
- * Informs the client that they have been disconnected for the specified [reason]
- * The client assumes that the connection has already been dropped by this point.
+ * Informs the client that they have been disconnected for the specified
+ * [reason].
+ *
+ * The client assumes that the connection has already been dropped by this
+ * point.
  */
-class PacketOutLoginDisconnect(private val reason: Component) : Packet {
+@JvmRecord
+data class PacketOutLoginDisconnect(private val reason: Component) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(reason)

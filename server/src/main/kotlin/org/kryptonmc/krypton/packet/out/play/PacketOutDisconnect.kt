@@ -23,7 +23,8 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 
-class PacketOutDisconnect(private val reason: Component) : Packet {
+@JvmRecord
+data class PacketOutDisconnect(private val reason: Component) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(reason)

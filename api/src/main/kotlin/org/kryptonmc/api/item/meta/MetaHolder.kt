@@ -18,8 +18,8 @@ import org.kryptonmc.api.item.ItemStack
 public interface MetaHolder : Pointers {
 
     /**
-     * Gets the value associated with the given [key], or null if
-     * there is no value associated with the given [key].
+     * Gets the value associated with the given [key], or null if there is no
+     * value associated with the given [key].
      *
      * @param key the key
      * @return the value, or null if not present
@@ -27,8 +27,7 @@ public interface MetaHolder : Pointers {
     public operator fun <V : Any> get(key: MetaKey<V>): V?
 
     /**
-     * Sets the value associated with the given [key] to the
-     * provided [value].
+     * Sets the value associated with the given [key] to the provided [value].
      *
      * @param key the key
      * @param value the new value
@@ -36,8 +35,7 @@ public interface MetaHolder : Pointers {
     public operator fun <V : Any> set(key: MetaKey<V>, value: V)
 
     /**
-     * Returns if this holder contains metadata for the given
-     * [key].
+     * Returns if this holder contains metadata for the given [key].
      *
      * @param key the key
      * @return true if there is metadata for the key, false otherwise

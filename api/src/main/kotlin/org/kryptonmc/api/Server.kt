@@ -32,11 +32,11 @@ import java.net.InetSocketAddress
 import java.util.UUID
 
 /**
- * The server is the centre of the API. It provides access to everything, and is
- * the central manager for most of the server.
+ * The server is the centre of the API. It provides access to everything, and
+ * is the central manager for most of the server.
  *
- * You can use the server to retrieve information, managers for various aspects of
- * the API, configuration options, status, and players.
+ * You can use the server to retrieve information, managers for various aspects
+ * of the API, configuration options, status, and players.
  */
 public interface Server : ForwardingAudience {
 
@@ -178,8 +178,8 @@ public interface Server : ForwardingAudience {
     public val channels: Set<Key>
 
     /**
-     * Gets the online player with the given [uuid], or returns null if there is no
-     * player online with the given [uuid].
+     * Gets the online player with the given [uuid], or returns null if there
+     * is no player online with the given [uuid].
      *
      * @param uuid the UUID
      * @return the player, or null if not present
@@ -187,8 +187,8 @@ public interface Server : ForwardingAudience {
     public fun player(uuid: UUID): Player?
 
     /**
-     * Gets the online player with the given [name], or returns null if there is no
-     * player online with the given [name].
+     * Gets the online player with the given [name], or returns null if there
+     * is no player online with the given [name].
      *
      * Warning: Usernames are not unique past a single session. Do **not** use
      * usernames to uniquely identify users!
@@ -199,10 +199,12 @@ public interface Server : ForwardingAudience {
     public fun player(name: String): Player?
 
     /**
-     * Sends a message to every player on the server with the given [permission].
+     * Sends a message to every player on the server with the given
+     * [permission].
      *
      * @param message the message to send
-     * @param permission the permission that players require to receive the message
+     * @param permission the permission that players require to receive the
+     * message
      */
     public fun sendMessage(message: Component, permission: String)
 

@@ -23,4 +23,7 @@ import org.kryptonmc.api.entity.ambient.AmbientCreature
 import org.kryptonmc.krypton.entity.KryptonMob
 import org.kryptonmc.krypton.world.KryptonWorld
 
-abstract class KryptonAmbientCreature(world: KryptonWorld, type: EntityType<out AmbientCreature>) : KryptonMob(world, type)
+abstract class KryptonAmbientCreature(
+    world: KryptonWorld,
+    type: EntityType<out AmbientCreature>
+) : KryptonMob(world, type)

@@ -46,8 +46,18 @@ public object AttributeTypes {
         register("horse.jump_strength", true, 0.7, 0.0, 2.0)
 
     // @formatter:on
-    private fun register(name: String, sendToClient: Boolean, baseDefault: Double, minimum: Double, maximum: Double): AttributeType {
+    private fun register(
+        name: String,
+        sendToClient: Boolean,
+        baseDefault: Double,
+        minimum: Double,
+        maximum: Double
+    ): AttributeType {
         val key = Key.key(name)
-        return Registries.register(Registries.ATTRIBUTE, key, AttributeType(key, sendToClient, baseDefault, minimum, maximum))
+        return Registries.register(
+            Registries.ATTRIBUTE,
+            key,
+            AttributeType(key, sendToClient, baseDefault, minimum, maximum)
+        )
     }
 }

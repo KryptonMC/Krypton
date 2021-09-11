@@ -21,8 +21,7 @@ public interface Creeper : Monster {
     public var fuse: Short
 
     /**
-     * The radius of the explosion this creeper will produce when it
-     * explodes.
+     * The radius of the explosion this creeper will produce when it explodes.
      *
      * Defaults to 3 for regular creepers and 6 for charged creepers.
      */

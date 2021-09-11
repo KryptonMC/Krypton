@@ -50,6 +50,10 @@ object MemoryKeys {
     @Suppress("UNCHECKED_CAST")
     private fun <T : Any> register(name: String, codec: Codec<T>, canExpire: Boolean): MemoryKey<T> {
         val key = Key.key(name)
-        return Registries.register(InternalRegistries.MEMORIES, key, MemoryKey(key, codec, canExpire) as MemoryKey<Any>) as MemoryKey<T>
+        return Registries.register(
+            InternalRegistries.MEMORIES,
+            key,
+            MemoryKey(key, codec, canExpire) as MemoryKey<Any>
+        ) as MemoryKey<T>
     }
 }

@@ -76,10 +76,12 @@ import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import java.util.Locale
 
 /**
- * This is the largest and most important of the four packet handlers, as the play state is where the
- * vast majority of packets reside.
+ * This is the largest and most important of the four packet handlers, as the
+ * play state is where the vast majority of packets reside.
  *
- * As mentioned above, this is the packet handler for the [Play][org.kryptonmc.krypton.network.PacketState.PLAY] state.
+ * As mentioned above, this is the packet handler for the
+ * [Play][org.kryptonmc.krypton.packet.PacketState.PLAY] state.
+ *
  * This handles all supported inbound packets in the play state.
  */
 class PlayHandler(
@@ -206,7 +208,8 @@ class PlayHandler(
             EntityAction.START_SPRINTING -> player.isSprinting = true
             EntityAction.STOP_SPRINTING -> player.isSprinting = false
             EntityAction.LEAVE_BED -> Unit // TODO: Sleeping
-            EntityAction.START_JUMP_WITH_HORSE, EntityAction.STOP_JUMP_WITH_HORSE, EntityAction.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
+            EntityAction.START_JUMP_WITH_HORSE, EntityAction.STOP_JUMP_WITH_HORSE,
+            EntityAction.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
             EntityAction.START_FLYING_WITH_ELYTRA -> Unit // TODO: Elytra
         }
         playerManager.sendToAll(PacketOutMetadata(player.id, player.data.dirty))
@@ -307,7 +310,13 @@ class PlayHandler(
 
     private fun handlePositionAndRotationUpdate(packet: PacketInPlayerPositionAndRotation) {
         val oldLocation = player.location
-        val newLocation = oldLocation.copy(x = packet.x, y = packet.y, z = packet.z, yaw = packet.yaw, pitch = packet.pitch)
+        val newLocation = oldLocation.copy(
+            x = packet.x,
+            y = packet.y,
+            z = packet.z,
+            yaw = packet.yaw,
+            pitch = packet.pitch
+        )
         if (newLocation == oldLocation) return
 
         player.location = newLocation

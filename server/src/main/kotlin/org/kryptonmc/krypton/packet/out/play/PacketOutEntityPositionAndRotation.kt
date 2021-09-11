@@ -24,7 +24,8 @@ import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeShort
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutEntityPositionAndRotation(
+@JvmRecord
+data class PacketOutEntityPositionAndRotation(
     private val id: Int,
     private val deltaX: Short,
     private val deltaY: Short,

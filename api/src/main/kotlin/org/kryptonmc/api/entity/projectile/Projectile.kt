@@ -17,8 +17,8 @@ import org.kryptonmc.api.entity.Entity
 public interface Projectile : Entity {
 
     /**
-     * The owner of this projectile, or null if this projectile does not have an owner
-     * yet.
+     * The owner of this projectile, or null if this projectile does not have
+     * an owner yet.
      */
     public val owner: Entity?
 

@@ -25,7 +25,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 
-class PacketOutDisplayScoreboard(
+@JvmRecord
+data class PacketOutDisplayScoreboard(
     private val scoreboard: KryptonScoreboard,
     private val team: Team? = null // used for team specific positioning
 ) : Packet {

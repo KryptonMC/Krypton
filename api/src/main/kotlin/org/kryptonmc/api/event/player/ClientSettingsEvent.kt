@@ -35,8 +35,10 @@ public class ClientSettingsEvent(
  * @param jacket whether the player has their jacket shown
  * @param leftSleeve whether the player has their left sleeve shown
  * @param rightSleeve whether the player has their right sleeve shown
- * @param leftPants whether the player has the left part of their trousers shown
- * @param rightPants whether the player has the right part of their trousers shown
+ * @param leftPants whether the player has the left part of their trousers
+ * shown
+ * @param rightPants whether the player has the right part of their trousers
+ * shown
  * @param hat whether the player has their hat shown
  */
 public data class SkinSettings(

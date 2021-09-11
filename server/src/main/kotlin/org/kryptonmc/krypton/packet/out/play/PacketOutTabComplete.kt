@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import com.mojang.brigadier.Message
 import com.mojang.brigadier.suggestion.Suggestions
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
@@ -35,7 +34,8 @@ import org.kryptonmc.krypton.util.writeVarInt
  * @param id the unique ID sent by the client to identify this request
  * @param matches matches for the given request
  */
-class PacketOutTabComplete(
+@JvmRecord
+data class PacketOutTabComplete(
     private val id: Int,
     private val matches: Suggestions
 ) : Packet {
@@ -48,9 +48,7 @@ class PacketOutTabComplete(
         buf.writeCollection(matches.list) {
             buf.writeString(it.text)
             buf.writeBoolean(it.tooltip != null)
-            if (it.tooltip != null) buf.writeChat(it.tooltip.toAdventure())
+            if (it.tooltip != null) buf.writeChat(Component.text(it.tooltip.string))
         }
     }
 }
-
-private fun Message.toAdventure() = Component.text(string)

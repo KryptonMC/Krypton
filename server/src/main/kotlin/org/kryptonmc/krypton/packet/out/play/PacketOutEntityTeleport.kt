@@ -24,7 +24,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutEntityTeleport(
+@JvmRecord
+data class PacketOutEntityTeleport(
     private val entityId: Int,
     private val location: Location,
     private val isOnGround: Boolean

@@ -35,7 +35,8 @@ import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.nbt.compound
 
-class PacketOutJoinGame(
+@JvmRecord
+data class PacketOutJoinGame(
     private val id: Int,
     private val isHardcore: Boolean,
     private val gamemode: Gamemode,

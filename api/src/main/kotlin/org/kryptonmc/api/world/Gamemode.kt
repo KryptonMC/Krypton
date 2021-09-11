@@ -24,8 +24,8 @@ import org.kryptonmc.api.world.Gamemode.SURVIVAL
 public enum class Gamemode(public val shortName: String) {
 
     /**
-     * Plain old survival mode. In this mode, you have a finite amount of health,
-     * and you can take damage.
+     * Plain old survival mode. In this mode, you have a finite amount of
+     * health, and you can take damage.
      */
     SURVIVAL("s"),
 
@@ -36,15 +36,16 @@ public enum class Gamemode(public val shortName: String) {
     CREATIVE("c"),
 
     /**
-     * Adventure mode is designed for map creators, in that blocks require specific
-     * tools to break, and you cannot break them without those tools.
+     * Adventure mode is designed for map creators, in that blocks require
+     * specific tools to break, and you cannot break them without those tools.
      */
     ADVENTURE("a"),
 
     /**
      * In spectator mode, you are also completely invulnerable, but you can
      * also fly through blocks, as the entire world is essentially non existent
-     * to your client (you can see things, but you will never collide with them).
+     * to your client (you can see things, but you will never collide with
+     * them).
      */
     SPECTATOR("sp");
 
@@ -64,7 +65,8 @@ public enum class Gamemode(public val shortName: String) {
     public companion object {
 
         /**
-         * Retrieves a game mode from its legacy ID. Should only need to be used internally.
+         * Retrieves a game mode from its legacy ID. Should only need to be
+         * used internally.
          */
         @JvmStatic
         public fun fromId(id: Int): Gamemode? {

@@ -37,12 +37,60 @@ public enum class Direction(
     public val normal: Vector3i
 ) : StringSerializable {
 
-    DOWN(0, 1, -1, "down", Axis.Y, AxisDirection.NEGATIVE, Vector3i(0, -1, 0)),
-    UP(1, 0, -1, "up", Axis.Y, AxisDirection.POSITIVE, Vector3i(0, 1, 0)),
-    NORTH(2, 3, 2, "north", Axis.Z, AxisDirection.NEGATIVE, Vector3i(0, 0, -1)),
-    SOUTH(3, 2, 0, "south", Axis.Z, AxisDirection.POSITIVE, Vector3i(0, 0, 1)),
-    WEST(4, 5, 1, "west", Axis.X, AxisDirection.NEGATIVE, Vector3i(-1, 0, 0)),
-    EAST(5, 4, 3, "east", Axis.X, AxisDirection.POSITIVE, Vector3i(1, 0, 0));
+    DOWN(
+        0,
+        1,
+        -1,
+        "down",
+        Axis.Y,
+        AxisDirection.NEGATIVE,
+        Vector3i(0, -1, 0)
+    ),
+    UP(
+        1,
+        0,
+        -1,
+        "up",
+        Axis.Y,
+        AxisDirection.POSITIVE,
+        Vector3i(0, 1, 0)
+    ),
+    NORTH(
+        2,
+        3,
+        2,
+        "north",
+        Axis.Z,
+        AxisDirection.NEGATIVE,
+        Vector3i(0, 0, -1)
+    ),
+    SOUTH(
+        3,
+        2,
+        0,
+        "south",
+        Axis.Z,
+        AxisDirection.POSITIVE,
+        Vector3i(0, 0, 1)
+    ),
+    WEST(
+        4,
+        5,
+        1,
+        "west",
+        Axis.X,
+        AxisDirection.NEGATIVE,
+        Vector3i(-1, 0, 0)
+    ),
+    EAST(
+        5,
+        4,
+        3,
+        "east",
+        Axis.X,
+        AxisDirection.POSITIVE,
+        Vector3i(1, 0, 0)
+    );
 
     /**
      * The normal on the X axis.
@@ -76,7 +124,9 @@ public enum class Direction(
      *
      * @param serialized the name
      */
-    public enum class Axis(override val serialized: String) : (Direction?) -> Boolean, Predicate<Direction?>, StringSerializable {
+    public enum class Axis(
+        override val serialized: String
+    ) : (Direction?) -> Boolean, Predicate<Direction?>, StringSerializable {
 
         X("x") {
 
@@ -110,8 +160,8 @@ public enum class Direction(
             get() = this == X || this == Z
 
         /**
-         * Selects the appropriate [x], [y], or [z] coordinate, depending on what the axis
-         * is, and returns it.
+         * Selects the appropriate [x], [y], or [z] coordinate, depending on
+         * what the axis is, and returns it.
          *
          * @param x the X coordinate
          * @param y the Y coordinate
@@ -121,8 +171,8 @@ public enum class Direction(
         public abstract fun select(x: Int, y: Int, z: Int): Int
 
         /**
-         * Selects the appropriate [x], [y], or [z] coordinate, depending on what the axis
-         * is, and returns it.
+         * Selects the appropriate [x], [y], or [z] coordinate, depending on
+         * what the axis is, and returns it.
          *
          * @param x the X coordinate
          * @param y the Y coordinate
@@ -178,7 +228,8 @@ public enum class Direction(
         public fun fromNormal(normal: Vector3i): Direction? = BY_OFFSET[normal.asLong()]
 
         /**
-         * Gets the [Direction] from the given [x], [y], and [z] normal coordinates.
+         * Gets the [Direction] from the given [x], [y], and [z] normal
+         * coordinates.
          *
          * @param x the normal X
          * @param y the normal Y

@@ -131,6 +131,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
             return max(abs(deltaX), abs(deltaZ))
         }
 
-        private fun calculateLevel(absDelta: Int, center: Int): Int = if (absDelta >= 0) center + absDelta else center - absDelta
+        private fun calculateLevel(absDelta: Int, center: Int): Int =
+            if (absDelta >= 0) center + absDelta else center - absDelta
     }
 }

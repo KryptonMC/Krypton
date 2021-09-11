@@ -13,9 +13,9 @@ import java.util.Objects
 /**
  * Holder for three rotation amounts, each on their respective axes.
  *
- * Each value must be a [finite][Float.isFinite] value between 0 and
- * 360. If a value larger than 360 degrees is provided, it will be
- * clamped to 360 degrees.
+ * Each value must be a [finite][Float.isFinite] value between 0 and 360. If a
+ * value larger than 360 degrees is provided, it will be clamped to 360
+ * degrees.
  */
 public class Rotation(x: Float, y: Float, z: Float) {
 

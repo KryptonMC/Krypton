@@ -144,7 +144,9 @@ fun ByteBuf.writeVarLong(value: Long) {
 fun ByteBuf.readString(max: Short = Short.MAX_VALUE): String {
     val length = readVarInt()
     return when {
-        length > max * 4 -> throw IOException("String too long! Expected maximum length of $max, got length of $length!")
+        length > max * 4 -> {
+            throw IOException("String too long! Expected maximum length of $max, got length of $length!")
+        }
         length < 0 -> throw IOException("String cannot be less than 0 in length!")
         else -> {
             val string = String(readAvailableBytes(length))
@@ -158,7 +160,9 @@ fun ByteBuf.readString(max: Short = Short.MAX_VALUE): String {
 
 fun ByteBuf.writeString(value: String, max: Short = Short.MAX_VALUE) {
     val bytes = value.encodeToByteArray()
-    if (bytes.size > max) throw EncoderException("String too long! Expected maximum size of $max, got length ${value.length}!")
+    if (bytes.size > max) {
+        throw EncoderException("String too long! Expected maximum size of $max, got length ${value.length}!")
+    }
     writeVarInt(bytes.size)
     writeBytes(bytes)
 }
@@ -166,7 +170,9 @@ fun ByteBuf.writeString(value: String, max: Short = Short.MAX_VALUE) {
 fun ByteBuf.readVarIntByteArray(): ByteArray {
     val length = readVarInt()
     val readable = readableBytes()
-    if (length > readable) throw DecoderException("Not enough bytes to read. Expected Length: $length, actual length: $readable")
+    if (length > readable) {
+        throw DecoderException("Not enough bytes to read. Expected Length: $length, actual length: $readable")
+    }
     return readAvailableBytes(length)
 }
 
@@ -279,7 +285,8 @@ fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
         // Particle is directional, the offset fields are used for the direction
         is DirectionalParticleData -> {
             val random = ThreadLocalRandom.current()
-            val direction = data.direction ?: Vector(random.nextGaussian(), random.nextGaussian(), random.nextGaussian())
+            val direction = data.direction
+                ?: Vector(random.nextGaussian(), random.nextGaussian(), random.nextGaussian())
 
             writeFloat(direction.x.toFloat())
             writeFloat(direction.y.toFloat())
@@ -373,7 +380,9 @@ fun ByteBuf.writeIntArray(array: IntArray) {
 
 fun <T> ByteBuf.encode(codec: Codec<T>, value: T) {
     val result = codec.encodeStart(NBTOps, value)
-    result.error().ifPresent { throw EncoderException("Failed to encode value $value with codec $codec! Reason: ${it.message()}") }
+    result.error().ifPresent {
+        throw EncoderException("Failed to encode value $value with codec $codec! Reason: ${it.message()}")
+    }
     writeNBT(result.result().get() as? CompoundTag)
 }
 

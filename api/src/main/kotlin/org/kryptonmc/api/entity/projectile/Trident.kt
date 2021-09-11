@@ -17,13 +17,14 @@ public interface Trident : ArrowLike {
 
     /**
      * The item that is given to entities that pick up this trident.
-     * Defaults to a single stack with [org.kryptonmc.api.item.ItemTypes.TRIDENT].
+     * Defaults to a single stack with
+     * [org.kryptonmc.api.item.ItemTypes.TRIDENT].
      */
     public val item: ItemStack
 
     /**
-     * If this trident has already damaged an entity, in which case subsequent collisions
-     * with entities will deal no damage.
+     * If this trident has already damaged an entity, in which case subsequent
+     * collisions with entities will deal no damage.
      */
     public var dealtDamage: Boolean
 

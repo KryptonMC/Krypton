@@ -53,8 +53,8 @@ object SessionService {
      * @param secret the shared secret
      * @param ip the server's IP address (string format)
      * @return a new [KryptonGameProfile] for the user
-     * @throws AuthenticationException if the response from Mojang was unsuccessful
-     * (authentication failed)
+     * @throws AuthenticationException if the response from Mojang was
+     * unsuccessful (authentication failed)
      */
     fun hasJoined(username: String, secret: ByteArray, ip: String): KryptonGameProfile {
         val cachedProfile = profiles.getIfPresent(username)

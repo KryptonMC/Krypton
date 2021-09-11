@@ -194,7 +194,13 @@ abstract class KryptonEntity(
     }
 
     final override fun move(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {
-        location = Location(location.x + x, location.y + y, location.z + z, location.yaw + yaw, location.pitch + pitch)
+        location = Location(
+            location.x + x,
+            location.y + y,
+            location.z + z,
+            location.yaw + yaw,
+            location.pitch + pitch
+        )
     }
 
     final override fun moveTo(x: Double, y: Double, z: Double) {
@@ -219,11 +225,9 @@ abstract class KryptonEntity(
 
     override fun identity() = Identity.identity(uuid)
 
-    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(op.apply(ShowEntity.of(
-        type.key,
-        uuid,
-        displayName.takeIf { it !== Component.empty() }
-    )))
+    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(
+        op.apply(ShowEntity.of(type.key, uuid, displayName.takeIf { it !== Component.empty() }))
+    )
 
     final override var isOnFire: Boolean
         get() = getSharedFlag(0)

@@ -159,6 +159,7 @@ license {
         "**/event/server/SetupPermissionsEvent.kt",
         "**/plugin/InvalidPluginException.kt",
         "**/plugin/PluginContainer.kt",
+        "**/plugin/PluginDependency.kt",
         "**/plugin/PluginDescription.kt",
         "**/plugin/PluginManager.kt",
         "**/plugin/annotation/DataFolder.kt",

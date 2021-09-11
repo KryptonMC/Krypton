@@ -27,7 +27,8 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 
-class ServerStatus(
+@JvmRecord
+data class ServerStatus(
     val motd: Component,
     val players: Players,
     val favicon: String?

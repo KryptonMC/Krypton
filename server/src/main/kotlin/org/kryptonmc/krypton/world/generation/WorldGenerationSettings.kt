@@ -52,7 +52,12 @@ data class WorldGenerationSettings(
     val legacyCustomOptions: Optional<String>
 ) {
 
-    constructor(seed: Long, generateFeatures: Boolean, bonusChest: Boolean, dimensions: KryptonRegistry<Dimension>) : this(
+    constructor(
+        seed: Long,
+        generateFeatures: Boolean,
+        bonusChest: Boolean,
+        dimensions: KryptonRegistry<Dimension>
+    ) : this(
         seed,
         generateFeatures,
         bonusChest,
@@ -82,16 +87,25 @@ data class WorldGenerationSettings(
         val CODEC: Codec<WorldGenerationSettings> = RecordCodecBuilder.create<WorldGenerationSettings> { instance ->
             instance.group(
                 Codec.LONG.fieldOf("seed").stable().forGetter(WorldGenerationSettings::seed),
-                Codec.BOOL.fieldOf("generate_features").orElse(true).stable().forGetter(WorldGenerationSettings::generateFeatures),
-                Codec.BOOL.fieldOf("bonus_chest").orElse(false).stable().forGetter(WorldGenerationSettings::bonusChest),
-                InternalResourceKeys.DIMENSION.directCodec(Dimension.CODEC).fieldOf("dimensions").forGetter(WorldGenerationSettings::dimensions),
-                Codec.STRING.optionalFieldOf("legacy_custom_options").stable().forGetter(WorldGenerationSettings::legacyCustomOptions)
+                Codec.BOOL.fieldOf("generate_features").orElse(true).stable()
+                    .forGetter(WorldGenerationSettings::generateFeatures),
+                Codec.BOOL.fieldOf("bonus_chest").orElse(false).stable()
+                    .forGetter(WorldGenerationSettings::bonusChest),
+                InternalResourceKeys.DIMENSION.directCodec(Dimension.CODEC).fieldOf("dimensions")
+                    .forGetter(WorldGenerationSettings::dimensions),
+                Codec.STRING.optionalFieldOf("legacy_custom_options").stable()
+                    .forGetter(WorldGenerationSettings::legacyCustomOptions)
             ).apply(instance, ::WorldGenerationSettings)
         }.comapFlatMap(WorldGenerationSettings::checkStable, Function.identity())
 
         fun default(): WorldGenerationSettings {
             val seed = Random.nextLong()
-            return WorldGenerationSettings(seed, true, false, defaults(seed).withOverworld(defaultOverworld(seed)))
+            return WorldGenerationSettings(
+                seed,
+                true,
+                false,
+                defaults(seed).withOverworld(defaultOverworld(seed))
+            )
         }
 
         fun fromConfig(config: KryptonConfig): WorldGenerationSettings {
@@ -188,8 +202,13 @@ data class WorldGenerationSettings(
             return withOverworld(overworldType, generator)
         }
 
-        private fun KryptonRegistry<Dimension>.withOverworld(type: KryptonDimensionType, generator: Generator): KryptonRegistry<Dimension> {
-            val registry = KryptonRegistry(InternalResourceKeys.DIMENSION).apply { register(Dimension.OVERWORLD, Dimension(type, generator)) }
+        private fun KryptonRegistry<Dimension>.withOverworld(
+            type: KryptonDimensionType,
+            generator: Generator
+        ): KryptonRegistry<Dimension> {
+            val registry = KryptonRegistry(InternalResourceKeys.DIMENSION).apply {
+                register(Dimension.OVERWORLD, Dimension(type, generator))
+            }
             entries.forEach { (key, value) -> if (key !== Dimension.OVERWORLD) registry.register(key, value) }
             return registry
         }

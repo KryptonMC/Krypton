@@ -51,9 +51,9 @@ public interface StatisticsTracker {
     public fun decrement(statistic: Statistic<*>, amount: Int)
 
     /**
-     * Invalidates all currently tracked statistics, forcing the server to re-send
-     * all statistics when the player next requests them, even if none of them have
-     * actually been updated.
+     * Invalidates all currently tracked statistics, forcing the server to
+     * re-send all statistics when the player next requests them, even if none
+     * of them have actually been updated.
      */
     public fun invalidate()
 }

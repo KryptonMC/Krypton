@@ -9,7 +9,8 @@
 package org.kryptonmc.api.entity.attribute
 
 /**
- * Represents an operation that can be [applied][apply] to [AttributeModifier]s.
+ * Represents an operation that can be [applied][apply] to
+ * [AttributeModifier]s.
  */
 public fun interface ModifierOperation {
 
@@ -30,7 +31,9 @@ public fun interface ModifierOperation {
          * respectively, the total would be 9, because 3 + 2 + 4 = 9.
          */
         @JvmField
-        public val ADD: ModifierOperation = ModifierOperation { base, values -> values.fold(base) { acc, value -> acc + value.amount } }
+        public val ADD: ModifierOperation = ModifierOperation { base, values ->
+            values.fold(base) { acc, value -> acc + value.amount }
+        }
 
         /**
          * Multiplies the base value by 1 + the sum of all the modifier amounts.

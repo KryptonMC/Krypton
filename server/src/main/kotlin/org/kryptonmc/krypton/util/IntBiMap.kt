@@ -20,19 +20,7 @@ package org.kryptonmc.krypton.util
 
 interface IntBiMap<T> : Iterable<T> {
 
-    /**
-     * Gets the id for the specified [value], or -1 if the specified value is not in this map
-     *
-     * @param value the value
-     * @return the ID of the [value], or -1 if the value isn't registered
-     */
-    fun idOf(value: T): Int
-
-    /**
-     * Gets the value for the specified [id], or null if there is no value with the specified [id]
-     *
-     * @param id the ID
-     * @return the value with this [id], or null if there is no value with this [id]
-     */
     operator fun get(id: Int): T?
+
+    fun idOf(value: T): Int
 }

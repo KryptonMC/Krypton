@@ -84,8 +84,10 @@ object PluginLoader {
             }
         }
 
-        if (foundBungeeBukkitPluginFile) throw InvalidPluginException("The plugin file $fileName appears to be a " +
-                "Bukkit or BungeeCord plugin. Krypton does not support Bukkit or BungeeCord plugins.")
+        if (foundBungeeBukkitPluginFile) {
+            throw InvalidPluginException("The plugin file $fileName appears to be a Bukkit or BungeeCord plugin. " +
+                    "Krypton does not support Bukkit or BungeeCord plugins.")
+        }
         return null
     }
 

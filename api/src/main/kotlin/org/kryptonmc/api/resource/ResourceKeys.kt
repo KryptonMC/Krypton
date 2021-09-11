@@ -58,7 +58,8 @@ public object ResourceKeys {
      * Custom built-in registries.
      */
     @JvmField public val GAMERULES: ResourceKey<out Registry<GameRule<Any>>> = krypton("gamerules")
-    @JvmField public val MODIFIER_OPERATIONS: ResourceKey<out Registry<ModifierOperation>> = krypton("attribute_modifier_operations")
+    @JvmField public val MODIFIER_OPERATIONS: ResourceKey<out Registry<ModifierOperation>> =
+        krypton("attribute_modifier_operations")
     @JvmField public val CRITERIA: ResourceKey<out Registry<Criterion>> = krypton("criteria")
     // @formatter:on
 

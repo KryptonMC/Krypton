@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.data
 import net.kyori.adventure.key.Key.key
 
 /**
- * Professions of villagers
+ * Professions of villagers.
  */
 enum class VillagerProfession(val id: Int) {
 

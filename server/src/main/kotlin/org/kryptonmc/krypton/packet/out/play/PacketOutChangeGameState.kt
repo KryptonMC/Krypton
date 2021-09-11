@@ -21,7 +21,8 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
-class PacketOutChangeGameState(
+@JvmRecord
+data class PacketOutChangeGameState(
     private val state: GameState,
     private val value: Float = 0.0F
 ) : Packet {

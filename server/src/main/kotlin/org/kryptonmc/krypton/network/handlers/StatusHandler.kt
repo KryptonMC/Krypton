@@ -27,7 +27,8 @@ import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
 import org.kryptonmc.krypton.network.Session
 
 /**
- * Handles all inbound packets in the [Status][org.kryptonmc.krypton.packet.state.PacketState.STATUS] state.
+ * Handles all inbound packets in the
+ * [Status][org.kryptonmc.krypton.packet.PacketState.STATUS] state.
  *
  * There are two packets in this state that we handle:
  * - [Status request][org.kryptonmc.krypton.packet. in.status.PacketInStatusRequest] -

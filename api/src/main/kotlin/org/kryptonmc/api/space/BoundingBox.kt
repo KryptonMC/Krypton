@@ -35,32 +35,32 @@ public class BoundingBox(
 ) {
 
     /**
-     * The minimum X value
+     * The minimum X value.
      */
     public val minimumX: Double = min(minimumX, maximumX)
 
     /**
-     * The minimum Y value
+     * The minimum Y value.
      */
     public val minimumY: Double = min(minimumY, maximumY)
 
     /**
-     * The minimum Z value
+     * The minimum Z value.
      */
     public val minimumZ: Double = min(minimumZ, maximumZ)
 
     /**
-     * The maximum X value
+     * The maximum X value.
      */
     public val maximumX: Double = max(minimumX, maximumX)
 
     /**
-     * The maximum Y value
+     * The maximum Y value.
      */
     public val maximumY: Double = max(minimumY, maximumY)
 
     /**
-     * The maximum Z value
+     * The maximum Z value.
      */
     public val maximumZ: Double = max(minimumZ, maximumZ)
 
@@ -108,15 +108,24 @@ public class BoundingBox(
     }
 
     /**
-     * Constructs a new [BoundingBox] from the given [minimum] and [maximum] vectors.
+     * Constructs a new [BoundingBox] from the given [minimum] and [maximum]
+     * vectors.
      *
      * @param minimum the minimum vector
      * @param maximum the maximum vector
      */
-    public constructor(minimum: Vector, maximum: Vector) : this(minimum.x, minimum.y, minimum.z, maximum.x, maximum.y, maximum.z)
+    public constructor(minimum: Vector, maximum: Vector) : this(
+        minimum.x,
+        minimum.y,
+        minimum.z,
+        maximum.x,
+        maximum.y,
+        maximum.z
+    )
 
     /**
-     * Constructs a new [BoundingBox] from the given [minimum] and [maximum] positions.
+     * Constructs a new [BoundingBox] from the given [minimum] and [maximum]
+     * positions.
      *
      * @param minimum the minimum position
      * @param maximum the maximum position
@@ -131,8 +140,8 @@ public class BoundingBox(
     )
 
     /**
-     * Constructs a new [BoundingBox] from the given [minimum], with a size of 1,
-     * calculating the maximum values by adding 1 to the minimum values.
+     * Constructs a new [BoundingBox] from the given [minimum], with a size of
+     * 1, calculating the maximum values by adding 1 to the minimum values.
      *
      * @param minimum the minimum position
      */
@@ -168,8 +177,9 @@ public class BoundingBox(
     public fun maximum(axis: Direction.Axis): Double = axis.select(maximumX, maximumY, maximumZ)
 
     /**
-     * Inflates the border of this bounding box by the given [xFactor], [yFactor], and
-     * [zFactor], and returns a new bounding box with the applied changes.
+     * Inflates the border of this bounding box by the given [xFactor],
+     * [yFactor], and [zFactor], and returns a new bounding box with the
+     * applied changes.
      *
      * @param xFactor the X factor to inflate the border by
      * @param xFactor the Y factor to inflate the border by
@@ -187,8 +197,8 @@ public class BoundingBox(
     }
 
     /**
-     * Inflates the border of this bounding box by the given [factor], and returns a
-     * new bounding box with the applied changes.
+     * Inflates the border of this bounding box by the given [factor], and
+     * returns a new bounding box with the applied changes.
      *
      * @param factor the factor to inflate the border by
      * @return a new bounding box with its border inflated by the given factor
@@ -196,8 +206,9 @@ public class BoundingBox(
     public fun inflate(factor: Double): BoundingBox = inflate(factor, factor, factor)
 
     /**
-     * Deflates the border of this bounding box by the given [xFactor], [yFactor], and
-     * [zFactor], and returns a new bounding box with the applied changes.
+     * Deflates the border of this bounding box by the given [xFactor],
+     * [yFactor], and [zFactor], and returns a new bounding box with the
+     * applied changes.
      *
      * This is equivalent to calling `inflate(-xFactor, -yFactor, -zFactor)`
      *
@@ -206,11 +217,12 @@ public class BoundingBox(
      * @param xFactor the Z factor to deflate the border by
      * @return a new bounding box with its border deflated by the given factors
      */
-    public fun deflate(xFactor: Double, yFactor: Double, zFactor: Double): BoundingBox = inflate(-xFactor, -yFactor, -zFactor)
+    public fun deflate(xFactor: Double, yFactor: Double, zFactor: Double): BoundingBox =
+        inflate(-xFactor, -yFactor, -zFactor)
 
     /**
-     * Deflates the border of this bounding box by the given [factor], and returns a
-     * new bounding box with the applied changes.
+     * Deflates the border of this bounding box by the given [factor], and
+     * returns a new bounding box with the applied changes.
      *
      * This is equivalent to calling `inflate(-factor)`
      *
@@ -220,8 +232,8 @@ public class BoundingBox(
     public fun deflate(factor: Double): BoundingBox = inflate(-factor)
 
     /**
-     * Intersects this bounding box with the given [other] bounding box, and returns a
-     * new bounding box with the resulted intersection.
+     * Intersects this bounding box with the given [other] bounding box, and
+     * returns a new bounding box with the resulted intersection.
      *
      * @param other the other box to intersect with
      * @return a new bounding box with the resulting intersection
@@ -237,8 +249,8 @@ public class BoundingBox(
     }
 
     /**
-     * Moves this bounding box by the specified [x], [y], and [z] amounts, and returns a
-     * new bounding box with the result of the move.
+     * Moves this bounding box by the specified [x], [y], and [z] amounts, and
+     * returns a new bounding box with the result of the move.
      *
      * @param x the X amount
      * @param y the Y amount
@@ -255,8 +267,8 @@ public class BoundingBox(
     )
 
     /**
-     * Moves this bounding box by the specified [amount], and returns a new bounding box
-     * with the result of the move.
+     * Moves this bounding box by the specified [amount], and returns a new
+     * bounding box with the result of the move.
      *
      * @param amount the amount
      * @return a new bounding box with the result of the move
@@ -264,8 +276,8 @@ public class BoundingBox(
     public fun move(amount: Vector): BoundingBox = move(amount.x, amount.y, amount.z)
 
     /**
-     * Expands this bounding box out by the given [x], [y], and [z] amounts, and returns a
-     * new bounding box with the result of the expansion.
+     * Expands this bounding box out by the given [x], [y], and [z] amounts,
+     * and returns a new bounding box with the result of the expansion.
      *
      * @param x the X amount
      * @param y the Y amount
@@ -286,8 +298,8 @@ public class BoundingBox(
     }
 
     /**
-     * Expands this bounding box out by the given [amount], and returns a new bounding
-     * box with the result of the expansion.
+     * Expands this bounding box out by the given [amount], and returns a new
+     * bounding box with the result of the expansion.
      *
      * @param amount the amount
      * @return a new bounding box with the result of the expansion
@@ -295,8 +307,8 @@ public class BoundingBox(
     public fun expand(amount: Vector): BoundingBox = expand(amount.x, amount.y, amount.z)
 
     /**
-     * Contracts this bounding box by the given [x], [y], and [z] amounts, and returns a
-     * new bounding box with the result of the contraction.
+     * Contracts this bounding box by the given [x], [y], and [z] amounts, and
+     * returns a new bounding box with the result of the contraction.
      *
      * @param x the X amount
      * @param y the Y amount
@@ -317,8 +329,8 @@ public class BoundingBox(
     }
 
     /**
-     * Returns true if this bounding box intersects with the given minimum and maximum
-     * values, false otherwise.
+     * Returns true if this bounding box intersects with the given minimum and
+     * maximum values, false otherwise.
      *
      * @param minimumX the minimum X value
      * @param minimumY the minimum Y value
@@ -340,8 +352,8 @@ public class BoundingBox(
             this.minimumZ < maximumZ && this.maximumZ > minimumZ
 
     /**
-     * Returns true if this bounding box intersects with the given [other] bounding box,
-     * false otherwise.
+     * Returns true if this bounding box intersects with the given [other]
+     * bounding box, false otherwise.
      *
      * @param other the other bounding box
      * @return true if this box intersects with the other box, false otherwise
@@ -356,8 +368,8 @@ public class BoundingBox(
     )
 
     /**
-     * Returns true if the given [x], [y], and [z] values are inside the bounds of this
-     * box, false otherwise.
+     * Returns true if the given [x], [y], and [z] values are inside the bounds
+     * of this box, false otherwise.
      *
      * @param x the X value
      * @param y the Y value
@@ -369,8 +381,8 @@ public class BoundingBox(
             z in minimumZ..maximumZ - 1
 
     /**
-     * Returns true if the given [position] is inside the bounds of this box, false
-     * otherwise.
+     * Returns true if the given [position] is inside the bounds of this box,
+     * false otherwise.
      *
      * @param position the position
      * @return true if this box contains the position, false otherwise
@@ -383,13 +395,27 @@ public class BoundingBox(
          * A bounding box with 0 for all of its values.
          */
         @JvmField
-        public val ZERO: BoundingBox = BoundingBox(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        public val ZERO: BoundingBox = BoundingBox(
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+        )
 
         /**
-         * A bounding box with 0 for all of its minimum values, and 1 for all of its maximum
-         * values.
+         * A bounding box with 0 for all of its minimum values, and 1 for all
+         * of its maximum values.
          */
         @JvmField
-        public val UNIT: BoundingBox = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+        public val UNIT: BoundingBox = BoundingBox(
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0
+        )
     }
 }

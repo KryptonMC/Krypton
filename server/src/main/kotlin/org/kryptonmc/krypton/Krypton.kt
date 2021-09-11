@@ -92,7 +92,8 @@ private class KryptonCLI : CliktCommand(
         }
 
         val logger = logger("Krypton")
-        logger.info("Starting Krypton server version ${KryptonPlatform.version} for Minecraft ${KryptonPlatform.minecraftVersion}...")
+        logger.info("Starting Krypton server version ${KryptonPlatform.version} for Minecraft " +
+                "${KryptonPlatform.minecraftVersion}...")
 
         // Run the bootstrap
         Bootstrap.preload()
@@ -106,17 +107,26 @@ private class KryptonCLI : CliktCommand(
         }
         // Populate the config with CLI parameters
         val config = loadedConfig.copy(
-            server = loadedConfig.server.copy(ip = ip ?: loadedConfig.server.ip, port = port ?: loadedConfig.server.port),
-            status = loadedConfig.status.copy(motd = motd ?: loadedConfig.status.motd, maxPlayers = maxPlayers ?: loadedConfig.status.maxPlayers),
+            server = loadedConfig.server.copy(
+                ip = ip ?: loadedConfig.server.ip,
+                port = port ?: loadedConfig.server.port
+            ),
+            status = loadedConfig.status.copy(
+                motd = motd ?: loadedConfig.status.motd,
+                maxPlayers = maxPlayers ?: loadedConfig.status.maxPlayers
+            ),
             world = loadedConfig.world.copy(name = worldName ?: loadedConfig.world.name)
         )
 
         // Warn about experimental data converter, setup registries, and create world storage access
         if (useDataConverter) {
-            logger.warn("You have opted in to use the data converter to automatically convert old data to the current version.")
-            logger.warn("Beware that this is an experimental tool, and has known issues with pre-1.13 worlds, and may cause")
+            logger.warn("You have opted in to use the data converter to automatically convert old data to the " +
+                    "current version.")
+            logger.warn("Beware that this is an experimental tool, and has known issues with pre-1.13 worlds, " +
+                    "and may cause")
             logger.warn("issues with newer worlds as well.")
-            logger.warn("USE THIS TOOL AT YOUR OWN RISK! If this tool corrupts your data, that is YOUR responsibility!")
+            logger.warn("USE THIS TOOL AT YOUR OWN RISK! If this tool corrupts your data, that is YOUR " +
+                    "responsibility!")
         }
         val storageAccess = WorldDataStorage(worldFolder).createAccess(config.world.name, useDataConverter)
         val profileCache = KryptonProfileCache(Path.of("usercache.json"))

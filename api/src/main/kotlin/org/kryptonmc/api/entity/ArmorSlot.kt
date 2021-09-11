@@ -9,8 +9,7 @@
 package org.kryptonmc.api.entity
 
 /**
- * Represents possible slots for armor pieces in
- * an entity's inventory.
+ * Represents possible slots for armor pieces in an entity's inventory.
  */
 public enum class ArmorSlot {
 

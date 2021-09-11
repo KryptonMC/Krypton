@@ -24,7 +24,8 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarLong
 import org.kryptonmc.krypton.world.KryptonWorldBorder
 
-class PacketOutInitializeWorldBorder(private val border: KryptonWorldBorder) : Packet {
+@JvmRecord
+data class PacketOutInitializeWorldBorder(private val border: KryptonWorldBorder) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeDouble(border.center.x())

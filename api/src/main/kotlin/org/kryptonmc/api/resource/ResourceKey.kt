@@ -32,9 +32,10 @@ public class ResourceKey<T : Any> private constructor(
         private val VALUES: MutableMap<String, ResourceKey<*>> = Collections.synchronizedMap(IdentityHashMap())
 
         /**
-         * Creates a new resource key, or returns an existing one if one with the
-         * given parameters has already been created, with the given [registry] as
-         * its parent name, and the given [location] as the location of the resource.
+         * Creates a new resource key, or returns an existing one if one with
+         * the given parameters has already been created, with the given
+         * [registry] as its parent name, and the given [location] as the
+         * location of the resource.
          *
          * @param registry the parent registry name
          * @param location the location of the resource
@@ -48,9 +49,10 @@ public class ResourceKey<T : Any> private constructor(
         }
 
         /**
-         * Creates a new resource key, or returns an existing one if one with the
-         * given parameters has already been created, with the given [parent] as
-         * its parent, and the given [location] as the location of the resource.
+         * Creates a new resource key, or returns an existing one if one with
+         * the given parameters has already been created, with the given
+         * [parent] as its parent, and the given [location] as the location of
+         * the resource.
          *
          * @param parent the parent key
          * @param location the location of the resource

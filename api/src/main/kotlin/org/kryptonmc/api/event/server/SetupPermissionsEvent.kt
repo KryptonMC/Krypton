@@ -33,8 +33,8 @@ public class SetupPermissionsEvent(
     public var provider: PermissionProvider = defaultProvider
 
     /**
-     * Creates a [org.kryptonmc.api.permission.PermissionFunction] for the given [subject] using the [provider]
-     * from this event.
+     * Creates a [org.kryptonmc.api.permission.PermissionFunction] for the
+     * given [subject] using the [provider] from this event.
      *
      * @param subject the subject
      * @return a permission function for the given subject

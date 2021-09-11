@@ -24,5 +24,7 @@ import org.kryptonmc.krypton.util.readVarInt
 
 class PacketInTeleportConfirm(buf: ByteBuf) : Packet {
 
-    val teleportId = buf.readVarInt()
+    init {
+        buf.readVarInt() // Ignore teleport ID
+    }
 }

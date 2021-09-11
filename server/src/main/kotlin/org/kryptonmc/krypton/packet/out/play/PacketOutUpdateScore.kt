@@ -24,7 +24,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutUpdateScore(
+@JvmRecord
+data class PacketOutUpdateScore(
     private val score: Score,
     private val action: ScoreAction
 ) : Packet {

@@ -23,8 +23,9 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.network.Session
 
 /**
- * The base interface for packet handlers. This exists primarily to abstract away the [handle]
- * function, so we can call it without actually knowing which handler will handle it. :wesmart:
+ * The base interface for packet handlers. This exists primarily to abstract
+ * away the [handle] function, so we can call it without actually knowing which
+ * handler will handle it. :wesmart:
  */
 interface PacketHandler {
 

@@ -85,11 +85,12 @@ public object Registries {
      */
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    public fun <T : Any> getDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = MANAGER.getDefaulted(key)
+    public fun <T : Any> getDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? =
+        MANAGER.getDefaulted(key)
 
     /**
-     * Registers a new entry to the given [registry], with the given [key] mapped to
-     * the given [value].
+     * Registers a new entry to the given [registry], with the given [key]
+     * mapped to the given [value].
      *
      * @param registry the registry to register to
      * @param key the key
@@ -99,8 +100,8 @@ public object Registries {
     public fun <T : Any> register(registry: Registry<T>, key: String, value: T): T = register(registry, key(key), value)
 
     /**
-     * Registers a new entry to the given [registry], with the given [key] mapped to
-     * the given [value].
+     * Registers a new entry to the given [registry], with the given [key]
+     * mapped to the given [value].
      *
      * @param registry the registry to register to
      * @param key the key
@@ -110,8 +111,8 @@ public object Registries {
     public fun <T : Any> register(registry: Registry<T>, key: Key, value: T): T = MANAGER.register(registry, key, value)
 
     /**
-     * Registers a new entry to the given [registry], with the given [key] mapped to
-     * the given [value].
+     * Registers a new entry to the given [registry], with the given [key]
+     * mapped to the given [value].
      *
      * @param registry the registry to register to
      * @param id the ID of the entry in the registry
@@ -119,11 +120,12 @@ public object Registries {
      * @param value the value
      */
     @JvmStatic
-    public fun <T : Any> register(registry: Registry<T>, id: Int, key: String, value: T): T = register(registry, id, key, value)
+    public fun <T : Any> register(registry: Registry<T>, id: Int, key: String, value: T): T =
+        register(registry, id, key, value)
 
     /**
-     * Registers a new entry to the given [registry], with the given [key] mapped to
-     * the given [value].
+     * Registers a new entry to the given [registry], with the given [key]
+     * mapped to the given [value].
      *
      * @param registry the registry to register to
      * @param id the ID of the entry in the registry
@@ -131,7 +133,8 @@ public object Registries {
      * @param value the value
      */
     @JvmStatic
-    public fun <T : Any> register(registry: Registry<T>, id: Int, key: Key, value: T): T = MANAGER.register(registry, id, key, value)
+    public fun <T : Any> register(registry: Registry<T>, id: Int, key: Key, value: T): T =
+        MANAGER.register(registry, id, key, value)
 
     /**
      * Creates a new registry with the given registry [key].
@@ -143,10 +146,11 @@ public object Registries {
     public fun <T : Any> create(key: ResourceKey<out Registry<T>>): Registry<T> = MANAGER.create(key)
 
     /**
-     * Creates a new registry with the given registry [key], with a [defaultKey].
+     * Creates a new registry with the given registry [key], with a
+     * [defaultKey].
      *
-     * The default value for this registry will be the first value registered that has
-     * a key that matches the given [defaultKey].
+     * The default value for this registry will be the first value registered
+     * that has a key that matches the given [defaultKey].
      *
      * @param key the registry key
      * @param defaultKey the default key

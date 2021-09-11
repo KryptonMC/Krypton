@@ -14,12 +14,14 @@ import org.kryptonmc.api.entity.player.Player
 /**
  * Represents a [Scoreboard] team.
  *
- * Teams are groups of entities that have a name, prefix, suffix, colour, and a specific set of rules they follow.
+ * Teams are groups of entities that have a name, prefix, suffix, colour,
+ * and a specific set of rules they follow.
  *
  * @param name the name of this team
  * @param displayName the display name of this team
  * @param allowFriendlyFire if this team allows friendly fire
- * @param canSeeInvisibleMembers if team members can see other team members that are invisible
+ * @param canSeeInvisibleMembers if team members can see other team members
+ * that are invisible
  * @param options the options for this team
  * @param color the color of this team
  * @param prefix this team's prefix

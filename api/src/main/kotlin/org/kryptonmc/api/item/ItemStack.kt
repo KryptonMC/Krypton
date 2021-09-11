@@ -133,8 +133,11 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
          */
         @Contract("_ -> new")
         @JvmStatic
-        public fun of(type: ItemType, amount: Int, metaBuilder: MetaHolder.() -> Unit): ItemStack =
-            FACTORY.builder().type(type).amount(amount).meta(metaBuilder).build()
+        public fun of(
+            type: ItemType,
+            amount: Int,
+            metaBuilder: MetaHolder.() -> Unit
+        ): ItemStack = FACTORY.builder().type(type).amount(amount).meta(metaBuilder).build()
 
         /**
          * Gets the empty [ItemStack] instance.

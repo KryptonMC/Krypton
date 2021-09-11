@@ -22,7 +22,8 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.packet.Packet
 
-class PacketOutDifficulty(private val difficulty: Difficulty) : Packet {
+@JvmRecord
+data class PacketOutDifficulty(private val difficulty: Difficulty) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(difficulty.ordinal)

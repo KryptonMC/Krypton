@@ -22,7 +22,8 @@ public open class InventoryType(
 )
 
 /**
- * Represents a type of inventory in a grid shape, such as a chest or a dropper.
+ * Represents a type of inventory in a grid shape, such as a chest or a
+ * dropper.
  *
  * @param key the key
  * @param columns the number of columns

@@ -32,7 +32,8 @@ import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : Packet {
+@JvmRecord
+data class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : Packet {
 
     override fun write(buf: ByteBuf) {
         val enumerations = root.enumerate()

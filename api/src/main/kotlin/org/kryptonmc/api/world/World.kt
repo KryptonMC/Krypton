@@ -104,7 +104,8 @@ public interface World : ForwardingAudience {
     public val isThundering: Boolean
 
     /**
-     * The level of the current thunderstorm (0 if there is no thunderstorm going on).
+     * The level of the current thunderstorm (0 if there is no thunderstorm
+     * going on).
      */
     public var thunderLevel: Float
 
@@ -127,10 +128,10 @@ public interface World : ForwardingAudience {
      * Gets the block at the given coordinates.
      *
      * This function will return the following in specific cases:
-     * - If the given [y] coordinate is greater than the maximum height of this world,
-     * this will return [Blocks.VOID_AIR].
-     * - If there is no chunk loaded at the given coordinates ([getChunkAt] was null),
-     * this will return [Blocks.AIR].
+     * - If the given [y] coordinate is greater than the maximum height of this
+     * world, this will return [Blocks.VOID_AIR].
+     * - If there is no chunk loaded at the given coordinates ([getChunkAt] was
+     * null), this will return [Blocks.AIR].
      * - Else it will return the block at the given coordinates.
      *
      * @param x the X coordinate
@@ -146,8 +147,8 @@ public interface World : ForwardingAudience {
      * This function will return the following in specific cases:
      * - If the given [position]'s [Vector3i.y] coordinate is greater than the
      * maximum height of this world, this will return [Blocks.VOID_AIR].
-     * - If there is no chunk loaded at the given [position] ([getChunkAt] was null),
-     * this will return [Blocks.AIR].
+     * - If there is no chunk loaded at the given [position] ([getChunkAt] was
+     * null), this will return [Blocks.AIR].
      * - Else it will return the block at the given [position].
      *
      * @param position the position
@@ -159,10 +160,10 @@ public interface World : ForwardingAudience {
      * Gets the block at the given [position].
      *
      * This function will return the following in specific cases:
-     * - If the given [position]'s [Position.blockY] coordinate is greater than the
-     * maximum height of this world, this will return [Blocks.VOID_AIR].
-     * - If there is no chunk loaded at the given [position] ([getChunkAt] was null),
-     * this will return [Blocks.AIR]
+     * - If the given [position]'s [Position.blockY] coordinate is greater than
+     * the maximum height of this world, this will return [Blocks.VOID_AIR].
+     * - If there is no chunk loaded at the given [position] ([getChunkAt] was
+     * null), this will return [Blocks.AIR]
      * - Else it will return the block at the given [position]
      *
      * @param position the position
@@ -174,9 +175,9 @@ public interface World : ForwardingAudience {
      * Gets the fluid at the given coordinates.
      *
      * This function will return the following in specific cases:
-     * - If the given [y] coordinate is greater than the maximum height of this world,
-     * or there is no chunk loaded at the given coordinates ([getChunkAt] was null),
-     * this will return [Fluids.EMPTY].
+     * - If the given [y] coordinate is greater than the maximum height of this
+     * world, or there is no chunk loaded at the given coordinates
+     * ([getChunkAt] was null), this will return [Fluids.EMPTY].
      * - Else it will return the fluid at the given coordinates.
      *
      * @param x the X coordinate
@@ -192,7 +193,8 @@ public interface World : ForwardingAudience {
      * This function will return the following in specific cases:
      * - If the given [position]'s [Vector3i.y] coordinate is greater than the
      * maximum height of this world,  or if there is no chunk loaded at the
-     * given [position] ([getChunkAt] returns null), this will return [Fluids.EMPTY].
+     * given [position] ([getChunkAt] returns null), this will return
+     * [Fluids.EMPTY].
      * - Else it will return the fluid at the given [position].
      *
      * @param position the position
@@ -204,9 +206,10 @@ public interface World : ForwardingAudience {
      * Gets the fluid at the given [position].
      *
      * This function will return the following in specific cases:
-     * - If the given [position]'s [Position.blockY] coordinate is greater than the
-     * maximum height of this world, or if there is no chunk loaded at the given
-     * [position] ([getChunkAt] was null), this will return [Fluids.EMPTY].
+     * - If the given [position]'s [Position.blockY] coordinate is greater than
+     * the maximum height of this world, or if there is no chunk loaded at the
+     * given [position] ([getChunkAt] was null), this will return
+     * [Fluids.EMPTY].
      * - Else it will return the fluid at the given [position]
      *
      * @param position the position
@@ -238,18 +241,21 @@ public interface World : ForwardingAudience {
      * @param position the position
      * @param block the block
      */
-    public fun setBlock(position: Position, block: Block): Unit = setBlock(position.blockX, position.blockY, position.blockZ, block)
+    public fun setBlock(position: Position, block: Block): Unit =
+        setBlock(position.blockX, position.blockY, position.blockZ, block)
 
     /**
      * Gets a chunk from its **chunk** coordinates, or returns null if there is
      * no chunk **loaded** at the given coordinates.
      *
-     * That is, to calculate the chunk coordinate from a given block coordinate,
-     * the block coordinate is shifted right by 4 (divided by 16 and floored).
+     * That is, to calculate the chunk coordinate from a given block
+     * coordinate, the block coordinate is shifted right by 4 (divided by 16
+     * and floored).
      *
      * @param x the chunk X coordinate
      * @param z the chunk Z coordinate
-     * @return the chunk at the given coordinates, or null if there isn't one loaded
+     * @return the chunk at the given coordinates, or null if there isn't one
+     * loaded
      */
     public fun getChunkAt(x: Int, z: Int): Chunk?
 
@@ -257,11 +263,13 @@ public interface World : ForwardingAudience {
      * Gets a chunk from its **chunk** coordinates, or returns null if there is
      * no chunk **loaded** at the given coordinates.
      *
-     * That is, to calculate the chunk coordinate from a given block coordinate,
-     * the block coordinate is shifted right by 4 (divided by 16 and floored).
+     * That is, to calculate the chunk coordinate from a given block
+     * coordinate, the block coordinate is shifted right by 4 (divided by 16
+     * and floored).
      *
      * @param position the chunk position
-     * @return the chunk at the given position, or null if there isn't one loaded
+     * @return the chunk at the given position, or null if there isn't one
+     * loaded
      */
     public fun getChunkAt(position: Vector2i): Chunk? = getChunkAt(position.x(), position.y())
 
@@ -272,7 +280,8 @@ public interface World : ForwardingAudience {
      * @param x the block X coordinate
      * @param y the block Y coordinate
      * @param z the block Z coordinate
-     * @return the chunk at the given coordinates, or null if there isn't one loaded
+     * @return the chunk at the given coordinates, or null if there isn't one
+     * loaded
      */
     public fun getChunk(x: Int, y: Int, z: Int): Chunk?
 
@@ -281,7 +290,8 @@ public interface World : ForwardingAudience {
      * no chunk **loaded** at the given coordinates.
      *
      * @param position the block position
-     * @return the chunk at the given coordinates, or null if there isn't one loaded
+     * @return the chunk at the given coordinates, or null if there isn't one
+     * loaded
      */
     public fun getChunk(position: Vector3i): Chunk?
 
@@ -290,15 +300,17 @@ public interface World : ForwardingAudience {
      * no chunk **loaded** at the given coordinates.
      *
      * @param position the position
-     * @return the chunk at the given coordinates, or null if there isn't one loaded
+     * @return the chunk at the given coordinates, or null if there isn't one
+     * loaded
      */
     public fun getChunk(position: Position): Chunk?
 
     /**
      * Gets or loads the chunk at the given **chunk** coordinates.
      *
-     * That is, to calculate the chunk coordinate from a given block coordinate,
-     * the block coordinate is shifted right by 4 (divided by 16 and floored).
+     * That is, to calculate the chunk coordinate from a given block
+     * coordinate, the block coordinate is shifted right by 4 (divided by 16
+     * and floored).
      *
      * Beware that chunks loaded using this function will not be automatically
      * unloaded!
@@ -309,13 +321,13 @@ public interface World : ForwardingAudience {
     public fun loadChunk(x: Int, z: Int): Chunk
 
     /**
-     * Unloads the chunk at the specified [x] and [z] coordinates if there is a chunk
-     * loaded. If there is no chunk loaded at the coordinates, this function simply
-     * returns.
+     * Unloads the chunk at the specified [x] and [z] coordinates if there is
+     * a chunk loaded. If there is no chunk loaded at the coordinates, this
+     * function simply returns.
      *
-     * If [force] is set to false and this chunk was not loaded using [loadChunk],
-     * this will also simply return. If it is set to true, however, the chunk will
-     * always be unloaded.
+     * If [force] is set to false and this chunk was not loaded using
+     * [loadChunk], this will also simply return. If it is set to true,
+     * however, the chunk will always be unloaded.
      *
      * Like [loadChunk], these coordinates are **chunk** coordinates.
      *
@@ -326,13 +338,14 @@ public interface World : ForwardingAudience {
     public fun unloadChunk(x: Int, z: Int, force: Boolean)
 
     /**
-     * Saves this world to disk. Exposed as a function of [World] to allow for custom world implementations
-     * to define this.
+     * Saves this world to disk. Exposed as a function of [World] to allow for
+     * custom world implementations to define this.
      */
     public fun save()
 
     /**
-     * Spawns an entity with the given [type] in this world at the given [location].
+     * Spawns an entity with the given [type] in this world at the given
+     * [location].
      *
      * @param type the type of the entity
      * @param location the location to spawn the entity at

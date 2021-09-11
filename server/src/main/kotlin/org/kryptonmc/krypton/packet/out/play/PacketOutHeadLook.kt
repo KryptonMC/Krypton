@@ -23,7 +23,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutHeadLook(
+@JvmRecord
+data class PacketOutHeadLook(
     private val entityId: Int,
     private val headYaw: Float
 ) : Packet {

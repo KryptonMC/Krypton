@@ -12,8 +12,8 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
 
 /**
- * The rarity of an item. This determines what colour the
- * lore text appears as when the tooltip is read.
+ * The rarity of an item. This determines what colour the lore text appears as
+ * when the tooltip is read.
  *
  * @param color the colour the lore text will appear
  */

@@ -36,8 +36,12 @@ object KryptonCriteria {
     val ARMOR = register("armor", isMutable = true)
     val EXPERIENCE = register("experience", "xp", isMutable = true)
     val LEVEL = register("level", isMutable = true)
-    val TEAM_KILL = register("team_kill", "teamkill", NamedTextColor.NAMES.keys().map { register("team_kill.$it", "teamkill.$it") })
-    val KILLED_BY_TEAM = register("killed_by_team", "killedByTeam", NamedTextColor.NAMES.keys().map { register("team_kill.$it", "teamkill.$it") })
+    val TEAM_KILL = register("team_kill", "teamkill", NamedTextColor.NAMES.keys().map {
+        register("team_kill.$it", "teamkill.$it")
+    })
+    val KILLED_BY_TEAM = register("killed_by_team", "killedByTeam", NamedTextColor.NAMES.keys().map {
+        register("team_kill.$it", "teamkill.$it")
+    })
 
     private fun register(
         key: String,
@@ -46,7 +50,11 @@ object KryptonCriteria {
         renderType: RenderType = RenderType.INTEGER
     ): KryptonCriterion {
         val key1 = Key.key(key)
-        return Registries.register(Registries.CRITERIA, key1, KryptonCriterion(key1, name, isMutable, renderType)) as KryptonCriterion
+        return Registries.register(
+            Registries.CRITERIA,
+            key1,
+            KryptonCriterion(key1, name, isMutable, renderType)
+        ) as KryptonCriterion
     }
 
     private fun register(
@@ -57,6 +65,10 @@ object KryptonCriteria {
         renderType: RenderType = RenderType.INTEGER
     ): KryptonCompoundCriterion {
         val key1 = Key.key(key)
-        return Registries.register(Registries.CRITERIA, key1, KryptonCompoundCriterion(key1, name, children, isMutable, renderType)) as KryptonCompoundCriterion
+        return Registries.register(
+            Registries.CRITERIA,
+            key1,
+            KryptonCompoundCriterion(key1, name, children, isMutable, renderType)
+        ) as KryptonCompoundCriterion
     }
 }

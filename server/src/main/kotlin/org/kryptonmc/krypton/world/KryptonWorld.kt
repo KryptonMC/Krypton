@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world
 
-import com.mojang.serialization.Codec
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
@@ -31,7 +30,6 @@ import org.kryptonmc.api.event.entity.EntitySpawnEvent
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Gamemode
@@ -140,7 +138,9 @@ class KryptonWorld(
     @Suppress("UNCHECKED_CAST")
     override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector): T? {
         if (!type.isSummonable || type === EntityTypes.PLAYER) return null
-        val entity = EntityFactory.create(type, this)?.apply { this.location = location.toLocation(0F, 0F) } ?: return null
+        val entity = EntityFactory.create(type, this)?.apply {
+            this.location = location.toLocation(0F, 0F)
+        } ?: return null
         spawnEntity(entity)
         return entity as? T
     }
@@ -153,7 +153,11 @@ class KryptonWorld(
 
             if (entity is KryptonPlayer) {
                 // TODO: World border
-                entity.session.sendPacket(PacketOutTimeUpdate(data.time, data.dayTime, data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
+                entity.session.sendPacket(PacketOutTimeUpdate(
+                    data.time,
+                    data.dayTime,
+                    data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]
+                ))
             }
             forEachEntityInRange(location, server.config.world.viewDistance) {
                 if (entity is KryptonPlayer) it.addViewer(entity)
@@ -166,7 +170,10 @@ class KryptonWorld(
         }
     }
 
-    fun addEntity(entity: KryptonEntity) = entitiesByChunk[ChunkPosition.toLong(entity.location.blockX shr 4, entity.location.blockZ shr 4)].add(entity)
+    fun addEntity(entity: KryptonEntity) = entitiesByChunk[ChunkPosition.toLong(
+        entity.location.blockX shr 4,
+        entity.location.blockZ shr 4
+    )].add(entity)
 
     fun removeEntity(entity: KryptonEntity) {
         if (entity.world != this) return
@@ -179,14 +186,22 @@ class KryptonWorld(
         }
     }
 
-    fun playEffect(effect: Effect, position: Vector3i, data: Int, except: KryptonPlayer) = playerManager.broadcast(PacketOutEffect(effect, position, data, false), this, position, 64.0, except)
+    fun playEffect(effect: Effect, position: Vector3i, data: Int, except: KryptonPlayer) = playerManager.broadcast(
+        PacketOutEffect(effect, position, data, false),
+        this,
+        position,
+        64.0,
+        except
+    )
 
-    fun playSound(
-        position: Vector3i,
-        sound: Sound,
-        event: SoundEvent,
-        except: KryptonPlayer
-    ) = playSound(position.x().toDouble() + 0.5, position.y().toDouble() + 0.5, position.z().toDouble() + 0.5, sound, event, except)
+    fun playSound(position: Vector3i, sound: Sound, event: SoundEvent, except: KryptonPlayer) = playSound(
+        position.x().toDouble() + 0.5,
+        position.y().toDouble() + 0.5,
+        position.z().toDouble() + 0.5,
+        sound,
+        event,
+        except
+    )
 
     private fun playSound(
         x: Double,
@@ -195,7 +210,15 @@ class KryptonWorld(
         sound: Sound,
         event: SoundEvent,
         except: KryptonPlayer
-    ) = playerManager.broadcast(PacketOutSoundEffect(sound, event, x, y, z), this, x, y, z, if (sound.volume() > 1F) (16F * sound.volume()).toDouble() else 16.0, except)
+    ) = playerManager.broadcast(
+        PacketOutSoundEffect(sound, event, x, y, z),
+        this,
+        x,
+        y,
+        z,
+        if (sound.volume() > 1F) (16F * sound.volume()).toDouble() else 16.0,
+        except
+    )
 
     override fun getBlock(x: Int, y: Int, z: Int): Block {
         if (y.outsideBuildHeight) return Blocks.VOID_AIR
@@ -211,9 +234,15 @@ class KryptonWorld(
 
     override fun getChunk(x: Int, z: Int, status: ChunkStatus, shouldCreate: Boolean): ChunkAccessor? = null // FIXME
 
-    override fun getHeight(type: Heightmap.Type, x: Int, z: Int) = if (x in MINIMUM_SIZE..MAXIMUM_SIZE && z in MINIMUM_SIZE..MAXIMUM_SIZE) {
-        if (hasChunk(x shr 4, z shr 4)) getChunk(x shr 4, z shr 4)!!.getHeight(type, x and 15, z and 15) + 1 else minimumBuildHeight
-    } else seaLevel + 1
+    override fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int {
+        if (x in MINIMUM_SIZE..MAXIMUM_SIZE && z in MINIMUM_SIZE..MAXIMUM_SIZE) {
+            if (hasChunk(x shr 4, z shr 4)) {
+                return getChunk(x shr 4, z shr 4)!!.getHeight(type, x and 15, z and 15) + 1
+            }
+            return minimumBuildHeight
+        }
+        return seaLevel + 1
+    }
 
     override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int) = generator.biomeGenerator[x, y, z]
 
@@ -231,7 +260,8 @@ class KryptonWorld(
 
     fun getEntitiesInChunk(chunk: KryptonChunk) = entitiesByChunk[chunk.position.toLong()]
 
-    override fun loadChunk(x: Int, z: Int) = chunkManager.load(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPosition.toLong(x, z)))
+    override fun loadChunk(x: Int, z: Int) =
+        chunkManager.load(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPosition.toLong(x, z)))
 
     override fun unloadChunk(x: Int, z: Int, force: Boolean) = chunkManager.unload(x, z, TicketTypes.API_LOAD, force)
 
@@ -294,10 +324,16 @@ class KryptonWorld(
             rainLevel = rainLevel.clamp(0F, 1F)
         }
 
-        if (oldRainLevel != rainLevel) playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel), this)
-        if (oldThunderLevel != thunderLevel) playerManager.sendToAll(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel), this)
+        if (oldRainLevel != rainLevel) {
+            playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel), this)
+        }
+        if (oldThunderLevel != thunderLevel) {
+            playerManager.sendToAll(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel), this)
+        }
         if (wasRaining != isRaining) {
-            playerManager.sendToAll(PacketOutChangeGameState(if (wasRaining) GameState.END_RAINING else GameState.BEGIN_RAINING))
+            playerManager.sendToAll(PacketOutChangeGameState(
+                if (wasRaining) GameState.END_RAINING else GameState.BEGIN_RAINING
+            ))
             playerManager.sendToAll(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, rainLevel))
             playerManager.sendToAll(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, thunderLevel))
         }

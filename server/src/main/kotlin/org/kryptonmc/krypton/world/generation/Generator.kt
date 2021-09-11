@@ -31,7 +31,10 @@ abstract class Generator(
     private val strongholdSeed: Long = 0L
 ) {
 
-    constructor(biomeGenerator: BiomeGenerator, structures: StructureSettings) : this(biomeGenerator, biomeGenerator, structures, 0L)
+    constructor(
+        biomeGenerator: BiomeGenerator,
+        structures: StructureSettings
+    ) : this(biomeGenerator, biomeGenerator, structures, 0L)
 
     abstract val codec: Codec<out Generator>
 

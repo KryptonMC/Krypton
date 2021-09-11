@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.nbt.CompoundTag
 import java.util.BitSet
 
-class PacketOutChunkData(private val chunk: KryptonChunk) : Packet {
+data class PacketOutChunkData(private val chunk: KryptonChunk) : Packet {
 
     private val buffer = ByteArray(chunk.calculateSize())
     private val sectionMask = chunk.extract(Unpooled.wrappedBuffer(buffer).apply { writerIndex(0) })

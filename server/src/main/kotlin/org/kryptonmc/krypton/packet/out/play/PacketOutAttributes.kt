@@ -54,9 +54,10 @@ class PacketOutAttributes(
         }
     }
 
+    @JvmRecord
     data class AttributeSnapshot(
         val type: AttributeType,
         val base: Double,
         val modifiers: Map<ModifierOperation, List<AttributeModifier>>
-        )
+    )
 }

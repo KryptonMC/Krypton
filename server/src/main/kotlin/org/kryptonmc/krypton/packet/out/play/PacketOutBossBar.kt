@@ -26,7 +26,8 @@ import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.bossbar.BossBarManager
 
-class PacketOutBossBar(
+@JvmRecord
+data class PacketOutBossBar(
     private val action: BossBarAction,
     private val bar: BossBarManager.BossBarHolder
 ) : Packet {

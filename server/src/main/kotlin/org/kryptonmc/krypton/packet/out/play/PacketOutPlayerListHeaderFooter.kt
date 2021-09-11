@@ -30,7 +30,8 @@ import org.kryptonmc.krypton.util.writeChat
  * Informs the client of the component to display above ([header] of the list) or below ([footer] of the list)
  * the player list.
  */
-class PacketOutPlayerListHeaderFooter(
+@JvmRecord
+data class PacketOutPlayerListHeaderFooter(
     private val header: Component,
     private val footer: Component
 ) : Packet {

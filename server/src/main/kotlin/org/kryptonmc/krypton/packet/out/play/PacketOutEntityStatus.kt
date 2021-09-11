@@ -28,8 +28,8 @@ import org.kryptonmc.krypton.packet.Packet
  *
  * @param id the ID of the entity to set the status for
  */
-// TODO: Add the rest of the entity statuses into this
-class PacketOutEntityStatus(
+@JvmRecord
+data class PacketOutEntityStatus(
     private val id: Int,
     private val action: Int
 ) : Packet {

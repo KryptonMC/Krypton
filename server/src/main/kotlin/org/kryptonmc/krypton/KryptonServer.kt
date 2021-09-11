@@ -163,8 +163,8 @@ class KryptonServer(
             LOGGER.warn("THIS SERVER IS IN OFFLINE MODE! NO ATTEMPTS WILL BE MADE TO AUTHENTICATE USERS!")
             LOGGER.warn("While this may allow players without full Minecraft accounts to connect," +
                     "it also allows hackers to connect with any username they choose! Beware!")
-            LOGGER.warn("Please beware that connections made to the server will not be encrypted, meaning hackers could " +
-                    "potentially intercept sensitive data!")
+            LOGGER.warn("Please beware that connections made to the server will not be encrypted, meaning hackers " +
+                    "could potentially intercept sensitive data!")
             LOGGER.warn("To get rid of this message, change \"online-mode\" to true in the configuration file")
             LOGGER.warn("-----------------------------------------------------------------------------------")
         }
@@ -191,7 +191,8 @@ class KryptonServer(
         // Add the shutdown hook to stop the server
         Runtime.getRuntime().addShutdownHook(Thread(::stop, "Shutdown Handler").apply { isDaemon = false })
 
-        LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type \"help\" for help.")
+        LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type " +
+                "\"help\" for help.")
 
         // Start up the console handler
         LOGGER.debug("Starting console handler")
@@ -221,7 +222,9 @@ class KryptonServer(
             eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
             lastTickTime = finishTime
 
-            val sleepTime = measureTimeMillis { Thread.sleep(max(0, MILLISECONDS_PER_TICK - tickTime - oversleepFactor)) }
+            val sleepTime = measureTimeMillis {
+                Thread.sleep(max(0, MILLISECONDS_PER_TICK - tickTime - oversleepFactor))
+            }
             oversleepFactor = sleepTime - (MILLISECONDS_PER_TICK - tickTime)
         }
     } catch (exception: Throwable) {
@@ -251,7 +254,10 @@ class KryptonServer(
             try {
                 eventManager.registerUnchecked(it, instance)
             } catch (exception: Exception) {
-                LOGGER.error("Unable to register plugin listener for plugin ${it.description.name}!", exception)
+                LOGGER.error(
+                    "Unable to register plugin listener for plugin ${it.description.name}!",
+                    exception
+                )
             }
         }
 
@@ -366,7 +372,9 @@ class KryptonServer(
             }
             println("Attempting to restart the server with script ${split[0]}...")
             val os = System.getProperty("os.name").lowercase()
-            Runtime.getRuntime().exec((if ("win" in os) "cmd /c start " else "sh ") + config.other.restartScript)
+            Runtime.getRuntime().exec(
+                (if ("win" in os) "cmd /c start " else "sh ") + config.other.restartScript
+            )
         }
         Runtime.getRuntime().halt(0)
     }

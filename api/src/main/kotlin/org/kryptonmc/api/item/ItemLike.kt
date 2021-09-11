@@ -14,7 +14,8 @@ package org.kryptonmc.api.item
 public interface ItemLike {
 
     /**
-     * Gets the item representation, or null if there is no item representation.
+     * Gets the item representation, or null if there is no item
+     * representation.
      */
     public fun asItem(): ItemType?
 }

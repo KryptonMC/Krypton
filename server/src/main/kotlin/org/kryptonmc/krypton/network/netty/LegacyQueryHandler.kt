@@ -80,7 +80,8 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
                     isValid = isValid and (msg.readableBytes() == 0)
                     if (!isValid) return
 
-                    LOGGER.debug("Legacy server list ping (version 1.6.x) received from ${address.address}:${address.port}")
+                    LOGGER.debug("Legacy server list ping (version 1.6.x) received from " +
+                            "${address.address}:${address.port}")
                     val reply = "\u00a71\u0000127\u0000$version\u0000$motd\u0000$playerCount\u0000$maxPlayers".toReply()
                     try {
                         ctx.writeAndClose(reply)
@@ -100,7 +101,8 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
         }
     }
 
-    private fun ChannelHandlerContext.writeAndClose(buf: ByteBuf) = pipeline().firstContext().writeAndFlush(buf).addListener(CLOSE)
+    private fun ChannelHandlerContext.writeAndClose(buf: ByteBuf) =
+        pipeline().firstContext().writeAndFlush(buf).addListener(CLOSE)
 
     private fun String.toReply() = Unpooled.buffer().writeByte(255).apply {
         val chars = toCharArray()

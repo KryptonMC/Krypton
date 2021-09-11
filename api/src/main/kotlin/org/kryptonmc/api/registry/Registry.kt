@@ -27,8 +27,8 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
     public val keySet: Set<Key>
 
     /**
-     * Gets a value by its namespaced [key], or null if there is
-     * no value associated with the given [key].
+     * Gets a value by its namespaced [key], or null if there is no value
+     * associated with the given [key].
      *
      * @param key the key
      * @return the value, or null if not present
@@ -36,8 +36,8 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
     public operator fun get(key: Key): T?
 
     /**
-     * Gets a value by its [id], or null if there is no value
-     * associated with the given key.
+     * Gets a value by its [id], or null if there is no value associated with
+     * the given key.
      *
      * @param id the ID
      * @return the value, or null if not present
@@ -45,8 +45,8 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
     public operator fun get(id: Int): T?
 
     /**
-     * Gets a namespaced [Key] by its [value], or null if there is
-     * no key associated with the given [value].
+     * Gets a namespaced [Key] by its [value], or null if there is no key
+     * associated with the given [value].
      *
      * @param value the value
      * @return the key, or null if not present
@@ -83,8 +83,8 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
     public operator fun contains(key: Key): Boolean
 
     /**
-     * Gets the [ResourceKey] for the given [value], or null if
-     * there is no key associated with the given [value].
+     * Gets the [ResourceKey] for the given [value], or null if there is no key
+     * associated with the given [value].
      *
      * @param value the value
      * @return the resource key, or null if not present
@@ -92,8 +92,8 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
     public fun resourceKey(value: T): ResourceKey<T>?
 
     /**
-     * Gets the ID for the given [value], or returns -1 if the
-     * given [value] is not registered.
+     * Gets the ID for the given [value], or returns -1 if the given [value] is
+     * not registered.
      *
      * @param value the value
      * @return the ID, or -1 if the [value] is not registered

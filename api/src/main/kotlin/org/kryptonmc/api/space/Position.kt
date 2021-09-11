@@ -58,8 +58,8 @@ public interface Position : Cloneable {
     public val blockZ: Int
 
     /**
-     * If this position is normalized or not. A position is defined as being normalised
-     * if it has a length of 1.
+     * If this position is normalized or not. A position is defined as being
+     * normalised if it has a length of 1.
      */
     public val isNormalized: Boolean
 
@@ -76,14 +76,14 @@ public interface Position : Cloneable {
     public val length: Double
 
     /**
-     * The magnitude of this position, squared. Defined as x^2 + y^2 + z^2
+     * The magnitude of this position, squared. Defined as x^2 + y^2 + z^2.
      */
     @get:JvmName("lengthSquared")
     public val lengthSquared: Double
 
     /**
-     * Adds the given [other] position to this position and returns a new position
-     * with the result.
+     * Adds the given [other] position to this position and returns a new
+     * position with the result.
      *
      * @param other the other position
      * @return a new position that is the result of the addition
@@ -93,8 +93,8 @@ public interface Position : Cloneable {
     public operator fun plus(other: Position): Position
 
     /**
-     * Subtracts the given [other] position from this position and returns a new
-     * position with the result.
+     * Subtracts the given [other] position from this position and returns a
+     * new position with the result.
      *
      * @param other the other position
      * @return a new position that is the result of the subtraction
@@ -104,8 +104,8 @@ public interface Position : Cloneable {
     public operator fun minus(other: Position): Position
 
     /**
-     * Multiplies this position by the given [other] position and returns a new
-     * position with the result.
+     * Multiplies this position by the given [other] position and returns a
+     * new position with the result.
      *
      * @param other the other position
      * @return a new position that is the result of the multiplication
@@ -115,8 +115,8 @@ public interface Position : Cloneable {
     public operator fun times(other: Position): Position
 
     /**
-     * Multiplies this position's [x], [y], and [z] coordinates by the given [factor],
-     * and returns a new position with the result.
+     * Multiplies this position's [x], [y], and [z] coordinates by the given
+     * [factor], and returns a new position with the result.
      *
      * @param factor the factor to multiply by
      * @return a new position that is the result of the multiplication
@@ -126,8 +126,8 @@ public interface Position : Cloneable {
     public operator fun times(factor: Int): Position
 
     /**
-     * Multiplies this position's [x], [y], and [z] coordinates by the given [factor],
-     * and returns a new position with the result.
+     * Multiplies this position's [x], [y], and [z] coordinates by the given
+     * [factor], and returns a new position with the result.
      *
      * @param factor the factor to multiply by
      * @return a new position that is the result of the multiplication
@@ -137,8 +137,8 @@ public interface Position : Cloneable {
     public operator fun times(factor: Double): Position
 
     /**
-     * Multiplies this position's [x], [y], and [z] coordinates by the given [factor],
-     * and returns a new position with the result.
+     * Multiplies this position's [x], [y], and [z] coordinates by the given
+     * [factor], and returns a new position with the result.
      *
      * @param factor the factor to multiply by
      * @return a new position that is the result of the multiplication
@@ -148,8 +148,8 @@ public interface Position : Cloneable {
     public operator fun times(factor: Float): Position
 
     /**
-     * Divides this position by the given [other] position and returns a new position
-     * with the result.
+     * Divides this position by the given [other] position and returns a new
+     * position with the result.
      *
      * @param other the other position
      * @return a new position that is the result of the division
@@ -159,8 +159,8 @@ public interface Position : Cloneable {
     public operator fun div(other: Position): Position
 
     /**
-     * Divides this position's [x], [y], and [z] coordinates by the given [factor],
-     * and returns a new position with the result.
+     * Divides this position's [x], [y], and [z] coordinates by the given
+     * [factor], and returns a new position with the result.
      *
      * @param factor the factor to divide by
      * @return a new position that is the result of the division
@@ -170,8 +170,8 @@ public interface Position : Cloneable {
     public operator fun div(factor: Int): Position
 
     /**
-     * Divides this position's [x], [y], and [z] coordinates by the given [factor],
-     * and returns a new position with the result.
+     * Divides this position's [x], [y], and [z] coordinates by the given
+     * [factor], and returns a new position with the result.
      *
      * @param factor the factor to divide by
      * @return a new position that is the result of the division
@@ -181,8 +181,8 @@ public interface Position : Cloneable {
     public operator fun div(factor: Double): Position
 
     /**
-     * Divides this position's [x], [y], and [z] coordinates by the given [factor],
-     * and returns a new position with the result.
+     * Divides this position's [x], [y], and [z] coordinates by the given
+     * [factor], and returns a new position with the result.
      *
      * @param factor the factor to divide by
      * @return a new position that is the result of the division
@@ -192,8 +192,8 @@ public interface Position : Cloneable {
     public operator fun div(factor: Float): Position
 
     /**
-     * Divides this position by the given [other] position and uses the remainders
-     * to create a new position with the result.
+     * Divides this position by the given [other] position and uses the
+     * remainders to create a new position with the result.
      *
      * @param other the other position
      * @return a new position that is the result of the modulo division
@@ -203,8 +203,9 @@ public interface Position : Cloneable {
     public operator fun rem(other: Position): Position
 
     /**
-     * Divides this position's [x], [y], and [z] coordinates by the given [factor]
-     * and used the remainders to create a new position with the result.
+     * Divides this position's [x], [y], and [z] coordinates by the given
+     * [factor] and used the remainders to create a new position with the
+     * result.
      *
      * @param factor the factor to divide by
      * @return a new position that is the result of the modulo division
@@ -214,8 +215,9 @@ public interface Position : Cloneable {
     public operator fun rem(factor: Int): Position
 
     /**
-     * Divides this position's [x], [y], and [z] coordinates by the given [factor]
-     * and used the remainders to create a new position with the result.
+     * Divides this position's [x], [y], and [z] coordinates by the given
+     * [factor] and used the remainders to create a new position with the
+     * result.
      *
      * @param factor the factor to divide by
      * @return a new position that is the result of the modulo division
@@ -225,8 +227,9 @@ public interface Position : Cloneable {
     public operator fun rem(factor: Double): Position
 
     /**
-     * Divides this position's [x], [y], and [z] coordinates by the given [factor]
-     * and used the remainders to create a new position with the result.
+     * Divides this position's [x], [y], and [z] coordinates by the given
+     * [factor] and used the remainders to create a new position with the
+     * result.
      *
      * @param factor the factor to divide by
      * @return a new position that is the result of the modulo division
@@ -245,7 +248,8 @@ public interface Position : Cloneable {
     public operator fun unaryMinus(): Position
 
     /**
-     * Increments this position by 1 and returns a new position with the result.
+     * Increments this position by 1 and returns a new position with the
+     * result.
      *
      * @return a new position that is the result of the increment
      */
@@ -253,7 +257,8 @@ public interface Position : Cloneable {
     public operator fun inc(): Position
 
     /**
-     * Decrements this position by 1 and returns a new position with the result.
+     * Decrements this position by 1 and returns a new position with the
+     * result.
      *
      * @return a new position that is the result of the decrement
      */
@@ -261,12 +266,13 @@ public interface Position : Cloneable {
     public operator fun dec(): Position
 
     /**
-     * Calculates the distance between this position and the given [other] position.
+     * Calculates the distance between this position and the given [other]
+     * position.
      *
      * Beware that this calls [sqrt], which may be costly, so avoid repeatedly
      * calling this method to calculate the position's magnitude. [Double.NaN]
-     * will be returned if the inner result of the [sqrt] function overflows, which
-     * will occur if the distance is too long.
+     * will be returned if the inner result of the [sqrt] function overflows,
+     * which will occur if the distance is too long.
      *
      * @param other the other position
      * @return the distance between this position and the given other position
@@ -275,8 +281,8 @@ public interface Position : Cloneable {
     public fun distance(other: Position): Double = sqrt(distanceSquared(other))
 
     /**
-     * Calculates the squared distance between this position and the given [other]
-     * position.
+     * Calculates the squared distance between this position and the given
+     * [other] position.
      *
      * @param other the other position
      * @return the distance between this position and the other position
@@ -287,8 +293,8 @@ public interface Position : Cloneable {
             (z - other.z) * (z - other.z)
 
     /**
-     * Calculates the angle between this position and the given [other] position, in
-     * radians.
+     * Calculates the angle between this position and the given [other]
+     * position, in radians.
      *
      * @param other the other position
      * @return the angle, in radians, between this position and the given other
@@ -298,12 +304,12 @@ public interface Position : Cloneable {
     public fun angle(other: Position): Double = acos(min(max(dot(other) / (length * other.length), -1.0), 1.0))
 
     /**
-     * Creates a new position that is the midpoint between this position and the
-     * given [other] position.
+     * Creates a new position that is the midpoint between this position and
+     * the given [other] position.
      *
      * @param other the other position
-     * @return a new position that is the midpoint between this position and the
-     * given other position
+     * @return a new position that is the midpoint between this position and
+     * the given other position
      */
     @Contract("_ -> new", pure = true)
     public fun midpoint(other: Position): Position
@@ -335,7 +341,8 @@ public interface Position : Cloneable {
     public fun cross(other: Position): Position
 
     /**
-     * Normalises this position to a unit position (a position with a length of 1).
+     * Normalises this position to a unit position (a position with a length of
+     * 1).
      *
      * @return a new unit position
      */
@@ -343,11 +350,8 @@ public interface Position : Cloneable {
     public fun normalize(): Position
 
     /**
-     * Copies this object and returns a new object with the given [x], [y] and [z] values.
-     *
-     * Generally, if you have an instance of either [Vector] or [Location], you shouldn't
-     * need to use this, having this just allows us to provide implementations for most
-     * of the functions in this class.
+     * Copies this object and returns a new object with the given [x], [y] and
+     * [z] values.
      */
     @Contract("_ -> new", pure = true)
     public fun copy(x: Double = this.x, y: Double = this.y, z: Double = this.z): Position
@@ -355,8 +359,9 @@ public interface Position : Cloneable {
     public companion object {
 
         /**
-         * Error correction term for fuzzy [org.kryptonmc.api.space.Vector.equals] method, to account
-         * for floating point errors.
+         * Error correction term for fuzzy
+         * [org.kryptonmc.api.space.Vector.equals] method, to account for
+         * floating point errors.
          */
         public const val EPSILON: Double = 0.000001
     }

@@ -21,9 +21,9 @@ import java.util.concurrent.CompletableFuture
 public interface EventManager {
 
     /**
-     * Requests that the specified [listener] be registered with this manager to
-     * listen for events, and the listener will be associated with the specified
-     * [plugin].
+     * Requests that the specified [listener] be registered with this manager
+     * to listen for events, and the listener will be associated with the
+     * specified [plugin].
      *
      * @param plugin the plugin to associate with the listener
      * @param listener the listener to register
@@ -32,8 +32,9 @@ public interface EventManager {
 
     /**
      * Requests that the specified [handler] be registered with this manager to
-     * listen for and handle events of type [E] at [medium priority][ListenerPriority.MEDIUM],
-     * and the handler will be associated with the specified [plugin].
+     * listen for and handle events of type [E] at
+     * [medium priority][ListenerPriority.MEDIUM], and the handler will be
+     * associated with the specified [plugin].
      *
      * @param plugin the plugin to associate the handler with
      * @param eventClass the class of the event
@@ -44,8 +45,8 @@ public interface EventManager {
 
     /**
      * Requests that the specified [handler] be registered with this manager to
-     * listen for and handle events of type [E], and the handler will be associated
-     * with the specified [plugin].
+     * listen for and handle events of type [E], and the handler will be
+     * associated with the specified [plugin].
      *
      * @param plugin the plugin to associate the handler with
      * @param eventClass the class of the event
@@ -56,8 +57,8 @@ public interface EventManager {
     public fun <E> register(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>)
 
     /**
-     * Fires the specified [event] to the event bus asynchronously, and returns its
-     * result as a [CompletableFuture].
+     * Fires the specified [event] to the event bus asynchronously, and returns
+     * its result as a [CompletableFuture].
      *
      * The asynchronous execution allows Krypton to continue functioning whilst
      * listeners/handlers for this event are still executing, which avoids the
@@ -105,8 +106,9 @@ public interface EventManager {
 
 /**
  * Requests that the specified [handler] be registered with this manager to
- * listen for and handle events of type [E] at [medium priority][ListenerPriority.MEDIUM],
- * and the handler will be associated with the specified [plugin].
+ * listen for and handle events of type [E] at
+ * [medium priority][ListenerPriority.MEDIUM], and the handler will be
+ * associated with the specified [plugin].
  *
  * @param plugin the plugin to associate the handler with
  * @param handler the handler to register

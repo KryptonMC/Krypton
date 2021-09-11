@@ -26,7 +26,8 @@ import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
 
-class PacketOutSpawnPainting(private val painting: KryptonPainting) : Packet {
+@JvmRecord
+data class PacketOutSpawnPainting(private val painting: KryptonPainting) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(painting.id)

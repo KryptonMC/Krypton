@@ -27,7 +27,8 @@ import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeMap
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutStatistics(private val statistics: Object2IntMap<Statistic<*>>) : Packet {
+@JvmRecord
+data class PacketOutStatistics(private val statistics: Object2IntMap<Statistic<*>>) : Packet {
 
     @Suppress("UNCHECKED_CAST")
     override fun write(buf: ByteBuf) {

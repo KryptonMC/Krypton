@@ -91,16 +91,17 @@ public interface DimensionType {
     /**
      * The maximum logical Y level that can be built at.
      *
-     * For example, in the nether, there is a bedrock roof at 128 blocks, so the
-     * logical height for the nether is 128, as whilst you can still build above
-     * the nether roof, it is not intended for you to do so.
+     * For example, in the nether, there is a bedrock roof at 128 blocks, so
+     * the logical height for the nether is 128, as whilst you can still build
+     * above he nether roof, it is not intended for you to do so.
      */
     public val logicalHeight: Int
 
     /**
-     * The scale of coordinates. For example, in the nether, the coordinate scale is
-     * 8.0, as for every 1 block you walk in the nether, you will walk 8 blocks in
-     * dimensions with a coordinate scale of 1.0, such as the overworld and the end.
+     * The scale of coordinates. For example, in the nether, the coordinate
+     * scale is 8.0, as for every 1 block you walk in the nether, you will walk
+     * 8 blocks in dimensions with a coordinate scale of 1.0, such as the
+     * overworld and the end.
      */
     public val coordinateScale: Double
 }

@@ -9,26 +9,26 @@
 package org.kryptonmc.api.service
 
 /**
- * Represents a provider of a service of type [T]
+ * Represents a provider of a service of type [T].
  *
  * Plugins can use these to provide classes to other plugins in a way that
  * allows them to not need to know who they are actually providing the service
- * to (if anyone), which is a neat abstraction layer
+ * to (if anyone), which is a neat abstraction layer.
  */
 public interface ServiceProvider<T> {
 
     /**
-     * The plugin that provided this service
+     * The plugin that provided this service.
      */
     public val plugin: Any
 
     /**
-     * The class of the service being provided
+     * The class of the service being provided.
      */
     public val serviceClass: Class<T>
 
     /**
-     * The service provided
+     * The service provided.
      */
     public val service: T
 }

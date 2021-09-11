@@ -36,7 +36,8 @@ data class WorldCategory(
     @Setting("force-default-gamemode")
     @Comment("Forces the above gamemode for all players in all worlds.")
     val forceDefaultGamemode: Boolean = false,
-    @Comment("The default difficulty. Valid values are: 0-3 (legacy), peaceful, easy, normal and hard (case insensitive).")
+    @Comment("The default difficulty. Valid values are: 0-3 (legacy), peaceful, easy, normal and hard " +
+            "(case insensitive).")
     val difficulty: Difficulty = Difficulty.NORMAL,
     @Comment("If this server is in hardcore mode. Currently does nothing.")
     val hardcore: Boolean = false,

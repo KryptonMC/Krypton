@@ -55,10 +55,10 @@ class KryptonStatisticsTracker(
     private val file: Path
 ) : StatisticsTracker {
 
-    override val statistics: Object2IntMap<Statistic<*>> =
-        Object2IntMaps.synchronize<Statistic<*>>(Object2IntOpenHashMap()).apply { defaultReturnValue(0) }
+    override val statistics: Object2IntMap<Statistic<*>> = Object2IntMaps.synchronize<Statistic<*>>(
+        Object2IntOpenHashMap()
+    ).apply { defaultReturnValue(0) }
     private val pendingUpdate = mutableSetOf<Statistic<*>>()
-
     private val pendingUpdating: Set<Statistic<*>>
         get() {
             val copy = LinkedHashSet(pendingUpdate)
@@ -134,7 +134,8 @@ class KryptonStatisticsTracker(
                 LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or " +
                         "--use-data-converter flag(s) to the JAR on startup.")
                 LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
-                LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
+                LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR " +
+                        "responsibility!")
                 error("Tried to load old statistics from version $version when data conversion is disabled!")
             }
 
@@ -162,7 +163,8 @@ class KryptonStatisticsTracker(
                                 LOGGER.warn("Invalid statistic found in $file! Could not recognise key $k!")
                             }
                         } else {
-                            LOGGER.warn("Invalid statistic found in $file! Could not recognise value ${values[k]} for key $k")
+                            LOGGER.warn("Invalid statistic found in $file! Could not recognise value ${values[k]} " +
+                                    "for key $k")
                         }
                     }
                 } ?: LOGGER.warn("Invalid statistic type found in $file! Could not recognise $key!")

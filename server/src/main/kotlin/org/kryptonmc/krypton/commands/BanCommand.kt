@@ -86,5 +86,10 @@ object BanCommand : InternalCommand {
         source: String,
         reason: String,
         server: KryptonServer
-    ) = server.console.sendMessage(translatable("commands.banlist.entry", text(target), text(source), text(reason)))
+    ) = server.console.sendMessage(translatable(
+        "commands.banlist.entry",
+        text(target),
+        text(source),
+        text(reason)
+    ))
 }

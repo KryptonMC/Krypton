@@ -15,7 +15,8 @@ import org.kryptonmc.api.world.scoreboard.criteria.Criterion
  * Represents an objective for a [Scoreboard].
  *
  * @param name the name of the objective
- * @param displayName the display name of the objective (this is what gets displayed on the scoreboard)
+ * @param displayName the display name of the objective (this is what gets
+ * displayed on the scoreboard)
  * @param criterion optional criteria for the scoreboard
  * @param renderType how this objective is rendered to the client
  */

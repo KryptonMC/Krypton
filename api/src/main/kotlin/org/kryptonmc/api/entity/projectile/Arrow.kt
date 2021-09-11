@@ -14,7 +14,7 @@ package org.kryptonmc.api.entity.projectile
 public interface Arrow : ArrowLike {
 
     /**
-     * The colour of this arrow, or null if this arrow does not have a colour.
+     * The colour of this arrow.
      */
     public var color: Int
 }

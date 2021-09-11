@@ -51,8 +51,14 @@ class ComponentTests {
         assertEquals(json, component.toJson())
         assertEquals(GsonComponentSerializer.gson().serialize(component), component.toJsonString())
         assertEquals(PlainTextComponentSerializer.plainText().serialize(component), component.toPlainText())
-        assertEquals(LegacyComponentSerializer.legacySection().serialize(component), component.toLegacyText(LegacyComponentSerializer.SECTION_CHAR))
-        assertEquals(LegacyComponentSerializer.legacyAmpersand().serialize(component), component.toLegacyText(LegacyComponentSerializer.AMPERSAND_CHAR))
+        assertEquals(
+            LegacyComponentSerializer.legacySection().serialize(component),
+            component.toLegacyText(LegacyComponentSerializer.SECTION_CHAR)
+        )
+        assertEquals(
+            LegacyComponentSerializer.legacyAmpersand().serialize(component),
+            component.toLegacyText(LegacyComponentSerializer.AMPERSAND_CHAR)
+        )
         assertEquals(component, json.toComponent())
     }
 }

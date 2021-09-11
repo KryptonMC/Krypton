@@ -130,7 +130,7 @@ object PacketRegistry {
         register(PacketState.HANDSHAKE, 0x00, ::PacketInHandshake)
 
         // Status
-        register(PacketState.STATUS, 0x00) { PacketInStatusRequest() }
+        register(PacketState.STATUS, 0x00) { PacketInStatusRequest }
         register(PacketState.STATUS, 0x01, ::PacketInPing)
 
         register<PacketOutStatusResponse>(0x00)

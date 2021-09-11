@@ -26,6 +26,7 @@ import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -88,7 +89,10 @@ class EntityQuery(
         }
     }
 
-    fun getProfiles(sender: Sender) = if (sender is KryptonPlayer) getPlayers(sender).map { it.profile } else emptyList()
+    fun getProfiles(sender: Sender): List<KryptonGameProfile> {
+        if (sender is KryptonPlayer) return getPlayers(sender).map { it.profile }
+        return emptyList()
+    }
 
     private fun applyArguments(originalEntities: List<KryptonEntity>, source: KryptonPlayer): List<KryptonEntity> {
         var entities = originalEntities

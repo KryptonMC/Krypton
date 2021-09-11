@@ -24,7 +24,8 @@ import org.kryptonmc.krypton.packet.Packet
 /**
  * Response to the client's [ping][org.kryptonmc.krypton.packet.in.status.PacketInPing] packet
  */
-class PacketOutPong(private val value: Long) : Packet {
+@JvmRecord
+data class PacketOutPong(private val value: Long) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeLong(value)

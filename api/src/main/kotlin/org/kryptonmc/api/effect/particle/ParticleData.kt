@@ -14,7 +14,8 @@ import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 
 /**
- * Interface used to denote that a class can be used as a [ParticleEffect]'s data.
+ * Interface used to denote that a class can be used as a [ParticleEffect]'s
+ * data.
  */
 public sealed interface ParticleData
 
@@ -22,7 +23,8 @@ public sealed interface ParticleData
  * Holds data for directional [ParticleEffect]s.
  *
  * @param direction the direction of the particle, random if null
- * @param velocity the velocity of this directional particle in the direction it's moving
+ * @param velocity the velocity of this directional particle in the direction
+ * it's moving
  */
 @JvmRecord
 public data class DirectionalParticleData(
@@ -90,7 +92,8 @@ public data class DustTransitionParticleData(
  * Holds data for note [ParticleEffect]s.
  *
  * @param note the note of this particle, must be between 0 and 24 (inclusive)
- * @throws IllegalArgumentException if the [note] is not between 0 and 24 (inclusive)
+ * @throws IllegalArgumentException if the [note] is not between 0 and 24
+ * (inclusive)
  */
 @JvmRecord
 public data class NoteParticleData(public val note: Byte) : ParticleData {

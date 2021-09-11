@@ -53,7 +53,10 @@ class BrigadierCompleter(
         } catch (exception: InterruptedException) {
             Thread.currentThread().interrupt()
         } catch (exception: ExecutionException) {
-            LOGGER.error("Exception caught whilst trying to suggest completions for command $input!", exception)
+            LOGGER.error(
+                "Exception caught whilst trying to suggest completions for command $input!",
+                exception
+            )
         }
     }
 

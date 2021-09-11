@@ -26,7 +26,9 @@ import net.kyori.adventure.text.TranslatableComponent
 public data class EntityType<T : Entity>(
     @get:JvmName("_get-key") @JvmSynthetic public val key: Key,
     public val isSummonable: Boolean,
-    public val name: TranslatableComponent = translatable("entity.${key.namespace()}.${key.value().replace("/", ".")}"),
+    public val name: TranslatableComponent = translatable(
+        "entity.${key.namespace()}.${key.value().replace("/", ".")}"
+    ),
 ) : Keyed {
 
     override fun key(): Key = key

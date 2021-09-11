@@ -22,7 +22,8 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVector
 
-class PacketOutSpawnPosition(
+@JvmRecord
+data class PacketOutSpawnPosition(
     private val x: Int,
     private val y: Int,
     private val z: Int,

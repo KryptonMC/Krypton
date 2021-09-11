@@ -65,7 +65,7 @@ import javax.crypto.spec.SecretKeySpec
 import kotlin.random.Random
 
 /**
- * Handles all inbound packets in the [Login][org.kryptonmc.krypton.network.PacketState.LOGIN] state.
+ * Handles all inbound packets in the [Login][org.kryptonmc.krypton.packet.PacketState.LOGIN] state.
  *
  * There are two inbound packets in this state that we handle:
  * - [Login Start][org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart] -
@@ -107,7 +107,8 @@ class LoginHandler(
         }
 
         name = packet.name
-        if (!server.isOnline || server.config.proxy.mode != ForwardingMode.NONE) { // Ignore online mode if we want forwarding
+        // Ignore online mode if we want forwarding
+        if (!server.isOnline || server.config.proxy.mode != ForwardingMode.NONE) {
             if (server.config.proxy.mode == ForwardingMode.MODERN) {
                 session.sendPacket(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
                 return
@@ -137,7 +138,8 @@ class LoginHandler(
     }
 
     private fun handleEncryptionResponse(packet: PacketInEncryptionResponse) {
-        if (!verifyToken(verifyToken, packet.verifyToken)) return // Check that the token we sent them is what they sent back to us.
+        // Check that the token we sent them is what they sent back to us.
+        if (!verifyToken(verifyToken, packet.verifyToken)) return
 
         // We decrypt the shared secret with the server's private key and then create a new AES streaming
         // cipher to use for encryption and decryption (see https://wiki.vg/Protocol_Encryption).
@@ -185,7 +187,10 @@ class LoginHandler(
 
     private fun handlePluginResponse(packet: PacketInPluginResponse) {
         if (!packet.isSuccessful) // Not successful, we don't care
-        if (packet.messageId != velocityMessageId || server.config.proxy.mode != ForwardingMode.MODERN) return // Not Velocity, ignore
+        if (packet.messageId != velocityMessageId || server.config.proxy.mode != ForwardingMode.MODERN) {
+            // Not Velocity, ignore
+            return
+        }
         if (packet.data.isEmpty()) { // For whatever reason, there was no data sent by Velocity
             LOGGER.error("Velocity sent no data in its login plugin response!")
             return
@@ -229,7 +234,9 @@ class LoginHandler(
             if (exception == null) return@whenComplete
             LOGGER.error("Disconnecting player ${player.name} due to exception caught whilst attempting to " +
                     "load them in...", exception)
-            player.disconnect(text("An unexpected exception occurred. Please contact the system administrator."))
+            player.disconnect(text(
+                "An unexpected exception occurred. Please contact the system administrator."
+            ))
         }
     }
 

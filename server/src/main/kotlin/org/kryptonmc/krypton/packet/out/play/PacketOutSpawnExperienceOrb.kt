@@ -23,7 +23,8 @@ import org.kryptonmc.krypton.entity.KryptonExperienceOrb
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutSpawnExperienceOrb(private val orb: KryptonExperienceOrb) : Packet {
+@JvmRecord
+data class PacketOutSpawnExperienceOrb(private val orb: KryptonExperienceOrb) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(orb.id)

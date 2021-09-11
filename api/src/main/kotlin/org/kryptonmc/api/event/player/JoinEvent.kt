@@ -29,7 +29,8 @@ public class JoinEvent(
     @get:JvmName("hasChangedName") public val hasChangedName: Boolean
 ) : ResultedEvent<JoinResult> {
 
-    // The message here is the default translatable component that vanilla Minecraft sends when a player joins.
+    // The message here is the default translatable component that vanilla
+    // Minecraft sends when a player joins.
     override var result: JoinResult = JoinResult.allowed(
         translatable(
             if (hasChangedName) "multiplayer.player.joined.renamed" else "multiplayer.player.joined",
@@ -56,8 +57,8 @@ public class JoinResult(
 
         /**
          * Creates a new join result that allows the player to join, optionally
-         * specifying if the player [has joined before][hasJoinedBefore], defaulting
-         * to false if not specified.
+         * specifying if the player [has joined before][hasJoinedBefore],
+         * defaulting to false if not specified.
          *
          * @param hasJoinedBefore if the player has joined before
          */
@@ -66,9 +67,10 @@ public class JoinResult(
         public fun allowed(hasJoinedBefore: Boolean = false): JoinResult = JoinResult(true, empty(), hasJoinedBefore)
 
         /**
-         * Creates a new join result that allows the player to join with the given
-         * join [message], optionally specifying if the player [has joined before][hasJoinedBefore],
-         * defaulting to false if not specified.
+         * Creates a new join result that allows the player to join with the
+         * given join [message], optionally specifying if the player
+         * [has joined before][hasJoinedBefore], defaulting to false if not
+         * specified.
          *
          * @param message the join message
          * @param hasJoinedBefore if the player has joined before
@@ -81,9 +83,10 @@ public class JoinResult(
         ): JoinResult = JoinResult(true, message, hasJoinedBefore)
 
         /**
-         * Creates a new join result that denies the player from joining, optionally
-         * specifying if the player [has joined before][hasJoinedBefore], defaulting
-         * to false if not specified.
+         * Creates a new join result that denies the player from joining,
+         * optionally specifying if the player
+         * [has joined before][hasJoinedBefore], defaulting to false if not
+         * specified.
          *
          * @param hasJoinedBefore if the player has joined before
          */
@@ -92,9 +95,10 @@ public class JoinResult(
         public fun denied(hasJoinedBefore: Boolean = false): JoinResult = JoinResult(false, empty(), hasJoinedBefore)
 
         /**
-         * Creates a new join result that denies the player from joining with the
-         * given join [message], optionally specifying if the player
-         * [has joined before][hasJoinedBefore], defaulting to false if not specified.
+         * Creates a new join result that denies the player from joining with
+         * the given join [message], optionally specifying if the player
+         * [has joined before][hasJoinedBefore], defaulting to false if not
+         * specified.
          *
          * @param message the join message
          * @param hasJoinedBefore if the player has joined before

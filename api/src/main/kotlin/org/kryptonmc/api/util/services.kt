@@ -14,15 +14,16 @@ import org.kryptonmc.api.Server
 import java.util.ServiceLoader
 
 /**
- * Gets a service provider's implementation from a [service loader][java.util.ServiceLoader]
+ * Gets a service provider's implementation from a
+ * [service loader][java.util.ServiceLoader].
  */
 @JvmSynthetic
 public inline fun <reified T> service(): T? = Services.service(T::class.java).getIfPresent()
 
 private val LOGGER = LogManager.getLogger(Server::class.java)
 
-// Internal function to print helpful log messages for when there is either more
-// than one or no services available for the type T.
+// Internal function to print helpful log messages for when there is either
+// more than one or no services available for the type T.
 @JvmSynthetic
 internal inline fun <reified T> serviceOrError(name: String): T = try {
     ServiceLoader.load(T::class.java, T::class.java.classLoader).single()

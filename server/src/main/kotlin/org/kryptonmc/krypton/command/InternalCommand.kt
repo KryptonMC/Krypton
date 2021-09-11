@@ -22,7 +22,8 @@ import com.mojang.brigadier.CommandDispatcher
 import org.kryptonmc.api.command.Sender
 
 /**
- * An internal command. Allows us to directly access the dispatcher where we need it.
+ * An internal command. Allows us to directly access the dispatcher where we
+ * need it.
  */
 interface InternalCommand {
 

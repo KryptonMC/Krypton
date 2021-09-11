@@ -24,7 +24,8 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutUnlockRecipes(
+@JvmRecord
+data class PacketOutUnlockRecipes(
     private val action: UnlockRecipesAction,
     private val isCraftingBookOpen: Boolean = false,
     private val isCraftingBookFiltered: Boolean = false,

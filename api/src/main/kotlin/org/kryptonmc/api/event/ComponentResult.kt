@@ -16,7 +16,8 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 
 /**
- * A result that contains a [reason] for allowing/denying the event, as a [Component].
+ * A result that contains a [reason] for allowing/denying the event, as a
+ * [Component].
  *
  * @param reason the reason for the result
  */
@@ -33,27 +34,30 @@ public class ComponentResult(override val isAllowed: Boolean, public val reason:
         private val ALLOWED = ComponentResult(true, Component.empty())
 
         /**
-         * Returns a result that represents the event being allowed with no reason.
+         * Returns a result that represents the event being allowed with no
+         * reason.
          *
-         * @return a result that represents the event being allowed with no reason
+         * @return an allowed result
          */
         @JvmStatic
         public fun allowed(): ComponentResult = ALLOWED
 
         /**
-         * Returns a result that represents the event being allowed for the given [reason].
+         * Returns a result that represents the event being allowed for the
+         * given [reason].
          *
          * @param reason the reason for allowing the event
-         * @return a result that represents the event being allowed for the given [reason]
+         * @return a new result
          */
         @JvmStatic
         public fun allowed(reason: Component): ComponentResult = ComponentResult(true, reason)
 
         /**
-         * Returns a result that represents the event being denied for the given [reason].
+         * Returns a result that represents the event being denied for the
+         * given [reason].
          *
          * @param reason the reason for denying the event
-         * @return a result that represents the event being denied for the given [reason]
+         * @return a new result
          */
         @JvmStatic
         public fun denied(reason: Component): ComponentResult = ComponentResult(false, reason)

@@ -23,4 +23,4 @@ import org.kryptonmc.krypton.packet.Packet
 /**
  * Sent by the client to request the server's status information
  */
-class PacketInStatusRequest : Packet
+object PacketInStatusRequest : Packet

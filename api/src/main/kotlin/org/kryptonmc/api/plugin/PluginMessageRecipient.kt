@@ -11,13 +11,13 @@ package org.kryptonmc.api.plugin
 import net.kyori.adventure.key.Key
 
 /**
- * A recipient of plugin messages
+ * A recipient of plugin messages.
  */
 public interface PluginMessageRecipient {
 
     /**
-     * Send a plugin message to this recipient on the specified [channel] with the specified
-     * [message] content.
+     * Send a plugin message to this recipient on the specified [channel] with
+     * the specified [message] content.
      *
      * @param channel the channel to send the message on
      * @param message the message to send

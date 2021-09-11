@@ -23,7 +23,8 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 
-class PacketOutSubTitle(private val subTitle: Component) : Packet {
+@JvmRecord
+data class PacketOutSubTitle(private val subTitle: Component) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(subTitle)

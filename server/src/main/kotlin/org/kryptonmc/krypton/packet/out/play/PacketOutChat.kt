@@ -26,7 +26,8 @@ import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeUUID
 import java.util.UUID
 
-class PacketOutChat(
+@JvmRecord
+data class PacketOutChat(
     private val message: Component,
     private val type: MessageType,
     private val senderUUID: UUID

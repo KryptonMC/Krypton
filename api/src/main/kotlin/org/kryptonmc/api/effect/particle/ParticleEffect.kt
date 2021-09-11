@@ -47,8 +47,8 @@ public data class ParticleEffect @JvmOverloads constructor(
         public fun builder(type: ParticleType): ParticleEffectBuilder = ParticleEffectBuilder(type)
 
         /**
-         * Creates a new directional particle effect builder for the given directional
-         * particle [type].
+         * Creates a new directional particle effect builder for the given
+         * directional particle [type].
          *
          * @param type the type of the directional particle
          * @return a new directional particle effect builder for the given type
@@ -58,8 +58,8 @@ public data class ParticleEffect @JvmOverloads constructor(
             DirectionalParticleEffectBuilder(type)
 
         /**
-         * Creates a new block particle effect builder for the given block particle
-         * [type].
+         * Creates a new block particle effect builder for the given block
+         * particle [type].
          *
          * @param type the type of the block particle
          * @return a new block particle effect builder for the given type
@@ -68,8 +68,8 @@ public data class ParticleEffect @JvmOverloads constructor(
         public fun builder(type: BlockParticleType): BlockParticleEffectBuilder = BlockParticleEffectBuilder(type)
 
         /**
-         * Creates a new item particle effect builder for the given item particle
-         * [type].
+         * Creates a new item particle effect builder for the given item
+         * particle [type].
          *
          * @param type the type of the item particle
          * @return a new item particle effect builder for the given type
@@ -78,8 +78,8 @@ public data class ParticleEffect @JvmOverloads constructor(
         public fun builder(type: ItemParticleType): ItemParticleEffectBuilder = ItemParticleEffectBuilder(type)
 
         /**
-         * Creates a new color particle effect builder for the given color particle
-         * [type].
+         * Creates a new color particle effect builder for the given color
+         * particle [type].
          *
          * @param type the type of the color particle
          * @return a new color particle effect builder for the given type
@@ -88,8 +88,8 @@ public data class ParticleEffect @JvmOverloads constructor(
         public fun builder(type: ColorParticleType): ColorParticleEffectBuilder = ColorParticleEffectBuilder(type)
 
         /**
-         * Creates a new dust particle effect builder for the given dust particle
-         * [type].
+         * Creates a new dust particle effect builder for the given dust
+         * particle [type].
          *
          * @param type the type of the directional particle
          * @return a new dust particle effect builder for the given type
@@ -98,19 +98,20 @@ public data class ParticleEffect @JvmOverloads constructor(
         public fun builder(type: DustParticleType): DustParticleEffectBuilder = DustParticleEffectBuilder(type)
 
         /**
-         * Creates a new dust transition particle effect builder for the given dust
-         * transition particle [type].
+         * Creates a new dust transition particle effect builder for the given
+         * dust transition particle [type].
          *
          * @param type the type of the dust transition particle
-         * @return a new dust transition particle effect builder for the given type
+         * @return a new dust transition particle effect builder for the given
+         * type
          */
         @JvmStatic
         public fun builder(type: DustTransitionParticleType): DustTransitionParticleEffectBuilder =
             DustTransitionParticleEffectBuilder(type)
 
         /**
-         * Creates a new note particle effect builder for the given note particle
-         * [type].
+         * Creates a new note particle effect builder for the given note
+         * particle [type].
          *
          * @param type the type of the note particle
          * @return a new note particle effect builder for the given type
@@ -119,8 +120,8 @@ public data class ParticleEffect @JvmOverloads constructor(
         public fun builder(type: NoteParticleType): NoteParticleEffectBuilder = NoteParticleEffectBuilder(type)
 
         /**
-         * Creates a new vibration particle effect builder for the given vibration
-         * particle [type].
+         * Creates a new vibration particle effect builder for the given
+         * vibration particle [type].
          *
          * @param type the type of the vibration particle
          * @return a new vibration particle effect builder for the given type

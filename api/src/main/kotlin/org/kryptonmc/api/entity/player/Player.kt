@@ -38,7 +38,11 @@ import java.util.Locale
  * Represents a player.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient, HoverEventSource<HoverEvent.ShowEntity> {
+public interface Player : LivingEntity,
+    Sender,
+    InventoryHolder,
+    PluginMessageRecipient,
+    HoverEventSource<HoverEvent.ShowEntity> {
 
     /**
      * The address that the player is currently connected from.
@@ -152,8 +156,8 @@ public interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRe
     /**
      * Increments the given [statistic] by the given [amount].
      *
-     * Note: This will increase the current value by the amount, it will not set
-     * it. To set statistics, use [StatisticsTracker.set]
+     * Note: This will increase the current value by the amount, it will not
+     * set it. To set statistics, use [StatisticsTracker.set]
      *
      * @param statistic the statistic
      * @param amount the amount
@@ -187,8 +191,8 @@ public interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRe
     /**
      * Decrements the given [statistic] by the given [amount].
      *
-     * Note: This will decrease the current value by the amount, it will not set
-     * it. To set statistics, use [StatisticsTracker.set]
+     * Note: This will decrease the current value by the amount, it will not
+     * set it. To set statistics, use [StatisticsTracker.set]
      *
      * @param statistic the statistic
      * @param amount the amount
@@ -205,7 +209,8 @@ public interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRe
     /**
      * Spawns particles for this player relative to a location.
      *
-     * @param particleEffect the [ParticleEffect] used to describe the particles' appearance
+     * @param particleEffect the [ParticleEffect] used to describe the
+     * particles' appearance
      * @param location the central location to spawn the particles at
      */
     public fun spawnParticles(particleEffect: ParticleEffect, location: Location)

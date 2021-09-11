@@ -31,7 +31,8 @@ import org.kryptonmc.krypton.util.writeVarInt
 /**
  * Tells the client to perform an action to a team on their current scoreboard
  */
-class PacketOutTeams(
+@JvmRecord
+data class PacketOutTeams(
     private val action: TeamAction,
     private val team: Team,
     private val addedMembers: List<KryptonPlayer> = emptyList(), // only applies for add players

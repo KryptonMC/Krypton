@@ -94,7 +94,8 @@ data class KryptonDimensionType(
                 Codecs.KEY.fieldOf("infiniburn").forGetter(KryptonDimensionType::infiniburn),
                 Codec.intRange(MIN_Y, MAX_Y).fieldOf("min_y").forGetter(KryptonDimensionType::minimumY),
                 Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).fieldOf("height").forGetter(KryptonDimensionType::height),
-                Codec.intRange(0, Y_SIZE).fieldOf("logical_height").forGetter(KryptonDimensionType::logicalHeight),
+                Codec.intRange(0, Y_SIZE).fieldOf("logical_height")
+                    .forGetter(KryptonDimensionType::logicalHeight),
                 Codec.doubleRange(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE).fieldOf("coordinate_scale")
                     .forGetter(KryptonDimensionType::coordinateScale),
                 Codecs.KEY.fieldOf("effects").forGetter(KryptonDimensionType::effects)

@@ -33,17 +33,18 @@ public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
     public val registry: Registry<T>
 
     /**
-     * Returns true if this type contains a statistic for the given [key], false
-     * otherwise.
+     * Returns true if this type contains a statistic for the given [key],
+     * false otherwise.
      *
      * @param key the key
-     * @return true if this type contains a statistic for the key, false otherwise
+     * @return true if this type contains a statistic for the key, false
+     * otherwise
      */
     public operator fun contains(key: T): Boolean
 
     /**
-     * Gets the statistic for the given [key], creating it if it does not already
-     * exist.
+     * Gets the statistic for the given [key], creating it if it does not
+     * already exist.
      *
      * @param key the key
      * @return the statistic for the key
@@ -51,8 +52,8 @@ public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
     public operator fun get(key: T): Statistic<T>
 
     /**
-     * Gets the statistic for the given [key] with the given [formatter], creating it
-     * if it does not already exist.
+     * Gets the statistic for the given [key] with the given [formatter],
+     * creating it if it does not already exist.
      *
      * @param key the key
      * @param formatter the formatter

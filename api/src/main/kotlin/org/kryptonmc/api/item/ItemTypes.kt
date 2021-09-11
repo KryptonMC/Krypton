@@ -638,7 +638,8 @@ public object ItemTypes {
     @JvmField public val CRIMSON_BUTTON: ItemType = register("crimson_button")
     @JvmField public val WARPED_BUTTON: ItemType = register("warped_button")
     @JvmField public val STONE_PRESSURE_PLATE: ItemType = register("stone_pressure_plate")
-    @JvmField public val POLISHED_BLACKSTONE_PRESSURE_PLATE: ItemType = register("polished_blackstone_pressure_plate")
+    @JvmField public val POLISHED_BLACKSTONE_PRESSURE_PLATE: ItemType =
+        register("polished_blackstone_pressure_plate")
     @JvmField public val LIGHT_WEIGHTED_PRESSURE_PLATE: ItemType = register("light_weighted_pressure_plate")
     @JvmField public val HEAVY_WEIGHTED_PRESSURE_PLATE: ItemType = register("heavy_weighted_pressure_plate")
     @JvmField public val OAK_PRESSURE_PLATE: ItemType = register("oak_pressure_plate")
@@ -685,8 +686,10 @@ public object ItemTypes {
     @JvmField public val FURNACE_MINECART: ItemType = register("furnace_minecart", maximumAmount = 1)
     @JvmField public val TNT_MINECART: ItemType = register("tnt_minecart", maximumAmount = 1)
     @JvmField public val HOPPER_MINECART: ItemType = register("hopper_minecart", maximumAmount = 1)
-    @JvmField public val CARROT_ON_A_STICK: ItemType = register("carrot_on_a_stick", maximumAmount = 1, durability = 25)
-    @JvmField public val WARPED_FUNGUS_ON_A_STICK: ItemType = register("warped_fungus_on_a_stick", maximumAmount = 1, durability = 100)
+    @JvmField public val CARROT_ON_A_STICK: ItemType =
+        register("carrot_on_a_stick", maximumAmount = 1, durability = 25)
+    @JvmField public val WARPED_FUNGUS_ON_A_STICK: ItemType =
+        register("warped_fungus_on_a_stick", maximumAmount = 1, durability = 100)
     @JvmField public val ELYTRA: ItemType = register("elytra", maximumAmount = 1, durability = 432)
     @JvmField public val OAK_BOAT: ItemType = register("oak_boat", maximumAmount = 1)
     @JvmField public val SPRUCE_BOAT: ItemType = register("spruce_boat", maximumAmount = 1)
@@ -698,7 +701,8 @@ public object ItemTypes {
     @JvmField public val JIGSAW: ItemType = register("jigsaw", ItemRarity.EPIC)
     @JvmField public val TURTLE_HELMET: ItemType = register("turtle_helmet", maximumAmount = 1)
     @JvmField public val SCUTE: ItemType = register("scute")
-    @JvmField public val FLINT_AND_STEEL: ItemType = register("flint_and_steel", maximumAmount = 1, durability = 64)
+    @JvmField public val FLINT_AND_STEEL: ItemType =
+        register("flint_and_steel", maximumAmount = 1, durability = 64)
     @JvmField public val APPLE: ItemType = register("apple")
     @JvmField public val BOW: ItemType = register("bow", maximumAmount = 1, durability = 384)
     @JvmField public val ARROW: ItemType = register("arrow")
@@ -742,11 +746,16 @@ public object ItemTypes {
     @JvmField public val DIAMOND_PICKAXE: ItemType = register("diamond_pickaxe", maximumAmount = 1)
     @JvmField public val DIAMOND_AXE: ItemType = register("diamond_axe", maximumAmount = 1)
     @JvmField public val DIAMOND_HOE: ItemType = register("diamond_hoe", maximumAmount = 1)
-    @JvmField public val NETHERITE_SWORD: ItemType = register("netherite_sword", maximumAmount = 1, isFireResistant = true)
-    @JvmField public val NETHERITE_SHOVEL: ItemType = register("netherite_shovel", maximumAmount = 1, isFireResistant = true)
-    @JvmField public val NETHERITE_PICKAXE: ItemType = register("netherite_pickaxe", maximumAmount = 1, isFireResistant = true)
-    @JvmField public val NETHERITE_AXE: ItemType = register("netherite_axe", maximumAmount = 1, isFireResistant = true)
-    @JvmField public val NETHERITE_HOE: ItemType = register("netherite_hoe", maximumAmount = 1, isFireResistant = true)
+    @JvmField public val NETHERITE_SWORD: ItemType =
+        register("netherite_sword", maximumAmount = 1, isFireResistant = true)
+    @JvmField public val NETHERITE_SHOVEL: ItemType =
+        register("netherite_shovel", maximumAmount = 1, isFireResistant = true)
+    @JvmField public val NETHERITE_PICKAXE: ItemType =
+        register("netherite_pickaxe", maximumAmount = 1, isFireResistant = true)
+    @JvmField public val NETHERITE_AXE: ItemType =
+        register("netherite_axe", maximumAmount = 1, isFireResistant = true)
+    @JvmField public val NETHERITE_HOE: ItemType =
+        register("netherite_hoe", maximumAmount = 1, isFireResistant = true)
     @JvmField public val STICK: ItemType = register("stick")
     @JvmField public val BOWL: ItemType = register("bowl")
     @JvmField public val MUSHROOM_STEW: ItemType = register("mushroom_stew", maximumAmount = 1)
@@ -776,10 +785,14 @@ public object ItemTypes {
     @JvmField public val GOLDEN_CHESTPLATE: ItemType = register("golden_chestplate", maximumAmount = 1)
     @JvmField public val GOLDEN_LEGGINGS: ItemType = register("golden_leggings", maximumAmount = 1)
     @JvmField public val GOLDEN_BOOTS: ItemType = register("golden_boots", maximumAmount = 1)
-    @JvmField public val NETHERITE_HELMET: ItemType = register("netherite_helmet", maximumAmount = 1, isFireResistant = true)
-    @JvmField public val NETHERITE_CHESTPLATE: ItemType = register("netherite_chestplate", maximumAmount = 1, isFireResistant = true)
-    @JvmField public val NETHERITE_LEGGINGS: ItemType = register("netherite_leggings", maximumAmount = 1, isFireResistant = true)
-    @JvmField public val NETHERITE_BOOTS: ItemType = register("netherite_boots", maximumAmount = 1, isFireResistant = true)
+    @JvmField public val NETHERITE_HELMET: ItemType =
+        register("netherite_helmet", maximumAmount = 1, isFireResistant = true)
+    @JvmField public val NETHERITE_CHESTPLATE: ItemType =
+        register("netherite_chestplate", maximumAmount = 1, isFireResistant = true)
+    @JvmField public val NETHERITE_LEGGINGS: ItemType =
+        register("netherite_leggings", maximumAmount = 1, isFireResistant = true)
+    @JvmField public val NETHERITE_BOOTS: ItemType =
+        register("netherite_boots", maximumAmount = 1, isFireResistant = true)
     @JvmField public val FLINT: ItemType = register("flint")
     @JvmField public val PORKCHOP: ItemType = register("porkchop")
     @JvmField public val COOKED_PORKCHOP: ItemType = register("cooked_porkchop")
@@ -981,7 +994,8 @@ public object ItemTypes {
     @JvmField public val PUMPKIN_PIE: ItemType = register("pumpkin_pie")
     @JvmField public val FIREWORK_ROCKET: ItemType = register("firework_rocket")
     @JvmField public val FIREWORK_STAR: ItemType = register("firework_star")
-    @JvmField public val ENCHANTED_BOOK: ItemType = register("enchanted_book", ItemRarity.UNCOMMON, 1)
+    @JvmField public val ENCHANTED_BOOK: ItemType =
+        register("enchanted_book", ItemRarity.UNCOMMON, 1)
     @JvmField public val NETHER_BRICK: ItemType = register("nether_brick")
     @JvmField public val PRISMARINE_SHARD: ItemType = register("prismarine_shard")
     @JvmField public val PRISMARINE_CRYSTALS: ItemType = register("prismarine_crystals")
@@ -997,7 +1011,8 @@ public object ItemTypes {
     @JvmField public val LEATHER_HORSE_ARMOR: ItemType = register("leather_horse_armor", maximumAmount = 1)
     @JvmField public val LEAD: ItemType = register("lead")
     @JvmField public val NAME_TAG: ItemType = register("name_tag")
-    @JvmField public val COMMAND_BLOCK_MINECART: ItemType = register("command_block_minecart", ItemRarity.EPIC, 1)
+    @JvmField public val COMMAND_BLOCK_MINECART: ItemType =
+        register("command_block_minecart", ItemRarity.EPIC, 1)
     @JvmField public val MUTTON: ItemType = register("mutton")
     @JvmField public val COOKED_MUTTON: ItemType = register("cooked_mutton")
     @JvmField public val WHITE_BANNER: ItemType = register("white_banner", maximumAmount = 16)
@@ -1028,24 +1043,30 @@ public object ItemTypes {
     @JvmField public val TIPPED_ARROW: ItemType = register("tipped_arrow")
     @JvmField public val LINGERING_POTION: ItemType = register("lingering_potion", maximumAmount = 1)
     @JvmField public val SHIELD: ItemType = register("shield", maximumAmount = 1, durability = 336)
-    @JvmField public val TOTEM_OF_UNDYING: ItemType = register("totem_of_undying", ItemRarity.UNCOMMON, 1)
+    @JvmField public val TOTEM_OF_UNDYING: ItemType =
+        register("totem_of_undying", ItemRarity.UNCOMMON, 1)
     @JvmField public val SHULKER_SHELL: ItemType = register("shulker_shell")
     @JvmField public val IRON_NUGGET: ItemType = register("iron_nugget")
     @JvmField public val KNOWLEDGE_BOOK: ItemType = register("knowledge_book", ItemRarity.EPIC, 1)
     @JvmField public val DEBUG_STICK: ItemType = register("debug_stick", ItemRarity.EPIC, 1)
     @JvmField public val MUSIC_DISC_13: ItemType = register("music_disc_13", ItemRarity.RARE, 1)
     @JvmField public val MUSIC_DISC_CAT: ItemType = register("music_disc_cat", ItemRarity.RARE, 1)
-    @JvmField public val MUSIC_DISC_BLOCKS: ItemType = register("music_disc_blocks", ItemRarity.RARE, 1)
-    @JvmField public val MUSIC_DISC_CHIRP: ItemType = register("music_disc_chirp", ItemRarity.RARE, 1)
+    @JvmField public val MUSIC_DISC_BLOCKS: ItemType =
+        register("music_disc_blocks", ItemRarity.RARE, 1)
+    @JvmField public val MUSIC_DISC_CHIRP: ItemType =
+        register("music_disc_chirp", ItemRarity.RARE, 1)
     @JvmField public val MUSIC_DISC_FAR: ItemType = register("music_disc_far", ItemRarity.RARE, 1)
     @JvmField public val MUSIC_DISC_MALL: ItemType = register("music_disc_mall", ItemRarity.RARE, 1)
-    @JvmField public val MUSIC_DISC_MELLOHI: ItemType = register("music_disc_mellohi", ItemRarity.RARE, 1)
+    @JvmField public val MUSIC_DISC_MELLOHI: ItemType =
+        register("music_disc_mellohi", ItemRarity.RARE, 1)
     @JvmField public val MUSIC_DISC_STAL: ItemType = register("music_disc_stal", ItemRarity.RARE, 1)
-    @JvmField public val MUSIC_DISC_STRAD: ItemType = register("music_disc_strad", ItemRarity.RARE, 1)
+    @JvmField public val MUSIC_DISC_STRAD: ItemType =
+        register("music_disc_strad", ItemRarity.RARE, 1)
     @JvmField public val MUSIC_DISC_WARD: ItemType = register("music_disc_ward", ItemRarity.RARE, 1)
     @JvmField public val MUSIC_DISC_11: ItemType = register("music_disc_11", ItemRarity.RARE, 1)
     @JvmField public val MUSIC_DISC_WAIT: ItemType = register("music_disc_wait", ItemRarity.RARE, 1)
-    @JvmField public val MUSIC_DISC_PIGSTEP: ItemType = register("music_disc_pigstep", ItemRarity.RARE, 1)
+    @JvmField public val MUSIC_DISC_PIGSTEP: ItemType =
+        register("music_disc_pigstep", ItemRarity.RARE, 1)
     @JvmField public val TRIDENT: ItemType = register("trident", maximumAmount = 1, durability = 250)
     @JvmField public val PHANTOM_MEMBRANE: ItemType = register("phantom_membrane")
     @JvmField public val NAUTILUS_SHELL: ItemType = register("nautilus_shell")
@@ -1054,9 +1075,12 @@ public object ItemTypes {
     @JvmField public val SUSPICIOUS_STEW: ItemType = register("suspicious_stew", maximumAmount = 1)
     @JvmField public val LOOM: ItemType = register("loom")
     @JvmField public val FLOWER_BANNER_PATTERN: ItemType = register("flower_banner_pattern", maximumAmount = 1)
-    @JvmField public val CREEPER_BANNER_PATTERN: ItemType = register("creeper_banner_pattern", ItemRarity.UNCOMMON, 1)
-    @JvmField public val SKULL_BANNER_PATTERN: ItemType = register("skull_banner_pattern", ItemRarity.UNCOMMON, 1)
-    @JvmField public val MOJANG_BANNER_PATTERN: ItemType = register("mojang_banner_pattern", ItemRarity.EPIC, 1)
+    @JvmField public val CREEPER_BANNER_PATTERN: ItemType =
+        register("creeper_banner_pattern", ItemRarity.UNCOMMON, 1)
+    @JvmField public val SKULL_BANNER_PATTERN: ItemType =
+        register("skull_banner_pattern", ItemRarity.UNCOMMON, 1)
+    @JvmField public val MOJANG_BANNER_PATTERN: ItemType =
+        register("mojang_banner_pattern", ItemRarity.EPIC, 1)
     @JvmField public val GLOBE_BANNER_PATTERN: ItemType = register("globe_banner_pattern", maximumAmount = 1)
     @JvmField public val PIGLIN_BANNER_PATTERN: ItemType = register("piglin_banner_pattern", maximumAmount = 1)
     @JvmField public val COMPOSTER: ItemType = register("composter")
@@ -1094,7 +1118,8 @@ public object ItemTypes {
     @JvmField public val POLISHED_BLACKSTONE_BRICKS: ItemType = register("polished_blackstone_bricks")
     @JvmField public val POLISHED_BLACKSTONE_BRICK_SLAB: ItemType = register("polished_blackstone_brick_slab")
     @JvmField public val POLISHED_BLACKSTONE_BRICK_STAIRS: ItemType = register("polished_blackstone_brick_stairs")
-    @JvmField public val CRACKED_POLISHED_BLACKSTONE_BRICKS: ItemType = register("cracked_polished_blackstone_bricks")
+    @JvmField public val CRACKED_POLISHED_BLACKSTONE_BRICKS: ItemType =
+        register("cracked_polished_blackstone_bricks")
     @JvmField public val RESPAWN_ANCHOR: ItemType = register("respawn_anchor")
     @JvmField public val CANDLE: ItemType = register("candle")
     @JvmField public val WHITE_CANDLE: ItemType = register("white_candle")

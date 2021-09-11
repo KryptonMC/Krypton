@@ -23,7 +23,9 @@ import org.kryptonmc.krypton.world.generation.feature.config.FeatureConfig
 
 abstract class Feature<C : FeatureConfig>(codec: Codec<C>) {
 
-    val configuredCodec: Codec<ConfiguredFeature<C, Feature<C>>> = codec.fieldOf("config").xmap({ ConfiguredFeature(this, it) }, { it.config }).codec()
+    val configuredCodec: Codec<ConfiguredFeature<C, Feature<C>>> = codec.fieldOf("config")
+        .xmap({ ConfiguredFeature(this, it) }, { it.config })
+        .codec()
 
     fun configured(config: C): ConfiguredFeature<C, *> = ConfiguredFeature(this, config)
 }

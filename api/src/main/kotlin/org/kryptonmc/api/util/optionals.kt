@@ -13,14 +13,14 @@ import java.util.Optional
 /**
  * Gets the value of this [Optional] if present, else returns null.
  *
- * Useful for converting [Optional] values from other Java-based libraries
- * in to nullable types.
+ * Useful for converting [Optional] values from other Java-based libraries in
+ * to nullable types.
  */
 public fun <T> Optional<T>.getIfPresent(): T? = if (isPresent) get() else null
 
 /**
- * Gets the value of this [Optional] if present, else calls [error] with
- * the given [message] (throwing an [IllegalStateException]).
+ * Gets the value of this [Optional] if present, else calls [error] with the
+ * given [message] (throwing an [IllegalStateException]).
  *
  * @param message the message for the exception if thrown
  */

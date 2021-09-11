@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.data
 import net.kyori.adventure.key.Key.key
 
 /**
- * Types of villagers
+ * Types of villagers.
  */
 enum class VillagerType(val id: Int) {
 

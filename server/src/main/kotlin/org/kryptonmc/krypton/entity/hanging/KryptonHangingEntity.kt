@@ -26,7 +26,10 @@ import org.kryptonmc.krypton.space.antiClockwise
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 
-abstract class KryptonHangingEntity(world: KryptonWorld, type: EntityType<out HangingEntity>) : KryptonEntity(world, type), HangingEntity {
+abstract class KryptonHangingEntity(
+    world: KryptonWorld,
+    type: EntityType<out HangingEntity>
+) : KryptonEntity(world, type), HangingEntity {
 
     abstract val width: Int
 

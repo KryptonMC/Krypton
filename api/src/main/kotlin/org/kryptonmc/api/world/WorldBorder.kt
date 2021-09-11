@@ -11,7 +11,8 @@ package org.kryptonmc.api.world
 import org.spongepowered.math.vector.Vector2d
 
 /**
- * The area around a world that prevents players from venturing too far into the wilderness.
+ * The area around a world that prevents players from venturing too far into
+ * the wilderness.
  */
 public interface WorldBorder {
 

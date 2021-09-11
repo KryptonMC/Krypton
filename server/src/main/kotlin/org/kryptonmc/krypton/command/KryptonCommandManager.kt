@@ -125,7 +125,11 @@ class KryptonCommandManager : CommandManager {
                 )
 
                 if (inputLength < exception.input.length) {
-                    val error = text(exception.input.substring(inputLength), NamedTextColor.RED, TextDecoration.UNDERLINED)
+                    val error = text(
+                        exception.input.substring(inputLength),
+                        NamedTextColor.RED,
+                        TextDecoration.UNDERLINED
+                    )
                     errorMessage = errorMessage.append(error)
                 }
 
@@ -182,5 +186,7 @@ class KryptonCommandManager : CommandManager {
         ClearCommand.register(dispatcher)
     }
 
-    private fun parse(sender: Sender, input: String): ParseResults<Sender> = lock.read { dispatcher.parse(input, sender) }
+    private fun parse(sender: Sender, input: String): ParseResults<Sender> = lock.read {
+        dispatcher.parse(input, sender)
+    }
 }

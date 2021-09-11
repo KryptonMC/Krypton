@@ -21,7 +21,8 @@ import org.kryptonmc.api.space.Vector
 import java.awt.Color
 
 /**
- * Allows building a [ParticleEffect] for simple particle effects using method chaining.
+ * Allows building a [ParticleEffect] for simple particle effects using method
+ * chaining.
  */
 public open class ParticleEffectBuilder @JvmOverloads constructor(
     protected val type: ParticleType,
@@ -33,7 +34,8 @@ public open class ParticleEffectBuilder @JvmOverloads constructor(
     /**
      * Sets the number of particles to be spawned by the [ParticleEffect].
      *
-     * @param quantity the number of particles, must be between 1 and 16384 inclusively
+     * @param quantity the number of particles, must be between 1 and 16384
+     * inclusively
      */
     @Contract("_ -> this", mutates = "this")
     public open fun quantity(quantity: Int): ParticleEffectBuilder = apply { this.quantity = quantity }
@@ -52,7 +54,8 @@ public open class ParticleEffectBuilder @JvmOverloads constructor(
      * When false, the view distance is 256.
      * When true, the view distance is 65536.
      *
-     * @param longDistance true for long view distance, false for normal view distance
+     * @param longDistance true for long view distance, false for normal view
+     * distance
      */
     @Contract("_ -> this", mutates = "this")
     public open fun longDistance(longDistance: Boolean): ParticleEffectBuilder = apply { this.longDistance = longDistance }
@@ -65,7 +68,8 @@ public open class ParticleEffectBuilder @JvmOverloads constructor(
 }
 
 /**
- * Allows building a [ParticleEffect] for directional particle effects using method chaining.
+ * Allows building a [ParticleEffect] for directional particle effects using
+ * method chaining.
  */
 public class DirectionalParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
@@ -87,8 +91,8 @@ public class DirectionalParticleEffectBuilder @JvmOverloads constructor(
     /**
      * Sets the velocity of the particles.
      *
-     * The actual velocity tends to vary largely for each particle type, so it's
-     * quite arbitrary what this means.
+     * The actual velocity tends to vary largely for each particle type, so
+     * it's quite arbitrary what this means.
      *
      * @param velocity the velocity of the particles
      */
@@ -118,7 +122,8 @@ public class DirectionalParticleEffectBuilder @JvmOverloads constructor(
 }
 
 /**
- * Allows building a [ParticleEffect] for item particle effects using method chaining.
+ * Allows building a [ParticleEffect] for item particle effects using method
+ * chaining.
  */
 public class ItemParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
@@ -153,7 +158,8 @@ public class ItemParticleEffectBuilder @JvmOverloads constructor(
 }
 
 /**
- * Allows building a [ParticleEffect] for block particle effects using method chaining.
+ * Allows building a [ParticleEffect] for block particle effects using method
+ * chaining.
  */
 public class BlockParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
@@ -188,7 +194,8 @@ public class BlockParticleEffectBuilder @JvmOverloads constructor(
 }
 
 /**
- * Allows building a [ParticleEffect] for colored particle effects using method chaining.
+ * Allows building a [ParticleEffect] for colored particle effects using method
+ * chaining.
  */
 public open class ColorParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
@@ -213,10 +220,11 @@ public open class ColorParticleEffectBuilder @JvmOverloads constructor(
     }
 
     /**
-     * Sets the color of the particle to the given [red], [green], and [blue] values.
+     * Sets the color of the particle to the given [red], [green], and [blue]
+     * values.
      *
-     * Note: if any of the given [red], [green], or [blue] values are > 255, they will
-     * become 255.
+     * Note: if any of the given [red], [green], or [blue] values are > 255,
+     * they will become 255.
      *
      * @param red the red value
      * @param green the green value
@@ -255,8 +263,8 @@ public open class ColorParticleEffectBuilder @JvmOverloads constructor(
      * Sets the color of the particle to the given [hue], [saturation], and
      * [value].
      *
-     * Note: The [hue], [saturation], and [value] given here must be between 0 and 1,
-     * due to them being HSB values.
+     * Note: The [hue], [saturation], and [value] given here must be between
+     * 0 and 1, due to them being HSB values.
      *
      * @param hue the hue
      * @param saturation the saturation
@@ -297,7 +305,8 @@ public open class ColorParticleEffectBuilder @JvmOverloads constructor(
 }
 
 /**
- * Allows building a [ParticleEffect] for dust particle effects using method chaining.
+ * Allows building a [ParticleEffect] for dust particle effects using method
+ * chaining.
  */
 public open class DustParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
@@ -360,7 +369,8 @@ public open class DustParticleEffectBuilder @JvmOverloads constructor(
 }
 
 /**
- * Allows building a [ParticleEffect] for dust color transition particle effects using method chaining.
+ * Allows building a [ParticleEffect] for dust color transition particle
+ * effects using method chaining.
  */
 public class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
@@ -385,11 +395,11 @@ public class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
     public fun toColor(color: Color): DustTransitionParticleEffectBuilder = toRGB(color.red, color.green, color.blue)
 
     /**
-     * Sets the color to transition the particle to to the given [red], [green], and
-     * [blue] values.
+     * Sets the color to transition the particle to to the given [red],
+     * [green], and [blue] values.
      *
-     * Note: if any of the given [red], [green], or [blue] values are > 255, they will
-     * become 255.
+     * Note: if any of the given [red], [green], or [blue] values are > 255,
+     * they will become 255.
      *
      * @param red the red value
      * @param green the green value
@@ -415,7 +425,8 @@ public class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
     public fun toRGB(rgb: Int): DustTransitionParticleEffectBuilder = rgb(rgb shr 16, rgb shr 8, rgb)
 
     /**
-     * Sets the color to transition the particle to to the given [rgb] like object.
+     * Sets the color to transition the particle to to the given [rgb] like
+     * object.
      *
      * Note: if any of the decoded RGB values are > 255, they will become 255.
      *
@@ -425,7 +436,8 @@ public class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
     public fun toRGB(rgb: RGBLike): DustTransitionParticleEffectBuilder = rgb(rgb.red(), rgb.green(), rgb.blue())
 
     /**
-     * Sets the color to transition the particle to to the given [hsv] like object.
+     * Sets the color to transition the particle to to the given [hsv] like
+     * object.
      *
      * Note: if any of the decoded HSV values are > 1, they will become 1.
      *
@@ -435,11 +447,11 @@ public class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
     public fun toHSV(hsv: HSVLike): DustTransitionParticleEffectBuilder = hsv(hsv.h(), hsv.s(), hsv.v())
 
     /**
-     * Sets the color to transition the particle to to the given [hue], [saturation], and
-     * [value].
+     * Sets the color to transition the particle to to the given [hue],
+     * [saturation], and [value].
      *
-     * Note: The [hue], [saturation], and [value] given here must be between 0 and 1,
-     * due to them being HSB values.
+     * Note: The [hue], [saturation], and [value] given here must be between
+     * 0 and 1, due to them being HSB values.
      *
      * @param hue the hue
      * @param saturation the saturation
@@ -497,7 +509,8 @@ public class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
 }
 
 /**
- * Allows building a [ParticleEffect] for note particle effects using method chaining.
+ * Allows building a [ParticleEffect] for note particle effects using method
+ * chaining.
  */
 public class NoteParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
@@ -537,7 +550,8 @@ public class NoteParticleEffectBuilder @JvmOverloads constructor(
 }
 
 /**
- * Allows building a [ParticleEffect] for vibration particle effects using method chaining.
+ * Allows building a [ParticleEffect] for vibration particle effects using
+ * method chaining.
  */
 public class VibrationParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,

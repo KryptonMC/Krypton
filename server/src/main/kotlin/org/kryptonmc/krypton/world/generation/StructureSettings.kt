@@ -39,8 +39,11 @@ class StructureSettings(
 
         val CODEC: Codec<StructureSettings> = RecordCodecBuilder.create { instance ->
             instance.group(
-                Codec.simpleMap(InternalRegistries.STRUCTURE, StructureConfig.CODEC, InternalRegistries.STRUCTURE).fieldOf("structures").forGetter(StructureSettings::structures),
-                StrongholdConfig.CODEC.optionalFieldOf("stronghold").forGetter { Optional.ofNullable(it.stronghold) }
+                Codec.simpleMap(InternalRegistries.STRUCTURE, StructureConfig.CODEC, InternalRegistries.STRUCTURE)
+                    .fieldOf("structures")
+                    .forGetter(StructureSettings::structures),
+                StrongholdConfig.CODEC.optionalFieldOf("stronghold")
+                    .forGetter { Optional.ofNullable(it.stronghold) }
             ).apply(instance, ::StructureSettings)
         }
         val DEFAULTS = emptyMap<Structure<*>, StructureConfig>()
