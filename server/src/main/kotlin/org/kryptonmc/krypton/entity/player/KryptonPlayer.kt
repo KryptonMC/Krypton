@@ -34,10 +34,10 @@ import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.title.Title
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.effect.particle.ColorParticleData
-import org.kryptonmc.api.effect.particle.DirectionalParticleData
-import org.kryptonmc.api.effect.particle.NoteParticleData
 import org.kryptonmc.api.effect.particle.ParticleEffect
+import org.kryptonmc.api.effect.particle.data.ColorParticleData
+import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
+import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.attribute.AttributeTypes
@@ -58,6 +58,7 @@ import org.kryptonmc.api.world.scoreboard.Scoreboard
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
+import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
@@ -302,11 +303,12 @@ class KryptonPlayer(
         return true
     }
 
-    override fun spawnParticles(particleEffect: ParticleEffect, location: Location) {
-        val packet = PacketOutParticle(particleEffect, location)
-        when (particleEffect.data) {
+    override fun spawnParticles(effect: ParticleEffect, location: Location) {
+        if (effect !is KryptonParticleEffect) return
+        val packet = PacketOutParticle(effect, location)
+        when (effect.data) {
             // Send multiple packets based on the quantity
-            is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(particleEffect.quantity) {
+            is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(effect.quantity) {
                 session.sendPacket(packet)
             }
             // Send particles to player at location

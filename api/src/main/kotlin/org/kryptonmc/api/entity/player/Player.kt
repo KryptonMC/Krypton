@@ -209,11 +209,11 @@ public interface Player : LivingEntity,
     /**
      * Spawns particles for this player relative to a location.
      *
-     * @param particleEffect the [ParticleEffect] used to describe the
-     * particles' appearance
+     * @param effect the particle effect used to describe the particles'
+     * appearance
      * @param location the central location to spawn the particles at
      */
-    public fun spawnParticles(particleEffect: ParticleEffect, location: Location)
+    public fun spawnParticles(effect: ParticleEffect, location: Location)
 
     /**
      * Teleport this player to the specified position.

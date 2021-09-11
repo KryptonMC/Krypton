@@ -23,10 +23,10 @@ import io.mockk.mockk
 import net.kyori.adventure.key.Key
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import org.kryptonmc.api.effect.particle.NoteParticleData
 import org.kryptonmc.api.effect.particle.ParticleType
-import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.space.Vector
+import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
+import org.kryptonmc.krypton.effect.particle.data.KryptonNoteParticleData
 import kotlin.test.Test
 
 class ParticleEffectTests {
@@ -34,12 +34,12 @@ class ParticleEffectTests {
     @Test
     fun `test bounds`() {
         val particle = mockk<ParticleType> {
-            every { key } returns Key.key("krypton", "test")
+            every { key() } returns Key.key("krypton", "test")
         }
-        assertThrows<IllegalArgumentException> { ParticleEffect(particle, -1, Vector.ZERO, false) }
-        assertThrows<IllegalArgumentException> { ParticleEffect(particle, 0, Vector.ZERO, false) }
-        assertThrows<IllegalArgumentException> { NoteParticleData(100) }
-        assertDoesNotThrow { NoteParticleData(0) }
-        assertDoesNotThrow { NoteParticleData(24) }
+        assertThrows<IllegalArgumentException> { KryptonParticleEffect(particle, -1, Vector.ZERO, false) }
+        assertThrows<IllegalArgumentException> { KryptonParticleEffect(particle, 0, Vector.ZERO, false) }
+        assertThrows<IllegalArgumentException> { KryptonNoteParticleData(100) }
+        assertDoesNotThrow { KryptonNoteParticleData(0) }
+        assertDoesNotThrow { KryptonNoteParticleData(24) }
     }
 }

@@ -8,34 +8,101 @@
  */
 package org.kryptonmc.api.effect.particle
 
+import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.effect.particle.builder.BlockParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.ColorParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.DirectionalParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.DustParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.DustTransitionParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.ItemParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.NoteParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.ParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.util.provide
 
 /**
  * Holds information used to spawn particles for a [Player].
  * These effects can be reused.
- *
- * @param type the type of particle
- * @param quantity the amount of particles
- * @param offset the offset vector from the spawn location
- * @param longDistance if true, the distance increases from 256 to 65536
- * @param data optional data for this particle effect
- * @throws IllegalArgumentException if the [quantity] is less than 1
  */
-@JvmRecord
-public data class ParticleEffect @JvmOverloads constructor(
-    public val type: ParticleType,
-    public val quantity: Int,
-    public val offset: Vector,
-    public val longDistance: Boolean,
-    public val data: ParticleData? = null
-) {
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface ParticleEffect {
 
-    init {
-        require(quantity > 0) { "Quantity must be at least 1!" }
+    /**
+     * The type of this effect.
+     */
+    @get:JvmName("type")
+    public val type: ParticleType
+
+    /**
+     * The amount of this effect that should be spawned. Must be >= 1.
+     */
+    @get:JvmName("quantity")
+    public val quantity: Int
+
+    /**
+     * The offset vector from the spawn location of this effect.
+     */
+    @get:JvmName("offset")
+    public val offset: Vector
+
+    /**
+     * If the distance of this effect is longer than usual.
+     *
+     * Specifically, the distance will increase from 256 to 65536.
+     */
+    @get:JvmName("longDistance")
+    public val longDistance: Boolean
+
+    /**
+     * Type-specific data for this effect. May be null if this effect has no
+     * type-specific data.
+     */
+    @get:JvmName("data")
+    public val data: ParticleData?
+
+    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun of(
+            type: ParticleType,
+            quantity: Int,
+            offset: Vector,
+            longDistance: Boolean,
+            data: ParticleData?
+        ): ParticleEffect
     }
 
     public companion object {
+
+        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+
+        /**
+         * Creates a new particle effect with the given values.
+         *
+         * @param type the type of the effect
+         * @param quantity the amount of the effect to be spawned
+         * @param offset the offset of the effect from the centre
+         * @param longDistance if the distance is long
+         * @param data optional type-specific data
+         * @throws IllegalArgumentException if the [quantity] is less than 1
+         * @return a new particle effect
+         */
+        @JvmOverloads
+        @JvmStatic
+        @Contract("_ -> new", pure = true)
+        public fun of(
+            type: ParticleType,
+            quantity: Int,
+            offset: Vector,
+            longDistance: Boolean,
+            data: ParticleData? = null
+        ): ParticleEffect = FACTORY.of(type, quantity, offset, longDistance, data)
 
         /**
          * Creates a new particle effect builder for the given particle [type].
@@ -44,6 +111,7 @@ public data class ParticleEffect @JvmOverloads constructor(
          * @return a new particle effect builder for the given type
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(type: ParticleType): ParticleEffectBuilder = ParticleEffectBuilder(type)
 
         /**
@@ -54,6 +122,7 @@ public data class ParticleEffect @JvmOverloads constructor(
          * @return a new directional particle effect builder for the given type
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(type: DirectionalParticleType): DirectionalParticleEffectBuilder =
             DirectionalParticleEffectBuilder(type)
 
@@ -65,6 +134,7 @@ public data class ParticleEffect @JvmOverloads constructor(
          * @return a new block particle effect builder for the given type
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(type: BlockParticleType): BlockParticleEffectBuilder = BlockParticleEffectBuilder(type)
 
         /**
@@ -75,6 +145,7 @@ public data class ParticleEffect @JvmOverloads constructor(
          * @return a new item particle effect builder for the given type
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(type: ItemParticleType): ItemParticleEffectBuilder = ItemParticleEffectBuilder(type)
 
         /**
@@ -85,6 +156,7 @@ public data class ParticleEffect @JvmOverloads constructor(
          * @return a new color particle effect builder for the given type
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(type: ColorParticleType): ColorParticleEffectBuilder = ColorParticleEffectBuilder(type)
 
         /**
@@ -95,6 +167,7 @@ public data class ParticleEffect @JvmOverloads constructor(
          * @return a new dust particle effect builder for the given type
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(type: DustParticleType): DustParticleEffectBuilder = DustParticleEffectBuilder(type)
 
         /**
@@ -106,6 +179,7 @@ public data class ParticleEffect @JvmOverloads constructor(
          * type
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(type: DustTransitionParticleType): DustTransitionParticleEffectBuilder =
             DustTransitionParticleEffectBuilder(type)
 
@@ -117,6 +191,7 @@ public data class ParticleEffect @JvmOverloads constructor(
          * @return a new note particle effect builder for the given type
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(type: NoteParticleType): NoteParticleEffectBuilder = NoteParticleEffectBuilder(type)
 
         /**
@@ -127,6 +202,7 @@ public data class ParticleEffect @JvmOverloads constructor(
          * @return a new vibration particle effect builder for the given type
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(type: VibrationParticleType): VibrationParticleEffectBuilder = VibrationParticleEffectBuilder(type)
     }
 }

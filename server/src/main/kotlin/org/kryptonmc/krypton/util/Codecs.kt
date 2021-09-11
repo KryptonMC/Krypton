@@ -54,7 +54,7 @@ object Codecs {
         { IntStream.of(it.x(), it.y(), it.z()) }
     ).stable()
     val SOUND_EVENT: Codec<SoundEvent> = KEY.xmap(::SoundEvent) { it.key }.stable()
-    val PARTICLE: Codec<ParticleType> = KEY.xmap({ InternalRegistries.PARTICLE_TYPE[it]!! }, { it.key }).stable()
+    val PARTICLE: Codec<ParticleType> = KEY.xmap({ InternalRegistries.PARTICLE_TYPE[it]!! }, { it.key() }).stable()
     val DIMENSION: Codec<ResourceKey<World>> = KEY.xmap(
         { ResourceKey.of(ResourceKeys.DIMENSION, it) },
         ResourceKey<World>::location

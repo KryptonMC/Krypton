@@ -16,23 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.effect.particle.data
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.space.Location
-import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
+import org.kryptonmc.api.space.Vector
 
-/**
- * Tells the client to spawn some particles around it
- */
 @JvmRecord
-data class PacketOutParticle(
-    private val effect: KryptonParticleEffect,
-    private val location: Location
-) : Packet {
-
-    override fun write(buf: ByteBuf) {
-        effect.write(buf, location)
-    }
-}
+data class KryptonDirectionalParticleData(
+    override val direction: Vector?,
+    override val velocity: Float
+) : DirectionalParticleData

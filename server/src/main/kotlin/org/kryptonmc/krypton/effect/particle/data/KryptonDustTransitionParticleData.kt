@@ -16,23 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.effect.particle.data
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.space.Location
-import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.api.effect.particle.data.DustTransitionParticleData
+import org.kryptonmc.krypton.network.Writable
 
-/**
- * Tells the client to spawn some particles around it
- */
 @JvmRecord
-data class PacketOutParticle(
-    private val effect: KryptonParticleEffect,
-    private val location: Location
-) : Packet {
+data class KryptonDustTransitionParticleData(
+    override val red: Short,
+    override val green: Short,
+    override val blue: Short,
+    override val scale: Float,
+    override val toRed: Short,
+    override val toGreen: Short,
+    override val toBlue: Short
+) : DustTransitionParticleData, Writable {
 
     override fun write(buf: ByteBuf) {
-        effect.write(buf, location)
+        buf.writeFloat(if (red == 0.toShort()) Float.MIN_VALUE else red.toFloat() / 255F)
+        buf.writeFloat(green.toFloat() / 255F)
+        buf.writeFloat(blue.toFloat() / 255F)
+        buf.writeFloat(scale)
+        buf.writeFloat(if (toRed == 0.toShort()) Float.MIN_VALUE else toRed.toFloat() / 255F)
+        buf.writeFloat(toGreen.toFloat() / 255F)
+        buf.writeFloat(toBlue.toFloat() / 255F)
     }
 }

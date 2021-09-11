@@ -34,13 +34,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.block.BlockHitResult
-import org.kryptonmc.api.effect.particle.ColorParticleData
-import org.kryptonmc.api.effect.particle.DirectionalParticleData
-import org.kryptonmc.api.effect.particle.NoteParticleData
-import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.space.Direction
-import org.kryptonmc.api.space.Location
-import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.util.toVector
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.item.EmptyItemStack
@@ -58,7 +52,6 @@ import java.io.IOException
 import java.util.BitSet
 import java.util.Optional
 import java.util.UUID
-import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.ceil
 import kotlin.math.min
 
@@ -257,79 +250,6 @@ fun ByteBuf.writeVector(vector: Vector3i) {
 
 fun ByteBuf.writeVector(x: Int, y: Int, z: Int) {
     writeLong(x.toLong() and 0x3FFFFFF shl 38 or (z.toLong() and 0x3FFFFFF shl 12) or (y.toLong() and 0xFFF))
-}
-
-fun ByteBuf.writeParticle(particle: ParticleEffect, location: Location) {
-    writeInt(InternalRegistries.PARTICLE_TYPE.idOf(particle.type))
-    writeBoolean(particle.longDistance)
-
-    val data = particle.data
-
-    // Write location. If the particle is directional, colorable, or a note then we need to manually apply the offsets first
-    when (data) {
-        is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> {
-            val random = ThreadLocalRandom.current()
-            writeDouble(location.x + particle.offset.x * random.nextGaussian())
-            writeDouble(location.y + particle.offset.y * random.nextGaussian())
-            writeDouble(location.z + particle.offset.z * random.nextGaussian())
-        }
-        else -> {
-            writeDouble(location.x)
-            writeDouble(location.y)
-            writeDouble(location.z)
-        }
-    }
-
-    // Write offsets depending on what type of particle it is
-    when (data) {
-        // Particle is directional, the offset fields are used for the direction
-        is DirectionalParticleData -> {
-            val random = ThreadLocalRandom.current()
-            val direction = data.direction
-                ?: Vector(random.nextGaussian(), random.nextGaussian(), random.nextGaussian())
-
-            writeFloat(direction.x.toFloat())
-            writeFloat(direction.y.toFloat())
-            writeFloat(direction.z.toFloat())
-        }
-        // Particle is colorable, the offset fields are used to define the color
-        is ColorParticleData -> {
-            writeFloat(data.red.toFloat() / 255F)
-            writeFloat(data.green.toFloat() / 255F)
-            writeFloat(data.blue.toFloat() / 255F)
-        }
-        // Particle is a note, the offset fields are used to define the note value (only the x field)
-        is NoteParticleData -> {
-            writeFloat(data.note.toFloat() / 24F)
-            writeFloat(0.0F)
-            writeFloat(0.0F)
-        }
-        // Particle is normal, let the client handle the offsets
-        else -> {
-            writeFloat(particle.offset.x.toFloat())
-            writeFloat(particle.offset.y.toFloat())
-            writeFloat(particle.offset.z.toFloat())
-        }
-    }
-
-    // Write the extra data
-    when (data) {
-        // Used for the velocity
-        is DirectionalParticleData -> writeFloat(data.velocity)
-        // Default to 1 otherwise
-        else -> writeFloat(1.0F)
-    }
-
-    // Write the count
-    when (data) {
-        // Count needs to be set to 0 so the special particle properties get applied
-        is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> writeInt(0)
-        // Count is set to whatever is defined
-        else -> writeInt(particle.quantity)
-    }
-
-    // Write the data, if applicable
-    particle.write(this)
 }
 
 fun ByteBuf.writeAngle(angle: Float) {

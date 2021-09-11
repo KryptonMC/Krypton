@@ -27,8 +27,8 @@ import org.kryptonmc.api.util.asLong
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.write
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeItem
@@ -159,7 +159,7 @@ object MetadataSerializers {
     val PARTICLE = object : MetadataSerializer<ParticleEffect>(15) {
         override fun write(buf: ByteBuf, item: ParticleEffect) {
             buf.writeVarInt(InternalRegistries.PARTICLE_TYPE.idOf(item.type))
-            item.write(buf)
+            (item.data as? Writable)?.write(buf)
         }
     }
 

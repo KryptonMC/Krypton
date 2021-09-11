@@ -9,6 +9,15 @@
 package org.kryptonmc.api.effect.particle
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.effect.particle.builder.BlockParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.ColorParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.DirectionalParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.DustParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.DustTransitionParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.ItemParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.NoteParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.ParticleEffectBuilder
+import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
 
 @DslMarker
 private annotation class ParticleDsl
