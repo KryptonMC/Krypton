@@ -61,13 +61,13 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
-import org.kryptonmc.krypton.network.Session
+import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toSkinSettings
@@ -86,7 +86,7 @@ import java.util.Locale
  */
 class PlayHandler(
     override val server: KryptonServer,
-    override val session: Session,
+    override val session: SessionHandler,
     private val player: KryptonPlayer
 ) : PacketHandler {
 
@@ -104,7 +104,7 @@ class PlayHandler(
                 pendingKeepAlive = true
                 lastKeepAlive = time
                 keepAliveChallenge = time
-                session.sendPacket(PacketOutKeepAlive(keepAliveChallenge))
+                session.send(PacketOutKeepAlive(keepAliveChallenge))
             }
         }
     }
@@ -265,7 +265,7 @@ class PlayHandler(
         val z = packet.location.z()
         chunk.setBlock(x, y, z, Blocks.AIR)
 
-        session.sendPacket(PacketOutDiggingResponse(packet.location, 0, DiggingStatus.FINISHED, true))
+        session.send(PacketOutDiggingResponse(packet.location, 0, DiggingStatus.FINISHED, true))
         playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
     }
 
@@ -322,6 +322,7 @@ class PlayHandler(
         player.location = newLocation
         server.eventManager.fireAndForget(MoveEvent(player, oldLocation, newLocation))
 
+        // TODO: Look in to optimising this (rotation and head look updating) as much as we possibly can
         playerManager.sendToAll(PacketOutEntityPositionAndRotation(
             player.id,
             calculatePositionChange(newLocation.x, oldLocation.x),
@@ -350,7 +351,7 @@ class PlayHandler(
 
         val parseResults = server.commandManager.dispatcher.parse(reader, player)
         server.commandManager.suggest(parseResults).thenAccept {
-            session.sendPacket(PacketOutTabComplete(packet.id, it))
+            session.send(PacketOutTabComplete(packet.id, it))
         }
     }
 

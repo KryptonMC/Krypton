@@ -21,9 +21,8 @@ package org.kryptonmc.krypton.network.netty
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageDecoder
-import org.kryptonmc.krypton.network.ChannelHandler
+import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.PacketRegistry
-import org.kryptonmc.krypton.network.Session
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.readVarInt
 
@@ -33,12 +32,12 @@ import org.kryptonmc.krypton.util.readVarInt
  */
 class PacketDecoder : ByteToMessageDecoder() {
 
-    private var session: Session? = null // Cache this since the get lookup for classes is a bit expensive
+    private var session: SessionHandler? = null // Cache this since the get lookup for classes is a bit expensive
 
     override fun decode(ctx: ChannelHandlerContext, buf: ByteBuf, out: MutableList<Any>) {
         if (buf.readableBytes() == 0) return
         val id = buf.readVarInt()
-        val session = this.session ?: ctx.pipeline().get(ChannelHandler::class.java).session.apply {
+        val session = session ?: ctx.pipeline().get(SessionHandler::class.java).apply {
             this@PacketDecoder.session = this
         }
 

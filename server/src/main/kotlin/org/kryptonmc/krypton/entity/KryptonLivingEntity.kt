@@ -117,7 +117,7 @@ abstract class KryptonLivingEntity(
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (!super.addViewer(player)) return false
-        player.session.sendPacket(PacketOutAttributes(id, attributes.values.filter { it.type.sendToClient }))
+        player.session.send(PacketOutAttributes(id, attributes.values.filter { it.type.sendToClient }))
         return true
     }
 

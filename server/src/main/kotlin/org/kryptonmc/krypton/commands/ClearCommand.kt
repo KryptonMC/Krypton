@@ -75,7 +75,7 @@ object ClearCommand : InternalCommand {
             val target = targets[0]
             clear(target, predicate, maxCount)
             sender.sendMessage(translatable("commands.clear.success.single", text(amount), text(target.name)))
-            target.session.sendPacket(PacketOutWindowItems(
+            target.session.send(PacketOutWindowItems(
                 target.inventory.id,
                 target.inventory.incrementStateId(),
                 target.inventory.networkWriter,
@@ -86,7 +86,7 @@ object ClearCommand : InternalCommand {
                 target.inventory.forEachIndexed { index, item ->
                     if (predicate(item)) target.inventory[index] = EmptyItemStack
                 }
-                target.session.sendPacket(PacketOutWindowItems(
+                target.session.send(PacketOutWindowItems(
                     target.inventory.id,
                     target.inventory.incrementStateId(),
                     target.inventory.networkWriter,

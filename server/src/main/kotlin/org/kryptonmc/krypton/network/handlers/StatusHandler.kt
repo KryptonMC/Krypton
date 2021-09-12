@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.packet.`in`.status.PacketInPing
 import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
 import org.kryptonmc.krypton.packet.out.status.PacketOutPong
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
-import org.kryptonmc.krypton.network.Session
+import org.kryptonmc.krypton.network.SessionHandler
 
 /**
  * Handles all inbound packets in the
@@ -38,7 +38,7 @@ import org.kryptonmc.krypton.network.Session
  */
 class StatusHandler(
     override val server: KryptonServer,
-    override val session: Session
+    override val session: SessionHandler
 ) : PacketHandler {
 
     override fun handle(packet: Packet) = when (packet) {
@@ -48,8 +48,8 @@ class StatusHandler(
     }
 
     private fun handleStatusRequest() {
-        session.sendPacket(PacketOutStatusResponse(server.playerManager.status))
+        session.send(PacketOutStatusResponse(server.playerManager.status))
     }
 
-    private fun handlePing(packet: PacketInPing) = session.sendPacket(PacketOutPong(packet.payload))
+    private fun handlePing(packet: PacketInPing) = session.send(PacketOutPong(packet.payload))
 }

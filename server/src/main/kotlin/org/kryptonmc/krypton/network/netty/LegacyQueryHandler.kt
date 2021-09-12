@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.network.netty
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import io.netty.channel.ChannelFutureListener.CLOSE
+import io.netty.channel.ChannelHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
 import io.netty.handler.codec.CorruptedFrameException
@@ -39,6 +40,7 @@ import java.net.InetSocketAddress
  *
  * This handler is essentially a Kotlin converted version of the vanilla handler, which is why it is such a mess.
  */
+@ChannelHandler.Sharable
 class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHandlerAdapter() {
 
     private val status = server.config.status

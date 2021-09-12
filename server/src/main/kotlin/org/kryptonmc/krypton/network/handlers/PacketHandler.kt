@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.network.handlers
 
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.network.Session
+import org.kryptonmc.krypton.network.SessionHandler
 
 /**
  * The base interface for packet handlers. This exists primarily to abstract
@@ -37,7 +37,7 @@ interface PacketHandler {
     /**
      * The session that this handler handles packets for.
      */
-    val session: Session
+    val session: SessionHandler
 
     /**
      * Handles the given [packet].

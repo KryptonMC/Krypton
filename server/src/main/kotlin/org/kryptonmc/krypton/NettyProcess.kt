@@ -35,7 +35,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.handler.timeout.ReadTimeoutHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.kryptonmc.krypton.network.ChannelHandler
+import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.netty.LegacyQueryHandler
 import org.kryptonmc.krypton.network.netty.PacketDecoder
 import org.kryptonmc.krypton.network.netty.PacketEncoder
@@ -56,6 +56,7 @@ class NettyProcess(private val server: KryptonServer) {
     suspend fun run() {
         LOGGER.debug("${bossGroup::class.simpleName} is the chosen one")
         try {
+            val legacyQueryHandler = LegacyQueryHandler(server)
             val bootstrap = ServerBootstrap()
                 .group(bossGroup, workerGroup)
                 .channel(bestChannel())
@@ -65,12 +66,12 @@ class NettyProcess(private val server: KryptonServer) {
                     override fun initChannel(ch: SocketChannel) {
                         ch.pipeline()
                             .addLast("timeout", ReadTimeoutHandler(30))
-                            .addLast(LegacyQueryHandler.NETTY_NAME, LegacyQueryHandler(server))
+                            .addLast(LegacyQueryHandler.NETTY_NAME, legacyQueryHandler)
                             .addLast(SizeDecoder.NETTY_NAME, SizeDecoder())
                             .addLast(PacketDecoder.NETTY_NAME, PacketDecoder())
                             .addLast(SizeEncoder.NETTY_NAME, SizeEncoder)
                             .addLast(PacketEncoder.NETTY_NAME, PacketEncoder)
-                            .addLast(ChannelHandler.NETTY_NAME, ChannelHandler(server))
+                            .addLast(SessionHandler.NETTY_NAME, SessionHandler(server))
                     }
                 })
 

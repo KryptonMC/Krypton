@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
-import org.kryptonmc.krypton.network.Session
+import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.network.data.LegacyForwardedData
 import org.kryptonmc.krypton.util.logger
@@ -39,7 +39,7 @@ import org.kryptonmc.krypton.util.logger
  */
 class HandshakeHandler(
     override val server: KryptonServer,
-    override val session: Session
+    override val session: SessionHandler
 ) : PacketHandler {
 
     override fun handle(packet: Packet) {
@@ -84,9 +84,7 @@ class HandshakeHandler(
             val data = try {
                 LegacyForwardedData.parse(packet.address)
             } catch (exception: Exception) {
-                disconnect(text(
-                    "Failed to decode legacy handshake data! Please report this to an administrator!"
-                ))
+                disconnect(text("Failed to decode legacy handshake data! Please report this to an administrator!"))
                 LOGGER.error("Failed to decode legacy forwarded handshake data!", exception)
                 return
             }
@@ -96,9 +94,7 @@ class HandshakeHandler(
                 handleStateChange(packet.nextState, data)
             } else {
                 // If the data was null then we weren't sent what we needed
-                disconnect(text(
-                    "This server cannot be direct connected to whilst it has proxy forwarding enabled."
-                ))
+                disconnect(text("This server cannot be direct connected to whilst it has proxy forwarding enabled."))
                 LOGGER.warn("Attempted direct connection from ${session.channel.remoteAddress()} when legacy " +
                         "forwarding is enabled!")
                 LOGGER.info("If you wish to enable legacy forwarding, please do so in the configuration file by " +
@@ -127,7 +123,7 @@ class HandshakeHandler(
     }
 
     private fun disconnect(reason: Component) {
-        session.sendPacket(PacketOutLoginDisconnect(reason))
+        session.send(PacketOutLoginDisconnect(reason))
         if (session.channel.isOpen) session.channel.close().awaitUninterruptibly()
     }
 

@@ -153,7 +153,7 @@ class KryptonWorld(
 
             if (entity is KryptonPlayer) {
                 // TODO: World border
-                entity.session.sendPacket(PacketOutTimeUpdate(
+                entity.session.send(PacketOutTimeUpdate(
                     data.time,
                     data.dayTime,
                     data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]

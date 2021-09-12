@@ -86,9 +86,9 @@ class KryptonPlayerInventory(
             in 36..44 -> items[index - 36] = item
             45 -> offHand = item
         }
-        owner.session.sendPacket(PacketOutSetSlot(id, incrementStateId(), index, item))
+        owner.session.send(PacketOutSetSlot(id, incrementStateId(), index, item))
         if (index == heldSlot) return
-        owner.session.sendPacket(PacketOutChangeHeldItem(index))
+        owner.session.send(PacketOutChangeHeldItem(index))
     }
 
     override fun load(tag: ListTag) {

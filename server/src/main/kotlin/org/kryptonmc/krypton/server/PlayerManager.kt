@@ -31,7 +31,7 @@ import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.network.Session
+import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameState
@@ -73,7 +73,6 @@ import org.kryptonmc.krypton.util.toProtocol
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.parseDimension
-import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.nio.file.Path
 import java.util.UUID
@@ -106,7 +105,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     val status = ServerStatus(server.motd, ServerStatus.Players(server.maxPlayers, players.size), null)
     private var lastStatus = 0L
 
-    fun add(player: KryptonPlayer, session: Session): CompletableFuture<Void> = dataManager.load(player).thenAccept { nbt ->
+    fun add(player: KryptonPlayer, session: SessionHandler): CompletableFuture<Void> = dataManager.load(player).thenAccept { nbt ->
         val profile = player.profile
         val name = server.profileCache[profile.uuid]?.name ?: profile.name
         server.profileCache.add(profile)
@@ -130,7 +129,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         // Join the game
         val reducedDebugInfo = world.gameRules[GameRules.REDUCED_DEBUG_INFO]
         val doImmediateRespawn = world.gameRules[GameRules.DO_IMMEDIATE_RESPAWN]
-        session.sendPacket(PacketOutJoinGame(
+        session.send(PacketOutJoinGame(
             player.id,
             world.data.isHardcore,
             player.gamemode,
@@ -146,16 +145,16 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             world.isDebug,
             server.worldData.worldGenerationSettings.isFlat
         ))
-        session.sendPacket(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
-        session.sendPacket(PacketOutDifficulty(world.difficulty))
+        session.send(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
+        session.send(PacketOutDifficulty(world.difficulty))
 
         // Player data stuff
-        session.sendPacket(PacketOutAbilities(player))
-        session.sendPacket(PacketOutChangeHeldItem(player.inventory.heldSlot))
-        session.sendPacket(PacketOutDeclareRecipes)
-        session.sendPacket(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
-        session.sendPacket(PacketOutTags)
-        session.sendPacket(PacketOutEntityStatus(
+        session.send(PacketOutAbilities(player))
+        session.send(PacketOutChangeHeldItem(player.inventory.heldSlot))
+        session.send(PacketOutDeclareRecipes)
+        session.send(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
+        session.send(PacketOutTags)
+        session.send(PacketOutEntityStatus(
             player.id,
             if (world.gameRules[GameRules.REDUCED_DEBUG_INFO]) 22 else 23)
         )
@@ -177,12 +176,12 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         }
         server.sendMessage(joinResult.message)
         player.sendMessage(joinResult.message) // This player hasn't been added to the list yet
-        session.sendPacket(PacketOutPlayerPositionAndLook(player.location))
+        session.send(PacketOutPlayerPositionAndLook(player.location))
 
         // Update player list
         sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, player))
-        session.sendPacket(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, player))
-        session.sendPacket(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, players))
+        session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, player))
+        session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, players))
 
         // Send entity data
         // TODO: Move this all to an entity manager
@@ -191,10 +190,10 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         sendToAll(PacketOutAttributes(player.id, player.attributes.values.filter { it.type.sendToClient }))
         sendToAll(PacketOutHeadLook(player.id, player.location.yaw))
         players.forEach { online ->
-            session.sendPacket(PacketOutSpawnPlayer(online))
-            session.sendPacket(PacketOutMetadata(online.id, online.data.all))
-            session.sendPacket(PacketOutAttributes(online.id, online.attributes.values.filter { it.type.sendToClient }))
-            session.sendPacket(PacketOutHeadLook(online.id, online.location.yaw))
+            session.send(PacketOutSpawnPlayer(online))
+            session.send(PacketOutMetadata(online.id, online.data.all))
+            session.send(PacketOutAttributes(online.id, online.attributes.values.filter { it.type.sendToClient }))
+            session.send(PacketOutHeadLook(online.id, online.location.yaw))
         }
 
         // Add the player to the list and cache maps
@@ -210,7 +209,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         sendWorldInfo(world, player)
 
         // Send inventory data
-        session.sendPacket(PacketOutWindowItems(
+        session.send(PacketOutWindowItems(
             player.inventory.id,
             player.inventory.incrementStateId(),
             player.inventory.networkWriter,
@@ -241,14 +240,14 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         }
     }
 
-    fun sendToAll(packet: Packet) = players.forEach { it.session.sendPacket(packet) }
+    fun sendToAll(packet: Packet) = players.forEach { it.session.send(packet) }
 
     fun sendToAll(packet: Packet, except: KryptonPlayer) = players.forEach {
-        if (it != except) it.session.sendPacket(packet)
+        if (it != except) it.session.send(packet)
     }
 
     fun sendToAll(packet: Packet, world: KryptonWorld) = players.forEach {
-        if (it.world == world) it.session.sendPacket(packet)
+        if (it.world == world) it.session.send(packet)
     }
 
     fun broadcast(
@@ -264,7 +263,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         val offsetX = x - it.location.x
         val offsetY = y - it.location.y
         val offsetZ = z - it.location.z
-        if (offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ < radius * radius) it.session.sendPacket(packet)
+        if (offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ < radius * radius) it.session.send(packet)
     }
 
     fun broadcast(
@@ -316,7 +315,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     private fun sendCommands(player: KryptonPlayer, permissionLevel: Int) {
         val status = (permissionLevel + 24).clamp(24, 28)
-        player.session.sendPacket(PacketOutEntityStatus(player.id, status))
+        player.session.send(PacketOutEntityStatus(player.id, status))
         server.commandManager.sendCommands(player)
     }
 
@@ -342,25 +341,25 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     }
 
     private fun sendWorldInfo(world: KryptonWorld, player: KryptonPlayer) {
-        player.session.sendPacket(PacketOutInitializeWorldBorder(world.border))
-        player.session.sendPacket(PacketOutTimeUpdate(
+        player.session.send(PacketOutInitializeWorldBorder(world.border))
+        player.session.send(PacketOutTimeUpdate(
             world.data.time,
             world.data.dayTime,
             world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]
         ))
-        player.session.sendPacket(PacketOutSpawnPosition(
+        player.session.send(PacketOutSpawnPosition(
             world.data.spawnX,
             world.data.spawnY,
             world.data.spawnZ,
             world.data.spawnAngle
         ))
         if (world.isRaining) {
-            player.session.sendPacket(PacketOutChangeGameState(GameState.BEGIN_RAINING))
-            player.session.sendPacket(PacketOutChangeGameState(
+            player.session.send(PacketOutChangeGameState(GameState.BEGIN_RAINING))
+            player.session.send(PacketOutChangeGameState(
                 GameState.RAIN_LEVEL_CHANGE,
                 world.getRainLevel(1F)
             ))
-            player.session.sendPacket(PacketOutChangeGameState(
+            player.session.send(PacketOutChangeGameState(
                 GameState.THUNDER_LEVEL_CHANGE,
                 world.getThunderLevel(1F)
             ))

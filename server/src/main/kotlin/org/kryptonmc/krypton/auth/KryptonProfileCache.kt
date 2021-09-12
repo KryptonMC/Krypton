@@ -33,6 +33,7 @@ import java.nio.file.Path
 import java.time.ZonedDateTime
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.io.path.exists
 import kotlin.io.path.reader
@@ -56,6 +57,9 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     fun add(profile: KryptonGameProfile) {
         val expiry = ZonedDateTime.now().plusMonths(1)
         safeAdd(ProfileHolder(profile, expiry))
+    }
+
+    fun queueSave() {
         IOScope.launch { save() }
     }
 

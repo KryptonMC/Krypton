@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.PacketState
-import org.kryptonmc.krypton.network.Session
+import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.data.LegacyForwardedData
 import org.kryptonmc.krypton.network.data.readVelocityData
 import org.kryptonmc.krypton.network.data.verifyVelocityIntegrity
@@ -60,9 +60,9 @@ import org.kryptonmc.krypton.util.logger
 import java.net.InetSocketAddress
 import java.net.SocketAddress
 import java.util.UUID
+import java.util.concurrent.ThreadLocalRandom
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
-import kotlin.random.Random
 
 /**
  * Handles all inbound packets in the [Login][org.kryptonmc.krypton.packet.PacketState.LOGIN] state.
@@ -75,13 +75,13 @@ import kotlin.random.Random
  */
 class LoginHandler(
     override val server: KryptonServer,
-    override val session: Session,
+    override val session: SessionHandler,
     private val legacyForwardedData: LegacyForwardedData?
 ) : PacketHandler {
 
     private val playerManager = server.playerManager
 
-    private val velocityMessageId = Random.nextInt(Short.MAX_VALUE.toInt()) // Doesn't really matter what this is.
+    private val velocityMessageId = ThreadLocalRandom.current().nextInt(Short.MAX_VALUE.toInt()) // Doesn't really matter what this is.
     private val forwardingSecret = server.config.proxy.secret.encodeToByteArray()
 
     private var name = "" // We cache the name here to avoid late initialization of the KryptonPlayer object.
@@ -99,7 +99,7 @@ class LoginHandler(
     }
 
     private fun handleLoginStart(packet: PacketInLoginStart) {
-        val rawAddress = session.channel.remoteAddress() as InetSocketAddress
+        val rawAddress = session.channel.remoteAddress() as InetSocketAddress // TODO: UNIX domain socket support
         val address = if (legacyForwardedData != null) {
             InetSocketAddress(legacyForwardedData.forwardedIp, rawAddress.port)
         } else {
@@ -110,7 +110,7 @@ class LoginHandler(
         // Ignore online mode if we want forwarding
         if (!server.isOnline || server.config.proxy.mode != ForwardingMode.NONE) {
             if (server.config.proxy.mode == ForwardingMode.MODERN) {
-                session.sendPacket(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
+                session.send(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
                 return
             }
 
@@ -134,7 +134,7 @@ class LoginHandler(
         }
 
         // The server isn't offline and the client wasn't forwarded, enable encryption.
-        session.sendPacket(PacketOutEncryptionRequest(Encryption.publicKey, verifyToken))
+        session.send(PacketOutEncryptionRequest(Encryption.publicKey, verifyToken))
     }
 
     private fun handleEncryptionResponse(packet: PacketInEncryptionResponse) {
@@ -227,7 +227,7 @@ class LoginHandler(
 
     private fun finishLogin(player: KryptonPlayer) {
         enableCompression()
-        session.sendPacket(PacketOutLoginSuccess(player.uuid, player.name))
+        session.send(PacketOutLoginSuccess(player.uuid, player.name))
         session.handler = PlayHandler(server, session, player)
         session.currentState = PacketState.PLAY
         playerManager.add(player, session).whenComplete { _, exception ->
@@ -282,7 +282,7 @@ class LoginHandler(
         }
 
         // Tell the client to update its compression threshold and create our compressor
-        session.sendPacket(PacketOutSetCompression(threshold))
+        session.send(PacketOutSetCompression(threshold))
         val compressor = Natives.compress.get().create(4)
         encoder = PacketCompressor(compressor, threshold)
         decoder = PacketDecompressor(compressor, threshold)
@@ -344,7 +344,7 @@ class LoginHandler(
     }
 
     private fun disconnect(reason: Component) {
-        session.sendPacket(PacketOutLoginDisconnect(reason))
+        session.send(PacketOutLoginDisconnect(reason))
         if (session.channel.isOpen) session.channel.close().awaitUninterruptibly()
     }
 

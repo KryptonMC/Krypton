@@ -94,7 +94,7 @@ class KryptonStatisticsTracker(
     fun send() {
         val map = Object2IntOpenHashMap<Statistic<*>>()
         pendingUpdating.forEach { map[it] = get(it) }
-        player.session.sendPacket(PacketOutStatistics(map))
+        player.session.send(PacketOutStatistics(map))
     }
 
     override fun invalidate() {

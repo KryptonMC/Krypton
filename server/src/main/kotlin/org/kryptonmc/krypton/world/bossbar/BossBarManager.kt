@@ -35,13 +35,13 @@ object BossBarManager :
 
     fun addBar(bar: BossBar, player: KryptonPlayer) {
         getOrCreate(bar).apply {
-            if (subscribers.add(player)) player.session.sendPacket(PacketOutBossBar(BossBarAction.ADD, this))
+            if (subscribers.add(player)) player.session.send(PacketOutBossBar(BossBarAction.ADD, this))
         }
     }
 
     fun removeBar(bar: BossBar, player: KryptonPlayer) {
         get(bar)?.apply {
-            if (subscribers.remove(player)) player.session.sendPacket(PacketOutBossBar(BossBarAction.REMOVE, this))
+            if (subscribers.remove(player)) player.session.send(PacketOutBossBar(BossBarAction.REMOVE, this))
         }
     }
 
@@ -77,7 +77,7 @@ object BossBarManager :
 
     private fun update(bar: BossBar, action: BossBarAction) {
         val holder = get(bar) ?: return
-        holder.subscribers.forEach { it.session.sendPacket(PacketOutBossBar(action, holder)) }
+        holder.subscribers.forEach { it.session.send(PacketOutBossBar(action, holder)) }
     }
 
     class BossBarHolder(val bar: BossBar) {

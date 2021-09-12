@@ -92,7 +92,7 @@ class KryptonServer(
         set(value) {
             worldData.difficulty = value
             // TODO: Update mob spawning flags
-            playerManager.players.forEach { it.session.sendPacket(PacketOutDifficulty(it.world.difficulty)) }
+            playerManager.players.forEach { it.session.send(PacketOutDifficulty(it.world.difficulty)) }
         }
     override var gamemode: Gamemode
         get() = worldData.gamemode
@@ -286,6 +286,10 @@ class KryptonServer(
             worldManager.saveAll()
             LOGGER.info("Auto save finished.")
         }
+        if (tickCount % SAVE_PROFILE_CACHE_INTERVAL == 0) {
+            LOGGER.debug("Saving authenticated user cache...")
+            profileCache.queueSave()
+        }
     }
 
     fun updateConfig() {
@@ -383,6 +387,7 @@ class KryptonServer(
 
         private val RESERVED_CHANNELS = setOf(key("register"), key("unregister"))
         private const val MILLISECONDS_PER_TICK = 50L // milliseconds in a tick
+        private const val SAVE_PROFILE_CACHE_INTERVAL = 600
         val LOGGER = logger<KryptonServer>()
     }
 }

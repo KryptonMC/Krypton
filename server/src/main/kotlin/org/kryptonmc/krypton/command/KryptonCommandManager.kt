@@ -154,7 +154,7 @@ class KryptonCommandManager : CommandManager {
         val node = RootCommandNode<Sender>()
         lock.read {
             dispatcher.root.children.forEach { if (it.requirement.test(player)) node.addChild(it) }
-            player.session.sendPacket(PacketOutDeclareCommands(node))
+            player.session.send(PacketOutDeclareCommands(node))
         }
     }
 

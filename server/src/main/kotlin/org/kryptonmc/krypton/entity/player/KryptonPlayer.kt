@@ -66,7 +66,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.item.toItemStack
-import org.kryptonmc.krypton.network.Session
+import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
@@ -116,7 +116,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 class KryptonPlayer(
-    val session: Session,
+    val session: SessionHandler,
     override val profile: KryptonGameProfile,
     world: KryptonWorld,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
@@ -149,7 +149,7 @@ class KryptonPlayer(
             val old = field
             field = value
             if (old != field) {
-                session.sendPacket(PacketOutCamera(field.id))
+                session.send(PacketOutCamera(field.id))
                 teleport(field.location)
             }
         }
@@ -177,7 +177,7 @@ class KryptonPlayer(
                 PacketOutPlayerInfo.PlayerAction.UPDATE_GAMEMODE,
                 this
             ))
-            session.sendPacket(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, value.ordinal.toFloat()))
+            session.send(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, value.ordinal.toFloat()))
             if (value != Gamemode.SPECTATOR) camera = this
         }
     override val direction: Direction
@@ -293,13 +293,13 @@ class KryptonPlayer(
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (player === this) return false
-        player.session.sendPacket(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, this))
+        player.session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, this))
         return super.addViewer(player)
     }
 
     override fun removeViewer(player: KryptonPlayer): Boolean {
         if (player === this || !super.removeViewer(player)) return false
-        player.session.sendPacket(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER, this))
+        player.session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER, this))
         return true
     }
 
@@ -309,10 +309,10 @@ class KryptonPlayer(
         when (effect.data) {
             // Send multiple packets based on the quantity
             is DirectionalParticleData, is ColorParticleData, is NoteParticleData -> repeat(effect.quantity) {
-                session.sendPacket(packet)
+                session.send(packet)
             }
             // Send particles to player at location
-            else -> session.sendPacket(packet)
+            else -> session.send(packet)
         }
     }
 
@@ -325,9 +325,9 @@ class KryptonPlayer(
             abs(location.y - oldLocation.y) > 8 ||
             abs(location.z - oldLocation.z) > 8
         ) {
-            session.sendPacket(PacketOutEntityTeleport(id, location, isOnGround))
+            session.send(PacketOutEntityTeleport(id, location, isOnGround))
         } else {
-            session.sendPacket(PacketOutEntityPosition(
+            session.send(PacketOutEntityPosition(
                 id,
                 calculatePositionChange(location.x, oldLocation.x),
                 calculatePositionChange(location.y, oldLocation.y),
@@ -352,43 +352,43 @@ class KryptonPlayer(
             SERVER_LOGGER.warn("A plugin attempted to send a plugin message on a debug channel. These channels will " +
                     "only function correctly with a modified client.")
         }
-        session.sendPacket(PacketOutPluginMessage(channel, message))
+        session.send(PacketOutPluginMessage(channel, message))
     }
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {
-        session.sendPacket(PacketOutChat(message, type, source.uuid()))
+        session.send(PacketOutChat(message, type, source.uuid()))
     }
 
     override fun sendActionBar(message: Component) {
-        session.sendPacket(PacketOutActionBar(message))
+        session.send(PacketOutActionBar(message))
     }
 
     override fun sendPlayerListHeaderAndFooter(header: Component, footer: Component) {
-        session.sendPacket(PacketOutPlayerListHeaderFooter(header, footer))
+        session.send(PacketOutPlayerListHeaderFooter(header, footer))
     }
 
     override fun showTitle(title: Title) {
-        session.sendPacket(PacketOutTitle(title.title()))
+        session.send(PacketOutTitle(title.title()))
     }
 
     fun sendTitle(title: Component) {
-        session.sendPacket(PacketOutTitle(title))
+        session.send(PacketOutTitle(title))
     }
 
     fun sendSubtitle(subtitle: Component) {
-        session.sendPacket(PacketOutSubTitle(subtitle))
+        session.send(PacketOutSubTitle(subtitle))
     }
 
     fun sendTitleTimes(fadeIn: Duration, stay: Duration, fadeOut: Duration) {
-        session.sendPacket(PacketOutTitleTimes(Title.Times.of(fadeIn, stay, fadeOut)))
+        session.send(PacketOutTitleTimes(Title.Times.of(fadeIn, stay, fadeOut)))
     }
 
     override fun clearTitle() {
-        session.sendPacket(PacketOutClearTitles(false))
+        session.send(PacketOutClearTitles(false))
     }
 
     override fun resetTitle() {
-        session.sendPacket(PacketOutClearTitles(true))
+        session.send(PacketOutClearTitles(true))
     }
 
     override fun showBossBar(bar: BossBar) = BossBarManager.addBar(bar, this)
@@ -399,7 +399,7 @@ class KryptonPlayer(
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
         val type = InternalRegistries.SOUND_EVENT[sound.name()]
-        session.sendPacket(if (type != null) {
+        session.send(if (type != null) {
             PacketOutSoundEffect(sound, type, Vector(x, y, z))
         } else {
             PacketOutNamedSoundEffect(sound, Vector(x, y, z))
@@ -407,15 +407,15 @@ class KryptonPlayer(
     }
 
     override fun stopSound(stop: SoundStop) {
-        session.sendPacket(PacketOutStopSound(stop))
+        session.send(PacketOutStopSound(stop))
     }
 
     override fun openBook(book: Book) {
         val item = book.toItemStack()
         val slot = inventory.heldSlot
-        session.sendPacket(PacketOutSetSlot(inventory.id, inventory.incrementStateId(), slot, item))
-        session.sendPacket(PacketOutOpenBook(hand))
-        session.sendPacket(PacketOutSetSlot(inventory.id, inventory.incrementStateId(), slot, inventory.mainHand))
+        session.send(PacketOutSetSlot(inventory.id, inventory.incrementStateId(), slot, item))
+        session.send(PacketOutOpenBook(hand))
+        session.send(PacketOutSetSlot(inventory.id, inventory.incrementStateId(), slot, inventory.mainHand))
     }
 
     override fun identity() = Identity.identity(uuid)
@@ -493,15 +493,15 @@ class KryptonPlayer(
             if (firstLoad) centralZ else oldCentralZ,
             radius
         ).thenRun {
-            session.sendPacket(PacketOutUpdateViewPosition(centralX, centralZ))
+            session.send(PacketOutUpdateViewPosition(centralX, centralZ))
             newChunks.forEach {
                 val chunk = world.chunkManager[it] ?: return@forEach
-                session.sendPacket(PacketOutUpdateLight(chunk))
-                session.sendPacket(PacketOutChunkData(chunk))
+                session.send(PacketOutUpdateLight(chunk))
+                session.send(PacketOutChunkData(chunk))
             }
 
             previousChunks?.forEach {
-                session.sendPacket(PacketOutUnloadChunk(it.toInt(), (it shr 32).toInt()))
+                session.send(PacketOutUnloadChunk(it.toInt(), (it shr 32).toInt()))
                 visibleChunks -= it
             }
             previousChunks?.clear()
@@ -522,7 +522,7 @@ class KryptonPlayer(
     }
 
     private fun onAbilitiesUpdate() {
-        session.sendPacket(PacketOutAbilities(this))
+        session.send(PacketOutAbilities(this))
         updateInvisibility()
         server.playerManager.sendToAll(PacketOutMetadata(id, data.dirty), world)
     }
