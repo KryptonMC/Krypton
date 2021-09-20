@@ -13,11 +13,13 @@ import java.util.UUID
 /**
  * A simple cache that holds [GameProfile]s.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ProfileCache : Iterable<GameProfile> {
 
     /**
      * All the currently cached profiles.
      */
+    @get:JvmName("profiles")
     public val profiles: Set<GameProfile>
 
     /**

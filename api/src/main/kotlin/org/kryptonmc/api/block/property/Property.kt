@@ -16,21 +16,25 @@ import org.kryptonmc.api.util.provide
 /**
  * Represents a property key.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Property<T : Comparable<T>> {
 
     /**
      * The name of the property key.
      */
+    @get:JvmName("name")
     public val name: String
 
     /**
      * The set of values this property key allows.
      */
+    @get:JvmName("values")
     public val values: Set<T>
 
     /**
      * The type of this property key.
      */
+    @get:JvmName("type")
     public val type: Class<T>
 
     /**

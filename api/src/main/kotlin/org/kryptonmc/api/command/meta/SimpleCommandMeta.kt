@@ -11,12 +11,14 @@ package org.kryptonmc.api.command.meta
 /**
  * Command metadata for a [org.kryptonmc.api.command.SimpleCommand].
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface SimpleCommandMeta : CommandMeta {
 
     /**
      * The permission required to execute the command, or null if no permission
      * is required.
      */
+    @get:JvmName("permission")
     public val permission: String?
 
     override fun toBuilder(): Builder
@@ -32,6 +34,14 @@ public interface SimpleCommandMeta : CommandMeta {
          * @param permission the permission
          */
         public fun permission(permission: String?): Builder
+
+        override fun name(name: String): Builder
+
+        override fun alias(alias: String): Builder
+
+        override fun aliases(aliases: Iterable<String>): Builder
+
+        override fun aliases(vararg aliases: String): Builder
 
         override fun build(): SimpleCommandMeta
     }

@@ -32,7 +32,7 @@ class KryptonAttribute(
     override val modifiers: MutableMap<ModifierOperation, MutableList<AttributeModifier>> = mutableMapOf()
 ) : Attribute {
 
-    override val name = type.key.asString()
+    override val name = type.key().asString()
     override var baseValue = type.defaultBase
         set(value) {
             field = value
@@ -45,11 +45,11 @@ class KryptonAttribute(
         baseValue = tag.getDouble("Base")
         if (tag.contains("Modifiers", ListTag.ID)) tag.getList("Modifiers", CompoundTag.ID).forEachCompound {
             val operation = Registries.MODIFIER_OPERATIONS[it.getInt("Operation")] ?: return@forEachCompound
-            modifiers.getOrPut(operation) { mutableListOf() } += AttributeModifier(
+            modifiers.getOrPut(operation) { mutableListOf() }.add(KryptonAttributeModifier(
                 it.getString("Name"),
                 it.getUUID("UUID") ?: return@forEachCompound,
                 it.getDouble("Amount")
-            )
+            ))
         }
     }
 

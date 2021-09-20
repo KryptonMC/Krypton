@@ -13,11 +13,13 @@ import net.kyori.adventure.key.Key
 /**
  * Manages block handlers for blocks.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface BlockManager {
 
     /**
      * The map of block type keys (e.g. "minecraft:air") to handlers.
      */
+    @get:JvmName("handlers")
     public val handlers: Map<String, BlockHandler>
 
     /**

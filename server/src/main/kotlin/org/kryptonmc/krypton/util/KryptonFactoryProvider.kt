@@ -20,10 +20,12 @@ package org.kryptonmc.krypton.util
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.api.block.BlockHitResult
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ParticleData
+import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.util.FactoryNotFoundException
@@ -32,9 +34,11 @@ import org.kryptonmc.krypton.auth.KryptonGameProfileFactory
 import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffectFactory
 import org.kryptonmc.krypton.effect.particle.data.KryptonParticleDataFactory
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import org.kryptonmc.krypton.item.KryptonItemStackFactory
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.world.block.BlockLoader
+import org.kryptonmc.krypton.world.block.KryptonBlockHitResultFactory
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 
 class KryptonFactoryProvider : FactoryProvider {
@@ -53,6 +57,8 @@ class KryptonFactoryProvider : FactoryProvider {
     fun bootstrap() {
         register<ParticleData.Factory>(KryptonParticleDataFactory)
         register<ParticleEffect.Factory>(KryptonParticleEffectFactory)
+        register<BlockHitResult.Factory>(KryptonBlockHitResultFactory)
+        register<AttributeModifier.Factory>(KryptonAttributeModifier.Factory)
         register<Property.Factory>(KryptonPropertyFactory)
         register<RegistryManager>(KryptonRegistryManager)
         BlockLoader.init()

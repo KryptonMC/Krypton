@@ -29,47 +29,56 @@ public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Comparable<
     /**
      * The key associated with this block.
      */
+    @get:JvmName("key")
     public val key: Key
 
     /**
      * The block ID of this block.
      */
+    @get:JvmName("id")
     public val id: Int
 
     /**
      * The ID of the block state this block represents.
      */
+    @get:JvmName("stateId")
     public val stateId: Int
 
     /**
      * The hardness of this block.
      */
+    @get:JvmName("hardness")
     public val hardness: Double
 
     /**
      * How resistant this block is to explosions. Higher
      * means more resistant.
      */
+    @get:JvmName("explosionResistance")
     public val explosionResistance: Double
 
     /**
      * The amount of light this block emits, in levels.
      */
+    @get:JvmName("lightEmission")
     public val lightEmission: Int
 
     /**
      * The friction of this block.
      */
+    @get:JvmName("friction")
     public val friction: Double
 
     /**
      * The speed factor of this block.
      */
+    @get:JvmName("speedFactor")
     public val speedFactor: Double
 
     /**
      * The jump factor of this block.
      */
+    @get:JvmName("jumpFactor")
     public val jumpFactor: Double
 
     /**
@@ -130,6 +139,7 @@ public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Comparable<
     /**
      * The amount of light that this block will block from passing through it.
      */
+    @get:JvmName("lightBlock")
     public val lightBlock: Int
 
     /**
@@ -145,6 +155,7 @@ public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Comparable<
     /**
      * The opacity of this block.
      */
+    @get:JvmName("opacity")
     public val opacity: Int
 
     /**
@@ -180,11 +191,13 @@ public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Comparable<
     /**
      * The render shape of this block.
      */
+    @get:JvmName("renderShape")
     public val renderShape: RenderShape
 
     /**
      * The translation component for translating the name
      * of this block.
      */
+    @get:JvmName("translation")
     public val translation: TranslatableComponent
 }

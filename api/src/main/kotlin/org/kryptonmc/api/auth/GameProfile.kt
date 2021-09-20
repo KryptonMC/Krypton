@@ -18,21 +18,25 @@ import java.util.UUID
  * authentication will be done with Mojang, but it may not, depending on the
  * implementation.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface GameProfile {
 
     /**
      * The name of the profile.
      */
+    @get:JvmName("name")
     public val name: String
 
     /**
      * The UUID of the profile.
      */
+    @get:JvmName("uuid")
     public val uuid: UUID
 
     /**
      * The list of properties for this profile.
      */
+    @get:JvmName("properties")
     public val properties: List<ProfileProperty>
 
     @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
@@ -53,6 +57,7 @@ public interface GameProfile {
          * @param uuid the UUID of the profile
          * @return a new profile with the given name and uuid
          */
+        @JvmStatic
         public fun of(name: String, uuid: UUID): GameProfile = FACTORY.of(name, uuid)
 
         /**
@@ -65,6 +70,7 @@ public interface GameProfile {
          * @return a new profile with the given name, uuid, and list of profile
          * properties
          */
+        @JvmStatic
         public fun of(
             name: String,
             uuid: UUID,

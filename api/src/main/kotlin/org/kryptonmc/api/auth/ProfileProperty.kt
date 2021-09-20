@@ -15,22 +15,26 @@ import org.kryptonmc.api.util.provide
 /**
  * A property of a [GameProfile].
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ProfileProperty {
 
     /**
      * The name of the property.
      */
+    @get:JvmName("name")
     public val name: String
 
     /**
      * The value of the property.
      */
+    @get:JvmName("value")
     public val value: String
 
     /**
      * The Yggdrasil signature for this property. May be null if this property
      * isn't signed.
      */
+    @get:JvmName("signature")
     public val signature: String?
 
     @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
@@ -52,6 +56,7 @@ public interface ProfileProperty {
          * @param value the value
          * @return a new profile property with the given name and value
          */
+        @JvmStatic
         public fun of(name: String, value: String): ProfileProperty = FACTORY.of(name, value)
 
         /**
@@ -63,6 +68,7 @@ public interface ProfileProperty {
          * @param signature the signature, or null for no signature
          * @return a new profile property with the given name and value
          */
+        @JvmStatic
         public fun of(
             name: String,
             value: String,

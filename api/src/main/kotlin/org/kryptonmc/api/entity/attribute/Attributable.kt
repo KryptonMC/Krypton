@@ -11,11 +11,13 @@ package org.kryptonmc.api.entity.attribute
 /**
  * Represents something that holds attributes.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Attributable {
 
     /**
      * All attributes currently stored for this attributable.
      */
+    @get:JvmName("attributes")
     public val attributes: Map<AttributeType, Attribute>
 
     /**

@@ -13,16 +13,19 @@ package org.kryptonmc.api.block.property
  *
  * @param T the recursive type of this holder, used to morph return types
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface PropertyHolder<out T : PropertyHolder<T>> {
 
     /**
      * All of the property keys available for use by this holder.
      */
+    @get:JvmName("availableProperties")
     public val availableProperties: Set<Property<*>>
 
     /**
      * All the properties that are being held by this property holder.
      */
+    @get:JvmName("properties")
     public val properties: Map<String, String>
 
     /**

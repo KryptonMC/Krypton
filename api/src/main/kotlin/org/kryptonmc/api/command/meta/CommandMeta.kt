@@ -17,16 +17,19 @@ import org.kryptonmc.api.util.provide
 /**
  * Holds metadata for a [org.kryptonmc.api.command.Command].
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
 
     /**
      * The name of the command.
      */
+    @get:JvmName("name")
     public val name: String
 
     /**
      * The set of aliases of the command.
      */
+    @get:JvmName("aliases")
     public val aliases: Set<String>
 
     /**

@@ -11,16 +11,19 @@ package org.kryptonmc.api.entity.attribute
 /**
  * Represents an attribute that can be applied to a living entity.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Attribute {
 
     /**
      * The name of this attribute
      */
+    @get:JvmName("name")
     public val name: String
 
     /**
      * The type of this attribute.
      */
+    @get:JvmName("type")
     public val type: AttributeType
 
     /**
@@ -34,12 +37,14 @@ public interface Attribute {
      * Use [recalculate] to recalculate this value.
      * Adding modifiers will
      */
+    @get:JvmName("value")
     public val value: Double
 
     /**
      * The modifiers used to modify the [baseValue] in calculation to get the
      * [value].
      */
+    @get:JvmName("modifiers")
     public val modifiers: Map<ModifierOperation, List<AttributeModifier>>
 
     /**
