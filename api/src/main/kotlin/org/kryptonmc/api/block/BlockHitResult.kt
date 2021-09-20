@@ -1,34 +1,70 @@
-/*
- * This file is part of the Krypton API, licensed under the MIT license.
- *
- * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
- *
- * This project is licensed under the terms of the MIT license.
- * For more details, please reference the LICENSE file in the api top-level directory.
- */
 package org.kryptonmc.api.block
 
+import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.HitResult
+import org.kryptonmc.api.util.provide
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 
 /**
- * Represents the result of a player hitting/attacking a block.
- *
- * @param clickLocation the location that the player clicked
- * @param position the position of the block
- * @param direction the direction the block was hit from
- * @param missed if the block was missed or not
- * @param isInside if the player is inside of this block
+ * The result of a player hitting (attacking) a block.
  */
-public class BlockHitResult(
-    clickLocation: Vector3d,
-    public val position: Vector3i,
-    public val direction: Direction,
-    private val missed: Boolean,
-    public val isInside: Boolean
-) : HitResult(clickLocation) {
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface BlockHitResult : HitResult {
 
-    override val type: Type = if (missed) Type.MISS else Type.BLOCK
+    /**
+     * The position of the block that was hit.
+     */
+    @get:JvmName("position")
+    public val position: Vector3i
+
+    /**
+     * The direction the block was hit from.
+     */
+    @get:JvmName("direction")
+    public val direction: Direction
+
+    /**
+     * If the player is inside of the block.
+     */
+    public val isInside: Boolean
+
+    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun of(
+            clickLocation: Vector3d,
+            position: Vector3i,
+            direction: Direction,
+            missed: Boolean,
+            isInside: Boolean
+        ): BlockHitResult
+    }
+
+    public companion object {
+
+        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+
+        /**
+         * Creates a new block hit result with the given values.
+         *
+         * @param clickLocation the location where the player clicked
+         * @param position the position of the block that was hit
+         * @param direction the direction the block was hit from
+         * @param missed if the player missed the block
+         * @param isInside if the player is inside the block
+         * @return a new block hit result
+         */
+        @JvmStatic
+        public fun of(
+            clickLocation: Vector3d,
+            position: Vector3i,
+            direction: Direction,
+            missed: Boolean,
+            isInside: Boolean
+        ): BlockHitResult = FACTORY.of(clickLocation, position, direction, missed, isInside)
+    }
 }

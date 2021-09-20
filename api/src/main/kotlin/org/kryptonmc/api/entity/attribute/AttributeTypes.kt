@@ -18,46 +18,20 @@ import org.kryptonmc.api.registry.Registries
 public object AttributeTypes {
 
     // @formatter:off
-    @JvmField public val MAX_HEALTH: AttributeType =
-        register("generic.max_health", true, 20.0, 0.0, 1024.0)
-    @JvmField public val FOLLOW_RANGE: AttributeType =
-        register("generic.follow_range", false, 32.0, 0.0, 2048.0)
-    @JvmField public val KNOCKBACK_RESISTANCE: AttributeType =
-        register("generic.knockback_resistance", false, 0.0, 0.0, 1.0)
-    @JvmField public val MOVEMENT_SPEED: AttributeType =
-        register("generic.movement_speed", true, 0.7, 0.0, 1024.0)
-    @JvmField public val FLYING_SPEED: AttributeType =
-        register("generic.flying_speed", true, 0.4, 0.0, 1024.0)
-    @JvmField public val ATTACK_DAMAGE: AttributeType =
-        register("generic.attack_damage", false, 2.0, 0.0, 2048.0)
-    @JvmField public val ATTACK_KNOCKBACK: AttributeType =
-        register("generic.attack_knockback", false, 0.0, 0.0, 5.0)
-    @JvmField public val ATTACK_SPEED: AttributeType =
-        register("generic.attack_speed", true, 4.0, 0.0, 1024.0)
-    @JvmField public val ARMOR: AttributeType =
-        register("generic.armor", true, 0.0, 0.0, 30.0)
-    @JvmField public val ARMOR_TOUGHNESS: AttributeType =
-        register("generic.armor_toughness", true, 0.0, 0.0, 20.0)
-    @JvmField public val LUCK: AttributeType =
-        register("generic.luck", true, 0.0, -1024.0, 1024.0)
-    @JvmField public val SPAWN_REINFORCEMENTS: AttributeType =
-        register("zombie.spawn_reinforcements", false, 0.0, 0.0, 1.0)
-    @JvmField public val JUMP_STRENGTH: AttributeType =
-        register("horse.jump_strength", true, 0.7, 0.0, 2.0)
+    @JvmField public val MAX_HEALTH: AttributeType = get("generic.max_health")
+    @JvmField public val FOLLOW_RANGE: AttributeType = get("generic.follow_range")
+    @JvmField public val KNOCKBACK_RESISTANCE: AttributeType = get("generic.knockback_resistance")
+    @JvmField public val MOVEMENT_SPEED: AttributeType = get("generic.movement_speed")
+    @JvmField public val FLYING_SPEED: AttributeType = get("generic.flying_speed")
+    @JvmField public val ATTACK_DAMAGE: AttributeType = get("generic.attack_damage")
+    @JvmField public val ATTACK_KNOCKBACK: AttributeType = get("generic.attack_knockback")
+    @JvmField public val ATTACK_SPEED: AttributeType = get("generic.attack_speed")
+    @JvmField public val ARMOR: AttributeType = get("generic.armor")
+    @JvmField public val ARMOR_TOUGHNESS: AttributeType = get("generic.armor_toughness")
+    @JvmField public val LUCK: AttributeType = get("generic.luck")
+    @JvmField public val SPAWN_REINFORCEMENTS: AttributeType = get("zombie.spawn_reinforcements")
+    @JvmField public val JUMP_STRENGTH: AttributeType = get("horse.jump_strength")
 
     // @formatter:on
-    private fun register(
-        name: String,
-        sendToClient: Boolean,
-        baseDefault: Double,
-        minimum: Double,
-        maximum: Double
-    ): AttributeType {
-        val key = Key.key(name)
-        return Registries.register(
-            Registries.ATTRIBUTE,
-            key,
-            AttributeType(key, sendToClient, baseDefault, minimum, maximum)
-        )
-    }
+    private fun get(name: String): AttributeType = Registries.ATTRIBUTE[Key.key(name)]!!
 }

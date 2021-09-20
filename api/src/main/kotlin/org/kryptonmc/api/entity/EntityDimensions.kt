@@ -1,61 +1,34 @@
-/*
- * This file is part of the Krypton API, licensed under the MIT license.
- *
- * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
- *
- * This project is licensed under the terms of the MIT license.
- * For more details, please reference the LICENSE file in the api top-level directory.
- */
 package org.kryptonmc.api.entity
 
+import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.space.BoundingBox
 import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.util.provide
 
 /**
  * Holder class for dimensions for an [Entity].
- *
- * @param width the width of the entity
- * @param height the height of the entity
- * @param isFixed if these dimensions are fixed
  */
-public data class EntityDimensions(
-    public val width: Float,
-    public val height: Float,
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface EntityDimensions {
+
+    /**
+     * The width of the entity.
+     */
+    @get:JvmName("width")
+    public val width: Float
+
+    /**
+     * The height of the entity.
+     */
+    @get:JvmName("height")
+    public val height: Float
+
+    /**
+     * If these dimensions are fixed, meaning mutating operations such as
+     * [scale] will simply return the current object.
+     */
     public val isFixed: Boolean
-) {
-
-    /**
-     * Creates a new bounding box from the given [center], using the [width]
-     * and [height] dimensions to offset the [center] to obtain the minimum and
-     * maximum values.
-     *
-     * @param center the centre position
-     * @return a new bounding box from the centre coordinates
-     */
-    public fun toBoundingBox(center: Vector): BoundingBox = toBoundingBox(center.x, center.y, center.z)
-
-    /**
-     * Creates a new bounding box from the given **centre** [x], [y], and [z]
-     * coordinates, using the [width] and [height] dimensions to offset the
-     * centre coordinates to obtain the minimum and maximum values.
-     *
-     * @param x the centre X coordinate
-     * @param y the centre Y coordinate
-     * @param z the centre Z coordinate
-     * @return a new bounding box from the centre coordinates
-     */
-    public fun toBoundingBox(x: Double, y: Double, z: Double): BoundingBox {
-        val width = width / 2.0
-        val height = height
-        return BoundingBox(
-            x - width,
-            y,
-            z - width,
-            x + width,
-            y + height,
-            z + width
-        )
-    }
 
     /**
      * Scales the dimensions of this object by the given [factor], returning a
@@ -112,10 +85,7 @@ public data class EntityDimensions(
      * @param height the height factor to scale the height by
      * @return see above
      */
-    public fun scale(width: Float, height: Float): EntityDimensions {
-        if (isFixed || width == 1F && height == 1F) return this
-        return scalable(this.width * width, this.height * height)
-    }
+    public fun scale(width: Float, height: Float): EntityDimensions
 
     /**
      * Scales the dimensions of this object by the given [width] and [height]
@@ -156,21 +126,40 @@ public data class EntityDimensions(
      */
     public fun scale(width: Long, height: Long): EntityDimensions = scale(width.toFloat(), height.toFloat())
 
-    override fun toString(): String = "EntityDimensions(width=$width, height=$height, isFixed=$isFixed)"
+    /**
+     * Creates a new bounding box from the given [center], using the [width]
+     * and [height] dimensions to offset the [center] to obtain the minimum and
+     * maximum values.
+     *
+     * @param center the centre position
+     * @return a new bounding box from the centre coordinates
+     */
+    public fun toBoundingBox(center: Vector): BoundingBox = toBoundingBox(center.x, center.y, center.z)
+
+    /**
+     * Creates a new bounding box from the given **centre** [x], [y], and [z]
+     * coordinates, using the [width] and [height] dimensions to offset the
+     * centre coordinates to obtain the minimum and maximum values.
+     *
+     * @param x the centre X coordinate
+     * @param y the centre Y coordinate
+     * @param z the centre Z coordinate
+     * @return a new bounding box from the centre coordinates
+     */
+    public fun toBoundingBox(x: Double, y: Double, z: Double): BoundingBox
+
+    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun scalable(width: Float, height: Float): EntityDimensions
+
+        public fun fixed(width: Float, height: Float): EntityDimensions
+    }
 
     public companion object {
 
-        /**
-         * Creates new entity dimensions that can be scaled with [scale], with
-         * the given [width] and [height].
-         *
-         * @param width the width
-         * @param height the height
-         * @return new scalable entity dimensions
-         */
-        @JvmStatic
-        public fun scalable(width: Float, height: Float): EntityDimensions =
-            EntityDimensions(width, height, false)
+        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
 
         /**
          * Creates new entity dimensions that can be scaled with [scale], with
@@ -181,8 +170,18 @@ public data class EntityDimensions(
          * @return new scalable entity dimensions
          */
         @JvmStatic
-        public fun scalable(width: Double, height: Double): EntityDimensions =
-            scalable(width.toFloat(), height.toFloat())
+        public fun scalable(width: Float, height: Float): EntityDimensions = FACTORY.scalable(width, height)
+
+        /**
+         * Creates new entity dimensions that can be scaled with [scale], with
+         * the given [width] and [height].
+         *
+         * @param width the width
+         * @param height the height
+         * @return new scalable entity dimensions
+         */
+        @JvmStatic
+        public fun scalable(width: Double, height: Double): EntityDimensions = scalable(width.toFloat(), height.toFloat())
 
         /**
          * Creates new entity dimensions that can be scaled with [scale], with
@@ -215,7 +214,7 @@ public data class EntityDimensions(
          * @return new fixed entity dimensions
          */
         @JvmStatic
-        public fun fixed(width: Float, height: Float): EntityDimensions = EntityDimensions(width, height, true)
+        public fun fixed(width: Float, height: Float): EntityDimensions = FACTORY.fixed(width, height)
 
         /**
          * Creates new entity dimensions that cannot scaled with [scale], with

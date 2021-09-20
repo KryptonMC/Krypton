@@ -103,6 +103,6 @@ abstract class KryptonArrowLike(
         byte("PierceLevel", piercingLevel.toByte())
         byte("shake", shakeTime.toByte())
         boolean("ShotFromCrossbow", wasShotFromCrossbow)
-        string("SoundEvent", sound.key.asString())
+        string("SoundEvent", sound.key().asString())
     }
 }

@@ -9,18 +9,34 @@
 package org.kryptonmc.api.effect.sound
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.sound.Sound
+import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.util.provide
 
 /**
  * A type of sound.
- *
- * @param key the key for this sound type
  */
-@JvmRecord
-public data class SoundEvent(
-    @get:JvmName("_get-key") @JvmSynthetic public val key: Key
-) : Sound.Type, Keyed {
+public interface SoundEvent : Sound.Type {
 
-    override fun key(): Key = key
+    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun of(key: Key): SoundEvent
+    }
+
+    public companion object {
+
+        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+
+        /**
+         * Creates a new sound event with the given [key].
+         *
+         * @param key the key
+         * @return a new sound event
+         */
+        @JvmStatic
+        public fun of(key: Key): SoundEvent = FACTORY.of(key)
+    }
 }

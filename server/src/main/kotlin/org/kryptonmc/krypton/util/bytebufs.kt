@@ -314,7 +314,7 @@ fun ByteBuf.readBlockHitResult(): BlockHitResult {
     val cursorZ = readFloat()
     val inside = readBoolean()
     val clickedPosition = Vector3d(position.x() + cursorX, position.y() + cursorY, position.z() + cursorZ)
-    return BlockHitResult(clickedPosition, position, direction, false, inside)
+    return BlockHitResult.of(clickedPosition, position, direction, false, inside)
 }
 
 private val VARINT_EXACT_BYTE_LENGTHS = IntArray(33) { ceil((31.0 - (it - 1)) / 7.0).toInt() }.apply { this[32] = 1 }

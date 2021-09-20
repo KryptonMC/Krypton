@@ -6,7 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-@file:JvmName("AdventureUtils")
+@file:JvmName("KryptonAdventure")
 package org.kryptonmc.api.adventure
 
 import com.mojang.brigadier.Message
@@ -22,7 +22,8 @@ import net.kyori.adventure.text.Component
  * You should use this class when you want to send a [Component] error message as
  * a response to a Brigadier command.
  */
-public class AdventureMessage(public val wrapped: Component) : Message {
+@JvmRecord
+public data class AdventureMessage(public val wrapped: Component) : Message {
 
     override fun getString(): String = wrapped.toPlainText()
 }

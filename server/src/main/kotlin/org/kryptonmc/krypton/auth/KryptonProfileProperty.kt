@@ -23,6 +23,7 @@ import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import org.kryptonmc.api.auth.ProfileProperty
 
+@JvmRecord
 data class KryptonProfileProperty(
     override val name: String,
     override val value: String,

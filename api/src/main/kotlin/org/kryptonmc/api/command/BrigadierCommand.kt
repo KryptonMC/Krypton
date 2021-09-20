@@ -16,7 +16,8 @@ import com.mojang.brigadier.tree.LiteralCommandNode
  *
  * @param node the node that backs this command
  */
-public class BrigadierCommand(public val node: LiteralCommandNode<Sender>) : Command {
+@JvmRecord
+public data class BrigadierCommand(public val node: LiteralCommandNode<Sender>) : Command {
 
     /**
      * Constructs a command that is backed by a Brigadier [LiteralCommandNode] from

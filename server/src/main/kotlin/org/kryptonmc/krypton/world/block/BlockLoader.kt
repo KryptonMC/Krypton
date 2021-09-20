@@ -18,44 +18,39 @@
  */
 package org.kryptonmc.krypton.world.block
 
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.property.Property
-import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.registry.data.BlockData
-import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.KryptonDataLoader
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import java.util.concurrent.ConcurrentHashMap
 
-object BlockLoader {
-
-    private val FILE_LOCATION = "${KryptonPlatform.minecraftVersion.replace('.', '_')}_blocks.json"
-    private val GSON = Gson()
+object BlockLoader : KryptonDataLoader("blocks") {
 
     private val KEY_MAP = mutableMapOf<String, KryptonBlock>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
     private val STATE_MAP = Int2ObjectOpenHashMap<KryptonBlock>()
 
-    private val LOGGER = logger<BlockLoader>()
-    @JvmStatic @Volatile private var isLoaded = false
+    fun fromKey(key: String): KryptonBlock? {
+        val id = if (key.indexOf(':') == -1) "minecraft:$key" else key
+        return KEY_MAP[id]
+    }
 
-    fun init() {
-        if (isLoaded) {
-            LOGGER.warn("Attempted to load block loader twice!")
-            return
-        }
+    fun fromKey(key: Key) = fromKey(key.asString())
 
+    fun properties(
+        key: String,
+        properties: Map<String, String>
+    ): KryptonBlock? = PROPERTY_MAP[key]?.properties?.get(properties)
+
+    override fun load(data: JsonObject) {
         KryptonPropertyFactory.bootstrap()
-        val inputStream = ClassLoader.getSystemResourceAsStream(FILE_LOCATION)
-            ?: error("Could not find $FILE_LOCATION bundled in JAR! Please report to Krypton!")
-        val blocks = GSON.fromJson<JsonObject>(inputStream.reader())
-
-        blocks.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
+        data.entrySet().forEach { (key, value) ->
+            value as JsonObject
             // Map properties
             val propertyEntry = PropertyEntry()
             val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) { element ->
@@ -76,24 +71,14 @@ object BlockLoader {
             PROPERTY_MAP[key] = propertyEntry
 
             // Register to registry
-            if (InternalRegistries.BLOCK.contains(Key.key(key))) return@forEach
+            val namespacedKey = Key.key(key)
+            if (InternalRegistries.BLOCK.contains(namespacedKey)) return@forEach
             KryptonRegistryManager.register(InternalRegistries.BLOCK, key, defaultBlock)
         }
         STATE_MAP.int2ObjectEntrySet().fastForEach { KryptonBlock.STATES[it.value] = it.intKey }
-        isLoaded = true
     }
-
-    fun fromKey(key: String): KryptonBlock? {
-        val id = if (key.indexOf(':') == -1) "minecraft:$key" else key
-        return KEY_MAP[id]
-    }
-
-    fun fromKey(key: Key) = fromKey(key.asString())
 
     private fun fromState(stateId: Int): KryptonBlock? = STATE_MAP[stateId]
-
-    fun properties(key: String, properties: Map<String, String>): KryptonBlock? =
-        PROPERTY_MAP[key]?.properties?.get(properties)
 
     private fun JsonObject.retrieveState(
         key: String,

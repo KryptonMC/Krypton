@@ -18,43 +18,30 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
-import com.google.gson.Gson
 import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.property.Property
-import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.registry.data.FluidData
-import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.KryptonDataLoader
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import java.util.concurrent.ConcurrentHashMap
 
-object FluidLoader {
-
-    private val FILE_LOCATION = "${KryptonPlatform.minecraftVersion.replace('.', '_')}_fluids.json"
-    private val GSON = Gson()
+object FluidLoader : KryptonDataLoader("fluids") {
 
     private val KEY_MAP = mutableMapOf<String, KryptonFluid>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
     private val STATE_MAP = Int2ObjectOpenHashMap<KryptonFluid>()
 
-    private val LOGGER = logger<FluidLoader>()
-    @JvmStatic @Volatile private var isLoaded = false
+    fun properties(
+        key: String,
+        properties: Map<String, String>
+    ): KryptonFluid? = PROPERTY_MAP[key]?.properties?.get(properties)
 
-    fun init() {
-        if (isLoaded) {
-            LOGGER.warn("Attempted to load fluid loader twice!")
-            return
-        }
-
-        val inputStream = ClassLoader.getSystemResourceAsStream(FILE_LOCATION)
-            ?: error("Could not find $FILE_LOCATION bundled in JAR! Please report to Krypton!")
-        val fluids = GSON.fromJson<JsonObject>(inputStream.reader())
-
-        fluids.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
+    override fun load(data: JsonObject) {
+        data.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
             // Map properties
             val propertyEntry = PropertyEntry()
             val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) {
@@ -77,13 +64,9 @@ object FluidLoader {
             if (InternalRegistries.FLUID.contains(Key.key(key))) return@forEach
             KryptonRegistryManager.register(InternalRegistries.FLUID, key, defaultFluid)
         }
-        isLoaded = true
     }
 
     private fun fromState(stateId: Int): KryptonFluid? = STATE_MAP[stateId]
-
-    fun properties(key: String, properties: Map<String, String>): KryptonFluid? =
-        PROPERTY_MAP[key]?.properties?.get(properties)
 
     private fun JsonObject.retrieveState(
         key: String,

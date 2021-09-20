@@ -20,28 +20,33 @@ package org.kryptonmc.krypton.command.meta
 
 import org.kryptonmc.api.command.meta.CommandMeta
 
-open class KryptonCommandMeta(
+@JvmRecord
+data class KryptonCommandMeta(
     override val name: String,
     override val aliases: Set<String>
 ) : CommandMeta {
 
     override fun toBuilder() = Builder(this)
 
-    open class Builder(protected var name: String) : CommandMeta.Builder {
+    @Suppress("UNCHECKED_CAST")
+    abstract class AbstractBuilder<B : AbstractBuilder<B>>(protected var name: String) : CommandMeta.Builder {
 
         protected val aliases = mutableSetOf<String>()
+
+        final override fun name(name: String): B = apply { this.name = name } as B
+
+        final override fun alias(alias: String): B = apply { aliases.add(alias) } as B
+
+        final override fun aliases(aliases: Iterable<String>): B = apply { this.aliases.addAll(aliases) } as B
+
+        final override fun aliases(vararg aliases: String): B = aliases(aliases.asIterable())
+    }
+
+    class Builder(name: String) : AbstractBuilder<Builder>(name), CommandMeta.Builder {
 
         constructor(meta: CommandMeta) : this(meta.name) {
             aliases += meta.aliases
         }
-
-        override fun name(name: String) = apply { this.name = name }
-
-        override fun alias(alias: String) = apply { aliases += alias }
-
-        override fun aliases(vararg aliases: String) = apply { this.aliases += aliases }
-
-        override fun aliases(aliases: Iterable<String>) = apply { this.aliases += aliases }
 
         override fun build() = KryptonCommandMeta(name, aliases)
     }

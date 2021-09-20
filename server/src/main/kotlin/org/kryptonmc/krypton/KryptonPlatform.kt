@@ -32,6 +32,7 @@ object KryptonPlatform : Platform {
     override val version: String = versions.getProperty("krypton")
     override val isStable = false
     override val minecraftVersion: String = versions.getProperty("minecraft")
+    val minecraftVersionPath = minecraftVersion.replace('.', '_')
     const val isStableMinecraft = true
     override val worldVersion = 2730
     override val protocolVersion = 756

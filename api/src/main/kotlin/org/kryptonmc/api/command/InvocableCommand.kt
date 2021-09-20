@@ -13,7 +13,7 @@ package org.kryptonmc.api.command
  *
  * @param A the type of the arguments
  */
-public interface InvocableCommand<A> : Command {
+public fun interface InvocableCommand<A> : Command {
 
     /**
      * Invokes this command with the given [sender] and [args].

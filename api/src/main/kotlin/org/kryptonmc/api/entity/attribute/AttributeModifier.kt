@@ -8,17 +8,53 @@
  */
 package org.kryptonmc.api.entity.attribute
 
+import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.util.provide
 import java.util.UUID
 
 /**
  * A modifier that can be applied to an [Attribute].
- *
- * @param name the name of the modifier
- * @param uuid the unique ID of the modifier
- * @param amount the amount of the modifier
  */
-public data class AttributeModifier(
-    public val name: String,
-    public val uuid: UUID,
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface AttributeModifier {
+
+    /**
+     * The name of the modifier.
+     */
+    @get:JvmName("name")
+    public val name: String
+
+    /**
+     * The unique ID of the modifier.
+     */
+    @get:JvmName("uuid")
+    public val uuid: UUID
+
+    /**
+     * The amount to modify attribute values by.
+     */
+    @get:JvmName("amount")
     public val amount: Double
-)
+
+    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+    public interface Factory {
+
+        public fun of(name: String, uuid: UUID, amount: Double): AttributeModifier
+    }
+
+    public companion object {
+
+        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+
+        /**
+         * Creates a new attribute modifier with the given values.
+         *
+         * @param name the name of the modifier
+         * @param uuid the unique ID of the modifier
+         * @param amount the amount to modify attribute values by
+         * @return a new attribute modifier
+         */
+        @JvmStatic
+        public fun of(name: String, uuid: UUID, amount: Double): AttributeModifier = FACTORY.of(name, uuid, amount)
+    }
+}

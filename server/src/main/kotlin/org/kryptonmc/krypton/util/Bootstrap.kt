@@ -37,7 +37,9 @@ import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
+import org.kryptonmc.krypton.effect.sound.SoundLoader
 import org.kryptonmc.krypton.entity.EntityFactory
+import org.kryptonmc.krypton.entity.attribute.AttributeLoader
 import org.kryptonmc.krypton.entity.hanging.KryptonCanvases
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemManager
@@ -76,6 +78,7 @@ object Bootstrap {
         Blocks
         GameEvents
         ParticleTypes
+        SoundLoader.init()
         SoundEvents
         EntityTypes
         ItemTypes
@@ -86,6 +89,7 @@ object Bootstrap {
         Biomes
         DimensionTypes
         GameRules
+        AttributeLoader.init()
         AttributeTypes
         MetadataKeys
         KryptonStatisticTypes

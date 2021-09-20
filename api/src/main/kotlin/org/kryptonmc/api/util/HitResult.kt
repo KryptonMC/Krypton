@@ -1,27 +1,25 @@
-/*
- * This file is part of the Krypton API, licensed under the MIT license.
- *
- * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
- *
- * This project is licensed under the terms of the MIT license.
- * For more details, please reference the LICENSE file in the api top-level directory.
- */
 package org.kryptonmc.api.util
 
 import org.kryptonmc.api.entity.Entity
 import org.spongepowered.math.vector.Vector3d
 
 /**
- * Represents the result of a player hitting/attacking something.
- *
- * @param clickLocation the location where the player clicked
+ * The result of a player hitting (attacking) something.
  */
-public abstract class HitResult(public val clickLocation: Vector3d) {
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface HitResult {
 
     /**
-     * The type of hit result this is.
+     * The location where the player clicked.
      */
-    public abstract val type: Type
+    @get:JvmName("clickLocation")
+    public val clickLocation: Vector3d
+
+    /**
+     * The type of this hit result.
+     */
+    @get:JvmName("type")
+    public val type: Type
 
     /**
      * Gets the distance squared from the [clickLocation] to the given
@@ -41,7 +39,7 @@ public abstract class HitResult(public val clickLocation: Vector3d) {
     }
 
     /**
-     * The type of hit result this is.
+     * The type of hit result.
      */
     public enum class Type {
 

@@ -20,15 +20,16 @@ package org.kryptonmc.krypton.command.meta
 
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
 
-class KryptonSimpleCommandMeta(
-    name: String,
-    aliases: Set<String>,
+@JvmRecord
+data class KryptonSimpleCommandMeta(
+    override val name: String,
+    override val aliases: Set<String>,
     override val permission: String?
-) : KryptonCommandMeta(name, aliases), SimpleCommandMeta {
+) : SimpleCommandMeta {
 
     override fun toBuilder() = Builder(this)
 
-    class Builder(name: String) : KryptonCommandMeta.Builder(name), SimpleCommandMeta.Builder {
+    class Builder(name: String) : KryptonCommandMeta.AbstractBuilder<Builder>(name), SimpleCommandMeta.Builder {
 
         private var permission: String? = null
 
