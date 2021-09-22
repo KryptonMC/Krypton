@@ -50,5 +50,5 @@ private val ERROR_UNKNOWN_ENTITY = DynamicCommandExceptionType {
     Component.translatable("entity.notFound", listOf(Component.text(it.toString()))).toMessage()
 }
 
-private fun Key.ensureSummonable() = InternalRegistries.ENTITY_TYPE[this].takeIf { it.isSummonable }?.key
+private fun Key.ensureSummonable() = InternalRegistries.ENTITY_TYPE[this].takeIf { it.isSummonable }?.key()
     ?: throw ERROR_UNKNOWN_ENTITY.create(this)

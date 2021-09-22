@@ -19,8 +19,8 @@ import net.kyori.adventure.pointer.Pointer
  */
 @JvmRecord
 public data class MetaKey<V : Any>(
-    @get:JvmName("_get-key") @JvmSynthetic public val key: Key,
-    @get:JvmName("_get-type") @JvmSynthetic public val type: Class<V>
+    private val key: Key,
+    private val type: Class<V>
 ) : Pointer<V> {
 
     override fun key(): Key = key

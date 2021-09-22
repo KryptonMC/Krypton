@@ -101,7 +101,7 @@ import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.bossbar.BossBarManager
+import org.kryptonmc.krypton.util.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag

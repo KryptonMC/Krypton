@@ -176,7 +176,7 @@ class KryptonServer(
 
         // Fire the event that signals the server starting. We fire it here so that plugins can listen to it as part
         // of their lifecycle, and we call it sync so plugins can finish initialising before we do
-        eventManager.fireAndForgetSync(ServerStartEvent())
+        eventManager.fireAndForgetSync(ServerStartEvent)
 
         // Initialize console permissions after plugins are loaded
         console.setupPermissions()
@@ -352,7 +352,7 @@ class KryptonServer(
 
         // Shut down plugins and unregister listeners
         LOGGER.info("Shutting down plugins and unregistering listeners...")
-        eventManager.fireAndForgetSync(ServerStopEvent())
+        eventManager.fireAndForgetSync(ServerStopEvent)
         eventManager.shutdown()
 
         // Shut down scheduler

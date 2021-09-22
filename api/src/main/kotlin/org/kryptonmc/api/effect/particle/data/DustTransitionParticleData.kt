@@ -15,24 +15,6 @@ package org.kryptonmc.api.effect.particle.data
 public interface DustTransitionParticleData : DustParticleData {
 
     /**
-     * The red component of the source RGB colour. Analogous with [red].
-     */
-    public val fromRed: Short
-        @JvmName("fromRed") get() = red
-
-    /**
-     * The green component of the source RGB colour. Analogous with [red].
-     */
-    public val fromGreen: Short
-        @JvmName("fromGreen") get() = green
-
-    /**
-     * The blue component of the source RGB colour. Analogous with [red].
-     */
-    public val fromBlue: Short
-        @JvmName("fromBlue") get() = blue
-
-    /**
      * The red component of the destination RGB colour.
      */
     @get:JvmName("toRed")
@@ -49,21 +31,6 @@ public interface DustTransitionParticleData : DustParticleData {
      */
     @get:JvmName("toBlue")
     public val toBlue: Short
-
-    /**
-     * The red component of the source RGB colour.
-     */
-    override val red: Short
-
-    /**
-     * The green component of the source RGB colour.
-     */
-    override val green: Short
-
-    /**
-     * The blue component of the source RGB colour.
-     */
-    override val blue: Short
 
     public companion object {
 

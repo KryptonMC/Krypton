@@ -14,6 +14,7 @@ import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockLike
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.TranslationHolder
 
 /**
  * Represents a type of item.
@@ -33,8 +34,8 @@ public data class ItemType(
     public val maximumAmount: Int,
     public val durability: Int,
     public val isFireResistant: Boolean,
-    public val translation: TranslatableComponent
-) : BlockLike, ComponentLike {
+    public override val translation: TranslatableComponent
+) : BlockLike, ComponentLike, TranslationHolder {
 
     override fun asBlock(): Block? = Registries.BLOCK[key]
 

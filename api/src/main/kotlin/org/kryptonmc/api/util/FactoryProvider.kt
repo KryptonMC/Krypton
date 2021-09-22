@@ -29,6 +29,14 @@ public interface FactoryProvider {
          */
         @JvmField
         public val INSTANCE: FactoryProvider = serviceOrError("factory provider")
+
+        /**
+         * Gets the singleton instance. Analogous with [INSTANCE].
+         *
+         * @return the singleton instance
+         */
+        @JvmStatic
+        public fun get(): FactoryProvider = INSTANCE
     }
 }
 

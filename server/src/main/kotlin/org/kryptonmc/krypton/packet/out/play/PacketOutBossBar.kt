@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.bossbar.BossBarManager
+import org.kryptonmc.krypton.util.BossBarManager
 
 @JvmRecord
 data class PacketOutBossBar(

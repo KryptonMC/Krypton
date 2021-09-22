@@ -14,14 +14,14 @@ import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.TranslatableComponent
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.util.FactoryProvider
-import org.kryptonmc.api.util.Translatable
+import org.kryptonmc.api.util.TranslationHolder
 import org.kryptonmc.api.util.provide
 
 /**
  * The type of an attribute.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface AttributeType : Translatable, Keyed {
+public interface AttributeType : TranslationHolder, Keyed {
 
     /**
      * The default base value for attributes of this type.

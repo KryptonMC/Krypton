@@ -71,8 +71,7 @@ public fun Component.toLegacySectionText(): String = LegacyComponentSerializer.l
  * [section serializer][LegacyComponentSerializer.legacyAmpersand].
  */
 @JvmSynthetic
-public fun Component.toLegacyAmpersandText(): String = LegacyComponentSerializer.legacyAmpersand()
-    .serialize(this)
+public fun Component.toLegacyAmpersandText(): String = LegacyComponentSerializer.legacyAmpersand().serialize(this)
 
 /**
  * Converts this [Component] to its plain text representation.

@@ -16,6 +16,7 @@ import java.util.Optional
  * Useful for converting [Optional] values from other Java-based libraries in
  * to nullable types.
  */
+@JvmSynthetic
 public fun <T> Optional<T>.getIfPresent(): T? = if (isPresent) get() else null
 
 /**
@@ -24,4 +25,5 @@ public fun <T> Optional<T>.getIfPresent(): T? = if (isPresent) get() else null
  *
  * @param message the message for the exception if thrown
  */
+@JvmSynthetic
 public fun <T> Optional<T>.orThrow(message: String): T = if (isPresent) get() else error(message)

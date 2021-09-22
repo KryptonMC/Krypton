@@ -22,9 +22,7 @@ import org.kryptonmc.api.item.ItemStack
 
 object KryptonItemStackFactory : ItemStack.Factory {
 
-    private val empty = EmptyItemStack
-
     override fun builder() = KryptonItemStack.Builder()
 
-    override fun empty() = empty
+    override fun empty() = EmptyItemStack
 }

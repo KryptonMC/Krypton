@@ -10,6 +10,7 @@ package org.kryptonmc.api.world.rule
 
 import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.TranslatableComponent
+import org.kryptonmc.api.util.TranslationHolder
 
 /**
  * A rule dictating how a specific aspect of the game functions.
@@ -22,9 +23,6 @@ import net.kyori.adventure.text.TranslatableComponent
 @JvmRecord
 public data class GameRule<V : Any>(
     public val name: String,
-    public val default: V,
-    public val translation: TranslatableComponent
-) : ComponentLike {
-
-    override fun asComponent(): TranslatableComponent = translation
-}
+    @get:JvmName("defaultValue") public val default: V,
+    public override val translation: TranslatableComponent
+) : ComponentLike, TranslationHolder

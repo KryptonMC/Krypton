@@ -158,7 +158,7 @@ abstract class KryptonEntity(
         list("Rotation", FloatTag.ID, FloatTag.of(location.yaw), FloatTag.of(location.pitch))
 
         // Type & UUID
-        if (this@KryptonEntity !is KryptonPlayer) string("id", this@KryptonEntity.type.key.asString())
+        if (this@KryptonEntity !is KryptonPlayer) string("id", this@KryptonEntity.type.key().asString())
         uuid("UUID", uuid)
 
         // Misc values
@@ -226,7 +226,7 @@ abstract class KryptonEntity(
     override fun identity() = Identity.identity(uuid)
 
     override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(
-        op.apply(ShowEntity.of(type.key, uuid, displayName.takeIf { it !== Component.empty() }))
+        op.apply(ShowEntity.of(type.key(), uuid, displayName.takeIf { it !== Component.empty() }))
     )
 
     final override var isOnFire: Boolean
@@ -254,7 +254,7 @@ abstract class KryptonEntity(
         get() = data[MetadataKeys.AIR_TICKS]
         set(value) = data.set(MetadataKeys.AIR_TICKS, value)
     final override var displayName: Component
-        get() = data[MetadataKeys.DISPLAY_NAME].orElse(type.name)
+        get() = data[MetadataKeys.DISPLAY_NAME].orElse(type.translation)
         set(value) = data.set(MetadataKeys.DISPLAY_NAME, Optional.ofNullable(value.takeIf { it != Component.empty() }))
     final override var isDisplayNameVisible: Boolean
         get() = data[MetadataKeys.DISPLAY_NAME_VISIBILITY]
