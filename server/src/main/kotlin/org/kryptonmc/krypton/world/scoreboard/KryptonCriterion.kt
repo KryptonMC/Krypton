@@ -23,8 +23,11 @@ import org.kryptonmc.api.world.scoreboard.RenderType
 import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 
 open class KryptonCriterion(
-    override val key: Key,
+    private val key: Key,
     override val name: String,
     override val isMutable: Boolean = false,
     override val renderType: RenderType = RenderType.INTEGER
-) : Criterion
+) : Criterion {
+
+    override fun key(): Key = key
+}

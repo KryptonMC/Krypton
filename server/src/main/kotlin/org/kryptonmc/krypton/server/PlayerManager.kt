@@ -132,8 +132,8 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         session.send(PacketOutJoinGame(
             player.id,
             world.data.isHardcore,
-            player.gamemode,
-            player.oldGamemode,
+            player.gameMode,
+            player.oldGameMode,
             server.worldManager.worlds.keys,
             world.dimensionType,
             world.dimension,
@@ -236,7 +236,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             // Send info and quit message
             invalidateStatus()
             sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER, player))
-            server.sendMessage(it.message)
+            server.sendMessage(it.result.reason)
         }
     }
 

@@ -22,10 +22,14 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.world.scoreboard.RenderType
 import org.kryptonmc.api.world.scoreboard.criteria.CompoundCriterion
 
-class KryptonCompoundCriterion(
-    key: Key,
-    name: String,
+@JvmRecord
+data class KryptonCompoundCriterion(
+    private val key: Key,
+    override val name: String,
     override val children: List<KryptonCriterion>,
-    isMutable: Boolean = false,
-    renderType: RenderType = RenderType.INTEGER
-) : KryptonCriterion(key, name, isMutable, renderType), CompoundCriterion
+    override val isMutable: Boolean = false,
+    override val renderType: RenderType = RenderType.INTEGER
+) : CompoundCriterion {
+
+    override fun key(): Key = key
+}

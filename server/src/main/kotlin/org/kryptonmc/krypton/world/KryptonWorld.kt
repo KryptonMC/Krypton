@@ -32,8 +32,8 @@ import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.world.Difficulty
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
@@ -60,6 +60,7 @@ import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.Generator
+import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.spongepowered.math.GenericMath
 import org.spongepowered.math.vector.Vector3i
@@ -82,8 +83,8 @@ class KryptonWorld(
     override val biomeManager = BiomeManager(this, seed, dimensionType.biomeZoomer)
     override val random = Random()
     override val border = KryptonWorldBorder.DEFAULT // FIXME
-    override val gamemode: Gamemode
-        get() = data.gamemode
+    override val gameMode: GameMode
+        get() = data.gameMode
     override var difficulty: Difficulty
         get() = data.difficulty
         set(value) { data.difficulty = value }

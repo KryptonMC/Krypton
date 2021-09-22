@@ -18,7 +18,9 @@ import org.kryptonmc.api.entity.player.Player
  * @param channel the channel the message came from
  * @param message the message received
  */
-public class PluginMessageEvent(
+@Suppress("ArrayInDataClass")
+@JvmRecord
+public data class PluginMessageEvent(
     public val player: Player,
     public val channel: Key,
     public val message: ByteArray

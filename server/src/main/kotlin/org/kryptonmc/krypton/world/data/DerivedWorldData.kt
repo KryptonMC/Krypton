@@ -23,7 +23,7 @@ import java.util.UUID
 class DerivedWorldData(delegate: WorldData) : WorldData {
 
     override val name = delegate.name
-    override var gamemode = delegate.gamemode
+    override var gameMode = delegate.gameMode
         set(_) = Unit
     override var difficulty = delegate.difficulty
         set(_) = Unit

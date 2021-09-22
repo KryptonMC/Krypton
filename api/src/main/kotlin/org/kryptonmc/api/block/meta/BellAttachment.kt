@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The attachment of a bell to another block.
  */
-public enum class BellAttachment(override val serialized: String) : StringSerializable {
+public enum class BellAttachment(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
     FLOOR("floor"),
     CEILING("ceiling"),

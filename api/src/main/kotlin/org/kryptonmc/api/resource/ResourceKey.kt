@@ -9,27 +9,41 @@
 package org.kryptonmc.api.resource
 
 import net.kyori.adventure.key.Key
+import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.registry.Registry
-import java.util.Collections
-import java.util.IdentityHashMap
+import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.util.provide
 
 /**
  * A key pointing to some form of resource.
  *
- * @param registry the [Key] name of the parent registry
- * @param location the [Key] location of the registry
  * @param T the type of this key
  */
-public class ResourceKey<T : Any> private constructor(
-    public val registry: Key,
-    public val location: Key
-) {
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface ResourceKey<T : Any> {
 
-    override fun toString(): String = "ResourceKey(registry=$registry, location=$location)"
+    /**
+     * The key of the parent registry.
+     */
+    @get:JvmName("registry")
+    public val registry: Key
+
+    /**
+     * The location of the registry.
+     */
+    @get:JvmName("location")
+    public val location: Key
+
+    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun <T : Any> of(registry: Key, location: Key): ResourceKey<T>
+    }
 
     public companion object {
 
-        private val VALUES: MutableMap<String, ResourceKey<*>> = Collections.synchronizedMap(IdentityHashMap())
+        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
 
         /**
          * Creates a new resource key, or returns an existing one if one with
@@ -43,10 +57,7 @@ public class ResourceKey<T : Any> private constructor(
          */
         @Suppress("UNCHECKED_CAST")
         @JvmStatic
-        public fun <T : Any> of(registry: Key, location: Key): ResourceKey<T> {
-            val key = "$registry:$location".intern()
-            return VALUES.getOrPut(key) { ResourceKey<T>(registry, location) } as ResourceKey<T>
-        }
+        public fun <T : Any> of(registry: Key, location: Key): ResourceKey<T> = FACTORY.of(registry, location)
 
         /**
          * Creates a new resource key, or returns an existing one if one with

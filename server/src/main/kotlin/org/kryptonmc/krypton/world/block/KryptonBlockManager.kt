@@ -31,7 +31,7 @@ object KryptonBlockManager : BlockManager {
 
     override fun handler(key: Key) = handlers[key.asString()]
 
-    override fun handler(block: Block) = handlers[block.key.asString()]
+    override fun handler(block: Block) = handlers[block.key().asString()]
 
     override fun register(key: String, handler: BlockHandler) {
         handlers[key] = handler
@@ -39,5 +39,5 @@ object KryptonBlockManager : BlockManager {
 
     override fun register(key: Key, handler: BlockHandler) = register(key.asString(), handler)
 
-    override fun register(block: Block, handler: BlockHandler) = register(block.key.asString(), handler)
+    override fun register(block: Block, handler: BlockHandler) = register(block.key().asString(), handler)
 }

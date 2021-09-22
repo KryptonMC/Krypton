@@ -14,11 +14,13 @@ import org.kryptonmc.api.resource.ResourceKey
 /**
  * The manager for registries.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface RegistryManager {
 
     /**
      * The parent registry. All registries should be a child of this registry.
      */
+    @get:JvmName("parent")
     public val parent: Registry<out Registry<out Any>>
 
     /**

@@ -25,8 +25,11 @@ import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.rule.GameRule
+import org.kryptonmc.api.world.scoreboard.CollisionRule
+import org.kryptonmc.api.world.scoreboard.Visibility
 import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 
 /**
@@ -64,6 +67,9 @@ public object Registries {
     @JvmField public val GAMERULES: Registry<GameRule<Any>> = create(ResourceKeys.GAMERULES)
     @JvmField public val MODIFIER_OPERATIONS: Registry<ModifierOperation> = create(ResourceKeys.MODIFIER_OPERATIONS)
     @JvmField public val CRITERIA: Registry<Criterion> = create(ResourceKeys.CRITERIA)
+    @JvmField public val VISIBILITIES: Registry<Visibility> = create(ResourceKeys.VISIBILITIES)
+    @JvmField public val COLLISION_RULES: Registry<CollisionRule> = create(ResourceKeys.COLLISION_RULES)
+    @JvmField public val GAME_MODES: Registry<GameMode> = create(ResourceKeys.GAME_MODES)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

@@ -26,11 +26,13 @@ import org.spongepowered.math.vector.Vector3i
  *
  * You can register these with [ItemManager.register].
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ItemHandler {
 
     /**
      * The type of item this is a handler for.
      */
+    @get:JvmName("type")
     public val type: ItemType
 
     /**
@@ -106,6 +108,7 @@ public interface ItemHandler {
  * @param hand the hand that was used to interact with
  * @param hitResult the result of the player attempting to hit the block
  */
+@JvmRecord
 public data class InteractionContext(
     public val player: Player,
     public val world: World,
@@ -117,27 +120,32 @@ public data class InteractionContext(
     /**
      * The position of the block that was interacted with.
      */
-    public val position: Vector3i = hitResult.position
+    public val position: Vector3i
+        get() = hitResult.position
 
     /**
      * The face of the block that the player clicked.
      */
-    public val clickedFace: Direction = hitResult.direction
+    public val clickedFace: Direction
+        get() = hitResult.direction
 
     /**
      * The location where the player clicked.
      */
-    public val clickLocation: Vector3d = hitResult.clickLocation
+    public val clickLocation: Vector3d
+        get() = hitResult.clickLocation
 
     /**
      * If the player is inside the block.
      */
-    public val isInside: Boolean = hitResult.isInside
+    public val isInside: Boolean
+        get() = hitResult.isInside
 
     /**
      * The player's pitch.
      */
-    public val pitch: Float = player.location.pitch
+    public val pitch: Float
+        get() = player.location.pitch
 }
 
 /**
@@ -146,7 +154,8 @@ public data class InteractionContext(
  * @param result the result
  * @param item the item
  */
-public class UseItemResult(
+@JvmRecord
+public data class UseItemResult(
     public val result: InteractionResult,
     public val item: ItemStack
 )

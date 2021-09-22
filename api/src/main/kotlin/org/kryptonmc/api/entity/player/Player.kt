@@ -23,11 +23,11 @@ import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.plugin.PluginMessageRecipient
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.space.Location
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticsTracker
-import org.kryptonmc.api.world.Gamemode
-import org.kryptonmc.api.space.Location
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard
@@ -109,7 +109,7 @@ public interface Player : LivingEntity,
     /**
      * This player's current game mode.
      */
-    public val gamemode: Gamemode
+    public val gameMode: GameMode
 
     /**
      * The direction this player is currently facing.

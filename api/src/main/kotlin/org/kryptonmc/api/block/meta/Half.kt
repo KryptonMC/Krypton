@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The half of a block.
  */
-public enum class Half(override val serialized: String) : StringSerializable {
+public enum class Half(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
     TOP("top"),
     BOTTOM("bottom")

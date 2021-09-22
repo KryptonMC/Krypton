@@ -9,29 +9,45 @@
 package org.kryptonmc.api.inventory
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Keyed
+import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.util.provide
 
 /**
  * Represents a type of [Inventory] that holds items.
- *
- * @param key the key
- * @param size the size of the inventory
  */
-public open class InventoryType(
-    public val key: Key,
-    public val size: Int
-)
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface InventoryType : Keyed {
 
-/**
- * Represents a type of inventory in a grid shape, such as a chest or a
- * dropper.
- *
- * @param key the key
- * @param columns the number of columns
- * @param rows the number of rows
- */
-@Suppress("MemberVisibilityCanBePrivate")
-public class GridInventoryType(
-    key: Key,
-    public val columns: Int,
-    public val rows: Int,
-) : InventoryType(key, rows * columns)
+    /**
+     * The size of the inventory.
+     */
+    @get:JvmName("size")
+    public val size: Int
+
+    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun of(key: Key, size: Int): InventoryType
+
+        public fun grid(key: Key, columns: Int, rows: Int): GridInventoryType
+    }
+
+    public companion object {
+
+        @JvmSynthetic
+        internal val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+
+        /**
+         * Creates a new inventory type with the given values.
+         *
+         * @param key the key
+         * @param size the size
+         * @return a new inventory type
+         */
+        @JvmStatic
+        public fun of(key: Key, size: Int): InventoryType = FACTORY.of(key, size)
+    }
+}

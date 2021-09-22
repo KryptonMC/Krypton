@@ -18,9 +18,9 @@ import org.kryptonmc.api.event.ResultedEvent
  * @param player the player sending the message
  * @param message the message sent
  */
-public class ChatEvent(
-    public val player: Player,
-    public val message: String
+public data class ChatEvent(
+    @get:JvmName("player") public val player: Player,
+    @get:JvmName("message") public val message: String
 ) : ResultedEvent<ComponentResult> {
 
     override var result: ComponentResult = ComponentResult.allowed()

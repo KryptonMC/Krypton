@@ -8,28 +8,25 @@
  */
 package org.kryptonmc.api.statistic
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.registry.Registry
 
 /**
  * A type of a statistic.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
-
-    /**
-     * The key for this statistic type.
-     */
-    public val key: Key
 
     /**
      * All of the statistics for this type.
      */
+    @get:JvmName("statistics")
     public val statistics: Map<T, Statistic<T>>
 
     /**
      * The registry for this statistic type.
      */
+    @get:JvmName("registry")
     public val registry: Registry<T>
 
     /**
@@ -60,6 +57,4 @@ public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
      * @return the statistic for the key
      */
     public operator fun get(key: T, formatter: StatisticFormatter): Statistic<T>
-
-    override fun key(): Key = key
 }

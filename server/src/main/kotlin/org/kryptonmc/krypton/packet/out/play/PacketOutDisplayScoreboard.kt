@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.world.scoreboard.ScoreboardPosition
 import org.kryptonmc.api.world.scoreboard.Team
+import org.kryptonmc.krypton.adventure.ordinal
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
@@ -35,7 +36,7 @@ data class PacketOutDisplayScoreboard(
         when (scoreboard.position) {
             ScoreboardPosition.TEAM_SPECIFIC -> {
                 requireNotNull(team) { "Team must be supplied if position is team specific!" }
-                buf.writeByte(3 + team.color.ordinal)
+                buf.writeByte(3 + team.color.ordinal())
             }
             else -> buf.writeByte(scoreboard.position.ordinal)
         }

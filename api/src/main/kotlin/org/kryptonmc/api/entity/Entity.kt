@@ -40,6 +40,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * The unique ID of this entity.
      */
     public val uuid: UUID
+        @JvmName("getUUID") get
 
     /**
      * The custom display name of this entity, as a component.

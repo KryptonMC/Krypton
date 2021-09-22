@@ -44,14 +44,16 @@ import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.Statistic
-import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.api.space.Location
+import org.kryptonmc.api.world.GameMode
+import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard
@@ -109,12 +111,14 @@ import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
 import java.time.Duration
 import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.UnaryOperator
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
+@Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonPlayer(
     val session: SessionHandler,
     override val profile: KryptonGameProfile,
@@ -124,8 +128,11 @@ class KryptonPlayer(
 
     var permissionFunction = PermissionFunction.ALWAYS_NOT_SET
 
-    override val name = profile.name
-    override var uuid = profile.uuid
+    override val name: String
+        get() = profile.name
+    override var uuid: UUID
+        get() = profile.uuid
+        set(_) = Unit // Player UUIDs are read only.
 
     override var canFly = false
     override var canBuild = false
@@ -162,14 +169,14 @@ class KryptonPlayer(
      * [NullPointerException] to occur client-side because it attempts to get
      * the abilities from a null player.
      */
-    private var internalGamemode = Gamemode.SURVIVAL
+    private var internalGamemode = GameModes.SURVIVAL
 
-    var oldGamemode: Gamemode? = null
-    override var gamemode: Gamemode
+    var oldGameMode: GameMode? = null
+    override var gameMode: GameMode
         get() = internalGamemode
         set(value) {
-            if (value == internalGamemode) return
-            oldGamemode = internalGamemode
+            if (value === internalGamemode) return
+            oldGameMode = internalGamemode
             internalGamemode = value
             updateAbilities()
             onAbilitiesUpdate()
@@ -177,8 +184,8 @@ class KryptonPlayer(
                 PacketOutPlayerInfo.PlayerAction.UPDATE_GAMEMODE,
                 this
             ))
-            session.send(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, value.ordinal.toFloat()))
-            if (value != Gamemode.SPECTATOR) camera = this
+            session.send(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, Registries.GAME_MODES.idOf(value).toFloat()))
+            if (value !== GameModes.SPECTATOR) camera = this
         }
     override val direction: Direction
         get() = Direction.fromPitch(location.pitch.toDouble())
@@ -213,8 +220,8 @@ class KryptonPlayer(
     override fun load(tag: CompoundTag) {
         super.load(tag)
         uuid = profile.uuid
-        oldGamemode = Gamemode.fromId((tag["previousPlayerGameType"] as? IntTag)?.value ?: -1)
-        internalGamemode = Gamemode.fromId(tag.getInt("playerGameType")) ?: Gamemode.SURVIVAL
+        (tag["previousPlayerGameType"] as? IntTag)?.value?.let { oldGameMode = Registries.GAME_MODES[it] }
+        internalGamemode = Registries.GAME_MODES[tag.getInt("playerGameType")] ?: GameModes.SURVIVAL
         inventory.load(tag.getList("Inventory", CompoundTag.ID))
         inventory.heldSlot = tag.getInt("SelectedItemSlot")
         score = tag.getInt("Score")
@@ -276,8 +283,8 @@ class KryptonPlayer(
         }
         if (leftShoulder.isNotEmpty()) put("ShoulderEntityLeft", leftShoulder)
         if (rightShoulder.isNotEmpty()) put("ShoulderEntityRight", rightShoulder)
-        int("playerGameType", internalGamemode.ordinal)
-        oldGamemode?.let { int("previousPlayerGameType", it.ordinal) }
+        int("playerGameType", Registries.GAME_MODES.idOf(internalGamemode))
+        oldGameMode?.let { int("previousPlayerGameType", Registries.GAME_MODES.idOf(it)) }
         string("Dimension", dimension.location.asString())
         respawnPosition?.let { position ->
             int("SpawnX", position.x())
@@ -426,12 +433,12 @@ class KryptonPlayer(
 
     private fun updateAbilities() {
         when (internalGamemode) {
-            Gamemode.CREATIVE -> {
+            GameModes.CREATIVE -> {
                 isInvulnerable = true
                 canFly = true
                 canInstantlyBuild = true
             }
-            Gamemode.SPECTATOR -> {
+            GameModes.SPECTATOR -> {
                 isInvulnerable = true
                 canFly = true
                 isFlying = true
@@ -529,7 +536,7 @@ class KryptonPlayer(
 
     private fun updateInvisibility() {
         removeEffectParticles()
-        isInvisible = internalGamemode == Gamemode.SPECTATOR
+        isInvisible = internalGamemode === GameModes.SPECTATOR
     }
 
     override fun incrementStatistic(statistic: Statistic<*>, amount: Int) = statistics.increment(statistic, amount)

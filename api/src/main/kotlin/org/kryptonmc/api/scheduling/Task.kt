@@ -11,16 +11,19 @@ package org.kryptonmc.api.scheduling
 /**
  * A scheduled task.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Task {
 
     /**
      * The plugin that scheduled this task.
      */
+    @get:JvmName("plugin")
     public val plugin: Any
 
     /**
      * The current state of the scheduled task.
      */
+    @get:JvmName("state")
     public val state: TaskState
 
     /**

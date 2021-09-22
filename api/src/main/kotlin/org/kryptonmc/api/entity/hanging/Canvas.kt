@@ -8,28 +8,23 @@
  */
 package org.kryptonmc.api.entity.hanging
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
 
 /**
  * The canvas of a painting.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Canvas : Keyed {
-
-    /**
-     * The key of this motive.
-     */
-    public val key: Key
 
     /**
      * The width of this motive.
      */
+    @get:JvmName("width")
     public val width: Int
 
     /**
      * The height of this motive.
      */
+    @get:JvmName("height")
     public val height: Int
-
-    override fun key(): Key = key
 }

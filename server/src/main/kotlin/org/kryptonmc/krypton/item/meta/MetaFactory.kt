@@ -117,7 +117,7 @@ private val BLOCK_LIST_META_SERIALIZER = ItemMetaSerializer(
         blocks
     },
     { nbt, blocks ->
-        nbt["CanDestroy"] = MutableListTag(blocks.mapTo(mutableListOf()) { StringTag.of(it.key.asString()) })
+        nbt["CanDestroy"] = MutableListTag(blocks.mapTo(mutableListOf()) { StringTag.of(it.key().asString()) })
     },
     { it.contains("CanDestroy", ListTag.ID) }
 )

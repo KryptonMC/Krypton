@@ -29,7 +29,7 @@ import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.server.TickEndEvent
 import org.kryptonmc.api.event.server.TickStartEvent
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.KryptonGameProfile
@@ -94,9 +94,9 @@ class KryptonServer(
             // TODO: Update mob spawning flags
             playerManager.players.forEach { it.session.send(PacketOutDifficulty(it.world.difficulty)) }
         }
-    override var gamemode: Gamemode
-        get() = worldData.gamemode
-        set(value) { worldData.gamemode = value }
+    override var gameMode: GameMode
+        get() = worldData.gameMode
+        set(value) { worldData.gameMode = value }
 
     override val address = InetSocketAddress(config.server.ip, config.server.port)
 

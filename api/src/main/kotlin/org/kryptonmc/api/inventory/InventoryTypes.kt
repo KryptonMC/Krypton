@@ -49,11 +49,11 @@ public object InventoryTypes {
     // @formatter:on
     private fun register(name: String, size: Int): InventoryType {
         val key = Key.key(name)
-        return Registries.register(Registries.MENU, key, InventoryType(key, size))
+        return Registries.register(Registries.MENU, key, InventoryType.of(key, size))
     }
 
     private fun register(name: String, columns: Int, rows: Int): GridInventoryType {
         val key = Key.key(name)
-        return Registries.register(Registries.MENU, key, GridInventoryType(key, rows, columns)) as GridInventoryType
+        return Registries.register(Registries.MENU, key, GridInventoryType.of(key, rows, columns)) as GridInventoryType
     }
 }

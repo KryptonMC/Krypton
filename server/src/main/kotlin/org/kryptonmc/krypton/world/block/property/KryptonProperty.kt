@@ -29,8 +29,7 @@ sealed class KryptonProperty<T : Comparable<T>>(
 ) : Property<T> {
 
     val codec: Codec<T> = Codec.STRING.comapFlatMap(
-        { key -> fromString(key)?.let { DataResult.success(it) }
-            ?: DataResult.error("Unable to read property $this with value $key") },
+        { key -> fromString(key)?.let { DataResult.success(it) } ?: DataResult.error("Unable to read property $this with value $key") },
         ::toString
     )
 

@@ -34,7 +34,7 @@ import org.spongepowered.math.vector.Vector3i
 
 open class KryptonBlockHandler : BlockHandler {
 
-    override fun getDestroyProgress(player: Player, world: World, block: Block, position: Vector3i): Float {
+    override fun calculateDestroyProgress(player: Player, world: World, block: Block, position: Vector3i): Float {
         val hardness = block.hardness
         if (hardness == -1.0) return 0F
         val factor = if (player.hasCorrectTool(block)) 30 else 100

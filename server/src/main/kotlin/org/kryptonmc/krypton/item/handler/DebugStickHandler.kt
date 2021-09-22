@@ -64,7 +64,7 @@ object DebugStickHandler : KryptonItemHandler(ItemTypes.DEBUG_STICK) {
     ): Boolean {
         if (!player.canUseGameMasterBlocks) return false
         val properties = block.availableProperties
-        val key = block.key.asString()
+        val key = block.key().asString()
         if (properties.isEmpty()) {
             player.sendActionBar(translatable("${type.translation.key()}.empty", text(key)))
             return false

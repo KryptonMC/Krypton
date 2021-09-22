@@ -8,26 +8,23 @@
  */
 package org.kryptonmc.api.event.player
 
-import net.kyori.adventure.extra.kotlin.translatable
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.event.ComponentResult
+import org.kryptonmc.api.event.ResultedEvent
 
 /**
  * Called when the connection to a player in the PLAY state is lost.
  *
  * @param player the player who quit
  */
-public class QuitEvent(public val player: Player) {
+public data class QuitEvent(@get:JvmName("player") public val player: Player) : ResultedEvent<ComponentResult> {
 
-    /**
-     * The message to send to the player when they quit.
-     */
-    @Volatile
-    public var message: Component = translatable {
-        key("multiplayer.player.left")
-        color(NamedTextColor.YELLOW)
-        args(text(player.name))
-    }
+    override var result: ComponentResult = ComponentResult.allowed(translatable(
+        "multiplayer.player.left",
+        NamedTextColor.YELLOW,
+        text(player.name)
+    ))
 }

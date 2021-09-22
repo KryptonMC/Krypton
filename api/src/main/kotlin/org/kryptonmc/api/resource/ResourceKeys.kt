@@ -22,8 +22,11 @@ import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.statistic.StatisticType
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRule
+import org.kryptonmc.api.world.scoreboard.CollisionRule
+import org.kryptonmc.api.world.scoreboard.Visibility
 import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 
 /**
@@ -61,6 +64,9 @@ public object ResourceKeys {
     @JvmField public val MODIFIER_OPERATIONS: ResourceKey<out Registry<ModifierOperation>> =
         krypton("attribute_modifier_operations")
     @JvmField public val CRITERIA: ResourceKey<out Registry<Criterion>> = krypton("criteria")
+    @JvmField public val VISIBILITIES: ResourceKey<out Registry<Visibility>> = krypton("visibilities")
+    @JvmField public val COLLISION_RULES: ResourceKey<out Registry<CollisionRule>> = krypton("collision_rules")
+    @JvmField public val GAME_MODES: ResourceKey<out Registry<GameMode>> = krypton("game_modes")
     // @formatter:on
 
     /**

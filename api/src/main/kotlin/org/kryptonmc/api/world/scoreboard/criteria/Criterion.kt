@@ -8,23 +8,19 @@
  */
 package org.kryptonmc.api.world.scoreboard.criteria
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.world.scoreboard.RenderType
 
 /**
  * The criterion for a scoreboard objective to be displayed.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Criterion : Keyed {
-
-    /**
-     * The key for this criterion.
-     */
-    public val key: Key
 
     /**
      * The name of this criterion.
      */
+    @get:JvmName("name")
     public val name: String
 
     /**
@@ -35,7 +31,6 @@ public interface Criterion : Keyed {
     /**
      * The render type of this criterion.
      */
+    @get:JvmName("renderType")
     public val renderType: RenderType
-
-    override fun key(): Key = key
 }

@@ -13,20 +13,24 @@ import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 /**
  * Represents a statistic that may be counted.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Statistic<T : Any> : Criterion {
 
     /**
      * The type of this statistic.
      */
+    @get:JvmName("type")
     public val type: StatisticType<T>
 
     /**
      * The value for this statistic.
      */
+    @get:JvmName("value")
     public val value: T
 
     /**
      * The formatter used to format values for this statistic.
      */
+    @get:JvmName("formatter")
     public val formatter: StatisticFormatter
 }

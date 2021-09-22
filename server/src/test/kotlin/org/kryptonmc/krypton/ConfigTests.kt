@@ -19,20 +19,23 @@
 package org.kryptonmc.krypton
 
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.config.category.StatusCategory
+import org.kryptonmc.krypton.util.Bootstrap
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class ConfigTests {
 
     @Test
     fun `test config loads properly with correct values`() {
+        Bootstrap.preload()
         val loader = HoconConfigurationLoader.builder()
             .defaultOptions(KryptonConfig.OPTIONS)
             .source {
@@ -53,7 +56,7 @@ class ConfigTests {
 
         // World settings
         assertEquals("world", config.world.name)
-        assertEquals(Gamemode.SURVIVAL, config.world.gamemode)
+        assertSame(GameModes.SURVIVAL, config.world.gameMode)
         assertFalse(config.world.forceDefaultGamemode)
         assertEquals(Difficulty.NORMAL, config.world.difficulty)
         assertFalse(config.world.hardcore)
@@ -74,6 +77,7 @@ class ConfigTests {
 
     @Test
     fun `test config defaults`() {
+        Bootstrap.preload()
         val config = KryptonConfig()
 
         // Server settings
@@ -88,7 +92,7 @@ class ConfigTests {
 
         // World settings
         assertEquals("world", config.world.name)
-        assertEquals(Gamemode.SURVIVAL, config.world.gamemode)
+        assertEquals(GameModes.SURVIVAL, config.world.gameMode)
         assertFalse(config.world.forceDefaultGamemode)
         assertEquals(Difficulty.NORMAL, config.world.difficulty)
         assertFalse(config.world.hardcore)

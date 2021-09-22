@@ -26,7 +26,7 @@ import org.kryptonmc.api.statistic.StatisticType
 import java.util.IdentityHashMap
 
 class KryptonStatisticType<T : Any>(
-    override val key: Key,
+    private val key: Key,
     override val registry: Registry<T>
 ) : StatisticType<T> {
 
@@ -41,4 +41,6 @@ class KryptonStatisticType<T : Any>(
     }
 
     override fun iterator() = statistics.values.iterator()
+
+    override fun key(): Key = key
 }

@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The side of redstone.
  */
-public enum class RedstoneSide(override val serialized: String) : StringSerializable {
+public enum class RedstoneSide(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
     UP("up"),
     SIDE("side"),

@@ -81,7 +81,7 @@ public interface World : ForwardingAudience {
     /**
      * The default gamemode of this world.
      */
-    public val gamemode: Gamemode
+    public val gameMode: GameMode
 
     /**
      * If the world is a hardcore world.

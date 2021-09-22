@@ -13,11 +13,13 @@ import org.kryptonmc.api.world.biome.Biome
 /**
  * Represents a container that holds biomes
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface BiomeContainer {
 
     /**
      * The array of biomes in this chunk
      */
+    @get:JvmName("biomes")
     public val biomes: Array<out Biome>
 
     /**

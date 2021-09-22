@@ -13,7 +13,7 @@ import net.kyori.adventure.key.Key
 /**
  * A recipient of plugin messages.
  */
-public interface PluginMessageRecipient {
+public fun interface PluginMessageRecipient {
 
     /**
      * Send a plugin message to this recipient on the specified [channel] with

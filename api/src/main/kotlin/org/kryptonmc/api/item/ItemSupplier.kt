@@ -11,10 +11,12 @@ package org.kryptonmc.api.item
 /**
  * Something that can supply items.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ItemSupplier {
 
     /**
      * The supplied item.
      */
+    @get:JvmName("item")
     public val item: ItemStack
 }

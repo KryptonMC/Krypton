@@ -33,7 +33,7 @@ data class FlatLayer(
     val height: Int
 ) {
 
-    override fun toString() = "${if (height != 1) "$height*" else ""}${block.key}"
+    override fun toString() = "${if (height != 1) "$height*" else ""}${block.key()}"
 
     companion object {
 

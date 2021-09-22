@@ -16,22 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.world.rule
 
-import net.kyori.adventure.text.Component
-import org.kryptonmc.api.event.player.QuitEvent
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import net.kyori.adventure.text.TranslatableComponent
+import org.kryptonmc.api.world.rule.GameRule
 
-class EventTests {
+@JvmRecord
+data class KryptonGameRule<V : Any>(
+    override val name: String,
+    override val default: V,
+    override val translation: TranslatableComponent
+) : GameRule<V> {
 
-    @Test
-    fun `test quit event message updates`() {
-        val event = QuitEvent(player)
-        val message = Component.text("Goodbye!")
-        event.message = message
+    object Factory : GameRule.Factory {
 
-        assertEquals(message, event.message)
-        assertEquals(player, event.player)
+        override fun <V : Any> of(
+            name: String,
+            default: V,
+            translation: TranslatableComponent
+        ): GameRule<V> = KryptonGameRule(name, default, translation)
     }
 }

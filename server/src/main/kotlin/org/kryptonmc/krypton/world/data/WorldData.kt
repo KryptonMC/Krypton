@@ -19,17 +19,16 @@
 package org.kryptonmc.krypton.world.data
 
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.world.DataPackConfig
-import org.kryptonmc.krypton.world.KryptonGameRuleHolder
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import java.util.UUID
 
 interface WorldData {
 
     // Settings
     val name: String
-    var gamemode: Gamemode
+    var gameMode: GameMode
     var difficulty: Difficulty
     var isHardcore: Boolean
     var gameRules: KryptonGameRuleHolder

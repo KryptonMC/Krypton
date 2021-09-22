@@ -66,26 +66,31 @@ public interface DimensionType {
     /**
      * The amount of lighting clients will display when in this dimension.
      */
+    @get:JvmName("ambientLight")
     public val ambientLight: Float
 
     /**
      * The time it will always be. If null, the time will progress normally.
      */
+    @get:JvmName("fixedTime")
     public val fixedTime: Long?
 
     /**
      * The settings used to define which blocks burn infinitely.
      */
+    @get:JvmName("infiniburn")
     public val infiniburn: Key
 
     /**
      * The minimum Y level that can be built at.
      */
+    @get:JvmName("minimumY")
     public val minimumY: Int
 
     /**
      * The maximum Y level that can be built at.
      */
+    @get:JvmName("height")
     public val height: Int
 
     /**
@@ -95,6 +100,7 @@ public interface DimensionType {
      * the logical height for the nether is 128, as whilst you can still build
      * above he nether roof, it is not intended for you to do so.
      */
+    @get:JvmName("logicalHeight")
     public val logicalHeight: Int
 
     /**
@@ -103,5 +109,6 @@ public interface DimensionType {
      * 8 blocks in dimensions with a coordinate scale of 1.0, such as the
      * overworld and the end.
      */
+    @get:JvmName("coordinateScale")
     public val coordinateScale: Double
 }

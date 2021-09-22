@@ -23,7 +23,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonPlatform
@@ -33,7 +33,6 @@ import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.util.ChunkProgressListener
 import org.kryptonmc.krypton.util.daemon
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.threadFactory
 import org.kryptonmc.krypton.util.uncaughtExceptionHandler
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
@@ -43,17 +42,16 @@ import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.world.generation.DebugGenerator
+import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.kryptonmc.krypton.world.storage.WorldDataStorage
 import java.io.File
 import java.io.IOException
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executors
 import java.util.concurrent.SynchronousQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
-import kotlin.io.path.exists
 
 @Suppress("MemberVisibilityCanBePrivate")
 class KryptonWorldManager(
@@ -118,13 +116,13 @@ class KryptonWorldManager(
 
         return CompletableFuture.supplyAsync({
             val worldData = storage.loadData(defaultData.dataPackConfig) ?: kotlin.run {
-                val gamemode = server.config.world.gamemode
+                val gameMode = server.config.world.gameMode
                 val difficulty = server.config.world.difficulty
                 val hardcore = server.config.world.hardcore
                 val rules = KryptonGameRuleHolder()
                 PrimaryWorldData(
                     folderName,
-                    gamemode,
+                    gameMode,
                     difficulty,
                     hardcore,
                     rules,
@@ -210,7 +208,7 @@ class KryptonWorldManager(
         data.isThundering = false
         data.clearWeatherTime = 1000000000
         data.dayTime = 6000L
-        data.gamemode = Gamemode.SPECTATOR
+        data.gameMode = (GameModes.SPECTATOR as KryptonGameMode)
     }
 
     fun saveAll(): Boolean {

@@ -25,21 +25,41 @@ import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ParticleData
+import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.attribute.AttributeModifier
+import org.kryptonmc.api.entity.attribute.AttributeType
+import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.registry.RegistryManager
+import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.FactoryNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.world.GameMode
+import org.kryptonmc.api.world.rule.GameRule
+import org.kryptonmc.api.world.scoreboard.Objective
+import org.kryptonmc.api.world.scoreboard.Score
+import org.kryptonmc.api.world.scoreboard.Team
 import org.kryptonmc.krypton.auth.KryptonGameProfileFactory
 import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffectFactory
 import org.kryptonmc.krypton.effect.particle.data.KryptonParticleDataFactory
+import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
+import org.kryptonmc.krypton.entity.KryptonEntityDimensions
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeType
+import org.kryptonmc.krypton.inventory.KryptonInventoryType
 import org.kryptonmc.krypton.item.KryptonItemStackFactory
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
+import org.kryptonmc.krypton.resource.KryptonResourceKey
+import org.kryptonmc.krypton.world.KryptonGameMode
 import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.block.KryptonBlockHitResultFactory
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
+import org.kryptonmc.krypton.world.rule.KryptonGameRule
+import org.kryptonmc.krypton.world.scoreboard.KryptonObjective
+import org.kryptonmc.krypton.world.scoreboard.KryptonScore
+import org.kryptonmc.krypton.world.scoreboard.KryptonTeam
 
 class KryptonFactoryProvider : FactoryProvider {
 
@@ -55,16 +75,24 @@ class KryptonFactoryProvider : FactoryProvider {
     }
 
     fun bootstrap() {
+        register<ResourceKey.Factory>(KryptonResourceKey.Factory)
         register<ParticleData.Factory>(KryptonParticleDataFactory)
         register<ParticleEffect.Factory>(KryptonParticleEffectFactory)
         register<BlockHitResult.Factory>(KryptonBlockHitResultFactory)
         register<AttributeModifier.Factory>(KryptonAttributeModifier.Factory)
+        register<AttributeType.Factory>(KryptonAttributeType.Factory)
         register<Property.Factory>(KryptonPropertyFactory)
         register<RegistryManager>(KryptonRegistryManager)
-        BlockLoader.init()
         register<ItemStack.Factory>(KryptonItemStackFactory)
         register<CommandMeta.Factory>(KryptonCommandMeta.Factory)
         register<GameProfile.Factory>(KryptonGameProfileFactory)
+        register<SoundEvent.Factory>(KryptonSoundEvent.Factory)
+        register<EntityDimensions.Factory>(KryptonEntityDimensions.Factory)
+        register<InventoryType.Factory>(KryptonInventoryType.Factory)
+        register<Objective.Factory>(KryptonObjective.Factory)
+        register<Score.Factory>(KryptonScore.Factory)
+        register<GameRule.Factory>(KryptonGameRule.Factory)
+        register<GameMode.Factory>(KryptonGameMode.Factory)
     }
 }
 

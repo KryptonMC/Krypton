@@ -16,27 +16,32 @@ import org.kryptonmc.api.item.ItemStack
 /**
  * Represents a player's inventory.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface PlayerInventory : Inventory {
 
     /**
      * The array of crafting slots in this inventory, where the first 4
      * elements of this array are the input, and the last slot is the output.
      */
+    @get:JvmName("crafting")
     public val crafting: Array<out ItemStack>
 
     /**
      * The array of armor pieces in this inventory.
      */
+    @get:JvmName("armor")
     public val armor: Array<out ItemStack>
 
     /**
      * The item that this player is currently holding in their main hand.
      */
+    @get:JvmName("mainHand")
     public val mainHand: ItemStack
 
     /**
      * The item that this player is currently holding in their offhand.
      */
+    @get:JvmName("offHand")
     public val offHand: ItemStack
 
     /**
@@ -62,8 +67,10 @@ public interface PlayerInventory : Inventory {
     /**
      * The slot of the currently held item.
      */
+    @get:JvmName("heldSlot")
     public val heldSlot: Int
 
+    @get:JvmName("owner")
     override val owner: Player
 
     /**

@@ -29,11 +29,10 @@ import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.player.ChatEvent
-import org.kryptonmc.api.event.player.ClientSettingsEvent
 import org.kryptonmc.api.event.player.MoveEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
 import org.kryptonmc.api.item.meta.MetaKeys
-import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
@@ -70,10 +69,8 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.toSkinSettings
 import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
-import java.util.Locale
 
 /**
  * This is the largest and most important of the four packet handlers, as the
@@ -175,15 +172,6 @@ class PlayHandler(
     }
 
     private fun handleClientSettings(packet: PacketInClientSettings) {
-        val event = ClientSettingsEvent(
-            player,
-            Locale(packet.locale),
-            packet.viewDistance.toInt(),
-            packet.chatColors,
-            packet.skinSettings.toSkinSettings()
-        )
-        server.eventManager.fireAndForget(event)
-
         player.mainHand = packet.mainHand
         player.skinSettings = packet.skinSettings.toByte()
         playerManager.sendToAll(PacketOutMetadata(
@@ -193,7 +181,7 @@ class PlayHandler(
     }
 
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
-        if (player.gamemode != Gamemode.CREATIVE) return
+        if (player.gameMode !== GameModes.CREATIVE) return
         val item = packet.clickedItem
         val inValidRange = packet.slot in 1..45
         val hasDamage = MetaKeys.DAMAGE in item.meta && item.meta[MetaKeys.DAMAGE]!! >= 0
@@ -254,7 +242,7 @@ class PlayHandler(
     }
 
     private fun handlePlayerDigging(packet: PacketInPlayerDigging) {
-        if (player.gamemode != Gamemode.CREATIVE) return
+        if (player.gameMode !== GameModes.CREATIVE) return
         if (packet.status != DiggingStatus.STARTED) return
 
         val chunkX = packet.location.x() shr 4

@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * Represents a type of chest.
  */
-public enum class ChestType(override val serialized: String) : StringSerializable {
+public enum class ChestType(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
     SINGLE("single"),
     LEFT("left"),
@@ -22,6 +22,7 @@ public enum class ChestType(override val serialized: String) : StringSerializabl
     /**
      * The chest type opposite to this chest type.
      */
+    @get:JvmName("opposite")
     public val opposite: ChestType by lazy {
         when (this) {
             SINGLE -> SINGLE

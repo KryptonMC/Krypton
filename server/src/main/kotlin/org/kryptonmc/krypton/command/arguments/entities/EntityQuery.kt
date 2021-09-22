@@ -24,12 +24,12 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.world.Gamemode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.world.KryptonGameMode
 
 /**
  * Documentation [TODO]
@@ -152,9 +152,9 @@ class EntityQuery(
                     entities = entities.filter {
                         if (it !is KryptonPlayer) return@filter true
                         if (exclude) {
-                            it.gamemode != Gamemode.fromName(value.toString())
+                            it.gameMode !== KryptonGameMode.fromName(value.toString())
                         } else {
-                            it.gamemode == Gamemode.fromName(value.toString())
+                            it.gameMode === KryptonGameMode.fromName(value.toString())
                         }
                     }
                 }

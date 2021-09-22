@@ -24,8 +24,8 @@ import org.kryptonmc.api.event.ResultedEvent.Result
  * @param player the player who joined
  * @param hasChangedName if this player has joined before
  */
-public class JoinEvent(
-    public val player: Player,
+public data class JoinEvent(
+    @get:JvmName("player") public val player: Player,
     @get:JvmName("hasChangedName") public val hasChangedName: Boolean
 ) : ResultedEvent<JoinResult> {
 
@@ -47,7 +47,8 @@ public class JoinEvent(
  * @param message the join message
  * @param hasChangedName if the player joining has joined before
  */
-public class JoinResult(
+@JvmRecord
+public data class JoinResult(
     override val isAllowed: Boolean,
     public val message: Component,
     @get:JvmName("hasChangedName") public val hasChangedName: Boolean

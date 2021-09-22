@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.fluid.Fluid
@@ -25,38 +26,45 @@ import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.data.FluidData
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
-class KryptonFluid(
-    data: FluidData,
+data class KryptonFluid(
+    private val data: FluidData,
     override val availableProperties: Set<Property<*>>,
     override val properties: Map<String, String>
 ) : KryptonPropertyHolder<Fluid>(), Fluid {
 
-    override val key = data.key
-    override val id = data.id
-    override val stateId = data.stateId
+    override val id: Int
+        get() = data.id
+    override val stateId: Int
+        get() = data.stateId
     override val bucket = InternalRegistries.ITEM[data.bucketId]
-    override val explosionResistance = data.explosionResistance
-    override val isEmpty = data.empty
-    override val height = data.height
-    override val isSource = data.source
-    override val level = data.level
-    private val blockKey = data.blockKey
+    override val explosionResistance: Double
+        get() = data.explosionResistance
+    override val isEmpty: Boolean
+        get() = data.empty
+    override val height: Float
+        get() = data.height
+    override val isSource: Boolean
+        get() = data.source
+    override val level: Int
+        get() = data.level
 
     override fun copy(key: String, value: String): Fluid {
         val newProperties = properties + (key to value)
-        return requireNotNull(FluidLoader.properties(this.key.asString(), newProperties)) {
-            "Invalid property $key:$value for block ${this.key}"
+        return requireNotNull(FluidLoader.properties(this.key().asString(), newProperties)) {
+            "Invalid property $key:$value for block ${this.key()}"
         }
     }
 
     override fun copy(newValues: Map<String, String>): Fluid {
         val newProperties = properties + newValues
-        return requireNotNull(FluidLoader.properties(key.asString(), newProperties)) {
-            "Invalid properties $newValues for block $key!"
+        return requireNotNull(FluidLoader.properties(key().asString(), newProperties)) {
+            "Invalid properties $newValues for block ${key()}!"
         }
     }
 
-    override fun asBlock() = InternalRegistries.BLOCK[blockKey] ?: Blocks.AIR
+    override fun asBlock() = InternalRegistries.BLOCK[data.blockKey] ?: Blocks.AIR
+
+    override fun key(): Key = data.key
 
     override fun compareTo(other: Fluid) = id.compareTo(other.id)
 }

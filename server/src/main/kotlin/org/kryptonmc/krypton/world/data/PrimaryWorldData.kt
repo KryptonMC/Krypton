@@ -20,15 +20,17 @@ package org.kryptonmc.krypton.world.data
 
 import ca.spottedleaf.dataconverter.types.MapType
 import ca.spottedleaf.dataconverter.types.ObjectType
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.GameMode
+import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.util.converter.types.nbt.NBTMapType
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.toUUID
 import org.kryptonmc.krypton.world.DataPackConfig
-import org.kryptonmc.krypton.world.KryptonGameRuleHolder
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
+import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
 import org.kryptonmc.nbt.StringTag
@@ -38,7 +40,7 @@ import java.util.UUID
 
 class PrimaryWorldData(
     override val name: String,
-    override var gamemode: Gamemode,
+    override var gameMode: GameMode,
     override var difficulty: Difficulty,
     override var isHardcore: Boolean,
     override var gameRules: KryptonGameRuleHolder,
@@ -68,7 +70,7 @@ class PrimaryWorldData(
 
     constructor(
         name: String,
-        gamemode: Gamemode,
+        gameMode: GameMode,
         difficulty: Difficulty,
         isHardcore: Boolean,
         gameRules: KryptonGameRuleHolder,
@@ -76,7 +78,7 @@ class PrimaryWorldData(
         worldGenerationSettings: WorldGenerationSettings
     ) : this(
         name,
-        gamemode,
+        gameMode,
         difficulty,
         isHardcore,
         gameRules,
@@ -115,7 +117,7 @@ class PrimaryWorldData(
                 boolean("Snapshot", !KryptonPlatform.isStableMinecraft)
             }
             string("LevelName", name)
-            int("GameType", gamemode.ordinal)
+            int("GameType", Registries.GAME_MODES.idOf(gameMode))
             byte("Difficulty", difficulty.ordinal.toByte())
             boolean("hardcore", isHardcore)
             put("GameRules", gameRules.save())
@@ -165,7 +167,7 @@ class PrimaryWorldData(
             )
             return PrimaryWorldData(
                 data.getString("LevelName", "")!!,
-                Gamemode.fromId(data.getInt("GameType", 0)) ?: Gamemode.SURVIVAL,
+                Registries.GAME_MODES[data.getInt("GameType", 0)] ?: GameModes.SURVIVAL,
                 data.getNumber("Difficulty")?.let { Difficulty.fromId(it.toInt()) } ?: Difficulty.NORMAL,
                 data.getBoolean("hardcore", false),
                 KryptonGameRuleHolder(data.getMap("GameRules") ?: NBTMapType(MutableCompoundTag())),

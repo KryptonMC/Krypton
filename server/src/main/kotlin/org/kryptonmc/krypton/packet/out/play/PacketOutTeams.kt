@@ -19,14 +19,16 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.world.scoreboard.Option
-import org.kryptonmc.api.world.scoreboard.OptionApplication
+import net.kyori.adventure.text.Component
+import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.world.scoreboard.Team
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.adventure.ordinal
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.world.scoreboard.KryptonCollisionRule
+import org.kryptonmc.krypton.world.scoreboard.KryptonVisibility
 
 /**
  * Tells the client to perform an action to a team on their current scoreboard
@@ -35,8 +37,8 @@ import org.kryptonmc.krypton.util.writeVarInt
 data class PacketOutTeams(
     private val action: TeamAction,
     private val team: Team,
-    private val addedMembers: List<KryptonPlayer> = emptyList(), // only applies for add players
-    private val removedMembers: List<KryptonPlayer> = emptyList() // only applies for remove players
+    private val addedMembers: Set<Component> = emptySet(), // only applies for add players
+    private val removedMembers: Set<Component> = emptySet() // only applies for remove players
 ) : Packet {
 
     override fun write(buf: ByteBuf) {
@@ -47,17 +49,17 @@ data class PacketOutTeams(
             TeamAction.CREATE -> {
                 buf.writeTeamInfo()
                 buf.writeVarInt(team.members.size)
-                for (member in team.members) buf.writeString(member.name, 40)
+                for (member in team.members) buf.writeString(member.toLegacySectionText(), 40)
             }
             TeamAction.REMOVE -> Unit
             TeamAction.UPDATE_INFO -> buf.writeTeamInfo()
             TeamAction.ADD_PLAYERS -> {
                 buf.writeVarInt(addedMembers.size)
-                for (member in addedMembers) buf.writeString(member.name, 40)
+                for (member in addedMembers) buf.writeString(member.toLegacySectionText(), 40)
             }
             TeamAction.REMOVE_PLAYERS -> {
                 buf.writeVarInt(removedMembers.size)
-                for (member in removedMembers) buf.writeString(member.name, 40)
+                for (member in removedMembers) buf.writeString(member.toLegacySectionText(), 40)
             }
         }
     }
@@ -65,9 +67,9 @@ data class PacketOutTeams(
     private fun ByteBuf.writeTeamInfo() {
         writeChat(team.displayName)
         writeByte(team.flagsToProtocol())
-        writeString(team.nametagVisibility(), 32)
-        writeString(team.collisionRule(), 32)
-        writeVarInt(team.color.ordinal)
+        writeString((team.nameTagVisibility as KryptonVisibility).name, 32)
+        writeString((team.collisionRule as KryptonCollisionRule).name, 32)
+        writeVarInt(team.color.ordinal())
         writeChat(team.prefix)
         writeChat(team.suffix)
     }
@@ -77,24 +79,6 @@ data class PacketOutTeams(
         if (allowFriendlyFire) byte += 0x01
         if (canSeeInvisibleMembers) byte += 0x02
         return byte
-    }
-
-    // These are functions because apparently you cannot use properties from the receiver type
-    // in value extension properties.
-    private fun Team.nametagVisibility() = when (options[Option.NAMETAG_VISIBILITY]) {
-        OptionApplication.ALWAYS -> "always"
-        OptionApplication.NEVER -> "never"
-        OptionApplication.OWN_TEAM -> "hideForOwnTeam"
-        OptionApplication.OTHER_TEAMS -> "hideForOtherTeams"
-        else -> "always"
-    }
-
-    private fun Team.collisionRule() = when (options[Option.COLLISION_RULE]) {
-        OptionApplication.ALWAYS -> "always"
-        OptionApplication.NEVER -> "never"
-        OptionApplication.OWN_TEAM -> "pushOwnTeam"
-        OptionApplication.OTHER_TEAMS -> "pushOtherTeams"
-        else -> "always"
     }
 }
 

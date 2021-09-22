@@ -18,7 +18,8 @@
  */
 package org.kryptonmc.krypton
 
-import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.GameModes
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -28,11 +29,11 @@ class GamemodeTests {
 
     @Test
     fun `test id conversions`() {
-        assertEquals("survival", Gamemode.SURVIVAL.toString())
-        assertNotNull(Gamemode.fromId(0))
-        assertNotNull(Gamemode.fromId(3))
-        assertNull(Gamemode.fromId(4))
-        assertNull(Gamemode.fromId(-1))
-        assertNull(Gamemode.fromId(100))
+        assertEquals("survival", GameModes.SURVIVAL.name)
+        assertNotNull(Registries.GAME_MODES[0])
+        assertNotNull(Registries.GAME_MODES[3])
+        assertNull(Registries.GAME_MODES[4])
+        assertNull(Registries.GAME_MODES[-1])
+        assertNull(Registries.GAME_MODES[100])
     }
 }

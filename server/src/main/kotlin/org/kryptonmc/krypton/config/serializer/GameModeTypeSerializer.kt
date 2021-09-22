@@ -18,26 +18,21 @@
  */
 package org.kryptonmc.krypton.config.serializer
 
-import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.GameMode
+import org.kryptonmc.krypton.world.KryptonGameMode
 import org.spongepowered.configurate.serialize.ScalarSerializer
 import org.spongepowered.configurate.serialize.SerializationException
 import java.lang.reflect.Type
 import java.util.function.Predicate
 
-object GamemodeTypeSerializer : ScalarSerializer<Gamemode>(Gamemode::class.java) {
+object GameModeTypeSerializer : ScalarSerializer<GameMode>(GameMode::class.java) {
 
-    override fun serialize(item: Gamemode, typeSupported: Predicate<Class<*>>) = item.name.lowercase()
+    override fun serialize(item: GameMode, typeSupported: Predicate<Class<*>>) = item.name
 
-    override fun deserialize(type: Type, source: Any): Gamemode {
-        return try {
-            when (source) {
-                is Int -> Gamemode.fromId(source) ?: throw SerializationException("$source is not a valid gamemode ID!")
-                is String -> Gamemode.valueOf(source.uppercase())
-                else -> throw SerializationException("Expected either an integer or a string for this gamemode, " +
-                        "got ${source::class.simpleName}")
-            }
-        } catch (exception: IllegalArgumentException) {
-            throw SerializationException("Unknown gamemode: $source")
-        }
+    override fun deserialize(type: Type, source: Any): GameMode = when (source) {
+        is Int -> Registries.GAME_MODES[source] ?: throw SerializationException("$source is not a valid game mode ID!")
+        is String -> KryptonGameMode.fromName(source.lowercase()) ?: throw SerializationException("$source is not a valid game mode name!")
+        else -> throw SerializationException("Expected either an integer or a string for this game mode, got ${source::class.simpleName}")
     }
 }

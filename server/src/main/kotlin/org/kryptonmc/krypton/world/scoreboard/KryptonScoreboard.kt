@@ -25,6 +25,7 @@ import org.kryptonmc.api.world.scoreboard.Scoreboard
 import org.kryptonmc.api.world.scoreboard.ScoreboardPosition
 import org.kryptonmc.api.world.scoreboard.Team
 
+@JvmRecord
 data class KryptonScoreboard(
     override val position: ScoreboardPosition,
     override val name: String,
@@ -41,7 +42,7 @@ data class KryptonScoreboard(
 
     override fun team(name: String) = teams.firstOrNull { it.name == name }
 
-    override fun playerTeam(player: Player) = teams.firstOrNull { player in it.members }
+    override fun playerTeam(player: Player) = teams.firstOrNull { player.displayName in it.members }
 
     override fun resetScores(player: Player) = scores.clear()
 }

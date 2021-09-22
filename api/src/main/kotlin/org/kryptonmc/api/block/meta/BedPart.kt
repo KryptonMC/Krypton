@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The part of a bed.
  */
-public enum class BedPart(override val serialized: String) : StringSerializable {
+public enum class BedPart(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
     HEAD("head"),
     FOOT("foot")

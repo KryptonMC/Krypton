@@ -18,9 +18,9 @@ import org.kryptonmc.api.util.StringSerializable
  * @param front the front direction
  */
 public enum class Orientation(
-    override val serialized: String,
-    public val top: Direction,
-    public val front: Direction
+    @get:JvmName("serialized") override val serialized: String,
+    @get:JvmName("top") public val top: Direction,
+    @get:JvmName("front") public val front: Direction
 ) : StringSerializable {
 
     UP_NORTH("up_north", Direction.UP, Direction.NORTH),

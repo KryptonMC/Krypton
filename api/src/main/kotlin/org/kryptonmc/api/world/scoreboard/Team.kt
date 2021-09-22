@@ -9,122 +9,94 @@
 package org.kryptonmc.api.world.scoreboard
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.entity.player.Player
+import net.kyori.adventure.text.format.NamedTextColor
 
 /**
- * Represents a [Scoreboard] team.
+ * A team on a [Scoreboard].
  *
  * Teams are groups of entities that have a name, prefix, suffix, colour,
  * and a specific set of rules they follow.
- *
- * @param name the name of this team
- * @param displayName the display name of this team
- * @param allowFriendlyFire if this team allows friendly fire
- * @param canSeeInvisibleMembers if team members can see other team members
- * that are invisible
- * @param options the options for this team
- * @param color the color of this team
- * @param prefix this team's prefix
- * @param suffix this team's suffix
- * @param members this team's members
  */
-@JvmRecord
-public data class Team(
-    public val name: String,
-    public val displayName: Component,
-    @get:JvmName("allowFriendlyFire") public val allowFriendlyFire: Boolean,
-    @get:JvmName("areInvisibleMembersVisible") public val canSeeInvisibleMembers: Boolean,
-    public val options: Map<Option, OptionApplication>,
-    public val color: TeamColor,
-    public val prefix: Component,
-    public val suffix: Component,
-    public val members: List<Player>
-)
-
-/**
- * Represents options for teams.
- */
-public enum class Option {
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface Team {
 
     /**
-     * Whether or not name tags are visible.
+     * The name of this team.
      */
-    NAMETAG_VISIBILITY,
+    @get:JvmName("name")
+    public val name: String
 
     /**
-     * Whether or not death messages are visible.
+     * The name that is displayed on the scoreboard to clients.
      */
-    DEATH_MESSAGE_VISIBILITY,
+    @get:JvmName("displayName")
+    public val displayName: Component
 
     /**
-     * Whether or not players will collide with each other.
+     * The prefix prepended to the display name of members of this team.
      */
-    COLLISION_RULE
-}
-
-/**
- * Represents how an [Option] is applied.
- */
-public enum class OptionApplication {
+    @get:JvmName("prefix")
+    public val prefix: Component
 
     /**
-     * Always apply this option.
+     * The suffix appended to the display name of members of this team.
      */
-    ALWAYS,
+    @get:JvmName("suffix")
+    public val suffix: Component
 
     /**
-     * Never apply this option.
+     * The colour of the team that is displayed on the scoreboard.
      */
-    NEVER,
+    @get:JvmName("color")
+    public val color: NamedTextColor
 
     /**
-     * Only apply this option to other teams.
+     * If this team allows members to attack each other.
+     *
+     * *Well that's not very nice, is it! They're there to help you...*
      */
-    OTHER_TEAMS,
+    @get:JvmName("allowFriendlyFire")
+    public val allowFriendlyFire: Boolean
 
     /**
-     * Only apply this option to our own team.
+     * If this team allows members to see members that are invisible.
      */
-    OWN_TEAM
-}
-
-/**
- * Represents the colour of a team. This is used because team colours are
- * legacy colours, and because they have special IDs.
- */
-public enum class TeamColor {
+    @get:JvmName("canSeeInvisibleMembers")
+    public val canSeeInvisibleMembers: Boolean
 
     /**
-     * Colours
+     * The visibility of name tags in the team.
      */
-    BLACK,
-    DARK_BLUE,
-    DARK_GREEN,
-    DARK_CYAN,
-    DARK_RED,
-    PURPLE,
-    GOLD,
-    GRAY,
-    DARK_GRAY,
-    BLUE,
-    BRIGHT_GREEN,
-    CYAN,
-    RED,
-    PINK,
-    YELLOW,
-    WHITE,
+    @get:JvmName("nameTagVisibility")
+    public val nameTagVisibility: Visibility
 
     /**
-     * Decoration
+     * The visibility of death messages in the team.
      */
-    OBFUSCATED,
-    BOLD,
-    STRIKETHROUGH,
-    UNDERLINED,
-    ITALIC,
+    @get:JvmName("deathMessageVisibility")
+    public val deathMessageVisibility: Visibility
 
     /**
-     * Other
+     * The collision rule for the team.
      */
-    RESET
+    @get:JvmName("collisionRule")
+    public val collisionRule: CollisionRule
+
+    /**
+     * All of the members in this team.
+     */
+    @get:JvmName("members")
+    public val members: Set<Component>
+
+    /**
+     * Adds a member to the list of members in this team.
+     *
+     * @param member the member to add
+     */
+    public fun addMember(member: Component)
+
+    /**
+     * Removes a member from the list of members in this team.
+     */
+    public fun removeMember(member: Component)
 }

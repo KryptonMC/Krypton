@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The phase of a sculk sensor.
  */
-public enum class SculkSensorPhase(override val serialized: String) : StringSerializable {
+public enum class SculkSensorPhase(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
     INACTIVE("inactive"),
     ACTIVE("active"),

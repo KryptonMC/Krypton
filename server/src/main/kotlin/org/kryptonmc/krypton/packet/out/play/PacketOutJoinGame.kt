@@ -19,8 +19,9 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.InternalRegistries
@@ -39,8 +40,8 @@ import org.kryptonmc.nbt.compound
 data class PacketOutJoinGame(
     private val id: Int,
     private val isHardcore: Boolean,
-    private val gamemode: Gamemode,
-    private val oldGamemode: Gamemode?,
+    private val gameMode: GameMode,
+    private val oldGameMode: GameMode?,
     private val worlds: Set<ResourceKey<World>>,
     private val dimensionType: KryptonDimensionType,
     private val dimension: ResourceKey<World>,
@@ -56,8 +57,8 @@ data class PacketOutJoinGame(
     override fun write(buf: ByteBuf) {
         buf.writeInt(id)
         buf.writeBoolean(isHardcore)
-        buf.writeByte(gamemode.ordinal)
-        buf.writeByte(oldGamemode?.ordinal ?: -1)
+        buf.writeByte(Registries.GAME_MODES.idOf(gameMode))
+        buf.writeByte(oldGameMode?.let { Registries.GAME_MODES.idOf(it) } ?: -1)
         buf.writeCollection(worlds) { buf.writeKey(it.location) }
         buf.writeNBT(compound {
             put(

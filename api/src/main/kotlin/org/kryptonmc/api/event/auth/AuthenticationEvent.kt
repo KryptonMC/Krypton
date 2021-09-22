@@ -16,7 +16,7 @@ import org.kryptonmc.api.event.ResultedEvent.Result
  * An event that is called when a request is made to authenticate a player with
  * the given [username].
  */
-public class AuthenticationEvent(public val username: String) : ResultedEvent<AuthenticationResult> {
+public data class AuthenticationEvent(@get:JvmName("username") public val username: String) : ResultedEvent<AuthenticationResult> {
 
     override var result: AuthenticationResult = AuthenticationResult.allowed(null)
 }
@@ -26,7 +26,8 @@ public class AuthenticationEvent(public val username: String) : ResultedEvent<Au
  *
  * @param profile the optional profile for a successful result
  */
-public class AuthenticationResult private constructor(
+@JvmRecord
+public data class AuthenticationResult(
     override val isAllowed: Boolean,
     public val profile: GameProfile?
 ) : Result {

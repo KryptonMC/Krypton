@@ -6,7 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-@file:JvmName("KryptonAdventure")
+@file:JvmSynthetic
 package org.kryptonmc.api.adventure
 
 import com.mojang.brigadier.Message
@@ -31,4 +31,5 @@ public data class AdventureMessage(public val wrapped: Component) : Message {
 /**
  * Converts this component to a wrapper for a Brigadier [Message].
  */
+@JvmSynthetic
 public fun Component.toMessage(): AdventureMessage = AdventureMessage(this)

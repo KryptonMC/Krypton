@@ -32,7 +32,7 @@ import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.DataPackConfig
-import org.kryptonmc.krypton.world.KryptonGameRuleHolder
+import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.storage.WorldDataStorage
@@ -133,7 +133,7 @@ private class KryptonCLI : CliktCommand(
 
         val worldData = storageAccess.loadData(DataPackConfig.DEFAULT) ?: PrimaryWorldData(
             config.world.name,
-            config.world.gamemode,
+            config.world.gameMode,
             config.world.difficulty,
             config.world.hardcore,
             KryptonGameRuleHolder(),

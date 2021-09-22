@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.config.category.ServerCategory
 import org.kryptonmc.krypton.config.category.StatusCategory
 import org.kryptonmc.krypton.config.category.WorldCategory
 import org.kryptonmc.krypton.config.serializer.DifficultyTypeSerializer
-import org.kryptonmc.krypton.config.serializer.GamemodeTypeSerializer
+import org.kryptonmc.krypton.config.serializer.GameModeTypeSerializer
 import org.kryptonmc.krypton.config.serializer.LocaleTypeSerializer
 import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
@@ -80,7 +80,7 @@ data class KryptonConfig(
                     .build()
                     .serializers()
                 ).register(DifficultyTypeSerializer)
-                    .register(GamemodeTypeSerializer)
+                    .register(GameModeTypeSerializer)
                     .register(LocaleTypeSerializer)
                     .registerAnnotatedObjects(objectMapperFactory())
             }

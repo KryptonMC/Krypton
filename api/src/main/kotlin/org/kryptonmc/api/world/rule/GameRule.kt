@@ -8,21 +8,56 @@
  */
 package org.kryptonmc.api.world.rule
 
-import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.TranslatableComponent
+import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.TranslationHolder
+import org.kryptonmc.api.util.provide
 
 /**
  * A rule dictating how a specific aspect of the game functions.
  *
- * @param name the name of the rule
- * @param default the default value of this rule
- * @param translation the client-side translation for the rule
  * @param V the type of the value
  */
-@JvmRecord
-public data class GameRule<V : Any>(
-    public val name: String,
-    @get:JvmName("defaultValue") public val default: V,
-    public override val translation: TranslatableComponent
-) : ComponentLike, TranslationHolder
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface GameRule<V : Any> : TranslationHolder {
+
+    /**
+     * The name of this rule.
+     */
+    @get:JvmName("name")
+    public val name: String
+
+    /**
+     * The default value of this rule.
+     */
+    @get:JvmName("defaultValue")
+    public val default: V
+
+    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun <V : Any> of(name: String, default: V, translation: TranslatableComponent): GameRule<V>
+    }
+
+    public companion object {
+
+        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+
+        /**
+         * Creates a new game rule with the given values.
+         *
+         * @param name the name
+         * @param default the default value
+         * @param translation the client-side translation
+         * @return a new game rule
+         */
+        @JvmStatic
+        public fun <V : Any> of(
+            name: String,
+            default: V,
+            translation: TranslatableComponent
+        ): GameRule<V> = FACTORY.of(name, default, translation)
+    }
+}

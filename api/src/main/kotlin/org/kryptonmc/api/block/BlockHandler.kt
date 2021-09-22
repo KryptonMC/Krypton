@@ -27,8 +27,8 @@ import org.spongepowered.math.vector.Vector3i
 public interface BlockHandler {
 
     /**
-     * Gets the destroy progress of the given [block] at the given [position], being
-     * broken by the given [player] in the given [world].
+     * Calculates the destroy progress of the given [block] at the given
+     * [position], being broken by the given [player] in the given [world].
      *
      * @param player the player breaking the block
      * @param world the world the block is in
@@ -36,11 +36,12 @@ public interface BlockHandler {
      * @param position the position of the block
      * @return the destroy progress of the block
      */
-    public fun getDestroyProgress(player: Player, world: World, block: Block, position: Vector3i): Float
+    public fun calculateDestroyProgress(player: Player, world: World, block: Block, position: Vector3i): Float
 
     /**
-     * Called when the given [block] is placed by the given [player] at the given [position],
-     * being placed on the given [face] (this will be facing the player).
+     * Called when the given [block] is placed by the given [player] at the
+     * given [position], being placed on the given [face] (this will be facing
+     * the player).
      *
      * @param player the player who placed the block
      * @param block the block that was placed
@@ -50,8 +51,8 @@ public interface BlockHandler {
     public fun onPlace(player: Player, block: Block, position: Vector3i, face: BlockFace)
 
     /**
-     * Called when the given [player] is about to break the given [block] at the given [position]
-     * in the given [world], but hasn't yet.
+     * Called when the given [player] is about to break the given [block] at
+     * the given [position] in the given [world], but hasn't yet.
      *
      * @param player the player who is about to destroy the block
      * @param world the world the block is in
@@ -61,8 +62,8 @@ public interface BlockHandler {
     public fun preDestroy(player: Player, world: World, block: Block, position: Vector3i)
 
     /**
-     * Called when the given [block] is destroyed by the given [player] at the given [position],
-     * with the given [item].
+     * Called when the given [block] is destroyed by the given [player] at the
+     * given [position], with the given [item].
      *
      * @param player the player who destroyed the block
      * @param block the block that was destroyed
@@ -72,8 +73,9 @@ public interface BlockHandler {
     public fun onDestroy(player: Player, block: Block, position: Vector3i, item: ItemStack)
 
     /**
-     * Called when the given [player] interacts with the given [block] at the given [position]
-     * in the given [world], using the given interaction [hand].
+     * Called when the given [player] interacts with the given [block] at the
+     * given [position] in the given [world], using the given interaction
+     * [hand].
      *
      * @param player the player who interacted with the block
      * @param world the world the block is in
@@ -85,8 +87,8 @@ public interface BlockHandler {
     public fun interact(player: Player, world: World, block: Block, position: Vector3i, hand: Hand): InteractionResult
 
     /**
-     * Called when the given [player] attacks the given [block] at the given [position] in
-     * the given [world].
+     * Called when the given [player] attacks the given [block] at the given
+     * [position] in the given [world].
      *
      * @param player the player who attacked the block
      * @param world the world the block is in
@@ -96,9 +98,9 @@ public interface BlockHandler {
     public fun attack(player: Player, world: World, block: Block, position: Vector3i)
 
     /**
-     * Called when the shape of the given [block] at the given [position] facing the
-     * given [direction] needs its face updated, with the given [neighbour] at the
-     * given [neighbourPosition] being.
+     * Called when the shape of the given [block] at the given [position]
+     * facing the given [direction] needs its face updated, with the given
+     * [neighbour] at the given [neighbourPosition].
      *
      * @param block the block that needs its shape updating
      * @param position the position of the block

@@ -11,10 +11,12 @@ package org.kryptonmc.api.util
 /**
  * Something that can be serialized to a string.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface StringSerializable {
 
     /**
      * The serialized value.
      */
+    @get:JvmName("serialized")
     public val serialized: String
 }

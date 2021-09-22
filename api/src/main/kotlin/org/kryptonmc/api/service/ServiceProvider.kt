@@ -15,20 +15,24 @@ package org.kryptonmc.api.service
  * allows them to not need to know who they are actually providing the service
  * to (if anyone), which is a neat abstraction layer.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ServiceProvider<T> {
 
     /**
      * The plugin that provided this service.
      */
+    @get:JvmName("plugin")
     public val plugin: Any
 
     /**
      * The class of the service being provided.
      */
-    public val serviceClass: Class<T>
+    @get:JvmName("type")
+    public val type: Class<T>
 
     /**
      * The service provided.
      */
+    @get:JvmName("service")
     public val service: T
 }

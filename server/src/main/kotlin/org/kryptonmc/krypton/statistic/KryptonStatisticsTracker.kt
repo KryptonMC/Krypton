@@ -80,7 +80,7 @@ class KryptonStatisticsTracker(
         }
 
         val statsJson = JsonObject()
-        map.forEach { statsJson.add(it.key.key.asString(), it.value) }
+        map.forEach { statsJson.add(it.key.key().asString(), it.value) }
 
         val json = JsonObject().apply {
             add("stats", statsJson)

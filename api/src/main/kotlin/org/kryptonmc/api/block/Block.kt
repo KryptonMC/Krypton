@@ -8,11 +8,11 @@
  */
 package org.kryptonmc.api.block
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.TranslatableComponent
+import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.block.property.PropertyHolder
 import org.kryptonmc.api.fluid.FluidLike
 import org.kryptonmc.api.item.ItemLike
+import org.kryptonmc.api.util.TranslationHolder
 
 /**
  * Represents a block with certain properties.
@@ -24,13 +24,7 @@ import org.kryptonmc.api.item.ItemLike
  * them much more thread-safe.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Comparable<Block> {
-
-    /**
-     * The key associated with this block.
-     */
-    @get:JvmName("key")
-    public val key: Key
+public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, TranslationHolder, Keyed, Comparable<Block> {
 
     /**
      * The block ID of this block.
@@ -193,11 +187,4 @@ public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Comparable<
      */
     @get:JvmName("renderShape")
     public val renderShape: RenderShape
-
-    /**
-     * The translation component for translating the name
-     * of this block.
-     */
-    @get:JvmName("translation")
-    public val translation: TranslatableComponent
 }

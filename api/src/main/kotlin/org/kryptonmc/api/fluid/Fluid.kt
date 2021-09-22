@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.fluid
 
-import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockLike
 import org.kryptonmc.api.block.property.PropertyHolder
@@ -19,26 +19,25 @@ import org.kryptonmc.api.item.ItemType
  *
  * The design of this is very similar to that of the [Block].
  */
-public interface Fluid : PropertyHolder<Fluid>, BlockLike, Comparable<Fluid> {
-
-    /**
-     * The key of this fluid.
-     */
-    public val key: Key
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface Fluid : PropertyHolder<Fluid>, BlockLike, Keyed, Comparable<Fluid> {
 
     /**
      * The ID of this fluid.
      */
+    @get:JvmName("id")
     public val id: Int
 
     /**
      * The ID of the fluid state this fluid represents.
      */
+    @get:JvmName("stateId")
     public val stateId: Int
 
     /**
      * The type of the bucket this fluid can be held in.
      */
+    @get:JvmName("bucket")
     public val bucket: ItemType
 
     /**
@@ -49,6 +48,7 @@ public interface Fluid : PropertyHolder<Fluid>, BlockLike, Comparable<Fluid> {
     /**
      * The value for this fluid's resistance to explosions.
      */
+    @get:JvmName("explosionResistance")
     public val explosionResistance: Double
 
     /**
@@ -59,6 +59,7 @@ public interface Fluid : PropertyHolder<Fluid>, BlockLike, Comparable<Fluid> {
     /**
      * The height of this fluid.
      */
+    @get:JvmName("height")
     public val height: Float
 
     /**
@@ -69,6 +70,7 @@ public interface Fluid : PropertyHolder<Fluid>, BlockLike, Comparable<Fluid> {
      * [level][org.kryptonmc.api.block.property.Properties.LIQUID_LEVEL]
      * property for flowing fluids.
      */
+    @get:JvmName("level")
     public val level: Int
 
     /**

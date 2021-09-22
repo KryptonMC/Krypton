@@ -21,8 +21,12 @@ package org.kryptonmc.krypton.entity.hanging
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.hanging.Canvas
 
-class KryptonCanvas(
-    override val key: Key,
+@JvmRecord
+data class KryptonCanvas(
+    private val key: Key,
     override val width: Int,
     override val height: Int
-) : Canvas
+) : Canvas {
+
+    override fun key(): Key = key
+}

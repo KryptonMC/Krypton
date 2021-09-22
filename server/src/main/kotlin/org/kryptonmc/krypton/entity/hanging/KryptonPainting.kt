@@ -43,7 +43,7 @@ class KryptonPainting(world: KryptonWorld) : KryptonHangingEntity(world, EntityT
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
-        canvas?.let { string("Motive", it.key.asString()) }
+        canvas?.let { string("Motive", it.key().asString()) }
         byte("Facing", direction.data2D.toByte())
     }
 

@@ -22,9 +22,9 @@ import org.kryptonmc.api.entity.player.Player
  * @param face the face of the block interacted with
  */
 // TODO: Make this resulted
-public class BlockInteractEvent(
-    public val player: Player,
-    public val hand: Hand,
-    public val block: Block,
-    public val face: BlockFace
+public data class BlockInteractEvent(
+    @get:JvmName("player") public val player: Player,
+    @get:JvmName("hand") public val hand: Hand,
+    @get:JvmName("block") public val block: Block,
+    @get:JvmName("face") public val face: BlockFace
 )

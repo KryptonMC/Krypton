@@ -15,7 +15,8 @@ package org.kryptonmc.api.event
 /**
  * A generic allowed/denied result.
  */
-public class GenericResult(override val isAllowed: Boolean) : ResultedEvent.Result {
+@JvmRecord
+public data class GenericResult(override val isAllowed: Boolean) : ResultedEvent.Result {
 
     override fun toString(): String = if (isAllowed) "allowed" else "denied"
 

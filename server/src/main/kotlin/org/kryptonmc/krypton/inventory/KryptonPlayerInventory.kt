@@ -146,6 +146,6 @@ class KryptonPlayerInventory(
     companion object {
 
         private const val SIZE = 46
-        private val TYPE = InventoryType(Key.key("krypton", "inventory/player"), SIZE)
+        private val TYPE = KryptonInventoryType(Key.key("krypton", "inventory/player"), SIZE)
     }
 }

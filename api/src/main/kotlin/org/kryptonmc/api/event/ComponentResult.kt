@@ -21,7 +21,8 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
  *
  * @param reason the reason for the result
  */
-public class ComponentResult(override val isAllowed: Boolean, public val reason: Component) : ResultedEvent.Result {
+@JvmRecord
+public data class ComponentResult(override val isAllowed: Boolean, public val reason: Component) : ResultedEvent.Result {
 
     override fun toString(): String {
         if (isAllowed) return "allowed"

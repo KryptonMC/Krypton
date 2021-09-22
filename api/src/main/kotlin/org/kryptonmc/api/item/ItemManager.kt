@@ -13,11 +13,13 @@ import net.kyori.adventure.key.Key
 /**
  * Manages item handlers for item types.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ItemManager {
 
     /**
      * The map of item type keys (e.g. "minecraft:air") to handlers.
      */
+    @get:JvmName("handlers")
     public val handlers: Map<String, ItemHandler>
 
     /**

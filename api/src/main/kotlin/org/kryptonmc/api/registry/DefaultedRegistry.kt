@@ -14,16 +14,19 @@ import org.kryptonmc.api.resource.ResourceKey
 /**
  * A registry with a default key-value pair.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface DefaultedRegistry<T : Any> : Registry<T> {
 
     /**
      * The default key for this defaulted registry.
      */
+    @get:JvmName("defaultKey")
     public val defaultKey: Key
 
     /**
      * The default value for this defaulted registry.
      */
+    @get:JvmName("defaultValue")
     public val defaultValue: T
 
     override fun get(key: Key): T

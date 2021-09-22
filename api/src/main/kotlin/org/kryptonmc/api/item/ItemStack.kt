@@ -18,6 +18,7 @@ import org.kryptonmc.api.util.provide
 /**
  * A stack of items in an inventory.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
 
     /**

@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The shape of a minecart rail.
  */
-public enum class RailShape(override val serialized: String) : StringSerializable {
+public enum class RailShape(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
     NORTH_SOUTH("north_south"),
     EAST_WEST("east_west"),

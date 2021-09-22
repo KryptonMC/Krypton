@@ -11,10 +11,12 @@ package org.kryptonmc.api.world.scoreboard.criteria
 /**
  * A criterion that is the parent of other sub-criterion.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface CompoundCriterion : Criterion {
 
     /**
      * The children of this compound criterion.
      */
+    @get:JvmName("children")
     public val children: List<Criterion>
 }

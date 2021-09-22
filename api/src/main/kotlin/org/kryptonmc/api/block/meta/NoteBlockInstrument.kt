@@ -18,8 +18,8 @@ import org.kryptonmc.api.util.StringSerializable
  * @param sound the corresponding sound event
  */
 public enum class NoteBlockInstrument(
-    override val serialized: String,
-    public val sound: SoundEvent
+    @get:JvmName("serialized") override val serialized: String,
+    @get:JvmName("sound") public val sound: SoundEvent
 ) : StringSerializable {
 
     HARP("harp", SoundEvents.NOTE_BLOCK_HARP),

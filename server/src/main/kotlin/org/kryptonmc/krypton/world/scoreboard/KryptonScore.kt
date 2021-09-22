@@ -16,16 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.world.scoreboard
 
-import org.kryptonmc.api.event.player.SkinSettings
+import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.world.scoreboard.Objective
+import org.kryptonmc.api.world.scoreboard.Score
 
-fun Short.toSkinSettings() = SkinSettings(
-    toInt() and 0x01 != 0,
-    toInt() and 0x02 != 0,
-    toInt() and 0x04 != 0,
-    toInt() and 0x08 != 0,
-    toInt() and 0x10 != 0,
-    toInt() and 0x20 != 0,
-    toInt() and 0x40 != 0
-)
+@JvmRecord
+data class KryptonScore(
+    override val player: Player,
+    override val objective: Objective,
+    override val score: Int
+) : Score {
+
+    object Factory : Score.Factory {
+
+        override fun of(player: Player, objective: Objective, score: Int): Score = KryptonScore(player, objective, score)
+    }
+}

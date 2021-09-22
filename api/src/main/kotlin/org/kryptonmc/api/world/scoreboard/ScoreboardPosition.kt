@@ -9,7 +9,7 @@
 package org.kryptonmc.api.world.scoreboard
 
 /**
- * Represents positions that a [Scoreboard] may appear in.
+ * The position that a scoreboard may appear in.
  */
 public enum class ScoreboardPosition {
 

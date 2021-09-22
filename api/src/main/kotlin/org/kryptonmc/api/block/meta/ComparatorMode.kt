@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The mode of a comparator.
  */
-public enum class ComparatorMode(override val serialized: String) : StringSerializable {
+public enum class ComparatorMode(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
     COMPARE("compare"),
     SUBTRACT("subtract")

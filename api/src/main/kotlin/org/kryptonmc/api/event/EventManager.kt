@@ -10,6 +10,7 @@
  * For the original file that this file is derived from, see here:
  * https://github.com/VelocityPowered/Velocity/blob/dev/1.1.0/api/src/main/java/com/velocitypowered/api/event/EventManager.java
  */
+@file:JvmSynthetic
 package org.kryptonmc.api.event
 
 import java.util.concurrent.CompletableFuture

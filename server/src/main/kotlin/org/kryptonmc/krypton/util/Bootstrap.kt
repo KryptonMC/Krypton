@@ -54,6 +54,7 @@ import org.kryptonmc.krypton.tags.ItemTags
 import org.kryptonmc.krypton.tags.TagManager
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
+import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.dimension.DimensionTypes
@@ -72,14 +73,15 @@ object Bootstrap {
         TranslationBootstrap.init()
 
         // Preload all the registry classes to ensure everything is properly registered
-        InternalRegistries
         (FactoryProvider.INSTANCE as KryptonFactoryProvider).bootstrap()
+        InternalRegistries
         Registries
+        SoundLoader.init()
+        SoundEvents
+        BlockLoader.init()
         Blocks
         GameEvents
         ParticleTypes
-        SoundLoader.init()
-        SoundEvents
         EntityTypes
         ItemTypes
         FluidLoader.init()
@@ -133,7 +135,7 @@ object Bootstrap {
         get() {
             val missing = TreeSet<String>()
             InternalRegistries.ATTRIBUTE.values.checkTranslations(missing) { it.translation.key() }
-            InternalRegistries.ENTITY_TYPE.values.checkTranslations(missing) { it.name.key() }
+            InternalRegistries.ENTITY_TYPE.values.checkTranslations(missing) { it.translation.key() }
             InternalRegistries.BLOCK.values.checkTranslations(missing) { it.translation.key() }
             InternalRegistries.ITEM.values.checkTranslations(missing) { it.translation.key() }
             Registries.GAMERULES.values.checkTranslations(missing) { it.translation.key() }

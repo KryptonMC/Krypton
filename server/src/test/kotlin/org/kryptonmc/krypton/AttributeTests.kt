@@ -20,6 +20,7 @@ package org.kryptonmc.krypton
 
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.ModifierOperation
+import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import java.util.UUID
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -45,8 +46,8 @@ class AttributeTests {
 
         const val BASE = 3.0
         val MODIFIERS = listOf(
-            AttributeModifier("1", UUID.randomUUID(), 2.0),
-            AttributeModifier("2", UUID.randomUUID(), 4.0)
+            KryptonAttributeModifier("1", UUID.randomUUID(), 2.0),
+            KryptonAttributeModifier("2", UUID.randomUUID(), 4.0)
         )
     }
 }

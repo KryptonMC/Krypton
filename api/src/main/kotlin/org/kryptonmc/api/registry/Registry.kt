@@ -14,16 +14,19 @@ import org.kryptonmc.api.resource.ResourceKey
 /**
  * A holder for registry entries.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
 
     /**
      * The registry key for this registry.
      */
+    @get:JvmName("key")
     public val key: ResourceKey<out Registry<T>>
 
     /**
      * The set of child keys.
      */
+    @get:JvmName("keys")
     public val keySet: Set<Key>
 
     /**

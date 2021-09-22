@@ -13,7 +13,7 @@ import org.kryptonmc.api.util.StringSerializable
 /**
  * The side of a wall.
  */
-public enum class WallSide(override val serialized: String) : StringSerializable {
+public enum class WallSide(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
     NONE("none"),
     LOW("low"),

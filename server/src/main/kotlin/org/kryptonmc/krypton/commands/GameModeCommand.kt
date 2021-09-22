@@ -26,7 +26,8 @@ import com.mojang.brigadier.context.CommandContext
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
@@ -34,57 +35,56 @@ import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.world.KryptonGameMode
 
-object GamemodeCommand : InternalCommand {
+object GameModeCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal<Sender>("gamemode").permission("krypton.command.gamemode", 2)
-        for (gamemode in Gamemode.values()) {
-            command.then(literal<Sender>(gamemode.name.lowercase())
-                .executes { gameModeArgument(it, gamemode) }
+        for (gameMode in Registries.GAME_MODES.values) {
+            command.then(literal(gameMode.name))
+                .executes { gameModeArgument(it, gameMode) }
                 .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
-                    .executes { targetArgument(it, gamemode) })
-            )
+                    .executes { targetArgument(it, gameMode) })
         }
 
-        command.then(argument<Sender, String>("gamemode", string())
+        command.then(argument<Sender, String>("gameMode", string())
             .executes {
-                val gamemode = Gamemode.fromShortName(it.argument("gamemode"))
-                    ?: Gamemode.fromId(it.argument<String>("gamemode").toIntOrNull() ?: return@executes 1)
+                val gameMode = KryptonGameMode.fromAbbreviation(it.argument("gameMode"))
+                    ?: Registries.GAME_MODES[it.argument<String>("gameMode").toIntOrNull() ?: return@executes 1]
                     ?: return@executes 1
-                gameModeArgument(it, gamemode)
-            }
+                gameModeArgument(it, gameMode)
+            })
             .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
                 .executes {
-                    val gamemode = Gamemode.fromShortName(it.argument("gamemode"))
-                        ?: Gamemode.fromId(it.argument<String>("gamemode").toIntOrNull() ?: return@executes 1)
+                    val gameMode = KryptonGameMode.fromAbbreviation(it.argument("gameMode"))
+                        ?: Registries.GAME_MODES[it.argument<String>("gameMode").toIntOrNull() ?: return@executes 1]
                         ?: return@executes 1
-                    targetArgument(it, gamemode)
+                    gameModeArgument(it, gameMode)
                 })
-        )
         dispatcher.register(command)
     }
 
-    private fun gameModeArgument(context: CommandContext<Sender>, gamemode: Gamemode): Int {
+    private fun gameModeArgument(context: CommandContext<Sender>, gameMode: GameMode): Int {
         val sender = context.source as? KryptonPlayer ?: return 0
-        updateGameMode(listOf(sender), gamemode, sender)
+        updateGameMode(listOf(sender), gameMode, sender)
         return 1
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun targetArgument(context: CommandContext<Sender>, gamemode: Gamemode): Int {
+    private fun targetArgument(context: CommandContext<Sender>, gameMode: GameMode): Int {
         val sender = context.source as? KryptonPlayer ?: return 0
         val entities = context.entityArgument("targets").getPlayers(sender)
-        updateGameMode(entities, gamemode, sender)
+        updateGameMode(entities, gameMode, sender)
         return 1
     }
 
     private fun updateGameMode(
         entities: List<KryptonPlayer>,
-        mode: Gamemode,
+        mode: GameMode,
         sender: KryptonPlayer
     ) = entities.forEach {
-        it.gamemode = mode
+        it.gameMode = mode
         if (sender == it) {
             sender.sendMessage(translatable(
                 "gameMode.changed",

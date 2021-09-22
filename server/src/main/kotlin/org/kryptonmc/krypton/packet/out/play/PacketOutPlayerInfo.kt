@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
@@ -59,12 +60,12 @@ data class PacketOutPlayerInfo(
                         if (signature != null) buf.writeString(signature)
                     }
 
-                    buf.writeVarInt(update.gamemode.ordinal)
+                    buf.writeVarInt(Registries.GAME_MODES.idOf(update.gameMode))
                     buf.writeVarInt(update.session.latency)
                     buf.writeBoolean(true)
                     buf.writeChat(update.displayName)
                 }
-                PlayerAction.UPDATE_GAMEMODE -> buf.writeVarInt(update.gamemode.ordinal)
+                PlayerAction.UPDATE_GAMEMODE -> buf.writeVarInt(Registries.GAME_MODES.idOf(update.gameMode))
                 PlayerAction.UPDATE_LATENCY -> buf.writeVarInt(update.session.latency)
                 PlayerAction.UPDATE_DISPLAY_NAME -> {
                     buf.writeBoolean(true)

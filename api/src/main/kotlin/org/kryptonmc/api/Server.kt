@@ -25,7 +25,7 @@ import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.api.world.scoreboard.Scoreboard
 import java.net.InetSocketAddress
@@ -148,9 +148,9 @@ public interface Server : ForwardingAudience {
     public val difficulty: Difficulty
 
     /**
-     * The default gamemode of this server.
+     * The default game mode of this server.
      */
-    public val gamemode: Gamemode
+    public val gameMode: GameMode
 
     /**
      * The address that this server is currently bound to.

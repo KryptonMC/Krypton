@@ -22,9 +22,9 @@ import org.kryptonmc.api.permission.Subject
  * @param subject the subject
  * @param defaultProvider the default permission provider
  */
-public class SetupPermissionsEvent(
-    public val subject: Subject,
-    public val defaultProvider: PermissionProvider
+public data class SetupPermissionsEvent(
+    @get:JvmName("subject") public val subject: Subject,
+    @get:JvmName("defaultProvider") public val defaultProvider: PermissionProvider
 ) {
 
     /**

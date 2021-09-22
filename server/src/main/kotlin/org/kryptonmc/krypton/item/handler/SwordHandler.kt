@@ -24,7 +24,7 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.world.Gamemode
+import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.tags.BlockTags
 import org.kryptonmc.krypton.world.block.isPlant
@@ -35,7 +35,7 @@ import org.spongepowered.math.vector.Vector3i
 sealed class SwordHandler(type: ItemType) : KryptonItemHandler(type) {
 
     override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i) =
-        player.gamemode != Gamemode.CREATIVE
+        player.gameMode !== GameModes.CREATIVE
 
     override fun getDestroySpeed(item: ItemStack, block: Block): Float {
         if (block.id == Blocks.COBWEB.id) return 15F

@@ -13,11 +13,13 @@ import net.kyori.adventure.key.Key
 /**
  * Manages fluid handlers for fluids.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface FluidManager {
 
     /**
      * The map of fluid type keys (e.g. "minecraft:air") to handlers.
      */
+    @get:JvmName("handlers")
     public val handlers: Map<String, FluidHandler>
 
     /**
