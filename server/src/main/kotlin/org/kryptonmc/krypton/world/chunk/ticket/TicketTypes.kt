@@ -18,8 +18,10 @@
  */
 package org.kryptonmc.krypton.world.chunk.ticket
 
+import org.kryptonmc.api.util.Catalogue
 import java.util.UUID
 
+@Catalogue(TicketType::class)
 object TicketTypes {
 
     val START = TicketType<Unit>("start") { _, _ -> 0 }

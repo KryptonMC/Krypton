@@ -12,6 +12,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.TranslatableComponent
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.TranslationHolder
 
 /**
@@ -24,6 +25,7 @@ import org.kryptonmc.api.util.TranslationHolder
  * @param translation the translation for this entity type
  */
 @JvmRecord
+@CataloguedBy(EntityTypes::class)
 public data class EntityType<T : Entity>(
     private val key: Key,
     public val isSummonable: Boolean,

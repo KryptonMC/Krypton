@@ -11,11 +11,13 @@ package org.kryptonmc.api.item
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * An object containing all built-in item types.
  */
 @Suppress("LargeClass", "UndocumentedPublicProperty")
+@Catalogue(ItemType::class)
 public object ItemTypes {
 
     // @formatter:off

@@ -21,10 +21,12 @@ package org.kryptonmc.krypton.entity.memory
 import com.mojang.serialization.Codec
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.space.GlobalPosition
 import org.kryptonmc.krypton.util.Codecs
 
+@Catalogue(MemoryKey::class)
 object MemoryKeys {
 
     val ADMIRING_DISABLED = register<Boolean>("admiring_disabled", Codec.BOOL, true)

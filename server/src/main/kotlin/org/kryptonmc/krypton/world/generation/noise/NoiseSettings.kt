@@ -22,7 +22,6 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.krypton.world.dimension.DimensionTypes
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import java.util.function.Function
 

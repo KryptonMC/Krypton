@@ -31,6 +31,7 @@ import org.kryptonmc.api.block.meta.StructureMode
 import org.kryptonmc.api.block.meta.Tilt
 import org.kryptonmc.api.block.meta.WallSide
 import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * All built-in block state properties.
@@ -39,6 +40,7 @@ import org.kryptonmc.api.space.Direction
  * for information on what types of blocks each property is applicable to.
  */
 @Suppress("StringLiteralDuplication")
+@Catalogue(Property::class)
 public object Properties {
 
     /**

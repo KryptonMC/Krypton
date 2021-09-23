@@ -10,6 +10,7 @@ package org.kryptonmc.api.world.rule
 
 import net.kyori.adventure.text.TranslatableComponent
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.TranslationHolder
 import org.kryptonmc.api.util.provide
@@ -20,6 +21,7 @@ import org.kryptonmc.api.util.provide
  * @param V the type of the value
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@CataloguedBy(GameRules::class)
 public interface GameRule<V : Any> : TranslationHolder {
 
     /**

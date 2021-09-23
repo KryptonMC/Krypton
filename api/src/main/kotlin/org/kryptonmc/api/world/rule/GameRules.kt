@@ -17,11 +17,13 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.Mob
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * All the built-in game rules.
  */
 @Suppress("MagicNumber")
+@Catalogue(GameRule::class)
 public object GameRules {
 
     // @formatter:off

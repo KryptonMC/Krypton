@@ -9,9 +9,11 @@
 package org.kryptonmc.api.world.scoreboard
 
 import net.kyori.adventure.key.Keyed
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.TranslationHolder
 
 /**
  * A rule for collision between members of a [Team].
  */
+@CataloguedBy(CollisionRules::class)
 public interface CollisionRule : Keyed, TranslationHolder

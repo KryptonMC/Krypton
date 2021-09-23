@@ -10,11 +10,13 @@ package org.kryptonmc.api.world
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * All of the built-in vanilla game modes.
  */
 @Suppress("UndocumentedPublicProperty")
+@Catalogue(GameMode::class)
 public object GameModes {
 
     // @formatter:off

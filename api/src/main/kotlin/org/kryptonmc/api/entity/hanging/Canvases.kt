@@ -10,11 +10,13 @@ package org.kryptonmc.api.entity.hanging
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * All of the built-in painting canvases.
  */
 @Suppress("UndocumentedPublicProperty")
+@Catalogue(Canvas::class)
 public object Canvases {
 
     // @formatter:off

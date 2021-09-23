@@ -10,11 +10,13 @@ package org.kryptonmc.api.entity.attribute
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * All of the built-in attribute types.
  */
 @Suppress("UndocumentedPublicProperty")
+@Catalogue(AttributeType::class)
 public object AttributeTypes {
 
     // @formatter:off

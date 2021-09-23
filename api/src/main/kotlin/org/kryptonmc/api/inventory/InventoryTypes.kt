@@ -10,6 +10,7 @@ package org.kryptonmc.api.inventory
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * All the built-in inventory types.
@@ -18,6 +19,7 @@ import org.kryptonmc.api.registry.Registries
  * menu type, and cannot be created, or opened client-side.
  */
 @Suppress("UndocumentedPublicProperty")
+@Catalogue(InventoryType::class, GridInventoryType::class)
 public object InventoryTypes {
 
     // @formatter:off

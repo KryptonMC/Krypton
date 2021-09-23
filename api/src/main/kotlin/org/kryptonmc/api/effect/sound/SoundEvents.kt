@@ -10,11 +10,13 @@ package org.kryptonmc.api.effect.sound
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * All the sound types in the game.
  */
 @Suppress("UndocumentedPublicProperty", "LargeClass")
+@Catalogue(SoundEvent::class)
 public object SoundEvents {
 
     // @formatter:off

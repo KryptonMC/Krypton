@@ -10,11 +10,13 @@ package org.kryptonmc.api.block
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * An object containing all the built-in vanilla blocks.
  */
 @Suppress("LargeClass", "UndocumentedPublicProperty")
+@Catalogue(Block::class)
 public object Blocks {
 
     // @formatter:off

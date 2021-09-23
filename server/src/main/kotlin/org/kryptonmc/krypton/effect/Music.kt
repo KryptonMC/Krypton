@@ -21,8 +21,10 @@ package org.kryptonmc.krypton.effect
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.krypton.util.Codecs
 
+@CataloguedBy(Musics::class)
 data class Music(
     val sound: SoundEvent,
     val minimumDelay: Int,

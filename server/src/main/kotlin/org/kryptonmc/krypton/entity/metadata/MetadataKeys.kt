@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.metadata
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.particle.particleEffect
 import org.kryptonmc.api.space.Rotation
+import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.item.KryptonItemStackFactory
 import org.kryptonmc.nbt.CompoundTag
@@ -28,6 +29,7 @@ import org.kryptonmc.nbt.MutableCompoundTag
 import java.util.Optional
 import java.util.OptionalInt
 
+@Catalogue(MetadataKey::class)
 object MetadataKeys {
 
     val AREA_EFFECT_CLOUD = AreaEffectCloudKeys

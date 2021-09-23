@@ -10,11 +10,13 @@ package org.kryptonmc.api.world.scoreboard
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * All of the possible vanilla collision rules.
  */
 @Suppress("UndocumentedPublicProperty")
+@Catalogue(CollisionRule::class)
 public object CollisionRules {
 
     // @formatter:off

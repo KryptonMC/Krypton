@@ -14,6 +14,7 @@ import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockLike
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.TranslationHolder
 
 /**
@@ -28,6 +29,7 @@ import org.kryptonmc.api.util.TranslationHolder
  * @param translation the client-side translation for this item
  */
 @JvmRecord
+@CataloguedBy(ItemTypes::class)
 public data class ItemType(
     public val key: Key,
     public val rarity: ItemRarity,

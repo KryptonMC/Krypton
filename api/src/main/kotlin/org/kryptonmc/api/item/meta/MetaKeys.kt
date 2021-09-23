@@ -11,6 +11,7 @@ package org.kryptonmc.api.item.meta
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.util.Catalogue
 import java.awt.Color
 
 /**
@@ -18,6 +19,7 @@ import java.awt.Color
  * keys.
  */
 @Suppress("UndocumentedPublicProperty")
+@Catalogue(MetaKey::class)
 public object MetaKeys {
 
     // @formatter:off

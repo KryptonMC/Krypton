@@ -13,6 +13,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockLike
 import org.kryptonmc.api.block.property.PropertyHolder
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.util.CataloguedBy
 
 /**
  * A fluid with certain properties.
@@ -20,6 +21,7 @@ import org.kryptonmc.api.item.ItemType
  * The design of this is very similar to that of the [Block].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@CataloguedBy(Fluids::class)
 public interface Fluid : PropertyHolder<Fluid>, BlockLike, Keyed, Comparable<Fluid> {
 
     /**

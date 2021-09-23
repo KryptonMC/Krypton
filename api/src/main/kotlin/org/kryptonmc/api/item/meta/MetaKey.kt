@@ -10,6 +10,7 @@ package org.kryptonmc.api.item.meta
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.pointer.Pointer
+import org.kryptonmc.api.util.CataloguedBy
 
 /**
  * A key used for retrieving item metadata.
@@ -18,6 +19,7 @@ import net.kyori.adventure.pointer.Pointer
  * @param type the type of this key
  */
 @JvmRecord
+@CataloguedBy(MetaKeys::class)
 public data class MetaKey<V : Any>(
     private val key: Key,
     private val type: Class<V>

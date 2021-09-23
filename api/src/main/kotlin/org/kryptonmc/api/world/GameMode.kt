@@ -11,6 +11,7 @@ package org.kryptonmc.api.world
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.TranslationHolder
 import org.kryptonmc.api.util.provide
@@ -19,6 +20,7 @@ import org.kryptonmc.api.util.provide
  * A mode of the game.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@CataloguedBy(GameModes::class)
 public interface GameMode : TranslationHolder {
 
     /**

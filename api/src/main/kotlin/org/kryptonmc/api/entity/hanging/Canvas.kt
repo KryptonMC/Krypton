@@ -9,11 +9,13 @@
 package org.kryptonmc.api.entity.hanging
 
 import net.kyori.adventure.key.Keyed
+import org.kryptonmc.api.util.CataloguedBy
 
 /**
  * The canvas of a painting.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@CataloguedBy(Canvases::class)
 public interface Canvas : Keyed {
 
     /**

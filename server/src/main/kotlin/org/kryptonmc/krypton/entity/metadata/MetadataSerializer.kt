@@ -19,7 +19,9 @@
 package org.kryptonmc.krypton.entity.metadata
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.util.CataloguedBy
 
+@CataloguedBy(MetadataSerializers::class)
 abstract class MetadataSerializer<T>(val id: Int) {
 
     abstract fun write(buf: ByteBuf, item: T)

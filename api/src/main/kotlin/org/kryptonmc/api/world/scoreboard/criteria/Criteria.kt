@@ -10,11 +10,13 @@ package org.kryptonmc.api.world.scoreboard.criteria
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * All of the built-in criteria for scoreboards.
  */
 @Suppress("UndocumentedPublicProperty")
+@Catalogue(Criterion::class, CompoundCriterion::class)
 public object Criteria {
 
     // @formatter:off

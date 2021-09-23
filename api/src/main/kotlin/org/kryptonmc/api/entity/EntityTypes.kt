@@ -31,11 +31,13 @@ import org.kryptonmc.api.entity.projectile.ThrownPotion
 import org.kryptonmc.api.entity.projectile.Trident
 import org.kryptonmc.api.entity.projectile.WitherSkull
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * All the types of entities in the game.
  */
 @Suppress("UndocumentedPublicProperty")
+@Catalogue(EntityType::class)
 public object EntityTypes {
 
     // TODO: Make each of these be of their respective entity types when they

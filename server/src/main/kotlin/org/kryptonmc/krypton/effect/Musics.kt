@@ -19,7 +19,9 @@
 package org.kryptonmc.krypton.effect
 
 import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.api.util.Catalogue
 
+@Catalogue(Music::class)
 object Musics {
 
     // Time in ticks constants

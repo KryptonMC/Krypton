@@ -18,7 +18,11 @@
  */
 package org.kryptonmc.krypton.world.chunk.ticket
 
-class TicketType<T>(
+import org.kryptonmc.api.util.CataloguedBy
+
+@JvmRecord
+@CataloguedBy(TicketTypes::class)
+data class TicketType<T>(
     val name: String,
     val comparator: Comparator<T>
 )

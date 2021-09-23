@@ -13,6 +13,7 @@ import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.TranslatableComponent
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.TranslationHolder
 import org.kryptonmc.api.util.provide
@@ -21,6 +22,7 @@ import org.kryptonmc.api.util.provide
  * The type of an attribute.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@CataloguedBy(AttributeTypes::class)
 public interface AttributeType : TranslationHolder, Keyed {
 
     /**

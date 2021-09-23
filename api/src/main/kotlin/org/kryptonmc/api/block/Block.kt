@@ -12,6 +12,7 @@ import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.block.property.PropertyHolder
 import org.kryptonmc.api.fluid.FluidLike
 import org.kryptonmc.api.item.ItemLike
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.TranslationHolder
 
 /**
@@ -24,6 +25,7 @@ import org.kryptonmc.api.util.TranslationHolder
  * them much more thread-safe.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@CataloguedBy(Blocks::class)
 public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, TranslationHolder, Keyed, Comparable<Block> {
 
     /**

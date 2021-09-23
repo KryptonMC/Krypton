@@ -10,11 +10,13 @@ package org.kryptonmc.api.statistic
 
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.util.CataloguedBy
 
 /**
  * A type of a statistic.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@CataloguedBy(StatisticTypes::class)
 public interface StatisticType<T : Any> : Iterable<Statistic<T>>, Keyed {
 
     /**

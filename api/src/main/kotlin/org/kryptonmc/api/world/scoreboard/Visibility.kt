@@ -9,9 +9,11 @@
 package org.kryptonmc.api.world.scoreboard
 
 import net.kyori.adventure.key.Keyed
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.TranslationHolder
 
 /**
  * A visibility for a team option, such as for name tag visibility.
  */
+@CataloguedBy(Visibilities::class)
 public interface Visibility : Keyed, TranslationHolder

@@ -23,6 +23,7 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.api.space.Rotation
+import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.util.asLong
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.entity.data.VillagerData
@@ -43,6 +44,7 @@ import java.util.Optional
 import java.util.OptionalInt
 import java.util.UUID
 
+@Catalogue(MetadataSerializer::class)
 object MetadataSerializers {
 
     @JvmField

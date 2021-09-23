@@ -10,6 +10,7 @@ package org.kryptonmc.api.effect.particle
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * Exposes all available particle types.
@@ -18,6 +19,7 @@ import org.kryptonmc.api.registry.Registries
  * on all of these types.
  */
 @Suppress("UndocumentedPublicProperty")
+@Catalogue(ParticleType::class)
 public object ParticleTypes {
 
     @JvmField public val AMBIENT_ENTITY_EFFECT: SimpleParticleType = simple("ambient_entity_effect")

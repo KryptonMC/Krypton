@@ -11,6 +11,7 @@ package org.kryptonmc.api.inventory
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 
@@ -18,6 +19,7 @@ import org.kryptonmc.api.util.provide
  * Represents a type of [Inventory] that holds items.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@CataloguedBy(InventoryTypes::class)
 public interface InventoryType : Keyed {
 
     /**

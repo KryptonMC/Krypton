@@ -20,11 +20,13 @@ import org.kryptonmc.api.effect.particle.builder.ItemParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.NoteParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.ParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
+import org.kryptonmc.api.util.CataloguedBy
 
 /**
  * A type of [ParticleEffect].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@CataloguedBy(ParticleTypes::class)
 public interface ParticleType : Buildable<ParticleEffect, Buildable.Builder<ParticleEffect>>, Keyed {
 
     /**

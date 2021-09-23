@@ -11,12 +11,14 @@ package org.kryptonmc.api.effect.sound
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 
 /**
  * A type of sound.
  */
+@CataloguedBy(SoundEvents::class)
 public interface SoundEvent : Sound.Type {
 
     @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")

@@ -10,11 +10,13 @@ package org.kryptonmc.api.statistic
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * All of the built-in custom statistics.
  */
 @Suppress("UndocumentedPublicProperty")
+@Catalogue(Key::class)
 public object CustomStatistics {
 
     // @formatter:off
