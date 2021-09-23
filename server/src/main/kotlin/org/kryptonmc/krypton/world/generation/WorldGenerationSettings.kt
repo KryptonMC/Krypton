@@ -36,7 +36,7 @@ import org.kryptonmc.krypton.world.biome.gen.MultiNoiseBiomeGenerator
 import org.kryptonmc.krypton.world.biome.gen.TheEndBiomeGenerator
 import org.kryptonmc.krypton.world.biome.gen.VanillaLayeredBiomeGenerator
 import org.kryptonmc.krypton.world.dimension.Dimension
-import org.kryptonmc.krypton.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
@@ -173,9 +173,9 @@ data class WorldGenerationSettings(
         }
 
         private fun defaults(seed: Long) = KryptonRegistry(InternalResourceKeys.DIMENSION).apply {
-            register(Dimension.OVERWORLD, Dimension(DimensionTypes.OVERWORLD, defaultOverworld(seed)))
-            register(Dimension.NETHER, Dimension(DimensionTypes.THE_NETHER, defaultNether(seed)))
-            register(Dimension.END, Dimension(DimensionTypes.THE_END, defaultEnd(seed)))
+            register(Dimension.OVERWORLD, Dimension(KryptonDimensionTypes.OVERWORLD, defaultOverworld(seed)))
+            register(Dimension.NETHER, Dimension(KryptonDimensionTypes.THE_NETHER, defaultNether(seed)))
+            register(Dimension.END, Dimension(KryptonDimensionTypes.THE_END, defaultEnd(seed)))
         }
 
         private fun defaultOverworld(seed: Long) = NoiseGenerator(
@@ -198,7 +198,7 @@ data class WorldGenerationSettings(
 
         private fun KryptonRegistry<Dimension>.withOverworld(generator: Generator): KryptonRegistry<Dimension> {
             val overworld = get(Dimension.OVERWORLD)
-            val overworldType = overworld?.type ?: DimensionTypes.OVERWORLD
+            val overworldType = overworld?.type ?: KryptonDimensionTypes.OVERWORLD
             return withOverworld(overworldType, generator)
         }
 

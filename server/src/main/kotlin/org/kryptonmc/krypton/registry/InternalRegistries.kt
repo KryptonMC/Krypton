@@ -23,6 +23,7 @@ import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 
 object InternalRegistries {
 
@@ -39,7 +40,6 @@ object InternalRegistries {
     val STATISTIC_TYPE = create(ResourceKeys.STATISTIC_TYPE)
     val CANVAS = createDefaulted(ResourceKeys.CANVAS, key("kebab"))
     val FLUID = createDefaulted(ResourceKeys.FLUID, key("empty"))
-    val DIMENSION_TYPE = create(InternalResourceKeys.DIMENSION_TYPE)
 
     // World generation registries
     val GENERATOR = create(InternalResourceKeys.GENERATOR)

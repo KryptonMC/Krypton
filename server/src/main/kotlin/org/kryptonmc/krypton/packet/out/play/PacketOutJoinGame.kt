@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.packet.Packet
@@ -62,8 +63,8 @@ data class PacketOutJoinGame(
         buf.writeCollection(worlds) { buf.writeKey(it.location) }
         buf.writeNBT(compound {
             put(
-                InternalResourceKeys.DIMENSION_TYPE.location.asString(),
-                InternalRegistries.DIMENSION_TYPE.encode(KryptonDimensionType.CODEC)
+                ResourceKeys.DIMENSION_TYPES.location.asString(),
+                Registries.DIMENSION_TYPES.encode(KryptonDimensionType.CODEC)
             )
             put(
                 InternalResourceKeys.BIOME.location.asString(),

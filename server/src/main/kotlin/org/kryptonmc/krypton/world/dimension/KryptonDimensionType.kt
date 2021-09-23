@@ -20,12 +20,13 @@ package org.kryptonmc.krypton.world.dimension
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
-import com.mojang.serialization.Dynamic
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.getIfPresent
 import org.kryptonmc.api.util.log2
 import org.kryptonmc.api.util.roundUpPow2
+import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.util.Codecs
 import org.kryptonmc.krypton.util.frac
@@ -35,7 +36,10 @@ import java.util.Optional
 import kotlin.math.PI
 import kotlin.math.cos
 
+@CataloguedBy(KryptonDimensionTypes::class)
+@JvmRecord
 data class KryptonDimensionType(
+    private val key: Key,
     override val isPiglinSafe: Boolean,
     override val isNatural: Boolean,
     override val isUltrawarm: Boolean,
@@ -51,7 +55,7 @@ data class KryptonDimensionType(
     override val height: Int,
     override val logicalHeight: Int,
     override val coordinateScale: Double,
-    val effects: Key,
+    override val effects: DimensionEffect,
     val biomeZoomer: BiomeZoomer = FuzzyOffsetBiomeZoomer
 ) : DimensionType {
 
@@ -62,6 +66,8 @@ data class KryptonDimensionType(
     }
 
     fun moonPhase(time: Long) = (time / 24000L % MOON_PHASES + MOON_PHASES).toInt() % MOON_PHASES
+
+    override fun key(): Key = key
 
     companion object {
 
@@ -77,39 +83,37 @@ data class KryptonDimensionType(
         const val MOON_PHASES = 8
         val MOON_BRIGHTNESS_BY_PHASE = floatArrayOf(1F, 0.75F, 0.5F, 0.25F, 0F, 0.25F, 0.5F, 0.75F)
 
-        val CODEC: Codec<KryptonDimensionType> = RecordCodecBuilder.create<KryptonDimensionType> { instance ->
+        val CODEC: Codec<DimensionType> = RecordCodecBuilder.create<DimensionType> { instance ->
             instance.group(
-                Codec.BOOL.fieldOf("piglin_safe").forGetter(KryptonDimensionType::isPiglinSafe),
-                Codec.BOOL.fieldOf("natural").forGetter(KryptonDimensionType::isNatural),
-                Codec.BOOL.fieldOf("ultrawarm").forGetter(KryptonDimensionType::isUltrawarm),
-                Codec.BOOL.fieldOf("has_skylight").forGetter(KryptonDimensionType::hasSkylight),
-                Codec.BOOL.fieldOf("has_ceiling").forGetter(KryptonDimensionType::hasCeiling),
-                Codec.BOOL.fieldOf("has_raids").forGetter(KryptonDimensionType::hasRaids),
-                Codec.BOOL.fieldOf("bed_works").forGetter(KryptonDimensionType::bedWorks),
-                Codec.BOOL.fieldOf("respawn_anchor_works").forGetter(KryptonDimensionType::respawnAnchorWorks),
-                Codec.FLOAT.fieldOf("ambient_light").forGetter(KryptonDimensionType::ambientLight),
+                Codec.BOOL.fieldOf("piglin_safe").forGetter(DimensionType::isPiglinSafe),
+                Codec.BOOL.fieldOf("natural").forGetter(DimensionType::isNatural),
+                Codec.BOOL.fieldOf("ultrawarm").forGetter(DimensionType::isUltrawarm),
+                Codec.BOOL.fieldOf("has_skylight").forGetter(DimensionType::hasSkylight),
+                Codec.BOOL.fieldOf("has_ceiling").forGetter(DimensionType::hasCeiling),
+                Codec.BOOL.fieldOf("has_raids").forGetter(DimensionType::hasRaids),
+                Codec.BOOL.fieldOf("bed_works").forGetter(DimensionType::bedWorks),
+                Codec.BOOL.fieldOf("respawn_anchor_works").forGetter(DimensionType::respawnAnchorWorks),
+                Codec.FLOAT.fieldOf("ambient_light").forGetter(DimensionType::ambientLight),
                 Codec.LONG.optionalFieldOf("fixed_time")
                     .xmap(Optional<Long>::getIfPresent) { Optional.ofNullable(it) }
-                    .forGetter(KryptonDimensionType::fixedTime),
-                Codecs.KEY.fieldOf("infiniburn").forGetter(KryptonDimensionType::infiniburn),
-                Codec.intRange(MIN_Y, MAX_Y).fieldOf("min_y").forGetter(KryptonDimensionType::minimumY),
-                Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).fieldOf("height").forGetter(KryptonDimensionType::height),
-                Codec.intRange(0, Y_SIZE).fieldOf("logical_height")
-                    .forGetter(KryptonDimensionType::logicalHeight),
-                Codec.doubleRange(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE).fieldOf("coordinate_scale")
-                    .forGetter(KryptonDimensionType::coordinateScale),
-                Codecs.KEY.fieldOf("effects").forGetter(KryptonDimensionType::effects)
-            ).apply(instance, ::KryptonDimensionType)
+                    .forGetter(DimensionType::fixedTime),
+                Codecs.KEY.fieldOf("infiniburn").forGetter(DimensionType::infiniburn),
+                Codec.intRange(MIN_Y, MAX_Y).fieldOf("min_y").forGetter(DimensionType::minimumY),
+                Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).fieldOf("height").forGetter(DimensionType::height),
+                Codec.intRange(0, Y_SIZE).fieldOf("logical_height").forGetter(DimensionType::logicalHeight),
+                Codec.doubleRange(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE)
+                    .fieldOf("coordinate_scale")
+                    .forGetter(DimensionType::coordinateScale),
+                Codecs.KEY.fieldOf("effects").forGetter { it.effects.key() }
+            ).apply(instance) { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ ->
+                error("Cannot decode dimension types!")
+            }
         }.comapFlatMap(::checkY) { it }
 
-        private fun checkY(type: KryptonDimensionType): DataResult<KryptonDimensionType> {
+        private fun checkY(type: DimensionType): DataResult<DimensionType> {
             if (type.height < MINIMUM_HEIGHT) return DataResult.error("Height has to be at least $MINIMUM_HEIGHT!")
-            if (type.minimumY + type.height > MAX_Y + 1) {
-                return DataResult.error("Minimum Y + height cannot be greater than ${MAX_Y + 1}!")
-            }
-            if (type.logicalHeight > type.height) {
-                return DataResult.error("Logical height cannot be greater than height!")
-            }
+            if (type.minimumY + type.height > MAX_Y + 1) return DataResult.error("Minimum Y + height cannot be greater than ${MAX_Y + 1}!")
+            if (type.logicalHeight > type.height) return DataResult.error("Logical height cannot be greater than height!")
             if (type.height % 16 != 0) return DataResult.error("Height must be a multiple of 16!")
             if (type.minimumY % 16 != 0) return DataResult.error("Minimum Y must be a multiple of 16!")
             return DataResult.success(type)

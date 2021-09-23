@@ -40,7 +40,7 @@ import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.DerivedWorldData
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.dimension.Dimension
-import org.kryptonmc.krypton.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import org.kryptonmc.krypton.world.storage.WorldDataAccess
@@ -94,7 +94,7 @@ class KryptonWorldManager(
         }
         val loaded = worlds[resourceKey]
         if (loaded != null) return CompletableFuture.completedFuture(loaded)
-        val dimensionType = DimensionTypes.OVERWORLD
+        val dimensionType = KryptonDimensionTypes.OVERWORLD
 //            ?: return failFuture(IllegalStateException("No dimension type found for given key $key!"))
         val generator = server.worldData.worldGenerationSettings.dimensions[ResourceKey.of(
             InternalResourceKeys.DIMENSION,
@@ -148,7 +148,7 @@ class KryptonWorldManager(
         val seed = Hashing.sha256().hashLong(generationSettings.seed).asLong()
         val dimensions = generationSettings.dimensions
         val overworld = dimensions[Dimension.OVERWORLD]
-        val dimensionType = overworld?.type ?: DimensionTypes.OVERWORLD
+        val dimensionType = overworld?.type ?: KryptonDimensionTypes.OVERWORLD
         val generator = overworld?.generator ?: DebugGenerator(InternalRegistries.BIOME)
         val world = KryptonWorld(
             server,

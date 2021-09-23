@@ -9,12 +9,13 @@
 package org.kryptonmc.api.world.dimension
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Keyed
 
 /**
  * Represents data for a dimension.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface DimensionType {
+public interface DimensionType : Keyed {
 
     /**
      * If [Piglin]s will transform in to [ZombifiedPiglin]s over time.
@@ -111,4 +112,11 @@ public interface DimensionType {
      */
     @get:JvmName("coordinateScale")
     public val coordinateScale: Double
+
+    /**
+     * The settings for specific effects that may or may not occur in the
+     * dimension, depending on what this is set to.
+     */
+    @get:JvmName("effects")
+    public val effects: DimensionEffect
 }

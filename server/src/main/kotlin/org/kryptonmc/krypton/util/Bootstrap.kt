@@ -57,7 +57,7 @@ import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
-import org.kryptonmc.krypton.world.dimension.DimensionTypes
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.event.GameEvents
 import org.kryptonmc.krypton.world.fluid.FluidLoader
 import java.util.TreeSet
@@ -89,7 +89,7 @@ object Bootstrap {
         KryptonBiomes
         BiomeKeys
         Biomes
-        DimensionTypes
+        KryptonDimensionTypes
         GameRules
         AttributeLoader.init()
         AttributeTypes

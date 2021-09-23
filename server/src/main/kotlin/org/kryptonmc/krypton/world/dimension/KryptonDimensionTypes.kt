@@ -21,21 +21,16 @@ package org.kryptonmc.krypton.world.dimension
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.krypton.tags.BlockTags
 import org.kryptonmc.krypton.world.biome.gen.BiomeZoomer
 import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetBiomeZoomer
 import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetConstantColumnBiomeZoomer
 
-object DimensionTypes {
-
-    private val OVERWORLD_EFFECTS = key("overworld")
-    private val THE_NETHER_EFFECTS = key("the_nether")
-    private val THE_END_EFFECTS = key("the_end")
+object KryptonDimensionTypes {
 
     val OVERWORLD = register(
+        "overworld",
         false,
         true,
         false,
@@ -51,10 +46,11 @@ object DimensionTypes {
         256,
         256,
         1.0,
-        OVERWORLD_EFFECTS,
+        KryptonDimensionEffects.OVERWORLD,
         FuzzyOffsetConstantColumnBiomeZoomer
     )
     val OVERWORLD_CAVES = register(
+        "overworld_caves",
         false,
         true,
         false,
@@ -70,10 +66,11 @@ object DimensionTypes {
         256,
         256,
         1.0,
-        OVERWORLD_EFFECTS,
+        KryptonDimensionEffects.OVERWORLD,
         FuzzyOffsetConstantColumnBiomeZoomer
     )
     val THE_NETHER = register(
+        "the_nether",
         true,
         false,
         true,
@@ -89,10 +86,11 @@ object DimensionTypes {
         256,
         128,
         8.0,
-        THE_NETHER_EFFECTS,
+        KryptonDimensionEffects.THE_NETHER,
         FuzzyOffsetBiomeZoomer
     )
     val THE_END = register(
+        "the_end",
         false,
         false,
         false,
@@ -108,11 +106,12 @@ object DimensionTypes {
         256,
         256,
         1.0,
-        THE_END_EFFECTS,
+        KryptonDimensionEffects.THE_END,
         FuzzyOffsetBiomeZoomer
     )
 
     private fun register(
+        name: String,
         isPiglinSafe: Boolean,
         isNatural: Boolean,
         isUltrawarm: Boolean,
@@ -128,29 +127,32 @@ object DimensionTypes {
         height: Int,
         logicalHeight: Int,
         coordinateScale: Double,
-        effects: Key,
+        effects: DimensionEffect,
         biomeZoomer: BiomeZoomer = FuzzyOffsetBiomeZoomer
-    ) = Registries.register(
-        InternalRegistries.DIMENSION_TYPE,
-        effects,
-        KryptonDimensionType(
-            isPiglinSafe,
-            isNatural,
-            isUltrawarm,
-            hasSkylight,
-            hasCeiling,
-            hasRaids,
-            bedWorks,
-            respawnAnchorWorks,
-            ambientLight,
-            fixedTime,
-            infiniburn,
-            minimumY,
-            height,
-            logicalHeight,
-            coordinateScale,
-            effects,
-            biomeZoomer
-        )
-    )
+    ): KryptonDimensionType {
+        val key = key(name)
+        return Registries.register(
+            Registries.DIMENSION_TYPES,
+            key,
+            KryptonDimensionType(
+                isPiglinSafe,
+                isNatural,
+                isUltrawarm,
+                hasSkylight,
+                hasCeiling,
+                hasRaids,
+                bedWorks,
+                respawnAnchorWorks,
+                ambientLight,
+                fixedTime,
+                infiniburn,
+                minimumY,
+                height,
+                logicalHeight,
+                coordinateScale,
+                effects,
+                biomeZoomer
+            )
+        ) as KryptonDimensionType
+    }
 }
