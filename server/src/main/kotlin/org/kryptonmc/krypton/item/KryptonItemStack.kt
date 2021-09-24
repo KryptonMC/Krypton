@@ -86,4 +86,11 @@ open class KryptonItemStack(
 
         override fun build() = KryptonItemStack(type, amount, meta)
     }
+
+    object Factory : ItemStack.Factory {
+
+        override fun builder() = Builder()
+
+        override fun empty() = EmptyItemStack
+    }
 }

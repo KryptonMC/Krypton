@@ -99,4 +99,15 @@ data class KryptonParticleEffect @JvmOverloads constructor(
         buf.writeFloat(y)
         buf.writeFloat(z)
     }
+
+    object Factory : ParticleEffect.Factory {
+
+        override fun of(
+            type: ParticleType,
+            quantity: Int,
+            offset: Vector,
+            longDistance: Boolean,
+            data: ParticleData?
+        ): ParticleEffect = KryptonParticleEffect(type, quantity, offset, longDistance, data)
+    }
 }

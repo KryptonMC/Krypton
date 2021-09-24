@@ -23,8 +23,7 @@ import org.kryptonmc.api.effect.particle.particleEffect
 import org.kryptonmc.api.space.Rotation
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.krypton.entity.Pose
-import org.kryptonmc.krypton.item.KryptonItemStackFactory
-import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.nbt.MutableCompoundTag
 import java.util.Optional
 import java.util.OptionalInt
@@ -99,12 +98,12 @@ object MetadataKeys {
 
     object FireballKeys {
 
-        val ITEM = register(8, MetadataSerializers.SLOT, KryptonItemStackFactory.empty())
+        val ITEM = register(8, MetadataSerializers.SLOT, KryptonItemStack.Factory.empty())
     }
 
     object FireworkRocketKeys {
 
-        val ITEM = register(8, MetadataSerializers.SLOT, KryptonItemStackFactory.empty())
+        val ITEM = register(8, MetadataSerializers.SLOT, KryptonItemStack.Factory.empty())
         val ATTACHED = register(9, MetadataSerializers.OPTIONAL_VAR_INT, OptionalInt.empty())
         val SHOT_AT_ANGLE = register(10, MetadataSerializers.BOOLEAN, false)
     }
@@ -117,7 +116,7 @@ object MetadataKeys {
 
     object ThrowableProjectileKeys {
 
-        val ITEM = register(8, MetadataSerializers.SLOT, KryptonItemStackFactory.empty())
+        val ITEM = register(8, MetadataSerializers.SLOT, KryptonItemStack.Factory.empty())
     }
 
     object WitherSkullKeys {

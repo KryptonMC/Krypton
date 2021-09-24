@@ -31,4 +31,22 @@ data class KryptonBlockHitResult(
     override val position: Vector3i,
     override val direction: Direction,
     override val isInside: Boolean
-) : BlockHitResult
+) : BlockHitResult {
+
+    object Factory : BlockHitResult.Factory {
+
+        override fun of(
+            clickLocation: Vector3d,
+            position: Vector3i,
+            direction: Direction,
+            missed: Boolean,
+            isInside: Boolean
+        ): BlockHitResult = KryptonBlockHitResult(
+            clickLocation,
+            if (missed) HitResult.Type.MISS else HitResult.Type.BLOCK,
+            position,
+            direction,
+            isInside
+        )
+    }
+}

@@ -34,6 +34,11 @@ data class KryptonGameProfile(
 
     override fun toString() = "GameProfile(name=$name,uuid=$uuid)"
 
+    object Factory : GameProfile.Factory {
+
+        override fun of(name: String, uuid: UUID, properties: List<ProfileProperty>): GameProfile = KryptonGameProfile(uuid, name, properties)
+    }
+
     companion object : TypeAdapter<KryptonGameProfile>() {
 
         override fun read(reader: JsonReader): KryptonGameProfile? {
