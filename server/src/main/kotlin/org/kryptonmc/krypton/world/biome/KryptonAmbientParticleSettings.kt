@@ -20,28 +20,31 @@ package org.kryptonmc.krypton.world.biome
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.api.effect.particle.ParticleType
+import org.kryptonmc.api.effect.particle.data.ParticleData
+import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.krypton.util.Codecs
 
 @JvmRecord
-data class AmbientMoodSettings(
-    val sound: SoundEvent,
-    val tickDelay: Int,
-    val blockSearchExtent: Int,
-    val offset: Double
-) {
+data class KryptonAmbientParticleSettings(
+    override val particle: ParticleType,
+    override val particleData: ParticleData?,
+    override val probability: Float
+) : AmbientParticleSettings {
+
+    object Factory : AmbientParticleSettings.Factory {
+
+        override fun of(particle: ParticleType, particleData: ParticleData?, probability: Float): AmbientParticleSettings =
+            KryptonAmbientParticleSettings(particle, particleData, probability)
+    }
 
     companion object {
 
-        val CAVE = AmbientMoodSettings(SoundEvents.AMBIENT_CAVE, 6000, 8, 2.0)
-        val CODEC: Codec<AmbientMoodSettings> = RecordCodecBuilder.create {
+        val CODEC: Codec<AmbientParticleSettings> = RecordCodecBuilder.create {
             it.group(
-                Codecs.SOUND_EVENT.fieldOf("sound").forGetter(AmbientMoodSettings::sound),
-                Codec.INT.fieldOf("tick_delay").forGetter(AmbientMoodSettings::tickDelay),
-                Codec.INT.fieldOf("block_search_extent").forGetter(AmbientMoodSettings::blockSearchExtent),
-                Codec.DOUBLE.fieldOf("offset").forGetter(AmbientMoodSettings::offset)
-            ).apply(it, ::AmbientMoodSettings)
+                Codecs.PARTICLE.fieldOf("particle").forGetter(AmbientParticleSettings::particle),
+                Codec.FLOAT.fieldOf("probability").forGetter(AmbientParticleSettings::probability)
+            ).apply(it) { particle, probability -> KryptonAmbientParticleSettings(particle, null, probability) }
         }
     }
 }

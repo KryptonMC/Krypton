@@ -135,6 +135,7 @@ object KryptonDimensionTypes {
             Registries.DIMENSION_TYPES,
             key,
             KryptonDimensionType(
+                key,
                 isPiglinSafe,
                 isNatural,
                 isUltrawarm,

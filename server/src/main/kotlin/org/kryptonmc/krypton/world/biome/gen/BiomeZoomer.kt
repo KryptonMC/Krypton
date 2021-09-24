@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.world.biome.gen
 
-import org.kryptonmc.krypton.world.biome.KryptonBiome
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 
 fun interface BiomeZoomer {
 
-    operator fun invoke(seed: Long, x: Int, y: Int, z: Int, source: NoiseBiomeSource): KryptonBiome
+    operator fun invoke(seed: Long, x: Int, y: Int, z: Int, source: NoiseBiomeSource): Biome
 }

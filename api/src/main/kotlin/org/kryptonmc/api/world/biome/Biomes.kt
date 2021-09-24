@@ -10,11 +10,13 @@ package org.kryptonmc.api.world.biome
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * All the built-in biomes.
  */
 @Suppress("UndocumentedPublicProperty")
+@Catalogue(Biome::class)
 public object Biomes {
 
     // @formatter:off

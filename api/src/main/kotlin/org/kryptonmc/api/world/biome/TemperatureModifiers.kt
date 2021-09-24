@@ -6,24 +6,26 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.world.dimension
+package org.kryptonmc.api.world.biome
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
 /**
- * All of the built-in vanilla dimension effects.
+ * All of the built-in vanilla temperature modifiers.
  */
 @Suppress("UndocumentedPublicProperty")
-@Catalogue(DimensionEffect::class)
-public object DimensionEffects {
+@Catalogue(TemperatureModifier::class)
+public object TemperatureModifiers {
 
     // @formatter:off
-    @JvmField public val OVERWORLD: DimensionEffect = get("overworld")
-    @JvmField public val THE_NETHER: DimensionEffect = get("the_nether")
-    @JvmField public val THE_END: DimensionEffect = get("the_end")
+    @JvmField public val NONE: TemperatureModifier = register("none")
+    @JvmField public val FROZEN: TemperatureModifier = register("frozen")
 
     // @formatter:on
-    private fun get(name: String): DimensionEffect = Registries.DIMENSION_EFFECTS[Key.key(name)]!!
+    private fun register(name: String): TemperatureModifier {
+        val key = Key.key(name)
+        return Registries.register(Registries.TEMPERATURE_MODIFIERS, key, TemperatureModifier.of(key))
+    }
 }

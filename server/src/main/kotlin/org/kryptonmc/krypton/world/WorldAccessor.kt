@@ -18,15 +18,15 @@
  */
 package org.kryptonmc.krypton.world
 
+import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.world.biome.BiomeManager
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.data.WorldData
-import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
 
@@ -35,7 +35,7 @@ interface WorldAccessor : BlockAccessor, NoiseBiomeSource {
     val server: KryptonServer
     val world: KryptonWorld
     val data: WorldData
-    val dimensionType: KryptonDimensionType
+    val dimensionType: DimensionType
     val chunkManager: ChunkManager
     val biomeManager: BiomeManager
     val random: Random
@@ -44,12 +44,6 @@ interface WorldAccessor : BlockAccessor, NoiseBiomeSource {
     val seaLevel: Int
     val dayTime: Long
         get() = data.dayTime
-    val moonBrightness: Float
-        get() = KryptonDimensionType.MOON_BRIGHTNESS_BY_PHASE[dimensionType.moonPhase(dayTime)]
-    val moonPhase: Int
-        get() = dimensionType.moonPhase(dayTime)
-    val timeOfDay: Float
-        get() = dimensionType.timeOfDay(dayTime)
     override val height: Int
         get() = dimensionType.height
     override val minimumBuildHeight: Int
@@ -67,11 +61,11 @@ interface WorldAccessor : BlockAccessor, NoiseBiomeSource {
 
     fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int
 
-    fun getBiome(x: Int, y: Int, z: Int): KryptonBiome = biomeManager[x, y, z]
+    fun getBiome(x: Int, y: Int, z: Int): Biome = biomeManager[x, y, z]
 
-    fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): KryptonBiome
+    fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome
 
-    override fun get(x: Int, y: Int, z: Int): KryptonBiome {
+    override fun get(x: Int, y: Int, z: Int): Biome {
         val chunk = getChunk(x shr 2, z shr 2, ChunkStatus.BIOMES, false)
         return if (chunk?.biomes != null) chunk.biomes!![x, y, z] else getUncachedNoiseBiome(x, y, z)
     }

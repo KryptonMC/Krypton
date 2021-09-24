@@ -6,24 +6,27 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.world.dimension
+package org.kryptonmc.api.world.biome
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
 /**
- * All of the built-in vanilla dimension effects.
+ * All of the built-in vanilla precipitations.
  */
 @Suppress("UndocumentedPublicProperty")
-@Catalogue(DimensionEffect::class)
-public object DimensionEffects {
+@Catalogue(Precipitation::class)
+public object Precipitations {
 
     // @formatter:off
-    @JvmField public val OVERWORLD: DimensionEffect = get("overworld")
-    @JvmField public val THE_NETHER: DimensionEffect = get("the_nether")
-    @JvmField public val THE_END: DimensionEffect = get("the_end")
+    @JvmField public val NONE: Precipitation = register("none")
+    @JvmField public val RAIN: Precipitation = register("rain")
+    @JvmField public val SNOW: Precipitation = register("snow")
 
     // @formatter:on
-    private fun get(name: String): DimensionEffect = Registries.DIMENSION_EFFECTS[Key.key(name)]!!
+    private fun register(name: String): Precipitation {
+        val key = Key.key(name)
+        return Registries.register(Registries.PRECIPITATIONS, key, Precipitation.of(key))
+    }
 }

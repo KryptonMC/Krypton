@@ -21,7 +21,8 @@ package org.kryptonmc.krypton.world.biome.gen
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.world.biome.BiomeKeys
@@ -32,7 +33,7 @@ class VanillaLayeredBiomeGenerator(
     private val seed: Long,
     private val legacyBiomeInitLayer: Boolean,
     private val largeBiomes: Boolean,
-    private val biomes: KryptonRegistry<KryptonBiome>
+    private val biomes: KryptonRegistry<Biome>
 ) : BiomeGenerator(POSSIBLE_BIOMES.map { biomes[it]!! }) {
 
     private val noiseBiomeLayer = Layers.default(seed, legacyBiomeInitLayer, if (largeBiomes) 6 else 4, 4)
@@ -45,12 +46,11 @@ class VanillaLayeredBiomeGenerator(
         val CODEC: Codec<VanillaLayeredBiomeGenerator> = RecordCodecBuilder.create {
             it.group(
                 Codec.LONG.fieldOf("seed").stable().forGetter(VanillaLayeredBiomeGenerator::seed),
-                Codec.BOOL.optionalFieldOf("legacy_biome_init_layer", false, Lifecycle.stable())
+                Codec.BOOL
+                    .optionalFieldOf("legacy_biome_init_layer", false, Lifecycle.stable())
                     .forGetter(VanillaLayeredBiomeGenerator::legacyBiomeInitLayer),
-                Codec.BOOL.fieldOf("large_biomes").orElse(false).stable()
-                    .forGetter(VanillaLayeredBiomeGenerator::largeBiomes),
-                InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes")
-                    .forGetter(VanillaLayeredBiomeGenerator::biomes)
+                Codec.BOOL.fieldOf("large_biomes").orElse(false).stable().forGetter(VanillaLayeredBiomeGenerator::largeBiomes),
+                ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes").forGetter(VanillaLayeredBiomeGenerator::biomes)
             ).apply(it, ::VanillaLayeredBiomeGenerator)
         }
         private val POSSIBLE_BIOMES = listOf(

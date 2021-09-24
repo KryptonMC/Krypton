@@ -23,6 +23,8 @@ import com.mojang.serialization.DataResult
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
@@ -34,7 +36,7 @@ import java.util.Optional
 import java.util.function.Function
 
 class FlatGeneratorSettings(
-    private val biomes: KryptonRegistry<KryptonBiome>,
+    private val biomes: KryptonRegistry<Biome>,
     val structureSettings: StructureSettings
 ) {
 
@@ -47,12 +49,12 @@ class FlatGeneratorSettings(
     var addLakes = false
 
     constructor(
-        biomes: KryptonRegistry<KryptonBiome>,
+        biomes: KryptonRegistry<Biome>,
         structureSettings: StructureSettings,
         layers: List<FlatLayer>,
         addLakes: Boolean,
         decorate: Boolean,
-        biome: Optional<KryptonBiome>
+        biome: Optional<Biome>
     ) : this(biomes, structureSettings) {
         if (addLakes) this.addLakes = true
         if (decorate) this.decorate = true
@@ -73,7 +75,8 @@ class FlatGeneratorSettings(
 
         val CODEC: Codec<FlatGeneratorSettings> = RecordCodecBuilder.create<FlatGeneratorSettings> { instance ->
             instance.group(
-                InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes")
+                ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC)
+                    .fieldOf("biomes")
                     .forGetter(FlatGeneratorSettings::biomes),
                 StructureSettings.CODEC.fieldOf("structures").forGetter(FlatGeneratorSettings::structureSettings),
                 FlatLayer.CODEC.listOf().fieldOf("layers").forGetter(FlatGeneratorSettings::layers),
@@ -85,7 +88,7 @@ class FlatGeneratorSettings(
             ).apply(instance, ::FlatGeneratorSettings)
         }.comapFlatMap(::validateHeight, Function.identity()).stable()
 
-        fun default(biomes: KryptonRegistry<KryptonBiome>): FlatGeneratorSettings {
+        fun default(biomes: KryptonRegistry<Biome>): FlatGeneratorSettings {
             // TODO: Add village structure to the map
             val structureSettings = StructureSettings(mapOf(), Optional.of(StructureSettings.DEFAULT_STRONGHOLD))
             return FlatGeneratorSettings(biomes, structureSettings).apply {

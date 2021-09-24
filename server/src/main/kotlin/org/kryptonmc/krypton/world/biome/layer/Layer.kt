@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.world.biome.layer
 
 import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.biome.area.AreaFactory
 import org.kryptonmc.krypton.world.biome.area.LazyArea
@@ -29,7 +29,7 @@ class Layer(factory: AreaFactory<LazyArea>) {
 
     private val area = factory.create()
 
-    operator fun get(biomes: Registry<KryptonBiome>, x: Int, z: Int): KryptonBiome {
+    operator fun get(biomes: Registry<Biome>, x: Int, z: Int): Biome {
         val biomeId = area[x, z]
         val biomeKey = KryptonBiomes.ID_TO_KEY[biomeId] ?: error("Unknown biome ID $biomeId! (emitted by layers)")
         val biome = biomes[biomeKey]

@@ -18,33 +18,24 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import org.kryptonmc.api.util.StringSerializable
+import com.mojang.serialization.Codec
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.biome.BiomeCategory
 import org.kryptonmc.krypton.util.Codecs
 
-enum class BiomeCategory(override val serialized: String) : StringSerializable {
+@JvmRecord
+data class KryptonBiomeCategory(private val key: Key) : BiomeCategory {
 
-    NONE("none"),
-    TAIGA("taiga"),
-    EXTREME_HILLS("extreme_hills"),
-    JUNGLE("jungle"),
-    MESA("mesa"),
-    PLAINS("plains"),
-    SAVANNA("savanna"),
-    ICY("icy"),
-    THE_END("the_end"),
-    BEACH("beach"),
-    FOREST("forest"),
-    OCEAN("ocean"),
-    DESERT("desert"),
-    RIVER("river"),
-    SWAMP("swamp"),
-    MUSHROOM("mushroom"),
-    NETHER("nether"),
-    UNDERGROUND("underground");
+    override fun key(): Key = key
+
+    object Factory : BiomeCategory.Factory {
+
+        override fun of(key: Key): BiomeCategory = KryptonBiomeCategory(key)
+    }
 
     companion object {
 
-        private val BY_NAME = values().associateBy { it.serialized }
-        val CODEC = Codecs.forEnum(values()) { BY_NAME[it] }
+        val CODEC: Codec<BiomeCategory> = Codecs.forRegistry(Registries.BIOME_CATEGORIES)
     }
 }

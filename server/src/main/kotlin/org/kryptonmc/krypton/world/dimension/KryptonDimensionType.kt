@@ -59,14 +59,6 @@ data class KryptonDimensionType(
     val biomeZoomer: BiomeZoomer = FuzzyOffsetBiomeZoomer
 ) : DimensionType {
 
-    fun timeOfDay(time: Long): Float {
-        val frac = ((fixedTime ?: time).toDouble() / 24000.0 - 0.25).frac()
-        val cos = 0.5 - cos(frac * PI) / 2.0
-        return (frac * 2.0 + cos).toFloat() / 3F
-    }
-
-    fun moonPhase(time: Long) = (time / 24000L % MOON_PHASES + MOON_PHASES).toInt() % MOON_PHASES
-
     override fun key(): Key = key
 
     companion object {
@@ -79,9 +71,6 @@ data class KryptonDimensionType(
         val Y_SIZE = (1 shl PACKED_Y) - 32
         val MAX_Y = (Y_SIZE shr 1) - 1
         val MIN_Y = MAX_Y - Y_SIZE + 1
-
-        const val MOON_PHASES = 8
-        val MOON_BRIGHTNESS_BY_PHASE = floatArrayOf(1F, 0.75F, 0.5F, 0.25F, 0F, 0.25F, 0.5F, 0.75F)
 
         val CODEC: Codec<DimensionType> = RecordCodecBuilder.create<DimensionType> { instance ->
             instance.group(

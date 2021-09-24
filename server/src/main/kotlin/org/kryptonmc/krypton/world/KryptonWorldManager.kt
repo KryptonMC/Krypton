@@ -40,6 +40,7 @@ import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.DerivedWorldData
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.dimension.Dimension
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
@@ -148,7 +149,7 @@ class KryptonWorldManager(
         val seed = Hashing.sha256().hashLong(generationSettings.seed).asLong()
         val dimensions = generationSettings.dimensions
         val overworld = dimensions[Dimension.OVERWORLD]
-        val dimensionType = overworld?.type ?: KryptonDimensionTypes.OVERWORLD
+        val dimensionType = (overworld?.type as? KryptonDimensionType) ?: KryptonDimensionTypes.OVERWORLD
         val generator = overworld?.generator ?: DebugGenerator(InternalRegistries.BIOME)
         val world = KryptonWorld(
             server,
@@ -171,7 +172,7 @@ class KryptonWorldManager(
         dimensions.entries.forEach { (key, dimension) ->
             if (key === Dimension.OVERWORLD) return@forEach
             val resourceKey = ResourceKey.of(ResourceKeys.DIMENSION, key.location)
-            val type = dimension.type
+            val type = dimension.type as? KryptonDimensionType ?: KryptonDimensionTypes.OVERWORLD
             val data = DerivedWorldData(worldData)
 
             worlds[resourceKey] = KryptonWorld(

@@ -22,11 +22,12 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.world.generation.Generator
 
 class Dimension(
-    val type: KryptonDimensionType,
+    val type: DimensionType,
     val generator: Generator
 ) {
 

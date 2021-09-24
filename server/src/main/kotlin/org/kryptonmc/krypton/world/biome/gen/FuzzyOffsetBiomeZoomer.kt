@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.world.biome.gen
 
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.util.LinearCongruentialGenerator
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 
 object FuzzyOffsetBiomeZoomer : BiomeZoomer {
@@ -28,7 +28,7 @@ object FuzzyOffsetBiomeZoomer : BiomeZoomer {
     private const val ZOOM = 4.0
     private const val MASK = 3
 
-    override fun invoke(seed: Long, x: Int, y: Int, z: Int, source: NoiseBiomeSource): KryptonBiome {
+    override fun invoke(seed: Long, x: Int, y: Int, z: Int, source: NoiseBiomeSource): Biome {
         val xOff = x - BITS
         val yOff = y - BITS
         val zOff = z - BITS

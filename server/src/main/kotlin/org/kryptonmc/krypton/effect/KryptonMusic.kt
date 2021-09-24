@@ -16,26 +16,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome
+package org.kryptonmc.krypton.effect
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.api.effect.particle.ParticleType
+import org.kryptonmc.api.effect.Music
+import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.krypton.util.Codecs
 
 @JvmRecord
-data class AmbientParticleSettings(
-    val particle: ParticleType,
-    val probability: Float
-) {
+data class KryptonMusic(
+    override val sound: SoundEvent,
+    override val minimumDelay: Int,
+    override val maximumDelay: Int,
+    override val replaceCurrentMusic: Boolean
+) : Music {
+
+    object Factory : Music.Factory {
+
+        override fun of(
+            sound: SoundEvent,
+            minimumDelay: Int,
+            maximumDelay: Int,
+            replaceCurrentMusic: Boolean
+        ): Music = KryptonMusic(sound, minimumDelay, maximumDelay, replaceCurrentMusic)
+    }
 
     companion object {
 
-        val CODEC: Codec<AmbientParticleSettings> = RecordCodecBuilder.create {
+        val CODEC: Codec<Music> = RecordCodecBuilder.create {
             it.group(
-                Codecs.PARTICLE.fieldOf("particle").forGetter(AmbientParticleSettings::particle),
-                Codec.FLOAT.fieldOf("probability").forGetter(AmbientParticleSettings::probability)
-            ).apply(it, ::AmbientParticleSettings)
+                Codecs.SOUND_EVENT.fieldOf("sound").forGetter(Music::sound),
+                Codec.INT.fieldOf("min_delay").forGetter(Music::minimumDelay),
+                Codec.INT.fieldOf("max_delay").forGetter(Music::maximumDelay),
+                Codec.BOOL.fieldOf("replace_current_music").forGetter(Music::replaceCurrentMusic)
+            ).apply(it, ::KryptonMusic)
         }
     }
 }

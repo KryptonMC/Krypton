@@ -19,23 +19,23 @@
 package org.kryptonmc.krypton.world.biome
 
 import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.api.effect.sound.SoundEvent
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.krypton.util.Codecs
 
 @JvmRecord
-data class AmbientAdditionsSettings(
-    val sound: SoundEvent,
-    val probability: Double
-) {
+data class KryptonTemperatureModifier(private val key: Key) : TemperatureModifier {
+
+    override fun key(): Key = key
+
+    object Factory : TemperatureModifier.Factory {
+
+        override fun of(key: Key): TemperatureModifier = KryptonTemperatureModifier(key)
+    }
 
     companion object {
 
-        val CODEC: Codec<AmbientAdditionsSettings> = RecordCodecBuilder.create {
-            it.group(
-                Codecs.SOUND_EVENT.fieldOf("sound").forGetter(AmbientAdditionsSettings::sound),
-                Codec.DOUBLE.fieldOf("probability").forGetter(AmbientAdditionsSettings::probability)
-            ).apply(it, ::AmbientAdditionsSettings)
-        }
+        val CODEC: Codec<TemperatureModifier> = Codecs.forRegistry(Registries.TEMPERATURE_MODIFIERS)
     }
 }

@@ -23,6 +23,7 @@ import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.block.BlockHitResult
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.command.meta.CommandMeta
+import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.effect.sound.SoundEvent
@@ -36,12 +37,22 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.FactoryNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.GameMode
+import org.kryptonmc.api.world.biome.AmbientAdditionsSettings
+import org.kryptonmc.api.world.biome.AmbientMoodSettings
+import org.kryptonmc.api.world.biome.AmbientParticleSettings
+import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.api.world.biome.BiomeCategory
+import org.kryptonmc.api.world.biome.BiomeEffects
+import org.kryptonmc.api.world.biome.Climate
+import org.kryptonmc.api.world.biome.GrassColorModifier
+import org.kryptonmc.api.world.biome.Precipitation
+import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.scoreboard.Objective
 import org.kryptonmc.api.world.scoreboard.Score
-import org.kryptonmc.api.world.scoreboard.Team
 import org.kryptonmc.krypton.auth.KryptonGameProfileFactory
 import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
+import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffectFactory
 import org.kryptonmc.krypton.effect.particle.data.KryptonParticleDataFactory
 import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
@@ -53,13 +64,21 @@ import org.kryptonmc.krypton.item.KryptonItemStackFactory
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.world.KryptonGameMode
-import org.kryptonmc.krypton.world.block.BlockLoader
+import org.kryptonmc.krypton.world.biome.KryptonAmbientAdditionsSettings
+import org.kryptonmc.krypton.world.biome.KryptonAmbientMoodSettings
+import org.kryptonmc.krypton.world.biome.KryptonAmbientParticleSettings
+import org.kryptonmc.krypton.world.biome.KryptonBiome
+import org.kryptonmc.krypton.world.biome.KryptonBiomeCategory
+import org.kryptonmc.krypton.world.biome.KryptonBiomeEffects
+import org.kryptonmc.krypton.world.biome.KryptonClimate
+import org.kryptonmc.krypton.world.biome.KryptonGrassColorModifier
+import org.kryptonmc.krypton.world.biome.KryptonPrecipitation
+import org.kryptonmc.krypton.world.biome.KryptonTemperatureModifier
 import org.kryptonmc.krypton.world.block.KryptonBlockHitResultFactory
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.world.rule.KryptonGameRule
 import org.kryptonmc.krypton.world.scoreboard.KryptonObjective
 import org.kryptonmc.krypton.world.scoreboard.KryptonScore
-import org.kryptonmc.krypton.world.scoreboard.KryptonTeam
 
 class KryptonFactoryProvider : FactoryProvider {
 
@@ -93,6 +112,17 @@ class KryptonFactoryProvider : FactoryProvider {
         register<Score.Factory>(KryptonScore.Factory)
         register<GameRule.Factory>(KryptonGameRule.Factory)
         register<GameMode.Factory>(KryptonGameMode.Factory)
+        register<Music.Factory>(KryptonMusic.Factory)
+        register<AmbientAdditionsSettings.Factory>(KryptonAmbientAdditionsSettings.Factory)
+        register<AmbientMoodSettings.Factory>(KryptonAmbientMoodSettings.Factory)
+        register<AmbientParticleSettings.Factory>(KryptonAmbientParticleSettings.Factory)
+        register<Biome.Factory>(KryptonBiome.Factory)
+        register<BiomeCategory.Factory>(KryptonBiomeCategory.Factory)
+        register<BiomeEffects.Factory>(KryptonBiomeEffects.Factory)
+        register<Climate.Factory>(KryptonClimate.Factory)
+        register<GrassColorModifier.Factory>(KryptonGrassColorModifier.Factory)
+        register<Precipitation.Factory>(KryptonPrecipitation.Factory)
+        register<TemperatureModifier.Factory>(KryptonTemperatureModifier.Factory)
     }
 }
 

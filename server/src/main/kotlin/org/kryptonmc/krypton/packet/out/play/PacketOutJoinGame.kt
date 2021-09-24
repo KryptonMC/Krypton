@@ -25,8 +25,6 @@ import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.encode
 import org.kryptonmc.krypton.util.encode
 import org.kryptonmc.krypton.util.writeCollection
@@ -67,8 +65,8 @@ data class PacketOutJoinGame(
                 Registries.DIMENSION_TYPES.encode(KryptonDimensionType.CODEC)
             )
             put(
-                InternalResourceKeys.BIOME.location.asString(),
-                InternalRegistries.BIOME.encode(KryptonBiome.CODEC)
+                ResourceKeys.BIOME.location.asString(),
+                Registries.BIOME.encode(KryptonBiome.CODEC)
             )
         })
         buf.encode(KryptonDimensionType.CODEC, dimensionType)

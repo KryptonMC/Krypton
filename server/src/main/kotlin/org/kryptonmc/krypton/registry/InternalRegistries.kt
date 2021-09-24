@@ -36,7 +36,7 @@ object InternalRegistries {
     val ATTRIBUTE = create(ResourceKeys.ATTRIBUTE)
     val MEMORIES = create(InternalResourceKeys.MEMORIES)
     val GAME_EVENT = create(InternalResourceKeys.GAME_EVENT)
-    val BIOME = create(InternalResourceKeys.BIOME)
+    val BIOME = create(ResourceKeys.BIOME)
     val STATISTIC_TYPE = create(ResourceKeys.STATISTIC_TYPE)
     val CANVAS = createDefaulted(ResourceKeys.CANVAS, key("kebab"))
     val FLUID = createDefaulted(ResourceKeys.FLUID, key("empty"))

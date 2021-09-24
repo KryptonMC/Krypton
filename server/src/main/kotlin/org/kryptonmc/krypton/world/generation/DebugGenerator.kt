@@ -19,7 +19,8 @@
 package org.kryptonmc.krypton.world.generation
 
 import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.world.biome.BiomeKeys
@@ -28,7 +29,7 @@ import org.kryptonmc.krypton.world.biome.gen.FixedBiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 
 class DebugGenerator(
-    private val biomes: KryptonRegistry<KryptonBiome>
+    private val biomes: KryptonRegistry<Biome>
 ) : Generator(FixedBiomeGenerator(biomes[BiomeKeys.PLAINS]!!), StructureSettings(false)) {
 
     override val codec = CODEC
@@ -37,7 +38,7 @@ class DebugGenerator(
 
     companion object {
 
-        val CODEC: Codec<DebugGenerator> = InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC)
+        val CODEC: Codec<DebugGenerator> = ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC)
             .fieldOf("biomes")
             .xmap(::DebugGenerator, DebugGenerator::biomes)
             .stable()

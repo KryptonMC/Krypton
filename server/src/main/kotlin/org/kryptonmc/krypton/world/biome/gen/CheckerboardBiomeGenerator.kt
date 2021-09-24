@@ -20,10 +20,11 @@ package org.kryptonmc.krypton.world.biome.gen
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 
 class CheckerboardBiomeGenerator(
-    allowedBiomes: List<KryptonBiome>,
+    allowedBiomes: List<Biome>,
     private val scale: Int
 ) : BiomeGenerator(allowedBiomes) {
 

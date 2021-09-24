@@ -20,28 +20,40 @@ package org.kryptonmc.krypton.world.biome
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.api.world.biome.BiomeCategory
+import org.kryptonmc.api.world.biome.BiomeEffects
+import org.kryptonmc.api.world.biome.Climate
 
 class KryptonBiome(
-    val climate: ClimateSettings,
-    val depth: Float,
-    val scale: Float,
-    val category: BiomeCategory,
-    val effects: BiomeEffects
+    override val climate: Climate,
+    override val depth: Float,
+    override val scale: Float,
+    override val category: BiomeCategory,
+    override val effects: BiomeEffects
 ) : Biome {
+
+    object Factory : Biome.Factory {
+
+        override fun of(
+            climate: Climate,
+            depth: Float,
+            scale: Float,
+            category: BiomeCategory,
+            effects: BiomeEffects
+        ): Biome = KryptonBiome(climate, depth, scale, category, effects)
+    }
 
     companion object {
 
         // TODO: Add the network codec (when there is generation and mob spawn settings for the direct codec)
-        val CODEC: Codec<KryptonBiome> = RecordCodecBuilder.create {
+        val CODEC: Codec<Biome> = RecordCodecBuilder.create {
             it.group(
-                ClimateSettings.CODEC.forGetter(KryptonBiome::climate),
-                Codec.FLOAT.fieldOf("depth").forGetter(KryptonBiome::depth),
-                Codec.FLOAT.fieldOf("scale").forGetter(KryptonBiome::scale),
-                BiomeCategory.CODEC.fieldOf("category").forGetter(KryptonBiome::category),
-                BiomeEffects.CODEC.fieldOf("effects").forGetter(KryptonBiome::effects)
+                KryptonClimate.CODEC.forGetter(Biome::climate),
+                Codec.FLOAT.fieldOf("depth").forGetter(Biome::depth),
+                Codec.FLOAT.fieldOf("scale").forGetter(Biome::scale),
+                KryptonBiomeCategory.CODEC.fieldOf("category").forGetter(Biome::category),
+                KryptonBiomeEffects.CODEC.fieldOf("effects").forGetter(Biome::effects)
             ).apply(it, ::KryptonBiome)
         }
     }

@@ -19,12 +19,13 @@
 package org.kryptonmc.krypton.world.biome
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.api.world.biome.Biome
 
 object KryptonBiomes {
 
-    val ID_TO_KEY = Int2ObjectArrayMap<ResourceKey<KryptonBiome>>()
+    val ID_TO_KEY = Int2ObjectArrayMap<ResourceKey<Biome>>()
     val PLAINS = register(BiomeKeys.PLAINS, 1, BuiltInBiomes.plains())
     val THE_VOID = register(BiomeKeys.THE_VOID, 127, BuiltInBiomes.void())
 
@@ -166,8 +167,8 @@ object KryptonBiomes {
         register(BiomeKeys.LUSH_CAVES, 175, BuiltInBiomes.lushCaves())
     }
 
-    private fun register(key: ResourceKey<KryptonBiome>, id: Int, biome: KryptonBiome): KryptonBiome {
+    private fun register(key: ResourceKey<Biome>, id: Int, biome: KryptonBiome): KryptonBiome {
         ID_TO_KEY[id] = key
-        return InternalRegistries.BIOME.register(id, key, biome)
+        return Registries.BIOME.register(id, key, biome)
     }
 }

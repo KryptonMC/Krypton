@@ -26,6 +26,7 @@ import com.mojang.serialization.Dynamic
 import com.mojang.serialization.JsonOps
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import me.bardy.gsonkt.fromJson
+import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.InternalResourceKeys
@@ -37,13 +38,13 @@ import org.kryptonmc.krypton.world.biome.gen.TheEndBiomeGenerator
 import org.kryptonmc.krypton.world.biome.gen.VanillaLayeredBiomeGenerator
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
-import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.flat.FlatGeneratorSettings
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 import java.util.Optional
 import java.util.function.Function
 import kotlin.random.Random
 
+@JvmRecord
 data class WorldGenerationSettings(
     val seed: Long,
     val generateFeatures: Boolean,
@@ -203,7 +204,7 @@ data class WorldGenerationSettings(
         }
 
         private fun KryptonRegistry<Dimension>.withOverworld(
-            type: KryptonDimensionType,
+            type: DimensionType,
             generator: Generator
         ): KryptonRegistry<Dimension> {
             val registry = KryptonRegistry(InternalResourceKeys.DIMENSION).apply {

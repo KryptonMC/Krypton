@@ -16,19 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.util.StringSerializable
-import org.kryptonmc.krypton.util.Codecs
+import com.mojang.serialization.Codec
+import com.mojang.serialization.DataResult
+import com.mojang.serialization.MapCodec
 
-enum class TemperatureModifier(override val serialized: String) : StringSerializable {
-
-    NONE("none"),
-    FROZEN("frozen");
-
-    companion object {
-
-        private val BY_NAME = values().associateBy { it.serialized }
-        val CODEC = Codecs.forEnum(values()) { BY_NAME[it] }
-    }
+fun <T> T?.successOrError(message: String): DataResult<T> {
+    if (this != null) return DataResult.success(this)
+    return DataResult.error(message)
 }
+
+fun <T> Codec<T>.nullableFieldOf(name: String): MapCodec<T?> = NullableFieldCodec(name, this)

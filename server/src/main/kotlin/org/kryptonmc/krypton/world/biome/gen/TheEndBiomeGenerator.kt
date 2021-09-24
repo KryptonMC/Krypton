@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.world.biome.gen
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
@@ -33,13 +35,13 @@ import kotlin.math.max
 import kotlin.math.sqrt
 
 class TheEndBiomeGenerator private constructor(
-    private val biomes: KryptonRegistry<KryptonBiome>,
+    private val biomes: KryptonRegistry<Biome>,
     private val seed: Long,
-    private val end: KryptonBiome,
-    private val highlands: KryptonBiome,
-    private val midlands: KryptonBiome,
-    private val islands: KryptonBiome,
-    private val barrens: KryptonBiome
+    private val end: Biome,
+    private val highlands: Biome,
+    private val midlands: Biome,
+    private val islands: Biome,
+    private val barrens: Biome
 ) : BiomeGenerator(listOf(end, highlands, midlands, islands, barrens)) {
 
     private val islandNoise = kotlin.run {
@@ -48,7 +50,7 @@ class TheEndBiomeGenerator private constructor(
     }
     override val codec = CODEC
 
-    constructor(biomes: KryptonRegistry<KryptonBiome>, seed: Long) : this(
+    constructor(biomes: KryptonRegistry<Biome>, seed: Long) : this(
         biomes,
         seed,
         biomes[BiomeKeys.THE_END]!!,
@@ -58,7 +60,7 @@ class TheEndBiomeGenerator private constructor(
         biomes[BiomeKeys.END_BARRENS]!!
     )
 
-    override fun get(x: Int, y: Int, z: Int): KryptonBiome {
+    override fun get(x: Int, y: Int, z: Int): Biome {
         val quartX = x shr 2
         val quartZ = z shr 2
         if (quartX.toLong() * quartX.toLong() + quartZ.toLong() * quartZ.toLong() <= ISLAND_CHUNK_DISTANCE_SQ) return end
@@ -75,7 +77,8 @@ class TheEndBiomeGenerator private constructor(
 
         val CODEC: Codec<TheEndBiomeGenerator> = RecordCodecBuilder.create {
             it.group(
-                InternalResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes")
+                ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC)
+                    .fieldOf("biomes")
                     .forGetter(TheEndBiomeGenerator::biomes),
                 Codec.LONG.fieldOf("seed").stable().forGetter(TheEndBiomeGenerator::seed)
             ).apply(it, ::TheEndBiomeGenerator)

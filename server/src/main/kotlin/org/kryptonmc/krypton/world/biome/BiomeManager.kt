@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.world.biome
 
 import org.kryptonmc.api.util.floor
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.world.biome.gen.BiomeZoomer
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.vector.Vector3i
 
 class BiomeManager(
@@ -31,14 +31,14 @@ class BiomeManager(
 
     operator fun get(x: Int, y: Int, z: Int) = zoomer(seed, x, y, z, source)
 
-    fun getNoiseBiome(x: Double, y: Double, z: Double): KryptonBiome {
+    fun getNoiseBiome(x: Double, y: Double, z: Double): Biome {
         val quartX = x.floor() shr 2
         val quartY = y.floor() shr 2
         val quartZ = z.floor() shr 2
         return getNoiseBiome(quartX, quartY, quartZ)
     }
 
-    fun getNoiseBiome(position: Vector3i): KryptonBiome {
+    fun getNoiseBiome(position: Vector3i): Biome {
         val quartX = position.x() shr 2
         val quartY = position.y() shr 2
         val quartZ = position.z() shr 2

@@ -20,15 +20,15 @@ package org.kryptonmc.krypton.world.biome.gen
 
 import com.mojang.serialization.Codec
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
 import java.util.function.Function
 import kotlin.math.abs
 
-sealed class BiomeGenerator(val possibleBiomes: List<KryptonBiome>) : NoiseBiomeSource {
+sealed class BiomeGenerator(val possibleBiomes: List<Biome>) : NoiseBiomeSource {
 
     abstract val codec: Codec<out BiomeGenerator>
 
@@ -40,7 +40,7 @@ sealed class BiomeGenerator(val possibleBiomes: List<KryptonBiome>) : NoiseBiome
         random: Random,
         step: Int = 1,
         absolute: Boolean = false,
-        predicate: (KryptonBiome) -> Boolean
+        predicate: (Biome) -> Boolean
     ): Vector3i? {
         val quartX = x shr 2
         val quartY = y shr 2

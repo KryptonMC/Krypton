@@ -19,28 +19,23 @@
 package org.kryptonmc.krypton.world.biome
 
 import com.mojang.serialization.Codec
-import com.mojang.serialization.MapCodec
-import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.api.util.StringSerializable
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.krypton.util.Codecs
 
-data class ClimateSettings(
-    val precipitation: Precipitation,
-    val temperature: Float,
-    val downfall: Float,
-    val temperatureModifier: TemperatureModifier = TemperatureModifier.NONE
-) {
+@JvmRecord
+data class KryptonPrecipitation(private val key: Key) : Precipitation {
+
+    override fun key(): Key = key
+
+    object Factory : Precipitation.Factory {
+
+        override fun of(key: Key): Precipitation = KryptonPrecipitation(key)
+    }
 
     companion object {
 
-        val CODEC: MapCodec<ClimateSettings> = RecordCodecBuilder.mapCodec {
-            it.group(
-                Precipitation.CODEC.fieldOf("precipitation").forGetter(ClimateSettings::precipitation),
-                Codec.FLOAT.fieldOf("temperature").forGetter(ClimateSettings::temperature),
-                Codec.FLOAT.fieldOf("downfall").forGetter(ClimateSettings::downfall),
-                TemperatureModifier.CODEC.optionalFieldOf("temperature_modifier", TemperatureModifier.NONE)
-                    .forGetter(ClimateSettings::temperatureModifier)
-            ).apply(it, ::ClimateSettings)
-        }
+        val CODEC: Codec<Precipitation> = Codecs.forRegistry(Registries.PRECIPITATIONS)
     }
 }

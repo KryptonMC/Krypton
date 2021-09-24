@@ -11,6 +11,7 @@ package org.kryptonmc.api.registry
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
@@ -27,6 +28,12 @@ import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.api.world.biome.BiomeCategory
+import org.kryptonmc.api.world.biome.GrassColorModifier
+import org.kryptonmc.api.world.biome.Precipitation
+import org.kryptonmc.api.world.biome.TemperatureModifier
+import org.kryptonmc.api.world.dimension.DimensionEffect
+import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.scoreboard.CollisionRule
 import org.kryptonmc.api.world.scoreboard.Visibility
@@ -55,7 +62,7 @@ public object Registries {
     @JvmField public val ITEM: DefaultedRegistry<ItemType> = getDefaulted(ResourceKeys.ITEM)!!
     @JvmField public val MENU: Registry<InventoryType> = get(ResourceKeys.MENU)!!
     @JvmField public val ATTRIBUTE: Registry<AttributeType> = get(ResourceKeys.ATTRIBUTE)!!
-    @JvmField public val BIOME: Registry<Biome> = get(ResourceKeys.minecraft("worldgen/biome"))!!
+    @JvmField public val BIOME: Registry<Biome> = create(ResourceKeys.BIOME)
     @JvmField public val STATISTIC_TYPE: Registry<StatisticType<*>> = get(ResourceKeys.STATISTIC_TYPE)!!
     @JvmField public val CUSTOM_STATISTIC: Registry<Key> = create(ResourceKeys.CUSTOM_STATISTIC)
     @JvmField public val CANVAS: DefaultedRegistry<Canvas> = getDefaulted(ResourceKeys.CANVAS)!!
@@ -70,6 +77,13 @@ public object Registries {
     @JvmField public val VISIBILITIES: Registry<Visibility> = create(ResourceKeys.VISIBILITIES)
     @JvmField public val COLLISION_RULES: Registry<CollisionRule> = create(ResourceKeys.COLLISION_RULES)
     @JvmField public val GAME_MODES: Registry<GameMode> = create(ResourceKeys.GAME_MODES)
+    @JvmField public val DIMENSION_TYPES: Registry<DimensionType> = create(ResourceKeys.DIMENSION_TYPES)
+    @JvmField public val DIMENSION_EFFECTS: Registry<DimensionEffect> = create(ResourceKeys.DIMENSION_EFFECTS)
+    @JvmField public val PRECIPITATIONS: Registry<Precipitation> = create(ResourceKeys.PRECIPITATIONS)
+    @JvmField public val TEMPERATURE_MODIFIERS: Registry<TemperatureModifier> = create(ResourceKeys.TEMPERATURE_MODIFIERS)
+    @JvmField public val GRASS_COLOR_MODIFIERS: Registry<GrassColorModifier> = create(ResourceKeys.GRASS_COLOR_MODIFIERS)
+    @JvmField public val MUSIC: Registry<Music> = create(ResourceKeys.MUSIC)
+    @JvmField public val BIOME_CATEGORIES: Registry<BiomeCategory> = create(ResourceKeys.BIOME_CATEGORIES)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

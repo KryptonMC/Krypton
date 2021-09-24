@@ -24,8 +24,10 @@ import com.mojang.serialization.DataResult
 import com.mojang.serialization.DynamicOps
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.util.StringSerializable
@@ -80,20 +82,32 @@ object Codecs {
 
         override fun <T> decode(ops: DynamicOps<T>, input: T): DataResult<Pair<E, T>> {
             if (ops.compressMaps()) return ops.getNumberValue(input)
-                .flatMap { id ->
-                    values.getOrNull(id.toInt())?.let { DataResult.success(it) }
-                        ?: DataResult.error("Could not find any element with ID matching $id!")
-                }
+                .flatMap { id -> values.getOrNull(id.toInt())?.successOrError("Could not find any element with ID matching $id!") }
                 .map { Pair.of(it, ops.empty()) }
             return ops.getStringValue(input)
-                .flatMap { name ->
-                    nameToValue(name)?.let { DataResult.success(it) }
-                        ?: DataResult.error("Could not find any element with name matching $name!")
-                }
+                .flatMap { name -> nameToValue(name)?.successOrError("Could not find any element with name matching $name!") }
                 .map { Pair.of(it, ops.empty()) }
         }
 
         override fun toString() = "Enum & StringSerializable"
+    }
+
+    @JvmStatic
+    fun <E : Keyed> forRegistry(registry: Registry<E>): Codec<E> = object : Codec<E> {
+
+        override fun <T> encode(input: E, ops: DynamicOps<T>, prefix: T): DataResult<T> {
+            if (ops.compressMaps()) return ops.mergeToPrimitive(prefix, ops.createInt(registry.idOf(input)))
+            return ops.mergeToPrimitive(prefix, ops.createString(input.key().value()))
+        }
+
+        override fun <T> decode(ops: DynamicOps<T>, input: T): DataResult<Pair<E, T>> {
+            if (ops.compressMaps()) return ops.getNumberValue(input)
+                .flatMap { id -> registry[id.toInt()]?.successOrError("Could not find any element with ID matching $id!") }
+                .map { Pair.of(it, ops.empty()) }
+            return ops.getStringValue(input)
+                .flatMap { name -> registry[Key.key(name)]?.successOrError("Could not find any element with name matching $name!") }
+                .map { Pair.of(it, ops.empty()) }
+        }
     }
 
     private fun parseKey(key: String) = try {

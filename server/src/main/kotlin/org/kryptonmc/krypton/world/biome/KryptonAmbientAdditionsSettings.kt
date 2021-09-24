@@ -18,18 +18,30 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import org.kryptonmc.api.util.StringSerializable
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.world.biome.AmbientAdditionsSettings
 import org.kryptonmc.krypton.util.Codecs
 
-enum class GrassColorModifier(override val serialized: String) : StringSerializable {
+@JvmRecord
+data class KryptonAmbientAdditionsSettings(
+    override val sound: SoundEvent,
+    override val probability: Double
+) : AmbientAdditionsSettings {
 
-    NONE("none"),
-    DARK_FOREST("dark_forest"),
-    SWAMP("swamp");
+    object Factory : AmbientAdditionsSettings.Factory {
+
+        override fun of(sound: SoundEvent, probability: Double): AmbientAdditionsSettings = KryptonAmbientAdditionsSettings(sound, probability)
+    }
 
     companion object {
 
-        private val BY_NAME = values().associateBy { it.serialized }
-        val CODEC = Codecs.forEnum(values()) { BY_NAME[it] }
+        val CODEC: Codec<AmbientAdditionsSettings> = RecordCodecBuilder.create {
+            it.group(
+                Codecs.SOUND_EVENT.fieldOf("sound").forGetter(AmbientAdditionsSettings::sound),
+                Codec.DOUBLE.fieldOf("probability").forGetter(AmbientAdditionsSettings::probability)
+            ).apply(it, ::KryptonAmbientAdditionsSettings)
+        }
     }
 }

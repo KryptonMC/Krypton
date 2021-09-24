@@ -16,31 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.effect
+package org.kryptonmc.krypton.world.biome
 
 import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.util.CataloguedBy
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.biome.GrassColorModifier
 import org.kryptonmc.krypton.util.Codecs
 
-@CataloguedBy(Musics::class)
-data class Music(
-    val sound: SoundEvent,
-    val minimumDelay: Int,
-    val maximumDelay: Int,
-    val replace: Boolean
-) {
+@JvmRecord
+data class KryptonGrassColorModifier(private val key: Key) : GrassColorModifier {
+
+    override fun key(): Key = key
+
+    object Factory : GrassColorModifier.Factory {
+
+        override fun of(key: Key): GrassColorModifier = KryptonGrassColorModifier(key)
+    }
 
     companion object {
 
-        val CODEC: Codec<Music> = RecordCodecBuilder.create {
-            it.group(
-                Codecs.SOUND_EVENT.fieldOf("sound").forGetter(Music::sound),
-                Codec.INT.fieldOf("min_delay").forGetter(Music::minimumDelay),
-                Codec.INT.fieldOf("max_delay").forGetter(Music::maximumDelay),
-                Codec.BOOL.fieldOf("replace_current_music").forGetter(Music::replace)
-            ).apply(it, ::Music)
-        }
+        val CODEC: Codec<GrassColorModifier> = Codecs.forRegistry(Registries.GRASS_COLOR_MODIFIERS)
     }
 }

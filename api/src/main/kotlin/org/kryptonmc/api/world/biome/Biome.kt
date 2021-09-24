@@ -8,7 +8,76 @@
  */
 package org.kryptonmc.api.world.biome
 
+import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.util.provide
+
 /**
- * Represents a biome.
+ * A biome is a region in a world with distinct geographical features.
  */
-public interface Biome
+@Suppress("INAPPLICABLE_JVM_NAME")
+@CataloguedBy(Biomes::class)
+public interface Biome {
+
+    /**
+     * The climate of this biome.
+     */
+    @get:JvmName("climate")
+    public val climate: Climate
+
+    /**
+     * The depth of this biome. Used for terrain noise generation.
+     */
+    @get:JvmName("depth")
+    public val depth: Float
+
+    /**
+     * The scale of this biome. Used for terrain noise generation.
+     */
+    @get:JvmName("scale")
+    public val scale: Float
+
+    /**
+     * The category of this biome.
+     */
+    @get:JvmName("category")
+    public val category: BiomeCategory
+
+    /**
+     * The effects of this biome.
+     */
+    @get:JvmName("effects")
+    public val effects: BiomeEffects
+
+    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun of(climate: Climate, depth: Float, scale: Float, category: BiomeCategory, effects: BiomeEffects): Biome
+    }
+
+    public companion object {
+
+        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+
+        /**
+         * Creates a new biome with the given values.
+         *
+         * @param climate the climate
+         * @param depth the depth
+         * @param scale the scale
+         * @param category the category
+         * @param effects the effects
+         * @return a new biome
+         */
+        @JvmStatic
+        public fun of(
+            climate: Climate,
+            depth: Float,
+            scale: Float,
+            category: BiomeCategory,
+            effects: BiomeEffects
+        ): Biome = FACTORY.of(climate, depth, scale, category, effects)
+    }
+}

@@ -10,6 +10,7 @@ package org.kryptonmc.api.resource
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
@@ -24,6 +25,13 @@ import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.api.world.biome.BiomeCategory
+import org.kryptonmc.api.world.biome.GrassColorModifier
+import org.kryptonmc.api.world.biome.Precipitation
+import org.kryptonmc.api.world.biome.TemperatureModifier
+import org.kryptonmc.api.world.dimension.DimensionEffect
+import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.scoreboard.CollisionRule
 import org.kryptonmc.api.world.scoreboard.Visibility
@@ -51,6 +59,7 @@ public object ResourceKeys {
     @JvmField public val ITEM: ResourceKey<out Registry<ItemType>> = minecraft("item")
     @JvmField public val DIMENSION: ResourceKey<out Registry<World>> = minecraft("dimension")
     @JvmField public val ATTRIBUTE: ResourceKey<out Registry<AttributeType>> = minecraft("attribute")
+    @JvmField public val BIOME: ResourceKey<out Registry<Biome>> = minecraft("worldgen/biome")
     @JvmField public val MENU: ResourceKey<out Registry<InventoryType>> = minecraft("menu")
     @JvmField public val STATISTIC_TYPE: ResourceKey<out Registry<StatisticType<*>>> = minecraft("stat_type")
     @JvmField public val CUSTOM_STATISTIC: ResourceKey<out Registry<Key>> = minecraft("custom_stat")
@@ -67,6 +76,13 @@ public object ResourceKeys {
     @JvmField public val VISIBILITIES: ResourceKey<out Registry<Visibility>> = krypton("visibilities")
     @JvmField public val COLLISION_RULES: ResourceKey<out Registry<CollisionRule>> = krypton("collision_rules")
     @JvmField public val GAME_MODES: ResourceKey<out Registry<GameMode>> = krypton("game_modes")
+    @JvmField public val DIMENSION_TYPES: ResourceKey<out Registry<DimensionType>> = krypton("dimension_types")
+    @JvmField public val DIMENSION_EFFECTS: ResourceKey<out Registry<DimensionEffect>> = krypton("dimension_effects")
+    @JvmField public val PRECIPITATIONS: ResourceKey<out Registry<Precipitation>> = krypton("precipitations")
+    @JvmField public val TEMPERATURE_MODIFIERS: ResourceKey<out Registry<TemperatureModifier>> = krypton("temperature_modifiers")
+    @JvmField public val GRASS_COLOR_MODIFIERS: ResourceKey<out Registry<GrassColorModifier>> = krypton("grass_color_modifiers")
+    @JvmField public val MUSIC: ResourceKey<out Registry<Music>> = krypton("music")
+    @JvmField public val BIOME_CATEGORIES: ResourceKey<out Registry<BiomeCategory>> = krypton("biome_categories")
     // @formatter:on
 
     /**

@@ -24,21 +24,20 @@ import org.kryptonmc.api.world.chunk.BiomeContainer
 import org.kryptonmc.krypton.util.IntBiMap
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.world.HeightAccessor
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 
 class KryptonBiomeContainer private constructor(
-    private val biomeRegistry: IntBiMap<KryptonBiome>,
+    private val biomeRegistry: IntBiMap<Biome>,
     heightAccessor: HeightAccessor,
-    override val biomes: Array<KryptonBiome>
+    override val biomes: Array<Biome>
 ) : BiomeContainer, NoiseBiomeSource {
 
     private val quartMinY = heightAccessor.minimumBuildHeight shr 2
     private val quartHeight = (heightAccessor.height shr 2) - 1
 
     constructor(
-        biomeRegistry: IntBiMap<KryptonBiome>,
+        biomeRegistry: IntBiMap<Biome>,
         heightAccessor: HeightAccessor,
         position: ChunkPosition,
         generator: BiomeGenerator,
@@ -67,7 +66,7 @@ class KryptonBiomeContainer private constructor(
 
     fun write() = IntArray(biomes.size) { biomeRegistry.idOf(biomes[it]) }
 
-    override fun get(x: Int, y: Int, z: Int): KryptonBiome {
+    override fun get(x: Int, y: Int, z: Int): Biome {
         val offX = x and HORIZONTAL_MASK
         val offY = (y - quartMinY).clamp(0, quartHeight)
         val offZ = z and HORIZONTAL_MASK
@@ -75,7 +74,6 @@ class KryptonBiomeContainer private constructor(
     }
 
     override fun set(x: Int, y: Int, z: Int, biome: Biome) {
-        if (biome !is KryptonBiome) return
         val offX = x and HORIZONTAL_MASK
         val offY = (y - quartMinY).clamp(0, quartHeight)
         val offZ = z and HORIZONTAL_MASK
@@ -89,7 +87,7 @@ class KryptonBiomeContainer private constructor(
 
         private fun Int.ceilDiv(other: Int) = (this + other - 1) / other
 
-        private fun BiomeGenerator.generateForIndex(x: Int, y: Int, z: Int, index: Int): KryptonBiome {
+        private fun BiomeGenerator.generateForIndex(x: Int, y: Int, z: Int, index: Int): Biome {
             val offX = index and HORIZONTAL_MASK
             val offY = index shr WIDTH_BITS + WIDTH_BITS
             val offZ = index shr WIDTH_BITS and HORIZONTAL_MASK

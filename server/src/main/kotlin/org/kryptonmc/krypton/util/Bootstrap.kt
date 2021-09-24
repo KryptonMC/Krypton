@@ -32,7 +32,11 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.world.biome.BiomeCategories
 import org.kryptonmc.api.world.biome.Biomes
+import org.kryptonmc.api.world.biome.GrassColorModifiers
+import org.kryptonmc.api.world.biome.Precipitations
+import org.kryptonmc.api.world.biome.TemperatureModifiers
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.command.BrigadierExceptions
@@ -86,6 +90,10 @@ object Bootstrap {
         ItemTypes
         FluidLoader.init()
         Fluids
+        BiomeCategories
+        GrassColorModifiers
+        Precipitations
+        TemperatureModifiers
         KryptonBiomes
         BiomeKeys
         Biomes

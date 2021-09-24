@@ -21,8 +21,12 @@ package org.kryptonmc.krypton.world.biome
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.krypton.effect.Music
-import org.kryptonmc.krypton.effect.Musics
+import org.kryptonmc.api.world.biome.BiomeCategories
+import org.kryptonmc.api.world.biome.GrassColorModifiers
+import org.kryptonmc.api.world.biome.Precipitations
+import org.kryptonmc.api.world.biome.TemperatureModifiers
+import org.kryptonmc.krypton.effect.KryptonMusic
+import org.kryptonmc.krypton.effect.KryptonMusics
 import org.kryptonmc.krypton.util.clamp
 import java.awt.Color
 import java.util.Optional
@@ -38,181 +42,181 @@ object BuiltInBiomes {
     fun warmOcean(isDeep: Boolean) = ocean(isDeep, 4445678, 270131)
 
     fun frozenOcean(isDeep: Boolean) = KryptonBiome(
-        ClimateSettings(
-            if (isDeep) Precipitation.RAIN else Precipitation.SNOW,
-            if (isDeep) 0.5F else 0F, 0.5F, TemperatureModifier.FROZEN
+        KryptonClimate(
+            if (isDeep) Precipitations.RAIN else Precipitations.SNOW,
+            if (isDeep) 0.5F else 0F, 0.5F, TemperatureModifiers.FROZEN
         ),
         if (isDeep) -1.8F else -1F,
         0.1F,
-        BiomeCategory.OCEAN,
-        BiomeEffects(
+        BiomeCategories.OCEAN,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(3750089),
             Color(329011),
             (if (isDeep) 0.5F else 0F).calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     private fun ocean(isDeep: Boolean, waterColor: Int, waterFogColor: Int) = KryptonBiome(
-        ClimateSettings(Precipitation.RAIN, 0.5F, 0.5F),
+        KryptonClimate(Precipitations.RAIN, 0.5F, 0.5F),
         if (isDeep) -1.8F else -1F,
         0.1F,
-        BiomeCategory.OCEAN,
-        BiomeEffects(
+        BiomeCategories.OCEAN,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(waterColor),
             Color(waterFogColor),
             0.5F.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun desert(depth: Float, scale: Float) = KryptonBiome(
-        ClimateSettings(Precipitation.NONE, 2F, 0F),
+        KryptonClimate(Precipitations.NONE, 2F, 0F),
         depth,
         scale,
-        BiomeCategory.DESERT,
-        BiomeEffects(
+        BiomeCategories.DESERT,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             2F.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun mountain(depth: Float, scale: Float) = KryptonBiome(
-        ClimateSettings(Precipitation.RAIN, 0.2F, 0.3F),
+        KryptonClimate(Precipitations.RAIN, 0.2F, 0.3F),
         depth,
         scale,
-        BiomeCategory.EXTREME_HILLS,
-        BiomeEffects(
+        BiomeCategories.EXTREME_HILLS,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             0.2F.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun forest(depth: Float, scale: Float) = KryptonBiome(
-        ClimateSettings(Precipitation.RAIN, 0.7F, 0.8F),
+        KryptonClimate(Precipitations.RAIN, 0.7F, 0.8F),
         depth,
         scale,
-        BiomeCategory.FOREST,
-        BiomeEffects(
+        BiomeCategories.FOREST,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             0.7F.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun birchForest(depth: Float, scale: Float) = KryptonBiome(
-        ClimateSettings(Precipitation.RAIN, 0.6F, 0.6F),
+        KryptonClimate(Precipitations.RAIN, 0.6F, 0.6F),
         depth,
         scale,
-        BiomeCategory.FOREST,
-        BiomeEffects(
+        BiomeCategories.FOREST,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             0.6F.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun flowerForest() = forest(0.1F, 0.4F)
 
     fun darkForest(depth: Float, scale: Float) = KryptonBiome(
-        ClimateSettings(Precipitation.RAIN, 0.7F, 0.8F),
+        KryptonClimate(Precipitations.RAIN, 0.7F, 0.8F),
         depth,
         scale,
-        BiomeCategory.FOREST,
-        BiomeEffects(
+        BiomeCategories.FOREST,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             0.7F.calculateSkyColor(),
-            GrassColorModifier.DARK_FOREST,
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            GrassColorModifiers.DARK_FOREST,
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun taiga(depth: Float, scale: Float, isSnowy: Boolean) = KryptonBiome(
-        ClimateSettings(
-            if (isSnowy) Precipitation.SNOW else Precipitation.RAIN,
+        KryptonClimate(
+            if (isSnowy) Precipitations.SNOW else Precipitations.RAIN,
             if (isSnowy) -0.5F else -0.25F, if (isSnowy) 0.4F else 0.8F
         ),
         depth,
         scale,
-        BiomeCategory.TAIGA,
-        BiomeEffects(
+        BiomeCategories.TAIGA,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(if (isSnowy) 4020182 else 4159204),
             Color(329011),
             (if (isSnowy) -0.5F else -0.25F).calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun giantTreeTaiga(depth: Float, scale: Float, temperature: Float) = KryptonBiome(
-        ClimateSettings(Precipitation.RAIN, temperature, 0.8F),
+        KryptonClimate(Precipitations.RAIN, temperature, 0.8F),
         depth,
         scale,
-        BiomeCategory.TAIGA,
-        BiomeEffects(
+        BiomeCategories.TAIGA,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             temperature.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun swamp(depth: Float, scale: Float) = KryptonBiome(
-        ClimateSettings(Precipitation.RAIN, 0.8F, 0.9F),
+        KryptonClimate(Precipitations.RAIN, 0.8F, 0.9F),
         depth,
         scale,
-        BiomeCategory.SWAMP,
-        BiomeEffects(
+        BiomeCategories.SWAMP,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(6388580),
             Color(2302743),
             0.8F.calculateSkyColor(),
-            GrassColorModifier.SWAMP,
-            Optional.of(Color(6975545)),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            GrassColorModifiers.SWAMP,
+            Color(6975545),
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun tundra(depth: Float, scale: Float) = KryptonBiome(
-        ClimateSettings(Precipitation.SNOW, 0F, 0.5F),
+        KryptonClimate(Precipitations.SNOW, 0F, 0.5F),
         depth,
         scale,
-        BiomeCategory.ICY,
-        BiomeEffects(
+        BiomeCategories.ICY,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             0F.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun river(depth: Float, scale: Float, temperature: Float, waterColor: Int, isSnowy: Boolean) = KryptonBiome(
-        ClimateSettings(if (isSnowy) Precipitation.SNOW else Precipitation.RAIN, temperature, 0.5F),
+        KryptonClimate(if (isSnowy) Precipitations.SNOW else Precipitations.RAIN, temperature, 0.5F),
         depth,
         scale,
-        BiomeCategory.RIVER,
-        BiomeEffects(
+        BiomeCategories.RIVER,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(waterColor),
             Color(329011),
             temperature.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
@@ -225,16 +229,16 @@ object BuiltInBiomes {
         isSnowy: Boolean,
         isShore: Boolean
     ) = KryptonBiome(
-        ClimateSettings(if (isSnowy) Precipitation.SNOW else Precipitation.RAIN, temperature, downfall),
+        KryptonClimate(if (isSnowy) Precipitations.SNOW else Precipitations.RAIN, temperature, downfall),
         depth,
         scale,
-        if (isShore) BiomeCategory.NONE else BiomeCategory.BEACH,
-        BiomeEffects(
+        if (isShore) BiomeCategories.NONE else BiomeCategories.BEACH,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(waterColor),
             Color(329011),
             temperature.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
@@ -255,106 +259,106 @@ object BuiltInBiomes {
     private fun jungle(depth: Float, scale: Float) = jungle(depth, scale, 0.9F)
 
     private fun jungle(depth: Float, scale: Float, downfall: Float) = KryptonBiome(
-        ClimateSettings(Precipitation.RAIN, 0.95F, downfall),
+        KryptonClimate(Precipitations.RAIN, 0.95F, downfall),
         depth,
         scale,
-        BiomeCategory.JUNGLE,
-        BiomeEffects(
+        BiomeCategories.JUNGLE,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             0.95F.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun plains() = KryptonBiome(
-        ClimateSettings(Precipitation.RAIN, 0.8F, 0.4F),
+        KryptonClimate(Precipitations.RAIN, 0.8F, 0.4F),
         0.125F,
         0.05F,
-        BiomeCategory.PLAINS,
-        BiomeEffects(
+        BiomeCategories.PLAINS,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             0.8F.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun end() = KryptonBiome(
-        ClimateSettings(Precipitation.NONE, 0.5F, 0.5F),
+        KryptonClimate(Precipitations.NONE, 0.5F, 0.5F),
         0.1F,
         0.2F,
-        BiomeCategory.THE_END,
-        BiomeEffects(
+        BiomeCategories.THE_END,
+        KryptonBiomeEffects(
             Color(10518688),
             Color(4159204),
             Color(329011),
             Color(0),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun mushroomFields(depth: Float, scale: Float) = KryptonBiome(
-        ClimateSettings(Precipitation.RAIN, 0.9F, 1F),
+        KryptonClimate(Precipitations.RAIN, 0.9F, 1F),
         depth,
         scale,
-        BiomeCategory.MUSHROOM,
-        BiomeEffects(
+        BiomeCategories.MUSHROOM,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             0.9F.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun savanna(depth: Float, scale: Float, temperature: Float) = KryptonBiome(
-        ClimateSettings(Precipitation.NONE, temperature, 0F),
+        KryptonClimate(Precipitations.NONE, temperature, 0F),
         depth,
         scale,
-        BiomeCategory.SAVANNA,
-        BiomeEffects(
+        BiomeCategories.SAVANNA,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             temperature.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun savannaPlateau() = savanna(1.5F, 0.025F, 1F)
 
     fun badlands(depth: Float, scale: Float) = KryptonBiome(
-        ClimateSettings(Precipitation.NONE, 2F, 0F),
+        KryptonClimate(Precipitations.NONE, 2F, 0F),
         depth,
         scale,
-        BiomeCategory.MESA,
-        BiomeEffects(
+        BiomeCategories.MESA,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             2F.calculateSkyColor(),
-            foliageColor = Optional.of(Color(10387789)),
-            grassColor = Optional.of(Color(9470285)),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            foliageColor = Color(10387789),
+            grassColor = Color(9470285),
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
     fun erodedBadlands() = badlands(0.1F, 0.2F)
 
     fun void() = KryptonBiome(
-        ClimateSettings(Precipitation.NONE, 0.5F, 0.5F),
+        KryptonClimate(Precipitations.NONE, 0.5F, 0.5F),
         0.1F,
         0.2F,
-        BiomeCategory.NONE,
-        BiomeEffects(
+        BiomeCategories.NONE,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             0.5F.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 
@@ -364,7 +368,7 @@ object BuiltInBiomes {
         SoundEvents.AMBIENT_NETHER_WASTES_LOOP,
         SoundEvents.AMBIENT_NETHER_WASTES_MOOD,
         SoundEvents.AMBIENT_NETHER_WASTES_ADDITIONS,
-        Musics.NETHER_WASTES
+        KryptonMusics.NETHER_WASTES
     )
 
     fun soulSandValley() = nether(
@@ -373,8 +377,8 @@ object BuiltInBiomes {
         SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP,
         SoundEvents.AMBIENT_SOUL_SAND_VALLEY_MOOD,
         SoundEvents.AMBIENT_SOUL_SAND_VALLEY_ADDITIONS,
-        Musics.SOUL_SAND_VALLEY,
-        AmbientParticleSettings(ParticleTypes.ASH, 0.00625F)
+        KryptonMusics.SOUL_SAND_VALLEY,
+        KryptonAmbientParticleSettings(ParticleTypes.ASH, null, 0.00625F)
     )
 
     fun basaltDeltas() = nether(
@@ -383,8 +387,8 @@ object BuiltInBiomes {
         SoundEvents.AMBIENT_BASALT_DELTAS_LOOP,
         SoundEvents.AMBIENT_BASALT_DELTAS_MOOD,
         SoundEvents.AMBIENT_BASALT_DELTAS_ADDITIONS,
-        Musics.BASALT_DELTAS,
-        AmbientParticleSettings(ParticleTypes.WHITE_ASH, 0.118093334F)
+        KryptonMusics.BASALT_DELTAS,
+        KryptonAmbientParticleSettings(ParticleTypes.WHITE_ASH, null, 0.118093334F)
     )
 
     fun crimsonForest() = nether(
@@ -393,8 +397,8 @@ object BuiltInBiomes {
         SoundEvents.AMBIENT_CRIMSON_FOREST_LOOP,
         SoundEvents.AMBIENT_CRIMSON_FOREST_MOOD,
         SoundEvents.AMBIENT_CRIMSON_FOREST_ADDITIONS,
-        Musics.CRIMSON_FOREST,
-        AmbientParticleSettings(ParticleTypes.CRIMSON_SPORE, 0.025F)
+        KryptonMusics.CRIMSON_FOREST,
+        KryptonAmbientParticleSettings(ParticleTypes.CRIMSON_SPORE, null, 0.025F)
     )
 
     fun warpedForest() = nether(
@@ -403,8 +407,8 @@ object BuiltInBiomes {
         SoundEvents.AMBIENT_WARPED_FOREST_LOOP,
         SoundEvents.AMBIENT_WARPED_FOREST_MOOD,
         SoundEvents.AMBIENT_WARPED_FOREST_ADDITIONS,
-        Musics.WARPED_FOREST,
-        AmbientParticleSettings(ParticleTypes.WARPED_SPORE, 0.01428F)
+        KryptonMusics.WARPED_FOREST,
+        KryptonAmbientParticleSettings(ParticleTypes.WARPED_SPORE, null, 0.01428F)
     )
 
     private fun nether(
@@ -413,32 +417,32 @@ object BuiltInBiomes {
         loop: SoundEvent,
         mood: SoundEvent,
         additions: SoundEvent,
-        music: Music,
-        particles: AmbientParticleSettings? = null
+        music: KryptonMusic,
+        particles: KryptonAmbientParticleSettings? = null
     ) = KryptonBiome(
-        ClimateSettings(Precipitation.NONE, 2F, 0F),
+        KryptonClimate(Precipitations.NONE, 2F, 0F),
         0.1F,
         0.2F,
-        BiomeCategory.NETHER,
-        BiomeEffects(
+        BiomeCategories.NETHER,
+        KryptonBiomeEffects(
             Color(fogColor),
             Color(4159204),
             Color(waterFogColor),
             2F.calculateSkyColor(),
-            ambientParticleSettings = Optional.ofNullable(particles),
-            ambientLoopSound = Optional.of(loop),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings(mood, 6000, 8, 2.0)),
-            ambientAdditionsSettings = Optional.of(AmbientAdditionsSettings(additions, 0.0111)),
-            backgroundMusic = Optional.of(music)
+            ambientParticleSettings = particles,
+            ambientLoopSound = loop,
+            ambientMoodSettings = KryptonAmbientMoodSettings(mood, 6000, 8, 2.0),
+            ambientAdditionsSettings = KryptonAmbientAdditionsSettings(additions, 0.0111),
+            backgroundMusic = music
         )
     )
 
     fun lushCaves() = KryptonBiome(
-        ClimateSettings(Precipitation.RAIN, 0.5F, 0.5F),
+        KryptonClimate(Precipitations.RAIN, 0.5F, 0.5F),
         0.1F,
         0.2F,
-        BiomeCategory.UNDERGROUND,
-        BiomeEffects(
+        BiomeCategories.UNDERGROUND,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
@@ -447,16 +451,16 @@ object BuiltInBiomes {
     )
 
     fun dripstoneCaves() = KryptonBiome(
-        ClimateSettings(Precipitation.RAIN, 0.8F, 0.4F),
+        KryptonClimate(Precipitations.RAIN, 0.8F, 0.4F),
         0.125F,
         0.05F,
-        BiomeCategory.UNDERGROUND,
-        BiomeEffects(
+        BiomeCategories.UNDERGROUND,
+        KryptonBiomeEffects(
             Color(12638463),
             Color(4159204),
             Color(329011),
             0.8F.calculateSkyColor(),
-            ambientMoodSettings = Optional.of(AmbientMoodSettings.CAVE)
+            ambientMoodSettings = KryptonAmbientMoodSettings.CAVE
         )
     )
 

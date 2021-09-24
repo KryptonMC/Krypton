@@ -19,11 +19,12 @@
 package org.kryptonmc.krypton.world.biome.gen
 
 import com.mojang.serialization.Codec
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
 
-class FixedBiomeGenerator(private val biome: KryptonBiome) : BiomeGenerator(listOf(biome)) {
+class FixedBiomeGenerator(private val biome: Biome) : BiomeGenerator(listOf(biome)) {
 
     override val codec = CODEC
 
@@ -37,7 +38,7 @@ class FixedBiomeGenerator(private val biome: KryptonBiome) : BiomeGenerator(list
         random: Random,
         step: Int,
         absolute: Boolean,
-        predicate: (KryptonBiome) -> Boolean
+        predicate: (Biome) -> Boolean
     ): Vector3i? {
         if (predicate(biome)) {
             if (absolute) return Vector3i(x, y, z)
