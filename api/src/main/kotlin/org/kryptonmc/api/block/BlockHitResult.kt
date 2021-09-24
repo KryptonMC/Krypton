@@ -9,8 +9,8 @@
 package org.kryptonmc.api.block
 
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.space.Direction
-import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.HitResult
 import org.kryptonmc.api.util.provide
 import org.spongepowered.math.vector.Vector3d
@@ -54,7 +54,7 @@ public interface BlockHitResult : HitResult {
 
     public companion object {
 
-        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new block hit result with the given values.

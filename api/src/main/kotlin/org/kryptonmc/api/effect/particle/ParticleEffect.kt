@@ -10,6 +10,7 @@ package org.kryptonmc.api.effect.particle
 
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.particle.builder.BlockParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.ColorParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.DirectionalParticleEffectBuilder
@@ -22,7 +23,6 @@ import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 
 /**
@@ -80,7 +80,7 @@ public interface ParticleEffect {
 
     public companion object {
 
-        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new particle effect with the given values.

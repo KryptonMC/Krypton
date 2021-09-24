@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.util
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvents
@@ -50,6 +51,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.item.meta.KryptonMetaKeys
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
 import org.kryptonmc.krypton.tags.BlockTags
 import org.kryptonmc.krypton.tags.EntityTypeTags
@@ -77,8 +79,16 @@ object Bootstrap {
         bootstrapped = true
         TranslationBootstrap.init()
 
+        // Preload the factory stuff
+        // These are some kinda nasty hacks, but the tight coupling nature of Krypton requires it
+        // The only 2 other alternatives here are to do away with the static singleton and revert back, or restructure
+        // the entire project to use Guice's dependency inversion (something that should be looked in to at some point)
+        Krypton::class.java.getDeclaredField("internalFactoryProvider").apply { isAccessible = true }.set(null, KryptonFactoryProvider)
+        Krypton::class.java.getDeclaredField("internalRegistryManager").apply { isAccessible = true }.set(null, KryptonRegistryManager)
+        KryptonFactoryProvider.bootstrap()
+        KryptonRegistryManager.parent // Force initialisation
+
         // Preload all the registry classes to ensure everything is properly registered
-        (FactoryProvider.INSTANCE as KryptonFactoryProvider).bootstrap()
         InternalRegistries
         Registries
         GameModes

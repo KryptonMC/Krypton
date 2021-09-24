@@ -9,7 +9,7 @@
 package org.kryptonmc.api.auth
 
 import org.jetbrains.annotations.ApiStatus
-import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.provide
 
 /**
@@ -46,7 +46,7 @@ public interface ProfileProperty {
 
     public companion object {
 
-        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new profile property with the given [name] and [value], with

@@ -10,7 +10,7 @@ package org.kryptonmc.api.world.scoreboard
 
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.ApiStatus
-import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.provide
 import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 
@@ -55,7 +55,7 @@ public interface Objective {
 
     public companion object {
 
-        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new objective with the given values.

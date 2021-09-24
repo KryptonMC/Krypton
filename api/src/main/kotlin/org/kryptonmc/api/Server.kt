@@ -24,6 +24,7 @@ import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
+import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.api.world.scoreboard.Scoreboard
 import java.net.InetSocketAddress
@@ -106,6 +107,14 @@ public interface Server : ForwardingAudience {
      * This is used to retrieve and register fluid handlers for fluids.
      */
     public val fluidManager: FluidManager
+
+    /**
+     * The factory provider for this server.
+     *
+     * This provides factories from the implementation, usually used to
+     * construct certain things, like an object, or a builder.
+     */
+    public val factoryProvider: FactoryProvider
 
     /**
      * The cache of [org.kryptonmc.api.auth.GameProfile]s.

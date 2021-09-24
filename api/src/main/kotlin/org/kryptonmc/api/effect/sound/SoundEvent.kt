@@ -11,8 +11,8 @@ package org.kryptonmc.api.effect.sound
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 
 /**
@@ -30,7 +30,7 @@ public interface SoundEvent : Sound.Type {
 
     public companion object {
 
-        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new sound event with the given [key].

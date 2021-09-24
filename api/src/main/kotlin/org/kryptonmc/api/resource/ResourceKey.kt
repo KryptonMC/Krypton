@@ -10,8 +10,8 @@ package org.kryptonmc.api.resource
 
 import net.kyori.adventure.key.Key
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 
 /**
@@ -43,7 +43,7 @@ public interface ResourceKey<T : Any> {
 
     public companion object {
 
-        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new resource key, or returns an existing one if one with

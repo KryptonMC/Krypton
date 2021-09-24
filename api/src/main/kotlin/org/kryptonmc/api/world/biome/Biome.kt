@@ -9,8 +9,8 @@
 package org.kryptonmc.api.world.biome
 
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 
 /**
@@ -59,7 +59,7 @@ public interface Biome {
 
     public companion object {
 
-        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new biome with the given values.

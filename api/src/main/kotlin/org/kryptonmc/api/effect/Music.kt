@@ -9,9 +9,9 @@
 package org.kryptonmc.api.effect
 
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 
 /**
@@ -59,7 +59,7 @@ public interface Music {
 
     public companion object {
 
-        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates new music with the given values.

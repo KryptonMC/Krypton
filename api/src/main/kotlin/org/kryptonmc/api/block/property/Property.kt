@@ -10,8 +10,8 @@
 package org.kryptonmc.api.block.property
 
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.util.provide
 
@@ -74,7 +74,7 @@ public interface Property<T : Comparable<T>> {
 
     public companion object {
 
-        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new boolean property with the given [name].

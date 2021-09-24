@@ -26,7 +26,7 @@ import org.kryptonmc.api.resource.ResourceKeys
 
 object KryptonRegistryManager : RegistryManager {
 
-    override val parent = KryptonRegistry(ResourceKeys.PARENT)
+    override val parent by lazy { KryptonRegistry(ResourceKeys.PARENT) }
 
     override fun <T : Any> register(
         registry: Registry<T>,

@@ -44,6 +44,7 @@ import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
+import org.kryptonmc.krypton.util.KryptonFactoryProvider
 import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorldManager
@@ -98,6 +99,7 @@ class KryptonServer(
     override val itemManager = KryptonItemManager
     override val fluidManager = KryptonFluidManager
     override val scheduler = KryptonScheduler(pluginManager)
+    override val factoryProvider = KryptonFactoryProvider
 
     @Volatile
     var isRunning = true

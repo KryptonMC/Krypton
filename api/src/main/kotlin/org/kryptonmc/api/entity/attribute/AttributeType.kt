@@ -13,8 +13,8 @@ import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.TranslatableComponent
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.TranslationHolder
 import org.kryptonmc.api.util.provide
 
@@ -64,7 +64,7 @@ public interface AttributeType : TranslationHolder, Keyed {
 
     public companion object {
 
-        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new type of attribute with the given values.

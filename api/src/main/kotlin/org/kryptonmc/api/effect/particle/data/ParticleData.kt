@@ -9,11 +9,11 @@
 package org.kryptonmc.api.effect.particle.data
 
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 
 /**
@@ -54,6 +54,6 @@ public interface ParticleData {
     public companion object {
 
         @JvmSynthetic
-        internal val FACTORY: Factory = FactoryProvider.INSTANCE.provide()
+        internal val FACTORY = Krypton.factoryProvider.provide<Factory>()
     }
 }

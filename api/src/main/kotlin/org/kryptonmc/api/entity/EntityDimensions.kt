@@ -9,9 +9,9 @@
 package org.kryptonmc.api.entity
 
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.space.BoundingBox
 import org.kryptonmc.api.space.Vector
-import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 
 /**
@@ -167,7 +167,7 @@ public interface EntityDimensions {
 
     public companion object {
 
-        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates new entity dimensions that can be scaled with [scale], with

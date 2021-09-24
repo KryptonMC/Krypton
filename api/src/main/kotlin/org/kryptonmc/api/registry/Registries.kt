@@ -10,6 +10,7 @@ package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleType
@@ -25,8 +26,6 @@ import org.kryptonmc.api.item.meta.MetaKey
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.statistic.StatisticType
-import org.kryptonmc.api.util.FactoryProvider
-import org.kryptonmc.api.util.provide
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeCategory
@@ -46,12 +45,10 @@ import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 @Suppress("UndocumentedPublicProperty")
 public object Registries {
 
-    private val MANAGER = FactoryProvider.INSTANCE.provide<RegistryManager>()
-
     /**
      * The parent registry. All registries should be a child of this registry.
      */
-    @JvmField public val PARENT: Registry<out Registry<out Any>> = MANAGER.parent
+    @JvmField public val PARENT: Registry<out Registry<out Any>> = Krypton.registryManager.parent
 
     /**
      * All built-in vanilla registries.
@@ -95,7 +92,7 @@ public object Registries {
      * @return the existing registry, or null if not present
      */
     @JvmStatic
-    public operator fun <T : Any> get(key: ResourceKey<out Registry<T>>): Registry<T>? = MANAGER[key]
+    public operator fun <T : Any> get(key: ResourceKey<out Registry<T>>): Registry<T>? = Krypton.registryManager[key]
 
     /**
      * Gets the existing defaulted registry with the given resource [key], or
@@ -107,8 +104,7 @@ public object Registries {
      */
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    public fun <T : Any> getDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? =
-        MANAGER.getDefaulted(key)
+    public fun <T : Any> getDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = Krypton.registryManager.getDefaulted(key)
 
     /**
      * Registers a new entry to the given [registry], with the given [key]
@@ -130,7 +126,7 @@ public object Registries {
      * @param value the value
      */
     @JvmStatic
-    public fun <T : Any> register(registry: Registry<T>, key: Key, value: T): T = MANAGER.register(registry, key, value)
+    public fun <T : Any> register(registry: Registry<T>, key: Key, value: T): T = Krypton.registryManager.register(registry, key, value)
 
     /**
      * Registers a new entry to the given [registry], with the given [key]
@@ -156,7 +152,7 @@ public object Registries {
      */
     @JvmStatic
     public fun <T : Any> register(registry: Registry<T>, id: Int, key: Key, value: T): T =
-        MANAGER.register(registry, id, key, value)
+        Krypton.registryManager.register(registry, id, key, value)
 
     /**
      * Creates a new registry with the given registry [key].
@@ -165,7 +161,7 @@ public object Registries {
      * @return a registry for the given [key]
      */
     @JvmStatic
-    public fun <T : Any> create(key: ResourceKey<out Registry<T>>): Registry<T> = MANAGER.create(key)
+    public fun <T : Any> create(key: ResourceKey<out Registry<T>>): Registry<T> = Krypton.registryManager.create(key)
 
     /**
      * Creates a new registry with the given registry [key], with a
@@ -182,5 +178,5 @@ public object Registries {
     public fun <T : Any> createDefaulted(
         key: ResourceKey<out Registry<T>>,
         defaultKey: Key
-    ): DefaultedRegistry<T> = MANAGER.createDefaulted(key, defaultKey)
+    ): DefaultedRegistry<T> = Krypton.registryManager.createDefaulted(key, defaultKey)
 }

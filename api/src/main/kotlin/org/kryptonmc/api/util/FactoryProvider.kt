@@ -22,23 +22,6 @@ public interface FactoryProvider {
      */
     @Throws(TypeNotPresentException::class)
     public fun <T> provide(type: Class<T>): T
-
-    public companion object {
-
-        /**
-         * The singleton instance.
-         */
-        @JvmField
-        public val INSTANCE: FactoryProvider = serviceOrError("factory provider")
-
-        /**
-         * Gets the singleton instance. Analogous with [INSTANCE].
-         *
-         * @return the singleton instance
-         */
-        @JvmStatic
-        public fun get(): FactoryProvider = INSTANCE
-    }
 }
 
 /**

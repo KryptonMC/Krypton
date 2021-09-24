@@ -11,8 +11,8 @@ package org.kryptonmc.api.world
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.TranslationHolder
 import org.kryptonmc.api.util.provide
 
@@ -50,7 +50,7 @@ public interface GameMode : TranslationHolder {
 
     public companion object {
 
-        private val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new game mode with the given values.

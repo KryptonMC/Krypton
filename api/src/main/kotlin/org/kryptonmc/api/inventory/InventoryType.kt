@@ -11,8 +11,8 @@ package org.kryptonmc.api.inventory
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
 import org.jetbrains.annotations.ApiStatus
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.util.provide
 
 /**
@@ -40,7 +40,7 @@ public interface InventoryType : Keyed {
     public companion object {
 
         @JvmSynthetic
-        internal val FACTORY = FactoryProvider.INSTANCE.provide<Factory>()
+        internal val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new inventory type with the given values.

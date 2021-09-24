@@ -27,8 +27,7 @@ public object GameModes {
 
     // @formatter:on
     private fun register(name: String, abbreviation: String, canBuild: Boolean): GameMode {
-        val key = Key.key("krypton", "game_modes/$name")
-        val mode = Registries.register(Registries.GAME_MODES, key, GameMode.of(name, abbreviation, canBuild))
-        return mode
+        val key = Key.key(name)
+        return Registries.register(Registries.GAME_MODES, key, GameMode.of(name, abbreviation, canBuild))
     }
 }

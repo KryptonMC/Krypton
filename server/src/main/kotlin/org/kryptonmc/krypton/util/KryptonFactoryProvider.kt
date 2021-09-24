@@ -80,7 +80,7 @@ import org.kryptonmc.krypton.world.rule.KryptonGameRule
 import org.kryptonmc.krypton.world.scoreboard.KryptonObjective
 import org.kryptonmc.krypton.world.scoreboard.KryptonScore
 
-class KryptonFactoryProvider : FactoryProvider {
+object KryptonFactoryProvider : FactoryProvider {
 
     private val factories = Object2ObjectOpenHashMap<Class<*>, Any>()
 
