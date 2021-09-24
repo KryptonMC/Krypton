@@ -31,11 +31,6 @@ import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.world.DataPackConfig
-import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
-import org.kryptonmc.krypton.world.data.PrimaryWorldData
-import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
-import org.kryptonmc.krypton.world.storage.WorldDataStorage
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicReference
 
@@ -83,7 +78,7 @@ private class KryptonCLI : CliktCommand(
     private val worldFolder by option("-W", "--world-folder", "--world-directory", "--world-dir", "--universe")
         .help("Folder where worlds are stored")
         .path(canBeFile = false, canBeSymlink = false, mustBeReadable = true, mustBeWritable = true)
-        .default(Path.of("."))
+        .default(Path.of(""))
 
     override fun run() {
         if (version) {
@@ -92,8 +87,7 @@ private class KryptonCLI : CliktCommand(
         }
 
         val logger = logger("Krypton")
-        logger.info("Starting Krypton server version ${KryptonPlatform.version} for Minecraft " +
-                "${KryptonPlatform.minecraftVersion}...")
+        logger.info("Starting Krypton server version ${KryptonPlatform.version} for Minecraft ${KryptonPlatform.minecraftVersion}...")
 
         // Run the bootstrap
         Bootstrap.preload()
@@ -128,20 +122,9 @@ private class KryptonCLI : CliktCommand(
             logger.warn("USE THIS TOOL AT YOUR OWN RISK! If this tool corrupts your data, that is YOUR " +
                     "responsibility!")
         }
-        val storageAccess = WorldDataStorage(worldFolder).createAccess(config.world.name, useDataConverter)
         val profileCache = KryptonProfileCache(Path.of("usercache.json"))
 
-        val worldData = storageAccess.loadData(DataPackConfig.DEFAULT) ?: PrimaryWorldData(
-            config.world.name,
-            config.world.gameMode,
-            config.world.difficulty,
-            config.world.hardcore,
-            KryptonGameRuleHolder(),
-            DataPackConfig.DEFAULT,
-            WorldGenerationSettings.default()
-        )
-
-        storageAccess.saveData(worldData)
+        // Start the server
         val reference = AtomicReference<KryptonServer>()
         val serverThread = Thread({ reference.get().start() }, "Tick Thread").apply {
             setUncaughtExceptionHandler { _, exception ->
@@ -150,8 +133,6 @@ private class KryptonCLI : CliktCommand(
             }
         }
         val server = KryptonServer(
-            storageAccess,
-            worldData,
             config,
             useDataConverter,
             profileCache,

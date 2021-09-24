@@ -41,7 +41,6 @@ object InternalResourceKeys {
     val GAME_EVENT = ResourceKeys.minecraft<GameEvent>("game_event")
 
     // World generation resources
-    val BIOME = ResourceKeys.minecraft<KryptonBiome>("worldgen/biome")
     val GENERATOR = ResourceKeys.minecraft<Codec<out Generator>>("worldgen/chunk_generator")
     val BIOME_GENERATOR = ResourceKeys.minecraft<Codec<out BiomeGenerator>>("worldgen/biome_source")
     val FEATURE = ResourceKeys.minecraft<Feature<*>>("worldgen/feature")

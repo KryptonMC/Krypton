@@ -18,28 +18,21 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import net.kyori.adventure.pointer.Pointer
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.item.meta.MetaKey
-import java.util.Optional
-import java.util.function.Supplier
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.MutableCompoundTag
 
-object EmptyMetaHolder : KryptonMetaHolder() {
+@JvmRecord
+data class KryptonMetaKey<V : Any>(
+    private val key: Key,
+    private val type: Class<V>,
+    val reader: (CompoundTag) -> V,
+    val writer: (MutableCompoundTag, V) -> Unit,
+    val predicate: (CompoundTag) -> Boolean
+) : MetaKey<V> {
 
-    override fun <V : Any> get(key: MetaKey<V>): V? = null
+    override fun key(): Key = key
 
-    override fun <V : Any> set(key: MetaKey<V>, value: V) = Unit
-
-    override fun <V : Any> contains(key: MetaKey<V>) = false
-
-    override fun <T : Any> get(pointer: Pointer<T>): Optional<T> = Optional.empty()
-
-    override fun <T : Any> getOrDefault(pointer: Pointer<T>, defaultValue: T?): T? = defaultValue
-
-    override fun <T : Any?> getOrDefaultFrom(pointer: Pointer<T>, defaultValue: Supplier<out T>): T = defaultValue.get()
-
-    override fun <T : Any> supports(pointer: Pointer<T>): Boolean = false
-
-    override fun copy() = EmptyMetaHolder
-
-    override fun toString() = "EmptyMetaHolder"
+    override fun type(): Class<V> = type
 }

@@ -32,6 +32,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.util.FactoryProvider
+import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.biome.BiomeCategories
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.biome.GrassColorModifiers
@@ -47,7 +48,7 @@ import org.kryptonmc.krypton.entity.attribute.AttributeLoader
 import org.kryptonmc.krypton.entity.hanging.KryptonCanvases
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemManager
-import org.kryptonmc.krypton.item.meta.MetaFactory
+import org.kryptonmc.krypton.item.meta.KryptonMetaKeys
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
 import org.kryptonmc.krypton.tags.BlockTags
@@ -80,6 +81,7 @@ object Bootstrap {
         (FactoryProvider.INSTANCE as KryptonFactoryProvider).bootstrap()
         InternalRegistries
         Registries
+        GameModes
         SoundLoader.init()
         SoundEvents
         BlockLoader.init()
@@ -94,8 +96,8 @@ object Bootstrap {
         GrassColorModifiers
         Precipitations
         TemperatureModifiers
-        KryptonBiomes
         BiomeKeys
+        KryptonBiomes
         Biomes
         KryptonDimensionTypes
         GameRules
@@ -107,6 +109,7 @@ object Bootstrap {
         CustomStatistics
         KryptonCanvases
         Canvases
+        KryptonMetaKeys
         MetaKeys // Not technically a registry, but quite close to one
 
         // Preload tags (which use registries)
@@ -123,7 +126,6 @@ object Bootstrap {
         ArgumentSerializers
         EntityFactory
         KryptonItemManager
-        MetaFactory
         KryptonBlockManager
         GlobalPalette
         CommandSyntaxException.BUILT_IN_EXCEPTIONS = BrigadierExceptions

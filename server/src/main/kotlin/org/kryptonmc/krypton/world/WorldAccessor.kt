@@ -42,8 +42,6 @@ interface WorldAccessor : BlockAccessor, NoiseBiomeSource {
     val seed: Long
 
     val seaLevel: Int
-    val dayTime: Long
-        get() = data.dayTime
     override val height: Int
         get() = dimensionType.height
     override val minimumBuildHeight: Int

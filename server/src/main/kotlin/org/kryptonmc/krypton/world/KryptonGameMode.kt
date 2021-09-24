@@ -43,8 +43,8 @@ data class KryptonGameMode(
 
     companion object {
 
-        private val NAMES = Registries.GAME_MODES.mapKeys { it.value.name }
-        private val ABBREVIATIONS = Registries.GAME_MODES.mapKeys { it.value.abbreviation }
+        private val NAMES by lazy { Registries.GAME_MODES.mapKeys { it.value.name } }
+        private val ABBREVIATIONS by lazy { Registries.GAME_MODES.mapKeys { it.value.abbreviation } }
 
         fun fromName(name: String): GameMode? = NAMES[name]
 

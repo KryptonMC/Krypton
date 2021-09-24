@@ -20,6 +20,7 @@ import org.kryptonmc.api.entity.hanging.Canvas
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.meta.MetaKey
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.statistic.StatisticType
@@ -65,6 +66,7 @@ public object ResourceKeys {
     @JvmField public val CUSTOM_STATISTIC: ResourceKey<out Registry<Key>> = minecraft("custom_stat")
     @JvmField public val CANVAS: ResourceKey<out Registry<Canvas>> = minecraft("motive")
     @JvmField public val FLUID: ResourceKey<out Registry<Fluid>> = minecraft("fluid")
+    @JvmField public val DIMENSION_TYPE: ResourceKey<out Registry<DimensionType>> = minecraft("dimension_type")
 
     /**
      * Custom built-in registries.
@@ -76,13 +78,13 @@ public object ResourceKeys {
     @JvmField public val VISIBILITIES: ResourceKey<out Registry<Visibility>> = krypton("visibilities")
     @JvmField public val COLLISION_RULES: ResourceKey<out Registry<CollisionRule>> = krypton("collision_rules")
     @JvmField public val GAME_MODES: ResourceKey<out Registry<GameMode>> = krypton("game_modes")
-    @JvmField public val DIMENSION_TYPES: ResourceKey<out Registry<DimensionType>> = krypton("dimension_types")
     @JvmField public val DIMENSION_EFFECTS: ResourceKey<out Registry<DimensionEffect>> = krypton("dimension_effects")
     @JvmField public val PRECIPITATIONS: ResourceKey<out Registry<Precipitation>> = krypton("precipitations")
     @JvmField public val TEMPERATURE_MODIFIERS: ResourceKey<out Registry<TemperatureModifier>> = krypton("temperature_modifiers")
     @JvmField public val GRASS_COLOR_MODIFIERS: ResourceKey<out Registry<GrassColorModifier>> = krypton("grass_color_modifiers")
     @JvmField public val MUSIC: ResourceKey<out Registry<Music>> = krypton("music")
     @JvmField public val BIOME_CATEGORIES: ResourceKey<out Registry<BiomeCategory>> = krypton("biome_categories")
+    @JvmField public val META_KEYS: ResourceKey<out Registry<MetaKey<*>>> = krypton("meta_keys")
     // @formatter:on
 
     /**

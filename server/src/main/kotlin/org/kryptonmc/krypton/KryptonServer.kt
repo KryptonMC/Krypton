@@ -28,9 +28,6 @@ import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.server.TickEndEvent
 import org.kryptonmc.api.event.server.TickStartEvent
-import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileCache
@@ -40,7 +37,6 @@ import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.packet.PacketRegistry
-import org.kryptonmc.krypton.packet.out.play.PacketOutDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
@@ -52,10 +48,8 @@ import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
-import org.kryptonmc.krypton.world.data.PrimaryWorldData
 import org.kryptonmc.krypton.world.fluid.KryptonFluidManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
-import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.net.InetSocketAddress
 import java.nio.file.Path
@@ -70,8 +64,6 @@ import kotlin.math.max
 import kotlin.system.measureTimeMillis
 
 class KryptonServer(
-    val dataAccess: WorldDataAccess,
-    val worldData: PrimaryWorldData,
     val config: KryptonConfig,
     val useDataConverter: Boolean,
     override val profileCache: KryptonProfileCache,
@@ -82,22 +74,7 @@ class KryptonServer(
     override val platform = KryptonPlatform
     override val maxPlayers = config.status.maxPlayers
     override val motd = config.status.motd
-
     override val isOnline = config.server.onlineMode
-    override var isHardcore: Boolean
-        get() = worldData.isHardcore
-        set(value) { worldData.isHardcore = value }
-    override var difficulty: Difficulty
-        get() = worldData.difficulty
-        set(value) {
-            worldData.difficulty = value
-            // TODO: Update mob spawning flags
-            playerManager.players.forEach { it.session.send(PacketOutDifficulty(it.world.difficulty)) }
-        }
-    override var gameMode: GameMode
-        get() = worldData.gameMode
-        set(value) { worldData.gameMode = value }
-
     override val address = InetSocketAddress(config.server.ip, config.server.port)
 
     val playerManager = PlayerManager(this)
@@ -111,7 +88,7 @@ class KryptonServer(
     private val nettyProcess = NettyProcess(this)
     val random = SecureRandom()
 
-    override val worldManager = KryptonWorldManager(this, dataAccess, worldData, worldFolder)
+    override val worldManager = KryptonWorldManager(this, worldFolder)
     override val commandManager = KryptonCommandManager()
     override val pluginManager = KryptonPluginManager(this)
     override val eventManager = KryptonEventManager(pluginManager)
@@ -301,10 +278,6 @@ class KryptonServer(
         config.save(node)
     }
 
-    fun overworld() = worldManager.worlds[World.OVERWORLD]!!
-
-    fun resolve(path: String) = dataAccess.resolve(path)
-
     override fun player(uuid: UUID) = playerManager.playersByUUID[uuid]
 
     override fun player(name: String) = playerManager.playersByName[name]
@@ -347,7 +320,6 @@ class KryptonServer(
         // Save data
         LOGGER.info("Saving player, world, and region data...")
         worldManager.saveAll()
-        dataAccess.close()
         playerManager.saveAll()
 
         // Shut down plugins and unregister listeners

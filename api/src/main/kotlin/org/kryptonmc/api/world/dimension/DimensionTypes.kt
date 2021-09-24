@@ -24,5 +24,5 @@ public object DimensionTypes {
     @JvmField public val THE_END: DimensionType = get("the_end")
 
     // @formatter:on
-    private fun get(name: String): DimensionType = Registries.DIMENSION_TYPES[Key.key(name)]!!
+    private fun get(name: String): DimensionType = Registries.DIMENSION_TYPE[Key.key(name)]!!
 }

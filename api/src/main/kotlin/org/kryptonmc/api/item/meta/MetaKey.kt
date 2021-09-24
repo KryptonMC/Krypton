@@ -8,24 +8,11 @@
  */
 package org.kryptonmc.api.item.meta
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.pointer.Pointer
 import org.kryptonmc.api.util.CataloguedBy
 
 /**
  * A key used for retrieving item metadata.
- *
- * @param key the namespaced key for this key
- * @param type the type of this key
  */
-@JvmRecord
 @CataloguedBy(MetaKeys::class)
-public data class MetaKey<V : Any>(
-    private val key: Key,
-    private val type: Class<V>
-) : Pointer<V> {
-
-    override fun key(): Key = key
-
-    override fun type(): Class<V> = type
-}
+public interface MetaKey<V : Any> : Pointer<V>

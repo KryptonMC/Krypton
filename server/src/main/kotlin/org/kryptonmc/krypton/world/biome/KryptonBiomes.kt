@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.world.biome
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.registry.InternalRegistries
 
 object KryptonBiomes {
 
@@ -169,6 +169,6 @@ object KryptonBiomes {
 
     private fun register(key: ResourceKey<Biome>, id: Int, biome: KryptonBiome): KryptonBiome {
         ID_TO_KEY[id] = key
-        return Registries.BIOME.register(id, key, biome)
+        return InternalRegistries.BIOME.register(id, key, biome)
     }
 }

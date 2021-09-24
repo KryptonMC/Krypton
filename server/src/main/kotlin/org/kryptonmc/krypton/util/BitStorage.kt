@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.data
+package org.kryptonmc.krypton.util
 
 /**
  * This one is a strange one. This is essentially an array that allows arbitrarily-sized numbers of any

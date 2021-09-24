@@ -21,19 +21,23 @@ package org.kryptonmc.krypton.world.data
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.world.DataPackConfig
+import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
+import java.nio.file.Path
 import java.util.UUID
 
 interface WorldData {
 
     // Settings
     val name: String
+    val folder: Path
     var gameMode: GameMode
     var difficulty: Difficulty
     var isHardcore: Boolean
     var gameRules: KryptonGameRuleHolder
     var dataPackConfig: DataPackConfig
     var isInitialized: Boolean
+    val worldGenerationSettings: WorldGenerationSettings
 
     // Spawn
     var spawnX: Int

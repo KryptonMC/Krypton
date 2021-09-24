@@ -119,7 +119,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
         val world = server.worldManager.worlds[dimension] ?: kotlin.run {
             LOGGER.warn("Unknown respawn dimension $dimension! Defaulting to overworld...")
-            server.overworld()
+            server.worldManager.default
         }
         player.world = world
         world.players += player
@@ -137,13 +137,13 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             server.worldManager.worlds.keys,
             world.dimensionType,
             world.dimension,
-            Hashing.sha256().hashLong(server.worldData.worldGenerationSettings.seed).asLong(),
+            Hashing.sha256().hashLong(server.worldManager.default.data.worldGenerationSettings.seed).asLong(),
             server.maxPlayers,
             server.config.world.viewDistance,
             reducedDebugInfo,
             doImmediateRespawn,
             world.isDebug,
-            server.worldData.worldGenerationSettings.isFlat
+            server.worldManager.default.data.worldGenerationSettings.isFlat
         ))
         session.send(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
         session.send(PacketOutDifficulty(world.difficulty))
@@ -301,7 +301,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     fun getStatistics(player: KryptonPlayer): KryptonStatisticsTracker {
         val uuid = player.uuid
         statistics[uuid]?.let { return it }
-        val folder = server.resolve("stats").tryCreateDirectory()
+        val folder = server.worldManager.default.folder.resolve("stats").tryCreateDirectory()
         // TODO: Deal with the old data files
         return KryptonStatisticsTracker(player, folder.resolve("$uuid.json")).apply {
             this@PlayerManager.statistics[uuid] = this

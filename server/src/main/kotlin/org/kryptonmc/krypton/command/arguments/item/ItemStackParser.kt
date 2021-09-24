@@ -72,7 +72,7 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { // TOD
 
         return ItemStackPredicate {
             if (item != null) {
-                if (nbt != null) nbt == (it.meta as KryptonMetaHolder).nbt.immutable() else it.type == item
+                if (nbt != null) nbt == (it.meta as? KryptonMetaHolder)?.nbt else it.type == item
             } else if (tag != null) {
                 (ItemTags[key(tag)] ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())).contains(it.type)
             } else {

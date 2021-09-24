@@ -132,7 +132,7 @@ object KryptonDimensionTypes {
     ): KryptonDimensionType {
         val key = key(name)
         return Registries.register(
-            Registries.DIMENSION_TYPES,
+            Registries.DIMENSION_TYPE,
             key,
             KryptonDimensionType(
                 key,

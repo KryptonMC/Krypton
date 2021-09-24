@@ -28,11 +28,14 @@ import java.util.Optional
 
 open class KryptonMetaHolder(var nbt: MutableCompoundTag = MutableCompoundTag()) : MetaHolder {
 
-    override fun <V : Any> get(key: MetaKey<V>): V? = MetaFactory.get(key, nbt)
+    override fun <V : Any> get(key: MetaKey<V>): V? = (key as? KryptonMetaKey<V>)?.reader?.invoke(nbt)
 
-    override fun <V : Any> set(key: MetaKey<V>, value: V) = MetaFactory.set(key, nbt, value)
+    override fun <V : Any> set(key: MetaKey<V>, value: V) {
+        if (key !is KryptonMetaKey<V>) return
+        key.writer.invoke(nbt, value)
+    }
 
-    override fun <V : Any> contains(key: MetaKey<V>) = MetaFactory.contains(key, nbt)
+    override fun <V : Any> contains(key: MetaKey<V>) = (key as? KryptonMetaKey<V>)?.predicate?.invoke(nbt) ?: false
 
     override fun copy() = KryptonMetaHolder(nbt.copy())
 

@@ -11,6 +11,7 @@ package org.kryptonmc.api.item.meta
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 import java.awt.Color
 
@@ -23,26 +24,24 @@ import java.awt.Color
 public object MetaKeys {
 
     // @formatter:off
-    @JvmField public val DAMAGE: MetaKey<Int> = of("damage")
-    @JvmField public val UNBREAKABLE: MetaKey<Boolean> = of("unbreakable")
-    @JvmField public val CAN_DESTROY: MetaKey<List<Block>> = of("can_destroy")
-    @JvmField public val CUSTOM_MODEL_DATA: MetaKey<Int> = of("custom_model_data")
-    @JvmField public val CAN_PLACE_ON: MetaKey<List<Block>> = of("block/can_place_on")
-    @JvmField public val NAME: MetaKey<Component> = of("display/name")
-    @JvmField public val LORE: MetaKey<List<Component>> = of("display/lore")
-    @JvmField public val COLOR: MetaKey<Color> = of("display/color")
+    @JvmField public val DAMAGE: MetaKey<Int> = get("damage")
+    @JvmField public val UNBREAKABLE: MetaKey<Boolean> = get("unbreakable")
+    @JvmField public val CAN_DESTROY: MetaKey<List<Block>> = get("can_destroy")
+    @JvmField public val CUSTOM_MODEL_DATA: MetaKey<Int> = get("custom_model_data")
+    @JvmField public val CAN_PLACE_ON: MetaKey<List<Block>> = get("can_place_on")
+    @JvmField public val NAME: MetaKey<Component> = get("name")
+    @JvmField public val LORE: MetaKey<List<Component>> = get("lore")
+    @JvmField public val COLOR: MetaKey<Color> = get("color")
 
-    @JvmField public val HIDE_ATTRIBUTES: MetaKey<Boolean> = of("hide_attributes")
-    @JvmField public val HIDE_CAN_DESTROY: MetaKey<Boolean> = of("hide_can_destroy")
-    @JvmField public val HIDE_CAN_PLACE_ON: MetaKey<Boolean> = of("hide_can_place_on")
-    @JvmField public val HIDE_DYE: MetaKey<Boolean> = of("hide_dye")
-    @JvmField public val HIDE_ENCHANTMENTS: MetaKey<Boolean> = of("hide_enchantments")
-    @JvmField public val HIDE_MISCELLANEOUS: MetaKey<Boolean> = of("hide_miscellaneous")
-    @JvmField public val HIDE_UNBREAKABLE: MetaKey<Boolean> = of("hide_unbreakable")
+    @JvmField public val HIDE_ATTRIBUTES: MetaKey<Boolean> = get("hide_attributes")
+    @JvmField public val HIDE_CAN_DESTROY: MetaKey<Boolean> = get("hide_can_destroy")
+    @JvmField public val HIDE_CAN_PLACE_ON: MetaKey<Boolean> = get("hide_can_place_on")
+    @JvmField public val HIDE_DYE: MetaKey<Boolean> = get("hide_dye")
+    @JvmField public val HIDE_ENCHANTMENTS: MetaKey<Boolean> = get("hide_enchantments")
+    @JvmField public val HIDE_MISCELLANEOUS: MetaKey<Boolean> = get("hide_miscellaneous")
+    @JvmField public val HIDE_UNBREAKABLE: MetaKey<Boolean> = get("hide_unbreakable")
 
     // @formatter:on
-    private inline fun <reified V : Any> of(key: String) = MetaKey(
-        Key.key("krypton", "item/meta/$key"),
-        V::class.java
-    )
+    @Suppress("UNCHECKED_CAST")
+    private fun <V : Any> get(name: String) = Registries.META_KEYS[Key.key("krypton", name)]!! as MetaKey<V>
 }

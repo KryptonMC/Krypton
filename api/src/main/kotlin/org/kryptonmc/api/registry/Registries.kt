@@ -21,6 +21,7 @@ import org.kryptonmc.api.entity.hanging.Canvas
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.meta.MetaKey
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.statistic.StatisticType
@@ -62,11 +63,12 @@ public object Registries {
     @JvmField public val ITEM: DefaultedRegistry<ItemType> = getDefaulted(ResourceKeys.ITEM)!!
     @JvmField public val MENU: Registry<InventoryType> = get(ResourceKeys.MENU)!!
     @JvmField public val ATTRIBUTE: Registry<AttributeType> = get(ResourceKeys.ATTRIBUTE)!!
-    @JvmField public val BIOME: Registry<Biome> = create(ResourceKeys.BIOME)
+    @JvmField public val BIOME: Registry<Biome> = get(ResourceKeys.BIOME)!!
     @JvmField public val STATISTIC_TYPE: Registry<StatisticType<*>> = get(ResourceKeys.STATISTIC_TYPE)!!
     @JvmField public val CUSTOM_STATISTIC: Registry<Key> = create(ResourceKeys.CUSTOM_STATISTIC)
     @JvmField public val CANVAS: DefaultedRegistry<Canvas> = getDefaulted(ResourceKeys.CANVAS)!!
     @JvmField public val FLUID: Registry<Fluid> = get(ResourceKeys.FLUID)!!
+    @JvmField public val DIMENSION_TYPE: Registry<DimensionType> = create(ResourceKeys.DIMENSION_TYPE)
 
     /**
      * Custom built-in registries.
@@ -77,13 +79,13 @@ public object Registries {
     @JvmField public val VISIBILITIES: Registry<Visibility> = create(ResourceKeys.VISIBILITIES)
     @JvmField public val COLLISION_RULES: Registry<CollisionRule> = create(ResourceKeys.COLLISION_RULES)
     @JvmField public val GAME_MODES: Registry<GameMode> = create(ResourceKeys.GAME_MODES)
-    @JvmField public val DIMENSION_TYPES: Registry<DimensionType> = create(ResourceKeys.DIMENSION_TYPES)
     @JvmField public val DIMENSION_EFFECTS: Registry<DimensionEffect> = create(ResourceKeys.DIMENSION_EFFECTS)
     @JvmField public val PRECIPITATIONS: Registry<Precipitation> = create(ResourceKeys.PRECIPITATIONS)
     @JvmField public val TEMPERATURE_MODIFIERS: Registry<TemperatureModifier> = create(ResourceKeys.TEMPERATURE_MODIFIERS)
     @JvmField public val GRASS_COLOR_MODIFIERS: Registry<GrassColorModifier> = create(ResourceKeys.GRASS_COLOR_MODIFIERS)
     @JvmField public val MUSIC: Registry<Music> = create(ResourceKeys.MUSIC)
     @JvmField public val BIOME_CATEGORIES: Registry<BiomeCategory> = create(ResourceKeys.BIOME_CATEGORIES)
+    @JvmField public val META_KEYS: Registry<MetaKey<*>> = create(ResourceKeys.META_KEYS)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

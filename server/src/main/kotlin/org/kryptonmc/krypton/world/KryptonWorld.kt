@@ -35,7 +35,6 @@ import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
-import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.EntityFactory
@@ -62,7 +61,6 @@ import org.kryptonmc.krypton.world.data.WorldData
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.Generator
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
-import org.kryptonmc.krypton.world.storage.WorldDataAccess
 import org.spongepowered.math.GenericMath
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
@@ -70,7 +68,6 @@ import java.util.concurrent.ConcurrentHashMap
 
 class KryptonWorld(
     override val server: KryptonServer,
-    storageAccess: WorldDataAccess,
     override val data: WorldData,
     override val dimension: ResourceKey<World>,
     override val dimensionType: KryptonDimensionType,
@@ -103,7 +100,7 @@ class KryptonWorld(
         get() = Vector3i(data.spawnX, data.spawnY, data.spawnZ)
     override val time: Long
         get() = data.time
-    override val folder = storageAccess.path
+    override val folder = data.folder
 
     override val chunks: Collection<KryptonChunk>
         get() = chunkManager.chunkMap.values

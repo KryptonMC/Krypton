@@ -24,8 +24,6 @@ import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
-import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.api.world.scoreboard.Scoreboard
 import java.net.InetSocketAddress
@@ -136,21 +134,6 @@ public interface Server : ForwardingAudience {
      * players through Mojang.
      */
     public val isOnline: Boolean
-
-    /**
-     * If this server has hardcore mode enabled.
-     */
-    public val isHardcore: Boolean
-
-    /**
-     * The default difficulty of this server.
-     */
-    public val difficulty: Difficulty
-
-    /**
-     * The default game mode of this server.
-     */
-    public val gameMode: GameMode
 
     /**
      * The address that this server is currently bound to.

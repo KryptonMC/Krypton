@@ -24,7 +24,7 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.util.ceillog2
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
-import org.kryptonmc.krypton.world.data.BitStorage
+import org.kryptonmc.krypton.util.BitStorage
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import kotlin.math.max

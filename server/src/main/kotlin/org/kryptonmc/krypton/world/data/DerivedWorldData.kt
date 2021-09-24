@@ -18,11 +18,13 @@
  */
 package org.kryptonmc.krypton.world.data
 
+import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
 import java.util.UUID
 
 class DerivedWorldData(delegate: WorldData) : WorldData {
 
     override val name = delegate.name
+    override val folder = delegate.folder
     override var gameMode = delegate.gameMode
         set(_) = Unit
     override var difficulty = delegate.difficulty
@@ -57,6 +59,7 @@ class DerivedWorldData(delegate: WorldData) : WorldData {
         set(_) = Unit
     override var isInitialized = delegate.isInitialized
         set(_) = Unit
+    override val worldGenerationSettings: WorldGenerationSettings = delegate.worldGenerationSettings
     override var wanderingTraderSpawnDelay = 0
         set(_) = Unit
     override var wanderingTraderSpawnChance = 0

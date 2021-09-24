@@ -25,11 +25,9 @@ import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.item.handler.DummyItemHandler
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
-import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.mutableCompound
-import java.util.Locale
 
 val ItemType.handler: ItemHandler
     get() = KryptonItemManager.handler(key.asString()) ?: DummyItemHandler

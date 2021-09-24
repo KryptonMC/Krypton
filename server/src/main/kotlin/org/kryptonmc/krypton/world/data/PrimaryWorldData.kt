@@ -35,11 +35,13 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.compound
+import java.nio.file.Path
 import java.time.Instant
 import java.util.UUID
 
 class PrimaryWorldData(
     override val name: String,
+    override val folder: Path,
     override var gameMode: GameMode,
     override var difficulty: Difficulty,
     override var isHardcore: Boolean,
@@ -63,13 +65,14 @@ class PrimaryWorldData(
     private var customBossEvents: CompoundTag?,
     private var enderDragonFightData: CompoundTag,
     private val serverBrands: MutableSet<String>,
-    val worldGenerationSettings: WorldGenerationSettings
+    override val worldGenerationSettings: WorldGenerationSettings
 ) : WorldData {
 
     private var isModded = true
 
     constructor(
         name: String,
+        folder: Path,
         gameMode: GameMode,
         difficulty: Difficulty,
         isHardcore: Boolean,
@@ -78,6 +81,7 @@ class PrimaryWorldData(
         worldGenerationSettings: WorldGenerationSettings
     ) : this(
         name,
+        folder,
         gameMode,
         difficulty,
         isHardcore,
@@ -155,6 +159,7 @@ class PrimaryWorldData(
         private const val ANVIL_VERSION_ID = 19133
 
         fun parse(
+            folder: Path,
             data: MapType<String>,
             generationSettings: WorldGenerationSettings,
             dataPackConfig: DataPackConfig
@@ -167,6 +172,7 @@ class PrimaryWorldData(
             )
             return PrimaryWorldData(
                 data.getString("LevelName", "")!!,
+                folder,
                 Registries.GAME_MODES[data.getInt("GameType", 0)] ?: GameModes.SURVIVAL,
                 data.getNumber("Difficulty")?.let { Difficulty.fromId(it.toInt()) } ?: Difficulty.NORMAL,
                 data.getBoolean("hardcore", false),
