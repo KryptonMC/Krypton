@@ -28,13 +28,13 @@ data class ItemStackArgument(val item: ItemType, val tag: CompoundTag? = null) {
 
     fun createItemStacks(amount: Int): List<KryptonItemStack> {
         val items = mutableListOf<KryptonItemStack>()
-        if (amount <= item.maximumAmount) {
+        if (amount <= item.maximumStackSize) {
             items.add(createStack(amount))
         } else {
             var size = amount
-            while (size > item.maximumAmount) {
-                items.add(createStack(item.maximumAmount))
-                size -= item.maximumAmount
+            while (size > item.maximumStackSize) {
+                items.add(createStack(item.maximumStackSize))
+                size -= item.maximumStackSize
             }
             items.add(createStack(size))
         }

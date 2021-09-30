@@ -49,13 +49,13 @@ object FluidLoader : KryptonDataLoader("fluids") {
             }
 
             // Iterate states
-            value.remove("states").asJsonArray.forEach {
+            value.remove("states")?.asJsonArray?.forEach {
                 val (properties, fluid) = it.asJsonObject.retrieveState(key, availableProperties, value)
                 propertyEntry.properties[properties] = fluid
             }
 
             // Get default state and add to maps
-            val defaultState = value["defaultStateId"].asInt
+            val defaultState = value["defaultStateId"].asInt // FIXME: Update ArticData when this is always non-null
             val defaultFluid = fromState(defaultState)!!
             KEY_MAP[key] = defaultFluid
             PROPERTY_MAP[key] = propertyEntry

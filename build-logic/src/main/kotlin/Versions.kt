@@ -32,6 +32,7 @@ object Versions {
     const val ASM = "9.2"
     const val NBT = "2.1"
     const val MINECRAFT = "1.17.1"
+    const val ARTICDATA = "1.17.1-SNAPSHOT"
 
     // Test
     const val JUNIT_PLATFORM_RUNNER = "1.7.2"

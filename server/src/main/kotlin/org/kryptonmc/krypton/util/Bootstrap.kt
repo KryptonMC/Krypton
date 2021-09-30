@@ -48,6 +48,7 @@ import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.attribute.AttributeLoader
 import org.kryptonmc.krypton.entity.hanging.KryptonCanvases
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.item.ItemLoader
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.item.meta.KryptonMetaKeys
 import org.kryptonmc.krypton.registry.InternalRegistries
@@ -99,6 +100,7 @@ object Bootstrap {
         GameEvents
         ParticleTypes
         EntityTypes
+        ItemLoader.init()
         ItemTypes
         FluidLoader.init()
         Fluids

@@ -14,6 +14,7 @@ evaluationDependsOn(":api")
 repositories {
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.kryptonmc.org/snapshots")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -48,7 +49,7 @@ dependencies {
     implementation("ca.spottedleaf", "data-converter", Versions.DATA_CONVERTER)
     implementation("org.kryptonmc", "datafixerupper", Versions.DFU) // Slight performance enhanced version, courtesy of Paper
     implementation("org.kryptonmc", "nbt-common-jvm", Versions.NBT)
-    implementation("org.kryptonmc", "articdata", Versions.MINECRAFT)
+    implementation("com.github.Articdive", "ArticData", Versions.ARTICDATA)
 
     // Miscellaneous
     implementation("com.github.ben-manes.caffeine", "caffeine", Versions.CAFFEINE)

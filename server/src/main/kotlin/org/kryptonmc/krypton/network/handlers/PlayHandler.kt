@@ -237,7 +237,7 @@ class PlayHandler(
         if (existingBlock != Blocks.AIR) return
 
         val item = player.inventory.mainHand
-        val block = BlockLoader.fromKey(item.type.key) ?: return
+        val block = BlockLoader.fromKey(item.type.key()) ?: return
         chunk.setBlock(packet.hitResult.position, block)
     }
 

@@ -76,8 +76,8 @@ open class KryptonItemStack(
         override fun type(type: ItemType) = apply { this.type = type }
 
         override fun amount(amount: Int) = apply {
-            require(amount in 1..type.maximumAmount) {
-                "Item amount must be between 1 and ${type.maximumAmount}, was $amount!"
+            require(amount in 1..type.maximumStackSize) {
+                "Item amount must be between 1 and ${type.maximumStackSize}, was $amount!"
             }
             this.amount = amount
         }

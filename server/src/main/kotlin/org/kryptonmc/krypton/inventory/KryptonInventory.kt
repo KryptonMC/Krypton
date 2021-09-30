@@ -54,7 +54,7 @@ abstract class KryptonInventory(
         items.forEachIndexed { index, element ->
             if (element.type == item.type) {
                 val initialAmount = element.amount
-                val maxAmount = element.type.maximumAmount
+                val maxAmount = element.type.maximumStackSize
                 if (initialAmount + item.amount <= maxAmount) {
                     element.amount = initialAmount + item.amount
                     return

@@ -51,7 +51,7 @@ object KryptonItemManager : ItemManager {
 
     override fun handler(key: Key) = handler(key.asString())
 
-    override fun handler(type: ItemType) = handler(type.key.asString())
+    override fun handler(type: ItemType) = handler(type.key().asString())
 
     override fun register(key: String, handler: ItemHandler) {
         handlers[key] = handler
@@ -59,5 +59,5 @@ object KryptonItemManager : ItemManager {
 
     override fun register(key: Key, handler: ItemHandler) = register(key.asString(), handler)
 
-    override fun register(type: ItemType, handler: ItemHandler) = register(type.key.asString(), handler)
+    override fun register(type: ItemType, handler: ItemHandler) = register(type.key().asString(), handler)
 }

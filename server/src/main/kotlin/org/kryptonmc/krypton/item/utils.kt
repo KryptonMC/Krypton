@@ -30,7 +30,7 @@ import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.mutableCompound
 
 val ItemType.handler: ItemHandler
-    get() = KryptonItemManager.handler(key.asString()) ?: DummyItemHandler
+    get() = KryptonItemManager.handler(key().asString()) ?: DummyItemHandler
 
 fun Book.toItemStack(): KryptonItemStack {
     val tag = mutableCompound {
