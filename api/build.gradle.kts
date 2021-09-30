@@ -12,6 +12,9 @@ val ap by sourceSets.registering {
     compileClasspath += sourceSets.main.get().compileClasspath
     compileClasspath += sourceSets.main.get().output
 }
+sourceSets.main {
+    java.srcDir("src/generated/kotlin")
+}
 
 dependencies {
     // BOMs

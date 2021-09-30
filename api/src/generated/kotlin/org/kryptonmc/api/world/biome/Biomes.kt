@@ -1,21 +1,17 @@
-/*
- * This file is part of the Krypton API, licensed under the MIT license.
- *
- * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
- *
- * This project is licensed under the terms of the MIT license.
- * For more details, please reference the LICENSE file in the api top-level directory.
- */
 package org.kryptonmc.api.world.biome
 
+import kotlin.String
+import kotlin.Suppress
+import kotlin.jvm.JvmField
+import kotlin.jvm.JvmStatic
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
 /**
- * All the built-in biomes.
+ * This file is auto-generated. Do not edit this manually!
  */
-@Suppress("UndocumentedPublicProperty")
+@Suppress("UndocumentedPublicProperty", "LargeClass")
 @Catalogue(Biome::class)
 public object Biomes {
 
@@ -103,5 +99,6 @@ public object Biomes {
     @JvmField public val LUSH_CAVES: Biome = get("lush_caves")
 
     // @formatter:on
-    private fun get(name: String) = Registries.BIOME[Key.key(name)]!!
+    @JvmStatic
+    private fun get(key: String): Biome = Registries.BIOME[Key.key(key)]!!
 }

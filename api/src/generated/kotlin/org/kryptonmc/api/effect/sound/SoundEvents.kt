@@ -1,19 +1,15 @@
-/*
- * This file is part of the Krypton API, licensed under the MIT license.
- *
- * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
- *
- * This project is licensed under the terms of the MIT license.
- * For more details, please reference the LICENSE file in the api top-level directory.
- */
 package org.kryptonmc.api.effect.sound
 
+import kotlin.String
+import kotlin.Suppress
+import kotlin.jvm.JvmField
+import kotlin.jvm.JvmStatic
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
 /**
- * All the sound types in the game.
+ * This file is auto-generated. Do not edit this manually!
  */
 @Suppress("UndocumentedPublicProperty", "LargeClass")
 @Catalogue(SoundEvent::class)
@@ -54,10 +50,10 @@ public object SoundEvents {
     @JvmField public val AMETHYST_CLUSTER_PLACE: SoundEvent = get("block.amethyst_cluster.place")
     @JvmField public val AMETHYST_CLUSTER_STEP: SoundEvent = get("block.amethyst_cluster.step")
     @JvmField public val ANCIENT_DEBRIS_BREAK: SoundEvent = get("block.ancient_debris.break")
-    @JvmField public val ANCIENT_DEBRIS_FALL: SoundEvent = get("block.ancient_debris.fall")
-    @JvmField public val ANCIENT_DEBRIS_HIT: SoundEvent = get("block.ancient_debris.hit")
-    @JvmField public val ANCIENT_DEBRIS_PLACE: SoundEvent = get("block.ancient_debris.place")
     @JvmField public val ANCIENT_DEBRIS_STEP: SoundEvent = get("block.ancient_debris.step")
+    @JvmField public val ANCIENT_DEBRIS_PLACE: SoundEvent = get("block.ancient_debris.place")
+    @JvmField public val ANCIENT_DEBRIS_HIT: SoundEvent = get("block.ancient_debris.hit")
+    @JvmField public val ANCIENT_DEBRIS_FALL: SoundEvent = get("block.ancient_debris.fall")
     @JvmField public val ANVIL_BREAK: SoundEvent = get("block.anvil.break")
     @JvmField public val ANVIL_DESTROY: SoundEvent = get("block.anvil.destroy")
     @JvmField public val ANVIL_FALL: SoundEvent = get("block.anvil.fall")
@@ -137,7 +133,7 @@ public object SoundEvents {
     @JvmField public val BEEHIVE_EXIT: SoundEvent = get("block.beehive.exit")
     @JvmField public val BEEHIVE_SHEAR: SoundEvent = get("block.beehive.shear")
     @JvmField public val BEEHIVE_WORK: SoundEvent = get("block.beehive.work")
-    @JvmField public val BELL_USE: SoundEvent = get("block.bell.use")
+    @JvmField public val BELL_BLOCK: SoundEvent = get("block.bell.use")
     @JvmField public val BELL_RESONATE: SoundEvent = get("block.bell.resonate")
     @JvmField public val BIG_DRIPLEAF_BREAK: SoundEvent = get("block.big_dripleaf.break")
     @JvmField public val BIG_DRIPLEAF_FALL: SoundEvent = get("block.big_dripleaf.fall")
@@ -159,10 +155,10 @@ public object SoundEvents {
     @JvmField public val BONE_MEAL_USE: SoundEvent = get("item.bone_meal.use")
     @JvmField public val BOOK_PAGE_TURN: SoundEvent = get("item.book.page_turn")
     @JvmField public val BOOK_PUT: SoundEvent = get("item.book.put")
-    @JvmField public val BLAST_FURNACE_FIRE_CRACKLE: SoundEvent = get("block.blastfurnace.fire_crackle")
+    @JvmField public val BLASTFURNACE_FIRE_CRACKLE: SoundEvent = get("block.blastfurnace.fire_crackle")
     @JvmField public val BOTTLE_EMPTY: SoundEvent = get("item.bottle.empty")
     @JvmField public val BOTTLE_FILL: SoundEvent = get("item.bottle.fill")
-    @JvmField public val BOTTLE_FILL_DRAGON_BREATH: SoundEvent = get("item.bottle.fill_dragonbreath")
+    @JvmField public val BOTTLE_FILL_DRAGONBREATH: SoundEvent = get("item.bottle.fill_dragonbreath")
     @JvmField public val BREWING_STAND_BREW: SoundEvent = get("block.brewing_stand.brew")
     @JvmField public val BUBBLE_COLUMN_BUBBLE_POP: SoundEvent = get("block.bubble_column.bubble_pop")
     @JvmField public val BUBBLE_COLUMN_UPWARDS_AMBIENT: SoundEvent = get("block.bubble_column.upwards_ambient")
@@ -257,7 +253,7 @@ public object SoundEvents {
     @JvmField public val CREEPER_HURT: SoundEvent = get("entity.creeper.hurt")
     @JvmField public val CREEPER_PRIMED: SoundEvent = get("entity.creeper.primed")
     @JvmField public val CROP_BREAK: SoundEvent = get("block.crop.break")
-    @JvmField public val CROP_PLANT: SoundEvent = get("item.crop.plant")
+    @JvmField public val CROP_PLANTED: SoundEvent = get("item.crop.plant")
     @JvmField public val CROSSBOW_HIT: SoundEvent = get("item.crossbow.hit")
     @JvmField public val CROSSBOW_LOADING_END: SoundEvent = get("item.crossbow.loading_end")
     @JvmField public val CROSSBOW_LOADING_MIDDLE: SoundEvent = get("item.crossbow.loading_middle")
@@ -376,7 +372,7 @@ public object SoundEvents {
     @JvmField public val EXPERIENCE_ORB_PICKUP: SoundEvent = get("entity.experience_orb.pickup")
     @JvmField public val FENCE_GATE_CLOSE: SoundEvent = get("block.fence_gate.close")
     @JvmField public val FENCE_GATE_OPEN: SoundEvent = get("block.fence_gate.open")
-    @JvmField public val FIRE_CHARGE_USE: SoundEvent = get("item.firecharge.use")
+    @JvmField public val FIRECHARGE_USE: SoundEvent = get("item.firecharge.use")
     @JvmField public val FIREWORK_ROCKET_BLAST: SoundEvent = get("entity.firework_rocket.blast")
     @JvmField public val FIREWORK_ROCKET_BLAST_FAR: SoundEvent = get("entity.firework_rocket.blast_far")
     @JvmField public val FIREWORK_ROCKET_LARGE_BLAST: SoundEvent = get("entity.firework_rocket.large_blast")
@@ -391,7 +387,7 @@ public object SoundEvents {
     @JvmField public val FISHING_BOBBER_RETRIEVE: SoundEvent = get("entity.fishing_bobber.retrieve")
     @JvmField public val FISHING_BOBBER_SPLASH: SoundEvent = get("entity.fishing_bobber.splash")
     @JvmField public val FISHING_BOBBER_THROW: SoundEvent = get("entity.fishing_bobber.throw")
-    @JvmField public val FLINT_AND_STEEL_USE: SoundEvent = get("item.flintandsteel.use")
+    @JvmField public val FLINTANDSTEEL_USE: SoundEvent = get("item.flintandsteel.use")
     @JvmField public val FLOWERING_AZALEA_BREAK: SoundEvent = get("block.flowering_azalea.break")
     @JvmField public val FLOWERING_AZALEA_FALL: SoundEvent = get("block.flowering_azalea.fall")
     @JvmField public val FLOWERING_AZALEA_HIT: SoundEvent = get("block.flowering_azalea.hit")
@@ -706,7 +702,7 @@ public object SoundEvents {
     @JvmField public val NETHERRACK_PLACE: SoundEvent = get("block.netherrack.place")
     @JvmField public val NETHERRACK_HIT: SoundEvent = get("block.netherrack.hit")
     @JvmField public val NETHERRACK_FALL: SoundEvent = get("block.netherrack.fall")
-    @JvmField public val NOTE_BLOCK_BASE_DRUM: SoundEvent = get("block.note_block.basedrum")
+    @JvmField public val NOTE_BLOCK_BASEDRUM: SoundEvent = get("block.note_block.basedrum")
     @JvmField public val NOTE_BLOCK_BASS: SoundEvent = get("block.note_block.bass")
     @JvmField public val NOTE_BLOCK_BELL: SoundEvent = get("block.note_block.bell")
     @JvmField public val NOTE_BLOCK_CHIME: SoundEvent = get("block.note_block.chime")
@@ -811,7 +807,7 @@ public object SoundEvents {
     @JvmField public val PISTON_EXTEND: SoundEvent = get("block.piston.extend")
     @JvmField public val PLAYER_ATTACK_CRIT: SoundEvent = get("entity.player.attack.crit")
     @JvmField public val PLAYER_ATTACK_KNOCKBACK: SoundEvent = get("entity.player.attack.knockback")
-    @JvmField public val PLAYER_ATTACK_NO_DAMAGE: SoundEvent = get("entity.player.attack.nodamage")
+    @JvmField public val PLAYER_ATTACK_NODAMAGE: SoundEvent = get("entity.player.attack.nodamage")
     @JvmField public val PLAYER_ATTACK_STRONG: SoundEvent = get("entity.player.attack.strong")
     @JvmField public val PLAYER_ATTACK_SWEEP: SoundEvent = get("entity.player.attack.sweep")
     @JvmField public val PLAYER_ATTACK_WEAK: SoundEvent = get("entity.player.attack.weak")
@@ -1212,5 +1208,6 @@ public object SoundEvents {
     @JvmField public val ZOMBIE_VILLAGER_STEP: SoundEvent = get("entity.zombie_villager.step")
 
     // @formatter:on
-    private fun get(name: String): SoundEvent = Registries.SOUND_EVENT[Key.key(name)]!!
+    @JvmStatic
+    private fun get(key: String): SoundEvent = Registries.SOUND_EVENT[Key.key(key)]!!
 }

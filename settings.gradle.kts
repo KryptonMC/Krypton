@@ -6,3 +6,4 @@ rootProject.name = "krypton"
 
 include("api")
 include("server")
+include("generators")

@@ -1,21 +1,17 @@
-/*
- * This file is part of the Krypton API, licensed under the MIT license.
- *
- * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
- *
- * This project is licensed under the terms of the MIT license.
- * For more details, please reference the LICENSE file in the api top-level directory.
- */
 package org.kryptonmc.api.item
 
+import kotlin.String
+import kotlin.Suppress
+import kotlin.jvm.JvmField
+import kotlin.jvm.JvmStatic
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
 /**
- * An object containing all built-in item types.
+ * This file is auto-generated. Do not edit this manually!
  */
-@Suppress("LargeClass", "UndocumentedPublicProperty")
+@Suppress("UndocumentedPublicProperty", "LargeClass")
 @Catalogue(ItemType::class)
 public object ItemTypes {
 
@@ -79,6 +75,7 @@ public object ItemTypes {
     @JvmField public val NETHER_GOLD_ORE: ItemType = get("nether_gold_ore")
     @JvmField public val NETHER_QUARTZ_ORE: ItemType = get("nether_quartz_ore")
     @JvmField public val ANCIENT_DEBRIS: ItemType = get("ancient_debris")
+    @JvmField public val COAL_BLOCK: ItemType = get("coal_block")
     @JvmField public val RAW_IRON_BLOCK: ItemType = get("raw_iron_block")
     @JvmField public val RAW_COPPER_BLOCK: ItemType = get("raw_copper_block")
     @JvmField public val RAW_GOLD_BLOCK: ItemType = get("raw_gold_block")
@@ -159,7 +156,7 @@ public object ItemTypes {
     @JvmField public val ACACIA_LEAVES: ItemType = get("acacia_leaves")
     @JvmField public val DARK_OAK_LEAVES: ItemType = get("dark_oak_leaves")
     @JvmField public val AZALEA_LEAVES: ItemType = get("azalea_leaves")
-    @JvmField public val FLOWERING_AZALEA_LEAVES: ItemType = get("flowering_azalea_leaves")
+    @JvmField public val AZALEA_LEAVES_FLOWERS: ItemType = get("flowering_azalea_leaves")
     @JvmField public val SPONGE: ItemType = get("sponge")
     @JvmField public val WET_SPONGE: ItemType = get("wet_sponge")
     @JvmField public val GLASS: ItemType = get("glass")
@@ -234,7 +231,7 @@ public object ItemTypes {
     @JvmField public val STONE_SLAB: ItemType = get("stone_slab")
     @JvmField public val SMOOTH_STONE_SLAB: ItemType = get("smooth_stone_slab")
     @JvmField public val SANDSTONE_SLAB: ItemType = get("sandstone_slab")
-    @JvmField public val CUT_SANDSTONE_SLAB: ItemType = get("cut_sandstone_slab")
+    @JvmField public val CUT_STANDSTONE_SLAB: ItemType = get("cut_sandstone_slab")
     @JvmField public val PETRIFIED_OAK_SLAB: ItemType = get("petrified_oak_slab")
     @JvmField public val COBBLESTONE_SLAB: ItemType = get("cobblestone_slab")
     @JvmField public val BRICK_SLAB: ItemType = get("brick_slab")
@@ -1058,7 +1055,7 @@ public object ItemTypes {
     @JvmField public val CREEPER_BANNER_PATTERN: ItemType = get("creeper_banner_pattern")
     @JvmField public val SKULL_BANNER_PATTERN: ItemType = get("skull_banner_pattern")
     @JvmField public val MOJANG_BANNER_PATTERN: ItemType = get("mojang_banner_pattern")
-    @JvmField public val GLOBE_BANNER_PATTERN: ItemType = get("globe_banner_pattern")
+    @JvmField public val GLOBE_BANNER_PATTER: ItemType = get("globe_banner_pattern")
     @JvmField public val PIGLIN_BANNER_PATTERN: ItemType = get("piglin_banner_pattern")
     @JvmField public val COMPOSTER: ItemType = get("composter")
     @JvmField public val BARREL: ItemType = get("barrel")
@@ -1121,5 +1118,6 @@ public object ItemTypes {
     @JvmField public val POINTED_DRIPSTONE: ItemType = get("pointed_dripstone")
 
     // @formatter:on
-    private fun get(name: String) = Registries.ITEM[Key.key(name)]
+    @JvmStatic
+    private fun get(key: String): ItemType = Registries.ITEM[Key.key(key)]!!
 }
