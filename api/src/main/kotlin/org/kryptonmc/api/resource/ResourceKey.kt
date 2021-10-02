@@ -10,6 +10,7 @@ package org.kryptonmc.api.resource
 
 import net.kyori.adventure.key.Key
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.util.provide
@@ -55,8 +56,8 @@ public interface ResourceKey<T : Any> {
          * @param location the location of the resource
          * @return a resource key
          */
-        @Suppress("UNCHECKED_CAST")
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun <T : Any> of(registry: Key, location: Key): ResourceKey<T> = FACTORY.of(registry, location)
 
         /**
@@ -70,6 +71,7 @@ public interface ResourceKey<T : Any> {
          * @return a resource key
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun <T : Any> of(
             parent: ResourceKey<out Registry<T>>,
             location: Key

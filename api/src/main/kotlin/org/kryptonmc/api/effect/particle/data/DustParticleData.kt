@@ -33,7 +33,6 @@ public interface DustParticleData : ColorParticleData {
          * @return new dust particle data
          */
         @JvmStatic
-        public fun of(red: Short, green: Short, blue: Short, scale: Float): DustParticleData =
-            ParticleData.FACTORY.dust(red, green, blue, scale)
+        public fun of(red: Short, green: Short, blue: Short, scale: Float): DustParticleData = ParticleData.FACTORY.dust(red, green, blue, scale)
     }
 }

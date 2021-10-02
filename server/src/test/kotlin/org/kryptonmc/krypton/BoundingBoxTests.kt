@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton
 
 import org.kryptonmc.api.space.BoundingBox
-import org.kryptonmc.api.space.Vector
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -27,20 +26,22 @@ class BoundingBoxTests {
 
     @Test
     fun `test size of box calculations`() {
-        val box = BoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
+        val box = BoundingBox.of(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
         assertEquals(6.0, box.size)
     }
 
     @Test
     fun `test volume calculation`() {
-        val box = BoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
+        val box = BoundingBox.of(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
         val expectedVolume = 6.0 * 6.0 * 6.0 // size.x * size.y * size.z
         assertEquals(expectedVolume, box.volume)
     }
 
     @Test
     fun `test center calculation`() {
-        val box = BoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
-        assertEquals(Vector.ZERO, box.center)
+        val box = BoundingBox.of(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
+        assertEquals(0.0, box.centerX)
+        assertEquals(0.0, box.centerY)
+        assertEquals(0.0, box.centerZ)
     }
 }

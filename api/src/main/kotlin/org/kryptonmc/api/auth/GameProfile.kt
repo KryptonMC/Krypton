@@ -9,6 +9,7 @@
 package org.kryptonmc.api.auth
 
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.provide
 import java.util.UUID
@@ -58,6 +59,7 @@ public interface GameProfile {
          * @return a new profile with the given name and uuid
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(name: String, uuid: UUID): GameProfile = FACTORY.of(name, uuid)
 
         /**
@@ -71,6 +73,7 @@ public interface GameProfile {
          * properties
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(
             name: String,
             uuid: UUID,

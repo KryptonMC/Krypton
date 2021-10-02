@@ -22,6 +22,7 @@ import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.ShulkerBullet
 import org.kryptonmc.api.space.Direction
+import org.kryptonmc.krypton.space.Directions
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID
@@ -42,7 +43,7 @@ class KryptonShulkerBullet(world: KryptonWorld) : KryptonProjectile(world, Entit
         targetDeltaX = tag.getDouble("TXD")
         targetDeltaY = tag.getDouble("TYD")
         targetDeltaZ = tag.getDouble("TZD")
-        if (tag.contains("Dir", 99)) movingDirection = Direction.from3D(tag.getInt("Dir"))
+        if (tag.contains("Dir", 99)) movingDirection = Directions.of3D(tag.getInt("Dir"))
         if (tag.hasUUID("Target")) targetId = tag.getUUID("Target")
     }
 
@@ -52,6 +53,6 @@ class KryptonShulkerBullet(world: KryptonWorld) : KryptonProjectile(world, Entit
         double("TYD", targetDeltaY)
         double("TZD", targetDeltaZ)
         target?.let { uuid("Target", it.uuid) }
-        movingDirection?.let { int("Dir", it.data3D) }
+        movingDirection?.let { int("Dir", it.ordinal) }
     }
 }

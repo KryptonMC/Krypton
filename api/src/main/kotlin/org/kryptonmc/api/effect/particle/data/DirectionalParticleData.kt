@@ -43,7 +43,6 @@ public interface DirectionalParticleData : ParticleData {
          * @return new directional particle data
          */
         @JvmStatic
-        public fun of(direction: Vector?, velocity: Float): DirectionalParticleData =
-            ParticleData.FACTORY.directional(direction, velocity)
+        public fun of(direction: Vector?, velocity: Float): DirectionalParticleData = ParticleData.FACTORY.directional(direction, velocity)
     }
 }

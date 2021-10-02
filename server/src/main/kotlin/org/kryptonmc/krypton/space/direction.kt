@@ -35,3 +35,5 @@ fun Direction.clockWise() = when (this) {
     Direction.EAST -> Direction.SOUTH
     else -> error("Unable to get clockwise direction for given direction $this!")
 }
+
+fun Direction.data2D(): Int = Directions.data2D(this)

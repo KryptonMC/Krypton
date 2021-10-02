@@ -72,7 +72,7 @@ abstract class KryptonEntity(
 
     final override var location = Location.ZERO
     final override var velocity = Vector.ZERO
-    final override var boundingBox = BoundingBox.ZERO
+    final override var boundingBox = BoundingBox.zero()
     final override var dimensions = EntityDimensions.fixed(1, 1) // TODO: Use type dimensions
     final override var isOnGround = true
     final override var ticksExisted = 0

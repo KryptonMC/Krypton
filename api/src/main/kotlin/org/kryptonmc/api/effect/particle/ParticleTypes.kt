@@ -13,7 +13,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
 /**
- * Exposes all available particle types.
+ * All of the built-in vanilla particle types.
  *
  * See [here](https://minecraft.fandom.com/wiki/Particles) for more information
  * on all of these types.
@@ -22,6 +22,7 @@ import org.kryptonmc.api.util.Catalogue
 @Catalogue(ParticleType::class)
 public object ParticleTypes {
 
+    // @formatter:off
     @JvmField public val AMBIENT_ENTITY_EFFECT: SimpleParticleType = simple("ambient_entity_effect")
     @JvmField public val ANGRY_VILLAGER: SimpleParticleType = simple("angry_villager")
     @JvmField public val BARRIER: SimpleParticleType = simple("barrier")
@@ -97,9 +98,10 @@ public object ParticleTypes {
     @JvmField public val REVERSE_PORTAL: DirectionalParticleType = directional("reverse_portal")
     @JvmField public val WHITE_ASH: SimpleParticleType = simple("white_ash")
 
+    // @formatter:on
     @Suppress("UNCHECKED_CAST")
-    private fun <T : ParticleType> register(particle: T): T =
-        Registries.register(Registries.PARTICLE_TYPE, particle.key(), particle) as T
+    @JvmStatic
+    private fun <T : ParticleType> register(particle: T): T = Registries.register(Registries.PARTICLE_TYPE, particle.key(), particle) as T
 
     private fun simple(name: String) = register(SimpleParticleType(Key.key(name)))
 

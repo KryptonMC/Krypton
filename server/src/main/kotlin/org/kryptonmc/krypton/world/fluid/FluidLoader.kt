@@ -56,7 +56,7 @@ object FluidLoader : KryptonDataLoader("fluids") {
 
             // Get default state and add to maps
             val defaultState = value["defaultStateId"].asInt // FIXME: Update ArticData when this is always non-null
-            val defaultFluid = fromState(defaultState)!!
+            val defaultFluid = STATE_MAP[defaultState]!!
             KEY_MAP[key] = defaultFluid
             PROPERTY_MAP[key] = propertyEntry
 
@@ -65,8 +65,6 @@ object FluidLoader : KryptonDataLoader("fluids") {
             KryptonRegistryManager.register(InternalRegistries.FLUID, key, defaultFluid)
         }
     }
-
-    private fun fromState(stateId: Int): KryptonFluid? = STATE_MAP[stateId]
 
     private fun JsonObject.retrieveState(
         key: String,
@@ -77,9 +75,9 @@ object FluidLoader : KryptonDataLoader("fluids") {
         val propertyMap = get("properties").asJsonObject.entrySet().associate {
             it.key to it.value.asString.lowercase()
         }
-        val block = KryptonFluid(FluidData(Key.key(key), fluidObject, this), availableProperties, propertyMap)
-        STATE_MAP[stateId] = block
-        return propertyMap to block
+        val fluid = KryptonFluid(FluidData(Key.key(key), fluidObject, this), availableProperties, propertyMap)
+        STATE_MAP[stateId] = fluid
+        return propertyMap to fluid
     }
 
     private class PropertyEntry {

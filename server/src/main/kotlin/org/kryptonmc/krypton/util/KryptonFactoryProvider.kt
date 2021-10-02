@@ -33,6 +33,7 @@ import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.space.BoundingBox
 import org.kryptonmc.api.util.FactoryNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.GameMode
@@ -61,6 +62,7 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttributeType
 import org.kryptonmc.krypton.inventory.KryptonInventoryType
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.resource.KryptonResourceKey
+import org.kryptonmc.krypton.space.KryptonBoundingBox
 import org.kryptonmc.krypton.world.KryptonGameMode
 import org.kryptonmc.krypton.world.biome.KryptonAmbientAdditionsSettings
 import org.kryptonmc.krypton.world.biome.KryptonAmbientMoodSettings
@@ -120,6 +122,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<GrassColorModifier.Factory>(KryptonGrassColorModifier.Factory)
         register<Precipitation.Factory>(KryptonPrecipitation.Factory)
         register<TemperatureModifier.Factory>(KryptonTemperatureModifier.Factory)
+        register<BoundingBox.Factory>(KryptonBoundingBox.Factory)
     }
 }
 

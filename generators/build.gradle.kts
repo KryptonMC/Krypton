@@ -14,3 +14,8 @@ minecraft {
     version("1.17.1")
     platform(MinecraftPlatform.SERVER)
 }
+
+license {
+    header.set(project.rootProject.resources.text.fromFile("HEADER.txt"))
+    newLine.set(false)
+}

@@ -38,8 +38,7 @@ public interface ServicesManager {
  * parameter.
  */
 @JvmSynthetic
-public inline fun <reified T> ServicesManager.register(plugin: Any, provider: T): Unit =
-    register(plugin, T::class.java, provider)
+public inline fun <reified T> ServicesManager.register(plugin: Any, provider: T): Unit = register(plugin, T::class.java, provider)
 
 /**
  * Allows retrieval of providers with the use of reified types, removing that

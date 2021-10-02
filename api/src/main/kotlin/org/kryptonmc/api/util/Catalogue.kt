@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.util
 
-import java.lang.annotation.Inherited
 import kotlin.reflect.KClass
 
 /**
@@ -38,9 +37,5 @@ import kotlin.reflect.KClass
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-@Inherited
 @MustBeDocumented
-// Also, for all of you americans out there, it's "catalogue", not "catalog",
-// that's why this annotation is named as such. This is one of the spellings
-// I won't budge on.
 public annotation class Catalogue(public vararg val type: KClass<*>)

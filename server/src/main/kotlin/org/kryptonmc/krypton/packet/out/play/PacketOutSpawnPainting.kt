@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.hanging.KryptonPainting
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.space.data2D
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
@@ -35,7 +36,7 @@ data class PacketOutSpawnPainting(private val painting: KryptonPainting) : Packe
         val canvas = painting.canvas
         buf.writeVarInt(if (canvas != null) InternalRegistries.CANVAS.idOf(canvas) else DEFAULT_CANVAS_ID)
         buf.writeVector(painting.centerPosition)
-        buf.writeByte(painting.direction.data2D)
+        buf.writeByte(painting.direction.data2D())
     }
 
     companion object {

@@ -35,7 +35,7 @@ data class KryptonEntityDimensions(
 
     override fun toBoundingBox(x: Double, y: Double, z: Double): BoundingBox {
         val center = width / 2.0
-        return BoundingBox(
+        return BoundingBox.of(
             x - center,
             y,
             z - center,

@@ -23,7 +23,7 @@ public enum class NoteBlockInstrument(
 ) : StringSerializable {
 
     HARP("harp", SoundEvents.NOTE_BLOCK_HARP),
-    BASE_DRUM("basedrum", SoundEvents.NOTE_BLOCK_BASE_DRUM),
+    BASE_DRUM("basedrum", SoundEvents.NOTE_BLOCK_BASEDRUM),
     SNARE("snare", SoundEvents.NOTE_BLOCK_SNARE),
     HAT("hat", SoundEvents.NOTE_BLOCK_HAT),
     BASS("bass", SoundEvents.NOTE_BLOCK_BASS),

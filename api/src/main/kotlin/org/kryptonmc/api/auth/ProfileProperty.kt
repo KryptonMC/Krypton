@@ -9,6 +9,7 @@
 package org.kryptonmc.api.auth
 
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.provide
 
@@ -57,6 +58,7 @@ public interface ProfileProperty {
          * @return a new profile property with the given name and value
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(name: String, value: String): ProfileProperty = FACTORY.of(name, value)
 
         /**
@@ -69,6 +71,7 @@ public interface ProfileProperty {
          * @return a new profile property with the given name and value
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(
             name: String,
             value: String,

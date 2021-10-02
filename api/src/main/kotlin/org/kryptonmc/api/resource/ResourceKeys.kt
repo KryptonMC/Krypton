@@ -9,6 +9,7 @@
 package org.kryptonmc.api.resource
 
 import net.kyori.adventure.key.Key
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleType
@@ -72,8 +73,7 @@ public object ResourceKeys {
      * Custom built-in registries.
      */
     @JvmField public val GAMERULES: ResourceKey<out Registry<GameRule<Any>>> = krypton("gamerules")
-    @JvmField public val MODIFIER_OPERATIONS: ResourceKey<out Registry<ModifierOperation>> =
-        krypton("attribute_modifier_operations")
+    @JvmField public val MODIFIER_OPERATIONS: ResourceKey<out Registry<ModifierOperation>> = krypton("attribute_modifier_operations")
     @JvmField public val CRITERIA: ResourceKey<out Registry<Criterion>> = krypton("criteria")
     @JvmField public val VISIBILITIES: ResourceKey<out Registry<Visibility>> = krypton("visibilities")
     @JvmField public val COLLISION_RULES: ResourceKey<out Registry<CollisionRule>> = krypton("collision_rules")
@@ -96,8 +96,8 @@ public object ResourceKeys {
      * @return a new registry key
      */
     @JvmStatic
-    public fun <T : Any> minecraft(key: String): ResourceKey<out Registry<T>> =
-        ResourceKey.of(RegistryRoots.MINECRAFT, Key.key(key))
+    @Contract("_ -> new", pure = true)
+    public fun <T : Any> minecraft(key: String): ResourceKey<out Registry<T>> = ResourceKey.of(RegistryRoots.MINECRAFT, Key.key(key))
 
     /**
      * Creates a new registry key with the given [key] as its base key.
@@ -108,6 +108,6 @@ public object ResourceKeys {
      * @return a new registry key
      */
     @JvmStatic
-    public fun <T : Any> krypton(key: String): ResourceKey<out Registry<T>> =
-        ResourceKey.of(RegistryRoots.KRYPTON, Key.key("krypton", key))
+    @Contract("_ -> new", pure = true)
+    public fun <T : Any> krypton(key: String): ResourceKey<out Registry<T>> = ResourceKey.of(RegistryRoots.KRYPTON, Key.key("krypton", key))
 }

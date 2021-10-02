@@ -25,7 +25,6 @@ import org.kryptonmc.api.util.CataloguedBy
 /**
  * A type of [ParticleEffect].
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(ParticleTypes::class)
 public interface ParticleType : Buildable<ParticleEffect, Buildable.Builder<ParticleEffect>>, Keyed {
 

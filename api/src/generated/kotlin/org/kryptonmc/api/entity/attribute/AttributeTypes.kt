@@ -13,9 +13,9 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
 /**
- * All of the built-in attribute types.
+ * This file is auto-generated. Do not edit this manually!
  */
-@Suppress("UndocumentedPublicProperty")
+@Suppress("UndocumentedPublicProperty", "LargeClass")
 @Catalogue(AttributeType::class)
 public object AttributeTypes {
 
@@ -31,9 +31,10 @@ public object AttributeTypes {
     @JvmField public val ARMOR: AttributeType = get("generic.armor")
     @JvmField public val ARMOR_TOUGHNESS: AttributeType = get("generic.armor_toughness")
     @JvmField public val LUCK: AttributeType = get("generic.luck")
-    @JvmField public val SPAWN_REINFORCEMENTS: AttributeType = get("zombie.spawn_reinforcements")
+    @JvmField public val SPAWN_REINFORCEMENTS_CHANCE: AttributeType = get("zombie.spawn_reinforcements")
     @JvmField public val JUMP_STRENGTH: AttributeType = get("horse.jump_strength")
 
     // @formatter:on
-    private fun get(name: String): AttributeType = Registries.ATTRIBUTE[Key.key(name)]!!
+    @JvmStatic
+    private fun get(key: String): AttributeType = Registries.ATTRIBUTE[Key.key(key)]!!
 }

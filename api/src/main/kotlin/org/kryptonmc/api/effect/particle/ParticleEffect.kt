@@ -123,8 +123,7 @@ public interface ParticleEffect {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(type: DirectionalParticleType): DirectionalParticleEffectBuilder =
-            DirectionalParticleEffectBuilder(type)
+        public fun builder(type: DirectionalParticleType): DirectionalParticleEffectBuilder = DirectionalParticleEffectBuilder(type)
 
         /**
          * Creates a new block particle effect builder for the given block
@@ -180,8 +179,7 @@ public interface ParticleEffect {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun builder(type: DustTransitionParticleType): DustTransitionParticleEffectBuilder =
-            DustTransitionParticleEffectBuilder(type)
+        public fun builder(type: DustTransitionParticleType): DustTransitionParticleEffectBuilder = DustTransitionParticleEffectBuilder(type)
 
         /**
          * Creates a new note particle effect builder for the given note

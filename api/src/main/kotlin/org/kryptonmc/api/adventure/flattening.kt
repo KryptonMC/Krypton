@@ -11,6 +11,7 @@ package org.kryptonmc.api.adventure
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.flattener.ComponentFlattener
+import org.jetbrains.annotations.Contract
 
 /**
  * Registers a type of component to be handled.
@@ -19,6 +20,7 @@ import net.kyori.adventure.text.flattener.ComponentFlattener
  * types to improve quality of life as a Kotlin user.
  */
 @JvmSynthetic
+@Contract("_ -> this", mutates = "this")
 public inline fun <reified T : Component> ComponentFlattener.Builder.mapper(
     noinline converter: (T) -> String
 ): ComponentFlattener.Builder = mapper(T::class.java, converter)
@@ -31,6 +33,7 @@ public inline fun <reified T : Component> ComponentFlattener.Builder.mapper(
  * reified types to improve quality of life as a Kotlin user.
  */
 @JvmSynthetic
+@Contract("_ -> this", mutates = "this")
 public inline fun <reified T : Component> ComponentFlattener.Builder.complexMapper(
     noinline converter: (T, (Component) -> Unit) -> Unit
 ): ComponentFlattener.Builder = complexMapper(T::class.java) { t, u -> converter(t) { u.accept(it) } }

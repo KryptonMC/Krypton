@@ -49,11 +49,13 @@ public object InventoryTypes {
     @JvmField public val STONECUTTER: InventoryType = register("stonecutter", 2)
 
     // @formatter:on
+    @JvmStatic
     private fun register(name: String, size: Int): InventoryType {
         val key = Key.key(name)
         return Registries.register(Registries.MENU, key, InventoryType.of(key, size))
     }
 
+    @JvmStatic
     private fun register(name: String, columns: Int, rows: Int): GridInventoryType {
         val key = Key.key(name)
         return Registries.register(Registries.MENU, key, GridInventoryType.of(key, rows, columns)) as GridInventoryType

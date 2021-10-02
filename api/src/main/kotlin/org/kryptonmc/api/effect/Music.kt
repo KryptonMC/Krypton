@@ -9,6 +9,7 @@
 package org.kryptonmc.api.effect
 
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.util.CataloguedBy
@@ -69,6 +70,8 @@ public interface Music {
          * @param maximumDelay the maximum delay before starting
          * @param replaceCurrentMusic if the current music should be replaced
          */
+        @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(
             sound: SoundEvent,
             minimumDelay: Int,

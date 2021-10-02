@@ -66,7 +66,7 @@ object BlockLoader : KryptonDataLoader("blocks") {
 
             // Get default state and add to map
             val defaultState = value["defaultStateId"].asInt
-            val defaultBlock = fromState(defaultState)!!
+            val defaultBlock = STATE_MAP[defaultState]!!
             KEY_MAP[key] = defaultBlock
             PROPERTY_MAP[key] = propertyEntry
 
@@ -77,8 +77,6 @@ object BlockLoader : KryptonDataLoader("blocks") {
         }
         STATE_MAP.int2ObjectEntrySet().fastForEach { KryptonBlock.STATES[it.value] = it.intKey }
     }
-
-    private fun fromState(stateId: Int): KryptonBlock? = STATE_MAP[stateId]
 
     private fun JsonObject.retrieveState(
         key: String,

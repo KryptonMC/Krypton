@@ -23,6 +23,7 @@ import org.kryptonmc.api.entity.hanging.HangingEntity
 import org.kryptonmc.api.space.Direction
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.space.antiClockwise
+import org.kryptonmc.krypton.space.data2D
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 
@@ -41,7 +42,7 @@ abstract class KryptonHangingEntity(
         set(value) {
             require(value.axis.isHorizontal)
             field = value
-            location = location.copy(pitch = (direction.data2D * 90).toFloat())
+            location = location.copy(pitch = (direction.data2D() * 90).toFloat())
             recalculateBoundingBox()
         }
 

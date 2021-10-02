@@ -96,8 +96,7 @@ public sealed class AbstractPosition<T : AbstractPosition<T>>(
 
     final override fun midpoint(other: Position): T = copy((x + other.x) / 2, (y + other.y) / 2, (z + other.z) / 2)
 
-    final override fun cross(other: Position): T =
-        copy(y * other.z - other.y * z, z * other.x - other.z * x, x * other.y - other.x * y)
+    final override fun cross(other: Position): T = copy(y * other.z - other.y * z, z * other.x - other.z * x, x * other.y - other.x * y)
 
     final override fun normalize(): T = copy(x / length, y / length, z / length)
 }

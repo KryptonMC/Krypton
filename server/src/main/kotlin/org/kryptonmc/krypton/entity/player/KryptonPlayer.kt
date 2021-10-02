@@ -97,6 +97,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.space.Directions
 import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
 import org.kryptonmc.krypton.util.Codecs
 import org.kryptonmc.krypton.util.calculatePositionChange
@@ -188,7 +189,7 @@ class KryptonPlayer(
             if (value !== GameModes.SPECTATOR) camera = this
         }
     override val direction: Direction
-        get() = Direction.fromPitch(location.pitch.toDouble())
+        get() = Directions.ofPitch(location.pitch.toDouble())
     val canUseGameMasterBlocks: Boolean
         get() = canInstantlyBuild && permissionLevel >= 2
 

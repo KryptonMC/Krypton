@@ -58,14 +58,6 @@ public interface DustTransitionParticleData : DustParticleData {
             toRed: Short,
             toGreen: Short,
             toBlue: Short
-        ): DustTransitionParticleData = ParticleData.FACTORY.transition(
-            fromRed,
-            fromGreen,
-            fromBlue,
-            scale,
-            toRed,
-            toGreen,
-            toBlue
-        )
+        ): DustTransitionParticleData = ParticleData.FACTORY.transition(fromRed, fromGreen, fromBlue, scale, toRed, toGreen, toBlue)
     }
 }

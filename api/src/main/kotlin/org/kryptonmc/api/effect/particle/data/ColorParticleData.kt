@@ -44,7 +44,6 @@ public interface ColorParticleData : ParticleData {
          * @return new color particle data
          */
         @JvmStatic
-        public fun of(red: Short, green: Short, blue: Short): ColorParticleData =
-            ParticleData.FACTORY.color(red, green, blue)
+        public fun of(red: Short, green: Short, blue: Short): ColorParticleData = ParticleData.FACTORY.color(red, green, blue)
     }
 }

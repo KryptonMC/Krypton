@@ -24,7 +24,4 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.SOURCE)
 @Inherited
 @MustBeDocumented
-// Also, for all of you americans out there, it's "catalogue", not "catalog",
-// that's why this annotation is named as such. This is one of the spellings
-// I won't budge on.
 public annotation class CataloguedBy(public val catalogue: KClass<*>)

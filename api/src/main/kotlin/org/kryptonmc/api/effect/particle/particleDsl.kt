@@ -36,7 +36,7 @@ private annotation class ParticleDsl
 public inline fun particleEffect(
     type: SimpleParticleType,
     builder: ParticleEffectBuilder.() -> Unit = {}
-): ParticleEffect = ParticleEffectBuilder(type).apply(builder).build()
+): ParticleEffect = type.builder().apply(builder).build()
 
 /**
  * DSL to create directional [ParticleEffect]s.
@@ -51,7 +51,7 @@ public inline fun particleEffect(
 public inline fun particleEffect(
     type: DirectionalParticleType,
     builder: DirectionalParticleEffectBuilder.() -> Unit = {}
-): ParticleEffect = DirectionalParticleEffectBuilder(type).apply(builder).build()
+): ParticleEffect = type.builder().apply(builder).build()
 
 /**
  * DSL to create block [ParticleEffect]s.
@@ -66,7 +66,7 @@ public inline fun particleEffect(
 public inline fun particleEffect(
     type: BlockParticleType,
     builder: BlockParticleEffectBuilder.() -> Unit = {}
-): ParticleEffect = BlockParticleEffectBuilder(type).apply(builder).build()
+): ParticleEffect = type.builder().apply(builder).build()
 
 /**
  * DSL to create item [ParticleEffect]s.
@@ -81,7 +81,7 @@ public inline fun particleEffect(
 public inline fun particleEffect(
     type: ItemParticleType,
     builder: ItemParticleEffectBuilder.() -> Unit = {}
-): ParticleEffect = ItemParticleEffectBuilder(type).apply(builder).build()
+): ParticleEffect = type.builder().apply(builder).build()
 
 /**
  * DSL to create colored [ParticleEffect]s.
@@ -96,7 +96,7 @@ public inline fun particleEffect(
 public inline fun particleEffect(
     type: ColorParticleType,
     builder: ColorParticleEffectBuilder.() -> Unit = {}
-): ParticleEffect = ColorParticleEffectBuilder(type).apply(builder).build()
+): ParticleEffect = type.builder().apply(builder).build()
 
 /**
  * DSL to create dust [ParticleEffect]s.
@@ -111,7 +111,7 @@ public inline fun particleEffect(
 public inline fun particleEffect(
     type: DustParticleType,
     builder: DustParticleEffectBuilder.() -> Unit = {}
-): ParticleEffect = DustParticleEffectBuilder(type).apply(builder).build()
+): ParticleEffect = type.builder().apply(builder).build()
 
 /**
  * DSL to create dust transition [ParticleEffect]s.
@@ -126,7 +126,7 @@ public inline fun particleEffect(
 public inline fun particleEffect(
     type: DustTransitionParticleType,
     builder: DustTransitionParticleEffectBuilder.() -> Unit = {}
-): ParticleEffect = DustTransitionParticleEffectBuilder(type).apply(builder).build()
+): ParticleEffect = type.builder().apply(builder).build()
 
 /**
  * DSL to create note [ParticleEffect]s.
@@ -141,7 +141,7 @@ public inline fun particleEffect(
 public inline fun particleEffect(
     type: NoteParticleType,
     builder: NoteParticleEffectBuilder.() -> Unit = {}
-): ParticleEffect = NoteParticleEffectBuilder(type).apply(builder).build()
+): ParticleEffect = type.builder().apply(builder).build()
 
 /**
  * DSL to create vibration [ParticleEffect]s.
@@ -156,4 +156,4 @@ public inline fun particleEffect(
 public inline fun particleEffect(
     type: VibrationParticleType,
     builder: VibrationParticleEffectBuilder.() -> Unit = {}
-): ParticleEffect = VibrationParticleEffectBuilder(type).apply(builder).build()
+): ParticleEffect = type.builder().apply(builder).build()
