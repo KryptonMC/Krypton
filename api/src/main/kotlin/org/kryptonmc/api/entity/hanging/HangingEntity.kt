@@ -9,7 +9,7 @@
 package org.kryptonmc.api.entity.hanging
 
 import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Direction
 
 /**
  * An entity that hangs from something, usually an item.

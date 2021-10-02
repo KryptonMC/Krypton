@@ -71,6 +71,8 @@ import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.spongepowered.math.vector.Vector2f
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * This is the largest and most important of the four packet handlers, as the
@@ -230,8 +232,8 @@ class PlayHandler(
         if (!player.canBuild) return // If they can't place blocks, they are irrelevant :)
 
         val world = player.world
-        val chunkX = player.location.blockX shr 4
-        val chunkZ = player.location.blockZ shr 4
+        val chunkX = player.location.floorX() shr 4
+        val chunkZ = player.location.floorZ() shr 4
         val chunk = world.chunkManager[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
         val existingBlock = chunk.getBlock(packet.hitResult.position)
         if (existingBlock != Blocks.AIR) return
@@ -259,33 +261,33 @@ class PlayHandler(
 
     private fun handlePositionUpdate(packet: PacketInPlayerPosition) {
         val oldLocation = player.location
-        val newLocation = oldLocation.copy(x = packet.x, y = packet.y, z = packet.z)
+        val newLocation = Vector3d(packet.x, packet.y, packet.z)
         if (newLocation == oldLocation) return
 
         player.location = newLocation
-        server.eventManager.fireAndForget(MoveEvent(player, oldLocation, newLocation))
+        server.eventManager.fireAndForget(MoveEvent(player, oldLocation, newLocation, player.rotation, player.rotation))
 
         playerManager.sendToAll(PacketOutEntityPosition(
             player.id,
-            calculatePositionChange(newLocation.x, oldLocation.x),
-            calculatePositionChange(newLocation.y, oldLocation.y),
-            calculatePositionChange(newLocation.z, oldLocation.z),
+            calculatePositionChange(newLocation.x(), oldLocation.x()),
+            calculatePositionChange(newLocation.y(), oldLocation.y()),
+            calculatePositionChange(newLocation.z(), oldLocation.z()),
             packet.onGround
         ), player)
         player.updateChunks()
         player.updateMovementStatistics(
-            newLocation.x - oldLocation.x,
-            newLocation.y - oldLocation.y,
-            newLocation.z - oldLocation.z
+            newLocation.x() - oldLocation.x(),
+            newLocation.y() - oldLocation.y(),
+            newLocation.z() - oldLocation.z()
         )
     }
 
     private fun handleRotationUpdate(packet: PacketInPlayerRotation) {
-        val oldLocation = player.location
-        val newLocation = oldLocation.copy(yaw = packet.yaw, pitch = packet.pitch)
+        val oldRotation = player.rotation
+        val newRotation = Vector2f(packet.yaw, packet.pitch)
 
-        player.location = newLocation
-        server.eventManager.fireAndForget(MoveEvent(player, oldLocation, newLocation))
+        player.rotation = newRotation
+        server.eventManager.fireAndForget(MoveEvent(player, player.location, player.location, oldRotation, newRotation))
 
         playerManager.sendToAll(PacketOutEntityRotation(
             player.id,
@@ -298,34 +300,31 @@ class PlayHandler(
 
     private fun handlePositionAndRotationUpdate(packet: PacketInPlayerPositionAndRotation) {
         val oldLocation = player.location
-        val newLocation = oldLocation.copy(
-            x = packet.x,
-            y = packet.y,
-            z = packet.z,
-            yaw = packet.yaw,
-            pitch = packet.pitch
-        )
+        val oldRotation = player.rotation
+        val newLocation = Vector3d(packet.x, packet.y, packet.z)
+        val newRotation = Vector2f(packet.yaw, packet.pitch)
         if (newLocation == oldLocation) return
 
         player.location = newLocation
-        server.eventManager.fireAndForget(MoveEvent(player, oldLocation, newLocation))
+        player.rotation = newRotation
+        server.eventManager.fireAndForget(MoveEvent(player, oldLocation, newLocation, oldRotation, newRotation))
 
         // TODO: Look in to optimising this (rotation and head look updating) as much as we possibly can
         playerManager.sendToAll(PacketOutEntityPositionAndRotation(
             player.id,
-            calculatePositionChange(newLocation.x, oldLocation.x),
-            calculatePositionChange(newLocation.y, oldLocation.y),
-            calculatePositionChange(newLocation.z, oldLocation.z),
-            newLocation.yaw,
-            newLocation.pitch,
+            calculatePositionChange(newLocation.x(), oldLocation.x()),
+            calculatePositionChange(newLocation.y(), oldLocation.y()),
+            calculatePositionChange(newLocation.z(), oldLocation.z()),
+            newRotation.x(),
+            newRotation.y(),
             packet.onGround
         ), player)
-        playerManager.sendToAll(PacketOutHeadLook(player.id, newLocation.yaw), player)
+        playerManager.sendToAll(PacketOutHeadLook(player.id, newRotation.x()), player)
         player.updateChunks()
         player.updateMovementStatistics(
-            newLocation.x - oldLocation.x,
-            newLocation.y - oldLocation.y,
-            newLocation.z - oldLocation.z
+            newLocation.x() - oldLocation.x(),
+            newLocation.y() - oldLocation.y(),
+            newLocation.z() - oldLocation.z()
         )
     }
 

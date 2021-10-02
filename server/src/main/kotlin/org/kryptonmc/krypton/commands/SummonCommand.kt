@@ -26,7 +26,6 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.space.Position
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.SuggestionProviders
 import org.kryptonmc.krypton.command.arguments.NBTCompoundArgument
@@ -42,6 +41,7 @@ import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.util.isInSpawnableBounds
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
+import org.spongepowered.math.vector.Vector3d
 
 object SummonCommand : InternalCommand {
 
@@ -85,15 +85,12 @@ object SummonCommand : InternalCommand {
     private fun spawnEntity(
         player: KryptonPlayer,
         entityType: Key,
-        position: Position,
+        position: Vector3d,
         nbt: CompoundTag? = MutableCompoundTag()
     ) {
         if (!position.isInSpawnableBounds()) throw ERROR_INVALID_POSITION.create()
         val world = player.world
-        val entity = EntityFactory.create(world, entityType.asString(), nbt)?.apply {
-            location = location.copy(position.x, position.y, position.z)
-        } ?: throw ERROR_FAILED.create()
-
+        val entity = EntityFactory.create(world, entityType.asString(), nbt)?.apply { this.location = position } ?: throw ERROR_FAILED.create()
         world.spawnEntity(entity)
         player.sendMessage(translatable("commands.summon.success", entity.displayName))
     }

@@ -12,8 +12,7 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.VibrationParticleData
-import org.kryptonmc.api.space.Position
-import org.kryptonmc.api.space.Vector
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * Allows building a [ParticleEffect] for vibration particle effects using
@@ -22,10 +21,10 @@ import org.kryptonmc.api.space.Vector
 public class VibrationParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
     quantity: Int = 1,
-    offset: Vector = Vector.ZERO,
+    offset: Vector3d = Vector3d.ZERO,
     longDistance: Boolean = false,
-    private var origin: Position = Vector.ZERO,
-    private var destination: Position = Vector.ZERO,
+    private var origin: Vector3d = Vector3d.ZERO,
+    private var destination: Vector3d = Vector3d.ZERO,
     private var ticks: Int = 0
 ) : AbstractParticleEffectBuilder<VibrationParticleEffectBuilder>(type, quantity, offset, longDistance) {
 
@@ -35,7 +34,7 @@ public class VibrationParticleEffectBuilder @JvmOverloads constructor(
      * @param position the origin position
      */
     @Contract("_ -> this", mutates = "this")
-    public fun origin(position: Position): VibrationParticleEffectBuilder = apply { origin = position }
+    public fun origin(position: Vector3d): VibrationParticleEffectBuilder = apply { origin = position }
 
     /**
      * Sets the destination location from the given [position].
@@ -43,7 +42,7 @@ public class VibrationParticleEffectBuilder @JvmOverloads constructor(
      * @param position the destination position
      */
     @Contract("_ -> this", mutates = "this")
-    public fun destination(position: Position): VibrationParticleEffectBuilder = apply { origin = position }
+    public fun destination(position: Vector3d): VibrationParticleEffectBuilder = apply { origin = position }
 
     /**
      * Sets the amount of ticks it will take to vibrate from the

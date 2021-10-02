@@ -29,9 +29,7 @@ import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.space.BoundingBox
-import org.kryptonmc.api.space.Location
-import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -48,6 +46,8 @@ import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.FloatTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
+import org.spongepowered.math.vector.Vector2f
+import org.spongepowered.math.vector.Vector3d
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
@@ -70,8 +70,9 @@ abstract class KryptonEntity(
     final override val server = world.server
     override val permissionLevel = 0
 
-    final override var location = Location.ZERO
-    final override var velocity = Vector.ZERO
+    final override var location: Vector3d = Vector3d.ZERO
+    final override var rotation: Vector2f = Vector2f.ZERO
+    final override var velocity: Vector3d = Vector3d.ZERO
     final override var boundingBox = BoundingBox.zero()
     final override var dimensions = EntityDimensions.fixed(1, 1) // TODO: Use type dimensions
     final override var isOnGround = true
@@ -118,7 +119,7 @@ abstract class KryptonEntity(
         val motionX = motion.getDouble(0).takeIf { abs(it) <= 10.0 } ?: 0.0
         val motionY = motion.getDouble(1).takeIf { abs(it) <= 10.0 } ?: 0.0
         val motionZ = motion.getDouble(2).takeIf { abs(it) <= 10.0 } ?: 0.0
-        velocity = Vector(motionX, motionY, motionZ)
+        velocity = Vector3d(motionX, motionY, motionZ)
 
         hasGravity = !tag.getBoolean("NoGravity")
         isOnGround = tag.getBoolean("OnGround")
@@ -126,14 +127,9 @@ abstract class KryptonEntity(
 
         val position = tag.getList("Pos", DoubleTag.ID)
         val rotation = tag.getList("Rotation", FloatTag.ID)
-        velocity = Vector(motionX, motionY, motionZ)
-        location = Location(
-            position.getDouble(0),
-            position.getDouble(1),
-            position.getDouble(2),
-            rotation.getFloat(0),
-            rotation.getFloat(1)
-        )
+        velocity = Vector3d(motionX, motionY, motionZ)
+        this.location = Vector3d(position.getDouble(0), position.getDouble(1), position.getDouble(2))
+        this.rotation = Vector2f(rotation.getFloat(0), rotation.getFloat(1))
 
         isSilent = tag.getBoolean("Silent")
         frozenTicks = tag.getInt("TicksFrozen")
@@ -153,9 +149,9 @@ abstract class KryptonEntity(
         if (isSilent) boolean("Silent", true)
 
         // Positioning
-        list("Motion", DoubleTag.ID, DoubleTag.of(velocity.x), DoubleTag.of(velocity.y), DoubleTag.of(velocity.z))
-        list("Pos", DoubleTag.ID, DoubleTag.of(location.x), DoubleTag.of(location.y), DoubleTag.of(location.z))
-        list("Rotation", FloatTag.ID, FloatTag.of(location.yaw), FloatTag.of(location.pitch))
+        list("Motion", DoubleTag.ID, DoubleTag.of(velocity.x()), DoubleTag.of(velocity.y()), DoubleTag.of(velocity.z()))
+        list("Pos", DoubleTag.ID, DoubleTag.of(location.x()), DoubleTag.of(location.y()), DoubleTag.of(location.z()))
+        list("Rotation", FloatTag.ID, FloatTag.of(rotation.x()), FloatTag.of(rotation.y()))
 
         // Type & UUID
         if (this@KryptonEntity !is KryptonPlayer) string("id", this@KryptonEntity.type.key().asString())
@@ -173,7 +169,7 @@ abstract class KryptonEntity(
         player.viewableEntities.add(this)
         player.session.send(getSpawnPacket())
         player.session.send(PacketOutMetadata(id, data.all))
-        player.session.send(PacketOutHeadLook(id, location.yaw))
+        player.session.send(PacketOutHeadLook(id, rotation.x()))
         return true
     }
 
@@ -194,25 +190,21 @@ abstract class KryptonEntity(
     }
 
     final override fun move(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {
-        location = Location(
-            location.x + x,
-            location.y + y,
-            location.z + z,
-            location.yaw + yaw,
-            location.pitch + pitch
-        )
+        location = location.add(x, y, z)
+        rotation = rotation.add(yaw, pitch)
     }
 
     final override fun moveTo(x: Double, y: Double, z: Double) {
-        location = Location(x, y, z, location.yaw, location.pitch)
+        location = Vector3d(x, y, z)
     }
 
     final override fun look(yaw: Float, pitch: Float) {
-        location = Location(location.x, location.y, location.z, yaw, pitch)
+        rotation = Vector2f(yaw, pitch)
     }
 
     final override fun reposition(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {
-        location = Location(x, y, z, yaw, pitch)
+        moveTo(x, y, z)
+        look(yaw, pitch)
     }
 
     override fun getPermissionValue(permission: String) = TriState.FALSE
@@ -272,7 +264,7 @@ abstract class KryptonEntity(
         get() = data[MetadataKeys.FROZEN_TICKS]
         set(value) = data.set(MetadataKeys.FROZEN_TICKS, value)
     val hasVelocity: Boolean
-        get() = velocity.x != 0.0 && velocity.y != 0.0 && velocity.z != 0.0
+        get() = velocity.x() != 0.0 && velocity.y() != 0.0 && velocity.z() != 0.0
 
     companion object {
 

@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.entity
 
-import org.kryptonmc.api.space.Rotation
+import org.spongepowered.math.vector.Vector3f
 
 /**
  * An armor stand.
@@ -41,30 +41,30 @@ public interface ArmorStand : LivingEntity {
     /**
      * The pose this stand's head is currently making.
      */
-    public var headPose: Rotation
+    public var headPose: Vector3f
 
     /**
      * The pose this stand's body is currently making.
      */
-    public var bodyPose: Rotation
+    public var bodyPose: Vector3f
 
     /**
      * The pose this stand's left arm is currently making.
      */
-    public var leftArmPose: Rotation
+    public var leftArmPose: Vector3f
 
     /**
      * The pose this stand's right arm is currently making.
      */
-    public var rightArmPose: Rotation
+    public var rightArmPose: Vector3f
 
     /**
      * The pose this stand's left leg is currently making.
      */
-    public var leftLegPose: Rotation
+    public var leftLegPose: Vector3f
 
     /**
      * The pose this stand's right leg is currently making.
      */
-    public var rightLegPose: Rotation
+    public var rightLegPose: Vector3f
 }

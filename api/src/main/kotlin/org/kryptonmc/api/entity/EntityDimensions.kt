@@ -10,9 +10,9 @@ package org.kryptonmc.api.entity
 
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.space.BoundingBox
-import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.provide
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * Holder class for dimensions for an [Entity].
@@ -142,7 +142,7 @@ public interface EntityDimensions {
      * @param center the centre position
      * @return a new bounding box from the centre coordinates
      */
-    public fun toBoundingBox(center: Vector): BoundingBox = toBoundingBox(center.x, center.y, center.z)
+    public fun toBoundingBox(center: Vector3d): BoundingBox = toBoundingBox(center.x(), center.y(), center.z())
 
     /**
      * Creates a new bounding box from the given **centre** [x], [y], and [z]

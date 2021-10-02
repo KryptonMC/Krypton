@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.block
 
-import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Direction
 
 /**
  * Represents the face of a block.

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.NoteParticleData
-import org.kryptonmc.api.space.Vector
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * Allows building a [ParticleEffect] for note particle effects using method
@@ -21,7 +21,7 @@ import org.kryptonmc.api.space.Vector
 public class NoteParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
     quantity: Int = 1,
-    offset: Vector = Vector.ZERO,
+    offset: Vector3d = Vector3d.ZERO,
     longDistance: Boolean = false,
     private var note: Byte = 0
 ) : AbstractParticleEffectBuilder<NoteParticleEffectBuilder>(type, quantity, offset, longDistance) {

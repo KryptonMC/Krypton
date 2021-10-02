@@ -10,7 +10,7 @@ package org.kryptonmc.api.block
 
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.HitResult
 import org.kryptonmc.api.util.provide
 import org.spongepowered.math.vector.Vector3d

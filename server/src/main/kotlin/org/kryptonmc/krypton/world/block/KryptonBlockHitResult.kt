@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.world.block
 
 import org.kryptonmc.api.block.BlockHitResult
-import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.HitResult
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i

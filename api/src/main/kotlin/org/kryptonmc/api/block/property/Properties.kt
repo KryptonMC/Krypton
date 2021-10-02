@@ -30,7 +30,7 @@ import org.kryptonmc.api.block.meta.StairShape
 import org.kryptonmc.api.block.meta.StructureMode
 import org.kryptonmc.api.block.meta.Tilt
 import org.kryptonmc.api.block.meta.WallSide
-import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Catalogue
 
 /**

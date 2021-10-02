@@ -10,7 +10,6 @@ package org.kryptonmc.api.world.chunk
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.fluid.Fluid
-import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3i
 
@@ -91,14 +90,6 @@ public interface Chunk {
     public fun getBlock(position: Vector3i): Block
 
     /**
-     * Gets the block at the given [position].
-     *
-     * @param position the position
-     * @return the block at the given position
-     */
-    public fun getBlock(position: Position): Block = getBlock(position.blockX, position.blockY, position.blockZ)
-
-    /**
      * Gets the fluid at the given [x], [y], and [z] coordinates.
      *
      * @param x the X coordinate
@@ -117,14 +108,6 @@ public interface Chunk {
     public fun getFluid(position: Vector3i): Fluid
 
     /**
-     * Gets the fluid at the given [position].
-     *
-     * @param position the position
-     * @return the fluid at the given position
-     */
-    public fun getFluid(position: Position): Fluid = getFluid(position.blockX, position.blockY, position.blockZ)
-
-    /**
      * Sets the block at the given coordinates to the given [block]
      *
      * @param x the X coordinate
@@ -141,15 +124,4 @@ public interface Chunk {
      * @param block the block
      */
     public fun setBlock(position: Vector3i, block: Block)
-
-    /**
-     * Sets the block at the given [position] to the given [block]
-     *
-     * @param position the position
-     * @param block the block
-     */
-    public fun setBlock(
-        position: Position,
-        block: Block
-    ): Unit = setBlock(position.blockX, position.blockY, position.blockZ, block)
 }

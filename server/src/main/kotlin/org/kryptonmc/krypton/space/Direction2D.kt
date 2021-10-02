@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.space
 
 import com.google.common.collect.Sets
-import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Direction
 
 enum class Direction2D(vararg directions: Direction) {
 

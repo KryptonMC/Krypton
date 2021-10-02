@@ -97,8 +97,8 @@ class ChunkManager(private val world: KryptonWorld) {
     }, executor)
 
     fun removePlayer(player: KryptonPlayer, viewDistance: Int = world.server.config.world.viewDistance) {
-        val x = player.location.blockX shr 4
-        val z = player.location.blockZ shr 4
+        val x = player.location.floorX() shr 4
+        val z = player.location.floorZ() shr 4
         ticketManager.removePlayer(x, z, player.uuid, viewDistance)
         val pos = ChunkPosition.toLong(x, z)
         val set = playersByChunk[pos]?.apply { remove(player) }

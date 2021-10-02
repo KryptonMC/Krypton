@@ -8,21 +8,19 @@
  */
 package org.kryptonmc.api.effect.particle.builder
 
-import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleType
-import org.kryptonmc.api.space.Vector
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * The base class for all dust particle effect builders. Used to abstract away
  * messy recursive builder logic.
  */
 @Suppress("UNCHECKED_CAST")
-@ApiStatus.Internal
 public sealed class AbstractDustParticleEffectBuilder<B : AbstractDustParticleEffectBuilder<B>>(
     type: ParticleType,
     quantity: Int = 1,
-    offset: Vector = Vector.ZERO,
+    offset: Vector3d = Vector3d.ZERO,
     longDistance: Boolean = false,
     red: Short = 255,
     green: Short = 0,

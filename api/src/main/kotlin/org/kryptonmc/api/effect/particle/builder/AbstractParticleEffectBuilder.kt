@@ -9,22 +9,20 @@
 package org.kryptonmc.api.effect.particle.builder
 
 import net.kyori.adventure.util.Buildable
-import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
-import org.kryptonmc.api.space.Vector
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * The base class for all particle effect builders. Used to abstract away messy
  * recursive builder logic.
  */
 @Suppress("UNCHECKED_CAST")
-@ApiStatus.Internal
 public sealed class AbstractParticleEffectBuilder<B : AbstractParticleEffectBuilder<B>>(
     protected val type: ParticleType,
     protected var quantity: Int = 1,
-    protected var offset: Vector = Vector.ZERO,
+    protected var offset: Vector3d = Vector3d.ZERO,
     protected var longDistance: Boolean = false
 ) : Buildable.Builder<ParticleEffect> {
 
@@ -43,7 +41,7 @@ public sealed class AbstractParticleEffectBuilder<B : AbstractParticleEffectBuil
      * @param offset the offset from the origin
      */
     @Contract("_ -> this", mutates = "this")
-    public fun offset(offset: Vector): B = apply { this.offset = offset } as B
+    public fun offset(offset: Vector3d): B = apply { this.offset = offset } as B
 
     /**
      * Sets if particles can be viewed from a further distance than normal.

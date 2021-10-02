@@ -18,13 +18,13 @@
  */
 package org.kryptonmc.krypton.entity
 
-import org.kryptonmc.api.space.Rotation
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.FloatTag
 import org.kryptonmc.nbt.ListTag
+import org.spongepowered.math.vector.Vector3f
 
-fun CompoundTag.getRotation(key: String): Rotation? {
+fun CompoundTag.getRotation(key: String): Vector3f? {
     if (!contains(key, ListTag.ID)) return null
     val list = getList(key, FloatTag.ID)
-    return Rotation(list.getFloat(0), list.getFloat(1), list.getFloat(2))
+    return Vector3f(list.getFloat(0), list.getFloat(1), list.getFloat(2))
 }

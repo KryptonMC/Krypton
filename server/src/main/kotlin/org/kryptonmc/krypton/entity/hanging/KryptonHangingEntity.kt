@@ -20,11 +20,13 @@ package org.kryptonmc.krypton.entity.hanging
 
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.hanging.HangingEntity
-import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.space.antiClockwise
 import org.kryptonmc.krypton.space.data2D
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.spongepowered.math.vector.Vector2f
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 
 abstract class KryptonHangingEntity(
@@ -36,13 +38,13 @@ abstract class KryptonHangingEntity(
 
     abstract val height: Int
 
-    var centerPosition = Vector3i(location.blockX, location.blockY, location.blockZ)
+    var centerPosition = Vector3i(location.floorX(), location.floorY(), location.floorZ())
         private set
     final override var direction = Direction.SOUTH
         set(value) {
             require(value.axis.isHorizontal)
             field = value
-            location = location.copy(pitch = (direction.data2D() * 90).toFloat())
+            rotation = Vector2f(rotation.x(), (direction.data2D() * 90).toFloat())
             recalculateBoundingBox()
         }
 
@@ -58,7 +60,7 @@ abstract class KryptonHangingEntity(
         val antiClockwise = direction.antiClockwise()
         x += offWidth * antiClockwise.normalX
         z += offWidth * antiClockwise.normalZ
-        location = location.copy(x, y, z)
+        location = Vector3d(x, y, z)
         var width1 = width.toDouble()
         var height = height.toDouble()
         var width2 = width.toDouble()

@@ -24,7 +24,7 @@ import org.kryptonmc.api.block.BlockHandler
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.effect.Effect

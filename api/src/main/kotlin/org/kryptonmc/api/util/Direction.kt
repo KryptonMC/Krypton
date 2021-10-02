@@ -6,9 +6,8 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.space
+package org.kryptonmc.api.util
 
-import org.kryptonmc.api.util.StringSerializable
 import org.spongepowered.math.vector.Vector3i
 import java.util.function.Predicate
 

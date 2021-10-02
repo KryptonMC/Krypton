@@ -12,9 +12,8 @@ import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.space.Position
-import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.util.provide
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * The supertype of all particle data. Merely serves as a marker interface for
@@ -26,7 +25,7 @@ public interface ParticleData {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun directional(direction: Vector?, velocity: Float): DirectionalParticleData
+        public fun directional(direction: Vector3d?, velocity: Float): DirectionalParticleData
 
         public fun item(item: ItemType): ItemParticleData
 
@@ -48,7 +47,7 @@ public interface ParticleData {
 
         public fun note(note: Byte): NoteParticleData
 
-        public fun vibration(origin: Position, destination: Position, ticks: Int): VibrationParticleData
+        public fun vibration(origin: Vector3d, destination: Vector3d, ticks: Int): VibrationParticleData
     }
 
     public companion object {

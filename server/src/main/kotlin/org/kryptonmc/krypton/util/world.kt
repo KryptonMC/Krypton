@@ -18,22 +18,21 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.space.Position
 import org.kryptonmc.api.util.floor
-import org.kryptonmc.api.space.Location
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.spongepowered.math.vector.Vector3d
 import kotlin.math.abs
 
-fun Position.isInSpawnableBounds() = !blockX.isOutsideSpawnableHeight() && isInHorizontalWorldBounds()
+fun Vector3d.isInSpawnableBounds() = !floorX().isOutsideSpawnableHeight() && isInHorizontalWorldBounds()
 
 private fun Int.isOutsideSpawnableHeight() = this < -20000000 || this >= 20000000
 
-private fun Position.isInHorizontalWorldBounds() = blockX >= -30000000 && blockZ >= -30000000 &&
-        blockX < 30000000 && blockZ < 30000000
+private fun Vector3d.isInHorizontalWorldBounds() = floorX() >= -30000000 && floorZ() >= -30000000 &&
+        floorX() < 30000000 && floorZ() < 30000000
 
-fun KryptonWorld.forEachEntityInRange(location: Location, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
+fun KryptonWorld.forEachEntityInRange(location: Vector3d, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
     val chunksInRange = location.chunksInRange(viewDistance)
     chunksInRange.forEach {
         val chunk = getChunkAt(it.chunkX(), it.chunkZ()) ?: return@forEach
@@ -45,7 +44,7 @@ private fun Long.chunkX() = (this and 4294967295L).toInt()
 
 private fun Long.chunkZ() = (this ushr 32 and 4294967295L).toInt()
 
-private fun Location.chunksInRange(range: Int): LongArray {
+private fun Vector3d.chunksInRange(range: Int): LongArray {
     val visible = LongArray(range.toArea())
     var xDistance = 0
     var xDirection = 1
@@ -55,8 +54,8 @@ private fun Location.chunksInRange(range: Int): LongArray {
     var corner = 0
 
     for (i in visible.indices) {
-        val chunkX = (xDistance * 16 + x).toChunkCoordinate()
-        val chunkZ = (zDistance * 16 + z).toChunkCoordinate()
+        val chunkX = (xDistance * 16 + x()).toChunkCoordinate()
+        val chunkZ = (zDistance * 16 + z()).toChunkCoordinate()
         visible[i] = ChunkPosition.toLong(chunkX, chunkZ)
 
         if (corner % 2 == 0) {

@@ -6,11 +6,11 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.space
+package org.kryptonmc.api.util
 
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.provide
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 
 /**
@@ -194,7 +194,7 @@ public interface BoundingBox {
      * @param amount the amount
      * @return a new bounding box with the result of the move
      */
-    public fun move(amount: Position): BoundingBox = move(amount.x, amount.y, amount.z)
+    public fun move(amount: Vector3d): BoundingBox = move(amount.x(), amount.y(), amount.z())
 
     /**
      * Expands this bounding box out by the given [x], [y], and [z] amounts,
@@ -214,7 +214,7 @@ public interface BoundingBox {
      * @param amount the amount
      * @return a new bounding box with the result of the expansion
      */
-    public fun expand(amount: Position): BoundingBox = expand(amount.x, amount.y, amount.z)
+    public fun expand(amount: Vector3d): BoundingBox = expand(amount.x(), amount.y(), amount.z())
 
     /**
      * Contracts this bounding box by the given [x], [y], and [z] amounts, and
@@ -275,7 +275,7 @@ public interface BoundingBox {
      * @param position the position
      * @return true if this box contains the position, false otherwise
      */
-    public operator fun contains(position: Position): Boolean = contains(position.x, position.y, position.z)
+    public operator fun contains(position: Vector3d): Boolean = contains(position.x(), position.y(), position.z())
 
     @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
@@ -285,7 +285,7 @@ public interface BoundingBox {
 
         public fun unit(): BoundingBox
 
-        public fun of(minimum: Vector, maximum: Vector): BoundingBox
+        public fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox
 
         public fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox
 
@@ -326,7 +326,7 @@ public interface BoundingBox {
          * greater than the minimum X
          */
         @JvmStatic
-        public fun of(minimum: Vector, maximum: Vector): BoundingBox = FACTORY.of(minimum, maximum)
+        public fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox = FACTORY.of(minimum, maximum)
 
         /**
          * Creates a new bounding box from the given values.

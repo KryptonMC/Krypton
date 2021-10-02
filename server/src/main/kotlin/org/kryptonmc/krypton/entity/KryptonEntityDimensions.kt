@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.EntityDimensions
-import org.kryptonmc.api.space.BoundingBox
+import org.kryptonmc.api.util.BoundingBox
 
 @JvmRecord
 data class KryptonEntityDimensions(

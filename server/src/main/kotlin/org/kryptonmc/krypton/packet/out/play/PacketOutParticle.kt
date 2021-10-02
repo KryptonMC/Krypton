@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.space.Location
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.kryptonmc.krypton.packet.Packet
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * Tells the client to spawn some particles around it
@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.packet.Packet
 @JvmRecord
 data class PacketOutParticle(
     private val effect: KryptonParticleEffect,
-    private val location: Location
+    private val location: Vector3d
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

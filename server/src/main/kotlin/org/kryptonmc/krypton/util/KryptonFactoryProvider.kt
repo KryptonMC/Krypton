@@ -33,7 +33,7 @@ import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.space.BoundingBox
+import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.FactoryNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.GameMode

@@ -115,15 +115,15 @@ class EntityQuery(
                 }
                 "x" -> {
                     checkInt(value.toString())
-                    entities = entities.filter { applyDifference(differenceX, value, it.location.blockX) }
+                    entities = entities.filter { applyDifference(differenceX, value, it.location.floorX()) }
                 }
                 "y" -> {
                     checkInt(value.toString())
-                    entities = entities.filter { applyDifference(differenceY, value, it.location.blockY) }
+                    entities = entities.filter { applyDifference(differenceY, value, it.location.floorY()) }
                 }
                 "z" -> {
                     checkInt(value.toString())
-                    entities = entities.filter { applyDifference(differenceZ, value, it.location.blockZ) }
+                    entities = entities.filter { applyDifference(differenceZ, value, it.location.floorZ()) }
                 }
                 "distance" -> {
                     checkIntOrRange(value.toString())
@@ -163,24 +163,24 @@ class EntityQuery(
                     checkIntOrRange(value.toString())
                     entities = if (value.toString().startsWith("..")) {
                         val pitch = value.toString().replace("..", "").toInt()
-                        entities.filter { it.location.pitch <= pitch }
+                        entities.filter { it.rotation.y() <= pitch }
                     } else if (!value.toString().contains("..")) {
-                        entities.filter { it.location.pitch.toInt() == value.toString().toInt() }
+                        entities.filter { it.rotation.y().toInt() == value.toString().toInt() }
                     } else {
                         val range = value.toString().toIntRange()
-                        entities.filter { it.location.pitch >= range!!.first && it.location.pitch <= range.last }
+                        entities.filter { it.rotation.y() >= range!!.first && it.rotation.y() <= range.last }
                     }
                 }
                 "y_rotation" -> {
                     checkIntOrRange(value.toString())
                     entities = if (value.toString().startsWith("..")) {
                         val yaw = value.toString().replace("..", "").toInt()
-                        entities.filter { it.location.yaw <= yaw }
+                        entities.filter { it.rotation.x() <= yaw }
                     } else if (!value.toString().contains("..")) {
-                        entities.filter { it.location.yaw.toInt() == value.toString().toInt() }
+                        entities.filter { it.rotation.x().toInt() == value.toString().toInt() }
                     } else {
                         val range = value.toString().toIntRange()
-                        entities.filter { it.location.yaw >= range!!.first && it.location.yaw <= range.last }
+                        entities.filter { it.rotation.x() >= range!!.first && it.rotation.x() <= range.last }
                     }
                 }
                 "type" -> notImplemented("type")

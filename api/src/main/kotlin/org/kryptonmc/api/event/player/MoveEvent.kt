@@ -9,7 +9,8 @@
 package org.kryptonmc.api.event.player
 
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.space.Location
+import org.spongepowered.math.vector.Vector2f
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * Called when a player moves.
@@ -17,10 +18,14 @@ import org.kryptonmc.api.space.Location
  * @param player the player who moved
  * @param oldLocation the old location of the player
  * @param newLocation the new location of the player
+ * @param oldRotation the old rotation of the player
+ * @param newRotation the new rotation of the player
  */
 @JvmRecord
 public data class MoveEvent(
     public val player: Player,
-    public val oldLocation: Location,
-    public val newLocation: Location
+    public val oldLocation: Vector3d,
+    public val newLocation: Vector3d,
+    public val oldRotation: Vector2f,
+    public val newRotation: Vector2f
 )

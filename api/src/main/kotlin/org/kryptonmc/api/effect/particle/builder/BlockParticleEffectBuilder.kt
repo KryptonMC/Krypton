@@ -14,7 +14,7 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.BlockParticleData
-import org.kryptonmc.api.space.Vector
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * Allows building a [ParticleEffect] for block particle effects using method
@@ -23,7 +23,7 @@ import org.kryptonmc.api.space.Vector
 public class BlockParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
     quantity: Int = 1,
-    offset: Vector = Vector.ZERO,
+    offset: Vector3d = Vector3d.ZERO,
     longDistance: Boolean = false,
     private var block: Block = Blocks.STONE
 ) : AbstractParticleEffectBuilder<BlockParticleEffectBuilder>(type, quantity, offset, longDistance) {

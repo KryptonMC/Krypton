@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.space
 
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap
-import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.floor
 import kotlin.math.abs
 

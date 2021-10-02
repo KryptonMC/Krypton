@@ -11,7 +11,7 @@ package org.kryptonmc.api.block
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3i

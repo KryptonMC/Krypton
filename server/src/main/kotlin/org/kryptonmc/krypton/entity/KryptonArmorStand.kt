@@ -20,10 +20,10 @@ package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.ArmorStand
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.space.Rotation
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
+import org.spongepowered.math.vector.Vector3f
 
 class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, EntityTypes.ARMOR_STAND), ArmorStand {
 
@@ -78,22 +78,22 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
             val flags = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt()
             data[MetadataKeys.ARMOR_STAND.FLAGS] = (if (value) flags or 16 else flags and -17).toByte()
         }
-    override var headPose: Rotation
+    override var headPose: Vector3f
         get() = data[MetadataKeys.ARMOR_STAND.HEAD_ROTATION]
         set(value) = data.set(MetadataKeys.ARMOR_STAND.HEAD_ROTATION, value)
-    override var bodyPose: Rotation
+    override var bodyPose: Vector3f
         get() = data[MetadataKeys.ARMOR_STAND.BODY_ROTATION]
         set(value) = data.set(MetadataKeys.ARMOR_STAND.BODY_ROTATION, value)
-    override var leftArmPose: Rotation
+    override var leftArmPose: Vector3f
         get() = data[MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION]
         set(value) = data.set(MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION, value)
-    override var rightArmPose: Rotation
+    override var rightArmPose: Vector3f
         get() = data[MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION]
         set(value) = data.set(MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION, value)
-    override var leftLegPose: Rotation
+    override var leftLegPose: Vector3f
         get() = data[MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION]
         set(value) = data.set(MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION, value)
-    override var rightLegPose: Rotation
+    override var rightLegPose: Vector3f
         get() = data[MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION]
         set(value) = data.set(MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION, value)
 }

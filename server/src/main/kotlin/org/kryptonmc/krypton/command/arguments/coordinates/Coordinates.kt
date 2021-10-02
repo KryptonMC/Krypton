@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.command.arguments.coordinates
 
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.space.Vector
 import org.spongepowered.math.vector.Vector2d
+import org.spongepowered.math.vector.Vector3d
 
 sealed interface Coordinates {
 
@@ -31,7 +31,7 @@ sealed interface Coordinates {
     val relativeZ: Boolean
         get() = true
 
-    fun position(player: Player): Vector
+    fun position(player: Player): Vector3d
 
     fun rotation(player: Player): Vector2d
 }

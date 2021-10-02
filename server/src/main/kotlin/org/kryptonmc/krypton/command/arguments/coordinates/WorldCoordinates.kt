@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.command.arguments.coordinates
 
 import com.mojang.brigadier.StringReader
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.command.CommandExceptions
 import org.spongepowered.math.vector.Vector2d
+import org.spongepowered.math.vector.Vector3d
 
 class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: WorldCoordinate) : Coordinates {
 
@@ -30,15 +30,15 @@ class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: Wo
     override val relativeY = y.isRelative
     override val relativeZ = z.isRelative
 
-    override fun position(player: Player) = Vector(
-        x[player.location.x],
-        y[player.location.y],
-        z[player.location.z]
+    override fun position(player: Player) = Vector3d(
+        x[player.location.x()],
+        y[player.location.y()],
+        z[player.location.z()]
     )
 
     override fun rotation(player: Player) = Vector2d(
-        x[player.location.yaw.toDouble()],
-        y[player.location.pitch.toDouble()]
+        x[player.rotation.x().toDouble()],
+        y[player.rotation.y().toDouble()]
     )
 
     companion object {

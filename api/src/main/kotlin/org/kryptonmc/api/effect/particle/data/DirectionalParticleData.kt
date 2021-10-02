@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.effect.particle.data
 
-import org.kryptonmc.api.space.Vector
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * Holds data for directional particle effects.
@@ -22,7 +22,7 @@ public interface DirectionalParticleData : ParticleData {
      * If this value is null, it will be randomized.
      */
     @get:JvmName("direction")
-    public val direction: Vector?
+    public val direction: Vector3d?
 
     /**
      * The current velocity of the particle in the direction it is moving.
@@ -43,6 +43,6 @@ public interface DirectionalParticleData : ParticleData {
          * @return new directional particle data
          */
         @JvmStatic
-        public fun of(direction: Vector?, velocity: Float): DirectionalParticleData = ParticleData.FACTORY.directional(direction, velocity)
+        public fun of(direction: Vector3d?, velocity: Float): DirectionalParticleData = ParticleData.FACTORY.directional(direction, velocity)
     }
 }

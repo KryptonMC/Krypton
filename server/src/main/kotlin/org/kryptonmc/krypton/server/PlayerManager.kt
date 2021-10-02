@@ -124,7 +124,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         player.world = world
         world.players += player
         LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at" +
-                "(${player.location.x}, ${player.location.y}, ${player.location.z})")
+                "(${player.location.x()}, ${player.location.y()}, ${player.location.z()})")
 
         // Join the game
         val reducedDebugInfo = world.gameRules[GameRules.REDUCED_DEBUG_INFO]
@@ -176,7 +176,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         }
         server.sendMessage(joinResult.message)
         player.sendMessage(joinResult.message) // This player hasn't been added to the list yet
-        session.send(PacketOutPlayerPositionAndLook(player.location))
+        session.send(PacketOutPlayerPositionAndLook(player.location, player.rotation))
 
         // Update player list
         sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, player))
@@ -188,12 +188,12 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         sendToAll(PacketOutSpawnPlayer(player))
         sendToAll(PacketOutMetadata(player.id, player.data.all))
         sendToAll(PacketOutAttributes(player.id, player.attributes.values.filter { it.type.sendToClient }))
-        sendToAll(PacketOutHeadLook(player.id, player.location.yaw))
+        sendToAll(PacketOutHeadLook(player.id, player.rotation.x()))
         players.forEach { online ->
             session.send(PacketOutSpawnPlayer(online))
             session.send(PacketOutMetadata(online.id, online.data.all))
             session.send(PacketOutAttributes(online.id, online.attributes.values.filter { it.type.sendToClient }))
-            session.send(PacketOutHeadLook(online.id, online.location.yaw))
+            session.send(PacketOutHeadLook(online.id, online.rotation.x()))
         }
 
         // Add the player to the list and cache maps
@@ -260,9 +260,9 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         except: KryptonPlayer
     ) = players.forEach {
         if (it == except || it.world != world) return@forEach
-        val offsetX = x - it.location.x
-        val offsetY = y - it.location.y
-        val offsetZ = z - it.location.z
+        val offsetX = x - it.location.x()
+        val offsetY = y - it.location.y()
+        val offsetZ = z - it.location.z()
         if (offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ < radius * radius) it.session.send(packet)
     }
 

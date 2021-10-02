@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.effect.particle.data
 
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
-import org.kryptonmc.api.space.Vector
+import org.spongepowered.math.vector.Vector3d
 
 @JvmRecord
 data class KryptonDirectionalParticleData(
-    override val direction: Vector?,
+    override val direction: Vector3d?,
     override val velocity: Float
 ) : DirectionalParticleData

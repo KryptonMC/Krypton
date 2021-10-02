@@ -25,17 +25,16 @@ import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.kryptonmc.api.space.Position
-import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.spongepowered.math.vector.Vector3d
 import java.util.concurrent.ThreadLocalRandom
 
 @JvmRecord
 data class KryptonParticleEffect @JvmOverloads constructor(
     override val type: ParticleType,
     override val quantity: Int,
-    override val offset: Vector,
+    override val offset: Vector3d,
     override val longDistance: Boolean,
     override val data: ParticleData? = null
 ) : ParticleEffect {
@@ -44,7 +43,7 @@ data class KryptonParticleEffect @JvmOverloads constructor(
         require(quantity >= 1) { "Quantity must be >= 1!" }
     }
 
-    fun write(buf: ByteBuf, position: Position) {
+    fun write(buf: ByteBuf, position: Vector3d) {
         buf.writeInt(InternalRegistries.PARTICLE_TYPE.idOf(type))
         buf.writeBoolean(longDistance)
 
@@ -56,9 +55,9 @@ data class KryptonParticleEffect @JvmOverloads constructor(
             is DirectionalParticleData -> {
                 writeOffsetPosition(buf, position)
                 val random = ThreadLocalRandom.current()
-                val x = data.direction?.x ?: random.nextGaussian()
-                val y = data.direction?.y ?: random.nextGaussian()
-                val z = data.direction?.z ?: random.nextGaussian()
+                val x = data.direction?.x() ?: random.nextGaussian()
+                val y = data.direction?.y() ?: random.nextGaussian()
+                val z = data.direction?.z() ?: random.nextGaussian()
                 writeOffset(buf, x.toFloat(), y.toFloat(), z.toFloat())
                 buf.writeFloat(data.velocity)
                 buf.writeInt(0)
@@ -76,10 +75,10 @@ data class KryptonParticleEffect @JvmOverloads constructor(
                 buf.writeInt(0)
             }
             else -> {
-                buf.writeDouble(position.x)
-                buf.writeDouble(position.y)
-                buf.writeDouble(position.z)
-                writeOffset(buf, offset.x.toFloat(), offset.y.toFloat(), offset.z.toFloat())
+                buf.writeDouble(position.x())
+                buf.writeDouble(position.y())
+                buf.writeDouble(position.z())
+                writeOffset(buf, offset.x().toFloat(), offset.y().toFloat(), offset.z().toFloat())
                 buf.writeFloat(1F)
                 buf.writeInt(quantity)
             }
@@ -87,11 +86,11 @@ data class KryptonParticleEffect @JvmOverloads constructor(
         if (data is Writable) data.write(buf)
     }
 
-    private fun writeOffsetPosition(buf: ByteBuf, position: Position) {
+    private fun writeOffsetPosition(buf: ByteBuf, position: Vector3d) {
         val random = ThreadLocalRandom.current()
-        buf.writeDouble(position.x + offset.x * random.nextGaussian())
-        buf.writeDouble(position.y + offset.y * random.nextGaussian())
-        buf.writeDouble(position.z + offset.z * random.nextGaussian())
+        buf.writeDouble(position.x() + offset.x() * random.nextGaussian())
+        buf.writeDouble(position.y() + offset.y() * random.nextGaussian())
+        buf.writeDouble(position.z() + offset.z() * random.nextGaussian())
     }
 
     private fun writeOffset(buf: ByteBuf, x: Float, y: Float, z: Float) {
@@ -105,7 +104,7 @@ data class KryptonParticleEffect @JvmOverloads constructor(
         override fun of(
             type: ParticleType,
             quantity: Int,
-            offset: Vector,
+            offset: Vector3d,
             longDistance: Boolean,
             data: ParticleData?
         ): ParticleEffect = KryptonParticleEffect(type, quantity, offset, longDistance, data)

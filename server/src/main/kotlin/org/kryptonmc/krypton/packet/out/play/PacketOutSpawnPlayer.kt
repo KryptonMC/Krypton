@@ -36,10 +36,10 @@ data class PacketOutSpawnPlayer(private val player: KryptonPlayer) : Packet {
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(player.id)
         buf.writeUUID(player.uuid)
-        buf.writeDouble(player.location.x)
-        buf.writeDouble(player.location.y)
-        buf.writeDouble(player.location.z)
-        buf.writeAngle(player.location.yaw)
-        buf.writeAngle(player.location.pitch)
+        buf.writeDouble(player.location.x())
+        buf.writeDouble(player.location.y())
+        buf.writeDouble(player.location.z())
+        buf.writeAngle(player.rotation.x())
+        buf.writeAngle(player.rotation.y())
     }
 }

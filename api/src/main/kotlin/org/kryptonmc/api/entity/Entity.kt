@@ -14,10 +14,10 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.space.BoundingBox
-import org.kryptonmc.api.space.Vector
-import org.kryptonmc.api.space.Location
+import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.world.World
+import org.spongepowered.math.vector.Vector2f
+import org.spongepowered.math.vector.Vector3d
 import java.util.UUID
 
 /**
@@ -56,15 +56,24 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
     public var isDisplayNameVisible: Boolean
 
     /**
-     * The current location of this entity.
+     * The current position of this entity.
      */
-    public var location: Location
+    public var location: Vector3d
+
+    /**
+     * The current rotation of this entity.
+     *
+     * The format of this rotation is:
+     * - x -> yaw
+     * - y -> pitch
+     */
+    public var rotation: Vector2f
 
     /**
      * The current delta X, Y, and Z values of this entity,
      * in metres per tick.
      */
-    public var velocity: Vector
+    public var velocity: Vector3d
 
     /**
      * The current bounding box of this entity.
@@ -229,7 +238,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * @param y the Y coordinate
      * @param z the Z coordinate
      */
-    public fun moveTo(x: Double = location.x, y: Double = location.y, z: Double = location.z)
+    public fun moveTo(x: Double = location.x(), y: Double = location.y(), z: Double = location.z())
 
     /**
      * Makes this entity look to the specified yaw and pitch.
@@ -237,7 +246,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * The values provided to this function are **absolute**, meaning they
      * will replace the existing yaw and pitch values.
      */
-    public fun look(yaw: Float = location.yaw, pitch: Float = location.pitch)
+    public fun look(yaw: Float = rotation.x(), pitch: Float = rotation.y())
 
     /**
      * Repositions this entity to be at the specified x, y, and z coordinates,
@@ -253,11 +262,11 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * @param pitch the pitch value
      */
     public fun reposition(
-        x: Double = location.x,
-        y: Double = location.y,
-        z: Double = location.z,
-        yaw: Float = location.yaw,
-        pitch: Float = location.pitch
+        x: Double = location.x(),
+        y: Double = location.y(),
+        z: Double = location.z(),
+        yaw: Float = rotation.x(),
+        pitch: Float = rotation.y()
     )
 
     /**

@@ -19,12 +19,11 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.api.space.Position
-import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRuleHolder
 import org.spongepowered.math.vector.Vector2i
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.nio.file.Path
 
@@ -157,21 +156,6 @@ public interface World : ForwardingAudience {
     public fun getBlock(position: Vector3i): Block
 
     /**
-     * Gets the block at the given [position].
-     *
-     * This function will return the following in specific cases:
-     * - If the given [position]'s [Position.blockY] coordinate is greater than
-     * the maximum height of this world, this will return [Blocks.VOID_AIR].
-     * - If there is no chunk loaded at the given [position] ([getChunkAt] was
-     * null), this will return [Blocks.AIR]
-     * - Else it will return the block at the given [position]
-     *
-     * @param position the position
-     * @return see above
-     */
-    public fun getBlock(position: Position): Block = getBlock(position.blockX, position.blockY, position.blockZ)
-
-    /**
      * Gets the fluid at the given coordinates.
      *
      * This function will return the following in specific cases:
@@ -203,21 +187,6 @@ public interface World : ForwardingAudience {
     public fun getFluid(position: Vector3i): Fluid
 
     /**
-     * Gets the fluid at the given [position].
-     *
-     * This function will return the following in specific cases:
-     * - If the given [position]'s [Position.blockY] coordinate is greater than
-     * the maximum height of this world, or if there is no chunk loaded at the
-     * given [position] ([getChunkAt] was null), this will return
-     * [Fluids.EMPTY].
-     * - Else it will return the fluid at the given [position]
-     *
-     * @param position the position
-     * @return see above
-     */
-    public fun getFluid(position: Position): Fluid = getFluid(position.blockX, position.blockY, position.blockZ)
-
-    /**
      * Sets the block at the given coordinates to the given [block].
      *
      * @param x the X coordinate
@@ -234,15 +203,6 @@ public interface World : ForwardingAudience {
      * @param block the new block
      */
     public fun setBlock(position: Vector3i, block: Block)
-
-    /**
-     * Sets the block at the given [position] to the given [block].
-     *
-     * @param position the position
-     * @param block the block
-     */
-    public fun setBlock(position: Position, block: Block): Unit =
-        setBlock(position.blockX, position.blockY, position.blockZ, block)
 
     /**
      * Gets a chunk from its **chunk** coordinates, or returns null if there is
@@ -296,16 +256,6 @@ public interface World : ForwardingAudience {
     public fun getChunk(position: Vector3i): Chunk?
 
     /**
-     * Gets a chunk from its **block** coordinates, or returns null if there is
-     * no chunk **loaded** at the given coordinates.
-     *
-     * @param position the position
-     * @return the chunk at the given coordinates, or null if there isn't one
-     * loaded
-     */
-    public fun getChunk(position: Position): Chunk?
-
-    /**
      * Gets or loads the chunk at the given **chunk** coordinates.
      *
      * That is, to calculate the chunk coordinate from a given block
@@ -350,7 +300,7 @@ public interface World : ForwardingAudience {
      * @param type the type of the entity
      * @param location the location to spawn the entity at
      */
-    public fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector): T?
+    public fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector3d): T?
 
     public companion object {
 

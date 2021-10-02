@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.space
 
-import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Direction
 
 fun Direction.antiClockwise() = when (this) {
     Direction.NORTH -> Direction.WEST

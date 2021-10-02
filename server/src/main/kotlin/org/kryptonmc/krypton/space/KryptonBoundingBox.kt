@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.space
 
-import org.kryptonmc.api.space.BoundingBox
-import org.kryptonmc.api.space.Direction
-import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.util.BoundingBox
+import org.kryptonmc.api.util.Direction
 import org.spongepowered.math.GenericMath
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import kotlin.math.max
 import kotlin.math.min
@@ -142,7 +142,8 @@ data class KryptonBoundingBox private constructor(
 
         override fun unit(): BoundingBox = UNIT
 
-        override fun of(minimum: Vector, maximum: Vector): BoundingBox = of(minimum.x, minimum.y, minimum.z, maximum.x, maximum.y, maximum.z)
+        override fun of(minimum: Vector3d, maximum: Vector3d): BoundingBox =
+            of(minimum.x(), minimum.y(), minimum.z(), maximum.x(), maximum.y(), maximum.z())
 
         override fun of(minimum: Vector3i, maximum: Vector3i): BoundingBox = of(
             minimum.x().toDouble(),

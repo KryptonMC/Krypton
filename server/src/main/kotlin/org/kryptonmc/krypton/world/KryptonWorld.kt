@@ -30,8 +30,6 @@ import org.kryptonmc.api.event.entity.EntitySpawnEvent
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.space.Position
-import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
@@ -62,6 +60,7 @@ import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.generation.Generator
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import org.spongepowered.math.GenericMath
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
@@ -135,11 +134,9 @@ class KryptonWorld(
         }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector): T? {
+    override fun <T : Entity> spawnEntity(type: EntityType<T>, location: Vector3d): T? {
         if (!type.isSummonable || type === EntityTypes.PLAYER) return null
-        val entity = EntityFactory.create(type, this)?.apply {
-            this.location = location.toLocation(0F, 0F)
-        } ?: return null
+        val entity = EntityFactory.create(type, this)?.apply { this.location = location } ?: return null
         spawnEntity(entity)
         return entity as? T
     }
@@ -163,15 +160,15 @@ class KryptonWorld(
                 if (it is KryptonPlayer) entity.addViewer(it)
             }
 
-            val chunk = getChunk(entity.location) ?: return@thenAccept
+            val chunk = getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
             entitiesByChunk[chunk.position.toLong()].add(entity)
             entities.add(entity)
         }
     }
 
     fun addEntity(entity: KryptonEntity) = entitiesByChunk[ChunkPosition.toLong(
-        entity.location.blockX shr 4,
-        entity.location.blockZ shr 4
+        entity.location.floorX() shr 4,
+        entity.location.floorZ() shr 4
     )].add(entity)
 
     fun removeEntity(entity: KryptonEntity) {
@@ -179,7 +176,7 @@ class KryptonWorld(
         server.eventManager.fire(EntityRemoveEvent(entity, this)).thenAccept {
             if (!it.result.isAllowed) return@thenAccept
             entity.viewers.forEach(entity::removeViewer)
-            val chunk = getChunk(entity.location) ?: return@thenAccept
+            val chunk = getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
             entitiesByChunk[chunk.position.toLong()].remove(entity)
             entities.remove(entity)
         }
@@ -252,8 +249,6 @@ class KryptonWorld(
     override fun getChunkAt(x: Int, z: Int) = chunkManager[x, z]
 
     override fun getChunk(x: Int, y: Int, z: Int) = getChunkAt(x shr 4, z shr 4)
-
-    override fun getChunk(position: Position) = getChunk(position.blockX, position.blockY, position.blockZ)
 
     override fun getChunk(position: Vector3i) = getChunk(position.x(), position.y(), position.z())
 

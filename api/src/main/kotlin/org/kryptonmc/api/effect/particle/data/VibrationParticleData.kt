@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.effect.particle.data
 
-import org.kryptonmc.api.space.Position
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * Holds data for vibration particle effects.
@@ -20,13 +20,13 @@ public interface VibrationParticleData : ParticleData {
      * The starting position of the vibration.
      */
     @get:JvmName("origin")
-    public val origin: Position
+    public val origin: Vector3d
 
     /**
      * The ending position of the vibration.
      */
     @get:JvmName("destination")
-    public val destination: Position
+    public val destination: Vector3d
 
     /**
      * The time, in ticks, it will take for the vibration to vibrate from
@@ -47,7 +47,7 @@ public interface VibrationParticleData : ParticleData {
          * @return new vibration particle effect data
          */
         @JvmStatic
-        public fun of(origin: Position, destination: Position, ticks: Int): VibrationParticleData =
+        public fun of(origin: Vector3d, destination: Vector3d, ticks: Int): VibrationParticleData =
             ParticleData.FACTORY.vibration(origin, destination, ticks)
     }
 }

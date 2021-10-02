@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.entity.projectile
 
-import org.kryptonmc.api.space.Vector
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * A projectile that will accelerate at constant velocity until it hits
@@ -19,5 +19,5 @@ public interface AcceleratingProjectile : Projectile {
     /**
      * The acceleration values of this projectile.
      */
-    public val acceleration: Vector
+    public val acceleration: Vector3d
 }

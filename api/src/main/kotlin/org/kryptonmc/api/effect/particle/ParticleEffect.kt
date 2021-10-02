@@ -22,8 +22,8 @@ import org.kryptonmc.api.effect.particle.builder.ParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.space.Vector
 import org.kryptonmc.api.util.provide
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * Holds information used to spawn particles for a [Player].
@@ -48,7 +48,7 @@ public interface ParticleEffect {
      * The offset vector from the spawn location of this effect.
      */
     @get:JvmName("offset")
-    public val offset: Vector
+    public val offset: Vector3d
 
     /**
      * If the distance of this effect is longer than usual.
@@ -72,7 +72,7 @@ public interface ParticleEffect {
         public fun of(
             type: ParticleType,
             quantity: Int,
-            offset: Vector,
+            offset: Vector3d,
             longDistance: Boolean,
             data: ParticleData?
         ): ParticleEffect
@@ -99,7 +99,7 @@ public interface ParticleEffect {
         public fun of(
             type: ParticleType,
             quantity: Int,
-            offset: Vector,
+            offset: Vector3d,
             longDistance: Boolean,
             data: ParticleData? = null
         ): ParticleEffect = FACTORY.of(type, quantity, offset, longDistance, data)

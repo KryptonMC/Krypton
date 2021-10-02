@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
-import org.kryptonmc.api.space.Vector
+import org.spongepowered.math.vector.Vector3d
 
 /**
  * Allows building a [ParticleEffect] for directional particle effects using
@@ -21,9 +21,9 @@ import org.kryptonmc.api.space.Vector
 public class DirectionalParticleEffectBuilder @JvmOverloads constructor(
     type: ParticleType,
     quantity: Int = 1,
-    offset: Vector = Vector.ZERO,
+    offset: Vector3d = Vector3d.ZERO,
     longDistance: Boolean = false,
-    private var direction: Vector? = null,
+    private var direction: Vector3d? = null,
     private var velocity: Float = 0.0F
 ) : AbstractParticleEffectBuilder<DirectionalParticleEffectBuilder>(type, quantity, offset, longDistance) {
 
@@ -33,7 +33,7 @@ public class DirectionalParticleEffectBuilder @JvmOverloads constructor(
      * @param direction the direction of the particles
      */
     @Contract("_ -> this", mutates = "this")
-    public fun direction(direction: Vector): DirectionalParticleEffectBuilder = apply { this.direction = direction }
+    public fun direction(direction: Vector3d): DirectionalParticleEffectBuilder = apply { this.direction = direction }
 
     /**
      * Sets the velocity of the particles.

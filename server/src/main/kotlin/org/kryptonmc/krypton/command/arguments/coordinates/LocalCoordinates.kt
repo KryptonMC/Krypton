@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.command.arguments.coordinates
 
 import com.mojang.brigadier.StringReader
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.space.Vector
 import org.kryptonmc.krypton.command.CommandExceptions
 import org.spongepowered.math.vector.Vector2d
+import org.spongepowered.math.vector.Vector3d
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -32,24 +32,24 @@ class LocalCoordinates(
     private val forwards: Double
 ) : Coordinates {
 
-    override fun position(player: Player): Vector {
-        val location = player.location
+    override fun position(player: Player): Vector3d {
+        val rotation = player.rotation
         val dividedPi = Math.PI / 180
-        val pitch1 = cos((location.pitch + 90F) * dividedPi).toFloat()
-        val pitch2 = sin((location.pitch + 90F) * dividedPi).toFloat()
-        val yaw1 = cos(-location.yaw * dividedPi).toFloat()
-        val yaw2 = sin(-location.yaw * dividedPi).toFloat()
-        val yaw3 = cos((-location.yaw + 90F) * dividedPi).toFloat()
-        val yaw4 = sin((-location.yaw + 90F) * dividedPi).toFloat()
+        val pitch1 = cos((rotation.x() + 90F) * dividedPi).toFloat()
+        val pitch2 = sin((rotation.y() + 90F) * dividedPi).toFloat()
+        val yaw1 = cos(-rotation.x() * dividedPi).toFloat()
+        val yaw2 = sin(-rotation.x() * dividedPi).toFloat()
+        val yaw3 = cos((-rotation.x() + 90F) * dividedPi).toFloat()
+        val yaw4 = sin((-rotation.x() + 90F) * dividedPi).toFloat()
 
-        val someVector = Vector(pitch1 * yaw1, yaw2, pitch2 * yaw1)
-        val someOtherVector = Vector(pitch1 * yaw3, yaw4, pitch2 * yaw3)
-        val scaled = someVector.cross(someOtherVector) * -1.0
+        val someVector = Vector3d(pitch1 * yaw1, yaw2, pitch2 * yaw1)
+        val someOtherVector = Vector3d(pitch1 * yaw3, yaw4, pitch2 * yaw3)
+        val scaled = someVector.cross(someOtherVector).negate()
 
-        val x = someVector.x * forwards + someOtherVector.x * up + scaled.x * left
-        val y = someVector.y * forwards + someOtherVector.y * up + scaled.y * left
-        val z = someVector.z * forwards + someOtherVector.z * up + scaled.z * left
-        return Vector(location.x + x, location.y + y, location.z + z)
+        val x = someVector.x() * forwards + someOtherVector.x() * up + scaled.x() * left
+        val y = someVector.y() * forwards + someOtherVector.y() * up + scaled.y() * left
+        val z = someVector.z() * forwards + someOtherVector.z() * up + scaled.z() * left
+        return Vector3d(player.location.x() + x, player.location.y() + y, player.location.z() + z)
     }
 
     override fun rotation(player: Player): Vector2d = Vector2d.ZERO

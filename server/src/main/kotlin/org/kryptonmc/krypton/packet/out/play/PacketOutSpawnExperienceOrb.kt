@@ -28,9 +28,9 @@ data class PacketOutSpawnExperienceOrb(private val orb: KryptonExperienceOrb) : 
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(orb.id)
-        buf.writeDouble(orb.location.x)
-        buf.writeDouble(orb.location.y)
-        buf.writeDouble(orb.location.z)
+        buf.writeDouble(orb.location.x())
+        buf.writeDouble(orb.location.y())
+        buf.writeDouble(orb.location.z())
         buf.writeShort(orb.count)
     }
 }

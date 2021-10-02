@@ -19,25 +19,27 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.space.Location
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
+import org.spongepowered.math.vector.Vector2f
+import org.spongepowered.math.vector.Vector3d
 import kotlin.random.Random
 
 @JvmRecord
 data class PacketOutPlayerPositionAndLook(
-    private val location: Location,
+    private val position: Vector3d,
+    private val rotation: Vector2f,
     private val flags: Int = 0,
     private val teleportId: Int = Random.nextInt(1000),
     private val shouldDismount: Boolean = false
 ) : Packet {
 
     override fun write(buf: ByteBuf) {
-        buf.writeDouble(location.x)
-        buf.writeDouble(location.y)
-        buf.writeDouble(location.z)
-        buf.writeFloat(location.yaw)
-        buf.writeFloat(location.pitch)
+        buf.writeDouble(position.x())
+        buf.writeDouble(position.y())
+        buf.writeDouble(position.z())
+        buf.writeFloat(rotation.x())
+        buf.writeFloat(rotation.y())
         buf.writeByte(flags)
         buf.writeVarInt(teleportId)
         buf.writeBoolean(shouldDismount)

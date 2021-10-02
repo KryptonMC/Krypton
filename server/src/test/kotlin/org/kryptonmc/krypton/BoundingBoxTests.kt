@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton
 
-import org.kryptonmc.api.space.BoundingBox
+import org.kryptonmc.api.util.BoundingBox
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

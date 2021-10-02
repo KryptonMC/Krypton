@@ -46,12 +46,9 @@ import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.space.Direction
-import org.kryptonmc.api.space.Position
-import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.Statistic
-import org.kryptonmc.api.space.Location
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
@@ -108,6 +105,7 @@ import org.kryptonmc.krypton.util.BossBarManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
 import java.time.Duration
@@ -189,7 +187,7 @@ class KryptonPlayer(
             if (value !== GameModes.SPECTATOR) camera = this
         }
     override val direction: Direction
-        get() = Directions.ofPitch(location.pitch.toDouble())
+        get() = Directions.ofPitch(rotation.y().toDouble())
     val canUseGameMasterBlocks: Boolean
         get() = canInstantlyBuild && permissionLevel >= 2
 
@@ -311,7 +309,7 @@ class KryptonPlayer(
         return true
     }
 
-    override fun spawnParticles(effect: ParticleEffect, location: Location) {
+    override fun spawnParticles(effect: ParticleEffect, location: Vector3d) {
         if (effect !is KryptonParticleEffect) return
         val packet = PacketOutParticle(effect, location)
         when (effect.data) {
@@ -324,22 +322,22 @@ class KryptonPlayer(
         }
     }
 
-    override fun teleport(position: Position) {
+    override fun teleport(position: Vector3d) {
         val oldLocation = location
-        location = Location(position.x, position.y, position.z)
+        location = position
 
         if (
-            abs(location.x - oldLocation.x) > 8 ||
-            abs(location.y - oldLocation.y) > 8 ||
-            abs(location.z - oldLocation.z) > 8
+            abs(location.x() - oldLocation.x()) > 8 ||
+            abs(location.y() - oldLocation.y()) > 8 ||
+            abs(location.z() - oldLocation.z()) > 8
         ) {
-            session.send(PacketOutEntityTeleport(id, location, isOnGround))
+            session.send(PacketOutEntityTeleport(id, location, rotation, isOnGround))
         } else {
             session.send(PacketOutEntityPosition(
                 id,
-                calculatePositionChange(location.x, oldLocation.x),
-                calculatePositionChange(location.y, oldLocation.y),
-                calculatePositionChange(location.z, oldLocation.z),
+                calculatePositionChange(location.x(), oldLocation.x()),
+                calculatePositionChange(location.y(), oldLocation.y()),
+                calculatePositionChange(location.z(), oldLocation.z()),
                 isOnGround
             ))
         }
@@ -403,14 +401,14 @@ class KryptonPlayer(
 
     override fun hideBossBar(bar: BossBar) = BossBarManager.removeBar(bar, this)
 
-    override fun playSound(sound: Sound) = playSound(sound, location.x, location.y, location.z)
+    override fun playSound(sound: Sound) = playSound(sound, location.x(), location.y(), location.z())
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
         val type = InternalRegistries.SOUND_EVENT[sound.name()]
         session.send(if (type != null) {
-            PacketOutSoundEffect(sound, type, Vector(x, y, z))
+            PacketOutSoundEffect(sound, type, x, y, z)
         } else {
-            PacketOutNamedSoundEffect(sound, Vector(x, y, z))
+            PacketOutNamedSoundEffect(sound, x, y, z)
         })
     }
 
@@ -456,8 +454,8 @@ class KryptonPlayer(
 
         val oldCentralX = previousCentralX
         val oldCentralZ = previousCentralZ
-        val centralX = location.blockX shr 4
-        val centralZ = location.blockZ shr 4
+        val centralX = location.floorX() shr 4
+        val centralZ = location.floorZ() shr 4
         val radius = server.config.world.viewDistance
 
         if (firstLoad) {
@@ -483,11 +481,11 @@ class KryptonPlayer(
         previousCentralZ = centralZ
 
         newChunks.sortWith { a, b ->
-            var dx = 16 * a.toInt() + 8 - location.x
-            var dz = 16 * (a shr 32).toInt() + 8 - location.z
+            var dx = 16 * a.toInt() + 8 - location.x()
+            var dz = 16 * (a shr 32).toInt() + 8 - location.z()
             val da = dx * dx + dz * dz
-            dx = 16 * b.toInt() + 8 - location.x
-            dz = 16 * (b shr 32).toInt() + 8 - location.z
+            dx = 16 * b.toInt() + 8 - location.x()
+            dz = 16 * (b shr 32).toInt() + 8 - location.z()
             val db = dx * dx + dz * dz
             da.compareTo(db)
         }

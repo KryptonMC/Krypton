@@ -20,11 +20,11 @@ package org.kryptonmc.krypton.entity.metadata
 
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.particle.particleEffect
-import org.kryptonmc.api.space.Rotation
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.nbt.MutableCompoundTag
+import org.spongepowered.math.vector.Vector3f
 import java.util.Optional
 import java.util.OptionalInt
 
@@ -71,12 +71,12 @@ object MetadataKeys {
     object ArmorStandKeys {
 
         val FLAGS = register(15, MetadataSerializers.BYTE, 0)
-        val HEAD_ROTATION = register(16, MetadataSerializers.ROTATION, Rotation(0F, 0F, 0F))
-        val BODY_ROTATION = register(17, MetadataSerializers.ROTATION, Rotation(0F, 0F, 0F))
-        val LEFT_ARM_ROTATION = register(18, MetadataSerializers.ROTATION, Rotation(-10F, 0F, -10F))
-        val RIGHT_ARM_ROTATION = register(19, MetadataSerializers.ROTATION, Rotation(-15F, 0F, 10F))
-        val LEFT_LEG_ROTATION = register(20, MetadataSerializers.ROTATION, Rotation(-1F, 0F, -1F))
-        val RIGHT_LEG_ROTATION = register(21, MetadataSerializers.ROTATION, Rotation(1F, 0F, 1F))
+        val HEAD_ROTATION = register(16, MetadataSerializers.ROTATION, Vector3f(0F, 0F, 0F))
+        val BODY_ROTATION = register(17, MetadataSerializers.ROTATION, Vector3f(0F, 0F, 0F))
+        val LEFT_ARM_ROTATION = register(18, MetadataSerializers.ROTATION, Vector3f(-10F, 0F, -10F))
+        val RIGHT_ARM_ROTATION = register(19, MetadataSerializers.ROTATION, Vector3f(-15F, 0F, 10F))
+        val LEFT_LEG_ROTATION = register(20, MetadataSerializers.ROTATION, Vector3f(-1F, 0F, -1F))
+        val RIGHT_LEG_ROTATION = register(21, MetadataSerializers.ROTATION, Vector3f(1F, 0F, 1F))
     }
 
     object ArrowLikeKeys {

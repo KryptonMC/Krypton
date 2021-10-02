@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.world.fluid.handler
 
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.FluidHandler
-import org.kryptonmc.api.space.Direction
-import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.World
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
 
@@ -36,7 +36,7 @@ object EmptyFluidHandler : FluidHandler {
         replacement: Fluid
     ) = true
 
-    override fun getFlow(fluid: Fluid, position: Vector3i, world: World) = Vector.ZERO
+    override fun getFlow(fluid: Fluid, position: Vector3i, world: World): Vector3d = Vector3d.ZERO
 
     override fun getHeight(fluid: Fluid, position: Vector3i, world: World) = 0F
 

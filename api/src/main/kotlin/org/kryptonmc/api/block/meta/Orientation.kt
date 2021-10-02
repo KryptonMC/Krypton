@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.block.meta
 
-import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.StringSerializable
 
 /**

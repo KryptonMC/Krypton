@@ -21,8 +21,7 @@ package org.kryptonmc.krypton.entity.metadata
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.effect.particle.ParticleEffect
-import org.kryptonmc.api.space.Direction
-import org.kryptonmc.api.space.Rotation
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.util.asLong
 import org.kryptonmc.krypton.entity.Pose
@@ -39,6 +38,7 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.nbt.CompoundTag
+import org.spongepowered.math.vector.Vector3f
 import org.spongepowered.math.vector.Vector3i
 import java.util.Optional
 import java.util.OptionalInt
@@ -106,11 +106,11 @@ object MetadataSerializers {
     }
 
     @JvmField
-    val ROTATION = object : MetadataSerializer<Rotation>(8) {
-        override fun write(buf: ByteBuf, item: Rotation) {
-            buf.writeFloat(item.x)
-            buf.writeFloat(item.y)
-            buf.writeFloat(item.z)
+    val ROTATION = object : MetadataSerializer<Vector3f>(8) {
+        override fun write(buf: ByteBuf, item: Vector3f) {
+            buf.writeFloat(item.x())
+            buf.writeFloat(item.y())
+            buf.writeFloat(item.z())
         }
     }
 

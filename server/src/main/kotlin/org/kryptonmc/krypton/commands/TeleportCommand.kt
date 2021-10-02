@@ -25,8 +25,6 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.space.Location
-import org.kryptonmc.krypton.command.CommandExceptions
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.VectorArgument
 import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
@@ -37,6 +35,7 @@ import org.kryptonmc.krypton.command.buildCopy
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
+import org.spongepowered.math.vector.Vector3d
 
 object TeleportCommand : InternalCommand {
 
@@ -85,9 +84,9 @@ object TeleportCommand : InternalCommand {
                         sender.sendMessage(translatable(
                             "commands.teleport.success.location.multiple",
                             text(players.size.toString()),
-                            text(location.position(sender).blockX.toString()),
-                            text(location.position(sender).blockY.toString()),
-                            text(location.position(sender).blockZ.toString())
+                            text(location.position(sender).floorX().toString()),
+                            text(location.position(sender).floorY().toString()),
+                            text(location.position(sender).floorZ().toString())
                         ))
                         1
                     })
@@ -101,7 +100,7 @@ object TeleportCommand : InternalCommand {
         player.teleport(location.position(player))
     }
 
-    private fun teleport(player: Sender, location: Location) {
+    private fun teleport(player: Sender, location: Vector3d) {
         if (player !is Player) return
         player.teleport(location)
     }

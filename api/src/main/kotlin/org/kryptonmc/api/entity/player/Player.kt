@@ -22,15 +22,14 @@ import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.plugin.PluginMessageRecipient
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.space.Direction
-import org.kryptonmc.api.space.Location
-import org.kryptonmc.api.space.Position
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticsTracker
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.scoreboard.Scoreboard
+import org.spongepowered.math.vector.Vector3d
 import java.net.InetSocketAddress
 import java.util.Locale
 
@@ -213,12 +212,12 @@ public interface Player : LivingEntity,
      * appearance
      * @param location the central location to spawn the particles at
      */
-    public fun spawnParticles(effect: ParticleEffect, location: Location)
+    public fun spawnParticles(effect: ParticleEffect, location: Vector3d)
 
     /**
      * Teleport this player to the specified position.
      */
-    public fun teleport(position: Position)
+    public fun teleport(position: Vector3d)
 
     /**
      * Teleport this player to the specified other [player].

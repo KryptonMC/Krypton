@@ -8,9 +8,9 @@
  */
 package org.kryptonmc.api.fluid
 
-import org.kryptonmc.api.space.Direction
-import org.kryptonmc.api.space.Vector
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.World
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
 
@@ -28,7 +28,7 @@ public interface FluidHandler {
      * @param world the world the fluid is in
      * @return the flow movement of the fluid
      */
-    public fun getFlow(fluid: Fluid, position: Vector3i, world: World): Vector
+    public fun getFlow(fluid: Fluid, position: Vector3i, world: World): Vector3d
 
     /**
      * Gets the height of the given [fluid] at the given [position] in the

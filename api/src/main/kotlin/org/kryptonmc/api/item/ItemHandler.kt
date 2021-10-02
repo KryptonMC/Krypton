@@ -12,7 +12,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockHitResult
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.space.Direction
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3d
@@ -145,7 +145,7 @@ public data class InteractionContext(
      * The player's pitch.
      */
     public val pitch: Float
-        get() = player.location.pitch
+        get() = player.rotation.y()
 }
 
 /**
