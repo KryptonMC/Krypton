@@ -12,6 +12,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.entity.BlockEntityType
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
@@ -66,6 +67,7 @@ public object Registries {
     @JvmField public val CANVAS: DefaultedRegistry<Canvas> = getDefaulted(ResourceKeys.CANVAS)!!
     @JvmField public val FLUID: Registry<Fluid> = get(ResourceKeys.FLUID)!!
     @JvmField public val DIMENSION_TYPE: Registry<DimensionType> = create(ResourceKeys.DIMENSION_TYPE)
+    @JvmField public val BLOCK_ENTITY_TYPE: Registry<BlockEntityType> = get(ResourceKeys.BLOCK_ENTITY_TYPE)!!
 
     /**
      * Custom built-in registries.

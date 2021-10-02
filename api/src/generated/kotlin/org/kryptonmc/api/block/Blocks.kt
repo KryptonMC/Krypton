@@ -8,10 +8,6 @@
  */
 package org.kryptonmc.api.block
 
-import kotlin.String
-import kotlin.Suppress
-import kotlin.jvm.JvmField
-import kotlin.jvm.JvmStatic
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue

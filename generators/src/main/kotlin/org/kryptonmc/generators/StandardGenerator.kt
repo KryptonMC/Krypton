@@ -31,6 +31,7 @@ import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 import java.nio.file.Path
 import kotlin.io.path.deleteIfExists
+import kotlin.io.path.exists
 import kotlin.io.path.writeText
 
 class StandardGenerator(private val output: Path) {
@@ -76,11 +77,11 @@ class StandardGenerator(private val output: Path) {
         file.addType(outputClass.build())
             .build()
             .writeTo(stringBuilder)
-        output.resolve(name.packageName.replace('.', '/'))
+        val outputFile = output.resolve(name.packageName.replace('.', '/'))
             .tryCreateDirectories()
             .resolve("${name.simpleName}.kt")
-            .apply { deleteIfExists() }
-            .tryCreateFile()
+        if (outputFile.exists()) return
+        outputFile.tryCreateFile()
             .writeText(stringBuilder.toString()
                 .replace(
                     "@JvmField\n {4}public val (.*): ${returnType.simpleName} =(\n {12})?(.*)(\n)?".toRegex(),

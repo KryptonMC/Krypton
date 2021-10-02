@@ -34,6 +34,7 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.biome.Biomes
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.material.Fluid
 import net.minecraft.world.level.material.Fluids
 import java.nio.file.Path
@@ -97,5 +98,13 @@ fun main() {
         Attribute::class.java,
         ClassName("org.kryptonmc.api.entity.attribute", "AttributeType"),
         "ATTRIBUTE"
+    )
+    generator.run(
+        BlockEntityType::class.java,
+        Registry.BLOCK_ENTITY_TYPE,
+        ClassName("org.kryptonmc.api.block.entity", "BlockEntityTypes"),
+        BlockEntityType::class.java,
+        ClassName("org.kryptonmc.api.block.entity", "BlockEntityType"),
+        "BLOCK_ENTITY_TYPE"
     )
 }

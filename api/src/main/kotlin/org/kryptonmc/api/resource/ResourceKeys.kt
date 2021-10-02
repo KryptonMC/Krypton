@@ -11,6 +11,7 @@ package org.kryptonmc.api.resource
 import net.kyori.adventure.key.Key
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.entity.BlockEntityType
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
@@ -68,6 +69,7 @@ public object ResourceKeys {
     @JvmField public val CANVAS: ResourceKey<out Registry<Canvas>> = minecraft("motive")
     @JvmField public val FLUID: ResourceKey<out Registry<Fluid>> = minecraft("fluid")
     @JvmField public val DIMENSION_TYPE: ResourceKey<out Registry<DimensionType>> = minecraft("dimension_type")
+    @JvmField public val BLOCK_ENTITY_TYPE: ResourceKey<out Registry<BlockEntityType>> = minecraft("block_entity")
 
     /**
      * Custom built-in registries.
