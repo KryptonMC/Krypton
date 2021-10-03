@@ -22,8 +22,8 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.hanging.HangingEntity
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.space.antiClockwise
-import org.kryptonmc.krypton.space.data2D
+import org.kryptonmc.krypton.util.antiClockwise
+import org.kryptonmc.krypton.util.data2D
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d

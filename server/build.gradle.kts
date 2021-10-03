@@ -111,7 +111,8 @@ license {
         "**/plugin/KryptonPluginManager.kt",
         "**/plugin/PluginClassLoader.kt",
         "**/plugin/dependencies.kt",
-        "**/plugin/loader/KryptonPluginDescription.kt",
+        "**/plugin/loader/LoadedPluginDescription.kt",
+        "**/plugin/loader/LoadedPluginDescriptionCandidate.kt",
         "**/plugin/loader/PluginLoader.kt",
         "**/scheduling/KryptonScheduler.kt",
         "**/util/bytebufs.kt"

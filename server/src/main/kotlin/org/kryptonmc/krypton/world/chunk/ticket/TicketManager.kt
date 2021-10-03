@@ -31,9 +31,7 @@ import kotlin.math.max
 
 class TicketManager(private val chunkManager: ChunkManager) {
 
-    private val tickets: Long2ObjectMap<SortedArraySet<Ticket<*>>> = Long2ObjectMaps.synchronize(
-        Long2ObjectOpenHashMap()
-    )
+    private val tickets: Long2ObjectMap<SortedArraySet<Ticket<*>>> = Long2ObjectMaps.synchronize(Long2ObjectOpenHashMap())
 
     fun <T> addTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T, onLoad: () -> Unit) {
         if (type === TicketTypes.PLAYER) return
@@ -53,14 +51,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
         propagateView(x, z, uuid, viewDistance)
     }
 
-    fun removePlayer(x: Int, z: Int, uuid: UUID, viewDistance: Int) = reset(
-        x,
-        z,
-        TicketTypes.PLAYER,
-        uuid,
-        viewDistance,
-        OFFSET
-    )
+    fun removePlayer(x: Int, z: Int, uuid: UUID, viewDistance: Int) = reset(x, z, TicketTypes.PLAYER, uuid, viewDistance, OFFSET)
 
     private fun <T> propagate(x: Int, z: Int, ticket: Ticket<T>, onLoad: () -> Unit) {
         var i = 0
@@ -100,15 +91,7 @@ class TicketManager(private val chunkManager: ChunkManager) {
         }
     }
 
-    private fun <T, K> reset(
-        x: Int,
-        z: Int,
-        type: TicketType<T>,
-        key: K,
-        radius: Int,
-        offset: Int = 0,
-        shouldUnload: Boolean = true
-    ) {
+    private fun <T, K> reset(x: Int, z: Int, type: TicketType<T>, key: K, radius: Int, offset: Int = 0, shouldUnload: Boolean = true) {
         for (i in 0 until (radius * 2 + offset) * (radius * 2 + offset)) {
             val pos = Maths.chunkInSpiral(i, x, z)
             val list = tickets[pos] ?: continue
@@ -131,7 +114,6 @@ class TicketManager(private val chunkManager: ChunkManager) {
             return max(abs(deltaX), abs(deltaZ))
         }
 
-        private fun calculateLevel(absDelta: Int, center: Int): Int =
-            if (absDelta >= 0) center + absDelta else center - absDelta
+        private fun calculateLevel(absDelta: Int, center: Int): Int = if (absDelta >= 0) center + absDelta else center - absDelta
     }
 }

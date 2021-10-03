@@ -21,7 +21,8 @@ package org.kryptonmc.krypton.world.event
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
 
-class GameEvent(val key: Key) : Keyed {
+@JvmRecord
+data class GameEvent(private val key: Key) : Keyed {
 
     override fun key() = key
 }

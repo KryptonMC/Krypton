@@ -20,7 +20,8 @@ package org.kryptonmc.krypton.tags
 
 import net.kyori.adventure.key.Key
 
-class Tag<T : Any>(
+@JvmRecord
+data class Tag<T : Any>(
     val name: Key,
     val type: TagType<T>,
     val values: Collection<T>

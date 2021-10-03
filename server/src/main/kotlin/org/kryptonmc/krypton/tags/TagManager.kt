@@ -46,8 +46,7 @@ object TagManager {
     }
 
     @Suppress("UNCHECKED_CAST")
-    operator fun <T : Any> get(type: TagType<T>, name: String): Tag<T>? =
-        TAG_MAP[type]?.firstOrNull { it.name.asString() == name } as? Tag<T>
+    operator fun <T : Any> get(type: TagType<T>, name: String): Tag<T>? = TAG_MAP[type]?.firstOrNull { it.name.asString() == name } as? Tag<T>
 
     private fun keys(main: JsonObject, value: String): Set<String> {
         val tagObject = main.getAsJsonObject(value)

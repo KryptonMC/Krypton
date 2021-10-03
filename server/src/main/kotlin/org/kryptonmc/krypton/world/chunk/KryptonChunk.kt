@@ -50,7 +50,7 @@ class KryptonChunk(
     override val height = world.height
     override val minimumBuildHeight = world.minimumBuildHeight
 
-    val lightSectionCount = sectionCount + 2
+    private val lightSectionCount = sectionCount + 2
     val minimumLightSection = minimumSection - 1
     val maximumLightSection = minimumLightSection + lightSectionCount
 
@@ -110,11 +110,9 @@ class KryptonChunk(
         inhabitedTime += playerCount
     }
 
-    override fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap =
-        heightmaps.getOrPut(type) { Heightmap(this, type) }
+    override fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap = heightmaps.getOrPut(type) { Heightmap(this, type) }
 
-    override fun getHeight(type: Heightmap.Type, x: Int, z: Int) =
-        heightmaps[type]!!.firstAvailable(x and 15, z and 15) - 1
+    override fun getHeight(type: Heightmap.Type, x: Int, z: Int) = heightmaps[type]!!.firstAvailable(x and 15, z and 15) - 1
 
     override fun setHeightmap(type: Heightmap.Type, data: LongArray) =
         heightmaps.getOrPut(type) { Heightmap(this, type) }.setData(this, type, data)

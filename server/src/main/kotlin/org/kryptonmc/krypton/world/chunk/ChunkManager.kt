@@ -73,8 +73,7 @@ class ChunkManager(private val world: KryptonWorld) {
     fun <T> addTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T, onLoad: () -> Unit) =
         ticketManager.addTicket(x, z, type, level, key, onLoad)
 
-    fun <T> removeTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T) =
-        ticketManager.removeTicket(x, z, type, level, key)
+    fun <T> removeTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T) = ticketManager.removeTicket(x, z, type, level, key)
 
     fun addPlayer(
         player: KryptonPlayer,
@@ -139,10 +138,7 @@ class ChunkManager(private val world: KryptonWorld) {
             val sectionData = sectionList.getCompound(i)
             val y = sectionData.getByte("Y").toInt()
             if (y == -1 || y == 16) continue
-            if (
-                sectionData.contains("Palette", ListTag.ID) &&
-                sectionData.contains("BlockStates", LongArrayTag.ID)
-            ) {
+            if (sectionData.contains("Palette", ListTag.ID) && sectionData.contains("BlockStates", LongArrayTag.ID)) {
                 val section = ChunkSection(
                     y,
                     sectionData.getByteArray("BlockLight"),
@@ -157,9 +153,7 @@ class ChunkManager(private val world: KryptonWorld) {
             }
         }
 
-        val carvingMasks = data.getCompound("CarvingMasks").let {
-            it.getByteArray("AIR") to it.getByteArray("LIQUID")
-        }
+        val carvingMasks = data.getCompound("CarvingMasks").let { it.getByteArray("AIR") to it.getByteArray("LIQUID") }
         val biomes = KryptonBiomeContainer(InternalRegistries.BIOME, world, position, world.generator.biomeGenerator)
         val chunk =  KryptonChunk(
             world,
@@ -176,11 +170,7 @@ class ChunkManager(private val world: KryptonWorld) {
 
         val noneOf = EnumSet.noneOf(Heightmap.Type::class.java)
         Heightmap.Type.POST_FEATURES.forEach {
-            if (heightmaps.contains(it.name, LongArrayTag.ID)) {
-                chunk.setHeightmap(it, heightmaps.getLongArray(it.name))
-            } else {
-                noneOf.add(it)
-            }
+            if (heightmaps.contains(it.name, LongArrayTag.ID)) chunk.setHeightmap(it, heightmaps.getLongArray(it.name)) else noneOf.add(it)
         }
         Heightmap.prime(chunk, noneOf)
         return chunk
@@ -241,9 +231,7 @@ class ChunkManager(private val world: KryptonWorld) {
             data.put("Sections", sectionList)
 
             val heightmapData = CompoundTag.builder()
-            heightmaps.forEach {
-                if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.longArray(it.key.name, it.value.data.data)
-            }
+            heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.longArray(it.key.name, it.value.data.data) }
             data.put("Heightmaps", heightmapData.build())
             return compound {
                 int("DataVersion", CHUNK_DATA_VERSION)

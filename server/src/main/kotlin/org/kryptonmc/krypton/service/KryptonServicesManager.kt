@@ -25,8 +25,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 object KryptonServicesManager : ServicesManager {
 
-    private val providers: Multimap<Class<*>, KryptonServiceProvider<*>> =
-        Multimaps.newListMultimap(ConcurrentHashMap()) { mutableListOf() }
+    private val providers: Multimap<Class<*>, KryptonServiceProvider<*>> = Multimaps.newListMultimap(ConcurrentHashMap()) { mutableListOf() }
 
     override fun <T> register(plugin: Any, clazz: Class<T>, service: T) {
         providers.put(clazz, KryptonServiceProvider(plugin, clazz, service))

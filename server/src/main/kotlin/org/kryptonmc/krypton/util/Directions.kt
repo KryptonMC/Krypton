@@ -16,11 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.space
+package org.kryptonmc.krypton.util
 
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.floor
 import kotlin.math.abs
 
 object Directions {

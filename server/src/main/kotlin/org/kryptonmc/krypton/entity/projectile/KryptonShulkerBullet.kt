@@ -22,7 +22,7 @@ import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.ShulkerBullet
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.space.Directions
+import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import java.util.UUID

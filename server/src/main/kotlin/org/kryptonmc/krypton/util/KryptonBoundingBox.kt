@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.space
+package org.kryptonmc.krypton.util
 
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.Direction

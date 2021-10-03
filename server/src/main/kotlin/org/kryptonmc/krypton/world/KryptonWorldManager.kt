@@ -75,7 +75,6 @@ class KryptonWorldManager(
             }
         }
     )
-    private val customWorldFolder = worldFolder.resolve("dimensions")
 
     private val name = server.config.world.name
     private val data = storageManager.load(server.config.world.name) ?: PrimaryWorldData(

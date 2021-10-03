@@ -26,7 +26,8 @@ import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.world.generation.Generator
 
-class Dimension(
+@JvmRecord
+data class Dimension(
     val type: DimensionType,
     val generator: Generator
 ) {

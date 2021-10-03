@@ -24,8 +24,8 @@ import org.kryptonmc.api.entity.hanging.Canvas
 import org.kryptonmc.api.entity.hanging.Painting
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPainting
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.space.Directions
-import org.kryptonmc.krypton.space.data2D
+import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.data2D
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 

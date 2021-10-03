@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world.chunk.ticket
 
+@JvmRecord
 data class Ticket<T>(
     val type: TicketType<T>,
     val level: Int,

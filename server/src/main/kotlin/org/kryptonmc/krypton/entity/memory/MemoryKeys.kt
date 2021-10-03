@@ -23,7 +23,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.space.GlobalPosition
+import org.kryptonmc.krypton.util.GlobalPosition
 import org.kryptonmc.krypton.util.Codecs
 
 @Catalogue(MemoryKey::class)

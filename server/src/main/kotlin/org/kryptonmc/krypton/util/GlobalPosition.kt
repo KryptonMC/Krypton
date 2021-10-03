@@ -16,21 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.space
+package org.kryptonmc.krypton.util
 
-import com.google.common.collect.Sets
-import org.kryptonmc.api.util.Direction
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.world.World
+import org.spongepowered.math.vector.Vector3i
 
-enum class Direction2D(vararg directions: Direction) {
+@JvmRecord
+data class GlobalPosition(
+    val dimension: ResourceKey<World>,
+    val position: Vector3i
+) {
 
-    NORTH(Direction.NORTH),
-    NORTH_EAST(Direction.NORTH, Direction.EAST),
-    EAST(Direction.EAST),
-    SOUTH_EAST(Direction.SOUTH, Direction.EAST),
-    SOUTH(Direction.SOUTH),
-    SOUTH_WEST(Direction.SOUTH, Direction.WEST),
-    WEST(Direction.WEST),
-    NORTH_WEST(Direction.NORTH, Direction.WEST);
+    companion object {
 
-    val directions: Set<Direction> = Sets.immutableEnumSet(directions.toList())
+        val CODEC: Codec<GlobalPosition> = RecordCodecBuilder.create {
+            it.group(
+                Codecs.DIMENSION.fieldOf("dimension").forGetter(GlobalPosition::dimension),
+                Codecs.VECTOR3I_STREAM.fieldOf("pos").forGetter(GlobalPosition::position)
+            ).apply(it, ::GlobalPosition)
+        }
+    }
 }

@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton
 
 import io.netty.bootstrap.ServerBootstrap
+import io.netty.channel.ChannelFuture
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.ChannelOption
 import io.netty.channel.EventLoopGroup
@@ -33,8 +34,6 @@ import io.netty.channel.socket.ServerSocketChannel
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.handler.timeout.ReadTimeoutHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.netty.LegacyQueryHandler
 import org.kryptonmc.krypton.network.netty.PacketDecoder
@@ -52,8 +51,9 @@ class NettyProcess(private val server: KryptonServer) {
 
     private val bossGroup: EventLoopGroup = bestLoopGroup()
     private val workerGroup: EventLoopGroup = bestLoopGroup()
+    private lateinit var future: ChannelFuture
 
-    suspend fun run() {
+    fun run() {
         LOGGER.debug("${bossGroup::class.simpleName} is the chosen one")
         try {
             val legacyQueryHandler = LegacyQueryHandler(server)
@@ -74,22 +74,15 @@ class NettyProcess(private val server: KryptonServer) {
                             .addLast(SessionHandler.NETTY_NAME, SessionHandler(server))
                     }
                 })
-
-            withContext(Dispatchers.IO) {
-                val future = bootstrap.bind(server.config.server.ip, server.config.server.port).syncUninterruptibly()
-                future.channel().closeFuture().syncUninterruptibly()
-            }
+            future = bootstrap.bind(server.config.server.ip, server.config.server.port)
         } catch (exception: IOException) {
             LOGGER.error("FAILED TO BIND TO PORT ${server.config.server.port}!", exception)
             server.stop()
-        } finally {
-            shutdown()
         }
     }
 
-    private fun shutdown() {
-        workerGroup.shutdownGracefully()
-        bossGroup.shutdownGracefully()
+    fun shutdown() {
+        future.channel().close().sync()
     }
 
     // Determines the best loop group to use based on what is available on the current operating system

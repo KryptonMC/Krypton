@@ -52,8 +52,11 @@ import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.fluid.KryptonFluidManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
+import java.lang.management.ManagementFactory
 import java.net.InetSocketAddress
 import java.nio.file.Path
+import java.security.AccessController
+import java.security.PrivilegedAction
 import java.security.SecureRandom
 import java.util.Locale
 import java.util.UUID
@@ -62,6 +65,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 import kotlin.math.max
+import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
 
 class KryptonServer(
@@ -163,13 +167,12 @@ class KryptonServer(
 
         // Start accepting connections
         LOGGER.debug("Starting Netty...")
-        IOScope.launch { nettyProcess.run() }
+        nettyProcess.run()
 
         // Add the shutdown hook to stop the server
-        Runtime.getRuntime().addShutdownHook(Thread(::stop, "Shutdown Handler").apply { isDaemon = false })
+        Runtime.getRuntime().addShutdownHook(Thread({ stop(false) }, "Shutdown Handler").apply { isDaemon = false })
 
-        LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type " +
-                "\"help\" for help.")
+        LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type \"help\" for help.")
 
         // Start up the console handler
         LOGGER.debug("Starting console handler")
@@ -204,8 +207,7 @@ class KryptonServer(
         }
     } catch (exception: Throwable) {
         LOGGER.error("Encountered an unexpected exception", exception)
-    } finally {
-        restart()
+        stop()
     }
 
     private fun loadPlugins() {
@@ -228,10 +230,7 @@ class KryptonServer(
             try {
                 eventManager.registerUnchecked(it, instance)
             } catch (exception: Exception) {
-                LOGGER.error(
-                    "Unable to register plugin listener for plugin ${it.description.name}!",
-                    exception
-                )
+                LOGGER.error("Unable to register plugin listener for plugin ${it.description.name}!", exception)
             }
         }
 
@@ -306,30 +305,43 @@ class KryptonServer(
         return 1
     }
 
-    fun stop() {
+    fun stop(explicitExit: Boolean = true) {
         if (!isRunning) return // Ensure we cannot accidentally run this twice
 
-        // Stop server and shut down session manager (disconnecting all players)
-        LOGGER.info("Starting shutdown for Krypton version ${KryptonPlatform.version}...")
-        isRunning = false
-        playerManager.disconnectAll()
+        val shutdownProcess = Runnable {
+            // Stop server and shut down session manager (disconnecting all players)
+            LOGGER.info("Starting shutdown for Krypton version ${KryptonPlatform.version}...")
+            isRunning = false
+            playerManager.disconnectAll()
+            nettyProcess.shutdown()
 
-        // Save data
-        LOGGER.info("Saving player, world, and region data...")
-        worldManager.saveAll()
-        playerManager.saveAll()
+            // Save data
+            LOGGER.info("Saving player, world, and region data...")
+            worldManager.saveAll()
+            playerManager.saveAll()
 
-        // Shut down plugins and unregister listeners
-        LOGGER.info("Shutting down plugins and unregistering listeners...")
-        eventManager.fireAndForgetSync(ServerStopEvent)
-        eventManager.shutdown()
+            // Shut down plugins and unregister listeners
+            LOGGER.info("Shutting down plugins and unregistering listeners...")
+            eventManager.fireAndForgetSync(ServerStopEvent)
+            eventManager.shutdown()
 
-        // Shut down scheduler
-        scheduler.shutdown()
-        LOGGER.info("Goodbye")
+            // Shut down scheduler
+            scheduler.shutdown()
+            LOGGER.info("Goodbye")
 
-        // Manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
-        LogManager.shutdown()
+            // Manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
+            LogManager.shutdown()
+            if (explicitExit) AccessController.doPrivileged(PrivilegedAction {
+                exitProcess(0)
+            })
+        }
+
+        if (explicitExit) {
+            val thread = Thread(shutdownProcess)
+            thread.start()
+        } else {
+            shutdownProcess.run()
+        }
     }
 
     fun restart() {

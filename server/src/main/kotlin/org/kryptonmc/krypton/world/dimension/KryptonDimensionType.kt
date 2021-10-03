@@ -32,7 +32,6 @@ import org.kryptonmc.krypton.world.biome.gen.BiomeZoomer
 import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetBiomeZoomer
 import java.util.Optional
 
-@CataloguedBy(KryptonDimensionTypes::class)
 @JvmRecord
 data class KryptonDimensionType(
     private val key: Key,

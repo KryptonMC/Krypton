@@ -17,40 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
- * For the original files that this file is derived from, see:
- * https://github.com/VelocityPowered/Velocity/blob/dev/1.1.0/proxy/src/main/java/com/velocitypowered/proxy/plugin/loader/VelocityPluginDescription.java
+ * For the original file that this file is derived from, see:
  * https://github.com/VelocityPowered/Velocity/blob/dev/1.1.0/proxy/src/main/java/com/velocitypowered/proxy/plugin/loader/java/JavaVelocityPluginDescription.java
- * https://github.com/VelocityPowered/Velocity/blob/dev/1.1.0/proxy/src/main/java/com/velocitypowered/proxy/plugin/loader/java/JavaVelocityPluginDescriptionCandidate.java
  */
 package org.kryptonmc.krypton.plugin.loader
 
 import org.kryptonmc.api.plugin.PluginDependency
 import org.kryptonmc.api.plugin.PluginDescription
 import java.nio.file.Path
-
-@JvmRecord
-data class LoadedPluginDescriptionCandidate(
-    override val id: String,
-    override val name: String,
-    override val version: String,
-    override val description: String,
-    override val authors: Collection<String>,
-    override val dependencies: Collection<PluginDependency>,
-    override val source: Path,
-    val mainClass: String
-) : PluginDescription {
-
-    fun toFull(mainClass: Class<*>) = LoadedPluginDescription(
-        id,
-        name,
-        version,
-        description,
-        authors,
-        dependencies,
-        source,
-        mainClass
-    )
-}
 
 @JvmRecord
 data class LoadedPluginDescription(
