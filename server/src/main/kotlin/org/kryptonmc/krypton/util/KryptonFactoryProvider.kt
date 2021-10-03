@@ -28,6 +28,7 @@ import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityDimensions
+import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.inventory.InventoryType
@@ -57,6 +58,7 @@ import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.kryptonmc.krypton.effect.particle.data.KryptonParticleDataFactory
 import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.entity.KryptonEntityDimensions
+import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeType
 import org.kryptonmc.krypton.inventory.KryptonInventoryType
@@ -123,6 +125,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<Precipitation.Factory>(KryptonPrecipitation.Factory)
         register<TemperatureModifier.Factory>(KryptonTemperatureModifier.Factory)
         register<BoundingBox.Factory>(KryptonBoundingBox.Factory)
+        register<EntityType.Factory>(KryptonEntityType.Factory)
     }
 }
 

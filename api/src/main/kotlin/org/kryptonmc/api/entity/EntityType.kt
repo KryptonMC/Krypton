@@ -10,29 +10,69 @@ package org.kryptonmc.api.entity
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
-import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.TranslatableComponent
+import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.TranslationHolder
+import org.kryptonmc.api.util.provide
 
 /**
  * A type of entity.
  *
  * @param T the type of entity
- * @param key the key for this entity type
- * @param isSummonable if this entity type can be summoned, for example, with
- *        the /summon command or [org.kryptonmc.api.world.World.spawnEntity]
- * @param translation the translation for this entity type
  */
-@JvmRecord
 @CataloguedBy(EntityTypes::class)
-public data class EntityType<T : Entity>(
-    private val key: Key,
-    public val isSummonable: Boolean,
-    public override val translation: TranslatableComponent = translatable(
-        "entity.${key.namespace()}.${key.value().replace("/", ".")}"
-    ),
-) : Keyed, TranslationHolder {
+public interface EntityType<T : Entity> : TranslationHolder, Keyed {
 
-    override fun key(): Key = key
+    /**
+     * If this entity type can be summoned, with the /summon command, or by
+     * spawning the entity through [org.kryptonmc.api.world.World.spawnEntity].
+     */
+    public val isSummonable: Boolean
+
+    @Suppress("UndocumentedPublicFunction")
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun <T : Entity> of(key: Key, summonable: Boolean, translation: TranslatableComponent): EntityType<T>
+
+        public fun <T : Entity> of(key: Key, summonable: Boolean): EntityType<T>
+    }
+
+    public companion object {
+
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
+
+        /**
+         * Creates a new entity type with the given values.
+         *
+         * @param key the key
+         * @param summonable if entities of the type can be summoned
+         * @param translation the translation
+         * @return a new entity type
+         */
+        @JvmStatic
+        @Contract("_ -> new", pure = true)
+        public fun <T : Entity> of(
+            key: Key,
+            summonable: Boolean,
+            translation: TranslatableComponent
+        ): EntityType<T> = FACTORY.of(key, summonable, translation)
+
+        /**
+         * Creates a new entity type with the given values.
+         *
+         * @param key the key
+         * @param summonable if entities of the type can be summoned
+         * @return a new entity type
+         */
+        @JvmStatic
+        @Contract("_ -> new", pure = true)
+        public fun <T : Entity> of(
+            key: Key,
+            summonable: Boolean,
+        ): EntityType<T> = FACTORY.of(key, summonable)
+    }
 }

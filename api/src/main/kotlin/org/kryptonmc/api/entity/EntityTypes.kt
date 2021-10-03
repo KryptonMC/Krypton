@@ -159,5 +159,5 @@ public object EntityTypes {
 
     @Suppress("UNCHECKED_CAST") // This should never fail here
     private fun <T : Entity> register(name: String, isSummonable: Boolean = true): EntityType<T> =
-        Registries.register(Registries.ENTITY_TYPE, name, EntityType<T>(Key.key(name), isSummonable)) as EntityType<T>
+        Registries.register(Registries.ENTITY_TYPE, name, EntityType.of<T>(Key.key(name), isSummonable)) as EntityType<T>
 }
