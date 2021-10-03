@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.util
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toPlainText
-import org.kryptonmc.api.util.floor
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import java.util.Locale
 

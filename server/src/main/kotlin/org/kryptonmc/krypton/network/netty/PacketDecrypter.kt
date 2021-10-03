@@ -36,7 +36,7 @@ class PacketDecrypter(private val cipher: VelocityCipher) : MessageToMessageDeco
         val compatible = MoreByteBufUtils.ensureCompatible(ctx.alloc(), cipher, msg).slice()
         try {
             cipher.process(compatible)
-            out += compatible
+            out.add(compatible)
             LOGGER.debug("Decrypted bytes length ${compatible.readableBytes()}")
         } catch (exception: Exception) {
             compatible.release()

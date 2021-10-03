@@ -22,7 +22,8 @@ import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import java.net.InetAddress
 import java.util.UUID
 
-class VelocityForwardedData(
+@JvmRecord
+data class VelocityForwardedData(
     val remoteAddress: InetAddress,
     val uuid: UUID,
     val username: String,

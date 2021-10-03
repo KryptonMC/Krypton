@@ -27,12 +27,14 @@ import org.kryptonmc.api.block.BlockManager
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.event.EventManager
+import org.kryptonmc.api.fluid.FluidManager
 import org.kryptonmc.api.item.ItemManager
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
+import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
 
@@ -52,6 +54,8 @@ class GlobalModule(
         bind<RegistryManager>().toInstance(server.registryManager)
         bind<BlockManager>().toInstance(server.blockManager)
         bind<ItemManager>().toInstance(server.itemManager)
+        bind<FluidManager>().toInstance(server.fluidManager)
+        bind<FactoryProvider>().toInstance(server.factoryProvider)
         bind<ProfileCache>().toInstance(server.profileCache)
         bind<Scheduler>().toInstance(server.scheduler)
         bind<ConsoleSender>().toInstance(server.console)

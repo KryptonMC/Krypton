@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import org.kryptonmc.api.util.ceillog2
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.chunk.BiomeContainer
 import org.kryptonmc.krypton.util.IntBiMap
+import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.world.HeightAccessor
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource

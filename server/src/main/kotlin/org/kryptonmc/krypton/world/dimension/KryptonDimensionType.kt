@@ -23,18 +23,14 @@ import com.mojang.serialization.DataResult
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.getIfPresent
-import org.kryptonmc.api.util.log2
-import org.kryptonmc.api.util.roundUpPow2
 import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.util.Codecs
-import org.kryptonmc.krypton.util.frac
+import org.kryptonmc.krypton.util.Vectors
+import org.kryptonmc.krypton.util.getIfPresent
 import org.kryptonmc.krypton.world.biome.gen.BiomeZoomer
 import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetBiomeZoomer
 import java.util.Optional
-import kotlin.math.PI
-import kotlin.math.cos
 
 @CataloguedBy(KryptonDimensionTypes::class)
 @JvmRecord
@@ -67,8 +63,7 @@ data class KryptonDimensionType(
         private const val MAXIMUM_COORDINATE_SCALE = 3.0E7
         private const val MINIMUM_HEIGHT = 16
 
-        private val PACKED_Y = 64 - (1 + 30000000.roundUpPow2().log2()) * 2
-        val Y_SIZE = (1 shl PACKED_Y) - 32
+        val Y_SIZE = (1 shl Vectors.PACKED_Y) - 32
         val MAX_Y = (Y_SIZE shr 1) - 1
         val MIN_Y = MAX_Y - Y_SIZE + 1
 

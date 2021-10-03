@@ -21,12 +21,10 @@ package org.kryptonmc.krypton.command.registrar
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
-import kotlinx.coroutines.launch
 import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
-import org.kryptonmc.krypton.command.CommandScope
 import org.kryptonmc.krypton.command.splitArguments
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.Lock
@@ -59,7 +57,7 @@ class SimpleCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<SimpleComma
     }
 
     private fun dispatch(command: SimpleCommand, sender: Sender, args: Array<String>): Int {
-        CommandScope.launch { command.execute(sender, args) }
+        command.execute(sender, args)
         return 1
     }
 }

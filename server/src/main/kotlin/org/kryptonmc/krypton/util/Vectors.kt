@@ -18,17 +18,14 @@
  */
 package org.kryptonmc.krypton.util
 
-/**
- * Convert an ordinary string to a protocol string, with its length prefixed.
- *
- * We manually copy the bytes to avoid using the spread operator.
- */
-fun String.toProtocol(): ByteArray {
-    val bytes = encodeToByteArray()
-    val array = ByteArray(bytes.size + 1)
-    array[0] = bytes.size.toByte()
-    for (i in bytes.indices) {
-        array[i + 1] = bytes[i]
-    }
-    return array
+import org.spongepowered.math.GenericMath
+
+object Vectors {
+
+    val PACKED_X_Z = 1 + GenericMath.roundUpPow2(30000000).log2()
+    val PACKED_Y = 64 - PACKED_X_Z * 2
+    val PACKED_X_Z_MASK = (1L shl PACKED_X_Z) - 1L
+    val PACKED_Y_MASK = (1L shl PACKED_Y) - 1L
+    val X_OFFSET = PACKED_Y + PACKED_X_Z
+    val Z_OFFSET = PACKED_Y
 }

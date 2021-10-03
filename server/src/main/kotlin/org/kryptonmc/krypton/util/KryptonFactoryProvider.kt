@@ -32,6 +32,7 @@ import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.inventory.InventoryType
+import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.util.BoundingBox
@@ -62,6 +63,7 @@ import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeType
 import org.kryptonmc.krypton.inventory.KryptonInventoryType
+import org.kryptonmc.krypton.item.KryptonItemRarity
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.space.KryptonBoundingBox
@@ -126,6 +128,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<TemperatureModifier.Factory>(KryptonTemperatureModifier.Factory)
         register<BoundingBox.Factory>(KryptonBoundingBox.Factory)
         register<EntityType.Factory>(KryptonEntityType.Factory)
+        register<ItemRarity.Factory>(KryptonItemRarity.Factory)
     }
 }
 

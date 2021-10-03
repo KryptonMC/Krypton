@@ -18,12 +18,14 @@
  */
 package org.kryptonmc.krypton.util
 
-import java.util.BitSet
+object Positioning {
 
-fun BitSet.toBooleanArray(): BooleanArray {
-    val array = BooleanArray(4096)
-    for (i in 0 until 4096) {
-        array[i] = get(i)
-    }
-    return array
+    /**
+     * Calculates the change in position between the given [new] and [old] coordinates.
+     * No idea why Mojang thought having player coordinates be absolute and entity
+     * coordinates be relative.
+     *
+     * This calculation comes from https://wiki.vg/Protocol#Entity_Position
+     */
+    fun delta(new: Double, old: Double) = ((new * 32 - old * 32) * 128).toInt().toShort()
 }

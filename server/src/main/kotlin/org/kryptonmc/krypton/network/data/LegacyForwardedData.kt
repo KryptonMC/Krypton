@@ -25,7 +25,8 @@ import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
 import java.util.UUID
 
-class LegacyForwardedData(
+@JvmRecord
+data class LegacyForwardedData(
     val originalIp: String,
     val forwardedIp: String,
     val uuid: UUID,

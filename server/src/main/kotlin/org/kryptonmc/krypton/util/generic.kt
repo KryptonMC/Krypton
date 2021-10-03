@@ -16,22 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command
+package org.kryptonmc.krypton.util
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.asCoroutineDispatcher
-import org.kryptonmc.krypton.util.threadFactory
-import java.util.concurrent.Executors
+import java.net.SocketAddress
+import java.util.BitSet
+import java.util.Optional
+import java.util.UUID
 
-/**
- * A custom coroutine scope for executing commands on, as commands are asynchronous
- * by default. This is an attempt to decrease the chance of a command holding up the
- * entire server whilst it executes.
- */
-object CommandScope : CoroutineScope {
-
-    override val coroutineContext = Executors.newFixedThreadPool(
-        2,
-        threadFactory("Command Handler #%d")
-    ).asCoroutineDispatcher()
+fun SocketAddress.asString(): String {
+    var string = toString()
+    if (string.contains("/")) string = string.substring(string.indexOf(47.toChar()) + 1)
+    if (string.contains(":")) string = string.substring(0, string.indexOf(58.toChar()))
+    return string
 }
+
+fun BitSet.toBooleanArray(): BooleanArray {
+    val array = BooleanArray(4096)
+    for (i in 0 until 4096) {
+        array[i] = get(i)
+    }
+    return array
+}
+
+fun IntArray.toUUID(): UUID = UUID(
+    this[0].toLong() shl 32 or this[1].toLong() and 4294967295L,
+    this[2].toLong() shl 32 or this[3].toLong() and 4294967295L
+)
+
+fun <T> Optional<T>.getIfPresent(): T? = if (isPresent) get() else null

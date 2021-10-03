@@ -23,7 +23,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 class IntHashBiMap<T>(values: Map<out T, Int>? = null) : IntBiMap<T> {
 
     private val byT = Object2IntOpenHashMap<T>().apply { defaultReturnValue(-1) }
-    private val byId = mutableListOf<T?>()
+    private val byId = ArrayList<T?>()
     private var nextId = 0
     val size: Int
         get() = byT.size

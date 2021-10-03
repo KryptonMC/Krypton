@@ -15,15 +15,18 @@ package org.kryptonmc.api.plugin
 /**
  * A wrapper around a loaded plugin.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface PluginContainer {
 
     /**
      * The description of this plugin.
      */
+    @get:JvmName("description")
     public val description: PluginDescription
 
     /**
      * The instance of this loaded plugin if it is available, null otherwise.
      */
+    @get:JvmName("instance")
     public val instance: Any?
 }

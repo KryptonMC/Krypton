@@ -21,10 +21,10 @@ package org.kryptonmc.krypton.world.block.palette
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.util.ceillog2
+import org.kryptonmc.krypton.util.BitStorage
+import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
-import org.kryptonmc.krypton.util.BitStorage
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import kotlin.math.max

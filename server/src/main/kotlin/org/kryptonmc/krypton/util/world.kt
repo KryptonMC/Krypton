@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.util.floor
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition

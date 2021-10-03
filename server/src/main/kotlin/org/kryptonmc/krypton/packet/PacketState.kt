@@ -47,13 +47,5 @@ enum class PacketState {
      * The vast majority of packets that exist in the protocol are in the play state.
      * This state indicates that the client is playing the game.
      */
-    PLAY;
-
-    companion object {
-
-        /**
-         * Gets a packet state from its protocol ID.
-         */
-        fun fromId(id: Int) = values()[id]
-    }
+    PLAY
 }

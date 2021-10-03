@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.util.converter.versions
 
 import ca.spottedleaf.dataconverter.types.ObjectType
-import org.kryptonmc.api.util.ceillog2
-import org.kryptonmc.api.util.isPowerOfTwo
+import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.converter.MCVersions
 import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
+import org.kryptonmc.krypton.util.isPowerOfTwo
 import kotlin.math.max
 
 object V2527 {

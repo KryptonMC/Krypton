@@ -28,7 +28,7 @@ import org.kryptonmc.krypton.util.BossBarManager
 
 @JvmRecord
 data class PacketOutBossBar(
-    private val action: BossBarAction,
+    private val action: Action,
     private val bar: BossBarManager.BossBarHolder
 ) : Packet {
 
@@ -37,21 +37,21 @@ data class PacketOutBossBar(
         buf.writeVarInt(action.ordinal)
 
         when (action) {
-            BossBarAction.ADD -> {
+            Action.ADD -> {
                 buf.writeChat(bar.bar.name())
                 buf.writeFloat(bar.bar.progress())
                 buf.writeVarInt(bar.bar.color().ordinal)
                 buf.writeVarInt(bar.bar.overlay().ordinal)
                 buf.writeByte(bar.bar.flagsToProtocol())
             }
-            BossBarAction.REMOVE -> Unit
-            BossBarAction.UPDATE_HEALTH -> buf.writeFloat(bar.bar.progress())
-            BossBarAction.UPDATE_TITLE -> buf.writeChat(bar.bar.name())
-            BossBarAction.UPDATE_STYLE -> {
+            Action.REMOVE -> Unit
+            Action.UPDATE_HEALTH -> buf.writeFloat(bar.bar.progress())
+            Action.UPDATE_TITLE -> buf.writeChat(bar.bar.name())
+            Action.UPDATE_STYLE -> {
                 buf.writeVarInt(bar.bar.color().ordinal)
                 buf.writeVarInt(bar.bar.overlay().ordinal)
             }
-            BossBarAction.UPDATE_FLAGS -> buf.writeByte(bar.bar.flagsToProtocol())
+            Action.UPDATE_FLAGS -> buf.writeByte(bar.bar.flagsToProtocol())
         }
     }
 
@@ -62,14 +62,14 @@ data class PacketOutBossBar(
         if (hasFlag(BossBar.Flag.CREATE_WORLD_FOG)) byte = byte or 0x04
         return byte
     }
-}
 
-enum class BossBarAction {
+    enum class Action {
 
-    ADD,
-    REMOVE,
-    UPDATE_HEALTH,
-    UPDATE_TITLE,
-    UPDATE_STYLE,
-    UPDATE_FLAGS
+        ADD,
+        REMOVE,
+        UPDATE_HEALTH,
+        UPDATE_TITLE,
+        UPDATE_STYLE,
+        UPDATE_FLAGS
+    }
 }

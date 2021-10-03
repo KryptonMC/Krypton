@@ -24,7 +24,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap
 import it.unimi.dsi.fastutil.ints.IntConsumer
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
-import org.kryptonmc.api.util.ceillog2
+import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.converter.MCVersions
 import org.kryptonmc.krypton.util.converter.PackedBitStorage
 import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry

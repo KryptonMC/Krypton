@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.util.noise
 
-import org.kryptonmc.api.util.floor
+import org.kryptonmc.krypton.util.floor
 import org.kryptonmc.krypton.util.random.RandomSource
 import kotlin.math.sqrt
 

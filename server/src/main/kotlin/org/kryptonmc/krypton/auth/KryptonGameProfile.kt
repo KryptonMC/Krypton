@@ -26,6 +26,7 @@ import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
 import java.util.UUID
 
+@JvmRecord
 data class KryptonGameProfile(
     override val uuid: UUID,
     override val name: String,

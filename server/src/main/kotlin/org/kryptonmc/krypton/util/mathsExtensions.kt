@@ -32,7 +32,15 @@ fun Double.floorl(): Long {
     return if (this < value) value - 1L else value
 }
 
-fun Double.frac() = this - floorl().toDouble()
+fun Float.floor(): Int {
+    val result = toInt()
+    return if (this < result) result - 1 else result
+}
+
+fun Double.floor(): Int {
+    val result = toInt()
+    return if (this < result) result - 1 else result
+}
 
 fun Int.ceillog2(): Int {
     val temp = if (isPowerOfTwo()) this else GenericMath.roundUpPow2(this)

@@ -26,6 +26,6 @@ import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
 
 data class KryptonPluginContainer(
-    override val description: PluginDescription,
-    override var instance: Any? = null
+    @get:JvmName("description") override val description: PluginDescription,
+    @get:JvmName("instance") override var instance: Any? = null
 ) : PluginContainer

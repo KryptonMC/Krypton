@@ -90,7 +90,7 @@ class KryptonServer(
     val random = SecureRandom()
 
     override val worldManager = KryptonWorldManager(this, worldFolder)
-    override val commandManager = KryptonCommandManager()
+    override val commandManager = KryptonCommandManager
     override val pluginManager = KryptonPluginManager(this)
     override val eventManager = KryptonEventManager(pluginManager)
     override val servicesManager = KryptonServicesManager
@@ -147,6 +147,7 @@ class KryptonServer(
         LOGGER.info("Preparing world ${config.world.name}...")
         worldManager.init()
 
+        // Load plugins here because most of everything they need is available now.
         loadPlugins()
 
         // Fire the event that signals the server starting. We fire it here so that plugins can listen to it as part of their lifecycle,
@@ -198,9 +199,7 @@ class KryptonServer(
             eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
             lastTickTime = finishTime
 
-            val sleepTime = measureTimeMillis {
-                Thread.sleep(max(0, MILLISECONDS_PER_TICK - tickTime - oversleepFactor))
-            }
+            val sleepTime = measureTimeMillis { Thread.sleep(max(0, MILLISECONDS_PER_TICK - tickTime - oversleepFactor)) }
             oversleepFactor = sleepTime - (MILLISECONDS_PER_TICK - tickTime)
         }
     } catch (exception: Throwable) {
@@ -211,7 +210,6 @@ class KryptonServer(
 
     private fun loadPlugins() {
         LOGGER.info("Loading plugins...")
-
         try {
             val pluginPath = Path.of("plugins")
             if (!pluginPath.exists()) pluginPath.tryCreateDirectory()
@@ -308,7 +306,7 @@ class KryptonServer(
         return 1
     }
 
-    fun stop(halt: Boolean = true) {
+    fun stop() {
         if (!isRunning) return // Ensure we cannot accidentally run this twice
 
         // Stop server and shut down session manager (disconnecting all players)
@@ -332,26 +330,21 @@ class KryptonServer(
 
         // Manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
         LogManager.shutdown()
-
-        // Finally, halt the JVM if we should (avoids shutdown hooks running)
-        if (halt) Runtime.getRuntime().halt(0)
     }
 
     fun restart() {
-        stop(false) // avoid halting there because we halt here
+        stop()
         val split = config.other.restartScript.split(" ")
         if (split.isNotEmpty()) {
             if (!Path.of(split[0]).isRegularFile()) {
                 println("Unable to find restart script ${split[0]}! Refusing to restart!")
-                Runtime.getRuntime().halt(0)
+                return
             }
             println("Attempting to restart the server with script ${split[0]}...")
             val os = System.getProperty("os.name").lowercase()
-            Runtime.getRuntime().exec(
-                (if ("win" in os) "cmd /c start " else "sh ") + config.other.restartScript
-            )
+            val runCommand = if (os.contains("win")) "cmd /c start " else "sh "
+            Runtime.getRuntime().exec(runCommand + config.other.restartScript)
         }
-        Runtime.getRuntime().halt(0)
     }
 
     companion object {

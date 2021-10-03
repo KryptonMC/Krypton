@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.util.noise
 
-import org.kryptonmc.api.util.floor
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.fade
+import org.kryptonmc.krypton.util.floor
 import org.kryptonmc.krypton.util.random.RandomSource
 
 class ImprovedNoise(random: RandomSource) {

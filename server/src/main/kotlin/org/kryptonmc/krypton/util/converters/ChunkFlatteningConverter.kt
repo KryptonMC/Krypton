@@ -25,7 +25,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.ints.IntArrayList
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap
-import org.kryptonmc.api.util.ceillog2
+import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.converter.MCVersions
 import org.kryptonmc.krypton.util.converter.PackedBitStorage
 import org.kryptonmc.krypton.util.converter.StringDataConverter

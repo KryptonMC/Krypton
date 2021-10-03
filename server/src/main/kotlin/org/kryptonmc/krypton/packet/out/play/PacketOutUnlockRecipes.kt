@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutUnlockRecipes(
-    private val action: UnlockRecipesAction,
+    private val action: Action,
     private val isCraftingBookOpen: Boolean = false,
     private val isCraftingBookFiltered: Boolean = false,
     private val isSmeltingBookOpen: Boolean = false,
@@ -54,16 +54,16 @@ data class PacketOutUnlockRecipes(
         buf.writeVarInt(recipes.size)
         for (recipe in recipes) buf.writeKey(recipe)
 
-        if (action == UnlockRecipesAction.INIT) {
+        if (action == Action.INIT) {
             buf.writeVarInt(newRecipes.size)
             for (recipe in newRecipes) buf.writeKey(recipe)
         }
     }
-}
 
-enum class UnlockRecipesAction {
+    enum class Action {
 
-    INIT,
-    ADD,
-    REMOVE
+        INIT,
+        ADD,
+        REMOVE
+    }
 }

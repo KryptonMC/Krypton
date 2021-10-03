@@ -32,7 +32,7 @@ public interface EntityType<T : Entity> : TranslationHolder, Keyed {
      */
     public val isSummonable: Boolean
 
-    @Suppress("UndocumentedPublicFunction")
+    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

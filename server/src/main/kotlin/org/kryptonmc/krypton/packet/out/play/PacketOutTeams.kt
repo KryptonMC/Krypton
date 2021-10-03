@@ -35,7 +35,7 @@ import org.kryptonmc.krypton.world.scoreboard.KryptonVisibility
  */
 @JvmRecord
 data class PacketOutTeams(
-    private val action: TeamAction,
+    private val action: Action,
     private val team: Team,
     private val addedMembers: Set<Component> = emptySet(), // only applies for add players
     private val removedMembers: Set<Component> = emptySet() // only applies for remove players
@@ -46,18 +46,18 @@ data class PacketOutTeams(
         buf.writeByte(action.ordinal)
 
         when (action) {
-            TeamAction.CREATE -> {
+            Action.CREATE -> {
                 buf.writeTeamInfo()
                 buf.writeVarInt(team.members.size)
                 for (member in team.members) buf.writeString(member.toLegacySectionText(), 40)
             }
-            TeamAction.REMOVE -> Unit
-            TeamAction.UPDATE_INFO -> buf.writeTeamInfo()
-            TeamAction.ADD_PLAYERS -> {
+            Action.REMOVE -> Unit
+            Action.UPDATE_INFO -> buf.writeTeamInfo()
+            Action.ADD_PLAYERS -> {
                 buf.writeVarInt(addedMembers.size)
                 for (member in addedMembers) buf.writeString(member.toLegacySectionText(), 40)
             }
-            TeamAction.REMOVE_PLAYERS -> {
+            Action.REMOVE_PLAYERS -> {
                 buf.writeVarInt(removedMembers.size)
                 for (member in removedMembers) buf.writeString(member.toLegacySectionText(), 40)
             }
@@ -80,13 +80,13 @@ data class PacketOutTeams(
         if (canSeeInvisibleMembers) byte += 0x02
         return byte
     }
-}
 
-enum class TeamAction {
+    enum class Action {
 
-    CREATE,
-    REMOVE,
-    UPDATE_INFO,
-    ADD_PLAYERS,
-    REMOVE_PLAYERS
+        CREATE,
+        REMOVE,
+        UPDATE_INFO,
+        ADD_PLAYERS,
+        REMOVE_PLAYERS
+    }
 }

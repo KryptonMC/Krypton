@@ -117,9 +117,7 @@ import org.kryptonmc.krypton.util.IdentityHashStrategy
 object PacketRegistry {
 
     private val byEncoded = Int2ObjectOpenHashMap<(ByteBuf) -> Packet>()
-    private val toId = Object2IntOpenCustomHashMap<Class<*>>(IdentityHashStrategy).apply {
-        defaultReturnValue(-1)
-    }
+    private val toId = Object2IntOpenCustomHashMap<Class<*>>(IdentityHashStrategy).apply { defaultReturnValue(-1) }
 
     operator fun get(clazz: Class<*>) = toId.getInt(clazz)
 

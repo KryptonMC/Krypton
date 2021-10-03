@@ -27,19 +27,19 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutUpdateScore(
     private val score: Score,
-    private val action: ScoreAction
+    private val action: Action
 ) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeString(score.player.name, 40)
         buf.writeByte(action.ordinal)
         buf.writeString(score.objective.name, 16)
-        if (action != ScoreAction.REMOVE) buf.writeVarInt(score.score)
+        if (action != Action.REMOVE) buf.writeVarInt(score.score)
     }
-}
 
-enum class ScoreAction {
+    enum class Action {
 
-    CREATE_OR_UPDATE,
-    REMOVE
+        CREATE_OR_UPDATE,
+        REMOVE
+    }
 }

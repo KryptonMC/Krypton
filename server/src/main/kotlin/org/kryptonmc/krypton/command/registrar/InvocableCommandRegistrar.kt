@@ -29,8 +29,7 @@ import org.kryptonmc.krypton.command.buildRawArgumentsLiteral
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.Lock
 
-sealed class InvocableCommandRegistrar<C : InvocableCommand<A>, M : CommandMeta, A>(lock: Lock) :
-    KryptonCommandRegistrar<C, M>(lock) {
+sealed class InvocableCommandRegistrar<C : InvocableCommand<A>, M : CommandMeta, A>(lock: Lock) : KryptonCommandRegistrar<C, M>(lock) {
 
     abstract fun execute(command: C, meta: M, context: CommandContext<Sender>): Int
 

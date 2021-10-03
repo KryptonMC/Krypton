@@ -19,14 +19,15 @@
 package org.kryptonmc.krypton.world.block
 
 import com.google.gson.JsonObject
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.PushReaction
 import org.kryptonmc.api.block.RenderShape
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
+import org.kryptonmc.krypton.util.IntHashBiMap
 import org.kryptonmc.krypton.util.KryptonDataLoader
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import java.util.concurrent.ConcurrentHashMap
@@ -35,7 +36,7 @@ object BlockLoader : KryptonDataLoader("blocks") {
 
     private val KEY_MAP = mutableMapOf<String, KryptonBlock>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
-    private val STATE_MAP = Int2ObjectOpenHashMap<KryptonBlock>()
+    val STATES = IntHashBiMap<Block>()
 
     fun fromKey(key: String): KryptonBlock? {
         val id = if (key.indexOf(':') == -1) "minecraft:$key" else key
@@ -48,6 +49,10 @@ object BlockLoader : KryptonDataLoader("blocks") {
         key: String,
         properties: Map<String, String>
     ): KryptonBlock? = PROPERTY_MAP[key]?.properties?.get(properties)
+
+    operator fun get(id: Int): Block? = STATES[id]
+
+    operator fun get(block: Block): Int = STATES.idOf(block)
 
     override fun load(data: JsonObject) {
         KryptonPropertyFactory.bootstrap()
@@ -68,7 +73,7 @@ object BlockLoader : KryptonDataLoader("blocks") {
 
             // Get default state and add to map
             val defaultState = value["defaultStateId"].asInt
-            val defaultBlock = STATE_MAP[defaultState]!!
+            val defaultBlock = STATES[defaultState]!! as KryptonBlock
             KEY_MAP[key] = defaultBlock
             PROPERTY_MAP[key] = propertyEntry
 
@@ -77,7 +82,6 @@ object BlockLoader : KryptonDataLoader("blocks") {
             if (InternalRegistries.BLOCK.contains(namespacedKey)) return@forEach
             KryptonRegistryManager.register(InternalRegistries.BLOCK, key, defaultBlock)
         }
-        STATE_MAP.int2ObjectEntrySet().fastForEach { KryptonBlock.STATES[it.value] = it.intKey }
     }
 
     private fun JsonObject.retrieveState(
@@ -90,7 +94,7 @@ object BlockLoader : KryptonDataLoader("blocks") {
             it.key to it.value.asString.lowercase()
         }
         val block = createBlock(Key.key(key), blockObject, this, availableProperties, propertyMap)
-        STATE_MAP[stateId] = block
+        STATES[block] = stateId
         return propertyMap to block
     }
 

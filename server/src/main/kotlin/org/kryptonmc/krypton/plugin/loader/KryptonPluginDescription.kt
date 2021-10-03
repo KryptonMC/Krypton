@@ -28,26 +28,17 @@ import org.kryptonmc.api.plugin.PluginDependency
 import org.kryptonmc.api.plugin.PluginDescription
 import java.nio.file.Path
 
-open class KryptonPluginDescription(
+@JvmRecord
+data class LoadedPluginDescriptionCandidate(
     override val id: String,
     override val name: String,
     override val version: String,
     override val description: String,
-    override val authors: List<String>,
-    override val dependencies: List<PluginDependency>,
-    override val source: Path
-) : PluginDescription
-
-class LoadedPluginDescriptionCandidate(
-    id: String,
-    name: String,
-    version: String,
-    description: String,
-    authors: List<String>,
-    dependencies: List<PluginDependency>,
-    source: Path,
+    override val authors: Collection<String>,
+    override val dependencies: Collection<PluginDependency>,
+    override val source: Path,
     val mainClass: String
-) : KryptonPluginDescription(id, name, version, description, authors, dependencies, source) {
+) : PluginDescription {
 
     fun toFull(mainClass: Class<*>) = LoadedPluginDescription(
         id,
@@ -61,13 +52,14 @@ class LoadedPluginDescriptionCandidate(
     )
 }
 
-class LoadedPluginDescription(
-    id: String,
-    name: String,
-    version: String,
-    description: String,
-    authors: List<String>,
-    dependencies: List<PluginDependency>,
-    source: Path,
+@JvmRecord
+data class LoadedPluginDescription(
+    override val id: String,
+    override val name: String,
+    override val version: String,
+    override val description: String,
+    override val authors: Collection<String>,
+    override val dependencies: Collection<PluginDependency>,
+    override val source: Path,
     val mainClass: Class<*>
-) : KryptonPluginDescription(id, name, version, description, authors, dependencies, source)
+) : PluginDescription

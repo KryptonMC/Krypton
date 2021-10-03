@@ -35,7 +35,6 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.block.BlockHitResult
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.api.util.toVector
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack

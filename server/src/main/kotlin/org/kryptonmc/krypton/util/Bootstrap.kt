@@ -27,6 +27,7 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.hanging.Canvases
 import org.kryptonmc.api.fluid.Fluids
+import org.kryptonmc.api.item.ItemRarities
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.registry.Registries
@@ -100,6 +101,7 @@ object Bootstrap {
         GameEvents
         ParticleTypes
         EntityTypes
+        ItemRarities
         ItemLoader.init()
         ItemTypes
         FluidLoader.init()

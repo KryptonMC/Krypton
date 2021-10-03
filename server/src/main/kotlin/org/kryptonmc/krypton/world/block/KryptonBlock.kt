@@ -28,7 +28,6 @@ import org.kryptonmc.api.block.RenderShape
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.Codecs
-import org.kryptonmc.krypton.util.IntHashBiMap
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
 @JvmRecord
@@ -98,6 +97,5 @@ data class KryptonBlock(
                 Codec.unboundedMap(Codec.STRING, Codec.STRING).fieldOf("Properties").forGetter(Block::properties)
             ).apply(it) { key, properties -> BlockLoader.fromKey(key)!!.copy(properties) }
         }
-        val STATES = IntHashBiMap<Block>()
     }
 }

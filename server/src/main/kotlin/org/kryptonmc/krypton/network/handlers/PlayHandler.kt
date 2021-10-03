@@ -36,7 +36,6 @@ import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.`in`.play.DiggingStatus
 import org.kryptonmc.krypton.packet.`in`.play.EntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAnimation
@@ -67,7 +66,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
-import org.kryptonmc.krypton.util.calculatePositionChange
+import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -245,7 +244,7 @@ class PlayHandler(
 
     private fun handlePlayerDigging(packet: PacketInPlayerDigging) {
         if (player.gameMode !== GameModes.CREATIVE) return
-        if (packet.status != DiggingStatus.STARTED) return
+        if (packet.status != PacketInPlayerDigging.Status.STARTED) return
 
         val chunkX = packet.location.x() shr 4
         val chunkZ = packet.location.z() shr 4
@@ -255,7 +254,7 @@ class PlayHandler(
         val z = packet.location.z()
         chunk.setBlock(x, y, z, Blocks.AIR)
 
-        session.send(PacketOutDiggingResponse(packet.location, 0, DiggingStatus.FINISHED, true))
+        session.send(PacketOutDiggingResponse(packet.location, 0, PacketInPlayerDigging.Status.FINISHED, true))
         playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
     }
 
@@ -269,9 +268,9 @@ class PlayHandler(
 
         playerManager.sendToAll(PacketOutEntityPosition(
             player.id,
-            calculatePositionChange(newLocation.x(), oldLocation.x()),
-            calculatePositionChange(newLocation.y(), oldLocation.y()),
-            calculatePositionChange(newLocation.z(), oldLocation.z()),
+            Positioning.delta(newLocation.x(), oldLocation.x()),
+            Positioning.delta(newLocation.y(), oldLocation.y()),
+            Positioning.delta(newLocation.z(), oldLocation.z()),
             packet.onGround
         ), player)
         player.updateChunks()
@@ -312,9 +311,9 @@ class PlayHandler(
         // TODO: Look in to optimising this (rotation and head look updating) as much as we possibly can
         playerManager.sendToAll(PacketOutEntityPositionAndRotation(
             player.id,
-            calculatePositionChange(newLocation.x(), oldLocation.x()),
-            calculatePositionChange(newLocation.y(), oldLocation.y()),
-            calculatePositionChange(newLocation.z(), oldLocation.z()),
+            Positioning.delta(newLocation.x(), oldLocation.x()),
+            Positioning.delta(newLocation.y(), oldLocation.y()),
+            Positioning.delta(newLocation.z(), oldLocation.z()),
             newRotation.x(),
             newRotation.y(),
             packet.onGround

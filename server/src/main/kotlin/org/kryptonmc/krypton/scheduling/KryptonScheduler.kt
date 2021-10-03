@@ -69,8 +69,9 @@ class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Schedu
         return executor.awaitTermination(10, TimeUnit.SECONDS)
     }
 
+    @Suppress("INAPPLICABLE_JVM_NAME")
     private inner class KryptonTask(
-        override val plugin: Any,
+        @get:JvmName("plugin") override val plugin: Any,
         val callable: TaskRunnable,
         val delay: Long,
         val period: Long,
@@ -81,7 +82,7 @@ class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Schedu
         private var currentTaskThread: Thread? = null
 
         override val state: TaskState
-            get() {
+            @JvmName("state") get() {
                 if (future == null) return TaskState.SCHEDULED
                 if (future!!.isCancelled) return TaskState.INTERRUPTED
                 if (future!!.isDone) return TaskState.COMPLETED

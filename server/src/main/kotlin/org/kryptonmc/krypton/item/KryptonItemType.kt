@@ -24,6 +24,7 @@ import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.api.item.ItemRarities
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
@@ -50,7 +51,7 @@ data class KryptonItemType(
 
     class Builder(private val key: Key) : ItemType.Builder {
 
-        private var rarity = ItemRarity.COMMON
+        private var rarity = ItemRarities.COMMON
         private var maximumStackSize = 64
         private var canBreak = false
         private var durability = 0

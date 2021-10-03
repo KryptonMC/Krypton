@@ -16,17 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.plugin
 
-import java.util.UUID
+import org.kryptonmc.api.plugin.PluginDependency
 
-fun UUID.toIntArray(): IntArray {
-    val most = mostSignificantBits
-    val least = leastSignificantBits
-    return intArrayOf((most shr 32).toInt(), most.toInt(), (least shr 32).toInt(), least.toInt())
-}
-
-fun IntArray.toUUID(): UUID = UUID(
-    this[0].toLong() shl 32 or this[1].toLong() and 4294967295L,
-    this[2].toLong() shl 32 or this[3].toLong() and 4294967295L
-)
+@JvmRecord
+data class KryptonPluginDependency(
+    override val id: String,
+    override val isOptional: Boolean
+) : PluginDependency

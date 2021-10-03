@@ -97,11 +97,11 @@ import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.space.Directions
 import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
 import org.kryptonmc.krypton.util.Codecs
-import org.kryptonmc.krypton.util.calculatePositionChange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.util.BossBarManager
+import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
@@ -335,9 +335,9 @@ class KryptonPlayer(
         } else {
             session.send(PacketOutEntityPosition(
                 id,
-                calculatePositionChange(location.x(), oldLocation.x()),
-                calculatePositionChange(location.y(), oldLocation.y()),
-                calculatePositionChange(location.z(), oldLocation.z()),
+                Positioning.delta(location.x(), oldLocation.x()),
+                Positioning.delta(location.y(), oldLocation.y()),
+                Positioning.delta(location.z(), oldLocation.z()),
                 isOnGround
             ))
         }

@@ -76,7 +76,7 @@ import kotlin.concurrent.write
 import kotlin.math.max
 import kotlin.math.min
 
-class KryptonCommandManager : CommandManager {
+object KryptonCommandManager : CommandManager {
 
     @GuardedBy("lock") val dispatcher = CommandDispatcher<Sender>() // Reads and writes MUST be locked by the lock below!
     private val lock = ReentrantReadWriteLock()
@@ -147,8 +147,7 @@ class KryptonCommandManager : CommandManager {
         }
     }
 
-    fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> =
-        dispatcher.getCompletionSuggestions(parseResults)
+    fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(parseResults)
 
     fun sendCommands(player: KryptonPlayer) {
         val node = RootCommandNode<Sender>()

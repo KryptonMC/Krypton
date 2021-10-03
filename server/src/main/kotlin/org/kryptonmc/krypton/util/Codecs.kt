@@ -48,7 +48,11 @@ object Codecs {
     ).stable()
     val UUID: Codec<UUID> = Codec.INT_STREAM.comapFlatMap(
         { it.fixedSizeIntArray(4).map(IntArray::toUUID) },
-        { Arrays.stream(it.toIntArray()) }
+        {
+            val most = it.mostSignificantBits
+            val least = it.leastSignificantBits
+            Arrays.stream(intArrayOf((most shr 32).toInt(), most.toInt(), (least shr 32).toInt(), least.toInt()))
+        }
     ).stable()
     val KEY: Codec<Key> = Codec.STRING.comapFlatMap({ parseKey(it) }, { it.asString() }).stable()
     val VECTOR3I_STREAM: Codec<Vector3i> = Codec.INT_STREAM.comapFlatMap(

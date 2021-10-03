@@ -21,6 +21,7 @@ import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.entity.hanging.Canvas
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
+import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.meta.MetaKey
 import org.kryptonmc.api.registry.Registry
@@ -87,6 +88,7 @@ public object ResourceKeys {
     @JvmField public val MUSIC: ResourceKey<out Registry<Music>> = krypton("music")
     @JvmField public val BIOME_CATEGORIES: ResourceKey<out Registry<BiomeCategory>> = krypton("biome_categories")
     @JvmField public val META_KEYS: ResourceKey<out Registry<MetaKey<*>>> = krypton("meta_keys")
+    @JvmField public val ITEM_RARITIES: ResourceKey<out Registry<ItemRarity>> = krypton("item_rarities")
     // @formatter:on
 
     /**

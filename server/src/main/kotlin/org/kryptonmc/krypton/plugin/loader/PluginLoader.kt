@@ -28,14 +28,11 @@ import com.google.inject.Guice
 import com.google.inject.Module
 import org.kryptonmc.api.plugin.InvalidPluginException
 import org.kryptonmc.api.plugin.PluginContainer
-import org.kryptonmc.api.plugin.PluginDependency
 import org.kryptonmc.api.plugin.PluginDescription
-import org.kryptonmc.api.plugin.ap.SerializedDependency
 import org.kryptonmc.api.plugin.ap.SerializedPluginDescription
 import org.kryptonmc.krypton.plugin.KryptonPluginContainer
+import org.kryptonmc.krypton.plugin.KryptonPluginDependency
 import org.kryptonmc.krypton.plugin.PluginClassLoader
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader
-import java.io.InputStream
 import java.nio.file.Path
 import java.security.AccessController
 import java.security.PrivilegedAction
@@ -97,7 +94,7 @@ object PluginLoader {
         version,
         description,
         authors,
-        dependencies.map { PluginDependency(it.id, it.optional) },
+        dependencies.map { KryptonPluginDependency(it.id, it.optional) },
         source,
         main
     )

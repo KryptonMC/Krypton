@@ -33,11 +33,14 @@ import org.kryptonmc.krypton.tags.ItemTags
 import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.nbt.CompoundTag
 
-class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { // TODO: Tags for ItemStackPredicate etc.
+class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) { // TODO: Tags for ItemStackPredicate etc.
 
     private fun readItem(reader: StringReader): ItemType {
         val i = reader.cursor
-        while (reader.canRead() && isCharValid(reader.peek())) reader.skip()
+        while (reader.canRead() && isCharValid(reader.peek())) {
+            reader.skip()
+        }
+
         val string = reader.string.substring(i, reader.cursor)
         val item = Registries.ITEM[key(string)]
         if (item == ItemTypes.AIR) throw ID_INVALID_EXCEPTION.createWithContext(reader, string)
@@ -48,7 +51,9 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { // TOD
         if (allowTags) {
             reader.expect('#')
             val i = reader.cursor
-            while (reader.canRead() && isCharValid(reader.peek())) reader.skip()
+            while (reader.canRead() && isCharValid(reader.peek())) {
+                reader.skip()
+            }
             return reader.string.substring(i, reader.cursor)
         } else {
             throw TAG_DISALLOWED_EXCEPTION.createWithContext(reader)
@@ -91,14 +96,8 @@ class ItemStackParser(val reader: StringReader, val allowTags: Boolean) { // TOD
 
     companion object {
 
-        val ID_INVALID_EXCEPTION = DynamicCommandExceptionType {
-            translatable("argument.item.id.invalid", text(it.toString())).toMessage()
-        }
-        val TAG_DISALLOWED_EXCEPTION = SimpleCommandExceptionType(
-            translatable("argument.item.tag.disallowed").toMessage()
-        )
-        val UNKNOWN_ITEM_TAG = DynamicCommandExceptionType {
-            translatable("arguments.item.tag.unknown", text(it.toString())).toMessage()
-        }
+        val ID_INVALID_EXCEPTION = DynamicCommandExceptionType { translatable("argument.item.id.invalid", text(it.toString())).toMessage() }
+        val TAG_DISALLOWED_EXCEPTION = SimpleCommandExceptionType(translatable("argument.item.tag.disallowed").toMessage())
+        val UNKNOWN_ITEM_TAG = DynamicCommandExceptionType { translatable("arguments.item.tag.unknown", text(it.toString())).toMessage() }
     }
 }

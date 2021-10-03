@@ -20,40 +20,48 @@ import java.nio.file.Path
  * This holds details about the plugin, for example it's name, main class,
  * version, description, authors and dependencies.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface PluginDescription {
 
     /**
      * The unique ID of this plugin.
      */
+    @get:JvmName("id")
     public val id: String
 
     /**
      * The name of this plugin. Defaults to empty.
      */
+    @get:JvmName("name")
     public val name: String
 
     /**
      * The version of this plugin. Defaults to <UNDEFINED>.
      */
+    @get:JvmName("version")
     public val version: String
 
     /**
      * A short description of this plugin.
      */
+    @get:JvmName("description")
     public val description: String
 
     /**
      * The list of people who created this plugin.
      */
-    public val authors: List<String>
+    @get:JvmName("authors")
+    public val authors: Collection<String>
 
     /**
      * The list of dependencies of this plugin.
      */
+    @get:JvmName("dependencies")
     public val dependencies: Collection<PluginDependency>
 
     /**
      * The source path that this plugin was loaded from.
      */
+    @get:JvmName("source")
     public val source: Path
 }

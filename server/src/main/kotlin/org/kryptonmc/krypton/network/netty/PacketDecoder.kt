@@ -37,14 +37,11 @@ class PacketDecoder : ByteToMessageDecoder() {
     override fun decode(ctx: ChannelHandlerContext, buf: ByteBuf, out: MutableList<Any>) {
         if (buf.readableBytes() == 0) return
         val id = buf.readVarInt()
-        val session = session ?: ctx.pipeline().get(SessionHandler::class.java).apply {
-            this@PacketDecoder.session = this
-        }
+        val session = session ?: ctx.pipeline().get(SessionHandler::class.java).apply { this@PacketDecoder.session = this }
 
         val packet = PacketRegistry.get(session.currentState, id, buf)
         if (packet == null) {
-            LOGGER.debug("Skipping packet with state ${session.currentState} and ID $id because a packet object " +
-                    "was not found")
+            LOGGER.debug("Skipping packet with state ${session.currentState} and ID $id because a packet object was not found")
             buf.skipBytes(buf.readableBytes())
             return
         }

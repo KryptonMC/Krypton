@@ -13,13 +13,19 @@
 package org.kryptonmc.api.plugin
 
 /**
- * Holder class for plugin dependency metadata.
- *
- * @param id the ID of the dependency
- * @param isOptional if this dependency is optional
+ * Information for a plugin's dependency on another plugin.
  */
-@JvmRecord
-public data class PluginDependency(
-    public val id: String,
+@Suppress("INAPPLICABLE_JVM_NAME")
+public interface PluginDependency {
+
+    /**
+     * The ID of the dependency.
+     */
+    @get:JvmName("id")
+    public val id: String
+
+    /**
+     * If the dependency is optional or not.
+     */
     public val isOptional: Boolean
-)
+}

@@ -23,12 +23,12 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.Catalogue
-import org.kryptonmc.api.util.asLong
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.entity.data.VillagerData
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.util.asLong
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeItem

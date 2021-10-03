@@ -16,13 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.item
 
-import java.net.SocketAddress
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.format.TextColor
+import org.kryptonmc.api.item.ItemRarity
 
-fun SocketAddress.asString(): String {
-    var string = toString()
-    if (string.contains("/")) string = string.substring(string.indexOf(47.toChar()) + 1)
-    if (string.contains(":")) string = string.substring(0, string.indexOf(58.toChar()))
-    return string
+@JvmRecord
+data class KryptonItemRarity(
+    private val key: Key,
+    override val color: TextColor
+) : ItemRarity {
+
+    override fun key(): Key = key
+
+    object Factory : ItemRarity.Factory {
+
+        override fun of(key: Key, color: TextColor): ItemRarity = KryptonItemRarity(key, color)
+    }
 }

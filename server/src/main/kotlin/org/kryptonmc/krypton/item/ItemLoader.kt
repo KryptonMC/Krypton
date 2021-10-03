@@ -22,7 +22,6 @@ import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
@@ -52,7 +51,7 @@ object ItemLoader : KryptonDataLoader("items") {
                 namespacedKey,
                 KryptonItemType(
                     namespacedKey,
-                    ItemRarity.valueOf(rarity),
+                    Registries.ITEM_RARITIES[Key.key("krypton", rarity.lowercase())]!!,
                     maxStackSize,
                     depletes,
                     maxDamage,

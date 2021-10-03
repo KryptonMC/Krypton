@@ -20,13 +20,17 @@ package org.kryptonmc.krypton.util
 
 import org.spongepowered.math.vector.Vector3i
 
-/**
- * Calculates the change in position between the given [new] and [old] coordinates.
- * No idea why Mojang thought having player coordinates be absolute and entity
- * coordinates be relative.
- *
- * This calculation comes from https://wiki.vg/Protocol#Entity_Position
- */
-fun calculatePositionChange(new: Double, old: Double) = ((new * 32 - old * 32) * 128).toInt().toShort()
+fun Vector3i.asLong(): Long {
+    var temp = 0L
+    temp = temp or (x().toLong() and Vectors.PACKED_X_Z_MASK shl Vectors.X_OFFSET)
+    temp = temp or (y().toLong() and Vectors.PACKED_Y_MASK)
+    return temp or (z().toLong() and Vectors.PACKED_X_Z_MASK shl Vectors.Z_OFFSET)
+}
 
-fun Long.toVector3i() = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())
+fun Long.toVector(): Vector3i = Vector3i(
+    (this shl 64 - Vectors.X_OFFSET - Vectors.PACKED_X_Z shr 64 - Vectors.PACKED_X_Z).toInt(),
+    (this shl 64 - Vectors.PACKED_Y shr 64 - Vectors.PACKED_Y).toInt(),
+    (this shl 64 - Vectors.Z_OFFSET - Vectors.PACKED_X_Z shr 64 - Vectors.PACKED_X_Z).toInt()
+)
+
+fun Long.decodeBlockPosition() = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())

@@ -21,15 +21,13 @@ package org.kryptonmc.krypton.world.generation
 import com.google.common.hash.Hashing
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
-import org.kryptonmc.api.util.floor
+import org.kryptonmc.krypton.util.floor
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.WorldAccessor
 import org.kryptonmc.krypton.world.biome.BiomeManager
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.chunk.ChunkStatus

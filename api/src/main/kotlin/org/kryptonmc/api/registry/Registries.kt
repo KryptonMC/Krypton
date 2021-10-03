@@ -22,6 +22,7 @@ import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.entity.hanging.Canvas
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
+import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.meta.MetaKey
 import org.kryptonmc.api.resource.ResourceKey
@@ -85,6 +86,7 @@ public object Registries {
     @JvmField public val MUSIC: Registry<Music> = create(ResourceKeys.MUSIC)
     @JvmField public val BIOME_CATEGORIES: Registry<BiomeCategory> = create(ResourceKeys.BIOME_CATEGORIES)
     @JvmField public val META_KEYS: Registry<MetaKey<*>> = create(ResourceKeys.META_KEYS)
+    @JvmField public val ITEM_RARITIES: Registry<ItemRarity> = create(ResourceKeys.ITEM_RARITIES)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

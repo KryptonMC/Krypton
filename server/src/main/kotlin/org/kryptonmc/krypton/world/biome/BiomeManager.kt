@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import org.kryptonmc.api.util.floor
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.util.floor
 import org.kryptonmc.krypton.world.biome.gen.BiomeZoomer
 import org.spongepowered.math.vector.Vector3i
 

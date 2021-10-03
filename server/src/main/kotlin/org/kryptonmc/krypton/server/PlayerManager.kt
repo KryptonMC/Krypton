@@ -55,7 +55,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnlockRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
-import org.kryptonmc.krypton.packet.out.play.UnlockRecipesAction
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
 import org.kryptonmc.krypton.server.ban.BannedIpList
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
@@ -69,7 +68,6 @@ import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.nextInt
-import org.kryptonmc.krypton.util.toProtocol
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.parseDimension
@@ -152,7 +150,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         session.send(PacketOutAbilities(player))
         session.send(PacketOutChangeHeldItem(player.inventory.heldSlot))
         session.send(PacketOutDeclareRecipes)
-        session.send(PacketOutUnlockRecipes(UnlockRecipesAction.INIT))
+        session.send(PacketOutUnlockRecipes(PacketOutUnlockRecipes.Action.INIT))
         session.send(PacketOutTags)
         session.send(PacketOutEntityStatus(
             player.id,
@@ -374,6 +372,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         private const val MAXIMUM_SAMPLED_PLAYERS = 12
         private val LOGGER = logger<PlayerManager>()
         private val BRAND_KEY = Key.key("brand")
-        private val BRAND_MESSAGE = "Krypton".toProtocol()
+        // The word "Krypton" encoded in to UTF-8 and then prefixed with the length, which in this case is 7.
+        private val BRAND_MESSAGE = byteArrayOf(7, 75, 114, 121, 112, 116, 111, 110)
     }
 }

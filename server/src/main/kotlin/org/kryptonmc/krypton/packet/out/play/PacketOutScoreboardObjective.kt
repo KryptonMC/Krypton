@@ -30,21 +30,21 @@ import org.kryptonmc.krypton.util.writeVarInt
  */
 @JvmRecord
 data class PacketOutScoreboardObjective(
-    private val action: ObjectiveAction,
+    private val action: Action,
     private val objective: Objective
 ) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeString(objective.name, 16)
-        buf.writeByte(action.id)
+        buf.writeByte(action.ordinal)
         buf.writeChat(objective.displayName)
-        if (action != ObjectiveAction.REMOVE) buf.writeVarInt(objective.renderType.ordinal)
+        if (action != Action.REMOVE) buf.writeVarInt(objective.renderType.ordinal)
     }
-}
 
-enum class ObjectiveAction(val id: Int) {
+    enum class Action {
 
-    CREATE(0),
-    REMOVE(1),
-    UPDATE_TEXT(2);
+        CREATE,
+        REMOVE,
+        UPDATE_TEXT
+    }
 }

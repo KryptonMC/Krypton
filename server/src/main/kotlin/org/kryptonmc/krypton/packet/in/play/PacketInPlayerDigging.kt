@@ -22,22 +22,22 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.block.BlockFace
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.toVector3i
+import org.kryptonmc.krypton.util.decodeBlockPosition
 
 class PacketInPlayerDigging(buf: ByteBuf) : Packet {
 
-    val status = buf.readEnum<DiggingStatus>()
-    val location = buf.readLong().toVector3i()
+    val status = buf.readEnum<Status>()
+    val location = buf.readLong().decodeBlockPosition()
     val face = buf.readEnum<BlockFace>()
-}
 
-enum class DiggingStatus {
+    enum class Status {
 
-    STARTED,
-    CANCELLED,
-    FINISHED,
-    DROP_ITEM_STACK,
-    DROP_ITEM,
-    UPDATE_STATE,
-    SWAP_ITEM_IN_HAND
+        STARTED,
+        CANCELLED,
+        FINISHED,
+        DROP_ITEM_STACK,
+        DROP_ITEM,
+        UPDATE_STATE,
+        SWAP_ITEM_IN_HAND
+    }
 }
