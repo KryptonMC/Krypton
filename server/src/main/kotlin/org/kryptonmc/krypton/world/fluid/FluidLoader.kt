@@ -24,7 +24,6 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
-import org.kryptonmc.krypton.registry.data.FluidData
 import org.kryptonmc.krypton.util.KryptonDataLoader
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import java.util.concurrent.ConcurrentHashMap
@@ -75,10 +74,31 @@ object FluidLoader : KryptonDataLoader("fluids") {
         val propertyMap = get("properties").asJsonObject.entrySet().associate {
             it.key to it.value.asString.lowercase()
         }
-        val fluid = KryptonFluid(FluidData(Key.key(key), fluidObject, this), availableProperties, propertyMap)
+        val fluid = createFluid(Key.key(key), fluidObject, this, availableProperties, propertyMap)
         STATE_MAP[stateId] = fluid
         return propertyMap to fluid
     }
+
+    private fun createFluid(
+        key: Key,
+        fluid: JsonObject,
+        state: JsonObject,
+        availableProperties: Set<Property<*>>,
+        propertyMap: Map<String, String>
+    ): KryptonFluid = KryptonFluid(
+        key,
+        fluid["id"].asInt,
+        state["stateId"].asInt,
+        InternalRegistries.ITEM[Key.key(fluid["bucketId"].asString)],
+        fluid["empty"].asBoolean,
+        fluid["explosionResistance"].asDouble,
+        state["source"].asBoolean,
+        state["ownHeight"].asFloat,
+        state["amount"].asInt,
+        Key.key(state["blockState"].asString),
+        availableProperties,
+        propertyMap
+    )
 
     private class PropertyEntry {
 

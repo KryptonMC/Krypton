@@ -21,11 +21,11 @@ package org.kryptonmc.krypton.world.block.property
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.block.property.PropertyHolder
 
-abstract class KryptonPropertyHolder<T : PropertyHolder<T>> : PropertyHolder<T> {
+interface KryptonPropertyHolder<T : PropertyHolder<T>> : PropertyHolder<T> {
 
-    abstract fun copy(newValues: Map<String, String>): T
+    fun copy(newValues: Map<String, String>): T
 
-    abstract fun copy(key: String, value: String): T
+    fun copy(key: String, value: String): T
 
     override fun <V : Comparable<V>> get(key: Property<V>): V? {
         val value = properties[key.name] ?: return null

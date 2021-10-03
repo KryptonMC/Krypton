@@ -21,85 +21,56 @@ package org.kryptonmc.krypton.world.block
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.block.PushReaction
 import org.kryptonmc.api.block.RenderShape
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.data.BlockData
 import org.kryptonmc.krypton.util.Codecs
 import org.kryptonmc.krypton.util.IntHashBiMap
-import org.kryptonmc.krypton.world.WorldAccessor
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
-import org.spongepowered.math.vector.Vector3i
 
-@Suppress("INAPPLICABLE_JVM_NAME")
+@JvmRecord
 data class KryptonBlock(
-    private val data: BlockData,
+    private val key: Key,
+    override val id: Int,
+    override val stateId: Int,
+    override val hardness: Double,
+    override val explosionResistance: Double,
+    override val friction: Double,
+    override val speedFactor: Double,
+    override val jumpFactor: Double,
+    override val isAir: Boolean,
+    override val isSolid: Boolean,
+    override val isLiquid: Boolean,
+    override val isSolidBlocking: Boolean,
+    override val hasBlockEntity: Boolean,
+    override val lightEmission: Int,
+    override val occludes: Boolean,
+    override val blocksMotion: Boolean,
+    override val isFlammable: Boolean,
+    override val hasGravity: Boolean,
+    override val translation: TranslatableComponent,
+    override val isReplaceable: Boolean,
+    override val hasDynamicShape: Boolean,
+    override val useShapeForOcclusion: Boolean,
+    override val propagatesSkylightDown: Boolean,
+    override val lightBlock: Int,
+    override val isConditionallyFullyOpaque: Boolean,
+    override val isSolidRender: Boolean,
+    override val opacity: Int,
+    override val hasLargeCollisionShape: Boolean,
+    override val isCollisionShapeFullBlock: Boolean,
+    override val canRespawnIn: Boolean,
+    override val requiresCorrectTool: Boolean,
+    override val renderShape: RenderShape,
+    override val pushReaction: PushReaction,
+    val itemKey: Key?,
+    val fluidKey: Key,
     override val availableProperties: Set<Property<*>>,
     override val properties: Map<String, String>
-) : KryptonPropertyHolder<Block>(), Block {
-
-    override val id: Int
-        @JvmName("id") get() = data.id
-    override val stateId: Int
-        @JvmName("stateId") get() = data.stateId
-    override val hardness: Double
-        @JvmName("hardness") get() = data.hardness
-    override val explosionResistance: Double
-        @JvmName("explosionResistance") get() = data.resistance
-    override val friction: Double
-        @JvmName("friction") get() = data.friction
-    override val speedFactor: Double
-        @JvmName("speedFactor") get() = data.speedFactor
-    override val jumpFactor: Double
-        @JvmName("jumpFactor") get() = data.jumpFactor
-    override val isAir: Boolean
-        get() = data.air
-    override val isSolid: Boolean
-        get() = data.solid
-    override val isLiquid: Boolean
-        get() = data.liquid
-    override val hasBlockEntity: Boolean
-        @JvmName("hasBlockEntity") get() = data.blockEntity
-    override val blocksMotion: Boolean
-        @JvmName("blocksMotion") get() = data.blocksMotion
-    override val hasGravity: Boolean
-        @JvmName("hasGravity") get() = data.gravity
-    override val isFlammable: Boolean
-        get() = data.flammable
-    override val lightEmission: Int
-        @JvmName("lightEmission") get() = data.lightEmission
-    override val occludes: Boolean
-        @JvmName("occludes") get() = data.occludes
-    override val canRespawnIn: Boolean
-        @JvmName("canRespawnIn") get() = data.canRespawnIn
-    override val isReplaceable: Boolean
-        get() = data.replaceable
-    override val hasDynamicShape: Boolean
-        @JvmName("hasDynamicShape") get() = data.dynamicShape
-    override val useShapeForOcclusion: Boolean
-        @JvmName("useShapeForOcclusion") get() = data.useShapeForOcclusion
-    override val propagatesSkylightDown: Boolean
-        @JvmName("propagatesSkylightDown") get() = data.propagatesLightDown
-    override val hasLargeCollisionShape: Boolean
-        @JvmName("hasLargeCollisionShape") get() = data.largeCollisionShape
-    override val isConditionallyFullyOpaque: Boolean
-        get() = data.conditionallyFullyOpaque
-    override val isSolidRender: Boolean
-        get() = data.solidRender
-    override val lightBlock: Int
-        @JvmName("lightBlock") get() = data.lightBlock
-    override val opacity: Int
-        @JvmName("opacity") get() = data.opacity
-    override val requiresCorrectTool: Boolean
-        @JvmName("requiresCorrectTool") get() = data.toolRequired
-    @get:JvmName("translation")
-    override val translation = Component.translatable(data.translationKey)
-    override val renderShape = data.renderShape?.let {
-        if (it == "ENTITYBLOCK_ANIMATED") RenderShape.ANIMATED_ENTITY_BLOCK else RenderShape.valueOf(it)
-    } ?: RenderShape.MODEL
+) : KryptonPropertyHolder<Block>, Block {
 
     override fun copy(key: String, value: String): Block {
         val newProperties = properties + (key to value)
@@ -111,11 +82,11 @@ data class KryptonBlock(
         return requireNotNull(BlockLoader.properties(key().asString(), newProperties)) { "Invalid properties $newValues for block ${key()}!" }
     }
 
-    override fun asItem() = data.itemKey?.let { InternalRegistries.ITEM[it] }
+    override fun asItem() = itemKey?.let { InternalRegistries.ITEM[it] }
 
-    override fun asFluid() = InternalRegistries.FLUID[data.fluidKey]
+    override fun asFluid() = InternalRegistries.FLUID[fluidKey]
 
-    override fun key(): Key = data.key
+    override fun key(): Key = key
 
     override fun compareTo(other: Block) = id.compareTo(other.id)
 

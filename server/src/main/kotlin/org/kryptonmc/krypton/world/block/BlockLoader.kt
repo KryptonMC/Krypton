@@ -21,10 +21,12 @@ package org.kryptonmc.krypton.world.block
 import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
+import org.kryptonmc.api.block.PushReaction
+import org.kryptonmc.api.block.RenderShape
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
-import org.kryptonmc.krypton.registry.data.BlockData
 import org.kryptonmc.krypton.util.KryptonDataLoader
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import java.util.concurrent.ConcurrentHashMap
@@ -87,10 +89,58 @@ object BlockLoader : KryptonDataLoader("blocks") {
         val propertyMap = get("properties").asJsonObject.entrySet().associate {
             it.key to it.value.asString.lowercase()
         }
-        val block = KryptonBlock(BlockData(Key.key(key), blockObject, this), availableProperties, propertyMap)
+        val block = createBlock(Key.key(key), blockObject, this, availableProperties, propertyMap)
         STATE_MAP[stateId] = block
         return propertyMap to block
     }
+
+    private fun createBlock(
+        key: Key,
+        block: JsonObject,
+        state: JsonObject,
+        availableProperties: Set<Property<*>>,
+        propertyMap: Map<String, String>
+    ): KryptonBlock = KryptonBlock(
+        key,
+        block["id"].asInt,
+        state["stateId"].asInt,
+        state["hardness"].asDouble,
+        block["explosionResistance"].asDouble,
+        block["friction"].asDouble,
+        block["speedFactor"].asDouble,
+        block["jumpFactor"].asDouble,
+        state["air"].asBoolean,
+        state["solid"].asBoolean,
+        state["liquid"].asBoolean,
+        state["solidBlocking"].asBoolean,
+        block["blockEntity"].asBoolean,
+        state["lightEmission"].asInt,
+        state["occludes"].asBoolean,
+        state["blocksMotion"].asBoolean,
+        state["flammable"].asBoolean,
+        block["gravity"].asBoolean,
+        Component.translatable(block["translationKey"].asString),
+        state["replaceable"].asBoolean,
+        block["dynamicShape"].asBoolean,
+        state["useShapeForLightOcclusion"].asBoolean,
+        state["propagatesSkylightDown"].asBoolean,
+        state["lightBlock"].asInt,
+        state["conditionallyFullyOpaque"].asBoolean,
+        state["solidRender"].asBoolean,
+        state["opacity"].asInt,
+        state["largeCollisionShape"].asBoolean,
+        state["collisionShapeFullBlock"].asBoolean,
+        block["canRespawnIn"].asBoolean,
+        state["toolRequired"].asBoolean,
+        state["renderShape"]?.asString?.let {
+            if (it == "ENTITYBLOCK_ANIMATED") RenderShape.ANIMATED_ENTITY_BLOCK else RenderShape.valueOf(it)
+        } ?: RenderShape.MODEL,
+        PushReaction.valueOf(state["pushReaction"].asString),
+        block["correspondingItem"]?.asString?.let { Key.key(it) },
+        Key.key(state["fluidState"].asString),
+        availableProperties,
+        propertyMap
+    )
 
     private class PropertyEntry {
 

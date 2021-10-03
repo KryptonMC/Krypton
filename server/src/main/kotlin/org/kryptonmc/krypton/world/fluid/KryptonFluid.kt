@@ -22,31 +22,25 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.data.FluidData
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
+@JvmRecord
 data class KryptonFluid(
-    private val data: FluidData,
+    private val key: Key,
+    override val id: Int,
+    override val stateId: Int,
+    override val bucket: ItemType,
+    override val isEmpty: Boolean,
+    override val explosionResistance: Double,
+    override val isSource: Boolean,
+    override val height: Float,
+    override val level: Int,
+    val blockKey: Key,
     override val availableProperties: Set<Property<*>>,
     override val properties: Map<String, String>
-) : KryptonPropertyHolder<Fluid>(), Fluid {
-
-    override val id: Int
-        get() = data.id
-    override val stateId: Int
-        get() = data.stateId
-    override val bucket = InternalRegistries.ITEM[data.bucketId]
-    override val explosionResistance: Double
-        get() = data.explosionResistance
-    override val isEmpty: Boolean
-        get() = data.empty
-    override val height: Float
-        get() = data.height
-    override val isSource: Boolean
-        get() = data.source
-    override val level: Int
-        get() = data.level
+) : KryptonPropertyHolder<Fluid>, Fluid {
 
     override fun copy(key: String, value: String): Fluid {
         val newProperties = properties + (key to value)
@@ -62,9 +56,9 @@ data class KryptonFluid(
         }
     }
 
-    override fun asBlock() = InternalRegistries.BLOCK[data.blockKey] ?: Blocks.AIR
+    override fun asBlock() = InternalRegistries.BLOCK[blockKey] ?: Blocks.AIR
 
-    override fun key(): Key = data.key
+    override fun key(): Key = key
 
     override fun compareTo(other: Fluid) = id.compareTo(other.id)
 }

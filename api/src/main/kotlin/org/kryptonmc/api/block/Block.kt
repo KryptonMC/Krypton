@@ -88,6 +88,11 @@ public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Translation
     public val isSolid: Boolean
 
     /**
+     * If this block is solid blocking.
+     */
+    public val isSolidBlocking: Boolean
+
+    /**
      * If this block is liquid.
      */
     public val isLiquid: Boolean
@@ -179,6 +184,11 @@ public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Translation
     public val hasLargeCollisionShape: Boolean
 
     /**
+     * If the collision shape of this block is a full block.
+     */
+    public val isCollisionShapeFullBlock: Boolean
+
+    /**
      * If this block requires the correct tool to be used to break it.
      */
     @get:JvmName("requiresCorrectTool")
@@ -189,4 +199,10 @@ public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Translation
      */
     @get:JvmName("renderShape")
     public val renderShape: RenderShape
+
+    /**
+     * The reaction this block has to being pushed.
+     */
+    @get:JvmName("pushReaction")
+    public val pushReaction: PushReaction
 }
