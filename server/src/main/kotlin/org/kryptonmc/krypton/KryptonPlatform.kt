@@ -24,9 +24,7 @@ import java.util.Properties
 // TODO: Check on update
 object KryptonPlatform : Platform {
 
-    private val versions = Properties().apply {
-        load(ClassLoader.getSystemResourceAsStream("META-INF/versions.properties"))
-    }
+    private val versions = Properties().apply { load(ClassLoader.getSystemResourceAsStream("META-INF/versions.properties")) }
 
     override val name = "Krypton"
     override val version: String = versions.getProperty("krypton")

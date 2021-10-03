@@ -81,6 +81,8 @@ tasks {
         exclude("it/unimi/dsi/fastutil/io/**")
         exclude("it/unimi/dsi/fastutil/objects/*Reference*")
         exclude("it/unimi/dsi/fastutil/shorts/**")
+
+        relocate("org.bstats", "org.kryptonmc.krypton.bstats")
     }
     withType<ProcessResources> {
         filter<ReplaceTokens>("tokens" to mapOf(

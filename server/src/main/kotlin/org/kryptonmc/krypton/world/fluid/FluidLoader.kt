@@ -48,7 +48,7 @@ object FluidLoader : KryptonDataLoader("fluids") {
             }
 
             // Iterate states
-            value.remove("states")?.asJsonArray?.forEach {
+            value.remove("states").asJsonArray.forEach {
                 val (properties, fluid) = it.asJsonObject.retrieveState(key, availableProperties, value)
                 propertyEntry.properties[properties] = fluid
             }

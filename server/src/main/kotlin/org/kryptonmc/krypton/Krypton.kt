@@ -114,13 +114,10 @@ private class KryptonCLI : CliktCommand(
 
         // Warn about experimental data converter, setup registries, and create world storage access
         if (useDataConverter) {
-            logger.warn("You have opted in to use the data converter to automatically convert old data to the " +
-                    "current version.")
-            logger.warn("Beware that this is an experimental tool, and has known issues with pre-1.13 worlds, " +
-                    "and may cause")
-            logger.warn("issues with newer worlds as well.")
-            logger.warn("USE THIS TOOL AT YOUR OWN RISK! If this tool corrupts your data, that is YOUR " +
-                    "responsibility!")
+            logger.warn("You have opted in to use the data converter to automatically convert old data to the current version.")
+            logger.warn("Beware that this is an experimental tool, and has known issues with pre-1.13 worlds, and may cause issues with newer " +
+                    "worlds as well.")
+            logger.warn("USE THIS TOOL AT YOUR OWN RISK! If this tool corrupts your data, that is YOUR responsibility!")
         }
         val profileCache = KryptonProfileCache(Path.of("usercache.json"))
 

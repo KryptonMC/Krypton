@@ -115,15 +115,12 @@ class KryptonServer(
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
         val startTime = System.nanoTime()
 
-        // Load the packets
         LOGGER.debug("Loading packets...")
         PacketRegistry.bootstrap()
-
-        // Register the built-in commands
         LOGGER.debug("Registering commands...")
         commandManager.registerBuiltins()
 
-        //Create server config lists
+        // Create server config lists here before we allow any players in.
         LOGGER.debug("Loading server config lists...")
         playerManager.bannedPlayers.validatePath()
         playerManager.whitelist.validatePath()
@@ -131,19 +128,18 @@ class KryptonServer(
         playerManager.ops.validatePath()
         playerManager.whitlistedIps.validatePath()
 
-        // Start the metrics system
+        // Start the metrics system.
         LOGGER.debug("Starting bStats metrics")
-        System.setProperty("bstats.relocatecheck", "false") // Avoid relocating bStats since we want to expose it later
         KryptonMetrics.initialize(this, config.other.metrics)
 
-        // Warn about piracy being unsupported if proxy forwarding is not enabled
+        // Warn about piracy being unsupported if proxy forwarding is not enabled, because video game piracy is bad.
         if (!config.server.onlineMode && config.proxy.mode == ForwardingMode.NONE) {
             LOGGER.warn("-----------------------------------------------------------------------------------")
             LOGGER.warn("THIS SERVER IS IN OFFLINE MODE! NO ATTEMPTS WILL BE MADE TO AUTHENTICATE USERS!")
-            LOGGER.warn("While this may allow players without full Minecraft accounts to connect," +
-                    "it also allows hackers to connect with any username they choose! Beware!")
-            LOGGER.warn("Please beware that connections made to the server will not be encrypted, meaning hackers " +
-                    "could potentially intercept sensitive data!")
+            LOGGER.warn("While this may allow players without full Minecraft accounts to connect, it also allows hackers to connect with any " +
+                    "username they choose! Beware!")
+            LOGGER.warn("Please beware that connections made to the server will not be encrypted, meaning hackers could potentially intercept " +
+                    "sensitive data!")
             LOGGER.warn("To get rid of this message, change \"online-mode\" to true in the configuration file")
             LOGGER.warn("-----------------------------------------------------------------------------------")
         }
@@ -153,14 +149,15 @@ class KryptonServer(
 
         loadPlugins()
 
-        // Fire the event that signals the server starting. We fire it here so that plugins can listen to it as part
-        // of their lifecycle, and we call it sync so plugins can finish initialising before we do
+        // Fire the event that signals the server starting. We fire it here so that plugins can listen to it as part of their lifecycle,
+        // and we call it sync so plugins can finish initialising before we do.
         eventManager.fireAndForgetSync(ServerStartEvent)
 
-        // Initialize console permissions after plugins are loaded
+        // Initialize console permissions after plugins are loaded. We do this here so plugins have had a chance to register their listeners
+        // so they can actually catch this event and set up their own permission providers for the console.
         console.setupPermissions()
 
-        // Set the last tick time (avoids initial check sending an overload warning every time)
+        // Set the last tick time early (avoids initial check sending an overload warning every time)
         lastTickTime = System.currentTimeMillis()
 
         // Start accepting connections
