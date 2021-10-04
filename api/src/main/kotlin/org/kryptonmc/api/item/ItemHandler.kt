@@ -33,7 +33,7 @@ public interface ItemHandler {
      * @param item the item being used to destroy the block
      * @param block the block being destroyed
      */
-    public fun getDestroySpeed(item: ItemStack, block: Block): Float
+    public fun destroySpeed(item: ItemStack, block: Block): Float
 
     /**
      * Returns true if this item type is the correct tool to break the

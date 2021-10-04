@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.world.biome
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeCategory
 import org.kryptonmc.api.world.biome.BiomeEffects
@@ -27,6 +28,7 @@ import org.kryptonmc.api.world.biome.Climate
 
 @JvmRecord
 data class KryptonBiome(
+    private val key: Key,
     override val climate: Climate,
     override val depth: Float,
     override val scale: Float,
@@ -34,15 +36,18 @@ data class KryptonBiome(
     override val effects: BiomeEffects
 ) : Biome {
 
+    override fun key(): Key = key
+
     object Factory : Biome.Factory {
 
         override fun of(
+            key: Key,
             climate: Climate,
             depth: Float,
             scale: Float,
             category: BiomeCategory,
             effects: BiomeEffects
-        ): Biome = KryptonBiome(climate, depth, scale, category, effects)
+        ): Biome = KryptonBiome(key, climate, depth, scale, category, effects)
     }
 
     companion object {
@@ -55,7 +60,7 @@ data class KryptonBiome(
                 Codec.FLOAT.fieldOf("scale").forGetter(Biome::scale),
                 KryptonBiomeCategory.CODEC.fieldOf("category").forGetter(Biome::category),
                 KryptonBiomeEffects.CODEC.fieldOf("effects").forGetter(Biome::effects)
-            ).apply(it, ::KryptonBiome)
+            ).apply(it) { _, _, _, _, _ -> error("Cannot decode biomes!") }
         }
     }
 }

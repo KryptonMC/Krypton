@@ -24,25 +24,20 @@ import org.kryptonmc.api.item.ItemManager
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.item.handler.DebugStickHandler
-import org.kryptonmc.krypton.item.handler.DiamondSwordHandler
-import org.kryptonmc.krypton.item.handler.GoldenSwordHandler
-import org.kryptonmc.krypton.item.handler.IronSwordHandler
-import org.kryptonmc.krypton.item.handler.NetheriteSwordHandler
-import org.kryptonmc.krypton.item.handler.StoneSwordHandler
+import org.kryptonmc.krypton.item.handler.SwordHandler
 import org.kryptonmc.krypton.item.handler.TridentHandler
-import org.kryptonmc.krypton.item.handler.WoodenSwordHandler
 
 object KryptonItemManager : ItemManager {
 
     override val handlers = mutableMapOf<String, ItemHandler>()
 
     init {
-        register(ItemTypes.WOODEN_SWORD, WoodenSwordHandler)
-        register(ItemTypes.STONE_SWORD, StoneSwordHandler)
-        register(ItemTypes.GOLDEN_SWORD, GoldenSwordHandler)
-        register(ItemTypes.IRON_SWORD, IronSwordHandler)
-        register(ItemTypes.DIAMOND_SWORD, DiamondSwordHandler)
-        register(ItemTypes.NETHERITE_SWORD, NetheriteSwordHandler)
+        register(ItemTypes.WOODEN_SWORD, SwordHandler)
+        register(ItemTypes.STONE_SWORD, SwordHandler)
+        register(ItemTypes.GOLDEN_SWORD, SwordHandler)
+        register(ItemTypes.IRON_SWORD, SwordHandler)
+        register(ItemTypes.DIAMOND_SWORD, SwordHandler)
+        register(ItemTypes.NETHERITE_SWORD, SwordHandler)
         register(ItemTypes.TRIDENT, TridentHandler)
         register(ItemTypes.DEBUG_STICK, DebugStickHandler)
     }

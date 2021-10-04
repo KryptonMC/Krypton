@@ -34,7 +34,7 @@ interface KryptonItemHandler : ItemHandler {
 
     override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i) = true
 
-    override fun getDestroySpeed(item: ItemStack, block: Block) = 1F
+    override fun destroySpeed(item: ItemStack, block: Block) = 1F
 
     override fun use(
         player: Player,

@@ -58,7 +58,7 @@ open class KryptonItemStack(
         return true
     }
 
-    fun getDestroySpeed(block: Block) = type.handler.getDestroySpeed(this, block)
+    fun destroySpeed(block: Block) = type.handler().destroySpeed(this, block)
 
     override fun copy(): KryptonItemStack {
         if (isEmpty()) return EmptyItemStack

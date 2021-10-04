@@ -8,6 +8,8 @@
  */
 package org.kryptonmc.api.world.biome
 
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Keyed
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
@@ -18,7 +20,7 @@ import org.kryptonmc.api.util.provide
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Biomes::class)
-public interface Biome {
+public interface Biome : Keyed {
 
     /**
      * The climate of this biome.
@@ -54,7 +56,7 @@ public interface Biome {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(climate: Climate, depth: Float, scale: Float, category: BiomeCategory, effects: BiomeEffects): Biome
+        public fun of(key: Key, climate: Climate, depth: Float, scale: Float, category: BiomeCategory, effects: BiomeEffects): Biome
     }
 
     public companion object {
@@ -64,6 +66,7 @@ public interface Biome {
         /**
          * Creates a new biome with the given values.
          *
+         * @param key the key
          * @param climate the climate
          * @param depth the depth
          * @param scale the scale
@@ -73,11 +76,12 @@ public interface Biome {
          */
         @JvmStatic
         public fun of(
+            key: Key,
             climate: Climate,
             depth: Float,
             scale: Float,
             category: BiomeCategory,
             effects: BiomeEffects
-        ): Biome = FACTORY.of(climate, depth, scale, category, effects)
+        ): Biome = FACTORY.of(key, climate, depth, scale, category, effects)
     }
 }

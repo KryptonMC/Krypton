@@ -25,7 +25,7 @@ import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3i
 
-object TridentHandler : KryptonItemHandler(ItemTypes.TRIDENT) {
+object TridentHandler : KryptonItemHandler {
 
     override fun canAttackBlock(
         player: Player,

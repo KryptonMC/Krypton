@@ -22,8 +22,6 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.tags.BlockTags
@@ -32,12 +30,12 @@ import org.kryptonmc.krypton.world.block.isReplaceablePlant
 import org.kryptonmc.krypton.world.block.isVegetable
 import org.spongepowered.math.vector.Vector3i
 
-sealed class SwordHandler(type: ItemType) : KryptonItemHandler(type) {
+object SwordHandler : KryptonItemHandler {
 
     override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i) =
         player.gameMode !== GameModes.CREATIVE
 
-    override fun getDestroySpeed(item: ItemStack, block: Block): Float {
+    override fun destroySpeed(item: ItemStack, block: Block): Float {
         if (block.id == Blocks.COBWEB.id) return 15F
         if (block.isPlant() || block.isReplaceablePlant() || BlockTags.LEAVES.contains(block) || block.isVegetable()) {
             return 1.5F
@@ -49,15 +47,3 @@ sealed class SwordHandler(type: ItemType) : KryptonItemHandler(type) {
 
     override fun mineBlock(player: Player, item: ItemStack, world: World, block: Block, position: Vector3i) = true
 }
-
-object WoodenSwordHandler : SwordHandler(ItemTypes.WOODEN_SWORD)
-
-object StoneSwordHandler : SwordHandler(ItemTypes.STONE_SWORD)
-
-object GoldenSwordHandler : SwordHandler(ItemTypes.GOLDEN_SWORD)
-
-object IronSwordHandler : SwordHandler(ItemTypes.IRON_SWORD)
-
-object DiamondSwordHandler : SwordHandler(ItemTypes.DIAMOND_SWORD)
-
-object NetheriteSwordHandler : SwordHandler(ItemTypes.NETHERITE_SWORD)

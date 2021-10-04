@@ -54,6 +54,7 @@ object DebugStickHandler : KryptonItemHandler {
     }
 
     @Suppress("UNCHECKED_CAST") // Screw you too generics, no wonder you have no friends
+    @JvmStatic
     private fun handleInteraction(
         player: KryptonPlayer,
         world: World,
@@ -95,7 +96,8 @@ object DebugStickHandler : KryptonItemHandler {
         }
         return true
     }
-}
 
-private fun <T : Comparable<T>> Block.cycle(property: Property<T>, reversed: Boolean) =
-    set(property, property.values.findRelative(get(property), reversed)!!)
+    @JvmStatic
+    private fun <T : Comparable<T>> Block.cycle(property: Property<T>, reversed: Boolean) =
+        set(property, property.values.findRelative(get(property), reversed)!!)
+}

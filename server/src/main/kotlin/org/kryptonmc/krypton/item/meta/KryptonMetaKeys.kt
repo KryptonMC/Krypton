@@ -48,7 +48,7 @@ object KryptonMetaKeys {
         { nbt, unbreakable -> nbt.putBoolean("Unbreakable", unbreakable) },
         { it.contains("Unbreakable", ByteTag.ID) }
     )
-    val CAN_DESTROY = register("can_destroy", getBlockList("CanDestroy"), setBlockList("CanDestroy")) {
+    val CAN_DESTROY = register("can_destroy", blockList("CanDestroy"), setBlockList("CanDestroy")) {
         it.contains("CanDestroy", ListTag.ID)
     }
     val CUSTOM_MODEL_DATA = register(
@@ -57,7 +57,7 @@ object KryptonMetaKeys {
         { nbt, data -> nbt.putInt("CustomModelData", data) },
         { it.contains("CustomModelData", IntTag.ID) }
     )
-    val CAN_PLACE_ON = register("can_place_on", getBlockList("CanPlaceOn"), setBlockList("CanPlaceOn")) {
+    val CAN_PLACE_ON = register("can_place_on", blockList("CanPlaceOn"), setBlockList("CanPlaceOn")) {
         it.contains("CanPlaceOn", ListTag.ID)
     }
     val NAME = register(
@@ -91,43 +91,44 @@ object KryptonMetaKeys {
     )
     val HIDE_ATTRIBUTES = register(
         "hide_attributes",
-        getFlag(ItemFlag.ATTRIBUTES),
+        flag(ItemFlag.ATTRIBUTES),
         setFlag(ItemFlag.ATTRIBUTES),
-        getFlag(ItemFlag.ATTRIBUTES)
+        flag(ItemFlag.ATTRIBUTES)
     )
     val HIDE_CAN_DESTROY = register(
         "hide_can_destroy",
-        getFlag(ItemFlag.CAN_DESTROY),
+        flag(ItemFlag.CAN_DESTROY),
         setFlag(ItemFlag.CAN_DESTROY),
-        getFlag(ItemFlag.CAN_DESTROY)
+        flag(ItemFlag.CAN_DESTROY)
     )
     val HIDE_CAN_PLACE_ON = register(
         "hide_can_place_on",
-        getFlag(ItemFlag.CAN_PLACE),
+        flag(ItemFlag.CAN_PLACE),
         setFlag(ItemFlag.CAN_PLACE),
-        getFlag(ItemFlag.CAN_PLACE)
+        flag(ItemFlag.CAN_PLACE)
     )
-    val HIDE_DYE = register("hide_dye", getFlag(ItemFlag.DYE), setFlag(ItemFlag.DYE), getFlag(ItemFlag.DYE))
+    val HIDE_DYE = register("hide_dye", flag(ItemFlag.DYE), setFlag(ItemFlag.DYE), flag(ItemFlag.DYE))
     val HIDE_ENCHANTMENTS = register(
         "hide_enchantments",
-        getFlag(ItemFlag.ENCHANTMENTS),
+        flag(ItemFlag.ENCHANTMENTS),
         setFlag(ItemFlag.ENCHANTMENTS),
-        getFlag(ItemFlag.ENCHANTMENTS)
+        flag(ItemFlag.ENCHANTMENTS)
     )
     val HIDE_MISCELLANEOUS = register(
         "hide_miscellaneous",
-        getFlag(ItemFlag.MISCELLANEOUS),
+        flag(ItemFlag.MISCELLANEOUS),
         setFlag(ItemFlag.MISCELLANEOUS),
-        getFlag(ItemFlag.MISCELLANEOUS)
+        flag(ItemFlag.MISCELLANEOUS)
     )
     val HIDE_UNBREAKABLE = register(
         "hide_unbreakable",
-        getFlag(ItemFlag.UNBREAKABLE),
+        flag(ItemFlag.UNBREAKABLE),
         setFlag(ItemFlag.UNBREAKABLE),
-        getFlag(ItemFlag.UNBREAKABLE)
+        flag(ItemFlag.UNBREAKABLE)
     )
 
     @Suppress("UNCHECKED_CAST")
+    @JvmStatic
     private inline fun <reified V : Any> register(
         name: String,
         noinline reader: (CompoundTag) -> V,
@@ -142,7 +143,8 @@ object KryptonMetaKeys {
         ) as KryptonMetaKey<V>
     }
 
-    private fun getBlockList(name: String): (CompoundTag) -> List<Block> = { nbt ->
+    @JvmStatic
+    private fun blockList(name: String): (CompoundTag) -> List<Block> = { nbt ->
         val blocks = mutableListOf<Block>()
         nbt.getList(name, StringTag.ID).forEachString { key -> BlockLoader.fromKey(key)?.let { blocks.add(it) } }
         blocks
@@ -152,7 +154,8 @@ object KryptonMetaKeys {
         nbt[name] = MutableListTag(blocks.mapTo(mutableListOf()) { StringTag.of(it.key().asString()) })
     }
 
-    private fun getFlag(flag: ItemFlag): (CompoundTag) -> Boolean = {
+    @JvmStatic
+    private fun flag(flag: ItemFlag): (CompoundTag) -> Boolean = {
         it.contains("HideFlags", 99) && it.getInt("HideFlags") and flag.mask == 0
     }
 
