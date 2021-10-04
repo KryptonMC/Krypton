@@ -8,6 +8,8 @@
  */
 package org.kryptonmc.api.world.rule
 
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.text.TranslatableComponent
 import org.jetbrains.annotations.ApiStatus
 import org.kryptonmc.api.Krypton
@@ -22,7 +24,7 @@ import org.kryptonmc.api.util.provide
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(GameRules::class)
-public interface GameRule<V : Any> : TranslationHolder {
+public interface GameRule<V : Any> : TranslationHolder, Keyed {
 
     /**
      * The name of this rule.
@@ -40,7 +42,7 @@ public interface GameRule<V : Any> : TranslationHolder {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun <V : Any> of(name: String, default: V, translation: TranslatableComponent): GameRule<V>
+        public fun <V : Any> of(key: Key, name: String, default: V, translation: TranslatableComponent): GameRule<V>
     }
 
     public companion object {
@@ -50,6 +52,7 @@ public interface GameRule<V : Any> : TranslationHolder {
         /**
          * Creates a new game rule with the given values.
          *
+         * @param key the key
          * @param name the name
          * @param default the default value
          * @param translation the client-side translation
@@ -57,9 +60,10 @@ public interface GameRule<V : Any> : TranslationHolder {
          */
         @JvmStatic
         public fun <V : Any> of(
+            key: Key,
             name: String,
             default: V,
             translation: TranslatableComponent
-        ): GameRule<V> = FACTORY.of(name, default, translation)
+        ): GameRule<V> = FACTORY.of(key, name, default, translation)
     }
 }

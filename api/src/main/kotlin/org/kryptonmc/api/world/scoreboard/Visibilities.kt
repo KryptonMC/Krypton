@@ -25,5 +25,7 @@ public object Visibilities {
     @JvmField public val HIDE_FOR_OTHER_TEAMS: Visibility = get("hide_for_other_teams")
     @JvmField public val HIDE_FOR_OWN_TEAM: Visibility = get("hide_for_own_team")
 
+    // @formatter:on
+    @JvmStatic
     private fun get(name: String): Visibility = Registries.VISIBILITIES[Key.key(name)]!!
 }

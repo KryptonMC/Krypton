@@ -54,7 +54,7 @@ class ChunkStatus private constructor(
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES
         )
 
-        val EMPTY = register("empty", null, -1, PRE_FEATURES, Type.PROTO)
+        private val EMPTY = register("empty", null, -1, PRE_FEATURES, Type.PROTO)
         private val STRUCTURE_STARTS = register("structure_starts", EMPTY, 0, PRE_FEATURES, Type.PROTO)
         private val STRUCTURE_REFERENCES = register(
             "structure_references",
@@ -68,7 +68,7 @@ class ChunkStatus private constructor(
         private val SURFACE = register("surface", NOISE, 0, PRE_FEATURES, Type.PROTO)
         private val CARVERS = register("carvers", SURFACE, 0, PRE_FEATURES, Type.PROTO)
         private val LIQUID_CARVERS = register("liquid_carvers", CARVERS, 0, POST_FEATURES, Type.PROTO)
-        val FEATURES = register("features", LIQUID_CARVERS, 8, POST_FEATURES, Type.PROTO)
+        private val FEATURES = register("features", LIQUID_CARVERS, 8, POST_FEATURES, Type.PROTO)
         private val LIGHT = register("light", FEATURES, 1, POST_FEATURES, Type.PROTO)
         private val SPAWN = register("spawn", LIGHT, 0, POST_FEATURES, Type.PROTO)
         private val HEIGHTMAPS = register("heightmaps", SPAWN, 0, POST_FEATURES, Type.PROTO)

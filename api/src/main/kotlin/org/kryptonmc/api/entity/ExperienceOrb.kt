@@ -13,11 +13,13 @@ import org.kryptonmc.api.entity.player.Player
 /**
  * An orb of experience.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ExperienceOrb : Entity {
 
     /**
      * The amount of ticks this orb has not been touched for.
      */
+    @get:JvmName("age")
     public val age: Int
 
     /**
@@ -27,6 +29,7 @@ public interface ExperienceOrb : Entity {
      * When multiple orbs are merged, their counts will be summed.
      * When this value reaches 0, the orb is depleted.
      */
+    @get:JvmName("count")
     public val count: Int
 
     /**
@@ -36,16 +39,19 @@ public interface ExperienceOrb : Entity {
      * explosions.
      * The orb is destroyed when this value reaches 0.
      */
+    @get:JvmName("health")
     public val health: Int
 
     /**
      * The amount of experience given by this orb when it is picked up.
      */
+    @get:JvmName("value")
     public val value: Int
 
     /**
      * The player this orb is currently following, or null if this orb is not
      * currently following a player.
      */
+    @get:JvmName("following")
     public val following: Player?
 }

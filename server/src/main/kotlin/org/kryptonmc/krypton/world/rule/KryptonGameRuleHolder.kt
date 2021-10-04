@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.world.rule
 
 import ca.spottedleaf.dataconverter.types.MapType
-import com.mojang.serialization.DynamicLike
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.rule.GameRuleHolder
@@ -31,13 +30,6 @@ class KryptonGameRuleHolder : GameRuleHolder {
 
     constructor() {
         Registries.GAMERULES.values.forEach { rules[it] = it.default }
-    }
-
-    constructor(tag: DynamicLike<*>) : this() {
-        rules.forEach { (key, _) ->
-            val rule = tag[key.name].asString().result()
-            rule.ifPresent { rules[key] = deserialize(it) }
-        }
     }
 
     constructor(tag: MapType<String>) : this() {

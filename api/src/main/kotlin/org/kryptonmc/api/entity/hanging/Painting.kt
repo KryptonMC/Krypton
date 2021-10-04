@@ -11,11 +11,13 @@ package org.kryptonmc.api.entity.hanging
 /**
  * A painting.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Painting : HangingEntity {
 
     /**
      * The canvas displayed on this painting, or null if this painting is
      * blank.
      */
+    @get:JvmName("canvas")
     public val canvas: Canvas?
 }

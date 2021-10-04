@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.findRelative
 import org.spongepowered.math.vector.Vector3i
 
-object DebugStickHandler : KryptonItemHandler(ItemTypes.DEBUG_STICK) {
+object DebugStickHandler : KryptonItemHandler {
 
     override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i): Boolean {
         if (player is KryptonPlayer) {
@@ -66,7 +66,7 @@ object DebugStickHandler : KryptonItemHandler(ItemTypes.DEBUG_STICK) {
         val properties = block.availableProperties
         val key = block.key().asString()
         if (properties.isEmpty()) {
-            player.sendActionBar(translatable("${type.translation.key()}.empty", text(key)))
+            player.sendActionBar(translatable("${ItemTypes.DEBUG_STICK.translation.key()}.empty", text(key)))
             return false
         }
 
@@ -79,7 +79,7 @@ object DebugStickHandler : KryptonItemHandler(ItemTypes.DEBUG_STICK) {
             val cycled = block.cycle(property, player.isCrouching)
             world.setBlock(position, cycled)
             player.sendMessage(translatable(
-                "${type.translation.key()}.update",
+                "${ItemTypes.DEBUG_STICK.translation.key()}.update",
                 text(property.name),
                 text(property.toString(cycled[property]!!))
             ))
@@ -88,7 +88,7 @@ object DebugStickHandler : KryptonItemHandler(ItemTypes.DEBUG_STICK) {
             val name = property.name
             tag.putString(key, name)
             player.sendMessage(translatable(
-                "${type.translation.key()}.select",
+                "${ItemTypes.DEBUG_STICK.translation.key()}.select",
                 text(name),
                 text(property.toString(block[property]!!))
             ))

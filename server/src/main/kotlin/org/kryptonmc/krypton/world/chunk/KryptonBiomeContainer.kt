@@ -30,7 +30,7 @@ import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 class KryptonBiomeContainer private constructor(
     private val biomeRegistry: IntBiMap<Biome>,
     heightAccessor: HeightAccessor,
-    override val biomes: Array<Biome>
+    @get:JvmName("biomes") override val biomes: Array<Biome>
 ) : BiomeContainer, NoiseBiomeSource {
 
     private val quartMinY = heightAccessor.minimumBuildHeight shr 2

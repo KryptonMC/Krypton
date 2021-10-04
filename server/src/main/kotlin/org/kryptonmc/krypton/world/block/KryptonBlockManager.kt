@@ -23,8 +23,10 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockHandler
 import org.kryptonmc.api.block.BlockManager
 
+@Suppress("INAPPLICABLE_JVM_NAME")
 object KryptonBlockManager : BlockManager {
 
+    @get:JvmName("handlers")
     override val handlers = mutableMapOf<String, BlockHandler>()
 
     override fun handler(key: String) = handlers[key]

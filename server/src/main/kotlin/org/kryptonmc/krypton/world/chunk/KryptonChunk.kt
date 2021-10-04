@@ -30,13 +30,14 @@ import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3i
 import java.util.EnumMap
 
+@Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonChunk(
-    override val world: KryptonWorld,
+    @get:JvmName("world") override val world: KryptonWorld,
     override val position: ChunkPosition,
     override val sections: Array<ChunkSection?>,
-    override val biomes: KryptonBiomeContainer,
-    override var lastUpdate: Long,
-    override var inhabitedTime: Long,
+    @get:JvmName("biomes") override val biomes: KryptonBiomeContainer,
+    @get:JvmName("lastUpdate") override var lastUpdate: Long,
+    @get:JvmName("inhabitedTime") override var inhabitedTime: Long,
     val ticket: Ticket<*>,
     val carvingMasks: Pair<ByteArray, ByteArray>,
     val structures: CompoundTag
@@ -54,8 +55,10 @@ class KryptonChunk(
     val minimumLightSection = minimumSection - 1
     val maximumLightSection = minimumLightSection + lightSectionCount
 
-    override val x = position.x
-    override val z = position.z
+    override val x: Int
+        @JvmName("x") get() = position.x
+    override val z: Int
+        @JvmName("z") get() = position.z
 
     override fun getBlock(x: Int, y: Int, z: Int): Block {
         val sectionIndex = sectionIndex(y)

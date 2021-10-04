@@ -29,18 +29,20 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
     /**
      * The world this entity is currently in.
      */
+    @get:JvmName("world")
     public val world: World
 
     /**
      * The type of this entity.
      */
+    @get:JvmName("type")
     public val type: EntityType<out Entity>
 
     /**
      * The unique ID of this entity.
      */
+    @get:JvmName("uuid")
     public val uuid: UUID
-        @JvmName("getUUID") get
 
     /**
      * The custom display name of this entity, as a component.
@@ -48,6 +50,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * May be [empty][Component.empty], indicating this entity does not have a
      * custom display name set.
      */
+    @get:JvmName("displayName")
     public var displayName: Component
 
     /**
@@ -58,6 +61,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
     /**
      * The current position of this entity.
      */
+    @get:JvmName("location")
     public var location: Vector3d
 
     /**
@@ -67,22 +71,26 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * - x -> yaw
      * - y -> pitch
      */
+    @get:JvmName("rotation")
     public var rotation: Vector2f
 
     /**
      * The current delta X, Y, and Z values of this entity,
      * in metres per tick.
      */
+    @get:JvmName("velocity")
     public var velocity: Vector3d
 
     /**
      * The current bounding box of this entity.
      */
+    @get:JvmName("boundingBox")
     public var boundingBox: BoundingBox
 
     /**
      * The current dimensions of this entity.
      */
+    @get:JvmName("dimensions")
     public var dimensions: EntityDimensions
 
     /**
@@ -90,6 +98,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      *
      * Will be empty if the entity has no passengers.
      */
+    @get:JvmName("passengers")
     public val passengers: List<Entity>
 
     /**
@@ -168,6 +177,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      *
      * This will be increased by 1 for every tick this entity exists for.
      */
+    @get:JvmName("ticksExisted")
     public val ticksExisted: Int
 
     /**
@@ -180,6 +190,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * take 1 health point (half a heart) of damage for every second
      * it remains underwater.
      */
+    @get:JvmName("air")
     public val air: Int
 
     /**
@@ -192,6 +203,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * When the value is negative, this represents the number of ticks this
      * entity can survive in fire for before burning.
      */
+    @get:JvmName("fireTicks")
     public val fireTicks: Short
 
     /**
@@ -204,6 +216,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * snow, to a maximum of 300, and decrease by 2 for every tick this entity
      * is not in powder snow.
      */
+    @get:JvmName("frozenTicks")
     public val frozenTicks: Int
 
     /**
@@ -212,6 +225,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * The larger the value of this, the more damage the entity will take when
      * it lands.
      */
+    @get:JvmName("fallDistance")
     public val fallDistance: Float
 
     /**

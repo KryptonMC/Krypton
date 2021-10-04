@@ -25,7 +25,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import java.util.function.Function
 
-class NoiseSettings(
+@JvmRecord
+data class NoiseSettings(
     val minimumY: Int,
     val height: Int,
     val sampling: NoiseSampling,
@@ -45,8 +46,7 @@ class NoiseSettings(
 
         val CODEC: Codec<NoiseSettings> = RecordCodecBuilder.create<NoiseSettings> {
             it.group(
-                Codec.intRange(KryptonDimensionType.MIN_Y, KryptonDimensionType.MAX_Y).fieldOf("min_y")
-                    .forGetter(NoiseSettings::minimumY),
+                Codec.intRange(KryptonDimensionType.MIN_Y, KryptonDimensionType.MAX_Y).fieldOf("min_y").forGetter(NoiseSettings::minimumY),
                 Codec.intRange(0, KryptonDimensionType.Y_SIZE).fieldOf("height").forGetter(NoiseSettings::height),
                 NoiseSampling.CODEC.fieldOf("sampling").forGetter(NoiseSettings::sampling),
                 NoiseSlide.CODEC.fieldOf("top_slide").forGetter(NoiseSettings::topSlide),
@@ -60,8 +60,7 @@ class NoiseSettings(
                     .forGetter(NoiseSettings::randomDensityOffset),
                 Codec.BOOL.optionalFieldOf("island_noise_override", false, Lifecycle.experimental())
                     .forGetter(NoiseSettings::islandNoiseOverride),
-                Codec.BOOL.optionalFieldOf("amplified", false, Lifecycle.experimental())
-                    .forGetter(NoiseSettings::isAmplified)
+                Codec.BOOL.optionalFieldOf("amplified", false, Lifecycle.experimental()).forGetter(NoiseSettings::isAmplified)
             ).apply(it, ::NoiseSettings)
         }.comapFlatMap(::guardY, Function.identity())
 

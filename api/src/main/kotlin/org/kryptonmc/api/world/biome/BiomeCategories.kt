@@ -40,6 +40,7 @@ public object BiomeCategories {
     @JvmField public val UNDERGROUND: BiomeCategory = register("underground")
 
     // @formatter:on
+    @JvmStatic
     private fun register(name: String): BiomeCategory {
         val key = Key.key(name)
         return Registries.register(Registries.BIOME_CATEGORIES, key, BiomeCategory.of(key))

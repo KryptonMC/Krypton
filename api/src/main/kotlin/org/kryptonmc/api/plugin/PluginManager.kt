@@ -17,11 +17,13 @@ import java.nio.file.Path
 /**
  * The plugin manager.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface PluginManager {
 
     /**
      * The list of currently loaded plugins.
      */
+    @get:JvmName("plugins")
     public val plugins: Collection<PluginContainer>
 
     /**

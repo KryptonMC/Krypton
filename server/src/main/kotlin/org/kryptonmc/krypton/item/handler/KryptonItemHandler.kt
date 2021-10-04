@@ -30,7 +30,7 @@ import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3i
 
-open class KryptonItemHandler(override val type: ItemType) : ItemHandler {
+interface KryptonItemHandler : ItemHandler {
 
     override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i) = true
 

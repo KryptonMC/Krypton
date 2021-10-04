@@ -27,18 +27,22 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.compound
 
-class KryptonAttribute(
-    override val type: AttributeType,
-    override val modifiers: MutableMap<ModifierOperation, MutableList<AttributeModifier>> = mutableMapOf()
+@Suppress("INAPPLICABLE_JVM_NAME")
+data class KryptonAttribute(
+    @get:JvmName("type") override val type: AttributeType,
+    @get:JvmName("modifiers") override val modifiers: MutableMap<ModifierOperation, MutableList<AttributeModifier>> = mutableMapOf()
 ) : Attribute {
 
+    @get:JvmName("name")
     override val name = type.key().asString()
     override var baseValue = type.defaultBase
+        @JvmName("baseValue") get
         set(value) {
             field = value
             recalculate()
         }
     override var value = 0.0
+        @JvmName("value") get
         private set
 
     fun load(tag: CompoundTag) {
@@ -59,7 +63,7 @@ class KryptonAttribute(
         put("Modifiers", modifiers.save())
     }
 
-    override fun getModifiers(operation: ModifierOperation) = modifiers.getOrPut(operation) { mutableListOf() }.apply {
+    override fun modifiers(operation: ModifierOperation) = modifiers.getOrPut(operation) { mutableListOf() }.apply {
         recalculate()
     }
 

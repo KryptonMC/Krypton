@@ -28,7 +28,7 @@ public interface FluidHandler {
      * @param world the world the fluid is in
      * @return the flow movement of the fluid
      */
-    public fun getFlow(fluid: Fluid, position: Vector3i, world: World): Vector3d
+    public fun flow(fluid: Fluid, position: Vector3i, world: World): Vector3d
 
     /**
      * Gets the height of the given [fluid] at the given [position] in the
@@ -39,7 +39,7 @@ public interface FluidHandler {
      * @param world the world the fluid is in
      * @return the height of the fluid
      */
-    public fun getHeight(fluid: Fluid, position: Vector3i, world: World): Float
+    public fun height(fluid: Fluid, position: Vector3i, world: World): Float
 
     /**
      * Returns true if the given [fluid] at the given [position] in the given

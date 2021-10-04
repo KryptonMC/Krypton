@@ -25,7 +25,6 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.world.biome.BiomeKeys
@@ -41,7 +40,7 @@ class FlatGeneratorSettings(
 ) {
 
     val layers = mutableListOf<FlatLayer>()
-    val blockLayers = mutableListOf<Block>()
+    private val blockLayers = mutableListOf<Block>()
     var biome = biomes[BiomeKeys.PLAINS]!!
         private set
     private var generateVoid = false
@@ -90,7 +89,7 @@ class FlatGeneratorSettings(
 
         fun default(biomes: KryptonRegistry<Biome>): FlatGeneratorSettings {
             // TODO: Add village structure to the map
-            val structureSettings = StructureSettings(mapOf(), Optional.of(StructureSettings.DEFAULT_STRONGHOLD))
+            val structureSettings = StructureSettings(mapOf(), StructureSettings.DEFAULT_STRONGHOLD)
             return FlatGeneratorSettings(biomes, structureSettings).apply {
                 this.biome = biomes[BiomeKeys.PLAINS]!!
                 layers.add(FlatLayer(Blocks.BEDROCK, 1))

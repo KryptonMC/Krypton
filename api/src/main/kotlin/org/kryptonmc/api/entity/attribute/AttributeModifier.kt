@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.entity.attribute
 
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.provide
 import java.util.UUID
@@ -55,6 +56,7 @@ public interface AttributeModifier {
          * @return a new attribute modifier
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(name: String, uuid: UUID, amount: Double): AttributeModifier = FACTORY.of(name, uuid, amount)
     }
 }

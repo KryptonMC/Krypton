@@ -14,6 +14,7 @@ import org.kryptonmc.api.util.Direction
 /**
  * A bullet fired from a [Shulker].
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface ShulkerBullet : Projectile {
 
     /**
@@ -25,32 +26,38 @@ public interface ShulkerBullet : Projectile {
      * and instead follows the target delta X, Y, and Z values in a straight
      * line.
      */
+    @get:JvmName("steps")
     public val steps: Int
 
     /**
      * The target of this bullet, or null if this bullet does not have a target
      * established.
      */
+    @get:JvmName("target")
     public val target: Entity?
 
     /**
      * The current direction that this bullet is moving, or null if this bullet
      * is not moving.
      */
+    @get:JvmName("movingDirection")
     public val movingDirection: Direction?
 
     /**
      * The X offset of the target from the location of this bullet.
      */
+    @get:JvmName("targetDeltaX")
     public val targetDeltaX: Double
 
     /**
      * The Y offset of the target from the location of this bullet.
      */
+    @get:JvmName("targetDeltaY")
     public val targetDeltaY: Double
 
     /**
      * The Z offset of the target from the location of this bullet.
      */
+    @get:JvmName("targetDeltaZ")
     public val targetDeltaZ: Double
 }

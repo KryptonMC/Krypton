@@ -37,13 +37,14 @@ import java.nio.file.Path
 import java.util.IdentityHashMap
 import kotlin.io.path.isRegularFile
 
+@Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonPluginManager(private val server: KryptonServer) : PluginManager {
 
     private val pluginMap = LinkedHashMap<String, PluginContainer>()
     private val pluginInstances = IdentityHashMap<Any, PluginContainer>()
 
     override val plugins: Collection<PluginContainer>
-        get() = pluginMap.values
+        @JvmName("plugins") get() = pluginMap.values
 
     fun loadPlugins(directory: Path) {
         val found = mutableListOf<PluginDescription>()

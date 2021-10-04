@@ -23,9 +23,6 @@ import org.kryptonmc.krypton.world.generation.feature.ConfiguredFeature
 
 interface FeatureConfig {
 
-    val features: Sequence<ConfiguredFeature<*, *>>
-        get() = emptySequence()
-
     companion object Empty : FeatureConfig {
 
         val CODEC: Codec<Empty> = Codec.unit { Empty }

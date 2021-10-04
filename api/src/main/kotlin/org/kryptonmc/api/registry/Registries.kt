@@ -142,8 +142,7 @@ public object Registries {
      * @param value the value
      */
     @JvmStatic
-    public fun <T : Any> register(registry: Registry<T>, id: Int, key: String, value: T): T =
-        register(registry, id, key, value)
+    public fun <T : Any> register(registry: Registry<T>, id: Int, key: String, value: T): T = register(registry, id, key, value)
 
     /**
      * Registers a new entry to the given [registry], with the given [key]

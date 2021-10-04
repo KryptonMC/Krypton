@@ -24,6 +24,7 @@ public object TemperatureModifiers {
     @JvmField public val FROZEN: TemperatureModifier = register("frozen")
 
     // @formatter:on
+    @JvmStatic
     private fun register(name: String): TemperatureModifier {
         val key = Key.key(name)
         return Registries.register(Registries.TEMPERATURE_MODIFIERS, key, TemperatureModifier.of(key))

@@ -47,21 +47,25 @@ public interface PlayerInventory : Inventory {
     /**
      * The helmet this player is currently wearing.
      */
+    @get:JvmName("helmet")
     public var helmet: ItemStack
 
     /**
      * The chestplate this player is currently wearing.
      */
+    @get:JvmName("chestplate")
     public var chestplate: ItemStack
 
     /**
      * The leggings this player is currently wearing.
      */
+    @get:JvmName("leggings")
     public var leggings: ItemStack
 
     /**
      * The boots this player is currently wearing.
      */
+    @get:JvmName("boots")
     public var boots: ItemStack
 
     /**

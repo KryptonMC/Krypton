@@ -8,14 +8,16 @@
  */
 package org.kryptonmc.api.item
 
-/**
- * Something that could be representable as an item.
- */
-public fun interface ItemLike {
+import org.kryptonmc.api.util.InteractionResult
 
-    /**
-     * Gets the item representation, or null if there is no item
-     * representation.
-     */
-    public fun asItem(): ItemType?
-}
+/**
+ * Represents the result of using an item.
+ *
+ * @param result the result
+ * @param item the item
+ */
+@JvmRecord
+public data class UseItemResult(
+    public val result: InteractionResult,
+    public val item: ItemStack
+)

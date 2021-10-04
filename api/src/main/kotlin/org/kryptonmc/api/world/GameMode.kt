@@ -11,6 +11,7 @@ package org.kryptonmc.api.world
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.TranslationHolder
@@ -62,6 +63,7 @@ public interface GameMode : TranslationHolder {
          */
         @JvmStatic
         @JvmOverloads
+        @Contract("_ -> new", pure = true)
         public fun of(
             name: String,
             abbreviation: String,

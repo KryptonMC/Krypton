@@ -20,4 +20,5 @@ package org.kryptonmc.krypton.world.generation.feature
 
 import org.kryptonmc.krypton.world.generation.feature.config.FeatureConfig
 
-class ConfiguredStructure<C : FeatureConfig, F : Structure<C>>(val feature: F, val config: C)
+@JvmRecord
+data class ConfiguredStructure<C : FeatureConfig, F : Structure<C>>(val feature: F, val config: C)

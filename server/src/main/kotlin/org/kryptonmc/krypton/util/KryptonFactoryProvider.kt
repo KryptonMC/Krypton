@@ -49,6 +49,7 @@ import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.api.world.biome.GrassColorModifier
 import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.TemperatureModifier
+import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.scoreboard.Objective
 import org.kryptonmc.api.world.scoreboard.Score
@@ -79,6 +80,7 @@ import org.kryptonmc.krypton.world.biome.KryptonPrecipitation
 import org.kryptonmc.krypton.world.biome.KryptonTemperatureModifier
 import org.kryptonmc.krypton.world.block.KryptonBlockHitResult
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
+import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.rule.KryptonGameRule
 import org.kryptonmc.krypton.world.scoreboard.KryptonObjective
 import org.kryptonmc.krypton.world.scoreboard.KryptonScore
@@ -128,6 +130,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<BoundingBox.Factory>(KryptonBoundingBox.Factory)
         register<EntityType.Factory>(KryptonEntityType.Factory)
         register<ItemRarity.Factory>(KryptonItemRarity.Factory)
+        register<DimensionType.Factory>(KryptonDimensionType.Factory)
     }
 }
 

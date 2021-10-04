@@ -44,7 +44,6 @@ object InternalRegistries {
     // World generation registries
     val GENERATOR = create(InternalResourceKeys.GENERATOR)
     val BIOME_GENERATOR = create(InternalResourceKeys.BIOME_GENERATOR)
-    val FEATURE = create(InternalResourceKeys.FEATURE)
     val STRUCTURE = create(InternalResourceKeys.STRUCTURE)
     val NOISE_GENERATOR_SETTINGS = create(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
     val CHUNK_STATUS = createDefaulted(InternalResourceKeys.CHUNK_STATUS, key("empty"))

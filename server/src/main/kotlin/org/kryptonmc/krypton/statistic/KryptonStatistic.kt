@@ -25,9 +25,9 @@ import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.krypton.world.scoreboard.KryptonCriterion
 
 class KryptonStatistic<T : Any>(
-    override val type: StatisticType<T>,
-    override val value: T,
-    override val formatter: StatisticFormatter
+    @get:JvmName("type") override val type: StatisticType<T>,
+    @get:JvmName("value") override val value: T,
+    @get:JvmName("formatter") override val formatter: StatisticFormatter
 ) : KryptonCriterion(Key.key(type.criterionName(value)), type.criterionName(value)), Statistic<T> {
 
     override fun equals(other: Any?) = this === other || (other is KryptonStatistic<*> && name == other.name)

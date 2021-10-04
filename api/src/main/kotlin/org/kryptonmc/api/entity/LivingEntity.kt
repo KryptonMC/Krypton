@@ -14,16 +14,19 @@ import org.spongepowered.math.vector.Vector3i
 /**
  * Represents an entity that lives in a world.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface LivingEntity : Entity, Attributable {
 
     /**
      * The current health of this entity.
      */
+    @get:JvmName("health")
     public var health: Float
 
     /**
      * The amount of absorption this living entity has.
      */
+    @get:JvmName("absorption")
     public var absorption: Float
 
     /**
@@ -34,6 +37,7 @@ public interface LivingEntity : Entity, Attributable {
     /**
      * The hand the entity is currently using
      */
+    @get:JvmName("hand")
     public val hand: Hand
 
     /**
@@ -64,6 +68,7 @@ public interface LivingEntity : Entity, Attributable {
      *
      * Will be 0 whilst this entity is alive.
      */
+    @get:JvmName("deathTime")
     public val deathTime: Short
 
     /**
@@ -71,6 +76,7 @@ public interface LivingEntity : Entity, Attributable {
      *
      * Will be 0 when not recently hit.
      */
+    @get:JvmName("hurtTime")
     public val hurtTime: Short
 
     /**
@@ -79,6 +85,7 @@ public interface LivingEntity : Entity, Attributable {
      * Calculated as the
      * [number of ticks since the entity's creation][ticksExisted].
      */
+    @get:JvmName("lastHurtTimestamp")
     public val lastHurtTimestamp: Int
 
     /**
@@ -86,5 +93,6 @@ public interface LivingEntity : Entity, Attributable {
      *
      * If this value is null, this entity is not currently sleeping.
      */
+    @get:JvmName("sleepingPosition")
     public val sleepingPosition: Vector3i?
 }

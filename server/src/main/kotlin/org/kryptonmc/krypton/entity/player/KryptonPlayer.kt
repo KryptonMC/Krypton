@@ -517,7 +517,7 @@ class KryptonPlayer(
     override fun hasCorrectTool(block: Block): Boolean =
         !block.requiresCorrectTool || inventory.mainHand.type.handler.isCorrectTool(block)
 
-    override fun getDestroySpeed(block: Block): Float {
+    override fun destroySpeed(block: Block): Float {
         var speed = inventory.mainHand.getDestroySpeed(block)
         if (!isOnGround) speed /= 5F
         return speed

@@ -32,98 +32,98 @@ public object Krypton {
      */
     @JvmStatic
     public val server: Server
-        get() = internalServer!!
+        @JvmName("server") get() = internalServer!!
 
     /**
      * The platform information for the implementation.
      */
     @JvmStatic
     public val platform: Platform
-        get() = server.platform
+        @JvmName("platform") get() = server.platform
 
     /**
      * The world manager for the server.
      */
     @JvmStatic
     public val worldManager: WorldManager
-        get() = server.worldManager
+        @JvmName("worldManager") get() = server.worldManager
 
     /**
      * The command manager for the server.
      */
     @JvmStatic
     public val commandManager: CommandManager
-        get() = server.commandManager
+        @JvmName("commandManager") get() = server.commandManager
 
     /**
      * The plugin manager for the server.
      */
     @JvmStatic
     public val pluginManager: PluginManager
-        get() = server.pluginManager
+        @JvmName("pluginManager") get() = server.pluginManager
 
     /**
      * The services manager for the server.
      */
     @JvmStatic
     public val servicesManager: ServicesManager
-        get() = server.servicesManager
+        @JvmName("servicesManager") get() = server.servicesManager
 
     /**
      * The event manager for the server.
      */
     @JvmStatic
     public val eventManager: EventManager
-        get() = server.eventManager
+        @JvmName("eventManager") get() = server.eventManager
 
     /**
      * The registry manager for the server.
      */
     @JvmStatic
     public val registryManager: RegistryManager
-        get() = internalRegistryManager!!
+        @JvmName("registryManager") get() = internalRegistryManager!!
 
     /**
      * The block manager for the server.
      */
     @JvmStatic
     public val blockManager: BlockManager
-        get() = server.blockManager
+        @JvmName("blockManager") get() = server.blockManager
 
     /**
      * The item manager for the server.
      */
     @JvmStatic
     public val itemManager: ItemManager
-        get() = server.itemManager
+        @JvmName("itemManager") get() = server.itemManager
 
     /**
      * The fluid manager for the server.
      */
     @JvmStatic
     public val fluidManager: FluidManager
-        get() = server.fluidManager
+        @JvmName("fluidManager") get() = server.fluidManager
 
     /**
      * The profile cache for the server.
      */
     @JvmStatic
     public val profileCache: ProfileCache
-        get() = server.profileCache
+        @JvmName("profileCache") get() = server.profileCache
 
     /**
      * The scheduler for the server.
      */
     @JvmStatic
     public val scheduler: Scheduler
-        get() = server.scheduler
+        @JvmName("scheduler") get() = server.scheduler
 
     /**
      * The factory provider for the server.
      */
     @JvmStatic
     public val factoryProvider: FactoryProvider
-        get() = internalFactoryProvider!!
+        @JvmName("factoryProvider") get() = internalFactoryProvider!!
 
     @JvmStatic
     private var internalServer: Server? = null

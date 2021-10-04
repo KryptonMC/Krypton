@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world.generation.feature.config
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 
+@JvmRecord
 data class StrongholdConfig(
     val distance: Int,
     val spread: Int,

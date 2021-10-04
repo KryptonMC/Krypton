@@ -10,12 +10,17 @@ package org.kryptonmc.api.world.dimension
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
+import net.kyori.adventure.util.Buildable
+import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.provide
 
 /**
  * Represents data for a dimension.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface DimensionType : Keyed {
+public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>, Keyed {
 
     /**
      * If [Piglin]s will transform in to [ZombifiedPiglin]s over time.
@@ -55,14 +60,14 @@ public interface DimensionType : Keyed {
     /**
      * If beds can be slept in. If false, beds will explode when used (boom).
      */
-    @get:JvmName("bedWorks")
-    public val bedWorks: Boolean
+    @get:JvmName("allowBeds")
+    public val allowBeds: Boolean
 
     /**
      * If respawn anchors can be charged and used.
      */
-    @get:JvmName("respawnAnchorWorks")
-    public val respawnAnchorWorks: Boolean
+    @get:JvmName("allowRespawnAnchors")
+    public val allowRespawnAnchors: Boolean
 
     /**
      * The amount of lighting clients will display when in this dimension.
@@ -119,4 +124,360 @@ public interface DimensionType : Keyed {
      */
     @get:JvmName("effects")
     public val effects: DimensionEffect
+
+    /**
+     * A builder for dimension types.
+     */
+    public interface Builder : Buildable.Builder<DimensionType> {
+
+        /**
+         * Makes the dimension type safe for piglins.
+         *
+         * @return this builder
+         * @see DimensionType.isPiglinSafe
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun piglinSafe(): Builder = piglinSafe(true)
+
+        /**
+         * Makes the dimension type not safe for piglins.
+         *
+         * This is the opposite of [isPiglinSafe].
+         *
+         * @return this builder
+         * @see DimensionType.isPiglinSafe
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun notPiglinSafe(): Builder = piglinSafe(false)
+
+        /**
+         * Sets whether the dimension type is safe for piglins.
+         *
+         * @param safe whether the dimension type is safe for piglins
+         * @return this builder
+         * @see DimensionType.isPiglinSafe
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun piglinSafe(safe: Boolean): Builder
+
+        /**
+         * Makes the dimension type natural.
+         *
+         * @return this builder
+         * @see DimensionType.isNatural
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun natural(): Builder = natural(true)
+
+        /**
+         * Makes the dimension type unnatural.
+         *
+         * This is the opposite of [isNatural].
+         *
+         * @return this builder
+         * @see DimensionType.isNatural
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun unnatural(): Builder = natural(false)
+
+        /**
+         * Sets whether the dimension type is natural.
+         *
+         * @param natural whether the dimension type is natural
+         * @return this builder
+         * @see DimensionType.isNatural
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun natural(natural: Boolean): Builder
+
+        /**
+         * Makes the dimension type ultrawarm.
+         *
+         * @return this builder
+         * @see DimensionType.isUltrawarm
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun ultrawarm(): Builder = ultrawarm(true)
+
+        /**
+         * Makes the dimension type not ultrawarm.
+         *
+         * This is the opposite of [isUltrawarm].
+         *
+         * @return this builder
+         * @see DimensionType.isUltrawarm
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun notUltrawarm(): Builder = ultrawarm(false)
+
+        /**
+         * Sets whether the dimension type is ultrawarm.
+         *
+         * @param ultrawarm whether the dimension type is ultrawarm
+         * @return this builder
+         * @see DimensionType.isUltrawarm
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun ultrawarm(ultrawarm: Boolean): Builder
+
+        /**
+         * Makes the dimension type have skylight.
+         *
+         * @return this builder
+         * @see DimensionType.hasSkylight
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun skylight(): Builder = skylight(true)
+
+        /**
+         * Makes the dimension type not have skylight.
+         *
+         * This is the opposite of [skylight].
+         *
+         * @return this builder
+         * @see DimensionType.hasSkylight
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun noSkylight(): Builder = skylight(false)
+
+        /**
+         * Sets whether the dimension type has skylight.
+         *
+         * @param light whether the dimension type has skylight
+         * @return this builder
+         * @see DimensionType.hasSkylight
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun skylight(light: Boolean): Builder
+
+        /**
+         * Makes the dimension type have a ceiling.
+         *
+         * @return this builder
+         * @see DimensionType.hasCeiling
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun ceiling(): Builder = ceiling(true)
+
+        /**
+         * Makes the dimension type have no ceiling.
+         *
+         * This is the opposite of [ceiling].
+         *
+         * @return this builder
+         * @see DimensionType.hasCeiling
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun noCeiling(): Builder = ceiling(false)
+
+        /**
+         * Sets whether the dimension type has a ceiling.
+         *
+         * @param ceiling whether the dimension type has a ceiling
+         * @return this builder
+         * @see DimensionType.hasCeiling
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun ceiling(ceiling: Boolean): Builder
+
+        /**
+         * Makes the dimension type have raids.
+         *
+         * @return this builder
+         * @see DimensionType.hasRaids
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun raids(): Builder = raids(true)
+
+        /**
+         * Makes the dimension type not have raids.
+         *
+         * This is the opposite of [raids].
+         *
+         * @return this builder
+         * @see DimensionType.hasRaids
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun noRaids(): Builder = raids(false)
+
+        /**
+         * Sets whether the dimension type has raids.
+         *
+         * @param raids whether the dimension type has raids
+         * @return this builder
+         * @see DimensionType.hasRaids
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun raids(raids: Boolean): Builder
+
+        /**
+         * Makes the dimension type allow beds to be used.
+         *
+         * @return this builder
+         * @see DimensionType.allowBeds
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun allowBeds(): Builder = beds(true)
+
+        /**
+         * Makes the dimension type not allow beds to be used.
+         *
+         * This is the opposite of [allowBeds].
+         *
+         * @return this builder
+         * @see DimensionType.allowBeds
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun noBeds(): Builder = beds(false)
+
+        /**
+         * Sets whether the dimension type allows beds.
+         *
+         * @param beds whether the dimension type allows beds
+         * @return this builder
+         * @see DimensionType.allowBeds
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun beds(beds: Boolean): Builder
+
+        /**
+         * Makes the dimension type allow respawn anchors to be used.
+         *
+         * @return this builder
+         * @see DimensionType.allowRespawnAnchors
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun allowRespawnAnchors(): Builder = respawnAnchors(true)
+
+        /**
+         * Makes the dimension type not allow respawn anchors to be used.
+         *
+         * This is the opposite of [allowRespawnAnchors].
+         *
+         * @return this builder
+         * @see DimensionType.allowRespawnAnchors
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun noRespawnAnchors(): Builder = respawnAnchors(false)
+
+        /**
+         * Sets whether the dimension type allows respawn anchors.
+         *
+         * @param respawnAnchors whether the dimension type allows respawn
+         * anchors
+         * @return this builder
+         * @see DimensionType.allowRespawnAnchors
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun respawnAnchors(respawnAnchors: Boolean): Builder
+
+        /**
+         * Sets the ambient light amount for the dimension type.
+         *
+         * @param light the light amount
+         * @return this builder
+         * @see DimensionType.ambientLight
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun ambientLight(light: Float): Builder
+
+        /**
+         * Sets the fixed time for the dimension type.
+         *
+         * @param time the time
+         * @return this builder
+         * @see DimensionType.fixedTime
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun fixedTime(time: Long): Builder
+
+        /**
+         * Makes the dimension type have no fixed time.
+         *
+         * @return this builder
+         * @see DimensionType.fixedTime
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun noFixedTime(): Builder
+
+        /**
+         * Sets the infiniburn settings for the dimension type.
+         *
+         * @param infiniburn the infiniburn settings
+         * @return this builder
+         * @see DimensionType.infiniburn
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun infiniburn(infiniburn: Key): Builder
+
+        /**
+         * Sets the minimum Y level for the dimension type.
+         *
+         * @param level the level
+         * @return this builder
+         * @see DimensionType.minimumY
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun minimumY(level: Int): Builder
+
+        /**
+         * Sets the maximum Y level (height) for the dimension type.
+         *
+         * @param level the level
+         * @return this builder
+         * @see DimensionType.height
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun height(level: Int): Builder
+
+        /**
+         * Sets the maximum logical Y level (height) for the dimension type.
+         *
+         * @param level the level
+         * @return this builder
+         * @see DimensionType.logicalHeight
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun logicalHeight(level: Int): Builder
+
+        /**
+         * Sets the coordinate scale for the dimension type.
+         *
+         * @param scale the scale
+         * @return this builder
+         * @see DimensionType.coordinateScale
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun coordinateScale(scale: Double): Builder
+
+        /**
+         * Sets the effects settings for the dimension type.
+         *
+         * @param effects the effects settings
+         * @return this builder
+         * @see DimensionType.effects
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun effects(effects: DimensionEffect): Builder
+    }
+
+    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun builder(key: Key): Builder
+    }
+
+    public companion object {
+
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
+
+        /**
+         * Creates a new builder for building dimension types.
+         *
+         * @param key the key
+         * @return a new builder
+         */
+        public fun builder(key: Key): Builder = FACTORY.builder(key)
+    }
 }

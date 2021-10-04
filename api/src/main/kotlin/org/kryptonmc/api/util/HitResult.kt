@@ -53,6 +53,6 @@ public interface HitResult {
 
         MISS,
         BLOCK,
-        ENTITY;
+        ENTITY
     }
 }

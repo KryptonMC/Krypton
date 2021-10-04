@@ -25,6 +25,7 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 
+@JvmRecord
 data class FlatLayer(
     val block: Block,
     val height: Int

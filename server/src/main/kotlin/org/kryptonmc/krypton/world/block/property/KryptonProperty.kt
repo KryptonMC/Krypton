@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.world.block.property
 
 import com.mojang.serialization.Codec
-import com.mojang.serialization.DataResult
 import org.kryptonmc.api.block.property.Property
+import org.kryptonmc.krypton.util.successOrError
 
 sealed class KryptonProperty<T : Comparable<T>>(
     override val name: String,
@@ -29,7 +29,7 @@ sealed class KryptonProperty<T : Comparable<T>>(
 ) : Property<T> {
 
     val codec: Codec<T> = Codec.STRING.comapFlatMap(
-        { key -> fromString(key)?.let { DataResult.success(it) } ?: DataResult.error("Unable to read property $this with value $key") },
+        { key -> fromString(key).successOrError("Unable to read property $this with value $key") },
         ::toString
     )
 

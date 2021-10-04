@@ -11,7 +11,7 @@ package org.kryptonmc.api.fluid
 /**
  * Something that can be represented as a [Fluid].
  */
-public interface FluidLike {
+public fun interface FluidLike {
 
     /**
      * Converts this fluid like object to its fluid representation.

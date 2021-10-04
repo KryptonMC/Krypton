@@ -13,16 +13,19 @@ package org.kryptonmc.api
  * the name and version, if it is considered stable, and the target Minecraft
  * version.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Platform {
 
     /**
      * The name of the platform.
      */
+    @get:JvmName("name")
     public val name: String
 
     /**
      * The version of the platform.
      */
+    @get:JvmName("version")
     public val version: String
 
     /**
@@ -33,20 +36,24 @@ public interface Platform {
     /**
      * The Minecraft version of the platform.
      */
+    @get:JvmName("minecraftVersion")
     public val minecraftVersion: String
 
     /**
      * The world version.
      */
+    @get:JvmName("worldVersion")
     public val worldVersion: Int
 
     /**
      * The protocol version.
      */
+    @get:JvmName("protocolVersion")
     public val protocolVersion: Int
 
     /**
      * The data pack version.
      */
+    @get:JvmName("dataPackVersion")
     public val dataPackVersion: Int
 }

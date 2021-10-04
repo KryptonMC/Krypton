@@ -20,6 +20,7 @@ public interface FireworkRocket : Projectile, ItemSupplier {
     /**
      * The number of ticks this rocket has been flying for.
      */
+    @get:JvmName("life")
     public var life: Int
 
     /**
@@ -31,6 +32,7 @@ public interface FireworkRocket : Projectile, ItemSupplier {
      * (flight + 1) * 10 + random(0 to 5) + random(0 to 6)
      * ```
      */
+    @get:JvmName("lifetime")
     public var lifetime: Int
 
     /**
@@ -46,5 +48,6 @@ public interface FireworkRocket : Projectile, ItemSupplier {
      *
      * This is used for elytra boosting.
      */
+    @get:JvmName("attachedEntity")
     public val attachedEntity: Entity?
 }

@@ -21,7 +21,8 @@ package org.kryptonmc.krypton.world.generation.noise
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 
-class NoiseSampling(
+@JvmRecord
+data class NoiseSampling(
     val xzScale: Double,
     val yScale: Double,
     val xzFactor: Double,

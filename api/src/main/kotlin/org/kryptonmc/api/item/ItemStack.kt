@@ -24,16 +24,19 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
     /**
      * The type of item in this stack.
      */
+    @get:JvmName("type")
     public val type: ItemType
 
     /**
      * The amount of items in this stack.
      */
+    @get:JvmName("amount")
     public var amount: Int
 
     /**
      * The holder for the stack's metadata.
      */
+    @get:JvmName("meta")
     public val meta: MetaHolder
 
     /**
@@ -101,15 +104,15 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
         /**
          * Creates a new builder for building [ItemStack] instances.
          */
-        @Contract("_ -> new")
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(): Builder = FACTORY.builder()
 
         /**
          * Creates a new [ItemStack] with the given [type].
          */
-        @Contract("_ -> new")
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(type: ItemType): ItemStack = FACTORY.builder().type(type).build()
 
         /**
@@ -119,8 +122,8 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
          * @param amount the amount of items
          * @return a new [ItemStack]
          */
-        @Contract("_ -> new")
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(type: ItemType, amount: Int): ItemStack = FACTORY.builder().type(type).amount(amount).build()
 
         /**
@@ -132,8 +135,8 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
          * @param metaBuilder the meta builder
          * @return a new [ItemStack]
          */
-        @Contract("_ -> new")
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(
             type: ItemType,
             amount: Int,
@@ -149,6 +152,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
          * be retrieved or set on this object.
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun empty(): ItemStack = FACTORY.empty()
     }
 }

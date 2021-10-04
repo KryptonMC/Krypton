@@ -26,5 +26,6 @@ public object CollisionRules {
     @JvmField public val PUSH_OWN_TEAM: CollisionRule = get("push_own_team")
 
     // @formatter:on
+    @JvmStatic
     private fun get(name: String): CollisionRule = Registries.COLLISION_RULES[Key.key(name)]!!
 }

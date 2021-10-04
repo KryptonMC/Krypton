@@ -50,10 +50,6 @@ object BlockLoader : KryptonDataLoader("blocks") {
         properties: Map<String, String>
     ): KryptonBlock? = PROPERTY_MAP[key]?.properties?.get(properties)
 
-    operator fun get(id: Int): Block? = STATES[id]
-
-    operator fun get(block: Block): Int = STATES.idOf(block)
-
     override fun load(data: JsonObject) {
         KryptonPropertyFactory.bootstrap()
         data.entrySet().forEach { (key, value) ->

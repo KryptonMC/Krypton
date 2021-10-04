@@ -13,6 +13,7 @@ import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.TranslatableComponent
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.TranslationHolder
@@ -46,6 +47,7 @@ public interface AttributeType : TranslationHolder, Keyed {
     /**
      * If attributes of this type should be sent to clients.
      */
+    @get:JvmName("sendToClient")
     public val sendToClient: Boolean
 
     @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
@@ -76,6 +78,7 @@ public interface AttributeType : TranslationHolder, Keyed {
          * @return a new type of attribute
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(
             key: Key,
             defaultBase: Double,
@@ -95,6 +98,7 @@ public interface AttributeType : TranslationHolder, Keyed {
          * @return a new type of attribute
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(
             key: Key,
             defaultBase: Double,

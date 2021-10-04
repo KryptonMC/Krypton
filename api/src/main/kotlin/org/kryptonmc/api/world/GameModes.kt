@@ -26,6 +26,7 @@ public object GameModes {
     @JvmField public val SPECTATOR: GameMode = register("spectator", "sp", false)
 
     // @formatter:on
+    @JvmStatic
     private fun register(name: String, abbreviation: String, canBuild: Boolean): GameMode {
         val key = Key.key(name)
         return Registries.register(Registries.GAME_MODES, key, GameMode.of(name, abbreviation, canBuild))

@@ -25,7 +25,8 @@ import org.kryptonmc.api.world.biome.BiomeCategory
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.Climate
 
-class KryptonBiome(
+@JvmRecord
+data class KryptonBiome(
     override val climate: Climate,
     override val depth: Float,
     override val scale: Float,

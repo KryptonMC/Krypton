@@ -10,6 +10,7 @@ package org.kryptonmc.api.command.meta
 
 import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.util.provide
@@ -79,6 +80,7 @@ public interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
          * @return a new builder
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(name: String): Builder = FACTORY.builder(name)
 
         /**
@@ -89,6 +91,7 @@ public interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
          * @return a new builder
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun builder(command: BrigadierCommand): Builder = builder(command.node.name)
     }
 }

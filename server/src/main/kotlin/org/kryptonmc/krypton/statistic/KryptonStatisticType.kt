@@ -25,12 +25,12 @@ import org.kryptonmc.api.statistic.StatisticFormatter
 import org.kryptonmc.api.statistic.StatisticType
 import java.util.IdentityHashMap
 
-class KryptonStatisticType<T : Any>(
+@JvmRecord
+data class KryptonStatisticType<T : Any>(
     private val key: Key,
-    override val registry: Registry<T>
+    override val registry: Registry<T>,
+    override val statistics: MutableMap<T, Statistic<T>> = IdentityHashMap()
 ) : StatisticType<T> {
-
-    override val statistics = IdentityHashMap<T, Statistic<T>>()
 
     override fun contains(key: T) = statistics.containsKey(key)
 

@@ -9,6 +9,7 @@
 package org.kryptonmc.api.block
 
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.HitResult
@@ -67,6 +68,7 @@ public interface BlockHitResult : HitResult {
          * @return a new block hit result
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(
             clickLocation: Vector3d,
             position: Vector3i,

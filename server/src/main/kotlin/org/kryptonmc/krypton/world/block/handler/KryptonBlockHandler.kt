@@ -32,13 +32,13 @@ import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 
-open class KryptonBlockHandler : BlockHandler {
+interface KryptonBlockHandler : BlockHandler {
 
     override fun calculateDestroyProgress(player: Player, world: World, block: Block, position: Vector3i): Float {
         val hardness = block.hardness
         if (hardness == -1.0) return 0F
         val factor = if (player.hasCorrectTool(block)) 30 else 100
-        return player.getDestroySpeed(block) / hardness.toFloat() / factor.toFloat()
+        return player.destroySpeed(block) / hardness.toFloat() / factor.toFloat()
     }
 
     override fun attack(player: Player, world: World, block: Block, position: Vector3i) = Unit

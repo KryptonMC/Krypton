@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world
 import org.kryptonmc.api.world.WorldBorder
 import org.spongepowered.math.vector.Vector2d
 
+@JvmRecord
 data class KryptonWorldBorder(
     override val size: Double,
     override val center: Vector2d,

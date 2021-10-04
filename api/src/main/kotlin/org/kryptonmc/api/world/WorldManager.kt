@@ -17,16 +17,19 @@ import java.util.concurrent.CompletableFuture
  * The world manager for this server. Can be used to retrieve loaded worlds,
  * or to load, save and update existing worlds.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface WorldManager {
 
     /**
      * The server this world manager is bound to.
      */
+    @get:JvmName("server")
     public val server: Server
 
     /**
      * The map of all currently loaded worlds by dimension.
      */
+    @get:JvmName("worlds")
     public val worlds: Map<ResourceKey<World>, World>
 
     /**
@@ -34,6 +37,7 @@ public interface WorldManager {
      *
      * What the default world is will be defined by the implementation.
      */
+    @get:JvmName("default")
     public val default: World
 
     /**

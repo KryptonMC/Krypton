@@ -33,7 +33,7 @@ class ArrayPalette(private val bits: Int, private val resizer: (Int, Block) -> I
     override val serializedSize: Int
         get() {
             var temp = size.varIntBytes
-            for (i in 0 until size) temp += BlockLoader.get(values[i]!!)
+            for (i in 0 until size) temp += BlockLoader.STATES.idOf(values[i]!!)
             return temp
         }
 
@@ -56,7 +56,7 @@ class ArrayPalette(private val bits: Int, private val resizer: (Int, Block) -> I
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(size)
-        for (i in 0 until size) buf.writeVarInt(BlockLoader[values[i]!!])
+        for (i in 0 until size) buf.writeVarInt(BlockLoader.STATES.idOf(values[i]!!))
     }
 
     override fun load(data: ListTag) {

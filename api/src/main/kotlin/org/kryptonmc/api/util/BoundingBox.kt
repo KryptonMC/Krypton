@@ -18,51 +18,61 @@ import org.spongepowered.math.vector.Vector3i
  *
  * These are immutable to guarantee thread-safe usage.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface BoundingBox {
 
     /**
      * The minimum X value.
      */
+    @get:JvmName("minimumX")
     public val minimumX: Double
 
     /**
      * The minimum Y value.
      */
+    @get:JvmName("minimumY")
     public val minimumY: Double
 
     /**
      * The minimum Z value.
      */
+    @get:JvmName("minimumZ")
     public val minimumZ: Double
 
     /**
      * The maximum X value.
      */
+    @get:JvmName("maximumX")
     public val maximumX: Double
 
     /**
      * The maximum Y value.
      */
+    @get:JvmName("maximumY")
     public val maximumY: Double
 
     /**
      * The maximum Z value.
      */
+    @get:JvmName("maximumZ")
     public val maximumZ: Double
 
     /**
      * The size of this bounding box on the X axis.
      */
+    @get:JvmName("xSize")
     public val xSize: Double
 
     /**
      * The size of this bounding box on the Y axis.
      */
+    @get:JvmName("ySize")
     public val ySize: Double
 
     /**
      * The size of this bounding box on the Z axis.
      */
+    @get:JvmName("zSize")
     public val zSize: Double
 
     /**
@@ -72,6 +82,7 @@ public interface BoundingBox {
      * formula:
      * `(xSize + ySize + zSize) / 3.0`
      */
+    @get:JvmName("size")
     public val size: Double
 
     /**
@@ -79,6 +90,7 @@ public interface BoundingBox {
      *
      * This is calculated by multiplying the 3 sizes together.
      */
+    @get:JvmName("volume")
     public val volume: Double
 
     /**
@@ -87,6 +99,7 @@ public interface BoundingBox {
      * This is calculated using a non-traditional method, in that the minimum
      * and maximum X value are linear interpolated with percentage 0.5.
      */
+    @get:JvmName("centerX")
     public val centerX: Double
 
     /**
@@ -95,6 +108,7 @@ public interface BoundingBox {
      * This is calculated using a non-traditional method, in that the minimum
      * and maximum Y value are linear interpolated with percentage 0.5.
      */
+    @get:JvmName("centerY")
     public val centerY: Double
 
     /**
@@ -103,6 +117,7 @@ public interface BoundingBox {
      * This is calculated using a non-traditional method, in that the minimum
      * and maximum Z value are linear interpolated with percentage 0.5.
      */
+    @get:JvmName("centerZ")
     public val centerZ: Double
 
     /**

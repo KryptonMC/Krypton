@@ -11,10 +11,12 @@ package org.kryptonmc.api.entity.projectile
 /**
  * A spectral arrow.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface SpectralArrow : ArrowLike {
 
     /**
      * The time, in ticks, that the glowing effect will persist for.
      */
+    @get:JvmName("duration")
     public var duration: Int
 }

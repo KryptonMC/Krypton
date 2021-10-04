@@ -25,12 +25,14 @@ public interface ArrowLike : Projectile {
     /**
      * The damage multiplier of this arrow like object.
      */
+    @get:JvmName("damage")
     public var damage: Double
 
     /**
      * The block this arrow like object is currently stuck in, or null if this
      * object is not currently stuck in a block.
      */
+    @get:JvmName("stuckInBlock")
     public var stuckInBlock: Block?
 
     /**
@@ -44,6 +46,7 @@ public interface ArrowLike : Projectile {
      * This will increase by 1 for every tick this object is not moving.
      * When this value reaches 1200, it will despawn.
      */
+    @get:JvmName("life")
     public val life: Int
 
     /**
@@ -52,6 +55,7 @@ public interface ArrowLike : Projectile {
      *
      * When this value reaches 0, it will no longer pierce through entities.
      */
+    @get:JvmName("piercingLevel")
     public val piercingLevel: Int
 
     /**
@@ -60,6 +64,7 @@ public interface ArrowLike : Projectile {
      *
      * When it hits a block, this value will be initially set to 7.
      */
+    @get:JvmName("shakeTime")
     public val shakeTime: Int
 
     /**
@@ -77,11 +82,13 @@ public interface ArrowLike : Projectile {
     /**
      * The sound event to play when hitting a block/mob.
      */
+    @get:JvmName("sound")
     public val sound: SoundEvent
 
     /**
      * The current pickup state of this arrow like object.
      */
+    @get:JvmName("pickup")
     public val pickup: Pickup
 
     /**

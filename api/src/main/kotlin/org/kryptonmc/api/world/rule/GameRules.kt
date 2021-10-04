@@ -13,6 +13,7 @@
  */
 package org.kryptonmc.api.world.rule
 
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.Mob
 import org.kryptonmc.api.entity.player.Player
@@ -329,9 +330,13 @@ public object GameRules {
 
     // @formatter:on
     @Suppress("UNCHECKED_CAST")
-    private fun <V : Any> register(key: String, name: String, default: V): GameRule<V> = Registries.register(
-        Registries.GAMERULES,
-        key,
-        GameRule.of(name, default, Component.translatable("gamerule.$name"))
-    ) as GameRule<V>
+    @JvmStatic
+    private fun <V : Any> register(key: String, name: String, default: V): GameRule<V> {
+        val key1 = Key.key(key)
+        return Registries.register(
+            Registries.GAMERULES,
+            key1,
+            GameRule.of(key1, name, default, Component.translatable("gamerule.$name"))
+        ) as GameRule<V>
+    }
 }

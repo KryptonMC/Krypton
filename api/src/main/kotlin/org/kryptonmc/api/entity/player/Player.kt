@@ -37,15 +37,12 @@ import java.util.Locale
  * Represents a player.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Player : LivingEntity,
-    Sender,
-    InventoryHolder,
-    PluginMessageRecipient,
-    HoverEventSource<HoverEvent.ShowEntity> {
+public interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient, HoverEventSource<HoverEvent.ShowEntity> {
 
     /**
      * The address that the player is currently connected from.
      */
+    @get:JvmName("address")
     public val address: InetSocketAddress
 
     /**
@@ -53,6 +50,7 @@ public interface Player : LivingEntity,
      *
      * Will contain offline mode details for offline mode players.
      */
+    @get:JvmName("profile")
     public val profile: GameProfile
 
     /**
@@ -76,26 +74,31 @@ public interface Player : LivingEntity,
     /**
      * The current speed at which this player can walk at.
      */
+    @get:JvmName("walkingSpeed")
     public var walkingSpeed: Float
 
     /**
      * The current speed at which this player can fly at.
      */
+    @get:JvmName("flyingSpeed")
     public var flyingSpeed: Float
 
     /**
      * The dimension resource key for the world the player is currently in.
      */
+    @get:JvmName("dimension")
     public val dimension: ResourceKey<World>
 
     /**
      * The dimension the player is currently in.
      */
+    @get:JvmName("dimensionType")
     public val dimensionType: DimensionType
 
     /**
      * The view distance of this player.
      */
+    @get:JvmName("viewDistance")
     public val viewDistance: Int
 
     /**
@@ -103,26 +106,31 @@ public interface Player : LivingEntity,
      *
      * Will always be the time of the server.
      */
+    @get:JvmName("time")
     public val time: Long
 
     /**
      * This player's current game mode.
      */
+    @get:JvmName("gameMode")
     public val gameMode: GameMode
 
     /**
      * The direction this player is currently facing.
      */
+    @get:JvmName("direction")
     public val direction: Direction
 
     /**
      * The scoreboard currently being shown to this player.
      */
+    @get:JvmName("scoreboard")
     public var scoreboard: Scoreboard?
 
     /**
      * This player's main hand.
      */
+    @get:JvmName("mainHand")
     public val mainHand: MainHand
 
     /**
@@ -130,16 +138,19 @@ public interface Player : LivingEntity,
      *
      * This can and should never be changed.
      */
+    @get:JvmName("inventory")
     override val inventory: PlayerInventory
 
     /**
      * This player's locale.
      */
+    @get:JvmName("locale")
     public val locale: Locale?
 
     /**
      * The statistics tracker for this player.
      */
+    @get:JvmName("statistics")
     public val statistics: StatisticsTracker
 
     /**
@@ -240,7 +251,7 @@ public interface Player : LivingEntity,
      * @param block the block the player is destroying
      * @return the destroy speed
      */
-    public fun getDestroySpeed(block: Block): Float
+    public fun destroySpeed(block: Block): Float
 
     /**
      * Kicks the player with the given text shown

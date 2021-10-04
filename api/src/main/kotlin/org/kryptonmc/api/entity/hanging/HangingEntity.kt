@@ -14,10 +14,12 @@ import org.kryptonmc.api.util.Direction
 /**
  * An entity that hangs from something, usually an item.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface HangingEntity : Entity {
 
     /**
      * The direction this hanging entity is facing.
      */
+    @get:JvmName("direction")
     public val direction: Direction
 }

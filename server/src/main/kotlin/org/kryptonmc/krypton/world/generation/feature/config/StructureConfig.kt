@@ -24,6 +24,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.krypton.util.Codecs
 import java.util.function.Function
 
+@JvmRecord
 data class StructureConfig(
     val spacing: Int,
     val separation: Int,

@@ -9,6 +9,7 @@
 package org.kryptonmc.api.inventory
 
 import net.kyori.adventure.key.Key
+import org.jetbrains.annotations.Contract
 
 /**
  * Represents a type of inventory in a grid shape, such as a chest or a
@@ -40,6 +41,7 @@ public interface GridInventoryType : InventoryType {
          * @return a new grid inventory type
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(key: Key, columns: Int, rows: Int): GridInventoryType = InventoryType.FACTORY.grid(key, columns, rows)
     }
 }

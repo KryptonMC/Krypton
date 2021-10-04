@@ -25,5 +25,6 @@ public object DimensionEffects {
     @JvmField public val THE_END: DimensionEffect = get("the_end")
 
     // @formatter:on
+    @JvmStatic
     private fun get(name: String): DimensionEffect = Registries.DIMENSION_EFFECTS[Key.key(name)]!!
 }

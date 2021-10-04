@@ -27,5 +27,5 @@ public interface Attributable {
      * @param type the type of the attribute
      * @return the attribute, or null if not present
      */
-    public fun getAttribute(type: AttributeType): Attribute? = attributes[type]
+    public fun attribute(type: AttributeType): Attribute? = attributes[type]
 }

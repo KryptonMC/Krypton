@@ -43,5 +43,6 @@ public object MetaKeys {
 
     // @formatter:on
     @Suppress("UNCHECKED_CAST")
+    @JvmStatic
     private fun <V : Any> get(name: String) = Registries.META_KEYS[Key.key("krypton", name)]!! as MetaKey<V>
 }

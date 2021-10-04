@@ -26,7 +26,8 @@ import org.spongepowered.math.vector.Vector3i
 import kotlin.math.max
 import kotlin.math.min
 
-data class KryptonBoundingBox private constructor(
+@JvmRecord
+data class KryptonBoundingBox(
     override val minimumX: Double,
     override val minimumY: Double,
     override val minimumZ: Double,
@@ -35,14 +36,22 @@ data class KryptonBoundingBox private constructor(
     override val maximumZ: Double
 ) : BoundingBox {
 
-    override val xSize: Double = maximumX - minimumX
-    override val ySize: Double = maximumY - minimumY
-    override val zSize: Double = maximumZ - minimumZ
-    override val size: Double = (xSize + ySize + zSize) / 3.0
-    override val volume: Double = xSize * ySize * zSize
-    override val centerX: Double = GenericMath.lerp(minimumX, maximumX, 0.5)
-    override val centerY: Double = GenericMath.lerp(minimumY, maximumY, 0.5)
-    override val centerZ: Double = GenericMath.lerp(minimumZ, maximumZ, 0.5)
+    override val xSize: Double
+        get() = maximumX - minimumX
+    override val ySize: Double
+        get() = maximumY - minimumY
+    override val zSize: Double
+        get() = maximumZ - minimumZ
+    override val size: Double
+        get() = (xSize + ySize + zSize) / 3.0
+    override val volume: Double
+        get() = xSize * ySize * zSize
+    override val centerX: Double
+        get() = GenericMath.lerp(minimumX, maximumX, 0.5)
+    override val centerY: Double
+        get() = GenericMath.lerp(minimumY, maximumY, 0.5)
+    override val centerZ: Double
+        get() = GenericMath.lerp(minimumZ, maximumZ, 0.5)
 
     init {
         require(minimumX <= maximumX) { "Maximum X cannot be less than than minimum X! Maximum is $maximumX and minimum is $minimumX!" }

@@ -50,11 +50,13 @@ import kotlin.io.path.writer
 import kotlin.math.max
 import kotlin.math.min
 
+@Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonStatisticsTracker(
     private val player: KryptonPlayer,
     private val file: Path
 ) : StatisticsTracker {
 
+    @get:JvmName("statistics")
     override val statistics: Object2IntMap<Statistic<*>> = Object2IntMaps.synchronize<Statistic<*>>(
         Object2IntOpenHashMap()
     ).apply { defaultReturnValue(0) }

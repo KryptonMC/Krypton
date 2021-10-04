@@ -11,6 +11,7 @@ package org.kryptonmc.api.effect.sound
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.provide
@@ -39,6 +40,7 @@ public interface SoundEvent : Sound.Type {
          * @return a new sound event
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(key: Key): SoundEvent = FACTORY.of(key)
     }
 }

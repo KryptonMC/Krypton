@@ -18,22 +18,27 @@
  */
 package org.kryptonmc.krypton.world.rule
 
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.world.rule.GameRule
 
 @JvmRecord
 data class KryptonGameRule<V : Any>(
+    private val key: Key,
     override val name: String,
     override val default: V,
     override val translation: TranslatableComponent
 ) : GameRule<V> {
 
+    override fun key(): Key = key
+
     object Factory : GameRule.Factory {
 
         override fun <V : Any> of(
+            key: Key,
             name: String,
             default: V,
             translation: TranslatableComponent
-        ): GameRule<V> = KryptonGameRule(name, default, translation)
+        ): GameRule<V> = KryptonGameRule(key, name, default, translation)
     }
 }

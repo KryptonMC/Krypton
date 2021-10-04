@@ -35,5 +35,6 @@ public object Criteria {
     @JvmField public val KILLED_BY_TEAM: CompoundCriterion = get("killed_by_team") as CompoundCriterion
 
     // @formatter:on
+    @JvmStatic
     private fun get(name: String) = Registries.CRITERIA[Key.key("krypton", name)]!!
 }

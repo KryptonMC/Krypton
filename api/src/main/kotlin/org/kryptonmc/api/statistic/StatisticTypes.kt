@@ -35,5 +35,6 @@ public object StatisticTypes {
 
     // @formatter:on
     @Suppress("UNCHECKED_CAST")
+    @JvmStatic
     private fun <T : Any> get(name: String) = Registries.STATISTIC_TYPE[Key.key(name)]!! as StatisticType<T>
 }

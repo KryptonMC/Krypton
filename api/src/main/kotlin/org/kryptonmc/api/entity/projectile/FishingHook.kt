@@ -13,12 +13,14 @@ import org.kryptonmc.api.entity.Entity
 /**
  * A fishing hook on the end of a fishing rod.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface FishingHook : Projectile {
 
     /**
      * The entity that is currently hooked by this hook, or null if this hook
      * is not hooking an entity.
      */
+    @get:JvmName("hooked")
     public val hooked: Entity?
 
     /**
@@ -29,6 +31,7 @@ public interface FishingHook : Projectile {
     /**
      * The current state of this hook.
      */
+    @get:JvmName("state")
     public val state: State
 
     /**

@@ -25,6 +25,7 @@ public object Precipitations {
     @JvmField public val SNOW: Precipitation = register("snow")
 
     // @formatter:on
+    @JvmStatic
     private fun register(name: String): Precipitation {
         val key = Key.key(name)
         return Registries.register(Registries.PRECIPITATIONS, key, Precipitation.of(key))

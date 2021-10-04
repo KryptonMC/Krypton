@@ -31,7 +31,8 @@ import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.generation.StructureSettings
 import java.util.Optional
 
-class NoiseGeneratorSettings(
+@JvmRecord
+data class NoiseGeneratorSettings(
     val structureSettings: StructureSettings,
     val noiseSettings: NoiseSettings,
     val defaultBlock: Block,
@@ -51,11 +52,11 @@ class NoiseGeneratorSettings(
     companion object {
 
         val OVERWORLD = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("overworld"))
-        val AMPLIFIED = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("amplified"))
+        private val AMPLIFIED = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("amplified"))
         val NETHER = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("nether"))
         val END = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("end"))
-        val CAVES = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("caves"))
-        val FLOATING_ISLANDS = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("floating_islands"))
+        private val CAVES = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("caves"))
+        private val FLOATING_ISLANDS = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("floating_islands"))
 
         val CODEC: Codec<NoiseGeneratorSettings> = RecordCodecBuilder.create {
             it.group(
@@ -144,9 +145,11 @@ class NoiseGeneratorSettings(
             defaultFluid: Block
         ): NoiseGeneratorSettings {
             val structures = StructureSettings.DEFAULTS.toMutableMap() // TODO: Add ruined portal to this map when it exists
-            return NoiseGeneratorSettings(StructureSettings(
-                structures,
-                Optional.ofNullable(structureSettings.stronghold)),
+            return NoiseGeneratorSettings(
+                StructureSettings(
+                    structures,
+                    structureSettings.stronghold
+                ),
                 NoiseSettings(
                     0,
                     128,

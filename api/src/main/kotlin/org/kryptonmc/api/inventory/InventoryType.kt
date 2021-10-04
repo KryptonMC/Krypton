@@ -11,6 +11,7 @@ package org.kryptonmc.api.inventory
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.provide
@@ -50,6 +51,7 @@ public interface InventoryType : Keyed {
          * @return a new inventory type
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(key: Key, size: Int): InventoryType = FACTORY.of(key, size)
     }
 }

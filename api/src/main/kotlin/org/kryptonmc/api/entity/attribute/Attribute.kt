@@ -29,6 +29,7 @@ public interface Attribute {
     /**
      * The base value of this attribute.
      */
+    @get:JvmName("baseValue")
     public var baseValue: Double
 
     /**
@@ -53,7 +54,7 @@ public interface Attribute {
      * @param operation the operation
      * @return all modifiers for the given operation
      */
-    public fun getModifiers(operation: ModifierOperation): List<AttributeModifier>
+    public fun modifiers(operation: ModifierOperation): List<AttributeModifier>
 
     /**
      * Adds the given [modifier] to the list of modifiers under the given

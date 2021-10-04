@@ -16,20 +16,24 @@ import org.kryptonmc.api.permission.Subject
 /**
  * A sender is an interface representing the sender of a command.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface Sender : Audience, Subject, Identified {
 
     /**
      * The name of the sender.
      */
+    @get:JvmName("name")
     public val name: String
 
     /**
      * The sender's permission level (the equivalent to Minecraft's operator level).
      */
+    @get:JvmName("permissionLevel")
     public val permissionLevel: Int
 
     /**
      * The sender's server
      */
+    @get:JvmName("server")
     public val server: Server
 }

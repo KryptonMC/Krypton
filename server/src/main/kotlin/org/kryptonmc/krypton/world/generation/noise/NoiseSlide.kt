@@ -22,7 +22,8 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.krypton.util.Codecs
 
-class NoiseSlide(
+@JvmRecord
+data class NoiseSlide(
     val target: Int,
     val size: Int,
     val offset: Int

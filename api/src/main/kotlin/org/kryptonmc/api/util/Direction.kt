@@ -9,7 +9,6 @@
 package org.kryptonmc.api.util
 
 import org.spongepowered.math.vector.Vector3i
-import java.util.function.Predicate
 
 /**
  * Represents a three-dimensional
@@ -104,9 +103,7 @@ public enum class Direction(
      *
      * @param serialized the name
      */
-    public enum class Axis(
-        @get:JvmName("serialized") override val serialized: String
-    ) : (Direction?) -> Boolean, Predicate<Direction?>, StringSerializable {
+    public enum class Axis(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
         X("x") {
 
@@ -160,10 +157,6 @@ public enum class Direction(
          * @return the chosen coordinate
          */
         public abstract fun select(x: Double, y: Double, z: Double): Double
-
-        override fun invoke(direction: Direction?): Boolean = direction?.axis === this
-
-        override fun test(t: Direction?): Boolean = invoke(t)
     }
 
     /**

@@ -20,6 +20,7 @@ public interface Projectile : Entity {
      * The owner of this projectile, or null if this projectile does not have
      * an owner yet.
      */
+    @get:JvmName("owner")
     public val owner: Entity?
 
     /**

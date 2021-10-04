@@ -20,21 +20,25 @@ import org.spongepowered.math.vector.Vector3i
  * These used to be known as tile entities, for all of you folks who remember
  * those days.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface BlockEntity {
 
     /**
      * The type of this block entity.
      */
+    @get:JvmName("type")
     public val type: BlockEntityType
 
     /**
      * The world this block entity is in.
      */
+    @get:JvmName("world")
     public val world: World
 
     /**
      * The block that this entity is bound to.
      */
+    @get:JvmName("block")
     public val block: Block
 
     /**
@@ -42,6 +46,7 @@ public interface BlockEntity {
      *
      * This will be identical to the position of the associated block.
      */
+    @get:JvmName("position")
     public val position: Vector3i
 
     /**

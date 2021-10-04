@@ -14,11 +14,13 @@ import org.spongepowered.math.vector.Vector2d
  * The area around a world that prevents players from venturing too far into
  * the wilderness.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface WorldBorder {
 
     /**
      * The size, or diameter, of the world border.
      */
+    @get:JvmName("size")
     public val size: Double
 
     /**
@@ -26,10 +28,12 @@ public interface WorldBorder {
      *
      * Note: This position's Y will always be -1.
      */
+    @get:JvmName("center")
     public val center: Vector2d
 
     /**
      * The damage multiplier for this border.
      */
+    @get:JvmName("damageMultiplier")
     public val damageMultiplier: Double
 }

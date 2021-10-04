@@ -30,56 +30,67 @@ import java.nio.file.Path
 /**
  * Represents a loaded world.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface World : ForwardingAudience {
 
     /**
      * The server this world was loaded on.
      */
+    @get:JvmName("server")
     public val server: Server
 
     /**
      * The name of this world.
      */
+    @get:JvmName("name")
     public val name: String
 
     /**
      * The folder of this world on disk.
      */
+    @get:JvmName("folder")
     public val folder: Path
 
     /**
      * The dimension resource key for this world.
      */
+    @get:JvmName("dimension")
     public val dimension: ResourceKey<World>
 
     /**
      * The dimension that this world is.
      */
+    @get:JvmName("dimensionType")
     public val dimensionType: DimensionType
 
     /**
      * The spawn location of this world.
      */
+    @get:JvmName("spawnLocation")
     public val spawnLocation: Vector3i
 
     /**
      * The set of chunks currently loaded in this world.
      */
+    @get:JvmName("chunks")
     public val chunks: Collection<Chunk>
 
     /**
      * This world's border.
      */
+    @get:JvmName("border")
     public val border: WorldBorder
 
     /**
      * The difficulty of this world.
      */
+    @get:JvmName("difficulty")
     public val difficulty: Difficulty
 
     /**
      * The default gamemode of this world.
      */
+    @get:JvmName("gameMode")
     public val gameMode: GameMode
 
     /**
@@ -90,11 +101,13 @@ public interface World : ForwardingAudience {
     /**
      * The seed of this world.
      */
+    @get:JvmName("seed")
     public val seed: Long
 
     /**
      * The current time in this world.
      */
+    @get:JvmName("time")
     public val time: Long
 
     /**
@@ -106,6 +119,7 @@ public interface World : ForwardingAudience {
      * The level of the current thunderstorm (0 if there is no thunderstorm
      * going on).
      */
+    @get:JvmName("thunderLevel")
     public var thunderLevel: Float
 
     /**
@@ -116,11 +130,13 @@ public interface World : ForwardingAudience {
     /**
      * The level of the current rain.
      */
+    @get:JvmName("rainLevel")
     public var rainLevel: Float
 
     /**
      * The game rules for this world.
      */
+    @get:JvmName("gameRules")
     public val gameRules: GameRuleHolder
 
     /**

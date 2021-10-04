@@ -37,14 +37,11 @@ object InternalResourceKeys {
 
     val MEMORIES = ResourceKeys.minecraft<MemoryKey<Any>>("memory_module_type")
     val DIMENSION = ResourceKeys.minecraft<Dimension>("dimension")
-    val DIMENSION_TYPE = ResourceKeys.minecraft<KryptonDimensionType>("dimension_type")
     val GAME_EVENT = ResourceKeys.minecraft<GameEvent>("game_event")
 
     // World generation resources
     val GENERATOR = ResourceKeys.minecraft<Codec<out Generator>>("worldgen/chunk_generator")
     val BIOME_GENERATOR = ResourceKeys.minecraft<Codec<out BiomeGenerator>>("worldgen/biome_source")
-    val FEATURE = ResourceKeys.minecraft<Feature<*>>("worldgen/feature")
-    val CONFIGURED_FEATURE = ResourceKeys.minecraft<ConfiguredFeature<*, *>>("worldgen/configured_feature")
     val STRUCTURE = ResourceKeys.minecraft<Structure<*>>("worldgen/structure_feature")
     val NOISE_GENERATOR_SETTINGS = ResourceKeys.minecraft<NoiseGeneratorSettings>("worldgen/noise_settings")
     val CHUNK_STATUS = ResourceKeys.minecraft<ChunkStatus>("chunk_status")

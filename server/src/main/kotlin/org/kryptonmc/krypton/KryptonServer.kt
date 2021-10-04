@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton
 
-import kotlinx.coroutines.launch
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component
@@ -52,7 +51,6 @@ import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.fluid.KryptonFluidManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
-import java.lang.management.ManagementFactory
 import java.net.InetSocketAddress
 import java.nio.file.Path
 import java.security.AccessController
@@ -108,9 +106,8 @@ class KryptonServer(
     @Volatile
     var isRunning = true
         private set
-    @Volatile
-    private var lastTickTime = 0L
 
+    private var lastTickTime = 0L
     private var lastOverloadWarning = 0L
     private var tickCount = 0
     private var oversleepFactor = 0L

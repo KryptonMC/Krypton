@@ -41,5 +41,6 @@ public interface Mob : LivingEntity {
     /**
      * The main hand of this mob.
      */
+    @get:JvmName("mainHand")
     public val mainHand: MainHand
 }

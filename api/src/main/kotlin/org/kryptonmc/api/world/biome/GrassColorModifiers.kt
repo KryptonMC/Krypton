@@ -25,6 +25,7 @@ public object GrassColorModifiers {
     @JvmField public val SWAMP: GrassColorModifier = register("swamp")
 
     // @formatter:on
+    @JvmStatic
     private fun register(name: String): GrassColorModifier {
         val key = Key.key(name)
         return Registries.register(Registries.GRASS_COLOR_MODIFIERS, key, GrassColorModifier.of(key))

@@ -36,9 +36,9 @@ object EmptyFluidHandler : FluidHandler {
         replacement: Fluid
     ) = true
 
-    override fun getFlow(fluid: Fluid, position: Vector3i, world: World): Vector3d = Vector3d.ZERO
+    override fun flow(fluid: Fluid, position: Vector3i, world: World): Vector3d = Vector3d.ZERO
 
-    override fun getHeight(fluid: Fluid, position: Vector3i, world: World) = 0F
+    override fun height(fluid: Fluid, position: Vector3i, world: World) = 0F
 
     override fun tick(fluid: Fluid, position: Vector3i, world: World) = Unit
 
