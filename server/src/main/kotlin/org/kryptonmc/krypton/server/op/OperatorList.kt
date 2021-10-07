@@ -46,6 +46,6 @@ class OperatorList(path: Path) : ServerConfigList<KryptonGameProfile, OperatorEn
 
         reader.endObject()
         if (name == null || uuid == null) return null
-        return OperatorEntry(KryptonGameProfile(uuid, name, emptyList()), level, bypassesPlayerLimit)
+        return OperatorEntry(KryptonGameProfile(name, uuid, emptyList()), level, bypassesPlayerLimit)
     }
 }

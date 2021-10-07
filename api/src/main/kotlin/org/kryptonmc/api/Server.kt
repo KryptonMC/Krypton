@@ -9,7 +9,6 @@
 package org.kryptonmc.api
 
 import net.kyori.adventure.audience.ForwardingAudience
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.ProfileCache
 import org.kryptonmc.api.block.BlockManager
@@ -185,12 +184,6 @@ public interface Server : ForwardingAudience {
     public val scoreboard: Scoreboard?
 
     /**
-     * The list of registered plugin messaging channels.
-     */
-    @get:JvmName("channels")
-    public val channels: Set<Key>
-
-    /**
      * Gets the online player with the given [uuid], or returns null if there
      * is no player online with the given [uuid].
      *
@@ -220,18 +213,4 @@ public interface Server : ForwardingAudience {
      * message
      */
     public fun sendMessage(message: Component, permission: String)
-
-    /**
-     * Registers a plugin messaging channel.
-     *
-     * @param channel the channel to register
-     */
-    public fun registerChannel(channel: Key)
-
-    /**
-     * Unregisters a plugin messaging channel.
-     *
-     * @param channel the channel to register
-     */
-    public fun unregisterChannel(channel: Key)
 }

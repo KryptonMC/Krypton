@@ -30,8 +30,8 @@ class AuthenticationTests {
     fun `test game profile property retention`() {
         val uuid = UUID.randomUUID()
         val profile = KryptonGameProfile(
-            uuid,
             "Test",
+            uuid,
             listOf(KryptonProfileProperty("hello", "world", "xxx"))
         )
 

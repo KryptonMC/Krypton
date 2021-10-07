@@ -118,7 +118,7 @@ class LoginHandler(
             // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
             val uuid = legacyForwardedData?.uuid
                 ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
-            val profile = KryptonGameProfile(uuid, packet.name, legacyForwardedData?.properties ?: emptyList())
+            val profile = KryptonGameProfile(packet.name, uuid, legacyForwardedData?.properties ?: emptyList())
 
             // Check the player can join and the login event was not cancelled.
             if (!canJoin(profile, address) || !callLoginEvent(profile)) return
@@ -209,7 +209,7 @@ class LoginHandler(
 
         // All good to go, let's construct our stuff
         LOGGER.debug("Detected Velocity login for ${data.uuid}")
-        val profile = KryptonGameProfile(data.uuid, data.username, data.properties)
+        val profile = KryptonGameProfile(data.username, data.uuid, data.properties)
         val player = KryptonPlayer(
             session,
             profile,

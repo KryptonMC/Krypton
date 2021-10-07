@@ -28,16 +28,16 @@ import java.util.UUID
 
 @JvmRecord
 data class KryptonGameProfile(
-    override val uuid: UUID,
     override val name: String,
+    override val uuid: UUID,
     override val properties: List<ProfileProperty>
 ) : GameProfile {
 
-    override fun toString() = "GameProfile(name=$name,uuid=$uuid)"
+    override fun toString() = "KryptonGameProfile(name=$name,uuid=$uuid,properties=$properties)"
 
     object Factory : GameProfile.Factory {
 
-        override fun of(name: String, uuid: UUID, properties: List<ProfileProperty>): GameProfile = KryptonGameProfile(uuid, name, properties)
+        override fun of(name: String, uuid: UUID, properties: List<ProfileProperty>): GameProfile = KryptonGameProfile(name, uuid, properties)
     }
 
     companion object : TypeAdapter<KryptonGameProfile>() {
@@ -65,7 +65,7 @@ data class KryptonGameProfile(
 
             reader.endObject()
             if (uuid == null || name == null) return null
-            return KryptonGameProfile(uuid, name, properties)
+            return KryptonGameProfile(name, uuid, properties)
         }
 
         override fun write(writer: JsonWriter, value: KryptonGameProfile) {

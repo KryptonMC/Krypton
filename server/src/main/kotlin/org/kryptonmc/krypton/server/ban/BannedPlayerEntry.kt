@@ -73,7 +73,7 @@ class BannedPlayerEntry(
 
             reader.endObject()
             if (name == null || uuid == null) return null
-            return BannedPlayerEntry(KryptonGameProfile(uuid, name, emptyList()), creationDate, source, expires, reason)
+            return BannedPlayerEntry(KryptonGameProfile(name, uuid, emptyList()), creationDate, source, expires, reason)
         }
     }
 }

@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
@@ -58,7 +56,6 @@ import java.security.PrivilegedAction
 import java.security.SecureRandom
 import java.util.Locale
 import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
@@ -83,7 +80,6 @@ class KryptonServer(
     val playerManager = PlayerManager(this)
     override val players = playerManager.players
 
-    override val channels: MutableSet<Key> = ConcurrentHashMap.newKeySet()
     override val console = KryptonConsole(this)
     override var scoreboard: KryptonScoreboard? = null
         private set
@@ -93,14 +89,14 @@ class KryptonServer(
 
     override val worldManager = KryptonWorldManager(this, worldFolder)
     override val commandManager = KryptonCommandManager
-    override val pluginManager = KryptonPluginManager(this)
-    override val eventManager = KryptonEventManager(pluginManager)
+    override val pluginManager = KryptonPluginManager
+    override val eventManager = KryptonEventManager
     override val servicesManager = KryptonServicesManager
     override val registryManager = KryptonRegistryManager
     override val blockManager = KryptonBlockManager
     override val itemManager = KryptonItemManager
     override val fluidManager = KryptonFluidManager
-    override val scheduler = KryptonScheduler(pluginManager)
+    override val scheduler = KryptonScheduler()
     override val factoryProvider = KryptonFactoryProvider
 
     @Volatile
@@ -217,7 +213,7 @@ class KryptonServer(
                 return
             }
 
-            pluginManager.loadPlugins(pluginPath)
+            pluginManager.loadPlugins(pluginPath, this)
         } catch (exception: Exception) {
             LOGGER.error("Failed to load plugins!", exception)
         }
@@ -275,22 +271,8 @@ class KryptonServer(
 
     override fun player(name: String) = playerManager.playersByName[name]
 
-    override fun registerChannel(channel: Key) {
-        require(channel !in RESERVED_CHANNELS) {
-            "Cannot register reserved channel with name \"minecraft:register\" or \"minecraft:unregister\"!"
-        }
-        channels.add(channel)
-    }
-
-    override fun unregisterChannel(channel: Key) {
-        channels.remove(channel)
-        require(channel !in RESERVED_CHANNELS) {
-            "Cannot unregister reserved channels with name \"minecraft:register\" or \"minecraft:unregister\"!"
-        }
-    }
-
     override fun sendMessage(message: Component, permission: String) {
-        playerManager.players.filter { it.hasPermission(permission) }.forEach { it.sendMessage(message) }
+        playerManager.players.forEach { if (it.hasPermission(permission)) it.sendMessage(message) }
         console.sendMessage(message)
         return
     }
@@ -358,7 +340,6 @@ class KryptonServer(
 
     companion object {
 
-        private val RESERVED_CHANNELS = setOf(key("register"), key("unregister"))
         private const val MILLISECONDS_PER_TICK = 50L // milliseconds in a tick
         private const val SAVE_PROFILE_CACHE_INTERVAL = 600
         val LOGGER = logger<KryptonServer>()

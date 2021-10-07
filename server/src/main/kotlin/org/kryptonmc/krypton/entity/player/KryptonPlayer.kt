@@ -351,9 +351,6 @@ class KryptonPlayer(
     override fun getSpawnPacket() = PacketOutSpawnPlayer(this)
 
     override fun sendPluginMessage(channel: Key, message: ByteArray) {
-        if (channel !in PREREGISTERED_CHANNELS) require(channel in server.channels) {
-            "Channel must be registered with the server to have data sent over it!"
-        }
         if (channel in DEBUG_CHANNELS) {
             SERVER_LOGGER.warn("A plugin attempted to send a plugin message on a debug channel. These channels will " +
                     "only function correctly with a modified client.")
@@ -614,7 +611,6 @@ class KryptonPlayer(
             key("debug/game_test_clear"),
             key("debug/raids")
         )
-        private val PREREGISTERED_CHANNELS = DEBUG_CHANNELS + key("brand")
         private val LOGGER = logger<KryptonPlayer>()
         private val SERVER_LOGGER = logger<KryptonServer>()
     }

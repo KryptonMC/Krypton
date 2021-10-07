@@ -53,17 +53,17 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.SynchronousQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
+import kotlin.math.max
 
-@Suppress("MemberVisibilityCanBePrivate")
 class KryptonWorldManager(
     override val server: KryptonServer,
-    val worldFolder: Path
+    private val worldFolder: Path
 ) : WorldManager {
 
     private val storageManager = WorldDataManager(worldFolder, server.useDataConverter)
     private val worldExecutor = ThreadPoolExecutor(
         0,
-        Runtime.getRuntime().availableProcessors() / 2,
+        max(1, Runtime.getRuntime().availableProcessors() / 2),
         60L,
         TimeUnit.SECONDS,
         SynchronousQueue(),

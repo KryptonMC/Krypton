@@ -40,6 +40,6 @@ class Whitelist(path: Path) : ServerConfigList<KryptonGameProfile, WhitelistEntr
 
         reader.endObject()
         if (name == null || uuid == null) return null
-        return WhitelistEntry(KryptonGameProfile(uuid, name, emptyList()))
+        return WhitelistEntry(KryptonGameProfile(name, uuid, emptyList()))
     }
 }

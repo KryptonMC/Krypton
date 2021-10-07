@@ -47,8 +47,9 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-class KryptonEventManager(private val pluginManager: PluginManager) : EventManager {
+object KryptonEventManager : EventManager {
 
+    private val LOGGER = logger<KryptonEventManager>()
     private val registeredListenersByPlugin: Multimap<Any, Any> = Multimaps.synchronizedListMultimap(
         Multimaps.newListMultimap(IdentityHashMap<Any, Collection<Any>>(), ::ArrayList)
     )
@@ -154,7 +155,7 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         it is KyoriToKryptonHandler && it.handler == handler
     }
 
-    private fun checkPlugin(plugin: Any) = require(pluginManager.fromInstance(plugin) != null) {
+    private fun checkPlugin(plugin: Any) = require(KryptonPluginManager.fromInstance(plugin) != null) {
         "The specified plugin is not loaded!"
     }
 
@@ -176,10 +177,5 @@ class KryptonEventManager(private val pluginManager: PluginManager) : EventManag
         override fun invoke(event: E) = handler.execute(event)
 
         override fun postOrder() = priority.ordinal
-    }
-
-    companion object {
-
-        private val LOGGER = logger<KryptonEventManager>()
     }
 }

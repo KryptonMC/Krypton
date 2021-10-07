@@ -54,7 +54,7 @@ class ProfileHolder(
 
             reader.endObject()
             if (name == null || uuid == null || expiryDate == null) return null
-            return ProfileHolder(KryptonGameProfile(uuid, name, emptyList()), expiryDate)
+            return ProfileHolder(KryptonGameProfile(name, uuid, emptyList()), expiryDate)
         }
 
         override fun write(writer: JsonWriter, value: ProfileHolder) {

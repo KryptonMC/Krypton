@@ -39,7 +39,7 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
-class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Scheduler {
+class KryptonScheduler : Scheduler {
 
     private val executor: ExecutorService = Executors.newCachedThreadPool(
         threadFactory("Krypton Scheduler #%d") { daemon() }
@@ -113,7 +113,7 @@ class KryptonScheduler(private val pluginManager: KryptonPluginManager) : Schedu
                     Thread.currentThread().interrupt()
                     return@execute
                 }
-                val name = pluginManager.fromInstance(plugin)?.description?.name ?: "UNKNOWN"
+                val name = KryptonPluginManager.fromInstance(plugin)?.description?.name ?: "UNKNOWN"
                 LOGGER.error(
                     "Plugin $name generated an exception whilst trying to execute task $callable!",
                     exception
