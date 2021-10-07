@@ -27,11 +27,7 @@ interface AreaTransformer2 : DimensionTransformer {
 
     operator fun invoke(context: Context, firstParent: Area, secondParent: Area, x: Int, z: Int): Int
 
-    fun <A : Area> run(
-        context: BigContext<A>,
-        firstParentFactory: AreaFactory<A>,
-        secondParentFactory: AreaFactory<A>
-    ) = AreaFactory {
+    fun <A : Area> run(context: BigContext<A>, firstParentFactory: AreaFactory<A>, secondParentFactory: AreaFactory<A>) = AreaFactory {
         val firstParent = firstParentFactory.create()
         val secondParent = secondParentFactory.create()
         context.createArea({ x, z ->

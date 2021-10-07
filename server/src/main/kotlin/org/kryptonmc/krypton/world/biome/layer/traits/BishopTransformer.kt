@@ -24,21 +24,14 @@ import org.kryptonmc.krypton.world.biome.context.Context
 
 interface BishopTransformer : AreaTransformer1, DimensionOffset1Transformer {
 
-    operator fun invoke(
-        context: Context,
-        southWest: Int,
-        southEast: Int,
-        northEast: Int,
-        northWest: Int,
-        center: Int
-    ): Int
+    operator fun invoke(context: Context, southWest: Int, southEast: Int, northEast: Int, northWest: Int, center: Int): Int
 
     override fun invoke(context: BigContext<*>, parent: Area, x: Int, z: Int) = invoke(
         context,
-        parent[getParentX(x), getParentZ(z + 2)],
-        parent[getParentX(x + 2), getParentZ(z + 2)],
-        parent[getParentX(x + 2), getParentZ(z)],
-        parent[getParentX(x), getParentZ(z)],
-        parent[getParentX(x + 1), getParentZ(z + 1)]
+        parent[parentX(x), parentZ(z + 2)],
+        parent[parentX(x + 2), parentZ(z + 2)],
+        parent[parentX(x + 2), parentZ(z)],
+        parent[parentX(x), parentZ(z)],
+        parent[parentX(x + 1), parentZ(z + 1)]
     )
 }

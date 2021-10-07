@@ -32,30 +32,29 @@ enum class ZoomLayer : AreaTransformer1 {
 
     protected open fun modeOrRandom(context: BigContext<*>, a: Int, b: Int, c: Int, d: Int): Int = when {
         b == c && c == d -> b
-        (a == b && a == c) || (a == b && a == d) || (a == c && a == d) ||
-                (a == b && c != d) || (a == c && b != d) || (a == d && b != c) -> a
+        (a == b && a == c) || (a == b && a == d) || (a == c && a == d) || (a == b && c != d) || (a == c && b != d) || (a == d && b != c) -> a
         (b == c && a != d) || (b == d && a != c) -> b
         c == d && a == b -> c
         else -> context.random(a, b, c, d)
     }
 
-    override fun getParentX(x: Int) = x shr 1
+    override fun parentX(x: Int) = x shr 1
 
-    override fun getParentZ(z: Int) = z shr 1
+    override fun parentZ(z: Int) = z shr 1
 
     override fun invoke(context: BigContext<*>, parent: Area, x: Int, z: Int): Int {
-        val first = parent[getParentX(x), getParentZ(z)]
+        val first = parent[parentX(x), parentZ(z)]
         context.initRandom((x shr 1 shl 1).toLong(), (z shr 1 shl 1).toLong())
         val andX = x and 1
         val andZ = z and 1
         if (andX == 0 && andZ == 0) return first
-        val second = parent[getParentX(x), getParentZ(z + 1)]
+        val second = parent[parentX(x), parentZ(z + 1)]
         val firstRandom = context.random(first, second)
         if (andX == 1 && andZ == 1) return firstRandom
-        val third = parent[getParentX(x + 1), getParentZ(z)]
+        val third = parent[parentX(x + 1), parentZ(z)]
         val secondRandom = context.random(first, third)
         if (andX == 1 && andZ == 0) return secondRandom
-        val fourth = parent[getParentX(x + 1), getParentZ(z + 1)]
+        val fourth = parent[parentX(x + 1), parentZ(z + 1)]
         return modeOrRandom(context, first, third, second, fourth)
     }
 }

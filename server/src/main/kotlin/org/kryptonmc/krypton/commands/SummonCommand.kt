@@ -46,29 +46,23 @@ import org.spongepowered.math.vector.Vector3d
 object SummonCommand : InternalCommand {
 
     private val ERROR_FAILED = SimpleCommandExceptionType(translatable("commands.summon.failed").toMessage())
-    private val ERROR_INVALID_POSITION = SimpleCommandExceptionType(
-        translatable("commands.summon.invalidPosition").toMessage()
-    )
+    private val ERROR_INVALID_POSITION = SimpleCommandExceptionType(translatable("commands.summon.invalidPosition").toMessage())
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("summon")
             .permission("krypton.command.summon", 2)
-            .then(argument<Sender, Key>("entity", SummonEntityArgument())
+            .then(argument<Sender, Key>("entity", SummonEntityArgument)
                 .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                 .executes {
                     val sender = it.source as? KryptonPlayer ?: return@executes 0
                     spawnEntity(sender, it.summonableEntity("entity"), sender.location)
                     1
-                }.then(argument<Sender, Coordinates>("position", VectorArgument())
+                }.then(argument<Sender, Coordinates>("position", VectorArgument.normal())
                     .executes {
                         val sender = it.source as? KryptonPlayer ?: return@executes 0
-                        spawnEntity(
-                            sender,
-                            it.summonableEntity("entity"),
-                            it.vectorArgument("position")
-                        )
+                        spawnEntity(sender, it.summonableEntity("entity"), it.vectorArgument("position"))
                         1
-                    }.then(argument<Sender, CompoundTag>("nbt", NBTCompoundArgument())
+                    }.then(argument<Sender, CompoundTag>("nbt", NBTCompoundArgument)
                         .executes {
                             val sender = it.source as? KryptonPlayer ?: return@executes 0
                             spawnEntity(
@@ -82,12 +76,7 @@ object SummonCommand : InternalCommand {
         )
     }
 
-    private fun spawnEntity(
-        player: KryptonPlayer,
-        entityType: Key,
-        position: Vector3d,
-        nbt: CompoundTag? = MutableCompoundTag()
-    ) {
+    private fun spawnEntity(player: KryptonPlayer, entityType: Key, position: Vector3d, nbt: CompoundTag? = MutableCompoundTag()) {
         if (!position.isInSpawnableBounds()) throw ERROR_INVALID_POSITION.create()
         val world = player.world
         val entity = EntityFactory.create(world, entityType.asString(), nbt)?.apply { this.location = position } ?: throw ERROR_FAILED.create()

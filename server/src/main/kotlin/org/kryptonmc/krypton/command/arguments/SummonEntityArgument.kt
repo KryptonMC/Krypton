@@ -30,16 +30,13 @@ import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.util.nextKey
 
-class SummonEntityArgument : ArgumentType<Key> {
+object SummonEntityArgument : ArgumentType<Key> {
+
+    private val EXAMPLES = setOf("minecraft:pig", "cow")
 
     override fun parse(reader: StringReader) = reader.nextKey().ensureSummonable()
 
     override fun getExamples() = EXAMPLES
-
-    companion object {
-
-        private val EXAMPLES = setOf("minecraft:pig", "cow")
-    }
 }
 
 fun CommandContext<Sender>.summonableEntity(name: String) = argument<Key>(name).ensureSummonable()

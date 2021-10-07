@@ -27,12 +27,12 @@ import org.kryptonmc.krypton.world.biome.layer.traits.DimensionOffset0Transforme
 object OceanMixerLayer : AreaTransformer2, DimensionOffset0Transformer {
 
     override fun invoke(context: Context, firstParent: Area, secondParent: Area, x: Int, z: Int): Int {
-        val firstValue = firstParent[getParentX(x), getParentZ(z)]
-        val secondValue = secondParent[getParentX(x), getParentZ(z)]
+        val firstValue = firstParent[parentX(x), parentZ(z)]
+        val secondValue = secondParent[parentX(x), parentZ(z)]
         if (!firstValue.isOcean()) return firstValue
         for (i in -8..8 step 4) {
             for (j in -8..8 step 4) {
-                val value = firstParent[getParentX(x + i), getParentZ(z + j)]
+                val value = firstParent[parentX(x + i), parentZ(z + j)]
                 if (!value.isOcean()) {
                     if (secondValue == BiomeConstants.WARM_OCEAN) return BiomeConstants.LUKEWARM_OCEAN
                     if (secondValue == BiomeConstants.FROZEN_OCEAN) return BiomeConstants.COLD_OCEAN

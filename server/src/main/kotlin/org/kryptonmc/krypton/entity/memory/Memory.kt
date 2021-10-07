@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.entity.memory
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.nbt.CompoundTag
 
-class Memory<T : Any>(
+data class Memory<T : Any>(
     val key: MemoryKey<T>,
     val value: T,
     var ttl: Long = 0L

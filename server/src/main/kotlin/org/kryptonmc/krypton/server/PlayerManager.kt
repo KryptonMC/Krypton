@@ -71,7 +71,6 @@ import org.kryptonmc.krypton.util.nextInt
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.parseDimension
-import org.kryptonmc.nbt.IntTag
 import org.spongepowered.math.vector.Vector3i
 import java.nio.file.Path
 import java.util.UUID

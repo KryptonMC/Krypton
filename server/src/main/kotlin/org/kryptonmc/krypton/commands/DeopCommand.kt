@@ -31,8 +31,8 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.gameProfileArgument
+import org.kryptonmc.krypton.command.matchesSubString
 import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.suggest
 
 object DeopCommand : InternalCommand {
 
@@ -43,13 +43,17 @@ object DeopCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("deop")
             .permission("krypton.command.deop", 3)
-            .then(argument<Sender, EntityQuery>("targets", GameProfileArgument())
+            .then(argument<Sender, EntityQuery>("targets", GameProfileArgument)
                 .suggests { context, builder ->
                     val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
-                    builder.suggest(server.playerManager.ops.map { it.key.name })
+                    server.playerManager.ops.forEach {
+                        if (!builder.remainingLowerCase.matchesSubString(it.key.name.lowercase())) return@forEach
+                        builder.suggest(it.key.name)
+                    }
+                    builder.buildFuture()
                 }
                 .executes { context ->
-                    val targets = context.gameProfileArgument("targets").getProfiles(context.source)
+                    val targets = context.gameProfileArgument("targets").profiles(context.source)
                     val server = context.source.server as? KryptonServer ?: return@executes 0
                     targets.forEach {
                         val ops = server.playerManager.ops

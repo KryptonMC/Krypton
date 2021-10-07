@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.world.biome
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 
+@JvmRecord
 data class ClimateParameters(
     val temperature: Float,
     val humidity: Float,

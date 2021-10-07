@@ -29,8 +29,8 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.suggest
 import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.matchesSubString
 
 object PardonIpCommand : InternalCommand {
 
@@ -47,7 +47,11 @@ object PardonIpCommand : InternalCommand {
             .then(argument<Sender, String>("target", string())
                 .suggests { context, builder ->
                     val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
-                    builder.suggest(server.playerManager.bannedIps.map { it.key })
+                    server.playerManager.bannedIps.forEach {
+                        if (!builder.remainingLowerCase.matchesSubString(it.key.lowercase())) return@forEach
+                        builder.suggest(it.key)
+                    }
+                    builder.buildFuture()
                 }
                 .executes {
                     unbanIp(it.source, it.argument("target"))

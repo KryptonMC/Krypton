@@ -27,8 +27,8 @@ import org.kryptonmc.krypton.world.biome.layer.traits.DimensionOffset0Transforme
 object RiverMixerLayer : AreaTransformer2, DimensionOffset0Transformer {
 
     override fun invoke(context: Context, firstParent: Area, secondParent: Area, x: Int, z: Int): Int {
-        val firstValue = firstParent[getParentX(x), getParentZ(z)]
-        val secondValue = secondParent[getParentX(x), getParentZ(z)]
+        val firstValue = firstParent[parentX(x), parentZ(z)]
+        val secondValue = secondParent[parentX(x), parentZ(z)]
         if (firstValue.isOcean()) return firstValue
         if (secondValue == BiomeConstants.RIVER) return when (secondValue) {
             BiomeConstants.SNOWY_TUNDRA -> BiomeConstants.FROZEN_RIVER

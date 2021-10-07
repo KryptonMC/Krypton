@@ -168,8 +168,8 @@ object MetadataSerializers {
     @JvmField
     val VILLAGER_DATA = object : MetadataSerializer<VillagerData>(16) {
         override fun write(buf: ByteBuf, item: VillagerData) {
-            buf.writeVarInt(item.type.id)
-            buf.writeVarInt(item.profession.id)
+            buf.writeVarInt(item.type.ordinal)
+            buf.writeVarInt(item.profession.ordinal)
             buf.writeVarInt(item.level)
         }
     }

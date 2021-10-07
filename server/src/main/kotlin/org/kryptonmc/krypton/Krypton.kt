@@ -71,11 +71,15 @@ private class KryptonCLI : CliktCommand(
         .help("The name of the world folder for the default world")
 
     // Folders
-    private val configFile by option("-c", "--config")
+    private val configFile by option("--config", "--config-file")
         .help("Configuration file path for the server")
         .path(canBeDir = false, canBeSymlink = false, mustBeReadable = true, mustBeWritable = true)
         .default(Path.of("config.conf"))
-    private val worldFolder by option("-W", "--world-folder", "--world-directory", "--world-dir", "--universe")
+    private val userCacheFile by option("--user-cache-file")
+        .help("File where users' profiles are stored.")
+        .path(canBeDir = false, canBeSymlink = false, mustBeReadable = true, mustBeWritable = true)
+        .default(Path.of("usercache.json"))
+    private val worldFolder by option("--world-folder", "--world-directory", "--world-dir", "--universe")
         .help("Folder where worlds are stored")
         .path(canBeFile = false, canBeSymlink = false, mustBeReadable = true, mustBeWritable = true)
         .default(Path.of(""))
@@ -119,7 +123,6 @@ private class KryptonCLI : CliktCommand(
                     "worlds as well.")
             logger.warn("USE THIS TOOL AT YOUR OWN RISK! If this tool corrupts your data, that is YOUR responsibility!")
         }
-        val profileCache = KryptonProfileCache(Path.of("usercache.json"))
 
         // Start the server
         val reference = AtomicReference<KryptonServer>()
@@ -132,7 +135,7 @@ private class KryptonCLI : CliktCommand(
         val server = KryptonServer(
             config,
             useDataConverter,
-            profileCache,
+            KryptonProfileCache(userCacheFile),
             configFile,
             worldFolder
         )

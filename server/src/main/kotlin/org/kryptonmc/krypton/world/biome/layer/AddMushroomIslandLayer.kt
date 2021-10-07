@@ -23,14 +23,7 @@ import org.kryptonmc.krypton.world.biome.layer.traits.BishopTransformer
 
 object AddMushroomIslandLayer : BishopTransformer {
 
-    override fun invoke(
-        context: Context,
-        southWest: Int,
-        southEast: Int,
-        northEast: Int,
-        northWest: Int,
-        center: Int
-    ): Int {
+    override fun invoke(context: Context, southWest: Int, southEast: Int, northEast: Int, northWest: Int, center: Int): Int {
         if (
             center.isShallowOcean() &&
             northWest.isShallowOcean() &&

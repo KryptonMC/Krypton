@@ -47,13 +47,14 @@ import java.io.IOException
 /**
  * The base Netty connection handler initializer.
  */
-class NettyProcess(private val server: KryptonServer) {
+object NettyProcess {
 
+    private val LOGGER = logger<KryptonServer>()
     private val bossGroup: EventLoopGroup = bestLoopGroup()
     private val workerGroup: EventLoopGroup = bestLoopGroup()
     private lateinit var future: ChannelFuture
 
-    fun run() {
+    fun run(server: KryptonServer) {
         LOGGER.debug("${bossGroup::class.simpleName} is the chosen one")
         try {
             val legacyQueryHandler = LegacyQueryHandler(server)
@@ -97,10 +98,5 @@ class NettyProcess(private val server: KryptonServer) {
         Epoll.isAvailable() -> EpollServerSocketChannel::class.java
         KQueue.isAvailable() -> KQueueServerSocketChannel::class.java
         else -> NioServerSocketChannel::class.java
-    }
-
-    companion object {
-
-        private val LOGGER = logger<KryptonServer>()
     }
 }

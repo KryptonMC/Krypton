@@ -34,13 +34,14 @@ import org.kryptonmc.krypton.world.KryptonGameMode
 /**
  * Documentation [TODO]
  */
-class EntityQuery(
+@JvmRecord
+data class EntityQuery(
     private val args: List<EntityArgument.EntityArg>,
     val type: Selector,
     private val playerName: String = ""
 ) {
 
-    fun getEntities(source: KryptonPlayer) = when (type) {
+    fun entities(source: KryptonPlayer) = when (type) {
         Selector.RANDOM_PLAYER -> listOf(source.server.players.random())
         Selector.ALL_PLAYERS -> {
             if (args.isNotEmpty()) {
@@ -73,14 +74,14 @@ class EntityQuery(
         Selector.UNKNOWN -> throw EntityArgumentExceptions.UNKNOWN_SELECTOR.create("")
     }
 
-    fun getEntity(source: KryptonPlayer): KryptonEntity = getEntities(source)[0]
+    fun entity(source: KryptonPlayer): KryptonEntity = entities(source)[0]
 
-    fun getPlayers(sender: Sender): List<KryptonPlayer> {
+    fun players(sender: Sender): List<KryptonPlayer> {
         val server = sender.server as KryptonServer
         return if (sender is KryptonPlayer) {
             if (playerName.isNotEmpty()) return listOf(server.player(playerName)
                 ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create())
-            getEntities(sender).map {
+            entities(sender).map {
                 it as? KryptonPlayer ?: throw UnsupportedOperationException("You cannot call .getPlayers() if there " +
                         "is an entity in the arguments")
             }
@@ -89,8 +90,8 @@ class EntityQuery(
         }
     }
 
-    fun getProfiles(sender: Sender): List<KryptonGameProfile> {
-        if (sender is KryptonPlayer) return getPlayers(sender).map { it.profile }
+    fun profiles(sender: Sender): List<KryptonGameProfile> {
+        if (sender is KryptonPlayer) return players(sender).map { it.profile }
         return emptyList()
     }
 
@@ -221,8 +222,7 @@ class EntityQuery(
         throw DynamicCommandExceptionType { a -> text("Not yet implemented: $a").toMessage() }.create(option)
     }
 
-    private fun checkInt(string: String) = string.toIntOrNull()
-        ?: throw BrigadierExceptions.readerExpectedInt().create()
+    private fun checkInt(string: String) = string.toIntOrNull() ?: throw BrigadierExceptions.readerExpectedInt().create()
 
     private fun checkIntOrRange(string: String) {
         if (string.toIntOrNull() != null) return

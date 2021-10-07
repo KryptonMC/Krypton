@@ -42,16 +42,16 @@ object BanCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("ban")
             .permission("krypton.command.ban", 3)
-            .then(argument<Sender, EntityQuery>("targets", GameProfileArgument())
+            .then(argument<Sender, EntityQuery>("targets", GameProfileArgument)
                 .executes {
                     val server = it.source.server as? KryptonServer ?: return@executes 0
-                    ban(it.gameProfileArgument("targets").getProfiles(it.source), server, it.source)
+                    ban(it.gameProfileArgument("targets").profiles(it.source), server, it.source)
                     1
                 }.then(argument<Sender, String>("reason", string())
                     .executes {
                         val server = it.source.server as? KryptonServer ?: return@executes 0
                         val reason = it.argument<String>("reason")
-                        ban(it.gameProfileArgument("targets").getProfiles(it.source), server, it.source, reason)
+                        ban(it.gameProfileArgument("targets").profiles(it.source), server, it.source, reason)
                         1
                     })
             )
@@ -81,12 +81,7 @@ object BanCommand : InternalCommand {
         player.disconnect(text)
     }
 
-    private fun logBan(
-        target: String,
-        source: String,
-        reason: String,
-        server: KryptonServer
-    ) = server.console.sendMessage(translatable(
+    private fun logBan(target: String, source: String, reason: String, server: KryptonServer) = server.console.sendMessage(translatable(
         "commands.banlist.entry",
         text(target),
         text(source),

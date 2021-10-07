@@ -20,15 +20,18 @@ package org.kryptonmc.krypton.command.arguments.coordinates
 
 import com.mojang.brigadier.StringReader
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.krypton.command.CommandExceptions
 import org.spongepowered.math.vector.Vector2d
 import org.spongepowered.math.vector.Vector3d
 
-class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: WorldCoordinate) : Coordinates {
+@JvmRecord
+data class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: WorldCoordinate) : Coordinates {
 
-    override val relativeX = x.isRelative
-    override val relativeY = y.isRelative
-    override val relativeZ = z.isRelative
+    override val relativeX: Boolean
+        get() = x.isRelative
+    override val relativeY: Boolean
+        get() = y.isRelative
+    override val relativeZ: Boolean
+        get() = z.isRelative
 
     override fun position(player: Player) = Vector3d(
         x[player.location.x()],
@@ -48,14 +51,14 @@ class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: Wo
             val x = WorldCoordinate.parse(reader, correctCenter)
             if (!reader.canRead() || reader.peek() != ' ') {
                 reader.cursor = position
-                throw CommandExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
+                throw CoordinateExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
             }
 
             reader.skip()
             val y = WorldCoordinate.parse(reader, false)
             if (!reader.canRead() || reader.peek() != ' ') {
                 reader.cursor = position
-                throw CommandExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
+                throw CoordinateExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
             }
 
             reader.skip()

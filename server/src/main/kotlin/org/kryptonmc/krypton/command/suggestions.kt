@@ -27,7 +27,7 @@ import java.util.concurrent.CompletableFuture
 
 fun SuggestionsBuilder.suggestCoordinates(
     text: String,
-    coordinates: Collection<TextCoordinates>,
+    coordinates: Sequence<TextCoordinates>,
     predicate: (String) -> Boolean
 ): CompletableFuture<Suggestions> {
     if (text.isEmpty()) {
@@ -80,20 +80,15 @@ fun <T> Iterable<T>.filterResources(text: String, provider: (T) -> Key, consumer
         val key = provider(it)
         if (hasColon && text.matchesSubString(key.asString())) {
             consumer(it)
-        } else if (
-            text.matchesSubString(key.namespace()) ||
-            key.namespace() == "minecraft" &&
-            text.matchesSubString(key.value())
-        ) {
+        } else if (text.matchesSubString(key.namespace()) || key.namespace() == "minecraft" && text.matchesSubString(key.value())) {
             consumer(it)
         }
     }
 }
 
-fun SuggestionsBuilder.suggest(suggestions: Iterable<String>): CompletableFuture<Suggestions> {
-    val remaining = remaining.lowercase()
+private fun SuggestionsBuilder.suggest(suggestions: Iterable<String>): CompletableFuture<Suggestions> {
     suggestions.forEach {
-        if (!remaining.matchesSubString(it.lowercase())) return@forEach
+        if (!remainingLowerCase.matchesSubString(it.lowercase())) return@forEach
         suggest(it)
     }
     return buildFuture()
@@ -102,7 +97,7 @@ fun SuggestionsBuilder.suggest(suggestions: Iterable<String>): CompletableFuture
 fun String.matchesSubString(other: String): Boolean {
     var i = 0
     while (!other.startsWith(this, i)) {
-        i = other.indexOf(Char(95), i)
+        i = other.indexOf(95.toChar(), i)
         if (i < 0) return false
         i++
     }

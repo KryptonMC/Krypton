@@ -22,11 +22,5 @@ import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 
 object NearestNeighborBiomeZoomer : BiomeZoomer {
 
-    override fun invoke(
-        seed: Long,
-        x: Int,
-        y: Int,
-        z: Int,
-        source: NoiseBiomeSource
-    ) = source[x shr 2, y shr 2, z shr 2]
+    override fun invoke(seed: Long, x: Int, y: Int, z: Int, source: NoiseBiomeSource) = source[x shr 2, y shr 2, z shr 2]
 }

@@ -42,11 +42,7 @@ class FixedBiomeGenerator(private val biome: Biome) : BiomeGenerator(listOf(biom
     ): Vector3i? {
         if (predicate(biome)) {
             if (absolute) return Vector3i(x, y, z)
-            return Vector3i(
-                x - radius + random.nextInt(radius * 2 + 1),
-                y,
-                z - radius + random.nextInt(radius * 2 + 1)
-            )
+            return Vector3i(x - radius + random.nextInt(radius * 2 + 1), y, z - radius + random.nextInt(radius * 2 + 1))
         }
         return null
     }

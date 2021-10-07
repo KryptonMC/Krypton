@@ -21,9 +21,7 @@ package org.kryptonmc.krypton.world.biome.layer
 import org.kryptonmc.krypton.world.biome.context.Context
 import org.kryptonmc.krypton.world.biome.layer.traits.C0Transformer
 
-class BiomeInitLayer(isLegacy: Boolean) : C0Transformer {
-
-    private val warmBiomes = if (isLegacy) LEGACY_WARM_BIOMES else WARM_BIOMES
+class BiomeInitLayer private constructor(private val warmBiomes: IntArray) : C0Transformer {
 
     override fun invoke(context: Context, value: Int): Int {
         val shifted = (value and 3840) shr 8
@@ -50,5 +48,11 @@ class BiomeInitLayer(isLegacy: Boolean) : C0Transformer {
         private val MEDIUM_BIOMES = intArrayOf(4, 29, 3, 1, 27, 6)
         private val COLD_BIOMES = intArrayOf(4, 3, 5, 1)
         private val ICE_BIOMES = intArrayOf(12, 12, 12, 30)
+
+        // Constants
+        private val NORMAL = BiomeInitLayer(WARM_BIOMES)
+        private val LEGACY = BiomeInitLayer(LEGACY_WARM_BIOMES)
+
+        fun of(isLegacy: Boolean) = if (isLegacy) LEGACY else NORMAL
     }
 }

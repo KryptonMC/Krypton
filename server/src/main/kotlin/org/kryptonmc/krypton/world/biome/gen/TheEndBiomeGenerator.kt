@@ -77,9 +77,7 @@ class TheEndBiomeGenerator private constructor(
 
         val CODEC: Codec<TheEndBiomeGenerator> = RecordCodecBuilder.create {
             it.group(
-                ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC)
-                    .fieldOf("biomes")
-                    .forGetter(TheEndBiomeGenerator::biomes),
+                ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes").forGetter(TheEndBiomeGenerator::biomes),
                 Codec.LONG.fieldOf("seed").stable().forGetter(TheEndBiomeGenerator::seed)
             ).apply(it, ::TheEndBiomeGenerator)
         }
@@ -96,10 +94,7 @@ class TheEndBiomeGenerator private constructor(
                 for (zo in -12..12) {
                     val offX = (divX + xo).toLong()
                     val offZ = (divZ + zo).toLong()
-                    if (
-                        offX * offX + offZ * offZ > ISLAND_CHUNK_DISTANCE_SQ &&
-                        getValue(offX.toDouble(), offZ.toDouble()) < ISLAND_THRESHOLD
-                    ) {
+                    if (offX * offX + offZ * offZ > ISLAND_CHUNK_DISTANCE_SQ && getValue(offX.toDouble(), offZ.toDouble()) < ISLAND_THRESHOLD) {
                         val abs = (abs(offX.toFloat()) * 3439F + abs(offZ.toFloat()) * 147F) % 13F + 9F
                         val offModX = (modX - xo * 2).toFloat()
                         val offModZ = (modZ - zo * 2).toFloat()

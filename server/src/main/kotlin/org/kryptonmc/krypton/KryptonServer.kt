@@ -84,7 +84,6 @@ class KryptonServer(
     override var scoreboard: KryptonScoreboard? = null
         private set
 
-    private val nettyProcess = NettyProcess(this)
     val random = SecureRandom()
 
     override val worldManager = KryptonWorldManager(this, worldFolder)
@@ -160,7 +159,7 @@ class KryptonServer(
 
         // Start accepting connections
         LOGGER.debug("Starting Netty...")
-        nettyProcess.run()
+        NettyProcess.run(this)
 
         // Add the shutdown hook to stop the server
         Runtime.getRuntime().addShutdownHook(Thread({ stop(false) }, "Shutdown Handler").apply { isDaemon = false })
@@ -292,7 +291,7 @@ class KryptonServer(
             LOGGER.info("Starting shutdown for Krypton version ${KryptonPlatform.version}...")
             isRunning = false
             playerManager.disconnectAll()
-            nettyProcess.shutdown()
+            NettyProcess.shutdown()
 
             // Save data
             LOGGER.info("Saving player, world, and region data...")

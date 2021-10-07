@@ -19,16 +19,17 @@
 package org.kryptonmc.krypton.packet
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.network.Writable
 
 /**
  * Super interface for all inbound and outbound packets.
  */
-interface Packet {
+interface Packet : Writable {
 
     /**
      * Write this packet's data to the given [buf]
      */
-    fun write(buf: ByteBuf) {
+    override fun write(buf: ByteBuf) {
         throw UnsupportedOperationException("$javaClass does not support writing")
     }
 }

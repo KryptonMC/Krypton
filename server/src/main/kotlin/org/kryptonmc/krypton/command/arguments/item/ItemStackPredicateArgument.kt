@@ -22,16 +22,13 @@ import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
 import org.kryptonmc.api.item.ItemStack
 
-class ItemStackPredicateArgument : ArgumentType<ItemStackPredicate> {
+object ItemStackPredicateArgument : ArgumentType<ItemStackPredicate> {
+
+    private val EXAMPLES = listOf("minecraft:stone", "stone", "#minecraft:boats", "stone{foo=bar}")
 
     override fun getExamples() = EXAMPLES
 
     override fun parse(reader: StringReader) = ItemStackParser(reader, true).parsePredicate()
-
-    companion object {
-
-        private val EXAMPLES = listOf("minecraft:stone", "stone", "#minecraft:boats", "stone{foo=bar}")
-    }
 }
 
 fun interface ItemStackPredicate {

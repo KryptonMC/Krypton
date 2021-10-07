@@ -18,28 +18,28 @@
  */
 package org.kryptonmc.krypton.entity.data
 
-import net.kyori.adventure.key.Key.key
+import net.kyori.adventure.key.Key
 
 /**
  * Professions of villagers.
  */
-enum class VillagerProfession(val id: Int) {
+enum class VillagerProfession {
 
-    NONE(0),
-    ARMORER(1),
-    BUTCHER(2),
-    CARTOGRAPHER(3),
-    CLERIC(4),
-    FARMER(5),
-    FISHERMAN(6),
-    FLETCHER(7),
-    LEATHERWORKER(8),
-    LIBRARIAN(9),
-    MASON(10),
-    NITWIT(11),
-    SHEPHERD(12),
-    TOOLSMITH(13),
-    WEAPONSMITH(14);
+    NONE,
+    ARMORER,
+    BUTCHER,
+    CARTOGRAPHER,
+    CLERIC,
+    FARMER,
+    FISHERMAN,
+    FLETCHER,
+    LEATHERWORKER,
+    LIBRARIAN,
+    MASON,
+    NITWIT,
+    SHEPHERD,
+    TOOLSMITH,
+    WEAPONSMITH;
 
-    val key by lazy { key(name.lowercase()) }
+    val key by lazy { Key.key(name.lowercase()) }
 }

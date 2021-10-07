@@ -74,22 +74,15 @@ object GameModeCommand : InternalCommand {
     @Suppress("UNCHECKED_CAST")
     private fun targetArgument(context: CommandContext<Sender>, gameMode: GameMode): Int {
         val sender = context.source as? KryptonPlayer ?: return 0
-        val entities = context.entityArgument("targets").getPlayers(sender)
+        val entities = context.entityArgument("targets").players(sender)
         updateGameMode(entities, gameMode, sender)
         return 1
     }
 
-    private fun updateGameMode(
-        entities: List<KryptonPlayer>,
-        mode: GameMode,
-        sender: KryptonPlayer
-    ) = entities.forEach {
+    private fun updateGameMode(entities: List<KryptonPlayer>, mode: GameMode, sender: KryptonPlayer) = entities.forEach {
         it.gameMode = mode
         if (sender == it) {
-            sender.sendMessage(translatable(
-                "gameMode.changed",
-                translatable("gameMode.${mode.name.lowercase()}")
-            ))
+            sender.sendMessage(translatable("gameMode.changed", translatable("gameMode.${mode.name.lowercase()}")))
             return@forEach
         }
         sender.sendMessage(translatable(

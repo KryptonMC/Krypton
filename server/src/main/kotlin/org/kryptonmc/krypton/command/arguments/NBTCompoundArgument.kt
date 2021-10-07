@@ -23,14 +23,11 @@ import com.mojang.brigadier.arguments.ArgumentType
 import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.nbt.CompoundTag
 
-class NBTCompoundArgument : ArgumentType<CompoundTag> {
+object NBTCompoundArgument : ArgumentType<CompoundTag> {
+
+    private val EXAMPLES = listOf("{}", "{foo=bar}")
 
     override fun parse(reader: StringReader) = SNBTParser(reader).readCompound()
 
     override fun getExamples() = EXAMPLES
-
-    companion object {
-
-        private val EXAMPLES = listOf("{}", "{foo=bar}")
-    }
 }

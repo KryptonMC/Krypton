@@ -32,7 +32,7 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
 
-object GameruleCommand : InternalCommand {
+object GameRuleCommand : InternalCommand {
 
     @Suppress("UNCHECKED_CAST")
     override fun register(dispatcher: CommandDispatcher<Sender>) {
@@ -40,11 +40,7 @@ object GameruleCommand : InternalCommand {
         Registries.GAMERULES.values.forEach { rule ->
             val gameRule = literal<Sender>(rule.name).executes {
                 val sender = it.source as? KryptonPlayer ?: return@executes 0
-                sender.sendMessage(translatable(
-                    "commands.gamerule.query",
-                    text(rule.name),
-                    text(sender.world.gameRules[rule].toString())
-                ))
+                sender.sendMessage(translatable("commands.gamerule.query", text(rule.name), text(sender.world.gameRules[rule].toString())))
                 1
             }
             if (rule.default is Boolean) {
@@ -52,11 +48,7 @@ object GameruleCommand : InternalCommand {
                     val sender = it.source as? KryptonPlayer ?: return@executes 0
                     val value = it.argument<Boolean>("value")
                     sender.world.gameRules[rule] = value
-                    sender.sendMessage(translatable(
-                        "commands.gamerule.set",
-                        text(rule.name),
-                        text(value.toString())
-                    ))
+                    sender.sendMessage(translatable("commands.gamerule.set", text(rule.name), text(value.toString())))
                     1
                 })
             } else if (rule.default is Int) {
@@ -64,11 +56,7 @@ object GameruleCommand : InternalCommand {
                     val sender = it.source as? KryptonPlayer ?: return@executes 0
                     val value = it.argument<Int>("value")
                     sender.world.gameRules[rule] = value
-                    sender.sendMessage(translatable(
-                        "commands.gamerule.set",
-                        text(rule.name),
-                        text(value.toString())
-                    ))
+                    sender.sendMessage(translatable("commands.gamerule.set", text(rule.name), text(value.toString())))
                     1
                 })
             }

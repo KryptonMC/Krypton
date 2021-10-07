@@ -26,14 +26,7 @@ object RiverLayer : CastleTransformer {
 
     override fun invoke(context: Context, north: Int, east: Int, south: Int, west: Int, center: Int): Int {
         val filter = riverFilter(center)
-        if (
-            filter == riverFilter(north) &&
-            filter == riverFilter(east) &&
-            filter == riverFilter(south) &&
-            filter == riverFilter(west)
-        ) {
-            return -1
-        }
+        if (filter == riverFilter(north) && filter == riverFilter(east) && filter == riverFilter(south) && filter == riverFilter(west)) return -1
         return BiomeConstants.RIVER
     }
 

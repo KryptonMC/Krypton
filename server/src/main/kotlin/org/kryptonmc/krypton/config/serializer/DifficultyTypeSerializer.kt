@@ -33,8 +33,7 @@ object DifficultyTypeSerializer : ScalarSerializer<Difficulty>(Difficulty::class
             when (source) {
                 is Int -> Difficulty.fromId(source)
                 is String -> Difficulty.valueOf(source.uppercase())
-                else -> throw SerializationException("Expected either an integer or a string for this gamemode, " +
-                        "got ${source::class.simpleName}")
+                else -> throw SerializationException("Expected either an integer or a string for this gamemode, got ${source::class.simpleName}")
             }
         } catch (exception: IllegalArgumentException) {
             throw SerializationException("Unknown difficulty: $source")

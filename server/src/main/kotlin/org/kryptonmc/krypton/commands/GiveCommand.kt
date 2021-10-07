@@ -43,16 +43,16 @@ object GiveCommand : InternalCommand {
         dispatcher.register(literal<Sender>("give")
             .permission("krypton.command.give", 2)
             .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
-                .then(argument<Sender, ItemStackArgument>("item", ItemStackArgumentType())
+                .then(argument<Sender, ItemStackArgument>("item", ItemStackArgumentType)
                     .executes {
-                        val targets = it.entityArgument("targets").getPlayers(it.source)
+                        val targets = it.entityArgument("targets").players(it.source)
                         val item = it.itemStackArgument("item")
                         give(targets, item, 1)
                         1
                     }
                     .then(argument<Sender, Int>("count", IntegerArgumentType.integer(1))
                         .executes {
-                            val targets = it.entityArgument("targets").getPlayers(it.source)
+                            val targets = it.entityArgument("targets").players(it.source)
                             val item = it.itemStackArgument("item")
                             val count = it.argument<Int>("count")
                             give(targets, item, count)

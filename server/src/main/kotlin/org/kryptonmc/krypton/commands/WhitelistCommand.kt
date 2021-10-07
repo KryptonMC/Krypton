@@ -31,10 +31,10 @@ import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.gameProfileArgument
 import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.suggest
 import org.kryptonmc.krypton.server.whitelist.WhitelistEntry
 import org.kryptonmc.krypton.server.whitelist.WhitelistIpEntry
 import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.matchesSubString
 import org.kryptonmc.krypton.util.asString
 
 object WhitelistCommand : InternalCommand {
@@ -83,19 +83,16 @@ object WhitelistCommand : InternalCommand {
                     1
                 })
             .then(literal<Sender>("add")
-                .then(argument<Sender, EntityQuery>("targets", GameProfileArgument())
+                .then(argument<Sender, EntityQuery>("targets", GameProfileArgument)
                     .executes {
                         val sender = it.source
                         val server = sender.server as? KryptonServer ?: return@executes 0
-                        val targets = it.gameProfileArgument("targets").getProfiles(sender)
+                        val targets = it.gameProfileArgument("targets").profiles(sender)
                         for (target in targets) {
                             val whitelist = server.playerManager.whitelist
                             if (!whitelist.contains(target)) {
                                 whitelist.add(WhitelistEntry(target))
-                                sender.sendMessage(translatable(
-                                    "commands.whitelist.add.success",
-                                    text(target.name)
-                                ))
+                                sender.sendMessage(translatable("commands.whitelist.add.success", text(target.name)))
                             } else {
                                 sender.sendMessage(translatable("commands.whitelist.add.failed"))
                             }
@@ -104,19 +101,16 @@ object WhitelistCommand : InternalCommand {
                     })
             )
             .then(literal<Sender>("remove")
-                .then(argument<Sender, EntityQuery>("targets", GameProfileArgument())
+                .then(argument<Sender, EntityQuery>("targets", GameProfileArgument)
                     .executes {
                         val sender = it.source
                         val server = sender.server as? KryptonServer ?: return@executes 0
-                        val targets = it.gameProfileArgument("targets").getProfiles(sender)
+                        val targets = it.gameProfileArgument("targets").profiles(sender)
                         for (target in targets) {
                             val whitelist = server.playerManager.whitelist
                             if (whitelist.contains(target)) {
                                 whitelist.remove(target)
-                                sender.sendMessage(translatable(
-                                    "commands.whitelist.remove.success",
-                                    text(target.name)
-                                ))
+                                sender.sendMessage(translatable("commands.whitelist.remove.success", text(target.name)))
                             } else {
                                 sender.sendMessage(translatable("commands.whitelist.remove.failed"))
                             }
@@ -136,9 +130,12 @@ object WhitelistCommand : InternalCommand {
             .then(literal<Sender>("remove-ip")
                 .then(argument<Sender, String>("ip", string())
                     .suggests { context, builder ->
-                        builder.suggest((context.source.server as KryptonServer).playerManager.whitlistedIps.map {
-                            it.key
-                        })
+                        val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
+                        server.playerManager.whitlistedIps.forEach {
+                            if (!builder.remainingLowerCase.matchesSubString(it.key.lowercase())) return@forEach
+                            builder.suggest(it.key)
+                        }
+                        builder.buildFuture()
                     }
                     .executes {
                         val sender = it.source

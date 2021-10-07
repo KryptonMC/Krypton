@@ -127,7 +127,7 @@ object Layers {
         factory = zoom(1000L, ZoomLayer.NORMAL, factory, 0, getter)
         var factory2 = zoom(1000L, ZoomLayer.NORMAL, factory, 0, getter)
         factory2 = RiverInitLayer.run(getter(100L), factory2)
-        var factory3 = BiomeInitLayer(isLegacy).run(getter(200L), factory)
+        var factory3 = BiomeInitLayer.of(isLegacy).run(getter(200L), factory)
         factory3 = RareBiomeLargeLayer.run(getter(1001L), factory3)
         factory3 = zoom(1000L, ZoomLayer.NORMAL, factory3, 2, getter)
         factory3 = BiomeEdgeLayer.run(getter(1000L), factory3)

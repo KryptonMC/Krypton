@@ -40,23 +40,12 @@ class BrigadierCompleter(
         try {
             suggestions.get().list.forEach {
                 if (it.text.isEmpty()) return@forEach
-                candidates.add(Candidate(
-                    it.text,
-                    it.text,
-                    null,
-                    it.tooltip?.string,
-                    null,
-                    null,
-                    parseResults.exceptions.isEmpty()
-                ))
+                candidates.add(Candidate(it.text, it.text, null, it.tooltip?.string, null, null, parseResults.exceptions.isEmpty()))
             }
         } catch (exception: InterruptedException) {
             Thread.currentThread().interrupt()
         } catch (exception: ExecutionException) {
-            LOGGER.error(
-                "Exception caught whilst trying to suggest completions for command $input!",
-                exception
-            )
+            LOGGER.error("Exception caught whilst trying to suggest completions for command $input!", exception)
         }
     }
 

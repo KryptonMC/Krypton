@@ -18,17 +18,50 @@
  */
 package org.kryptonmc.krypton
 
+import org.bstats.MetricsBase
 import org.bstats.charts.DrilldownPie
 import org.bstats.charts.SimplePie
 import org.bstats.charts.SingleLineChart
+import org.bstats.config.MetricsConfig
+import org.bstats.json.JsonObjectBuilder
 import org.kryptonmc.krypton.util.logger
+import java.io.IOException
+import java.nio.file.Path
 
 object KryptonMetrics {
 
-    private val LOGGER = logger<Metrics>()
+    private val LOGGER = logger<KryptonMetrics>()
 
     fun initialize(server: KryptonServer, enabled: Boolean) {
-        val metrics = Metrics(LOGGER, 11197, enabled)
+        val config = try {
+            MetricsConfig(Path.of("plugins/bStats/config.txt").toFile(), enabled)
+        } catch (exception: IOException) {
+            LOGGER.error("Failed to create bStats config!", exception)
+            return
+        }
+        if (!config.didExistBefore()) {
+            LOGGER.info("Krypton and some of its plugins collect metrics and send them to bStats (https://bstats.org).")
+            LOGGER.info("bStats collects some basic information for plugin authors, like how many people use")
+            LOGGER.info("their plugin and their total player count. It's recommended to keep bStats enabled, but")
+            LOGGER.info("if you're not comfortable with this, you can opt-out by editing the config.txt file in")
+            LOGGER.info("the '/plugins/bStats/' folder and setting enabled to false.")
+        }
+
+        val metrics = MetricsBase(
+            "server-implementation",
+            config.serverUUID,
+            11197,
+            config.isEnabled,
+            ::appendPlatformData,
+            {},
+            null,
+            { true },
+            LOGGER::warn,
+            LOGGER::info,
+            config.isLogErrorsEnabled,
+            config.isLogSentDataEnabled,
+            config.isLogResponseStatusTextEnabled
+        )
 
         metrics.addCustomChart(SingleLineChart("players", server.players::size))
         metrics.addCustomChart(SimplePie("online_mode") { if (server.config.server.onlineMode) "online" else "offline" })
@@ -49,5 +82,12 @@ object KryptonMetrics {
 
             mapOf<String, Map<String, Int>>(release to mapOf(javaVersion to 1))
         })
+    }
+
+    private fun appendPlatformData(builder: JsonObjectBuilder) {
+        builder.appendField("osName", System.getProperty("os.name"))
+        builder.appendField("osArch", System.getProperty("os.arch"))
+        builder.appendField("osVersion", System.getProperty("os.version"))
+        builder.appendField("coreCount", Runtime.getRuntime().availableProcessors())
     }
 }

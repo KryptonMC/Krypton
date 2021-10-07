@@ -24,16 +24,13 @@ import com.mojang.brigadier.context.CommandContext
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.argument.argument
 
-class ItemStackArgumentType : ArgumentType<ItemStackArgument> {
+object ItemStackArgumentType : ArgumentType<ItemStackArgument> {
+
+    private val EXAMPLES = listOf("minecraft:cookie", "cookie", "cookie{foo=bar}")
 
     override fun getExamples() = EXAMPLES
 
     override fun parse(reader: StringReader) = ItemStackParser(reader, false).parseItem()
-
-    companion object {
-
-        private val EXAMPLES = listOf("minecraft:cookie", "cookie", "cookie{foo=bar}")
-    }
 }
 
 fun CommandContext<Sender>.itemStackArgument(name: String) = argument<ItemStackArgument>(name)

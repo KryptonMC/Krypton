@@ -18,7 +18,8 @@
  */
 package org.kryptonmc.krypton.command.arguments.coordinates
 
-data class TextCoordinates(val x: String, val y: String, val z: String) {
+@JvmRecord
+data class TextCoordinates private constructor(val x: String, val y: String, val z: String) {
 
     companion object {
 

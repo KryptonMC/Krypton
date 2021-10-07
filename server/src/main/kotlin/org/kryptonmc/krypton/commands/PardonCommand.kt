@@ -30,22 +30,26 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.gameProfileArgument
+import org.kryptonmc.krypton.command.matchesSubString
 import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.command.suggest
 
 object PardonCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("pardon")
             .permission("krypton.command.pardon", 3)
-            .then(argument<Sender, EntityQuery>("targets", GameProfileArgument())
+            .then(argument<Sender, EntityQuery>("targets", GameProfileArgument)
                 .suggests { context, builder ->
                     val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
-                    builder.suggest(server.playerManager.bannedPlayers.map { it.key.name })
+                    server.playerManager.bannedPlayers.forEach {
+                        if (!builder.remainingLowerCase.matchesSubString(it.key.name.lowercase())) return@forEach
+                        builder.suggest(it.key.name)
+                    }
+                    builder.buildFuture()
                 }
                 .executes {
                     val server = it.source.server as? KryptonServer ?: return@executes 0
-                    unban(it.gameProfileArgument("targets").getProfiles(it.source), it.source, server)
+                    unban(it.gameProfileArgument("targets").profiles(it.source), it.source, server)
                     1
                 })
         )

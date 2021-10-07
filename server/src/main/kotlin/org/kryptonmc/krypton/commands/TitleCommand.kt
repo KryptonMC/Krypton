@@ -45,7 +45,7 @@ object TitleCommand : InternalCommand {
                     .then(argument<Sender, String>("message", string())
                         .executes { context ->
                             val sender = context.source as? KryptonPlayer ?: return@executes 0
-                            val targets = context.entityArgument("targets").getPlayers(sender)
+                            val targets = context.entityArgument("targets").players(sender)
                             val message = context.argument<String>("message")
                             targets.forEach { it.sendActionBar(text(message)) }
                             val feedback = if (targets.size == 1) {
@@ -60,7 +60,7 @@ object TitleCommand : InternalCommand {
                     .then(argument<Sender, String>("message", string())
                         .executes { context ->
                             val sender = context.source as? KryptonPlayer ?: return@executes 0
-                            val targets = context.entityArgument("targets").getPlayers(sender)
+                            val targets = context.entityArgument("targets").players(sender)
                             val message = context.argument<String>("message")
                             targets.forEach { it.sendTitle(text(message)) }
                             val feedback = if (targets.size == 1) {
@@ -75,7 +75,7 @@ object TitleCommand : InternalCommand {
                     .then(argument<Sender, String>("message", string())
                         .executes { context ->
                             val sender = context.source as? KryptonPlayer ?: return@executes 0
-                            val targets = context.entityArgument("targets").getPlayers(sender)
+                            val targets = context.entityArgument("targets").players(sender)
                             val message = context.argument<String>("message")
                             targets.forEach { it.sendSubtitle(text(message)) }
                             val feedback = if (targets.size == 1) {
@@ -89,7 +89,7 @@ object TitleCommand : InternalCommand {
                 ).then(literal<Sender>("clear")
                     .executes { context ->
                         val sender = context.source as? KryptonPlayer ?: return@executes 0
-                        val targets = context.entityArgument("targets").getPlayers(sender)
+                        val targets = context.entityArgument("targets").players(sender)
                         targets.forEach { it.clearTitle() }
                         val feedback = if (targets.size == 1) {
                             translatable("commands.title.cleared.single", text(sender.name))
@@ -102,7 +102,7 @@ object TitleCommand : InternalCommand {
                 ).then(literal<Sender>("reset")
                     .executes { context ->
                         val sender = context.source as? KryptonPlayer ?: return@executes 0
-                        val targets = context.entityArgument("targets").getPlayers(sender)
+                        val targets = context.entityArgument("targets").players(sender)
                         targets.forEach { it.resetTitle() }
                         val feedback = if (targets.size == 1) {
                             translatable("commands.title.reset.single", text(sender.name))
@@ -118,7 +118,7 @@ object TitleCommand : InternalCommand {
                             .then(argument<Sender, Int>("fadeOut", integer())
                                 .executes { context ->
                                     val sender = context.source as? KryptonPlayer ?: return@executes 0
-                                    val targets = context.entityArgument("targets").getPlayers(sender)
+                                    val targets = context.entityArgument("targets").players(sender)
                                     val fadeIn = context.argument<Int>("fadeIn")
                                     val stay = context.argument<Int>("stay")
                                     val fadeOut = context.argument<Int>("fadeOut")

@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.data
 /**
  * Various data for villagers. Used for entity metadata.
  */
+@JvmRecord
 data class VillagerData(
     val type: VillagerType,
     val profession: VillagerProfession,

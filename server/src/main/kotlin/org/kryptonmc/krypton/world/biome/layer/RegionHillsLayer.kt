@@ -54,8 +54,8 @@ object RegionHillsLayer : AreaTransformer2, DimensionOffset1Transformer {
     }
 
     override fun invoke(context: Context, firstParent: Area, secondParent: Area, x: Int, z: Int): Int {
-        val firstValue = firstParent[getParentX(x + 1), getParentZ(z + 1)]
-        val secondValue = secondParent[getParentX(x + 1), getParentZ(z + 1)]
+        val firstValue = firstParent[parentX(x + 1), parentZ(z + 1)]
+        val secondValue = secondParent[parentX(x + 1), parentZ(z + 1)]
         val value = (secondValue - 2) % 29
         if (!firstValue.isShallowOcean() && secondValue >= 2 && value == 1) return MUTATIONS.getOrDefault(firstValue, firstValue)
         if (context.nextRandom(3) == 0 || value == 0) {
@@ -92,10 +92,10 @@ object RegionHillsLayer : AreaTransformer2, DimensionOffset1Transformer {
             if (value == 0 && mixed != firstValue) mixed = MUTATIONS.getOrDefault(mixed, firstValue)
             if (mixed != firstValue) {
                 var i = 0
-                if (firstParent[getParentX(x + 1), getParentZ(z)].isSame(firstValue)) i++
-                if (firstParent[getParentX(x + 2), getParentZ(z + 1)].isSame(firstValue)) i++
-                if (firstParent[getParentX(x), getParentZ(z + 1)].isSame(firstValue)) i++
-                if (firstParent[getParentX(x + 1), getParentZ(z + 2)].isSame(firstValue)) i++
+                if (firstParent[parentX(x + 1), parentZ(z)].isSame(firstValue)) i++
+                if (firstParent[parentX(x + 2), parentZ(z + 1)].isSame(firstValue)) i++
+                if (firstParent[parentX(x), parentZ(z + 1)].isSame(firstValue)) i++
+                if (firstParent[parentX(x + 1), parentZ(z + 2)].isSame(firstValue)) i++
                 if (i >= 3) return mixed
             }
         }

@@ -21,7 +21,8 @@ package org.kryptonmc.krypton.world
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 
-class DataPackConfig(val enabled: List<String>, val disabled: List<String>) {
+@JvmRecord
+data class DataPackConfig(val enabled: List<String>, val disabled: List<String>) {
 
     companion object {
 

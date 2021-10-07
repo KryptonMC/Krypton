@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.command.arguments.coordinates
 
 import com.mojang.brigadier.StringReader
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.krypton.command.CommandExceptions
 import org.spongepowered.math.vector.Vector2d
 import org.spongepowered.math.vector.Vector3d
 import kotlin.math.cos
@@ -61,14 +60,14 @@ class LocalCoordinates(
             val left = reader.readPositionalDouble(resetPosition)
             if (!reader.canRead() || reader.peek() != ' ') {
                 reader.cursor = resetPosition
-                throw CommandExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
+                throw CoordinateExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
             }
             reader.skip()
 
             val up = reader.readPositionalDouble(resetPosition)
             if (!reader.canRead() || reader.peek() != ' ') {
                 reader.cursor = resetPosition
-                throw CommandExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
+                throw CoordinateExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
             }
             reader.skip()
 
@@ -77,10 +76,10 @@ class LocalCoordinates(
         }
 
         private fun StringReader.readPositionalDouble(resetPosition: Int): Double {
-            if (!canRead()) throw CommandExceptions.POSITION_EXPECTED_DOUBLE.createWithContext(this)
+            if (!canRead()) throw CoordinateExceptions.POSITION_EXPECTED_DOUBLE.createWithContext(this)
             if (peek() != '^') {
                 cursor = resetPosition
-                throw CommandExceptions.POSITION_MIXED_TYPE.createWithContext(this)
+                throw CoordinateExceptions.POSITION_MIXED_TYPE.createWithContext(this)
             }
             skip()
             return if (canRead() && peek() != ' ') readDouble() else 0.0

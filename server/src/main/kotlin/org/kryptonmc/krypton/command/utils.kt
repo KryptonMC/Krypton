@@ -18,14 +18,10 @@
  */
 package org.kryptonmc.krypton.command
 
-import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.StringArgumentType.greedyString
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.tree.LiteralCommandNode
 import org.apache.commons.lang3.StringUtils
 import org.kryptonmc.api.command.Sender
@@ -39,17 +35,6 @@ fun LiteralCommandNode<Sender>.buildCopy(newName: String): LiteralArgumentBuilde
 
 fun LiteralCommandNode<Sender>.copy(newName: String): LiteralCommandNode<Sender> = buildCopy(newName).build()
 
-fun buildRawArgumentsLiteral(
-    alias: String,
-    command: Command<Sender>,
-    suggestionProvider: SuggestionProvider<Sender>
-): LiteralCommandNode<Sender> = literal<Sender>(alias.lowercase())
-    .then(argument<Sender, String>("arguments", greedyString())
-        .suggests(suggestionProvider)
-        .executes(command))
-    .executes(command)
-    .build()
-
 val CommandContext<Sender>.rawArguments: String
     get() {
         val firstSpace = input.indexOf(' ')
@@ -62,15 +47,12 @@ val CommandContext<Sender>.splitArguments: Array<String>
         return if (raw.isEmpty()) emptyArray() else StringUtils.split(raw)
     }
 
-fun LiteralArgumentBuilder<Sender>.permission(permission: String, level: Int) = apply {
+fun LiteralArgumentBuilder<Sender>.permission(permission: String, level: Int): LiteralArgumentBuilder<Sender> =
     requires { it.hasPermission(permission) || it.permissionLevel >= level }
-}
 
 fun String.normalize(trim: Boolean): String {
     val command = if (trim) trim() else this
     val firstSeparator = command.indexOf(CommandDispatcher.ARGUMENT_SEPARATOR_CHAR)
-    if (firstSeparator != -1) {
-        return command.substring(0, firstSeparator).lowercase() + command.substring(firstSeparator)
-    }
+    if (firstSeparator != -1) return command.substring(0, firstSeparator).lowercase() + command.substring(firstSeparator)
     return command.lowercase()
 }

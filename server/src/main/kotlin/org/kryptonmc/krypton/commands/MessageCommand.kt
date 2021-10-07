@@ -43,18 +43,10 @@ object MessageCommand : InternalCommand {
                 .then(argument<Sender, String>("message", string())
                     .executes {
                         val source = it.source as? KryptonPlayer ?: return@executes 0
-                        val player = it.entityArgument("player").getPlayers(source)[0]
+                        val player = it.entityArgument("player").players(source)[0]
                         val message = it.argument<String>("message")
-                        source.sendMessage(translatable(
-                            "commands.message.display.outgoing",
-                            text(player.name),
-                            text(message)
-                        ))
-                        player.sendMessage(translatable(
-                            "commands.message.display.incoming",
-                            text(source.name),
-                            text(message)
-                        ))
+                        source.sendMessage(translatable("commands.message.display.outgoing", text(player.name), text(message)))
+                        player.sendMessage(translatable("commands.message.display.incoming", text(source.name), text(message)))
                         1
                     })
             )

@@ -49,16 +49,12 @@ object ClearCommand : InternalCommand {
             }
             .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
                 .executes {
-                    clear(it.entityArgument("targets").getPlayers(it.source), it.source)
+                    clear(it.entityArgument("targets").players(it.source), it.source)
                     1
                 }
-                .then(argument<Sender, ItemStackPredicate>("item", ItemStackPredicateArgument())
+                .then(argument<Sender, ItemStackPredicate>("item", ItemStackPredicateArgument)
                     .executes {
-                        clear(
-                            it.entityArgument("targets").getPlayers(it.source),
-                            it.source,
-                            it.argument("item")
-                        )
+                        clear(it.entityArgument("targets").players(it.source), it.source, it.argument("item"))
                         1
                     })))
     }
@@ -83,9 +79,7 @@ object ClearCommand : InternalCommand {
             ))
         } else {
             targets.forEach { target ->
-                target.inventory.forEachIndexed { index, item ->
-                    if (predicate(item)) target.inventory[index] = EmptyItemStack
-                }
+                target.inventory.forEachIndexed { index, item -> if (predicate(item)) target.inventory[index] = EmptyItemStack }
                 target.session.send(PacketOutWindowItems(
                     target.inventory.id,
                     target.inventory.incrementStateId(),
@@ -93,11 +87,7 @@ object ClearCommand : InternalCommand {
                     target.inventory.mainHand
                 ))
             }
-            sender.sendMessage(translatable(
-                "commands.clear.success.multiple",
-                text(amount),
-                text(targets.size.toString())
-            ))
+            sender.sendMessage(translatable("commands.clear.success.multiple", text(amount), text(targets.size.toString())))
         }
     }
 

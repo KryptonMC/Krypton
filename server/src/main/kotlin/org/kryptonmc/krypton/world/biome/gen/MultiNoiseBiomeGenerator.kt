@@ -93,8 +93,6 @@ class MultiNoiseBiomeGenerator private constructor(
 
         constructor(firstOctave: Int, amplitudes: List<Double>) : this(firstOctave, DoubleArrayList(amplitudes))
 
-        constructor(firstOctave: Int, vararg amplitudes: Double) : this(firstOctave, DoubleArrayList(amplitudes))
-
         companion object {
 
             val CODEC: Codec<NoiseParameters> = RecordCodecBuilder.create {
@@ -106,10 +104,8 @@ class MultiNoiseBiomeGenerator private constructor(
         }
     }
 
-    class Preset(
-        val name: Key,
-        val generator: (Preset, KryptonRegistry<Biome>, Long) -> MultiNoiseBiomeGenerator
-    ) {
+    @JvmRecord
+    data class Preset private constructor(val name: Key, val generator: (Preset, KryptonRegistry<Biome>, Long) -> MultiNoiseBiomeGenerator) {
 
         init {
             BY_NAME[name] = this
@@ -142,9 +138,7 @@ class MultiNoiseBiomeGenerator private constructor(
                         { key -> Preset.BY_NAME[key]?.successOrError("Unknown generator preset $key!") },
                         { DataResult.success(it.name) }
                     ).fieldOf("preset").stable().forGetter(PresetInstance::preset),
-                    ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC)
-                        .fieldOf("biomes")
-                        .forGetter(PresetInstance::biomes),
+                    ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes").forGetter(PresetInstance::biomes),
                     Codec.LONG.fieldOf("seed").stable().forGetter(PresetInstance::seed)
                 ).apply(instance, MultiNoiseBiomeGenerator::PresetInstance)
             }

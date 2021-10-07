@@ -30,29 +30,15 @@ object ShoreLayer : CastleTransformer {
 
     override fun invoke(context: Context, north: Int, east: Int, south: Int, west: Int, center: Int): Int {
         if (center == BiomeConstants.MUSHROOM_FIELDS) {
-            if (
-                north.isShallowOcean() ||
-                east.isShallowOcean() ||
-                south.isShallowOcean() ||
-                west.isShallowOcean()
-            ) {
+            if (north.isShallowOcean() || east.isShallowOcean() || south.isShallowOcean() || west.isShallowOcean()) {
                 return BiomeConstants.MUSHROOM_FIELD_SHORE
             }
         } else if (JUNGLES.contains(center)) {
-            if (
-                !north.isJungleCompatible() ||
-                !east.isJungleCompatible() ||
-                !south.isJungleCompatible() ||
-                !west.isJungleCompatible()
-            ) {
+            if (!north.isJungleCompatible() || !east.isJungleCompatible() || !south.isJungleCompatible() || !west.isJungleCompatible()) {
                 return BiomeConstants.JUNGLE_EDGE
             }
             if (north.isOcean() || east.isOcean() || south.isOcean() || west.isOcean()) return BiomeConstants.BEACH
-        } else if (
-            center != BiomeConstants.MOUNTAINS &&
-            center != BiomeConstants.WOODED_MOUNTAINS &&
-            center != BiomeConstants.MOUNTAIN_EDGE
-        ) {
+        } else if (center != BiomeConstants.MOUNTAINS && center != BiomeConstants.WOODED_MOUNTAINS && center != BiomeConstants.MOUNTAIN_EDGE) {
             if (SNOWY.contains(center)) {
                 if (!center.isOcean() && (north.isOcean() || east.isOcean() || south.isOcean() || west.isOcean())) {
                     return BiomeConstants.SNOWY_BEACH
@@ -75,10 +61,7 @@ object ShoreLayer : CastleTransformer {
             ) {
                 return BiomeConstants.DESERT
             }
-        } else if (
-            !center.isOcean() &&
-            (north.isOcean() || east.isOcean() || south.isOcean() || west.isOcean())
-        ) {
+        } else if (!center.isOcean() && (north.isOcean() || east.isOcean() || south.isOcean() || west.isOcean())) {
             return BiomeConstants.STONE_SHORE
         }
         return center

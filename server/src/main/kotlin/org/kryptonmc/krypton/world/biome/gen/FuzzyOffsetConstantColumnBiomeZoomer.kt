@@ -22,11 +22,5 @@ import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 
 object FuzzyOffsetConstantColumnBiomeZoomer : BiomeZoomer {
 
-    override fun invoke(
-        seed: Long,
-        x: Int,
-        y: Int,
-        z: Int,
-        source: NoiseBiomeSource
-    ) = FuzzyOffsetBiomeZoomer(seed, x, 0, z, source)
+    override fun invoke(seed: Long, x: Int, y: Int, z: Int, source: NoiseBiomeSource) = FuzzyOffsetBiomeZoomer(seed, x, 0, z, source)
 }

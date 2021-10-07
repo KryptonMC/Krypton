@@ -28,10 +28,10 @@ interface CastleTransformer : AreaTransformer1, DimensionOffset1Transformer {
 
     override fun invoke(context: BigContext<*>, parent: Area, x: Int, z: Int) = invoke(
         context,
-        parent[getParentX(x + 1), getParentZ(z)],
-        parent[getParentX(x + 2), getParentZ(z + 1)],
-        parent[getParentX(x + 1), getParentZ(z + 2)],
-        parent[getParentX(x), getParentZ(z + 1)],
-        parent[getParentX(x + 1), getParentZ(z + 1)]
+        parent[parentX(x + 1), parentZ(z)],
+        parent[parentX(x + 2), parentZ(z + 1)],
+        parent[parentX(x + 1), parentZ(z + 2)],
+        parent[parentX(x), parentZ(z + 1)],
+        parent[parentX(x + 1), parentZ(z + 1)]
     )
 }

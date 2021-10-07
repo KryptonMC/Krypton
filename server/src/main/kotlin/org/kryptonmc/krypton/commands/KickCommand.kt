@@ -39,16 +39,15 @@ object KickCommand : InternalCommand {
             .permission("krypton.command.kick", 3)
             .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
                 .executes { context ->
-                    context.entityArgument("targets").getPlayers(context.source).forEach {
+                    context.entityArgument("targets").players(context.source).forEach {
                         it.disconnect(translatable("multiplayer.disconnect.kicked"))
                     }
                     1
                 }.then(argument<Sender, String>("reason", string())
                     .executes { context ->
                         val reason = context.argument<String>("reason")
-                        context.entityArgument("targets").getPlayers(context.source).forEach {
-                            it.disconnect(translatable("multiplayer.disconnect.kicked")
-                                .append(text(" Reason: $reason")))
+                        context.entityArgument("targets").players(context.source).forEach {
+                            it.disconnect(translatable("multiplayer.disconnect.kicked").append(text(" Reason: $reason")))
                         }
                         1
                     })

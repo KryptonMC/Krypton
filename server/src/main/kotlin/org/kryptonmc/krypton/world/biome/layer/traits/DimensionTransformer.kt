@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.biome.layer.traits
 
 interface DimensionTransformer {
 
-    fun getParentX(x: Int): Int
+    fun parentX(x: Int): Int
 
-    fun getParentZ(z: Int): Int
+    fun parentZ(z: Int): Int
 }

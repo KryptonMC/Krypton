@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 
-class Brain(val memories: MutableList<Memory<out Any>>) {
+class Brain(private val memories: MutableList<Memory<out Any>>) {
 
     fun load(tag: CompoundTag) = tag.getCompound("Memories").forEach {
         val key = InternalRegistries.MEMORIES[Key.key(it.key)] ?: return@forEach

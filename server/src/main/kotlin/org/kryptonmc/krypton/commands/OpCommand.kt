@@ -40,9 +40,9 @@ object OpCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("op")
             .permission("krypton.command.op", 3)
-            .then(argument<Sender, EntityQuery>("targets", GameProfileArgument())
+            .then(argument<Sender, EntityQuery>("targets", GameProfileArgument)
                 .executes { context ->
-                    val targets = context.gameProfileArgument("targets").getProfiles(context.source)
+                    val targets = context.gameProfileArgument("targets").profiles(context.source)
                     val server = context.source.server as? KryptonServer ?: return@executes 0
                     targets.forEach {
                         val ops = server.playerManager.ops

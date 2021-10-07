@@ -26,14 +26,7 @@ object AddEdgeLayer {
 
     object CoolWarm : CastleTransformer {
 
-        override fun invoke(
-            context: Context,
-            north: Int,
-            east: Int,
-            south: Int,
-            west: Int,
-            center: Int
-        ): Int {
+        override fun invoke(context: Context, north: Int, east: Int, south: Int, west: Int, center: Int): Int {
             if (
                 center != 1 ||
                 north != 3 && east != 3 && south != 3 && west != 3 &&
@@ -47,14 +40,7 @@ object AddEdgeLayer {
 
     object HeatIce : CastleTransformer {
 
-        override fun invoke(
-            context: Context,
-            north: Int,
-            east: Int,
-            south: Int,
-            west: Int,
-            center: Int
-        ): Int {
+        override fun invoke(context: Context, north: Int, east: Int, south: Int, west: Int, center: Int): Int {
             if (
                 center != 4 ||
                 north != 1 && east != 1 && south != 1 && west != 1 &&

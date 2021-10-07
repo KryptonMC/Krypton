@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentParser
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.argument.argument
 
-class GameProfileArgument : ArgumentType<EntityQuery> {
+object GameProfileArgument : ArgumentType<EntityQuery> {
 
     override fun parse(reader: StringReader): EntityQuery {
         if (reader.canRead() && reader.peek() == '@') {

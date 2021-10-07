@@ -44,7 +44,7 @@ object ArgumentSerializers {
 
     init {
         // Brigadier serializers
-        registerEmpty<BoolArgumentType>("brigadier:bool")
+        empty<BoolArgumentType>("brigadier:bool")
         register("brigadier:double", DoubleArgumentSerializer)
         register("brigadier:float", FloatArgumentSerializer)
         register("brigadier:integer", IntArgumentSerializer)
@@ -52,14 +52,14 @@ object ArgumentSerializers {
         register("brigadier:string", StringArgumentSerializer)
 
         // Built-in serializers
-        registerEmpty<NBTArgument>("nbt_tag")
-        registerEmpty<NBTCompoundArgument>("nbt_compound_tag")
-        registerEmpty<SummonEntityArgument>("entity_summon")
-        registerEmpty<VectorArgument>("vec3")
+        empty<NBTArgument>("nbt_tag")
+        empty<NBTCompoundArgument>("nbt_compound_tag")
+        empty<SummonEntityArgument>("entity_summon")
+        empty<VectorArgument>("vec3")
         register("entity", EntityArgumentSerializer)
-        registerEmpty<GameProfileArgument>("game_profile")
-        registerEmpty<ItemStackArgumentType>("item_stack")
-        registerEmpty<ItemStackPredicateArgument>("item_predicate")
+        empty<GameProfileArgument>("game_profile")
+        empty<ItemStackArgumentType>("item_stack")
+        empty<ItemStackPredicateArgument>("item_predicate")
     }
 
     operator fun get(name: Key) = BY_NAME[name]
@@ -79,9 +79,9 @@ object ArgumentSerializers {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private inline fun <reified T : ArgumentType<*>> registerEmpty(name: String) =
-        register(name, ArgumentSerializer.Empty as ArgumentSerializer<T>)
+    private inline fun <reified T : ArgumentType<*>> empty(name: String) = register(name, ArgumentSerializer.Empty as ArgumentSerializer<T>)
 
+    @JvmRecord
     data class Entry<T : ArgumentType<*>>(
         val name: Key,
         val clazz: Class<T>,

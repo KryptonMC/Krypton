@@ -43,33 +43,40 @@ class EntityArgument private constructor(
 
     override fun getExamples() = EXAMPLES
 
+    @JvmRecord
+    data class EntityArg(val name: String, val value: Any, val exclude: Boolean)
+
     companion object {
 
         private val EXAMPLES = listOf("Player1", "Player2", "@a", "@e", "@r", "@a[gamemode=adventure]")
         private val PLAYER_NAME_REGEX = Regex("[a-zA-Z0-9_]{1,16}")
 
+        // Constants
+        private val PLAYER = EntityArgument(true, true)
+        private val PLAYERS = EntityArgument(true, false)
+        private val ENTITY = EntityArgument(false, true)
+        private val ENTITIES = EntityArgument(false, false)
+
         /**
          * @return An argument which can only accept one player
          */
-        fun player() = EntityArgument(true, true)
+        fun player() = PLAYER
 
         /**
          * @return An argument which can only accept players
          */
-        fun players() = EntityArgument(true, false)
+        fun players() = PLAYERS
 
         /**
          * @return An argument which can accept one entity
          */
-        fun entity() = EntityArgument(false, true)
+        fun entity() = ENTITY
 
         /**
          * @return An argument which can accept entities
          */
-        fun entities() = EntityArgument(false, false)
+        fun entities() = ENTITIES
     }
-
-    data class EntityArg(val name: String, val value: Any, val exclude: Boolean)
 }
 
 fun CommandContext<Sender>.entityArgument(name: String) = argument<EntityQuery>(name)

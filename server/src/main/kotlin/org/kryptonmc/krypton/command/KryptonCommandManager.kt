@@ -45,7 +45,7 @@ import org.kryptonmc.krypton.commands.ClearCommand
 import org.kryptonmc.krypton.commands.DeopCommand
 import org.kryptonmc.krypton.commands.DifficultyCommand
 import org.kryptonmc.krypton.commands.GameModeCommand
-import org.kryptonmc.krypton.commands.GameruleCommand
+import org.kryptonmc.krypton.commands.GameRuleCommand
 import org.kryptonmc.krypton.commands.GiveCommand
 import org.kryptonmc.krypton.commands.KickCommand
 import org.kryptonmc.krypton.commands.ListCommand
@@ -171,7 +171,7 @@ object KryptonCommandManager : CommandManager {
         MessageCommand.register(dispatcher)
         TitleCommand.register(dispatcher)
         DifficultyCommand.register(dispatcher)
-        GameruleCommand.register(dispatcher)
+        GameRuleCommand.register(dispatcher)
         VersionCommand.register(dispatcher)
         KickCommand.register(dispatcher)
         BanCommand.register(dispatcher)

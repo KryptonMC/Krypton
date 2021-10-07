@@ -18,14 +18,19 @@
  */
 package org.kryptonmc.krypton.command.registrar
 
+import com.mojang.brigadier.Command
+import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
+import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.InvocableCommand
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.buildRawArgumentsLiteral
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.Lock
 
@@ -53,5 +58,20 @@ sealed class InvocableCommandRegistrar<C : InvocableCommand<A>, M : CommandMeta,
             if (value == name) return@forEach
             register(root, node, value)
         }
+    }
+
+    companion object {
+
+        private fun buildRawArgumentsLiteral(
+            alias: String,
+            command: Command<Sender>,
+            suggestionProvider: SuggestionProvider<Sender>
+        ): LiteralCommandNode<Sender> = LiteralArgumentBuilder.literal<Sender>(alias.lowercase())
+            .then(
+                RequiredArgumentBuilder.argument<Sender, String>("arguments", StringArgumentType.greedyString())
+                .suggests(suggestionProvider)
+                .executes(command))
+            .executes(command)
+            .build()
     }
 }

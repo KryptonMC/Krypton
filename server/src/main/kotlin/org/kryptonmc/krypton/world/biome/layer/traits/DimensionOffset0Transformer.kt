@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.biome.layer.traits
 
 interface DimensionOffset0Transformer : DimensionTransformer {
 
-    override fun getParentX(x: Int) = x
+    override fun parentX(x: Int) = x
 
-    override fun getParentZ(z: Int) = z
+    override fun parentZ(z: Int) = z
 }

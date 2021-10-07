@@ -34,7 +34,7 @@ import org.kryptonmc.krypton.command.suggestCoordinates
 import org.kryptonmc.krypton.command.argument.argument
 import java.util.concurrent.CompletableFuture
 
-class VectorArgument(private val correctCenter: Boolean = true) : ArgumentType<Coordinates> {
+class VectorArgument private constructor(private val correctCenter: Boolean = true) : ArgumentType<Coordinates> {
 
     override fun parse(reader: StringReader): Coordinates {
         if (reader.canRead() && reader.peek() == '^') return LocalCoordinates.parse(reader)
@@ -52,7 +52,7 @@ class VectorArgument(private val correctCenter: Boolean = true) : ArgumentType<C
         } else {
             TextCoordinates.CENTER_GLOBAL
         }
-        return builder.suggestCoordinates(remaining, listOf(suggestion)) {
+        return builder.suggestCoordinates(remaining, sequenceOf(suggestion)) {
             try {
                 parse(StringReader(it))
                 true
@@ -67,6 +67,9 @@ class VectorArgument(private val correctCenter: Boolean = true) : ArgumentType<C
     companion object {
 
         private val EXAMPLES = listOf("0 0 0", "~ ~ ~", "^ ^ ^", "^1 ^ ^-5", "0.1 -0.5 .9", "~0.5 ~1 ~-5")
+        private val NORMAL = VectorArgument(true)
+
+        fun normal() = NORMAL
     }
 }
 

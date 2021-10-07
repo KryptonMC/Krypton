@@ -42,7 +42,7 @@ object TeleportCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val node = dispatcher.register(literal<Sender>("teleport")
             .permission("krypton.command.teleport", 2)
-            .then(argument<Sender, Coordinates>("location", VectorArgument(true))
+            .then(argument<Sender, Coordinates>("location", VectorArgument.normal())
                 .executes {
                     teleport(it.source, it.argument<Coordinates>("location"))
                     1
@@ -50,23 +50,19 @@ object TeleportCommand : InternalCommand {
             .then(argument<Sender, EntityQuery>("players", EntityArgument.players())
                 .executes {
                     val sender = it.source as? KryptonPlayer ?: return@executes 0
-                    val players = it.entityArgument("players").getPlayers(sender)
+                    val players = it.entityArgument("players").players(sender)
                     if (players.size == 1) {
                         val player = players[0]
                         teleport(sender, player.location)
-                        sender.sendMessage(translatable(
-                            "commands.teleport.success.entity.single",
-                            text(sender.name),
-                            text(player.name)
-                        ))
+                        sender.sendMessage(translatable("commands.teleport.success.entity.single", text(sender.name), text(player.name)))
                     }
                     1
                 }
                 .then(argument<Sender, EntityQuery>("target", EntityArgument.player())
                     .executes { context ->
                         val sender = context.source as? KryptonPlayer ?: return@executes 0
-                        val players = context.entityArgument("players").getPlayers(sender)
-                        val target = context.entityArgument("target").getPlayers(sender)[0]
+                        val players = context.entityArgument("players").players(sender)
+                        val target = context.entityArgument("target").players(sender)[0]
                         players.forEach { teleport(it, target.location) }
                         sender.sendMessage(translatable(
                             "commands.teleport.success.entity.multiple",
@@ -75,10 +71,10 @@ object TeleportCommand : InternalCommand {
                         ))
                         1
                     })
-                .then(argument<Sender, Coordinates>("location", VectorArgument(true))
+                .then(argument<Sender, Coordinates>("location", VectorArgument.normal())
                     .executes { context ->
                         val sender = context.source as? KryptonPlayer ?: return@executes 0
-                        val players = context.entityArgument("players").getPlayers(sender)
+                        val players = context.entityArgument("players").players(sender)
                         val location = context.argument<Coordinates>("location")
                         players.forEach { teleport(it, location) }
                         sender.sendMessage(translatable(

@@ -24,6 +24,7 @@ import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
 
+@JvmRecord
 data class ItemStackArgument(val item: ItemType, val tag: CompoundTag? = null) {
 
     fun createItemStacks(amount: Int): List<KryptonItemStack> {
