@@ -36,9 +36,7 @@ import org.kryptonmc.krypton.util.IntBiMap
 import java.util.stream.Stream
 import kotlin.math.max
 
-open class KryptonRegistry<T : Any>(
-    override val key: ResourceKey<out Registry<T>>
-) : Registry<T>, Codec<T>, Keyable, IntBiMap<T> {
+open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, Codec<T>, Keyable, IntBiMap<T> {
 
     private val byId = ObjectArrayList<T>(256)
     @Suppress("UNCHECKED_CAST")
@@ -113,9 +111,7 @@ open class KryptonRegistry<T : Any>(
 
     companion object {
 
-        fun <T : Any> ResourceKey<out Registry<T>>.directCodec(
-            elementCodec: Codec<T>
-        ): Codec<KryptonRegistry<T>> = Codec.unboundedMap(
+        fun <T : Any> ResourceKey<out Registry<T>>.directCodec(elementCodec: Codec<T>): Codec<KryptonRegistry<T>> = Codec.unboundedMap(
             Codecs.KEY.xmap({ ResourceKey.of(this, it) }, ResourceKey<*>::location),
             elementCodec
         ).xmap(

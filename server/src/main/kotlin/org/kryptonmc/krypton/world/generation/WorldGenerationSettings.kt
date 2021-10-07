@@ -23,7 +23,7 @@ import com.mojang.serialization.DataResult
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.resource.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.world.biome.gen.MultiNoiseBiomeGenerator

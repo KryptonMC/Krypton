@@ -23,6 +23,7 @@ import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.krypton.resource.InternalResourceKeys
 
 object InternalRegistries {
 

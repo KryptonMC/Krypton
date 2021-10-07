@@ -26,10 +26,9 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.resource.InternalResourceKeys
 import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.generation.StructureSettings
-import java.util.Optional
 
 @JvmRecord
 data class NoiseGeneratorSettings(

@@ -23,7 +23,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.resource.InternalResourceKeys
 import org.kryptonmc.krypton.world.generation.Generator
 
 @JvmRecord

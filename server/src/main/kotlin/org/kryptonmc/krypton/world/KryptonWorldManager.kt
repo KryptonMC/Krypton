@@ -30,7 +30,7 @@ import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.InternalResourceKeys
+import org.kryptonmc.krypton.resource.InternalResourceKeys
 import org.kryptonmc.krypton.util.ChunkProgressListener
 import org.kryptonmc.krypton.util.daemon
 import org.kryptonmc.krypton.util.logger

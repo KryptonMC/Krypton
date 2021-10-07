@@ -22,7 +22,6 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.util.clamp

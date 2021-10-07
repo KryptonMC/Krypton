@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.world.biome
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.krypton.registry.InternalResourceKeys
 
 object BiomeKeys {
 

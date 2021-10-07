@@ -28,7 +28,6 @@ import it.unimi.dsi.fastutil.doubles.DoubleList
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.util.Codecs
