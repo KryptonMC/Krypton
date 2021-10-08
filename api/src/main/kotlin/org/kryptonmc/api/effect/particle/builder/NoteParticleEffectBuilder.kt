@@ -9,6 +9,7 @@
 package org.kryptonmc.api.effect.particle.builder
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.effect.particle.ParticleDsl
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.NoteParticleData
@@ -33,6 +34,7 @@ public class NoteParticleEffectBuilder @JvmOverloads constructor(
      *
      * @param note the note value
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun note(note: Int): NoteParticleEffectBuilder = apply {
         require(note in 0..24) { "Note must be between 0 and 24!" }

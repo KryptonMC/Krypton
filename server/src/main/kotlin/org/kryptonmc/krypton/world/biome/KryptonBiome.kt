@@ -22,6 +22,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.api.world.biome.BiomeCategories
 import org.kryptonmc.api.world.biome.BiomeCategory
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.Climate
@@ -38,6 +39,39 @@ data class KryptonBiome(
 
     override fun key(): Key = key
 
+    override fun toBuilder(): Biome.Builder = Builder(this)
+
+    class Builder(private var key: Key) : Biome.Builder {
+
+        private var climate = KryptonClimate.DEFAULT
+        private var depth = 0F
+        private var scale = 0F
+        private var category = BiomeCategories.NONE
+        private var effects = KryptonBiomeEffects.DEFAULT
+
+        constructor(biome: Biome) : this(biome.key()) {
+            climate = biome.climate
+            depth = biome.depth
+            scale = biome.scale
+            category = biome.category
+            effects = biome.effects
+        }
+
+        override fun key(key: Key): Biome.Builder = apply { this.key = key }
+
+        override fun climate(climate: Climate): Biome.Builder = apply { this.climate = climate }
+
+        override fun depth(depth: Float): Biome.Builder = apply { this.depth = depth }
+
+        override fun scale(scale: Float): Biome.Builder = apply { this.scale = scale }
+
+        override fun category(category: BiomeCategory): Biome.Builder = apply { this.category = category }
+
+        override fun effects(effects: BiomeEffects): Biome.Builder = apply { this.effects = effects }
+
+        override fun build(): Biome = KryptonBiome(key, climate, depth, scale, category, effects)
+    }
+
     object Factory : Biome.Factory {
 
         override fun of(
@@ -48,6 +82,8 @@ data class KryptonBiome(
             category: BiomeCategory,
             effects: BiomeEffects
         ): Biome = KryptonBiome(key, climate, depth, scale, category, effects)
+
+        override fun builder(key: Key): Biome.Builder = Builder(key)
     }
 
     companion object {

@@ -23,6 +23,7 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.api.world.biome.Precipitation
+import org.kryptonmc.api.world.biome.Precipitations
 import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.api.world.biome.TemperatureModifiers
 
@@ -34,6 +35,33 @@ data class KryptonClimate(
     override val temperatureModifier: TemperatureModifier = TemperatureModifiers.NONE
 ) : Climate {
 
+    override fun toBuilder(): Climate.Builder = Builder(this)
+
+    class Builder() : Climate.Builder {
+
+        private var precipitation = Precipitations.NONE
+        private var temperature = 0F
+        private var downfall = 0F
+        private var temperatureModifier = TemperatureModifiers.NONE
+
+        constructor(climate: Climate) : this() {
+            precipitation = climate.precipitation
+            temperature = climate.temperature
+            downfall = climate.downfall
+            temperatureModifier = climate.temperatureModifier
+        }
+
+        override fun precipitation(precipitation: Precipitation): Climate.Builder = apply { this.precipitation = precipitation }
+
+        override fun temperature(temperature: Float): Climate.Builder = apply { this.temperature = temperature }
+
+        override fun downfall(downfall: Float): Climate.Builder = apply { this.downfall = downfall }
+
+        override fun temperatureModifier(modifier: TemperatureModifier): Climate.Builder = apply { temperatureModifier = modifier }
+
+        override fun build(): Climate = KryptonClimate(precipitation, temperature, downfall, temperatureModifier)
+    }
+
     object Factory : Climate.Factory {
 
         override fun of(
@@ -42,10 +70,13 @@ data class KryptonClimate(
             downfall: Float,
             temperatureModifier: TemperatureModifier
         ): Climate = KryptonClimate(precipitation, temperature, downfall, temperatureModifier)
+
+        override fun builder(): Climate.Builder = Builder()
     }
 
     companion object {
 
+        val DEFAULT = Builder().build()
         val CODEC: MapCodec<Climate> = RecordCodecBuilder.mapCodec {
             it.group(
                 KryptonPrecipitation.CODEC.fieldOf("precipitation").forGetter(Climate::precipitation),

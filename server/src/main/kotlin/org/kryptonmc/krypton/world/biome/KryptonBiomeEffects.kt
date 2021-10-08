@@ -49,6 +49,78 @@ data class KryptonBiomeEffects(
     override val backgroundMusic: Music? = null
 ) : BiomeEffects {
 
+    override fun toBuilder(): BiomeEffects.Builder = Builder(this)
+
+    class Builder() : BiomeEffects.Builder {
+
+        private var fogColor = Color.BLACK
+        private var waterColor = Color.BLACK
+        private var waterFogColor = Color.BLACK
+        private var skyColor = Color.BLACK
+        private var grassColorModifier = GrassColorModifiers.NONE
+        private var foliageColor: Color? = null
+        private var grassColor: Color? = null
+        private var particles: AmbientParticleSettings? = null
+        private var loopSound: SoundEvent? = null
+        private var mood: AmbientMoodSettings? = null
+        private var additions: AmbientAdditionsSettings? = null
+        private var backgroundMusic: Music? = null
+
+        constructor(effects: BiomeEffects) : this() {
+            fogColor = effects.fogColor
+            waterColor = effects.waterColor
+            waterFogColor = effects.waterFogColor
+            skyColor = effects.skyColor
+            grassColorModifier = effects.grassColorModifier
+            foliageColor = effects.foliageColor
+            grassColor = effects.grassColor
+            particles = effects.ambientParticleSettings
+            loopSound = effects.ambientLoopSound
+            mood = effects.ambientMoodSettings
+            additions = effects.ambientAdditionsSettings
+            backgroundMusic = effects.backgroundMusic
+        }
+
+        override fun fogColor(color: Color): BiomeEffects.Builder = apply { fogColor = color }
+
+        override fun waterColor(color: Color): BiomeEffects.Builder = apply { waterColor = color }
+
+        override fun waterFogColor(color: Color): BiomeEffects.Builder = apply { waterFogColor = color }
+
+        override fun skyColor(color: Color): BiomeEffects.Builder = apply { skyColor = color }
+
+        override fun grassColorModifier(modifier: GrassColorModifier): BiomeEffects.Builder = apply { grassColorModifier = modifier }
+
+        override fun foliageColor(color: Color?): BiomeEffects.Builder = apply { foliageColor = color }
+
+        override fun grassColor(color: Color?): BiomeEffects.Builder = apply { grassColor = color }
+
+        override fun particles(settings: AmbientParticleSettings?): BiomeEffects.Builder = apply { particles = settings }
+
+        override fun loopSound(sound: SoundEvent?): BiomeEffects.Builder = apply { loopSound = sound }
+
+        override fun mood(settings: AmbientMoodSettings?): BiomeEffects.Builder = apply { mood = settings }
+
+        override fun additions(settings: AmbientAdditionsSettings?): BiomeEffects.Builder = apply { additions = settings }
+
+        override fun backgroundMusic(music: Music?): BiomeEffects.Builder = apply { backgroundMusic = music }
+
+        override fun build(): BiomeEffects = KryptonBiomeEffects(
+            fogColor,
+            waterColor,
+            waterFogColor,
+            skyColor,
+            grassColorModifier,
+            foliageColor,
+            grassColor,
+            particles,
+            loopSound,
+            mood,
+            additions,
+            backgroundMusic
+        )
+    }
+
     object Factory : BiomeEffects.Factory {
 
         override fun of(
@@ -78,10 +150,13 @@ data class KryptonBiomeEffects(
             ambientAdditionsSettings,
             backgroundMusic
         )
+
+        override fun builder(): BiomeEffects.Builder = Builder()
     }
 
     companion object {
 
+        val DEFAULT = Builder().build()
         val CODEC: Codec<BiomeEffects> = RecordCodecBuilder.create { instance ->
             instance.group(
                 Codecs.COLOR.fieldOf("fog_color").forGetter(BiomeEffects::fogColor),

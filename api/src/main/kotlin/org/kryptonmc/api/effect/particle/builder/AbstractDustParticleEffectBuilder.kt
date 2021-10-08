@@ -9,6 +9,7 @@
 package org.kryptonmc.api.effect.particle.builder
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.effect.particle.ParticleDsl
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.spongepowered.math.vector.Vector3d
 
@@ -34,6 +35,7 @@ public sealed class AbstractDustParticleEffectBuilder<B : AbstractDustParticleEf
      *
      * @param scale the scale of the particles
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun scale(scale: Float): B = apply { this.scale = scale } as B
 }

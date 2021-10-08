@@ -10,6 +10,7 @@ package org.kryptonmc.api.effect.particle.builder
 
 import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.effect.particle.ParticleDsl
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.spongepowered.math.vector.Vector3d
@@ -32,6 +33,7 @@ public sealed class AbstractParticleEffectBuilder<B : AbstractParticleEffectBuil
      * @param quantity the number of particles, must be between 1 and 16384
      * inclusively
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun quantity(quantity: Int): B = apply { this.quantity = quantity } as B
 
@@ -40,6 +42,7 @@ public sealed class AbstractParticleEffectBuilder<B : AbstractParticleEffectBuil
      *
      * @param offset the offset from the origin
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun offset(offset: Vector3d): B = apply { this.offset = offset } as B
 
@@ -52,6 +55,7 @@ public sealed class AbstractParticleEffectBuilder<B : AbstractParticleEffectBuil
      * @param longDistance true for long view distance, false for normal view
      * distance
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun longDistance(longDistance: Boolean): B = apply { this.longDistance = longDistance } as B
 }

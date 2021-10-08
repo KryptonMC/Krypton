@@ -9,6 +9,7 @@
 package org.kryptonmc.api.effect.particle.builder
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.effect.particle.ParticleDsl
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.ItemParticleData
@@ -33,6 +34,7 @@ public class ItemParticleEffectBuilder @JvmOverloads constructor(
      *
      * @param item the item type to use
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun item(item: ItemType): ItemParticleEffectBuilder = apply { this.item = item }
 

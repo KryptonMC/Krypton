@@ -7,6 +7,7 @@
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
 @file:JvmSynthetic
+@file:Suppress("MatchingDeclarationName")
 package org.kryptonmc.api.effect.particle
 
 import org.jetbrains.annotations.Contract
@@ -20,8 +21,10 @@ import org.kryptonmc.api.effect.particle.builder.NoteParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.ParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
 
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
 @DslMarker
-private annotation class ParticleDsl
+internal annotation class ParticleDsl
 
 /**
  * DSL to create simple [ParticleEffect]s.

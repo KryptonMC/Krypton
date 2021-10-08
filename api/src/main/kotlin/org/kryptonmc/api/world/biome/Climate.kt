@@ -8,7 +8,9 @@
  */
 package org.kryptonmc.api.world.biome
 
+import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.provide
 
@@ -16,7 +18,7 @@ import org.kryptonmc.api.util.provide
  * The climate for a biome.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Climate {
+public interface Climate : Buildable<Climate, Climate.Builder> {
 
     /**
      * The precipitation settings for this climate.
@@ -42,11 +44,68 @@ public interface Climate {
     @get:JvmName("temperatureModifier")
     public val temperatureModifier: TemperatureModifier
 
+    /**
+     * A builder for climates.
+     */
+    @BiomeDsl
+    public interface Builder : Buildable.Builder<Climate> {
+
+        /**
+         * Sets the precipitation for the climate to the given [precipitation]
+         * and returns this builder.
+         *
+         * @param precipitation the precipitation
+         * @return this builder
+         * @see Climate.precipitation
+         */
+        @BiomeDsl
+        @Contract("_ -> this", mutates = "this")
+        public fun precipitation(precipitation: Precipitation): Builder
+
+        /**
+         * Sets the temperature for the climate to the given [temperature] and
+         * returns this builder.
+         *
+         * @param temperature the temperature
+         * @return this builder
+         * @see Climate.temperature
+         */
+        @BiomeDsl
+        @Contract("_ -> this", mutates = "this")
+        public fun temperature(temperature: Float): Builder
+
+        /**
+         * Sets the downfall for the climate to the given [downfall] and
+         * returns this builder.
+         *
+         * @param downfall the downfall
+         * @return this builder
+         * @see Climate.downfall
+         */
+        @BiomeDsl
+        @Contract("_ -> this", mutates = "this")
+        public fun downfall(downfall: Float): Builder
+
+        /**
+         * Sets the temperature modifier for the climate to the given
+         * [modifier] and returns this builder.
+         *
+         * @param modifier the temperature modifier
+         * @return this builder
+         * @see Climate.temperatureModifier
+         */
+        @BiomeDsl
+        @Contract("_ -> this", mutates = "this")
+        public fun temperatureModifier(modifier: TemperatureModifier): Builder
+    }
+
     @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 
         public fun of(precipitation: Precipitation, temperature: Float, downfall: Float, temperatureModifier: TemperatureModifier): Climate
+
+        public fun builder(): Builder
     }
 
     public companion object {
@@ -63,11 +122,21 @@ public interface Climate {
          * @return a new climate
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun of(
             precipitation: Precipitation,
             temperature: Float,
             downfall: Float,
             temperatureModifier: TemperatureModifier
         ): Climate = FACTORY.of(precipitation, temperature, downfall, temperatureModifier)
+
+        /**
+         * Creates a new builder for climates.
+         *
+         * @return a new builder
+         */
+        @JvmStatic
+        @Contract("_ -> new", pure = true)
+        public fun builder(): Builder = FACTORY.builder()
     }
 }

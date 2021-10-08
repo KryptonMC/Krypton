@@ -10,8 +10,10 @@ package org.kryptonmc.api.world.rule
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.TranslationHolder
@@ -59,11 +61,13 @@ public interface GameRule<V : Any> : TranslationHolder, Keyed {
          * @return a new game rule
          */
         @JvmStatic
+        @JvmOverloads
+        @Contract("_ -> new", pure = true)
         public fun <V : Any> of(
             key: Key,
             name: String,
             default: V,
-            translation: TranslatableComponent
+            translation: TranslatableComponent = Component.translatable("gamerule.$name")
         ): GameRule<V> = FACTORY.of(key, name, default, translation)
     }
 }

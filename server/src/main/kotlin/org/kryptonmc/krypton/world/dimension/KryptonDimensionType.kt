@@ -58,7 +58,7 @@ data class KryptonDimensionType(
 
     override fun toBuilder(): DimensionType.Builder = Builder(this)
 
-    class Builder(private val key: Key) : DimensionType.Builder {
+    class Builder(private var key: Key) : DimensionType.Builder {
 
         private var piglinSafe = false
         private var natural = false
@@ -95,6 +95,8 @@ data class KryptonDimensionType(
             coordinateScale = type.coordinateScale
             effects = type.effects
         }
+
+        override fun key(key: Key): DimensionType.Builder = apply { this.key = key }
 
         override fun piglinSafe(safe: Boolean): DimensionType.Builder = apply { piglinSafe = safe }
 

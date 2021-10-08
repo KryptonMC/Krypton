@@ -9,6 +9,7 @@
 package org.kryptonmc.api.effect.particle.builder
 
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.effect.particle.ParticleDsl
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
@@ -32,6 +33,7 @@ public class DirectionalParticleEffectBuilder @JvmOverloads constructor(
      *
      * @param direction the direction of the particles
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun direction(direction: Vector3d): DirectionalParticleEffectBuilder = apply { this.direction = direction }
 
@@ -43,6 +45,7 @@ public class DirectionalParticleEffectBuilder @JvmOverloads constructor(
      *
      * @param velocity the velocity of the particles
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun velocity(velocity: Float): DirectionalParticleEffectBuilder = apply { this.velocity = velocity }
 

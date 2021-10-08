@@ -11,6 +11,7 @@ package org.kryptonmc.api.effect.particle.builder
 import net.kyori.adventure.util.HSVLike
 import net.kyori.adventure.util.RGBLike
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.effect.particle.ParticleDsl
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.DustTransitionParticleData
@@ -49,6 +50,7 @@ public class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
      *
      * @param color the color
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun toColor(color: Color): DustTransitionParticleEffectBuilder = toRGB(color.red, color.green, color.blue)
 
@@ -63,6 +65,7 @@ public class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
      * @param green the green value
      * @param blue the blue value
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
     public fun toRGB(red: Int, green: Int, blue: Int): DustTransitionParticleEffectBuilder = apply {
@@ -78,6 +81,7 @@ public class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
      *
      * @param rgb the RGB value
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
     public fun toRGB(rgb: Int): DustTransitionParticleEffectBuilder = rgb(rgb shr 16, rgb shr 8, rgb)
@@ -90,6 +94,7 @@ public class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
      *
      * @param rgb the RGB like object
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun toRGB(rgb: RGBLike): DustTransitionParticleEffectBuilder = rgb(rgb.red(), rgb.green(), rgb.blue())
 
@@ -101,6 +106,7 @@ public class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
      *
      * @param hsv the HSV value
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun toHSV(hsv: HSVLike): DustTransitionParticleEffectBuilder = hsv(hsv.h(), hsv.s(), hsv.v())
 
@@ -115,6 +121,7 @@ public class DustTransitionParticleEffectBuilder @JvmOverloads constructor(
      * @param saturation the saturation
      * @param value the value
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun toHSV(hue: Float, saturation: Float, value: Float): DustTransitionParticleEffectBuilder {
         require(hue in 0F..1F) { "Hue must be between 0 and 1!" }

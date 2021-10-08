@@ -14,6 +14,7 @@ import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.KeyedBuilder
 import org.kryptonmc.api.util.provide
 
 /**
@@ -128,7 +129,7 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
     /**
      * A builder for dimension types.
      */
-    public interface Builder : Buildable.Builder<DimensionType> {
+    public interface Builder : KeyedBuilder<DimensionType, Builder> {
 
         /**
          * Makes the dimension type safe for piglins.

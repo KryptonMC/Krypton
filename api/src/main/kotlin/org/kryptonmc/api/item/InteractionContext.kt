@@ -18,24 +18,36 @@ import org.spongepowered.math.vector.Vector3i
 
 /**
  * Context for when a player interacts with a block.
- *
- * @param player the interacting player
- * @param world the world the block is in
- * @param heldItem the item the player held while interacting
- * @param hand the hand that was used to interact with
- * @param hitResult the result of the player attempting to hit the block
  */
-@JvmRecord
-public data class InteractionContext(
-    public val player: Player,
-    public val world: World,
-    public val heldItem: ItemStack,
-    public val hand: Hand,
-    public val hitResult: BlockHitResult
-) {
+public interface InteractionContext {
 
     /**
-     * The position of the block that was interacted with.
+     * The player that is performing the interaction.
+     */
+    public val player: Player
+
+    /**
+     * The world the block being interacted with is in.
+     */
+    public val world: World
+
+    /**
+     * The item that the player held while interacting.
+     */
+    public val heldItem: ItemStack
+
+    /**
+     * The hand being used to interact with.
+     */
+    public val hand: Hand
+
+    /**
+     * The result of the player attempting to hit the block.
+     */
+    public val hitResult: BlockHitResult
+
+    /**
+     * The position of the block that is being interacted with.
      */
     public val position: Vector3i
         get() = hitResult.position
@@ -59,7 +71,7 @@ public data class InteractionContext(
         get() = hitResult.isInside
 
     /**
-     * The player's pitch.
+     * The pitch of the player.
      */
     public val pitch: Float
         get() = player.rotation.y()

@@ -11,6 +11,7 @@ package org.kryptonmc.api.effect.particle.builder
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.effect.particle.ParticleDsl
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.particle.data.BlockParticleData
@@ -33,6 +34,7 @@ public class BlockParticleEffectBuilder @JvmOverloads constructor(
      *
      * @param block the block
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun block(block: Block): BlockParticleEffectBuilder = apply { this.block = block }
 

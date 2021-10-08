@@ -23,7 +23,7 @@ import org.kryptonmc.api.world.scoreboard.criteria.Criterion
 public interface Objective {
 
     /**
-     * The internal name of this objective.
+     * The name of this objective.
      */
     @get:JvmName("name")
     public val name: String

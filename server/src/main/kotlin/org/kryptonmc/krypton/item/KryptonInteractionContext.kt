@@ -16,33 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.item.handler
+package org.kryptonmc.krypton.item
 
-import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.BlockHitResult
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.InteractionContext
-import org.kryptonmc.api.item.ItemHandler
 import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.item.KryptonUseItemResult
-import org.spongepowered.math.vector.Vector3i
 
-interface KryptonItemHandler : ItemHandler {
-
-    override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i) = true
-
-    override fun destroySpeed(item: ItemStack, block: Block) = 1F
-
-    override fun use(
-        player: Player,
-        hand: Hand
-    ) = KryptonUseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
-
-    override fun interact(context: InteractionContext) = InteractionResult.PASS
-
-    override fun isCorrectTool(block: Block) = false
-
-    override fun mineBlock(player: Player, item: ItemStack, world: World, block: Block, position: Vector3i) = false
-}
+@JvmRecord
+data class KryptonInteractionContext(
+    override val player: Player,
+    override val world: World,
+    override val heldItem: ItemStack,
+    override val hand: Hand,
+    override val hitResult: BlockHitResult
+) : InteractionContext

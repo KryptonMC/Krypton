@@ -21,28 +21,60 @@ package org.kryptonmc.krypton.world.biome
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.particle.ParticleType
+import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.krypton.util.Codecs
 
 @JvmRecord
 data class KryptonAmbientParticleSettings(
-    override val particle: ParticleType,
-    override val particleData: ParticleData?,
+    override val type: ParticleType,
+    override val data: ParticleData?,
     override val probability: Float
 ) : AmbientParticleSettings {
 
+    override fun toBuilder(): AmbientParticleSettings.Builder = Builder(this)
+
+    class Builder(private var type: ParticleType) : AmbientParticleSettings.Builder {
+
+        private var data: ParticleData? = null
+        private var probability = 0F
+
+        constructor(settings: AmbientParticleSettings) : this(settings.type) {
+            data = settings.data
+            probability = settings.probability
+        }
+
+        override fun type(type: ParticleType): AmbientParticleSettings.Builder = apply { this.type = type }
+
+        override fun data(data: ParticleData?): AmbientParticleSettings.Builder = apply { this.data = data }
+
+        override fun particle(type: ParticleType, data: ParticleData?): AmbientParticleSettings.Builder = apply {
+            type(type)
+            data(data)
+        }
+
+        override fun probability(probability: Float): AmbientParticleSettings.Builder = apply { this.probability = probability }
+
+        override fun build(): AmbientParticleSettings = KryptonAmbientParticleSettings(type, data, probability)
+    }
+
     object Factory : AmbientParticleSettings.Factory {
 
-        override fun of(particle: ParticleType, particleData: ParticleData?, probability: Float): AmbientParticleSettings =
-            KryptonAmbientParticleSettings(particle, particleData, probability)
+        override fun of(
+            type: ParticleType,
+            data: ParticleData?,
+            probability: Float
+        ): AmbientParticleSettings = KryptonAmbientParticleSettings(type, data, probability)
+
+        override fun builder(type: ParticleType): AmbientParticleSettings.Builder = Builder(type)
     }
 
     companion object {
 
         val CODEC: Codec<AmbientParticleSettings> = RecordCodecBuilder.create {
             it.group(
-                Codecs.PARTICLE.fieldOf("particle").forGetter(AmbientParticleSettings::particle),
+                Codecs.PARTICLE.fieldOf("particle").forGetter(AmbientParticleSettings::type),
                 Codec.FLOAT.fieldOf("probability").forGetter(AmbientParticleSettings::probability)
             ).apply(it) { particle, probability -> KryptonAmbientParticleSettings(particle, null, probability) }
         }

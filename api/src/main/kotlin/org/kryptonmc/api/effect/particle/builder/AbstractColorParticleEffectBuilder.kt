@@ -11,6 +11,7 @@ package org.kryptonmc.api.effect.particle.builder
 import net.kyori.adventure.util.HSVLike
 import net.kyori.adventure.util.RGBLike
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.effect.particle.ParticleDsl
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.spongepowered.math.vector.Vector3d
 import java.awt.Color
@@ -35,6 +36,7 @@ public sealed class AbstractColorParticleEffectBuilder<B : AbstractColorParticle
      *
      * @param color the color
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun color(color: Color): B = apply {
         this.red = color.red.toShort()
@@ -53,6 +55,7 @@ public sealed class AbstractColorParticleEffectBuilder<B : AbstractColorParticle
      * @param green the green value
      * @param blue the blue value
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
     public fun rgb(red: Int, green: Int, blue: Int): B = apply {
@@ -68,6 +71,7 @@ public sealed class AbstractColorParticleEffectBuilder<B : AbstractColorParticle
      *
      * @param rgb the RGB value
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
     public fun rgb(rgb: Int): B = rgb(rgb shr 16, rgb shr 8, rgb)
@@ -79,6 +83,7 @@ public sealed class AbstractColorParticleEffectBuilder<B : AbstractColorParticle
      *
      * @param rgb the RGB like object
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun rgb(rgb: RGBLike): B = rgb(rgb.red(), rgb.green(), rgb.blue())
 
@@ -93,6 +98,7 @@ public sealed class AbstractColorParticleEffectBuilder<B : AbstractColorParticle
      * @param saturation the saturation
      * @param value the value
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun hsv(hue: Float, saturation: Float, value: Float): B {
         require(hue in 0F..1F) { "Hue must be between 0 and 1!" }
@@ -108,6 +114,7 @@ public sealed class AbstractColorParticleEffectBuilder<B : AbstractColorParticle
      *
      * @param hsv the HSV value
      */
+    @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     public fun hsv(hsv: HSVLike): B = hsv(hsv.h(), hsv.s(), hsv.v())
 }

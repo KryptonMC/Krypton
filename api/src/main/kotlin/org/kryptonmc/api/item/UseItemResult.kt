@@ -11,13 +11,17 @@ package org.kryptonmc.api.item
 import org.kryptonmc.api.util.InteractionResult
 
 /**
- * Represents the result of using an item.
- *
- * @param result the result
- * @param item the item
+ * The result of using an item.
  */
-@JvmRecord
-public data class UseItemResult(
-    public val result: InteractionResult,
+public interface UseItemResult {
+
+    /**
+     * The interaction result.
+     */
+    public val result: InteractionResult
+
+    /**
+     * The item that was being used.
+     */
     public val item: ItemStack
-)
+}
