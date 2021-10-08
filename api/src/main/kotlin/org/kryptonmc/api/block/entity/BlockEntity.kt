@@ -9,6 +9,7 @@
 package org.kryptonmc.api.block.entity
 
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3i
 
@@ -21,7 +22,7 @@ import org.spongepowered.math.vector.Vector3i
  * those days.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface BlockEntity {
+public interface BlockEntity : InventoryHolder {
 
     /**
      * The type of this block entity.

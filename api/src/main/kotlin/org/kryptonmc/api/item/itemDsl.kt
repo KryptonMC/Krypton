@@ -7,12 +7,15 @@
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
 @file:JvmSynthetic
+@file:Suppress("MatchingDeclarationName")
 package org.kryptonmc.api.item
 
 import org.jetbrains.annotations.Contract
 
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
 @DslMarker
-private annotation class ItemDsl
+internal annotation class ItemDsl
 
 /**
  * Constructs a new [ItemStack] using the provided [builder] function.

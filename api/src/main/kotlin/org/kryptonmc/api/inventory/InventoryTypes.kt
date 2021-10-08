@@ -19,17 +19,17 @@ import org.kryptonmc.api.util.Catalogue
  * menu type, and cannot be created, or opened client-side.
  */
 @Suppress("UndocumentedPublicProperty")
-@Catalogue(InventoryType::class, GridInventoryType::class)
+@Catalogue(InventoryType::class)
 public object InventoryTypes {
 
     // @formatter:off
-    @JvmField public val GENERIC_9x1: GridInventoryType = register("generic_9x1", 9, 1)
-    @JvmField public val GENERIC_9x2: GridInventoryType = register("generic_9x2", 9, 2)
-    @JvmField public val GENERIC_9x3: GridInventoryType = register("generic_9x3", 9, 3)
-    @JvmField public val GENERIC_9x4: GridInventoryType = register("generic_9x4", 9, 4)
-    @JvmField public val GENERIC_9x5: GridInventoryType = register("generic_9x5", 9, 5)
-    @JvmField public val GENERIC_9x6: GridInventoryType = register("generic_9x6", 9, 6)
-    @JvmField public val GENERIC_3x3: GridInventoryType = register("generic_3x3", 9, 3)
+    @JvmField public val GENERIC_9x1: InventoryType = register("generic_9x1", 9)
+    @JvmField public val GENERIC_9x2: InventoryType = register("generic_9x2", 18)
+    @JvmField public val GENERIC_9x3: InventoryType = register("generic_9x3", 27)
+    @JvmField public val GENERIC_9x4: InventoryType = register("generic_9x4", 36)
+    @JvmField public val GENERIC_9x5: InventoryType = register("generic_9x5", 45)
+    @JvmField public val GENERIC_9x6: InventoryType = register("generic_9x6", 54)
+    @JvmField public val GENERIC_3x3: InventoryType = register("generic_3x3", 9)
     @JvmField public val ANVIL: InventoryType = register("anvil", 3)
     @JvmField public val BEACON: InventoryType = register("beacon", 1)
     @JvmField public val BLAST_FURNACE: InventoryType = register("blast_furnace", 3)
@@ -38,11 +38,11 @@ public object InventoryTypes {
     @JvmField public val ENCHANTING_TABLE: InventoryType = register("enchantment", 2)
     @JvmField public val FURNACE: InventoryType = register("furnace", 3)
     @JvmField public val GRINDSTONE: InventoryType = register("grindstone", 3)
-    @JvmField public val HOPPER: GridInventoryType = register("hopper", 5, 1)
+    @JvmField public val HOPPER: InventoryType = register("hopper", 5)
     @JvmField public val LECTERN: InventoryType = register("lectern", 1)
     @JvmField public val LOOM: InventoryType = register("loom", 4)
     @JvmField public val MERCHANT: InventoryType = register("merchant", 3)
-    @JvmField public val SHULKER_BOX: GridInventoryType = register("shulker_box", 9, 3)
+    @JvmField public val SHULKER_BOX: InventoryType = register("shulker_box", 27)
     @JvmField public val SMITHING_TABLE: InventoryType = register("smithing", 3)
     @JvmField public val SMOKER: InventoryType = register("smoker", 3)
     @JvmField public val CARTOGRAPHY_TABLE: InventoryType = register("cartography_table", 3)
@@ -53,11 +53,5 @@ public object InventoryTypes {
     private fun register(name: String, size: Int): InventoryType {
         val key = Key.key(name)
         return Registries.register(Registries.MENU, key, InventoryType.of(key, size))
-    }
-
-    @JvmStatic
-    private fun register(name: String, columns: Int, rows: Int): GridInventoryType {
-        val key = Key.key(name)
-        return Registries.register(Registries.MENU, key, GridInventoryType.of(key, rows, columns)) as GridInventoryType
     }
 }

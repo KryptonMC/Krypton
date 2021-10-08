@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.inventory
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.inventory.GridInventoryType
 import org.kryptonmc.api.inventory.InventoryType
 
 @JvmRecord
@@ -33,7 +32,5 @@ data class KryptonInventoryType(
     object Factory : InventoryType.Factory {
 
         override fun of(key: Key, size: Int): InventoryType = KryptonInventoryType(key, size)
-
-        override fun grid(key: Key, columns: Int, rows: Int): GridInventoryType = KryptonGridInventoryType(key, columns, rows)
     }
 }

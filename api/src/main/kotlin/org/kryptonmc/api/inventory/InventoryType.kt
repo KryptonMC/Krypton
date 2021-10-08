@@ -17,7 +17,7 @@ import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.provide
 
 /**
- * Represents a type of [Inventory] that holds items.
+ * A type of [Inventory].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(InventoryTypes::class)
@@ -34,14 +34,11 @@ public interface InventoryType : Keyed {
     public interface Factory {
 
         public fun of(key: Key, size: Int): InventoryType
-
-        public fun grid(key: Key, columns: Int, rows: Int): GridInventoryType
     }
 
     public companion object {
 
-        @JvmSynthetic
-        internal val FACTORY = Krypton.factoryProvider.provide<Factory>()
+        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
          * Creates a new inventory type with the given values.

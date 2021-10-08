@@ -23,5 +23,9 @@ import org.kryptonmc.krypton.item.meta.EmptyMetaHolder
 
 object EmptyItemStack : KryptonItemStack(ItemTypes.AIR, 1, EmptyMetaHolder) {
 
+    override var amount: Int
+        get() = super.amount
+        set(_) = Unit
+
     override fun toString() = "EmptyItemStack"
 }
