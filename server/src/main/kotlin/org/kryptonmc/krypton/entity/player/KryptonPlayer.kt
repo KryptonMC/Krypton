@@ -46,6 +46,7 @@ import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.Statistic
@@ -83,6 +84,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
+import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
@@ -356,6 +358,10 @@ class KryptonPlayer(
                     "only function correctly with a modified client.")
         }
         session.send(PacketOutPluginMessage(channel, message))
+    }
+
+    override fun sendResourcePack(pack: ResourcePack) {
+        session.send(PacketOutResourcePack(pack))
     }
 
     override fun sendMessage(source: Identity, message: Component, type: MessageType) {

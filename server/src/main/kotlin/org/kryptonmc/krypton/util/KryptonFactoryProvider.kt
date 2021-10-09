@@ -35,6 +35,7 @@ import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.FactoryNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
@@ -67,6 +68,7 @@ import org.kryptonmc.krypton.inventory.KryptonInventoryType
 import org.kryptonmc.krypton.item.KryptonItemRarity
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.resource.KryptonResourceKey
+import org.kryptonmc.krypton.resource.KryptonResourcePack
 import org.kryptonmc.krypton.world.KryptonGameMode
 import org.kryptonmc.krypton.world.biome.KryptonAmbientAdditionsSettings
 import org.kryptonmc.krypton.world.biome.KryptonAmbientMoodSettings
@@ -131,6 +133,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<EntityType.Factory>(KryptonEntityType.Factory)
         register<ItemRarity.Factory>(KryptonItemRarity.Factory)
         register<DimensionType.Factory>(KryptonDimensionType.Factory)
+        register<ResourcePack.Factory>(KryptonResourcePack.Factory)
     }
 }
 

@@ -22,6 +22,7 @@ import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.plugin.PluginMessageRecipient
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticsTracker
@@ -229,6 +230,13 @@ public interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRe
      * @param location the central location to spawn the particles at
      */
     public fun spawnParticles(effect: ParticleEffect, location: Vector3d)
+
+    /**
+     * Sends the given resource [pack] to this player.
+     *
+     * @param pack the resource pack
+     */
+    public fun sendResourcePack(pack: ResourcePack)
 
     /**
      * Teleport this player to the specified position.

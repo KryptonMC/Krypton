@@ -39,5 +39,8 @@ data class ServerCategory(
     var whitelistEnabled: Boolean = false,
     @Setting("op-permission-level")
     @Comment("The permission level operators will get")
-    val opPermissionLevel: Int = 4
+    val opPermissionLevel: Int = 4,
+    @Setting("resource-pack")
+    @Comment("Settings for the server resource pack")
+    val resourcePack: ResourcePackCategory = ResourcePackCategory()
 )

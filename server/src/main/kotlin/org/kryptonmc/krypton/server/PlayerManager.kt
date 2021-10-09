@@ -49,6 +49,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerPositionAndLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutDifficulty
+import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutTags
@@ -205,6 +206,10 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
         // TODO: Custom boss events, resource pack pack, mob effects
         sendWorldInfo(world, player)
+        if (server.config.server.resourcePack.uri.isNotEmpty()) {
+            val resourcePack = server.config.server.resourcePack
+            player.session.send(PacketOutResourcePack(resourcePack.uri, resourcePack.hash, resourcePack.forced, resourcePack.prompt))
+        }
 
         // Send inventory data
         session.send(PacketOutWindowItems(
