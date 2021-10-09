@@ -15,18 +15,14 @@ package org.kryptonmc.api.plugin.annotation
 import org.intellij.lang.annotations.Pattern
 
 /**
- * Annotation used to describe a plugin.
+ * A metadata annotation used to describe a plugin.
  *
- * @param id the identifier for this plugin. This ID **should be unique**, to
- * avoid conflicts with other plugins. It is recommended, though not required
- * however, to make this something that other plugins could easily be able to
- * use and recognise, as they will use this to depend on your plugin. In
- * addition, this may contain alphanumeric characters, dashes, and underscores,
- * and it must be between 1 and 64 characters in length
- * @param name the human readable name of this plugin, as to be used in
- * descriptions and similar tags. This does not have to be unique, but is
- * recommended to be, to avoid confusion for users with other plugins with the
- * same name
+ * This has to go on the plugin's main class, and it will be the injection
+ * point for the plugin. This is similar in functionality to the standard JVM
+ * entry point of the [`main` method](https://docs.oracle.com/javase/tutorial/getStarted/application/index.html).
+ *
+ * @param id the identifier for this plugin
+ * @param name the human readable name of this plugin
  * @param version the version of this plugin, or empty for undefined
  * @param description the description of this plugin, explaining what it can be
  * used for
@@ -37,10 +33,23 @@ import org.intellij.lang.annotations.Pattern
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
 public annotation class Plugin(
-    @Pattern("[A-Za-z0-9-_]+") public val id: String,
+    @Pattern(ID_REGEX) public val id: String,
     public val name: String = "",
     public val version: String = "",
     public val description: String = "",
     public val authors: Array<String> = [],
     public val dependencies: Array<Dependency> = []
-)
+) {
+
+    public companion object {
+
+        /**
+         * A regex for validating that your plugin ID is fine.
+         *
+         * If you want to check this on the web, it is recommended to copy this
+         * in to [regex101](https://regex101.com), and then put in your plugin
+         * ID and see if it matches.
+         */
+        public const val ID_REGEX: String = "[a-z][a-z0-9-_]{0,63}"
+    }
+}

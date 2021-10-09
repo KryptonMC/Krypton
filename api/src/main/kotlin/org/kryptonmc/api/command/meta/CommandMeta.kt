@@ -36,26 +36,35 @@ public interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
     /**
      * A builder for [CommandMeta].
      */
+    @CommandMetaDsl
     public interface Builder : Buildable.Builder<CommandMeta> {
 
         /**
          * Sets the name of the command to the given [name].
          */
+        @CommandMetaDsl
+        @Contract("_ -> this", mutates = "this")
         public fun name(name: String): Builder
 
         /**
          * Adds the given [alias] to the list of aliases.
          */
+        @CommandMetaDsl
+        @Contract("_ -> this", mutates = "this")
         public fun alias(alias: String): Builder
 
         /**
          * Adds the given [aliases] to the list of aliases.
          */
+        @CommandMetaDsl
+        @Contract("_ -> this", mutates = "this")
         public fun aliases(vararg aliases: String): Builder
 
         /**
          * Adds the given [aliases] to the list of aliases.
          */
+        @CommandMetaDsl
+        @Contract("_ -> this", mutates = "this")
         public fun aliases(aliases: Iterable<String>): Builder
     }
 

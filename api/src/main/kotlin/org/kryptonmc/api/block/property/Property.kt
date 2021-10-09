@@ -10,6 +10,7 @@
 package org.kryptonmc.api.block.property
 
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.StringSerializable
@@ -85,6 +86,7 @@ public interface Property<T : Comparable<T>> {
          * @return a new boolean property
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun forBoolean(name: String): Property<Boolean> = FACTORY.forBoolean(name)
 
         /**
@@ -96,6 +98,7 @@ public interface Property<T : Comparable<T>> {
          * @return a new integer property
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun forInt(name: String, values: Set<Int>): Property<Int> = FACTORY.forInt(name, values)
 
         /**
@@ -107,6 +110,7 @@ public interface Property<T : Comparable<T>> {
          * @return a new integer property
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun forInt(name: String, vararg values: Int): Property<Int> = forInt(name, values.toSet())
 
         /**
@@ -118,6 +122,7 @@ public interface Property<T : Comparable<T>> {
          * @return a new integer property
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun forInt(name: String, range: IntRange): Property<Int> = forInt(name, range.toSet())
 
         /**
@@ -130,6 +135,7 @@ public interface Property<T : Comparable<T>> {
          * @return a new enum property
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun <E> forEnum(
             name: String,
             type: Class<E>,
@@ -146,6 +152,7 @@ public interface Property<T : Comparable<T>> {
          * @return a new enum property
          */
         @JvmStatic
+        @Contract("_ -> new", pure = true)
         public fun <E> forEnum(
             name: String,
             type: Class<E>,
@@ -163,6 +170,7 @@ public interface Property<T : Comparable<T>> {
  * @return a new enum property
  */
 @JvmSynthetic
+@Contract("_ -> new", pure = true)
 public inline fun <reified E> Property.Companion.forEnum(
     name: String,
     values: Set<E>
@@ -177,6 +185,7 @@ public inline fun <reified E> Property.Companion.forEnum(
  * @return a new enum property
  */
 @JvmSynthetic
+@Contract("_ -> new", pure = true)
 public inline fun <reified E> Property.Companion.forEnum(
     name: String,
     values: Array<E>

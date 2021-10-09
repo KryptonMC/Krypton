@@ -46,6 +46,8 @@ public interface CommandManager {
      * Registers the given [command] with the given [meta] to this manager using
      * the given [registrar].
      *
+     * This is designed
+     *
      * @param command the command to register
      * @param meta the command metadata
      * @param registrar the command registrar to use to register the command

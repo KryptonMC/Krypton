@@ -25,7 +25,7 @@ import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.api.entity.hanging.Canvases
+import org.kryptonmc.api.entity.hanging.Pictures
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.item.ItemRarities
 import org.kryptonmc.api.item.ItemTypes
@@ -33,7 +33,6 @@ import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.StatisticTypes
-import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.biome.BiomeCategories
 import org.kryptonmc.api.world.biome.Biomes
@@ -122,7 +121,7 @@ object Bootstrap {
         StatisticTypes
         CustomStatistics
         KryptonCanvases
-        Canvases
+        Pictures
         KryptonMetaKeys
         MetaKeys // Not technically a registry, but quite close to one
 

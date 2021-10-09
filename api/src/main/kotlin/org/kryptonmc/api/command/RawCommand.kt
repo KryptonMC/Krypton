@@ -9,9 +9,11 @@
 package org.kryptonmc.api.command
 
 /**
- * A command that passes its arguments as a single string, without processing the input.
+ * A command that passes its arguments as a single string, without processing
+ * the input.
  *
- * This is useful for attaching external command frameworks to Krypton, and allowing them
- * to do their own processing.
+ * This is useful for attaching external command frameworks to Krypton, and
+ * allowing them to do their own processing. However, it is strongly
+ * recommended to use the [CommandRegistrar] method over this.
  */
 public fun interface RawCommand : InvocableCommand<String>

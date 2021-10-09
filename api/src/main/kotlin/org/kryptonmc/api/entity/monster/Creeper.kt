@@ -25,18 +25,24 @@ public interface Creeper : Monster {
     /**
      * The radius of the explosion this creeper will produce when it explodes.
      *
-     * Defaults to 3 for regular creepers and 6 for charged creepers.
+     * In vanilla Minecraft, this will default to 3 for regular creepers, and
+     * 6 for charged creepers, however these values may differ depending on the
+     * implementation.
      */
     @get:JvmName("explosionRadius")
     public val explosionRadius: Int
 
     /**
-     * If this creeper is charged (has been struck by lightning).
+     * If this creeper is charged.
+     *
+     * In vanilla Minecraft, a creeper may be charged if it is struck by
+     * lightning during a thunder storm.
      */
     public var isCharged: Boolean
 
     /**
-     * If this creeper has been ignited.
+     * If this creeper has been ignited, meaning it will explode when the
+     * [fuse] reaches 0.
      */
     public var isIgnited: Boolean
 }

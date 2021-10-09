@@ -8,6 +8,9 @@
  */
 package org.kryptonmc.api.block.property
 
+import org.jetbrains.annotations.Contract
+import org.jetbrains.annotations.Unmodifiable
+
 /**
  * Represents something that can hold properties.
  *
@@ -20,13 +23,13 @@ public interface PropertyHolder<out T : PropertyHolder<T>> {
      * All of the property keys available for use by this holder.
      */
     @get:JvmName("availableProperties")
-    public val availableProperties: Set<Property<*>>
+    public val availableProperties: @Unmodifiable Set<Property<*>>
 
     /**
      * All the properties that are being held by this property holder.
      */
     @get:JvmName("properties")
-    public val properties: Map<String, String>
+    public val properties: @Unmodifiable Map<String, String>
 
     /**
      * Returns true if the specified [key] is in this holder, false otherwise.
@@ -56,5 +59,6 @@ public interface PropertyHolder<out T : PropertyHolder<T>> {
      * @param key the property key
      * @return a new holder with the value of the key set to the given value
      */
+    @Contract("_ -> new", pure = true)
     public operator fun <V : Comparable<V>> set(key: Property<V>, value: V): T
 }

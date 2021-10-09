@@ -30,29 +30,33 @@ public interface Platform {
 
     /**
      * If the platform is considered "stable".
+     *
+     * What counts as "stable" will vary from platform to platform, but
+     * generally, it should be defined by
+     * [semantic versioning](https://semver.org/).
      */
     public val isStable: Boolean
 
     /**
-     * The Minecraft version of the platform.
+     * The version of vanilla Minecraft that this platform targets.
      */
     @get:JvmName("minecraftVersion")
     public val minecraftVersion: String
 
     /**
-     * The world version.
+     * The version of the world format used by this platform.
      */
     @get:JvmName("worldVersion")
     public val worldVersion: Int
 
     /**
-     * The protocol version.
+     * The version of the protocol used by this platform.
      */
     @get:JvmName("protocolVersion")
     public val protocolVersion: Int
 
     /**
-     * The data pack version.
+     * The version of the data pack format used by this platform.
      */
     @get:JvmName("dataPackVersion")
     public val dataPackVersion: Int

@@ -42,7 +42,7 @@ public interface RegistryManager {
      * @return the existing defaulted registry, or null if not present
      */
     @Suppress("UNCHECKED_CAST")
-    public fun <T : Any> getDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = parent[key] as? DefaultedRegistry<T>
+    public fun <T : Any> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = parent[key] as? DefaultedRegistry<T>
 
     /**
      * Registers a new entry to the given [registry], with the given [key]

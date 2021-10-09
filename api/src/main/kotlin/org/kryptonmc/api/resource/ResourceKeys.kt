@@ -18,7 +18,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
-import org.kryptonmc.api.entity.hanging.Canvas
+import org.kryptonmc.api.entity.hanging.Picture
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemRarity
@@ -67,7 +67,7 @@ public object ResourceKeys {
     @JvmField public val MENU: ResourceKey<out Registry<InventoryType>> = minecraft("menu")
     @JvmField public val STATISTIC_TYPE: ResourceKey<out Registry<StatisticType<*>>> = minecraft("stat_type")
     @JvmField public val CUSTOM_STATISTIC: ResourceKey<out Registry<Key>> = minecraft("custom_stat")
-    @JvmField public val CANVAS: ResourceKey<out Registry<Canvas>> = minecraft("motive")
+    @JvmField public val PICTURE: ResourceKey<out Registry<Picture>> = minecraft("motive")
     @JvmField public val FLUID: ResourceKey<out Registry<Fluid>> = minecraft("fluid")
     @JvmField public val DIMENSION_TYPE: ResourceKey<out Registry<DimensionType>> = minecraft("dimension_type")
     @JvmField public val BLOCK_ENTITY_TYPE: ResourceKey<out Registry<BlockEntityType>> = minecraft("block_entity")

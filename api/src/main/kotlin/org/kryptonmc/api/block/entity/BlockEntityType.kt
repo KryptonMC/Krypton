@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.block.entity
 
+import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.util.CataloguedBy
 
@@ -22,7 +23,7 @@ public interface BlockEntityType {
      * The set of blocks that block entities of this type can be bound to.
      */
     @get:JvmName("applicableBlocks")
-    public val applicableBlocks: Set<Block>
+    public val applicableBlocks: @Unmodifiable Set<Block>
 
     /**
      * Returns true if the given [block] is applicable to block entities of

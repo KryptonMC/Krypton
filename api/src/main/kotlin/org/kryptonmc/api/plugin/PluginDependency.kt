@@ -19,7 +19,7 @@ package org.kryptonmc.api.plugin
 public interface PluginDependency {
 
     /**
-     * The ID of the dependency.
+     * The plugin ID of the **dependency**, not the **dependent**.
      */
     @get:JvmName("id")
     public val id: String

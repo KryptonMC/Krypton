@@ -28,6 +28,7 @@ public interface SimpleCommandMeta : CommandMeta {
     /**
      * A builder for [SimpleCommandMeta].
      */
+    @CommandMetaDsl
     public interface Builder : CommandMeta.Builder {
 
         /**
@@ -35,6 +36,8 @@ public interface SimpleCommandMeta : CommandMeta {
          *
          * @param permission the permission
          */
+        @CommandMetaDsl
+        @Contract("_ -> this", mutates = "this")
         public fun permission(permission: String?): Builder
 
         override fun name(name: String): Builder

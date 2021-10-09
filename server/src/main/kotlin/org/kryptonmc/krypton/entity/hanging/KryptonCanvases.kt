@@ -51,8 +51,8 @@ object KryptonCanvases {
     val SKELETON = register("skeleton", 64, 48)
     val DONKEY_KONG = register("donkey_kong", 64, 48)
 
-    private fun register(name: String, width: Int, height: Int): KryptonCanvas {
+    private fun register(name: String, width: Int, height: Int): KryptonPicture {
         val key = Key.key(name)
-        return Registries.register(InternalRegistries.CANVAS, key, KryptonCanvas(key, width, height)) as KryptonCanvas
+        return Registries.register(InternalRegistries.CANVAS, key, KryptonPicture(key, width, height)) as KryptonPicture
     }
 }

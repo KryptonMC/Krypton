@@ -34,7 +34,7 @@ import java.net.InetSocketAddress
 import java.util.Locale
 
 /**
- * Represents a player.
+ * A player that is connected to the server and playing the game.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 public interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient, HoverEventSource<HoverEvent.ShowEntity> {
@@ -134,15 +134,20 @@ public interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRe
     public val mainHand: MainHand
 
     /**
-     * The player's inventory.
+     * The inventory of this player.
      *
-     * This can and should never be changed.
+     * This holds information on all of the items that are currently held by
+     * this player.
      */
     @get:JvmName("inventory")
     override val inventory: PlayerInventory
 
     /**
-     * This player's locale.
+     * The locale of this player.
+     *
+     * This may be null if the client has not yet indicated what locale they
+     * want to use, in which case a sensible default should be assumed, such
+     * as [Locale.US].
      */
     @get:JvmName("locale")
     public val locale: Locale?

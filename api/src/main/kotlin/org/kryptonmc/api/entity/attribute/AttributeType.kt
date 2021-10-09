@@ -28,6 +28,8 @@ public interface AttributeType : TranslationHolder, Keyed {
 
     /**
      * The default base value for attributes of this type.
+     *
+     * This must be between the [minimum] and [maximum] base values.
      */
     @get:JvmName("defaultBase")
     public val defaultBase: Double
@@ -40,12 +42,17 @@ public interface AttributeType : TranslationHolder, Keyed {
 
     /**
      * The maximum base value for attributes of this type.
+     *
+     * This must be greater than the [minimum] base value.
      */
     @get:JvmName("maximum")
     public val maximum: Double
 
     /**
      * If attributes of this type should be sent to clients.
+     *
+     * When set to false, attributes of this type will only be stored server
+     * side, and will not be accessible by clients.
      */
     @get:JvmName("sendToClient")
     public val sendToClient: Boolean

@@ -19,7 +19,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
-import org.kryptonmc.api.entity.hanging.Canvas
+import org.kryptonmc.api.entity.hanging.Picture
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemRarity
@@ -56,16 +56,16 @@ public object Registries {
      * All built-in vanilla registries.
      */
     @JvmField public val SOUND_EVENT: Registry<SoundEvent> = get(ResourceKeys.SOUND_EVENT)!!
-    @JvmField public val ENTITY_TYPE: DefaultedRegistry<EntityType<*>> = getDefaulted(ResourceKeys.ENTITY_TYPE)!!
+    @JvmField public val ENTITY_TYPE: DefaultedRegistry<EntityType<*>> = defaulted(ResourceKeys.ENTITY_TYPE)!!
     @JvmField public val PARTICLE_TYPE: Registry<ParticleType> = get(ResourceKeys.PARTICLE_TYPE)!!
     @JvmField public val BLOCK: Registry<Block> = get(ResourceKeys.BLOCK)!!
-    @JvmField public val ITEM: DefaultedRegistry<ItemType> = getDefaulted(ResourceKeys.ITEM)!!
+    @JvmField public val ITEM: DefaultedRegistry<ItemType> = defaulted(ResourceKeys.ITEM)!!
     @JvmField public val MENU: Registry<InventoryType> = get(ResourceKeys.MENU)!!
     @JvmField public val ATTRIBUTE: Registry<AttributeType> = get(ResourceKeys.ATTRIBUTE)!!
     @JvmField public val BIOME: Registry<Biome> = get(ResourceKeys.BIOME)!!
     @JvmField public val STATISTIC_TYPE: Registry<StatisticType<*>> = get(ResourceKeys.STATISTIC_TYPE)!!
     @JvmField public val CUSTOM_STATISTIC: Registry<Key> = create(ResourceKeys.CUSTOM_STATISTIC)
-    @JvmField public val CANVAS: DefaultedRegistry<Canvas> = getDefaulted(ResourceKeys.CANVAS)!!
+    @JvmField public val PICTURE: DefaultedRegistry<Picture> = defaulted(ResourceKeys.PICTURE)!!
     @JvmField public val FLUID: Registry<Fluid> = get(ResourceKeys.FLUID)!!
     @JvmField public val DIMENSION_TYPE: Registry<DimensionType> = create(ResourceKeys.DIMENSION_TYPE)
     @JvmField public val BLOCK_ENTITY_TYPE: Registry<BlockEntityType> = get(ResourceKeys.BLOCK_ENTITY_TYPE)!!
@@ -108,7 +108,7 @@ public object Registries {
      */
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    public fun <T : Any> getDefaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = Krypton.registryManager.getDefaulted(key)
+    public fun <T : Any> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = Krypton.registryManager.defaulted(key)
 
     /**
      * Registers a new entry to the given [registry], with the given [key]
@@ -154,8 +154,7 @@ public object Registries {
      * @param value the value
      */
     @JvmStatic
-    public fun <T : Any> register(registry: Registry<T>, id: Int, key: Key, value: T): T =
-        Krypton.registryManager.register(registry, id, key, value)
+    public fun <T : Any> register(registry: Registry<T>, id: Int, key: Key, value: T): T = Krypton.registryManager.register(registry, id, key, value)
 
     /**
      * Creates a new registry with the given registry [key].

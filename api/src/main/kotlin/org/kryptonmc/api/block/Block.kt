@@ -9,6 +9,7 @@
 package org.kryptonmc.api.block
 
 import net.kyori.adventure.key.Keyed
+import org.jetbrains.annotations.Range
 import org.kryptonmc.api.block.property.PropertyHolder
 import org.kryptonmc.api.fluid.FluidLike
 import org.kryptonmc.api.item.ItemLike
@@ -32,13 +33,13 @@ public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Translation
      * The block ID of this block.
      */
     @get:JvmName("id")
-    public val id: Int
+    public val id: @Range(from = 0L, to = Int.MAX_VALUE.toLong()) Int
 
     /**
      * The ID of the block state this block represents.
      */
     @get:JvmName("stateId")
-    public val stateId: Int
+    public val stateId: @Range(from = 0L, to = Int.MAX_VALUE.toLong()) Int
 
     /**
      * The hardness of this block.
@@ -57,7 +58,7 @@ public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Translation
      * The amount of light this block emits, in levels.
      */
     @get:JvmName("lightEmission")
-    public val lightEmission: Int
+    public val lightEmission: @Range(from = 0L, to = 15L) Int
 
     /**
      * The friction of this block.
@@ -141,7 +142,7 @@ public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Translation
      * The amount of light that this block will block from passing through it.
      */
     @get:JvmName("lightBlock")
-    public val lightBlock: Int
+    public val lightBlock: @Range(from = 0L, to = 15L) Int
 
     /**
      * If this block is sometimes fully opaque.
@@ -157,7 +158,7 @@ public interface Block : PropertyHolder<Block>, ItemLike, FluidLike, Translation
      * The opacity of this block.
      */
     @get:JvmName("opacity")
-    public val opacity: Int
+    public val opacity: @Range(from = 0L, to = 15L) Int
 
     /**
      * If this block cannot be moved through.

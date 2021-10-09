@@ -7,10 +7,13 @@
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
 @file:JvmSynthetic
+@file:Suppress("MatchingDeclarationName")
 package org.kryptonmc.api.command.meta
 
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
 @DslMarker
-private annotation class CommandMetaDsl
+internal annotation class CommandMetaDsl
 
 /**
  * Constructs new [CommandMeta] with the given [name] and [builder].

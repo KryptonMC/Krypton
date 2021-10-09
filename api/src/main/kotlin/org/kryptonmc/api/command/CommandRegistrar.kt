@@ -12,8 +12,12 @@ import com.mojang.brigadier.tree.RootCommandNode
 import org.kryptonmc.api.command.meta.CommandMeta
 
 /**
- * A registrar of commands. Implement this to define how the server should register commands
- * of type [C] with metadata of type [M]
+ * A registrar of commands. Implement this to define how the server should
+ * register commands of type [C] with metadata of type [M].
+ *
+ * This is designed for external command frameworks, to give them even more
+ * control over registration of commands than what is otherwise provided.
+ * It is also to discourage the use of wrapper classes for delegating calls.
  *
  * @param C the command type
  * @param M the metadata type
@@ -21,8 +25,11 @@ import org.kryptonmc.api.command.meta.CommandMeta
 public fun interface CommandRegistrar<C : Command, M : CommandMeta> {
 
     /**
-     * Registers the given [command] with the given [meta] to the given
-     * [root] command node.
+     * Registers the given [command] with the given [meta] to the given [root]
+     * command node.
+     *
+     * This will be invoked when commands of type [C] are registered to the
+     * command manager with [CommandManager.register].
      *
      * @param root the root command node to register to
      * @param command the command to register

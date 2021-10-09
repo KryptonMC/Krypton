@@ -23,6 +23,9 @@ public fun interface Subject : PermissionChecker {
     /**
      * Gets the value for the given [permission].
      *
+     * For some subtypes of this interface, this may always be a constant
+     * value, generally indicating that the type does not possess permissions.
+     *
      * @param permission the permission
      * @return the value for the given permission
      */
@@ -31,6 +34,9 @@ public fun interface Subject : PermissionChecker {
     /**
      * Returns true if this subject has the given [permission], false
      * otherwise.
+     *
+     * A subject having a permission is defined as the subject both possessing
+     * the permission, and it being set to [TriState.TRUE].
      *
      * @param permission the permission
      * @return true if this subject has the permission, false otherwise

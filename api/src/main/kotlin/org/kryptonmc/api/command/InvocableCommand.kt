@@ -20,16 +20,20 @@ public fun interface InvocableCommand<A> : Command {
      *
      * This will be called by the command manager when this command is invoked.
      *
+     * A command is defined as being invoked when a [Sender] executes it
+     * through some medium, such as typing it out in chat, or in the console.
+     *
      * @param sender the sender who ran this command
      * @param args the arguments the sender sent
      */
     public fun execute(sender: Sender, args: A)
 
     /**
-     * Gets the list of suggestions for the given [sender] and the given [args].
+     * Gets the list of suggestions for the given [sender] and the given
+     * [args].
      *
-     * This will be called by the command manager when suggestions are requested
-     * for this command.
+     * This will be called by the command manager when suggestions are
+     * requested for this command.
      *
      * @param sender the sender who sent the tab completion request
      * @param args the arguments the sender sent

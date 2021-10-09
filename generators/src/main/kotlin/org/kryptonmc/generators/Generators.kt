@@ -62,10 +62,10 @@ fun main() {
     generator.run(
         Motive::class.java,
         Registry.MOTIVE,
-        ClassName("org.kryptonmc.api.entity.hanging", "Canvases"),
+        ClassName("org.kryptonmc.api.entity.hanging", "Pictures"),
         Motive::class.java,
-        ClassName("org.kryptonmc.api.entity.hanging", "Canvas"),
-        "CANVAS"
+        ClassName("org.kryptonmc.api.entity.hanging", "Picture"),
+        "PICTURE"
     )
     generator.run(
         Fluids::class.java,

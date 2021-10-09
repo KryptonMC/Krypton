@@ -41,7 +41,7 @@ public inline fun item(builder: ItemStack.Builder.() -> Unit): ItemStack = ItemS
 @Contract("_ -> new")
 public inline fun item(
     type: ItemType,
-    builder: ItemStack.Builder.() -> Unit = {}
+    builder: ItemStack.Builder.() -> Unit
 ): ItemStack = ItemStack.builder().type(type).apply(builder).build()
 
 /**
@@ -59,5 +59,5 @@ public inline fun item(
 public inline fun item(
     type: ItemType,
     amount: Int,
-    builder: ItemStack.Builder.() -> Unit = {}
+    builder: ItemStack.Builder.() -> Unit
 ): ItemStack = ItemStack.builder().type(type).amount(amount).apply(builder).build()

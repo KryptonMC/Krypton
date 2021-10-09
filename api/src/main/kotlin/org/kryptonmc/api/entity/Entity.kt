@@ -13,6 +13,7 @@ import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
+import org.jetbrains.annotations.Range
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.world.World
@@ -21,7 +22,7 @@ import org.spongepowered.math.vector.Vector3d
 import java.util.UUID
 
 /**
- * Represents an entity in a world.
+ * An entity somewhere in a world.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter {
@@ -75,14 +76,14 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
     public var rotation: Vector2f
 
     /**
-     * The current delta X, Y, and Z values of this entity,
-     * in metres per tick.
+     * The current delta X, Y, and Z values of this entity, in metres per tick.
      */
     @get:JvmName("velocity")
     public var velocity: Vector3d
 
     /**
-     * The current bounding box of this entity.
+     * The current bounding box of this entity. This is used to determine the
+     * area in which an entity can be interacted with, also known as a hitbox.
      */
     @get:JvmName("boundingBox")
     public var boundingBox: BoundingBox
@@ -112,8 +113,8 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * - If this entity is a player, it will also be ignored by any hostile
      * mobs.
      *
-     * Setting this to true, however, will not prevent this entity from
-     * being damaged by a player in creative mode.
+     * Setting this to true, however, will not prevent this entity from being
+     * damaged by a player in creative mode.
      */
     public val isInvulnerable: Boolean
 
@@ -160,6 +161,9 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
 
     /**
      * If this entity is silenced, meaning it does not produce any sounds.
+     *
+     * This also means that any attempts to play a sound with this entity as
+     * its emitter will also fail.
      */
     public val isSilent: Boolean
 
@@ -178,13 +182,13 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * This will be increased by 1 for every tick this entity exists for.
      */
     @get:JvmName("ticksExisted")
-    public val ticksExisted: Int
+    public val ticksExisted: @Range(from = 0L, to = Int.MAX_VALUE.toLong()) Int
 
     /**
      * How much air this entity has, in ticks.
      *
-     * This will fill to a maximum of 300 in air, giving a total of 15
-     * seconds underwater before the entity begins to drown and die.
+     * This will fill to a maximum of 300 in air, giving the entity a total of
+     * 15 seconds underwater before the entity begins to drown and die.
      *
      * If this value reaches 0, and this entity is underwater, it will
      * take 1 health point (half a heart) of damage for every second
@@ -284,16 +288,10 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
     )
 
     /**
-     * Gets the distance to the specified [entity] squared.
+     * Removes this entity from the world it is currently in.
      *
-     * @param entity the entity to calculate the distance to
-     * @return the distance to the other entity squared
-     */
-    public fun distanceToSquared(entity: Entity): Double = location.distanceSquared(entity.location)
-
-    /**
-     * Marks this entity to be removed in the very near future, preferably
-     * within one game tick.
+     * This removal may happen immediately, or be queued up and happen in the
+     * near future, depending on how it is implemented.
      */
     public fun remove()
 }

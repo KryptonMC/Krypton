@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.entity.hanging
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.hanging.Canvas
+import org.kryptonmc.api.entity.hanging.Picture
 import org.kryptonmc.api.entity.hanging.Painting
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPainting
 import org.kryptonmc.krypton.registry.InternalRegistries
@@ -31,20 +31,20 @@ import org.kryptonmc.nbt.CompoundTag
 
 class KryptonPainting(world: KryptonWorld) : KryptonHangingEntity(world, EntityTypes.PAINTING), Painting {
 
-    override var canvas: Canvas? = null
+    override var picture: Picture? = null
     override val width: Int
-        get() = canvas?.width ?: 1
+        get() = picture?.width ?: 1
     override val height: Int
-        get() = canvas?.height ?: 1
+        get() = picture?.height ?: 1
 
     override fun load(tag: CompoundTag) {
-        canvas = InternalRegistries.CANVAS[Key.key(tag.getString("Motive"))]
+        picture = InternalRegistries.CANVAS[Key.key(tag.getString("Motive"))]
         direction = Directions.of2D(tag.getByte("Facing").toInt())
         super.load(tag)
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
-        canvas?.let { string("Motive", it.key().asString()) }
+        picture?.let { string("Motive", it.key().asString()) }
         byte("Facing", direction.data2D().toByte())
     }
 

@@ -33,7 +33,7 @@ data class PacketOutSpawnPainting(private val painting: KryptonPainting) : Packe
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(painting.id)
         buf.writeUUID(painting.uuid)
-        val canvas = painting.canvas
+        val canvas = painting.picture
         buf.writeVarInt(if (canvas != null) InternalRegistries.CANVAS.idOf(canvas) else DEFAULT_CANVAS_ID)
         buf.writeVector(painting.centerPosition)
         buf.writeByte(painting.direction.data2D())

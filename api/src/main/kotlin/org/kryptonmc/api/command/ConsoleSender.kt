@@ -9,9 +9,10 @@
 package org.kryptonmc.api.command
 
 /**
- * The sender for the [org.kryptonmc.api.Server]. This is the sender that is used by
- * the console.
+ * The sender for the [org.kryptonmc.api.Server]. This is the sender that is
+ * used by the console.
  *
- * This purely exists so it can be `is` checked if necessary.
+ * This purely exists so it can be `is` checked if necessary, to determine
+ * whether a given [Sender] is the console or not.
  */
 public interface ConsoleSender : Sender

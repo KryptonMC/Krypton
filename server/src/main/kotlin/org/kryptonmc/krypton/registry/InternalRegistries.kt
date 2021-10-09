@@ -38,7 +38,7 @@ object InternalRegistries {
     val GAME_EVENT = create(InternalResourceKeys.GAME_EVENT)
     val BIOME = create(ResourceKeys.BIOME)
     val STATISTIC_TYPE = create(ResourceKeys.STATISTIC_TYPE)
-    val CANVAS = createDefaulted(ResourceKeys.CANVAS, key("kebab"))
+    val CANVAS = createDefaulted(ResourceKeys.PICTURE, key("kebab"))
     val FLUID = createDefaulted(ResourceKeys.FLUID, key("empty"))
     val BLOCK_ENTITY_TYPE = create(ResourceKeys.BLOCK_ENTITY_TYPE)
 

@@ -65,7 +65,7 @@ data class EntityQuery(
         Selector.NEAREST_PLAYER -> {
             var currentNearest = source.server.players[0]
             source.server.players.forEach {
-                if (it.distanceToSquared(source) < currentNearest.distanceToSquared(source)) currentNearest = it
+                if (it.location.distanceSquared(source.location) < currentNearest.location.distanceSquared(source.location)) currentNearest = it
             }
             listOf(currentNearest)
         }
@@ -130,18 +130,19 @@ data class EntityQuery(
                     checkIntOrRange(value.toString())
                     entities = if (value.toString().startsWith("..")) {
                         val distance = value.toString().replace("..", "").toInt()
-                        entities.filter { it.distanceToSquared(source) <= distance }
+                        entities.filter { it.location.distanceSquared(source.location) <= distance }
                     } else if (!value.toString().contains("..")) {
                         checkInt(value.toString())
                         entities.filter {
-                            val int = it.distanceToSquared(source).toInt()
+                            val int = it.location.distanceSquared(source.location).toInt()
                             if (int < 0) throw EntityArgumentExceptions.DISTANCE_NEGATIVE.create()
                             int == value.toString().toInt()
                         }
                     } else {
                         val range = value.toString().toIntRange()
                         entities.filter {
-                            it.distanceToSquared(source) >= range!!.first && it.distanceToSquared(source) <= range.last
+                            it.location.distanceSquared(source.location) >= range!!.first &&
+                                    it.location.distanceSquared(source.location) <= range.last
                         }
                     }
                 }
@@ -192,8 +193,8 @@ data class EntityQuery(
                     val sorter = EntityArguments.Sorter.fromName(value.toString())
                         ?: throw EntityArgumentExceptions.INVALID_SORT_TYPE.create(value)
                     entities = when (sorter) {
-                        EntityArguments.Sorter.NEAREST -> entities.sortedBy { it.distanceToSquared(source) }
-                        EntityArguments.Sorter.FURTHEST -> entities.sortedByDescending { it.distanceToSquared(source) }
+                        EntityArguments.Sorter.NEAREST -> entities.sortedBy { it.location.distanceSquared(source.location) }
+                        EntityArguments.Sorter.FURTHEST -> entities.sortedByDescending { it.location.distanceSquared(source.location) }
                         EntityArguments.Sorter.RANDOM -> entities.shuffled()
                         EntityArguments.Sorter.ARBITRARY -> entities.sortedBy { it.ticksExisted }
                     }
