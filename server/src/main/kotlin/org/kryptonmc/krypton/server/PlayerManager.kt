@@ -199,7 +199,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         players += player
         playersByName[player.name] = player
         playersByUUID[player.uuid] = player
-        world.addEntity(player)
+        world.spawnPlayer(player)
 
         // Send the initial chunk stream
         player.updateChunks(true)
@@ -289,7 +289,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         it.session.disconnect(Component.translatable("multiplayer.disconnect.server_shutdown"))
     }
 
-    fun saveAll() = players.forEach { dataManager.save(it) }
+    fun saveAll() = players.forEach { save(it) }
 
     fun addToOperators(profile: KryptonGameProfile) {
         ops.add(OperatorEntry(profile, server.config.server.opPermissionLevel, true))

@@ -36,7 +36,7 @@ abstract class KryptonProjectile(
         get() {
             if (field != null) return field
             if (ownerId != null) {
-                field = world.entities.first { it.uuid == ownerId }
+                field = world.entityManager[ownerId!!]
                 return field
             }
             return null

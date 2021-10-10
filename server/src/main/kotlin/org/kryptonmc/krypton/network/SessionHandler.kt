@@ -64,6 +64,7 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
             PacketState.LOGIN -> send(PacketOutLoginDisconnect(reason))
             else -> Unit
         }
+        handler?.onDisconnect()
         if (channel.isOpen) channel.close().awaitUninterruptibly()
     }
 

@@ -25,8 +25,6 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.event.entity.EntityRemoveEvent
-import org.kryptonmc.api.event.entity.EntitySpawnEvent
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
@@ -43,12 +41,11 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.effect.Effect
+import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
-import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.util.clamp
-import org.kryptonmc.krypton.util.forEachEntityInRange
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -104,15 +101,12 @@ class KryptonWorld(
     override val chunks: Collection<KryptonChunk>
         get() = chunkManager.chunkMap.values
 
-    val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
-    val entities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
-    private val entitiesByChunk = object : ConcurrentHashMap<Long, MutableSet<KryptonEntity>>() {
-        override fun get(key: Long) = super.computeIfAbsent(key) { newKeySet() }
-        operator fun get(chunk: KryptonChunk) = get(ChunkPosition.toLong(chunk.position.x, chunk.position.z))
-    }
+    val entityManager = EntityManager(this)
+    val entities: MutableCollection<KryptonEntity> = entityManager.entities
 
     override val chunkManager = ChunkManager(this)
     val playerManager = server.playerManager
+    val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
 
     override val height = dimensionType.height
     override val minimumBuildHeight = dimensionType.minimumY
@@ -141,46 +135,11 @@ class KryptonWorld(
         return entity as? T
     }
 
-    fun spawnEntity(entity: KryptonEntity) {
-        if (entity.world != this) return
-        server.eventManager.fire(EntitySpawnEvent(entity, this)).thenAccept { event ->
-            if (!event.result.isAllowed) return@thenAccept
-            val location = entity.location
+    fun spawnEntity(entity: KryptonEntity) = entityManager.spawn(entity)
 
-            if (entity is KryptonPlayer) {
-                // TODO: World border
-                entity.session.send(PacketOutTimeUpdate(
-                    data.time,
-                    data.dayTime,
-                    data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]
-                ))
-            }
-            forEachEntityInRange(location, server.config.world.viewDistance) {
-                if (entity is KryptonPlayer) it.addViewer(entity)
-                if (it is KryptonPlayer) entity.addViewer(it)
-            }
+    fun spawnPlayer(player: KryptonPlayer) = entityManager.spawn(player)
 
-            val chunk = getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
-            entitiesByChunk[chunk.position.toLong()].add(entity)
-            entities.add(entity)
-        }
-    }
-
-    fun addEntity(entity: KryptonEntity) = entitiesByChunk[ChunkPosition.toLong(
-        entity.location.floorX() shr 4,
-        entity.location.floorZ() shr 4
-    )].add(entity)
-
-    fun removeEntity(entity: KryptonEntity) {
-        if (entity.world != this) return
-        server.eventManager.fire(EntityRemoveEvent(entity, this)).thenAccept {
-            if (!it.result.isAllowed) return@thenAccept
-            entity.viewers.forEach(entity::removeViewer)
-            val chunk = getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
-            entitiesByChunk[chunk.position.toLong()].remove(entity)
-            entities.remove(entity)
-        }
-    }
+    fun removeEntity(entity: KryptonEntity) = entityManager.remove(entity)
 
     fun playEffect(effect: Effect, position: Vector3i, data: Int, except: KryptonPlayer) = playerManager.broadcast(
         PacketOutEffect(effect, position, data, false),
@@ -251,8 +210,6 @@ class KryptonWorld(
     override fun getChunk(x: Int, y: Int, z: Int) = getChunkAt(x shr 4, z shr 4)
 
     override fun getChunk(position: Vector3i) = getChunk(position.x(), position.y(), position.z())
-
-    fun getEntitiesInChunk(chunk: KryptonChunk) = entitiesByChunk[chunk.position.toLong()]
 
     override fun loadChunk(x: Int, z: Int) =
         chunkManager.load(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPosition.toLong(x, z)))
@@ -342,7 +299,9 @@ class KryptonWorld(
         if (data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]) data.dayTime++
     }
 
-    override fun save() = chunkManager.saveAll()
+    override fun save() {
+        chunkManager.saveAll()
+    }
 
     override fun audiences() = players
 

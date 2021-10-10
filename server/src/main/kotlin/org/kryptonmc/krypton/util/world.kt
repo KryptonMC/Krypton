@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util
 
+import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
@@ -31,11 +32,11 @@ private fun Int.isOutsideSpawnableHeight() = this < -20000000 || this >= 2000000
 private fun Vector3d.isInHorizontalWorldBounds() = floorX() >= -30000000 && floorZ() >= -30000000 &&
         floorX() < 30000000 && floorZ() < 30000000
 
-fun KryptonWorld.forEachEntityInRange(location: Vector3d, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
+fun EntityManager.forEachEntityInRange(location: Vector3d, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
     val chunksInRange = location.chunksInRange(viewDistance)
     chunksInRange.forEach {
-        val chunk = getChunkAt(it.chunkX(), it.chunkZ()) ?: return@forEach
-        getEntitiesInChunk(chunk).forEach(callback)
+        val chunk = world.getChunkAt(it.chunkX(), it.chunkZ()) ?: return@forEach
+        get(chunk).forEach(callback)
     }
 }
 

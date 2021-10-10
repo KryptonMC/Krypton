@@ -115,10 +115,8 @@ class ChunkManager(private val world: KryptonWorld) {
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !world.server.useDataConverter) {
-            LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data " +
-                    "conversion is disabled!")
-            LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or " +
-                    "--use-data-converter flag(s) to the JAR on startup.")
+            LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data conversion is disabled!")
+            LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or --use-data-converter flag(s) to the JAR on startup.")
             LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
             LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
             error("Tried to load old chunk from version $version when data conversion is disabled!")
@@ -173,6 +171,7 @@ class ChunkManager(private val world: KryptonWorld) {
             if (heightmaps.contains(it.name, LongArrayTag.ID)) chunk.setHeightmap(it, heightmaps.getLongArray(it.name)) else noneOf.add(it)
         }
         Heightmap.prime(chunk, noneOf)
+        world.entityManager.load(chunk)
         return chunk
     }
 
@@ -183,12 +182,17 @@ class ChunkManager(private val world: KryptonWorld) {
         chunkMap.remove(loaded.position.toLong())
     }
 
-    fun saveAll() = chunkMap.values.forEach { save(it) }
+    fun saveAll() {
+        chunkMap.values.forEach { save(it) }
+        regionFileManager.close()
+        world.entityManager.close()
+    }
 
     fun save(chunk: KryptonChunk) {
         val lastUpdate = world.time
         chunk.lastUpdate = lastUpdate
         regionFileManager.write(chunk.position, chunk.serialize())
+        world.entityManager.save(chunk)
     }
 
     companion object {

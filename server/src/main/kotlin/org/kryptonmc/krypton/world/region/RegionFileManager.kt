@@ -26,6 +26,7 @@ import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
+import kotlin.io.path.exists
 
 /**
  * Manages region files. That's literally it.
@@ -34,6 +35,8 @@ class RegionFileManager(
     private val folder: Path,
     private val synchronizeWrites: Boolean
 ) : AutoCloseable {
+
+    private val regionCache = Long2ObjectLinkedOpenHashMap<RegionFile>()
 
     fun read(position: ChunkPosition) = getRegionFile(position).getChunkDataInputStream(position).use {
         if (it == null) return MutableCompoundTag()
@@ -48,22 +51,17 @@ class RegionFileManager(
         val regionX = position.x shr 5
         val regionZ = position.z shr 5
         val serialized = ChunkPosition.toLong(regionX, regionZ)
-        val cachedFile = REGION_CACHE.getAndMoveToFirst(serialized)
+        val cachedFile = regionCache.getAndMoveToFirst(serialized)
         if (cachedFile != null) return cachedFile
 
-        if (REGION_CACHE.size >= 256) REGION_CACHE.removeLast().close()
-        folder.createDirectories()
+        if (regionCache.size >= 256) regionCache.removeLast().close()
+        if (!folder.exists()) folder.createDirectories()
 
         val path = folder.resolve("r.$regionX.$regionZ.mca")
         val regionFile = RegionFile(path, synchronizeWrites, folder, RegionFileCompression.ZLIB)
-        REGION_CACHE.putAndMoveToFirst(serialized, regionFile)
+        regionCache.putAndMoveToFirst(serialized, regionFile)
         return regionFile
     }
 
-    override fun close() = REGION_CACHE.values.forEach { it.close() }
-
-    companion object {
-
-        private val REGION_CACHE = Long2ObjectLinkedOpenHashMap<RegionFile>()
-    }
+    override fun close() = regionCache.values.forEach { it.close() }
 }
