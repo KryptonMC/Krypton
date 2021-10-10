@@ -22,7 +22,7 @@ import org.spongepowered.math.vector.Vector3i
  * those days.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface BlockEntity : InventoryHolder {
+public interface BlockEntity {
 
     /**
      * The type of this block entity.
@@ -32,9 +32,11 @@ public interface BlockEntity : InventoryHolder {
 
     /**
      * The world this block entity is in.
+     *
+     * This may be null if the block entity has not been placed in a world.
      */
     @get:JvmName("world")
-    public val world: World
+    public val world: World?
 
     /**
      * The block that this entity is bound to.

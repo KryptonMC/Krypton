@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.block.entity
 
+import net.kyori.adventure.key.Keyed
 import org.jetbrains.annotations.Unmodifiable
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.util.CataloguedBy
@@ -17,7 +18,7 @@ import org.kryptonmc.api.util.CataloguedBy
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(BlockEntityTypes::class)
-public interface BlockEntityType {
+public interface BlockEntityType : Keyed {
 
     /**
      * The set of blocks that block entities of this type can be bound to.

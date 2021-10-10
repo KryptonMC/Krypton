@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.util
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.block.entity.BlockEntityTypes
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
@@ -64,6 +65,7 @@ import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
+import org.kryptonmc.krypton.world.block.entity.BlockEntityLoader
 import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.event.GameEvents
@@ -97,6 +99,8 @@ object Bootstrap {
         SoundEvents
         BlockLoader.init()
         Blocks
+        BlockEntityLoader.init()
+        BlockEntityTypes
         GameEvents
         ParticleTypes
         EntityTypes
