@@ -91,7 +91,12 @@ data class EntityQuery(
     }
 
     fun profiles(sender: Sender): List<KryptonGameProfile> {
-        if (sender is KryptonPlayer) return players(sender).map { it.profile }
+        val server = sender.server as? KryptonServer ?: return emptyList()
+        if (sender is KryptonPlayer) {
+            if (playerName.isNotEmpty()) return listOf(server.profileCache[playerName] ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create())
+            return players(sender).map { it.profile }
+        }
+        if (playerName.isNotEmpty()) return listOf(server.profileCache[playerName] ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create())
         return emptyList()
     }
 
