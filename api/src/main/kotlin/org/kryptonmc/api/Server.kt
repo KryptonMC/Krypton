@@ -25,7 +25,7 @@ import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.WorldManager
-import org.kryptonmc.api.world.scoreboard.Scoreboard
+import org.kryptonmc.api.scoreboard.Scoreboard
 import java.net.InetSocketAddress
 import java.util.UUID
 

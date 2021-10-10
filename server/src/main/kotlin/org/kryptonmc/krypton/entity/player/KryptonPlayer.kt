@@ -54,7 +54,7 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.api.world.scoreboard.Scoreboard
+import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile

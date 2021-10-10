@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.world.scoreboard.Objective
-import org.kryptonmc.api.world.scoreboard.RenderType
-import org.kryptonmc.api.world.scoreboard.criteria.Criterion
+import org.kryptonmc.api.scoreboard.Objective
+import org.kryptonmc.api.scoreboard.RenderType
+import org.kryptonmc.api.scoreboard.criteria.Criterion
 
 @JvmRecord
 data class KryptonObjective(

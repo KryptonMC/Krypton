@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.world.scoreboard
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.world.scoreboard.RenderType
+import org.kryptonmc.api.scoreboard.RenderType
 
 object KryptonCriteria {
 

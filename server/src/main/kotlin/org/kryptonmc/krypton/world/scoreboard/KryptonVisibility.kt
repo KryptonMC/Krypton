@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.TranslatableComponent
-import org.kryptonmc.api.world.scoreboard.Visibility
+import org.kryptonmc.api.scoreboard.Visibility
 
 @JvmRecord
 data class KryptonVisibility(

@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.world.scoreboard.RenderType
-import org.kryptonmc.api.world.scoreboard.criteria.CompoundCriterion
+import org.kryptonmc.api.scoreboard.RenderType
+import org.kryptonmc.api.scoreboard.criteria.CompoundCriterion
 
 @JvmRecord
 data class KryptonCompoundCriterion(

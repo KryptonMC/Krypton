@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.util.converter.versions
 import ca.spottedleaf.dataconverter.types.MapType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.kryptonmc.api.world.scoreboard.RenderType
+import org.kryptonmc.api.scoreboard.RenderType
 import org.kryptonmc.krypton.util.converter.MCVersions
 import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
 

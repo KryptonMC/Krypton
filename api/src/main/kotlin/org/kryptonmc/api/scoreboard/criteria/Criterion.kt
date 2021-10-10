@@ -6,11 +6,11 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.world.scoreboard.criteria
+package org.kryptonmc.api.scoreboard.criteria
 
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.world.scoreboard.RenderType
+import org.kryptonmc.api.scoreboard.RenderType
 
 /**
  * The criterion for a scoreboard objective to be displayed.

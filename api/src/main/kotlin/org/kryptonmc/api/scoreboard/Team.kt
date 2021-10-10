@@ -6,7 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.world.scoreboard
+package org.kryptonmc.api.scoreboard
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor

@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.TranslatableComponent
-import org.kryptonmc.api.world.scoreboard.CollisionRule
+import org.kryptonmc.api.scoreboard.CollisionRule
 
 @JvmRecord
 data class KryptonCollisionRule(

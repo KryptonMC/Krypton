@@ -6,15 +6,14 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.world.scoreboard
+package org.kryptonmc.api.scoreboard
+
+import net.kyori.adventure.key.Keyed
+import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.api.util.TranslationHolder
 
 /**
- * The position that a scoreboard may appear in.
+ * A rule for collision between members of a [Team].
  */
-public enum class ScoreboardPosition {
-
-    LIST,
-    SIDEBAR,
-    BELOW_NAME,
-    TEAM_SPECIFIC
-}
+@CataloguedBy(CollisionRules::class)
+public interface CollisionRule : Keyed, TranslationHolder

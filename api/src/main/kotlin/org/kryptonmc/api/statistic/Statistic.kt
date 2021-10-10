@@ -8,7 +8,7 @@
  */
 package org.kryptonmc.api.statistic
 
-import org.kryptonmc.api.world.scoreboard.criteria.Criterion
+import org.kryptonmc.api.scoreboard.criteria.Criterion
 
 /**
  * Represents a statistic that may be counted.

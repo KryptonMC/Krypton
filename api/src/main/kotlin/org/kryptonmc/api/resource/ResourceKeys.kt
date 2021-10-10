@@ -37,9 +37,9 @@ import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
-import org.kryptonmc.api.world.scoreboard.CollisionRule
-import org.kryptonmc.api.world.scoreboard.Visibility
-import org.kryptonmc.api.world.scoreboard.criteria.Criterion
+import org.kryptonmc.api.scoreboard.CollisionRule
+import org.kryptonmc.api.scoreboard.Visibility
+import org.kryptonmc.api.scoreboard.criteria.Criterion
 
 /**
  * All the built-in registry keys for various registries.

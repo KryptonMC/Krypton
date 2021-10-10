@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.kryptonmc.api.world.scoreboard.CollisionRule
-import org.kryptonmc.api.world.scoreboard.Team
-import org.kryptonmc.api.world.scoreboard.Visibility
+import org.kryptonmc.api.scoreboard.CollisionRule
+import org.kryptonmc.api.scoreboard.Team
+import org.kryptonmc.api.scoreboard.Visibility
 
 @JvmRecord
 data class KryptonTeam(

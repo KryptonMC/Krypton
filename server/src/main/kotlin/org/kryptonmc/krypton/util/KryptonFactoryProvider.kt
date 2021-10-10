@@ -52,8 +52,8 @@ import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
-import org.kryptonmc.api.world.scoreboard.Objective
-import org.kryptonmc.api.world.scoreboard.Score
+import org.kryptonmc.api.scoreboard.Objective
+import org.kryptonmc.api.scoreboard.Score
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
 import org.kryptonmc.krypton.effect.KryptonMusic

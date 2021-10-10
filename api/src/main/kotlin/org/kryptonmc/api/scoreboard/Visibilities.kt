@@ -6,26 +6,26 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.world.scoreboard
+package org.kryptonmc.api.scoreboard
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
 /**
- * All of the possible vanilla collision rules.
+ * All of the possible vanilla visibilities.
  */
 @Suppress("UndocumentedPublicProperty")
-@Catalogue(CollisionRule::class)
-public object CollisionRules {
+@Catalogue(Visibility::class)
+public object Visibilities {
 
     // @formatter:off
-    @JvmField public val ALWAYS: CollisionRule = get("always")
-    @JvmField public val NEVER: CollisionRule = get("never")
-    @JvmField public val PUSH_OTHER_TEAMS: CollisionRule = get("push_other_teams")
-    @JvmField public val PUSH_OWN_TEAM: CollisionRule = get("push_own_team")
+    @JvmField public val ALWAYS: Visibility = get("always")
+    @JvmField public val NEVER: Visibility = get("never")
+    @JvmField public val HIDE_FOR_OTHER_TEAMS: Visibility = get("hide_for_other_teams")
+    @JvmField public val HIDE_FOR_OWN_TEAM: Visibility = get("hide_for_own_team")
 
     // @formatter:on
     @JvmStatic
-    private fun get(name: String): CollisionRule = Registries.COLLISION_RULES[Key.key(name)]!!
+    private fun get(name: String): Visibility = Registries.VISIBILITIES[Key.key(name)]!!
 }

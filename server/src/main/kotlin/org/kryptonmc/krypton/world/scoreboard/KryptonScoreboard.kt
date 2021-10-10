@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.world.scoreboard
 
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.world.scoreboard.Objective
-import org.kryptonmc.api.world.scoreboard.Score
-import org.kryptonmc.api.world.scoreboard.Scoreboard
-import org.kryptonmc.api.world.scoreboard.ScoreboardPosition
-import org.kryptonmc.api.world.scoreboard.Team
+import org.kryptonmc.api.scoreboard.Objective
+import org.kryptonmc.api.scoreboard.Score
+import org.kryptonmc.api.scoreboard.Scoreboard
+import org.kryptonmc.api.scoreboard.ScoreboardPosition
+import org.kryptonmc.api.scoreboard.Team
 
 @JvmRecord
 data class KryptonScoreboard(
