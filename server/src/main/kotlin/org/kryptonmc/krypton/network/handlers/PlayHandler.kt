@@ -65,7 +65,9 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
+import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityNBTQuery
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
+import org.kryptonmc.krypton.packet.out.play.PacketOutNBTQueryResponse
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.block.BlockLoader
@@ -124,6 +126,7 @@ class PlayHandler(
         is PacketInPluginMessage -> handlePluginMessage(packet)
         is PacketInTabComplete -> handleTabComplete(packet)
         is PacketInClientStatus -> handleClientStatus(packet)
+        is PacketInEntityNBTQuery -> handleEntityNBTQuery(packet)
         else -> Unit
     }
 
@@ -346,6 +349,12 @@ class PlayHandler(
             PacketInClientStatus.Action.PERFORM_RESPAWN -> Unit // TODO
             PacketInClientStatus.Action.REQUEST_STATS -> player.statistics.send()
         }
+    }
+
+    private fun handleEntityNBTQuery(packet: PacketInEntityNBTQuery) {
+        if (player.permissionLevel < 2 && !player.hasPermission("krypton.data.query.entity")) return
+        val entity = player.world.entityManager[packet.entityId] ?: return
+        player.session.send(PacketOutNBTQueryResponse(packet.transactionId, entity.save().build()))
     }
 
     companion object {
