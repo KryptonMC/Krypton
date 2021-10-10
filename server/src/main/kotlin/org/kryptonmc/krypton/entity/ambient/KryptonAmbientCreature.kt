@@ -21,9 +21,11 @@ package org.kryptonmc.krypton.entity.ambient
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.ambient.AmbientCreature
 import org.kryptonmc.krypton.entity.KryptonMob
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.world.KryptonWorld
 
 abstract class KryptonAmbientCreature(
     world: KryptonWorld,
-    type: EntityType<out AmbientCreature>
-) : KryptonMob(world, type)
+    type: EntityType<out AmbientCreature>,
+    attributeSupplier: AttributeSupplier
+) : KryptonMob(world, type, attributeSupplier)

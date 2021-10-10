@@ -31,6 +31,6 @@ fun AttributeModifier.save(operation: ModifierOperation) = compound {
     int("Operation", Registries.MODIFIER_OPERATIONS.idOf(operation))
 }
 
-fun Map<ModifierOperation, List<AttributeModifier>>.save() = list {
+fun Map<ModifierOperation, Set<AttributeModifier>>.save() = list {
     this@save.forEach { (operation, modifiers) -> modifiers.forEach { add(it.save(operation)) } }
 }

@@ -9,16 +9,10 @@
 package org.kryptonmc.api.entity.attribute
 
 /**
- * Represents something that holds attributes.
+ * A holder of attributes.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Attributable {
-
-    /**
-     * All attributes currently stored for this attributable.
-     */
-    @get:JvmName("attributes")
-    public val attributes: Map<AttributeType, Attribute>
+public interface AttributeHolder {
 
     /**
      * Gets the attribute for the specified [type], or returns null if there
@@ -27,5 +21,5 @@ public interface Attributable {
      * @param type the type of the attribute
      * @return the attribute, or null if not present
      */
-    public fun attribute(type: AttributeType): Attribute? = attributes[type]
+    public fun attribute(type: AttributeType): Attribute?
 }

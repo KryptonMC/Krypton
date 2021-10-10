@@ -8,17 +8,13 @@
  */
 package org.kryptonmc.api.entity.attribute
 
+import java.util.UUID
+
 /**
  * Represents an attribute that can be applied to a living entity.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 public interface Attribute {
-
-    /**
-     * The name of this attribute
-     */
-    @get:JvmName("name")
-    public val name: String
 
     /**
      * The type of this attribute.
@@ -34,9 +30,6 @@ public interface Attribute {
 
     /**
      * The cached calculated value of this attribute.
-     *
-     * Use [recalculate] to recalculate this value.
-     * Adding modifiers will
      */
     @get:JvmName("value")
     public val value: Double
@@ -46,7 +39,16 @@ public interface Attribute {
      * [value].
      */
     @get:JvmName("modifiers")
-    public val modifiers: Map<ModifierOperation, List<AttributeModifier>>
+    public val modifiers: Set<AttributeModifier>
+
+    /**
+     * Gets the modifier with the given [uuid], or returns null if there is no
+     * modifier with the given [uuid].
+     *
+     * @param uuid the UUID
+     * @return the modifier, or null if not present
+     */
+    public fun modifier(uuid: UUID): AttributeModifier?
 
     /**
      * Gets all modifiers stored under the given [operation].
@@ -54,7 +56,7 @@ public interface Attribute {
      * @param operation the operation
      * @return all modifiers for the given operation
      */
-    public fun modifiers(operation: ModifierOperation): List<AttributeModifier>
+    public fun modifiers(operation: ModifierOperation): Set<AttributeModifier>
 
     /**
      * Adds the given [modifier] to the list of modifiers under the given
@@ -75,14 +77,7 @@ public interface Attribute {
     public fun removeModifier(operation: ModifierOperation, modifier: AttributeModifier)
 
     /**
-     * Removes all modifiers under the given [operation].
-     *
-     * @param operation the operation
+     * Clears all modifiers for this attribute.
      */
-    public fun removeModifiers(operation: ModifierOperation)
-
-    /**
-     * Forces this attribute's [value] to be recalculated.
-     */
-    public fun recalculate()
+    public fun clearModifiers()
 }

@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3f
 
-class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, EntityTypes.ARMOR_STAND), ArmorStand {
+class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, EntityTypes.ARMOR_STAND, attributes().build()), ArmorStand {
 
     init {
         data.add(MetadataKeys.ARMOR_STAND.FLAGS)

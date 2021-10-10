@@ -8,14 +8,14 @@
  */
 package org.kryptonmc.api.entity
 
-import org.kryptonmc.api.entity.attribute.Attributable
+import org.kryptonmc.api.entity.attribute.AttributeHolder
 import org.spongepowered.math.vector.Vector3i
 
 /**
  * Represents an entity that lives in a world.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface LivingEntity : Entity, Attributable {
+public interface LivingEntity : Entity, AttributeHolder {
 
     /**
      * The current health of this entity.

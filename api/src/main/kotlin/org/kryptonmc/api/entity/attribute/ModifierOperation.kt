@@ -20,7 +20,7 @@ public fun interface ModifierOperation {
      * @param values the values to apply
      * @return the result of applying this operation to the specified values
      */
-    public fun apply(base: Double, values: List<AttributeModifier>): Double
+    public fun apply(base: Double, values: Set<AttributeModifier>): Double
 
     public companion object {
 

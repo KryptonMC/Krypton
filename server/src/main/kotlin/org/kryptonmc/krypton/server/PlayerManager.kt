@@ -186,12 +186,12 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         // TODO: Move this all to an entity manager
         sendToAll(PacketOutSpawnPlayer(player))
         sendToAll(PacketOutMetadata(player.id, player.data.all))
-        sendToAll(PacketOutAttributes(player.id, player.attributes.values.filter { it.type.sendToClient }))
+        sendToAll(PacketOutAttributes(player.id, player.attributes.syncable))
         sendToAll(PacketOutHeadLook(player.id, player.rotation.x()))
         players.forEach { online ->
             session.send(PacketOutSpawnPlayer(online))
             session.send(PacketOutMetadata(online.id, online.data.all))
-            session.send(PacketOutAttributes(online.id, online.attributes.values.filter { it.type.sendToClient }))
+            session.send(PacketOutAttributes(online.id, online.attributes.syncable))
             session.send(PacketOutHeadLook(online.id, online.rotation.x()))
         }
 

@@ -18,6 +18,9 @@
  */
 package org.kryptonmc.krypton.entity.attribute
 
+import com.google.common.collect.ImmutableSet
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap
+import it.unimi.dsi.fastutil.objects.ObjectArraySet
 import org.kryptonmc.api.entity.attribute.Attribute
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
@@ -26,65 +29,107 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.compound
+import java.util.UUID
 
-@Suppress("INAPPLICABLE_JVM_NAME")
 data class KryptonAttribute(
-    @get:JvmName("type") override val type: AttributeType,
-    @get:JvmName("modifiers") override val modifiers: MutableMap<ModifierOperation, MutableList<AttributeModifier>> = mutableMapOf()
+    override val type: AttributeType,
+    private val callback: (KryptonAttribute) -> Unit
 ) : Attribute {
 
-    @get:JvmName("name")
-    override val name = type.key().asString()
+    val modifiersByOperation = mutableMapOf<ModifierOperation, MutableSet<AttributeModifier>>()
+    private val modifiersById = Object2ObjectArrayMap<UUID, AttributeModifier>()
+    private val permanentModifiers = ObjectArraySet<AttributeModifier>()
+    override val modifiers: Set<AttributeModifier>
+        get() = ImmutableSet.copyOf(modifiersById.values)
+
+    private var dirty = true
+    private var cachedValue = 0.0
     override var baseValue = type.defaultBase
-        @JvmName("baseValue") get
         set(value) {
+            if (field == value) return
             field = value
-            recalculate()
+            makeDirty()
         }
-    override var value = 0.0
-        @JvmName("value") get
-        private set
+    override val value: Double
+        get() {
+            if (dirty) {
+                cachedValue = recalculate()
+                dirty = false
+            }
+            return cachedValue
+        }
 
     fun load(tag: CompoundTag) {
         baseValue = tag.getDouble("Base")
         if (tag.contains("Modifiers", ListTag.ID)) tag.getList("Modifiers", CompoundTag.ID).forEachCompound {
             val operation = Registries.MODIFIER_OPERATIONS[it.getInt("Operation")] ?: return@forEachCompound
-            modifiers.getOrPut(operation) { mutableListOf() }.add(KryptonAttributeModifier(
+            val modifier = KryptonAttributeModifier(
                 it.getString("Name"),
                 it.getUUID("UUID") ?: return@forEachCompound,
                 it.getDouble("Amount")
-            ))
+            )
+            modifiersById[modifier.uuid] = modifier
+            modifiers(operation).add(modifier)
+            permanentModifiers.add(modifier)
         }
+        makeDirty()
     }
 
     fun save() = compound {
-        string("Name", name)
+        string("Name", type.key().asString())
         double("Base", baseValue)
-        put("Modifiers", modifiers.save())
+        put("Modifiers", modifiersByOperation.save())
     }
 
-    override fun modifiers(operation: ModifierOperation) = modifiers.getOrPut(operation) { mutableListOf() }.apply {
-        recalculate()
+    fun hasModifier(modifier: AttributeModifier): Boolean = modifiersById[modifier.uuid] != null
+
+    fun addPermanentModifier(operation: ModifierOperation, modifier: AttributeModifier) {
+        addModifier(operation, modifier)
+        permanentModifiers.add(modifier)
     }
+
+    fun replaceFrom(other: KryptonAttribute) {
+        baseValue = other.baseValue
+        modifiersById.clear()
+        modifiersById.putAll(other.modifiersById)
+        permanentModifiers.clear()
+        permanentModifiers.addAll(other.permanentModifiers)
+        modifiersByOperation.clear()
+        other.modifiersByOperation.forEach { modifiers(it.key).addAll(it.value) }
+        makeDirty()
+    }
+
+    override fun modifier(uuid: UUID): AttributeModifier? = modifiersById[uuid]
+
+    override fun modifiers(operation: ModifierOperation) = modifiersByOperation.getOrPut(operation) { mutableSetOf() }
 
     override fun addModifier(operation: ModifierOperation, modifier: AttributeModifier) {
-        modifiers.getOrPut(operation) { mutableListOf() } += modifier
-        recalculate()
+        require(modifiersById.putIfAbsent(modifier.uuid, modifier) == null) { "The modifier is already applied to this attribute!" }
+        modifiers(operation).add(modifier)
+        makeDirty()
     }
 
     override fun removeModifier(operation: ModifierOperation, modifier: AttributeModifier) {
-        modifiers.getOrPut(operation) { mutableListOf() } -= modifier
-        recalculate()
+        modifiers(operation).remove(modifier)
+        modifiersById[modifier.uuid] = modifier
+        makeDirty()
     }
 
-    override fun removeModifiers(operation: ModifierOperation) {
-        modifiers -= operation
-        recalculate()
+    override fun clearModifiers() {
+        modifiersByOperation.clear()
+        modifiersById.clear()
+        permanentModifiers.clear()
+        makeDirty()
     }
 
-    override fun recalculate() {
+    private fun recalculate(): Double {
         var total = baseValue
-        modifiers.forEach { (operation, modifiers) -> total = operation.apply(total, modifiers) }
-        value = total
+        modifiersByOperation.forEach { (operation, modifiers) -> total = operation.apply(total, modifiers) }
+        return total
+    }
+
+    private fun makeDirty() {
+        dirty = true
+        callback(this)
     }
 }

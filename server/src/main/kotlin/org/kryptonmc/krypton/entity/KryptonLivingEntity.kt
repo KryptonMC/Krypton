@@ -18,14 +18,14 @@
  */
 package org.kryptonmc.krypton.entity
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.LivingEntity
+import org.kryptonmc.api.entity.attribute.Attribute
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
+import org.kryptonmc.krypton.entity.attribute.AttributeMap
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.memory.Brain
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -38,11 +38,11 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.spongepowered.math.vector.Vector3i
 import java.util.Optional
-import java.util.concurrent.ConcurrentHashMap
 
 abstract class KryptonLivingEntity(
     world: KryptonWorld,
-    type: EntityType<out LivingEntity>
+    type: EntityType<out LivingEntity>,
+    attributeSupplier: AttributeSupplier
 ) : KryptonEntity(world, type), LivingEntity {
 
     override var absorption = 0F
@@ -51,7 +51,7 @@ abstract class KryptonLivingEntity(
     final override var hurtTime: Short = 0
     final override var isFallFlying = false
     final override var lastHurtTimestamp = 0
-    final override val attributes = ConcurrentHashMap<AttributeType, KryptonAttribute>()
+    val attributes = AttributeMap(attributeSupplier)
     private val brain = Brain(mutableListOf())
 
     init {
@@ -62,18 +62,14 @@ abstract class KryptonLivingEntity(
         data.add(MetadataKeys.LIVING.ARROWS)
         data.add(MetadataKeys.LIVING.STINGERS)
         data.add(MetadataKeys.LIVING.BED_LOCATION)
-        attributes[AttributeTypes.MAX_HEALTH]
     }
+
+    override fun attribute(type: AttributeType): Attribute? = attributes[type]
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
         // AI stuff
-        if (tag.contains("Attributes", ListTag.ID)) {
-            tag.getList("Attributes", CompoundTag.ID).forEachCompound { attribute ->
-                val type = Registries.ATTRIBUTE[Key.key(attribute.getString("Name"))] ?: return@forEachCompound
-                attributes[type] = KryptonAttribute(type).apply { load(attribute) }
-            }
-        }
+        if (tag.contains("Attributes", ListTag.ID)) attributes.load(tag.getList("Attributes", CompoundTag.ID))
         if (tag.contains("Brain", CompoundTag.ID)) brain.load(tag.getCompound("Brain"))
 
         // Values
@@ -101,7 +97,7 @@ abstract class KryptonLivingEntity(
 
     override fun save() = super.save().apply {
         float("AbsorptionAmount", absorption)
-        list("Attributes", CompoundTag.ID, attributes.values.map { it.save() })
+        put("Attributes", attributes.save())
         put("Brain", brain.save())
         short("DeathTime", deathTime)
         boolean("FallFlying", isFallFlying)
@@ -117,7 +113,7 @@ abstract class KryptonLivingEntity(
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (!super.addViewer(player)) return false
-        player.session.send(PacketOutAttributes(id, attributes.values.filter { it.type.sendToClient }))
+        player.session.send(PacketOutAttributes(id, attributes.syncable))
         return true
     }
 
@@ -160,4 +156,15 @@ abstract class KryptonLivingEntity(
     final override var sleepingPosition: Vector3i?
         get() = data[MetadataKeys.LIVING.BED_LOCATION].getIfPresent()
         set(value) = data.set(MetadataKeys.LIVING.BED_LOCATION, Optional.ofNullable(value))
+
+    companion object {
+
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = AttributeSupplier.builder()
+            .add(AttributeTypes.MAX_HEALTH)
+            .add(AttributeTypes.KNOCKBACK_RESISTANCE)
+            .add(AttributeTypes.MOVEMENT_SPEED)
+            .add(AttributeTypes.ARMOR)
+            .add(AttributeTypes.ARMOR_TOUGHNESS)
+    }
 }

@@ -61,6 +61,7 @@ import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
@@ -125,7 +126,7 @@ class KryptonPlayer(
     override val profile: KryptonGameProfile,
     world: KryptonWorld,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
-) : KryptonLivingEntity(world, EntityTypes.PLAYER), Player {
+) : KryptonLivingEntity(world, EntityTypes.PLAYER, attributes().build()), Player {
 
     var permissionFunction = PermissionFunction.ALWAYS_NOT_SET
 
@@ -236,9 +237,7 @@ class KryptonPlayer(
             walkingSpeed = abilitiesData.getFloat("walkSpeed")
             flyingSpeed = abilitiesData.getFloat("flySpeed")
         }
-        attributes.getOrPut(AttributeTypes.MOVEMENT_SPEED) {
-            KryptonAttribute(AttributeTypes.MOVEMENT_SPEED)
-        }.baseValue = walkingSpeed.toDouble()
+        attribute(AttributeTypes.MOVEMENT_SPEED)!!.baseValue = walkingSpeed.toDouble()
 
         // NBT data for entities sitting on the player's shoulders, e.g. parrots
         if (tag.contains("ShoulderEntityLeft", CompoundTag.ID)) {
@@ -619,5 +618,12 @@ class KryptonPlayer(
         )
         private val LOGGER = logger<KryptonPlayer>()
         private val SERVER_LOGGER = logger<KryptonServer>()
+
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonLivingEntity.attributes()
+            .add(AttributeTypes.ATTACK_DAMAGE, 1.0)
+            .add(AttributeTypes.MOVEMENT_SPEED, 0.1)
+            .add(AttributeTypes.ATTACK_SPEED)
+            .add(AttributeTypes.LUCK)
     }
 }

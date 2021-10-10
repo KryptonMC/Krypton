@@ -21,11 +21,17 @@ package org.kryptonmc.krypton.entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.Mob
+import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
-abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : KryptonLivingEntity(world, type), Mob {
+abstract class KryptonMob(
+    world: KryptonWorld,
+    type: EntityType<out Mob>,
+    attributeSupplier: AttributeSupplier
+) : KryptonLivingEntity(world, type, attributeSupplier), Mob {
 
     final override var canPickUpLoot = false
     final override var isPersistent = false
@@ -67,4 +73,12 @@ abstract class KryptonMob(world: KryptonWorld, type: EntityType<out Mob>) : Kryp
             val flags = data[MetadataKeys.MOB.FLAGS].toInt()
             data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 4 else flags and -5).toByte()
         }
+
+    companion object {
+
+        @JvmStatic
+        fun attributes(): AttributeSupplier.Builder = KryptonLivingEntity.attributes()
+            .add(AttributeTypes.FOLLOW_RANGE, 16.0)
+            .add(AttributeTypes.ATTACK_KNOCKBACK)
+    }
 }

@@ -36,7 +36,7 @@ class PacketOutAttributes(
     attributes: Collection<KryptonAttribute>
 ) : Packet {
 
-    private val attributes = attributes.map { AttributeSnapshot(it.type, it.baseValue, it.modifiers) }
+    private val attributes = attributes.map { AttributeSnapshot(it.type, it.baseValue, it.modifiersByOperation) }
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(id)
@@ -58,6 +58,6 @@ class PacketOutAttributes(
     data class AttributeSnapshot(
         val type: AttributeType,
         val base: Double,
-        val modifiers: Map<ModifierOperation, List<AttributeModifier>>
+        val modifiers: Map<ModifierOperation, Set<AttributeModifier>>
     )
 }
