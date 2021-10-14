@@ -21,12 +21,14 @@ package org.kryptonmc.krypton.util
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import java.util.concurrent.ThreadFactory
 
+/**
+ * A DSL for Guava's [ThreadFactoryBuilder].
+ */
 @DslMarker
 private annotation class ThreadFactoryDsl
 
 @ThreadFactoryDsl
-inline fun threadFactory(builder: ThreadFactoryBuilder.() -> Unit): ThreadFactory =
-    ThreadFactoryBuilder().apply(builder).build()
+inline fun threadFactory(builder: ThreadFactoryBuilder.() -> Unit): ThreadFactory = ThreadFactoryBuilder().apply(builder).build()
 
 @ThreadFactoryDsl
 inline fun threadFactory(

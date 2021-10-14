@@ -34,7 +34,7 @@ data class KryptonSimpleCommandMeta(
         private var permission: String? = null
 
         constructor(meta: SimpleCommandMeta) : this(meta.name) {
-            aliases += meta.aliases
+            aliases.addAll(meta.aliases)
             permission = meta.permission
         }
 

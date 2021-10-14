@@ -45,7 +45,7 @@ data class KryptonCommandMeta(
     class Builder(name: String) : AbstractBuilder<Builder>(name), CommandMeta.Builder {
 
         constructor(meta: CommandMeta) : this(meta.name) {
-            aliases += meta.aliases
+            aliases.addAll(meta.aliases)
         }
 
         override fun build() = KryptonCommandMeta(name, aliases)

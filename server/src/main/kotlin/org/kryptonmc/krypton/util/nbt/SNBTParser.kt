@@ -22,8 +22,7 @@ import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.nbt.ByteArrayTag
 import org.kryptonmc.nbt.ByteTag
@@ -220,21 +219,17 @@ class SNBTParser(private val reader: StringReader) {
         private val SHORT_REGEX = "[-+]?(?:0|[1-9][0-9]*)s".toRegex(RegexOption.IGNORE_CASE)
         private val INT_REGEX = "[-+]?(?:0|[1-9][0-9]*)".toRegex(RegexOption.IGNORE_CASE)
 
-        private val ERROR_TRAILING_DATA = SimpleCommandExceptionType(translatable("argument.nbt.trailing").toMessage())
-        private val ERROR_EXPECTED_KEY = SimpleCommandExceptionType(
-            translatable("argument.nbt.expected.key").toMessage()
-        )
-        private val ERROR_EXPECTED_VALUE = SimpleCommandExceptionType(
-            translatable("argument.nbt.expected.value").toMessage()
-        )
+        private val ERROR_TRAILING_DATA = SimpleCommandExceptionType(Component.translatable("argument.nbt.trailing").toMessage())
+        private val ERROR_EXPECTED_KEY = SimpleCommandExceptionType(Component.translatable("argument.nbt.expected.key").toMessage())
+        private val ERROR_EXPECTED_VALUE = SimpleCommandExceptionType(Component.translatable("argument.nbt.expected.value").toMessage())
         private val ERROR_INSERT_MIXED_LIST = Dynamic2CommandExceptionType { a, b ->
-            translatable("argument.nbt.list.mixed", text(a.toString()), text(b.toString())).toMessage()
+            Component.translatable("argument.nbt.list.mixed", Component.text(a.toString()), Component.text(b.toString())).toMessage()
         }
         private val ERROR_INSERT_MIXED_ARRAY = Dynamic2CommandExceptionType { a, b ->
-            translatable("argument.nbt.array.mixed", text(a.toString()), text(b.toString())).toMessage()
+            Component.translatable("argument.nbt.array.mixed", Component.text(a.toString()), Component.text(b.toString())).toMessage()
         }
         private val ERROR_INVALID_ARRAY = DynamicCommandExceptionType {
-            translatable("argument.nbt.array.invalid", text(it.toString())).toMessage()
+            Component.translatable("argument.nbt.array.invalid", Component.text(it.toString())).toMessage()
         }
 
         private fun StringReader.hasElementSeparator(): Boolean {

@@ -67,8 +67,7 @@ sealed class InvocableCommandRegistrar<C : InvocableCommand<A>, M : CommandMeta,
             command: Command<Sender>,
             suggestionProvider: SuggestionProvider<Sender>
         ): LiteralCommandNode<Sender> = LiteralArgumentBuilder.literal<Sender>(alias.lowercase())
-            .then(
-                RequiredArgumentBuilder.argument<Sender, String>("arguments", StringArgumentType.greedyString())
+            .then(RequiredArgumentBuilder.argument<Sender, String>("arguments", StringArgumentType.greedyString())
                 .suggests(suggestionProvider)
                 .executes(command))
             .executes(command)

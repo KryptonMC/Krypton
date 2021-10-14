@@ -23,8 +23,7 @@ import com.mojang.brigadier.ParseResults
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.tree.RootCommandNode
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.Style
@@ -109,37 +108,29 @@ object KryptonCommandManager : CommandManager {
             dispatcher.execute(parseResults) != BrigadierCommand.FORWARD
         } catch (exception: CommandSyntaxException) {
             val rawMessage = exception.rawMessage
-            val message = if (rawMessage is AdventureMessage) rawMessage.wrapped else text(exception.message.orEmpty())
+            val message = if (rawMessage is AdventureMessage) rawMessage.wrapped else Component.text(exception.message.orEmpty())
             sender.sendMessage(message.color(NamedTextColor.RED))
 
             // This will process extra stuff that we want for proper error reporting to clients.
             if (exception.input != null && exception.cursor >= 0) {
                 val inputLength = min(exception.input.length, exception.cursor)
-                var errorMessage = text("", Style.style(NamedTextColor.GRAY)
-                    .clickEvent(ClickEvent.suggestCommand(command)))
-
-                // If the length of the input is too long, we shorten it by appending ... at the beginning.
-                if (inputLength > 10) errorMessage = errorMessage.append(text("..."))
-                errorMessage = errorMessage.append(
-                    text(exception.input.substring(max(0, inputLength - 10), inputLength))
+                var errorMessage = Component.text(
+                    Component.empty().content(),
+                    Style.style(NamedTextColor.GRAY).clickEvent(ClickEvent.suggestCommand(command))
                 )
 
+                // If the length of the input is too long, we shorten it by appending ... at the beginning.
+                if (inputLength > 10) errorMessage = errorMessage.append(Component.text("..."))
+                errorMessage = errorMessage.append(Component.text(exception.input.substring(max(0, inputLength - 10), inputLength)))
+
                 if (inputLength < exception.input.length) {
-                    val error = text(
-                        exception.input.substring(inputLength),
-                        NamedTextColor.RED,
-                        TextDecoration.UNDERLINED
-                    )
+                    val error = Component.text(exception.input.substring(inputLength), NamedTextColor.RED, TextDecoration.UNDERLINED)
                     errorMessage = errorMessage.append(error)
                 }
 
                 // Append the "[HERE]" text (locale-specific) to the end, just like vanilla.
-                errorMessage = errorMessage.append(translatable(
-                    "command.context.here",
-                    NamedTextColor.RED,
-                    TextDecoration.ITALIC
-                ))
-                sender.sendMessage(text("").append(errorMessage).color(NamedTextColor.RED))
+                errorMessage = errorMessage.append(Component.translatable("command.context.here", NamedTextColor.RED, TextDecoration.ITALIC))
+                sender.sendMessage(Component.empty().append(errorMessage).color(NamedTextColor.RED))
             }
             false
         } catch (exception: Throwable) { // We catch Throwable because plugins like to do stupid things sometimes.
@@ -150,6 +141,7 @@ object KryptonCommandManager : CommandManager {
     fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(parseResults)
 
     fun sendCommands(player: KryptonPlayer) {
+        // We copy the root node to avoid a command changing whilst we're trying to send it to the client.
         val node = RootCommandNode<Sender>()
         lock.read {
             dispatcher.root.children.forEach { if (it.requirement.test(player)) node.addChild(it) }
@@ -157,7 +149,6 @@ object KryptonCommandManager : CommandManager {
         }
     }
 
-    // Registers all the built-in commands.
     fun registerBuiltins() {
         StopCommand.register(dispatcher)
         RestartCommand.register(dispatcher)

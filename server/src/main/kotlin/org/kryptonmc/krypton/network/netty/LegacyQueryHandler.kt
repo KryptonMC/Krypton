@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.network.netty
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
-import io.netty.channel.ChannelFutureListener.CLOSE
+import io.netty.channel.ChannelFutureListener
 import io.netty.channel.ChannelHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
@@ -61,12 +61,12 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
             when (msg.readableBytes()) {
                 0 -> {
                     LOGGER.debug("Legacy server list ping (versions <=1.3.x) received from ${address.address}:${address.port}")
-                    ctx.writeAndClose("$motd\u00a7$playerCount\u00a7$maxPlayers".toReply())
+                    ctx.reply("$motd§$playerCount§$maxPlayers")
                 }
                 1 -> {
                     if (msg.readUnsignedByte() != 1.toShort()) return
                     LOGGER.debug("Legacy server list ping (versions 1.4.x-1.5.x) received from ${address.address}:${address.port}")
-                    ctx.writeAndClose(("\u00a71\u0000127\u0000$version\u0000$motd\u0000$playerCount\u0000$maxPlayers").toReply())
+                    ctx.reply("§1\u0000127\u0000$version\u0000$motd\u0000$playerCount\u0000$maxPlayers")
                 }
                 else -> {
                     var isValid = msg.readUnsignedByte() == 1.toShort()
@@ -80,12 +80,7 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
                     if (!isValid) return
 
                     LOGGER.debug("Legacy server list ping (version 1.6.x) received from ${address.address}:${address.port}")
-                    val reply = "\u00a71\u0000127\u0000$version\u0000$motd\u0000$playerCount\u0000$maxPlayers".toReply()
-                    try {
-                        ctx.writeAndClose(reply)
-                    } finally {
-                        reply.release()
-                    }
+                    ctx.reply("§1\u0000127\u0000$version\u0000$motd\u0000$playerCount\u0000$maxPlayers")
                 }
             }
             msg.release()
@@ -99,12 +94,14 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
         }
     }
 
-    private fun ChannelHandlerContext.writeAndClose(buf: ByteBuf) = pipeline().firstContext().writeAndFlush(buf).addListener(CLOSE)
-
-    private fun String.toReply() = Unpooled.buffer().writeByte(255).apply {
-        val chars = toCharArray()
-        writeShort(chars.size)
-        chars.forEach { writeChar(it.code) }
+    private fun ChannelHandlerContext.reply(message: String) {
+        val buffer = Unpooled.buffer().writeByte(255)
+        val chars = message.toCharArray()
+        buffer.writeShort(chars.size)
+        chars.forEach { buffer.writeChar(it.code) }
+        pipeline().firstContext().writeAndFlush(buffer)
+            .addListener(ChannelFutureListener.CLOSE)
+            .addListener { buffer.release() }
     }
 
     private fun ByteBuf.readLegacyString(): String {

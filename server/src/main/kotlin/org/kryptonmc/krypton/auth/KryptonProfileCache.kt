@@ -21,10 +21,8 @@ package org.kryptonmc.krypton.auth
 import com.google.gson.JsonParseException
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import kotlinx.coroutines.launch
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileCache
-import org.kryptonmc.krypton.IOScope
 import org.kryptonmc.krypton.util.tryCreateFile
 import org.kryptonmc.krypton.util.logger
 import java.io.FileNotFoundException
@@ -33,7 +31,6 @@ import java.nio.file.Path
 import java.time.ZonedDateTime
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.io.path.exists
 import kotlin.io.path.reader
@@ -57,10 +54,6 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     fun add(profile: KryptonGameProfile) {
         val expiry = ZonedDateTime.now().plusMonths(1)
         safeAdd(ProfileHolder(profile, expiry))
-    }
-
-    fun queueSave() {
-        IOScope.launch { save() }
     }
 
     override fun get(name: String) = profilesByName[name.lowercase()]?.apply { lastAccess = operations.incrementAndGet() }?.profile
@@ -106,7 +99,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         return holders
     }
 
-    private fun save() {
+    fun save() {
         path.tryCreateFile()
         try {
             JsonWriter(path.writer()).use { writer ->

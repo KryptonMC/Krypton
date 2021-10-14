@@ -16,12 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.adventure
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import java.util.function.Consumer
 
-object IOScope : CoroutineScope {
+class KryptonPlainTextComponentSerializerProvider : PlainTextComponentSerializer.Provider {
 
-    override val coroutineContext = Dispatchers.IO
+    override fun plainTextSimple(): PlainTextComponentSerializer = PlainTextComponentSerializer.builder()
+        .flattener(KryptonAdventure.FLATTENER)
+        .build()
+
+    override fun plainText(): Consumer<PlainTextComponentSerializer.Builder> = Consumer {}
 }

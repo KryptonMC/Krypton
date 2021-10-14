@@ -55,7 +55,6 @@ object NettyProcess {
     private lateinit var future: ChannelFuture
 
     fun run(server: KryptonServer) {
-        LOGGER.debug("${bossGroup::class.simpleName} is the chosen one")
         try {
             val legacyQueryHandler = LegacyQueryHandler(server)
             val bootstrap = ServerBootstrap()

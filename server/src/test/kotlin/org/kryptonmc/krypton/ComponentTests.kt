@@ -26,7 +26,8 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.api.adventure.toComponent
 import org.kryptonmc.api.adventure.toJson
 import org.kryptonmc.api.adventure.toJsonString
-import org.kryptonmc.api.adventure.toLegacyText
+import org.kryptonmc.api.adventure.toLegacyAmpersandText
+import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.adventure.toPlainText
 import kotlin.test.Test
@@ -53,11 +54,11 @@ class ComponentTests {
         assertEquals(PlainTextComponentSerializer.plainText().serialize(component), component.toPlainText())
         assertEquals(
             LegacyComponentSerializer.legacySection().serialize(component),
-            component.toLegacyText(LegacyComponentSerializer.SECTION_CHAR)
+            component.toLegacySectionText()
         )
         assertEquals(
             LegacyComponentSerializer.legacyAmpersand().serialize(component),
-            component.toLegacyText(LegacyComponentSerializer.AMPERSAND_CHAR)
+            component.toLegacyAmpersandText()
         )
         assertEquals(component, json.toComponent())
     }

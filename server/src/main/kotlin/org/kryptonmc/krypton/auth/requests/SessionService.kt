@@ -56,7 +56,7 @@ object SessionService {
      * @throws AuthenticationException if the response from Mojang was
      * unsuccessful (authentication failed)
      */
-    fun hasJoined(username: String, secret: ByteArray, ip: String): KryptonGameProfile {
+    fun hasJoined(username: String, secret: ByteArray, ip: String): KryptonGameProfile? {
         val cachedProfile = profiles.getIfPresent(username)
         if (cachedProfile != null) return cachedProfile
 
@@ -73,7 +73,7 @@ object SessionService {
         if (response.statusCode() != 200) { // Ensures no content responses are also a failure.
             LOGGER.debug("Error authenticating $username! Code: ${response.statusCode()}, body: ${response.body()}")
             LOGGER.error("Failed to verify username $username!")
-            throw AuthenticationException()
+            return null
         }
 
         val profile = KryptonGameProfile.fromJson(response.body())

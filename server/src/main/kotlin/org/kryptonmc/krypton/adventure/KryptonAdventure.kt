@@ -18,19 +18,17 @@
  */
 package org.kryptonmc.krypton.adventure
 
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import java.util.function.Consumer
+import net.kyori.adventure.text.TranslatableComponent
+import net.kyori.adventure.text.flattener.ComponentFlattener
+import org.kryptonmc.api.adventure.complexMapper
+import org.kryptonmc.krypton.util.TranslationBootstrap
+import java.util.Locale
 
-class KryptonGsonComponentSerializerProvider : GsonComponentSerializer.Provider {
+object KryptonAdventure {
 
-    override fun gson() = GsonComponentSerializer.builder()
-        .legacyHoverEventSerializer(NBTLegacyHoverEventSerializer)
+    val FLATTENER = ComponentFlattener.basic().toBuilder()
+        .complexMapper<TranslatableComponent> { translatable, consumer ->
+            consumer(TranslationBootstrap.RENDERER.render(translatable, Locale.ENGLISH))
+        }
         .build()
-
-    override fun gsonLegacy() = GsonComponentSerializer.builder()
-        .legacyHoverEventSerializer(NBTLegacyHoverEventSerializer)
-        .downsampleColors()
-        .build()
-
-    override fun builder(): Consumer<GsonComponentSerializer.Builder> = Consumer {}
 }

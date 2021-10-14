@@ -97,7 +97,6 @@ private class KryptonCLI : CliktCommand(
         Bootstrap.preload()
         Bootstrap.validate()
 
-        // Load the config
         val loadedConfig = KryptonConfig.load(configFile)
         if (configOnly) {
             logger.info("Successfully initialized config file located at $configFile.")
@@ -116,7 +115,7 @@ private class KryptonCLI : CliktCommand(
             world = loadedConfig.world.copy(name = worldName ?: loadedConfig.world.name)
         )
 
-        // Warn about experimental data converter, setup registries, and create world storage access
+        // Warn about the data converter being kinda broken
         if (useDataConverter) {
             logger.warn("You have opted in to use the data converter to automatically convert old data to the current version.")
             logger.warn("Beware that this is an experimental tool, and has known issues with pre-1.13 worlds, and may cause issues with newer " +
@@ -124,7 +123,8 @@ private class KryptonCLI : CliktCommand(
             logger.warn("USE THIS TOOL AT YOUR OWN RISK! If this tool corrupts your data, that is YOUR responsibility!")
         }
 
-        // Start the server
+        // This logic comes from vanilla. We should probably just use the main thread, though this may greater ensure parity
+        // with vanilla's buggy mess. Not sure if this is actually the case though.
         val reference = AtomicReference<KryptonServer>()
         val serverThread = Thread({ reference.get().start() }, "Tick Thread").apply {
             setUncaughtExceptionHandler { _, exception ->

@@ -65,6 +65,10 @@ import kotlin.math.max
 import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
 
+/**
+ * This is the centre of operations here at Krypton Inc. Everything stems from
+ * this class.
+ */
 class KryptonServer(
     val config: KryptonConfig,
     val useDataConverter: Boolean,
@@ -102,6 +106,8 @@ class KryptonServer(
     var isRunning = true
         private set
 
+    // These help us keep track of how fast the server is running and how far
+    // behind it is at any one time.
     private var lastTickTime = 0L
     private var lastOverloadWarning = 0L
     private var tickCount = 0
@@ -111,6 +117,8 @@ class KryptonServer(
         KryptonFactoryProvider.register<Scoreboard.Factory>(KryptonScoreboard.Factory(this))
     }
 
+    // The order of loading here is pretty important, as some things depend on
+    // others to function properly.
     fun start() {
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")
         val startTime = System.nanoTime()
@@ -257,7 +265,7 @@ class KryptonServer(
         }
         if (tickCount % SAVE_PROFILE_CACHE_INTERVAL == 0) {
             LOGGER.debug("Saving authenticated user cache...")
-            profileCache.queueSave()
+            profileCache.save()
         }
     }
 

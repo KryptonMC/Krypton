@@ -31,7 +31,6 @@ import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
-import org.kryptonmc.krypton.command.buildCopy
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
@@ -88,7 +87,7 @@ object TeleportCommand : InternalCommand {
                     })
                 )
         )
-        dispatcher.register(node.buildCopy("tp"))
+        dispatcher.register(literal<Sender>("tp").redirect(node))
     }
 
     private fun teleport(player: Sender, location: Coordinates) {

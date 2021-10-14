@@ -158,14 +158,11 @@ class LoginHandler(
         server.eventManager.fire(AuthenticationEvent(name)).thenApplyAsync({
             if (!it.result.isAllowed) return@thenApplyAsync null
 
-            val profile = try {
-                val value = SessionService.hasJoined(name, sharedSecret, server.config.server.ip)
-                if (!canJoin(value, address) || !callLoginEvent(value)) return@thenApplyAsync null
-                value
-            } catch (exception: AuthenticationException) {
+            val profile = SessionService.hasJoined(name, sharedSecret, server.config.server.ip) ?: kotlin.run {
                 session.disconnect(translatable("multiplayer.disconnect.unverified_username"))
                 return@thenApplyAsync null
             }
+            if (!canJoin(profile, address) || !callLoginEvent(profile)) return@thenApplyAsync null
 
             // Check the profile from the event and construct the player.
             val resultProfile = it.result.profile

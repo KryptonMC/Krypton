@@ -28,9 +28,17 @@ import org.kryptonmc.krypton.util.logger
 import java.io.IOException
 import java.nio.file.Path
 
+/**
+ * Responsible for setting up the metrics tracker for the server on bStats.
+ *
+ * Find the bStats page for this
+ * [here](https://bstats.org/plugin/server-implementation/Krypton/11197).
+ */
 object KryptonMetrics {
 
     private val LOGGER = logger<KryptonMetrics>()
+    private const val SERVICE_ID = 11197
+    private val VERSION_REGEX = "\\d+".toRegex()
 
     fun initialize(server: KryptonServer, enabled: Boolean) {
         val config = try {
@@ -50,7 +58,7 @@ object KryptonMetrics {
         val metrics = MetricsBase(
             "server-implementation",
             config.serverUUID,
-            11197,
+            SERVICE_ID,
             config.isEnabled,
             ::appendPlatformData,
             {},
@@ -76,8 +84,7 @@ object KryptonMetrics {
             val release = "Java " + if (major == "1") {
                 javaVersion.substring(0, dot)
             } else {
-                val versionRegex = "\\d+".toRegex()
-                if (versionRegex matches major) versionRegex.find(major)!!.groups[0]!!.value else major
+                if (VERSION_REGEX matches major) VERSION_REGEX.find(major)!!.groups[0]!!.value else major
             }
 
             mapOf<String, Map<String, Int>>(release to mapOf(javaVersion to 1))

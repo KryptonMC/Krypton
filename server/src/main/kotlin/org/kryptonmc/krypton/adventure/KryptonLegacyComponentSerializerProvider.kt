@@ -18,19 +18,22 @@
  */
 package org.kryptonmc.krypton.adventure
 
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import java.util.function.Consumer
 
-class KryptonGsonComponentSerializerProvider : GsonComponentSerializer.Provider {
+class KryptonLegacyComponentSerializerProvider : LegacyComponentSerializer.Provider {
 
-    override fun gson() = GsonComponentSerializer.builder()
-        .legacyHoverEventSerializer(NBTLegacyHoverEventSerializer)
+    override fun legacy(): Consumer<LegacyComponentSerializer.Builder> = Consumer {}
+
+    override fun legacyAmpersand(): LegacyComponentSerializer = LegacyComponentSerializer.builder()
+        .character(LegacyComponentSerializer.AMPERSAND_CHAR)
+        .hexCharacter(LegacyComponentSerializer.HEX_CHAR)
+        .flattener(KryptonAdventure.FLATTENER)
         .build()
 
-    override fun gsonLegacy() = GsonComponentSerializer.builder()
-        .legacyHoverEventSerializer(NBTLegacyHoverEventSerializer)
-        .downsampleColors()
+    override fun legacySection(): LegacyComponentSerializer = LegacyComponentSerializer.builder()
+        .character(LegacyComponentSerializer.SECTION_CHAR)
+        .hexCharacter(LegacyComponentSerializer.HEX_CHAR)
+        .flattener(KryptonAdventure.FLATTENER)
         .build()
-
-    override fun builder(): Consumer<GsonComponentSerializer.Builder> = Consumer {}
 }

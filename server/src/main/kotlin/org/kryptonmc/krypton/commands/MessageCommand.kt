@@ -29,7 +29,6 @@ import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
-import org.kryptonmc.krypton.command.buildCopy
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
@@ -52,7 +51,7 @@ object MessageCommand : InternalCommand {
             )
         )
 
-        dispatcher.register(messageCommand.buildCopy("tell"))
-        dispatcher.register(messageCommand.buildCopy("w"))
+        dispatcher.register(literal<Sender>("tell").redirect(messageCommand))
+        dispatcher.register(literal<Sender>("w").redirect(messageCommand))
     }
 }
