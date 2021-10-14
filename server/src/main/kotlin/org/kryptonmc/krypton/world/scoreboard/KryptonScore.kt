@@ -18,19 +18,47 @@
  */
 package org.kryptonmc.krypton.world.scoreboard
 
-import org.kryptonmc.api.entity.player.Player
+import net.kyori.adventure.text.Component
+import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.scoreboard.Score
 
-@JvmRecord
-data class KryptonScore(
-    override val player: Player,
-    override val objective: Objective,
-    override val score: Int
+class KryptonScore(
+    var scoreboard: KryptonScoreboard?,
+    override val objective: Objective?,
+    override val name: Component
 ) : Score {
 
-    object Factory : Score.Factory {
+    private var forceUpdate = true
+    val nameString = name.toLegacySectionText()
+    override var score = 0
+        set(value) {
+            val old = field
+            field = value
+            if (old != value || forceUpdate) {
+                forceUpdate = false
+                scoreboard?.onScoreUpdated(this)
+            }
+        }
+    override var isLocked = true
 
-        override fun of(player: Player, objective: Objective, score: Int): Score = KryptonScore(player, objective, score)
+    fun add(amount: Int) {
+        check(objective?.criterion?.isMutable ?: false) { "Cannot modify a score with a read-only criterion!" }
+        score += amount
+    }
+
+    fun increment() = add(1)
+
+    fun reset() {
+        score = 0
+    }
+
+    companion object {
+
+        val COMPARATOR: Comparator<KryptonScore> = Comparator { o1, o2 ->
+            if (o1.score > o2.score) return@Comparator 1
+            if (o1.score < o2.score) return@Comparator -1
+            o1.nameString.compareTo(o2.nameString, true)
+        }
     }
 }

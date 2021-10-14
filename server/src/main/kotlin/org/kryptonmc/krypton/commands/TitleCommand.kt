@@ -49,7 +49,7 @@ object TitleCommand : InternalCommand {
                             val message = context.argument<String>("message")
                             targets.forEach { it.sendActionBar(text(message)) }
                             val feedback = if (targets.size == 1) {
-                                translatable("commands.title.show.actionbar.single", text(sender.name))
+                                translatable("commands.title.show.actionbar.single", sender.displayName)
                             } else {
                                 translatable("commands.title.show.actionbar.multiple", text(targets.size))
                             }
@@ -64,7 +64,7 @@ object TitleCommand : InternalCommand {
                             val message = context.argument<String>("message")
                             targets.forEach { it.sendTitle(text(message)) }
                             val feedback = if (targets.size == 1) {
-                                translatable("commands.title.show.title.single", text(sender.name))
+                                translatable("commands.title.show.title.single", sender.displayName)
                             } else {
                                 translatable("commands.title.show.title.multiple", text(targets.size))
                             }
@@ -79,7 +79,7 @@ object TitleCommand : InternalCommand {
                             val message = context.argument<String>("message")
                             targets.forEach { it.sendSubtitle(text(message)) }
                             val feedback = if (targets.size == 1) {
-                                translatable("commands.title.show.subtitle.single", text(sender.name))
+                                translatable("commands.title.show.subtitle.single", sender.displayName)
                             } else {
                                 translatable("commands.title.show.subtitle.multiple", text(targets.size))
                             }
@@ -92,7 +92,7 @@ object TitleCommand : InternalCommand {
                         val targets = context.entityArgument("targets").players(sender)
                         targets.forEach { it.clearTitle() }
                         val feedback = if (targets.size == 1) {
-                            translatable("commands.title.cleared.single", text(sender.name))
+                            translatable("commands.title.cleared.single", sender.displayName)
                         } else {
                             translatable("commands.title.cleared.multiple", text(targets.size))
                         }
@@ -105,7 +105,7 @@ object TitleCommand : InternalCommand {
                         val targets = context.entityArgument("targets").players(sender)
                         targets.forEach { it.resetTitle() }
                         val feedback = if (targets.size == 1) {
-                            translatable("commands.title.reset.single", text(sender.name))
+                            translatable("commands.title.reset.single", sender.displayName)
                         } else {
                             translatable("commands.title.reset.multiple", text(targets.size))
                         }
@@ -130,7 +130,7 @@ object TitleCommand : InternalCommand {
                                         )
                                     }
                                     val feedback = if (targets.size == 1) {
-                                        translatable("commands.title.times.single", text(sender.name))
+                                        translatable("commands.title.times.single", sender.displayName)
                                     } else {
                                         translatable("commands.title.times.multiple", text(targets.size))
                                     }

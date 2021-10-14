@@ -181,7 +181,7 @@ public interface Server : ForwardingAudience {
      * The server's [Scoreboard], or null if there isn't one.
      */
     @get:JvmName("scoreboard")
-    public val scoreboard: Scoreboard?
+    public val scoreboard: Scoreboard
 
     /**
      * Gets the online player with the given [uuid], or returns null if there

@@ -8,57 +8,35 @@
  */
 package org.kryptonmc.api.scoreboard
 
-import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.util.provide
+import net.kyori.adventure.text.Component
 
 /**
- * Represents the score of a player for a specific [objective].
+ * The score of a member of a team for a specific objective.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 public interface Score {
 
     /**
-     * The player who's score this is.
+     * The name of the score.
      */
-    @get:JvmName("player")
-    public val player: Player
+    @get:JvmName("name")
+    public val name: Component
 
     /**
-     * The objective that's tracking this score.
+     * The objective this score is registered to, or null if this score is not
+     * currently registered to an objective.
      */
     @get:JvmName("objective")
-    public val objective: Objective
+    public val objective: Objective?
 
     /**
-     * The actual score value.
+     * The underlying value of this score.
      */
     @get:JvmName("score")
-    public val score: Int
+    public var score: Int
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun of(player: Player, objective: Objective, score: Int): Score
-    }
-
-    public companion object {
-
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
-        /**
-         * Creates a new score with the given values.
-         *
-         * @param player the player being scored
-         * @param objective the tracking objective
-         * @param score the actual value
-         * @return a new score
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(player: Player, objective: Objective, score: Int): Score = FACTORY.of(player, objective, score)
-    }
+    /**
+     * If this score is locked, meaning it cannot be changed.
+     */
+    public var isLocked: Boolean
 }

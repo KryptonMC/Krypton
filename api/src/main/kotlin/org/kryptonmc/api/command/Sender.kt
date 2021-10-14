@@ -10,6 +10,7 @@ package org.kryptonmc.api.command
 
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.identity.Identified
+import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Range
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.permission.Subject
@@ -26,7 +27,7 @@ public interface Sender : Audience, Subject, Identified {
      * How this is defined is entirely dependent on the subtype.
      */
     @get:JvmName("name")
-    public val name: String
+    public val name: Component
 
     /**
      * The sender's permission level.

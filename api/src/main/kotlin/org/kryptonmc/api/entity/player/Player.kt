@@ -126,7 +126,7 @@ public interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRe
      * The scoreboard currently being shown to this player.
      */
     @get:JvmName("scoreboard")
-    public var scoreboard: Scoreboard?
+    public val scoreboard: Scoreboard
 
     /**
      * This player's main hand.

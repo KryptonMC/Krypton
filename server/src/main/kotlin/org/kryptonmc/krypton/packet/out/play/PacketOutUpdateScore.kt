@@ -19,6 +19,8 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Score
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
@@ -26,15 +28,19 @@ import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutUpdateScore(
-    private val score: Score,
-    private val action: Action
+    private val action: Action,
+    private val name: Component,
+    private val objectiveName: String?,
+    private val score: Int,
 ) : Packet {
 
+    constructor(action: Action, score: Score) : this(action, score.name, score.objective?.name, score.score)
+
     override fun write(buf: ByteBuf) {
-        buf.writeString(score.player.name, 40)
+        buf.writeString(LegacyComponentSerializer.legacySection().serialize(name), 40)
         buf.writeByte(action.ordinal)
-        buf.writeString(score.objective.name, 16)
-        if (action != Action.REMOVE) buf.writeVarInt(score.score)
+        buf.writeString(objectiveName ?: "", 16)
+        if (action != Action.REMOVE) buf.writeVarInt(score)
     }
 
     enum class Action {

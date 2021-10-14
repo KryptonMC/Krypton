@@ -34,11 +34,10 @@ import org.kryptonmc.krypton.world.scoreboard.KryptonVisibility
  * Tells the client to perform an action to a team on their current scoreboard
  */
 @JvmRecord
-data class PacketOutTeams(
+data class PacketOutTeam(
     private val action: Action,
     private val team: Team,
-    private val addedMembers: Set<Component> = emptySet(), // only applies for add players
-    private val removedMembers: Set<Component> = emptySet() // only applies for remove players
+    private val members: Collection<Component> = emptySet(), // only applies for add players
 ) : Packet {
 
     override fun write(buf: ByteBuf) {
@@ -54,12 +53,12 @@ data class PacketOutTeams(
             Action.REMOVE -> Unit
             Action.UPDATE_INFO -> buf.writeTeamInfo()
             Action.ADD_PLAYERS -> {
-                buf.writeVarInt(addedMembers.size)
-                for (member in addedMembers) buf.writeString(member.toLegacySectionText(), 40)
+                buf.writeVarInt(members.size)
+                for (member in members) buf.writeString(member.toLegacySectionText(), 40)
             }
             Action.REMOVE_PLAYERS -> {
-                buf.writeVarInt(removedMembers.size)
-                for (member in removedMembers) buf.writeString(member.toLegacySectionText(), 40)
+                buf.writeVarInt(members.size)
+                for (member in members) buf.writeString(member.toLegacySectionText(), 40)
             }
         }
     }

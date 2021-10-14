@@ -9,9 +9,6 @@
 package org.kryptonmc.api.event.player
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.Component.empty
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.ResultedEvent
@@ -32,10 +29,10 @@ public data class JoinEvent(
     // The message here is the default translatable component that vanilla
     // Minecraft sends when a player joins.
     override var result: JoinResult = JoinResult.allowed(
-        translatable(
+        Component.translatable(
             if (hasChangedName) "multiplayer.player.joined.renamed" else "multiplayer.player.joined",
             NamedTextColor.YELLOW,
-            text(player.name)
+            player.displayName
         ),
         hasChangedName
     )
@@ -65,7 +62,7 @@ public data class JoinResult(
          */
         @JvmStatic
         @JvmOverloads
-        public fun allowed(hasJoinedBefore: Boolean = false): JoinResult = JoinResult(true, empty(), hasJoinedBefore)
+        public fun allowed(hasJoinedBefore: Boolean = false): JoinResult = JoinResult(true, Component.empty(), hasJoinedBefore)
 
         /**
          * Creates a new join result that allows the player to join with the
@@ -93,7 +90,7 @@ public data class JoinResult(
          */
         @JvmStatic
         @JvmOverloads
-        public fun denied(hasJoinedBefore: Boolean = false): JoinResult = JoinResult(false, empty(), hasJoinedBefore)
+        public fun denied(hasJoinedBefore: Boolean = false): JoinResult = JoinResult(false, Component.empty(), hasJoinedBefore)
 
         /**
          * Creates a new join result that denies the player from joining with

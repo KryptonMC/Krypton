@@ -28,6 +28,7 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
@@ -97,6 +98,7 @@ class KryptonWorld(
     override val time: Long
         get() = data.time
     override val folder = data.folder
+    override val scoreboard = server.scoreboard
 
     override val chunks: Collection<KryptonChunk>
         get() = chunkManager.chunkMap.values

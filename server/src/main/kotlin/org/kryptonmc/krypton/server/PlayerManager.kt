@@ -25,6 +25,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.event.player.JoinEvent
 import org.kryptonmc.api.event.player.QuitEvent
+import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
@@ -40,6 +41,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
+import org.kryptonmc.krypton.packet.out.play.PacketOutDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
@@ -48,11 +50,11 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerPositionAndLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
-import org.kryptonmc.krypton.packet.out.play.PacketOutDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutTags
+import org.kryptonmc.krypton.packet.out.play.PacketOutTeam
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnlockRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
@@ -65,13 +67,15 @@ import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.clamp
-import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.nextInt
+import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.parseDimension
+import org.kryptonmc.krypton.world.scoreboard.KryptonObjective
+import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.math.vector.Vector3i
 import java.nio.file.Path
 import java.util.UUID
@@ -153,12 +157,10 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         session.send(PacketOutDeclareRecipes)
         session.send(PacketOutUnlockRecipes(PacketOutUnlockRecipes.Action.INIT))
         session.send(PacketOutTags)
-        session.send(PacketOutEntityStatus(
-            player.id,
-            if (world.gameRules[GameRules.REDUCED_DEBUG_INFO]) 22 else 23)
-        )
+        session.send(PacketOutEntityStatus(player.id, if (reducedDebugInfo) 22 else 23))
         sendCommands(player)
         player.statistics.invalidate()
+        updateScoreboard(world.scoreboard, player)
         invalidateStatus()
 
         // Fire join event and send result message
@@ -197,7 +199,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
         // Add the player to the list and cache maps
         players += player
-        playersByName[player.name] = player
+        playersByName[player.profile.name] = player
         playersByUUID[player.uuid] = player
         world.spawnPlayer(player)
 
@@ -231,7 +233,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             players.remove(player)
 
             if (playersByUUID[player.uuid] === player) {
-                playersByName.remove(player.name)
+                playersByName.remove(player.profile.name)
                 playersByUUID.remove(player.uuid)
                 statistics.remove(player.uuid)
             }
@@ -366,6 +368,16 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
                 GameState.THUNDER_LEVEL_CHANGE,
                 world.getThunderLevel(1F)
             ))
+        }
+    }
+
+    private fun updateScoreboard(scoreboard: KryptonScoreboard, player: KryptonPlayer) {
+        val objectives = mutableSetOf<Objective>()
+        scoreboard.teams.forEach { player.session.send(PacketOutTeam(PacketOutTeam.Action.CREATE, it, it.members)) }
+        scoreboard.displayObjectives.forEach { (_, objective) ->
+            if (objectives.contains(objective)) return@forEach
+            scoreboard.getStartTrackingPackets(objective).forEach { player.session.send(it) }
+            objectives.add(objective)
         }
     }
 

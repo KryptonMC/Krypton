@@ -64,7 +64,7 @@ class PlayerDataManager(private val folder: Path) {
         val nbt = try {
             TagIO.read(playerFile, TagCompression.GZIP)
         } catch (exception: IOException) {
-            LOGGER.warn("Failed to load player data for player ${player.name}!", exception)
+            LOGGER.warn("Failed to load player data for player ${player.profile.name}!", exception)
             return@supplyAsync null
         }
 

@@ -19,25 +19,58 @@
 package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Objective
-import org.kryptonmc.api.scoreboard.RenderType
+import org.kryptonmc.api.scoreboard.ObjectiveRenderType
+import org.kryptonmc.api.scoreboard.ObjectiveRenderTypes
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 
-@JvmRecord
-data class KryptonObjective(
+class KryptonObjective(
+    var scoreboard: KryptonScoreboard?,
     override val name: String,
-    override val displayName: Component,
-    override val criterion: Criterion?,
-    override val renderType: RenderType
+    override val criterion: Criterion,
+    displayName: Component,
+    renderType: ObjectiveRenderType
 ) : Objective {
+
+    override var displayName: Component = displayName
+        set(value) {
+            field = value
+            scoreboard?.onObjectiveUpdated(this)
+        }
+    override var renderType: ObjectiveRenderType = renderType
+        set(value) {
+            field = value
+            scoreboard?.onObjectiveUpdated(this)
+        }
+
+    override fun toBuilder(): Objective.Builder = Builder(this)
+
+    class Builder(private var name: String, private var criterion: Criterion) : Objective.Builder {
+
+        private var scoreboard: KryptonScoreboard? = null
+        private var displayName: Component = LegacyComponentSerializer.legacySection().deserialize(name)
+        private var renderType = ObjectiveRenderTypes.INTEGER
+
+        constructor(objective: KryptonObjective) : this(objective.name, objective.criterion) {
+            scoreboard = objective.scoreboard
+            displayName = objective.displayName
+            renderType = objective.renderType
+        }
+
+        override fun name(name: String): Objective.Builder = apply { this.name = name }
+
+        override fun displayName(name: Component): Objective.Builder = apply { displayName = name }
+
+        override fun criterion(criterion: Criterion): Objective.Builder = apply { this.criterion = criterion }
+
+        override fun renderType(type: ObjectiveRenderType): Objective.Builder = apply { renderType = type }
+
+        override fun build() = KryptonObjective(scoreboard, name, criterion, displayName, renderType)
+    }
 
     object Factory : Objective.Factory {
 
-        override fun of(
-            name: String,
-            displayName: Component,
-            criterion: Criterion?,
-            renderType: RenderType
-        ): Objective = KryptonObjective(name, displayName, criterion, renderType)
+        override fun builder(name: String, criterion: Criterion): Objective.Builder = Builder(name, criterion)
     }
 }

@@ -20,24 +20,80 @@ package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.CollisionRule
+import org.kryptonmc.api.scoreboard.CollisionRules
 import org.kryptonmc.api.scoreboard.Team
+import org.kryptonmc.api.scoreboard.Visibilities
 import org.kryptonmc.api.scoreboard.Visibility
 
-@JvmRecord
-data class KryptonTeam(
+class KryptonTeam(
+    var scoreboard: KryptonScoreboard?,
     override val name: String,
-    override val displayName: Component,
-    override val prefix: Component,
-    override val suffix: Component,
-    override val color: NamedTextColor,
-    override val allowFriendlyFire: Boolean,
-    override val canSeeInvisibleMembers: Boolean,
-    override val nameTagVisibility: Visibility,
-    override val deathMessageVisibility: Visibility,
-    override val collisionRule: CollisionRule,
-    override val members: MutableSet<Component>
+    displayName: Component = Component.text(name),
+    prefix: Component = Component.empty(),
+    suffix: Component = Component.empty(),
+    color: NamedTextColor = NamedTextColor.WHITE,
+    allowFriendlyFire: Boolean = true,
+    canSeeInvisibleMembers: Boolean = true,
+    nameTagVisibility: Visibility = Visibilities.ALWAYS,
+    deathMessagesVisibility: Visibility = Visibilities.ALWAYS,
+    collisionRule: CollisionRule = CollisionRules.ALWAYS,
+    override val members: MutableSet<Component> = mutableSetOf()
 ) : Team {
+
+    override var displayName: Component = displayName
+        set(value) {
+            field = value
+            scoreboard?.onTeamUpdated(this)
+        }
+    override var prefix: Component = prefix
+        set(value) {
+            field = value
+            scoreboard?.onTeamUpdated(this)
+        }
+    override var suffix: Component = suffix
+        set(value) {
+            field = value
+            scoreboard?.onTeamUpdated(this)
+        }
+    override var color: NamedTextColor = color
+        set(value) {
+            field = value
+            scoreboard?.onTeamUpdated(this)
+        }
+    override var allowFriendlyFire = allowFriendlyFire
+        set(value) {
+            field = value
+            scoreboard?.onTeamUpdated(this)
+        }
+    override var canSeeInvisibleMembers = canSeeInvisibleMembers
+        set(value) {
+            field = value
+            scoreboard?.onTeamUpdated(this)
+        }
+    override var nameTagVisibility = nameTagVisibility
+        set(value) {
+            field = value
+            scoreboard?.onTeamUpdated(this)
+        }
+    override var deathMessageVisibility = deathMessagesVisibility
+        set(value) {
+            field = value
+            scoreboard?.onTeamUpdated(this)
+        }
+    override var collisionRule = collisionRule
+        set(value) {
+            field = value
+            scoreboard?.onTeamUpdated(this)
+        }
+
+    override fun formatName(name: Component): Component = Component.empty().toBuilder()
+        .append(prefix)
+        .append(name)
+        .append(suffix)
+        .color(color)
+        .build()
 
     override fun addMember(member: Component) {
         members.add(member)
@@ -45,5 +101,80 @@ data class KryptonTeam(
 
     override fun removeMember(member: Component) {
         members.remove(member)
+    }
+
+    override fun toBuilder(): Team.Builder = Builder(this)
+
+    class Builder(private var name: String) : Team.Builder {
+
+        private var scoreboard: KryptonScoreboard? = null
+        private var displayName: Component = LegacyComponentSerializer.legacySection().deserialize(name)
+        private var prefix: Component = Component.empty()
+        private var suffix: Component = Component.empty()
+        private var color: NamedTextColor = NamedTextColor.WHITE
+        private var friendlyFire = true
+        private var canSeeInvisibleMembers = true
+        private var nameTags = Visibilities.ALWAYS
+        private var deathMessages = Visibilities.ALWAYS
+        private var collisionRule = CollisionRules.ALWAYS
+        private val members = mutableSetOf<Component>()
+
+        constructor(team: KryptonTeam) : this(team.name) {
+            scoreboard = team.scoreboard
+            displayName = team.displayName
+            prefix = team.prefix
+            suffix = team.suffix
+            color = team.color
+            friendlyFire = team.allowFriendlyFire
+            canSeeInvisibleMembers = team.canSeeInvisibleMembers
+            nameTags = team.nameTagVisibility
+            deathMessages = team.deathMessageVisibility
+            collisionRule = team.collisionRule
+            members.addAll(team.members)
+        }
+
+        override fun name(name: String): Team.Builder = apply { this.name = name }
+
+        override fun displayName(name: Component): Team.Builder = apply { displayName = name }
+
+        override fun prefix(prefix: Component): Team.Builder = apply { this.prefix = prefix }
+
+        override fun suffix(suffix: Component): Team.Builder = apply { this.suffix = suffix }
+
+        override fun color(color: NamedTextColor): Team.Builder = apply { this.color = color }
+
+        override fun friendlyFire(value: Boolean): Team.Builder = apply { friendlyFire = value }
+
+        override fun canSeeInvisibleMembers(value: Boolean): Team.Builder = apply { canSeeInvisibleMembers = value }
+
+        override fun nameTagVisibility(visibility: Visibility): Team.Builder = apply { nameTags = visibility }
+
+        override fun deathMessageVisibility(visibility: Visibility): Team.Builder = apply { deathMessages = visibility }
+
+        override fun collisionRule(rule: CollisionRule): Team.Builder = apply { collisionRule = rule }
+
+        override fun addMember(member: Component): Team.Builder = apply { members.add(member) }
+
+        override fun removeMember(member: Component): Team.Builder = apply { members.remove(member) }
+
+        override fun build(): Team = KryptonTeam(
+            scoreboard,
+            name,
+            displayName,
+            prefix,
+            suffix,
+            color,
+            friendlyFire,
+            canSeeInvisibleMembers,
+            nameTags,
+            deathMessages,
+            collisionRule,
+            members
+        )
+    }
+
+    object Factory : Team.Factory {
+
+        override fun builder(name: String): Team.Builder = Builder(name)
     }
 }

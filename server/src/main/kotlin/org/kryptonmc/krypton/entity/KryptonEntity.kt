@@ -25,10 +25,10 @@ import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.adventure.toJsonString
-import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
@@ -39,6 +39,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutDestroyEntities
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
+import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -63,13 +64,29 @@ abstract class KryptonEntity(
 
     val id = NEXT_ENTITY_ID.incrementAndGet()
     override var uuid = Random.nextUUID()
-    override val name: String
-        get() = displayName.toLegacySectionText()
+        set(value) {
+            field = value
+            uuidComponent = Component.text(value.toString())
+            identity = Identity.identity(value)
+        }
+    private var uuidComponent: Component = Component.text(uuid.toString())
+    private var identity: Identity = Identity.identity(uuid)
+    override val teamRepresentation: Component
+        get() = uuidComponent
+    override val name: Component
+        get() = customName ?: type.translation
+    override val displayName: Component
+        get() = team?.formatName(name)?.style {
+            it.hoverEvent(asHoverEvent())
+            it.insertion(uuid.toString())
+        } ?: name
     val data = MetadataHolder(this)
 
     final override val server = world.server
     override val permissionLevel = 0
 
+    override val team: Team?
+        get() = world.scoreboard.memberTeam(teamRepresentation)
     final override var location: Vector3d = Vector3d.ZERO
     final override var rotation: Vector2f = Vector2f.ZERO
     final override var velocity: Vector3d = Vector3d.ZERO
@@ -84,6 +101,8 @@ abstract class KryptonEntity(
 
     open val maxAirTicks: Int
         get() = 300
+    open val isAlive: Boolean
+        get() = !isRemoved
     val viewers: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
     var noPhysics = false
     private var portalCooldown = 0
@@ -92,8 +111,8 @@ abstract class KryptonEntity(
     init {
         data.add(MetadataKeys.FLAGS)
         data.add(MetadataKeys.AIR_TICKS, maxAirTicks)
-        data.add(MetadataKeys.DISPLAY_NAME)
-        data.add(MetadataKeys.DISPLAY_NAME_VISIBILITY)
+        data.add(MetadataKeys.CUSTOM_NAME)
+        data.add(MetadataKeys.CUSTOM_NAME_VISIBILITY)
         data.add(MetadataKeys.SILENT)
         data.add(MetadataKeys.NO_GRAVITY)
         data.add(MetadataKeys.POSE)
@@ -107,9 +126,9 @@ abstract class KryptonEntity(
     open fun load(tag: CompoundTag) {
         air = tag.getShort("Air").toInt()
         if (tag.contains("CustomName", StringTag.ID)) {
-            displayName = GsonComponentSerializer.gson().deserialize(tag.getString("CustomName"))
+            customName = GsonComponentSerializer.gson().deserialize(tag.getString("CustomName"))
         }
-        isDisplayNameVisible = tag.getBoolean("CustomNameVisible")
+        isCustomNameVisible = tag.getBoolean("CustomNameVisible")
         fallDistance = tag.getFloat("FallDistance")
         fireTicks = tag.getShort("Fire")
         isGlowing = tag.getBoolean("Glowing")
@@ -138,8 +157,8 @@ abstract class KryptonEntity(
 
     open fun save() = buildCompound {
         // Display name
-        if (isDisplayNameVisible) boolean("CustomNameVisible", true)
-        if (displayName != Component.empty()) string("CustomName", displayName.toJsonString())
+        if (isCustomNameVisible) boolean("CustomNameVisible", true)
+        customName?.let { string("CustomName", it.toJsonString()) }
 
         // Flags
         if (isGlowing) boolean("Glowing", true)
@@ -215,11 +234,9 @@ abstract class KryptonEntity(
         world.removeEntity(this)
     }
 
-    override fun identity() = Identity.identity(uuid)
+    override fun identity() = identity
 
-    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(
-        op.apply(ShowEntity.of(type.key(), uuid, displayName.takeIf { it !== Component.empty() }))
-    )
+    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(op.apply(ShowEntity.of(type.key(), uuid, displayName)))
 
     final override var isOnFire: Boolean
         get() = getSharedFlag(0)
@@ -245,12 +262,12 @@ abstract class KryptonEntity(
     final override var air: Int
         get() = data[MetadataKeys.AIR_TICKS]
         set(value) = data.set(MetadataKeys.AIR_TICKS, value)
-    final override var displayName: Component
-        get() = data[MetadataKeys.DISPLAY_NAME].orElse(type.translation)
-        set(value) = data.set(MetadataKeys.DISPLAY_NAME, Optional.ofNullable(value.takeIf { it != Component.empty() }))
-    final override var isDisplayNameVisible: Boolean
-        get() = data[MetadataKeys.DISPLAY_NAME_VISIBILITY]
-        set(value) = data.set(MetadataKeys.DISPLAY_NAME_VISIBILITY, value)
+    final override var customName: Component?
+        get() = data[MetadataKeys.CUSTOM_NAME].orElse(null)
+        set(value) = data.set(MetadataKeys.CUSTOM_NAME, Optional.ofNullable(value))
+    final override var isCustomNameVisible: Boolean
+        get() = data[MetadataKeys.CUSTOM_NAME_VISIBILITY]
+        set(value) = data.set(MetadataKeys.CUSTOM_NAME_VISIBILITY, value)
     final override var isSilent: Boolean
         get() = data[MetadataKeys.SILENT]
         set(value) = data.set(MetadataKeys.SILENT, value)
@@ -269,5 +286,7 @@ abstract class KryptonEntity(
     companion object {
 
         private val NEXT_ENTITY_ID = AtomicInteger(0)
+        @JvmStatic
+        protected val LOGGER = logger("Entity")
     }
 }

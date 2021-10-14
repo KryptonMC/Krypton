@@ -112,6 +112,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             byUUID.remove(entity.uuid)
             val entitiesByChunk = byChunk[chunk.position.toLong()].apply { remove(entity) }
             if (entitiesByChunk.isEmpty()) byChunk.remove(chunk.position.toLong())
+            world.scoreboard.removeEntity(entity)
         }
     }
 

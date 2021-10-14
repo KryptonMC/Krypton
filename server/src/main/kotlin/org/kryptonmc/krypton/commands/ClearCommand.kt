@@ -70,7 +70,7 @@ object ClearCommand : InternalCommand {
         if (targets.size == 1) {
             val target = targets[0]
             clear(target, predicate, maxCount)
-            sender.sendMessage(translatable("commands.clear.success.single", text(amount), text(target.name)))
+            sender.sendMessage(translatable("commands.clear.success.single", text(amount), target.displayName))
             target.session.send(PacketOutWindowItems(
                 target.inventory.id,
                 target.inventory.incrementStateId(),

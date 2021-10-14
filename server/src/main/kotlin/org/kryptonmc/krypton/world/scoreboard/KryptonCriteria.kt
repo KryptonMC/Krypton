@@ -21,7 +21,8 @@ package org.kryptonmc.krypton.world.scoreboard
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.scoreboard.RenderType
+import org.kryptonmc.api.scoreboard.ObjectiveRenderType
+import org.kryptonmc.api.scoreboard.ObjectiveRenderTypes
 
 object KryptonCriteria {
 
@@ -30,7 +31,7 @@ object KryptonCriteria {
     val DEATH_COUNT = register("death_count", "deathCount")
     val PLAYER_KILL_COUNT = register("player_kill_count", "playerKillCount")
     val TOTAL_KILL_COUNT = register("total_kill_count", "totalKillCount")
-    val HEALTH = register("health", isMutable = true, renderType = RenderType.HEARTS)
+    val HEALTH = register("health", isMutable = true, renderType = ObjectiveRenderTypes.HEARTS)
     val FOOD = register("food", isMutable = true)
     val AIR = register("air", isMutable = true)
     val ARMOR = register("armor", isMutable = true)
@@ -47,7 +48,7 @@ object KryptonCriteria {
         key: String,
         name: String = key,
         isMutable: Boolean = false,
-        renderType: RenderType = RenderType.INTEGER
+        renderType: ObjectiveRenderType = ObjectiveRenderTypes.INTEGER
     ): KryptonCriterion {
         val key1 = Key.key(key)
         return Registries.register(
@@ -62,7 +63,7 @@ object KryptonCriteria {
         name: String,
         children: List<KryptonCriterion>,
         isMutable: Boolean = false,
-        renderType: RenderType = RenderType.INTEGER
+        renderType: ObjectiveRenderType = ObjectiveRenderTypes.INTEGER
     ): KryptonCompoundCriterion {
         val key1 = Key.key(key)
         return Registries.register(

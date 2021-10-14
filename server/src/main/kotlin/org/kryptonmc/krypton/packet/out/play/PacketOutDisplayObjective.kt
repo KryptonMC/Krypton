@@ -19,27 +19,24 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.scoreboard.ScoreboardPosition
-import org.kryptonmc.api.scoreboard.Team
-import org.kryptonmc.krypton.adventure.ordinal
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.scoreboard.DisplaySlot
+import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 
 @JvmRecord
-data class PacketOutDisplayScoreboard(
-    private val scoreboard: KryptonScoreboard,
-    private val team: Team? = null // used for team specific positioning
+data class PacketOutDisplayObjective(
+    private val slot: Int,
+    private val name: String
 ) : Packet {
 
+    constructor(slot: DisplaySlot, objective: Objective?) : this(Registries.DISPLAY_SLOTS.idOf(slot), objective?.name ?: "")
+
+    constructor(slot: Int, objective: Objective?) : this(slot, objective?.name ?: "")
+
     override fun write(buf: ByteBuf) {
-        when (scoreboard.position) {
-            ScoreboardPosition.TEAM_SPECIFIC -> {
-                requireNotNull(team) { "Team must be supplied if position is team specific!" }
-                buf.writeByte(3 + team.color.ordinal())
-            }
-            else -> buf.writeByte(scoreboard.position.ordinal)
-        }
-        buf.writeString(scoreboard.name, 16)
+        buf.writeByte(slot)
+        buf.writeString(name)
     }
 }

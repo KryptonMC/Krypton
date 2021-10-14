@@ -8,8 +8,7 @@
  */
 package org.kryptonmc.api.event.player
 
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.ComponentResult
@@ -22,9 +21,9 @@ import org.kryptonmc.api.event.ResultedEvent
  */
 public data class QuitEvent(@get:JvmName("player") public val player: Player) : ResultedEvent<ComponentResult> {
 
-    override var result: ComponentResult = ComponentResult.allowed(translatable(
+    override var result: ComponentResult = ComponentResult.allowed(Component.translatable(
         "multiplayer.player.left",
         NamedTextColor.YELLOW,
-        text(player.name)
+        player.displayName
     ))
 }

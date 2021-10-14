@@ -36,6 +36,7 @@ import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
+import org.kryptonmc.api.scoreboard.DisplaySlot
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.FactoryNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
@@ -53,7 +54,8 @@ import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.scoreboard.Objective
-import org.kryptonmc.api.scoreboard.Score
+import org.kryptonmc.api.scoreboard.ObjectiveRenderType
+import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
 import org.kryptonmc.krypton.effect.KryptonMusic
@@ -84,8 +86,10 @@ import org.kryptonmc.krypton.world.block.KryptonBlockHitResult
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.rule.KryptonGameRule
+import org.kryptonmc.krypton.world.scoreboard.KryptonDisplaySlot
 import org.kryptonmc.krypton.world.scoreboard.KryptonObjective
-import org.kryptonmc.krypton.world.scoreboard.KryptonScore
+import org.kryptonmc.krypton.world.scoreboard.KryptonObjectiveRenderType
+import org.kryptonmc.krypton.world.scoreboard.KryptonTeam
 
 object KryptonFactoryProvider : FactoryProvider {
 
@@ -115,7 +119,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<EntityDimensions.Factory>(KryptonEntityDimensions.Factory)
         register<InventoryType.Factory>(KryptonInventoryType.Factory)
         register<Objective.Factory>(KryptonObjective.Factory)
-        register<Score.Factory>(KryptonScore.Factory)
         register<GameRule.Factory>(KryptonGameRule.Factory)
         register<GameMode.Factory>(KryptonGameMode.Factory)
         register<Music.Factory>(KryptonMusic.Factory)
@@ -134,6 +137,9 @@ object KryptonFactoryProvider : FactoryProvider {
         register<ItemRarity.Factory>(KryptonItemRarity.Factory)
         register<DimensionType.Factory>(KryptonDimensionType.Factory)
         register<ResourcePack.Factory>(KryptonResourcePack.Factory)
+        register<DisplaySlot.Factory>(KryptonDisplaySlot.Factory)
+        register<ObjectiveRenderType.Factory>(KryptonObjectiveRenderType.Factory)
+        register<Team.Factory>(KryptonTeam.Factory)
     }
 }
 

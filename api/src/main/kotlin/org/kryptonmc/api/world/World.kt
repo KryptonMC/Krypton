@@ -19,6 +19,7 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRuleHolder
@@ -138,6 +139,12 @@ public interface World : ForwardingAudience {
      */
     @get:JvmName("gameRules")
     public val gameRules: GameRuleHolder
+
+    /**
+     * The scoreboard for this world.
+     */
+    @get:JvmName("scoreboard")
+    public val scoreboard: Scoreboard
 
     /**
      * Gets the block at the given coordinates.

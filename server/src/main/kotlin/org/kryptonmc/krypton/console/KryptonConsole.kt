@@ -36,7 +36,7 @@ import java.util.Locale
 class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole(), ConsoleSender {
 
     private var permissionFunction = PermissionFunction.ALWAYS_TRUE
-    override val name = "CONSOLE"
+    override val name = Component.text("CONSOLE")
     override val permissionLevel = 4
 
     fun setupPermissions() {

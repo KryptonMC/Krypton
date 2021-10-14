@@ -54,7 +54,7 @@ object TeleportCommand : InternalCommand {
                     if (players.size == 1) {
                         val player = players[0]
                         teleport(sender, player.location)
-                        sender.sendMessage(translatable("commands.teleport.success.entity.single", text(sender.name), text(player.name)))
+                        sender.sendMessage(translatable("commands.teleport.success.entity.single", sender.displayName, player.displayName))
                     }
                     1
                 }
@@ -67,7 +67,7 @@ object TeleportCommand : InternalCommand {
                         sender.sendMessage(translatable(
                             "commands.teleport.success.entity.multiple",
                             text(players.size.toString()),
-                            text(target.name)
+                            target.displayName
                         ))
                         1
                     })

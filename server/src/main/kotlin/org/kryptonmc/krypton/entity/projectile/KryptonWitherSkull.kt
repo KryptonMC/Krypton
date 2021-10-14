@@ -23,9 +23,7 @@ import org.kryptonmc.api.entity.projectile.WitherSkull
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonWitherSkull(
-    world: KryptonWorld
-) : KryptonAcceleratingProjectile(world, EntityTypes.WITHER_SKULL), WitherSkull {
+class KryptonWitherSkull(world: KryptonWorld) : KryptonAcceleratingProjectile(world, EntityTypes.WITHER_SKULL), WitherSkull {
 
     override var isDangerous: Boolean
         get() = data[MetadataKeys.WITHER_SKULL.DANGEROUS]

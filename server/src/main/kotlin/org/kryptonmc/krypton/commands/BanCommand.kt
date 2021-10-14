@@ -69,7 +69,6 @@ object BanCommand : InternalCommand {
         server.playerManager.bannedPlayers.add(entry)
         server.player(profile.uuid)?.let { kick(entry, it) }
         sender.sendMessage(translatable("commands.ban.success", text(profile.name), text(reason)))
-        logBan(profile.name, sender.name, reason, server)
     }
 
     private fun kick(entry: BannedPlayerEntry, player: KryptonPlayer) {
@@ -80,11 +79,4 @@ object BanCommand : InternalCommand {
         ))
         player.disconnect(text)
     }
-
-    private fun logBan(target: String, source: String, reason: String, server: KryptonServer) = server.console.sendMessage(translatable(
-        "commands.banlist.entry",
-        text(target),
-        text(source),
-        text(reason)
-    ))
 }

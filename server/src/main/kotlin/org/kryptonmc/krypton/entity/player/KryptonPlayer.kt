@@ -54,7 +54,6 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
@@ -62,7 +61,6 @@ import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
-import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
@@ -106,6 +104,7 @@ import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.util.BossBarManager
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.scoreboard.KryptonScore
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
 import org.spongepowered.math.vector.Vector3d
@@ -130,8 +129,7 @@ class KryptonPlayer(
 
     var permissionFunction = PermissionFunction.ALWAYS_NOT_SET
 
-    override val name: String
-        get() = profile.name
+    override val name = Component.text(profile.name)
     override var uuid: UUID
         get() = profile.uuid
         set(_) = Unit // Player UUIDs are read only.
@@ -142,9 +140,10 @@ class KryptonPlayer(
     override var walkingSpeed = 0.1F
     override var flyingSpeed = 0.05F
     override val inventory = KryptonPlayerInventory(this)
-    override var scoreboard: Scoreboard? = null
+    override val scoreboard = world.scoreboard
     override var locale: Locale? = null
     override val statistics = server.playerManager.getStatistics(this)
+    override val teamRepresentation = name
 
     // TODO: Per-player view distance, see issue #49
     override val viewDistance = server.config.world.viewDistance
@@ -540,14 +539,22 @@ class KryptonPlayer(
         isInvisible = internalGamemode === GameModes.SPECTATOR
     }
 
-    override fun incrementStatistic(statistic: Statistic<*>, amount: Int) = statistics.increment(statistic, amount)
+    override fun incrementStatistic(statistic: Statistic<*>, amount: Int) {
+        statistics.increment(statistic, amount)
+        scoreboard.forEachObjective(statistic, teamRepresentation) { it.add(amount) }
+    }
 
-    override fun incrementStatistic(key: Key, amount: Int) =
-        incrementStatistic(KryptonStatisticTypes.CUSTOM[key], amount)
+    override fun incrementStatistic(key: Key, amount: Int) = incrementStatistic(KryptonStatisticTypes.CUSTOM[key], amount)
 
-    override fun decrementStatistic(statistic: Statistic<*>, amount: Int) = statistics.decrement(statistic, amount)
+    override fun decrementStatistic(statistic: Statistic<*>, amount: Int) {
+        statistics.decrement(statistic, amount)
+        scoreboard.forEachObjective(statistic, teamRepresentation, KryptonScore::reset)
+    }
 
-    override fun resetStatistic(statistic: Statistic<*>) = statistics.set(statistic, 0)
+    override fun resetStatistic(statistic: Statistic<*>) {
+        statistics[statistic] = 0
+        scoreboard.forEachObjective(statistic, teamRepresentation, KryptonScore::reset)
+    }
 
     fun updateMovementStatistics(deltaX: Double, deltaY: Double, deltaZ: Double) {
         // TODO: Walking underwater, walking on water, climbing

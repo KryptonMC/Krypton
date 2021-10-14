@@ -38,6 +38,8 @@ import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.scoreboard.CollisionRule
+import org.kryptonmc.api.scoreboard.DisplaySlot
+import org.kryptonmc.api.scoreboard.ObjectiveRenderType
 import org.kryptonmc.api.scoreboard.Visibility
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 
@@ -89,6 +91,8 @@ public object ResourceKeys {
     @JvmField public val BIOME_CATEGORIES: ResourceKey<out Registry<BiomeCategory>> = krypton("biome_categories")
     @JvmField public val META_KEYS: ResourceKey<out Registry<MetaKey<*>>> = krypton("meta_keys")
     @JvmField public val ITEM_RARITIES: ResourceKey<out Registry<ItemRarity>> = krypton("item_rarities")
+    @JvmField public val DISPLAY_SLOTS: ResourceKey<out Registry<DisplaySlot>> = krypton("display_slots")
+    @JvmField public val OBJECTIVE_RENDER_TYPES: ResourceKey<out Registry<ObjectiveRenderType>> = krypton("objective_render_types")
     // @formatter:on
 
     /**

@@ -50,8 +50,8 @@ object MetadataKeys {
 
     val FLAGS = register(0, MetadataSerializers.BYTE, 0)
     val AIR_TICKS = register(1, MetadataSerializers.VAR_INT, 300)
-    val DISPLAY_NAME = register(2, MetadataSerializers.OPTIONAL_COMPONENT, Optional.empty())
-    val DISPLAY_NAME_VISIBILITY = register(3, MetadataSerializers.BOOLEAN, false)
+    val CUSTOM_NAME = register(2, MetadataSerializers.OPTIONAL_COMPONENT, Optional.empty())
+    val CUSTOM_NAME_VISIBILITY = register(3, MetadataSerializers.BOOLEAN, false)
     val SILENT = register(4, MetadataSerializers.BOOLEAN, false)
     val NO_GRAVITY = register(5, MetadataSerializers.BOOLEAN, false)
     val POSE = register(6, MetadataSerializers.POSE, Pose.STANDING)

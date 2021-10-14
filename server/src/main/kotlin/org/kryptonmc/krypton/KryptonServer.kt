@@ -25,6 +25,7 @@ import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.server.TickEndEvent
 import org.kryptonmc.api.event.server.TickStartEvent
+import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileCache
@@ -44,6 +45,7 @@ import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.util.KryptonFactoryProvider
 import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.register
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.fluid.KryptonFluidManager
@@ -81,11 +83,9 @@ class KryptonServer(
     override val players = playerManager.players
 
     override val console = KryptonConsole(this)
-    override var scoreboard: KryptonScoreboard? = null
-        private set
+    override val scoreboard = KryptonScoreboard(this)
 
     val random = SecureRandom()
-
     override val worldManager = KryptonWorldManager(this, worldFolder)
     override val commandManager = KryptonCommandManager
     override val pluginManager = KryptonPluginManager
@@ -106,6 +106,10 @@ class KryptonServer(
     private var lastOverloadWarning = 0L
     private var tickCount = 0
     private var oversleepFactor = 0L
+
+    init {
+        KryptonFactoryProvider.register<Scoreboard.Factory>(KryptonScoreboard.Factory(this))
+    }
 
     fun start() {
         LOGGER.info("Starting Krypton server on ${config.server.ip}:${config.server.port}...")

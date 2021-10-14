@@ -9,18 +9,19 @@
 package org.kryptonmc.api.scoreboard
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.provide
 import org.kryptonmc.api.scoreboard.criteria.Criterion
+import org.kryptonmc.api.util.provide
 
 /**
  * An objective for a scoreboard, that has optional criteria that must be met,
  * and information about what it's called and how it should be rendered.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Objective {
+public interface Objective : Buildable<Objective, Objective.Builder> {
 
     /**
      * The name of this objective.
@@ -32,26 +33,68 @@ public interface Objective {
      * The name that is displayed on the scoreboard to clients.
      */
     @get:JvmName("displayName")
-    public val displayName: Component
+    public var displayName: Component
 
     /**
-     * The criterion that must be met for this objective. May be null.
+     * The criterion that must be met for this objective.
      */
     @get:JvmName("criterion")
-    public val criterion: Criterion?
+    public val criterion: Criterion
 
     /**
      * The setting for how this objective should be displayed on the
      * scoreboard.
      */
     @get:JvmName("renderType")
-    public val renderType: RenderType
+    public val renderType: ObjectiveRenderType
+
+    /**
+     * A builder for objectives.
+     */
+    public interface Builder : Buildable.Builder<Objective> {
+
+        /**
+         * Sets the name of the objective to the given [name].
+         *
+         * @param name the name
+         * @return this builder
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun name(name: String): Builder
+
+        /**
+         * Sets the display name of the objective to the given [name].
+         *
+         * @param name the display name
+         * @return this builder
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun displayName(name: Component): Builder
+
+        /**
+         * Sets the criterion for the objective to the given [criterion].
+         *
+         * @param criterion the criterion
+         * @return this builder
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun criterion(criterion: Criterion): Builder
+
+        /**
+         * Sets the render type for the objective to the given [type].
+         *
+         * @param type the render type
+         * @return this builder
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun renderType(type: ObjectiveRenderType): Builder
+    }
 
     @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(name: String, displayName: Component, criterion: Criterion?, renderType: RenderType): Objective
+        public fun builder(name: String, criterion: Criterion): Builder
     }
 
     public companion object {
@@ -59,23 +102,14 @@ public interface Objective {
         private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
-         * Creates a new objective with the given values.
+         * Creates a new builder for building an objective.
          *
-         * @param name the internal name
-         * @param displayName the name displayed on the scoreboard to clients
-         * @param criterion the criterion that must be met, may be null
-         * @param renderType the setting for how it should be displayed on
-         * the scoreboard
-         * @return a new objective
+         * @param name the name
+         * @param criterion the criterion
+         * @return a new builder
          */
         @JvmStatic
-        @JvmOverloads
-        @Contract("_ -> new", pure = true)
-        public fun of(
-            name: String,
-            displayName: Component,
-            criterion: Criterion? = null,
-            renderType: RenderType = RenderType.INTEGER
-        ): Objective = FACTORY.of(name, displayName, criterion, renderType)
+        @Contract("-> new", pure = true)
+        public fun builder(name: String, criterion: Criterion): Builder = FACTORY.builder(name, criterion)
     }
 }

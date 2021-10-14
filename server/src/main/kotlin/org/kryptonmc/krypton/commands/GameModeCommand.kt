@@ -87,7 +87,7 @@ object GameModeCommand : InternalCommand {
         }
         sender.sendMessage(translatable(
             "commands.gamemode.success.other",
-            text(it.name),
+            it.displayName,
             translatable("gameMode.${mode.name.lowercase()}")
         ))
     }

@@ -15,6 +15,7 @@ import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.event.HoverEventSource
 import org.jetbrains.annotations.Range
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.scoreboard.TeamMember
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector2f
@@ -25,7 +26,7 @@ import java.util.UUID
  * An entity somewhere in a world.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter {
+public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter, TeamMember {
 
     /**
      * The world this entity is currently in.
@@ -46,18 +47,24 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
     public val uuid: UUID
 
     /**
-     * The custom display name of this entity, as a component.
-     *
-     * May be [empty][Component.empty], indicating this entity does not have a
-     * custom display name set.
+     * The custom name of the entity. May be null if the custom name has not
+     * been set.
      */
-    @get:JvmName("displayName")
-    public var displayName: Component
+    @get:JvmName("customName")
+    public var customName: Component?
 
     /**
-     * If the current [displayName] is visible or not.
+     * If the current [customName] is visible or not.
      */
-    public var isDisplayNameVisible: Boolean
+    public var isCustomNameVisible: Boolean
+
+    /**
+     * The display name of this entity.
+     *
+     * In vanilla, this is dependent on the name of the team the entity is in.
+     */
+    @get:JvmName("displayName")
+    public val displayName: Component
 
     /**
      * The current position of this entity.

@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.util.converter.versions
 import ca.spottedleaf.dataconverter.types.MapType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
-import org.kryptonmc.api.scoreboard.RenderType
+import org.kryptonmc.api.scoreboard.ObjectiveRenderTypes
 import org.kryptonmc.krypton.util.converter.MCVersions
 import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
 
@@ -37,7 +37,7 @@ object V1514 {
             val criteriaName = data.getString("CriteriaName", "")!!
             data.setString(
                 "RenderType",
-                if (criteriaName == "health") RenderType.HEARTS.serialized else RenderType.INTEGER.serialized
+                if (criteriaName == "health") ObjectiveRenderTypes.HEARTS.key().value() else ObjectiveRenderTypes.INTEGER.key().value()
             )
             null
         }

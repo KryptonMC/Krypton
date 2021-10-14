@@ -26,6 +26,7 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.event.ClickEvent.suggestCommand
 import net.kyori.adventure.text.format.NamedTextColor
+import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.player.ChatEvent
@@ -165,10 +166,10 @@ class PlayHandler(
                 return@thenAccept
             }
 
-            val name = player.name
+            val name = player.profile.name
             val message = translatable(
                 "chat.type.text",
-                text(name).insertion(name).clickEvent(suggestCommand("/msg $name")).hoverEvent(player),
+                player.displayName.insertion(name).clickEvent(suggestCommand("/msg $name")).hoverEvent(player),
                 text(packet.message)
             )
             server.sendMessage(player, message, MessageType.CHAT)
@@ -209,7 +210,7 @@ class PlayHandler(
 
     private fun handleHeldItemChange(packet: PacketInChangeHeldItem) {
         if (packet.slot !in 0..8) {
-            LOGGER.warn("${player.name} tried to change their held item slot to an invalid value!")
+            LOGGER.warn("${player.profile.name} tried to change their held item slot to an invalid value!")
             return
         }
         player.inventory.heldSlot = packet.slot.toInt()

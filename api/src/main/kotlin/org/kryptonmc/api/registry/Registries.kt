@@ -38,6 +38,8 @@ import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.scoreboard.CollisionRule
+import org.kryptonmc.api.scoreboard.DisplaySlot
+import org.kryptonmc.api.scoreboard.ObjectiveRenderType
 import org.kryptonmc.api.scoreboard.Visibility
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 
@@ -87,6 +89,8 @@ public object Registries {
     @JvmField public val BIOME_CATEGORIES: Registry<BiomeCategory> = create(ResourceKeys.BIOME_CATEGORIES)
     @JvmField public val META_KEYS: Registry<MetaKey<*>> = create(ResourceKeys.META_KEYS)
     @JvmField public val ITEM_RARITIES: Registry<ItemRarity> = create(ResourceKeys.ITEM_RARITIES)
+    @JvmField public val DISPLAY_SLOTS: Registry<DisplaySlot> = create(ResourceKeys.DISPLAY_SLOTS)
+    @JvmField public val OBJECTIVE_RENDER_TYPES: Registry<ObjectiveRenderType> = create(ResourceKeys.OBJECTIVE_RENDER_TYPES)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

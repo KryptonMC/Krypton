@@ -23,7 +23,9 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.BrigadierExceptions
@@ -165,7 +167,10 @@ data class EntityQuery(
                         }
                     }
                 }
-                "name" -> entities = entities.filter { if (exclude) it.name != value else it.name == value }
+                "name" -> entities = entities.filter {
+                    val name = if (it is Player) it.profile.name else it.name.toPlainText()
+                    if (exclude) name != value else name == value
+                }
                 "x_rotation" -> {
                     checkIntOrRange(value.toString())
                     entities = if (value.toString().startsWith("..")) {

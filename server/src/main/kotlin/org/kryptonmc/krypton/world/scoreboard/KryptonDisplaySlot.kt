@@ -16,31 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.login
+package org.kryptonmc.krypton.world.scoreboard
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.writeString
-import org.kryptonmc.krypton.util.writeUUID
-import java.util.UUID
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.format.NamedTextColor
+import org.kryptonmc.api.scoreboard.DisplaySlot
 
-/**
- * Sent to the client on successful login, to inform them of their own UUID.
- *
- * Not sure why we return their username to them though, as they already know
- * it because they told us it in login start.
- */
 @JvmRecord
-data class PacketOutLoginSuccess(
-    private val uuid: UUID,
-    private val username: String
-) : Packet {
+data class KryptonDisplaySlot(
+    private val key: Key,
+    override val teamColor: NamedTextColor?
+) : DisplaySlot {
 
-    constructor(profile: GameProfile) : this(profile.uuid, profile.name)
+    override fun key(): Key = key
 
-    override fun write(buf: ByteBuf) {
-        buf.writeUUID(uuid)
-        buf.writeString(username)
+    object Factory : DisplaySlot.Factory {
+
+        private val BY_TEXT_COLOR = mutableMapOf<NamedTextColor, DisplaySlot>()
+
+        override fun of(key: Key, color: NamedTextColor?): DisplaySlot = KryptonDisplaySlot(key, color).apply {
+            if (color != null && !BY_TEXT_COLOR.containsKey(color)) BY_TEXT_COLOR[color] = this
+        }
+
+        override fun get(color: NamedTextColor): DisplaySlot? = BY_TEXT_COLOR[color]
     }
 }

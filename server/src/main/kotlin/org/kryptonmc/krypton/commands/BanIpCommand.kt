@@ -68,7 +68,6 @@ object BanIpCommand : InternalCommand {
 
             // Send success
             sender.sendMessage(translatable("commands.banip.success", text(target), text(reason)))
-            logBan(target, sender.name, reason, server)
         } else if (server.player(target) != null) { // The target is a player
             val player = server.player(target)!!
             val entry = BannedIpEntry(player.address.asString(), reason = reason)
@@ -87,16 +86,8 @@ object BanIpCommand : InternalCommand {
 
             // Send success
             sender.sendMessage(translatable("commands.banip.success", text(target), text(entry.reason)))
-            logBan(target, sender.name, reason, server)
         } else { // The target isn't an IP address or a player
             sender.sendMessage(translatable("commands.banip.invalid"))
         }
     }
-
-    private fun logBan(target: String, source: String, reason: String, server: KryptonServer) = server.console.sendMessage(translatable(
-        "commands.banlist.entry",
-        text(target),
-        text(source),
-        text(reason)
-    ))
 }

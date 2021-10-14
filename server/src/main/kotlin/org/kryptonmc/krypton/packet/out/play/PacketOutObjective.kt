@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
@@ -29,7 +30,7 @@ import org.kryptonmc.krypton.util.writeVarInt
  * Tells the client to perform an action to an objective for a scoreboard
  */
 @JvmRecord
-data class PacketOutScoreboardObjective(
+data class PacketOutObjective(
     private val action: Action,
     private val objective: Objective
 ) : Packet {
@@ -37,8 +38,10 @@ data class PacketOutScoreboardObjective(
     override fun write(buf: ByteBuf) {
         buf.writeString(objective.name, 16)
         buf.writeByte(action.ordinal)
-        buf.writeChat(objective.displayName)
-        if (action != Action.REMOVE) buf.writeVarInt(objective.renderType.ordinal)
+        if (action != Action.REMOVE) {
+            buf.writeChat(objective.displayName)
+            buf.writeVarInt(Registries.OBJECTIVE_RENDER_TYPES.idOf(objective.renderType))
+        }
     }
 
     enum class Action {

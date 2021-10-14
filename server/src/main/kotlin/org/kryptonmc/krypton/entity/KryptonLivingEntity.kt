@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.entity
 
+import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.LivingEntity
@@ -36,6 +37,7 @@ import org.kryptonmc.krypton.util.getIfPresent
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.StringTag
 import org.spongepowered.math.vector.Vector3i
 import java.util.Optional
 
@@ -46,6 +48,8 @@ abstract class KryptonLivingEntity(
 ) : KryptonEntity(world, type), LivingEntity {
 
     override var absorption = 0F
+    final override val isAlive: Boolean
+        get() = super.isAlive && health > 0F
     final override var isDead = false
     final override var deathTime: Short = 0
     final override var hurtTime: Short = 0
@@ -79,6 +83,14 @@ abstract class KryptonLivingEntity(
         health = tag.getFloat("Health")
         lastHurtTimestamp = tag.getInt("HurtByTimestamp")
         hurtTime = tag.getShort("HurtTime")
+
+        // Scoreboard stuff
+        if (tag.contains("Team", StringTag.ID)) {
+            val teamName = tag.getString("Team")
+            val team = world.scoreboard.team(teamName)
+            val wasAdded = team != null && world.scoreboard.addMemberToTeam(teamRepresentation, team)
+            if (!wasAdded) LOGGER.warn("Unable to add living entity ${name.toPlainText()} to team ${teamName}. This team may not exist.")
+        }
 
         // Sleeping coordinates
         if (

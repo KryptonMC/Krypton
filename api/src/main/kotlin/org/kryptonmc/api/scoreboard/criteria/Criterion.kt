@@ -9,8 +9,8 @@
 package org.kryptonmc.api.scoreboard.criteria
 
 import net.kyori.adventure.key.Keyed
+import org.kryptonmc.api.scoreboard.ObjectiveRenderType
 import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.scoreboard.RenderType
 
 /**
  * The criterion for a scoreboard objective to be displayed.
@@ -34,5 +34,5 @@ public interface Criterion : Keyed {
      * The render type of this criterion.
      */
     @get:JvmName("renderType")
-    public val renderType: RenderType
+    public val renderType: ObjectiveRenderType
 }

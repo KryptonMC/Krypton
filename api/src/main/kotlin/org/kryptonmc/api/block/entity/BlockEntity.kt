@@ -9,7 +9,6 @@
 package org.kryptonmc.api.block.entity
 
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector3i
 

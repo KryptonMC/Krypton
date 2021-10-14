@@ -22,6 +22,7 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
+import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
@@ -46,7 +47,7 @@ object ListCommand : InternalCommand {
     }
 
     private fun sendNames(sender: Sender, server: KryptonServer) {
-        val names = server.players.map(KryptonPlayer::name)
+        val names = server.players.map { it.displayName.toPlainText() }
         sender.sendMessage(translatable(
             "commands.list.players",
             text(names.size),
@@ -56,7 +57,7 @@ object ListCommand : InternalCommand {
     }
 
     private fun sendNamesWithUUID(sender: Sender, server: KryptonServer) {
-        val names = server.players.map { "${it.name} (${it.uuid})" }
+        val names = server.players.map { "${it.displayName.toPlainText()} (${it.uuid})" }
         sender.sendMessage(translatable(
             "commands.list.players",
             text(names.size),

@@ -16,19 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.world.scoreboard
 
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.runs
-import org.kryptonmc.api.entity.player.Player
-import java.net.InetSocketAddress
-import java.util.UUID
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.scoreboard.ObjectiveRenderType
 
-val player = mockk<Player> {
-    every { name } returns "Dorothy"
-    every { uuid } returns UUID.randomUUID()
-    every { address } returns InetSocketAddress.createUnresolved("0.0.0.0", 25565)
-    every { sendMessage(any()) } just runs
+@JvmRecord
+data class KryptonObjectiveRenderType(private val key: Key) : ObjectiveRenderType {
+
+    override fun key(): Key = key
+
+    object Factory : ObjectiveRenderType.Factory {
+
+        override fun of(key: Key): ObjectiveRenderType = KryptonObjectiveRenderType(key)
+    }
 }

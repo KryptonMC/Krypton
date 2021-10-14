@@ -25,6 +25,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -39,7 +40,7 @@ object MeCommand : InternalCommand {
                 .executes {
                     it.source.server.sendMessage(translatable(
                         "chat.type.emote",
-                        text(it.source.name),
+                        it.source.name,
                         text(it.argument<String>("action"))
                     ))
                     1

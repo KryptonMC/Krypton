@@ -68,7 +68,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutDestroyEntities
 import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutDisconnect
-import org.kryptonmc.krypton.packet.out.play.PacketOutDisplayScoreboard
+import org.kryptonmc.krypton.packet.out.play.PacketOutDisplayObjective
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
@@ -87,7 +87,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerPositionAndLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
-import org.kryptonmc.krypton.packet.out.play.PacketOutScoreboardObjective
+import org.kryptonmc.krypton.packet.out.play.PacketOutObjective
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
@@ -101,7 +101,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutStopSound
 import org.kryptonmc.krypton.packet.out.play.PacketOutSubTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
 import org.kryptonmc.krypton.packet.out.play.PacketOutTags
-import org.kryptonmc.krypton.packet.out.play.PacketOutTeams
+import org.kryptonmc.krypton.packet.out.play.PacketOutTeam
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.packet.out.play.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
@@ -211,10 +211,10 @@ object PacketRegistry {
         register<PacketOutChangeHeldItem>(0x48)
         register<PacketOutUpdateViewPosition>(0x49)
         register<PacketOutSpawnPosition>(0x4B)
-        register<PacketOutDisplayScoreboard>(0x4C)
+        register<PacketOutDisplayObjective>(0x4C)
         register<PacketOutMetadata>(0x4D)
-        register<PacketOutScoreboardObjective>(0x53)
-        register<PacketOutTeams>(0x55)
+        register<PacketOutObjective>(0x53)
+        register<PacketOutTeam>(0x55)
         register<PacketOutUpdateScore>(0x56)
         register<PacketOutSubTitle>(0x57)
         register<PacketOutTimeUpdate>(0x58)
