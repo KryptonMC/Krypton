@@ -25,7 +25,7 @@ dependencies {
     // Kotlin
     api(kotlin("stdlib"))
     api(kotlin("reflect"))
-//    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", Versions.COROUTINES)
+    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", Versions.COROUTINES)
 
     // Core
     api("com.google.guava", "guava", Versions.GUAVA) {
