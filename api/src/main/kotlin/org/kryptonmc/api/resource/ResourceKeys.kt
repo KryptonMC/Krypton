@@ -16,6 +16,7 @@ import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.entity.hanging.Picture
@@ -93,6 +94,7 @@ public object ResourceKeys {
     @JvmField public val ITEM_RARITIES: ResourceKey<out Registry<ItemRarity>> = krypton("item_rarities")
     @JvmField public val DISPLAY_SLOTS: ResourceKey<out Registry<DisplaySlot>> = krypton("display_slots")
     @JvmField public val OBJECTIVE_RENDER_TYPES: ResourceKey<out Registry<ObjectiveRenderType>> = krypton("objective_render_types")
+    @JvmField public val MOB_CATEGORIES: ResourceKey<out Registry<EntityCategory>> = krypton("mob_categories")
     // @formatter:on
 
     /**

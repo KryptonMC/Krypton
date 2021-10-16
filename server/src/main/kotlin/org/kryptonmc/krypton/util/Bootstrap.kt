@@ -24,6 +24,7 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.entity.BlockEntityTypes
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.api.entity.EntityCategories
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.hanging.Pictures
@@ -46,6 +47,8 @@ import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.effect.sound.SoundLoader
 import org.kryptonmc.krypton.entity.EntityFactory
+import org.kryptonmc.krypton.entity.KryptonEntityCategories
+import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.attribute.AttributeLoader
 import org.kryptonmc.krypton.entity.hanging.KryptonCanvases
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -103,6 +106,9 @@ object Bootstrap {
         BlockEntityTypes
         GameEvents
         ParticleTypes
+        KryptonEntityCategories
+        EntityCategories
+        KryptonEntityTypes
         EntityTypes
         ItemRarities
         ItemLoader.init()

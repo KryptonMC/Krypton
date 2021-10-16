@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.world.block
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.block.property.Properties
+import org.kryptonmc.krypton.tags.BlockTags
 
 private val PLANTS = intArrayOf(
     Blocks.OAK_SAPLING.id,
@@ -101,3 +103,11 @@ fun Block.isPlant() = id in PLANTS
 fun Block.isReplaceablePlant() = id in REPLACEABLE_PLANTS
 
 fun Block.isVegetable() = id in VEGETABLES
+
+fun Block.isBurning() = BlockTags.FIRE.contains(this)||
+        this === Blocks.LAVA ||
+        this === Blocks.MAGMA_BLOCK ||
+        isLitCampfire() ||
+        this === Blocks.LAVA_CAULDRON
+
+fun Block.isLitCampfire() = contains(Properties.LIT) && BlockTags.CAMPFIRES.contains(this) && get(Properties.LIT)!!
