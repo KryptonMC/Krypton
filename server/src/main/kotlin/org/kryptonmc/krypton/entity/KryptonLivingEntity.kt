@@ -55,6 +55,7 @@ abstract class KryptonLivingEntity(
     final override var hurtTime: Short = 0
     final override var isFallFlying = false
     final override var lastHurtTimestamp = 0
+    override val isBaby = false
     val attributes = AttributeMap(attributeSupplier)
     private val brain = Brain(mutableListOf())
 
