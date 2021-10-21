@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.world.block
 
+import com.google.common.collect.ImmutableMap
+import com.google.common.collect.ImmutableSet
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
@@ -56,10 +58,10 @@ object BlockLoader : KryptonDataLoader("blocks") {
             value as JsonObject
             // Map properties
             val propertyEntry = PropertyEntry()
-            val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) { element ->
+            val availableProperties = ImmutableSet.copyOf(value["properties"].asJsonArray.mapTo(mutableSetOf()) { element ->
                 val string = element.asString.let { if (it == "LEVEL") "LEVEL_FLOWING" else it }
                 KryptonPropertyFactory.PROPERTIES[string]!!
-            }
+            })
 
             // Iterate states
             value.remove("states").asJsonArray.forEach {
@@ -86,9 +88,9 @@ object BlockLoader : KryptonDataLoader("blocks") {
         blockObject: JsonObject
     ): Pair<Map<String, String>, KryptonBlock> {
         val stateId = get("stateId").asInt
-        val propertyMap = get("properties").asJsonObject.entrySet().associate {
+        val propertyMap = ImmutableMap.copyOf(get("properties").asJsonObject.entrySet().associate {
             it.key to it.value.asString.lowercase()
-        }
+        })
         val block = createBlock(Key.key(key), blockObject, this, availableProperties, propertyMap)
         STATES[block] = stateId
         return propertyMap to block

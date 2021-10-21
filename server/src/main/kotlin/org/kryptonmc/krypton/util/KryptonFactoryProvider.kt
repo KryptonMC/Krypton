@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.util
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import org.kryptonmc.api.auth.GameProfile
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockHitResult
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.command.meta.CommandMeta
@@ -31,6 +32,7 @@ import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
+import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemStack
@@ -82,9 +84,11 @@ import org.kryptonmc.krypton.world.biome.KryptonClimate
 import org.kryptonmc.krypton.world.biome.KryptonGrassColorModifier
 import org.kryptonmc.krypton.world.biome.KryptonPrecipitation
 import org.kryptonmc.krypton.world.biome.KryptonTemperatureModifier
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.KryptonBlockHitResult
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
+import org.kryptonmc.krypton.world.fluid.KryptonFluid
 import org.kryptonmc.krypton.world.rule.KryptonGameRule
 import org.kryptonmc.krypton.world.scoreboard.KryptonDisplaySlot
 import org.kryptonmc.krypton.world.scoreboard.KryptonObjective
@@ -140,6 +144,8 @@ object KryptonFactoryProvider : FactoryProvider {
         register<DisplaySlot.Factory>(KryptonDisplaySlot.Factory)
         register<ObjectiveRenderType.Factory>(KryptonObjectiveRenderType.Factory)
         register<Team.Factory>(KryptonTeam.Factory)
+        register<Block.Factory>(KryptonBlock.Factory)
+        register<Fluid.Factory>(KryptonFluid.Factory)
     }
 }
 

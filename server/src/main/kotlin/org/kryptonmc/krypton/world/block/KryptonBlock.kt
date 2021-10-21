@@ -18,9 +18,12 @@
  */
 package org.kryptonmc.krypton.world.block
 
+import com.google.common.collect.ImmutableMap
+import com.google.common.collect.ImmutableSet
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.PushReaction
@@ -87,10 +90,211 @@ data class KryptonBlock(
 
     override fun key(): Key = key
 
+    override fun toBuilder() = Builder(this)
+
     override fun compareTo(other: Block) = id.compareTo(other.id)
+
+    class Builder(
+        private val key: Key,
+        private var id: Int,
+        private var stateId: Int
+    ) : KryptonPropertyHolder.Builder<Block.Builder, Block>(), Block.Builder {
+
+        private var hardness = 0.0
+        private var explosionResistance = 0.0
+        private var friction = 0.0
+        private var speedFactor = 0.0
+        private var jumpFactor = 0.0
+        private var air = false
+        private var solid = false
+        private var liquid = false
+        private var solidBlocking = false
+        private var blockEntity = false
+        private var lightEmission = 0
+        private var occludes = false
+        private var blocksMotion = false
+        private var flammable = false
+        private var gravity = false
+        private var translation: TranslatableComponent? = null
+        private var replaceable = false
+        private var dynamicShape = false
+        private var useShapeForOcclusion = false
+        private var propagatesSkylightDown = false
+        private var lightBlock = 0
+        private var conditionallyFullyOpaque = false
+        private var solidRender = false
+        private var opacity = 0
+        private var largeCollisionShape = false
+        private var collisionShapeFullBlock = false
+        private var canRespawnIn = false
+        private var requiresCorrectTool = false
+        private var renderShape = RenderShape.MODEL
+        private var pushReaction = PushReaction.NORMAL
+        private var item: Key? = null
+        private var fluid: Key? = null
+
+        constructor(block: Block) : this(block.key(), block.id, block.stateId) {
+            hardness = block.hardness
+            explosionResistance = block.explosionResistance
+            friction = block.friction
+            speedFactor = block.speedFactor
+            jumpFactor = block.jumpFactor
+            air = block.isAir
+            solid = block.isSolid
+            liquid = block.isLiquid
+            solidBlocking = block.isSolidBlocking
+            blockEntity = block.hasBlockEntity
+            lightEmission = block.lightEmission
+            occludes = block.occludes
+            blocksMotion = block.blocksMotion
+            flammable = block.isFlammable
+            gravity = block.hasGravity
+            translation = block.translation
+            replaceable = block.isReplaceable
+            dynamicShape = block.hasDynamicShape
+            useShapeForOcclusion = block.useShapeForOcclusion
+            propagatesSkylightDown = block.propagatesSkylightDown
+            lightBlock = block.lightBlock
+            conditionallyFullyOpaque = block.isConditionallyFullyOpaque
+            opacity = block.opacity
+            largeCollisionShape = block.hasLargeCollisionShape
+            collisionShapeFullBlock = block.isCollisionShapeFullBlock
+            canRespawnIn = block.canRespawnIn
+            requiresCorrectTool = block.requiresCorrectTool
+            renderShape = block.renderShape
+            pushReaction = block.pushReaction
+            item = block.asItem()?.key()
+            fluid = block.asFluid().key()
+        }
+
+        override fun id(id: Int): Block.Builder = apply { this.id = id }
+
+        override fun stateId(id: Int): Block.Builder = apply { stateId = id }
+
+        override fun hardness(hardness: Double): Block.Builder = apply { this.hardness = hardness }
+
+        override fun resistance(resistance: Double): Block.Builder = apply { explosionResistance = resistance }
+
+        override fun friction(friction: Double): Block.Builder = apply { this.friction = friction }
+
+        override fun speedFactor(factor: Double): Block.Builder = apply { speedFactor = factor }
+
+        override fun jumpFactor(factor: Double): Block.Builder = apply { jumpFactor = factor }
+
+        override fun air(value: Boolean): Block.Builder = apply { air = value }
+
+        override fun solid(value: Boolean): Block.Builder = apply { solid = value }
+
+        override fun liquid(value: Boolean): Block.Builder = apply { liquid = value }
+
+        override fun solidBlocking(value: Boolean): Block.Builder = apply { solidBlocking = value }
+
+        override fun flammable(value: Boolean): Block.Builder = apply { flammable = value }
+
+        override fun replaceable(value: Boolean): Block.Builder = apply { replaceable = value }
+
+        override fun hasBlockEntity(value: Boolean): Block.Builder = apply { blockEntity = value }
+
+        override fun lightEmission(amount: Int): Block.Builder = apply {
+            require(amount in 0..15) { "The light value must be between 0 and 15!" }
+            lightEmission = amount
+        }
+
+        override fun occludes(value: Boolean): Block.Builder = apply { occludes = value }
+
+        override fun dynamicShape(value: Boolean): Block.Builder = apply { dynamicShape = value }
+
+        override fun useShapeForOcclusion(value: Boolean): Block.Builder = apply { useShapeForOcclusion = value }
+
+        override fun propagatesSkylightDown(value: Boolean): Block.Builder = apply { propagatesSkylightDown = value }
+
+        override fun lightBlock(value: Int): Block.Builder = apply {
+            require(value in 0..15) { "The light value must be between 0 and 15!" }
+            lightBlock = value
+        }
+
+        override fun conditionallyFullyOpaque(value: Boolean): Block.Builder = apply { conditionallyFullyOpaque = value }
+
+        override fun solidRender(value: Boolean): Block.Builder = apply { solidRender = value }
+
+        override fun opacity(value: Int): Block.Builder = apply {
+            require(value in 0..15) { "The light value must be between 0 and 15!" }
+            opacity = value
+        }
+
+        override fun blocksMotion(value: Boolean): Block.Builder = apply { blocksMotion = value }
+
+        override fun gravity(value: Boolean): Block.Builder = apply { gravity = value }
+
+        override fun translation(translation: TranslatableComponent): Block.Builder = apply {
+            this.translation = translation
+        }
+
+        override fun canRespawnIn(value: Boolean): Block.Builder = apply { canRespawnIn = value }
+
+        override fun largeCollisionShape(value: Boolean): Block.Builder = apply { largeCollisionShape = value }
+
+        override fun collisionShapeFullBlock(value: Boolean): Block.Builder = apply { collisionShapeFullBlock = value }
+
+        override fun requiresCorrectTool(value: Boolean): Block.Builder = apply { requiresCorrectTool = value }
+
+        override fun renderShape(shape: RenderShape): Block.Builder = apply { renderShape = shape }
+
+        override fun pushReaction(reaction: PushReaction): Block.Builder = apply { pushReaction = reaction }
+
+        override fun item(key: Key): Block.Builder = apply { item = key }
+
+        override fun fluid(key: Key): Block.Builder = apply { fluid = key }
+
+        override fun build(): Block = KryptonBlock(
+            key,
+            id,
+            stateId,
+            hardness,
+            explosionResistance,
+            friction,
+            speedFactor,
+            jumpFactor,
+            air,
+            solid,
+            liquid,
+            solidBlocking,
+            blockEntity,
+            lightEmission,
+            occludes,
+            blocksMotion,
+            flammable,
+            gravity,
+            translation ?: Component.translatable("block.${key.namespace()}.${key.value()}"),
+            replaceable,
+            dynamicShape,
+            useShapeForOcclusion,
+            propagatesSkylightDown,
+            lightBlock,
+            conditionallyFullyOpaque,
+            solidRender,
+            opacity,
+            largeCollisionShape,
+            collisionShapeFullBlock,
+            canRespawnIn,
+            requiresCorrectTool,
+            renderShape,
+            pushReaction,
+            item,
+            fluid ?: EMPTY_KEY,
+            ImmutableSet.copyOf(availableProperties),
+            ImmutableMap.copyOf(properties)
+        )
+    }
+
+    object Factory : Block.Factory {
+
+        override fun builder(key: Key, id: Int, stateId: Int) = Builder(key, id, stateId)
+    }
 
     companion object {
 
+        private val EMPTY_KEY = Key.key("empty")
         val CODEC: Codec<Block> = RecordCodecBuilder.create {
             it.group(
                 Codecs.KEY.fieldOf("Name").forGetter(Block::key),

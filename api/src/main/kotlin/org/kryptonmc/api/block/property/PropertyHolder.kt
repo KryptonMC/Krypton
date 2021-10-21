@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.block.property
 
+import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.Contract
 import org.jetbrains.annotations.Unmodifiable
 
@@ -61,4 +62,22 @@ public interface PropertyHolder<out T : PropertyHolder<T>> {
      */
     @Contract("_ -> new", pure = true)
     public operator fun <V : Comparable<V>> set(key: Property<V>, value: V): T
+
+    /**
+     * A base builder for building property holders.
+     */
+    public interface Builder<B : Builder<B, T>, T : PropertyHolder<T>> : Buildable.Builder<T> {
+
+        /**
+         * Adds the given property [key] to the list of available properties
+         * for the property holder and sets the value of the property to the
+         * given [value] in the properties map.
+         *
+         * @param key the key
+         * @param value the value
+         * @return this builder
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun <V : Comparable<V>> property(key: Property<V>, value: V): B
+    }
 }

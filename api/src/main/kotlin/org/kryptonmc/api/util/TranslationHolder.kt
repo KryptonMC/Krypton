@@ -11,6 +11,8 @@ package org.kryptonmc.api.util
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.TranslatableComponent
+import net.kyori.adventure.util.Buildable
+import org.jetbrains.annotations.Contract
 
 /**
  * An object that holds a translation. The translation is usually the client-side translatable
@@ -26,4 +28,20 @@ public interface TranslationHolder : ComponentLike {
     public val translation: TranslatableComponent
 
     override fun asComponent(): Component = translation
+
+    /**
+     * A base builder for building translation holders.
+     */
+    public interface Builder<B : Builder<B, T>, T : TranslationHolder> : Buildable.Builder<T> {
+
+        /**
+         * Sets the translation of the translation holder to the given
+         * [translation].
+         *
+         * @param translation the translation
+         * @return this builder
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun translation(translation: TranslatableComponent): B
+    }
 }

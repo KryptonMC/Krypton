@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
+import com.google.common.collect.ImmutableMap
+import com.google.common.collect.ImmutableSet
 import com.google.gson.JsonObject
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
@@ -43,9 +45,9 @@ object FluidLoader : KryptonDataLoader("fluids") {
         data.entrySet().asSequence().map { it.key to it.value.asJsonObject }.forEach { (key, value) ->
             // Map properties
             val propertyEntry = PropertyEntry()
-            val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) {
+            val availableProperties = ImmutableSet.copyOf(value["properties"].asJsonArray.mapTo(mutableSetOf()) {
                 KryptonPropertyFactory.PROPERTIES[it.asString]!!
-            }
+            })
 
             // Iterate states
             value.remove("states").asJsonArray.forEach {
@@ -71,9 +73,9 @@ object FluidLoader : KryptonDataLoader("fluids") {
         fluidObject: JsonObject
     ): Pair<Map<String, String>, KryptonFluid> {
         val stateId = get("stateId").asInt
-        val propertyMap = get("properties").asJsonObject.entrySet().associate {
+        val propertyMap = ImmutableMap.copyOf(get("properties").asJsonObject.entrySet().associate {
             it.key to it.value.asString.lowercase()
-        }
+        })
         val fluid = createFluid(Key.key(key), fluidObject, this, availableProperties, propertyMap)
         STATE_MAP[stateId] = fluid
         return propertyMap to fluid
