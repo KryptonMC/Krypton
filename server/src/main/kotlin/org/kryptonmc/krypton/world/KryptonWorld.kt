@@ -46,6 +46,7 @@ import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
@@ -151,31 +152,47 @@ class KryptonWorld(
         except
     )
 
-    fun playSound(position: Vector3i, sound: Sound, event: SoundEvent, except: KryptonPlayer) = playSound(
-        position.x().toDouble() + 0.5,
-        position.y().toDouble() + 0.5,
-        position.z().toDouble() + 0.5,
-        sound,
-        event,
-        except
-    )
+    fun playSound(
+        position: Vector3i,
+        event: SoundEvent,
+        source: Sound.Source,
+        volume: Float,
+        pitch: Float,
+        except: KryptonPlayer? = null
+    ) = playSound(position.x() + 0.5, position.y() + 0.5, position.z() + 0.5, event, source, volume, pitch, except)
 
-    private fun playSound(
+    fun playSound(
         x: Double,
         y: Double,
         z: Double,
-        sound: Sound,
         event: SoundEvent,
-        except: KryptonPlayer
-    ) = playerManager.broadcast(
-        PacketOutSoundEffect(sound, event, x, y, z),
-        this,
-        x,
-        y,
-        z,
-        if (sound.volume() > 1F) (16F * sound.volume()).toDouble() else 16.0,
-        except
-    )
+        source: Sound.Source,
+        volume: Float,
+        pitch: Float,
+        except: KryptonPlayer? = null
+    ) {
+        server.playerManager.broadcast(
+            PacketOutSoundEffect(event, source, x, y, z, volume, pitch),
+            this,
+            x,
+            y,
+            z,
+            if (volume > 1F) (16.0 * volume) else 16.0,
+            except
+        )
+    }
+
+    fun playSound(event: SoundEvent, source: Sound.Source, emitter: KryptonEntity, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
+        server.playerManager.broadcast(
+            PacketOutEntitySoundEffect(event, source, emitter.id, volume, pitch),
+            this,
+            emitter.location.x(),
+            emitter.location.y(),
+            emitter.location.z(),
+            if (volume > 1F) 16.0 * volume else 16.0,
+            except
+        )
+    }
 
     override fun getBlock(x: Int, y: Int, z: Int): Block {
         if (y.outsideBuildHeight) return Blocks.VOID_AIR

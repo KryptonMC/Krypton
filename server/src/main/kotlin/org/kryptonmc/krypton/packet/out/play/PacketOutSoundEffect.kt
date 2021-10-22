@@ -28,20 +28,30 @@ import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutSoundEffect(
-    private val sound: Sound,
     private val event: SoundEvent,
+    private val source: Sound.Source,
     private val x: Double,
     private val y: Double,
-    private val z: Double
+    private val z: Double,
+    private val volume: Float,
+    private val pitch: Float
 ) : Packet {
+
+    constructor(
+        sound: Sound,
+        event: SoundEvent,
+        x: Double,
+        y: Double,
+        z: Double
+    ) : this(event, sound.source(), x, y, z, sound.volume(), sound.pitch())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(InternalRegistries.SOUND_EVENT.idOf(event))
-        buf.writeEnum(sound.source())
+        buf.writeEnum(source)
         buf.writeInt((x * 8.0).toInt())
         buf.writeInt((y * 8.0).toInt())
         buf.writeInt((z * 8.0).toInt())
-        buf.writeFloat(sound.volume())
-        buf.writeFloat(sound.pitch())
+        buf.writeFloat(volume)
+        buf.writeFloat(pitch)
     }
 }

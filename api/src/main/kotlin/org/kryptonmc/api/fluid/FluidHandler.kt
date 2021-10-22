@@ -21,25 +21,29 @@ public interface FluidHandler {
 
     /**
      * Gets the movement vector for the current flow of the given [fluid] at
-     * the given [position] in the given [world].
+     * the given [x], [y], and [z] coordinates, in the given [world].
      *
      * @param fluid the fluid to get the flow of
-     * @param position the position of the fluid
+     * @param x the X coordinate of the fluid
+     * @param y the Y coordinate of the fluid
+     * @param z the Z coordinate of the fluid
      * @param world the world the fluid is in
      * @return the flow movement of the fluid
      */
-    public fun flow(fluid: Fluid, position: Vector3i, world: World): Vector3d
+    public fun flow(fluid: Fluid, x: Int, y: Int, z: Int, world: World): Vector3d
 
     /**
-     * Gets the height of the given [fluid] at the given [position] in the
-     * given [world].
+     * Gets the height of the given [fluid] at the given [x], [y], and [z]
+     * coordinates in the given [world].
      *
      * @param fluid the fluid to get the height of
-     * @param position the position of the fluid
+     * @param x the X coordinate of the fluid
+     * @param y the Y coordinate of the fluid
+     * @param z the Z coordinate of the fluid
      * @param world the world the fluid is in
      * @return the height of the fluid
      */
-    public fun height(fluid: Fluid, position: Vector3i, world: World): Float
+    public fun height(fluid: Fluid, x: Int, y: Int, z: Int, world: World): Float
 
     /**
      * Returns true if the given [fluid] at the given [position] in the given

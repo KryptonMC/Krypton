@@ -10,11 +10,8 @@ package org.kryptonmc.api.entity.player
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.event.HoverEvent
-import net.kyori.adventure.text.event.HoverEventSource
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.MainHand
@@ -38,7 +35,7 @@ import java.util.Locale
  * A player that is connected to the server and playing the game.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Player : LivingEntity, Sender, InventoryHolder, PluginMessageRecipient, HoverEventSource<HoverEvent.ShowEntity> {
+public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient {
 
     /**
      * The address that the player is currently connected from.

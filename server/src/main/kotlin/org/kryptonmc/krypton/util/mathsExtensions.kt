@@ -42,6 +42,11 @@ fun Double.floor(): Int {
     return if (this < result) result - 1 else result
 }
 
+fun Double.ceil(): Int {
+    val result = toInt()
+    return if (this > result) result + 1 else result
+}
+
 fun Int.ceillog2(): Int {
     val temp = if (isPowerOfTwo()) this else GenericMath.roundUpPow2(this)
     return MULTIPLY_DE_BRUIJN_BIT_POSITION[(temp.toLong() * 125613361L shr 27 and 31).toInt()]

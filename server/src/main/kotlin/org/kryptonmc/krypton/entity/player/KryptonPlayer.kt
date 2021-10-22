@@ -75,6 +75,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutChat
 import org.kryptonmc.krypton.packet.out.play.PacketOutChunkData
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityTeleport
 import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutNamedSoundEffect
@@ -144,6 +145,7 @@ class KryptonPlayer(
     override var locale: Locale? = null
     override val statistics = server.playerManager.getStatistics(this)
     override val teamRepresentation = name
+    override val pushedByFluid = !isFlying
 
     // TODO: Per-player view distance, see issue #49
     override val viewDistance = server.config.world.viewDistance
@@ -411,6 +413,29 @@ class KryptonPlayer(
         } else {
             PacketOutNamedSoundEffect(sound, x, y, z)
         })
+    }
+
+    override fun playSound(sound: Sound, emitter: Sound.Emitter) {
+        val entity = when {
+            emitter === Sound.Emitter.self() -> this
+            emitter is KryptonEntity -> emitter
+            else -> error("Sound emitter must be an entity or self(), was $emitter")
+        }
+
+        val event = Registries.SOUND_EVENT[sound.name()]
+        if (event != null) {
+            session.send(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch()))
+        } else {
+            session.send(PacketOutNamedSoundEffect(
+                sound.name(),
+                sound.source(),
+                entity.location.x(),
+                entity.location.y(),
+                entity.location.z(),
+                sound.volume(),
+                sound.pitch()
+            ))
+        }
     }
 
     override fun stopSound(stop: SoundStop) {

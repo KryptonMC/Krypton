@@ -18,16 +18,21 @@
  */
 package org.kryptonmc.krypton.entity
 
+import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap
 import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.adventure.toJsonString
+import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
@@ -36,12 +41,20 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutDestroyEntities
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityVelocity
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
+import org.kryptonmc.krypton.tags.FluidTags
+import org.kryptonmc.krypton.tags.Tag
+import org.kryptonmc.krypton.tags.TagManager
+import org.kryptonmc.krypton.tags.TagTypes
+import org.kryptonmc.krypton.util.ceil
+import org.kryptonmc.krypton.util.floor
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.fluid.handler
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.FloatTag
@@ -54,6 +67,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.UnaryOperator
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.random.Random
 
 @Suppress("LeakingThis")
@@ -98,15 +112,36 @@ abstract class KryptonEntity(
     final override var isInvulnerable = false
     final override var fallDistance = 0F
     final override val passengers = emptyList<Entity>()
+    final override var inWater = false
+    final override var inLava = false
+    final override var underwater = false
 
     open val maxAirTicks: Int
         get() = 300
     open val isAlive: Boolean
         get() = !isRemoved
+    protected open val pushedByFluid: Boolean
+        get() = true
+
+    open val soundSource: Sound.Source
+        get() = Sound.Source.NEUTRAL
+    protected open val swimSound: SoundEvent
+        get() = SoundEvents.GENERIC_SWIM
+    protected open val splashSound: SoundEvent
+        get() = SoundEvents.GENERIC_SPLASH
+    protected open val highSpeedSplashSound: SoundEvent
+        get() = SoundEvents.GENERIC_SPLASH
+
     val viewers: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
     var noPhysics = false
+    private var oldVelocity = Vector3d.ZERO
+    private var eyeHeight = 0F
+    private val fluidHeights = Object2DoubleArrayMap<Tag<Fluid>>(2)
+    private var fluidOnEyes: Tag<Fluid>? = null
     private var portalCooldown = 0
     private var isRemoved = false
+    private var tickCount = 0
+    private var gravityTickCount = 0
 
     init {
         data.add(MetadataKeys.FLAGS)
@@ -199,6 +234,17 @@ abstract class KryptonEntity(
         return true
     }
 
+    private fun playSound(event: SoundEvent, volume: Float, pitch: Float) {
+        if (isSilent) return
+        world.playSound(location.x(), location.y(), location.z(), event, soundSource, volume, pitch)
+    }
+
+    open fun tick() {
+        updateWater()
+        updateUnderFluid()
+        updateSwimming()
+    }
+
     protected open fun getSpawnPacket(): Packet = PacketOutSpawnEntity(this)
 
     private fun getSharedFlag(flag: Int) = data[MetadataKeys.FLAGS].toInt() and (1 shl flag) != 0
@@ -206,6 +252,106 @@ abstract class KryptonEntity(
     private fun setSharedFlag(flag: Int, state: Boolean) {
         val flags = data[MetadataKeys.FLAGS].toInt()
         data[MetadataKeys.FLAGS] = (if (state) flags or (1 shl flag) else flags and (1 shl flag).inv()).toByte()
+    }
+
+    private fun updateWater(): Boolean {
+        fluidHeights.clear()
+        updateWaterCurrent()
+        val lavaScale = if (world.dimensionType.isUltrawarm) FAST_LAVA_FLOW_SCALE else SLOW_LAVA_FLOW_SCALE
+        val pushedFromLava = updateFluidHeight(FluidTags.LAVA, lavaScale)
+        return inWater || pushedFromLava
+    }
+
+    private fun updateWaterCurrent() {
+        if (updateFluidHeight(FluidTags.WATER, WATER_FLOW_SCALE)) {
+            fallDistance = 0F
+            inWater = true
+            fireTicks = 0
+        } else {
+            inWater = false
+        }
+    }
+
+    private fun updateFluidHeight(tag: Tag<Fluid>, flowScale: Double): Boolean {
+        val minX = (boundingBox.minimumX - 0.001).floor()
+        val minY = (boundingBox.minimumY - 0.001).floor()
+        val minZ = (boundingBox.minimumZ - 0.001).floor()
+        val maxX = (boundingBox.maximumX + 0.001).ceil()
+        val maxY = (boundingBox.maximumY + 0.001).ceil()
+        val maxZ = (boundingBox.maximumZ + 0.001).ceil()
+        var amount = 0.0
+        val pushed = pushedByFluid
+        var shouldPush = false
+        var offset = Vector3d.ZERO
+        var pushes = 0
+
+        for (x in minX..maxX) {
+            for (y in minY..maxY) {
+                for (z in minZ..maxZ) {
+                    val fluid = world.getFluid(x, y, z)
+                    if (!tag.contains(fluid)) continue
+                    val height = y.toDouble() + fluid.handler().height(fluid, x, y, z, world)
+                    if (height < minY) continue
+                    shouldPush = true
+                    amount = max(height - minY, amount)
+                    if (!pushed) continue
+                    var flow = fluid.handler().flow(fluid, x, y, z, world)
+                    if (amount < 0.4) flow = flow.mul(amount)
+                    offset = offset.add(flow)
+                    ++pushes
+                }
+            }
+        }
+
+        if (offset.length() > 0.0) {
+            if (pushes > 0) offset = offset.mul(1.0 / pushes)
+            var wasNormalized = false
+            if (this !is KryptonPlayer) {
+                offset = offset.normalize()
+                wasNormalized = true
+            }
+
+            val velocity = velocity
+            offset = offset.mul(flowScale * 1.0)
+            if (abs(velocity.x()) < FLUID_VECTOR_EPSILON && abs(velocity.z()) < FLUID_VECTOR_EPSILON && offset.length() < FLUID_VECTOR_MAGIC) {
+                if (!wasNormalized) offset = offset.normalize()
+                offset = offset.mul(FLUID_VECTOR_MAGIC)
+            }
+            this.velocity = this.velocity.add(offset)
+            viewers.forEach { it.session.send(PacketOutEntityVelocity(this)) }
+        }
+
+        fluidHeights[tag] = amount
+        return shouldPush
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun updateUnderFluid() {
+        underwater = underFluid(FluidTags.WATER)
+        fluidOnEyes = null
+
+        val x = location.floorX()
+        val y = (location.y() + eyeHeight) - BREATHING_DISTANCE_BELOW_EYES
+        val z = location.floorZ()
+        val fluid = world.getFluid(x, y.floor(), z)
+
+        TagManager.TAGS[TagTypes.FLUIDS]!!.forEach {
+            it as Tag<Fluid>
+            if (!it.contains(fluid)) return@forEach
+            val height = y + fluid.handler().height(fluid, x, y.floor(), z, world)
+            if (height > y) fluidOnEyes = it
+            return
+        }
+    }
+
+    private fun underFluid(fluid: Tag<Fluid>) = fluidOnEyes === fluid
+
+    private fun updateSwimming() {
+        isSwimming = if (isSwimming) {
+            isSprinting && inWater
+        } else {
+            isSprinting && underwater && FluidTags.WATER.contains(world.getFluid(location.floorX(), location.floorY(), location.floorZ()))
+        }
     }
 
     final override fun move(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {
@@ -288,5 +434,12 @@ abstract class KryptonEntity(
         private val NEXT_ENTITY_ID = AtomicInteger(0)
         @JvmStatic
         protected val LOGGER = logger("Entity")
+
+        private const val FLUID_VECTOR_EPSILON = 0.003
+        private const val FLUID_VECTOR_MAGIC = 0.0045000000000000005
+        private const val WATER_FLOW_SCALE = 0.014
+        private const val FAST_LAVA_FLOW_SCALE = 0.007
+        private const val SLOW_LAVA_FLOW_SCALE = 0.0023333333333333335
+        private const val BREATHING_DISTANCE_BELOW_EYES = 0.11111111F
     }
 }

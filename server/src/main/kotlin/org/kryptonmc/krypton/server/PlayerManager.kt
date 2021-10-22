@@ -262,7 +262,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         y: Double,
         z: Double,
         radius: Double,
-        except: KryptonPlayer
+        except: KryptonPlayer?
     ) = players.forEach {
         if (it == except || it.world != world) return@forEach
         val offsetX = x - it.location.x()
@@ -276,7 +276,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         world: KryptonWorld,
         position: Vector3i,
         radius: Double,
-        except: KryptonPlayer
+        except: KryptonPlayer?
     ) = broadcast(
         packet,
         world,

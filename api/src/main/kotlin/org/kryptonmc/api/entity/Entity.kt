@@ -8,7 +8,6 @@
  */
 package org.kryptonmc.api.entity
 
-import net.kyori.adventure.identity.Identified
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
@@ -26,7 +25,7 @@ import java.util.UUID
  * An entity somewhere in a world.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter, TeamMember {
+public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter, TeamMember {
 
     /**
      * The world this entity is currently in.
@@ -123,48 +122,48 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * Setting this to true, however, will not prevent this entity from being
      * damaged by a player in creative mode.
      */
-    public val isInvulnerable: Boolean
+    public var isInvulnerable: Boolean
 
     /**
      * If this entity is currently on fire.
      */
-    public val isOnFire: Boolean
+    public var isOnFire: Boolean
 
     /**
      * If this entity is on terra firma.
      */
-    public val isOnGround: Boolean
+    public var isOnGround: Boolean
 
     /**
      * If this entity is crouching/sneaking.
      */
-    public val isCrouching: Boolean
+    public var isCrouching: Boolean
 
     /**
      * If this entity is sprinting.
      */
-    public val isSprinting: Boolean
+    public var isSprinting: Boolean
 
     /**
      * If this entity is swimming.
      */
-    public val isSwimming: Boolean
+    public var isSwimming: Boolean
 
     /**
      * If this entity is invisible.
      */
-    public val isInvisible: Boolean
+    public var isInvisible: Boolean
 
     /**
      * If this entity has a glowing outline.
      */
-    public val isGlowing: Boolean
+    public var isGlowing: Boolean
 
     /**
      * If this entity is currently flying with an
      * [elytra][org.kryptonmc.api.item.ItemTypes.ELYTRA].
      */
-    public val isFlying: Boolean
+    public var isFlying: Boolean
 
     /**
      * If this entity is silenced, meaning it does not produce any sounds.
@@ -172,7 +171,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * This also means that any attempts to play a sound with this entity as
      * its emitter will also fail.
      */
-    public val isSilent: Boolean
+    public var isSilent: Boolean
 
     /**
      * If this entity is affected by gravity.
@@ -181,7 +180,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * has no blocks under its feet to support it.
      */
     @get:JvmName("hasGravity")
-    public val hasGravity: Boolean
+    public var hasGravity: Boolean
 
     /**
      * The amount of ticks this entity has existed for.
@@ -202,7 +201,7 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      * it remains underwater.
      */
     @get:JvmName("air")
-    public val air: Int
+    public val air: @Range(from = 0L, to = Int.MAX_VALUE.toLong()) Int
 
     /**
      * This value can mean one of two things, depending on if the value is
@@ -238,6 +237,25 @@ public interface Entity : Sender, Identified, HoverEventSource<HoverEvent.ShowEn
      */
     @get:JvmName("fallDistance")
     public val fallDistance: Float
+
+    /**
+     * If this entity is currently touching water.
+     */
+    @get:JvmName("inWater")
+    public val inWater: Boolean
+
+    /**
+     * If this entity is currently touching lava.
+     */
+    @get:JvmName("inLava")
+    public val inLava: Boolean
+
+    /**
+     * If this entity is currently fully submerged under water, meaning its
+     * entire hitbox must be under water.
+     */
+    @get:JvmName("underwater")
+    public val underwater: Boolean
 
     /**
      * Moves this entity by the specified x, y, z, yaw, and pitch amounts.
