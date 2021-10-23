@@ -73,13 +73,16 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityRotation
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityTeleport
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityVelocity
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
 import org.kryptonmc.krypton.packet.out.play.PacketOutJoinGame
 import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
 import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
+import org.kryptonmc.krypton.packet.out.play.PacketOutNBTQueryResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutNamedSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutOpenBook
 import org.kryptonmc.krypton.packet.out.play.PacketOutParticle
@@ -88,6 +91,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerListHeaderFooter
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerPositionAndLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutObjective
+import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
 import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
@@ -205,6 +209,7 @@ object PacketRegistry {
         register<PacketOutPlayerPositionAndLook>(0x38)
         register<PacketOutUnlockRecipes>(0x39)
         register<PacketOutDestroyEntities>(0x3A)
+        register<PacketOutResourcePack>(0x3C)
         register<PacketOutHeadLook>(0x3E)
         register<PacketOutActionBar>(0x41)
         register<PacketOutCamera>(0x47)
@@ -213,6 +218,7 @@ object PacketRegistry {
         register<PacketOutSpawnPosition>(0x4B)
         register<PacketOutDisplayObjective>(0x4C)
         register<PacketOutMetadata>(0x4D)
+        register<PacketOutEntityVelocity>(0x4F)
         register<PacketOutObjective>(0x53)
         register<PacketOutTeam>(0x55)
         register<PacketOutUpdateScore>(0x56)
@@ -220,9 +226,11 @@ object PacketRegistry {
         register<PacketOutTimeUpdate>(0x58)
         register<PacketOutTitle>(0x59)
         register<PacketOutTitleTimes>(0x5A)
+        register<PacketOutEntitySoundEffect>(0x5B)
         register<PacketOutSoundEffect>(0x5C)
         register<PacketOutStopSound>(0x5D)
         register<PacketOutPlayerListHeaderFooter>(0x5E)
+        register<PacketOutNBTQueryResponse>(0x5F)
         register<PacketOutEntityTeleport>(0x61)
         register<PacketOutAttributes>(0x63)
         register<PacketOutDeclareRecipes>(0x65)
