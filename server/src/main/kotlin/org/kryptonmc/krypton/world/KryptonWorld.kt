@@ -310,6 +310,11 @@ class KryptonWorld(
 
         tickTime()
         chunkManager.chunkMap.values.forEach { it.tick(chunkManager.players(it.position.toLong()).size) }
+
+        if (players.isNotEmpty()) entities.forEach {
+            if (it.isRemoved) return@forEach
+            it.tick()
+        }
     }
 
     private fun tickTime() {

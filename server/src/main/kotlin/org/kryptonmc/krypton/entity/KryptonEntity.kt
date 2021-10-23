@@ -83,10 +83,18 @@ abstract class KryptonEntity(
             uuidComponent = Component.text(value.toString())
             identity = Identity.identity(value)
         }
-    private var uuidComponent: Component = Component.text(uuid.toString())
-    private var identity: Identity = Identity.identity(uuid)
+    private var uuidComponent: Component? = null
+        get() {
+            if (field == null) field = Component.text(uuid.toString())
+            return field
+        }
+    private var identity: Identity? = null
+        get() {
+            if (field == null) field = Identity.identity(uuid)
+            return field
+        }
     override val teamRepresentation: Component
-        get() = uuidComponent
+        get() = uuidComponent!!
     override val name: Component
         get() = customName ?: type.translation
     override val displayName: Component
@@ -139,7 +147,8 @@ abstract class KryptonEntity(
     private val fluidHeights = Object2DoubleArrayMap<Tag<Fluid>>(2)
     private var fluidOnEyes: Tag<Fluid>? = null
     private var portalCooldown = 0
-    private var isRemoved = false
+    var isRemoved = false
+        private set
     private var tickCount = 0
     private var gravityTickCount = 0
 
@@ -380,7 +389,7 @@ abstract class KryptonEntity(
         world.removeEntity(this)
     }
 
-    override fun identity() = identity
+    override fun identity() = identity!!
 
     override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(op.apply(ShowEntity.of(type.key(), uuid, displayName)))
 
