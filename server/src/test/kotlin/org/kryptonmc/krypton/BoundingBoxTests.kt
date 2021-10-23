@@ -18,7 +18,9 @@
  */
 package org.kryptonmc.krypton
 
-import org.kryptonmc.api.util.BoundingBox
+import org.junit.jupiter.api.BeforeAll
+import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.util.KryptonBoundingBox
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -26,22 +28,31 @@ class BoundingBoxTests {
 
     @Test
     fun `test size of box calculations`() {
-        val box = BoundingBox.of(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
+        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
         assertEquals(6.0, box.size)
     }
 
     @Test
     fun `test volume calculation`() {
-        val box = BoundingBox.of(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
+        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
         val expectedVolume = 6.0 * 6.0 * 6.0 // size.x * size.y * size.z
         assertEquals(expectedVolume, box.volume)
     }
 
     @Test
     fun `test center calculation`() {
-        val box = BoundingBox.of(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
+        val box = KryptonBoundingBox(-3.0, -3.0, -3.0, 3.0, 3.0, 3.0)
         assertEquals(0.0, box.centerX)
         assertEquals(0.0, box.centerY)
         assertEquals(0.0, box.centerZ)
+    }
+
+    companion object {
+
+        @JvmStatic
+        @BeforeAll
+        fun bootstrap() {
+            Bootstrap.preload()
+        }
     }
 }

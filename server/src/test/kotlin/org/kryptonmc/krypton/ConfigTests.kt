@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton
 
+import org.junit.jupiter.api.BeforeAll
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.krypton.config.KryptonConfig
@@ -35,7 +36,6 @@ class ConfigTests {
 
     @Test
     fun `test config loads properly with correct values`() {
-        Bootstrap.preload()
         val loader = HoconConfigurationLoader.builder()
             .defaultOptions(KryptonConfig.OPTIONS)
             .source {
@@ -77,7 +77,6 @@ class ConfigTests {
 
     @Test
     fun `test config defaults`() {
-        Bootstrap.preload()
         val config = KryptonConfig()
 
         // Server settings
@@ -110,5 +109,14 @@ class ConfigTests {
         assertTrue(config.other.metrics)
         assertEquals(5, config.other.saveThreshold)
         assertEquals("./start.sh", config.other.restartScript)
+    }
+
+    companion object {
+
+        @JvmStatic
+        @BeforeAll
+        fun bootstrap() {
+            Bootstrap.preload()
+        }
     }
 }

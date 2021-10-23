@@ -19,22 +19,17 @@
 package org.kryptonmc.krypton
 
 import net.kyori.adventure.key.Key
+import org.junit.jupiter.api.BeforeAll
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockFace
-import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.block.meta.AttachFace
-import org.kryptonmc.api.block.property.Property
-import org.kryptonmc.api.block.property.forEnum
 import org.kryptonmc.krypton.util.Bootstrap
+import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.block.handler.DummyBlockHandler
-import org.kryptonmc.krypton.world.block.property.BooleanProperty
-import org.kryptonmc.krypton.world.block.property.EnumProperty
-import org.kryptonmc.krypton.world.block.property.IntProperty
-import java.lang.reflect.Modifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertNotNull
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class BlockTests {
 
@@ -56,18 +51,25 @@ class BlockTests {
     }
 
     @Test
-    fun `cover block constants`() {
-        Bootstrap.preload()
-        Blocks::class.java.declaredFields.forEach {
-            if (!Modifier.isStatic(it.modifiers)) error("Non-static field found in Blocks object!")
-            assertNotNull(it.get(null))
-        }
+    fun `test comparisons`() {
+        val blockOne = KryptonBlock.Builder(Key.key("birch_wood"), 5, 78).build()
+        val blockTwo = KryptonBlock.Builder(Key.key("acacia_door"), 8, 97).build()
+        assertTrue(blockOne.compare(blockOne))
+        assertFalse(blockOne.compare(blockTwo))
+        assertTrue(blockOne.compare(blockOne, Block.Comparator.IDENTITY))
+        assertFalse(blockOne.compare(blockTwo, Block.Comparator.IDENTITY))
+        assertTrue(blockOne.compare(blockOne, Block.Comparator.ID))
+        assertFalse(blockOne.compare(blockTwo, Block.Comparator.ID))
+        assertTrue(blockOne.compare(blockOne, Block.Comparator.STATE))
+        assertFalse(blockOne.compare(blockTwo, Block.Comparator.STATE))
     }
 
-    @Test
-    fun `test static property constructors`() {
-        assertIs<BooleanProperty>(Property.forBoolean("hello_world"))
-        assertIs<IntProperty>(Property.forInt("hello_world"))
-        assertIs<EnumProperty<*>>(Property.forEnum("hello_world", AttachFace.values()))
+    companion object {
+
+        @JvmStatic
+        @BeforeAll
+        fun bootstrap() {
+            Bootstrap.preload()
+        }
     }
 }
