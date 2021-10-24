@@ -24,6 +24,7 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.meta.DyeColor
 import org.kryptonmc.api.item.meta.MetaKey
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
@@ -95,6 +96,7 @@ public object ResourceKeys {
     @JvmField public val DISPLAY_SLOTS: ResourceKey<out Registry<DisplaySlot>> = krypton("display_slots")
     @JvmField public val OBJECTIVE_RENDER_TYPES: ResourceKey<out Registry<ObjectiveRenderType>> = krypton("objective_render_types")
     @JvmField public val MOB_CATEGORIES: ResourceKey<out Registry<EntityCategory>> = krypton("mob_categories")
+    @JvmField public val DYE_COLORS: ResourceKey<out Registry<DyeColor>> = krypton("dye_colors")
     // @formatter:on
 
     /**

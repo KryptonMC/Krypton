@@ -16,30 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.item.meta
 
-import io.netty.buffer.ByteBuf
-import net.kyori.adventure.sound.Sound
-import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.writeEnum
-import org.kryptonmc.krypton.util.writeVarInt
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.format.TextColor
+import org.kryptonmc.api.item.meta.DyeColor
+import java.awt.Color
 
 @JvmRecord
-data class PacketOutEntitySoundEffect(
-    private val event: SoundEvent,
-    private val source: Sound.Source,
-    private val id: Int,
-    private val volume: Float,
-    private val pitch: Float
-) : Packet {
+data class KryptonDyeColor(
+    private val key: Key,
+    override val color: Color,
+    override val fireworkColor: Color,
+    override val textColor: TextColor
+) : DyeColor {
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(Registries.SOUND_EVENT.idOf(event))
-        buf.writeEnum(source)
-        buf.writeVarInt(id)
-        buf.writeFloat(volume)
-        buf.writeFloat(pitch)
+    override fun key(): Key = key
+
+    object Factory : DyeColor.Factory {
+
+        override fun of(
+            key: Key,
+            color: Color,
+            fireworkColor: Color,
+            textColor: TextColor
+        ): DyeColor = KryptonDyeColor(key, color, fireworkColor, textColor)
     }
 }

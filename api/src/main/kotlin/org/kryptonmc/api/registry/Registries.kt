@@ -16,8 +16,8 @@ import org.kryptonmc.api.block.entity.BlockEntityType
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityCategory
+import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.entity.hanging.Picture
@@ -25,9 +25,15 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.meta.DyeColor
 import org.kryptonmc.api.item.meta.MetaKey
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
+import org.kryptonmc.api.scoreboard.CollisionRule
+import org.kryptonmc.api.scoreboard.DisplaySlot
+import org.kryptonmc.api.scoreboard.ObjectiveRenderType
+import org.kryptonmc.api.scoreboard.Visibility
+import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.biome.Biome
@@ -38,11 +44,6 @@ import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
-import org.kryptonmc.api.scoreboard.CollisionRule
-import org.kryptonmc.api.scoreboard.DisplaySlot
-import org.kryptonmc.api.scoreboard.ObjectiveRenderType
-import org.kryptonmc.api.scoreboard.Visibility
-import org.kryptonmc.api.scoreboard.criteria.Criterion
 
 /**
  * Holder of all of the built-in registries.
@@ -93,6 +94,7 @@ public object Registries {
     @JvmField public val DISPLAY_SLOTS: Registry<DisplaySlot> = create(ResourceKeys.DISPLAY_SLOTS)
     @JvmField public val OBJECTIVE_RENDER_TYPES: Registry<ObjectiveRenderType> = create(ResourceKeys.OBJECTIVE_RENDER_TYPES)
     @JvmField public val MOB_CATEGORIES: Registry<EntityCategory> = create(ResourceKeys.MOB_CATEGORIES)
+    @JvmField public val DYE_COLORS: Registry<DyeColor> = create(ResourceKeys.DYE_COLORS)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

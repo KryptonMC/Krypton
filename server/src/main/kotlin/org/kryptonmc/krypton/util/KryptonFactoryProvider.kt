@@ -36,6 +36,7 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.api.item.meta.DyeColor
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.scoreboard.DisplaySlot
@@ -71,6 +72,7 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttributeType
 import org.kryptonmc.krypton.inventory.KryptonInventoryType
 import org.kryptonmc.krypton.item.KryptonItemRarity
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.meta.KryptonDyeColor
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourcePack
 import org.kryptonmc.krypton.world.KryptonGameMode
@@ -146,6 +148,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<Team.Factory>(KryptonTeam.Factory)
         register<Block.Factory>(KryptonBlock.Factory)
         register<Fluid.Factory>(KryptonFluid.Factory)
+        register<DyeColor.Factory>(KryptonDyeColor.Factory)
     }
 }
 
