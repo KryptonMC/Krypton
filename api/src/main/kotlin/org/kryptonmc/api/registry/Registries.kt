@@ -35,6 +35,7 @@ import org.kryptonmc.api.scoreboard.ObjectiveRenderType
 import org.kryptonmc.api.scoreboard.Visibility
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.api.statistic.StatisticType
+import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeCategory
@@ -95,6 +96,7 @@ public object Registries {
     @JvmField public val OBJECTIVE_RENDER_TYPES: Registry<ObjectiveRenderType> = create(ResourceKeys.OBJECTIVE_RENDER_TYPES)
     @JvmField public val MOB_CATEGORIES: Registry<EntityCategory> = create(ResourceKeys.MOB_CATEGORIES)
     @JvmField public val DYE_COLORS: Registry<DyeColor> = create(ResourceKeys.DYE_COLORS)
+    @JvmField public val TAG_TYPES: Registry<TagType<*>> = create(ResourceKeys.TAG_TYPES)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

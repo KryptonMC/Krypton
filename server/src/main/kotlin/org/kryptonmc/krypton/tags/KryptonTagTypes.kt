@@ -18,27 +18,37 @@
  */
 package org.kryptonmc.krypton.tags
 
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.registry.InternalRegistries
 
-object TagTypes {
+object KryptonTagTypes {
 
     private val MINECRAFT = KryptonPlatform.minecraftVersion.replace('.', '_')
     private val PREFIX = "${MINECRAFT}_tags/${MINECRAFT}_"
-    val VALUES = mutableListOf<TagType<*>>()
 
-    val BLOCKS = create("block", InternalRegistries.BLOCK)
-    val ENTITY_TYPES = create("entity_type", InternalRegistries.ENTITY_TYPE)
-    val FLUIDS = create("fluid", InternalRegistries.FLUID)
-    val GAME_EVENTS = create("game_event", "gameplay", InternalRegistries.GAME_EVENT)
-    val ITEMS = create("item", InternalRegistries.ITEM)
+    val BLOCKS = register("block", InternalRegistries.BLOCK)
+    val ENTITY_TYPES = register("entity_type", InternalRegistries.ENTITY_TYPE)
+    val FLUIDS = register("fluid", InternalRegistries.FLUID)
+    val GAME_EVENTS = register("game_event", "gameplay", InternalRegistries.GAME_EVENT)
+    val ITEMS = register("item", InternalRegistries.ITEM)
 
-    private fun <T : Any> create(
+    @Suppress("UNCHECKED_CAST")
+    @JvmStatic
+    private fun <T : Any> register(
         name: String,
         fileName: String,
         registry: Registry<T>
-    ) = TagType("minecraft:$name", "${PREFIX}${fileName}_tags.json", registry).apply { VALUES += this }
+    ): KryptonTagType<T> {
+        val key = Key.key(name)
+        return Registries.register(
+            Registries.TAG_TYPES,
+            key,
+            KryptonTagType(key, "${PREFIX}${fileName}_tags.json", registry)
+        ) as KryptonTagType<T>
+    }
 
-    private fun <T : Any> create(name: String, registry: Registry<T>) = create(name, name, registry)
+    private fun <T : Any> register(name: String, registry: Registry<T>) = register(name, name, registry)
 }

@@ -19,23 +19,15 @@
 package org.kryptonmc.krypton.tags
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.tags.TagType
 
-object EntityTypeTags {
+@JvmRecord
+data class KryptonTagType<T : Any>(
+    private val key: Key,
+    val path: String,
+    override val registry: Registry<T>
+) : TagType<T> {
 
-    @JvmField val SKELETONS = get("skeletons")
-    @JvmField val RAIDERS = get("raiders")
-    @JvmField val BEEHIVE_INHABITORS = get("beehive_inhabitors")
-    @JvmField val ARROWS = get("arrows")
-    @JvmField val IMPACT_PROJECTILES = get("impact_projectiles")
-    @JvmField val POWDER_SNOW_WALKABLE_MOBS = get("powder_snow_walkable_mobs")
-    @JvmField val AXOLOTL_ALWAYS_HOSTILES = get("axolotl_always_hostiles")
-    @JvmField val AXOLOTL_HUNT_TARGETS = get("axolotl_hunt_targets")
-    @JvmField val FREEZE_IMMUNE_ENTITY_TYPES = get("freeze_immune_entity_types")
-    @JvmField val FREEZE_HURTS_EXTRA_TYPES = get("freeze_hurts_extra_types")
-
-    @JvmStatic
-    operator fun get(key: Key) = TagManager[TagTypes.ENTITY_TYPES, key.asString()]
-
-    @JvmStatic
-    private fun get(name: String) = TagManager[TagTypes.ENTITY_TYPES, "minecraft:$name"]!!
+    override fun key(): Key = key
 }

@@ -28,8 +28,9 @@ import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.tags.TagTypes
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
-import org.kryptonmc.krypton.tags.ItemTags
+import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.nbt.CompoundTag
 
@@ -79,7 +80,7 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
             if (item != null) {
                 if (nbt != null) nbt == (it.meta as? KryptonMetaHolder)?.nbt else it.type == item
             } else if (tag != null) {
-                (ItemTags[key(tag)] ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())).contains(it.type)
+                (KryptonTagManager[TagTypes.ITEMS, tag] ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())).contains(it.type)
             } else {
                 false
             }

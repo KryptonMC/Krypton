@@ -21,33 +21,40 @@ package org.kryptonmc.krypton.tags
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.tags.Tag
+import org.kryptonmc.api.tags.TagManager
+import org.kryptonmc.api.tags.TagType
 import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
-object TagManager {
+object KryptonTagManager : TagManager {
 
     private val GSON = Gson()
-    private val TAG_MAP = ConcurrentHashMap<TagType<out Any>, MutableList<Tag<out Any>>>()
-    val TAGS: Map<TagType<out Any>, List<Tag<out Any>>>
+    private val TAG_MAP = ConcurrentHashMap<TagType<out Any>, MutableList<KryptonTag<out Any>>>()
+    override val tags: Map<TagType<*>, List<Tag<*>>>
         get() = Collections.unmodifiableMap(TAG_MAP)
 
-    init {
-        TagTypes.VALUES.forEach { type ->
+    fun bootstrap() {
+        Registries.TAG_TYPES.values.forEach { type ->
+            if (type !is KryptonTagType) return@forEach
             val json = ClassLoader.getSystemResourceAsStream(type.path)!!.reader().use {
                 GSON.fromJson(it, JsonObject::class.java)
             }
             val identifierMap = TAG_MAP.getOrPut(type) { CopyOnWriteArrayList() }
             json.keySet().forEach {
-                val tag = Tag(Key.key(it), type, keys(json, it))
+                val tag = KryptonTag(Key.key(it), type, keys(json, it))
                 identifierMap.add(tag)
             }
         }
     }
 
     @Suppress("UNCHECKED_CAST")
-    operator fun <T : Any> get(type: TagType<T>, name: String): Tag<T>? = TAG_MAP[type]?.firstOrNull { it.name.asString() == name } as? Tag<T>
+    override operator fun <T : Any> get(type: TagType<T>, name: String): KryptonTag<T>? =
+        TAG_MAP[type]?.firstOrNull { it.key().asString() == name } as? KryptonTag<T>
 
+    @JvmStatic
     private fun keys(main: JsonObject, value: String): Set<String> {
         val tagObject = main.getAsJsonObject(value)
         val tagValues = tagObject.getAsJsonArray("values")

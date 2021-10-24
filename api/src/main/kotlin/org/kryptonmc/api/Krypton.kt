@@ -18,6 +18,7 @@ import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
+import org.kryptonmc.api.tags.TagManager
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.WorldManager
 
@@ -84,6 +85,13 @@ public object Krypton {
         @JvmName("registryManager") get() = internalRegistryManager!!
 
     /**
+     * The tag manager for the server.
+     */
+    @JvmStatic
+    public val tagManager: TagManager
+        @JvmName("tagManager") get() = internalTagManager!!
+
+    /**
      * The block manager for the server.
      */
     @JvmStatic
@@ -131,4 +139,6 @@ public object Krypton {
     private var internalFactoryProvider: FactoryProvider? = null
     @JvmStatic
     private var internalRegistryManager: RegistryManager? = null
+    @JvmStatic
+    private var internalTagManager: TagManager? = null
 }

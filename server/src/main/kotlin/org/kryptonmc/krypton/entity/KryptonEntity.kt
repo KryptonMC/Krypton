@@ -34,6 +34,8 @@ import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.scoreboard.Team
+import org.kryptonmc.api.tags.FluidTags
+import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
@@ -45,10 +47,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutEntityVelocity
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
-import org.kryptonmc.krypton.tags.FluidTags
-import org.kryptonmc.krypton.tags.Tag
-import org.kryptonmc.krypton.tags.TagManager
-import org.kryptonmc.krypton.tags.TagTypes
+import org.kryptonmc.krypton.tags.KryptonTagTypes
+import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.util.ceil
 import org.kryptonmc.krypton.util.floor
 import org.kryptonmc.krypton.util.logger
@@ -344,7 +344,7 @@ abstract class KryptonEntity(
         val z = location.floorZ()
         val fluid = world.getFluid(x, y.floor(), z)
 
-        TagManager.TAGS[TagTypes.FLUIDS]!!.forEach {
+        KryptonTagManager.tags[KryptonTagTypes.FLUIDS]!!.forEach {
             it as Tag<Fluid>
             if (!it.contains(fluid)) return@forEach
             val height = y + fluid.handler().height(fluid, x, y.floor(), z, world)

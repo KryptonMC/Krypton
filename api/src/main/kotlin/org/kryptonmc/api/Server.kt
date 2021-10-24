@@ -26,6 +26,7 @@ import org.kryptonmc.api.service.ServicesManager
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.api.scoreboard.Scoreboard
+import org.kryptonmc.api.tags.TagManager
 import java.net.InetSocketAddress
 import java.util.UUID
 
@@ -93,6 +94,12 @@ public interface Server : ForwardingAudience {
      */
     @get:JvmName("registryManager")
     public val registryManager: RegistryManager
+
+    /**
+     * The tag manager for this server.
+     */
+    @get:JvmName("tagManager")
+    public val tagManager: TagManager
 
     /**
      * The block manager for this server.

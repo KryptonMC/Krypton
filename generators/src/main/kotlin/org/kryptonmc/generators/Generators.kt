@@ -19,6 +19,8 @@
 package org.kryptonmc.generators
 
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.STAR
 import net.minecraft.SharedConstants
 import net.minecraft.core.Registry
 import net.minecraft.data.BuiltinRegistries
@@ -26,6 +28,10 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.server.Bootstrap
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundEvents
+import net.minecraft.tags.BlockTags
+import net.minecraft.tags.EntityTypeTags
+import net.minecraft.tags.FluidTags
+import net.minecraft.tags.ItemTags
 import net.minecraft.world.entity.ai.attributes.Attribute
 import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.entity.decoration.Motive
@@ -112,5 +118,34 @@ fun main() {
     DyeColorGenerator(output).run<DyeColor>(
         ClassName("org.kryptonmc.api.item.meta", "DyeColors"),
         DyeColorGenerator.DYE_COLOR
+    )
+    val tagGenerator = TagGenerator(output)
+    tagGenerator.run(
+        "BlockTags",
+        "BLOCKS",
+        ClassName("org.kryptonmc.api.block", "Block"),
+        "Block",
+        BlockTags::class.java
+    )
+    tagGenerator.run(
+        "EntityTypeTags",
+        "ENTITY_TYPES",
+        ClassName("org.kryptonmc.api.entity", "EntityType").parameterizedBy(STAR),
+        "EntityType<\\*>",
+        EntityTypeTags::class.java
+    )
+    tagGenerator.run(
+        "FluidTags",
+        "FLUIDS",
+        ClassName("org.kryptonmc.api.fluid", "Fluid"),
+        "Fluid",
+        FluidTags::class.java
+    )
+    tagGenerator.run(
+        "ItemTags",
+        "ITEMS",
+        ClassName("org.kryptonmc.api.item", "ItemType"),
+        "ItemType",
+        ItemTags::class.java
     )
 }

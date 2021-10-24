@@ -22,9 +22,9 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.api.tags.BlockTags
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.tags.BlockTags
 import org.kryptonmc.krypton.world.block.isPlant
 import org.kryptonmc.krypton.world.block.isReplaceablePlant
 import org.kryptonmc.krypton.world.block.isVegetable

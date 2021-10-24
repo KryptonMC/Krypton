@@ -44,6 +44,7 @@ import org.kryptonmc.api.scoreboard.DisplaySlot
 import org.kryptonmc.api.scoreboard.ObjectiveRenderType
 import org.kryptonmc.api.scoreboard.Visibility
 import org.kryptonmc.api.scoreboard.criteria.Criterion
+import org.kryptonmc.api.tags.TagType
 
 /**
  * All the built-in registry keys for various registries.
@@ -97,6 +98,7 @@ public object ResourceKeys {
     @JvmField public val OBJECTIVE_RENDER_TYPES: ResourceKey<out Registry<ObjectiveRenderType>> = krypton("objective_render_types")
     @JvmField public val MOB_CATEGORIES: ResourceKey<out Registry<EntityCategory>> = krypton("mob_categories")
     @JvmField public val DYE_COLORS: ResourceKey<out Registry<DyeColor>> = krypton("dye_colors")
+    @JvmField public val TAG_TYPES: ResourceKey<out Registry<TagType<*>>> = krypton("tag_types")
     // @formatter:on
 
     /**

@@ -21,22 +21,21 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.tags.TagManager
+import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.util.writeKey
-import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 object PacketOutTags : Packet {
 
     @Suppress("UNCHECKED_CAST")
     override fun write(buf: ByteBuf) {
-        val tags = TagManager.TAGS
+        val tags = KryptonTagManager.tags
         buf.writeVarInt(tags.size)
         tags.forEach { (type, tags) ->
-            buf.writeString(type.identifier)
+            buf.writeKey(type.key())
             buf.writeVarInt(tags.size)
             tags.forEach { tag ->
-                buf.writeKey(tag.name)
+                buf.writeKey(tag.key())
                 val values = tag.values
                 buf.writeVarInt(values.size)
                 values.forEach { buf.writeVarInt((type.registry as Registry<Any>).idOf(it)) }

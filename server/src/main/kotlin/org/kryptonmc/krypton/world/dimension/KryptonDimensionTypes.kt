@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.world.dimension
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.tags.BlockTags
 import org.kryptonmc.api.world.dimension.DimensionEffect
-import org.kryptonmc.krypton.tags.BlockTags
 import org.kryptonmc.krypton.world.biome.gen.BiomeZoomer
 import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetBiomeZoomer
 import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetConstantColumnBiomeZoomer
@@ -41,7 +41,7 @@ object KryptonDimensionTypes {
         false,
         0F,
         null,
-        BlockTags.INFINIBURN_OVERWORLD.name,
+        BlockTags.INFINIBURN_OVERWORLD.key(),
         0,
         256,
         256,
@@ -61,7 +61,7 @@ object KryptonDimensionTypes {
         false,
         0F,
         null,
-        BlockTags.INFINIBURN_OVERWORLD.name,
+        BlockTags.INFINIBURN_OVERWORLD.key(),
         0,
         256,
         256,
@@ -81,7 +81,7 @@ object KryptonDimensionTypes {
         true,
         0.1F,
         18000L,
-        BlockTags.INFINIBURN_NETHER.name,
+        BlockTags.INFINIBURN_NETHER.key(),
         0,
         256,
         128,
@@ -101,7 +101,7 @@ object KryptonDimensionTypes {
         false,
         0F,
         6000L,
-        BlockTags.INFINIBURN_END.name,
+        BlockTags.INFINIBURN_END.key(),
         0,
         256,
         256,

@@ -35,12 +35,18 @@ import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.StatisticTypes
+import org.kryptonmc.api.tags.BlockTags
+import org.kryptonmc.api.tags.EntityTypeTags
+import org.kryptonmc.api.tags.FluidTags
+import org.kryptonmc.api.tags.ItemTags
+import org.kryptonmc.api.tags.TagTypes
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.biome.BiomeCategories
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.biome.GrassColorModifiers
 import org.kryptonmc.api.world.biome.Precipitations
 import org.kryptonmc.api.world.biome.TemperatureModifiers
+import org.kryptonmc.api.world.dimension.DimensionTypes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.command.BrigadierExceptions
@@ -58,12 +64,9 @@ import org.kryptonmc.krypton.item.meta.KryptonMetaKeys
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
-import org.kryptonmc.krypton.tags.BlockTags
-import org.kryptonmc.krypton.tags.EntityTypeTags
-import org.kryptonmc.krypton.tags.FluidTags
 import org.kryptonmc.krypton.tags.GameEventTags
-import org.kryptonmc.krypton.tags.ItemTags
-import org.kryptonmc.krypton.tags.TagManager
+import org.kryptonmc.krypton.tags.KryptonTagManager
+import org.kryptonmc.krypton.tags.KryptonTagTypes
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.block.BlockLoader
@@ -91,12 +94,15 @@ object Bootstrap {
         // the entire project to use Guice's dependency inversion (something that should be looked in to at some point)
         Krypton::class.java.getDeclaredField("internalFactoryProvider").apply { isAccessible = true }.set(null, KryptonFactoryProvider)
         Krypton::class.java.getDeclaredField("internalRegistryManager").apply { isAccessible = true }.set(null, KryptonRegistryManager)
+        Krypton::class.java.getDeclaredField("internalTagManager").apply { isAccessible = true }.set(null, KryptonTagManager)
         KryptonFactoryProvider.bootstrap()
         KryptonRegistryManager.parent // Force initialisation
 
         // Preload all the registry classes to ensure everything is properly registered
         InternalRegistries
         Registries
+        KryptonTagTypes
+        TagTypes
         GameModes
         SoundLoader.init()
         SoundEvents
@@ -122,7 +128,14 @@ object Bootstrap {
         BiomeKeys
         KryptonBiomes
         Biomes
+        KryptonTagManager.bootstrap()
         KryptonDimensionTypes
+        DimensionTypes
+        BlockTags
+        EntityTypeTags
+        FluidTags
+        GameEventTags
+        ItemTags
         GameRules
         AttributeLoader.init()
         AttributeTypes
@@ -134,14 +147,6 @@ object Bootstrap {
         Pictures
         KryptonMetaKeys
         MetaKeys // Not technically a registry, but quite close to one
-
-        // Preload tags (which use registries)
-        TagManager
-        BlockTags
-        EntityTypeTags
-        FluidTags
-        GameEventTags
-        ItemTags
 
         // Preload some other things that would otherwise load on first player join or some other time
         Encryption

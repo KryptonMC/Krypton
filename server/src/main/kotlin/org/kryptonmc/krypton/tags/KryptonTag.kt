@@ -19,15 +19,20 @@
 package org.kryptonmc.krypton.tags
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.tags.Tag
 
-object FluidTags {
+@JvmRecord
+data class KryptonTag<T : Any>(
+    private val key: Key,
+    override val type: KryptonTagType<T>,
+    override val values: Collection<T>
+) : Tag<T> {
 
-    @JvmField val WATER = get("water")
-    @JvmField val LAVA = get("lava")
+    constructor(name: Key, type: KryptonTagType<T>, keys: Set<String>) : this(
+        name,
+        type,
+        keys.map { type.registry[Key.key(it)]!! }
+    )
 
-    @JvmStatic
-    operator fun get(key: Key) = TagManager[TagTypes.FLUIDS, key.asString()]
-
-    @JvmStatic
-    private fun get(name: String) = TagManager[TagTypes.FLUIDS, "minecraft:$name"]!!
+    override fun key(): Key = key
 }

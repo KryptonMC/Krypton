@@ -42,6 +42,7 @@ import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.server.PlayerManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
+import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.util.KryptonFactoryProvider
 import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.util.logger
@@ -96,6 +97,7 @@ class KryptonServer(
     override val eventManager = KryptonEventManager
     override val servicesManager = KryptonServicesManager
     override val registryManager = KryptonRegistryManager
+    override val tagManager = KryptonTagManager
     override val blockManager = KryptonBlockManager
     override val itemManager = KryptonItemManager
     override val fluidManager = KryptonFluidManager
