@@ -78,7 +78,7 @@ object BlockLoader : KryptonDataLoader("blocks") {
             // Register to registry
             val namespacedKey = Key.key(key)
             if (InternalRegistries.BLOCK.contains(namespacedKey)) return@forEach
-            KryptonRegistryManager.register(InternalRegistries.BLOCK, key, defaultBlock)
+            KryptonRegistryManager.register(InternalRegistries.BLOCK, defaultBlock.id, key, defaultBlock)
         }
     }
 

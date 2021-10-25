@@ -26,6 +26,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
+import org.kryptonmc.krypton.util.IntHashBiMap
 import org.kryptonmc.krypton.util.KryptonDataLoader
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import java.util.concurrent.ConcurrentHashMap
@@ -34,7 +35,7 @@ object FluidLoader : KryptonDataLoader("fluids") {
 
     private val KEY_MAP = mutableMapOf<String, KryptonFluid>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
-    private val STATE_MAP = Int2ObjectOpenHashMap<KryptonFluid>()
+    val STATES = IntHashBiMap<KryptonFluid>()
 
     fun properties(
         key: String,
@@ -57,7 +58,7 @@ object FluidLoader : KryptonDataLoader("fluids") {
 
             // Get default state and add to maps
             val defaultState = value["defaultStateId"].asInt // FIXME: Update ArticData when this is always non-null
-            val defaultFluid = STATE_MAP[defaultState]!!
+            val defaultFluid = STATES[defaultState]!!
             KEY_MAP[key] = defaultFluid
             PROPERTY_MAP[key] = propertyEntry
 
@@ -77,7 +78,7 @@ object FluidLoader : KryptonDataLoader("fluids") {
             it.key to it.value.asString.lowercase()
         })
         val fluid = createFluid(Key.key(key), fluidObject, this, availableProperties, propertyMap)
-        STATE_MAP[stateId] = fluid
+        STATES[fluid] = stateId
         return propertyMap to fluid
     }
 

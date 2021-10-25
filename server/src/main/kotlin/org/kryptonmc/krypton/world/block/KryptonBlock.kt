@@ -29,6 +29,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.PushReaction
 import org.kryptonmc.api.block.RenderShape
 import org.kryptonmc.api.block.property.Property
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.Codecs
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
@@ -290,6 +291,10 @@ data class KryptonBlock(
     object Factory : Block.Factory {
 
         override fun builder(key: Key, id: Int, stateId: Int) = Builder(key, id, stateId)
+
+        override fun fromId(id: Int): Block? = Registries.BLOCK[id]
+
+        override fun fromStateId(id: Int): Block? = BlockLoader.STATES[id]
     }
 
     companion object {

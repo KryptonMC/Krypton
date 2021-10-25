@@ -249,6 +249,10 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
     public interface Factory {
 
         public fun builder(key: Key, id: Int, stateId: Int): Builder
+
+        public fun fromId(id: Int): Fluid?
+
+        public fun fromStateId(id: Int): Fluid?
     }
 
     public companion object {
@@ -267,5 +271,25 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
         @JvmOverloads
         @Contract("_ -> new", pure = true)
         public fun builder(key: Key, id: Int, stateId: Int = id): Builder = FACTORY.builder(key, id, stateId)
+
+        /**
+         * Gets the fluid with the given block [id], or returns null if there
+         * is no registered fluid with the given fluid [id].
+         *
+         * @param id the fluid ID
+         * @return the fluid with the ID, or null if not present
+         */
+        @JvmStatic
+        public fun fromId(id: Int): Fluid? = FACTORY.fromId(id)
+
+        /**
+         * Gets the fluid with the given state [id], or returns null if there
+         * is no registered fluid with the given state [id].
+         *
+         * @param id the state ID
+         * @return the fluid with the ID, or null if not present
+         */
+        @JvmStatic
+        public fun fromStateId(id: Int): Fluid? = FACTORY.fromStateId(id)
     }
 }

@@ -26,6 +26,7 @@ import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
@@ -128,6 +129,10 @@ data class KryptonFluid(
     object Factory : Fluid.Factory {
 
         override fun builder(key: Key, id: Int, stateId: Int) = Builder(key, id, stateId)
+
+        override fun fromId(id: Int): Fluid? = Registries.FLUID[id]
+
+        override fun fromStateId(id: Int): Fluid? = FluidLoader.STATES[id]
     }
 
     companion object {

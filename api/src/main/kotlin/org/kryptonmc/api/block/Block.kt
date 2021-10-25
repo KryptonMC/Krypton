@@ -617,6 +617,10 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
     public interface Factory {
 
         public fun builder(key: Key, id: Int, stateId: Int): Builder
+
+        public fun fromId(id: Int): Block?
+
+        public fun fromStateId(id: Int): Block?
     }
 
     public companion object {
@@ -635,5 +639,25 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
         @JvmOverloads
         @Contract("_ -> new", pure = true)
         public fun builder(key: Key, id: Int, stateId: Int = id): Builder = FACTORY.builder(key, id, stateId)
+
+        /**
+         * Gets the block with the given block [id], or returns null if there
+         * is no registered block with the given block [id].
+         *
+         * @param id the block ID
+         * @return the block with the ID, or null if not present
+         */
+        @JvmStatic
+        public fun fromId(id: Int): Block? = FACTORY.fromId(id)
+
+        /**
+         * Gets the block with the given state [id], or returns null if there
+         * is no registered block with the given state [id].
+         *
+         * @param id the state ID
+         * @return the block with the ID, or null if not present
+         */
+        @JvmStatic
+        public fun fromStateId(id: Int): Block? = FACTORY.fromStateId(id)
     }
 }
