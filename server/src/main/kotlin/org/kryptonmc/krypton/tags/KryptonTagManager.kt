@@ -29,6 +29,7 @@ import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
+@Suppress("UNCHECKED_CAST")
 object KryptonTagManager : TagManager {
 
     private val GSON = Gson()
@@ -50,9 +51,12 @@ object KryptonTagManager : TagManager {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override operator fun <T : Any> get(type: TagType<T>, name: String): KryptonTag<T>? =
-        TAG_MAP[type]?.firstOrNull { it.key().asString() == name } as? KryptonTag<T>
+    override fun <T : Any> get(type: TagType<T>): List<Tag<T>> = TAG_MAP[type] as? List<Tag<T>> ?: emptyList()
+
+    override fun <T : Any> get(type: TagType<T>, name: String): KryptonTag<T>? {
+        val tags = TAG_MAP[type] ?: return null
+        return tags.firstOrNull { it.key().asString() == name } as? KryptonTag<T>
+    }
 
     @JvmStatic
     private fun keys(main: JsonObject, value: String): Set<String> {

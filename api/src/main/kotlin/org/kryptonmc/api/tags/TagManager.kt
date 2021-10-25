@@ -21,6 +21,14 @@ public interface TagManager {
     public val tags: Map<TagType<*>, List<Tag<*>>>
 
     /**
+     * Gets the list of tags for the given [type].
+     *
+     * @param type the type
+     * @return the list of tags for the type
+     */
+    public operator fun <T : Any> get(type: TagType<T>): List<Tag<T>>
+
+    /**
      * Gets the tag with the given [type] and [name], or returns null if there
      * is no tag with the given [type] and [name].
      *
