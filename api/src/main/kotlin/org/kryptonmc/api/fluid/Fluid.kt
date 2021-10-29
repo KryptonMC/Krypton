@@ -28,7 +28,7 @@ import org.kryptonmc.api.util.provide
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Fluids::class)
-public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>, BlockLike, Keyed, Comparable<Fluid> {
+public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>, FluidLike, BlockLike, Keyed {
 
     /**
      * The ID of this fluid.
@@ -99,9 +99,8 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
      */
     public fun compare(other: Fluid, comparator: Comparator): Boolean = comparator(this, other)
 
-    /**
-     * Converts this fluid in to its equivalent [Block].
-     */
+    override fun asFluid(): Fluid = this
+
     override fun asBlock(): Block
 
     /**

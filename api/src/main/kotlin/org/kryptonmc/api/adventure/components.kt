@@ -10,10 +10,12 @@
 package org.kryptonmc.api.adventure
 
 import com.google.gson.JsonElement
+import com.mojang.brigadier.Message
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import org.jetbrains.annotations.Contract
 
 /**
  * Converts this [Component] to a [JsonElement].
@@ -82,3 +84,10 @@ public fun Component.toLegacyAmpersandText(): String = LegacyComponentSerializer
  */
 @JvmSynthetic
 public fun Component.toPlainText(): String = PlainTextComponentSerializer.plainText().serialize(this)
+
+/**
+ * Converts this component to a wrapper for a Brigadier [Message].
+ */
+@JvmSynthetic
+@Contract("_ -> new", pure = true)
+public fun Component.toMessage(): AdventureMessage = AdventureMessage(this)

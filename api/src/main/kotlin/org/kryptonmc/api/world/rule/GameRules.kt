@@ -27,7 +27,6 @@ import org.kryptonmc.api.util.Catalogue
 @Catalogue(GameRule::class)
 public object GameRules {
 
-    // @formatter:off
     /**
      * If advancements should be announced to the server.
      *
@@ -328,7 +327,6 @@ public object GameRules {
     @JvmField
     public val UNIVERSAL_ANGER: GameRule<Boolean> = register("universal_anger", "universalAnger", false)
 
-    // @formatter:on
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
     private fun <V : Any> register(key: String, name: String, default: V): GameRule<V> {

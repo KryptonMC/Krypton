@@ -25,7 +25,7 @@ internal annotation class ItemDsl
  */
 @ItemDsl
 @JvmSynthetic
-@Contract("_ -> new")
+@Contract("_ -> new", pure = true)
 public inline fun item(builder: ItemStack.Builder.() -> Unit): ItemStack = ItemStack.builder().apply(builder).build()
 
 /**
@@ -38,7 +38,7 @@ public inline fun item(builder: ItemStack.Builder.() -> Unit): ItemStack = ItemS
  */
 @ItemDsl
 @JvmSynthetic
-@Contract("_ -> new")
+@Contract("_ -> new", pure = true)
 public inline fun item(
     type: ItemType,
     builder: ItemStack.Builder.() -> Unit
@@ -55,7 +55,7 @@ public inline fun item(
  */
 @ItemDsl
 @JvmSynthetic
-@Contract("_ -> new")
+@Contract("_ -> new", pure = true)
 public inline fun item(
     type: ItemType,
     amount: Int,

@@ -25,7 +25,7 @@ import org.kryptonmc.api.util.provide
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(ItemTypes::class)
-public interface ItemType : Buildable<ItemType, ItemType.Builder>, BlockLike, TranslationHolder, Keyed {
+public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, BlockLike, TranslationHolder, Keyed {
 
     /**
      * The rarity of the item.
@@ -83,6 +83,8 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, BlockLike, Tr
      */
     @get:JvmName("drinkingSound")
     public val drinkingSound: SoundEvent
+
+    override fun asItem(): ItemType = this
 
     /**
      * A builder that can be used to build item type instances.
@@ -190,6 +192,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, BlockLike, Tr
          * @param eatingSound the eating sound
          * @return this builder
          */
+        @Contract("_ -> this", mutates = "this")
         public fun eatingSound(eatingSound: SoundEvent): Builder
 
         /**
@@ -198,6 +201,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, BlockLike, Tr
          * @param drinkingSound the eating sound
          * @return this builder
          */
+        @Contract("_ -> this", mutates = "this")
         public fun drinkingSound(drinkingSound: SoundEvent): Builder
     }
 
@@ -206,53 +210,12 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, BlockLike, Tr
     @ApiStatus.OverrideOnly
     public interface Factory {
 
-        public fun of(
-            key: Key,
-            rarity: ItemRarity,
-            maximumStackSize: Int,
-            canBreak: Boolean,
-            durability: Int,
-            isEdible: Boolean,
-            isFireResistant: Boolean,
-            eatingSound: SoundEvent,
-            drinkingSound: SoundEvent
-        ): ItemType
-
         public fun builder(key: Key): Builder
     }
 
     public companion object {
 
         private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
-        /**
-         * Creates a new item type with the given values.
-         *
-         * @param key the key
-         * @param rarity the rarity
-         * @param maximumStackSize the maximum stack size
-         * @param canBreak if items of the type can break
-         * @param durability the durability
-         * @param isEdible if items of the type can be eaten
-         * @param isFireResistant if items of the type are resistant to fire
-         * @param eatingSound the sound to make when items of the type are
-         * eaten
-         * @param drinkingSound the sound to make when items of the type
-         * are drank
-         * @return a new item type
-         */
-        @JvmStatic
-        public fun of(
-            key: Key,
-            rarity: ItemRarity,
-            maximumStackSize: Int,
-            canBreak: Boolean,
-            durability: Int,
-            isEdible: Boolean,
-            isFireResistant: Boolean,
-            eatingSound: SoundEvent,
-            drinkingSound: SoundEvent
-        ): ItemType = FACTORY.of(key, rarity, maximumStackSize, canBreak, durability, isEdible, isFireResistant, eatingSound, drinkingSound)
 
         /**
          * Creates a new builder for item types.

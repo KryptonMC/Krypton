@@ -27,7 +27,6 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
 @JvmRecord
@@ -46,27 +45,21 @@ data class KryptonFluid(
     override val properties: Map<String, String>
 ) : KryptonPropertyHolder<Fluid>, Fluid {
 
+    override fun key(): Key = key
+
     override fun copy(key: String, value: String): Fluid {
         val newProperties = properties + (key to value)
-        return requireNotNull(FluidLoader.properties(this.key().asString(), newProperties)) {
-            "Invalid property $key:$value for block ${this.key()}"
-        }
+        return requireNotNull(FluidLoader.properties(key().asString(), newProperties)) { "Invalid property $key:$value for block ${key()}" }
     }
 
     override fun copy(newValues: Map<String, String>): Fluid {
         val newProperties = properties + newValues
-        return requireNotNull(FluidLoader.properties(key().asString(), newProperties)) {
-            "Invalid properties $newValues for block ${key()}!"
-        }
+        return requireNotNull(FluidLoader.properties(key().asString(), newProperties)) { "Invalid properties $newValues for block ${key()}!" }
     }
 
-    override fun asBlock() = InternalRegistries.BLOCK[blockKey] ?: Blocks.AIR
-
-    override fun key(): Key = key
+    override fun asBlock() = Registries.BLOCK[blockKey] ?: Blocks.AIR
 
     override fun toBuilder() = Builder(this)
-
-    override fun compareTo(other: Fluid) = id.compareTo(other.id)
 
     class Builder(
         private val key: Key,

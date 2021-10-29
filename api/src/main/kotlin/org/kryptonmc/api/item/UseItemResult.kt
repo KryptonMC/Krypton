@@ -13,15 +13,18 @@ import org.kryptonmc.api.util.InteractionResult
 /**
  * The result of using an item.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface UseItemResult {
 
     /**
      * The interaction result.
      */
+    @get:JvmName("result")
     public val result: InteractionResult
 
     /**
      * The item that was being used.
      */
+    @get:JvmName("item")
     public val item: ItemStack
 }

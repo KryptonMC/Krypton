@@ -57,7 +57,7 @@ public interface GameRule<V : Any> : TranslationHolder, Keyed {
          * @param key the key
          * @param name the name
          * @param default the default value
-         * @param translation the client-side translation
+         * @param translation the translation
          * @return a new game rule
          */
         @JvmStatic

@@ -93,8 +93,6 @@ data class KryptonBlock(
 
     override fun toBuilder() = Builder(this)
 
-    override fun compareTo(other: Block) = id.compareTo(other.id)
-
     class Builder(
         private val key: Key,
         private var id: Int,

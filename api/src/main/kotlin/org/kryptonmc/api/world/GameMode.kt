@@ -59,6 +59,7 @@ public interface GameMode : TranslationHolder {
          * @param name the name
          * @param abbreviation the abbreviation
          * @param canBuild if the mode permits users using it to build
+         * @param translation the translation
          * @return a new game mode
          */
         @JvmStatic

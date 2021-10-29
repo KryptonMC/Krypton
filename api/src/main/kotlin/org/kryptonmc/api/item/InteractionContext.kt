@@ -19,50 +19,56 @@ import org.spongepowered.math.vector.Vector3i
 /**
  * Context for when a player interacts with a block.
  */
+@Suppress("INAPPLICABLE_JVM_NAME")
 public interface InteractionContext {
 
     /**
      * The player that is performing the interaction.
      */
+    @get:JvmName("player")
     public val player: Player
 
     /**
      * The world the block being interacted with is in.
      */
+    @get:JvmName("world")
     public val world: World
 
     /**
      * The item that the player held while interacting.
      */
+    @get:JvmName("heldItem")
     public val heldItem: ItemStack
 
     /**
      * The hand being used to interact with.
      */
+    @get:JvmName("hand")
     public val hand: Hand
 
     /**
      * The result of the player attempting to hit the block.
      */
+    @get:JvmName("hitResult")
     public val hitResult: BlockHitResult
 
     /**
      * The position of the block that is being interacted with.
      */
     public val position: Vector3i
-        get() = hitResult.position
+        @JvmName("position") get() = hitResult.position
 
     /**
      * The face of the block that the player clicked.
      */
     public val clickedFace: Direction
-        get() = hitResult.direction
+        @JvmName("clickedFace") get() = hitResult.direction
 
     /**
      * The location where the player clicked.
      */
     public val clickLocation: Vector3d
-        get() = hitResult.clickLocation
+        @JvmName("clickLocation") get() = hitResult.clickLocation
 
     /**
      * If the player is inside the block.
@@ -74,5 +80,5 @@ public interface InteractionContext {
      * The pitch of the player.
      */
     public val pitch: Float
-        get() = player.rotation.y()
+        @JvmName("pitch") get() = player.rotation.y()
 }

@@ -66,8 +66,11 @@ class PluginAnnotationProcessor : AbstractProcessor() {
         }
         return false
     }
+
+    companion object {
+
+        private fun Messager.warn(message: String) = printMessage(Diagnostic.Kind.WARNING, message)
+
+        private fun Messager.error(message: String) = printMessage(Diagnostic.Kind.ERROR, message)
+    }
 }
-
-private fun Messager.warn(message: String) = printMessage(Diagnostic.Kind.WARNING, message)
-
-private fun Messager.error(message: String) = printMessage(Diagnostic.Kind.ERROR, message)

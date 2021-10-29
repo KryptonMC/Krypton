@@ -119,29 +119,6 @@ data class KryptonItemType(
 
     object Factory : ItemType.Factory {
 
-        override fun of(
-            key: Key,
-            rarity: ItemRarity,
-            maximumStackSize: Int,
-            canBreak: Boolean,
-            durability: Int,
-            isEdible: Boolean,
-            isFireResistant: Boolean,
-            eatingSound: SoundEvent,
-            drinkingSound: SoundEvent
-        ): ItemType = KryptonItemType(
-            key,
-            rarity,
-            maximumStackSize,
-            canBreak,
-            durability,
-            isEdible,
-            isFireResistant,
-            eatingSound,
-            drinkingSound,
-            Registries.BLOCK[key]?.translation ?: Component.translatable("item.${key.asString().replace(':', '.')}")
-        )
-
         override fun builder(key: Key): ItemType.Builder = Builder(key)
     }
 }

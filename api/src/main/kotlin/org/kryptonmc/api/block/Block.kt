@@ -35,7 +35,7 @@ import org.kryptonmc.api.util.provide
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(Blocks::class)
-public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>, ItemLike, FluidLike, TranslationHolder, Keyed, Comparable<Block> {
+public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>, BlockLike, ItemLike, FluidLike, TranslationHolder, Keyed {
 
     /**
      * The block ID of this block.
@@ -214,6 +214,8 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
      */
     @get:JvmName("pushReaction")
     public val pushReaction: PushReaction
+
+    override fun asBlock(): Block = this
 
     /**
      * Compares this block to the given [other] block.
