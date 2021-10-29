@@ -83,6 +83,9 @@ object Bootstrap {
     private val LOGGER = logger<Bootstrap>()
     @Volatile private var bootstrapped = false
 
+    // Might be better if you turn away from this now, unless you're making something that is registry-based,
+    // in which, good luck. It probably needs to be placed somewhere with its dependencies before it and its
+    // dependents after it.
     fun preload() {
         if (bootstrapped) return
         bootstrapped = true

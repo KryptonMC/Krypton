@@ -36,6 +36,7 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.meta.DyeColor
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
@@ -72,6 +73,7 @@ import org.kryptonmc.krypton.entity.attribute.KryptonAttributeType
 import org.kryptonmc.krypton.inventory.KryptonInventoryType
 import org.kryptonmc.krypton.item.KryptonItemRarity
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.item.meta.KryptonDyeColor
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourcePack
@@ -119,6 +121,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<AttributeType.Factory>(KryptonAttributeType.Factory)
         register<Property.Factory>(KryptonPropertyFactory)
         register<ItemStack.Factory>(KryptonItemStack.Factory)
+        register<ItemType.Factory>(KryptonItemType.Factory)
         register<CommandMeta.Factory>(KryptonCommandMeta.Factory)
         register<GameProfile.Factory>(KryptonGameProfile.Factory)
         register<SoundEvent.Factory>(KryptonSoundEvent.Factory)
