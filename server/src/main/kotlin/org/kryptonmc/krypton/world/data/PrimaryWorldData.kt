@@ -47,66 +47,30 @@ class PrimaryWorldData(
     override var isHardcore: Boolean,
     override var gameRules: KryptonGameRuleHolder,
     override var dataPackConfig: DataPackConfig,
-    override var spawnX: Int,
-    override var spawnY: Int,
-    override var spawnZ: Int,
-    override var spawnAngle: Float,
-    override var time: Long,
-    override var dayTime: Long,
-    override var clearWeatherTime: Int,
-    override var isRaining: Boolean,
-    override var rainTime: Int,
-    override var isThundering: Boolean,
-    override var thunderTime: Int,
-    override var isInitialized: Boolean,
-    override var wanderingTraderSpawnChance: Int,
-    override var wanderingTraderSpawnDelay: Int,
-    override var wanderingTraderId: UUID?,
-    private var customBossEvents: CompoundTag?,
-    private var enderDragonFightData: CompoundTag,
-    private val serverBrands: MutableSet<String>,
-    override val worldGenerationSettings: WorldGenerationSettings
+    override val worldGenerationSettings: WorldGenerationSettings,
+    override var spawnX: Int = 0,
+    override var spawnY: Int = 0,
+    override var spawnZ: Int = 0,
+    override var spawnAngle: Float = 0F,
+    override var time: Long = 0L,
+    override var dayTime: Long = 0L,
+    override var clearWeatherTime: Int = 0,
+    override var isRaining: Boolean = false,
+    override var rainTime: Int = 0,
+    override var isThundering: Boolean = false,
+    override var thunderTime: Int = 0,
+    override var isInitialized: Boolean = false,
+    override var wanderingTraderSpawnChance: Int = 0,
+    override var wanderingTraderSpawnDelay: Int = 0,
+    override var wanderingTraderId: UUID? = null,
+    private var customBossEvents: CompoundTag? = null,
+    private var enderDragonFightData: CompoundTag = CompoundTag.empty(),
+    private val serverBrands: MutableSet<String> = mutableSetOf()
 ) : WorldData {
 
-    private var isModded = true
-
-    constructor(
-        name: String,
-        folder: Path,
-        gameMode: GameMode,
-        difficulty: Difficulty,
-        isHardcore: Boolean,
-        gameRules: KryptonGameRuleHolder,
-        dataPackConfig: DataPackConfig,
-        worldGenerationSettings: WorldGenerationSettings
-    ) : this(
-        name,
-        folder,
-        gameMode,
-        difficulty,
-        isHardcore,
-        gameRules,
-        dataPackConfig,
-        0,
-        0,
-        0,
-        0F,
-        0L,
-        0L,
-        0,
-        false,
-        0,
-        false,
-        0,
-        false,
-        0,
-        0,
-        null,
-        null,
-        MutableCompoundTag(),
-        mutableSetOf(),
-        worldGenerationSettings
-    )
+    init {
+        if (!serverBrands.contains("Krypton")) serverBrands.add("Krypton")
+    }
 
     fun save() = compound {
         compound("Data") {
@@ -145,13 +109,8 @@ class PrimaryWorldData(
             customBossEvents?.let { put("CustomBossEvents", it) }
             put("DragonFight", enderDragonFightData)
             list("ServerBrands", StringTag.ID, serverBrands.map { StringTag.of(it) })
-            boolean("WasModded", isModded)
+            boolean("WasModded", true)
         }
-    }
-
-    fun setModdedInfo(name: String, modded: Boolean) {
-        serverBrands.add(name)
-        isModded = isModded or modded
     }
 
     companion object {
@@ -167,9 +126,9 @@ class PrimaryWorldData(
             val time = data.getLong("Time", 0L)
             val dragonFightData = data.getMap(
                 "DragonFightData",
-                data.getMap<String>("DimensionData")?.getMap<String>("1")?.getMap("DragonFight")
-                    ?: NBTMapType(MutableCompoundTag())
+                data.getMap<String>("DimensionData")?.getMap<String>("1")?.getMap("DragonFight") ?: NBTMapType(MutableCompoundTag())
             )
+            val customBossEvents = (data.getMap<String>("CustomBossEvents") as? NBTMapType)?.map ?: MutableCompoundTag()
             return PrimaryWorldData(
                 data.getString("LevelName", "")!!,
                 folder,
@@ -178,6 +137,7 @@ class PrimaryWorldData(
                 data.getBoolean("hardcore", false),
                 KryptonGameRuleHolder(data.getMap("GameRules") ?: NBTMapType(MutableCompoundTag())),
                 dataPackConfig,
+                generationSettings,
                 data.getInt("SpawnX", 0),
                 data.getInt("SpawnY", 0),
                 data.getInt("SpawnZ", 0),
@@ -193,8 +153,7 @@ class PrimaryWorldData(
                 data.getInt("WanderingTraderSpawnChance", 0),
                 data.getInt("WanderingTraderSpawnDelay", 0),
                 data.getInts("WanderingTraderId")?.toUUID(),
-                (data.getMap<String>("CustomBossEvents") as? NBTMapType)?.map
-                    ?: MutableCompoundTag(),
+                customBossEvents,
                 (dragonFightData as NBTMapType).map,
                 data.getList("ServerBrands", ObjectType.STRING)?.let {
                     val set = mutableSetOf<String>()
@@ -202,8 +161,7 @@ class PrimaryWorldData(
                         set.add(it.getString(i))
                     }
                     set
-                } ?: mutableSetOf(),
-                generationSettings
+                } ?: mutableSetOf()
             )
         }
     }

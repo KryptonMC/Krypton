@@ -30,7 +30,7 @@ object Versions {
     const val DATA_CONVERTER = "1.0.0-SNAPSHOT"
     const val EVENT = "4.0.0-SNAPSHOT"
     const val ASM = "9.2"
-    const val NBT = "2.1"
+    const val NBT = "2.4"
     const val MINECRAFT = "1.17.1"
     const val ARTICDATA = "1.17.1-SNAPSHOT"
 

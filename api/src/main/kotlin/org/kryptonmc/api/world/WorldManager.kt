@@ -37,7 +37,7 @@ public interface WorldManager {
      *
      * What the default world is will be defined by the implementation.
      */
-    @get:JvmName("default")
+    @get:JvmName("defaultWorld")
     public val default: World
 
     /**

@@ -37,7 +37,7 @@ data class KryptonWorldBorder(
 
         val DEFAULT = KryptonWorldBorder(
             5.9999968E7,
-            Vector2d(0.0, 0.0),
+            Vector2d.ZERO,
             0.2,
             5.0,
             0.0,

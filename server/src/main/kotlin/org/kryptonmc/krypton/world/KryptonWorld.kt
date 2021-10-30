@@ -170,17 +170,15 @@ class KryptonWorld(
         volume: Float,
         pitch: Float,
         except: KryptonPlayer? = null
-    ) {
-        server.playerManager.broadcast(
-            PacketOutSoundEffect(event, source, x, y, z, volume, pitch),
-            this,
-            x,
-            y,
-            z,
-            if (volume > 1F) (16.0 * volume) else 16.0,
-            except
-        )
-    }
+    ) = server.playerManager.broadcast(
+        PacketOutSoundEffect(event, source, x, y, z, volume, pitch),
+        this,
+        x,
+        y,
+        z,
+        if (volume > 1F) 16.0 * volume else 16.0,
+        except
+    )
 
     fun playSound(event: SoundEvent, source: Sound.Source, emitter: KryptonEntity, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
         server.playerManager.broadcast(
@@ -210,9 +208,7 @@ class KryptonWorld(
 
     override fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int {
         if (x in MINIMUM_SIZE..MAXIMUM_SIZE && z in MINIMUM_SIZE..MAXIMUM_SIZE) {
-            if (hasChunk(x shr 4, z shr 4)) {
-                return getChunk(x shr 4, z shr 4)!!.getHeight(type, x and 15, z and 15) + 1
-            }
+            if (hasChunk(x shr 4, z shr 4)) return getChunk(x shr 4, z shr 4)!!.getHeight(type, x and 15, z and 15) + 1
             return minimumBuildHeight
         }
         return seaLevel + 1
@@ -230,8 +226,7 @@ class KryptonWorld(
 
     override fun getChunk(position: Vector3i) = getChunk(position.x(), position.y(), position.z())
 
-    override fun loadChunk(x: Int, z: Int) =
-        chunkManager.load(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPosition.toLong(x, z)))
+    override fun loadChunk(x: Int, z: Int) = chunkManager.load(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPosition.toLong(x, z)))
 
     override fun unloadChunk(x: Int, z: Int, force: Boolean) = chunkManager.unload(x, z, TicketTypes.API_LOAD, force)
 

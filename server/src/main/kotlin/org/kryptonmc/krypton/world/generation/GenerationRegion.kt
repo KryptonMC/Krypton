@@ -46,7 +46,7 @@ class GenerationRegion(
     private val size: Int
     private val firstPosition: ChunkPosition
     private val lastPosition: ChunkPosition
-    var currentlyGenerating: (() -> String)? = null
+    private var currentlyGenerating: (() -> String)? = null
     override val seed = world.seed
     override val random = world.random
     override val dimensionType = world.dimensionType
@@ -71,8 +71,7 @@ class GenerationRegion(
         lastPosition = cache.last().position
     }
 
-    override fun hasChunk(x: Int, z: Int) = x >= firstPosition.x && x <= lastPosition.x &&
-            z >= firstPosition.z && z <= lastPosition.z
+    override fun hasChunk(x: Int, z: Int) = x >= firstPosition.x && x <= lastPosition.x && z >= firstPosition.z && z <= lastPosition.z
 
     override fun getChunk(x: Int, z: Int, status: ChunkStatus, shouldCreate: Boolean): ChunkAccessor? {
         val chunk = if (hasChunk(x, z)) {
@@ -83,11 +82,8 @@ class GenerationRegion(
         if (!shouldCreate) return null
         LOGGER.error("Requested chunk at $x, $z is out of region bounds at ${firstPosition.x}, ${firstPosition.z} " +
                 "to ${lastPosition.x}, ${lastPosition.z}!")
-        throw RuntimeException(if (chunk != null) {
-            "Requested chunk at $x, $z has the wrong status! Expected $status, was ${chunk.status}"
-        } else {
-            "Requested chunk at $x, $z is out of bounds!"
-        })
+        if (chunk != null) throw RuntimeException("Requested chunk at $x, $z has the wrong status! Expected $status, was ${chunk.status}")
+        throw RuntimeException("Requested chunk at $x, $z is out of bounds!")
     }
 
     override fun getBlock(x: Int, y: Int, z: Int) = getChunk(x, z)?.getBlock(x, y, z) ?: Blocks.AIR
@@ -109,14 +105,10 @@ class GenerationRegion(
         val chunkZ = z shr 4
         val dx = abs(center.x - chunkX)
         val dz = abs(center.z - chunkZ)
-        return if (dx <= writeRadiusCutoff && dz <= writeRadiusCutoff) {
-            true
-        } else {
-            LOGGER.error("Attempted to set block in chunk out of bounds! Chunk: ($chunkX, $chunkZ), position: " +
-                    "($x, $y, $z), status: " + status +
+        if (dx <= writeRadiusCutoff && dz <= writeRadiusCutoff) return true
+        LOGGER.error("Attempted to set block in chunk out of bounds! Chunk: ($chunkX, $chunkZ), position: ($x, $y, $z), status: " + status +
                     currentlyGenerating?.invoke()?.let { ", currently generating: $it" })
-            false
-        }
+        return false
     }
 
     companion object {
