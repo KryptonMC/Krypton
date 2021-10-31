@@ -35,8 +35,8 @@ dependencies {
     implementation("io.netty", "netty-transport")
 
     // Extra natives for networking
-    implementation("io.netty", "netty-transport-native-epoll")
-    implementation("io.netty", "netty-transport-native-kqueue")
+    implementation("io.netty", "netty-transport-native-epoll", classifier = "linux-x86_64")
+    implementation("io.netty", "netty-transport-native-kqueue", classifier = "osx-x86_64")
     implementation("com.velocitypowered", "velocity-native", Versions.VELOCITY_NATIVE)
 
     // Events

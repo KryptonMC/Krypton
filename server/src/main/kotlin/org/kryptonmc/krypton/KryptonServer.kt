@@ -168,19 +168,13 @@ class KryptonServer(
         // so they can actually catch this event and set up their own permission providers for the console.
         console.setupPermissions()
 
-        // Set the last tick time early (avoids initial check sending an overload warning every time)
-        lastTickTime = System.currentTimeMillis()
-
         // Start accepting connections
         LOGGER.debug("Starting Netty...")
         NettyProcess.run(this)
 
-        // Add the shutdown hook to stop the server
         Runtime.getRuntime().addShutdownHook(Thread({ stop(false) }, "Shutdown Handler").apply { isDaemon = false })
-
         LOGGER.info("Done (${"%.3fs".format(Locale.ROOT, (System.nanoTime() - startTime) / 1.0E9)})! Type \"help\" for help.")
 
-        // Start up the console handler
         LOGGER.debug("Starting console handler")
         Thread(console::start, "Console Handler").apply {
             uncaughtExceptionHandler = Thread.UncaughtExceptionHandler { _, exception ->
@@ -193,12 +187,16 @@ class KryptonServer(
     }
 
     fun run() = try {
+        // Set the last tick time early (avoids initial check sending an overload warning every time)
+        lastTickTime = System.currentTimeMillis()
+
         while (isRunning) {
             val nextTickTime = System.currentTimeMillis() - lastTickTime
             if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15_000L) {
                 LOGGER.warn("Can't keep up! Running $nextTickTime ms (${nextTickTime / 50} ticks) behind!")
                 lastOverloadWarning = lastTickTime
             }
+
             // tick
             eventManager.fireAndForgetSync(TickStartEvent(tickCount))
             val tickTime = measureTimeMillis(::tick)
