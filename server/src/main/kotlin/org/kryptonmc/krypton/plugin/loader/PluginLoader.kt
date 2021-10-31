@@ -29,10 +29,10 @@ import com.google.inject.Module
 import org.kryptonmc.api.plugin.InvalidPluginException
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
-import org.kryptonmc.api.plugin.ap.SerializedPluginDescription
 import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import org.kryptonmc.krypton.plugin.KryptonPluginDependency
 import org.kryptonmc.krypton.plugin.PluginClassLoader
+import org.kryptonmc.processor.SerializedPluginDescription
 import java.nio.file.Path
 import java.security.AccessController
 import java.security.PrivilegedAction

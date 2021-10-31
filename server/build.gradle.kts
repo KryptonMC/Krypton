@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     implementation(project(":api"))
-    implementation(project(":api").dependencyProject.sourceSets["ap"].output)
+    implementation(project(":annotation-processor"))
     implementation(platform("io.netty:netty-bom:${Versions.NETTY}"))
 
     // Extra Kotlin stuff
@@ -99,8 +99,8 @@ jacoco {
 }
 
 license {
-    header.set(project.rootProject.resources.text.fromFile("HEADER.txt"))
-    newLine.set(false)
+    header(project.rootProject.resources.text.fromFile("HEADER.txt"))
+    newLine(false)
     exclude(
         "**/*.properties",
         "**/*.conf",

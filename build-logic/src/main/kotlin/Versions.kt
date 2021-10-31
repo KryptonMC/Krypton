@@ -4,12 +4,11 @@ object Versions {
 
     // API
     const val GUAVA = "31.0.1-jre"
-    const val GSON = "2.8.8"
+    const val GSON = "2.8.9"
     const val GSON_KT = "1.3"
     const val GUICE = "5.0.1"
     const val KOTLIN_GUICE = "1.5.0"
     const val COMMONS_LANG = "3.12.0"
-    const val COMMONS_TEXT = "1.9"
     const val ADVENTURE = "4.9.2"
     const val COROUTINES = "1.5.2"
     const val CONFIGURATE = "4.1.2"
@@ -20,7 +19,7 @@ object Versions {
     // Server
     const val NETTY = "4.1.69.Final"
     const val TCA = "1.3.0"
-    const val JANSI = "3.20.0"
+    const val JANSI = "3.21.0"
     const val CAFFEINE = "3.0.4"
     const val FASTUTIL = "8.5.6"
     const val CLIKT = "3.3.0"
@@ -37,5 +36,5 @@ object Versions {
     // Test
     const val JUNIT_PLATFORM_RUNNER = "1.8.1"
     const val MOCKK = "1.12.0"
-    const val BYTEBUDDY = "1.11.20"
+    const val BYTEBUDDY = "1.11.22"
 }

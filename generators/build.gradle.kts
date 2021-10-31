@@ -16,6 +16,6 @@ minecraft {
 }
 
 license {
-    header.set(project.rootProject.resources.text.fromFile("HEADER.txt"))
-    newLine.set(false)
+    header(project.rootProject.resources.text.fromFile("HEADER.txt"))
+    newLine(false)
 }
