@@ -38,6 +38,7 @@ import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.channel.unix.DomainSocketAddress
 import io.netty.handler.timeout.ReadTimeoutHandler
+import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.netty.ChannelInitializeListener
@@ -59,7 +60,7 @@ object NettyProcess {
     private val LOGGER = logger<KryptonServer>()
     private val bossGroup: EventLoopGroup = bestLoopGroup()
     private val workerGroup: EventLoopGroup = bestLoopGroup()
-    private val listeners = mutableSetOf<ChannelInitializeListener>()
+    private val listeners = mutableMapOf<Key, ChannelInitializeListener>()
     private var future: ChannelFuture? = null
 
     fun run(server: KryptonServer) {
@@ -102,7 +103,7 @@ object NettyProcess {
                             .addLast(SizeEncoder.NETTY_NAME, SizeEncoder)
                             .addLast(PacketEncoder.NETTY_NAME, PacketEncoder)
                             .addLast(SessionHandler.NETTY_NAME, SessionHandler(server))
-                        listeners.forEach { it(channel) }
+                        listeners.values.forEach { it(channel) }
                     }
                 })
             future = bootstrap.bind().syncUninterruptibly()
@@ -116,8 +117,12 @@ object NettyProcess {
         future?.channel()?.close()?.sync()
     }
 
-    fun addListener(listener: ChannelInitializeListener) {
-        listeners.add(listener)
+    fun addListener(key: Key, listener: ChannelInitializeListener) {
+        listeners[key] = listener
+    }
+
+    fun removeListener(key: Key) {
+        listeners.remove(key)
     }
 
     // Determines the best loop group to use based on what is available on the current operating system
