@@ -4,9 +4,12 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id("krypton.common")
+    id("org.jetbrains.dokka")
     id("com.github.johnrengelman.shadow") version Versions.SHADOW
     `java-library`
     jacoco
+    `maven-publish`
+    signing
 }
 
 evaluationDependsOn(":api")
@@ -96,6 +99,45 @@ tasks["build"].dependsOn(tasks["shadowJar"])
 
 jacoco {
     toolVersion = "0.8.7"
+}
+
+task<Jar>("sourcesJar") {
+    from(sourceSets.main.get().allSource)
+    archiveClassifier.set("sources")
+}
+
+task<Jar>("javadocJar") {
+    from(tasks["dokkaJavadoc"])
+    archiveClassifier.set("javadoc")
+}
+
+publishing {
+    repositories {
+        krypton(project)
+    }
+
+    publications {
+        create<MavenPublication>("kryptonServer") {
+            artifactId = "krypton-server"
+
+            from(components["kotlin"])
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
+
+            pom {
+                name.set("Krypton")
+                description.set("Free and open-source Minecraft server software, written from the ground up.")
+                url.set("https://www.kryptonmc.org")
+                inceptionYear.set("2021")
+                packaging = "jar"
+                kryptonDetails()
+            }
+        }
+    }
+}
+
+signing {
+    sign(publishing.publications["kryptonServer"])
 }
 
 license {
