@@ -31,13 +31,13 @@ object KryptonCollisionRules {
     @JvmField val PUSH_OWN_TEAM = register(3, "push_own_team", "pushOwnTeam")
 
     // @formatter:off
+    @JvmStatic
     private fun register(id: Int, key: String, name: String = key): KryptonCollisionRule {
         val key1 = Key.key("krypton", key)
-        return Registries.register(
-            Registries.COLLISION_RULES,
+        return Registries.COLLISION_RULES.register(
             id,
             key1,
             KryptonCollisionRule(id, name, key1, Component.translatable("team.collision.$name"))
-        ) as KryptonCollisionRule
+        )
     }
 }

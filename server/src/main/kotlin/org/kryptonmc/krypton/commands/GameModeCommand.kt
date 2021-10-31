@@ -42,7 +42,7 @@ object GameModeCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal<Sender>("gamemode").permission("krypton.command.gamemode", 2)
         for (gameMode in Registries.GAME_MODES.values) {
-            command.then(literal(gameMode.name))
+            command.then(literal(gameMode.key().value()))
                 .executes { gameModeArgument(it, gameMode) }
                 .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
                     .executes { targetArgument(it, gameMode) })
@@ -82,13 +82,13 @@ object GameModeCommand : InternalCommand {
     private fun updateGameMode(entities: List<KryptonPlayer>, mode: GameMode, sender: KryptonPlayer) = entities.forEach {
         it.gameMode = mode
         if (sender == it) {
-            sender.sendMessage(translatable("gameMode.changed", translatable("gameMode.${mode.name.lowercase()}")))
+            sender.sendMessage(translatable("gameMode.changed", translatable("gameMode.${mode.key().value().lowercase()}")))
             return@forEach
         }
         sender.sendMessage(translatable(
             "commands.gamemode.success.other",
             it.displayName,
-            translatable("gameMode.${mode.name.lowercase()}")
+            translatable("gameMode.${mode.key().value().lowercase()}")
         ))
     }
 }

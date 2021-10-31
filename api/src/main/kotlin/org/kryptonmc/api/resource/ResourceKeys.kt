@@ -52,7 +52,6 @@ import org.kryptonmc.api.tags.TagType
 @Suppress("UndocumentedPublicProperty")
 public object ResourceKeys {
 
-    // @formatter:off
     /**
      * The key of the parent registry.
      */
@@ -99,7 +98,6 @@ public object ResourceKeys {
     @JvmField public val MOB_CATEGORIES: ResourceKey<out Registry<EntityCategory>> = krypton("mob_categories")
     @JvmField public val DYE_COLORS: ResourceKey<out Registry<DyeColor>> = krypton("dye_colors")
     @JvmField public val TAG_TYPES: ResourceKey<out Registry<TagType<*>>> = krypton("tag_types")
-    // @formatter:on
 
     /**
      * Creates a new registry key with the given [key] as its base key.
@@ -123,5 +121,8 @@ public object ResourceKeys {
      */
     @JvmStatic
     @Contract("_ -> new", pure = true)
-    public fun <T : Any> krypton(key: String): ResourceKey<out Registry<T>> = ResourceKey.of(RegistryRoots.KRYPTON, Key.key("krypton", key))
+    public fun <T : Any> krypton(key: String): ResourceKey<out Registry<T>> = ResourceKey.of(
+        RegistryRoots.KRYPTON,
+        Key.key("krypton", key)
+    )
 }

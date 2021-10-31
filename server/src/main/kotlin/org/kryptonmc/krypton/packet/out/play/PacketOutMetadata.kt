@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
-import org.kryptonmc.krypton.entity.metadata.write
+import org.kryptonmc.krypton.entity.metadata.MetadataHolder.Companion.write
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 

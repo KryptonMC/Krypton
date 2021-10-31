@@ -25,23 +25,22 @@ import org.kryptonmc.krypton.registry.InternalRegistries
 
 object KryptonStatisticTypes {
 
-    val BLOCK_MINED = register("mined", InternalRegistries.BLOCK)
-    val ITEM_CRAFTED = register("crafted", InternalRegistries.ITEM)
-    val ITEM_USED = register("used", InternalRegistries.ITEM)
-    val ITEM_BROKEN = register("broken", InternalRegistries.ITEM)
-    val ITEM_PICKED_UP = register("picked_up", InternalRegistries.ITEM)
-    val ITEM_DROPPED = register("dropped", InternalRegistries.ITEM)
-    val ENTITY_KILLED = register("killed", InternalRegistries.ENTITY_TYPE)
-    val ENTITY_KILLED_BY = register("killed_by", InternalRegistries.ENTITY_TYPE)
-    val CUSTOM = register("custom", Registries.CUSTOM_STATISTIC)
+    @JvmField val BLOCK_MINED = register("mined", InternalRegistries.BLOCK)
+    @JvmField val ITEM_CRAFTED = register("crafted", InternalRegistries.ITEM)
+    @JvmField val ITEM_USED = register("used", InternalRegistries.ITEM)
+    @JvmField val ITEM_BROKEN = register("broken", InternalRegistries.ITEM)
+    @JvmField val ITEM_PICKED_UP = register("picked_up", InternalRegistries.ITEM)
+    @JvmField val ITEM_DROPPED = register("dropped", InternalRegistries.ITEM)
+    @JvmField val ENTITY_KILLED = register("killed", InternalRegistries.ENTITY_TYPE)
+    @JvmField val ENTITY_KILLED_BY = register("killed_by", InternalRegistries.ENTITY_TYPE)
+    @JvmField val CUSTOM = register("custom", Registries.CUSTOM_STATISTIC)
 
-    @Suppress("UNCHECKED_CAST")
+    @JvmStatic
     private fun <T : Any> register(name: String, registry: Registry<T>): KryptonStatisticType<T> {
         val key = Key.key(name)
-        return Registries.register(
-            InternalRegistries.STATISTIC_TYPE,
+        return InternalRegistries.STATISTIC_TYPE.register(
             key,
             KryptonStatisticType(key, registry)
-        ) as KryptonStatisticType<T>
+        )
     }
 }

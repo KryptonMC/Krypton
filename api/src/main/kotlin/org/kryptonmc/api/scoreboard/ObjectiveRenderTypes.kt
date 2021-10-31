@@ -27,6 +27,6 @@ public object ObjectiveRenderTypes {
     @JvmStatic
     private fun register(name: String): ObjectiveRenderType {
         val key = Key.key("krypton", name)
-        return Registries.register(Registries.OBJECTIVE_RENDER_TYPES, key, ObjectiveRenderType.of(key))
+        return Registries.OBJECTIVE_RENDER_TYPES.register(key, ObjectiveRenderType.of(key))
     }
 }

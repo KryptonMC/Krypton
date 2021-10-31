@@ -25,11 +25,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-class GamemodeTests {
+class GameModeTests {
 
     @Test
     fun `test id conversions`() {
-        assertEquals("survival", GameModes.SURVIVAL.name)
+        assertEquals("survival", GameModes.SURVIVAL.key().value())
         assertNotNull(Registries.GAME_MODES[0])
         assertNotNull(Registries.GAME_MODES[3])
         assertNull(Registries.GAME_MODES[4])

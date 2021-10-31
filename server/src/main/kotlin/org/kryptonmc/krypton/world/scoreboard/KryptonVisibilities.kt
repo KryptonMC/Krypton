@@ -31,13 +31,13 @@ object KryptonVisibilities {
     @JvmField val HIDE_FOR_OWN_TEAM = register(3, "hide_for_own_team", "hideForOwnTeam")
 
     // @formatter:on
+    @JvmStatic
     private fun register(id: Int, key: String, name: String = key): KryptonVisibility {
         val key1 = Key.key("krypton", key)
-        return Registries.register(
-            Registries.VISIBILITIES,
+        return Registries.VISIBILITIES.register(
             id,
             key1,
             KryptonVisibility(id, name, key1, Component.translatable("team.visibility.$name"))
-        ) as KryptonVisibility
+        )
     }
 }

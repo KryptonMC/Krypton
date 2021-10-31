@@ -99,9 +99,8 @@ public object ParticleTypes {
     @JvmField public val WHITE_ASH: SimpleParticleType = simple("white_ash")
 
     // @formatter:on
-    @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    private fun <T : ParticleType> register(particle: T): T = Registries.register(Registries.PARTICLE_TYPE, particle.key(), particle) as T
+    private fun <T : ParticleType> register(particle: T): T = Registries.PARTICLE_TYPE.register(particle.key(), particle)
 
     private fun simple(name: String) = register(SimpleParticleType(Key.key(name)))
 

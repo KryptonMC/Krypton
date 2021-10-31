@@ -37,11 +37,17 @@ object KryptonParticleDataFactory : ParticleData.Factory {
 
     override fun color(red: Short, green: Short, blue: Short): ColorParticleData = KryptonColorParticleData(red, green, blue)
 
-    override fun directional(direction: Vector3d?, velocity: Float): DirectionalParticleData =
-        KryptonDirectionalParticleData(direction, velocity)
+    override fun directional(
+        direction: Vector3d?,
+        velocity: Float
+    ): DirectionalParticleData = KryptonDirectionalParticleData(direction, velocity)
 
-    override fun dust(red: Short, green: Short, blue: Short, scale: Float): DustParticleData =
-        KryptonDustParticleData(red, green, blue, scale)
+    override fun dust(
+        red: Short,
+        green: Short,
+        blue: Short,
+        scale: Float
+    ): DustParticleData = KryptonDustParticleData(red, green, blue, scale)
 
     override fun item(item: ItemType): ItemParticleData = KryptonItemParticleData(item)
 
@@ -57,6 +63,9 @@ object KryptonParticleDataFactory : ParticleData.Factory {
         toBlue: Short
     ): DustTransitionParticleData = KryptonDustTransitionParticleData(fromRed, fromGreen, fromBlue, scale, toRed, toGreen, toBlue)
 
-    override fun vibration(origin: Vector3d, destination: Vector3d, ticks: Int): VibrationParticleData =
-        KryptonVibrationParticleData(origin, destination, ticks)
+    override fun vibration(
+        origin: Vector3d,
+        destination: Vector3d,
+        ticks: Int
+    ): VibrationParticleData = KryptonVibrationParticleData(origin, destination, ticks)
 }

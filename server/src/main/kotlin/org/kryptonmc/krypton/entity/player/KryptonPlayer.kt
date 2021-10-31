@@ -33,6 +33,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent.ShowEntity
 import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.title.Title
+import net.kyori.adventure.title.TitlePart
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
@@ -377,7 +378,16 @@ class KryptonPlayer(
     }
 
     override fun showTitle(title: Title) {
+        title.times()?.let { session.send(PacketOutTitleTimes(it)) }
+        session.send(PacketOutSubTitle(title.subtitle()))
         session.send(PacketOutTitle(title.title()))
+    }
+
+    override fun <T> sendTitlePart(part: TitlePart<T>, value: T) {
+        if (part === TitlePart.TITLE) session.send(PacketOutTitle(value as Component))
+        if (part === TitlePart.SUBTITLE) session.send(PacketOutSubTitle(value as Component))
+        if (part === TitlePart.TIMES) session.send(PacketOutTitleTimes(value as Title.Times))
+        throw IllegalArgumentException("Unknown TitlePart")
     }
 
     fun sendTitle(title: Component) {
@@ -444,17 +454,12 @@ class KryptonPlayer(
 
     override fun openBook(book: Book) {
         val item = book.toItemStack()
-        val slot = inventory.heldSlot
-        session.send(PacketOutSetSlot(inventory.id, inventory.incrementStateId(), slot, item))
+        val slot = inventory.items.size + inventory.heldSlot
+        val stateId = inventory.stateId
+        session.send(PacketOutSetSlot(0, stateId, slot, item))
         session.send(PacketOutOpenBook(hand))
-        session.send(PacketOutSetSlot(inventory.id, inventory.incrementStateId(), slot, inventory.mainHand))
+        session.send(PacketOutSetSlot(0, stateId, slot, inventory.mainHand))
     }
-
-    override fun identity() = Identity.identity(uuid)
-
-    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(
-        op.apply(ShowEntity.of(key("minecraft", "player"), uuid, displayName))
-    )
 
     private fun updateAbilities() {
         when (internalGamemode) {

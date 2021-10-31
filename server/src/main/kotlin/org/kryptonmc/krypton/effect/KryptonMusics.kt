@@ -32,23 +32,23 @@ object KryptonMusics {
     private const val TEN_MINUTES = 12000
     private const val TWENTY_MINUTES = 24000
 
-    val MENU = register(SoundEvents.MUSIC_MENU, ONE_SECOND, THIRTY_SECONDS, true)
-    val CREATIVE = register(SoundEvents.MUSIC_CREATIVE, TEN_MINUTES, TWENTY_MINUTES, false)
-    val CREDITS = register(SoundEvents.MUSIC_CREDITS, 0, 0, true)
-    val END_BOSS = register(SoundEvents.MUSIC_DRAGON, 0, 0, true)
-    val END = register(SoundEvents.MUSIC_END, FIVE_MINUTES, TWENTY_MINUTES, true)
-    val UNDER_WATER = register(SoundEvents.MUSIC_UNDER_WATER, TEN_MINUTES, TWENTY_MINUTES, false)
-    val GAME = register(SoundEvents.MUSIC_GAME, TEN_MINUTES, TWENTY_MINUTES, false)
-    val NETHER_WASTES = register(SoundEvents.MUSIC_BIOME_NETHER_WASTES, TEN_MINUTES, TWENTY_MINUTES, false)
-    val SOUL_SAND_VALLEY = register(SoundEvents.MUSIC_BIOME_SOUL_SAND_VALLEY, TEN_MINUTES, TWENTY_MINUTES, false)
-    val BASALT_DELTAS = register(SoundEvents.MUSIC_BIOME_BASALT_DELTAS, TEN_MINUTES, TWENTY_MINUTES, false)
-    val CRIMSON_FOREST = register(SoundEvents.MUSIC_BIOME_CRIMSON_FOREST, TEN_MINUTES, TWENTY_MINUTES, false)
-    val WARPED_FOREST = register(SoundEvents.MUSIC_BIOME_WARPED_FOREST, TEN_MINUTES, TWENTY_MINUTES, false)
+    @JvmField val MENU = register(SoundEvents.MUSIC_MENU, ONE_SECOND, THIRTY_SECONDS, true)
+    @JvmField val CREATIVE = register(SoundEvents.MUSIC_CREATIVE, TEN_MINUTES, TWENTY_MINUTES, false)
+    @JvmField val CREDITS = register(SoundEvents.MUSIC_CREDITS, 0, 0, true)
+    @JvmField val END_BOSS = register(SoundEvents.MUSIC_DRAGON, 0, 0, true)
+    @JvmField val END = register(SoundEvents.MUSIC_END, FIVE_MINUTES, TWENTY_MINUTES, true)
+    @JvmField val UNDER_WATER = register(SoundEvents.MUSIC_UNDER_WATER, TEN_MINUTES, TWENTY_MINUTES, false)
+    @JvmField val GAME = register(SoundEvents.MUSIC_GAME, TEN_MINUTES, TWENTY_MINUTES, false)
+    @JvmField val NETHER_WASTES = register(SoundEvents.MUSIC_BIOME_NETHER_WASTES, TEN_MINUTES, TWENTY_MINUTES, false)
+    @JvmField val SOUL_SAND_VALLEY = register(SoundEvents.MUSIC_BIOME_SOUL_SAND_VALLEY, TEN_MINUTES, TWENTY_MINUTES, false)
+    @JvmField val BASALT_DELTAS = register(SoundEvents.MUSIC_BIOME_BASALT_DELTAS, TEN_MINUTES, TWENTY_MINUTES, false)
+    @JvmField val CRIMSON_FOREST = register(SoundEvents.MUSIC_BIOME_CRIMSON_FOREST, TEN_MINUTES, TWENTY_MINUTES, false)
+    @JvmField val WARPED_FOREST = register(SoundEvents.MUSIC_BIOME_WARPED_FOREST, TEN_MINUTES, TWENTY_MINUTES, false)
 
-    private fun register(sound: SoundEvent, minDelay: Int, maxDelay: Int, replace: Boolean): KryptonMusic = Registries.register(
-        Registries.MUSIC,
+    @JvmStatic
+    private fun register(sound: SoundEvent, minDelay: Int, maxDelay: Int, replace: Boolean): KryptonMusic = Registries.MUSIC.register(
         sound.key(),
         KryptonMusic(sound, minDelay, maxDelay, replace)
-    ) as KryptonMusic
+    )
 }
 

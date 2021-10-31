@@ -77,11 +77,11 @@ sealed class BiomeGenerator(val possibleBiomes: List<Biome>) : NoiseBiomeSource 
         val CODEC: Codec<BiomeGenerator> = InternalRegistries.BIOME_GENERATOR.dispatchStable(BiomeGenerator::codec, Function.identity())
 
         init {
-            Registries.register(InternalRegistries.BIOME_GENERATOR, "fixed", FixedBiomeGenerator.CODEC)
-            Registries.register(InternalRegistries.BIOME_GENERATOR, "multi_noise", MultiNoiseBiomeGenerator.CODEC)
-            Registries.register(InternalRegistries.BIOME_GENERATOR, "checkerboard", CheckerboardBiomeGenerator.CODEC)
-            Registries.register(InternalRegistries.BIOME_GENERATOR, "vanilla_layered", VanillaLayeredBiomeGenerator.CODEC)
-            Registries.register(InternalRegistries.BIOME_GENERATOR, "the_end", TheEndBiomeGenerator.CODEC)
+            InternalRegistries.BIOME_GENERATOR.register("fixed", FixedBiomeGenerator.CODEC)
+            InternalRegistries.BIOME_GENERATOR.register("multi_noise", MultiNoiseBiomeGenerator.CODEC)
+            InternalRegistries.BIOME_GENERATOR.register("checkerboard", CheckerboardBiomeGenerator.CODEC)
+            InternalRegistries.BIOME_GENERATOR.register("vanilla_layered", VanillaLayeredBiomeGenerator.CODEC)
+            InternalRegistries.BIOME_GENERATOR.register("the_end", TheEndBiomeGenerator.CODEC)
         }
     }
 }

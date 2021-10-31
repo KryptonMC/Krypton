@@ -34,10 +34,9 @@ object KryptonEntityCategories {
     @JvmStatic
     private fun register(name: String, max: Int, friendly: Boolean, persistent: Boolean, despawn: Int): KryptonEntityCategory {
         val key = Key.key(name)
-        return Registries.register(
-            Registries.MOB_CATEGORIES,
+        return Registries.MOB_CATEGORIES.register(
             key,
             KryptonEntityCategory(key, max, friendly, persistent, despawn, 32)
-        ) as KryptonEntityCategory
+        )
     }
 }

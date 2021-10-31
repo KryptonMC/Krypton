@@ -102,7 +102,7 @@ data class NoiseGeneratorSettings(
         private fun register(
             key: ResourceKey<NoiseGeneratorSettings>,
             settings: NoiseGeneratorSettings
-        ) = settings.apply { Registries.register(InternalRegistries.NOISE_GENERATOR_SETTINGS, key.location, this) }
+        ) = settings.apply { InternalRegistries.NOISE_GENERATOR_SETTINGS.register(key.location, this) }
 
         private fun overworld(structureSettings: StructureSettings, isAmplified: Boolean): NoiseGeneratorSettings {
             val scale = 0.9999999814507745

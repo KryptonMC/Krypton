@@ -33,14 +33,19 @@ import java.awt.Color
 
 object BuiltInBiomes {
 
+    @JvmStatic
     fun ocean(key: Key, isDeep: Boolean) = ocean(key, isDeep, 4159204, 329011)
 
+    @JvmStatic
     fun coldOcean(key: Key, isDeep: Boolean) = ocean(key, isDeep, 4020182, 329011)
 
+    @JvmStatic
     fun lukewarmOcean(key: Key, isDeep: Boolean) = ocean(key, isDeep, 4566514, 267827)
 
+    @JvmStatic
     fun warmOcean(key: Key, isDeep: Boolean) = ocean(key, isDeep, 4445678, 270131)
 
+    @JvmStatic
     fun frozenOcean(key: Key, isDeep: Boolean) = KryptonBiome(
         key,
         KryptonClimate(
@@ -59,6 +64,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     private fun ocean(key: Key, isDeep: Boolean, waterColor: Int, waterFogColor: Int) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.RAIN, 0.5F, 0.5F),
@@ -74,6 +80,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun desert(key: Key, depth: Float, scale: Float) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.NONE, 2F, 0F),
@@ -89,6 +96,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun mountain(key: Key, depth: Float, scale: Float) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.RAIN, 0.2F, 0.3F),
@@ -104,6 +112,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun forest(key: Key, depth: Float, scale: Float) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.RAIN, 0.7F, 0.8F),
@@ -119,6 +128,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun birchForest(key: Key, depth: Float, scale: Float) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.RAIN, 0.6F, 0.6F),
@@ -134,8 +144,10 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun flowerForest(key: Key) = forest(key, 0.1F, 0.4F)
 
+    @JvmStatic
     fun darkForest(key: Key, depth: Float, scale: Float) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.RAIN, 0.7F, 0.8F),
@@ -152,6 +164,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun taiga(key: Key, depth: Float, scale: Float, isSnowy: Boolean) = KryptonBiome(
         key,
         KryptonClimate(
@@ -170,6 +183,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun giantTreeTaiga(key: Key, depth: Float, scale: Float, temperature: Float) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.RAIN, temperature, 0.8F),
@@ -185,6 +199,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun swamp(key: Key, depth: Float, scale: Float) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.RAIN, 0.8F, 0.9F),
@@ -202,6 +217,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun tundra(key: Key, depth: Float, scale: Float) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.SNOW, 0F, 0.5F),
@@ -217,6 +233,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun river(key: Key, depth: Float, scale: Float, temperature: Float, waterColor: Int, isSnowy: Boolean) = KryptonBiome(
         key,
         KryptonClimate(if (isSnowy) Precipitations.SNOW else Precipitations.RAIN, temperature, 0.5F),
@@ -232,6 +249,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun beach(
         key: Key,
         depth: Float,
@@ -256,22 +274,31 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun jungle(key: Key) = jungle(key, 0.1F, 0.2F)
 
+    @JvmStatic
     fun jungleEdge(key: Key) = jungle(key, 0.1F, 0.2F, 0.8F)
 
+    @JvmStatic
     fun modifiedJungle(key: Key) = jungle(key, 0.2F, 0.4F, 0.9F)
 
+    @JvmStatic
     fun modifiedJungleEdge(key: Key) = jungle(key, 0.2F, 0.4F, 0.8F)
 
+    @JvmStatic
     fun jungleHills(key: Key) = jungle(key, 0.45F, 0.3F)
 
+    @JvmStatic
     fun bambooJungle(key: Key) = jungle(key, 0.1F, 0.2F)
 
+    @JvmStatic
     fun bambooJungleHills(key: Key) = jungle(key, 0.45F, 0.3F)
 
+    @JvmStatic
     private fun jungle(key: Key, depth: Float, scale: Float) = jungle(key, depth, scale, 0.9F)
 
+    @JvmStatic
     private fun jungle(key: Key, depth: Float, scale: Float, downfall: Float) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.RAIN, 0.95F, downfall),
@@ -287,6 +314,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun plains(key: Key) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.RAIN, 0.8F, 0.4F),
@@ -302,6 +330,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun end(key: Key) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.NONE, 0.5F, 0.5F),
@@ -317,6 +346,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun mushroomFields(key: Key, depth: Float, scale: Float) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.RAIN, 0.9F, 1F),
@@ -332,6 +362,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun savanna(key: Key, depth: Float, scale: Float, temperature: Float) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.NONE, temperature, 0F),
@@ -347,8 +378,10 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun savannaPlateau(key: Key) = savanna(key, 1.5F, 0.025F, 1F)
 
+    @JvmStatic
     fun badlands(key: Key, depth: Float, scale: Float) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.NONE, 2F, 0F),
@@ -366,8 +399,10 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun erodedBadlands(key: Key) = badlands(key, 0.1F, 0.2F)
 
+    @JvmStatic
     fun void(key: Key) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.NONE, 0.5F, 0.5F),
@@ -383,6 +418,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun netherWastes(key: Key) = nether(
         key,
         3344392,
@@ -393,6 +429,7 @@ object BuiltInBiomes {
         KryptonMusics.NETHER_WASTES
     )
 
+    @JvmStatic
     fun soulSandValley(key: Key) = nether(
         key,
         1787717,
@@ -404,6 +441,7 @@ object BuiltInBiomes {
         KryptonAmbientParticleSettings(ParticleTypes.ASH, null, 0.00625F)
     )
 
+    @JvmStatic
     fun basaltDeltas(key: Key) = nether(
         key,
         6840176,
@@ -415,6 +453,7 @@ object BuiltInBiomes {
         KryptonAmbientParticleSettings(ParticleTypes.WHITE_ASH, null, 0.118093334F)
     )
 
+    @JvmStatic
     fun crimsonForest(key: Key) = nether(
         key,
         3343107,
@@ -426,6 +465,7 @@ object BuiltInBiomes {
         KryptonAmbientParticleSettings(ParticleTypes.CRIMSON_SPORE, null, 0.025F)
     )
 
+    @JvmStatic
     fun warpedForest(key: Key) = nether(
         key,
         1705242,
@@ -437,6 +477,7 @@ object BuiltInBiomes {
         KryptonAmbientParticleSettings(ParticleTypes.WARPED_SPORE, null, 0.01428F)
     )
 
+    @JvmStatic
     private fun nether(
         key: Key,
         fogColor: Int,
@@ -465,6 +506,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun lushCaves(key: Key) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.RAIN, 0.5F, 0.5F),
@@ -479,6 +521,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     fun dripstoneCaves(key: Key) = KryptonBiome(
         key,
         KryptonClimate(Precipitations.RAIN, 0.8F, 0.4F),
@@ -494,6 +537,7 @@ object BuiltInBiomes {
         )
     )
 
+    @JvmStatic
     private fun Float.calculateSkyColor(): Color {
         val temp = (this / 3F).clamp(-1F, 1F)
         return Color.getHSBColor(0.62222224F - temp * 0.05F, 0.5F + temp * 0.1F, 1F)

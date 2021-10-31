@@ -68,6 +68,10 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
         return value
     }
 
+    override fun <V : T> register(key: Key, value: V): V = register(ResourceKey.of(this.key, key), value)
+
+    override fun <V : T> register(id: Int, key: Key, value: V): V = register(id, ResourceKey.of(this.key, key), value)
+
     override fun get(key: Key) = storage[key]
 
     override fun get(id: Int) = if (id in byId.indices) byId[id] else null

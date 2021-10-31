@@ -43,6 +43,6 @@ public object BiomeCategories {
     @JvmStatic
     private fun register(name: String): BiomeCategory {
         val key = Key.key(name)
-        return Registries.register(Registries.BIOME_CATEGORIES, key, BiomeCategory.of(key))
+        return Registries.BIOME_CATEGORIES.register(key, BiomeCategory.of(key))
     }
 }

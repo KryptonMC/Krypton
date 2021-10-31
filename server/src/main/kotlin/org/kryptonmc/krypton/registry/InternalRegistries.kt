@@ -27,30 +27,32 @@ import org.kryptonmc.krypton.resource.InternalResourceKeys
 
 object InternalRegistries {
 
-    val SOUND_EVENT = create(ResourceKeys.SOUND_EVENT)
-    val ENTITY_TYPE = createDefaulted(ResourceKeys.ENTITY_TYPE, key("pig"))
-    val PARTICLE_TYPE = create(ResourceKeys.PARTICLE_TYPE)
-    val BLOCK = create(ResourceKeys.BLOCK)
-    val ITEM = createDefaulted(ResourceKeys.ITEM, key("air"))
-    val MENU = create(ResourceKeys.MENU)
-    val ATTRIBUTE = create(ResourceKeys.ATTRIBUTE)
-    val MEMORIES = create(InternalResourceKeys.MEMORIES)
-    val GAME_EVENT = create(InternalResourceKeys.GAME_EVENT)
-    val BIOME = create(ResourceKeys.BIOME)
-    val STATISTIC_TYPE = create(ResourceKeys.STATISTIC_TYPE)
-    val CANVAS = createDefaulted(ResourceKeys.PICTURE, key("kebab"))
-    val FLUID = createDefaulted(ResourceKeys.FLUID, key("empty"))
-    val BLOCK_ENTITY_TYPE = create(ResourceKeys.BLOCK_ENTITY_TYPE)
+    @JvmField val SOUND_EVENT = create(ResourceKeys.SOUND_EVENT)
+    @JvmField val ENTITY_TYPE = createDefaulted(ResourceKeys.ENTITY_TYPE, key("pig"))
+    @JvmField val PARTICLE_TYPE = create(ResourceKeys.PARTICLE_TYPE)
+    @JvmField val BLOCK = create(ResourceKeys.BLOCK)
+    @JvmField val ITEM = createDefaulted(ResourceKeys.ITEM, key("air"))
+    @JvmField val MENU = create(ResourceKeys.MENU)
+    @JvmField val ATTRIBUTE = create(ResourceKeys.ATTRIBUTE)
+    @JvmField val MEMORIES = create(InternalResourceKeys.MEMORIES)
+    @JvmField val GAME_EVENT = create(InternalResourceKeys.GAME_EVENT)
+    @JvmField val BIOME = create(ResourceKeys.BIOME)
+    @JvmField val STATISTIC_TYPE = create(ResourceKeys.STATISTIC_TYPE)
+    @JvmField val CANVAS = createDefaulted(ResourceKeys.PICTURE, key("kebab"))
+    @JvmField val FLUID = createDefaulted(ResourceKeys.FLUID, key("empty"))
+    @JvmField val BLOCK_ENTITY_TYPE = create(ResourceKeys.BLOCK_ENTITY_TYPE)
 
     // World generation registries
-    val GENERATOR = create(InternalResourceKeys.GENERATOR)
-    val BIOME_GENERATOR = create(InternalResourceKeys.BIOME_GENERATOR)
-    val STRUCTURE = create(InternalResourceKeys.STRUCTURE)
-    val NOISE_GENERATOR_SETTINGS = create(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
-    val CHUNK_STATUS = createDefaulted(InternalResourceKeys.CHUNK_STATUS, key("empty"))
+    @JvmField val GENERATOR = create(InternalResourceKeys.GENERATOR)
+    @JvmField val BIOME_GENERATOR = create(InternalResourceKeys.BIOME_GENERATOR)
+    @JvmField val STRUCTURE = create(InternalResourceKeys.STRUCTURE)
+    @JvmField val NOISE_GENERATOR_SETTINGS = create(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
+    @JvmField val CHUNK_STATUS = createDefaulted(InternalResourceKeys.CHUNK_STATUS, key("empty"))
 
+    @JvmStatic
     private fun <T : Any> create(key: ResourceKey<out Registry<T>>) = KryptonRegistryManager.create(key)
 
+    @JvmStatic
     private fun <T : Any> createDefaulted(
         key: ResourceKey<out Registry<T>>,
         defaultKey: Key

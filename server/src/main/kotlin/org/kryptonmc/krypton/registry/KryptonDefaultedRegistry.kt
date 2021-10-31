@@ -32,7 +32,7 @@ class KryptonDefaultedRegistry<T : Any>(
 
     override fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V {
         if (key.location == defaultKey) defaultValue = value
-        return super.register(id, key, value)
+        return super<KryptonRegistry>.register(id, key, value)
     }
 
     override fun get(key: Key) = super.get(key) ?: defaultValue

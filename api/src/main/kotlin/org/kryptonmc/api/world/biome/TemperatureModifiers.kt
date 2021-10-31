@@ -27,6 +27,6 @@ public object TemperatureModifiers {
     @JvmStatic
     private fun register(name: String): TemperatureModifier {
         val key = Key.key(name)
-        return Registries.register(Registries.TEMPERATURE_MODIFIERS, key, TemperatureModifier.of(key))
+        return Registries.TEMPERATURE_MODIFIERS.register(key, TemperatureModifier.of(key))
     }
 }

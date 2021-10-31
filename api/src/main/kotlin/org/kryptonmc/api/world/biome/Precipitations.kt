@@ -28,6 +28,6 @@ public object Precipitations {
     @JvmStatic
     private fun register(name: String): Precipitation {
         val key = Key.key(name)
-        return Registries.register(Registries.PRECIPITATIONS, key, Precipitation.of(key))
+        return Registries.PRECIPITATIONS.register(key, Precipitation.of(key))
     }
 }

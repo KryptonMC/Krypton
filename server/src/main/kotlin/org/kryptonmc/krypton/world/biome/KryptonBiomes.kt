@@ -25,9 +25,9 @@ import org.kryptonmc.krypton.registry.InternalRegistries
 
 object KryptonBiomes {
 
-    val ID_TO_KEY = Int2ObjectArrayMap<ResourceKey<Biome>>()
-    val PLAINS = register(BiomeKeys.PLAINS, 1, BuiltInBiomes.plains(BiomeKeys.PLAINS.location))
-    val THE_VOID = register(BiomeKeys.THE_VOID, 127, BuiltInBiomes.void(BiomeKeys.THE_VOID.location))
+    @JvmField val ID_TO_KEY = Int2ObjectArrayMap<ResourceKey<Biome>>()
+    @JvmField val PLAINS = register(BiomeKeys.PLAINS, 1, BuiltInBiomes.plains(BiomeKeys.PLAINS.location))
+    @JvmField val THE_VOID = register(BiomeKeys.THE_VOID, 127, BuiltInBiomes.void(BiomeKeys.THE_VOID.location))
 
     init {
         register(BiomeKeys.OCEAN, 0, BuiltInBiomes.ocean(BiomeKeys.OCEAN.location, false))
@@ -52,7 +52,11 @@ object KryptonBiomes {
         register(BiomeKeys.SNOWY_TUNDRA, 12, BuiltInBiomes.tundra(BiomeKeys.SNOWY_TUNDRA.location, 0.125F, 0.05F))
         register(BiomeKeys.SNOWY_MOUNTAINS, 13, BuiltInBiomes.tundra(BiomeKeys.SNOWY_MOUNTAINS.location, 0.45F, 0.3F))
         register(BiomeKeys.MUSHROOM_FIELDS, 14, BuiltInBiomes.mushroomFields(BiomeKeys.MUSHROOM_FIELDS.location, 0.2F, 0.3F))
-        register(BiomeKeys.MUSHROOM_FIELD_SHORE, 15, BuiltInBiomes.mushroomFields(BiomeKeys.MUSHROOM_FIELD_SHORE.location, 0F, 0.025F))
+        register(
+            BiomeKeys.MUSHROOM_FIELD_SHORE,
+            15,
+            BuiltInBiomes.mushroomFields(BiomeKeys.MUSHROOM_FIELD_SHORE.location, 0F, 0.025F)
+        )
         register(BiomeKeys.BEACH, 16, BuiltInBiomes.beach(
             BiomeKeys.BEACH.location,
             0F,
@@ -95,7 +99,11 @@ object KryptonBiomes {
         register(BiomeKeys.BIRCH_FOREST_HILLS, 28, BuiltInBiomes.birchForest(BiomeKeys.BIRCH_FOREST_HILLS.location, 0.45F, 0.3F))
         register(BiomeKeys.DARK_FOREST, 29, BuiltInBiomes.darkForest(BiomeKeys.DARK_FOREST.location, 0.1F, 0.2F))
         register(BiomeKeys.SNOWY_TAIGA, 30, BuiltInBiomes.taiga(BiomeKeys.SNOWY_TAIGA.location, 0.2F, 0.2F, true))
-        register(BiomeKeys.SNOWY_TAIGA_HILLS, 31, BuiltInBiomes.taiga(BiomeKeys.SNOWY_TAIGA_HILLS.location, 0.45F, 0.3F, true))
+        register(
+            BiomeKeys.SNOWY_TAIGA_HILLS,
+            31,
+            BuiltInBiomes.taiga(BiomeKeys.SNOWY_TAIGA_HILLS.location, 0.45F, 0.3F, true)
+        )
         register(
             BiomeKeys.GIANT_TREE_TAIGA,
             32,

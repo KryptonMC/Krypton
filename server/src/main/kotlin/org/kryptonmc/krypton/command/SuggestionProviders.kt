@@ -18,7 +18,10 @@
  */
 package org.kryptonmc.krypton.command
 
+import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.SuggestionProvider
+import com.mojang.brigadier.suggestion.Suggestions
+import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.text.Component.translatable
@@ -26,12 +29,14 @@ import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.krypton.registry.InternalRegistries
+import java.util.concurrent.CompletableFuture
 
 object SuggestionProviders {
 
     private val PROVIDERS_BY_NAME = mutableMapOf<Key, SuggestionProvider<Sender>>()
     private val DEFAULT_NAME = key("ask_server")
 
+    @JvmField
     val SUMMONABLE_ENTITIES = register(key("summonable_entities")) { _, builder ->
         InternalRegistries.ENTITY_TYPE.values.filter { it.isSummonable }.suggestKey(builder, { it.key() }) {
             val key = InternalRegistries.ENTITY_TYPE[it]
@@ -39,6 +44,7 @@ object SuggestionProviders {
         }
     }
 
+    @JvmStatic
     fun register(key: Key, provider: SuggestionProvider<Sender>): SuggestionProvider<Sender> {
         require(key !in PROVIDERS_BY_NAME) {
             "A command suggestion provider is already registered with the given key $key!"
@@ -47,10 +53,18 @@ object SuggestionProviders {
         return Wrapper(key, provider)
     }
 
+    @JvmStatic
     fun name(provider: SuggestionProvider<Sender>) = if (provider is Wrapper) provider.name else DEFAULT_NAME
 
-    private class Wrapper(
+    @JvmRecord
+    private data class Wrapper(
         val name: Key,
         private val delegate: SuggestionProvider<Sender>
-    ) : SuggestionProvider<Sender> by delegate
+    ) : SuggestionProvider<Sender> {
+
+        override fun getSuggestions(
+            context: CommandContext<Sender>?,
+            builder: SuggestionsBuilder?
+        ): CompletableFuture<Suggestions> = delegate.getSuggestions(context, builder)
+    }
 }

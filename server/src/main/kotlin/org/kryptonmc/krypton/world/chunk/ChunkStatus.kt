@@ -80,8 +80,7 @@ class ChunkStatus private constructor(
             range: Int,
             heightmapsAfter: EnumSet<Heightmap.Type>,
             type: Type
-        ): ChunkStatus = Registries.register(
-            InternalRegistries.CHUNK_STATUS,
+        ): ChunkStatus = InternalRegistries.CHUNK_STATUS.register(
             name,
             ChunkStatus(name, parent, range, heightmapsAfter, type)
         )

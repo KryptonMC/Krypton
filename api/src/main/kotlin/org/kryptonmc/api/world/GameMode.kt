@@ -8,6 +8,8 @@
  */
 package org.kryptonmc.api.world
 
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import org.jetbrains.annotations.ApiStatus
@@ -22,13 +24,7 @@ import org.kryptonmc.api.util.provide
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 @CataloguedBy(GameModes::class)
-public interface GameMode : TranslationHolder {
-
-    /**
-     * The full name of this game mode. For example, 'survival'.
-     */
-    @get:JvmName("name")
-    public val name: String
+public interface GameMode : TranslationHolder, Keyed {
 
     /**
      * The abbreviation of this game mode. For example, 's' for survival.
@@ -46,7 +42,7 @@ public interface GameMode : TranslationHolder {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(name: String, abbreviation: String, canBuild: Boolean, translation: TranslatableComponent): GameMode
+        public fun of(key: Key, abbreviation: String, canBuild: Boolean, translation: TranslatableComponent): GameMode
     }
 
     public companion object {
@@ -56,7 +52,7 @@ public interface GameMode : TranslationHolder {
         /**
          * Creates a new game mode with the given values.
          *
-         * @param name the name
+         * @param key the key
          * @param abbreviation the abbreviation
          * @param canBuild if the mode permits users using it to build
          * @param translation the translation
@@ -66,10 +62,10 @@ public interface GameMode : TranslationHolder {
         @JvmOverloads
         @Contract("_ -> new", pure = true)
         public fun of(
-            name: String,
+            key: Key,
             abbreviation: String,
             canBuild: Boolean,
-            translation: TranslatableComponent = Component.translatable("gameMode.${name.lowercase()}")
-        ): GameMode = FACTORY.of(name, abbreviation, canBuild, translation)
+            translation: TranslatableComponent = Component.translatable("gameMode.${key.value().lowercase()}")
+        ): GameMode = FACTORY.of(key, abbreviation, canBuild, translation)
     }
 }

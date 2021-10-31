@@ -28,5 +28,5 @@ public enum class StructureMode(@get:JvmName("serialized") override val serializ
      * The client-side translation for this structure mode.
      */
     @get:JvmName("translation")
-    public override val translation: TranslatableComponent = Component.translatable("structure_block.mode_info.$serialized")
+    override val translation: TranslatableComponent = Component.translatable("structure_block.mode_info.$serialized")
 }

@@ -36,6 +36,7 @@ import kotlin.io.path.writeText
 
 class StandardGenerator(private val output: Path) {
 
+    @Suppress("UNCHECKED_CAST")
     fun run(
         source: Class<*>,
         registry: Registry<*>,

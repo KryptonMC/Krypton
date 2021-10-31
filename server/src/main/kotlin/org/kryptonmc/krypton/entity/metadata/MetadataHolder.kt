@@ -96,19 +96,18 @@ class MetadataHolder(private val entity: KryptonEntity) {
     companion object {
 
         private const val MAX_ID_VALUE = 254
+        private const val EOF_MARKER = 255
+
+        fun List<Entry<*>>.write(buf: ByteBuf) {
+            forEach { buf.writeEntry(it) }
+            buf.writeByte(EOF_MARKER)
+        }
+
+        private fun <T> ByteBuf.writeEntry(entry: Entry<T>) {
+            val key = entry.key
+            writeByte(key.id)
+            writeVarInt(key.serializer.id)
+            key.serializer.write(this, entry.value)
+        }
     }
-}
-
-private const val EOF_MARKER = 255
-
-fun List<MetadataHolder.Entry<*>>.write(buf: ByteBuf) {
-    forEach { buf.writeEntry(it) }
-    buf.writeByte(EOF_MARKER)
-}
-
-private fun <T> ByteBuf.writeEntry(entry: MetadataHolder.Entry<T>) {
-    val key = entry.key
-    writeByte(key.id)
-    writeVarInt(key.serializer.id)
-    key.serializer.write(this, entry.value)
 }

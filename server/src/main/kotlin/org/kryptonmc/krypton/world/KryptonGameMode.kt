@@ -18,35 +18,34 @@
  */
 package org.kryptonmc.krypton.world
 
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.api.world.GameModes
 
 @JvmRecord
 data class KryptonGameMode(
-    override val name: String,
+    private val key: Key,
     override val abbreviation: String,
     override val canBuild: Boolean,
     override val translation: TranslatableComponent
 ) : GameMode {
 
+    override fun key(): Key = key
+
     object Factory : GameMode.Factory {
 
         override fun of(
-            name: String,
+            key: Key,
             abbreviation: String,
             canBuild: Boolean,
             translation: TranslatableComponent
-        ): GameMode = KryptonGameMode(name, abbreviation, canBuild, translation)
+        ): GameMode = KryptonGameMode(key, abbreviation, canBuild, translation)
     }
 
     companion object {
 
-        private val NAMES by lazy { Registries.GAME_MODES.mapKeys { it.value.name } }
         private val ABBREVIATIONS by lazy { Registries.GAME_MODES.mapKeys { it.value.abbreviation } }
-
-        fun fromName(name: String): GameMode? = NAMES[name]
 
         fun fromAbbreviation(abbreviation: String): GameMode? = ABBREVIATIONS[abbreviation]
     }

@@ -29,6 +29,6 @@ public object GameModes {
     @JvmStatic
     private fun register(name: String, abbreviation: String, canBuild: Boolean): GameMode {
         val key = Key.key(name)
-        return Registries.register(Registries.GAME_MODES, key, GameMode.of(name, abbreviation, canBuild))
+        return Registries.GAME_MODES.register(key, GameMode.of(key, abbreviation, canBuild))
     }
 }

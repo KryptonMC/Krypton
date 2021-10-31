@@ -78,6 +78,45 @@ public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
     public fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V
 
     /**
+     * Registers a new value to this registry with the given registry [key]
+     * and value.
+     *
+     * @param key the key
+     * @param value the value
+     */
+    public fun <V : T> register(key: String, value: V): V = register(Key.key(key), value)
+
+    /**
+     * Registers a new value to this registry with the given registry [key]
+     * and value.
+     *
+     * @param key the registry key
+     * @param value the value
+     * @return the value
+     */
+    public fun <V : T> register(key: Key, value: V): V
+
+    /**
+     * Registers a new value to this registry with the given registry [key]
+     * and value.
+     *
+     * @param id the ID of the entry in the registry
+     * @param key the key
+     * @param value the value
+     */
+    public fun <V : T> register(id: Int, key: String, value: V): V = register(id, Key.key(key), value)
+
+    /**
+     * Registers a new value to this registry with the given registry [key]
+     * and value.
+     *
+     * @param id the ID of the entry in the registry
+     * @param key the key
+     * @param value the value
+     */
+    public fun <V : T> register(id: Int, key: Key, value: V): V
+
+    /**
      * Returns true if the given [key] is registered, false otherwise.
      *
      * @param key the key

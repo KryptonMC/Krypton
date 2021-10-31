@@ -26,24 +26,25 @@ import org.kryptonmc.api.scoreboard.ObjectiveRenderTypes
 
 object KryptonCriteria {
 
-    val DUMMY = register("dummy")
-    val TRIGGER = register("trigger")
-    val DEATH_COUNT = register("death_count", "deathCount")
-    val PLAYER_KILL_COUNT = register("player_kill_count", "playerKillCount")
-    val TOTAL_KILL_COUNT = register("total_kill_count", "totalKillCount")
-    val HEALTH = register("health", isMutable = true, renderType = ObjectiveRenderTypes.HEARTS)
-    val FOOD = register("food", isMutable = true)
-    val AIR = register("air", isMutable = true)
-    val ARMOR = register("armor", isMutable = true)
-    val EXPERIENCE = register("experience", "xp", isMutable = true)
-    val LEVEL = register("level", isMutable = true)
-    val TEAM_KILL = register("team_kill", "teamkill", NamedTextColor.NAMES.keys().map {
+    @JvmField val DUMMY = register("dummy")
+    @JvmField val TRIGGER = register("trigger")
+    @JvmField val DEATH_COUNT = register("death_count", "deathCount")
+    @JvmField val PLAYER_KILL_COUNT = register("player_kill_count", "playerKillCount")
+    @JvmField val TOTAL_KILL_COUNT = register("total_kill_count", "totalKillCount")
+    @JvmField val HEALTH = register("health", isMutable = true, renderType = ObjectiveRenderTypes.HEARTS)
+    @JvmField val FOOD = register("food", isMutable = true)
+    @JvmField val AIR = register("air", isMutable = true)
+    @JvmField val ARMOR = register("armor", isMutable = true)
+    @JvmField val EXPERIENCE = register("experience", "xp", isMutable = true)
+    @JvmField val LEVEL = register("level", isMutable = true)
+    @JvmField val TEAM_KILL = register("team_kill", "teamkill", NamedTextColor.NAMES.keys().map {
         register("team_kill.$it", "teamkill.$it")
     })
-    val KILLED_BY_TEAM = register("killed_by_team", "killedByTeam", NamedTextColor.NAMES.keys().map {
+    @JvmField val KILLED_BY_TEAM = register("killed_by_team", "killedByTeam", NamedTextColor.NAMES.keys().map {
         register("team_kill.$it", "teamkill.$it")
     })
 
+    @JvmStatic
     private fun register(
         key: String,
         name: String = key,
@@ -51,13 +52,13 @@ object KryptonCriteria {
         renderType: ObjectiveRenderType = ObjectiveRenderTypes.INTEGER
     ): KryptonCriterion {
         val key1 = Key.key(key)
-        return Registries.register(
-            Registries.CRITERIA,
+        return Registries.CRITERIA.register(
             key1,
             KryptonCriterion(key1, name, isMutable, renderType)
-        ) as KryptonCriterion
+        )
     }
 
+    @JvmStatic
     private fun register(
         key: String,
         name: String,
@@ -66,10 +67,9 @@ object KryptonCriteria {
         renderType: ObjectiveRenderType = ObjectiveRenderTypes.INTEGER
     ): KryptonCompoundCriterion {
         val key1 = Key.key(key)
-        return Registries.register(
-            Registries.CRITERIA,
+        return Registries.CRITERIA.register(
             key1,
             KryptonCompoundCriterion(key1, name, children, isMutable, renderType)
-        ) as KryptonCompoundCriterion
+        )
     }
 }

@@ -136,11 +136,10 @@ object KryptonMetaKeys {
         noinline predicate: (CompoundTag) -> Boolean
     ): KryptonMetaKey<V> {
         val key = Key.key("krypton", name)
-        return Registries.register(
-            Registries.META_KEYS,
+        return Registries.META_KEYS.register(
             key,
             KryptonMetaKey(key, V::class.java, reader, writer, predicate)
-        ) as KryptonMetaKey<V>
+        )
     }
 
     @JvmStatic

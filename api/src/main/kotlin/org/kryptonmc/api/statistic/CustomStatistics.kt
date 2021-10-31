@@ -100,7 +100,7 @@ public object CustomStatistics {
     @JvmStatic
     private fun register(name: String, formatter: StatisticFormatter): Key {
         val key = Key.key(name)
-        Registries.register(Registries.CUSTOM_STATISTIC, key, key)
+        Registries.CUSTOM_STATISTIC.register(key, key)
         StatisticTypes.CUSTOM[key, formatter]
         return key
     }

@@ -116,7 +116,6 @@ public object Registries {
      * @param key the key
      * @return the existing defaulted registry, or null if not present
      */
-    @Suppress("UNCHECKED_CAST")
     @JvmStatic
     public fun <T : Any> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = Krypton.registryManager.defaulted(key)
 

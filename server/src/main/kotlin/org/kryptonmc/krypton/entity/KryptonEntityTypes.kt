@@ -534,7 +534,6 @@ object KryptonEntityTypes {
         updateInterval(10)
     }
 
-    @Suppress("UNCHECKED_CAST")
     @JvmStatic
     private fun <T : Entity> register(
         name: String,
@@ -542,10 +541,9 @@ object KryptonEntityTypes {
         builder: KryptonEntityType.Builder<T>.() -> Unit = {}
     ): KryptonEntityType<T> {
         val key = Key.key(name)
-        return Registries.register(
-            InternalRegistries.ENTITY_TYPE,
+        return InternalRegistries.ENTITY_TYPE.register(
             key,
             KryptonEntityType.Builder<T>(key, category).apply(builder).build()
-        ) as KryptonEntityType<T>
+        )
     }
 }

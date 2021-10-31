@@ -69,6 +69,7 @@ class VectorArgument private constructor(private val correctCenter: Boolean = tr
         private val EXAMPLES = listOf("0 0 0", "~ ~ ~", "^ ^ ^", "^1 ^ ^-5", "0.1 -0.5 .9", "~0.5 ~1 ~-5")
         private val NORMAL = VectorArgument(true)
 
+        @JvmStatic
         fun normal() = NORMAL
     }
 }

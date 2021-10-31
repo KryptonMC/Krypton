@@ -31,6 +31,6 @@ public object ItemRarities {
     @JvmStatic
     private fun register(name: String, color: TextColor): ItemRarity {
         val key = Key.key("krypton", name)
-        return Registries.register(Registries.ITEM_RARITIES, key, ItemRarity.of(key, color))
+        return Registries.ITEM_RARITIES.register(key, ItemRarity.of(key, color))
     }
 }

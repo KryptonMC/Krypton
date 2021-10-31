@@ -45,6 +45,6 @@ public object DisplaySlots {
     @JvmStatic
     private fun register(name: String, color: NamedTextColor? = null): DisplaySlot {
         val key = Key.key("krypton", name)
-        return Registries.register(Registries.DISPLAY_SLOTS, key, DisplaySlot.of(key, color))
+        return Registries.DISPLAY_SLOTS.register(key, DisplaySlot.of(key, color))
     }
 }

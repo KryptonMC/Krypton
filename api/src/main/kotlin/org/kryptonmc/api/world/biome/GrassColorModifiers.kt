@@ -28,6 +28,6 @@ public object GrassColorModifiers {
     @JvmStatic
     private fun register(name: String): GrassColorModifier {
         val key = Key.key(name)
-        return Registries.register(Registries.GRASS_COLOR_MODIFIERS, key, GrassColorModifier.of(key))
+        return Registries.GRASS_COLOR_MODIFIERS.register(key, GrassColorModifier.of(key))
     }
 }

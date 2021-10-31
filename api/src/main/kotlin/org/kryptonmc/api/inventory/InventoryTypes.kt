@@ -52,6 +52,6 @@ public object InventoryTypes {
     @JvmStatic
     private fun register(name: String, size: Int): InventoryType {
         val key = Key.key(name)
-        return Registries.register(Registries.MENU, key, InventoryType.of(key, size))
+        return Registries.MENU.register(key, InventoryType.of(key, size))
     }
 }

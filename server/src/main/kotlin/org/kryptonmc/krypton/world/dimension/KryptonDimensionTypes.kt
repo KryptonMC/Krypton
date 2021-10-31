@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetConstantColumnBiomeZoome
 
 object KryptonDimensionTypes {
 
-    val OVERWORLD = register(
+    @JvmField val OVERWORLD = register(
         "overworld",
         false,
         true,
@@ -49,7 +49,7 @@ object KryptonDimensionTypes {
         KryptonDimensionEffects.OVERWORLD,
         FuzzyOffsetConstantColumnBiomeZoomer
     )
-    val OVERWORLD_CAVES = register(
+    @JvmField val OVERWORLD_CAVES = register(
         "overworld_caves",
         false,
         true,
@@ -69,7 +69,7 @@ object KryptonDimensionTypes {
         KryptonDimensionEffects.OVERWORLD,
         FuzzyOffsetConstantColumnBiomeZoomer
     )
-    val THE_NETHER = register(
+    @JvmField val THE_NETHER = register(
         "the_nether",
         true,
         false,
@@ -89,7 +89,7 @@ object KryptonDimensionTypes {
         KryptonDimensionEffects.THE_NETHER,
         FuzzyOffsetBiomeZoomer
     )
-    val THE_END = register(
+    @JvmField val THE_END = register(
         "the_end",
         false,
         false,
@@ -110,6 +110,7 @@ object KryptonDimensionTypes {
         FuzzyOffsetBiomeZoomer
     )
 
+    @JvmStatic
     private fun register(
         name: String,
         isPiglinSafe: Boolean,
@@ -131,8 +132,7 @@ object KryptonDimensionTypes {
         biomeZoomer: BiomeZoomer = FuzzyOffsetBiomeZoomer
     ): KryptonDimensionType {
         val key = key(name)
-        return Registries.register(
-            Registries.DIMENSION_TYPE,
+        return Registries.DIMENSION_TYPE.register(
             key,
             KryptonDimensionType(
                 key,
@@ -154,6 +154,6 @@ object KryptonDimensionTypes {
                 effects,
                 biomeZoomer
             )
-        ) as KryptonDimensionType
+        )
     }
 }

@@ -331,8 +331,7 @@ public object GameRules {
     @JvmStatic
     private fun <V : Any> register(key: String, name: String, default: V): GameRule<V> {
         val key1 = Key.key(key)
-        return Registries.register(
-            Registries.GAMERULES,
+        return Registries.GAMERULES.register(
             key1,
             GameRule.of(key1, name, default, Component.translatable("gamerule.$name"))
         ) as GameRule<V>
