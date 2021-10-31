@@ -758,6 +758,7 @@ object ChunkFlatteningConverter : StringDataConverter(MCVersions.V17W47A, 1) {
 
         private fun addFix(block: Int, index: Int) = toFix.getOrPut(block) { IntArrayList() }.add(index)
 
+        @Suppress("MANY_INTERFACES_MEMBER_NOT_IMPLEMENTED_WARNING")
         class Palette : Reference2IntOpenHashMap<MapType<String>>() {
 
             val states = NBTTypeUtil.createEmptyList()

@@ -124,7 +124,9 @@ class KryptonScheduler : Scheduler {
             }
         }
 
-        private fun finish() = tasksByPlugin[plugin]?.minusAssign(this)
+        private fun finish() {
+            tasksByPlugin[plugin].remove(this)
+        }
     }
 
     companion object {

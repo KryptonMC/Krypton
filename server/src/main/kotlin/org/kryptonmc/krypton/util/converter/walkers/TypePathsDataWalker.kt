@@ -27,7 +27,7 @@ open class TypePathsDataWalker<T, R>(
     protected val paths: Array<out String>
 ) : DataWalker<String> {
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNCHECKED_CAST", "NULLABLE_TYPE_PARAMETER_AGAINST_NOT_NULL_TYPE_PARAMETER")
     override fun walk(data: MapType<String>, fromVersion: Long, toVersion: Long): MapType<String>? {
         paths.forEach {
             val current = data.getGeneric(it) ?: return@forEach
