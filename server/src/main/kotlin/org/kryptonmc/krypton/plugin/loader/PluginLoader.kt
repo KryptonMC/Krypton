@@ -43,7 +43,7 @@ object PluginLoader {
 
     fun loadDescription(source: Path): LoadedPluginDescriptionCandidate {
         val serialized = source.findMetadata()
-            ?: throw InvalidPluginException("Could not find a valid krypton-plugin-meta.json or plugin.conf file!")
+            ?: throw InvalidPluginException("Could not find a valid krypton-plugin-meta.json file!")
         if (!serialized.id.matches(SerializedPluginDescription.ID_REGEX)) {
             throw InvalidPluginException("Plugin ID ${serialized.id} is invalid!")
         }

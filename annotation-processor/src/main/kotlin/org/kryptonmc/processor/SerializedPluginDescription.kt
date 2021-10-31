@@ -113,6 +113,8 @@ data class SerializedPluginDescription(
                 writer.endArray()
             }
 
+            writer.name("main")
+            writer.value(value.main)
             writer.endObject()
         }
     }

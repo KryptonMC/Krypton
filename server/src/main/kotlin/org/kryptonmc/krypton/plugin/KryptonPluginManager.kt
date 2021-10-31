@@ -52,7 +52,7 @@ object KryptonPluginManager : PluginManager {
 
         directory.forEachDirectoryEntry({ it.isRegularFile() && it.toString().endsWith(".jar") }, {
             try {
-                found += PluginLoader.loadDescription(it)
+                found.add(PluginLoader.loadDescription(it))
             } catch (exception: Exception) {
                 LOGGER.error("Failed to load plugin at $it!", exception)
             }
@@ -76,7 +76,7 @@ object KryptonPluginManager : PluginManager {
                 val description = PluginLoader.loadPlugin(candidate)
                 val container = KryptonPluginContainer(description)
                 pluginContainers[container] = PluginModule(description, container, directory)
-                loadedPluginsById += description.id
+                loadedPluginsById.add(description.id)
             } catch (exception: Exception) {
                 LOGGER.error("Failed to create Guice module for plugin ${candidate.id}!", exception)
             }
