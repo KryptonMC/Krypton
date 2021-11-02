@@ -304,7 +304,7 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
 
     class Factory(private val server: KryptonServer) : Scoreboard.Factory {
 
-        override fun of(): Scoreboard = KryptonScoreboard(server)
+        override fun empty(): Scoreboard = KryptonScoreboard(server)
 
         override fun builder(): Scoreboard.Builder = Builder(server)
     }

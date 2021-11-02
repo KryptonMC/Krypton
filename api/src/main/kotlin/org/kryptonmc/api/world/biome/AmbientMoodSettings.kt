@@ -100,7 +100,6 @@ public interface AmbientMoodSettings : Buildable<AmbientMoodSettings, AmbientMoo
         public fun offset(offset: Double): Builder
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

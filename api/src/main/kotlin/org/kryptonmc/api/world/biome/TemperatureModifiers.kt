@@ -15,7 +15,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the built-in vanilla temperature modifiers.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(TemperatureModifier::class)
 public object TemperatureModifiers {
 

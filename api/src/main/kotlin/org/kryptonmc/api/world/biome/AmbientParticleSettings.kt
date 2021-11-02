@@ -103,7 +103,6 @@ public interface AmbientParticleSettings : Buildable<AmbientParticleSettings, Am
         public fun probability(probability: Float): Builder
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

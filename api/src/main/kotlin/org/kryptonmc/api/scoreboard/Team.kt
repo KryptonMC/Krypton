@@ -268,7 +268,6 @@ public interface Team : Buildable<Team, Team.Builder> {
         public fun removeMember(member: Component): Builder
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

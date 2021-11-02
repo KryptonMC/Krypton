@@ -205,9 +205,7 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
         public fun drinkingSound(drinkingSound: SoundEvent): Builder
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
-    @ApiStatus.OverrideOnly
     public interface Factory {
 
         public fun builder(key: Key): Builder

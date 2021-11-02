@@ -38,7 +38,6 @@ public interface ProfileProperty {
     @get:JvmName("signature")
     public val signature: String?
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

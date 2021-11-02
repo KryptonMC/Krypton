@@ -276,11 +276,10 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
         public fun teams(teams: Iterable<Team>): Builder
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(): Scoreboard
+        public fun empty(): Scoreboard
 
         public fun builder(): Builder
     }
@@ -296,7 +295,7 @@ public interface Scoreboard : Buildable<Scoreboard, Scoreboard.Builder> {
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(): Scoreboard = FACTORY.of()
+        public fun empty(): Scoreboard = FACTORY.empty()
 
         /**
          * Creates a new builder for building a scoreboard.

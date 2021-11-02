@@ -13,6 +13,7 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.registry.Registry
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.provide
 
 /**
@@ -21,6 +22,7 @@ import org.kryptonmc.api.util.provide
  * @param T the type of this key
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@CataloguedBy(ResourceKeys::class)
 public interface ResourceKey<T : Any> {
 
     /**
@@ -35,7 +37,6 @@ public interface ResourceKey<T : Any> {
     @get:JvmName("location")
     public val location: Key
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

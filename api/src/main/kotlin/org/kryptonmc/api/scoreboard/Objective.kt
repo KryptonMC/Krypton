@@ -90,7 +90,6 @@ public interface Objective : Buildable<Objective, Objective.Builder> {
         public fun renderType(type: ObjectiveRenderType): Builder
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

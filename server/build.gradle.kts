@@ -3,63 +3,59 @@ import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCach
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id("krypton.common")
-    id("org.jetbrains.dokka")
-    id("com.github.johnrengelman.shadow") version Versions.SHADOW
+    id("com.github.johnrengelman.shadow")
     `java-library`
     jacoco
-    `maven-publish`
-    signing
-}
-
-evaluationDependsOn(":api")
-
-repositories {
-    maven("https://oss.sonatype.org/content/groups/public/")
-    maven("https://repo.kryptonmc.org/snapshots")
-    maven("https://jitpack.io")
 }
 
 dependencies {
-    implementation(project(":api"))
-    implementation(project(":annotation-processor"))
-    implementation(platform("io.netty:netty-bom:${Versions.NETTY}"))
+    implementation(projects.api)
+    implementation(projects.annotationProcessor)
 
     // Extra Kotlin stuff
-    implementation(kotlin("stdlib-jdk7"))
-    implementation(kotlin("stdlib-jdk8"))
+    implementation(libs.kotlin.stdlib.jdk7)
+    implementation(libs.kotlin.stdlib.jdk8)
 
     // Networking
-    implementation("io.netty", "netty-buffer")
-    implementation("io.netty", "netty-handler")
-    implementation("io.netty", "netty-transport")
-
-    // Extra natives for networking
-    implementation("io.netty", "netty-transport-native-epoll", classifier = "linux-x86_64")
-    implementation("io.netty", "netty-transport-native-kqueue", classifier = "osx-x86_64")
-    implementation("com.velocitypowered", "velocity-native", Versions.VELOCITY_NATIVE)
+    implementation(libs.bundles.netty)
+    implementation(libs.netty.transport.native.epoll) {
+        artifact {
+            classifier = "linux-x86_64"
+        }
+    }
+    implementation(libs.netty.transport.native.kqueue) {
+        artifact {
+            classifier = "osx-x86_64"
+        }
+    }
+    implementation(libs.velocity.native)
 
     // Events
-    implementation("net.kyori", "event-method-asm", Versions.EVENT)
-    implementation("org.ow2.asm", "asm", Versions.ASM)
+    implementation(libs.event)
+    implementation(libs.asm)
 
     // Logging and console
-    runtimeOnly("org.apache.logging.log4j", "log4j-core")
-    implementation("net.minecrell", "terminalconsoleappender", Versions.TCA)
-    runtimeOnly("org.jline", "jline-terminal-jansi", Versions.JANSI)
+    runtimeOnly(libs.log4j.core)
+    implementation(libs.tca)
+    runtimeOnly(libs.jline.jansi)
 
     // Data
-    implementation("ca.spottedleaf", "data-converter", Versions.DATA_CONVERTER)
-    implementation("org.kryptonmc", "datafixerupper", Versions.DFU) // Slight performance enhanced version, courtesy of Paper
-    implementation("org.kryptonmc", "nbt-common-jvm", Versions.NBT)
-    implementation("com.github.Articdive", "ArticData", Versions.ARTICDATA)
+    implementation(libs.dataConverter)
+    implementation(libs.dfu) // Slight performance enhanced version, courtesy of Paper
+    implementation(libs.nbt)
+    implementation(libs.articData)
 
     // Miscellaneous
-    implementation("com.github.ben-manes.caffeine", "caffeine", Versions.CAFFEINE)
-    implementation("it.unimi.dsi", "fastutil", Versions.FASTUTIL)
-    implementation("com.github.ajalt.clikt", "clikt", Versions.CLIKT)
-    implementation("org.bstats", "bstats-base", Versions.BSTATS)
-    implementation("net.kyori", "adventure-serializer-configurate4")
+    implementation(libs.caffeine)
+    implementation(libs.fastutil)
+    implementation(libs.clikt)
+    implementation(libs.bstats)
+    implementation(libs.adventure.serializer.configurate)
+
+    testImplementation(libs.bundles.junit)
+    testImplementation(libs.junit.platform.runner)
+    testImplementation(libs.mockk)
+    testRuntimeOnly(libs.bytebuddy)
 }
 
 tasks {
@@ -90,7 +86,7 @@ tasks {
     withType<ProcessResources> {
         filter<ReplaceTokens>("tokens" to mapOf(
             "version" to project.version.toString(),
-            "minecraft" to Versions.MINECRAFT
+            "minecraft" to global.versions.minecraft.get()
         ))
     }
 }
@@ -98,51 +94,10 @@ tasks {
 tasks["build"].dependsOn(tasks["shadowJar"])
 
 jacoco {
-    toolVersion = "0.8.7"
-}
-
-task<Jar>("sourcesJar") {
-    from(sourceSets.main.get().allSource)
-    archiveClassifier.set("sources")
-}
-
-task<Jar>("javadocJar") {
-    from(tasks["dokkaJavadoc"])
-    archiveClassifier.set("javadoc")
-}
-
-publishing {
-    repositories {
-        krypton(project)
-    }
-
-    publications {
-        create<MavenPublication>("kryptonServer") {
-            artifactId = "krypton-server"
-
-            from(components["kotlin"])
-            artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
-
-            pom {
-                name.set("Krypton")
-                description.set("Free and open-source Minecraft server software, written from the ground up.")
-                url.set("https://www.kryptonmc.org")
-                inceptionYear.set("2021")
-                packaging = "jar"
-                kryptonDetails()
-            }
-        }
-    }
-}
-
-signing {
-    sign(publishing.publications["kryptonServer"])
+    toolVersion = global.versions.jacoco.get()
 }
 
 license {
-    header(project.rootProject.resources.text.fromFile("HEADER.txt"))
-    newLine(false)
     exclude(
         "**/*.properties",
         "**/*.conf",
@@ -164,8 +119,8 @@ license {
 tasks.jacocoTestReport {
     sourceSets(project(":api").sourceSets.main.get())
     reports {
-        xml.isEnabled = true
-        html.isEnabled = true
+        xml.required.set(true)
+        html.required.set(true)
     }
 }
 

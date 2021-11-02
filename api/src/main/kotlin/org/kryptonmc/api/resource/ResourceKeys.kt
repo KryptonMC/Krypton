@@ -45,11 +45,12 @@ import org.kryptonmc.api.scoreboard.ObjectiveRenderType
 import org.kryptonmc.api.scoreboard.Visibility
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.api.tags.TagType
+import org.kryptonmc.api.util.Catalogue
 
 /**
  * All the built-in registry keys for various registries.
  */
-@Suppress("UndocumentedPublicProperty")
+@Catalogue(ResourceKey::class)
 public object ResourceKeys {
 
     /**

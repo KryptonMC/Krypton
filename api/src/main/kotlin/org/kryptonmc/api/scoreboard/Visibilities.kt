@@ -15,7 +15,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the possible vanilla visibilities.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(Visibility::class)
 public object Visibilities {
 

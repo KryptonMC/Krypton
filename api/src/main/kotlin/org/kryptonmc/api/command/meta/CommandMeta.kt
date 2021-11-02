@@ -68,7 +68,6 @@ public interface CommandMeta : Buildable<CommandMeta, CommandMeta.Builder> {
         public fun aliases(aliases: Iterable<String>): Builder
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

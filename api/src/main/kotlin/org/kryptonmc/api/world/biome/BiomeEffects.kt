@@ -369,7 +369,6 @@ public interface BiomeEffects : Buildable<BiomeEffects, BiomeEffects.Builder> {
         public fun backgroundMusic(music: Music?): Builder
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

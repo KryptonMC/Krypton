@@ -15,7 +15,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the possible vanilla collision rules.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(CollisionRule::class)
 public object CollisionRules {
 

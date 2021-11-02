@@ -36,6 +36,7 @@ import org.kryptonmc.api.scoreboard.Visibility
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.tags.TagType
+import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeCategory
@@ -49,7 +50,7 @@ import org.kryptonmc.api.world.rule.GameRule
 /**
  * Holder of all of the built-in registries.
  */
-@Suppress("UndocumentedPublicProperty")
+@Catalogue(Registry::class)
 public object Registries {
 
     /**

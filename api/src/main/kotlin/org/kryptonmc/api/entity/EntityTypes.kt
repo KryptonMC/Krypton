@@ -36,7 +36,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All the types of entities in the game.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(EntityType::class)
 public object EntityTypes {
 

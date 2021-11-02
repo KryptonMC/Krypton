@@ -10,11 +10,13 @@ package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.resource.ResourceKey
+import org.kryptonmc.api.util.CataloguedBy
 
 /**
  * A holder for registry entries.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@CataloguedBy(Registries::class)
 public interface Registry<T : Any> : Map<ResourceKey<T>, T> {
 
     /**

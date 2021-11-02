@@ -15,7 +15,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the built-in vanilla precipitations.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(Precipitation::class)
 public object Precipitations {
 

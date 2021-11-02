@@ -15,7 +15,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the built-in custom statistics.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(Key::class)
 public object CustomStatistics {
 

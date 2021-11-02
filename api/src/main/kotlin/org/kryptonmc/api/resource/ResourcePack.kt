@@ -54,7 +54,6 @@ public interface ResourcePack {
      */
     public fun send(player: Player)
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

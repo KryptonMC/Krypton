@@ -292,7 +292,6 @@ public interface BoundingBox {
      */
     public operator fun contains(position: Vector3d): Boolean = contains(position.x(), position.y(), position.z())
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

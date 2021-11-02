@@ -16,7 +16,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the built-in vanilla scoreboard display slots.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(DisplaySlot::class)
 public object DisplaySlots {
 

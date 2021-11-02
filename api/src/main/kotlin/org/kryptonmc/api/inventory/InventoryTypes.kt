@@ -18,7 +18,6 @@ import org.kryptonmc.api.util.Catalogue
  * Note: The player inventory is not included in this list as it is not a valid
  * menu type, and cannot be created, or opened client-side.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(InventoryType::class)
 public object InventoryTypes {
 

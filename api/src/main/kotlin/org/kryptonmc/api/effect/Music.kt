@@ -51,7 +51,6 @@ public interface Music {
     @get:JvmName("replaceCurrentMusic")
     public val replaceCurrentMusic: Boolean
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

@@ -29,7 +29,6 @@ public interface ItemRarity : Keyed {
     @get:JvmName("color")
     public val color: TextColor
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

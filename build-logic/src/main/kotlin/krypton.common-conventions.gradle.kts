@@ -5,19 +5,6 @@ plugins {
     id("org.cadixdev.licenser")
 }
 
-repositories {
-    maven("https://repo.kryptonmc.org/releases")
-    maven("https://repo.velocitypowered.com/snapshots/")
-    jcenter()
-}
-
-dependencies {
-    testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.platform", "junit-platform-runner", Versions.JUNIT_PLATFORM_RUNNER)
-    testImplementation("io.mockk", "mockk", Versions.MOCKK)
-    testRuntimeOnly("net.bytebuddy", "byte-buddy", Versions.BYTEBUDDY)
-}
-
 configurations.all {
     exclude("org.checkerframework", "checker-qual")
     exclude("junit")
@@ -42,3 +29,8 @@ tasks {
 }
 
 tasks["build"].dependsOn(tasks["test"])
+
+license {
+    header(project.rootProject.resources.text.fromFile("HEADER.txt"))
+    newLine(false)
+}

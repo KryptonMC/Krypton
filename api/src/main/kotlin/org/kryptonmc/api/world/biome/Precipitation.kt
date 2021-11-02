@@ -21,7 +21,6 @@ import org.kryptonmc.api.util.provide
 @CataloguedBy(Precipitations::class)
 public interface Precipitation : Keyed {
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

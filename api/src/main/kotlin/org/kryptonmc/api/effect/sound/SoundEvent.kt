@@ -22,7 +22,6 @@ import org.kryptonmc.api.util.provide
 @CataloguedBy(SoundEvents::class)
 public interface SoundEvent : Sound.Type {
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

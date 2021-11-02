@@ -20,7 +20,6 @@ import org.kryptonmc.api.util.provide
 @Suppress("INAPPLICABLE_JVM_NAME")
 public interface ObjectiveRenderType : Keyed {
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

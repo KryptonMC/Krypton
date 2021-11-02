@@ -40,7 +40,6 @@ public interface GameRule<V : Any> : TranslationHolder, Keyed {
     @get:JvmName("defaultValue")
     public val default: V
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

@@ -14,6 +14,7 @@ import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.KeyedBuilder
 import org.kryptonmc.api.util.provide
 
@@ -21,6 +22,7 @@ import org.kryptonmc.api.util.provide
  * Represents data for a dimension.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
+@CataloguedBy(DimensionTypes::class)
 public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>, Keyed {
 
     /**
@@ -462,7 +464,6 @@ public interface DimensionType : Buildable<DimensionType, DimensionType.Builder>
         public fun effects(effects: DimensionEffect): Builder
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

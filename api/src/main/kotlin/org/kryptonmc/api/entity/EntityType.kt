@@ -246,7 +246,6 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
         public fun translation(translation: TranslatableComponent): Builder<T>
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

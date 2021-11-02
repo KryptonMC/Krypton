@@ -18,7 +18,6 @@ import org.kryptonmc.api.util.Catalogue
  * See [here](https://minecraft.fandom.com/wiki/Particles) for more information
  * on all of these types.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(ParticleType::class)
 public object ParticleTypes {
 

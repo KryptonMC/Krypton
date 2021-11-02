@@ -21,21 +21,26 @@ comments:
   UndocumentedPublicClass:
     active: true
     excludes: ["**/test/**"]
+    ignoreAnnotated: ["ApiStatus.Internal"]
   UndocumentedPublicFunction:
     active: true
     excludes: ["**/test/**"]
+    ignoreAnnotated: ["ApiStatus.Internal"]
   UndocumentedPublicProperty:
     active: true
     excludes: ["**/test/**"]
+    ignoreAnnotated: ["ApiStatus.Internal", "Catalogue"]
 
 complexity:
   active: true
   LargeClass:
     active: true
+    ignoreAnnotated: ["Catalogue"]
   LongParameterList:
     active: false
   StringLiteralDuplication:
     active: true
+    ignoreAnnotated: ["Catalogue"]
   TooManyFunctions:
     active: false
 

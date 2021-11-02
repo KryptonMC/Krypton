@@ -99,7 +99,6 @@ public interface Climate : Buildable<Climate, Climate.Builder> {
         public fun temperatureModifier(modifier: TemperatureModifier): Builder
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

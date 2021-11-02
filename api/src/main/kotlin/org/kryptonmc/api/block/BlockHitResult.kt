@@ -40,7 +40,6 @@ public interface BlockHitResult : HitResult {
      */
     public val isInside: Boolean
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

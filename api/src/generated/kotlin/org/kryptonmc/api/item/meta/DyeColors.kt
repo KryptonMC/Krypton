@@ -22,7 +22,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * This file is auto-generated. Do not edit this manually!
  */
-@Suppress("UndocumentedPublicProperty", "LargeClass")
 @Catalogue(DyeColor::class)
 public object DyeColors {
 

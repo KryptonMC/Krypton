@@ -21,7 +21,6 @@ import org.spongepowered.math.vector.Vector3d
  */
 public interface ParticleData {
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

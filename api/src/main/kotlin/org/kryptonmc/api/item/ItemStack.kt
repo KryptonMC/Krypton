@@ -105,7 +105,6 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
         override fun build(): ItemStack
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

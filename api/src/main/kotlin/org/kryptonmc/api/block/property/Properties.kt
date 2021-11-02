@@ -39,7 +39,6 @@ import org.kryptonmc.api.util.Catalogue
  * See [here](https://minecraft.fandom.com/wiki/Java_Edition_data_values#Block_states)
  * for information on what types of blocks each property is applicable to.
  */
-@Suppress("StringLiteralDuplication")
 @Catalogue(Property::class)
 public object Properties {
 

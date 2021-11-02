@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api.entity.attribute
 
+import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.util.provide
@@ -37,7 +38,7 @@ public interface AttributeModifier {
     @get:JvmName("amount")
     public val amount: Double
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
+    @ApiStatus.Internal
     public interface Factory {
 
         public fun of(name: String, uuid: UUID, amount: Double): AttributeModifier

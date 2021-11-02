@@ -21,7 +21,6 @@ import org.kryptonmc.api.util.provide
 @CataloguedBy(TemperatureModifiers::class)
 public interface TemperatureModifier : Keyed {
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

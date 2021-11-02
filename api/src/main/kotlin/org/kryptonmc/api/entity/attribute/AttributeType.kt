@@ -57,7 +57,6 @@ public interface AttributeType : TranslationHolder, Keyed {
     @get:JvmName("sendToClient")
     public val sendToClient: Boolean
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

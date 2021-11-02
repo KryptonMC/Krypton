@@ -15,7 +15,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the built-in vanilla game modes.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(GameMode::class)
 public object GameModes {
 

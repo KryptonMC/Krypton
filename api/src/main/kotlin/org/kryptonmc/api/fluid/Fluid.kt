@@ -243,7 +243,6 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
         public fun block(block: Block): Builder = block(block.key())
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

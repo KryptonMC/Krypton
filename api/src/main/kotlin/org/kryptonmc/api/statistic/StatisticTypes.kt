@@ -18,7 +18,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the built-in statistic types.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(StatisticType::class)
 public object StatisticTypes {
 

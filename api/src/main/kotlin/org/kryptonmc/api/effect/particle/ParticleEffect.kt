@@ -65,7 +65,6 @@ public interface ParticleEffect {
     @get:JvmName("data")
     public val data: ParticleData?
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

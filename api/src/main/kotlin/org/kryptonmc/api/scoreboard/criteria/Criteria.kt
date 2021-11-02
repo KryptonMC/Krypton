@@ -15,7 +15,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the built-in criteria for scoreboards.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(Criterion::class, CompoundCriterion::class)
 public object Criteria {
 

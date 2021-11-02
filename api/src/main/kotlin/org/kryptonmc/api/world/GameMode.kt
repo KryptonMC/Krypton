@@ -38,7 +38,6 @@ public interface GameMode : TranslationHolder, Keyed {
     @get:JvmName("canBuild")
     public val canBuild: Boolean
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

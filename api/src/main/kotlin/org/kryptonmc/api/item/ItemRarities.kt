@@ -17,7 +17,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the built-in vanilla item rarities.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(ItemRarity::class)
 public object ItemRarities {
 

@@ -29,7 +29,6 @@ public interface InventoryType : Keyed {
     @get:JvmName("size")
     public val size: Int
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

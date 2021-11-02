@@ -58,7 +58,6 @@ public interface Property<T : Comparable<T>> {
      */
     public fun toString(value: T): String
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

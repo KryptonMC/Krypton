@@ -15,7 +15,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All the built-in vanilla biome categories.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(BiomeCategory::class)
 public object BiomeCategories {
 

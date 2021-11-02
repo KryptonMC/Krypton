@@ -65,7 +65,6 @@ public interface AmbientAdditionsSettings : Buildable<AmbientAdditionsSettings, 
         public fun probability(probability: Double): Builder
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

@@ -15,7 +15,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the built-in vanilla mob categories.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(EntityCategory::class)
 public object EntityCategories {
 

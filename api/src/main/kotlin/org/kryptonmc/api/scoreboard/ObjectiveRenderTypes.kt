@@ -15,7 +15,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the built-in vanilla objective render types.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(ObjectiveRenderType::class)
 public object ObjectiveRenderTypes {
 

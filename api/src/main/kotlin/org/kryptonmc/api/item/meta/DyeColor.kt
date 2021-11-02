@@ -44,7 +44,6 @@ public interface DyeColor : Keyed {
     @get:JvmName("textColor")
     public val textColor: TextColor
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

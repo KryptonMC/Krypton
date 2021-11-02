@@ -15,7 +15,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the built-in vanilla dimension effects.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(DimensionEffect::class)
 public object DimensionEffects {
 

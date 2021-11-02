@@ -19,7 +19,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the built-in vanilla tag types.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(TagType::class)
 public object TagTypes {
 

@@ -156,7 +156,6 @@ public interface EntityDimensions {
      */
     public fun toBoundingBox(x: Double, y: Double, z: Double): BoundingBox
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

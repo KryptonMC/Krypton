@@ -169,7 +169,6 @@ public interface Biome : Buildable<Biome, Biome.Builder>, Keyed {
         public fun effects(builder: Consumer<BiomeEffects.Builder>): Builder = effects { builder.accept(this) }
     }
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

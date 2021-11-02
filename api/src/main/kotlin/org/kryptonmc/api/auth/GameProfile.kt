@@ -40,7 +40,6 @@ public interface GameProfile {
     @get:JvmName("properties")
     public val properties: List<ProfileProperty>
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
     @ApiStatus.Internal
     public interface Factory {
 

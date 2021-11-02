@@ -15,7 +15,6 @@ import org.kryptonmc.api.util.Catalogue
 /**
  * All of the built-in vanilla grass colour modifiers.
  */
-@Suppress("UndocumentedPublicProperty")
 @Catalogue(GrassColorModifier::class)
 public object GrassColorModifiers {
 
