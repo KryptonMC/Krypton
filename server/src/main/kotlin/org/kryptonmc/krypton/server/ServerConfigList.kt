@@ -33,10 +33,14 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
     private val map = hashMapOf<String, V>()
     val size: Int
         get() = map.values.size
+    val values: Collection<V>
+        get() = map.values
 
     abstract fun read(reader: JsonReader): ServerConfigEntry<K>?
 
-    open operator fun get(key: K) = map[key.toString()]
+    open fun key(key: K): String = key.toString()
+
+    open operator fun get(key: K) = map[key(key)]
 
     open fun validatePath() {
         if (!path.exists()) {
@@ -47,19 +51,19 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
         load()
     }
 
-    fun contains(key: K) = map.containsKey(key.toString())
+    fun contains(key: K) = map.containsKey(key(key))
 
     fun isEmpty() = map.isEmpty()
 
     fun add(entry: V) {
         if(contains(entry.key)) return
-        map[entry.key.toString()] = entry
+        map[key(entry.key)] = entry
         save()
     }
 
     fun remove(key: K) {
         if(!contains(key)) return
-        map.remove(key.toString())
+        map.remove(key(key))
         save()
     }
 

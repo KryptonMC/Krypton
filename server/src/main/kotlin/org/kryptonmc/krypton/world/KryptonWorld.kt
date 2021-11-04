@@ -61,6 +61,7 @@ import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import org.spongepowered.math.GenericMath
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
+import java.util.Collections
 import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
 
@@ -105,7 +106,7 @@ class KryptonWorld(
         get() = chunkManager.chunkMap.values
 
     val entityManager = EntityManager(this)
-    val entities: MutableCollection<KryptonEntity> = entityManager.entities
+    override val entities: MutableCollection<KryptonEntity> = entityManager.entities
 
     override val chunkManager = ChunkManager(this)
     val playerManager = server.playerManager

@@ -10,6 +10,7 @@ package org.kryptonmc.api.resource
 
 import net.kyori.adventure.key.Key
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.user.ban.BanType
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntityType
 import org.kryptonmc.api.effect.Music
@@ -99,6 +100,7 @@ public object ResourceKeys {
     @JvmField public val MOB_CATEGORIES: ResourceKey<out Registry<EntityCategory>> = krypton("mob_categories")
     @JvmField public val DYE_COLORS: ResourceKey<out Registry<DyeColor>> = krypton("dye_colors")
     @JvmField public val TAG_TYPES: ResourceKey<out Registry<TagType<*>>> = krypton("tag_types")
+    @JvmField public val BAN_TYPES: ResourceKey<out Registry<BanType>> = krypton("ban_types")
 
     /**
      * Creates a new registry key with the given [key] as its base key.

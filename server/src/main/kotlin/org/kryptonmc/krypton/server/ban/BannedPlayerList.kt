@@ -19,16 +19,19 @@
 package org.kryptonmc.krypton.server.ban
 
 import com.google.gson.stream.JsonReader
+import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.server.ServerConfigList
 import java.nio.file.Path
 import java.time.OffsetDateTime
 
-class BannedPlayerList(path: Path) : ServerConfigList<KryptonGameProfile, BannedPlayerEntry>(path) {
+class BannedPlayerList(path: Path) : ServerConfigList<GameProfile, BannedPlayerEntry>(path) {
 
-    fun clear() = forEach { it.expiryDate?.let { time -> if (time.isBefore(OffsetDateTime.now())) remove(it.key) } }
+    fun clear() = forEach { it.expirationDate?.let { time -> if (time.isBefore(OffsetDateTime.now())) remove(it.key) } }
 
     override fun read(reader: JsonReader): BannedPlayerEntry? = BannedPlayerEntry.read(reader)
+
+    override fun key(key: GameProfile): String = key.uuid.toString()
 
     override fun validatePath() {
         super.validatePath()

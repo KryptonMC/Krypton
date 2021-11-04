@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.util
 
+import java.net.InetAddress
 import java.net.SocketAddress
 import java.util.BitSet
 import java.util.Optional
@@ -27,6 +28,13 @@ fun SocketAddress.asString(): String {
     var string = toString()
     if (string.contains("/")) string = string.substring(string.indexOf(47.toChar()) + 1)
     if (string.contains(":")) string = string.substring(0, string.indexOf(58.toChar()))
+    return string
+}
+
+fun InetAddress.asString(): String {
+    var string = toString()
+    if (string.contains("/")) string = string.substring(string.indexOf('/') + 1)
+    if (string.contains(":")) string = string.substring(0, string.indexOf(':'))
     return string
 }
 

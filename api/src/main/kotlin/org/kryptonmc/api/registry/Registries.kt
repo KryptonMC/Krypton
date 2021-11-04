@@ -11,6 +11,7 @@ package org.kryptonmc.api.registry
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.user.ban.BanType
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntityType
 import org.kryptonmc.api.effect.Music
@@ -98,6 +99,7 @@ public object Registries {
     @JvmField public val MOB_CATEGORIES: Registry<EntityCategory> = create(ResourceKeys.MOB_CATEGORIES)
     @JvmField public val DYE_COLORS: Registry<DyeColor> = create(ResourceKeys.DYE_COLORS)
     @JvmField public val TAG_TYPES: Registry<TagType<*>> = create(ResourceKeys.TAG_TYPES)
+    @JvmField public val BAN_TYPES: Registry<BanType> = create(ResourceKeys.BAN_TYPES)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

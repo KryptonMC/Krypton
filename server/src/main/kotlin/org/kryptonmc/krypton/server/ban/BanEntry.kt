@@ -19,20 +19,31 @@
 package org.kryptonmc.krypton.server.ban
 
 import com.google.gson.stream.JsonWriter
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.kryptonmc.api.user.ban.Ban
 import org.kryptonmc.krypton.server.ServerConfigEntry
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
 sealed class BanEntry<T>(
     key: T,
-    private val creationDate: OffsetDateTime = OffsetDateTime.now(),
-    val source: String = "(Unknown)",
-    val expiryDate: OffsetDateTime? = null,
-    val reason: String = "Banned by operator."
-) : ServerConfigEntry<T>(key) {
+    final override val creationDate: OffsetDateTime = OffsetDateTime.now(),
+    final override val source: Component = DEFAULT_SOURCE,
+    final override val expirationDate: OffsetDateTime? = null,
+    final override val reason: Component = DEFAULT_REASON
+) : ServerConfigEntry<T>(key), Ban {
 
+    private val sourceName by lazy { LegacyComponentSerializer.legacySection().serialize(source) }
+    private val reasonString by lazy { LegacyComponentSerializer.legacySection().serialize(reason) }
+    private val startFormatted by lazy { creationDate.format(DATE_FORMATTER) }
+    private val endFormatted by lazy { expirationDate?.format(DATE_FORMATTER) ?: "forever" }
     override val isInvalid: Boolean
-        get() = expiryDate?.isBefore(OffsetDateTime.now()) ?: false
+        get() {
+            val now = OffsetDateTime.now()
+            if (expirationDate == null) return false
+            return expirationDate.isEqual(now) || expirationDate.isBefore(now)
+        }
 
     abstract fun writeKey(writer: JsonWriter)
 
@@ -40,18 +51,22 @@ sealed class BanEntry<T>(
         writer.beginObject()
         writeKey(writer)
         writer.name("created")
-        writer.value(creationDate.format(DATE_FORMATTER))
+        writer.value(startFormatted)
         writer.name("source")
-        writer.value(source)
+        writer.value(sourceName)
         writer.name("expires")
-        writer.value(expiryDate?.format(DATE_FORMATTER) ?: "forever")
+        writer.value(endFormatted)
         writer.name("reason")
-        writer.value(reason)
+        writer.value(reasonString)
         writer.endObject()
     }
+
+    final override fun toBuilder(): Ban.Builder = KryptonBanBuilder(this)
 
     companion object {
 
         val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")
+        val DEFAULT_SOURCE = Component.text("(Unknown)")
+        val DEFAULT_REASON = Component.text("Banned by operator.")
     }
 }

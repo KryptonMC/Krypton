@@ -80,14 +80,12 @@ object KryptonMetrics {
             val javaVersion = System.getProperty("java.version")
             val major = javaVersion.split("\\.")[0]
             val dot = javaVersion.lastIndexOf('.')
-
-            val release = "Java " + if (major == "1") {
-                javaVersion.substring(0, dot)
-            } else {
-                if (VERSION_REGEX matches major) VERSION_REGEX.find(major)!!.groups[0]!!.value else major
+            val version = when {
+                major == "1" -> javaVersion.substring(0, dot)
+                VERSION_REGEX matches major -> VERSION_REGEX.find(major)!!.groups[0]!!.value
+                else -> major
             }
-
-            mapOf<String, Map<String, Int>>(release to mapOf(javaVersion to 1))
+            mapOf<String, Map<String, Int>>("Java $version" to mapOf(javaVersion to 1))
         })
     }
 

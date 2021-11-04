@@ -31,7 +31,7 @@ class BannedIpList(path: Path) : ServerConfigList<String, BannedIpEntry>(path) {
 
     fun isBanned(address: SocketAddress) = contains(address.asString())
 
-    fun clear() = forEach { it.expiryDate?.let { time -> if (time.isBefore(OffsetDateTime.now())) remove(it.key) } }
+    fun clear() = forEach { it.expirationDate?.let { time -> if (time.isBefore(OffsetDateTime.now())) remove(it.key) } }
 
     override fun read(reader: JsonReader): BannedIpEntry? = BannedIpEntry.read(reader)
 

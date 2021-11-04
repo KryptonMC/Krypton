@@ -16,20 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.server.whitelist
+package org.kryptonmc.krypton.server.ban
 
-import com.google.gson.stream.JsonWriter
-import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.krypton.server.ServerConfigEntry
+import org.kryptonmc.api.user.ban.Ban
+import org.kryptonmc.api.user.ban.BanType
 
-class WhitelistEntry(key: GameProfile) : ServerConfigEntry<GameProfile>(key) {
+object KryptonBanFactory : Ban.Factory {
 
-    override fun write(writer: JsonWriter) {
-        writer.beginObject()
-        writer.name("name")
-        writer.value(key.name)
-        writer.name("uuid")
-        writer.value(key.uuid.toString())
-        writer.endObject()
-    }
+    override fun builder(type: BanType): Ban.Builder = KryptonBanBuilder(type)
 }

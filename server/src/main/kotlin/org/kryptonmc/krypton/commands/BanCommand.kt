@@ -24,6 +24,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
@@ -63,19 +64,22 @@ object BanCommand : InternalCommand {
         server: KryptonServer,
         sender: Sender,
         reason: String = "Banned by operator.",
-    ) = profiles.forEach { profile ->
-        if (server.playerManager.bannedPlayers.contains(profile)) return@forEach
-        val entry = BannedPlayerEntry(profile, reason = reason)
-        server.playerManager.bannedPlayers.add(entry)
-        server.player(profile.uuid)?.let { kick(entry, it) }
-        sender.sendMessage(translatable("commands.ban.success", text(profile.name), text(reason)))
+    ) {
+        val componentReason = LegacyComponentSerializer.legacySection().deserialize(reason)
+        profiles.forEach { profile ->
+            if (server.playerManager.bannedPlayers.contains(profile)) return@forEach
+            val entry = BannedPlayerEntry(profile, reason = componentReason)
+            server.playerManager.bannedPlayers.add(entry)
+            server.player(profile.uuid)?.let { kick(entry, it) }
+            sender.sendMessage(translatable("commands.ban.success", text(profile.name), text(reason)))
+        }
     }
 
     private fun kick(entry: BannedPlayerEntry, player: KryptonPlayer) {
-        val text = translatable("multiplayer.disconnect.banned.reason", text(entry.reason))
-        if (entry.expiryDate != null) text.append(translatable(
+        val text = translatable("multiplayer.disconnect.banned.reason", entry.reason)
+        if (entry.expirationDate != null) text.append(translatable(
             "multiplayer.disconnect.banned.expiration",
-            text(BanEntry.DATE_FORMATTER.format(entry.expiryDate))
+            text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
         ))
         player.disconnect(text)
     }

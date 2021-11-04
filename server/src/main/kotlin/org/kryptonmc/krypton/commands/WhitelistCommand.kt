@@ -131,7 +131,7 @@ object WhitelistCommand : InternalCommand {
                 .then(argument<Sender, String>("ip", string())
                     .suggests { context, builder ->
                         val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
-                        server.playerManager.whitlistedIps.forEach {
+                        server.playerManager.whitelistedIps.forEach {
                             if (!builder.remainingLowerCase.matchesSubString(it.key.lowercase())) return@forEach
                             builder.suggest(it.key)
                         }
@@ -141,8 +141,8 @@ object WhitelistCommand : InternalCommand {
                         val sender = it.source
                         val server = sender.server as? KryptonServer ?: return@executes 0
                         val ip = it.argument<String>("ip")
-                        if (server.playerManager.whitlistedIps.contains(ip)) {
-                            server.playerManager.whitlistedIps.remove(ip)
+                        if (server.playerManager.whitelistedIps.contains(ip)) {
+                            server.playerManager.whitelistedIps.remove(ip)
                             sender.sendMessage(translatable("commands.whitelist.remove.success", text(ip)))
                         } else {
                             sender.sendMessage(translatable("commands.whitelist.remove.failed"))
@@ -155,22 +155,22 @@ object WhitelistCommand : InternalCommand {
 
     private fun whitelistIp(server: KryptonServer, target: String, sender: Sender) {
         if (target.matches(BanIpCommand.IP_ADDRESS_PATTERN)) {
-            if (server.playerManager.whitlistedIps.contains(target)) {
+            if (server.playerManager.whitelistedIps.contains(target)) {
                 sender.sendMessage(translatable("commands.whitelist.add.failed"))
                 return
             }
             val entry = WhitelistIpEntry(target)
-            server.playerManager.whitlistedIps.add(entry)
+            server.playerManager.whitelistedIps.add(entry)
             sender.sendMessage(translatable("commands.whitelist.add.success", text(target)))
             return
         } else if (server.player(target) != null) {
             val address = server.player(target)!!.address.asString()
-            if (server.playerManager.whitlistedIps.contains(address)) {
+            if (server.playerManager.whitelistedIps.contains(address)) {
                 sender.sendMessage(translatable("commands.whitelist.add.failed"))
                 return
             }
             val entry = WhitelistIpEntry(address)
-            server.playerManager.whitlistedIps.add(entry)
+            server.playerManager.whitelistedIps.add(entry)
             sender.sendMessage(translatable("commands.whitelist.add.success", text(target)))
             return
         }

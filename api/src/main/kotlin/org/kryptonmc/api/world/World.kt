@@ -77,6 +77,12 @@ public interface World : ForwardingAudience {
     public val chunks: Collection<Chunk>
 
     /**
+     * All of the entities currently present within this world.
+     */
+    @get:JvmName("entities")
+    public val entities: Collection<Entity>
+
+    /**
      * This world's border.
      */
     @get:JvmName("border")

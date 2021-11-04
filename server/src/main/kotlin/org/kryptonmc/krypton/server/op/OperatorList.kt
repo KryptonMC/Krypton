@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.server.op
 
 import com.google.gson.stream.JsonReader
 import org.kryptonmc.krypton.auth.KryptonGameProfile
-import org.kryptonmc.krypton.server.ServerConfigEntry
 import org.kryptonmc.krypton.server.ServerConfigList
 import java.nio.file.Path
 import java.util.UUID
@@ -48,4 +47,6 @@ class OperatorList(path: Path) : ServerConfigList<KryptonGameProfile, OperatorEn
         if (name == null || uuid == null) return null
         return OperatorEntry(KryptonGameProfile(name, uuid, emptyList()), level, bypassesPlayerLimit)
     }
+
+    override fun key(key: KryptonGameProfile): String = key.uuid.toString()
 }

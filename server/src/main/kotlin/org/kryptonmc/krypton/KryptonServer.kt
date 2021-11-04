@@ -41,6 +41,8 @@ import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.server.PlayerManager
+import org.kryptonmc.krypton.server.ban.KryptonBanManager
+import org.kryptonmc.krypton.server.whitelist.KryptonWhitelistManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.util.KryptonFactoryProvider
@@ -56,7 +58,6 @@ import java.net.InetSocketAddress
 import java.nio.file.Path
 import java.security.AccessController
 import java.security.PrivilegedAction
-import java.security.SecureRandom
 import java.util.Locale
 import java.util.UUID
 import kotlin.io.path.exists
@@ -90,7 +91,6 @@ class KryptonServer(
     override val console = KryptonConsole(this)
     override val scoreboard = KryptonScoreboard(this)
 
-    val random = SecureRandom()
     override val worldManager = KryptonWorldManager(this, worldFolder)
     override val commandManager = KryptonCommandManager
     override val pluginManager = KryptonPluginManager
@@ -103,6 +103,8 @@ class KryptonServer(
     override val fluidManager = KryptonFluidManager
     override val scheduler = KryptonScheduler()
     override val factoryProvider = KryptonFactoryProvider
+    override val banManager = KryptonBanManager(this)
+    override val whitelistManager = KryptonWhitelistManager(this)
 
     @Volatile
     var isRunning = true
@@ -136,7 +138,7 @@ class KryptonServer(
         playerManager.whitelist.validatePath()
         playerManager.bannedIps.validatePath()
         playerManager.ops.validatePath()
-        playerManager.whitlistedIps.validatePath()
+        playerManager.whitelistedIps.validatePath()
 
         // Start the metrics system.
         LOGGER.debug("Starting bStats metrics")
@@ -197,19 +199,19 @@ class KryptonServer(
                 lastOverloadWarning = lastTickTime
             }
 
-            // tick
             eventManager.fireAndForgetSync(TickStartEvent(tickCount))
             val tickTime = measureTimeMillis(::tick)
 
-            // end tick
             val finishTime = System.currentTimeMillis()
             eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
             lastTickTime = finishTime
 
+            // This logic ensures that ticking isn't delayed by the overhead from Thread.sleep, which seems to be up to 10 ms,
+            // which is enough that the average TPS would be reporting at around 15-16, rather than 20.
             val sleepTime = measureTimeMillis { Thread.sleep(max(0, MILLISECONDS_PER_TICK - tickTime - oversleepFactor)) }
             oversleepFactor = sleepTime - (MILLISECONDS_PER_TICK - tickTime)
         }
-    } catch (exception: Throwable) {
+    } catch (exception: Throwable) { // This is hacky, but ensures that we catch absolutely everything that may be thrown here.
         LOGGER.error("Encountered an unexpected exception", exception)
         stop()
     }
@@ -229,6 +231,8 @@ class KryptonServer(
             LOGGER.error("Failed to load plugins!", exception)
         }
 
+        // Register all of the plugin instances as event listeners, so that plugins can listen for events such as
+        // ServerStartEvent and ServerStopEvent in their main class.
         pluginManager.plugins.forEach {
             val instance = it.instance ?: return@forEach
             try {
@@ -249,7 +253,7 @@ class KryptonServer(
         if (playerManager.players.isEmpty()) return // don't tick if there are no players on the server
 
         worldManager.worlds.forEach { (_, world) ->
-            if (tickCount % 20 == 0) {
+            if (tickCount % TICKS_PER_SECOND == 0) {
                 playerManager.sendToAll(PacketOutTimeUpdate(
                     world.data.time,
                     world.data.dayTime,
@@ -352,6 +356,7 @@ class KryptonServer(
     companion object {
 
         private const val MILLISECONDS_PER_TICK = 50L // milliseconds in a tick
+        private const val TICKS_PER_SECOND = 20
         private const val SAVE_PROFILE_CACHE_INTERVAL = 600
         val LOGGER = logger<KryptonServer>()
     }

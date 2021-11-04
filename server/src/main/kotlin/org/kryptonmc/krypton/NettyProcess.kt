@@ -53,7 +53,7 @@ import java.io.IOException
 import java.net.InetSocketAddress
 
 /**
- * The base Netty connection handler initializer.
+ * The handler that starts up and shuts down the Netty connection handler.
  */
 object NettyProcess {
 
@@ -117,10 +117,31 @@ object NettyProcess {
         future?.channel()?.close()?.sync()
     }
 
+    /**
+     * Adds a listener that will be called after a new channel has been
+     * initialised, allowing for extra processing on each new channel, such as
+     * adding, replacing, and/or removing handlers in the pipeline, mutating
+     * metadata, along with may other purposes.
+     *
+     * This is designed mostly for use by plugins, however this should NOT be
+     * considered public API, as this could change at any time.
+     *
+     * @param key the key to store the listener by, for removal
+     * @param listener the listener to add
+     */
     fun addListener(key: Key, listener: ChannelInitializeListener) {
         listeners[key] = listener
     }
 
+    /**
+     * Removes the channel initialise listener with the given [key], if there
+     * is one registered, or else does nothing.
+     *
+     * This is designed mostly for use by plugins, however this should NOT be
+     * considered public API, as this could change at any time.
+     *
+     * @param key the key for the channel initialise listener
+     */
     fun removeListener(key: Key) {
         listeners.remove(key)
     }

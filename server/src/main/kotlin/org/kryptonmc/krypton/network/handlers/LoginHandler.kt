@@ -28,7 +28,6 @@ import org.kryptonmc.api.event.player.LoginEvent
 import org.kryptonmc.api.event.server.SetupPermissionsEvent
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
-import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.auth.requests.SessionService
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -59,6 +58,7 @@ import org.kryptonmc.krypton.util.Encryption
 import org.kryptonmc.krypton.util.logger
 import java.net.InetSocketAddress
 import java.net.SocketAddress
+import java.security.SecureRandom
 import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
 import javax.crypto.SecretKey
@@ -87,7 +87,7 @@ class LoginHandler(
     private var name = "" // We cache the name here to avoid late initialization of the KryptonPlayer object.
     private val verifyToken by lazy {
         val bytes = ByteArray(4)
-        server.random.nextBytes(bytes)
+        RANDOM.nextBytes(bytes)
         bytes
     }
 
@@ -307,11 +307,11 @@ class LoginHandler(
     private fun canJoin(profile: KryptonGameProfile, address: SocketAddress): Boolean {
         if (playerManager.bannedPlayers.contains(profile)) { // We are banned
             val entry = playerManager.bannedPlayers[profile]!!
-            val text = translatable("multiplayer.disconnect.banned.reason", text(entry.reason))
-            // Add the
-            if (entry.expiryDate != null) text.append(translatable(
+            val text = translatable("multiplayer.disconnect.banned.reason", entry.reason)
+            // Add the expiration date
+            if (entry.expirationDate != null) text.append(translatable(
                 "multiplayer.disconnect.banned.expiration",
-                text(BanEntry.DATE_FORMATTER.format(entry.expiryDate))
+                text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
             ))
 
             // Inform the client that they are banned
@@ -321,18 +321,17 @@ class LoginHandler(
         } else if (
             playerManager.whitelistEnabled &&
             !playerManager.whitelist.contains(profile) &&
-            !playerManager.whitlistedIps.isWhitelisted(address)
-        ) { // We are whitelisted
+            !playerManager.whitelistedIps.isWhitelisted(address)
+        ) { // We are not whitelisted
             disconnect(translatable("multiplayer.disconnect.not_whitelisted"))
-            LOGGER.info("${profile.name} was disconnected as this server is whitelisted and they are not on " +
-                    "the whitelist.")
+            LOGGER.info("${profile.name} was disconnected as this server is whitelisted and they are not on the whitelist.")
             return false
         } else if (playerManager.bannedIps.isBanned(address)) { // Their IP is banned.
             val entry = playerManager.bannedIps[address]!!
-            var text = translatable("multiplayer.disconnect.banned_ip.reason", text(entry.reason))
-            if (entry.expiryDate != null) text = text.append(translatable(
+            var text = translatable("multiplayer.disconnect.banned_ip.reason", entry.reason)
+            if (entry.expirationDate != null) text = text.append(translatable(
                 "multiplayer.disconnect.banned.expiration",
-                text(BanEntry.DATE_FORMATTER.format(entry.expiryDate))
+                text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
             ))
             disconnect(text)
             LOGGER.info("${profile.name} disconnected. Reason: IP Banned")
@@ -348,6 +347,7 @@ class LoginHandler(
     companion object {
 
         private const val VELOCITY_CHANNEL_ID = "velocity:player_info"
+        private val RANDOM = SecureRandom()
         private val LOGGER = logger<LoginHandler>()
     }
 }

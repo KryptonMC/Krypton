@@ -18,18 +18,28 @@
  */
 package org.kryptonmc.krypton.server.ban
 
+import com.google.common.net.InetAddresses
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.kryptonmc.api.user.ban.Ban
+import org.kryptonmc.api.user.ban.BanType
+import org.kryptonmc.api.user.ban.BanTypes
+import java.net.InetAddress
 import java.time.OffsetDateTime
 import java.time.format.DateTimeParseException
 
 class BannedIpEntry(
     ip: String,
     creationDate: OffsetDateTime = OffsetDateTime.now(),
-    source: String = "(Unknown)",
+    source: Component = DEFAULT_SOURCE,
     expiryDate: OffsetDateTime? = null,
-    reason: String = "Banned by operator."
-) : BanEntry<String>(ip, creationDate, source, expiryDate, reason) {
+    reason: Component = DEFAULT_REASON
+) : BanEntry<String>(ip, creationDate, source, expiryDate, reason), Ban.IP {
+
+    override val type: BanType = BanTypes.IP
+    override val address: InetAddress = InetAddresses.forString(ip)
 
     override fun writeKey(writer: JsonWriter) {
         writer.name("ip")
@@ -43,9 +53,9 @@ class BannedIpEntry(
 
             var ip: String? = null
             var creationDate: OffsetDateTime = OffsetDateTime.now()
-            var source = "(Unknown)"
+            var source: Component = DEFAULT_SOURCE
             var expires: OffsetDateTime? = null
-            var reason = "Banned by operator."
+            var reason: Component = DEFAULT_REASON
 
             while (reader.hasNext()) {
                 when (reader.nextName()) {
@@ -55,13 +65,13 @@ class BannedIpEntry(
                     } catch (_: DateTimeParseException) {
                         OffsetDateTime.now()
                     }
-                    "source" -> source = reader.nextString()
+                    "source" -> source = LegacyComponentSerializer.legacySection().deserialize(reader.nextString())
                     "expires" -> expires = try {
                         OffsetDateTime.parse(reader.nextString(), DATE_FORMATTER)
                     } catch (_: DateTimeParseException) {
                         null
                     }
-                    "reason" -> reason = reader.nextString()
+                    "reason" -> reason = LegacyComponentSerializer.legacySection().deserialize(reader.nextString())
                 }
             }
 

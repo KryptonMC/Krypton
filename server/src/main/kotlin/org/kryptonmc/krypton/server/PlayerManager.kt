@@ -97,7 +97,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     val whitelist = Whitelist(Path.of("whitelist.json"))
     val bannedIps = BannedIpList(Path.of("banned-ips.json"))
     val ops = OperatorList(Path.of("ops.json"))
-    val whitlistedIps = WhitelistedIps(Path.of("whitelisted-ips.json"))
+    val whitelistedIps = WhitelistedIps(Path.of("whitelisted-ips.json"))
     var whitelistEnabled = server.config.server.whitelistEnabled
         set(value) {
             field = value
