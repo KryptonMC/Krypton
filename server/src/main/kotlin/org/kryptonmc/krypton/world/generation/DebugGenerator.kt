@@ -24,6 +24,7 @@ import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.world.biome.BiomeKeys
+import org.kryptonmc.krypton.world.biome.Climate
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.gen.FixedBiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
@@ -33,6 +34,7 @@ class DebugGenerator(
 ) : Generator(FixedBiomeGenerator(biomes[BiomeKeys.PLAINS]!!), StructureSettings(false)) {
 
     override val codec = CODEC
+    override val climateSampler: Climate.Sampler = Climate.Sampler { _, _, _ -> Climate.TargetPoint.ZERO }
 
     override fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor) = Unit
 

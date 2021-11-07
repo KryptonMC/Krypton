@@ -134,6 +134,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             Hashing.sha256().hashLong(server.worldManager.default.data.worldGenerationSettings.seed).asLong(),
             server.maxPlayers,
             server.config.world.viewDistance,
+            server.config.world.simulationDistance,
             reducedDebugInfo,
             doImmediateRespawn,
             world.isDebug,

@@ -20,6 +20,11 @@ dependencyResolutionManagement {
 }
 
 pluginManagement {
+    repositories {
+        maven("https://repo.spongepowered.org/repository/maven-snapshots/")
+        mavenCentral()
+        gradlePluginPortal()
+    }
     includeBuild("build-logic")
 }
 

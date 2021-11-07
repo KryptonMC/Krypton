@@ -90,6 +90,7 @@ class WorldDataManager(
         }
         PrimaryWorldData.parse(folder, data, WorldGenerationSettings.default(), dataPackConfig)
     } catch (exception: Exception) {
+        LOGGER.error("Error whilst trying to read world at $folder!", exception)
         null
     }
 

@@ -19,15 +19,8 @@
 package org.kryptonmc.krypton.world.biome
 
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
 
 fun interface NoiseBiomeSource {
 
-    operator fun get(x: Int, y: Int, z: Int): Biome
-
-    fun primary(position: ChunkPosition) = get(
-        (position.x shl 2) + BiomeManager.CENTER_QUART,
-        0,
-        (position.z shl 2) + BiomeManager.CENTER_QUART
-    )
+    fun getNoiseBiome(x: Int, y: Int, z: Int): Biome
 }

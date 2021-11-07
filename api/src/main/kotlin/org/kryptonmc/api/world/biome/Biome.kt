@@ -33,18 +33,6 @@ public interface Biome : Buildable<Biome, Biome.Builder>, Keyed {
     public val climate: Climate
 
     /**
-     * The depth of this biome. Used for terrain noise generation.
-     */
-    @get:JvmName("depth")
-    public val depth: Float
-
-    /**
-     * The scale of this biome. Used for terrain noise generation.
-     */
-    @get:JvmName("scale")
-    public val scale: Float
-
-    /**
      * The category of this biome.
      */
     @get:JvmName("category")
@@ -96,30 +84,6 @@ public interface Biome : Buildable<Biome, Biome.Builder>, Keyed {
         @BiomeDsl
         @Contract("_ -> this", mutates = "this")
         public fun climate(builder: Consumer<Climate.Builder>): Builder = climate { builder.accept(this) }
-
-        /**
-         * Sets the depth of the biome to the given [depth] and returns this
-         * builder.
-         *
-         * @param depth the depth
-         * @return this builder
-         * @see Biome.depth
-         */
-        @BiomeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun depth(depth: Float): Builder
-
-        /**
-         * Sets the scale of the biome to the given [scale] and returns this
-         * builder.
-         *
-         * @param scale the depth
-         * @return this builder
-         * @see Biome.scale
-         */
-        @BiomeDsl
-        @Contract("_ -> this", mutates = "this")
-        public fun scale(scale: Float): Builder
 
         /**
          * Sets the category the biome is in to the given [category] and

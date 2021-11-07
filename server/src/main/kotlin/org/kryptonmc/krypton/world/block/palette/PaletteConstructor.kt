@@ -16,16 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome.layer
+package org.kryptonmc.krypton.world.block.palette
 
-import org.kryptonmc.krypton.world.biome.BiomeConstants
-import org.kryptonmc.krypton.world.biome.context.Context
-import org.kryptonmc.krypton.world.biome.layer.traits.C1Transformer
+fun interface PaletteConstructor<P : Palette<T>, T> {
 
-object RareBiomeSpotLayer : C1Transformer {
-
-    override fun invoke(context: Context, value: Int): Int {
-        if (context.nextRandom(57) == 0 && value == BiomeConstants.PLAINS) return BiomeConstants.SUNFLOWER_PLAINS
-        return value
-    }
+    operator fun invoke(resizer: PaletteResizer<T>, bits: Int): P
 }

@@ -48,5 +48,5 @@ public object Pictures {
 
     // @formatter:on
     @JvmStatic
-    private fun get(key: String): Picture = Registries.PICTURE[Key.key(key)]
+    private fun get(key: String): Picture = Registries.PICTURE[Key.key(key)]!!
 }

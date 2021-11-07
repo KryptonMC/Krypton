@@ -18,10 +18,14 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
+import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.util.Quart
+import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.Heightmap
+import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 
-interface ChunkAccessor : BlockAccessor {
+interface ChunkAccessor : BlockAccessor, NoiseBiomeSource {
 
     val position: ChunkPosition
     val status: ChunkStatus
@@ -30,7 +34,6 @@ interface ChunkAccessor : BlockAccessor {
     var isLightCorrect: Boolean
     val sections: Array<ChunkSection?>
     val heightmaps: Map<Heightmap.Type, Heightmap>
-    val biomes: KryptonBiomeContainer?
 
     val highestSection: ChunkSection?
         get() = sections.lastOrNull { it != null && !it.isEmpty() }
@@ -46,4 +49,12 @@ interface ChunkAccessor : BlockAccessor {
 
     fun setHeightmap(type: Heightmap.Type, data: LongArray) =
         getOrCreateHeightmap(type).setData(this, type, data)
+
+    override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome {
+        val minQuart = Quart.fromBlock(minimumBuildHeight)
+        val maxQuart = minQuart + Quart.fromBlock(height) - 1
+        val clamped = y.clamp(minQuart, maxQuart)
+        val index = sectionIndex(Quart.toBlock(clamped))
+        return sections[index]!!.getNoiseBiome(x and 3, clamped and 3, z and 3)
+    }
 }

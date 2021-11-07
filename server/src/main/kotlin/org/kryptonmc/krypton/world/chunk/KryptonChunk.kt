@@ -22,6 +22,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -35,7 +36,6 @@ class KryptonChunk(
     @get:JvmName("world") override val world: KryptonWorld,
     override val position: ChunkPosition,
     override val sections: Array<ChunkSection?>,
-    @get:JvmName("biomes") override val biomes: KryptonBiomeContainer,
     @get:JvmName("lastUpdate") override var lastUpdate: Long,
     @get:JvmName("inhabitedTime") override var inhabitedTime: Long,
     val ticket: Ticket<*>,
@@ -108,6 +108,10 @@ class KryptonChunk(
     }
 
     override fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
+
+    override fun getBiome(x: Int, y: Int, z: Int): Biome = getNoiseBiome(x, y, z)
+
+    override fun getBiome(position: Vector3i): Biome = getBiome(position.x(), position.y(), position.z())
 
     fun tick(playerCount: Int) {
         inhabitedTime += playerCount

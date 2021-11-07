@@ -24,7 +24,7 @@ import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
-import org.kryptonmc.krypton.util.BitStorage
+import org.kryptonmc.krypton.util.SimpleBitStorage
 import java.util.EnumSet
 
 class Heightmap(
@@ -33,7 +33,7 @@ class Heightmap(
 ) {
 
     private val isOpaque = type.isOpaque
-    val data = BitStorage((chunk.height + 1).ceillog2(), 256)
+    val data = SimpleBitStorage((chunk.height + 1).ceillog2(), 256)
 
     fun update(x: Int, y: Int, z: Int, block: Block): Boolean {
         val firstAvailable = firstAvailable(x, z)

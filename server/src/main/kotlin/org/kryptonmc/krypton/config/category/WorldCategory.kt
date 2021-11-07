@@ -43,6 +43,9 @@ data class WorldCategory(
     @Setting("view-distance")
     @Comment("The render distance of the server. This is how many chunks you can see in front of you, excluding the one you are in.")
     val viewDistance: Int = 10,
+    @Setting("simulation-distance")
+    @Comment("The distance, in chunks, that the client will simulate things, like entities.")
+    val simulationDistance: Int = 10,
     @Setting("autosave-interval")
     @Comment("The amount of time (in ticks) between automatic world saves.")
     val autosaveInterval: Int = 6000

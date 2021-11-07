@@ -16,24 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome.layer
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.krypton.world.biome.context.Context
-import org.kryptonmc.krypton.world.biome.layer.traits.CastleTransformer
+fun interface StorageConsumer {
 
-object SmoothLayer : CastleTransformer {
-
-    override fun invoke(context: Context, north: Int, east: Int, south: Int, west: Int, center: Int): Int {
-        val eastAndWestSame = east == west
-        val northAndSouthSame = north == south
-        if (eastAndWestSame == northAndSouthSame) {
-            if (eastAndWestSame) {
-                if (context.nextRandom(2) == 0) return west
-                return north
-            }
-            return center
-        }
-        if (eastAndWestSame) return west
-        return north
-    }
+    operator fun invoke(index: Int, value: Int)
 }

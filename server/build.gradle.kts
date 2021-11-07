@@ -88,7 +88,8 @@ tasks {
         filter<ReplaceTokens>("tokens" to mapOf(
             "version" to project.version.toString(),
             "minecraft" to global.versions.minecraft.get(),
-            "spark" to libs.versions.spark.get()
+            "spark" to libs.versions.spark.get(),
+            "data" to libs.versions.articData.get().removeSuffix("-SNAPSHOT").replace('.', '_')
         ))
     }
 }

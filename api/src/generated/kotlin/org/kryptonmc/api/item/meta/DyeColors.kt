@@ -10,10 +10,6 @@ package org.kryptonmc.api.item.meta
 
 import java.awt.Color
 import kotlin.Int
-import kotlin.String
-import kotlin.Suppress
-import kotlin.jvm.JvmField
-import kotlin.jvm.JvmStatic
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.format.TextColor
 import org.kryptonmc.api.registry.Registries
@@ -52,6 +48,6 @@ public object DyeColors {
         textColor: Int
     ): DyeColor {
         val key = Key.key(name)
-        return Registries.DYE_COLORS.register(key, DyeColor.of(key, color, fireworkColor, TextColor.color(textColor)))
+        return Registries.register(Registries.DYE_COLORS, key, DyeColor.of(key, color, fireworkColor, TextColor.color(textColor)))
     }
 }

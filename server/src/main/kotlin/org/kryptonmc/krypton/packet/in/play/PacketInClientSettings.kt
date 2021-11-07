@@ -34,4 +34,5 @@ class PacketInClientSettings(buf: ByteBuf) : Packet {
     val skinSettings = buf.readUnsignedByte()
     val mainHand = buf.readEnum<MainHand>()
     val disableTextFiltering = buf.readBoolean()
+    val allowsListing = buf.readBoolean()
 }

@@ -30,7 +30,6 @@ import net.minecraft.resources.ResourceLocation
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 import java.nio.file.Path
-import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 import kotlin.io.path.writeText
 
@@ -52,9 +51,6 @@ class StandardGenerator(private val output: Path) {
             .addImport("org.kryptonmc.api.registry", "Registries")
         val outputClass = TypeSpec.objectBuilder(name)
             .addKdoc("This file is auto-generated. Do not edit this manually!")
-            .addAnnotation(AnnotationSpec.builder(Suppress::class)
-                .addMember("\"UndocumentedPublicProperty\", \"LargeClass\"")
-                .build())
             .addAnnotation(AnnotationSpec.builder(ClassName("org.kryptonmc.api.util", "Catalogue"))
                 .addMember("${returnType.simpleName}::class")
                 .build())
@@ -82,18 +78,6 @@ class StandardGenerator(private val output: Path) {
             .tryCreateDirectories()
             .resolve("${name.simpleName}.kt")
         if (outputFile.exists()) return
-        outputFile.tryCreateFile()
-            .writeText(stringBuilder.toString()
-                .replace(
-                    "@JvmField\n {4}public val (.*): ${returnType.simpleName} =(\n {12})?(.*)(\n)?".toRegex(),
-                    "@JvmField public val $1: ${returnType.simpleName} = $3"
-                )
-                .replace("=  ", "= ")
-                .replace(
-                    "public object ${name.simpleName} {\n",
-                    "public object ${name.simpleName} {\n\n    // @formatter:off\n"
-                )
-                .replace("\n    @JvmStatic", "\n\n    // @formatter:on\n    @JvmStatic")
-                .replace("`get`", "get"))
+        outputFile.tryCreateFile().writeText(stringBuilder.toString().performReplacements(returnType.simpleName, name.simpleName))
     }
 }

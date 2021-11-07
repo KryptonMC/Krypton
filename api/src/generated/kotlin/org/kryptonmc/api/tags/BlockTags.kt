@@ -8,10 +8,6 @@
  */
 package org.kryptonmc.api.tags
 
-import kotlin.String
-import kotlin.Suppress
-import kotlin.jvm.JvmField
-import kotlin.jvm.JvmStatic
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.util.Catalogue
@@ -130,6 +126,7 @@ public object BlockTags {
     @JvmField public val MOSS_REPLACEABLE: Tag<Block> = get("moss_replaceable")
     @JvmField public val LUSH_GROUND_REPLACEABLE: Tag<Block> = get("lush_ground_replaceable")
     @JvmField public val SMALL_DRIPLEAF_PLACEABLE: Tag<Block> = get("small_dripleaf_placeable")
+    @JvmField public val BIG_DRIPLEAF_PLACEABLE: Tag<Block> = get("big_dripleaf_placeable")
     @JvmField public val SNOW: Tag<Block> = get("snow")
     @JvmField public val MINEABLE_WITH_AXE: Tag<Block> = get("mineable/axe")
     @JvmField public val MINEABLE_WITH_HOE: Tag<Block> = get("mineable/hoe")
@@ -139,8 +136,17 @@ public object BlockTags {
     @JvmField public val NEEDS_IRON_TOOL: Tag<Block> = get("needs_iron_tool")
     @JvmField public val NEEDS_STONE_TOOL: Tag<Block> = get("needs_stone_tool")
     @JvmField public val FEATURES_CANNOT_REPLACE: Tag<Block> = get("features_cannot_replace")
-    @JvmField public val LAVA_POOL_STONE_CANNOT_REPLACE: Tag<Block> = get("lava_pool_stone_replaceables")
+    @JvmField public val LAVA_POOL_STONE_CANNOT_REPLACE: Tag<Block> = get("lava_pool_stone_cannot_replace")
     @JvmField public val GEODE_INVALID_BLOCKS: Tag<Block> = get("geode_invalid_blocks")
+    @JvmField public val ANIMALS_SPAWNABLE_ON: Tag<Block> = get("animals_spawnable_on")
+    @JvmField public val AXOLOTLS_SPAWNABLE_ON: Tag<Block> = get("axolotls_spawnable_on")
+    @JvmField public val GOATS_SPAWNABLE_ON: Tag<Block> = get("goats_spawnable_on")
+    @JvmField public val MOOSHROOMS_SPAWNABLE_ON: Tag<Block> = get("mooshrooms_spawnable_on")
+    @JvmField public val PARROTS_SPAWNABLE_ON: Tag<Block> = get("parrots_spawnable_on")
+    @JvmField public val POLAR_BEARS_SPAWNABLE_ON_IN_FROZEN_OCEAN: Tag<Block> = get("polar_bears_spawnable_on_in_frozen_ocean")
+    @JvmField public val RABBITS_SPAWNABLE_ON: Tag<Block> = get("rabbits_spawnable_on")
+    @JvmField public val FOXES_SPAWNABLE_ON: Tag<Block> = get("foxes_spawnable_on")
+    @JvmField public val WOLVES_SPAWNABLE_ON: Tag<Block> = get("wolves_spawnable_on")
 
     // @formatter:on
     @JvmStatic

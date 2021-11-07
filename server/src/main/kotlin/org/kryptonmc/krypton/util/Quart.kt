@@ -16,13 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome.context
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.krypton.util.noise.ImprovedNoise
+object Quart {
 
-interface Context {
+    const val BITS = 2
+    const val SIZE = 4
+    const val MASK = 3
+    private const val SECTION_TO_QUART_BITS = 2
 
-    val biomeNoise: ImprovedNoise
+    @JvmStatic
+    fun fromBlock(value: Int): Int = value shr BITS
 
-    fun nextRandom(bound: Int): Int
+    @JvmStatic
+    fun toBlock(value: Int): Int = value shl BITS
+
+    @JvmStatic
+    fun fromSection(value: Int): Int = value shr BITS
+
+    @JvmStatic
+    fun toSection(value: Int): Int = value shl BITS
 }

@@ -77,7 +77,7 @@ class KryptonWorld(
 ) : World, WorldAccessor {
 
     override val world = this
-    override val biomeManager = BiomeManager(this, seed, dimensionType.biomeZoomer)
+    override val biomeManager = BiomeManager(this, seed)
     override val random = Random()
     override val border = KryptonWorldBorder.DEFAULT // FIXME
     override val gameMode: GameMode
@@ -215,7 +215,7 @@ class KryptonWorld(
         return seaLevel + 1
     }
 
-    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int) = generator.biomeGenerator[x, y, z]
+    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int) = generator.biome(x, y, z)
 
     override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
 

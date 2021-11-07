@@ -81,7 +81,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
 import org.kryptonmc.krypton.packet.out.play.PacketOutCamera
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChat
-import org.kryptonmc.krypton.packet.out.play.PacketOutChunkData
+import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
@@ -763,8 +763,7 @@ class KryptonPlayer(
             session.send(PacketOutUpdateViewPosition(centralX, centralZ))
             newChunks.forEach {
                 val chunk = world.chunkManager[it] ?: return@forEach
-                session.send(PacketOutUpdateLight(chunk))
-                session.send(PacketOutChunkData(chunk))
+                session.send(PacketOutChunkDataAndLight(chunk))
             }
 
             previousChunks?.forEach {

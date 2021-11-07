@@ -31,8 +31,6 @@ import org.kryptonmc.api.world.biome.Climate
 data class KryptonBiome(
     private val key: Key,
     override val climate: Climate,
-    override val depth: Float,
-    override val scale: Float,
     override val category: BiomeCategory,
     override val effects: BiomeEffects
 ) : Biome {
@@ -51,8 +49,6 @@ data class KryptonBiome(
 
         constructor(biome: Biome) : this(biome.key()) {
             climate = biome.climate
-            depth = biome.depth
-            scale = biome.scale
             category = biome.category
             effects = biome.effects
         }
@@ -61,15 +57,11 @@ data class KryptonBiome(
 
         override fun climate(climate: Climate): Biome.Builder = apply { this.climate = climate }
 
-        override fun depth(depth: Float): Biome.Builder = apply { this.depth = depth }
-
-        override fun scale(scale: Float): Biome.Builder = apply { this.scale = scale }
-
         override fun category(category: BiomeCategory): Biome.Builder = apply { this.category = category }
 
         override fun effects(effects: BiomeEffects): Biome.Builder = apply { this.effects = effects }
 
-        override fun build(): Biome = KryptonBiome(key, climate, depth, scale, category, effects)
+        override fun build(): Biome = KryptonBiome(key, climate, category, effects)
     }
 
     object Factory : Biome.Factory {
@@ -81,7 +73,7 @@ data class KryptonBiome(
             scale: Float,
             category: BiomeCategory,
             effects: BiomeEffects
-        ): Biome = KryptonBiome(key, climate, depth, scale, category, effects)
+        ): Biome = KryptonBiome(key, climate, category, effects)
 
         override fun builder(key: Key): Biome.Builder = Builder(key)
     }
@@ -92,11 +84,9 @@ data class KryptonBiome(
         val CODEC: Codec<Biome> = RecordCodecBuilder.create {
             it.group(
                 KryptonClimate.CODEC.forGetter(Biome::climate),
-                Codec.FLOAT.fieldOf("depth").forGetter(Biome::depth),
-                Codec.FLOAT.fieldOf("scale").forGetter(Biome::scale),
                 KryptonBiomeCategory.CODEC.fieldOf("category").forGetter(Biome::category),
                 KryptonBiomeEffects.CODEC.fieldOf("effects").forGetter(Biome::effects)
-            ).apply(it) { _, _, _, _, _ -> error("Cannot decode biomes!") }
+            ).apply(it) { _, _, _ -> error("Cannot decode biomes!") }
         }
     }
 }

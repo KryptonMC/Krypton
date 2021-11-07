@@ -19,17 +19,16 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.nbt.ListTag
 
-interface Palette {
+interface Palette<T> {
 
     val size: Int
     val serializedSize: Int
 
-    operator fun get(value: Block): Int
+    operator fun get(value: T): Int
 
-    operator fun get(id: Int): Block?
+    operator fun get(id: Int): T?
 
     fun write(buf: ByteBuf)
 

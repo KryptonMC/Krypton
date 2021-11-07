@@ -20,32 +20,30 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.writeBitSet
-import org.kryptonmc.krypton.util.writeIntArray
 import org.kryptonmc.krypton.util.writeNBT
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.nbt.CompoundTag
-import java.util.BitSet
 
-data class PacketOutChunkData(val chunk: KryptonChunk) : Packet {
+data class PacketOutChunkDataAndLight(
+    private val chunk: KryptonChunk,
+    private val trustEdges: Boolean = true
+) : PacketOutLight(chunk, trustEdges) {
 
     private val buffer = ByteArray(chunk.calculateSize())
-    private val sectionMask = chunk.extract(Unpooled.wrappedBuffer(buffer).apply { writerIndex(0) })
+
+    init {
+        chunk.extract(Unpooled.wrappedBuffer(buffer).apply { writerIndex(0) })
+    }
 
     override fun write(buf: ByteBuf) {
         buf.writeInt(chunk.position.x)
         buf.writeInt(chunk.position.z)
-        buf.writeBitSet(sectionMask)
 
         // Heightmaps
         val heightmaps = CompoundTag.builder()
         chunk.heightmaps.forEach { if (it.key.sendToClient) heightmaps.longArray(it.key.name, it.value.data.data) }
         buf.writeNBT(heightmaps.build())
-
-        // Biomes
-        buf.writeIntArray(chunk.biomes.write())
 
         // Actual chunk data
         buf.writeVarInt(buffer.size)
@@ -53,29 +51,25 @@ data class PacketOutChunkData(val chunk: KryptonChunk) : Packet {
 
         // TODO: When block entities are added, make use of this here
         buf.writeVarInt(0) // number of block entities
+
+        // Light data from super
+        super.write(buf)
     }
 
     companion object {
 
         @JvmStatic
-        private fun KryptonChunk.extract(buf: ByteBuf): BitSet {
-            val mask = BitSet()
+        private fun KryptonChunk.extract(buf: ByteBuf) {
             for (i in sections.indices) {
-                val section = sections[i]
-                if (section != null && !section.isEmpty()) {
-                    mask.set(i)
-                    section.write(buf)
-                }
+                sections[i]!!.write(buf)
             }
-            return mask
         }
 
         @JvmStatic
         private fun KryptonChunk.calculateSize(): Int {
             var size = 0
             for (i in sections.indices) {
-                val section = sections[i]
-                if (section != null && !section.isEmpty()) size += section.serializedSize
+                size += sections[i]!!.serializedSize
             }
             return size
         }

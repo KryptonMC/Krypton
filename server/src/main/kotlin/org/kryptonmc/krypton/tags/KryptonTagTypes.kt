@@ -26,7 +26,7 @@ import org.kryptonmc.krypton.registry.InternalRegistries
 
 object KryptonTagTypes {
 
-    private val MINECRAFT = KryptonPlatform.minecraftVersion.replace('.', '_')
+    private val MINECRAFT = KryptonPlatform.dataVersionPrefix
     private val PREFIX = "${MINECRAFT}_tags/${MINECRAFT}_"
 
     @JvmField val BLOCKS = register("block", InternalRegistries.BLOCK)

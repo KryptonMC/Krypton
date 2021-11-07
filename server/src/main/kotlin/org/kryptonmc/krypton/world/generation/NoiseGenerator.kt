@@ -30,6 +30,7 @@ import org.kryptonmc.krypton.util.noise.SurfaceNoise
 import org.kryptonmc.krypton.util.random.SimpleRandomSource
 import org.kryptonmc.krypton.util.random.WorldGenRandom
 import org.kryptonmc.krypton.world.Heightmap
+import org.kryptonmc.krypton.world.biome.Climate
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
@@ -53,8 +54,9 @@ class NoiseGenerator(
     private val defaultBlock: Block
     private val defaultFluid: Block
     private val height: Int
-    private val sampler: NoiseSampler
     override val codec = CODEC
+    // TODO: Fix this when NoiseSampler is back
+    override val climateSampler: Climate.Sampler = Climate.Sampler { _, _, _ -> Climate.TargetPoint.ZERO }
 
     init {
         val noiseSettings = settings.noiseSettings
@@ -85,17 +87,6 @@ class NoiseGenerator(
         waterLevelNoise = NormalNoise(SimpleRandomSource(random.nextLong()), -3, 1.0, 0.0, 2.0)
         lavaNoise = NormalNoise(SimpleRandomSource(random.nextLong()), -1, 1.0, 0.0)
         val modifier = NoiseModifier.PASSTHROUGH // TODO: Check for noise caves and set to cavifier
-        sampler = NoiseSampler(
-            biomeGenerator,
-            cellWidth,
-            cellHeight,
-            cellCountY,
-            noiseSettings,
-            blendedNoise,
-            islandNoise,
-            depthNoise,
-            modifier
-        )
     }
 
     override fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor) {

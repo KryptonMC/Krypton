@@ -16,15 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome.layer.traits
+package org.kryptonmc.krypton.world.block.palette
 
-import org.kryptonmc.krypton.world.biome.area.Area
-import org.kryptonmc.krypton.world.biome.context.BigContext
-import org.kryptonmc.krypton.world.biome.context.Context
+fun interface PaletteResizer<T> {
 
-interface C0Transformer : AreaTransformer1, DimensionOffset0Transformer {
-
-    operator fun invoke(context: Context, value: Int): Int
-
-    override fun invoke(context: BigContext<*>, parent: Area, x: Int, z: Int) = invoke(context, parent[parentX(x), parentZ(z)])
+    operator fun invoke(newBits: Int, value: T): Int
 }

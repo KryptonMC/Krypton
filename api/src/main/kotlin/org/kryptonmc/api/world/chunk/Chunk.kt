@@ -11,6 +11,7 @@ package org.kryptonmc.api.world.chunk
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.biome.Biome
 import org.spongepowered.math.vector.Vector3i
 
 /**
@@ -36,12 +37,6 @@ public interface Chunk {
      */
     @get:JvmName("z")
     public val z: Int
-
-    /**
-     * The container holding all the biomes in this chunk.
-     */
-    @get:JvmName("biomes")
-    public val biomes: BiomeContainer
 
     /**
      * The cumulative number of ticks players have been in this chunk.
@@ -124,4 +119,22 @@ public interface Chunk {
      * @param block the block
      */
     public fun setBlock(position: Vector3i, block: Block)
+
+    /**
+     * Gets the biome at the given [x], [y], and [z] coordinates.
+     *
+     * @param x the X coordinate
+     * @param y the Y coordinate
+     * @param z the Z coordinate
+     * @return the biome
+     */
+    public fun getBiome(x: Int, y: Int, z: Int): Biome
+
+    /**
+     * Gets the biome at the given [position].
+     *
+     * @param position the position
+     * @return the biome at the given position
+     */
+    public fun getBiome(position: Vector3i): Biome
 }

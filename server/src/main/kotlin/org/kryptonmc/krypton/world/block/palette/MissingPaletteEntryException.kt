@@ -16,11 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome.gen
+package org.kryptonmc.krypton.world.block.palette
 
-import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
-
-object NearestNeighborBiomeZoomer : BiomeZoomer {
-
-    override fun invoke(seed: Long, x: Int, y: Int, z: Int, source: NoiseBiomeSource) = source[x shr 2, y shr 2, z shr 2]
-}
+class MissingPaletteEntryException(index: Int) : RuntimeException("Missing palette entry at index $index!")

@@ -18,35 +18,35 @@
  */
 package org.kryptonmc.krypton.util
 
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import me.bardy.gsonkt.fromJson
-import org.kryptonmc.krypton.KryptonPlatform
+class ZeroBitStorage(override val size: Int) : BitStorage {
 
-abstract class KryptonDataLoader(fileSuffix: String) {
+    override val bits = 0
+    override val data = RAW
 
-    private val fileName = "${KryptonPlatform.dataVersionPrefix}_$fileSuffix.json"
-    @Volatile
-    private var isLoaded = false
+    override fun getAndSet(index: Int, value: Int): Int {
+        require(index in 0 until size) { "Index must be between 0 and $size, was $index" }
+        require(value == 0) { "Value must be 0, was $value" }
+        return 0
+    }
 
-    protected abstract fun load(data: JsonObject)
+    override fun get(index: Int): Int {
+        require(index in 0 until size) { "Index must be between 0 and $size, was $index" }
+        return 0
+    }
 
-    fun init() {
-        if (isLoaded) {
-            LOGGER.warn("Attempted to load data twice!")
-            return
+    override fun set(index: Int, value: Int) {
+        require(index in 0 until size) { "Index must be between 0 and $size, was $index" }
+        require(value == 0) { "Value must be 0, was $value" }
+    }
+
+    override fun forEach(consumer: StorageConsumer) {
+        for (i in 0 until size) {
+            consumer(i, 0)
         }
-
-        val inputStream = ClassLoader.getSystemResourceAsStream(fileName)
-            ?: error("Could not find $fileName bundled in JAR! Please report to Krypton!")
-        val data = GSON.fromJson<JsonObject>(inputStream.reader())
-        load(data)
-        isLoaded = true
     }
 
     companion object {
 
-        protected val GSON = Gson()
-        private val LOGGER = logger<KryptonDataLoader>()
+        private val RAW = LongArray(0)
     }
 }

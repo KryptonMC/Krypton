@@ -19,7 +19,9 @@
 package org.kryptonmc.krypton.world.generation
 
 import com.mojang.serialization.Codec
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.world.biome.Climate
 import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import java.util.function.Function
@@ -37,8 +39,11 @@ abstract class Generator(
     ) : this(biomeGenerator, biomeGenerator, structures, 0L)
 
     abstract val codec: Codec<out Generator>
+    abstract val climateSampler: Climate.Sampler
 
     abstract fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor)
+
+    fun biome(x: Int, y: Int, z: Int): Biome = biomeGenerator[x, y, z, climateSampler]
 
     companion object {
 

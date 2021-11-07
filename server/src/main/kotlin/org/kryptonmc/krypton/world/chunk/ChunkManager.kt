@@ -39,6 +39,7 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.LongArrayTag
 import org.kryptonmc.nbt.MutableListTag
+import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
 import org.kryptonmc.nbt.compound
 import java.util.EnumSet
@@ -126,38 +127,34 @@ class ChunkManager(private val world: KryptonWorld) {
         val data = if (world.server.useDataConverter && version < KryptonPlatform.worldVersion) {
             MCDataConverter.convertTag(MCTypeRegistry.CHUNK, nbt, version, KryptonPlatform.worldVersion).getCompound("Level")
         } else {
-            nbt.getCompound("Level")
+            nbt
         }
         val heightmaps = data.getCompound("Heightmaps")
 
-        val sectionList = data.getList("Sections", CompoundTag.ID)
+        val sectionList = data.getList("sections", CompoundTag.ID)
         val sections = arrayOfNulls<ChunkSection>(world.sectionCount)
         for (i in sectionList.indices) {
             val sectionData = sectionList.getCompound(i)
             val y = sectionData.getByte("Y").toInt()
             if (y == -1 || y == 16) continue
-            if (sectionData.contains("Palette", ListTag.ID) && sectionData.contains("BlockStates", LongArrayTag.ID)) {
+            if (sectionData.contains("block_states", CompoundTag.ID) && sectionData.contains("biomes", CompoundTag.ID)) {
                 val section = ChunkSection(
                     y,
                     sectionData.getByteArray("BlockLight"),
                     sectionData.getByteArray("SkyLight")
                 )
-                section.palette.load(
-                    sectionData.getList("Palette", CompoundTag.ID),
-                    sectionData.getLongArray("BlockStates")
-                )
+                section.blocks.load(sectionData.getCompound("block_states"), CompoundTag.ID)
+                section.biomes.load(sectionData.getCompound("biomes"), StringTag.ID)
                 section.recount()
                 if (!section.isEmpty()) sections[world.sectionIndexFromY(y)] = section
             }
         }
 
         val carvingMasks = data.getCompound("CarvingMasks").let { it.getByteArray("AIR") to it.getByteArray("LIQUID") }
-        val biomes = KryptonBiomeContainer(InternalRegistries.BIOME, world, position, world.generator.biomeGenerator)
         val chunk =  KryptonChunk(
             world,
             position,
             sections,
-            biomes,
             data.getLong("LastUpdate"),
             data.getLong("inhabitedTime"),
             ticket,
@@ -200,7 +197,7 @@ class ChunkManager(private val world: KryptonWorld) {
 
         private fun KryptonChunk.serialize(): CompoundTag {
             val data = buildCompound {
-                intArray("Biomes", biomes.write())
+                int("DataVersion", KryptonPlatform.worldVersion)
                 compound("CarvingMasks") {
                     byteArray("AIR", carvingMasks.first)
                     byteArray("LIQUID", carvingMasks.second)
@@ -226,20 +223,18 @@ class ChunkManager(private val world: KryptonWorld) {
                 val section = sections.firstOrNull { it.bottomBlockY shr 4 == i } ?: continue
                 sectionList.add(compound {
                     byte("Y", (i and 255).toByte())
-                    section.palette.save(this)
+                    compound("blocks") { section.blocks.save(this) }
+                    compound("biomes") { section.biomes.save(this) }
                     if (section.blockLight.isNotEmpty()) byteArray("BlockLight", section.blockLight)
                     if (section.skyLight.isNotEmpty()) byteArray("SkyLight", section.skyLight)
                 })
             }
-            data.put("Sections", sectionList)
+            data.put("sections", sectionList)
 
             val heightmapData = CompoundTag.builder()
             heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.longArray(it.key.name, it.value.data.data) }
             data.put("Heightmaps", heightmapData.build())
-            return compound {
-                int("DataVersion", KryptonPlatform.worldVersion)
-                put("Level", data.build())
-            }
+            return data.build()
         }
     }
 }
