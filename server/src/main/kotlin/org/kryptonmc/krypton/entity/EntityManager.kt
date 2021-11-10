@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.entity
 
+import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
+import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
 import net.kyori.adventure.key.InvalidKeyException
@@ -29,8 +31,6 @@ import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
-import org.kryptonmc.krypton.util.converter.MCDataConverter.convertData
-import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
 import org.kryptonmc.krypton.util.forEachEntityInRange
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -129,7 +129,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         }
 
         val data = if (world.server.useDataConverter && version < KryptonPlatform.worldVersion) {
-            nbt.convertData(MCTypeRegistry.CHUNK, version, KryptonPlatform.worldVersion).getList("Entities", CompoundTag.ID)
+            MCDataConverter.convertTag(MCTypeRegistry.CHUNK, nbt, version, KryptonPlatform.worldVersion).getList("Entities", CompoundTag.ID)
         } else {
             nbt.getList("Entities", CompoundTag.ID)
         }

@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.world.data
 
+import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
+import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.converter.MCDataConverter.convertData
-import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
 import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.daemon
 import org.kryptonmc.krypton.util.logger
@@ -81,7 +81,7 @@ class PlayerDataManager(private val folder: Path) {
 
         // Don't use data converter if the version is not older than our version.
         val data = if (player.server.useDataConverter && version < KryptonPlatform.worldVersion) {
-            nbt.convertData(MCTypeRegistry.PLAYER, version, KryptonPlatform.worldVersion)
+            MCDataConverter.convertTag(MCTypeRegistry.PLAYER, nbt, version, KryptonPlatform.worldVersion)
         } else {
             nbt
         }

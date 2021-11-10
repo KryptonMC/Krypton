@@ -20,12 +20,12 @@ package org.kryptonmc.krypton.world.data
 
 import ca.spottedleaf.dataconverter.types.MapType
 import ca.spottedleaf.dataconverter.types.ObjectType
+import ca.spottedleaf.dataconverter.types.nbt.NBTMapType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.util.converter.types.nbt.NBTMapType
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.toUUID
 import org.kryptonmc.krypton.world.DataPackConfig
@@ -128,7 +128,7 @@ class PrimaryWorldData(
                 "DragonFightData",
                 data.getMap<String>("DimensionData")?.getMap<String>("1")?.getMap("DragonFight") ?: NBTMapType(MutableCompoundTag())
             )
-            val customBossEvents = (data.getMap<String>("CustomBossEvents") as? NBTMapType)?.map ?: MutableCompoundTag()
+            val customBossEvents = (data.getMap<String>("CustomBossEvents") as? NBTMapType)?.tag ?: MutableCompoundTag()
             return PrimaryWorldData(
                 data.getString("LevelName", "")!!,
                 folder,
@@ -154,7 +154,7 @@ class PrimaryWorldData(
                 data.getInt("WanderingTraderSpawnDelay", 0),
                 data.getInts("WanderingTraderId")?.toUUID(),
                 customBossEvents,
-                (dragonFightData as NBTMapType).map,
+                (dragonFightData as NBTMapType).tag,
                 data.getList("ServerBrands", ObjectType.STRING)?.let {
                     val set = mutableSetOf<String>()
                     for (i in 0 until it.size()) {

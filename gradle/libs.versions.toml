@@ -89,7 +89,7 @@ tca = { group = "net.minecrell", name = "terminalconsoleappender", version.ref =
 clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt" }
 
 # Data
-dataConverter = { group = "ca.spottedleaf", name = "data-converter", version.ref = "dataConverter" }
+dataConverter = { group = "ca.spottedleaf", name = "dataconverter", version.ref = "dataConverter" }
 dfu = { group = "org.kryptonmc", name = "datafixerupper", version.ref = "dfu" }
 articData = { group = "com.github.Articdive", name = "ArticData", version.ref = "articData" }
 nbt = { group = "org.kryptonmc", name = "nbt-common-jvm", version.ref = "nbt" }

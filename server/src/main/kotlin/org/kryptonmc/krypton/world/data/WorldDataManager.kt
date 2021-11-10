@@ -18,10 +18,10 @@
  */
 package org.kryptonmc.krypton.world.data
 
+import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
+import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
+import ca.spottedleaf.dataconverter.types.nbt.NBTMapType
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.util.converter.MCDataConverter.convertDataTyped
-import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
-import org.kryptonmc.krypton.util.converter.types.nbt.NBTMapType
 import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.tryCreateDirectories
@@ -84,7 +84,7 @@ class WorldDataManager(
 
         // Don't use data converter if the data isn't older than our version.
         val data = if (useDataConverter && version < KryptonPlatform.worldVersion) {
-            tag.convertDataTyped(MCTypeRegistry.LEVEL, version, KryptonPlatform.worldVersion)
+            NBTMapType(MCDataConverter.convertTag(MCTypeRegistry.LEVEL, tag, version, KryptonPlatform.worldVersion))
         } else {
             NBTMapType(tag)
         }

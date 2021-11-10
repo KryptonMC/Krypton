@@ -18,13 +18,13 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
+import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
+import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import it.unimi.dsi.fastutil.objects.ObjectArraySet
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.converter.MCDataConverter.convertData
-import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
 import org.kryptonmc.krypton.util.daemon
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.threadFactory
@@ -124,7 +124,7 @@ class ChunkManager(private val world: KryptonWorld) {
 
         // Don't upgrade if the version is not older than our version.
         val data = if (world.server.useDataConverter && version < KryptonPlatform.worldVersion) {
-            nbt.convertData(MCTypeRegistry.CHUNK, version, KryptonPlatform.worldVersion).getCompound("Level")
+            MCDataConverter.convertTag(MCTypeRegistry.CHUNK, nbt, version, KryptonPlatform.worldVersion).getCompound("Level")
         } else {
             nbt.getCompound("Level")
         }

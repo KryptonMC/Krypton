@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.statistic
 
+import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
+import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import com.google.gson.internal.Streams
@@ -35,8 +37,6 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutStatistics
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.converter.MCDataConverter.convertData
-import org.kryptonmc.krypton.util.converter.types.MCTypeRegistry
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.toKeyOrNull
 import org.kryptonmc.krypton.util.tryCreateFile
@@ -143,7 +143,7 @@ class KryptonStatisticsTracker(
 
             // Don't use data converter if the version isn't older than our version.
             val data = if (player.server.useDataConverter && json["DataVersion"].asInt < KryptonPlatform.worldVersion) {
-                json.convertData(MCTypeRegistry.STATS, json["DataVersion"].asInt, KryptonPlatform.worldVersion)
+                MCDataConverter.convertJson(MCTypeRegistry.STATS, json, false, json["DataVersion"].asInt, KryptonPlatform.worldVersion)
             } else {
                 json
             }
