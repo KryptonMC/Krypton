@@ -185,7 +185,6 @@ class ChunkManager(private val world: KryptonWorld) {
     fun saveAll() {
         chunkMap.values.forEach { save(it) }
         regionFileManager.close()
-        world.entityManager.close()
     }
 
     fun save(chunk: KryptonChunk) {
@@ -223,8 +222,9 @@ class ChunkManager(private val world: KryptonWorld) {
             }
 
             val sectionList = MutableListTag(elementType = CompoundTag.ID)
+            val sections = sections.asSequence().filterNotNull()
             for (i in minimumLightSection until maximumLightSection) {
-                val section = sections.asSequence().filter { it != null && it.y shr 4 == i }.firstOrNull() ?: continue
+                val section = sections.firstOrNull { it.bottomBlockY shr 4 == i } ?: continue
                 sectionList.add(compound {
                     byte("Y", (i and 255).toByte())
                     section.palette.save(this)

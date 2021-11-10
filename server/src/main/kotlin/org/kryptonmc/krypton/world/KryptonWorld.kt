@@ -321,6 +321,7 @@ class KryptonWorld(
 
     override fun save() {
         chunkManager.saveAll()
+        entityManager.close()
     }
 
     override fun audiences() = players

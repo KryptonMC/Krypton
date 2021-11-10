@@ -35,7 +35,7 @@ interface ChunkAccessor : BlockAccessor {
     val highestSection: ChunkSection?
         get() = sections.lastOrNull { it != null && !it.isEmpty() }
     val highestSectionY: Int
-        get() = highestSection?.y ?: minimumBuildHeight
+        get() = highestSection?.bottomBlockY ?: minimumBuildHeight
 
     fun getOrCreateSection(index: Int) = sections.getOrNull(index)
         ?: ChunkSection(sectionYFromIndex(index)).apply { sections[index] = this }

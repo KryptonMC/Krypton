@@ -30,11 +30,12 @@ import org.kryptonmc.krypton.world.block.palette.PaletteHolder
  * states and palette information.
  */
 class ChunkSection(
-    val y: Int,
+    y: Int,
     val blockLight: ByteArray = ByteArray(2048),
     val skyLight: ByteArray = ByteArray(2048)
 ) {
 
+    val bottomBlockY = y shl 4
     val palette = PaletteHolder(GlobalPalette)
     private var nonEmptyBlockCount = 0
     val serializedSize: Int
