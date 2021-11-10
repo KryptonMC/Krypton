@@ -129,7 +129,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         }
 
         val data = if (world.server.useDataConverter && version < KryptonPlatform.worldVersion) {
-            MCDataConverter.convertTag(MCTypeRegistry.CHUNK, nbt, version, KryptonPlatform.worldVersion).getList("Entities", CompoundTag.ID)
+            MCDataConverter.convertTag(MCTypeRegistry.ENTITY_CHUNK, nbt, version, KryptonPlatform.worldVersion).getList("Entities", CompoundTag.ID)
         } else {
             nbt.getList("Entities", CompoundTag.ID)
         }
