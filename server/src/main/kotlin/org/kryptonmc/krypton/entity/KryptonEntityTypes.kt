@@ -28,6 +28,7 @@ import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.ExperienceOrb
 import org.kryptonmc.api.entity.ambient.Bat
+import org.kryptonmc.api.entity.animal.cat.Cat
 import org.kryptonmc.api.entity.hanging.Painting
 import org.kryptonmc.api.entity.monster.Creeper
 import org.kryptonmc.api.entity.monster.Zombie
@@ -92,7 +93,7 @@ object KryptonEntityTypes {
         dimensions(1.375F, 0.5625F)
         clientTrackingRange(10)
     }
-    @JvmField val CAT: KryptonEntityType<Entity> = register("cat", EntityCategories.CREATURE) {
+    @JvmField val CAT: KryptonEntityType<Cat> = register("cat", EntityCategories.CREATURE) {
         dimensions(0.6F, 0.7F)
         clientTrackingRange(8)
     }

@@ -65,7 +65,7 @@ public interface LivingEntity : Entity, AttributeHolder {
     /**
      * If this entity is considered a baby.
      */
-    public val isBaby: Boolean
+    public var isBaby: Boolean
 
     /**
      * The number of ticks this entity has been dead for.

@@ -20,6 +20,9 @@ package org.kryptonmc.krypton.entity.metadata
 
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.particle.particleEffect
+import org.kryptonmc.api.entity.animal.cat.CatTypes
+import org.kryptonmc.api.item.meta.DyeColors
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.item.KryptonItemStack
@@ -47,6 +50,9 @@ object MetadataKeys {
     @JvmField val CREEPER = CreeperKeys
     @JvmField val ZOMBIE = ZombieKeys
     @JvmField val PLAYER = PlayerKeys
+    @JvmField val AGEABLE = AgeableKeys
+    @JvmField val TAMABLE = TamableKeys
+    @JvmField val CAT = CatKeys
 
     @JvmField val FLAGS = create(0, MetadataSerializers.BYTE, 0)
     @JvmField val AIR_TICKS = create(1, MetadataSerializers.VAR_INT, 300)
@@ -163,6 +169,25 @@ object MetadataKeys {
     object BatKeys {
 
         @JvmField val FLAGS = create(16, MetadataSerializers.BYTE, 0)
+    }
+
+    object AgeableKeys {
+
+        @JvmField val BABY = create(16, MetadataSerializers.BOOLEAN, false)
+    }
+
+    object TamableKeys {
+
+        @JvmField val FLAGS = create(17, MetadataSerializers.BYTE, 0)
+        @JvmField val OWNER = create(18, MetadataSerializers.OPTIONAL_UUID, Optional.empty())
+    }
+
+    object CatKeys {
+
+        @JvmField val TYPE = create(19, MetadataSerializers.VAR_INT, Registries.CAT_TYPES.idOf(CatTypes.BLACK))
+        @JvmField val LYING = create(20, MetadataSerializers.BOOLEAN, false)
+        @JvmField val RELAXED = create(21, MetadataSerializers.BOOLEAN, false)
+        @JvmField val COLLAR_COLOR = create(22, MetadataSerializers.VAR_INT, Registries.DYE_COLORS.idOf(DyeColors.RED))
     }
 
     @JvmStatic

@@ -27,17 +27,17 @@ import org.kryptonmc.api.item.ItemStack
 public interface Animal : Ageable {
 
     /**
-     * The time remaining that this animal will be in love for.
+     * Whether this animal is currently in love, meaning it is looking for a
+     * mate.
      */
     @get:JvmName("inLove")
-    public var inLove: Int
+    public val inLove: Boolean
 
     /**
-     * The player that caused this animal to fall in love. May be null if this
-     * animal isn't currently in love.
+     * The time remaining that this animal will be in love for.
      */
-    @get:JvmName("loveCause")
-    public var loveCause: Player?
+    @get:JvmName("inLoveTime")
+    public val inLoveTime: Int
 
     /**
      * If this animal can fall in love.

@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
-class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world, EntityTypes.BAT, attributes().build()), Bat {
+class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world, EntityTypes.BAT, ATTRIBUTES), Bat {
 
     override var isResting: Boolean
         get() = data[MetadataKeys.BAT.FLAGS].toInt() and 1 != 0
@@ -51,7 +51,8 @@ class KryptonBat(world: KryptonWorld) : KryptonAmbientCreature(world, EntityType
 
     companion object {
 
-        @JvmStatic
-        fun attributes(): AttributeSupplier.Builder = KryptonMob.attributes().add(AttributeTypes.MAX_HEALTH, 6.0)
+        private val ATTRIBUTES = KryptonMob.attributes()
+            .add(AttributeTypes.MAX_HEALTH, 6.0)
+            .build()
     }
 }

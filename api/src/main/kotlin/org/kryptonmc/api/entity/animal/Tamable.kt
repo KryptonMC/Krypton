@@ -8,9 +8,8 @@
  */
 package org.kryptonmc.api.entity.animal
 
-import org.kryptonmc.api.entity.Entity
+import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.player.Player
-import java.util.UUID
 
 /**
  * An animal that may be tamed by an entity, usually a player.
@@ -34,16 +33,11 @@ public interface Tamable : Animal {
     public var isOrderedToSit: Boolean
 
     /**
-     * The UUID of the entity that has tamed this animal.
-     */
-    @get:JvmName("ownerUUID")
-    public var ownerUUID: UUID
-
-    /**
-     * The entity that has tamed this animal.
+     * The entity that has tamed this animal, or null, if no entities own this
+     * tamable animal.
      */
     @get:JvmName("owner")
-    public val owner: Entity
+    public val owner: LivingEntity?
 
     /**
      * Tames this animal, making the owner the given [tamer].

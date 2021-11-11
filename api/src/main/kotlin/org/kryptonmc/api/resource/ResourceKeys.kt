@@ -18,6 +18,7 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityCategory
+import org.kryptonmc.api.entity.animal.cat.CatType
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.entity.hanging.Picture
@@ -101,6 +102,7 @@ public object ResourceKeys {
     @JvmField public val DYE_COLORS: ResourceKey<out Registry<DyeColor>> = krypton("dye_colors")
     @JvmField public val TAG_TYPES: ResourceKey<out Registry<TagType<*>>> = krypton("tag_types")
     @JvmField public val BAN_TYPES: ResourceKey<out Registry<BanType>> = krypton("ban_types")
+    @JvmField public val CAT_TYPES: ResourceKey<out Registry<CatType>> = krypton("cat_types")
 
     /**
      * Creates a new registry key with the given [key] as its base key.

@@ -40,6 +40,7 @@ import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.StringTag
 import org.spongepowered.math.vector.Vector3i
 import java.util.Optional
+import kotlin.random.Random
 
 abstract class KryptonLivingEntity(
     world: KryptonWorld,
@@ -55,9 +56,17 @@ abstract class KryptonLivingEntity(
     final override var hurtTime: Short = 0
     final override var isFallFlying = false
     final override var lastHurtTimestamp = 0
-    override val isBaby = false
+    override var isBaby = false
     val attributes = AttributeMap(attributeSupplier)
     private val brain = Brain(mutableListOf())
+
+    open val soundVolume: Float
+        get() = 1F
+    open val voicePitch: Float
+        get() {
+            val babyFactor = if (isBaby) 1.5F else 1F
+            return (Random.nextFloat() - Random.nextFloat()) * 0.2F + babyFactor
+        }
 
     init {
         data.add(MetadataKeys.LIVING.FLAGS)
@@ -171,6 +180,9 @@ abstract class KryptonLivingEntity(
         set(value) = data.set(MetadataKeys.LIVING.BED_LOCATION, Optional.ofNullable(value))
 
     companion object {
+
+        @JvmField
+        val ATTRIBUTES = attributes().build()
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = AttributeSupplier.builder()

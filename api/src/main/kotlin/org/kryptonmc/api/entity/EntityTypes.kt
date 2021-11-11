@@ -10,6 +10,7 @@ package org.kryptonmc.api.entity
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.ambient.Bat
+import org.kryptonmc.api.entity.animal.cat.Cat
 import org.kryptonmc.api.entity.hanging.Painting
 import org.kryptonmc.api.entity.monster.Creeper
 import org.kryptonmc.api.entity.monster.Zombie
@@ -49,7 +50,7 @@ public object EntityTypes {
     @JvmField public val BEE: EntityType<Entity> = get("bee")
     @JvmField public val BLAZE: EntityType<Entity> = get("blaze")
     @JvmField public val BOAT: EntityType<Entity> = get("boat")
-    @JvmField public val CAT: EntityType<Entity> = get("cat")
+    @JvmField public val CAT: EntityType<Cat> = get("cat")
     @JvmField public val CAVE_SPIDER: EntityType<Entity> = get("cave_spider")
     @JvmField public val CHICKEN: EntityType<Entity> = get("chicken")
     @JvmField public val COD: EntityType<Entity> = get("cod")

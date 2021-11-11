@@ -127,7 +127,7 @@ class KryptonPlayer(
     override val profile: KryptonGameProfile,
     world: KryptonWorld,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
-) : KryptonLivingEntity(world, EntityTypes.PLAYER, attributes().build()), Player {
+) : KryptonLivingEntity(world, EntityTypes.PLAYER, ATTRIBUTES), Player {
 
     var permissionFunction = PermissionFunction.ALWAYS_NOT_SET
 
@@ -655,12 +655,11 @@ class KryptonPlayer(
         )
         private val LOGGER = logger<KryptonPlayer>()
         private val SERVER_LOGGER = logger<KryptonServer>()
-
-        @JvmStatic
-        fun attributes(): AttributeSupplier.Builder = KryptonLivingEntity.attributes()
+        private val ATTRIBUTES = KryptonLivingEntity.attributes()
             .add(AttributeTypes.ATTACK_DAMAGE, 1.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.1)
             .add(AttributeTypes.ATTACK_SPEED)
             .add(AttributeTypes.LUCK)
+            .build()
     }
 }
