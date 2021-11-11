@@ -197,7 +197,6 @@ class ChunkManager(private val world: KryptonWorld) {
     companion object {
 
         private val LOGGER = logger<ChunkManager>()
-        private const val CHUNK_DATA_VERSION = 2578
 
         private fun KryptonChunk.serialize(): CompoundTag {
             val data = buildCompound {
@@ -238,7 +237,7 @@ class ChunkManager(private val world: KryptonWorld) {
             heightmaps.forEach { if (it.key in Heightmap.Type.POST_FEATURES) heightmapData.longArray(it.key.name, it.value.data.data) }
             data.put("Heightmaps", heightmapData.build())
             return compound {
-                int("DataVersion", CHUNK_DATA_VERSION)
+                int("DataVersion", KryptonPlatform.worldVersion)
                 put("Level", data.build())
             }
         }
