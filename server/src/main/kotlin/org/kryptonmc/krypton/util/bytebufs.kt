@@ -188,6 +188,12 @@ fun ByteBuf.writeSingletonLongArray(element: Long) {
     writeLong(element)
 }
 
+fun ByteBuf.readUUID(): UUID {
+    val msb = readLong()
+    val lsb = readLong()
+    return UUID(msb, lsb)
+}
+
 fun ByteBuf.writeUUID(uuid: UUID) {
     writeLong(uuid.mostSignificantBits)
     writeLong(uuid.leastSignificantBits)
