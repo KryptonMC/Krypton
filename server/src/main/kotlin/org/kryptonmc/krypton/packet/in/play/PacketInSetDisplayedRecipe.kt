@@ -19,10 +19,10 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
+import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readString
 
-// TODO: Register after finding out if there is a better way to read identifiers
 class PacketInSetDisplayedRecipe(buf: ByteBuf) : Packet {
-    val recipeId = buf.readString()
+    val recipeId = Key.key(buf.readString())
 }

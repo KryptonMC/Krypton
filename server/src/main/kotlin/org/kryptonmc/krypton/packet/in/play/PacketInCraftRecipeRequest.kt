@@ -19,12 +19,12 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
+import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readString
 
-// TODO: Register after figuring out if string works for identifiers or a readKey method is needed?
 class PacketInCraftRecipeRequest(buf: ByteBuf) : Packet {
     val windowId = buf.readByte()
-    val recipeId = buf.readString()
+    val recipeId = Key.key(buf.readString())
     val makeAll = buf.readBoolean()
 }
