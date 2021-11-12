@@ -51,6 +51,7 @@ import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.Statistic
+import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
@@ -96,6 +97,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
@@ -229,6 +231,10 @@ class KryptonPlayer(
         inventory.load(tag.getList("Inventory", CompoundTag.ID))
         inventory.heldSlot = tag.getInt("SelectedItemSlot")
         score = tag.getInt("Score")
+        foodLevel = tag.getInt("foodLevel")
+        foodTickTimer = tag.getInt("foodTickTimer")
+        foodExhaustionLevel = tag.getFloat("foodExhaustionLevel")
+        foodSaturationLevel = tag.getFloat("foodSaturationLevel")
         if (tag.contains("abilities", CompoundTag.ID)) {
             val abilitiesData = tag.getCompound("abilities")
             isInvulnerable = abilitiesData.getBoolean("invulnerable")
@@ -274,6 +280,10 @@ class KryptonPlayer(
         put("Inventory", inventory.save())
         int("SelectedItemSlot", inventory.heldSlot)
         int("Score", score)
+        int("foodLevel", foodLevel)
+        int("foodTickTimer", foodTickTimer)
+        float("foodExhaustionLevel", foodExhaustionLevel)
+        float("foodSaturationLevel", foodSaturationLevel)
         compound("abilities") {
             boolean("flying", isFlying)
             boolean("invulnerable", isInvulnerable)
@@ -297,6 +307,68 @@ class KryptonPlayer(
             Codecs.DIMENSION.encodeStart(NBTOps, respawnDimension)
                 .resultOrPartial(LOGGER::error)
                 .ifPresent { put("SpawnDimension", it) }
+        }
+    }
+
+    override fun tick() {
+        super.tick()
+        hungerMechanic()
+    }
+
+    private fun hungerMechanic() {
+        // TODO: Hunger in general -> min/max to replace if/else, more actions for exhaustion
+        foodTickTimer++
+        if (foodExhaustionLevel > 4f) {
+            foodExhaustionLevel -= 4.0f
+            if (foodSaturationLevel > 0) {
+                if (foodSaturationLevel - 1 >= 0) {
+                    foodSaturationLevel--
+                } else {
+                    foodSaturationLevel = 0f
+                }
+            } else {
+                if (foodLevel - 1 >= 0) {
+                    foodLevel--
+                } else {
+                    foodLevel = 0
+                }
+            }
+        }
+
+        when (server.config.world.difficulty) {
+            Difficulty.EASY -> {
+                if (health > 10 && foodLevel == 0 && foodTickTimer == 80) { // starving
+                    health-- // deduct half a heart
+                }
+            }
+            Difficulty.NORMAL -> {
+                if (health > 1 && foodLevel == 0 && foodTickTimer == 80) {
+                    health--
+                }
+            }
+            Difficulty.HARD -> {
+                if (foodLevel == 0 && foodTickTimer == 80) {
+                    health--
+                }
+            }
+            Difficulty.PEACEFUL -> {
+                if (foodLevel < 20 && foodTickTimer % 20 == 0) {
+                    foodLevel++ // increase player food level
+                }
+            }
+        }
+
+        if (foodTickTimer == 80) {
+            if (foodLevel >= 18) {
+                health++ // regenerate health
+                if (foodExhaustionLevel + 3f < 4f) {
+                    foodExhaustionLevel += 3f
+                } else {
+                    foodExhaustionLevel = 4f
+                }
+                foodSaturationLevel -= 3
+            }
+            foodTickTimer = 0 // reset tick timer
         }
     }
 
@@ -607,6 +679,18 @@ class KryptonPlayer(
         }
     }
 
+    fun updateMovementExhaustion(deltaX: Double, deltaY: Double, deltaZ: Double) {
+        if (isSwimming) {
+            val value = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ)
+            if (value > 0) foodExhaustionLevel += 0.01F * value.toFloat()
+        } else if (isOnGround) {
+            val value = sqrt(deltaX * deltaX + deltaZ * deltaZ)
+            if (value > 0) when {
+                isSprinting -> foodExhaustionLevel += 0.1F * value.toFloat()
+            }
+        }
+    }
+
     override var absorption: Float
         get() = data[MetadataKeys.PLAYER.ADDITIONAL_HEARTS]
         set(value) = data.set(MetadataKeys.PLAYER.ADDITIONAL_HEARTS, value)
@@ -614,6 +698,31 @@ class KryptonPlayer(
     var score: Int
         get() = data[MetadataKeys.PLAYER.SCORE]
         set(value) = data.set(MetadataKeys.PLAYER.SCORE, value)
+
+    override var health: Float = 1.0f
+        get() = super.health
+        set(value) {
+            super.health = value
+            field = value
+            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
+        }
+
+    override var foodLevel: Int = 20
+        set(value) {
+            field = value
+            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
+        }
+
+    var foodTickTimer: Int = 0
+
+    override var foodExhaustionLevel: Float = 0f
+
+    override var foodSaturationLevel: Float = 5f
+        set(value) {
+            field = value
+            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
+        }
+
 
     var skinSettings: Byte
         get() = data[MetadataKeys.PLAYER.SKIN_FLAGS]

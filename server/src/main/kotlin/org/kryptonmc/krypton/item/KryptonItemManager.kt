@@ -24,6 +24,7 @@ import org.kryptonmc.api.item.ItemManager
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.item.handler.DebugStickHandler
+import org.kryptonmc.krypton.item.handler.FoodHandler
 import org.kryptonmc.krypton.item.handler.SwordHandler
 import org.kryptonmc.krypton.item.handler.TridentHandler
 
@@ -40,6 +41,7 @@ object KryptonItemManager : ItemManager {
         register(ItemTypes.NETHERITE_SWORD, SwordHandler)
         register(ItemTypes.TRIDENT, TridentHandler)
         register(ItemTypes.DEBUG_STICK, DebugStickHandler)
+        register(ItemTypes.COOKED_BEEF, FoodHandler)
     }
 
     override fun handler(key: String) = handlers[key]

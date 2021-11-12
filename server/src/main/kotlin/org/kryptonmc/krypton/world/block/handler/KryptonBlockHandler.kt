@@ -63,7 +63,8 @@ interface KryptonBlockHandler : BlockHandler {
     }
 
     override fun onDestroy(player: Player, block: Block, position: Vector3i, item: ItemStack) {
-        // TODO: Award block mined statistic, cause exhaustion, and drop items
+        // TODO: Award block mined statistic and drop items
+        player.foodExhaustionLevel += 0.005f
     }
 
     override fun updateShape(
