@@ -29,6 +29,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
 import org.kryptonmc.krypton.packet.`in`.play.PacketInCraftRecipeRequest
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAnimation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChangeHeldItem
+import org.kryptonmc.krypton.packet.`in`.play.PacketInAdvancementTab
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChat
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientSettings
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerBoat
@@ -193,6 +194,7 @@ object PacketRegistry {
         register(PacketState.PLAY, 0x1F, ::PacketInSetDisplayedRecipe)
         register(PacketState.PLAY, 0x20, ::PacketInNameItem)
         register(PacketState.PLAY, 0x21, ::PacketInResourcePackStatus)
+        register(PacketState.PLAY, 0x22, ::PacketInAdvancementTab)
         register(PacketState.PLAY, 0x25, ::PacketInChangeHeldItem)
         register(PacketState.PLAY, 0x28, ::PacketInCreativeInventoryAction)
         register(PacketState.PLAY, 0x2C, ::PacketInAnimation)
