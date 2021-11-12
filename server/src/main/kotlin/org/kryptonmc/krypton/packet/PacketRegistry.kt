@@ -32,6 +32,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInChat
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientSettings
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
 import org.kryptonmc.krypton.packet.`in`.play.PacketInCreativeInventoryAction
+import org.kryptonmc.krypton.packet.`in`.play.PacketInGenerateStructure
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlaceBlock
@@ -160,6 +161,7 @@ object PacketRegistry {
         register(PacketState.PLAY, 0x0A, ::PacketInPluginMessage)
         register(PacketState.PLAY, 0x0C, ::PacketInEntityNBTQuery)
         register(PacketState.PLAY, 0x0D, ::PacketInPlayerInteractEntity)
+        register(PacketState.PLAY, 0x0E, ::PacketInGenerateStructure)
         register(PacketState.PLAY, 0x0F, ::PacketInKeepAlive)
         register(PacketState.PLAY, 0x11, ::PacketInPlayerPosition)
         register(PacketState.PLAY, 0x12, ::PacketInPlayerPositionAndRotation)
