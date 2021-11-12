@@ -31,6 +31,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInChangeHeldItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChat
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientSettings
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerBoat
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPickItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
 import org.kryptonmc.krypton.packet.`in`.play.PacketInCreativeInventoryAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInGenerateStructure
@@ -174,6 +175,7 @@ object PacketRegistry {
         register(PacketState.PLAY, 0x14, ::PacketInPlayerMovement)
         register(PacketState.PLAY, 0x15, ::PacketInVehicleMove)
         register(PacketState.PLAY, 0x16, ::PacketInSteerBoat)
+        register(PacketState.PLAY, 0x17, ::PacketInPickItem)
         register(PacketState.PLAY, 0x19, ::PacketInAbilities)
         register(PacketState.PLAY, 0x1A, ::PacketInPlayerDigging)
         register(PacketState.PLAY, 0x1B, ::PacketInEntityAction)
