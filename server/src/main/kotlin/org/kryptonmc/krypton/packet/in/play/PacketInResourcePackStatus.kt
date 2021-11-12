@@ -19,11 +19,8 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.readString
 
 class PacketInResourcePackStatus(buf: ByteBuf) : Packet {
     val result = buf.readEnum<ResourcePackStatus>()

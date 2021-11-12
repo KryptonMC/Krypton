@@ -19,11 +19,7 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.decodeBlockPosition
-import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.readVarInt
 
 class PacketInLockDifficulty(buf: ByteBuf) : Packet {
     val locked = buf.readBoolean()
