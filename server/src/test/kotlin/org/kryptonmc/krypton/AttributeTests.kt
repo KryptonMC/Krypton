@@ -27,7 +27,7 @@ import kotlin.test.assertEquals
 class AttributeTests {
 
     @Test
-    fun `add modifier`() {
+    fun add() {
         assertEquals(9.0, ModifierOperation.ADD.apply(BASE, MODIFIERS))
     }
 

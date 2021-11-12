@@ -38,18 +38,15 @@ public sealed class AbstractColorParticleEffectBuilder<B : AbstractColorParticle
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
-    public fun color(color: Color): B = apply {
-        this.red = color.red.toShort()
-        this.green = color.green.toShort()
-        this.blue = color.blue.toShort()
-    } as B
+    public fun color(color: Color): B = rgb(color.red, color.green, color.blue)
 
     /**
      * Sets the color of the particle to the given [red], [green], and [blue]
      * values.
      *
-     * Note: if any of the given [red], [green], or [blue] values are > 255,
-     * they will become 255.
+     * Note: If any of the given [red], [green], or [blue] values have more
+     * than 8 bits, any excess bits will be "cut off", resulting in a value
+     * that is 8 bits. This cut off can be calculated by `value & 0xFF`.
      *
      * @param red the red value
      * @param green the green value
@@ -67,14 +64,16 @@ public sealed class AbstractColorParticleEffectBuilder<B : AbstractColorParticle
     /**
      * Sets the color of the particle to the given [rgb] value.
      *
-     * Note: if any of the decoded RGB values are > 255, they will become 255.
+     * Note: If any of the decoded RGB values have more than 8 bits, any excess
+     * bits will be "cut off", resulting in a value that is 8 bits. This cut
+     * off can be calculated by `value & 0xFF`.
      *
      * @param rgb the RGB value
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
     @Suppress("MagicNumber")
-    public fun rgb(rgb: Int): B = rgb(rgb shr 16, rgb shr 8, rgb)
+    public fun rgb(rgb: Int): B = rgb(rgb shr 16 and 0xFF, rgb shr 8 and 0xFF, rgb and 0xFF)
 
     /**
      * Sets the color of the particle to the given [rgb] like object.
@@ -97,6 +96,8 @@ public sealed class AbstractColorParticleEffectBuilder<B : AbstractColorParticle
      * @param hue the hue
      * @param saturation the saturation
      * @param value the value
+     * @throws IllegalArgumentException if any of the values are not between 0
+     * and 1
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
@@ -110,9 +111,12 @@ public sealed class AbstractColorParticleEffectBuilder<B : AbstractColorParticle
     /**
      * Sets the color of the particle to the given [hsv] like object.
      *
-     * Note: if any of the decoded HSV values are > 1, they will become 1.
+     * Note: The values given here in the [hsv] like object must be between
+     * 0 and 1, due to them being HSB values.
      *
      * @param hsv the HSV value
+     * @throws IllegalArgumentException if any of the values are not between 0
+     * and 1
      */
     @ParticleDsl
     @Contract("_ -> this", mutates = "this")
