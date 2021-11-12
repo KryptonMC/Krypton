@@ -43,6 +43,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityNBTQuery
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTeleportConfirm
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerInteractEntity
 import org.kryptonmc.krypton.packet.`in`.status.PacketInPing
 import org.kryptonmc.krypton.packet.`in`.status.PacketInStatusRequest
 import org.kryptonmc.krypton.packet.out.login.PacketOutEncryptionRequest
@@ -158,6 +159,7 @@ object PacketRegistry {
         register(PacketState.PLAY, 0x06, ::PacketInTabComplete)
         register(PacketState.PLAY, 0x0A, ::PacketInPluginMessage)
         register(PacketState.PLAY, 0x0C, ::PacketInEntityNBTQuery)
+        register(PacketState.PLAY, 0x0D, ::PacketInPlayerInteractEntity)
         register(PacketState.PLAY, 0x0F, ::PacketInKeepAlive)
         register(PacketState.PLAY, 0x11, ::PacketInPlayerPosition)
         register(PacketState.PLAY, 0x12, ::PacketInPlayerPositionAndRotation)
