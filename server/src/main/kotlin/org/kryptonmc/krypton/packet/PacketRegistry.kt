@@ -42,6 +42,10 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInNameItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInCreativeInventoryAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInGenerateStructure
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPong
+import org.kryptonmc.krypton.packet.`in`.play.PacketInSelectTrade
+import org.kryptonmc.krypton.packet.`in`.play.PacketInSetBeaconEffect
+import org.kryptonmc.krypton.packet.`in`.play.PacketInUpdateCommandBlock
+import org.kryptonmc.krypton.packet.`in`.play.PacketInUpdateCommandBlockMinecart
 import org.kryptonmc.krypton.packet.`in`.play.PacketInVehicleMove
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityAction
@@ -195,7 +199,11 @@ object PacketRegistry {
         register(PacketState.PLAY, 0x20, ::PacketInNameItem)
         register(PacketState.PLAY, 0x21, ::PacketInResourcePackStatus)
         register(PacketState.PLAY, 0x22, ::PacketInAdvancementTab)
+        register(PacketState.PLAY, 0x23, ::PacketInSelectTrade)
+        register(PacketState.PLAY, 0x24, ::PacketInSetBeaconEffect)
         register(PacketState.PLAY, 0x25, ::PacketInChangeHeldItem)
+        register(PacketState.PLAY, 0x26, ::PacketInUpdateCommandBlock)
+        register(PacketState.PLAY, 0x27, ::PacketInUpdateCommandBlockMinecart)
         register(PacketState.PLAY, 0x28, ::PacketInCreativeInventoryAction)
         register(PacketState.PLAY, 0x2C, ::PacketInAnimation)
         register(PacketState.PLAY, 0x2E, ::PacketInPlaceBlock)
