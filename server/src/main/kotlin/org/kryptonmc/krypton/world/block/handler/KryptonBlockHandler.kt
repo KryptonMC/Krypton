@@ -64,6 +64,8 @@ interface KryptonBlockHandler : BlockHandler {
 
     override fun onDestroy(player: Player, block: Block, position: Vector3i, item: ItemStack) {
         // TODO: Award block mined statistic and drop items
+        // 0.005/block is the vanilla food exhaustion per block to be added to the player
+        // Source: https://minecraft.fandom.com/wiki/Hunger#Exhaustion_level_increase
         player.foodExhaustionLevel += 0.005f
     }
 

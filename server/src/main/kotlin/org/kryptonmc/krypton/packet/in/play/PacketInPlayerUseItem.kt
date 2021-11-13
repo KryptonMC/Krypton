@@ -26,5 +26,6 @@ import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.decodeBlockPosition
 
 class PacketInPlayerUseItem(buf: ByteBuf) : Packet {
+
     val hand = buf.readEnum<Hand>()
 }

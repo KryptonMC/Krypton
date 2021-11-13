@@ -265,7 +265,9 @@ class PlayHandler(
                 playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
             }
             PacketInPlayerDigging.Status.UPDATE_STATE -> {
-                (server.itemManager.handler(player.inventory[player.inventory.heldSlot].type) as KryptonItemTimedHandler).finishUse(player, player.hand)
+                val handler = server.itemManager.handler(player.inventory[player.inventory.heldSlot].type)
+                if (handler !is KryptonItemTimedHandler) return
+                handler.finishUse(player, player.hand)
             }
         }
     }

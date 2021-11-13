@@ -119,9 +119,7 @@ import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.UnaryOperator
-import kotlin.math.abs
-import kotlin.math.roundToInt
-import kotlin.math.sqrt
+import kotlin.math.*
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonPlayer(
@@ -316,25 +314,49 @@ class KryptonPlayer(
     }
 
     private fun hungerMechanic() {
-        // TODO: Hunger in general -> min/max to replace if/else, more actions for exhaustion
+        // TODO: More actions for exhaustion, add constants?
         foodTickTimer++
+
+        // Sources:
+        //      -> Minecraft Wiki https://minecraft.fandom.com/wiki/Hunger
+        //      -> 3 other implementations of this exact mechanic (lines up with wiki)
+
+        // Food System
+        // The food exhaustion level accumulates exhaustion from player actions
+        // over time. Once the exhaustion level exceeds a threshold of 4, it
+        // resets, and then deducts a food saturation level.
+        // The food saturation level, in turn, once depleted (at zero), deducts a
+        // a food level every tick, only once the exhaustion has been reset again.
+        // Additionally, client side, a saturation level of zero is responsible for
+        // triggering the shaking of the hunger bar.
+        // TLDR: The exhaustion level deducts from the saturation. The saturation level
+        // follows the food level and acts as a buffer before any food levels are deducted.
+        // -> Player action
+        // -> Exhaustion ↑
+        // -> If Exhaustion Threshold of 4
+        // -> Reset Exhaustion
+        // -> Saturation ↓
+        // -> If Saturation Threshold of 0
+        // -> Food Level ↓
         if (foodExhaustionLevel > 4f) {
-            foodExhaustionLevel -= 4.0f
+            foodExhaustionLevel -= 4f
             if (foodSaturationLevel > 0) {
-                if (foodSaturationLevel - 1 >= 0) {
-                    foodSaturationLevel--
-                } else {
-                    foodSaturationLevel = 0f
-                }
+                foodSaturationLevel = max(foodSaturationLevel - 1, 0f)
             } else {
-                if (foodLevel - 1 >= 0) {
-                    foodLevel--
-                } else {
-                    foodLevel = 0
-                }
+                foodLevel = max(foodLevel - 1, 0)
             }
         }
 
+        // Starvation System
+        // If the food level is zero, every 80 ticks, deduct a half-heart.
+        // This system is conditional based on difficulty.
+        //      -> Easy: Health must be greater than 10
+        //      -> Normal: Health must be greater than 1
+        //      -> Hard: There is no minimum health, good luck out there.
+        // An exception to this system is in peaceful mode, where every 20 ticks,
+        // the food level regenerates instead of deducting a half-heart.
+        // NOTE: 80 are 20 ticks are the vanilla timings for hunger and
+        // peaceful food regeneration respectively.
         when (server.config.world.difficulty) {
             Difficulty.EASY -> {
                 if (health > 10 && foodLevel == 0 && foodTickTimer == 80) { // starving
@@ -358,14 +380,24 @@ class KryptonPlayer(
             }
         }
 
+        // Health Regeneration System
+        // Every 80 ticks if the food level is greater than
+        // or equal to 18, add a half-heart to the player.
+        // Healing of course, comes at an expense to the player's
+        // food level, so food exhaustion and saturation are adjusted
+        // to bring equilibrium to the hunger system. This is to avoid
+        // a player healing infinitely.
         if (foodTickTimer == 80) {
             if (foodLevel >= 18) {
-                health++ // regenerate health
-                if (foodExhaustionLevel + 3f < 4f) {
-                    foodExhaustionLevel += 3f
-                } else {
-                    foodExhaustionLevel = 4f
-                }
+                health++ // Regenerate health
+                // Once a half-heart has been added, increase the exhaustion by 3,
+                // or if that operation were to exceed the threshold, instead, set it to the
+                // threshold value of 4.
+                foodExhaustionLevel = min(foodExhaustionLevel + 3f, 4f)
+                // Force the saturation level to deplete by 3.
+                // So as health comes up, the food "buffer" comes down,
+                // eventually causing the food level to decrease, when saturation
+                // reaches zero.
                 foodSaturationLevel -= 3
             }
             foodTickTimer = 0 // reset tick timer
@@ -680,13 +712,16 @@ class KryptonPlayer(
     }
 
     fun updateMovementExhaustion(deltaX: Double, deltaY: Double, deltaZ: Double) {
+        // Source: https://minecraft.fandom.com/wiki/Hunger#Exhaustion_level_increase
         if (isSwimming) {
             val value = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ)
             if (value > 0) foodExhaustionLevel += 0.01F * value.toFloat()
+            // 0.01/u is the vanilla level of exhaustion per unit for swimming
         } else if (isOnGround) {
             val value = sqrt(deltaX * deltaX + deltaZ * deltaZ)
             if (value > 0) when {
                 isSprinting -> foodExhaustionLevel += 0.1F * value.toFloat()
+                // 0.1/u is the vanilla level of exhaustion per unit for sprinting
             }
         }
     }
@@ -699,14 +734,16 @@ class KryptonPlayer(
         get() = data[MetadataKeys.PLAYER.SCORE]
         set(value) = data.set(MetadataKeys.PLAYER.SCORE, value)
 
-    override var health: Float = 1.0f
+    override var health: Float
         get() = super.health
         set(value) {
             super.health = value
-            field = value
             session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
         }
 
+    // Sources for vanilla hunger system values:
+    //      -> Minecraft Wiki https://minecraft.fandom.com/wiki/Hunger
+    // 20 is the default vanilla food level
     override var foodLevel: Int = 20
         set(value) {
             field = value
@@ -715,8 +752,10 @@ class KryptonPlayer(
 
     var foodTickTimer: Int = 0
 
+    // 0 is the default vanilla food exhaustion level
     override var foodExhaustionLevel: Float = 0f
 
+    // 5 is the default vanilla food saturation level
     override var foodSaturationLevel: Float = 5f
         set(value) {
             field = value
