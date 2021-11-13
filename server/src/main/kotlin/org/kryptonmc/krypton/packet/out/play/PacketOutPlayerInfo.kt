@@ -19,13 +19,17 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import net.kyori.adventure.text.Component
+import org.kryptonmc.api.auth.ProfileProperty
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
+import java.util.UUID
 
 /**
  * Updates information on the tab list (called the player list by vanilla).
@@ -36,23 +40,31 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutPlayerInfo(
     val action: Action,
-    val players: Collection<KryptonPlayer> = emptyList()
+    val players: List<PlayerData> = emptyList()
 ) : Packet {
 
-    constructor(action: Action, vararg players: KryptonPlayer) : this(action, players.toList())
+    constructor(action: Action, vararg players: KryptonPlayer) : this(
+        action,
+        players.map { PlayerData(it.profile.uuid, it.profile.name, it.profile.properties, it.gameMode, it.session.latency, it.displayName) }
+    )
+
+    constructor(action: Action, players: Collection<KryptonPlayer>) : this(
+        action,
+        players.map { PlayerData(it.profile.uuid, it.profile.name, it.profile.properties, it.gameMode, it.session.latency, it.displayName) }
+    )
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(action.ordinal)
         buf.writeVarInt(players.size)
 
         players.forEach { update ->
-            buf.writeUUID(update.profile.uuid)
+            buf.writeUUID(update.uuid)
             when (action) {
                 Action.ADD_PLAYER -> {
-                    buf.writeString(update.profile.name)
-                    buf.writeVarInt(update.profile.properties.size)
+                    buf.writeString(update.name)
+                    buf.writeVarInt(update.properties.size)
 
-                    update.profile.properties.forEach {
+                    update.properties.forEach {
                         buf.writeString(it.name)
                         buf.writeString(it.value)
                         val signature = it.signature
@@ -61,12 +73,12 @@ data class PacketOutPlayerInfo(
                     }
 
                     buf.writeVarInt(Registries.GAME_MODES.idOf(update.gameMode))
-                    buf.writeVarInt(update.session.latency)
+                    buf.writeVarInt(update.latency)
                     buf.writeBoolean(true)
                     buf.writeChat(update.displayName)
                 }
                 Action.UPDATE_GAMEMODE -> buf.writeVarInt(Registries.GAME_MODES.idOf(update.gameMode))
-                Action.UPDATE_LATENCY -> buf.writeVarInt(update.session.latency)
+                Action.UPDATE_LATENCY -> buf.writeVarInt(update.latency)
                 Action.UPDATE_DISPLAY_NAME -> {
                     buf.writeBoolean(true)
                     buf.writeChat(update.displayName)
@@ -75,6 +87,15 @@ data class PacketOutPlayerInfo(
             }
         }
     }
+
+    class PlayerData(
+        val uuid: UUID,
+        val name: String,
+        val properties: List<ProfileProperty>,
+        val gameMode: GameMode,
+        val latency: Int,
+        val displayName: Component
+    )
 
     enum class Action {
 
