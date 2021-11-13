@@ -30,8 +30,6 @@ import net.kyori.adventure.key.Key.key
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.event.HoverEvent.ShowEntity
-import net.kyori.adventure.text.event.HoverEvent.showEntity
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import org.kryptonmc.api.block.Block
@@ -62,7 +60,6 @@ import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
-import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
@@ -118,7 +115,6 @@ import java.time.Duration
 import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import java.util.function.UnaryOperator
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -189,7 +185,7 @@ class KryptonPlayer(
             updateAbilities()
             onAbilitiesUpdate()
             server.playerManager.sendToAll(PacketOutPlayerInfo(
-                PacketOutPlayerInfo.PlayerAction.UPDATE_GAMEMODE,
+                PacketOutPlayerInfo.Action.UPDATE_GAMEMODE,
                 this
             ))
             session.send(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, Registries.GAME_MODES.idOf(value).toFloat()))
@@ -410,13 +406,13 @@ class KryptonPlayer(
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (player === this) return false
-        player.session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, this))
+        player.session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, this))
         return super.addViewer(player)
     }
 
     override fun removeViewer(player: KryptonPlayer): Boolean {
         if (player === this || !super.removeViewer(player)) return false
-        player.session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER, this))
+        player.session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.REMOVE_PLAYER, this))
         return true
     }
 

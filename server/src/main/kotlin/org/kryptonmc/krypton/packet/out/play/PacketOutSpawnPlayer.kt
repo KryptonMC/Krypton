@@ -20,26 +20,43 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
+import java.util.UUID
 
 /**
  * Spawn a player for the client.
- *
- * @param player the player to spawn.
  */
 @JvmRecord
-data class PacketOutSpawnPlayer(private val player: KryptonPlayer) : Packet {
+data class PacketOutSpawnPlayer(
+    override val entityId: Int,
+    val uuid: UUID,
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val yaw: Float,
+    val pitch: Float
+) : EntityPacket {
+
+    constructor(player: KryptonPlayer) : this(
+        player.id,
+        player.uuid,
+        player.location.x(),
+        player.location.y(),
+        player.location.z(),
+        player.rotation.x(),
+        player.rotation.y()
+    )
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(player.id)
-        buf.writeUUID(player.uuid)
-        buf.writeDouble(player.location.x())
-        buf.writeDouble(player.location.y())
-        buf.writeDouble(player.location.z())
-        buf.writeAngle(player.rotation.x())
-        buf.writeAngle(player.rotation.y())
+        buf.writeVarInt(entityId)
+        buf.writeUUID(uuid)
+        buf.writeDouble(x)
+        buf.writeDouble(y)
+        buf.writeDouble(z)
+        buf.writeAngle(yaw)
+        buf.writeAngle(pitch)
     }
 }

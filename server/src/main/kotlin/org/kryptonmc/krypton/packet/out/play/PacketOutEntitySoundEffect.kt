@@ -22,23 +22,23 @@ import io.netty.buffer.ByteBuf
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutEntitySoundEffect(
-    private val event: SoundEvent,
-    private val source: Sound.Source,
-    private val id: Int,
-    private val volume: Float,
-    private val pitch: Float
-) : Packet {
+    val event: SoundEvent,
+    val source: Sound.Source,
+    override val entityId: Int,
+    val volume: Float,
+    val pitch: Float
+) : EntityPacket {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(Registries.SOUND_EVENT.idOf(event))
         buf.writeEnum(source)
-        buf.writeVarInt(id)
+        buf.writeVarInt(entityId)
         buf.writeFloat(volume)
         buf.writeFloat(pitch)
     }

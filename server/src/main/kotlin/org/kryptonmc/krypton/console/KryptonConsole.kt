@@ -26,6 +26,7 @@ import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
 import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.command.ConsoleSender
+import org.kryptonmc.api.event.command.CommandExecuteEvent
 import org.kryptonmc.api.event.server.SetupPermissionsEvent
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.krypton.KryptonServer
@@ -55,7 +56,9 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
     override fun isRunning() = server.isRunning
 
     override fun runCommand(command: String) {
-        server.commandManager.dispatch(this, command)
+        val result = server.eventManager.fireSync(CommandExecuteEvent(this, command)).result
+        if (!result.isAllowed) return
+        server.commandManager.dispatch(this, result.command ?: command)
     }
 
     override fun shutdown() = server.stop()

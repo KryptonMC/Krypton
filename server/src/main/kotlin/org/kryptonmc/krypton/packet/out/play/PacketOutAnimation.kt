@@ -19,17 +19,17 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutAnimation(
-    private val id: Int,
-    private val animation: EntityAnimation
-) : Packet {
+    override val entityId: Int,
+    val animation: EntityAnimation
+) : EntityPacket {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(id)
+        buf.writeVarInt(entityId)
         buf.writeByte(animation.ordinal)
     }
 }
@@ -41,5 +41,13 @@ enum class EntityAnimation {
     LEAVE_BED,
     SWING_OFFHAND,
     CRITICAL_EFFECT,
-    MAGIC_CRITICAL_EFFECT
+    MAGIC_CRITICAL_EFFECT;
+
+    companion object {
+
+        private val BY_ID = values()
+
+        @JvmStatic
+        fun fromId(id: Int): EntityAnimation? = BY_ID.getOrNull(id)
+    }
 }

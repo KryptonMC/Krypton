@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 
 @JvmRecord
-data class PacketOutDisconnect(private val reason: Component) : Packet {
+data class PacketOutDisconnect(val reason: Component) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(reason)

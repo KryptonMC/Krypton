@@ -21,23 +21,32 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
-class PacketOutTimeUpdate(
-    private val time: Long,
-    dayTime: Long,
-    doDaylightCycle: Boolean
+@JvmRecord
+data class PacketOutTimeUpdate(
+    val time: Long,
+    val dayTime: Long
 ) : Packet {
 
-    private val dayTime = kotlin.run {
-        var time = dayTime
-        if (!doDaylightCycle) {
-            time = -dayTime
-            if (time == 0L) time = -1L
-        }
-        time
-    }
+    constructor(time: Long, dayTime: Long, doDaylightCycle: Boolean) : this(
+        time,
+        calculateDayTime(dayTime, doDaylightCycle)
+    )
 
     override fun write(buf: ByteBuf) {
         buf.writeLong(time)
         buf.writeLong(dayTime)
+    }
+
+    companion object {
+
+        @JvmStatic
+        private fun calculateDayTime(dayTime: Long, doDaylightCycle: Boolean): Long {
+            var time = dayTime
+            if (!doDaylightCycle) {
+                time = -dayTime
+                if (time == 0L) time = -1L
+            }
+            return time
+        }
     }
 }

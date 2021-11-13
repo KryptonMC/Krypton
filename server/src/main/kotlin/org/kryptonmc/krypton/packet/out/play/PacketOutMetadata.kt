@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder.Companion.write
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.writeVarInt
 
 /**
@@ -35,9 +35,9 @@ import org.kryptonmc.krypton.util.writeVarInt
  */
 @JvmRecord
 data class PacketOutMetadata(
-    private val entityId: Int,
-    private val packedEntries: List<MetadataHolder.Entry<*>>
-) : Packet {
+    override val entityId: Int,
+    val packedEntries: List<MetadataHolder.Entry<*>>
+) : EntityPacket {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

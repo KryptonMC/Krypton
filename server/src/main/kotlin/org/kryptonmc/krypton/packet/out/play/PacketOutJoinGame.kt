@@ -24,7 +24,7 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.encode
 import org.kryptonmc.krypton.util.encode
 import org.kryptonmc.krypton.util.writeCollection
@@ -37,24 +37,24 @@ import org.kryptonmc.nbt.compound
 
 @JvmRecord
 data class PacketOutJoinGame(
-    private val id: Int,
-    private val isHardcore: Boolean,
-    private val gameMode: GameMode,
-    private val oldGameMode: GameMode?,
-    private val worlds: Set<ResourceKey<World>>,
-    private val dimensionType: KryptonDimensionType,
-    private val dimension: ResourceKey<World>,
-    private val seed: Long,
-    private val maxPlayers: Int,
-    private val viewDistance: Int,
-    private val reducedDebugInfo: Boolean,
-    private val doImmediateRespawn: Boolean,
-    private val isDebug: Boolean,
-    private val isFlat: Boolean
-) : Packet {
+    override val entityId: Int,
+    val isHardcore: Boolean,
+    val gameMode: GameMode,
+    val oldGameMode: GameMode?,
+    val worlds: Set<ResourceKey<World>>,
+    val dimensionType: KryptonDimensionType,
+    val dimension: ResourceKey<World>,
+    val seed: Long,
+    val maxPlayers: Int,
+    val viewDistance: Int,
+    val reducedDebugInfo: Boolean,
+    val doImmediateRespawn: Boolean,
+    val isDebug: Boolean,
+    val isFlat: Boolean
+) : EntityPacket {
 
     override fun write(buf: ByteBuf) {
-        buf.writeInt(id)
+        buf.writeInt(entityId)
         buf.writeBoolean(isHardcore)
         buf.writeByte(Registries.GAME_MODES.idOf(gameMode))
         buf.writeByte(oldGameMode?.let { Registries.GAME_MODES.idOf(it) } ?: -1)

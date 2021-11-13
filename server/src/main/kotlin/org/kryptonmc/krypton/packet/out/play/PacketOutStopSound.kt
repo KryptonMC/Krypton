@@ -19,17 +19,22 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.SoundStop
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeKey
 
 @JvmRecord
-data class PacketOutStopSound(private val stop: SoundStop) : Packet {
+data class PacketOutStopSound(
+    val source: Sound.Source?,
+    val sound: Key?
+) : Packet {
+
+    constructor(stop: SoundStop) : this(stop.source(), stop.sound())
 
     override fun write(buf: ByteBuf) {
-        val source = stop.source()
-        val sound = stop.sound()
         if (source != null) {
             if (sound != null) {
                 buf.writeByte(3)

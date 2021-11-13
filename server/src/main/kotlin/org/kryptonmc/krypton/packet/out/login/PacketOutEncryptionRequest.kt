@@ -32,8 +32,8 @@ import java.security.PublicKey
  */
 @JvmRecord
 data class PacketOutEncryptionRequest(
-    private val publicKey: PublicKey,
-    private val verifyToken: ByteArray
+    val publicKey: PublicKey,
+    val verifyToken: ByteArray
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

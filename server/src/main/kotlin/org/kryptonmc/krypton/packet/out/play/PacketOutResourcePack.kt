@@ -27,10 +27,10 @@ import org.kryptonmc.krypton.util.writeString
 
 @JvmRecord
 data class PacketOutResourcePack(
-    private val uri: String,
-    private val hash: String,
-    private val forced: Boolean,
-    private val prompt: Component
+    val uri: String,
+    val hash: String,
+    val forced: Boolean,
+    val prompt: Component
 ) : Packet {
 
     constructor(pack: ResourcePack) : this(pack.uri.toString(), pack.hash, pack.isForced, pack.promptMessage)

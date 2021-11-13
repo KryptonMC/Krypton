@@ -23,8 +23,8 @@ import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
 data class PacketOutChangeGameState(
-    private val state: GameState,
-    private val value: Float = 0.0F
+    val state: GameState,
+    val value: Float = 0.0F
 ) : Packet {
 
     override fun write(buf: ByteBuf) {
@@ -46,5 +46,13 @@ enum class GameState {
     THUNDER_LEVEL_CHANGE,
     PLAY_PUFFERFISH_STING_SOUND,
     PLAY_ELDER_GUARDIAN_MOB_APPEARANCE,
-    ENABLE_RESPAWN_SCREEN
+    ENABLE_RESPAWN_SCREEN;
+
+    companion object {
+
+        private val BY_ID = values()
+
+        @JvmStatic
+        fun fromId(id: Int): GameState? = BY_ID.getOrNull(id)
+    }
 }

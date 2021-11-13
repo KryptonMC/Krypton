@@ -27,10 +27,10 @@ import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
 data class PacketOutBlockChange(
-    private val block: Block,
-    private val x: Int,
-    private val y: Int,
-    private val z: Int
+    val block: Block,
+    val x: Int,
+    val y: Int,
+    val z: Int
 ) : Packet {
 
     constructor(block: Block, location: Vector3i) : this(block, location.x(), location.y(), location.z())

@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 
 @JvmRecord
-data class PacketOutActionBar(private val bar: Component) : Packet {
+data class PacketOutActionBar(val bar: Component) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(bar)

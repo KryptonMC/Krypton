@@ -19,23 +19,21 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.EntityPacket
 
 /**
  * Sent to indicate a status for an entity.
  *
- * This is currently hard coded to always use the status code 28 (OP level 4 for players), and is only used with players.
- *
- * @param id the ID of the entity to set the status for
+ * @param entityId the ID of the entity to set the status for
  */
 @JvmRecord
 data class PacketOutEntityStatus(
-    private val id: Int,
-    private val action: Int
-) : Packet {
+    override val entityId: Int,
+    val action: Int
+) : EntityPacket {
 
     override fun write(buf: ByteBuf) {
-        buf.writeInt(id)
+        buf.writeInt(entityId)
         buf.writeByte(action)
     }
 }

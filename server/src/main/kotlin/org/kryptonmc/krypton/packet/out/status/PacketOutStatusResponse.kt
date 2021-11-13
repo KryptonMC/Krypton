@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.util.writeString
  * Response to the client's earlier [status request][org.kryptonmc.krypton.packet.in.status.PacketInStatusRequest] packet.
  */
 @JvmRecord
-data class PacketOutStatusResponse(private val status: ServerStatus) : Packet {
+data class PacketOutStatusResponse(val status: ServerStatus) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeString(GSON.toJson(status))

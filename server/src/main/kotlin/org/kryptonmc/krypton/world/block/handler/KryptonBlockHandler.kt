@@ -24,6 +24,7 @@ import org.kryptonmc.api.block.BlockHandler
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
@@ -63,10 +64,11 @@ interface KryptonBlockHandler : BlockHandler {
     }
 
     override fun onDestroy(player: Player, block: Block, position: Vector3i, item: ItemStack) {
-        // TODO: Award block mined statistic and drop items
+        // TODO: drop items
         // 0.005/block is the vanilla food exhaustion per block to be added to the player
         // Source: https://minecraft.fandom.com/wiki/Hunger#Exhaustion_level_increase
         player.foodExhaustionLevel += 0.005f
+        player.incrementStatistic(StatisticTypes.BLOCK_MINED[block])
     }
 
     override fun updateShape(

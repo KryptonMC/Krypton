@@ -28,8 +28,8 @@ import org.kryptonmc.krypton.util.BossBarManager
 
 @JvmRecord
 data class PacketOutBossBar(
-    private val action: Action,
-    private val bar: BossBarManager.BossBarHolder
+    val action: Action,
+    val bar: BossBarManager.BossBarHolder
 ) : Packet {
 
     override fun write(buf: ByteBuf) {
@@ -70,6 +70,14 @@ data class PacketOutBossBar(
         UPDATE_HEALTH,
         UPDATE_TITLE,
         UPDATE_STYLE,
-        UPDATE_FLAGS
+        UPDATE_FLAGS;
+
+        companion object {
+
+            private val BY_ID = values()
+
+            @JvmStatic
+            fun fromId(id: Int): Action? = BY_ID.getOrNull(id)
+        }
     }
 }

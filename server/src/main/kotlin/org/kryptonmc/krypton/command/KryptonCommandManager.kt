@@ -38,6 +38,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
+import org.kryptonmc.api.event.command.CommandSendEvent
 import org.kryptonmc.krypton.commands.BanCommand
 import org.kryptonmc.krypton.commands.BanIpCommand
 import org.kryptonmc.krypton.commands.ClearCommand
@@ -145,6 +146,7 @@ object KryptonCommandManager : CommandManager {
         val node = RootCommandNode<Sender>()
         lock.read {
             dispatcher.root.children.forEach { if (it.requirement.test(player)) node.addChild(it) }
+            player.server.eventManager.fireAndForget(CommandSendEvent(player, node))
             player.session.send(PacketOutDeclareCommands(node))
         }
     }

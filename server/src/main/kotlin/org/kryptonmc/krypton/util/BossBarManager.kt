@@ -23,53 +23,58 @@ import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar
+import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar.Action
 import java.util.Collections
 import java.util.UUID
 
-object BossBarManager : BossBar.Listener, MutableMap<BossBar, BossBarManager.BossBarHolder> by MapMaker().weakKeys().makeMap() {
+object BossBarManager : BossBar.Listener {
 
-    private fun getOrCreate(bar: BossBar) = getOrPut(bar) { BossBarHolder(bar) }.apply { register() }
+    private val bars: MutableMap<BossBar, BossBarHolder> = MapMaker().weakKeys().makeMap()
+
+    private fun getOrCreate(bar: BossBar) = bars.getOrPut(bar) { BossBarHolder(bar) }.apply { register() }
 
     fun addBar(bar: BossBar, player: KryptonPlayer) {
-        getOrCreate(bar).apply { if (subscribers.add(player)) player.session.send(PacketOutBossBar(PacketOutBossBar.Action.ADD, this)) }
+        val holder = getOrCreate(bar)
+        if (holder.subscribers.add(player)) player.session.send(PacketOutBossBar(Action.ADD, holder))
     }
 
     fun removeBar(bar: BossBar, player: KryptonPlayer) {
-        get(bar)?.apply { if (subscribers.remove(player)) player.session.send(PacketOutBossBar(PacketOutBossBar.Action.REMOVE, this)) }
+        val holder = bars[bar] ?: return
+        if (holder.subscribers.remove(player)) player.session.send(PacketOutBossBar(Action.REMOVE, holder))
     }
 
     override fun bossBarNameChanged(
         bar: BossBar,
         oldName: Component,
         newName: Component
-    ) = update(bar, PacketOutBossBar.Action.UPDATE_TITLE)
+    ) = update(bar, Action.UPDATE_TITLE)
 
     override fun bossBarProgressChanged(
         bar: BossBar,
         oldProgress: Float,
         newProgress: Float
-    ) = update(bar, PacketOutBossBar.Action.UPDATE_HEALTH)
+    ) = update(bar, Action.UPDATE_HEALTH)
 
     override fun bossBarColorChanged(
         bar: BossBar,
         oldColor: BossBar.Color,
         newColor: BossBar.Color
-    ) = update(bar, PacketOutBossBar.Action.UPDATE_STYLE)
+    ) = update(bar, Action.UPDATE_STYLE)
 
     override fun bossBarOverlayChanged(
         bar: BossBar,
         oldOverlay: BossBar.Overlay,
         newOverlay: BossBar.Overlay
-    ) = update(bar, PacketOutBossBar.Action.UPDATE_STYLE)
+    ) = update(bar, Action.UPDATE_STYLE)
 
     override fun bossBarFlagsChanged(
         bar: BossBar,
         flagsAdded: MutableSet<BossBar.Flag>,
         flagsRemoved: MutableSet<BossBar.Flag>
-    ) = update(bar, PacketOutBossBar.Action.UPDATE_FLAGS)
+    ) = update(bar, Action.UPDATE_FLAGS)
 
-    private fun update(bar: BossBar, action: PacketOutBossBar.Action) {
-        val holder = get(bar) ?: return
+    private fun update(bar: BossBar, action: Action) {
+        val holder = bars[bar] ?: return
         holder.subscribers.forEach { it.session.send(PacketOutBossBar(action, holder)) }
     }
 

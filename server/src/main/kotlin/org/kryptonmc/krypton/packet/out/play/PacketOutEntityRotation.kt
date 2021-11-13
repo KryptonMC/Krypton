@@ -19,17 +19,17 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutEntityRotation(
-    private val entityId: Int,
-    private val yaw: Float,
-    private val pitch: Float,
-    private val onGround: Boolean
-) : Packet {
+    override val entityId: Int,
+    val yaw: Float,
+    val pitch: Float,
+    val onGround: Boolean
+) : EntityPacket {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)

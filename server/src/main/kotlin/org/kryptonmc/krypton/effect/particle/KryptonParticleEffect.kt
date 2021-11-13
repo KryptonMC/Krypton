@@ -43,7 +43,7 @@ data class KryptonParticleEffect @JvmOverloads constructor(
         require(quantity >= 1) { "Quantity must be >= 1!" }
     }
 
-    fun write(buf: ByteBuf, position: Vector3d) {
+    fun write(buf: ByteBuf, x: Double, y: Double, z: Double) {
         buf.writeInt(InternalRegistries.PARTICLE_TYPE.idOf(type))
         buf.writeBoolean(longDistance)
 
@@ -53,31 +53,31 @@ data class KryptonParticleEffect @JvmOverloads constructor(
          */
         when (data) {
             is DirectionalParticleData -> {
-                writeOffsetPosition(buf, position)
+                writeOffsetPosition(buf, x, y, z)
                 val random = ThreadLocalRandom.current()
-                val x = data.direction?.x() ?: random.nextGaussian()
-                val y = data.direction?.y() ?: random.nextGaussian()
-                val z = data.direction?.z() ?: random.nextGaussian()
-                writeOffset(buf, x.toFloat(), y.toFloat(), z.toFloat())
+                val directionX = data.direction?.x() ?: random.nextGaussian()
+                val directionY = data.direction?.y() ?: random.nextGaussian()
+                val directionZ = data.direction?.z() ?: random.nextGaussian()
+                writeOffset(buf, directionX.toFloat(), directionY.toFloat(), directionZ.toFloat())
                 buf.writeFloat(data.velocity)
                 buf.writeInt(0)
             }
             is ColorParticleData -> {
-                writeOffsetPosition(buf, position)
+                writeOffsetPosition(buf, x, y, z)
                 writeOffset(buf, data.red.toFloat() / 255F, data.green.toFloat() / 255F, data.blue.toFloat() / 255F)
                 buf.writeFloat(1F)
                 buf.writeInt(0)
             }
             is NoteParticleData -> {
-                writeOffsetPosition(buf, position)
+                writeOffsetPosition(buf, x, y, z)
                 writeOffset(buf, data.note.toFloat() / 24F, 0F, 0F)
                 buf.writeFloat(1F)
                 buf.writeInt(0)
             }
             else -> {
-                buf.writeDouble(position.x())
-                buf.writeDouble(position.y())
-                buf.writeDouble(position.z())
+                buf.writeDouble(x)
+                buf.writeDouble(y)
+                buf.writeDouble(z)
                 writeOffset(buf, offset.x().toFloat(), offset.y().toFloat(), offset.z().toFloat())
                 buf.writeFloat(1F)
                 buf.writeInt(quantity)
@@ -86,11 +86,11 @@ data class KryptonParticleEffect @JvmOverloads constructor(
         if (data is Writable) data.write(buf)
     }
 
-    private fun writeOffsetPosition(buf: ByteBuf, position: Vector3d) {
+    private fun writeOffsetPosition(buf: ByteBuf, x: Double, y: Double, z: Double) {
         val random = ThreadLocalRandom.current()
-        buf.writeDouble(position.x() + offset.x() * random.nextGaussian())
-        buf.writeDouble(position.y() + offset.y() * random.nextGaussian())
-        buf.writeDouble(position.z() + offset.z() * random.nextGaussian())
+        buf.writeDouble(x + offset.x() * random.nextGaussian())
+        buf.writeDouble(y + offset.y() * random.nextGaussian())
+        buf.writeDouble(z + offset.z() * random.nextGaussian())
     }
 
     private fun writeOffset(buf: ByteBuf, x: Float, y: Float, z: Float) {

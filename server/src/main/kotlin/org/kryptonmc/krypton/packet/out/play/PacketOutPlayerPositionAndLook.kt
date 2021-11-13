@@ -27,19 +27,30 @@ import kotlin.random.Random
 
 @JvmRecord
 data class PacketOutPlayerPositionAndLook(
-    private val position: Vector3d,
-    private val rotation: Vector2f,
-    private val flags: Int = 0,
-    private val teleportId: Int = Random.nextInt(1000),
-    private val shouldDismount: Boolean = false
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val yaw: Float,
+    val pitch: Float,
+    val flags: Int = 0,
+    val teleportId: Int = Random.nextInt(1000),
+    val shouldDismount: Boolean = false
 ) : Packet {
 
+    constructor(
+        position: Vector3d,
+        rotation: Vector2f,
+        flags: Int = 0,
+        teleportId: Int = Random.nextInt(1000),
+        shouldDismount: Boolean = false
+    ) : this(position.x(), position.y(), position.z(), rotation.x(), rotation.y(), flags, teleportId, shouldDismount)
+
     override fun write(buf: ByteBuf) {
-        buf.writeDouble(position.x())
-        buf.writeDouble(position.y())
-        buf.writeDouble(position.z())
-        buf.writeFloat(rotation.x())
-        buf.writeFloat(rotation.y())
+        buf.writeDouble(x)
+        buf.writeDouble(y)
+        buf.writeDouble(z)
+        buf.writeFloat(yaw)
+        buf.writeFloat(pitch)
         buf.writeByte(flags)
         buf.writeVarInt(teleportId)
         buf.writeBoolean(shouldDismount)

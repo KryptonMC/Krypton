@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
 import org.kryptonmc.krypton.util.writeVarInt
@@ -27,14 +28,41 @@ import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
 data class PacketOutDiggingResponse(
-    private val position: Vector3i,
-    private val stateId: Int,
-    private val status: PacketInPlayerDigging.Status,
-    private val successful: Boolean
+    val x: Int,
+    val y: Int,
+    val z: Int,
+    val stateId: Int,
+    val status: PacketInPlayerDigging.Status,
+    val successful: Boolean
 ) : Packet {
 
+    constructor(position: Vector3i, stateId: Int, status: PacketInPlayerDigging.Status, successful: Boolean) : this(
+        position.x(),
+        position.y(),
+        position.z(),
+        stateId,
+        status,
+        successful
+    )
+
+    constructor(position: Vector3i, block: Block, status: PacketInPlayerDigging.Status, successful: Boolean) : this(
+        position,
+        block.stateId,
+        status,
+        successful
+    )
+
+    constructor(x: Int, y: Int, z: Int, block: Block, status: PacketInPlayerDigging.Status, successful: Boolean) : this(
+        x,
+        y,
+        z,
+        block.stateId,
+        status,
+        successful
+    )
+
     override fun write(buf: ByteBuf) {
-        buf.writeVector(position)
+        buf.writeVector(x, y, z)
         buf.writeVarInt(stateId)
         buf.writeVarInt(status.ordinal)
         buf.writeBoolean(successful)

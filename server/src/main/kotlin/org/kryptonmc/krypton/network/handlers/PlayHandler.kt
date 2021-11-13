@@ -26,9 +26,9 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.event.ClickEvent.suggestCommand
 import net.kyori.adventure.text.format.NamedTextColor
-import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.api.event.command.CommandExecuteEvent
 import org.kryptonmc.api.event.player.ChatEvent
 import org.kryptonmc.api.event.player.MoveEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
@@ -155,17 +155,19 @@ class PlayHandler(
 
     private fun handleChat(packet: PacketInChat) {
         if (packet.message.startsWith("/")) { // This is a command, process it as one.
-            server.commandManager.dispatch(player, packet.message.substring(1))
+            val command = packet.message.substring(1)
+            server.eventManager.fire(CommandExecuteEvent(player, command)).thenAcceptAsync({
+                if (!it.result.isAllowed) return@thenAcceptAsync
+                server.commandManager.dispatch(player, command)
+            }, player.session.channel.eventLoop())
             return
         }
 
         // Fire the chat event
-        val event = ChatEvent(player, packet.message)
-        server.eventManager.fire(event).thenAccept {
-            val result = it.result
-            if (!result.isAllowed) return@thenAccept
-            if (result.reason !== Component.empty()) {
-                server.sendMessage(player, result.reason, MessageType.CHAT)
+        server.eventManager.fire(ChatEvent(player, packet.message)).thenAccept {
+            if (!it.result.isAllowed) return@thenAccept
+            if (it.result.reason !== Component.empty()) {
+                server.sendMessage(player, it.result.reason, MessageType.CHAT)
                 return@thenAccept
             }
 
@@ -224,7 +226,7 @@ class PlayHandler(
             val latency = (System.currentTimeMillis() - lastKeepAlive).toInt()
             session.latency = (session.latency * 3 + latency) / 3
             pendingKeepAlive = false
-            playerManager.sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.UPDATE_LATENCY, player))
+            playerManager.sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_LATENCY, player))
             return
         }
         session.disconnect(translatable("disconnect.timeout"))

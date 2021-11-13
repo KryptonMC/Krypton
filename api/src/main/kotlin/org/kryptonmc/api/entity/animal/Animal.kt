@@ -9,7 +9,6 @@
 package org.kryptonmc.api.entity.animal
 
 import org.kryptonmc.api.entity.Ageable
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.ItemStack
 
 /**

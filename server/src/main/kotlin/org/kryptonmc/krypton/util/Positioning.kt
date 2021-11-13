@@ -28,4 +28,10 @@ object Positioning {
      * This calculation comes from https://wiki.vg/Protocol#Entity_Position
      */
     fun delta(new: Double, old: Double) = ((new * 32 - old * 32) * 128).toInt().toShort()
+
+    /**
+     * Encodes the given [velocity] in to the protocol's standard velocity
+     * units, measured in 1/8000 of a block per server tick.
+     */
+    fun encodeVelocity(velocity: Double): Int = (velocity.clamp(-3.9, 3.9) * 8000.0).toInt()
 }

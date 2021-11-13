@@ -28,11 +28,15 @@ import org.spongepowered.math.vector.Vector3d
  */
 @JvmRecord
 data class PacketOutParticle(
-    private val effect: KryptonParticleEffect,
-    private val location: Vector3d
+    val effect: KryptonParticleEffect,
+    val x: Double,
+    val y: Double,
+    val z: Double
 ) : Packet {
 
+    constructor(effect: KryptonParticleEffect, location: Vector3d) : this(effect, location.x(), location.y(), location.z())
+
     override fun write(buf: ByteBuf) {
-        effect.write(buf, location)
+        effect.write(buf, x, y, z)
     }
 }

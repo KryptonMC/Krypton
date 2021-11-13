@@ -33,8 +33,8 @@ import java.util.UUID
  */
 @JvmRecord
 data class PacketOutLoginSuccess(
-    private val uuid: UUID,
-    private val username: String
+    val uuid: UUID,
+    val username: String
 ) : Packet {
 
     constructor(profile: GameProfile) : this(profile.uuid, profile.name)

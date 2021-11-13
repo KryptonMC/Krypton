@@ -24,12 +24,12 @@ import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
 data class PacketOutAbilities(
-    private val isInvulnerable: Boolean,
-    private val isFlying: Boolean,
-    private val canFly: Boolean,
-    private val canInstantlyBuild: Boolean,
-    private val flyingSpeed: Float,
-    private val walkingSpeed: Float
+    val isInvulnerable: Boolean,
+    val isFlying: Boolean,
+    val canFly: Boolean,
+    val canInstantlyBuild: Boolean,
+    val flyingSpeed: Float,
+    val walkingSpeed: Float
 ) : Packet {
 
     constructor(player: KryptonPlayer) : this(
