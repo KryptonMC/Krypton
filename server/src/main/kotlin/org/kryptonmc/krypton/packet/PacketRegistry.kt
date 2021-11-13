@@ -115,6 +115,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateScore
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetPassengers
 import org.kryptonmc.krypton.packet.out.status.PacketOutPong
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
 import org.kryptonmc.krypton.util.IdentityHashStrategy
@@ -220,6 +221,7 @@ object PacketRegistry {
         register<PacketOutMetadata>(0x4D)
         register<PacketOutEntityVelocity>(0x4F)
         register<PacketOutObjective>(0x53)
+        register<PacketOutSetPassengers>(0x54)
         register<PacketOutTeam>(0x55)
         register<PacketOutUpdateScore>(0x56)
         register<PacketOutSubTitle>(0x57)
