@@ -119,7 +119,11 @@ import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.UnaryOperator
-import kotlin.math.*
+import kotlin.math.abs
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
+import kotlin.math.max
+import kotlin.math.min
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonPlayer(
