@@ -24,8 +24,8 @@ import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutUpdateViewPosition(
-    private val x: Int,
-    private val z: Int
+    val x: Int,
+    val z: Int
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

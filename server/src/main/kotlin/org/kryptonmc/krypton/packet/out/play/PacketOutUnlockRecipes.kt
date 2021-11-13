@@ -24,6 +24,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeVarInt
 
+// TODO: What the hell was I thinking? This needs to be redone.
 @JvmRecord
 data class PacketOutUnlockRecipes(
     private val action: Action,

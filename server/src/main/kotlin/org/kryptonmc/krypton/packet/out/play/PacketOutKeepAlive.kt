@@ -29,7 +29,7 @@ import org.kryptonmc.krypton.packet.Packet
  * [System.currentTimeMillis]
  */
 @JvmRecord
-data class PacketOutKeepAlive(private val keepAliveId: Long) : Packet {
+data class PacketOutKeepAlive(val keepAliveId: Long) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeLong(keepAliveId)

@@ -26,8 +26,8 @@ import org.kryptonmc.nbt.CompoundTag
 
 @JvmRecord
 data class PacketOutNBTQueryResponse(
-    private val transactionId: Int,
-    private val nbt: CompoundTag
+    val transactionId: Int,
+    val nbt: CompoundTag
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

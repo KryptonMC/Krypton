@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.util.writeVarInt
  * that are >= [threshold] in size will be compressed.
  */
 @JvmRecord
-data class PacketOutSetCompression(private val threshold: Int) : Packet {
+data class PacketOutSetCompression(val threshold: Int) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(threshold)

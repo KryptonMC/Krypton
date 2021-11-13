@@ -20,18 +20,18 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.writeVarInt
 import org.spongepowered.math.vector.Vector3d
 
 @JvmRecord
 data class PacketOutEntityVelocity(
-    private val id: Int,
-    private val x: Int,
-    private val y: Int,
-    private val z: Int
-) : Packet {
+    override val entityId: Int,
+    val x: Int,
+    val y: Int,
+    val z: Int
+) : EntityPacket {
 
     constructor(entity: KryptonEntity, velocity: Vector3d = entity.velocity) : this(
         entity.id,
@@ -41,7 +41,7 @@ data class PacketOutEntityVelocity(
     )
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(id)
+        buf.writeVarInt(entityId)
         buf.writeShort(x)
         buf.writeShort(y)
         buf.writeShort(z)

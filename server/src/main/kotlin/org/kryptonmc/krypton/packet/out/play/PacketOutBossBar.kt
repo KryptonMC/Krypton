@@ -28,8 +28,8 @@ import org.kryptonmc.krypton.util.BossBarManager
 
 @JvmRecord
 data class PacketOutBossBar(
-    private val action: Action,
-    private val bar: BossBarManager.BossBarHolder
+    val action: Action,
+    val bar: BossBarManager.BossBarHolder
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

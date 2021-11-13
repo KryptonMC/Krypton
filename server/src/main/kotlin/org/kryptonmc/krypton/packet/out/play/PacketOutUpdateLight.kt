@@ -26,8 +26,8 @@ import org.kryptonmc.krypton.world.chunk.KryptonChunk
 
 @JvmRecord
 data class PacketOutUpdateLight(
-    private val chunk: KryptonChunk,
-    private val trustEdges: Boolean = true
+    val chunk: KryptonChunk,
+    val trustEdges: Boolean = true
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

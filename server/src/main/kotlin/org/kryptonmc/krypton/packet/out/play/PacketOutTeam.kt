@@ -35,9 +35,9 @@ import org.kryptonmc.krypton.world.scoreboard.KryptonVisibility
  */
 @JvmRecord
 data class PacketOutTeam(
-    private val action: Action,
-    private val team: Team,
-    private val members: Collection<Component> = emptySet(), // only applies for add players
+    val action: Action,
+    val team: Team,
+    val members: Collection<Component> = emptySet(), // only applies for add players
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

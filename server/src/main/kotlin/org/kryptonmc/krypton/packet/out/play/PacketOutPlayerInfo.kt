@@ -35,8 +35,8 @@ import org.kryptonmc.krypton.util.writeVarInt
  */
 @JvmRecord
 data class PacketOutPlayerInfo(
-    private val action: PlayerAction,
-    private val players: Collection<KryptonPlayer> = emptyList()
+    val action: PlayerAction,
+    val players: Collection<KryptonPlayer> = emptyList()
 ) : Packet {
 
     constructor(action: PlayerAction, vararg players: KryptonPlayer) : this(action, players.toList())

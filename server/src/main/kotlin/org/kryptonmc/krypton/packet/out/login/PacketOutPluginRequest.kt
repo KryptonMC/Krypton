@@ -25,9 +25,9 @@ import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutPluginRequest(
-    private val id: Int,
-    private val channel: String,
-    private val data: ByteArray
+    val id: Int,
+    val channel: String,
+    val data: ByteArray
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

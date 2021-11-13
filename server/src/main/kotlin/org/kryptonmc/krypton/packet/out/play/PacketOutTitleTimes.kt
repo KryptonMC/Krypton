@@ -21,13 +21,26 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.title.Title
 import org.kryptonmc.krypton.packet.Packet
+import java.time.Duration
 
 @JvmRecord
-data class PacketOutTitleTimes(private val times: Title.Times) : Packet {
+data class PacketOutTitleTimes(
+    val fadeInTicks: Int,
+    val stayTicks: Int,
+    val fadeOutTicks: Int
+) : Packet {
+
+    constructor(times: Title.Times) : this(times.fadeIn(), times.stay(), times.fadeOut())
+
+    constructor(fadeIn: Duration, stay: Duration, fadeOut: Duration) : this(
+        fadeIn.toSeconds().toInt() * 20,
+        stay.toSeconds().toInt() * 20,
+        fadeOut.toSeconds().toInt() * 20
+    )
 
     override fun write(buf: ByteBuf) {
-        buf.writeInt(times.fadeIn().toSeconds().toInt() * 20)
-        buf.writeInt(times.stay().toSeconds().toInt() * 20)
-        buf.writeInt(times.fadeOut().toSeconds().toInt() * 20)
+        buf.writeInt(fadeInTicks)
+        buf.writeInt(stayTicks)
+        buf.writeInt(fadeOutTicks)
     }
 }

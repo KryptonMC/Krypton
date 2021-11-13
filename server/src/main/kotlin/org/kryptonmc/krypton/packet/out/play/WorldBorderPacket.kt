@@ -18,24 +18,18 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.writeIntArray
+import org.kryptonmc.krypton.world.KryptonWorldBorder
 
-@JvmRecord
-data class PacketOutDestroyEntities(val ids: IntArray) : Packet {
+/**
+ * A packet that uses a world border.
+ */
+@Suppress("INAPPLICABLE_JVM_NAME")
+interface WorldBorderPacket : Packet {
 
-    constructor(id: Int) : this(IntArray(id))
-
-    override fun write(buf: ByteBuf) {
-        buf.writeIntArray(ids)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return ids.contentEquals((other as PacketOutDestroyEntities).ids)
-    }
-
-    override fun hashCode(): Int = 31 * super.hashCode() + ids.contentHashCode()
+    /**
+     * The world border for this packet
+     */
+    @get:JvmName("border")
+    val border: KryptonWorldBorder
 }

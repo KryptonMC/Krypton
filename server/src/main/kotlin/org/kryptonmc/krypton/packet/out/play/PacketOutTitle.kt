@@ -20,11 +20,14 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.title.Title
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 
 @JvmRecord
-data class PacketOutTitle(private val title: Component) : Packet {
+data class PacketOutTitle(val title: Component) : Packet {
+
+    constructor(title: Title) : this(title.title())
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(title)

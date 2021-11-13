@@ -27,10 +27,10 @@ import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
 data class PacketOutDiggingResponse(
-    private val position: Vector3i,
-    private val stateId: Int,
-    private val status: PacketInPlayerDigging.Status,
-    private val successful: Boolean
+    val position: Vector3i,
+    val stateId: Int,
+    val status: PacketInPlayerDigging.Status,
+    val successful: Boolean
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

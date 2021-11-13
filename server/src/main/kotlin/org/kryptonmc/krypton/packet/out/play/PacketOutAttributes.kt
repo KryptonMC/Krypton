@@ -24,22 +24,26 @@ import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.attribute.KryptonAttribute
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeCollection
 import org.kryptonmc.krypton.util.writeKey
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketOutAttributes(
-    private val id: Int,
-    attributes: Collection<KryptonAttribute>
-) : Packet {
+@JvmRecord
+data class PacketOutAttributes(
+    override val entityId: Int,
+    val attributes: List<AttributeSnapshot>
+) : EntityPacket {
 
-    private val attributes = attributes.map { AttributeSnapshot(it.type, it.baseValue, it.modifiersByOperation) }
+    constructor(
+        id: Int,
+        attributes: Collection<KryptonAttribute>
+    ) : this(id, attributes.map { AttributeSnapshot(it.type, it.baseValue, it.modifiersByOperation) })
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(id)
+        buf.writeVarInt(entityId)
         buf.writeCollection(attributes) { attribute ->
             buf.writeKey(InternalRegistries.ATTRIBUTE[attribute.type]!!)
             buf.writeDouble(attribute.base)

@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutOpenBook(private val hand: Hand) : Packet {
+data class PacketOutOpenBook(val hand: Hand) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(hand.ordinal)

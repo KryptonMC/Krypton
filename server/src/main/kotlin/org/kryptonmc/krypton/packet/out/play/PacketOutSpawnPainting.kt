@@ -20,23 +20,42 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.hanging.KryptonPainting
+import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.data2D
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVector
+import java.util.UUID
 
 @JvmRecord
-data class PacketOutSpawnPainting(private val painting: KryptonPainting) : Packet {
+data class PacketOutSpawnPainting(
+    override val entityId: Int,
+    val uuid: UUID,
+    val pictureId: Int,
+    val centerX: Int,
+    val centerY: Int,
+    val centerZ: Int,
+    val directionData: Int
+) : EntityPacket {
+
+    constructor(painting: KryptonPainting) : this(
+        painting.id,
+        painting.uuid,
+        painting.picture?.let { InternalRegistries.CANVAS.idOf(it) } ?: DEFAULT_CANVAS_ID,
+        painting.centerPosition.x(),
+        painting.centerPosition.y(),
+        painting.centerPosition.z(),
+        painting.direction.data2D()
+    )
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(painting.id)
-        buf.writeUUID(painting.uuid)
-        val canvas = painting.picture
-        buf.writeVarInt(if (canvas != null) InternalRegistries.CANVAS.idOf(canvas) else DEFAULT_CANVAS_ID)
-        buf.writeVector(painting.centerPosition)
-        buf.writeByte(painting.direction.data2D())
+        buf.writeVarInt(entityId)
+        buf.writeUUID(uuid)
+        buf.writeVarInt(pictureId)
+        buf.writeVector(centerX, centerY, centerZ)
+        buf.writeByte(directionData)
     }
 
     companion object {

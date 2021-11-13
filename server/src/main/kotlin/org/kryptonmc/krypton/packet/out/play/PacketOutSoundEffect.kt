@@ -28,13 +28,13 @@ import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class PacketOutSoundEffect(
-    private val event: SoundEvent,
-    private val source: Sound.Source,
-    private val x: Double,
-    private val y: Double,
-    private val z: Double,
-    private val volume: Float,
-    private val pitch: Float
+    val event: SoundEvent,
+    val source: Sound.Source,
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val volume: Float,
+    val pitch: Float
 ) : Packet {
 
     constructor(

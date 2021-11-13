@@ -16,26 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.packet
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.writeIntArray
+/**
+ * A packet that contains an entity ID.
+ */
+@Suppress("INAPPLICABLE_JVM_NAME")
+interface EntityPacket : Packet {
 
-@JvmRecord
-data class PacketOutDestroyEntities(val ids: IntArray) : Packet {
-
-    constructor(id: Int) : this(IntArray(id))
-
-    override fun write(buf: ByteBuf) {
-        buf.writeIntArray(ids)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return ids.contentEquals((other as PacketOutDestroyEntities).ids)
-    }
-
-    override fun hashCode(): Int = 31 * super.hashCode() + ids.contentHashCode()
+    /**
+     * The ID of the entity this packet is intended for.
+     */
+    @get:JvmName("entityId")
+    val entityId: Int
 }

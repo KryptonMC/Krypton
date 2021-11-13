@@ -28,9 +28,9 @@ import java.util.UUID
 
 @JvmRecord
 data class PacketOutChat(
-    private val message: Component,
-    private val type: MessageType,
-    private val senderUUID: UUID
+    val message: Component,
+    val type: MessageType,
+    val senderUUID: UUID
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

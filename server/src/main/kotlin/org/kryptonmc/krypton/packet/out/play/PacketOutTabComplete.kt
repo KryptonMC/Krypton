@@ -36,8 +36,8 @@ import org.kryptonmc.krypton.util.writeVarInt
  */
 @JvmRecord
 data class PacketOutTabComplete(
-    private val id: Int,
-    private val matches: Suggestions
+    val id: Int,
+    val matches: Suggestions
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

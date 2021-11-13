@@ -20,28 +20,57 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.clamp
+import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
+import java.util.UUID
 
 @JvmRecord
-data class PacketOutSpawnEntity(private val entity: KryptonEntity) : Packet {
+data class PacketOutSpawnEntity(
+    override val entityId: Int,
+    val uuid: UUID,
+    val typeId: Int,
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val yaw: Float,
+    val pitch: Float,
+    val data: Int,
+    val velocityX: Int,
+    val velocityY: Int,
+    val velocityZ: Int
+) : EntityPacket {
+
+    constructor(entity: KryptonEntity) : this(
+        entity.id,
+        entity.uuid,
+        InternalRegistries.ENTITY_TYPE.idOf(entity.type),
+        entity.location.x(),
+        entity.location.y(),
+        entity.location.z(),
+        entity.rotation.x(),
+        entity.rotation.y(),
+        0,
+        Positioning.encodeVelocity(entity.velocity.x()),
+        Positioning.encodeVelocity(entity.velocity.y()),
+        Positioning.encodeVelocity(entity.velocity.z())
+    )
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entity.id)
-        buf.writeUUID(entity.uuid)
-        buf.writeVarInt(InternalRegistries.ENTITY_TYPE.idOf(entity.type))
-        buf.writeDouble(entity.location.x())
-        buf.writeDouble(entity.location.y())
-        buf.writeDouble(entity.location.z())
-        buf.writeAngle(entity.rotation.x())
-        buf.writeAngle(entity.rotation.y())
-        buf.writeInt(0)
-        buf.writeShort((entity.velocity.x().clamp(-3.9, 3.9) * 8000.0).toInt())
-        buf.writeShort((entity.velocity.y().clamp(-3.9, 3.9) * 8000.0).toInt())
-        buf.writeShort((entity.velocity.z().clamp(-3.9, 3.9) * 8000.0).toInt())
+        buf.writeVarInt(entityId)
+        buf.writeUUID(uuid)
+        buf.writeVarInt(typeId)
+        buf.writeDouble(x)
+        buf.writeDouble(y)
+        buf.writeDouble(z)
+        buf.writeAngle(yaw)
+        buf.writeAngle(pitch)
+        buf.writeInt(data)
+        buf.writeShort(velocityX)
+        buf.writeShort(velocityY)
+        buf.writeShort(velocityZ)
     }
 }

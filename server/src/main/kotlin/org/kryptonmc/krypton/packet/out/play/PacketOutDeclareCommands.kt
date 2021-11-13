@@ -33,7 +33,7 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) : Packet {
+data class PacketOutDeclareCommands(val root: RootCommandNode<Sender>) : Packet {
 
     override fun write(buf: ByteBuf) {
         val enumerations = root.enumerate()
@@ -77,15 +77,15 @@ data class PacketOutDeclareCommands(private val root: RootCommandNode<Sender>) :
     private fun RootCommandNode<Sender>.enumerate(): Map<CommandNode<Sender>, Int> {
         val result = mutableMapOf<CommandNode<Sender>, Int>()
         val queue = ArrayDeque<CommandNode<Sender>>()
-        queue += this
+        queue.add(this)
 
         while (queue.isNotEmpty()) {
             val element = queue.removeFirst()
             if (element in result) continue
             val size = result.size
             result[element] = size
-            queue += element.children
-            if (element.redirect != null) queue += element.redirect
+            queue.addAll(element.children)
+            if (element.redirect != null) queue.add(element.redirect)
         }
 
         return result

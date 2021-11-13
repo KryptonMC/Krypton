@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
-data class PacketOutClearTitles(private val reset: Boolean) : Packet {
+data class PacketOutClearTitles(val reset: Boolean) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeBoolean(reset)

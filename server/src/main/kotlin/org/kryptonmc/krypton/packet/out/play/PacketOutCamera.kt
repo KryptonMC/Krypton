@@ -19,13 +19,13 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutCamera(private val id: Int) : Packet {
+data class PacketOutCamera(override val entityId: Int) : EntityPacket {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(id)
+        buf.writeVarInt(entityId)
     }
 }

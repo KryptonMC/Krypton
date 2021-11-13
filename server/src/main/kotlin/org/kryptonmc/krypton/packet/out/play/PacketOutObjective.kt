@@ -31,8 +31,8 @@ import org.kryptonmc.krypton.util.writeVarInt
  */
 @JvmRecord
 data class PacketOutObjective(
-    private val action: Action,
-    private val objective: Objective
+    val action: Action,
+    val objective: Objective
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

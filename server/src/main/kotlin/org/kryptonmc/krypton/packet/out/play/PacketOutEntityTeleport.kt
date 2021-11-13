@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 import org.spongepowered.math.vector.Vector2f
@@ -27,19 +27,29 @@ import org.spongepowered.math.vector.Vector3d
 
 @JvmRecord
 data class PacketOutEntityTeleport(
-    private val entityId: Int,
-    private val position: Vector3d,
-    private val rotation: Vector2f,
-    private val isOnGround: Boolean
-) : Packet {
+    override val entityId: Int,
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val yaw: Float,
+    val pitch: Float,
+    val isOnGround: Boolean
+) : EntityPacket {
+
+    constructor(
+        entityId: Int,
+        position: Vector3d,
+        rotation: Vector2f,
+        isOnGround: Boolean
+    ) : this(entityId, position.x(), position.y(), position.z(), rotation.x(), rotation.y(), isOnGround)
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
-        buf.writeDouble(position.x())
-        buf.writeDouble(position.y())
-        buf.writeDouble(position.z())
-        buf.writeAngle(rotation.x())
-        buf.writeAngle(rotation.y())
+        buf.writeDouble(x)
+        buf.writeDouble(y)
+        buf.writeDouble(z)
+        buf.writeAngle(yaw)
+        buf.writeAngle(pitch)
         buf.writeBoolean(isOnGround)
     }
 }

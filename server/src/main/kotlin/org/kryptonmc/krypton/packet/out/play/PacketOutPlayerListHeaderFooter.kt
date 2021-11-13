@@ -32,8 +32,8 @@ import org.kryptonmc.krypton.util.writeChat
  */
 @JvmRecord
 data class PacketOutPlayerListHeaderFooter(
-    private val header: Component,
-    private val footer: Component
+    val header: Component,
+    val footer: Component
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

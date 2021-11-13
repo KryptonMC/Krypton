@@ -23,8 +23,8 @@ import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
 data class PacketOutChangeGameState(
-    private val state: GameState,
-    private val value: Float = 0.0F
+    val state: GameState,
+    val value: Float = 0.0F
 ) : Packet {
 
     override fun write(buf: ByteBuf) {

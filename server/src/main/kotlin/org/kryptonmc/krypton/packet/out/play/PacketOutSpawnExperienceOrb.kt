@@ -20,17 +20,25 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.KryptonExperienceOrb
-import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
-data class PacketOutSpawnExperienceOrb(private val orb: KryptonExperienceOrb) : Packet {
+data class PacketOutSpawnExperienceOrb(
+    override val entityId: Int,
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val count: Int
+) : EntityPacket {
+
+    constructor(orb: KryptonExperienceOrb) : this(orb.id, orb.location.x(), orb.location.y(), orb.location.z(), orb.count)
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(orb.id)
-        buf.writeDouble(orb.location.x())
-        buf.writeDouble(orb.location.y())
-        buf.writeDouble(orb.location.z())
-        buf.writeShort(orb.count)
+        buf.writeVarInt(entityId)
+        buf.writeDouble(x)
+        buf.writeDouble(y)
+        buf.writeDouble(z)
+        buf.writeShort(count)
     }
 }
