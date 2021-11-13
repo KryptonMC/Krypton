@@ -35,11 +35,11 @@ import org.kryptonmc.krypton.util.writeVarInt
  */
 @JvmRecord
 data class PacketOutPlayerInfo(
-    val action: PlayerAction,
+    val action: Action,
     val players: Collection<KryptonPlayer> = emptyList()
 ) : Packet {
 
-    constructor(action: PlayerAction, vararg players: KryptonPlayer) : this(action, players.toList())
+    constructor(action: Action, vararg players: KryptonPlayer) : this(action, players.toList())
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(action.ordinal)
@@ -48,7 +48,7 @@ data class PacketOutPlayerInfo(
         players.forEach { update ->
             buf.writeUUID(update.profile.uuid)
             when (action) {
-                PlayerAction.ADD_PLAYER -> {
+                Action.ADD_PLAYER -> {
                     buf.writeString(update.profile.name)
                     buf.writeVarInt(update.profile.properties.size)
 
@@ -65,23 +65,31 @@ data class PacketOutPlayerInfo(
                     buf.writeBoolean(true)
                     buf.writeChat(update.displayName)
                 }
-                PlayerAction.UPDATE_GAMEMODE -> buf.writeVarInt(Registries.GAME_MODES.idOf(update.gameMode))
-                PlayerAction.UPDATE_LATENCY -> buf.writeVarInt(update.session.latency)
-                PlayerAction.UPDATE_DISPLAY_NAME -> {
+                Action.UPDATE_GAMEMODE -> buf.writeVarInt(Registries.GAME_MODES.idOf(update.gameMode))
+                Action.UPDATE_LATENCY -> buf.writeVarInt(update.session.latency)
+                Action.UPDATE_DISPLAY_NAME -> {
                     buf.writeBoolean(true)
                     buf.writeChat(update.displayName)
                 }
-                PlayerAction.REMOVE_PLAYER -> Unit
+                Action.REMOVE_PLAYER -> Unit
             }
         }
     }
 
-    enum class PlayerAction {
+    enum class Action {
 
         ADD_PLAYER,
         UPDATE_GAMEMODE,
         UPDATE_LATENCY,
         UPDATE_DISPLAY_NAME,
-        REMOVE_PLAYER
+        REMOVE_PLAYER;
+
+        companion object {
+
+            private val BY_ID = values()
+
+            @JvmStatic
+            fun fromId(id: Int): Action? = BY_ID.getOrNull(id)
+        }
     }
 }

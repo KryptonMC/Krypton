@@ -55,24 +55,29 @@ data class PacketOutChunkData(val chunk: KryptonChunk) : Packet {
         buf.writeVarInt(0) // number of block entities
     }
 
-    private fun KryptonChunk.extract(buf: ByteBuf): BitSet {
-        val mask = BitSet()
-        for (i in sections.indices) {
-            val section = sections[i]
-            if (section != null && !section.isEmpty()) {
-                mask.set(i)
-                section.write(buf)
-            }
-        }
-        return mask
-    }
+    companion object {
 
-    private fun KryptonChunk.calculateSize(): Int {
-        var size = 0
-        for (i in sections.indices) {
-            val section = sections[i]
-            if (section != null && !section.isEmpty()) size += section.serializedSize
+        @JvmStatic
+        private fun KryptonChunk.extract(buf: ByteBuf): BitSet {
+            val mask = BitSet()
+            for (i in sections.indices) {
+                val section = sections[i]
+                if (section != null && !section.isEmpty()) {
+                    mask.set(i)
+                    section.write(buf)
+                }
+            }
+            return mask
         }
-        return size
+
+        @JvmStatic
+        private fun KryptonChunk.calculateSize(): Int {
+            var size = 0
+            for (i in sections.indices) {
+                val section = sections[i]
+                if (section != null && !section.isEmpty()) size += section.serializedSize
+            }
+            return size
+        }
     }
 }

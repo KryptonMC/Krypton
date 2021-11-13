@@ -36,48 +36,65 @@ import org.kryptonmc.krypton.world.scoreboard.KryptonVisibility
 @JvmRecord
 data class PacketOutTeam(
     val action: Action,
-    val team: Team,
-    val members: Collection<Component> = emptySet(), // only applies for add players
+    val name: String,
+    val displayName: Component,
+    val color: Int,
+    val prefix: Component,
+    val suffix: Component,
+    val allowFriendlyFire: Boolean,
+    val canSeeInvisibleMembers: Boolean,
+    val nameTagVisibility: String,
+    val collisionRule: String,
+    val members: Collection<Component>,
+    val addedMembers: Collection<Component> = emptySet() // only applies for add/remove players
 ) : Packet {
 
+    constructor(action: Action, team: Team, addedMembers: Collection<Component> = emptySet()) : this(
+        action,
+        team.name,
+        team.displayName,
+        team.color.ordinal(),
+        team.prefix,
+        team.suffix,
+        team.allowFriendlyFire,
+        team.canSeeInvisibleMembers,
+        (team.nameTagVisibility as KryptonVisibility).name,
+        (team.collisionRule as KryptonCollisionRule).name,
+        team.members,
+        addedMembers
+    )
+
     override fun write(buf: ByteBuf) {
-        buf.writeString(team.name, 16)
+        buf.writeString(name, 16)
         buf.writeByte(action.ordinal)
 
         when (action) {
             Action.CREATE -> {
                 buf.writeTeamInfo()
-                buf.writeVarInt(team.members.size)
-                for (member in team.members) buf.writeString(member.toLegacySectionText(), 40)
+                buf.writeVarInt(members.size)
+                for (member in members) buf.writeString(member.toLegacySectionText(), 40)
             }
             Action.REMOVE -> Unit
             Action.UPDATE_INFO -> buf.writeTeamInfo()
-            Action.ADD_PLAYERS -> {
-                buf.writeVarInt(members.size)
-                for (member in members) buf.writeString(member.toLegacySectionText(), 40)
+            Action.ADD_MEMBERS -> {
+                buf.writeVarInt(addedMembers.size)
+                for (member in addedMembers) buf.writeString(member.toLegacySectionText(), 40)
             }
-            Action.REMOVE_PLAYERS -> {
-                buf.writeVarInt(members.size)
-                for (member in members) buf.writeString(member.toLegacySectionText(), 40)
+            Action.REMOVE_MEMBERS -> {
+                buf.writeVarInt(addedMembers.size)
+                for (member in addedMembers) buf.writeString(member.toLegacySectionText(), 40)
             }
         }
     }
 
     private fun ByteBuf.writeTeamInfo() {
-        writeChat(team.displayName)
-        writeByte(team.flagsToProtocol())
-        writeString((team.nameTagVisibility as KryptonVisibility).name, 32)
-        writeString((team.collisionRule as KryptonCollisionRule).name, 32)
-        writeVarInt(team.color.ordinal())
-        writeChat(team.prefix)
-        writeChat(team.suffix)
-    }
-
-    private fun Team.flagsToProtocol(): Int {
-        var byte = 0x0
-        if (allowFriendlyFire) byte += 0x01
-        if (canSeeInvisibleMembers) byte += 0x02
-        return byte
+        writeChat(displayName)
+        writeByte(flagsToProtocol(allowFriendlyFire, canSeeInvisibleMembers))
+        writeString(nameTagVisibility, 32)
+        writeString(collisionRule, 32)
+        writeVarInt(color)
+        writeChat(prefix)
+        writeChat(suffix)
     }
 
     enum class Action {
@@ -85,7 +102,26 @@ data class PacketOutTeam(
         CREATE,
         REMOVE,
         UPDATE_INFO,
-        ADD_PLAYERS,
-        REMOVE_PLAYERS
+        ADD_MEMBERS,
+        REMOVE_MEMBERS;
+
+        companion object {
+
+            private val BY_ID = values()
+
+            @JvmStatic
+            fun fromId(id: Int): Action? = BY_ID.getOrNull(id)
+        }
+    }
+
+    companion object {
+
+        @JvmStatic
+        private fun flagsToProtocol(allowFriendlyFire: Boolean, canSeeInvisibleMembers: Boolean): Int {
+            var byte = 0x0
+            if (allowFriendlyFire) byte += 0x01
+            if (canSeeInvisibleMembers) byte += 0x02
+            return byte
+        }
     }
 }

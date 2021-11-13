@@ -30,12 +30,12 @@ import java.util.UUID
 data class PacketOutChat(
     val message: Component,
     val type: MessageType,
-    val senderUUID: UUID
+    val senderId: UUID
 ) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeChat(message)
         buf.writeByte(type.ordinal)
-        buf.writeUUID(senderUUID)
+        buf.writeUUID(senderId)
     }
 }

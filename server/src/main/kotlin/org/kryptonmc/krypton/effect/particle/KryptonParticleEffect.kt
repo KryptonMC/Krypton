@@ -89,7 +89,7 @@ data class KryptonParticleEffect @JvmOverloads constructor(
     private fun writeOffsetPosition(buf: ByteBuf, x: Double, y: Double, z: Double) {
         val random = ThreadLocalRandom.current()
         buf.writeDouble(x + offset.x() * random.nextGaussian())
-        buf.writeDouble(x + offset.y() * random.nextGaussian())
+        buf.writeDouble(y + offset.y() * random.nextGaussian())
         buf.writeDouble(z + offset.z() * random.nextGaussian())
     }
 

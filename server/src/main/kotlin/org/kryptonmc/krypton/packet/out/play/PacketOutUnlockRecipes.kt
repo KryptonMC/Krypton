@@ -65,6 +65,14 @@ data class PacketOutUnlockRecipes(
 
         INIT,
         ADD,
-        REMOVE
+        REMOVE;
+
+        companion object {
+
+            private val BY_ID = values()
+
+            @JvmStatic
+            fun fromId(id: Int): Action? = BY_ID.getOrNull(id)
+        }
     }
 }

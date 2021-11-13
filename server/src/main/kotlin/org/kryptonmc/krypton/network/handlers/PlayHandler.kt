@@ -26,7 +26,6 @@ import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.event.ClickEvent.suggestCommand
 import net.kyori.adventure.text.format.NamedTextColor
-import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.player.ChatEvent
@@ -221,7 +220,7 @@ class PlayHandler(
             val latency = (System.currentTimeMillis() - lastKeepAlive).toInt()
             session.latency = (session.latency * 3 + latency) / 3
             pendingKeepAlive = false
-            playerManager.sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.UPDATE_LATENCY, player))
+            playerManager.sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_LATENCY, player))
             return
         }
         session.disconnect(translatable("disconnect.timeout"))

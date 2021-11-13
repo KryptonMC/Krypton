@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.krypton.packet.Packet
@@ -32,15 +33,24 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutObjective(
     val action: Action,
-    val objective: Objective
+    val name: String,
+    val displayName: Component,
+    val renderType: Int
 ) : Packet {
 
+    constructor(action: Action, objective: Objective) : this(
+        action,
+        objective.name,
+        objective.displayName,
+        Registries.OBJECTIVE_RENDER_TYPES.idOf(objective.renderType)
+    )
+
     override fun write(buf: ByteBuf) {
-        buf.writeString(objective.name, 16)
+        buf.writeString(name, 16)
         buf.writeByte(action.ordinal)
         if (action != Action.REMOVE) {
-            buf.writeChat(objective.displayName)
-            buf.writeVarInt(Registries.OBJECTIVE_RENDER_TYPES.idOf(objective.renderType))
+            buf.writeChat(displayName)
+            buf.writeVarInt(renderType)
         }
     }
 
@@ -48,6 +58,14 @@ data class PacketOutObjective(
 
         CREATE,
         REMOVE,
-        UPDATE_TEXT
+        UPDATE_TEXT;
+
+        companion object {
+
+            private val BY_ID = values()
+
+            @JvmStatic
+            fun fromId(id: Int): Action? = BY_ID.getOrNull(id)
+        }
     }
 }

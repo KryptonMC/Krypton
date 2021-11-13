@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
+import com.mojang.brigadier.suggestion.Suggestion
 import com.mojang.brigadier.suggestion.Suggestions
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
@@ -28,24 +29,32 @@ import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
 
 /**
- * Sent by the server as a response to the [tab complete][org.kryptonmc.krypton.packet.in.play.PacketInTabComplete].
- * Contains all of the matches that the server got for the command provided by the request packet.
+ * Sent by the server as a response to the
+ * [tab complete][org.kryptonmc.krypton.packet.in.play.PacketInTabComplete].
+ * Contains all of the matches that the server got for the command provided by
+ * the request packet.
  *
  * @param id the unique ID sent by the client to identify this request
- * @param matches matches for the given request
+ * @param start the start index of the suggestion range
+ * @param end the end index of the suggestion range
+ * @param suggestions the suggestions for the client
  */
 @JvmRecord
 data class PacketOutTabComplete(
     val id: Int,
-    val matches: Suggestions
+    val start: Int,
+    val end: Int,
+    val suggestions: Collection<Suggestion>
 ) : Packet {
+
+    constructor(id: Int, matches: Suggestions) : this(id, matches.range.start, matches.range.end, matches.list)
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(id)
-        buf.writeVarInt(matches.range.start)
-        buf.writeVarInt(matches.range.length)
+        buf.writeVarInt(start)
+        buf.writeVarInt(end)
 
-        buf.writeCollection(matches.list) {
+        buf.writeCollection(suggestions) {
             buf.writeString(it.text)
             buf.writeBoolean(it.tooltip != null)
             if (it.tooltip != null) buf.writeChat(Component.text(it.tooltip.string))

@@ -41,5 +41,13 @@ enum class EntityAnimation {
     LEAVE_BED,
     SWING_OFFHAND,
     CRITICAL_EFFECT,
-    MAGIC_CRITICAL_EFFECT
+    MAGIC_CRITICAL_EFFECT;
+
+    companion object {
+
+        private val BY_ID = values()
+
+        @JvmStatic
+        fun fromId(id: Int): EntityAnimation? = BY_ID.getOrNull(id)
+    }
 }

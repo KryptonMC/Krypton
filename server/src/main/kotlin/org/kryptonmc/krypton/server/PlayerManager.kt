@@ -74,7 +74,6 @@ import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.parseDimension
-import org.kryptonmc.krypton.world.scoreboard.KryptonObjective
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.math.vector.Vector3i
 import java.nio.file.Path
@@ -180,9 +179,9 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         session.send(PacketOutPlayerPositionAndLook(player.location, player.rotation))
 
         // Update player list
-        sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, player))
-        session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, player))
-        session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.ADD_PLAYER, players))
+        sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
+        session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
+        session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, players))
 
         // Send entity data
         // TODO: Move this all to an entity manager
@@ -240,7 +239,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
             // Send info and quit message
             invalidateStatus()
-            sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.PlayerAction.REMOVE_PLAYER, player))
+            sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.REMOVE_PLAYER, player))
             server.sendMessage(it.result.reason)
         }
     }

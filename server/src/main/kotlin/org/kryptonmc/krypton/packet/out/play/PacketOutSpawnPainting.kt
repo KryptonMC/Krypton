@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.hanging.KryptonPainting
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.data2D
 import org.kryptonmc.krypton.util.writeUUID

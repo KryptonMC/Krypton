@@ -70,6 +70,14 @@ data class PacketOutBossBar(
         UPDATE_HEALTH,
         UPDATE_TITLE,
         UPDATE_STYLE,
-        UPDATE_FLAGS
+        UPDATE_FLAGS;
+
+        companion object {
+
+            private val BY_ID = values()
+
+            @JvmStatic
+            fun fromId(id: Int): Action? = BY_ID.getOrNull(id)
+        }
     }
 }
