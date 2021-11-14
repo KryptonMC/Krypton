@@ -36,6 +36,7 @@ import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.item.handler.KryptonItemTimedHandler
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.play.EntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
@@ -53,6 +54,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerPositionAndRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerUseItem
 import org.kryptonmc.krypton.packet.out.play.EntityAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
@@ -128,6 +130,7 @@ class PlayHandler(
         is PacketInTabComplete -> handleTabComplete(packet)
         is PacketInClientStatus -> handleClientStatus(packet)
         is PacketInEntityNBTQuery -> handleEntityNBTQuery(packet)
+        is PacketInPlayerUseItem -> handlePlayerUseItem(packet)
         else -> Unit
     }
 
@@ -249,19 +252,30 @@ class PlayHandler(
     }
 
     private fun handlePlayerDigging(packet: PacketInPlayerDigging) {
-        if (player.gameMode !== GameModes.CREATIVE) return
-        if (packet.status != PacketInPlayerDigging.Status.STARTED) return
+        when(packet.status) {
+            PacketInPlayerDigging.Status.STARTED -> {
+                if (player.gameMode !== GameModes.CREATIVE) return
+                val chunkX = packet.location.x() shr 4
+                val chunkZ = packet.location.z() shr 4
+                val chunk = player.world.chunkManager[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
+                val x = packet.location.x()
+                val y = packet.location.y()
+                val z = packet.location.z()
+                chunk.setBlock(x, y, z, Blocks.AIR)
 
-        val chunkX = packet.location.x() shr 4
-        val chunkZ = packet.location.z() shr 4
-        val chunk = player.world.chunkManager[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
-        val x = packet.location.x()
-        val y = packet.location.y()
-        val z = packet.location.z()
-        chunk.setBlock(x, y, z, Blocks.AIR)
+                session.send(PacketOutDiggingResponse(packet.location, 0, PacketInPlayerDigging.Status.FINISHED, true))
+                playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
+            }
+            PacketInPlayerDigging.Status.UPDATE_STATE -> {
+                val handler = server.itemManager.handler(player.inventory[player.inventory.heldSlot].type)
+                if (handler !is KryptonItemTimedHandler) return
+                handler.finishUse(player, player.hand)
+            }
+        }
+    }
 
-        session.send(PacketOutDiggingResponse(packet.location, 0, PacketInPlayerDigging.Status.FINISHED, true))
-        playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
+    private fun handlePlayerUseItem(packet: PacketInPlayerUseItem) {
+        server.itemManager.handler(player.inventory.heldItem(packet.hand).type)?.use(player, packet.hand)
     }
 
     private fun handlePositionUpdate(packet: PacketInPlayerPosition) {
@@ -281,6 +295,11 @@ class PlayHandler(
         ), player)
         player.updateChunks()
         player.updateMovementStatistics(
+            newLocation.x() - oldLocation.x(),
+            newLocation.y() - oldLocation.y(),
+            newLocation.z() - oldLocation.z()
+        )
+        player.updateMovementExhaustion(
             newLocation.x() - oldLocation.x(),
             newLocation.y() - oldLocation.y(),
             newLocation.z() - oldLocation.z()
@@ -327,6 +346,11 @@ class PlayHandler(
         playerManager.sendToAll(PacketOutHeadLook(player.id, newRotation.x()), player)
         player.updateChunks()
         player.updateMovementStatistics(
+            newLocation.x() - oldLocation.x(),
+            newLocation.y() - oldLocation.y(),
+            newLocation.z() - oldLocation.z()
+        )
+        player.updateMovementExhaustion(
             newLocation.x() - oldLocation.x(),
             newLocation.y() - oldLocation.y(),
             newLocation.z() - oldLocation.z()

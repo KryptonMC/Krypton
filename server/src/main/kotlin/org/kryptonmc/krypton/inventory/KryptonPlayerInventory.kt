@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.inventory
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.inventory.InventoryType
@@ -75,6 +76,19 @@ class KryptonPlayerInventory(
     override fun heldItem(hand: Hand): KryptonItemStack = when (hand) {
         Hand.MAIN -> mainHand
         Hand.OFF -> offHand
+    }
+
+    override fun setHeldItem(hand: Hand, item: ItemStack) {
+        if (item !is KryptonItemStack) return
+        when (hand) {
+            Hand.MAIN -> set(heldSlot + 36, item)
+            Hand.OFF -> set(45, item)
+        }
+    }
+
+    public override operator fun set(index: Int, item: ItemStack) {
+        if (item !is KryptonItemStack) return
+        set(index, item)
     }
 
     operator fun set(index: Int, item: KryptonItemStack) {

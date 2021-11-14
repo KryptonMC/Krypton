@@ -100,4 +100,21 @@ public interface PlayerInventory : Inventory {
      * @return the item held in that hand
      */
     public fun heldItem(hand: Hand): ItemStack
+
+    /**
+     * Set the item the player is holding in the specified [hand].
+     *
+     * @param hand the hand
+     * @param item the item to set
+     */
+    public fun setHeldItem(hand: Hand, item: ItemStack)
+
+    /**
+     * Set an item in this inventory at the specified [index].
+     *
+     * @param index the index (slot, starts from 0)
+     * @param item the item to set
+     */
+    public operator fun set(index: Int, item: ItemStack)
+
 }

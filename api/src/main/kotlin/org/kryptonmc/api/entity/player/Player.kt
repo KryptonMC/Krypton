@@ -151,6 +151,24 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
     public val locale: Locale?
 
     /**
+     * The food level of this player.
+     */
+    @get:JvmName("foodLevel")
+    public var foodLevel: Int
+
+    /**
+     * The food exhaustion level of this player.
+     */
+    @get:JvmName("foodExhaustionLevel")
+    public var foodExhaustionLevel: Float
+
+    /**
+     * The food saturation level of this player.
+     */
+    @get:JvmName("foodSaturationLevel")
+    public var foodSaturationLevel: Float
+
+    /**
      * The statistics tracker for this player.
      */
     @get:JvmName("statistics")
