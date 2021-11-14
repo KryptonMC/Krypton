@@ -16,28 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.util.writeIntArray
-import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.readVarInt
 
-@JvmRecord
-data class PacketOutSetPassengers(
-    override val entityId: Int,
-    val passengers: List<Entity>,
-) : EntityPacket {
+class PacketInPlayerInteractEntity(buf: ByteBuf) : Packet {
 
-    constructor(entity: KryptonEntity) : this(
-        entity.id,
-        entity.passengers
-    )
+    val entityId = buf.readVarInt()
+    val type = buf.readEnum<Type>()
+    val x = if (type === Type.INTERACT_AT) buf.readFloat() else 0F
+    val y = if (type === Type.INTERACT_AT) buf.readFloat() else 0F
+    val z = if (type === Type.INTERACT_AT) buf.readFloat() else 0F
+    val hand = if (type === Type.INTERACT || type === Type.INTERACT_AT) buf.readEnum<Hand>() else null
+    val sneaking = buf.readBoolean()
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
-        buf.writeIntArray(passengers.map { (it as KryptonEntity).id }.toIntArray())
+    enum class Type {
+
+        INTERACT,
+        ATTACK,
+        INTERACT_AT
     }
 }

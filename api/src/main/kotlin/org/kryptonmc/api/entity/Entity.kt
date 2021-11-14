@@ -109,6 +109,12 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public val passengers: List<Entity>
 
     /**
+     * The entity that this entity is a passenger of.
+     */
+    @get:JvmName("vehicle")
+    public var vehicle: Entity?
+
+    /**
      * If this entity should not take damage from any source.
      *
      * When this is true, the following statements are also true:
@@ -311,6 +317,20 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
         yaw: Float = rotation.x(),
         pitch: Float = rotation.y()
     )
+
+    /**
+     * Adds a passenger to this entity
+     *
+     * @param entity the entity to be added
+     */
+    public fun addPassenger(entity: Entity)
+
+    /**
+     * Removes a passenger from this entity
+     *
+     * @param entity the entity to be removed
+     */
+    public fun removePassenger(entity: Entity)
 
     /**
      * Removes this entity from the world it is currently in.

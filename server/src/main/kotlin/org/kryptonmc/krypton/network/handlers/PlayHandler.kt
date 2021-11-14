@@ -67,6 +67,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityNBTQuery
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerInteractEntity
+import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutNBTQueryResponse
 import org.kryptonmc.krypton.util.Positioning
@@ -128,6 +130,8 @@ class PlayHandler(
         is PacketInTabComplete -> handleTabComplete(packet)
         is PacketInClientStatus -> handleClientStatus(packet)
         is PacketInEntityNBTQuery -> handleEntityNBTQuery(packet)
+        is PacketInPlayerInteractEntity -> handlePlayerInteractEntity(packet)
+        is PacketInSteerVehicle -> handleSteerVehicle(packet)
         else -> Unit
     }
 
@@ -262,6 +266,21 @@ class PlayHandler(
 
         session.send(PacketOutDiggingResponse(packet.location, 0, PacketInPlayerDigging.Status.FINISHED, true))
         playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
+    }
+
+    private fun handleSteerVehicle(packet: PacketInSteerVehicle) {
+        val flagInt = packet.flags.toInt()
+        // jump
+        if (flagInt and 0x01 == 0x01) /* noop */
+        // unmount
+        if (flagInt and 0x02 == 0x02) player.vehicle?.removePassenger(player)
+    }
+
+    private fun handlePlayerInteractEntity(packet: PacketInPlayerInteractEntity) {
+        if (packet.type === PacketInPlayerInteractEntity.Type.INTERACT) {
+            val target = player.world.entityManager[packet.entityId]
+            target?.addPassenger(player)
+        }
     }
 
     private fun handlePositionUpdate(packet: PacketInPlayerPosition) {

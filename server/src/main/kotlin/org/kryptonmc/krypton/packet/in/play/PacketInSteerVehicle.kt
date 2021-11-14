@@ -16,28 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.out.play
+package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.util.writeIntArray
-import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.packet.Packet
 
-@JvmRecord
-data class PacketOutSetPassengers(
-    override val entityId: Int,
-    val passengers: List<Entity>,
-) : EntityPacket {
+class PacketInSteerVehicle(buf: ByteBuf) : Packet {
 
-    constructor(entity: KryptonEntity) : this(
-        entity.id,
-        entity.passengers
-    )
-
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
-        buf.writeIntArray(passengers.map { (it as KryptonEntity).id }.toIntArray())
-    }
+    val sideways = buf.readFloat()
+    val forward = buf.readFloat()
+    val flags = buf.readByte()
 }
