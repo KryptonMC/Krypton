@@ -136,11 +136,6 @@ class PlayHandler(
 
     override fun onDisconnect() {
         playerManager.invalidateStatus()
-        playerManager.sendMessage(
-            Identity.nil(),
-            translatable("multiplayer.player.left", NamedTextColor.YELLOW, player.displayName),
-            MessageType.SYSTEM
-        )
         playerManager.remove(player)
     }
 

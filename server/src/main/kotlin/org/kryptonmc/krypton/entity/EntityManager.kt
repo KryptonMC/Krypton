@@ -91,9 +91,11 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
         // TODO: World border
         player.session.send(PacketOutTimeUpdate(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
-        forEachEntityInRange(location, world.server.config.world.viewDistance) {
-            it.addViewer(player)
-            if (it is KryptonPlayer) player.addViewer(it)
+        if (!player.isVanished) {
+            forEachEntityInRange(location, world.server.config.world.viewDistance) {
+                it.addViewer(player)
+                if (it is KryptonPlayer && !it.isVanished) player.addViewer(it)
+            }
         }
 
         val chunk = world.getChunk(player.location.floorX(), player.location.floorY(), player.location.floorZ()) ?: return

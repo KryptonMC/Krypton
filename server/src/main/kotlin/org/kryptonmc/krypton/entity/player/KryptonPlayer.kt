@@ -201,7 +201,8 @@ class KryptonPlayer(
     override val dimension: ResourceKey<World>
         get() = world.dimension
 
-    val viewableEntities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
+    override var isVanished = false
+    private val hiddenPlayers = mutableSetOf<UUID>()
 
     private var respawnPosition: Vector3i? = null
     private var respawnForced = false
@@ -271,6 +272,11 @@ class KryptonPlayer(
                 respawnDimension = dimension.resultOrPartial(LOGGER::error).orElse(World.OVERWORLD)
             }
         }
+
+        if (tag.contains("krypton", CompoundTag.ID)) {
+            val kryptonData = tag.getCompound("krypton")
+            isVanished = kryptonData.getBoolean("vanished")
+        }
     }
 
     override fun save() = super.save().apply {
@@ -305,6 +311,9 @@ class KryptonPlayer(
             Codecs.DIMENSION.encodeStart(NBTOps, respawnDimension)
                 .resultOrPartial(LOGGER::error)
                 .ifPresent { put("SpawnDimension", it) }
+        }
+        compound("krypton") {
+            boolean("vanished", isVanished)
         }
     }
 
@@ -452,6 +461,34 @@ class KryptonPlayer(
     }
 
     override fun teleport(player: Player) = teleport(player.location)
+
+    override fun vanish() {
+        if (isVanished) return // We are already vanished
+        isVanished = true
+        world.players.forEach { removeViewer(it) }
+    }
+
+    override fun unvanish() {
+        if (!isVanished) return // We are not vanished
+        isVanished = false
+        world.players.forEach { addViewer(it) }
+    }
+
+    override fun show(player: Player) {
+        if (player !is KryptonPlayer || this == player) return
+        if (!hiddenPlayers.contains(player.uuid)) return
+        hiddenPlayers.remove(player.uuid)
+        player.addViewer(this)
+    }
+
+    override fun hide(player: Player) {
+        if (player !is KryptonPlayer || this == player) return
+        if (hiddenPlayers.contains(player.uuid)) return
+        hiddenPlayers.add(player.uuid)
+        player.removeViewer(this)
+    }
+
+    override fun canSee(player: Player): Boolean = hiddenPlayers.contains(player.uuid)
 
     override fun getPermissionValue(permission: String) = permissionFunction[permission]
 

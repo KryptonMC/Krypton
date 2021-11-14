@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.util.writeIntArray
 @JvmRecord
 data class PacketOutDestroyEntities(val ids: IntArray) : Packet {
 
-    constructor(id: Int) : this(IntArray(id))
+    constructor(id: Int) : this(intArrayOf(id))
 
     override fun write(buf: ByteBuf) {
         buf.writeIntArray(ids)

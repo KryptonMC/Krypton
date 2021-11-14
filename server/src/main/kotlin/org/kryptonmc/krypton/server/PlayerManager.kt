@@ -124,7 +124,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             server.worldManager.default
         }
         player.world = world
-        world.players += player
+        world.players.add(player)
         LOGGER.info("Player ${profile.name} logged in with entity ID ${player.id} at" +
                 "(${player.location.x()}, ${player.location.y()}, ${player.location.z()})")
 
@@ -197,7 +197,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         }
 
         // Add the player to the list and cache maps
-        players += player
+        players.add(player)
         playersByName[player.profile.name] = player
         playersByUUID[player.uuid] = player
         world.spawnPlayer(player)
@@ -230,6 +230,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             // Remove from caches
             player.world.removeEntity(player)
             players.remove(player)
+            player.world.players.remove(player)
 
             if (playersByUUID[player.uuid] === player) {
                 playersByName.remove(player.profile.name)
