@@ -269,9 +269,8 @@ class PlayHandler(
     }
 
     private fun handleSteerVehicle(packet: PacketInSteerVehicle) {
+        // TODO: Handle steering here
         val flagInt = packet.flags.toInt()
-        // jump
-        if (flagInt and 0x01 == 0x01) /* noop */
         // unmount
         if (flagInt and 0x02 == 0x02) player.vehicle?.removePassenger(player)
     }

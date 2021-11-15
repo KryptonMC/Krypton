@@ -115,7 +115,7 @@ abstract class KryptonEntity(
     final override var fireTicks: Short = 0
     final override var isInvulnerable = false
     final override var fallDistance = 0F
-    final override val passengers: MutableList<Entity> = ArrayList()
+    final override val passengers = mutableListOf<Entity>()
     final override var inWater = false
     final override var inLava = false
     final override var underwater = false
