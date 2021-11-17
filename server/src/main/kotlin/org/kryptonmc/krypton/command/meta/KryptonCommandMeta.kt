@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.command.meta
 
 import org.kryptonmc.api.command.meta.CommandMeta
+import org.kryptonmc.api.command.meta.SimpleCommandMeta
 
 @JvmRecord
 data class KryptonCommandMeta(
@@ -26,7 +27,7 @@ data class KryptonCommandMeta(
     override val aliases: Set<String>
 ) : CommandMeta {
 
-    override fun toBuilder() = Builder(this)
+    override fun toBuilder(): CommandMeta.Builder = Builder(this)
 
     @Suppress("UNCHECKED_CAST")
     abstract class AbstractBuilder<B : AbstractBuilder<B>>(protected var name: String) : CommandMeta.Builder {
@@ -48,13 +49,13 @@ data class KryptonCommandMeta(
             aliases.addAll(meta.aliases)
         }
 
-        override fun build() = KryptonCommandMeta(name, aliases)
+        override fun build(): CommandMeta = KryptonCommandMeta(name, aliases)
     }
 
     object Factory : CommandMeta.Factory {
 
-        override fun builder(name: String) = Builder(name)
+        override fun builder(name: String): CommandMeta.Builder = Builder(name)
 
-        override fun simpleBuilder(name: String) = KryptonSimpleCommandMeta.Builder(name)
+        override fun simpleBuilder(name: String): SimpleCommandMeta.Builder = KryptonSimpleCommandMeta.Builder(name)
     }
 }

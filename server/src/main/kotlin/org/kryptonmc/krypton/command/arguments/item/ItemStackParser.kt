@@ -66,7 +66,7 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
         return null
     }
 
-    fun parseItem() = ItemStackArgument(readItem(this.reader), readNBT(this.reader))
+    fun parseItem(): ItemStackArgument = ItemStackArgument(readItem(this.reader), readNBT(this.reader))
 
     fun parsePredicate(): ItemStackPredicate {
         var tag: String? = null
@@ -87,7 +87,7 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
         }
     }
 
-    private fun isCharValid(c: Char) = c in '0'..'9' ||
+    private fun isCharValid(c: Char): Boolean = c in '0'..'9' ||
             c in 'a'..'z' ||
             c == '_' ||
             c == ':' ||

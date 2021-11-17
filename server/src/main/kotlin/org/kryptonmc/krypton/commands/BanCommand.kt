@@ -59,6 +59,7 @@ object BanCommand : InternalCommand {
         )
     }
 
+    @JvmStatic
     private fun ban(
         profiles: List<KryptonGameProfile>,
         server: KryptonServer,
@@ -75,12 +76,15 @@ object BanCommand : InternalCommand {
         }
     }
 
+    @JvmStatic
     private fun kick(entry: BannedPlayerEntry, player: KryptonPlayer) {
         val text = translatable("multiplayer.disconnect.banned.reason", entry.reason)
-        if (entry.expirationDate != null) text.append(translatable(
-            "multiplayer.disconnect.banned.expiration",
-            text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
-        ))
+        if (entry.expirationDate != null) {
+            text.append(translatable(
+                "multiplayer.disconnect.banned.expiration",
+                text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
+            ))
+        }
         player.disconnect(text)
     }
 }

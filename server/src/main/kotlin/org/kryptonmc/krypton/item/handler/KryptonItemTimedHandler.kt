@@ -24,6 +24,7 @@ import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.item.InteractionContext
 import org.kryptonmc.api.item.ItemHandler
 import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.api.item.UseItemResult
 import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -32,23 +33,23 @@ import org.spongepowered.math.vector.Vector3i
 
 interface KryptonItemTimedHandler : ItemHandler {
 
-    override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i) = true
+    override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i): Boolean = true
 
-    override fun destroySpeed(item: ItemStack, block: Block) = 1F
+    override fun destroySpeed(item: ItemStack, block: Block): Float = 1F
 
     override fun use(
         player: Player,
         hand: Hand
-    ) = KryptonUseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
+    ): UseItemResult = KryptonUseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
 
     fun finishUse(
         player: Player,
         hand: Hand
-    ) = KryptonUseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
+    ): UseItemResult = KryptonUseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
 
-    override fun interact(context: InteractionContext) = InteractionResult.PASS
+    override fun interact(context: InteractionContext): InteractionResult = InteractionResult.PASS
 
-    override fun isCorrectTool(block: Block) = false
+    override fun isCorrectTool(block: Block): Boolean = false
 
-    override fun mineBlock(player: Player, item: ItemStack, world: World, block: Block, position: Vector3i) = false
+    override fun mineBlock(player: Player, item: ItemStack, world: World, block: Block, position: Vector3i): Boolean = false
 }

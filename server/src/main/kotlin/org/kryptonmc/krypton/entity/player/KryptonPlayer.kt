@@ -32,6 +32,7 @@ import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
+import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
@@ -46,9 +47,9 @@ import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
-import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.Statistic
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.GameModes
@@ -56,6 +57,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -63,8 +65,8 @@ import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
-import org.kryptonmc.krypton.item.toItemStack
 import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
@@ -92,18 +94,18 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSubTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
+import org.kryptonmc.krypton.util.BossBarManager
 import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.util.BossBarManager
-import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.scoreboard.KryptonScore
 import org.kryptonmc.nbt.CompoundTag
@@ -114,12 +116,11 @@ import java.net.InetSocketAddress
 import java.time.Duration
 import java.util.Locale
 import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.abs
-import kotlin.math.roundToInt
-import kotlin.math.sqrt
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonPlayer(
@@ -279,7 +280,7 @@ class KryptonPlayer(
         }
     }
 
-    override fun save() = super.save().apply {
+    override fun save(): CompoundTag.Builder = super.save().apply {
         int("DataVersion", KryptonPlatform.worldVersion)
         put("Inventory", inventory.save())
         int("SelectedItemSlot", inventory.heldSlot)
@@ -460,7 +461,9 @@ class KryptonPlayer(
         updateChunks()
     }
 
-    override fun teleport(player: Player) = teleport(player.location)
+    override fun teleport(player: Player) {
+        teleport(player.location)
+    }
 
     override fun vanish() {
         if (isVanished) return // We are already vanished
@@ -490,9 +493,9 @@ class KryptonPlayer(
 
     override fun canSee(player: Player): Boolean = hiddenPlayers.contains(player.uuid)
 
-    override fun getPermissionValue(permission: String) = permissionFunction[permission]
+    override fun getPermissionValue(permission: String): TriState = permissionFunction[permission]
 
-    override fun getSpawnPacket() = PacketOutSpawnPlayer(this)
+    override fun getSpawnPacket(): Packet = PacketOutSpawnPlayer(this)
 
     override fun sendPluginMessage(channel: Key, message: ByteArray) {
         if (channel in DEBUG_CHANNELS) {
@@ -559,11 +562,11 @@ class KryptonPlayer(
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
         val type = InternalRegistries.SOUND_EVENT[sound.name()]
-        session.send(if (type != null) {
-            PacketOutSoundEffect(sound, type, x, y, z)
-        } else {
-            PacketOutNamedSoundEffect(sound, x, y, z)
-        })
+        if (type != null) {
+            session.send(PacketOutSoundEffect(sound, type, x, y, z))
+            return
+        }
+        session.send(PacketOutNamedSoundEffect(sound, x, y, z))
     }
 
     override fun playSound(sound: Sound, emitter: Sound.Emitter) {
@@ -576,17 +579,17 @@ class KryptonPlayer(
         val event = Registries.SOUND_EVENT[sound.name()]
         if (event != null) {
             session.send(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch()))
-        } else {
-            session.send(PacketOutNamedSoundEffect(
-                sound.name(),
-                sound.source(),
-                entity.location.x(),
-                entity.location.y(),
-                entity.location.z(),
-                sound.volume(),
-                sound.pitch()
-            ))
+            return
         }
+        session.send(PacketOutNamedSoundEffect(
+            sound.name(),
+            sound.source(),
+            entity.location.x(),
+            entity.location.y(),
+            entity.location.z(),
+            sound.volume(),
+            sound.pitch()
+        ))
     }
 
     override fun stopSound(stop: SoundStop) {
@@ -594,7 +597,7 @@ class KryptonPlayer(
     }
 
     override fun openBook(book: Book) {
-        val item = book.toItemStack()
+        val item = KryptonAdventure.toItemStack(book)
         val slot = inventory.items.size + inventory.heldSlot
         val stateId = inventory.stateId
         session.send(PacketOutSetSlot(0, stateId, slot, item))
@@ -715,7 +718,9 @@ class KryptonPlayer(
         scoreboard.forEachObjective(statistic, teamRepresentation) { it.add(amount) }
     }
 
-    override fun incrementStatistic(key: Key, amount: Int) = incrementStatistic(KryptonStatisticTypes.CUSTOM[key], amount)
+    override fun incrementStatistic(key: Key, amount: Int) {
+        incrementStatistic(KryptonStatisticTypes.CUSTOM[key], amount)
+    }
 
     override fun decrementStatistic(statistic: Statistic<*>, amount: Int) {
         statistics.decrement(statistic, amount)
@@ -732,19 +737,26 @@ class KryptonPlayer(
         if (isSwimming) {
             val value = (sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 100F).roundToInt()
             if (value > 0) incrementStatistic(CustomStatistics.SWIM_ONE_CM, value)
-        } else if (isOnGround) {
+            return
+        }
+        if (isOnGround) {
             val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ) * 100F).roundToInt()
             if (value > 0) when {
                 isSprinting -> incrementStatistic(CustomStatistics.SPRINT_ONE_CM, value)
                 isCrouching -> incrementStatistic(CustomStatistics.CROUCH_ONE_CM, value)
                 else -> incrementStatistic(CustomStatistics.WALK_ONE_CM, value)
             }
-        } else if (isFallFlying) {
+            return
+        }
+        if (isFallFlying) {
             val value = (sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 100F).roundToInt()
             incrementStatistic(CustomStatistics.AVIATE_ONE_CM, value)
-        } else {
+            return
+        }
+        if (isFlying) {
             val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ ) * 100F).roundToInt()
             if (value > FLYING_ACHIEVEMENT_MINIMUM_SPEED) incrementStatistic(CustomStatistics.FLY_ONE_CM, value)
+            return
         }
     }
 
@@ -754,12 +766,15 @@ class KryptonPlayer(
             val value = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ)
             if (value > 0) foodExhaustionLevel += 0.01F * value.toFloat()
             // 0.01/u is the vanilla level of exhaustion per unit for swimming
-        } else if (isOnGround) {
+            return
+        }
+        if (isOnGround) {
             val value = sqrt(deltaX * deltaX + deltaZ * deltaZ)
             if (value > 0) when {
                 isSprinting -> foodExhaustionLevel += 0.1F * value.toFloat()
                 // 0.1/u is the vanilla level of exhaustion per unit for sprinting
             }
+            return
         }
     }
 
@@ -840,7 +855,7 @@ class KryptonPlayer(
         )
         private val LOGGER = logger<KryptonPlayer>()
         private val SERVER_LOGGER = logger<KryptonServer>()
-        private val ATTRIBUTES = KryptonLivingEntity.attributes()
+        private val ATTRIBUTES = attributes()
             .add(AttributeTypes.ATTACK_DAMAGE, 1.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.1)
             .add(AttributeTypes.ATTACK_SPEED)

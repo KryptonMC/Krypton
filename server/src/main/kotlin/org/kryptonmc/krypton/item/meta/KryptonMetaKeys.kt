@@ -36,37 +36,37 @@ import java.awt.Color
 
 object KryptonMetaKeys {
 
-    val DAMAGE = register(
+    @JvmField val DAMAGE = register(
         "damage",
         { it.getInt("Damage") },
         { nbt, damage -> nbt.putInt("Damage", damage) },
         { it.contains("Damage", IntTag.ID) }
     )
-    val UNBREAKABLE = register(
+    @JvmField val UNBREAKABLE = register(
         "unbreakable",
         { it.getBoolean("Unbreakable") },
         { nbt, unbreakable -> nbt.putBoolean("Unbreakable", unbreakable) },
         { it.contains("Unbreakable", ByteTag.ID) }
     )
-    val CAN_DESTROY = register("can_destroy", blockList("CanDestroy"), setBlockList("CanDestroy")) {
+    @JvmField val CAN_DESTROY = register("can_destroy", blockList("CanDestroy"), setBlockList("CanDestroy")) {
         it.contains("CanDestroy", ListTag.ID)
     }
-    val CUSTOM_MODEL_DATA = register(
+    @JvmField val CUSTOM_MODEL_DATA = register(
         "custom_model_data",
         { it.getInt("CustomModelData") },
         { nbt, data -> nbt.putInt("CustomModelData", data) },
         { it.contains("CustomModelData", IntTag.ID) }
     )
-    val CAN_PLACE_ON = register("can_place_on", blockList("CanPlaceOn"), setBlockList("CanPlaceOn")) {
+    @JvmField val CAN_PLACE_ON = register("can_place_on", blockList("CanPlaceOn"), setBlockList("CanPlaceOn")) {
         it.contains("CanPlaceOn", ListTag.ID)
     }
-    val NAME = register(
+    @JvmField val NAME = register(
         "name",
         { GsonComponentSerializer.gson().deserialize(it.getCompound("display").getString("Name")) },
         { nbt, name -> nbt.update("display") { putString("Name", name.toJsonString()) } },
         { it.contains("display", CompoundTag.ID) && it.getCompound("display").contains("Name", StringTag.ID) }
     )
-    val LORE = register(
+    @JvmField val LORE = register(
         "lore",
         { nbt ->
             nbt.getCompound("display")
@@ -83,44 +83,44 @@ object KryptonMetaKeys {
         },
         { it.contains("display", CompoundTag.ID) && it.getCompound("display").contains("Lore", StringTag.ID) }
     )
-    val COLOR = register(
+    @JvmField val COLOR = register(
         "color",
         { Color(it.getCompound("display").getInt("color")) },
         { nbt, color -> nbt.update("display") { putInt("color", color.rgb) } },
         { it.contains("display", CompoundTag.ID) && it.getCompound("display").contains("color", IntTag.ID) }
     )
-    val HIDE_ATTRIBUTES = register(
+    @JvmField val HIDE_ATTRIBUTES = register(
         "hide_attributes",
         flag(ItemFlag.ATTRIBUTES),
         setFlag(ItemFlag.ATTRIBUTES),
         flag(ItemFlag.ATTRIBUTES)
     )
-    val HIDE_CAN_DESTROY = register(
+    @JvmField val HIDE_CAN_DESTROY = register(
         "hide_can_destroy",
         flag(ItemFlag.CAN_DESTROY),
         setFlag(ItemFlag.CAN_DESTROY),
         flag(ItemFlag.CAN_DESTROY)
     )
-    val HIDE_CAN_PLACE_ON = register(
+    @JvmField val HIDE_CAN_PLACE_ON = register(
         "hide_can_place_on",
         flag(ItemFlag.CAN_PLACE),
         setFlag(ItemFlag.CAN_PLACE),
         flag(ItemFlag.CAN_PLACE)
     )
-    val HIDE_DYE = register("hide_dye", flag(ItemFlag.DYE), setFlag(ItemFlag.DYE), flag(ItemFlag.DYE))
-    val HIDE_ENCHANTMENTS = register(
+    @JvmField val HIDE_DYE = register("hide_dye", flag(ItemFlag.DYE), setFlag(ItemFlag.DYE), flag(ItemFlag.DYE))
+    @JvmField val HIDE_ENCHANTMENTS = register(
         "hide_enchantments",
         flag(ItemFlag.ENCHANTMENTS),
         setFlag(ItemFlag.ENCHANTMENTS),
         flag(ItemFlag.ENCHANTMENTS)
     )
-    val HIDE_MISCELLANEOUS = register(
+    @JvmField val HIDE_MISCELLANEOUS = register(
         "hide_miscellaneous",
         flag(ItemFlag.MISCELLANEOUS),
         setFlag(ItemFlag.MISCELLANEOUS),
         flag(ItemFlag.MISCELLANEOUS)
     )
-    val HIDE_UNBREAKABLE = register(
+    @JvmField val HIDE_UNBREAKABLE = register(
         "hide_unbreakable",
         flag(ItemFlag.UNBREAKABLE),
         setFlag(ItemFlag.UNBREAKABLE),

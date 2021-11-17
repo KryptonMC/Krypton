@@ -32,6 +32,7 @@ import org.kryptonmc.krypton.command.arguments.coordinates.TextCoordinates
 import org.kryptonmc.krypton.command.arguments.coordinates.WorldCoordinates
 import org.kryptonmc.krypton.command.suggestCoordinates
 import org.kryptonmc.krypton.command.argument.argument
+import org.spongepowered.math.vector.Vector3d
 import java.util.concurrent.CompletableFuture
 
 class VectorArgument private constructor(private val correctCenter: Boolean = true) : ArgumentType<Coordinates> {
@@ -62,7 +63,7 @@ class VectorArgument private constructor(private val correctCenter: Boolean = tr
         }
     }
 
-    override fun getExamples() = EXAMPLES
+    override fun getExamples(): Collection<String> = EXAMPLES
 
     companion object {
 
@@ -70,8 +71,8 @@ class VectorArgument private constructor(private val correctCenter: Boolean = tr
         private val NORMAL = VectorArgument(true)
 
         @JvmStatic
-        fun normal() = NORMAL
+        fun normal(): VectorArgument = NORMAL
     }
 }
 
-fun CommandContext<Sender>.vectorArgument(name: String) = argument<Coordinates>(name).position(source as Player)
+fun CommandContext<Sender>.vectorArgument(name: String): Vector3d = argument<Coordinates>(name).position(source as Player)

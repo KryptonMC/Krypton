@@ -30,7 +30,7 @@ import java.util.UUID
 class AttributeMap(private val supplier: AttributeSupplier) {
 
     private val attributes = mutableMapOf<AttributeType, KryptonAttribute>()
-    val dirty = mutableSetOf<KryptonAttribute>()
+    private val dirty = mutableSetOf<KryptonAttribute>()
     val syncable: Collection<KryptonAttribute> = attributes.values.filter { it.type.sendToClient }
 
     operator fun get(type: AttributeType): KryptonAttribute = attributes.computeIfAbsent(type) { supplier.create(type, ::onModify) }
@@ -55,7 +55,7 @@ class AttributeMap(private val supplier: AttributeSupplier) {
         }
     }
 
-    fun save() = list {
+    fun save(): ListTag = list {
         attributes.values.forEach { add(it.save()) }
     }
 

@@ -43,4 +43,4 @@ object GameProfileArgument : ArgumentType<EntityQuery> {
     }
 }
 
-fun CommandContext<Sender>.gameProfileArgument(name: String) = argument<EntityQuery>(name)
+fun CommandContext<Sender>.gameProfileArgument(name: String): EntityQuery = argument(name)

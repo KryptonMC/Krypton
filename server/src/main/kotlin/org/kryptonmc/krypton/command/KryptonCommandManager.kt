@@ -100,7 +100,9 @@ object KryptonCommandManager : CommandManager {
         lock.write { registrar.register(dispatcher.root, command, meta) }
     }
 
-    override fun unregister(alias: String) = dispatcher.root.removeChildByName(alias)
+    override fun unregister(alias: String) {
+        dispatcher.root.removeChildByName(alias)
+    }
 
     override fun dispatch(sender: Sender, command: String): Boolean {
         val normalized = command.normalize(true)
@@ -178,7 +180,5 @@ object KryptonCommandManager : CommandManager {
         ClearCommand.register(dispatcher)
     }
 
-    private fun parse(sender: Sender, input: String): ParseResults<Sender> = lock.read {
-        dispatcher.parse(input, sender)
-    }
+    private fun parse(sender: Sender, input: String): ParseResults<Sender> = lock.read { dispatcher.parse(input, sender) }
 }

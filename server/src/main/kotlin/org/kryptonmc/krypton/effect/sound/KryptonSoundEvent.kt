@@ -28,6 +28,6 @@ data class KryptonSoundEvent(private val key: Key) : SoundEvent {
 
     object Factory : SoundEvent.Factory {
 
-        override fun of(key: Key) = KryptonSoundEvent(key)
+        override fun of(key: Key): SoundEvent = KryptonSoundEvent(key)
     }
 }

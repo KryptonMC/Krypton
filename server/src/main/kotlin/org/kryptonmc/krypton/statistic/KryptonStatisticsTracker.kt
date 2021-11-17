@@ -32,6 +32,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticType
+import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.statistic.StatisticsTracker
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -74,23 +75,25 @@ class KryptonStatisticsTracker(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun save() = try {
-        val map = mutableMapOf<StatisticType<*>, JsonObject>()
-        statistics.object2IntEntrySet().forEach {
-            val registry = it.key.type.registry as Registry<Any>
-            map.getOrPut(it.key.type) { JsonObject() }.addProperty(registry[it.key.value]!!.toString(), it.intValue)
+    fun save() {
+        try {
+            val map = mutableMapOf<StatisticType<*>, JsonObject>()
+            statistics.object2IntEntrySet().forEach {
+                val registry = it.key.type.registry as Registry<Any>
+                map.getOrPut(it.key.type) { JsonObject() }.addProperty(registry[it.key.value]!!.toString(), it.intValue)
+            }
+
+            val statsJson = JsonObject()
+            map.forEach { statsJson.add(it.key.key().asString(), it.value) }
+
+            val json = JsonObject().apply {
+                add("stats", statsJson)
+                addProperty("DataVersion", KryptonPlatform.worldVersion)
+            }.toString()
+            file.writer().use { it.write(json) }
+        } catch (exception: IOException) {
+            LOGGER.error("Failed to save statistics file $file!", exception)
         }
-
-        val statsJson = JsonObject()
-        map.forEach { statsJson.add(it.key.key().asString(), it.value) }
-
-        val json = JsonObject().apply {
-            add("stats", statsJson)
-            addProperty("DataVersion", KryptonPlatform.worldVersion)
-        }.toString()
-        file.writer().use { it.write(json) }
-    } catch (exception: IOException) {
-        LOGGER.error("Failed to save statistics file $file!", exception)
     }
 
     fun send() {
@@ -103,18 +106,22 @@ class KryptonStatisticsTracker(
         pendingUpdate.addAll(statistics.keys)
     }
 
-    override fun get(statistic: Statistic<*>) = statistics.getInt(statistic)
+    override fun get(statistic: Statistic<*>): Int = statistics.getInt(statistic)
+
+    override fun get(statistic: Key): Int = statistics.getInt(StatisticTypes.CUSTOM[statistic])
 
     override fun set(statistic: Statistic<*>, value: Int) {
         statistics[statistic] = value
         pendingUpdate.add(statistic)
     }
 
-    override fun increment(statistic: Statistic<*>, amount: Int) =
+    override fun increment(statistic: Statistic<*>, amount: Int) {
         set(statistic, min(get(statistic).toLong() + amount.toLong(), Int.MAX_VALUE.toLong()).toInt())
+    }
 
-    override fun decrement(statistic: Statistic<*>, amount: Int) =
+    override fun decrement(statistic: Statistic<*>, amount: Int) {
         set(statistic, max(get(statistic).toLong() - amount.toLong(), Int.MIN_VALUE.toLong()).toInt())
+    }
 
     private fun load(reader: Reader) {
         try {

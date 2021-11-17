@@ -86,7 +86,7 @@ class KryptonPlayerInventory(
         }
     }
 
-    public override operator fun set(index: Int, item: ItemStack) {
+    override fun set(index: Int, item: ItemStack) {
         if (item !is KryptonItemStack) return
         set(index, item)
     }

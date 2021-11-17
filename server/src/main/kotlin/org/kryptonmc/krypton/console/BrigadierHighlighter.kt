@@ -49,10 +49,10 @@ class BrigadierHighlighter(
                 argumentColorIndex = (argumentColorIndex + 1) % ARGUMENT_STYLES.size
                 lastPos = end
             }
-            if (lastPos < reader.totalLength) builder.append(
-                reader.string.substring(lastPos),
-                if (results.exceptions.isEmpty()) LITERAL_STYLE else ERROR_STYLE
-            )
+            if (lastPos < reader.totalLength) {
+                val style = if (results.exceptions.isEmpty()) LITERAL_STYLE else ERROR_STYLE
+                builder.append(reader.string.substring(lastPos), style)
+            }
             builder.toAttributedString()
         } catch (exception: Exception) {
             LOGGER.error("Exception caught whilst trying to highlight command $buffer!", exception)

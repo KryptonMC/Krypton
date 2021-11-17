@@ -63,11 +63,11 @@ object ArgumentSerializers {
     }
 
     @JvmStatic
-    operator fun get(name: Key) = BY_NAME[name]
+    operator fun get(name: Key): Entry<*>? = BY_NAME[name]
 
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    operator fun <T : ArgumentType<*>> get(type: T) = BY_CLASS[type::class.java] as? Entry<T>
+    operator fun <T : ArgumentType<*>> get(type: T): Entry<T>? = BY_CLASS[type::class.java] as? Entry<T>
 
     @JvmStatic
     private inline fun <reified T : ArgumentType<*>> register(name: String, serializer: ArgumentSerializer<T>) {
@@ -83,7 +83,9 @@ object ArgumentSerializers {
 
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    private inline fun <reified T : ArgumentType<*>> empty(name: String) = register(name, ArgumentSerializer.Empty as ArgumentSerializer<T>)
+    private inline fun <reified T : ArgumentType<*>> empty(name: String) {
+        register(name, ArgumentSerializer.Empty as ArgumentSerializer<T>)
+    }
 
     @JvmRecord
     data class Entry<T : ArgumentType<*>>(

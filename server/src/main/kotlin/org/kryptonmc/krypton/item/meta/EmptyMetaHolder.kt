@@ -29,7 +29,7 @@ object EmptyMetaHolder : KryptonMetaHolder() {
 
     override fun <V : Any> set(key: MetaKey<V>, value: V) = Unit
 
-    override fun <V : Any> contains(key: MetaKey<V>) = false
+    override fun <V : Any> contains(key: MetaKey<V>): Boolean = false
 
     override fun <T : Any> get(pointer: Pointer<T>): Optional<T> = Optional.empty()
 
@@ -39,7 +39,7 @@ object EmptyMetaHolder : KryptonMetaHolder() {
 
     override fun <T : Any> supports(pointer: Pointer<T>): Boolean = false
 
-    override fun copy() = EmptyMetaHolder
+    override fun copy(): EmptyMetaHolder = EmptyMetaHolder
 
     override fun toString() = "EmptyMetaHolder"
 }

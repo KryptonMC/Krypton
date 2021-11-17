@@ -44,17 +44,21 @@ object KryptonItemManager : ItemManager {
         register(ItemTypes.COOKED_BEEF, FoodHandler)
     }
 
-    override fun handler(key: String) = handlers[key]
+    override fun handler(key: String): ItemHandler? = handlers[key]
 
-    override fun handler(key: Key) = handler(key.asString())
+    override fun handler(key: Key): ItemHandler? = handler(key.asString())
 
-    override fun handler(type: ItemType) = handler(type.key().asString())
+    override fun handler(type: ItemType): ItemHandler? = handler(type.key().asString())
 
     override fun register(key: String, handler: ItemHandler) {
         handlers[key] = handler
     }
 
-    override fun register(key: Key, handler: ItemHandler) = register(key.asString(), handler)
+    override fun register(key: Key, handler: ItemHandler) {
+        register(key.asString(), handler)
+    }
 
-    override fun register(type: ItemType, handler: ItemHandler) = register(type.key().asString(), handler)
+    override fun register(type: ItemType, handler: ItemHandler) {
+        register(type.key().asString(), handler)
+    }
 }

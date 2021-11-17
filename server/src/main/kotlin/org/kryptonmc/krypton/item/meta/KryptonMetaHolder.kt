@@ -28,16 +28,22 @@ import java.util.Optional
 
 open class KryptonMetaHolder(var nbt: MutableCompoundTag = MutableCompoundTag()) : MetaHolder {
 
-    override fun <V : Any> get(key: MetaKey<V>): V? = (key as? KryptonMetaKey<V>)?.reader?.invoke(nbt)
+    override fun <V : Any> get(key: MetaKey<V>): V? {
+        if (key !is KryptonMetaKey<V>) return null
+        return key.reader(nbt)
+    }
 
     override fun <V : Any> set(key: MetaKey<V>, value: V) {
         if (key !is KryptonMetaKey<V>) return
         key.writer.invoke(nbt, value)
     }
 
-    override fun <V : Any> contains(key: MetaKey<V>) = (key as? KryptonMetaKey<V>)?.predicate?.invoke(nbt) ?: false
+    override fun <V : Any> contains(key: MetaKey<V>): Boolean {
+        if (key !is KryptonMetaKey<V>) return false
+        return key.predicate(nbt)
+    }
 
-    override fun copy() = KryptonMetaHolder(nbt.copy())
+    override fun copy(): KryptonMetaHolder = KryptonMetaHolder(nbt.copy())
 
     override fun <T : Any> get(pointer: Pointer<T>): Optional<T> {
         if (pointer !is MetaKey<T>) return Optional.empty()

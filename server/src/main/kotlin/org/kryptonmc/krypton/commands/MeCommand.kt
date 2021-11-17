@@ -35,7 +35,7 @@ object MeCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("me")
-            .permission("krypton.command.list", 1)
+            .permission("krypton.command.me", 1)
             .then(argument<Sender, String>("action", string())
                 .executes {
                     it.source.server.sendMessage(translatable(

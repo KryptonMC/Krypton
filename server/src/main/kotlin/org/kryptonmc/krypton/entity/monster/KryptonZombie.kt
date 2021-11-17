@@ -43,7 +43,7 @@ class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOM
         }
     }
 
-    override fun save() = super.save().apply {
+    override fun save(): CompoundTag.Builder = super.save().apply {
         boolean("IsBaby", isBaby)
         int("DrownedConversionTime", if (isConverting) conversionTime else -1)
     }
@@ -58,7 +58,7 @@ class KryptonZombie(world: KryptonWorld) : KryptonMonster(world, EntityTypes.ZOM
 
     companion object {
 
-        private val ATTRIBUTES = KryptonMonster.attributes()
+        private val ATTRIBUTES = attributes()
             .add(AttributeTypes.FOLLOW_RANGE, 35.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.23)
             .add(AttributeTypes.ATTACK_DAMAGE, 3.0)

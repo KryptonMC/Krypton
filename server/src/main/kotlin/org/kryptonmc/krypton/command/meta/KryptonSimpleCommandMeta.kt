@@ -27,7 +27,7 @@ data class KryptonSimpleCommandMeta(
     override val permission: String?
 ) : SimpleCommandMeta {
 
-    override fun toBuilder() = Builder(this)
+    override fun toBuilder(): SimpleCommandMeta.Builder = Builder(this)
 
     class Builder(name: String) : KryptonCommandMeta.AbstractBuilder<Builder>(name), SimpleCommandMeta.Builder {
 
@@ -38,8 +38,8 @@ data class KryptonSimpleCommandMeta(
             permission = meta.permission
         }
 
-        override fun permission(permission: String?) = apply { this.permission = permission }
+        override fun permission(permission: String?): SimpleCommandMeta.Builder = apply { this.permission = permission }
 
-        override fun build() = KryptonSimpleCommandMeta(name, aliases, permission)
+        override fun build(): SimpleCommandMeta = KryptonSimpleCommandMeta(name, aliases, permission)
     }
 }

@@ -32,5 +32,5 @@ object TridentHandler : KryptonItemHandler {
         world: World,
         block: Block,
         position: Vector3i
-    ) = player.gameMode !== GameModes.CREATIVE
+    ): Boolean = player.gameMode !== GameModes.CREATIVE
 }

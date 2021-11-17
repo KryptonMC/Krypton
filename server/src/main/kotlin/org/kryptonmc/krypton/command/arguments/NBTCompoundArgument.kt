@@ -27,7 +27,7 @@ object NBTCompoundArgument : ArgumentType<CompoundTag> {
 
     private val EXAMPLES = listOf("{}", "{foo=bar}")
 
-    override fun parse(reader: StringReader) = SNBTParser(reader).readCompound()
+    override fun parse(reader: StringReader): CompoundTag = SNBTParser(reader).readCompound()
 
-    override fun getExamples() = EXAMPLES
+    override fun getExamples(): Collection<String> = EXAMPLES
 }

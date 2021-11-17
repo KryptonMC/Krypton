@@ -52,9 +52,9 @@ class AttributeSupplier(attributes: Map<AttributeType, KryptonAttribute>) {
         private val attributes = mutableMapOf<AttributeType, KryptonAttribute>()
         private var frozen = false
 
-        fun add(type: AttributeType) = apply { create(type) }
+        fun add(type: AttributeType): Builder = apply { create(type) }
 
-        fun add(type: AttributeType, base: Double) = apply { create(type).baseValue = base }
+        fun add(type: AttributeType, base: Double): Builder = apply { create(type).baseValue = base }
 
         fun build(): AttributeSupplier {
             frozen = true

@@ -117,7 +117,7 @@ abstract class KryptonLivingEntity(
         }
     }
 
-    override fun save() = super.save().apply {
+    override fun save(): CompoundTag.Builder = super.save().apply {
         float("AbsorptionAmount", absorption)
         put("Attributes", attributes.save())
         put("Brain", brain.save())

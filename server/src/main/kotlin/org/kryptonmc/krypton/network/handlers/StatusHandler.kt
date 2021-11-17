@@ -51,5 +51,7 @@ class StatusHandler(
         session.send(PacketOutStatusResponse(server.playerManager.status))
     }
 
-    private fun handlePing(packet: PacketInPing) = session.send(PacketOutPong(packet.payload))
+    private fun handlePing(packet: PacketInPing) {
+        session.send(PacketOutPong(packet.payload))
+    }
 }

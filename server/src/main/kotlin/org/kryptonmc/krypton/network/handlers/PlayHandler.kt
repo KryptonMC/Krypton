@@ -247,7 +247,7 @@ class PlayHandler(
     }
 
     private fun handlePlayerDigging(packet: PacketInPlayerDigging) {
-        when(packet.status) {
+        when (packet.status) {
             PacketInPlayerDigging.Status.STARTED -> {
                 if (player.gameMode !== GameModes.CREATIVE) return
                 val chunkX = packet.location.x() shr 4
@@ -266,6 +266,7 @@ class PlayHandler(
                 if (handler !is KryptonItemTimedHandler) return
                 handler.finishUse(player, player.hand)
             }
+            else -> Unit
         }
     }
 

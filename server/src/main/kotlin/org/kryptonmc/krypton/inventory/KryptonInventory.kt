@@ -45,9 +45,9 @@ abstract class KryptonInventory(
         return stateId
     }
 
-    override fun get(index: Int) = items[index]
+    override fun get(index: Int): KryptonItemStack = items[index]
 
-    override fun contains(item: ItemStack) = item in items
+    override fun contains(item: ItemStack): Boolean = items.contains(item)
 
     override fun add(item: ItemStack) {
         if (item !is KryptonItemStack) return
@@ -78,7 +78,9 @@ abstract class KryptonInventory(
         }
     }
 
-    override fun clear() = items.forEachIndexed { index, _ -> items[index] = EmptyItemStack }
+    override fun clear() {
+        items.forEachIndexed { index, _ -> items[index] = EmptyItemStack }
+    }
 
-    override fun iterator() = items.iterator()
+    override fun iterator(): Iterator<KryptonItemStack> = items.iterator()
 }

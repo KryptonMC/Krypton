@@ -116,5 +116,4 @@ public interface PlayerInventory : Inventory {
      * @param item the item to set
      */
     public operator fun set(index: Int, item: ItemStack)
-
 }

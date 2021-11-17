@@ -66,7 +66,9 @@ abstract class KryptonAgeable(
         if (age == 0) age = forcedAge
     }
 
-    override fun age(amount: Int) = age(amount, false)
+    override fun age(amount: Int) {
+        age(amount, false)
+    }
 
     override fun load(tag: CompoundTag) {
         super.load(tag)

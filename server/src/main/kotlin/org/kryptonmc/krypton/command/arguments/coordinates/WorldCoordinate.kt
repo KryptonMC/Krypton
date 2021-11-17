@@ -26,10 +26,14 @@ data class WorldCoordinate(
     val isRelative: Boolean
 ) {
 
-    operator fun get(relativeTo: Double) = if (isRelative) value + relativeTo else value
+    operator fun get(relativeTo: Double): Double {
+        if (isRelative) return value + relativeTo
+        return value
+    }
 
     companion object {
 
+        @JvmStatic
         fun parse(reader: StringReader, correctCenter: Boolean): WorldCoordinate {
             // Got a caret (local coordinate) when we expected to get relative coordinates
             if (reader.canRead() && reader.peek() == '^') {

@@ -19,11 +19,14 @@
 package org.kryptonmc.krypton.command.arguments.coordinates
 
 @JvmRecord
-data class TextCoordinates private constructor(val x: String, val y: String, val z: String) {
+data class TextCoordinates(val x: String, val y: String, val z: String) {
 
     companion object {
 
+        @JvmField
         val CENTER_LOCAL = TextCoordinates("^", "^", "^")
+
+        @JvmField
         val CENTER_GLOBAL = TextCoordinates("~", "~", "~")
     }
 }

@@ -18,24 +18,8 @@
  */
 package org.kryptonmc.krypton.item
 
-import net.kyori.adventure.inventory.Book
-import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.item.ItemHandler
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.item.handler.DummyItemHandler
-import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
-import org.kryptonmc.nbt.MutableListTag
-import org.kryptonmc.nbt.StringTag
-import org.kryptonmc.nbt.mutableCompound
 
 fun ItemType.handler(): ItemHandler = KryptonItemManager.handler(key().asString()) ?: DummyItemHandler
-
-fun Book.toItemStack(): KryptonItemStack {
-    val tag = mutableCompound {
-        putString("title", title().toJsonString())
-        putString("author", author().toJsonString())
-        put("pages", MutableListTag(pages().mapTo(mutableListOf()) { StringTag.of(it.toJsonString()) }, StringTag.ID))
-    }
-    return KryptonItemStack(ItemTypes.WRITTEN_BOOK, 1, KryptonMetaHolder(tag))
-}

@@ -403,7 +403,7 @@ abstract class KryptonEntity(
     final override var isSwimming: Boolean
         get() = getSharedFlag(4)
         set(value) = setSharedFlag(4, value)
-    final override var isInvisible: Boolean
+    override var isInvisible: Boolean
         get() = getSharedFlag(5)
         set(value) = setSharedFlag(5, value)
     final override var isGlowing: Boolean

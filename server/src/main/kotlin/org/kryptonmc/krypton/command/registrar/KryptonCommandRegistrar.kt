@@ -30,15 +30,15 @@ import kotlin.concurrent.withLock
 
 abstract class KryptonCommandRegistrar<C : Command, M : CommandMeta>(private val lock: Lock) : CommandRegistrar<C, M> {
 
-    protected fun register(root: RootCommandNode<Sender>, node: LiteralCommandNode<Sender>) = lock.withLock {
-        root.removeChildByName(node.name)
-        root.addChild(node)
+    protected fun register(root: RootCommandNode<Sender>, node: LiteralCommandNode<Sender>) {
+        lock.withLock {
+            root.removeChildByName(node.name)
+            root.addChild(node)
+        }
     }
 
     // This shallow copies the node to get around https://github.com/Mojang/brigadier/issues/46
-    protected fun register(
-        root: RootCommandNode<Sender>,
-        node: LiteralCommandNode<Sender>,
-        alias: String
-    ) = register(root, node.copy(alias))
+    protected fun register(root: RootCommandNode<Sender>, node: LiteralCommandNode<Sender>, alias: String) {
+        register(root, node.copy(alias))
+    }
 }

@@ -24,7 +24,8 @@ import com.mojang.brigadier.context.CommandContext
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.argument.argument
 
-class EntityArgument private constructor(
+@JvmRecord
+data class EntityArgument(
     val onlyPlayers: Boolean,
     val singleTarget: Boolean,
 ) : ArgumentType<EntityQuery> {
@@ -41,7 +42,7 @@ class EntityArgument private constructor(
         return EntityQuery(emptyList(), EntityQuery.Selector.UNKNOWN)
     }
 
-    override fun getExamples() = EXAMPLES
+    override fun getExamples(): Collection<String> = EXAMPLES
 
     @JvmRecord
     data class EntityArg(val name: String, val value: Any, val exclude: Boolean)
@@ -60,23 +61,27 @@ class EntityArgument private constructor(
         /**
          * @return An argument which can only accept one player
          */
-        fun player() = PLAYER
+        @JvmStatic
+        fun player(): EntityArgument = PLAYER
 
         /**
          * @return An argument which can only accept players
          */
-        fun players() = PLAYERS
+        @JvmStatic
+        fun players(): EntityArgument = PLAYERS
 
         /**
          * @return An argument which can accept one entity
          */
-        fun entity() = ENTITY
+        @JvmStatic
+        fun entity(): EntityArgument = ENTITY
 
         /**
          * @return An argument which can accept entities
          */
-        fun entities() = ENTITIES
+        @JvmStatic
+        fun entities(): EntityArgument = ENTITIES
     }
 }
 
-fun CommandContext<Sender>.entityArgument(name: String) = argument<EntityQuery>(name)
+fun CommandContext<Sender>.entityArgument(name: String): EntityQuery = argument<EntityQuery>(name)

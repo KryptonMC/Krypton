@@ -20,16 +20,16 @@ package org.kryptonmc.krypton.command.arguments.entities
 
 object EntityArguments {
 
-    val SELECTOR_ALL = listOf("@p", "@r", "@a", "@e", "@s")
-    val SELECTOR_PLAYERS = listOf("@p", "@r", "@a", "@s")
-    val SELECTOR_PLAYERS_SINGLE = listOf("@p", "@r", "@s")
-    val ARGUMENTS = listOf(
+    @JvmField val SELECTOR_ALL = listOf("@p", "@r", "@a", "@e", "@s")
+    @JvmField val SELECTOR_PLAYERS = listOf("@p", "@r", "@a", "@s")
+    @JvmField val SELECTOR_PLAYERS_SINGLE = listOf("@p", "@r", "@s")
+    @JvmField val ARGUMENTS = listOf(
         "x", "y", "z",
         "distance", "dx", "dy", "dz",
         "scores", "tag", "team", "limit", "sort", "level", "gamemode", "name",
         "x_rotation", "y_rotation", "type", "nbt", "advancements", "predicate"
     )
-    val EXCLUDE_ARGUMENTS = listOf("team", "tag", "gamemode", "name", "predicate")
+    @JvmField val EXCLUDE_ARGUMENTS = listOf("team", "tag", "gamemode", "name", "predicate")
 
     enum class Sorter {
 
@@ -58,7 +58,8 @@ object EntityArguments {
             /**
              * Get the sort candidate from the name
              */
-            fun fromName(name: String) = values().firstOrNull { it.name == name.uppercase() }
+            @JvmStatic
+            fun fromName(name: String): Sorter? = values().firstOrNull { it.name == name.uppercase() }
         }
     }
 }

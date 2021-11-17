@@ -37,11 +37,13 @@ object SuggestionProviders {
     private val DEFAULT_NAME = key("ask_server")
 
     @JvmField
-    val SUMMONABLE_ENTITIES = register(key("summonable_entities")) { _, builder ->
-        InternalRegistries.ENTITY_TYPE.values.filter { it.isSummonable }.suggestKey(builder, { it.key() }) {
-            val key = InternalRegistries.ENTITY_TYPE[it]
-            translatable("entity.${key.namespace()}.${key.value().replace("/", ".")}").toMessage()
-        }
+    val SUMMONABLE_ENTITIES: SuggestionProvider<Sender> = register(key("summonable_entities")) { _, builder ->
+        InternalRegistries.ENTITY_TYPE.values
+            .filter { it.isSummonable }
+            .suggestKey(builder, EntityType<*>::key) {
+                val key = InternalRegistries.ENTITY_TYPE[it]
+                translatable("entity.${key.namespace()}.${key.value().replace("/", ".")}").toMessage()
+            }
     }
 
     @JvmStatic
@@ -54,7 +56,10 @@ object SuggestionProviders {
     }
 
     @JvmStatic
-    fun name(provider: SuggestionProvider<Sender>) = if (provider is Wrapper) provider.name else DEFAULT_NAME
+    fun name(provider: SuggestionProvider<Sender>): Key {
+        if (provider is Wrapper) return provider.name
+        return DEFAULT_NAME
+    }
 
     @JvmRecord
     private data class Wrapper(

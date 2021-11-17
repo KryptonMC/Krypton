@@ -25,10 +25,10 @@ import kotlin.math.sqrt
 
 object Maths {
 
-    fun nextInt(random: Random, lower: Int, upper: Int) = if (lower >= upper) {
-        lower
-    } else {
-        random.nextInt(upper - lower + 1) + lower
+    @JvmStatic
+    fun nextInt(random: Random, lower: Int, upper: Int): Int {
+        if (lower >= upper) return lower
+        return random.nextInt(upper - lower + 1) + lower
     }
 
     private fun biLerp(
