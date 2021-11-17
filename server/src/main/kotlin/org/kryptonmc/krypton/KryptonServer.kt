@@ -56,8 +56,6 @@ import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.net.InetSocketAddress
 import java.nio.file.Path
-import java.security.AccessController
-import java.security.PrivilegedAction
 import java.util.Locale
 import java.util.UUID
 import kotlin.io.path.exists
@@ -325,9 +323,7 @@ class KryptonServer(
 
             // Manually shut down Log4J 2 here so it doesn't shut down before we've finished logging
             LogManager.shutdown()
-            if (explicitExit) AccessController.doPrivileged(PrivilegedAction {
-                exitProcess(0)
-            })
+            if (explicitExit) exitProcess(0)
         }
 
         if (explicitExit) {

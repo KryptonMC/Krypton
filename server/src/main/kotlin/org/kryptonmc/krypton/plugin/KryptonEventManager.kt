@@ -34,13 +34,10 @@ import org.kryptonmc.api.event.EventHandler
 import org.kryptonmc.api.event.EventManager
 import org.kryptonmc.api.event.Listener
 import org.kryptonmc.api.event.ListenerPriority
-import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.krypton.util.daemon
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.threadFactory
 import java.lang.reflect.Method
-import java.security.AccessController
-import java.security.PrivilegedAction
 import java.util.IdentityHashMap
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutorService
@@ -64,7 +61,7 @@ object KryptonEventManager : EventManager {
     )
 
     init {
-        val loader = AccessController.doPrivileged(PrivilegedAction { PluginClassLoader() }).apply { addToLoaders() }
+        val loader = PluginClassLoader().addToLoaders()
 
         bus = object : SimpleEventBus<Any>(Any::class.java) {
             // No cancellable or generic events (from event) in Krypton, so we don't need to perform those checks
