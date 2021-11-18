@@ -405,6 +405,12 @@ abstract class KryptonEntity(
         world.playerManager.sendToAll(PacketOutSetPassengers(this))
     }
 
+    override fun ejectVehicle() {
+        val tempVehicle = vehicle as KryptonEntity
+        vehicle = null
+        tempVehicle.removePassenger(this)
+    }
+
     final override var isOnFire: Boolean
         get() = getSharedFlag(0)
         set(value) = setSharedFlag(0, value)
