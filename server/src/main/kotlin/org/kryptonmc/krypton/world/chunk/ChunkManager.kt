@@ -24,7 +24,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArraySet
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.daemon
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.threadFactory
@@ -136,7 +135,7 @@ class ChunkManager(private val world: KryptonWorld) {
         for (i in sectionList.indices) {
             val sectionData = sectionList.getCompound(i)
             val y = sectionData.getByte("Y").toInt()
-            if (y == -1 || y == 16) continue
+            val index = world.sectionIndexFromY(y)
             if (sectionData.contains("block_states", CompoundTag.ID) && sectionData.contains("biomes", CompoundTag.ID)) {
                 val section = ChunkSection(
                     y,
@@ -146,7 +145,7 @@ class ChunkManager(private val world: KryptonWorld) {
                 section.blocks.load(sectionData.getCompound("block_states"), CompoundTag.ID)
                 section.biomes.load(sectionData.getCompound("biomes"), StringTag.ID)
                 section.recount()
-                if (!section.isEmpty()) sections[world.sectionIndexFromY(y)] = section
+                sections[index] = section
             }
         }
 

@@ -64,7 +64,7 @@ class KryptonChunk(
         val sectionIndex = sectionIndex(y)
         if (sectionIndex in sections.indices) {
             val section = sections[sectionIndex]
-            if (section != null && !section.isEmpty()) return section[x and 15, y and 15, z and 15]
+            if (section != null && !section.hasOnlyAir()) return section[x and 15, y and 15, z and 15]
         }
         return Blocks.AIR
     }
@@ -75,7 +75,7 @@ class KryptonChunk(
         val sectionIndex = sectionIndex(y)
         if (sectionIndex in sections.indices) {
             val section = sections[sectionIndex]
-            if (section != null && !section.isEmpty()) return section[x and 15, y and 15, z and 15].asFluid()
+            if (section != null && !section.hasOnlyAir()) return section[x and 15, y and 15, z and 15].asFluid()
         }
         return Fluids.EMPTY
     }

@@ -19,7 +19,10 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
+import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeVarInt
@@ -28,6 +31,7 @@ import org.kryptonmc.krypton.world.block.toBlock
 import org.kryptonmc.krypton.world.block.toNBT
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.Tag
 import org.kryptonmc.nbt.list
 import java.util.function.ToIntFunction
@@ -81,8 +85,19 @@ sealed class MapPalette<T>(
         }
     }
 
-    class Blocks(
-        bits: Int,
-        resizer: PaletteResizer<Block>
-    ) : MapPalette<Block>(bits, resizer, { BlockLoader.STATES.idOf(it) }, Block::toNBT, { (it as CompoundTag).toBlock() })
+    class Blocks(bits: Int, resizer: PaletteResizer<Block>) : MapPalette<Block>(
+        bits,
+        resizer,
+        { BlockLoader.STATES.idOf(it) },
+        Block::toNBT,
+        { (it as CompoundTag).toBlock() }
+    )
+
+    class Biomes(bits: Int, resizer: PaletteResizer<Biome>) : MapPalette<Biome>(
+        bits,
+        resizer,
+        { Registries.BIOME.idOf(it) },
+        { StringTag.of(it.key().asString()) },
+        { Registries.BIOME[Key.key((it as StringTag).value)]!! }
+    )
 }

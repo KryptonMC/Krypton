@@ -74,10 +74,12 @@ sealed class ArrayPalette<T>(
 
     override fun load(data: ListTag) {
         for (i in data.indices) {
-            values[i] = deserializer(data.getCompound(i))
+            values[i] = deserializer(data[i])
         }
         size = data.size
     }
+
+    override fun toString(): String = "ArrayPalette(bits=$bits, values=${values.contentToString()}, size=$size)"
 
     class Blocks(
         bits: Int,

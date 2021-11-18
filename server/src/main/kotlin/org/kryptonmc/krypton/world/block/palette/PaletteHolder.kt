@@ -25,12 +25,12 @@ import org.kryptonmc.krypton.util.ZeroBitStorage
 import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
+import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.ListTag
 
 class PaletteHolder<T>(
-    private var palette: Palette<T>,
-    private val type: PaletteType<T>
+    private val type: PaletteType<T>,
+    private var palette: Palette<T> = type.globalPalette
 ) : PaletteResizer<T> {
 
     private lateinit var storage: BitStorage
@@ -44,10 +44,8 @@ class PaletteHolder<T>(
                 type.mapRange != null && field in type.mapRange -> type.mapPalette(this, field)
                 else -> type.globalPalette
             }
-            storage = if (field == 0) ZeroBitStorage(1 shl 0) else SimpleBitStorage(field, 1 shl (field * 3))
+            storage = if (field == 0) ZeroBitStorage(type.size) else SimpleBitStorage(field, type.size)
         }
-    val size: Int
-        get() = 1 shl (bits * 3)
     val serializedSize: Int
         get() = 1 + palette.serializedSize + storage.size.varIntBytes + storage.data.size * Long.SIZE_BYTES
 
@@ -74,40 +72,38 @@ class PaletteHolder<T>(
 
     @Synchronized
     fun load(data: CompoundTag, paletteType: Int) {
-        val size = size
-        val bits = calculateSerializationBits(size)
+        val paletteData = data.getList("palette", paletteType)
+        val size = type.size
+        val bits = calculateSerializationBits(paletteData.size)
         if (bits != this.bits) this.bits = bits
-        palette.load(data.getList("palette", paletteType))
+        palette.load(paletteData)
         if (bits == 0) {
             storage = ZeroBitStorage(size)
             return
         }
         val states = data.getLongArray("data")
-        val storageBits = states.size * Long.SIZE_BITS / size
-        when {
-            palette === type.globalPalette -> {
-                val newPalette = type.mapPalette(dummyResizer(), bits).apply { load(data.getList("palette", paletteType)) }
-                val bitStorage = SimpleBitStorage(bits, size, states)
-                for (i in 0 until size) storage[i] = type.globalPalette[newPalette[bitStorage[i]]!!]
+        if (palette === type.globalPalette) {
+            val newPalette = type.mapPalette(dummyResizer(), bits).apply { load(data.getList("palette", paletteType)) }
+            val bitStorage = SimpleBitStorage(bits, size, states)
+            val ids = IntArray(bitStorage.size) { type.registry.idOf(newPalette[bitStorage[it]]!!) }
+            storage = SimpleBitStorage(bits, size).apply {
+                var index = -1
+                ids.forEach { set(index++, it) }
             }
-            storageBits == this.bits -> System.arraycopy(states, 0, storage.data, 0, states.size)
-            else -> {
-                val bitStorage = SimpleBitStorage(storageBits, size, states)
-                for (i in 0 until size) storage[i] = bitStorage[i]
-            }
+            return
         }
+        storage = SimpleBitStorage(bits, size, states)
     }
 
     @Synchronized
     @Suppress("UNCHECKED_CAST")
     fun save(builder: CompoundTag.Builder) {
-        val size = size
         val newPalette = type.mapPalette(dummyResizer(), bits)
         var default = type.defaultValue
         var defaultId = newPalette[type.defaultValue]
-        val states = IntArray(size)
+        val states = IntArray(type.size)
 
-        for (i in 0 until size) {
+        for (i in 0 until type.size) {
             val value = get(i)
             if (value !== default) {
                 default = value
@@ -118,13 +114,21 @@ class PaletteHolder<T>(
 
         val paletteData = newPalette.save()
         builder.put("palette", paletteData)
-        val bits = calculateSerializationBits(size)
-        val storage = SimpleBitStorage(bits, size)
-        for (i in states.indices) storage[i] = states[i]
-        builder.longArray("data", storage.data)
+        val bits = calculateSerializationBits(paletteData.size)
+        val data = if (bits == 0) {
+            LongArray(0)
+        } else {
+            val storage = SimpleBitStorage(bits, type.size)
+            for (i in states.indices) {
+                storage[i] = states[i]
+            }
+            storage.data
+        }
+        builder.longArray("data", data)
     }
 
-    fun forEachLocation(consumer: (T, Int) -> Unit) = storage.forEach { location, data ->
+    fun forEachLocation(consumer: PaletteConsumer<T>) = storage.forEach { location, data ->
+        if (palette[data] == null) return@forEach
         consumer(palette[data]!!, location)
     }
 
@@ -143,6 +147,11 @@ class PaletteHolder<T>(
     private fun calculateSerializationBits(size: Int): Int {
         if (palette === type.globalPalette) return size.ceillog2()
         return bits
+    }
+
+    fun interface PaletteConsumer<T> {
+
+        operator fun invoke(element: T, location: Int)
     }
 
     companion object {

@@ -33,8 +33,12 @@ data class PaletteType<T>(
     val arrayPalette: PaletteConstructor<ArrayPalette<T>, T>,
     val mapPalette: PaletteConstructor<MapPalette<T>, T>,
     val globalPalette: GlobalPalette<T>,
-    val defaultValue: T
+    val defaultValue: T,
+    val sizeBits: Int
 ) {
+
+    val size: Int
+        get() = 1 shl (sizeBits * 3)
 
     companion object {
 
@@ -46,7 +50,8 @@ data class PaletteType<T>(
             { resizer, bits -> ArrayPalette.Blocks(bits, resizer) },
             { resizer, bits -> MapPalette.Blocks(bits, resizer) },
             GlobalPalette.Blocks,
-            Blocks.AIR
+            Blocks.AIR,
+            4
         )
         val BIOMES = PaletteType(
             InternalRegistries.BIOME,
@@ -54,9 +59,10 @@ data class PaletteType<T>(
             null,
             { SinglePalette.Biomes(it) },
             { resizer, bits -> ArrayPalette.Biomes(bits, resizer) },
-            { _, _ -> error("Biomes do not support map palettes!") },
+            { resizer, bits -> MapPalette.Biomes(bits, resizer) },
             GlobalPalette.Biomes,
-            Biomes.PLAINS
+            Biomes.PLAINS,
+            2
         )
     }
 }

@@ -36,7 +36,7 @@ interface ChunkAccessor : BlockAccessor, NoiseBiomeSource {
     val heightmaps: Map<Heightmap.Type, Heightmap>
 
     val highestSection: ChunkSection?
-        get() = sections.lastOrNull { it != null && !it.isEmpty() }
+        get() = sections.lastOrNull { it != null && !it.hasOnlyAir() }
     val highestSectionY: Int
         get() = highestSection?.bottomBlockY ?: minimumBuildHeight
 

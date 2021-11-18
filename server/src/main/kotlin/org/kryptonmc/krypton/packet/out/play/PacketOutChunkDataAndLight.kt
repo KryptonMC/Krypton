@@ -61,7 +61,7 @@ data class PacketOutChunkDataAndLight(
         @JvmStatic
         private fun KryptonChunk.extract(buf: ByteBuf) {
             for (i in sections.indices) {
-                sections[i]!!.write(buf)
+                sections[i]?.write(buf)
             }
         }
 
@@ -69,7 +69,8 @@ data class PacketOutChunkDataAndLight(
         private fun KryptonChunk.calculateSize(): Int {
             var size = 0
             for (i in sections.indices) {
-                size += sections[i]!!.serializedSize
+                val section = sections[i] ?: continue
+                size += section.serializedSize
             }
             return size
         }

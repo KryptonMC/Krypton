@@ -22,7 +22,6 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
-import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 import org.kryptonmc.krypton.world.block.palette.PaletteType
 
@@ -37,8 +36,8 @@ class ChunkSection(
 ) : NoiseBiomeSource {
 
     val bottomBlockY = y shl 4
-    val blocks = PaletteHolder(GlobalPalette.Blocks, PaletteType.BLOCKS)
-    val biomes = PaletteHolder(GlobalPalette.Biomes, PaletteType.BIOMES)
+    val blocks = PaletteHolder(PaletteType.BLOCKS)
+    val biomes = PaletteHolder(PaletteType.BIOMES)
     private var nonEmptyBlockCount = 0
     val serializedSize: Int
         get() = 2 + blocks.serializedSize + biomes.serializedSize
@@ -52,7 +51,7 @@ class ChunkSection(
         return oldBlock
     }
 
-    fun isEmpty(): Boolean = nonEmptyBlockCount == 0
+    fun hasOnlyAir(): Boolean = nonEmptyBlockCount == 0
 
     fun recount() {
         nonEmptyBlockCount = 0
