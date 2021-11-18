@@ -384,6 +384,8 @@ abstract class KryptonEntity(
     override fun remove() {
         if (isRemoved) return
         isRemoved = true
+        ejectVehicle()
+        ejectPassengers()
         world.removeEntity(this)
     }
 
@@ -399,13 +401,19 @@ abstract class KryptonEntity(
     }
 
     override fun removePassenger(entity: Entity) {
+        if (entity.vehicle == this) return
         if (!passengers.contains(entity)) return
         entity.vehicle = null
         passengers.remove(entity)
         world.playerManager.sendToAll(PacketOutSetPassengers(this))
     }
 
+    override fun ejectPassengers() {
+        passengers.forEach { it.ejectVehicle() }
+    }
+
     override fun ejectVehicle() {
+        // TODO: Vehicle could be null? IDEA doesn't seem to care...
         val tempVehicle = vehicle as KryptonEntity
         vehicle = null
         tempVehicle.removePassenger(this)

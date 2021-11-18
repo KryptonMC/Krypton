@@ -333,6 +333,18 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public fun removePassenger(entity: Entity)
 
     /**
+     * Removes all passengers from this entity
+     *
+     */
+    public fun ejectPassengers()
+
+    /**
+     * Removes this entity from it's vehicle.
+     *
+     */
+    public fun ejectVehicle()
+
+    /**
      * Removes this entity from the world it is currently in.
      *
      * This removal may happen immediately, or be queued up and happen in the
