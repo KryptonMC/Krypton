@@ -205,6 +205,17 @@ class KryptonPlayer(
     override var isVanished = false
     private val hiddenPlayers = mutableSetOf<UUID>()
 
+    override var isOperator: Boolean
+        get() = server.playerManager.ops.contains(profile)
+        set(value) {
+            if (value == isOperator) return
+            if (value) {
+                server.playerManager.addToOperators(profile)
+            } else {
+                server.playerManager.removeFromOperators(profile)
+            }
+        }
+
     private var respawnPosition: Vector3i? = null
     private var respawnForced = false
     private var respawnAngle = 0F

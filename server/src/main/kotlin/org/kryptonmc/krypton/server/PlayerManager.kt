@@ -295,12 +295,14 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     fun addToOperators(profile: KryptonGameProfile) {
         ops.add(OperatorEntry(profile, server.config.server.opPermissionLevel, true))
-        if (server.player(profile.uuid) != null) sendCommands(server.player(profile.uuid)!!)
+        val player = server.player(profile.uuid)
+        if (player != null) sendCommands(player)
     }
 
     fun removeFromOperators(profile: KryptonGameProfile) {
         ops.remove(profile)
-        if (server.player(profile.uuid) != null) sendCommands(server.player(profile.uuid)!!)
+        val player = server.player(profile.uuid)
+        if (player != null) sendCommands(player)
     }
 
     fun getStatistics(player: KryptonPlayer): KryptonStatisticsTracker {

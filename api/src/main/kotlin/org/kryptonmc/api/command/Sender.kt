@@ -11,7 +11,6 @@ package org.kryptonmc.api.command
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.identity.Identified
 import net.kyori.adventure.text.Component
-import org.jetbrains.annotations.Range
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.permission.Subject
 
@@ -30,12 +29,9 @@ public interface Sender : Audience, Subject, Identified {
     public val name: Component
 
     /**
-     * The sender's permission level.
-     *
-     * This should be representative of an operator-like permission system.
+     * If this sender is a server operator.
      */
-    @get:JvmName("permissionLevel")
-    public val permissionLevel: @Range(from = 0L, to = 4L) Int
+    public var isOperator: Boolean
 
     /**
      * The server that the sender is on.

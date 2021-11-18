@@ -37,6 +37,7 @@ import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.api.util.BoundingBox
+import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -74,7 +75,7 @@ import kotlin.random.Random
 abstract class KryptonEntity(
     override var world: KryptonWorld,
     override val type: EntityType<out Entity>
-) : Entity {
+) : Entity, KryptonSender {
 
     val id = NEXT_ENTITY_ID.incrementAndGet()
     override var uuid = Random.nextUUID()
@@ -106,6 +107,9 @@ abstract class KryptonEntity(
 
     final override val server = world.server
     override val permissionLevel = 0
+    override var isOperator: Boolean
+        get() = false
+        set(_) = Unit
 
     override val team: Team?
         get() = world.scoreboard.memberTeam(teamRepresentation)

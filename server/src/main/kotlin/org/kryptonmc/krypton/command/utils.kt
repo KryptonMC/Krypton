@@ -48,7 +48,7 @@ val CommandContext<Sender>.splitArguments: Array<String>
     }
 
 fun LiteralArgumentBuilder<Sender>.permission(permission: String, level: Int): LiteralArgumentBuilder<Sender> =
-    requires { it.hasPermission(permission) || it.permissionLevel >= level }
+    requires { it.hasPermission(permission) || (it is KryptonSender && it.permissionLevel >= level) }
 
 fun String.normalize(trim: Boolean): String {
     val command = if (trim) trim() else this
