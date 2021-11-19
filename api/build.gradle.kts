@@ -34,6 +34,7 @@ dependencies {
     // Miscellaneous
     api(libs.velocity.brigadier)
     api(libs.math)
+    api(libs.spark.api)
 }
 
 license {

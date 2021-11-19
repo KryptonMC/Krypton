@@ -16,6 +16,7 @@ guice = "5.0.1"
 kotlinGuice = "1.5.0"
 velocityBrigadier = "1.0.0-SNAPSHOT"
 math = "2.0.1"
+sparkApi = "0.1-SNAPSHOT"
 
 # Generation
 kotlinpoet = "1.10.2"
@@ -35,6 +36,7 @@ caffeine = "3.0.4"
 fastutil = "8.5.6"
 clikt = "3.3.0"
 bstats = "2.2.1"
+spark = "1.6-SNAPSHOT"
 
 # Test
 junit-jupiter = "5.8.1"
@@ -97,6 +99,10 @@ nbt = { group = "org.kryptonmc", name = "nbt-common-jvm", version.ref = "nbt" }
 # Events
 event = { group = "net.kyori", name = "event-method-asm", version.ref = "event" }
 asm = { group = "org.ow2.asm", name = "asm", version.ref = "asm" }
+
+# Spark
+spark-api = { group = "me.lucko", name = "spark-api", version.ref = "sparkApi" }
+spark-common = { group = "me.lucko", name = "spark-common", version.ref = "spark" }
 
 # Generation
 kotlinpoet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotlinpoet" }

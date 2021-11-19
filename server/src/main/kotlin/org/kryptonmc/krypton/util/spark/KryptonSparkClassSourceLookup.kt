@@ -16,25 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.util.spark
 
-import org.kryptonmc.api.Platform
-import java.util.Properties
+import me.lucko.spark.common.util.ClassSourceLookup
+import org.kryptonmc.krypton.plugin.KryptonPluginManager
 
-// TODO: Check on update
-object KryptonPlatform : Platform {
+object KryptonSparkClassSourceLookup : ClassSourceLookup.ByClassLoader() {
 
-    private val versions = Properties().apply { load(ClassLoader.getSystemResourceAsStream("META-INF/versions.properties")) }
-
-    override val name = "Krypton"
-    override val version: String = versions.getProperty("krypton")
-    override val isStable = false
-    override val minecraftVersion: String = versions.getProperty("minecraft")
-    val minecraftVersionPath = minecraftVersion.replace('.', '_')
-    const val isStableMinecraft = true
-    override val worldVersion = 2730
-    override val protocolVersion = 756
-    override val dataPackVersion = 7
-
-    val sparkVersion: String = versions.getProperty("spark")
+    override fun identify(loader: ClassLoader): String? {
+        KryptonPluginManager.plugins.forEach {
+            val instance = it.instance ?: return@forEach
+            if (instance.javaClass.classLoader === loader) return it.description.name.ifEmpty { it.description.id }
+        }
+        return null
+    }
 }

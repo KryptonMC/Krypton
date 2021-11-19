@@ -16,25 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.util.spark.ticking
 
-import org.kryptonmc.api.Platform
-import java.util.Properties
+import me.lucko.spark.common.tick.AbstractTickReporter
 
-// TODO: Check on update
-object KryptonPlatform : Platform {
+class KryptonSparkTickReporter : AbstractTickReporter() {
 
-    private val versions = Properties().apply { load(ClassLoader.getSystemResourceAsStream("META-INF/versions.properties")) }
+    fun endTick(duration: Long) {
+        onTick(duration.toDouble())
+    }
 
-    override val name = "Krypton"
-    override val version: String = versions.getProperty("krypton")
-    override val isStable = false
-    override val minecraftVersion: String = versions.getProperty("minecraft")
-    val minecraftVersionPath = minecraftVersion.replace('.', '_')
-    const val isStableMinecraft = true
-    override val worldVersion = 2730
-    override val protocolVersion = 756
-    override val dataPackVersion = 7
+    override fun start() = Unit
 
-    val sparkVersion: String = versions.getProperty("spark")
+    override fun close() = Unit
 }

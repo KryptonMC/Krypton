@@ -8,6 +8,7 @@
  */
 package org.kryptonmc.api
 
+import me.lucko.spark.api.Spark
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.ProfileCache
@@ -203,6 +204,15 @@ public interface Server : ForwardingAudience {
      */
     @get:JvmName("scoreboard")
     public val scoreboard: Scoreboard
+
+    /**
+     * The Spark implementation embedded in to the server.
+     *
+     * Note: The TPS and MSPT statistics provided here by Spark should be available
+     * at all times, meaning it should be safe to assume that they are non-null.
+     */
+    @get:JvmName("spark")
+    public val spark: Spark
 
     /**
      * Gets the online player with the given [uuid], or returns null if there

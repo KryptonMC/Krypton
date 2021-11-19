@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.clikt)
     implementation(libs.bstats)
     implementation(libs.adventure.serializer.configurate)
+    implementation(libs.spark.common)
 
     testImplementation(libs.bundles.junit)
     testImplementation(libs.junit.platform.runner)
@@ -86,7 +87,8 @@ tasks {
     withType<ProcessResources> {
         filter<ReplaceTokens>("tokens" to mapOf(
             "version" to project.version.toString(),
-            "minecraft" to global.versions.minecraft.get()
+            "minecraft" to global.versions.minecraft.get(),
+            "spark" to libs.versions.spark.get()
         ))
     }
 }

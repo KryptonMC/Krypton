@@ -8,6 +8,7 @@ dependencyResolutionManagement {
         jcenter() // Dokka requires this for kotlinx.html
         maven("https://oss.sonatype.org/content/groups/public/")
         maven("https://repo.kryptonmc.org/snapshots")
+        maven("https://oss.sonatype.org/content/repositories/snapshots/")
         maven("https://jitpack.io")
         mavenCentral()
     }

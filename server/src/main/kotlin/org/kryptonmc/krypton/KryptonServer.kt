@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton
 
+import me.lucko.spark.api.Spark
 import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
@@ -27,7 +28,6 @@ import org.kryptonmc.api.event.server.TickEndEvent
 import org.kryptonmc.api.event.server.TickStartEvent
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.world.rule.GameRules
-import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.config.KryptonConfig
@@ -49,6 +49,7 @@ import org.kryptonmc.krypton.util.KryptonFactoryProvider
 import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.register
+import org.kryptonmc.krypton.util.spark.KryptonSparkPlugin
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.fluid.KryptonFluidManager
@@ -107,6 +108,9 @@ class KryptonServer(
     @Volatile
     var isRunning = true
         private set
+    private val sparkPlugin = KryptonSparkPlugin(this, Path.of("plugins").resolve("spark"))
+    override val spark: Spark
+        get() = sparkPlugin.api
 
     // These help us keep track of how fast the server is running and how far
     // behind it is at any one time.
@@ -158,6 +162,8 @@ class KryptonServer(
 
         // Load plugins here because most of everything they need is available now.
         loadPlugins()
+        LOGGER.info("Loading built-in Spark...")
+        sparkPlugin.start()
 
         // Fire the event that signals the server starting. We fire it here so that plugins can listen to it as part of their lifecycle,
         // and we call it sync so plugins can finish initialising before we do.
@@ -197,10 +203,12 @@ class KryptonServer(
             }
 
             eventManager.fireAndForgetSync(TickStartEvent(tickCount))
+            sparkPlugin.tickHook.startTick()
             val tickTime = measureTimeMillis(::tick)
 
             val finishTime = System.currentTimeMillis()
             eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
+            sparkPlugin.tickReporter.endTick(tickTime)
             lastTickTime = finishTime
 
             // This logic ensures that ticking isn't delayed by the overhead from Thread.sleep, which seems to be up to 10 ms,
@@ -310,6 +318,7 @@ class KryptonServer(
             LOGGER.info("Shutting down plugins and unregistering listeners...")
             eventManager.fireAndForgetSync(ServerStopEvent)
             eventManager.shutdown()
+            sparkPlugin.stop()
 
             // Shut down scheduler
             scheduler.shutdown()
