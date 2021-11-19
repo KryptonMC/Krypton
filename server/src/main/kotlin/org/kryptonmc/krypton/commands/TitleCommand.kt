@@ -39,7 +39,7 @@ object TitleCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("title")
-            .permission("krypton.command.title", 2)
+            .permission(KryptonPermission.TITLE)
             .then(argument<Sender, EntityQuery>("targets", players())
                 .then(literal<Sender>("actionbar")
                     .then(argument<Sender, String>("message", string())

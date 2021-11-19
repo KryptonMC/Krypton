@@ -40,7 +40,7 @@ import org.kryptonmc.krypton.world.KryptonGameMode
 object GameModeCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        val command = literal<Sender>("gamemode").permission("krypton.command.gamemode", 2)
+        val command = literal<Sender>("gamemode").permission(KryptonPermission.GAME_MODE)
         for (gameMode in Registries.GAME_MODES.values) {
             command.then(literal(gameMode.key().value()))
                 .executes { gameModeArgument(it, gameMode) }

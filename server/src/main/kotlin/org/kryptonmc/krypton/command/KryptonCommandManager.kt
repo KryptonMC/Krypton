@@ -42,7 +42,6 @@ import org.kryptonmc.api.event.command.CommandSendEvent
 import org.kryptonmc.krypton.commands.BanCommand
 import org.kryptonmc.krypton.commands.BanIpCommand
 import org.kryptonmc.krypton.commands.ClearCommand
-import org.kryptonmc.krypton.commands.DeopCommand
 import org.kryptonmc.krypton.commands.DifficultyCommand
 import org.kryptonmc.krypton.commands.GameModeCommand
 import org.kryptonmc.krypton.commands.GameRuleCommand
@@ -51,7 +50,6 @@ import org.kryptonmc.krypton.commands.KickCommand
 import org.kryptonmc.krypton.commands.ListCommand
 import org.kryptonmc.krypton.commands.MeCommand
 import org.kryptonmc.krypton.commands.MessageCommand
-import org.kryptonmc.krypton.commands.OpCommand
 import org.kryptonmc.krypton.commands.PardonCommand
 import org.kryptonmc.krypton.commands.PardonIpCommand
 import org.kryptonmc.krypton.commands.RestartCommand
@@ -174,8 +172,6 @@ object KryptonCommandManager : CommandManager {
         WhitelistCommand.register(dispatcher)
         BanIpCommand.register(dispatcher)
         PardonIpCommand.register(dispatcher)
-        OpCommand.register(dispatcher)
-        DeopCommand.register(dispatcher)
         GiveCommand.register(dispatcher)
         ClearCommand.register(dispatcher)
     }

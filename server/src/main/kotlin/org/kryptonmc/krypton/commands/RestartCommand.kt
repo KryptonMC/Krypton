@@ -30,7 +30,7 @@ object RestartCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("restart")
-            .permission("krypton.command.restart", 4)
+            .permission(KryptonPermission.RESTART)
             .executes {
                 val server = it.source.server as? KryptonServer ?: return@executes 0
                 it.source.sendMessage(text("Attempting to restart Krypton..."))

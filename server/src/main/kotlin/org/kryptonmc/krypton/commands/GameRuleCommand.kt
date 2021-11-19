@@ -36,7 +36,7 @@ object GameRuleCommand : InternalCommand {
 
     @Suppress("UNCHECKED_CAST")
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        val command = literal<Sender>("gamerule").permission("krypton.command.gamerule", 2)
+        val command = literal<Sender>("gamerule").permission(KryptonPermission.GAME_RULE)
         Registries.GAMERULES.values.forEach { rule ->
             val gameRule = literal<Sender>(rule.name).executes {
                 val sender = it.source as? KryptonPlayer ?: return@executes 0

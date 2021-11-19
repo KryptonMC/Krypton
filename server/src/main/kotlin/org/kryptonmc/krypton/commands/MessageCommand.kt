@@ -37,7 +37,7 @@ object MessageCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val messageCommand = dispatcher.register(literal<Sender>("msg")
-            .permission("krypton.command.message", 1)
+            .permission(KryptonPermission.MESSAGE)
             .then(argument<Sender, EntityQuery>("player", EntityArgument.player())
                 .then(argument<Sender, String>("message", string())
                     .executes {

@@ -59,6 +59,7 @@ import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.auth.KryptonGameProfile
+import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
@@ -153,9 +154,6 @@ class KryptonPlayer(
     override val viewDistance = server.config.world.viewDistance
     override var time = 0L
 
-    override val permissionLevel: Int
-        get() = server.getPermissionLevel(profile)
-
     private var camera: KryptonEntity = this
         set(value) {
             val old = field
@@ -195,7 +193,7 @@ class KryptonPlayer(
     override val direction: Direction
         get() = Directions.ofPitch(rotation.y().toDouble())
     val canUseGameMasterBlocks: Boolean
-        get() = canInstantlyBuild && permissionLevel >= 2
+        get() = canInstantlyBuild && hasPermission(KryptonPermission.USE_GAME_MASTER_BLOCKS.node)
 
     override val dimensionType: DimensionType
         get() = world.dimensionType
@@ -204,17 +202,6 @@ class KryptonPlayer(
 
     override var isVanished = false
     private val hiddenPlayers = mutableSetOf<UUID>()
-
-    override var isOperator: Boolean
-        get() = server.playerManager.ops.contains(profile)
-        set(value) {
-            if (value == isOperator) return
-            if (value) {
-                server.playerManager.addToOperators(profile)
-            } else {
-                server.playerManager.removeFromOperators(profile)
-            }
-        }
 
     private var respawnPosition: Vector3i? = null
     private var respawnForced = false

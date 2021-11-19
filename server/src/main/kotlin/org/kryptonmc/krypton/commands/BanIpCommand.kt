@@ -44,7 +44,7 @@ object BanIpCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("ban-ip")
-            .permission("krypton.command.banip", 3)
+            .permission(KryptonPermission.BAN_IP)
             .then(argument<Sender, String>("target", string())
                 .executes {
                     val server = it.source.server as? KryptonServer ?: return@executes 0

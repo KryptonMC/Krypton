@@ -42,7 +42,7 @@ object BanCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("ban")
-            .permission("krypton.command.ban", 3)
+            .permission(KryptonPermission.BAN)
             .then(argument<Sender, EntityQuery>("targets", GameProfileArgument)
                 .executes {
                     val server = it.source.server as? KryptonServer ?: return@executes 0

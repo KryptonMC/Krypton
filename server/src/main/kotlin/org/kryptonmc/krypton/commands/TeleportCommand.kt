@@ -40,7 +40,7 @@ object TeleportCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val node = dispatcher.register(literal<Sender>("teleport")
-            .permission("krypton.command.teleport", 2)
+            .permission(KryptonPermission.TELEPORT)
             .then(argument<Sender, Coordinates>("location", VectorArgument.normal())
                 .executes {
                     teleport(it.source, it.argument<Coordinates>("location"))

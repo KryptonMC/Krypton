@@ -30,7 +30,7 @@ object StopCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("stop")
-            .permission("krypton.command.stop", 4)
+            .permission(KryptonPermission.STOP)
             .executes {
                 val server = it.source.server as? KryptonServer ?: return@executes 0
                 it.source.sendMessage(translatable("commands.stop.stopping"))

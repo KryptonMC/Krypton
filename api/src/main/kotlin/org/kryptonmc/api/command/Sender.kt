@@ -13,6 +13,7 @@ import net.kyori.adventure.identity.Identified
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.permission.Subject
+import java.util.UUID
 
 /**
  * A sender is an interface representing the sender of a command.
@@ -29,9 +30,10 @@ public interface Sender : Audience, Subject, Identified {
     public val name: Component
 
     /**
-     * If this sender is a server operator.
+     * The UUID of this sender.
      */
-    public var isOperator: Boolean
+    @get:JvmName("uuid")
+    public val uuid: UUID
 
     /**
      * The server that the sender is on.

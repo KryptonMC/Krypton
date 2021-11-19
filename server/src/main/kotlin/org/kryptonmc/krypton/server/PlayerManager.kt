@@ -30,7 +30,6 @@ import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.network.handlers.PlayHandler
@@ -61,12 +60,9 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.out.status.ServerStatus
 import org.kryptonmc.krypton.server.ban.BannedIpList
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
-import org.kryptonmc.krypton.server.op.OperatorEntry
-import org.kryptonmc.krypton.server.op.OperatorList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
-import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.nextInt
@@ -95,7 +91,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     val bannedPlayers = BannedPlayerList(Path.of("banned-players.json"))
     val whitelist = Whitelist(Path.of("whitelist.json"))
     val bannedIps = BannedIpList(Path.of("banned-ips.json"))
-    val ops = OperatorList(Path.of("ops.json"))
     val whitelistedIps = WhitelistedIps(Path.of("whitelisted-ips.json"))
     var whitelistEnabled = server.config.server.whitelistEnabled
         set(value) {
@@ -293,18 +288,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     fun saveAll() = players.forEach { save(it) }
 
-    fun addToOperators(profile: KryptonGameProfile) {
-        ops.add(OperatorEntry(profile, server.config.server.opPermissionLevel, true))
-        val player = server.player(profile.uuid)
-        if (player != null) sendCommands(player)
-    }
-
-    fun removeFromOperators(profile: KryptonGameProfile) {
-        ops.remove(profile)
-        val player = server.player(profile.uuid)
-        if (player != null) sendCommands(player)
-    }
-
     fun getStatistics(player: KryptonPlayer): KryptonStatisticsTracker {
         val uuid = player.uuid
         statistics[uuid]?.let { return it }
@@ -316,13 +299,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     }
 
     private fun sendCommands(player: KryptonPlayer) {
-        val permissionLevel = player.server.getPermissionLevel(player.profile)
-        sendCommands(player, permissionLevel)
-    }
-
-    private fun sendCommands(player: KryptonPlayer, permissionLevel: Int) {
-        val status = (permissionLevel + 24).clamp(24, 28)
-        player.session.send(PacketOutEntityStatus(player.id, status))
+        player.session.send(PacketOutEntityStatus(player.id, 28))
         server.commandManager.sendCommands(player)
     }
 

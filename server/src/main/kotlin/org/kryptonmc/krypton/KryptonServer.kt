@@ -135,7 +135,6 @@ class KryptonServer(
         playerManager.bannedPlayers.validatePath()
         playerManager.whitelist.validatePath()
         playerManager.bannedIps.validatePath()
-        playerManager.ops.validatePath()
         playerManager.whitelistedIps.validatePath()
 
         // Start the metrics system.
@@ -291,11 +290,6 @@ class KryptonServer(
     }
 
     override fun audiences() = players + console
-
-    fun getPermissionLevel(profile: KryptonGameProfile): Int {
-        if (playerManager.ops.contains(profile)) return playerManager.ops[profile]?.permissionLevel ?: 1
-        return 1
-    }
 
     fun stop(explicitExit: Boolean = true) {
         if (!isRunning) return // Ensure we cannot accidentally run this twice

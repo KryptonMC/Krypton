@@ -41,7 +41,7 @@ object WhitelistCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("whitelist")
-            .permission("krypton.command.whitelist", 3)
+            .permission(KryptonPermission.WHITELIST)
             .then(literal<Sender>("on")
                 .executes {
                     val sender = it.source

@@ -43,7 +43,7 @@ object PardonIpCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("pardon-ip")
-            .permission("krypton.command.pardonip", 3)
+            .permission(KryptonPermission.PARDON_IP)
             .then(argument<Sender, String>("target", string())
                 .suggests { context, builder ->
                     val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()

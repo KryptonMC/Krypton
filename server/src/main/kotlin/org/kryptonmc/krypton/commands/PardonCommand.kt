@@ -37,7 +37,7 @@ object PardonCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("pardon")
-            .permission("krypton.command.pardon", 3)
+            .permission(KryptonPermission.PARDON)
             .then(argument<Sender, EntityQuery>("targets", GameProfileArgument)
                 .suggests { context, builder ->
                     val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()

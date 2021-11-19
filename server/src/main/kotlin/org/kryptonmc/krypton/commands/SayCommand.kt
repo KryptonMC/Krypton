@@ -34,7 +34,7 @@ object SayCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("say")
-            .permission("krypton.command.say", 2)
+            .permission(KryptonPermission.SAY)
             .then(argument<Sender, String>("message", string())
                 .executes {
                     val server = it.source.server as? KryptonServer ?: return@executes 0

@@ -33,7 +33,7 @@ object ListCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("list")
-            .permission("krypton.command.list", 1)
+            .permission(KryptonPermission.LIST)
             .executes {
                 sendNames(it.source, it.source.server as KryptonServer)
                 1

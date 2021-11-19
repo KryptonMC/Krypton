@@ -31,7 +31,7 @@ object DifficultyCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal<Sender>("difficulty")
-            .permission("krypton.command.difficulty", 2)
+            .permission(KryptonPermission.DIFFICULTY)
             .executes {
                 val sender = it.source as? KryptonPlayer ?: return@executes 0
                 sender.sendMessage(translatable(

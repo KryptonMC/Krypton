@@ -34,7 +34,7 @@ object SeedCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("seed")
-            .permission("krypton.command.seed", 2)
+            .permission(KryptonPermission.SEED)
             .executes {
                 val sender = it.source as? KryptonPlayer ?: return@executes 0
                 val text = text("[").append(text(sender.world.seed, GREEN)).append(text("]"))

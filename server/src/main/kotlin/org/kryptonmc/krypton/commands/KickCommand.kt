@@ -36,7 +36,7 @@ object KickCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("kick")
-            .permission("krypton.command.kick", 3)
+            .permission(KryptonPermission.KICK)
             .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
                 .executes { context ->
                     context.entityArgument("targets").players(context.source).forEach {

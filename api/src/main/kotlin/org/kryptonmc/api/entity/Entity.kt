@@ -19,7 +19,6 @@ import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.world.World
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
-import java.util.UUID
 
 /**
  * An entity somewhere in a world.
@@ -38,12 +37,6 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      */
     @get:JvmName("type")
     public val type: EntityType<out Entity>
-
-    /**
-     * The unique ID of this entity.
-     */
-    @get:JvmName("uuid")
-    public val uuid: UUID
 
     /**
      * The custom name of the entity. May be null if the custom name has not

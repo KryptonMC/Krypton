@@ -35,6 +35,7 @@ import org.kryptonmc.api.event.player.PluginMessageEvent
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.handler.KryptonItemTimedHandler
 import org.kryptonmc.krypton.packet.Packet
@@ -375,7 +376,7 @@ class PlayHandler(
     }
 
     private fun handleEntityNBTQuery(packet: PacketInEntityNBTQuery) {
-        if (player.permissionLevel < 2 && !player.hasPermission("krypton.data.query.entity")) return
+        if (!player.hasPermission(KryptonPermission.ENTITY_QUERY.node)) return
         val entity = player.world.entityManager[packet.entityId] ?: return
         player.session.send(PacketOutNBTQueryResponse(packet.transactionId, entity.save().build()))
     }

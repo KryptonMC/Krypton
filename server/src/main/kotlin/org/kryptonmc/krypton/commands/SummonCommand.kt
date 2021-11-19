@@ -50,7 +50,7 @@ object SummonCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("summon")
-            .permission("krypton.command.summon", 2)
+            .permission(KryptonPermission.SUMMON)
             .then(argument<Sender, Key>("entity", SummonEntityArgument)
                 .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
                 .executes {

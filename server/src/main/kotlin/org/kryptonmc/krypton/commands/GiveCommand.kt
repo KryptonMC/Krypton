@@ -41,7 +41,7 @@ object GiveCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("give")
-            .permission("krypton.command.give", 2)
+            .permission(KryptonPermission.GIVE)
             .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
                 .then(argument<Sender, ItemStackArgument>("item", ItemStackArgumentType)
                     .executes {

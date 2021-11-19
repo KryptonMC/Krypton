@@ -25,6 +25,7 @@ import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.tree.LiteralCommandNode
 import org.apache.commons.lang3.StringUtils
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.commands.KryptonPermission
 
 fun LiteralCommandNode<Sender>.buildCopy(newName: String): LiteralArgumentBuilder<Sender> = literal<Sender>(newName)
     .requires(requirement)
@@ -47,8 +48,9 @@ val CommandContext<Sender>.splitArguments: Array<String>
         return if (raw.isEmpty()) emptyArray() else StringUtils.split(raw)
     }
 
-fun LiteralArgumentBuilder<Sender>.permission(permission: String, level: Int): LiteralArgumentBuilder<Sender> =
-    requires { it.hasPermission(permission) || (it is KryptonSender && it.permissionLevel >= level) }
+fun LiteralArgumentBuilder<Sender>.permission(permission: KryptonPermission): LiteralArgumentBuilder<Sender> = requires {
+    it.hasPermission(permission.node)
+}
 
 fun String.normalize(trim: Boolean): String {
     val command = if (trim) trim() else this

@@ -31,19 +31,15 @@ import org.kryptonmc.api.event.command.CommandExecuteEvent
 import org.kryptonmc.api.event.server.SetupPermissionsEvent
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.command.KryptonSender
 import org.kryptonmc.krypton.util.TranslationBootstrap
 import org.kryptonmc.krypton.util.logger
 import java.util.Locale
 
-class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole(), ConsoleSender, KryptonSender {
+class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole(), ConsoleSender {
 
     private var permissionFunction = PermissionFunction.ALWAYS_TRUE
     override val name = Component.text("CONSOLE")
-    override val permissionLevel = 4
-    override var isOperator: Boolean
-        get() = true
-        set(_) = Unit
+    override val uuid = Identity.nil().uuid()
 
     fun setupPermissions() {
         val event = SetupPermissionsEvent(this) { PermissionFunction.ALWAYS_TRUE }

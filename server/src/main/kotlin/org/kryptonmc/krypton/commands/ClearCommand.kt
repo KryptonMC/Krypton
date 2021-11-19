@@ -41,7 +41,7 @@ object ClearCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("clear")
-            .permission("krypton.command.clear", 2)
+            .permission(KryptonPermission.CLEAR)
             .executes {
                 if(it.source !is KryptonPlayer) return@executes 1
                 clear(listOf(it.source as KryptonPlayer), it.source)
