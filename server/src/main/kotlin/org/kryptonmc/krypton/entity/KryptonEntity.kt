@@ -411,10 +411,11 @@ abstract class KryptonEntity(
     }
 
     override fun ejectVehicle() {
-        // TODO: Vehicle could be null? IDEA doesn't seem to care...
-        val tempVehicle = vehicle as KryptonEntity
-        vehicle = null
-        tempVehicle.removePassenger(this)
+        if (vehicle != null) {
+            val tempVehicle = vehicle as KryptonEntity
+            vehicle = null
+            tempVehicle.removePassenger(this)
+        }
     }
 
     final override var isOnFire: Boolean
