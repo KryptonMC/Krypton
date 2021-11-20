@@ -41,6 +41,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerInteractEntity
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerPosition
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerPositionAndRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerRotation
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerUseItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityNBTQuery
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
@@ -118,6 +119,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateScore
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetPassengers
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
 import org.kryptonmc.krypton.packet.out.status.PacketOutPong
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
 import org.kryptonmc.krypton.util.IdentityHashStrategy
@@ -174,6 +176,7 @@ object PacketRegistry {
         register(PacketState.PLAY, 0x28, ::PacketInCreativeInventoryAction)
         register(PacketState.PLAY, 0x2C, ::PacketInAnimation)
         register(PacketState.PLAY, 0x2E, ::PacketInPlaceBlock)
+        register(PacketState.PLAY, 0x2F, ::PacketInPlayerUseItem)
 
         register<PacketOutSpawnEntity>(0x00)
         register<PacketOutSpawnExperienceOrb>(0x01)
@@ -224,6 +227,7 @@ object PacketRegistry {
         register<PacketOutDisplayObjective>(0x4C)
         register<PacketOutMetadata>(0x4D)
         register<PacketOutEntityVelocity>(0x4F)
+        register<PacketOutUpdateHealth>(0x52)
         register<PacketOutObjective>(0x53)
         register<PacketOutSetPassengers>(0x54)
         register<PacketOutTeam>(0x55)

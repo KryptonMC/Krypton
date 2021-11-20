@@ -108,6 +108,12 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
     public val time: Long
 
     /**
+     * If this player is currently vanished, meaning no other player on the
+     * server can see them.
+     */
+    public val isVanished: Boolean
+
+    /**
      * This player's current game mode.
      */
     @get:JvmName("gameMode")
@@ -149,6 +155,24 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
      */
     @get:JvmName("locale")
     public val locale: Locale?
+
+    /**
+     * The food level of this player.
+     */
+    @get:JvmName("foodLevel")
+    public var foodLevel: Int
+
+    /**
+     * The food exhaustion level of this player.
+     */
+    @get:JvmName("foodExhaustionLevel")
+    public var foodExhaustionLevel: Float
+
+    /**
+     * The food saturation level of this player.
+     */
+    @get:JvmName("foodSaturationLevel")
+    public var foodSaturationLevel: Float
 
     /**
      * The statistics tracker for this player.
@@ -244,6 +268,40 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
      * Teleport this player to the specified other [player].
      */
     public fun teleport(player: Player)
+
+    /**
+     * Hides this player from all other players on the server.
+     */
+    public fun vanish()
+
+    /**
+     * Shows this player to all other players on the server.
+     */
+    public fun unvanish()
+
+    /**
+     * Shows the given [player] to this player if they are hidden, or does
+     * nothing if they aren't.
+     *
+     * @param player the player to show
+     */
+    public fun show(player: Player)
+
+    /**
+     * Hides the given [player] from this player if they are shown, or does
+     * nothing if they aren't.
+     *
+     * @param player the player to hide
+     */
+    public fun hide(player: Player)
+
+    /**
+     * Checks if this player can see the given other [player].
+     *
+     * @param player the player to check
+     * @return true if this player can see the other player, false otherwise
+     */
+    public fun canSee(player: Player): Boolean
 
     /**
      * Returns true if this player has the correct tool to be able to break

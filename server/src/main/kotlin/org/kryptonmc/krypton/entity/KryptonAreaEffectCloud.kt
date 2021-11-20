@@ -44,7 +44,7 @@ class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityT
         color = tag.getInt("Color")
     }
 
-    override fun save() = super.save().apply {
+    override fun save(): CompoundTag.Builder = super.save().apply {
         int("Age", age)
         int("Duration", duration)
         float("Radius", radius)

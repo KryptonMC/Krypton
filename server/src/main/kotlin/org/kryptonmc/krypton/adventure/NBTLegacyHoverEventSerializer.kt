@@ -80,12 +80,10 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
             string(ITEM_TYPE, input.item().asString())
             byte(ITEM_COUNT, input.count().toByte())
         }
-        input.nbt()?.let {
-            try {
-                tag.put(ITEM_TAG, it[SNBT_CODEC])
-            } catch (exception: CommandSyntaxException) {
-                throw IOException(exception)
-            }
+        try {
+            if (input.nbt() != null) tag.put(ITEM_TAG, input.nbt()!!.get(SNBT_CODEC))
+        } catch (exception: CommandSyntaxException) {
+            throw IOException(exception)
         }
         return Component.text(SNBT_CODEC.encode(tag.build()))
     }
@@ -98,7 +96,7 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
             string(ENTITY_ID, input.id().toString())
             string(ENTITY_TYPE, input.type().asString())
         }
-        input.name()?.let { tag.string(ENTITY_NAME, encoder.encode(it)) }
+        if (input.name() != null) tag.string(ENTITY_NAME, encoder.encode(input.name()!!))
         return Component.text(SNBT_CODEC.encode(tag.build()))
     }
 }

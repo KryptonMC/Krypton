@@ -26,6 +26,7 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.util.nextKey
@@ -39,13 +40,16 @@ object SummonEntityArgument : ArgumentType<Key> {
     override fun getExamples() = EXAMPLES
 }
 
-fun CommandContext<Sender>.summonableEntity(name: String) = argument<Key>(name).ensureSummonable()
+fun CommandContext<Sender>.summonableEntity(name: String): Key = argument<Key>(name).ensureSummonable()
 
-fun CommandContext<Sender>.entityArgument(name: String) = argument<Key>(name).ensureSummonable()
+fun CommandContext<Sender>.entityArgument(name: String): Key = argument<Key>(name).ensureSummonable()
 
 private val ERROR_UNKNOWN_ENTITY = DynamicCommandExceptionType {
     Component.translatable("entity.notFound", listOf(Component.text(it.toString()))).toMessage()
 }
 
-private fun Key.ensureSummonable() = InternalRegistries.ENTITY_TYPE[this].takeIf { it.isSummonable }?.key()
-    ?: throw ERROR_UNKNOWN_ENTITY.create(this)
+private fun Key.ensureSummonable(): Key {
+    val type = Registries.ENTITY_TYPE[this]
+    if (!type.isSummonable) throw ERROR_UNKNOWN_ENTITY.create(this)
+    return type.key()
+}

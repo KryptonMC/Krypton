@@ -62,65 +62,65 @@ object BrigadierExceptions : BuiltInExceptionProvider {
     private val DISPATCHER_EXPECTED_SEPARATOR = simpleExceptionType("command.expected.separator")
     private val DISPATCHER_PARSE_EXCEPTION = dynamicExceptionType("command.exception")
 
-    override fun integerTooLow() = INTEGER_TOO_SMALL
+    override fun integerTooLow(): Dynamic2CommandExceptionType = INTEGER_TOO_SMALL
 
-    override fun integerTooHigh() = INTEGER_TOO_LARGE
+    override fun integerTooHigh(): Dynamic2CommandExceptionType = INTEGER_TOO_LARGE
 
-    override fun longTooLow() = LONG_TOO_SMALL
+    override fun longTooLow(): Dynamic2CommandExceptionType = LONG_TOO_SMALL
 
-    override fun longTooHigh() = LONG_TOO_LARGE
+    override fun longTooHigh(): Dynamic2CommandExceptionType = LONG_TOO_LARGE
 
-    override fun floatTooLow() = FLOAT_TOO_SMALL
+    override fun floatTooLow(): Dynamic2CommandExceptionType = FLOAT_TOO_SMALL
 
-    override fun floatTooHigh() = FLOAT_TOO_LARGE
+    override fun floatTooHigh(): Dynamic2CommandExceptionType = FLOAT_TOO_LARGE
 
-    override fun doubleTooLow() = DOUBLE_TOO_SMALL
+    override fun doubleTooLow(): Dynamic2CommandExceptionType = DOUBLE_TOO_SMALL
 
-    override fun doubleTooHigh() = DOUBLE_TOO_LARGE
+    override fun doubleTooHigh(): Dynamic2CommandExceptionType = DOUBLE_TOO_LARGE
 
-    override fun literalIncorrect() = LITERAL_INCORRECT
+    override fun literalIncorrect(): DynamicCommandExceptionType = LITERAL_INCORRECT
 
-    override fun readerInvalidEscape() = READER_INVALID_ESCAPE
+    override fun readerInvalidEscape(): DynamicCommandExceptionType = READER_INVALID_ESCAPE
 
-    override fun readerInvalidBool() = READER_INVALID_BOOLEAN
+    override fun readerInvalidBool(): DynamicCommandExceptionType = READER_INVALID_BOOLEAN
 
-    override fun readerInvalidInt() = READER_INVALID_INTEGER
+    override fun readerInvalidInt(): DynamicCommandExceptionType = READER_INVALID_INTEGER
 
-    override fun readerInvalidLong() = READER_INVALID_LONG
+    override fun readerInvalidLong(): DynamicCommandExceptionType = READER_INVALID_LONG
 
-    override fun readerInvalidFloat() = READER_INVALID_FLOAT
+    override fun readerInvalidFloat(): DynamicCommandExceptionType = READER_INVALID_FLOAT
 
-    override fun readerInvalidDouble() = READER_INVALID_DOUBLE
+    override fun readerInvalidDouble(): DynamicCommandExceptionType = READER_INVALID_DOUBLE
 
-    override fun readerExpectedBool() = READER_EXPECTED_BOOLEAN
+    override fun readerExpectedBool(): SimpleCommandExceptionType = READER_EXPECTED_BOOLEAN
 
-    override fun readerExpectedInt() = READER_EXPECTED_INTEGER
+    override fun readerExpectedInt(): SimpleCommandExceptionType = READER_EXPECTED_INTEGER
 
-    override fun readerExpectedLong() = READER_EXPECTED_LONG
+    override fun readerExpectedLong(): SimpleCommandExceptionType = READER_EXPECTED_LONG
 
-    override fun readerExpectedFloat() = READER_EXPECTED_FLOAT
+    override fun readerExpectedFloat(): SimpleCommandExceptionType = READER_EXPECTED_FLOAT
 
-    override fun readerExpectedDouble() = READER_EXPECTED_DOUBLE
+    override fun readerExpectedDouble(): SimpleCommandExceptionType = READER_EXPECTED_DOUBLE
 
-    override fun readerExpectedStartOfQuote() = READER_EXPECTED_START_OF_QUOTE
+    override fun readerExpectedStartOfQuote(): SimpleCommandExceptionType = READER_EXPECTED_START_OF_QUOTE
 
-    override fun readerExpectedEndOfQuote() = READER_EXPECTED_END_OF_QUOTE
+    override fun readerExpectedEndOfQuote(): SimpleCommandExceptionType = READER_EXPECTED_END_OF_QUOTE
 
-    override fun readerExpectedSymbol() = READER_EXPECTED_SYMBOL
+    override fun readerExpectedSymbol(): DynamicCommandExceptionType = READER_EXPECTED_SYMBOL
 
-    override fun dispatcherUnknownCommand() = DISPATCHER_UNKNOWN_COMMAND
+    override fun dispatcherUnknownCommand(): SimpleCommandExceptionType = DISPATCHER_UNKNOWN_COMMAND
 
-    override fun dispatcherUnknownArgument() = DISPATCHER_UNKNOWN_ARGUMENT
+    override fun dispatcherUnknownArgument(): SimpleCommandExceptionType = DISPATCHER_UNKNOWN_ARGUMENT
 
-    override fun dispatcherExpectedArgumentSeparator() = DISPATCHER_EXPECTED_SEPARATOR
+    override fun dispatcherExpectedArgumentSeparator(): SimpleCommandExceptionType = DISPATCHER_EXPECTED_SEPARATOR
 
-    override fun dispatcherParseException() = DISPATCHER_PARSE_EXCEPTION
+    override fun dispatcherParseException(): DynamicCommandExceptionType = DISPATCHER_PARSE_EXCEPTION
 
     private fun translatable(key: String, vararg arguments: Any) = Component.translatable(key, arguments.map { text(it.toString()) }).toMessage()
 
-    private fun simpleExceptionType(key: String) = SimpleCommandExceptionType(Component.translatable(key).toMessage())
+    private fun simpleExceptionType(key: String): SimpleCommandExceptionType = SimpleCommandExceptionType(Component.translatable(key).toMessage())
 
-    private fun dynamicExceptionType(key: String) = DynamicCommandExceptionType { translatable(key, it) }
+    private fun dynamicExceptionType(key: String): DynamicCommandExceptionType = DynamicCommandExceptionType { translatable(key, it) }
 
-    private fun dynamic2ExceptionType(key: String) = Dynamic2CommandExceptionType { a, b -> translatable(key, a, b) }
+    private fun dynamic2ExceptionType(key: String): Dynamic2CommandExceptionType = Dynamic2CommandExceptionType { a, b -> translatable(key, a, b) }
 }

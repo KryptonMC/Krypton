@@ -83,13 +83,15 @@ object EntityFactory {
 
     fun create(type: EntityType<out Entity>, world: KryptonWorld): KryptonEntity? = TYPE_MAP[type]?.invoke(world)
 
-    fun create(world: KryptonWorld, id: String, nbt: CompoundTag?): KryptonEntity? = try {
-        create(InternalRegistries.ENTITY_TYPE[Key.key(id)], world)?.apply { if (nbt != null) load(nbt) } ?: run {
-            LOGGER.warn("No entity found with ID $id")
-            return null
+    fun create(world: KryptonWorld, id: String, nbt: CompoundTag?): KryptonEntity? {
+        return try {
+            create(InternalRegistries.ENTITY_TYPE[Key.key(id)], world)?.apply { if (nbt != null) load(nbt) } ?: run {
+                LOGGER.warn("No entity found with ID $id")
+                return null
+            }
+        } catch (exception: RuntimeException) {
+            LOGGER.warn("Exception loading entity", exception)
+            null
         }
-    } catch (exception: RuntimeException) {
-        LOGGER.warn("Exception loading entity", exception)
-        null
     }
 }

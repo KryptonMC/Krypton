@@ -46,7 +46,7 @@ open class KryptonItemStack(
         return MutableCompoundTag().apply { meta.nbt[key] = this }
     }
 
-    fun save(tag: CompoundTag.Builder) = tag.apply {
+    fun save(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
         string("id", InternalRegistries.ITEM[type].asString())
         int("Count", amount)
         put("tag", meta.nbt)
@@ -58,14 +58,14 @@ open class KryptonItemStack(
         return true
     }
 
-    fun destroySpeed(block: Block) = type.handler().destroySpeed(this, block)
+    fun destroySpeed(block: Block): Float = type.handler().destroySpeed(this, block)
 
     override fun copy(): KryptonItemStack {
         if (isEmpty()) return EmptyItemStack
         return KryptonItemStack(type, amount, meta.copy())
     }
 
-    override fun toBuilder() = Builder()
+    override fun toBuilder(): Builder = Builder()
 
     class Builder(
         private var type: ItemType = ItemTypes.AIR,
@@ -73,24 +73,24 @@ open class KryptonItemStack(
         private var meta: KryptonMetaHolder = KryptonMetaHolder()
     ) : ItemStack.Builder {
 
-        override fun type(type: ItemType) = apply { this.type = type }
+        override fun type(type: ItemType): ItemStack.Builder = apply { this.type = type }
 
-        override fun amount(amount: Int) = apply {
+        override fun amount(amount: Int): ItemStack.Builder = apply {
             require(amount in 1..type.maximumStackSize) {
                 "Item amount must be between 1 and ${type.maximumStackSize}, was $amount!"
             }
             this.amount = amount
         }
 
-        override fun meta(builder: MetaHolder.() -> Unit) = apply { meta.apply(builder) }
+        override fun meta(builder: MetaHolder.() -> Unit): ItemStack.Builder = apply { meta.apply(builder) }
 
-        override fun build() = KryptonItemStack(type, amount, meta)
+        override fun build(): KryptonItemStack = KryptonItemStack(type, amount, meta)
     }
 
     object Factory : ItemStack.Factory {
 
-        override fun builder() = Builder()
+        override fun builder(): Builder = Builder()
 
-        override fun empty() = EmptyItemStack
+        override fun empty(): EmptyItemStack = EmptyItemStack
     }
 }

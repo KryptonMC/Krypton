@@ -26,12 +26,12 @@ object ItemStackPredicateArgument : ArgumentType<ItemStackPredicate> {
 
     private val EXAMPLES = listOf("minecraft:stone", "stone", "#minecraft:boats", "stone{foo=bar}")
 
-    override fun getExamples() = EXAMPLES
+    override fun getExamples(): Collection<String> = EXAMPLES
 
-    override fun parse(reader: StringReader) = ItemStackParser(reader, true).parsePredicate()
+    override fun parse(reader: StringReader): ItemStackPredicate = ItemStackParser(reader, true).parsePredicate()
 }
 
 fun interface ItemStackPredicate {
 
-    operator fun invoke(item: ItemStack) : Boolean
+    operator fun invoke(item: ItemStack): Boolean
 }

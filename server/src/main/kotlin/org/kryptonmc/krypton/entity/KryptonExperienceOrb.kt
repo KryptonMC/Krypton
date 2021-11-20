@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.ExperienceOrb
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnExperienceOrb
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -48,5 +49,5 @@ class KryptonExperienceOrb(world: KryptonWorld) : KryptonEntity(world, EntityTyp
         short("Value", value.toShort())
     }
 
-    override fun getSpawnPacket() = PacketOutSpawnExperienceOrb(this)
+    override fun getSpawnPacket(): Packet = PacketOutSpawnExperienceOrb(this)
 }

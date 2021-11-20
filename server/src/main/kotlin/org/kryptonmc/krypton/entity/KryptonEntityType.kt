@@ -93,7 +93,7 @@ data class KryptonEntityType<T : Entity>(
 
         override fun translation(translation: TranslatableComponent): EntityType.Builder<T> = apply { this.translation = translation }
 
-        override fun build() = KryptonEntityType<T>(
+        override fun build(): KryptonEntityType<T> = KryptonEntityType<T>(
             key,
             category,
             summonable,

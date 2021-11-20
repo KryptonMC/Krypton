@@ -32,8 +32,7 @@ import org.spongepowered.math.vector.Vector3i
 
 object SwordHandler : KryptonItemHandler {
 
-    override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i) =
-        player.gameMode !== GameModes.CREATIVE
+    override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i): Boolean = player.gameMode !== GameModes.CREATIVE
 
     override fun destroySpeed(item: ItemStack, block: Block): Float {
         if (block.id == Blocks.COBWEB.id) return 15F
@@ -43,7 +42,7 @@ object SwordHandler : KryptonItemHandler {
         return 1F
     }
 
-    override fun isCorrectTool(block: Block) = block.id == Blocks.COBWEB.id
+    override fun isCorrectTool(block: Block): Boolean = block.id == Blocks.COBWEB.id
 
-    override fun mineBlock(player: Player, item: ItemStack, world: World, block: Block, position: Vector3i) = true
+    override fun mineBlock(player: Player, item: ItemStack, world: World, block: Block, position: Vector3i): Boolean = true
 }

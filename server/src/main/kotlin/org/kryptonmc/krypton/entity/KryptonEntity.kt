@@ -227,7 +227,6 @@ abstract class KryptonEntity(
 
     open fun addViewer(player: KryptonPlayer): Boolean {
         if (!viewers.add(player)) return false
-        player.viewableEntities.add(this)
         player.session.send(getSpawnPacket())
         player.session.send(PacketOutMetadata(id, data.all))
         player.session.send(PacketOutHeadLook(id, rotation.x()))
@@ -237,7 +236,6 @@ abstract class KryptonEntity(
     open fun removeViewer(player: KryptonPlayer): Boolean {
         if (!viewers.remove(player)) return false
         player.session.send(PacketOutDestroyEntities(id))
-        player.viewableEntities.remove(this)
         return true
     }
 
@@ -431,7 +429,7 @@ abstract class KryptonEntity(
     final override var isSwimming: Boolean
         get() = getSharedFlag(4)
         set(value) = setSharedFlag(4, value)
-    final override var isInvisible: Boolean
+    override var isInvisible: Boolean
         get() = getSharedFlag(5)
         set(value) = setSharedFlag(5, value)
     final override var isGlowing: Boolean

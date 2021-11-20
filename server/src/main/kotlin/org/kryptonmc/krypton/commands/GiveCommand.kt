@@ -65,11 +65,6 @@ object GiveCommand : InternalCommand {
         items.forEach { target.inventory.add(it) }
 
         target.playSound(Sound.sound(SoundEvents.ITEM_PICKUP, Sound.Source.PLAYER, 0.2F, 2F))
-        target.session.send(PacketOutWindowItems(
-            target.inventory.id,
-            target.inventory.incrementStateId(),
-            target.inventory.networkWriter,
-            target.inventory.mainHand
-        ))
+        target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
     }
 }

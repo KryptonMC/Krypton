@@ -10,16 +10,16 @@ configurations.all {
     exclude("junit")
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(16))
+kotlin {
+    jvmToolchain {
+        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
 tasks {
     withType<KotlinCompile> {
         kotlinOptions {
-            jvmTarget = "16"
+            jvmTarget = "17"
             freeCompilerArgs = listOf("-Xjvm-default=all")
         }
     }

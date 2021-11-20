@@ -22,6 +22,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.hanging.Picture
 import org.kryptonmc.api.entity.hanging.Painting
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPainting
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.Directions
@@ -48,5 +49,5 @@ class KryptonPainting(world: KryptonWorld) : KryptonHangingEntity(world, EntityT
         byte("Facing", direction.data2D().toByte())
     }
 
-    override fun getSpawnPacket() = PacketOutSpawnPainting(this)
+    override fun getSpawnPacket(): Packet = PacketOutSpawnPainting(this)
 }

@@ -36,9 +36,7 @@ import org.kryptonmc.krypton.command.permission
 
 object DeopCommand : InternalCommand {
 
-    private val ALREADY_DEOPPED_EXCEPTION = SimpleCommandExceptionType(
-        translatable("commands.deop.failed").toMessage()
-    )
+    private val ALREADY_DEOPPED_EXCEPTION = SimpleCommandExceptionType(translatable("commands.deop.failed").toMessage())
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal<Sender>("deop")

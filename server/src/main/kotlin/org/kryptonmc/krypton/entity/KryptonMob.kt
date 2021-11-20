@@ -48,7 +48,7 @@ abstract class KryptonMob(
         hasAI = !tag.getBoolean("NoAI")
     }
 
-    override fun save() = super.save().apply {
+    override fun save(): CompoundTag.Builder = super.save().apply {
         boolean("CanPickUpLoot", canPickUpLoot)
         boolean("PersistenceRequired", isPersistent)
         boolean("LeftHanded", mainHand == MainHand.LEFT)

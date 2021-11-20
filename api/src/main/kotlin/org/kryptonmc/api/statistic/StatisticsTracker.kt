@@ -8,6 +8,9 @@
  */
 package org.kryptonmc.api.statistic
 
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registries
+
 /**
  * A tracker of statistics.
  */
@@ -27,6 +30,18 @@ public interface StatisticsTracker {
      * @return the value
      */
     public operator fun get(statistic: Statistic<*>): Int
+
+    /**
+     * Gets the value for the given custom [statistic].
+     *
+     * If the given [statistic] is not in the
+     * [custom statistics registry][Registries.CUSTOM_STATISTIC], this will
+     * return -1.
+     *
+     * @param statistic the custom statistic
+     * @return the value for the given custom statistic
+     */
+    public operator fun get(statistic: Key): Int
 
     /**
      * Sets the value for the given [statistic] to the given [value].

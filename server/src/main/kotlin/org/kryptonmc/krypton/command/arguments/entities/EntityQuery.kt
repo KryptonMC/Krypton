@@ -33,7 +33,6 @@ import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.BrigadierExceptions
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.world.KryptonGameMode
 
 /**
  * Documentation [TODO]
@@ -45,11 +44,11 @@ data class EntityQuery(
     private val playerName: String = ""
 ) {
 
-    fun entities(source: KryptonPlayer) = when (type) {
+    fun entities(source: KryptonPlayer): List<KryptonEntity> = when (type) {
         Selector.RANDOM_PLAYER -> listOf(source.server.players.random())
         Selector.ALL_PLAYERS -> {
             if (args.isNotEmpty()) {
-                val entities = applyArguments((source.server.players + source.world.entities).toList(), source)
+                val entities = applyArguments((source.server.players + source.world.entities).asSequence(), source)
                 if (entities.isEmpty()) throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()
                 entities
             } else {
@@ -59,7 +58,7 @@ data class EntityQuery(
         Selector.EXECUTOR -> listOf(source)
         Selector.ALL_ENTITIES -> {
             if (args.isNotEmpty()) {
-                val entities = applyArguments((source.server.players + source.world.entities).toList(), source)
+                val entities = applyArguments((source.server.players + source.world.entities).asSequence(), source)
                 if (entities.isEmpty()) throw EntityArgumentExceptions.ENTITY_NOT_FOUND.create()
                 entities
             } else {
@@ -73,25 +72,29 @@ data class EntityQuery(
             }
             listOf(currentNearest)
         }
-        Selector.PLAYER -> listOf(source.server.player(playerName)
-            ?: throw EntityArgumentExceptions.UNKNOWN_PLAYER.create())
+        Selector.PLAYER -> {
+            val player = source.server.player(playerName) ?: throw EntityArgumentExceptions.UNKNOWN_PLAYER.create()
+            listOf(player)
+        }
         Selector.UNKNOWN -> throw EntityArgumentExceptions.UNKNOWN_SELECTOR.create("")
     }
 
     fun entity(source: KryptonPlayer): KryptonEntity = entities(source)[0]
 
+    @Suppress("UNCHECKED_CAST")
     fun players(sender: Sender): List<KryptonPlayer> {
         val server = sender.server as KryptonServer
-        return if (sender is KryptonPlayer) {
-            if (playerName.isNotEmpty()) return listOf(server.player(playerName)
-                ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create())
-            entities(sender).map {
-                it as? KryptonPlayer ?: throw UnsupportedOperationException("You cannot call .getPlayers() if there " +
-                        "is an entity in the arguments")
+        if (sender is KryptonPlayer) {
+            if (playerName.isNotEmpty()) {
+                val player = server.player(playerName) ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()
+                return listOf(player)
             }
-        } else {
-            listOf(server.player(playerName) ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create())
+            return entities(sender).onEach {
+                if (it !is KryptonPlayer) throw UnsupportedOperationException("You cannot call players if there is an entity in the arguments!")
+            } as List<KryptonPlayer>
         }
+        val player = server.player(playerName) ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()
+        return listOf(player)
     }
 
     fun profiles(sender: Sender): List<KryptonGameProfile> {
@@ -104,7 +107,7 @@ data class EntityQuery(
         return emptyList()
     }
 
-    private fun applyArguments(originalEntities: List<KryptonEntity>, source: KryptonPlayer): List<KryptonEntity> {
+    private fun applyArguments(originalEntities: Sequence<KryptonEntity>, source: KryptonPlayer): List<KryptonEntity> {
         var entities = originalEntities
         var differenceX = 0
         var differenceY = 0
@@ -137,22 +140,24 @@ data class EntityQuery(
                 }
                 "distance" -> {
                     checkIntOrRange(value.toString())
-                    entities = if (value.toString().startsWith("..")) {
+                    if (value.toString().startsWith("..")) {
                         val distance = value.toString().replace("..", "").toInt()
-                        entities.filter { it.location.distanceSquared(source.location) <= distance }
-                    } else if (!value.toString().contains("..")) {
+                        entities = entities.filter { it.location.distanceSquared(source.location) <= distance }
+                        continue
+                    }
+                    if (!value.toString().contains("..")) {
                         checkInt(value.toString())
-                        entities.filter {
+                        entities = entities.filter {
                             val int = it.location.distanceSquared(source.location).toInt()
                             if (int < 0) throw EntityArgumentExceptions.DISTANCE_NEGATIVE.create()
                             int == value.toString().toInt()
                         }
-                    } else {
-                        val range = value.toString().toIntRange()
-                        entities.filter {
-                            it.location.distanceSquared(source.location) >= range!!.first &&
-                                    it.location.distanceSquared(source.location) <= range.last
-                        }
+                        continue
+                    }
+                    val range = value.toString().toIntRange()!!
+                    entities = entities.filter {
+                        it.location.distanceSquared(source.location) >= range.first &&
+                                it.location.distanceSquared(source.location) <= range.last
                     }
                 }
                 "scores" -> notImplemented("scores")
@@ -175,27 +180,31 @@ data class EntityQuery(
                 }
                 "x_rotation" -> {
                     checkIntOrRange(value.toString())
-                    entities = if (value.toString().startsWith("..")) {
+                    if (value.toString().startsWith("..")) {
                         val pitch = value.toString().replace("..", "").toInt()
-                        entities.filter { it.rotation.y() <= pitch }
-                    } else if (!value.toString().contains("..")) {
-                        entities.filter { it.rotation.y().toInt() == value.toString().toInt() }
-                    } else {
-                        val range = value.toString().toIntRange()
-                        entities.filter { it.rotation.y() >= range!!.first && it.rotation.y() <= range.last }
+                        entities = entities.filter { it.rotation.y() <= pitch }
+                        continue
                     }
+                    if (!value.toString().contains("..")) {
+                        entities = entities.filter { it.rotation.y().toInt() == value.toString().toInt() }
+                        continue
+                    }
+                    val range = value.toString().toIntRange()!!
+                    entities = entities.filter { it.rotation.y() >= range.first && it.rotation.y() <= range.last }
                 }
                 "y_rotation" -> {
                     checkIntOrRange(value.toString())
-                    entities = if (value.toString().startsWith("..")) {
+                    if (value.toString().startsWith("..")) {
                         val yaw = value.toString().replace("..", "").toInt()
-                        entities.filter { it.rotation.x() <= yaw }
-                    } else if (!value.toString().contains("..")) {
-                        entities.filter { it.rotation.x().toInt() == value.toString().toInt() }
-                    } else {
-                        val range = value.toString().toIntRange()
-                        entities.filter { it.rotation.x() >= range!!.first && it.rotation.x() <= range.last }
+                        entities = entities.filter { it.rotation.x() <= yaw }
+                        continue
                     }
+                    if (!value.toString().contains("..")) {
+                        entities = entities.filter { it.rotation.x().toInt() == value.toString().toInt() }
+                        continue
+                    }
+                    val range = value.toString().toIntRange()!!
+                    entities = entities.filter { it.rotation.x() >= range.first && it.rotation.x() <= range.last }
                 }
                 "type" -> notImplemented("type")
                 "nbt" -> notImplemented("nbt")
@@ -215,27 +224,30 @@ data class EntityQuery(
                     checkInt(value.toString())
                     val limit = value.toString().toInt()
                     if (limit <= 0) throw EntityArgumentExceptions.LIMIT_NULL.create()
-                    entities = if (entities.size > limit) entities.subList(0, limit - 1) else entities
+                    entities = if (entities.count() > limit) entities.take(limit - 1) else entities
                 }
                 else -> throw UnsupportedOperationException("Invalid option")
             }
         }
-        return entities
+        return entities.toList()
     }
 
-    private fun applyDifference(difference: Int, value: Any, blockCoordinate: Int) = if (difference != 0) {
-        val min = value.toString().toInt()
-        val max = min + difference
-        blockCoordinate in min..max
-    } else {
-        blockCoordinate == value.toString().toInt()
+    private fun applyDifference(difference: Int, value: Any, blockCoordinate: Int): Boolean {
+        if (difference != 0) {
+            val min = value.toString().toInt()
+            val max = min + difference
+            return blockCoordinate in min..max
+        }
+        return blockCoordinate == value.toString().toInt()
     }
 
     private fun notImplemented(option: String) {
         throw DynamicCommandExceptionType { a -> text("Not yet implemented: $a").toMessage() }.create(option)
     }
 
-    private fun checkInt(string: String) = string.toIntOrNull() ?: throw BrigadierExceptions.readerExpectedInt().create()
+    private fun checkInt(string: String) {
+        if (string.toIntOrNull() == null) throw BrigadierExceptions.readerExpectedInt().create()
+    }
 
     private fun checkIntOrRange(string: String) {
         if (string.toIntOrNull() != null) return
@@ -260,7 +272,8 @@ data class EntityQuery(
              * Gets the target selector from it's short name
              * you can find these at the [Minecraft Wiki](https://minecraft.fandom.com/wiki/Target_selectors)
              */
-            fun fromChar(selector: Char) = when (selector) {
+            @JvmStatic
+            fun fromChar(selector: Char): Selector = when (selector) {
                 'p' -> NEAREST_PLAYER
                 'r' -> RANDOM_PLAYER
                 'a' -> ALL_PLAYERS
@@ -273,6 +286,7 @@ data class EntityQuery(
 
     companion object {
 
+        @JvmStatic
         private fun String.toIntRange(): IntRange? {
             if (startsWith("...")) {
                 val string = replace("..", "").toIntOrNull() ?: return null

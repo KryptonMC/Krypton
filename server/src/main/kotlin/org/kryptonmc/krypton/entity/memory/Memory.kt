@@ -31,7 +31,7 @@ data class Memory<T : Any>(
         if (key.canExpire) ttl--
     }
 
-    fun save(tag: CompoundTag.Builder) = tag.apply {
+    fun save(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
         compound(key.key.asString()) {
             key.codec.encodeStart(NBTOps, value).result().ifPresent { put("value", it) }
             if (key.canExpire) long("ttl", ttl)

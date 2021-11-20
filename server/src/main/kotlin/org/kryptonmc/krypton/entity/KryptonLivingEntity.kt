@@ -117,7 +117,7 @@ abstract class KryptonLivingEntity(
         }
     }
 
-    override fun save() = super.save().apply {
+    override fun save(): CompoundTag.Builder = super.save().apply {
         float("AbsorptionAmount", absorption)
         put("Attributes", attributes.save())
         put("Brain", brain.save())
@@ -160,7 +160,7 @@ abstract class KryptonLivingEntity(
     final override var isInRiptideSpinAttack: Boolean
         get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 4 > 0
         set(value) = setLivingFlag(4, value)
-    final override var health: Float
+    override var health: Float
         get() = data[MetadataKeys.LIVING.HEALTH]
         set(value) = data.set(MetadataKeys.LIVING.HEALTH, value)
     var potionEffectColor: Int

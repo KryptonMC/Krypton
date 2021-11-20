@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.console
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.util.TriState
 import net.minecrell.terminalconsole.SimpleTerminalConsole
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
@@ -49,11 +50,11 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
         LOGGER.info(TranslationBootstrap.RENDERER.render(message, Locale.ENGLISH).toLegacySectionText())
     }
 
-    override fun getPermissionValue(permission: String) = permissionFunction[permission]
+    override fun getPermissionValue(permission: String): TriState = permissionFunction[permission]
 
-    override fun identity() = Identity.nil()
+    override fun identity(): Identity = Identity.nil()
 
-    override fun isRunning() = server.isRunning
+    override fun isRunning(): Boolean = server.isRunning
 
     override fun runCommand(command: String) {
         val result = server.eventManager.fireSync(CommandExecuteEvent(this, command)).result
@@ -61,7 +62,9 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
         server.commandManager.dispatch(this, result.command ?: command)
     }
 
-    override fun shutdown() = server.stop()
+    override fun shutdown() {
+        server.stop()
+    }
 
     override fun buildReader(builder: LineReaderBuilder): LineReader = super.buildReader(
         builder.appName("Krypton")

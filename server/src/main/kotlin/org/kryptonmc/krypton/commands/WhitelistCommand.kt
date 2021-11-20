@@ -163,8 +163,10 @@ object WhitelistCommand : InternalCommand {
             server.playerManager.whitelistedIps.add(entry)
             sender.sendMessage(translatable("commands.whitelist.add.success", text(target)))
             return
-        } else if (server.player(target) != null) {
-            val address = server.player(target)!!.address.asString()
+        }
+        val player = server.player(target)
+        if (player != null) {
+            val address = player.address.asString()
             if (server.playerManager.whitelistedIps.contains(address)) {
                 sender.sendMessage(translatable("commands.whitelist.add.failed"))
                 return

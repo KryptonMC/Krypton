@@ -16,11 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity
+package org.kryptonmc.krypton.packet.`in`.play
 
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.EntityTypes
+import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.block.BlockFace
+import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.decodeBlockPosition
 
-fun EntityType<*>.trackDeltas() = this !== EntityTypes.PLAYER && this !== EntityTypes.LLAMA_SPIT && this !== EntityTypes.WITHER &&
-        this !== EntityTypes.BAT && this !== EntityTypes.ITEM_FRAME && this !== EntityTypes.GLOW_ITEM_FRAME && this !== EntityTypes.LEASH_KNOT &&
-        this !== EntityTypes.PAINTING && this !== EntityTypes.END_CRYSTAL && this !== EntityTypes.EVOKER_FANGS
+class PacketInPlayerUseItem(buf: ByteBuf) : Packet {
+
+    val hand = buf.readEnum<Hand>()
+}

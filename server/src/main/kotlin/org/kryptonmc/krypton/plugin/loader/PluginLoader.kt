@@ -34,8 +34,6 @@ import org.kryptonmc.krypton.plugin.KryptonPluginDependency
 import org.kryptonmc.krypton.plugin.PluginClassLoader
 import org.kryptonmc.processor.SerializedPluginDescription
 import java.nio.file.Path
-import java.security.AccessController
-import java.security.PrivilegedAction
 import java.util.jar.JarInputStream
 import kotlin.io.path.inputStream
 
@@ -52,9 +50,7 @@ object PluginLoader {
 
     fun loadPlugin(description: PluginDescription): LoadedPluginDescription {
         require(description is LoadedPluginDescriptionCandidate) { "Description provided isn't a loaded candidate!" }
-        val loader = AccessController.doPrivileged(PrivilegedAction { PluginClassLoader(description.source) }).apply {
-            addToLoaders()
-        }
+        val loader = PluginClassLoader(description.source).addToLoaders()
         val mainClass = loader.loadClass(description.mainClass)
         return description.toFull(mainClass)
     }

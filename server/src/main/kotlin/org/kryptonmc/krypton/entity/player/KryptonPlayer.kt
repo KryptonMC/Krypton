@@ -32,6 +32,7 @@ import net.kyori.adventure.sound.SoundStop
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
+import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
@@ -46,15 +47,17 @@ import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
-import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.Statistic
+import org.kryptonmc.api.util.Direction
+import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.kryptonmc.krypton.entity.KryptonEntity
@@ -62,8 +65,8 @@ import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.handler
-import org.kryptonmc.krypton.item.toItemStack
 import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
@@ -91,17 +94,18 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutSubTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
+import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
+import org.kryptonmc.krypton.util.BossBarManager
 import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.util.BossBarManager
-import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.scoreboard.KryptonScore
 import org.kryptonmc.nbt.CompoundTag
@@ -112,8 +116,9 @@ import java.net.InetSocketAddress
 import java.time.Duration
 import java.util.Locale
 import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
@@ -197,7 +202,8 @@ class KryptonPlayer(
     override val dimension: ResourceKey<World>
         get() = world.dimension
 
-    val viewableEntities: MutableSet<KryptonEntity> = ConcurrentHashMap.newKeySet()
+    override var isVanished = false
+    private val hiddenPlayers = mutableSetOf<UUID>()
 
     private var respawnPosition: Vector3i? = null
     private var respawnForced = false
@@ -225,6 +231,10 @@ class KryptonPlayer(
         inventory.load(tag.getList("Inventory", CompoundTag.ID))
         inventory.heldSlot = tag.getInt("SelectedItemSlot")
         score = tag.getInt("Score")
+        foodLevel = tag.getInt("foodLevel")
+        foodTickTimer = tag.getInt("foodTickTimer")
+        foodExhaustionLevel = tag.getFloat("foodExhaustionLevel")
+        foodSaturationLevel = tag.getFloat("foodSaturationLevel")
         if (tag.contains("abilities", CompoundTag.ID)) {
             val abilitiesData = tag.getCompound("abilities")
             isInvulnerable = abilitiesData.getBoolean("invulnerable")
@@ -263,13 +273,22 @@ class KryptonPlayer(
                 respawnDimension = dimension.resultOrPartial(LOGGER::error).orElse(World.OVERWORLD)
             }
         }
+
+        if (tag.contains("krypton", CompoundTag.ID)) {
+            val kryptonData = tag.getCompound("krypton")
+            isVanished = kryptonData.getBoolean("vanished")
+        }
     }
 
-    override fun save() = super.save().apply {
+    override fun save(): CompoundTag.Builder = super.save().apply {
         int("DataVersion", KryptonPlatform.worldVersion)
         put("Inventory", inventory.save())
         int("SelectedItemSlot", inventory.heldSlot)
         int("Score", score)
+        int("foodLevel", foodLevel)
+        int("foodTickTimer", foodTickTimer)
+        float("foodExhaustionLevel", foodExhaustionLevel)
+        float("foodSaturationLevel", foodSaturationLevel)
         compound("abilities") {
             boolean("flying", isFlying)
             boolean("invulnerable", isInvulnerable)
@@ -293,6 +312,105 @@ class KryptonPlayer(
             Codecs.DIMENSION.encodeStart(NBTOps, respawnDimension)
                 .resultOrPartial(LOGGER::error)
                 .ifPresent { put("SpawnDimension", it) }
+        }
+        compound("krypton") {
+            boolean("vanished", isVanished)
+        }
+    }
+
+    override fun tick() {
+        super.tick()
+        hungerMechanic()
+    }
+
+    private fun hungerMechanic() {
+        // TODO: More actions for exhaustion, add constants?
+        foodTickTimer++
+
+        // Sources:
+        //      -> Minecraft Wiki https://minecraft.fandom.com/wiki/Hunger
+        //      -> 3 other implementations of this exact mechanic (lines up with wiki)
+
+        // Food System
+        // The food exhaustion level accumulates exhaustion from player actions
+        // over time. Once the exhaustion level exceeds a threshold of 4, it
+        // resets, and then deducts a food saturation level.
+        // The food saturation level, in turn, once depleted (at zero), deducts a
+        // a food level every tick, only once the exhaustion has been reset again.
+        // Additionally, client side, a saturation level of zero is responsible for
+        // triggering the shaking of the hunger bar.
+        // TLDR: The exhaustion level deducts from the saturation. The saturation level
+        // follows the food level and acts as a buffer before any food levels are deducted.
+        // -> Player action
+        // -> Exhaustion ↑
+        // -> If Exhaustion Threshold of 4
+        // -> Reset Exhaustion
+        // -> Saturation ↓
+        // -> If Saturation Threshold of 0
+        // -> Food Level ↓
+        if (foodExhaustionLevel > 4f) {
+            foodExhaustionLevel -= 4f
+            if (foodSaturationLevel > 0) {
+                foodSaturationLevel = max(foodSaturationLevel - 1, 0f)
+            } else {
+                foodLevel = max(foodLevel - 1, 0)
+            }
+        }
+
+        // Starvation System
+        // If the food level is zero, every 80 ticks, deduct a half-heart.
+        // This system is conditional based on difficulty.
+        //      -> Easy: Health must be greater than 10
+        //      -> Normal: Health must be greater than 1
+        //      -> Hard: There is no minimum health, good luck out there.
+        // An exception to this system is in peaceful mode, where every 20 ticks,
+        // the food level regenerates instead of deducting a half-heart.
+        // NOTE: 80 are 20 ticks are the vanilla timings for hunger and
+        // peaceful food regeneration respectively.
+        when (server.config.world.difficulty) {
+            Difficulty.EASY -> {
+                if (health > 10 && foodLevel == 0 && foodTickTimer == 80) { // starving
+                    health-- // deduct half a heart
+                }
+            }
+            Difficulty.NORMAL -> {
+                if (health > 1 && foodLevel == 0 && foodTickTimer == 80) {
+                    health--
+                }
+            }
+            Difficulty.HARD -> {
+                if (foodLevel == 0 && foodTickTimer == 80) {
+                    health--
+                }
+            }
+            Difficulty.PEACEFUL -> {
+                if (foodLevel < 20 && foodTickTimer % 20 == 0) {
+                    foodLevel++ // increase player food level
+                }
+            }
+        }
+
+        // Health Regeneration System
+        // Every 80 ticks if the food level is greater than
+        // or equal to 18, add a half-heart to the player.
+        // Healing of course, comes at an expense to the player's
+        // food level, so food exhaustion and saturation are adjusted
+        // to bring equilibrium to the hunger system. This is to avoid
+        // a player healing infinitely.
+        if (foodTickTimer == 80) {
+            if (foodLevel >= 18) {
+                health++ // Regenerate health
+                // Once a half-heart has been added, increase the exhaustion by 3,
+                // or if that operation were to exceed the threshold, instead, set it to the
+                // threshold value of 4.
+                foodExhaustionLevel = min(foodExhaustionLevel + 3f, 4f)
+                // Force the saturation level to deplete by 3.
+                // So as health comes up, the food "buffer" comes down,
+                // eventually causing the food level to decrease, when saturation
+                // reaches zero.
+                foodSaturationLevel -= 3
+            }
+            foodTickTimer = 0 // reset tick timer
         }
     }
 
@@ -343,11 +461,41 @@ class KryptonPlayer(
         updateChunks()
     }
 
-    override fun teleport(player: Player) = teleport(player.location)
+    override fun teleport(player: Player) {
+        teleport(player.location)
+    }
 
-    override fun getPermissionValue(permission: String) = permissionFunction[permission]
+    override fun vanish() {
+        if (isVanished) return // We are already vanished
+        isVanished = true
+        world.players.forEach { removeViewer(it) }
+    }
 
-    override fun getSpawnPacket() = PacketOutSpawnPlayer(this)
+    override fun unvanish() {
+        if (!isVanished) return // We are not vanished
+        isVanished = false
+        world.players.forEach { addViewer(it) }
+    }
+
+    override fun show(player: Player) {
+        if (player !is KryptonPlayer || this == player) return
+        if (!hiddenPlayers.contains(player.uuid)) return
+        hiddenPlayers.remove(player.uuid)
+        player.addViewer(this)
+    }
+
+    override fun hide(player: Player) {
+        if (player !is KryptonPlayer || this == player) return
+        if (hiddenPlayers.contains(player.uuid)) return
+        hiddenPlayers.add(player.uuid)
+        player.removeViewer(this)
+    }
+
+    override fun canSee(player: Player): Boolean = hiddenPlayers.contains(player.uuid)
+
+    override fun getPermissionValue(permission: String): TriState = permissionFunction[permission]
+
+    override fun getSpawnPacket(): Packet = PacketOutSpawnPlayer(this)
 
     override fun sendPluginMessage(channel: Key, message: ByteArray) {
         if (channel in DEBUG_CHANNELS) {
@@ -414,11 +562,11 @@ class KryptonPlayer(
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
         val type = InternalRegistries.SOUND_EVENT[sound.name()]
-        session.send(if (type != null) {
-            PacketOutSoundEffect(sound, type, x, y, z)
-        } else {
-            PacketOutNamedSoundEffect(sound, x, y, z)
-        })
+        if (type != null) {
+            session.send(PacketOutSoundEffect(sound, type, x, y, z))
+            return
+        }
+        session.send(PacketOutNamedSoundEffect(sound, x, y, z))
     }
 
     override fun playSound(sound: Sound, emitter: Sound.Emitter) {
@@ -431,17 +579,17 @@ class KryptonPlayer(
         val event = Registries.SOUND_EVENT[sound.name()]
         if (event != null) {
             session.send(PacketOutEntitySoundEffect(event, sound.source(), entity.id, sound.volume(), sound.pitch()))
-        } else {
-            session.send(PacketOutNamedSoundEffect(
-                sound.name(),
-                sound.source(),
-                entity.location.x(),
-                entity.location.y(),
-                entity.location.z(),
-                sound.volume(),
-                sound.pitch()
-            ))
+            return
         }
+        session.send(PacketOutNamedSoundEffect(
+            sound.name(),
+            sound.source(),
+            entity.location.x(),
+            entity.location.y(),
+            entity.location.z(),
+            sound.volume(),
+            sound.pitch()
+        ))
     }
 
     override fun stopSound(stop: SoundStop) {
@@ -449,7 +597,7 @@ class KryptonPlayer(
     }
 
     override fun openBook(book: Book) {
-        val item = book.toItemStack()
+        val item = KryptonAdventure.toItemStack(book)
         val slot = inventory.items.size + inventory.heldSlot
         val stateId = inventory.stateId
         session.send(PacketOutSetSlot(0, stateId, slot, item))
@@ -570,7 +718,9 @@ class KryptonPlayer(
         scoreboard.forEachObjective(statistic, teamRepresentation) { it.add(amount) }
     }
 
-    override fun incrementStatistic(key: Key, amount: Int) = incrementStatistic(KryptonStatisticTypes.CUSTOM[key], amount)
+    override fun incrementStatistic(key: Key, amount: Int) {
+        incrementStatistic(KryptonStatisticTypes.CUSTOM[key], amount)
+    }
 
     override fun decrementStatistic(statistic: Statistic<*>, amount: Int) {
         statistics.decrement(statistic, amount)
@@ -587,19 +737,44 @@ class KryptonPlayer(
         if (isSwimming) {
             val value = (sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 100F).roundToInt()
             if (value > 0) incrementStatistic(CustomStatistics.SWIM_ONE_CM, value)
-        } else if (isOnGround) {
+            return
+        }
+        if (isOnGround) {
             val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ) * 100F).roundToInt()
             if (value > 0) when {
                 isSprinting -> incrementStatistic(CustomStatistics.SPRINT_ONE_CM, value)
                 isCrouching -> incrementStatistic(CustomStatistics.CROUCH_ONE_CM, value)
                 else -> incrementStatistic(CustomStatistics.WALK_ONE_CM, value)
             }
-        } else if (isFallFlying) {
+            return
+        }
+        if (isFallFlying) {
             val value = (sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 100F).roundToInt()
             incrementStatistic(CustomStatistics.AVIATE_ONE_CM, value)
-        } else {
+            return
+        }
+        if (isFlying) {
             val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ ) * 100F).roundToInt()
             if (value > FLYING_ACHIEVEMENT_MINIMUM_SPEED) incrementStatistic(CustomStatistics.FLY_ONE_CM, value)
+            return
+        }
+    }
+
+    fun updateMovementExhaustion(deltaX: Double, deltaY: Double, deltaZ: Double) {
+        // Source: https://minecraft.fandom.com/wiki/Hunger#Exhaustion_level_increase
+        if (isSwimming) {
+            val value = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ)
+            if (value > 0) foodExhaustionLevel += 0.01F * value.toFloat()
+            // 0.01/u is the vanilla level of exhaustion per unit for swimming
+            return
+        }
+        if (isOnGround) {
+            val value = sqrt(deltaX * deltaX + deltaZ * deltaZ)
+            if (value > 0) when {
+                isSprinting -> foodExhaustionLevel += 0.1F * value.toFloat()
+                // 0.1/u is the vanilla level of exhaustion per unit for sprinting
+            }
+            return
         }
     }
 
@@ -610,6 +785,35 @@ class KryptonPlayer(
     var score: Int
         get() = data[MetadataKeys.PLAYER.SCORE]
         set(value) = data.set(MetadataKeys.PLAYER.SCORE, value)
+
+    override var health: Float
+        get() = super.health
+        set(value) {
+            super.health = value
+            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
+        }
+
+    // Sources for vanilla hunger system values:
+    //      -> Minecraft Wiki https://minecraft.fandom.com/wiki/Hunger
+    // 20 is the default vanilla food level
+    override var foodLevel: Int = 20
+        set(value) {
+            field = value
+            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
+        }
+
+    var foodTickTimer: Int = 0
+
+    // 0 is the default vanilla food exhaustion level
+    override var foodExhaustionLevel: Float = 0f
+
+    // 5 is the default vanilla food saturation level
+    override var foodSaturationLevel: Float = 5f
+        set(value) {
+            field = value
+            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
+        }
+
 
     var skinSettings: Byte
         get() = data[MetadataKeys.PLAYER.SKIN_FLAGS]
@@ -651,7 +855,7 @@ class KryptonPlayer(
         )
         private val LOGGER = logger<KryptonPlayer>()
         private val SERVER_LOGGER = logger<KryptonServer>()
-        private val ATTRIBUTES = KryptonLivingEntity.attributes()
+        private val ATTRIBUTES = attributes()
             .add(AttributeTypes.ATTACK_DAMAGE, 1.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.1)
             .add(AttributeTypes.ATTACK_SPEED)

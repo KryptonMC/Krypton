@@ -20,41 +20,44 @@ package org.kryptonmc.krypton.command.arguments.coordinates
 
 import com.mojang.brigadier.StringReader
 import org.kryptonmc.api.entity.player.Player
+import org.spongepowered.math.TrigMath
 import org.spongepowered.math.vector.Vector2d
 import org.spongepowered.math.vector.Vector3d
-import kotlin.math.cos
-import kotlin.math.sin
 
-class LocalCoordinates(
+@JvmRecord
+data class LocalCoordinates(
     private val left: Double,
     private val up: Double,
     private val forwards: Double
 ) : Coordinates {
 
     override fun position(player: Player): Vector3d {
+        // All of this is some slightly complicated linear algebra that I don't really understand.
+        // What this does is determine absolute coordinates from the local forwards, up, and left components, which are relative
+        // to the direction that a player is facing.
         val rotation = player.rotation
-        val dividedPi = Math.PI / 180
-        val pitch1 = cos((rotation.x() + 90F) * dividedPi).toFloat()
-        val pitch2 = sin((rotation.y() + 90F) * dividedPi).toFloat()
-        val yaw1 = cos(-rotation.x() * dividedPi).toFloat()
-        val yaw2 = sin(-rotation.x() * dividedPi).toFloat()
-        val yaw3 = cos((-rotation.x() + 90F) * dividedPi).toFloat()
-        val yaw4 = sin((-rotation.x() + 90F) * dividedPi).toFloat()
+        val pitch1 = TrigMath.cos(Math.toRadians(rotation.y() + 90.0))
+        val pitch2 = TrigMath.sin(Math.toRadians(rotation.y() + 90.0))
+        val yaw1 = TrigMath.cos(Math.toRadians(-rotation.x().toDouble()))
+        val yaw2 = TrigMath.sin(Math.toRadians(-rotation.x().toDouble()))
+        val yaw3 = TrigMath.cos(Math.toRadians(-rotation.x() + 90.0))
+        val yaw4 = TrigMath.sin(Math.toRadians(-rotation.x() + 90.0))
 
         val someVector = Vector3d(pitch1 * yaw1, yaw2, pitch2 * yaw1)
         val someOtherVector = Vector3d(pitch1 * yaw3, yaw4, pitch2 * yaw3)
         val scaled = someVector.cross(someOtherVector).negate()
 
-        val x = someVector.x() * forwards + someOtherVector.x() * up + scaled.x() * left
-        val y = someVector.y() * forwards + someOtherVector.y() * up + scaled.y() * left
-        val z = someVector.z() * forwards + someOtherVector.z() * up + scaled.z() * left
-        return Vector3d(player.location.x() + x, player.location.y() + y, player.location.z() + z)
+        val offsetX = someVector.x() * forwards + someOtherVector.x() * up + scaled.x() * left
+        val offsetY = someVector.y() * forwards + someOtherVector.y() * up + scaled.y() * left
+        val offsetZ = someVector.z() * forwards + someOtherVector.z() * up + scaled.z() * left
+        return Vector3d(player.location.x() + offsetX, player.location.y() + offsetY, player.location.z() + offsetZ)
     }
 
     override fun rotation(player: Player): Vector2d = Vector2d.ZERO
 
     companion object {
 
+        @JvmStatic
         fun parse(reader: StringReader): LocalCoordinates {
             val resetPosition = reader.cursor
             val left = reader.readPositionalDouble(resetPosition)
@@ -75,6 +78,7 @@ class LocalCoordinates(
             return LocalCoordinates(left, up, forwards)
         }
 
+        @JvmStatic
         private fun StringReader.readPositionalDouble(resetPosition: Int): Double {
             if (!canRead()) throw CoordinateExceptions.POSITION_EXPECTED_DOUBLE.createWithContext(this)
             if (peek() != '^') {

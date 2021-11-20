@@ -61,7 +61,7 @@ class MetadataHolder(private val entity: KryptonEntity) {
     }
 
     @Suppress("UNCHECKED_CAST")
-    operator fun <T> get(key: MetadataKey<T>) = lock.read { itemsById[key.id] as Entry<T> }.value
+    operator fun <T> get(key: MetadataKey<T>): T = lock.read { itemsById[key.id] as Entry<T> }.value
 
     @Suppress("UNCHECKED_CAST")
     operator fun <T> set(key: MetadataKey<T>, value: T) {
@@ -90,7 +90,7 @@ class MetadataHolder(private val entity: KryptonEntity) {
 
         var isDirty = true
 
-        fun copy() = Entry(key, key.serializer.copy(value))
+        fun copy(): Entry<T> = Entry(key, key.serializer.copy(value))
     }
 
     companion object {

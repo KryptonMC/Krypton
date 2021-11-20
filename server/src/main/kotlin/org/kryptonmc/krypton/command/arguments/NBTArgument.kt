@@ -27,7 +27,7 @@ object NBTArgument : ArgumentType<Tag> {
 
     private val EXAMPLES = listOf("0", "0b", "0l", "0.0", "\"foo\"", "{foo=bar}", "[0]")
 
-    override fun parse(reader: StringReader) = SNBTParser(reader).readValue()
+    override fun parse(reader: StringReader): Tag = SNBTParser(reader).readValue()
 
-    override fun getExamples() = EXAMPLES
+    override fun getExamples(): Collection<String> = EXAMPLES
 }

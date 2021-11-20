@@ -26,11 +26,11 @@ import org.spongepowered.math.vector.Vector3d
 @JvmRecord
 data class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val z: WorldCoordinate) : Coordinates {
 
-    override val relativeX: Boolean
+    override val hasRelativeX: Boolean
         get() = x.isRelative
-    override val relativeY: Boolean
+    override val hasRelativeY: Boolean
         get() = y.isRelative
-    override val relativeZ: Boolean
+    override val hasRelativeZ: Boolean
         get() = z.isRelative
 
     override fun position(player: Player) = Vector3d(
@@ -46,6 +46,7 @@ data class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val 
 
     companion object {
 
+        @JvmStatic
         fun parse(reader: StringReader, correctCenter: Boolean): WorldCoordinates {
             val position = reader.cursor
             val x = WorldCoordinate.parse(reader, correctCenter)

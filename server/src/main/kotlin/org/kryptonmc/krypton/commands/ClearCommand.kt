@@ -71,44 +71,34 @@ object ClearCommand : InternalCommand {
             val target = targets[0]
             clear(target, predicate, maxCount)
             sender.sendMessage(translatable("commands.clear.success.single", text(amount), target.displayName))
-            target.session.send(PacketOutWindowItems(
-                target.inventory.id,
-                target.inventory.incrementStateId(),
-                target.inventory.networkWriter,
-                target.inventory.mainHand
-            ))
+            target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
         } else {
             targets.forEach { target ->
                 target.inventory.forEachIndexed { index, item -> if (predicate(item)) target.inventory[index] = EmptyItemStack }
-                target.session.send(PacketOutWindowItems(
-                    target.inventory.id,
-                    target.inventory.incrementStateId(),
-                    target.inventory.networkWriter,
-                    target.inventory.mainHand
-                ))
+                target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
             }
             sender.sendMessage(translatable("commands.clear.success.multiple", text(amount), text(targets.size.toString())))
         }
     }
 
     private fun clear(target: KryptonPlayer, predicate: ItemStackPredicate, maxCount: Int) {
-        val inv = target.inventory
+        val inventory = target.inventory
         var remaining = maxCount
 
         // Clear inventory items
-        remaining = clearList(predicate, remaining, inv.items) { inv.items[it] = EmptyItemStack }
+        remaining = clearList(predicate, remaining, inventory.items) { inventory.items[it] = EmptyItemStack }
         if (remaining == 0) return
 
         // Clear armor items
-        remaining = clearList(predicate, remaining, inv.armor) { inv.armor[it] = EmptyItemStack }
+        remaining = clearList(predicate, remaining, inventory.armor) { inventory.armor[it] = EmptyItemStack }
         if (remaining == 0) return
 
         // Clear crafting items
-        remaining = clearList(predicate, remaining, inv.crafting) { inv.crafting[it] = EmptyItemStack }
+        remaining = clearList(predicate, remaining, inventory.crafting) { inventory.crafting[it] = EmptyItemStack }
         if (remaining == 0) return
 
         // Clear offhand
-        clearList(predicate, remaining, arrayOf(inv.offHand)) { inv.offHand = EmptyItemStack }
+        clearList(predicate, remaining, arrayOf(inventory.offHand)) { inventory.offHand = EmptyItemStack }
     }
 
     private fun clearList(

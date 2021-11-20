@@ -62,7 +62,8 @@ object BanIpCommand : InternalCommand {
 
     private fun banIp(server: KryptonServer, target: String, sender: Sender, reason: String = "Banned by operator") {
         val componentReason = LegacyComponentSerializer.legacySection().deserialize(reason)
-        if (target.matches(IP_ADDRESS_PATTERN)) { // The target is an IP address
+        if (target.matches(IP_ADDRESS_PATTERN)) {
+            // The target is an IP address
             // Check player is not already banned
             if (server.playerManager.bannedIps.contains(target)) throw ALREADY_BANNED.create()
             val entry = BannedIpEntry(target, reason = componentReason)
@@ -70,7 +71,10 @@ object BanIpCommand : InternalCommand {
 
             // Send success
             sender.sendMessage(translatable("commands.banip.success", text(target), text(reason)))
-        } else if (server.player(target) != null) { // The target is a player
+            return
+        }
+        if (server.player(target) != null) {
+            // The target is a player
             val player = server.player(target)!!
             val entry = BannedIpEntry(player.address.asString(), reason = componentReason)
 
@@ -88,8 +92,9 @@ object BanIpCommand : InternalCommand {
 
             // Send success
             sender.sendMessage(translatable("commands.banip.success", text(target), entry.reason))
-        } else { // The target isn't an IP address or a player
-            sender.sendMessage(translatable("commands.banip.invalid"))
+            return
         }
+        // The target isn't an IP address or a player
+        sender.sendMessage(translatable("commands.banip.invalid"))
     }
 }

@@ -75,7 +75,7 @@ data class KryptonAttribute(
         makeDirty()
     }
 
-    fun save() = compound {
+    fun save(): CompoundTag = compound {
         string("Name", type.key().asString())
         double("Base", baseValue)
         put("Modifiers", modifiersByOperation.save())

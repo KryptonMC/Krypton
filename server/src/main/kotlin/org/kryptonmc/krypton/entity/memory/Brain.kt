@@ -26,16 +26,18 @@ import org.kryptonmc.nbt.compound
 
 class Brain(private val memories: MutableList<Memory<out Any>>) {
 
-    fun load(tag: CompoundTag) = tag.getCompound("Memories").forEach {
-        val key = InternalRegistries.MEMORIES[Key.key(it.key)] ?: return@forEach
-        val value = it.value as? CompoundTag ?: return@forEach
-        val decodedResult = key.codec.parse(NBTOps, value["value"] ?: return@forEach)
-        if (decodedResult.result().isEmpty) return@forEach
-        val decoded = decodedResult.result().get()
-        memories += Memory(key, decoded, value.getLong("ttl"))
+    fun load(tag: CompoundTag) {
+        tag.getCompound("Memories").forEach {
+            val key = InternalRegistries.MEMORIES[Key.key(it.key)] ?: return@forEach
+            val value = it.value as? CompoundTag ?: return@forEach
+            val decodedResult = key.codec.parse(NBTOps, value["value"] ?: return@forEach)
+            if (decodedResult.result().isEmpty) return@forEach
+            val decoded = decodedResult.result().get()
+            memories += Memory(key, decoded, value.getLong("ttl"))
+        }
     }
 
-    fun save() = compound {
+    fun save(): CompoundTag = compound {
         compound("memories") memories@{ memories.forEach { it.save(this@memories) } }
     }
 }

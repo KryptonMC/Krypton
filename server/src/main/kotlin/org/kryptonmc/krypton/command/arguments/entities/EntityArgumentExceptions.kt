@@ -26,27 +26,29 @@ import org.kryptonmc.api.adventure.toMessage
 
 object EntityArgumentExceptions {
 
-    val MISSING_SELECTOR = SimpleCommandExceptionType(translatable("argument.entity.selector.missing").toMessage())
+    @JvmField val MISSING_SELECTOR = SimpleCommandExceptionType(translatable("argument.entity.selector.missing").toMessage())
+    @JvmField
     val UNKNOWN_SELECTOR = DynamicCommandExceptionType {
         translatable("argument.entity.selector.unknown", text(it.toString())).toMessage()
     }
-    val UNTERMINATED = SimpleCommandExceptionType(translatable("argument.entity.options.unterminated").toMessage())
+    @JvmField val UNTERMINATED = SimpleCommandExceptionType(translatable("argument.entity.options.unterminated").toMessage())
+    @JvmField
     val VALUELESS = DynamicCommandExceptionType {
         translatable("argument.entity.options.valueless", text(it.toString())).toMessage()
     }
+    @JvmField
     val INVALID_OPTION = DynamicCommandExceptionType {
         translatable("argument.entity.options.unknown", text(it.toString())).toMessage()
     }
-    val PLAYER_NOT_FOUND = SimpleCommandExceptionType(translatable("argument.entity.notfound.player").toMessage())
-    val ENTITY_NOT_FOUND = SimpleCommandExceptionType(translatable("argument.entity.notfound.entity").toMessage())
-    val TOO_MANY_ENTITIES = SimpleCommandExceptionType(translatable("argument.entity.toomany").toMessage())
-    val TOO_MANY_PLAYERS = SimpleCommandExceptionType(translatable("argument.player.toomany").toMessage())
-    val ONLY_FOR_PLAYERS = SimpleCommandExceptionType(translatable("argument.player.entities").toMessage())
-    val UNKNOWN_PLAYER = SimpleCommandExceptionType(translatable("argument.player.unknown").toMessage())
-    val LIMIT_NULL = SimpleCommandExceptionType(translatable("argument.entity.options.limit.toosmall").toMessage())
-    val DISTANCE_NEGATIVE = SimpleCommandExceptionType(
-        translatable("argument.entity.options.distance.negative").toMessage()
-    )
+    @JvmField val PLAYER_NOT_FOUND = SimpleCommandExceptionType(translatable("argument.entity.notfound.player").toMessage())
+    @JvmField val ENTITY_NOT_FOUND = SimpleCommandExceptionType(translatable("argument.entity.notfound.entity").toMessage())
+    @JvmField val TOO_MANY_ENTITIES = SimpleCommandExceptionType(translatable("argument.entity.toomany").toMessage())
+    @JvmField val TOO_MANY_PLAYERS = SimpleCommandExceptionType(translatable("argument.player.toomany").toMessage())
+    @JvmField val ONLY_FOR_PLAYERS = SimpleCommandExceptionType(translatable("argument.player.entities").toMessage())
+    @JvmField val UNKNOWN_PLAYER = SimpleCommandExceptionType(translatable("argument.player.unknown").toMessage())
+    @JvmField val LIMIT_NULL = SimpleCommandExceptionType(translatable("argument.entity.options.limit.toosmall").toMessage())
+    @JvmField val DISTANCE_NEGATIVE = SimpleCommandExceptionType(translatable("argument.entity.options.distance.negative").toMessage())
+    @JvmField
     val INVALID_SORT_TYPE = DynamicCommandExceptionType {
         translatable(
             "argument.entity.options.sort.irreversible",

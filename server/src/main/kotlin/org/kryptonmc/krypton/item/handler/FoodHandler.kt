@@ -18,19 +18,25 @@
  */
 package org.kryptonmc.krypton.item.handler
 
-import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.world.GameModes
-import org.kryptonmc.api.world.World
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.util.InteractionResult
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.item.KryptonUseItemResult
 
-object TridentHandler : KryptonItemHandler {
+object FoodHandler : KryptonItemTimedHandler {
 
-    override fun canAttackBlock(
-        player: Player,
-        world: World,
-        block: Block,
-        position: Vector3i
-    ): Boolean = player.gameMode !== GameModes.CREATIVE
+    override fun finishUse(player: Player, hand: Hand): KryptonUseItemResult {
+        // TODO: Remove hardcoded values and add tick system
+        val stack = player.inventory.heldItem(hand)
+        stack.amount--
+        player.inventory.setHeldItem(hand, stack)
+        // These are dummy values for testing, until saturation and food level values
+        // can be pulled from item definitions, and once more thought is in put into
+        // fleshing out the handling of food consumption et cetera.
+        player.foodLevel += 8
+        player.foodSaturationLevel += 12.8f
+        return KryptonUseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
+    }
+
 }

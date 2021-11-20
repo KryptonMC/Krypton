@@ -16,15 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command.arguments.coordinates
+package org.kryptonmc.krypton.packet.out.play
 
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
+import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toMessage
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.kryptonmc.api.scoreboard.Score
+import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeVarInt
 
-object CoordinateExceptions {
+@JvmRecord
+data class PacketOutUpdateHealth(
+    private val health: Float,
+    private val food: Int,
+    private val foodSaturation: Float
+) : Packet {
 
-    @JvmField val POSITION_EXPECTED_DOUBLE = SimpleCommandExceptionType(Component.translatable("argument.pos.missing.double").toMessage())
-    @JvmField val POSITION_3D_INCOMPLETE = SimpleCommandExceptionType(Component.translatable("argument.pos3d.incomplete").toMessage())
-    @JvmField val POSITION_MIXED_TYPE = SimpleCommandExceptionType(Component.translatable("argument.pos.mixed").toMessage())
+    override fun write(buf: ByteBuf) {
+        buf.writeFloat(health)
+        buf.writeVarInt(food)
+        buf.writeFloat(foodSaturation)
+    }
 }

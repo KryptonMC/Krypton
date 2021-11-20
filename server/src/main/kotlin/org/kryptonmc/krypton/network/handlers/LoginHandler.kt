@@ -116,8 +116,7 @@ class LoginHandler(
 
             // Copy over the data from legacy forwarding
             // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
-            val uuid = legacyForwardedData?.uuid
-                ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
+            val uuid = legacyForwardedData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
             val profile = KryptonGameProfile(packet.name, uuid, legacyForwardedData?.properties ?: emptyList())
 
             // Check the player can join and the login event was not cancelled.
@@ -166,11 +165,7 @@ class LoginHandler(
 
             // Check the profile from the event and construct the player.
             val resultProfile = it.result.profile
-            val finalProfile = if (resultProfile != null && resultProfile is KryptonGameProfile) {
-                resultProfile
-            } else {
-                profile
-            }
+            val finalProfile = if (resultProfile != null && resultProfile is KryptonGameProfile) resultProfile else profile
             KryptonPlayer(session, finalProfile, server.worldManager.default, address)
         }, session.channel.eventLoop()).thenApplyAsync({
             if (it == null) return@thenApplyAsync

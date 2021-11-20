@@ -22,13 +22,14 @@ import com.mojang.brigadier.StringReader
 
 object EntityArgumentParser {
 
+    @JvmStatic
     fun parse(
         reader: StringReader,
         operation: Char,
         position: Int,
         onlyPlayers: Boolean,
         singleTarget: Boolean,
-    ) = when (operation) {
+    ): EntityQuery = when (operation) {
         'p' -> EntityQuery(emptyList(), EntityQuery.Selector.NEAREST_PLAYER)
         'e' -> {
             if (singleTarget) {
@@ -67,7 +68,8 @@ object EntityArgumentParser {
         }
     }
 
-    private fun parseArguments(reader: StringReader, ): List<EntityArgument.EntityArg> {
+    @JvmStatic
+    private fun parseArguments(reader: StringReader): List<EntityArgument.EntityArg> {
         reader.skipWhitespace()
         val args = mutableListOf<EntityArgument.EntityArg>()
         while (reader.canRead() && reader.peek() != ']') {

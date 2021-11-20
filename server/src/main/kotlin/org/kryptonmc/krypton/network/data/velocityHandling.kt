@@ -57,7 +57,7 @@ fun ByteBuf.readVelocityProperties(): List<KryptonProfileProperty> {
     return properties
 }
 
-fun ByteBuf.readVelocityData() = VelocityForwardedData(
+fun ByteBuf.readVelocityData(): VelocityForwardedData = VelocityForwardedData(
     InetAddresses.forString(readString()),
     UUID(readLong(), readLong()),
     readString(16),
