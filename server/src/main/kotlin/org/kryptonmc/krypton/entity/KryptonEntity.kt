@@ -128,6 +128,7 @@ abstract class KryptonEntity(
         get() = !isRemoved
     protected open val pushedByFluid: Boolean
         get() = true
+    open val isRideable: Boolean = false
 
     open val soundSource: Sound.Source
         get() = Sound.Source.NEUTRAL
@@ -415,6 +416,12 @@ abstract class KryptonEntity(
             val tempVehicle = vehicle as KryptonEntity
             vehicle = null
             tempVehicle.removePassenger(this)
+        }
+    }
+
+    override fun tryRide(entity: Entity) {
+        if (isRideable) {
+            addPassenger(entity)
         }
     }
 

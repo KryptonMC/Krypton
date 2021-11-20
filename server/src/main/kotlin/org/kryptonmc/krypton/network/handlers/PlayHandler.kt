@@ -20,12 +20,10 @@ package org.kryptonmc.krypton.network.handlers
 
 import com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
-import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.event.ClickEvent.suggestCommand
-import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.command.CommandExecuteEvent
@@ -286,10 +284,9 @@ class PlayHandler(
     }
 
     private fun handlePlayerInteractEntity(packet: PacketInPlayerInteractEntity) {
-        // TODO: Check if entity is rideable
         if (packet.type === PacketInPlayerInteractEntity.Type.INTERACT) {
             val target = player.world.entityManager[packet.entityId]
-            target?.addPassenger(player)
+            target?.tryRide(player)
         }
     }
 

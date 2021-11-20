@@ -180,6 +180,11 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public var isSilent: Boolean
 
     /**
+     * If this entity is rideable or not.
+     */
+    public val isRideable: Boolean
+
+    /**
      * If this entity is affected by gravity.
      *
      * When this value is false, this entity will not naturally fall when it
@@ -317,6 +322,13 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
         yaw: Float = rotation.x(),
         pitch: Float = rotation.y()
     )
+
+    /**
+     * Tries to ride this entity with an entity
+     *
+     * @param entity the entity to try ride this entity
+     */
+    public fun tryRide(entity: Entity)
 
     /**
      * Adds a passenger to this entity
