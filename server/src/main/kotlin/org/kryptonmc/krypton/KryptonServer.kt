@@ -166,6 +166,7 @@ class KryptonServer(
         loadPlugins()
         LOGGER.info("Loading built-in Spark...")
         sparkPlugin.start()
+        sparkPlugin.tickReporter.endTick(0L) // Makes MSPT not return null by setting durationSupported
 
         // Fire the event that signals the server starting. We fire it here so that plugins can listen to it as part of their lifecycle,
         // and we call it sync so plugins can finish initialising before we do.
