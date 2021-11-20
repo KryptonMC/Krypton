@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.adventure.toPlainText
+import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.LivingEntity
@@ -149,6 +150,12 @@ abstract class KryptonLivingEntity(
     protected fun removeEffectParticles() {
         isPotionEffectAmbient = false
         potionEffectColor = 0
+    }
+
+    override fun tryRide(entity: Entity) {
+        if (isAlive && isRideable) {
+            addPassenger(entity)
+        }
     }
 
     final override var isUsingItem: Boolean

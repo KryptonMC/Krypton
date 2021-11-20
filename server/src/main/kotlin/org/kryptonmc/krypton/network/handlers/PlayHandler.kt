@@ -20,12 +20,10 @@ package org.kryptonmc.krypton.network.handlers
 
 import com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
-import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import net.kyori.adventure.text.event.ClickEvent.suggestCommand
-import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.command.CommandExecuteEvent
@@ -70,6 +68,8 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityNBTQuery
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerInteractEntity
+import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutNBTQueryResponse
 import org.kryptonmc.krypton.util.Positioning
@@ -131,6 +131,8 @@ class PlayHandler(
         is PacketInTabComplete -> handleTabComplete(packet)
         is PacketInClientStatus -> handleClientStatus(packet)
         is PacketInEntityNBTQuery -> handleEntityNBTQuery(packet)
+        is PacketInPlayerInteractEntity -> handlePlayerInteractEntity(packet)
+        is PacketInSteerVehicle -> handleSteerVehicle(packet)
         is PacketInPlayerUseItem -> handlePlayerUseItem(packet)
         else -> Unit
     }
@@ -273,6 +275,20 @@ class PlayHandler(
 
     private fun handlePlayerUseItem(packet: PacketInPlayerUseItem) {
         server.itemManager.handler(player.inventory.heldItem(packet.hand).type)?.use(player, packet.hand)
+    }
+
+    private fun handleSteerVehicle(packet: PacketInSteerVehicle) {
+        // TODO: Handle steering here
+        val flagInt = packet.flags.toInt()
+        // unmount
+        if (flagInt and 0x02 == 0x02) player.ejectVehicle()
+    }
+
+    private fun handlePlayerInteractEntity(packet: PacketInPlayerInteractEntity) {
+        if (packet.type === PacketInPlayerInteractEntity.Type.INTERACT) {
+            val target = player.world.entityManager[packet.entityId]
+            target?.tryRide(player)
+        }
     }
 
     private fun handlePositionUpdate(packet: PacketInPlayerPosition) {

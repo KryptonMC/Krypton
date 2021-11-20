@@ -102,6 +102,12 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public val passengers: List<Entity>
 
     /**
+     * The entity that this entity is a passenger of.
+     */
+    @get:JvmName("vehicle")
+    public var vehicle: Entity?
+
+    /**
      * If this entity should not take damage from any source.
      *
      * When this is true, the following statements are also true:
@@ -165,6 +171,11 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * its emitter will also fail.
      */
     public var isSilent: Boolean
+
+    /**
+     * If this entity is rideable or not.
+     */
+    public val isRideable: Boolean
 
     /**
      * If this entity is affected by gravity.
@@ -304,6 +315,39 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
         yaw: Float = rotation.x(),
         pitch: Float = rotation.y()
     )
+
+    /**
+     * Tries to ride this entity with an entity
+     *
+     * @param entity the entity to try ride this entity
+     */
+    public fun tryRide(entity: Entity)
+
+    /**
+     * Adds a passenger to this entity
+     *
+     * @param entity the entity to be added
+     */
+    public fun addPassenger(entity: Entity)
+
+    /**
+     * Removes a passenger from this entity
+     *
+     * @param entity the entity to be removed
+     */
+    public fun removePassenger(entity: Entity)
+
+    /**
+     * Removes all passengers from this entity
+     *
+     */
+    public fun ejectPassengers()
+
+    /**
+     * Removes this entity from it's vehicle.
+     *
+     */
+    public fun ejectVehicle()
 
     /**
      * Removes this entity from the world it is currently in.

@@ -42,11 +42,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.play.PacketOutDestroyEntities
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityVelocity
-import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
-import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
-import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
+import org.kryptonmc.krypton.packet.out.play.*
 import org.kryptonmc.krypton.tags.KryptonTagTypes
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.util.ceil
@@ -118,10 +114,12 @@ abstract class KryptonEntity(
     final override var fireTicks: Short = 0
     final override var isInvulnerable = false
     final override var fallDistance = 0F
-    final override val passengers = emptyList<Entity>()
+    final override val passengers = mutableListOf<Entity>()
     final override var inWater = false
     final override var inLava = false
     final override var underwater = false
+
+    override var vehicle: Entity? = null
 
     open val maxAirTicks: Int
         get() = 300
@@ -129,6 +127,7 @@ abstract class KryptonEntity(
         get() = !isRemoved
     protected open val pushedByFluid: Boolean
         get() = true
+    open val isRideable: Boolean = false
 
     open val soundSource: Sound.Source
         get() = Sound.Source.NEUTRAL
@@ -383,12 +382,47 @@ abstract class KryptonEntity(
     override fun remove() {
         if (isRemoved) return
         isRemoved = true
+        ejectVehicle()
+        ejectPassengers()
         world.removeEntity(this)
     }
 
     override fun identity() = identity!!
 
     override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(op.apply(ShowEntity.of(type.key(), uuid, displayName)))
+
+    override fun addPassenger(entity: Entity) {
+        if (passengers.contains(entity) || entity.passengers.contains(this)) return
+        entity.vehicle = this
+        passengers.add(entity)
+        world.playerManager.sendToAll(PacketOutSetPassengers(this))
+    }
+
+    override fun removePassenger(entity: Entity) {
+        if (entity.vehicle == this) return
+        if (!passengers.contains(entity)) return
+        entity.vehicle = null
+        passengers.remove(entity)
+        world.playerManager.sendToAll(PacketOutSetPassengers(this))
+    }
+
+    override fun ejectPassengers() {
+        passengers.forEach { it.ejectVehicle() }
+    }
+
+    override fun ejectVehicle() {
+        if (vehicle != null) {
+            val tempVehicle = vehicle as KryptonEntity
+            vehicle = null
+            tempVehicle.removePassenger(this)
+        }
+    }
+
+    override fun tryRide(entity: Entity) {
+        if (isRideable) {
+            addPassenger(entity)
+        }
+    }
 
     final override var isOnFire: Boolean
         get() = getSharedFlag(0)

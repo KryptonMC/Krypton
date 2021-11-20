@@ -36,6 +36,8 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlaceBlock
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
+import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerInteractEntity
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerPosition
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerPositionAndRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerRotation
@@ -116,6 +118,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateScore
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetPassengers
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
 import org.kryptonmc.krypton.packet.out.status.PacketOutPong
 import org.kryptonmc.krypton.packet.out.status.PacketOutStatusResponse
@@ -160,6 +163,7 @@ object PacketRegistry {
         register(PacketState.PLAY, 0x06, ::PacketInTabComplete)
         register(PacketState.PLAY, 0x0A, ::PacketInPluginMessage)
         register(PacketState.PLAY, 0x0C, ::PacketInEntityNBTQuery)
+        register(PacketState.PLAY, 0x0D, ::PacketInPlayerInteractEntity)
         register(PacketState.PLAY, 0x0F, ::PacketInKeepAlive)
         register(PacketState.PLAY, 0x11, ::PacketInPlayerPosition)
         register(PacketState.PLAY, 0x12, ::PacketInPlayerPositionAndRotation)
@@ -167,6 +171,7 @@ object PacketRegistry {
         register(PacketState.PLAY, 0x19, ::PacketInAbilities)
         register(PacketState.PLAY, 0x1A, ::PacketInPlayerDigging)
         register(PacketState.PLAY, 0x1B, ::PacketInEntityAction)
+        register(PacketState.PLAY, 0x1C, ::PacketInSteerVehicle)
         register(PacketState.PLAY, 0x25, ::PacketInChangeHeldItem)
         register(PacketState.PLAY, 0x28, ::PacketInCreativeInventoryAction)
         register(PacketState.PLAY, 0x2C, ::PacketInAnimation)
@@ -224,6 +229,7 @@ object PacketRegistry {
         register<PacketOutEntityVelocity>(0x4F)
         register<PacketOutUpdateHealth>(0x52)
         register<PacketOutObjective>(0x53)
+        register<PacketOutSetPassengers>(0x54)
         register<PacketOutTeam>(0x55)
         register<PacketOutUpdateScore>(0x56)
         register<PacketOutSubTitle>(0x57)
