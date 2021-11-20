@@ -29,6 +29,7 @@ import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.tags.TagManager
+import org.kryptonmc.api.user.UserManager
 import org.kryptonmc.api.user.whitelist.WhitelistManager
 import java.net.InetSocketAddress
 import java.util.UUID
@@ -148,6 +149,12 @@ public interface Server : ForwardingAudience {
      */
     @get:JvmName("banManager")
     public val banManager: BanManager
+
+    /**
+     * The user manager for this server.
+     */
+    @get:JvmName("userManager")
+    public val userManager: UserManager
 
     /**
      * The manager of the whitelist.

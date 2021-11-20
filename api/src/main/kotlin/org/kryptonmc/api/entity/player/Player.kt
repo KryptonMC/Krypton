@@ -29,6 +29,7 @@ import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.spongepowered.math.vector.Vector3d
 import java.net.InetSocketAddress
+import java.time.Instant
 import java.util.Locale
 
 /**
@@ -42,6 +43,23 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
      */
     @get:JvmName("address")
     public val address: InetSocketAddress
+
+    /**
+     * If this player is currently online.
+     */
+    public val isOnline: Boolean
+
+    /**
+     * The time that this player first joined the server.
+     */
+    @get:JvmName("firstJoined")
+    public val firstJoined: Instant
+
+    /**
+     * The latest time when this player last joined the server.
+     */
+    @get:JvmName("lastJoined")
+    public val lastJoined: Instant
 
     /**
      * The game profile for this player.

@@ -45,6 +45,7 @@ import org.kryptonmc.krypton.server.ban.KryptonBanManager
 import org.kryptonmc.krypton.server.whitelist.KryptonWhitelistManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.tags.KryptonTagManager
+import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.util.KryptonFactoryProvider
 import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.util.logger
@@ -103,6 +104,7 @@ class KryptonServer(
     override val scheduler = KryptonScheduler()
     override val factoryProvider = KryptonFactoryProvider
     override val banManager = KryptonBanManager(this)
+    override val userManager = KryptonUserManager(this)
     override val whitelistManager = KryptonWhitelistManager(this)
 
     @Volatile

@@ -82,7 +82,7 @@ import kotlin.random.Random
 
 class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
-    private val dataManager = PlayerDataManager(Path.of(server.config.world.name).resolve("playerdata"))
+    val dataManager = PlayerDataManager(Path.of(server.config.world.name).resolve("playerdata"))
     val players = CopyOnWriteArrayList<KryptonPlayer>()
     val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
@@ -113,6 +113,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         } else {
             World.OVERWORLD
         }
+        if (nbt != null) server.userManager.updateUser(profile.uuid, nbt)
 
         val world = server.worldManager.worlds[dimension] ?: kotlin.run {
             LOGGER.warn("Unknown respawn dimension $dimension! Defaulting to overworld...")
@@ -304,7 +305,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     }
 
     private fun save(player: KryptonPlayer) {
-        dataManager.save(player)
+        server.userManager.updateUser(player.uuid, dataManager.save(player))
         statistics[player.uuid]?.save()
     }
 

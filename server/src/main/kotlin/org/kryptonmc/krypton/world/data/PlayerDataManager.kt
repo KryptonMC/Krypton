@@ -42,7 +42,7 @@ import kotlin.io.path.moveTo
 /**
  * Responsible for loading and saving player data files
  */
-class PlayerDataManager(private val folder: Path) {
+class PlayerDataManager(val folder: Path) {
 
     private val executor = Executors.newFixedThreadPool(
         2,
@@ -89,7 +89,7 @@ class PlayerDataManager(private val folder: Path) {
         data
     }, executor)
 
-    fun save(player: KryptonPlayer) {
+    fun save(player: KryptonPlayer): CompoundTag {
         val data = player.save().build()
 
         // Create temp file and write data
@@ -100,7 +100,7 @@ class PlayerDataManager(private val folder: Path) {
         val dataPath = folder.resolve("${player.uuid}.dat")
         if (!dataPath.exists()) {
             temp.moveTo(dataPath)
-            return
+            return data
         }
 
         // Save the old data and then save the new data
@@ -108,6 +108,7 @@ class PlayerDataManager(private val folder: Path) {
         dataPath.moveTo(oldDataPath)
         dataPath.deleteIfExists()
         temp.moveTo(dataPath)
+        return data
     }
 
     companion object {

@@ -29,9 +29,11 @@ object MojangUUIDTypeAdapter : TypeAdapter<UUID>() {
 
     fun fromString(string: String): UUID = UUID.fromString(string.replace(REPLACEMENT_REGEX, "$1-$2-$3-$4-$5"))
 
+    fun toString(uuid: UUID): String = uuid.toString().replace("-", "")
+
     override fun read(reader: JsonReader): UUID = fromString(reader.nextString())
 
     override fun write(out: JsonWriter, value: UUID) {
-        out.value(value.toString().replace("-", ""))
+        out.value(toString(value))
     }
 }

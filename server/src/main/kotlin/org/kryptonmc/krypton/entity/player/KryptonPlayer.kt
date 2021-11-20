@@ -115,6 +115,7 @@ import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
 import java.time.Duration
+import java.time.Instant
 import java.util.Locale
 import java.util.UUID
 import kotlin.math.abs
@@ -200,6 +201,10 @@ class KryptonPlayer(
     override val dimension: ResourceKey<World>
         get() = world.dimension
 
+    override val isOnline = server.player(uuid) === this
+    override var firstJoined: Instant = Instant.EPOCH
+    override var lastJoined: Instant = Instant.now()
+
     override var isVanished = false
     private val hiddenPlayers = mutableSetOf<UUID>()
 
@@ -275,6 +280,7 @@ class KryptonPlayer(
         if (tag.contains("krypton", CompoundTag.ID)) {
             val kryptonData = tag.getCompound("krypton")
             isVanished = kryptonData.getBoolean("vanished")
+            firstJoined = Instant.ofEpochMilli(kryptonData.getLong("firstJoined"))
         }
     }
 
@@ -313,6 +319,8 @@ class KryptonPlayer(
         }
         compound("krypton") {
             boolean("vanished", isVanished)
+            long("firstJoined", firstJoined.toEpochMilli())
+            long("lastJoined", lastJoined.toEpochMilli())
         }
     }
 

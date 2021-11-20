@@ -19,20 +19,35 @@
 package org.kryptonmc.krypton.auth.requests
 
 import org.kryptonmc.krypton.auth.KryptonGameProfile
+import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.util.UUID
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
 
 object ApiService {
 
     private val client = HttpClient.newHttpClient()
 
-    fun profile(name: String): CompletableFuture<KryptonGameProfile?> {
+    fun profile(name: String, executor: Executor? = null): CompletableFuture<KryptonGameProfile?> {
         val request = HttpRequest.newBuilder()
             .uri(URI("https://api.mojang.com/users/profiles/minecraft/$name"))
             .build()
-        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply { KryptonGameProfile.fromJson(it.body()) }
+        val future = client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+        if (executor != null) return future.thenApplyAsync({ KryptonGameProfile.fromJson(it.body()) }, executor)
+        return future.thenApplyAsync { KryptonGameProfile.fromJson(it.body()) }
+    }
+
+    fun profile(uuid: UUID, executor: Executor? = null): CompletableFuture<KryptonGameProfile?> {
+        val id = MojangUUIDTypeAdapter.toString(uuid)
+        val request = HttpRequest.newBuilder()
+            .uri(URI("https://sessionserver.mojang.com/session/minecraft/profile/$id"))
+            .build()
+        val future = client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+        if (executor != null) return future.thenApplyAsync({ KryptonGameProfile.fromJson(it.body()) }, executor)
+        return future.thenApplyAsync { KryptonGameProfile.fromJson(it.body()) }
     }
 }
