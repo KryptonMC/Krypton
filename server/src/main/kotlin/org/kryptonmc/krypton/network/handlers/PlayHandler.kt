@@ -286,6 +286,7 @@ class PlayHandler(
     }
 
     private fun handlePlayerInteractEntity(packet: PacketInPlayerInteractEntity) {
+        // TODO: Check if entity is rideable
         if (packet.type === PacketInPlayerInteractEntity.Type.INTERACT) {
             val target = player.world.entityManager[packet.entityId]
             target?.addPassenger(player)
