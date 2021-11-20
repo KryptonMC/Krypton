@@ -272,7 +272,7 @@ class PlayHandler(
         // TODO: Handle steering here
         val flagInt = packet.flags.toInt()
         // unmount
-        if (flagInt and 0x02 == 0x02) player.vehicle?.removePassenger(player)
+        if (flagInt and 0x02 == 0x02) player.ejectVehicle()
     }
 
     private fun handlePlayerInteractEntity(packet: PacketInPlayerInteractEntity) {
