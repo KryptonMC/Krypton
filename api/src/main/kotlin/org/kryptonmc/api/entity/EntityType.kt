@@ -48,6 +48,11 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
     public val isImmuneToFire: Boolean
 
     /**
+     * If entities of this type can be ridden.
+     */
+    public val isRideable: Boolean
+
+    /**
      * The radius of the circle in which the client will track the movement of
      * entities of this type.
      */
@@ -145,6 +150,23 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
          */
         @Contract("_ -> this", mutates = "this")
         public fun fireImmune(): Builder<T> = fireImmune(true)
+
+        /**
+         * Sets whether entities of the type can be ridden.
+         *
+         * @param value the value of the setting
+         * @return this builder
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun rideable(value: Boolean): Builder<T>
+
+        /**
+         * Makes entities of the type able to be ridden.
+         *
+         * @return this builder
+         */
+        @Contract("_ -> this", mutates = "this")
+        public fun rideable(): Builder<T> = rideable(true)
 
         /**
          * Makes entities of the type flammable.
@@ -254,6 +276,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
             category: EntityCategory,
             summonable: Boolean,
             fireImmune: Boolean,
+            rideable: Boolean,
             trackingRange: Int,
             updateInterval: Int,
             dimensions: EntityDimensions,
@@ -292,6 +315,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
             category: EntityCategory,
             summonable: Boolean,
             fireImmune: Boolean,
+            rideable: Boolean,
             clientTrackingRange: Int,
             updateInterval: Int,
             dimensions: EntityDimensions,
@@ -305,6 +329,7 @@ public interface EntityType<T : Entity> : Keyed, TranslationHolder {
             category,
             summonable,
             fireImmune,
+            rideable,
             clientTrackingRange,
             updateInterval,
             dimensions,

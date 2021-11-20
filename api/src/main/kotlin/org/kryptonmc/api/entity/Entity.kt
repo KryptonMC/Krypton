@@ -317,35 +317,33 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     )
 
     /**
-     * Tries to ride this entity with an entity
+     * Attempts to make the given [entity] ride this entity.
      *
-     * @param entity the entity to try ride this entity
+     * @param entity the entity
      */
     public fun tryRide(entity: Entity)
 
     /**
-     * Adds a passenger to this entity
+     * Adds the given [entity] as a passenger of this entity.
      *
      * @param entity the entity to be added
      */
     public fun addPassenger(entity: Entity)
 
     /**
-     * Removes a passenger from this entity
+     * Removes the given [entity] as a passenger of this entity.
      *
      * @param entity the entity to be removed
      */
     public fun removePassenger(entity: Entity)
 
     /**
-     * Removes all passengers from this entity
-     *
+     * Ejects all passengers from this entity.
      */
     public fun ejectPassengers()
 
     /**
-     * Removes this entity from it's vehicle.
-     *
+     * Ejects this entity from it's vehicle.
      */
     public fun ejectVehicle()
 

@@ -68,7 +68,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityNBTQuery
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerInteractEntity
+import org.kryptonmc.krypton.packet.`in`.play.PacketInInteract
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutNBTQueryResponse
@@ -131,7 +131,7 @@ class PlayHandler(
         is PacketInTabComplete -> handleTabComplete(packet)
         is PacketInClientStatus -> handleClientStatus(packet)
         is PacketInEntityNBTQuery -> handleEntityNBTQuery(packet)
-        is PacketInPlayerInteractEntity -> handlePlayerInteractEntity(packet)
+        is PacketInInteract -> handleInteract(packet)
         is PacketInSteerVehicle -> handleSteerVehicle(packet)
         is PacketInPlayerUseItem -> handlePlayerUseItem(packet)
         else -> Unit
@@ -284,8 +284,8 @@ class PlayHandler(
         if (flagInt and 0x02 == 0x02) player.ejectVehicle()
     }
 
-    private fun handlePlayerInteractEntity(packet: PacketInPlayerInteractEntity) {
-        if (packet.type === PacketInPlayerInteractEntity.Type.INTERACT) {
+    private fun handleInteract(packet: PacketInInteract) {
+        if (packet.type === PacketInInteract.Type.INTERACT) {
             val target = player.world.entityManager[packet.entityId]
             target?.tryRide(player)
         }

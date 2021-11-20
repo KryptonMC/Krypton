@@ -120,6 +120,10 @@ abstract class KryptonEntity(
     final override var underwater = false
 
     override var vehicle: Entity? = null
+        set(value) {
+            if (value !is KryptonEntity) return // plugins are naughty!
+            field = value
+        }
 
     open val maxAirTicks: Int
         get() = 300
@@ -127,7 +131,8 @@ abstract class KryptonEntity(
         get() = !isRemoved
     protected open val pushedByFluid: Boolean
         get() = true
-    open val isRideable: Boolean = false
+    override val isRideable: Boolean
+        get() = type.isRideable
 
     open val soundSource: Sound.Source
         get() = Sound.Source.NEUTRAL
@@ -399,7 +404,7 @@ abstract class KryptonEntity(
     }
 
     override fun removePassenger(entity: Entity) {
-        if (entity.vehicle == this) return
+        if (entity.vehicle === this) return
         if (!passengers.contains(entity)) return
         entity.vehicle = null
         passengers.remove(entity)
@@ -407,21 +412,16 @@ abstract class KryptonEntity(
     }
 
     override fun ejectPassengers() {
-        passengers.forEach { it.ejectVehicle() }
+        passengers.forEach(Entity::ejectVehicle)
     }
 
     override fun ejectVehicle() {
-        if (vehicle != null) {
-            val tempVehicle = vehicle as KryptonEntity
-            vehicle = null
-            tempVehicle.removePassenger(this)
-        }
+        vehicle?.removePassenger(this)
+        vehicle = null
     }
 
     override fun tryRide(entity: Entity) {
-        if (isRideable) {
-            addPassenger(entity)
-        }
+        if (isRideable) addPassenger(entity)
     }
 
     final override var isOnFire: Boolean

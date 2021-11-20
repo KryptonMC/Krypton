@@ -24,7 +24,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
 
-class PacketInPlayerInteractEntity(buf: ByteBuf) : Packet {
+class PacketInInteract(buf: ByteBuf) : Packet {
 
     val entityId = buf.readVarInt()
     val type = buf.readEnum<Type>()

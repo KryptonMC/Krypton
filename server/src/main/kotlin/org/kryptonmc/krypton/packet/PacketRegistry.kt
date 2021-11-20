@@ -37,7 +37,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlaceBlock
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerInteractEntity
+import org.kryptonmc.krypton.packet.`in`.play.PacketInInteract
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerPosition
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerPositionAndRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerRotation
@@ -163,7 +163,7 @@ object PacketRegistry {
         register(PacketState.PLAY, 0x06, ::PacketInTabComplete)
         register(PacketState.PLAY, 0x0A, ::PacketInPluginMessage)
         register(PacketState.PLAY, 0x0C, ::PacketInEntityNBTQuery)
-        register(PacketState.PLAY, 0x0D, ::PacketInPlayerInteractEntity)
+        register(PacketState.PLAY, 0x0D, ::PacketInInteract)
         register(PacketState.PLAY, 0x0F, ::PacketInKeepAlive)
         register(PacketState.PLAY, 0x11, ::PacketInPlayerPosition)
         register(PacketState.PLAY, 0x12, ::PacketInPlayerPositionAndRotation)

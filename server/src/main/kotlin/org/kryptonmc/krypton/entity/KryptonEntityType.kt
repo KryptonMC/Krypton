@@ -36,6 +36,7 @@ data class KryptonEntityType<T : Entity>(
     override val category: EntityCategory,
     override val isSummonable: Boolean,
     override val isImmuneToFire: Boolean,
+    override val isRideable: Boolean,
     override val clientTrackingRange: Int,
     override val updateInterval: Int,
     override val dimensions: EntityDimensions,
@@ -56,6 +57,7 @@ data class KryptonEntityType<T : Entity>(
 
         private var summonable = true
         private var fireImmune = false
+        private var rideable = false
         private var dimensions = DEFAULT_DIMENSIONS
         private val immuneTo = mutableSetOf<Block>()
         private var clientTrackingRange = 5
@@ -66,6 +68,7 @@ data class KryptonEntityType<T : Entity>(
         constructor(type: EntityType<T>) : this(type.key(), type.category) {
             summonable = type.isSummonable
             fireImmune = type.isImmuneToFire
+            rideable = type.isRideable
             dimensions = type.dimensions
             immuneTo.addAll(type.immuneTo)
             lootTable = type.lootTable
@@ -76,6 +79,8 @@ data class KryptonEntityType<T : Entity>(
         override fun summonable(value: Boolean): EntityType.Builder<T> = apply { summonable = value }
 
         override fun fireImmune(value: Boolean): EntityType.Builder<T> = apply { fireImmune = value }
+
+        override fun rideable(value: Boolean): EntityType.Builder<T> = apply { rideable = value }
 
         override fun clientTrackingRange(range: Int): EntityType.Builder<T> = apply { clientTrackingRange = range }
 
@@ -98,6 +103,7 @@ data class KryptonEntityType<T : Entity>(
             category,
             summonable,
             fireImmune,
+            rideable,
             clientTrackingRange,
             updateInterval,
             dimensions,
@@ -119,6 +125,7 @@ data class KryptonEntityType<T : Entity>(
             category: EntityCategory,
             summonable: Boolean,
             fireImmune: Boolean,
+            rideable: Boolean,
             trackingRange: Int,
             updateInterval: Int,
             dimensions: EntityDimensions,
@@ -130,6 +137,7 @@ data class KryptonEntityType<T : Entity>(
             category,
             summonable,
             fireImmune,
+            rideable,
             trackingRange,
             updateInterval,
             dimensions,

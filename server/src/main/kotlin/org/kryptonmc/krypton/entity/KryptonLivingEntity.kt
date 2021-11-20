@@ -153,9 +153,8 @@ abstract class KryptonLivingEntity(
     }
 
     override fun tryRide(entity: Entity) {
-        if (isAlive && isRideable) {
-            addPassenger(entity)
-        }
+        if (!isAlive) return
+        super.tryRide(entity)
     }
 
     final override var isUsingItem: Boolean
