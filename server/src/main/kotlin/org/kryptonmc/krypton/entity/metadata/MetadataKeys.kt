@@ -53,6 +53,7 @@ object MetadataKeys {
     @JvmField val AGEABLE = AgeableKeys
     @JvmField val TAMABLE = TamableKeys
     @JvmField val CAT = CatKeys
+    @JvmField val ITEM = ItemKeys
 
     @JvmField val FLAGS = create(0, MetadataSerializers.BYTE, 0)
     @JvmField val AIR_TICKS = create(1, MetadataSerializers.VAR_INT, 300)
@@ -188,6 +189,11 @@ object MetadataKeys {
         @JvmField val LYING = create(20, MetadataSerializers.BOOLEAN, false)
         @JvmField val RELAXED = create(21, MetadataSerializers.BOOLEAN, false)
         @JvmField val COLLAR_COLOR = create(22, MetadataSerializers.VAR_INT, Registries.DYE_COLORS.idOf(DyeColors.RED))
+    }
+
+    object ItemKeys {
+
+        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.Factory.empty())
     }
 
     @JvmStatic

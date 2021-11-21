@@ -34,6 +34,8 @@ import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.commands.KryptonPermission
+import org.kryptonmc.krypton.entity.item.KryptonItemEntity
+import org.kryptonmc.krypton.entity.monster.KryptonCreeper
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.handler.KryptonItemTimedHandler
 import org.kryptonmc.krypton.packet.Packet
@@ -78,6 +80,7 @@ import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
+import java.util.concurrent.ThreadLocalRandom
 
 /**
  * This is the largest and most important of the four packet handlers, as the
@@ -263,6 +266,30 @@ class PlayHandler(
 
                 session.send(PacketOutDiggingResponse(packet.location, 0, PacketInPlayerDigging.Status.FINISHED, true))
                 playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
+            }
+            PacketInPlayerDigging.Status.DROP_ITEM -> {
+                val heldItem = player.inventory.heldItem(Hand.MAIN)
+                if (heldItem.isEmpty()) return
+
+                // Update held item amount
+                heldItem.amount--
+                player.inventory.setHeldItem(Hand.MAIN, heldItem)
+
+                // Create and spawn new item entity
+                val singleItem = heldItem.copy()
+                singleItem.amount = 1
+                val itemEntity = KryptonItemEntity(player.world)
+                itemEntity.thrower = player.uuid
+                itemEntity.item = singleItem
+                itemEntity.location = player.location.add(0.0, 1.62 - 0.3, 0.0) // eye height - some magic value??
+                val velocity = player.rotation.mul(0.3).toDouble().toVector3(0.0)
+                // Glowstone's method. Seems sane however it uses guess work. I don't blame them. Just look at the vanilla source...
+                // https://github.com/GlowstoneMC/Glowstone/blob/dev/src/main/java/net/glowstone/entity/GlowHumanEntity.java
+                val random = ThreadLocalRandom.current()
+                val bound = 0.02
+                velocity.add(random.nextDouble(bound) - bound / 2, random.nextDouble(0.12), random.nextDouble(bound) - bound / 2)
+                itemEntity.velocity = velocity
+                player.world.entityManager.spawn(itemEntity)
             }
             PacketInPlayerDigging.Status.UPDATE_STATE -> {
                 val handler = server.itemManager.handler(player.inventory[player.inventory.heldSlot].type)
