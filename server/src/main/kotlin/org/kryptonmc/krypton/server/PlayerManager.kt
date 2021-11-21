@@ -158,6 +158,11 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         updateScoreboard(world.scoreboard, player)
         invalidateStatus()
 
+        // Add the player to the list and cache maps
+        players.add(player)
+        playersByName[player.profile.name] = player
+        playersByUUID[player.uuid] = player
+
         // Fire join event and send result message
         val joinResult = server.eventManager.fireSync(JoinEvent(
             player,
@@ -173,29 +178,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         server.sendMessage(joinResult.message)
         player.sendMessage(joinResult.message) // This player hasn't been added to the list yet
         session.send(PacketOutPlayerPositionAndLook(player.location, player.rotation))
-
-        // Update player list
-        sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
-        session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
-        session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, players))
-
-        // Send entity data
-        // TODO: Move this all to an entity manager
-        sendToAll(PacketOutSpawnPlayer(player))
-        sendToAll(PacketOutMetadata(player.id, player.data.all))
-        sendToAll(PacketOutAttributes(player.id, player.attributes.syncable))
-        sendToAll(PacketOutHeadLook(player.id, player.rotation.x()))
-        players.forEach { online ->
-            session.send(PacketOutSpawnPlayer(online))
-            session.send(PacketOutMetadata(online.id, online.data.all))
-            session.send(PacketOutAttributes(online.id, online.attributes.syncable))
-            session.send(PacketOutHeadLook(online.id, online.rotation.x()))
-        }
-
-        // Add the player to the list and cache maps
-        players.add(player)
-        playersByName[player.profile.name] = player
-        playersByUUID[player.uuid] = player
         world.spawnPlayer(player)
 
         // Send the initial chunk stream

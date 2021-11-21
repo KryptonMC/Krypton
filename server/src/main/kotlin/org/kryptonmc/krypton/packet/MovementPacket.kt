@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.packet.`in`.play
+package org.kryptonmc.krypton.packet
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.MovementPacket
-import org.kryptonmc.krypton.packet.Packet
+/**
+ * A packet that signals movement.
+ */
+interface MovementPacket : Packet {
 
-class PacketInPlayerRotation(buf: ByteBuf) : MovementPacket {
-
-    val yaw = buf.readFloat()
-    val pitch = buf.readFloat()
-    override val onGround = buf.readBoolean()
+    /**
+     * If the target of this movement packet is currently on terra firma.
+     */
+    val onGround: Boolean
 }

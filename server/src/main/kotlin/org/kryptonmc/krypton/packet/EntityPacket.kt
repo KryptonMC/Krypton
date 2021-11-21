@@ -21,12 +21,10 @@ package org.kryptonmc.krypton.packet
 /**
  * A packet that contains an entity ID.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
 interface EntityPacket : Packet {
 
     /**
      * The ID of the entity this packet is intended for.
      */
-    @get:JvmName("entityId")
     val entityId: Int
 }

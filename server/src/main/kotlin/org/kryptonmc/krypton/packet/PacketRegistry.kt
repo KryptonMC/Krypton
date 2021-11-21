@@ -44,6 +44,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerUseItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityNBTQuery
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTeleportConfirm
 import org.kryptonmc.krypton.packet.`in`.status.PacketInPing
@@ -168,6 +169,7 @@ object PacketRegistry {
         register(PacketState.PLAY, 0x11, ::PacketInPlayerPosition)
         register(PacketState.PLAY, 0x12, ::PacketInPlayerPositionAndRotation)
         register(PacketState.PLAY, 0x13, ::PacketInPlayerRotation)
+        register(PacketState.PLAY, 0x14, ::PacketInPlayerMovement)
         register(PacketState.PLAY, 0x19, ::PacketInAbilities)
         register(PacketState.PLAY, 0x1A, ::PacketInPlayerDigging)
         register(PacketState.PLAY, 0x1B, ::PacketInEntityAction)

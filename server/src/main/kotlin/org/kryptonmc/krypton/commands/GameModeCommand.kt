@@ -42,10 +42,10 @@ object GameModeCommand : InternalCommand {
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         val command = literal<Sender>("gamemode").permission(KryptonPermission.GAME_MODE)
         for (gameMode in Registries.GAME_MODES.values) {
-            command.then(literal(gameMode.key().value()))
+            command.then(literal<Sender>(gameMode.key().value())
                 .executes { gameModeArgument(it, gameMode) }
                 .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
-                    .executes { targetArgument(it, gameMode) })
+                    .executes { targetArgument(it, gameMode) }))
         }
 
         command.then(argument<Sender, String>("gameMode", string())
@@ -54,14 +54,14 @@ object GameModeCommand : InternalCommand {
                     ?: Registries.GAME_MODES[it.argument<String>("gameMode").toIntOrNull() ?: return@executes 1]
                     ?: return@executes 1
                 gameModeArgument(it, gameMode)
-            })
+            }
             .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
                 .executes {
                     val gameMode = KryptonGameMode.fromAbbreviation(it.argument("gameMode"))
                         ?: Registries.GAME_MODES[it.argument<String>("gameMode").toIntOrNull() ?: return@executes 1]
                         ?: return@executes 1
                     gameModeArgument(it, gameMode)
-                })
+                }))
         dispatcher.register(command)
     }
 
@@ -81,7 +81,7 @@ object GameModeCommand : InternalCommand {
 
     private fun updateGameMode(entities: List<KryptonPlayer>, mode: GameMode, sender: KryptonPlayer) = entities.forEach {
         it.gameMode = mode
-        if (sender == it) {
+        if (sender === it) {
             sender.sendMessage(translatable("gameMode.changed", translatable("gameMode.${mode.key().value().lowercase()}")))
             return@forEach
         }

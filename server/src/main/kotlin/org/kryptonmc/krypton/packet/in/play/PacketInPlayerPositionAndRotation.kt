@@ -19,14 +19,15 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.packet.MovementPacket
 import org.kryptonmc.krypton.packet.Packet
 
-class PacketInPlayerPositionAndRotation(buf: ByteBuf) : Packet {
+class PacketInPlayerPositionAndRotation(buf: ByteBuf) : MovementPacket {
 
     val x = buf.readDouble()
     val y = buf.readDouble()
     val z = buf.readDouble()
     val yaw = buf.readFloat()
     val pitch = buf.readFloat()
-    val onGround = buf.readBoolean()
+    override val onGround = buf.readBoolean()
 }

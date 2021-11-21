@@ -201,7 +201,8 @@ class KryptonPlayer(
     override val dimension: ResourceKey<World>
         get() = world.dimension
 
-    override val isOnline = server.player(uuid) === this
+    override val isOnline: Boolean
+        get() = server.player(uuid) === this
     override var firstJoined: Instant = Instant.EPOCH
     override var lastJoined: Instant = Instant.now()
 
@@ -497,7 +498,7 @@ class KryptonPlayer(
         player.removeViewer(this)
     }
 
-    override fun canSee(player: Player): Boolean = hiddenPlayers.contains(player.uuid)
+    override fun canSee(player: Player): Boolean = !hiddenPlayers.contains(player.uuid)
 
     override fun getPermissionValue(permission: String): TriState = permissionFunction[permission]
 
