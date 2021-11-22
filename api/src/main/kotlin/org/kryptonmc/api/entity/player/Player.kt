@@ -199,6 +199,12 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
     public val statistics: StatisticsTracker
 
     /**
+     * The cooldown tracker for this player.
+     */
+    @get:JvmName("cooldowns")
+    public val cooldowns: CooldownTracker
+
+    /**
      * Increments the given [statistic] by 1.
      *
      * Note: This will increase the current value by 1, it will not set it.

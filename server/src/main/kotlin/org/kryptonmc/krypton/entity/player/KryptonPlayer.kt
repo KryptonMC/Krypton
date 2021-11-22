@@ -148,6 +148,7 @@ class KryptonPlayer(
     override val scoreboard = world.scoreboard
     override var locale: Locale? = null
     override val statistics = server.playerManager.getStatistics(this)
+    override val cooldowns = KryptonCooldownTracker(this)
     override val teamRepresentation = name
     override val pushedByFluid = !isFlying
 
