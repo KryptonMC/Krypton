@@ -36,21 +36,17 @@ import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
-import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
-import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
 import org.kryptonmc.krypton.packet.out.play.PacketOutJoinGame
-import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerPositionAndLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
-import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeam
@@ -63,9 +59,9 @@ import org.kryptonmc.krypton.server.ban.BannedPlayerList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
-import org.kryptonmc.krypton.util.nextInt
 import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
@@ -296,7 +292,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             lastStatus = time
             status.players.online = players.size
             val sampleSize = min(players.size, MAXIMUM_SAMPLED_PLAYERS)
-            val playerOffset = nextInt(Random, 0, players.size - sampleSize)
+            val playerOffset = Maths.randomBetween(Random, 0, players.size - sampleSize)
             val sample = Array(sampleSize) { players[it + playerOffset].profile }.apply { shuffle() }
             status.players.sample = sample
         }

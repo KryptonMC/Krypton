@@ -20,6 +20,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.animal.cat.CatType
+import org.kryptonmc.api.entity.animal.cow.MooshroomType
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.entity.hanging.Picture
@@ -102,6 +103,7 @@ public object Registries {
     @JvmField public val TAG_TYPES: Registry<TagType<*>> = create(ResourceKeys.TAG_TYPES)
     @JvmField public val BAN_TYPES: Registry<BanType> = create(ResourceKeys.BAN_TYPES)
     @JvmField public val CAT_TYPES: Registry<CatType> = create(ResourceKeys.CAT_TYPES)
+    @JvmField public val MOOSHROOM_TYPES: Registry<MooshroomType> = create(ResourceKeys.MOOSHROOM_TYPES)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

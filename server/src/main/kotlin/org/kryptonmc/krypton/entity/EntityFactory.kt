@@ -23,7 +23,11 @@ import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.krypton.entity.ambient.KryptonBat
+import org.kryptonmc.krypton.entity.animal.KryptonBee
+import org.kryptonmc.krypton.entity.animal.KryptonChicken
 import org.kryptonmc.krypton.entity.animal.cat.KryptonCat
+import org.kryptonmc.krypton.entity.animal.cow.KryptonCow
+import org.kryptonmc.krypton.entity.animal.cow.KryptonMooshroom
 import org.kryptonmc.krypton.entity.hanging.KryptonPainting
 import org.kryptonmc.krypton.entity.monster.KryptonCreeper
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
@@ -56,13 +60,17 @@ object EntityFactory {
         EntityTypes.ARMOR_STAND to ::KryptonArmorStand,
         EntityTypes.ARROW to ::KryptonArrow,
         EntityTypes.BAT to ::KryptonBat,
+        EntityTypes.BEE to ::KryptonBee,
         EntityTypes.CAT to ::KryptonCat,
+        EntityTypes.CHICKEN to ::KryptonChicken,
+        EntityTypes.COW to ::KryptonCow,
         EntityTypes.CREEPER to ::KryptonCreeper,
         EntityTypes.DRAGON_FIREBALL to ::KryptonDragonFireball,
         EntityTypes.EXPERIENCE_ORB to ::KryptonExperienceOrb,
         EntityTypes.FIREWORK_ROCKET to ::KryptonFireworkRocket,
         EntityTypes.FIREBALL to ::KryptonLargeFireball,
         EntityTypes.LLAMA_SPIT to ::KryptonLlamaSpit,
+        EntityTypes.MOOSHROOM to ::KryptonMooshroom,
         EntityTypes.PAINTING to ::KryptonPainting,
         EntityTypes.SHULKER_BULLET to ::KryptonShulkerBullet,
         EntityTypes.SMALL_FIREBALL to ::KryptonSmallFireball,

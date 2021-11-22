@@ -70,10 +70,7 @@ fun Double.clamp(low: Double, high: Double) = if (this < low) low else if (this 
 
 fun Float.clamp(low: Float, high: Float) = if (this < low) low else if (this > high) high else this
 
-fun nextInt(random: Random, lower: Int, upper: Int): Int {
-    if (lower >= upper) return lower
-    return random.nextInt(upper - lower + 1) + lower
-}
+fun IntRange.sample(random: Random): Int = Maths.randomBetween(random, first, last)
 
 fun Int.toArea() = (this * 2 + 1).square()
 

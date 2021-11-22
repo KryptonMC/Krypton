@@ -20,13 +20,13 @@ package org.kryptonmc.krypton.util
 
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.GenericMath
-import java.util.Random
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 object Maths {
 
     @JvmStatic
-    fun nextInt(random: Random, lower: Int, upper: Int): Int {
+    fun randomBetween(random: Random, lower: Int, upper: Int): Int {
         if (lower >= upper) return lower
         return random.nextInt(upper - lower + 1) + lower
     }

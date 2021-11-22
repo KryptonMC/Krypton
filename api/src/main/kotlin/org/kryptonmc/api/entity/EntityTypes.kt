@@ -10,7 +10,11 @@ package org.kryptonmc.api.entity
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.ambient.Bat
+import org.kryptonmc.api.entity.animal.Bee
+import org.kryptonmc.api.entity.animal.Chicken
 import org.kryptonmc.api.entity.animal.cat.Cat
+import org.kryptonmc.api.entity.animal.cow.Cow
+import org.kryptonmc.api.entity.animal.cow.Mooshroom
 import org.kryptonmc.api.entity.hanging.Painting
 import org.kryptonmc.api.entity.monster.Creeper
 import org.kryptonmc.api.entity.monster.Zombie
@@ -47,14 +51,14 @@ public object EntityTypes {
     @JvmField public val ARROW: EntityType<Arrow> = get("arrow")
     @JvmField public val AXOLOTL: EntityType<Entity> = get("axolotl")
     @JvmField public val BAT: EntityType<Bat> = get("bat")
-    @JvmField public val BEE: EntityType<Entity> = get("bee")
+    @JvmField public val BEE: EntityType<Bee> = get("bee")
     @JvmField public val BLAZE: EntityType<Entity> = get("blaze")
     @JvmField public val BOAT: EntityType<Entity> = get("boat")
     @JvmField public val CAT: EntityType<Cat> = get("cat")
     @JvmField public val CAVE_SPIDER: EntityType<Entity> = get("cave_spider")
-    @JvmField public val CHICKEN: EntityType<Entity> = get("chicken")
+    @JvmField public val CHICKEN: EntityType<Chicken> = get("chicken")
     @JvmField public val COD: EntityType<Entity> = get("cod")
-    @JvmField public val COW: EntityType<Entity> = get("cow")
+    @JvmField public val COW: EntityType<Cow> = get("cow")
     @JvmField public val CREEPER: EntityType<Creeper> = get("creeper")
     @JvmField public val DOLPHIN: EntityType<Entity> = get("dolphin")
     @JvmField public val DONKEY: EntityType<Entity> = get("donkey")
@@ -100,7 +104,7 @@ public object EntityTypes {
     @JvmField public val SPAWNER_MINECART: EntityType<Entity> = get("spawner_minecart")
     @JvmField public val TNT_MINECART: EntityType<Entity> = get("tnt_minecart")
     @JvmField public val MULE: EntityType<Entity> = get("mule")
-    @JvmField public val MOOSHROOM: EntityType<Entity> = get("mooshroom")
+    @JvmField public val MOOSHROOM: EntityType<Mooshroom> = get("mooshroom")
     @JvmField public val OCELOT: EntityType<Entity> = get("ocelot")
     @JvmField public val PAINTING: EntityType<Painting> = get("painting")
     @JvmField public val PANDA: EntityType<Entity> = get("panda")
@@ -159,5 +163,5 @@ public object EntityTypes {
 
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    private fun <T : Entity> get(name: String) = Registries.ENTITY_TYPE[Key.key(name)] as EntityType<T>
+    private fun <T : Entity> get(name: String): EntityType<T> = Registries.ENTITY_TYPE[Key.key(name)] as EntityType<T>
 }

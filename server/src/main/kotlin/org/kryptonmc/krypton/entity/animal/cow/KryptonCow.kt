@@ -16,22 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity
+package org.kryptonmc.krypton.entity.animal.cow
 
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.FloatTag
-import org.kryptonmc.nbt.ListTag
-import org.spongepowered.math.vector.Vector3f
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.entity.animal.cow.Cow
+import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.krypton.entity.animal.KryptonAnimal
+import org.kryptonmc.krypton.world.KryptonWorld
 
-fun CompoundTag.getRotation(key: String): Vector3f? {
-    if (!contains(key, ListTag.ID)) return null
-    val list = getList(key, FloatTag.ID)
-    return Vector3f(list.getFloat(0), list.getFloat(1), list.getFloat(2))
-}
+open class KryptonCow(world: KryptonWorld, type: EntityType<out Cow>) : KryptonAnimal(world, type, ATTRIBUTES), Cow {
 
-fun CompoundTag.getVector3i(key: String): Vector3i? {
-    if (!contains(key, CompoundTag.ID)) return null
-    val position = getCompound(key)
-    return Vector3i(position.getInt("X"), position.getInt("Y"), position.getInt("Z"))
+    constructor(world: KryptonWorld) : this(world, EntityTypes.COW)
+
+    override val soundVolume: Float
+        get() = 0.4F
+
+    companion object {
+
+        private val ATTRIBUTES = attributes()
+            .add(AttributeTypes.MAX_HEALTH, 10.0)
+            .add(AttributeTypes.MOVEMENT_SPEED, 0.2)
+            .build()
+    }
 }

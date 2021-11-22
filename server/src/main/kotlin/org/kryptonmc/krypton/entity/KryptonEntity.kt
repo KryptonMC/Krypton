@@ -129,6 +129,8 @@ abstract class KryptonEntity(
         get() = 300
     open val isAlive: Boolean
         get() = !isRemoved
+    open val isSpectator: Boolean
+        get() = false
     protected open val pushedByFluid: Boolean
         get() = true
     override val isRideable: Boolean

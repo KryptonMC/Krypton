@@ -31,6 +31,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.animal.cat.CatType
+import org.kryptonmc.api.entity.animal.cow.MooshroomType
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.fluid.Fluid
@@ -71,6 +72,7 @@ import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.entity.KryptonEntityDimensions
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.animal.cat.KryptonCatType
+import org.kryptonmc.krypton.entity.animal.cow.KryptonMooshroomType
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeType
 import org.kryptonmc.krypton.inventory.KryptonInventoryType
@@ -158,6 +160,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<DyeColor.Factory>(KryptonDyeColor.Factory)
         register<Ban.Factory>(KryptonBanFactory)
         register<CatType.Factory>(KryptonCatType.Factory)
+        register<MooshroomType.Factory>(KryptonMooshroomType.Factory)
     }
 }
 

@@ -16,22 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity
+package org.kryptonmc.krypton.entity.animal.cow
 
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.FloatTag
-import org.kryptonmc.nbt.ListTag
-import org.spongepowered.math.vector.Vector3f
-import org.spongepowered.math.vector.Vector3i
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.entity.animal.cow.Mooshroom
+import org.kryptonmc.api.entity.animal.cow.MooshroomType
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.world.KryptonWorld
 
-fun CompoundTag.getRotation(key: String): Vector3f? {
-    if (!contains(key, ListTag.ID)) return null
-    val list = getList(key, FloatTag.ID)
-    return Vector3f(list.getFloat(0), list.getFloat(1), list.getFloat(2))
-}
+class KryptonMooshroom(world: KryptonWorld) : KryptonCow(world, EntityTypes.MOOSHROOM), Mooshroom {
 
-fun CompoundTag.getVector3i(key: String): Vector3i? {
-    if (!contains(key, CompoundTag.ID)) return null
-    val position = getCompound(key)
-    return Vector3i(position.getInt("X"), position.getInt("Y"), position.getInt("Z"))
+    override var mooshroomType: MooshroomType
+        get() = Registries.MOOSHROOM_TYPES[Key.key(data[MetadataKeys.MOOSHROOM.TYPE])]!!
+        set(value) = data.set(MetadataKeys.MOOSHROOM.TYPE, value.key().value())
 }

@@ -192,6 +192,8 @@ class KryptonPlayer(
             session.send(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, Registries.GAME_MODES.idOf(value).toFloat()))
             if (value !== GameModes.SPECTATOR) camera = this
         }
+    override val isSpectator: Boolean
+        get() = gameMode === GameModes.SPECTATOR
     override val direction: Direction
         get() = Directions.ofPitch(rotation.y().toDouble())
     val canUseGameMasterBlocks: Boolean

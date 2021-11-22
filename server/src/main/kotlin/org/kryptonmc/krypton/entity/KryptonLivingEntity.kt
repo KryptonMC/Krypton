@@ -26,6 +26,7 @@ import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.attribute.Attribute
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.entity.attribute.AttributeMap
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.memory.Brain
@@ -58,9 +59,27 @@ abstract class KryptonLivingEntity(
     final override var isFallFlying = false
     final override var lastHurtTimestamp = 0
     override var isBaby = false
+    private var tickCount = 0
     val attributes = AttributeMap(attributeSupplier)
     private val brain = Brain(mutableListOf())
 
+    var lastHurtByMob: KryptonLivingEntity? = null
+        set(value) {
+            field = value
+            lastHurtByMobTime = tickCount
+        }
+    private var lastHurtByMobTime = 0
+    var lastHurtByPlayer: KryptonPlayer? = null
+        set(value) {
+            field = value
+            lastHurtByPlayerTime = tickCount
+        }
+    private var lastHurtByPlayerTime = 0
+
+    open val canBeSeenAsEnemy: Boolean
+        get() = !isInvulnerable && canBeSeenByAnyone
+    open val canBeSeenByAnyone: Boolean
+        get() = !isSpectator && isAlive
     open val soundVolume: Float
         get() = 1F
     open val voicePitch: Float
@@ -77,6 +96,11 @@ abstract class KryptonLivingEntity(
         data.add(MetadataKeys.LIVING.ARROWS)
         data.add(MetadataKeys.LIVING.STINGERS)
         data.add(MetadataKeys.LIVING.BED_LOCATION)
+    }
+
+    fun canAttack(target: KryptonLivingEntity): Boolean {
+        if (target is KryptonPlayer && world.difficulty === Difficulty.PEACEFUL) return false
+        return target.canBeSeenAsEnemy
     }
 
     override fun attribute(type: AttributeType): Attribute? = attributes[type]
