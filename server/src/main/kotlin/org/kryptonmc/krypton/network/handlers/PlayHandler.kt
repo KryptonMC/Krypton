@@ -30,7 +30,9 @@ import org.kryptonmc.api.event.command.CommandExecuteEvent
 import org.kryptonmc.api.event.player.ChatEvent
 import org.kryptonmc.api.event.player.MoveEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
+import org.kryptonmc.api.event.player.ResourcePackStatusEvent
 import org.kryptonmc.api.item.meta.MetaKeys
+import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -69,6 +71,7 @@ import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityNBTQuery
 import org.kryptonmc.krypton.packet.`in`.play.PacketInInteract
+import org.kryptonmc.krypton.packet.`in`.play.PacketInResourcePackStatus
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutNBTQueryResponse
@@ -134,6 +137,7 @@ class PlayHandler(
         is PacketInInteract -> handleInteract(packet)
         is PacketInSteerVehicle -> handleSteerVehicle(packet)
         is PacketInPlayerUseItem -> handlePlayerUseItem(packet)
+        is PacketInResourcePackStatus -> handleResourcePackStatus(packet)
         else -> Unit
     }
 
@@ -395,6 +399,14 @@ class PlayHandler(
         if (!player.hasPermission(KryptonPermission.ENTITY_QUERY.node)) return
         val entity = player.world.entityManager[packet.entityId] ?: return
         player.session.send(PacketOutNBTQueryResponse(packet.transactionId, entity.save().build()))
+    }
+
+    private fun handleResourcePackStatus(packet: PacketInResourcePackStatus) {
+        if (packet.status == ResourcePack.Status.DECLINED && server.config.server.resourcePack.forced) {
+            player.session.disconnect(translatable("multiplayer.requiredTexturePrompt.disconnect"))
+            return
+        }
+        server.eventManager.fireAndForget(ResourcePackStatusEvent(player, packet.status))
     }
 
     companion object {

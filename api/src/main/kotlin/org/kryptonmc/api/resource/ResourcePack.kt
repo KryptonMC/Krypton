@@ -60,6 +60,34 @@ public interface ResourcePack {
         public fun of(uri: URI, hash: String, isForced: Boolean, promptMessage: Component): ResourcePack
     }
 
+    /**
+     * The status of a resource pack.
+     */
+    public enum class Status {
+
+        /**
+         * The client has successfully downloaded and applied the resource
+         * pack.
+         */
+        SUCCESSFULLY_LOADED,
+
+        /**
+         * The client refused to accept the resource pack.
+         */
+        DECLINED,
+
+        /**
+         * The client accepted the resource pack, but it failed to download it.
+         */
+        FAILED_DOWNLOAD,
+
+        /**
+         * The client accepted the resource pack and is attempting to download
+         * it.
+         */
+        ACCEPTED
+    }
+
     public companion object {
 
         private val FACTORY = Krypton.factoryProvider.provide<Factory>()
