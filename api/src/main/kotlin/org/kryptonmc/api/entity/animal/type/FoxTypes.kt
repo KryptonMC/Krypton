@@ -6,26 +6,26 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.entity.animal.cow
+package org.kryptonmc.api.entity.animal.type
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 
 /**
- * All of the built-in vanilla mooshroom types.
+ * All of the built-in vanilla fox types.
  */
-@Catalogue(MooshroomType::class)
-public object MooshroomTypes {
+@Catalogue(FoxType::class)
+public object FoxTypes {
 
     // @formatter:off
-    @JvmField public val BROWN: MooshroomType = register("brown")
-    @JvmField public val RED: MooshroomType = register("red")
+    @JvmField public val RED: FoxType = register("red")
+    @JvmField public val SNOW: FoxType = register("snow")
 
     // @formatter:on
     @JvmStatic
-    private fun register(name: String): MooshroomType {
+    private fun register(name: String): FoxType {
         val key = Key.key(name)
-        return Registries.MOOSHROOM_TYPES.register(key, MooshroomType.of(key))
+        return Registries.FOX_TYPES.register(key, FoxType.of(key))
     }
 }

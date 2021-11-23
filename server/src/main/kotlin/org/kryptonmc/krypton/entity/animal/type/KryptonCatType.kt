@@ -16,27 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.animal.cow
+package org.kryptonmc.krypton.entity.animal.type
 
-import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.animal.cow.Cow
-import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.krypton.entity.animal.KryptonAnimal
-import org.kryptonmc.krypton.world.KryptonWorld
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.entity.animal.type.CatType
 
-open class KryptonCow(world: KryptonWorld, type: EntityType<out Cow>) : KryptonAnimal(world, type, ATTRIBUTES), Cow {
+@JvmRecord
+data class KryptonCatType(private val key: Key) : CatType {
 
-    constructor(world: KryptonWorld) : this(world, EntityTypes.COW)
+    override fun key(): Key = key
 
-    override val soundVolume: Float
-        get() = 0.4F
+    object Factory : CatType.Factory {
 
-    companion object {
-
-        private val ATTRIBUTES = attributes()
-            .add(AttributeTypes.MAX_HEALTH, 10.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.2)
-            .build()
+        override fun of(key: Key): CatType = KryptonCatType(key)
     }
 }

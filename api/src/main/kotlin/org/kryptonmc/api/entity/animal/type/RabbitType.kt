@@ -6,23 +6,26 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.entity.animal.cow
+package org.kryptonmc.api.entity.animal.type
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.provide
 
 /**
- * A type of mooshroom.
+ * A type of rabbit.
  */
-public interface MooshroomType : Keyed {
+@CataloguedBy(RabbitTypes::class)
+public interface RabbitType : Keyed {
 
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(key: Key): MooshroomType
+        public fun of(key: Key): RabbitType
     }
 
     public companion object {
@@ -30,12 +33,13 @@ public interface MooshroomType : Keyed {
         private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
-         * Creates a new mooshroom type with the given [key].
+         * Creates a new rabbit type with the given [key].
          *
          * @param key the key
-         * @return a new mooshroom type
+         * @return a new rabbit type
          */
         @JvmStatic
-        public fun of(key: Key): MooshroomType = FACTORY.of(key)
+        @Contract("_ -> new", pure = true)
+        public fun of(key: Key): RabbitType = FACTORY.of(key)
     }
 }

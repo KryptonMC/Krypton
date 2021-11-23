@@ -35,7 +35,7 @@ abstract class KryptonMob(
 
     final override var canPickUpLoot = false
     final override var isPersistent = false
-    var target: KryptonLivingEntity? = null
+    open var target: KryptonLivingEntity? = null
 
     init {
         data.add(MetadataKeys.MOB.FLAGS)

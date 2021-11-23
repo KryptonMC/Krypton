@@ -429,7 +429,7 @@ abstract class KryptonEntity(
     final override var isOnFire: Boolean
         get() = getSharedFlag(0)
         set(value) = setSharedFlag(0, value)
-    final override var isCrouching: Boolean
+    final override var isSneaking: Boolean
         get() = getSharedFlag(1)
         set(value) = setSharedFlag(1, value)
     final override var isSprinting: Boolean

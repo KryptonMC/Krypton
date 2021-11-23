@@ -19,43 +19,53 @@
 package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.animal.Chicken
+import org.kryptonmc.api.entity.animal.PolarBear
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.krypton.entity.Neutral
+import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.util.sample
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
+import java.util.UUID
 import kotlin.random.Random
 
-class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.CHICKEN, ATTRIBUTES), Chicken {
+class KryptonPolarBear(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.POLAR_BEAR, ATTRIBUTES), PolarBear, Neutral {
 
-    override var eggTime = Random.nextInt(6000) + 6000
-    override var isJockey = false
+    override var remainingAngerTime = 0
+    override var angerTarget: UUID? = null
 
-    override fun isFood(item: ItemStack): Boolean = FOOD_ITEMS.contains(item.type)
+    override var isStanding: Boolean
+        get() = data[MetadataKeys.POLAR_BEAR.STANDING]
+        set(value) = data.set(MetadataKeys.POLAR_BEAR.STANDING, value)
+
+    init {
+        data.add(MetadataKeys.POLAR_BEAR.STANDING)
+    }
+
+    override fun startAngerTimer() {
+        remainingAngerTime = PERSISTENT_ANGER_TIME.sample(Random)
+    }
+
+    override fun isFood(item: ItemStack): Boolean = false
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        isJockey = tag.getBoolean("IsChickenJockey")
-        if (tag.contains("EggLayTime")) eggTime = tag.getInt("EggLayTime")
+        loadAngerData(world, tag)
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
-        boolean("IsChickenJockey", isJockey)
-        int("EggLayTime", eggTime)
+        saveAngerData(this)
     }
 
     companion object {
 
         private val ATTRIBUTES = attributes()
-            .add(AttributeTypes.MAX_HEALTH, 4.0)
+            .add(AttributeTypes.MAX_HEALTH, 30.0)
+            .add(AttributeTypes.FOLLOW_RANGE, 20.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
+            .add(AttributeTypes.ATTACK_DAMAGE, 6.0)
             .build()
-        private val FOOD_ITEMS = setOf(
-            ItemTypes.WHEAT_SEEDS,
-            ItemTypes.MELON_SEEDS,
-            ItemTypes.PUMPKIN_SEEDS,
-            ItemTypes.BEETROOT_SEEDS
-        )
+        private val PERSISTENT_ANGER_TIME = 20..39
     }
 }

@@ -18,44 +18,24 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
+import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.animal.Chicken
+import org.kryptonmc.api.entity.animal.Cow
 import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.nbt.CompoundTag
-import kotlin.random.Random
 
-class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.CHICKEN, ATTRIBUTES), Chicken {
+open class KryptonCow(world: KryptonWorld, type: EntityType<out Cow>) : KryptonAnimal(world, type, ATTRIBUTES), Cow {
 
-    override var eggTime = Random.nextInt(6000) + 6000
-    override var isJockey = false
+    constructor(world: KryptonWorld) : this(world, EntityTypes.COW)
 
-    override fun isFood(item: ItemStack): Boolean = FOOD_ITEMS.contains(item.type)
-
-    override fun load(tag: CompoundTag) {
-        super.load(tag)
-        isJockey = tag.getBoolean("IsChickenJockey")
-        if (tag.contains("EggLayTime")) eggTime = tag.getInt("EggLayTime")
-    }
-
-    override fun save(): CompoundTag.Builder = super.save().apply {
-        boolean("IsChickenJockey", isJockey)
-        int("EggLayTime", eggTime)
-    }
+    override val soundVolume: Float
+        get() = 0.4F
 
     companion object {
 
         private val ATTRIBUTES = attributes()
-            .add(AttributeTypes.MAX_HEALTH, 4.0)
-            .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
+            .add(AttributeTypes.MAX_HEALTH, 10.0)
+            .add(AttributeTypes.MOVEMENT_SPEED, 0.2)
             .build()
-        private val FOOD_ITEMS = setOf(
-            ItemTypes.WHEAT_SEEDS,
-            ItemTypes.MELON_SEEDS,
-            ItemTypes.PUMPKIN_SEEDS,
-            ItemTypes.BEETROOT_SEEDS
-        )
     }
 }

@@ -6,7 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.entity.animal.cat
+package org.kryptonmc.api.entity.animal.type
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries

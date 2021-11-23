@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.animal.cat
+package org.kryptonmc.krypton.entity.animal.type
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.animal.cat.CatType
+import org.kryptonmc.api.entity.animal.type.MooshroomType
 
 @JvmRecord
-data class KryptonCatType(private val key: Key) : CatType {
+data class KryptonMooshroomType(private val key: Key) : MooshroomType {
 
     override fun key(): Key = key
 
-    object Factory : CatType.Factory {
+    object Factory : MooshroomType.Factory {
 
-        override fun of(key: Key): CatType = KryptonCatType(key)
+        override fun of(key: Key): MooshroomType = KryptonMooshroomType(key)
     }
 }

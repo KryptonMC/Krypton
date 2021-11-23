@@ -6,10 +6,10 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.entity.animal.cat
+package org.kryptonmc.api.entity.animal
 
 import org.kryptonmc.api.effect.sound.SoundEvents
-import org.kryptonmc.api.entity.animal.Tamable
+import org.kryptonmc.api.entity.animal.type.CatType
 import org.kryptonmc.api.item.meta.DyeColor
 
 /**

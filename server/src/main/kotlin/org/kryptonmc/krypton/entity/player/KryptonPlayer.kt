@@ -753,7 +753,7 @@ class KryptonPlayer(
             val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ) * 100F).roundToInt()
             if (value > 0) when {
                 isSprinting -> incrementStatistic(CustomStatistics.SPRINT_ONE_CM, value)
-                isCrouching -> incrementStatistic(CustomStatistics.CROUCH_ONE_CM, value)
+                isSneaking -> incrementStatistic(CustomStatistics.CROUCH_ONE_CM, value)
                 else -> incrementStatistic(CustomStatistics.WALK_ONE_CM, value)
             }
             return

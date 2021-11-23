@@ -6,7 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.entity.animal.cat
+package org.kryptonmc.api.entity.animal.type
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
@@ -17,15 +17,20 @@ import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.provide
 
 /**
- * A type of cat.
+ * A gene that a panda may possess.
  */
-@CataloguedBy(CatTypes::class)
-public interface CatType : Keyed {
+@CataloguedBy(PandaGenes::class)
+public interface PandaGene : Keyed {
+
+    /**
+     * If this gene is a recessive allele.
+     */
+    public val isRecessive: Boolean
 
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(key: Key): CatType
+        public fun of(key: Key, isRecessive: Boolean): PandaGene
     }
 
     public companion object {
@@ -33,13 +38,14 @@ public interface CatType : Keyed {
         private val FACTORY = Krypton.factoryProvider.provide<Factory>()
 
         /**
-         * Creates a new cat type with the given [key].
+         * Creates a new panda gene with the given values.
          *
          * @param key the key
-         * @return a new cat type
+         * @param isRecessive if the gene is a recessive allele
+         * @return a new panda gene
          */
         @JvmStatic
         @Contract("_ -> new", pure = true)
-        public fun of(key: Key): CatType = FACTORY.of(key)
+        public fun of(key: Key, isRecessive: Boolean): PandaGene = FACTORY.of(key, isRecessive)
     }
 }

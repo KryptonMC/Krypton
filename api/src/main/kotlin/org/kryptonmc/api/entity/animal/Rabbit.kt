@@ -6,17 +6,19 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.entity.animal.cow
+package org.kryptonmc.api.entity.animal
+
+import org.kryptonmc.api.entity.animal.type.RabbitType
 
 /**
- * A mooshroom.
+ * A rabbit.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Mooshroom : Cow {
+public interface Rabbit : Animal {
 
     /**
-     * The type of this mooshroom.
+     * The type of this rabbit.
      */
-    @get:JvmName("mooshroomType")
-    public var mooshroomType: MooshroomType
+    @get:JvmName("rabbitType")
+    public var rabbitType: RabbitType
 }

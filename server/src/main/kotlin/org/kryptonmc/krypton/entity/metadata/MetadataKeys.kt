@@ -20,8 +20,10 @@ package org.kryptonmc.krypton.entity.metadata
 
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.particle.particleEffect
-import org.kryptonmc.api.entity.animal.cat.CatTypes
-import org.kryptonmc.api.entity.animal.cow.MooshroomTypes
+import org.kryptonmc.api.entity.animal.type.CatTypes
+import org.kryptonmc.api.entity.animal.type.MooshroomTypes
+import org.kryptonmc.api.entity.animal.type.FoxTypes
+import org.kryptonmc.api.entity.animal.type.PandaGenes
 import org.kryptonmc.api.item.meta.DyeColors
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
@@ -29,6 +31,7 @@ import org.kryptonmc.krypton.entity.Pose
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.nbt.MutableCompoundTag
 import org.spongepowered.math.vector.Vector3f
+import org.spongepowered.math.vector.Vector3i
 import java.util.Optional
 import java.util.OptionalInt
 
@@ -55,7 +58,16 @@ object MetadataKeys {
     @JvmField val TAMABLE = TamableKeys
     @JvmField val BEE = BeeKeys
     @JvmField val CAT = CatKeys
+    @JvmField val FOX = FoxKeys
     @JvmField val MOOSHROOM = MooshroomKeys
+    @JvmField val OCELOT = OcelotKeys
+    @JvmField val PANDA = PandaKeys
+    @JvmField val PIG = PigKeys
+    @JvmField val POLAR_BEAR = PolarBearKeys
+    @JvmField val RABBIT = RabbitKeys
+    @JvmField val SHEEP = SheepKeys
+    @JvmField val TURTLE = TurtleKeys
+    @JvmField val WOLF = WolfKeys
 
     @JvmField val FLAGS = create(0, MetadataSerializers.BYTE, 0)
     @JvmField val AIR_TICKS = create(1, MetadataSerializers.VAR_INT, 300)
@@ -199,9 +211,70 @@ object MetadataKeys {
         @JvmField val COLLAR_COLOR = create(22, MetadataSerializers.VAR_INT, Registries.DYE_COLORS.idOf(DyeColors.RED))
     }
 
+    object FoxKeys {
+
+        @JvmField val TYPE = create(17, MetadataSerializers.VAR_INT, Registries.FOX_TYPES.idOf(FoxTypes.RED))
+        @JvmField val FLAGS = create(18, MetadataSerializers.BYTE, 0)
+        @JvmField val FIRST_TRUSTED = create(19, MetadataSerializers.OPTIONAL_UUID, Optional.empty())
+        @JvmField val SECOND_TRUSTED = create(20, MetadataSerializers.OPTIONAL_UUID, Optional.empty())
+    }
+
     object MooshroomKeys {
 
         @JvmField val TYPE = create(17, MetadataSerializers.STRING, MooshroomTypes.RED.key().value())
+    }
+
+    object OcelotKeys {
+
+        @JvmField val TRUSTING = create(17, MetadataSerializers.BOOLEAN, false)
+    }
+
+    object PandaKeys {
+
+        @JvmField val UNHAPPY_TIMER = create(17, MetadataSerializers.VAR_INT, 0)
+        @JvmField val SNEEZE_TIMER = create(18, MetadataSerializers.VAR_INT, 0)
+        @JvmField val EATING_TIMER = create(19, MetadataSerializers.VAR_INT, 0)
+        @JvmField val MAIN_GENE = create(20, MetadataSerializers.BYTE, 0)
+        @JvmField val HIDDEN_GENE = create(21, MetadataSerializers.BYTE, 0)
+        @JvmField val FLAGS = create(22, MetadataSerializers.BYTE, 0)
+    }
+
+    object PigKeys {
+
+        @JvmField val SADDLE = create(17, MetadataSerializers.BOOLEAN, false)
+        @JvmField val BOOST_TIME = create(18, MetadataSerializers.VAR_INT, 0)
+    }
+
+    object PolarBearKeys {
+
+        @JvmField val STANDING = create(17, MetadataSerializers.BOOLEAN, false)
+    }
+
+    object RabbitKeys {
+
+        @JvmField val TYPE = create(17, MetadataSerializers.VAR_INT, 0)
+    }
+
+    object SheepKeys {
+
+        @JvmField val FLAGS = create(17, MetadataSerializers.BYTE, 0)
+    }
+
+    object TurtleKeys {
+
+        @JvmField val HOME = create(17, MetadataSerializers.POSITION, Vector3i.ZERO)
+        @JvmField val HAS_EGG = create(18, MetadataSerializers.BOOLEAN, false)
+        @JvmField val LAYING_EGG = create(19, MetadataSerializers.BOOLEAN, false)
+        @JvmField val DESTINATION = create(20, MetadataSerializers.POSITION, Vector3i.ZERO)
+        @JvmField val GOING_HOME = create(21, MetadataSerializers.BOOLEAN, false)
+        @JvmField val TRAVELLING = create(22, MetadataSerializers.BOOLEAN, false)
+    }
+
+    object WolfKeys {
+
+        @JvmField val BEGGING = create(19, MetadataSerializers.BOOLEAN, false)
+        @JvmField val COLLAR_COLOR = create(20, MetadataSerializers.VAR_INT, Registries.DYE_COLORS.idOf(DyeColors.RED))
+        @JvmField val ANGER_TIME = create(21, MetadataSerializers.VAR_INT, 0)
     }
 
     @JvmStatic

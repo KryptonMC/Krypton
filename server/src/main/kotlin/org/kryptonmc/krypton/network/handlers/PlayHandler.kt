@@ -203,8 +203,8 @@ class PlayHandler(
 
     private fun handleEntityAction(packet: PacketInEntityAction) {
         when (packet.action) {
-            EntityAction.START_SNEAKING -> player.isCrouching = true
-            EntityAction.STOP_SNEAKING -> player.isCrouching = false
+            EntityAction.START_SNEAKING -> player.isSneaking = true
+            EntityAction.STOP_SNEAKING -> player.isSneaking = false
             EntityAction.START_SPRINTING -> player.isSprinting = true
             EntityAction.STOP_SPRINTING -> player.isSprinting = false
             EntityAction.LEAVE_BED -> Unit // TODO: Sleeping

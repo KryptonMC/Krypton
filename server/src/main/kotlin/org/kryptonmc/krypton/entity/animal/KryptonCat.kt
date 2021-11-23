@@ -16,29 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.animal.cat
+package org.kryptonmc.krypton.entity.animal
 
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Animal
-import org.kryptonmc.api.entity.animal.cat.Cat
-import org.kryptonmc.api.entity.animal.cat.CatType
+import org.kryptonmc.api.entity.animal.Cat
+import org.kryptonmc.api.entity.animal.type.CatType
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.DyeColor
 import org.kryptonmc.api.item.meta.DyeColors
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.entity.animal.KryptonTamable
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.nbt.CompoundTag
+import kotlin.random.Random
 
 class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, ATTRIBUTES), Cat {
 
     override var catType: CatType
         get() = Registries.CAT_TYPES[data[MetadataKeys.CAT.TYPE]]!!
-        set(value) = data.set(MetadataKeys.CAT.TYPE, Registries.CAT_TYPES.idOf(value))
+        set(value) {
+            var id = Registries.CAT_TYPES.idOf(value)
+            if (id < 0 || id > Registries.CAT_TYPES.size) id = Random.nextInt(Registries.CAT_TYPES.size)
+            data[MetadataKeys.CAT.TYPE] = id
+        }
     override var isLying: Boolean
         get() = data[MetadataKeys.CAT.LYING]
         set(value) = data.set(MetadataKeys.CAT.LYING, value)
@@ -67,6 +72,19 @@ class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, A
     }
 
     override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.COD || item.type === ItemTypes.SALMON
+
+    override fun load(tag: CompoundTag) {
+        super.load(tag)
+        data[MetadataKeys.CAT.TYPE] = tag.getInt("CatType")
+        if (tag.contains("CollarColor", 99)) {
+            data[MetadataKeys.CAT.COLLAR_COLOR] = tag.getInt("CollarColor")
+        }
+    }
+
+    override fun save(): CompoundTag.Builder = super.save().apply {
+        int("CatType", data[MetadataKeys.CAT.TYPE])
+        byte("CollarColor", data[MetadataKeys.CAT.COLLAR_COLOR].toByte())
+    }
 
     companion object {
 

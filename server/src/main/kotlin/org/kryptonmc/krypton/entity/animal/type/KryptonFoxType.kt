@@ -16,19 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.animal.cow
+package org.kryptonmc.krypton.entity.animal.type
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.animal.cow.Mooshroom
-import org.kryptonmc.api.entity.animal.cow.MooshroomType
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.api.entity.animal.type.FoxType
 
-class KryptonMooshroom(world: KryptonWorld) : KryptonCow(world, EntityTypes.MOOSHROOM), Mooshroom {
+@JvmRecord
+data class KryptonFoxType(private val key: Key) : FoxType {
 
-    override var mooshroomType: MooshroomType
-        get() = Registries.MOOSHROOM_TYPES[Key.key(data[MetadataKeys.MOOSHROOM.TYPE])]!!
-        set(value) = data.set(MetadataKeys.MOOSHROOM.TYPE, value.key().value())
+    override fun key(): Key = key
+
+    object Factory : FoxType.Factory {
+
+        override fun of(key: Key): FoxType = KryptonFoxType(key)
+    }
 }

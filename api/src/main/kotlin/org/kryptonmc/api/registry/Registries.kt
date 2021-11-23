@@ -19,8 +19,11 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.animal.cat.CatType
-import org.kryptonmc.api.entity.animal.cow.MooshroomType
+import org.kryptonmc.api.entity.animal.type.CatType
+import org.kryptonmc.api.entity.animal.type.MooshroomType
+import org.kryptonmc.api.entity.animal.type.FoxType
+import org.kryptonmc.api.entity.animal.type.PandaGene
+import org.kryptonmc.api.entity.animal.type.RabbitType
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.entity.hanging.Picture
@@ -104,6 +107,9 @@ public object Registries {
     @JvmField public val BAN_TYPES: Registry<BanType> = create(ResourceKeys.BAN_TYPES)
     @JvmField public val CAT_TYPES: Registry<CatType> = create(ResourceKeys.CAT_TYPES)
     @JvmField public val MOOSHROOM_TYPES: Registry<MooshroomType> = create(ResourceKeys.MOOSHROOM_TYPES)
+    @JvmField public val FOX_TYPES: Registry<FoxType> = create(ResourceKeys.FOX_TYPES)
+    @JvmField public val PANDA_GENES: Registry<PandaGene> = create(ResourceKeys.PANDA_GENES)
+    @JvmField public val RABBIT_TYPES: Registry<RabbitType> = create(ResourceKeys.RABBIT_TYPES)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

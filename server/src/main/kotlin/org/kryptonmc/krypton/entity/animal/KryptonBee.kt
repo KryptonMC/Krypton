@@ -21,9 +21,12 @@ package org.kryptonmc.krypton.entity.animal
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Bee
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.api.item.ItemStack
+import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.krypton.entity.Neutral
 import org.kryptonmc.krypton.entity.getVector3i
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.vector3i
 import org.kryptonmc.krypton.util.sample
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -40,11 +43,6 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, AT
     private var timeSincePollination = 0
     private var cropsGrownSincePollination = 0
 
-    init {
-        data.add(MetadataKeys.BEE.FLAGS)
-        data.add(MetadataKeys.BEE.ANGER_TIME)
-    }
-
     override var isAngry: Boolean
         get() = getFlag(2)
         set(value) = setFlag(2, value)
@@ -53,14 +51,27 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, AT
         set(value) = setFlag(4, value)
     override var hasNectar: Boolean
         get() = getFlag(8)
-        set(value) = setFlag(8, value)
+        set(value) {
+            if (value) timeSincePollination = 0
+            setFlag(8, value)
+        }
     override var remainingAngerTime: Int
         get() = data[MetadataKeys.BEE.ANGER_TIME]
         set(value) = data.set(MetadataKeys.BEE.ANGER_TIME, value)
 
+    override val soundVolume: Float
+        get() = 0.4F
+
+    init {
+        data.add(MetadataKeys.BEE.FLAGS)
+        data.add(MetadataKeys.BEE.ANGER_TIME)
+    }
+
     override fun startAngerTimer() {
         remainingAngerTime = PERSISTENT_ANGER_TIME.sample(Random)
     }
+
+    override fun isFood(item: ItemStack): Boolean = ItemTags.FLOWERS.contains(item.type)
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
@@ -71,6 +82,18 @@ class KryptonBee(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.BEE, AT
         timeSincePollination = tag.getInt("TicksSincePollination")
         cannotEnterHiveTicks = tag.getInt("CannotEnterHiveTicks")
         cropsGrownSincePollination = tag.getInt("CropsGrownSincePollination")
+        loadAngerData(world, tag)
+    }
+
+    override fun save(): CompoundTag.Builder = super.save().apply {
+        if (hive != null) vector3i("HivePos", hive!!)
+        if (flower != null) vector3i("FlowerPos", flower!!)
+        boolean("HasNectar", hasNectar)
+        boolean("HasStung", hasStung)
+        int("TicksSincePollination", timeSincePollination)
+        int("CannotEnterHiveTicks", cannotEnterHiveTicks)
+        int("CropsGrownSincePollination", cropsGrownSincePollination)
+        saveAngerData(this)
     }
 
     private fun getFlag(index: Int): Boolean = data[MetadataKeys.BEE.FLAGS].toInt() and index != 0

@@ -134,9 +134,9 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public var isOnGround: Boolean
 
     /**
-     * If this entity is crouching/sneaking.
+     * If this entity is sneaking.
      */
-    public var isCrouching: Boolean
+    public var isSneaking: Boolean
 
     /**
      * If this entity is sprinting.

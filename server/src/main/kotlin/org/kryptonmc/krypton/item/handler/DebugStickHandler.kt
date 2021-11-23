@@ -77,7 +77,7 @@ object DebugStickHandler : KryptonItemHandler {
 
         if (isUse) {
             if (property == null) property = properties.first() as Property<Comparable<Any>>
-            val cycled = block.cycle(property, player.isCrouching)
+            val cycled = block.cycle(property, player.isSneaking)
             world.setBlock(position, cycled)
             player.sendMessage(translatable(
                 "${ItemTypes.DEBUG_STICK.translation.key()}.update",
@@ -85,7 +85,7 @@ object DebugStickHandler : KryptonItemHandler {
                 text(property.toString(cycled[property]!!))
             ))
         } else {
-            property = properties.findRelative(property, player.isCrouching) as Property<Comparable<Any>>
+            property = properties.findRelative(property, player.isSneaking) as Property<Comparable<Any>>
             val name = property.name
             tag.putString(key, name)
             player.sendMessage(translatable(

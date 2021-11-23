@@ -35,3 +35,9 @@ fun CompoundTag.getVector3i(key: String): Vector3i? {
     val position = getCompound(key)
     return Vector3i(position.getInt("X"), position.getInt("Y"), position.getInt("Z"))
 }
+
+fun CompoundTag.Builder.vector3i(key: String, vector: Vector3i): CompoundTag.Builder = compound(key) {
+    int("X", vector.x())
+    int("Y", vector.y())
+    int("Z", vector.z())
+}

@@ -16,18 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.animal.cow
+package org.kryptonmc.krypton.entity.animal.type
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.animal.cow.MooshroomType
+import org.kryptonmc.api.entity.animal.type.PandaGene
 
 @JvmRecord
-data class KryptonMooshroomType(private val key: Key) : MooshroomType {
+data class KryptonPandaGene(
+    private val key: Key,
+    override val isRecessive: Boolean
+) : PandaGene {
 
     override fun key(): Key = key
 
-    object Factory : MooshroomType.Factory {
+    object Factory : PandaGene.Factory {
 
-        override fun of(key: Key): MooshroomType = KryptonMooshroomType(key)
+        override fun of(key: Key, isRecessive: Boolean): PandaGene = KryptonPandaGene(key, isRecessive)
     }
 }
