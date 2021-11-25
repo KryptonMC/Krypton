@@ -38,10 +38,14 @@ import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.data.NoteParticleData
+import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.event.player.PerformActionEvent
+import org.kryptonmc.api.item.ItemTypes
+import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.permission.PermissionFunction
 import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.registry.Registries
@@ -147,6 +151,25 @@ class KryptonPlayer(
     override var canInstantlyBuild = false
     override var walkingSpeed = 0.1F
     override var flyingSpeed = 0.05F
+    override var isFlying: Boolean
+        get() = super.isFlying
+        set(value) {
+            val action = if (value) PerformActionEvent.Action.START_FLYING_WITH_ELYTRA else PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA
+            val event = server.eventManager.fireSync(PerformActionEvent(this, action))
+            if (!event.result.isAllowed) return
+
+            if (action == PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA) {
+                super.isFlying = false
+                return
+            }
+            if (!isOnGround && !super.isFlying && !inWater) {
+                val chestplate = inventory.armor(ArmorSlot.CHESTPLATE)
+                val damage = chestplate.meta[MetaKeys.DAMAGE] ?: 0
+                if (chestplate.type === ItemTypes.ELYTRA && damage < chestplate.type.durability - 1) {
+                    super.isFlying = true
+                }
+            }
+        }
     override val inventory = KryptonPlayerInventory(this)
     override val scoreboard = world.scoreboard
     override var locale: Locale? = null
@@ -329,6 +352,7 @@ class KryptonPlayer(
     override fun tick() {
         super.tick()
         hungerMechanic()
+        if (data.isDirty) session.send(PacketOutMetadata(id, data.dirty))
     }
 
     private fun hungerMechanic() {
@@ -703,7 +727,6 @@ class KryptonPlayer(
     private fun onAbilitiesUpdate() {
         session.send(PacketOutAbilities(this))
         updateInvisibility()
-        server.playerManager.sendToAll(PacketOutMetadata(id, data.dirty), world)
     }
 
     private fun updateInvisibility() {
@@ -746,16 +769,13 @@ class KryptonPlayer(
             }
             return
         }
-        if (isFallFlying) {
+        if (isFlying) {
             val value = (sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 100F).roundToInt()
             incrementStatistic(CustomStatistics.AVIATE_ONE_CM, value)
             return
         }
-        if (isFlying) {
-            val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ ) * 100F).roundToInt()
-            if (value > FLYING_ACHIEVEMENT_MINIMUM_SPEED) incrementStatistic(CustomStatistics.FLY_ONE_CM, value)
-            return
-        }
+        val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ) * 100F).roundToInt()
+        if (value > FLYING_ACHIEVEMENT_MINIMUM_SPEED) incrementStatistic(CustomStatistics.FLY_ONE_CM, value)
     }
 
     fun updateMovementExhaustion(deltaX: Double, deltaY: Double, deltaZ: Double) {

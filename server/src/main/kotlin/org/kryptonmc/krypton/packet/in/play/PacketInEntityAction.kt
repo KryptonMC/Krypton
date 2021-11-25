@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
@@ -26,19 +27,6 @@ import org.kryptonmc.krypton.util.readVarInt
 class PacketInEntityAction(buf: ByteBuf) : Packet {
 
     val id = buf.readVarInt()
-    val action = buf.readEnum<EntityAction>()
+    val action = buf.readEnum<PerformActionEvent.Action>()
     val data = buf.readVarInt()
-}
-
-enum class EntityAction {
-
-    START_SNEAKING,
-    STOP_SNEAKING,
-    LEAVE_BED,
-    START_SPRINTING,
-    STOP_SPRINTING,
-    START_JUMP_WITH_HORSE,
-    STOP_JUMP_WITH_HORSE,
-    OPEN_HORSE_INVENTORY,
-    START_FLYING_WITH_ELYTRA
 }

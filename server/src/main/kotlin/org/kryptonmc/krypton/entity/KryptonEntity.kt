@@ -32,6 +32,7 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.tags.FluidTags
@@ -255,6 +256,7 @@ abstract class KryptonEntity(
         updateWater()
         updateUnderFluid()
         updateSwimming()
+        if (data.isDirty) viewers.forEach { it.session.send(PacketOutMetadata(id, data.dirty)) }
     }
 
     protected open fun getSpawnPacket(): Packet = PacketOutSpawnEntity(this)
@@ -444,7 +446,7 @@ abstract class KryptonEntity(
     final override var isGlowing: Boolean
         get() = getSharedFlag(6)
         set(value) = setSharedFlag(6, value)
-    final override var isFlying: Boolean
+    override var isFlying: Boolean
         get() = getSharedFlag(7)
         set(value) = setSharedFlag(7, value)
     final override var air: Int

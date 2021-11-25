@@ -56,7 +56,6 @@ abstract class KryptonLivingEntity(
     final override var isDead = false
     final override var deathTime: Short = 0
     final override var hurtTime: Short = 0
-    final override var isFallFlying = false
     final override var lastHurtTimestamp = 0
     override var isBaby = false
     private var tickCount = 0
@@ -114,7 +113,7 @@ abstract class KryptonLivingEntity(
         // Values
         absorption = tag.getFloat("AbsorptionAmount")
         deathTime = tag.getShort("DeathTime")
-        isFallFlying = tag.getBoolean("FallFlying")
+        isFlying = tag.getBoolean("FallFlying")
         health = tag.getFloat("Health")
         lastHurtTimestamp = tag.getInt("HurtByTimestamp")
         hurtTime = tag.getShort("HurtTime")
@@ -147,7 +146,7 @@ abstract class KryptonLivingEntity(
         put("Attributes", attributes.save())
         put("Brain", brain.save())
         short("DeathTime", deathTime)
-        boolean("FallFlying", isFallFlying)
+        boolean("FallFlying", isFlying)
         float("Health", health)
         int("HurtByTimestamp", lastHurtTimestamp)
         short("HurtTime", hurtTime)

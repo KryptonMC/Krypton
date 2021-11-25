@@ -29,6 +29,7 @@ import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.command.CommandExecuteEvent
 import org.kryptonmc.api.event.player.ChatEvent
 import org.kryptonmc.api.event.player.MoveEvent
+import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
 import org.kryptonmc.api.event.player.ResourcePackStatusEvent
 import org.kryptonmc.api.item.meta.MetaKeys
@@ -39,7 +40,6 @@ import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.handler.KryptonItemTimedHandler
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.`in`.play.EntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAnimation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChat
@@ -186,10 +186,6 @@ class PlayHandler(
     private fun handleClientSettings(packet: PacketInClientSettings) {
         player.mainHand = packet.mainHand
         player.skinSettings = packet.skinSettings.toByte()
-        playerManager.sendToAll(PacketOutMetadata(
-            player.id,
-            player.data.dirty
-        ))
     }
 
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
@@ -202,17 +198,21 @@ class PlayHandler(
     }
 
     private fun handleEntityAction(packet: PacketInEntityAction) {
-        when (packet.action) {
-            EntityAction.START_SNEAKING -> player.isSneaking = true
-            EntityAction.STOP_SNEAKING -> player.isSneaking = false
-            EntityAction.START_SPRINTING -> player.isSprinting = true
-            EntityAction.STOP_SPRINTING -> player.isSprinting = false
-            EntityAction.LEAVE_BED -> Unit // TODO: Sleeping
-            EntityAction.START_JUMP_WITH_HORSE, EntityAction.STOP_JUMP_WITH_HORSE,
-            EntityAction.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
-            EntityAction.START_FLYING_WITH_ELYTRA -> Unit // TODO: Elytra
-        }
-        playerManager.sendToAll(PacketOutMetadata(player.id, player.data.dirty))
+        server.eventManager.fire(PerformActionEvent(player, packet.action)).thenAcceptAsync({
+            if (!it.result.isAllowed) return@thenAcceptAsync
+            when (it.action) {
+                PerformActionEvent.Action.START_SNEAKING -> player.isSneaking = true
+                PerformActionEvent.Action.STOP_SNEAKING -> player.isSneaking = false
+                PerformActionEvent.Action.START_SPRINTING -> player.isSprinting = true
+                PerformActionEvent.Action.STOP_SPRINTING -> player.isSprinting = false
+                PerformActionEvent.Action.LEAVE_BED -> Unit // TODO: Sleeping
+                PerformActionEvent.Action.START_JUMP_WITH_HORSE,
+                PerformActionEvent.Action.STOP_JUMP_WITH_HORSE,
+                PerformActionEvent.Action.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
+                PerformActionEvent.Action.START_FLYING_WITH_ELYTRA -> player.isFlying = true
+                PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA -> player.isFlying = false
+            }
+        }, session.channel.eventLoop())
     }
 
     private fun handleHeldItemChange(packet: PacketInChangeHeldItem) {

@@ -30,8 +30,9 @@ class MetadataHolder(private val entity: KryptonEntity) {
 
     private val itemsById = Int2ObjectOpenHashMap<Entry<*>>()
     private val lock = ReentrantReadWriteLock()
-    private var isDirty = false
 
+    var isDirty = false
+        private set
     var isEmpty = true
         private set
     val all: List<Entry<*>>
