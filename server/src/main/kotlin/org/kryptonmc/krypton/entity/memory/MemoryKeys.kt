@@ -29,33 +29,33 @@ import org.kryptonmc.krypton.util.Codecs
 @Catalogue(MemoryKey::class)
 object MemoryKeys {
 
-    @JvmField val ADMIRING_DISABLED = register<Boolean>("admiring_disabled", Codec.BOOL, true)
-    @JvmField val ADMIRING_ITEM = register<Boolean>("admiring_item", Codec.BOOL, true)
-    @JvmField val ANGRY_AT = register("angry_at", Codecs.UUID, true)
-    @JvmField val GOLEM_DETECTED_RECENTLY = register<Boolean>("golem_detected_recently", Codec.BOOL, true)
-    @JvmField val HAS_HUNTING_COOLDOWN = register<Boolean>("has_hunting_cooldown", Codec.BOOL, true)
-    @JvmField val HOME = register("home", GlobalPosition.CODEC, false)
-    @JvmField val HUNTED_RECENTLY = register<Boolean>("hunted_recently", Codec.BOOL, true)
-    @JvmField val IS_TEMPTED = register<Boolean>("is_tempted", Codec.BOOL, false)
-    @JvmField val JOB_SITE = register("job_site", GlobalPosition.CODEC, false)
-    @JvmField val LAST_SLEPT = register<Long>("last_slept", Codec.LONG, false)
-    @JvmField val LAST_WOKEN = register<Long>("last_woken", Codec.LONG, false)
-    @JvmField val LAST_WORKED_AT_POI = register<Long>("last_worked_at_poi", Codec.LONG, false)
-    @JvmField val LONG_JUMP_COOLING_DOWN = register<Int>("long_jump_cooling_down", Codec.INT, false)
-    @JvmField val MEETING_POINT = register("meeting_point", GlobalPosition.CODEC, false)
-    @JvmField val PLAY_DEAD_TICKS = register<Int>("play_dead_ticks", Codec.INT, false)
-    @JvmField val POTENTIAL_JOB_SITE = register("potential_job_site", GlobalPosition.CODEC, false)
-    @JvmField val RAM_COOLDOWN_TICKS = register<Int>("ram_cooldown_ticks", Codec.INT, false)
-    @JvmField val TEMPTATION_COOLDOWN_TICKS = register<Int>("temptation_cooldown_ticks", Codec.INT, false)
-    @JvmField val UNIVERSAL_ANGER = register<Boolean>("universal_anger", Codec.BOOL, true)
+    @JvmField val ADMIRING_DISABLED = register<Boolean>("admiring_disabled", Codec.BOOL)
+    @JvmField val ADMIRING_ITEM = register<Boolean>("admiring_item", Codec.BOOL)
+    @JvmField val ANGRY_AT = register("angry_at", Codecs.UUID)
+    @JvmField val GOLEM_DETECTED_RECENTLY = register<Boolean>("golem_detected_recently", Codec.BOOL)
+    @JvmField val HAS_HUNTING_COOLDOWN = register<Boolean>("has_hunting_cooldown", Codec.BOOL)
+    @JvmField val HOME = register("home", GlobalPosition.CODEC)
+    @JvmField val HUNTED_RECENTLY = register<Boolean>("hunted_recently", Codec.BOOL)
+    @JvmField val IS_TEMPTED = register<Boolean>("is_tempted", Codec.BOOL)
+    @JvmField val JOB_SITE = register("job_site", GlobalPosition.CODEC)
+    @JvmField val LAST_SLEPT = register<Long>("last_slept", Codec.LONG)
+    @JvmField val LAST_WOKEN = register<Long>("last_woken", Codec.LONG)
+    @JvmField val LAST_WORKED_AT_POI = register<Long>("last_worked_at_poi", Codec.LONG)
+    @JvmField val LONG_JUMP_COOLING_DOWN = register<Int>("long_jump_cooling_down", Codec.INT)
+    @JvmField val MEETING_POINT = register("meeting_point", GlobalPosition.CODEC)
+    @JvmField val PLAY_DEAD_TICKS = register<Int>("play_dead_ticks", Codec.INT)
+    @JvmField val POTENTIAL_JOB_SITE = register("potential_job_site", GlobalPosition.CODEC)
+    @JvmField val RAM_COOLDOWN_TICKS = register<Int>("ram_cooldown_ticks", Codec.INT)
+    @JvmField val TEMPTATION_COOLDOWN_TICKS = register<Int>("temptation_cooldown_ticks", Codec.INT)
+    @JvmField val UNIVERSAL_ANGER = register<Boolean>("universal_anger", Codec.BOOL)
 
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    private fun <T : Any> register(name: String, codec: Codec<T>, canExpire: Boolean): MemoryKey<T> {
+    private fun <T : Any> register(name: String, codec: Codec<T>): MemoryKey<T> {
         val key = Key.key(name)
         return InternalRegistries.MEMORIES.register(
             key,
-            MemoryKey(key, codec, canExpire) as MemoryKey<Any>
+            MemoryKey(key, codec) as MemoryKey<Any>
         ) as MemoryKey<T>
     }
 }

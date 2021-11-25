@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.entity.metadata
 
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.particle.particleEffect
+import org.kryptonmc.api.entity.animal.type.AxolotlVariants
 import org.kryptonmc.api.entity.animal.type.CatTypes
 import org.kryptonmc.api.entity.animal.type.MooshroomTypes
 import org.kryptonmc.api.entity.animal.type.FoxTypes
@@ -56,9 +57,11 @@ object MetadataKeys {
     @JvmField val PLAYER = PlayerKeys
     @JvmField val AGEABLE = AgeableKeys
     @JvmField val TAMABLE = TamableKeys
+    @JvmField val AXOLOTL = AxolotlKeys
     @JvmField val BEE = BeeKeys
     @JvmField val CAT = CatKeys
     @JvmField val FOX = FoxKeys
+    @JvmField val GOAT = GoatKeys
     @JvmField val MOOSHROOM = MooshroomKeys
     @JvmField val OCELOT = OcelotKeys
     @JvmField val PANDA = PandaKeys
@@ -197,6 +200,13 @@ object MetadataKeys {
         @JvmField val OWNER = create(18, MetadataSerializers.OPTIONAL_UUID, Optional.empty())
     }
 
+    object AxolotlKeys {
+
+        @JvmField val VARIANT = create(17, MetadataSerializers.VAR_INT, Registries.AXOLOTL_VARIANTS.idOf(AxolotlVariants.LUCY))
+        @JvmField val PLAYING_DEAD = create(18, MetadataSerializers.BOOLEAN, false)
+        @JvmField val FROM_BUCKET = create(19, MetadataSerializers.BOOLEAN, false)
+    }
+
     object BeeKeys {
 
         @JvmField val FLAGS = create(17, MetadataSerializers.BYTE, 0)
@@ -217,6 +227,11 @@ object MetadataKeys {
         @JvmField val FLAGS = create(18, MetadataSerializers.BYTE, 0)
         @JvmField val FIRST_TRUSTED = create(19, MetadataSerializers.OPTIONAL_UUID, Optional.empty())
         @JvmField val SECOND_TRUSTED = create(20, MetadataSerializers.OPTIONAL_UUID, Optional.empty())
+    }
+
+    object GoatKeys {
+
+        @JvmField val SCREAMING = create(17, MetadataSerializers.BOOLEAN, false)
     }
 
     object MooshroomKeys {

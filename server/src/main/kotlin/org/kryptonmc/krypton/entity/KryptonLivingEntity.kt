@@ -61,7 +61,7 @@ abstract class KryptonLivingEntity(
     override var isBaby = false
     private var tickCount = 0
     val attributes = AttributeMap(attributeSupplier)
-    private val brain = Brain(mutableListOf())
+    open val brain: Brain<*> = Brain<KryptonLivingEntity>()
 
     var lastHurtByMob: KryptonLivingEntity? = null
         set(value) {

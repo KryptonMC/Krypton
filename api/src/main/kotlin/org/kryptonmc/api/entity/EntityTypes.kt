@@ -10,12 +10,14 @@ package org.kryptonmc.api.entity
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.ambient.Bat
+import org.kryptonmc.api.entity.animal.Axolotl
 import org.kryptonmc.api.entity.animal.Bee
 import org.kryptonmc.api.entity.animal.Chicken
 import org.kryptonmc.api.entity.animal.Cat
 import org.kryptonmc.api.entity.animal.Fox
 import org.kryptonmc.api.entity.animal.Ocelot
 import org.kryptonmc.api.entity.animal.Cow
+import org.kryptonmc.api.entity.animal.Goat
 import org.kryptonmc.api.entity.animal.Mooshroom
 import org.kryptonmc.api.entity.animal.Panda
 import org.kryptonmc.api.entity.animal.Pig
@@ -58,7 +60,7 @@ public object EntityTypes {
     @JvmField public val AREA_EFFECT_CLOUD: EntityType<AreaEffectCloud> = get("area_effect_cloud")
     @JvmField public val ARMOR_STAND: EntityType<ArmorStand> = get("armor_stand")
     @JvmField public val ARROW: EntityType<Arrow> = get("arrow")
-    @JvmField public val AXOLOTL: EntityType<Entity> = get("axolotl")
+    @JvmField public val AXOLOTL: EntityType<Axolotl> = get("axolotl")
     @JvmField public val BAT: EntityType<Bat> = get("bat")
     @JvmField public val BEE: EntityType<Bee> = get("bee")
     @JvmField public val BLAZE: EntityType<Entity> = get("blaze")
@@ -89,7 +91,7 @@ public object EntityTypes {
     @JvmField public val GIANT: EntityType<Entity> = get("giant")
     @JvmField public val GLOW_ITEM_FRAME: EntityType<Entity> = get("glow_item_frame")
     @JvmField public val GLOW_SQUID: EntityType<Entity> = get("glow_squid")
-    @JvmField public val GOAT: EntityType<Entity> = get("goat")
+    @JvmField public val GOAT: EntityType<Goat> = get("goat")
     @JvmField public val GUARDIAN: EntityType<Entity> = get("guardian")
     @JvmField public val HOGLIN: EntityType<Entity> = get("hoglin")
     @JvmField public val HORSE: EntityType<Entity> = get("horse")

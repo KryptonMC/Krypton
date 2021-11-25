@@ -26,6 +26,7 @@ import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityCategories
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.entity.animal.type.AxolotlVariants
 import org.kryptonmc.api.entity.animal.type.CatTypes
 import org.kryptonmc.api.entity.animal.type.FoxTypes
 import org.kryptonmc.api.entity.animal.type.MooshroomTypes
@@ -160,6 +161,7 @@ object Bootstrap {
         MooshroomTypes
         PandaGenes
         RabbitTypes
+        AxolotlVariants
 
         // Preload some other things that would otherwise load on first player join or some other time
         Encryption

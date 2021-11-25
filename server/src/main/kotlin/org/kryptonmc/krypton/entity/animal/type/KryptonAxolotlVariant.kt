@@ -16,15 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.memory
+package org.kryptonmc.krypton.entity.animal.type
 
-import com.mojang.serialization.Codec
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.api.entity.animal.type.AxolotlVariant
 
 @JvmRecord
-@CataloguedBy(MemoryKeys::class)
-data class MemoryKey<T : Any>(
-    val key: Key,
-    val codec: Codec<T>
-)
+data class KryptonAxolotlVariant(
+    private val key: Key,
+    override val isCommon: Boolean
+) : AxolotlVariant {
+
+    override fun key(): Key = key
+
+    object Factory : AxolotlVariant.Factory {
+
+        override fun of(key: Key, isCommon: Boolean): AxolotlVariant = KryptonAxolotlVariant(key, isCommon)
+    }
+}

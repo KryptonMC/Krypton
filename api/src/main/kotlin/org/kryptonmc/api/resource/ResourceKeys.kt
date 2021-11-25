@@ -18,6 +18,7 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityCategory
+import org.kryptonmc.api.entity.animal.type.AxolotlVariant
 import org.kryptonmc.api.entity.animal.type.CatType
 import org.kryptonmc.api.entity.animal.type.MooshroomType
 import org.kryptonmc.api.entity.animal.type.FoxType
@@ -111,6 +112,7 @@ public object ResourceKeys {
     @JvmField public val FOX_TYPES: ResourceKey<out Registry<FoxType>> = krypton("fox_types")
     @JvmField public val PANDA_GENES: ResourceKey<out Registry<PandaGene>> = krypton("panda_genes")
     @JvmField public val RABBIT_TYPES: ResourceKey<out Registry<RabbitType>> = krypton("rabbit_types")
+    @JvmField public val AXOLOTL_VARIANTS: ResourceKey<out Registry<AxolotlVariant>> = krypton("axolotl_variants")
 
     /**
      * Creates a new registry key with the given [key] as its base key.

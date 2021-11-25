@@ -19,6 +19,7 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.animal.type.AxolotlVariant
 import org.kryptonmc.api.entity.animal.type.CatType
 import org.kryptonmc.api.entity.animal.type.MooshroomType
 import org.kryptonmc.api.entity.animal.type.FoxType
@@ -110,6 +111,7 @@ public object Registries {
     @JvmField public val FOX_TYPES: Registry<FoxType> = create(ResourceKeys.FOX_TYPES)
     @JvmField public val PANDA_GENES: Registry<PandaGene> = create(ResourceKeys.PANDA_GENES)
     @JvmField public val RABBIT_TYPES: Registry<RabbitType> = create(ResourceKeys.RABBIT_TYPES)
+    @JvmField public val AXOLOTL_VARIANTS: Registry<AxolotlVariant> = create(ResourceKeys.AXOLOTL_VARIANTS)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

@@ -30,6 +30,7 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.animal.type.AxolotlVariant
 import org.kryptonmc.api.entity.animal.type.CatType
 import org.kryptonmc.api.entity.animal.type.FoxType
 import org.kryptonmc.api.entity.animal.type.MooshroomType
@@ -74,6 +75,7 @@ import org.kryptonmc.krypton.effect.particle.data.KryptonParticleDataFactory
 import org.kryptonmc.krypton.effect.sound.KryptonSoundEvent
 import org.kryptonmc.krypton.entity.KryptonEntityDimensions
 import org.kryptonmc.krypton.entity.KryptonEntityType
+import org.kryptonmc.krypton.entity.animal.type.KryptonAxolotlVariant
 import org.kryptonmc.krypton.entity.animal.type.KryptonCatType
 import org.kryptonmc.krypton.entity.animal.type.KryptonFoxType
 import org.kryptonmc.krypton.entity.animal.type.KryptonMooshroomType
@@ -170,6 +172,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<FoxType.Factory>(KryptonFoxType.Factory)
         register<PandaGene.Factory>(KryptonPandaGene.Factory)
         register<RabbitType.Factory>(KryptonRabbitType.Factory)
+        register<AxolotlVariant.Factory>(KryptonAxolotlVariant.Factory)
     }
 }
 

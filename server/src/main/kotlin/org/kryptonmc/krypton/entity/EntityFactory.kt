@@ -23,6 +23,7 @@ import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.krypton.entity.ambient.KryptonBat
+import org.kryptonmc.krypton.entity.animal.KryptonAxolotl
 import org.kryptonmc.krypton.entity.animal.KryptonBee
 import org.kryptonmc.krypton.entity.animal.KryptonChicken
 import org.kryptonmc.krypton.entity.animal.KryptonFox
@@ -32,6 +33,7 @@ import org.kryptonmc.krypton.entity.animal.KryptonPig
 import org.kryptonmc.krypton.entity.animal.KryptonPolarBear
 import org.kryptonmc.krypton.entity.animal.KryptonCat
 import org.kryptonmc.krypton.entity.animal.KryptonCow
+import org.kryptonmc.krypton.entity.animal.KryptonGoat
 import org.kryptonmc.krypton.entity.animal.KryptonMooshroom
 import org.kryptonmc.krypton.entity.animal.KryptonRabbit
 import org.kryptonmc.krypton.entity.animal.KryptonSheep
@@ -68,6 +70,7 @@ object EntityFactory {
         EntityTypes.AREA_EFFECT_CLOUD to ::KryptonAreaEffectCloud,
         EntityTypes.ARMOR_STAND to ::KryptonArmorStand,
         EntityTypes.ARROW to ::KryptonArrow,
+        EntityTypes.AXOLOTL to ::KryptonAxolotl,
         EntityTypes.BAT to ::KryptonBat,
         EntityTypes.BEE to ::KryptonBee,
         EntityTypes.CAT to ::KryptonCat,
@@ -79,6 +82,7 @@ object EntityFactory {
         EntityTypes.FIREWORK_ROCKET to ::KryptonFireworkRocket,
         EntityTypes.FIREBALL to ::KryptonLargeFireball,
         EntityTypes.FOX to ::KryptonFox,
+        EntityTypes.GOAT to ::KryptonGoat,
         EntityTypes.LLAMA_SPIT to ::KryptonLlamaSpit,
         EntityTypes.MOOSHROOM to ::KryptonMooshroom,
         EntityTypes.OCELOT to ::KryptonOcelot,

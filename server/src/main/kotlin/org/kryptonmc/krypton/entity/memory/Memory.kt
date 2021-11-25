@@ -21,20 +21,28 @@ package org.kryptonmc.krypton.entity.memory
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.nbt.CompoundTag
 
-data class Memory<T : Any>(
-    val key: MemoryKey<T>,
-    val value: T,
-    var ttl: Long = 0L
+class Memory<T : Any>(
+    val value: T?,
+    timeToLive: Long = Long.MAX_VALUE
 ) {
 
+    var timeToLive = timeToLive
+        private set
+    val canExpire: Boolean
+        get() = timeToLive != Long.MAX_VALUE
+    val hasExpired: Boolean
+        get() = timeToLive <= 0L
+
     fun tick() {
-        if (key.canExpire) ttl--
+        if (canExpire) --timeToLive
     }
 
-    fun save(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
+    fun save(key: MemoryKey<in T>, tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
         compound(key.key.asString()) {
             key.codec.encodeStart(NBTOps, value).result().ifPresent { put("value", it) }
-            if (key.canExpire) long("ttl", ttl)
+            if (canExpire) long("ttl", timeToLive)
         }
     }
+
+    override fun toString(): String = "Memory(value=$value, ttl=$timeToLive)"
 }
