@@ -50,6 +50,8 @@ abstract class KryptonLivingEntity(
     attributeSupplier: AttributeSupplier
 ) : KryptonEntity(world, type), LivingEntity {
 
+    private val maxHealth: Float
+        get() = attributes.value(AttributeTypes.MAX_HEALTH).toFloat()
     override var absorption = 0F
     final override val isAlive: Boolean
         get() = super.isAlive && health > 0F
@@ -95,6 +97,7 @@ abstract class KryptonLivingEntity(
         data.add(MetadataKeys.LIVING.ARROWS)
         data.add(MetadataKeys.LIVING.STINGERS)
         data.add(MetadataKeys.LIVING.BED_LOCATION)
+        data[MetadataKeys.LIVING.HEALTH] = maxHealth
     }
 
     fun canAttack(target: KryptonLivingEntity): Boolean {
@@ -111,10 +114,10 @@ abstract class KryptonLivingEntity(
         if (tag.contains("Brain", CompoundTag.ID)) brain.load(tag.getCompound("Brain"))
 
         // Values
-        absorption = tag.getFloat("AbsorptionAmount")
+        if (tag.contains("Health", 99)) health = tag.getFloat("Health")
+        if (tag.getBoolean("FallFlying")) isFlying = true
+        absorption = tag.getFloat("AbsorptionAmount").coerceAtLeast(0F)
         deathTime = tag.getShort("DeathTime")
-        isFlying = tag.getBoolean("FallFlying")
-        health = tag.getFloat("Health")
         lastHurtTimestamp = tag.getInt("HurtByTimestamp")
         hurtTime = tag.getShort("HurtTime")
 
@@ -127,16 +130,8 @@ abstract class KryptonLivingEntity(
         }
 
         // Sleeping coordinates
-        if (
-            tag.contains("SleepingX", 99) &&
-            tag.contains("SleepingY", 99) &&
-            tag.contains("SleepingZ", 99)
-        ) {
-            sleepingPosition = Vector3i(
-                tag.getInt("SleepingX"),
-                tag.getInt("SleepingY"),
-                tag.getInt("SleepingZ")
-            )
+        if (tag.contains("SleepingX", 99) && tag.contains("SleepingY", 99) && tag.contains("SleepingZ", 99)) {
+            sleepingPosition = Vector3i(tag.getInt("SleepingX"), tag.getInt("SleepingY"), tag.getInt("SleepingZ"))
             pose = Pose.SLEEPING
         }
     }
