@@ -47,6 +47,8 @@ import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
+import org.kryptonmc.api.service.provide
+import org.kryptonmc.api.service.VanishService
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.util.Direction
@@ -99,6 +101,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
 import org.kryptonmc.krypton.util.BossBarManager
 import org.kryptonmc.krypton.util.Codecs
@@ -209,8 +212,9 @@ class KryptonPlayer(
     override var firstJoined: Instant = Instant.EPOCH
     override var lastJoined: Instant = Instant.now()
 
-    override var isVanished = false
-    private val hiddenPlayers = mutableSetOf<UUID>()
+    private val vanishService = server.servicesManager.provide<VanishService>()!!
+    override val isVanished: Boolean
+        get() = vanishService.isVanished(this)
 
     private var respawnPosition: Vector3i? = null
     private var respawnForced = false
@@ -232,9 +236,10 @@ class KryptonPlayer(
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        uuid = profile.uuid
-        (tag["previousPlayerGameType"] as? IntTag)?.value?.let { oldGameMode = Registries.GAME_MODES[it] }
         internalGamemode = Registries.GAME_MODES[tag.getInt("playerGameType")] ?: GameModes.SURVIVAL
+        if (tag.contains("previousPlayerGameType", IntTag.ID)) {
+            oldGameMode = Registries.GAME_MODES[tag.getInt("previousPlayerGameType")]
+        }
         inventory.load(tag.getList("Inventory", CompoundTag.ID))
         inventory.heldSlot = tag.getInt("SelectedItemSlot")
         score = tag.getInt("Score")
@@ -242,6 +247,7 @@ class KryptonPlayer(
         foodTickTimer = tag.getInt("foodTickTimer")
         foodExhaustionLevel = tag.getFloat("foodExhaustionLevel")
         foodSaturationLevel = tag.getFloat("foodSaturationLevel")
+
         if (tag.contains("abilities", CompoundTag.ID)) {
             val abilitiesData = tag.getCompound("abilities")
             isInvulnerable = abilitiesData.getBoolean("invulnerable")
@@ -263,16 +269,8 @@ class KryptonPlayer(
         }
 
         // Respawn data
-        if (
-            tag.contains("SpawnX", 99) &&
-            tag.contains("SpawnY", 99) &&
-            tag.contains("SpawnZ", 99)
-        ) {
-            respawnPosition = Vector3i(
-                tag.getInt("SpawnX"),
-                tag.getInt("SpawnY"),
-                tag.getInt("SpawnZ")
-            )
+        if (tag.contains("SpawnX", 99) && tag.contains("SpawnY", 99) && tag.contains("SpawnZ", 99)) {
+            respawnPosition = Vector3i(tag.getInt("SpawnX"), tag.getInt("SpawnY"), tag.getInt("SpawnZ"))
             respawnForced = tag.getBoolean("SpawnForced")
             respawnAngle = tag.getFloat("SpawnAngle")
             if (tag.containsKey("SpawnDimension")) {
@@ -283,7 +281,7 @@ class KryptonPlayer(
 
         if (tag.contains("krypton", CompoundTag.ID)) {
             val kryptonData = tag.getCompound("krypton")
-            isVanished = kryptonData.getBoolean("vanished")
+            if (vanishService is KryptonVanishService && kryptonData.getBoolean("vanished")) vanishService.vanish(this)
             firstJoined = Instant.ofEpochMilli(kryptonData.getLong("firstJoined"))
         }
     }
@@ -322,7 +320,7 @@ class KryptonPlayer(
                 .ifPresent { put("SpawnDimension", it) }
         }
         compound("krypton") {
-            boolean("vanished", isVanished)
+            if (vanishService is KryptonVanishService) boolean("vanished", isVanished)
             long("firstJoined", firstJoined.toEpochMilli())
             long("lastJoined", lastJoined.toEpochMilli())
         }
@@ -476,32 +474,22 @@ class KryptonPlayer(
     }
 
     override fun vanish() {
-        if (isVanished) return // We are already vanished
-        isVanished = true
-        world.players.forEach { removeViewer(it) }
+        vanishService.vanish(this)
     }
 
     override fun unvanish() {
-        if (!isVanished) return // We are not vanished
-        isVanished = false
-        world.players.forEach { addViewer(it) }
+        vanishService.unvanish(this)
     }
 
     override fun show(player: Player) {
-        if (player !is KryptonPlayer || this == player) return
-        if (!hiddenPlayers.contains(player.uuid)) return
-        hiddenPlayers.remove(player.uuid)
-        player.addViewer(this)
+        vanishService.show(this, player)
     }
 
     override fun hide(player: Player) {
-        if (player !is KryptonPlayer || this == player) return
-        if (hiddenPlayers.contains(player.uuid)) return
-        hiddenPlayers.add(player.uuid)
-        player.removeViewer(this)
+        vanishService.hide(this, player)
     }
 
-    override fun canSee(player: Player): Boolean = !hiddenPlayers.contains(player.uuid)
+    override fun canSee(player: Player): Boolean = vanishService.canSee(this, player)
 
     override fun getPermissionValue(permission: String): TriState = permissionFunction[permission]
 

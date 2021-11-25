@@ -33,6 +33,7 @@ import org.kryptonmc.api.command.meta.simpleCommandMeta
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.KryptonCommandManager
+import org.kryptonmc.krypton.plugin.KryptonPluginDescription
 import org.kryptonmc.krypton.util.spark.ticking.KryptonSparkTickHook
 import org.kryptonmc.krypton.util.spark.ticking.KryptonSparkTickReporter
 import java.nio.file.Path
@@ -43,6 +44,15 @@ class KryptonSparkPlugin(
     private val folder: Path
 ) : SparkPlugin, SimpleCommand {
 
+    val description = KryptonPluginDescription(
+        "spark",
+        "Spark",
+        KryptonPlatform.sparkVersion,
+        "spark is a performance profiling plugin/mod for Minecraft clients, servers and proxies.",
+        setOf("Luck"),
+        emptySet(),
+        folder
+    )
     private lateinit var platform: SparkPlatform
     private val platformInfo = KryptonSparkPlatformInfo
 

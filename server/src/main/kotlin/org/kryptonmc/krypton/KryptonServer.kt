@@ -37,6 +37,7 @@ import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
+import org.kryptonmc.krypton.plugin.KryptonPluginContainer
 import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
@@ -163,8 +164,10 @@ class KryptonServer(
         worldManager.init()
 
         // Load plugins here because most of everything they need is available now.
+        servicesManager.bootstrap()
         loadPlugins()
         LOGGER.info("Loading built-in Spark...")
+        pluginManager.registerPlugin(KryptonPluginContainer(sparkPlugin.description, sparkPlugin))
         sparkPlugin.start()
         sparkPlugin.tickReporter.endTick(0L) // Makes MSPT not return null by setting durationSupported
 

@@ -66,5 +66,5 @@ public interface User : Identified {
     /**
      * If this user is vanished, meaning they cannot be seen by other players.
      */
-    public var isVanished: Boolean
+    public val isVanished: Boolean
 }

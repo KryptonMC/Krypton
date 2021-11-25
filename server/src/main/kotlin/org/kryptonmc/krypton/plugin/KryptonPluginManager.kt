@@ -52,6 +52,12 @@ object KryptonPluginManager : PluginManager {
 
         directory.forEachDirectoryEntry({ it.isRegularFile() && it.toString().endsWith(".jar") }, {
             try {
+                val description = PluginLoader.loadDescription(it)
+                if (description.id == "spark") {
+                    // If we don't stop the standalone one loading, we could end up with conflicts on the classpath.
+                    LOGGER.warn("Ignoring attempt to load standalone Spark plugin, as this plugin is already bundled.")
+                    return@forEachDirectoryEntry
+                }
                 found.add(PluginLoader.loadDescription(it))
             } catch (exception: Exception) {
                 LOGGER.error("Failed to load plugin at $it!", exception)
@@ -93,13 +99,12 @@ object KryptonPluginManager : PluginManager {
                 return@forEach
             }
 
-            LOGGER.info("Successfully loaded plugin ${description.id} version ${description.version} " +
-                    "by ${description.authors.joinToString()}")
+            LOGGER.info("Successfully loaded plugin ${description.id} version ${description.version} by ${description.authors.joinToString()}")
             registerPlugin(container)
         }
     }
 
-    private fun registerPlugin(plugin: PluginContainer) {
+    fun registerPlugin(plugin: PluginContainer) {
         pluginMap[plugin.description.id] = plugin
         plugin.instance?.let { pluginInstances[it] = plugin }
     }
@@ -109,9 +114,9 @@ object KryptonPluginManager : PluginManager {
         return pluginInstances[instance]
     }
 
-    override fun plugin(id: String) = pluginMap[id]
+    override fun plugin(id: String): PluginContainer? = pluginMap[id]
 
-    override fun isLoaded(id: String) = id in pluginMap
+    override fun isLoaded(id: String): Boolean = id in pluginMap
 
     override fun addToClasspath(plugin: Any, path: Path) {
         val container = requireNotNull(fromInstance(plugin)) { "Plugin is not loaded!" }
