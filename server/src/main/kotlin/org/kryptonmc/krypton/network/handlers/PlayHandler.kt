@@ -61,7 +61,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
-import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
@@ -209,8 +208,8 @@ class PlayHandler(
                 PerformActionEvent.Action.START_JUMP_WITH_HORSE,
                 PerformActionEvent.Action.STOP_JUMP_WITH_HORSE,
                 PerformActionEvent.Action.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
-                PerformActionEvent.Action.START_FLYING_WITH_ELYTRA -> player.isFlying = true
-                PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA -> player.isFlying = false
+                PerformActionEvent.Action.START_FLYING_WITH_ELYTRA -> player.isGliding = true
+                PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA -> player.isGliding = false
             }
         }, session.channel.eventLoop())
     }
@@ -235,7 +234,7 @@ class PlayHandler(
     }
 
     private fun handleAbilities(packet: PacketInAbilities) {
-        player.isFlying = packet.isFlying && player.canFly
+        player.isGliding = packet.isFlying && player.canFly
     }
 
     private fun handleBlockPlacement(packet: PacketInPlaceBlock) {

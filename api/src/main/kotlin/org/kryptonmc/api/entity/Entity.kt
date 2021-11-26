@@ -27,6 +27,15 @@ import org.spongepowered.math.vector.Vector3d
 public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter, TeamMember {
 
     /**
+     * The ID of this entity.
+     *
+     * This should be unique whilst the server is running, however it should
+     * not be persisted in any way, shape, or form, as it is retrieved when the
+     * entity object is first created.
+     */
+    public val id: Int
+
+    /**
      * The world this entity is currently in.
      */
     @get:JvmName("world")
@@ -159,7 +168,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public var isGlowing: Boolean
 
     /**
-     * If this entity is flying.
+     * If this entity is gliding with an elytra.
      *
      * Setting this value to true for non-player entities will cause this
      * entity to glide as long as they are wearing an elytra in their
@@ -168,7 +177,7 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * This can be used to detect when the player is gliding without using
      * scoreboard statistics.
      */
-    public var isFlying: Boolean
+    public var isGliding: Boolean
 
     /**
      * If this entity is silenced, meaning it does not produce any sounds.

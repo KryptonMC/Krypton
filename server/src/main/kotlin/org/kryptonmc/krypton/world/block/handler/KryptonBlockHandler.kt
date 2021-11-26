@@ -30,6 +30,7 @@ import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.effect.Effect
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.item.destroySpeed
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 
@@ -38,8 +39,8 @@ interface KryptonBlockHandler : BlockHandler {
     override fun calculateDestroyProgress(player: Player, world: World, block: Block, position: Vector3i): Float {
         val hardness = block.hardness
         if (hardness == -1.0) return 0F
-        val factor = if (player.hasCorrectTool(block)) 30 else 100
-        return player.destroySpeed(block) / hardness.toFloat() / factor.toFloat()
+        val factor = if (hasCorrectTool(player, block)) 30 else 100
+        return calculateDestroySpeed(player, block) / hardness.toFloat() / factor.toFloat()
     }
 
     override fun attack(player: Player, world: World, block: Block, position: Vector3i) = Unit
@@ -68,7 +69,7 @@ interface KryptonBlockHandler : BlockHandler {
         // 0.005/block is the vanilla food exhaustion per block to be added to the player
         // Source: https://minecraft.fandom.com/wiki/Hunger#Exhaustion_level_increase
         player.foodExhaustionLevel += 0.005f
-        player.incrementStatistic(StatisticTypes.BLOCK_MINED[block])
+        player.statistics.increment(StatisticTypes.BLOCK_MINED[block])
     }
 
     override fun updateShape(
@@ -79,4 +80,16 @@ interface KryptonBlockHandler : BlockHandler {
         neighbourPosition: Vector3i,
         world: World
     ): Block = block
+
+    companion object {
+
+        private fun hasCorrectTool(player: Player, block: Block): Boolean =
+            !block.requiresCorrectTool || player.inventory.mainHand.type.handler.isCorrectTool(block)
+
+        private fun calculateDestroySpeed(player: Player, block: Block): Float {
+            var speed = player.inventory.mainHand.destroySpeed(block)
+            if (!player.isOnGround) speed /= 5F
+            return speed
+        }
+    }
 }

@@ -32,7 +32,6 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.tags.FluidTags
@@ -43,15 +42,19 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.play.*
-import org.kryptonmc.krypton.tags.KryptonTagTypes
+import org.kryptonmc.krypton.packet.out.play.PacketOutDestroyEntities
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityVelocity
+import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
+import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetPassengers
+import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.tags.KryptonTagManager
+import org.kryptonmc.krypton.tags.KryptonTagTypes
 import org.kryptonmc.krypton.util.ceil
 import org.kryptonmc.krypton.util.floor
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.fluid.handler
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.FloatTag
@@ -73,7 +76,7 @@ abstract class KryptonEntity(
     override val type: EntityType<out Entity>
 ) : Entity {
 
-    val id = NEXT_ENTITY_ID.incrementAndGet()
+    final override val id = NEXT_ENTITY_ID.incrementAndGet()
     override var uuid = Random.nextUUID()
         set(value) {
             field = value
@@ -119,12 +122,7 @@ abstract class KryptonEntity(
     final override var inWater = false
     final override var inLava = false
     final override var underwater = false
-
-    override var vehicle: Entity? = null
-        set(value) {
-            if (value !is KryptonEntity) return // plugins are naughty!
-            field = value
-        }
+    final override var vehicle: Entity? = null
 
     open val maxAirTicks: Int
         get() = 300
@@ -304,12 +302,12 @@ abstract class KryptonEntity(
                 for (z in minZ..maxZ) {
                     val fluid = world.getFluid(x, y, z)
                     if (!tag.contains(fluid)) continue
-                    val height = y.toDouble() + fluid.handler().height(fluid, x, y, z, world)
+                    val height = y.toDouble() + fluid.handler.height(fluid, x, y, z, world)
                     if (height < minY) continue
                     shouldPush = true
                     amount = max(height - minY, amount)
                     if (!pushed) continue
-                    var flow = fluid.handler().flow(fluid, x, y, z, world)
+                    var flow = fluid.handler.flow(fluid, x, y, z, world)
                     if (amount < 0.4) flow = flow.mul(amount)
                     offset = offset.add(flow)
                     ++pushes
@@ -352,7 +350,7 @@ abstract class KryptonEntity(
         KryptonTagManager.tags[KryptonTagTypes.FLUIDS]!!.forEach {
             it as Tag<Fluid>
             if (!it.contains(fluid)) return@forEach
-            val height = y + fluid.handler().height(fluid, x, y.floor(), z, world)
+            val height = y + fluid.handler.height(fluid, x, y.floor(), z, world)
             if (height > y) fluidOnEyes = it
             return
         }
@@ -440,13 +438,13 @@ abstract class KryptonEntity(
     final override var isSwimming: Boolean
         get() = getSharedFlag(4)
         set(value) = setSharedFlag(4, value)
-    override var isInvisible: Boolean
+    final override var isInvisible: Boolean
         get() = getSharedFlag(5)
         set(value) = setSharedFlag(5, value)
     final override var isGlowing: Boolean
         get() = getSharedFlag(6)
         set(value) = setSharedFlag(6, value)
-    override var isFlying: Boolean
+    override var isGliding: Boolean
         get() = getSharedFlag(7)
         set(value) = setSharedFlag(7, value)
     final override var air: Int

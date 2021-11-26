@@ -27,15 +27,6 @@ public data class BrigadierCommand(public val node: LiteralCommandNode<Sender>) 
      * @param builder the builder to build the backing node from
      */
     public constructor(builder: LiteralArgumentBuilder<Sender>) : this(builder.build())
-
-    public companion object {
-
-        /**
-         * The return code used by Brigadier to indicate that command execution
-         * should be forwarded to the backend server.
-         */
-        public const val FORWARD: Int = 0xF6287429.toInt()
-    }
 }
 
 /**

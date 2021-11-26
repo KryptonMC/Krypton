@@ -35,19 +35,26 @@ class MetadataHolder(private val entity: KryptonEntity) {
         private set
     var isEmpty = true
         private set
-    val all: List<Entry<*>>
-        get() = lock.read { itemsById.values.map { it.copy() }.apply { invalidate() } }
-    val dirty: List<Entry<*>>
+    val all: Sequence<Entry<*>>
+        get() = lock.read {
+            itemsById.int2ObjectEntrySet()
+                .fastIterator()
+                .asSequence()
+                .map { it.value.copy() }
+                .apply { invalidate() }
+        }
+    val dirty: Sequence<Entry<*>>
         get() {
-            if (!isDirty) return emptyList()
+            if (!isDirty) return emptySequence()
             return lock.read {
-                val entries = itemsById.values.asSequence()
-                    .filter { it.isDirty }
+                val entries = itemsById.int2ObjectEntrySet()
+                    .fastIterator()
+                    .asSequence()
+                    .filter { it.value.isDirty }
                     .map {
-                        it.isDirty = false
-                        it.copy()
+                        it.value.isDirty = false
+                        it.value.copy()
                     }
-                    .toList()
                 isDirty = false
                 entries
             }
@@ -76,7 +83,7 @@ class MetadataHolder(private val entity: KryptonEntity) {
 
     private fun invalidate() {
         isDirty = false
-        lock.read { itemsById.values.forEach { it.isDirty = false } }
+        lock.read { itemsById.int2ObjectEntrySet().fastForEach { it.value.isDirty = false } }
     }
 
     private fun <T> createItem(key: MetadataKey<T>, value: T) {
@@ -99,7 +106,7 @@ class MetadataHolder(private val entity: KryptonEntity) {
         private const val MAX_ID_VALUE = 254
         private const val EOF_MARKER = 255
 
-        fun List<Entry<*>>.write(buf: ByteBuf) {
+        fun Sequence<Entry<*>>.write(buf: ByteBuf) {
             forEach { buf.writeEntry(it) }
             buf.writeByte(EOF_MARKER)
         }

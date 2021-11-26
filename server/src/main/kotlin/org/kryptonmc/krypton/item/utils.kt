@@ -18,8 +18,7 @@
  */
 package org.kryptonmc.krypton.item
 
-import org.kryptonmc.api.item.ItemHandler
-import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.krypton.item.handler.DummyItemHandler
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.item.ItemStack
 
-fun ItemType.handler(): ItemHandler = KryptonItemManager.handler(key().asString()) ?: DummyItemHandler
+fun ItemStack.destroySpeed(block: Block): Float = type.handler.destroySpeed(this, block)

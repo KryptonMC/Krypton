@@ -19,7 +19,8 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
+import org.kryptonmc.api.effect.particle.ParticleEffect
+import org.kryptonmc.krypton.effect.particle.write
 import org.kryptonmc.krypton.packet.Packet
 import org.spongepowered.math.vector.Vector3d
 
@@ -28,13 +29,13 @@ import org.spongepowered.math.vector.Vector3d
  */
 @JvmRecord
 data class PacketOutParticle(
-    val effect: KryptonParticleEffect,
+    val effect: ParticleEffect,
     val x: Double,
     val y: Double,
     val z: Double
 ) : Packet {
 
-    constructor(effect: KryptonParticleEffect, location: Vector3d) : this(effect, location.x(), location.y(), location.z())
+    constructor(effect: ParticleEffect, location: Vector3d) : this(effect, location.x(), location.y(), location.z())
 
     override fun write(buf: ByteBuf) {
         effect.write(buf, x, y, z)

@@ -115,7 +115,7 @@ abstract class KryptonLivingEntity(
 
         // Values
         if (tag.contains("Health", 99)) health = tag.getFloat("Health")
-        if (tag.getBoolean("FallFlying")) isFlying = true
+        if (tag.getBoolean("FallFlying")) isGliding = true
         absorption = tag.getFloat("AbsorptionAmount").coerceAtLeast(0F)
         deathTime = tag.getShort("DeathTime")
         lastHurtTimestamp = tag.getInt("HurtByTimestamp")
@@ -141,7 +141,7 @@ abstract class KryptonLivingEntity(
         put("Attributes", attributes.save())
         put("Brain", brain.save())
         short("DeathTime", deathTime)
-        boolean("FallFlying", isFlying)
+        boolean("FallFlying", isGliding)
         float("Health", health)
         int("HurtByTimestamp", lastHurtTimestamp)
         short("HurtTime", hurtTime)

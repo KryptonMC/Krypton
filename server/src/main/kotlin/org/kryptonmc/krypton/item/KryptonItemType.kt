@@ -24,10 +24,12 @@ import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
+import org.kryptonmc.api.item.ItemHandler
 import org.kryptonmc.api.item.ItemRarities
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.item.handler.DummyItemHandler
 
 @JvmRecord
 data class KryptonItemType(
@@ -42,6 +44,9 @@ data class KryptonItemType(
     override val drinkingSound: SoundEvent,
     override val translation: TranslatableComponent
 ) : ItemType {
+
+    override val handler: ItemHandler
+        get() = KryptonItemManager.handler(this) ?: DummyItemHandler
 
     override fun key(): Key = key
 

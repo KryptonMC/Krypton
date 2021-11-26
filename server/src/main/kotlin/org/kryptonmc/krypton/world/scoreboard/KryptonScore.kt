@@ -43,11 +43,14 @@ class KryptonScore(
     override var isLocked = true
 
     fun add(amount: Int) {
-        check(objective?.criterion?.isMutable ?: false) { "Cannot modify a score with a read-only criterion!" }
+        if (objective == null || !objective.criterion.isMutable) return
         score += amount
     }
 
-    fun increment() = add(1)
+    fun subtract(amount: Int) {
+        if (objective == null || !objective.criterion.isMutable) return
+        score -= amount
+    }
 
     fun reset() {
         score = 0

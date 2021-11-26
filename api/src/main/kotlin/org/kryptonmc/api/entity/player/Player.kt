@@ -8,10 +8,8 @@
  */
 package org.kryptonmc.api.entity.player
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.MainHand
@@ -21,7 +19,6 @@ import org.kryptonmc.api.plugin.PluginMessageRecipient
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticsTracker
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
@@ -98,6 +95,11 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
      */
     @get:JvmName("flyingSpeed")
     public var flyingSpeed: Float
+
+    /**
+     * If this player is currently flying.
+     */
+    public var isFlying: Boolean
 
     /**
      * The dimension resource key for the world the player is currently in.
@@ -205,69 +207,6 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
     public val cooldowns: CooldownTracker
 
     /**
-     * Increments the given [statistic] by 1.
-     *
-     * Note: This will increase the current value by 1, it will not set it.
-     * To set statistics, use [StatisticsTracker.set]
-     *
-     * @param statistic the statistic
-     */
-    public fun incrementStatistic(statistic: Statistic<*>): Unit = incrementStatistic(statistic, 1)
-
-    /**
-     * Increments the given [statistic] by the given [amount].
-     *
-     * Note: This will increase the current value by the amount, it will not
-     * set it. To set statistics, use [StatisticsTracker.set]
-     *
-     * @param statistic the statistic
-     * @param amount the amount
-     */
-    public fun incrementStatistic(statistic: Statistic<*>, amount: Int)
-
-    /**
-     * Increments the given custom statistic [key] by 1.
-     *
-     * @param key the custom statistic key
-     */
-    public fun incrementStatistic(key: Key): Unit = incrementStatistic(key, 1)
-
-    /**
-     * Increments the given custom statistic [key] by the given [amount].
-     *
-     * @param key the custom statistic key
-     */
-    public fun incrementStatistic(key: Key, amount: Int)
-
-    /**
-     * Decrements the given [statistic] by 1.
-     *
-     * Note: This will decrease the current value by 1, it will not set it.
-     * To set statistics, use [StatisticsTracker.set]
-     *
-     * @param statistic the statistic
-     */
-    public fun decrementStatistic(statistic: Statistic<*>): Unit = decrementStatistic(statistic, 1)
-
-    /**
-     * Decrements the given [statistic] by the given [amount].
-     *
-     * Note: This will decrease the current value by the amount, it will not
-     * set it. To set statistics, use [StatisticsTracker.set]
-     *
-     * @param statistic the statistic
-     * @param amount the amount
-     */
-    public fun decrementStatistic(statistic: Statistic<*>, amount: Int)
-
-    /**
-     * Resets the given statistic back to a value of 0.
-     *
-     * @param statistic the statistic
-     */
-    public fun resetStatistic(statistic: Statistic<*>)
-
-    /**
      * Spawns particles for this player relative to a location.
      *
      * @param effect the particle effect used to describe the particles'
@@ -326,24 +265,6 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
      * @return true if this player can see the other player, false otherwise
      */
     public fun canSee(player: Player): Boolean
-
-    /**
-     * Returns true if this player has the correct tool to be able to break
-     * the given [block].
-     *
-     * @param block the block to check
-     * @return true if the player can break it, false otherwise
-     */
-    public fun hasCorrectTool(block: Block): Boolean
-
-    /**
-     * Gets the speed at which this player can destroy the given
-     * [block].
-     *
-     * @param block the block the player is destroying
-     * @return the destroy speed
-     */
-    public fun destroySpeed(block: Block): Float
 
     /**
      * Kicks the player with the given text shown

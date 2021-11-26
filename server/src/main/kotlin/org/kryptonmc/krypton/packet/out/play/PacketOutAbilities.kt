@@ -34,7 +34,7 @@ data class PacketOutAbilities(
 
     constructor(player: KryptonPlayer) : this(
         player.isInvulnerable,
-        player.isFlying,
+        player.isGliding,
         player.canFly,
         player.canInstantlyBuild,
         player.flyingSpeed,

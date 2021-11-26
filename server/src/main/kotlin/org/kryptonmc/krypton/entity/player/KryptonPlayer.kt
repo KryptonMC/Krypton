@@ -33,7 +33,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import net.kyori.adventure.util.TriState
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
@@ -51,10 +50,9 @@ import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
-import org.kryptonmc.api.service.provide
 import org.kryptonmc.api.service.VanishService
+import org.kryptonmc.api.service.provide
 import org.kryptonmc.api.statistic.CustomStatistics
-import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
@@ -66,12 +64,10 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.commands.KryptonPermission
-import org.kryptonmc.krypton.effect.particle.KryptonParticleEffect
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
-import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameState
@@ -106,7 +102,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.service.KryptonVanishService
-import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
 import org.kryptonmc.krypton.util.BossBarManager
 import org.kryptonmc.krypton.util.Codecs
 import org.kryptonmc.krypton.util.Directions
@@ -115,7 +110,6 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
-import org.kryptonmc.krypton.world.scoreboard.KryptonScore
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
 import org.spongepowered.math.vector.Vector3d
@@ -147,26 +141,51 @@ class KryptonPlayer(
         set(_) = Unit // Player UUIDs are read only.
 
     override var canFly = false
+        set(value) {
+            field = value
+            onAbilitiesUpdate()
+        }
     override var canBuild = false
+        set(value) {
+            field = value
+            onAbilitiesUpdate()
+        }
     override var canInstantlyBuild = false
+        set(value) {
+            field = value
+            onAbilitiesUpdate()
+        }
     override var walkingSpeed = 0.1F
+        set(value) {
+            field = value
+            onAbilitiesUpdate()
+        }
     override var flyingSpeed = 0.05F
-    override var isFlying: Boolean
-        get() = super.isFlying
+        set(value) {
+            field = value
+            onAbilitiesUpdate()
+        }
+    override var isFlying = false
+        set(value) {
+            field = value
+            onAbilitiesUpdate()
+        }
+    override var isGliding: Boolean
+        get() = super.isGliding
         set(value) {
             val action = if (value) PerformActionEvent.Action.START_FLYING_WITH_ELYTRA else PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA
             val event = server.eventManager.fireSync(PerformActionEvent(this, action))
             if (!event.result.isAllowed) return
 
             if (action == PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA) {
-                super.isFlying = false
+                super.isGliding = false
                 return
             }
-            if (!isOnGround && !super.isFlying && !inWater) {
+            if (!isOnGround && !super.isGliding && !inWater) {
                 val chestplate = inventory.armor(ArmorSlot.CHESTPLATE)
                 val damage = chestplate.meta[MetaKeys.DAMAGE] ?: 0
                 if (chestplate.type === ItemTypes.ELYTRA && damage < chestplate.type.durability - 1) {
-                    super.isFlying = true
+                    super.isGliding = true
                 }
             }
         }
@@ -274,7 +293,7 @@ class KryptonPlayer(
         if (tag.contains("abilities", CompoundTag.ID)) {
             val abilitiesData = tag.getCompound("abilities")
             isInvulnerable = abilitiesData.getBoolean("invulnerable")
-            isFlying = abilitiesData.getBoolean("flying")
+            isGliding = abilitiesData.getBoolean("flying")
             canFly = abilitiesData.getBoolean("mayfly")
             canBuild = abilitiesData.getBoolean("mayBuild")
             canInstantlyBuild = abilitiesData.getBoolean("instabuild")
@@ -319,7 +338,7 @@ class KryptonPlayer(
         float("foodExhaustionLevel", foodExhaustionLevel)
         float("foodSaturationLevel", foodSaturationLevel)
         compound("abilities") {
-            boolean("flying", isFlying)
+            boolean("flying", isGliding)
             boolean("invulnerable", isInvulnerable)
             boolean("mayfly", canFly)
             boolean("mayBuild", canBuild)
@@ -459,7 +478,6 @@ class KryptonPlayer(
     }
 
     override fun spawnParticles(effect: ParticleEffect, location: Vector3d) {
-        if (effect !is KryptonParticleEffect) return
         val packet = PacketOutParticle(effect, location)
         when (effect.data) {
             // Send multiple packets based on the quantity
@@ -637,7 +655,7 @@ class KryptonPlayer(
             GameModes.SPECTATOR -> {
                 isInvulnerable = true
                 canFly = true
-                isFlying = true
+                isGliding = true
                 canInstantlyBuild = false
             }
             else -> Unit
@@ -711,15 +729,6 @@ class KryptonPlayer(
         }
     }
 
-    override fun hasCorrectTool(block: Block): Boolean =
-        !block.requiresCorrectTool || inventory.mainHand.type.handler().isCorrectTool(block)
-
-    override fun destroySpeed(block: Block): Float {
-        var speed = inventory.mainHand.destroySpeed(block)
-        if (!isOnGround) speed /= 5F
-        return speed
-    }
-
     override fun disconnect(text: Component) {
         session.disconnect(text)
     }
@@ -734,48 +743,29 @@ class KryptonPlayer(
         isInvisible = internalGamemode === GameModes.SPECTATOR
     }
 
-    override fun incrementStatistic(statistic: Statistic<*>, amount: Int) {
-        statistics.increment(statistic, amount)
-        scoreboard.forEachObjective(statistic, teamRepresentation) { it.add(amount) }
-    }
-
-    override fun incrementStatistic(key: Key, amount: Int) {
-        incrementStatistic(KryptonStatisticTypes.CUSTOM[key], amount)
-    }
-
-    override fun decrementStatistic(statistic: Statistic<*>, amount: Int) {
-        statistics.decrement(statistic, amount)
-        scoreboard.forEachObjective(statistic, teamRepresentation, KryptonScore::reset)
-    }
-
-    override fun resetStatistic(statistic: Statistic<*>) {
-        statistics[statistic] = 0
-        scoreboard.forEachObjective(statistic, teamRepresentation, KryptonScore::reset)
-    }
-
     fun updateMovementStatistics(deltaX: Double, deltaY: Double, deltaZ: Double) {
         // TODO: Walking underwater, walking on water, climbing
         if (isSwimming) {
             val value = (sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 100F).roundToInt()
-            if (value > 0) incrementStatistic(CustomStatistics.SWIM_ONE_CM, value)
+            if (value > 0) statistics.increment(CustomStatistics.SWIM_ONE_CM, value)
             return
         }
         if (isOnGround) {
             val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ) * 100F).roundToInt()
             if (value > 0) when {
-                isSprinting -> incrementStatistic(CustomStatistics.SPRINT_ONE_CM, value)
-                isSneaking -> incrementStatistic(CustomStatistics.CROUCH_ONE_CM, value)
-                else -> incrementStatistic(CustomStatistics.WALK_ONE_CM, value)
+                isSprinting -> statistics.increment(CustomStatistics.SPRINT_ONE_CM, value)
+                isSneaking -> statistics.increment(CustomStatistics.CROUCH_ONE_CM, value)
+                else -> statistics.increment(CustomStatistics.WALK_ONE_CM, value)
             }
             return
         }
-        if (isFlying) {
+        if (isGliding) {
             val value = (sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 100F).roundToInt()
-            incrementStatistic(CustomStatistics.AVIATE_ONE_CM, value)
+            statistics.increment(CustomStatistics.AVIATE_ONE_CM, value)
             return
         }
         val value = (sqrt(deltaX * deltaX + deltaZ * deltaZ) * 100F).roundToInt()
-        if (value > FLYING_ACHIEVEMENT_MINIMUM_SPEED) incrementStatistic(CustomStatistics.FLY_ONE_CM, value)
+        if (value > FLYING_ACHIEVEMENT_MINIMUM_SPEED) statistics.increment(CustomStatistics.FLY_ONE_CM, value)
     }
 
     fun updateMovementExhaustion(deltaX: Double, deltaY: Double, deltaZ: Double) {

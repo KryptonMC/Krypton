@@ -117,10 +117,12 @@ class KryptonStatisticsTracker(
 
     override fun increment(statistic: Statistic<*>, amount: Int) {
         set(statistic, min(get(statistic).toLong() + amount.toLong(), Int.MAX_VALUE.toLong()).toInt())
+        player.scoreboard.forEachObjective(statistic, player.teamRepresentation) { it.add(amount) }
     }
 
     override fun decrement(statistic: Statistic<*>, amount: Int) {
         set(statistic, max(get(statistic).toLong() - amount.toLong(), Int.MIN_VALUE.toLong()).toInt())
+        player.scoreboard.forEachObjective(statistic, player.teamRepresentation) { it.subtract(amount) }
     }
 
     private fun load(reader: Reader) {

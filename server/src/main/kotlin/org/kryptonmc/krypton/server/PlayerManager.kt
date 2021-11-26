@@ -197,7 +197,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     fun remove(player: KryptonPlayer) {
         server.eventManager.fire(QuitEvent(player)).thenAccept {
-            player.incrementStatistic(CustomStatistics.LEAVE_GAME)
+            player.statistics.increment(CustomStatistics.LEAVE_GAME)
             save(player)
             player.world.chunkManager.removePlayer(player)
 
