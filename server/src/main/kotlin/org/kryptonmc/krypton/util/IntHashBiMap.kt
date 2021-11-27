@@ -25,7 +25,7 @@ class IntHashBiMap<T>(values: Map<out T, Int>? = null) : IntBiMap<T> {
     private val byT = Object2IntOpenHashMap<T>().apply { defaultReturnValue(-1) }
     private val byId = ArrayList<T?>()
     private var nextId = 0
-    val size: Int
+    override val size: Int
         get() = byT.size
 
     init {

@@ -23,61 +23,41 @@ import org.kryptonmc.krypton.util.IntBiMap
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeVarInt
 
-@Suppress("UNCHECKED_CAST")
-class ArrayPalette<T> private constructor(
+class SingleValuePalette<T>(
     private val registry: IntBiMap<T>,
-    private val values: Array<T?>,
     private val resizer: PaletteResizer<T>,
-    private val bits: Int,
-    size: Int
+    entries: List<T>
 ) : Palette<T> {
 
-    override var size = size
-        private set
+    private var value: T? = null
+    override val size: Int = 1
     override val serializedSize: Int
         get() {
-            var temp = size.varIntBytes
-            for (i in 0 until size) {
-                temp += registry.idOf(values[i]!!).varIntBytes
-            }
-            return temp
+            checkNotNull(value) { "Attempted to use an uninitialised single value palette!" }
+            return registry.idOf(value!!).varIntBytes
         }
 
-    private constructor(
-        registry: IntBiMap<T>,
-        bits: Int,
-        resizer: PaletteResizer<T>,
-        entries: List<T>
-    ) : this(registry, arrayOfNulls<Any>(1 shl bits) as Array<T?>, resizer, bits, entries.size) {
-        require(entries.size <= values.size) {
-            "Failed to initialise array palette with entries $entries! Entries size (${entries.size}) must be < palette size (${1 shl bits})!"
-        }
-        for (i in entries.indices) {
-            values[i] = entries[i]
+    init {
+        if (entries.isNotEmpty()) {
+            require(entries.size <= 1) { "Cannot initialise a single value palette with more than 1 value!" }
+            value = entries.first()
         }
     }
 
     override fun get(value: T): Int {
-        for (i in 0 until size) {
-            if (values[i] === value) return i
-        }
-
-        val size = size
-        if (size < values.size) {
-            values[size] = value
-            this.size++
-            return size
-        }
-        return resizer.onResize(bits + 1, value)
+        if (this.value != null && this.value != value) return resizer.onResize(1, value)
+        this.value = value
+        return 0
     }
 
-    override fun get(id: Int): T = values.getOrNull(id) ?: throw MissingPaletteEntryException(id)
+    override fun get(id: Int): T {
+        check(value != null && id == 0) { "Missing palette entry for ID $id!" }
+        return value!!
+    }
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(size)
-        for (i in 0 until size) {
-            buf.writeVarInt(registry.idOf(values[i]!!))
-        }
+        checkNotNull(value) { "Attempted to use an uninitialised palette!" }
+        buf.writeVarInt(registry.idOf(value!!))
     }
 
     object Factory : Palette.Factory {
@@ -87,6 +67,6 @@ class ArrayPalette<T> private constructor(
             registry: IntBiMap<T>,
             resizer: PaletteResizer<T>,
             entries: List<T>
-        ): Palette<T> = ArrayPalette(registry, bits, resizer, entries)
+        ): Palette<T> = SingleValuePalette(registry, resizer, entries)
     }
 }

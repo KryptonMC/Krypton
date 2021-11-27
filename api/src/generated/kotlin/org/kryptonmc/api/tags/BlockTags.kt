@@ -71,6 +71,7 @@ public object BlockTags {
     @JvmField public val NON_FLAMMABLE_WOOD: Tag<Block> = get("non_flammable_wood")
     @JvmField public val CANDLES: Tag<Block> = get("candles")
     @JvmField public val DIRT: Tag<Block> = get("dirt")
+    @JvmField public val TERRACOTTA: Tag<Block> = get("terracotta")
     @JvmField public val FLOWER_POTS: Tag<Block> = get("flower_pots")
     @JvmField public val ENDERMAN_HOLDABLE: Tag<Block> = get("enderman_holdable")
     @JvmField public val ICE: Tag<Block> = get("ice")
@@ -125,6 +126,7 @@ public object BlockTags {
     @JvmField public val CAVE_VINES: Tag<Block> = get("cave_vines")
     @JvmField public val MOSS_REPLACEABLE: Tag<Block> = get("moss_replaceable")
     @JvmField public val LUSH_GROUND_REPLACEABLE: Tag<Block> = get("lush_ground_replaceable")
+    @JvmField public val AZALEA_ROOT_REPLACEABLE: Tag<Block> = get("azalea_root_replaceable")
     @JvmField public val SMALL_DRIPLEAF_PLACEABLE: Tag<Block> = get("small_dripleaf_placeable")
     @JvmField public val BIG_DRIPLEAF_PLACEABLE: Tag<Block> = get("big_dripleaf_placeable")
     @JvmField public val SNOW: Tag<Block> = get("snow")
@@ -147,6 +149,8 @@ public object BlockTags {
     @JvmField public val RABBITS_SPAWNABLE_ON: Tag<Block> = get("rabbits_spawnable_on")
     @JvmField public val FOXES_SPAWNABLE_ON: Tag<Block> = get("foxes_spawnable_on")
     @JvmField public val WOLVES_SPAWNABLE_ON: Tag<Block> = get("wolves_spawnable_on")
+    @JvmField public val AZALEA_GROWS_ON: Tag<Block> = get("azalea_grows_on")
+    @JvmField public val REPLACEABLE_PLANTS: Tag<Block> = get("replaceable_plants")
 
     // @formatter:on
     @JvmStatic

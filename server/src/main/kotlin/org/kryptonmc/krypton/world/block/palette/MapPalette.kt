@@ -19,85 +19,76 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.util.IntBiMap
 import org.kryptonmc.krypton.util.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.block.BlockLoader
-import org.kryptonmc.krypton.world.block.toBlock
-import org.kryptonmc.krypton.world.block.toNBT
-import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.ListTag
-import org.kryptonmc.nbt.StringTag
-import org.kryptonmc.nbt.Tag
-import org.kryptonmc.nbt.list
-import java.util.function.ToIntFunction
 
-sealed class MapPalette<T>(
+class MapPalette<T> private constructor(
+    private val registry: IntBiMap<T>,
     private val bits: Int,
     private val resizer: PaletteResizer<T>,
-    private val idProvider: ToIntFunction<T>,
-    private val serializer: (T) -> Tag,
-    private val deserializer: (Tag) -> T
+    private val values: IntIdentityHashBiMap<T>
 ) : Palette<T> {
 
-    private val values = IntIdentityHashBiMap<T>(1 shl bits)
+    val entries: List<T>
+        get() {
+            val list = ArrayList<T>()
+            values.forEach(list::add)
+            return list
+        }
     override val size: Int
         get() = values.size
     override val serializedSize: Int
         get() {
             var temp = size.varIntBytes
             for (i in 0 until size) {
-                temp += idProvider.applyAsInt(values[i]!!).varIntBytes
+                temp += registry.idOf(values[i]!!).varIntBytes
             }
             return temp
         }
 
-    fun save() = list {
-        for (i in 0 until this@MapPalette.size) {
-            add(serializer(values[i]!!))
-        }
+    constructor(
+        registry: IntBiMap<T>,
+        bits: Int,
+        resizer: PaletteResizer<T>,
+        entries: List<T>
+    ) : this(registry, bits, resizer) {
+        entries.forEach(values::add)
     }
+
+    constructor(
+        registry: IntBiMap<T>,
+        bits: Int,
+        resizer: PaletteResizer<T>
+    ) : this(registry, bits, resizer, IntIdentityHashBiMap(1 shl bits))
 
     override fun get(value: T): Int {
         var id = values.idOf(value)
         if (id == -1) {
             id = values.add(value)
-            if (id >= 1 shl bits) id = resizer(bits + 1, value)
+            if (id >= 1 shl bits) id = resizer.onResize(bits + 1, value)
         }
         return id
     }
 
-    override fun get(id: Int) = values[id]
+    override fun get(id: Int): T = values[id] ?: throw MissingPaletteEntryException(id)
 
     override fun write(buf: ByteBuf) {
+        val size = size
         buf.writeVarInt(size)
-        for (i in 0 until size) buf.writeVarInt(idProvider.applyAsInt(values[i]!!))
-    }
-
-    override fun load(data: ListTag) {
-        values.clear()
-        for (i in data.indices) {
-            values.add(deserializer(data.getCompound(i)))
+        for (i in 0 until size) {
+            buf.writeVarInt(registry.idOf(values[i]!!))
         }
     }
 
-    class Blocks(bits: Int, resizer: PaletteResizer<Block>) : MapPalette<Block>(
-        bits,
-        resizer,
-        { BlockLoader.STATES.idOf(it) },
-        Block::toNBT,
-        { (it as CompoundTag).toBlock() }
-    )
+    object Factory : Palette.Factory {
 
-    class Biomes(bits: Int, resizer: PaletteResizer<Biome>) : MapPalette<Biome>(
-        bits,
-        resizer,
-        { Registries.BIOME.idOf(it) },
-        { StringTag.of(it.key().asString()) },
-        { Registries.BIOME[Key.key((it as StringTag).value)]!! }
-    )
+        override fun <T> create(
+            bits: Int,
+            registry: IntBiMap<T>,
+            resizer: PaletteResizer<T>,
+            entries: List<T>
+        ): Palette<T> = MapPalette(registry, bits, resizer, entries)
+    }
 }

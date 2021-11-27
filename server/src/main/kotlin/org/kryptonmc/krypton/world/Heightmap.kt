@@ -23,8 +23,8 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.kryptonmc.krypton.util.SimpleBitStorage
+import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import java.util.EnumSet
 
 class Heightmap(

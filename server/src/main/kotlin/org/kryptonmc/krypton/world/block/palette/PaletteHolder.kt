@@ -19,134 +19,109 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
+import it.unimi.dsi.fastutil.ints.Int2ObjectFunction
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.BitStorage
+import org.kryptonmc.krypton.util.IntBiMap
 import org.kryptonmc.krypton.util.SimpleBitStorage
 import org.kryptonmc.krypton.util.ZeroBitStorage
 import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeLongArray
-import org.kryptonmc.krypton.world.chunk.ChunkPosition
+import org.kryptonmc.krypton.world.block.BlockLoader
+import org.kryptonmc.krypton.world.block.toBlock
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.Tag
+import org.kryptonmc.nbt.compound
+import java.util.function.IntUnaryOperator
 
-class PaletteHolder<T>(
-    private val type: PaletteType<T>,
-    private var palette: Palette<T> = type.globalPalette
-) : PaletteResizer<T> {
+class PaletteHolder<T> : PaletteResizer<T> {
 
-    private lateinit var storage: BitStorage
-    private var bits = 0
-        set(value) {
-            if (field == value) return
-            field = value
-            palette = when {
-                field == 0 -> type.singlePalette(this)
-                type.arrayRange != null && field in type.arrayRange -> type.arrayPalette(this, field)
-                type.mapRange != null && field in type.mapRange -> type.mapPalette(this, field)
-                else -> type.globalPalette
-            }
-            storage = if (field == 0) ZeroBitStorage(type.size) else SimpleBitStorage(field, type.size)
-        }
+    private val strategy: Strategy<T>
+    @Volatile
+    private var data: Data<T>
     val serializedSize: Int
-        get() = 1 + palette.serializedSize + storage.size.varIntBytes + storage.data.size * Long.SIZE_BYTES
+        get() = data.serializedSize
+
+    constructor(
+        strategy: Strategy<T>,
+        configuration: Configuration<T>,
+        storage: BitStorage,
+        entries: List<T>
+    ) {
+        this.strategy = strategy
+        data = Data(configuration, storage, configuration.factory.create(configuration.bits, strategy.registry, this, entries))
+    }
+
+    constructor(
+        strategy: Strategy<T>,
+        value: T
+    ) {
+        this.strategy = strategy
+        data = createOrReuseData(null, 0)
+        data.palette[value] // Preload
+    }
 
     @Synchronized
     fun getAndSet(x: Int, y: Int, z: Int, value: T): T {
-        val id = palette[value]
-        val newId = storage.getAndSet(indexOf(x, y, z), id)
-        return palette[newId] ?: type.defaultValue
+        val id = data.palette[value]
+        val newId = data.storage.getAndSet(strategy.indexOf(x, y, z), id)
+        return data.palette[newId]
     }
 
-    operator fun get(x: Int, y: Int, z: Int): T = palette[storage[indexOf(x, y, z)]] ?: type.defaultValue
+    operator fun get(x: Int, y: Int, z: Int): T = data.palette[data.storage[strategy.indexOf(x, y, z)]]
 
-    operator fun get(index: Int): T = palette[storage[index]] ?: type.defaultValue
+    operator fun get(index: Int): T = data.palette[data.storage[index]]
 
     @Synchronized
-    operator fun set(x: Int, y: Int, z: Int, value: T) = set(indexOf(x, y, z), value)
+    operator fun set(x: Int, y: Int, z: Int, value: T) {
+        data.storage[strategy.indexOf(x, y, z)] = data.palette[value]
+    }
 
     @Synchronized
     fun write(buf: ByteBuf) {
-        buf.writeByte(bits)
-        palette.write(buf)
-        buf.writeLongArray(storage.data)
+        data.write(buf)
     }
 
     @Synchronized
-    fun load(data: CompoundTag, paletteType: Int) {
-        val paletteData = data.getList("palette", paletteType)
-        val size = type.size
-        val bits = calculateSerializationBits(paletteData.size)
-        if (bits != this.bits) this.bits = bits
-        palette.load(paletteData)
-        if (bits == 0) {
-            storage = ZeroBitStorage(size)
-            return
-        }
-        val states = data.getLongArray("data")
-        if (palette === type.globalPalette) {
-            val newPalette = type.mapPalette(dummyResizer(), bits).apply { load(data.getList("palette", paletteType)) }
-            val bitStorage = SimpleBitStorage(bits, size, states)
-            val ids = IntArray(bitStorage.size) { type.registry.idOf(newPalette[bitStorage[it]]!!) }
-            storage = SimpleBitStorage(bits, size).apply {
-                var index = -1
-                ids.forEach { set(index++, it) }
+    fun write(encoder: (T) -> Tag): CompoundTag {
+        val palette = MapPalette(strategy.registry, data.storage.bits, dummyResizer())
+        val size = strategy.size
+        val ids = IntArray(size)
+        data.storage.unpack(ids)
+        swapPalette(ids) { palette[data.palette[it]] }
+        val bits = strategy.calculateSerializationBits(palette.size)
+        val data = if (bits != 0) SimpleBitStorage(bits, size, ids).data else LongArray(0)
+        return compound {
+            list("palette") {
+                palette.entries.forEach { add(encoder(it)) }
             }
-            return
+            longArray("data", data)
         }
-        storage = SimpleBitStorage(bits, size, states)
     }
 
-    @Synchronized
-    @Suppress("UNCHECKED_CAST")
-    fun save(builder: CompoundTag.Builder) {
-        val newPalette = type.mapPalette(dummyResizer(), bits)
-        var default = type.defaultValue
-        var defaultId = newPalette[type.defaultValue]
-        val states = IntArray(type.size)
-
-        for (i in 0 until type.size) {
-            val value = get(i)
-            if (value !== default) {
-                default = value
-                defaultId = newPalette[value]
-            }
-            states[i] = defaultId
-        }
-
-        val paletteData = newPalette.save()
-        builder.put("palette", paletteData)
-        val bits = calculateSerializationBits(paletteData.size)
-        val data = if (bits == 0) {
-            LongArray(0)
-        } else {
-            val storage = SimpleBitStorage(bits, type.size)
-            for (i in states.indices) {
-                storage[i] = states[i]
-            }
-            storage.data
-        }
-        builder.longArray("data", data)
+    fun forEachLocation(consumer: PaletteConsumer<T>) = data.storage.forEach { location, data ->
+        consumer(this.data.palette[data]!!, location)
     }
 
-    fun forEachLocation(consumer: PaletteConsumer<T>) = storage.forEach { location, data ->
-        if (palette[data] == null) return@forEach
-        consumer(palette[data]!!, location)
+    override fun onResize(newBits: Int, value: T): Int {
+        val old = data
+        val new = createOrReuseData(old, newBits)
+        new.copyFrom(data.palette, data.storage)
+        data = new
+        return new.palette[value]
     }
 
-    override fun invoke(newBits: Int, value: T): Int {
-        val oldStorage = storage
-        val oldPalette = palette
-        bits = newBits
-        for (i in 0 until oldStorage.size) oldPalette[oldStorage[i]]?.let { set(i, it) }
-        return palette[value]
-    }
-
-    private fun set(index: Int, value: T) = storage.set(index, palette[value])
-
-    private fun indexOf(x: Int, y: Int, z: Int): Int = (((y shl bits) or z) shl bits) or x
-
-    private fun calculateSerializationBits(size: Int): Int {
-        if (palette === type.globalPalette) return size.ceillog2()
-        return bits
+    private fun createOrReuseData(old: Data<T>?, bits: Int): Data<T> {
+        val config = strategy.configuration(bits)
+        if (old != null && config == old.configuration) return old
+        return config.createData(strategy.registry, this, strategy.size)
     }
 
     fun interface PaletteConsumer<T> {
@@ -154,11 +129,146 @@ class PaletteHolder<T>(
         operator fun invoke(element: T, location: Int)
     }
 
+    @JvmRecord
+    data class Configuration<T>(
+        val factory: Palette.Factory,
+        val bits: Int
+    ) {
+
+        fun createData(registry: IntBiMap<T>, resizer: PaletteResizer<T>, size: Int): Data<T> {
+            val storage = if (bits == 0) ZeroBitStorage(size) else SimpleBitStorage(bits, size)
+            val palette = factory.create(bits, registry, resizer, emptyList())
+            return Data(this, storage, palette)
+        }
+    }
+
+    @JvmRecord
+    data class Data<T>(
+        val configuration: Configuration<T>,
+        val storage: BitStorage,
+        val palette: Palette<T>
+    ) {
+
+        val serializedSize: Int
+            get() = 1 + palette.serializedSize + storage.size.varIntBytes + storage.data.size * Long.SIZE_BYTES
+
+        fun copyFrom(oldPalette: Palette<T>, oldStorage: BitStorage) {
+            for (i in 0 until oldStorage.size) {
+                val value = oldPalette[oldStorage[i]]!!
+                storage[i] = palette[value]
+            }
+        }
+
+        fun write(buf: ByteBuf) {
+            buf.writeByte(storage.bits)
+            palette.write(buf)
+            buf.writeLongArray(storage.data)
+        }
+    }
+
+    abstract class Strategy<T>(
+        val registry: IntBiMap<T>,
+        private val sizeBits: Int
+    ) {
+
+        private val cache = Int2ObjectOpenHashMap<Configuration<T>>()
+        val size: Int
+            get() = 1 shl sizeBits * 3
+
+        protected abstract fun createConfiguration(bits: Int): Configuration<T>
+
+        fun configuration(bits: Int): Configuration<T> = cache.computeIfAbsent(bits, Int2ObjectFunction(::createConfiguration))
+
+        fun indexOf(x: Int, y: Int, z: Int): Int = (((y shl sizeBits) or z) shl sizeBits) or x
+
+        fun calculateSerializationBits(size: Int): Int {
+            val sizeBits = size.ceillog2()
+            val config = configuration(sizeBits)
+            if (config.factory === GlobalPalette.Factory) return sizeBits
+            return config.bits
+        }
+
+        companion object {
+
+            @JvmField
+            val BLOCKS = object : Strategy<Block>(BlockLoader.STATES, 4) {
+
+                override fun createConfiguration(bits: Int): Configuration<Block> = when (bits) {
+                    0 -> Configuration(SingleValuePalette.Factory, bits)
+                    in 1..4 -> Configuration(ArrayPalette.Factory, 4)
+                    in 5..8 -> Configuration(MapPalette.Factory, bits)
+                    else -> Configuration(GlobalPalette.Factory, registry.size.ceillog2())
+                }
+            }
+            @JvmField
+            val BIOMES = object : Strategy<Biome>(InternalRegistries.BIOME, 2) {
+
+                override fun createConfiguration(bits: Int): Configuration<Biome> = when (bits) {
+                    0 -> Configuration(SingleValuePalette.Factory, bits)
+                    in 1..3 -> Configuration(ArrayPalette.Factory, bits)
+                    else -> Configuration(GlobalPalette.Factory, registry.size.ceillog2())
+                }
+            }
+        }
+    }
+
     companion object {
 
         private val DUMMY_RESIZER: PaletteResizer<Any?> = PaletteResizer { _, _ -> 0 }
 
+        @JvmStatic
+        fun readBlocks(tag: CompoundTag): PaletteHolder<Block> {
+            val entries = mutableListOf<Block>()
+            tag.getList("palette", CompoundTag.ID).forEachCompound { entries.add(it.toBlock()) }
+            return read(Strategy.BLOCKS, entries, tag.getLongArray("data"))
+        }
+
+        @JvmStatic
+        fun readBiomes(tag: CompoundTag): PaletteHolder<Biome> {
+            val entries = mutableListOf<Biome>()
+            tag.getList("palette", StringTag.ID).forEachString {
+                val biome = checkNotNull(Registries.BIOME[Key.key(it)]) { "Invalid palette data! Failed to find biome with key $it!" }
+                entries.add(biome)
+            }
+            return read(Strategy.BIOMES, entries, tag.getLongArray("data"))
+        }
+
         @Suppress("UNCHECKED_CAST")
+        @JvmStatic
         private fun <T> dummyResizer(): PaletteResizer<T> = DUMMY_RESIZER as PaletteResizer<T>
+
+        @JvmStatic
+        private fun <T> read(strategy: Strategy<T>, entries: List<T>, values: LongArray): PaletteHolder<T> {
+            val size = strategy.size
+            val bits = strategy.calculateSerializationBits(entries.size)
+            val config = strategy.configuration(bits)
+            if (bits == 0) return PaletteHolder(strategy, config, ZeroBitStorage(size), entries)
+            check(values.isNotEmpty()) { "Expected to have values for non-zero storage, but found none!" }
+
+            if (config.factory === GlobalPalette.Factory) {
+                val palette = MapPalette(strategy.registry, bits, dummyResizer(), entries)
+                val storage = SimpleBitStorage(bits, size, values)
+                val ids = IntArray(size)
+                storage.unpack(ids)
+                swapPalette(ids) { strategy.registry.idOf(palette[it]) }
+                return PaletteHolder(strategy, config, SimpleBitStorage(config.bits, size, ids), entries)
+            }
+            return PaletteHolder(strategy, config, SimpleBitStorage(config.bits, size, values), entries)
+        }
+
+        @JvmStatic
+        private fun swapPalette(ids: IntArray, operator: IntUnaryOperator) {
+            var lastId = -1
+            var transformedId = -1
+
+            for (i in ids.indices) {
+                val id = ids[i]
+                if (id != lastId) {
+                    lastId = id
+                    transformedId = operator.applyAsInt(id)
+                }
+                ids[i] = transformedId
+            }
+        }
     }
 }

@@ -22,6 +22,9 @@ import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import it.unimi.dsi.fastutil.objects.ObjectArraySet
 import it.unimi.dsi.fastutil.objects.ObjectSet
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.util.daemon
@@ -30,6 +33,8 @@ import org.kryptonmc.krypton.util.threadFactory
 import org.kryptonmc.krypton.util.uncaughtExceptionHandler
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.block.palette.PaletteHolder
+import org.kryptonmc.krypton.world.block.toNBT
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.chunk.ticket.TicketManager
 import org.kryptonmc.krypton.world.chunk.ticket.TicketType
@@ -124,7 +129,7 @@ class ChunkManager(private val world: KryptonWorld) {
 
         // Don't upgrade if the version is not older than our version.
         val data = if (world.server.useDataConverter && version < KryptonPlatform.worldVersion) {
-            MCDataConverter.convertTag(MCTypeRegistry.CHUNK, nbt, version, KryptonPlatform.worldVersion).getCompound("Level")
+            MCDataConverter.convertTag(MCTypeRegistry.CHUNK, nbt.copy() as CompoundTag, version, KryptonPlatform.worldVersion)
         } else {
             nbt
         }
@@ -136,15 +141,24 @@ class ChunkManager(private val world: KryptonWorld) {
             val sectionData = sectionList.getCompound(i)
             val y = sectionData.getByte("Y").toInt()
             val index = world.sectionIndexFromY(y)
-            if (sectionData.contains("block_states", CompoundTag.ID) && sectionData.contains("biomes", CompoundTag.ID)) {
+            if (index >= 0 && index < sections.size) {
+                val blocks = if (sectionData.contains("block_states", CompoundTag.ID)) {
+                    PaletteHolder.readBlocks(sectionData.getCompound("block_states"))
+                } else {
+                    PaletteHolder(PaletteHolder.Strategy.BLOCKS, Blocks.AIR)
+                }
+                val biomes = if (sectionData.contains("biomes", CompoundTag.ID)) {
+                    PaletteHolder.readBiomes(sectionData.getCompound("biomes"))
+                } else {
+                    PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS)
+                }
                 val section = ChunkSection(
                     y,
+                    blocks,
+                    biomes,
                     sectionData.getByteArray("BlockLight"),
                     sectionData.getByteArray("SkyLight")
                 )
-                section.blocks.load(sectionData.getCompound("block_states"), CompoundTag.ID)
-                section.biomes.load(sectionData.getCompound("biomes"), StringTag.ID)
-                section.recount()
                 sections[index] = section
             }
         }
@@ -217,16 +231,20 @@ class ChunkManager(private val world: KryptonWorld) {
             }
 
             val sectionList = MutableListTag(elementType = CompoundTag.ID)
-            val sections = sections.asSequence().filterNotNull()
             for (i in minimumLightSection until maximumLightSection) {
-                val section = sections.firstOrNull { it.bottomBlockY shr 4 == i } ?: continue
-                sectionList.add(compound {
-                    byte("Y", (i and 255).toByte())
-                    compound("blocks") { section.blocks.save(this) }
-                    compound("biomes") { section.biomes.save(this) }
-                    if (section.blockLight.isNotEmpty()) byteArray("BlockLight", section.blockLight)
-                    if (section.skyLight.isNotEmpty()) byteArray("SkyLight", section.skyLight)
-                })
+                val sectionIndex = world.sectionIndexFromY(i)
+                // TODO: Handle light sections below and above the world
+                if (sectionIndex >= 0 && sectionIndex < sections.size) {
+                    val section = sections[sectionIndex] ?: continue
+                    val tag = compound {
+                        byte("Y", i.toByte())
+                        put("block_states", section.blocks.write(Block::toNBT))
+                        put("biomes", section.biomes.write { StringTag.of(it.key().asString()) })
+                        if (section.blockLight.isNotEmpty()) byteArray("BlockLight", section.blockLight)
+                        if (section.skyLight.isNotEmpty()) byteArray("SkyLight", section.skyLight)
+                    }
+                    sectionList.add(tag)
+                }
             }
             data.put("sections", sectionList)
 

@@ -170,8 +170,6 @@ object Bootstrap {
         EntityFactory
         KryptonItemManager
         KryptonBlockManager
-        GlobalPalette.Blocks
-        GlobalPalette.Biomes
         CommandSyntaxException.BUILT_IN_EXCEPTIONS = BrigadierExceptions
     }
 

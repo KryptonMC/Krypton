@@ -32,8 +32,8 @@ class SimpleBitStorage(
 ) : BitStorage {
 
     private val mask = (1L shl bits) - 1L
-    private val valuesPerLong = 64 / bits
-    override val data = data ?: LongArray((size + valuesPerLong - 1) / valuesPerLong)
+    private val valuesPerLong = Long.SIZE_BITS / bits
+    override val data: LongArray
 
     // magic operations
     private val divideMultiply: Long
@@ -45,6 +45,38 @@ class SimpleBitStorage(
         divideMultiply = Integer.toUnsignedLong(MAGIC[magicIndex])
         divideAdd = Integer.toUnsignedLong(MAGIC[magicIndex + 1])
         divideShift = MAGIC[magicIndex + 2]
+        val dataSize = (size + valuesPerLong - 1) / valuesPerLong
+        if (data != null) {
+            if (data.size != dataSize) throw InitializationException("Invalid length given for storage! Expected $dataSize, got ${data.size}!")
+            this.data = data
+        } else {
+            this.data = LongArray(dataSize)
+        }
+    }
+
+    constructor(bits: Int, size: Int, ids: IntArray) : this(bits, size) {
+        var cellIndex = 0
+
+        var dataIndex = 0
+        while (dataIndex <= size - valuesPerLong) {
+            var datum = 0L
+            for (i in valuesPerLong - 1 downTo 0) {
+                datum = datum shl bits
+                datum = datum or (ids[dataIndex + i].toLong() and mask)
+            }
+            data[cellIndex++] = datum
+            dataIndex += valuesPerLong
+        }
+
+        val remaining = size - dataIndex
+        if (remaining > 0) {
+            var datum = 0L
+            for (i in remaining - 1 downTo 0) {
+                datum = datum shl bits
+                datum = datum or (ids[dataIndex + i].toLong() and mask)
+            }
+            data[cellIndex] = datum
+        }
     }
 
     override fun getAndSet(index: Int, value: Int): Int {
@@ -93,6 +125,29 @@ class SimpleBitStorage(
         }
     }
 
+    override fun unpack(output: IntArray) {
+        val dataSize = data.size
+        var total = 0
+
+        for (i in 0 until dataSize - 1) {
+            var datum = data[i]
+            for (j in 0 until valuesPerLong) {
+                output[total + j] = (datum and mask).toInt()
+                datum = datum shr bits
+            }
+            total += valuesPerLong
+        }
+
+        val remaining = size - total
+        if (remaining > 0) {
+            var datum = data[dataSize - 1]
+            for (i in 0 until remaining) {
+                output[total + i] = (datum and mask).toInt()
+                datum = datum shr bits
+            }
+        }
+    }
+
     private fun cellIndex(index: Int) = ((index.toLong() * divideMultiply + divideAdd) shr 32 shr divideShift).toInt()
 
     fun isEmpty() = data.isEmpty()
@@ -105,6 +160,8 @@ class SimpleBitStorage(
             data.contentEquals(other.data)
 
     override fun hashCode() = arrayOf(bits, size, data).contentDeepHashCode()
+
+    class InitializationException(message: String) : RuntimeException(message)
 
     companion object {
 

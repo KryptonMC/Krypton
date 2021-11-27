@@ -19,27 +19,31 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.IntBiMap
-import org.kryptonmc.krypton.world.block.BlockLoader
-import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.krypton.util.varIntBytes
 
-sealed class GlobalPalette<T>(override val size: Int, private val registry: IntBiMap<T>) : Palette<T> {
+class GlobalPalette<T>(private val registry: IntBiMap<T>) : Palette<T> {
 
-    override val serializedSize = 0
+    override val size: Int
+        get() = registry.size
+    override val serializedSize = 0.varIntBytes
+
+    override fun get(value: T): Int {
+        val id = registry.idOf(value)
+        return if (id == -1) 0 else id
+    }
 
     override fun get(id: Int): T = registry[id] ?: throw MissingPaletteEntryException(id)
 
-    override fun get(value: T): Int = registry.idOf(value)
-
-    override fun load(data: ListTag) = Unit
-
     override fun write(buf: ByteBuf) = Unit
 
-    object Blocks : GlobalPalette<Block>(BlockLoader.STATES.size, BlockLoader.STATES)
+    object Factory : Palette.Factory {
 
-    object Biomes : GlobalPalette<Biome>(Registries.BIOME.size, InternalRegistries.BIOME)
+        override fun <T> create(
+            bits: Int,
+            registry: IntBiMap<T>,
+            resizer: PaletteResizer<T>,
+            entries: List<T>
+        ): Palette<T> = GlobalPalette(registry)
+    }
 }

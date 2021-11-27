@@ -31,4 +31,6 @@ interface BitStorage {
     operator fun set(index: Int, value: Int)
 
     fun forEach(consumer: StorageConsumer)
+
+    fun unpack(output: IntArray)
 }

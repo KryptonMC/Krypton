@@ -18,43 +18,94 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
+import io.netty.buffer.Unpooled
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.util.Quart
 import org.kryptonmc.krypton.util.clamp
+import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.BlockAccessor
+import org.kryptonmc.krypton.world.HeightAccessor
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
+import org.kryptonmc.nbt.CompoundTag
+import java.util.EnumMap
+import java.util.EnumSet
 
-interface ChunkAccessor : BlockAccessor, NoiseBiomeSource {
+abstract class ChunkAccessor(
+    val position: ChunkPosition,
+    val heightAccessor: HeightAccessor,
+    var inhabitedTime: Long,
+    sections: Array<ChunkSection?>?
+) : BlockAccessor, NoiseBiomeSource {
 
-    val position: ChunkPosition
-    val status: ChunkStatus
-    var isUnsaved: Boolean
-    var inhabitedTime: Long
-    var isLightCorrect: Boolean
-    val sections: Array<ChunkSection?>
-    val heightmaps: Map<Heightmap.Type, Heightmap>
+    private val sectionArray = arrayOfNulls<ChunkSection>(heightAccessor.sectionCount)
+    @Volatile var isUnsaved = false
+    val heightmaps: MutableMap<Heightmap.Type, Heightmap> = EnumMap(Heightmap.Type::class.java)
 
+    val sections: Array<ChunkSection>
+        @Suppress("UNCHECKED_CAST") get() = sectionArray as Array<ChunkSection>
     val highestSection: ChunkSection?
-        get() = sections.lastOrNull { it != null && !it.hasOnlyAir() }
+        get() {
+            for (i in sectionArray.size - 1 downTo 0) {
+                val section = sectionArray[i]
+                if (!section!!.hasOnlyAir()) return section
+            }
+            return null
+        }
     val highestSectionY: Int
         get() = highestSection?.bottomBlockY ?: minimumBuildHeight
+    override val height: Int
+        get() = heightAccessor.height
+    override val minimumBuildHeight: Int
+        get() = heightAccessor.minimumBuildHeight
 
-    fun getOrCreateSection(index: Int) = sections.getOrNull(index)
-        ?: ChunkSection(sectionYFromIndex(index)).apply { sections[index] = this }
+    abstract val status: ChunkStatus
 
-    fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap
+    init {
+        if (sections != null) {
+            if (this.sectionArray.size == sections.size) {
+                System.arraycopy(sections, 0, this.sectionArray, 0, this.sectionArray.size)
+            } else {
+                LOGGER.warn("Failed to set chunk sections! Expected array size ${this.sectionArray.size} but got ${sections.size}!")
+            }
+        }
+        replaceMissingSections(heightAccessor, this.sectionArray)
+    }
 
-    fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int
+    fun section(index: Int): ChunkSection = sectionArray[index]!!
 
-    fun setHeightmap(type: Heightmap.Type, data: LongArray) =
+    fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap = heightmaps.getOrPut(type) { Heightmap(this, type) }
+
+    fun setHeightmap(type: Heightmap.Type, data: LongArray) {
         getOrCreateHeightmap(type).setData(this, type, data)
+    }
+
+    fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int {
+        var heightmap = heightmaps[type]
+        if (heightmap == null) {
+            Heightmap.prime(this, EnumSet.of(type))
+            heightmap = heightmaps[type]!!
+        }
+        return heightmap.firstAvailable(x and 15, z and 15) - 1
+    }
 
     override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome {
-        val minQuart = Quart.fromBlock(minimumBuildHeight)
-        val maxQuart = minQuart + Quart.fromBlock(height) - 1
-        val clamped = y.clamp(minQuart, maxQuart)
-        val index = sectionIndex(Quart.toBlock(clamped))
-        return sections[index]!!.getNoiseBiome(x and 3, clamped and 3, z and 3)
+        val minimumQuart = Quart.fromBlock(minimumBuildHeight)
+        val maximumQuart = minimumQuart + Quart.fromBlock(height) - 1
+        val actualY = y.clamp(minimumQuart, maximumQuart)
+        val sectionIndex = sectionIndex(Quart.toBlock(actualY))
+        return section(sectionIndex).getNoiseBiome(x and 3, actualY and 3, z and 3)
+    }
+
+    companion object {
+
+        private val LOGGER = logger<ChunkAccessor>()
+
+        @JvmStatic
+        private fun replaceMissingSections(heightAccessor: HeightAccessor, sections: Array<ChunkSection?>) {
+            for (i in sections.indices) {
+                if (sections[i] == null) sections[i] = ChunkSection(heightAccessor.sectionYFromIndex(i))
+            }
+        }
     }
 }

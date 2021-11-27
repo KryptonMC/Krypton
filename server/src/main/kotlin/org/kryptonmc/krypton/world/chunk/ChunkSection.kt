@@ -20,10 +20,11 @@ package org.kryptonmc.krypton.world.chunk
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
-import org.kryptonmc.krypton.world.block.palette.PaletteType
 
 /**
  * A section of a chunk. These are 16x16x16 areas that hold the actual block
@@ -31,16 +32,20 @@ import org.kryptonmc.krypton.world.block.palette.PaletteType
  */
 class ChunkSection(
     y: Int,
+    val blocks: PaletteHolder<Block> = PaletteHolder(PaletteHolder.Strategy.BLOCKS, Blocks.AIR),
+    val biomes: PaletteHolder<Biome> = PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS),
     val blockLight: ByteArray = ByteArray(2048),
     val skyLight: ByteArray = ByteArray(2048)
 ) : NoiseBiomeSource {
 
     val bottomBlockY = y shl 4
-    val blocks = PaletteHolder(PaletteType.BLOCKS)
-    val biomes = PaletteHolder(PaletteType.BIOMES)
     private var nonEmptyBlockCount = 0
     val serializedSize: Int
         get() = 2 + blocks.serializedSize + biomes.serializedSize
+
+    init {
+        recount()
+    }
 
     operator fun get(x: Int, y: Int, z: Int): Block = blocks[x, y, z]
 
@@ -53,7 +58,7 @@ class ChunkSection(
 
     fun hasOnlyAir(): Boolean = nonEmptyBlockCount == 0
 
-    fun recount() {
+    private fun recount() {
         nonEmptyBlockCount = 0
         blocks.forEachLocation { block, _ ->
             val fluid = block.asFluid()

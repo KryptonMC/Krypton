@@ -25,15 +25,24 @@ import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.nbt.CompoundTag
 
-data class PacketOutChunkDataAndLight(
-    private val chunk: KryptonChunk,
-    private val trustEdges: Boolean = true
+class PacketOutChunkDataAndLight(
+    chunk: KryptonChunk,
+    trustEdges: Boolean = true
 ) : PacketOutLight(chunk, trustEdges) {
 
-    private val buffer = ByteArray(chunk.calculateSize())
+    private val heightmaps: CompoundTag
+    private val buffer: ByteArray
 
     init {
-        chunk.extract(Unpooled.wrappedBuffer(buffer).apply { writerIndex(0) })
+        val heightmapData = CompoundTag.builder()
+        chunk.heightmaps.forEach {
+            if (it.key.sendToClient) heightmapData.longArray(it.key.name, it.value.data.data)
+        }
+        heightmaps = heightmapData.build()
+
+        buffer = ByteArray(chunk.sections.sumOf { it.serializedSize })
+        val wrappedBuffer = Unpooled.wrappedBuffer(buffer).writerIndex(0)
+        chunk.sections.forEach { it.write(wrappedBuffer) }
     }
 
     override fun write(buf: ByteBuf) {
@@ -41,9 +50,7 @@ data class PacketOutChunkDataAndLight(
         buf.writeInt(chunk.position.z)
 
         // Heightmaps
-        val heightmaps = CompoundTag.builder()
-        chunk.heightmaps.forEach { if (it.key.sendToClient) heightmaps.longArray(it.key.name, it.value.data.data) }
-        buf.writeNBT(heightmaps.build())
+        buf.writeNBT(heightmaps)
 
         // Actual chunk data
         buf.writeVarInt(buffer.size)
@@ -54,25 +61,5 @@ data class PacketOutChunkDataAndLight(
 
         // Light data from super
         super.write(buf)
-    }
-
-    companion object {
-
-        @JvmStatic
-        private fun KryptonChunk.extract(buf: ByteBuf) {
-            for (i in sections.indices) {
-                sections[i]?.write(buf)
-            }
-        }
-
-        @JvmStatic
-        private fun KryptonChunk.calculateSize(): Int {
-            var size = 0
-            for (i in sections.indices) {
-                val section = sections[i] ?: continue
-                size += section.serializedSize
-            }
-            return size
-        }
     }
 }

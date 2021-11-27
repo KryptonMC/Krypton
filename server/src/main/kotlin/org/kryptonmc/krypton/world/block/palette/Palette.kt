@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.util.IntBiMap
 import org.kryptonmc.nbt.ListTag
 
 interface Palette<T> {
@@ -28,9 +29,12 @@ interface Palette<T> {
 
     operator fun get(value: T): Int
 
-    operator fun get(id: Int): T?
+    operator fun get(id: Int): T
 
     fun write(buf: ByteBuf)
 
-    fun load(data: ListTag)
+    interface Factory {
+
+        fun <T> create(bits: Int, registry: IntBiMap<T>, resizer: PaletteResizer<T>, entries: List<T>): Palette<T>
+    }
 }

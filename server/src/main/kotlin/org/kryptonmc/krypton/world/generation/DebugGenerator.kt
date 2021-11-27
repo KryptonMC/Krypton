@@ -19,15 +19,21 @@
 package org.kryptonmc.krypton.world.generation
 
 import com.mojang.serialization.Codec
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
+import org.kryptonmc.krypton.util.ceil
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.Climate
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.gen.FixedBiomeGenerator
+import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
+import org.spongepowered.math.GenericMath
+import kotlin.math.abs
 
 class DebugGenerator(
     private val biomes: KryptonRegistry<Biome>
@@ -45,5 +51,22 @@ class DebugGenerator(
             .xmap(::DebugGenerator, DebugGenerator::biomes)
             .stable()
             .codec()
+        private const val BLOCK_MARGIN = 2
+        private val GRID_WIDTH = GenericMath.sqrt(BlockLoader.STATES.size.toDouble()).ceil()
+        private val GRID_HEIGHT = (BlockLoader.STATES.size.toDouble() / GRID_WIDTH).ceil()
+
+        @JvmStatic
+        fun blockAt(x: Int, z: Int): Block {
+            var block = Blocks.AIR
+            if (x > 0 && z > 0 && x % 2 != 0 && z % 2 != 0) {
+                val newX = x / 2
+                val newZ = z / 2
+                if (newX <= GRID_WIDTH && newZ <= GRID_HEIGHT) {
+                    val index = abs(newX * GRID_WIDTH + newZ)
+                    if (index < BlockLoader.STATES.size) block = BlockLoader.STATES[index]!!
+                }
+            }
+            return block
+        }
     }
 }

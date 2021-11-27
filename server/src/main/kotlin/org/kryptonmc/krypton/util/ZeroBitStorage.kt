@@ -45,6 +45,10 @@ class ZeroBitStorage(override val size: Int) : BitStorage {
         }
     }
 
+    override fun unpack(output: IntArray) {
+        output.fill(0)
+    }
+
     companion object {
 
         private val RAW = LongArray(0)

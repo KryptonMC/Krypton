@@ -20,5 +20,5 @@ package org.kryptonmc.krypton.world.block.palette
 
 fun interface PaletteResizer<T> {
 
-    operator fun invoke(newBits: Int, value: T): Int
+    fun onResize(newBits: Int, value: T): Int
 }
