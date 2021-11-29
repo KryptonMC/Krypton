@@ -37,6 +37,8 @@ import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.api.util.BoundingBox
+import org.kryptonmc.api.world.damage.DamageSource
+import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -55,6 +57,7 @@ import org.kryptonmc.krypton.util.floor
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.FloatTag
@@ -153,6 +156,7 @@ abstract class KryptonEntity(
     private var portalCooldown = 0
     var isRemoved = false
         private set
+    private var wasDamaged = false
     private var tickCount = 0
     private var gravityTickCount = 0
 
@@ -255,6 +259,10 @@ abstract class KryptonEntity(
         updateUnderFluid()
         updateSwimming()
         if (data.isDirty) viewers.forEach { it.session.send(PacketOutMetadata(id, data.dirty)) }
+        if (wasDamaged) {
+            viewers.forEach { it.session.send(PacketOutEntityVelocity(this)) }
+            wasDamaged = false
+        }
     }
 
     protected open fun getSpawnPacket(): Packet = PacketOutSpawnEntity(this)
@@ -382,6 +390,24 @@ abstract class KryptonEntity(
     final override fun reposition(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {
         moveTo(x, y, z)
         look(yaw, pitch)
+    }
+
+    open fun isInvulnerableTo(source: KryptonDamageSource): Boolean =
+        isRemoved || isInvulnerable && source.type !== DamageTypes.VOID && !source.isCreativePlayer
+
+    open fun damage(source: KryptonDamageSource, damage: Float): Boolean {
+        if (isInvulnerableTo(source)) return false
+        markDamaged()
+        return false
+    }
+
+    protected fun markDamaged() {
+        wasDamaged = true
+    }
+
+    final override fun damage(source: DamageSource, damage: Float): Boolean {
+        if (source !is KryptonDamageSource) return false
+        return damage(source, damage)
     }
 
     override fun getPermissionValue(permission: String) = TriState.FALSE

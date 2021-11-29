@@ -50,6 +50,7 @@ import org.kryptonmc.api.world.biome.BiomeCategory
 import org.kryptonmc.api.world.biome.GrassColorModifier
 import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.TemperatureModifier
+import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRule
@@ -112,6 +113,7 @@ public object Registries {
     @JvmField public val PANDA_GENES: Registry<PandaGene> = create(ResourceKeys.PANDA_GENES)
     @JvmField public val RABBIT_TYPES: Registry<RabbitType> = create(ResourceKeys.RABBIT_TYPES)
     @JvmField public val AXOLOTL_VARIANTS: Registry<AxolotlVariant> = create(ResourceKeys.AXOLOTL_VARIANTS)
+    @JvmField public val DAMAGE_SOURCES: Registry<DamageType> = create(ResourceKeys.DAMAGE_SOURCES)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null

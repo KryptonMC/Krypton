@@ -53,6 +53,7 @@ import org.kryptonmc.api.scoreboard.Visibility
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.api.world.damage.type.DamageType
 
 /**
  * All the built-in registry keys for various registries.
@@ -113,6 +114,7 @@ public object ResourceKeys {
     @JvmField public val PANDA_GENES: ResourceKey<out Registry<PandaGene>> = krypton("panda_genes")
     @JvmField public val RABBIT_TYPES: ResourceKey<out Registry<RabbitType>> = krypton("rabbit_types")
     @JvmField public val AXOLOTL_VARIANTS: ResourceKey<out Registry<AxolotlVariant>> = krypton("axolotl_variants")
+    @JvmField public val DAMAGE_SOURCES: ResourceKey<out Registry<DamageType>> = krypton("damage_sources")
 
     /**
      * Creates a new registry key with the given [key] as its base key.

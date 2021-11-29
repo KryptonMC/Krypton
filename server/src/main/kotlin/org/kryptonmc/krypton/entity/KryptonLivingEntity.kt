@@ -64,6 +64,13 @@ abstract class KryptonLivingEntity(
     val attributes = AttributeMap(attributeSupplier)
     open val brain: Brain<*> = Brain<KryptonLivingEntity>()
 
+    val killer: KryptonLivingEntity?
+        get() {
+            // TODO: Check combat tracker here
+            if (lastHurtByPlayer != null) return lastHurtByPlayer
+            if (lastHurtByMob != null) return lastHurtByMob
+            return null
+        }
     var lastHurtByMob: KryptonLivingEntity? = null
         set(value) {
             field = value

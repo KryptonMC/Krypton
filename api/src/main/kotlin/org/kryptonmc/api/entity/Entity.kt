@@ -17,6 +17,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.scoreboard.TeamMember
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.damage.DamageSource
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
 
@@ -361,6 +362,15 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * Ejects this entity from it's vehicle.
      */
     public fun ejectVehicle()
+
+    /**
+     * Damages this entity with the given [source].
+     *
+     * @param source the source of the damage
+     * @param damage the damage amount
+     * @return true if damaging this entity was successful, false otherwise
+     */
+    public fun damage(source: DamageSource, damage: Float): Boolean
 
     /**
      * Removes this entity from the world it is currently in.
