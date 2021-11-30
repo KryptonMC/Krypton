@@ -14,7 +14,7 @@ import org.spongepowered.math.vector.Vector3f
  * An armor stand.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface ArmorStand : LivingEntity {
+public interface ArmorStand : LivingEntity, Equipable {
 
     /**
      * If this armor stand is small.

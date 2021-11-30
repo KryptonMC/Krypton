@@ -39,6 +39,7 @@ import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
 import org.kryptonmc.api.effect.particle.data.NoteParticleData
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.player.Player
@@ -64,10 +65,14 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.adventure.KryptonAdventure
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.commands.KryptonPermission
+import org.kryptonmc.krypton.entity.EquipmentSlot
 import org.kryptonmc.krypton.entity.KryptonEntity
+import org.kryptonmc.krypton.entity.KryptonEquipable
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
+import org.kryptonmc.krypton.item.EmptyItemStack
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameState
@@ -131,7 +136,7 @@ class KryptonPlayer(
     override val profile: KryptonGameProfile,
     world: KryptonWorld,
     override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
-) : KryptonLivingEntity(world, EntityTypes.PLAYER, ATTRIBUTES), Player {
+) : KryptonLivingEntity(world, EntityTypes.PLAYER, ATTRIBUTES), Player, KryptonEquipable {
 
     var permissionFunction = PermissionFunction.ALWAYS_NOT_SET
 
@@ -190,6 +195,11 @@ class KryptonPlayer(
             }
         }
     override val inventory = KryptonPlayerInventory(this)
+    override val handSlots: Iterable<KryptonItemStack>
+        get() = listOf(inventory.mainHand, inventory.offHand)
+    override val armorSlots: Iterable<KryptonItemStack>
+        get() = inventory.armor
+
     override val scoreboard = world.scoreboard
     override var locale: Locale? = null
     override val statistics = server.playerManager.getStatistics(this)
@@ -274,6 +284,28 @@ class KryptonPlayer(
         data.add(MetadataKeys.PLAYER.MAIN_HAND)
         data.add(MetadataKeys.PLAYER.LEFT_SHOULDER)
         data.add(MetadataKeys.PLAYER.RIGHT_SHOULDER)
+    }
+
+    override fun equipment(slot: EquipmentSlot): KryptonItemStack = when {
+        slot == EquipmentSlot.MAIN_HAND -> inventory.mainHand
+        slot == EquipmentSlot.OFF_HAND -> inventory.offHand
+        slot.type == EquipmentSlot.Type.ARMOR -> inventory.armor[slot.index]
+        else -> EmptyItemStack
+    }
+
+    override fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack) {
+        if (slot == EquipmentSlot.MAIN_HAND) {
+            inventory.setHeldItem(Hand.MAIN, item)
+            return
+        }
+        if (slot == EquipmentSlot.OFF_HAND) {
+            inventory.setHeldItem(Hand.OFF, item)
+            return
+        }
+        if (slot.type == EquipmentSlot.Type.ARMOR) {
+            inventory.armor[slot.index] = item
+            return
+        }
     }
 
     override fun load(tag: CompoundTag) {

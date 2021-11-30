@@ -20,10 +20,8 @@ package org.kryptonmc.krypton.inventory
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
 import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
@@ -32,7 +30,7 @@ import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
-import org.kryptonmc.krypton.util.nbt.Serializable
+import org.kryptonmc.krypton.util.FixedList
 import org.kryptonmc.krypton.util.writeItem
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.nbt.CompoundTag
@@ -40,12 +38,10 @@ import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.compound
 
-class KryptonPlayerInventory(
-    override val owner: KryptonPlayer
-) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory, Serializable<ListTag> {
+class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory {
 
-    override val crafting = Array<KryptonItemStack>(5) { EmptyItemStack }
-    override val armor = Array<KryptonItemStack>(4) { EmptyItemStack }
+    override val crafting = FixedList<KryptonItemStack>(5, EmptyItemStack)
+    override val armor = FixedList<KryptonItemStack>(4, EmptyItemStack)
 
     override var helmet: ItemStack
         get() = armor(ArmorSlot.HELMET)
@@ -105,7 +101,7 @@ class KryptonPlayerInventory(
         owner.session.send(PacketOutChangeHeldItem(index))
     }
 
-    override fun load(tag: ListTag) {
+    fun load(tag: ListTag) {
         clear()
         for (i in tag.indices) {
             val compound = tag.getCompound(i)
@@ -123,7 +119,7 @@ class KryptonPlayerInventory(
         }
     }
 
-    override fun save(): ListTag {
+    fun save(): ListTag {
         val list = MutableListTag(elementType = CompoundTag.ID)
         items.forEachIndexed { index, item ->
             if (item.type === ItemTypes.AIR) return@forEachIndexed

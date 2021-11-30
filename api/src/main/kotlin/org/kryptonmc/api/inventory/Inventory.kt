@@ -41,7 +41,7 @@ public interface Inventory : Iterable<ItemStack> {
      * The items in this inventory.
      */
     @get:JvmName("items")
-    public val items: Array<out ItemStack>
+    public val items: List<ItemStack>
 
     /**
      * Retrieve an item from this inventory at the specified [index].

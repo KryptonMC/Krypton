@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.adventure.toPlainText
+import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Hand
@@ -32,6 +33,7 @@ import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.memory.Brain
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
@@ -84,6 +86,7 @@ abstract class KryptonLivingEntity(
         }
     private var lastHurtByPlayerTime = 0
 
+    abstract override val armorSlots: Iterable<KryptonItemStack>
     open val canBeSeenAsEnemy: Boolean
         get() = !isInvulnerable && canBeSeenByAnyone
     open val canBeSeenByAnyone: Boolean
@@ -105,6 +108,35 @@ abstract class KryptonLivingEntity(
         data.add(MetadataKeys.LIVING.STINGERS)
         data.add(MetadataKeys.LIVING.BED_LOCATION)
         data[MetadataKeys.LIVING.HEALTH] = maxHealth
+    }
+
+    abstract fun equipment(slot: EquipmentSlot): KryptonItemStack
+
+    abstract override fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack)
+
+    fun heldItem(hand: Hand): KryptonItemStack {
+        if (hand == Hand.MAIN) return equipment(EquipmentSlot.MAIN_HAND)
+        if (hand == Hand.OFF) return equipment(EquipmentSlot.OFF_HAND)
+        error("Tried to get held item for hand $hand that should not exist! Please sure that no plugins are injecting entries in to enums!")
+    }
+
+    fun setHeldItem(hand: Hand, item: KryptonItemStack) {
+        if (hand == Hand.MAIN) {
+            setEquipment(EquipmentSlot.MAIN_HAND, item)
+            return
+        }
+        if (hand == Hand.OFF) {
+            setEquipment(EquipmentSlot.OFF_HAND, item)
+            return
+        }
+        error("Tried to set held item for hand $hand to item $item, when this hand should not exist! Please sure that no plugins are injecting " +
+                "entries in to enums!")
+    }
+
+    fun armor(slot: ArmorSlot): KryptonItemStack = equipment(EquipmentSlot.fromArmorSlot(slot))
+
+    fun setArmor(slot: ArmorSlot, item: KryptonItemStack) {
+        setEquipment(EquipmentSlot.fromArmorSlot(slot), item)
     }
 
     fun canAttack(target: KryptonLivingEntity): Boolean {

@@ -22,15 +22,19 @@ public interface PlayerInventory : Inventory {
     /**
      * The array of crafting slots in this inventory, where the first 4
      * elements of this array are the input, and the last slot is the output.
+     *
+     * The returned list is immutable, and of a fixed size.
      */
     @get:JvmName("crafting")
-    public val crafting: Array<out ItemStack>
+    public val crafting: List<ItemStack>
 
     /**
      * The array of armor pieces in this inventory.
+     *
+     * The returned list is immutable, and of a fixed size.
      */
     @get:JvmName("armor")
-    public val armor: Array<out ItemStack>
+    public val armor: List<ItemStack>
 
     /**
      * The item that this player is currently holding in their main hand.

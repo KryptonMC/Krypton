@@ -30,6 +30,18 @@ fun CompoundTag.getRotation(key: String): Vector3f? {
     return Vector3f(list.getFloat(0), list.getFloat(1), list.getFloat(2))
 }
 
+fun ListTag.readRotation(): Vector3f = Vector3f.from(
+    getFloat(0),
+    getFloat(1),
+    getFloat(2)
+)
+
+fun CompoundTag.Builder.rotation(key: String, rotation: Vector3f) = list(key) {
+    addFloat(rotation.x())
+    addFloat(rotation.y())
+    addFloat(rotation.z())
+}
+
 fun CompoundTag.getVector3i(key: String): Vector3i? {
     if (!contains(key, CompoundTag.ID)) return null
     val position = getCompound(key)

@@ -25,6 +25,7 @@ import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.util.FixedList
 
 abstract class KryptonInventory(
     val id: Int,
@@ -38,7 +39,7 @@ abstract class KryptonInventory(
 
     var stateId = 0
         private set
-    override val items = Array<KryptonItemStack>(totalItems) { EmptyItemStack }
+    override val items = FixedList<KryptonItemStack>(totalItems, EmptyItemStack)
 
     fun incrementStateId(): Int {
         stateId = stateId + 1 and Short.MAX_VALUE.toInt()

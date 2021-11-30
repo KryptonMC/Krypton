@@ -12,7 +12,7 @@ package org.kryptonmc.api.entity
  * An entity with a simple artificial intelligence that can drop items.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Mob : LivingEntity {
+public interface Mob : LivingEntity, Equipable {
 
     /**
      * If this mob is persistent (will have its data saved on removal).

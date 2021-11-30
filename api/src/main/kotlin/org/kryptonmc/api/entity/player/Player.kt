@@ -11,6 +11,7 @@ package org.kryptonmc.api.entity.player
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.effect.particle.ParticleEffect
+import org.kryptonmc.api.entity.Equipable
 import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.inventory.InventoryHolder
@@ -33,7 +34,7 @@ import java.util.Locale
  * A player that is connected to the server and playing the game.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient {
+public interface Player : LivingEntity, Equipable, InventoryHolder, PluginMessageRecipient {
 
     /**
      * The address that the player is currently connected from.

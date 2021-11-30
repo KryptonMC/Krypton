@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.entity
 
+import com.google.common.collect.Iterables
 import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.sound.Sound
@@ -32,6 +33,7 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.tags.FluidTags
@@ -43,6 +45,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutDestroyEntities
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityVelocity
@@ -61,6 +64,8 @@ import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.FloatTag
+import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
 import org.spongepowered.math.vector.Vector2f
@@ -146,6 +151,13 @@ abstract class KryptonEntity(
         get() = SoundEvents.GENERIC_SPLASH
     protected open val highSpeedSplashSound: SoundEvent
         get() = SoundEvents.GENERIC_SPLASH
+
+    open val handSlots: Iterable<KryptonItemStack>
+        get() = emptyList()
+    open val armorSlots: Iterable<KryptonItemStack>
+        get() = emptyList()
+    open val allSlots: Iterable<KryptonItemStack>
+        get() = Iterables.concat(handSlots, armorSlots)
 
     val viewers: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
     var noPhysics = false
@@ -264,6 +276,8 @@ abstract class KryptonEntity(
             wasDamaged = false
         }
     }
+
+    open fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack) = Unit
 
     protected open fun getSpawnPacket(): Packet = PacketOutSpawnEntity(this)
 
