@@ -30,9 +30,9 @@ object KryptonPlatform : Platform {
     override val version: String = versions.getProperty("krypton")
     override val isStable = false
     override val minecraftVersion: String = versions.getProperty("minecraft")
-    const val isStableMinecraft = false
-    override val worldVersion = 2857
-    override val protocolVersion = 1073741883
+    const val isStableMinecraft = true
+    override val worldVersion = 2860
+    override val protocolVersion = 757
     override val dataPackVersion = 8
 
     val sparkVersion: String = versions.getProperty("spark")
