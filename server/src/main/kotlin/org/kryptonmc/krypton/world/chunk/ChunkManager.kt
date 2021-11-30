@@ -128,7 +128,7 @@ class ChunkManager(private val world: KryptonWorld) {
         }
 
         // Don't upgrade if the version is not older than our version.
-        val data = if (world.server.useDataConverter && version < KryptonPlatform.worldVersion) {
+        val data = if (world.server.useDataConverter && version < KryptonPlatform.worldVersion && nbt.isNotEmpty()) {
             MCDataConverter.convertTag(MCTypeRegistry.CHUNK, nbt.copy() as CompoundTag, version, KryptonPlatform.worldVersion)
         } else {
             nbt
