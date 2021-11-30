@@ -194,6 +194,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             player.inventory.networkWriter,
             player.inventory.mainHand
         ))
+        player.isLoaded = true
     }
 
     fun remove(player: KryptonPlayer) {

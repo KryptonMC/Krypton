@@ -124,7 +124,7 @@ abstract class KryptonEntity(
     final override var isOnGround = true
     final override var ticksExisted = 0
     final override var fireTicks: Short = 0
-    final override var isInvulnerable = false
+    override var isInvulnerable = false
     final override var fallDistance = 0F
 
     final override val isPassenger: Boolean

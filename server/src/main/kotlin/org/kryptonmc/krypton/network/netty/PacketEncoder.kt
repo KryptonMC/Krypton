@@ -28,8 +28,9 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.writeVarInt
 
 /**
- * Encodes packets into raw packet data by writing the packet's ID as a varint followed by calling the packet's
- * [write][org.kryptonmc.krypton.packet.Packet.write] function
+ * Encodes packets into raw packet data by writing the packet's ID as a var int
+ * followed by calling the packet's
+ * [write][org.kryptonmc.krypton.packet.Packet.write] function.
  */
 @ChannelHandler.Sharable
 object PacketEncoder : MessageToByteEncoder<Packet>() {

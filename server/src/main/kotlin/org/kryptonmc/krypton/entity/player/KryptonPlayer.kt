@@ -103,7 +103,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTitle
 import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
-import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.service.KryptonVanishService
@@ -135,7 +134,7 @@ class KryptonPlayer(
     val session: SessionHandler,
     override val profile: KryptonGameProfile,
     world: KryptonWorld,
-    override val address: InetSocketAddress = InetSocketAddress("127.0.0.1", 1)
+    override val address: InetSocketAddress
 ) : KryptonLivingEntity(world, EntityTypes.PLAYER, ATTRIBUTES), Player, KryptonEquipable {
 
     var permissionFunction = PermissionFunction.ALWAYS_NOT_SET
@@ -145,34 +144,51 @@ class KryptonPlayer(
         get() = profile.uuid
         set(_) = Unit // Player UUIDs are read only.
 
+    // This is a bit hacky, but ensures that data will never be sent in the wrong order for players.
+    @Volatile
+    var isLoaded = false
+
     override var canFly = false
         set(value) {
             field = value
+            if (!isLoaded) return
             onAbilitiesUpdate()
         }
     override var canBuild = false
         set(value) {
             field = value
+            if (!isLoaded) return
             onAbilitiesUpdate()
         }
     override var canInstantlyBuild = false
         set(value) {
             field = value
+            if (!isLoaded) return
             onAbilitiesUpdate()
         }
     override var walkingSpeed = 0.1F
         set(value) {
             field = value
+            if (!isLoaded) return
             onAbilitiesUpdate()
         }
     override var flyingSpeed = 0.05F
         set(value) {
             field = value
+            if (!isLoaded) return
             onAbilitiesUpdate()
         }
     override var isFlying = false
         set(value) {
             field = value
+            if (!isLoaded) return
+            onAbilitiesUpdate()
+        }
+    override var isInvulnerable: Boolean
+        get() = super.isInvulnerable
+        set(value) {
+            super.isInvulnerable = value
+            if (!isLoaded) return
             onAbilitiesUpdate()
         }
     override var isGliding: Boolean
@@ -221,23 +237,13 @@ class KryptonPlayer(
             }
         }
 
-    /**
-     * Doing this avoids a strange issue, where loading the player data will
-     * set the game mode value, which in turn updates the abilities, and sends
-     * the abilities packet before the client has constructed a local player
-     * (done when we send the join game packet), which in turn causes a
-     * [NullPointerException] to occur client-side because it attempts to get
-     * the abilities from a null player.
-     */
-    private var internalGamemode = GameModes.SURVIVAL
-
     var oldGameMode: GameMode? = null
-    override var gameMode: GameMode
-        get() = internalGamemode
+    override var gameMode: GameMode = GameModes.SURVIVAL
         set(value) {
-            if (value === internalGamemode) return
-            oldGameMode = internalGamemode
-            internalGamemode = value
+            if (value === field) return
+            oldGameMode = field
+            field = value
+            if (!isLoaded) return
             updateAbilities()
             onAbilitiesUpdate()
             server.playerManager.sendToAll(PacketOutPlayerInfo(
@@ -310,7 +316,7 @@ class KryptonPlayer(
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        internalGamemode = Registries.GAME_MODES[tag.getInt("playerGameType")] ?: GameModes.SURVIVAL
+        gameMode = Registries.GAME_MODES[tag.getInt("playerGameType")] ?: GameModes.SURVIVAL
         if (tag.contains("previousPlayerGameType", IntTag.ID)) {
             oldGameMode = Registries.GAME_MODES[tag.getInt("previousPlayerGameType")]
         }
@@ -325,7 +331,7 @@ class KryptonPlayer(
         if (tag.contains("abilities", CompoundTag.ID)) {
             val abilitiesData = tag.getCompound("abilities")
             isInvulnerable = abilitiesData.getBoolean("invulnerable")
-            isGliding = abilitiesData.getBoolean("flying")
+            isFlying = abilitiesData.getBoolean("flying")
             canFly = abilitiesData.getBoolean("mayfly")
             canBuild = abilitiesData.getBoolean("mayBuild")
             canInstantlyBuild = abilitiesData.getBoolean("instabuild")
@@ -361,7 +367,7 @@ class KryptonPlayer(
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
-        int("playerGameType", Registries.GAME_MODES.idOf(internalGamemode))
+        int("playerGameType", Registries.GAME_MODES.idOf(gameMode))
         if (oldGameMode != null) int("previousPlayerGameType", Registries.GAME_MODES.idOf(oldGameMode!!))
 
         int("DataVersion", KryptonPlatform.worldVersion)
@@ -692,7 +698,7 @@ class KryptonPlayer(
     }
 
     private fun updateAbilities() {
-        when (internalGamemode) {
+        when (gameMode) {
             GameModes.CREATIVE -> {
                 isInvulnerable = true
                 canFly = true
@@ -706,7 +712,7 @@ class KryptonPlayer(
             }
             else -> Unit
         }
-        canBuild = internalGamemode.canBuild
+        canBuild = gameMode.canBuild
     }
 
     fun updateChunks(firstLoad: Boolean = false) {
@@ -785,7 +791,7 @@ class KryptonPlayer(
 
     private fun updateInvisibility() {
         removeEffectParticles()
-        isInvisible = internalGamemode === GameModes.SPECTATOR
+        isInvisible = gameMode === GameModes.SPECTATOR
     }
 
     fun updateMovementStatistics(deltaX: Double, deltaY: Double, deltaZ: Double) {
@@ -843,6 +849,7 @@ class KryptonPlayer(
         get() = super.health
         set(value) {
             super.health = value
+            if (!isLoaded) return
             session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
         }
 
@@ -852,6 +859,7 @@ class KryptonPlayer(
     override var foodLevel: Int = 20
         set(value) {
             field = value
+            if (!isLoaded) return
             session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
         }
 
@@ -864,6 +872,7 @@ class KryptonPlayer(
     override var foodSaturationLevel: Float = 5f
         set(value) {
             field = value
+            if (!isLoaded) return
             session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
         }
 

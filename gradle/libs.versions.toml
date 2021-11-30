@@ -30,8 +30,8 @@ tca = "1.3.0"
 jline = "3.21.0"
 dataConverter = "1.0.0-SNAPSHOT"
 dfu = "4.0"
-nbt = "2.4.2"
-articData = "1.18-rc3"
+nbt = "2.5"
+articData = "1.18-SNAPSHOT"
 caffeine = "3.0.4"
 fastutil = "8.5.6"
 clikt = "3.3.0"
@@ -39,10 +39,10 @@ bstats = "2.2.1"
 spark = "1.6-SNAPSHOT"
 
 # Test
-junit-jupiter = "5.8.1"
-junit-platform = "1.8.1"
-mockk = "1.12.0"
-bytebuddy = "1.12.1"
+junit-jupiter = "5.8.2"
+junit-platform = "1.8.2"
+mockk = "1.12.1"
+bytebuddy = "1.12.2"
 
 [libraries]
 
@@ -93,7 +93,7 @@ clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt
 # Data
 dataConverter = { group = "ca.spottedleaf", name = "dataconverter", version.ref = "dataConverter" }
 dfu = { group = "org.kryptonmc", name = "datafixerupper", version.ref = "dfu" }
-articData = { group = "de.articdive", name = "articdata", version.ref = "articData" }
+articData = { group = "com.github.Articdive", name = "ArticData", version.ref = "articData" }
 nbt = { group = "org.kryptonmc", name = "nbt-common-jvm", version.ref = "nbt" }
 
 # Events

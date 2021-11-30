@@ -129,7 +129,7 @@ class ChunkManager(private val world: KryptonWorld) {
 
         // Don't upgrade if the version is not older than our version.
         val data = if (world.server.useDataConverter && version < KryptonPlatform.worldVersion && nbt.isNotEmpty()) {
-            MCDataConverter.convertTag(MCTypeRegistry.CHUNK, nbt.copy() as CompoundTag, version, KryptonPlatform.worldVersion)
+            MCDataConverter.convertTag(MCTypeRegistry.CHUNK, nbt.copy(), version, KryptonPlatform.worldVersion)
         } else {
             nbt
         }
@@ -235,7 +235,7 @@ class ChunkManager(private val world: KryptonWorld) {
                 val sectionIndex = world.sectionIndexFromY(i)
                 // TODO: Handle light sections below and above the world
                 if (sectionIndex >= 0 && sectionIndex < sections.size) {
-                    val section = sections[sectionIndex] ?: continue
+                    val section = sections[sectionIndex]
                     val tag = compound {
                         byte("Y", i.toByte())
                         put("block_states", section.blocks.write(Block::toNBT))
