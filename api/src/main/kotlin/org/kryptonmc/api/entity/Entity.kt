@@ -104,12 +104,22 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public var dimensions: EntityDimensions
 
     /**
+     * If this entity is a passenger of another entity.
+     */
+    public val isPassenger: Boolean
+
+    /**
      * The passengers this entity currently has.
      *
      * Will be empty if the entity has no passengers.
      */
     @get:JvmName("passengers")
     public val passengers: List<Entity>
+
+    /**
+     * If this entity is a vehicle for another entity.
+     */
+    public val isVehicle: Boolean
 
     /**
      * The entity that this entity is a passenger of.

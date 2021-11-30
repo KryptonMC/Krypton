@@ -126,11 +126,39 @@ abstract class KryptonEntity(
     final override var fireTicks: Short = 0
     final override var isInvulnerable = false
     final override var fallDistance = 0F
+
+    final override val isPassenger: Boolean
+        get() = vehicle != null
+    final override val isVehicle: Boolean
+        get() = passengers.isNotEmpty()
     final override val passengers = mutableListOf<Entity>()
+    final override var vehicle: Entity? = null
+        set(value) {
+            if (value !is KryptonEntity) return
+            field = value
+        }
+    val rootVehicle: KryptonEntity
+        get() {
+            var root: KryptonEntity = this
+            while (root.isPassenger) {
+                root = root.vehicle!! as KryptonEntity
+            }
+            return root
+        }
+    val hasExactlyOnePlayerPassenger: Boolean
+        get() = indirectPassengersSequence.count { it is Player } == 1
+    val selfAndPassengers: Sequence<Entity>
+        get() = sequenceOf(this).plus(indirectPassengersSequence)
+    val passengersAndSelf: Sequence<Entity>
+        get() = indirectPassengersSequence.plus(this)
+    val indirectPassengers: Iterable<Entity>
+        get() = Iterable { indirectPassengersSequence.iterator() }
+    private val indirectPassengersSequence: Sequence<Entity>
+        get() = passengers.asSequence().flatMap { (it as KryptonEntity).selfAndPassengers }
+
     final override var inWater = false
     final override var inLava = false
     final override var underwater = false
-    final override var vehicle: Entity? = null
 
     open val maxAirTicks: Int
         get() = 300
@@ -245,6 +273,17 @@ abstract class KryptonEntity(
         short("Fire", fireTicks)
         int("TicksFrozen", frozenTicks)
         float("FallDistance", fallDistance)
+    }
+
+    fun saveWithPassengers(): CompoundTag.Builder = save().apply {
+        if (isVehicle) {
+            val passengerList = MutableListTag()
+            passengers.forEach {
+                if (it !is KryptonEntity) return@forEach
+                passengerList.add(it.saveWithPassengers().build())
+            }
+            if (passengerList.isNotEmpty()) put("Passengers", passengerList)
+        }
     }
 
     open fun addViewer(player: KryptonPlayer): Boolean {

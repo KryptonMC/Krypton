@@ -361,6 +361,9 @@ class KryptonPlayer(
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
+        int("playerGameType", Registries.GAME_MODES.idOf(internalGamemode))
+        if (oldGameMode != null) int("previousPlayerGameType", Registries.GAME_MODES.idOf(oldGameMode!!))
+
         int("DataVersion", KryptonPlatform.worldVersion)
         put("Inventory", inventory.save())
         int("SelectedItemSlot", inventory.heldSlot)
@@ -369,6 +372,7 @@ class KryptonPlayer(
         int("foodTickTimer", foodTickTimer)
         float("foodExhaustionLevel", foodExhaustionLevel)
         float("foodSaturationLevel", foodSaturationLevel)
+
         compound("abilities") {
             boolean("flying", isGliding)
             boolean("invulnerable", isInvulnerable)
@@ -378,10 +382,10 @@ class KryptonPlayer(
             float("walkSpeed", walkingSpeed)
             float("flySpeed", flyingSpeed)
         }
+
         if (leftShoulder.isNotEmpty()) put("ShoulderEntityLeft", leftShoulder)
         if (rightShoulder.isNotEmpty()) put("ShoulderEntityRight", rightShoulder)
-        int("playerGameType", Registries.GAME_MODES.idOf(internalGamemode))
-        oldGameMode?.let { int("previousPlayerGameType", Registries.GAME_MODES.idOf(it)) }
+
         string("Dimension", dimension.location.asString())
         respawnPosition?.let { position ->
             int("SpawnX", position.x())
@@ -393,6 +397,16 @@ class KryptonPlayer(
                 .resultOrPartial(LOGGER::error)
                 .ifPresent { put("SpawnDimension", it) }
         }
+
+        val rootVehicle = rootVehicle
+        val vehicle = vehicle
+        if (vehicle != null && rootVehicle !== this@KryptonPlayer && rootVehicle.hasExactlyOnePlayerPassenger) {
+            compound("RootVehicle") {
+                uuid("Attach", vehicle.uuid)
+                put("Entity", rootVehicle.save().build())
+            }
+        }
+
         compound("krypton") {
             if (vanishService is KryptonVanishService) boolean("vanished", isVanished)
             long("firstJoined", firstJoined.toEpochMilli())

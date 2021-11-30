@@ -90,7 +90,7 @@ class PlayerDataManager(val folder: Path) {
     }, executor)
 
     fun save(player: KryptonPlayer): CompoundTag {
-        val data = player.save().build()
+        val data = player.saveWithPassengers().build()
 
         // Create temp file and write data
         val temp = folder.createTempFile(player.uuid.toString(), ".dat")

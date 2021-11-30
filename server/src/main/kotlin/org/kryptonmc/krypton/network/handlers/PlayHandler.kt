@@ -397,7 +397,7 @@ class PlayHandler(
     private fun handleEntityNBTQuery(packet: PacketInEntityNBTQuery) {
         if (!player.hasPermission(KryptonPermission.ENTITY_QUERY.node)) return
         val entity = player.world.entityManager[packet.entityId] ?: return
-        player.session.send(PacketOutNBTQueryResponse(packet.transactionId, entity.save().build()))
+        player.session.send(PacketOutNBTQueryResponse(packet.transactionId, entity.saveWithPassengers().build()))
     }
 
     private fun handleResourcePackStatus(packet: PacketInResourcePackStatus) {
