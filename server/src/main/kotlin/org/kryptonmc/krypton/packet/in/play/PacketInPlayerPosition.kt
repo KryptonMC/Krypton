@@ -22,10 +22,20 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.MovementPacket
 import org.kryptonmc.krypton.packet.Packet
 
-class PacketInPlayerPosition(buf: ByteBuf) : MovementPacket {
+@JvmRecord
+data class PacketInPlayerPosition(
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    override val onGround: Boolean
+) : MovementPacket {
 
-    val x = buf.readDouble()
-    val y = buf.readDouble()
-    val z = buf.readDouble()
-    override val onGround = buf.readBoolean()
+    constructor(buf: ByteBuf) : this(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readBoolean())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeDouble(x)
+        buf.writeDouble(y)
+        buf.writeDouble(z)
+        buf.writeBoolean(onGround)
+    }
 }

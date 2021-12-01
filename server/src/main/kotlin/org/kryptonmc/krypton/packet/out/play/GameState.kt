@@ -18,18 +18,26 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.world.KryptonWorldBorder
+enum class GameState {
 
-/**
- * A packet that uses a world border.
- */
-@Suppress("INAPPLICABLE_JVM_NAME")
-interface WorldBorderPacket : Packet {
+    NO_RESPAWN_BLOCK_AVAILABLE,
+    END_RAINING,
+    BEGIN_RAINING,
+    CHANGE_GAMEMODE,
+    WIN_GAME,
+    DEMO_EVENT,
+    ARROW_HIT_PLAYER,
+    RAIN_LEVEL_CHANGE,
+    THUNDER_LEVEL_CHANGE,
+    PLAY_PUFFERFISH_STING_SOUND,
+    PLAY_ELDER_GUARDIAN_MOB_APPEARANCE,
+    ENABLE_RESPAWN_SCREEN;
 
-    /**
-     * The world border for this packet
-     */
-    @get:JvmName("border")
-    val border: KryptonWorldBorder
+    companion object {
+
+        private val BY_ID = values()
+
+        @JvmStatic
+        fun fromId(id: Int): GameState? = BY_ID.getOrNull(id)
+    }
 }

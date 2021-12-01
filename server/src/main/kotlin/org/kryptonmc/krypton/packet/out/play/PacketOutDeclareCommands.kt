@@ -43,51 +43,54 @@ data class PacketOutDeclareCommands(val root: RootCommandNode<Sender>) : Packet 
         buf.writeVarInt(enumerations.getValue(root))
     }
 
-    private fun ByteBuf.writeNode(node: CommandNode<Sender>, enumerations: Map<CommandNode<Sender>, Int>) {
-        writeFlags(node)
-        writeCollection(node.children) { writeVarInt(enumerations.getValue(it)) }
-        if (node.redirect != null) writeVarInt(enumerations.getValue(node.redirect))
+    companion object {
 
-        if (node is ArgumentCommandNode<*, *>) {
-            node as ArgumentCommandNode<Sender, *>
-            writeString(node.name)
-            writeArgumentType(node.type)
-            if (node.customSuggestions != null) writeKey(SuggestionProviders.name(node.customSuggestions))
-        } else if (node is LiteralCommandNode<*>) {
-            writeString(node.name)
-        }
-    }
+        private fun ByteBuf.writeNode(node: CommandNode<Sender>, enumerations: Map<CommandNode<Sender>, Int>) {
+            writeFlags(node)
+            writeCollection(node.children) { writeVarInt(enumerations.getValue(it)) }
+            if (node.redirect != null) writeVarInt(enumerations.getValue(node.redirect))
 
-    private fun ByteBuf.writeFlags(node: CommandNode<Sender>) {
-        var byte = 0
-        if (node.redirect != null) byte = byte or 8
-        if (node.command != null) byte = byte or 4
-        when (node) {
-            is RootCommandNode<*> -> byte = byte or 0
-            is LiteralCommandNode<*> -> byte = byte or 1
-            is ArgumentCommandNode<*, *> -> {
-                byte = byte or 2
-                if (node.customSuggestions != null) byte = byte or 0x10
+            if (node is ArgumentCommandNode<*, *>) {
+                node as ArgumentCommandNode<Sender, *>
+                writeString(node.name)
+                writeArgumentType(node.type)
+                if (node.customSuggestions != null) writeKey(SuggestionProviders.name(node.customSuggestions))
+            } else if (node is LiteralCommandNode<*>) {
+                writeString(node.name)
             }
         }
-        writeByte(byte)
-    }
 
-    // a breadth-first search algorithm to enumerate a root node
-    private fun RootCommandNode<Sender>.enumerate(): Map<CommandNode<Sender>, Int> {
-        val result = mutableMapOf<CommandNode<Sender>, Int>()
-        val queue = ArrayDeque<CommandNode<Sender>>()
-        queue.add(this)
-
-        while (queue.isNotEmpty()) {
-            val element = queue.removeFirst()
-            if (element in result) continue
-            val size = result.size
-            result[element] = size
-            queue.addAll(element.children)
-            if (element.redirect != null) queue.add(element.redirect)
+        private fun ByteBuf.writeFlags(node: CommandNode<Sender>) {
+            var byte = 0
+            if (node.redirect != null) byte = byte or 8
+            if (node.command != null) byte = byte or 4
+            when (node) {
+                is RootCommandNode<*> -> byte = byte or 0
+                is LiteralCommandNode<*> -> byte = byte or 1
+                is ArgumentCommandNode<*, *> -> {
+                    byte = byte or 2
+                    if (node.customSuggestions != null) byte = byte or 0x10
+                }
+            }
+            writeByte(byte)
         }
 
-        return result
+        // a breadth-first search algorithm to enumerate a root node
+        private fun RootCommandNode<Sender>.enumerate(): Map<CommandNode<Sender>, Int> {
+            val result = mutableMapOf<CommandNode<Sender>, Int>()
+            val queue = ArrayDeque<CommandNode<Sender>>()
+            queue.add(this)
+
+            while (queue.isNotEmpty()) {
+                val element = queue.removeFirst()
+                if (element in result) continue
+                val size = result.size
+                result[element] = size
+                queue.addAll(element.children)
+                if (element.redirect != null) queue.add(element.redirect)
+            }
+
+            return result
+        }
     }
 }

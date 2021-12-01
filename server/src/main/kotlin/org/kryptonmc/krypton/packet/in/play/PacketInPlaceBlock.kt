@@ -19,13 +19,24 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.block.BlockHitResult
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readBlockHitResult
 import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.writeBlockHitResult
+import org.kryptonmc.krypton.util.writeEnum
 
-class PacketInPlaceBlock(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInPlaceBlock(
+    val hand: Hand,
+    val hitResult: BlockHitResult
+) : Packet {
 
-    val hand = buf.readEnum<Hand>()
-    val hitResult = buf.readBlockHitResult()
+    constructor(buf: ByteBuf) : this(buf.readEnum<Hand>(), buf.readBlockHitResult())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeEnum(hand)
+        buf.writeBlockHitResult(hitResult)
+    }
 }

@@ -42,6 +42,7 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.item.ItemTypes
@@ -225,6 +226,9 @@ class KryptonPlayer(
 
     // TODO: Per-player view distance, see issue #49
     override val viewDistance = server.config.world.viewDistance
+    override var chatVisibility = ChatVisibility.FULL
+    override var filterText = false
+    override var allowsListing = true
     override var time = 0L
 
     private var camera: KryptonEntity = this

@@ -23,10 +23,21 @@ import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeEnum
+import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketInEntityAction(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInEntityAction(
+    val id: Int,
+    val action: PerformActionEvent.Action,
+    val data: Int
+) : Packet {
 
-    val id = buf.readVarInt()
-    val action = buf.readEnum<PerformActionEvent.Action>()
-    val data = buf.readVarInt()
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readEnum<PerformActionEvent.Action>(), buf.readVarInt())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(id)
+        buf.writeEnum(action)
+        buf.writeVarInt(data)
+    }
 }

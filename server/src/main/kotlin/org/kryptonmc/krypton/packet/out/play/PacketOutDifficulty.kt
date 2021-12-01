@@ -23,10 +23,13 @@ import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.packet.Packet
 
 @JvmRecord
-data class PacketOutDifficulty(val difficulty: Difficulty) : Packet {
+data class PacketOutDifficulty(
+    val difficulty: Difficulty,
+    val isLocked: Boolean = true
+) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeByte(difficulty.ordinal)
-        buf.writeBoolean(true) // Always locked in multiplayer
+        buf.writeBoolean(isLocked)
     }
 }

@@ -18,27 +18,20 @@
  */
 package org.kryptonmc.krypton.packet.out.play
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.entity.Entity
-import org.kryptonmc.krypton.entity.KryptonEntity
-import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.util.writeIntArray
-import org.kryptonmc.krypton.util.writeVarInt
+enum class EntityAnimation {
 
-@JvmRecord
-data class PacketOutSetPassengers(
-    override val entityId: Int,
-    val passengers: List<Entity>,
-) : EntityPacket {
+    SWING_MAIN_ARM,
+    TAKE_DAMAGE,
+    LEAVE_BED,
+    SWING_OFFHAND,
+    CRITICAL_EFFECT,
+    MAGIC_CRITICAL_EFFECT;
 
-    constructor(entity: KryptonEntity) : this(
-        entity.id,
-        entity.passengers
-    )
+    companion object {
 
-    override fun write(buf: ByteBuf) {
-        buf.writeVarInt(entityId)
-        buf.writeVarInt(passengers.size)
-        passengers.forEach { buf.writeVarInt(it.id) }
+        private val BY_ID = values()
+
+        @JvmStatic
+        fun fromId(id: Int): EntityAnimation? = BY_ID.getOrNull(id)
     }
 }

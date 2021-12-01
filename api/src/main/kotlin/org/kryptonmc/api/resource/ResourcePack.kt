@@ -45,7 +45,7 @@ public interface ResourcePack {
      * confirm the resource pack.
      */
     @get:JvmName("promptMessage")
-    public val promptMessage: Component
+    public val promptMessage: Component?
 
     /**
      * Sends this resource pack to the given [player].
@@ -57,7 +57,7 @@ public interface ResourcePack {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun of(uri: URI, hash: String, isForced: Boolean, promptMessage: Component): ResourcePack
+        public fun of(uri: URI, hash: String, isForced: Boolean, promptMessage: Component?): ResourcePack
     }
 
     /**
@@ -107,7 +107,7 @@ public interface ResourcePack {
             uri: URI,
             hash: String,
             isForced: Boolean,
-            promptMessage: Component
+            promptMessage: Component?
         ): ResourcePack = FACTORY.of(uri, hash, isForced, promptMessage)
     }
 }

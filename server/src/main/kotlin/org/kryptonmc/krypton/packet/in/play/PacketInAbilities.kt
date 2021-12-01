@@ -21,7 +21,14 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
-class PacketInAbilities(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInAbilities(val isFlying: Boolean) : Packet {
 
-    val isFlying = buf.readByte().toInt() and 2 != 0
+    constructor(buf: ByteBuf) : this(buf.readByte().toInt() and 2 != 0)
+
+    override fun write(buf: ByteBuf) {
+        var flags = 0
+        if (isFlying) flags = flags or 2
+        buf.writeByte(flags)
+    }
 }

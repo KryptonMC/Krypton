@@ -74,27 +74,28 @@ data class PacketOutPlayerInfo(
 
                     buf.writeVarInt(Registries.GAME_MODES.idOf(update.gameMode))
                     buf.writeVarInt(update.latency)
-                    buf.writeBoolean(true)
-                    buf.writeChat(update.displayName)
+                    buf.writeBoolean(update.displayName != null)
+                    if (update.displayName != null) buf.writeChat(update.displayName)
                 }
                 Action.UPDATE_GAMEMODE -> buf.writeVarInt(Registries.GAME_MODES.idOf(update.gameMode))
                 Action.UPDATE_LATENCY -> buf.writeVarInt(update.latency)
                 Action.UPDATE_DISPLAY_NAME -> {
-                    buf.writeBoolean(true)
-                    buf.writeChat(update.displayName)
+                    buf.writeBoolean(update.displayName != null)
+                    if (update.displayName != null) buf.writeChat(update.displayName)
                 }
                 Action.REMOVE_PLAYER -> Unit
             }
         }
     }
 
-    class PlayerData(
+    @JvmRecord
+    data class PlayerData(
         val uuid: UUID,
         val name: String,
         val properties: List<ProfileProperty>,
         val gameMode: GameMode,
         val latency: Int,
-        val displayName: Component
+        val displayName: Component?
     )
 
     enum class Action {

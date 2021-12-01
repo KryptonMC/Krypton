@@ -38,13 +38,12 @@ data class PacketOutPluginRequest(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass || !super.equals(other)) return false
-        other as PacketOutPluginRequest
-        return id == other.id && channel == other.channel && data.contentEquals(other.data)
+        if (javaClass != other?.javaClass) return false
+        return id == (other as PacketOutPluginRequest).id && channel == other.channel && data.contentEquals(other.data)
     }
 
     override fun hashCode(): Int {
-        var result = super.hashCode()
+        var result = 1
         result = 31 * result + id
         result = 31 * result + channel.hashCode()
         result = 31 * result + data.contentHashCode()

@@ -21,10 +21,14 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketInTeleportConfirm(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInTeleportConfirm(val id: Int) : Packet {
 
-    init {
-        buf.readVarInt() // Ignore teleport ID
+    constructor(buf: ByteBuf) : this(buf.readVarInt())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(id)
     }
 }

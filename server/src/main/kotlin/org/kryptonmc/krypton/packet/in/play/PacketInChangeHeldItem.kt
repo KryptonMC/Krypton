@@ -21,7 +21,12 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
-class PacketInChangeHeldItem(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInChangeHeldItem(val slot: Int) : Packet {
 
-    val slot = buf.readShort()
+    constructor(buf: ByteBuf) : this(buf.readShort().toInt())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeShort(slot)
+    }
 }

@@ -22,9 +22,19 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketInTabComplete(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInTabComplete(
+    val id: Int,
+    val command: String
+) : Packet {
 
-    val id = buf.readVarInt()
-    val command = buf.readString(32500)
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readString(32500))
+
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(id)
+        buf.writeString(command)
+    }
 }

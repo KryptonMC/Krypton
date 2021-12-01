@@ -121,6 +121,35 @@ public interface Player : LivingEntity, Equipable, InventoryHolder, PluginMessag
     public val viewDistance: Int
 
     /**
+     * The visibility settings for this player's chat.
+     */
+    @get:JvmName("chatVisibility")
+    public val chatVisibility: ChatVisibility
+
+    /**
+     * If this player wants their text filtered before it is sent to them.
+     *
+     * This filtering is usually meant to be done by Mojang, and is designed to
+     * protect underage players from receiving any naughty words, like swear
+     * words.
+     *
+     * It is recommended that plugins that wish to filter text for players,
+     * such as chat plugins, respect this option, and allow players to opt-out
+     * of chat filtering if they wish to do so.
+     */
+    public val filterText: Boolean
+
+    /**
+     * If this player wants to be listed in the server status' player list.
+     *
+     * All plugins that override the MOTD settings with their own custom MOTDs
+     * should try to respect the setting that has been indicated here, as this
+     * was added to prevent cross-server player tracking.
+     */
+    @get:JvmName("allowsListing")
+    public val allowsListing: Boolean
+
+    /**
      * The current time of this player.
      *
      * Will always be the time of the server.

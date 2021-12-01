@@ -21,10 +21,16 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.writeEnum
 
-class PacketInClientStatus(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInClientStatus(val action: Action) : Packet {
 
-    val action = buf.readEnum<Action>()
+    constructor(buf: ByteBuf) : this(buf.readEnum<Action>())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeEnum(action)
+    }
 
     enum class Action {
 

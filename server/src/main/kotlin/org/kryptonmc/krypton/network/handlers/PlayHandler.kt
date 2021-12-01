@@ -20,6 +20,8 @@ package org.kryptonmc.krypton.network.handlers
 
 import com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
+import net.kyori.adventure.key.InvalidKeyException
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
@@ -80,6 +82,7 @@ import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
+import java.util.Locale
 
 /**
  * This is the largest and most important of the four packet handlers, as the
@@ -183,8 +186,12 @@ class PlayHandler(
     }
 
     private fun handleClientSettings(packet: PacketInClientSettings) {
-        player.mainHand = packet.mainHand
+        player.locale = Locale.forLanguageTag(packet.locale)
+        player.chatVisibility = packet.chatVisibility
         player.skinSettings = packet.skinSettings.toByte()
+        player.mainHand = packet.mainHand
+        player.filterText = packet.filterText
+        player.allowsListing = packet.allowsListing
     }
 
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
@@ -282,9 +289,7 @@ class PlayHandler(
 
     private fun handleSteerVehicle(packet: PacketInSteerVehicle) {
         // TODO: Handle steering here
-        val flagInt = packet.flags.toInt()
-        // unmount
-        if (flagInt and 0x02 == 0x02) player.ejectVehicle()
+        if (packet.isSneaking) player.ejectVehicle()
     }
 
     private fun handleInteract(packet: PacketInInteract) {
@@ -374,7 +379,13 @@ class PlayHandler(
     }
 
     private fun handlePluginMessage(packet: PacketInPluginMessage) {
-        server.eventManager.fireAndForget(PluginMessageEvent(player, packet.channel, packet.data))
+        val channel = try {
+            Key.key(packet.channel)
+        } catch (exception: InvalidKeyException) {
+            LOGGER.warn("Invalid plugin message channel ${packet.channel}.")
+            return
+        }
+        server.eventManager.fireAndForget(PluginMessageEvent(player, channel, packet.data))
     }
 
     private fun handleTabComplete(packet: PacketInTabComplete) {

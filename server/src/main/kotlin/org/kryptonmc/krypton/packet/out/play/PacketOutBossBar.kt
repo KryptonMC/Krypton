@@ -20,47 +20,50 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.bossbar.BossBar
+import net.kyori.adventure.text.Component
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.BossBarManager
+import java.util.UUID
 
 @JvmRecord
 data class PacketOutBossBar(
     val action: Action,
-    val bar: BossBarManager.BossBarHolder
+    val uuid: UUID,
+    val name: Component,
+    val progress: Float,
+    val color: BossBar.Color,
+    val overlay: BossBar.Overlay,
+    val flags: Int
 ) : Packet {
 
+    constructor(action: Action, bar: BossBarManager.BossBarHolder) : this(action, bar.id, bar.bar)
+
+    constructor(action: Action, uuid: UUID, bar: BossBar) : this(action, uuid, bar.name(), bar.progress(), bar.color(), bar.overlay(), bar.flagsToProtocol())
+
     override fun write(buf: ByteBuf) {
-        buf.writeUUID(bar.id)
+        buf.writeUUID(uuid)
         buf.writeVarInt(action.ordinal)
 
         when (action) {
             Action.ADD -> {
-                buf.writeChat(bar.bar.name())
-                buf.writeFloat(bar.bar.progress())
-                buf.writeVarInt(bar.bar.color().ordinal)
-                buf.writeVarInt(bar.bar.overlay().ordinal)
-                buf.writeByte(bar.bar.flagsToProtocol())
+                buf.writeChat(name)
+                buf.writeFloat(progress)
+                buf.writeVarInt(color.ordinal)
+                buf.writeVarInt(overlay.ordinal)
+                buf.writeByte(flags)
             }
             Action.REMOVE -> Unit
-            Action.UPDATE_HEALTH -> buf.writeFloat(bar.bar.progress())
-            Action.UPDATE_TITLE -> buf.writeChat(bar.bar.name())
+            Action.UPDATE_HEALTH -> buf.writeFloat(progress)
+            Action.UPDATE_TITLE -> buf.writeChat(name)
             Action.UPDATE_STYLE -> {
-                buf.writeVarInt(bar.bar.color().ordinal)
-                buf.writeVarInt(bar.bar.overlay().ordinal)
+                buf.writeVarInt(color.ordinal)
+                buf.writeVarInt(overlay.ordinal)
             }
-            Action.UPDATE_FLAGS -> buf.writeByte(bar.bar.flagsToProtocol())
+            Action.UPDATE_FLAGS -> buf.writeByte(flags)
         }
-    }
-
-    private fun BossBar.flagsToProtocol(): Int {
-        var byte = 0x0
-        if (hasFlag(BossBar.Flag.DARKEN_SCREEN)) byte = byte or 0x01
-        if (hasFlag(BossBar.Flag.PLAY_BOSS_MUSIC)) byte = byte or 0x02
-        if (hasFlag(BossBar.Flag.CREATE_WORLD_FOG)) byte = byte or 0x04
-        return byte
     }
 
     enum class Action {
@@ -78,6 +81,17 @@ data class PacketOutBossBar(
 
             @JvmStatic
             fun fromId(id: Int): Action? = BY_ID.getOrNull(id)
+        }
+    }
+
+    companion object {
+
+        private fun BossBar.flagsToProtocol(): Int {
+            var byte = 0
+            if (hasFlag(BossBar.Flag.DARKEN_SCREEN)) byte = byte or 1
+            if (hasFlag(BossBar.Flag.PLAY_BOSS_MUSIC)) byte = byte or 2
+            if (hasFlag(BossBar.Flag.CREATE_WORLD_FOG)) byte = byte or 4
+            return byte
         }
     }
 }

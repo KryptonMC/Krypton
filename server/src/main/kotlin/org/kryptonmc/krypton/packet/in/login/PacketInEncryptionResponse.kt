@@ -21,9 +21,31 @@ package org.kryptonmc.krypton.packet.`in`.login
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readVarIntByteArray
+import org.kryptonmc.krypton.util.writeVarIntByteArray
 
-class PacketInEncryptionResponse(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInEncryptionResponse(
+    val secret: ByteArray,
+    val verifyToken: ByteArray
+) : Packet {
 
-    val secret = buf.readVarIntByteArray()
-    val verifyToken = buf.readVarIntByteArray()
+    constructor(buf: ByteBuf) : this(buf.readVarIntByteArray(), buf.readVarIntByteArray())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeVarIntByteArray(secret)
+        buf.writeVarIntByteArray(verifyToken)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return secret.contentEquals((other as PacketInEncryptionResponse).secret) && verifyToken.contentEquals(other.verifyToken)
+    }
+
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + secret.contentHashCode()
+        result = 31 * result + verifyToken.contentHashCode()
+        return result
+    }
 }

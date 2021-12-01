@@ -21,9 +21,23 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
-class PacketInSteerVehicle(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInSteerVehicle(
+    val sideways: Float,
+    val forward: Float,
+    val flags: Byte
+) : Packet {
 
-    val sideways = buf.readFloat()
-    val forward = buf.readFloat()
-    val flags = buf.readByte()
+    val isJumping: Boolean
+        get() = flags.toInt() and 1 > 0
+    val isSneaking: Boolean
+        get() = flags.toInt() and 2 > 0
+
+    constructor(buf: ByteBuf) : this(buf.readFloat(), buf.readFloat(), buf.readByte())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeFloat(sideways)
+        buf.writeFloat(forward)
+        buf.writeByte(flags.toInt())
+    }
 }

@@ -22,8 +22,14 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.writeEnum
 
-class PacketInResourcePackStatus(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInResourcePackStatus(val status: ResourcePack.Status) : Packet {
 
-    val status = buf.readEnum<ResourcePack.Status>()
+    constructor(buf: ByteBuf) : this(buf.readEnum<ResourcePack.Status>())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeEnum(status)
+    }
 }

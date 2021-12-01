@@ -21,7 +21,12 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.MovementPacket
 
-class PacketInPlayerMovement(buf: ByteBuf) : MovementPacket {
+@JvmRecord
+data class PacketInPlayerMovement(override val onGround: Boolean) : MovementPacket {
 
-    override val onGround = buf.readBoolean()
+    constructor(buf: ByteBuf) : this(buf.readBoolean())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeBoolean(onGround)
+    }
 }

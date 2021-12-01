@@ -22,10 +22,20 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.writeVarIntByteArray
 
-class PacketInPluginResponse(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInPluginResponse(
+    val messageId: Int,
+    val data: ByteArray?
+) : Packet {
 
-    val messageId = buf.readVarInt()
-    val isSuccessful = buf.readBoolean()
-    val data = if (isSuccessful) buf.readAllAvailableBytes() else ByteArray(0)
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), if (buf.readBoolean()) buf.readAllAvailableBytes() else null)
+
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(messageId)
+        buf.writeBoolean(data != null)
+        if (data != null) buf.writeVarIntByteArray(data)
+    }
 }

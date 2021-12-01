@@ -133,7 +133,7 @@ class LoginHandler(
         }
 
         // The server isn't offline and the client wasn't forwarded, enable encryption.
-        session.send(PacketOutEncryptionRequest(Encryption.publicKey, verifyToken))
+        session.send(PacketOutEncryptionRequest(Encryption.publicKey.encoded, verifyToken))
     }
 
     private fun handleEncryptionResponse(packet: PacketInEncryptionResponse) {
@@ -178,7 +178,7 @@ class LoginHandler(
     }
 
     private fun handlePluginResponse(packet: PacketInPluginResponse) {
-        if (!packet.isSuccessful) // Not successful, we don't care
+        if (packet.data == null) return // Not successful, we don't care
         if (packet.messageId != velocityMessageId || server.config.proxy.mode != ForwardingMode.MODERN) {
             // Not Velocity, ignore
             return

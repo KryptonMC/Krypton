@@ -21,7 +21,7 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.util.clamp
+import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.writeVarInt
 import org.spongepowered.math.vector.Vector3d
 
@@ -35,9 +35,9 @@ data class PacketOutEntityVelocity(
 
     constructor(entity: KryptonEntity, velocity: Vector3d = entity.velocity) : this(
         entity.id,
-        (velocity.x().clamp(MINIMUM, MAXIMUM) * 8000.0).toInt(),
-        (velocity.y().clamp(MINIMUM, MAXIMUM) * 8000.0).toInt(),
-        (velocity.z().clamp(MINIMUM, MAXIMUM) * 8000.0).toInt()
+        Positioning.encodeVelocity(velocity.x()),
+        Positioning.encodeVelocity(velocity.y()),
+        Positioning.encodeVelocity(velocity.z())
     )
 
     override fun write(buf: ByteBuf) {
@@ -45,11 +45,5 @@ data class PacketOutEntityVelocity(
         buf.writeShort(x)
         buf.writeShort(y)
         buf.writeShort(z)
-    }
-
-    companion object {
-
-        private const val MINIMUM = -3.9
-        private const val MAXIMUM = -MINIMUM
     }
 }
