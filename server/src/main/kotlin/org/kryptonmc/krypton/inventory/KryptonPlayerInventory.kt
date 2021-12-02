@@ -43,6 +43,9 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
     override val crafting = FixedList<KryptonItemStack>(5, EmptyItemStack)
     override val armor = FixedList<KryptonItemStack>(4, EmptyItemStack)
 
+    override val main: List<ItemStack> = items.subList(9, 35)
+    override val hotbar: List<ItemStack> = items.subList(0, 8)
+
     override var helmet: ItemStack
         get() = armor(ArmorSlot.HELMET)
         set(value) = armor(ArmorSlot.HELMET, value)
