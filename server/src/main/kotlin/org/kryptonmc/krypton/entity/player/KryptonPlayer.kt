@@ -271,6 +271,7 @@ class KryptonPlayer(
 
     override val isOnline: Boolean
         get() = server.player(uuid) === this
+    override var hasJoinedBefore: Boolean = false
     override var firstJoined: Instant = Instant.EPOCH
     override var lastJoined: Instant = Instant.now()
 
@@ -364,6 +365,7 @@ class KryptonPlayer(
         }
 
         if (tag.contains("krypton", CompoundTag.ID)) {
+            hasJoinedBefore = true
             val kryptonData = tag.getCompound("krypton")
             if (vanishService is KryptonVanishService && kryptonData.getBoolean("vanished")) vanishService.vanish(this)
             firstJoined = Instant.ofEpochMilli(kryptonData.getLong("firstJoined"))

@@ -42,8 +42,6 @@ import org.kryptonmc.krypton.plugin.KryptonPluginManager
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.scheduling.KryptonScheduler
 import org.kryptonmc.krypton.server.PlayerManager
-import org.kryptonmc.krypton.server.ban.KryptonBanManager
-import org.kryptonmc.krypton.server.whitelist.KryptonWhitelistManager
 import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.user.KryptonUserManager
@@ -96,7 +94,7 @@ class KryptonServer(
     override val commandManager = KryptonCommandManager
     override val pluginManager = KryptonPluginManager
     override val eventManager = KryptonEventManager
-    override val servicesManager = KryptonServicesManager
+    override val servicesManager = KryptonServicesManager(this)
     override val registryManager = KryptonRegistryManager
     override val tagManager = KryptonTagManager
     override val blockManager = KryptonBlockManager
@@ -104,9 +102,7 @@ class KryptonServer(
     override val fluidManager = KryptonFluidManager
     override val scheduler = KryptonScheduler()
     override val factoryProvider = KryptonFactoryProvider
-    override val banManager = KryptonBanManager(this)
     override val userManager = KryptonUserManager(this)
-    override val whitelistManager = KryptonWhitelistManager(this)
 
     @Volatile
     var isRunning = true

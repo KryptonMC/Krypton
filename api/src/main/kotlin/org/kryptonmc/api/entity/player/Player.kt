@@ -48,6 +48,12 @@ public interface Player : LivingEntity, Equipable, InventoryHolder, PluginMessag
     public val isOnline: Boolean
 
     /**
+     * If this player has joined this server before.
+     */
+    @get:JvmName("hasJoinedBefore")
+    public val hasJoinedBefore: Boolean
+
+    /**
      * The time that this player first joined the server.
      */
     @get:JvmName("firstJoined")

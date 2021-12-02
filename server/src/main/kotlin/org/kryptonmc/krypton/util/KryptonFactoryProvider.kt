@@ -66,7 +66,6 @@ import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.scoreboard.ObjectiveRenderType
 import org.kryptonmc.api.scoreboard.Team
-import org.kryptonmc.api.user.ban.Ban
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.meta.KryptonCommandMeta
 import org.kryptonmc.krypton.effect.KryptonMusic
@@ -90,7 +89,6 @@ import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.item.meta.KryptonDyeColor
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourcePack
-import org.kryptonmc.krypton.server.ban.KryptonBanFactory
 import org.kryptonmc.krypton.world.KryptonGameMode
 import org.kryptonmc.krypton.world.biome.KryptonAmbientAdditionsSettings
 import org.kryptonmc.krypton.world.biome.KryptonAmbientMoodSettings
@@ -166,7 +164,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<Block.Factory>(KryptonBlock.Factory)
         register<Fluid.Factory>(KryptonFluid.Factory)
         register<DyeColor.Factory>(KryptonDyeColor.Factory)
-        register<Ban.Factory>(KryptonBanFactory)
         register<CatType.Factory>(KryptonCatType.Factory)
         register<MooshroomType.Factory>(KryptonMooshroomType.Factory)
         register<FoxType.Factory>(KryptonFoxType.Factory)

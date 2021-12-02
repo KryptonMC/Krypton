@@ -61,8 +61,6 @@ sealed class BanEntry<T>(
         writer.endObject()
     }
 
-    final override fun toBuilder(): Ban.Builder = KryptonBanBuilder(this)
-
     companion object {
 
         val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")

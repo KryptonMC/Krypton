@@ -23,12 +23,14 @@ import org.kryptonmc.api.event.user.whitelist.RemoveWhitelistedIpEvent
 import org.kryptonmc.api.event.user.whitelist.RemoveWhitelistedProfileEvent
 import org.kryptonmc.api.event.user.whitelist.WhitelistIpEvent
 import org.kryptonmc.api.event.user.whitelist.WhitelistProfileEvent
-import org.kryptonmc.api.user.whitelist.WhitelistManager
+import org.kryptonmc.api.user.whitelist.WhitelistService
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.server.whitelist.WhitelistEntry
+import org.kryptonmc.krypton.server.whitelist.WhitelistIpEntry
 import org.kryptonmc.krypton.util.asString
 import java.net.InetAddress
 
-class KryptonWhitelistManager(private val server: KryptonServer) : WhitelistManager {
+class KryptonWhitelistService(private val server: KryptonServer) : WhitelistService {
 
     override val isEnabled: Boolean
         get() = server.playerManager.whitelistEnabled
@@ -38,22 +40,26 @@ class KryptonWhitelistManager(private val server: KryptonServer) : WhitelistMana
     override fun isWhitelisted(address: InetAddress): Boolean = server.playerManager.whitelistedIps.contains(address.asString())
 
     override fun add(profile: GameProfile) {
-        server.eventManager.fire(WhitelistProfileEvent(profile))
-            .thenApplyAsync { if (it.result.isAllowed) server.playerManager.whitelist.add(WhitelistEntry(profile)) }
+        server.eventManager.fire(WhitelistProfileEvent(profile)).thenApplyAsync {
+            if (it.result.isAllowed) server.playerManager.whitelist.add(WhitelistEntry(profile))
+        }
     }
 
     override fun add(address: InetAddress) {
-        server.eventManager.fire(WhitelistIpEvent(address))
-            .thenApplyAsync { if (it.result.isAllowed) server.playerManager.whitelistedIps.add(WhitelistIpEntry(address.asString())) }
+        server.eventManager.fire(WhitelistIpEvent(address)).thenApplyAsync {
+            if (it.result.isAllowed) server.playerManager.whitelistedIps.add(WhitelistIpEntry(address.asString()))
+        }
     }
 
     override fun remove(profile: GameProfile) {
-        server.eventManager.fire(RemoveWhitelistedProfileEvent(profile))
-            .thenApplyAsync { if (it.result.isAllowed) server.playerManager.whitelist.remove(profile) }
+        server.eventManager.fire(RemoveWhitelistedProfileEvent(profile)).thenApplyAsync {
+            if (it.result.isAllowed) server.playerManager.whitelist.remove(profile)
+        }
     }
 
     override fun remove(address: InetAddress) {
-        server.eventManager.fire(RemoveWhitelistedIpEvent(address))
-            .thenApplyAsync { if (it.result.isAllowed) server.playerManager.whitelistedIps.remove(address.asString()) }
+        server.eventManager.fire(RemoveWhitelistedIpEvent(address)).thenApplyAsync {
+            if (it.result.isAllowed) server.playerManager.whitelistedIps.remove(address.asString())
+        }
     }
 }

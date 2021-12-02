@@ -45,6 +45,12 @@ class KryptonUser(
         get() = player != null
     override val player: KryptonPlayer?
         get() = server.player(uuid)
+    override val hasJoinedBefore: Boolean
+        get() {
+            val player = player
+            if (player != null) return player.hasJoinedBefore
+            return data.isNotEmpty()
+        }
     override val firstJoined: Instant
         get() {
             val player = player

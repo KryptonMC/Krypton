@@ -12,7 +12,7 @@ import me.lucko.spark.api.Spark
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.ProfileCache
-import org.kryptonmc.api.user.ban.BanManager
+import org.kryptonmc.api.user.ban.BanService
 import org.kryptonmc.api.block.BlockManager
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
@@ -30,7 +30,6 @@ import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.tags.TagManager
 import org.kryptonmc.api.user.UserManager
-import org.kryptonmc.api.user.whitelist.WhitelistManager
 import java.net.InetSocketAddress
 import java.util.UUID
 
@@ -145,22 +144,10 @@ public interface Server : ForwardingAudience {
     public val profileCache: ProfileCache
 
     /**
-     * The manager of bans.
-     */
-    @get:JvmName("banManager")
-    public val banManager: BanManager
-
-    /**
      * The user manager for this server.
      */
     @get:JvmName("userManager")
     public val userManager: UserManager
-
-    /**
-     * The manager of the whitelist.
-     */
-    @get:JvmName("whitelistManager")
-    public val whitelistManager: WhitelistManager
 
     /**
      * The scheduler for this server.

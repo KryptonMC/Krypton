@@ -12,10 +12,10 @@ import org.kryptonmc.api.auth.GameProfile
 import java.net.InetAddress
 
 /**
- * The manager of whitelist entries.
+ * A service that can whitelist users.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface WhitelistManager {
+public interface WhitelistService {
 
     /**
      * If the whitelist is currently enabled.

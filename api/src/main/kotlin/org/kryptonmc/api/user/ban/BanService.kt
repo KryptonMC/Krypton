@@ -8,14 +8,16 @@
  */
 package org.kryptonmc.api.user.ban
 
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.GameProfile
 import java.net.InetAddress
+import java.time.OffsetDateTime
 
 /**
- * The manager of bans.
+ * A service that provides a way to ban users.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface BanManager {
+public interface BanService {
 
     /**
      * All of the registered profile bans.
@@ -87,4 +89,50 @@ public interface BanManager {
      * @param ban the ban
      */
     public fun remove(ban: Ban)
+
+    /**
+     * Creates a new builder for building a ban with the given [type].
+     *
+     * @param type the type of the ban
+     * @return a new ban builder
+     */
+    public fun createBuilder(type: BanType): Ban.Builder
+
+    /**
+     * Creates a new profile ban for the given [profile], expiring on the given [expirationDate].
+     *
+     * @param profile the profile to ban
+     * @param source the source of the ban
+     * @param reason the reason why the profile was banned
+     * @param expirationDate the date when the ban expires
+     * @return a new profile ban for the profile
+     */
+    public fun createProfileBan(
+        profile: GameProfile,
+        source: Component,
+        reason: Component?,
+        expirationDate: OffsetDateTime?
+    ): Ban = createBuilder(BanTypes.PROFILE)
+        .profile(profile)
+        .apply { if (expirationDate != null) expirationDate(expirationDate) }
+        .build()
+
+    /**
+     * Creates a new IP ban for the given IP [address], expiring on the given [expirationDate].
+     *
+     * @param address the IP address to ban
+     * @param source the source of the ban
+     * @param reason the reason why the IP was banned
+     * @param expirationDate the date when the ban expires
+     * @return a new IP ban for the IP address
+     */
+    public fun createIPBan(
+        address: InetAddress,
+        source: Component,
+        reason: Component?,
+        expirationDate: OffsetDateTime?
+    ): Ban = createBuilder(BanTypes.PROFILE)
+        .address(address)
+        .apply { if (expirationDate != null) expirationDate(expirationDate) }
+        .build()
 }
