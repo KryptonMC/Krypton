@@ -320,6 +320,7 @@ class KryptonServer(
             LOGGER.info("Shutting down plugins and unregistering listeners...")
             eventManager.fireAndForgetSync(ServerStopEvent)
             eventManager.shutdown()
+            pluginManager.unloadPlugins()
             sparkPlugin.stop()
 
             // Shut down scheduler

@@ -23,6 +23,7 @@
 package org.kryptonmc.krypton.plugin
 
 import com.google.inject.Module
+import org.kryptonmc.api.plugin.KryptonPlugin
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.api.plugin.PluginManager
@@ -34,7 +35,7 @@ import org.kryptonmc.krypton.plugin.loader.PluginLoader
 import org.kryptonmc.krypton.util.forEachDirectoryEntry
 import org.kryptonmc.krypton.util.logger
 import java.nio.file.Path
-import java.util.IdentityHashMap
+import java.util.*
 import kotlin.io.path.isRegularFile
 
 @Suppress("INAPPLICABLE_JVM_NAME")
@@ -104,9 +105,30 @@ object KryptonPluginManager : PluginManager {
         }
     }
 
+    fun unloadPlugins(){
+        pluginInstances.forEach{
+            disablePlugin(it.value)
+        }
+    }
+
+    fun disablePlugin(plugin: PluginContainer){
+        plugin.instance?.let{
+            pluginInstances.remove(it)
+            KryptonEventManager.unregisterListeners(it)
+            if(it is KryptonPlugin){
+                it.onDisable()
+            }
+        }
+    }
+
     fun registerPlugin(plugin: PluginContainer) {
         pluginMap[plugin.description.id] = plugin
-        plugin.instance?.let { pluginInstances[it] = plugin }
+        plugin.instance?.let {
+            pluginInstances[it] = plugin
+            if(it is KryptonPlugin){
+                it.onEnable()
+            }
+        }
     }
 
     override fun fromInstance(instance: Any): PluginContainer? {
