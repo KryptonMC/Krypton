@@ -47,20 +47,23 @@ class MultiNoiseBiomeGenerator private constructor(
     private val preset: Pair<KryptonRegistry<Biome>, Preset>? = null
 ) : BiomeGenerator(parameters.biomes.map { it.second.get() }) {
 
-    override val codec = CODEC
+    private val presetInstance = if (preset != null) PresetInstance(preset.second, preset.first) else null
+    override val codec: Codec<out BiomeGenerator> = CODEC
 
     override fun get(x: Int, y: Int, z: Int, sampler: Climate.Sampler): Biome = get(sampler.sample(x, y, z))
 
     private fun get(target: Climate.TargetPoint): Biome = parameters.findBiome(target) { KryptonBiomes.THE_VOID }
 
-    private fun preset() = preset?.let { PresetInstance(it.second, it.first) }
+    private fun preset(): PresetInstance? = presetInstance
 
-    class NoiseParameters(val firstOctave: Int, val amplitudes: DoubleList) {
+    @JvmRecord
+    data class NoiseParameters(val firstOctave: Int, val amplitudes: DoubleList) {
 
         constructor(firstOctave: Int, amplitudes: List<Double>) : this(firstOctave, DoubleArrayList(amplitudes))
 
         companion object {
 
+            @JvmField
             val CODEC: Codec<NoiseParameters> = RecordCodecBuilder.create {
                 it.group(
                     Codec.INT.fieldOf("firstOctave").forGetter(NoiseParameters::firstOctave),
@@ -71,18 +74,25 @@ class MultiNoiseBiomeGenerator private constructor(
     }
 
     @JvmRecord
-    data class Preset(val name: Key, val generator: (Preset, KryptonRegistry<Biome>) -> MultiNoiseBiomeGenerator) {
+    data class Preset(val name: Key, val generator: Generator) {
 
         init {
-            BY_NAME[name] = this
+            BY_KEY[name] = this
         }
 
-        fun generator(biomes: KryptonRegistry<Biome>) = generator(this, biomes)
+        fun createGenerator(biomes: KryptonRegistry<Biome>): MultiNoiseBiomeGenerator = generator.create(this, biomes)
+
+        fun interface Generator {
+
+            fun create(preset: Preset, biomes: KryptonRegistry<Biome>): MultiNoiseBiomeGenerator
+        }
 
         companion object {
 
-            val BY_NAME = mutableMapOf<Key, Preset>()
-            val NETHER = Preset(Key.key("nether")) { preset, biomes ->
+            private val BY_KEY = mutableMapOf<Key, Preset>()
+
+            @JvmField
+            val NETHER: Preset = Preset(Key.key("nether")) { preset, biomes ->
                 MultiNoiseBiomeGenerator(
                     ParameterList(ImmutableList.of(
                         Climate.ParameterPoint.ZERO to Supplier { biomes[BiomeKeys.NETHER_WASTES]!! },
@@ -98,26 +108,34 @@ class MultiNoiseBiomeGenerator private constructor(
                     Pair(biomes, preset)
                 )
             }
-            val OVERWORLD = Preset(Key.key("overworld")) { preset, biomes ->
+
+            @JvmField
+            val OVERWORLD: Preset = Preset(Key.key("overworld")) { preset, biomes ->
                 val parameters = ImmutableList.builder<Pair<Climate.ParameterPoint, Supplier<Biome>>>()
                 OverworldBiomeBuilder.addBiomes { point, key -> parameters.add(Pair(point, Supplier { biomes[key]!! })) }
                 MultiNoiseBiomeGenerator(ParameterList(parameters.build()), Pair(biomes, preset))
             }
+
+            @JvmStatic
+            fun fromKey(key: Key): Preset? = BY_KEY[key]
         }
     }
 
     class PresetInstance(val preset: Preset, val biomes: KryptonRegistry<Biome>) {
 
-        val generator = preset.generator(biomes)
+        val generator: MultiNoiseBiomeGenerator = preset.createGenerator(biomes)
 
         companion object {
 
+            @JvmField
             val CODEC: MapCodec<PresetInstance> = RecordCodecBuilder.mapCodec { instance ->
                 instance.group(
                     Codecs.KEY.flatXmap(
-                        { key -> Preset.BY_NAME[key]?.successOrError("Unknown generator preset $key!") },
+                        { key -> Preset.fromKey(key).successOrError("Unknown generator preset $key!") },
                         { DataResult.success(it.name) }
-                    ).fieldOf("preset").stable().forGetter(PresetInstance::preset),
+                    ).fieldOf("preset")
+                        .stable()
+                        .forGetter(PresetInstance::preset),
                     ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes").forGetter(PresetInstance::biomes)
                 ).apply(instance, MultiNoiseBiomeGenerator::PresetInstance)
             }
@@ -139,9 +157,11 @@ class MultiNoiseBiomeGenerator private constructor(
                     .forGetter(MultiNoiseBiomeGenerator::parameters),
             ).apply(instance, ::MultiNoiseBiomeGenerator)
         }
+
+        @JvmField
         val CODEC: Codec<MultiNoiseBiomeGenerator> = Codec.mapEither(PresetInstance.CODEC, DIRECT_CODEC).xmap(
             { either -> either.map(PresetInstance::generator, Function.identity()) },
-            { generator -> generator.preset()?.let { Either.left(it) } ?: Either.right(generator) }
+            { generator -> if (generator.preset() != null) Either.left(generator.preset()) else Either.right(generator) }
         ).codec()
     }
 }

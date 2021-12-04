@@ -47,6 +47,7 @@ abstract class Generator(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<Generator> = InternalRegistries.GENERATOR.dispatchStable(Generator::codec, Function.identity())
     }
 }

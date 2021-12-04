@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton
 
 import me.lucko.spark.api.Spark
+import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
@@ -33,6 +34,7 @@ import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.console.KryptonConsole
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
@@ -46,10 +48,10 @@ import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.util.KryptonFactoryProvider
-import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.register
 import org.kryptonmc.krypton.util.spark.KryptonSparkPlugin
+import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.fluid.KryptonFluidManager
@@ -193,34 +195,36 @@ class KryptonServer(
         run()
     }
 
-    fun run() = try {
-        // Set the last tick time early (avoids initial check sending an overload warning every time)
-        lastTickTime = System.currentTimeMillis()
+    fun run() {
+        try {
+            // Set the last tick time early (avoids initial check sending an overload warning every time)
+            lastTickTime = System.currentTimeMillis()
 
-        while (isRunning) {
-            val nextTickTime = System.currentTimeMillis() - lastTickTime
-            if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15_000L) {
-                LOGGER.warn("Can't keep up! Running $nextTickTime ms (${nextTickTime / 50} ticks) behind!")
-                lastOverloadWarning = lastTickTime
+            while (isRunning) {
+                val nextTickTime = System.currentTimeMillis() - lastTickTime
+                if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15_000L) {
+                    LOGGER.warn("Can't keep up! Running $nextTickTime ms (${nextTickTime / 50} ticks) behind!")
+                    lastOverloadWarning = lastTickTime
+                }
+
+                eventManager.fireAndForgetSync(TickStartEvent(tickCount))
+                sparkPlugin.tickHook.startTick()
+                val tickTime = measureTimeMillis(::tick)
+
+                val finishTime = System.currentTimeMillis()
+                eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
+                sparkPlugin.tickReporter.endTick(tickTime)
+                lastTickTime = finishTime
+
+                // This logic ensures that ticking isn't delayed by the overhead from Thread.sleep, which seems to be up to 10 ms,
+                // which is enough that the average TPS would be reporting at around 15-16, rather than 20.
+                val sleepTime = measureTimeMillis { Thread.sleep(max(0, MILLISECONDS_PER_TICK - tickTime - oversleepFactor)) }
+                oversleepFactor = sleepTime - (MILLISECONDS_PER_TICK - tickTime)
             }
-
-            eventManager.fireAndForgetSync(TickStartEvent(tickCount))
-            sparkPlugin.tickHook.startTick()
-            val tickTime = measureTimeMillis(::tick)
-
-            val finishTime = System.currentTimeMillis()
-            eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
-            sparkPlugin.tickReporter.endTick(tickTime)
-            lastTickTime = finishTime
-
-            // This logic ensures that ticking isn't delayed by the overhead from Thread.sleep, which seems to be up to 10 ms,
-            // which is enough that the average TPS would be reporting at around 15-16, rather than 20.
-            val sleepTime = measureTimeMillis { Thread.sleep(max(0, MILLISECONDS_PER_TICK - tickTime - oversleepFactor)) }
-            oversleepFactor = sleepTime - (MILLISECONDS_PER_TICK - tickTime)
+        } catch (exception: Throwable) { // This is hacky, but ensures that we catch absolutely everything that may be thrown here.
+            LOGGER.error("Encountered an unexpected exception", exception)
+            stop()
         }
-    } catch (exception: Throwable) { // This is hacky, but ensures that we catch absolutely everything that may be thrown here.
-        LOGGER.error("Encountered an unexpected exception", exception)
-        stop()
     }
 
     private fun loadPlugins() {
@@ -280,18 +284,18 @@ class KryptonServer(
         }
     }
 
-    fun updateConfig() {
+    fun updateConfig(path: String, value: Any?) {
         val config = HoconConfigurationLoader.builder()
             .path(configPath)
             .defaultOptions(KryptonConfig.OPTIONS)
             .build()
-        val node = config.load().set(this.config)
+        val node = config.load().node(path.split(".")).set(value)
         config.save(node)
     }
 
-    override fun player(uuid: UUID) = playerManager.playersByUUID[uuid]
+    override fun player(uuid: UUID): KryptonPlayer? = playerManager.playersByUUID[uuid]
 
-    override fun player(name: String) = playerManager.playersByName[name]
+    override fun player(name: String): KryptonPlayer? = playerManager.playersByName[name]
 
     override fun sendMessage(message: Component, permission: String) {
         playerManager.players.forEach { if (it.hasPermission(permission)) it.sendMessage(message) }
@@ -299,7 +303,7 @@ class KryptonServer(
         return
     }
 
-    override fun audiences() = players + console
+    override fun audiences(): Iterable<Audience> = players.asSequence().plus(console).asIterable()
 
     fun stop(explicitExit: Boolean = true) {
         if (!isRunning) return // Ensure we cannot accidentally run this twice

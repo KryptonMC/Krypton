@@ -16,9 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block.palette
+package org.kryptonmc.krypton.command.arguments.item
 
-fun interface PaletteConstructor<P : Palette<T>, T> {
+import org.kryptonmc.api.item.ItemStack
 
-    operator fun invoke(resizer: PaletteResizer<T>, bits: Int): P
+fun interface ItemStackPredicate {
+
+    operator fun invoke(item: ItemStack): Boolean
 }

@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.auth.exceptions
+package org.kryptonmc.krypton.command.arguments.entities
 
-/**
- * Thrown when an error occurs attempting to authenticate a user.
- */
-class AuthenticationException : RuntimeException()
+import com.mojang.brigadier.context.CommandContext
+import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.command.argument.argument
+
+fun CommandContext<Sender>.entityArgument(name: String): EntityQuery = argument(name)

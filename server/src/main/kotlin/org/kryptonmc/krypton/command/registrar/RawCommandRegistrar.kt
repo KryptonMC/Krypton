@@ -21,9 +21,9 @@ package org.kryptonmc.krypton.command.registrar
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
-import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.RawCommand
 import org.kryptonmc.api.command.Sender
+import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.krypton.command.rawArguments
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.Lock
@@ -31,7 +31,7 @@ import java.util.concurrent.locks.Lock
 class RawCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<RawCommand, CommandMeta, String>(lock) {
 
     override fun execute(command: RawCommand, meta: CommandMeta, context: CommandContext<Sender>): Int {
-        command.execute(context.source, context.rawArguments)
+        command.execute(context.source, context.rawArguments())
         return 1
     }
 
@@ -41,7 +41,7 @@ class RawCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<RawCommand, Co
         context: CommandContext<Sender>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
-        command.suggest(context.source, context.rawArguments).forEach { builder.suggest(it) }
+        command.suggest(context.source, context.rawArguments()).forEach { builder.suggest(it) }
         return builder.buildFuture()
     }
 }

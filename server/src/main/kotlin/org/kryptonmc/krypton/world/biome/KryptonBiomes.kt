@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.biome.Biome
@@ -26,7 +25,6 @@ import org.kryptonmc.krypton.registry.InternalRegistries
 
 object KryptonBiomes {
 
-    @JvmField val ID_TO_KEY = Int2ObjectArrayMap<ResourceKey<Biome>>()
     @JvmField val THE_VOID = register(BiomeKeys.THE_VOID, OverworldBiomes::theVoid)
     @JvmField val PLAINS = register(BiomeKeys.PLAINS, OverworldBiomes::plains)
 

@@ -36,6 +36,7 @@ data class KryptonBiomeCategory(private val key: Key) : BiomeCategory {
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<BiomeCategory> = Codecs.forRegistry(Registries.BIOME_CATEGORIES)
     }
 }

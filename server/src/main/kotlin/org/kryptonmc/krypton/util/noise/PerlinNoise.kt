@@ -74,7 +74,7 @@ class PerlinNoise private constructor(
         randomGetter: (Long) -> RandomSource = ::WorldGenRandom
     ) : this(random, octaves.makeAmplitudes(), randomGetter)
 
-    fun getOctaveNoise(index: Int) = noiseLevels[noiseLevels.size - 1 - index]
+    fun getOctaveNoise(index: Int): ImprovedNoise? = noiseLevels[noiseLevels.size - 1 - index]
 
     fun getValue(
         x: Double,
@@ -105,11 +105,11 @@ class PerlinNoise private constructor(
         return value
     }
 
-    override fun getValue(x: Double, y: Double, yScale: Double, yMax: Double) =
-        getValue(x, y, 0.0, yScale, yMax, false)
+    override fun getValue(x: Double, y: Double, yScale: Double, yMax: Double): Double = getValue(x, y, 0.0, yScale, yMax, false)
 
     companion object {
 
+        @JvmStatic
         private fun IntSortedSet.makeAmplitudes(): Pair<Int, DoubleList> {
             require(isNotEmpty()) { "No octaves provided! Octaves must be provided for the noise generator!" }
             val invFirst = -firstInt()

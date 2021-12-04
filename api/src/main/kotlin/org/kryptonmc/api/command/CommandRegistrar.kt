@@ -22,7 +22,7 @@ import org.kryptonmc.api.command.meta.CommandMeta
  * @param C the command type
  * @param M the metadata type
  */
-public fun interface CommandRegistrar<C : Command, M : CommandMeta> {
+public fun interface CommandRegistrar<C, M> {
 
     /**
      * Registers the given [command] with the given [meta] to the given [root]

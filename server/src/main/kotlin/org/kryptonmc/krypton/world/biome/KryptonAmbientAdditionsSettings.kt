@@ -56,6 +56,7 @@ data class KryptonAmbientAdditionsSettings(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<AmbientAdditionsSettings> = RecordCodecBuilder.create {
             it.group(
                 Codecs.SOUND_EVENT.fieldOf("sound").forGetter(AmbientAdditionsSettings::sound),

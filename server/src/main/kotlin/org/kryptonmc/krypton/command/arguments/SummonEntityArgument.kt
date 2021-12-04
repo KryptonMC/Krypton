@@ -34,22 +34,18 @@ import org.kryptonmc.krypton.util.nextKey
 object SummonEntityArgument : ArgumentType<Key> {
 
     private val EXAMPLES = setOf("minecraft:pig", "cow")
+    private val ERROR_UNKNOWN_ENTITY: DynamicCommandExceptionType = DynamicCommandExceptionType {
+        Component.translatable("entity.notFound", Component.text(it.toString())).toMessage()
+    }
 
-    override fun parse(reader: StringReader) = reader.nextKey().ensureSummonable()
+    @JvmStatic
+    fun ensureSummonable(key: Key): Key {
+        val type = Registries.ENTITY_TYPE[key]
+        if (!type.isSummonable) throw ERROR_UNKNOWN_ENTITY.create(key)
+        return type.key()
+    }
 
-    override fun getExamples() = EXAMPLES
-}
+    override fun parse(reader: StringReader): Key = ensureSummonable(reader.nextKey())
 
-fun CommandContext<Sender>.summonableEntity(name: String): Key = argument<Key>(name).ensureSummonable()
-
-fun CommandContext<Sender>.entityArgument(name: String): Key = argument<Key>(name).ensureSummonable()
-
-private val ERROR_UNKNOWN_ENTITY = DynamicCommandExceptionType {
-    Component.translatable("entity.notFound", listOf(Component.text(it.toString()))).toMessage()
-}
-
-private fun Key.ensureSummonable(): Key {
-    val type = Registries.ENTITY_TYPE[this]
-    if (!type.isSummonable) throw ERROR_UNKNOWN_ENTITY.create(this)
-    return type.key()
+    override fun getExamples(): Collection<String> = EXAMPLES
 }

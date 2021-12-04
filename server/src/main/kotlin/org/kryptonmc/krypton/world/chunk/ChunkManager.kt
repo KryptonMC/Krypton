@@ -38,6 +38,7 @@ import org.kryptonmc.krypton.world.block.toNBT
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.chunk.ticket.TicketManager
 import org.kryptonmc.krypton.world.chunk.ticket.TicketType
+import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.region.RegionFileManager
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
@@ -53,7 +54,7 @@ import java.util.concurrent.Executors
 
 class ChunkManager(private val world: KryptonWorld) {
 
-    val chunkMap = ConcurrentHashMap<Long, KryptonChunk>()
+    val chunkMap: MutableMap<Long, KryptonChunk> = ConcurrentHashMap()
     private val playersByChunk = ConcurrentHashMap<Long, ObjectSet<KryptonPlayer>>()
     private val executor = Executors.newFixedThreadPool(
         2,
@@ -75,10 +76,17 @@ class ChunkManager(private val world: KryptonWorld) {
 
     operator fun get(position: Long): KryptonChunk? = chunkMap[position]
 
-    fun <T> addTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T, onLoad: () -> Unit) =
-        ticketManager.addTicket(x, z, type, level, key, onLoad)
+    fun addStartTicket(centerX: Int, centerZ: Int, onLoad: () -> Unit) {
+        addTicket(centerX, centerZ, TicketTypes.START, 22, Unit, onLoad)
+    }
 
-    fun <T> removeTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T) = ticketManager.removeTicket(x, z, type, level, key)
+    fun <T> addTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T, onLoad: () -> Unit) {
+        ticketManager.addTicket(x, z, type, level, key, onLoad)
+    }
+
+    fun <T> removeTicket(x: Int, z: Int, type: TicketType<T>, level: Int, key: T) {
+        ticketManager.removeTicket(x, z, type, level, key)
+    }
 
     fun addPlayer(
         player: KryptonPlayer,
@@ -109,7 +117,7 @@ class ChunkManager(private val world: KryptonWorld) {
         if (set != null && set.isEmpty()) playersByChunk.remove(pos)
     }
 
-    fun players(position: Long) = playersByChunk[position] ?: emptySet()
+    fun players(position: Long): Set<KryptonPlayer> = playersByChunk[position] ?: emptySet()
 
     fun load(x: Int, z: Int, ticket: Ticket<*>): KryptonChunk {
         val pos = ChunkPosition.toLong(x, z)

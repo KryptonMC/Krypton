@@ -65,7 +65,7 @@ object KryptonEventManager : EventManager {
 
         bus = object : SimpleEventBus<Any>(Any::class.java) {
             // No cancellable or generic events (from event) in Krypton, so we don't need to perform those checks
-            override fun shouldPost(event: Any, subscriber: EventSubscriber<*>) = true
+            override fun shouldPost(event: Any, subscriber: EventSubscriber<*>): Boolean = true
         }
         methodAdapter = SimpleMethodSubscriptionAdapter(bus, ASMEventExecutorFactory(loader), KryptonMethodScanner())
     }
@@ -143,13 +143,11 @@ object KryptonEventManager : EventManager {
         val result = bus.post(event)
         if (result.exceptions().isEmpty()) return
         LOGGER.error("Some errors occurred whilst posting event $event!")
-        result.exceptions().values.forEachIndexed { index, exception ->
-            LOGGER.error("#${index + 1}: \n", exception)
-        }
+        result.exceptions().values.forEachIndexed { index, exception -> LOGGER.error("#${index + 1}: \n", exception) }
     }
 
-    private fun unregisterHandler(handler: EventHandler<*>) = bus.unregister { it: EventSubscriber<*> ->
-        it is KyoriToKryptonHandler && it.handler == handler
+    private fun unregisterHandler(handler: EventHandler<*>) {
+        bus.unregister { subscriber: EventSubscriber<*> -> subscriber is KyoriToKryptonHandler && subscriber.handler == handler }
     }
 
     private fun checkPlugin(plugin: Any) = require(KryptonPluginManager.fromInstance(plugin) != null) {
@@ -158,12 +156,11 @@ object KryptonEventManager : EventManager {
 
     private class KryptonMethodScanner : MethodScanner<Any> {
 
-        override fun shouldRegister(listener: Any, method: Method) = method.isAnnotationPresent(Listener::class.java)
+        override fun shouldRegister(listener: Any, method: Method): Boolean = method.isAnnotationPresent(Listener::class.java)
 
-        override fun postOrder(listener: Any, method: Method) =
-            method.getAnnotation(Listener::class.java).priority.ordinal
+        override fun postOrder(listener: Any, method: Method): Int = method.getAnnotation(Listener::class.java).priority.ordinal
 
-        override fun consumeCancelledEvents(listener: Any, method: Method) = true
+        override fun consumeCancelledEvents(listener: Any, method: Method): Boolean = true
     }
 
     private class KyoriToKryptonHandler<E>(
@@ -171,8 +168,10 @@ object KryptonEventManager : EventManager {
         val priority: ListenerPriority
     ) : EventSubscriber<E> {
 
-        override fun invoke(event: E) = handler.execute(event)
+        override fun invoke(event: E) {
+            handler.execute(event)
+        }
 
-        override fun postOrder() = priority.ordinal
+        override fun postOrder(): Int = priority.ordinal
     }
 }

@@ -18,34 +18,31 @@
  */
 package org.kryptonmc.krypton.commands
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.StringArgumentType.string
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
+import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.matchesSubString
 
 object PardonIpCommand : InternalCommand {
 
-    private val INVALID_IP_EXCEPTION = SimpleCommandExceptionType(
-        translatable("commands.pardonip.invalid").toMessage()
-    )
-    private val ALREADY_UNBANNED_EXCEPTION = SimpleCommandExceptionType(
-        translatable("commands.pardonip.failed").toMessage()
-    )
+    private val INVALID_IP_EXCEPTION = SimpleCommandExceptionType(Component.translatable("commands.pardonip.invalid").toMessage())
+    private val ALREADY_UNBANNED_EXCEPTION = SimpleCommandExceptionType(Component.translatable("commands.pardonip.failed").toMessage())
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("pardon-ip")
-            .permission(KryptonPermission.PARDON_IP)
-            .then(argument<Sender, String>("target", string())
-                .suggests { context, builder ->
+        dispatcher.register(literal("pardon-ip") {
+            permission(KryptonPermission.PARDON_IP)
+            argument("target", StringArgumentType.string()) {
+                suggests { context, builder ->
                     val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
                     server.playerManager.bannedIps.forEach {
                         if (!builder.remainingLowerCase.matchesSubString(it.key.lowercase())) return@forEach
@@ -53,13 +50,15 @@ object PardonIpCommand : InternalCommand {
                     }
                     builder.buildFuture()
                 }
-                .executes {
+                executes {
                     unbanIp(it.source, it.argument("target"))
-                    1
-                })
-        )
+                    Command.SINGLE_SUCCESS
+                }
+            }
+        })
     }
 
+    @JvmStatic
     private fun unbanIp(sender: Sender, target: String) {
         val server = sender.server as? KryptonServer ?: return
         if (target.matches(BanIpCommand.IP_ADDRESS_PATTERN)) {

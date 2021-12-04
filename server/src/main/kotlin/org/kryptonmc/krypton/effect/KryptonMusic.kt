@@ -44,6 +44,7 @@ data class KryptonMusic(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<Music> = RecordCodecBuilder.create {
             it.group(
                 Codecs.SOUND_EVENT.fieldOf("sound").forGetter(Music::sound),

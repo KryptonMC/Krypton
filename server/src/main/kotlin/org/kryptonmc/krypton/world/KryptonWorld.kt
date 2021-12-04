@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.world
 
+import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
@@ -31,6 +32,7 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.effect.Effect
@@ -137,28 +139,25 @@ class KryptonWorld(
         return entity as? T
     }
 
-    fun spawnEntity(entity: KryptonEntity) = entityManager.spawn(entity)
+    fun spawnEntity(entity: KryptonEntity) {
+        entityManager.spawn(entity)
+    }
 
-    fun spawnPlayer(player: KryptonPlayer) = entityManager.spawn(player)
+    fun spawnPlayer(player: KryptonPlayer) {
+        entityManager.spawn(player)
+    }
 
-    fun removeEntity(entity: KryptonEntity) = entityManager.remove(entity)
+    fun removeEntity(entity: KryptonEntity) {
+        entityManager.remove(entity)
+    }
 
-    fun playEffect(effect: Effect, position: Vector3i, data: Int, except: KryptonPlayer) = playerManager.broadcast(
-        PacketOutEffect(effect, position, data, false),
-        this,
-        position,
-        64.0,
-        except
-    )
+    fun playEffect(effect: Effect, position: Vector3i, data: Int, except: KryptonPlayer) {
+        playerManager.broadcast(PacketOutEffect(effect, position, data, false), this, position, 64.0, except)
+    }
 
-    fun playSound(
-        position: Vector3i,
-        event: SoundEvent,
-        source: Sound.Source,
-        volume: Float,
-        pitch: Float,
-        except: KryptonPlayer? = null
-    ) = playSound(position.x() + 0.5, position.y() + 0.5, position.z() + 0.5, event, source, volume, pitch, except)
+    fun playSound(position: Vector3i, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
+        playSound(position.x() + 0.5, position.y() + 0.5, position.z() + 0.5, event, source, volume, pitch, except)
+    }
 
     fun playSound(
         x: Double,
@@ -169,15 +168,10 @@ class KryptonWorld(
         volume: Float,
         pitch: Float,
         except: KryptonPlayer? = null
-    ) = server.playerManager.broadcast(
-        PacketOutSoundEffect(event, source, x, y, z, volume, pitch),
-        this,
-        x,
-        y,
-        z,
-        if (volume > 1F) 16.0 * volume else 16.0,
-        except
-    )
+    ) {
+        val finalVolume = if (volume > 1F) 16.0 * volume else 16.0
+        server.playerManager.broadcast(PacketOutSoundEffect(event, source, x, y, z, volume, pitch), this, x, y, z, finalVolume, except)
+    }
 
     fun playSound(event: SoundEvent, source: Sound.Source, emitter: KryptonEntity, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
         server.playerManager.broadcast(
@@ -192,13 +186,13 @@ class KryptonWorld(
     }
 
     override fun getBlock(x: Int, y: Int, z: Int): Block {
-        if (y.outsideBuildHeight) return Blocks.VOID_AIR
+        if (isOutsideBuildHeight(y)) return Blocks.VOID_AIR
         val chunk = getChunkAt(x, z) ?: return Blocks.AIR
         return chunk.getBlock(x, y, z)
     }
 
     override fun getFluid(x: Int, y: Int, z: Int): Fluid {
-        if (y.outsideBuildHeight) return Fluids.EMPTY
+        if (isOutsideBuildHeight(y)) return Fluids.EMPTY
         val chunk = getChunkAt(x, z) ?: return Fluids.EMPTY
         return chunk.getFluid(x, y, z)
     }
@@ -213,30 +207,34 @@ class KryptonWorld(
         return seaLevel + 1
     }
 
-    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int) = generator.biome(x, y, z)
+    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome = generator.biome(x, y, z)
 
-    override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
+    override fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
 
-    override fun getFluid(position: Vector3i) = getFluid(position.x(), position.y(), position.z())
+    override fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
 
-    override fun getChunkAt(x: Int, z: Int) = chunkManager[x, z]
+    override fun getChunkAt(x: Int, z: Int): KryptonChunk? = chunkManager[x, z]
 
-    override fun getChunk(x: Int, y: Int, z: Int) = getChunkAt(x shr 4, z shr 4)
+    override fun getChunk(x: Int, y: Int, z: Int): KryptonChunk? = getChunkAt(x shr 4, z shr 4)
 
-    override fun getChunk(position: Vector3i) = getChunk(position.x(), position.y(), position.z())
+    override fun getChunk(position: Vector3i): KryptonChunk? = getChunk(position.x(), position.y(), position.z())
 
-    override fun loadChunk(x: Int, z: Int) = chunkManager.load(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPosition.toLong(x, z)))
+    override fun loadChunk(x: Int, z: Int): KryptonChunk = chunkManager.load(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPosition.toLong(x, z)))
 
-    override fun unloadChunk(x: Int, z: Int, force: Boolean) = chunkManager.unload(x, z, TicketTypes.API_LOAD, force)
+    override fun unloadChunk(x: Int, z: Int, force: Boolean) {
+        chunkManager.unload(x, z, TicketTypes.API_LOAD, force)
+    }
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
-        if (y.outsideBuildHeight) return
+        if (isOutsideBuildHeight(y)) return
         getChunkAt(x shr 4, z shr 4)?.setBlock(x, y, z, block)?.run {
             playerManager.sendToAll(PacketOutBlockChange(block, x, y, z), this@KryptonWorld)
         }
     }
 
-    override fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
+    override fun setBlock(position: Vector3i, block: Block) {
+        setBlock(position.x(), position.y(), position.z(), block)
+    }
 
     fun tick() {
         if (players.isEmpty()) return // don't tick the world if there's no players in it
@@ -322,11 +320,11 @@ class KryptonWorld(
         entityManager.close()
     }
 
-    override fun audiences() = players
+    override fun audiences(): Iterable<Audience> = players
 
-    fun getRainLevel(delta: Float) = GenericMath.lerp(oldRainLevel, rainLevel, delta)
+    fun getRainLevel(delta: Float): Float = GenericMath.lerp(oldRainLevel, rainLevel, delta)
 
-    fun getThunderLevel(delta: Float) = GenericMath.lerp(oldThunderLevel, thunderLevel, delta) * getRainLevel(delta)
+    fun getThunderLevel(delta: Float): Float = GenericMath.lerp(oldThunderLevel, thunderLevel, delta) * getRainLevel(delta)
 
     companion object {
 

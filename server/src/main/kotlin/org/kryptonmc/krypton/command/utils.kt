@@ -20,33 +20,22 @@ package org.kryptonmc.krypton.command
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
 import com.mojang.brigadier.context.CommandContext
-import com.mojang.brigadier.tree.LiteralCommandNode
 import org.apache.commons.lang3.StringUtils
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.commands.KryptonPermission
 
-fun LiteralCommandNode<Sender>.buildCopy(newName: String): LiteralArgumentBuilder<Sender> = literal<Sender>(newName)
-    .requires(requirement)
-    .requiresWithContext(contextRequirement)
-    .forward(redirect, redirectModifier, isFork)
-    .executes(command)
-    .apply { children.forEach { then(it) } }
+fun CommandContext<Sender>.rawArguments(): String {
+    val firstSpace = input.indexOf(' ')
+    if (firstSpace == -1) return ""
+    return input.substring(firstSpace + 1)
+}
 
-fun LiteralCommandNode<Sender>.copy(newName: String): LiteralCommandNode<Sender> = buildCopy(newName).build()
-
-val CommandContext<Sender>.rawArguments: String
-    get() {
-        val firstSpace = input.indexOf(' ')
-        return if (firstSpace == -1) "" else input.substring(firstSpace + 1)
-    }
-
-val CommandContext<Sender>.splitArguments: Array<String>
-    get() {
-        val raw = rawArguments
-        return if (raw.isEmpty()) emptyArray() else StringUtils.split(raw)
-    }
+fun CommandContext<Sender>.splitArguments(): Array<String> {
+    val raw = rawArguments()
+    if (raw.isEmpty()) return emptyArray()
+    return StringUtils.split(raw)
+}
 
 fun LiteralArgumentBuilder<Sender>.permission(permission: KryptonPermission): LiteralArgumentBuilder<Sender> = requires {
     it.hasPermission(permission.node)

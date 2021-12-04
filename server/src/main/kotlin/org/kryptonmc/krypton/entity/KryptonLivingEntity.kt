@@ -112,7 +112,7 @@ abstract class KryptonLivingEntity(
 
     abstract fun equipment(slot: EquipmentSlot): KryptonItemStack
 
-    abstract override fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack)
+    abstract fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack)
 
     fun heldItem(hand: Hand): KryptonItemStack {
         if (hand == Hand.MAIN) return equipment(EquipmentSlot.MAIN_HAND)
@@ -245,7 +245,7 @@ abstract class KryptonLivingEntity(
     companion object {
 
         @JvmField
-        val ATTRIBUTES = attributes().build()
+        val ATTRIBUTES: AttributeSupplier = attributes().build()
 
         @JvmStatic
         fun attributes(): AttributeSupplier.Builder = AttributeSupplier.builder()

@@ -20,16 +20,25 @@ package org.kryptonmc.krypton.command.arguments.entities
 
 object EntityArguments {
 
-    @JvmField val SELECTOR_ALL = listOf("@p", "@r", "@a", "@e", "@s")
-    @JvmField val SELECTOR_PLAYERS = listOf("@p", "@r", "@a", "@s")
-    @JvmField val SELECTOR_PLAYERS_SINGLE = listOf("@p", "@r", "@s")
-    @JvmField val ARGUMENTS = listOf(
+    @JvmField
+    val SELECTOR_ALL = listOf("@p", "@r", "@a", "@e", "@s")
+
+    @JvmField
+    val SELECTOR_PLAYERS = listOf("@p", "@r", "@a", "@s")
+
+    @JvmField
+    val SELECTOR_PLAYERS_SINGLE = listOf("@p", "@r", "@s")
+
+    @JvmField
+    val ARGUMENTS = listOf(
         "x", "y", "z",
         "distance", "dx", "dy", "dz",
         "scores", "tag", "team", "limit", "sort", "level", "gamemode", "name",
         "x_rotation", "y_rotation", "type", "nbt", "advancements", "predicate"
     )
-    @JvmField val EXCLUDE_ARGUMENTS = listOf("team", "tag", "gamemode", "name", "predicate")
+
+    @JvmField
+    val EXCLUDE_ARGUMENTS = listOf("team", "tag", "gamemode", "name", "predicate")
 
     enum class Sorter {
 
@@ -55,11 +64,13 @@ object EntityArguments {
 
         companion object {
 
+            private val BY_NAME = values().associateBy { it.name }
+
             /**
              * Get the sort candidate from the name
              */
             @JvmStatic
-            fun fromName(name: String): Sorter? = values().firstOrNull { it.name == name.uppercase() }
+            fun fromName(name: String): Sorter? = BY_NAME[name.uppercase()]
         }
     }
 }

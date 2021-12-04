@@ -40,13 +40,13 @@ import java.net.InetSocketAddress
  */
 class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHandler<Packet>() {
 
-    private var _channel: Channel? = null
+    private var internalChannel: Channel? = null
         set(value) {
             check(field == null) { "Cannot re-set channel!" }
             field = value
         }
     val channel: Channel
-        get() = _channel ?: error("Cannot call channel before it is initialized!")
+        get() = internalChannel ?: error("Cannot call channel before it is initialized!")
 
     var latency = 0
     @Volatile
@@ -69,7 +69,7 @@ class SessionHandler(private val server: KryptonServer) : SimpleChannelInboundHa
     }
 
     override fun channelActive(ctx: ChannelHandlerContext) {
-        _channel = ctx.channel()
+        internalChannel = ctx.channel()
         handler = HandshakeHandler(server, this)
         ctx.channel().config().isAutoRead = true
     }

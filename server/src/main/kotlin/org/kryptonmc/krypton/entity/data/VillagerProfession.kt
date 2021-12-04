@@ -41,5 +41,5 @@ enum class VillagerProfession {
     TOOLSMITH,
     WEAPONSMITH;
 
-    val key by lazy { Key.key(name.lowercase()) }
+    val key: Key by lazy { Key.key(name.lowercase()) }
 }

@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.item.handler
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.util.InteractionResult
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonUseItemResult
 
 object FoodHandler : KryptonItemTimedHandler {
@@ -33,10 +32,9 @@ object FoodHandler : KryptonItemTimedHandler {
         player.inventory.setHeldItem(hand, stack)
         // These are dummy values for testing, until saturation and food level values
         // can be pulled from item definitions, and once more thought is in put into
-        // fleshing out the handling of food consumption et cetera.
+        // fleshing out the handling of food consumption, etc.
         player.foodLevel += 8
         player.foodSaturationLevel += 12.8f
         return KryptonUseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
     }
-
 }

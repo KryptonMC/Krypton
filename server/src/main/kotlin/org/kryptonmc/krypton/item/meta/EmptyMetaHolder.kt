@@ -27,7 +27,9 @@ object EmptyMetaHolder : KryptonMetaHolder() {
 
     override fun <V : Any> get(key: MetaKey<V>): V? = null
 
-    override fun <V : Any> set(key: MetaKey<V>, value: V) = Unit
+    override fun <V : Any> set(key: MetaKey<V>, value: V) {
+        // the empty meta holder is immutable
+    }
 
     override fun <V : Any> contains(key: MetaKey<V>): Boolean = false
 

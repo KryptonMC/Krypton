@@ -26,7 +26,12 @@ class KryptonSparkTickReporter : AbstractTickReporter() {
         onTick(duration.toDouble())
     }
 
-    override fun start() = Unit
+    override fun start() {
+        // we have nothing to register, since endTick is called by the server
+        // when we end the tick
+    }
 
-    override fun close() = Unit
+    override fun close() {
+        // we have nothing to unregister
+    }
 }

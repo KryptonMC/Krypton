@@ -23,6 +23,7 @@ import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.objectmapping.meta.Setting
 
 @ConfigSerializable
+@JvmRecord
 data class AdvancedCategory(
     @Setting("synchronize-chunk-writes")
     @Comment("Whether we should use the DSYNC option for saving region files to disk.")

@@ -47,32 +47,33 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
     private const val ENTITY_NAME = "name"
     private const val ENTITY_ID = "id"
 
-    override fun deserializeShowItem(input: Component) = try {
-        val raw = input.toPlainText()
-        val nbt = SNBT_CODEC.decode(raw)
-        val tag = nbt.getCompound(ITEM_TAG)
-        HoverEvent.ShowItem.of(
-            Key.key(nbt.getString(ITEM_TYPE)),
-            nbt.getByte(ITEM_COUNT).toInt(),
-            if (tag.isEmpty()) null else BinaryTagHolder.encode(tag, SNBT_CODEC)
-        )
-    } catch (exception: CommandSyntaxException) {
-        throw IOException(exception)
+    override fun deserializeShowItem(input: Component): HoverEvent.ShowItem {
+        return try {
+            val raw = input.toPlainText()
+            val nbt = SNBT_CODEC.decode(raw)
+            val tag = nbt.getCompound(ITEM_TAG)
+            HoverEvent.ShowItem.of(
+                Key.key(nbt.getString(ITEM_TYPE)),
+                nbt.getByte(ITEM_COUNT).toInt(),
+                if (tag.isEmpty()) null else BinaryTagHolder.encode(tag, SNBT_CODEC)
+            )
+        } catch (exception: CommandSyntaxException) {
+            throw IOException(exception)
+        }
     }
 
-    override fun deserializeShowEntity(
-        input: Component,
-        decoder: Codec.Decoder<Component, String, out RuntimeException>
-    ) = try {
-        val raw = input.toPlainText()
-        val nbt = SNBT_CODEC.decode(raw)
-        HoverEvent.ShowEntity.of(
-            Key.key(nbt.getString(ENTITY_TYPE)),
-            UUID.fromString(nbt.getString(ENTITY_ID)),
-            decoder.decode(nbt.getString(ENTITY_NAME))
-        )
-    } catch (exception: CommandSyntaxException) {
-        throw IOException(exception)
+    override fun deserializeShowEntity(input: Component, decoder: Codec.Decoder<Component, String, out RuntimeException>): HoverEvent.ShowEntity {
+        return try {
+            val raw = input.toPlainText()
+            val nbt = SNBT_CODEC.decode(raw)
+            HoverEvent.ShowEntity.of(
+                Key.key(nbt.getString(ENTITY_TYPE)),
+                UUID.fromString(nbt.getString(ENTITY_ID)),
+                decoder.decode(nbt.getString(ENTITY_NAME))
+            )
+        } catch (exception: CommandSyntaxException) {
+            throw IOException(exception)
+        }
     }
 
     override fun serializeShowItem(input: HoverEvent.ShowItem): Component {
@@ -88,10 +89,7 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
         return Component.text(SNBT_CODEC.encode(tag.build()))
     }
 
-    override fun serializeShowEntity(
-        input: HoverEvent.ShowEntity,
-        encoder: Codec.Encoder<Component, String, out RuntimeException>
-    ): Component {
+    override fun serializeShowEntity(input: HoverEvent.ShowEntity, encoder: Codec.Encoder<Component, String, out RuntimeException>): Component {
         val tag = buildCompound {
             string(ENTITY_ID, input.id().toString())
             string(ENTITY_TYPE, input.type().asString())

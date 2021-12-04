@@ -22,12 +22,13 @@ import com.google.common.collect.ImmutableSet
 
 class BooleanProperty(name: String) : KryptonProperty<Boolean>(name, Boolean::class.java, VALUES) {
 
-    override fun fromString(value: String) = value.toBooleanStrictOrNull()
+    override fun fromString(value: String): Boolean? = value.toBooleanStrictOrNull()
 
-    override fun toString(value: Boolean) = value.toString()
+    override fun toString(value: Boolean): String = value.toString()
 
     companion object {
 
+        @JvmField
         val VALUES: Set<Boolean> = ImmutableSet.of(true, false)
     }
 }

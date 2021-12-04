@@ -43,7 +43,6 @@ object KryptonPluginManager : PluginManager {
     private val LOGGER = logger("PluginManager")
     private val pluginMap = LinkedHashMap<String, PluginContainer>()
     private val pluginInstances = IdentityHashMap<Any, PluginContainer>()
-
     override val plugins: Collection<PluginContainer>
         @JvmName("plugins") get() = pluginMap.values
 

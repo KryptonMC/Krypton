@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.tags
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.krypton.world.event.GameEvent
 
 object GameEventTags {
 
@@ -26,8 +27,8 @@ object GameEventTags {
     @JvmField val IGNORE_VIBRATIONS_SNEAKING = get("ignore_vibrations_sneaking")
 
     @JvmStatic
-    operator fun get(key: Key) = KryptonTagManager[KryptonTagTypes.GAME_EVENTS, key.asString()]
+    operator fun get(key: Key): KryptonTag<GameEvent>? = KryptonTagManager[KryptonTagTypes.GAME_EVENTS, key.asString()]
 
     @JvmStatic
-    private fun get(name: String) = KryptonTagManager[KryptonTagTypes.GAME_EVENTS, "minecraft:$name"]!!
+    private fun get(name: String): KryptonTag<GameEvent> = KryptonTagManager[KryptonTagTypes.GAME_EVENTS, "minecraft:$name"]!!
 }

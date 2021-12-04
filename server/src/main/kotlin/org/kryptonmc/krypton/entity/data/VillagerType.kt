@@ -33,5 +33,5 @@ enum class VillagerType {
     SWAMP,
     TAIGA;
 
-    val key by lazy { Key.key(name.lowercase()) }
+    val key: Key by lazy { Key.key(name.lowercase()) }
 }

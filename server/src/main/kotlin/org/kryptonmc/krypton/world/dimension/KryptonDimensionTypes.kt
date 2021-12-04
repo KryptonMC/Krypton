@@ -26,7 +26,7 @@ import org.kryptonmc.api.world.dimension.DimensionEffect
 
 object KryptonDimensionTypes {
 
-    @JvmField val OVERWORLD = register(
+    @JvmField val OVERWORLD: KryptonDimensionType = register(
         "overworld",
         false,
         true,
@@ -45,7 +45,7 @@ object KryptonDimensionTypes {
         1.0,
         KryptonDimensionEffects.OVERWORLD
     )
-    @JvmField val OVERWORLD_CAVES = register(
+    @JvmField val OVERWORLD_CAVES: KryptonDimensionType = register(
         "overworld_caves",
         false,
         true,
@@ -64,7 +64,7 @@ object KryptonDimensionTypes {
         1.0,
         KryptonDimensionEffects.OVERWORLD
     )
-    @JvmField val THE_NETHER = register(
+    @JvmField val THE_NETHER: KryptonDimensionType = register(
         "the_nether",
         true,
         false,
@@ -83,7 +83,7 @@ object KryptonDimensionTypes {
         8.0,
         KryptonDimensionEffects.THE_NETHER
     )
-    @JvmField val THE_END = register(
+    @JvmField val THE_END: KryptonDimensionType = register(
         "the_end",
         false,
         false,

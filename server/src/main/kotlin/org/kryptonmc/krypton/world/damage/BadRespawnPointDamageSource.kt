@@ -19,9 +19,10 @@
 package org.kryptonmc.krypton.world.damage
 
 import org.kryptonmc.api.world.damage.DamageSource
+import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.krypton.world.damage.type.KryptonDamageTypes
 
 object BadRespawnPointDamageSource : DamageSource {
 
-    override val type = KryptonDamageTypes.BAD_RESPAWN_POINT
+    override val type: DamageType = KryptonDamageTypes.BAD_RESPAWN_POINT
 }

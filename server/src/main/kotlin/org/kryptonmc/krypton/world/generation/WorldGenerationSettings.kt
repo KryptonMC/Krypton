@@ -58,7 +58,7 @@ data class WorldGenerationSettings(
     val isFlat: Boolean
         get() = overworld() is FlatGenerator
 
-    fun overworld() = checkNotNull(dimensions[Dimension.OVERWORLD]) { "Missing overworld settings!" }.generator
+    fun overworld(): Generator = checkNotNull(dimensions[Dimension.OVERWORLD]) { "Missing overworld settings!" }.generator
 
     private fun checkStable(): DataResult<WorldGenerationSettings> {
         dimensions[Dimension.OVERWORLD] ?: return DataResult.error("Missing overworld settings!")
@@ -67,6 +67,7 @@ data class WorldGenerationSettings(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<WorldGenerationSettings> = RecordCodecBuilder.create<WorldGenerationSettings> { instance ->
             instance.group(
                 Codec.LONG.fieldOf("seed").stable().forGetter(WorldGenerationSettings::seed),
@@ -78,6 +79,7 @@ data class WorldGenerationSettings(
             ).apply(instance, ::WorldGenerationSettings)
         }.comapFlatMap(WorldGenerationSettings::checkStable, Function.identity())
 
+        @JvmStatic
         fun default(): WorldGenerationSettings {
             val seed = Random.nextLong()
             return WorldGenerationSettings(
@@ -88,40 +90,43 @@ data class WorldGenerationSettings(
             )
         }
 
-        private fun defaults(seed: Long) = KryptonRegistry(InternalResourceKeys.DIMENSION).apply {
+        @JvmStatic
+        private fun defaults(seed: Long): KryptonRegistry<Dimension> = KryptonRegistry(InternalResourceKeys.DIMENSION).apply {
             register(Dimension.OVERWORLD, Dimension(KryptonDimensionTypes.OVERWORLD, defaultOverworld(seed)))
             register(Dimension.NETHER, Dimension(KryptonDimensionTypes.THE_NETHER, defaultNether(seed)))
             register(Dimension.END, Dimension(KryptonDimensionTypes.THE_END, defaultEnd(seed)))
         }
 
-        private fun defaultOverworld(seed: Long) = NoiseGenerator(
-            MultiNoiseBiomeGenerator.Preset.OVERWORLD.generator(InternalRegistries.BIOME),
+        @JvmStatic
+        private fun defaultOverworld(seed: Long): NoiseGenerator = NoiseGenerator(
+            MultiNoiseBiomeGenerator.Preset.OVERWORLD.createGenerator(InternalRegistries.BIOME),
             seed,
             InternalRegistries.NOISE_GENERATOR_SETTINGS[NoiseGeneratorSettings.OVERWORLD]!!
         )
 
-        private fun defaultNether(seed: Long) = NoiseGenerator(
-            MultiNoiseBiomeGenerator.Preset.NETHER.generator(InternalRegistries.BIOME),
+        @JvmStatic
+        private fun defaultNether(seed: Long): NoiseGenerator = NoiseGenerator(
+            MultiNoiseBiomeGenerator.Preset.NETHER.createGenerator(InternalRegistries.BIOME),
             seed,
             InternalRegistries.NOISE_GENERATOR_SETTINGS[NoiseGeneratorSettings.NETHER]!!
         )
 
-        private fun defaultEnd(seed: Long) = NoiseGenerator(
+        @JvmStatic
+        private fun defaultEnd(seed: Long): NoiseGenerator = NoiseGenerator(
             TheEndBiomeGenerator(InternalRegistries.BIOME, seed),
             seed,
             InternalRegistries.NOISE_GENERATOR_SETTINGS[NoiseGeneratorSettings.END]!!
         )
 
+        @JvmStatic
         private fun KryptonRegistry<Dimension>.withOverworld(generator: Generator): KryptonRegistry<Dimension> {
             val overworld = get(Dimension.OVERWORLD)
             val overworldType = overworld?.type ?: KryptonDimensionTypes.OVERWORLD
             return withOverworld(overworldType, generator)
         }
 
-        private fun KryptonRegistry<Dimension>.withOverworld(
-            type: DimensionType,
-            generator: Generator
-        ): KryptonRegistry<Dimension> {
+        @JvmStatic
+        private fun KryptonRegistry<Dimension>.withOverworld(type: DimensionType, generator: Generator): KryptonRegistry<Dimension> {
             val registry = KryptonRegistry(InternalResourceKeys.DIMENSION).apply { register(Dimension.OVERWORLD, Dimension(type, generator)) }
             entries.forEach { (key, value) -> if (key !== Dimension.OVERWORLD) registry.register(key, value) }
             return registry

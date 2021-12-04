@@ -23,8 +23,7 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.event.HoverEvent.ShowEntity
-import net.kyori.adventure.text.event.HoverEvent.showEntity
+import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.adventure.toJsonString
@@ -120,7 +119,7 @@ abstract class KryptonEntity(
     final override var rotation: Vector2f = Vector2f.ZERO
     final override var velocity: Vector3d = Vector3d.ZERO
     final override var boundingBox = BoundingBox.zero()
-    final override var dimensions = EntityDimensions.fixed(1, 1) // TODO: Use type dimensions
+    final override var dimensions = EntityDimensions.fixed(type.dimensions.width, type.dimensions.height)
     final override var isOnGround = true
     final override var ticksExisted = 0
     final override var fireTicks: Short = 0
@@ -316,11 +315,9 @@ abstract class KryptonEntity(
         }
     }
 
-    open fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack) = Unit
-
     protected open fun getSpawnPacket(): Packet = PacketOutSpawnEntity(this)
 
-    private fun getSharedFlag(flag: Int) = data[MetadataKeys.FLAGS].toInt() and (1 shl flag) != 0
+    private fun getSharedFlag(flag: Int): Boolean = data[MetadataKeys.FLAGS].toInt() and (1 shl flag) != 0
 
     private fun setSharedFlag(flag: Int, state: Boolean) {
         val flags = data[MetadataKeys.FLAGS].toInt()
@@ -417,7 +414,7 @@ abstract class KryptonEntity(
         }
     }
 
-    private fun underFluid(fluid: Tag<Fluid>) = fluidOnEyes === fluid
+    private fun underFluid(fluid: Tag<Fluid>): Boolean = fluidOnEyes === fluid
 
     private fun updateSwimming() {
         isSwimming = if (isSwimming) {
@@ -463,7 +460,7 @@ abstract class KryptonEntity(
         return damage(source, damage)
     }
 
-    override fun getPermissionValue(permission: String) = TriState.FALSE
+    override fun getPermissionValue(permission: String): TriState = TriState.FALSE
 
     override fun remove() {
         if (isRemoved) return
@@ -473,9 +470,11 @@ abstract class KryptonEntity(
         world.removeEntity(this)
     }
 
-    override fun identity() = identity!!
+    override fun identity(): Identity = identity!!
 
-    override fun asHoverEvent(op: UnaryOperator<ShowEntity>) = showEntity(op.apply(ShowEntity.of(type.key(), uuid, displayName)))
+    override fun asHoverEvent(op: UnaryOperator<HoverEvent.ShowEntity>): HoverEvent<HoverEvent.ShowEntity> = HoverEvent.showEntity(
+        op.apply(HoverEvent.ShowEntity.of(type.key(), uuid, displayName))
+    )
 
     override fun addPassenger(entity: Entity) {
         if (passengers.contains(entity) || entity.passengers.contains(this)) return

@@ -25,10 +25,10 @@ import org.kryptonmc.api.registry.Registries
 object KryptonVisibilities {
 
     // @formatter:off
-    @JvmField val ALWAYS = register(0, "always")
-    @JvmField val NEVER = register(1, "never")
-    @JvmField val HIDE_FOR_OTHER_TEAMS = register(2, "hide_for_other_teams", "hideForOtherTeams")
-    @JvmField val HIDE_FOR_OWN_TEAM = register(3, "hide_for_own_team", "hideForOwnTeam")
+    @JvmField val ALWAYS: KryptonVisibility = register(0, "always")
+    @JvmField val NEVER: KryptonVisibility = register(1, "never")
+    @JvmField val HIDE_FOR_OTHER_TEAMS: KryptonVisibility = register(2, "hide_for_other_teams", "hideForOtherTeams")
+    @JvmField val HIDE_FOR_OWN_TEAM: KryptonVisibility = register(3, "hide_for_own_team", "hideForOwnTeam")
 
     // @formatter:on
     @JvmStatic

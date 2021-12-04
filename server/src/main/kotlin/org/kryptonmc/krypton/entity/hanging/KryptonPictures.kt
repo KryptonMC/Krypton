@@ -19,10 +19,9 @@
 package org.kryptonmc.krypton.entity.hanging
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 
-object KryptonCanvases {
+object KryptonPictures {
 
     @JvmField val KEBAB = register("kebab", 16, 16)
     @JvmField val AZTEC = register("aztec", 16, 16)
@@ -54,6 +53,6 @@ object KryptonCanvases {
     @JvmStatic
     private fun register(name: String, width: Int, height: Int): KryptonPicture {
         val key = Key.key(name)
-        return InternalRegistries.CANVAS.register(key, KryptonPicture(key, width, height))
+        return InternalRegistries.PICTURE.register(key, KryptonPicture(key, width, height))
     }
 }

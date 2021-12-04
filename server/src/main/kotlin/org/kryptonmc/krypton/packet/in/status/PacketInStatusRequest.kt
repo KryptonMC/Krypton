@@ -26,5 +26,7 @@ import org.kryptonmc.krypton.packet.Packet
  */
 object PacketInStatusRequest : Packet {
 
-    override fun write(buf: ByteBuf) = Unit
+    override fun write(buf: ByteBuf) {
+        // there is nothing to write here, and nothing is read for this either
+    }
 }

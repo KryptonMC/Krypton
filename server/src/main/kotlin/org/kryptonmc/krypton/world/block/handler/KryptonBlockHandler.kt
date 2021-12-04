@@ -43,7 +43,9 @@ interface KryptonBlockHandler : BlockHandler {
         return calculateDestroySpeed(player, block) / hardness.toFloat() / factor.toFloat()
     }
 
-    override fun attack(player: Player, world: World, block: Block, position: Vector3i) = Unit
+    override fun attack(player: Player, world: World, block: Block, position: Vector3i) {
+        // all blocks do nothing when attacked by default, breaking isn't handled here
+    }
 
     override fun interact(
         player: Player,
@@ -51,9 +53,12 @@ interface KryptonBlockHandler : BlockHandler {
         block: Block,
         position: Vector3i,
         hand: Hand
-    ) = InteractionResult.PASS
+    ): InteractionResult = InteractionResult.PASS
 
-    override fun onPlace(player: Player, block: Block, position: Vector3i, face: BlockFace) = Unit
+    override fun onPlace(player: Player, block: Block, position: Vector3i, face: BlockFace) {
+        // This isn't what it may seem like. This is for reacting to block placements, which
+        // most blocks don't need to do.
+    }
 
     override fun preDestroy(player: Player, world: World, block: Block, position: Vector3i) {
         if (player !is KryptonPlayer || world !is KryptonWorld) return
@@ -83,8 +88,10 @@ interface KryptonBlockHandler : BlockHandler {
 
     companion object {
 
-        private fun hasCorrectTool(player: Player, block: Block): Boolean =
-            !block.requiresCorrectTool || player.inventory.mainHand.type.handler.isCorrectTool(block)
+        private fun hasCorrectTool(
+            player: Player,
+            block: Block
+        ): Boolean = !block.requiresCorrectTool || player.inventory.mainHand.type.handler.isCorrectTool(block)
 
         private fun calculateDestroySpeed(player: Player, block: Block): Float {
             var speed = player.inventory.mainHand.destroySpeed(block)

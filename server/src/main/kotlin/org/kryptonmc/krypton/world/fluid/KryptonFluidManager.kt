@@ -27,17 +27,21 @@ object KryptonFluidManager : FluidManager {
 
     override val handlers = mutableMapOf<String, FluidHandler>()
 
-    override fun handler(key: String) = handlers[key]
+    override fun handler(key: String): FluidHandler? = handlers[key]
 
-    override fun handler(key: Key) = handler(key.asString())
+    override fun handler(key: Key): FluidHandler? = handler(key.asString())
 
-    override fun handler(fluid: Fluid) = handler(fluid.key().asString())
+    override fun handler(fluid: Fluid): FluidHandler? = handler(fluid.key().asString())
 
     override fun register(key: String, handler: FluidHandler) {
         handlers[key] = handler
     }
 
-    override fun register(key: Key, handler: FluidHandler) = register(key.asString(), handler)
+    override fun register(key: Key, handler: FluidHandler) {
+        register(key.asString(), handler)
+    }
 
-    override fun register(fluid: Fluid, handler: FluidHandler) = register(fluid.key().asString(), handler)
+    override fun register(fluid: Fluid, handler: FluidHandler) {
+        register(fluid.key().asString(), handler)
+    }
 }

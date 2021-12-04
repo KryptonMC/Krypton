@@ -197,7 +197,7 @@ class SimplexNoise(random: RandomSource) {
         }
     }
 
-    private fun permute(hash: Int) = permutations[hash and 255]
+    private fun permute(hash: Int): Int = permutations[hash and 255]
 
     companion object {
 

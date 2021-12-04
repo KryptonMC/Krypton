@@ -18,28 +18,27 @@
  */
 package org.kryptonmc.krypton.commands
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
-import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.gameProfileArgument
+import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.matchesSubString
 import org.kryptonmc.krypton.command.permission
 
 object PardonCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("pardon")
-            .permission(KryptonPermission.PARDON)
-            .then(argument<Sender, EntityQuery>("targets", GameProfileArgument)
-                .suggests { context, builder ->
+        dispatcher.register(literal("pardon") {
+            permission(KryptonPermission.PARDON)
+            argument("targets", GameProfileArgument) {
+                suggests { context, builder ->
                     val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
                     server.playerManager.bannedPlayers.forEach {
                         if (!builder.remainingLowerCase.matchesSubString(it.key.name.lowercase())) return@forEach
@@ -47,17 +46,19 @@ object PardonCommand : InternalCommand {
                     }
                     builder.buildFuture()
                 }
-                .executes {
-                    val server = it.source.server as? KryptonServer ?: return@executes 0
+                executes {
+                    val server = it.source.server as? KryptonServer ?: return@executes Command.SINGLE_SUCCESS
                     unban(it.gameProfileArgument("targets").profiles(it.source), it.source, server)
-                    1
-                })
-        )
+                    Command.SINGLE_SUCCESS
+                }
+            }
+        })
     }
 
+    @JvmStatic
     private fun unban(targets: List<KryptonGameProfile>, sender: Sender, server: KryptonServer) = targets.forEach {
         if (!server.playerManager.bannedPlayers.contains(it)) return@forEach
         server.playerManager.bannedPlayers.remove(it)
-        sender.sendMessage(translatable("commands.pardon.success", text(it.name)))
+        sender.sendMessage(Component.translatable("commands.pardon.success", Component.text(it.name)))
     }
 }

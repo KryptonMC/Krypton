@@ -28,7 +28,7 @@ import java.util.Random
 
 class FixedBiomeGenerator(private val biome: Biome) : BiomeGenerator(listOf(biome)), NoiseBiomeSource {
 
-    override val codec = CODEC
+    override val codec: Codec<out BiomeGenerator> = CODEC
 
     override fun get(x: Int, y: Int, z: Int, sampler: Climate.Sampler): Biome = biome
 
@@ -54,9 +54,10 @@ class FixedBiomeGenerator(private val biome: Biome) : BiomeGenerator(listOf(biom
 
     companion object {
 
-        val CODEC: Codec<FixedBiomeGenerator> = KryptonBiome.CODEC.fieldOf("biome").xmap(
-            ::FixedBiomeGenerator,
-            FixedBiomeGenerator::biome
-        ).stable().codec()
+        @JvmField
+        val CODEC: Codec<FixedBiomeGenerator> = KryptonBiome.CODEC.fieldOf("biome")
+            .xmap(::FixedBiomeGenerator, FixedBiomeGenerator::biome)
+            .stable()
+            .codec()
     }
 }

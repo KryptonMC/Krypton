@@ -64,7 +64,7 @@ fun SuggestionsBuilder.suggestCoordinates(
     return suggest(emptyList())
 }
 
-fun <T> Iterable<T>.suggestKey(
+fun <T> Sequence<T>.suggestKey(
     builder: SuggestionsBuilder,
     provider: (T) -> Key,
     messageProvider: (T) -> Message
@@ -74,7 +74,7 @@ fun <T> Iterable<T>.suggestKey(
     return builder.buildFuture()
 }
 
-fun <T> Iterable<T>.filterResources(text: String, provider: (T) -> Key, consumer: (T) -> Unit) {
+fun <T> Sequence<T>.filterResources(text: String, provider: (T) -> Key, consumer: (T) -> Unit) {
     val hasColon = text.indexOf(':') > -1
     forEach {
         val key = provider(it)

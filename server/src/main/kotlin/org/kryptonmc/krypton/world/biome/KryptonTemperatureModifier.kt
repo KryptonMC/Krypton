@@ -36,6 +36,7 @@ data class KryptonTemperatureModifier(private val key: Key) : TemperatureModifie
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<TemperatureModifier> = Codecs.forRegistry(Registries.TEMPERATURE_MODIFIERS)
     }
 }

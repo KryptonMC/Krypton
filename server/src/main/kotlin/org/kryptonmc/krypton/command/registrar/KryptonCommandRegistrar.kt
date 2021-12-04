@@ -18,17 +18,15 @@
  */
 package org.kryptonmc.krypton.command.registrar
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.tree.LiteralCommandNode
 import com.mojang.brigadier.tree.RootCommandNode
-import org.kryptonmc.api.command.Command
-import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.CommandRegistrar
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.copy
 import java.util.concurrent.locks.Lock
 import kotlin.concurrent.withLock
 
-abstract class KryptonCommandRegistrar<C : Command, M : CommandMeta>(private val lock: Lock) : CommandRegistrar<C, M> {
+abstract class KryptonCommandRegistrar<C, M>(private val lock: Lock) : CommandRegistrar<C, M> {
 
     protected fun register(root: RootCommandNode<Sender>, node: LiteralCommandNode<Sender>) {
         lock.withLock {
@@ -39,6 +37,6 @@ abstract class KryptonCommandRegistrar<C : Command, M : CommandMeta>(private val
 
     // This shallow copies the node to get around https://github.com/Mojang/brigadier/issues/46
     protected fun register(root: RootCommandNode<Sender>, node: LiteralCommandNode<Sender>, alias: String) {
-        register(root, node.copy(alias))
+        register(root, LiteralArgumentBuilder.literal<Sender>(alias).redirect(node).build())
     }
 }

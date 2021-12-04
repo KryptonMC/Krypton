@@ -25,12 +25,14 @@ package org.kryptonmc.krypton.world.chunk
 @JvmRecord
 data class ChunkPosition(val x: Int, val z: Int) {
 
-    fun toLong() = toLong(x, z)
+    fun toLong(): Long = toLong(x, z)
 
     companion object {
 
-        val ZERO = ChunkPosition(0, 0)
+        @JvmField
+        val ZERO: ChunkPosition = ChunkPosition(0, 0)
 
-        fun toLong(x: Int, z: Int) = x.toLong() and 0xFFFFFFFFL or (z.toLong() and 0xFFFFFFFFL shl 32)
+        @JvmStatic
+        fun toLong(x: Int, z: Int): Long = x.toLong() and 0xFFFFFFFFL or (z.toLong() and 0xFFFFFFFFL shl 32)
     }
 }

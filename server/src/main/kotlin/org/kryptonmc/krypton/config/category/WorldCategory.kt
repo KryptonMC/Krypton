@@ -26,6 +26,7 @@ import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.objectmapping.meta.Setting
 
 @ConfigSerializable
+@JvmRecord
 data class WorldCategory(
     @Comment("The name of the folder with the world to load in it.")
     val name: String = "world",

@@ -96,8 +96,9 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         listeners.add(listener)
     }
 
-    fun forEachObjective(criterion: Criterion, member: Component, action: (KryptonScore) -> Unit) =
+    fun forEachObjective(criterion: Criterion, member: Component, action: (KryptonScore) -> Unit) {
         objectivesByCriterion.getOrDefault(criterion, emptyList()).forEach { action(getOrCreateScore(member, it)) }
+    }
 
     fun removeEntity(entity: KryptonEntity) {
         if (entity is KryptonPlayer || entity.isAlive) return
@@ -112,12 +113,12 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         return scores.containsKey(objective)
     }
 
-    fun getOrCreateScore(member: Component, objective: Objective): KryptonScore {
+    private fun getOrCreateScore(member: Component, objective: Objective): KryptonScore {
         val scores = memberScores.computeIfAbsent(member) { mutableMapOf() }
         return scores.computeIfAbsent(objective) { KryptonScore(this, it, member).apply { score = 0 } }
     }
 
-    fun resetScore(member: Component, objective: Objective?) {
+    private fun resetScore(member: Component, objective: Objective?) {
         if (objective == null) {
             val scores = memberScores.remove(member)
             if (scores != null) onMemberRemoved(member)
@@ -141,14 +142,16 @@ class KryptonScoreboard(private val server: KryptonServer) : Scoreboard {
         return true
     }
 
-    fun removeMemberFromTeam(member: Component): Boolean {
+    private fun removeMemberFromTeam(member: Component): Boolean {
         val team = memberTeam(member) ?: return false
         removeMemberFromTeam(member, team)
         return true
     }
 
-    fun removeMemberFromTeam(member: Component, team: Team) {
-        check(memberTeam(member) === team) { "Cannot remove member ${member.toPlainText()} from team ${team.name}! Member is not on the team!" }
+    private fun removeMemberFromTeam(member: Component, team: Team) {
+        check(memberTeam(member) === team) {
+            "Cannot remove member ${member.toPlainText()} from team ${team.name}! Member is not on the team!"
+        }
         teamsByMember.remove(member)
         team.removeMember(member)
     }

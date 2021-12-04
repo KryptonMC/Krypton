@@ -43,7 +43,7 @@ class KryptonChunk(
     val structures: CompoundTag
 ) : ChunkAccessor(position, world, inhabitedTime, sections), Chunk {
 
-    override val status = ChunkStatus.FULL
+    override val status: ChunkStatus = ChunkStatus.FULL
     override val height = world.height
     override val minimumBuildHeight = world.minimumBuildHeight
 
@@ -52,9 +52,9 @@ class KryptonChunk(
     val maximumLightSection = minimumLightSection + lightSectionCount
 
     override val x: Int
-        @JvmName("x") get() = position.x
+        get() = position.x
     override val z: Int
-        @JvmName("z") get() = position.z
+        get() = position.z
 
     override fun getBlock(x: Int, y: Int, z: Int): Block {
         if (world.isDebug) {
@@ -103,7 +103,9 @@ class KryptonChunk(
         return
     }
 
-    override fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
+    override fun setBlock(position: Vector3i, block: Block) {
+        setBlock(position.x(), position.y(), position.z(), block)
+    }
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome = getNoiseBiome(x, y, z)
 

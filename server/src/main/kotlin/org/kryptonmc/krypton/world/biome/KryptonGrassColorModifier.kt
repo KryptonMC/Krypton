@@ -36,6 +36,7 @@ data class KryptonGrassColorModifier(private val key: Key) : GrassColorModifier 
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<GrassColorModifier> = Codecs.forRegistry(Registries.GRASS_COLOR_MODIFIERS)
     }
 }

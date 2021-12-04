@@ -30,6 +30,7 @@ import me.lucko.spark.common.util.ClassSourceLookup
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.meta.simpleCommandMeta
+import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.KryptonCommandManager
@@ -44,7 +45,7 @@ class KryptonSparkPlugin(
     private val folder: Path
 ) : SparkPlugin, SimpleCommand {
 
-    val description = KryptonPluginDescription(
+    val description: PluginDescription = KryptonPluginDescription(
         "spark",
         "Spark",
         KryptonPlatform.sparkVersion,
@@ -58,8 +59,8 @@ class KryptonSparkPlugin(
 
     lateinit var api: Spark
         private set
-    val tickHook by lazy { KryptonSparkTickHook() }
-    val tickReporter by lazy { KryptonSparkTickReporter() }
+    val tickHook: KryptonSparkTickHook by lazy { KryptonSparkTickHook() }
+    val tickReporter: KryptonSparkTickReporter by lazy { KryptonSparkTickReporter() }
 
     fun start() {
         platform = SparkPlatform(this)

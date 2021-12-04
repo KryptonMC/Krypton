@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.server
 
 import com.google.common.hash.Hashing
 import com.mojang.serialization.Dynamic
+import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
@@ -91,8 +92,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     var whitelistEnabled = server.config.server.whitelistEnabled
         set(value) {
             field = value
-            server.config.server.whitelistEnabled = value
-            server.updateConfig()
+            server.updateConfig("server.whitelist-enabled", value)
         }
 
     val status = ServerStatus(server.motd, ServerStatus.Players(server.maxPlayers, players.size), null)
@@ -221,53 +221,39 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         }
     }
 
-    fun sendToAll(packet: Packet) = players.forEach { it.session.send(packet) }
-
-    fun sendToAll(packet: Packet, except: KryptonPlayer) = players.forEach {
-        if (it != except) it.session.send(packet)
+    fun sendToAll(packet: Packet) {
+        players.forEach { it.session.send(packet) }
     }
 
-    fun sendToAll(packet: Packet, world: KryptonWorld) = players.forEach {
-        if (it.world == world) it.session.send(packet)
+    fun sendToAll(packet: Packet, except: KryptonPlayer) {
+        players.forEach { if (it != except) it.session.send(packet) }
     }
 
-    fun broadcast(
-        packet: Packet,
-        world: KryptonWorld,
-        x: Double,
-        y: Double,
-        z: Double,
-        radius: Double,
-        except: KryptonPlayer?
-    ) = players.forEach {
-        if (it == except || it.world != world) return@forEach
-        val offsetX = x - it.location.x()
-        val offsetY = y - it.location.y()
-        val offsetZ = z - it.location.z()
-        if (offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ < radius * radius) it.session.send(packet)
+    fun sendToAll(packet: Packet, world: KryptonWorld) {
+        players.forEach { if (it.world == world) it.session.send(packet) }
     }
 
-    fun broadcast(
-        packet: Packet,
-        world: KryptonWorld,
-        position: Vector3i,
-        radius: Double,
-        except: KryptonPlayer?
-    ) = broadcast(
-        packet,
-        world,
-        position.x().toDouble(),
-        position.y().toDouble(),
-        position.z().toDouble(),
-        radius,
-        except
-    )
-
-    fun disconnectAll() = players.forEach {
-        it.session.disconnect(Component.translatable("multiplayer.disconnect.server_shutdown"))
+    fun broadcast(packet: Packet, world: KryptonWorld, x: Double, y: Double, z: Double, radius: Double, except: KryptonPlayer?) {
+        players.forEach {
+            if (it == except || it.world != world) return@forEach
+            val offsetX = x - it.location.x()
+            val offsetY = y - it.location.y()
+            val offsetZ = z - it.location.z()
+            if (offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ < radius * radius) it.session.send(packet)
+        }
     }
 
-    fun saveAll() = players.forEach { save(it) }
+    fun broadcast(packet: Packet, world: KryptonWorld, position: Vector3i, radius: Double, except: KryptonPlayer?) {
+        broadcast(packet, world, position.x().toDouble(), position.y().toDouble(), position.z().toDouble(), radius, except)
+    }
+
+    fun disconnectAll() {
+        players.forEach { it.session.disconnect(Component.translatable("multiplayer.disconnect.server_shutdown")) }
+    }
+
+    fun saveAll() {
+        players.forEach(::save)
+    }
 
     fun getStatistics(player: KryptonPlayer): KryptonStatisticsTracker {
         val uuid = player.uuid
@@ -307,27 +293,12 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     private fun sendWorldInfo(world: KryptonWorld, player: KryptonPlayer) {
         player.session.send(PacketOutInitializeWorldBorder(world.border))
-        player.session.send(PacketOutTimeUpdate(
-            world.data.time,
-            world.data.dayTime,
-            world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]
-        ))
-        player.session.send(PacketOutSpawnPosition(
-            world.data.spawnX,
-            world.data.spawnY,
-            world.data.spawnZ,
-            world.data.spawnAngle
-        ))
+        player.session.send(PacketOutTimeUpdate(world.data.time, world.data.dayTime, world.data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]))
+        player.session.send(PacketOutSpawnPosition(world.data.spawnX, world.data.spawnY, world.data.spawnZ, world.data.spawnAngle))
         if (world.isRaining) {
             player.session.send(PacketOutChangeGameState(GameState.BEGIN_RAINING))
-            player.session.send(PacketOutChangeGameState(
-                GameState.RAIN_LEVEL_CHANGE,
-                world.getRainLevel(1F)
-            ))
-            player.session.send(PacketOutChangeGameState(
-                GameState.THUNDER_LEVEL_CHANGE,
-                world.getThunderLevel(1F)
-            ))
+            player.session.send(PacketOutChangeGameState(GameState.RAIN_LEVEL_CHANGE, world.getRainLevel(1F)))
+            player.session.send(PacketOutChangeGameState(GameState.THUNDER_LEVEL_CHANGE, world.getThunderLevel(1F)))
         }
     }
 
@@ -341,7 +312,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         }
     }
 
-    override fun audiences() = players
+    override fun audiences(): Iterable<Audience> = players
 
     companion object {
 

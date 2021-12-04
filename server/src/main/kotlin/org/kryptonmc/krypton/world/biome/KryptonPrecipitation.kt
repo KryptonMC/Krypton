@@ -36,6 +36,7 @@ data class KryptonPrecipitation(private val key: Key) : Precipitation {
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<Precipitation> = Codecs.forRegistry(Registries.PRECIPITATIONS)
     }
 }

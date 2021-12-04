@@ -34,10 +34,14 @@ data class Dimension(
 
     companion object {
 
-        val OVERWORLD = ResourceKey.of(InternalResourceKeys.DIMENSION, key("overworld"))
-        val NETHER = ResourceKey.of(InternalResourceKeys.DIMENSION, key("the_nether"))
-        val END = ResourceKey.of(InternalResourceKeys.DIMENSION, key("the_end"))
+        @JvmField
+        val OVERWORLD: ResourceKey<Dimension> = ResourceKey.of(InternalResourceKeys.DIMENSION, key("overworld"))
+        @JvmField
+        val NETHER: ResourceKey<Dimension> = ResourceKey.of(InternalResourceKeys.DIMENSION, key("the_nether"))
+        @JvmField
+        val END: ResourceKey<Dimension> = ResourceKey.of(InternalResourceKeys.DIMENSION, key("the_end"))
 
+        @JvmField
         val CODEC: Codec<Dimension> = RecordCodecBuilder.create {
             it.group(
                 KryptonDimensionType.CODEC.fieldOf("type").forGetter(Dimension::type),

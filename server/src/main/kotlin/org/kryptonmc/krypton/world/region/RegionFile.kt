@@ -46,9 +46,10 @@ import kotlin.io.path.fileSize
 /**
  * A region file holder, used for reading and writing region file data.
  *
- * This is heavily based on the original work from MCRegion, made by Scaevolous, and the modifications to it
- * made by Mojang AB, and also the modifications to make it work in Kotlin, and a few other optimisations, by
- * me, Callum Seabrook.
+ * This is heavily based on the original work from MCRegion, made by
+ * Scaevolous, and the modifications to it made by Mojang AB, and also the
+ * modifications to make it work in Kotlin, and a few other optimisations, by
+ * KryptonMC.
  */
 class RegionFile(
     private val path: Path,
@@ -82,8 +83,8 @@ class RegionFile(
                 val offset = offsets[i]
                 if (offset == 0) continue
 
-                val sectorNumber = offset.sectorNumber
-                val sectorCount = offset.sectorCount
+                val sectorNumber = offset.sectorNumber()
+                val sectorCount = offset.sectorCount()
                 if (sectorNumber < 2) {
                     LOGGER.error("Region file $path has an invalid sector at index $i! Sector $sectorNumber overlaps " +
                             "with header!")
@@ -114,11 +115,11 @@ class RegionFile(
      */
     @Synchronized
     fun getChunkDataInputStream(position: ChunkPosition): DataInputStream? {
-        val offset = offsets[position.offsetIndex]
+        val offset = offsets[position.offsetIndex()]
         if (offset == 0) return null
 
-        val sectorNumber = offset.sectorNumber
-        val sectorCount = offset.sectorCount
+        val sectorNumber = offset.sectorNumber()
+        val sectorCount = offset.sectorCount()
         val size = sectorCount * 4096L
 
         val buffer = ByteBuffer.allocate(sectorCount * 4096)
@@ -139,10 +140,10 @@ class RegionFile(
         }
 
         val dataLength = length - 1
-        if (compressionType.isExternalStreamChunk) {
+        if (compressionType.isExternalStreamChunk()) {
             if (dataLength != 0) LOGGER.error("Chunk at $position in region file $path has both internal and " +
                     "external streams!")
-            return createExternalChunkInputStream(position, compressionType.externalChunkVersion)
+            return createExternalChunkInputStream(position, compressionType.externalChunkVersion())
         }
         if (dataLength > buffer.remaining()) {
             LOGGER.error("Chunk at $position in region file $path has a truncated stream! Expected $dataLength, but " +
@@ -166,8 +167,9 @@ class RegionFile(
      * @param position the position of the chunk
      * @return a [DataOutputStream] for writing chunk data to
      */
-    fun getChunkDataOutputStream(position: ChunkPosition) =
-        DataOutputStream(BufferedOutputStream(compression.compress(ChunkBuffer(position))))
+    fun getChunkDataOutputStream(position: ChunkPosition): DataOutputStream = DataOutputStream(
+        BufferedOutputStream(compression.compress(ChunkBuffer(position)))
+    )
 
     /**
      * Writes chunk data for a chunk at the specified [position]
@@ -177,13 +179,13 @@ class RegionFile(
      */
     @Synchronized
     fun write(position: ChunkPosition, buffer: ByteBuffer) {
-        val action: () -> Unit
+        val action: Runnable
         val sectors: Int
 
-        val offsetIndex = position.offsetIndex
+        val offsetIndex = position.offsetIndex()
         val offset = offsets[offsetIndex]
-        val sectorNumber = offset.sectorNumber
-        val sectorCount = offset.sectorCount
+        val sectorNumber = offset.sectorNumber()
+        val sectorCount = offset.sectorCount()
         val length = buffer.remaining()
         var requiredSectors = (length + 4096 - 1) / 4096
 
@@ -197,7 +199,7 @@ class RegionFile(
             channel.write(externalStub, sectors * 4096L)
         } else {
             sectors = usedSectors.allocate(requiredSectors)
-            action = { externalDirectory.resolve("c.${position.x}.${position.z}.mcc").deleteIfExists() }
+            action = Runnable { externalDirectory.resolve("c.${position.x}.${position.z}.mcc").deleteIfExists() }
             channel.write(buffer, sectors * 4096L)
         }
 
@@ -205,7 +207,7 @@ class RegionFile(
         offsets[offsetIndex] = sectors shl 8 or requiredSectors
         timestamps[offsetIndex] = timestamp
         writeHeader()
-        action()
+        action.run()
         if (sectorNumber != 0) usedSectors.free(sectorNumber, sectorCount)
     }
 
@@ -218,11 +220,7 @@ class RegionFile(
         return createChunkInputStream(position, compressionType, path.inputStream())
     }
 
-    private fun createChunkInputStream(
-        position: ChunkPosition,
-        compressionType: Byte,
-        input: InputStream
-    ): DataInputStream? {
+    private fun createChunkInputStream(position: ChunkPosition, compressionType: Byte, input: InputStream): DataInputStream? {
         val compression = RegionFileCompression.fromId(compressionType)
         if (compression == null) {
             LOGGER.error("Chunk at $position in region file $path has an invalid compression type! " +
@@ -232,13 +230,13 @@ class RegionFile(
         return DataInputStream(BufferedInputStream(compression.decompress(input)))
     }
 
-    private fun writeExternal(path: Path, buffer: ByteBuffer): () -> Unit {
+    private fun writeExternal(path: Path, buffer: ByteBuffer): Runnable {
         val temp = externalDirectory.createTempFile("tmp")
         FileChannel.open(path, StandardOpenOption.CREATE, StandardOpenOption.WRITE).use {
             buffer.position(5)
             it.write(buffer)
         }
-        return { temp.moveTo(path, StandardCopyOption.REPLACE_EXISTING) }
+        return Runnable { temp.moveTo(path, StandardCopyOption.REPLACE_EXISTING) }
     }
 
     private fun writeHeader() {
@@ -246,8 +244,10 @@ class RegionFile(
         channel.write(header, 0)
     }
 
-    private fun createExternalStub() =
-        ByteBuffer.allocate(5).putInt(1).put((compression.ordinal or 0x80).toByte()).flip()
+    private fun createExternalStub(): ByteBuffer = ByteBuffer.allocate(5)
+        .putInt(1)
+        .put((compression.ordinal or 0x80).toByte())
+        .flip()
 
     private fun padToFullSector() {
         val size = channel.size()
@@ -285,9 +285,13 @@ class RegionFile(
 
         private val used = BitSet()
 
-        fun force(from: Int, to: Int) = used.set(from, from + to)
+        fun force(from: Int, to: Int) {
+            used.set(from, from + to)
+        }
 
-        fun free(from: Int, to: Int) = used.clear(from, from + to)
+        fun free(from: Int, to: Int) {
+            used.clear(from, from + to)
+        }
 
         fun allocate(bits: Int): Int {
             var i = 0
@@ -312,17 +316,22 @@ class RegionFile(
         )
         private val PADDING_BUFFER = ByteBuffer.allocateDirect(1)
 
-        private val Int.sectorNumber: Int
-            get() = shr(8) and 0xFFFFFF
-        private val Int.sectorCount: Int
-            get() = and(0xFF)
-        private val ChunkPosition.offsetIndex: Int
-            get() = (x and 0x1F) + (z and 0x1F) * 32
-        private val Byte.isExternalStreamChunk: Boolean
-            get() = toInt() and 0x80 != 0
-        private val Byte.externalChunkVersion: Byte
-            get() = (toInt() and 0xFFFFFF7F.toInt()).toByte()
+        @JvmStatic
+        private fun Int.sectorNumber(): Int = this shr 8 and 0xFFFFFF
 
+        @JvmStatic
+        private fun Int.sectorCount(): Int = this and 0xFF
+
+        @JvmStatic
+        private fun ChunkPosition.offsetIndex(): Int = (x and 0x1F) + (z and 0x1F) * 32
+
+        @JvmStatic
+        private fun Byte.isExternalStreamChunk(): Boolean = toInt() and 0x80 != 0
+
+        @JvmStatic
+        private fun Byte.externalChunkVersion(): Byte = (toInt() and 0xFFFFFF7F.toInt()).toByte()
+
+        @JvmStatic
         private operator fun IntBuffer.set(index: Int, value: Int): IntBuffer = put(index, value)
     }
 }

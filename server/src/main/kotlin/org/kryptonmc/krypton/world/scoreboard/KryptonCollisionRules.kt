@@ -25,10 +25,10 @@ import org.kryptonmc.api.registry.Registries
 object KryptonCollisionRules {
 
     // @formatter:on
-    @JvmField val ALWAYS = register(0, "always")
-    @JvmField val NEVER = register(1, "never")
-    @JvmField val PUSH_OTHER_TEAMS = register(2, "push_other_teams", "pushOtherTeams")
-    @JvmField val PUSH_OWN_TEAM = register(3, "push_own_team", "pushOwnTeam")
+    @JvmField val ALWAYS: KryptonCollisionRule = register(0, "always")
+    @JvmField val NEVER: KryptonCollisionRule = register(1, "never")
+    @JvmField val PUSH_OTHER_TEAMS: KryptonCollisionRule = register(2, "push_other_teams", "pushOtherTeams")
+    @JvmField val PUSH_OWN_TEAM: KryptonCollisionRule = register(3, "push_own_team", "pushOwnTeam")
 
     // @formatter:off
     @JvmStatic

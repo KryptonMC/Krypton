@@ -22,6 +22,7 @@ import ca.spottedleaf.dataconverter.types.MapType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.rule.GameRule
 import org.kryptonmc.api.world.rule.GameRuleHolder
+import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 
 class KryptonGameRuleHolder : GameRuleHolder {
@@ -36,17 +37,20 @@ class KryptonGameRuleHolder : GameRuleHolder {
         rules.forEach { (key, _) -> tag.getString(key.name)?.let { rules[key] = deserialize(it) } }
     }
 
-    fun save() = compound {
+    fun save(): CompoundTag = compound {
         rules.forEach { (rule, value) -> string(rule.name, value.toString()) }
     }
 
     @Suppress("UNCHECKED_CAST") // This should be fine
-    override fun <V : Any> get(rule: GameRule<V>) = rules.getOrDefault(rule, rule.default) as V
+    override fun <V : Any> get(rule: GameRule<V>): V = rules.getOrDefault(rule, rule.default) as V
 
-    override fun <V : Any> set(rule: GameRule<V>, value: V) = rules.set(rule, value)
+    override fun <V : Any> set(rule: GameRule<V>, value: V) {
+        rules[rule] = value
+    }
 
     companion object {
 
+        @JvmStatic
         private fun deserialize(input: String): Any {
             if (input.toBooleanStrictOrNull() != null) return input.toBooleanStrict()
             if (input.toIntOrNull() != null) return input.toInt()

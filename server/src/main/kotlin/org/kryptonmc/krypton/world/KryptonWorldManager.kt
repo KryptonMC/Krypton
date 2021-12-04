@@ -86,7 +86,7 @@ class KryptonWorldManager(
         prepare()
     }
 
-    override fun get(key: Key) = worlds[ResourceKey.of(ResourceKeys.DIMENSION, key)]
+    override fun get(key: Key): World? = worlds[ResourceKey.of(ResourceKeys.DIMENSION, key)]
 
     override fun load(key: Key): CompletableFuture<KryptonWorld> {
         val resourceKey = ResourceKey.of(ResourceKeys.DIMENSION, key)
@@ -124,7 +124,7 @@ class KryptonWorldManager(
 
     override fun save(world: World): CompletableFuture<Unit> = CompletableFuture.supplyAsync({ world.save() }, worldExecutor)
 
-    override fun contains(key: Key) = worlds.containsKey(ResourceKey.of(ResourceKeys.DIMENSION, key))
+    override fun contains(key: Key): Boolean = worlds.containsKey(ResourceKey.of(ResourceKeys.DIMENSION, key))
 
     private fun create() {
         val generationSettings = data.worldGenerationSettings
@@ -175,13 +175,9 @@ class KryptonWorldManager(
         val listener = ChunkProgressListener(9)
         LOGGER.info("Preparing start region for dimension ${default.dimension.location}...")
         listener.tick()
-        default.chunkManager.addTicket(
-            default.data.spawnX shr 4,
-            default.data.spawnZ shr 4,
-            TicketTypes.START,
-            22,
-            Unit
-        ) { listener.updateStatus(ChunkStatus.FULL) }
+        default.chunkManager.addStartTicket(default.data.spawnX shr 4, default.data.spawnZ shr 4) {
+            listener.updateStatus(ChunkStatus.FULL)
+        }
         listener.stop()
     }
 
@@ -208,6 +204,7 @@ class KryptonWorldManager(
 
         private val LOGGER = logger<KryptonWorldManager>()
 
+        @JvmStatic
         private fun Key.storageFolder() = when (this) {
             World.OVERWORLD.location -> ""
             World.NETHER.location -> "DIM-1"
@@ -215,6 +212,7 @@ class KryptonWorldManager(
             else -> value()
         }
 
+        @JvmStatic
         private fun <T> failFuture(exception: Exception): CompletableFuture<T> = CompletableFuture.failedFuture(exception)
     }
 }

@@ -16,13 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util.nbt
+package org.kryptonmc.krypton.command.arguments.item
 
-import org.kryptonmc.nbt.Tag
+import com.mojang.brigadier.context.CommandContext
+import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.command.argument.argument
 
-interface Serializable<T : Tag> {
-
-    fun load(tag: T)
-
-    fun save(): T
-}
+fun CommandContext<Sender>.itemStackArgument(name: String): ItemStackArgument = argument(name)

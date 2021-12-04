@@ -34,7 +34,6 @@ fun ParticleEffect.write(buf: ByteBuf, x: Double, y: Double, z: Double) {
     /*
      * Write location. If the particle is directional, colorable, or a note, then we need
      * to manually apply the offsets first.
-
      */
     val data = data
     when (data) {

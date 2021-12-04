@@ -148,11 +148,9 @@ class SimpleBitStorage(
         }
     }
 
-    private fun cellIndex(index: Int) = ((index.toLong() * divideMultiply + divideAdd) shr 32 shr divideShift).toInt()
+    fun isEmpty(): Boolean = data.isEmpty()
 
-    fun isEmpty() = data.isEmpty()
-
-    fun isNotEmpty() = !isEmpty()
+    fun isNotEmpty(): Boolean = !isEmpty()
 
     override fun equals(other: Any?) = other is SimpleBitStorage &&
             bits == other.bits &&
@@ -160,6 +158,8 @@ class SimpleBitStorage(
             data.contentEquals(other.data)
 
     override fun hashCode() = arrayOf(bits, size, data).contentDeepHashCode()
+
+    private fun cellIndex(index: Int): Int = ((index.toLong() * divideMultiply + divideAdd) shr 32 shr divideShift).toInt()
 
     class InitializationException(message: String) : RuntimeException(message)
 

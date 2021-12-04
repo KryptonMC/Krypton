@@ -40,8 +40,7 @@ import kotlin.io.path.inputStream
 object PluginLoader {
 
     fun loadDescription(source: Path): LoadedPluginDescriptionCandidate {
-        val serialized = source.findMetadata()
-            ?: throw InvalidPluginException("Could not find a valid krypton-plugin-meta.json file!")
+        val serialized = source.findMetadata() ?: throw InvalidPluginException("Could not find a valid krypton-plugin-meta.json file!")
         if (!serialized.id.matches(SerializedPluginDescription.ID_REGEX)) {
             throw InvalidPluginException("Plugin ID ${serialized.id} is invalid!")
         }
@@ -84,7 +83,7 @@ object PluginLoader {
         return null
     }
 
-    private fun SerializedPluginDescription.toCandidate(source: Path) = LoadedPluginDescriptionCandidate(
+    private fun SerializedPluginDescription.toCandidate(source: Path): LoadedPluginDescriptionCandidate = LoadedPluginDescriptionCandidate(
         id,
         name,
         version,

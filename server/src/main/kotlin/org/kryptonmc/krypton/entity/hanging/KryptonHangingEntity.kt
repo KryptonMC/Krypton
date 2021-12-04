@@ -71,5 +71,5 @@ abstract class KryptonHangingEntity(
         // TODO: Set bounding box when it exists for entities
     }
 
-    private fun offset(value: Int) = if (value % 32 == 0) 0.5 else 0.0
+    private fun offset(value: Int): Double = if (value % 32 == 0) 0.5 else 0.0
 }

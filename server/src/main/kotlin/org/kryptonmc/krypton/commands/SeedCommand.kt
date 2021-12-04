@@ -18,13 +18,13 @@
  */
 package org.kryptonmc.krypton.commands
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
@@ -33,13 +33,14 @@ object SeedCommand : InternalCommand {
     private val GREEN = TextColor.color(5635925)
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("seed")
-            .permission(KryptonPermission.SEED)
-            .executes {
+        dispatcher.register(literal("seed") {
+            permission(KryptonPermission.SEED)
+            executes {
                 val sender = it.source as? KryptonPlayer ?: return@executes 0
-                val text = text("[").append(text(sender.world.seed, GREEN)).append(text("]"))
-                sender.sendMessage(translatable("commands.seed.success", text))
-                1
-            })
+                val text = Component.text('[').append(Component.text(sender.world.seed, GREEN)).append(Component.text(']'))
+                sender.sendMessage(Component.translatable("commands.seed.success", text))
+                Command.SINGLE_SUCCESS
+            }
+        })
     }
 }

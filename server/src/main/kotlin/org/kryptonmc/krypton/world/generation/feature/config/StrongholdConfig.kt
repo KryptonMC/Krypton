@@ -30,6 +30,7 @@ data class StrongholdConfig(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<StrongholdConfig> = RecordCodecBuilder.create {
             it.group(
                 Codec.intRange(0, 1023).fieldOf("distance").forGetter(StrongholdConfig::distance),

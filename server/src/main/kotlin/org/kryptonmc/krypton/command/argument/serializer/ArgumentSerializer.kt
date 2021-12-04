@@ -25,8 +25,17 @@ interface ArgumentSerializer<T : ArgumentType<*>> {
 
     fun write(buf: ByteBuf, value: T)
 
-    companion object Empty : ArgumentSerializer<ArgumentType<*>> {
+    object Empty : ArgumentSerializer<ArgumentType<*>> {
 
-        override fun write(buf: ByteBuf, value: ArgumentType<*>) = Unit
+        override fun write(buf: ByteBuf, value: ArgumentType<*>) {
+            // nothing to write for an empty serializer
+        }
+    }
+
+    companion object {
+
+        @JvmStatic
+        @Suppress("UNCHECKED_CAST")
+        fun <T> empty(): ArgumentSerializer<ArgumentType<T>> = Empty as ArgumentSerializer<ArgumentType<T>>
     }
 }

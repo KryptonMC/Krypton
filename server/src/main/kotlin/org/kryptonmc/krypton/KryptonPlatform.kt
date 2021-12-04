@@ -35,6 +35,8 @@ object KryptonPlatform : Platform {
     override val protocolVersion = 757
     override val dataPackVersion = 8
 
+    @JvmField
     val sparkVersion: String = versions.getProperty("spark")
+    @JvmField
     val dataVersionPrefix: String = versions.getProperty("data")
 }

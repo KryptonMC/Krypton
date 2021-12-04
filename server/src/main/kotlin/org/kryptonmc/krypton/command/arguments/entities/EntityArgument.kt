@@ -83,5 +83,3 @@ data class EntityArgument(
         fun entities(): EntityArgument = ENTITIES
     }
 }
-
-fun CommandContext<Sender>.entityArgument(name: String): EntityQuery = argument<EntityQuery>(name)

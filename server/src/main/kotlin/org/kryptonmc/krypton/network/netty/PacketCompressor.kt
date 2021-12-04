@@ -29,10 +29,7 @@ import org.kryptonmc.krypton.util.writeVarInt
  *
  * Thanks Velocity for the fast var ints and native stuff!
  */
-class PacketCompressor(
-    private val compressor: VelocityCompressor,
-    var threshold: Int
-) : MessageToByteEncoder<ByteBuf>() {
+class PacketCompressor(private val compressor: VelocityCompressor, var threshold: Int) : MessageToByteEncoder<ByteBuf>() {
 
     override fun encode(ctx: ChannelHandlerContext, msg: ByteBuf, out: ByteBuf) {
         val uncompressedSize = msg.readableBytes()
@@ -45,7 +42,9 @@ class PacketCompressor(
         compressor.deflate(msg, out)
     }
 
-    override fun handlerRemoved(ctx: ChannelHandlerContext?) = compressor.close()
+    override fun handlerRemoved(ctx: ChannelHandlerContext?) {
+        compressor.close()
+    }
 
     companion object {
 

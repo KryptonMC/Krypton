@@ -98,6 +98,6 @@ object DebugStickHandler : KryptonItemHandler {
     }
 
     @JvmStatic
-    private fun <T : Comparable<T>> Block.cycle(property: Property<T>, reversed: Boolean) =
+    private fun <T : Comparable<T>> Block.cycle(property: Property<T>, reversed: Boolean): Block =
         set(property, property.values.findRelative(get(property), reversed)!!)
 }

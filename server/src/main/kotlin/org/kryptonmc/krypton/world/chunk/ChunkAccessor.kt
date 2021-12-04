@@ -39,7 +39,8 @@ abstract class ChunkAccessor(
 ) : BlockAccessor, NoiseBiomeSource {
 
     private val sectionArray = arrayOfNulls<ChunkSection>(heightAccessor.sectionCount)
-    @Volatile var isUnsaved = false
+    @Volatile
+    var isUnsaved = false
     val heightmaps: MutableMap<Heightmap.Type, Heightmap> = EnumMap(Heightmap.Type::class.java)
 
     val sections: Array<ChunkSection>

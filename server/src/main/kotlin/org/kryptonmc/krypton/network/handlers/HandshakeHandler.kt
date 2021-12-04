@@ -19,8 +19,6 @@
 package org.kryptonmc.krypton.network.handlers
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.Component.newline
-import net.kyori.adventure.text.Component.text
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.config.category.ForwardingMode
@@ -33,9 +31,10 @@ import org.kryptonmc.krypton.network.data.LegacyForwardedData
 import org.kryptonmc.krypton.util.logger
 
 /**
- * Handles all inbound packets in the [Handshake][PacketState.HANDSHAKE] state. Contrary to the
- * other handlers and states, there is only one packet in this state, so this is directly handled
- * by the [handle] function, instead of delegating to another function.
+ * Handles all inbound packets in the [Handshake][PacketState.HANDSHAKE] state.
+ * Contrary to the other handlers and states, there is only one packet in this
+ * state, so this is directly handled by the [handle] function, instead of
+ * delegating to another function.
  */
 class HandshakeHandler(
     override val server: KryptonServer,
@@ -53,7 +52,7 @@ class HandshakeHandler(
                 packet.protocol > KryptonPlatform.protocolVersion -> "multiplayer.disconnect.outdated_server"
                 else -> "multiplayer.disconnect.incompatible" // This should be impossible
             }
-            val reason = Component.translatable(key, text(KryptonPlatform.minecraftVersion))
+            val reason = Component.translatable(key, Component.text(KryptonPlatform.minecraftVersion))
             disconnect(reason)
             return
         }
@@ -72,10 +71,10 @@ class HandshakeHandler(
             LOGGER.info("If you wish to enable legacy forwarding, please do so in the configuration file by " +
                     "setting \"mode\" to \"LEGACY\" under the \"proxy\" section.")
             disconnect(
-                text("It appears that you have been forwarded using legacy forwarding by a proxy, but " +
+                Component.text("It appears that you have been forwarded using legacy forwarding by a proxy, but " +
                         "this server is not configured")
-                    .append(newline())
-                    .append(text("to support legacy forwarding. Please contact a server administrator."))
+                    .append(Component.newline())
+                    .append(Component.text("to support legacy forwarding. Please contact a server administrator."))
             )
             return
         }
@@ -84,7 +83,7 @@ class HandshakeHandler(
             val data = try {
                 LegacyForwardedData.parse(packet.address)
             } catch (exception: Exception) {
-                disconnect(text("Failed to decode legacy handshake data! Please report this to an administrator!"))
+                disconnect(Component.text("Failed to decode legacy handshake data! Please report this to an administrator!"))
                 LOGGER.error("Failed to decode legacy forwarded handshake data!", exception)
                 return
             }
@@ -94,7 +93,7 @@ class HandshakeHandler(
                 handleStateChange(packet.nextState, data)
             } else {
                 // If the data was null then we weren't sent what we needed
-                disconnect(text("This server cannot be direct connected to whilst it has proxy forwarding enabled."))
+                disconnect(Component.text("This server cannot be direct connected to whilst it has proxy forwarding enabled."))
                 LOGGER.warn("Attempted direct connection from ${session.channel.remoteAddress()} when legacy " +
                         "forwarding is enabled!")
                 LOGGER.info("If you wish to enable legacy forwarding, please do so in the configuration file by " +

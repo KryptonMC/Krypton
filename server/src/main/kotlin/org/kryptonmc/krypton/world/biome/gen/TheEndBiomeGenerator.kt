@@ -48,7 +48,7 @@ class TheEndBiomeGenerator private constructor(
         val random = WorldGenRandom(seed).apply { skip(17292) }
         SimplexNoise(random)
     }
-    override val codec = CODEC
+    override val codec: Codec<out BiomeGenerator> = CODEC
 
     constructor(biomes: KryptonRegistry<Biome>, seed: Long) : this(
         biomes,
@@ -75,14 +75,16 @@ class TheEndBiomeGenerator private constructor(
 
     companion object {
 
+        private const val ISLAND_THRESHOLD = -0.9
+        private const val ISLAND_CHUNK_DISTANCE_SQ = 4096L
+
+        @JvmField
         val CODEC: Codec<TheEndBiomeGenerator> = RecordCodecBuilder.create {
             it.group(
                 ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes").forGetter(TheEndBiomeGenerator::biomes),
                 Codec.LONG.fieldOf("seed").stable().forGetter(TheEndBiomeGenerator::seed)
             ).apply(it, ::TheEndBiomeGenerator)
         }
-        private const val ISLAND_THRESHOLD = -0.9
-        private const val ISLAND_CHUNK_DISTANCE_SQ = 4096L
 
         fun SimplexNoise.getHeightValue(x: Int, z: Int): Float {
             val divX = x / 2

@@ -25,7 +25,11 @@ import it.unimi.dsi.fastutil.Hash
  */
 object IdentityHashStrategy : Hash.Strategy<Any> {
 
-    override fun equals(a: Any?, b: Any?) = a === b
+    @JvmStatic
+    @Suppress("UNCHECKED_CAST")
+    fun <T> get(): Hash.Strategy<T> = IdentityHashStrategy as Hash.Strategy<T>
 
-    override fun hashCode(o: Any?) = System.identityHashCode(o)
+    override fun equals(a: Any?, b: Any?): Boolean = a === b
+
+    override fun hashCode(o: Any?): Int = System.identityHashCode(o)
 }

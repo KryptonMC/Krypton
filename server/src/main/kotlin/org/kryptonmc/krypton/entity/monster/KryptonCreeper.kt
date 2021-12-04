@@ -55,7 +55,7 @@ class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CR
 
     companion object {
 
-        private val ATTRIBUTES = KryptonMonster.attributes()
+        private val ATTRIBUTES = attributes()
             .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
             .build()
     }

@@ -18,15 +18,15 @@
  */
 package org.kryptonmc.krypton.commands
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.Component.newline
-import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.TextColor
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.literal
 
 object VersionCommand : InternalCommand {
 
@@ -34,18 +34,18 @@ object VersionCommand : InternalCommand {
     private val OPTION_COLOR = TextColor.color(255, 251, 33)
     private val VALUE_COLOR = TextColor.color(0, 196, 244)
 
-    private val HEADER = text()
-        .append(text("This server is running "))
-        .append(text("Krypton", KRYPTON_COLOR)
+    private val HEADER = Component.text()
+        .append(Component.text("This server is running "))
+        .append(Component.text("Krypton", KRYPTON_COLOR)
             .clickEvent(ClickEvent.openUrl("https://github.com/KryptonMC/Krypton")))
-        .append(newline())
-    private val VERSION = text("Version: ", OPTION_COLOR)
-    private val MINECRAFT_VERSION = text("Minecraft Version: ", OPTION_COLOR)
-    private val PLUGINS_LOADED = text("Plugins Loaded: ", OPTION_COLOR)
+        .append(Component.newline())
+    private val VERSION = Component.text("Version: ", OPTION_COLOR)
+    private val MINECRAFT_VERSION = Component.text("Minecraft Version: ", OPTION_COLOR)
+    private val PLUGINS_LOADED = Component.text("Plugins Loaded: ", OPTION_COLOR)
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        val node = dispatcher.register(literal<Sender>("version")
-            .executes {
+        val node = dispatcher.register(literal("version") {
+            executes {
                 val version = it.source.server.platform.version
                 val minecraftVersion = it.source.server.platform.minecraftVersion
                 val pluginsLoaded = it.source.server.pluginManager.plugins.size
@@ -54,10 +54,12 @@ object VersionCommand : InternalCommand {
                     .append(column(MINECRAFT_VERSION, minecraftVersion))
                     .append(column(PLUGINS_LOADED, pluginsLoaded.toString()))
                 it.source.sendMessage(text)
-                1
-            })
-        dispatcher.register(literal<Sender>("about").redirect(node))
+                Command.SINGLE_SUCCESS
+            }
+        })
+        dispatcher.register(LiteralArgumentBuilder.literal<Sender>("about").redirect(node))
     }
 
-    private fun column(option: Component, value: String): Component = option.append(text(value, VALUE_COLOR)).append(newline())
+    @JvmStatic
+    private fun column(option: Component, value: String): Component = option.append(Component.text(value, VALUE_COLOR)).append(Component.newline())
 }

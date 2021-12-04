@@ -72,7 +72,7 @@ class PrimaryWorldData(
         if (!serverBrands.contains("Krypton")) serverBrands.add("Krypton")
     }
 
-    fun save() = compound {
+    fun save(): CompoundTag = compound {
         compound("Data") {
             compound("Krypton") {
                 string("Version", KryptonPlatform.version)
@@ -117,23 +117,35 @@ class PrimaryWorldData(
 
         private const val ANVIL_VERSION_ID = 19133
 
+        @JvmStatic
         fun parse(
             folder: Path,
             data: MapType<String>,
             generationSettings: WorldGenerationSettings,
             dataPackConfig: DataPackConfig
         ): PrimaryWorldData {
+            val difficulty = if (data.getNumber("Difficulty") != null) Difficulty.fromId(data.getInt("Difficulty")) else Difficulty.NORMAL
             val time = data.getLong("Time", 0L)
             val dragonFightData = data.getMap(
                 "DragonFightData",
                 data.getMap<String>("DimensionData")?.getMap<String>("1")?.getMap("DragonFight") ?: NBTMapType(MutableCompoundTag())
             )
             val customBossEvents = (data.getMap<String>("CustomBossEvents") as? NBTMapType)?.tag ?: MutableCompoundTag()
+            val brandData = data.getList("ServerBrands", ObjectType.STRING)
+            val brands = if (brandData != null) {
+                val set = mutableSetOf<String>()
+                for (i in 0 until brandData.size()) {
+                    set.add(brandData.getString(i))
+                }
+                set
+            } else {
+                mutableSetOf()
+            }
             return PrimaryWorldData(
                 data.getString("LevelName", "")!!,
                 folder,
                 Registries.GAME_MODES[data.getInt("GameType", 0)] ?: GameModes.SURVIVAL,
-                data.getNumber("Difficulty")?.let { Difficulty.fromId(it.toInt()) } ?: Difficulty.NORMAL,
+                difficulty,
                 data.getBoolean("hardcore", false),
                 KryptonGameRuleHolder(data.getMap("GameRules") ?: NBTMapType(MutableCompoundTag())),
                 dataPackConfig,
@@ -155,13 +167,7 @@ class PrimaryWorldData(
                 data.getInts("WanderingTraderId")?.toUUID(),
                 customBossEvents,
                 (dragonFightData as NBTMapType).tag,
-                data.getList("ServerBrands", ObjectType.STRING)?.let {
-                    val set = mutableSetOf<String>()
-                    for (i in 0 until it.size()) {
-                        set.add(it.getString(i))
-                    }
-                    set
-                } ?: mutableSetOf()
+                brands
             )
         }
     }

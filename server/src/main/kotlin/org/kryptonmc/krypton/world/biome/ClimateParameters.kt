@@ -30,7 +30,7 @@ data class ClimateParameters(
     val offset: Float
 ) {
 
-    fun fitness(other: ClimateParameters) = (temperature - other.temperature) * (temperature - other.temperature) +
+    fun fitness(other: ClimateParameters): Float = (temperature - other.temperature) * (temperature - other.temperature) +
             (humidity - other.humidity) * (humidity - other.humidity) +
             (altitude - other.altitude) * (altitude - other.altitude) +
             (weirdness - other.weirdness) * (weirdness - other.weirdness) +
@@ -38,6 +38,7 @@ data class ClimateParameters(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<ClimateParameters> = RecordCodecBuilder.create {
             it.group(
                 Codec.floatRange(-2F, 2F).fieldOf("temperature").forGetter(ClimateParameters::temperature),

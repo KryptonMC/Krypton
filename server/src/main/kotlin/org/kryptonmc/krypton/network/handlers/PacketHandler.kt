@@ -27,7 +27,7 @@ import org.kryptonmc.krypton.network.SessionHandler
  * away the [handle] function, so we can call it without actually knowing which
  * handler will handle it. :wesmart:
  */
-interface PacketHandler {
+sealed interface PacketHandler {
 
     /**
      * The server that this handler is running on.
@@ -44,5 +44,7 @@ interface PacketHandler {
      */
     fun handle(packet: Packet)
 
-    fun onDisconnect() = Unit
+    fun onDisconnect() {
+        // do nothing by default, only the play handler does something for this
+    }
 }

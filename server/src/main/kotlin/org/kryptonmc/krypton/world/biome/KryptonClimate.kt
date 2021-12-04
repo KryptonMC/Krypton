@@ -76,7 +76,10 @@ data class KryptonClimate(
 
     companion object {
 
-        val DEFAULT = Builder().build()
+        @JvmField
+        val DEFAULT: Climate = Builder().build()
+
+        @JvmField
         val CODEC: MapCodec<Climate> = RecordCodecBuilder.mapCodec {
             it.group(
                 KryptonPrecipitation.CODEC.fieldOf("precipitation").forGetter(Climate::precipitation),

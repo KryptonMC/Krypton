@@ -49,11 +49,11 @@ interface WorldAccessor : BlockAccessor, NoiseBiomeSource {
 
     fun hasChunk(x: Int, z: Int): Boolean = chunkManager[x, z] != null
 
-    fun hasChunkAt(x: Int, z: Int) = hasChunk(x shr 4, z shr 4)
+    fun hasChunkAt(x: Int, z: Int): Boolean = hasChunk(x shr 4, z shr 4)
 
-    fun hasChunkAt(position: Vector3i) = hasChunkAt(position.x(), position.z())
+    fun hasChunkAt(position: Vector3i): Boolean = hasChunkAt(position.x(), position.z())
 
-    fun getChunk(position: Vector3i) = getChunk(position.x() shr 4, position.z() shr 4)
+    fun getChunk(position: Vector3i): ChunkAccessor? = getChunk(position.x() shr 4, position.z() shr 4)
 
     fun getChunk(x: Int, z: Int, status: ChunkStatus = ChunkStatus.FULL, shouldCreate: Boolean = true): ChunkAccessor?
 

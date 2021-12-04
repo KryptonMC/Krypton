@@ -20,12 +20,13 @@ package org.kryptonmc.krypton.world.dimension
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.dimension.DimensionEffect
 
 object KryptonDimensionEffects {
 
-    @JvmField val OVERWORLD = register("overworld", true, true, false, false)
-    @JvmField val THE_NETHER = register("the_nether", false, false, true, false)
-    @JvmField val THE_END = register("the_end", false, false, false, true)
+    @JvmField val OVERWORLD: DimensionEffect = register("overworld", true, true, false, false)
+    @JvmField val THE_NETHER: DimensionEffect = register("the_nether", false, false, true, false)
+    @JvmField val THE_END: DimensionEffect = register("the_end", false, false, false, true)
 
     @JvmStatic
     private fun register(

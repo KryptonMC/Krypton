@@ -35,7 +35,7 @@ fun CompoundTag.toBlock(): Block {
     return block
 }
 
-fun Block.toNBT() = compound {
+fun Block.toNBT(): CompoundTag = compound {
     string("Name", key().asString())
     if (properties.isNotEmpty()) compound("Properties") { properties.forEach { string(it.key, it.value) } }
 }

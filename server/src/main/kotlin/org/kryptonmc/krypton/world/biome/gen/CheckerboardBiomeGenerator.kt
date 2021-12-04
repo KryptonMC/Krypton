@@ -25,19 +25,21 @@ import org.kryptonmc.krypton.world.biome.Climate
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import java.util.function.Supplier
 
-class CheckerboardBiomeGenerator(
-    private val allowedBiomes: List<Biome>,
-    private val size: Int
-) : BiomeGenerator(allowedBiomes) {
+class CheckerboardBiomeGenerator(allowedBiomes: List<Biome>, private val size: Int) : BiomeGenerator(allowedBiomes) {
 
     private val bitShift = size + 2
-    override val codec = CODEC
+    override val codec: Codec<out BiomeGenerator> = CODEC
 
-    override fun get(x: Int, y: Int, z: Int, sampler: Climate.Sampler) =
-        possibleBiomes[Math.floorMod((x shr bitShift) + (z shr bitShift), possibleBiomes.size)]
+    override fun get(
+        x: Int,
+        y: Int,
+        z: Int,
+        sampler: Climate.Sampler
+    ): Biome = possibleBiomes[Math.floorMod((x shr bitShift) + (z shr bitShift), possibleBiomes.size)]
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<CheckerboardBiomeGenerator> = RecordCodecBuilder.create {
             it.group(
                 KryptonBiome.CODEC.listOf().fieldOf("biomes").forGetter(CheckerboardBiomeGenerator::possibleBiomes),

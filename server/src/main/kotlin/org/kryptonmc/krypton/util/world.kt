@@ -25,12 +25,14 @@ import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.vector.Vector3d
 import kotlin.math.abs
 
-fun Vector3d.isInSpawnableBounds() = !floorX().isOutsideSpawnableHeight() && isInHorizontalWorldBounds()
+fun Vector3d.isInSpawnableBounds(): Boolean = !floorX().isOutsideSpawnableHeight() && isInHorizontalWorldBounds()
 
-private fun Int.isOutsideSpawnableHeight() = this < -20000000 || this >= 20000000
+private fun Int.isOutsideSpawnableHeight(): Boolean = this < -20000000 || this >= 20000000
 
-private fun Vector3d.isInHorizontalWorldBounds() = floorX() >= -30000000 && floorZ() >= -30000000 &&
-        floorX() < 30000000 && floorZ() < 30000000
+private fun Vector3d.isInHorizontalWorldBounds(): Boolean = floorX() >= -30000000 &&
+        floorZ() >= -30000000 &&
+        floorX() < 30000000 &&
+        floorZ() < 30000000
 
 fun EntityManager.forEachEntityInRange(location: Vector3d, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
     val chunksInRange = location.chunksInRange(viewDistance)
@@ -40,9 +42,9 @@ fun EntityManager.forEachEntityInRange(location: Vector3d, viewDistance: Int, ca
     }
 }
 
-private fun Long.chunkX() = (this and 4294967295L).toInt()
+private fun Long.chunkX(): Int = (this and 4294967295L).toInt()
 
-private fun Long.chunkZ() = (this ushr 32 and 4294967295L).toInt()
+private fun Long.chunkZ(): Int = (this ushr 32 and 4294967295L).toInt()
 
 private fun Vector3d.chunksInRange(range: Int): LongArray {
     val visible = LongArray(range.toArea())

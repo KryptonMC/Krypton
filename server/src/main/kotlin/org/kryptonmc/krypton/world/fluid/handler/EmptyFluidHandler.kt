@@ -34,13 +34,17 @@ object EmptyFluidHandler : FluidHandler {
         world: World,
         direction: Direction,
         replacement: Fluid
-    ) = true
+    ): Boolean = true
 
     override fun flow(fluid: Fluid, x: Int, y: Int, z: Int, world: World): Vector3d = Vector3d.ZERO
 
-    override fun height(fluid: Fluid, x: Int, y: Int, z: Int, world: World) = 0F
+    override fun height(fluid: Fluid, x: Int, y: Int, z: Int, world: World): Float = 0F
 
-    override fun tick(fluid: Fluid, position: Vector3i, world: World) = Unit
+    override fun tick(fluid: Fluid, position: Vector3i, world: World) {
+        // empty fluids don't tick
+    }
 
-    override fun randomTick(fluid: Fluid, position: Vector3i, world: World, random: Random) = Unit
+    override fun randomTick(fluid: Fluid, position: Vector3i, world: World, random: Random) {
+        // empty fluids don't randomly tick
+    }
 }

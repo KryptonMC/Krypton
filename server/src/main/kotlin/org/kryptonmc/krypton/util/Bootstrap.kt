@@ -62,7 +62,7 @@ import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.KryptonEntityCategories
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.attribute.AttributeLoader
-import org.kryptonmc.krypton.entity.hanging.KryptonCanvases
+import org.kryptonmc.krypton.entity.hanging.KryptonPictures
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.ItemLoader
 import org.kryptonmc.krypton.item.KryptonItemManager
@@ -78,7 +78,6 @@ import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.block.KryptonBlockManager
 import org.kryptonmc.krypton.world.block.entity.BlockEntityLoader
-import org.kryptonmc.krypton.world.block.palette.GlobalPalette
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.event.GameEvents
 import org.kryptonmc.krypton.world.fluid.FluidLoader
@@ -87,11 +86,13 @@ import java.util.TreeSet
 object Bootstrap {
 
     private val LOGGER = logger<Bootstrap>()
-    @Volatile private var bootstrapped = false
+    @Volatile
+    private var bootstrapped = false
 
     // Might be better if you turn away from this now, unless you're making something that is registry-based,
     // in which, good luck. It probably needs to be placed somewhere with its dependencies before it and its
     // dependents after it.
+    @JvmStatic
     fun preload() {
         if (bootstrapped) return
         bootstrapped = true
@@ -152,7 +153,7 @@ object Bootstrap {
         KryptonStatisticTypes
         StatisticTypes
         CustomStatistics
-        KryptonCanvases
+        KryptonPictures
         Pictures
         KryptonMetaKeys
         MetaKeys // Not technically a registry, but quite close to one
@@ -173,24 +174,26 @@ object Bootstrap {
         CommandSyntaxException.BUILT_IN_EXCEPTIONS = BrigadierExceptions
     }
 
+    @JvmStatic
     fun validate() {
         require(bootstrapped) { "Bootstrap wasn't ran!" }
-        missingTranslations.forEach { LOGGER.warn("Missing translation: $it") }
+        missingTranslations().forEach { LOGGER.warn("Missing translation: $it") }
     }
 
+    @JvmStatic
     private fun <T> Iterable<T>.checkTranslations(missing: MutableSet<String>, getter: (T) -> String) = forEach {
         val key = getter(it)
         if (!TranslationBootstrap.REGISTRY.contains(key)) missing.add(key)
     }
 
-    private val missingTranslations: Set<String>
-        get() {
-            val missing = TreeSet<String>()
-            InternalRegistries.ATTRIBUTE.values.checkTranslations(missing) { it.translation.key() }
-            InternalRegistries.ENTITY_TYPE.values.checkTranslations(missing) { it.translation.key() }
-            InternalRegistries.BLOCK.values.checkTranslations(missing) { it.translation.key() }
-            InternalRegistries.ITEM.values.checkTranslations(missing) { it.translation.key() }
-            Registries.GAMERULES.values.checkTranslations(missing) { it.translation.key() }
-            return missing
-        }
+    @JvmStatic
+    private fun missingTranslations(): Set<String> {
+        val missing = TreeSet<String>()
+        InternalRegistries.ATTRIBUTE.values.checkTranslations(missing) { it.translation.key() }
+        InternalRegistries.ENTITY_TYPE.values.checkTranslations(missing) { it.translation.key() }
+        InternalRegistries.BLOCK.values.checkTranslations(missing) { it.translation.key() }
+        InternalRegistries.ITEM.values.checkTranslations(missing) { it.translation.key() }
+        Registries.GAMERULES.values.checkTranslations(missing) { it.translation.key() }
+        return missing
+    }
 }

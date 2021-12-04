@@ -18,33 +18,32 @@
  */
 package org.kryptonmc.krypton.commands
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.StringArgumentType.string
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import com.mojang.brigadier.arguments.StringArgumentType
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.permission
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.literal
 
 object MeCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("me")
-            .permission(KryptonPermission.ME)
-            .then(argument<Sender, String>("action", string())
-                .executes {
-                    it.source.server.sendMessage(translatable(
+        dispatcher.register(literal("me") {
+            permission(KryptonPermission.ME)
+            argument("action", StringArgumentType.string()) {
+                executes {
+                    it.source.server.sendMessage(Component.translatable(
                         "chat.type.emote",
                         it.source.name,
-                        text(it.argument<String>("action"))
+                        Component.text(it.argument<String>("action"))
                     ))
-                    1
-                })
-        )
+                    Command.SINGLE_SUCCESS
+                }
+            }
+        })
     }
 }

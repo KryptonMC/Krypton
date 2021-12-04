@@ -16,32 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.resource
+package org.kryptonmc.krypton.command.arguments
 
-import net.kyori.adventure.text.Component
+import com.mojang.brigadier.context.CommandContext
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.resource.ResourcePack
-import java.net.URI
+import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
+import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
+import org.spongepowered.math.vector.Vector3d
 
-@JvmRecord
-data class KryptonResourcePack(
-    override val uri: URI,
-    override val hash: String,
-    override val isForced: Boolean,
-    override val promptMessage: Component?
-) : ResourcePack {
+fun CommandContext<Sender>.gameProfileArgument(name: String): EntityQuery = argument(name)
 
-    override fun send(player: Player) {
-        player.sendResourcePack(this)
-    }
+fun CommandContext<Sender>.summonableEntity(name: String): Key = SummonEntityArgument.ensureSummonable(argument(name))
 
-    object Factory : ResourcePack.Factory {
+fun CommandContext<Sender>.entityArgument(name: String): Key = SummonEntityArgument.ensureSummonable(argument(name))
 
-        override fun of(
-            uri: URI,
-            hash: String,
-            isForced: Boolean,
-            promptMessage: Component?
-        ): ResourcePack = KryptonResourcePack(uri, hash, isForced, promptMessage)
-    }
-}
+fun CommandContext<Sender>.vectorArgument(name: String): Vector3d = argument<Coordinates>(name).position(source as Player)

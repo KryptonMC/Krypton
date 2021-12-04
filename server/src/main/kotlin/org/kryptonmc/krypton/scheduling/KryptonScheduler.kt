@@ -51,10 +51,9 @@ class KryptonScheduler : Scheduler {
         ConcurrentHashMap.newKeySet()
     }
 
-    override fun run(plugin: Any, task: TaskRunnable) = schedule(plugin, 0, TimeUnit.MILLISECONDS, task)
+    override fun run(plugin: Any, task: TaskRunnable): Task = schedule(plugin, 0, TimeUnit.MILLISECONDS, task)
 
-    override fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: TaskRunnable) =
-        schedule(plugin, delay, 0, unit, task)
+    override fun schedule(plugin: Any, delay: Long, unit: TimeUnit, task: TaskRunnable): Task = schedule(plugin, delay, 0, unit, task)
 
     override fun schedule(plugin: Any, delay: Long, period: Long, unit: TimeUnit, task: TaskRunnable): Task {
         val scheduledTask = KryptonTask(plugin, task, delay, period, unit)
@@ -104,23 +103,25 @@ class KryptonScheduler : Scheduler {
             finish()
         }
 
-        override fun run() = executor.execute {
-            currentTaskThread = Thread.currentThread()
-            try {
-                callable.run(this)
-            } catch (exception: Exception) {
-                if (exception is InterruptedException) {
-                    Thread.currentThread().interrupt()
-                    return@execute
+        override fun run() {
+            executor.execute {
+                currentTaskThread = Thread.currentThread()
+                try {
+                    callable.run(this)
+                } catch (exception: Exception) {
+                    if (exception is InterruptedException) {
+                        Thread.currentThread().interrupt()
+                        return@execute
+                    }
+                    val name = KryptonPluginManager.fromInstance(plugin)?.description?.name ?: "UNKNOWN"
+                    LOGGER.error(
+                        "Plugin $name generated an exception whilst trying to execute task $callable!",
+                        exception
+                    )
+                } finally {
+                    if (period == 0L) finish()
+                    currentTaskThread = null
                 }
-                val name = KryptonPluginManager.fromInstance(plugin)?.description?.name ?: "UNKNOWN"
-                LOGGER.error(
-                    "Plugin $name generated an exception whilst trying to execute task $callable!",
-                    exception
-                )
-            } finally {
-                if (period == 0L) finish()
-                currentTaskThread = null
             }
         }
 

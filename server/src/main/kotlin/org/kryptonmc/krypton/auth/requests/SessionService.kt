@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.auth.requests
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import org.kryptonmc.krypton.auth.KryptonGameProfile
-import org.kryptonmc.krypton.auth.exceptions.AuthenticationException
 import org.kryptonmc.krypton.util.Encryption
 import org.kryptonmc.krypton.util.logger
 import java.math.BigInteger
@@ -52,9 +51,8 @@ object SessionService {
      * @param username the username to authenticate
      * @param secret the shared secret
      * @param ip the server's IP address (string format)
-     * @return a new [KryptonGameProfile] for the user
-     * @throws AuthenticationException if the response from Mojang was
-     * unsuccessful (authentication failed)
+     * @return the authenticated game profile for the user, or null if not
+     * present
      */
     fun hasJoined(username: String, secret: ByteArray, ip: String): KryptonGameProfile? {
         val cachedProfile = profiles.getIfPresent(username)

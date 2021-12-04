@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.player
 import it.unimi.dsi.fastutil.longs.LongArrayList
 import it.unimi.dsi.fastutil.longs.LongArraySet
 import it.unimi.dsi.fastutil.longs.LongSet
+import me.lucko.spark.common.command.sender.CommandSender
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.identity.Identity
@@ -429,6 +430,7 @@ class KryptonPlayer(
     override fun tick() {
         super.tick()
         hungerMechanic()
+        cooldowns.tick()
         if (data.isDirty) session.send(PacketOutMetadata(id, data.dirty))
     }
 
@@ -551,11 +553,7 @@ class KryptonPlayer(
         val oldLocation = location
         location = position
 
-        if (
-            abs(location.x() - oldLocation.x()) > 8 ||
-            abs(location.y() - oldLocation.y()) > 8 ||
-            abs(location.z() - oldLocation.z()) > 8
-        ) {
+        if (Positioning.deltaInMoveRange(oldLocation, location)) {
             session.send(PacketOutEntityTeleport(id, location, rotation, isOnGround))
         } else {
             session.send(PacketOutEntityPosition(
@@ -640,8 +638,12 @@ class KryptonPlayer(
         session.send(PacketOutSubTitle(subtitle))
     }
 
+    fun sendTitleTimes(fadeInTicks: Int, stayTicks: Int, fadeOutTicks: Int) {
+        session.send(PacketOutTitleTimes(fadeInTicks, stayTicks, fadeOutTicks))
+    }
+
     fun sendTitleTimes(fadeIn: Duration, stay: Duration, fadeOut: Duration) {
-        session.send(PacketOutTitleTimes(Title.Times.of(fadeIn, stay, fadeOut)))
+        session.send(PacketOutTitleTimes(fadeIn, stay, fadeOut))
     }
 
     override fun clearTitle() {

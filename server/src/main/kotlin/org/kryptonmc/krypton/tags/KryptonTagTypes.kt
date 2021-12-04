@@ -49,5 +49,5 @@ object KryptonTagTypes {
     }
 
     @JvmStatic
-    private fun <T : Any> register(name: String, registry: Registry<T>) = register(name, name, registry)
+    private fun <T : Any> register(name: String, registry: Registry<T>): KryptonTagType<T> = register(name, name, registry)
 }

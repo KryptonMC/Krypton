@@ -10,18 +10,17 @@ package org.kryptonmc.api.event.player
 
 import org.kryptonmc.api.entity.player.Player
 import org.spongepowered.math.vector.Vector2f
-import org.spongepowered.math.vector.Vector3d
 
 /**
- * Called when a player moves.
+ * Called when a player rotates their head.
  *
- * @param player the player who moved
- * @param oldLocation the old location of the player
- * @param newLocation the new location of the player
+ * @param player the player who rotated their head
+ * @param oldRotation the old rotation of the player
+ * @param newRotation the new rotation of the player
  */
 @JvmRecord
-public data class MoveEvent(
+public data class RotateEvent(
     public val player: Player,
-    public val oldLocation: Vector3d,
-    public val newLocation: Vector3d,
+    public val oldRotation: Vector2f,
+    public val newRotation: Vector2f
 )

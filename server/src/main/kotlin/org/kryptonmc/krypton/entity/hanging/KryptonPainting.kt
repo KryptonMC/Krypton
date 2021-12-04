@@ -39,7 +39,7 @@ class KryptonPainting(world: KryptonWorld) : KryptonHangingEntity(world, EntityT
         get() = picture?.height ?: 1
 
     override fun load(tag: CompoundTag) {
-        picture = InternalRegistries.CANVAS[Key.key(tag.getString("Motive"))]
+        picture = InternalRegistries.PICTURE[Key.key(tag.getString("Motive"))]
         direction = Directions.of2D(tag.getByte("Facing").toInt())
         super.load(tag)
     }

@@ -26,7 +26,7 @@ class GlobalPalette<T>(private val registry: IntBiMap<T>) : Palette<T> {
 
     override val size: Int
         get() = registry.size
-    override val serializedSize = 0.varIntBytes
+    override val serializedSize = 0.varIntBytes()
 
     override fun get(value: T): Int {
         val id = registry.idOf(value)
@@ -35,7 +35,10 @@ class GlobalPalette<T>(private val registry: IntBiMap<T>) : Palette<T> {
 
     override fun get(id: Int): T = registry[id] ?: throw MissingPaletteEntryException(id)
 
-    override fun write(buf: ByteBuf) = Unit
+    override fun write(buf: ByteBuf) {
+        // The global palette has nothing to write because the client assumes that
+        // we are using the global palette if we send the right bits per entry
+    }
 
     object Factory : Palette.Factory {
 

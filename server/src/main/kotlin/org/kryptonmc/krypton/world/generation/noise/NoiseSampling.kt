@@ -32,6 +32,8 @@ data class NoiseSampling(
     companion object {
 
         private val SCALE_RANGE = Codec.doubleRange(0.001, 1000.0)
+
+        @JvmField
         val CODEC: Codec<NoiseSampling> = RecordCodecBuilder.create {
             it.group(
                 SCALE_RANGE.fieldOf("xz_scale").forGetter(NoiseSampling::xzScale),

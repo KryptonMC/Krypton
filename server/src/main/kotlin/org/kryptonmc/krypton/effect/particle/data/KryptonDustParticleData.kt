@@ -31,7 +31,8 @@ data class KryptonDustParticleData(
 ) : DustParticleData, Writable {
 
     override fun write(buf: ByteBuf) {
-        buf.writeFloat(if (red == 0.toShort()) Float.MIN_VALUE else red.toFloat() / 255F)
+        val x = if (red == 0.toShort()) Float.MIN_VALUE else red.toFloat() / 255F
+        buf.writeFloat(x)
         buf.writeFloat(green.toFloat() / 255F)
         buf.writeFloat(blue.toFloat() / 255F)
         buf.writeFloat(scale)

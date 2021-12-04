@@ -78,6 +78,7 @@ sealed class BiomeGenerator(val possibleBiomes: List<Biome>) {
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<BiomeGenerator> = InternalRegistries.BIOME_GENERATOR.dispatchStable(BiomeGenerator::codec, Function.identity())
 
         init {

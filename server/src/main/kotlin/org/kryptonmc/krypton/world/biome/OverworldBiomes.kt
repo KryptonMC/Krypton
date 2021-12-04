@@ -33,8 +33,12 @@ import java.awt.Color
 object OverworldBiomes {
 
     // Standard colours
+    @JvmField
     val OVERWORLD_WATER = Color(4159204)
+
+    @JvmField
     val OVERWORLD_WATER_FOG = Color(329011)
+
     private val OVERWORLD_FOG = Color(12638463)
     private val COLD_WATER = Color(3750089)
     private val LUKEWARM_WATER = Color(4566514)
@@ -53,6 +57,7 @@ object OverworldBiomes {
     // None
     // ==============================
 
+    @JvmStatic
     fun theVoid(key: Key): KryptonBiome = createBiome(key, Precipitations.NONE, BiomeCategories.NONE, 0.5F, 0.5F)
 
     // ==============================

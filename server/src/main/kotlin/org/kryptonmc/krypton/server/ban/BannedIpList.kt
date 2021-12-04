@@ -27,11 +27,16 @@ import java.time.OffsetDateTime
 
 class BannedIpList(path: Path) : ServerConfigList<String, BannedIpEntry>(path) {
 
-    operator fun get(key: SocketAddress) = super.get(key.asString())
+    operator fun get(key: SocketAddress): BannedIpEntry? = super.get(key.asString())
 
-    fun isBanned(address: SocketAddress) = contains(address.asString())
+    fun isBanned(address: SocketAddress): Boolean = contains(address.asString())
 
-    fun clear() = forEach { it.expirationDate?.let { time -> if (time.isBefore(OffsetDateTime.now())) remove(it.key) } }
+    fun clear() {
+        forEach {
+            val expirationDate = it.expirationDate ?: return@forEach
+            if (expirationDate.isBefore(OffsetDateTime.now())) remove(it.key)
+        }
+    }
 
     override fun read(reader: JsonReader): BannedIpEntry? = BannedIpEntry.read(reader)
 

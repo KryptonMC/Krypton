@@ -53,7 +53,6 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         world.folder.resolve("entities"),
         world.server.config.advanced.synchronizeChunkWrites
     )
-
     val entities: MutableCollection<KryptonEntity>
         get() = byId.values
 
@@ -61,8 +60,10 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
     operator fun get(uuid: UUID): KryptonEntity? = byUUID[uuid]
 
-    operator fun get(chunk: KryptonChunk): Set<KryptonEntity> =
-        byChunk.computeIfAbsent(ChunkPosition.toLong(chunk.position.x, chunk.position.z), LongFunction { mutableSetOf() })
+    operator fun get(chunk: KryptonChunk): Set<KryptonEntity> = byChunk.computeIfAbsent(
+        ChunkPosition.toLong(chunk.position.x, chunk.position.z),
+        LongFunction { mutableSetOf() }
+    )
 
     fun spawn(entity: KryptonEntity) {
         if (entity.world != world) return
@@ -131,11 +132,11 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         }
 
         val data = if (world.server.useDataConverter && version < KryptonPlatform.worldVersion) {
-            MCDataConverter.convertTag(MCTypeRegistry.ENTITY_CHUNK, nbt, version, KryptonPlatform.worldVersion).getList("Entities", CompoundTag.ID)
+            MCDataConverter.convertTag(MCTypeRegistry.ENTITY_CHUNK, nbt, version, KryptonPlatform.worldVersion)
         } else {
-            nbt.getList("Entities", CompoundTag.ID)
+            nbt
         }
-        data.forEachCompound {
+        data.getList("Entities", CompoundTag.ID).forEachCompound {
             val id = it.getString("id")
             if (id.isBlank()) return@forEachCompound
             val key = try {
@@ -168,7 +169,9 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         regionFileManager.write(chunk.position, root)
     }
 
-    override fun close() = regionFileManager.close()
+    override fun close() {
+        regionFileManager.close()
+    }
 
     companion object {
 

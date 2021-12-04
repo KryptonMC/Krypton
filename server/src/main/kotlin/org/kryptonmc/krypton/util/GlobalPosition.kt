@@ -32,6 +32,7 @@ data class GlobalPosition(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<GlobalPosition> = RecordCodecBuilder.create {
             it.group(
                 Codecs.DIMENSION.fieldOf("dimension").forGetter(GlobalPosition::dimension),

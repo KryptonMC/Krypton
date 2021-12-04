@@ -33,7 +33,7 @@ class SimpleCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<SimpleComma
 
     override fun execute(command: SimpleCommand, meta: SimpleCommandMeta, context: CommandContext<Sender>): Int {
         val sender = context.source
-        val args = context.splitArguments
+        val args = context.splitArguments()
         if (meta.permission == null) return dispatch(command, sender, args)
 
         return when (sender.getPermissionValue(meta.permission!!)) {
@@ -48,7 +48,7 @@ class SimpleCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<SimpleComma
         context: CommandContext<Sender>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
-        val args = context.splitArguments
+        val args = context.splitArguments()
         val hasPermission = meta.permission?.let(context.source::hasPermission) ?: true
         if (!hasPermission) return builder.buildFuture()
 

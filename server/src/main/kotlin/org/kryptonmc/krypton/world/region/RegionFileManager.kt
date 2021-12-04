@@ -38,7 +38,7 @@ class RegionFileManager(
 
     private val regionCache = Long2ObjectLinkedOpenHashMap<RegionFile>()
 
-    fun read(position: ChunkPosition) = getRegionFile(position).getChunkDataInputStream(position).use {
+    fun read(position: ChunkPosition): CompoundTag = getRegionFile(position).getChunkDataInputStream(position).use {
         if (it == null) return MutableCompoundTag()
         TagIO.read(it, TagCompression.NONE)
     }
@@ -63,5 +63,7 @@ class RegionFileManager(
         return regionFile
     }
 
-    override fun close() = regionCache.values.forEach { it.close() }
+    override fun close() {
+        regionCache.values.forEach { it.close() }
+    }
 }

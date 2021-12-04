@@ -25,7 +25,7 @@ import kotlin.math.min
 @Suppress("UNCHECKED_CAST", "EqualsOrHashCode")
 class SortedArraySet<T>(
     private val comparator: Comparator<T>,
-    initialCapacity: Int = DEFAULT_INITIAL_CAPACITY,
+    initialCapacity: Int,
 ) : AbstractMutableSet<T>() {
 
     private var contents = arrayOfNulls<Any>(initialCapacity) as Array<T?>
@@ -57,13 +57,14 @@ class SortedArraySet<T>(
 
     override fun remove(element: T): Boolean {
         val index = findIndex(element)
-        return if (index >= 0) {
+        if (index >= 0) {
             removeInternal(index)
-            true
-        } else false
+            return true
+        }
+        return false
     }
 
-    override fun contains(element: T) = findIndex(element) >= 0
+    override fun contains(element: T): Boolean = findIndex(element) >= 0
 
     override fun iterator(): MutableIterator<T> = ArrayIterator()
 
@@ -75,7 +76,7 @@ class SortedArraySet<T>(
         return super.equals(other)
     }
 
-    override fun toArray() = contents.clone()
+    override fun toArray(): Array<T?> = contents.clone()
 
     override fun <U> toArray(a: Array<U?>): Array<U?> {
         if (a.size < size) return contents.copyOf(size) as Array<U?>
@@ -112,7 +113,7 @@ class SortedArraySet<T>(
         return true
     }
 
-    private fun findIndex(element: T) = contents.binarySearch(element, comparator as Comparator<T?>, 0, size)
+    private fun findIndex(element: T): Int = contents.binarySearch(element, comparator as Comparator<T?>, 0, size)
 
     private fun addInternal(element: T, index: Int) {
         grow(size + 1)
@@ -149,13 +150,12 @@ class SortedArraySet<T>(
         private var index = 0
         private var last = -1
 
-        override fun hasNext() = index < size
+        override fun hasNext(): Boolean = index < size
 
-        override fun next(): T = if (index >= size) {
-            throw NoSuchElementException()
-        } else {
+        override fun next(): T {
+            if (index >= size) throw NoSuchElementException()
             last = index++
-            contents[last]!!
+            return contents[last]!!
         }
 
         override fun remove() {
@@ -168,9 +168,7 @@ class SortedArraySet<T>(
 
     companion object {
 
-        private const val DEFAULT_INITIAL_CAPACITY = 10
-
-        fun <T : Comparable<T>> create(initialCapacity: Int = DEFAULT_INITIAL_CAPACITY) =
-            SortedArraySet(naturalOrder<T>(), initialCapacity)
+        @JvmStatic
+        fun <T : Comparable<T>> create(initialCapacity: Int): SortedArraySet<T> = SortedArraySet(naturalOrder(), initialCapacity)
     }
 }

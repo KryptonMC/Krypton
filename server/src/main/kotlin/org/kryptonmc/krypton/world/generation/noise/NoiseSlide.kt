@@ -31,6 +31,7 @@ data class NoiseSlide(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<NoiseSlide> = RecordCodecBuilder.create {
             it.group(
                 Codec.INT.fieldOf("target").forGetter(NoiseSlide::target),

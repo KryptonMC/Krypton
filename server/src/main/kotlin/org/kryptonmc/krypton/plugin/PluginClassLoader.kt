@@ -32,7 +32,7 @@ class PluginClassLoader(vararg urls: URL) : URLClassLoader(urls) {
 
     constructor(path: Path) : this(path.toUri().toURL())
 
-    fun addToLoaders() = apply { loaders.add(this) }
+    fun addToLoaders(): PluginClassLoader = apply { loaders.add(this) }
 
     internal fun addPath(path: Path) {
         addURL(path.toUri().toURL())
@@ -43,7 +43,7 @@ class PluginClassLoader(vararg urls: URL) : URLClassLoader(urls) {
         super.close()
     }
 
-    override fun loadClass(name: String, resolve: Boolean) = loadClass0(name, resolve, true)
+    override fun loadClass(name: String, resolve: Boolean): Class<*> = loadClass0(name, resolve, true)
 
     private fun loadClass0(name: String, resolve: Boolean, checkOther: Boolean): Class<*> {
         try {

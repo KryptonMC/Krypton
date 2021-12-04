@@ -22,17 +22,28 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.item.meta.MetaKey
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
+import java.util.function.Predicate
 
 @JvmRecord
 data class KryptonMetaKey<V : Any>(
     private val key: Key,
     private val type: Class<V>,
-    val reader: (CompoundTag) -> V,
-    val writer: (MutableCompoundTag, V) -> Unit,
-    val predicate: (CompoundTag) -> Boolean
+    val reader: Reader<V>,
+    val writer: Writer<V>,
+    val predicate: Predicate<CompoundTag>
 ) : MetaKey<V> {
 
     override fun key(): Key = key
 
     override fun type(): Class<V> = type
+
+    fun interface Reader<T> {
+
+        fun read(tag: CompoundTag): T
+    }
+
+    fun interface Writer<T> {
+
+        fun write(tag: MutableCompoundTag, value: T)
+    }
 }

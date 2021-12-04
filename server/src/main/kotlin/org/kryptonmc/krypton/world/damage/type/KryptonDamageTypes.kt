@@ -24,83 +24,83 @@ import org.kryptonmc.api.world.damage.type.DamageType
 
 object KryptonDamageTypes {
 
-    @JvmField val IN_FIRE = register("in_fire", "inFire") {
+    @JvmField val IN_FIRE: DamageType = register("in_fire", "inFire") {
         bypassesArmor()
         fire()
     }
-    @JvmField val LIGHTNING_BOLT = register("lightning_bolt", "lightningBolt")
-    @JvmField val ON_FIRE = register("on_fire", "onFire") {
+    @JvmField val LIGHTNING_BOLT: DamageType = register("lightning_bolt", "lightningBolt")
+    @JvmField val ON_FIRE: DamageType = register("on_fire", "onFire") {
         bypassesArmor()
         fire()
     }
-    @JvmField val LAVA = register("lava", "lava") { fire() }
-    @JvmField val HOT_FLOOR = register("hot_floor", "hotFloor") { fire() }
-    @JvmField val SUFFOCATION = register("suffocation", "inWall") { bypassesArmor() }
-    @JvmField val CRAMMING = register("cramming", "cramming") { bypassesArmor() }
-    @JvmField val DROWNING = register("drowning", "drown") { bypassesArmor() }
-    @JvmField val STARVING = register("starving", "starve") {
+    @JvmField val LAVA: DamageType = register("lava", "lava") { fire() }
+    @JvmField val HOT_FLOOR: DamageType = register("hot_floor", "hotFloor") { fire() }
+    @JvmField val SUFFOCATION: DamageType = register("suffocation", "inWall") { bypassesArmor() }
+    @JvmField val CRAMMING: DamageType = register("cramming", "cramming") { bypassesArmor() }
+    @JvmField val DROWNING: DamageType = register("drowning", "drown") { bypassesArmor() }
+    @JvmField val STARVING: DamageType = register("starving", "starve") {
         bypassesArmor()
         bypassesMagic()
     }
-    @JvmField val CACTUS = register("cactus", "cactus")
-    @JvmField val FALL = register("falling", "fall") {
+    @JvmField val CACTUS: DamageType = register("cactus", "cactus")
+    @JvmField val FALL: DamageType = register("falling", "fall") {
         bypassesArmor()
         fall()
     }
-    @JvmField val FLY_INTO_WALL = register("fly_into_wall", "flyIntoWall") { bypassesArmor() }
-    @JvmField val VOID = register("void", "outOfWorld") {
+    @JvmField val FLY_INTO_WALL: DamageType = register("fly_into_wall", "flyIntoWall") { bypassesArmor() }
+    @JvmField val VOID: DamageType = register("void", "outOfWorld") {
         bypassesArmor()
         bypassesInvulnerability()
     }
-    @JvmField val GENERIC = register("generic", "generic") { bypassesArmor() }
-    @JvmField val MAGIC = register("magic", "magic") {
+    @JvmField val GENERIC: DamageType = register("generic", "generic") { bypassesArmor() }
+    @JvmField val MAGIC: DamageType = register("magic", "magic") {
         bypassesArmor()
         magic()
     }
-    @JvmField val WITHER = register("wither", "wither") { bypassesArmor() }
-    @JvmField val ANVIL = register("anvil", "anvil") { damagesHelmet() }
-    @JvmField val FALLING_BLOCK = register("falling_block", "fallingBlock") { damagesHelmet() }
-    @JvmField val DRAGON_BREATH = register("dragon_breath", "dragonBreath") { bypassesArmor() }
-    @JvmField val DRY_OUT = register("dry_out", "dryout")
-    @JvmField val SWEET_BERRY_BUSH = register("sweet_berry_bush", "sweetBerryBush")
-    @JvmField val FREEZING = register("freezing", "freeze") { bypassesArmor() }
-    @JvmField val FALLING_STALACTITE = register("falling_stalactite", "fallingStalactite") { damagesHelmet() }
-    @JvmField val STALAGMITE = register("stalagmite", "stalagmite") { fall() }
-    @JvmField val STING = register("sting", "sting")
-    @JvmField val GENERIC_MOB_ATTACK = register("generic_mob_attack", "mob")
-    @JvmField val PASSIVE_MOB_ATTACK = register("passive_mob_attack", "mob") { aggravatesTarget(false) }
-    @JvmField val PROJECTILE_MOB_ATTACK = register("indirect_mob_attack", "mob") { projectile() }
-    @JvmField val PLAYER_ATTACK = register("player_attack", "player")
-    @JvmField val ARROW = register("arrow", "arrow") { projectile() }
-    @JvmField val TRIDENT = register("trident", "trident") { projectile() }
-    @JvmField val FIREWORKS = register("fireworks", "fireworks") { explosion() }
-    @JvmField val FIREBALL = register("fireball", "fireball") {
+    @JvmField val WITHER: DamageType = register("wither", "wither") { bypassesArmor() }
+    @JvmField val ANVIL: DamageType = register("anvil", "anvil") { damagesHelmet() }
+    @JvmField val FALLING_BLOCK: DamageType = register("falling_block", "fallingBlock") { damagesHelmet() }
+    @JvmField val DRAGON_BREATH: DamageType = register("dragon_breath", "dragonBreath") { bypassesArmor() }
+    @JvmField val DRY_OUT: DamageType = register("dry_out", "dryout")
+    @JvmField val SWEET_BERRY_BUSH: DamageType = register("sweet_berry_bush", "sweetBerryBush")
+    @JvmField val FREEZING: DamageType = register("freezing", "freeze") { bypassesArmor() }
+    @JvmField val FALLING_STALACTITE: DamageType = register("falling_stalactite", "fallingStalactite") { damagesHelmet() }
+    @JvmField val STALAGMITE: DamageType = register("stalagmite", "stalagmite") { fall() }
+    @JvmField val STING: DamageType = register("sting", "sting")
+    @JvmField val GENERIC_MOB_ATTACK: DamageType = register("generic_mob_attack", "mob")
+    @JvmField val PASSIVE_MOB_ATTACK: DamageType = register("passive_mob_attack", "mob") { aggravatesTarget(false) }
+    @JvmField val PROJECTILE_MOB_ATTACK: DamageType = register("indirect_mob_attack", "mob") { projectile() }
+    @JvmField val PLAYER_ATTACK: DamageType = register("player_attack", "player")
+    @JvmField val ARROW: DamageType = register("arrow", "arrow") { projectile() }
+    @JvmField val TRIDENT: DamageType = register("trident", "trident") { projectile() }
+    @JvmField val FIREWORKS: DamageType = register("fireworks", "fireworks") { explosion() }
+    @JvmField val FIREBALL: DamageType = register("fireball", "fireball") {
         fire()
         projectile()
     }
-    @JvmField val FIREBALL_ON_FIRE = register("fireball_on_fire", "onFire") {
+    @JvmField val FIREBALL_ON_FIRE: DamageType = register("fireball_on_fire", "onFire") {
         fire()
         projectile()
     }
-    @JvmField val WITHER_SKULL = register("wither_skull", "witherSkull") { projectile() }
-    @JvmField val THROWN_PROJECTILE = register("thrown_projectile", "thrown") { projectile() }
-    @JvmField val INDIRECT_MAGIC = register("indirect_magic", "indirectMagic") {
+    @JvmField val WITHER_SKULL: DamageType = register("wither_skull", "witherSkull") { projectile() }
+    @JvmField val THROWN_PROJECTILE: DamageType = register("thrown_projectile", "thrown") { projectile() }
+    @JvmField val INDIRECT_MAGIC: DamageType = register("indirect_magic", "indirectMagic") {
         bypassesArmor()
         magic()
     }
-    @JvmField val THORNS = register("thorns", "thorns") {
+    @JvmField val THORNS: DamageType = register("thorns", "thorns") {
         thorns()
         magic()
     }
-    @JvmField val EXPLOSION = register("explosion", "explosion") {
+    @JvmField val EXPLOSION: DamageType = register("explosion", "explosion") {
         scalesWithDifficulty()
         explosion()
     }
-    @JvmField val PLAYER_EXPLOSION = register("player_explosion", "explosion.player") {
+    @JvmField val PLAYER_EXPLOSION: DamageType = register("player_explosion", "explosion.player") {
         scalesWithDifficulty()
         explosion()
     }
-    @JvmField val BAD_RESPAWN_POINT = register("bad_respawn_point", "badRespawnPoint") {
+    @JvmField val BAD_RESPAWN_POINT: DamageType = register("bad_respawn_point", "badRespawnPoint") {
         scalesWithDifficulty()
         explosion()
     }

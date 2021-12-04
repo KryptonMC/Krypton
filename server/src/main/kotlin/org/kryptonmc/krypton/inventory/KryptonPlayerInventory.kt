@@ -158,7 +158,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
 
     companion object {
 
-        private const val SIZE = 46
+        const val SIZE = 46
         private val TYPE = KryptonInventoryType(Key.key("krypton", "inventory/player"), SIZE)
     }
 }

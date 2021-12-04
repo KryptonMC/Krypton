@@ -29,17 +29,21 @@ object KryptonBlockManager : BlockManager {
     @get:JvmName("handlers")
     override val handlers = mutableMapOf<String, BlockHandler>()
 
-    override fun handler(key: String) = handlers[key]
+    override fun handler(key: String): BlockHandler? = handlers[key]
 
-    override fun handler(key: Key) = handlers[key.asString()]
+    override fun handler(key: Key): BlockHandler? = handlers[key.asString()]
 
-    override fun handler(block: Block) = handlers[block.key().asString()]
+    override fun handler(block: Block): BlockHandler? = handlers[block.key().asString()]
 
     override fun register(key: String, handler: BlockHandler) {
         handlers[key] = handler
     }
 
-    override fun register(key: Key, handler: BlockHandler) = register(key.asString(), handler)
+    override fun register(key: Key, handler: BlockHandler) {
+        register(key.asString(), handler)
+    }
 
-    override fun register(block: Block, handler: BlockHandler) = register(block.key().asString(), handler)
+    override fun register(block: Block, handler: BlockHandler) {
+        register(block.key().asString(), handler)
+    }
 }

@@ -12,7 +12,6 @@ import me.lucko.spark.api.Spark
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.ProfileCache
-import org.kryptonmc.api.user.ban.BanService
 import org.kryptonmc.api.block.BlockManager
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender

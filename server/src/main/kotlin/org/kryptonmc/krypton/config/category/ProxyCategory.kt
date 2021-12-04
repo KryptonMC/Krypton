@@ -33,6 +33,7 @@ direct connect.
 """
 
 @ConfigSerializable
+@JvmRecord
 data class ProxyCategory(
     @Comment(MODE_COMMENT)
     val mode: ForwardingMode = ForwardingMode.NONE,

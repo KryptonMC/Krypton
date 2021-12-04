@@ -98,16 +98,16 @@ private val VEGETABLES = intArrayOf(
     Blocks.MELON.id
 )
 
-fun Block.isPlant() = id in PLANTS
+fun Block.isPlant(): Boolean = PLANTS.contains(id)
 
-fun Block.isReplaceablePlant() = id in REPLACEABLE_PLANTS
+fun Block.isReplaceablePlant() = REPLACEABLE_PLANTS.contains(id)
 
-fun Block.isVegetable() = id in VEGETABLES
+fun Block.isVegetable() = VEGETABLES.contains(id)
 
-fun Block.isBurning() = BlockTags.FIRE.contains(this)||
+fun Block.isBurning(): Boolean = BlockTags.FIRE.contains(this) ||
         this === Blocks.LAVA ||
         this === Blocks.MAGMA_BLOCK ||
         isLitCampfire() ||
         this === Blocks.LAVA_CAULDRON
 
-fun Block.isLitCampfire() = contains(Properties.LIT) && BlockTags.CAMPFIRES.contains(this) && get(Properties.LIT)!!
+fun Block.isLitCampfire(): Boolean = contains(Properties.LIT) && BlockTags.CAMPFIRES.contains(this) && get(Properties.LIT)!!

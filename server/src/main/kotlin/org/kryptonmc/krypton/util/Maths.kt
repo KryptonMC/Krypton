@@ -31,15 +31,6 @@ object Maths {
         return random.nextInt(upper - lower + 1) + lower
     }
 
-    private fun biLerp(
-        deltaX: Double,
-        deltaY: Double,
-        x0y0: Double,
-        x1y0: Double,
-        x0y1: Double,
-        x1y1: Double
-    ) = GenericMath.lerp(GenericMath.lerp(x0y0, x1y0, deltaX), GenericMath.lerp(x0y1, x1y1, deltaX), deltaY)
-
     fun triLerp(
         deltaX: Double,
         deltaY: Double,
@@ -52,11 +43,20 @@ object Maths {
         x1y0z1: Double,
         x0y1z1: Double,
         x1y1z1: Double
-    ) = GenericMath.lerp(
+    ): Double = GenericMath.lerp(
         biLerp(deltaX, deltaY, x0y0z0, x1y0z0, x0y1z0, x1y1z0),
         biLerp(deltaX, deltaY, x0y0z1, x1y0z1, x0y1z1, x1y1z1),
         deltaZ
     )
+
+    private fun biLerp(
+        deltaX: Double,
+        deltaY: Double,
+        x0y0: Double,
+        x1y0: Double,
+        x0y1: Double,
+        x1y1: Double
+    ): Double = GenericMath.lerp(GenericMath.lerp(x0y0, x1y0, deltaX), GenericMath.lerp(x0y1, x1y1, deltaX), deltaY)
 
     /**
      * Calculates a chunk position from a given [id] in a spiral pattern.

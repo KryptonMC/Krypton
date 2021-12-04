@@ -20,7 +20,13 @@ package org.kryptonmc.krypton.network
 
 import io.netty.buffer.ByteBuf
 
+/**
+ * Something that can write its data to a Netty ByteBuf.
+ */
 interface Writable {
 
+    /**
+     * Writes the data contained within this writable to the given [buf].
+     */
     fun write(buf: ByteBuf)
 }

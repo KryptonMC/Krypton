@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.projectile
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.Trident
+import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
@@ -29,7 +30,7 @@ import org.kryptonmc.nbt.CompoundTag
 
 class KryptonTrident(world: KryptonWorld) : KryptonArrowLike(world, EntityTypes.TRIDENT, SoundEvents.TRIDENT_HIT_GROUND), Trident {
 
-    override var item = KryptonItemStack(ItemTypes.TRIDENT, 1)
+    override var item: KryptonItemStack = KryptonItemStack(ItemTypes.TRIDENT, 1)
     override var dealtDamage = false
 
     override var loyaltyLevel: Int

@@ -35,10 +35,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import kotlin.io.path.moveTo
 
-class WorldDataManager(
-    private val folder: Path,
-    private val useDataConverter: Boolean
-) {
+class WorldDataManager(private val folder: Path, private val useDataConverter: Boolean) {
 
     fun load(name: String, dataPackConfig: DataPackConfig = DataPackConfig.DEFAULT): PrimaryWorldData? {
         val path = folder.resolve(name)
@@ -70,28 +67,30 @@ class WorldDataManager(
         }
     }
 
-    private fun read(folder: Path, path: Path, dataPackConfig: DataPackConfig): PrimaryWorldData? = try {
-        val tag = TagIO.read(path, TagCompression.GZIP).getCompound("Data")
-        val version = if (tag.contains("DataVersion", 99)) tag.getInt("DataVersion") else -1
-        // We won't upgrade data if use of the data converter is disabled.
-        if (version < KryptonPlatform.worldVersion && !useDataConverter) {
-            LOGGER.error("The server attempted to load a world from an earlier version of Minecraft, but data conversion is disabled!")
-            LOGGER.info("If you would like to use data conversion, provide the --upgrade-data flag to the JAR on startup.")
-            LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
-            LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
-            error("Attempted to load old world data from version $version when data conversion is disabled!")
-        }
+    private fun read(folder: Path, path: Path, dataPackConfig: DataPackConfig): PrimaryWorldData? {
+        return try {
+            val tag = TagIO.read(path, TagCompression.GZIP).getCompound("Data")
+            val version = if (tag.contains("DataVersion", 99)) tag.getInt("DataVersion") else -1
+            // We won't upgrade data if use of the data converter is disabled.
+            if (version < KryptonPlatform.worldVersion && !useDataConverter) {
+                LOGGER.error("The server attempted to load a world from an earlier version of Minecraft, but data conversion is disabled!")
+                LOGGER.info("If you would like to use data conversion, provide the --upgrade-data flag to the JAR on startup.")
+                LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
+                LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
+                error("Attempted to load old world data from version $version when data conversion is disabled!")
+            }
 
-        // Don't use data converter if the data isn't older than our version.
-        val data = if (useDataConverter && version < KryptonPlatform.worldVersion) {
-            NBTMapType(MCDataConverter.convertTag(MCTypeRegistry.LEVEL, tag, version, KryptonPlatform.worldVersion))
-        } else {
-            NBTMapType(tag)
+            // Don't use data converter if the data isn't older than our version.
+            val data = if (useDataConverter && version < KryptonPlatform.worldVersion) {
+                NBTMapType(MCDataConverter.convertTag(MCTypeRegistry.LEVEL, tag, version, KryptonPlatform.worldVersion))
+            } else {
+                NBTMapType(tag)
+            }
+            PrimaryWorldData.parse(folder, data, WorldGenerationSettings.default(), dataPackConfig)
+        } catch (exception: Exception) {
+            LOGGER.error("Error whilst trying to read world at $folder!", exception)
+            null
         }
-        PrimaryWorldData.parse(folder, data, WorldGenerationSettings.default(), dataPackConfig)
-    } catch (exception: Exception) {
-        LOGGER.error("Error whilst trying to read world at $folder!", exception)
-        null
     }
 
     companion object {

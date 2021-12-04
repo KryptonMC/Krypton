@@ -36,5 +36,5 @@ class WhitelistedIps(path: Path) : ServerConfigList<String, WhitelistIpEntry>(pa
         return WhitelistIpEntry(ip)
     }
 
-    operator fun get(key: SocketAddress) = super.get(key.asString())
+    operator fun get(key: SocketAddress): WhitelistIpEntry? = super.get(key.asString())
 }

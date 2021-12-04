@@ -40,6 +40,7 @@ import java.io.IOException
 import java.nio.file.Path
 
 @ConfigSerializable
+@JvmRecord
 data class KryptonConfig(
     @Comment("The main server settings.")
     val server: ServerCategory = ServerCategory(),
@@ -67,6 +68,7 @@ data class KryptonConfig(
             at https://discord.gg/4QuwYACDRX
         """.trimIndent()
 
+        @JvmField
         val OPTIONS: ConfigurationOptions = ConfigurationOptions.defaults()
             .header(HEADER)
             .serializers {
@@ -85,6 +87,7 @@ data class KryptonConfig(
                     .registerAnnotatedObjects(objectMapperFactory())
             }
 
+        @JvmStatic
         fun load(path: Path): KryptonConfig {
             val loader = HoconConfigurationLoader.builder()
                 .path(path)

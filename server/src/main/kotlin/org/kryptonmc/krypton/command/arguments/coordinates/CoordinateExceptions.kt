@@ -24,7 +24,16 @@ import org.kryptonmc.api.adventure.toMessage
 
 object CoordinateExceptions {
 
-    @JvmField val POSITION_EXPECTED_DOUBLE = SimpleCommandExceptionType(Component.translatable("argument.pos.missing.double").toMessage())
-    @JvmField val POSITION_3D_INCOMPLETE = SimpleCommandExceptionType(Component.translatable("argument.pos3d.incomplete").toMessage())
-    @JvmField val POSITION_MIXED_TYPE = SimpleCommandExceptionType(Component.translatable("argument.pos.mixed").toMessage())
+    @JvmField
+    val POSITION_EXPECTED_DOUBLE: SimpleCommandExceptionType = SimpleCommandExceptionType(
+        Component.translatable("argument.pos.missing.double").toMessage()
+    )
+
+    @JvmField
+    val POSITION_3D_INCOMPLETE: SimpleCommandExceptionType = SimpleCommandExceptionType(
+        Component.translatable("argument.pos3d.incomplete").toMessage()
+    )
+
+    @JvmField
+    val POSITION_MIXED_TYPE: SimpleCommandExceptionType = SimpleCommandExceptionType(Component.translatable("argument.pos.mixed").toMessage())
 }

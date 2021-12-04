@@ -22,6 +22,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 
 @ConfigSerializable
+@JvmRecord
 data class GeneratorCategory(
     @Comment("The world generation settings as a JSON string")
     val settings: String = "",

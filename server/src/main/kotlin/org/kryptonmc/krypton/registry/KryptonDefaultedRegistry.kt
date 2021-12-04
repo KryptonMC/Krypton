@@ -28,18 +28,20 @@ class KryptonDefaultedRegistry<T : Any>(
     override val defaultKey: Key
 ) : KryptonRegistry<T>(key), DefaultedRegistry<T> {
 
-    override lateinit var defaultValue: T
+    private var internalDefault: T? = null
+    override val defaultValue: T
+        get() = internalDefault ?: error("The default value has not been registered for registry ${key.location}!")
 
     override fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V {
-        if (key.location == defaultKey) defaultValue = value
+        if (key.location == defaultKey) internalDefault = value
         return super<KryptonRegistry>.register(id, key, value)
     }
 
-    override fun get(key: Key) = super.get(key) ?: defaultValue
+    override fun get(key: Key): T = super.get(key) ?: defaultValue
 
-    override fun get(id: Int) = super.get(id) ?: defaultValue
+    override fun get(id: Int): T = super.get(id) ?: defaultValue
 
-    override fun get(key: ResourceKey<T>) = super.get(key) ?: defaultValue
+    override fun get(key: ResourceKey<T>): T = super.get(key) ?: defaultValue
 
-    override fun get(value: T) = super.get(value) ?: defaultKey
+    override fun get(value: T): Key = super.get(value) ?: defaultKey
 }

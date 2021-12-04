@@ -18,40 +18,43 @@
  */
 package org.kryptonmc.krypton.commands
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.StringArgumentType.string
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import com.mojang.brigadier.arguments.StringArgumentType
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
-import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.literal
 
 object KickCommand : InternalCommand {
 
+    private val KICKED_MESSAGE = Component.translatable("multiplayer.disconnect.kicked")
+
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("kick")
-            .permission(KryptonPermission.KICK)
-            .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
-                .executes { context ->
+        dispatcher.register(literal("kick") {
+            permission(KryptonPermission.KICK)
+            argument("targets", EntityArgument.players()) {
+                executes { context ->
                     context.entityArgument("targets").players(context.source).forEach {
-                        it.disconnect(translatable("multiplayer.disconnect.kicked"))
+                        it.disconnect(KICKED_MESSAGE)
                     }
-                    1
-                }.then(argument<Sender, String>("reason", string())
-                    .executes { context ->
+                    Command.SINGLE_SUCCESS
+                }
+                argument("reason", StringArgumentType.string()) {
+                    executes { context ->
                         val reason = context.argument<String>("reason")
                         context.entityArgument("targets").players(context.source).forEach {
-                            it.disconnect(translatable("multiplayer.disconnect.kicked").append(text(" Reason: $reason")))
+                            it.disconnect(KICKED_MESSAGE.append(Component.text(" Reason: $reason")))
                         }
-                        1
-                    })
-            )
-        )
+                        Command.SINGLE_SUCCESS
+                    }
+                }
+            }
+        })
     }
 }

@@ -39,21 +39,25 @@ class DebugGenerator(
     private val biomes: KryptonRegistry<Biome>
 ) : Generator(FixedBiomeGenerator(biomes[BiomeKeys.PLAINS]!!), StructureSettings(false)) {
 
-    override val codec = CODEC
+    override val codec: Codec<out Generator> = CODEC
     override val climateSampler: Climate.Sampler = Climate.Sampler { _, _, _ -> Climate.TargetPoint.ZERO }
 
-    override fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor) = Unit
+    override fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor) {
+        // no surface to build for debug generator
+    }
 
     companion object {
 
+        private const val BLOCK_MARGIN = 2
+        private val GRID_WIDTH = GenericMath.sqrt(BlockLoader.STATES.size.toDouble()).ceil()
+        private val GRID_HEIGHT = (BlockLoader.STATES.size.toDouble() / GRID_WIDTH).ceil()
+
+        @JvmField
         val CODEC: Codec<DebugGenerator> = ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC)
             .fieldOf("biomes")
             .xmap(::DebugGenerator, DebugGenerator::biomes)
             .stable()
             .codec()
-        private const val BLOCK_MARGIN = 2
-        private val GRID_WIDTH = GenericMath.sqrt(BlockLoader.STATES.size.toDouble()).ceil()
-        private val GRID_HEIGHT = (BlockLoader.STATES.size.toDouble() / GRID_WIDTH).ceil()
 
         @JvmStatic
         fun blockAt(x: Int, z: Int): Block {

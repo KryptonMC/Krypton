@@ -161,10 +161,14 @@ data class KryptonDimensionType(
         private const val MAXIMUM_COORDINATE_SCALE = 3.0E7
         private const val MINIMUM_HEIGHT = 16
 
+        @JvmField
         val Y_SIZE = (1 shl Vectors.PACKED_Y) - 32
+        @JvmField
         val MAX_Y = (Y_SIZE shr 1) - 1
+        @JvmField
         val MIN_Y = MAX_Y - Y_SIZE + 1
 
+        @JvmField
         val CODEC: Codec<DimensionType> = RecordCodecBuilder.create<DimensionType> { instance ->
             instance.group(
                 Codec.BOOL.fieldOf("piglin_safe").forGetter(DimensionType::isPiglinSafe),
@@ -190,6 +194,7 @@ data class KryptonDimensionType(
             ).apply(instance) { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> error("Cannot decode dimension types!") }
         }.comapFlatMap(::checkY) { it }
 
+        @JvmStatic
         private fun checkY(type: DimensionType): DataResult<DimensionType> {
             if (type.height < MINIMUM_HEIGHT) return DataResult.error("Height has to be at least $MINIMUM_HEIGHT!")
             if (type.minimumY + type.height > MAX_Y + 1) return DataResult.error("Minimum Y + height cannot be greater than ${MAX_Y + 1}!")

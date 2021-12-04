@@ -32,7 +32,7 @@ data class KryptonStatisticType<T : Any>(
     override val statistics: MutableMap<T, Statistic<T>> = IdentityHashMap()
 ) : StatisticType<T> {
 
-    override fun contains(key: T) = statistics.containsKey(key)
+    override fun contains(key: T): Boolean = statistics.containsKey(key)
 
     override fun get(key: T): Statistic<T> = get(key, StatisticFormatter.DEFAULT)
 
@@ -40,7 +40,7 @@ data class KryptonStatisticType<T : Any>(
         KryptonStatistic(this, key, formatter)
     }
 
-    override fun iterator() = statistics.values.iterator()
+    override fun iterator(): Iterator<Statistic<T>> = statistics.values.iterator()
 
     override fun key(): Key = key
 }

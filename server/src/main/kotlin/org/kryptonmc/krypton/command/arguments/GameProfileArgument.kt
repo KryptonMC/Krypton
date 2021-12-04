@@ -42,5 +42,3 @@ object GameProfileArgument : ArgumentType<EntityQuery> {
         return EntityQuery(emptyList(), EntityQuery.Selector.PLAYER, string)
     }
 }
-
-fun CommandContext<Sender>.gameProfileArgument(name: String): EntityQuery = argument(name)

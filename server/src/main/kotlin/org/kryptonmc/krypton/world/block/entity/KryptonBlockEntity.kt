@@ -35,9 +35,12 @@ abstract class KryptonBlockEntity(
     override var isValid: Boolean = true
     open val updateTag: CompoundTag
         get() = saveMetadata(CompoundTag.builder()).build()
-    open val restrictModification: Boolean = false
+    open val restrictModification: Boolean
+        get() = false
 
-    open fun load(tag: CompoundTag) {}
+    open fun load(tag: CompoundTag) {
+        // nothing to do for now
+    }
 
     open fun save(tag: CompoundTag.Builder): CompoundTag.Builder = saveMetadata(tag)
 

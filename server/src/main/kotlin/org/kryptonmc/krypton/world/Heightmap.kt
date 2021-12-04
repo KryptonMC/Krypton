@@ -21,19 +21,17 @@ package org.kryptonmc.krypton.world
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.krypton.util.BitStorage
 import org.kryptonmc.krypton.util.ceillog2
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.SimpleBitStorage
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import java.util.EnumSet
 
-class Heightmap(
-    private val chunk: ChunkAccessor,
-    val type: Type
-) {
+class Heightmap(private val chunk: ChunkAccessor, val type: Type) {
 
     private val isOpaque = type.isOpaque
-    val data = SimpleBitStorage((chunk.height + 1).ceillog2(), 256)
+    val data: BitStorage = SimpleBitStorage((chunk.height + 1).ceillog2(), 256)
 
     fun update(x: Int, y: Int, z: Int, block: Block): Boolean {
         val firstAvailable = firstAvailable(x, z)
@@ -68,15 +66,17 @@ class Heightmap(
         }
     }
 
-    fun firstAvailable(x: Int, z: Int) = firstAvailable(indexOf(x, z))
+    fun firstAvailable(x: Int, z: Int): Int = firstAvailable(indexOf(x, z))
 
-    fun highestTaken(x: Int, z: Int) = firstAvailable(indexOf(x, z)) - 1
+    fun highestTaken(x: Int, z: Int): Int = firstAvailable(indexOf(x, z)) - 1
 
-    private fun set(x: Int, z: Int, y: Int) = data.set(indexOf(x, z), y - chunk.minimumBuildHeight)
+    private fun set(x: Int, z: Int, y: Int) {
+        data[indexOf(x, z)] = y - chunk.minimumBuildHeight
+    }
 
-    private fun indexOf(x: Int, z: Int) = x + z * 16
+    private fun indexOf(x: Int, z: Int): Int = x + z * 16
 
-    private fun firstAvailable(index: Int) = data[index] + chunk.minimumBuildHeight
+    private fun firstAvailable(index: Int): Int = data[index] + chunk.minimumBuildHeight
 
     enum class Type(val isOpaque: (Block) -> Boolean, val sendToClient: Boolean = false) {
 
@@ -89,6 +89,7 @@ class Heightmap(
 
         companion object {
 
+            @JvmField
             val POST_FEATURES: Set<Type> = EnumSet.of(
                 WORLD_SURFACE,
                 OCEAN_FLOOR,
@@ -114,6 +115,7 @@ class Heightmap(
         }
         private val LOGGER = logger<Heightmap>()
 
+        @JvmStatic
         fun prime(chunk: ChunkAccessor, toPrime: Set<Type>) {
             val size = toPrime.size
             val heightmaps = ObjectArrayList<Heightmap>(size)
