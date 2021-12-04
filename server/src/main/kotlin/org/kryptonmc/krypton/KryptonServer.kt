@@ -275,13 +275,10 @@ class KryptonServer(
         }
         if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
             LOGGER.info("Auto save started.")
-            worldManager.saveAll()
+            worldManager.saveAll(false)
             LOGGER.info("Auto save finished.")
         }
-        if (tickCount % SAVE_PROFILE_CACHE_INTERVAL == 0) {
-            LOGGER.debug("Saving authenticated user cache...")
-            profileCache.save()
-        }
+        if (tickCount % SAVE_PROFILE_CACHE_INTERVAL == 0) profileCache.save()
     }
 
     fun updateConfig(path: String, value: Any?) {
@@ -317,7 +314,7 @@ class KryptonServer(
 
             // Save data
             LOGGER.info("Saving player, world, and region data...")
-            worldManager.saveAll()
+            worldManager.saveAll(true)
             playerManager.saveAll()
 
             // Shut down plugins and unregister listeners

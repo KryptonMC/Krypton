@@ -120,7 +120,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
     }
 
     fun load(chunk: KryptonChunk) {
-        val nbt = regionFileManager.read(chunk.position) ?: return
+        val nbt = regionFileManager.read(chunk.x, chunk.z) ?: return
         val version = if (nbt.contains("DataVersion", IntTag.ID)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !world.server.useDataConverter) {
@@ -151,6 +151,10 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         }
     }
 
+    fun saveAll(shouldClose: Boolean) {
+        byChunk.long2ObjectEntrySet().fastForEach {  }
+    }
+
     fun save(chunk: KryptonChunk) {
         val x = chunk.position.x
         val z = chunk.position.z
@@ -166,7 +170,11 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             if (it is KryptonPlayer) return@forEach // Do not save players in here.
             entityList.add(it.saveWithPassengers().build())
         }
-        regionFileManager.write(chunk.position, root)
+        regionFileManager.write(chunk.x, chunk.z, root)
+    }
+
+    fun flush() {
+        regionFileManager.flush()
     }
 
     override fun close() {

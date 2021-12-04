@@ -124,7 +124,7 @@ class ChunkManager(private val world: KryptonWorld) {
         if (chunkMap.containsKey(pos)) return chunkMap[pos]!!
 
         val position = ChunkPosition(x, z)
-        val nbt = regionFileManager.read(position) ?: return null
+        val nbt = regionFileManager.read(x, z) ?: return null
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !world.server.useDataConverter) {
@@ -200,15 +200,15 @@ class ChunkManager(private val world: KryptonWorld) {
         chunkMap.remove(loaded.position.toLong())
     }
 
-    fun saveAll() {
+    fun saveAll(shouldClose: Boolean) {
         chunkMap.values.forEach { save(it) }
-        regionFileManager.close()
+        if (shouldClose) regionFileManager.close() else regionFileManager.flush()
     }
 
     fun save(chunk: KryptonChunk) {
         val lastUpdate = world.time
         chunk.lastUpdate = lastUpdate
-        regionFileManager.write(chunk.position, chunk.serialize())
+        regionFileManager.write(chunk.x, chunk.z, chunk.serialize())
         world.entityManager.save(chunk)
     }
 

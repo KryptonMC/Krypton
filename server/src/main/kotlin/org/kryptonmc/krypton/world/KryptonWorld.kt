@@ -315,9 +315,9 @@ class KryptonWorld(
         if (data.gameRules[GameRules.DO_DAYLIGHT_CYCLE]) data.dayTime++
     }
 
-    override fun save() {
-        chunkManager.saveAll()
-        entityManager.close()
+    fun save(shouldClose: Boolean) {
+        chunkManager.saveAll(shouldClose)
+        if (shouldClose) entityManager.close() else entityManager.flush()
     }
 
     override fun audiences(): Iterable<Audience> = players

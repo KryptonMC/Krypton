@@ -107,14 +107,17 @@ class RegionFile(
     ) : this(folder, externalFolder, RegionFileVersion.ZLIB, synchronizeWrites)
 
     /**
-     * Get a [DataInputStream] containing all of the chunk data for a chunk at the specified [position].
+     * Gets a [DataInputStream] containing all of the chunk data for a chunk at
+     * the given [x] and [z] chunk coordinates.
      *
-     * @param position the position of the chunk to get data for
-     * @return a [DataInputStream] containing the chunk data, or null if an error occurred
+     * @param x the X coordinate
+     * @param z the Z coordinate
+     * @return a [DataInputStream] containing the chunk data, or null if an
+     * error occurred
      */
     @Synchronized
-    fun getChunkDataInputStream(position: ChunkPosition): DataInputStream? {
-        val offset = offset(position)
+    fun getChunkDataInputStream(x: Int, z: Int): DataInputStream? {
+        val offset = offset(x, z)
         if (offset == 0) return null
 
         val sectorNumber = sectorNumber(offset)
@@ -126,55 +129,58 @@ class RegionFile(
         buffer.flip()
 
         if (buffer.remaining() < 5) {
-            LOGGER.error("Chunk at $position in region file $folder has truncated header! Expected $size, but was ${buffer.remaining()}!")
+            LOGGER.error("Chunk at $x, $z in region file $folder has truncated header! Expected $size, but was ${buffer.remaining()}!")
             return null
         }
 
         val length = buffer.int
         val compressionType = buffer.get()
         if (length == 0) {
-            LOGGER.error("Chunk at $position in region file $folder is allocated, but has no stream!")
+            LOGGER.error("Chunk at $x, $z in region file $folder is allocated, but has no stream!")
             return null
         }
 
         val dataLength = length - 1
         if (isExternalStreamChunk(compressionType)) {
             if (dataLength != 0) {
-                LOGGER.error("Chunk at $position in region file $folder has both internal and external streams!")
+                LOGGER.error("Chunk at $x, $z in region file $folder has both internal and external streams!")
             }
-            return createExternalChunkInputStream(position, externalChunkVersion(compressionType))
+            return createExternalChunkInputStream(x, z, externalChunkVersion(compressionType))
         }
         if (dataLength > buffer.remaining()) {
-            LOGGER.error("Chunk at $position in region file $folder has a truncated stream! Expected $dataLength, but was ${buffer.remaining()}!")
+            LOGGER.error("Chunk at $x, $z in region file $folder has a truncated stream! Expected $dataLength, but was ${buffer.remaining()}!")
             return null
         }
         if (dataLength < 0) {
-            LOGGER.error("Chunk at $position in region file $folder has a negative declared size!")
+            LOGGER.error("Chunk at $x, $z in region file $folder has a negative declared size!")
             return null
         }
-        return createChunkInputStream(position, compressionType, createStream(buffer, dataLength))
+        return createChunkInputStream(x, z, compressionType, createStream(buffer, dataLength))
     }
 
     /**
-     * Gets a [DataOutputStream] for writing chunk data to
+     * Gets a [DataOutputStream] for writing chunk data to.
      *
-     * @param position the position of the chunk
+     * @param x the X coordinate
+     * @param z the Z coordinate
      * @return a [DataOutputStream] for writing chunk data to
      */
-    fun getChunkDataOutputStream(position: ChunkPosition): DataOutputStream = DataOutputStream(version.compress(ChunkBuffer(position)))
+    fun getChunkDataOutputStream(x: Int, z: Int): DataOutputStream = DataOutputStream(version.compress(ChunkBuffer(x, z)))
 
     /**
-     * Writes chunk data for a chunk at the specified [position]
+     * Writes chunk data for a chunk at the specified [x] and [z] chunk
+     * coordinates.
      *
-     * @param position the position of the chunk to write
+     * @param x the X coordinate
+     * @param z the Z coordinate
      * @param buffer the data to write
      */
     @Synchronized
-    fun write(position: ChunkPosition, buffer: ByteBuffer) {
+    fun write(x: Int, z: Int, buffer: ByteBuffer) {
         val action: Runnable
         val sectors: Int
 
-        val offsetIndex = offsetIndex(position)
+        val offsetIndex = offsetIndex(x, z)
         val offset = offsets.get(offsetIndex)
         val sectorNumber = sectorNumber(offset)
         val sectorCount = sectorCount(offset)
@@ -182,8 +188,8 @@ class RegionFile(
         var requiredSectors = sectorCountFromSize(length)
 
         if (requiredSectors >= EXTERNAL_CHUNK_THRESHOLD) {
-            val path = resolveExternalChunkPath(position)
-            LOGGER.warn("Saving oversized chunk at $position in file $path, due to it being $length bytes.")
+            val path = resolveExternalChunkPath(x, z)
+            LOGGER.warn("Saving oversized chunk at $x, $z in file $path, due to it being $length bytes.")
             requiredSectors = 1
             sectors = usedSectors.allocate(requiredSectors)
             action = writeExternal(path, buffer)
@@ -191,7 +197,7 @@ class RegionFile(
             channel.write(externalStub, (sectors * SECTOR_BYTES).toLong())
         } else {
             sectors = usedSectors.allocate(requiredSectors)
-            action = Runnable { Files.deleteIfExists(resolveExternalChunkPath(position)) }
+            action = Runnable { Files.deleteIfExists(resolveExternalChunkPath(x, z)) }
             channel.write(buffer, (sectors * SECTOR_BYTES).toLong())
         }
 
@@ -202,19 +208,19 @@ class RegionFile(
         if (sectorNumber != 0) usedSectors.free(sectorNumber, sectorCount)
     }
 
-    private fun createExternalChunkInputStream(position: ChunkPosition, compressionType: Byte): DataInputStream? {
-        val path = resolveExternalChunkPath(position)
+    private fun createExternalChunkInputStream(x: Int, z: Int, compressionType: Byte): DataInputStream? {
+        val path = resolveExternalChunkPath(x, z)
         if (!path.isRegularFile()) {
-            LOGGER.error("External path $path for chunk at $position is not a file!")
+            LOGGER.error("External path $path for chunk at $x, $z is not a file!")
             return null
         }
-        return createChunkInputStream(position, compressionType, path.inputStream())
+        return createChunkInputStream(x, z, compressionType, path.inputStream())
     }
 
-    private fun createChunkInputStream(position: ChunkPosition, compressionType: Byte, input: InputStream): DataInputStream? {
+    private fun createChunkInputStream(x: Int, z: Int, compressionType: Byte, input: InputStream): DataInputStream? {
         val compression = RegionFileVersion.fromId(compressionType.toInt())
         if (compression == null) {
-            LOGGER.error("Chunk at $position in region file $folder has an invalid compression type! Type: $compressionType")
+            LOGGER.error("Chunk at $x, $z in region file $folder has an invalid compression type! Type: $compressionType")
             return null
         }
         return DataInputStream(compression.decompress(input))
@@ -241,10 +247,10 @@ class RegionFile(
         return Runnable { Files.move(tempFile, path, StandardCopyOption.REPLACE_EXISTING) }
     }
 
-    private fun offset(position: ChunkPosition): Int = offsets.get(offsetIndex(position))
+    private fun offset(x: Int, z: Int): Int = offsets.get(offsetIndex(x, z))
 
-    private fun resolveExternalChunkPath(position: ChunkPosition): Path {
-        val name = "c.${position.x}.${position.z}$EXTERNAL_FILE_EXTENSION"
+    private fun resolveExternalChunkPath(x: Int, z: Int): Path {
+        val name = "c.$x.$z$EXTERNAL_FILE_EXTENSION"
         return externalFolder.resolve(name)
     }
 
@@ -268,16 +274,20 @@ class RegionFile(
         }
     }
 
-    fun clear(position: ChunkPosition) {
-        val offsetIndex = offsetIndex(position)
+    fun clear(x: Int, z: Int) {
+        val offsetIndex = offsetIndex(x, z)
         val offset = offsets.get(offsetIndex)
         if (offset != CHUNK_NOT_PRESENT) {
             offsets.put(offsetIndex, CHUNK_NOT_PRESENT)
             timestamps.put(offsetIndex, timestamp())
             writeHeader()
-            Files.deleteIfExists(resolveExternalChunkPath(position))
+            Files.deleteIfExists(resolveExternalChunkPath(x, z))
             usedSectors.free(sectorNumber(offset), sectorCount(offset))
         }
+    }
+
+    fun flush() {
+        channel.force(true)
     }
 
     override fun close() {
@@ -288,7 +298,7 @@ class RegionFile(
         }
     }
 
-    private inner class ChunkBuffer(private val position: ChunkPosition) : ByteArrayOutputStream(SECTOR_BYTES * 2) {
+    private inner class ChunkBuffer(private val x: Int, private val z: Int) : ByteArrayOutputStream(SECTOR_BYTES * 2) {
 
         init {
             repeat(4) { write(0) }
@@ -298,7 +308,7 @@ class RegionFile(
         override fun close() {
             val buffer = ByteBuffer.wrap(buf, 0, count)
             buffer.putInt(0, count - CHUNK_HEADER_SIZE + 1)
-            this@RegionFile.write(position, buffer)
+            this@RegionFile.write(x, z, buffer)
         }
     }
 
@@ -356,7 +366,7 @@ class RegionFile(
         private fun timestamp(): Int = (System.currentTimeMillis() / 1000L).toInt()
 
         @JvmStatic
-        private fun offsetIndex(position: ChunkPosition): Int = (position.x and 31) + (position.z and 31) * 32
+        private fun offsetIndex(x: Int, z: Int): Int = (x and 31) + (z and 31) * 32
 
         @JvmStatic
         private fun sectorNumber(sector: Int): Int = sector shr 8 and 0xFFFFFF

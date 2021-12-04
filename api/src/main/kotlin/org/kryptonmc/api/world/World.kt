@@ -319,12 +319,6 @@ public interface World : ForwardingAudience {
     public fun unloadChunk(x: Int, z: Int, force: Boolean)
 
     /**
-     * Saves this world to disk. Exposed as a function of [World] to allow for
-     * custom world implementations to define this.
-     */
-    public fun save()
-
-    /**
      * Spawns an entity with the given [type] in this world at the given
      * [location].
      *

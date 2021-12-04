@@ -122,7 +122,9 @@ class KryptonWorldManager(
         }, worldExecutor)
     }
 
-    override fun save(world: World): CompletableFuture<Unit> = CompletableFuture.supplyAsync({ world.save() }, worldExecutor)
+    override fun save(world: World): CompletableFuture<Unit> = CompletableFuture.supplyAsync({
+        if (world is KryptonWorld) world.save(false)
+    }, worldExecutor)
 
     override fun contains(key: Key): Boolean = worlds.containsKey(ResourceKey.of(ResourceKeys.DIMENSION, key))
 
@@ -190,10 +192,10 @@ class KryptonWorldManager(
         data.gameMode = (GameModes.SPECTATOR as KryptonGameMode)
     }
 
-    fun saveAll(): Boolean {
+    fun saveAll(shouldClose: Boolean): Boolean {
         var successful = false
         worlds.values.forEach {
-            it.save()
+            it.save(shouldClose)
             successful = true
         }
         storageManager.save(name, data)
