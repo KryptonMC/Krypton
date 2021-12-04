@@ -50,6 +50,10 @@ abstract class KryptonAgeable(
             age = if (value) -24000 else 0
         }
 
+    init {
+        data.add(MetadataKeys.AGEABLE.BABY)
+    }
+
     protected open fun onAgeTransformation() = Unit
 
     fun age(amount: Int, forced: Boolean) {
