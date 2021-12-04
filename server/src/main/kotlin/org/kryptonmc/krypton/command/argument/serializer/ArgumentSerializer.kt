@@ -31,11 +31,4 @@ interface ArgumentSerializer<T : ArgumentType<*>> {
             // nothing to write for an empty serializer
         }
     }
-
-    companion object {
-
-        @JvmStatic
-        @Suppress("UNCHECKED_CAST")
-        fun <T> empty(): ArgumentSerializer<ArgumentType<T>> = Empty as ArgumentSerializer<ArgumentType<T>>
-    }
 }

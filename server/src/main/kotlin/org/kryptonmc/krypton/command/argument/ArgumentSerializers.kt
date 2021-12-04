@@ -84,7 +84,7 @@ object ArgumentSerializers {
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
     private inline fun <reified T : ArgumentType<*>> empty(name: String) {
-        register(name, ArgumentSerializer.empty<T>())
+        register(name, ArgumentSerializer.Empty as ArgumentSerializer<T>)
     }
 
     @JvmRecord

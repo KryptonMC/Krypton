@@ -9,7 +9,6 @@
 package org.kryptonmc.api.command
 
 import com.mojang.brigadier.tree.RootCommandNode
-import org.kryptonmc.api.command.meta.CommandMeta
 
 /**
  * A registrar of commands. Implement this to define how the server should

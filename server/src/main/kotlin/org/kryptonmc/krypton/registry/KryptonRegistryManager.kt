@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.registry
 
 import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.DefaultedRegistry
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.resource.ResourceKey
@@ -43,13 +42,13 @@ object KryptonRegistryManager : RegistryManager {
     ): T = registry.register(id, ResourceKey.of(registry.key, key), value)
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> create(key: ResourceKey<out Registry<T>>): Registry<T> = parent.register(
+    override fun <T : Any> create(key: ResourceKey<out Registry<T>>): KryptonRegistry<T> = parent.register(
         key as ResourceKey<Registry<out Any>>,
         KryptonRegistry(key as ResourceKey<out Registry<T>>)
     )
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): DefaultedRegistry<T> = parent.register(
+    override fun <T : Any> createDefaulted(key: ResourceKey<out Registry<T>>, defaultKey: Key): KryptonDefaultedRegistry<T> = parent.register(
         key as ResourceKey<Registry<out Any>>,
         KryptonDefaultedRegistry(key as ResourceKey<out Registry<T>>, defaultKey)
     )

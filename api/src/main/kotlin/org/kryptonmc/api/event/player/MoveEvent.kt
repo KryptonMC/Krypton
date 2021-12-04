@@ -9,7 +9,6 @@
 package org.kryptonmc.api.event.player
 
 import org.kryptonmc.api.entity.player.Player
-import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
 
 /**
