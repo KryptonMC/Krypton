@@ -47,7 +47,7 @@ class MultiNoiseBiomeGenerator private constructor(
     private val preset: Pair<KryptonRegistry<Biome>, Preset>? = null
 ) : BiomeGenerator(parameters.biomes.map { it.second.get() }) {
 
-    private val presetInstance = if (preset != null) PresetInstance(preset.second, preset.first) else null
+    private val presetInstance: PresetInstance? by lazy { if (preset != null) PresetInstance(preset.second, preset.first) else null }
     override val codec: Codec<out BiomeGenerator> = CODEC
 
     override fun get(x: Int, y: Int, z: Int, sampler: Climate.Sampler): Biome = get(sampler.sample(x, y, z))
