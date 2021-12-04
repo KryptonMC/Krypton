@@ -27,8 +27,9 @@ to Krypton from a proxy server. Supported values are:
   - NONE - Disable forwarding support completely
   - LEGACY - Use the BungeeCord/pre-1.13 method
   - MODERN - Use Velocity's modern forwarding protocol
-When any mode other than NONE is used, the server will be forced offline
-and will ONLY accept connections from proxies. No users will be able to
+  - TCPSHIELD - Use TCPShield's forwarding protocol
+When any mode other than NONE or TCPSHIELD is used, the server will be forced
+offline and will ONLY accept connections from proxies. No users will be able to
 direct connect.
 """
 
@@ -41,9 +42,10 @@ data class ProxyCategory(
     val secret: String = ""
 )
 
-enum class ForwardingMode {
+enum class ForwardingMode(val authenticatesUsers: Boolean) {
 
-    NONE,
-    LEGACY,
-    MODERN
+    NONE(false),
+    LEGACY(true),
+    MODERN(true),
+    TCPSHIELD(false)
 }

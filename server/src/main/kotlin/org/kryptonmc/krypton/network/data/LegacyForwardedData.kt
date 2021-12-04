@@ -27,11 +27,14 @@ import java.util.UUID
 
 @JvmRecord
 data class LegacyForwardedData(
-    val originalIp: String,
-    val forwardedIp: String,
-    val uuid: UUID,
-    val properties: List<KryptonProfileProperty>
-) {
+    val originalAddress: String,
+    override val forwardedAddress: String,
+    override val uuid: UUID,
+    override val properties: List<KryptonProfileProperty>
+) : ForwardedData {
+
+    override val forwardedPort: Int
+        get() = -1
 
     companion object {
 

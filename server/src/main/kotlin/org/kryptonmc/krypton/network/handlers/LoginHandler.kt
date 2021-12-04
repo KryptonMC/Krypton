@@ -31,6 +31,7 @@ import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.network.data.ForwardedData
 import org.kryptonmc.krypton.network.data.LegacyForwardedData
 import org.kryptonmc.krypton.network.data.readVelocityData
 import org.kryptonmc.krypton.network.data.verifyVelocityIntegrity
@@ -75,7 +76,7 @@ import javax.crypto.spec.SecretKeySpec
 class LoginHandler(
     override val server: KryptonServer,
     override val session: SessionHandler,
-    private val legacyForwardedData: LegacyForwardedData?
+    private val proxyForwardedData: ForwardedData?
 ) : PacketHandler {
 
     private val playerManager = server.playerManager
@@ -100,25 +101,27 @@ class LoginHandler(
     }
 
     private fun handleLoginStart(packet: PacketInLoginStart) {
-        val rawAddress = session.channel.remoteAddress() as InetSocketAddress // TODO: UNIX domain socket support
-        val address = if (legacyForwardedData != null) {
-            InetSocketAddress(legacyForwardedData.forwardedIp, rawAddress.port)
-        } else {
-            rawAddress
-        }
-
         name = packet.name
-        // Ignore online mode if we want forwarding
-        if (!server.isOnline || server.config.proxy.mode != ForwardingMode.NONE) {
+
+        // Ignore online mode if we want proxy forwarding
+        if (!server.isOnline || server.config.proxy.mode.authenticatesUsers) {
             if (server.config.proxy.mode == ForwardingMode.MODERN) {
                 session.send(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
                 return
             }
 
+            val rawAddress = session.channel.remoteAddress() as InetSocketAddress // TODO: UNIX domain socket support
+            val address = if (proxyForwardedData != null) {
+                val port = if (proxyForwardedData.forwardedPort == -1) rawAddress.port else proxyForwardedData.forwardedPort
+                InetSocketAddress(proxyForwardedData.forwardedAddress, port)
+            } else {
+                rawAddress
+            }
+
             // Copy over the data from legacy forwarding
             // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
-            val uuid = legacyForwardedData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
-            val profile = KryptonGameProfile(packet.name, uuid, legacyForwardedData?.properties ?: emptyList())
+            val uuid = proxyForwardedData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
+            val profile = KryptonGameProfile(packet.name, uuid, proxyForwardedData?.properties ?: emptyList())
 
             // Check the player can join and the login event was not cancelled.
             if (!canJoin(profile, address) || !callLoginEvent(profile)) return
@@ -148,8 +151,9 @@ class LoginHandler(
         enableEncryption(secretKey)
 
         val rawAddress = session.channel.remoteAddress() as InetSocketAddress
-        val address = if (legacyForwardedData != null) {
-            InetSocketAddress(legacyForwardedData.forwardedIp, rawAddress.port)
+        val address = if (proxyForwardedData != null) {
+            val port = if (proxyForwardedData.forwardedPort != -1) proxyForwardedData.forwardedPort else rawAddress.port
+            InetSocketAddress(proxyForwardedData.forwardedAddress, port)
         } else {
             rawAddress
         }
