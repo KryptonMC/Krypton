@@ -219,7 +219,7 @@ class KryptonWorld(
 
     override fun getChunk(position: Vector3i): KryptonChunk? = getChunk(position.x(), position.y(), position.z())
 
-    override fun loadChunk(x: Int, z: Int): KryptonChunk = chunkManager.load(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPosition.toLong(x, z)))
+    override fun loadChunk(x: Int, z: Int): KryptonChunk? = chunkManager.load(x, z, Ticket(TicketTypes.API_LOAD, 31, ChunkPosition.toLong(x, z)))
 
     override fun unloadChunk(x: Int, z: Int, force: Boolean) {
         chunkManager.unload(x, z, TicketTypes.API_LOAD, force)

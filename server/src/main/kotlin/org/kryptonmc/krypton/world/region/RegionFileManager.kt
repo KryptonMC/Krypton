@@ -24,6 +24,7 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
+import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
@@ -38,13 +39,19 @@ class RegionFileManager(
 
     private val regionCache = Long2ObjectLinkedOpenHashMap<RegionFile>()
 
-    fun read(position: ChunkPosition): CompoundTag = getRegionFile(position).getChunkDataInputStream(position).use {
-        if (it == null) return MutableCompoundTag()
-        TagIO.read(it, TagCompression.NONE)
+    fun read(position: ChunkPosition): CompoundTag? {
+        val file = getRegionFile(position)
+        val input = file.getChunkDataInputStream(position) ?: return null
+        return input.use { TagIO.read(it) }
     }
 
-    fun write(position: ChunkPosition, tag: CompoundTag) {
-        TagIO.write(getRegionFile(position).getChunkDataOutputStream(position), tag, TagCompression.NONE)
+    fun write(position: ChunkPosition, tag: CompoundTag?) {
+        val file = getRegionFile(position)
+        if (tag == null) {
+            file.clear(position)
+            return
+        }
+        file.getChunkDataOutputStream(position).use { TagIO.write(it, tag) }
     }
 
     private fun getRegionFile(position: ChunkPosition): RegionFile {
@@ -54,16 +61,21 @@ class RegionFileManager(
         val cachedFile = regionCache.getAndMoveToFirst(serialized)
         if (cachedFile != null) return cachedFile
 
-        if (regionCache.size >= 256) regionCache.removeLast().close()
-        if (!folder.exists()) folder.createDirectories()
-
-        val path = folder.resolve("r.$regionX.$regionZ.mca")
-        val regionFile = RegionFile(path, synchronizeWrites, folder, RegionFileCompression.ZLIB)
+        if (regionCache.size >= MAX_CACHE_SIZE) regionCache.removeLast().close()
+        Files.createDirectories(folder)
+        val path = folder.resolve("r.$regionX.$regionZ$ANVIL_EXTENSION")
+        val regionFile = RegionFile(path, folder, synchronizeWrites)
         regionCache.putAndMoveToFirst(serialized, regionFile)
         return regionFile
     }
 
     override fun close() {
         regionCache.values.forEach { it.close() }
+    }
+
+    companion object {
+
+        private const val ANVIL_EXTENSION = ".mca"
+        private const val MAX_CACHE_SIZE = 256
     }
 }

@@ -119,12 +119,12 @@ class ChunkManager(private val world: KryptonWorld) {
 
     fun players(position: Long): Set<KryptonPlayer> = playersByChunk[position] ?: emptySet()
 
-    fun load(x: Int, z: Int, ticket: Ticket<*>): KryptonChunk {
+    fun load(x: Int, z: Int, ticket: Ticket<*>): KryptonChunk? {
         val pos = ChunkPosition.toLong(x, z)
         if (chunkMap.containsKey(pos)) return chunkMap[pos]!!
 
         val position = ChunkPosition(x, z)
-        val nbt = regionFileManager.read(position)
+        val nbt = regionFileManager.read(position) ?: return null
         val version = if (nbt.contains("DataVersion", 99)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !world.server.useDataConverter) {
@@ -216,6 +216,7 @@ class ChunkManager(private val world: KryptonWorld) {
 
         private val LOGGER = logger<ChunkManager>()
 
+        @JvmStatic
         private fun KryptonChunk.serialize(): CompoundTag {
             val data = buildCompound {
                 int("DataVersion", KryptonPlatform.worldVersion)

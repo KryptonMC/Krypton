@@ -120,7 +120,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
     }
 
     fun load(chunk: KryptonChunk) {
-        val nbt = regionFileManager.read(chunk.position)
+        val nbt = regionFileManager.read(chunk.position) ?: return
         val version = if (nbt.contains("DataVersion", IntTag.ID)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !world.server.useDataConverter) {

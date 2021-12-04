@@ -66,8 +66,8 @@ class TicketManager(private val chunkManager: ChunkManager) {
             val newTicket = Ticket(ticket.type, calculatedLevel, ticket.key)
             tickets.getOrPut(pos) { SortedArraySet.create(4) }.add(newTicket)
             if (calculatedLevel <= PLAYER_TICKET_LEVEL) {
-                chunkManager.load(xo, zo, newTicket)
-                onLoad()
+                val loadedChunk = chunkManager.load(xo, zo, newTicket)
+                if (loadedChunk != null) onLoad()
             }
             i++
         }
