@@ -27,7 +27,7 @@ public interface LivingEntity : Entity, AttributeHolder {
      * The maximum health of this entity.
      */
     @get:JvmName("maxHealth")
-    public var maxHealth: Float
+    public val maxHealth: Float
 
     /**
      * The amount of absorption this living entity has.

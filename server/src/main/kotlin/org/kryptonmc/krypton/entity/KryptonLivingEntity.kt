@@ -52,7 +52,7 @@ abstract class KryptonLivingEntity(
     attributeSupplier: AttributeSupplier
 ) : KryptonEntity(world, type), LivingEntity {
 
-    val maxHealth: Float
+    override val maxHealth: Float
         get() = attributes.value(AttributeTypes.MAX_HEALTH).toFloat()
     override var absorption = 0F
     final override val isAlive: Boolean
