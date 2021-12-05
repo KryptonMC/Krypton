@@ -185,6 +185,9 @@ class KryptonWorld(
         )
     }
 
+    // TODO: Check world border bounds
+    fun canInteract(player: KryptonPlayer, x: Int, z: Int): Boolean = !server.isProtected(this, x, z, player)
+
     override fun getBlock(x: Int, y: Int, z: Int): Block {
         if (isOutsideBuildHeight(y)) return Blocks.VOID_AIR
         val chunk = getChunkAt(x, z) ?: return Blocks.AIR

@@ -28,9 +28,11 @@ import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.server.TickEndEvent
 import org.kryptonmc.api.event.server.TickStartEvent
 import org.kryptonmc.api.scoreboard.Scoreboard
+import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
+import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.console.KryptonConsole
@@ -51,6 +53,7 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.register
 import org.kryptonmc.krypton.util.spark.KryptonSparkPlugin
 import org.kryptonmc.krypton.util.tryCreateDirectory
+import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
@@ -61,6 +64,7 @@ import java.util.UUID
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
@@ -282,6 +286,17 @@ class KryptonServer(
             .build()
         val node = config.load().node(path.split(".")).set(value)
         config.save(node)
+    }
+
+    fun isProtected(world: KryptonWorld, x: Int, z: Int, player: KryptonPlayer): Boolean {
+        if (world.dimension !== World.OVERWORLD) return false
+        if (player.hasPermission(KryptonPermission.BYPASS_SPAWN_PROTECTION.node)) return false
+        if (config.world.spawnProtectionRadius <= 0) return false
+        // TODO: This isn't right. This should use the heightmap pos if not in world bounds, but it'll do for now.
+        val distanceX = abs(x - world.data.spawnX)
+        val distanceZ = abs(z - world.data.spawnZ)
+        val maxDistance = max(distanceX, distanceZ)
+        return maxDistance <= config.world.spawnProtectionRadius
     }
 
     override fun player(uuid: UUID): KryptonPlayer? = playerManager.playersByUUID[uuid]

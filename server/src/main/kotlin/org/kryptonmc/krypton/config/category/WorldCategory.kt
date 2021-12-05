@@ -49,5 +49,8 @@ data class WorldCategory(
     val simulationDistance: Int = 10,
     @Setting("autosave-interval")
     @Comment("The amount of time (in ticks) between automatic world saves.")
-    val autosaveInterval: Int = 6000
+    val autosaveInterval: Int = 6000,
+    @Setting("spawn-protection-radius")
+    @Comment("The radius from spawn in which players cannot break blocks.")
+    val spawnProtectionRadius: Int = 16
 )
