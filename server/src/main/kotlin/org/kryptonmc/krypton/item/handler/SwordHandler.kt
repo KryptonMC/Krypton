@@ -25,16 +25,24 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.tags.BlockTags
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.isPlant
 import org.kryptonmc.krypton.world.block.isReplaceablePlant
 import org.kryptonmc.krypton.world.block.isVegetable
 import org.spongepowered.math.vector.Vector3i
 
-object SwordHandler : KryptonItemHandler {
+object SwordHandler : ItemHandler {
 
-    override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i): Boolean = player.gameMode !== GameModes.CREATIVE
+    override fun canAttackBlock(
+        player: KryptonPlayer,
+        world: KryptonWorld,
+        block: Block,
+        position: Vector3i
+    ): Boolean = player.gameMode !== GameModes.CREATIVE
 
-    override fun destroySpeed(item: ItemStack, block: Block): Float {
+    override fun destroySpeed(item: KryptonItemStack, block: Block): Float {
         if (block.id == Blocks.COBWEB.id) return 15F
         if (block.isPlant() || block.isReplaceablePlant() || BlockTags.LEAVES.contains(block) || block.isVegetable()) {
             return 1.5F
@@ -44,5 +52,5 @@ object SwordHandler : KryptonItemHandler {
 
     override fun isCorrectTool(block: Block): Boolean = block.id == Blocks.COBWEB.id
 
-    override fun mineBlock(player: Player, item: ItemStack, world: World, block: Block, position: Vector3i): Boolean = true
+    override fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: Block, position: Vector3i): Boolean = true
 }

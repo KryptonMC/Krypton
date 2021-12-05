@@ -9,11 +9,8 @@
 package org.kryptonmc.api
 
 import org.kryptonmc.api.auth.ProfileCache
-import org.kryptonmc.api.block.BlockManager
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.event.EventManager
-import org.kryptonmc.api.fluid.FluidManager
-import org.kryptonmc.api.item.ItemManager
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
@@ -90,27 +87,6 @@ public object Krypton {
     @JvmStatic
     public val tagManager: TagManager
         @JvmName("tagManager") get() = internalTagManager!!
-
-    /**
-     * The block manager for the server.
-     */
-    @JvmStatic
-    public val blockManager: BlockManager
-        @JvmName("blockManager") get() = server.blockManager
-
-    /**
-     * The item manager for the server.
-     */
-    @JvmStatic
-    public val itemManager: ItemManager
-        @JvmName("itemManager") get() = server.itemManager
-
-    /**
-     * The fluid manager for the server.
-     */
-    @JvmStatic
-    public val fluidManager: FluidManager
-        @JvmName("fluidManager") get() = server.fluidManager
 
     /**
      * The profile cache for the server.

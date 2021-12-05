@@ -18,30 +18,18 @@
  */
 package org.kryptonmc.krypton.world.fluid
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.fluid.Fluid
-import org.kryptonmc.api.fluid.FluidHandler
-import org.kryptonmc.api.fluid.FluidManager
+import org.kryptonmc.krypton.world.fluid.handler.FluidHandler
 
-object KryptonFluidManager : FluidManager {
+object FluidManager {
 
-    override val handlers = mutableMapOf<String, FluidHandler>()
+    private val handlers = mutableMapOf<String, FluidHandler>()
 
-    override fun handler(key: String): FluidHandler? = handlers[key]
+    @JvmStatic
+    fun handler(fluid: Fluid): FluidHandler? = handlers[fluid.key().asString()]
 
-    override fun handler(key: Key): FluidHandler? = handler(key.asString())
-
-    override fun handler(fluid: Fluid): FluidHandler? = handler(fluid.key().asString())
-
-    override fun register(key: String, handler: FluidHandler) {
-        handlers[key] = handler
-    }
-
-    override fun register(key: Key, handler: FluidHandler) {
-        register(key.asString(), handler)
-    }
-
-    override fun register(fluid: Fluid, handler: FluidHandler) {
-        register(fluid.key().asString(), handler)
+    @JvmStatic
+    fun register(fluid: Fluid, handler: FluidHandler) {
+        handlers[fluid.key().asString()] = handler
     }
 }

@@ -18,32 +18,19 @@
  */
 package org.kryptonmc.krypton.world.block
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.BlockHandler
-import org.kryptonmc.api.block.BlockManager
+import org.kryptonmc.krypton.world.block.handler.BlockHandler
 
 @Suppress("INAPPLICABLE_JVM_NAME")
-object KryptonBlockManager : BlockManager {
+object BlockManager {
 
-    @get:JvmName("handlers")
-    override val handlers = mutableMapOf<String, BlockHandler>()
+    private val handlers = mutableMapOf<String, BlockHandler>()
 
-    override fun handler(key: String): BlockHandler? = handlers[key]
+    @JvmStatic
+    fun handler(block: Block): BlockHandler? = handlers[block.key().asString()]
 
-    override fun handler(key: Key): BlockHandler? = handlers[key.asString()]
-
-    override fun handler(block: Block): BlockHandler? = handlers[block.key().asString()]
-
-    override fun register(key: String, handler: BlockHandler) {
-        handlers[key] = handler
-    }
-
-    override fun register(key: Key, handler: BlockHandler) {
-        register(key.asString(), handler)
-    }
-
-    override fun register(block: Block, handler: BlockHandler) {
-        register(block.key().asString(), handler)
+    @JvmStatic
+    fun register(block: Block, handler: BlockHandler) {
+        handlers[block.key().asString()] = handler
     }
 }

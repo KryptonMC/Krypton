@@ -60,10 +60,10 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.damage.KryptonDamageSource
+import org.kryptonmc.krypton.world.fluid.handler
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.FloatTag
-import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
@@ -360,12 +360,12 @@ abstract class KryptonEntity(
                 for (z in minZ..maxZ) {
                     val fluid = world.getFluid(x, y, z)
                     if (!tag.contains(fluid)) continue
-                    val height = y.toDouble() + fluid.handler.height(fluid, x, y, z, world)
+                    val height = y.toDouble() + fluid.handler().height(fluid, x, y, z, world)
                     if (height < minY) continue
                     shouldPush = true
                     amount = max(height - minY, amount)
                     if (!pushed) continue
-                    var flow = fluid.handler.flow(fluid, x, y, z, world)
+                    var flow = fluid.handler().flow(fluid, x, y, z, world)
                     if (amount < 0.4) flow = flow.mul(amount)
                     offset = offset.add(flow)
                     ++pushes
@@ -408,7 +408,7 @@ abstract class KryptonEntity(
         KryptonTagManager.tags[KryptonTagTypes.FLUIDS]!!.forEach {
             it as Tag<Fluid>
             if (!it.contains(fluid)) return@forEach
-            val height = y + fluid.handler.height(fluid, x, y.floor(), z, world)
+            val height = y + fluid.handler().height(fluid, x, y.floor(), z, world)
             if (height > y) fluidOnEyes = it
             return
         }

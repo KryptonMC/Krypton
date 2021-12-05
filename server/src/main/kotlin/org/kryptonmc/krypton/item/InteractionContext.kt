@@ -16,20 +16,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.item.handler
+package org.kryptonmc.krypton.item
 
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.world.GameModes
+import org.kryptonmc.krypton.world.block.BlockHitResult
+import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 
-object TridentHandler : ItemHandler {
+@JvmRecord
+data class InteractionContext(
+    val player: KryptonPlayer,
+    val world: KryptonWorld,
+    val heldItem: KryptonItemStack,
+    val hand: Hand,
+    val hitResult: BlockHitResult
+) {
 
-    override fun canAttackBlock(
-        player: KryptonPlayer,
-        world: KryptonWorld,
-        block: Block,
-        position: Vector3i
-    ): Boolean = player.gameMode !== GameModes.CREATIVE
+    val position: Vector3i
+        get() = hitResult.position
+    val clickedFace: Direction
+        get() = hitResult.direction
+    val clickLocation: Vector3d
+        get() = hitResult.clickLocation
+    val isInside: Boolean
+        get() = hitResult.isInside
+    val pitch: Float
+        get() = player.rotation.y()
 }

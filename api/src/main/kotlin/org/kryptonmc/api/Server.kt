@@ -12,14 +12,11 @@ import me.lucko.spark.api.Spark
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.ProfileCache
-import org.kryptonmc.api.block.BlockManager
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.EventManager
-import org.kryptonmc.api.fluid.FluidManager
-import org.kryptonmc.api.item.ItemManager
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
@@ -102,30 +99,6 @@ public interface Server : ForwardingAudience {
      */
     @get:JvmName("tagManager")
     public val tagManager: TagManager
-
-    /**
-     * The block manager for this server.
-     *
-     * This is used to retrieve and register block handlers for blocks.
-     */
-    @get:JvmName("blockManager")
-    public val blockManager: BlockManager
-
-    /**
-     * The item manager for this server.
-     *
-     * This is used to retrieve and register item handlers for item types.
-     */
-    @get:JvmName("itemManager")
-    public val itemManager: ItemManager
-
-    /**
-     * The fluid manager for this server.
-     *
-     * This is used to retrieve and register fluid handlers for fluids.
-     */
-    @get:JvmName("fluidManager")
-    public val fluidManager: FluidManager
 
     /**
      * The factory provider for this server.

@@ -65,7 +65,7 @@ import org.kryptonmc.krypton.entity.attribute.AttributeLoader
 import org.kryptonmc.krypton.entity.hanging.KryptonPictures
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.ItemLoader
-import org.kryptonmc.krypton.item.KryptonItemManager
+import org.kryptonmc.krypton.item.ItemManager
 import org.kryptonmc.krypton.item.meta.KryptonMetaKeys
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
@@ -76,7 +76,7 @@ import org.kryptonmc.krypton.tags.KryptonTagTypes
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.block.BlockLoader
-import org.kryptonmc.krypton.world.block.KryptonBlockManager
+import org.kryptonmc.krypton.world.block.BlockManager
 import org.kryptonmc.krypton.world.block.entity.BlockEntityLoader
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.event.GameEvents
@@ -169,8 +169,8 @@ object Bootstrap {
         SessionService
         ArgumentSerializers
         EntityFactory
-        KryptonItemManager
-        KryptonBlockManager
+        ItemManager
+        BlockManager
         CommandSyntaxException.BUILT_IN_EXCEPTIONS = BrigadierExceptions
     }
 

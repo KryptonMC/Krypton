@@ -16,20 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.item
+package org.kryptonmc.krypton.world.fluid
 
-import org.kryptonmc.api.block.BlockHitResult
-import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.item.InteractionContext
-import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.world.World
+import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.krypton.world.fluid.handler.FluidHandler
+import org.kryptonmc.krypton.world.fluid.handler.EmptyFluidHandler
 
-@JvmRecord
-data class KryptonInteractionContext(
-    override val player: Player,
-    override val world: World,
-    override val heldItem: ItemStack,
-    override val hand: Hand,
-    override val hitResult: BlockHitResult
-) : InteractionContext
+fun Fluid.handler(): FluidHandler = FluidManager.handler(this) ?: EmptyFluidHandler

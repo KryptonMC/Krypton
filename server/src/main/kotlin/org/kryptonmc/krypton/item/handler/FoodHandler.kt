@@ -19,13 +19,13 @@
 package org.kryptonmc.krypton.item.handler
 
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.util.InteractionResult
-import org.kryptonmc.krypton.item.KryptonUseItemResult
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.item.UseItemResult
 
-object FoodHandler : KryptonItemTimedHandler {
+object FoodHandler : ItemTimedHandler {
 
-    override fun finishUse(player: Player, hand: Hand): KryptonUseItemResult {
+    override fun finishUse(player: KryptonPlayer, hand: Hand): UseItemResult {
         // TODO: Remove hardcoded values and add tick system
         val stack = player.inventory.heldItem(hand)
         stack.amount--
@@ -35,6 +35,6 @@ object FoodHandler : KryptonItemTimedHandler {
         // fleshing out the handling of food consumption, etc.
         player.foodLevel += 8
         player.foodSaturationLevel += 12.8f
-        return KryptonUseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
+        return UseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
     }
 }

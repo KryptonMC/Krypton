@@ -151,10 +151,6 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         }
     }
 
-    fun saveAll(shouldClose: Boolean) {
-        byChunk.long2ObjectEntrySet().fastForEach {  }
-    }
-
     fun save(chunk: KryptonChunk) {
         val x = chunk.position.x
         val z = chunk.position.z

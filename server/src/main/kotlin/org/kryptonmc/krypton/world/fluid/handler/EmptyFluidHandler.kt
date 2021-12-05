@@ -18,33 +18,4 @@
  */
 package org.kryptonmc.krypton.world.fluid.handler
 
-import org.kryptonmc.api.fluid.Fluid
-import org.kryptonmc.api.fluid.FluidHandler
-import org.kryptonmc.api.util.Direction
-import org.kryptonmc.api.world.World
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
-import java.util.Random
-
-object EmptyFluidHandler : FluidHandler {
-
-    override fun canReplaceWith(
-        fluid: Fluid,
-        position: Vector3i,
-        world: World,
-        direction: Direction,
-        replacement: Fluid
-    ): Boolean = true
-
-    override fun flow(fluid: Fluid, x: Int, y: Int, z: Int, world: World): Vector3d = Vector3d.ZERO
-
-    override fun height(fluid: Fluid, x: Int, y: Int, z: Int, world: World): Float = 0F
-
-    override fun tick(fluid: Fluid, position: Vector3i, world: World) {
-        // empty fluids don't tick
-    }
-
-    override fun randomTick(fluid: Fluid, position: Vector3i, world: World, random: Random) {
-        // empty fluids don't randomly tick
-    }
-}
+object EmptyFluidHandler : FluidHandler

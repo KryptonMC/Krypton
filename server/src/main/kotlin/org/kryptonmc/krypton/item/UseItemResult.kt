@@ -18,12 +18,13 @@
  */
 package org.kryptonmc.krypton.item
 
-import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.item.UseItemResult
 import org.kryptonmc.api.util.InteractionResult
 
+/**
+ * The result of using an item.
+ */
 @JvmRecord
-data class KryptonUseItemResult(
-    override val result: InteractionResult,
-    override val item: ItemStack
-) : UseItemResult
+data class UseItemResult(
+    val result: InteractionResult,
+    val item: KryptonItemStack
+)

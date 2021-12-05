@@ -40,7 +40,8 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
-import org.kryptonmc.krypton.item.handler.KryptonItemTimedHandler
+import org.kryptonmc.krypton.item.handler
+import org.kryptonmc.krypton.item.handler.ItemTimedHandler
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
@@ -279,8 +280,8 @@ class PlayHandler(
                 playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
             }
             PacketInPlayerDigging.Status.UPDATE_STATE -> {
-                val handler = player.inventory[player.inventory.heldSlot].type.handler
-                if (handler !is KryptonItemTimedHandler) return
+                val handler = player.inventory[player.inventory.heldSlot].type.handler()
+                if (handler !is ItemTimedHandler) return
                 handler.finishUse(player, player.hand)
             }
             else -> Unit
@@ -288,7 +289,7 @@ class PlayHandler(
     }
 
     private fun handlePlayerUseItem(packet: PacketInPlayerUseItem) {
-        player.inventory.heldItem(packet.hand).type.handler.use(player, packet.hand)
+        player.inventory.heldItem(packet.hand).type.handler().use(player, packet.hand)
     }
 
     private fun handleSteerVehicle(packet: PacketInSteerVehicle) {

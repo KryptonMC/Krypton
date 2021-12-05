@@ -33,7 +33,7 @@ import io.netty.handler.codec.EncoderException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toJsonString
-import org.kryptonmc.api.block.BlockHitResult
+import org.kryptonmc.krypton.world.block.BlockHitResult
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.item.EmptyItemStack
@@ -48,12 +48,9 @@ import org.kryptonmc.nbt.io.TagIO
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
-import java.util.BitSet
 import java.util.Optional
 import java.util.UUID
-import java.util.function.IntFunction
 import kotlin.math.ceil
-import kotlin.math.max
 import kotlin.math.min
 
 fun ByteBuf.writeShort(short: Short) {
@@ -305,7 +302,7 @@ fun ByteBuf.readBlockHitResult(): BlockHitResult {
     val cursorZ = readFloat()
     val inside = readBoolean()
     val clickedPosition = Vector3d(position.x() + cursorX, position.y() + cursorY, position.z() + cursorZ)
-    return BlockHitResult.of(clickedPosition, position, direction, false, inside)
+    return BlockHitResult(clickedPosition, position, direction, false, inside)
 }
 
 fun ByteBuf.writeBlockHitResult(hitResult: BlockHitResult) {

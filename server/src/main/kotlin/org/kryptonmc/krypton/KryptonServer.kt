@@ -35,7 +35,6 @@ import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.console.KryptonConsole
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.item.KryptonItemManager
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
@@ -53,8 +52,6 @@ import org.kryptonmc.krypton.util.register
 import org.kryptonmc.krypton.util.spark.KryptonSparkPlugin
 import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorldManager
-import org.kryptonmc.krypton.world.block.KryptonBlockManager
-import org.kryptonmc.krypton.world.fluid.KryptonFluidManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.net.InetSocketAddress
@@ -99,9 +96,6 @@ class KryptonServer(
     override val servicesManager = KryptonServicesManager(this)
     override val registryManager = KryptonRegistryManager
     override val tagManager = KryptonTagManager
-    override val blockManager = KryptonBlockManager
-    override val itemManager = KryptonItemManager
-    override val fluidManager = KryptonFluidManager
     override val scheduler = KryptonScheduler()
     override val factoryProvider = KryptonFactoryProvider
     override val userManager = KryptonUserManager(this)

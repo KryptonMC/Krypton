@@ -84,12 +84,6 @@ public interface ItemType : Buildable<ItemType, ItemType.Builder>, ItemLike, Blo
     @get:JvmName("drinkingSound")
     public val drinkingSound: SoundEvent
 
-    /**
-     * The handler for this item type.
-     */
-    @get:JvmName("handler")
-    public val handler: ItemHandler
-
     override fun asItem(): ItemType = this
 
     /**

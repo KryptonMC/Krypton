@@ -25,12 +25,10 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.fluid.Fluid
-import org.kryptonmc.api.fluid.FluidHandler
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
-import org.kryptonmc.krypton.world.fluid.handler.EmptyFluidHandler
 
 @JvmRecord
 data class KryptonFluid(
@@ -47,9 +45,6 @@ data class KryptonFluid(
     override val availableProperties: Set<Property<*>>,
     override val properties: Map<String, String>
 ) : KryptonPropertyHolder<Fluid>, Fluid {
-
-    override val handler: FluidHandler
-        get() = KryptonFluidManager.handler(this) ?: EmptyFluidHandler
 
     override fun key(): Key = key
 
