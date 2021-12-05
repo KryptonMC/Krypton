@@ -434,7 +434,7 @@ class KryptonPlayer(
 
     private fun hungerMechanic() {
         // TODO: More actions for exhaustion, add constants?
-        if (!(gameMode == GameModes.SURVIVAL || gameMode == GameModes.ADVENTURE)) return
+        if (gameMode != GameModes.SURVIVAL && gameMode != GameModes.ADVENTURE) return
         foodTickTimer++
 
         // Sources:
