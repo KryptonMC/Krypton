@@ -436,6 +436,7 @@ class KryptonPlayer(
 
     private fun hungerMechanic() {
         // TODO: More actions for exhaustion, add constants?
+        if (gameMode != GameModes.SURVIVAL && gameMode != GameModes.ADVENTURE) return
         foodTickTimer++
 
         // Sources:
@@ -510,16 +511,22 @@ class KryptonPlayer(
         // a player healing infinitely.
         if (foodTickTimer == 80) {
             if (foodLevel >= 18) {
-                health++ // Regenerate health
-                // Once a half-heart has been added, increase the exhaustion by 3,
-                // or if that operation were to exceed the threshold, instead, set it to the
-                // threshold value of 4.
-                foodExhaustionLevel = min(foodExhaustionLevel + 3f, 4f)
-                // Force the saturation level to deplete by 3.
-                // So as health comes up, the food "buffer" comes down,
-                // eventually causing the food level to decrease, when saturation
-                // reaches zero.
-                foodSaturationLevel -= 3
+                // Avoid exceeding max health
+                if (maxHealth >= health + 1) {
+                    // Regenerate health
+                    health++
+                    // Once a half-heart has been added, increase the exhaustion by 3,
+                    // or if that operation were to exceed the threshold, instead, set it to the
+                    // threshold value of 4.
+                    foodExhaustionLevel = min(foodExhaustionLevel + 3f, 4f)
+                    // Force the saturation level to deplete by 3.
+                    // So as health comes up, the food "buffer" comes down,
+                    // eventually causing the food level to decrease, when saturation
+                    // reaches zero.
+                    foodSaturationLevel -= 3
+                } else {
+                    health = maxHealth
+                }
             }
             foodTickTimer = 0 // reset tick timer
         }
