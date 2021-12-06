@@ -278,6 +278,7 @@ class PlayHandler(
                 playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
             }
             PacketInPlayerDigging.Status.DROP_ITEM -> {
+                // TODO: Move to method on player
                 val heldItem = player.inventory.heldItem(Hand.MAIN)
                 if (heldItem.isEmpty()) return
 
@@ -296,8 +297,8 @@ class PlayHandler(
                 // Glowstone's method. Seems sane however it uses guess work. I don't blame them. Just look at the vanilla source...
                 // https://github.com/GlowstoneMC/Glowstone/blob/dev/src/main/java/net/glowstone/entity/GlowHumanEntity.java
                 val random = ThreadLocalRandom.current()
-                val bound = 0.02
-                velocity.add(random.nextDouble(bound) - bound / 2, random.nextDouble(0.12), random.nextDouble(bound) - bound / 2)
+                val offset = 0.02
+                velocity.add(random.nextDouble(offset) - offset / 2, random.nextDouble(0.12), random.nextDouble(offset) - offset / 2)
                 itemEntity.velocity = velocity
                 player.world.entityManager.spawn(itemEntity)
             }
