@@ -25,11 +25,11 @@ import java.nio.file.Path
 
 object ServerPluginDescription : PluginDescription {
 
-    override val id = "krypton"
-    override val name = "Krypton"
-    override val version = KryptonPlatform.version
-    override val description = "A plugin representing the server."
-    override val authors = setOf("KryptonMC")
-    override val dependencies = emptySet<PluginDependency>()
+    override val id: String = "krypton"
+    override val name: String = "Krypton"
+    override val version: String = KryptonPlatform.version
+    override val description: String = "A plugin representing the server."
+    override val authors: Set<String> = setOf("KryptonMC")
+    override val dependencies: Set<PluginDependency> = emptySet()
     override val source: Path = Path.of("")
 }

@@ -22,6 +22,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 
 @ConfigSerializable
+@JvmRecord
 data class QueryCategory(
     @Comment("Whether to enable the query protocol.")
     val enabled: Boolean = false,

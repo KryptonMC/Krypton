@@ -24,8 +24,6 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.BlockFace
 import org.kryptonmc.krypton.util.Bootstrap
 import org.kryptonmc.krypton.world.block.KryptonBlock
-import org.kryptonmc.krypton.world.block.KryptonBlockManager
-import org.kryptonmc.krypton.world.block.handler.DummyBlockHandler
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -41,13 +39,6 @@ class BlockTests {
         assertEquals(BlockFace.NORTH, BlockFace.SOUTH.opposite)
         assertEquals(BlockFace.EAST, BlockFace.WEST.opposite)
         assertEquals(BlockFace.WEST, BlockFace.EAST.opposite)
-    }
-
-    @Test
-    fun `test handler registration and retrieval`() {
-        val handler = DummyBlockHandler
-        KryptonBlockManager.register(Key.key("air"), handler)
-        assertEquals(handler, KryptonBlockManager.handler(Key.key("air")))
     }
 
     @Test

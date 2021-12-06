@@ -62,10 +62,11 @@ private fun Graph<PluginDescription>.visitNode(
     if (mark == Mark.PERMANENT) return
     if (mark == Mark.TEMPORARY) {
         currentIteration.addLast(node)
-        error("Circular dependency detected: ${buildString {
+        val errorMessage = buildString {
             currentIteration.forEach { append("${it.id} -> ") }
             setLength(length - 4)
-        }}")
+        }
+        error("Circular dependency detected: $errorMessage")
     }
 
     currentIteration.addLast(node)
@@ -73,7 +74,7 @@ private fun Graph<PluginDescription>.visitNode(
     successors(node).forEach { visitNode(it, marks, sorted, currentIteration) }
     marks[node] = Mark.PERMANENT
     currentIteration.removeLast()
-    sorted += node
+    sorted.add(node)
 }
 
 private enum class Mark {

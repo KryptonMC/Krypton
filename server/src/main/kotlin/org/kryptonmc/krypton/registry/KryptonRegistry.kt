@@ -24,7 +24,6 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.DynamicOps
 import com.mojang.serialization.Keyable
-import it.unimi.dsi.fastutil.Hash
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import net.kyori.adventure.key.Key
@@ -39,8 +38,7 @@ import kotlin.math.max
 open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, Codec<T>, Keyable, IntBiMap<T> {
 
     private val byId = ObjectArrayList<T>(256)
-    @Suppress("UNCHECKED_CAST")
-    private val toId = Object2IntOpenCustomHashMap(IdentityHashStrategy as Hash.Strategy<T>)
+    private val toId = Object2IntOpenCustomHashMap(IdentityHashStrategy.get<T>())
     private val storage = HashBiMap.create<Key, T>()
     private val keyStorage = HashBiMap.create<ResourceKey<T>, T>()
     private var nextId = 0
@@ -56,7 +54,7 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
     override val size: Int
         get() = storage.size
 
-    override fun <V : T> register(key: ResourceKey<T>, value: V) = register(nextId, key, value)
+    override fun <V : T> register(key: ResourceKey<T>, value: V): V = register(nextId, key, value)
 
     override fun <V : T> register(id: Int, key: ResourceKey<T>, value: V): V {
         byId.size(max(byId.size, id + 1))
@@ -72,27 +70,27 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
 
     override fun <V : T> register(id: Int, key: Key, value: V): V = register(id, ResourceKey.of(this.key, key), value)
 
-    override fun get(key: Key) = storage[key]
+    override fun get(key: Key): T? = storage[key]
 
-    override fun get(id: Int) = if (id in byId.indices) byId[id] else null
+    override fun get(id: Int): T? = byId.getOrNull(id)
 
-    override fun get(value: T) = storage.inverse()[value]
+    override fun get(value: T): Key? = storage.inverse()[value]
 
-    override fun get(key: ResourceKey<T>) = keyStorage[key]
+    override fun get(key: ResourceKey<T>): T? = keyStorage[key]
 
-    override fun resourceKey(value: T) = keyStorage.inverse()[value]
+    override fun resourceKey(value: T): ResourceKey<T>? = keyStorage.inverse()[value]
 
-    override fun idOf(value: T) = toId.getInt(value)
+    override fun idOf(value: T): Int = toId.getInt(value)
 
-    override fun contains(key: Key) = key in storage
+    override fun contains(key: Key): Boolean = storage.containsKey(key)
 
-    override fun containsKey(key: ResourceKey<T>) = key in keyStorage
+    override fun containsKey(key: ResourceKey<T>): Boolean = keyStorage.containsKey(key)
 
-    override fun containsValue(value: T) = storage.containsValue(value)
+    override fun containsValue(value: T): Boolean = storage.containsValue(value)
 
-    override fun isEmpty() = storage.isEmpty()
+    override fun isEmpty(): Boolean = storage.isEmpty()
 
-    override fun iterator() = storage.values.iterator()
+    override fun iterator(): Iterator<T> = storage.values.iterator()
 
     override fun <U> encode(input: T, ops: DynamicOps<U>, prefix: U): DataResult<U> {
         val key = get(input) ?: return DataResult.error("Unknown registry element $input!")

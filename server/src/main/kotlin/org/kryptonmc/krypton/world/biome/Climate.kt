@@ -38,10 +38,10 @@ object Climate {
     private const val PARAMETER_COUNT = 7
 
     @JvmStatic
-    fun Float.quantize(): Long = (this * 10000).toLong()
+    fun Float.quantize(): Long = (this * QUANTIZATION_FACTOR).toLong()
 
     @JvmStatic
-    fun Long.unquantize(): Float = this / 10000F
+    fun Long.unquantize(): Float = this / QUANTIZATION_FACTOR
 
     @JvmStatic
     fun parameters(

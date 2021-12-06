@@ -24,5 +24,7 @@ import org.kryptonmc.krypton.util.writeEnum
 
 object StringArgumentSerializer : ArgumentSerializer<StringArgumentType> {
 
-    override fun write(buf: ByteBuf, value: StringArgumentType) = buf.writeEnum(value.type)
+    override fun write(buf: ByteBuf, value: StringArgumentType) {
+        buf.writeEnum(value.type)
+    }
 }

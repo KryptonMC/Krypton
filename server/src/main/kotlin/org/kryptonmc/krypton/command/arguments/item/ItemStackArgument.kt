@@ -39,7 +39,7 @@ data class ItemStackArgument(val item: ItemType, val tag: CompoundTag? = null) {
         return items
     }
 
-    private fun createStack(amount: Int) = KryptonItemStack(
+    private fun createStack(amount: Int): KryptonItemStack = KryptonItemStack(
         item,
         amount,
         KryptonMetaHolder(tag as MutableCompoundTag)

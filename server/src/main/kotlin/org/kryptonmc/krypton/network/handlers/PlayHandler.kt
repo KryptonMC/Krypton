@@ -25,9 +25,7 @@ import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
-import net.kyori.adventure.text.event.ClickEvent.suggestCommand
+import net.kyori.adventure.text.event.ClickEvent
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.command.CommandExecuteEvent
@@ -36,6 +34,7 @@ import org.kryptonmc.api.event.player.MoveEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
 import org.kryptonmc.api.event.player.ResourcePackStatusEvent
+import org.kryptonmc.api.event.player.RotateEvent
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.world.GameModes
@@ -44,42 +43,44 @@ import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.item.KryptonItemEntity
 import org.kryptonmc.krypton.entity.monster.KryptonCreeper
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.item.handler.KryptonItemTimedHandler
+import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
+import org.kryptonmc.krypton.item.handler
+import org.kryptonmc.krypton.item.handler.ItemTimedHandler
+import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAnimation
+import org.kryptonmc.krypton.packet.`in`.play.PacketInChangeHeldItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChat
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientSettings
+import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
 import org.kryptonmc.krypton.packet.`in`.play.PacketInCreativeInventoryAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityAction
-import org.kryptonmc.krypton.packet.`in`.play.PacketInChangeHeldItem
+import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityNBTQuery
+import org.kryptonmc.krypton.packet.`in`.play.PacketInInteract
 import org.kryptonmc.krypton.packet.`in`.play.PacketInKeepAlive
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlaceBlock
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerPosition
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerPositionAndRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerRotation
-import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
-import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerUseItem
-import org.kryptonmc.krypton.packet.out.play.EntityAnimation
-import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
-import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
-import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
-import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
-import org.kryptonmc.krypton.packet.out.play.PacketOutEntityRotation
-import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
-import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
-import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
-import org.kryptonmc.krypton.network.SessionHandler
-import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
-import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityNBTQuery
-import org.kryptonmc.krypton.packet.`in`.play.PacketInInteract
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
 import org.kryptonmc.krypton.packet.`in`.play.PacketInResourcePackStatus
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
+import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
+import org.kryptonmc.krypton.packet.out.play.EntityAnimation
+import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
+import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
+import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityRotation
+import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
+import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
 import org.kryptonmc.krypton.packet.out.play.PacketOutNBTQueryResponse
+import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
+import org.kryptonmc.krypton.packet.out.play.PacketOutTabComplete
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.block.BlockLoader
@@ -110,41 +111,42 @@ class PlayHandler(
 
     fun tick() {
         val time = System.currentTimeMillis()
-        if (time - lastKeepAlive >= KEEP_ALIVE_INTERVAL) {
-            if (pendingKeepAlive) {
-                session.disconnect(translatable("disconnect.timeout"))
-            } else {
-                pendingKeepAlive = true
-                lastKeepAlive = time
-                keepAliveChallenge = time
-                session.send(PacketOutKeepAlive(keepAliveChallenge))
-            }
+        if (time - lastKeepAlive < KEEP_ALIVE_INTERVAL) return
+        if (pendingKeepAlive) {
+            session.disconnect(Component.translatable("disconnect.timeout"))
+            return
         }
+        pendingKeepAlive = true
+        lastKeepAlive = time
+        keepAliveChallenge = time
+        session.send(PacketOutKeepAlive(keepAliveChallenge))
     }
 
-    override fun handle(packet: Packet) = when (packet) {
-        is PacketInAnimation -> handleAnimation(packet)
-        is PacketInChat -> handleChat(packet)
-        is PacketInClientSettings -> handleClientSettings(packet)
-        is PacketInCreativeInventoryAction -> handleCreativeInventoryAction(packet)
-        is PacketInEntityAction -> handleEntityAction(packet)
-        is PacketInChangeHeldItem -> handleHeldItemChange(packet)
-        is PacketInKeepAlive -> handleKeepAlive(packet)
-        is PacketInAbilities -> handleAbilities(packet)
-        is PacketInPlaceBlock -> handleBlockPlacement(packet)
-        is PacketInPlayerDigging -> handlePlayerDigging(packet)
-        is PacketInPlayerPosition -> handlePositionUpdate(packet)
-        is PacketInPlayerRotation -> handleRotationUpdate(packet)
-        is PacketInPlayerPositionAndRotation -> handlePositionAndRotationUpdate(packet)
-        is PacketInPluginMessage -> handlePluginMessage(packet)
-        is PacketInTabComplete -> handleTabComplete(packet)
-        is PacketInClientStatus -> handleClientStatus(packet)
-        is PacketInEntityNBTQuery -> handleEntityNBTQuery(packet)
-        is PacketInInteract -> handleInteract(packet)
-        is PacketInSteerVehicle -> handleSteerVehicle(packet)
-        is PacketInPlayerUseItem -> handlePlayerUseItem(packet)
-        is PacketInResourcePackStatus -> handleResourcePackStatus(packet)
-        else -> Unit
+    override fun handle(packet: Packet) {
+        when (packet) {
+            is PacketInAnimation -> handleAnimation(packet)
+            is PacketInChat -> handleChat(packet)
+            is PacketInClientSettings -> handleClientSettings(packet)
+            is PacketInCreativeInventoryAction -> handleCreativeInventoryAction(packet)
+            is PacketInEntityAction -> handleEntityAction(packet)
+            is PacketInChangeHeldItem -> handleHeldItemChange(packet)
+            is PacketInKeepAlive -> handleKeepAlive(packet)
+            is PacketInAbilities -> handleAbilities(packet)
+            is PacketInPlaceBlock -> handleBlockPlacement(packet)
+            is PacketInPlayerDigging -> handlePlayerDigging(packet)
+            is PacketInPlayerPosition -> handlePositionUpdate(packet)
+            is PacketInPlayerRotation -> handleRotationUpdate(packet)
+            is PacketInPlayerPositionAndRotation -> handlePositionAndRotationUpdate(packet)
+            is PacketInPluginMessage -> handlePluginMessage(packet)
+            is PacketInTabComplete -> handleTabComplete(packet)
+            is PacketInClientStatus -> handleClientStatus(packet)
+            is PacketInEntityNBTQuery -> handleEntityNBTQuery(packet)
+            is PacketInInteract -> handleInteract(packet)
+            is PacketInSteerVehicle -> handleSteerVehicle(packet)
+            is PacketInPlayerUseItem -> handlePlayerUseItem(packet)
+            is PacketInResourcePackStatus -> handleResourcePackStatus(packet)
+            else -> Unit
+        }
     }
 
     override fun onDisconnect() {
@@ -180,10 +182,13 @@ class PlayHandler(
             }
 
             val name = player.profile.name
-            val message = translatable(
+            val message = Component.translatable(
                 "chat.type.text",
-                player.displayName.insertion(name).clickEvent(suggestCommand("/msg $name")).hoverEvent(player),
-                text(packet.message)
+                player.displayName
+                    .insertion(name)
+                    .clickEvent(ClickEvent.suggestCommand("/msg $name"))
+                    .hoverEvent(player),
+                Component.text(packet.message)
             )
             server.sendMessage(player, message, MessageType.CHAT)
         }
@@ -201,7 +206,7 @@ class PlayHandler(
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
         if (player.gameMode !== GameModes.CREATIVE) return
         val item = packet.clickedItem
-        val inValidRange = packet.slot in 1..45
+        val inValidRange = packet.slot in 1 until KryptonPlayerInventory.SIZE
         val hasDamage = MetaKeys.DAMAGE in item.meta && item.meta[MetaKeys.DAMAGE]!! >= 0
         val isValid = item.isEmpty() || (hasDamage && item.amount <= 64 && !item.isEmpty())
         if (inValidRange && isValid) player.inventory[packet.slot.toInt()] = packet.clickedItem
@@ -230,7 +235,7 @@ class PlayHandler(
             LOGGER.warn("${player.profile.name} tried to change their held item slot to an invalid value!")
             return
         }
-        player.inventory.heldSlot = packet.slot.toInt()
+        player.inventory.heldSlot = packet.slot
     }
 
     private fun handleKeepAlive(packet: PacketInKeepAlive) {
@@ -241,7 +246,7 @@ class PlayHandler(
             playerManager.sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.UPDATE_LATENCY, player))
             return
         }
-        session.disconnect(translatable("disconnect.timeout"))
+        session.disconnect(Component.translatable("disconnect.timeout"))
     }
 
     private fun handleAbilities(packet: PacketInAbilities) {
@@ -304,8 +309,8 @@ class PlayHandler(
                 player.world.entityManager.spawn(itemEntity)
             }
             PacketInPlayerDigging.Status.UPDATE_STATE -> {
-                val handler = server.itemManager.handler(player.inventory[player.inventory.heldSlot].type)
-                if (handler !is KryptonItemTimedHandler) return
+                val handler = player.inventory[player.inventory.heldSlot].type.handler()
+                if (handler !is ItemTimedHandler) return
                 handler.finishUse(player, player.hand)
             }
             else -> Unit
@@ -313,7 +318,7 @@ class PlayHandler(
     }
 
     private fun handlePlayerUseItem(packet: PacketInPlayerUseItem) {
-        server.itemManager.handler(player.inventory.heldItem(packet.hand).type)?.use(player, packet.hand)
+        player.inventory.heldItem(packet.hand).type.handler().use(player, packet.hand)
     }
 
     private fun handleSteerVehicle(packet: PacketInSteerVehicle) {
@@ -330,30 +335,25 @@ class PlayHandler(
 
     private fun handlePositionUpdate(packet: PacketInPlayerPosition) {
         val oldLocation = player.location
+        if (oldLocation.x() == packet.x && oldLocation.y() == packet.y && oldLocation.z() == packet.z) {
+            // We haven't moved at all. We can avoid constructing the Vector3d object entirely, and just
+            // fast nope out.
+            return
+        }
         val newLocation = Vector3d(packet.x, packet.y, packet.z)
-        if (newLocation == oldLocation) return
 
         player.location = newLocation
-        server.eventManager.fireAndForget(MoveEvent(player, oldLocation, newLocation, player.rotation, player.rotation))
+        server.eventManager.fireAndForget(MoveEvent(player, oldLocation, newLocation))
 
-        playerManager.sendToAll(PacketOutEntityPosition(
+        val newPacket = PacketOutEntityPosition(
             player.id,
             Positioning.delta(newLocation.x(), oldLocation.x()),
             Positioning.delta(newLocation.y(), oldLocation.y()),
             Positioning.delta(newLocation.z(), oldLocation.z()),
             packet.onGround
-        ), player)
-        player.updateChunks()
-        player.updateMovementStatistics(
-            newLocation.x() - oldLocation.x(),
-            newLocation.y() - oldLocation.y(),
-            newLocation.z() - oldLocation.z()
         )
-        player.updateMovementExhaustion(
-            newLocation.x() - oldLocation.x(),
-            newLocation.y() - oldLocation.y(),
-            newLocation.z() - oldLocation.z()
-        )
+        player.viewers.forEach { it.session.send(newPacket) }
+        onMove(newLocation, oldLocation)
     }
 
     private fun handleRotationUpdate(packet: PacketInPlayerRotation) {
@@ -361,7 +361,7 @@ class PlayHandler(
         val newRotation = Vector2f(packet.yaw, packet.pitch)
 
         player.rotation = newRotation
-        server.eventManager.fireAndForget(MoveEvent(player, player.location, player.location, oldRotation, newRotation))
+        server.eventManager.fireAndForget(RotateEvent(player, oldRotation, newRotation))
 
         playerManager.sendToAll(PacketOutEntityRotation(
             player.id,
@@ -381,7 +381,8 @@ class PlayHandler(
 
         player.location = newLocation
         player.rotation = newRotation
-        server.eventManager.fireAndForget(MoveEvent(player, oldLocation, newLocation, oldRotation, newRotation))
+        server.eventManager.fireAndForget(MoveEvent(player, oldLocation, newLocation))
+        server.eventManager.fireAndForget(RotateEvent(player, oldRotation, newRotation))
 
         // TODO: Look in to optimising this (rotation and head look updating) as much as we possibly can
         playerManager.sendToAll(PacketOutEntityPositionAndRotation(
@@ -394,17 +395,7 @@ class PlayHandler(
             packet.onGround
         ), player)
         playerManager.sendToAll(PacketOutHeadLook(player.id, newRotation.x()), player)
-        player.updateChunks()
-        player.updateMovementStatistics(
-            newLocation.x() - oldLocation.x(),
-            newLocation.y() - oldLocation.y(),
-            newLocation.z() - oldLocation.z()
-        )
-        player.updateMovementExhaustion(
-            newLocation.x() - oldLocation.x(),
-            newLocation.y() - oldLocation.y(),
-            newLocation.z() - oldLocation.z()
-        )
+        onMove(newLocation, oldLocation)
     }
 
     private fun handlePluginMessage(packet: PacketInPluginMessage) {
@@ -422,9 +413,9 @@ class PlayHandler(
         if (reader.canRead() && reader.peek() == '/') reader.skip()
 
         val parseResults = server.commandManager.dispatcher.parse(reader, player)
-        server.commandManager.suggest(parseResults).thenAccept {
+        server.commandManager.suggest(parseResults).thenAcceptAsync({
             session.send(PacketOutTabComplete(packet.id, it))
-        }
+        }, session.channel.eventLoop())
     }
 
     private fun handleClientStatus(packet: PacketInClientStatus) {
@@ -442,10 +433,24 @@ class PlayHandler(
 
     private fun handleResourcePackStatus(packet: PacketInResourcePackStatus) {
         if (packet.status == ResourcePack.Status.DECLINED && server.config.server.resourcePack.forced) {
-            player.session.disconnect(translatable("multiplayer.requiredTexturePrompt.disconnect"))
+            player.session.disconnect(Component.translatable("multiplayer.requiredTexturePrompt.disconnect"))
             return
         }
         server.eventManager.fireAndForget(ResourcePackStatusEvent(player, packet.status))
+    }
+
+    private fun onMove(newLocation: Vector3d, oldLocation: Vector3d) {
+        player.updateChunks()
+        player.updateMovementStatistics(
+            newLocation.x() - oldLocation.x(),
+            newLocation.y() - oldLocation.y(),
+            newLocation.z() - oldLocation.z()
+        )
+        player.updateMovementExhaustion(
+            newLocation.x() - oldLocation.x(),
+            newLocation.y() - oldLocation.y(),
+            newLocation.z() - oldLocation.z()
+        )
     }
 
     companion object {

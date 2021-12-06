@@ -21,6 +21,7 @@ package org.kryptonmc.krypton.entity.player
 import it.unimi.dsi.fastutil.longs.LongArrayList
 import it.unimi.dsi.fastutil.longs.LongArraySet
 import it.unimi.dsi.fastutil.longs.LongSet
+import me.lucko.spark.common.command.sender.CommandSender
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.identity.Identity
@@ -429,11 +430,13 @@ class KryptonPlayer(
     override fun tick() {
         super.tick()
         hungerMechanic()
+        cooldowns.tick()
         if (data.isDirty) session.send(PacketOutMetadata(id, data.dirty))
     }
 
     private fun hungerMechanic() {
         // TODO: More actions for exhaustion, add constants?
+        if (gameMode != GameModes.SURVIVAL && gameMode != GameModes.ADVENTURE) return
         foodTickTimer++
 
         // Sources:
@@ -508,16 +511,22 @@ class KryptonPlayer(
         // a player healing infinitely.
         if (foodTickTimer == 80) {
             if (foodLevel >= 18) {
-                health++ // Regenerate health
-                // Once a half-heart has been added, increase the exhaustion by 3,
-                // or if that operation were to exceed the threshold, instead, set it to the
-                // threshold value of 4.
-                foodExhaustionLevel = min(foodExhaustionLevel + 3f, 4f)
-                // Force the saturation level to deplete by 3.
-                // So as health comes up, the food "buffer" comes down,
-                // eventually causing the food level to decrease, when saturation
-                // reaches zero.
-                foodSaturationLevel -= 3
+                // Avoid exceeding max health
+                if (maxHealth >= health + 1) {
+                    // Regenerate health
+                    health++
+                    // Once a half-heart has been added, increase the exhaustion by 3,
+                    // or if that operation were to exceed the threshold, instead, set it to the
+                    // threshold value of 4.
+                    foodExhaustionLevel = min(foodExhaustionLevel + 3f, 4f)
+                    // Force the saturation level to deplete by 3.
+                    // So as health comes up, the food "buffer" comes down,
+                    // eventually causing the food level to decrease, when saturation
+                    // reaches zero.
+                    foodSaturationLevel -= 3
+                } else {
+                    health = maxHealth
+                }
             }
             foodTickTimer = 0 // reset tick timer
         }
@@ -551,11 +560,7 @@ class KryptonPlayer(
         val oldLocation = location
         location = position
 
-        if (
-            abs(location.x() - oldLocation.x()) > 8 ||
-            abs(location.y() - oldLocation.y()) > 8 ||
-            abs(location.z() - oldLocation.z()) > 8
-        ) {
+        if (Positioning.deltaInMoveRange(oldLocation, location)) {
             session.send(PacketOutEntityTeleport(id, location, rotation, isOnGround))
         } else {
             session.send(PacketOutEntityPosition(
@@ -640,8 +645,12 @@ class KryptonPlayer(
         session.send(PacketOutSubTitle(subtitle))
     }
 
+    fun sendTitleTimes(fadeInTicks: Int, stayTicks: Int, fadeOutTicks: Int) {
+        session.send(PacketOutTitleTimes(fadeInTicks, stayTicks, fadeOutTicks))
+    }
+
     fun sendTitleTimes(fadeIn: Duration, stay: Duration, fadeOut: Duration) {
-        session.send(PacketOutTitleTimes(Title.Times.of(fadeIn, stay, fadeOut)))
+        session.send(PacketOutTitleTimes(fadeIn, stay, fadeOut))
     }
 
     override fun clearTitle() {

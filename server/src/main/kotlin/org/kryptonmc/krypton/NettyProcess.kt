@@ -24,6 +24,7 @@ import io.netty.channel.ChannelFuture
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.ChannelOption
 import io.netty.channel.EventLoopGroup
+import io.netty.channel.MultithreadEventLoopGroup
 import io.netty.channel.ServerChannel
 import io.netty.channel.epoll.Epoll
 import io.netty.channel.epoll.EpollEventLoopGroup
@@ -63,6 +64,7 @@ object NettyProcess {
     private val listeners = mutableMapOf<Key, ChannelInitializeListener>()
     private var future: ChannelFuture? = null
 
+    @JvmStatic
     fun run(server: KryptonServer) {
         val ip = server.config.server.ip
         val address = if (ip.startsWith("unix:")) {
@@ -113,6 +115,7 @@ object NettyProcess {
         }
     }
 
+    @JvmStatic
     fun shutdown() {
         future?.channel()?.close()?.sync()
     }
@@ -129,6 +132,7 @@ object NettyProcess {
      * @param key the key to store the listener by, for removal
      * @param listener the listener to add
      */
+    @JvmStatic
     fun addListener(key: Key, listener: ChannelInitializeListener) {
         listeners[key] = listener
     }
@@ -142,18 +146,21 @@ object NettyProcess {
      *
      * @param key the key for the channel initialise listener
      */
+    @JvmStatic
     fun removeListener(key: Key) {
         listeners.remove(key)
     }
 
     // Determines the best loop group to use based on what is available on the current operating system
-    private fun bestLoopGroup() = when {
+    @JvmStatic
+    private fun bestLoopGroup(): MultithreadEventLoopGroup = when {
         Epoll.isAvailable() -> EpollEventLoopGroup(0, threadFactory("Netty Epoll Worker #%d"))
         KQueue.isAvailable() -> KQueueEventLoopGroup(0, threadFactory("Netty KQueue Worker #%d"))
         else -> NioEventLoopGroup(0, threadFactory("Netty NIO Worker #%d"))
     }
 
     // Determines the best socket channel to use based on what is available on the current operating system
+    @JvmStatic
     private fun bestChannel(domainSocket: Boolean): Class<out ServerChannel> = when {
         Epoll.isAvailable() -> if (domainSocket) EpollServerDomainSocketChannel::class.java else EpollServerSocketChannel::class.java
         KQueue.isAvailable() -> if (domainSocket) KQueueServerDomainSocketChannel::class.java else KQueueServerSocketChannel::class.java

@@ -18,40 +18,49 @@
  */
 package org.kryptonmc.krypton.commands
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.StringArgumentType.string
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
-import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.literal
 
 object MessageCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        val messageCommand = dispatcher.register(literal<Sender>("msg")
-            .permission(KryptonPermission.MESSAGE)
-            .then(argument<Sender, EntityQuery>("player", EntityArgument.player())
-                .then(argument<Sender, String>("message", string())
-                    .executes {
+        val messageCommand = dispatcher.register(literal("msg") {
+            permission(KryptonPermission.MESSAGE)
+            argument("player", EntityArgument.players()) {
+                argument("message", StringArgumentType.string()) {
+                    executes {
                         val source = it.source as? KryptonPlayer ?: return@executes 0
                         val player = it.entityArgument("player").players(source)[0]
                         val message = it.argument<String>("message")
-                        source.sendMessage(translatable("commands.message.display.outgoing", player.displayName, text(message)))
-                        player.sendMessage(translatable("commands.message.display.incoming", source.displayName, text(message)))
-                        1
-                    })
-            )
-        )
+                        source.sendMessage(Component.translatable(
+                            "commands.message.display.outgoing",
+                            player.displayName,
+                            Component.text(message)
+                        ))
+                        player.sendMessage(Component.translatable(
+                            "commands.message.display.incoming",
+                            source.displayName,
+                            Component.text(message)
+                        ))
+                        Command.SINGLE_SUCCESS
+                    }
+                }
+            }
+        })
 
-        dispatcher.register(literal<Sender>("tell").redirect(messageCommand))
-        dispatcher.register(literal<Sender>("w").redirect(messageCommand))
+        dispatcher.register(LiteralArgumentBuilder.literal<Sender>("tell").redirect(messageCommand))
+        dispatcher.register(LiteralArgumentBuilder.literal<Sender>("w").redirect(messageCommand))
     }
 }

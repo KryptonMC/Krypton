@@ -21,19 +21,10 @@ package org.kryptonmc.krypton.util
 object Quart {
 
     const val BITS = 2
-    const val SIZE = 4
-    const val MASK = 3
-    private const val SECTION_TO_QUART_BITS = 2
 
     @JvmStatic
     fun fromBlock(value: Int): Int = value shr BITS
 
     @JvmStatic
     fun toBlock(value: Int): Int = value shl BITS
-
-    @JvmStatic
-    fun fromSection(value: Int): Int = value shr BITS
-
-    @JvmStatic
-    fun toSection(value: Int): Int = value shl BITS
 }

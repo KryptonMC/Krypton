@@ -26,7 +26,10 @@ data class DataPackConfig(val enabled: List<String>, val disabled: List<String>)
 
     companion object {
 
-        val DEFAULT = DataPackConfig(listOf("vanilla"), emptyList())
+        @JvmField
+        val DEFAULT: DataPackConfig = DataPackConfig(listOf("vanilla"), emptyList())
+
+        @JvmField
         val CODEC: Codec<DataPackConfig> = RecordCodecBuilder.create {
             it.group(
                 Codec.STRING.listOf().fieldOf("Enabled").forGetter(DataPackConfig::enabled),

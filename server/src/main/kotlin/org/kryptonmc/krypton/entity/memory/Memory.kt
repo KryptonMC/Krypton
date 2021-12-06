@@ -28,7 +28,7 @@ class Memory<T : Any>(
 
     var timeToLive = timeToLive
         private set
-    val canExpire: Boolean
+    private val canExpire: Boolean
         get() = timeToLive != Long.MAX_VALUE
     val hasExpired: Boolean
         get() = timeToLive <= 0L

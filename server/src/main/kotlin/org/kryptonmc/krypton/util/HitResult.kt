@@ -1,12 +1,22 @@
 /*
- * This file is part of the Krypton API, licensed under the MIT license.
+ * This file is part of the Krypton project, licensed under the GNU General Public License v3.0
  *
- * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
+ * Copyright (C) 2021 KryptonMC and the contributors of the Krypton project
  *
- * This project is licensed under the terms of the MIT license.
- * For more details, please reference the LICENSE file in the api top-level directory.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.api.util
+package org.kryptonmc.krypton.util
 
 import org.kryptonmc.api.entity.Entity
 import org.spongepowered.math.vector.Vector3d
@@ -14,20 +24,17 @@ import org.spongepowered.math.vector.Vector3d
 /**
  * The result of a player hitting (attacking) something.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
-public interface HitResult {
+interface HitResult {
 
     /**
      * The location where the player clicked.
      */
-    @get:JvmName("clickLocation")
-    public val clickLocation: Vector3d
+    val clickLocation: Vector3d
 
     /**
      * The type of this hit result.
      */
-    @get:JvmName("type")
-    public val type: Type
+    val type: Type
 
     /**
      * Gets the distance squared from the [clickLocation] to the given
@@ -39,7 +46,7 @@ public interface HitResult {
      * @param entity the entity to calculate the distance to
      * @return the distance squared from the click location to the given entity
      */
-    public fun distanceTo(entity: Entity): Double {
+    fun distanceTo(entity: Entity): Double {
         val distanceX = clickLocation.x() - entity.location.x()
         val distanceY = clickLocation.y() - entity.location.y()
         val distanceZ = clickLocation.z() - entity.location.z()
@@ -49,7 +56,7 @@ public interface HitResult {
     /**
      * The type of hit result.
      */
-    public enum class Type {
+    enum class Type {
 
         MISS,
         BLOCK,

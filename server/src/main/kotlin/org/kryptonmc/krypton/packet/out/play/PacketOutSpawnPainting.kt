@@ -42,7 +42,7 @@ data class PacketOutSpawnPainting(
     constructor(painting: KryptonPainting) : this(
         painting.id,
         painting.uuid,
-        painting.picture?.let { InternalRegistries.CANVAS.idOf(it) } ?: DEFAULT_CANVAS_ID,
+        painting.picture?.let { InternalRegistries.PICTURE.idOf(it) } ?: DEFAULT_CANVAS_ID,
         painting.centerPosition.x(),
         painting.centerPosition.y(),
         painting.centerPosition.z(),
@@ -59,6 +59,6 @@ data class PacketOutSpawnPainting(
 
     companion object {
 
-        private val DEFAULT_CANVAS_ID = InternalRegistries.CANVAS.idOf(InternalRegistries.CANVAS.defaultValue)
+        private val DEFAULT_CANVAS_ID = InternalRegistries.PICTURE.idOf(InternalRegistries.PICTURE.defaultValue)
     }
 }

@@ -21,8 +21,6 @@ package org.kryptonmc.krypton.network.handlers
 import com.velocitypowered.natives.util.Natives
 import io.netty.buffer.Unpooled
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.event.auth.AuthenticationEvent
 import org.kryptonmc.api.event.player.LoginEvent
 import org.kryptonmc.api.event.server.SetupPermissionsEvent
@@ -33,6 +31,7 @@ import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.network.data.ForwardedData
 import org.kryptonmc.krypton.network.data.LegacyForwardedData
 import org.kryptonmc.krypton.network.data.readVelocityData
 import org.kryptonmc.krypton.network.data.verifyVelocityIntegrity
@@ -65,7 +64,8 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
 /**
- * Handles all inbound packets in the [Login][org.kryptonmc.krypton.packet.PacketState.LOGIN] state.
+ * Handles all inbound packets in the [Login][org.kryptonmc.krypton.packet.PacketState.LOGIN]
+ * state.
  *
  * There are two inbound packets in this state that we handle:
  * - [Login Start][org.kryptonmc.krypton.packet.`in`.login.PacketInLoginStart] -
@@ -76,7 +76,7 @@ import javax.crypto.spec.SecretKeySpec
 class LoginHandler(
     override val server: KryptonServer,
     override val session: SessionHandler,
-    private val legacyForwardedData: LegacyForwardedData?
+    private val proxyForwardedData: ForwardedData?
 ) : PacketHandler {
 
     private val playerManager = server.playerManager
@@ -91,33 +91,37 @@ class LoginHandler(
         bytes
     }
 
-    override fun handle(packet: Packet) = when (packet) {
-        is PacketInLoginStart -> handleLoginStart(packet)
-        is PacketInEncryptionResponse -> handleEncryptionResponse(packet)
-        is PacketInPluginResponse -> handlePluginResponse(packet)
-        else -> Unit
+    override fun handle(packet: Packet) {
+        when (packet) {
+            is PacketInLoginStart -> handleLoginStart(packet)
+            is PacketInEncryptionResponse -> handleEncryptionResponse(packet)
+            is PacketInPluginResponse -> handlePluginResponse(packet)
+            else -> Unit
+        }
     }
 
     private fun handleLoginStart(packet: PacketInLoginStart) {
-        val rawAddress = session.channel.remoteAddress() as InetSocketAddress // TODO: UNIX domain socket support
-        val address = if (legacyForwardedData != null) {
-            InetSocketAddress(legacyForwardedData.forwardedIp, rawAddress.port)
-        } else {
-            rawAddress
-        }
-
         name = packet.name
-        // Ignore online mode if we want forwarding
-        if (!server.isOnline || server.config.proxy.mode != ForwardingMode.NONE) {
+
+        // Ignore online mode if we want proxy forwarding
+        if (!server.isOnline || server.config.proxy.mode.authenticatesUsers) {
             if (server.config.proxy.mode == ForwardingMode.MODERN) {
                 session.send(PacketOutPluginRequest(velocityMessageId, VELOCITY_CHANNEL_ID, ByteArray(0)))
                 return
             }
 
+            val rawAddress = session.channel.remoteAddress() as InetSocketAddress // TODO: UNIX domain socket support
+            val address = if (proxyForwardedData != null) {
+                val port = if (proxyForwardedData.forwardedPort == -1) rawAddress.port else proxyForwardedData.forwardedPort
+                InetSocketAddress(proxyForwardedData.forwardedAddress, port)
+            } else {
+                rawAddress
+            }
+
             // Copy over the data from legacy forwarding
             // Note: Per the protocol, offline players use UUID v3, rather than UUID v4.
-            val uuid = legacyForwardedData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
-            val profile = KryptonGameProfile(packet.name, uuid, legacyForwardedData?.properties ?: emptyList())
+            val uuid = proxyForwardedData?.uuid ?: UUID.nameUUIDFromBytes("OfflinePlayer:${packet.name}".encodeToByteArray())
+            val profile = KryptonGameProfile(packet.name, uuid, proxyForwardedData?.properties ?: emptyList())
 
             // Check the player can join and the login event was not cancelled.
             if (!canJoin(profile, address) || !callLoginEvent(profile)) return
@@ -147,8 +151,9 @@ class LoginHandler(
         enableEncryption(secretKey)
 
         val rawAddress = session.channel.remoteAddress() as InetSocketAddress
-        val address = if (legacyForwardedData != null) {
-            InetSocketAddress(legacyForwardedData.forwardedIp, rawAddress.port)
+        val address = if (proxyForwardedData != null) {
+            val port = if (proxyForwardedData.forwardedPort != -1) proxyForwardedData.forwardedPort else rawAddress.port
+            InetSocketAddress(proxyForwardedData.forwardedAddress, port)
         } else {
             rawAddress
         }
@@ -158,7 +163,7 @@ class LoginHandler(
             if (!it.result.isAllowed) return@thenApplyAsync null
 
             val profile = SessionService.hasJoined(name, sharedSecret, server.config.server.ip) ?: kotlin.run {
-                session.disconnect(translatable("multiplayer.disconnect.unverified_username"))
+                session.disconnect(Component.translatable("multiplayer.disconnect.unverified_username"))
                 return@thenApplyAsync null
             }
             if (!canJoin(profile, address) || !callLoginEvent(profile)) return@thenApplyAsync null
@@ -192,7 +197,7 @@ class LoginHandler(
         val buffer = Unpooled.copiedBuffer(packet.data)
         val hasValidIntegrity = buffer.verifyVelocityIntegrity(forwardingSecret)
         if (!hasValidIntegrity) {
-            disconnect(text("Response received from Velocity could not be verified!"))
+            disconnect(Component.text("Response received from Velocity could not be verified!"))
             return
         }
 
@@ -226,22 +231,20 @@ class LoginHandler(
             if (exception == null) return@whenComplete
             LOGGER.error("Disconnecting player ${player.profile.name} due to exception caught whilst attempting to " +
                     "load them in...", exception)
-            player.disconnect(text(
-                "An unexpected exception occurred. Please contact the system administrator."
-            ))
+            player.disconnect(Component.text("An unexpected exception occurred. Please contact the system administrator."))
         }
     }
 
     /**
-     * Ensures that the given [expected] and [actual] arrays are the same
+     * Ensures that the given [expected] and [actual] arrays are the same.
      */
     private fun verifyToken(expected: ByteArray, actual: ByteArray): Boolean {
         val decryptedActual = Encryption.decrypt(actual)
         if (!decryptedActual.contentEquals(expected)) {
             LOGGER.error("Verify tokens for $name did not match! Their connection may have been intercepted.")
-            disconnect(translatable(
+            disconnect(Component.translatable(
                 "disconnect.loginFailedInfo",
-                text("Verify tokens did not match! Your connection may have been intercepted.")
+                Component.text("Verify tokens did not match! Your connection may have been intercepted.")
             ))
             return false
         }
@@ -291,7 +294,7 @@ class LoginHandler(
             val reason = if (result.reason !== Component.empty()) {
                 result.reason
             } else {
-                translatable("multiplayer.disconnect.kicked")
+                Component.translatable("multiplayer.disconnect.kicked")
             }
             disconnect(reason)
             return false
@@ -302,12 +305,14 @@ class LoginHandler(
     private fun canJoin(profile: KryptonGameProfile, address: SocketAddress): Boolean {
         if (playerManager.bannedPlayers.contains(profile)) { // We are banned
             val entry = playerManager.bannedPlayers[profile]!!
-            val text = translatable("multiplayer.disconnect.banned.reason", entry.reason)
+            val text = Component.translatable("multiplayer.disconnect.banned.reason", entry.reason)
             // Add the expiration date
-            if (entry.expirationDate != null) text.append(translatable(
-                "multiplayer.disconnect.banned.expiration",
-                text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
-            ))
+            if (entry.expirationDate != null) {
+                text.append(Component.translatable(
+                    "multiplayer.disconnect.banned.expiration",
+                    Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
+                ))
+            }
 
             // Inform the client that they are banned
             disconnect(text)
@@ -318,16 +323,18 @@ class LoginHandler(
             !playerManager.whitelist.contains(profile) &&
             !playerManager.whitelistedIps.isWhitelisted(address)
         ) { // We are not whitelisted
-            disconnect(translatable("multiplayer.disconnect.not_whitelisted"))
+            disconnect(Component.translatable("multiplayer.disconnect.not_whitelisted"))
             LOGGER.info("${profile.name} was disconnected as this server is whitelisted and they are not on the whitelist.")
             return false
         } else if (playerManager.bannedIps.isBanned(address)) { // Their IP is banned.
             val entry = playerManager.bannedIps[address]!!
-            var text = translatable("multiplayer.disconnect.banned_ip.reason", entry.reason)
-            if (entry.expirationDate != null) text = text.append(translatable(
-                "multiplayer.disconnect.banned.expiration",
-                text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
-            ))
+            var text = Component.translatable("multiplayer.disconnect.banned_ip.reason", entry.reason)
+            if (entry.expirationDate != null) {
+                text = text.append(Component.translatable(
+                    "multiplayer.disconnect.banned.expiration",
+                    Component.text(BanEntry.DATE_FORMATTER.format(entry.expirationDate))
+                ))
+            }
             disconnect(text)
             LOGGER.info("${profile.name} disconnected. Reason: IP Banned")
         }

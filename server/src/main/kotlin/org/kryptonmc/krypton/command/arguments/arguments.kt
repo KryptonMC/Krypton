@@ -16,20 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.item
+package org.kryptonmc.krypton.command.arguments
 
-import org.kryptonmc.api.block.BlockHitResult
-import org.kryptonmc.api.entity.Hand
+import com.mojang.brigadier.context.CommandContext
+import net.kyori.adventure.key.Key
+import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.item.InteractionContext
-import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.world.World
+import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.arguments.coordinates.Coordinates
+import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
+import org.spongepowered.math.vector.Vector3d
 
-@JvmRecord
-data class KryptonInteractionContext(
-    override val player: Player,
-    override val world: World,
-    override val heldItem: ItemStack,
-    override val hand: Hand,
-    override val hitResult: BlockHitResult
-) : InteractionContext
+fun CommandContext<Sender>.gameProfileArgument(name: String): EntityQuery = argument(name)
+
+fun CommandContext<Sender>.summonableEntity(name: String): Key = SummonEntityArgument.ensureSummonable(argument(name))
+
+fun CommandContext<Sender>.entityArgument(name: String): Key = SummonEntityArgument.ensureSummonable(argument(name))
+
+fun CommandContext<Sender>.vectorArgument(name: String): Vector3d = argument<Coordinates>(name).position(source as Player)

@@ -40,7 +40,7 @@ sealed class KryptonProperty<T : Comparable<T>>(
         return name == other.name && type == other.type
     }
 
-    override fun hashCode() = 31 * type.hashCode() + name.hashCode()
+    override fun hashCode(): Int = 31 * type.hashCode() + name.hashCode()
 
-    override fun toString() = "${javaClass.simpleName}(name=$name, type=${type.simpleName}, values=$values)"
+    override fun toString(): String = "${javaClass.simpleName}(name=$name, type=${type.simpleName}, values=$values)"
 }

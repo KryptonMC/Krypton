@@ -26,7 +26,7 @@ import java.util.function.Predicate
 
 object LocaleTypeSerializer : ScalarSerializer<Locale>(Locale::class.java) {
 
-    override fun serialize(item: Locale, typeSupported: Predicate<Class<*>>) = item.toString()
+    override fun serialize(item: Locale, typeSupported: Predicate<Class<*>>): Any = item.toString()
 
     override fun deserialize(type: Type, obj: Any): Locale {
         if (obj !is String) throw SerializationException("Locale must be a string!")

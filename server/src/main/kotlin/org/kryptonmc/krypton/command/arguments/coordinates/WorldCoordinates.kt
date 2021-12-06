@@ -33,15 +33,15 @@ data class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val 
     override val hasRelativeZ: Boolean
         get() = z.isRelative
 
-    override fun position(player: Player) = Vector3d(
-        x[player.location.x()],
-        y[player.location.y()],
-        z[player.location.z()]
+    override fun position(player: Player): Vector3d = Vector3d(
+        x.calculate(player.location.x()),
+        y.calculate(player.location.y()),
+        z.calculate(player.location.z())
     )
 
-    override fun rotation(player: Player) = Vector2d(
-        x[player.rotation.x().toDouble()],
-        y[player.rotation.y().toDouble()]
+    override fun rotation(player: Player): Vector2d = Vector2d(
+        x.calculate(player.rotation.x().toDouble()),
+        y.calculate(player.rotation.y().toDouble())
     )
 
     companion object {

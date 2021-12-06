@@ -36,15 +36,15 @@ object Encryption {
     private val keyPair = generateKeyPair()
     val publicKey: PublicKey = keyPair.public
 
-    private fun generateKeyPair(): KeyPair {
-        val generator = KeyPairGenerator.getInstance(PAIR_ALGORITHM)
-        generator.initialize(1024)
-        return generator.generateKeyPair()
-    }
-
     fun decrypt(encryptedData: ByteArray): ByteArray {
         val cipher = Cipher.getInstance(PAIR_ALGORITHM)
         cipher.init(Cipher.DECRYPT_MODE, keyPair.private)
         return cipher.doFinal(encryptedData)
+    }
+
+    private fun generateKeyPair(): KeyPair {
+        val generator = KeyPairGenerator.getInstance(PAIR_ALGORITHM)
+        generator.initialize(1024)
+        return generator.generateKeyPair()
     }
 }

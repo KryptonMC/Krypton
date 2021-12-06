@@ -154,7 +154,7 @@ object Codecs {
     }
 
     @JvmStatic
-    private fun parseKey(key: String) = try {
+    private fun parseKey(key: String): DataResult<Key> = try {
         DataResult.success(Key.key(key))
     } catch (exception: InvalidKeyException) {
         DataResult.error("$key is not a valid key! Exception: ${exception.message}")

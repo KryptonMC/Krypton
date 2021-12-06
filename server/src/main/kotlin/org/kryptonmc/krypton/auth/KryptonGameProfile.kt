@@ -33,7 +33,7 @@ data class KryptonGameProfile(
     override val properties: List<ProfileProperty>
 ) : GameProfile {
 
-    override fun toString() = "KryptonGameProfile(name=$name,uuid=$uuid,properties=$properties)"
+    override fun toString(): String = "KryptonGameProfile(name=$name,uuid=$uuid,properties=$properties)"
 
     object Factory : GameProfile.Factory {
 

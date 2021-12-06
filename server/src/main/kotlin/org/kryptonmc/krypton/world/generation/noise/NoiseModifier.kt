@@ -24,6 +24,7 @@ fun interface NoiseModifier {
 
     companion object {
 
-        val PASSTHROUGH = NoiseModifier { value, _, _, _ -> value }
+        @JvmField
+        val PASSTHROUGH: NoiseModifier = NoiseModifier { value, _, _, _ -> value }
     }
 }

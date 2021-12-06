@@ -28,7 +28,7 @@ class EnumProperty<E>(
 
     private val names = values.associateBy { it.serialized }
 
-    override fun fromString(value: String) = names[value]
+    override fun fromString(value: String): E? = names[value]
 
-    override fun toString(value: E) = value.serialized
+    override fun toString(value: E): String = value.serialized
 }

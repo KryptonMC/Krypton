@@ -82,12 +82,6 @@ public interface Fluid : Buildable<Fluid, Fluid.Builder>, PropertyHolder<Fluid>,
     public val level: Int
 
     /**
-     * The handler for this fluid.
-     */
-    @get:JvmName("handler")
-    public val handler: FluidHandler
-
-    /**
      * Compares this fluid to the given [other] fluid.
      *
      * @param other the other fluid

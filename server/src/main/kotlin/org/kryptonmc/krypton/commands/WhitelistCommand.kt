@@ -18,118 +18,63 @@
  */
 package org.kryptonmc.krypton.commands
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.StringArgumentType.string
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import com.mojang.brigadier.arguments.StringArgumentType
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
-import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.gameProfileArgument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.server.whitelist.WhitelistEntry
 import org.kryptonmc.krypton.server.whitelist.WhitelistIpEntry
 import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.matchesSubString
 import org.kryptonmc.krypton.util.asString
 
 object WhitelistCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("whitelist")
-            .permission(KryptonPermission.WHITELIST)
-            .then(literal<Sender>("on")
-                .executes {
-                    val sender = it.source
-                    val server = sender.server as? KryptonServer ?: return@executes 0
-                    if (!server.playerManager.whitelistEnabled) {
-                        server.playerManager.whitelistEnabled = true
-                        sender.sendMessage(translatable("commands.whitelist.enabled"))
-                    } else {
-                        sender.sendMessage(translatable("commands.whitelist.alreadyOn"))
-                    }
-                    1
-                })
-            .then(literal<Sender>("off")
-                .executes {
-                    val sender = it.source
-                    val server = sender.server as? KryptonServer ?: return@executes 0
-                    if (server.playerManager.whitelistEnabled) {
-                        server.playerManager.whitelistEnabled = false
-                        sender.sendMessage(translatable("commands.whitelist.disabled"))
-                    } else {
-                        sender.sendMessage(translatable("commands.whitelist.alreadyOff"))
-                    }
-                    1
-                })
-            .then(literal<Sender>("list")
-                .executes {
+        dispatcher.register(literal("whitelist") {
+            permission(KryptonPermission.WHITELIST)
+            toggle("on", true, "enabled", "alreadyOn")
+            toggle("off", false, "disabled", "alreadyOff")
+            literal("list") {
+                executes {
                     val sender = it.source
                     val server = it.source.server as? KryptonServer ?: return@executes 0
                     val whitelist = server.playerManager.whitelist
                     if (whitelist.isEmpty()) {
-                        sender.sendMessage(translatable("commands.whitelist.none"))
-                    } else {
-                        sender.sendMessage(translatable(
-                            "commands.whitelist.list",
-                            text(whitelist.size.toString()),
-                            text(whitelist.joinToString())
-                        ))
+                        sender.sendMessage(Component.translatable("commands.whitelist.none"))
+                        return@executes Command.SINGLE_SUCCESS
                     }
-                    1
-                })
-            .then(literal<Sender>("add")
-                .then(argument<Sender, EntityQuery>("targets", GameProfileArgument)
-                    .executes {
-                        val sender = it.source
-                        val server = sender.server as? KryptonServer ?: return@executes 0
-                        val targets = it.gameProfileArgument("targets").profiles(sender)
-                        for (target in targets) {
-                            val whitelist = server.playerManager.whitelist
-                            if (!whitelist.contains(target)) {
-                                whitelist.add(WhitelistEntry(target))
-                                sender.sendMessage(translatable("commands.whitelist.add.success", text(target.name)))
-                            } else {
-                                sender.sendMessage(translatable("commands.whitelist.add.failed"))
-                            }
-                        }
-                        1
-                    })
-            )
-            .then(literal<Sender>("remove")
-                .then(argument<Sender, EntityQuery>("targets", GameProfileArgument)
-                    .executes {
-                        val sender = it.source
-                        val server = sender.server as? KryptonServer ?: return@executes 0
-                        val targets = it.gameProfileArgument("targets").profiles(sender)
-                        for (target in targets) {
-                            val whitelist = server.playerManager.whitelist
-                            if (whitelist.contains(target)) {
-                                whitelist.remove(target)
-                                sender.sendMessage(translatable("commands.whitelist.remove.success", text(target.name)))
-                            } else {
-                                sender.sendMessage(translatable("commands.whitelist.remove.failed"))
-                            }
-                        }
-                        1
-                    })
-            ).then(literal<Sender>("add-ip")
-                .then(argument<Sender, String>("target", string())
-                    .executes {
-                        val sender = it.source
-                        val server = sender.server as? KryptonServer ?: return@executes 0
-                        val target = it.argument<String>("target")
-                        whitelistIp(server, target, sender)
-                        1
-                    })
-            )
-            .then(literal<Sender>("remove-ip")
-                .then(argument<Sender, String>("ip", string())
-                    .suggests { context, builder ->
+                    sender.sendMessage(Component.translatable(
+                        "commands.whitelist.list",
+                        Component.text(whitelist.size.toString()),
+                        Component.text(whitelist.joinToString())
+                    ))
+                    Command.SINGLE_SUCCESS
+                }
+            }
+            addOrRemove("add", true)
+            addOrRemove("remove", false)
+            literal("add-ip") {
+                argument("target", StringArgumentType.string()) {
+                    executes {
+                        val server = it.source.server as? KryptonServer ?: return@executes 0
+                        whitelistIp(server, it.argument("target"), it.source)
+                        Command.SINGLE_SUCCESS
+                    }
+                }
+            }
+            literal("remove-ip") {
+                argument("ip", StringArgumentType.string()) {
+                    suggests { context, builder ->
                         val server = context.source.server as? KryptonServer ?: return@suggests builder.buildFuture()
                         server.playerManager.whitelistedIps.forEach {
                             if (!builder.remainingLowerCase.matchesSubString(it.key.lowercase())) return@forEach
@@ -137,45 +82,87 @@ object WhitelistCommand : InternalCommand {
                         }
                         builder.buildFuture()
                     }
-                    .executes {
-                        val sender = it.source
-                        val server = sender.server as? KryptonServer ?: return@executes 0
+                    executes {
+                        val server = it.source.server as? KryptonServer ?: return@executes 0
                         val ip = it.argument<String>("ip")
                         if (server.playerManager.whitelistedIps.contains(ip)) {
                             server.playerManager.whitelistedIps.remove(ip)
-                            sender.sendMessage(translatable("commands.whitelist.remove.success", text(ip)))
-                        } else {
-                            sender.sendMessage(translatable("commands.whitelist.remove.failed"))
+                            it.source.sendMessage(Component.translatable("commands.whitelist.remove.success", Component.text(ip)))
+                            return@executes Command.SINGLE_SUCCESS
                         }
-                        1
-                    })
-            )
-        )
+                        it.source.sendMessage(Component.translatable("commands.whitelist.remove.failed"))
+                        Command.SINGLE_SUCCESS
+                    }
+                }
+            }
+        })
+
     }
 
+    @JvmStatic
+    private fun LiteralArgumentBuilder<Sender>.toggle(
+        name: String,
+        enable: Boolean,
+        key: String,
+        alreadyKey: String
+    ): LiteralArgumentBuilder<Sender> = literal(name) {
+        executes {
+            val server = it.source.server as? KryptonServer ?: return@executes 0
+            val toggled = if (enable) !server.playerManager.whitelistEnabled else server.playerManager.whitelistEnabled
+            if (toggled) {
+                server.playerManager.whitelistEnabled = enable
+                it.source.sendMessage(Component.translatable("commands.whitelist.$key"))
+            } else {
+                it.source.sendMessage(Component.translatable("commands.whitelist.$alreadyKey"))
+            }
+            Command.SINGLE_SUCCESS
+        }
+    }
+
+    @JvmStatic
+    private fun LiteralArgumentBuilder<Sender>.addOrRemove(name: String, add: Boolean): LiteralArgumentBuilder<Sender> = literal(name) {
+        argument("targets", GameProfileArgument) {
+            executes { context ->
+                val server = context.source.server as? KryptonServer ?: return@executes 0
+                val whitelist = server.playerManager.whitelist
+                context.gameProfileArgument("targets").profiles(context.source).forEach {
+                    val state = if (add) !whitelist.contains(it) else whitelist.contains(it)
+                    if (state) {
+                        if (add) whitelist.add(WhitelistEntry(it)) else whitelist.remove(it)
+                        context.source.sendMessage(Component.translatable("commands.whitelist.$name.success", Component.text(it.name)))
+                        return@forEach
+                    }
+                    context.source.sendMessage(Component.translatable("commands.whitelist.$name.failed"))
+                }
+                Command.SINGLE_SUCCESS
+            }
+        }
+    }
+
+    @JvmStatic
     private fun whitelistIp(server: KryptonServer, target: String, sender: Sender) {
         if (target.matches(BanIpCommand.IP_ADDRESS_PATTERN)) {
             if (server.playerManager.whitelistedIps.contains(target)) {
-                sender.sendMessage(translatable("commands.whitelist.add.failed"))
+                sender.sendMessage(Component.translatable("commands.whitelist.add.failed"))
                 return
             }
             val entry = WhitelistIpEntry(target)
             server.playerManager.whitelistedIps.add(entry)
-            sender.sendMessage(translatable("commands.whitelist.add.success", text(target)))
+            sender.sendMessage(Component.translatable("commands.whitelist.add.success", Component.text(target)))
             return
         }
         val player = server.player(target)
         if (player != null) {
             val address = player.address.asString()
             if (server.playerManager.whitelistedIps.contains(address)) {
-                sender.sendMessage(translatable("commands.whitelist.add.failed"))
+                sender.sendMessage(Component.translatable("commands.whitelist.add.failed"))
                 return
             }
             val entry = WhitelistIpEntry(address)
             server.playerManager.whitelistedIps.add(entry)
-            sender.sendMessage(translatable("commands.whitelist.add.success", text(target)))
+            sender.sendMessage(Component.translatable("commands.whitelist.add.success", Component.text(target)))
             return
         }
-        sender.sendMessage(translatable("commands.banip.invalid"))
+        sender.sendMessage(Component.translatable("commands.banip.invalid"))
     }
 }

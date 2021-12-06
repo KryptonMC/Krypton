@@ -49,11 +49,8 @@ class PerlinSimplexNoise private constructor(random: RandomSource, octaves: IntS
             random.skip(262)
         }
         if (last > 0) {
-            val sourceLevel = (noiseLevel.getValue(
-                noiseLevel.xOffset,
-                noiseLevel.yOffset,
-                noiseLevel.zOffset
-            ) * LONG_MAX_FLOAT.toDouble()).toLong()
+            val value = noiseLevel.getValue(noiseLevel.xOffset, noiseLevel.yOffset, noiseLevel.zOffset)
+            val sourceLevel = (value * LONG_MAX_FLOAT.toDouble()).toLong()
             val genRandom = WorldGenRandom(sourceLevel)
             for (i in total - 1 downTo 0) {
                 if (i < total && octaves.contains(total - i)) {
@@ -72,17 +69,19 @@ class PerlinSimplexNoise private constructor(random: RandomSource, octaves: IntS
         var highestFreqInputFactor = highestFrequencyInputFactor
         var highestFreqValueFactor = highestFrequencyValueFactor
         noiseLevels.forEach {
-            if (it != null) total += it.getValue(
-                x * highestFreqInputFactor + if (useOrigin) it.xOffset else 0.0,
-                y * highestFreqInputFactor + if (useOrigin) it.yOffset else 0.0
-            ) * highestFreqValueFactor
+            if (it != null) {
+                val xOffset = if (useOrigin) it.xOffset else 0.0
+                val yOffset = if (useOrigin) it.yOffset else 0.0
+                val value = it.getValue(x * highestFreqInputFactor + xOffset, y * highestFreqInputFactor + yOffset)
+                total += value * highestFreqValueFactor
+            }
             highestFreqInputFactor /= 2.0
             highestFreqValueFactor *= 2.0
         }
         return total
     }
 
-    override fun getValue(x: Double, y: Double, yScale: Double, yMax: Double) = getValue(x, y, true) * 0.55
+    override fun getValue(x: Double, y: Double, yScale: Double, yMax: Double): Double = getValue(x, y, true) * 0.55
 
     companion object {
 

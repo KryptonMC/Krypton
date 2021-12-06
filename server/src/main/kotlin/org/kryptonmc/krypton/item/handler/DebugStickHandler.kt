@@ -23,22 +23,19 @@ import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.item.InteractionContext
+import org.kryptonmc.krypton.item.InteractionContext
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.util.InteractionResult
-import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.findRelative
+import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 
-object DebugStickHandler : KryptonItemHandler {
+object DebugStickHandler : ItemHandler {
 
-    override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i): Boolean {
-        if (player is KryptonPlayer) {
-            handleInteraction(player, world, block, position, false, player.inventory.heldItem(Hand.MAIN))
-        }
+    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: Block, position: Vector3i): Boolean {
+        handleInteraction(player, world, block, position, false, player.inventory.heldItem(Hand.MAIN))
         return false
     }
 
@@ -57,7 +54,7 @@ object DebugStickHandler : KryptonItemHandler {
     @JvmStatic
     private fun handleInteraction(
         player: KryptonPlayer,
-        world: World,
+        world: KryptonWorld,
         block: Block,
         position: Vector3i,
         isUse: Boolean,
@@ -98,6 +95,8 @@ object DebugStickHandler : KryptonItemHandler {
     }
 
     @JvmStatic
-    private fun <T : Comparable<T>> Block.cycle(property: Property<T>, reversed: Boolean) =
-        set(property, property.values.findRelative(get(property), reversed)!!)
+    private fun <T : Comparable<T>> Block.cycle(
+        property: Property<T>,
+        reversed: Boolean
+    ): Block = set(property, property.values.findRelative(get(property), reversed)!!)
 }

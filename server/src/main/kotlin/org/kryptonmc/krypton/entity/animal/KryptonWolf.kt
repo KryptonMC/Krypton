@@ -36,7 +36,6 @@ import kotlin.random.Random
 class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF, ATTRIBUTES), Wolf, Neutral {
 
     override var angerTarget: UUID? = null
-
     override var isAngry: Boolean
         get() = remainingAngerTime > 0
         set(value) {
@@ -55,7 +54,6 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
     override var remainingAngerTime: Int
         get() = data[MetadataKeys.WOLF.ANGER_TIME]
         set(value) = data.set(MetadataKeys.WOLF.ANGER_TIME, value)
-
     override var isTame: Boolean
         get() = super.isTame
         set(value) {
@@ -68,6 +66,7 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
             }
             attribute(AttributeTypes.ATTACK_DAMAGE)?.baseValue = 4.0
         }
+
     override val soundVolume: Float
         get() = 0.4F
 

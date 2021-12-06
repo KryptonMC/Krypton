@@ -72,6 +72,7 @@ class FlatGeneratorSettings(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<FlatGeneratorSettings> = RecordCodecBuilder.create<FlatGeneratorSettings> { instance ->
             instance.group(
                 ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC)
@@ -87,6 +88,7 @@ class FlatGeneratorSettings(
             ).apply(instance, ::FlatGeneratorSettings)
         }.comapFlatMap(::validateHeight, Function.identity()).stable()
 
+        @JvmStatic
         fun default(biomes: KryptonRegistry<Biome>): FlatGeneratorSettings {
             // TODO: Add village structure to the map
             val structureSettings = StructureSettings(mapOf(), StructureSettings.DEFAULT_STRONGHOLD)
@@ -99,14 +101,14 @@ class FlatGeneratorSettings(
             }
         }
 
+        @JvmStatic
         private fun validateHeight(settings: FlatGeneratorSettings): DataResult<FlatGeneratorSettings> {
             val heightSum = settings.layers.sumOf { it.height }
-            return if (heightSum > KryptonDimensionType.Y_SIZE) {
-                DataResult.error("Sum of layer heights is greater than the maximum sum of heights " +
+            if (heightSum > KryptonDimensionType.Y_SIZE) {
+                return DataResult.error("Sum of layer heights is greater than the maximum sum of heights " +
                         "${KryptonDimensionType.Y_SIZE}!", settings)
-            } else {
-                DataResult.success(settings)
             }
+            return DataResult.success(settings)
         }
     }
 }

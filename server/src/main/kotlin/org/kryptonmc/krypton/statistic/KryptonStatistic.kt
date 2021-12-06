@@ -25,19 +25,24 @@ import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.krypton.world.scoreboard.KryptonCriterion
 
 class KryptonStatistic<T : Any>(
-    @get:JvmName("type") override val type: StatisticType<T>,
-    @get:JvmName("value") override val value: T,
-    @get:JvmName("formatter") override val formatter: StatisticFormatter
+    override val type: StatisticType<T>,
+    override val value: T,
+    override val formatter: StatisticFormatter
 ) : KryptonCriterion(Key.key(type.criterionName(value)), type.criterionName(value)), Statistic<T> {
 
-    override fun equals(other: Any?) = this === other || (other is KryptonStatistic<*> && name == other.name)
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return name == (other as KryptonStatistic<*>).name
+    }
 
-    override fun hashCode() = name.hashCode()
+    override fun hashCode(): Int = name.hashCode()
 
-    override fun toString() = "Statistic(name=$name, formatter=$formatter)"
+    override fun toString(): String = "KryptonStatistic(name=$name, formatter=$formatter)"
 
     companion object {
 
+        @JvmStatic
         private fun <T : Any> StatisticType<T>.criterionName(value: T): String {
             val key = key().asString().replace(':', '.')
             val path = registry[value]?.asString()?.replace(':', '.')

@@ -20,10 +20,11 @@ package org.kryptonmc.krypton.entity.projectile
 
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.EnderPearl
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonEnderPearl(world: KryptonWorld) : KryptonThrowableProjectile(world, EntityTypes.ENDER_PEARL), EnderPearl {
 
-    override val defaultItem = ItemTypes.ENDER_PEARL
+    override val defaultItem: ItemType = ItemTypes.ENDER_PEARL
 }

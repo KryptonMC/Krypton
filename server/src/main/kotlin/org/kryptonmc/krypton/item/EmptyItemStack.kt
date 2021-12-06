@@ -27,5 +27,5 @@ object EmptyItemStack : KryptonItemStack(ItemTypes.AIR, 1, EmptyMetaHolder) {
         get() = super.amount
         set(_) = Unit
 
-    override fun toString() = "EmptyItemStack"
+    override fun toString(): String = "EmptyItemStack"
 }

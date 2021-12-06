@@ -45,7 +45,7 @@ object BlockLoader : KryptonDataLoader("blocks") {
         return KEY_MAP[id]
     }
 
-    fun fromKey(key: Key) = fromKey(key.asString())
+    fun fromKey(key: Key): KryptonBlock? = fromKey(key.asString())
 
     fun properties(
         key: String,

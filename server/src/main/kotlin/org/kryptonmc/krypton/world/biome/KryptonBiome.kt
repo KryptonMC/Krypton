@@ -42,8 +42,6 @@ data class KryptonBiome(
     class Builder(private var key: Key) : Biome.Builder {
 
         private var climate = KryptonClimate.DEFAULT
-        private var depth = 0F
-        private var scale = 0F
         private var category = BiomeCategories.NONE
         private var effects = KryptonBiomeEffects.DEFAULT
 
@@ -80,7 +78,7 @@ data class KryptonBiome(
 
     companion object {
 
-        // TODO: Add the network codec (when there is generation and mob spawn settings for the direct codec)
+        @JvmField
         val CODEC: Codec<Biome> = RecordCodecBuilder.create {
             it.group(
                 KryptonClimate.CODEC.forGetter(Biome::climate),

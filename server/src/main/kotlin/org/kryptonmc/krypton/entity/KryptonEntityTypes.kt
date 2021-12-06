@@ -28,7 +28,20 @@ import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.ExperienceOrb
 import org.kryptonmc.api.entity.ambient.Bat
+import org.kryptonmc.api.entity.animal.Axolotl
+import org.kryptonmc.api.entity.animal.Bee
 import org.kryptonmc.api.entity.animal.Cat
+import org.kryptonmc.api.entity.animal.Chicken
+import org.kryptonmc.api.entity.animal.Cow
+import org.kryptonmc.api.entity.animal.Fox
+import org.kryptonmc.api.entity.animal.Goat
+import org.kryptonmc.api.entity.animal.Ocelot
+import org.kryptonmc.api.entity.animal.Panda
+import org.kryptonmc.api.entity.animal.Pig
+import org.kryptonmc.api.entity.animal.PolarBear
+import org.kryptonmc.api.entity.animal.Rabbit
+import org.kryptonmc.api.entity.animal.Sheep
+import org.kryptonmc.api.entity.animal.Wolf
 import org.kryptonmc.api.entity.hanging.Painting
 import org.kryptonmc.api.entity.monster.Creeper
 import org.kryptonmc.api.entity.monster.Zombie
@@ -71,7 +84,7 @@ object KryptonEntityTypes {
         clientTrackingRange(4)
         updateInterval(20)
     }
-    @JvmField val AXOLOTL: KryptonEntityType<Entity> = register("axolotl", EntityCategories.UNDERGROUND_WATER_CREATURE) {
+    @JvmField val AXOLOTL: KryptonEntityType<Axolotl> = register("axolotl", EntityCategories.UNDERGROUND_WATER_CREATURE) {
         dimensions(0.75F, 0.42F)
         clientTrackingRange(10)
     }
@@ -79,7 +92,7 @@ object KryptonEntityTypes {
         dimensions(0.5F, 0.9F)
         clientTrackingRange(5)
     }
-    @JvmField val BEE: KryptonEntityType<Entity> = register("bee", EntityCategories.CREATURE) {
+    @JvmField val BEE: KryptonEntityType<Bee> = register("bee", EntityCategories.CREATURE) {
         dimensions(0.7F, 0.6F)
         clientTrackingRange(8)
     }
@@ -100,7 +113,7 @@ object KryptonEntityTypes {
         dimensions(0.7F, 0.5F)
         clientTrackingRange(8)
     }
-    @JvmField val CHICKEN: KryptonEntityType<Entity> = register("chicken", EntityCategories.CREATURE) {
+    @JvmField val CHICKEN: KryptonEntityType<Chicken> = register("chicken", EntityCategories.CREATURE) {
         dimensions(0.4F, 0.7F)
         clientTrackingRange(10)
     }
@@ -108,7 +121,7 @@ object KryptonEntityTypes {
         dimensions(0.5F, 0.3F)
         clientTrackingRange(4)
     }
-    @JvmField val COW: KryptonEntityType<Entity> = register("cow", EntityCategories.CREATURE) {
+    @JvmField val COW: KryptonEntityType<Cow> = register("cow", EntityCategories.CREATURE) {
         dimensions(0.9F, 1.4F)
         clientTrackingRange(10)
     }
@@ -183,7 +196,7 @@ object KryptonEntityTypes {
         clientTrackingRange(4)
         updateInterval(10)
     }
-    @JvmField val FOX: KryptonEntityType<Entity> = register("fox", EntityCategories.CREATURE) {
+    @JvmField val FOX: KryptonEntityType<Fox> = register("fox", EntityCategories.CREATURE) {
         dimensions(0.6F, 0.7F)
         clientTrackingRange(8)
         immuneTo(Blocks.SWEET_BERRY_BUSH)
@@ -206,7 +219,7 @@ object KryptonEntityTypes {
         dimensions(0.8F, 0.8F)
         clientTrackingRange(10)
     }
-    @JvmField val GOAT: KryptonEntityType<Entity> = register("goat", EntityCategories.CREATURE) {
+    @JvmField val GOAT: KryptonEntityType<Goat> = register("goat", EntityCategories.CREATURE) {
         dimensions(0.9F, 1.3F)
         clientTrackingRange(10)
     }
@@ -292,7 +305,7 @@ object KryptonEntityTypes {
         dimensions(0.9F, 1.4F)
         clientTrackingRange(10)
     }
-    @JvmField val OCELOT: KryptonEntityType<Entity> = register("ocelot", EntityCategories.CREATURE) {
+    @JvmField val OCELOT: KryptonEntityType<Ocelot> = register("ocelot", EntityCategories.CREATURE) {
         dimensions(0.6F, 0.7F)
         clientTrackingRange(10)
     }
@@ -301,7 +314,7 @@ object KryptonEntityTypes {
         clientTrackingRange(10)
         updateInterval(Int.MAX_VALUE)
     }
-    @JvmField val PANDA: KryptonEntityType<Entity> = register("panda", EntityCategories.CREATURE) {
+    @JvmField val PANDA: KryptonEntityType<Panda> = register("panda", EntityCategories.CREATURE) {
         dimensions(1.3F, 1.25F)
         clientTrackingRange(10)
     }
@@ -313,7 +326,7 @@ object KryptonEntityTypes {
         dimensions(0.9F, 0.5F)
         clientTrackingRange(8)
     }
-    @JvmField val PIG: KryptonEntityType<Entity> = register("pig", EntityCategories.CREATURE) {
+    @JvmField val PIG: KryptonEntityType<Pig> = register("pig", EntityCategories.CREATURE) {
         dimensions(0.9F, 0.9F)
         clientTrackingRange(10)
     }
@@ -329,7 +342,7 @@ object KryptonEntityTypes {
         dimensions(0.6F, 1.95F)
         clientTrackingRange(8)
     }
-    @JvmField val POLAR_BEAR: KryptonEntityType<Entity> = register("polar_bear", EntityCategories.CREATURE) {
+    @JvmField val POLAR_BEAR: KryptonEntityType<PolarBear> = register("polar_bear", EntityCategories.CREATURE) {
         dimensions(1.4F, 1.4F)
         clientTrackingRange(10)
         immuneTo(Blocks.POWDER_SNOW)
@@ -344,7 +357,7 @@ object KryptonEntityTypes {
         dimensions(0.7F, 0.7F)
         clientTrackingRange(4)
     }
-    @JvmField val RABBIT: KryptonEntityType<Entity> = register("rabbit", EntityCategories.CREATURE) {
+    @JvmField val RABBIT: KryptonEntityType<Rabbit> = register("rabbit", EntityCategories.CREATURE) {
         dimensions(0.4F, 0.5F)
         clientTrackingRange(8)
     }
@@ -356,7 +369,7 @@ object KryptonEntityTypes {
         dimensions(0.7F, 0.4F)
         clientTrackingRange(4)
     }
-    @JvmField val SHEEP: KryptonEntityType<Entity> = register("sheep", EntityCategories.CREATURE) {
+    @JvmField val SHEEP: KryptonEntityType<Sheep> = register("sheep", EntityCategories.CREATURE) {
         dimensions(0.9F, 1.3F)
         clientTrackingRange(10)
     }
@@ -482,7 +495,7 @@ object KryptonEntityTypes {
         clientTrackingRange(4)
         updateInterval(10)
     }
-    @JvmField val WOLF: KryptonEntityType<Entity> = register("wolf", EntityCategories.CREATURE) {
+    @JvmField val WOLF: KryptonEntityType<Wolf> = register("wolf", EntityCategories.CREATURE) {
         dimensions(0.6F, 0.85F)
         clientTrackingRange(10)
     }

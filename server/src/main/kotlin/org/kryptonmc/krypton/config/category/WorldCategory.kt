@@ -26,6 +26,7 @@ import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.objectmapping.meta.Setting
 
 @ConfigSerializable
+@JvmRecord
 data class WorldCategory(
     @Comment("The name of the folder with the world to load in it.")
     val name: String = "world",
@@ -48,5 +49,8 @@ data class WorldCategory(
     val simulationDistance: Int = 10,
     @Setting("autosave-interval")
     @Comment("The amount of time (in ticks) between automatic world saves.")
-    val autosaveInterval: Int = 6000
+    val autosaveInterval: Int = 6000,
+    @Setting("spawn-protection-radius")
+    @Comment("The radius from spawn in which players cannot break blocks.")
+    val spawnProtectionRadius: Int = 16
 )

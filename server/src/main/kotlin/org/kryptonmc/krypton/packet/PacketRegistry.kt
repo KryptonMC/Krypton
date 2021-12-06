@@ -251,13 +251,16 @@ object PacketRegistry {
         register<PacketOutTags>(0x67)
     }
 
+    @JvmStatic
     private fun register(state: PacketState, id: Int, creator: (ByteBuf) -> Packet) {
         byEncoded[encode(state, id)] = creator
     }
 
+    @JvmStatic
     private inline fun <reified T> register(id: Int) {
         toId[T::class.java] = id
     }
 
+    @JvmStatic
     private fun encode(state: PacketState, id: Int): Int = (state.ordinal shl 16) or (id and 0xFFFF)
 }

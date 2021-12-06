@@ -24,36 +24,28 @@ import org.kryptonmc.krypton.util.IntIdentityHashBiMap
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeVarInt
 
-class MapPalette<T> private constructor(
+@JvmRecord
+data class MapPalette<T> private constructor(
     private val registry: IntBiMap<T>,
     private val bits: Int,
     private val resizer: PaletteResizer<T>,
     private val values: IntIdentityHashBiMap<T>
 ) : Palette<T> {
 
-    val entries: List<T>
-        get() {
-            val list = ArrayList<T>()
-            values.forEach(list::add)
-            return list
-        }
+    val entries: Sequence<T>
+        get() = values.asSequence()
     override val size: Int
         get() = values.size
     override val serializedSize: Int
         get() {
-            var temp = size.varIntBytes
+            var temp = size.varIntBytes()
             for (i in 0 until size) {
-                temp += registry.idOf(values[i]!!).varIntBytes
+                temp += registry.idOf(values[i]!!).varIntBytes()
             }
             return temp
         }
 
-    constructor(
-        registry: IntBiMap<T>,
-        bits: Int,
-        resizer: PaletteResizer<T>,
-        entries: List<T>
-    ) : this(registry, bits, resizer) {
+    constructor(registry: IntBiMap<T>, bits: Int, resizer: PaletteResizer<T>, entries: List<T>) : this(registry, bits, resizer) {
         entries.forEach(values::add)
     }
 

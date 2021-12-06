@@ -30,7 +30,7 @@ import kotlin.io.path.writer
 
 abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : Iterable<V> {
 
-    private val map = hashMapOf<String, V>()
+    private val map = mutableMapOf<String, V>()
     val size: Int
         get() = map.values.size
     val values: Collection<V>
@@ -51,18 +51,18 @@ abstract class ServerConfigList<K, V : ServerConfigEntry<K>>(val path: Path) : I
         load()
     }
 
-    fun contains(key: K) = map.containsKey(key(key))
+    fun contains(key: K): Boolean = map.containsKey(key(key))
 
-    fun isEmpty() = map.isEmpty()
+    fun isEmpty(): Boolean = map.isEmpty()
 
     fun add(entry: V) {
-        if(contains(entry.key)) return
+        if (contains(entry.key)) return
         map[key(entry.key)] = entry
         save()
     }
 
     fun remove(key: K) {
-        if(!contains(key)) return
+        if (!contains(key)) return
         map.remove(key(key))
         save()
     }

@@ -30,7 +30,6 @@ import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.api.command.BrigadierCommand
-import org.kryptonmc.api.command.Command
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.CommandRegistrar
 import org.kryptonmc.api.command.RawCommand
@@ -97,7 +96,7 @@ object KryptonCommandManager : CommandManager {
         rawCommandRegistrar.register(dispatcher.root, command, meta)
     }
 
-    override fun <C : Command, M : CommandMeta> register(command: C, meta: M, registrar: CommandRegistrar<C, M>) {
+    override fun <C, M> register(command: C, meta: M, registrar: CommandRegistrar<C, M>) {
         lock.write { registrar.register(dispatcher.root, command, meta) }
     }
 

@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.util
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.BlockHitResult
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.effect.Music
@@ -101,7 +100,6 @@ import org.kryptonmc.krypton.world.biome.KryptonGrassColorModifier
 import org.kryptonmc.krypton.world.biome.KryptonPrecipitation
 import org.kryptonmc.krypton.world.biome.KryptonTemperatureModifier
 import org.kryptonmc.krypton.world.block.KryptonBlock
-import org.kryptonmc.krypton.world.block.KryptonBlockHitResult
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.fluid.KryptonFluid
@@ -116,8 +114,7 @@ object KryptonFactoryProvider : FactoryProvider {
     private val factories = Object2ObjectOpenHashMap<Class<*>, Any>()
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T> provide(type: Class<T>): T = factories[type] as? T
-        ?: throw FactoryNotFoundException("Type $type has no factory registered!")
+    override fun <T> provide(type: Class<T>): T = factories[type] as? T ?: throw FactoryNotFoundException("Type $type has no factory registered!")
 
     fun <T> register(clazz: Class<T>, factory: T) {
         require(clazz !in factories) { "Duplicate registration for type $clazz!" }
@@ -128,7 +125,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<ResourceKey.Factory>(KryptonResourceKey.Factory)
         register<ParticleData.Factory>(KryptonParticleDataFactory)
         register<ParticleEffect.Factory>(KryptonParticleEffect.Factory)
-        register<BlockHitResult.Factory>(KryptonBlockHitResult.Factory)
         register<AttributeModifier.Factory>(KryptonAttributeModifier.Factory)
         register<AttributeType.Factory>(KryptonAttributeType.Factory)
         register<Property.Factory>(KryptonPropertyFactory)
@@ -173,4 +169,6 @@ object KryptonFactoryProvider : FactoryProvider {
     }
 }
 
-inline fun <reified T> KryptonFactoryProvider.register(factory: T) = register(T::class.java, factory)
+inline fun <reified T> KryptonFactoryProvider.register(factory: T) {
+    register(T::class.java, factory)
+}

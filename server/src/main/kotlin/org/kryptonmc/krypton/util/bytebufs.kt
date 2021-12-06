@@ -33,7 +33,7 @@ import io.netty.handler.codec.EncoderException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toJsonString
-import org.kryptonmc.api.block.BlockHitResult
+import org.kryptonmc.krypton.world.block.BlockHitResult
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.item.EmptyItemStack
@@ -48,12 +48,9 @@ import org.kryptonmc.nbt.io.TagIO
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
-import java.util.BitSet
 import java.util.Optional
 import java.util.UUID
-import java.util.function.IntFunction
 import kotlin.math.ceil
-import kotlin.math.max
 import kotlin.math.min
 
 fun ByteBuf.writeShort(short: Short) {
@@ -138,15 +135,11 @@ fun ByteBuf.writeVarLong(value: Long) {
 fun ByteBuf.readString(max: Int = Short.MAX_VALUE.toInt()): String {
     val length = readVarInt()
     return when {
-        length > max * 4 -> {
-            throw IOException("String too long! Expected maximum length of $max, got length of $length!")
-        }
+        length > max * 4 -> throw IOException("String too long! Expected maximum length of $max, got length of $length!")
         length < 0 -> throw IOException("String cannot be less than 0 in length!")
         else -> {
             val string = String(readAvailableBytes(length))
-            if (string.length > max) {
-                throw IOException("String too long! Expected maximum length of $max, got length of ${string.length}")
-            }
+            if (string.length > max) throw IOException("String too long! Expected maximum length of $max, got length of ${string.length}")
             string
         }
     }
@@ -154,9 +147,7 @@ fun ByteBuf.readString(max: Int = Short.MAX_VALUE.toInt()): String {
 
 fun ByteBuf.writeString(value: String, max: Short = Short.MAX_VALUE) {
     val bytes = value.encodeToByteArray()
-    if (bytes.size > max) {
-        throw EncoderException("String too long! Expected maximum size of $max, got length ${value.length}!")
-    }
+    if (bytes.size > max) throw EncoderException("String too long! Expected maximum size of $max, got length ${value.length}!")
     writeVarInt(bytes.size)
     writeBytes(bytes)
 }
@@ -169,7 +160,7 @@ fun ByteBuf.readAvailableBytes(length: Int): ByteArray {
     return bytes
 }
 
-fun ByteBuf.readAllAvailableBytes() = readAvailableBytes(readableBytes())
+fun ByteBuf.readAllAvailableBytes(): ByteArray = readAvailableBytes(readableBytes())
 
 fun ByteBuf.writeVarIntByteArray(bytes: ByteArray) {
     writeVarInt(bytes.size)
@@ -268,7 +259,9 @@ fun <T : ArgumentType<*>> ByteBuf.writeArgumentType(type: T) {
 
 inline fun <reified T : Enum<T>> ByteBuf.readEnum(): T = T::class.java.enumConstants[readVarInt()]
 
-fun ByteBuf.writeEnum(enum: Enum<*>) = writeVarInt(enum.ordinal)
+fun ByteBuf.writeEnum(enum: Enum<*>) {
+    writeVarInt(enum.ordinal)
+}
 
 fun <T> ByteBuf.writeOptional(optional: Optional<T>, presentAction: (T) -> Unit) {
     writeBoolean(optional.isPresent)
@@ -309,7 +302,7 @@ fun ByteBuf.readBlockHitResult(): BlockHitResult {
     val cursorZ = readFloat()
     val inside = readBoolean()
     val clickedPosition = Vector3d(position.x() + cursorX, position.y() + cursorY, position.z() + cursorZ)
-    return BlockHitResult.of(clickedPosition, position, direction, false, inside)
+    return BlockHitResult(clickedPosition, position, direction, false, inside)
 }
 
 fun ByteBuf.writeBlockHitResult(hitResult: BlockHitResult) {
@@ -325,5 +318,4 @@ fun ByteBuf.writeBlockHitResult(hitResult: BlockHitResult) {
 
 private val VARINT_EXACT_BYTE_LENGTHS = IntArray(33) { ceil((31.0 - (it - 1)) / 7.0).toInt() }.apply { this[32] = 1 }
 
-val Int.varIntBytes: Int
-    get() = VARINT_EXACT_BYTE_LENGTHS[countLeadingZeroBits()]
+fun Int.varIntBytes(): Int = VARINT_EXACT_BYTE_LENGTHS[countLeadingZeroBits()]

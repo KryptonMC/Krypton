@@ -28,15 +28,15 @@ object DifficultyTypeSerializer : ScalarSerializer<Difficulty>(Difficulty::class
 
     override fun serialize(item: Difficulty, typeSupported: Predicate<Class<*>>) = item.name.lowercase()
 
-    override fun deserialize(type: Type, source: Any): Difficulty {
-        return try {
-            when (source) {
-                is Int -> Difficulty.fromId(source)
-                is String -> Difficulty.valueOf(source.uppercase())
-                else -> throw SerializationException("Expected either an integer or a string for this gamemode, got ${source::class.simpleName}")
+    override fun deserialize(type: Type, source: Any): Difficulty = when (source) {
+        is Int -> Difficulty.fromId(source)
+        is String -> {
+            try {
+                Difficulty.valueOf(source.uppercase())
+            } catch (exception: IllegalArgumentException) {
+                throw SerializationException("Unknown difficulty $source!")
             }
-        } catch (exception: IllegalArgumentException) {
-            throw SerializationException("Unknown difficulty: $source")
         }
+        else -> throw SerializationException("Expected either an integer or a string for difficulties, got ${source::class.simpleName}")
     }
 }

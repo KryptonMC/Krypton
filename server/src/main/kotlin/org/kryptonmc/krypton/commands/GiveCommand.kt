@@ -18,14 +18,14 @@
  */
 package org.kryptonmc.krypton.commands
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.IntegerArgumentType
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
@@ -36,30 +36,36 @@ import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.literal
 
 object GiveCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("give")
-            .permission(KryptonPermission.GIVE)
-            .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
-                .then(argument<Sender, ItemStackArgument>("item", ItemStackArgumentType)
-                    .executes {
+        dispatcher.register(literal("give") {
+            permission(KryptonPermission.GIVE)
+            argument("targets", EntityArgument.players()) {
+                argument("item", ItemStackArgumentType) {
+                    executes {
                         val targets = it.entityArgument("targets").players(it.source)
                         val item = it.itemStackArgument("item")
                         give(targets, item, 1)
-                        1
+                        Command.SINGLE_SUCCESS
                     }
-                    .then(argument<Sender, Int>("count", IntegerArgumentType.integer(1))
-                        .executes {
+                    argument("count", IntegerArgumentType.integer(1)) {
+                        executes {
                             val targets = it.entityArgument("targets").players(it.source)
                             val item = it.itemStackArgument("item")
                             val count = it.argument<Int>("count")
                             give(targets, item, count)
-                            1
-                        }))))
+                            Command.SINGLE_SUCCESS
+                        }
+                    }
+                }
+            }
+        })
     }
 
+    @JvmStatic
     private fun give(targets: List<KryptonPlayer>, item: ItemStackArgument, count: Int) = targets.forEach { target ->
         val items = item.createItemStacks(count)
         items.forEach { target.inventory.add(it) }

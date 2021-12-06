@@ -36,9 +36,9 @@ class ArrayPalette<T> private constructor(
         private set
     override val serializedSize: Int
         get() {
-            var temp = size.varIntBytes
+            var temp = size.varIntBytes()
             for (i in 0 until size) {
-                temp += registry.idOf(values[i]!!).varIntBytes
+                temp += registry.idOf(values[i]!!).varIntBytes()
             }
             return temp
         }

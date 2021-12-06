@@ -42,9 +42,9 @@ class IntHashBiMap<T>(values: Map<out T, Int>? = null) : IntBiMap<T> {
         if (nextId <= id) nextId = id + 1
     }
 
-    override fun idOf(value: T) = byT.getInt(value)
+    override fun idOf(value: T): Int = byT.getInt(value)
 
     override fun get(id: Int): T? = byId.getOrNull(id)
 
-    override fun iterator() = byId.iterator().asSequence().filterNotNull().iterator()
+    override fun iterator(): Iterator<T> = byId.iterator().asSequence().filterNotNull().iterator()
 }

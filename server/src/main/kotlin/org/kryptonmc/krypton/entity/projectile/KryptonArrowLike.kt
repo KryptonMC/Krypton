@@ -83,7 +83,8 @@ abstract class KryptonArrowLike(
         life = tag.getShort("life").toInt()
 
         val pickupOrdinal = tag.getInt("pickup")
-        pickup = ArrowLike.Pickup.values()[if (pickupOrdinal in 0..ArrowLike.Pickup.values().size) pickupOrdinal else 0]
+        val pickupIndex = if (pickupOrdinal in PICKUP_VALUES.indices) pickupOrdinal else 0
+        pickup = ArrowLike.Pickup.values()[pickupIndex]
         piercingLevel = tag.getByte("PierceLevel").toInt()
         shakeTime = tag.getByte("shake").toInt() and 255
         wasShotFromCrossbow = tag.getBoolean("ShotFromCrossbow")
@@ -96,7 +97,7 @@ abstract class KryptonArrowLike(
     override fun save(): CompoundTag.Builder = super.save().apply {
         boolean("crit", isCritical)
         double("damage", damage)
-        stuckInBlock?.let { put("inBlockState", it.toNBT()) }
+        if (stuckInBlock != null) put("inBlockState", stuckInBlock!!.toNBT())
         boolean("inGround", isInGround)
         short("life", life.toShort())
         byte("pickup", pickup.ordinal.toByte())
@@ -104,5 +105,10 @@ abstract class KryptonArrowLike(
         byte("shake", shakeTime.toByte())
         boolean("ShotFromCrossbow", wasShotFromCrossbow)
         string("SoundEvent", sound.key().asString())
+    }
+
+    companion object {
+
+        private val PICKUP_VALUES = ArrowLike.Pickup.values()
     }
 }

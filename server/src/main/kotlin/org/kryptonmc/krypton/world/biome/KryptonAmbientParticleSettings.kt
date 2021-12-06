@@ -72,6 +72,7 @@ data class KryptonAmbientParticleSettings(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<AmbientParticleSettings> = RecordCodecBuilder.create {
             it.group(
                 Codecs.PARTICLE.fieldOf("particle").forGetter(AmbientParticleSettings::type),

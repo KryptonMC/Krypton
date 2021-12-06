@@ -32,13 +32,15 @@ import org.kryptonmc.krypton.util.readAvailableBytes
 import java.net.InetSocketAddress
 
 /**
- * The legacy query handler is a special handler for special cases. It handles the server list ping packet from
- * old versions of Minecraft.
+ * The legacy query handler is a special handler for special cases. It handles
+ * the server list ping packet from old versions of Minecraft.
  *
- * From the words of wiki.vg: "while not technically part of the current protocol, legacy clients may send this to
- * initiate a legacy server list ping, and modern servers should handle it correctly"
+ * From the words of wiki.vg: "while not technically part of the current
+ * protocol, legacy clients may send this to initiate a legacy server list
+ * ping, and modern servers should handle it correctly".
  *
- * This handler is essentially a Kotlin converted version of the vanilla handler, which is why it is such a mess.
+ * This handler is essentially a Kotlin converted version of the vanilla
+ * handler, which is why it is such a mess.
  */
 @ChannelHandler.Sharable
 class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHandlerAdapter() {
@@ -61,12 +63,12 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
             when (msg.readableBytes()) {
                 0 -> {
                     LOGGER.debug("Legacy server list ping (versions <=1.3.x) received from ${address.address}:${address.port}")
-                    ctx.reply("$motd§$playerCount§$maxPlayers")
+                    ctx.reply("§", motd, playerCount, maxPlayers)
                 }
                 1 -> {
                     if (msg.readUnsignedByte() != 1.toShort()) return
                     LOGGER.debug("Legacy server list ping (versions 1.4.x-1.5.x) received from ${address.address}:${address.port}")
-                    ctx.reply("§1\u0000127\u0000$version\u0000$motd\u0000$playerCount\u0000$maxPlayers")
+                    ctx.reply("\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
                 }
                 else -> {
                     var isValid = msg.readUnsignedByte() == 1.toShort()
@@ -80,7 +82,7 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
                     if (!isValid) return
 
                     LOGGER.debug("Legacy server list ping (version 1.6.x) received from ${address.address}:${address.port}")
-                    ctx.reply("§1\u0000127\u0000$version\u0000$motd\u0000$playerCount\u0000$maxPlayers")
+                    ctx.reply("\u0000", "§1", "127", version, motd, playerCount, maxPlayers)
                 }
             }
             msg.release()
@@ -102,6 +104,10 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
         pipeline().firstContext().writeAndFlush(buffer)
             .addListener(ChannelFutureListener.CLOSE)
             .addListener { buffer.release() }
+    }
+
+    private fun ChannelHandlerContext.reply(separator: String, vararg parts: Any) {
+        reply(parts.joinToString(separator))
     }
 
     private fun ByteBuf.readLegacyString(): String {

@@ -27,18 +27,25 @@ import java.util.UUID
 
 @JvmRecord
 data class LegacyForwardedData(
-    val originalIp: String,
-    val forwardedIp: String,
-    val uuid: UUID,
-    val properties: List<KryptonProfileProperty>
-) {
+    val originalAddress: String,
+    override val forwardedAddress: String,
+    override val uuid: UUID,
+    override val properties: List<KryptonProfileProperty>
+) : ForwardedData {
+
+    override val forwardedPort: Int
+        get() = -1
 
     companion object {
 
+        // The reason why we register a final class as a hierarchy adapter is because the
+        // properties list above gets resolved as a List<? extends KryptonProfileProperty>
+        // on the JVM, and having this use the standard adapter gives us issues in deserialization.
         private val GSON = GsonBuilder()
             .registerTypeHierarchyAdapter<KryptonProfileProperty>(KryptonProfileProperty)
             .create()
 
+        @JvmStatic
         fun parse(string: String): LegacyForwardedData? {
             val split = string.split('\u0000')
             // We need to have the original IP, forwarded IP, and the UUID at bare minimum.

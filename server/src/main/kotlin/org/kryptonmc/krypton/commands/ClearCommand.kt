@@ -18,48 +18,51 @@
  */
 package org.kryptonmc.krypton.commands
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.argument
+import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
-import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicate
 import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicateArgument
+import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
-import org.kryptonmc.krypton.command.argument.argument
 
 object ClearCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("clear")
-            .permission(KryptonPermission.CLEAR)
-            .executes {
-                if(it.source !is KryptonPlayer) return@executes 1
+        dispatcher.register(literal("clear") {
+            permission(KryptonPermission.CLEAR)
+            executes {
+                if (it.source !is KryptonPlayer) return@executes 0
                 clear(listOf(it.source as KryptonPlayer), it.source)
-                1
+                Command.SINGLE_SUCCESS
             }
-            .then(argument<Sender, EntityQuery>("targets", EntityArgument.players())
-                .executes {
+            argument("targets", EntityArgument.players()) {
+                executes {
                     clear(it.entityArgument("targets").players(it.source), it.source)
-                    1
+                    Command.SINGLE_SUCCESS
                 }
-                .then(argument<Sender, ItemStackPredicate>("item", ItemStackPredicateArgument)
-                    .executes {
+                argument("item", ItemStackPredicateArgument) {
+                    executes {
                         clear(it.entityArgument("targets").players(it.source), it.source, it.argument("item"))
-                        1
-                    })))
+                        Command.SINGLE_SUCCESS
+                    }
+                }
+            }
+        })
     }
 
     //-1 means that everything should be cleared (there is no limit)
+    @JvmStatic
     private fun clear(
         targets: List<KryptonPlayer>,
         sender: Sender,
@@ -70,17 +73,22 @@ object ClearCommand : InternalCommand {
         if (targets.size == 1) {
             val target = targets[0]
             clear(target, predicate, maxCount)
-            sender.sendMessage(translatable("commands.clear.success.single", text(amount), target.displayName))
+            sender.sendMessage(Component.translatable("commands.clear.success.single", Component.text(amount), target.displayName))
             target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
         } else {
             targets.forEach { target ->
                 target.inventory.forEachIndexed { index, item -> if (predicate(item)) target.inventory[index] = EmptyItemStack }
                 target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
             }
-            sender.sendMessage(translatable("commands.clear.success.multiple", text(amount), text(targets.size.toString())))
+            sender.sendMessage(Component.translatable(
+                "commands.clear.success.multiple",
+                Component.text(amount),
+                Component.text(targets.size.toString())
+            ))
         }
     }
 
+    @JvmStatic
     private fun clear(target: KryptonPlayer, predicate: ItemStackPredicate, maxCount: Int) {
         val inventory = target.inventory
         var remaining = maxCount
@@ -101,6 +109,7 @@ object ClearCommand : InternalCommand {
         clearItem(predicate, remaining, inventory.offHand) { inventory.offHand = EmptyItemStack }
     }
 
+    @JvmStatic
     private fun clearList(
         predicate: ItemStackPredicate,
         originalRemaining: Int,
@@ -126,6 +135,7 @@ object ClearCommand : InternalCommand {
         return remaining
     }
 
+    @JvmStatic
     private fun clearItem(
         predicate: ItemStackPredicate,
         remaining: Int,

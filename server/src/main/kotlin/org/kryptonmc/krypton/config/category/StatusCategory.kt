@@ -26,6 +26,7 @@ import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.objectmapping.meta.Setting
 
 @ConfigSerializable
+@JvmRecord
 data class StatusCategory(
     @Comment("The message of the day. Supports legacy and hex codes (using &#).")
     val motd: TextComponent = DEFAULT_MOTD,

@@ -35,12 +35,11 @@ interface HeightAccessor {
     val sectionCount: Int
         get() = maximumSection - minimumSection
 
-    fun sectionIndexFromY(y: Int) = y - minimumSection
+    fun sectionIndexFromY(y: Int): Int = y - minimumSection
 
-    fun sectionYFromIndex(index: Int) = index + minimumSection
+    fun sectionYFromIndex(index: Int): Int = index + minimumSection
 
-    fun sectionIndex(y: Int) = sectionIndexFromY(y shr 4)
+    fun sectionIndex(y: Int): Int = sectionIndexFromY(y shr 4)
 
-    val Int.outsideBuildHeight: Boolean
-        get() = this < minimumBuildHeight || this >= maximumBuildHeight
+    fun isOutsideBuildHeight(y: Int): Boolean = y < minimumBuildHeight || y >= maximumBuildHeight
 }

@@ -21,15 +21,14 @@ package org.kryptonmc.krypton.world.fluid
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.fluid.Fluid
-import org.kryptonmc.api.fluid.FluidHandler
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
-import org.kryptonmc.krypton.world.fluid.handler.EmptyFluidHandler
 
 @JvmRecord
 data class KryptonFluid(
@@ -47,9 +46,6 @@ data class KryptonFluid(
     override val properties: Map<String, String>
 ) : KryptonPropertyHolder<Fluid>, Fluid {
 
-    override val handler: FluidHandler
-        get() = KryptonFluidManager.handler(this) ?: EmptyFluidHandler
-
     override fun key(): Key = key
 
     override fun copy(key: String, value: String): Fluid {
@@ -62,9 +58,9 @@ data class KryptonFluid(
         return requireNotNull(FluidLoader.properties(key().asString(), newProperties)) { "Invalid properties $newValues for block ${key()}!" }
     }
 
-    override fun asBlock() = Registries.BLOCK[blockKey] ?: Blocks.AIR
+    override fun asBlock(): Block = Registries.BLOCK[blockKey] ?: Blocks.AIR
 
-    override fun toBuilder() = Builder(this)
+    override fun toBuilder(): Builder = Builder(this)
 
     class Builder(
         private val key: Key,
@@ -126,7 +122,7 @@ data class KryptonFluid(
 
     object Factory : Fluid.Factory {
 
-        override fun builder(key: Key, id: Int, stateId: Int) = Builder(key, id, stateId)
+        override fun builder(key: Key, id: Int, stateId: Int): Builder = Builder(key, id, stateId)
 
         override fun fromId(id: Int): Fluid? = Registries.FLUID[id]
 

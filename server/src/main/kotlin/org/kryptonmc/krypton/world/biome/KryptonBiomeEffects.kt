@@ -156,7 +156,10 @@ data class KryptonBiomeEffects(
 
     companion object {
 
-        val DEFAULT = Builder().build()
+        @JvmField
+        val DEFAULT: BiomeEffects = Builder().build()
+
+        @JvmField
         val CODEC: Codec<BiomeEffects> = RecordCodecBuilder.create { instance ->
             instance.group(
                 Codecs.COLOR.fieldOf("fog_color").forGetter(BiomeEffects::fogColor),

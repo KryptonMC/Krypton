@@ -20,7 +20,9 @@ package org.kryptonmc.krypton.world.generation
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.util.floor
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.Heightmap
@@ -69,7 +71,7 @@ class GenerationRegion(
         lastPosition = cache.last().position
     }
 
-    override fun hasChunk(x: Int, z: Int) = x >= firstPosition.x && x <= lastPosition.x && z >= firstPosition.z && z <= lastPosition.z
+    override fun hasChunk(x: Int, z: Int): Boolean = x >= firstPosition.x && x <= lastPosition.x && z >= firstPosition.z && z <= lastPosition.z
 
     override fun getChunk(x: Int, z: Int, status: ChunkStatus, shouldCreate: Boolean): ChunkAccessor? {
         val chunk = if (hasChunk(x, z)) {
@@ -84,19 +86,21 @@ class GenerationRegion(
         throw RuntimeException("Requested chunk at $x, $z is out of bounds!")
     }
 
-    override fun getBlock(x: Int, y: Int, z: Int) = getChunk(x, z)?.getBlock(x, y, z) ?: Blocks.AIR
+    override fun getBlock(x: Int, y: Int, z: Int): Block = getChunk(x, z)?.getBlock(x, y, z) ?: Blocks.AIR
 
-    override fun getFluid(x: Int, y: Int, z: Int) = getChunk(x, z)?.getFluid(x, y, z) ?: Fluids.EMPTY
+    override fun getFluid(x: Int, y: Int, z: Int): Fluid = getChunk(x, z)?.getFluid(x, y, z) ?: Fluids.EMPTY
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
         if (!canWrite(x, y, z)) return
         getChunk(x shr 4, z shr 4)?.setBlock(x, y, z, block)
     }
 
-    override fun getHeight(type: Heightmap.Type, x: Int, z: Int) =
-        getChunk(x shr 4, z shr 4)!!.getHeight(type, x and 15, z and 15) + 1
+    override fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int {
+        val chunk = getChunk(x shr 4, z shr 4)!!
+        return chunk.getHeight(type, x and 15, z and 15) + 1
+    }
 
-    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int) = world.getUncachedNoiseBiome(x, y, z)
+    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome = world.getUncachedNoiseBiome(x, y, z)
 
     override fun canWrite(x: Int, y: Int, z: Int): Boolean {
         val chunkX = x shr 4

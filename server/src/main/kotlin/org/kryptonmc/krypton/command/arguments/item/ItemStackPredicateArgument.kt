@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.command.arguments.item
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
-import org.kryptonmc.api.item.ItemStack
 
 object ItemStackPredicateArgument : ArgumentType<ItemStackPredicate> {
 
@@ -29,9 +28,4 @@ object ItemStackPredicateArgument : ArgumentType<ItemStackPredicate> {
     override fun getExamples(): Collection<String> = EXAMPLES
 
     override fun parse(reader: StringReader): ItemStackPredicate = ItemStackParser(reader, true).parsePredicate()
-}
-
-fun interface ItemStackPredicate {
-
-    operator fun invoke(item: ItemStack): Boolean
 }

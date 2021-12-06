@@ -19,23 +19,24 @@
 package org.kryptonmc.krypton.network.handlers
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.Component.newline
-import net.kyori.adventure.text.Component.text
-import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.KryptonPlatform
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.config.category.ForwardingMode
+import org.kryptonmc.krypton.network.SessionHandler
+import org.kryptonmc.krypton.network.data.ForwardedData
+import org.kryptonmc.krypton.network.data.LegacyForwardedData
+import org.kryptonmc.krypton.network.data.TCPShieldForwardedData
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.packet.`in`.handshake.PacketInHandshake
 import org.kryptonmc.krypton.packet.out.login.PacketOutLoginDisconnect
-import org.kryptonmc.krypton.network.SessionHandler
-import org.kryptonmc.krypton.packet.PacketState
-import org.kryptonmc.krypton.network.data.LegacyForwardedData
 import org.kryptonmc.krypton.util.logger
 
 /**
- * Handles all inbound packets in the [Handshake][PacketState.HANDSHAKE] state. Contrary to the
- * other handlers and states, there is only one packet in this state, so this is directly handled
- * by the [handle] function, instead of delegating to another function.
+ * Handles all inbound packets in the [Handshake][PacketState.HANDSHAKE] state.
+ * Contrary to the other handlers and states, there is only one packet in this
+ * state, so this is directly handled by the [handle] function, instead of
+ * delegating to another function.
  */
 class HandshakeHandler(
     override val server: KryptonServer,
@@ -53,7 +54,7 @@ class HandshakeHandler(
                 packet.protocol > KryptonPlatform.protocolVersion -> "multiplayer.disconnect.outdated_server"
                 else -> "multiplayer.disconnect.incompatible" // This should be impossible
             }
-            val reason = Component.translatable(key, text(KryptonPlatform.minecraftVersion))
+            val reason = Component.translatable(key, Component.text(KryptonPlatform.minecraftVersion))
             disconnect(reason)
             return
         }
@@ -66,17 +67,21 @@ class HandshakeHandler(
 
         // This split here is checking for a null split list of strings, which will be sent by BungeeCord
         // (and can also be sent by Velocity) as part of their legacy forwarding mechanisms.
-        if (packet.address.split('\u0000').size > 1 && server.config.proxy.mode != ForwardingMode.LEGACY) {
+        if (packet.address.contains('\u0000') && server.config.proxy.mode != ForwardingMode.LEGACY) {
             LOGGER.error("User attempted legacy forwarded connection (most likely from a proxy such as BungeeCord " +
                     "or Velocity), but this server is not configured to use legacy forwarding!")
-            LOGGER.info("If you wish to enable legacy forwarding, please do so in the configuration file by " +
-                    "setting \"mode\" to \"LEGACY\" under the \"proxy\" section.")
-            disconnect(
-                text("It appears that you have been forwarded using legacy forwarding by a proxy, but " +
-                        "this server is not configured")
-                    .append(newline())
-                    .append(text("to support legacy forwarding. Please contact a server administrator."))
-            )
+            LOGGER.info("If you wish to enable legacy forwarding, please do so in the configuration file by setting \"mode\" to \"LEGACY\" " +
+                    "under the \"proxy\" section.")
+            disconnect(LEGACY_FORWARDING_NOT_ENABLED)
+            return
+        }
+        // This split here is checking for a triple slash split list of strings, which will be sent by TCPShield
+        // as part of its real IP forwarding mechanism.
+        if (packet.address.contains("///") && server.config.proxy.mode != ForwardingMode.TCPSHIELD) {
+            LOGGER.error("User attempted TCPShield forwarded connection, but this server is not configured to use TCPShield forwarding!")
+            LOGGER.info("If you wish to enable TCPShield forwarding, please do so in the configuration file by setting \"mode\" to \"TCPSHIELD\" " +
+                    "under the \"proxy\" section.")
+            disconnect(TCPSHIELD_FORWARDING_NOT_ENABLED)
             return
         }
 
@@ -84,7 +89,7 @@ class HandshakeHandler(
             val data = try {
                 LegacyForwardedData.parse(packet.address)
             } catch (exception: Exception) {
-                disconnect(text("Failed to decode legacy handshake data! Please report this to an administrator!"))
+                disconnect(FAILED_LEGACY_DECODE)
                 LOGGER.error("Failed to decode legacy forwarded handshake data!", exception)
                 return
             }
@@ -94,11 +99,27 @@ class HandshakeHandler(
                 handleStateChange(packet.nextState, data)
             } else {
                 // If the data was null then we weren't sent what we needed
-                disconnect(text("This server cannot be direct connected to whilst it has proxy forwarding enabled."))
-                LOGGER.warn("Attempted direct connection from ${session.channel.remoteAddress()} when legacy " +
-                        "forwarding is enabled!")
-                LOGGER.info("If you wish to enable legacy forwarding, please do so in the configuration file by " +
-                        "setting \"mode\" to \"LEGACY\" under the \"proxy\" section.")
+                disconnect(NO_DIRECT_CONNECT)
+                LOGGER.warn("Attempted direct connection from ${session.channel.remoteAddress()} when legacy forwarding is enabled!")
+                return
+            }
+        }
+        if (server.config.proxy.mode == ForwardingMode.TCPSHIELD && packet.nextState == PacketState.LOGIN) {
+            val data = try {
+                TCPShieldForwardedData.parse(packet.address)
+            } catch (exception: Exception) {
+                disconnect(FAILED_TCPSHIELD_DECODE)
+                LOGGER.error("Failed to decode TCPShield forwarded handshake data!", exception)
+                return
+            }
+
+            if (data != null) {
+                LOGGER.debug("Detected TCPShield forwarded login")
+                handleStateChange(packet.nextState, data)
+            } else {
+                // If the data was null then we weren't sent what we needed
+                disconnect(NO_DIRECT_CONNECT)
+                LOGGER.warn("Attempted direct connection from ${session.channel.remoteAddress()} when TCPShield forwarding is enabled!")
                 return
             }
         }
@@ -106,13 +127,13 @@ class HandshakeHandler(
         handleStateChange(packet.nextState)
     }
 
-    private fun handleStateChange(state: PacketState, data: LegacyForwardedData? = null) = when (state) {
+    private fun handleStateChange(state: PacketState, data: ForwardedData? = null) = when (state) {
         PacketState.LOGIN -> handleLoginRequest(data)
         PacketState.STATUS -> handleStatusRequest()
         else -> throw UnsupportedOperationException("Invalid next login state $state sent in handshake!")
     }
 
-    private fun handleLoginRequest(data: LegacyForwardedData? = null) {
+    private fun handleLoginRequest(data: ForwardedData? = null) {
         session.currentState = PacketState.LOGIN
         session.handler = LoginHandler(server, session, data)
     }
@@ -130,5 +151,20 @@ class HandshakeHandler(
     companion object {
 
         private val LOGGER = logger<HandshakeHandler>()
+
+        private val LEGACY_FORWARDING_NOT_ENABLED = Component.text()
+            .content("It appears that you have been forwarded using legacy forwarding by a proxy, but this server is not configured")
+            .append(Component.newline())
+            .append(Component.text("to support legacy forwarding. Please contact a server administrator."))
+            .build()
+        private val TCPSHIELD_FORWARDING_NOT_ENABLED = Component.text()
+            .content("It appears that you have been forwarded from TCPShield, but this server is not configured to support TCPShield " +
+                    "forwarding.")
+            .append(Component.newline())
+            .append(Component.text("Please contact a server administrator."))
+            .build()
+        private val FAILED_LEGACY_DECODE = Component.text("Failed to decode legacy data! Please report this to an administrator!")
+        private val FAILED_TCPSHIELD_DECODE = Component.text("Failed to decode TCPShield data! Please report this to an administrator!")
+        private val NO_DIRECT_CONNECT = Component.text("This server cannot be direct connected to whilst it has forwarding enabled.")
     }
 }

@@ -16,13 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util.nbt
+package org.kryptonmc.krypton.world.fluid
 
-import org.kryptonmc.nbt.Tag
+import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.krypton.world.fluid.handler.FluidHandler
 
-interface Serializable<T : Tag> {
+object FluidManager {
 
-    fun load(tag: T)
+    private val handlers = mutableMapOf<String, FluidHandler>()
 
-    fun save(): T
+    @JvmStatic
+    fun handler(fluid: Fluid): FluidHandler? = handlers[fluid.key().asString()]
+
+    @JvmStatic
+    fun register(fluid: Fluid, handler: FluidHandler) {
+        handlers[fluid.key().asString()] = handler
+    }
 }

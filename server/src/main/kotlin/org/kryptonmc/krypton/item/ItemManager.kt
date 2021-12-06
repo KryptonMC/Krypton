@@ -18,9 +18,7 @@
  */
 package org.kryptonmc.krypton.item
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.item.ItemHandler
-import org.kryptonmc.api.item.ItemManager
+import org.kryptonmc.krypton.item.handler.ItemHandler
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.item.handler.DebugStickHandler
@@ -28,9 +26,9 @@ import org.kryptonmc.krypton.item.handler.FoodHandler
 import org.kryptonmc.krypton.item.handler.SwordHandler
 import org.kryptonmc.krypton.item.handler.TridentHandler
 
-object KryptonItemManager : ItemManager {
+object ItemManager {
 
-    override val handlers = mutableMapOf<String, ItemHandler>()
+    private val handlers = mutableMapOf<String, ItemHandler>()
 
     init {
         register(ItemTypes.WOODEN_SWORD, SwordHandler)
@@ -44,21 +42,11 @@ object KryptonItemManager : ItemManager {
         register(ItemTypes.COOKED_BEEF, FoodHandler)
     }
 
-    override fun handler(key: String): ItemHandler? = handlers[key]
+    @JvmStatic
+    fun handler(type: ItemType): ItemHandler? = handlers[type.key().asString()]
 
-    override fun handler(key: Key): ItemHandler? = handler(key.asString())
-
-    override fun handler(type: ItemType): ItemHandler? = handler(type.key().asString())
-
-    override fun register(key: String, handler: ItemHandler) {
-        handlers[key] = handler
-    }
-
-    override fun register(key: Key, handler: ItemHandler) {
-        register(key.asString(), handler)
-    }
-
-    override fun register(type: ItemType, handler: ItemHandler) {
-        register(type.key().asString(), handler)
+    @JvmStatic
+    fun register(type: ItemType, handler: ItemHandler) {
+        handlers[type.key().asString()] = handler
     }
 }

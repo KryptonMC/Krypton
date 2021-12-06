@@ -32,5 +32,3 @@ object ItemStackArgumentType : ArgumentType<ItemStackArgument> {
 
     override fun parse(reader: StringReader): ItemStackArgument = ItemStackParser(reader, false).parseItem()
 }
-
-fun CommandContext<Sender>.itemStackArgument(name: String): ItemStackArgument = argument(name)

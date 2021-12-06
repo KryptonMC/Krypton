@@ -25,8 +25,10 @@ interface ArgumentSerializer<T : ArgumentType<*>> {
 
     fun write(buf: ByteBuf, value: T)
 
-    companion object Empty : ArgumentSerializer<ArgumentType<*>> {
+    object Empty : ArgumentSerializer<ArgumentType<*>> {
 
-        override fun write(buf: ByteBuf, value: ArgumentType<*>) = Unit
+        override fun write(buf: ByteBuf, value: ArgumentType<*>) {
+            // nothing to write for an empty serializer
+        }
     }
 }

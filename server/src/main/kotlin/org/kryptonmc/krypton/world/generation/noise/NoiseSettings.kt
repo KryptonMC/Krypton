@@ -44,6 +44,7 @@ data class NoiseSettings(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<NoiseSettings> = RecordCodecBuilder.create<NoiseSettings> {
             it.group(
                 Codec.intRange(KryptonDimensionType.MIN_Y, KryptonDimensionType.MAX_Y).fieldOf("min_y").forGetter(NoiseSettings::minimumY),
@@ -64,6 +65,7 @@ data class NoiseSettings(
             ).apply(it, ::NoiseSettings)
         }.comapFlatMap(::guardY, Function.identity())
 
+        @JvmStatic
         private fun guardY(settings: NoiseSettings): DataResult<NoiseSettings> {
             if (settings.minimumY + settings.height > KryptonDimensionType.MAX_Y + 1) {
                 return DataResult.error("Minimum Y + height cannot be greater than ${KryptonDimensionType.MAX_Y + 1}!")

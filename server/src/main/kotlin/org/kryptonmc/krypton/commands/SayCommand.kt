@@ -18,29 +18,34 @@
  */
 package org.kryptonmc.krypton.commands
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.arguments.StringArgumentType.string
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import com.mojang.brigadier.builder.RequiredArgumentBuilder.argument
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import com.mojang.brigadier.arguments.StringArgumentType
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.command.argument.argument
+import org.kryptonmc.krypton.command.literal
 
 object SayCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        dispatcher.register(literal<Sender>("say")
-            .permission(KryptonPermission.SAY)
-            .then(argument<Sender, String>("message", string())
-                .executes {
+        dispatcher.register(literal("say") {
+            permission(KryptonPermission.SAY)
+            argument("message", StringArgumentType.string()) {
+                executes {
                     val server = it.source.server as? KryptonServer ?: return@executes 0
-                    server.sendMessage(translatable("chat.type.announcement", it.source.name, text(it.argument<String>("message"))))
-                    1
-                })
-        )
+                    server.sendMessage(Component.translatable(
+                        "chat.type.announcement",
+                        it.source.name,
+                        Component.text(it.argument<String>("message"))
+                    ))
+                    Command.SINGLE_SUCCESS
+                }
+            }
+        })
     }
 }

@@ -29,13 +29,15 @@ interface BlockAccessor : HeightAccessor {
 
     fun getBlock(x: Int, y: Int, z: Int): Block
 
-    fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
+    fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
 
     fun getFluid(x: Int, y: Int, z: Int): Fluid
 
-    fun getFluid(position: Vector3i) = getFluid(position.x(), position.y(), position.z())
+    fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
 
     fun setBlock(x: Int, y: Int, z: Int, block: Block)
 
-    fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
+    fun setBlock(position: Vector3i, block: Block) {
+        setBlock(position.x(), position.y(), position.z(), block)
+    }
 }

@@ -21,9 +21,8 @@ package org.kryptonmc.krypton.command.arguments.item
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import net.kyori.adventure.key.Key.key
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
@@ -36,37 +35,7 @@ import org.kryptonmc.nbt.CompoundTag
 
 class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) { // TODO: Tags for ItemStackPredicate etc.
 
-    private fun readItem(reader: StringReader): ItemType {
-        val i = reader.cursor
-        while (reader.canRead() && isCharValid(reader.peek())) {
-            reader.skip()
-        }
-
-        val string = reader.string.substring(i, reader.cursor)
-        val item = Registries.ITEM[key(string)]
-        if (item == ItemTypes.AIR) throw ID_INVALID_EXCEPTION.createWithContext(reader, string)
-        return item
-    }
-
-    private fun readTag(reader: StringReader): String {
-        if (allowTags) {
-            reader.expect('#')
-            val i = reader.cursor
-            while (reader.canRead() && isCharValid(reader.peek())) {
-                reader.skip()
-            }
-            return reader.string.substring(i, reader.cursor)
-        } else {
-            throw TAG_DISALLOWED_EXCEPTION.createWithContext(reader)
-        }
-    }
-
-    private fun readNBT(reader: StringReader): CompoundTag? {
-        if (reader.canRead() && reader.peek() == '{') return SNBTParser(reader).readCompound()
-        return null
-    }
-
-    fun parseItem(): ItemStackArgument = ItemStackArgument(readItem(this.reader), readNBT(this.reader))
+    fun parseItem(): ItemStackArgument = ItemStackArgument(readItem(reader), readNBT(reader))
 
     fun parsePredicate(): ItemStackPredicate {
         var tag: String? = null
@@ -78,27 +47,70 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
 
         return ItemStackPredicate {
             if (item != null) {
-                if (nbt != null) nbt == (it.meta as? KryptonMetaHolder)?.nbt else it.type == item
-            } else if (tag != null) {
-                (KryptonTagManager[TagTypes.ITEMS, tag] ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())).contains(it.type)
-            } else {
-                false
+                if (nbt != null) return@ItemStackPredicate nbt == (it.meta as? KryptonMetaHolder)?.nbt
+                return@ItemStackPredicate it.type == item
             }
+            if (tag != null) {
+                val tags = KryptonTagManager[TagTypes.ITEMS, tag] ?: throw UNKNOWN_ITEM_TAG.create(tag.toString())
+                return@ItemStackPredicate tags.contains(it.type)
+            }
+            false
         }
     }
 
-    private fun isCharValid(c: Char): Boolean = c in '0'..'9' ||
-            c in 'a'..'z' ||
-            c == '_' ||
-            c == ':' ||
-            c == '/' ||
-            c == '.' ||
-            c == '-'
+    private fun readItem(reader: StringReader): ItemType {
+        val i = reader.cursor
+        while (reader.canRead() && isCharacterValid(reader.peek())) {
+            reader.skip()
+        }
+
+        val string = reader.string.substring(i, reader.cursor)
+        val item = Registries.ITEM[Key.key(string)]
+        if (item == ItemTypes.AIR) throw ID_INVALID_EXCEPTION.createWithContext(reader, string)
+        return item
+    }
+
+    private fun readTag(reader: StringReader): String {
+        if (allowTags) {
+            reader.expect('#')
+            val i = reader.cursor
+            while (reader.canRead() && isCharacterValid(reader.peek())) {
+                reader.skip()
+            }
+            return reader.string.substring(i, reader.cursor)
+        }
+        throw TAG_DISALLOWED_EXCEPTION.createWithContext(reader)
+    }
+
+    private fun readNBT(reader: StringReader): CompoundTag? {
+        if (reader.canRead() && reader.peek() == '{') return SNBTParser(reader).readCompound()
+        return null
+    }
 
     companion object {
 
-        val ID_INVALID_EXCEPTION = DynamicCommandExceptionType { translatable("argument.item.id.invalid", text(it.toString())).toMessage() }
-        val TAG_DISALLOWED_EXCEPTION = SimpleCommandExceptionType(translatable("argument.item.tag.disallowed").toMessage())
-        val UNKNOWN_ITEM_TAG = DynamicCommandExceptionType { translatable("arguments.item.tag.unknown", text(it.toString())).toMessage() }
+        @JvmField
+        val ID_INVALID_EXCEPTION: DynamicCommandExceptionType = DynamicCommandExceptionType {
+            Component.translatable("argument.item.id.invalid", Component.text(it.toString())).toMessage()
+        }
+
+        @JvmField
+        val TAG_DISALLOWED_EXCEPTION: SimpleCommandExceptionType = SimpleCommandExceptionType(
+            Component.translatable("argument.item.tag.disallowed").toMessage()
+        )
+
+        @JvmField
+        val UNKNOWN_ITEM_TAG: DynamicCommandExceptionType = DynamicCommandExceptionType {
+            Component.translatable("arguments.item.tag.unknown", Component.text(it.toString())).toMessage()
+        }
+
+        @JvmStatic
+        private fun isCharacterValid(character: Char): Boolean = character in '0'..'9' ||
+                character in 'a'..'z' ||
+                character == '_' ||
+                character == ':' ||
+                character == '/' ||
+                character == '.' ||
+                character == '-'
     }
 }

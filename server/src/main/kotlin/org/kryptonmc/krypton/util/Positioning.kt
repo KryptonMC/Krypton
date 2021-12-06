@@ -18,6 +18,9 @@
  */
 package org.kryptonmc.krypton.util
 
+import org.spongepowered.math.vector.Vector3d
+import kotlin.math.abs
+
 object Positioning {
 
     /**
@@ -27,11 +30,28 @@ object Positioning {
      *
      * This calculation comes from https://wiki.vg/Protocol#Entity_Position
      */
-    fun delta(new: Double, old: Double) = ((new * 32 - old * 32) * 128).toInt().toShort()
+    @JvmStatic
+    fun delta(new: Double, old: Double): Short = ((new * 32 - old * 32) * 128).toInt().toShort()
 
     /**
      * Encodes the given [velocity] in to the protocol's standard velocity
      * units, measured in 1/8000 of a block per server tick.
      */
+    @JvmStatic
     fun encodeVelocity(velocity: Double): Int = (velocity.clamp(-3.9, 3.9) * 8000.0).toInt()
+
+    /**
+     * Checks if the change between the old and the new is within the range
+     * allowed by the entity move packet.
+     *
+     * The entity move packet allows at most 8 blocks in any direction, because
+     * it calculates the delta as shown in [delta], the range of a short is
+     * -32768 to 32767, and 32768 / (128 * 32) = 8.
+     *
+     * Source: https://wiki.vg/Protocol#Entity_Position
+     */
+    @JvmStatic
+    fun deltaInMoveRange(old: Vector3d, new: Vector3d): Boolean = abs(new.x() - old.x()) > 8 ||
+            abs(new.y() - old.y()) > 8 ||
+            abs(new.z() - old.z()) > 8
 }

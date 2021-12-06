@@ -285,7 +285,8 @@ public interface World : ForwardingAudience {
     public fun getChunk(position: Vector3i): Chunk?
 
     /**
-     * Gets or loads the chunk at the given **chunk** coordinates.
+     * Gets or loads the chunk at the given **chunk** coordinates, or returns
+     * null if there is no chunk at the given chunk coordinates.
      *
      * That is, to calculate the chunk coordinate from a given block
      * coordinate, the block coordinate is shifted right by 4 (divided by 16
@@ -296,8 +297,9 @@ public interface World : ForwardingAudience {
      *
      * @param x the X coordinate
      * @param z the Z coordinate
+     * @return the loaded chunk, or null if not present
      */
-    public fun loadChunk(x: Int, z: Int): Chunk
+    public fun loadChunk(x: Int, z: Int): Chunk?
 
     /**
      * Unloads the chunk at the specified [x] and [z] coordinates if there is
@@ -315,12 +317,6 @@ public interface World : ForwardingAudience {
      * @param force whether to force unload the chunk or not
      */
     public fun unloadChunk(x: Int, z: Int, force: Boolean)
-
-    /**
-     * Saves this world to disk. Exposed as a function of [World] to allow for
-     * custom world implementations to define this.
-     */
-    public fun save()
 
     /**
      * Spawns an entity with the given [type] in this world at the given

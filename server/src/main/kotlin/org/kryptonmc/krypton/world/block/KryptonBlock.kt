@@ -26,14 +26,14 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.BlockHandler
 import org.kryptonmc.api.block.PushReaction
 import org.kryptonmc.api.block.RenderShape
 import org.kryptonmc.api.block.property.Property
+import org.kryptonmc.api.fluid.Fluid
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.Codecs
-import org.kryptonmc.krypton.world.block.handler.DummyBlockHandler
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
 
 @JvmRecord
@@ -77,9 +77,6 @@ data class KryptonBlock(
     override val properties: Map<String, String>
 ) : KryptonPropertyHolder<Block>, Block {
 
-    override val handler: BlockHandler
-        get() = KryptonBlockManager.handler(this) ?: DummyBlockHandler
-
     override fun copy(key: String, value: String): Block {
         val newProperties = properties + (key to value)
         return requireNotNull(BlockLoader.properties(key().asString(), newProperties)) { "Invalid property $key:$value for block ${key()}!" }
@@ -90,13 +87,13 @@ data class KryptonBlock(
         return requireNotNull(BlockLoader.properties(key().asString(), newProperties)) { "Invalid properties $newValues for block ${key()}!" }
     }
 
-    override fun asItem() = itemKey?.let { InternalRegistries.ITEM[it] }
+    override fun asItem(): ItemType? = if (itemKey != null) InternalRegistries.ITEM[itemKey] else null
 
-    override fun asFluid() = InternalRegistries.FLUID[fluidKey]
+    override fun asFluid(): Fluid = InternalRegistries.FLUID[fluidKey]
 
     override fun key(): Key = key
 
-    override fun toBuilder() = Builder(this)
+    override fun toBuilder(): Builder = Builder(this)
 
     class Builder(
         private val key: Key,
@@ -293,7 +290,7 @@ data class KryptonBlock(
 
     object Factory : Block.Factory {
 
-        override fun builder(key: Key, id: Int, stateId: Int) = Builder(key, id, stateId)
+        override fun builder(key: Key, id: Int, stateId: Int): Builder = Builder(key, id, stateId)
 
         override fun fromId(id: Int): Block? = Registries.BLOCK[id]
 
@@ -303,6 +300,8 @@ data class KryptonBlock(
     companion object {
 
         private val EMPTY_KEY = Key.key("empty")
+
+        @JvmField
         val CODEC: Codec<Block> = RecordCodecBuilder.create {
             it.group(
                 Codecs.KEY.fieldOf("Name").forGetter(Block::key),

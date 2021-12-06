@@ -34,7 +34,7 @@ class SingleValuePalette<T>(
     override val serializedSize: Int
         get() {
             checkNotNull(value) { "Attempted to use an uninitialised single value palette!" }
-            return registry.idOf(value!!).varIntBytes
+            return registry.idOf(value!!).varIntBytes()
         }
 
     init {

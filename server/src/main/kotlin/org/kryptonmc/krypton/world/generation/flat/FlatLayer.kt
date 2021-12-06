@@ -31,10 +31,14 @@ data class FlatLayer(
     val height: Int
 ) {
 
-    override fun toString() = "${if (height != 1) "$height*" else ""}${block.key()}"
+    override fun toString(): String {
+        if (height != 1) return "$height*${block.key().asString()}"
+        return block.key().asString()
+    }
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<FlatLayer> = RecordCodecBuilder.create {
             it.group(
                 InternalRegistries.BLOCK.fieldOf("block").orElse(Blocks.AIR).forGetter(FlatLayer::block),

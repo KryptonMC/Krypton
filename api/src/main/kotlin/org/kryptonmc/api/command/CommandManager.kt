@@ -52,7 +52,7 @@ public interface CommandManager {
      * @param meta the command metadata
      * @param registrar the command registrar to use to register the command
      */
-    public fun <C : Command, M : CommandMeta> register(command: C, meta: M, registrar: CommandRegistrar<C, M>)
+    public fun <C, M> register(command: C, meta: M, registrar: CommandRegistrar<C, M>)
 
     /**
      * Unregisters the given alias from this manager, if registered.

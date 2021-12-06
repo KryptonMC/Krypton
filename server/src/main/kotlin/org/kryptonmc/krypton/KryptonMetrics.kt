@@ -40,6 +40,7 @@ object KryptonMetrics {
     private const val SERVICE_ID = 11197
     private val VERSION_REGEX = "\\d+".toRegex()
 
+    @JvmStatic
     fun initialize(server: KryptonServer, enabled: Boolean) {
         val config = try {
             MetricsConfig(Path.of("plugins/bStats/config.txt").toFile(), enabled)
@@ -89,6 +90,7 @@ object KryptonMetrics {
         })
     }
 
+    @JvmStatic
     private fun appendPlatformData(builder: JsonObjectBuilder) {
         builder.appendField("osName", System.getProperty("os.name"))
         builder.appendField("osArch", System.getProperty("os.arch"))

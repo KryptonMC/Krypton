@@ -18,8 +18,7 @@
  */
 package org.kryptonmc.krypton.util
 
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import java.util.Locale
@@ -30,7 +29,7 @@ class ChunkProgressListener(radius: Int) {
     private var count = 0
     private var startTime = 0L
     private var nextTickTime = Long.MAX_VALUE
-    val progress: Int
+    private val progress: Int
         get() = (count.toFloat() * 100F / area.toFloat()).floor()
 
     fun stop() {
@@ -48,10 +47,8 @@ class ChunkProgressListener(radius: Int) {
         val progress = progress
         if (System.currentTimeMillis() > nextTickTime) {
             nextTickTime += 50L
-            LOGGER.info(TranslationBootstrap.RENDERER.render(translatable(
-                "menu.preparingSpawn",
-                text(progress.clamp(0, 100))
-            ), Locale.ENGLISH).toPlainText())
+            val message = Component.translatable("menu.preparingSpawn", Component.text(progress.clamp(0, 100)))
+            LOGGER.info(TranslationBootstrap.RENDERER.render(message, Locale.ENGLISH).toPlainText())
         }
     }
 

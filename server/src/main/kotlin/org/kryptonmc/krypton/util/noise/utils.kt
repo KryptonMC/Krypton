@@ -20,10 +20,6 @@ package org.kryptonmc.krypton.util.noise
 
 import org.kryptonmc.krypton.util.floorl
 
-fun IntArray.dot(
-    x: Double,
-    y: Double,
-    z: Double
-) = this[0].toDouble() * x + this[1].toDouble() * y + this[2].toDouble() * z
+fun IntArray.dot(x: Double, y: Double, z: Double): Double = this[0].toDouble() * x + this[1].toDouble() * y + this[2].toDouble() * z
 
-fun Double.wrap() = this - (this / 3.3554432E7 + 0.5).floorl() * 3.3554432E7
+fun Double.wrap(): Double = this - (this / 3.3554432E7 + 0.5).floorl() * 3.3554432E7

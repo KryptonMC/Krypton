@@ -52,11 +52,11 @@ fun Int.ceillog2(): Int {
     return MULTIPLY_DE_BRUIJN_BIT_POSITION[(temp.toLong() * 125613361L shr 27 and 31).toInt()]
 }
 
-fun Int.log2() = ceillog2() - if (isPowerOfTwo()) 0 else 1
+fun Int.log2(): Int = ceillog2() - if (isPowerOfTwo()) 0 else 1
 
-fun Int.isPowerOfTwo() = GenericMath.isPowerOfTwo(this)
+fun Int.isPowerOfTwo(): Boolean = GenericMath.isPowerOfTwo(this)
 
-fun Int.roundToward(toward: Int) = (this + toward - 1) / toward * toward
+fun Int.roundToward(toward: Int): Int = (this + toward - 1) / toward * toward
 
 fun Random.nextUUID(): UUID {
     val most = nextLong() and -61441L or 16384L
@@ -64,11 +64,23 @@ fun Random.nextUUID(): UUID {
     return UUID(most, least)
 }
 
-fun Int.clamp(low: Int, high: Int) = if (this < low) low else if (this > high) high else this
+fun Int.clamp(low: Int, high: Int): Int {
+    if (this < low) return low
+    if (this > high) return high
+    return this
+}
 
-fun Double.clamp(low: Double, high: Double) = if (this < low) low else if (this > high) high else this
+fun Double.clamp(low: Double, high: Double): Double {
+    if (this < low) return low
+    if (this > high) return high
+    return this
+}
 
-fun Float.clamp(low: Float, high: Float) = if (this < low) low else if (this > high) high else this
+fun Float.clamp(low: Float, high: Float): Float {
+    if (this < low) return low
+    if (this > high) return high
+    return this
+}
 
 fun IntRange.sample(random: Random): Int = Maths.randomBetween(random, first, last)
 
@@ -77,11 +89,11 @@ fun IntRange.randomValue(random: Random): Int {
     return random.nextInt(last - first + 1) + first
 }
 
-fun Int.toArea() = (this * 2 + 1).square()
+fun Int.toArea(): Int = (this * 2 + 1).square()
 
-fun Int.square() = this * this
+fun Int.square(): Int = this * this
 
-fun Double.fade() = this * this * this * (this * (this * 6 - 15) + 10)
+fun Double.fade(): Double = this * this * this * (this * (this * 6 - 15) + 10)
 
 fun Double.clampedLerp(lower: Double, upper: Double): Double {
     if (this < lower) return lower
@@ -89,4 +101,7 @@ fun Double.clampedLerp(lower: Double, upper: Double): Double {
     return GenericMath.lerp(lower, upper, this)
 }
 
-fun java.util.Random.nextFloatClamped(a: Float, b: Float) = if (a >= b) a else nextFloat() * (b - a) + a
+fun Random.nextFloatClamped(a: Float, b: Float): Float {
+    if (a >= b) return a
+    return nextFloat() * (b - a) + a
+}

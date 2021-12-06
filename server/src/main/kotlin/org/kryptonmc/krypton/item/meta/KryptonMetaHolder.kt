@@ -30,17 +30,17 @@ open class KryptonMetaHolder(var nbt: MutableCompoundTag = MutableCompoundTag())
 
     override fun <V : Any> get(key: MetaKey<V>): V? {
         if (key !is KryptonMetaKey<V>) return null
-        return key.reader(nbt)
+        return key.reader.read(nbt)
     }
 
     override fun <V : Any> set(key: MetaKey<V>, value: V) {
         if (key !is KryptonMetaKey<V>) return
-        key.writer.invoke(nbt, value)
+        key.writer.write(nbt, value)
     }
 
     override fun <V : Any> contains(key: MetaKey<V>): Boolean {
         if (key !is KryptonMetaKey<V>) return false
-        return key.predicate(nbt)
+        return key.predicate.test(nbt)
     }
 
     override fun copy(): KryptonMetaHolder = KryptonMetaHolder(nbt.copy())

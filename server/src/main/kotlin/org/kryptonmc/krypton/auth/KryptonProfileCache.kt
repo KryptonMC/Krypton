@@ -56,14 +56,22 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         safeAdd(ProfileHolder(profile, expiry))
     }
 
-    override fun get(name: String) = profilesByName[name.lowercase()]?.apply { lastAccess = operations.incrementAndGet() }?.profile
+    override fun get(name: String): KryptonGameProfile? {
+        val holder = profilesByName[name] ?: return null
+        holder.lastAccess = operations.incrementAndGet()
+        return holder.profile
+    }
 
-    override fun get(uuid: UUID) = profilesByUUID[uuid]?.apply { lastAccess = operations.incrementAndGet() }?.profile
+    override fun get(uuid: UUID): KryptonGameProfile? {
+        val holder = profilesByUUID[uuid] ?: return null
+        holder.lastAccess = operations.incrementAndGet()
+        return holder.profile
+    }
 
-    override fun iterator() = profilesByUUID.values.asSequence().map {
-        it.lastAccess = operations.incrementAndGet()
-        it.profile
-    }.iterator()
+    override fun iterator(): Iterator<GameProfile> = profilesByUUID.values.asSequence()
+        .onEach { it.lastAccess = operations.incrementAndGet() }
+        .map(ProfileHolder::profile)
+        .iterator()
 
     private fun safeAdd(holder: ProfileHolder) {
         val profile = holder.profile

@@ -25,6 +25,7 @@ interface FeatureConfig {
 
     companion object Empty : FeatureConfig {
 
+        @JvmField
         val CODEC: Codec<Empty> = Codec.unit { Empty }
     }
 }

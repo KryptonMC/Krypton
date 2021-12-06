@@ -50,13 +50,18 @@ data class NoiseGeneratorSettings(
 
     companion object {
 
-        val OVERWORLD = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("overworld"))
+        @JvmField
+        val OVERWORLD: ResourceKey<NoiseGeneratorSettings> = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("overworld"))
+        @JvmField
+        val NETHER: ResourceKey<NoiseGeneratorSettings> = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("nether"))
+        @JvmField
+        val END: ResourceKey<NoiseGeneratorSettings> = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("end"))
+
         private val AMPLIFIED = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("amplified"))
-        val NETHER = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("nether"))
-        val END = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("end"))
         private val CAVES = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("caves"))
         private val FLOATING_ISLANDS = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("floating_islands"))
 
+        @JvmField
         val CODEC: Codec<NoiseGeneratorSettings> = RecordCodecBuilder.create {
             it.group(
                 StructureSettings.CODEC.fieldOf("structures").forGetter(NoiseGeneratorSettings::structureSettings),
@@ -99,11 +104,13 @@ data class NoiseGeneratorSettings(
             ))
         }
 
+        @JvmStatic
         private fun register(
             key: ResourceKey<NoiseGeneratorSettings>,
             settings: NoiseGeneratorSettings
-        ) = settings.apply { InternalRegistries.NOISE_GENERATOR_SETTINGS.register(key.location, this) }
+        ): NoiseGeneratorSettings = settings.apply { InternalRegistries.NOISE_GENERATOR_SETTINGS.register(key.location, this) }
 
+        @JvmStatic
         private fun overworld(structureSettings: StructureSettings, isAmplified: Boolean): NoiseGeneratorSettings {
             val scale = 0.9999999814507745
             return NoiseGeneratorSettings(
@@ -138,6 +145,7 @@ data class NoiseGeneratorSettings(
             )
         }
 
+        @JvmStatic
         private fun netherLike(
             structureSettings: StructureSettings,
             defaultBlock: Block,
@@ -179,13 +187,14 @@ data class NoiseGeneratorSettings(
             )
         }
 
+        @JvmStatic
         private fun endLike(
             structureSettings: StructureSettings,
             defaultBlock: Block,
             defaultFluid: Block,
             disableMobGeneration: Boolean,
             islandNoiseOverride: Boolean
-        ) = NoiseGeneratorSettings(
+        ): NoiseGeneratorSettings = NoiseGeneratorSettings(
             structureSettings,
             NoiseSettings(
                 0,

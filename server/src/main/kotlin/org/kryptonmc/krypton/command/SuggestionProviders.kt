@@ -38,7 +38,7 @@ object SuggestionProviders {
 
     @JvmField
     val SUMMONABLE_ENTITIES: SuggestionProvider<Sender> = register(key("summonable_entities")) { _, builder ->
-        InternalRegistries.ENTITY_TYPE.values
+        InternalRegistries.ENTITY_TYPE.values.asSequence()
             .filter { it.isSummonable }
             .suggestKey(builder, EntityType<*>::key) {
                 val key = InternalRegistries.ENTITY_TYPE[it]

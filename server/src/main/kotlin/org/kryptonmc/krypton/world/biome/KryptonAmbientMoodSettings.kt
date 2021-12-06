@@ -72,7 +72,10 @@ data class KryptonAmbientMoodSettings(
 
     companion object {
 
-        val CAVE = KryptonAmbientMoodSettings(SoundEvents.AMBIENT_CAVE, 6000, 8, 2.0)
+        @JvmField
+        val CAVE: KryptonAmbientMoodSettings = KryptonAmbientMoodSettings(SoundEvents.AMBIENT_CAVE, 6000, 8, 2.0)
+
+        @JvmField
         val CODEC: Codec<AmbientMoodSettings> = RecordCodecBuilder.create {
             it.group(
                 Codecs.SOUND_EVENT.fieldOf("sound").forGetter(AmbientMoodSettings::sound),

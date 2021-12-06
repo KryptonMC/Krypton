@@ -33,6 +33,7 @@ data class StructureConfig(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<StructureConfig> = RecordCodecBuilder.create<StructureConfig> {
             it.group(
                 Codec.intRange(0, 4096).fieldOf("spacing").forGetter(StructureConfig::spacing),

@@ -66,7 +66,7 @@ class KryptonObjective(
 
         override fun renderType(type: ObjectiveRenderType): Objective.Builder = apply { renderType = type }
 
-        override fun build() = KryptonObjective(scoreboard, name, criterion, displayName, renderType)
+        override fun build(): KryptonObjective = KryptonObjective(scoreboard, name, criterion, displayName, renderType)
     }
 
     object Factory : Objective.Factory {

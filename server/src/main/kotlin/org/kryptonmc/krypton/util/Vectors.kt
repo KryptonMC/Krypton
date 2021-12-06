@@ -22,7 +22,7 @@ import org.spongepowered.math.GenericMath
 
 object Vectors {
 
-    val PACKED_X_Z = 1 + GenericMath.roundUpPow2(30000000).log2()
+    private val PACKED_X_Z = 1 + GenericMath.roundUpPow2(30000000).log2()
     val PACKED_Y = 64 - PACKED_X_Z * 2
     val PACKED_X_Z_MASK = (1L shl PACKED_X_Z) - 1L
     val PACKED_Y_MASK = (1L shl PACKED_Y) - 1L

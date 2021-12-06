@@ -41,7 +41,7 @@ interface KryptonPropertyHolder<T : PropertyHolder<T>> : PropertyHolder<T> {
         return copy(key.name, key.toString(value))
     }
 
-    override fun contains(key: Property<*>) = properties.containsKey(key.name)
+    override fun contains(key: Property<*>): Boolean = properties.containsKey(key.name)
 
     abstract class Builder<B : PropertyHolder.Builder<B, T>, T : PropertyHolder<T>>() : PropertyHolder.Builder<B, T> {
 

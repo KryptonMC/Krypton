@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.Heightmap
 import java.util.EnumSet
@@ -31,12 +30,12 @@ class ChunkStatus private constructor(
     val type: Type,
 ) {
 
-    val parent = parent ?: this
+    val parent: ChunkStatus = parent ?: this
     val index: Int = if (parent == null) 0 else parent.index + 1
 
-    fun isOrAfter(other: ChunkStatus) = index >= other.index
+    fun isOrAfter(other: ChunkStatus): Boolean = index >= other.index
 
-    override fun toString() = InternalRegistries.CHUNK_STATUS[this].asString()
+    override fun toString(): String = InternalRegistries.CHUNK_STATUS[this].asString()
 
     enum class Type {
 
@@ -63,7 +62,7 @@ class ChunkStatus private constructor(
             PRE_FEATURES,
             Type.PROTO
         )
-        val BIOMES = register("biomes", STRUCTURE_REFERENCES, 0, PRE_FEATURES, Type.PROTO)
+        val BIOMES: ChunkStatus = register("biomes", STRUCTURE_REFERENCES, 0, PRE_FEATURES, Type.PROTO)
         private val NOISE = register("noise", BIOMES, 8, PRE_FEATURES, Type.PROTO)
         private val SURFACE = register("surface", NOISE, 0, PRE_FEATURES, Type.PROTO)
         private val CARVERS = register("carvers", SURFACE, 0, PRE_FEATURES, Type.PROTO)
@@ -72,8 +71,9 @@ class ChunkStatus private constructor(
         private val LIGHT = register("light", FEATURES, 1, POST_FEATURES, Type.PROTO)
         private val SPAWN = register("spawn", LIGHT, 0, POST_FEATURES, Type.PROTO)
         private val HEIGHTMAPS = register("heightmaps", SPAWN, 0, POST_FEATURES, Type.PROTO)
-        val FULL = register("full", HEIGHTMAPS, 0, POST_FEATURES, Type.FULL)
+        val FULL: ChunkStatus = register("full", HEIGHTMAPS, 0, POST_FEATURES, Type.FULL)
 
+        @JvmStatic
         private fun register(
             name: String,
             parent: ChunkStatus?,

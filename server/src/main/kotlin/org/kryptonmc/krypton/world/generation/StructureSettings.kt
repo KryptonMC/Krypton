@@ -37,6 +37,7 @@ data class StructureSettings(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<StructureSettings> = RecordCodecBuilder.create { instance ->
             instance.group(
                 Codec.simpleMap(InternalRegistries.STRUCTURE, StructureConfig.CODEC, InternalRegistries.STRUCTURE)
@@ -45,7 +46,9 @@ data class StructureSettings(
                 StrongholdConfig.CODEC.nullableFieldOf("stronghold").forGetter(StructureSettings::stronghold)
             ).apply(instance, ::StructureSettings)
         }
+        @JvmField
         val DEFAULTS = emptyMap<Structure<*>, StructureConfig>()
-        val DEFAULT_STRONGHOLD = StrongholdConfig(32, 3, 128)
+        @JvmField
+        val DEFAULT_STRONGHOLD: StrongholdConfig = StrongholdConfig(32, 3, 128)
     }
 }

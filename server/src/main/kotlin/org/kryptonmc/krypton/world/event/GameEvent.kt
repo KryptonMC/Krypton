@@ -24,5 +24,5 @@ import net.kyori.adventure.key.Keyed
 @JvmRecord
 data class GameEvent(private val key: Key) : Keyed {
 
-    override fun key() = key
+    override fun key(): Key = key
 }

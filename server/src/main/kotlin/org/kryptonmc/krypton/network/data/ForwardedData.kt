@@ -16,9 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.auth.exceptions
+package org.kryptonmc.krypton.network.data
 
-/**
- * Thrown when an error occurs attempting to authenticate a user.
- */
-class AuthenticationException : RuntimeException()
+import org.kryptonmc.krypton.auth.KryptonProfileProperty
+import java.util.UUID
+
+interface ForwardedData {
+
+    val forwardedAddress: String
+    val forwardedPort: Int
+
+    val uuid: UUID?
+        get() = null
+    val properties: List<KryptonProfileProperty>?
+        get() = null
+}

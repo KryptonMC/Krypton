@@ -26,7 +26,7 @@ data class WorldCoordinate(
     val isRelative: Boolean
 ) {
 
-    operator fun get(relativeTo: Double): Double {
+    fun calculate(relativeTo: Double): Double {
         if (isRelative) return value + relativeTo
         return value
     }

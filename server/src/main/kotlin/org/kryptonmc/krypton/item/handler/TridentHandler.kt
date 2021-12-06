@@ -19,17 +19,16 @@
 package org.kryptonmc.krypton.item.handler
 
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.world.GameModes
-import org.kryptonmc.api.world.World
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 
-object TridentHandler : KryptonItemHandler {
+object TridentHandler : ItemHandler {
 
     override fun canAttackBlock(
-        player: Player,
-        world: World,
+        player: KryptonPlayer,
+        world: KryptonWorld,
         block: Block,
         position: Vector3i
     ): Boolean = player.gameMode !== GameModes.CREATIVE

@@ -53,7 +53,6 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         world.folder.resolve("entities"),
         world.server.config.advanced.synchronizeChunkWrites
     )
-
     val entities: MutableCollection<KryptonEntity>
         get() = byId.values
 
@@ -61,8 +60,10 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
     operator fun get(uuid: UUID): KryptonEntity? = byUUID[uuid]
 
-    operator fun get(chunk: KryptonChunk): Set<KryptonEntity> =
-        byChunk.computeIfAbsent(ChunkPosition.toLong(chunk.position.x, chunk.position.z), LongFunction { mutableSetOf() })
+    operator fun get(chunk: KryptonChunk): Set<KryptonEntity> = byChunk.computeIfAbsent(
+        ChunkPosition.toLong(chunk.position.x, chunk.position.z),
+        LongFunction { mutableSetOf() }
+    )
 
     fun spawn(entity: KryptonEntity) {
         if (entity.world != world) return
@@ -119,7 +120,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
     }
 
     fun load(chunk: KryptonChunk) {
-        val nbt = regionFileManager.read(chunk.position)
+        val nbt = regionFileManager.read(chunk.x, chunk.z) ?: return
         val version = if (nbt.contains("DataVersion", IntTag.ID)) nbt.getInt("DataVersion") else -1
         // We won't upgrade data if use of the data converter is disabled.
         if (version < KryptonPlatform.worldVersion && !world.server.useDataConverter) {
@@ -131,11 +132,11 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         }
 
         val data = if (world.server.useDataConverter && version < KryptonPlatform.worldVersion) {
-            MCDataConverter.convertTag(MCTypeRegistry.ENTITY_CHUNK, nbt, version, KryptonPlatform.worldVersion).getList("Entities", CompoundTag.ID)
+            MCDataConverter.convertTag(MCTypeRegistry.ENTITY_CHUNK, nbt, version, KryptonPlatform.worldVersion)
         } else {
-            nbt.getList("Entities", CompoundTag.ID)
+            nbt
         }
-        data.forEachCompound {
+        data.getList("Entities", CompoundTag.ID).forEachCompound {
             val id = it.getString("id")
             if (id.isBlank()) return@forEachCompound
             val key = try {
@@ -165,10 +166,16 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
             if (it is KryptonPlayer) return@forEach // Do not save players in here.
             entityList.add(it.saveWithPassengers().build())
         }
-        regionFileManager.write(chunk.position, root)
+        regionFileManager.write(chunk.x, chunk.z, root)
     }
 
-    override fun close() = regionFileManager.close()
+    fun flush() {
+        regionFileManager.flush()
+    }
+
+    override fun close() {
+        regionFileManager.close()
+    }
 
     companion object {
 

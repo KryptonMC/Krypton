@@ -24,7 +24,7 @@ import org.kryptonmc.api.effect.particle.data.ParticleData
 import org.spongepowered.math.vector.Vector3d
 
 @JvmRecord
-data class KryptonParticleEffect @JvmOverloads constructor(
+data class KryptonParticleEffect(
     override val type: ParticleType,
     override val quantity: Int,
     override val offset: Vector3d,

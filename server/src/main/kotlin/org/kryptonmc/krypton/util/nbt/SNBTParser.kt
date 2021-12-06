@@ -42,11 +42,6 @@ import org.kryptonmc.nbt.io.Types
 
 class SNBTParser(private val reader: StringReader) {
 
-    private fun readKey(): String {
-        reader.skipWhitespace()
-        return if (!reader.canRead()) throw ERROR_EXPECTED_KEY.createWithContext(reader) else reader.readString()
-    }
-
     fun readValue(): Tag {
         reader.skipWhitespace()
         if (!reader.canRead()) throw ERROR_EXPECTED_VALUE.createWithContext(reader)
@@ -63,6 +58,32 @@ class SNBTParser(private val reader: StringReader) {
         return if (reader.canRead()) throw ERROR_TRAILING_DATA.createWithContext(reader) else compound
     }
 
+    fun readCompound(): CompoundTag {
+        expect(COMPOUND_START)
+        val builder = CompoundTag.builder()
+        reader.skipWhitespace()
+
+        while (reader.canRead() && reader.peek() != COMPOUND_END) {
+            val cursor = reader.cursor
+            val key = readKey()
+            if (key.isEmpty()) {
+                reader.cursor = cursor
+                throw ERROR_EXPECTED_KEY.createWithContext(reader)
+            }
+            expect(KEY_SEPARATOR)
+            builder.put(key, readValue())
+            if (!reader.hasElementSeparator()) break
+            if (!reader.canRead()) throw ERROR_EXPECTED_KEY.createWithContext(reader)
+        }
+        expect(COMPOUND_END)
+        return builder.build()
+    }
+
+    private fun readKey(): String {
+        reader.skipWhitespace()
+        return if (!reader.canRead()) throw ERROR_EXPECTED_KEY.createWithContext(reader) else reader.readString()
+    }
+
     private fun readTypedValue(): Tag {
         reader.skipWhitespace()
         val cursor = reader.cursor
@@ -76,15 +97,10 @@ class SNBTParser(private val reader: StringReader) {
     }
 
     private fun readList(): Tag {
-        return if (
-            reader.canRead(3) &&
-            !StringReader.isQuotedStringStart(reader.peek(1)) &&
-            reader.peek(2) == ';'
-        ) {
-            readArrayTag()
-        } else {
-            readListTag()
+        if (reader.canRead(3) && !StringReader.isQuotedStringStart(reader.peek(1)) && reader.peek(2) == ';') {
+            return readArrayTag()
         }
+        return readListTag()
     }
 
     private fun readListTag(): Tag {
@@ -159,35 +175,14 @@ class SNBTParser(private val reader: StringReader) {
         }
     }
 
-    fun readCompound(): CompoundTag {
-        expect(COMPOUND_START)
-        val builder = CompoundTag.builder()
-        reader.skipWhitespace()
-
-        while (reader.canRead() && reader.peek() != COMPOUND_END) {
-            val cursor = reader.cursor
-            val key = readKey()
-            if (key.isEmpty()) {
-                reader.cursor = cursor
-                throw ERROR_EXPECTED_KEY.createWithContext(reader)
-            }
-            expect(KEY_SEPARATOR)
-            builder.put(key, readValue())
-            if (!reader.hasElementSeparator()) break
-            if (!reader.canRead()) throw ERROR_EXPECTED_KEY.createWithContext(reader)
-        }
-        expect(COMPOUND_END)
-        return builder.build()
-    }
-
     private fun convert(text: String): Tag = when {
-        text matches BYTE_REGEX -> ByteTag.of(text.dropLast(1).toByte())
-        text matches SHORT_REGEX -> ShortTag.of(text.dropLast(1).toShort())
-        text matches INT_REGEX -> IntTag.of(text.toInt())
-        text matches LONG_REGEX -> LongTag.of(text.dropLast(1).toLong())
-        text matches FLOAT_REGEX -> FloatTag.of(text.dropLast(1).toFloat())
-        text matches DOUBLE_REGEX -> DoubleTag.of(text.dropLast(1).toDouble())
-        text matches DOUBLE_REGEX_NO_SUFFIX -> DoubleTag.of(text.toDouble())
+        BYTE_REGEX.matches(text) -> ByteTag.of(text.dropLast(1).toByte())
+        SHORT_REGEX.matches(text) -> ShortTag.of(text.dropLast(1).toShort())
+        INT_REGEX.matches(text) -> IntTag.of(text.toInt())
+        LONG_REGEX.matches(text) -> LongTag.of(text.dropLast(1).toLong())
+        FLOAT_REGEX.matches(text) -> FloatTag.of(text.dropLast(1).toFloat())
+        DOUBLE_REGEX.matches(text) -> DoubleTag.of(text.dropLast(1).toDouble())
+        DOUBLE_REGEX_NO_SUFFIX.matches(text) -> DoubleTag.of(text.toDouble())
         text == "true" -> ByteTag.ONE
         text == "false" -> ByteTag.ZERO
         else -> StringTag.of(text)
@@ -210,8 +205,7 @@ class SNBTParser(private val reader: StringReader) {
         private const val INT_ARRAY_START = 'I'
         private const val ELEMENT_SEPARATOR = ','
 
-        private val DOUBLE_REGEX_NO_SUFFIX = "[-+]?(?:[0-9]+[.]|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?"
-            .toRegex(RegexOption.IGNORE_CASE)
+        private val DOUBLE_REGEX_NO_SUFFIX = "[-+]?(?:[0-9]+[.]|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?".toRegex(RegexOption.IGNORE_CASE)
         private val DOUBLE_REGEX = "[-+]?(?:[0-9]+[.]?|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?d".toRegex(RegexOption.IGNORE_CASE)
         private val FLOAT_REGEX = "[-+]?(?:[0-9]+[.]?|[0-9]*[.][0-9]+)(?:e[-+]?[0-9]+)?f".toRegex(RegexOption.IGNORE_CASE)
         private val BYTE_REGEX = "[-+]?(?:0|[1-9][0-9]*)b".toRegex(RegexOption.IGNORE_CASE)
@@ -232,6 +226,7 @@ class SNBTParser(private val reader: StringReader) {
             Component.translatable("argument.nbt.array.invalid", Component.text(it.toString())).toMessage()
         }
 
+        @JvmStatic
         private fun StringReader.hasElementSeparator(): Boolean {
             skipWhitespace()
             val hasSeparator = canRead() && peek() == ELEMENT_SEPARATOR

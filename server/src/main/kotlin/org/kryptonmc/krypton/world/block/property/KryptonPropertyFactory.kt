@@ -62,9 +62,9 @@ object KryptonPropertyFactory : Property.Factory {
         }
     }
 
-    override fun forBoolean(name: String) = BooleanProperty(name)
+    override fun forBoolean(name: String): Property<Boolean> = BooleanProperty(name)
 
-    override fun forInt(name: String, values: Set<Int>) = IntProperty(name, values)
+    override fun forInt(name: String, values: Set<Int>): Property<Int> = IntProperty(name, values)
 
     override fun <E> forEnum(
         name: String,

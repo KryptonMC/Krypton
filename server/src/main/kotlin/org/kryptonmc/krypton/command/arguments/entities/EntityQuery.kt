@@ -100,10 +100,16 @@ data class EntityQuery(
     fun profiles(sender: Sender): List<KryptonGameProfile> {
         val server = sender.server as? KryptonServer ?: return emptyList()
         if (sender is KryptonPlayer) {
-            if (playerName.isNotEmpty()) return listOf(server.profileCache[playerName] ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create())
+            if (playerName.isNotEmpty()) {
+                val profile = server.profileCache[playerName] ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()
+                return listOf(profile)
+            }
             return players(sender).map { it.profile }
         }
-        if (playerName.isNotEmpty()) return listOf(server.profileCache[playerName] ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create())
+        if (playerName.isNotEmpty()) {
+            val profile = server.profileCache[playerName] ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()
+            return listOf(profile)
+        }
         return emptyList()
     }
 
@@ -156,8 +162,7 @@ data class EntityQuery(
                     }
                     val range = value.toString().toIntRange()!!
                     entities = entities.filter {
-                        it.location.distanceSquared(source.location) >= range.first &&
-                                it.location.distanceSquared(source.location) <= range.last
+                        it.location.distanceSquared(source.location) >= range.first && it.location.distanceSquared(source.location) <= range.last
                     }
                 }
                 "scores" -> notImplemented("scores")
@@ -174,9 +179,11 @@ data class EntityQuery(
                         }
                     }
                 }
-                "name" -> entities = entities.filter {
-                    val name = if (it is Player) it.profile.name else it.name.toPlainText()
-                    if (exclude) name != value else name == value
+                "name" -> {
+                    entities = entities.filter {
+                        val name = if (it is Player) it.profile.name else it.name.toPlainText()
+                        if (exclude) name != value else name == value
+                    }
                 }
                 "x_rotation" -> {
                     checkIntOrRange(value.toString())

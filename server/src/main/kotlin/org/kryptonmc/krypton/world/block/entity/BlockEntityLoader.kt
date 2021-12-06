@@ -33,16 +33,16 @@ object BlockEntityLoader : KryptonDataLoader("block_entities") {
             val namespacedKey = Key.key(key)
             value as JsonObject
 
-            val blocks = ImmutableSet.copyOf(value["blocks"].asJsonArray.map {
+            val blocks = value["blocks"].asJsonArray.map {
                 val id = Key.key(it.asJsonObject["id"].asString)
                 Registries.BLOCK[id]!!
-            })
+            }
 
             if (InternalRegistries.BLOCK_ENTITY_TYPE.contains(namespacedKey)) return@forEach
             KryptonRegistryManager.register(
                 InternalRegistries.BLOCK_ENTITY_TYPE,
                 namespacedKey,
-                KryptonBlockEntityType(namespacedKey, blocks)
+                KryptonBlockEntityType(namespacedKey, ImmutableSet.copyOf(blocks))
             )
         }
     }

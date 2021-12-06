@@ -41,10 +41,12 @@ class StatusHandler(
     override val session: SessionHandler
 ) : PacketHandler {
 
-    override fun handle(packet: Packet) = when (packet) {
-        is PacketInStatusRequest -> handleStatusRequest()
-        is PacketInPing -> handlePing(packet)
-        else -> Unit
+    override fun handle(packet: Packet) {
+        when (packet) {
+            is PacketInStatusRequest -> handleStatusRequest()
+            is PacketInPing -> handlePing(packet)
+            else -> Unit
+        }
     }
 
     private fun handleStatusRequest() {

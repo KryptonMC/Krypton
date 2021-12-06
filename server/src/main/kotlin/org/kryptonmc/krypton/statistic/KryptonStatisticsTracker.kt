@@ -57,10 +57,7 @@ class KryptonStatisticsTracker(
     private val file: Path
 ) : StatisticsTracker {
 
-    @get:JvmName("statistics")
-    override val statistics: Object2IntMap<Statistic<*>> = Object2IntMaps.synchronize<Statistic<*>>(
-        Object2IntOpenHashMap()
-    ).apply { defaultReturnValue(0) }
+    override val statistics: Object2IntMap<Statistic<*>> = Object2IntMaps.synchronize(Object2IntOpenHashMap())
     private val pendingUpdate = mutableSetOf<Statistic<*>>()
     private val pendingUpdating: Set<Statistic<*>>
         get() {
@@ -70,6 +67,7 @@ class KryptonStatisticsTracker(
         }
 
     init {
+        statistics.defaultReturnValue(0)
         if (file.isRegularFile()) load(file.reader())
         if (!file.exists()) file.tryCreateFile()
     }

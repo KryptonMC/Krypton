@@ -18,46 +18,50 @@
  */
 package org.kryptonmc.krypton.commands
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.builder.LiteralArgumentBuilder.literal
-import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.command.InternalCommand
+import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
 object DifficultyCommand : InternalCommand {
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
-        val command = literal<Sender>("difficulty")
-            .permission(KryptonPermission.DIFFICULTY)
-            .executes {
+        val command = literal<Sender>("difficulty") {
+            permission(KryptonPermission.DIFFICULTY)
+            executes {
                 val sender = it.source as? KryptonPlayer ?: return@executes 0
-                sender.sendMessage(translatable(
+                sender.sendMessage(Component.translatable(
                     "commands.difficulty.query",
-                    translatable("options.difficulty.${sender.world.difficulty.name.lowercase()}")
+                    Component.translatable("options.difficulty.${sender.world.difficulty.name.lowercase()}")
                 ))
-                1
+                Command.SINGLE_SUCCESS
             }
+        }
         Difficulty.values().forEach { difficulty ->
-            command.then(literal<Sender>(difficulty.name.lowercase())
-                .executes {
+            val name = difficulty.name.lowercase()
+            command.then(literal(name) {
+                executes {
                     val sender = it.source as? KryptonPlayer ?: return@executes 0
                     if (sender.world.difficulty == difficulty) {
-                        sender.sendMessage(translatable(
+                        sender.sendMessage(Component.translatable(
                             "commands.difficulty.failure",
-                            translatable("options.difficulty.${difficulty.name.lowercase()}")
+                            Component.translatable("options.difficulty.$name")
                         ))
-                    } else {
-                        sender.world.difficulty = difficulty
-                        sender.sendMessage(translatable(
-                            "commands.difficulty.success",
-                            translatable("options.difficulty.${difficulty.name.lowercase()}")
-                        ))
+                        return@executes Command.SINGLE_SUCCESS
                     }
-                    1
-                })
+                    sender.world.difficulty = difficulty
+                    sender.sendMessage(Component.translatable(
+                        "commands.difficulty.success",
+                        Component.translatable("options.difficulty.$name")
+                    ))
+                    Command.SINGLE_SUCCESS
+                }
+            })
         }
         dispatcher.register(command)
     }

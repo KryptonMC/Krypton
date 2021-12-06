@@ -215,12 +215,6 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
     @get:JvmName("pushReaction")
     public val pushReaction: PushReaction
 
-    /**
-     * The handler for this block.
-     */
-    @get:JvmName("handler")
-    public val handler: BlockHandler
-
     override fun asBlock(): Block = this
 
     /**

@@ -31,8 +31,6 @@ object BossBarManager : BossBar.Listener {
 
     private val bars: MutableMap<BossBar, BossBarHolder> = MapMaker().weakKeys().makeMap()
 
-    private fun getOrCreate(bar: BossBar) = bars.getOrPut(bar) { BossBarHolder(bar) }.apply { register() }
-
     fun addBar(bar: BossBar, player: KryptonPlayer) {
         val holder = getOrCreate(bar)
         if (holder.subscribers.add(player)) player.session.send(PacketOutBossBar(Action.ADD, holder))
@@ -43,35 +41,27 @@ object BossBarManager : BossBar.Listener {
         if (holder.subscribers.remove(player)) player.session.send(PacketOutBossBar(Action.REMOVE, holder))
     }
 
-    override fun bossBarNameChanged(
-        bar: BossBar,
-        oldName: Component,
-        newName: Component
-    ) = update(bar, Action.UPDATE_TITLE)
+    override fun bossBarNameChanged(bar: BossBar, oldName: Component, newName: Component) {
+        update(bar, Action.UPDATE_TITLE)
+    }
 
-    override fun bossBarProgressChanged(
-        bar: BossBar,
-        oldProgress: Float,
-        newProgress: Float
-    ) = update(bar, Action.UPDATE_HEALTH)
+    override fun bossBarProgressChanged(bar: BossBar, oldProgress: Float, newProgress: Float) {
+        update(bar, Action.UPDATE_HEALTH)
+    }
 
-    override fun bossBarColorChanged(
-        bar: BossBar,
-        oldColor: BossBar.Color,
-        newColor: BossBar.Color
-    ) = update(bar, Action.UPDATE_STYLE)
+    override fun bossBarColorChanged(bar: BossBar, oldColor: BossBar.Color, newColor: BossBar.Color) {
+        update(bar, Action.UPDATE_STYLE)
+    }
 
-    override fun bossBarOverlayChanged(
-        bar: BossBar,
-        oldOverlay: BossBar.Overlay,
-        newOverlay: BossBar.Overlay
-    ) = update(bar, Action.UPDATE_STYLE)
+    override fun bossBarOverlayChanged(bar: BossBar, oldOverlay: BossBar.Overlay, newOverlay: BossBar.Overlay) {
+        update(bar, Action.UPDATE_STYLE)
+    }
 
-    override fun bossBarFlagsChanged(
-        bar: BossBar,
-        flagsAdded: MutableSet<BossBar.Flag>,
-        flagsRemoved: MutableSet<BossBar.Flag>
-    ) = update(bar, Action.UPDATE_FLAGS)
+    override fun bossBarFlagsChanged(bar: BossBar, flagsAdded: MutableSet<BossBar.Flag>, flagsRemoved: MutableSet<BossBar.Flag>) {
+        update(bar, Action.UPDATE_FLAGS)
+    }
+
+    private fun getOrCreate(bar: BossBar): BossBarHolder = bars.getOrPut(bar) { BossBarHolder(bar) }.apply { register() }
 
     private fun update(bar: BossBar, action: Action) {
         val holder = bars[bar] ?: return

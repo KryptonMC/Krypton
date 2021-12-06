@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton
 
 import me.lucko.spark.api.Spark
+import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
 import org.kryptonmc.api.Server
@@ -27,13 +28,15 @@ import org.kryptonmc.api.event.server.ServerStopEvent
 import org.kryptonmc.api.event.server.TickEndEvent
 import org.kryptonmc.api.event.server.TickStartEvent
 import org.kryptonmc.api.scoreboard.Scoreboard
+import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.KryptonProfileCache
 import org.kryptonmc.krypton.command.KryptonCommandManager
+import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.config.category.ForwardingMode
 import org.kryptonmc.krypton.console.KryptonConsole
-import org.kryptonmc.krypton.item.KryptonItemManager
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.PacketRegistry
 import org.kryptonmc.krypton.packet.out.play.PacketOutTimeUpdate
 import org.kryptonmc.krypton.plugin.KryptonEventManager
@@ -46,13 +49,12 @@ import org.kryptonmc.krypton.service.KryptonServicesManager
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.user.KryptonUserManager
 import org.kryptonmc.krypton.util.KryptonFactoryProvider
-import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.register
 import org.kryptonmc.krypton.util.spark.KryptonSparkPlugin
+import org.kryptonmc.krypton.util.tryCreateDirectory
+import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.KryptonWorldManager
-import org.kryptonmc.krypton.world.block.KryptonBlockManager
-import org.kryptonmc.krypton.world.fluid.KryptonFluidManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.net.InetSocketAddress
@@ -62,6 +64,7 @@ import java.util.UUID
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
@@ -97,9 +100,6 @@ class KryptonServer(
     override val servicesManager = KryptonServicesManager(this)
     override val registryManager = KryptonRegistryManager
     override val tagManager = KryptonTagManager
-    override val blockManager = KryptonBlockManager
-    override val itemManager = KryptonItemManager
-    override val fluidManager = KryptonFluidManager
     override val scheduler = KryptonScheduler()
     override val factoryProvider = KryptonFactoryProvider
     override val userManager = KryptonUserManager(this)
@@ -193,34 +193,36 @@ class KryptonServer(
         run()
     }
 
-    fun run() = try {
-        // Set the last tick time early (avoids initial check sending an overload warning every time)
-        lastTickTime = System.currentTimeMillis()
+    fun run() {
+        try {
+            // Set the last tick time early (avoids initial check sending an overload warning every time)
+            lastTickTime = System.currentTimeMillis()
 
-        while (isRunning) {
-            val nextTickTime = System.currentTimeMillis() - lastTickTime
-            if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15_000L) {
-                LOGGER.warn("Can't keep up! Running $nextTickTime ms (${nextTickTime / 50} ticks) behind!")
-                lastOverloadWarning = lastTickTime
+            while (isRunning) {
+                val nextTickTime = System.currentTimeMillis() - lastTickTime
+                if (nextTickTime > 2000L && lastTickTime - lastOverloadWarning >= 15_000L) {
+                    LOGGER.warn("Can't keep up! Running $nextTickTime ms (${nextTickTime / 50} ticks) behind!")
+                    lastOverloadWarning = lastTickTime
+                }
+
+                eventManager.fireAndForgetSync(TickStartEvent(tickCount))
+                sparkPlugin.tickHook.startTick()
+                val tickTime = measureTimeMillis(::tick)
+
+                val finishTime = System.currentTimeMillis()
+                eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
+                sparkPlugin.tickReporter.endTick(tickTime)
+                lastTickTime = finishTime
+
+                // This logic ensures that ticking isn't delayed by the overhead from Thread.sleep, which seems to be up to 10 ms,
+                // which is enough that the average TPS would be reporting at around 15-16, rather than 20.
+                val sleepTime = measureTimeMillis { Thread.sleep(max(0, MILLISECONDS_PER_TICK - tickTime - oversleepFactor)) }
+                oversleepFactor = sleepTime - (MILLISECONDS_PER_TICK - tickTime)
             }
-
-            eventManager.fireAndForgetSync(TickStartEvent(tickCount))
-            sparkPlugin.tickHook.startTick()
-            val tickTime = measureTimeMillis(::tick)
-
-            val finishTime = System.currentTimeMillis()
-            eventManager.fireAndForgetSync(TickEndEvent(tickCount, tickTime, finishTime))
-            sparkPlugin.tickReporter.endTick(tickTime)
-            lastTickTime = finishTime
-
-            // This logic ensures that ticking isn't delayed by the overhead from Thread.sleep, which seems to be up to 10 ms,
-            // which is enough that the average TPS would be reporting at around 15-16, rather than 20.
-            val sleepTime = measureTimeMillis { Thread.sleep(max(0, MILLISECONDS_PER_TICK - tickTime - oversleepFactor)) }
-            oversleepFactor = sleepTime - (MILLISECONDS_PER_TICK - tickTime)
+        } catch (exception: Throwable) { // This is hacky, but ensures that we catch absolutely everything that may be thrown here.
+            LOGGER.error("Encountered an unexpected exception", exception)
+            stop()
         }
-    } catch (exception: Throwable) { // This is hacky, but ensures that we catch absolutely everything that may be thrown here.
-        LOGGER.error("Encountered an unexpected exception", exception)
-        stop()
     }
 
     private fun loadPlugins() {
@@ -271,27 +273,35 @@ class KryptonServer(
         }
         if (config.world.autosaveInterval > 0 && tickCount % config.world.autosaveInterval == 0) {
             LOGGER.info("Auto save started.")
-            worldManager.saveAll()
+            worldManager.saveAll(false)
             LOGGER.info("Auto save finished.")
         }
-        if (tickCount % SAVE_PROFILE_CACHE_INTERVAL == 0) {
-            LOGGER.debug("Saving authenticated user cache...")
-            profileCache.save()
-        }
+        if (tickCount % SAVE_PROFILE_CACHE_INTERVAL == 0) profileCache.save()
     }
 
-    fun updateConfig() {
+    fun updateConfig(path: String, value: Any?) {
         val config = HoconConfigurationLoader.builder()
             .path(configPath)
             .defaultOptions(KryptonConfig.OPTIONS)
             .build()
-        val node = config.load().set(this.config)
+        val node = config.load().node(path.split(".")).set(value)
         config.save(node)
     }
 
-    override fun player(uuid: UUID) = playerManager.playersByUUID[uuid]
+    fun isProtected(world: KryptonWorld, x: Int, z: Int, player: KryptonPlayer): Boolean {
+        if (world.dimension !== World.OVERWORLD) return false
+        if (player.hasPermission(KryptonPermission.BYPASS_SPAWN_PROTECTION.node)) return false
+        if (config.world.spawnProtectionRadius <= 0) return false
+        // TODO: This isn't right. This should use the heightmap pos if not in world bounds, but it'll do for now.
+        val distanceX = abs(x - world.data.spawnX)
+        val distanceZ = abs(z - world.data.spawnZ)
+        val maxDistance = max(distanceX, distanceZ)
+        return maxDistance <= config.world.spawnProtectionRadius
+    }
 
-    override fun player(name: String) = playerManager.playersByName[name]
+    override fun player(uuid: UUID): KryptonPlayer? = playerManager.playersByUUID[uuid]
+
+    override fun player(name: String): KryptonPlayer? = playerManager.playersByName[name]
 
     override fun sendMessage(message: Component, permission: String) {
         playerManager.players.forEach { if (it.hasPermission(permission)) it.sendMessage(message) }
@@ -299,7 +309,7 @@ class KryptonServer(
         return
     }
 
-    override fun audiences() = players + console
+    override fun audiences(): Iterable<Audience> = players.asSequence().plus(console).asIterable()
 
     fun stop(explicitExit: Boolean = true) {
         if (!isRunning) return // Ensure we cannot accidentally run this twice
@@ -313,7 +323,7 @@ class KryptonServer(
 
             // Save data
             LOGGER.info("Saving player, world, and region data...")
-            worldManager.saveAll()
+            worldManager.saveAll(true)
             playerManager.saveAll()
 
             // Shut down plugins and unregister listeners

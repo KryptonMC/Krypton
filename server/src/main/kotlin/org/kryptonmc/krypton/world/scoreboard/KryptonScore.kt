@@ -58,6 +58,7 @@ class KryptonScore(
 
     companion object {
 
+        @JvmField
         val COMPARATOR: Comparator<KryptonScore> = Comparator { o1, o2 ->
             if (o1.score > o2.score) return@Comparator 1
             if (o1.score < o2.score) return@Comparator -1

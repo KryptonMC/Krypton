@@ -24,9 +24,9 @@ data class TextCoordinates(val x: String, val y: String, val z: String) {
     companion object {
 
         @JvmField
-        val CENTER_LOCAL = TextCoordinates("^", "^", "^")
+        val CENTER_LOCAL: TextCoordinates = TextCoordinates("^", "^", "^")
 
         @JvmField
-        val CENTER_GLOBAL = TextCoordinates("~", "~", "~")
+        val CENTER_GLOBAL: TextCoordinates = TextCoordinates("~", "~", "~")
     }
 }

@@ -26,23 +26,27 @@ import org.kryptonmc.api.scoreboard.ObjectiveRenderTypes
 
 object KryptonCriteria {
 
-    @JvmField val DUMMY = register("dummy")
-    @JvmField val TRIGGER = register("trigger")
-    @JvmField val DEATH_COUNT = register("death_count", "deathCount")
-    @JvmField val PLAYER_KILL_COUNT = register("player_kill_count", "playerKillCount")
-    @JvmField val TOTAL_KILL_COUNT = register("total_kill_count", "totalKillCount")
-    @JvmField val HEALTH = register("health", isMutable = true, renderType = ObjectiveRenderTypes.HEARTS)
-    @JvmField val FOOD = register("food", isMutable = true)
-    @JvmField val AIR = register("air", isMutable = true)
-    @JvmField val ARMOR = register("armor", isMutable = true)
-    @JvmField val EXPERIENCE = register("experience", "xp", isMutable = true)
-    @JvmField val LEVEL = register("level", isMutable = true)
-    @JvmField val TEAM_KILL = register("team_kill", "teamkill", NamedTextColor.NAMES.keys().map {
-        register("team_kill.$it", "teamkill.$it")
-    })
-    @JvmField val KILLED_BY_TEAM = register("killed_by_team", "killedByTeam", NamedTextColor.NAMES.keys().map {
-        register("team_kill.$it", "teamkill.$it")
-    })
+    @JvmField val DUMMY: KryptonCriterion = register("dummy")
+    @JvmField val TRIGGER: KryptonCriterion = register("trigger")
+    @JvmField val DEATH_COUNT: KryptonCriterion = register("death_count", "deathCount")
+    @JvmField val PLAYER_KILL_COUNT: KryptonCriterion = register("player_kill_count", "playerKillCount")
+    @JvmField val TOTAL_KILL_COUNT: KryptonCriterion = register("total_kill_count", "totalKillCount")
+    @JvmField val HEALTH: KryptonCriterion = register("health", isMutable = true, renderType = ObjectiveRenderTypes.HEARTS)
+    @JvmField val FOOD: KryptonCriterion = register("food", isMutable = true)
+    @JvmField val AIR: KryptonCriterion = register("air", isMutable = true)
+    @JvmField val ARMOR: KryptonCriterion = register("armor", isMutable = true)
+    @JvmField val EXPERIENCE: KryptonCriterion = register("experience", "xp", isMutable = true)
+    @JvmField val LEVEL: KryptonCriterion = register("level", isMutable = true)
+    @JvmField val TEAM_KILL: KryptonCompoundCriterion = register(
+        "team_kill",
+        "teamkill",
+        NamedTextColor.NAMES.keys().map { register("team_kill.$it", "teamkill.$it") }
+    )
+    @JvmField val KILLED_BY_TEAM: KryptonCompoundCriterion = register(
+        "killed_by_team",
+        "killedByTeam",
+        NamedTextColor.NAMES.keys().map { register("team_kill.$it", "teamkill.$it") }
+    )
 
     @JvmStatic
     private fun register(

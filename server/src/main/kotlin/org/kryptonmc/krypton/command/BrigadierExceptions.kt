@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.command
 
+import com.mojang.brigadier.Message
 import com.mojang.brigadier.exceptions.BuiltInExceptionProvider
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
@@ -116,7 +117,10 @@ object BrigadierExceptions : BuiltInExceptionProvider {
 
     override fun dispatcherParseException(): DynamicCommandExceptionType = DISPATCHER_PARSE_EXCEPTION
 
-    private fun translatable(key: String, vararg arguments: Any) = Component.translatable(key, arguments.map { text(it.toString()) }).toMessage()
+    private fun translatable(key: String, vararg arguments: Any): Message = Component.translatable(
+        key,
+        arguments.map { text(it.toString()) }
+    ).toMessage()
 
     private fun simpleExceptionType(key: String): SimpleCommandExceptionType = SimpleCommandExceptionType(Component.translatable(key).toMessage())
 

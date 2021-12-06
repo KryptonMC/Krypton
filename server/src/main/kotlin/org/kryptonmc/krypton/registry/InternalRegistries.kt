@@ -38,7 +38,7 @@ object InternalRegistries {
     @JvmField val GAME_EVENT = create(InternalResourceKeys.GAME_EVENT)
     @JvmField val BIOME = create(ResourceKeys.BIOME)
     @JvmField val STATISTIC_TYPE = create(ResourceKeys.STATISTIC_TYPE)
-    @JvmField val CANVAS = createDefaulted(ResourceKeys.PICTURE, key("kebab"))
+    @JvmField val PICTURE = createDefaulted(ResourceKeys.PICTURE, key("kebab"))
     @JvmField val FLUID = createDefaulted(ResourceKeys.FLUID, key("empty"))
     @JvmField val BLOCK_ENTITY_TYPE = create(ResourceKeys.BLOCK_ENTITY_TYPE)
 
@@ -50,11 +50,11 @@ object InternalRegistries {
     @JvmField val CHUNK_STATUS = createDefaulted(InternalResourceKeys.CHUNK_STATUS, key("empty"))
 
     @JvmStatic
-    private fun <T : Any> create(key: ResourceKey<out Registry<T>>) = KryptonRegistryManager.create(key)
+    private fun <T : Any> create(key: ResourceKey<out Registry<T>>): KryptonRegistry<T> = KryptonRegistryManager.create(key)
 
     @JvmStatic
     private fun <T : Any> createDefaulted(
         key: ResourceKey<out Registry<T>>,
         defaultKey: Key
-    ) = KryptonRegistryManager.createDefaulted(key, defaultKey)
+    ): KryptonDefaultedRegistry<T> = KryptonRegistryManager.createDefaulted(key, defaultKey)
 }

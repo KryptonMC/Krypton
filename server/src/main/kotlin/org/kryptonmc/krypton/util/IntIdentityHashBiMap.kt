@@ -38,7 +38,7 @@ class IntIdentityHashBiMap<K>(initialCapacity: Int) : IntBiMap<K> {
         byId = arrayOfNulls<Any>(capacity) as Array<K?>
     }
 
-    fun add(key: K) = nextId().apply { set(key, this) }
+    fun add(key: K): Int = nextId().apply { set(key, this) }
 
     operator fun set(key: K, value: Int) {
         val max = max(value, size + 1)
@@ -62,13 +62,13 @@ class IntIdentityHashBiMap<K>(initialCapacity: Int) : IntBiMap<K> {
         size = 0
     }
 
-    override fun idOf(value: K) = getValue(indexOf(value, hash(value)))
+    override fun idOf(value: K): Int = getValue(indexOf(value, hash(value)))
 
-    override fun get(id: Int) = if (id in 0..byId.size) byId[id] else null
+    override fun get(id: Int): K? = byId.getOrNull(id)
 
-    override fun iterator() = byId.iterator().asSequence().filterNotNull().iterator()
+    override fun iterator(): Iterator<K> = byId.iterator().asSequence().filterNotNull().iterator()
 
-    private fun getValue(id: Int) = if (id == -1) -1 else values[id]
+    private fun getValue(id: Int): Int = if (id == -1) -1 else values[id]
 
     private fun nextId(): Int {
         while (nextId < byId.size && byId[nextId] != null) nextId++
@@ -86,7 +86,7 @@ class IntIdentityHashBiMap<K>(initialCapacity: Int) : IntBiMap<K> {
         for (i in oldKeys.indices) oldKeys[i]?.let { set(it, oldValues[i]) }
     }
 
-    private fun hash(key: K) = (murmurHash3Mixer(System.identityHashCode(key)) and Int.MAX_VALUE) % keys.size
+    private fun hash(key: K): Int = (murmurHash3Mixer(System.identityHashCode(key)) and Int.MAX_VALUE) % keys.size
 
     private fun indexOf(key: K, value: Int): Int {
         for (i in value until keys.size) {

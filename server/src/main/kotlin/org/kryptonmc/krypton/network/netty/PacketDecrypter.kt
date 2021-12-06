@@ -37,7 +37,6 @@ class PacketDecrypter(private val cipher: VelocityCipher) : MessageToMessageDeco
         try {
             cipher.process(compatible)
             out.add(compatible)
-            LOGGER.debug("Decrypted bytes length ${compatible.readableBytes()}")
         } catch (exception: Exception) {
             compatible.release()
             throw exception

@@ -20,10 +20,11 @@ package org.kryptonmc.krypton.entity.projectile
 
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.projectile.Egg
+import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
 class KryptonEgg(world: KryptonWorld) : KryptonThrowableProjectile(world, EntityTypes.EGG), Egg {
 
-    override val defaultItem = ItemTypes.EGG
+    override val defaultItem: ItemType = ItemTypes.EGG
 }

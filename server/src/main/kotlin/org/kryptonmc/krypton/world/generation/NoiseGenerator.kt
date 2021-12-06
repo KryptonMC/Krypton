@@ -115,6 +115,7 @@ class NoiseGenerator(
 
     companion object {
 
+        @JvmField
         val CODEC: Codec<NoiseGenerator> = RecordCodecBuilder.create { instance ->
             instance.group(
                 BiomeGenerator.CODEC.fieldOf("biome_source").forGetter { it.biomeGenerator },

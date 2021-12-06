@@ -31,9 +31,11 @@ class SimpleRandomSource(seed: Long) : RandomSource {
     private var nextNextGaussian = 0.0
     private var haveNextNextGaussian = false
 
-    override fun setSeed(seed: Long) = this.seed.set((seed xor MULTIPLIER) and MODULUS_MASK)
+    override fun setSeed(seed: Long) {
+        this.seed.set((seed xor MULTIPLIER) and MODULUS_MASK)
+    }
 
-    override fun nextInt() = next(32)
+    override fun nextInt(): Int = next(32)
 
     override fun nextInt(upper: Int): Int {
         require(upper > 0) { "Bound must be positive!" }
@@ -46,13 +48,13 @@ class SimpleRandomSource(seed: Long) : RandomSource {
         return nextSeed
     }
 
-    override fun nextLong() = (next(32).toLong() shl 32) + next(32)
+    override fun nextLong(): Long = (next(32).toLong() shl 32) + next(32)
 
-    override fun nextBoolean() = next(1) != 0
+    override fun nextBoolean(): Boolean = next(1) != 0
 
-    override fun nextFloat() = next(24) * FLOAT_MULTIPLIER
+    override fun nextFloat(): Float = next(24) * FLOAT_MULTIPLIER
 
-    override fun nextDouble() = ((next(26).toLong() shl 27) + next(27)) * DOUBLE_MULTIPLIER
+    override fun nextDouble(): Double = ((next(26).toLong() shl 27) + next(27)) * DOUBLE_MULTIPLIER
 
     override fun nextGaussian(): Double {
         if (haveNextNextGaussian) {

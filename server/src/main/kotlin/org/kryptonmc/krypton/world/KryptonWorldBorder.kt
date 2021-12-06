@@ -35,7 +35,8 @@ data class KryptonWorldBorder(
 
     companion object {
 
-        val DEFAULT = KryptonWorldBorder(
+        @JvmField
+        val DEFAULT: KryptonWorldBorder = KryptonWorldBorder(
             5.9999968E7,
             Vector2d.ZERO,
             0.2,

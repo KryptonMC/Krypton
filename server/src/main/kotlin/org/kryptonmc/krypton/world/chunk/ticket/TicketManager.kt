@@ -51,7 +51,9 @@ class TicketManager(private val chunkManager: ChunkManager) {
         propagateView(x, z, uuid, viewDistance)
     }
 
-    fun removePlayer(x: Int, z: Int, uuid: UUID, viewDistance: Int) = reset(x, z, TicketTypes.PLAYER, uuid, viewDistance, OFFSET)
+    fun removePlayer(x: Int, z: Int, uuid: UUID, viewDistance: Int) {
+        reset(x, z, TicketTypes.PLAYER, uuid, viewDistance, OFFSET)
+    }
 
     private fun <T> propagate(x: Int, z: Int, ticket: Ticket<T>, onLoad: () -> Unit) {
         var i = 0
@@ -64,8 +66,8 @@ class TicketManager(private val chunkManager: ChunkManager) {
             val newTicket = Ticket(ticket.type, calculatedLevel, ticket.key)
             tickets.getOrPut(pos) { SortedArraySet.create(4) }.add(newTicket)
             if (calculatedLevel <= PLAYER_TICKET_LEVEL) {
-                chunkManager.load(xo, zo, newTicket)
-                onLoad()
+                val loadedChunk = chunkManager.load(xo, zo, newTicket)
+                if (loadedChunk != null) onLoad()
             }
             i++
         }
@@ -109,11 +111,13 @@ class TicketManager(private val chunkManager: ChunkManager) {
         private const val MAXIMUM_TICKET_LEVEL = 44
         private const val OFFSET = (MAXIMUM_TICKET_LEVEL - PLAYER_TICKET_LEVEL) * 2 + 1
 
+        @JvmStatic
         private fun absDelta(deltaX: Int, deltaZ: Int): Int {
             if (deltaX == 0 && deltaZ == 0) return 0
             return max(abs(deltaX), abs(deltaZ))
         }
 
+        @JvmStatic
         private fun calculateLevel(absDelta: Int, center: Int): Int = if (absDelta >= 0) center + absDelta else center - absDelta
     }
 }

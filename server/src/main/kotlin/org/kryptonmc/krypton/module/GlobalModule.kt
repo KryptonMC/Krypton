@@ -23,12 +23,9 @@ import dev.misfitlabs.kotlinguice4.KotlinModule
 import org.kryptonmc.api.Platform
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.auth.ProfileCache
-import org.kryptonmc.api.block.BlockManager
 import org.kryptonmc.api.command.CommandManager
 import org.kryptonmc.api.command.ConsoleSender
 import org.kryptonmc.api.event.EventManager
-import org.kryptonmc.api.fluid.FluidManager
-import org.kryptonmc.api.item.ItemManager
 import org.kryptonmc.api.plugin.PluginContainer
 import org.kryptonmc.api.plugin.PluginManager
 import org.kryptonmc.api.registry.RegistryManager
@@ -52,9 +49,6 @@ class GlobalModule(
         bind<ServicesManager>().toInstance(server.servicesManager)
         bind<EventManager>().toInstance(server.eventManager)
         bind<RegistryManager>().toInstance(server.registryManager)
-        bind<BlockManager>().toInstance(server.blockManager)
-        bind<ItemManager>().toInstance(server.itemManager)
-        bind<FluidManager>().toInstance(server.fluidManager)
         bind<FactoryProvider>().toInstance(server.factoryProvider)
         bind<ProfileCache>().toInstance(server.profileCache)
         bind<Scheduler>().toInstance(server.scheduler)

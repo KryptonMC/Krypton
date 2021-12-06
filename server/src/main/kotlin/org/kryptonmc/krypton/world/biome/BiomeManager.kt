@@ -80,11 +80,10 @@ class BiomeManager(
         return getNoiseBiome(quartX, quartY, quartZ)
     }
 
-    private fun getNoiseBiome(x: Int, y: Int, z: Int) = source.getNoiseBiome(x, y, z)
+    private fun getNoiseBiome(x: Int, y: Int, z: Int): Biome = source.getNoiseBiome(x, y, z)
 
     companion object {
 
-        const val CENTER_QUART = 8 shr Quart.BITS
         private const val ZOOM_BITS = 2
         private const val ZOOM = 4.0
         private const val ZOOM_MASK = 3

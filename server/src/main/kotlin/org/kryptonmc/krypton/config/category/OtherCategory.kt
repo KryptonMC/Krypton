@@ -23,6 +23,7 @@ import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.objectmapping.meta.Setting
 
 @ConfigSerializable
+@JvmRecord
 data class OtherCategory(
     @Comment("If we should enable bStats metrics for the server")
     val metrics: Boolean = true,

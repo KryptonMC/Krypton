@@ -18,28 +18,34 @@
  */
 package org.kryptonmc.krypton.world.block
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.BlockHandler
-import org.kryptonmc.api.block.BlockManager
+import org.kryptonmc.api.util.Direction
+import org.kryptonmc.krypton.util.HitResult
+import org.spongepowered.math.vector.Vector3d
+import org.spongepowered.math.vector.Vector3i
 
-@Suppress("INAPPLICABLE_JVM_NAME")
-object KryptonBlockManager : BlockManager {
+/**
+ * The result of a player hitting (attacking) a block.
+ */
+@JvmRecord
+data class BlockHitResult(
+    override val clickLocation: Vector3d,
+    override val type: HitResult.Type,
+    val position: Vector3i,
+    val direction: Direction,
+    val isInside: Boolean
+) : HitResult {
 
-    @get:JvmName("handlers")
-    override val handlers = mutableMapOf<String, BlockHandler>()
-
-    override fun handler(key: String) = handlers[key]
-
-    override fun handler(key: Key) = handlers[key.asString()]
-
-    override fun handler(block: Block) = handlers[block.key().asString()]
-
-    override fun register(key: String, handler: BlockHandler) {
-        handlers[key] = handler
-    }
-
-    override fun register(key: Key, handler: BlockHandler) = register(key.asString(), handler)
-
-    override fun register(block: Block, handler: BlockHandler) = register(block.key().asString(), handler)
+    constructor(
+        clickLocation: Vector3d,
+        position: Vector3i,
+        direction: Direction,
+        missed: Boolean,
+        isInside: Boolean
+    ) : this(
+        clickLocation,
+        if (missed) HitResult.Type.MISS else HitResult.Type.BLOCK,
+        position,
+        direction,
+        isInside
+    )
 }

@@ -16,28 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.fluid
+package org.kryptonmc.krypton.command.arguments.item
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.fluid.Fluid
-import org.kryptonmc.api.fluid.FluidHandler
-import org.kryptonmc.api.fluid.FluidManager
+import com.mojang.brigadier.context.CommandContext
+import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.command.argument.argument
 
-object KryptonFluidManager : FluidManager {
-
-    override val handlers = mutableMapOf<String, FluidHandler>()
-
-    override fun handler(key: String) = handlers[key]
-
-    override fun handler(key: Key) = handler(key.asString())
-
-    override fun handler(fluid: Fluid) = handler(fluid.key().asString())
-
-    override fun register(key: String, handler: FluidHandler) {
-        handlers[key] = handler
-    }
-
-    override fun register(key: Key, handler: FluidHandler) = register(key.asString(), handler)
-
-    override fun register(fluid: Fluid, handler: FluidHandler) = register(fluid.key().asString(), handler)
-}
+fun CommandContext<Sender>.itemStackArgument(name: String): ItemStackArgument = argument(name)

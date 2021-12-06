@@ -20,36 +20,33 @@ package org.kryptonmc.krypton.item.handler
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.item.InteractionContext
-import org.kryptonmc.api.item.ItemHandler
-import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.item.UseItemResult
+import org.kryptonmc.krypton.item.InteractionContext
+import org.kryptonmc.krypton.item.UseItemResult
 import org.kryptonmc.api.util.InteractionResult
-import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.item.KryptonUseItemResult
+import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.world.KryptonWorld
 import org.spongepowered.math.vector.Vector3i
 
-interface KryptonItemTimedHandler : ItemHandler {
+interface ItemTimedHandler : ItemHandler {
 
-    override fun canAttackBlock(player: Player, world: World, block: Block, position: Vector3i): Boolean = true
+    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: Block, position: Vector3i): Boolean = true
 
-    override fun destroySpeed(item: ItemStack, block: Block): Float = 1F
+    override fun destroySpeed(item: KryptonItemStack, block: Block): Float = 1F
 
     override fun use(
-        player: Player,
+        player: KryptonPlayer,
         hand: Hand
-    ): UseItemResult = KryptonUseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
+    ): UseItemResult = UseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
 
     fun finishUse(
-        player: Player,
+        player: KryptonPlayer,
         hand: Hand
-    ): UseItemResult = KryptonUseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
+    ): UseItemResult = UseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
 
     override fun interact(context: InteractionContext): InteractionResult = InteractionResult.PASS
 
     override fun isCorrectTool(block: Block): Boolean = false
 
-    override fun mineBlock(player: Player, item: ItemStack, world: World, block: Block, position: Vector3i): Boolean = false
+    override fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: Block, position: Vector3i): Boolean = false
 }

@@ -49,20 +49,12 @@ class PaletteHolder<T> : PaletteResizer<T> {
     val serializedSize: Int
         get() = data.serializedSize
 
-    constructor(
-        strategy: Strategy<T>,
-        configuration: Configuration<T>,
-        storage: BitStorage,
-        entries: List<T>
-    ) {
+    constructor(strategy: Strategy<T>, configuration: Configuration<T>, storage: BitStorage, entries: List<T>) {
         this.strategy = strategy
         data = Data(configuration, storage, configuration.factory.create(configuration.bits, strategy.registry, this, entries))
     }
 
-    constructor(
-        strategy: Strategy<T>,
-        value: T
-    ) {
+    constructor(strategy: Strategy<T>, value: T) {
         this.strategy = strategy
         data = createOrReuseData(null, 0)
         data.palette[value] // Preload
@@ -90,7 +82,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
     }
 
     @Synchronized
-    fun write(encoder: (T) -> Tag): CompoundTag {
+    fun write(encoder: ValueEncoder<T>): CompoundTag {
         val palette = MapPalette(strategy.registry, data.storage.bits, dummyResizer())
         val size = strategy.size
         val ids = IntArray(size)
@@ -100,14 +92,14 @@ class PaletteHolder<T> : PaletteResizer<T> {
         val data = if (bits != 0) SimpleBitStorage(bits, size, ids).data else LongArray(0)
         return compound {
             list("palette") {
-                palette.entries.forEach { add(encoder(it)) }
+                palette.entries.forEach { add(encoder.encode(it)) }
             }
             longArray("data", data)
         }
     }
 
-    fun forEachLocation(consumer: PaletteConsumer<T>) = data.storage.forEach { location, data ->
-        consumer(this.data.palette[data]!!, location)
+    fun forEachLocation(consumer: PaletteConsumer<T>) {
+        data.storage.forEach { location, data -> consumer(this.data.palette[data]!!, location) }
     }
 
     override fun onResize(newBits: Int, value: T): Int {
@@ -130,10 +122,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
     }
 
     @JvmRecord
-    data class Configuration<T>(
-        val factory: Palette.Factory,
-        val bits: Int
-    ) {
+    data class Configuration<T>(val factory: Palette.Factory, val bits: Int) {
 
         fun createData(registry: IntBiMap<T>, resizer: PaletteResizer<T>, size: Int): Data<T> {
             val storage = if (bits == 0) ZeroBitStorage(size) else SimpleBitStorage(bits, size)
@@ -143,14 +132,10 @@ class PaletteHolder<T> : PaletteResizer<T> {
     }
 
     @JvmRecord
-    data class Data<T>(
-        val configuration: Configuration<T>,
-        val storage: BitStorage,
-        val palette: Palette<T>
-    ) {
+    data class Data<T>(val configuration: Configuration<T>, val storage: BitStorage, val palette: Palette<T>) {
 
         val serializedSize: Int
-            get() = 1 + palette.serializedSize + storage.size.varIntBytes + storage.data.size * Long.SIZE_BYTES
+            get() = 1 + palette.serializedSize + storage.size.varIntBytes() + storage.data.size * Long.SIZE_BYTES
 
         fun copyFrom(oldPalette: Palette<T>, oldStorage: BitStorage) {
             for (i in 0 until oldStorage.size) {
@@ -166,10 +151,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
         }
     }
 
-    abstract class Strategy<T>(
-        val registry: IntBiMap<T>,
-        private val sizeBits: Int
-    ) {
+    abstract class Strategy<T>(val registry: IntBiMap<T>, private val sizeBits: Int) {
 
         private val cache = Int2ObjectOpenHashMap<Configuration<T>>()
         val size: Int
@@ -210,6 +192,11 @@ class PaletteHolder<T> : PaletteResizer<T> {
                 }
             }
         }
+    }
+
+    fun interface ValueEncoder<T> {
+
+        fun encode(value: T): Tag
     }
 
     companion object {
