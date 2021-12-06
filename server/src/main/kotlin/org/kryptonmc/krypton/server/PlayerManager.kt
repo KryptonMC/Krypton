@@ -188,12 +188,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         }
 
         // Send inventory data
-        session.send(PacketOutWindowItems(
-            player.inventory.id,
-            player.inventory.incrementStateId(),
-            player.inventory.networkWriter,
-            player.inventory.mainHand
-        ))
+        session.send(PacketOutWindowItems(player.inventory, player.inventory.mainHand))
         player.isLoaded = true
     }
 
