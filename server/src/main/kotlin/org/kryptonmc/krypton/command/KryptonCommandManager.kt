@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.command
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.ParseResults
+import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.tree.RootCommandNode
@@ -79,7 +80,7 @@ object KryptonCommandManager : CommandManager {
 
     private val LOGGER = logger<CommandManager>()
 
-    @GuardedBy("lock") val dispatcher = CommandDispatcher<Sender>() // Reads and writes MUST be locked by the lock below!
+    @GuardedBy("lock") private val dispatcher = CommandDispatcher<Sender>() // Reads and writes MUST be locked by the lock below!
     private val lock = ReentrantReadWriteLock()
     private val brigadierCommandRegistrar = BrigadierCommandRegistrar(lock.writeLock())
     private val simpleCommandRegistrar = SimpleCommandRegistrar(lock.writeLock())
@@ -144,7 +145,9 @@ object KryptonCommandManager : CommandManager {
         }
     }
 
-    fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(parseResults)
+    fun suggest(results: ParseResults<Sender>, cursor: Int): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(results, cursor)
+
+    fun suggest(sender: Sender, reader: StringReader): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(parse(sender, reader))
 
     override fun updateCommands(player: Player) {
         if (player !is KryptonPlayer) return
@@ -182,5 +185,7 @@ object KryptonCommandManager : CommandManager {
         ClearCommand.register(dispatcher)
     }
 
-    private fun parse(sender: Sender, input: String): ParseResults<Sender> = lock.read { dispatcher.parse(input, sender) }
+    fun parse(sender: Sender, input: String): ParseResults<Sender> = lock.read { dispatcher.parse(input, sender) }
+
+    private fun parse(sender: Sender, reader: StringReader): ParseResults<Sender> = lock.read { dispatcher.parse(reader, sender) }
 }

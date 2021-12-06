@@ -371,8 +371,7 @@ class PlayHandler(
         val reader = StringReader(packet.command)
         if (reader.canRead() && reader.peek() == '/') reader.skip()
 
-        val parseResults = server.commandManager.dispatcher.parse(reader, player)
-        server.commandManager.suggest(parseResults).thenAcceptAsync({
+        server.commandManager.suggest(player, reader).thenAcceptAsync({
             session.send(PacketOutTabComplete(packet.id, it))
         }, session.channel.eventLoop())
     }
