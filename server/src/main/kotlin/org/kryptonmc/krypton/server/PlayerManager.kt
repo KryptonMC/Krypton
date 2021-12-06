@@ -176,6 +176,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         )
         server.sendMessage(joinMessage)
         session.send(PacketOutPlayerPositionAndLook(player.location, player.rotation))
+        session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
         world.spawnPlayer(player)
 
         // Send the initial chunk stream
