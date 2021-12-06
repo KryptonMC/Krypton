@@ -24,6 +24,7 @@ import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.event.player.JoinEvent
 import org.kryptonmc.api.event.player.QuitEvent
 import org.kryptonmc.api.scoreboard.Objective
@@ -161,19 +162,19 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         playersByUUID[player.uuid] = player
 
         // Fire join event and send result message
-        val joinResult = server.eventManager.fireSync(JoinEvent(
-            player,
-            !profile.name.equals(name, true)
-        )).result
+        val joinResult = server.eventManager.fireSync(JoinEvent(player, !profile.name.equals(name, true))).result
         if (!joinResult.isAllowed) {
             // Use default reason if denied without specified reason
-            val reason = joinResult.message.takeIf { it != Component.empty() }
-                ?: Component.translatable("multiplayer.disconnect.kicked")
+            val reason = joinResult.message ?: Component.translatable("multiplayer.disconnect.kicked")
             session.disconnect(reason)
             return@thenAccept
         }
-        server.sendMessage(joinResult.message)
-        player.sendMessage(joinResult.message) // This player hasn't been added to the list yet
+        val joinMessage = joinResult.message ?: Component.translatable(
+            if (joinResult.hasJoinedBefore) "multiplayer.player.joined.renamed" else "multiplayer.player.joined",
+            NamedTextColor.YELLOW,
+            player.displayName
+        )
+        server.sendMessage(joinMessage)
         session.send(PacketOutPlayerPositionAndLook(player.location, player.rotation))
         world.spawnPlayer(player)
 

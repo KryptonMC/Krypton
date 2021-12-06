@@ -9,7 +9,6 @@
 package org.kryptonmc.api.event.player
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.ResultedEvent
 import org.kryptonmc.api.event.ResultedEvent.Result
@@ -19,39 +18,37 @@ import org.kryptonmc.api.event.ResultedEvent.Result
  * constructed for them (just before the state is switched to PLAY).
  *
  * @param player the player who joined
- * @param hasChangedName if this player has joined before
+ * @param hasJoinedBefore if this player has joined before
  */
 public data class JoinEvent(
     @get:JvmName("player") public val player: Player,
-    @get:JvmName("hasChangedName") public val hasChangedName: Boolean
+    @get:JvmName("hasChangedName") public val hasJoinedBefore: Boolean
 ) : ResultedEvent<JoinResult> {
 
     // The message here is the default translatable component that vanilla
     // Minecraft sends when a player joins.
-    override var result: JoinResult = JoinResult.allowed(
-        Component.translatable(
-            if (hasChangedName) "multiplayer.player.joined.renamed" else "multiplayer.player.joined",
-            NamedTextColor.YELLOW,
-            player.displayName
-        ),
-        hasChangedName
-    )
+    override var result: JoinResult = JoinResult.allowed(hasJoinedBefore)
 }
 
 /**
  * The result of a [JoinEvent].
  *
  * @param message the join message
- * @param hasChangedName if the player joining has joined before
+ * @param hasJoinedBefore if the player joining has joined before
  */
 @JvmRecord
 public data class JoinResult(
     override val isAllowed: Boolean,
-    public val message: Component,
-    @get:JvmName("hasChangedName") public val hasChangedName: Boolean
+    public val message: Component?,
+    public val hasJoinedBefore: Boolean
 ) : Result {
 
     public companion object {
+
+        private val ALLOWED_NOT_JOINED_BEFORE = JoinResult(true, null, false)
+        private val ALLOWED_JOINED_BEFORE = JoinResult(true, null, true)
+        private val DENIED_NOT_JOINED_BEFORE = JoinResult(false, null, false)
+        private val DENIED_JOINED_BEFORE = JoinResult(false, null, true)
 
         /**
          * Creates a new join result that allows the player to join, optionally
@@ -62,7 +59,10 @@ public data class JoinResult(
          */
         @JvmStatic
         @JvmOverloads
-        public fun allowed(hasJoinedBefore: Boolean = false): JoinResult = JoinResult(true, Component.empty(), hasJoinedBefore)
+        public fun allowed(hasJoinedBefore: Boolean = false): JoinResult {
+            if (hasJoinedBefore) return ALLOWED_JOINED_BEFORE
+            return ALLOWED_NOT_JOINED_BEFORE
+        }
 
         /**
          * Creates a new join result that allows the player to join with the
@@ -90,7 +90,10 @@ public data class JoinResult(
          */
         @JvmStatic
         @JvmOverloads
-        public fun denied(hasJoinedBefore: Boolean = false): JoinResult = JoinResult(false, Component.empty(), hasJoinedBefore)
+        public fun denied(hasJoinedBefore: Boolean = false): JoinResult {
+            if (hasJoinedBefore) return DENIED_JOINED_BEFORE
+            return DENIED_NOT_JOINED_BEFORE
+        }
 
         /**
          * Creates a new join result that denies the player from joining with
