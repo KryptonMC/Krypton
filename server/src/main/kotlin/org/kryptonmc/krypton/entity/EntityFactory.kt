@@ -23,7 +23,22 @@ import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.krypton.entity.ambient.KryptonBat
-import org.kryptonmc.krypton.entity.animal.cat.KryptonCat
+import org.kryptonmc.krypton.entity.animal.KryptonAxolotl
+import org.kryptonmc.krypton.entity.animal.KryptonBee
+import org.kryptonmc.krypton.entity.animal.KryptonChicken
+import org.kryptonmc.krypton.entity.animal.KryptonFox
+import org.kryptonmc.krypton.entity.animal.KryptonOcelot
+import org.kryptonmc.krypton.entity.animal.KryptonPanda
+import org.kryptonmc.krypton.entity.animal.KryptonPig
+import org.kryptonmc.krypton.entity.animal.KryptonPolarBear
+import org.kryptonmc.krypton.entity.animal.KryptonCat
+import org.kryptonmc.krypton.entity.animal.KryptonCow
+import org.kryptonmc.krypton.entity.animal.KryptonGoat
+import org.kryptonmc.krypton.entity.animal.KryptonMooshroom
+import org.kryptonmc.krypton.entity.animal.KryptonRabbit
+import org.kryptonmc.krypton.entity.animal.KryptonSheep
+import org.kryptonmc.krypton.entity.animal.KryptonTurtle
+import org.kryptonmc.krypton.entity.animal.KryptonWolf
 import org.kryptonmc.krypton.entity.hanging.KryptonPainting
 import org.kryptonmc.krypton.entity.monster.KryptonCreeper
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
@@ -56,15 +71,28 @@ object EntityFactory {
         EntityTypes.AREA_EFFECT_CLOUD to ::KryptonAreaEffectCloud,
         EntityTypes.ARMOR_STAND to ::KryptonArmorStand,
         EntityTypes.ARROW to ::KryptonArrow,
+        EntityTypes.AXOLOTL to ::KryptonAxolotl,
         EntityTypes.BAT to ::KryptonBat,
+        EntityTypes.BEE to ::KryptonBee,
         EntityTypes.CAT to ::KryptonCat,
+        EntityTypes.CHICKEN to ::KryptonChicken,
+        EntityTypes.COW to ::KryptonCow,
         EntityTypes.CREEPER to ::KryptonCreeper,
         EntityTypes.DRAGON_FIREBALL to ::KryptonDragonFireball,
         EntityTypes.EXPERIENCE_ORB to ::KryptonExperienceOrb,
         EntityTypes.FIREWORK_ROCKET to ::KryptonFireworkRocket,
         EntityTypes.FIREBALL to ::KryptonLargeFireball,
+        EntityTypes.FOX to ::KryptonFox,
+        EntityTypes.GOAT to ::KryptonGoat,
         EntityTypes.LLAMA_SPIT to ::KryptonLlamaSpit,
+        EntityTypes.MOOSHROOM to ::KryptonMooshroom,
+        EntityTypes.OCELOT to ::KryptonOcelot,
         EntityTypes.PAINTING to ::KryptonPainting,
+        EntityTypes.PANDA to ::KryptonPanda,
+        EntityTypes.PIG to ::KryptonPig,
+        EntityTypes.POLAR_BEAR to ::KryptonPolarBear,
+        EntityTypes.RABBIT to ::KryptonRabbit,
+        EntityTypes.SHEEP to ::KryptonSheep,
         EntityTypes.SHULKER_BULLET to ::KryptonShulkerBullet,
         EntityTypes.SMALL_FIREBALL to ::KryptonSmallFireball,
         EntityTypes.SNOWBALL to ::KryptonSnowball,
@@ -74,7 +102,9 @@ object EntityFactory {
         EntityTypes.EXPERIENCE_BOTTLE to ::KryptonExperienceBottle,
         EntityTypes.POTION to ::KryptonThrownPotion,
         EntityTypes.TRIDENT to ::KryptonTrident,
+        EntityTypes.TURTLE to ::KryptonTurtle,
         EntityTypes.WITHER_SKULL to ::KryptonWitherSkull,
+        EntityTypes.WOLF to ::KryptonWolf,
         EntityTypes.ZOMBIE to ::KryptonZombie,
         EntityTypes.FISHING_HOOK to ::KryptonFishingHook,
         EntityTypes.ITEM to ::KryptonItemEntity

@@ -63,9 +63,9 @@ interface WorldAccessor : BlockAccessor, NoiseBiomeSource {
 
     fun getUncachedNoiseBiome(x: Int, y: Int, z: Int): Biome
 
-    override fun get(x: Int, y: Int, z: Int): Biome {
-        val chunk = getChunk(x shr 2, z shr 2, ChunkStatus.BIOMES, false)
-        return if (chunk?.biomes != null) chunk.biomes!![x, y, z] else getUncachedNoiseBiome(x, y, z)
+    override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome {
+        val chunk = getChunk(x shr 2, z shr 2, ChunkStatus.BIOMES, false) ?: return getUncachedNoiseBiome(x, y, z)
+        return chunk.getNoiseBiome(x, y, z)
     }
 
     fun canWrite(x: Int, y: Int, z: Int): Boolean = true

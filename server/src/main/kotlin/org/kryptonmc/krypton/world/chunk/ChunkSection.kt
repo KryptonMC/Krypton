@@ -19,10 +19,11 @@
 package org.kryptonmc.krypton.world.chunk
 
 import io.netty.buffer.ByteBuf
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.krypton.world.block.palette.GlobalPalette
+import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.api.world.biome.Biomes
+import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.kryptonmc.krypton.world.block.palette.PaletteHolder
 
 /**
@@ -31,30 +32,35 @@ import org.kryptonmc.krypton.world.block.palette.PaletteHolder
  */
 class ChunkSection(
     y: Int,
+    val blocks: PaletteHolder<Block> = PaletteHolder(PaletteHolder.Strategy.BLOCKS, Blocks.AIR),
+    val biomes: PaletteHolder<Biome> = PaletteHolder(PaletteHolder.Strategy.BIOMES, Biomes.PLAINS),
     val blockLight: ByteArray = ByteArray(2048),
     val skyLight: ByteArray = ByteArray(2048)
-) {
+) : NoiseBiomeSource {
 
     val bottomBlockY = y shl 4
-    val palette = PaletteHolder(GlobalPalette)
     private var nonEmptyBlockCount = 0
     val serializedSize: Int
-        get() = 2 + palette.serializedSize
+        get() = 2 + blocks.serializedSize + biomes.serializedSize
 
-    operator fun get(x: Int, y: Int, z: Int) = palette[x, y, z]
+    init {
+        recount()
+    }
+
+    operator fun get(x: Int, y: Int, z: Int): Block = blocks[x, y, z]
 
     operator fun set(x: Int, y: Int, z: Int, block: Block): Block {
-        val oldBlock = palette.getAndSet(x, y, z, block)
+        val oldBlock = blocks.getAndSet(x, y, z, block)
         if (!oldBlock.isAir) nonEmptyBlockCount--
         if (!block.isAir) nonEmptyBlockCount++
         return oldBlock
     }
 
-    fun isEmpty() = nonEmptyBlockCount == 0
+    fun hasOnlyAir(): Boolean = nonEmptyBlockCount == 0
 
-    fun recount() {
+    private fun recount() {
         nonEmptyBlockCount = 0
-        palette.forEachLocation { block, _ ->
+        blocks.forEachLocation { block, _ ->
             val fluid = block.asFluid()
             if (!block.isAir) nonEmptyBlockCount++
             if (!fluid.isEmpty) nonEmptyBlockCount++
@@ -63,6 +69,9 @@ class ChunkSection(
 
     fun write(buf: ByteBuf) {
         buf.writeShort(nonEmptyBlockCount)
-        palette.write(buf)
+        blocks.write(buf)
+        biomes.write(buf)
     }
+
+    override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome = biomes[x, y, z]
 }

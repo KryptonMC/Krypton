@@ -28,30 +28,29 @@ import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.effect.Effect
 import org.kryptonmc.krypton.entity.EntityFactory
+import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.GameState
-import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
-import org.kryptonmc.krypton.world.chunk.ChunkManager
-import org.kryptonmc.krypton.world.chunk.KryptonChunk
-import org.kryptonmc.krypton.effect.Effect
-import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
-import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
+import org.kryptonmc.krypton.packet.out.play.PacketOutSoundEffect
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.world.biome.BiomeManager
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
+import org.kryptonmc.krypton.world.chunk.ChunkManager
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
+import org.kryptonmc.krypton.world.chunk.KryptonChunk
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
 import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.WorldData
@@ -61,7 +60,6 @@ import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
 import org.spongepowered.math.GenericMath
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
-import java.util.Collections
 import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
 
@@ -77,7 +75,7 @@ class KryptonWorld(
 ) : World, WorldAccessor {
 
     override val world = this
-    override val biomeManager = BiomeManager(this, seed, dimensionType.biomeZoomer)
+    override val biomeManager = BiomeManager(this, seed)
     override val random = Random()
     override val border = KryptonWorldBorder.DEFAULT // FIXME
     override val gameMode: GameMode
@@ -215,7 +213,7 @@ class KryptonWorld(
         return seaLevel + 1
     }
 
-    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int) = generator.biomeGenerator[x, y, z]
+    override fun getUncachedNoiseBiome(x: Int, y: Int, z: Int) = generator.biome(x, y, z)
 
     override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
 

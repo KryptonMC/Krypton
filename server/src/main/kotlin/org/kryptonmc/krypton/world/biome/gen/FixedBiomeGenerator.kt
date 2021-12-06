@@ -20,15 +20,19 @@ package org.kryptonmc.krypton.world.biome.gen
 
 import com.mojang.serialization.Codec
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.world.biome.Climate
 import org.kryptonmc.krypton.world.biome.KryptonBiome
+import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
 
-class FixedBiomeGenerator(private val biome: Biome) : BiomeGenerator(listOf(biome)) {
+class FixedBiomeGenerator(private val biome: Biome) : BiomeGenerator(listOf(biome)), NoiseBiomeSource {
 
     override val codec = CODEC
 
-    override fun get(x: Int, y: Int, z: Int) = biome
+    override fun get(x: Int, y: Int, z: Int, sampler: Climate.Sampler): Biome = biome
+
+    override fun getNoiseBiome(x: Int, y: Int, z: Int): Biome = biome
 
     override fun findBiomeHorizontal(
         x: Int,
@@ -36,6 +40,7 @@ class FixedBiomeGenerator(private val biome: Biome) : BiomeGenerator(listOf(biom
         z: Int,
         radius: Int,
         random: Random,
+        sampler: Climate.Sampler,
         step: Int,
         absolute: Boolean,
         predicate: (Biome) -> Boolean

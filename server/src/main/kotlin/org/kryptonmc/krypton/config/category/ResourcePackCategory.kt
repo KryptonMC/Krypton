@@ -26,5 +26,5 @@ data class ResourcePackCategory(
     val uri: String = "",
     val hash: String = "",
     val forced: Boolean = false,
-    val prompt: Component = Component.empty()
+    val prompt: Component? = null
 )

@@ -10,11 +10,8 @@ package org.kryptonmc.api.user.ban
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Buildable
-import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.util.provide
 import java.net.InetAddress
 import java.time.OffsetDateTime
 
@@ -22,7 +19,7 @@ import java.time.OffsetDateTime
  * A ban made on a target.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Ban : Buildable<Ban, Ban.Builder> {
+public interface Ban {
 
     /**
      * The type of this ban.
@@ -66,18 +63,6 @@ public interface Ban : Buildable<Ban, Ban.Builder> {
          */
         @get:JvmName("profile")
         public val profile: GameProfile
-
-        public companion object {
-
-            /**
-             * Creates a new builder for building a profile ban.
-             *
-             * @return a new builder
-             */
-            @JvmStatic
-            @Contract("_ -> new", pure = true)
-            public fun builder(): Builder = builder(BanTypes.PROFILE)
-        }
     }
 
     /**
@@ -90,22 +75,12 @@ public interface Ban : Buildable<Ban, Ban.Builder> {
          */
         @get:JvmName("address")
         public val address: InetAddress
-
-        public companion object {
-
-            /**
-             * Creates a new builder for building an IP ban.
-             *
-             * @return a new builder
-             */
-            @JvmStatic
-            @Contract("_ -> new", pure = true)
-            public fun builder(): Builder = builder(BanTypes.IP)
-        }
     }
 
     /**
      * A builder for building bans.
+     *
+     * A new builder can be created with [BanService.createBuilder].
      */
     public interface Builder : Buildable.Builder<Ban> {
 
@@ -181,57 +156,5 @@ public interface Ban : Buildable<Ban, Ban.Builder> {
          */
         @Contract("_ -> this", mutates = "this")
         public fun expirationDate(date: OffsetDateTime): Builder
-    }
-
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun builder(type: BanType): Builder
-    }
-
-    public companion object {
-
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
-        /**
-         * Creates a new builder for building a ban.
-         *
-         * @param type the type
-         * @return a new builder
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun builder(type: BanType): Builder = FACTORY.builder(type)
-
-        /**
-         * Creates a new profile ban for the given [profile].
-         *
-         * If the given [expirationDate] is null, this ban will be permanent.
-         *
-         * @param profile the profile
-         * @param expirationDate the date when the ban will expire on
-         * @return a new profile ban
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun profile(
-            profile: GameProfile,
-            expirationDate: OffsetDateTime? = null
-        ): Ban = Profile.builder().profile(profile).apply { if (expirationDate != null) expirationDate(expirationDate) }.build()
-
-        /**
-         * Creates a new IP ban for the given [address].
-         *
-         * If the given [expirationDate] is null, this ban will be permanent.
-         *
-         * @param address the address
-         * @return a new IP ban
-         */
-        @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun ip(
-            address: InetAddress,
-            expirationDate: OffsetDateTime? = null
-        ): Ban = IP.builder().address(address).apply { if (expirationDate != null) expirationDate(expirationDate) }.build()
     }
 }

@@ -39,6 +39,6 @@ data class PacketOutSetPassengers(
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
         buf.writeVarInt(passengers.size)
-        passengers.forEach { buf.writeVarInt((it as KryptonEntity).id) }
+        passengers.forEach { buf.writeVarInt(it.id) }
     }
 }

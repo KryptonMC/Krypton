@@ -48,9 +48,6 @@ class TagGenerator(private val output: Path) {
             .addImport("org.kryptonmc.api", "Krypton")
         val outputClass = TypeSpec.objectBuilder(ClassName("org.kryptonmc.api.tags", name))
             .addKdoc("This file is auto-generated. Do not edit this manually!")
-            .addAnnotation(AnnotationSpec.builder(Suppress::class)
-                .addMember("\"UndocumentedPublicProperty\", \"LargeClass\"")
-                .build())
             .addAnnotation(AnnotationSpec.builder(ClassName("org.kryptonmc.api.util", "Catalogue"))
                 .addMember("Tag::class")
                 .build())
@@ -79,18 +76,6 @@ class TagGenerator(private val output: Path) {
             .tryCreateDirectories()
             .resolve("$name.kt")
         if (outputFile.exists()) return
-        outputFile.tryCreateFile()
-            .writeText(stringBuilder.toString()
-                .replace(
-                    "@JvmField\n {4}public val (.*): Tag<$parameterTypeName> =(\n {12})?(.*)(\n)?".toRegex(),
-                    "@JvmField public val $1: Tag<$parameterTypeName> = $3"
-                )
-                .replace("=  ", "= ")
-                .replace(
-                    "public object $name {\n",
-                    "public object $name {\n\n    // @formatter:off\n"
-                )
-                .replace("\n    @JvmStatic", "\n\n    // @formatter:on\n    @JvmStatic")
-                .replace("`get`", "get"))
+        outputFile.tryCreateFile().writeText(stringBuilder.toString().performReplacements("Tag<$parameterTypeName>", name))
     }
 }

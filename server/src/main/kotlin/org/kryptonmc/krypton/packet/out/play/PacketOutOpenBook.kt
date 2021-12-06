@@ -21,12 +21,12 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.writeEnum
 
 @JvmRecord
 data class PacketOutOpenBook(val hand: Hand) : Packet {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(hand.ordinal)
+        buf.writeEnum(hand)
     }
 }

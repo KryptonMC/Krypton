@@ -9,15 +9,15 @@ plugins {
 }
 
 dependencies {
-    implementation(projects.api)
+    api(projects.api)
     implementation(projects.annotationProcessor)
 
     // Extra Kotlin stuff
-    implementation(libs.kotlin.stdlib.jdk7)
-    implementation(libs.kotlin.stdlib.jdk8)
+    api(libs.kotlin.stdlib.jdk7)
+    api(libs.kotlin.stdlib.jdk8)
 
     // Networking
-    implementation(libs.bundles.netty)
+    api(libs.bundles.netty)
     implementation(libs.netty.transport.native.epoll) {
         artifact {
             classifier = "linux-x86_64"
@@ -40,9 +40,9 @@ dependencies {
     runtimeOnly(libs.jline.jansi)
 
     // Data
-    implementation(libs.dataConverter)
-    implementation(libs.dfu) // Slight performance enhanced version, courtesy of Paper
-    implementation(libs.nbt)
+    api(libs.dataConverter)
+    implementation(libs.dfu) // TODO: Remove this and replace with native conversion
+    api(libs.nbt)
     implementation(libs.articData)
 
     // Miscellaneous
@@ -88,7 +88,9 @@ tasks {
         filter<ReplaceTokens>("tokens" to mapOf(
             "version" to project.version.toString(),
             "minecraft" to global.versions.minecraft.get(),
-            "spark" to libs.versions.spark.get()
+            "spark" to libs.versions.spark.get(),
+            "data" to "1_18"
+//            "data" to libs.versions.articData.get().removeSuffix("-SNAPSHOT").replace('.', '_')
         ))
     }
 }

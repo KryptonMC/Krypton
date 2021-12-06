@@ -21,7 +21,12 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
-class PacketInKeepAlive(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInKeepAlive(val id: Long) : Packet {
 
-    val id = buf.readLong()
+    constructor(buf: ByteBuf) : this(buf.readLong())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeLong(id)
+    }
 }

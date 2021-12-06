@@ -20,17 +20,34 @@ import org.kryptonmc.api.item.ItemStack
 public interface PlayerInventory : Inventory {
 
     /**
+     * The main inventory area, excluding the hotbar area. This has 27 slots,
+     * and covers from slots 9 to 35.
+     */
+    @get:JvmName("main")
+    public val main: List<ItemStack>
+
+    /**
+     * The hotbar area. This has 9 slots, and covers from slots 0 to 8.
+     */
+    @get:JvmName("hotbar")
+    public val hotbar: List<ItemStack>
+
+    /**
      * The array of crafting slots in this inventory, where the first 4
      * elements of this array are the input, and the last slot is the output.
+     *
+     * The returned list is immutable, and of a fixed size.
      */
     @get:JvmName("crafting")
-    public val crafting: Array<out ItemStack>
+    public val crafting: List<ItemStack>
 
     /**
      * The array of armor pieces in this inventory.
+     *
+     * The returned list is immutable, and of a fixed size.
      */
     @get:JvmName("armor")
-    public val armor: Array<out ItemStack>
+    public val armor: List<ItemStack>
 
     /**
      * The item that this player is currently holding in their main hand.

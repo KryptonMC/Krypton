@@ -19,82 +19,18 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.writeSingletonLongArray
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.world.chunk.KryptonChunk
 
-@JvmRecord
-data class PacketOutUpdateLight(
-    val chunk: KryptonChunk,
-    val trustEdges: Boolean = true
-) : Packet {
+class PacketOutUpdateLight(
+    chunk: KryptonChunk,
+    trustEdges: Boolean = true
+) : PacketOutLight(chunk, trustEdges) {
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(chunk.position.x)
         buf.writeVarInt(chunk.position.z)
-        buf.writeBoolean(trustEdges)
-        val sections = chunk.sections
 
-        var skyMask = 0L
-        var blockMask = 0L
-        var emptySkyMask = 0L
-        var emptyBlockMask = 0L
-        val skyLights = ArrayList<ByteArray>()
-        val blockLights = ArrayList<ByteArray>()
-
-        for (i in sections.indices) {
-            val section = sections[i]
-            if (section == null) {
-                emptySkyMask = emptySkyMask or (1L shl i)
-                emptyBlockMask = emptyBlockMask or (1L shl i)
-                continue
-            }
-
-            // Deal with sky light data
-            if (section.skyLight.hasNonZeroData()) {
-                skyMask = skyMask or (1L shl i)
-                skyLights.add(section.skyLight)
-            } else {
-                emptySkyMask = emptySkyMask or (1L shl i)
-            }
-
-            // Deal with block light data
-            if (section.blockLight.hasNonZeroData()) {
-                blockMask = blockMask or (1L shl i)
-                blockLights.add(section.blockLight)
-            } else {
-                emptyBlockMask = emptyBlockMask or (1L shl i)
-            }
-        }
-
-        buf.writeSingletonLongArray(skyMask)
-        buf.writeSingletonLongArray(blockMask)
-        buf.writeSingletonLongArray(emptySkyMask)
-        buf.writeSingletonLongArray(emptyBlockMask)
-
-        buf.writeVarInt(skyLights.size)
-        for (i in skyLights.indices) {
-            val light = skyLights[i]
-            buf.writeVarInt(2048) // Always 2048 in length (for now)
-            buf.writeBytes(light)
-        }
-
-        buf.writeVarInt(blockLights.size)
-        for (i in blockLights.indices) {
-            val light = blockLights[i]
-            buf.writeVarInt(2048)
-            buf.writeBytes(light)
-        }
-    }
-
-    companion object {
-
-        private fun ByteArray.hasNonZeroData(): Boolean {
-            for (i in indices) {
-                if (get(i) != 0.toByte()) return true
-            }
-            return false
-        }
+        super.write(buf)
     }
 }

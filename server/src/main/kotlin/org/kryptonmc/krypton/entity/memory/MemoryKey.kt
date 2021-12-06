@@ -26,6 +26,5 @@ import org.kryptonmc.api.util.CataloguedBy
 @CataloguedBy(MemoryKeys::class)
 data class MemoryKey<T : Any>(
     val key: Key,
-    val codec: Codec<T>,
-    val canExpire: Boolean
+    val codec: Codec<T>
 )

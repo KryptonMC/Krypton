@@ -19,22 +19,43 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeVarInt
 import org.kryptonmc.krypton.util.writeVarLong
 import org.kryptonmc.krypton.world.KryptonWorldBorder
 
 @JvmRecord
-data class PacketOutInitializeWorldBorder(override val border: KryptonWorldBorder) : WorldBorderPacket {
+data class PacketOutInitializeWorldBorder(
+    val centerX: Double,
+    val centerZ: Double,
+    val oldSize: Double,
+    val newSize: Double,
+    val speed: Long,
+    val teleportBoundary: Int,
+    val warningBlocks: Int,
+    val warningTime: Int
+) : Packet {
+
+    constructor(border: KryptonWorldBorder) : this(
+        border.center.x(),
+        border.center.y(),
+        border.size,
+        border.size,
+        0,
+        PORTAL_TELEPORT_BOUNDARY,
+        border.warningBlocks,
+        border.warningTime
+    )
 
     override fun write(buf: ByteBuf) {
-        buf.writeDouble(border.center.x())
-        buf.writeDouble(border.center.y())
-        buf.writeDouble(border.size)
-        buf.writeDouble(border.size)
-        buf.writeVarLong(0)
-        buf.writeVarInt(PORTAL_TELEPORT_BOUNDARY)
-        buf.writeVarInt(border.warningBlocks)
-        buf.writeVarInt(border.warningTime)
+        buf.writeDouble(centerX)
+        buf.writeDouble(centerZ)
+        buf.writeDouble(oldSize)
+        buf.writeDouble(newSize)
+        buf.writeVarLong(speed)
+        buf.writeVarInt(teleportBoundary)
+        buf.writeVarInt(warningBlocks)
+        buf.writeVarInt(warningTime)
     }
 
     companion object {

@@ -51,7 +51,9 @@ import java.io.IOException
 import java.util.BitSet
 import java.util.Optional
 import java.util.UUID
+import java.util.function.IntFunction
 import kotlin.math.ceil
+import kotlin.math.max
 import kotlin.math.min
 
 fun ByteBuf.writeShort(short: Short) {
@@ -133,7 +135,7 @@ fun ByteBuf.writeVarLong(value: Long) {
     }
 }
 
-fun ByteBuf.readString(max: Short = Short.MAX_VALUE): String {
+fun ByteBuf.readString(max: Int = Short.MAX_VALUE.toInt()): String {
     val length = readVarInt()
     return when {
         length > max * 4 -> {
@@ -159,14 +161,7 @@ fun ByteBuf.writeString(value: String, max: Short = Short.MAX_VALUE) {
     writeBytes(bytes)
 }
 
-fun ByteBuf.readVarIntByteArray(): ByteArray {
-    val length = readVarInt()
-    val readable = readableBytes()
-    if (length > readable) {
-        throw DecoderException("Not enough bytes to read. Expected Length: $length, actual length: $readable")
-    }
-    return readAvailableBytes(length)
-}
+fun ByteBuf.readVarIntByteArray(): ByteArray = readAvailableBytes(readVarInt())
 
 fun ByteBuf.readAvailableBytes(length: Int): ByteArray {
     val bytes = ByteArray(length)
@@ -175,6 +170,11 @@ fun ByteBuf.readAvailableBytes(length: Int): ByteArray {
 }
 
 fun ByteBuf.readAllAvailableBytes() = readAvailableBytes(readableBytes())
+
+fun ByteBuf.writeVarIntByteArray(bytes: ByteArray) {
+    writeVarInt(bytes.size)
+    writeBytes(bytes)
+}
 
 fun ByteBuf.writeLongArray(array: LongArray) {
     writeVarInt(array.size)
@@ -270,8 +270,6 @@ inline fun <reified T : Enum<T>> ByteBuf.readEnum(): T = T::class.java.enumConst
 
 fun ByteBuf.writeEnum(enum: Enum<*>) = writeVarInt(enum.ordinal)
 
-fun ByteBuf.writeBitSet(set: BitSet) = writeLongArray(set.toLongArray())
-
 fun <T> ByteBuf.writeOptional(optional: Optional<T>, presentAction: (T) -> Unit) {
     writeBoolean(optional.isPresent)
     if (optional.isPresent) presentAction(optional.get())
@@ -299,9 +297,7 @@ fun ByteBuf.writeIntArray(array: IntArray) {
 
 fun <T> ByteBuf.encode(codec: Codec<T>, value: T) {
     val result = codec.encodeStart(NBTOps, value)
-    result.error().ifPresent {
-        throw EncoderException("Failed to encode value $value with codec $codec! Reason: ${it.message()}")
-    }
+    result.error().ifPresent { throw EncoderException("Failed to encode value $value with codec $codec! Reason: ${it.message()}") }
     writeNBT(result.result().get() as? CompoundTag)
 }
 
@@ -314,6 +310,17 @@ fun ByteBuf.readBlockHitResult(): BlockHitResult {
     val inside = readBoolean()
     val clickedPosition = Vector3d(position.x() + cursorX, position.y() + cursorY, position.z() + cursorZ)
     return BlockHitResult.of(clickedPosition, position, direction, false, inside)
+}
+
+fun ByteBuf.writeBlockHitResult(hitResult: BlockHitResult) {
+    val position = hitResult.position
+    writeVector(position)
+    writeEnum(hitResult.direction)
+    val clickLocation = hitResult.clickLocation
+    writeFloat((clickLocation.x() - position.x()).toFloat())
+    writeFloat((clickLocation.y() - position.y()).toFloat())
+    writeFloat((clickLocation.z() - position.z()).toFloat())
+    writeBoolean(hitResult.isInside)
 }
 
 private val VARINT_EXACT_BYTE_LENGTHS = IntArray(33) { ceil((31.0 - (it - 1)) / 7.0).toInt() }.apply { this[32] = 1 }

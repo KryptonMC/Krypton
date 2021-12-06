@@ -22,9 +22,34 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.FloatTag
 import org.kryptonmc.nbt.ListTag
 import org.spongepowered.math.vector.Vector3f
+import org.spongepowered.math.vector.Vector3i
 
 fun CompoundTag.getRotation(key: String): Vector3f? {
     if (!contains(key, ListTag.ID)) return null
     val list = getList(key, FloatTag.ID)
     return Vector3f(list.getFloat(0), list.getFloat(1), list.getFloat(2))
+}
+
+fun ListTag.readRotation(): Vector3f = Vector3f.from(
+    getFloat(0),
+    getFloat(1),
+    getFloat(2)
+)
+
+fun CompoundTag.Builder.rotation(key: String, rotation: Vector3f) = list(key) {
+    addFloat(rotation.x())
+    addFloat(rotation.y())
+    addFloat(rotation.z())
+}
+
+fun CompoundTag.getVector3i(key: String): Vector3i? {
+    if (!contains(key, CompoundTag.ID)) return null
+    val position = getCompound(key)
+    return Vector3i(position.getInt("X"), position.getInt("Y"), position.getInt("Z"))
+}
+
+fun CompoundTag.Builder.vector3i(key: String, vector: Vector3i): CompoundTag.Builder = compound(key) {
+    int("X", vector.x())
+    int("Y", vector.y())
+    int("Z", vector.z())
 }

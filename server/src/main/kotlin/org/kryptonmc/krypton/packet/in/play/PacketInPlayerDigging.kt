@@ -21,14 +21,25 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.block.BlockFace
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.asLong
 import org.kryptonmc.krypton.util.decodeBlockPosition
+import org.kryptonmc.krypton.util.readEnum
+import org.kryptonmc.krypton.util.writeEnum
+import org.spongepowered.math.vector.Vector3i
 
-class PacketInPlayerDigging(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInPlayerDigging(
+    val status: Status,
+    val location: Vector3i,
+    val face: BlockFace
+) : Packet {
 
-    val status = buf.readEnum<Status>()
-    val location = buf.readLong().decodeBlockPosition()
-    val face = buf.readEnum<BlockFace>()
+    constructor(buf: ByteBuf) : this(buf.readEnum<Status>(), buf.readLong().decodeBlockPosition(), buf.readEnum())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeEnum(status)
+        buf.writeLong(location.asLong())
+    }
 
     enum class Status {
 

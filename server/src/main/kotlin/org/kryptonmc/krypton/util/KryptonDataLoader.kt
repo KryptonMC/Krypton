@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.KryptonPlatform
 
 abstract class KryptonDataLoader(fileSuffix: String) {
 
-    private val fileName = "${KryptonPlatform.minecraftVersionPath}_$fileSuffix.json"
+    private val fileName = "${KryptonPlatform.dataVersionPrefix}_$fileSuffix.json"
     @Volatile
     private var isLoaded = false
 

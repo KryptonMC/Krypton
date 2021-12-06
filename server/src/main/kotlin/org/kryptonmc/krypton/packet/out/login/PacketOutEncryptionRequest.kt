@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.writeVarIntByteArray
 import java.security.PublicKey
 
 /**
@@ -32,19 +33,14 @@ import java.security.PublicKey
  */
 @JvmRecord
 data class PacketOutEncryptionRequest(
-    val publicKey: PublicKey,
+    val publicKey: ByteArray,
     val verifyToken: ByteArray
 ) : Packet {
 
     override fun write(buf: ByteBuf) {
         buf.writeString("", 20)
-
-        val encoded = publicKey.encoded
-        buf.writeVarInt(encoded.size)
-        buf.writeBytes(encoded)
-
-        buf.writeVarInt(verifyToken.size)
-        buf.writeBytes(verifyToken)
+        buf.writeVarIntByteArray(publicKey)
+        buf.writeVarIntByteArray(verifyToken)
     }
 
     override fun equals(other: Any?): Boolean {

@@ -8,10 +8,6 @@
  */
 package org.kryptonmc.api.tags
 
-import kotlin.String
-import kotlin.Suppress
-import kotlin.jvm.JvmField
-import kotlin.jvm.JvmStatic
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.util.Catalogue

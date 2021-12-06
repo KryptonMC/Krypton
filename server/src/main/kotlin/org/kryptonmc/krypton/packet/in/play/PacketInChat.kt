@@ -21,8 +21,14 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.writeString
 
-class PacketInChat(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInChat(val message: String) : Packet {
 
-    val message = buf.readString(256)
+    constructor(buf: ByteBuf) : this(buf.readString())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeString(message)
+    }
 }

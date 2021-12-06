@@ -36,21 +36,17 @@ import org.kryptonmc.krypton.network.handlers.PlayHandler
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
-import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
 import org.kryptonmc.krypton.packet.out.play.PacketOutDifficulty
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
-import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
 import org.kryptonmc.krypton.packet.out.play.PacketOutJoinGame
-import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerInfo
 import org.kryptonmc.krypton.packet.out.play.PacketOutPlayerPositionAndLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutPluginMessage
 import org.kryptonmc.krypton.packet.out.play.PacketOutResourcePack
-import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutTags
 import org.kryptonmc.krypton.packet.out.play.PacketOutTeam
@@ -63,9 +59,9 @@ import org.kryptonmc.krypton.server.ban.BannedPlayerList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
+import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nbt.NBTOps
-import org.kryptonmc.krypton.util.nextInt
 import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
@@ -138,6 +134,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             Hashing.sha256().hashLong(server.worldManager.default.data.worldGenerationSettings.seed).asLong(),
             server.maxPlayers,
             server.config.world.viewDistance,
+            server.config.world.simulationDistance,
             reducedDebugInfo,
             doImmediateRespawn,
             world.isDebug,
@@ -158,6 +155,11 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         updateScoreboard(world.scoreboard, player)
         invalidateStatus()
 
+        // Add the player to the list and cache maps
+        players.add(player)
+        playersByName[player.profile.name] = player
+        playersByUUID[player.uuid] = player
+
         // Fire join event and send result message
         val joinResult = server.eventManager.fireSync(JoinEvent(
             player,
@@ -173,29 +175,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         server.sendMessage(joinResult.message)
         player.sendMessage(joinResult.message) // This player hasn't been added to the list yet
         session.send(PacketOutPlayerPositionAndLook(player.location, player.rotation))
-
-        // Update player list
-        sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
-        session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
-        session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, players))
-
-        // Send entity data
-        // TODO: Move this all to an entity manager
-        sendToAll(PacketOutSpawnPlayer(player))
-        sendToAll(PacketOutMetadata(player.id, player.data.all))
-        sendToAll(PacketOutAttributes(player.id, player.attributes.syncable))
-        sendToAll(PacketOutHeadLook(player.id, player.rotation.x()))
-        players.forEach { online ->
-            session.send(PacketOutSpawnPlayer(online))
-            session.send(PacketOutMetadata(online.id, online.data.all))
-            session.send(PacketOutAttributes(online.id, online.attributes.syncable))
-            session.send(PacketOutHeadLook(online.id, online.rotation.x()))
-        }
-
-        // Add the player to the list and cache maps
-        players.add(player)
-        playersByName[player.profile.name] = player
-        playersByUUID[player.uuid] = player
         world.spawnPlayer(player)
 
         // Send the initial chunk stream
@@ -215,11 +194,12 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             player.inventory.networkWriter,
             player.inventory.mainHand
         ))
+        player.isLoaded = true
     }
 
     fun remove(player: KryptonPlayer) {
         server.eventManager.fire(QuitEvent(player)).thenAccept {
-            player.incrementStatistic(CustomStatistics.LEAVE_GAME)
+            player.statistics.increment(CustomStatistics.LEAVE_GAME)
             save(player)
             player.world.chunkManager.removePlayer(player)
 
@@ -314,7 +294,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             lastStatus = time
             status.players.online = players.size
             val sampleSize = min(players.size, MAXIMUM_SAMPLED_PLAYERS)
-            val playerOffset = nextInt(Random, 0, players.size - sampleSize)
+            val playerOffset = Maths.randomBetween(Random, 0, players.size - sampleSize)
             val sample = Array(sampleSize) { players[it + playerOffset].profile }.apply { shuffle() }
             status.players.sample = sample
         }

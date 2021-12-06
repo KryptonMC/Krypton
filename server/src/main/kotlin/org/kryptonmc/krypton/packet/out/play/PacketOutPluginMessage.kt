@@ -36,13 +36,12 @@ data class PacketOutPluginMessage(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass || !super.equals(other)) return false
-        other as PacketOutPluginMessage
-        return channel == other.channel && content.contentEquals(other.content)
+        if (javaClass != other?.javaClass) return false
+        return channel == (other as PacketOutPluginMessage).channel && content.contentEquals(other.content)
     }
 
     override fun hashCode(): Int {
-        var result = super.hashCode()
+        var result = 1
         result = 31 * result + channel.hashCode()
         result = 31 * result + content.contentHashCode()
         return result

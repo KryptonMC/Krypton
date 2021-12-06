@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.EntityPacket
+import org.kryptonmc.krypton.packet.MovementPacket
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeVarInt
 import org.spongepowered.math.vector.Vector2f
@@ -33,15 +34,18 @@ data class PacketOutEntityTeleport(
     val z: Double,
     val yaw: Float,
     val pitch: Float,
-    val isOnGround: Boolean
-) : EntityPacket {
+    override val onGround: Boolean
+) : EntityPacket, MovementPacket {
 
-    constructor(
-        entityId: Int,
-        position: Vector3d,
-        rotation: Vector2f,
-        isOnGround: Boolean
-    ) : this(entityId, position.x(), position.y(), position.z(), rotation.x(), rotation.y(), isOnGround)
+    constructor(entityId: Int, position: Vector3d, rotation: Vector2f, isOnGround: Boolean) : this(
+        entityId,
+        position.x(),
+        position.y(),
+        position.z(),
+        rotation.x(),
+        rotation.y(),
+        isOnGround
+    )
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
@@ -50,6 +54,6 @@ data class PacketOutEntityTeleport(
         buf.writeDouble(z)
         buf.writeAngle(yaw)
         buf.writeAngle(pitch)
-        buf.writeBoolean(isOnGround)
+        buf.writeBoolean(onGround)
     }
 }

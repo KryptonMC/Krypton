@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.generation
 
-import com.google.common.hash.Hashing
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.fluid.Fluids
@@ -52,8 +51,7 @@ class GenerationRegion(
     override val dimensionType = world.dimensionType
     override val biomeManager = BiomeManager(
         this,
-        Hashing.sha256().hashLong(seed).asLong(),
-        world.dimensionType.biomeZoomer
+        BiomeManager.obfuscateSeed(seed)
     )
     override val chunkManager = world.chunkManager
     override val data = world.data

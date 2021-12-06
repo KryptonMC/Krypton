@@ -46,18 +46,6 @@ public interface LivingEntity : Entity, AttributeHolder {
     public val isInRiptideSpinAttack: Boolean
 
     /**
-     * If this entity is fall flying.
-     *
-     * Setting this value to true for non-player entities will cause this
-     * entity to glide as long as they are wearing an elytra in their
-     * chestplate slot.
-     *
-     * This can be used to detect when the player is gliding without using
-     * scoreboard statistics.
-     */
-    public val isFallFlying: Boolean
-
-    /**
      * If this entity is dead or not.
      */
     public val isDead: Boolean

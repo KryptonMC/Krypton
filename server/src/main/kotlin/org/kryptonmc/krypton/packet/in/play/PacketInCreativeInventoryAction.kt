@@ -19,11 +19,21 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readItem
+import org.kryptonmc.krypton.util.writeItem
 
-class PacketInCreativeInventoryAction(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInCreativeInventoryAction(
+    val slot: Short,
+    val clickedItem: KryptonItemStack
+) : Packet {
 
-    val slot = buf.readShort()
-    val clickedItem = buf.readItem()
+    constructor(buf: ByteBuf) : this(buf.readShort(), buf.readItem())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeShort(slot.toInt())
+        buf.writeItem(clickedItem)
+    }
 }

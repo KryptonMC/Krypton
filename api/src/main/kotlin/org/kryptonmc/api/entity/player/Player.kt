@@ -8,11 +8,10 @@
  */
 package org.kryptonmc.api.entity.player
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ParticleEffect
+import org.kryptonmc.api.entity.Equipable
 import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.inventory.InventoryHolder
@@ -21,7 +20,6 @@ import org.kryptonmc.api.plugin.PluginMessageRecipient
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticsTracker
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
@@ -36,7 +34,7 @@ import java.util.Locale
  * A player that is connected to the server and playing the game.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient {
+public interface Player : LivingEntity, Equipable, InventoryHolder, PluginMessageRecipient {
 
     /**
      * The address that the player is currently connected from.
@@ -48,6 +46,12 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
      * If this player is currently online.
      */
     public val isOnline: Boolean
+
+    /**
+     * If this player has joined this server before.
+     */
+    @get:JvmName("hasJoinedBefore")
+    public val hasJoinedBefore: Boolean
 
     /**
      * The time that this player first joined the server.
@@ -100,6 +104,11 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
     public var flyingSpeed: Float
 
     /**
+     * If this player is currently flying.
+     */
+    public var isFlying: Boolean
+
+    /**
      * The dimension resource key for the world the player is currently in.
      */
     @get:JvmName("dimension")
@@ -116,6 +125,35 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
      */
     @get:JvmName("viewDistance")
     public val viewDistance: Int
+
+    /**
+     * The visibility settings for this player's chat.
+     */
+    @get:JvmName("chatVisibility")
+    public val chatVisibility: ChatVisibility
+
+    /**
+     * If this player wants their text filtered before it is sent to them.
+     *
+     * This filtering is usually meant to be done by Mojang, and is designed to
+     * protect underage players from receiving any naughty words, like swear
+     * words.
+     *
+     * It is recommended that plugins that wish to filter text for players,
+     * such as chat plugins, respect this option, and allow players to opt-out
+     * of chat filtering if they wish to do so.
+     */
+    public val filterText: Boolean
+
+    /**
+     * If this player wants to be listed in the server status' player list.
+     *
+     * All plugins that override the MOTD settings with their own custom MOTDs
+     * should try to respect the setting that has been indicated here, as this
+     * was added to prevent cross-server player tracking.
+     */
+    @get:JvmName("allowsListing")
+    public val allowsListing: Boolean
 
     /**
      * The current time of this player.
@@ -199,67 +237,10 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
     public val statistics: StatisticsTracker
 
     /**
-     * Increments the given [statistic] by 1.
-     *
-     * Note: This will increase the current value by 1, it will not set it.
-     * To set statistics, use [StatisticsTracker.set]
-     *
-     * @param statistic the statistic
+     * The cooldown tracker for this player.
      */
-    public fun incrementStatistic(statistic: Statistic<*>): Unit = incrementStatistic(statistic, 1)
-
-    /**
-     * Increments the given [statistic] by the given [amount].
-     *
-     * Note: This will increase the current value by the amount, it will not
-     * set it. To set statistics, use [StatisticsTracker.set]
-     *
-     * @param statistic the statistic
-     * @param amount the amount
-     */
-    public fun incrementStatistic(statistic: Statistic<*>, amount: Int)
-
-    /**
-     * Increments the given custom statistic [key] by 1.
-     *
-     * @param key the custom statistic key
-     */
-    public fun incrementStatistic(key: Key): Unit = incrementStatistic(key, 1)
-
-    /**
-     * Increments the given custom statistic [key] by the given [amount].
-     *
-     * @param key the custom statistic key
-     */
-    public fun incrementStatistic(key: Key, amount: Int)
-
-    /**
-     * Decrements the given [statistic] by 1.
-     *
-     * Note: This will decrease the current value by 1, it will not set it.
-     * To set statistics, use [StatisticsTracker.set]
-     *
-     * @param statistic the statistic
-     */
-    public fun decrementStatistic(statistic: Statistic<*>): Unit = decrementStatistic(statistic, 1)
-
-    /**
-     * Decrements the given [statistic] by the given [amount].
-     *
-     * Note: This will decrease the current value by the amount, it will not
-     * set it. To set statistics, use [StatisticsTracker.set]
-     *
-     * @param statistic the statistic
-     * @param amount the amount
-     */
-    public fun decrementStatistic(statistic: Statistic<*>, amount: Int)
-
-    /**
-     * Resets the given statistic back to a value of 0.
-     *
-     * @param statistic the statistic
-     */
-    public fun resetStatistic(statistic: Statistic<*>)
+    @get:JvmName("cooldowns")
+    public val cooldowns: CooldownTracker
 
     /**
      * Spawns particles for this player relative to a location.
@@ -320,24 +301,6 @@ public interface Player : LivingEntity, InventoryHolder, PluginMessageRecipient 
      * @return true if this player can see the other player, false otherwise
      */
     public fun canSee(player: Player): Boolean
-
-    /**
-     * Returns true if this player has the correct tool to be able to break
-     * the given [block].
-     *
-     * @param block the block to check
-     * @return true if the player can break it, false otherwise
-     */
-    public fun hasCorrectTool(block: Block): Boolean
-
-    /**
-     * Gets the speed at which this player can destroy the given
-     * [block].
-     *
-     * @param block the block the player is destroying
-     * @return the destroy speed
-     */
-    public fun destroySpeed(block: Block): Float
 
     /**
      * Kicks the player with the given text shown

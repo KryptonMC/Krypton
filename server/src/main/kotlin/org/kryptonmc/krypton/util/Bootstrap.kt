@@ -26,6 +26,12 @@ import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityCategories
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.entity.animal.type.AxolotlVariants
+import org.kryptonmc.api.entity.animal.type.CatTypes
+import org.kryptonmc.api.entity.animal.type.FoxTypes
+import org.kryptonmc.api.entity.animal.type.MooshroomTypes
+import org.kryptonmc.api.entity.animal.type.PandaGenes
+import org.kryptonmc.api.entity.animal.type.RabbitTypes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.hanging.Pictures
 import org.kryptonmc.api.fluid.Fluids
@@ -150,6 +156,12 @@ object Bootstrap {
         Pictures
         KryptonMetaKeys
         MetaKeys // Not technically a registry, but quite close to one
+        CatTypes
+        FoxTypes
+        MooshroomTypes
+        PandaGenes
+        RabbitTypes
+        AxolotlVariants
 
         // Preload some other things that would otherwise load on first player join or some other time
         Encryption
@@ -158,7 +170,6 @@ object Bootstrap {
         EntityFactory
         KryptonItemManager
         KryptonBlockManager
-        GlobalPalette
         CommandSyntaxException.BUILT_IN_EXCEPTIONS = BrigadierExceptions
     }
 

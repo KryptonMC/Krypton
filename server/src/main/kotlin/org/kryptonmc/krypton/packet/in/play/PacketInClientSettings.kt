@@ -20,18 +20,44 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.entity.MainHand
+import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readString
-import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeEnum
+import org.kryptonmc.krypton.util.writeString
 
-class PacketInClientSettings(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInClientSettings(
+    val locale: String,
+    val viewDistance: Int,
+    val chatVisibility: ChatVisibility,
+    val chatColors: Boolean,
+    val skinSettings: Short,
+    val mainHand: MainHand,
+    val filterText: Boolean,
+    val allowsListing: Boolean
+) : Packet {
 
-    val locale = buf.readString(16)
-    val viewDistance = buf.readByte()
-    val chatMode = buf.readVarInt()
-    val chatColors = buf.readBoolean()
-    val skinSettings = buf.readUnsignedByte()
-    val mainHand = buf.readEnum<MainHand>()
-    val disableTextFiltering = buf.readBoolean()
+    constructor(buf: ByteBuf) : this(
+        buf.readString(16),
+        buf.readByte().toInt(),
+        buf.readEnum(),
+        buf.readBoolean(),
+        buf.readUnsignedByte(),
+        buf.readEnum(),
+        buf.readBoolean(),
+        buf.readBoolean()
+    )
+
+    override fun write(buf: ByteBuf) {
+        buf.writeString(locale)
+        buf.writeByte(viewDistance)
+        buf.writeEnum(chatVisibility)
+        buf.writeBoolean(chatColors)
+        buf.writeByte(skinSettings.toInt())
+        buf.writeEnum(mainHand)
+        buf.writeBoolean(filterText)
+        buf.writeBoolean(allowsListing)
+    }
 }

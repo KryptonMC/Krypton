@@ -28,7 +28,7 @@ class IntIdentityHashBiMap<K>(initialCapacity: Int) : IntBiMap<K> {
     private var byId: Array<K?>
 
     private var nextId = 0
-    var size = 0
+    override var size = 0
         private set
 
     init {

@@ -37,6 +37,7 @@ object KryptonTagManager : TagManager {
     override val tags: Map<TagType<*>, List<Tag<*>>>
         get() = Collections.unmodifiableMap(TAG_MAP)
 
+    @JvmStatic
     fun bootstrap() {
         Registries.TAG_TYPES.values.forEach { type ->
             if (type !is KryptonTagType) return@forEach

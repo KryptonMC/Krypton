@@ -23,9 +23,32 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readAllAvailableBytes
 import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeVarIntByteArray
 
-class PacketInPluginMessage(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInPluginMessage(
+    val channel: String,
+    val data: ByteArray
+) : Packet {
 
-    val channel = Key.key(buf.readString())
-    val data = buf.readAllAvailableBytes()
+    constructor(buf: ByteBuf) : this(buf.readString(), buf.readAllAvailableBytes())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeString(channel)
+        buf.writeVarIntByteArray(data)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return channel == (other as PacketInPluginMessage).channel && data.contentEquals(other.data)
+    }
+
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + channel.hashCode()
+        result = 31 * result + data.contentHashCode()
+        return result
+    }
 }

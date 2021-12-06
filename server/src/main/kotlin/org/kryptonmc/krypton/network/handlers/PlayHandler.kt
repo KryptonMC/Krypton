@@ -18,8 +18,12 @@
  */
 package org.kryptonmc.krypton.network.handlers
 
-import com.mojang.brigadier.StringReader
+
+import java.util.concurrent.ThreadLocalRandom
+import java.utilimport com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
+import net.kyori.adventure.key.InvalidKeyException
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
@@ -29,8 +33,11 @@ import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.command.CommandExecuteEvent
 import org.kryptonmc.api.event.player.ChatEvent
 import org.kryptonmc.api.event.player.MoveEvent
+import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
+import org.kryptonmc.api.event.player.ResourcePackStatusEvent
 import org.kryptonmc.api.item.meta.MetaKeys
+import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -39,7 +46,6 @@ import org.kryptonmc.krypton.entity.monster.KryptonCreeper
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.handler.KryptonItemTimedHandler
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.`in`.play.EntityAction
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAbilities
 import org.kryptonmc.krypton.packet.`in`.play.PacketInAnimation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInChat
@@ -61,7 +67,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
-import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutKeepAlive
@@ -71,6 +76,7 @@ import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.`in`.play.PacketInClientStatus
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityNBTQuery
 import org.kryptonmc.krypton.packet.`in`.play.PacketInInteract
+import org.kryptonmc.krypton.packet.`in`.play.PacketInResourcePackStatus
 import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutNBTQueryResponse
@@ -80,7 +86,6 @@ import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
-import java.util.concurrent.ThreadLocalRandom
 
 /**
  * This is the largest and most important of the four packet handlers, as the
@@ -137,6 +142,7 @@ class PlayHandler(
         is PacketInInteract -> handleInteract(packet)
         is PacketInSteerVehicle -> handleSteerVehicle(packet)
         is PacketInPlayerUseItem -> handlePlayerUseItem(packet)
+        is PacketInResourcePackStatus -> handleResourcePackStatus(packet)
         else -> Unit
     }
 
@@ -183,12 +189,12 @@ class PlayHandler(
     }
 
     private fun handleClientSettings(packet: PacketInClientSettings) {
-        player.mainHand = packet.mainHand
+        player.locale = Locale.forLanguageTag(packet.locale)
+        player.chatVisibility = packet.chatVisibility
         player.skinSettings = packet.skinSettings.toByte()
-        playerManager.sendToAll(PacketOutMetadata(
-            player.id,
-            player.data.dirty
-        ))
+        player.mainHand = packet.mainHand
+        player.filterText = packet.filterText
+        player.allowsListing = packet.allowsListing
     }
 
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
@@ -201,17 +207,21 @@ class PlayHandler(
     }
 
     private fun handleEntityAction(packet: PacketInEntityAction) {
-        when (packet.action) {
-            EntityAction.START_SNEAKING -> player.isCrouching = true
-            EntityAction.STOP_SNEAKING -> player.isCrouching = false
-            EntityAction.START_SPRINTING -> player.isSprinting = true
-            EntityAction.STOP_SPRINTING -> player.isSprinting = false
-            EntityAction.LEAVE_BED -> Unit // TODO: Sleeping
-            EntityAction.START_JUMP_WITH_HORSE, EntityAction.STOP_JUMP_WITH_HORSE,
-            EntityAction.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
-            EntityAction.START_FLYING_WITH_ELYTRA -> Unit // TODO: Elytra
-        }
-        playerManager.sendToAll(PacketOutMetadata(player.id, player.data.dirty))
+        server.eventManager.fire(PerformActionEvent(player, packet.action)).thenAcceptAsync({
+            if (!it.result.isAllowed) return@thenAcceptAsync
+            when (it.action) {
+                PerformActionEvent.Action.START_SNEAKING -> player.isSneaking = true
+                PerformActionEvent.Action.STOP_SNEAKING -> player.isSneaking = false
+                PerformActionEvent.Action.START_SPRINTING -> player.isSprinting = true
+                PerformActionEvent.Action.STOP_SPRINTING -> player.isSprinting = false
+                PerformActionEvent.Action.LEAVE_BED -> Unit // TODO: Sleeping
+                PerformActionEvent.Action.START_JUMP_WITH_HORSE,
+                PerformActionEvent.Action.STOP_JUMP_WITH_HORSE,
+                PerformActionEvent.Action.OPEN_HORSE_INVENTORY -> Unit // TODO: Horses
+                PerformActionEvent.Action.START_FLYING_WITH_ELYTRA -> player.isGliding = true
+                PerformActionEvent.Action.STOP_FLYING_WITH_ELYTRA -> player.isGliding = false
+            }
+        }, session.channel.eventLoop())
     }
 
     private fun handleHeldItemChange(packet: PacketInChangeHeldItem) {
@@ -234,7 +244,7 @@ class PlayHandler(
     }
 
     private fun handleAbilities(packet: PacketInAbilities) {
-        player.isFlying = packet.isFlying && player.canFly
+        player.isGliding = packet.isFlying && player.canFly
     }
 
     private fun handleBlockPlacement(packet: PacketInPlaceBlock) {
@@ -306,9 +316,7 @@ class PlayHandler(
 
     private fun handleSteerVehicle(packet: PacketInSteerVehicle) {
         // TODO: Handle steering here
-        val flagInt = packet.flags.toInt()
-        // unmount
-        if (flagInt and 0x02 == 0x02) player.ejectVehicle()
+        if (packet.isSneaking) player.ejectVehicle()
     }
 
     private fun handleInteract(packet: PacketInInteract) {
@@ -398,7 +406,13 @@ class PlayHandler(
     }
 
     private fun handlePluginMessage(packet: PacketInPluginMessage) {
-        server.eventManager.fireAndForget(PluginMessageEvent(player, packet.channel, packet.data))
+        val channel = try {
+            Key.key(packet.channel)
+        } catch (exception: InvalidKeyException) {
+            LOGGER.warn("Invalid plugin message channel ${packet.channel}.")
+            return
+        }
+        server.eventManager.fireAndForget(PluginMessageEvent(player, channel, packet.data))
     }
 
     private fun handleTabComplete(packet: PacketInTabComplete) {
@@ -421,7 +435,15 @@ class PlayHandler(
     private fun handleEntityNBTQuery(packet: PacketInEntityNBTQuery) {
         if (!player.hasPermission(KryptonPermission.ENTITY_QUERY.node)) return
         val entity = player.world.entityManager[packet.entityId] ?: return
-        player.session.send(PacketOutNBTQueryResponse(packet.transactionId, entity.save().build()))
+        player.session.send(PacketOutNBTQueryResponse(packet.transactionId, entity.saveWithPassengers().build()))
+    }
+
+    private fun handleResourcePackStatus(packet: PacketInResourcePackStatus) {
+        if (packet.status == ResourcePack.Status.DECLINED && server.config.server.resourcePack.forced) {
+            player.session.disconnect(translatable("multiplayer.requiredTexturePrompt.disconnect"))
+            return
+        }
+        server.eventManager.fireAndForget(ResourcePackStatusEvent(player, packet.status))
     }
 
     companion object {

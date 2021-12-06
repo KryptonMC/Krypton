@@ -52,7 +52,16 @@ public interface StatisticsTracker {
     public operator fun set(statistic: Statistic<*>, value: Int)
 
     /**
-     * Increments the given [statistic] by the given [amount].
+     * Increases the value of the given [statistic] by 1.
+     *
+     * @param statistic the statistic
+     */
+    public fun increment(statistic: Statistic<*>) {
+        increment(statistic, 1)
+    }
+
+    /**
+     * Increases the value of the given [statistic] by the given [amount].
      *
      * @param statistic the statistic
      * @param amount the amount
@@ -60,12 +69,61 @@ public interface StatisticsTracker {
     public fun increment(statistic: Statistic<*>, amount: Int)
 
     /**
-     * Decrements the given [statistic] by the given [amount].
+     * Increases the value of the given custom [statistic] by 1.
+     *
+     * @param statistic the statistic
+     */
+    public fun increment(statistic: Key) {
+        increment(statistic, 1)
+    }
+
+    /**
+     * Increases the value of the given custom [statistic] by the given
+     * [amount].
+     *
+     * @param statistic the statistic
+     * @param amount the amount
+     */
+    public fun increment(statistic: Key, amount: Int) {
+        increment(StatisticTypes.CUSTOM[statistic], amount)
+    }
+
+    /**
+     * Decreases the value of the given [statistic] by 1.
+     *
+     * @param statistic the statistic
+     */
+    public fun decrement(statistic: Statistic<*>) {
+        decrement(statistic, 1)
+    }
+
+    /**
+     * Decreases the value of the given [statistic] by the given [amount].
      *
      * @param statistic the statistic
      * @param amount the amount
      */
     public fun decrement(statistic: Statistic<*>, amount: Int)
+
+    /**
+     * Decreases the value of the given custom [statistic] by 1.
+     *
+     * @param statistic the statistic
+     */
+    public fun decrement(statistic: Key) {
+        decrement(statistic, 1)
+    }
+
+    /**
+     * Decreases the value of the given custom [statistic] by the given
+     * [amount].
+     *
+     * @param statistic the statistic
+     * @param amount the amount
+     */
+    public fun decrement(statistic: Key, amount: Int) {
+        decrement(StatisticTypes.CUSTOM[statistic], amount)
+    }
 
     /**
      * Invalidates all currently tracked statistics, forcing the server to

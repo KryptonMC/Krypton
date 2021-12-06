@@ -30,8 +30,8 @@ tca = "1.3.0"
 jline = "3.21.0"
 dataConverter = "1.0.0-SNAPSHOT"
 dfu = "4.0"
-nbt = "2.4.2"
-articData = "1.17.1-SNAPSHOT"
+nbt = "2.5"
+articData = "1.18-SNAPSHOT"
 caffeine = "3.0.4"
 fastutil = "8.5.6"
 clikt = "3.3.0"
@@ -39,10 +39,10 @@ bstats = "2.2.1"
 spark = "1.6-SNAPSHOT"
 
 # Test
-junit-jupiter = "5.8.1"
-junit-platform = "1.8.1"
-mockk = "1.12.0"
-bytebuddy = "1.12.1"
+junit-jupiter = "5.8.2"
+junit-platform = "1.8.2"
+mockk = "1.12.1"
+bytebuddy = "1.12.2"
 
 [libraries]
 

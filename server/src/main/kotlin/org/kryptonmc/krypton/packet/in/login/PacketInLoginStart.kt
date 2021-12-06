@@ -21,8 +21,14 @@ package org.kryptonmc.krypton.packet.`in`.login
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readString
+import org.kryptonmc.krypton.util.writeString
 
-class PacketInLoginStart(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInLoginStart(val name: String) : Packet {
 
-    val name = buf.readString(16)
+    constructor(buf: ByteBuf) : this(buf.readString(16))
+
+    override fun write(buf: ByteBuf) {
+        buf.writeString(name, 16)
+    }
 }

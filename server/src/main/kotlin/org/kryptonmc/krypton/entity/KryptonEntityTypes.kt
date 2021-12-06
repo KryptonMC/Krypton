@@ -28,7 +28,7 @@ import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.ExperienceOrb
 import org.kryptonmc.api.entity.ambient.Bat
-import org.kryptonmc.api.entity.animal.cat.Cat
+import org.kryptonmc.api.entity.animal.Cat
 import org.kryptonmc.api.entity.hanging.Painting
 import org.kryptonmc.api.entity.monster.Creeper
 import org.kryptonmc.api.entity.monster.Zombie
@@ -49,7 +49,6 @@ import org.kryptonmc.api.entity.projectile.SpectralArrow
 import org.kryptonmc.api.entity.projectile.ThrownPotion
 import org.kryptonmc.api.entity.projectile.Trident
 import org.kryptonmc.api.entity.projectile.WitherSkull
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
 
 object KryptonEntityTypes {

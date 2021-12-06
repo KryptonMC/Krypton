@@ -163,7 +163,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
         }
         entities.forEach {
             if (it is KryptonPlayer) return@forEach // Do not save players in here.
-            entityList.add(it.save().build())
+            entityList.add(it.saveWithPassengers().build())
         }
         regionFileManager.write(chunk.position, root)
     }

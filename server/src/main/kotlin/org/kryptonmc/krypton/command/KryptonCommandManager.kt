@@ -66,6 +66,7 @@ import org.kryptonmc.krypton.command.registrar.RawCommandRegistrar
 import org.kryptonmc.krypton.command.registrar.SimpleCommandRegistrar
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
+import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import javax.annotation.concurrent.GuardedBy
@@ -75,6 +76,8 @@ import kotlin.math.max
 import kotlin.math.min
 
 object KryptonCommandManager : CommandManager {
+
+    private val LOGGER = logger<CommandManager>()
 
     @GuardedBy("lock") val dispatcher = CommandDispatcher<Sender>() // Reads and writes MUST be locked by the lock below!
     private val lock = ReentrantReadWriteLock()
@@ -106,7 +109,8 @@ object KryptonCommandManager : CommandManager {
         val normalized = command.normalize(true)
         return try {
             val parseResults = parse(sender, normalized)
-            dispatcher.execute(parseResults) != BrigadierCommand.FORWARD
+            dispatcher.execute(parseResults)
+            true
         } catch (exception: CommandSyntaxException) {
             val rawMessage = exception.rawMessage
             val message = if (rawMessage is AdventureMessage) rawMessage.wrapped else Component.text(exception.message.orEmpty())
@@ -135,6 +139,7 @@ object KryptonCommandManager : CommandManager {
             }
             false
         } catch (exception: Throwable) { // We catch Throwable because plugins like to do stupid things sometimes.
+            LOGGER.error("Unable to dispatch command $command from $sender!", exception)
             throw RuntimeException("Unable to dispatch command $command from $sender!", exception)
         }
     }

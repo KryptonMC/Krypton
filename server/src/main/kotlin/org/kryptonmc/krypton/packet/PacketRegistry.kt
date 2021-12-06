@@ -44,6 +44,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerRotation
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerUseItem
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPluginMessage
 import org.kryptonmc.krypton.packet.`in`.play.PacketInEntityNBTQuery
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerMovement
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTeleportConfirm
 import org.kryptonmc.krypton.packet.`in`.status.PacketInPing
@@ -63,7 +64,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutCamera
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutChat
-import org.kryptonmc.krypton.packet.out.play.PacketOutChunkData
+import org.kryptonmc.krypton.packet.out.play.PacketOutChunkDataAndLight
 import org.kryptonmc.krypton.packet.out.play.PacketOutClearTitles
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareRecipes
@@ -168,6 +169,7 @@ object PacketRegistry {
         register(PacketState.PLAY, 0x11, ::PacketInPlayerPosition)
         register(PacketState.PLAY, 0x12, ::PacketInPlayerPositionAndRotation)
         register(PacketState.PLAY, 0x13, ::PacketInPlayerRotation)
+        register(PacketState.PLAY, 0x14, ::PacketInPlayerMovement)
         register(PacketState.PLAY, 0x19, ::PacketInAbilities)
         register(PacketState.PLAY, 0x1A, ::PacketInPlayerDigging)
         register(PacketState.PLAY, 0x1B, ::PacketInEntityAction)
@@ -203,7 +205,7 @@ object PacketRegistry {
         register<PacketOutChangeGameState>(0x1E)
         register<PacketOutInitializeWorldBorder>(0x20)
         register<PacketOutKeepAlive>(0x21)
-        register<PacketOutChunkData>(0x22)
+        register<PacketOutChunkDataAndLight>(0x22)
         register<PacketOutEffect>(0x23)
         register<PacketOutParticle>(0x24)
         register<PacketOutUpdateLight>(0x25)
@@ -232,19 +234,19 @@ object PacketRegistry {
         register<PacketOutSetPassengers>(0x54)
         register<PacketOutTeam>(0x55)
         register<PacketOutUpdateScore>(0x56)
-        register<PacketOutSubTitle>(0x57)
-        register<PacketOutTimeUpdate>(0x58)
-        register<PacketOutTitle>(0x59)
-        register<PacketOutTitleTimes>(0x5A)
-        register<PacketOutEntitySoundEffect>(0x5B)
-        register<PacketOutSoundEffect>(0x5C)
-        register<PacketOutStopSound>(0x5D)
-        register<PacketOutPlayerListHeaderFooter>(0x5E)
-        register<PacketOutNBTQueryResponse>(0x5F)
-        register<PacketOutEntityTeleport>(0x61)
-        register<PacketOutAttributes>(0x63)
-        register<PacketOutDeclareRecipes>(0x65)
-        register<PacketOutTags>(0x66)
+        register<PacketOutSubTitle>(0x58)
+        register<PacketOutTimeUpdate>(0x59)
+        register<PacketOutTitle>(0x5A)
+        register<PacketOutTitleTimes>(0x5B)
+        register<PacketOutEntitySoundEffect>(0x5C)
+        register<PacketOutSoundEffect>(0x5D)
+        register<PacketOutStopSound>(0x5E)
+        register<PacketOutPlayerListHeaderFooter>(0x5F)
+        register<PacketOutNBTQueryResponse>(0x60)
+        register<PacketOutEntityTeleport>(0x62)
+        register<PacketOutAttributes>(0x64)
+        register<PacketOutDeclareRecipes>(0x66)
+        register<PacketOutTags>(0x67)
     }
 
     private fun register(state: PacketState, id: Int, creator: (ByteBuf) -> Packet) {

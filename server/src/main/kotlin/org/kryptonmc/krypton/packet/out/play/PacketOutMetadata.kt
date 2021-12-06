@@ -36,7 +36,7 @@ import org.kryptonmc.krypton.util.writeVarInt
 @JvmRecord
 data class PacketOutMetadata(
     override val entityId: Int,
-    val packedEntries: List<MetadataHolder.Entry<*>>
+    val packedEntries: Sequence<MetadataHolder.Entry<*>>
 ) : EntityPacket {
 
     override fun write(buf: ByteBuf) {

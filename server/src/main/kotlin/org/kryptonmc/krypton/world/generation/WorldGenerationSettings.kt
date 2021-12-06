@@ -28,7 +28,6 @@ import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.world.biome.gen.MultiNoiseBiomeGenerator
 import org.kryptonmc.krypton.world.biome.gen.TheEndBiomeGenerator
-import org.kryptonmc.krypton.world.biome.gen.VanillaLayeredBiomeGenerator
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
@@ -96,13 +95,13 @@ data class WorldGenerationSettings(
         }
 
         private fun defaultOverworld(seed: Long) = NoiseGenerator(
-            VanillaLayeredBiomeGenerator(seed, false, false, InternalRegistries.BIOME),
+            MultiNoiseBiomeGenerator.Preset.OVERWORLD.generator(InternalRegistries.BIOME),
             seed,
             InternalRegistries.NOISE_GENERATOR_SETTINGS[NoiseGeneratorSettings.OVERWORLD]!!
         )
 
         private fun defaultNether(seed: Long) = NoiseGenerator(
-            MultiNoiseBiomeGenerator.Preset.NETHER.generator(InternalRegistries.BIOME, seed),
+            MultiNoiseBiomeGenerator.Preset.NETHER.generator(InternalRegistries.BIOME),
             seed,
             InternalRegistries.NOISE_GENERATOR_SETTINGS[NoiseGeneratorSettings.NETHER]!!
         )

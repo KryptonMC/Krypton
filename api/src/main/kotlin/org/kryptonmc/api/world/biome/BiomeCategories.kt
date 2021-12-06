@@ -37,6 +37,7 @@ public object BiomeCategories {
     @JvmField public val MUSHROOM: BiomeCategory = register("mushroom")
     @JvmField public val NETHER: BiomeCategory = register("nether")
     @JvmField public val UNDERGROUND: BiomeCategory = register("underground")
+    @JvmField public val MOUNTAIN: BiomeCategory = register("mountain")
 
     // @formatter:on
     @JvmStatic

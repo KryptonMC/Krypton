@@ -21,9 +21,18 @@ package org.kryptonmc.krypton.packet.`in`.play
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketInEntityNBTQuery(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInEntityNBTQuery(
+    val transactionId: Int,
+    val entityId: Int
+) : Packet {
 
-    val transactionId = buf.readVarInt()
-    val entityId = buf.readVarInt()
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readVarInt())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(transactionId)
+        buf.writeVarInt(entityId)
+    }
 }

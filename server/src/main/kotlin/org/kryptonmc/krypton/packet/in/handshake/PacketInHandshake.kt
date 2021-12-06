@@ -24,11 +24,24 @@ import org.kryptonmc.krypton.packet.PacketState
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readString
 import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeEnum
+import org.kryptonmc.krypton.util.writeString
+import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketInHandshake(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInHandshake(
+    val protocol: Int,
+    val address: String,
+    val port: Int,
+    val nextState: PacketState
+) : Packet {
 
-    val protocol = buf.readVarInt()
-    val address = buf.readString()
-    val port = buf.readUnsignedShort().toUShort()
-    val nextState = buf.readEnum<PacketState>()
+    constructor(buf: ByteBuf) : this(buf.readVarInt(), buf.readString(), buf.readUnsignedShort(), buf.readEnum())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(protocol)
+        buf.writeString(address)
+        buf.writeShort(port)
+        buf.writeEnum(nextState)
+    }
 }

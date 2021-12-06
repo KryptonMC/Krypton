@@ -21,24 +21,27 @@ package org.kryptonmc.krypton.world.biome.gen
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.world.biome.Biome
+import org.kryptonmc.krypton.world.biome.Climate
 import org.kryptonmc.krypton.world.biome.KryptonBiome
+import java.util.function.Supplier
 
 class CheckerboardBiomeGenerator(
-    allowedBiomes: List<Biome>,
-    private val scale: Int
+    private val allowedBiomes: List<Biome>,
+    private val size: Int
 ) : BiomeGenerator(allowedBiomes) {
 
-    private val bitShift = scale + 2
+    private val bitShift = size + 2
     override val codec = CODEC
 
-    override fun get(x: Int, y: Int, z: Int) = possibleBiomes[Math.floorMod((x shr bitShift) + (z shr bitShift), possibleBiomes.size)]
+    override fun get(x: Int, y: Int, z: Int, sampler: Climate.Sampler) =
+        possibleBiomes[Math.floorMod((x shr bitShift) + (z shr bitShift), possibleBiomes.size)]
 
     companion object {
 
         val CODEC: Codec<CheckerboardBiomeGenerator> = RecordCodecBuilder.create {
             it.group(
                 KryptonBiome.CODEC.listOf().fieldOf("biomes").forGetter(CheckerboardBiomeGenerator::possibleBiomes),
-                Codec.intRange(0, 62).fieldOf("scale").orElse(2).forGetter(CheckerboardBiomeGenerator::scale)
+                Codec.intRange(0, 62).fieldOf("scale").orElse(2).forGetter(CheckerboardBiomeGenerator::size)
             ).apply(it, ::CheckerboardBiomeGenerator)
         }
     }

@@ -19,50 +19,74 @@
 package org.kryptonmc.krypton.world.block.palette
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.block.Block
+import org.kryptonmc.krypton.util.IntBiMap
 import org.kryptonmc.krypton.util.varIntBytes
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.block.BlockLoader
-import org.kryptonmc.krypton.world.block.toBlock
-import org.kryptonmc.nbt.ListTag
 
-class ArrayPalette(private val bits: Int, private val resizer: (Int, Block) -> Int) : Palette {
+@Suppress("UNCHECKED_CAST")
+class ArrayPalette<T> private constructor(
+    private val registry: IntBiMap<T>,
+    private val values: Array<T?>,
+    private val resizer: PaletteResizer<T>,
+    private val bits: Int,
+    size: Int
+) : Palette<T> {
 
-    private val values = arrayOfNulls<Block>(1 shl bits)
-    override var size = 0
+    override var size = size
+        private set
     override val serializedSize: Int
         get() {
             var temp = size.varIntBytes
-            for (i in 0 until size) temp += BlockLoader.STATES.idOf(values[i]!!)
+            for (i in 0 until size) {
+                temp += registry.idOf(values[i]!!).varIntBytes
+            }
             return temp
         }
 
-    override fun get(value: Block): Int {
+    private constructor(
+        registry: IntBiMap<T>,
+        bits: Int,
+        resizer: PaletteResizer<T>,
+        entries: List<T>
+    ) : this(registry, arrayOfNulls<Any>(1 shl bits) as Array<T?>, resizer, bits, entries.size) {
+        require(entries.size <= values.size) {
+            "Failed to initialise array palette with entries $entries! Entries size (${entries.size}) must be < palette size (${1 shl bits})!"
+        }
+        for (i in entries.indices) {
+            values[i] = entries[i]
+        }
+    }
+
+    override fun get(value: T): Int {
         for (i in 0 until size) {
             if (values[i] === value) return i
         }
 
         val size = size
-        return if (size < values.size) {
+        if (size < values.size) {
             values[size] = value
-            ++this.size
-            size
-        } else {
-            resizer(bits + 1, value)
+            this.size++
+            return size
         }
+        return resizer.onResize(bits + 1, value)
     }
 
-    override fun get(id: Int) = if (id in 0 until size) values[id] else null
+    override fun get(id: Int): T = values.getOrNull(id) ?: throw MissingPaletteEntryException(id)
 
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(size)
-        for (i in 0 until size) buf.writeVarInt(BlockLoader.STATES.idOf(values[i]!!))
+        for (i in 0 until size) {
+            buf.writeVarInt(registry.idOf(values[i]!!))
+        }
     }
 
-    override fun load(data: ListTag) {
-        for (i in data.indices) {
-            values[i] = data.getCompound(i).toBlock()
-        }
-        size = data.size
+    object Factory : Palette.Factory {
+
+        override fun <T> create(
+            bits: Int,
+            registry: IntBiMap<T>,
+            resizer: PaletteResizer<T>,
+            entries: List<T>
+        ): Palette<T> = ArrayPalette(registry, bits, resizer, entries)
     }
 }

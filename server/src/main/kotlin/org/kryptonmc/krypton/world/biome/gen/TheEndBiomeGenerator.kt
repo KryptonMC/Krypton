@@ -28,6 +28,7 @@ import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.noise.SimplexNoise
 import org.kryptonmc.krypton.util.random.WorldGenRandom
 import org.kryptonmc.krypton.world.biome.BiomeKeys
+import org.kryptonmc.krypton.world.biome.Climate
 import org.kryptonmc.krypton.world.biome.KryptonBiome
 import kotlin.math.abs
 import kotlin.math.max
@@ -59,7 +60,7 @@ class TheEndBiomeGenerator private constructor(
         biomes[BiomeKeys.END_BARRENS]!!
     )
 
-    override fun get(x: Int, y: Int, z: Int): Biome {
+    override fun get(x: Int, y: Int, z: Int, sampler: Climate.Sampler): Biome {
         val quartX = x shr 2
         val quartZ = z shr 2
         if (quartX.toLong() * quartX.toLong() + quartZ.toLong() * quartZ.toLong() <= ISLAND_CHUNK_DISTANCE_SQ) return end

@@ -52,7 +52,7 @@ private class KryptonCLI : CliktCommand(
         .flag()
         .help("Creates the config file and exits")
     private val useDataConverter by option("--upgrade-data", "--use-data-converter")
-        .flag()
+        .flag(default = true)
         .help("Whether data from older versions of Minecraft should be automatically upgraded or not.")
 
     // Config options

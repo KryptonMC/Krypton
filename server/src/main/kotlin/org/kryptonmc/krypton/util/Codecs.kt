@@ -18,10 +18,13 @@
  */
 package org.kryptonmc.krypton.util
 
+import com.google.common.collect.ImmutableList
+import com.mojang.datafixers.util.Either
 import com.mojang.datafixers.util.Pair
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import com.mojang.serialization.DynamicOps
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
@@ -97,6 +100,42 @@ object Codecs {
     }
 
     @JvmStatic
+    inline fun <P : Any, I> interval(
+        elementCodec: Codec<P>,
+        firstName: String,
+        secondName: String,
+        noinline constructor: (P, P) -> DataResult<I>,
+        crossinline extractFirst: (I) -> P,
+        crossinline extractSecond: (I) -> P
+    ): Codec<I> {
+        val codec = Codec.list(elementCodec).comapFlatMap({ list ->
+            list.fixedSize(2).flatMap {
+                val first = it[0]
+                val second = it[1]
+                constructor(first, second)
+            }
+        }, { ImmutableList.of(extractFirst(it), extractSecond(it)) })
+        val otherCodec = RecordCodecBuilder.create<Pair<P, P>> {
+            it.group(
+                elementCodec.fieldOf(firstName).forGetter(Pair<P, P>::getFirst),
+                elementCodec.fieldOf(secondName).forGetter(Pair<P, P>::getSecond)
+            ).apply(it) { first, second -> Pair.of(first, second) }
+        }.comapFlatMap({ constructor(it.first, it.second) }, { Pair.of(extractFirst(it), extractSecond(it)) })
+        val eitherCodec = EitherCodec(codec, otherCodec).xmap(
+            { either -> either.map({ it }, { it }) },
+            { Either.left(it) }
+        )
+        return Codec.either(elementCodec, eitherCodec).comapFlatMap(
+            { either -> either.map({ constructor(it, it) }, { DataResult.success(it) }) },
+            {
+                val min = extractFirst(it)
+                val max = extractSecond(it)
+                if (min == max) Either.left(min) else Either.right(it)
+            }
+        )
+    }
+
+    @JvmStatic
     fun <E : Keyed> forRegistry(registry: Registry<E>): Codec<E> = object : Codec<E> {
 
         override fun <T> encode(input: E, ops: DynamicOps<T>, prefix: T): DataResult<T> {
@@ -114,12 +153,14 @@ object Codecs {
         }
     }
 
+    @JvmStatic
     private fun parseKey(key: String) = try {
         DataResult.success(Key.key(key))
     } catch (exception: InvalidKeyException) {
         DataResult.error("$key is not a valid key! Exception: ${exception.message}")
     }
 
+    @JvmStatic
     private fun IntStream.fixedSizeIntArray(size: Int): DataResult<IntArray> {
         val limited = limit(size + 1L).toArray()
         return when {
@@ -130,5 +171,47 @@ object Codecs {
             )
             else -> DataResult.error("Input is not an array of integers with size $size!")
         }
+    }
+
+    @JvmStatic
+    @PublishedApi
+    internal fun <T> List<T>.fixedSize(size: Int): DataResult<List<T>> {
+        if (this.size != size) {
+            val errorMessage = "Input is not a list of exactly $size elements, was a list of ${this.size} elements!"
+            return if (this.size >= size) DataResult.error(errorMessage, subList(0, size)) else DataResult.error(errorMessage)
+        }
+        return DataResult.success(this)
+    }
+
+    class EitherCodec<F, S>(private val first: Codec<F>, private val second: Codec<S>) : Codec<Either<F, S>> {
+
+        override fun <T> decode(ops: DynamicOps<T>, input: T): DataResult<Pair<Either<F, S>, T>> {
+            val firstDecode = first.decode(ops, input).map { pair -> pair.mapFirst { Either.left<F, S>(it) } }
+            if (!firstDecode.error().isPresent) return firstDecode
+            val secondDecode = second.decode(ops, input).map { pair -> pair.mapFirst { Either.right<F, S>(it) } }
+            if (!secondDecode.error().isPresent) return secondDecode
+            return firstDecode.apply2({ _, second -> second }, secondDecode)
+        }
+
+        override fun <T> encode(input: Either<F, S>, ops: DynamicOps<T>, prefix: T): DataResult<T> = input.map(
+            { first.encode(it, ops, prefix) },
+            { second.encode(it, ops, prefix) }
+        )
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            other as EitherCodec<*, *>
+            return first == other.first && second == other.second
+        }
+
+        override fun hashCode(): Int {
+            var result = 1
+            result = 31 * result + first.hashCode()
+            result = 31 * result + second.hashCode()
+            return result
+        }
+
+        override fun toString(): String = "EitherCodec(first=$first, second=$second)"
     }
 }

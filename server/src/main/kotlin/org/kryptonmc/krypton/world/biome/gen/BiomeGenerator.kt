@@ -22,15 +22,18 @@ import com.mojang.serialization.Codec
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.world.biome.Climate
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
 import java.util.function.Function
 import kotlin.math.abs
 
-sealed class BiomeGenerator(val possibleBiomes: List<Biome>) : NoiseBiomeSource {
+sealed class BiomeGenerator(val possibleBiomes: List<Biome>) {
 
     abstract val codec: Codec<out BiomeGenerator>
+
+    abstract operator fun get(x: Int, y: Int, z: Int, sampler: Climate.Sampler): Biome
 
     open fun findBiomeHorizontal(
         x: Int,
@@ -38,6 +41,7 @@ sealed class BiomeGenerator(val possibleBiomes: List<Biome>) : NoiseBiomeSource 
         z: Int,
         radius: Int,
         random: Random,
+        sampler: Climate.Sampler,
         step: Int = 1,
         absolute: Boolean = false,
         predicate: (Biome) -> Boolean
@@ -59,7 +63,7 @@ sealed class BiomeGenerator(val possibleBiomes: List<Biome>) : NoiseBiomeSource 
                     }
                     val offX = quartX + xo
                     val offZ = quartZ + zo
-                    if (predicate(get(offX, quartY, offZ))) {
+                    if (predicate(get(offX, quartY, offZ, sampler))) {
                         if (position == null || random.nextInt(h + 1) == 0) {
                             position = Vector3i(offX shl 2, y, offZ shl 2)
                             if (absolute) return position
@@ -80,7 +84,6 @@ sealed class BiomeGenerator(val possibleBiomes: List<Biome>) : NoiseBiomeSource 
             InternalRegistries.BIOME_GENERATOR.register("fixed", FixedBiomeGenerator.CODEC)
             InternalRegistries.BIOME_GENERATOR.register("multi_noise", MultiNoiseBiomeGenerator.CODEC)
             InternalRegistries.BIOME_GENERATOR.register("checkerboard", CheckerboardBiomeGenerator.CODEC)
-            InternalRegistries.BIOME_GENERATOR.register("vanilla_layered", VanillaLayeredBiomeGenerator.CODEC)
             InternalRegistries.BIOME_GENERATOR.register("the_end", TheEndBiomeGenerator.CODEC)
         }
     }

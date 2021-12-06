@@ -98,13 +98,13 @@ object ClearCommand : InternalCommand {
         if (remaining == 0) return
 
         // Clear offhand
-        clearList(predicate, remaining, arrayOf(inventory.offHand)) { inventory.offHand = EmptyItemStack }
+        clearItem(predicate, remaining, inventory.offHand) { inventory.offHand = EmptyItemStack }
     }
 
     private fun clearList(
         predicate: ItemStackPredicate,
         originalRemaining: Int,
-        items: Array<KryptonItemStack>,
+        items: MutableList<KryptonItemStack>,
         removeItem: (Int) -> Unit
     ) : Int {
         var remaining = originalRemaining
@@ -124,5 +124,19 @@ object ClearCommand : InternalCommand {
             }
         }
         return remaining
+    }
+
+    private fun clearItem(
+        predicate: ItemStackPredicate,
+        remaining: Int,
+        item: KryptonItemStack,
+        removeItem: () -> Unit
+    ) {
+        if (!predicate(item)) return
+        when {
+            remaining == -1 -> removeItem()
+            remaining > item.amount -> removeItem()
+            else -> item.amount -= remaining
+        }
     }
 }

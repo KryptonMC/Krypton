@@ -23,9 +23,6 @@ import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.tags.BlockTags
 import org.kryptonmc.api.world.dimension.DimensionEffect
-import org.kryptonmc.krypton.world.biome.gen.BiomeZoomer
-import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetBiomeZoomer
-import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetConstantColumnBiomeZoomer
 
 object KryptonDimensionTypes {
 
@@ -42,12 +39,11 @@ object KryptonDimensionTypes {
         0F,
         null,
         BlockTags.INFINIBURN_OVERWORLD.key(),
-        0,
-        256,
-        256,
+        -64,
+        384,
+        384,
         1.0,
-        KryptonDimensionEffects.OVERWORLD,
-        FuzzyOffsetConstantColumnBiomeZoomer
+        KryptonDimensionEffects.OVERWORLD
     )
     @JvmField val OVERWORLD_CAVES = register(
         "overworld_caves",
@@ -62,12 +58,11 @@ object KryptonDimensionTypes {
         0F,
         null,
         BlockTags.INFINIBURN_OVERWORLD.key(),
-        0,
-        256,
-        256,
+        -64,
+        384,
+        384,
         1.0,
-        KryptonDimensionEffects.OVERWORLD,
-        FuzzyOffsetConstantColumnBiomeZoomer
+        KryptonDimensionEffects.OVERWORLD
     )
     @JvmField val THE_NETHER = register(
         "the_nether",
@@ -86,8 +81,7 @@ object KryptonDimensionTypes {
         256,
         128,
         8.0,
-        KryptonDimensionEffects.THE_NETHER,
-        FuzzyOffsetBiomeZoomer
+        KryptonDimensionEffects.THE_NETHER
     )
     @JvmField val THE_END = register(
         "the_end",
@@ -106,8 +100,7 @@ object KryptonDimensionTypes {
         256,
         256,
         1.0,
-        KryptonDimensionEffects.THE_END,
-        FuzzyOffsetBiomeZoomer
+        KryptonDimensionEffects.THE_END
     )
 
     @JvmStatic
@@ -128,8 +121,7 @@ object KryptonDimensionTypes {
         height: Int,
         logicalHeight: Int,
         coordinateScale: Double,
-        effects: DimensionEffect,
-        biomeZoomer: BiomeZoomer = FuzzyOffsetBiomeZoomer
+        effects: DimensionEffect
     ): KryptonDimensionType {
         val key = key(name)
         return Registries.DIMENSION_TYPE.register(
@@ -151,8 +143,7 @@ object KryptonDimensionTypes {
                 height,
                 logicalHeight,
                 coordinateScale,
-                effects,
-                biomeZoomer
+                effects
             )
         )
     }

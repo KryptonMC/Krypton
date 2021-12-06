@@ -17,6 +17,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.scoreboard.TeamMember
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.damage.DamageSource
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
 
@@ -25,6 +26,15 @@ import org.spongepowered.math.vector.Vector3d
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound.Emitter, TeamMember {
+
+    /**
+     * The ID of this entity.
+     *
+     * This should be unique whilst the server is running, however it should
+     * not be persisted in any way, shape, or form, as it is retrieved when the
+     * entity object is first created.
+     */
+    public val id: Int
 
     /**
      * The world this entity is currently in.
@@ -94,12 +104,22 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public var dimensions: EntityDimensions
 
     /**
+     * If this entity is a passenger of another entity.
+     */
+    public val isPassenger: Boolean
+
+    /**
      * The passengers this entity currently has.
      *
      * Will be empty if the entity has no passengers.
      */
     @get:JvmName("passengers")
     public val passengers: List<Entity>
+
+    /**
+     * If this entity is a vehicle for another entity.
+     */
+    public val isVehicle: Boolean
 
     /**
      * The entity that this entity is a passenger of.
@@ -134,9 +154,9 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public var isOnGround: Boolean
 
     /**
-     * If this entity is crouching/sneaking.
+     * If this entity is sneaking.
      */
-    public var isCrouching: Boolean
+    public var isSneaking: Boolean
 
     /**
      * If this entity is sprinting.
@@ -159,10 +179,16 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
     public var isGlowing: Boolean
 
     /**
-     * If this entity is currently flying with an
-     * [elytra][org.kryptonmc.api.item.ItemTypes.ELYTRA].
+     * If this entity is gliding with an elytra.
+     *
+     * Setting this value to true for non-player entities will cause this
+     * entity to glide as long as they are wearing an elytra in their
+     * chestplate slot.
+     *
+     * This can be used to detect when the player is gliding without using
+     * scoreboard statistics.
      */
-    public var isFlying: Boolean
+    public var isGliding: Boolean
 
     /**
      * If this entity is silenced, meaning it does not produce any sounds.
@@ -346,6 +372,15 @@ public interface Entity : Sender, HoverEventSource<HoverEvent.ShowEntity>, Sound
      * Ejects this entity from it's vehicle.
      */
     public fun ejectVehicle()
+
+    /**
+     * Damages this entity with the given [source].
+     *
+     * @param source the source of the damage
+     * @param damage the damage amount
+     * @return true if damaging this entity was successful, false otherwise
+     */
+    public fun damage(source: DamageSource, damage: Float): Boolean
 
     /**
      * Removes this entity from the world it is currently in.

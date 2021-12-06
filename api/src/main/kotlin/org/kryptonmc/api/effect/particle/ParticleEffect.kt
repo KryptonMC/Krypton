@@ -21,13 +21,14 @@ import org.kryptonmc.api.effect.particle.builder.NoteParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.ParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.builder.VibrationParticleEffectBuilder
 import org.kryptonmc.api.effect.particle.data.ParticleData
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.util.provide
 import org.spongepowered.math.vector.Vector3d
 
 /**
- * Holds information used to spawn particles for a [Player].
- * These effects can be reused.
+ * Holds information used to spawn particles for a player.
+ *
+ * This effect is entirely immutable, and so is safe for both storage and
+ * reuse.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 public interface ParticleEffect {

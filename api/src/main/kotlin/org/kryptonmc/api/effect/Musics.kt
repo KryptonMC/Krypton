@@ -28,11 +28,6 @@ public object Musics {
     @JvmField public val END: Music = get(SoundEvents.MUSIC_END)
     @JvmField public val UNDER_WATER: Music = get(SoundEvents.MUSIC_UNDER_WATER)
     @JvmField public val GAME: Music = get(SoundEvents.MUSIC_GAME)
-    @JvmField public val NETHER_WASTES: Music = get(SoundEvents.MUSIC_BIOME_NETHER_WASTES)
-    @JvmField public val SOUL_SAND_VALLEY: Music = get(SoundEvents.MUSIC_BIOME_SOUL_SAND_VALLEY)
-    @JvmField public val BASALT_DELTAS: Music = get(SoundEvents.MUSIC_BIOME_BASALT_DELTAS)
-    @JvmField public val CRIMSON_FOREST: Music = get(SoundEvents.MUSIC_BIOME_CRIMSON_FOREST)
-    @JvmField public val WARPED_FOREST: Music = get(SoundEvents.MUSIC_BIOME_WARPED_FOREST)
 
     // @formatter:off
     private fun get(sound: SoundEvent): Music = Registries.MUSIC[sound.key()]!!

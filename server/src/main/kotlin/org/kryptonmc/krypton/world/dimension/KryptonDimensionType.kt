@@ -28,8 +28,6 @@ import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.util.Codecs
 import org.kryptonmc.krypton.util.Vectors
 import org.kryptonmc.krypton.util.getIfPresent
-import org.kryptonmc.krypton.world.biome.gen.BiomeZoomer
-import org.kryptonmc.krypton.world.biome.gen.FuzzyOffsetBiomeZoomer
 import java.util.Optional
 
 @JvmRecord
@@ -50,8 +48,7 @@ data class KryptonDimensionType(
     override val height: Int,
     override val logicalHeight: Int,
     override val coordinateScale: Double,
-    override val effects: DimensionEffect,
-    val biomeZoomer: BiomeZoomer = FuzzyOffsetBiomeZoomer
+    override val effects: DimensionEffect
 ) : DimensionType {
 
     override fun key(): Key = key

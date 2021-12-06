@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.adventure.toPlainText
+import org.kryptonmc.api.entity.ArmorSlot
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.Hand
@@ -26,11 +27,13 @@ import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.attribute.Attribute
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.krypton.entity.attribute.AttributeMap
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.memory.Brain
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
@@ -49,18 +52,45 @@ abstract class KryptonLivingEntity(
     attributeSupplier: AttributeSupplier
 ) : KryptonEntity(world, type), LivingEntity {
 
+    private val maxHealth: Float
+        get() = attributes.value(AttributeTypes.MAX_HEALTH).toFloat()
     override var absorption = 0F
     final override val isAlive: Boolean
         get() = super.isAlive && health > 0F
     final override var isDead = false
     final override var deathTime: Short = 0
     final override var hurtTime: Short = 0
-    final override var isFallFlying = false
     final override var lastHurtTimestamp = 0
     override var isBaby = false
+    private var tickCount = 0
     val attributes = AttributeMap(attributeSupplier)
-    private val brain = Brain(mutableListOf())
+    open val brain: Brain<*> = Brain<KryptonLivingEntity>()
 
+    val killer: KryptonLivingEntity?
+        get() {
+            // TODO: Check combat tracker here
+            if (lastHurtByPlayer != null) return lastHurtByPlayer
+            if (lastHurtByMob != null) return lastHurtByMob
+            return null
+        }
+    var lastHurtByMob: KryptonLivingEntity? = null
+        set(value) {
+            field = value
+            lastHurtByMobTime = tickCount
+        }
+    private var lastHurtByMobTime = 0
+    var lastHurtByPlayer: KryptonPlayer? = null
+        set(value) {
+            field = value
+            lastHurtByPlayerTime = tickCount
+        }
+    private var lastHurtByPlayerTime = 0
+
+    abstract override val armorSlots: Iterable<KryptonItemStack>
+    open val canBeSeenAsEnemy: Boolean
+        get() = !isInvulnerable && canBeSeenByAnyone
+    open val canBeSeenByAnyone: Boolean
+        get() = !isSpectator && isAlive
     open val soundVolume: Float
         get() = 1F
     open val voicePitch: Float
@@ -77,6 +107,41 @@ abstract class KryptonLivingEntity(
         data.add(MetadataKeys.LIVING.ARROWS)
         data.add(MetadataKeys.LIVING.STINGERS)
         data.add(MetadataKeys.LIVING.BED_LOCATION)
+        data[MetadataKeys.LIVING.HEALTH] = maxHealth
+    }
+
+    abstract fun equipment(slot: EquipmentSlot): KryptonItemStack
+
+    abstract override fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack)
+
+    fun heldItem(hand: Hand): KryptonItemStack {
+        if (hand == Hand.MAIN) return equipment(EquipmentSlot.MAIN_HAND)
+        if (hand == Hand.OFF) return equipment(EquipmentSlot.OFF_HAND)
+        error("Tried to get held item for hand $hand that should not exist! Please sure that no plugins are injecting entries in to enums!")
+    }
+
+    fun setHeldItem(hand: Hand, item: KryptonItemStack) {
+        if (hand == Hand.MAIN) {
+            setEquipment(EquipmentSlot.MAIN_HAND, item)
+            return
+        }
+        if (hand == Hand.OFF) {
+            setEquipment(EquipmentSlot.OFF_HAND, item)
+            return
+        }
+        error("Tried to set held item for hand $hand to item $item, when this hand should not exist! Please sure that no plugins are injecting " +
+                "entries in to enums!")
+    }
+
+    fun armor(slot: ArmorSlot): KryptonItemStack = equipment(EquipmentSlot.fromArmorSlot(slot))
+
+    fun setArmor(slot: ArmorSlot, item: KryptonItemStack) {
+        setEquipment(EquipmentSlot.fromArmorSlot(slot), item)
+    }
+
+    fun canAttack(target: KryptonLivingEntity): Boolean {
+        if (target is KryptonPlayer && world.difficulty === Difficulty.PEACEFUL) return false
+        return target.canBeSeenAsEnemy
     }
 
     override fun attribute(type: AttributeType): Attribute? = attributes[type]
@@ -88,10 +153,10 @@ abstract class KryptonLivingEntity(
         if (tag.contains("Brain", CompoundTag.ID)) brain.load(tag.getCompound("Brain"))
 
         // Values
-        absorption = tag.getFloat("AbsorptionAmount")
+        if (tag.contains("Health", 99)) health = tag.getFloat("Health")
+        if (tag.getBoolean("FallFlying")) isGliding = true
+        absorption = tag.getFloat("AbsorptionAmount").coerceAtLeast(0F)
         deathTime = tag.getShort("DeathTime")
-        isFallFlying = tag.getBoolean("FallFlying")
-        health = tag.getFloat("Health")
         lastHurtTimestamp = tag.getInt("HurtByTimestamp")
         hurtTime = tag.getShort("HurtTime")
 
@@ -104,16 +169,8 @@ abstract class KryptonLivingEntity(
         }
 
         // Sleeping coordinates
-        if (
-            tag.contains("SleepingX", 99) &&
-            tag.contains("SleepingY", 99) &&
-            tag.contains("SleepingZ", 99)
-        ) {
-            sleepingPosition = Vector3i(
-                tag.getInt("SleepingX"),
-                tag.getInt("SleepingY"),
-                tag.getInt("SleepingZ")
-            )
+        if (tag.contains("SleepingX", 99) && tag.contains("SleepingY", 99) && tag.contains("SleepingZ", 99)) {
+            sleepingPosition = Vector3i(tag.getInt("SleepingX"), tag.getInt("SleepingY"), tag.getInt("SleepingZ"))
             pose = Pose.SLEEPING
         }
     }
@@ -123,7 +180,7 @@ abstract class KryptonLivingEntity(
         put("Attributes", attributes.save())
         put("Brain", brain.save())
         short("DeathTime", deathTime)
-        boolean("FallFlying", isFallFlying)
+        boolean("FallFlying", isGliding)
         float("Health", health)
         int("HurtByTimestamp", lastHurtTimestamp)
         short("HurtTime", hurtTime)

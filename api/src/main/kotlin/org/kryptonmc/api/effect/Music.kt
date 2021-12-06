@@ -12,7 +12,6 @@ import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.api.util.CataloguedBy
 import org.kryptonmc.api.util.provide
 
 /**
@@ -21,7 +20,6 @@ import org.kryptonmc.api.util.provide
  * between this time frame.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-@CataloguedBy(Musics::class)
 public interface Music {
 
     /**

@@ -22,32 +22,28 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.fluid.Fluids
+import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ticket.Ticket
+import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.nbt.CompoundTag
 import org.spongepowered.math.vector.Vector3i
-import java.util.EnumMap
 
 @Suppress("INAPPLICABLE_JVM_NAME")
 class KryptonChunk(
-    @get:JvmName("world") override val world: KryptonWorld,
-    override val position: ChunkPosition,
-    override val sections: Array<ChunkSection?>,
-    @get:JvmName("biomes") override val biomes: KryptonBiomeContainer,
-    @get:JvmName("lastUpdate") override var lastUpdate: Long,
-    @get:JvmName("inhabitedTime") override var inhabitedTime: Long,
+    override val world: KryptonWorld,
+    position: ChunkPosition,
+    sections: Array<ChunkSection?>,
+    override var lastUpdate: Long,
+    inhabitedTime: Long,
     val ticket: Ticket<*>,
     val carvingMasks: Pair<ByteArray, ByteArray>,
     val structures: CompoundTag
-) : Chunk, ChunkAccessor {
-
-    override val heightmaps = EnumMap<Heightmap.Type, Heightmap>(Heightmap.Type::class.java)
+) : ChunkAccessor(position, world, inhabitedTime, sections), Chunk {
 
     override val status = ChunkStatus.FULL
-    override var isLightCorrect = false
-    override var isUnsaved = false
     override val height = world.height
     override val minimumBuildHeight = world.minimumBuildHeight
 
@@ -61,43 +57,43 @@ class KryptonChunk(
         @JvmName("z") get() = position.z
 
     override fun getBlock(x: Int, y: Int, z: Int): Block {
+        if (world.isDebug) {
+            var block: Block? = null
+            if (y == 60) block = Blocks.BARRIER
+            if (y == 70) block = DebugGenerator.blockAt(x, z)
+            return block ?: Blocks.AIR
+        }
         val sectionIndex = sectionIndex(y)
-        if (sectionIndex in sections.indices) {
+        if (sectionIndex >= 0 && sectionIndex < sections.size) {
             val section = sections[sectionIndex]
-            if (section != null && !section.isEmpty()) return section[x and 15, y and 15, z and 15]
+            if (!section.hasOnlyAir()) return section[x and 15, y and 15, z and 15]
         }
         return Blocks.AIR
     }
 
-    override fun getBlock(position: Vector3i) = getBlock(position.x(), position.y(), position.z())
+    override fun getBlock(position: Vector3i): Block = getBlock(position.x(), position.y(), position.z())
 
     override fun getFluid(x: Int, y: Int, z: Int): Fluid {
         val sectionIndex = sectionIndex(y)
-        if (sectionIndex in sections.indices) {
+        if (sectionIndex >= 0 && sectionIndex < sections.size) {
             val section = sections[sectionIndex]
-            if (section != null && !section.isEmpty()) return section[x and 15, y and 15, z and 15].asFluid()
+            if (!section.hasOnlyAir()) return section[x and 15, y and 15, z and 15].asFluid()
         }
         return Fluids.EMPTY
     }
 
-    override fun getFluid(position: Vector3i) = getFluid(position.x(), position.y(), position.z())
+    override fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
 
     override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
-        // Get the section
-        val sectionIndex = sectionIndex(y)
-        var section = sections[sectionIndex]
-        if (section == null) {
-            if (block.isAir) return
-            section = ChunkSection(y shr 4)
-            sections[sectionIndex] = section
-        }
+        val section = sections[sectionIndex(y)]
+        if (section.hasOnlyAir() && block.isAir) return
 
         // Get the local coordinates and set the new state in the section
         val localX = x and 15
         val localY = y and 15
         val localZ = z and 15
         val oldState = section.set(localX, localY, localZ, block)
-        if (oldState == block) return
+        if (oldState === block) return
 
         // Update the heightmaps
         heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING).update(localX, y, localZ, block)
@@ -109,14 +105,11 @@ class KryptonChunk(
 
     override fun setBlock(position: Vector3i, block: Block) = setBlock(position.x(), position.y(), position.z(), block)
 
+    override fun getBiome(x: Int, y: Int, z: Int): Biome = getNoiseBiome(x, y, z)
+
+    override fun getBiome(position: Vector3i): Biome = getBiome(position.x(), position.y(), position.z())
+
     fun tick(playerCount: Int) {
         inhabitedTime += playerCount
     }
-
-    override fun getOrCreateHeightmap(type: Heightmap.Type): Heightmap = heightmaps.getOrPut(type) { Heightmap(this, type) }
-
-    override fun getHeight(type: Heightmap.Type, x: Int, z: Int) = heightmaps[type]!!.firstAvailable(x and 15, z and 15) - 1
-
-    override fun setHeightmap(type: Heightmap.Type, data: LongArray) =
-        heightmaps.getOrPut(type) { Heightmap(this, type) }.setData(this, type, data)
 }

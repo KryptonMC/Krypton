@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.effect
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.util.Catalogue
 
 object KryptonMusics {
 
@@ -37,13 +36,27 @@ object KryptonMusics {
     @JvmField val CREDITS = register(SoundEvents.MUSIC_CREDITS, 0, 0, true)
     @JvmField val END_BOSS = register(SoundEvents.MUSIC_DRAGON, 0, 0, true)
     @JvmField val END = register(SoundEvents.MUSIC_END, FIVE_MINUTES, TWENTY_MINUTES, true)
-    @JvmField val UNDER_WATER = register(SoundEvents.MUSIC_UNDER_WATER, TEN_MINUTES, TWENTY_MINUTES, false)
-    @JvmField val GAME = register(SoundEvents.MUSIC_GAME, TEN_MINUTES, TWENTY_MINUTES, false)
-    @JvmField val NETHER_WASTES = register(SoundEvents.MUSIC_BIOME_NETHER_WASTES, TEN_MINUTES, TWENTY_MINUTES, false)
-    @JvmField val SOUL_SAND_VALLEY = register(SoundEvents.MUSIC_BIOME_SOUL_SAND_VALLEY, TEN_MINUTES, TWENTY_MINUTES, false)
-    @JvmField val BASALT_DELTAS = register(SoundEvents.MUSIC_BIOME_BASALT_DELTAS, TEN_MINUTES, TWENTY_MINUTES, false)
-    @JvmField val CRIMSON_FOREST = register(SoundEvents.MUSIC_BIOME_CRIMSON_FOREST, TEN_MINUTES, TWENTY_MINUTES, false)
-    @JvmField val WARPED_FOREST = register(SoundEvents.MUSIC_BIOME_WARPED_FOREST, TEN_MINUTES, TWENTY_MINUTES, false)
+    @JvmField val UNDER_WATER = registerGame(SoundEvents.MUSIC_UNDER_WATER)
+    @JvmField val GAME = registerGame(SoundEvents.MUSIC_GAME)
+    @JvmField val NETHER_WASTES = game(SoundEvents.MUSIC_BIOME_NETHER_WASTES)
+    @JvmField val SOUL_SAND_VALLEY = game(SoundEvents.MUSIC_BIOME_SOUL_SAND_VALLEY)
+    @JvmField val BASALT_DELTAS = game(SoundEvents.MUSIC_BIOME_BASALT_DELTAS)
+    @JvmField val CRIMSON_FOREST = game(SoundEvents.MUSIC_BIOME_CRIMSON_FOREST)
+    @JvmField val WARPED_FOREST = game(SoundEvents.MUSIC_BIOME_WARPED_FOREST)
+    @JvmField val MEADOW = game(SoundEvents.MUSIC_BIOME_MEADOW)
+    @JvmField val FROZEN_PEAKS = game(SoundEvents.MUSIC_BIOME_FROZEN_PEAKS)
+    @JvmField val JAGGED_PEAKS = game(SoundEvents.MUSIC_BIOME_JAGGED_PEAKS)
+    @JvmField val STONY_PEAKS = game(SoundEvents.MUSIC_BIOME_STONY_PEAKS)
+    @JvmField val SNOWY_SLOPES = game(SoundEvents.MUSIC_BIOME_SNOWY_SLOPES)
+    @JvmField val GROVE = game(SoundEvents.MUSIC_BIOME_GROVE)
+    @JvmField val LUSH_CAVES = game(SoundEvents.MUSIC_BIOME_LUSH_CAVES)
+    @JvmField val DRIPSTONE_CAVES = game(SoundEvents.MUSIC_BIOME_DRIPSTONE_CAVES)
+
+    @JvmStatic
+    private fun game(sound: SoundEvent): KryptonMusic = KryptonMusic(sound, TEN_MINUTES, TWENTY_MINUTES, false)
+
+    @JvmStatic
+    private fun registerGame(sound: SoundEvent): KryptonMusic = Registries.MUSIC.register(sound.key(), game(sound))
 
     @JvmStatic
     private fun register(sound: SoundEvent, minDelay: Int, maxDelay: Int, replace: Boolean): KryptonMusic = Registries.MUSIC.register(

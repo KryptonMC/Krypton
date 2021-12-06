@@ -52,6 +52,12 @@ public interface User : Identified {
     public val player: Player?
 
     /**
+     * If this user has joined this server before.
+     */
+    @get:JvmName("hasJoinedBefore")
+    public val hasJoinedBefore: Boolean
+
+    /**
      * The time that this user first joined the server.
      */
     @get:JvmName("firstJoined")
@@ -66,5 +72,5 @@ public interface User : Identified {
     /**
      * If this user is vanished, meaning they cannot be seen by other players.
      */
-    public var isVanished: Boolean
+    public val isVanished: Boolean
 }

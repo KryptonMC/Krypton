@@ -18,7 +18,12 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityCategory
-import org.kryptonmc.api.entity.animal.cat.CatType
+import org.kryptonmc.api.entity.animal.type.AxolotlVariant
+import org.kryptonmc.api.entity.animal.type.CatType
+import org.kryptonmc.api.entity.animal.type.MooshroomType
+import org.kryptonmc.api.entity.animal.type.FoxType
+import org.kryptonmc.api.entity.animal.type.PandaGene
+import org.kryptonmc.api.entity.animal.type.RabbitType
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.entity.hanging.Picture
@@ -48,6 +53,7 @@ import org.kryptonmc.api.scoreboard.Visibility
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.api.util.Catalogue
+import org.kryptonmc.api.world.damage.type.DamageType
 
 /**
  * All the built-in registry keys for various registries.
@@ -103,6 +109,12 @@ public object ResourceKeys {
     @JvmField public val TAG_TYPES: ResourceKey<out Registry<TagType<*>>> = krypton("tag_types")
     @JvmField public val BAN_TYPES: ResourceKey<out Registry<BanType>> = krypton("ban_types")
     @JvmField public val CAT_TYPES: ResourceKey<out Registry<CatType>> = krypton("cat_types")
+    @JvmField public val MOOSHROOM_TYPES: ResourceKey<out Registry<MooshroomType>> = krypton("mooshroom_types")
+    @JvmField public val FOX_TYPES: ResourceKey<out Registry<FoxType>> = krypton("fox_types")
+    @JvmField public val PANDA_GENES: ResourceKey<out Registry<PandaGene>> = krypton("panda_genes")
+    @JvmField public val RABBIT_TYPES: ResourceKey<out Registry<RabbitType>> = krypton("rabbit_types")
+    @JvmField public val AXOLOTL_VARIANTS: ResourceKey<out Registry<AxolotlVariant>> = krypton("axolotl_variants")
+    @JvmField public val DAMAGE_SOURCES: ResourceKey<out Registry<DamageType>> = krypton("damage_sources")
 
     /**
      * Creates a new registry key with the given [key] as its base key.

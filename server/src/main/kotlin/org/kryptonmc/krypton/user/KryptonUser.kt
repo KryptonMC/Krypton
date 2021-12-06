@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.user
 
 import net.kyori.adventure.identity.Identity
 import org.kryptonmc.api.auth.GameProfile
-import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.user.User
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
@@ -46,6 +45,12 @@ class KryptonUser(
         get() = player != null
     override val player: KryptonPlayer?
         get() = server.player(uuid)
+    override val hasJoinedBefore: Boolean
+        get() {
+            val player = player
+            if (player != null) return player.hasJoinedBefore
+            return data.isNotEmpty()
+        }
     override val firstJoined: Instant
         get() {
             val player = player
@@ -64,20 +69,8 @@ class KryptonUser(
             lastJoinedCached = instant
             return instant
         }
-    override var isVanished: Boolean
-        get() {
-            val player = player
-            if (player != null) return player.isVanished
-            return data.getBoolean("vanished")
-        }
-        set(value) {
-            val player = player
-            if (player != null) {
-                player.isVanished = value
-                return
-            }
-            data.putBoolean("vanished", value)
-        }
+    override val isVanished: Boolean
+        get() = player?.isVanished ?: false
 
     override fun identity(): Identity = identity
 }

@@ -24,7 +24,12 @@ import org.kryptonmc.krypton.packet.Packet
 /**
  * Sent when the client pings the server.
  */
-class PacketInPing(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInPing(val payload: Long) : Packet {
 
-    val payload = buf.readLong()
+    constructor(buf: ByteBuf) : this(buf.readLong())
+
+    override fun write(buf: ByteBuf) {
+        buf.writeLong(payload)
+    }
 }

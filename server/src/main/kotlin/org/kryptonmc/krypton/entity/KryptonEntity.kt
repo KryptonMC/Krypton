@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.entity
 
+import com.google.common.collect.Iterables
 import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.sound.Sound
@@ -32,28 +33,39 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.api.util.BoundingBox
+import org.kryptonmc.api.world.damage.DamageSource
+import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
 import org.kryptonmc.krypton.entity.metadata.MetadataKey
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.packet.out.play.*
-import org.kryptonmc.krypton.tags.KryptonTagTypes
+import org.kryptonmc.krypton.packet.out.play.PacketOutDestroyEntities
+import org.kryptonmc.krypton.packet.out.play.PacketOutEntityVelocity
+import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
+import org.kryptonmc.krypton.packet.out.play.PacketOutMetadata
+import org.kryptonmc.krypton.packet.out.play.PacketOutSetPassengers
+import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnEntity
 import org.kryptonmc.krypton.tags.KryptonTagManager
+import org.kryptonmc.krypton.tags.KryptonTagTypes
 import org.kryptonmc.krypton.util.ceil
 import org.kryptonmc.krypton.util.floor
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.nextUUID
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.kryptonmc.krypton.world.fluid.handler
+import org.kryptonmc.krypton.world.damage.KryptonDamageSource
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.DoubleTag
 import org.kryptonmc.nbt.FloatTag
+import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
 import org.spongepowered.math.vector.Vector2f
@@ -72,7 +84,7 @@ abstract class KryptonEntity(
     override val type: EntityType<out Entity>
 ) : Entity {
 
-    val id = NEXT_ENTITY_ID.incrementAndGet()
+    final override val id = NEXT_ENTITY_ID.incrementAndGet()
     override var uuid = Random.nextUUID()
         set(value) {
             field = value
@@ -112,23 +124,48 @@ abstract class KryptonEntity(
     final override var isOnGround = true
     final override var ticksExisted = 0
     final override var fireTicks: Short = 0
-    final override var isInvulnerable = false
+    override var isInvulnerable = false
     final override var fallDistance = 0F
+
+    final override val isPassenger: Boolean
+        get() = vehicle != null
+    final override val isVehicle: Boolean
+        get() = passengers.isNotEmpty()
     final override val passengers = mutableListOf<Entity>()
+    final override var vehicle: Entity? = null
+        set(value) {
+            if (value !is KryptonEntity) return
+            field = value
+        }
+    val rootVehicle: KryptonEntity
+        get() {
+            var root: KryptonEntity = this
+            while (root.isPassenger) {
+                root = root.vehicle!! as KryptonEntity
+            }
+            return root
+        }
+    val hasExactlyOnePlayerPassenger: Boolean
+        get() = indirectPassengersSequence.count { it is Player } == 1
+    val selfAndPassengers: Sequence<Entity>
+        get() = sequenceOf(this).plus(indirectPassengersSequence)
+    val passengersAndSelf: Sequence<Entity>
+        get() = indirectPassengersSequence.plus(this)
+    val indirectPassengers: Iterable<Entity>
+        get() = Iterable { indirectPassengersSequence.iterator() }
+    private val indirectPassengersSequence: Sequence<Entity>
+        get() = passengers.asSequence().flatMap { (it as KryptonEntity).selfAndPassengers }
+
     final override var inWater = false
     final override var inLava = false
     final override var underwater = false
-
-    override var vehicle: Entity? = null
-        set(value) {
-            if (value !is KryptonEntity) return // plugins are naughty!
-            field = value
-        }
 
     open val maxAirTicks: Int
         get() = 300
     open val isAlive: Boolean
         get() = !isRemoved
+    open val isSpectator: Boolean
+        get() = false
     protected open val pushedByFluid: Boolean
         get() = true
     override val isRideable: Boolean
@@ -143,6 +180,13 @@ abstract class KryptonEntity(
     protected open val highSpeedSplashSound: SoundEvent
         get() = SoundEvents.GENERIC_SPLASH
 
+    open val handSlots: Iterable<KryptonItemStack>
+        get() = emptyList()
+    open val armorSlots: Iterable<KryptonItemStack>
+        get() = emptyList()
+    open val allSlots: Iterable<KryptonItemStack>
+        get() = Iterables.concat(handSlots, armorSlots)
+
     val viewers: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
     var noPhysics = false
     private var oldVelocity = Vector3d.ZERO
@@ -152,6 +196,7 @@ abstract class KryptonEntity(
     private var portalCooldown = 0
     var isRemoved = false
         private set
+    private var wasDamaged = false
     private var tickCount = 0
     private var gravityTickCount = 0
 
@@ -230,6 +275,17 @@ abstract class KryptonEntity(
         float("FallDistance", fallDistance)
     }
 
+    fun saveWithPassengers(): CompoundTag.Builder = save().apply {
+        if (isVehicle) {
+            val passengerList = MutableListTag()
+            passengers.forEach {
+                if (it !is KryptonEntity) return@forEach
+                passengerList.add(it.saveWithPassengers().build())
+            }
+            if (passengerList.isNotEmpty()) put("Passengers", passengerList)
+        }
+    }
+
     open fun addViewer(player: KryptonPlayer): Boolean {
         if (!viewers.add(player)) return false
         player.session.send(getSpawnPacket())
@@ -253,7 +309,14 @@ abstract class KryptonEntity(
         updateWater()
         updateUnderFluid()
         updateSwimming()
+        if (data.isDirty) viewers.forEach { it.session.send(PacketOutMetadata(id, data.dirty)) }
+        if (wasDamaged) {
+            viewers.forEach { it.session.send(PacketOutEntityVelocity(this)) }
+            wasDamaged = false
+        }
     }
+
+    open fun setEquipment(slot: EquipmentSlot, item: KryptonItemStack) = Unit
 
     protected open fun getSpawnPacket(): Packet = PacketOutSpawnEntity(this)
 
@@ -300,12 +363,12 @@ abstract class KryptonEntity(
                 for (z in minZ..maxZ) {
                     val fluid = world.getFluid(x, y, z)
                     if (!tag.contains(fluid)) continue
-                    val height = y.toDouble() + fluid.handler().height(fluid, x, y, z, world)
+                    val height = y.toDouble() + fluid.handler.height(fluid, x, y, z, world)
                     if (height < minY) continue
                     shouldPush = true
                     amount = max(height - minY, amount)
                     if (!pushed) continue
-                    var flow = fluid.handler().flow(fluid, x, y, z, world)
+                    var flow = fluid.handler.flow(fluid, x, y, z, world)
                     if (amount < 0.4) flow = flow.mul(amount)
                     offset = offset.add(flow)
                     ++pushes
@@ -348,7 +411,7 @@ abstract class KryptonEntity(
         KryptonTagManager.tags[KryptonTagTypes.FLUIDS]!!.forEach {
             it as Tag<Fluid>
             if (!it.contains(fluid)) return@forEach
-            val height = y + fluid.handler().height(fluid, x, y.floor(), z, world)
+            val height = y + fluid.handler.height(fluid, x, y.floor(), z, world)
             if (height > y) fluidOnEyes = it
             return
         }
@@ -380,6 +443,24 @@ abstract class KryptonEntity(
     final override fun reposition(x: Double, y: Double, z: Double, yaw: Float, pitch: Float) {
         moveTo(x, y, z)
         look(yaw, pitch)
+    }
+
+    open fun isInvulnerableTo(source: KryptonDamageSource): Boolean =
+        isRemoved || isInvulnerable && source.type !== DamageTypes.VOID && !source.isCreativePlayer
+
+    open fun damage(source: KryptonDamageSource, damage: Float): Boolean {
+        if (isInvulnerableTo(source)) return false
+        markDamaged()
+        return false
+    }
+
+    protected fun markDamaged() {
+        wasDamaged = true
+    }
+
+    final override fun damage(source: DamageSource, damage: Float): Boolean {
+        if (source !is KryptonDamageSource) return false
+        return damage(source, damage)
     }
 
     override fun getPermissionValue(permission: String) = TriState.FALSE
@@ -427,7 +508,7 @@ abstract class KryptonEntity(
     final override var isOnFire: Boolean
         get() = getSharedFlag(0)
         set(value) = setSharedFlag(0, value)
-    final override var isCrouching: Boolean
+    final override var isSneaking: Boolean
         get() = getSharedFlag(1)
         set(value) = setSharedFlag(1, value)
     final override var isSprinting: Boolean
@@ -436,13 +517,13 @@ abstract class KryptonEntity(
     final override var isSwimming: Boolean
         get() = getSharedFlag(4)
         set(value) = setSharedFlag(4, value)
-    override var isInvisible: Boolean
+    final override var isInvisible: Boolean
         get() = getSharedFlag(5)
         set(value) = setSharedFlag(5, value)
     final override var isGlowing: Boolean
         get() = getSharedFlag(6)
         set(value) = setSharedFlag(6, value)
-    final override var isFlying: Boolean
+    override var isGliding: Boolean
         get() = getSharedFlag(7)
         set(value) = setSharedFlag(7, value)
     final override var air: Int

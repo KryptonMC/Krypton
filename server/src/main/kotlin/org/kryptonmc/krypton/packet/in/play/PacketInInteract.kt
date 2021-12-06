@@ -23,16 +23,48 @@ import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.readVarInt
+import org.kryptonmc.krypton.util.writeEnum
+import org.kryptonmc.krypton.util.writeVarInt
 
-class PacketInInteract(buf: ByteBuf) : Packet {
+@JvmRecord
+data class PacketInInteract(
+    val entityId: Int,
+    val type: Type,
+    val x: Float,
+    val y: Float,
+    val z: Float,
+    val hand: Hand?,
+    val sneaking: Boolean
+) : Packet {
 
-    val entityId = buf.readVarInt()
-    val type = buf.readEnum<Type>()
-    val x = if (type === Type.INTERACT_AT) buf.readFloat() else 0F
-    val y = if (type === Type.INTERACT_AT) buf.readFloat() else 0F
-    val z = if (type === Type.INTERACT_AT) buf.readFloat() else 0F
-    val hand = if (type === Type.INTERACT || type === Type.INTERACT_AT) buf.readEnum<Hand>() else null
-    val sneaking = buf.readBoolean()
+    constructor(buf: ByteBuf) : this(
+        buf,
+        buf.readVarInt(),
+        buf.readEnum<Type>()
+    )
+
+    private constructor(buf: ByteBuf, entityId: Int, type: Type) : this(
+        entityId,
+        type,
+        if (type == Type.INTERACT_AT) buf.readFloat() else 0F,
+        if (type == Type.INTERACT_AT) buf.readFloat() else 0F,
+        if (type == Type.INTERACT_AT) buf.readFloat() else 0F,
+        if (type == Type.INTERACT || type == Type.INTERACT_AT) buf.readEnum<Hand>() else null,
+        buf.readBoolean()
+    )
+
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(entityId)
+        buf.writeEnum(type)
+        if (type != Type.ATTACK) {
+            if (type == Type.INTERACT_AT) {
+                buf.writeFloat(x)
+                buf.writeFloat(y)
+                buf.writeFloat(z)
+            }
+            if (hand != null) buf.writeEnum(hand)
+        }
+    }
 
     enum class Type {
 

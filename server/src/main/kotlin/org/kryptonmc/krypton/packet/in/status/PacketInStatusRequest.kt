@@ -18,9 +18,13 @@
  */
 package org.kryptonmc.krypton.packet.`in`.status
 
+import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.packet.Packet
 
 /**
  * Sent by the client to request the server's status information
  */
-object PacketInStatusRequest : Packet
+object PacketInStatusRequest : Packet {
+
+    override fun write(buf: ByteBuf) = Unit
+}

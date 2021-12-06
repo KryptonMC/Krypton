@@ -8,10 +8,6 @@
  */
 package org.kryptonmc.api.tags
 
-import kotlin.String
-import kotlin.Suppress
-import kotlin.jvm.JvmField
-import kotlin.jvm.JvmStatic
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.util.Catalogue
@@ -77,6 +73,8 @@ public object ItemTags {
     @JvmField public val NON_FLAMMABLE_WOOD: Tag<ItemType> = get("non_flammable_wood")
     @JvmField public val SOUL_FIRE_BASE_BLOCKS: Tag<ItemType> = get("soul_fire_base_blocks")
     @JvmField public val CANDLES: Tag<ItemType> = get("candles")
+    @JvmField public val DIRT: Tag<ItemType> = get("dirt")
+    @JvmField public val TERRACOTTA: Tag<ItemType> = get("terracotta")
     @JvmField public val BOATS: Tag<ItemType> = get("boats")
     @JvmField public val FISHES: Tag<ItemType> = get("fishes")
     @JvmField public val SIGNS: Tag<ItemType> = get("signs")

@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.network.data
 
 import com.google.gson.GsonBuilder
 import me.bardy.gsonkt.fromJson
-import me.bardy.gsonkt.registerTypeAdapter
+import me.bardy.gsonkt.registerTypeHierarchyAdapter
 import org.kryptonmc.krypton.auth.KryptonProfileProperty
 import org.kryptonmc.krypton.util.MojangUUIDTypeAdapter
 import java.util.UUID
@@ -36,7 +36,7 @@ data class LegacyForwardedData(
     companion object {
 
         private val GSON = GsonBuilder()
-            .registerTypeAdapter<KryptonProfileProperty>(KryptonProfileProperty)
+            .registerTypeHierarchyAdapter<KryptonProfileProperty>(KryptonProfileProperty)
             .create()
 
         fun parse(string: String): LegacyForwardedData? {

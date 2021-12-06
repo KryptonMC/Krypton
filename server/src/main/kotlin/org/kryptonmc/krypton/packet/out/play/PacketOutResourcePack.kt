@@ -30,7 +30,7 @@ data class PacketOutResourcePack(
     val uri: String,
     val hash: String,
     val forced: Boolean,
-    val prompt: Component
+    val prompt: Component?
 ) : Packet {
 
     constructor(pack: ResourcePack) : this(pack.uri.toString(), pack.hash, pack.isForced, pack.promptMessage)
@@ -39,11 +39,7 @@ data class PacketOutResourcePack(
         buf.writeString(uri)
         buf.writeString(hash)
         buf.writeBoolean(forced)
-        if (prompt !== Component.empty()) {
-            buf.writeBoolean(true)
-            buf.writeChat(prompt)
-        } else {
-            buf.writeBoolean(false)
-        }
+        buf.writeBoolean(prompt != null)
+        if (prompt != null) buf.writeChat(prompt)
     }
 }

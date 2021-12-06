@@ -47,6 +47,7 @@ data class PacketOutJoinGame(
     val seed: Long,
     val maxPlayers: Int,
     val viewDistance: Int,
+    val simulationDistance: Int,
     val reducedDebugInfo: Boolean,
     val doImmediateRespawn: Boolean,
     val isDebug: Boolean,
@@ -74,6 +75,7 @@ data class PacketOutJoinGame(
         buf.writeLong(seed)
         buf.writeVarInt(maxPlayers)
         buf.writeVarInt(viewDistance)
+        buf.writeVarInt(simulationDistance)
         buf.writeBoolean(reducedDebugInfo)
         buf.writeBoolean(!doImmediateRespawn)
         buf.writeBoolean(isDebug)

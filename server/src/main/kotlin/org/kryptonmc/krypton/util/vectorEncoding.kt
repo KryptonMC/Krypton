@@ -33,4 +33,10 @@ fun Long.toVector(): Vector3i = Vector3i(
     (this shl 64 - Vectors.Z_OFFSET - Vectors.PACKED_X_Z shr 64 - Vectors.PACKED_X_Z).toInt()
 )
 
+fun Long.decodeVectorX(): Int = (this shl 64 - Vectors.X_OFFSET - Vectors.PACKED_X_Z shr 64 - Vectors.PACKED_X_Z).toInt()
+
+fun Long.decodeVectorY(): Int = (this shl 64 - Vectors.PACKED_Y shr 64 - Vectors.PACKED_Y).toInt()
+
+fun Long.decodeVectorZ(): Int = (this shl 64 - Vectors.Z_OFFSET - Vectors.PACKED_X_Z shr 64 - Vectors.PACKED_X_Z).toInt()
+
 fun Long.decodeBlockPosition() = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())
