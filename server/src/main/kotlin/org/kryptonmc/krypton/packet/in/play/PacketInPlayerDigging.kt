@@ -20,25 +20,41 @@ package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.block.BlockFace
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.util.asLong
-import org.kryptonmc.krypton.util.decodeBlockPosition
+import org.kryptonmc.krypton.util.decodeBlockX
+import org.kryptonmc.krypton.util.decodeBlockY
+import org.kryptonmc.krypton.util.decodeBlockZ
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.writeEnum
+import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
 data class PacketInPlayerDigging(
     val status: Status,
-    val location: Vector3i,
-    val face: BlockFace
+    val x: Int,
+    val y: Int,
+    val z: Int,
+    val direction: Direction
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readEnum<Status>(), buf.readLong().decodeBlockPosition(), buf.readEnum())
+    constructor(status: Status, location: Vector3i, direction: Direction) : this(status, location.x(), location.y(), location.z(), direction)
+
+    constructor(buf: ByteBuf) : this(buf.readEnum<Status>(), buf.readLong(), buf.readEnum())
+
+    private constructor(status: Status, location: Long, direction: Direction) : this(
+        status,
+        location.decodeBlockX(),
+        location.decodeBlockY(),
+        location.decodeBlockZ(),
+        direction
+    )
 
     override fun write(buf: ByteBuf) {
         buf.writeEnum(status)
-        buf.writeLong(location.asLong())
+        buf.writeVector(x, y, z)
+        buf.writeEnum(direction)
     }
 
     enum class Status {

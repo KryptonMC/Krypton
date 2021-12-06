@@ -16,23 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.world.block
 
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.krypton.world.block.handler.BlockHandler
+import org.kryptonmc.krypton.world.block.handler.DummyBlockHandler
 
-fun Vector3i.asLong(): Long {
-    var temp = 0L
-    temp = temp or (x().toLong() and Vectors.PACKED_X_Z_MASK shl Vectors.X_OFFSET)
-    temp = temp or (y().toLong() and Vectors.PACKED_Y_MASK)
-    return temp or (z().toLong() and Vectors.PACKED_X_Z_MASK shl Vectors.Z_OFFSET)
-}
-
-fun Long.toVector(): Vector3i = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())
-
-fun Long.decodeBlockPosition(): Vector3i = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())
-
-fun Long.decodeBlockX(): Int = (this shr 38).toInt()
-
-fun Long.decodeBlockY(): Int = (this and 0xFFF).toInt()
-
-fun Long.decodeBlockZ(): Int = (this shl 26 shr 38).toInt()
+fun Block.handler(): BlockHandler = BlockManager.handler(this) ?: DummyBlockHandler

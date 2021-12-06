@@ -18,35 +18,15 @@
  */
 package org.kryptonmc.krypton.item.handler
 
-import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.krypton.item.InteractionContext
 import org.kryptonmc.krypton.item.UseItemResult
 import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.world.KryptonWorld
-import org.spongepowered.math.vector.Vector3i
 
 interface ItemTimedHandler : ItemHandler {
-
-    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: Block, position: Vector3i): Boolean = true
-
-    override fun destroySpeed(item: KryptonItemStack, block: Block): Float = 1F
-
-    override fun use(
-        player: KryptonPlayer,
-        hand: Hand
-    ): UseItemResult = UseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
 
     fun finishUse(
         player: KryptonPlayer,
         hand: Hand
     ): UseItemResult = UseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
-
-    override fun interact(context: InteractionContext): InteractionResult = InteractionResult.PASS
-
-    override fun isCorrectTool(block: Block): Boolean = false
-
-    override fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: Block, position: Vector3i): Boolean = false
 }

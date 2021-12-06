@@ -222,16 +222,18 @@ public interface World : ForwardingAudience {
      * @param y the Y coordinate
      * @param z the Z coordinate
      * @param block the new block
+     * @return true if the block was set, false otherwise
      */
-    public fun setBlock(x: Int, y: Int, z: Int, block: Block)
+    public fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean
 
     /**
      * Sets the block at the given [position] to the given [block].
      *
      * @param position the position
      * @param block the new block
+     * @return true if the block was set, false otherwise
      */
-    public fun setBlock(position: Vector3i, block: Block)
+    public fun setBlock(position: Vector3i, block: Block): Boolean
 
     /**
      * Gets a chunk from its **chunk** coordinates, or returns null if there is

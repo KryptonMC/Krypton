@@ -98,6 +98,14 @@ private val VEGETABLES = intArrayOf(
     Blocks.MELON.id
 )
 
+private val GAME_MASTER_BLOCKS = intArrayOf(
+    Blocks.COMMAND_BLOCK.id,
+    Blocks.CHAIN_COMMAND_BLOCK.id,
+    Blocks.REPEATING_COMMAND_BLOCK.id,
+    Blocks.JIGSAW.id,
+    Blocks.STRUCTURE_BLOCK.id
+)
+
 fun Block.isPlant(): Boolean = PLANTS.contains(id)
 
 fun Block.isReplaceablePlant() = REPLACEABLE_PLANTS.contains(id)
@@ -111,3 +119,5 @@ fun Block.isBurning(): Boolean = BlockTags.FIRE.contains(this) ||
         this === Blocks.LAVA_CAULDRON
 
 fun Block.isLitCampfire(): Boolean = contains(Properties.LIT) && BlockTags.CAMPFIRES.contains(this) && get(Properties.LIT)!!
+
+fun Block.isGameMasterBlock(): Boolean = GAME_MASTER_BLOCKS.contains(id)

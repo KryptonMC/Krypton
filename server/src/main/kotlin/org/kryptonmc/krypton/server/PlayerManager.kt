@@ -247,6 +247,10 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         broadcast(packet, world, position.x().toDouble(), position.y().toDouble(), position.z().toDouble(), radius, except)
     }
 
+    fun broadcast(packet: Packet, world: KryptonWorld, x: Int, y: Int, z: Int, radius: Double, except: KryptonPlayer?) {
+        broadcast(packet, world, x.toDouble(), y.toDouble(), z.toDouble(), radius, except)
+    }
+
     fun disconnectAll() {
         players.forEach { it.session.disconnect(Component.translatable("multiplayer.disconnect.server_shutdown")) }
     }

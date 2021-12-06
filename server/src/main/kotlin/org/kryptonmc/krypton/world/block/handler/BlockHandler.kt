@@ -23,6 +23,7 @@ import org.kryptonmc.api.block.BlockFace
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.statistic.StatisticTypes
+import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.util.InteractionResult
 import org.kryptonmc.krypton.effect.Effect
@@ -42,9 +43,10 @@ interface BlockHandler {
 
     /**
      * Calculates the destroy progress of the given [block] at the given
-     * [position], being broken by the given [player] in the given [world].
+     * [x], [y], and [z] coordinates, being broken by the given [player] in
+     * the given [world].
      */
-    fun calculateDestroyProgress(player: KryptonPlayer, world: KryptonWorld, block: Block, position: Vector3i): Float {
+    fun calculateDestroyProgress(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int): Float {
         val hardness = block.hardness
         if (hardness == -1.0) return 0F
         val factor = if (hasCorrectTool(player, block)) 30 else 100
@@ -53,27 +55,32 @@ interface BlockHandler {
 
     /**
      * Called when the given [block] is placed by the given [player] at the
-     * given [position], being placed on the given [face] (this will be facing
-     * the player).
+     * given [x], [y], and [z] coordinates being placed on the given [face]
+     * (this will be facing the player).
      */
-    fun onPlace(player: KryptonPlayer, block: Block, position: Vector3i, face: BlockFace) {
+    fun onPlace(player: KryptonPlayer, block: Block, x: Int, y: Int, z: Int, face: BlockFace) {
         // This isn't what it may seem like. This is for reacting to block placements, which
         // most blocks don't need to do.
     }
 
     /**
      * Called when the given [player] is about to break the given [block] at
-     * the given [position] in the given [world], but hasn't yet.
+     * the given [x], [y], and [z] coordinates in the given [world], but
+     * hasn't yet.
      */
-    fun preDestroy(player: KryptonPlayer, world: KryptonWorld, block: Block, position: Vector3i) {
-        spawnDestroyParticles(world, player, position, block)
+    fun preDestroy(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int) {
+        spawnDestroyParticles(world, player, x, y, z, block)
+    }
+
+    fun destroy(world: KryptonWorld, x: Int, y: Int, z: Int, block: Block) {
+        // do nothing by default
     }
 
     /**
      * Called when the given [block] is destroyed by the given [player] at the
-     * given [position], with the given [item].
+     * given [x], [y], and [z] coordinates, with the given [item].
      */
-    fun onDestroy(player: KryptonPlayer, block: Block, position: Vector3i, item: ItemStack) {
+    fun onDestroy(player: KryptonPlayer, block: Block, x: Int, y: Int, z: Int, item: ItemStack) {
         // TODO: drop items
         // 0.005/block is the vanilla food exhaustion per block to be added to the player
         // Source: https://minecraft.fandom.com/wiki/Hunger#Exhaustion_level_increase
@@ -83,35 +90,45 @@ interface BlockHandler {
 
     /**
      * Called when the given [player] interacts with the given [block] at the
-     * given [position] in the given [world], using the given interaction
-     * [hand].
+     * given [x], [y], and [z] coordinates in the given [world], using the
+     * given interaction [hand].
      */
-    fun interact(player: KryptonPlayer, world: KryptonWorld, block: Block, position: Vector3i, hand: Hand): InteractionResult = InteractionResult.PASS
+    fun interact(
+        player: KryptonPlayer,
+        world: KryptonWorld,
+        block: Block,
+        x: Int,
+        y: Int,
+        z: Int,
+        hand: Hand
+    ): InteractionResult = InteractionResult.PASS
 
     /**
      * Called when the given [player] attacks the given [block] at the given
-     * [position] in the given [world].
+     * [x], [y], and [z] coordinates in the given [world].
      */
-    fun attack(player: KryptonPlayer, world: KryptonWorld, block: Block, position: Vector3i) {
+    fun attack(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int) {
         // all blocks do nothing when attacked by default, breaking isn't handled here
     }
 
     /**
-     * Called when the shape of the given [block] at the given [position]
-     * facing the given [direction] needs its face updated, with the given
-     * [neighbour] at the given [neighbourPosition].
+     * Called when the shape of the given [block] at the given [x], [y], and
+     * [z] coordinates facing the given [direction] needs its face updated,
+     * with the given [neighbour] at the given [neighbourPosition].
      */
     fun updateShape(
         block: Block,
-        position: Vector3i,
+        x: Int,
+        y: Int,
+        z: Int,
         direction: Direction,
         neighbour: Block,
         neighbourPosition: Vector3i,
         world: KryptonWorld
     ): Block = block
 
-    fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, position: Vector3i, block: Block) {
-        world.playEffect(Effect.DESTROY_BLOCK, position, block.stateId, player)
+    fun spawnDestroyParticles(world: KryptonWorld, player: KryptonPlayer, x: Int, y: Int, z: Int, block: Block) {
+        world.playEffect(Effect.DESTROY_BLOCK, x, y, z, block.stateId, player)
     }
 
     companion object {
@@ -123,6 +140,7 @@ interface BlockHandler {
 
         private fun calculateDestroySpeed(player: KryptonPlayer, block: Block): Float {
             var speed = player.inventory.mainHand.destroySpeed(block)
+            if (player.underFluid(FluidTags.WATER)) speed /= 5F
             if (!player.isOnGround) speed /= 5F
             return speed
         }

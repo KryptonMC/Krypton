@@ -84,28 +84,26 @@ class KryptonChunk(
 
     override fun getFluid(position: Vector3i): Fluid = getFluid(position.x(), position.y(), position.z())
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
+    override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
         val section = sections[sectionIndex(y)]
-        if (section.hasOnlyAir() && block.isAir) return
+        if (section.hasOnlyAir() && block.isAir) return false
 
         // Get the local coordinates and set the new state in the section
         val localX = x and 15
         val localY = y and 15
         val localZ = z and 15
         val oldState = section.set(localX, localY, localZ, block)
-        if (oldState === block) return
+        if (oldState === block) return false
 
         // Update the heightmaps
         heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.OCEAN_FLOOR).update(localX, y, localZ, block)
         heightmaps.getValue(Heightmap.Type.WORLD_SURFACE).update(localX, y, localZ, block)
-        return
+        return true
     }
 
-    override fun setBlock(position: Vector3i, block: Block) {
-        setBlock(position.x(), position.y(), position.z(), block)
-    }
+    override fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome = getNoiseBiome(x, y, z)
 

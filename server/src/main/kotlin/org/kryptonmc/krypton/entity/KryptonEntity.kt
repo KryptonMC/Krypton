@@ -414,7 +414,7 @@ abstract class KryptonEntity(
         }
     }
 
-    private fun underFluid(fluid: Tag<Fluid>): Boolean = fluidOnEyes === fluid
+    fun underFluid(fluid: Tag<Fluid>): Boolean = fluidOnEyes === fluid
 
     private fun updateSwimming() {
         isSwimming = if (isSwimming) {

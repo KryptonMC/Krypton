@@ -67,8 +67,6 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.out.play.EntityAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
-import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
-import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityRotation
@@ -266,18 +264,8 @@ class PlayHandler(
 
     private fun handlePlayerDigging(packet: PacketInPlayerDigging) {
         when (packet.status) {
-            PacketInPlayerDigging.Status.STARTED -> {
-                if (player.gameMode !== GameModes.CREATIVE) return
-                val chunkX = packet.location.x() shr 4
-                val chunkZ = packet.location.z() shr 4
-                val chunk = player.world.chunkManager[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
-                val x = packet.location.x()
-                val y = packet.location.y()
-                val z = packet.location.z()
-                chunk.setBlock(x, y, z, Blocks.AIR)
-
-                session.send(PacketOutDiggingResponse(packet.location, 0, PacketInPlayerDigging.Status.FINISHED, true))
-                playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
+            PacketInPlayerDigging.Status.STARTED, PacketInPlayerDigging.Status.FINISHED, PacketInPlayerDigging.Status.CANCELLED -> {
+                player.blockBreakHandler.handleBlockBreak(packet)
             }
             PacketInPlayerDigging.Status.UPDATE_STATE -> {
                 val handler = player.inventory[player.inventory.heldSlot].type.handler()

@@ -34,6 +34,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import net.kyori.adventure.util.TriState
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
@@ -75,6 +76,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameState
@@ -289,6 +291,8 @@ class KryptonPlayer(
     private var previousCentralZ = 0
     private val visibleChunks = LongArraySet()
 
+    val blockBreakHandler = BlockBreakHandler(this)
+
     init {
         data.add(MetadataKeys.PLAYER.ADDITIONAL_HEARTS)
         data.add(MetadataKeys.PLAYER.SCORE)
@@ -429,6 +433,7 @@ class KryptonPlayer(
 
     override fun tick() {
         super.tick()
+        blockBreakHandler.tick()
         hungerMechanic()
         cooldowns.tick()
         if (data.isDirty) session.send(PacketOutMetadata(id, data.dirty))
@@ -531,6 +536,16 @@ class KryptonPlayer(
             foodTickTimer = 0 // reset tick timer
         }
     }
+
+    fun isBlockActionRestricted(x: Int, y: Int, z: Int): Boolean {
+        if (gameMode !== GameModes.ADVENTURE && gameMode !== GameModes.SPECTATOR) return false
+        if (gameMode === GameModes.SPECTATOR) return true
+        if (canBuild) return false
+        val mainHand = inventory.mainHand
+        return mainHand.isEmpty() // TODO: Check Adventure CanDestroy
+    }
+
+    fun hasCorrectTool(block: Block): Boolean = !block.requiresCorrectTool || inventory.items[inventory.heldSlot].type.handler().isCorrectTool(block)
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (player === this) return false

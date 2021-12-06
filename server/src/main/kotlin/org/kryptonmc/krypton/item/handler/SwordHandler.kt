@@ -39,7 +39,9 @@ object SwordHandler : ItemHandler {
         player: KryptonPlayer,
         world: KryptonWorld,
         block: Block,
-        position: Vector3i
+        x: Int,
+        y: Int,
+        z: Int
     ): Boolean = player.gameMode !== GameModes.CREATIVE
 
     override fun destroySpeed(item: KryptonItemStack, block: Block): Float {
@@ -52,5 +54,5 @@ object SwordHandler : ItemHandler {
 
     override fun isCorrectTool(block: Block): Boolean = block.id == Blocks.COBWEB.id
 
-    override fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: Block, position: Vector3i): Boolean = true
+    override fun mineBlock(player: KryptonPlayer, item: KryptonItemStack, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int): Boolean = true
 }

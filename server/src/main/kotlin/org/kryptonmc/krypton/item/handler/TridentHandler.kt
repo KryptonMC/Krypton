@@ -30,6 +30,8 @@ object TridentHandler : ItemHandler {
         player: KryptonPlayer,
         world: KryptonWorld,
         block: Block,
-        position: Vector3i
+        x: Int,
+        y: Int,
+        z: Int
     ): Boolean = player.gameMode !== GameModes.CREATIVE
 }

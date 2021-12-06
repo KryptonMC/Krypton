@@ -16,23 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.packet.out.play
 
+import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.packet.EntityPacket
+import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.writeVector
 import org.spongepowered.math.vector.Vector3i
 
-fun Vector3i.asLong(): Long {
-    var temp = 0L
-    temp = temp or (x().toLong() and Vectors.PACKED_X_Z_MASK shl Vectors.X_OFFSET)
-    temp = temp or (y().toLong() and Vectors.PACKED_Y_MASK)
-    return temp or (z().toLong() and Vectors.PACKED_X_Z_MASK shl Vectors.Z_OFFSET)
+@JvmRecord
+data class PacketOutBlockBreakAnimation(
+    override val entityId: Int,
+    val x: Int,
+    val y: Int,
+    val z: Int,
+    val destroyStage: Int
+) : EntityPacket {
+
+    constructor(entityId: Int, position: Vector3i, destroyStage: Int) : this(entityId, position.x(), position.y(), position.z(), destroyStage)
+
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(entityId)
+        buf.writeVector(x, y, z)
+        buf.writeByte(destroyStage)
+    }
 }
-
-fun Long.toVector(): Vector3i = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())
-
-fun Long.decodeBlockPosition(): Vector3i = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())
-
-fun Long.decodeBlockX(): Int = (this shr 38).toInt()
-
-fun Long.decodeBlockY(): Int = (this and 0xFFF).toInt()
-
-fun Long.decodeBlockZ(): Int = (this shl 26 shr 38).toInt()

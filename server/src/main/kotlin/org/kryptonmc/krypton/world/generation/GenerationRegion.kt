@@ -90,9 +90,10 @@ class GenerationRegion(
 
     override fun getFluid(x: Int, y: Int, z: Int): Fluid = getChunk(x, z)?.getFluid(x, y, z) ?: Fluids.EMPTY
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
-        if (!canWrite(x, y, z)) return
-        getChunk(x shr 4, z shr 4)?.setBlock(x, y, z, block)
+    override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
+        if (!canWrite(x, y, z)) return false
+        val chunk = getChunk(x shr 4, z shr 4) ?: return false
+        return chunk.setBlock(x, y, z, block)
     }
 
     override fun getHeight(type: Heightmap.Type, x: Int, z: Int): Int {
