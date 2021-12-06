@@ -40,8 +40,5 @@ class RawCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<RawCommand, Co
         meta: CommandMeta,
         context: CommandContext<Sender>,
         builder: SuggestionsBuilder
-    ): CompletableFuture<Suggestions> {
-        command.suggest(context.source, context.rawArguments()).forEach { builder.suggest(it) }
-        return builder.buildFuture()
-    }
+    ): CompletableFuture<Suggestions> = createSuggestions(builder, command.suggest(context.source, context.rawArguments()))
 }

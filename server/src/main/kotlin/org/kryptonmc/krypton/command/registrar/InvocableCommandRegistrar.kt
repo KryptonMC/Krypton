@@ -45,6 +45,15 @@ sealed class InvocableCommandRegistrar<C : InvocableCommand<A>, M : CommandMeta,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions>
 
+    fun createSuggestions(
+        builder: SuggestionsBuilder,
+        results: List<String>
+    ): CompletableFuture<Suggestions> {
+        val offsetBuilder = builder.createOffset(builder.input.lastIndexOf(' ') + 1)
+        results.forEach(offsetBuilder::suggest)
+        return offsetBuilder.buildFuture()
+    }
+
     override fun register(root: RootCommandNode<Sender>, command: C, meta: M) {
         val name = meta.name.lowercase()
         val node = buildRawArgumentsLiteral(

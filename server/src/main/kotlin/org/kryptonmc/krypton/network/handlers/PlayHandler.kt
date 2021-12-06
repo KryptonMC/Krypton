@@ -37,6 +37,7 @@ import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.command.normalize
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
