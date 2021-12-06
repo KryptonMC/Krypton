@@ -63,8 +63,8 @@ class KryptonItemEntity(world: KryptonWorld) : KryptonEntity(world, EntityTypes.
             if (pickupDelay != DELAY_NO_PICKUP) pickupDelay--
             if (pickupDelay < 20) {
                 // Item pickup zone
-                val minimum = Vector3d.from(location.x() - 1, location.y() - 0.5, location.z() - 1.0)
-                val maximum = Vector3d.from(location.x() + 1, location.y() + 0.5, location.z() + 1.0)
+                val minimum = Vector3d.from(location.x() - 1.0, location.y() - 0.5, location.z() - 1.0)
+                val maximum = Vector3d.from(location.x() + 1.0, location.y() + 0.5, location.z() + 1.0)
                 world.entityManager.forEachEntityInBounds(BoundingBox.of(minimum, maximum)) {
                     if (it.isAlive && it is KryptonLivingEntity) {
                         // TODO: Test for mobs picking up items and handle item merge
