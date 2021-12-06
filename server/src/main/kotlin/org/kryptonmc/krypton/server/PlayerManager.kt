@@ -271,7 +271,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     private fun sendCommands(player: KryptonPlayer) {
         player.session.send(PacketOutEntityStatus(player.id, 28))
-        server.commandManager.sendCommands(player)
+        server.commandManager.updateCommands(player)
     }
 
     private fun save(player: KryptonPlayer) {

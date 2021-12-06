@@ -37,6 +37,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.command.CommandSendEvent
 import org.kryptonmc.krypton.commands.BanCommand
 import org.kryptonmc.krypton.commands.BanIpCommand
@@ -145,7 +146,8 @@ object KryptonCommandManager : CommandManager {
 
     fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(parseResults)
 
-    fun sendCommands(player: KryptonPlayer) {
+    override fun updateCommands(player: Player) {
+        if (player !is KryptonPlayer) return
         // We copy the root node to avoid a command changing whilst we're trying to send it to the client.
         val node = RootCommandNode<Sender>()
         lock.read {
