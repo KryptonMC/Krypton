@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.network.handlers
 
 
 import java.util.concurrent.ThreadLocalRandom
-import java.utilimport com.mojang.brigadier.StringReader
+import com.mojang.brigadier.StringReader
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
