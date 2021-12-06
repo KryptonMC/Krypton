@@ -36,12 +36,12 @@ open class KryptonItemStack(
 
     constructor(nbt: CompoundTag) : this(
         InternalRegistries.ITEM[Key.key(nbt.getString("id"))],
-        nbt.getInt("Count"),
-        KryptonMetaHolder(nbt.getCompound("tag") as MutableCompoundTag)
+        nbt.getInt("Count"),gma
+        KryptonMetaHolder(nbt.getCompound("tag").mutable())
     )
 
     fun getOrCreateTag(key: String): MutableCompoundTag {
-        if (meta.nbt.contains(key, CompoundTag.ID)) return meta.nbt.getCompound(key) as MutableCompoundTag
+        if (meta.nbt.contains(key, CompoundTag.ID)) return meta.nbt.getCompound(key).mutable()
         return MutableCompoundTag().apply { meta.nbt[key] = this }
     }
 
