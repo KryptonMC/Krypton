@@ -36,7 +36,7 @@ open class KryptonItemStack(
 
     constructor(nbt: CompoundTag) : this(
         InternalRegistries.ITEM[Key.key(nbt.getString("id"))],
-        nbt.getInt("Count"),gma
+        nbt.getInt("Count"),
         KryptonMetaHolder(nbt.getCompound("tag").mutable())
     )
 
