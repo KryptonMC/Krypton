@@ -81,6 +81,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutEntitySoundEffect
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityStatus
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityTeleport
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityVelocity
+import org.kryptonmc.krypton.packet.out.play.PacketOutCollectItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutHeadLook
 import org.kryptonmc.krypton.packet.out.play.PacketOutInitializeWorldBorder
 import org.kryptonmc.krypton.packet.out.play.PacketOutJoinGame
@@ -243,6 +244,7 @@ object PacketRegistry {
         register<PacketOutStopSound>(0x5E)
         register<PacketOutPlayerListHeaderFooter>(0x5F)
         register<PacketOutNBTQueryResponse>(0x60)
+        register<PacketOutCollectItem>(0x61)
         register<PacketOutEntityTeleport>(0x62)
         register<PacketOutAttributes>(0x64)
         register<PacketOutDeclareRecipes>(0x66)

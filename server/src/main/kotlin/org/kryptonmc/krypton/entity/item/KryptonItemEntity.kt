@@ -1,5 +1,6 @@
 package org.kryptonmc.krypton.entity.item
 
+import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.util.BoundingBox
@@ -7,6 +8,8 @@ import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
+import org.kryptonmc.krypton.packet.out.play.PacketOutCollectItem
 import org.kryptonmc.krypton.util.Vectors
 import org.kryptonmc.krypton.util.forEachEntityInBounds
 import org.kryptonmc.krypton.util.forEachEntityInRange
@@ -51,6 +54,9 @@ class KryptonItemEntity(world: KryptonWorld) : KryptonEntity(world, EntityTypes.
         if (entity is InventoryHolder) {
             entity.inventory.add(item)
         }
+        // TODO: Perhaps consider only sending this to players in range?
+        world.playerManager.sendToAll(PacketOutCollectItem(id, entity.id, item.amount))
+        item.amount = 0 // destroy next tick
     }
 
     override fun tick() {
@@ -67,7 +73,7 @@ class KryptonItemEntity(world: KryptonWorld) : KryptonEntity(world, EntityTypes.
                 val maximum = Vector3d.from(location.x() + 1.0, location.y() + 0.5, location.z() + 1.0)
                 world.entityManager.forEachEntityInBounds(BoundingBox.of(minimum, maximum)) {
                     if (it.isAlive && it is KryptonLivingEntity) {
-                        // TODO: Test for mobs picking up items and handle item merge
+                        // TODO: Test for mob pick up and handle item merge
                         entityPickupItem(it)
                     }
                 }
