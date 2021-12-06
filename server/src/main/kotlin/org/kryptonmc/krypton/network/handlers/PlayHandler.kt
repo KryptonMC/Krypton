@@ -86,6 +86,7 @@ import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
+import java.util.Locale
 
 /**
  * This is the largest and most important of the four packet handlers, as the
