@@ -19,8 +19,8 @@
 package org.kryptonmc.krypton.entity.player
 
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.GameModes
+import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
 import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
@@ -33,6 +33,8 @@ class BlockBreakHandler(private val player: KryptonPlayer) {
 
     private val world: KryptonWorld
         get() = player.world
+    private val server: KryptonServer
+        get() = player.server
     private val isCreative: Boolean
         get() = player.gameMode === GameModes.CREATIVE
 
@@ -97,6 +99,7 @@ class BlockBreakHandler(private val player: KryptonPlayer) {
         when (status) {
             PacketInPlayerDigging.Status.STARTED -> {
                 if (!world.canInteract(player, x, z)) {
+                    if (server.config.world.sendSpawnProtectionMessage) player.sendActionBar(server.config.world.spawnProtectionMessage)
                     player.session.send(PacketOutDiggingResponse(x, y, z, world.getBlock(x, y, z), status, false))
                     return
                 }
