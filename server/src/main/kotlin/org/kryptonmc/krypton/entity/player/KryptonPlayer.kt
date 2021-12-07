@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.entity.player
 import it.unimi.dsi.fastutil.longs.LongArrayList
 import it.unimi.dsi.fastutil.longs.LongArraySet
 import it.unimi.dsi.fastutil.longs.LongSet
-import me.lucko.spark.common.command.sender.CommandSender
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.identity.Identity
@@ -46,6 +45,7 @@ import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.MetaKeys
@@ -60,7 +60,6 @@ import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.KryptonPlatform
@@ -245,23 +244,13 @@ class KryptonPlayer(
         }
 
     var oldGameMode: GameMode? = null
-    override var gameMode: GameMode = GameModes.SURVIVAL
-        set(value) {
-            if (value === field) return
-            oldGameMode = field
-            field = value
-            if (!isLoaded) return
-            updateAbilities()
-            onAbilitiesUpdate()
-            server.playerManager.sendToAll(PacketOutPlayerInfo(
-                PacketOutPlayerInfo.Action.UPDATE_GAMEMODE,
-                this
-            ))
-            session.send(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, Registries.GAME_MODES.idOf(value).toFloat()))
-            if (value !== GameModes.SPECTATOR) camera = this
-        }
+    // Hacks to get around Kotlin not letting us set the value of the property without calling the setter.
+    private var internalGameMode: GameMode = GameMode.SURVIVAL
+    override var gameMode: GameMode
+        get() = internalGameMode
+        set(value) = updateGameMode(value, ChangeGameModeEvent.Cause.API)
     override val isSpectator: Boolean
-        get() = gameMode === GameModes.SPECTATOR
+        get() = gameMode == GameMode.SPECTATOR
     override val direction: Direction
         get() = Directions.ofPitch(rotation.y().toDouble())
     val canUseGameMasterBlocks: Boolean
@@ -302,6 +291,24 @@ class KryptonPlayer(
         data.add(MetadataKeys.PLAYER.RIGHT_SHOULDER)
     }
 
+    fun updateGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause) {
+        if (mode === gameMode) return
+        val result = server.eventManager.fireSync(ChangeGameModeEvent(this, gameMode, mode, cause)).result
+        if (!result.isAllowed) return
+
+        oldGameMode = gameMode
+        internalGameMode = result.newGameMode ?: mode
+        if (!isLoaded) return
+        updateAbilities()
+        onAbilitiesUpdate()
+        server.playerManager.sendToAll(PacketOutPlayerInfo(
+            PacketOutPlayerInfo.Action.UPDATE_GAMEMODE,
+            this
+        ))
+        session.send(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
+        if (mode != GameMode.SPECTATOR) camera = this
+    }
+
     override fun equipment(slot: EquipmentSlot): KryptonItemStack = when {
         slot == EquipmentSlot.MAIN_HAND -> inventory.mainHand
         slot == EquipmentSlot.OFF_HAND -> inventory.offHand
@@ -326,9 +333,9 @@ class KryptonPlayer(
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        gameMode = Registries.GAME_MODES[tag.getInt("playerGameType")] ?: GameModes.SURVIVAL
+        updateGameMode(GameMode.fromId(tag.getInt("playerGameType")) ?: GameMode.SURVIVAL, ChangeGameModeEvent.Cause.LOAD)
         if (tag.contains("previousPlayerGameType", IntTag.ID)) {
-            oldGameMode = Registries.GAME_MODES[tag.getInt("previousPlayerGameType")]
+            oldGameMode = GameMode.fromId(tag.getInt("previousPlayerGameType"))
         }
         inventory.load(tag.getList("Inventory", CompoundTag.ID))
         inventory.heldSlot = tag.getInt("SelectedItemSlot")
@@ -378,8 +385,8 @@ class KryptonPlayer(
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
-        int("playerGameType", Registries.GAME_MODES.idOf(gameMode))
-        if (oldGameMode != null) int("previousPlayerGameType", Registries.GAME_MODES.idOf(oldGameMode!!))
+        int("playerGameType", gameMode.ordinal)
+        if (oldGameMode != null) int("previousPlayerGameType", oldGameMode!!.ordinal)
 
         int("DataVersion", KryptonPlatform.worldVersion)
         put("Inventory", inventory.save())
@@ -441,7 +448,7 @@ class KryptonPlayer(
 
     private fun hungerMechanic() {
         // TODO: More actions for exhaustion, add constants?
-        if (gameMode != GameModes.SURVIVAL && gameMode != GameModes.ADVENTURE) return
+        if (gameMode != GameMode.SURVIVAL && gameMode != GameMode.ADVENTURE) return
         foodTickTimer++
 
         // Sources:
@@ -538,8 +545,8 @@ class KryptonPlayer(
     }
 
     fun isBlockActionRestricted(x: Int, y: Int, z: Int): Boolean {
-        if (gameMode !== GameModes.ADVENTURE && gameMode !== GameModes.SPECTATOR) return false
-        if (gameMode === GameModes.SPECTATOR) return true
+        if (gameMode != GameMode.ADVENTURE && gameMode != GameMode.SPECTATOR) return false
+        if (gameMode == GameMode.SPECTATOR) return true
         if (canBuild) return false
         val mainHand = inventory.mainHand
         return mainHand.isEmpty() // TODO: Check Adventure CanDestroy
@@ -729,12 +736,12 @@ class KryptonPlayer(
 
     private fun updateAbilities() {
         when (gameMode) {
-            GameModes.CREATIVE -> {
+            GameMode.CREATIVE -> {
                 isInvulnerable = true
                 canFly = true
                 canInstantlyBuild = true
             }
-            GameModes.SPECTATOR -> {
+            GameMode.SPECTATOR -> {
                 isInvulnerable = true
                 canFly = true
                 isGliding = true
@@ -821,7 +828,7 @@ class KryptonPlayer(
 
     private fun updateInvisibility() {
         removeEffectParticles()
-        isInvisible = gameMode === GameModes.SPECTATOR
+        isInvisible = gameMode == GameMode.SPECTATOR
     }
 
     fun updateMovementStatistics(deltaX: Double, deltaY: Double, deltaZ: Double) {

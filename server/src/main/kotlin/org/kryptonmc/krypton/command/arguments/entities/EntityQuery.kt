@@ -20,14 +20,13 @@ package org.kryptonmc.krypton.command.arguments.entities
 
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.BrigadierExceptions
@@ -172,11 +171,8 @@ data class EntityQuery(
                 "gamemode" -> {
                     entities = entities.filter {
                         if (it !is KryptonPlayer) return@filter true
-                        if (exclude) {
-                            it.gameMode !== Registries.GAME_MODES[Key.key(value.toString())]
-                        } else {
-                            it.gameMode !== Registries.GAME_MODES[Key.key(value.toString())]
-                        }
+                        val mode = GameMode.fromName(value.toString())
+                        if (exclude) it.gameMode != mode else it.gameMode == mode
                     }
                 }
                 "name" -> {

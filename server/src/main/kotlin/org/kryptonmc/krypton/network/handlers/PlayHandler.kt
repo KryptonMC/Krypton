@@ -35,9 +35,8 @@ import org.kryptonmc.api.event.player.ResourcePackStatusEvent
 import org.kryptonmc.api.event.player.RotateEvent
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.resource.ResourcePack
-import org.kryptonmc.api.world.GameModes
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.command.normalize
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
@@ -199,7 +198,7 @@ class PlayHandler(
     }
 
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
-        if (player.gameMode !== GameModes.CREATIVE) return
+        if (player.gameMode != GameMode.CREATIVE) return
         val item = packet.clickedItem
         val inValidRange = packet.slot in 1 until KryptonPlayerInventory.SIZE
         val hasDamage = MetaKeys.DAMAGE in item.meta && item.meta[MetaKeys.DAMAGE]!! >= 0

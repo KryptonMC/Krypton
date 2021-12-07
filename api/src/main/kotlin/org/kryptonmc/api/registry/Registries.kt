@@ -44,7 +44,6 @@ import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.api.util.Catalogue
-import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeCategory
 import org.kryptonmc.api.world.biome.GrassColorModifier
@@ -92,7 +91,6 @@ public object Registries {
     @JvmField public val CRITERIA: Registry<Criterion> = create(ResourceKeys.CRITERIA)
     @JvmField public val VISIBILITIES: Registry<Visibility> = create(ResourceKeys.VISIBILITIES)
     @JvmField public val COLLISION_RULES: Registry<CollisionRule> = create(ResourceKeys.COLLISION_RULES)
-    @JvmField public val GAME_MODES: Registry<GameMode> = create(ResourceKeys.GAME_MODES)
     @JvmField public val DIMENSION_EFFECTS: Registry<DimensionEffect> = create(ResourceKeys.DIMENSION_EFFECTS)
     @JvmField public val PRECIPITATIONS: Registry<Precipitation> = create(ResourceKeys.PRECIPITATIONS)
     @JvmField public val TEMPERATURE_MODIFIERS: Registry<TemperatureModifier> = create(ResourceKeys.TEMPERATURE_MODIFIERS)

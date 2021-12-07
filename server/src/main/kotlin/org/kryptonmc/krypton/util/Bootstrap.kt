@@ -46,7 +46,6 @@ import org.kryptonmc.api.tags.EntityTypeTags
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.api.tags.TagTypes
-import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.biome.BiomeCategories
 import org.kryptonmc.api.world.biome.Biomes
 import org.kryptonmc.api.world.biome.GrassColorModifiers
@@ -113,7 +112,6 @@ object Bootstrap {
         Registries
         KryptonTagTypes
         TagTypes
-        GameModes
         SoundLoader.init()
         SoundEvents
         BlockLoader.init()

@@ -57,8 +57,8 @@ data class PacketOutJoinGame(
     override fun write(buf: ByteBuf) {
         buf.writeInt(entityId)
         buf.writeBoolean(isHardcore)
-        buf.writeByte(Registries.GAME_MODES.idOf(gameMode))
-        buf.writeByte(oldGameMode?.let { Registries.GAME_MODES.idOf(it) } ?: -1)
+        buf.writeByte(gameMode.ordinal)
+        buf.writeByte(oldGameMode?.ordinal ?: -1)
         buf.writeCollection(worlds) { buf.writeKey(it.location) }
         buf.writeNBT(compound {
             put(

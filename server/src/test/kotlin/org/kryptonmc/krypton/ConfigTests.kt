@@ -20,7 +20,7 @@ package org.kryptonmc.krypton
 
 import org.junit.jupiter.api.BeforeAll
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.GameModes
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.config.KryptonConfig
 import org.kryptonmc.krypton.config.category.StatusCategory
 import org.kryptonmc.krypton.util.Bootstrap
@@ -56,7 +56,7 @@ class ConfigTests {
 
         // World settings
         assertEquals("world", config.world.name)
-        assertSame(GameModes.SURVIVAL, config.world.gameMode)
+        assertSame(GameMode.SURVIVAL, config.world.gameMode)
         assertFalse(config.world.forceDefaultGamemode)
         assertEquals(Difficulty.NORMAL, config.world.difficulty)
         assertFalse(config.world.hardcore)
@@ -91,7 +91,7 @@ class ConfigTests {
 
         // World settings
         assertEquals("world", config.world.name)
-        assertEquals(GameModes.SURVIVAL, config.world.gameMode)
+        assertEquals(GameMode.SURVIVAL, config.world.gameMode)
         assertFalse(config.world.forceDefaultGamemode)
         assertEquals(Difficulty.NORMAL, config.world.difficulty)
         assertFalse(config.world.hardcore)

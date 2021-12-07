@@ -20,18 +20,14 @@ package org.kryptonmc.krypton.item.handler
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.entity.player.Player
-import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.tags.BlockTags
-import org.kryptonmc.api.world.GameModes
-import org.kryptonmc.api.world.World
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.isPlant
 import org.kryptonmc.krypton.world.block.isReplaceablePlant
 import org.kryptonmc.krypton.world.block.isVegetable
-import org.spongepowered.math.vector.Vector3i
 
 object SwordHandler : ItemHandler {
 
@@ -42,7 +38,7 @@ object SwordHandler : ItemHandler {
         x: Int,
         y: Int,
         z: Int
-    ): Boolean = player.gameMode !== GameModes.CREATIVE
+    ): Boolean = player.gameMode != GameMode.CREATIVE
 
     override fun destroySpeed(item: KryptonItemStack, block: Block): Float {
         if (block.id == Blocks.COBWEB.id) return 15F

@@ -23,7 +23,6 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.api.world.GameModes
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.objectmapping.meta.Setting
@@ -36,7 +35,7 @@ data class WorldCategory(
     @Comment("Settings for world generation")
     val generator: GeneratorCategory = GeneratorCategory(),
     @Comment("The gamemode for this world. Valid values are: 0-3 (legacy), survival, creative, adventure and spectator (case insensitive).")
-    val gameMode: GameMode = GameModes.SURVIVAL,
+    val gameMode: GameMode = GameMode.SURVIVAL,
     @Setting("force-default-gamemode")
     @Comment("Forces the above gamemode for all players in all worlds.")
     val forceDefaultGamemode: Boolean = false,

@@ -224,10 +224,11 @@ public object GameRules {
      * before taking 3 suffocation damage per half-second.
      *
      * Damage affects
-     * [survival mode][org.kryptonmc.api.world.GameModes.SURVIVAL] or
-     * [adventure mode][org.kryptonmc.api.world.GameModes.ADVENTURE] [Player]s,
-     * and all mobs but bats. Pushable entities include non-spectator-mode
-     * [Player], any mob except bats, as well as minecarts and boats.
+     * [survival mode][org.kryptonmc.api.world.GameMode.SURVIVAL] or
+     * [adventure mode][org.kryptonmc.api.world.GameMode.ADVENTURE]
+     * players, and all mobs but bats.
+     * Pushable entities include non-spectator-mode players, any mob except
+     * bats, as well as minecarts and boats.
      *
      * Setting to `0` disables the rule.
      *
@@ -306,7 +307,7 @@ public object GameRules {
 
     /**
      * Whether players in
-     * [spectator mode][org.kryptonmc.api.world.GameModes.SPECTATOR] can
+     * [spectator mode][org.kryptonmc.api.world.GameMode.SPECTATOR] can
      * generate chunks.
      *
      * This is a boolean game rule, with a default value of `true`.

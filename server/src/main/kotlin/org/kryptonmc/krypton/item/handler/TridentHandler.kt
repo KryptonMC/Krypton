@@ -19,10 +19,9 @@
 package org.kryptonmc.krypton.item.handler
 
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.world.GameModes
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.spongepowered.math.vector.Vector3i
 
 object TridentHandler : ItemHandler {
 
@@ -33,5 +32,5 @@ object TridentHandler : ItemHandler {
         x: Int,
         y: Int,
         z: Int
-    ): Boolean = player.gameMode !== GameModes.CREATIVE
+    ): Boolean = player.gameMode != GameMode.CREATIVE
 }

@@ -24,7 +24,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.Difficulty
-import org.kryptonmc.api.world.GameModes
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
@@ -36,15 +36,14 @@ import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.threadFactory
 import org.kryptonmc.krypton.util.uncaughtExceptionHandler
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
-import org.kryptonmc.krypton.world.chunk.ticket.TicketTypes
 import org.kryptonmc.krypton.world.data.DerivedWorldData
 import org.kryptonmc.krypton.world.data.PrimaryWorldData
+import org.kryptonmc.krypton.world.data.WorldDataManager
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.generation.DebugGenerator
 import org.kryptonmc.krypton.world.rule.KryptonGameRuleHolder
-import org.kryptonmc.krypton.world.data.WorldDataManager
 import java.io.File
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
@@ -189,7 +188,7 @@ class KryptonWorldManager(
         data.isThundering = false
         data.clearWeatherTime = 1000000000
         data.dayTime = 6000L
-        data.gameMode = (GameModes.SPECTATOR as KryptonGameMode)
+        data.gameMode = GameMode.SPECTATOR
     }
 
     fun saveAll(shouldClose: Boolean): Boolean {

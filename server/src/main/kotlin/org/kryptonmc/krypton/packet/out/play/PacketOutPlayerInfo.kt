@@ -21,11 +21,11 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.ProfileProperty
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
+import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
@@ -72,12 +72,12 @@ data class PacketOutPlayerInfo(
                         if (signature != null) buf.writeString(signature)
                     }
 
-                    buf.writeVarInt(Registries.GAME_MODES.idOf(update.gameMode))
+                    buf.writeEnum(update.gameMode)
                     buf.writeVarInt(update.latency)
                     buf.writeBoolean(update.displayName != null)
                     if (update.displayName != null) buf.writeChat(update.displayName)
                 }
-                Action.UPDATE_GAMEMODE -> buf.writeVarInt(Registries.GAME_MODES.idOf(update.gameMode))
+                Action.UPDATE_GAMEMODE -> buf.writeEnum(update.gameMode)
                 Action.UPDATE_LATENCY -> buf.writeVarInt(update.latency)
                 Action.UPDATE_DISPLAY_NAME -> {
                     buf.writeBoolean(update.displayName != null)

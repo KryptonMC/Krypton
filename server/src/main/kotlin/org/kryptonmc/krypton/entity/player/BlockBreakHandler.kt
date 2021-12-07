@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.entity.player
 
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.world.GameModes
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
@@ -36,7 +36,7 @@ class BlockBreakHandler(private val player: KryptonPlayer) {
     private val server: KryptonServer
         get() = player.server
     private val isCreative: Boolean
-        get() = player.gameMode === GameModes.CREATIVE
+        get() = player.gameMode == GameMode.CREATIVE
 
     private var currentTick = 0
     private var isDestroying = false

@@ -49,7 +49,6 @@ import org.kryptonmc.api.scoreboard.DisplaySlot
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.FactoryNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
-import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.biome.AmbientAdditionsSettings
 import org.kryptonmc.api.world.biome.AmbientMoodSettings
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
@@ -88,7 +87,6 @@ import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.item.meta.KryptonDyeColor
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourcePack
-import org.kryptonmc.krypton.world.KryptonGameMode
 import org.kryptonmc.krypton.world.biome.KryptonAmbientAdditionsSettings
 import org.kryptonmc.krypton.world.biome.KryptonAmbientMoodSettings
 import org.kryptonmc.krypton.world.biome.KryptonAmbientParticleSettings
@@ -137,7 +135,6 @@ object KryptonFactoryProvider : FactoryProvider {
         register<InventoryType.Factory>(KryptonInventoryType.Factory)
         register<Objective.Factory>(KryptonObjective.Factory)
         register<GameRule.Factory>(KryptonGameRule.Factory)
-        register<GameMode.Factory>(KryptonGameMode.Factory)
         register<Music.Factory>(KryptonMusic.Factory)
         register<AmbientAdditionsSettings.Factory>(KryptonAmbientAdditionsSettings.Factory)
         register<AmbientMoodSettings.Factory>(KryptonAmbientMoodSettings.Factory)

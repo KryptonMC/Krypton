@@ -36,7 +36,6 @@ import org.kryptonmc.api.item.meta.MetaKey
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.registry.RegistryRoots
 import org.kryptonmc.api.statistic.StatisticType
-import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeCategory
@@ -93,7 +92,6 @@ public object ResourceKeys {
     @JvmField public val CRITERIA: ResourceKey<out Registry<Criterion>> = krypton("criteria")
     @JvmField public val VISIBILITIES: ResourceKey<out Registry<Visibility>> = krypton("visibilities")
     @JvmField public val COLLISION_RULES: ResourceKey<out Registry<CollisionRule>> = krypton("collision_rules")
-    @JvmField public val GAME_MODES: ResourceKey<out Registry<GameMode>> = krypton("game_modes")
     @JvmField public val DIMENSION_EFFECTS: ResourceKey<out Registry<DimensionEffect>> = krypton("dimension_effects")
     @JvmField public val PRECIPITATIONS: ResourceKey<out Registry<Precipitation>> = krypton("precipitations")
     @JvmField public val TEMPERATURE_MODIFIERS: ResourceKey<out Registry<TemperatureModifier>> = krypton("temperature_modifiers")
