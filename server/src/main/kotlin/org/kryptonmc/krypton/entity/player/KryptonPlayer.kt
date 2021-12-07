@@ -54,6 +54,7 @@ import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
+import org.kryptonmc.api.service.AFKService
 import org.kryptonmc.api.service.VanishService
 import org.kryptonmc.api.service.provide
 import org.kryptonmc.api.statistic.CustomStatistics
@@ -270,6 +271,11 @@ class KryptonPlayer(
     private val vanishService = server.servicesManager.provide<VanishService>()!!
     override val isVanished: Boolean
         get() = vanishService.isVanished(this)
+
+    private val afkService = server.servicesManager.provide<AFKService>()!!
+    override var isAfk: Boolean
+        get() = afkService.isAfk(this)
+        set(value) = afkService.setAfk(this, value)
 
     private var respawnPosition: Vector3i? = null
     private var respawnForced = false

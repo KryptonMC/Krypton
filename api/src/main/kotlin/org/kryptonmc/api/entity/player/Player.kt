@@ -170,6 +170,11 @@ public interface Player : LivingEntity, Equipable, InventoryHolder, PluginMessag
     public val isVanished: Boolean
 
     /**
+     * If this player is currently AFK, meaning they are not doing anything.
+     */
+    public var isAfk: Boolean
+
+    /**
      * This player's current game mode.
      */
     @get:JvmName("gameMode")

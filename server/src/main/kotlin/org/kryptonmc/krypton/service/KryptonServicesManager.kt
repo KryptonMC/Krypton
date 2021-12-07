@@ -18,10 +18,11 @@
  */
 package org.kryptonmc.krypton.service
 
+import org.kryptonmc.api.service.AFKService
 import org.kryptonmc.api.service.ServiceProvider
 import org.kryptonmc.api.service.ServicesManager
-import org.kryptonmc.api.service.register
 import org.kryptonmc.api.service.VanishService
+import org.kryptonmc.api.service.register
 import org.kryptonmc.api.user.ban.BanService
 import org.kryptonmc.api.user.whitelist.WhitelistService
 import org.kryptonmc.krypton.KryptonServer
@@ -36,6 +37,7 @@ class KryptonServicesManager(private val server: KryptonServer) : ServicesManage
 
     fun bootstrap() {
         register<VanishService>(ServerPluginContainer, KryptonVanishService())
+        register<AFKService>(ServerPluginContainer, KryptonAFKService())
         register<WhitelistService>(ServerPluginContainer, KryptonWhitelistService(server))
         register<BanService>(ServerPluginContainer, KryptonBanService(server))
     }
