@@ -16,24 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.dimension
+package org.kryptonmc.krypton.util.serialization
 
-import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.nbt.NumberTag
-import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.Tag
+import org.kryptonmc.nbt.list
 
-fun Tag.parseDimension(): ResourceKey<World>? {
-    if (this is NumberTag) {
-        when (value.toInt()) {
-            -1 -> return World.NETHER
-            0 -> return World.OVERWORLD
-            1 -> return World.END
-        }
-        return null
+class ListCodec<T>(private val elementCodec: Codec<Tag, T>) : Codec<ListTag, List<T>> {
+
+    override fun encode(value: List<T>): ListTag = list {
+        value.forEach { add(elementCodec.encode(it)) }
     }
-    if (this !is StringTag) return null
-    return Codecs.DIMENSION.decodeNullable(this)
+
+    override fun decode(tag: ListTag): List<T> {
+        val list = mutableListOf<T>()
+        tag.forEach { list.add(elementCodec.decode(it)) }
+        return list
+    }
 }

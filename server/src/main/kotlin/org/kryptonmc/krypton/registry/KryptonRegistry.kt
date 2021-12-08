@@ -19,23 +19,18 @@
 package org.kryptonmc.krypton.registry
 
 import com.google.common.collect.HashBiMap
-import com.mojang.datafixers.util.Pair
-import com.mojang.serialization.Codec
-import com.mojang.serialization.DataResult
-import com.mojang.serialization.DynamicOps
-import com.mojang.serialization.Keyable
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.IdentityHashStrategy
 import org.kryptonmc.krypton.util.IntBiMap
-import java.util.stream.Stream
+import org.kryptonmc.krypton.util.serialization.StringCodec
 import kotlin.math.max
 
-open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, Codec<T>, Keyable, IntBiMap<T> {
+open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T>>) : Registry<T>, StringCodec<T>, IntBiMap<T> {
 
     private val byId = ObjectArrayList<T>(256)
     private val toId = Object2IntOpenCustomHashMap(IdentityHashStrategy.get<T>())
@@ -92,33 +87,9 @@ open class KryptonRegistry<T : Any>(override val key: ResourceKey<out Registry<T
 
     override fun iterator(): Iterator<T> = storage.values.iterator()
 
-    override fun <U> encode(input: T, ops: DynamicOps<U>, prefix: U): DataResult<U> {
-        val key = get(input) ?: return DataResult.error("Unknown registry element $input!")
-        if (ops.compressMaps()) return ops.mergeToPrimitive(prefix, ops.createInt(idOf(input)))
-        return ops.mergeToPrimitive(prefix, ops.createString(key.asString()))
-    }
+    override fun encodeString(value: T): String = requireNotNull(get(value)) { "Unknown registry element $value!" }.asString()
 
-    override fun <U> decode(ops: DynamicOps<U>, input: U): DataResult<Pair<T, U>> {
-        if (ops.compressMaps()) return ops.getNumberValue(input).flatMap { id ->
-            get(id.toInt())?.let { DataResult.success(Pair.of(it, ops.empty())) }
-                ?: DataResult.error("Could not find element with ID $id in registry $key!")
-        }
-        return Codecs.KEY.decode(ops, input).flatMap { pair ->
-            get(pair.first)?.let { DataResult.success(Pair.of(it, pair.second)) }
-                ?: DataResult.error("Could not find element with key ${pair.first} in registry $key!")
-        }
-    }
-
-    override fun <U> keys(ops: DynamicOps<U>): Stream<U> = keySet.stream().map { ops.createString(it.asString()) }
-
-    companion object {
-
-        fun <T : Any> ResourceKey<out Registry<T>>.directCodec(elementCodec: Codec<T>): Codec<KryptonRegistry<T>> = Codec.unboundedMap(
-            Codecs.KEY.xmap({ ResourceKey.of(this, it) }, ResourceKey<*>::location),
-            elementCodec
-        ).xmap(
-            { map -> KryptonRegistry(this).apply { map.forEach { (k, v) -> register(k as ResourceKey<T>, v) } } },
-            { it.keyStorage.toMap() }
-        )
+    override fun decodeString(value: String): T = requireNotNull(get(Codecs.KEY.decodeString(value))) {
+        "Could not find element with key $value in registry $key!"
     }
 }

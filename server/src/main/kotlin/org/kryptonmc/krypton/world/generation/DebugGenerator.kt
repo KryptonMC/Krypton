@@ -18,28 +18,21 @@
  */
 package org.kryptonmc.krypton.world.generation
 
-import com.mojang.serialization.Codec
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.KryptonRegistry
-import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.util.ceil
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.Climate
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.gen.FixedBiomeGenerator
 import org.kryptonmc.krypton.world.block.BlockLoader
 import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.spongepowered.math.GenericMath
 import kotlin.math.abs
 
-class DebugGenerator(
-    private val biomes: KryptonRegistry<Biome>
-) : Generator(FixedBiomeGenerator(biomes[BiomeKeys.PLAINS]!!), StructureSettings(false)) {
+class DebugGenerator(biomes: KryptonRegistry<Biome>) : Generator(FixedBiomeGenerator(biomes[BiomeKeys.PLAINS]!!), StructureSettings(false)) {
 
-    override val codec: Codec<out Generator> = CODEC
     override val climateSampler: Climate.Sampler = Climate.Sampler { _, _, _ -> Climate.TargetPoint.ZERO }
 
     override fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor) {
@@ -48,16 +41,8 @@ class DebugGenerator(
 
     companion object {
 
-        private const val BLOCK_MARGIN = 2
         private val GRID_WIDTH = GenericMath.sqrt(BlockLoader.STATES.size.toDouble()).ceil()
         private val GRID_HEIGHT = (BlockLoader.STATES.size.toDouble() / GRID_WIDTH).ceil()
-
-        @JvmField
-        val CODEC: Codec<DebugGenerator> = ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC)
-            .fieldOf("biomes")
-            .xmap(::DebugGenerator, DebugGenerator::biomes)
-            .stable()
-            .codec()
 
         @JvmStatic
         fun blockAt(x: Int, z: Int): Block {

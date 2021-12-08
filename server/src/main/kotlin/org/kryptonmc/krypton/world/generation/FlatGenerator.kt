@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.generation
 
-import com.mojang.serialization.Codec
 import org.kryptonmc.krypton.world.biome.Climate
 import org.kryptonmc.krypton.world.biome.KryptonBiomes
 import org.kryptonmc.krypton.world.biome.gen.FixedBiomeGenerator
@@ -32,18 +31,9 @@ class FlatGenerator(val settings: FlatGeneratorSettings) : Generator(
     settings.structureSettings
 ) {
 
-    override val codec: Codec<out Generator> = CODEC
     override val climateSampler: Climate.Sampler = Climate.Sampler { _, _, _ -> Climate.TargetPoint.ZERO }
 
     override fun buildSurface(region: GenerationRegion, chunk: ChunkAccessor) {
         // no surface to build for flat generator... yet
-    }
-
-    companion object {
-
-        @JvmField
-        val CODEC: Codec<FlatGenerator> = FlatGeneratorSettings.CODEC.fieldOf("settings")
-            .xmap(::FlatGenerator, FlatGenerator::settings)
-            .codec()
     }
 }

@@ -18,17 +18,15 @@
  */
 package org.kryptonmc.krypton.world.dimension
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.DataResult
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionEffects
 import org.kryptonmc.api.world.dimension.DimensionType
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.Vectors
-import org.kryptonmc.krypton.util.getIfPresent
-import java.util.Optional
+import org.kryptonmc.krypton.util.serialization.CompoundEncoder
+import org.kryptonmc.krypton.util.serialization.encode
+import org.kryptonmc.nbt.compound
 
 @JvmRecord
 data class KryptonDimensionType(
@@ -167,41 +165,31 @@ data class KryptonDimensionType(
         val MAX_Y = (Y_SIZE shr 1) - 1
         @JvmField
         val MIN_Y = MAX_Y - Y_SIZE + 1
+        private val MINIMUM_Y_CODEC = Codecs.range(MIN_Y, MAX_Y)
+        private val HEIGHT_CODEC = Codecs.range(MINIMUM_HEIGHT, Y_SIZE)
+        private val LOGICAL_HEIGHT_CODEC = Codecs.range(0, Y_SIZE)
+        private val COORDINATE_SCALE_CODEC = Codecs.range(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE)
 
         @JvmField
-        val CODEC: Codec<DimensionType> = RecordCodecBuilder.create<DimensionType> { instance ->
-            instance.group(
-                Codec.BOOL.fieldOf("piglin_safe").forGetter(DimensionType::isPiglinSafe),
-                Codec.BOOL.fieldOf("natural").forGetter(DimensionType::isNatural),
-                Codec.BOOL.fieldOf("ultrawarm").forGetter(DimensionType::isUltrawarm),
-                Codec.BOOL.fieldOf("has_skylight").forGetter(DimensionType::hasSkylight),
-                Codec.BOOL.fieldOf("has_ceiling").forGetter(DimensionType::hasCeiling),
-                Codec.BOOL.fieldOf("has_raids").forGetter(DimensionType::hasRaids),
-                Codec.BOOL.fieldOf("bed_works").forGetter(DimensionType::allowBeds),
-                Codec.BOOL.fieldOf("respawn_anchor_works").forGetter(DimensionType::allowRespawnAnchors),
-                Codec.FLOAT.fieldOf("ambient_light").forGetter(DimensionType::ambientLight),
-                Codec.LONG.optionalFieldOf("fixed_time")
-                    .xmap(Optional<Long>::getIfPresent) { Optional.ofNullable(it) }
-                    .forGetter(DimensionType::fixedTime),
-                Codecs.KEY.fieldOf("infiniburn").forGetter(DimensionType::infiniburn),
-                Codec.intRange(MIN_Y, MAX_Y).fieldOf("min_y").forGetter(DimensionType::minimumY),
-                Codec.intRange(MINIMUM_HEIGHT, Y_SIZE).fieldOf("height").forGetter(DimensionType::height),
-                Codec.intRange(0, Y_SIZE).fieldOf("logical_height").forGetter(DimensionType::logicalHeight),
-                Codec.doubleRange(MINIMUM_COORDINATE_SCALE, MAXIMUM_COORDINATE_SCALE)
-                    .fieldOf("coordinate_scale")
-                    .forGetter(DimensionType::coordinateScale),
-                Codecs.KEY.fieldOf("effects").forGetter { it.effects.key() }
-            ).apply(instance) { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> error("Cannot decode dimension types!") }
-        }.comapFlatMap(::checkY) { it }
-
-        @JvmStatic
-        private fun checkY(type: DimensionType): DataResult<DimensionType> {
-            if (type.height < MINIMUM_HEIGHT) return DataResult.error("Height has to be at least $MINIMUM_HEIGHT!")
-            if (type.minimumY + type.height > MAX_Y + 1) return DataResult.error("Minimum Y + height cannot be greater than ${MAX_Y + 1}!")
-            if (type.logicalHeight > type.height) return DataResult.error("Logical height cannot be greater than height!")
-            if (type.height % 16 != 0) return DataResult.error("Height must be a multiple of 16!")
-            if (type.minimumY % 16 != 0) return DataResult.error("Minimum Y must be a multiple of 16!")
-            return DataResult.success(type)
+        val ENCODER: CompoundEncoder<DimensionType> = CompoundEncoder {
+            compound {
+                encode(Codecs.BOOLEAN, "piglin_safe", it.isPiglinSafe)
+                encode(Codecs.BOOLEAN, "natural", it.isNatural)
+                encode(Codecs.BOOLEAN, "ultrawarm", it.isUltrawarm)
+                encode(Codecs.BOOLEAN, "has_skylight", it.hasSkylight)
+                encode(Codecs.BOOLEAN, "has_ceiling", it.hasCeiling)
+                encode(Codecs.BOOLEAN, "has_raids", it.hasRaids)
+                encode(Codecs.BOOLEAN, "bed_works", it.allowBeds)
+                encode(Codecs.BOOLEAN, "respawn_anchor_works", it.allowRespawnAnchors)
+                encode(Codecs.FLOAT, "ambient_light", it.ambientLight)
+                encode(Codecs.LONG, "fixed_time", it.fixedTime)
+                encode(Codecs.KEY, "infiniburn", it.infiniburn)
+                encode(MINIMUM_Y_CODEC, "min_y", it.minimumY)
+                encode(HEIGHT_CODEC, "height", it.height)
+                encode(LOGICAL_HEIGHT_CODEC, "logical_height", it.logicalHeight)
+                encode(COORDINATE_SCALE_CODEC, "coordinate_scale", it.coordinateScale)
+                encode(Codecs.KEY, "effects", it.effects.key())
+            }
         }
     }
 }

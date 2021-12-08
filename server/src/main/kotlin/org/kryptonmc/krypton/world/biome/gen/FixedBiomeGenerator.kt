@@ -18,17 +18,13 @@
  */
 package org.kryptonmc.krypton.world.biome.gen
 
-import com.mojang.serialization.Codec
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.world.biome.Climate
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
 
 class FixedBiomeGenerator(private val biome: Biome) : BiomeGenerator(listOf(biome)), NoiseBiomeSource {
-
-    override val codec: Codec<out BiomeGenerator> = CODEC
 
     override fun get(x: Int, y: Int, z: Int, sampler: Climate.Sampler): Biome = biome
 
@@ -50,14 +46,5 @@ class FixedBiomeGenerator(private val biome: Biome) : BiomeGenerator(listOf(biom
             return Vector3i(x - radius + random.nextInt(radius * 2 + 1), y, z - radius + random.nextInt(radius * 2 + 1))
         }
         return null
-    }
-
-    companion object {
-
-        @JvmField
-        val CODEC: Codec<FixedBiomeGenerator> = KryptonBiome.CODEC.fieldOf("biome")
-            .xmap(::FixedBiomeGenerator, FixedBiomeGenerator::biome)
-            .stable()
-            .codec()
     }
 }

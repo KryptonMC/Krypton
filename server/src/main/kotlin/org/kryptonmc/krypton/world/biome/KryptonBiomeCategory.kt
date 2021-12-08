@@ -18,11 +18,11 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import com.mojang.serialization.Codec
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.biome.BiomeCategory
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.serialization.StringCodec
 
 @JvmRecord
 data class KryptonBiomeCategory(private val key: Key) : BiomeCategory {
@@ -37,6 +37,6 @@ data class KryptonBiomeCategory(private val key: Key) : BiomeCategory {
     companion object {
 
         @JvmField
-        val CODEC: Codec<BiomeCategory> = Codecs.forRegistry(Registries.BIOME_CATEGORIES)
+        val CODEC: StringCodec<BiomeCategory> = Codecs.forRegistry(Registries.BIOME_CATEGORIES)
     }
 }

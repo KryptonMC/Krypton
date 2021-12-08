@@ -16,15 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.util.serialization
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.DataResult
-import com.mojang.serialization.MapCodec
+import org.kryptonmc.nbt.CompoundTag
 
-fun <T> T?.successOrError(message: String): DataResult<T> {
-    if (this != null) return DataResult.success(this)
-    return DataResult.error(message)
+interface CompoundCodec<T> : Codec<CompoundTag, T>, CompoundEncoder<T>, CompoundDecoder<T> {
+
+    private class Passthrough<T>(private val encoder: CompoundEncoder<T>, private val decoder: CompoundDecoder<T>) : CompoundCodec<T> {
+
+        override fun encode(value: T): CompoundTag = encoder.encode(value)
+
+        override fun decode(tag: CompoundTag): T = decoder.decode(tag)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun <T> of(encoder: CompoundEncoder<T>, decoder: CompoundDecoder<T>): CompoundCodec<T> = Passthrough(encoder, decoder)
+    }
 }
 
-fun <T> Codec<T>.nullableFieldOf(name: String): MapCodec<T?> = NullableFieldCodec(name, this)
+fun interface CompoundEncoder<T> : Encoder<T, CompoundTag>
+
+fun interface CompoundDecoder<T> : Decoder<CompoundTag, T>

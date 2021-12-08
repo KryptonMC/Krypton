@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.server
 
 import com.google.common.hash.Hashing
-import com.mojang.serialization.Dynamic
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
@@ -63,7 +62,6 @@ import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
@@ -103,13 +101,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         val profile = player.profile
         val name = server.profileCache[profile.uuid]?.name ?: profile.name
         server.profileCache.add(profile)
-        val dimension = if (nbt != null) {
-            Dynamic(NBTOps, nbt["Dimension"]).parseDimension()
-                .resultOrPartial(LOGGER::error)
-                .orElse(World.OVERWORLD)
-        } else {
-            World.OVERWORLD
-        }
+        val dimension = if (nbt != null) nbt["Dimension"]?.parseDimension() ?: World.OVERWORLD else World.OVERWORLD
         if (nbt != null) server.userManager.updateUser(profile.uuid, nbt)
 
         val world = server.worldManager.worlds[dimension] ?: kotlin.run {

@@ -63,14 +63,14 @@ data class PacketOutJoinGame(
         buf.writeNBT(compound {
             put(
                 ResourceKeys.DIMENSION_TYPE.location.asString(),
-                Registries.DIMENSION_TYPE.encode(KryptonDimensionType.CODEC)
+                Registries.DIMENSION_TYPE.encode(KryptonDimensionType.ENCODER)
             )
             put(
                 ResourceKeys.BIOME.location.asString(),
-                Registries.BIOME.encode(KryptonBiome.CODEC)
+                Registries.BIOME.encode(KryptonBiome.ENCODER)
             )
         })
-        buf.encode(KryptonDimensionType.CODEC, dimensionType)
+        buf.encode(KryptonDimensionType.ENCODER, dimensionType)
         buf.writeKey(dimension.location)
         buf.writeLong(seed)
         buf.writeVarInt(maxPlayers)

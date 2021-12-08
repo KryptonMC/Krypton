@@ -43,8 +43,6 @@ object InternalRegistries {
     @JvmField val BLOCK_ENTITY_TYPE = create(ResourceKeys.BLOCK_ENTITY_TYPE)
 
     // World generation registries
-    @JvmField val GENERATOR = create(InternalResourceKeys.GENERATOR)
-    @JvmField val BIOME_GENERATOR = create(InternalResourceKeys.BIOME_GENERATOR)
     @JvmField val STRUCTURE = create(InternalResourceKeys.STRUCTURE)
     @JvmField val NOISE_GENERATOR_SETTINGS = create(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
     @JvmField val CHUNK_STATUS = createDefaulted(InternalResourceKeys.CHUNK_STATUS, key("empty"))

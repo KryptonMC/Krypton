@@ -128,7 +128,14 @@ bstats = { group = "org.bstats", name = "bstats-base", version.ref = "bstats" }
 
 [bundles]
 
-adventure = ["adventure-api", "adventure-extraKotlin", "adventure-serializer-gson", "adventure-serializer-legacy", "adventure-serializer-plain"]
+adventure = [
+  "adventure-api",
+  "adventure-extraKotlin",
+  "adventure-serializer-gson",
+  "adventure-serializer-legacy",
+  "adventure-serializer-plain",
+  "adventure-serializer-configurate",
+]
 configurate = ["configurate-core", "configurate-gson", "configurate-hocon", "configurate-yaml", "configurate-extra-kotlin", "configurate-extra-guice"]
 netty = ["netty-buffer", "netty-handler", "netty-transport"]
 junit = ["junit-api", "junit-engine", "kotlin-test-junit"]

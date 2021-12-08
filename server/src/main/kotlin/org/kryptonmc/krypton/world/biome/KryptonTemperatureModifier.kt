@@ -18,11 +18,11 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import com.mojang.serialization.Codec
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.biome.TemperatureModifier
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.serialization.StringCodec
 
 @JvmRecord
 data class KryptonTemperatureModifier(private val key: Key) : TemperatureModifier {
@@ -37,6 +37,6 @@ data class KryptonTemperatureModifier(private val key: Key) : TemperatureModifie
     companion object {
 
         @JvmField
-        val CODEC: Codec<TemperatureModifier> = Codecs.forRegistry(Registries.TEMPERATURE_MODIFIERS)
+        val CODEC: StringCodec<TemperatureModifier> = Codecs.forRegistry(Registries.TEMPERATURE_MODIFIERS)
     }
 }

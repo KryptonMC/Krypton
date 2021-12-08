@@ -18,11 +18,11 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import com.mojang.serialization.Codec
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.biome.GrassColorModifier
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.serialization.StringCodec
 
 @JvmRecord
 data class KryptonGrassColorModifier(private val key: Key) : GrassColorModifier {
@@ -37,6 +37,6 @@ data class KryptonGrassColorModifier(private val key: Key) : GrassColorModifier 
     companion object {
 
         @JvmField
-        val CODEC: Codec<GrassColorModifier> = Codecs.forRegistry(Registries.GRASS_COLOR_MODIFIERS)
+        val CODEC: StringCodec<GrassColorModifier> = Codecs.forRegistry(Registries.GRASS_COLOR_MODIFIERS)
     }
 }

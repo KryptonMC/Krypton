@@ -16,24 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.dimension
+package org.kryptonmc.krypton.util.serialization
 
-import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.nbt.NumberTag
-import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.Tag
+import org.kryptonmc.nbt.compound
 
-fun Tag.parseDimension(): ResourceKey<World>? {
-    if (this is NumberTag) {
-        when (value.toInt()) {
-            -1 -> return World.NETHER
-            0 -> return World.OVERWORLD
-            1 -> return World.END
-        }
-        return null
+class MapCodec<K, V>(private val keyCodec: StringCodec<K>, private val valueCodec: Codec<Tag, V>) : CompoundCodec<Map<K, V>> {
+
+    override fun encode(value: Map<K, V>): CompoundTag = compound {
+        value.forEach { put(keyCodec.encodeString(it.key), valueCodec.encode(it.value)) }
     }
-    if (this !is StringTag) return null
-    return Codecs.DIMENSION.decodeNullable(this)
+
+    override fun decode(tag: CompoundTag): Map<K, V> {
+        val map = mutableMapOf<K, V>()
+        tag.forEach { map[keyCodec.decodeString(it.key)] = valueCodec.decode(it.value) }
+        return map
+    }
 }

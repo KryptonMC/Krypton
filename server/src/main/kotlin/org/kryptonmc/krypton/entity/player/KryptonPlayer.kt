@@ -111,15 +111,16 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.util.BossBarManager
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.Positioning
+import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
+import org.kryptonmc.nbt.StringTag
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
@@ -376,9 +377,8 @@ class KryptonPlayer(
             respawnPosition = Vector3i(tag.getInt("SpawnX"), tag.getInt("SpawnY"), tag.getInt("SpawnZ"))
             respawnForced = tag.getBoolean("SpawnForced")
             respawnAngle = tag.getFloat("SpawnAngle")
-            if (tag.containsKey("SpawnDimension")) {
-                val dimension = Codecs.DIMENSION.parse(NBTOps, tag["SpawnDimension"]!!)
-                respawnDimension = dimension.resultOrPartial(LOGGER::error).orElse(World.OVERWORLD)
+            if (tag.contains("SpawnDimension", StringTag.ID)) {
+                respawnDimension = Codecs.DIMENSION.decodeNullable(tag["SpawnDimension"] as StringTag) ?: World.OVERWORLD
             }
         }
 
@@ -423,9 +423,7 @@ class KryptonPlayer(
             int("SpawnZ", position.z())
             float("SpawnAngle", respawnAngle)
             boolean("SpawnForced", respawnForced)
-            Codecs.DIMENSION.encodeStart(NBTOps, respawnDimension)
-                .resultOrPartial(LOGGER::error)
-                .ifPresent { put("SpawnDimension", it) }
+            encode(Codecs.DIMENSION, "SpawnDimension", respawnDimension)
         }
 
         val rootVehicle = rootVehicle

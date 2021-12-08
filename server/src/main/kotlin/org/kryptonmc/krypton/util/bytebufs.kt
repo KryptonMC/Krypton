@@ -24,7 +24,6 @@
 package org.kryptonmc.krypton.util
 
 import com.mojang.brigadier.arguments.ArgumentType
-import com.mojang.serialization.Codec
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.ByteBufInputStream
 import io.netty.buffer.ByteBufOutputStream
@@ -40,7 +39,7 @@ import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.nbt.NBTOps
+import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
 import org.kryptonmc.nbt.io.TagCompression
@@ -288,10 +287,13 @@ fun ByteBuf.writeIntArray(array: IntArray) {
     }
 }
 
-fun <T> ByteBuf.encode(codec: Codec<T>, value: T) {
-    val result = codec.encodeStart(NBTOps, value)
-    result.error().ifPresent { throw EncoderException("Failed to encode value $value with codec $codec! Reason: ${it.message()}") }
-    writeNBT(result.result().get() as? CompoundTag)
+fun <T> ByteBuf.encode(encoder: CompoundEncoder<T>, value: T) {
+    val result = try {
+        encoder.encode(value)
+    } catch (exception: Exception) {
+        throw EncoderException("Failed to encode value $value with encoder $encoder!", exception)
+    }
+    writeNBT(result)
 }
 
 fun ByteBuf.readBlockHitResult(): BlockHitResult {

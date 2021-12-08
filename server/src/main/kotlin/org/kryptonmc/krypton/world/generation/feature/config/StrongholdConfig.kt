@@ -18,25 +18,9 @@
  */
 package org.kryptonmc.krypton.world.generation.feature.config
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
-
 @JvmRecord
 data class StrongholdConfig(
     val distance: Int,
     val spread: Int,
     val count: Int
-) {
-
-    companion object {
-
-        @JvmField
-        val CODEC: Codec<StrongholdConfig> = RecordCodecBuilder.create {
-            it.group(
-                Codec.intRange(0, 1023).fieldOf("distance").forGetter(StrongholdConfig::distance),
-                Codec.intRange(1, 4095).fieldOf("count").forGetter(StrongholdConfig::count),
-                Codec.intRange(0, 1023).fieldOf("spread").forGetter(StrongholdConfig::spread)
-            ).apply(it, ::StrongholdConfig)
-        }
-    }
-}
+)

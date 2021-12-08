@@ -16,24 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.dimension
+package org.kryptonmc.krypton.util.serialization
 
-import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.nbt.NumberTag
-import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.Tag
 
-fun Tag.parseDimension(): ResourceKey<World>? {
-    if (this is NumberTag) {
-        when (value.toInt()) {
-            -1 -> return World.NETHER
-            0 -> return World.OVERWORLD
-            1 -> return World.END
+fun interface Decoder<I : Tag, O> {
+
+    fun decode(tag: I): O
+
+    fun decodeNullable(tag: I): O? {
+        return try {
+            decode(tag)
+        } catch (exception: Exception) {
+            null
         }
-        return null
     }
-    if (this !is StringTag) return null
-    return Codecs.DIMENSION.decodeNullable(this)
 }

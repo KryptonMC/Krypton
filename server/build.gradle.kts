@@ -41,7 +41,6 @@ dependencies {
 
     // Data
     api(libs.dataConverter)
-    implementation(libs.dfu) // TODO: Remove this and replace with native conversion
     api(libs.nbt)
     implementation(libs.articData)
 
@@ -50,7 +49,6 @@ dependencies {
     implementation(libs.fastutil)
     implementation(libs.clikt)
     implementation(libs.bstats)
-    implementation(libs.adventure.serializer.configurate)
     implementation(libs.spark.common)
 
     testImplementation(libs.bundles.junit)

@@ -16,24 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.dimension
+package org.kryptonmc.krypton.util.serialization
 
-import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.nbt.NumberTag
-import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.Tag
 
-fun Tag.parseDimension(): ResourceKey<World>? {
-    if (this is NumberTag) {
-        when (value.toInt()) {
-            -1 -> return World.NETHER
-            0 -> return World.OVERWORLD
-            1 -> return World.END
-        }
-        return null
+interface Codec<T : Tag, U> : Encoder<U, T>, Decoder<T, U> {
+
+    fun <V> transform(
+        encodeTransformer: (V) -> U,
+        decodeTransformer: (U) -> V
+    ): TransformingCodec<T, U, V> = TransformingCodec(this, encodeTransformer, decodeTransformer)
+
+    @Suppress("UNCHECKED_CAST")
+    fun list(): ListCodec<U> = ListCodec(this as Codec<Tag, U>)
+
+    private class Passthrough<T : Tag, U>(private val encoder: Encoder<U, T>, private val decoder: Decoder<T, U>) : Codec<T, U> {
+
+        override fun encode(value: U): T = encoder.encode(value)
+
+        override fun decode(tag: T): U = decoder.decode(tag)
     }
-    if (this !is StringTag) return null
-    return Codecs.DIMENSION.decodeNullable(this)
+
+    companion object {
+
+        @JvmStatic
+        fun <T : Tag, U> of(encoder: Encoder<U, T>, decoder: Decoder<T, U>): Codec<T, U> = Passthrough(encoder, decoder)
+    }
 }

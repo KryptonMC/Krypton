@@ -18,11 +18,12 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.world.biome.AmbientAdditionsSettings
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.serialization.CompoundEncoder
+import org.kryptonmc.krypton.util.serialization.encode
+import org.kryptonmc.nbt.compound
 
 @JvmRecord
 data class KryptonAmbientAdditionsSettings(
@@ -57,11 +58,11 @@ data class KryptonAmbientAdditionsSettings(
     companion object {
 
         @JvmField
-        val CODEC: Codec<AmbientAdditionsSettings> = RecordCodecBuilder.create {
-            it.group(
-                Codecs.SOUND_EVENT.fieldOf("sound").forGetter(AmbientAdditionsSettings::sound),
-                Codec.DOUBLE.fieldOf("probability").forGetter(AmbientAdditionsSettings::probability)
-            ).apply(it, ::KryptonAmbientAdditionsSettings)
+        val ENCODER: CompoundEncoder<AmbientAdditionsSettings> = CompoundEncoder {
+            compound {
+                encode(Codecs.SOUND_EVENT, "sound", it.sound)
+                encode(Codecs.DOUBLE, "probability", it.probability)
+            }
         }
     }
 }

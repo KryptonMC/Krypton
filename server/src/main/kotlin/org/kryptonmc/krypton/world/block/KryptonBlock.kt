@@ -20,8 +20,6 @@ package org.kryptonmc.krypton.world.block
 
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
@@ -33,8 +31,12 @@ import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.serialization.CompoundCodec
+import org.kryptonmc.krypton.util.serialization.decode
+import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyHolder
+import org.kryptonmc.nbt.compound
 
 @JvmRecord
 data class KryptonBlock(
@@ -300,13 +302,17 @@ data class KryptonBlock(
     companion object {
 
         private val EMPTY_KEY = Key.key("empty")
+        private val PROPERTIES_CODEC = Codecs.map(Codecs.STRING)
 
         @JvmField
-        val CODEC: Codec<Block> = RecordCodecBuilder.create {
-            it.group(
-                Codecs.KEY.fieldOf("Name").forGetter(Block::key),
-                Codec.unboundedMap(Codec.STRING, Codec.STRING).fieldOf("Properties").forGetter(Block::properties)
-            ).apply(it) { key, properties -> BlockLoader.fromKey(key)!!.copy(properties) }
-        }
+        val CODEC: CompoundCodec<Block> = CompoundCodec.of(
+            {
+                compound {
+                    encode(Codecs.KEY, "Name", it.key())
+                    encode(PROPERTIES_CODEC, "Properties", it.properties)
+                }
+            },
+            { BlockLoader.fromKey(it.decode(Codecs.KEY, "Name")!!)!!.copy(it.decode(PROPERTIES_CODEC, "Properties")!!) }
+        )
     }
 }

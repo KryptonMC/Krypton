@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.world.dimension
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.dimension.DimensionType
@@ -40,13 +38,5 @@ data class Dimension(
         val NETHER: ResourceKey<Dimension> = ResourceKey.of(InternalResourceKeys.DIMENSION, key("the_nether"))
         @JvmField
         val END: ResourceKey<Dimension> = ResourceKey.of(InternalResourceKeys.DIMENSION, key("the_end"))
-
-        @JvmField
-        val CODEC: Codec<Dimension> = RecordCodecBuilder.create {
-            it.group(
-                KryptonDimensionType.CODEC.fieldOf("type").forGetter(Dimension::type),
-                Generator.CODEC.fieldOf("generator").forGetter(Dimension::generator)
-            ).apply(it, ::Dimension)
-        }
     }
 }

@@ -16,24 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.dimension
+package org.kryptonmc.krypton.util.serialization
 
-import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.nbt.NumberTag
-import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.Tag
 
-fun Tag.parseDimension(): ResourceKey<World>? {
-    if (this is NumberTag) {
-        when (value.toInt()) {
-            -1 -> return World.NETHER
-            0 -> return World.OVERWORLD
-            1 -> return World.END
-        }
-        return null
-    }
-    if (this !is StringTag) return null
-    return Codecs.DIMENSION.decodeNullable(this)
+fun <T> CompoundTag.Builder.encode(encoder: Encoder<T, out Tag>, name: String, value: T?): CompoundTag.Builder = apply {
+    if (value != null) put(name, encoder.encode(value))
+}
+
+fun <T> CompoundTag.Builder.encode(encoder: CompoundEncoder<T>, value: T?): CompoundTag.Builder = apply {
+    if (value != null) encoder.encode(value).forEach { put(it.key, it.value) }
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T> CompoundTag.decode(decoder: Decoder<out Tag, T>, name: String): T? {
+    val tag = get(name) ?: return null
+    return (decoder as Decoder<Tag, T>).decodeNullable(tag)
 }

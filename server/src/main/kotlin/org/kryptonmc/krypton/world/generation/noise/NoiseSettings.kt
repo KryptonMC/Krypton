@@ -18,13 +18,6 @@
  */
 package org.kryptonmc.krypton.world.generation.noise
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.DataResult
-import com.mojang.serialization.Lifecycle
-import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
-import java.util.function.Function
-
 @JvmRecord
 data class NoiseSettings(
     val minimumY: Int,
@@ -40,39 +33,4 @@ data class NoiseSettings(
     val randomDensityOffset: Boolean,
     val islandNoiseOverride: Boolean,
     val isAmplified: Boolean
-) {
-
-    companion object {
-
-        @JvmField
-        val CODEC: Codec<NoiseSettings> = RecordCodecBuilder.create<NoiseSettings> {
-            it.group(
-                Codec.intRange(KryptonDimensionType.MIN_Y, KryptonDimensionType.MAX_Y).fieldOf("min_y").forGetter(NoiseSettings::minimumY),
-                Codec.intRange(0, KryptonDimensionType.Y_SIZE).fieldOf("height").forGetter(NoiseSettings::height),
-                NoiseSampling.CODEC.fieldOf("sampling").forGetter(NoiseSettings::sampling),
-                NoiseSlide.CODEC.fieldOf("top_slide").forGetter(NoiseSettings::topSlide),
-                NoiseSlide.CODEC.fieldOf("bottom_slide").forGetter(NoiseSettings::bottomSlide),
-                Codec.intRange(1, 4).fieldOf("size_horizontal").forGetter(NoiseSettings::horizontalSize),
-                Codec.intRange(1, 4).fieldOf("size_vertical").forGetter(NoiseSettings::verticalSize),
-                Codec.DOUBLE.fieldOf("density_factor").forGetter(NoiseSettings::densityFactor),
-                Codec.DOUBLE.fieldOf("density_offset").forGetter(NoiseSettings::densityOffset),
-                Codec.BOOL.fieldOf("simplex_surface_noise").forGetter(NoiseSettings::useSimplexSurfaceNoise),
-                Codec.BOOL.optionalFieldOf("random_density_offset", false, Lifecycle.experimental())
-                    .forGetter(NoiseSettings::randomDensityOffset),
-                Codec.BOOL.optionalFieldOf("island_noise_override", false, Lifecycle.experimental())
-                    .forGetter(NoiseSettings::islandNoiseOverride),
-                Codec.BOOL.optionalFieldOf("amplified", false, Lifecycle.experimental()).forGetter(NoiseSettings::isAmplified)
-            ).apply(it, ::NoiseSettings)
-        }.comapFlatMap(::guardY, Function.identity())
-
-        @JvmStatic
-        private fun guardY(settings: NoiseSettings): DataResult<NoiseSettings> {
-            if (settings.minimumY + settings.height > KryptonDimensionType.MAX_Y + 1) {
-                return DataResult.error("Minimum Y + height cannot be greater than ${KryptonDimensionType.MAX_Y + 1}!")
-            }
-            if (settings.height % 16 != 0) return DataResult.error("Height must be a multiple of 16!")
-            if (settings.minimumY % 16 != 0) return DataResult.error("Minimum Y must be a multiple of 16!")
-            return DataResult.success(settings)
-        }
-    }
-}
+)

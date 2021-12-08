@@ -24,7 +24,6 @@ import ca.spottedleaf.dataconverter.types.nbt.NBTMapType
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.toUUID
 import org.kryptonmc.krypton.world.DataPackConfig
 import org.kryptonmc.krypton.world.generation.WorldGenerationSettings
@@ -87,7 +86,7 @@ class PrimaryWorldData(
             byte("Difficulty", difficulty.ordinal.toByte())
             boolean("hardcore", isHardcore)
             put("GameRules", gameRules.save())
-            DataPackConfig.CODEC.encodeStart(NBTOps, dataPackConfig).result().ifPresent { put("DataPacks", it) }
+            DataPackConfig.ENCODER.encodeNullable(dataPackConfig)?.let { put("DataPacks", it) }
             int("SpawnX", spawnX)
             int("SpawnY", spawnY)
             int("SpawnZ", spawnZ)

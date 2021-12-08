@@ -16,27 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome
+package org.kryptonmc.krypton.util.serialization
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.world.biome.Precipitation
-import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.StringCodec
+import org.kryptonmc.nbt.IntTag
 
-@JvmRecord
-data class KryptonPrecipitation(private val key: Key) : Precipitation {
+interface IntCodec<T> : Codec<IntTag, T>, IntEncoder<T>, IntDecoder<T> {
 
-    override fun key(): Key = key
+    private class Passthrough<T>(private val encoder: IntEncoder<T>, private val decoder: IntDecoder<T>) : IntCodec<T> {
 
-    object Factory : Precipitation.Factory {
+        override fun encodeInt(value: T): Int = encoder.encodeInt(value)
 
-        override fun of(key: Key): Precipitation = KryptonPrecipitation(key)
+        override fun decodeInt(value: Int): T = decoder.decodeInt(value)
     }
 
     companion object {
 
-        @JvmField
-        val CODEC: StringCodec<Precipitation> = Codecs.forRegistry(Registries.PRECIPITATIONS)
+        @JvmStatic
+        fun <T> of(encoder: IntEncoder<T>, decoder: IntDecoder<T>): IntCodec<T> = Passthrough(encoder, decoder)
     }
+}
+
+fun interface IntEncoder<I> : Encoder<I, IntTag> {
+
+    fun encodeInt(value: I): Int
+
+    override fun encode(value: I): IntTag = IntTag.of(encodeInt(value))
+}
+
+fun interface IntDecoder<O> : Decoder<IntTag, O> {
+
+    fun decodeInt(value: Int): O
+
+    override fun decode(tag: IntTag): O = decodeInt(tag.value)
 }
