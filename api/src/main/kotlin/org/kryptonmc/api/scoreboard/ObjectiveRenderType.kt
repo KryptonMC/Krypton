@@ -8,34 +8,41 @@
  */
 package org.kryptonmc.api.scoreboard
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Keyed
-import org.jetbrains.annotations.ApiStatus
-import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.provide
+import org.kryptonmc.api.util.StringSerializable
 
 /**
  * A type representing a method of rendering an objective to a client.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
-public interface ObjectiveRenderType : Keyed {
+public enum class ObjectiveRenderType(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun of(key: Key): ObjectiveRenderType
-    }
+    INTEGER("integer"),
+    HEARTS("hearts");
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
+        private val VALUES = values()
+        private val BY_NAME = VALUES.associateBy { it.serialized }
 
         /**
-         * Creates a new objective render type with the given [key].
+         * Gets the objective render type with the given [name], or returns
+         * null if there is no objective render type with the given [name].
          *
-         * @param key the key
-         * @return a new objective render type
+         * @param name the name
+         * @return the objective render type with the name, or null if not
+         * present
          */
-        public fun of(key: Key): ObjectiveRenderType = FACTORY.of(key)
+        @JvmStatic
+        public fun fromName(name: String): ObjectiveRenderType? = BY_NAME[name]
+
+        /**
+         * Gets the objective render type with the given [id], or returns null
+         * if there is no objective render type with the given [id].
+         *
+         * @param id the ID
+         * @return the objective render type with the ID, or null if not
+         * present
+         */
+        @JvmStatic
+        public fun fromId(id: Int): ObjectiveRenderType? = VALUES.getOrNull(id)
     }
 }

@@ -22,10 +22,9 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.world.biome.BiomeCategories
 import org.kryptonmc.api.world.biome.BiomeCategory
-import org.kryptonmc.api.world.biome.GrassColorModifiers
 import org.kryptonmc.api.world.biome.Precipitation
-import org.kryptonmc.api.world.biome.Precipitations
-import org.kryptonmc.api.world.biome.TemperatureModifiers
+import org.kryptonmc.api.world.biome.GrassColorModifier
+import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.krypton.effect.KryptonMusics
 import org.kryptonmc.krypton.util.clamp
 import java.awt.Color
@@ -58,7 +57,7 @@ object OverworldBiomes {
     // ==============================
 
     @JvmStatic
-    fun theVoid(key: Key): KryptonBiome = createBiome(key, Precipitations.NONE, BiomeCategories.NONE, 0.5F, 0.5F)
+    fun theVoid(key: Key): KryptonBiome = createBiome(key, Precipitation.NONE, BiomeCategories.NONE, 0.5F, 0.5F)
 
     // ==============================
     // Taiga
@@ -73,7 +72,7 @@ object OverworldBiomes {
     @JvmStatic
     private fun oldGrowthTaiga(key: Key, spruce: Boolean): KryptonBiome = createBiome(
         key,
-        Precipitations.RAIN,
+        Precipitation.RAIN,
         BiomeCategories.TAIGA,
         if (spruce) 0.25F else 0.3F,
         0.8F
@@ -88,7 +87,7 @@ object OverworldBiomes {
     @JvmStatic
     private fun taiga(key: Key, snowy: Boolean): KryptonBiome = createBiome(
         key,
-        if (snowy) Precipitations.SNOW else Precipitations.RAIN,
+        if (snowy) Precipitation.SNOW else Precipitation.RAIN,
         BiomeCategories.TAIGA,
         if (snowy) -0.5F else 0.25F,
         if (snowy) 0.4F else 0.8F,
@@ -108,7 +107,7 @@ object OverworldBiomes {
     @JvmStatic
     private fun windsweptHills(key: Key, isEdge: Boolean): KryptonBiome = createBiome(
         key,
-        Precipitations.RAIN,
+        Precipitation.RAIN,
         BiomeCategories.EXTREME_HILLS,
         0.2F,
         0.3F
@@ -130,7 +129,7 @@ object OverworldBiomes {
     @JvmStatic
     private fun baseJungle(key: Key, downfall: Float, isBamboo: Boolean, isEdge: Boolean, isLight: Boolean): KryptonBiome = createBiome(
         key,
-        Precipitations.RAIN,
+        Precipitation.RAIN,
         BiomeCategories.JUNGLE,
         0.95F,
         downfall
@@ -151,7 +150,7 @@ object OverworldBiomes {
         val temperature = 2F
         return biome(key) {
             climate {
-                precipitation(Precipitations.NONE)
+                precipitation(Precipitation.NONE)
                 temperature(temperature)
                 downfall(0F)
             }
@@ -187,7 +186,7 @@ object OverworldBiomes {
     @JvmStatic
     private fun plains(key: Key, sunflowers: Boolean, icy: Boolean, spikes: Boolean): KryptonBiome = createBiome(
         key,
-        if (icy) Precipitations.SNOW else Precipitations.RAIN,
+        if (icy) Precipitation.SNOW else Precipitation.RAIN,
         if (icy) BiomeCategories.ICY else BiomeCategories.PLAINS,
         if (icy) 0F else 0.8F,
         if (icy) 0F else 0.4F
@@ -213,7 +212,7 @@ object OverworldBiomes {
             plateau -> 1F
             else -> 1.2F
         }
-        return createBiome(key, Precipitations.NONE, BiomeCategories.SAVANNA, temperature, 0F)
+        return createBiome(key, Precipitation.NONE, BiomeCategories.SAVANNA, temperature, 0F)
     }
 
     // ==============================
@@ -239,7 +238,7 @@ object OverworldBiomes {
         }
         return createBiome(
             key,
-            if (snowy) Precipitations.SNOW else Precipitations.RAIN,
+            if (snowy) Precipitation.SNOW else Precipitation.RAIN,
             BiomeCategories.BEACH,
             temperature,
             if (normal) 0.4F else 0.3F,
@@ -266,7 +265,7 @@ object OverworldBiomes {
     @JvmStatic
     private fun forest(key: Key, birch: Boolean, tall: Boolean, flower: Boolean): KryptonBiome = createBiome(
         key,
-        Precipitations.RAIN,
+        Precipitation.RAIN,
         BiomeCategories.FOREST,
         if (birch) 0.6F else 0.7F,
         if (birch) 0.6F else 0.8F
@@ -277,7 +276,7 @@ object OverworldBiomes {
         val temperature = 0.7F
         return biome(key) {
             climate {
-                precipitation(Precipitations.RAIN)
+                precipitation(Precipitation.RAIN)
                 temperature(temperature)
                 downfall(0.8F)
             }
@@ -287,7 +286,7 @@ object OverworldBiomes {
                 waterFogColor(OVERWORLD_WATER_FOG)
                 fogColor(OVERWORLD_FOG)
                 skyColor(calculateSkyColor(temperature))
-                grassColorModifier(GrassColorModifiers.DARK_FOREST)
+                grassColorModifier(GrassColorModifier.DARK_FOREST)
                 mood(KryptonAmbientMoodSettings.CAVE)
             }
         }
@@ -338,9 +337,9 @@ object OverworldBiomes {
         val temperature = if (deep) 0.5F else 0F
         return biome(key) {
             climate {
-                precipitation(if (deep) Precipitations.RAIN else Precipitations.SNOW)
+                precipitation(if (deep) Precipitation.RAIN else Precipitation.SNOW)
                 temperature(temperature)
-                temperatureModifier(TemperatureModifiers.FROZEN)
+                temperatureModifier(TemperatureModifier.FROZEN)
                 downfall(0.5F)
             }
             category(BiomeCategories.OCEAN)
@@ -357,7 +356,7 @@ object OverworldBiomes {
     @JvmStatic
     private fun baseOcean(key: Key, waterColor: Color, waterFogColor: Color): KryptonBiome = createBiome(
         key,
-        Precipitations.RAIN,
+        Precipitation.RAIN,
         BiomeCategories.OCEAN,
         0.5F,
         0.5F,
@@ -370,7 +369,7 @@ object OverworldBiomes {
     // ==============================
 
     @JvmStatic
-    fun desert(key: Key): KryptonBiome = createBiome(key, Precipitations.NONE, BiomeCategories.DESERT, 2F, 0F)
+    fun desert(key: Key): KryptonBiome = createBiome(key, Precipitation.NONE, BiomeCategories.DESERT, 2F, 0F)
 
     // ==============================
     // River
@@ -385,7 +384,7 @@ object OverworldBiomes {
     @JvmStatic
     private fun river(key: Key, frozen: Boolean): KryptonBiome = createBiome(
         key,
-        if (frozen) Precipitations.SNOW else Precipitations.RAIN,
+        if (frozen) Precipitation.SNOW else Precipitation.RAIN,
         BiomeCategories.RIVER,
         if (frozen) 0F else 0.5F,
         0.5F,
@@ -401,7 +400,7 @@ object OverworldBiomes {
         val temperature = 0.8F
         return biome(key) {
             climate {
-                precipitation(Precipitations.RAIN)
+                precipitation(Precipitation.RAIN)
                 temperature(temperature)
                 downfall(0.9F)
             }
@@ -412,7 +411,7 @@ object OverworldBiomes {
                 fogColor(OVERWORLD_FOG)
                 skyColor(calculateSkyColor(0.8F))
                 foliageColor(SWAMP_FOLIAGE)
-                grassColorModifier(GrassColorModifiers.SWAMP)
+                grassColorModifier(GrassColorModifier.SWAMP)
                 mood(KryptonAmbientMoodSettings.CAVE)
             }
         }
@@ -423,7 +422,7 @@ object OverworldBiomes {
     // ==============================
 
     @JvmStatic
-    fun mushroomFields(key: Key): KryptonBiome = createBiome(key, Precipitations.RAIN, BiomeCategories.MUSHROOM, 0.9F, 1F)
+    fun mushroomFields(key: Key): KryptonBiome = createBiome(key, Precipitation.RAIN, BiomeCategories.MUSHROOM, 0.9F, 1F)
 
     // ==============================
     // Underground
@@ -432,7 +431,7 @@ object OverworldBiomes {
     @JvmStatic
     fun lushCaves(key: Key): KryptonBiome = createBiome(
         key,
-        Precipitations.RAIN,
+        Precipitation.RAIN,
         BiomeCategories.UNDERGROUND,
         0.5F,
         0.5F,
@@ -442,7 +441,7 @@ object OverworldBiomes {
     @JvmStatic
     fun dripstoneCaves(key: Key): KryptonBiome = createBiome(
         key,
-        Precipitations.RAIN,
+        Precipitation.RAIN,
         BiomeCategories.UNDERGROUND,
         0.8F,
         0.4F,
@@ -456,7 +455,7 @@ object OverworldBiomes {
     @JvmStatic
     fun meadow(key: Key): KryptonBiome = createBiome(
         key,
-        Precipitations.RAIN,
+        Precipitation.RAIN,
         BiomeCategories.MOUNTAIN,
         0.5F,
         0.8F,
@@ -468,7 +467,7 @@ object OverworldBiomes {
     @JvmStatic
     fun frozenPeaks(key: Key): KryptonBiome = createBiome(
         key,
-        Precipitations.RAIN,
+        Precipitation.RAIN,
         BiomeCategories.MOUNTAIN,
         -0.7F,
         0.9F,
@@ -478,7 +477,7 @@ object OverworldBiomes {
     @JvmStatic
     fun jaggedPeaks(key: Key): KryptonBiome = createBiome(
         key,
-        Precipitations.SNOW,
+        Precipitation.SNOW,
         BiomeCategories.MOUNTAIN,
         -0.7F,
         0.9F,
@@ -488,7 +487,7 @@ object OverworldBiomes {
     @JvmStatic
     fun stonyPeaks(key: Key): KryptonBiome = createBiome(
         key,
-        Precipitations.RAIN,
+        Precipitation.RAIN,
         BiomeCategories.MOUNTAIN,
         1F,
         0.3F,
@@ -498,7 +497,7 @@ object OverworldBiomes {
     @JvmStatic
     fun snowySlopes(key: Key): KryptonBiome = createBiome(
         key,
-        Precipitations.SNOW,
+        Precipitation.SNOW,
         BiomeCategories.MOUNTAIN,
         -0.3F,
         0.9F,
@@ -508,7 +507,7 @@ object OverworldBiomes {
     @JvmStatic
     fun grove(key: Key): KryptonBiome = createBiome(
         key,
-        Precipitations.SNOW,
+        Precipitation.SNOW,
         BiomeCategories.FOREST,
         -0.2F,
         0.8F,

@@ -8,12 +8,41 @@
  */
 package org.kryptonmc.api.scoreboard
 
-import net.kyori.adventure.key.Keyed
-import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.TranslationHolder
+import org.kryptonmc.api.util.StringSerializable
 
 /**
- * A rule for collision between members of a [Team].
+ * A rule for collision between members of a team.
  */
-@CataloguedBy(CollisionRules::class)
-public interface CollisionRule : Keyed, TranslationHolder
+public enum class CollisionRule(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+
+    ALWAYS("always"),
+    NEVER("never"),
+    PUSH_OTHER_TEAMS("pushOtherTeams"),
+    PUSH_OWN_TEAM("pushOwnTeam");
+
+    public companion object {
+
+        private val VALUES = values()
+        private val BY_NAME = VALUES.associateBy { it.serialized }
+
+        /**
+         * Gets the collision rule with the given [name], or returns null if
+         * there is no collision rule with the given [name].
+         *
+         * @param name the name
+         * @return the collision rule with the name, or null if not present
+         */
+        @JvmStatic
+        public fun fromName(name: String): CollisionRule? = BY_NAME[name]
+
+        /**
+         * Gets the collision rule with the given [id], or returns null if
+         * there is no collision rule with the given [id].
+         *
+         * @param id the ID
+         * @return the collision rule with the ID, or null if not present
+         */
+        @JvmStatic
+        public fun fromId(id: Int): CollisionRule? = VALUES.getOrNull(id)
+    }
+}

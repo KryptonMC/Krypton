@@ -8,38 +8,44 @@
  */
 package org.kryptonmc.api.entity.animal.type
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Keyed
-import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.provide
+import org.kryptonmc.api.util.StringSerializable
 
 /**
  * A type of rabbit.
  */
-@CataloguedBy(RabbitTypes::class)
-public interface RabbitType : Keyed {
+public enum class RabbitType(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun of(key: Key): RabbitType
-    }
+    BROWN("brown"),
+    WHITE("white"),
+    BLACK("black"),
+    BLACK_AND_WHITE("black_and_white"),
+    GOLD("gold"),
+    SALT_AND_PEPPER("salt_and_pepper"),
+    KILLER("killer");
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
+        private val VALUES = values()
+        private val BY_NAME = VALUES.associateBy { it.serialized }
 
         /**
-         * Creates a new rabbit type with the given [key].
+         * Gets the rabbit type with the given [name], or returns null if
+         * there is no rabbit type with the given [name].
          *
-         * @param key the key
-         * @return a new rabbit type
+         * @param name the name
+         * @return the rabbit type with the name, or null if not present
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(key: Key): RabbitType = FACTORY.of(key)
+        public fun fromName(name: String): RabbitType? = BY_NAME[name]
+
+        /**
+         * Gets the rabbit type with the given [id], or returns null if there
+         * is no rabbit type with the given [id].
+         *
+         * @param id the ID
+         * @return the rabbit type with the ID, or null if not present
+         */
+        @JvmStatic
+        public fun fromId(id: Int): RabbitType? = VALUES.getOrNull(id)
     }
 }

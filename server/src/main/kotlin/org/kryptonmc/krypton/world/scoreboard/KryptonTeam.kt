@@ -21,10 +21,8 @@ package org.kryptonmc.krypton.world.scoreboard
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import org.kryptonmc.api.scoreboard.CollisionRule
-import org.kryptonmc.api.scoreboard.CollisionRules
 import org.kryptonmc.api.scoreboard.Team
-import org.kryptonmc.api.scoreboard.Visibilities
+import org.kryptonmc.api.scoreboard.CollisionRule
 import org.kryptonmc.api.scoreboard.Visibility
 
 class KryptonTeam(
@@ -36,9 +34,9 @@ class KryptonTeam(
     color: NamedTextColor = NamedTextColor.WHITE,
     allowFriendlyFire: Boolean = true,
     canSeeInvisibleMembers: Boolean = true,
-    nameTagVisibility: Visibility = Visibilities.ALWAYS,
-    deathMessagesVisibility: Visibility = Visibilities.ALWAYS,
-    collisionRule: CollisionRule = CollisionRules.ALWAYS,
+    nameTagVisibility: Visibility = Visibility.ALWAYS,
+    deathMessagesVisibility: Visibility = Visibility.ALWAYS,
+    collisionRule: CollisionRule = CollisionRule.ALWAYS,
     override val members: MutableSet<Component> = mutableSetOf()
 ) : Team {
 
@@ -114,9 +112,9 @@ class KryptonTeam(
         private var color: NamedTextColor = NamedTextColor.WHITE
         private var friendlyFire = true
         private var canSeeInvisibleMembers = true
-        private var nameTags = Visibilities.ALWAYS
-        private var deathMessages = Visibilities.ALWAYS
-        private var collisionRule = CollisionRules.ALWAYS
+        private var nameTags = Visibility.ALWAYS
+        private var deathMessages = Visibility.ALWAYS
+        private var collisionRule = CollisionRule.ALWAYS
         private val members = mutableSetOf<Component>()
 
         constructor(team: KryptonTeam) : this(team.name) {

@@ -27,8 +27,6 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
 import org.kryptonmc.krypton.util.writeString
 import org.kryptonmc.krypton.util.writeVarInt
-import org.kryptonmc.krypton.world.scoreboard.KryptonCollisionRule
-import org.kryptonmc.krypton.world.scoreboard.KryptonVisibility
 
 /**
  * Tells the client to perform an action to a team on their current scoreboard
@@ -58,8 +56,8 @@ data class PacketOutTeam(
         team.suffix,
         team.allowFriendlyFire,
         team.canSeeInvisibleMembers,
-        (team.nameTagVisibility as KryptonVisibility).name,
-        (team.collisionRule as KryptonCollisionRule).name,
+        team.nameTagVisibility.serialized,
+        team.collisionRule.serialized,
         team.members,
         addedMembers
     )

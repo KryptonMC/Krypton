@@ -8,36 +8,14 @@
  */
 package org.kryptonmc.api.world.biome
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Keyed
-import org.jetbrains.annotations.ApiStatus
-import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.provide
+import org.kryptonmc.api.util.StringSerializable
 
 /**
  * A form of precipitation that applies in a climate.
  */
-@CataloguedBy(Precipitations::class)
-public interface Precipitation : Keyed {
+public enum class Precipitation(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun of(key: Key): Precipitation
-    }
-
-    public companion object {
-
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
-
-        /**
-         * Creates a new form of precipitation with the given [key].
-         *
-         * @param key the key
-         * @return a new form of precipitation
-         */
-        @JvmStatic
-        public fun of(key: Key): Precipitation = FACTORY.of(key)
-    }
+    NONE("none"),
+    RAIN("rain"),
+    SNOW("snow")
 }

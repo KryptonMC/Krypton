@@ -22,7 +22,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.scoreboard.ObjectiveRenderType
-import org.kryptonmc.api.scoreboard.ObjectiveRenderTypes
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 
 class KryptonObjective(
@@ -50,7 +49,7 @@ class KryptonObjective(
 
         private var scoreboard: KryptonScoreboard? = null
         private var displayName: Component = LegacyComponentSerializer.legacySection().deserialize(name)
-        private var renderType = ObjectiveRenderTypes.INTEGER
+        private var renderType = ObjectiveRenderType.INTEGER
 
         constructor(objective: KryptonObjective) : this(objective.name, objective.criterion) {
             scoreboard = objective.scoreboard

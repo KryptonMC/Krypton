@@ -18,20 +18,19 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Mooshroom
 import org.kryptonmc.api.entity.animal.type.MooshroomType
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.StringTag
 
 class KryptonMooshroom(world: KryptonWorld) : KryptonCow(world, EntityTypes.MOOSHROOM), Mooshroom {
 
     override var mooshroomType: MooshroomType
-        get() = Registries.MOOSHROOM_TYPES[Key.key(data[MetadataKeys.MOOSHROOM.TYPE])]!!
-        set(value) = data.set(MetadataKeys.MOOSHROOM.TYPE, value.key().value())
+        get() = MooshroomType.fromName(data[MetadataKeys.MOOSHROOM.TYPE])!!
+        set(value) = data.set(MetadataKeys.MOOSHROOM.TYPE, value.serialized)
 
     init {
         data.add(MetadataKeys.MOOSHROOM.TYPE)
@@ -39,10 +38,10 @@ class KryptonMooshroom(world: KryptonWorld) : KryptonCow(world, EntityTypes.MOOS
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        if (tag.contains("Type")) data[MetadataKeys.MOOSHROOM.TYPE] = tag.getString("Type")
+        if (tag.contains("Type", StringTag.ID)) mooshroomType = MooshroomType.fromName(tag.getString("Type"))!!
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
-        string("Type", data[MetadataKeys.MOOSHROOM.TYPE])
+        string("Type", mooshroomType.serialized)
     }
 }

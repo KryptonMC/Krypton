@@ -20,11 +20,10 @@ package org.kryptonmc.krypton.world.biome
 
 import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.api.world.biome.Precipitation
-import org.kryptonmc.api.world.biome.Precipitations
 import org.kryptonmc.api.world.biome.TemperatureModifier
-import org.kryptonmc.api.world.biome.TemperatureModifiers
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.CompoundEncoder
+import org.kryptonmc.krypton.util.serialization.EnumCodecs
 import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.nbt.compound
 
@@ -33,17 +32,17 @@ data class KryptonClimate(
     override val precipitation: Precipitation,
     override val temperature: Float,
     override val downfall: Float,
-    override val temperatureModifier: TemperatureModifier = TemperatureModifiers.NONE
+    override val temperatureModifier: TemperatureModifier = TemperatureModifier.NONE
 ) : Climate {
 
     override fun toBuilder(): Climate.Builder = Builder(this)
 
     class Builder() : Climate.Builder {
 
-        private var precipitation = Precipitations.NONE
+        private var precipitation = Precipitation.NONE
         private var temperature = 0F
         private var downfall = 0F
-        private var temperatureModifier = TemperatureModifiers.NONE
+        private var temperatureModifier = TemperatureModifier.NONE
 
         constructor(climate: Climate) : this() {
             precipitation = climate.precipitation
@@ -83,10 +82,10 @@ data class KryptonClimate(
         @JvmField
         val ENCODER: CompoundEncoder<Climate> = CompoundEncoder {
             compound {
-                encode(KryptonPrecipitation.CODEC, "precipitation", it.precipitation)
+                encode(EnumCodecs.PRECIPITATION, "precipitation", it.precipitation)
                 encode(Codecs.FLOAT, "temperature", it.temperature)
                 encode(Codecs.FLOAT, "downfall", it.downfall)
-                encode(KryptonTemperatureModifier.CODEC, "temperature_modifier", it.temperatureModifier)
+                encode(EnumCodecs.TEMPERATURE_MODIFIER, "temperature_modifier", it.temperatureModifier)
             }
         }
     }

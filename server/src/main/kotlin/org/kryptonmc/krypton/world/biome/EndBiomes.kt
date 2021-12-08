@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.world.biome
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.world.biome.BiomeCategories
-import org.kryptonmc.api.world.biome.Precipitations
+import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.biome
 import java.awt.Color
 
@@ -46,7 +46,7 @@ object EndBiomes {
     @JvmStatic
     private fun baseEnd(key: Key): KryptonBiome = biome(key) {
         climate {
-            precipitation(Precipitations.NONE)
+            precipitation(Precipitation.NONE)
             temperature(0.5F)
             downfall(0.5F)
         }

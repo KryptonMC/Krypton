@@ -8,62 +8,73 @@
  */
 package org.kryptonmc.api.scoreboard
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.text.format.NamedTextColor
-import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.provide
+import org.kryptonmc.api.util.StringSerializable
 
 /**
  * The slot that a scoreboard may be displayed in.
+ *
+ * @param teamColor the team colour associated with this slot, or null if this
+ * slot is not associated with a team colour.
  */
-@Suppress("INAPPLICABLE_JVM_NAME")
-public interface DisplaySlot : Keyed {
-
-    /**
-     * The team colour associated with this position, or null if this position
-     * is not associated with a team colour.
-     */
-    @get:JvmName("teamColor")
+public enum class DisplaySlot(
+    @get:JvmName("serialized") override val serialized: String,
     public val teamColor: NamedTextColor?
+) : StringSerializable {
 
-    @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun of(key: Key, color: NamedTextColor?): DisplaySlot
-
-        public fun get(color: NamedTextColor): DisplaySlot?
-    }
+    LIST("list", null),
+    SIDEBAR("sidebar", null),
+    BELOW_NAME("below_name", null),
+    SIDEBAR_TEAM_BLACK("sidebar_team_black", NamedTextColor.BLACK),
+    SIDEBAR_TEAM_DARK_BLUE("sidebar_team_dark_blue", NamedTextColor.DARK_BLUE),
+    SIDEBAR_TEAM_DARK_GREEN("sidebar_team_dark_green", NamedTextColor.DARK_GREEN),
+    SIDEBAR_TEAM_DARK_AQUA("sidebar_team_dark_aqua", NamedTextColor.DARK_AQUA),
+    SIDEBAR_TEAM_DARK_RED("sidebar_team_dark_red", NamedTextColor.DARK_RED),
+    SIDEBAR_TEAM_DARK_PURPLE("sidebar_team_dark_purple", NamedTextColor.DARK_PURPLE),
+    SIDEBAR_TEAM_GOLD("sidebar_team_gold", NamedTextColor.GOLD),
+    SIDEBAR_TEAM_GRAY("sidebar_team_gray", NamedTextColor.GRAY),
+    SIDEBAR_TEAM_DARK_GRAY("sidebar_team_dark_gray", NamedTextColor.DARK_GRAY),
+    SIDEBAR_TEAM_BLUE("sidebar_team_blue", NamedTextColor.BLUE),
+    SIDEBAR_TEAM_GREEN("sidebar_team_green", NamedTextColor.GREEN),
+    SIDEBAR_TEAM_AQUA("sidebar_team_aqua", NamedTextColor.AQUA),
+    SIDEBAR_TEAM_RED("sidebar_team_red", NamedTextColor.RED),
+    SIDEBAR_TEAM_LIGHT_PURPLE("sidebar_team_light_purple", NamedTextColor.LIGHT_PURPLE),
+    SIDEBAR_TEAM_YELLOW("sidebar_team_yellow", NamedTextColor.YELLOW),
+    SIDEBAR_TEAM_WHITE("sidebar_team_white", NamedTextColor.WHITE);
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
+        private val VALUES = values()
+        private val BY_NAME = VALUES.associateBy { it.serialized }
+        private val BY_COLOR = VALUES.filter { it.teamColor != null }.associateBy { it.teamColor }
 
         /**
-         * Creates a new scoreboard position with the given values.
+         * Gets the display slot with the given [name], or returns null if
+         * there is no display slot with the given [name].
          *
-         * @param key the key
-         * @param color the associated team colour
-         * @return a new scoreboard position
+         * @param name the name
+         * @return the display slot with the name, or null if not present
          */
         @JvmStatic
-        @JvmOverloads
-        @Contract("_ -> new", pure = true)
-        public fun of(key: Key, color: NamedTextColor? = null): DisplaySlot = FACTORY.of(key, color)
+        public fun fromName(name: String): DisplaySlot? = BY_NAME[name]
 
         /**
-         * Gets the scoreboard position for the given team [color], or returns
-         * null if there is no scoreboard position associated with the given
-         * team [color].
+         * Gets the display slot with the given [id], or returns null if there
+         * is no display slot with the given [id].
          *
-         * @param color the team colour
-         * @return the scoreboard position for the colour, or null if there is
-         * no position for the colour
+         * @param id the ID
+         * @return the display slot with the ID, or null if not present
          */
         @JvmStatic
-        public fun fromTeamColor(color: NamedTextColor): DisplaySlot? = FACTORY.get(color)
+        public fun fromId(id: Int): DisplaySlot? = VALUES.getOrNull(id)
+
+        /**
+         * Gets the display slot with the given [color].
+         *
+         * @param color the colour
+         * @return the display slot with the colour
+         */
+        @JvmStatic
+        public fun fromColor(color: NamedTextColor): DisplaySlot = BY_COLOR.getValue(color)
     }
 }

@@ -26,9 +26,9 @@ import org.kryptonmc.api.world.biome.AmbientMoodSettings
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.GrassColorModifier
-import org.kryptonmc.api.world.biome.GrassColorModifiers
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.CompoundEncoder
+import org.kryptonmc.krypton.util.serialization.EnumCodecs
 import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.nbt.compound
 import java.awt.Color
@@ -39,7 +39,7 @@ data class KryptonBiomeEffects(
     override val waterColor: Color,
     override val waterFogColor: Color,
     override val skyColor: Color,
-    override val grassColorModifier: GrassColorModifier = GrassColorModifiers.NONE,
+    override val grassColorModifier: GrassColorModifier = GrassColorModifier.NONE,
     override val foliageColor: Color? = null,
     override val grassColor: Color? = null,
     override val ambientParticleSettings: AmbientParticleSettings? = null,
@@ -57,7 +57,7 @@ data class KryptonBiomeEffects(
         private var waterColor = Color.BLACK
         private var waterFogColor = Color.BLACK
         private var skyColor = Color.BLACK
-        private var grassColorModifier = GrassColorModifiers.NONE
+        private var grassColorModifier = GrassColorModifier.NONE
         private var foliageColor: Color? = null
         private var grassColor: Color? = null
         private var particles: AmbientParticleSettings? = null
@@ -166,7 +166,7 @@ data class KryptonBiomeEffects(
                 encode(Codecs.COLOR, "water_color", it.waterColor)
                 encode(Codecs.COLOR, "water_fog_color", it.waterFogColor)
                 encode(Codecs.COLOR, "sky_color", it.skyColor)
-                encode(KryptonGrassColorModifier.CODEC, "grass_color_modifier", it.grassColorModifier)
+                encode(EnumCodecs.GRASS_COLOR_MODIFIER, "grass_color_modifier", it.grassColorModifier)
                 encode(Codecs.COLOR, "foliage_color", it.foliageColor)
                 encode(Codecs.COLOR, "grass_color", it.grassColor)
                 encode(KryptonAmbientParticleSettings.ENCODER, "particle", it.ambientParticleSettings)

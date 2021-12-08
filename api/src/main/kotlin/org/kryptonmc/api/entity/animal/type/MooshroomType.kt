@@ -8,38 +8,39 @@
  */
 package org.kryptonmc.api.entity.animal.type
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Keyed
-import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.provide
+import org.kryptonmc.api.util.StringSerializable
 
 /**
  * A type of mooshroom.
  */
-@CataloguedBy(MooshroomTypes::class)
-public interface MooshroomType : Keyed {
+public enum class MooshroomType(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
 
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun of(key: Key): MooshroomType
-    }
+    BROWN("brown"),
+    RED("red");
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
+        private val VALUES = values()
+        private val BY_NAME = VALUES.associateBy { it.serialized }
 
         /**
-         * Creates a new mooshroom type with the given [key].
+         * Gets the mooshroom type with the given [name], or returns null if
+         * there is no mooshroom type with the given [name].
          *
-         * @param key the key
-         * @return a new mooshroom type
+         * @param name the name
+         * @return the mooshroom type with the name, or null if not present
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(key: Key): MooshroomType = FACTORY.of(key)
+        public fun fromName(name: String): MooshroomType? = BY_NAME[name]
+
+        /**
+         * Gets the mooshroom type with the given [id], or returns null if
+         * there is no mooshroom type with the given [id].
+         *
+         * @param id the ID
+         * @return the mooshroom type with the ID, or null if not present
+         */
+        @JvmStatic
+        public fun fromId(id: Int): MooshroomType? = VALUES.getOrNull(id)
     }
 }

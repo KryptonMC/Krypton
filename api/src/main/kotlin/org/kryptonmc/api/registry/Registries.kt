@@ -19,12 +19,6 @@ import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityCategory
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.animal.type.AxolotlVariant
-import org.kryptonmc.api.entity.animal.type.CatType
-import org.kryptonmc.api.entity.animal.type.MooshroomType
-import org.kryptonmc.api.entity.animal.type.FoxType
-import org.kryptonmc.api.entity.animal.type.PandaGene
-import org.kryptonmc.api.entity.animal.type.RabbitType
 import org.kryptonmc.api.entity.attribute.AttributeType
 import org.kryptonmc.api.entity.attribute.ModifierOperation
 import org.kryptonmc.api.entity.hanging.Picture
@@ -36,19 +30,12 @@ import org.kryptonmc.api.item.meta.DyeColor
 import org.kryptonmc.api.item.meta.MetaKey
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
-import org.kryptonmc.api.scoreboard.CollisionRule
-import org.kryptonmc.api.scoreboard.DisplaySlot
-import org.kryptonmc.api.scoreboard.ObjectiveRenderType
-import org.kryptonmc.api.scoreboard.Visibility
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.tags.TagType
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeCategory
-import org.kryptonmc.api.world.biome.GrassColorModifier
-import org.kryptonmc.api.world.biome.Precipitation
-import org.kryptonmc.api.world.biome.TemperatureModifier
 import org.kryptonmc.api.world.damage.type.DamageType
 import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionType
@@ -89,28 +76,15 @@ public object Registries {
     @JvmField public val GAMERULES: Registry<GameRule<Any>> = create(ResourceKeys.GAMERULES)
     @JvmField public val MODIFIER_OPERATIONS: Registry<ModifierOperation> = create(ResourceKeys.MODIFIER_OPERATIONS)
     @JvmField public val CRITERIA: Registry<Criterion> = create(ResourceKeys.CRITERIA)
-    @JvmField public val VISIBILITIES: Registry<Visibility> = create(ResourceKeys.VISIBILITIES)
-    @JvmField public val COLLISION_RULES: Registry<CollisionRule> = create(ResourceKeys.COLLISION_RULES)
     @JvmField public val DIMENSION_EFFECTS: Registry<DimensionEffect> = create(ResourceKeys.DIMENSION_EFFECTS)
-    @JvmField public val PRECIPITATIONS: Registry<Precipitation> = create(ResourceKeys.PRECIPITATIONS)
-    @JvmField public val TEMPERATURE_MODIFIERS: Registry<TemperatureModifier> = create(ResourceKeys.TEMPERATURE_MODIFIERS)
-    @JvmField public val GRASS_COLOR_MODIFIERS: Registry<GrassColorModifier> = create(ResourceKeys.GRASS_COLOR_MODIFIERS)
     @JvmField public val MUSIC: Registry<Music> = create(ResourceKeys.MUSIC)
     @JvmField public val BIOME_CATEGORIES: Registry<BiomeCategory> = create(ResourceKeys.BIOME_CATEGORIES)
     @JvmField public val META_KEYS: Registry<MetaKey<*>> = create(ResourceKeys.META_KEYS)
     @JvmField public val ITEM_RARITIES: Registry<ItemRarity> = create(ResourceKeys.ITEM_RARITIES)
-    @JvmField public val DISPLAY_SLOTS: Registry<DisplaySlot> = create(ResourceKeys.DISPLAY_SLOTS)
-    @JvmField public val OBJECTIVE_RENDER_TYPES: Registry<ObjectiveRenderType> = create(ResourceKeys.OBJECTIVE_RENDER_TYPES)
     @JvmField public val MOB_CATEGORIES: Registry<EntityCategory> = create(ResourceKeys.MOB_CATEGORIES)
     @JvmField public val DYE_COLORS: Registry<DyeColor> = create(ResourceKeys.DYE_COLORS)
     @JvmField public val TAG_TYPES: Registry<TagType<*>> = create(ResourceKeys.TAG_TYPES)
     @JvmField public val BAN_TYPES: Registry<BanType> = create(ResourceKeys.BAN_TYPES)
-    @JvmField public val CAT_TYPES: Registry<CatType> = create(ResourceKeys.CAT_TYPES)
-    @JvmField public val MOOSHROOM_TYPES: Registry<MooshroomType> = create(ResourceKeys.MOOSHROOM_TYPES)
-    @JvmField public val FOX_TYPES: Registry<FoxType> = create(ResourceKeys.FOX_TYPES)
-    @JvmField public val PANDA_GENES: Registry<PandaGene> = create(ResourceKeys.PANDA_GENES)
-    @JvmField public val RABBIT_TYPES: Registry<RabbitType> = create(ResourceKeys.RABBIT_TYPES)
-    @JvmField public val AXOLOTL_VARIANTS: Registry<AxolotlVariant> = create(ResourceKeys.AXOLOTL_VARIANTS)
     @JvmField public val DAMAGE_SOURCES: Registry<DamageType> = create(ResourceKeys.DAMAGE_SOURCES)
 
     /**

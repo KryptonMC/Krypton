@@ -19,13 +19,11 @@
 package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.scoreboard.Objective
-import org.kryptonmc.api.scoreboard.Score
 import org.kryptonmc.api.scoreboard.Scoreboard
-import org.kryptonmc.api.scoreboard.DisplaySlot
 import org.kryptonmc.api.scoreboard.Team
+import org.kryptonmc.api.scoreboard.DisplaySlot
 import org.kryptonmc.api.scoreboard.criteria.Criterion
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.entity.KryptonEntity

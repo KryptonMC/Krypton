@@ -8,48 +8,48 @@
  */
 package org.kryptonmc.api.entity.animal.type
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Keyed
-import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.provide
+import org.kryptonmc.api.util.StringSerializable
 
 /**
  * A variant of an axolotl.
+ *
+ * @param isCommon if this axolotl variant is common to find, currently only
+ * applies to the blue variant
  */
-@CataloguedBy(AxolotlVariants::class)
-public interface AxolotlVariant : Keyed {
+public enum class AxolotlVariant(
+    @get:JvmName("serialized") override val serialized: String,
+    public val isCommon: Boolean = true
+) : StringSerializable {
 
-    /**
-     * If this axolotl variant is common to find.
-     *
-     * Currently only applies to the [blue variant][AxolotlVariants.BLUE] in
-     * vanilla, but it can be used to drastically decrease the spawn chance for
-     * custom axolotl variants.
-     */
-    public val isCommon: Boolean
-
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun of(key: Key, isCommon: Boolean): AxolotlVariant
-    }
+    LUCY("lucy"),
+    WILD("wild"),
+    GOLD("gold"),
+    CYAN("cyan"),
+    BLUE("blue", false);
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
+        private val VALUES = values()
+        private val BY_NAME = VALUES.associateBy { it.serialized }
 
         /**
-         * Creates a new axolotl variant with the given values.
+         * Gets the axolotl variant with the given [name], or returns null if
+         * there is no axolotl variant with the given [name].
          *
-         * @param key the key
-         * @param isCommon if the variant spawns commonly
-         * @return a new axolotl variant
+         * @param name the name
+         * @return the axolotl variant with the name, or null if not present
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(key: Key, isCommon: Boolean): AxolotlVariant = FACTORY.of(key, isCommon)
+        public fun fromName(name: String): AxolotlVariant? = BY_NAME[name]
+
+        /**
+         * Gets the axolotl variant with the given [id], or returns null if
+         * there is no axolotl variant with the given [id].
+         *
+         * @param id the ID
+         * @return the axolotl rule with the ID, or null if not present
+         */
+        @JvmStatic
+        public fun fromId(id: Int): AxolotlVariant? = VALUES.getOrNull(id)
     }
 }

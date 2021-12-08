@@ -16,21 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.animal.type
+package org.kryptonmc.krypton.util.serialization
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.animal.type.PandaGene
+import org.kryptonmc.api.world.biome.Precipitation
+import org.kryptonmc.api.world.biome.GrassColorModifier
+import org.kryptonmc.api.world.biome.TemperatureModifier
 
-@JvmRecord
-data class KryptonPandaGene(
-    private val key: Key,
-    override val isRecessive: Boolean
-) : PandaGene {
+object EnumCodecs {
 
-    override fun key(): Key = key
-
-    object Factory : PandaGene.Factory {
-
-        override fun of(key: Key, isRecessive: Boolean): PandaGene = KryptonPandaGene(key, isRecessive)
-    }
+    @JvmField
+    val TEMPERATURE_MODIFIER: StringEncoder<TemperatureModifier> = StringEncoder { it.serialized }
+    @JvmField
+    val PRECIPITATION: StringEncoder<Precipitation> = StringEncoder { it.serialized }
+    @JvmField
+    val GRASS_COLOR_MODIFIER: StringEncoder<GrassColorModifier> = StringEncoder { it.serialized }
 }
