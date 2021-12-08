@@ -16,17 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.item.handler
+package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.krypton.item.UseItemResult
-import org.kryptonmc.krypton.util.InteractionResult
-import org.kryptonmc.krypton.entity.player.KryptonPlayer
+enum class InteractionResult {
 
-interface ItemTimedHandler : ItemHandler {
+    SUCCESS,
+    CONSUME,
+    CONSUME_PARTIAL,
+    FAIL,
+    PASS;
 
-    fun finishUse(
-        player: KryptonPlayer,
-        hand: Hand
-    ): UseItemResult = UseItemResult(InteractionResult.PASS, player.inventory.heldItem(hand))
+    val consumesAction: Boolean
+        get() = this == SUCCESS || this == CONSUME || this == CONSUME_PARTIAL
 }

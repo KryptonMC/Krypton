@@ -20,13 +20,13 @@ package org.kryptonmc.krypton.item.handler
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.util.InteractionResult
+import org.kryptonmc.krypton.util.InteractionResult
+import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.InteractionContext
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.UseItemResult
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.spongepowered.math.vector.Vector3i
 
 /**
  * A handler for a type of item.
@@ -58,6 +58,13 @@ interface ItemHandler {
      * are attempting to dig it up (left click interaction).
      */
     fun interact(context: InteractionContext): InteractionResult = InteractionResult.PASS
+
+    fun interactEntity(
+        item: KryptonItemStack,
+        player: KryptonPlayer,
+        entity: KryptonLivingEntity,
+        hand: Hand
+    ): InteractionResult = InteractionResult.PASS
 
     /**
      * Called when the given [player] uses the item they are holding in the

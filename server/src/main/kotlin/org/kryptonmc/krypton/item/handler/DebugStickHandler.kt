@@ -25,12 +25,11 @@ import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.item.InteractionContext
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.util.InteractionResult
+import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.findRelative
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.spongepowered.math.vector.Vector3i
 
 object DebugStickHandler : ItemHandler {
 

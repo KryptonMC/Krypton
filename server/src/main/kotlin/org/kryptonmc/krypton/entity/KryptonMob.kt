@@ -19,14 +19,19 @@
 package org.kryptonmc.krypton.entity
 
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.Mob
 import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
+import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.util.FixedList
+import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.ByteTag
 import org.kryptonmc.nbt.CompoundTag
@@ -104,6 +109,28 @@ abstract class KryptonMob(
         }
         boolean("LeftHanded", mainHand == MainHand.LEFT)
         if (!hasAI) boolean("NoAI", true)
+    }
+
+    protected open fun mobInteract(player: KryptonPlayer, hand: Hand): InteractionResult = InteractionResult.PASS
+
+    final override fun interact(player: KryptonPlayer, hand: Hand): InteractionResult {
+        if (!isAlive) return InteractionResult.PASS
+        var result = handleImportantInteractions(player, hand)
+        if (result.consumesAction) return result
+        result = mobInteract(player, hand)
+        if (result.consumesAction) return result
+        return super.interact(player, hand)
+    }
+
+    private fun handleImportantInteractions(player: KryptonPlayer, hand: Hand): InteractionResult {
+        val heldItem = player.heldItem(hand)
+        // TODO: Handle mob leashing
+        if (heldItem.type === ItemTypes.NAME_TAG) {
+            val result = heldItem.type.handler().interactEntity(heldItem, player, this, hand)
+            if (result.consumesAction) return result
+        }
+        // TODO: Handle spawn egg
+        return InteractionResult.PASS
     }
 
     final override var hasAI: Boolean

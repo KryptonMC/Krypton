@@ -113,6 +113,7 @@ import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.util.BossBarManager
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.krypton.util.logger
@@ -557,6 +558,28 @@ class KryptonPlayer(
     }
 
     fun hasCorrectTool(block: Block): Boolean = !block.requiresCorrectTool || inventory.items[inventory.heldSlot].type.handler().isCorrectTool(block)
+
+    fun interactOn(entity: KryptonEntity, hand: Hand): InteractionResult {
+        if (isSpectator) {
+            // TODO: Open spectator menu
+            return InteractionResult.PASS
+        }
+        var heldItem = heldItem(hand)
+        val heldCopy = heldItem.copy()
+        val result = entity.interact(this, hand)
+        if (result.consumesAction) {
+            if (canInstantlyBuild && heldItem === heldItem(hand) && heldItem.amount < heldCopy.amount) heldItem.amount = heldCopy.amount
+            return result
+        }
+        if (heldItem.isEmpty() || entity !is KryptonLivingEntity) return InteractionResult.PASS
+        if (canInstantlyBuild) heldItem = heldCopy
+        val interactResult = heldItem.type.handler().interactEntity(heldItem, this, entity, hand)
+        if (interactResult.consumesAction) {
+            if (heldItem.isEmpty() && !canInstantlyBuild) setHeldItem(hand, EmptyItemStack)
+            return interactResult
+        }
+        return InteractionResult.PASS
+    }
 
     override fun addViewer(player: KryptonPlayer): Boolean {
         if (player === this) return false

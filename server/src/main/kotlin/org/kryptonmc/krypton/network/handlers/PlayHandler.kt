@@ -27,7 +27,10 @@ import net.kyori.adventure.text.event.ClickEvent
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.command.CommandExecuteEvent
+import org.kryptonmc.api.event.player.AttackEntityEvent
 import org.kryptonmc.api.event.player.ChatEvent
+import org.kryptonmc.api.event.player.InteractAtEntityEvent
+import org.kryptonmc.api.event.player.InteractEntityEvent
 import org.kryptonmc.api.event.player.MoveEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
@@ -286,9 +289,23 @@ class PlayHandler(
     }
 
     private fun handleInteract(packet: PacketInInteract) {
-        if (packet.type === PacketInInteract.Type.INTERACT) {
-            val target = player.world.entityManager[packet.entityId]
-            target?.tryRide(player)
+        val target = player.world.entityManager[packet.entityId] ?: return
+        val hand = packet.hand
+        val x = target.location.x() + packet.x
+        val y = target.location.y() + packet.y
+        val z = target.location.z() + packet.z
+        player.isSneaking = packet.sneaking
+        if (player.location.distanceSquared(target.location) >= 36.0) return
+        when (packet.type) {
+            PacketInInteract.Type.INTERACT -> {
+                server.eventManager.fire(InteractEntityEvent(player, target, hand!!)).thenAcceptAsync({
+                    if (!it.result.isAllowed) return@thenAcceptAsync
+                    target.tryRide(player)
+                    player.interactOn(target, hand)
+                }, session.channel.eventLoop())
+            }
+            PacketInInteract.Type.ATTACK -> server.eventManager.fireAndForget(AttackEntityEvent(player, target)) // TODO
+            PacketInInteract.Type.INTERACT_AT -> server.eventManager.fireAndForget(InteractAtEntityEvent(player, target, hand!!, x, y, z)) // TODO
         }
     }
 

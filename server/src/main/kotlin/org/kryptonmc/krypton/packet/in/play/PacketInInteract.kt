@@ -62,7 +62,7 @@ data class PacketInInteract(
                 buf.writeFloat(y)
                 buf.writeFloat(z)
             }
-            if (hand != null) buf.writeEnum(hand)
+            buf.writeEnum(requireNotNull(hand) { "Hand must be present for non-attacking interactions!" })
         }
     }
 

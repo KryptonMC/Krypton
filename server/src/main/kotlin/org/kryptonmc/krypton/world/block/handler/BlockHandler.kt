@@ -25,7 +25,7 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.statistic.StatisticTypes
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.util.Direction
-import org.kryptonmc.api.util.InteractionResult
+import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.effect.Effect
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.destroySpeed
