@@ -19,24 +19,54 @@
 package org.kryptonmc.krypton.packet.`in`.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.block.BlockFace
 import org.kryptonmc.krypton.world.block.BlockHitResult
 import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.packet.Packet
+import org.kryptonmc.krypton.util.decodeBlockX
+import org.kryptonmc.krypton.util.decodeBlockY
+import org.kryptonmc.krypton.util.decodeBlockZ
 import org.kryptonmc.krypton.util.readBlockHitResult
 import org.kryptonmc.krypton.util.readEnum
 import org.kryptonmc.krypton.util.writeBlockHitResult
 import org.kryptonmc.krypton.util.writeEnum
+import org.kryptonmc.krypton.util.writeVector
 
 @JvmRecord
 data class PacketInPlaceBlock(
     val hand: Hand,
-    val hitResult: BlockHitResult
+    val x: Int,
+    val y: Int,
+    val z: Int,
+    val face: Direction,
+    val cursorX: Float,
+    val cursorY: Float,
+    val cursorZ: Float,
+    val isInside: Boolean
 ) : Packet {
 
-    constructor(buf: ByteBuf) : this(buf.readEnum<Hand>(), buf.readBlockHitResult())
+    constructor(buf: ByteBuf) : this(buf, buf.readEnum<Hand>(), buf.readLong())
+
+    private constructor(buf: ByteBuf, hand: Hand, location: Long) : this(
+        hand,
+        location.decodeBlockX(),
+        location.decodeBlockY(),
+        location.decodeBlockZ(),
+        buf.readEnum<Direction>(),
+        buf.readFloat(),
+        buf.readFloat(),
+        buf.readFloat(),
+        buf.readBoolean()
+    )
 
     override fun write(buf: ByteBuf) {
         buf.writeEnum(hand)
-        buf.writeBlockHitResult(hitResult)
+        buf.writeVector(x, y, z)
+        buf.writeEnum(face)
+        buf.writeFloat(cursorX)
+        buf.writeFloat(cursorY)
+        buf.writeFloat(cursorZ)
+        buf.writeBoolean(isInside)
     }
 }

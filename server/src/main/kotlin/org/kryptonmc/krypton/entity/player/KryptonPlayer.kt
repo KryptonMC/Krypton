@@ -288,7 +288,7 @@ class KryptonPlayer(
     private var previousCentralZ = 0
     private val visibleChunks = LongArraySet()
 
-    val blockBreakHandler = BlockBreakHandler(this)
+    val blockHandler = PlayerBlockHandler(this)
 
     init {
         data.add(MetadataKeys.PLAYER.ADDITIONAL_HEARTS)
@@ -445,7 +445,7 @@ class KryptonPlayer(
 
     override fun tick() {
         super.tick()
-        blockBreakHandler.tick()
+        blockHandler.tick()
         hungerMechanic()
         cooldowns.tick()
         if (data.isDirty) session.send(PacketOutMetadata(id, data.dirty))

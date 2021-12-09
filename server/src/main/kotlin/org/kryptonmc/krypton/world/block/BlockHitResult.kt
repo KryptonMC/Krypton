@@ -41,11 +41,5 @@ data class BlockHitResult(
         direction: Direction,
         missed: Boolean,
         isInside: Boolean
-    ) : this(
-        clickLocation,
-        if (missed) HitResult.Type.MISS else HitResult.Type.BLOCK,
-        position,
-        direction,
-        isInside
-    )
+    ) : this(clickLocation, if (missed) HitResult.Type.MISS else HitResult.Type.BLOCK, position, direction, isInside)
 }

@@ -23,10 +23,10 @@ import net.kyori.adventure.text.Component.translatable
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.krypton.item.InteractionContext
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
+import org.kryptonmc.krypton.item.InteractionContext
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.findRelative
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -39,8 +39,8 @@ object DebugStickHandler : ItemHandler {
     }
 
     override fun interact(context: InteractionContext): InteractionResult {
-        val player = context.player as? KryptonPlayer ?: return InteractionResult.PASS
-        val item = context.heldItem as? KryptonItemStack ?: return InteractionResult.PASS
+        val player = context.player
+        val item = context.heldItem
         val world = context.world
         val position = context.position
         if (!handleInteraction(player, world, world.getBlock(position), position.x(), position.y(), position.z(), true, item)) {

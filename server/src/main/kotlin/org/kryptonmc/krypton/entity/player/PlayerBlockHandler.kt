@@ -19,17 +19,26 @@
 package org.kryptonmc.krypton.entity.player
 
 import org.kryptonmc.api.block.Block
+import org.kryptonmc.api.entity.Hand
+import org.kryptonmc.api.event.player.PlaceBlockEvent
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
+import org.kryptonmc.krypton.packet.`in`.play.PacketInPlaceBlock
 import org.kryptonmc.krypton.packet.`in`.play.PacketInPlayerDigging
 import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
+import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
+import org.kryptonmc.krypton.world.block.BlockHitResult
 import org.kryptonmc.krypton.world.block.handler
 import org.kryptonmc.krypton.world.block.isGameMasterBlock
+import org.spongepowered.math.vector.Vector3d
+import org.spongepowered.math.vector.Vector3i
 
-class BlockBreakHandler(private val player: KryptonPlayer) {
+class PlayerBlockHandler(private val player: KryptonPlayer) {
 
     private val world: KryptonWorld
         get() = player.world
@@ -230,6 +239,6 @@ class BlockBreakHandler(private val player: KryptonPlayer) {
     companion object {
 
         private const val MAXIMUM_DISTANCE_FROM_BLOCK = 36.0
-        private val LOGGER = logger<BlockBreakHandler>()
+        private val LOGGER = logger<PlayerBlockHandler>()
     }
 }
