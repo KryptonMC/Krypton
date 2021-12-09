@@ -30,6 +30,7 @@ import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.krypton.entity.item.KryptonItemEntity
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.CompoundCodec
