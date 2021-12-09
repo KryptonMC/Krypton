@@ -110,6 +110,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.service.KryptonVanishService
+import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.BossBarManager
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.Directions
@@ -117,6 +118,7 @@ import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
@@ -224,7 +226,10 @@ class KryptonPlayer(
 
     override val scoreboard = world.scoreboard
     override var locale: Locale? = null
-    override val statistics = server.playerManager.getStatistics(this)
+    override val statistics = KryptonStatisticsTracker(
+        this,
+        world.folder.resolve("stats").tryCreateDirectory().resolve("$uuid.json")
+    )
     override val cooldowns = KryptonCooldownTracker(this)
     override val teamRepresentation = name
     override val pushedByFluid = !isFlying

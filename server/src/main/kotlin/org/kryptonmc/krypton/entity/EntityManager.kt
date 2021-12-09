@@ -107,9 +107,13 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
 
     fun remove(entity: KryptonEntity) {
         if (entity.world != world) return
-        world.server.eventManager.fire(EntityRemoveEvent(entity, world)).thenAccept {
-            if (!it.result.isAllowed) return@thenAccept
-            entity.viewers.forEach(entity::removeViewer)
+        world.server.eventManager.fire(EntityRemoveEvent(entity, world)).thenAccept { event ->
+            if (!event.result.isAllowed) return@thenAccept
+            forEachEntityInRange(entity.location, world.server.config.world.viewDistance) {
+                if (it is KryptonPlayer) entity.removeViewer(it)
+                if (entity is KryptonPlayer) it.removeViewer(entity)
+            }
+
             val chunk = world.getChunk(entity.location.floorX(), entity.location.floorY(), entity.location.floorZ()) ?: return@thenAccept
             byId.remove(entity.id)
             byUUID.remove(entity.uuid)

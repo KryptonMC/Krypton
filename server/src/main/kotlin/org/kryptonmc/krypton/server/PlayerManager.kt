@@ -82,7 +82,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     val players = CopyOnWriteArrayList<KryptonPlayer>()
     val playersByName = ConcurrentHashMap<String, KryptonPlayer>()
     val playersByUUID = ConcurrentHashMap<UUID, KryptonPlayer>()
-    private val statistics = ConcurrentHashMap<UUID, KryptonStatisticsTracker>()
 
     val bannedPlayers = BannedPlayerList(Path.of("banned-players.json"))
     val whitelist = Whitelist(Path.of("whitelist.json"))
@@ -187,26 +186,22 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
     }
 
     fun remove(player: KryptonPlayer) {
-        server.eventManager.fire(QuitEvent(player)).thenAccept {
+        server.eventManager.fire(QuitEvent(player)).thenAccept { event ->
             player.statistics.increment(CustomStatistics.LEAVE_GAME)
             save(player)
             player.world.chunkManager.removePlayer(player)
 
             // Remove from caches
             player.world.removeEntity(player)
-            players.remove(player)
             player.world.players.remove(player)
-
-            if (playersByUUID[player.uuid] === player) {
-                playersByName.remove(player.profile.name)
-                playersByUUID.remove(player.uuid)
-                statistics.remove(player.uuid)
-            }
+            players.remove(player)
+            playersByName.remove(player.profile.name)
+            playersByUUID.remove(player.uuid)
 
             // Send info and quit message
             invalidateStatus()
             sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.REMOVE_PLAYER, player))
-            server.sendMessage(it.result.reason)
+            server.sendMessage(event.result.reason)
         }
     }
 
@@ -248,16 +243,6 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         players.forEach(::save)
     }
 
-    fun getStatistics(player: KryptonPlayer): KryptonStatisticsTracker {
-        val uuid = player.uuid
-        statistics[uuid]?.let { return it }
-        val folder = server.worldManager.default.folder.resolve("stats").tryCreateDirectory()
-        // TODO: Deal with the old data files
-        return KryptonStatisticsTracker(player, folder.resolve("$uuid.json")).apply {
-            this@PlayerManager.statistics[uuid] = this
-        }
-    }
-
     private fun sendCommands(player: KryptonPlayer) {
         player.session.send(PacketOutEntityStatus(player.id, 28))
         server.commandManager.updateCommands(player)
@@ -265,7 +250,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     private fun save(player: KryptonPlayer) {
         server.userManager.updateUser(player.uuid, dataManager.save(player))
-        statistics[player.uuid]?.save()
+        player.statistics.save()
     }
 
     fun tick(time: Long) {
