@@ -20,11 +20,10 @@ package org.kryptonmc.krypton.entity.metadata
 
 import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.particle.particleEffect
-import org.kryptonmc.api.entity.animal.type.AxolotlVariants
-import org.kryptonmc.api.entity.animal.type.CatTypes
-import org.kryptonmc.api.entity.animal.type.MooshroomTypes
-import org.kryptonmc.api.entity.animal.type.FoxTypes
-import org.kryptonmc.api.entity.animal.type.PandaGenes
+import org.kryptonmc.api.entity.animal.type.AxolotlVariant
+import org.kryptonmc.api.entity.animal.type.CatType
+import org.kryptonmc.api.entity.animal.type.FoxType
+import org.kryptonmc.api.entity.animal.type.MooshroomType
 import org.kryptonmc.api.item.meta.DyeColors
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
@@ -203,7 +202,7 @@ object MetadataKeys {
 
     object AxolotlKeys {
 
-        @JvmField val VARIANT = create(17, MetadataSerializers.VAR_INT, Registries.AXOLOTL_VARIANTS.idOf(AxolotlVariants.LUCY))
+        @JvmField val VARIANT = create(17, MetadataSerializers.VAR_INT, AxolotlVariant.LUCY.ordinal)
         @JvmField val PLAYING_DEAD = create(18, MetadataSerializers.BOOLEAN, false)
         @JvmField val FROM_BUCKET = create(19, MetadataSerializers.BOOLEAN, false)
     }
@@ -216,7 +215,7 @@ object MetadataKeys {
 
     object CatKeys {
 
-        @JvmField val TYPE = create(19, MetadataSerializers.VAR_INT, Registries.CAT_TYPES.idOf(CatTypes.BLACK))
+        @JvmField val TYPE = create(19, MetadataSerializers.VAR_INT, CatType.BLACK.ordinal)
         @JvmField val LYING = create(20, MetadataSerializers.BOOLEAN, false)
         @JvmField val RELAXED = create(21, MetadataSerializers.BOOLEAN, false)
         @JvmField val COLLAR_COLOR = create(22, MetadataSerializers.VAR_INT, Registries.DYE_COLORS.idOf(DyeColors.RED))
@@ -229,7 +228,7 @@ object MetadataKeys {
 
     object FoxKeys {
 
-        @JvmField val TYPE = create(17, MetadataSerializers.VAR_INT, Registries.FOX_TYPES.idOf(FoxTypes.RED))
+        @JvmField val TYPE = create(17, MetadataSerializers.VAR_INT, FoxType.RED.ordinal)
         @JvmField val FLAGS = create(18, MetadataSerializers.BYTE, 0)
         @JvmField val FIRST_TRUSTED = create(19, MetadataSerializers.OPTIONAL_UUID, Optional.empty())
         @JvmField val SECOND_TRUSTED = create(20, MetadataSerializers.OPTIONAL_UUID, Optional.empty())
@@ -242,7 +241,7 @@ object MetadataKeys {
 
     object MooshroomKeys {
 
-        @JvmField val TYPE = create(17, MetadataSerializers.STRING, MooshroomTypes.RED.key().value())
+        @JvmField val TYPE = create(17, MetadataSerializers.STRING, MooshroomType.RED.serialized)
     }
 
     object OcelotKeys {

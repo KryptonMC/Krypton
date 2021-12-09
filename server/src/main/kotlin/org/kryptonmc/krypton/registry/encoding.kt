@@ -18,19 +18,18 @@
  */
 package org.kryptonmc.krypton.registry
 
-import com.mojang.serialization.Codec
 import org.kryptonmc.api.registry.Registry
-import org.kryptonmc.krypton.util.nbt.NBTOps
+import org.kryptonmc.krypton.util.serialization.Encoder
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.compound
 
-fun <T : Any> Registry<T>.encode(elementCodec: Codec<T>): CompoundTag = compound {
+fun <T : Any> Registry<T>.encode(elementEncoder: Encoder<T, CompoundTag>): CompoundTag = compound {
     string("type", key.location.asString())
     list("value", CompoundTag.ID, values.map {
         compound {
             string("name", get(it)!!.asString())
             int("id", idOf(it))
-            put("element", elementCodec.encodeStart(NBTOps, it).get().orThrow())
+            put("element", elementEncoder.encode(it))
         }
     })
 }

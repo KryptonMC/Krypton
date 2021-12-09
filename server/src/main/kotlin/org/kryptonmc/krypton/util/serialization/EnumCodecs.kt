@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.animal.type
+package org.kryptonmc.krypton.util.serialization
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.animal.type.CatType
+import org.kryptonmc.api.world.biome.Precipitation
+import org.kryptonmc.api.world.biome.GrassColorModifier
+import org.kryptonmc.api.world.biome.TemperatureModifier
 
-@JvmRecord
-data class KryptonCatType(private val key: Key) : CatType {
+object EnumCodecs {
 
-    override fun key(): Key = key
-
-    object Factory : CatType.Factory {
-
-        override fun of(key: Key): CatType = KryptonCatType(key)
-    }
+    @JvmField
+    val TEMPERATURE_MODIFIER: StringEncoder<TemperatureModifier> = StringEncoder { it.serialized }
+    @JvmField
+    val PRECIPITATION: StringEncoder<Precipitation> = StringEncoder { it.serialized }
+    @JvmField
+    val GRASS_COLOR_MODIFIER: StringEncoder<GrassColorModifier> = StringEncoder { it.serialized }
 }

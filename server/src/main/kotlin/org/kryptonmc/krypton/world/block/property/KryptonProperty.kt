@@ -18,9 +18,10 @@
  */
 package org.kryptonmc.krypton.world.block.property
 
-import com.mojang.serialization.Codec
 import org.kryptonmc.api.block.property.Property
-import org.kryptonmc.krypton.util.successOrError
+import org.kryptonmc.krypton.util.serialization.Codec
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.nbt.StringTag
 
 sealed class KryptonProperty<T : Comparable<T>>(
     override val name: String,
@@ -28,10 +29,9 @@ sealed class KryptonProperty<T : Comparable<T>>(
     override val values: Set<T>
 ) : Property<T> {
 
-    val codec: Codec<T> = Codec.STRING.comapFlatMap(
-        { key -> fromString(key).successOrError("Unable to read property $this with value $key") },
-        ::toString
-    )
+    val codec: Codec<StringTag, T> = Codecs.STRING.transform(::toString) {
+        requireNotNull(fromString(it)) { "Unable to read property $this with value $it!" }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

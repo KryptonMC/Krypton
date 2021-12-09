@@ -18,14 +18,7 @@
  */
 package org.kryptonmc.krypton.world.generation.feature.config
 
-import com.mojang.serialization.Codec
-import org.kryptonmc.krypton.world.generation.feature.ConfiguredFeature
-
 interface FeatureConfig {
 
-    companion object Empty : FeatureConfig {
-
-        @JvmField
-        val CODEC: Codec<Empty> = Codec.unit { Empty }
-    }
+    companion object Empty : FeatureConfig
 }

@@ -25,7 +25,7 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.api.world.biome.BiomeCategories
-import org.kryptonmc.api.world.biome.Precipitations
+import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.biome
 import org.kryptonmc.krypton.effect.KryptonMusics
 import java.awt.Color
@@ -100,7 +100,7 @@ object NetherBiomes {
         particles: AmbientParticleSettings? = null
     ): KryptonBiome = biome(key) {
         climate {
-            precipitation(Precipitations.NONE)
+            precipitation(Precipitation.NONE)
             temperature(TEMPERATURE)
             downfall(0F)
         }

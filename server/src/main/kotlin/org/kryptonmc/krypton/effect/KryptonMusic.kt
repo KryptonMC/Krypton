@@ -18,11 +18,13 @@
  */
 package org.kryptonmc.krypton.effect
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.sound.SoundEvent
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.serialization.Codec
+import org.kryptonmc.krypton.util.serialization.CompoundEncoder
+import org.kryptonmc.krypton.util.serialization.encode
+import org.kryptonmc.nbt.compound
 
 @JvmRecord
 data class KryptonMusic(
@@ -45,13 +47,13 @@ data class KryptonMusic(
     companion object {
 
         @JvmField
-        val CODEC: Codec<Music> = RecordCodecBuilder.create {
-            it.group(
-                Codecs.SOUND_EVENT.fieldOf("sound").forGetter(Music::sound),
-                Codec.INT.fieldOf("min_delay").forGetter(Music::minimumDelay),
-                Codec.INT.fieldOf("max_delay").forGetter(Music::maximumDelay),
-                Codec.BOOL.fieldOf("replace_current_music").forGetter(Music::replaceCurrentMusic)
-            ).apply(it, ::KryptonMusic)
+        val ENCODER: CompoundEncoder<Music> = CompoundEncoder {
+            compound {
+                encode(Codecs.SOUND_EVENT, "sound", it.sound)
+                encode(Codecs.INTEGER, "min_delay", it.minimumDelay)
+                encode(Codecs.INTEGER, "max_delay", it.maximumDelay)
+                encode(Codecs.BOOLEAN, "replace_current_music", it.replaceCurrentMusic)
+            }
         }
     }
 }

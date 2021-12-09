@@ -4,7 +4,7 @@ plugins {
 
 allprojects {
     group = "org.kryptonmc"
-    version = "0.57.2"
+    version = "0.59"
     description = "Free and open-source Minecraft server software, written from the ground up."
 }
 

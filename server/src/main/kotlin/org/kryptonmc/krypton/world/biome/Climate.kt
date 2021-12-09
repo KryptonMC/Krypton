@@ -19,10 +19,6 @@
 package org.kryptonmc.krypton.world.biome
 
 import com.google.common.collect.ImmutableList
-import com.mojang.serialization.Codec
-import com.mojang.serialization.DataResult
-import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.krypton.util.Codecs
 import org.spongepowered.math.vector.Vector3i
 import java.util.function.Supplier
 import kotlin.math.abs
@@ -35,7 +31,6 @@ import kotlin.math.pow
 object Climate {
 
     private const val QUANTIZATION_FACTOR = 10000F
-    private const val PARAMETER_COUNT = 7
 
     @JvmStatic
     fun Float.quantize(): Long = (this * QUANTIZATION_FACTOR).toLong()
@@ -118,20 +113,6 @@ object Climate {
         companion object {
 
             @JvmField
-            val CODEC: Codec<ParameterPoint> = RecordCodecBuilder.create { instance ->
-                instance.group(
-                    Parameter.CODEC.fieldOf("temperature").forGetter(ParameterPoint::temperature),
-                    Parameter.CODEC.fieldOf("humidity").forGetter(ParameterPoint::humidity),
-                    Parameter.CODEC.fieldOf("continentalness").forGetter(ParameterPoint::continentalness),
-                    Parameter.CODEC.fieldOf("erosion").forGetter(ParameterPoint::erosion),
-                    Parameter.CODEC.fieldOf("depth").forGetter(ParameterPoint::depth),
-                    Parameter.CODEC.fieldOf("weirdness").forGetter(ParameterPoint::weirdness),
-                    Codec.floatRange(0F, 1F).fieldOf("offset")
-                        .xmap({ it.quantize() }, { it.unquantize() })
-                        .forGetter(ParameterPoint::offset)
-                ).apply(instance, ::ParameterPoint)
-            }
-            @JvmField
             val ZERO: ParameterPoint = ParameterPoint(
                 Parameter.ZERO,
                 Parameter.ZERO,
@@ -174,21 +155,6 @@ object Climate {
 
         companion object {
 
-            @JvmField
-            val CODEC: Codec<Parameter> = Codecs.interval(
-                Codec.floatRange(-2F, 2F),
-                "min",
-                "max",
-                { first, second ->
-                    if (first.compareTo(second) > 0) {
-                        DataResult.error("Minimum cannot be greater than maximum! ($first > $second)")
-                    } else {
-                        DataResult.success(Parameter(first.quantize(), second.quantize()))
-                    }
-                },
-                { it.minimum.unquantize() },
-                { it.maximum.unquantize() }
-            )
             @JvmField
             val ZERO: Parameter = value(0F)
             @JvmField

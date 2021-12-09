@@ -16,21 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.animal.type
+package org.kryptonmc.krypton.packet.out.play
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.animal.type.PandaGene
+import io.netty.buffer.ByteBuf
+import org.kryptonmc.krypton.packet.EntityPacket
+import org.kryptonmc.krypton.util.writeVarInt
+import org.kryptonmc.krypton.util.writeVector
+import org.spongepowered.math.vector.Vector3i
 
 @JvmRecord
-data class KryptonPandaGene(
-    private val key: Key,
-    override val isRecessive: Boolean
-) : PandaGene {
+data class PacketOutBlockBreakAnimation(
+    override val entityId: Int,
+    val x: Int,
+    val y: Int,
+    val z: Int,
+    val destroyStage: Int
+) : EntityPacket {
 
-    override fun key(): Key = key
+    constructor(entityId: Int, position: Vector3i, destroyStage: Int) : this(entityId, position.x(), position.y(), position.z(), destroyStage)
 
-    object Factory : PandaGene.Factory {
-
-        override fun of(key: Key, isRecessive: Boolean): PandaGene = KryptonPandaGene(key, isRecessive)
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(entityId)
+        buf.writeVector(x, y, z)
+        buf.writeByte(destroyStage)
     }
 }

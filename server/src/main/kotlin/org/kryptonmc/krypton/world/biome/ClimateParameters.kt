@@ -18,9 +18,6 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
-
 @JvmRecord
 data class ClimateParameters(
     val temperature: Float,
@@ -35,18 +32,4 @@ data class ClimateParameters(
             (altitude - other.altitude) * (altitude - other.altitude) +
             (weirdness - other.weirdness) * (weirdness - other.weirdness) +
             (offset - other.offset) * (offset - other.offset)
-
-    companion object {
-
-        @JvmField
-        val CODEC: Codec<ClimateParameters> = RecordCodecBuilder.create {
-            it.group(
-                Codec.floatRange(-2F, 2F).fieldOf("temperature").forGetter(ClimateParameters::temperature),
-                Codec.floatRange(-2F, 2F).fieldOf("humidity").forGetter(ClimateParameters::humidity),
-                Codec.floatRange(-2F, 2F).fieldOf("altitude").forGetter(ClimateParameters::altitude),
-                Codec.floatRange(-2F, 2F).fieldOf("weirdness").forGetter(ClimateParameters::weirdness),
-                Codec.floatRange(0F, 1F).fieldOf("offset").forGetter(ClimateParameters::offset)
-            ).apply(it, ::ClimateParameters)
-        }
-    }
 }

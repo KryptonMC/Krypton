@@ -26,7 +26,6 @@ import org.kryptonmc.api.entity.animal.type.AxolotlVariant
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.krypton.entity.BucketStorable
 import org.kryptonmc.krypton.entity.memory.MemoryKeys
@@ -38,8 +37,8 @@ import org.kryptonmc.nbt.CompoundTag
 class KryptonAxolotl(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.AXOLOTL, ATTRIBUTES), Axolotl, BucketStorable {
 
     override var variant: AxolotlVariant
-        get() = Registries.AXOLOTL_VARIANTS[data[MetadataKeys.AXOLOTL.VARIANT]]!!
-        set(value) = data.set(MetadataKeys.AXOLOTL.VARIANT, Registries.AXOLOTL_VARIANTS.idOf(value))
+        get() = AxolotlVariant.fromId(data[MetadataKeys.AXOLOTL.VARIANT])!!
+        set(value) = data.set(MetadataKeys.AXOLOTL.VARIANT, value.ordinal)
     override var isPlayingDead: Boolean
         get() = data[MetadataKeys.AXOLOTL.PLAYING_DEAD]
         set(value) = data.set(MetadataKeys.AXOLOTL.PLAYING_DEAD, value)

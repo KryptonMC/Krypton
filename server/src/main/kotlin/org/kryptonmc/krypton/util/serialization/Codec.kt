@@ -16,27 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome
+package org.kryptonmc.krypton.util.serialization
 
-import com.mojang.serialization.Codec
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.world.biome.TemperatureModifier
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.nbt.Tag
 
-@JvmRecord
-data class KryptonTemperatureModifier(private val key: Key) : TemperatureModifier {
+interface Codec<T : Tag, U> : Encoder<U, T>, Decoder<T, U> {
 
-    override fun key(): Key = key
+    fun <V> transform(
+        encodeTransformer: (V) -> U,
+        decodeTransformer: (U) -> V
+    ): TransformingCodec<T, U, V> = TransformingCodec(this, encodeTransformer, decodeTransformer)
 
-    object Factory : TemperatureModifier.Factory {
+    @Suppress("UNCHECKED_CAST")
+    fun list(): ListCodec<U> = ListCodec(this as Codec<Tag, U>)
 
-        override fun of(key: Key): TemperatureModifier = KryptonTemperatureModifier(key)
+    private class Passthrough<T : Tag, U>(private val encoder: Encoder<U, T>, private val decoder: Decoder<T, U>) : Codec<T, U> {
+
+        override fun encode(value: U): T = encoder.encode(value)
+
+        override fun decode(tag: T): U = decoder.decode(tag)
     }
 
     companion object {
 
-        @JvmField
-        val CODEC: Codec<TemperatureModifier> = Codecs.forRegistry(Registries.TEMPERATURE_MODIFIERS)
+        @JvmStatic
+        fun <T : Tag, U> of(encoder: Encoder<U, T>, decoder: Decoder<T, U>): Codec<T, U> = Passthrough(encoder, decoder)
     }
 }

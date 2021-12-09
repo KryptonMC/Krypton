@@ -20,6 +20,7 @@ package org.kryptonmc.krypton.command
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.ParseResults
+import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.tree.RootCommandNode
@@ -37,6 +38,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.command.SimpleCommand
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
+import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.command.CommandSendEvent
 import org.kryptonmc.krypton.commands.BanCommand
 import org.kryptonmc.krypton.commands.BanIpCommand
@@ -78,7 +80,7 @@ object KryptonCommandManager : CommandManager {
 
     private val LOGGER = logger<CommandManager>()
 
-    @GuardedBy("lock") val dispatcher = CommandDispatcher<Sender>() // Reads and writes MUST be locked by the lock below!
+    @GuardedBy("lock") private val dispatcher = CommandDispatcher<Sender>() // Reads and writes MUST be locked by the lock below!
     private val lock = ReentrantReadWriteLock()
     private val brigadierCommandRegistrar = BrigadierCommandRegistrar(lock.writeLock())
     private val simpleCommandRegistrar = SimpleCommandRegistrar(lock.writeLock())
@@ -143,9 +145,12 @@ object KryptonCommandManager : CommandManager {
         }
     }
 
-    fun suggest(parseResults: ParseResults<Sender>): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(parseResults)
+    fun suggest(results: ParseResults<Sender>, cursor: Int): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(results, cursor)
 
-    fun sendCommands(player: KryptonPlayer) {
+    fun suggest(sender: Sender, reader: StringReader): CompletableFuture<Suggestions> = dispatcher.getCompletionSuggestions(parse(sender, reader))
+
+    override fun updateCommands(player: Player) {
+        if (player !is KryptonPlayer) return
         // We copy the root node to avoid a command changing whilst we're trying to send it to the client.
         val node = RootCommandNode<Sender>()
         lock.read {
@@ -180,5 +185,7 @@ object KryptonCommandManager : CommandManager {
         ClearCommand.register(dispatcher)
     }
 
-    private fun parse(sender: Sender, input: String): ParseResults<Sender> = lock.read { dispatcher.parse(input, sender) }
+    fun parse(sender: Sender, input: String): ParseResults<Sender> = lock.read { dispatcher.parse(input, sender) }
+
+    private fun parse(sender: Sender, reader: StringReader): ParseResults<Sender> = lock.read { dispatcher.parse(reader, sender) }
 }

@@ -18,25 +18,21 @@
  */
 package org.kryptonmc.krypton.console
 
-import com.mojang.brigadier.CommandDispatcher
 import org.jline.reader.Highlighter
 import org.jline.reader.LineReader
 import org.jline.utils.AttributedString
 import org.jline.utils.AttributedStringBuilder
 import org.jline.utils.AttributedStyle
-import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.util.logger
 import java.util.regex.Pattern
 import kotlin.math.min
 
-class BrigadierHighlighter(
-    private val console: KryptonConsole,
-    private val dispatcher: CommandDispatcher<Sender>
-) : Highlighter {
+class BrigadierHighlighter(private val console: KryptonConsole) : Highlighter {
 
     override fun highlight(lineReader: LineReader, buffer: String): AttributedString {
         return try {
-            val results = dispatcher.parse(buffer, console)
+            val results = KryptonCommandManager.parse(console, buffer)
             val reader = results.reader
             val builder = AttributedStringBuilder()
             var lastPos = 0
@@ -60,9 +56,13 @@ class BrigadierHighlighter(
         }
     }
 
-    override fun setErrorPattern(errorPattern: Pattern?) = Unit
+    override fun setErrorPattern(errorPattern: Pattern?) {
+        // do nothing
+    }
 
-    override fun setErrorIndex(errorIndex: Int) = Unit
+    override fun setErrorIndex(errorIndex: Int) {
+        // do nothing
+    }
 
     companion object {
 

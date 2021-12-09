@@ -18,20 +18,13 @@
  */
 package org.kryptonmc.krypton.world.biome.gen
 
-import com.mojang.serialization.Codec
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.biome.Climate
-import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
 import org.spongepowered.math.vector.Vector3i
 import java.util.Random
-import java.util.function.Function
 import kotlin.math.abs
 
 sealed class BiomeGenerator(val possibleBiomes: List<Biome>) {
-
-    abstract val codec: Codec<out BiomeGenerator>
 
     abstract operator fun get(x: Int, y: Int, z: Int, sampler: Climate.Sampler): Biome
 
@@ -74,18 +67,5 @@ sealed class BiomeGenerator(val possibleBiomes: List<Biome>) {
             }
         }
         return position
-    }
-
-    companion object {
-
-        @JvmField
-        val CODEC: Codec<BiomeGenerator> = InternalRegistries.BIOME_GENERATOR.dispatchStable(BiomeGenerator::codec, Function.identity())
-
-        init {
-            InternalRegistries.BIOME_GENERATOR.register("fixed", FixedBiomeGenerator.CODEC)
-            InternalRegistries.BIOME_GENERATOR.register("multi_noise", MultiNoiseBiomeGenerator.CODEC)
-            InternalRegistries.BIOME_GENERATOR.register("checkerboard", CheckerboardBiomeGenerator.CODEC)
-            InternalRegistries.BIOME_GENERATOR.register("the_end", TheEndBiomeGenerator.CODEC)
-        }
     }
 }

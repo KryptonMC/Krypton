@@ -18,21 +18,16 @@
  */
 package org.kryptonmc.krypton.world.generation
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.DataResult
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.resource.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
-import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.world.biome.gen.MultiNoiseBiomeGenerator
 import org.kryptonmc.krypton.world.biome.gen.TheEndBiomeGenerator
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.dimension.KryptonDimensionTypes
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 import java.util.Optional
-import java.util.function.Function
 import kotlin.random.Random
 
 @JvmRecord
@@ -60,24 +55,7 @@ data class WorldGenerationSettings(
 
     fun overworld(): Generator = checkNotNull(dimensions[Dimension.OVERWORLD]) { "Missing overworld settings!" }.generator
 
-    private fun checkStable(): DataResult<WorldGenerationSettings> {
-        dimensions[Dimension.OVERWORLD] ?: return DataResult.error("Missing overworld settings!")
-        return DataResult.success(this)
-    }
-
     companion object {
-
-        @JvmField
-        val CODEC: Codec<WorldGenerationSettings> = RecordCodecBuilder.create<WorldGenerationSettings> { instance ->
-            instance.group(
-                Codec.LONG.fieldOf("seed").stable().forGetter(WorldGenerationSettings::seed),
-                Codec.BOOL.fieldOf("generate_features").orElse(true).stable().forGetter(WorldGenerationSettings::generateFeatures),
-                Codec.BOOL.fieldOf("bonus_chest").orElse(false).stable().forGetter(WorldGenerationSettings::bonusChest),
-                InternalResourceKeys.DIMENSION.directCodec(Dimension.CODEC).fieldOf("dimensions")
-                    .forGetter(WorldGenerationSettings::dimensions),
-                Codec.STRING.optionalFieldOf("legacy_custom_options").stable().forGetter(WorldGenerationSettings::legacyCustomOptions)
-            ).apply(instance, ::WorldGenerationSettings)
-        }.comapFlatMap(WorldGenerationSettings::checkStable, Function.identity())
 
         @JvmStatic
         fun default(): WorldGenerationSettings {

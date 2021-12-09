@@ -19,11 +19,11 @@
 package org.kryptonmc.krypton.server
 
 import com.google.common.hash.Hashing
-import com.mojang.serialization.Dynamic
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.event.player.JoinEvent
 import org.kryptonmc.api.event.player.QuitEvent
 import org.kryptonmc.api.scoreboard.Objective
@@ -62,7 +62,6 @@ import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
@@ -102,13 +101,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         val profile = player.profile
         val name = server.profileCache[profile.uuid]?.name ?: profile.name
         server.profileCache.add(profile)
-        val dimension = if (nbt != null) {
-            Dynamic(NBTOps, nbt["Dimension"]).parseDimension()
-                .resultOrPartial(LOGGER::error)
-                .orElse(World.OVERWORLD)
-        } else {
-            World.OVERWORLD
-        }
+        val dimension = if (nbt != null) nbt["Dimension"]?.parseDimension() ?: World.OVERWORLD else World.OVERWORLD
         if (nbt != null) server.userManager.updateUser(profile.uuid, nbt)
 
         val world = server.worldManager.worlds[dimension] ?: kotlin.run {
@@ -161,20 +154,21 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         playersByUUID[player.uuid] = player
 
         // Fire join event and send result message
-        val joinResult = server.eventManager.fireSync(JoinEvent(
-            player,
-            !profile.name.equals(name, true)
-        )).result
+        val joinResult = server.eventManager.fireSync(JoinEvent(player, !profile.name.equals(name, true))).result
         if (!joinResult.isAllowed) {
             // Use default reason if denied without specified reason
-            val reason = joinResult.message.takeIf { it != Component.empty() }
-                ?: Component.translatable("multiplayer.disconnect.kicked")
+            val reason = joinResult.message ?: Component.translatable("multiplayer.disconnect.kicked")
             session.disconnect(reason)
             return@thenAccept
         }
-        server.sendMessage(joinResult.message)
-        player.sendMessage(joinResult.message) // This player hasn't been added to the list yet
+        val joinMessage = joinResult.message ?: Component.translatable(
+            if (joinResult.hasJoinedBefore) "multiplayer.player.joined.renamed" else "multiplayer.player.joined",
+            NamedTextColor.YELLOW,
+            player.displayName
+        )
+        server.sendMessage(joinMessage)
         session.send(PacketOutPlayerPositionAndLook(player.location, player.rotation))
+        session.send(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.ADD_PLAYER, player))
         world.spawnPlayer(player)
 
         // Send the initial chunk stream
@@ -188,12 +182,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         }
 
         // Send inventory data
-        session.send(PacketOutWindowItems(
-            player.inventory.id,
-            player.inventory.incrementStateId(),
-            player.inventory.networkWriter,
-            player.inventory.mainHand
-        ))
+        session.send(PacketOutWindowItems(player.inventory, player.inventory.mainHand))
         player.isLoaded = true
     }
 
@@ -247,6 +236,10 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
         broadcast(packet, world, position.x().toDouble(), position.y().toDouble(), position.z().toDouble(), radius, except)
     }
 
+    fun broadcast(packet: Packet, world: KryptonWorld, x: Int, y: Int, z: Int, radius: Double, except: KryptonPlayer?) {
+        broadcast(packet, world, x.toDouble(), y.toDouble(), z.toDouble(), radius, except)
+    }
+
     fun disconnectAll() {
         players.forEach { it.session.disconnect(Component.translatable("multiplayer.disconnect.server_shutdown")) }
     }
@@ -267,7 +260,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
 
     private fun sendCommands(player: KryptonPlayer) {
         player.session.send(PacketOutEntityStatus(player.id, 28))
-        server.commandManager.sendCommands(player)
+        server.commandManager.updateCommands(player)
     }
 
     private fun save(player: KryptonPlayer) {

@@ -18,14 +18,9 @@
  */
 package org.kryptonmc.krypton.world.generation
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.util.nullableFieldOf
 import org.kryptonmc.krypton.world.generation.feature.Structure
 import org.kryptonmc.krypton.world.generation.feature.config.StrongholdConfig
 import org.kryptonmc.krypton.world.generation.feature.config.StructureConfig
-import java.util.Optional
 
 @JvmRecord
 data class StructureSettings(
@@ -37,15 +32,6 @@ data class StructureSettings(
 
     companion object {
 
-        @JvmField
-        val CODEC: Codec<StructureSettings> = RecordCodecBuilder.create { instance ->
-            instance.group(
-                Codec.simpleMap(InternalRegistries.STRUCTURE, StructureConfig.CODEC, InternalRegistries.STRUCTURE)
-                    .fieldOf("structures")
-                    .forGetter(StructureSettings::structures),
-                StrongholdConfig.CODEC.nullableFieldOf("stronghold").forGetter(StructureSettings::stronghold)
-            ).apply(instance, ::StructureSettings)
-        }
         @JvmField
         val DEFAULTS = emptyMap<Structure<*>, StructureConfig>()
         @JvmField

@@ -8,44 +8,49 @@
  */
 package org.kryptonmc.api.entity.animal.type
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Keyed
-import org.jetbrains.annotations.ApiStatus
-import org.jetbrains.annotations.Contract
-import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.provide
+import org.kryptonmc.api.util.StringSerializable
 
 /**
  * A gene that a panda may possess.
+ *
+ * @param isRecessive if this gene is a recessive allele
  */
-@CataloguedBy(PandaGenes::class)
-public interface PandaGene : Keyed {
-
-    /**
-     * If this gene is a recessive allele.
-     */
+public enum class PandaGene(
+    @get:JvmName("serialized") override val serialized: String,
     public val isRecessive: Boolean
+) : StringSerializable {
 
-    @ApiStatus.Internal
-    public interface Factory {
-
-        public fun of(key: Key, isRecessive: Boolean): PandaGene
-    }
+    NORMAL("normal", false),
+    LAZY("lazy", false),
+    WORRIED("worried", false),
+    PLAYFUL("playful", false),
+    BROWN("brown", true),
+    WEAK("weak", true),
+    AGGRESSIVE("aggressive", false);
 
     public companion object {
 
-        private val FACTORY = Krypton.factoryProvider.provide<Factory>()
+        private val VALUES = values()
+        private val BY_NAME = VALUES.associateBy { it.serialized }
 
         /**
-         * Creates a new panda gene with the given values.
+         * Gets the panda gene with the given [name], or returns null if there
+         * is no panda gene with the given [name].
          *
-         * @param key the key
-         * @param isRecessive if the gene is a recessive allele
-         * @return a new panda gene
+         * @param name the name
+         * @return the panda gene with the name, or null if not present
          */
         @JvmStatic
-        @Contract("_ -> new", pure = true)
-        public fun of(key: Key, isRecessive: Boolean): PandaGene = FACTORY.of(key, isRecessive)
+        public fun fromName(name: String): PandaGene? = BY_NAME[name]
+
+        /**
+         * Gets the panda gene with the given [id], or returns null if there
+         * is no panda gene with the given [id].
+         *
+         * @param id the ID
+         * @return the panda gene with the ID, or null if not present
+         */
+        @JvmStatic
+        public fun fromId(id: Int): PandaGene? = VALUES.getOrNull(id)
     }
 }

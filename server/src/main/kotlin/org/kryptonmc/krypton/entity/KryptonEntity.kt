@@ -32,12 +32,14 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.scoreboard.Team
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.Tag
 import org.kryptonmc.api.util.BoundingBox
+import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.api.world.damage.DamageSource
 import org.kryptonmc.api.world.damage.type.DamageTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataHolder
@@ -414,7 +416,9 @@ abstract class KryptonEntity(
         }
     }
 
-    private fun underFluid(fluid: Tag<Fluid>): Boolean = fluidOnEyes === fluid
+    fun underFluid(fluid: Tag<Fluid>): Boolean = fluidOnEyes === fluid
+
+    open fun interact(player: KryptonPlayer, hand: Hand): InteractionResult = InteractionResult.PASS
 
     private fun updateSwimming() {
         isSwimming = if (isSwimming) {

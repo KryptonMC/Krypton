@@ -18,16 +18,12 @@
  */
 package org.kryptonmc.krypton.world.generation.noise
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.resource.InternalResourceKeys
-import org.kryptonmc.krypton.world.block.KryptonBlock
 import org.kryptonmc.krypton.world.generation.StructureSettings
 
 @JvmRecord
@@ -60,28 +56,6 @@ data class NoiseGeneratorSettings(
         private val AMPLIFIED = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("amplified"))
         private val CAVES = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("caves"))
         private val FLOATING_ISLANDS = ResourceKey.of(InternalResourceKeys.NOISE_GENERATOR_SETTINGS, key("floating_islands"))
-
-        @JvmField
-        val CODEC: Codec<NoiseGeneratorSettings> = RecordCodecBuilder.create {
-            it.group(
-                StructureSettings.CODEC.fieldOf("structures").forGetter(NoiseGeneratorSettings::structureSettings),
-                NoiseSettings.CODEC.fieldOf("noise").forGetter(NoiseGeneratorSettings::noiseSettings),
-                KryptonBlock.CODEC.fieldOf("default_block").forGetter(NoiseGeneratorSettings::defaultBlock),
-                KryptonBlock.CODEC.fieldOf("default_fluid").forGetter(NoiseGeneratorSettings::defaultFluid),
-                Codec.INT.fieldOf("bedrock_roof_position").forGetter(NoiseGeneratorSettings::bedrockRoofPosition),
-                Codec.INT.fieldOf("bedrock_floor_position")
-                    .forGetter(NoiseGeneratorSettings::bedrockFloorPosition),
-                Codec.INT.fieldOf("sea_level").forGetter(NoiseGeneratorSettings::seaLevel),
-                Codec.INT.fieldOf("min_surface_level").forGetter(NoiseGeneratorSettings::minimumSurfaceLevel),
-                Codec.BOOL.fieldOf("disable_mob_generation")
-                    .forGetter(NoiseGeneratorSettings::disableMobGeneration),
-                Codec.BOOL.fieldOf("aquifiers_enabled").forGetter(NoiseGeneratorSettings::aquifiersEnabled),
-                Codec.BOOL.fieldOf("noise_caves_enabled").forGetter(NoiseGeneratorSettings::noiseCavesEnabled),
-                Codec.BOOL.fieldOf("deepslate_enabled").forGetter(NoiseGeneratorSettings::deepslateEnabled),
-                Codec.BOOL.fieldOf("ore_veins_enabled").forGetter(NoiseGeneratorSettings::oreVeinsEnabled),
-                Codec.BOOL.fieldOf("noodle_caves_enabled").forGetter(NoiseGeneratorSettings::noodleCavesEnabled)
-            ).apply(it, ::NoiseGeneratorSettings)
-        }
 
         init {
             register(OVERWORLD, overworld(StructureSettings(true), false))

@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.entity.memory
 
-import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.nbt.CompoundTag
 
 class Memory<T : Any>(
@@ -39,7 +38,7 @@ class Memory<T : Any>(
 
     fun save(key: MemoryKey<in T>, tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
         compound(key.key.asString()) {
-            key.codec.encodeStart(NBTOps, value).result().ifPresent { put("value", it) }
+            if (value != null) put("value", key.codec.encode(value))
             if (canExpire) long("ttl", timeToLive)
         }
     }

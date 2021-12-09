@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.world.scoreboard
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.scoreboard.ObjectiveRenderType
-import org.kryptonmc.api.scoreboard.ObjectiveRenderTypes
 import org.kryptonmc.api.scoreboard.criteria.CompoundCriterion
 
 @JvmRecord
@@ -29,7 +28,7 @@ data class KryptonCompoundCriterion(
     override val name: String,
     override val children: List<KryptonCriterion>,
     override val isMutable: Boolean = false,
-    override val renderType: ObjectiveRenderType = ObjectiveRenderTypes.INTEGER
+    override val renderType: ObjectiveRenderType = ObjectiveRenderType.INTEGER
 ) : CompoundCriterion {
 
     override fun key(): Key = key

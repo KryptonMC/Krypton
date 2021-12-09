@@ -18,9 +18,11 @@
  */
 package org.kryptonmc.krypton.config.category
 
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.api.world.GameModes
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.objectmapping.meta.Setting
@@ -33,7 +35,7 @@ data class WorldCategory(
     @Comment("Settings for world generation")
     val generator: GeneratorCategory = GeneratorCategory(),
     @Comment("The gamemode for this world. Valid values are: 0-3 (legacy), survival, creative, adventure and spectator (case insensitive).")
-    val gameMode: GameMode = GameModes.SURVIVAL,
+    val gameMode: GameMode = GameMode.SURVIVAL,
     @Setting("force-default-gamemode")
     @Comment("Forces the above gamemode for all players in all worlds.")
     val forceDefaultGamemode: Boolean = false,
@@ -52,5 +54,21 @@ data class WorldCategory(
     val autosaveInterval: Int = 6000,
     @Setting("spawn-protection-radius")
     @Comment("The radius from spawn in which players cannot break blocks.")
-    val spawnProtectionRadius: Int = 16
-)
+    val spawnProtectionRadius: Int = 16,
+    @Setting("send-spawn-protection-message")
+    @Comment("If the spawn protection message should be sent to players in protection.")
+    val sendSpawnProtectionMessage: Boolean = true,
+    @Setting("spawn-protection-message")
+    @Comment("The message sent to players that try to break blocks in spawn.")
+    val spawnProtectionMessage: Component = DEFAULT_PROTECTION_MESSAGE
+) {
+
+    companion object {
+
+        private val DEFAULT_PROTECTION_MESSAGE = Component.text()
+            .content("You are currently in a protected area. You may not break blocks here.")
+            .color(NamedTextColor.RED)
+            .decorate(TextDecoration.BOLD)
+            .build()
+    }
+}

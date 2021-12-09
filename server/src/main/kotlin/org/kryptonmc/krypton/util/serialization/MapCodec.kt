@@ -16,15 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.util.serialization
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.DataResult
-import com.mojang.serialization.MapCodec
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.Tag
+import org.kryptonmc.nbt.compound
 
-fun <T> T?.successOrError(message: String): DataResult<T> {
-    if (this != null) return DataResult.success(this)
-    return DataResult.error(message)
+class MapCodec<K, V>(private val keyCodec: StringCodec<K>, private val valueCodec: Codec<Tag, V>) : CompoundCodec<Map<K, V>> {
+
+    override fun encode(value: Map<K, V>): CompoundTag = compound {
+        value.forEach { put(keyCodec.encodeString(it.key), valueCodec.encode(it.value)) }
+    }
+
+    override fun decode(tag: CompoundTag): Map<K, V> {
+        val map = mutableMapOf<K, V>()
+        tag.forEach { map[keyCodec.decodeString(it.key)] = valueCodec.decode(it.value) }
+        return map
+    }
 }
-
-fun <T> Codec<T>.nullableFieldOf(name: String): MapCodec<T?> = NullableFieldCodec(name, this)

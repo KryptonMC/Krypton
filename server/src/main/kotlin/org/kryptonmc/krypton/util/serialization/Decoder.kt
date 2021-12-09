@@ -16,18 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.animal.type
+package org.kryptonmc.krypton.util.serialization
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.animal.type.MooshroomType
+import org.kryptonmc.nbt.Tag
 
-@JvmRecord
-data class KryptonMooshroomType(private val key: Key) : MooshroomType {
+fun interface Decoder<I : Tag, O> {
 
-    override fun key(): Key = key
+    fun decode(tag: I): O
 
-    object Factory : MooshroomType.Factory {
-
-        override fun of(key: Key): MooshroomType = KryptonMooshroomType(key)
+    fun decodeNullable(tag: I): O? {
+        return try {
+            decode(tag)
+        } catch (exception: Exception) {
+            null
+        }
     }
 }

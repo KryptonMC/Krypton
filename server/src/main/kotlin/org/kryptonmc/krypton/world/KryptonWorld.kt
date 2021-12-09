@@ -41,6 +41,7 @@ import org.kryptonmc.krypton.entity.EntityManager
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.GameState
+import org.kryptonmc.krypton.packet.out.play.PacketOutBlockBreakAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeGameState
 import org.kryptonmc.krypton.packet.out.play.PacketOutEffect
@@ -155,6 +156,10 @@ class KryptonWorld(
         playerManager.broadcast(PacketOutEffect(effect, position, data, false), this, position, 64.0, except)
     }
 
+    fun playEffect(effect: Effect, x: Int, y: Int, z: Int, data: Int, except: KryptonPlayer) {
+        playerManager.broadcast(PacketOutEffect(effect, x, y, z, data, false), this, x, y, z, 64.0, except)
+    }
+
     fun playSound(position: Vector3i, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
         playSound(position.x() + 0.5, position.y() + 0.5, position.z() + 0.5, event, source, volume, pitch, except)
     }
@@ -188,15 +193,32 @@ class KryptonWorld(
     // TODO: Check world border bounds
     fun canInteract(player: KryptonPlayer, x: Int, z: Int): Boolean = !server.isProtected(this, x, z, player)
 
+    fun broadcastBlockDestroyProgress(sourceId: Int, x: Int, y: Int, z: Int, state: Int) {
+        server.playerManager.players.forEach {
+            if (it == null || it.world !== this || it.id == sourceId) return@forEach
+            val distanceX = x - it.location.x()
+            val distanceY = y - it.location.y()
+            val distanceZ = z - it.location.z()
+            if (distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ < 1024.0) {
+                it.session.send(PacketOutBlockBreakAnimation(sourceId, x, y, z, state))
+            }
+        }
+    }
+
+    fun removeBlock(x: Int, y: Int, z: Int): Boolean {
+        val fluid = getFluid(x, y, z)
+        return setBlock(x, y, z, fluid.asBlock())
+    }
+
     override fun getBlock(x: Int, y: Int, z: Int): Block {
         if (isOutsideBuildHeight(y)) return Blocks.VOID_AIR
-        val chunk = getChunkAt(x, z) ?: return Blocks.AIR
+        val chunk = getChunkAt(x shr 4, z shr 4) ?: return Blocks.AIR
         return chunk.getBlock(x, y, z)
     }
 
     override fun getFluid(x: Int, y: Int, z: Int): Fluid {
         if (isOutsideBuildHeight(y)) return Fluids.EMPTY
-        val chunk = getChunkAt(x, z) ?: return Fluids.EMPTY
+        val chunk = getChunkAt(x shr 4, z shr 4) ?: return Fluids.EMPTY
         return chunk.getFluid(x, y, z)
     }
 
@@ -228,16 +250,16 @@ class KryptonWorld(
         chunkManager.unload(x, z, TicketTypes.API_LOAD, force)
     }
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: Block) {
-        if (isOutsideBuildHeight(y)) return
-        getChunkAt(x shr 4, z shr 4)?.setBlock(x, y, z, block)?.run {
-            playerManager.sendToAll(PacketOutBlockChange(block, x, y, z), this@KryptonWorld)
-        }
+    override fun setBlock(x: Int, y: Int, z: Int, block: Block): Boolean {
+        if (isOutsideBuildHeight(y)) return false
+        if (isDebug) return false
+        val chunk = getChunk(x, y, z) ?: return false
+        if (!chunk.setBlock(x, y, z, block)) return false
+        playerManager.sendToAll(PacketOutBlockChange(block, x, y, z))
+        return true
     }
 
-    override fun setBlock(position: Vector3i, block: Block) {
-        setBlock(position.x(), position.y(), position.z(), block)
-    }
+    override fun setBlock(position: Vector3i, block: Block): Boolean = setBlock(position.x(), position.y(), position.z(), block)
 
     fun tick() {
         if (players.isEmpty()) return // don't tick the world if there's no players in it

@@ -29,7 +29,10 @@ import net.kyori.adventure.text.event.ClickEvent
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.command.CommandExecuteEvent
+import org.kryptonmc.api.event.player.AttackEntityEvent
 import org.kryptonmc.api.event.player.ChatEvent
+import org.kryptonmc.api.event.player.InteractAtEntityEvent
+import org.kryptonmc.api.event.player.InteractEntityEvent
 import org.kryptonmc.api.event.player.MoveEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
@@ -37,7 +40,7 @@ import org.kryptonmc.api.event.player.ResourcePackStatusEvent
 import org.kryptonmc.api.event.player.RotateEvent
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.resource.ResourcePack
-import org.kryptonmc.api.world.GameModes
+import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.item.KryptonItemEntity
@@ -71,8 +74,6 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.out.play.EntityAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
-import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
-import org.kryptonmc.krypton.packet.out.play.PacketOutDiggingResponse
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityRotation
@@ -204,7 +205,7 @@ class PlayHandler(
     }
 
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
-        if (player.gameMode !== GameModes.CREATIVE) return
+        if (player.gameMode != GameMode.CREATIVE) return
         val item = packet.clickedItem
         val inValidRange = packet.slot in 1 until KryptonPlayerInventory.SIZE
         val hasDamage = MetaKeys.DAMAGE in item.meta && item.meta[MetaKeys.DAMAGE]!! >= 0
@@ -270,18 +271,8 @@ class PlayHandler(
 
     private fun handlePlayerDigging(packet: PacketInPlayerDigging) {
         when (packet.status) {
-            PacketInPlayerDigging.Status.STARTED -> {
-                if (player.gameMode !== GameModes.CREATIVE) return
-                val chunkX = packet.location.x() shr 4
-                val chunkZ = packet.location.z() shr 4
-                val chunk = player.world.chunkManager[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
-                val x = packet.location.x()
-                val y = packet.location.y()
-                val z = packet.location.z()
-                chunk.setBlock(x, y, z, Blocks.AIR)
-
-                session.send(PacketOutDiggingResponse(packet.location, 0, PacketInPlayerDigging.Status.FINISHED, true))
-                playerManager.sendToAll(PacketOutBlockChange(Blocks.AIR, packet.location))
+            PacketInPlayerDigging.Status.STARTED, PacketInPlayerDigging.Status.FINISHED, PacketInPlayerDigging.Status.CANCELLED -> {
+                player.blockBreakHandler.handleBlockBreak(packet)
             }
             PacketInPlayerDigging.Status.DROP_ITEM -> {
                 // TODO: Move to method on player
@@ -327,9 +318,23 @@ class PlayHandler(
     }
 
     private fun handleInteract(packet: PacketInInteract) {
-        if (packet.type === PacketInInteract.Type.INTERACT) {
-            val target = player.world.entityManager[packet.entityId]
-            target?.tryRide(player)
+        val target = player.world.entityManager[packet.entityId] ?: return
+        val hand = packet.hand
+        val x = target.location.x() + packet.x
+        val y = target.location.y() + packet.y
+        val z = target.location.z() + packet.z
+        player.isSneaking = packet.sneaking
+        if (player.location.distanceSquared(target.location) >= 36.0) return
+        when (packet.type) {
+            PacketInInteract.Type.INTERACT -> {
+                server.eventManager.fire(InteractEntityEvent(player, target, hand!!)).thenAcceptAsync({
+                    if (!it.result.isAllowed) return@thenAcceptAsync
+                    target.tryRide(player)
+                    player.interactOn(target, hand)
+                }, session.channel.eventLoop())
+            }
+            PacketInInteract.Type.ATTACK -> server.eventManager.fireAndForget(AttackEntityEvent(player, target)) // TODO
+            PacketInInteract.Type.INTERACT_AT -> server.eventManager.fireAndForget(InteractAtEntityEvent(player, target, hand!!, x, y, z)) // TODO
         }
     }
 
@@ -412,8 +417,7 @@ class PlayHandler(
         val reader = StringReader(packet.command)
         if (reader.canRead() && reader.peek() == '/') reader.skip()
 
-        val parseResults = server.commandManager.dispatcher.parse(reader, player)
-        server.commandManager.suggest(parseResults).thenAcceptAsync({
+        server.commandManager.suggest(player, reader).thenAcceptAsync({
             session.send(PacketOutTabComplete(packet.id, it))
         }, session.channel.eventLoop())
     }

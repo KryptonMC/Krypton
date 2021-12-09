@@ -16,21 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.animal.type
+package org.kryptonmc.krypton.service
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.animal.type.AxolotlVariant
+import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.service.AFKService
 
-@JvmRecord
-data class KryptonAxolotlVariant(
-    private val key: Key,
-    override val isCommon: Boolean
-) : AxolotlVariant {
+class KryptonAFKService : AFKService {
 
-    override fun key(): Key = key
+    private val afkPlayers = mutableSetOf<Player>()
 
-    object Factory : AxolotlVariant.Factory {
+    override fun isAfk(player: Player): Boolean = afkPlayers.contains(player)
 
-        override fun of(key: Key, isCommon: Boolean): AxolotlVariant = KryptonAxolotlVariant(key, isCommon)
+    override fun setAfk(player: Player, afk: Boolean) {
+        if (afk) afkPlayers.add(player) else afkPlayers.remove(player)
     }
 }

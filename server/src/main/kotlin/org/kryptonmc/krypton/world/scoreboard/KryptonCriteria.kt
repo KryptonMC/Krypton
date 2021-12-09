@@ -22,7 +22,6 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.scoreboard.ObjectiveRenderType
-import org.kryptonmc.api.scoreboard.ObjectiveRenderTypes
 
 object KryptonCriteria {
 
@@ -31,7 +30,7 @@ object KryptonCriteria {
     @JvmField val DEATH_COUNT: KryptonCriterion = register("death_count", "deathCount")
     @JvmField val PLAYER_KILL_COUNT: KryptonCriterion = register("player_kill_count", "playerKillCount")
     @JvmField val TOTAL_KILL_COUNT: KryptonCriterion = register("total_kill_count", "totalKillCount")
-    @JvmField val HEALTH: KryptonCriterion = register("health", isMutable = true, renderType = ObjectiveRenderTypes.HEARTS)
+    @JvmField val HEALTH: KryptonCriterion = register("health", isMutable = true, renderType = ObjectiveRenderType.HEARTS)
     @JvmField val FOOD: KryptonCriterion = register("food", isMutable = true)
     @JvmField val AIR: KryptonCriterion = register("air", isMutable = true)
     @JvmField val ARMOR: KryptonCriterion = register("armor", isMutable = true)
@@ -53,7 +52,7 @@ object KryptonCriteria {
         key: String,
         name: String = key,
         isMutable: Boolean = false,
-        renderType: ObjectiveRenderType = ObjectiveRenderTypes.INTEGER
+        renderType: ObjectiveRenderType = ObjectiveRenderType.INTEGER
     ): KryptonCriterion {
         val key1 = Key.key(key)
         return Registries.CRITERIA.register(
@@ -68,7 +67,7 @@ object KryptonCriteria {
         name: String,
         children: List<KryptonCriterion>,
         isMutable: Boolean = false,
-        renderType: ObjectiveRenderType = ObjectiveRenderTypes.INTEGER
+        renderType: ObjectiveRenderType = ObjectiveRenderType.INTEGER
     ): KryptonCompoundCriterion {
         val key1 = Key.key(key)
         return Registries.CRITERIA.register(

@@ -22,11 +22,9 @@ import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Rabbit
 import org.kryptonmc.api.entity.animal.type.RabbitType
-import org.kryptonmc.api.entity.animal.type.RabbitTypes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -37,19 +35,19 @@ class KryptonRabbit(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.RABB
     override var rabbitType: RabbitType
         get() {
             val id = data[MetadataKeys.RABBIT.TYPE]
-            if (id == 99) return RabbitTypes.KILLER
-            return Registries.RABBIT_TYPES[data[MetadataKeys.RABBIT.TYPE]]!!
+            if (id == 99) return RabbitType.KILLER
+            return RabbitType.fromId(data[MetadataKeys.RABBIT.TYPE])!!
         }
         set(value) {
-            if (value === RabbitTypes.KILLER) {
+            if (value == RabbitType.KILLER) {
                 data[MetadataKeys.RABBIT.TYPE] = 99
                 return
             }
-            data[MetadataKeys.RABBIT.TYPE] = Registries.RABBIT_TYPES.idOf(value)
+            data[MetadataKeys.RABBIT.TYPE] = value.ordinal
         }
 
     override val soundSource: Sound.Source
-        get() = if (rabbitType === RabbitTypes.KILLER) Sound.Source.HOSTILE else Sound.Source.NEUTRAL
+        get() = if (rabbitType == RabbitType.KILLER) Sound.Source.HOSTILE else Sound.Source.NEUTRAL
 
     init {
         data.add(MetadataKeys.RABBIT.TYPE)

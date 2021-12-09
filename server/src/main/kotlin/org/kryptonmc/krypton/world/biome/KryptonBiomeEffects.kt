@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.api.effect.sound.SoundEvent
@@ -28,9 +26,11 @@ import org.kryptonmc.api.world.biome.AmbientMoodSettings
 import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.GrassColorModifier
-import org.kryptonmc.api.world.biome.GrassColorModifiers
-import org.kryptonmc.krypton.util.Codecs
-import org.kryptonmc.krypton.util.nullableFieldOf
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.serialization.CompoundEncoder
+import org.kryptonmc.krypton.util.serialization.EnumCodecs
+import org.kryptonmc.krypton.util.serialization.encode
+import org.kryptonmc.nbt.compound
 import java.awt.Color
 
 @JvmRecord
@@ -39,7 +39,7 @@ data class KryptonBiomeEffects(
     override val waterColor: Color,
     override val waterFogColor: Color,
     override val skyColor: Color,
-    override val grassColorModifier: GrassColorModifier = GrassColorModifiers.NONE,
+    override val grassColorModifier: GrassColorModifier = GrassColorModifier.NONE,
     override val foliageColor: Color? = null,
     override val grassColor: Color? = null,
     override val ambientParticleSettings: AmbientParticleSettings? = null,
@@ -57,7 +57,7 @@ data class KryptonBiomeEffects(
         private var waterColor = Color.BLACK
         private var waterFogColor = Color.BLACK
         private var skyColor = Color.BLACK
-        private var grassColorModifier = GrassColorModifiers.NONE
+        private var grassColorModifier = GrassColorModifier.NONE
         private var foliageColor: Color? = null
         private var grassColor: Color? = null
         private var particles: AmbientParticleSettings? = null
@@ -160,23 +160,21 @@ data class KryptonBiomeEffects(
         val DEFAULT: BiomeEffects = Builder().build()
 
         @JvmField
-        val CODEC: Codec<BiomeEffects> = RecordCodecBuilder.create { instance ->
-            instance.group(
-                Codecs.COLOR.fieldOf("fog_color").forGetter(BiomeEffects::fogColor),
-                Codecs.COLOR.fieldOf("water_color").forGetter(BiomeEffects::waterColor),
-                Codecs.COLOR.fieldOf("water_fog_color").forGetter(BiomeEffects::waterFogColor),
-                Codecs.COLOR.fieldOf("sky_color").forGetter(BiomeEffects::skyColor),
-                KryptonGrassColorModifier.CODEC
-                    .optionalFieldOf("grass_color_modifier", GrassColorModifiers.NONE)
-                    .forGetter(BiomeEffects::grassColorModifier),
-                Codecs.COLOR.nullableFieldOf("foliage_color").forGetter(BiomeEffects::foliageColor),
-                Codecs.COLOR.nullableFieldOf("grass_color").forGetter(BiomeEffects::grassColor),
-                KryptonAmbientParticleSettings.CODEC.nullableFieldOf("particle").forGetter(BiomeEffects::ambientParticleSettings),
-                Codecs.SOUND_EVENT.nullableFieldOf("ambient_sound").forGetter(BiomeEffects::ambientLoopSound),
-                KryptonAmbientMoodSettings.CODEC.nullableFieldOf("mood_sound").forGetter(BiomeEffects::ambientMoodSettings),
-                KryptonAmbientAdditionsSettings.CODEC.nullableFieldOf("additions_sound").forGetter(BiomeEffects::ambientAdditionsSettings),
-                KryptonMusic.CODEC.nullableFieldOf("music").forGetter(BiomeEffects::backgroundMusic)
-            ).apply(instance, ::KryptonBiomeEffects)
+        val ENCODER: CompoundEncoder<BiomeEffects> = CompoundEncoder {
+            compound {
+                encode(Codecs.COLOR, "fog_color", it.fogColor)
+                encode(Codecs.COLOR, "water_color", it.waterColor)
+                encode(Codecs.COLOR, "water_fog_color", it.waterFogColor)
+                encode(Codecs.COLOR, "sky_color", it.skyColor)
+                encode(EnumCodecs.GRASS_COLOR_MODIFIER, "grass_color_modifier", it.grassColorModifier)
+                encode(Codecs.COLOR, "foliage_color", it.foliageColor)
+                encode(Codecs.COLOR, "grass_color", it.grassColor)
+                encode(KryptonAmbientParticleSettings.ENCODER, "particle", it.ambientParticleSettings)
+                encode(Codecs.SOUND_EVENT, "ambient_sound", it.ambientLoopSound)
+                encode(KryptonAmbientMoodSettings.ENCODER, "mood_sound", it.ambientMoodSettings)
+                encode(KryptonAmbientAdditionsSettings.ENCODER, "additions_sound", it.ambientAdditionsSettings)
+                encode(KryptonMusic.ENCODER, "music", it.backgroundMusic)
+            }
         }
     }
 }

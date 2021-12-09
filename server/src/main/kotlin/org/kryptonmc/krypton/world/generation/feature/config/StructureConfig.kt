@@ -18,34 +18,9 @@
  */
 package org.kryptonmc.krypton.world.generation.feature.config
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.DataResult
-import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.krypton.util.Codecs
-import java.util.function.Function
-
 @JvmRecord
 data class StructureConfig(
     val spacing: Int,
     val separation: Int,
     val salt: Int
-) {
-
-    companion object {
-
-        @JvmField
-        val CODEC: Codec<StructureConfig> = RecordCodecBuilder.create<StructureConfig> {
-            it.group(
-                Codec.intRange(0, 4096).fieldOf("spacing").forGetter(StructureConfig::spacing),
-                Codec.intRange(0, 4096).fieldOf("separation").forGetter(StructureConfig::separation),
-                Codecs.NON_NEGATIVE_INT.fieldOf("salt").forGetter(StructureConfig::salt)
-            ).apply(it, ::StructureConfig)
-        }.comapFlatMap({
-            if (it.spacing <= it.separation) {
-                DataResult.error("Spacing must be larger than separation!")
-            } else {
-                DataResult.success(it)
-            }
-        }, Function.identity())
-    }
-}
+)

@@ -57,20 +57,20 @@ data class PacketOutJoinGame(
     override fun write(buf: ByteBuf) {
         buf.writeInt(entityId)
         buf.writeBoolean(isHardcore)
-        buf.writeByte(Registries.GAME_MODES.idOf(gameMode))
-        buf.writeByte(oldGameMode?.let { Registries.GAME_MODES.idOf(it) } ?: -1)
+        buf.writeByte(gameMode.ordinal)
+        buf.writeByte(oldGameMode?.ordinal ?: -1)
         buf.writeCollection(worlds) { buf.writeKey(it.location) }
         buf.writeNBT(compound {
             put(
                 ResourceKeys.DIMENSION_TYPE.location.asString(),
-                Registries.DIMENSION_TYPE.encode(KryptonDimensionType.CODEC)
+                Registries.DIMENSION_TYPE.encode(KryptonDimensionType.ENCODER)
             )
             put(
                 ResourceKeys.BIOME.location.asString(),
-                Registries.BIOME.encode(KryptonBiome.CODEC)
+                Registries.BIOME.encode(KryptonBiome.ENCODER)
             )
         })
-        buf.encode(KryptonDimensionType.CODEC, dimensionType)
+        buf.encode(KryptonDimensionType.ENCODER, dimensionType)
         buf.writeKey(dimension.location)
         buf.writeLong(seed)
         buf.writeVarInt(maxPlayers)

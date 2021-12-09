@@ -68,8 +68,8 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
 
     override fun buildReader(builder: LineReaderBuilder): LineReader = super.buildReader(
         builder.appName("Krypton")
-            .completer(BrigadierCompleter(this, server.commandManager.dispatcher))
-            .highlighter(BrigadierHighlighter(this, server.commandManager.dispatcher))
+            .completer(BrigadierCompleter(this))
+            .highlighter(BrigadierHighlighter(this))
             .option(LineReader.Option.COMPLETE_IN_WORD, true)
     )
 

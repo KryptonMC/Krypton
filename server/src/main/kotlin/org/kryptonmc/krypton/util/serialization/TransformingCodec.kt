@@ -16,27 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.biome
+package org.kryptonmc.krypton.util.serialization
 
-import com.mojang.serialization.Codec
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.world.biome.Precipitation
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.nbt.Tag
 
-@JvmRecord
-data class KryptonPrecipitation(private val key: Key) : Precipitation {
+class TransformingCodec<T : Tag, U, V>(
+    private val backing: Codec<T, U>,
+    private val encodeTransformer: (V) -> U,
+    private val decodeTransformer: (U) -> V
+) : Codec<T, V> {
 
-    override fun key(): Key = key
+    override fun encode(value: V): T = backing.encode(encodeTransformer(value))
 
-    object Factory : Precipitation.Factory {
-
-        override fun of(key: Key): Precipitation = KryptonPrecipitation(key)
-    }
-
-    companion object {
-
-        @JvmField
-        val CODEC: Codec<Precipitation> = Codecs.forRegistry(Registries.PRECIPITATIONS)
-    }
+    override fun decode(tag: T): V = decodeTransformer(backing.decode(tag))
 }

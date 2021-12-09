@@ -16,18 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.animal.type
+package org.kryptonmc.krypton.util
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.animal.type.RabbitType
+enum class InteractionResult {
 
-@JvmRecord
-data class KryptonRabbitType(private val key: Key) : RabbitType {
+    SUCCESS,
+    CONSUME,
+    CONSUME_PARTIAL,
+    FAIL,
+    PASS;
 
-    override fun key(): Key = key
-
-    object Factory : RabbitType.Factory {
-
-        override fun of(key: Key): RabbitType = KryptonRabbitType(key)
-    }
+    val consumesAction: Boolean
+        get() = this == SUCCESS || this == CONSUME || this == CONSUME_PARTIAL
 }

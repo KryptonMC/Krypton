@@ -21,10 +21,10 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.statistic.StatisticsTracker
-import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.scoreboard.Scoreboard
+import org.kryptonmc.api.world.GameMode
 import org.spongepowered.math.vector.Vector3d
 import java.net.InetSocketAddress
 import java.time.Instant
@@ -170,10 +170,15 @@ public interface Player : LivingEntity, Equipable, InventoryHolder, PluginMessag
     public val isVanished: Boolean
 
     /**
+     * If this player is currently AFK, meaning they are not doing anything.
+     */
+    public var isAfk: Boolean
+
+    /**
      * This player's current game mode.
      */
     @get:JvmName("gameMode")
-    public val gameMode: GameMode
+    public var gameMode: GameMode
 
     /**
      * The direction this player is currently facing.

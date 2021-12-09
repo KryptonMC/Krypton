@@ -18,27 +18,25 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Panda
 import org.kryptonmc.api.entity.animal.type.PandaGene
-import org.kryptonmc.api.entity.animal.type.PandaGenes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.StringTag
 
 class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA, ATTRIBUTES), Panda {
 
     override var knownGene: PandaGene
-        get() = Registries.PANDA_GENES[data[MetadataKeys.PANDA.MAIN_GENE].toInt()]!!
-        set(value) = data.set(MetadataKeys.PANDA.MAIN_GENE, Registries.PANDA_GENES.idOf(value).toByte())
+        get() = PandaGene.fromId(data[MetadataKeys.PANDA.MAIN_GENE].toInt())!!
+        set(value) = data.set(MetadataKeys.PANDA.MAIN_GENE, value.ordinal.toByte())
     override var hiddenGene: PandaGene
-        get() = Registries.PANDA_GENES[data[MetadataKeys.PANDA.HIDDEN_GENE].toInt()]!!
-        set(value) = data.set(MetadataKeys.PANDA.HIDDEN_GENE, Registries.PANDA_GENES.idOf(value).toByte())
+        get() = PandaGene.fromId(data[MetadataKeys.PANDA.HIDDEN_GENE].toInt())!!
+        set(value) = data.set(MetadataKeys.PANDA.HIDDEN_GENE, value.ordinal.toByte())
     override val isUnhappy: Boolean
         get() = unhappyTime > 0
     override var isSneezing: Boolean
@@ -71,7 +69,7 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
         get() = data[MetadataKeys.PANDA.EATING_TIMER]
         set(value) = data.set(MetadataKeys.PANDA.EATING_TIMER, value)
     override val isScared: Boolean
-        get() = variant === PandaGenes.WORRIED && world.isThundering
+        get() = variant == PandaGene.WORRIED && world.isThundering
 
     private val variant: PandaGene
         get() = variantFromGenes(knownGene, hiddenGene)
@@ -90,13 +88,13 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        if (tag.contains("MainGene")) knownGene = Registries.PANDA_GENES[Key.key(tag.getString("MainGene"))]!!
-        if (tag.contains("HiddenGene")) hiddenGene = Registries.PANDA_GENES[Key.key(tag.getString("HiddenGene"))]!!
+        if (tag.contains("MainGene", StringTag.ID)) knownGene = PandaGene.fromName(tag.getString("MainGene"))!!
+        if (tag.contains("HiddenGene", StringTag.ID)) hiddenGene = PandaGene.fromName(tag.getString("HiddenGene"))!!
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
-        string("MainGene", knownGene.key().value())
-        string("HiddenGene", hiddenGene.key().value())
+        string("MainGene", knownGene.serialized)
+        string("HiddenGene", hiddenGene.serialized)
     }
 
     private fun getFlag(index: Int): Boolean = data[MetadataKeys.PANDA.FLAGS].toInt() and index != 0
@@ -120,8 +118,8 @@ class KryptonPanda(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.PANDA
         @JvmStatic
         private fun variantFromGenes(main: PandaGene, hidden: PandaGene): PandaGene {
             if (main.isRecessive) {
-                if (main === hidden) return main
-                return PandaGenes.NORMAL
+                if (main == hidden) return main
+                return PandaGene.NORMAL
             }
             return main
         }

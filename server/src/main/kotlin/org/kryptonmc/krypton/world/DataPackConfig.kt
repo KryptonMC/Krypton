@@ -18,8 +18,10 @@
  */
 package org.kryptonmc.krypton.world
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.serialization.CompoundEncoder
+import org.kryptonmc.krypton.util.serialization.encode
+import org.kryptonmc.nbt.compound
 
 @JvmRecord
 data class DataPackConfig(val enabled: List<String>, val disabled: List<String>) {
@@ -30,11 +32,11 @@ data class DataPackConfig(val enabled: List<String>, val disabled: List<String>)
         val DEFAULT: DataPackConfig = DataPackConfig(listOf("vanilla"), emptyList())
 
         @JvmField
-        val CODEC: Codec<DataPackConfig> = RecordCodecBuilder.create {
-            it.group(
-                Codec.STRING.listOf().fieldOf("Enabled").forGetter(DataPackConfig::enabled),
-                Codec.STRING.listOf().fieldOf("Disabled").forGetter(DataPackConfig::disabled)
-            ).apply(it, ::DataPackConfig)
+        val ENCODER: CompoundEncoder<DataPackConfig> = CompoundEncoder {
+            compound {
+                encode(Codecs.STRING_LIST, "Enabled", it.enabled)
+                encode(Codecs.STRING_LIST, "Disabled", it.disabled)
+            }
         }
     }
 }

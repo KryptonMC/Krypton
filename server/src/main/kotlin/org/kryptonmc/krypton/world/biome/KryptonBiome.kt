@@ -18,14 +18,15 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.api.world.biome.BiomeCategories
 import org.kryptonmc.api.world.biome.BiomeCategory
 import org.kryptonmc.api.world.biome.BiomeEffects
 import org.kryptonmc.api.world.biome.Climate
+import org.kryptonmc.krypton.util.serialization.CompoundEncoder
+import org.kryptonmc.krypton.util.serialization.encode
+import org.kryptonmc.nbt.compound
 
 @JvmRecord
 data class KryptonBiome(
@@ -79,12 +80,12 @@ data class KryptonBiome(
     companion object {
 
         @JvmField
-        val CODEC: Codec<Biome> = RecordCodecBuilder.create {
-            it.group(
-                KryptonClimate.CODEC.forGetter(Biome::climate),
-                KryptonBiomeCategory.CODEC.fieldOf("category").forGetter(Biome::category),
-                KryptonBiomeEffects.CODEC.fieldOf("effects").forGetter(Biome::effects)
-            ).apply(it) { _, _, _ -> error("Cannot decode biomes!") }
+        val ENCODER: CompoundEncoder<Biome> = CompoundEncoder {
+            compound {
+                encode(KryptonClimate.ENCODER, it.climate)
+                encode(KryptonBiomeCategory.CODEC, "category", it.category)
+                encode(KryptonBiomeEffects.ENCODER, "effects", it.effects)
+            }
         }
     }
 }

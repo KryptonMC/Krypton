@@ -19,9 +19,8 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.scoreboard.DisplaySlot
 import org.kryptonmc.api.scoreboard.Objective
+import org.kryptonmc.api.scoreboard.DisplaySlot
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeString
 
@@ -31,7 +30,7 @@ data class PacketOutDisplayObjective(
     val name: String
 ) : Packet {
 
-    constructor(slot: DisplaySlot, objective: Objective?) : this(Registries.DISPLAY_SLOTS.idOf(slot), objective?.name ?: "")
+    constructor(slot: DisplaySlot, objective: Objective?) : this(slot.ordinal, objective?.name ?: "")
 
     constructor(slot: Int, objective: Objective?) : this(slot, objective?.name ?: "")
 

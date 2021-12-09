@@ -8,12 +8,41 @@
  */
 package org.kryptonmc.api.scoreboard
 
-import net.kyori.adventure.key.Keyed
-import org.kryptonmc.api.util.CataloguedBy
-import org.kryptonmc.api.util.TranslationHolder
+import org.kryptonmc.api.util.StringSerializable
 
 /**
  * A visibility for a team option, such as for name tag visibility.
  */
-@CataloguedBy(Visibilities::class)
-public interface Visibility : Keyed, TranslationHolder
+public enum class Visibility(@get:JvmName("serialized") override val serialized: String) : StringSerializable {
+
+    ALWAYS("always"),
+    NEVER("never"),
+    HIDE_FOR_OTHER_TEAMS("hideForOtherTeams"),
+    HIDE_FOR_OWN_TEAM("hideForOwnTeam");
+
+    public companion object {
+
+        private val VALUES = values()
+        private val BY_NAME = VALUES.associateBy { it.serialized }
+
+        /**
+         * Gets the visibility with the given [name], or returns null if there
+         * is no visibility with the given [name].
+         *
+         * @param name the name
+         * @return the visibility with the name, or null if not present
+         */
+        @JvmStatic
+        public fun fromName(name: String): Visibility? = BY_NAME[name]
+
+        /**
+         * Gets the visibility with the given [id], or returns null if there
+         * is no visibility with the given [id].
+         *
+         * @param id the ID
+         * @return the visibility with the ID, or null if not present
+         */
+        @JvmStatic
+        public fun fromId(id: Int): Visibility? = VALUES.getOrNull(id)
+    }
+}

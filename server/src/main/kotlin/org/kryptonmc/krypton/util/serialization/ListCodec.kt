@@ -16,24 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton
+package org.kryptonmc.krypton.util.serialization
 
-import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.api.world.GameModes
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
+import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.Tag
+import org.kryptonmc.nbt.list
 
-class GameModeTests {
+class ListCodec<T>(private val elementCodec: Codec<Tag, T>) : Codec<ListTag, List<T>> {
 
-    @Test
-    fun `test id conversions`() {
-        assertEquals("survival", GameModes.SURVIVAL.key().value())
-        assertNotNull(Registries.GAME_MODES[0])
-        assertNotNull(Registries.GAME_MODES[3])
-        assertNull(Registries.GAME_MODES[4])
-        assertNull(Registries.GAME_MODES[-1])
-        assertNull(Registries.GAME_MODES[100])
+    override fun encode(value: List<T>): ListTag = list {
+        value.forEach { add(elementCodec.encode(it)) }
+    }
+
+    override fun decode(tag: ListTag): List<T> {
+        val list = mutableListOf<T>()
+        tag.forEach { list.add(elementCodec.decode(it)) }
+        return list
     }
 }

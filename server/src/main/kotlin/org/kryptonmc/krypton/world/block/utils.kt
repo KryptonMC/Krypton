@@ -16,19 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.scoreboard
+package org.kryptonmc.krypton.world.block
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.TranslatableComponent
-import org.kryptonmc.api.scoreboard.CollisionRule
+import org.kryptonmc.api.block.Block
+import org.kryptonmc.krypton.world.block.handler.BlockHandler
+import org.kryptonmc.krypton.world.block.handler.DummyBlockHandler
 
-@JvmRecord
-data class KryptonCollisionRule(
-    val id: Int,
-    val name: String,
-    private val key: Key,
-    override val translation: TranslatableComponent
-) : CollisionRule {
-
-    override fun key(): Key = key
-}
+fun Block.handler(): BlockHandler = BlockManager.handler(this) ?: DummyBlockHandler

@@ -18,12 +18,6 @@
  */
 package org.kryptonmc.krypton.world.generation.feature
 
-import com.mojang.serialization.Codec
 import org.kryptonmc.krypton.world.generation.feature.config.FeatureConfig
 
-abstract class Structure<C : FeatureConfig>(codec: Codec<C>) {
-
-    val configuredStructureCodec: Codec<ConfiguredStructure<C, Structure<C>>> = codec.fieldOf("config")
-        .xmap({ ConfiguredStructure(this, it) }, { it.config })
-        .codec()
-}
+abstract class Structure<C : FeatureConfig>

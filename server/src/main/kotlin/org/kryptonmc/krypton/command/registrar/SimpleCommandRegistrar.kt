@@ -51,9 +51,7 @@ class SimpleCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<SimpleComma
         val args = context.splitArguments()
         val hasPermission = meta.permission?.let(context.source::hasPermission) ?: true
         if (!hasPermission) return builder.buildFuture()
-
-        command.suggest(context.source, args).forEach { builder.suggest(it) }
-        return builder.buildFuture()
+        return createSuggestions(builder, command.suggest(context.source, args))
     }
 
     private fun dispatch(command: SimpleCommand, sender: Sender, args: Array<String>): Int {

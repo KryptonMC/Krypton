@@ -16,18 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.entity.animal.type
+package org.kryptonmc.krypton.util.serialization
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.entity.animal.type.FoxType
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.Tag
 
-@JvmRecord
-data class KryptonFoxType(private val key: Key) : FoxType {
+fun <T> CompoundTag.Builder.encode(encoder: Encoder<T, out Tag>, name: String, value: T?): CompoundTag.Builder = apply {
+    if (value != null) put(name, encoder.encode(value))
+}
 
-    override fun key(): Key = key
+fun <T> CompoundTag.Builder.encode(encoder: CompoundEncoder<T>, value: T?): CompoundTag.Builder = apply {
+    if (value != null) encoder.encode(value).forEach { put(it.key, it.value) }
+}
 
-    object Factory : FoxType.Factory {
-
-        override fun of(key: Key): FoxType = KryptonFoxType(key)
-    }
+@Suppress("UNCHECKED_CAST")
+fun <T> CompoundTag.decode(decoder: Decoder<out Tag, T>, name: String): T? {
+    val tag = get(name) ?: return null
+    return (decoder as Decoder<Tag, T>).decodeNullable(tag)
 }

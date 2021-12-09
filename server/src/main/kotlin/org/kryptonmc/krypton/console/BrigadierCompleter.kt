@@ -18,24 +18,20 @@
  */
 package org.kryptonmc.krypton.console
 
-import com.mojang.brigadier.CommandDispatcher
 import org.jline.reader.Candidate
 import org.jline.reader.Completer
 import org.jline.reader.LineReader
 import org.jline.reader.ParsedLine
-import org.kryptonmc.api.command.Sender
+import org.kryptonmc.krypton.command.KryptonCommandManager
 import org.kryptonmc.krypton.util.logger
 import java.util.concurrent.ExecutionException
 
-class BrigadierCompleter(
-    private val console: KryptonConsole,
-    private val dispatcher: CommandDispatcher<Sender>
-) : Completer {
+class BrigadierCompleter(private val console: KryptonConsole) : Completer {
 
     override fun complete(reader: LineReader, line: ParsedLine, candidates: MutableList<Candidate>) {
         val input = line.line()
-        val parseResults = dispatcher.parse(input, console)
-        val suggestions = dispatcher.getCompletionSuggestions(parseResults, line.cursor())
+        val parseResults = KryptonCommandManager.parse(console, input)
+        val suggestions = KryptonCommandManager.suggest(parseResults, line.cursor())
 
         try {
             suggestions.get().list.forEach {

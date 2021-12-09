@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.entity.player
 import it.unimi.dsi.fastutil.longs.LongArrayList
 import it.unimi.dsi.fastutil.longs.LongArraySet
 import it.unimi.dsi.fastutil.longs.LongSet
-import me.lucko.spark.common.command.sender.CommandSender
 import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.identity.Identity
@@ -34,6 +33,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import net.kyori.adventure.title.TitlePart
 import net.kyori.adventure.util.TriState
+import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.effect.particle.ParticleEffect
 import org.kryptonmc.api.effect.particle.data.ColorParticleData
 import org.kryptonmc.api.effect.particle.data.DirectionalParticleData
@@ -45,6 +45,7 @@ import org.kryptonmc.api.entity.MainHand
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.entity.player.Player
+import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.MetaKeys
@@ -53,13 +54,13 @@ import org.kryptonmc.api.permission.PermissionProvider
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
+import org.kryptonmc.api.service.AFKService
 import org.kryptonmc.api.service.VanishService
 import org.kryptonmc.api.service.provide
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.Difficulty
 import org.kryptonmc.api.world.GameMode
-import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.KryptonPlatform
@@ -75,6 +76,7 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.network.SessionHandler
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.GameState
@@ -109,15 +111,17 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.util.BossBarManager
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.Directions
+import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Positioning
+import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.nbt.NBTOps
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
+import org.kryptonmc.nbt.StringTag
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
@@ -243,23 +247,13 @@ class KryptonPlayer(
         }
 
     var oldGameMode: GameMode? = null
-    override var gameMode: GameMode = GameModes.SURVIVAL
-        set(value) {
-            if (value === field) return
-            oldGameMode = field
-            field = value
-            if (!isLoaded) return
-            updateAbilities()
-            onAbilitiesUpdate()
-            server.playerManager.sendToAll(PacketOutPlayerInfo(
-                PacketOutPlayerInfo.Action.UPDATE_GAMEMODE,
-                this
-            ))
-            session.send(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, Registries.GAME_MODES.idOf(value).toFloat()))
-            if (value !== GameModes.SPECTATOR) camera = this
-        }
+    // Hacks to get around Kotlin not letting us set the value of the property without calling the setter.
+    private var internalGameMode: GameMode = GameMode.SURVIVAL
+    override var gameMode: GameMode
+        get() = internalGameMode
+        set(value) = updateGameMode(value, ChangeGameModeEvent.Cause.API)
     override val isSpectator: Boolean
-        get() = gameMode === GameModes.SPECTATOR
+        get() = gameMode == GameMode.SPECTATOR
     override val direction: Direction
         get() = Directions.ofPitch(rotation.y().toDouble())
     val canUseGameMasterBlocks: Boolean
@@ -280,6 +274,11 @@ class KryptonPlayer(
     override val isVanished: Boolean
         get() = vanishService.isVanished(this)
 
+    private val afkService = server.servicesManager.provide<AFKService>()!!
+    override var isAfk: Boolean
+        get() = afkService.isAfk(this)
+        set(value) = afkService.setAfk(this, value)
+
     private var respawnPosition: Vector3i? = null
     private var respawnForced = false
     private var respawnAngle = 0F
@@ -289,6 +288,8 @@ class KryptonPlayer(
     private var previousCentralZ = 0
     private val visibleChunks = LongArraySet()
 
+    val blockBreakHandler = BlockBreakHandler(this)
+
     init {
         data.add(MetadataKeys.PLAYER.ADDITIONAL_HEARTS)
         data.add(MetadataKeys.PLAYER.SCORE)
@@ -296,6 +297,24 @@ class KryptonPlayer(
         data.add(MetadataKeys.PLAYER.MAIN_HAND)
         data.add(MetadataKeys.PLAYER.LEFT_SHOULDER)
         data.add(MetadataKeys.PLAYER.RIGHT_SHOULDER)
+    }
+
+    fun updateGameMode(mode: GameMode, cause: ChangeGameModeEvent.Cause) {
+        if (mode === gameMode) return
+        val result = server.eventManager.fireSync(ChangeGameModeEvent(this, gameMode, mode, cause)).result
+        if (!result.isAllowed) return
+
+        oldGameMode = gameMode
+        internalGameMode = result.newGameMode ?: mode
+        if (!isLoaded) return
+        updateAbilities()
+        onAbilitiesUpdate()
+        server.playerManager.sendToAll(PacketOutPlayerInfo(
+            PacketOutPlayerInfo.Action.UPDATE_GAMEMODE,
+            this
+        ))
+        session.send(PacketOutChangeGameState(GameState.CHANGE_GAMEMODE, mode.ordinal.toFloat()))
+        if (mode != GameMode.SPECTATOR) camera = this
     }
 
     override fun equipment(slot: EquipmentSlot): KryptonItemStack = when {
@@ -322,9 +341,9 @@ class KryptonPlayer(
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        gameMode = Registries.GAME_MODES[tag.getInt("playerGameType")] ?: GameModes.SURVIVAL
+        updateGameMode(GameMode.fromId(tag.getInt("playerGameType")) ?: GameMode.SURVIVAL, ChangeGameModeEvent.Cause.LOAD)
         if (tag.contains("previousPlayerGameType", IntTag.ID)) {
-            oldGameMode = Registries.GAME_MODES[tag.getInt("previousPlayerGameType")]
+            oldGameMode = GameMode.fromId(tag.getInt("previousPlayerGameType"))
         }
         inventory.load(tag.getList("Inventory", CompoundTag.ID))
         inventory.heldSlot = tag.getInt("SelectedItemSlot")
@@ -359,9 +378,8 @@ class KryptonPlayer(
             respawnPosition = Vector3i(tag.getInt("SpawnX"), tag.getInt("SpawnY"), tag.getInt("SpawnZ"))
             respawnForced = tag.getBoolean("SpawnForced")
             respawnAngle = tag.getFloat("SpawnAngle")
-            if (tag.containsKey("SpawnDimension")) {
-                val dimension = Codecs.DIMENSION.parse(NBTOps, tag["SpawnDimension"]!!)
-                respawnDimension = dimension.resultOrPartial(LOGGER::error).orElse(World.OVERWORLD)
+            if (tag.contains("SpawnDimension", StringTag.ID)) {
+                respawnDimension = Codecs.DIMENSION.decodeNullable(tag["SpawnDimension"] as StringTag) ?: World.OVERWORLD
             }
         }
 
@@ -374,8 +392,8 @@ class KryptonPlayer(
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
-        int("playerGameType", Registries.GAME_MODES.idOf(gameMode))
-        if (oldGameMode != null) int("previousPlayerGameType", Registries.GAME_MODES.idOf(oldGameMode!!))
+        int("playerGameType", gameMode.ordinal)
+        if (oldGameMode != null) int("previousPlayerGameType", oldGameMode!!.ordinal)
 
         int("DataVersion", KryptonPlatform.worldVersion)
         put("Inventory", inventory.save())
@@ -406,9 +424,7 @@ class KryptonPlayer(
             int("SpawnZ", position.z())
             float("SpawnAngle", respawnAngle)
             boolean("SpawnForced", respawnForced)
-            Codecs.DIMENSION.encodeStart(NBTOps, respawnDimension)
-                .resultOrPartial(LOGGER::error)
-                .ifPresent { put("SpawnDimension", it) }
+            encode(Codecs.DIMENSION, "SpawnDimension", respawnDimension)
         }
 
         val rootVehicle = rootVehicle
@@ -429,6 +445,7 @@ class KryptonPlayer(
 
     override fun tick() {
         super.tick()
+        blockBreakHandler.tick()
         hungerMechanic()
         cooldowns.tick()
         if (data.isDirty) session.send(PacketOutMetadata(id, data.dirty))
@@ -436,7 +453,7 @@ class KryptonPlayer(
 
     private fun hungerMechanic() {
         // TODO: More actions for exhaustion, add constants?
-        if (gameMode != GameModes.SURVIVAL && gameMode != GameModes.ADVENTURE) return
+        if (gameMode != GameMode.SURVIVAL && gameMode != GameMode.ADVENTURE) return
         foodTickTimer++
 
         // Sources:
@@ -530,6 +547,38 @@ class KryptonPlayer(
             }
             foodTickTimer = 0 // reset tick timer
         }
+    }
+
+    fun isBlockActionRestricted(x: Int, y: Int, z: Int): Boolean {
+        if (gameMode != GameMode.ADVENTURE && gameMode != GameMode.SPECTATOR) return false
+        if (gameMode == GameMode.SPECTATOR) return true
+        if (canBuild) return false
+        val mainHand = inventory.mainHand
+        return mainHand.isEmpty() // TODO: Check Adventure CanDestroy
+    }
+
+    fun hasCorrectTool(block: Block): Boolean = !block.requiresCorrectTool || inventory.items[inventory.heldSlot].type.handler().isCorrectTool(block)
+
+    fun interactOn(entity: KryptonEntity, hand: Hand): InteractionResult {
+        if (isSpectator) {
+            // TODO: Open spectator menu
+            return InteractionResult.PASS
+        }
+        var heldItem = heldItem(hand)
+        val heldCopy = heldItem.copy()
+        val result = entity.interact(this, hand)
+        if (result.consumesAction) {
+            if (canInstantlyBuild && heldItem === heldItem(hand) && heldItem.amount < heldCopy.amount) heldItem.amount = heldCopy.amount
+            return result
+        }
+        if (heldItem.isEmpty() || entity !is KryptonLivingEntity) return InteractionResult.PASS
+        if (canInstantlyBuild) heldItem = heldCopy
+        val interactResult = heldItem.type.handler().interactEntity(heldItem, this, entity, hand)
+        if (interactResult.consumesAction) {
+            if (heldItem.isEmpty() && !canInstantlyBuild) setHeldItem(hand, EmptyItemStack)
+            return interactResult
+        }
+        return InteractionResult.PASS
     }
 
     override fun addViewer(player: KryptonPlayer): Boolean {
@@ -714,12 +763,12 @@ class KryptonPlayer(
 
     private fun updateAbilities() {
         when (gameMode) {
-            GameModes.CREATIVE -> {
+            GameMode.CREATIVE -> {
                 isInvulnerable = true
                 canFly = true
                 canInstantlyBuild = true
             }
-            GameModes.SPECTATOR -> {
+            GameMode.SPECTATOR -> {
                 isInvulnerable = true
                 canFly = true
                 isGliding = true
@@ -806,7 +855,7 @@ class KryptonPlayer(
 
     private fun updateInvisibility() {
         removeEffectParticles()
-        isInvisible = gameMode === GameModes.SPECTATOR
+        isInvisible = gameMode == GameMode.SPECTATOR
     }
 
     fun updateMovementStatistics(deltaX: Double, deltaY: Double, deltaZ: Double) {

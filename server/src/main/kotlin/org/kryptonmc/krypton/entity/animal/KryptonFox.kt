@@ -18,13 +18,11 @@
  */
 package org.kryptonmc.krypton.entity.animal
 
-import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.animal.Fox
 import org.kryptonmc.api.entity.animal.type.FoxType
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.item.ItemStack
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
@@ -39,8 +37,8 @@ import java.util.UUID
 class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, ATTRIBUTES), Fox {
 
     override var foxType: FoxType
-        get() = Registries.FOX_TYPES[data[MetadataKeys.FOX.TYPE]]!!
-        set(value) = data.set(MetadataKeys.FOX.TYPE, Registries.FOX_TYPES.idOf(value))
+        get() = FoxType.fromId(data[MetadataKeys.FOX.TYPE])!!
+        set(value) = data.set(MetadataKeys.FOX.TYPE, value.ordinal)
     override var isSitting: Boolean
         get() = getFlag(1)
         set(value) = setFlag(1, value)
@@ -88,7 +86,7 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
         super.load(tag)
         tag.getList("Trusted", IntArrayTag.ID).forEachIntArray { addTrustedId(it.toUUID()) }
         isSleeping = tag.getBoolean("Sleeping")
-        if (tag.contains("Type")) foxType = Registries.FOX_TYPES[Key.key(tag.getString("Type"))]!!
+        if (tag.contains("Type")) foxType = FoxType.fromName(tag.getString("Type"))!!
         isSitting = tag.getBoolean("Sitting")
         isCrouching = tag.getBoolean("Crouching")
     }
@@ -99,7 +97,7 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
             if (secondTrusted != null) addUUID(secondTrusted!!)
         }
         boolean("Sleeping", isSleeping)
-        string("Type", foxType.key().value())
+        string("Type", foxType.serialized)
         boolean("Sitting", isSitting)
         boolean("Crouching", isCrouching)
     }

@@ -18,31 +18,31 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.MapCodec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.world.biome.Climate
 import org.kryptonmc.api.world.biome.Precipitation
-import org.kryptonmc.api.world.biome.Precipitations
 import org.kryptonmc.api.world.biome.TemperatureModifier
-import org.kryptonmc.api.world.biome.TemperatureModifiers
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.serialization.CompoundEncoder
+import org.kryptonmc.krypton.util.serialization.EnumCodecs
+import org.kryptonmc.krypton.util.serialization.encode
+import org.kryptonmc.nbt.compound
 
 @JvmRecord
 data class KryptonClimate(
     override val precipitation: Precipitation,
     override val temperature: Float,
     override val downfall: Float,
-    override val temperatureModifier: TemperatureModifier = TemperatureModifiers.NONE
+    override val temperatureModifier: TemperatureModifier = TemperatureModifier.NONE
 ) : Climate {
 
     override fun toBuilder(): Climate.Builder = Builder(this)
 
     class Builder() : Climate.Builder {
 
-        private var precipitation = Precipitations.NONE
+        private var precipitation = Precipitation.NONE
         private var temperature = 0F
         private var downfall = 0F
-        private var temperatureModifier = TemperatureModifiers.NONE
+        private var temperatureModifier = TemperatureModifier.NONE
 
         constructor(climate: Climate) : this() {
             precipitation = climate.precipitation
@@ -80,15 +80,13 @@ data class KryptonClimate(
         val DEFAULT: Climate = Builder().build()
 
         @JvmField
-        val CODEC: MapCodec<Climate> = RecordCodecBuilder.mapCodec {
-            it.group(
-                KryptonPrecipitation.CODEC.fieldOf("precipitation").forGetter(Climate::precipitation),
-                Codec.FLOAT.fieldOf("temperature").forGetter(Climate::temperature),
-                Codec.FLOAT.fieldOf("downfall").forGetter(Climate::downfall),
-                KryptonTemperatureModifier.CODEC
-                    .optionalFieldOf("temperature_modifier", TemperatureModifiers.NONE)
-                    .forGetter(Climate::temperatureModifier)
-            ).apply(it, ::KryptonClimate)
+        val ENCODER: CompoundEncoder<Climate> = CompoundEncoder {
+            compound {
+                encode(EnumCodecs.PRECIPITATION, "precipitation", it.precipitation)
+                encode(Codecs.FLOAT, "temperature", it.temperature)
+                encode(Codecs.FLOAT, "downfall", it.downfall)
+                encode(EnumCodecs.TEMPERATURE_MODIFIER, "temperature_modifier", it.temperatureModifier)
+            }
         }
     }
 }

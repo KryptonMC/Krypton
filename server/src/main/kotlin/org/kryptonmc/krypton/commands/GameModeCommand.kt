@@ -24,17 +24,16 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.command.Sender
-import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
+import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
+import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.command.argument.argument
-import org.kryptonmc.krypton.command.literal
-import org.kryptonmc.krypton.world.KryptonGameMode
 
 object GameModeCommand : InternalCommand {
 
@@ -42,31 +41,31 @@ object GameModeCommand : InternalCommand {
         val command = literal<Sender>("gamemode") {
             permission(KryptonPermission.GAME_MODE)
         }
-        for (gameMode in Registries.GAME_MODES.values) {
-            command.then(literal(gameMode.key().value()) {
-                executes { gameModeArgument(it, gameMode) }
+        GameMode.values().forEach { mode ->
+            command.then(literal(mode.displayName) {
+                executes { gameModeArgument(it, mode) }
                 argument("targets", EntityArgument.players()) {
-                    executes { targetArgument(it, gameMode) }
+                    executes { targetArgument(it, mode) }
                 }
             })
         }
 
         command.then(argument("gameMode", StringArgumentType.string()) {
             executes {
-                var gameMode = KryptonGameMode.fromAbbreviation(it.argument("gameMode"))
+                var gameMode = GameMode.fromAbbreviation(it.argument("gameMode"))
                 if (gameMode == null) {
                     val id = it.argument<String>("gameMode").toIntOrNull() ?: return@executes 0
-                    gameMode = Registries.GAME_MODES[id]
+                    gameMode = GameMode.fromId(id)
                 }
                 if (gameMode == null) return@executes 0
                 gameModeArgument(it, gameMode)
             }
             argument("targets", EntityArgument.players()) {
                 executes {
-                    var gameMode = KryptonGameMode.fromAbbreviation(it.argument("gameMode"))
+                    var gameMode = GameMode.fromAbbreviation(it.argument("gameMode"))
                     if (gameMode == null) {
                         val id = it.argument<String>("gameMode").toIntOrNull() ?: return@executes 0
-                        gameMode = Registries.GAME_MODES[id]
+                        gameMode = GameMode.fromId(id)
                     }
                     if (gameMode == null) return@executes 0
                     gameModeArgument(it, gameMode!!)
@@ -85,27 +84,26 @@ object GameModeCommand : InternalCommand {
 
     @Suppress("UNCHECKED_CAST")
     private fun targetArgument(context: CommandContext<Sender>, gameMode: GameMode): Int {
-        val sender = context.source as? KryptonPlayer ?: return 0
-        val entities = context.entityArgument("targets").players(sender)
-        updateGameMode(entities, gameMode, sender)
+        val sender = context.source
+        updateGameMode(context.entityArgument("targets").players(sender), gameMode, sender)
         return Command.SINGLE_SUCCESS
     }
 
     @JvmStatic
-    private fun updateGameMode(entities: List<KryptonPlayer>, mode: GameMode, sender: KryptonPlayer) {
+    private fun updateGameMode(entities: List<KryptonPlayer>, mode: GameMode, sender: Sender) {
         entities.forEach {
-            it.gameMode = mode
+            it.updateGameMode(mode, ChangeGameModeEvent.Cause.COMMAND)
             if (sender === it) {
                 sender.sendMessage(Component.translatable(
                     "gameMode.changed",
-                    Component.translatable("gameMode.${mode.key().value().lowercase()}")
+                    mode.translation
                 ))
                 return@forEach
             }
             sender.sendMessage(Component.translatable(
                 "commands.gamemode.success.other",
                 it.displayName,
-                Component.translatable("gameMode.${mode.key().value().lowercase()}")
+                mode.translation
             ))
         }
     }

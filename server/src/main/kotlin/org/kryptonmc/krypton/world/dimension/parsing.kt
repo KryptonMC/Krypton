@@ -18,18 +18,22 @@
  */
 package org.kryptonmc.krypton.world.dimension
 
-import com.mojang.serialization.DataResult
-import com.mojang.serialization.Dynamic
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.nbt.NumberTag
+import org.kryptonmc.nbt.StringTag
+import org.kryptonmc.nbt.Tag
 
-fun Dynamic<*>.parseDimension(): DataResult<ResourceKey<World>> {
-    val id = asNumber().result()
-    if (id.isPresent) when (id.get().toInt()) { // Parse legacy dimension type
-        -1 -> return DataResult.success(World.NETHER)
-        0 -> return DataResult.success(World.OVERWORLD)
-        1 -> return DataResult.success(World.END)
+fun Tag.parseDimension(): ResourceKey<World>? {
+    if (this is NumberTag) {
+        when (value.toInt()) {
+            -1 -> return World.NETHER
+            0 -> return World.OVERWORLD
+            1 -> return World.END
+        }
+        return null
     }
-    return Codecs.DIMENSION.parse(this)
+    if (this !is StringTag) return null
+    return Codecs.DIMENSION.decodeNullable(this)
 }

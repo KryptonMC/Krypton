@@ -18,18 +18,13 @@
  */
 package org.kryptonmc.krypton.world.biome.gen
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
-import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.registry.KryptonRegistry
-import org.kryptonmc.krypton.registry.KryptonRegistry.Companion.directCodec
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.noise.SimplexNoise
 import org.kryptonmc.krypton.util.random.WorldGenRandom
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.Climate
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
@@ -48,7 +43,6 @@ class TheEndBiomeGenerator private constructor(
         val random = WorldGenRandom(seed).apply { skip(17292) }
         SimplexNoise(random)
     }
-    override val codec: Codec<out BiomeGenerator> = CODEC
 
     constructor(biomes: KryptonRegistry<Biome>, seed: Long) : this(
         biomes,
@@ -77,14 +71,6 @@ class TheEndBiomeGenerator private constructor(
 
         private const val ISLAND_THRESHOLD = -0.9
         private const val ISLAND_CHUNK_DISTANCE_SQ = 4096L
-
-        @JvmField
-        val CODEC: Codec<TheEndBiomeGenerator> = RecordCodecBuilder.create {
-            it.group(
-                ResourceKeys.BIOME.directCodec(KryptonBiome.CODEC).fieldOf("biomes").forGetter(TheEndBiomeGenerator::biomes),
-                Codec.LONG.fieldOf("seed").stable().forGetter(TheEndBiomeGenerator::seed)
-            ).apply(it, ::TheEndBiomeGenerator)
-        }
 
         fun SimplexNoise.getHeightValue(x: Int, z: Int): Float {
             val divX = x / 2

@@ -18,7 +18,7 @@
  */
 package org.kryptonmc.krypton.item
 
-import org.kryptonmc.api.util.InteractionResult
+import org.kryptonmc.krypton.util.InteractionResult
 
 /**
  * The result of using an item.

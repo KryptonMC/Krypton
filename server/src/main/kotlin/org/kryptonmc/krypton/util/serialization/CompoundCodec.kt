@@ -16,18 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.scoreboard
+package org.kryptonmc.krypton.util.serialization
 
-import net.kyori.adventure.key.Key
-import org.kryptonmc.api.scoreboard.ObjectiveRenderType
+import org.kryptonmc.nbt.CompoundTag
 
-@JvmRecord
-data class KryptonObjectiveRenderType(private val key: Key) : ObjectiveRenderType {
+interface CompoundCodec<T> : Codec<CompoundTag, T>, CompoundEncoder<T>, CompoundDecoder<T> {
 
-    override fun key(): Key = key
+    private class Passthrough<T>(private val encoder: CompoundEncoder<T>, private val decoder: CompoundDecoder<T>) : CompoundCodec<T> {
 
-    object Factory : ObjectiveRenderType.Factory {
+        override fun encode(value: T): CompoundTag = encoder.encode(value)
 
-        override fun of(key: Key): ObjectiveRenderType = KryptonObjectiveRenderType(key)
+        override fun decode(tag: CompoundTag): T = decoder.decode(tag)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun <T> of(encoder: CompoundEncoder<T>, decoder: CompoundDecoder<T>): CompoundCodec<T> = Passthrough(encoder, decoder)
     }
 }
+
+fun interface CompoundEncoder<T> : Encoder<T, CompoundTag>
+
+fun interface CompoundDecoder<T> : Decoder<CompoundTag, T>

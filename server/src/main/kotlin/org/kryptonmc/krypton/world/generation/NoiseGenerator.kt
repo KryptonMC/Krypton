@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.world.generation
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.krypton.util.noise.BlendedNoise
 import org.kryptonmc.krypton.util.noise.NormalNoise
@@ -54,7 +52,6 @@ class NoiseGenerator(
     private val defaultBlock: Block
     private val defaultFluid: Block
     private val height: Int
-    override val codec = CODEC
     // TODO: Fix this when NoiseSampler is back
     override val climateSampler: Climate.Sampler = Climate.Sampler { _, _, _ -> Climate.TargetPoint.ZERO }
 
@@ -111,17 +108,5 @@ class NoiseGenerator(
             }
         }
         // TODO: Set bedrock
-    }
-
-    companion object {
-
-        @JvmField
-        val CODEC: Codec<NoiseGenerator> = RecordCodecBuilder.create { instance ->
-            instance.group(
-                BiomeGenerator.CODEC.fieldOf("biome_source").forGetter { it.biomeGenerator },
-                Codec.LONG.fieldOf("seed").stable().forGetter(NoiseGenerator::seed),
-                NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(NoiseGenerator::settings)
-            ).apply(instance, ::NoiseGenerator)
-        }
     }
 }

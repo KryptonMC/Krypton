@@ -26,12 +26,6 @@ import org.kryptonmc.api.effect.particle.ParticleTypes
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityCategories
 import org.kryptonmc.api.entity.EntityTypes
-import org.kryptonmc.api.entity.animal.type.AxolotlVariants
-import org.kryptonmc.api.entity.animal.type.CatTypes
-import org.kryptonmc.api.entity.animal.type.FoxTypes
-import org.kryptonmc.api.entity.animal.type.MooshroomTypes
-import org.kryptonmc.api.entity.animal.type.PandaGenes
-import org.kryptonmc.api.entity.animal.type.RabbitTypes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.hanging.Pictures
 import org.kryptonmc.api.fluid.Fluids
@@ -46,12 +40,8 @@ import org.kryptonmc.api.tags.EntityTypeTags
 import org.kryptonmc.api.tags.FluidTags
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.api.tags.TagTypes
-import org.kryptonmc.api.world.GameModes
 import org.kryptonmc.api.world.biome.BiomeCategories
 import org.kryptonmc.api.world.biome.Biomes
-import org.kryptonmc.api.world.biome.GrassColorModifiers
-import org.kryptonmc.api.world.biome.Precipitations
-import org.kryptonmc.api.world.biome.TemperatureModifiers
 import org.kryptonmc.api.world.dimension.DimensionTypes
 import org.kryptonmc.api.world.rule.GameRules
 import org.kryptonmc.krypton.auth.requests.SessionService
@@ -113,7 +103,6 @@ object Bootstrap {
         Registries
         KryptonTagTypes
         TagTypes
-        GameModes
         SoundLoader.init()
         SoundEvents
         BlockLoader.init()
@@ -132,9 +121,6 @@ object Bootstrap {
         FluidLoader.init()
         Fluids
         BiomeCategories
-        GrassColorModifiers
-        Precipitations
-        TemperatureModifiers
         BiomeKeys
         KryptonBiomes
         Biomes
@@ -157,12 +143,6 @@ object Bootstrap {
         Pictures
         KryptonMetaKeys
         MetaKeys // Not technically a registry, but quite close to one
-        CatTypes
-        FoxTypes
-        MooshroomTypes
-        PandaGenes
-        RabbitTypes
-        AxolotlVariants
 
         // Preload some other things that would otherwise load on first player join or some other time
         Encryption

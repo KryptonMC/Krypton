@@ -19,7 +19,7 @@
 package org.kryptonmc.krypton.item.handler
 
 import org.kryptonmc.api.entity.Hand
-import org.kryptonmc.api.util.InteractionResult
+import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.UseItemResult
 

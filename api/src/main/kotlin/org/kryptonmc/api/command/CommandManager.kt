@@ -10,6 +10,7 @@ package org.kryptonmc.api.command
 
 import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
+import org.kryptonmc.api.entity.player.Player
 
 /**
  * The command manager is responsible for registering, unregistering, and
@@ -70,4 +71,14 @@ public interface CommandManager {
      * @return true if the command dispatched successfully, false otherwise
      */
     public fun dispatch(sender: Sender, command: String): Boolean
+
+    /**
+     * Updates the list of known commands for the given [player].
+     *
+     * This is useful for permission plugins that want to trigger a refresh of
+     * commands when a user gains or loses a permission.
+     *
+     * @param player the player to update commands for
+     */
+    public fun updateCommands(player: Player)
 }

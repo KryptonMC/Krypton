@@ -18,12 +18,13 @@
  */
 package org.kryptonmc.krypton.world.biome
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.world.biome.AmbientMoodSettings
-import org.kryptonmc.krypton.util.Codecs
+import org.kryptonmc.krypton.util.serialization.Codecs
+import org.kryptonmc.krypton.util.serialization.CompoundEncoder
+import org.kryptonmc.krypton.util.serialization.encode
+import org.kryptonmc.nbt.compound
 
 @JvmRecord
 data class KryptonAmbientMoodSettings(
@@ -76,13 +77,13 @@ data class KryptonAmbientMoodSettings(
         val CAVE: KryptonAmbientMoodSettings = KryptonAmbientMoodSettings(SoundEvents.AMBIENT_CAVE, 6000, 8, 2.0)
 
         @JvmField
-        val CODEC: Codec<AmbientMoodSettings> = RecordCodecBuilder.create {
-            it.group(
-                Codecs.SOUND_EVENT.fieldOf("sound").forGetter(AmbientMoodSettings::sound),
-                Codec.INT.fieldOf("tick_delay").forGetter(AmbientMoodSettings::tickDelay),
-                Codec.INT.fieldOf("block_search_extent").forGetter(AmbientMoodSettings::blockSearchExtent),
-                Codec.DOUBLE.fieldOf("offset").forGetter(AmbientMoodSettings::offset)
-            ).apply(it, ::KryptonAmbientMoodSettings)
+        val ENCODER: CompoundEncoder<AmbientMoodSettings> = CompoundEncoder {
+            compound {
+                encode(Codecs.SOUND_EVENT, "sound", it.sound)
+                encode(Codecs.INTEGER, "tick_delay", it.tickDelay)
+                encode(Codecs.INTEGER, "block_search_extent", it.blockSearchExtent)
+                encode(Codecs.DOUBLE, "offset", it.offset)
+            }
         }
     }
 }

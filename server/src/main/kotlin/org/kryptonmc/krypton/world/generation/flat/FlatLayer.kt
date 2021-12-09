@@ -18,12 +18,7 @@
  */
 package org.kryptonmc.krypton.world.generation.flat
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
 import org.kryptonmc.api.block.Block
-import org.kryptonmc.api.block.Blocks
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
 
 @JvmRecord
 data class FlatLayer(
@@ -34,16 +29,5 @@ data class FlatLayer(
     override fun toString(): String {
         if (height != 1) return "$height*${block.key().asString()}"
         return block.key().asString()
-    }
-
-    companion object {
-
-        @JvmField
-        val CODEC: Codec<FlatLayer> = RecordCodecBuilder.create {
-            it.group(
-                InternalRegistries.BLOCK.fieldOf("block").orElse(Blocks.AIR).forGetter(FlatLayer::block),
-                Codec.intRange(0, KryptonDimensionType.Y_SIZE).fieldOf("height").forGetter(FlatLayer::height)
-            ).apply(it, ::FlatLayer)
-        }
     }
 }

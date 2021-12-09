@@ -33,17 +33,12 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
-import kotlin.random.Random
 
 class KryptonCat(world: KryptonWorld) : KryptonTamable(world, EntityTypes.CAT, ATTRIBUTES), Cat {
 
     override var catType: CatType
-        get() = Registries.CAT_TYPES[data[MetadataKeys.CAT.TYPE]]!!
-        set(value) {
-            var id = Registries.CAT_TYPES.idOf(value)
-            if (id < 0 || id > Registries.CAT_TYPES.size) id = Random.nextInt(Registries.CAT_TYPES.size)
-            data[MetadataKeys.CAT.TYPE] = id
-        }
+        get() = CatType.fromId(data[MetadataKeys.CAT.TYPE])!!
+        set(value) = data.set(MetadataKeys.CAT.TYPE, value.ordinal)
     override var isLying: Boolean
         get() = data[MetadataKeys.CAT.LYING]
         set(value) = data.set(MetadataKeys.CAT.LYING, value)

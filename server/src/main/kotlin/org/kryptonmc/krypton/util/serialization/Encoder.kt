@@ -16,19 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.scoreboard
+package org.kryptonmc.krypton.util.serialization
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.TranslatableComponent
-import org.kryptonmc.api.scoreboard.Visibility
+import org.kryptonmc.nbt.Tag
 
-@JvmRecord
-data class KryptonVisibility(
-    val id: Int,
-    val name: String,
-    private val key: Key,
-    override val translation: TranslatableComponent
-) : Visibility {
+fun interface Encoder<I, O : Tag> {
 
-    override fun key(): Key = key
+    fun encode(value: I): O
+
+    fun encodeNullable(value: I): O? {
+        return try {
+            encode(value)
+        } catch (exception: Exception) {
+            null
+        }
+    }
 }

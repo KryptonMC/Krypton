@@ -18,18 +18,11 @@
  */
 package org.kryptonmc.krypton.resource
 
-import com.mojang.serialization.Codec
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.entity.memory.MemoryKey
-import org.kryptonmc.krypton.world.biome.KryptonBiome
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.event.GameEvent
-import org.kryptonmc.krypton.world.generation.Generator
-import org.kryptonmc.krypton.world.biome.gen.BiomeGenerator
 import org.kryptonmc.krypton.world.chunk.ChunkStatus
-import org.kryptonmc.krypton.world.dimension.KryptonDimensionType
-import org.kryptonmc.krypton.world.generation.feature.ConfiguredFeature
-import org.kryptonmc.krypton.world.generation.feature.Feature
 import org.kryptonmc.krypton.world.generation.feature.Structure
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 
@@ -40,8 +33,6 @@ object InternalResourceKeys {
     @JvmField val GAME_EVENT = ResourceKeys.minecraft<GameEvent>("game_event")
 
     // World generation resources
-    @JvmField val GENERATOR = ResourceKeys.minecraft<Codec<out Generator>>("worldgen/chunk_generator")
-    @JvmField val BIOME_GENERATOR = ResourceKeys.minecraft<Codec<out BiomeGenerator>>("worldgen/biome_source")
     @JvmField val STRUCTURE = ResourceKeys.minecraft<Structure<*>>("worldgen/structure_feature")
     @JvmField val NOISE_GENERATOR_SETTINGS = ResourceKeys.minecraft<NoiseGeneratorSettings>("worldgen/noise_settings")
     @JvmField val CHUNK_STATUS = ResourceKeys.minecraft<ChunkStatus>("chunk_status")

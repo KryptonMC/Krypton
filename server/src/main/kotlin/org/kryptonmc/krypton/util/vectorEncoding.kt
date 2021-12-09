@@ -30,3 +30,9 @@ fun Vector3i.asLong(): Long {
 fun Long.toVector(): Vector3i = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())
 
 fun Long.decodeBlockPosition(): Vector3i = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())
+
+fun Long.decodeBlockX(): Int = (this shr 38).toInt()
+
+fun Long.decodeBlockY(): Int = (this and 0xFFF).toInt()
+
+fun Long.decodeBlockZ(): Int = (this shl 26 shr 38).toInt()

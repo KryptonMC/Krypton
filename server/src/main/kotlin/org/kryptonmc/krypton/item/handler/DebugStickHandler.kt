@@ -25,17 +25,16 @@ import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.krypton.item.InteractionContext
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.util.InteractionResult
+import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.findRelative
 import org.kryptonmc.krypton.world.KryptonWorld
-import org.spongepowered.math.vector.Vector3i
 
 object DebugStickHandler : ItemHandler {
 
-    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: Block, position: Vector3i): Boolean {
-        handleInteraction(player, world, block, position, false, player.inventory.heldItem(Hand.MAIN))
+    override fun canAttackBlock(player: KryptonPlayer, world: KryptonWorld, block: Block, x: Int, y: Int, z: Int): Boolean {
+        handleInteraction(player, world, block, x, y, z, false, player.inventory.heldItem(Hand.MAIN))
         return false
     }
 
@@ -44,7 +43,7 @@ object DebugStickHandler : ItemHandler {
         val item = context.heldItem as? KryptonItemStack ?: return InteractionResult.PASS
         val world = context.world
         val position = context.position
-        if (!handleInteraction(player, world, world.getBlock(position), position, true, item)) {
+        if (!handleInteraction(player, world, world.getBlock(position), position.x(), position.y(), position.z(), true, item)) {
             return InteractionResult.FAIL
         }
         return InteractionResult.CONSUME
@@ -56,7 +55,9 @@ object DebugStickHandler : ItemHandler {
         player: KryptonPlayer,
         world: KryptonWorld,
         block: Block,
-        position: Vector3i,
+        x: Int,
+        y: Int,
+        z: Int,
         isUse: Boolean,
         item: KryptonItemStack
     ): Boolean {
@@ -75,7 +76,7 @@ object DebugStickHandler : ItemHandler {
         if (isUse) {
             if (property == null) property = properties.first() as Property<Comparable<Any>>
             val cycled = block.cycle(property, player.isSneaking)
-            world.setBlock(position, cycled)
+            world.setBlock(x, y, z, cycled)
             player.sendMessage(translatable(
                 "${ItemTypes.DEBUG_STICK.translation.key()}.update",
                 text(property.name),

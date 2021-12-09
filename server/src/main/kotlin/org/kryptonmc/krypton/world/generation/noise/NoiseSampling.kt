@@ -18,29 +18,10 @@
  */
 package org.kryptonmc.krypton.world.generation.noise
 
-import com.mojang.serialization.Codec
-import com.mojang.serialization.codecs.RecordCodecBuilder
-
 @JvmRecord
 data class NoiseSampling(
     val xzScale: Double,
     val yScale: Double,
     val xzFactor: Double,
     val yFactor: Double
-) {
-
-    companion object {
-
-        private val SCALE_RANGE = Codec.doubleRange(0.001, 1000.0)
-
-        @JvmField
-        val CODEC: Codec<NoiseSampling> = RecordCodecBuilder.create {
-            it.group(
-                SCALE_RANGE.fieldOf("xz_scale").forGetter(NoiseSampling::xzScale),
-                SCALE_RANGE.fieldOf("y_scale").forGetter(NoiseSampling::yScale),
-                SCALE_RANGE.fieldOf("xz_factor").forGetter(NoiseSampling::xzFactor),
-                SCALE_RANGE.fieldOf("y_factor").forGetter(NoiseSampling::yFactor)
-            ).apply(it, ::NoiseSampling)
-        }
-    }
-}
+)

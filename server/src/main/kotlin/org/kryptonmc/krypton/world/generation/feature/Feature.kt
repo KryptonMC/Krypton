@@ -18,14 +18,9 @@
  */
 package org.kryptonmc.krypton.world.generation.feature
 
-import com.mojang.serialization.Codec
 import org.kryptonmc.krypton.world.generation.feature.config.FeatureConfig
 
-abstract class Feature<C : FeatureConfig>(codec: Codec<C>) {
-
-    val configuredCodec: Codec<ConfiguredFeature<C, Feature<C>>> = codec.fieldOf("config")
-        .xmap({ ConfiguredFeature(this, it) }, { it.config })
-        .codec()
+abstract class Feature<C : FeatureConfig> {
 
     fun configured(config: C): ConfiguredFeature<C, *> = ConfiguredFeature(this, config)
 }

@@ -18,13 +18,14 @@
  */
 package org.kryptonmc.krypton.entity.memory
 
-import com.mojang.serialization.Codec
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.util.CataloguedBy
+import org.kryptonmc.krypton.util.serialization.Codec
+import org.kryptonmc.nbt.Tag
 
 @JvmRecord
 @CataloguedBy(MemoryKeys::class)
 data class MemoryKey<T : Any>(
     val key: Key,
-    val codec: Codec<T>
+    val codec: Codec<Tag, T>
 )

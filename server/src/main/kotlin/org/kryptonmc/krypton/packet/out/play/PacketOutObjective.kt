@@ -20,7 +20,6 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.writeChat
@@ -42,7 +41,7 @@ data class PacketOutObjective(
         action,
         objective.name,
         objective.displayName,
-        Registries.OBJECTIVE_RENDER_TYPES.idOf(objective.renderType)
+        objective.renderType.ordinal
     )
 
     override fun write(buf: ByteBuf) {

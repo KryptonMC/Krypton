@@ -58,6 +58,7 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutAbilities
 import org.kryptonmc.krypton.packet.out.play.PacketOutActionBar
 import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
+import org.kryptonmc.krypton.packet.out.play.PacketOutBlockBreakAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutBossBar
 import org.kryptonmc.krypton.packet.out.play.PacketOutCamera
@@ -189,6 +190,7 @@ object PacketRegistry {
         register<PacketOutAnimation>(0x06)
         register<PacketOutStatistics>(0x07)
         register<PacketOutDiggingResponse>(0x08)
+        register<PacketOutBlockBreakAnimation>(0x09)
         register<PacketOutBlockChange>(0x0C)
         register<PacketOutBossBar>(0x0D)
         register<PacketOutDifficulty>(0x0E)
