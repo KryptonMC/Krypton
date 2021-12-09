@@ -46,6 +46,7 @@ import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
+import org.kryptonmc.api.event.player.ItemDropEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
@@ -917,20 +918,24 @@ class KryptonPlayer(
     }
 
     fun dropItem(itemStack: ItemStack) {
-        val singleStack = itemStack.copy() as KryptonItemStack
-        singleStack.amount = 1
-        val itemEntity = KryptonItemEntity(world)
-        itemEntity.thrower = uuid
-        itemEntity.item = singleStack
-        itemEntity.location = location.add(0.0, 1.62 - 0.3, 0.0) // eye height - some magic value??
-        val itemVelocity = rotation.mul(0.3).toDouble().toVector3(0.0)
-        // Glowstone's method. Seems sane however it uses guess work. I don't blame them. Just look at the vanilla source...
-        // https://github.com/GlowstoneMC/Glowstone/blob/dev/src/main/java/net/glowstone/entity/GlowHumanEntity.java
-        val random = ThreadLocalRandom.current()
-        val offset = 0.02
-        itemVelocity.add(random.nextDouble(offset) - offset / 2, random.nextDouble(0.12), random.nextDouble(offset) - offset / 2)
-        itemEntity.velocity = itemVelocity
-        world.entityManager.spawn(itemEntity)
+        server.eventManager.fire(ItemDropEvent(this, itemStack)).thenAcceptAsync({
+            if (!it.result.isAllowed) return@thenAcceptAsync
+            val singleStack = itemStack.copy() as KryptonItemStack
+            singleStack.amount = 1
+            val itemEntity = KryptonItemEntity(world)
+            itemEntity.thrower = uuid
+            itemEntity.item = singleStack
+            itemEntity.location = location.add(0.0, 1.62 - 0.3, 0.0) // eye height - some magic value??
+            val itemVelocity = rotation.mul(0.3).toDouble().toVector3(0.0)
+            // Glowstone's method. Seems sane however it uses guess work. I don't blame them. Just look at the vanilla source...
+            // https://github.com/GlowstoneMC/Glowstone/blob/dev/src/main/java/net/glowstone/entity/GlowHumanEntity.java
+            val random = ThreadLocalRandom.current()
+            val offset = 0.02
+            itemVelocity.add(random.nextDouble(offset) - offset / 2, random.nextDouble(0.12), random.nextDouble(offset) - offset / 2)
+            itemEntity.velocity = itemVelocity
+            world.entityManager.spawn(itemEntity)
+        }, session.channel.eventLoop())
+        return
     }
 
     override var absorption: Float
