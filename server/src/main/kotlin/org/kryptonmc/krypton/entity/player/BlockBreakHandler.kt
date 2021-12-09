@@ -149,6 +149,7 @@ class BlockBreakHandler(private val player: KryptonPlayer) {
                     if (!block.isAir) {
                         val destroyProgress = block.handler().calculateDestroyProgress(player, world, block, x, y, z) * (tickDifference + 1).toFloat()
                         if (destroyProgress >= 0.7F) {
+                            // TODO: Loot tables and block dropping
                             isDestroying = false
                             world.broadcastBlockDestroyProgress(player.id, x, y, z, -1)
                             destroyAndAcknowledge(x, y, z, status)

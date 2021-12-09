@@ -47,6 +47,7 @@ import org.kryptonmc.api.entity.player.ChatVisibility
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.player.ChangeGameModeEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
+import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.permission.PermissionFunction
@@ -72,6 +73,7 @@ import org.kryptonmc.krypton.entity.EquipmentSlot
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.KryptonEquipable
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
+import org.kryptonmc.krypton.entity.item.KryptonItemEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
 import org.kryptonmc.krypton.item.EmptyItemStack
@@ -129,6 +131,7 @@ import java.time.Duration
 import java.time.Instant
 import java.util.Locale
 import java.util.UUID
+import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -899,6 +902,35 @@ class KryptonPlayer(
             }
             return
         }
+    }
+
+    fun dropHeldItem() {
+        val heldItem = inventory.heldItem(Hand.MAIN)
+        if (heldItem.isEmpty()) return
+
+        // Update held item amount
+        heldItem.amount--
+        inventory.setHeldItem(Hand.MAIN, heldItem)
+
+        // drop the item
+        dropItem(heldItem)
+    }
+
+    fun dropItem(itemStack: ItemStack) {
+        val singleStack = itemStack.copy() as KryptonItemStack
+        singleStack.amount = 1
+        val itemEntity = KryptonItemEntity(world)
+        itemEntity.thrower = uuid
+        itemEntity.item = singleStack
+        itemEntity.location = location.add(0.0, 1.62 - 0.3, 0.0) // eye height - some magic value??
+        val itemVelocity = rotation.mul(0.3).toDouble().toVector3(0.0)
+        // Glowstone's method. Seems sane however it uses guess work. I don't blame them. Just look at the vanilla source...
+        // https://github.com/GlowstoneMC/Glowstone/blob/dev/src/main/java/net/glowstone/entity/GlowHumanEntity.java
+        val random = ThreadLocalRandom.current()
+        val offset = 0.02
+        itemVelocity.add(random.nextDouble(offset) - offset / 2, random.nextDouble(0.12), random.nextDouble(offset) - offset / 2)
+        itemEntity.velocity = itemVelocity
+        world.entityManager.spawn(itemEntity)
     }
 
     override var absorption: Float

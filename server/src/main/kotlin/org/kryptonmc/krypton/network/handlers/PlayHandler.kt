@@ -275,29 +275,7 @@ class PlayHandler(
                 player.blockBreakHandler.handleBlockBreak(packet)
             }
             PacketInPlayerDigging.Status.DROP_ITEM -> {
-                // TODO: Move to method on player
-                val heldItem = player.inventory.heldItem(Hand.MAIN)
-                if (heldItem.isEmpty()) return
-
-                // Update held item amount
-                heldItem.amount--
-                player.inventory.setHeldItem(Hand.MAIN, heldItem)
-
-                // Create and spawn new item entity
-                val singleItem = heldItem.copy()
-                singleItem.amount = 1
-                val itemEntity = KryptonItemEntity(player.world)
-                itemEntity.thrower = player.uuid
-                itemEntity.item = singleItem
-                itemEntity.location = player.location.add(0.0, 1.62 - 0.3, 0.0) // eye height - some magic value??
-                val velocity = player.rotation.mul(0.3).toDouble().toVector3(0.0)
-                // Glowstone's method. Seems sane however it uses guess work. I don't blame them. Just look at the vanilla source...
-                // https://github.com/GlowstoneMC/Glowstone/blob/dev/src/main/java/net/glowstone/entity/GlowHumanEntity.java
-                val random = ThreadLocalRandom.current()
-                val offset = 0.02
-                velocity.add(random.nextDouble(offset) - offset / 2, random.nextDouble(0.12), random.nextDouble(offset) - offset / 2)
-                itemEntity.velocity = velocity
-                player.world.entityManager.spawn(itemEntity)
+                player.dropHeldItem()
             }
             PacketInPlayerDigging.Status.UPDATE_STATE -> {
                 val handler = player.inventory[player.inventory.heldSlot].type.handler()
