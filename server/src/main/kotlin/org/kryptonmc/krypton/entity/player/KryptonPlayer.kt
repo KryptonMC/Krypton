@@ -113,13 +113,9 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.service.KryptonVanishService
-import org.kryptonmc.krypton.util.BossBarManager
+import org.kryptonmc.krypton.util.*
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.Directions
-import org.kryptonmc.krypton.util.InteractionResult
-import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.serialization.encode
-import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
@@ -926,16 +922,29 @@ class KryptonPlayer(
             itemEntity.thrower = uuid
             itemEntity.item = singleStack
             itemEntity.location = location.add(0.0, 1.62 - 0.3, 0.0) // eye height - some magic value??
-            val itemVelocity = rotation.mul(0.3).toDouble().toVector3(0.0)
+            val itemVelocity = getDirectionVector().mul(0.3)
             // Glowstone's method. Seems sane however it uses guess work. I don't blame them. Just look at the vanilla source...
             // https://github.com/GlowstoneMC/Glowstone/blob/dev/src/main/java/net/glowstone/entity/GlowHumanEntity.java
             val random = ThreadLocalRandom.current()
             val offset = 0.02
-            itemVelocity.add(random.nextDouble(offset) - offset / 2, random.nextDouble(0.12), random.nextDouble(offset) - offset / 2)
+            itemVelocity.add(
+                random.nextDouble(offset) - offset / 2,
+                random.nextDouble(0.12),
+                random.nextDouble(offset) - offset / 2
+            )
             world.entityManager.spawn(itemEntity)
             itemEntity.velocity = itemVelocity
         }, session.channel.eventLoop())
         return
+    }
+
+    private fun getDirectionVector(): Vector3d {
+        // Similar to wiki.vg/bukkit impl
+        val y = kotlin.math.sin(Math.toRadians(rotation.y().toDouble()))
+        val xz = kotlin.math.cos(Math.toRadians(rotation.y().toDouble()))
+        val x = -xz * kotlin.math.sin(Math.toRadians(rotation.x().toDouble()))
+        val z = xz * kotlin.math.cos(Math.toRadians(rotation.x().toDouble()))
+        return Vector3d.from(x, y, z)
     }
 
     override var absorption: Float
