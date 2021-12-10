@@ -20,12 +20,20 @@ import org.kryptonmc.api.entity.animal.Cow
 import org.kryptonmc.api.entity.animal.Goat
 import org.kryptonmc.api.entity.animal.Mooshroom
 import org.kryptonmc.api.entity.animal.Panda
+import org.kryptonmc.api.entity.animal.Parrot
 import org.kryptonmc.api.entity.animal.Pig
 import org.kryptonmc.api.entity.animal.PolarBear
 import org.kryptonmc.api.entity.animal.Rabbit
 import org.kryptonmc.api.entity.animal.Sheep
 import org.kryptonmc.api.entity.animal.Turtle
 import org.kryptonmc.api.entity.animal.Wolf
+import org.kryptonmc.api.entity.aquatic.Cod
+import org.kryptonmc.api.entity.aquatic.Dolphin
+import org.kryptonmc.api.entity.aquatic.GlowSquid
+import org.kryptonmc.api.entity.aquatic.Pufferfish
+import org.kryptonmc.api.entity.aquatic.Salmon
+import org.kryptonmc.api.entity.aquatic.Squid
+import org.kryptonmc.api.entity.aquatic.TropicalFish
 import org.kryptonmc.api.entity.hanging.Painting
 import org.kryptonmc.api.entity.monster.Creeper
 import org.kryptonmc.api.entity.monster.Zombie
@@ -68,10 +76,10 @@ public object EntityTypes {
     @JvmField public val CAT: EntityType<Cat> = get("cat")
     @JvmField public val CAVE_SPIDER: EntityType<Entity> = get("cave_spider")
     @JvmField public val CHICKEN: EntityType<Chicken> = get("chicken")
-    @JvmField public val COD: EntityType<Entity> = get("cod")
+    @JvmField public val COD: EntityType<Cod> = get("cod")
     @JvmField public val COW: EntityType<Cow> = get("cow")
     @JvmField public val CREEPER: EntityType<Creeper> = get("creeper")
-    @JvmField public val DOLPHIN: EntityType<Entity> = get("dolphin")
+    @JvmField public val DOLPHIN: EntityType<Dolphin> = get("dolphin")
     @JvmField public val DONKEY: EntityType<Entity> = get("donkey")
     @JvmField public val DRAGON_FIREBALL: EntityType<DragonFireball> = get("dragon_fireball")
     @JvmField public val DROWNED: EntityType<Entity> = get("drowned")
@@ -90,7 +98,7 @@ public object EntityTypes {
     @JvmField public val GHAST: EntityType<Entity> = get("ghast")
     @JvmField public val GIANT: EntityType<Entity> = get("giant")
     @JvmField public val GLOW_ITEM_FRAME: EntityType<Entity> = get("glow_item_frame")
-    @JvmField public val GLOW_SQUID: EntityType<Entity> = get("glow_squid")
+    @JvmField public val GLOW_SQUID: EntityType<GlowSquid> = get("glow_squid")
     @JvmField public val GOAT: EntityType<Goat> = get("goat")
     @JvmField public val GUARDIAN: EntityType<Entity> = get("guardian")
     @JvmField public val HOGLIN: EntityType<Entity> = get("hoglin")
@@ -119,7 +127,7 @@ public object EntityTypes {
     @JvmField public val OCELOT: EntityType<Ocelot> = get("ocelot")
     @JvmField public val PAINTING: EntityType<Painting> = get("painting")
     @JvmField public val PANDA: EntityType<Panda> = get("panda")
-    @JvmField public val PARROT: EntityType<Entity> = get("parrot")
+    @JvmField public val PARROT: EntityType<Parrot> = get("parrot")
     @JvmField public val PHANTOM: EntityType<Entity> = get("phantom")
     @JvmField public val PIG: EntityType<Pig> = get("pig")
     @JvmField public val PIGLIN: EntityType<Entity> = get("piglin")
@@ -127,10 +135,10 @@ public object EntityTypes {
     @JvmField public val PILLAGER: EntityType<Entity> = get("pillager")
     @JvmField public val POLAR_BEAR: EntityType<PolarBear> = get("polar_bear")
     @JvmField public val PRIMED_TNT: EntityType<Entity> = get("tnt")
-    @JvmField public val PUFFERFISH: EntityType<Entity> = get("pufferfish")
+    @JvmField public val PUFFERFISH: EntityType<Pufferfish> = get("pufferfish")
     @JvmField public val RABBIT: EntityType<Rabbit> = get("rabbit")
     @JvmField public val RAVAGER: EntityType<Entity> = get("ravager")
-    @JvmField public val SALMON: EntityType<Entity> = get("salmon")
+    @JvmField public val SALMON: EntityType<Salmon> = get("salmon")
     @JvmField public val SHEEP: EntityType<Sheep> = get("sheep")
     @JvmField public val SHULKER: EntityType<Entity> = get("shulker")
     @JvmField public val SHULKER_BULLET: EntityType<ShulkerBullet> = get("shulker_bullet")
@@ -143,7 +151,7 @@ public object EntityTypes {
     @JvmField public val SNOWBALL: EntityType<Snowball> = get("snowball")
     @JvmField public val SPECTRAL_ARROW: EntityType<SpectralArrow> = get("spectral_arrow")
     @JvmField public val SPIDER: EntityType<Entity> = get("spider")
-    @JvmField public val SQUID: EntityType<Entity> = get("squid")
+    @JvmField public val SQUID: EntityType<Squid> = get("squid")
     @JvmField public val STRAY: EntityType<Entity> = get("stray")
     @JvmField public val STRIDER: EntityType<Entity> = get("strider")
     @JvmField public val EGG: EntityType<Egg> = get("egg")
@@ -152,7 +160,7 @@ public object EntityTypes {
     @JvmField public val POTION: EntityType<ThrownPotion> = get("potion")
     @JvmField public val TRIDENT: EntityType<Trident> = get("trident")
     @JvmField public val TRADER_LLAMA: EntityType<Entity> = get("trader_llama")
-    @JvmField public val TROPICAL_FISH: EntityType<Entity> = get("tropical_fish")
+    @JvmField public val TROPICAL_FISH: EntityType<TropicalFish> = get("tropical_fish")
     @JvmField public val TURTLE: EntityType<Turtle> = get("turtle")
     @JvmField public val VEX: EntityType<Entity> = get("vex")
     @JvmField public val VILLAGER: EntityType<Entity> = get("villager")

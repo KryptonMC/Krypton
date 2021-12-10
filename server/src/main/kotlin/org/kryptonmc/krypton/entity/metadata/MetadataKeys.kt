@@ -24,6 +24,8 @@ import org.kryptonmc.api.entity.animal.type.AxolotlVariant
 import org.kryptonmc.api.entity.animal.type.CatType
 import org.kryptonmc.api.entity.animal.type.FoxType
 import org.kryptonmc.api.entity.animal.type.MooshroomType
+import org.kryptonmc.api.entity.animal.type.ParrotType
+import org.kryptonmc.api.entity.aquatic.TropicalFishShape
 import org.kryptonmc.api.item.meta.DyeColors
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
@@ -64,12 +66,18 @@ object MetadataKeys {
     @JvmField val MOOSHROOM = MooshroomKeys
     @JvmField val OCELOT = OcelotKeys
     @JvmField val PANDA = PandaKeys
+    @JvmField val PARROT = ParrotKeys
     @JvmField val PIG = PigKeys
     @JvmField val POLAR_BEAR = PolarBearKeys
     @JvmField val RABBIT = RabbitKeys
     @JvmField val SHEEP = SheepKeys
     @JvmField val TURTLE = TurtleKeys
     @JvmField val WOLF = WolfKeys
+    @JvmField val FISH = FishKeys
+    @JvmField val DOLPHIN = DolphinKeys
+    @JvmField val PUFFERFISH = PufferfishKeys
+    @JvmField val GLOW_SQUID = GlowSquidKeys
+    @JvmField val TROPICAL_FISH = TropicalFishKeys
 
     @JvmField val FLAGS = create(0, MetadataSerializers.BYTE, 0)
     @JvmField val AIR_TICKS = create(1, MetadataSerializers.VAR_INT, 300)
@@ -253,6 +261,11 @@ object MetadataKeys {
         @JvmField val FLAGS = create(22, MetadataSerializers.BYTE, 0)
     }
 
+    object ParrotKeys {
+
+        @JvmField val TYPE = create(19, MetadataSerializers.VAR_INT, ParrotType.RED_AND_BLUE.ordinal)
+    }
+
     object PigKeys {
 
         @JvmField val SADDLE = create(17, MetadataSerializers.BOOLEAN, false)
@@ -289,6 +302,33 @@ object MetadataKeys {
         @JvmField val BEGGING = create(19, MetadataSerializers.BOOLEAN, false)
         @JvmField val COLLAR_COLOR = create(20, MetadataSerializers.VAR_INT, Registries.DYE_COLORS.idOf(DyeColors.RED))
         @JvmField val ANGER_TIME = create(21, MetadataSerializers.VAR_INT, 0)
+    }
+
+    object FishKeys {
+
+        @JvmField val FROM_BUCKET = create(16, MetadataSerializers.BOOLEAN, false)
+    }
+
+    object DolphinKeys {
+
+        @JvmField val TREASURE_POSITION = create(16, MetadataSerializers.POSITION, Vector3i.ZERO)
+        @JvmField val GOT_FISH = create(17, MetadataSerializers.BOOLEAN, false)
+        @JvmField val MOISTURE = create(18, MetadataSerializers.VAR_INT, 2400)
+    }
+
+    object PufferfishKeys {
+
+        @JvmField val PUFF_STATE = create(17, MetadataSerializers.VAR_INT, 0)
+    }
+
+    object GlowSquidKeys {
+
+        @JvmField val REMAINING_DARK_TICKS = create(16, MetadataSerializers.VAR_INT, 0)
+    }
+
+    object TropicalFishKeys {
+
+        @JvmField val VARIANT = create(17, MetadataSerializers.VAR_INT, TropicalFishShape.KOB.ordinal)
     }
 
     @JvmStatic

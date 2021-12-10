@@ -27,6 +27,7 @@ import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.util.TriState
 import org.kryptonmc.api.adventure.toJsonString
+import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.Entity
@@ -160,6 +161,8 @@ abstract class KryptonEntity(
     final override var inWater = false
     final override var inLava = false
     final override var underwater = false
+    val inBubbleColumn: Boolean
+        get() = world.getBlock(location.floorX(), location.floorY(), location.floorZ()) === Blocks.BUBBLE_COLUMN
 
     open val maxAirTicks: Int
         get() = 300
@@ -301,7 +304,7 @@ abstract class KryptonEntity(
         return true
     }
 
-    private fun playSound(event: SoundEvent, volume: Float, pitch: Float) {
+    fun playSound(event: SoundEvent, volume: Float, pitch: Float) {
         if (isSilent) return
         world.playSound(location.x(), location.y(), location.z(), event, soundSource, volume, pitch)
     }
