@@ -239,12 +239,12 @@ class BlockBreakHandler(private val player: KryptonPlayer) {
         val blockItem = block.asItem() ?: return
         itemEntity.item = ItemStack.of(blockItem) as KryptonItemStack
         val random = ThreadLocalRandom.current()
-        itemEntity.velocity = Vector3d.from(random.nextDouble() * 0.2 - 0.1, 0.2, random.nextDouble() * 0.2 - 0.1)
         itemEntity.location = Vector3d.from(
             x.toDouble()+(0.5)+random.nextDouble(-0.25, 0.25),
             y.toDouble()+(0.5)+random.nextDouble(-0.25, 0.25)-(0.25/2f), // minus half height of item entity
             z.toDouble()+(0.5)+random.nextDouble(-0.25, 0.25))
         world.entityManager.spawn(itemEntity)
+        itemEntity.velocity = Vector3d.from(random.nextDouble() * 0.2 - 0.1, 0.2, random.nextDouble() * 0.2 - 0.1)
     }
 
     companion object {

@@ -932,8 +932,8 @@ class KryptonPlayer(
             val random = ThreadLocalRandom.current()
             val offset = 0.02
             itemVelocity.add(random.nextDouble(offset) - offset / 2, random.nextDouble(0.12), random.nextDouble(offset) - offset / 2)
-            itemEntity.velocity = itemVelocity
             world.entityManager.spawn(itemEntity)
+            itemEntity.velocity = itemVelocity
         }, session.channel.eventLoop())
         return
     }
