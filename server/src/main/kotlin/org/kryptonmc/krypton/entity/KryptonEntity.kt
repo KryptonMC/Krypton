@@ -120,6 +120,10 @@ abstract class KryptonEntity(
     final override var location: Vector3d = Vector3d.ZERO
     final override var rotation: Vector2f = Vector2f.ZERO
     final override var velocity: Vector3d = Vector3d.ZERO
+        set(value) {
+            field = value
+            viewers.forEach { it.session.send(PacketOutEntityVelocity(this)) }
+        }
     final override var boundingBox = BoundingBox.zero()
     final override var dimensions = EntityDimensions.fixed(type.dimensions.width, type.dimensions.height)
     final override var isOnGround = true
