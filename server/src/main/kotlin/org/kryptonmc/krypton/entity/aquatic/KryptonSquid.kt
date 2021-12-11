@@ -16,30 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block
+package org.kryptonmc.krypton.entity.aquatic
 
-import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.HitResult
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.entity.EntityType
+import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.entity.aquatic.Squid
+import org.kryptonmc.api.entity.attribute.AttributeTypes
+import org.kryptonmc.krypton.world.KryptonWorld
 
-/**
- * The result of a player hitting (attacking) a block.
- */
-@JvmRecord
-data class BlockHitResult(
-    override val clickLocation: Vector3d,
-    override val type: HitResult.Type,
-    val position: Vector3i,
-    val direction: Direction,
-    val isInside: Boolean
-) : HitResult {
+open class KryptonSquid(world: KryptonWorld, type: EntityType<out Squid>) : KryptonAquaticAnimal(world, type, ATTRIBUTES) {
 
-    constructor(
-        clickLocation: Vector3d,
-        position: Vector3i,
-        direction: Direction,
-        missed: Boolean,
-        isInside: Boolean
-    ) : this(clickLocation, if (missed) HitResult.Type.MISS else HitResult.Type.BLOCK, position, direction, isInside)
+    override val soundVolume: Float
+        get() = 0.4F
+
+    constructor(world: KryptonWorld) : this(world, EntityTypes.SQUID)
+
+    companion object {
+
+        private val ATTRIBUTES = attributes()
+            .add(AttributeTypes.MAX_HEALTH, 10.0)
+            .build()
+    }
 }

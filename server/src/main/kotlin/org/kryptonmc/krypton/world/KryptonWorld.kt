@@ -164,6 +164,10 @@ class KryptonWorld(
         playSound(position.x() + 0.5, position.y() + 0.5, position.z() + 0.5, event, source, volume, pitch, except)
     }
 
+    fun playSound(position: Vector3d, event: SoundEvent, source: Sound.Source, volume: Float, pitch: Float, except: KryptonPlayer? = null) {
+        playSound(position.x(), position.y(), position.z(), event, source, volume, pitch, except)
+    }
+
     fun playSound(
         x: Double,
         y: Double,

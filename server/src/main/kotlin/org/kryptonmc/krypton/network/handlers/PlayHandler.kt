@@ -26,6 +26,7 @@ import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
+import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.command.CommandExecuteEvent
@@ -35,11 +36,13 @@ import org.kryptonmc.api.event.player.InteractAtEntityEvent
 import org.kryptonmc.api.event.player.InteractEntityEvent
 import org.kryptonmc.api.event.player.MoveEvent
 import org.kryptonmc.api.event.player.PerformActionEvent
+import org.kryptonmc.api.event.player.PlaceBlockEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
 import org.kryptonmc.api.event.player.ResourcePackStatusEvent
 import org.kryptonmc.api.event.player.RotateEvent
 import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.resource.ResourcePack
+import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.commands.KryptonPermission
@@ -47,6 +50,7 @@ import org.kryptonmc.krypton.entity.item.KryptonItemEntity
 import org.kryptonmc.krypton.entity.monster.KryptonCreeper
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
+import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.item.handler.ItemTimedHandler
 import org.kryptonmc.krypton.network.SessionHandler
@@ -74,6 +78,7 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.out.play.EntityAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
+import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityRotation
@@ -258,21 +263,27 @@ class PlayHandler(
         if (!player.canBuild) return // If they can't place blocks, they are irrelevant :)
 
         val world = player.world
+        val x = packet.x
+        val y = packet.y
+        val z = packet.z
+        val event = server.eventManager.fireSync(PlaceBlockEvent(player, world.getBlock(x, y, z), packet.hand, x, y, z, packet.face, packet.isInside))
+        if (!event.result.isAllowed) return
+
         val chunkX = player.location.floorX() shr 4
         val chunkZ = player.location.floorZ() shr 4
         val chunk = world.chunkManager[ChunkPosition.toLong(chunkX, chunkZ)] ?: return
-        val existingBlock = chunk.getBlock(packet.hitResult.position)
+        val existingBlock = chunk.getBlock(x, y, z)
         if (existingBlock != Blocks.AIR) return
 
         val item = player.inventory.mainHand
         val block = BlockLoader.fromKey(item.type.key()) ?: return
-        chunk.setBlock(packet.hitResult.position, block)
+        chunk.setBlock(x, y, z, block)
     }
 
     private fun handlePlayerDigging(packet: PacketInPlayerDigging) {
         when (packet.status) {
             PacketInPlayerDigging.Status.STARTED, PacketInPlayerDigging.Status.FINISHED, PacketInPlayerDigging.Status.CANCELLED -> {
-                player.blockBreakHandler.handleBlockBreak(packet)
+                player.blockHandler.handleBlockBreak(packet)
             }
             PacketInPlayerDigging.Status.DROP_ITEM -> {
                 player.dropHeldItem()
@@ -439,5 +450,11 @@ class PlayHandler(
 
         private const val KEEP_ALIVE_INTERVAL = 15000L
         private val LOGGER = logger<PlayHandler>()
+
+        @JvmStatic
+        private fun wasBlockPlaceAttempt(player: KryptonPlayer, item: KryptonItemStack): Boolean {
+            if (item.isEmpty()) return false
+            return (item.type.asBlock() != null || item.type.key().asString().contains("bucket")) && !player.cooldowns.contains(item.type)
+        }
     }
 }

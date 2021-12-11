@@ -47,7 +47,7 @@ public enum class AxolotlVariant(
          * there is no axolotl variant with the given [id].
          *
          * @param id the ID
-         * @return the axolotl rule with the ID, or null if not present
+         * @return the axolotl variant with the ID, or null if not present
          */
         @JvmStatic
         public fun fromId(id: Int): AxolotlVariant? = VALUES.getOrNull(id)

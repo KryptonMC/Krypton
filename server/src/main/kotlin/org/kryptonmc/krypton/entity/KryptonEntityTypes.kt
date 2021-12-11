@@ -37,6 +37,7 @@ import org.kryptonmc.api.entity.animal.Fox
 import org.kryptonmc.api.entity.animal.Goat
 import org.kryptonmc.api.entity.animal.Ocelot
 import org.kryptonmc.api.entity.animal.Panda
+import org.kryptonmc.api.entity.animal.Parrot
 import org.kryptonmc.api.entity.animal.Pig
 import org.kryptonmc.api.entity.animal.PolarBear
 import org.kryptonmc.api.entity.animal.Rabbit
@@ -131,6 +132,7 @@ object KryptonEntityTypes {
     }
     @JvmField val DOLPHIN: KryptonEntityType<Entity> = register("dolphin", EntityCategories.WATER_CREATURE) {
         dimensions(0.9F, 0.6F)
+        rideable()
     }
     @JvmField val DONKEY: KryptonEntityType<Entity> = register("donkey", EntityCategories.CREATURE) {
         dimensions(MAGIC_HORSE_WIDTH, 1.5F)
@@ -318,7 +320,7 @@ object KryptonEntityTypes {
         dimensions(1.3F, 1.25F)
         clientTrackingRange(10)
     }
-    @JvmField val PARROT: KryptonEntityType<Entity> = register("parrot", EntityCategories.CREATURE) {
+    @JvmField val PARROT: KryptonEntityType<Parrot> = register("parrot", EntityCategories.CREATURE) {
         dimensions(0.5F, 0.9F)
         clientTrackingRange(8)
     }

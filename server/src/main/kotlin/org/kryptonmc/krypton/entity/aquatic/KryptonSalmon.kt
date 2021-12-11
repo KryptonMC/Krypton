@@ -16,30 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.world.block
+package org.kryptonmc.krypton.entity.aquatic
 
-import org.kryptonmc.api.util.Direction
-import org.kryptonmc.krypton.util.HitResult
-import org.spongepowered.math.vector.Vector3d
-import org.spongepowered.math.vector.Vector3i
+import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.entity.aquatic.Salmon
+import org.kryptonmc.krypton.world.KryptonWorld
 
-/**
- * The result of a player hitting (attacking) a block.
- */
-@JvmRecord
-data class BlockHitResult(
-    override val clickLocation: Vector3d,
-    override val type: HitResult.Type,
-    val position: Vector3i,
-    val direction: Direction,
-    val isInside: Boolean
-) : HitResult {
-
-    constructor(
-        clickLocation: Vector3d,
-        position: Vector3i,
-        direction: Direction,
-        missed: Boolean,
-        isInside: Boolean
-    ) : this(clickLocation, if (missed) HitResult.Type.MISS else HitResult.Type.BLOCK, position, direction, isInside)
-}
+class KryptonSalmon(world: KryptonWorld) : KryptonSchoolingFish(world, EntityTypes.SALMON), Salmon

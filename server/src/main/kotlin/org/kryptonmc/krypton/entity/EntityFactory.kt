@@ -35,10 +35,18 @@ import org.kryptonmc.krypton.entity.animal.KryptonCat
 import org.kryptonmc.krypton.entity.animal.KryptonCow
 import org.kryptonmc.krypton.entity.animal.KryptonGoat
 import org.kryptonmc.krypton.entity.animal.KryptonMooshroom
+import org.kryptonmc.krypton.entity.animal.KryptonParrot
 import org.kryptonmc.krypton.entity.animal.KryptonRabbit
 import org.kryptonmc.krypton.entity.animal.KryptonSheep
 import org.kryptonmc.krypton.entity.animal.KryptonTurtle
 import org.kryptonmc.krypton.entity.animal.KryptonWolf
+import org.kryptonmc.krypton.entity.aquatic.KryptonCod
+import org.kryptonmc.krypton.entity.aquatic.KryptonDolphin
+import org.kryptonmc.krypton.entity.aquatic.KryptonGlowSquid
+import org.kryptonmc.krypton.entity.aquatic.KryptonPufferfish
+import org.kryptonmc.krypton.entity.aquatic.KryptonSalmon
+import org.kryptonmc.krypton.entity.aquatic.KryptonSquid
+import org.kryptonmc.krypton.entity.aquatic.KryptonTropicalFish
 import org.kryptonmc.krypton.entity.hanging.KryptonPainting
 import org.kryptonmc.krypton.entity.monster.KryptonCreeper
 import org.kryptonmc.krypton.entity.monster.KryptonZombie
@@ -76,32 +84,40 @@ object EntityFactory {
         EntityTypes.BEE to ::KryptonBee,
         EntityTypes.CAT to ::KryptonCat,
         EntityTypes.CHICKEN to ::KryptonChicken,
+        EntityTypes.COD to ::KryptonCod,
         EntityTypes.COW to ::KryptonCow,
         EntityTypes.CREEPER to ::KryptonCreeper,
+        EntityTypes.DOLPHIN to ::KryptonDolphin,
         EntityTypes.DRAGON_FIREBALL to ::KryptonDragonFireball,
         EntityTypes.EXPERIENCE_ORB to ::KryptonExperienceOrb,
         EntityTypes.FIREWORK_ROCKET to ::KryptonFireworkRocket,
         EntityTypes.FIREBALL to ::KryptonLargeFireball,
         EntityTypes.FOX to ::KryptonFox,
+        EntityTypes.GLOW_SQUID to ::KryptonGlowSquid,
         EntityTypes.GOAT to ::KryptonGoat,
         EntityTypes.LLAMA_SPIT to ::KryptonLlamaSpit,
         EntityTypes.MOOSHROOM to ::KryptonMooshroom,
         EntityTypes.OCELOT to ::KryptonOcelot,
         EntityTypes.PAINTING to ::KryptonPainting,
         EntityTypes.PANDA to ::KryptonPanda,
+        EntityTypes.PARROT to ::KryptonParrot,
         EntityTypes.PIG to ::KryptonPig,
         EntityTypes.POLAR_BEAR to ::KryptonPolarBear,
+        EntityTypes.PUFFERFISH to ::KryptonPufferfish,
         EntityTypes.RABBIT to ::KryptonRabbit,
+        EntityTypes.SALMON to ::KryptonSalmon,
         EntityTypes.SHEEP to ::KryptonSheep,
         EntityTypes.SHULKER_BULLET to ::KryptonShulkerBullet,
         EntityTypes.SMALL_FIREBALL to ::KryptonSmallFireball,
         EntityTypes.SNOWBALL to ::KryptonSnowball,
         EntityTypes.SPECTRAL_ARROW to ::KryptonSpectralArrow,
+        EntityTypes.SQUID to ::KryptonSquid,
         EntityTypes.EGG to ::KryptonEgg,
         EntityTypes.ENDER_PEARL to ::KryptonEnderPearl,
         EntityTypes.EXPERIENCE_BOTTLE to ::KryptonExperienceBottle,
         EntityTypes.POTION to ::KryptonThrownPotion,
         EntityTypes.TRIDENT to ::KryptonTrident,
+        EntityTypes.TROPICAL_FISH to ::KryptonTropicalFish,
         EntityTypes.TURTLE to ::KryptonTurtle,
         EntityTypes.WITHER_SKULL to ::KryptonWitherSkull,
         EntityTypes.WOLF to ::KryptonWolf,

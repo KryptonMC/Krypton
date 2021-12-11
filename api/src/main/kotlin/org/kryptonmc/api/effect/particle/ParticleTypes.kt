@@ -24,9 +24,8 @@ public object ParticleTypes {
     // @formatter:off
     @JvmField public val AMBIENT_ENTITY_EFFECT: SimpleParticleType = simple("ambient_entity_effect")
     @JvmField public val ANGRY_VILLAGER: SimpleParticleType = simple("angry_villager")
-    @JvmField public val BARRIER: SimpleParticleType = simple("barrier")
-    @JvmField public val LIGHT: SimpleParticleType = simple("light")
     @JvmField public val BLOCK: BlockParticleType = block("block")
+    @JvmField public val BLOCK_MARKER: BlockParticleType = block("block_marker")
     @JvmField public val BUBBLE: DirectionalParticleType = directional("bubble")
     @JvmField public val CLOUD: DirectionalParticleType = directional("cloud")
     @JvmField public val CRIT: DirectionalParticleType = directional("crit")
@@ -59,6 +58,7 @@ public object ParticleTypes {
     @JvmField public val HEART: SimpleParticleType = simple("heart")
     @JvmField public val INSTANT_EFFECT: SimpleParticleType = simple("instant_effect")
     @JvmField public val ITEM: ItemParticleType = item("item")
+    @JvmField public val VIBRATION: VibrationParticleType = vibration("vibration")
     @JvmField public val ITEM_SLIME: SimpleParticleType = simple("item_slime")
     @JvmField public val ITEM_SNOWBALL: SimpleParticleType = simple("item_snowball")
     @JvmField public val LARGE_SMOKE: DirectionalParticleType = directional("large_smoke")
@@ -88,32 +88,57 @@ public object ParticleTypes {
     @JvmField public val FALLING_HONEY: SimpleParticleType = simple("falling_honey")
     @JvmField public val LANDING_HONEY: SimpleParticleType = simple("landing_honey")
     @JvmField public val FALLING_NECTAR: SimpleParticleType = simple("falling_nectar")
+    @JvmField public val FALLING_SPORE_BLOSSOM: SimpleParticleType = simple("falling_spore_blossom")
     @JvmField public val ASH: SimpleParticleType = simple("ash")
     @JvmField public val CRIMSON_SPORE: SimpleParticleType = simple("crimson_spore")
     @JvmField public val WARPED_SPORE: SimpleParticleType = simple("warped_spore")
+    @JvmField public val SPORE_BLOSSOM_AIR: SimpleParticleType = simple("spore_blossom_air")
     @JvmField public val DRIPPING_OBSIDIAN_TEAR: SimpleParticleType = simple("dripping_obsidian_tear")
     @JvmField public val FALLING_OBSIDIAN_TEAR: SimpleParticleType = simple("falling_obsidian_tear")
     @JvmField public val LANDING_OBSIDIAN_TEAR: SimpleParticleType = simple("landing_obsidian_tear")
     @JvmField public val REVERSE_PORTAL: DirectionalParticleType = directional("reverse_portal")
     @JvmField public val WHITE_ASH: SimpleParticleType = simple("white_ash")
+    @JvmField public val SMALL_FLAME: SimpleParticleType = simple("small_flame")
+    @JvmField public val SNOWFLAKE: SimpleParticleType = simple("snowflake")
+    @JvmField public val DRIPPING_DRIPSTONE_LAVA: SimpleParticleType = simple("dripping_dripstone_lava")
+    @JvmField public val FALLING_DRIPSTONE_LAVA: SimpleParticleType = simple("falling_dripstone_lava")
+    @JvmField public val DRIPPING_DRIPSTONE_WATER: SimpleParticleType = simple("dripping_dripstone_water")
+    @JvmField public val FALLING_DRIPSTONE_WATER: SimpleParticleType = simple("falling_dripstone_water")
+    @JvmField public val GLOW_SQUID_INK: SimpleParticleType = simple("glow_squid_ink")
+    @JvmField public val GLOW: SimpleParticleType = simple("glow")
+    @JvmField public val WAX_ON: SimpleParticleType = simple("wax_on")
+    @JvmField public val WAX_OFF: SimpleParticleType = simple("wax_off")
+    @JvmField public val ELECTRIC_SPARK: SimpleParticleType = simple("electric_spark")
+    @JvmField public val SCRAPE: SimpleParticleType = simple("scrape")
 
     // @formatter:on
     @JvmStatic
     private fun <T : ParticleType> register(particle: T): T = Registries.PARTICLE_TYPE.register(particle.key(), particle)
 
-    private fun simple(name: String) = register(SimpleParticleType(Key.key(name)))
+    @JvmStatic
+    private fun simple(name: String): SimpleParticleType = register(SimpleParticleType(Key.key(name)))
 
-    private fun directional(name: String) = register(DirectionalParticleType(Key.key(name)))
+    @JvmStatic
+    private fun directional(name: String): DirectionalParticleType = register(DirectionalParticleType(Key.key(name)))
 
-    private fun block(name: String) = register(BlockParticleType(Key.key(name)))
+    @JvmStatic
+    private fun block(name: String): BlockParticleType = register(BlockParticleType(Key.key(name)))
 
-    private fun item(name: String) = register(ItemParticleType(Key.key(name)))
+    @JvmStatic
+    private fun item(name: String): ItemParticleType = register(ItemParticleType(Key.key(name)))
 
-    private fun dust(name: String) = register(DustParticleType(Key.key(name)))
+    @JvmStatic
+    private fun dust(name: String): DustParticleType = register(DustParticleType(Key.key(name)))
 
-    private fun transition(name: String) = register(DustTransitionParticleType(Key.key(name)))
+    @JvmStatic
+    private fun transition(name: String): DustTransitionParticleType = register(DustTransitionParticleType(Key.key(name)))
 
-    private fun color(name: String) = register(ColorParticleType(Key.key(name)))
+    @JvmStatic
+    private fun color(name: String): ColorParticleType = register(ColorParticleType(Key.key(name)))
 
-    private fun note(name: String) = register(NoteParticleType(Key.key(name)))
+    @JvmStatic
+    private fun note(name: String): NoteParticleType = register(NoteParticleType(Key.key(name)))
+
+    @JvmStatic
+    private fun vibration(name: String): VibrationParticleType = register(VibrationParticleType(Key.key(name)))
 }

@@ -114,8 +114,12 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.util.*
+import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
+import org.kryptonmc.krypton.util.BossBarManager
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.encode
+import org.kryptonmc.krypton.util.logger
+import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
@@ -224,7 +228,10 @@ class KryptonPlayer(
 
     override val scoreboard = world.scoreboard
     override var locale: Locale? = null
-    override val statistics = server.playerManager.getStatistics(this)
+    override val statistics = KryptonStatisticsTracker(
+        this,
+        world.folder.resolve("stats").tryCreateDirectory().resolve("$uuid.json")
+    )
     override val cooldowns = KryptonCooldownTracker(this)
     override val teamRepresentation = name
     override val pushedByFluid = !isFlying
@@ -288,7 +295,7 @@ class KryptonPlayer(
     private var previousCentralZ = 0
     private val visibleChunks = LongArraySet()
 
-    val blockBreakHandler = BlockBreakHandler(this)
+    val blockHandler = PlayerBlockHandler(this)
 
     init {
         data.add(MetadataKeys.PLAYER.ADDITIONAL_HEARTS)
@@ -445,7 +452,7 @@ class KryptonPlayer(
 
     override fun tick() {
         super.tick()
-        blockBreakHandler.tick()
+        blockHandler.tick()
         hungerMechanic()
         cooldowns.tick()
         if (data.isDirty) session.send(PacketOutMetadata(id, data.dirty))
