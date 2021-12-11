@@ -21,7 +21,7 @@ dependencyResolutionManagement {
 
 pluginManagement {
     repositories {
-        maven("https://repo.spongepowered.org/repository/maven-snapshots/")
+        maven("https://repo.spongepowered.org/repository/maven-public/")
         mavenCentral()
         gradlePluginPortal()
     }
@@ -32,6 +32,5 @@ rootProject.name = "krypton"
 
 include("api")
 include("server")
-// TODO: Re-enable the generator when VanillaGradle fix their broken distribution
-//include("generators")
+include("generators")
 include("annotation-processor")
