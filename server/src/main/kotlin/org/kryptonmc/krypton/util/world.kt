@@ -44,11 +44,9 @@ fun EntityManager.forEachEntityInRange(location: Vector3d, viewDistance: Int, ca
 }
 
 fun EntityManager.forEachEntityInBounds(bounds: BoundingBox, callback: (KryptonEntity) -> Unit) {
-    val intersected = world.entities.stream().filter { it.boundingBox.intersects(bounds) }
+    val intersected = world.entities.stream().filter { bounds.intersects(it.boundingBox.move(it.location)) }
     intersected.forEach(callback)
 }
-
-
 
 private fun Long.chunkX(): Int = (this and 4294967295L).toInt()
 
