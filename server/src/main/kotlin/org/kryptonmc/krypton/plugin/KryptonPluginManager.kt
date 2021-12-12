@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * For the original file that this file is derived from, see here:
- * https://github.com/VelocityPowered/Velocity/blob/dev/1.1.0/proxy/src/main/java/com/velocitypowered/proxy/plugin/VelocityPluginManager.java
+ * https://github.com/PaperMC/Velocity/blob/0097359a99c23de4fc6b92c59a401a10208b4c4a/proxy/src/main/java/com/velocitypowered/proxy/plugin/VelocityPluginManager.java
  */
 package org.kryptonmc.krypton.plugin
 
@@ -44,7 +44,7 @@ object KryptonPluginManager : PluginManager {
     private val pluginMap = LinkedHashMap<String, PluginContainer>()
     private val pluginInstances = IdentityHashMap<Any, PluginContainer>()
     override val plugins: Collection<PluginContainer>
-        @JvmName("plugins") get() = pluginMap.values
+        get() = pluginMap.values
 
     fun loadPlugins(directory: Path, server: KryptonServer) {
         val found = mutableListOf<PluginDescription>()

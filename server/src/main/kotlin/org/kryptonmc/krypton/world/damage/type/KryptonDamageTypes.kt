@@ -108,6 +108,6 @@ object KryptonDamageTypes {
     @JvmStatic
     private fun register(name: String, messageId: String, builder: KryptonDamageType.Builder.() -> Unit = {}): DamageType {
         val key = Key.key(name)
-        return Registries.DAMAGE_SOURCES.register(key, KryptonDamageType.Builder(key, messageId).apply(builder).build())
+        return Registries.DAMAGE_TYPES.register(key, KryptonDamageType.Builder(key, messageId).apply(builder).build())
     }
 }

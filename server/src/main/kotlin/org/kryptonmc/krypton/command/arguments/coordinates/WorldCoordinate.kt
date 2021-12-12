@@ -18,15 +18,13 @@
  */
 package org.kryptonmc.krypton.command.arguments.coordinates
 
+import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 
 @JvmRecord
-data class WorldCoordinate(
-    val value: Double,
-    val isRelative: Boolean
-) {
+data class WorldCoordinate(val value: Double, val isRelative: Boolean) {
 
-    fun calculate(relativeTo: Double): Double {
+    fun get(relativeTo: Double): Double {
         if (isRelative) return value + relativeTo
         return value
     }
@@ -36,20 +34,20 @@ data class WorldCoordinate(
         @JvmStatic
         fun parse(reader: StringReader, correctCenter: Boolean): WorldCoordinate {
             // Got a caret (local coordinate) when we expected to get relative coordinates
-            if (reader.canRead() && reader.peek() == '^') {
+            if (reader.canRead() && reader.peek() == TextCoordinates.LOCAL_MODIFIER) {
                 throw CoordinateExceptions.POSITION_MIXED_TYPE.createWithContext(reader)
             }
             if (!reader.canRead()) throw CoordinateExceptions.POSITION_EXPECTED_DOUBLE.createWithContext(reader)
 
             // Check for relative positioning
-            val relative = reader.peek() == '~'
+            val relative = reader.peek() == TextCoordinates.RELATIVE_MODIFIER
             if (relative) reader.skip()
 
             val position = reader.cursor
-            var value = if (reader.canRead() && reader.peek() != ' ') reader.readDouble() else 0.0
+            var value = if (reader.canRead() && reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) reader.readDouble() else 0.0
             val string = reader.string.substring(position, reader.cursor)
             if (relative && string.isEmpty()) return WorldCoordinate(0.0, true)
-            if ('.' !in string && !relative && correctCenter) value += 0.5
+            if (!string.contains('.') && !relative && correctCenter) value += 0.5
             return WorldCoordinate(value, relative)
         }
     }

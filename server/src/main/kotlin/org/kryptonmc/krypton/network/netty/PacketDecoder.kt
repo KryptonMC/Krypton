@@ -46,7 +46,7 @@ class PacketDecoder : ByteToMessageDecoder() {
             return
         }
 
-        if (buf.readableBytes() != 0) LOGGER.debug("More bytes from packet $packet (${buf.readableBytes()})")
+        if (buf.readableBytes() != 0) LOGGER.debug("$packet has more bytes available to read.")
         out.add(packet)
     }
 

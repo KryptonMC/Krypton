@@ -45,7 +45,7 @@ data class PacketOutAttributes(
     override fun write(buf: ByteBuf) {
         buf.writeVarInt(entityId)
         buf.writeCollection(attributes) { attribute ->
-            buf.writeKey(InternalRegistries.ATTRIBUTE[attribute.type]!!)
+            buf.writeKey(Registries.ATTRIBUTE[attribute.type]!!)
             buf.writeDouble(attribute.base)
             buf.writeVarInt(attribute.modifiers.values.sumOf { it.size })
             attribute.modifiers.forEach { (operation, modifiers) ->

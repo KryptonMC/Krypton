@@ -27,5 +27,5 @@ public object EntityCategories {
     @JvmField public val MISC: EntityCategory = get("misc")
 
     @JvmStatic
-    private fun get(name: String) = Registries.MOB_CATEGORIES[Key.key(name)]!!
+    private fun get(name: String) = Registries.ENTITY_CATEGORIES[Key.key(name)]!!
 }

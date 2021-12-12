@@ -45,7 +45,7 @@ class DyeColorGenerator(output: Path) : EnumRegistryGenerator(output) {
             .addModifiers(KModifier.PRIVATE)
             .addCode("""
                 val·key·=·Key.key(name)
-                return·Registries.register(Registries.DYE_COLORS,·key,·DyeColor.of(key,·color,·fireworkColor,·TextColor.color(textColor)))
+                return·Registries.DYE_COLORS.register(key,·DyeColor.of(key,·color,·fireworkColor,·TextColor.color(textColor)))
             """.trimIndent())
             .build())
         DyeColor::class.java.declaredFields.asSequence()

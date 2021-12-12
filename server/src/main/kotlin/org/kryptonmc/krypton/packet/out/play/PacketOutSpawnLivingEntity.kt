@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.writeAngle
 import org.kryptonmc.krypton.util.writeUUID
@@ -47,7 +47,7 @@ data class PacketOutSpawnLivingEntity(
     constructor(entity: KryptonLivingEntity) : this(
         entity.id,
         entity.uuid,
-        InternalRegistries.ENTITY_TYPE.idOf(entity.type),
+        Registries.ENTITY_TYPE.idOf(entity.type),
         entity.location.x(),
         entity.location.y(),
         entity.location.z(),

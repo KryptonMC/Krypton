@@ -74,17 +74,18 @@ data class KryptonConfig(
             .serializers {
                 it.registerAll(ConfigurateComponentSerializer.builder()
                     .scalarSerializer(LegacyComponentSerializer.builder()
-                        .character('&')
+                        .character(LegacyComponentSerializer.AMPERSAND_CHAR)
                         .extractUrls()
                         .hexColors()
                         .build())
                     .outputStringComponents(true)
                     .build()
                     .serializers()
-                ).register(DifficultyTypeSerializer)
-                    .register(GameModeTypeSerializer)
-                    .register(LocaleTypeSerializer)
-                    .registerAnnotatedObjects(objectMapperFactory())
+                )
+                it.register(DifficultyTypeSerializer)
+                it.register(GameModeTypeSerializer)
+                it.register(LocaleTypeSerializer)
+                it.registerAnnotatedObjects(objectMapperFactory())
             }
 
         @JvmStatic

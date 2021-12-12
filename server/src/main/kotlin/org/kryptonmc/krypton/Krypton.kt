@@ -34,7 +34,9 @@ import org.kryptonmc.krypton.util.logger
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicReference
 
-fun main(args: Array<String>) = KryptonCLI().main(args)
+fun main(args: Array<String>) {
+    KryptonCLI().main(args)
+}
 
 private class KryptonCLI : CliktCommand(
     """

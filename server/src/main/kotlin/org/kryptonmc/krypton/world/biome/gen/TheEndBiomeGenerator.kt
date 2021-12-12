@@ -18,8 +18,8 @@
  */
 package org.kryptonmc.krypton.world.biome.gen
 
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.clamp
 import org.kryptonmc.krypton.util.noise.SimplexNoise
 import org.kryptonmc.krypton.util.random.WorldGenRandom
@@ -30,7 +30,6 @@ import kotlin.math.max
 import kotlin.math.sqrt
 
 class TheEndBiomeGenerator private constructor(
-    private val biomes: KryptonRegistry<Biome>,
     private val seed: Long,
     private val end: Biome,
     private val highlands: Biome,
@@ -44,14 +43,13 @@ class TheEndBiomeGenerator private constructor(
         SimplexNoise(random)
     }
 
-    constructor(biomes: KryptonRegistry<Biome>, seed: Long) : this(
-        biomes,
+    constructor(seed: Long) : this(
         seed,
-        biomes[BiomeKeys.THE_END]!!,
-        biomes[BiomeKeys.END_HIGHLANDS]!!,
-        biomes[BiomeKeys.END_MIDLANDS]!!,
-        biomes[BiomeKeys.SMALL_END_ISLANDS]!!,
-        biomes[BiomeKeys.END_BARRENS]!!
+        Registries.BIOME[BiomeKeys.THE_END]!!,
+        Registries.BIOME[BiomeKeys.END_HIGHLANDS]!!,
+        Registries.BIOME[BiomeKeys.END_MIDLANDS]!!,
+        Registries.BIOME[BiomeKeys.SMALL_END_ISLANDS]!!,
+        Registries.BIOME[BiomeKeys.END_BARRENS]!!
     )
 
     override fun get(x: Int, y: Int, z: Int, sampler: Climate.Sampler): Biome {

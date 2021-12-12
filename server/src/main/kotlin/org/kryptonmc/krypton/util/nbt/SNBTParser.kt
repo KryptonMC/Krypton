@@ -21,9 +21,9 @@ package org.kryptonmc.krypton.util.nbt
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.krypton.command.toExceptionType
 import org.kryptonmc.nbt.ByteArrayTag
 import org.kryptonmc.nbt.ByteTag
 import org.kryptonmc.nbt.CompoundTag
@@ -213,9 +213,9 @@ class SNBTParser(private val reader: StringReader) {
         private val SHORT_REGEX = "[-+]?(?:0|[1-9][0-9]*)s".toRegex(RegexOption.IGNORE_CASE)
         private val INT_REGEX = "[-+]?(?:0|[1-9][0-9]*)".toRegex(RegexOption.IGNORE_CASE)
 
-        private val ERROR_TRAILING_DATA = SimpleCommandExceptionType(Component.translatable("argument.nbt.trailing").toMessage())
-        private val ERROR_EXPECTED_KEY = SimpleCommandExceptionType(Component.translatable("argument.nbt.expected.key").toMessage())
-        private val ERROR_EXPECTED_VALUE = SimpleCommandExceptionType(Component.translatable("argument.nbt.expected.value").toMessage())
+        private val ERROR_TRAILING_DATA = Component.translatable("argument.nbt.trailing").toExceptionType()
+        private val ERROR_EXPECTED_KEY = Component.translatable("argument.nbt.expected.key").toExceptionType()
+        private val ERROR_EXPECTED_VALUE = Component.translatable("argument.nbt.expected.value").toExceptionType()
         private val ERROR_INSERT_MIXED_LIST = Dynamic2CommandExceptionType { a, b ->
             Component.translatable("argument.nbt.list.mixed", Component.text(a.toString()), Component.text(b.toString())).toMessage()
         }

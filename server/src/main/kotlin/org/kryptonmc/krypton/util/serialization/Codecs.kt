@@ -22,11 +22,11 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.api.world.World
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.toUUID
 import org.kryptonmc.nbt.ByteTag
 import org.kryptonmc.nbt.DoubleTag
@@ -83,9 +83,9 @@ object Codecs {
         }
     )
     @JvmField
-    val SOUND_EVENT: Codec<StringTag, SoundEvent> = KEY.transform(SoundEvent::key) { InternalRegistries.SOUND_EVENT[it]!! }
+    val SOUND_EVENT: Codec<StringTag, SoundEvent> = KEY.transform(SoundEvent::key) { Registries.SOUND_EVENT[it]!! }
     @JvmField
-    val PARTICLE: Codec<StringTag, ParticleType> = KEY.transform(ParticleType::key) { InternalRegistries.PARTICLE_TYPE[it]!! }
+    val PARTICLE: Codec<StringTag, ParticleType> = KEY.transform(ParticleType::key) { Registries.PARTICLE_TYPE[it]!! }
     @JvmField
     val DIMENSION: Codec<StringTag, ResourceKey<World>> = KEY.transform(ResourceKey<World>::location) { ResourceKey.of(ResourceKeys.DIMENSION, it) }
 

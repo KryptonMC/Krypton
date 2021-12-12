@@ -35,7 +35,6 @@ abstract class KryptonCommandRegistrar<C, M>(private val lock: Lock) : CommandRe
         }
     }
 
-    // This shallow copies the node to get around https://github.com/Mojang/brigadier/issues/46
     protected fun register(root: RootCommandNode<Sender>, node: LiteralCommandNode<Sender>, alias: String) {
         register(root, LiteralArgumentBuilder.literal<Sender>(alias).redirect(node).build())
     }

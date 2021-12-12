@@ -23,25 +23,15 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.network.SessionHandler
 
 /**
- * The base interface for packet handlers. This exists primarily to abstract
- * away the [handle] function, so we can call it without actually knowing which
- * handler will handle it. :wesmart:
+ * The base interface for packet handlers. This exists primarily to avoid
+ * having one handler for all, which is what we used to have before this
+ * system.
  */
 sealed interface PacketHandler {
 
-    /**
-     * The server that this handler is running on.
-     */
     val server: KryptonServer
-
-    /**
-     * The session that this handler handles packets for.
-     */
     val session: SessionHandler
 
-    /**
-     * Handles the given [packet].
-     */
     fun handle(packet: Packet)
 
     fun onDisconnect() {

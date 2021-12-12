@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.world.biome
 
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.InternalRegistries
 
 object KryptonBiomes {
 
@@ -94,5 +94,5 @@ object KryptonBiomes {
     private fun register(key: ResourceKey<Biome>, provider: (Key) -> KryptonBiome): KryptonBiome = register(key, provider(key.location))
 
     @JvmStatic
-    private fun register(key: ResourceKey<Biome>, biome: KryptonBiome): KryptonBiome = InternalRegistries.BIOME.register(key, biome)
+    private fun register(key: ResourceKey<Biome>, biome: KryptonBiome): KryptonBiome = Registries.BIOME.register(key, biome)
 }

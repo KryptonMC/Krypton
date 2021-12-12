@@ -44,7 +44,7 @@ object KryptonCriteria {
     @JvmField val KILLED_BY_TEAM: KryptonCompoundCriterion = register(
         "killed_by_team",
         "killedByTeam",
-        NamedTextColor.NAMES.keys().map { register("team_kill.$it", "teamkill.$it") }
+        NamedTextColor.NAMES.keys().map { register("killed_by_team.$it", "killedByTeam.$it") }
     )
 
     @JvmStatic
@@ -70,9 +70,6 @@ object KryptonCriteria {
         renderType: ObjectiveRenderType = ObjectiveRenderType.INTEGER
     ): KryptonCompoundCriterion {
         val key1 = Key.key(key)
-        return Registries.CRITERIA.register(
-            key1,
-            KryptonCompoundCriterion(key1, name, children, isMutable, renderType)
-        )
+        return Registries.CRITERIA.register(key1, KryptonCompoundCriterion(key1, name, children, isMutable, renderType))
     }
 }

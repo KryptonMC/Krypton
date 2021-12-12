@@ -10,6 +10,7 @@ package org.kryptonmc.api.world
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
+import org.kryptonmc.api.util.StringSerializable
 import org.kryptonmc.api.util.TranslationHolder
 import org.kryptonmc.api.world.damage.type.DamageType
 
@@ -18,18 +19,16 @@ import org.kryptonmc.api.world.damage.type.DamageType
  * with what the player is able to do, such as being able to build, fly, not
  * take damage, or fly through walls.
  *
- * @param displayName the name that this game mode will display as, such as
- * 'survival' for [SURVIVAL]
  * @param abbreviation the shortened name of this game mode, such as 's' for
  * [SURVIVAL]
  * @param canBuild whether players in this game mode can build
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
 public enum class GameMode(
-    public val displayName: String,
+    @get:JvmName("serialized") override val serialized: String,
     public val abbreviation: String,
     public val canBuild: Boolean
-) : TranslationHolder {
+) : StringSerializable, TranslationHolder {
 
     /**
      * Survival mode is the default game mode. In it, you can access most
@@ -62,12 +61,12 @@ public enum class GameMode(
     SPECTATOR("spectator", "sp", false);
 
     @get:JvmName("translation")
-    override val translation: TranslatableComponent = Component.translatable("gameMode.$displayName")
+    override val translation: TranslatableComponent = Component.translatable("gameMode.$serialized")
 
     public companion object {
 
         private val VALUES = values()
-        private val BY_NAME = VALUES.associateBy { it.displayName }
+        private val BY_NAME = VALUES.associateBy { it.serialized }
         private val BY_ABBREVIATION = VALUES.associateBy { it.abbreviation }
 
         /**

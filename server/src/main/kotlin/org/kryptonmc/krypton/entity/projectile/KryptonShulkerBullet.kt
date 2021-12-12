@@ -52,7 +52,7 @@ class KryptonShulkerBullet(world: KryptonWorld) : KryptonProjectile(world, Entit
         double("TXD", targetDeltaX)
         double("TYD", targetDeltaY)
         double("TZD", targetDeltaZ)
-        target?.let { uuid("Target", it.uuid) }
-        movingDirection?.let { int("Dir", it.ordinal) }
+        if (target != null) uuid("Target", target!!.uuid)
+        if (movingDirection != null) int("Dir", movingDirection!!.ordinal)
     }
 }

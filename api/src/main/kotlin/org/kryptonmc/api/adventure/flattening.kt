@@ -36,4 +36,4 @@ public inline fun <reified T : Component> ComponentFlattener.Builder.mapper(
 @Contract("_ -> this", mutates = "this")
 public inline fun <reified T : Component> ComponentFlattener.Builder.complexMapper(
     noinline converter: (T, (Component) -> Unit) -> Unit
-): ComponentFlattener.Builder = complexMapper(T::class.java) { t, u -> converter(t) { u.accept(it) } }
+): ComponentFlattener.Builder = complexMapper(T::class.java) { value, consumer -> converter(value) { consumer.accept(it) } }

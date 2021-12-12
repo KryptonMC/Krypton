@@ -18,10 +18,12 @@
  */
 package org.kryptonmc.krypton.world.generation
 
+import org.kryptonmc.api.registry.Registries
+import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.resource.InternalResourceKeys
 import org.kryptonmc.krypton.registry.KryptonRegistry
+import org.kryptonmc.krypton.resource.InternalResourceKeys
 import org.kryptonmc.krypton.world.biome.gen.MultiNoiseBiomeGenerator
 import org.kryptonmc.krypton.world.biome.gen.TheEndBiomeGenerator
 import org.kryptonmc.krypton.world.dimension.Dimension
@@ -35,7 +37,7 @@ data class WorldGenerationSettings(
     val seed: Long,
     val generateFeatures: Boolean,
     val bonusChest: Boolean,
-    val dimensions: KryptonRegistry<Dimension>,
+    val dimensions: Registry<Dimension>,
     val legacyCustomOptions: Optional<String>
 ) {
 
@@ -43,7 +45,7 @@ data class WorldGenerationSettings(
         seed: Long,
         generateFeatures: Boolean,
         bonusChest: Boolean,
-        dimensions: KryptonRegistry<Dimension>
+        dimensions: Registry<Dimension>
     ) : this(seed, generateFeatures, bonusChest, dimensions, Optional.empty()) {
         checkNotNull(dimensions[Dimension.OVERWORLD]) { "Missing overworld settings!" }
     }
@@ -69,7 +71,7 @@ data class WorldGenerationSettings(
         }
 
         @JvmStatic
-        private fun defaults(seed: Long): KryptonRegistry<Dimension> = KryptonRegistry(InternalResourceKeys.DIMENSION).apply {
+        private fun defaults(seed: Long): Registry<Dimension> = KryptonRegistry(InternalResourceKeys.DIMENSION).apply {
             register(Dimension.OVERWORLD, Dimension(KryptonDimensionTypes.OVERWORLD, defaultOverworld(seed)))
             register(Dimension.NETHER, Dimension(KryptonDimensionTypes.THE_NETHER, defaultNether(seed)))
             register(Dimension.END, Dimension(KryptonDimensionTypes.THE_END, defaultEnd(seed)))
@@ -77,34 +79,34 @@ data class WorldGenerationSettings(
 
         @JvmStatic
         private fun defaultOverworld(seed: Long): NoiseGenerator = NoiseGenerator(
-            MultiNoiseBiomeGenerator.Preset.OVERWORLD.createGenerator(InternalRegistries.BIOME),
+            MultiNoiseBiomeGenerator.Preset.OVERWORLD.createGenerator(Registries.BIOME),
             seed,
             InternalRegistries.NOISE_GENERATOR_SETTINGS[NoiseGeneratorSettings.OVERWORLD]!!
         )
 
         @JvmStatic
         private fun defaultNether(seed: Long): NoiseGenerator = NoiseGenerator(
-            MultiNoiseBiomeGenerator.Preset.NETHER.createGenerator(InternalRegistries.BIOME),
+            MultiNoiseBiomeGenerator.Preset.NETHER.createGenerator(Registries.BIOME),
             seed,
             InternalRegistries.NOISE_GENERATOR_SETTINGS[NoiseGeneratorSettings.NETHER]!!
         )
 
         @JvmStatic
         private fun defaultEnd(seed: Long): NoiseGenerator = NoiseGenerator(
-            TheEndBiomeGenerator(InternalRegistries.BIOME, seed),
+            TheEndBiomeGenerator(seed),
             seed,
             InternalRegistries.NOISE_GENERATOR_SETTINGS[NoiseGeneratorSettings.END]!!
         )
 
         @JvmStatic
-        private fun KryptonRegistry<Dimension>.withOverworld(generator: Generator): KryptonRegistry<Dimension> {
+        private fun Registry<Dimension>.withOverworld(generator: Generator): KryptonRegistry<Dimension> {
             val overworld = get(Dimension.OVERWORLD)
             val overworldType = overworld?.type ?: KryptonDimensionTypes.OVERWORLD
             return withOverworld(overworldType, generator)
         }
 
         @JvmStatic
-        private fun KryptonRegistry<Dimension>.withOverworld(type: DimensionType, generator: Generator): KryptonRegistry<Dimension> {
+        private fun Registry<Dimension>.withOverworld(type: DimensionType, generator: Generator): KryptonRegistry<Dimension> {
             val registry = KryptonRegistry(InternalResourceKeys.DIMENSION).apply { register(Dimension.OVERWORLD, Dimension(type, generator)) }
             entries.forEach { (key, value) -> if (key !== Dimension.OVERWORLD) registry.register(key, value) }
             return registry

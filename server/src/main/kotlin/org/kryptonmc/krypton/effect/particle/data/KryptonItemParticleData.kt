@@ -21,14 +21,14 @@ package org.kryptonmc.krypton.effect.particle.data
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.api.effect.particle.data.ItemParticleData
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.network.Writable
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeVarInt
 
 @JvmRecord
 data class KryptonItemParticleData(override val item: ItemType) : ItemParticleData, Writable {
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(InternalRegistries.ITEM.idOf(item))
+        buf.writeVarInt(Registries.ITEM.idOf(item))
     }
 }

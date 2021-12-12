@@ -38,6 +38,7 @@ class KryptonFireworkRocket(world: KryptonWorld) : KryptonProjectile(world, Enti
             val raw = data[MetadataKeys.FIREWORK_ROCKET.ITEM]
             return if (raw.isEmpty()) KryptonItemStack(ItemTypes.FIREWORK_ROCKET, 1) else raw
         }
+
     override var wasShotAtAngle: Boolean
         get() = data[MetadataKeys.FIREWORK_ROCKET.SHOT_AT_ANGLE]
         set(value) = data.set(MetadataKeys.FIREWORK_ROCKET.SHOT_AT_ANGLE, value)

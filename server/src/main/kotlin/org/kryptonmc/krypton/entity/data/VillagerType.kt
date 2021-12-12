@@ -18,8 +18,6 @@
  */
 package org.kryptonmc.krypton.entity.data
 
-import net.kyori.adventure.key.Key
-
 /**
  * Types of villagers.
  */
@@ -31,7 +29,5 @@ enum class VillagerType {
     SAVANNA,
     SNOW,
     SWAMP,
-    TAIGA;
-
-    val key: Key by lazy { Key.key(name.lowercase()) }
+    TAIGA
 }

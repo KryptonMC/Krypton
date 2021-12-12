@@ -142,7 +142,7 @@ class PrimaryWorldData(
                 data.getString("LevelName", "")!!,
                 folder,
                 GameMode.fromId(data.getInt("GameType", 0)) ?: GameMode.SURVIVAL,
-                difficulty,
+                difficulty ?: Difficulty.NORMAL,
                 data.getBoolean("hardcore", false),
                 KryptonGameRuleHolder(data.getMap("GameRules") ?: NBTMapType(MutableCompoundTag())),
                 dataPackConfig,

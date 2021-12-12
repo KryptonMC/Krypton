@@ -72,7 +72,6 @@ import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.buildCompound
 import org.spongepowered.math.vector.Vector2f
 import org.spongepowered.math.vector.Vector3d
-import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.UnaryOperator
@@ -203,6 +202,51 @@ abstract class KryptonEntity(
     private var wasDamaged = false
     private var tickCount = 0
     private var gravityTickCount = 0
+
+    final override var isOnFire: Boolean
+        get() = getSharedFlag(0)
+        set(value) = setSharedFlag(0, value)
+    final override var isSneaking: Boolean
+        get() = getSharedFlag(1)
+        set(value) = setSharedFlag(1, value)
+    final override var isSprinting: Boolean
+        get() = getSharedFlag(3)
+        set(value) = setSharedFlag(3, value)
+    final override var isSwimming: Boolean
+        get() = getSharedFlag(4)
+        set(value) = setSharedFlag(4, value)
+    final override var isInvisible: Boolean
+        get() = getSharedFlag(5)
+        set(value) = setSharedFlag(5, value)
+    final override var isGlowing: Boolean
+        get() = getSharedFlag(6)
+        set(value) = setSharedFlag(6, value)
+    override var isGliding: Boolean
+        get() = getSharedFlag(7)
+        set(value) = setSharedFlag(7, value)
+    final override var air: Int
+        get() = data[MetadataKeys.AIR_TICKS]
+        set(value) = data.set(MetadataKeys.AIR_TICKS, value)
+    final override var customName: Component?
+        get() = data[MetadataKeys.CUSTOM_NAME]
+        set(value) = data.set(MetadataKeys.CUSTOM_NAME, value)
+    final override var isCustomNameVisible: Boolean
+        get() = data[MetadataKeys.CUSTOM_NAME_VISIBILITY]
+        set(value) = data.set(MetadataKeys.CUSTOM_NAME_VISIBILITY, value)
+    final override var isSilent: Boolean
+        get() = data[MetadataKeys.SILENT]
+        set(value) = data.set(MetadataKeys.SILENT, value)
+    final override var hasGravity: Boolean
+        get() = !data[MetadataKeys.NO_GRAVITY]
+        set(value) = data.set(MetadataKeys.NO_GRAVITY, !value)
+    var pose: Pose
+        get() = data[MetadataKeys.POSE]
+        set(value) = data.set(MetadataKeys.POSE, value)
+    final override var frozenTicks: Int
+        get() = data[MetadataKeys.FROZEN_TICKS]
+        set(value) = data.set(MetadataKeys.FROZEN_TICKS, value)
+    val hasVelocity: Boolean
+        get() = velocity.x() != 0.0 && velocity.y() != 0.0 && velocity.z() != 0.0
 
     init {
         data.add(MetadataKeys.FLAGS)
@@ -510,51 +554,6 @@ abstract class KryptonEntity(
     override fun tryRide(entity: Entity) {
         if (isRideable) addPassenger(entity)
     }
-
-    final override var isOnFire: Boolean
-        get() = getSharedFlag(0)
-        set(value) = setSharedFlag(0, value)
-    final override var isSneaking: Boolean
-        get() = getSharedFlag(1)
-        set(value) = setSharedFlag(1, value)
-    final override var isSprinting: Boolean
-        get() = getSharedFlag(3)
-        set(value) = setSharedFlag(3, value)
-    final override var isSwimming: Boolean
-        get() = getSharedFlag(4)
-        set(value) = setSharedFlag(4, value)
-    final override var isInvisible: Boolean
-        get() = getSharedFlag(5)
-        set(value) = setSharedFlag(5, value)
-    final override var isGlowing: Boolean
-        get() = getSharedFlag(6)
-        set(value) = setSharedFlag(6, value)
-    override var isGliding: Boolean
-        get() = getSharedFlag(7)
-        set(value) = setSharedFlag(7, value)
-    final override var air: Int
-        get() = data[MetadataKeys.AIR_TICKS]
-        set(value) = data.set(MetadataKeys.AIR_TICKS, value)
-    final override var customName: Component?
-        get() = data[MetadataKeys.CUSTOM_NAME].orElse(null)
-        set(value) = data.set(MetadataKeys.CUSTOM_NAME, Optional.ofNullable(value))
-    final override var isCustomNameVisible: Boolean
-        get() = data[MetadataKeys.CUSTOM_NAME_VISIBILITY]
-        set(value) = data.set(MetadataKeys.CUSTOM_NAME_VISIBILITY, value)
-    final override var isSilent: Boolean
-        get() = data[MetadataKeys.SILENT]
-        set(value) = data.set(MetadataKeys.SILENT, value)
-    final override var hasGravity: Boolean
-        get() = !data[MetadataKeys.NO_GRAVITY]
-        set(value) = data.set(MetadataKeys.NO_GRAVITY, !value)
-    var pose: Pose
-        get() = data[MetadataKeys.POSE]
-        set(value) = data.set(MetadataKeys.POSE, value)
-    final override var frozenTicks: Int
-        get() = data[MetadataKeys.FROZEN_TICKS]
-        set(value) = data.set(MetadataKeys.FROZEN_TICKS, value)
-    val hasVelocity: Boolean
-        get() = velocity.x() != 0.0 && velocity.y() != 0.0 && velocity.z() != 0.0
 
     companion object {
 

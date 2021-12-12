@@ -20,8 +20,8 @@ package org.kryptonmc.krypton
 
 import me.lucko.spark.api.Spark
 import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.text.Component
 import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.kryptonmc.api.Server
 import org.kryptonmc.api.event.server.ServerStartEvent
 import org.kryptonmc.api.event.server.ServerStopEvent
@@ -59,6 +59,7 @@ import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.net.InetSocketAddress
 import java.nio.file.Path
+import java.util.Collections
 import java.util.Locale
 import java.util.UUID
 import kotlin.io.path.exists
@@ -88,7 +89,7 @@ class KryptonServer(
     override val address = InetSocketAddress(config.server.ip, config.server.port)
 
     val playerManager = PlayerManager(this)
-    override val players = playerManager.players
+    override val players: List<KryptonPlayer> = Collections.unmodifiableList(playerManager.players)
 
     override val console = KryptonConsole(this)
     override val scoreboard = KryptonScoreboard(this)
@@ -303,12 +304,6 @@ class KryptonServer(
 
     override fun player(name: String): KryptonPlayer? = playerManager.playersByName[name]
 
-    override fun sendMessage(message: Component, permission: String) {
-        playerManager.players.forEach { if (it.hasPermission(permission)) it.sendMessage(message) }
-        console.sendMessage(message)
-        return
-    }
-
     override fun audiences(): Iterable<Audience> = players.asSequence().plus(console).asIterable()
 
     fun stop(explicitExit: Boolean = true) {
@@ -369,6 +364,8 @@ class KryptonServer(
         private const val MILLISECONDS_PER_TICK = 50L // milliseconds in a tick
         private const val TICKS_PER_SECOND = 20
         private const val SAVE_PROFILE_CACHE_INTERVAL = 600
-        val LOGGER = logger<KryptonServer>()
+
+        @JvmField
+        val LOGGER: Logger = logger<KryptonServer>()
     }
 }

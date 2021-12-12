@@ -26,9 +26,9 @@ import org.kryptonmc.krypton.util.random.RandomSource
 class ImprovedNoise(random: RandomSource) {
 
     private val permutations = ByteArray(256) { it.toByte() }
-    val xOffset = random.nextDouble() * 256
+    private val xOffset = random.nextDouble() * 256
     val yOffset = random.nextDouble() * 256
-    val zOffset = random.nextDouble() * 256
+    private val zOffset = random.nextDouble() * 256
 
     init {
         // Randomise the permutation table
@@ -53,7 +53,9 @@ class ImprovedNoise(random: RandomSource) {
         val scaleY = if (yScale != 0.0) {
             val max = if (yMax >= 0.0 && yMax < fadeRelX) yMax else fadeRelX
             (max / yScale + SHIFT_UP_EPSILON).floor() * yScale
-        } else 0.0
+        } else {
+            0.0
+        }
         val relY = fadeRelX - scaleY
         val a = permute(floorX)
         val aa = permute(floorX + 1)
@@ -75,12 +77,13 @@ class ImprovedNoise(random: RandomSource) {
         return Maths.triLerp(fadeX, fadeY, fadeZ, d, e, f, g, h, i, j, k)
     }
 
-    private fun permute(hash: Int) = permutations[hash and 255].toInt() and 255
+    private fun permute(hash: Int): Int = permutations[hash and 255].toInt() and 255
 
     companion object {
 
         private const val SHIFT_UP_EPSILON = 1.0E-7F
 
-        private fun Int.gradDot(x: Double, y: Double, z: Double) = SimplexNoise.GRADIENT[this and 15].dot(x, y, z)
+        @JvmStatic
+        private fun Int.gradDot(x: Double, y: Double, z: Double): Double = SimplexNoise.GRADIENT[this and 15].dot(x, y, z)
     }
 }

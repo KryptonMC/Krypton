@@ -176,8 +176,7 @@ class LoginHandler(
             if (it == null) return@thenApplyAsync
             // Setup permissions.
             val event = server.eventManager.fireSync(SetupPermissionsEvent(it, KryptonPlayer.DEFAULT_PERMISSIONS))
-            val function = event.createFunction(it)
-            it.permissionFunction = function
+            it.permissionFunction = event.createFunction(it)
             finishLogin(it)
         }, session.channel.eventLoop())
     }
@@ -207,17 +206,11 @@ class LoginHandler(
         // All good to go, let's construct our stuff
         LOGGER.debug("Detected Velocity login for ${data.uuid}")
         val profile = KryptonGameProfile(data.username, data.uuid, data.properties)
-        val player = KryptonPlayer(
-            session,
-            profile,
-            server.worldManager.default,
-            InetSocketAddress(data.remoteAddress, address.port)
-        )
+        val player = KryptonPlayer(session, profile, server.worldManager.default, InetSocketAddress(data.remoteAddress, address.port))
 
         // Setup permissions for the player
         server.eventManager.fire(SetupPermissionsEvent(player, KryptonPlayer.DEFAULT_PERMISSIONS)).thenApplyAsync({
-            val function = it.createFunction(player)
-            player.permissionFunction = function
+            player.permissionFunction = it.createFunction(player)
             finishLogin(player)
         }, session.channel.eventLoop())
     }
@@ -291,12 +284,7 @@ class LoginHandler(
         val event = LoginEvent(profile.name, profile.uuid, session.channel.remoteAddress() as InetSocketAddress)
         val result = server.eventManager.fireSync(event).result
         if (!result.isAllowed) {
-            val reason = if (result.reason !== Component.empty()) {
-                result.reason
-            } else {
-                Component.translatable("multiplayer.disconnect.kicked")
-            }
-            disconnect(reason)
+            disconnect(result.reason ?: Component.translatable("multiplayer.disconnect.kicked"))
             return false
         }
         return true

@@ -28,11 +28,7 @@ data class KryptonTag<T : Any>(
     override val values: Collection<T>
 ) : Tag<T> {
 
-    constructor(name: Key, type: KryptonTagType<T>, keys: Set<String>) : this(
-        name,
-        type,
-        keys.map { type.registry[Key.key(it)]!! }
-    )
+    constructor(name: Key, type: KryptonTagType<T>, keys: Set<String>) : this(name, type, keys.map { type.registry[Key.key(it)]!! })
 
     override fun key(): Key = key
 }

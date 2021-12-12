@@ -142,8 +142,9 @@ public interface Server : ForwardingAudience {
     public val motd: Component
 
     /**
-     * If this server is in online mode, meaning it authenticates
-     * players through Mojang.
+     * If this server is in online mode, meaning it authenticates players
+     * through verified means. The authentication provider will, for most
+     * implementations, be Mojang.
      */
     public val isOnline: Boolean
 
@@ -157,7 +158,7 @@ public interface Server : ForwardingAudience {
      * The list of online players.
      */
     @get:JvmName("players")
-    public val players: List<Player>
+    public val players: Collection<Player>
 
     /**
      * The console's [Sender] object.
@@ -200,14 +201,4 @@ public interface Server : ForwardingAudience {
      * @return the player, or null if not present
      */
     public fun player(name: String): Player?
-
-    /**
-     * Sends a message to every player on the server with the given
-     * [permission].
-     *
-     * @param message the message to send
-     * @param permission the permission that players require to receive the
-     * message
-     */
-    public fun sendMessage(message: Component, permission: String)
 }

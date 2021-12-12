@@ -36,8 +36,7 @@ sealed class KryptonProperty<T : Comparable<T>>(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
-        other as KryptonProperty<*>
-        return name == other.name && type == other.type
+        return name == (other as KryptonProperty<*>).name && type == other.type
     }
 
     override fun hashCode(): Int = 31 * type.hashCode() + name.hashCode()

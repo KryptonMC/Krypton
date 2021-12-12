@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.command.registrar
 
 import com.mojang.brigadier.Command
+import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
@@ -34,6 +35,12 @@ import org.kryptonmc.api.command.Sender
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.Lock
 
+/**
+ * Registers commands that can be invoked. This is an abstraction over
+ * [SimpleCommandRegistrar] and [RawCommandRegistrar], which adds in some
+ * helper functions that we can just override in those subclasses to provide
+ * the functionality that we need for each.
+ */
 sealed class InvocableCommandRegistrar<C : InvocableCommand<A>, M : CommandMeta, A>(lock: Lock) : KryptonCommandRegistrar<C, M>(lock) {
 
     abstract fun execute(command: C, meta: M, context: CommandContext<Sender>): Int
@@ -45,11 +52,20 @@ sealed class InvocableCommandRegistrar<C : InvocableCommand<A>, M : CommandMeta,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions>
 
-    fun createSuggestions(
-        builder: SuggestionsBuilder,
-        results: List<String>
-    ): CompletableFuture<Suggestions> {
-        val offsetBuilder = builder.createOffset(builder.input.lastIndexOf(' ') + 1)
+    /**
+     * This came from CraftBukkit. We create a copy of the suggestions builder
+     * that only contains suggestions from the last
+     * [argument separator][CommandDispatcher.ARGUMENT_SEPARATOR_CHAR] in the
+     * input, so that we don't end up suggesting arguments after the first one
+     * in place of the first one.
+     *
+     * For example, the way this was found was with `/lp user <username>`.
+     * Completing `user` worked fine, but completing the `<username>` would
+     * replace `user` with the `<username>`, meaning we would get
+     * `/lp <username>`.
+     */
+    fun createSuggestions(builder: SuggestionsBuilder, results: List<String>): CompletableFuture<Suggestions> {
+        val offsetBuilder = builder.createOffset(builder.input.lastIndexOf(CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) + 1)
         results.forEach(offsetBuilder::suggest)
         return offsetBuilder.buildFuture()
     }

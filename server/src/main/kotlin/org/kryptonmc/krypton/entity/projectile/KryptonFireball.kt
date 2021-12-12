@@ -41,7 +41,8 @@ abstract class KryptonFireball(
     final override val item: ItemStack
         get() {
             val raw = rawItem
-            return if (raw.isEmpty()) KryptonItemStack(ItemTypes.FIRE_CHARGE, 1) else raw
+            if (raw.isEmpty()) return KryptonItemStack(ItemTypes.FIRE_CHARGE, 1)
+            return raw
         }
 
     init {

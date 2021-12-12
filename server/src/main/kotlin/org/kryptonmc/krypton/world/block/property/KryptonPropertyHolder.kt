@@ -37,7 +37,8 @@ interface KryptonPropertyHolder<T : PropertyHolder<T>> : PropertyHolder<T> {
         require(value in key.values) {
             "Tried to set invalid property value $value for key $key! Accepted values: ${key.values}"
         }
-        properties[key.name]?.let { return this as T }
+        val existing = properties[key.name]
+        if (existing != null && existing == value) return this as T
         return copy(key.name, key.toString(value))
     }
 

@@ -30,11 +30,14 @@ class KryptonGameRuleHolder : GameRuleHolder {
     override val rules = mutableMapOf<GameRule<out Any>, Any>()
 
     constructor() {
-        Registries.GAMERULES.values.forEach { rules[it] = it.default }
+        Registries.GAME_RULES.values.forEach { rules[it] = it.default }
     }
 
     constructor(tag: MapType<String>) : this() {
-        rules.forEach { (key, _) -> tag.getString(key.name)?.let { rules[key] = deserialize(it) } }
+        rules.forEach { (key, _) ->
+            val rule = tag.getString(key.name)
+            if (rule != null) rules[key] = deserialize(rule)
+        }
     }
 
     fun save(): CompoundTag = compound {

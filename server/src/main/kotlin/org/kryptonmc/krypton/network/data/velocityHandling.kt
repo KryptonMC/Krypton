@@ -51,8 +51,8 @@ fun ByteBuf.readVelocityProperties(): List<KryptonProfileProperty> {
     repeat(readVarInt()) {
         val name = readString()
         val value = readString()
-        val signature = if (readBoolean()) readString() else ""
-        properties += KryptonProfileProperty(name, value, signature)
+        val signature = if (readBoolean()) readString() else null
+        properties.add(KryptonProfileProperty(name, value, signature))
     }
     return properties
 }

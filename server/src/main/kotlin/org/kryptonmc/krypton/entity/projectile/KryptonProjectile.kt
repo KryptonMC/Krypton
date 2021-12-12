@@ -57,7 +57,7 @@ abstract class KryptonProjectile(
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
-        ownerId?.let { uuid("Owner", it) }
+        if (ownerId != null) uuid("Owner", ownerId!!)
         if (hasLeftOwner) boolean("LeftOwner", true)
         boolean("HasBeenShot", hasBeenShot)
     }

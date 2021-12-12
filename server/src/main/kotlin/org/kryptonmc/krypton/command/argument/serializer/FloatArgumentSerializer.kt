@@ -21,6 +21,17 @@ package org.kryptonmc.krypton.command.argument.serializer
 import com.mojang.brigadier.arguments.FloatArgumentType
 import io.netty.buffer.ByteBuf
 
+/**
+ * Float argument types are serialized with flags indicating if the minimum
+ * value is equal to -[Float.MAX_VALUE], and the maximum value is equal to
+ * [Float.MAX_VALUE], which are the minimum and maximum values that can be
+ * used with Brigadier's float argument type.
+ *
+ * We then further write the minimum and maximum values, if they are not equal
+ * to -[Float.MAX_VALUE] and [Float.MAX_VALUE] respectively.
+ *
+ * See [here](https://wiki.vg/Command_Data#brigadier:float)
+ */
 object FloatArgumentSerializer : FlaggedArgumentSerializer<FloatArgumentType> {
 
     override fun write(buf: ByteBuf, value: FloatArgumentType) {

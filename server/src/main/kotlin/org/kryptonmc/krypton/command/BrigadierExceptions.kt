@@ -18,13 +18,11 @@
  */
 package org.kryptonmc.krypton.command
 
-import com.mojang.brigadier.Message
 import com.mojang.brigadier.exceptions.BuiltInExceptionProvider
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.Component.text
 import org.kryptonmc.api.adventure.toMessage
 
 // Built-in types using vanilla's translation keys
@@ -117,14 +115,13 @@ object BrigadierExceptions : BuiltInExceptionProvider {
 
     override fun dispatcherParseException(): DynamicCommandExceptionType = DISPATCHER_PARSE_EXCEPTION
 
-    private fun translatable(key: String, vararg arguments: Any): Message = Component.translatable(
-        key,
-        arguments.map { text(it.toString()) }
-    ).toMessage()
+    private fun simpleExceptionType(key: String): SimpleCommandExceptionType = Component.translatable(key).toExceptionType()
 
-    private fun simpleExceptionType(key: String): SimpleCommandExceptionType = SimpleCommandExceptionType(Component.translatable(key).toMessage())
+    private fun dynamicExceptionType(key: String): DynamicCommandExceptionType = DynamicCommandExceptionType {
+        Component.translatable(key, Component.text(it.toString())).toMessage()
+    }
 
-    private fun dynamicExceptionType(key: String): DynamicCommandExceptionType = DynamicCommandExceptionType { translatable(key, it) }
-
-    private fun dynamic2ExceptionType(key: String): Dynamic2CommandExceptionType = Dynamic2CommandExceptionType { a, b -> translatable(key, a, b) }
+    private fun dynamic2ExceptionType(key: String): Dynamic2CommandExceptionType = Dynamic2CommandExceptionType { a, b ->
+        Component.translatable(key, Component.text(a.toString()), Component.text(b.toString())).toMessage()
+    }
 }

@@ -27,11 +27,7 @@ import org.kryptonmc.nbt.CompoundTag
 import java.time.Instant
 import java.util.UUID
 
-class KryptonUser(
-    override val profile: GameProfile,
-    var data: CompoundTag,
-    private val server: KryptonServer
-) : User {
+class KryptonUser(override val profile: GameProfile, var data: CompoundTag, private val server: KryptonServer) : User {
 
     private val identity = Identity.identity(uuid)
     private var firstJoinedCached: Instant? = null

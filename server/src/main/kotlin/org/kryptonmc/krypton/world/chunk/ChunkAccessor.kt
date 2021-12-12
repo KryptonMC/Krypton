@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import io.netty.buffer.Unpooled
 import org.kryptonmc.api.world.biome.Biome
 import org.kryptonmc.krypton.util.Quart
 import org.kryptonmc.krypton.util.clamp
@@ -27,25 +26,22 @@ import org.kryptonmc.krypton.world.BlockAccessor
 import org.kryptonmc.krypton.world.HeightAccessor
 import org.kryptonmc.krypton.world.Heightmap
 import org.kryptonmc.krypton.world.biome.NoiseBiomeSource
-import org.kryptonmc.nbt.CompoundTag
 import java.util.EnumMap
 import java.util.EnumSet
 
 abstract class ChunkAccessor(
     val position: ChunkPosition,
-    val heightAccessor: HeightAccessor,
+    private val heightAccessor: HeightAccessor,
     var inhabitedTime: Long,
     sections: Array<ChunkSection?>?
 ) : BlockAccessor, NoiseBiomeSource {
 
     private val sectionArray = arrayOfNulls<ChunkSection>(heightAccessor.sectionCount)
-    @Volatile
-    var isUnsaved = false
     val heightmaps: MutableMap<Heightmap.Type, Heightmap> = EnumMap(Heightmap.Type::class.java)
 
     val sections: Array<ChunkSection>
         @Suppress("UNCHECKED_CAST") get() = sectionArray as Array<ChunkSection>
-    val highestSection: ChunkSection?
+    private val highestSection: ChunkSection?
         get() {
             for (i in sectionArray.size - 1 downTo 0) {
                 val section = sectionArray[i]

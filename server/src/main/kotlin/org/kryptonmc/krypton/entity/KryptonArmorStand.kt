@@ -42,6 +42,49 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
     private val hasPhysics: Boolean
         get() = !isMarker && hasGravity
 
+    override var isSmall: Boolean
+        get() = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt() and 1 > 0
+        set(value) {
+            val flags = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt()
+            data[MetadataKeys.ARMOR_STAND.FLAGS] = (if (value) flags or 1 else flags and -2).toByte()
+        }
+    override var hasArms: Boolean
+        get() = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt() and 4 > 0
+        set(value) {
+            val flags = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt()
+            data[MetadataKeys.ARMOR_STAND.FLAGS] = (if (value) flags or 4 else flags and -5).toByte()
+        }
+    override var hasBasePlate: Boolean
+        get() = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt() and 8 <= 0
+        set(value) {
+            val flags = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt()
+            data[MetadataKeys.ARMOR_STAND.FLAGS] = (if (value) flags and -9 else flags or 8).toByte()
+        }
+    override var isMarker: Boolean
+        get() = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt() and 16 > 0
+        set(value) {
+            val flags = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt()
+            data[MetadataKeys.ARMOR_STAND.FLAGS] = (if (value) flags or 16 else flags and -17).toByte()
+        }
+    override var headPose: Vector3f
+        get() = data[MetadataKeys.ARMOR_STAND.HEAD_ROTATION]
+        set(value) = data.set(MetadataKeys.ARMOR_STAND.HEAD_ROTATION, value)
+    override var bodyPose: Vector3f
+        get() = data[MetadataKeys.ARMOR_STAND.BODY_ROTATION]
+        set(value) = data.set(MetadataKeys.ARMOR_STAND.BODY_ROTATION, value)
+    override var leftArmPose: Vector3f
+        get() = data[MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION]
+        set(value) = data.set(MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION, value)
+    override var rightArmPose: Vector3f
+        get() = data[MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION]
+        set(value) = data.set(MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION, value)
+    override var leftLegPose: Vector3f
+        get() = data[MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION]
+        set(value) = data.set(MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION, value)
+    override var rightLegPose: Vector3f
+        get() = data[MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION]
+        set(value) = data.set(MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION, value)
+
     init {
         data.add(MetadataKeys.ARMOR_STAND.FLAGS)
         data.add(MetadataKeys.ARMOR_STAND.HEAD_ROTATION)
@@ -111,47 +154,4 @@ class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, Entity
             if (rightLegPose != MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION.default) rotation("RightLeg", rightLegPose)
         }
     }
-
-    override var isSmall: Boolean
-        get() = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt() and 1 > 0
-        set(value) {
-            val flags = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt()
-            data[MetadataKeys.ARMOR_STAND.FLAGS] = (if (value) flags or 1 else flags and -2).toByte()
-        }
-    override var hasArms: Boolean
-        get() = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt() and 4 > 0
-        set(value) {
-            val flags = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt()
-            data[MetadataKeys.ARMOR_STAND.FLAGS] = (if (value) flags or 4 else flags and -5).toByte()
-        }
-    override var hasBasePlate: Boolean
-        get() = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt() and 8 <= 0
-        set(value) {
-            val flags = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt()
-            data[MetadataKeys.ARMOR_STAND.FLAGS] = (if (value) flags and -9 else flags or 8).toByte()
-        }
-    override var isMarker: Boolean
-        get() = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt() and 16 > 0
-        set(value) {
-            val flags = data[MetadataKeys.ARMOR_STAND.FLAGS].toInt()
-            data[MetadataKeys.ARMOR_STAND.FLAGS] = (if (value) flags or 16 else flags and -17).toByte()
-        }
-    override var headPose: Vector3f
-        get() = data[MetadataKeys.ARMOR_STAND.HEAD_ROTATION]
-        set(value) = data.set(MetadataKeys.ARMOR_STAND.HEAD_ROTATION, value)
-    override var bodyPose: Vector3f
-        get() = data[MetadataKeys.ARMOR_STAND.BODY_ROTATION]
-        set(value) = data.set(MetadataKeys.ARMOR_STAND.BODY_ROTATION, value)
-    override var leftArmPose: Vector3f
-        get() = data[MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION]
-        set(value) = data.set(MetadataKeys.ARMOR_STAND.LEFT_ARM_ROTATION, value)
-    override var rightArmPose: Vector3f
-        get() = data[MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION]
-        set(value) = data.set(MetadataKeys.ARMOR_STAND.RIGHT_ARM_ROTATION, value)
-    override var leftLegPose: Vector3f
-        get() = data[MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION]
-        set(value) = data.set(MetadataKeys.ARMOR_STAND.LEFT_LEG_ROTATION, value)
-    override var rightLegPose: Vector3f
-        get() = data[MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION]
-        set(value) = data.set(MetadataKeys.ARMOR_STAND.RIGHT_LEG_ROTATION, value)
 }

@@ -28,6 +28,10 @@ import org.kryptonmc.krypton.command.rawArguments
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.Lock
 
+/**
+ * Registers raw commands to a root node. This is relatively simple, as raw
+ * commands do not do any extra processing.
+ */
 class RawCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<RawCommand, CommandMeta, String>(lock) {
 
     override fun execute(command: RawCommand, meta: CommandMeta, context: CommandContext<Sender>): Int {

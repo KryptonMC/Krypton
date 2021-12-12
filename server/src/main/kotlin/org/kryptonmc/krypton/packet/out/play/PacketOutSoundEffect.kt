@@ -21,8 +21,8 @@ package org.kryptonmc.krypton.packet.out.play
 import io.netty.buffer.ByteBuf
 import net.kyori.adventure.sound.Sound
 import org.kryptonmc.api.effect.sound.SoundEvent
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -46,7 +46,7 @@ data class PacketOutSoundEffect(
     ) : this(event, sound.source(), x, y, z, sound.volume(), sound.pitch())
 
     override fun write(buf: ByteBuf) {
-        buf.writeVarInt(InternalRegistries.SOUND_EVENT.idOf(event))
+        buf.writeVarInt(Registries.SOUND_EVENT.idOf(event))
         buf.writeEnum(source)
         buf.writeInt((x * 8.0).toInt())
         buf.writeInt((y * 8.0).toInt())

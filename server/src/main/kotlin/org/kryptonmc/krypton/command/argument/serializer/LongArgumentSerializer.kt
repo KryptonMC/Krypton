@@ -21,6 +21,17 @@ package org.kryptonmc.krypton.command.argument.serializer
 import com.mojang.brigadier.arguments.LongArgumentType
 import io.netty.buffer.ByteBuf
 
+/**
+ * Long argument types are serialized with flags indicating if the minimum
+ * value is equal to -[Long.MAX_VALUE], and the maximum value is equal to
+ * [Long.MAX_VALUE], which are the minimum and maximum values that can be
+ * used with Brigadier's long argument type.
+ *
+ * We then further write the minimum and maximum values, if they are not equal
+ * to -[Long.MAX_VALUE] and [Long.MAX_VALUE] respectively.
+ *
+ * See [here](https://wiki.vg/Command_Data#brigadier:long)
+ */
 object LongArgumentSerializer : FlaggedArgumentSerializer<LongArgumentType> {
 
     override fun write(buf: ByteBuf, value: LongArgumentType) {

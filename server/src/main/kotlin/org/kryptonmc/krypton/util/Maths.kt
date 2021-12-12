@@ -31,6 +31,7 @@ object Maths {
         return random.nextInt(upper - lower + 1) + lower
     }
 
+    @JvmStatic
     fun triLerp(
         deltaX: Double,
         deltaY: Double,
@@ -49,6 +50,7 @@ object Maths {
         deltaZ
     )
 
+    @JvmStatic
     private fun biLerp(
         deltaX: Double,
         deltaY: Double,
@@ -80,6 +82,7 @@ object Maths {
      * @param zOffset an optional Z offset
      * @return a [ChunkPosition] containing the calculated position in the spiral.
      */
+    @JvmStatic
     fun chunkInSpiral(id: Int, xOffset: Int = 0, zOffset: Int = 0): Long {
         // if the id is 0 then we know we're in the centre
         if (id == 0) return ChunkPosition.toLong(0 + xOffset, 0 + zOffset)

@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.entity.monster
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.attribute.AttributeTypes
 import org.kryptonmc.api.entity.monster.Creeper
-import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
@@ -30,6 +29,13 @@ class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CR
 
     override var fuse: Short = 0
     override var explosionRadius = 0
+
+    override var isCharged: Boolean
+        get() = data[MetadataKeys.CREEPER.CHARGED]
+        set(value) = data.set(MetadataKeys.CREEPER.CHARGED, value)
+    override var isIgnited: Boolean
+        get() = data[MetadataKeys.CREEPER.IGNITED]
+        set(value) = data.set(MetadataKeys.CREEPER.IGNITED, value)
 
     init {
         data.add(MetadataKeys.CREEPER.STATE)
@@ -44,14 +50,6 @@ class KryptonCreeper(world: KryptonWorld) : KryptonMonster(world, EntityTypes.CR
         fuse = tag.getShort("Fuse")
         explosionRadius = tag.getInt("ExplosionRadius")
     }
-
-    override var isCharged: Boolean
-        get() = data[MetadataKeys.CREEPER.CHARGED]
-        set(value) = data.set(MetadataKeys.CREEPER.CHARGED, value)
-
-    override var isIgnited: Boolean
-        get() = data[MetadataKeys.CREEPER.IGNITED]
-        set(value) = data.set(MetadataKeys.CREEPER.IGNITED, value)
 
     companion object {
 

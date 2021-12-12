@@ -9,12 +9,10 @@
 package org.kryptonmc.api.registry
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.user.ban.BanType
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntityType
-import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityCategory
@@ -55,37 +53,36 @@ public object Registries {
     /**
      * All built-in vanilla registries.
      */
-    @JvmField public val SOUND_EVENT: Registry<SoundEvent> = get(ResourceKeys.SOUND_EVENT)!!
-    @JvmField public val ENTITY_TYPE: DefaultedRegistry<EntityType<*>> = defaulted(ResourceKeys.ENTITY_TYPE)!!
-    @JvmField public val PARTICLE_TYPE: Registry<ParticleType> = get(ResourceKeys.PARTICLE_TYPE)!!
-    @JvmField public val BLOCK: Registry<Block> = get(ResourceKeys.BLOCK)!!
-    @JvmField public val ITEM: DefaultedRegistry<ItemType> = defaulted(ResourceKeys.ITEM)!!
-    @JvmField public val MENU: Registry<InventoryType> = get(ResourceKeys.MENU)!!
-    @JvmField public val ATTRIBUTE: Registry<AttributeType> = get(ResourceKeys.ATTRIBUTE)!!
-    @JvmField public val BIOME: Registry<Biome> = get(ResourceKeys.BIOME)!!
-    @JvmField public val STATISTIC_TYPE: Registry<StatisticType<*>> = get(ResourceKeys.STATISTIC_TYPE)!!
+    @JvmField public val SOUND_EVENT: Registry<SoundEvent> = create(ResourceKeys.SOUND_EVENT)
+    @JvmField public val ENTITY_TYPE: DefaultedRegistry<EntityType<*>> = createDefaulted(ResourceKeys.ENTITY_TYPE, Key.key("pig"))
+    @JvmField public val PARTICLE_TYPE: Registry<ParticleType> = create(ResourceKeys.PARTICLE_TYPE)
+    @JvmField public val BLOCK: Registry<Block> = create(ResourceKeys.BLOCK)
+    @JvmField public val ITEM: DefaultedRegistry<ItemType> = createDefaulted(ResourceKeys.ITEM, Key.key("air"))
+    @JvmField public val MENU: Registry<InventoryType> = create(ResourceKeys.MENU)
+    @JvmField public val ATTRIBUTE: Registry<AttributeType> = create(ResourceKeys.ATTRIBUTE)
+    @JvmField public val BIOME: Registry<Biome> = create(ResourceKeys.BIOME)
+    @JvmField public val STATISTIC_TYPE: Registry<StatisticType<*>> = create(ResourceKeys.STATISTIC_TYPE)
     @JvmField public val CUSTOM_STATISTIC: Registry<Key> = create(ResourceKeys.CUSTOM_STATISTIC)
-    @JvmField public val PICTURE: DefaultedRegistry<Picture> = defaulted(ResourceKeys.PICTURE)!!
-    @JvmField public val FLUID: Registry<Fluid> = get(ResourceKeys.FLUID)!!
+    @JvmField public val FLUID: DefaultedRegistry<Fluid> = createDefaulted(ResourceKeys.FLUID, Key.key("empty"))
     @JvmField public val DIMENSION_TYPE: Registry<DimensionType> = create(ResourceKeys.DIMENSION_TYPE)
-    @JvmField public val BLOCK_ENTITY_TYPE: Registry<BlockEntityType> = get(ResourceKeys.BLOCK_ENTITY_TYPE)!!
+    @JvmField public val BLOCK_ENTITY_TYPE: Registry<BlockEntityType> = create(ResourceKeys.BLOCK_ENTITY_TYPE)
 
     /**
      * Custom built-in registries.
      */
-    @JvmField public val GAMERULES: Registry<GameRule<Any>> = create(ResourceKeys.GAMERULES)
+    @JvmField public val PICTURES: DefaultedRegistry<Picture> = createDefaulted(ResourceKeys.PICTURES, Key.key("kebab"))
+    @JvmField public val GAME_RULES: Registry<GameRule<Any>> = create(ResourceKeys.GAME_RULES)
     @JvmField public val MODIFIER_OPERATIONS: Registry<ModifierOperation> = create(ResourceKeys.MODIFIER_OPERATIONS)
     @JvmField public val CRITERIA: Registry<Criterion> = create(ResourceKeys.CRITERIA)
     @JvmField public val DIMENSION_EFFECTS: Registry<DimensionEffect> = create(ResourceKeys.DIMENSION_EFFECTS)
-    @JvmField public val MUSIC: Registry<Music> = create(ResourceKeys.MUSIC)
     @JvmField public val BIOME_CATEGORIES: Registry<BiomeCategory> = create(ResourceKeys.BIOME_CATEGORIES)
     @JvmField public val META_KEYS: Registry<MetaKey<*>> = create(ResourceKeys.META_KEYS)
     @JvmField public val ITEM_RARITIES: Registry<ItemRarity> = create(ResourceKeys.ITEM_RARITIES)
-    @JvmField public val MOB_CATEGORIES: Registry<EntityCategory> = create(ResourceKeys.MOB_CATEGORIES)
+    @JvmField public val ENTITY_CATEGORIES: Registry<EntityCategory> = create(ResourceKeys.ENTITY_CATEGORIES)
     @JvmField public val DYE_COLORS: Registry<DyeColor> = create(ResourceKeys.DYE_COLORS)
     @JvmField public val TAG_TYPES: Registry<TagType<*>> = create(ResourceKeys.TAG_TYPES)
     @JvmField public val BAN_TYPES: Registry<BanType> = create(ResourceKeys.BAN_TYPES)
-    @JvmField public val DAMAGE_SOURCES: Registry<DamageType> = create(ResourceKeys.DAMAGE_SOURCES)
+    @JvmField public val DAMAGE_TYPES: Registry<DamageType> = create(ResourceKeys.DAMAGE_TYPES)
 
     /**
      * Gets the existing registry with the given resource [key], or returns null
@@ -95,7 +92,7 @@ public object Registries {
      * @return the existing registry, or null if not present
      */
     @JvmStatic
-    public operator fun <T : Any> get(key: ResourceKey<out Registry<T>>): Registry<T>? = Krypton.registryManager[key]
+    public fun <T : Any> registry(key: ResourceKey<out Registry<T>>): Registry<T>? = Krypton.registryManager.registry(key)
 
     /**
      * Gets the existing defaulted registry with the given resource [key], or
@@ -107,52 +104,6 @@ public object Registries {
      */
     @JvmStatic
     public fun <T : Any> defaulted(key: ResourceKey<out Registry<T>>): DefaultedRegistry<T>? = Krypton.registryManager.defaulted(key)
-
-    /**
-     * Registers a new entry to the given [registry], with the given [key]
-     * mapped to the given [value].
-     *
-     * @param registry the registry to register to
-     * @param key the key
-     * @param value the value
-     */
-    @JvmStatic
-    public fun <T : Any> register(registry: Registry<T>, key: String, value: T): T = register(registry, key(key), value)
-
-    /**
-     * Registers a new entry to the given [registry], with the given [key]
-     * mapped to the given [value].
-     *
-     * @param registry the registry to register to
-     * @param key the key
-     * @param value the value
-     */
-    @JvmStatic
-    public fun <T : Any> register(registry: Registry<T>, key: Key, value: T): T = Krypton.registryManager.register(registry, key, value)
-
-    /**
-     * Registers a new entry to the given [registry], with the given [key]
-     * mapped to the given [value].
-     *
-     * @param registry the registry to register to
-     * @param id the ID of the entry in the registry
-     * @param key the key
-     * @param value the value
-     */
-    @JvmStatic
-    public fun <T : Any> register(registry: Registry<T>, id: Int, key: String, value: T): T = register(registry, id, key, value)
-
-    /**
-     * Registers a new entry to the given [registry], with the given [key]
-     * mapped to the given [value].
-     *
-     * @param registry the registry to register to
-     * @param id the ID of the entry in the registry
-     * @param key the key
-     * @param value the value
-     */
-    @JvmStatic
-    public fun <T : Any> register(registry: Registry<T>, id: Int, key: Key, value: T): T = Krypton.registryManager.register(registry, id, key, value)
 
     /**
      * Creates a new registry with the given registry [key].

@@ -33,13 +33,4 @@ data class BlockHitResult(
     val position: Vector3i,
     val direction: Direction,
     val isInside: Boolean
-) : HitResult {
-
-    constructor(
-        clickLocation: Vector3d,
-        position: Vector3i,
-        direction: Direction,
-        missed: Boolean,
-        isInside: Boolean
-    ) : this(clickLocation, if (missed) HitResult.Type.MISS else HitResult.Type.BLOCK, position, direction, isInside)
-}
+) : HitResult

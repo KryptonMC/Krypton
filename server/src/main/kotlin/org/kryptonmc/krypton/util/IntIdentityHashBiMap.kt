@@ -20,6 +20,13 @@ package org.kryptonmc.krypton.util
 
 import kotlin.math.max
 
+/**
+ * An IntBiMap implementation that uses identity equality to store values.
+ *
+ * This should be replaced, as it is a copy and translation of vanilla's
+ * `CrudeIncrementalIntIdentityHashBiMap`. It is also not entirely clear why it
+ * is necessary.
+ */
 @Suppress("UNCHECKED_CAST") // Our casts are fine and should always succeed
 class IntIdentityHashBiMap<K>(initialCapacity: Int) : IntBiMap<K> {
 
@@ -116,6 +123,7 @@ class IntIdentityHashBiMap<K>(initialCapacity: Int) : IntBiMap<K> {
         private val EMPTY_SLOT = null
         private const val LOAD_FACTOR = 0.8F
 
+        @JvmStatic
         private fun murmurHash3Mixer(value: Int): Int {
             var temp = value xor value ushr 16
             temp *= -2048144789

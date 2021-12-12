@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.world.chunk
 
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.Heightmap
 import java.util.EnumSet
 
@@ -35,7 +34,7 @@ class ChunkStatus private constructor(
 
     fun isOrAfter(other: ChunkStatus): Boolean = index >= other.index
 
-    override fun toString(): String = InternalRegistries.CHUNK_STATUS[this].asString()
+    override fun toString(): String = "ChunkStatus(name=$name, parent=$parent, range=$range, heightmapsAfter=$heightmapsAfter, type=$type)"
 
     enum class Type {
 
@@ -53,36 +52,27 @@ class ChunkStatus private constructor(
             Heightmap.Type.MOTION_BLOCKING_NO_LEAVES
         )
 
-        private val EMPTY = register("empty", null, -1, PRE_FEATURES, Type.PROTO)
-        private val STRUCTURE_STARTS = register("structure_starts", EMPTY, 0, PRE_FEATURES, Type.PROTO)
-        private val STRUCTURE_REFERENCES = register(
-            "structure_references",
-            STRUCTURE_STARTS,
-            8,
-            PRE_FEATURES,
-            Type.PROTO
-        )
-        val BIOMES: ChunkStatus = register("biomes", STRUCTURE_REFERENCES, 0, PRE_FEATURES, Type.PROTO)
-        private val NOISE = register("noise", BIOMES, 8, PRE_FEATURES, Type.PROTO)
-        private val SURFACE = register("surface", NOISE, 0, PRE_FEATURES, Type.PROTO)
-        private val CARVERS = register("carvers", SURFACE, 0, PRE_FEATURES, Type.PROTO)
-        private val LIQUID_CARVERS = register("liquid_carvers", CARVERS, 0, POST_FEATURES, Type.PROTO)
-        private val FEATURES = register("features", LIQUID_CARVERS, 8, POST_FEATURES, Type.PROTO)
-        private val LIGHT = register("light", FEATURES, 1, POST_FEATURES, Type.PROTO)
-        private val SPAWN = register("spawn", LIGHT, 0, POST_FEATURES, Type.PROTO)
-        private val HEIGHTMAPS = register("heightmaps", SPAWN, 0, POST_FEATURES, Type.PROTO)
-        val FULL: ChunkStatus = register("full", HEIGHTMAPS, 0, POST_FEATURES, Type.FULL)
+        private val EMPTY = create("empty", null, -1, PRE_FEATURES, Type.PROTO)
+        private val STRUCTURE_STARTS = create("structure_starts", EMPTY, 0, PRE_FEATURES, Type.PROTO)
+        private val STRUCTURE_REFERENCES = create("structure_references", STRUCTURE_STARTS, 8, PRE_FEATURES, Type.PROTO)
+        val BIOMES: ChunkStatus = create("biomes", STRUCTURE_REFERENCES, 0, PRE_FEATURES, Type.PROTO)
+        private val NOISE = create("noise", BIOMES, 8, PRE_FEATURES, Type.PROTO)
+        private val SURFACE = create("surface", NOISE, 0, PRE_FEATURES, Type.PROTO)
+        private val CARVERS = create("carvers", SURFACE, 0, PRE_FEATURES, Type.PROTO)
+        private val LIQUID_CARVERS = create("liquid_carvers", CARVERS, 0, POST_FEATURES, Type.PROTO)
+        private val FEATURES = create("features", LIQUID_CARVERS, 8, POST_FEATURES, Type.PROTO)
+        private val LIGHT = create("light", FEATURES, 1, POST_FEATURES, Type.PROTO)
+        private val SPAWN = create("spawn", LIGHT, 0, POST_FEATURES, Type.PROTO)
+        private val HEIGHTMAPS = create("heightmaps", SPAWN, 0, POST_FEATURES, Type.PROTO)
+        val FULL: ChunkStatus = create("full", HEIGHTMAPS, 0, POST_FEATURES, Type.FULL)
 
         @JvmStatic
-        private fun register(
+        private fun create(
             name: String,
             parent: ChunkStatus?,
             range: Int,
             heightmapsAfter: EnumSet<Heightmap.Type>,
             type: Type
-        ): ChunkStatus = InternalRegistries.CHUNK_STATUS.register(
-            name,
-            ChunkStatus(name, parent, range, heightmapsAfter, type)
-        )
+        ): ChunkStatus = ChunkStatus(name, parent, range, heightmapsAfter, type)
     }
 }

@@ -19,7 +19,6 @@
 package org.kryptonmc.krypton.entity.animal
 
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.api.entity.LivingEntity
 import org.kryptonmc.api.entity.animal.Tamable
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.scoreboard.Team
@@ -28,7 +27,6 @@ import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
-import java.util.Optional
 import java.util.UUID
 
 abstract class KryptonTamable(
@@ -51,8 +49,8 @@ abstract class KryptonTamable(
             data[MetadataKeys.TAMABLE.FLAGS] = if (value) (existing or 1).toByte() else (existing and -2).toByte()
         }
     var ownerUUID: UUID?
-        get() = data[MetadataKeys.TAMABLE.OWNER].orElse(null)
-        set(value) = data.set(MetadataKeys.TAMABLE.OWNER, Optional.ofNullable(value))
+        get() = data[MetadataKeys.TAMABLE.OWNER]
+        set(value) = data.set(MetadataKeys.TAMABLE.OWNER, value)
     override val owner: KryptonPlayer?
         get() {
             val uuid = ownerUUID ?: return null

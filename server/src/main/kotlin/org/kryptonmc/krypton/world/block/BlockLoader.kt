@@ -27,8 +27,7 @@ import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.PushReaction
 import org.kryptonmc.api.block.RenderShape
 import org.kryptonmc.api.block.property.Property
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.KryptonRegistryManager
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.util.IntHashBiMap
 import org.kryptonmc.krypton.util.KryptonDataLoader
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
@@ -38,15 +37,20 @@ object BlockLoader : KryptonDataLoader("blocks") {
 
     private val KEY_MAP = mutableMapOf<String, KryptonBlock>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
-    val STATES = IntHashBiMap<Block>()
 
+    @JvmField
+    val STATES: IntHashBiMap<Block> = IntHashBiMap()
+
+    @JvmStatic
     fun fromKey(key: String): KryptonBlock? {
         val id = if (key.indexOf(':') == -1) "minecraft:$key" else key
         return KEY_MAP[id]
     }
 
+    @JvmStatic
     fun fromKey(key: Key): KryptonBlock? = fromKey(key.asString())
 
+    @JvmStatic
     fun properties(
         key: String,
         properties: Map<String, String>
@@ -58,14 +62,16 @@ object BlockLoader : KryptonDataLoader("blocks") {
             value as JsonObject
             // Map properties
             val propertyEntry = PropertyEntry()
-            val availableProperties = ImmutableSet.copyOf(value["properties"].asJsonArray.mapTo(mutableSetOf()) { element ->
-                val string = element.asString.let { if (it == "LEVEL") "LEVEL_FLOWING" else it }
+            val availableProperties = value["properties"].asJsonArray.mapTo(mutableSetOf()) { element ->
+                var string = element.asString
+                if (string == "LEVEL") string = "LEVEL_FLOWING"
                 KryptonPropertyFactory.PROPERTIES[string]!!
-            })
+            }
+            val immutableProperties = ImmutableSet.copyOf(availableProperties)
 
             // Iterate states
             value.remove("states").asJsonArray.forEach {
-                val (properties, block) = it.asJsonObject.retrieveState(key, availableProperties, value)
+                val (properties, block) = it.asJsonObject.retrieveState(key, immutableProperties, value)
                 propertyEntry.properties[properties] = block
             }
 
@@ -77,25 +83,26 @@ object BlockLoader : KryptonDataLoader("blocks") {
 
             // Register to registry
             val namespacedKey = Key.key(key)
-            if (InternalRegistries.BLOCK.contains(namespacedKey)) return@forEach
-            KryptonRegistryManager.register(InternalRegistries.BLOCK, defaultBlock.id, key, defaultBlock)
+            if (Registries.BLOCK.contains(namespacedKey)) return@forEach
+            Registries.BLOCK.register(defaultBlock.id, namespacedKey, defaultBlock)
         }
     }
 
+    @JvmStatic
     private fun JsonObject.retrieveState(
         key: String,
         availableProperties: Set<Property<*>>,
         blockObject: JsonObject
     ): Pair<Map<String, String>, KryptonBlock> {
         val stateId = get("stateId").asInt
-        val propertyMap = ImmutableMap.copyOf(get("properties").asJsonObject.entrySet().associate {
-            it.key to it.value.asString.lowercase()
-        })
-        val block = createBlock(Key.key(key), blockObject, this, availableProperties, propertyMap)
+        val propertyMap = get("properties").asJsonObject.entrySet().associate { it.key to it.value.asString.lowercase() }
+        val properties = ImmutableMap.copyOf(propertyMap)
+        val block = createBlock(Key.key(key), blockObject, this, availableProperties, properties)
         STATES[block] = stateId
-        return propertyMap to block
+        return properties to block
     }
 
+    @JvmStatic
     private fun createBlock(
         key: Key,
         block: JsonObject,
@@ -134,9 +141,7 @@ object BlockLoader : KryptonDataLoader("blocks") {
         state["collisionShapeFullBlock"].asBoolean,
         block["canRespawnIn"].asBoolean,
         state["toolRequired"].asBoolean,
-        state["renderShape"]?.asString?.let {
-            if (it == "ENTITYBLOCK_ANIMATED") RenderShape.ANIMATED_ENTITY_BLOCK else RenderShape.valueOf(it)
-        } ?: RenderShape.MODEL,
+        convertRenderShape(state["renderShape"]?.asString),
         PushReaction.valueOf(state["pushReaction"].asString),
         block["correspondingItem"]?.asString?.let { Key.key(it) },
         Key.key(state["fluidState"].asString),
@@ -144,8 +149,15 @@ object BlockLoader : KryptonDataLoader("blocks") {
         propertyMap
     )
 
+    @JvmStatic
+    private fun convertRenderShape(shape: String?): RenderShape {
+        if (shape == null) return RenderShape.MODEL
+        if (shape == "ENTITYBLOCK_ANIMATED") return RenderShape.ANIMATED_ENTITY_BLOCK
+        return RenderShape.valueOf(shape)
+    }
+
     private class PropertyEntry {
 
-        val properties = ConcurrentHashMap<Map<String, String>, KryptonBlock>()
+        val properties: MutableMap<Map<String, String>, KryptonBlock> = ConcurrentHashMap()
     }
 }

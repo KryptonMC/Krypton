@@ -58,6 +58,25 @@ abstract class KryptonMob(
     final override var isPersistent = false
     open var target: KryptonLivingEntity? = null
 
+    final override var hasAI: Boolean
+        get() = data[MetadataKeys.MOB.FLAGS].toInt() and 1 == 0
+        set(value) {
+            val flags = data[MetadataKeys.MOB.FLAGS].toInt()
+            data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 1 else flags and -2).toByte()
+        }
+    final override var mainHand: MainHand
+        get() = if (data[MetadataKeys.MOB.FLAGS].toInt() and 2 != 0) MainHand.LEFT else MainHand.RIGHT
+        set(value) {
+            val flags = data[MetadataKeys.MOB.FLAGS].toInt()
+            data[MetadataKeys.MOB.FLAGS] = (if (value == MainHand.LEFT) flags or 1 else flags and -2).toByte()
+        }
+    final override var isAggressive: Boolean
+        get() = data[MetadataKeys.MOB.FLAGS].toInt() and 4 != 0
+        set(value) {
+            val flags = data[MetadataKeys.MOB.FLAGS].toInt()
+            data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 4 else flags and -5).toByte()
+        }
+
     init {
         data.add(MetadataKeys.MOB.FLAGS)
     }
@@ -132,25 +151,6 @@ abstract class KryptonMob(
         // TODO: Handle spawn egg
         return InteractionResult.PASS
     }
-
-    final override var hasAI: Boolean
-        get() = data[MetadataKeys.MOB.FLAGS].toInt() and 1 == 0
-        set(value) {
-            val flags = data[MetadataKeys.MOB.FLAGS].toInt()
-            data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 1 else flags and -2).toByte()
-        }
-    final override var mainHand: MainHand
-        get() = if (data[MetadataKeys.MOB.FLAGS].toInt() and 2 != 0) MainHand.LEFT else MainHand.RIGHT
-        set(value) {
-            val flags = data[MetadataKeys.MOB.FLAGS].toInt()
-            data[MetadataKeys.MOB.FLAGS] = (if (value == MainHand.LEFT) flags or 1 else flags and -2).toByte()
-        }
-    final override var isAggressive: Boolean
-        get() = data[MetadataKeys.MOB.FLAGS].toInt() and 4 != 0
-        set(value) {
-            val flags = data[MetadataKeys.MOB.FLAGS].toInt()
-            data[MetadataKeys.MOB.FLAGS] = (if (value) flags or 4 else flags and -5).toByte()
-        }
 
     companion object {
 

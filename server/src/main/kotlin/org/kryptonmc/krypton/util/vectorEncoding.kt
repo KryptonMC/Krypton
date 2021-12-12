@@ -20,16 +20,20 @@ package org.kryptonmc.krypton.util
 
 import org.spongepowered.math.vector.Vector3i
 
-fun Vector3i.asLong(): Long {
-    var temp = 0L
-    temp = temp or (x().toLong() and Vectors.PACKED_X_Z_MASK shl Vectors.X_OFFSET)
-    temp = temp or (y().toLong() and Vectors.PACKED_Y_MASK)
-    return temp or (z().toLong() and Vectors.PACKED_X_Z_MASK shl Vectors.Z_OFFSET)
-}
+/**
+ * The encoding here is decently efficient. It places the X in the first 26
+ * bits (most significant), then the Z in the "middle" 26 bits, followed by
+ * the Y value in the last 12 bits (least significant).
+ *
+ * For example, for X = 13, Y = 2, and Z = 2021, the encoded form would be
+ * calculated by:
+ * `((x & 0x3FFFFFF) >> 38) | ((Z & 0x3FFFFFF) << 12) | (y & 0xFFF)`.
+ *
+ * See [here](https://wiki.vg/Protocol#Position)
+ */
+fun Vector3i.asLong(): Long = ((x().toLong() and 0x3FFFFFF) shl 38) or ((z().toLong() and 0x3FFFFFF) shl 12) or (y().toLong() and 0xFFF)
 
 fun Long.toVector(): Vector3i = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())
-
-fun Long.decodeBlockPosition(): Vector3i = Vector3i((this shr 38).toInt(), (this and 0xFFF).toInt(), (this shl 26 shr 38).toInt())
 
 fun Long.decodeBlockX(): Int = (this shr 38).toInt()
 

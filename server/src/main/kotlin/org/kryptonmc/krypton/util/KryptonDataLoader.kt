@@ -37,8 +37,9 @@ abstract class KryptonDataLoader(fileSuffix: String) {
             return
         }
 
-        val inputStream = ClassLoader.getSystemResourceAsStream(fileName)
-            ?: error("Could not find $fileName bundled in JAR! Please report to Krypton!")
+        val inputStream = checkNotNull(ClassLoader.getSystemResourceAsStream(fileName)) {
+            "Could not find $fileName bundled in JAR! Please report to Krypton!"
+        }
         val data = GSON.fromJson<JsonObject>(inputStream.reader())
         load(data)
         isLoaded = true

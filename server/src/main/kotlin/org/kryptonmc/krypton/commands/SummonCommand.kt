@@ -20,10 +20,8 @@ package org.kryptonmc.krypton.commands
 
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.SuggestionProviders
@@ -38,6 +36,7 @@ import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.command.literal
+import org.kryptonmc.krypton.command.toExceptionType
 import org.kryptonmc.krypton.util.isInSpawnableBounds
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
@@ -45,8 +44,8 @@ import org.spongepowered.math.vector.Vector3d
 
 object SummonCommand : InternalCommand {
 
-    private val ERROR_FAILED = SimpleCommandExceptionType(Component.translatable("commands.summon.failed").toMessage())
-    private val ERROR_INVALID_POSITION = SimpleCommandExceptionType(Component.translatable("commands.summon.invalidPosition").toMessage())
+    private val ERROR_FAILED = Component.translatable("commands.summon.failed").toExceptionType()
+    private val ERROR_INVALID_POSITION = Component.translatable("commands.summon.invalidPosition").toExceptionType()
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
         dispatcher.register(literal("summon") {

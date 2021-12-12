@@ -31,7 +31,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.kryptonmc.krypton.command.argument.serializer.DoubleArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.FlaggedArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.FloatArgumentSerializer
-import org.kryptonmc.krypton.command.argument.serializer.IntArgumentSerializer
+import org.kryptonmc.krypton.command.argument.serializer.IntegerArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.LongArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.StringArgumentSerializer
 import org.kryptonmc.krypton.util.readString
@@ -70,7 +70,7 @@ class ArgumentTests {
     fun `serializer flag creating`() {
         DoubleArgumentSerializer.checkFlags()
         FloatArgumentSerializer.checkFlags()
-        IntArgumentSerializer.checkFlags()
+        IntegerArgumentSerializer.checkFlags()
         LongArgumentSerializer.checkFlags()
     }
 
@@ -88,7 +88,7 @@ class ArgumentTests {
         assertEquals(10F, buf.readFloat())
         assertEquals(20F, buf.readFloat())
 
-        IntArgumentSerializer.write(buf, IntegerArgumentType.integer(10, 20))
+        IntegerArgumentSerializer.write(buf, IntegerArgumentType.integer(10, 20))
         buf.readByte()
         assertEquals(10, buf.readInt())
         assertEquals(20, buf.readInt())

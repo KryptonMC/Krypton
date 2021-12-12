@@ -26,7 +26,7 @@ import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.commands.KryptonPermission
 
 fun CommandContext<Sender>.rawArguments(): String {
-    val firstSpace = input.indexOf(' ')
+    val firstSpace = input.indexOf(CommandDispatcher.ARGUMENT_SEPARATOR_CHAR)
     if (firstSpace == -1) return ""
     return input.substring(firstSpace + 1)
 }

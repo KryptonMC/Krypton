@@ -26,12 +26,10 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.tags.ItemTags
 import org.kryptonmc.krypton.entity.KryptonLivingEntity
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.util.getIfPresent
 import org.kryptonmc.krypton.util.toUUID
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntArrayTag
-import java.util.Optional
 import java.util.UUID
 
 class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, ATTRIBUTES), Fox {
@@ -61,11 +59,11 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
         get() = getFlag(128)
         set(value) = setFlag(128, value)
     override var firstTrusted: UUID?
-        get() = data[MetadataKeys.FOX.FIRST_TRUSTED].getIfPresent()
-        set(value) = data.set(MetadataKeys.FOX.FIRST_TRUSTED, Optional.ofNullable(value))
+        get() = data[MetadataKeys.FOX.FIRST_TRUSTED]
+        set(value) = data.set(MetadataKeys.FOX.FIRST_TRUSTED, value)
     override var secondTrusted: UUID?
-        get() = data[MetadataKeys.FOX.SECOND_TRUSTED].getIfPresent()
-        set(value) = data.set(MetadataKeys.FOX.SECOND_TRUSTED, Optional.ofNullable(value))
+        get() = data[MetadataKeys.FOX.SECOND_TRUSTED]
+        set(value) = data.set(MetadataKeys.FOX.SECOND_TRUSTED, value)
     override var target: KryptonLivingEntity?
         get() = super.target
         set(value) {
@@ -116,10 +114,10 @@ class KryptonFox(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.FOX, AT
     }
 
     private fun addTrustedId(uuid: UUID?) {
-        if (data[MetadataKeys.FOX.FIRST_TRUSTED].isPresent) {
-            data[MetadataKeys.FOX.SECOND_TRUSTED] = Optional.ofNullable(uuid)
+        if (data[MetadataKeys.FOX.FIRST_TRUSTED] != null) {
+            data[MetadataKeys.FOX.SECOND_TRUSTED] = uuid
         } else {
-            data[MetadataKeys.FOX.FIRST_TRUSTED] = Optional.ofNullable(uuid)
+            data[MetadataKeys.FOX.FIRST_TRUSTED] = uuid
         }
     }
 

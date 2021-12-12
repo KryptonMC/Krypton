@@ -18,18 +18,26 @@
  */
 package org.kryptonmc.krypton.config.serializer
 
+import org.kryptonmc.api.util.StringSerializable
 import org.spongepowered.configurate.serialize.ScalarSerializer
 import org.spongepowered.configurate.serialize.SerializationException
 import java.lang.reflect.Type
-import java.util.Locale
+import java.util.function.IntFunction
 import java.util.function.Predicate
+import kotlin.reflect.KClass
 
-object LocaleTypeSerializer : ScalarSerializer<Locale>(Locale::class.java) {
+sealed class EnumSerializer<E>(
+    type: KClass<E>,
+    private val typeName: String,
+    private val fromId: IntFunction<E?>,
+    private val fromName: (String) -> E?
+) : ScalarSerializer<E>(type.java) where E : Enum<E>, E : StringSerializable {
 
-    override fun serialize(item: Locale, typeSupported: Predicate<Class<*>>): Any = item.toString()
+    override fun serialize(item: E, typeSupported: Predicate<Class<*>>?): Any = item.serialized
 
-    override fun deserialize(type: Type, source: Any): Locale {
-        if (source !is String) throw SerializationException("Locale must be a string!")
-        return Locale.forLanguageTag(source)
+    override fun deserialize(type: Type, source: Any): E = when (source) {
+        is Int -> fromId.apply(source) ?: throw SerializationException("$source is not a valid $typeName ID!")
+        is String -> fromName(source.lowercase()) ?: throw SerializationException("$source is not a valid $typeName name!")
+        else -> throw SerializationException("Expected either an integer or a string for this $typeName, got ${source::class.simpleName}!")
     }
 }

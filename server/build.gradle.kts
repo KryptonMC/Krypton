@@ -113,7 +113,10 @@ license {
         "**/plugin/loader/LoadedPluginDescriptionCandidate.kt",
         "**/plugin/loader/PluginLoader.kt",
         "**/scheduling/KryptonScheduler.kt",
-        "**/util/bytebufs.kt"
+        "**/util/bytebufs.kt",
+        // Sponge derivatives, with a special header
+        "**/console/BrigadierCompleter.kt",
+        "**/console/BrigadierHighlighter.kt"
     )
 }
 

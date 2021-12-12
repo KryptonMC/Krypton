@@ -20,20 +20,48 @@ package org.kryptonmc.krypton.command.arguments.coordinates
 
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.krypton.command.toExceptionType
 
+/**
+ * Various exceptions that may be thrown as a result of trying to parse
+ * coordinates.
+ */
 object CoordinateExceptions {
 
+    /**
+     * Thrown when a user fails to input a value for a coordinate.
+     *
+     * This is only used by local coordinates, as they are the only coordinates
+     * that require values for all 3 coordinates to be inputted.
+     *
+     * For example, the following are invalid and will throw this exception:
+     * - `^ ^ ^`
+     * - `^3 ^ ^4`
+     * - `^6 ^2 ^`
+     */
     @JvmField
-    val POSITION_EXPECTED_DOUBLE: SimpleCommandExceptionType = SimpleCommandExceptionType(
-        Component.translatable("argument.pos.missing.double").toMessage()
-    )
+    val POSITION_EXPECTED_DOUBLE: SimpleCommandExceptionType = Component.translatable("argument.pos.missing.double").toExceptionType()
 
+    /**
+     * Thrown when a user fails to input all 3 coordinates that are required.
+     *
+     * For example, the following are invalid and will throw this exception:
+     * - `^3 ^2`
+     * - `~4 ~`
+     * - `6 4`
+     */
     @JvmField
-    val POSITION_3D_INCOMPLETE: SimpleCommandExceptionType = SimpleCommandExceptionType(
-        Component.translatable("argument.pos3d.incomplete").toMessage()
-    )
+    val POSITION_3D_INCOMPLETE: SimpleCommandExceptionType = Component.translatable("argument.pos3d.incomplete").toExceptionType()
 
+    /**
+     * Thrown when a user inputs coordinates of different types in to the same
+     * string.
+     *
+     * For example, the following are invalid and will throw this exception:
+     * - `^3 ~4 8`
+     * - `4 ~2 9`
+     * - `~6 ^4 0`
+     */
     @JvmField
-    val POSITION_MIXED_TYPE: SimpleCommandExceptionType = SimpleCommandExceptionType(Component.translatable("argument.pos.mixed").toMessage())
+    val POSITION_MIXED_TYPE: SimpleCommandExceptionType = Component.translatable("argument.pos.mixed").toExceptionType()
 }

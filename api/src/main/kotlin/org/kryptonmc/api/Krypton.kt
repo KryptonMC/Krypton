@@ -16,6 +16,7 @@ import org.kryptonmc.api.registry.RegistryManager
 import org.kryptonmc.api.scheduling.Scheduler
 import org.kryptonmc.api.service.ServicesManager
 import org.kryptonmc.api.tags.TagManager
+import org.kryptonmc.api.user.UserManager
 import org.kryptonmc.api.util.FactoryProvider
 import org.kryptonmc.api.world.WorldManager
 
@@ -94,6 +95,13 @@ public object Krypton {
     @JvmStatic
     public val profileCache: ProfileCache
         @JvmName("profileCache") get() = server.profileCache
+
+    /**
+     * The user manager for the server.
+     */
+    @JvmStatic
+    public val userManager: UserManager
+        @JvmName("userManager") get() = server.userManager
 
     /**
      * The scheduler for the server.

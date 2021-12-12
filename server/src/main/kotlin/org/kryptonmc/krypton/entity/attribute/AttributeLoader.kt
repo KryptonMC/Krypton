@@ -19,15 +19,10 @@
 package org.kryptonmc.krypton.entity.attribute
 
 import com.google.gson.JsonObject
-import me.bardy.gsonkt.fromJson
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import org.kryptonmc.krypton.KryptonPlatform
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.KryptonRegistryManager
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.util.KryptonDataLoader
-import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.world.block.BlockLoader
 
 object AttributeLoader : KryptonDataLoader("attributes") {
 
@@ -43,9 +38,8 @@ object AttributeLoader : KryptonDataLoader("attributes") {
             val min = range["minValue"].asDouble
             val max = range["maxValue"].asDouble
 
-            if (InternalRegistries.ATTRIBUTE.contains(namespacedKey)) return@forEach
-            KryptonRegistryManager.register(
-                InternalRegistries.ATTRIBUTE,
+            if (Registries.ATTRIBUTE.contains(namespacedKey)) return@forEach
+            Registries.ATTRIBUTE.register(
                 namespacedKey,
                 KryptonAttributeType(namespacedKey, defaultValue, min, max, clientSync, Component.translatable(translationKey))
             )

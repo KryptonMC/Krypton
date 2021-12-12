@@ -20,6 +20,10 @@ package org.kryptonmc.krypton.command.meta
 
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
 
+/**
+ * This doesn't extend [KryptonCommandMeta] because we want it to be a record,
+ * and records cannot have superclasses.
+ */
 @JvmRecord
 data class KryptonSimpleCommandMeta(
     override val name: String,

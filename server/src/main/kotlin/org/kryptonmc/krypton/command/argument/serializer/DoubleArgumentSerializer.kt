@@ -21,6 +21,17 @@ package org.kryptonmc.krypton.command.argument.serializer
 import com.mojang.brigadier.arguments.DoubleArgumentType
 import io.netty.buffer.ByteBuf
 
+/**
+ * Double argument types are serialized with flags indicating if the minimum
+ * value is equal to -[Double.MAX_VALUE], and the maximum value is equal to
+ * [Double.MAX_VALUE], which are the minimum and maximum values that can be
+ * used with Brigadier's double argument type.
+ *
+ * We then further write the minimum and maximum values, if they are not equal
+ * to -[Double.MAX_VALUE] and [Double.MAX_VALUE] respectively.
+ *
+ * See [here](https://wiki.vg/Command_Data#brigadier:double)
+ */
 object DoubleArgumentSerializer : FlaggedArgumentSerializer<DoubleArgumentType> {
 
     override fun write(buf: ByteBuf, value: DoubleArgumentType) {

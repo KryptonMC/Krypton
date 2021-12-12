@@ -32,13 +32,13 @@ import io.netty.handler.codec.EncoderException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toJsonString
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.world.block.BlockHitResult
 import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
 import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
@@ -217,7 +217,7 @@ fun ByteBuf.readItem(): KryptonItemStack {
     val id = readVarInt()
     val count = readByte()
     val nbt = readNBT().mutable()
-    return KryptonItemStack(InternalRegistries.ITEM[id], count.toInt(), KryptonMetaHolder(nbt))
+    return KryptonItemStack(Registries.ITEM[id], count.toInt(), KryptonMetaHolder(nbt))
 }
 
 fun ByteBuf.writeItem(item: KryptonItemStack) {
@@ -226,7 +226,7 @@ fun ByteBuf.writeItem(item: KryptonItemStack) {
         return
     }
     writeBoolean(true)
-    writeVarInt(InternalRegistries.ITEM.idOf(item.type))
+    writeVarInt(Registries.ITEM.idOf(item.type))
     writeByte(item.amount)
     writeNBT(item.meta.nbt)
 }
@@ -238,7 +238,7 @@ fun ByteBuf.writeVector(vector: Vector3i) {
 }
 
 fun ByteBuf.writeVector(x: Int, y: Int, z: Int) {
-    writeLong(x.toLong() and 0x3FFFFFF shl 38 or (z.toLong() and 0x3FFFFFF shl 12) or (y.toLong() and 0xFFF))
+    writeLong(((x.toLong() and 0x3FFFFFF) shl 38) or ((z.toLong() and 0x3FFFFFF) shl 12) or (y.toLong() and 0xFFF))
 }
 
 fun ByteBuf.writeAngle(angle: Float) {
@@ -262,9 +262,9 @@ fun ByteBuf.writeEnum(enum: Enum<*>) {
     writeVarInt(enum.ordinal)
 }
 
-fun <T> ByteBuf.writeOptional(optional: Optional<T>, presentAction: (T) -> Unit) {
-    writeBoolean(optional.isPresent)
-    if (optional.isPresent) presentAction(optional.get())
+fun <T> ByteBuf.writeOptional(value: T?, presentAction: (T) -> Unit) {
+    writeBoolean(value != null)
+    if (value != null) presentAction(value)
 }
 
 fun <E> ByteBuf.writeCollection(collection: Collection<E>, action: (E) -> Unit) {
@@ -294,28 +294,6 @@ fun <T> ByteBuf.encode(encoder: CompoundEncoder<T>, value: T) {
         throw EncoderException("Failed to encode value $value with encoder $encoder!", exception)
     }
     writeNBT(result)
-}
-
-fun ByteBuf.readBlockHitResult(): BlockHitResult {
-    val position = readVector()
-    val direction = readEnum<Direction>()
-    val cursorX = readFloat()
-    val cursorY = readFloat()
-    val cursorZ = readFloat()
-    val inside = readBoolean()
-    val clickedPosition = Vector3d(position.x() + cursorX, position.y() + cursorY, position.z() + cursorZ)
-    return BlockHitResult(clickedPosition, position, direction, false, inside)
-}
-
-fun ByteBuf.writeBlockHitResult(hitResult: BlockHitResult) {
-    val position = hitResult.position
-    writeVector(position)
-    writeEnum(hitResult.direction)
-    val clickLocation = hitResult.clickLocation
-    writeFloat((clickLocation.x() - position.x()).toFloat())
-    writeFloat((clickLocation.y() - position.y()).toFloat())
-    writeFloat((clickLocation.z() - position.z()).toFloat())
-    writeBoolean(hitResult.isInside)
 }
 
 private val VARINT_EXACT_BYTE_LENGTHS = IntArray(33) { ceil((31.0 - (it - 1)) / 7.0).toInt() }.apply { this[32] = 1 }

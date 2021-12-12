@@ -16,16 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.util
+package org.kryptonmc.krypton.command
 
-import org.spongepowered.math.GenericMath
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
+import net.kyori.adventure.text.Component
+import org.kryptonmc.api.adventure.toMessage
 
-object Vectors {
-
-    private val PACKED_X_Z = 1 + GenericMath.roundUpPow2(30000000).log2()
-    val PACKED_Y = 64 - PACKED_X_Z * 2
-    val PACKED_X_Z_MASK = (1L shl PACKED_X_Z) - 1L
-    val PACKED_Y_MASK = (1L shl PACKED_Y) - 1L
-    val X_OFFSET = PACKED_Y + PACKED_X_Z
-    val Z_OFFSET = PACKED_Y
-}
+fun Component.toExceptionType(): SimpleCommandExceptionType = SimpleCommandExceptionType(toMessage())

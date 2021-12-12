@@ -30,7 +30,6 @@ import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.serialization.Codecs
 import org.kryptonmc.krypton.util.serialization.CompoundCodec
 import org.kryptonmc.krypton.util.serialization.decode
@@ -89,9 +88,9 @@ data class KryptonBlock(
         return requireNotNull(BlockLoader.properties(key().asString(), newProperties)) { "Invalid properties $newValues for block ${key()}!" }
     }
 
-    override fun asItem(): ItemType? = if (itemKey != null) InternalRegistries.ITEM[itemKey] else null
+    override fun asItem(): ItemType? = if (itemKey != null) Registries.ITEM[itemKey] else null
 
-    override fun asFluid(): Fluid = InternalRegistries.FLUID[fluidKey]
+    override fun asFluid(): Fluid = Registries.FLUID[fluidKey]
 
     override fun key(): Key = key
 

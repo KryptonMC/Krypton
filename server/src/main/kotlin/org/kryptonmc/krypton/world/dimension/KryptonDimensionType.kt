@@ -23,7 +23,6 @@ import org.kryptonmc.api.world.dimension.DimensionEffect
 import org.kryptonmc.api.world.dimension.DimensionEffects
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.Vectors
 import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.nbt.compound
@@ -159,12 +158,11 @@ data class KryptonDimensionType(
         private const val MAXIMUM_COORDINATE_SCALE = 3.0E7
         private const val MINIMUM_HEIGHT = 16
 
-        @JvmField
-        val Y_SIZE = (1 shl Vectors.PACKED_Y) - 32
-        @JvmField
-        val MAX_Y = (Y_SIZE shr 1) - 1
-        @JvmField
-        val MIN_Y = MAX_Y - Y_SIZE + 1
+        // The number of bits used to encode the Y value of a block position in to a long. See https://wiki.vg/Protocol#Position
+        private const val ENCODED_Y_BITS = 12
+        private const val Y_SIZE = (1 shl ENCODED_Y_BITS) - 32
+        private const val MAX_Y = (Y_SIZE shr 1) - 1
+        private const val MIN_Y = MAX_Y - Y_SIZE + 1
         private val MINIMUM_Y_CODEC = Codecs.range(MIN_Y, MAX_Y)
         private val HEIGHT_CODEC = Codecs.range(MINIMUM_HEIGHT, Y_SIZE)
         private val LOGICAL_HEIGHT_CODEC = Codecs.range(0, Y_SIZE)

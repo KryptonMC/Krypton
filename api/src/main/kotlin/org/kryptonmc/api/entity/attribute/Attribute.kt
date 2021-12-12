@@ -39,7 +39,7 @@ public interface Attribute {
      * [value].
      */
     @get:JvmName("modifiers")
-    public val modifiers: Set<AttributeModifier>
+    public val modifiers: Collection<AttributeModifier>
 
     /**
      * Gets the modifier with the given [uuid], or returns null if there is no

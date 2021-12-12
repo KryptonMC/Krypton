@@ -22,6 +22,17 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.util.writeEnum
 
+/**
+ * String argument types only serialize the type of string argument they are.
+ * The possible values are:
+ * * SINGLE_WORD - reads until it finds a space
+ * * QUOTABLE_PHRASE - if the string starts with ", keeps reading until another
+ *   " appears closing it off (can escape with \), otherwise behaves the same
+ *   as SINGLE_WORD
+ * * GREEDY_STRING - reads until there is nothing more to be read
+ *
+ * See [here](https://wiki.vg/Command_Data#brigadier:string)
+ */
 object StringArgumentSerializer : ArgumentSerializer<StringArgumentType> {
 
     override fun write(buf: ByteBuf, value: StringArgumentType) {

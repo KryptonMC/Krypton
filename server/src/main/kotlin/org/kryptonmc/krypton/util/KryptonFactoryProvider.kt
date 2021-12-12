@@ -31,6 +31,7 @@ import org.kryptonmc.api.entity.EntityDimensions
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.attribute.AttributeModifier
 import org.kryptonmc.api.entity.attribute.AttributeType
+import org.kryptonmc.api.entity.hanging.Picture
 import org.kryptonmc.api.fluid.Fluid
 import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemRarity
@@ -41,6 +42,7 @@ import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.scoreboard.Objective
 import org.kryptonmc.api.scoreboard.Team
+import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.api.util.BoundingBox
 import org.kryptonmc.api.util.FactoryNotFoundException
 import org.kryptonmc.api.util.FactoryProvider
@@ -63,6 +65,7 @@ import org.kryptonmc.krypton.entity.KryptonEntityDimensions
 import org.kryptonmc.krypton.entity.KryptonEntityType
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeModifier
 import org.kryptonmc.krypton.entity.attribute.KryptonAttributeType
+import org.kryptonmc.krypton.entity.hanging.KryptonPicture
 import org.kryptonmc.krypton.inventory.KryptonInventoryType
 import org.kryptonmc.krypton.item.KryptonItemRarity
 import org.kryptonmc.krypton.item.KryptonItemStack
@@ -70,6 +73,7 @@ import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.item.meta.KryptonDyeColor
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourcePack
+import org.kryptonmc.krypton.statistic.KryptonStatisticType
 import org.kryptonmc.krypton.world.biome.KryptonAmbientAdditionsSettings
 import org.kryptonmc.krypton.world.biome.KryptonAmbientMoodSettings
 import org.kryptonmc.krypton.world.biome.KryptonAmbientParticleSettings
@@ -130,6 +134,8 @@ object KryptonFactoryProvider : FactoryProvider {
         register<Block.Factory>(KryptonBlock.Factory)
         register<Fluid.Factory>(KryptonFluid.Factory)
         register<DyeColor.Factory>(KryptonDyeColor.Factory)
+        register<Picture.Factory>(KryptonPicture.Factory)
+        register<StatisticType.Factory>(KryptonStatisticType.Factory)
     }
 }
 

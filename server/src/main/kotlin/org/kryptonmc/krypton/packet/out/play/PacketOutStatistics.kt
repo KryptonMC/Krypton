@@ -20,10 +20,10 @@ package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
 import it.unimi.dsi.fastutil.objects.Object2IntMap
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticType
 import org.kryptonmc.krypton.packet.Packet
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.writeMap
 import org.kryptonmc.krypton.util.writeVarInt
 
@@ -33,7 +33,7 @@ data class PacketOutStatistics(val statistics: Object2IntMap<Statistic<*>>) : Pa
     @Suppress("UNCHECKED_CAST")
     override fun write(buf: ByteBuf) {
         buf.writeMap(statistics, { _, key ->
-            buf.writeVarInt(InternalRegistries.STATISTIC_TYPE.idOf(key.type))
+            buf.writeVarInt(Registries.STATISTIC_TYPE.idOf(key.type))
             buf.writeVarInt((key.type as StatisticType<Any>).registry.idOf(key.value))
         }, ByteBuf::writeVarInt)
     }

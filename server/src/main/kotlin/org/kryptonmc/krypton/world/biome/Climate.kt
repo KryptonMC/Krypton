@@ -89,7 +89,7 @@ object Climate {
         private fun findBiomeIndex(target: TargetPoint): T = index.search(target) { node, parameters -> node.distance(parameters) }
     }
 
-    class ParameterPoint(
+    data class ParameterPoint(
         val temperature: Parameter,
         val humidity: Parameter,
         val continentalness: Parameter,

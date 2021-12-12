@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * For the original file that this file is derived from, see here:
- * https://github.com/VelocityPowered/Velocity/blob/dev/1.1.0/proxy/src/main/java/com/velocitypowered/proxy/plugin/VelocityEventManager.java
+ * https://github.com/PaperMC/Velocity/blob/0097359a99c23de4fc6b92c59a401a10208b4c4a/proxy/src/main/java/com/velocitypowered/proxy/plugin/VelocityEventManager.java
  */
 package org.kryptonmc.krypton.plugin
 
@@ -98,8 +98,9 @@ object KryptonEventManager : EventManager {
         registerUnchecked(plugin, listener)
     }
 
-    override fun <E> register(plugin: Any, eventClass: Class<E>, handler: EventHandler<E>) =
+    override fun <E> register(plugin: Any, eventClass: Class<E>, handler: EventHandler<E>) {
         register(plugin, eventClass, ListenerPriority.MEDIUM, handler)
+    }
 
     override fun <E> register(plugin: Any, eventClass: Class<E>, priority: ListenerPriority, handler: EventHandler<E>) {
         checkPlugin(plugin)
@@ -108,7 +109,7 @@ object KryptonEventManager : EventManager {
     }
 
     override fun <E> fire(event: E): CompletableFuture<E> {
-        requireNotNull(event) // Required to access event's class
+        requireNotNull(event) { "Attempted to fire a null event!" } // Required to access event's class
         if (!bus.hasSubscribers(event.javaClass)) return CompletableFuture.completedFuture(event)
         return CompletableFuture.supplyAsync({
             fireEvent(event)

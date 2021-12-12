@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.util
 
 object Quart {
 
-    const val BITS = 2
+    private const val BITS = 2
 
     @JvmStatic
     fun fromBlock(value: Int): Int = value shr BITS

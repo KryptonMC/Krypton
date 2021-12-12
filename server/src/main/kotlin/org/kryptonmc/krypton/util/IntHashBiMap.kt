@@ -20,6 +20,10 @@ package org.kryptonmc.krypton.util
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 
+/**
+ * The most basic IntBiMap implementation, that uses a map to store T -> Int,
+ * and an array to store Int -> T.
+ */
 class IntHashBiMap<T>(values: Map<out T, Int>? = null) : IntBiMap<T> {
 
     private val byT = Object2IntOpenHashMap<T>().apply { defaultReturnValue(-1) }

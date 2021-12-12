@@ -28,7 +28,9 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap
 import it.unimi.dsi.fastutil.objects.Object2IntMaps
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import me.bardy.gsonkt.keys
+import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.statistic.Statistic
 import org.kryptonmc.api.statistic.StatisticType
@@ -37,9 +39,7 @@ import org.kryptonmc.api.statistic.StatisticsTracker
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutStatistics
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.toKeyOrNull
 import org.kryptonmc.krypton.util.tryCreateFile
 import java.io.IOException
 import java.io.Reader
@@ -138,13 +138,11 @@ class KryptonStatisticsTracker(
             val version = json["DataVersion"].asInt
             // We won't upgrade data if use of the data converter is old.
             if (version < KryptonPlatform.worldVersion && !player.server.useDataConverter) {
-                LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data " +
-                        "conversion is disabled!")
-                LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or " +
-                        "--use-data-converter flag(s) to the JAR on startup.")
+                LOGGER.error("The server attempted to load a chunk from a earlier version of Minecraft when data conversion is disabled!")
+                LOGGER.info("If you would like to use data conversion, provide the --upgrade-data or --use-data-converter flag(s) to the JAR on " +
+                        "startup.")
                 LOGGER.warn("Beware that this is an experimental tool and has known issues with pre-1.13 worlds.")
-                LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR " +
-                        "responsibility!")
+                LOGGER.warn("USE THIS TOOL AT YOUR OWN RISK. If the tool corrupts your data, that is YOUR responsibility!")
                 error("Tried to load old statistics from version $version when data conversion is disabled!")
             }
 
@@ -159,24 +157,24 @@ class KryptonStatisticsTracker(
             val stats = data["stats"]?.asJsonObject ?: JsonObject()
             stats.keys.forEach { key ->
                 if (!stats[key].isJsonObject) return@forEach
-
-                InternalRegistries.STATISTIC_TYPE[Key.key(key)]?.let { type ->
-                    val values = stats[key].asJsonObject
-
-                    values.keys.forEach { k ->
-                        if (values[k].isJsonPrimitive) {
-                            val statistic = stat(type, k)
-                            if (statistic != null) {
-                                statistics[statistic] = values[k].asInt
-                            } else {
-                                LOGGER.warn("Invalid statistic found in $file! Could not recognise key $k!")
-                            }
+                val type = Registries.STATISTIC_TYPE[Key.key(key)]
+                if (type == null) {
+                    LOGGER.warn("Invalid statistic type found in $file! Could not recognise $key!")
+                    return@forEach
+                }
+                val values = stats[key].asJsonObject
+                values.keys.forEach { valueKey ->
+                    if (values[valueKey].isJsonPrimitive) {
+                        val statistic = statistic(type, valueKey)
+                        if (statistic != null) {
+                            statistics[statistic] = values[valueKey].asInt
                         } else {
-                            LOGGER.warn("Invalid statistic found in $file! Could not recognise value ${values[k]} " +
-                                    "for key $k")
+                            LOGGER.warn("Invalid statistic found in $file! Could not recognise key $valueKey!")
                         }
+                    } else {
+                        LOGGER.warn("Invalid statistic found in $file! Could not recognise value ${values[valueKey]} for key $valueKey")
                     }
-                } ?: LOGGER.warn("Invalid statistic type found in $file! Could not recognise $key!")
+                }
             }
         } catch (exception: IOException) {
             LOGGER.error("Failed to load statistics data from $file!", exception)
@@ -185,8 +183,12 @@ class KryptonStatisticsTracker(
         }
     }
 
-    private fun <T : Any> stat(type: StatisticType<T>, name: String): Statistic<T>? {
-        val key = name.toKeyOrNull() ?: return null
+    private fun <T : Any> statistic(type: StatisticType<T>, name: String): Statistic<T>? {
+        val key = try {
+            Key.key(name)
+        } catch (exception: InvalidKeyException) {
+            return null
+        }
         return type.registry[key]?.let { type[it] }
     }
 

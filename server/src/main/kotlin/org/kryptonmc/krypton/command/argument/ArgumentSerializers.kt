@@ -25,7 +25,7 @@ import org.kryptonmc.krypton.command.argument.serializer.ArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.DoubleArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.EntityArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.FloatArgumentSerializer
-import org.kryptonmc.krypton.command.argument.serializer.IntArgumentSerializer
+import org.kryptonmc.krypton.command.argument.serializer.IntegerArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.LongArgumentSerializer
 import org.kryptonmc.krypton.command.argument.serializer.StringArgumentSerializer
 import org.kryptonmc.krypton.command.arguments.GameProfileArgument
@@ -37,17 +37,20 @@ import org.kryptonmc.krypton.command.arguments.item.ItemStackArgumentType
 import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicateArgument
 import java.util.concurrent.ConcurrentHashMap
 
+/**
+ * Holds all of the built-in argument serializers for all of the argument
+ * types that we use that need to be sent to the client.
+ */
 object ArgumentSerializers {
 
-    private val BY_CLASS = ConcurrentHashMap<Class<*>, Entry<*>>()
-    private val BY_NAME = ConcurrentHashMap<Key, Entry<*>>()
+    private val ENTRIES = ConcurrentHashMap<Class<*>, Entry<*>>()
 
     init {
         // Brigadier serializers
         empty<BoolArgumentType>("brigadier:bool")
         register("brigadier:double", DoubleArgumentSerializer)
         register("brigadier:float", FloatArgumentSerializer)
-        register("brigadier:integer", IntArgumentSerializer)
+        register("brigadier:integer", IntegerArgumentSerializer)
         register("brigadier:long", LongArgumentSerializer)
         register("brigadier:string", StringArgumentSerializer)
 
@@ -62,23 +65,13 @@ object ArgumentSerializers {
         empty<ItemStackPredicateArgument>("item_predicate")
     }
 
-    @JvmStatic
-    operator fun get(name: Key): Entry<*>? = BY_NAME[name]
-
     @Suppress("UNCHECKED_CAST")
     @JvmStatic
-    operator fun <T : ArgumentType<*>> get(type: T): Entry<T>? = BY_CLASS[type::class.java] as? Entry<T>
+    operator fun <T : ArgumentType<*>> get(type: T): Entry<T>? = ENTRIES[type::class.java] as? Entry<T>
 
     @JvmStatic
     private inline fun <reified T : ArgumentType<*>> register(name: String, serializer: ArgumentSerializer<T>) {
-        val key = Key.key(name)
-        require(!BY_CLASS.containsKey(T::class.java)) {
-            "Serializer for class ${T::class.java} has already been registered!"
-        }
-        require(!BY_NAME.containsKey(key)) { "Serializer with name $key has already been registered!" }
-        val entry = Entry(key, T::class.java, serializer)
-        BY_CLASS[T::class.java] = entry
-        BY_NAME[key] = entry
+        ENTRIES[T::class.java] = Entry(Key.key(name), T::class.java, serializer)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -88,9 +81,5 @@ object ArgumentSerializers {
     }
 
     @JvmRecord
-    data class Entry<T : ArgumentType<*>>(
-        val name: Key,
-        val clazz: Class<T>,
-        val serializer: ArgumentSerializer<T>
-    )
+    data class Entry<T : ArgumentType<*>>(val name: Key, val clazz: Class<T>, val serializer: ArgumentSerializer<T>)
 }

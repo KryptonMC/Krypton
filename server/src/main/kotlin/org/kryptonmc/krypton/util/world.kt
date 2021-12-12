@@ -25,14 +25,15 @@ import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.spongepowered.math.vector.Vector3d
 import kotlin.math.abs
 
-fun Vector3d.isInSpawnableBounds(): Boolean = !floorX().isOutsideSpawnableHeight() && isInHorizontalWorldBounds()
+/**
+ * Determines whether the given position is both inside the maximum spawnable
+ * height **and** inside the maximum world bounds.
+ */
+fun Vector3d.isInSpawnableBounds(): Boolean = !y().isOutsideSpawnableHeight() && isInHorizontalWorldBounds()
 
-private fun Int.isOutsideSpawnableHeight(): Boolean = this < -20000000 || this >= 20000000
+private fun Double.isOutsideSpawnableHeight(): Boolean = this < -20000000 || this >= 20000000
 
-private fun Vector3d.isInHorizontalWorldBounds(): Boolean = floorX() >= -30000000 &&
-        floorZ() >= -30000000 &&
-        floorX() < 30000000 &&
-        floorZ() < 30000000
+private fun Vector3d.isInHorizontalWorldBounds(): Boolean = x() >= -30000000 && z() >= -30000000 && x() < 30000000 && z() < 30000000
 
 fun EntityManager.forEachEntityInRange(location: Vector3d, viewDistance: Int, callback: (KryptonEntity) -> Unit) {
     val chunksInRange = location.chunksInRange(viewDistance)

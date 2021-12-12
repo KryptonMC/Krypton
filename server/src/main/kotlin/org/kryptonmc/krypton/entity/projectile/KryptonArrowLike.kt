@@ -24,8 +24,8 @@ import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.projectile.ArrowLike
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.block.toBlock
 import org.kryptonmc.krypton.world.block.toNBT
@@ -90,7 +90,7 @@ abstract class KryptonArrowLike(
         wasShotFromCrossbow = tag.getBoolean("ShotFromCrossbow")
 
         if (tag.contains("SoundEvent", StringTag.ID)) {
-            sound = InternalRegistries.SOUND_EVENT[Key.key(tag.getString("SoundEvent"))] ?: defaultHitGroundSound
+            sound = Registries.SOUND_EVENT[Key.key(tag.getString("SoundEvent"))] ?: defaultHitGroundSound
         }
     }
 

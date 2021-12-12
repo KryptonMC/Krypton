@@ -20,8 +20,8 @@ package org.kryptonmc.krypton.world.generation
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.ceil
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.Climate
@@ -31,7 +31,7 @@ import org.kryptonmc.krypton.world.chunk.ChunkAccessor
 import org.spongepowered.math.GenericMath
 import kotlin.math.abs
 
-class DebugGenerator(biomes: KryptonRegistry<Biome>) : Generator(FixedBiomeGenerator(biomes[BiomeKeys.PLAINS]!!), StructureSettings(false)) {
+class DebugGenerator(biomes: Registry<Biome>) : Generator(FixedBiomeGenerator(biomes[BiomeKeys.PLAINS]!!), StructureSettings(false)) {
 
     override val climateSampler: Climate.Sampler = Climate.Sampler { _, _, _ -> Climate.TargetPoint.ZERO }
 

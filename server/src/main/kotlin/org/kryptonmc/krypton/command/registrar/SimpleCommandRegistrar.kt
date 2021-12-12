@@ -29,6 +29,10 @@ import org.kryptonmc.krypton.command.splitArguments
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.locks.Lock
 
+/**
+ * Registers simple commands to a root node. This performs permission checks on
+ * execute and suggest.
+ */
 class SimpleCommandRegistrar(lock: Lock) : InvocableCommandRegistrar<SimpleCommand, SimpleCommandMeta, Array<String>>(lock) {
 
     override fun execute(command: SimpleCommand, meta: SimpleCommandMeta, context: CommandContext<Sender>): Int {

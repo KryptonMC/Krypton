@@ -27,13 +27,19 @@ import java.util.Locale
 
 object TranslationBootstrap {
 
-    val REGISTRY = TranslationRegistry.create(Key.key("krypton", "minecraft_translations"))
-    val RENDERER = TranslatableComponentRenderer.usingTranslationSource(REGISTRY)
+    // A regex for an old format that was used previously by Minecraft.
+    // This comes from vanilla's Language, and is only here because it's what vanilla does.
     private val UNSUPPORTED_FORMAT_REGEX = "%(\\d+\\\$)?[\\d.]*[df]".toRegex()
 
+    @JvmField
+    val REGISTRY: TranslationRegistry = TranslationRegistry.create(Key.key("krypton", "minecraft_translations"))
+    @JvmField
+    val RENDERER: TranslatableComponentRenderer<Locale> = TranslatableComponentRenderer.usingTranslationSource(REGISTRY)
+
     fun init() {
-        val inputStream = Thread.currentThread().contextClassLoader.getResourceAsStream("en_us.json")
-            ?: error("Unable to find built-in Minecraft locale file in JAR!")
+        val inputStream = checkNotNull(ClassLoader.getSystemResourceAsStream("en_us.json")) {
+            "Unable to find built-in Minecraft locale file in JAR!"
+        }
         JsonReader(inputStream.reader()).use { reader ->
             reader.beginObject()
             while (reader.hasNext()) {

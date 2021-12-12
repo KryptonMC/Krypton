@@ -40,7 +40,7 @@ object GameRuleCommand : InternalCommand {
         val command = literal<Sender>("gamerule") {
             permission(KryptonPermission.GAME_RULE)
         }
-        Registries.GAMERULES.values.forEach { rule ->
+        Registries.GAME_RULES.values.forEach { rule ->
             val gameRule = LiteralArgumentBuilder.literal<Sender>(rule.name).executes {
                 val sender = it.source as? KryptonPlayer ?: return@executes 0
                 sender.sendMessage(Component.translatable(

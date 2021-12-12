@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.effect
 import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.krypton.util.serialization.Codecs
-import org.kryptonmc.krypton.util.serialization.Codec
 import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.krypton.util.serialization.encode
 import org.kryptonmc.nbt.compound
@@ -46,6 +45,10 @@ data class KryptonMusic(
 
     companion object {
 
+        // Time in ticks constants
+        private const val TEN_MINUTES = 12000
+        private const val TWENTY_MINUTES = 24000
+
         @JvmField
         val ENCODER: CompoundEncoder<Music> = CompoundEncoder {
             compound {
@@ -55,5 +58,8 @@ data class KryptonMusic(
                 encode(Codecs.BOOLEAN, "replace_current_music", it.replaceCurrentMusic)
             }
         }
+
+        @JvmStatic
+        fun game(sound: SoundEvent): KryptonMusic = KryptonMusic(sound, TEN_MINUTES, TWENTY_MINUTES, false)
     }
 }

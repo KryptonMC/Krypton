@@ -36,8 +36,11 @@ object VersionCommand : InternalCommand {
 
     private val HEADER = Component.text()
         .append(Component.text("This server is running "))
-        .append(Component.text("Krypton", KRYPTON_COLOR)
-            .clickEvent(ClickEvent.openUrl("https://github.com/KryptonMC/Krypton")))
+        .append(Component.text()
+            .content("Krypton")
+            .color(KRYPTON_COLOR)
+            .clickEvent(ClickEvent.openUrl("https://kryptonmc.org"))
+            .build())
         .append(Component.newline())
     private val VERSION = Component.text("Version: ", OPTION_COLOR)
     private val MINECRAFT_VERSION = Component.text("Minecraft Version: ", OPTION_COLOR)

@@ -20,37 +20,34 @@ package org.kryptonmc.krypton.world.generation.flat
 
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.Blocks
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.generation.StructureSettings
 import java.util.Optional
 
-class FlatGeneratorSettings(biomes: KryptonRegistry<Biome>, val structureSettings: StructureSettings) {
+class FlatGeneratorSettings(val structureSettings: StructureSettings) {
 
     val layers = mutableListOf<FlatLayer>()
     private val blockLayers = mutableListOf<Block>()
-    var biome = biomes[BiomeKeys.PLAINS]!!
+    var biome: Biome = Registries.BIOME[BiomeKeys.PLAINS]!!
         private set
     private var generateVoid = false
-    var decorate = false
-    var addLakes = false
+    private var decorate = false
+    private var addLakes = false
 
     constructor(
-        biomes: KryptonRegistry<Biome>,
         structureSettings: StructureSettings,
         layers: List<FlatLayer>,
         addLakes: Boolean,
         decorate: Boolean,
         biome: Optional<Biome>
-    ) : this(biomes, structureSettings) {
+    ) : this(structureSettings) {
         if (addLakes) this.addLakes = true
         if (decorate) this.decorate = true
         this.layers.addAll(layers)
         updateLayers()
-        this.biome = if (!biome.isPresent) {
-            biomes[BiomeKeys.PLAINS]!!
-        } else biome.get()
+        this.biome = biome.orElse(Registries.BIOME[BiomeKeys.PLAINS])
     }
 
     private fun updateLayers() {
@@ -62,11 +59,11 @@ class FlatGeneratorSettings(biomes: KryptonRegistry<Biome>, val structureSetting
     companion object {
 
         @JvmStatic
-        fun default(biomes: KryptonRegistry<Biome>): FlatGeneratorSettings {
+        fun default(): FlatGeneratorSettings {
             // TODO: Add village structure to the map
             val structureSettings = StructureSettings(mapOf(), StructureSettings.DEFAULT_STRONGHOLD)
-            return FlatGeneratorSettings(biomes, structureSettings).apply {
-                this.biome = biomes[BiomeKeys.PLAINS]!!
+            return FlatGeneratorSettings(structureSettings).apply {
+                this.biome = Registries.BIOME[BiomeKeys.PLAINS]!!
                 layers.add(FlatLayer(Blocks.BEDROCK, 1))
                 layers.add(FlatLayer(Blocks.DIRT, 2))
                 layers.add(FlatLayer(Blocks.GRASS_BLOCK, 1))

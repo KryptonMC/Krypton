@@ -20,27 +20,20 @@ package org.kryptonmc.krypton.util
 
 import java.net.InetAddress
 import java.net.SocketAddress
-import java.util.BitSet
-import java.util.Optional
 import java.util.UUID
 
-fun SocketAddress.asString(): String {
-    var string = toString()
-    if (string.contains("/")) string = string.substring(string.indexOf(47.toChar()) + 1)
-    if (string.contains(":")) string = string.substring(0, string.indexOf(58.toChar()))
-    return string
-}
+fun SocketAddress.asString(): String = toString().addressAsString()
 
-fun InetAddress.asString(): String {
-    var string = toString()
-    if (string.contains("/")) string = string.substring(string.indexOf('/') + 1)
-    if (string.contains(":")) string = string.substring(0, string.indexOf(':'))
-    return string
+fun InetAddress.asString(): String = toString().addressAsString()
+
+private fun String.addressAsString(): String {
+    var temp = this
+    if (temp.contains('/')) temp = temp.substring(temp.indexOf('/') + 1)
+    if (temp.contains(':')) temp = temp.substring(0, temp.indexOf(':'))
+    return temp
 }
 
 fun IntArray.toUUID(): UUID = UUID(
     this[0].toLong() shl 32 or this[1].toLong() and 4294967295L,
     this[2].toLong() shl 32 or this[3].toLong() and 4294967295L
 )
-
-fun <T> Optional<T>.getIfPresent(): T? = if (isPresent) get() else null

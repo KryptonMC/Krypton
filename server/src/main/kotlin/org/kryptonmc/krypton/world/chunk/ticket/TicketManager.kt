@@ -29,6 +29,12 @@ import java.util.UUID
 import kotlin.math.abs
 import kotlin.math.max
 
+/**
+ * Handles the propagation of chunk tickets.
+ *
+ * This likely needs cleaning up a bit, since there's a lot of hacks in here
+ * that somehow work.
+ */
 class TicketManager(private val chunkManager: ChunkManager) {
 
     private val tickets: Long2ObjectMap<SortedArraySet<Ticket<*>>> = Long2ObjectMaps.synchronize(Long2ObjectOpenHashMap())

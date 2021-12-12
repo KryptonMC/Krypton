@@ -20,17 +20,21 @@ package org.kryptonmc.krypton.command.arguments
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
-import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
-import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.command.argument.argument
 import org.kryptonmc.krypton.util.nextKey
 
+/**
+ * An argument type that parses entity types that are summonable, in the form
+ * of namespaced keys.
+ *
+ * The default namespace accepted here is "minecraft", just like with
+ * everywhere else that keys are used, and that is also valid for entity type
+ * keys here, so "pig" and "minecraft:pig" are equivalent.
+ */
 object SummonEntityArgument : ArgumentType<Key> {
 
     private val EXAMPLES = setOf("minecraft:pig", "cow")
@@ -38,6 +42,13 @@ object SummonEntityArgument : ArgumentType<Key> {
         Component.translatable("entity.notFound", Component.text(it.toString())).toMessage()
     }
 
+    /**
+     * Ensures the given [key] is both a valid entity type **and** the entity
+     * type that mapped to the key is summonable.
+     *
+     * If the entity type is not summonable, [ERROR_UNKNOWN_ENTITY] will be
+     * thrown, despite the entity actually being known.
+     */
     @JvmStatic
     fun ensureSummonable(key: Key): Key {
         val type = Registries.ENTITY_TYPE[key]

@@ -30,7 +30,6 @@ import org.kryptonmc.nbt.ByteTag
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.IntTag
 import org.kryptonmc.nbt.ListTag
-import org.kryptonmc.nbt.MutableCompoundTag
 import org.kryptonmc.nbt.MutableListTag
 import org.kryptonmc.nbt.StringTag
 import java.awt.Color
@@ -147,10 +146,7 @@ object KryptonMetaKeys {
         predicate: Predicate<CompoundTag>
     ): KryptonMetaKey<V> {
         val key = Key.key("krypton", name)
-        return Registries.META_KEYS.register(
-            key,
-            KryptonMetaKey(key, V::class.java, reader, writer, predicate)
-        )
+        return Registries.META_KEYS.register(key, KryptonMetaKey(key, V::class.java, reader, writer, predicate))
     }
 
     @JvmStatic
@@ -161,7 +157,7 @@ object KryptonMetaKeys {
     }
 
     private fun setBlockList(name: String): KryptonMetaKey.Writer<List<Block>> = KryptonMetaKey.Writer { nbt, blocks ->
-        nbt.put(name, MutableListTag(blocks.mapTo(mutableListOf()) { StringTag.of(it.key().asString()) }))
+        nbt[name] = MutableListTag(blocks.mapTo(mutableListOf()) { StringTag.of(it.key().asString()) })
     }
 
     @JvmStatic
