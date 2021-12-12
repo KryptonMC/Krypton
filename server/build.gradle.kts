@@ -87,8 +87,7 @@ tasks {
             "version" to project.version.toString(),
             "minecraft" to global.versions.minecraft.get(),
             "spark" to libs.versions.spark.get(),
-            "data" to "1_18"
-//            "data" to libs.versions.articData.get().removeSuffix("-SNAPSHOT").replace('.', '_')
+            "data" to global.versions.minecraft.get().replace('.', '_')
         ))
     }
 }
