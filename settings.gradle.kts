@@ -5,7 +5,6 @@ dependencyResolutionManagement {
     repositories {
         maven("https://repo.kryptonmc.org/releases")
         maven("https://repo.velocitypowered.com/snapshots/")
-        jcenter() // Dokka requires this for kotlinx.html
         maven("https://oss.sonatype.org/content/groups/public/")
         maven("https://repo.kryptonmc.org/snapshots")
         maven("https://oss.sonatype.org/content/repositories/snapshots/")
