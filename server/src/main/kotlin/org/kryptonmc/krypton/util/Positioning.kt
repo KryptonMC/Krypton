@@ -28,7 +28,7 @@ object Positioning {
      * No idea why Mojang thought having player coordinates be absolute and entity
      * coordinates be relative.
      *
-     * This calculation comes from https://wiki.vg/Protocol#Entity_Position
+     * See [here](https://wiki.vg/Protocol#Entity_Position)
      */
     @JvmStatic
     fun delta(new: Double, old: Double): Short = ((new * 32 - old * 32) * 128).toInt().toShort()
@@ -48,7 +48,7 @@ object Positioning {
      * it calculates the delta as shown in [delta], the range of a short is
      * -32768 to 32767, and 32768 / (128 * 32) = 8.
      *
-     * Source: https://wiki.vg/Protocol#Entity_Position
+     * See [here](https://wiki.vg/Protocol#Entity_Position)
      */
     @JvmStatic
     fun deltaInMoveRange(old: Vector3d, new: Vector3d): Boolean = abs(new.x() - old.x()) > 8 ||

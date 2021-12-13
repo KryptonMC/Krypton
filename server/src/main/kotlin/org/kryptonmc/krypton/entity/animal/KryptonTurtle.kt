@@ -67,19 +67,19 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.TURT
         data.add(MetadataKeys.TURTLE.TRAVELLING)
     }
 
-    override fun isFood(item: ItemStack): Boolean = item.type === FOOD_ITEM
+    override fun isFood(item: ItemStack): Boolean = item.type === ItemTypes.SEAGRASS
 
     override fun load(tag: CompoundTag) {
+        super.load(tag)
         val homeX = tag.getInt("HomePosX")
         val homeY = tag.getInt("HomePosY")
         val homeZ = tag.getInt("HomePosZ")
         home = Vector3i.from(homeX, homeY, homeZ)
-        super.load(tag)
-        hasEgg = tag.getBoolean("HasEgg")
         val destinationX = tag.getInt("TravelPosX")
         val destinationY = tag.getInt("TravelPosY")
         val destinationZ = tag.getInt("TravelPosZ")
         destination = Vector3i.from(destinationX, destinationY, destinationZ)
+        hasEgg = tag.getBoolean("HasEgg")
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
@@ -98,6 +98,5 @@ class KryptonTurtle(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.TURT
             .add(AttributeTypes.MAX_HEALTH, 30.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
             .build()
-        private val FOOD_ITEM = ItemTypes.SEAGRASS
     }
 }

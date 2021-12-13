@@ -152,12 +152,19 @@ class SimpleBitStorage(
 
     fun isNotEmpty(): Boolean = !isEmpty()
 
-    override fun equals(other: Any?) = other is SimpleBitStorage &&
-            bits == other.bits &&
-            size == other.size &&
-            data.contentEquals(other.data)
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return bits == (other as SimpleBitStorage).bits && size == other.size && data.contentEquals(other.data)
+    }
 
-    override fun hashCode() = arrayOf(bits, size, data).contentDeepHashCode()
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + bits.hashCode()
+        result = 31 * result + size.hashCode()
+        result = 31 * result + data.contentHashCode()
+        return result
+    }
 
     private fun cellIndex(index: Int): Int = ((index.toLong() * divideMultiply + divideAdd) shr 32 shr divideShift).toInt()
 

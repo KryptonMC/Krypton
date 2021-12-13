@@ -68,18 +68,21 @@ class MetadataHolder(private val entity: KryptonEntity) {
         return createItem(key, value)
     }
 
-    @Suppress("UNCHECKED_CAST")
-    operator fun <T> get(key: MetadataKey<T>): T = lock.read { itemsById[key.id] as Entry<T> }.value
+    operator fun <T> get(key: MetadataKey<T>): T = checkNotNull(entry<T>(key.id)) {
+        "Could not find key $key for entity of type ${entity.type}!"
+    }.value
 
-    @Suppress("UNCHECKED_CAST")
     operator fun <T> set(key: MetadataKey<T>, value: T) {
-        val existing = lock.read { itemsById[key.id] as Entry<T> }
+        val existing = checkNotNull(entry<T>(key.id)) { "Could not find key $key for entity of type ${entity.type}!" }
         if (value === existing.value) return
         existing.value = value
         entity.onDataUpdate(key)
         existing.isDirty = true
         isDirty = true
     }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> entry(id: Int): Entry<T>? = lock.read { itemsById[id] as? Entry<T> }
 
     private fun invalidate() {
         isDirty = false

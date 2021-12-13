@@ -47,12 +47,6 @@ object SessionService {
 
     /**
      * Authenticates a user with Mojang.
-     *
-     * @param username the username to authenticate
-     * @param secret the shared secret
-     * @param ip the server's IP address (string format)
-     * @return the authenticated game profile for the user, or null if not
-     * present
      */
     fun hasJoined(username: String, secret: ByteArray, ip: String): KryptonGameProfile? {
         val cachedProfile = profiles.getIfPresent(username)

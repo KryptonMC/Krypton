@@ -28,11 +28,15 @@ import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.tags.TagTypes
+import org.kryptonmc.krypton.command.toExceptionType
 import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.nbt.CompoundTag
 
+/**
+ * A parser that can parse both item stacks and item stack predicates.
+ */
 class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) { // TODO: Tags for ItemStackPredicate etc.
 
     fun parseItem(): ItemStackArgument = ItemStackArgument(readItem(reader), readNBT(reader))
@@ -66,7 +70,7 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
 
         val string = reader.string.substring(i, reader.cursor)
         val item = Registries.ITEM[Key.key(string)]
-        if (item == ItemTypes.AIR) throw ID_INVALID_EXCEPTION.createWithContext(reader, string)
+        if (item === ItemTypes.AIR) throw ID_INVALID_EXCEPTION.createWithContext(reader, string)
         return item
     }
 
@@ -89,16 +93,26 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
 
     companion object {
 
+        /**
+         * Thrown when a user tries to parse an item stack with type AIR, which
+         * is not allowed (for hopefully obvious reasons).
+         */
         @JvmField
         val ID_INVALID_EXCEPTION: DynamicCommandExceptionType = DynamicCommandExceptionType {
             Component.translatable("argument.item.id.invalid", Component.text(it.toString())).toMessage()
         }
 
+        /**
+         * Thrown when a user inputs an item tag and the parser is not allowed
+         * to parse item tags.
+         */
         @JvmField
-        val TAG_DISALLOWED_EXCEPTION: SimpleCommandExceptionType = SimpleCommandExceptionType(
-            Component.translatable("argument.item.tag.disallowed").toMessage()
-        )
+        val TAG_DISALLOWED_EXCEPTION: SimpleCommandExceptionType = Component.translatable("argument.item.tag.disallowed").toExceptionType()
 
+        /**
+         * Thrown when a user inputs an item tag and the parser was unable to
+         * resolve the input to a valid item tag.
+         */
         @JvmField
         val UNKNOWN_ITEM_TAG: DynamicCommandExceptionType = DynamicCommandExceptionType {
             Component.translatable("arguments.item.tag.unknown", Component.text(it.toString())).toMessage()

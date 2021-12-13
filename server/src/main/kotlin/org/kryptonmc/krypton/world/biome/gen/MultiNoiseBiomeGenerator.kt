@@ -22,8 +22,8 @@ import com.google.common.collect.ImmutableList
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList
 import it.unimi.dsi.fastutil.doubles.DoubleList
 import net.kyori.adventure.key.Key
+import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.world.biome.BiomeKeys
 import org.kryptonmc.krypton.world.biome.Climate
 import org.kryptonmc.krypton.world.biome.Climate.ParameterList
@@ -33,7 +33,7 @@ import java.util.function.Supplier
 
 class MultiNoiseBiomeGenerator private constructor(
     private val parameters: ParameterList<Biome>,
-    private val preset: Pair<KryptonRegistry<Biome>, Preset>? = null
+    private val preset: Pair<Registry<Biome>, Preset>? = null
 ) : BiomeGenerator(parameters.biomes.map { it.second.get() }) {
 
     private val presetInstance: PresetInstance? by lazy { if (preset != null) PresetInstance(preset.second, preset.first) else null }
@@ -57,11 +57,11 @@ class MultiNoiseBiomeGenerator private constructor(
             BY_KEY[name] = this
         }
 
-        fun createGenerator(biomes: KryptonRegistry<Biome>): MultiNoiseBiomeGenerator = generator.create(this, biomes)
+        fun createGenerator(biomes: Registry<Biome>): MultiNoiseBiomeGenerator = generator.create(this, biomes)
 
         fun interface Generator {
 
-            fun create(preset: Preset, biomes: KryptonRegistry<Biome>): MultiNoiseBiomeGenerator
+            fun create(preset: Preset, biomes: Registry<Biome>): MultiNoiseBiomeGenerator
         }
 
         companion object {
@@ -98,7 +98,7 @@ class MultiNoiseBiomeGenerator private constructor(
         }
     }
 
-    class PresetInstance(val preset: Preset, val biomes: KryptonRegistry<Biome>) {
+    class PresetInstance(val preset: Preset, val biomes: Registry<Biome>) {
 
         val generator: MultiNoiseBiomeGenerator = preset.createGenerator(biomes)
     }

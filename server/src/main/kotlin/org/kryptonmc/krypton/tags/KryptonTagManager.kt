@@ -34,8 +34,7 @@ object KryptonTagManager : TagManager {
 
     private val GSON = Gson()
     private val TAG_MAP = ConcurrentHashMap<TagType<out Any>, MutableList<KryptonTag<out Any>>>()
-    override val tags: Map<TagType<*>, List<Tag<*>>>
-        get() = Collections.unmodifiableMap(TAG_MAP)
+    override val tags: Map<TagType<*>, List<Tag<*>>> = Collections.unmodifiableMap(TAG_MAP)
 
     @JvmStatic
     fun bootstrap() {

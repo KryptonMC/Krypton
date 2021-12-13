@@ -10,7 +10,6 @@ package org.kryptonmc.api.block.property
 
 import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.Contract
-import org.jetbrains.annotations.Unmodifiable
 
 /**
  * Represents something that can hold properties.
@@ -24,13 +23,13 @@ public interface PropertyHolder<out T : PropertyHolder<T>> {
      * All of the property keys available for use by this holder.
      */
     @get:JvmName("availableProperties")
-    public val availableProperties: @Unmodifiable Set<Property<*>>
+    public val availableProperties: Set<Property<*>>
 
     /**
      * All the properties that are being held by this property holder.
      */
     @get:JvmName("properties")
-    public val properties: @Unmodifiable Map<String, String>
+    public val properties: Map<String, String>
 
     /**
      * Returns true if the specified [key] is in this holder, false otherwise.

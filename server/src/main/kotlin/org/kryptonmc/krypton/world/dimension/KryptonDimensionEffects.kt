@@ -37,9 +37,6 @@ object KryptonDimensionEffects {
         endSky: Boolean
     ): KryptonDimensionEffect {
         val key = Key.key(name)
-        return Registries.DIMENSION_EFFECTS.register(
-            key,
-            KryptonDimensionEffect(key, clouds, celestialBodies, fog, endSky)
-        )
+        return Registries.DIMENSION_EFFECTS.register(key, KryptonDimensionEffect(key, clouds, celestialBodies, fog, endSky))
     }
 }

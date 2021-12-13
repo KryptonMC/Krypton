@@ -24,6 +24,11 @@ import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.Sender
 import java.util.concurrent.locks.Lock
 
+/**
+ * Registers Brigadier commands to a root node. Brigadier commands are really
+ * easy to register, as they are already backed by nodes that we are able to
+ * add to the tree.
+ */
 class BrigadierCommandRegistrar(lock: Lock) : KryptonCommandRegistrar<BrigadierCommand, CommandMeta>(lock) {
 
     override fun register(root: RootCommandNode<Sender>, command: BrigadierCommand, meta: CommandMeta) {

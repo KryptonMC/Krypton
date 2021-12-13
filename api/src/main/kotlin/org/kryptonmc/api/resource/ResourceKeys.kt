@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.user.ban.BanType
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.entity.BlockEntityType
-import org.kryptonmc.api.effect.Music
 import org.kryptonmc.api.effect.particle.ParticleType
 import org.kryptonmc.api.effect.sound.SoundEvent
 import org.kryptonmc.api.entity.EntityType
@@ -66,7 +65,6 @@ public object ResourceKeys {
     @JvmField public val MENU: ResourceKey<out Registry<InventoryType>> = minecraft("menu")
     @JvmField public val STATISTIC_TYPE: ResourceKey<out Registry<StatisticType<*>>> = minecraft("stat_type")
     @JvmField public val CUSTOM_STATISTIC: ResourceKey<out Registry<Key>> = minecraft("custom_stat")
-    @JvmField public val PICTURE: ResourceKey<out Registry<Picture>> = minecraft("motive")
     @JvmField public val FLUID: ResourceKey<out Registry<Fluid>> = minecraft("fluid")
     @JvmField public val DIMENSION_TYPE: ResourceKey<out Registry<DimensionType>> = minecraft("dimension_type")
     @JvmField public val BLOCK_ENTITY_TYPE: ResourceKey<out Registry<BlockEntityType>> = minecraft("block_entity")
@@ -74,19 +72,19 @@ public object ResourceKeys {
     /**
      * Custom built-in registries.
      */
-    @JvmField public val GAMERULES: ResourceKey<out Registry<GameRule<Any>>> = krypton("gamerules")
+    @JvmField public val PICTURES: ResourceKey<out Registry<Picture>> = minecraft("motive")
+    @JvmField public val GAME_RULES: ResourceKey<out Registry<GameRule<Any>>> = krypton("gamerules")
     @JvmField public val MODIFIER_OPERATIONS: ResourceKey<out Registry<ModifierOperation>> = krypton("attribute_modifier_operations")
     @JvmField public val CRITERIA: ResourceKey<out Registry<Criterion>> = krypton("criteria")
     @JvmField public val DIMENSION_EFFECTS: ResourceKey<out Registry<DimensionEffect>> = krypton("dimension_effects")
-    @JvmField public val MUSIC: ResourceKey<out Registry<Music>> = krypton("music")
     @JvmField public val BIOME_CATEGORIES: ResourceKey<out Registry<BiomeCategory>> = krypton("biome_categories")
     @JvmField public val META_KEYS: ResourceKey<out Registry<MetaKey<*>>> = krypton("meta_keys")
     @JvmField public val ITEM_RARITIES: ResourceKey<out Registry<ItemRarity>> = krypton("item_rarities")
-    @JvmField public val MOB_CATEGORIES: ResourceKey<out Registry<EntityCategory>> = krypton("mob_categories")
+    @JvmField public val ENTITY_CATEGORIES: ResourceKey<out Registry<EntityCategory>> = krypton("entity_categories")
     @JvmField public val DYE_COLORS: ResourceKey<out Registry<DyeColor>> = krypton("dye_colors")
     @JvmField public val TAG_TYPES: ResourceKey<out Registry<TagType<*>>> = krypton("tag_types")
     @JvmField public val BAN_TYPES: ResourceKey<out Registry<BanType>> = krypton("ban_types")
-    @JvmField public val DAMAGE_SOURCES: ResourceKey<out Registry<DamageType>> = krypton("damage_sources")
+    @JvmField public val DAMAGE_TYPES: ResourceKey<out Registry<DamageType>> = krypton("damage_types")
 
     /**
      * Creates a new registry key with the given [key] as its base key.

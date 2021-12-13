@@ -18,8 +18,7 @@
  */
 package org.kryptonmc.krypton.item.handler
 
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.block.property.Property
 import org.kryptonmc.api.entity.Hand
@@ -65,7 +64,7 @@ object DebugStickHandler : ItemHandler {
         val properties = block.availableProperties
         val key = block.key().asString()
         if (properties.isEmpty()) {
-            player.sendActionBar(translatable("${ItemTypes.DEBUG_STICK.translation.key()}.empty", text(key)))
+            player.sendActionBar(Component.translatable("${ItemTypes.DEBUG_STICK.translation.key()}.empty", Component.text(key)))
             return false
         }
 
@@ -77,19 +76,19 @@ object DebugStickHandler : ItemHandler {
             if (property == null) property = properties.first() as Property<Comparable<Any>>
             val cycled = block.cycle(property, player.isSneaking)
             world.setBlock(x, y, z, cycled)
-            player.sendMessage(translatable(
+            player.sendMessage(Component.translatable(
                 "${ItemTypes.DEBUG_STICK.translation.key()}.update",
-                text(property.name),
-                text(property.toString(cycled[property]!!))
+                Component.text(property.name),
+                Component.text(property.toString(cycled[property]!!))
             ))
         } else {
             property = properties.findRelative(property, player.isSneaking) as Property<Comparable<Any>>
             val name = property.name
             tag.putString(key, name)
-            player.sendMessage(translatable(
+            player.sendMessage(Component.translatable(
                 "${ItemTypes.DEBUG_STICK.translation.key()}.select",
-                text(name),
-                text(property.toString(block[property]!!))
+                Component.text(name),
+                Component.text(property.toString(block[property]!!))
             ))
         }
         return true

@@ -42,7 +42,15 @@ import org.kryptonmc.api.entity.animal.Pig
 import org.kryptonmc.api.entity.animal.PolarBear
 import org.kryptonmc.api.entity.animal.Rabbit
 import org.kryptonmc.api.entity.animal.Sheep
+import org.kryptonmc.api.entity.animal.Turtle
 import org.kryptonmc.api.entity.animal.Wolf
+import org.kryptonmc.api.entity.aquatic.Cod
+import org.kryptonmc.api.entity.aquatic.Dolphin
+import org.kryptonmc.api.entity.aquatic.GlowSquid
+import org.kryptonmc.api.entity.aquatic.Pufferfish
+import org.kryptonmc.api.entity.aquatic.Salmon
+import org.kryptonmc.api.entity.aquatic.Squid
+import org.kryptonmc.api.entity.aquatic.TropicalFish
 import org.kryptonmc.api.entity.hanging.Painting
 import org.kryptonmc.api.entity.monster.Creeper
 import org.kryptonmc.api.entity.monster.Zombie
@@ -63,7 +71,7 @@ import org.kryptonmc.api.entity.projectile.SpectralArrow
 import org.kryptonmc.api.entity.projectile.ThrownPotion
 import org.kryptonmc.api.entity.projectile.Trident
 import org.kryptonmc.api.entity.projectile.WitherSkull
-import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.api.registry.Registries
 
 object KryptonEntityTypes {
 
@@ -118,7 +126,7 @@ object KryptonEntityTypes {
         dimensions(0.4F, 0.7F)
         clientTrackingRange(10)
     }
-    @JvmField val COD: KryptonEntityType<Entity> = register("cod", EntityCategories.WATER_AMBIENT) {
+    @JvmField val COD: KryptonEntityType<Cod> = register("cod", EntityCategories.WATER_AMBIENT) {
         dimensions(0.5F, 0.3F)
         clientTrackingRange(4)
     }
@@ -130,7 +138,7 @@ object KryptonEntityTypes {
         dimensions(0.6F, 1.7F)
         clientTrackingRange(8)
     }
-    @JvmField val DOLPHIN: KryptonEntityType<Entity> = register("dolphin", EntityCategories.WATER_CREATURE) {
+    @JvmField val DOLPHIN: KryptonEntityType<Dolphin> = register("dolphin", EntityCategories.WATER_CREATURE) {
         dimensions(0.9F, 0.6F)
         rideable()
     }
@@ -217,7 +225,7 @@ object KryptonEntityTypes {
         clientTrackingRange(10)
         updateInterval(Int.MAX_VALUE)
     }
-    @JvmField val GLOW_SQUID: KryptonEntityType<Entity> = register("glow_squid", EntityCategories.UNDERGROUND_WATER_CREATURE) {
+    @JvmField val GLOW_SQUID: KryptonEntityType<GlowSquid> = register("glow_squid", EntityCategories.UNDERGROUND_WATER_CREATURE) {
         dimensions(0.8F, 0.8F)
         clientTrackingRange(10)
     }
@@ -355,7 +363,7 @@ object KryptonEntityTypes {
         clientTrackingRange(10)
         updateInterval(10)
     }
-    @JvmField val PUFFERFISH: KryptonEntityType<Entity> = register("pufferfish", EntityCategories.WATER_AMBIENT) {
+    @JvmField val PUFFERFISH: KryptonEntityType<Pufferfish> = register("pufferfish", EntityCategories.WATER_AMBIENT) {
         dimensions(0.7F, 0.7F)
         clientTrackingRange(4)
     }
@@ -367,7 +375,7 @@ object KryptonEntityTypes {
         dimensions(1.95F, 2.2F)
         clientTrackingRange(10)
     }
-    @JvmField val SALMON: KryptonEntityType<Entity> = register("salmon", EntityCategories.WATER_AMBIENT) {
+    @JvmField val SALMON: KryptonEntityType<Salmon> = register("salmon", EntityCategories.WATER_AMBIENT) {
         dimensions(0.7F, 0.4F)
         clientTrackingRange(4)
     }
@@ -424,7 +432,7 @@ object KryptonEntityTypes {
         dimensions(1.4F, 0.9F)
         clientTrackingRange(8)
     }
-    @JvmField val SQUID: KryptonEntityType<Entity> = register("squid", EntityCategories.WATER_CREATURE) {
+    @JvmField val SQUID: KryptonEntityType<Squid> = register("squid", EntityCategories.WATER_CREATURE) {
         dimensions(0.8F, 0.8F)
         clientTrackingRange(8)
     }
@@ -451,11 +459,11 @@ object KryptonEntityTypes {
         dimensions(0.9F, 1.87F)
         clientTrackingRange(10)
     }
-    @JvmField val TROPICAL_FISH: KryptonEntityType<Entity> = register("tropical_fish", EntityCategories.WATER_AMBIENT) {
+    @JvmField val TROPICAL_FISH: KryptonEntityType<TropicalFish> = register("tropical_fish", EntityCategories.WATER_AMBIENT) {
         dimensions(0.5F, 0.4F)
         clientTrackingRange(4)
     }
-    @JvmField val TURTLE: KryptonEntityType<Entity> = register("turtle", EntityCategories.CREATURE) {
+    @JvmField val TURTLE: KryptonEntityType<Turtle> = register("turtle", EntityCategories.CREATURE) {
         dimensions(1.2F, 0.4F)
         clientTrackingRange(10)
     }
@@ -556,9 +564,6 @@ object KryptonEntityTypes {
         builder: KryptonEntityType.Builder<T>.() -> Unit = {}
     ): KryptonEntityType<T> {
         val key = Key.key(name)
-        return InternalRegistries.ENTITY_TYPE.register(
-            key,
-            KryptonEntityType.Builder<T>(key, category).apply(builder).build()
-        )
+        return Registries.ENTITY_TYPE.register(key, KryptonEntityType.Builder<T>(key, category).apply(builder).build())
     }
 }

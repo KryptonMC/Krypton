@@ -29,6 +29,11 @@ data class KryptonCommandMeta(
 
     override fun toBuilder(): CommandMeta.Builder = Builder(this)
 
+    /**
+     * This builder allows us to reduce repetition between both of its
+     * implementations, and keep them separate. It also avoids the need to add
+     * an abstract builder to the API.
+     */
     @Suppress("UNCHECKED_CAST")
     abstract class AbstractBuilder<B : AbstractBuilder<B>>(protected var name: String) : CommandMeta.Builder {
 

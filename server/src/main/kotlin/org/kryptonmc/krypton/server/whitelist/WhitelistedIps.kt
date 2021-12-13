@@ -26,7 +26,7 @@ import java.nio.file.Path
 
 class WhitelistedIps(path: Path) : ServerConfigList<String, WhitelistIpEntry>(path) {
 
-    fun isWhitelisted(address: SocketAddress) = contains(address.asString())
+    fun isWhitelisted(address: SocketAddress): Boolean = contains(address.asString())
 
     override fun read(reader: JsonReader): WhitelistIpEntry? {
         reader.beginObject()

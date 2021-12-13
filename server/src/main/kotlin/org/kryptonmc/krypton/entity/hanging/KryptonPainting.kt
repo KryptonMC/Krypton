@@ -22,9 +22,9 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.hanging.Picture
 import org.kryptonmc.api.entity.hanging.Painting
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnPainting
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.data2D
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -39,13 +39,13 @@ class KryptonPainting(world: KryptonWorld) : KryptonHangingEntity(world, EntityT
         get() = picture?.height ?: 1
 
     override fun load(tag: CompoundTag) {
-        picture = InternalRegistries.PICTURE[Key.key(tag.getString("Motive"))]
+        picture = Registries.PICTURES[Key.key(tag.getString("Motive"))]
         direction = Directions.of2D(tag.getByte("Facing").toInt())
         super.load(tag)
     }
 
     override fun save(): CompoundTag.Builder = super.save().apply {
-        picture?.let { string("Motive", it.key().asString()) }
+        if (picture != null) string("Motive", picture!!.key().asString())
         byte("Facing", direction.data2D().toByte())
     }
 

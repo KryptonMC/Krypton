@@ -47,7 +47,7 @@ data class KryptonProfileProperty(
             }
 
             reader.endObject()
-            if (name == null || value == null) return null
+            if (name == null || value == null) return null // We can't complete a profile without these
             return KryptonProfileProperty(name, value, signature)
         }
 

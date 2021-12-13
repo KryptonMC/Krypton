@@ -24,9 +24,15 @@ import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
 
+/**
+ * An argument that represents an item, optionally with some NBT data.
+ */
 @JvmRecord
 data class ItemStackArgument(val item: ItemType, val tag: CompoundTag? = null) {
 
+    /**
+     * Creates the item stacks from the data stored by this argument.
+     */
     fun createItemStacks(amount: Int): List<KryptonItemStack> {
         if (amount <= item.maximumStackSize) return listOf(createStack(amount))
         val items = mutableListOf<KryptonItemStack>()
@@ -39,9 +45,8 @@ data class ItemStackArgument(val item: ItemType, val tag: CompoundTag? = null) {
         return items
     }
 
-    private fun createStack(amount: Int): KryptonItemStack = KryptonItemStack(
-        item,
-        amount,
-        KryptonMetaHolder(tag as MutableCompoundTag)
-    )
+    private fun createStack(amount: Int): KryptonItemStack {
+        val nbt = tag?.mutable() ?: MutableCompoundTag()
+        return KryptonItemStack(item, amount, KryptonMetaHolder(nbt))
+    }
 }

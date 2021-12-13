@@ -20,18 +20,18 @@ package org.kryptonmc.krypton.command.arguments.entities
 
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
-import com.mojang.brigadier.context.CommandContext
-import org.kryptonmc.api.command.Sender
-import org.kryptonmc.krypton.command.argument.argument
 
+/**
+ * An argument type that parses an entity selector, such as `@a` or `@p`.
+ *
+ * @param onlyPlayers whether the selector will only parse player entities
+ * @param singleTarget whether the selector will only parse a single entity
+ */
 @JvmRecord
-data class EntityArgument(
-    val onlyPlayers: Boolean,
-    val singleTarget: Boolean,
-) : ArgumentType<EntityQuery> {
+data class EntityArgument(val onlyPlayers: Boolean, val singleTarget: Boolean) : ArgumentType<EntityQuery> {
 
     override fun parse(reader: StringReader): EntityQuery {
-        if (reader.canRead() && reader.peek() == '@') {
+        if (reader.canRead() && reader.peek() == EntityArgumentParser.SELECTOR_CHAR) {
             reader.skip()
             if (!reader.canRead()) throw EntityArgumentExceptions.MISSING_SELECTOR.createWithContext(reader)
             val position = reader.cursor
@@ -59,25 +59,25 @@ data class EntityArgument(
         private val ENTITIES = EntityArgument(false, false)
 
         /**
-         * @return An argument which can only accept one player
+         * An argument that will only attempt to parse a single player.
          */
         @JvmStatic
         fun player(): EntityArgument = PLAYER
 
         /**
-         * @return An argument which can only accept players
+         * An argument that will attempt to parse multiple players.
          */
         @JvmStatic
         fun players(): EntityArgument = PLAYERS
 
         /**
-         * @return An argument which can accept one entity
+         * An argument that will attempt to parse a single entity.
          */
         @JvmStatic
         fun entity(): EntityArgument = ENTITY
 
         /**
-         * @return An argument which can accept entities
+         * An argument that will attempt to parse multiple entities.
          */
         @JvmStatic
         fun entities(): EntityArgument = ENTITIES

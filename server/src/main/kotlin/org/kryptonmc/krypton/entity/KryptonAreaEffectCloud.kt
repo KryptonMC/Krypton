@@ -26,15 +26,22 @@ import org.kryptonmc.nbt.CompoundTag
 
 class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityTypes.AREA_EFFECT_CLOUD), AreaEffectCloud {
 
+    override var age = 0
+    override var duration = 0
+
+    override var radius: Float
+        get() = data[MetadataKeys.AREA_EFFECT_CLOUD.RADIUS]
+        set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.RADIUS, value)
+    override var color: Int
+        get() = data[MetadataKeys.AREA_EFFECT_CLOUD.COLOR]
+        set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.COLOR, value)
+
     init {
         data.add(MetadataKeys.AREA_EFFECT_CLOUD.RADIUS)
         data.add(MetadataKeys.AREA_EFFECT_CLOUD.COLOR)
         data.add(MetadataKeys.AREA_EFFECT_CLOUD.IGNORE_RADIUS)
         data.add(MetadataKeys.AREA_EFFECT_CLOUD.PARTICLE)
     }
-
-    override var age = 0
-    override var duration = 0
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
@@ -50,11 +57,4 @@ class KryptonAreaEffectCloud(world: KryptonWorld) : KryptonEntity(world, EntityT
         float("Radius", radius)
         int("Color", color)
     }
-
-    override var radius: Float
-        get() = data[MetadataKeys.AREA_EFFECT_CLOUD.RADIUS]
-        set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.RADIUS, value)
-    override var color: Int
-        get() = data[MetadataKeys.AREA_EFFECT_CLOUD.COLOR]
-        set(value) = data.set(MetadataKeys.AREA_EFFECT_CLOUD.COLOR, value)
 }

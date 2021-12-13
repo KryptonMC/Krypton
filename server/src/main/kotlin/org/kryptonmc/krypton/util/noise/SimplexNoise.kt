@@ -207,7 +207,8 @@ class SimplexNoise(random: RandomSource) {
         private const val F3 = 1.0 / 3.0
         const val G3 = 1.0 / 6.0
 
-        val GRADIENT = arrayOf(
+        @JvmField
+        val GRADIENT: Array<IntArray> = arrayOf(
             intArrayOf(1, 1, 0),
             intArrayOf(-1, 1, 0),
             intArrayOf(1, -1, 0),

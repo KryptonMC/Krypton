@@ -36,15 +36,6 @@ class KryptonBanBuilder(private var type: BanType) : Ban.Builder {
     private var start: OffsetDateTime? = null
     private var end: OffsetDateTime? = null
 
-    constructor(ban: Ban) : this(ban.type) {
-        if (ban is Ban.Profile) profile = ban.profile
-        if (ban is Ban.IP) address = ban.address
-        source = ban.source
-        reason = ban.reason
-        start = ban.creationDate
-        end = ban.expirationDate
-    }
-
     override fun profile(profile: GameProfile): Ban.Builder = apply {
         require(type === BanTypes.PROFILE) { "Ban type must be set to PROFILE to set the profile!" }
         this.profile = profile

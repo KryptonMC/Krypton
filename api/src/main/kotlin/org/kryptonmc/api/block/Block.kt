@@ -13,7 +13,6 @@ import net.kyori.adventure.key.Keyed
 import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
-import org.jetbrains.annotations.Range
 import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.property.PropertyHolder
 import org.kryptonmc.api.fluid.Fluid
@@ -41,13 +40,13 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
      * The block ID of this block.
      */
     @get:JvmName("id")
-    public val id: @Range(from = 0L, to = Int.MAX_VALUE.toLong()) Int
+    public val id: Int
 
     /**
      * The ID of the block state this block represents.
      */
     @get:JvmName("stateId")
-    public val stateId: @Range(from = 0L, to = Int.MAX_VALUE.toLong()) Int
+    public val stateId: Int
 
     /**
      * The hardness of this block.
@@ -66,7 +65,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
      * The amount of light this block emits, in levels.
      */
     @get:JvmName("lightEmission")
-    public val lightEmission: @Range(from = 0L, to = 15L) Int
+    public val lightEmission: Int
 
     /**
      * The friction of this block.
@@ -150,7 +149,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
      * The amount of light that this block will block from passing through it.
      */
     @get:JvmName("lightBlock")
-    public val lightBlock: @Range(from = 0L, to = 15L) Int
+    public val lightBlock: Int
 
     /**
      * If this block is sometimes fully opaque.
@@ -166,7 +165,7 @@ public interface Block : Buildable<Block, Block.Builder>, PropertyHolder<Block>,
      * The opacity of this block.
      */
     @get:JvmName("opacity")
-    public val opacity: @Range(from = 0L, to = 15L) Int
+    public val opacity: Int
 
     /**
      * If this block cannot be moved through.

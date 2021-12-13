@@ -21,8 +21,6 @@ package org.kryptonmc.krypton.entity.ambient
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.api.entity.ambient.Bat
 import org.kryptonmc.api.entity.attribute.AttributeTypes
-import org.kryptonmc.krypton.entity.KryptonMob
-import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag

@@ -182,8 +182,8 @@ class PlayHandler(
         // Fire the chat event
         server.eventManager.fire(ChatEvent(player, packet.message)).thenAccept {
             if (!it.result.isAllowed) return@thenAccept
-            if (it.result.reason !== Component.empty()) {
-                server.sendMessage(player, it.result.reason, MessageType.CHAT)
+            if (it.result.reason != null) {
+                server.sendMessage(player, it.result.reason!!, MessageType.CHAT)
                 return@thenAccept
             }
 
@@ -450,11 +450,5 @@ class PlayHandler(
 
         private const val KEEP_ALIVE_INTERVAL = 15000L
         private val LOGGER = logger<PlayHandler>()
-
-        @JvmStatic
-        private fun wasBlockPlaceAttempt(player: KryptonPlayer, item: KryptonItemStack): Boolean {
-            if (item.isEmpty()) return false
-            return (item.type.asBlock() != null || item.type.key().asString().contains("bucket")) && !player.cooldowns.contains(item.type)
-        }
     }
 }

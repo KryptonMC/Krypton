@@ -29,6 +29,7 @@ import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.compound
+import java.util.Collections
 import java.util.UUID
 
 data class KryptonAttribute(
@@ -39,8 +40,7 @@ data class KryptonAttribute(
     val modifiersByOperation = mutableMapOf<ModifierOperation, MutableSet<AttributeModifier>>()
     private val modifiersById = Object2ObjectArrayMap<UUID, AttributeModifier>()
     private val permanentModifiers = ObjectArraySet<AttributeModifier>()
-    override val modifiers: Set<AttributeModifier>
-        get() = ImmutableSet.copyOf(modifiersById.values)
+    override val modifiers: Collection<AttributeModifier> = Collections.unmodifiableCollection(modifiersById.values)
 
     private var dirty = true
     private var cachedValue = 0.0

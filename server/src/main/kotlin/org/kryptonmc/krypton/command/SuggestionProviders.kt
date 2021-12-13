@@ -23,34 +23,43 @@ import com.mojang.brigadier.suggestion.SuggestionProvider
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Key.key
-import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.api.entity.EntityType
-import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.api.registry.Registries
 import java.util.concurrent.CompletableFuture
 
+/**
+ * Holds built-in suggestion providers that are used client-side to make
+ * suggestions without bothering the server.
+ *
+ * All retrievals in here will default to returning information about the
+ * special "ask_server" suggestion provider name, which instructs the client
+ * that they should bother the server for custom suggestions.
+ */
 object SuggestionProviders {
 
     private val PROVIDERS_BY_NAME = mutableMapOf<Key, SuggestionProvider<Sender>>()
-    private val DEFAULT_NAME = key("ask_server")
+    private val DEFAULT_NAME = Key.key("ask_server")
 
+    /**
+     * Suggestion provider that suggests all entity types that can be summoned
+     * through some means, such as with the `/summon` command.
+     */
     @JvmField
-    val SUMMONABLE_ENTITIES: SuggestionProvider<Sender> = register(key("summonable_entities")) { _, builder ->
-        InternalRegistries.ENTITY_TYPE.values.asSequence()
+    val SUMMONABLE_ENTITIES: SuggestionProvider<Sender> = register(Key.key("summonable_entities")) { _, builder ->
+        Registries.ENTITY_TYPE.values.asSequence()
             .filter { it.isSummonable }
             .suggestKey(builder, EntityType<*>::key) {
-                val key = InternalRegistries.ENTITY_TYPE[it]
-                translatable("entity.${key.namespace()}.${key.value().replace("/", ".")}").toMessage()
+                val key = Registries.ENTITY_TYPE[it]
+                Component.translatable("entity.${key.namespace()}.${key.value().replace("/", ".")}").toMessage()
             }
     }
 
     @JvmStatic
     fun register(key: Key, provider: SuggestionProvider<Sender>): SuggestionProvider<Sender> {
-        require(key !in PROVIDERS_BY_NAME) {
-            "A command suggestion provider is already registered with the given key $key!"
-        }
+        require(key !in PROVIDERS_BY_NAME) { "A command suggestion provider is already registered with the given key $key!" }
         PROVIDERS_BY_NAME[key] = provider
         return Wrapper(key, provider)
     }
@@ -62,10 +71,7 @@ object SuggestionProviders {
     }
 
     @JvmRecord
-    private data class Wrapper(
-        val name: Key,
-        private val delegate: SuggestionProvider<Sender>
-    ) : SuggestionProvider<Sender> {
+    private data class Wrapper(val name: Key, private val delegate: SuggestionProvider<Sender>) : SuggestionProvider<Sender> {
 
         override fun getSuggestions(
             context: CommandContext<Sender>?,

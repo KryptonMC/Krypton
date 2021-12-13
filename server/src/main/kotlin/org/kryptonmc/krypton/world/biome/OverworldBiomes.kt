@@ -20,12 +20,13 @@ package org.kryptonmc.krypton.world.biome
 
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.effect.Music
+import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.world.biome.BiomeCategories
 import org.kryptonmc.api.world.biome.BiomeCategory
 import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.GrassColorModifier
 import org.kryptonmc.api.world.biome.TemperatureModifier
-import org.kryptonmc.krypton.effect.KryptonMusics
+import org.kryptonmc.krypton.effect.KryptonMusic
 import org.kryptonmc.krypton.util.clamp
 import java.awt.Color
 
@@ -435,7 +436,7 @@ object OverworldBiomes {
         BiomeCategories.UNDERGROUND,
         0.5F,
         0.5F,
-        music = KryptonMusics.LUSH_CAVES
+        music = KryptonMusic.game(SoundEvents.MUSIC_BIOME_LUSH_CAVES)
     )
 
     @JvmStatic
@@ -445,7 +446,7 @@ object OverworldBiomes {
         BiomeCategories.UNDERGROUND,
         0.8F,
         0.4F,
-        music = KryptonMusics.DRIPSTONE_CAVES
+        music = KryptonMusic.game(SoundEvents.MUSIC_BIOME_DRIPSTONE_CAVES)
     )
 
     // ==============================
@@ -461,7 +462,7 @@ object OverworldBiomes {
         0.8F,
         MEADOW_WATER,
         OVERWORLD_WATER_FOG,
-        KryptonMusics.MEADOW
+        KryptonMusic.game(SoundEvents.MUSIC_BIOME_MEADOW)
     )
 
     @JvmStatic
@@ -471,7 +472,7 @@ object OverworldBiomes {
         BiomeCategories.MOUNTAIN,
         -0.7F,
         0.9F,
-        music = KryptonMusics.FROZEN_PEAKS
+        music = KryptonMusic.game(SoundEvents.MUSIC_BIOME_FROZEN_PEAKS)
     )
 
     @JvmStatic
@@ -481,7 +482,7 @@ object OverworldBiomes {
         BiomeCategories.MOUNTAIN,
         -0.7F,
         0.9F,
-        music = KryptonMusics.JAGGED_PEAKS
+        music = KryptonMusic.game(SoundEvents.MUSIC_BIOME_JAGGED_PEAKS)
     )
 
     @JvmStatic
@@ -491,7 +492,7 @@ object OverworldBiomes {
         BiomeCategories.MOUNTAIN,
         1F,
         0.3F,
-        music = KryptonMusics.STONY_PEAKS
+        music = KryptonMusic.game(SoundEvents.MUSIC_BIOME_STONY_PEAKS)
     )
 
     @JvmStatic
@@ -501,7 +502,7 @@ object OverworldBiomes {
         BiomeCategories.MOUNTAIN,
         -0.3F,
         0.9F,
-        music = KryptonMusics.SNOWY_SLOPES
+        music = KryptonMusic.game(SoundEvents.MUSIC_BIOME_SNOWY_SLOPES)
     )
 
     @JvmStatic
@@ -511,7 +512,7 @@ object OverworldBiomes {
         BiomeCategories.FOREST,
         -0.2F,
         0.8F,
-        music = KryptonMusics.GROVE
+        music = KryptonMusic.game(SoundEvents.MUSIC_BIOME_GROVE)
     )
 
     // ******************************

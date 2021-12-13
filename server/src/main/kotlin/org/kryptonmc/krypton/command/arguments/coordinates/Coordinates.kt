@@ -19,9 +19,11 @@
 package org.kryptonmc.krypton.command.arguments.coordinates
 
 import org.kryptonmc.api.entity.player.Player
-import org.spongepowered.math.vector.Vector2d
 import org.spongepowered.math.vector.Vector3d
 
+/**
+ * A wrapper around all 3 types of coordinates that may be used in Minecraft.
+ */
 sealed interface Coordinates {
 
     val hasRelativeX: Boolean
@@ -31,7 +33,12 @@ sealed interface Coordinates {
     val hasRelativeZ: Boolean
         get() = true
 
+    /**
+     * Calculates the new absolute position based on the coordinates held by
+     * this object.
+     *
+     * This is where all the magic happens, in terms of actual movement
+     * calculation.
+     */
     fun position(player: Player): Vector3d
-
-    fun rotation(player: Player): Vector2d
 }

@@ -23,8 +23,6 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.util.KryptonDataLoader
 
 object ItemLoader : KryptonDataLoader("items") {
@@ -45,9 +43,8 @@ object ItemLoader : KryptonDataLoader("items") {
             val eatingSound = value["eatingSound"].asString
             val drinkingSound = value["drinkingSound"].asString
 
-            if (InternalRegistries.ITEM.contains(namespacedKey)) return@forEach
-            KryptonRegistryManager.register(
-                InternalRegistries.ITEM,
+            if (Registries.ITEM.contains(namespacedKey)) return@forEach
+            Registries.ITEM.register(
                 namespacedKey,
                 KryptonItemType(
                     namespacedKey,

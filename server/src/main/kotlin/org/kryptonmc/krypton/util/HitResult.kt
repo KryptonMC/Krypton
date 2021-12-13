@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.util
 
-import org.kryptonmc.api.entity.Entity
 import org.spongepowered.math.vector.Vector3d
 
 /**
@@ -26,36 +25,9 @@ import org.spongepowered.math.vector.Vector3d
  */
 interface HitResult {
 
-    /**
-     * The location where the player clicked.
-     */
     val clickLocation: Vector3d
-
-    /**
-     * The type of this hit result.
-     */
     val type: Type
 
-    /**
-     * Gets the distance squared from the [clickLocation] to the given
-     * [entity]'s location, where the distance squared is calculated as
-     * the following:
-     *
-     * `(clickedX - entityX) ^ 2 + (clickedY - entityY) ^ 2 + (clickedZ - entityZ) ^ 2`
-     *
-     * @param entity the entity to calculate the distance to
-     * @return the distance squared from the click location to the given entity
-     */
-    fun distanceTo(entity: Entity): Double {
-        val distanceX = clickLocation.x() - entity.location.x()
-        val distanceY = clickLocation.y() - entity.location.y()
-        val distanceZ = clickLocation.z() - entity.location.z()
-        return distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ
-    }
-
-    /**
-     * The type of hit result.
-     */
     enum class Type {
 
         MISS,

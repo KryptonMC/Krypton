@@ -71,7 +71,7 @@ class KryptonScheduler : Scheduler {
 
     @Suppress("INAPPLICABLE_JVM_NAME")
     private inner class KryptonTask(
-        @get:JvmName("plugin") override val plugin: Any,
+        override val plugin: Any,
         val callable: TaskRunnable,
         val delay: Long,
         val period: Long,
@@ -82,7 +82,7 @@ class KryptonScheduler : Scheduler {
         private var currentTaskThread: Thread? = null
 
         override val state: TaskState
-            @JvmName("state") get() {
+            get() {
                 if (future == null) return TaskState.SCHEDULED
                 if (future!!.isCancelled) return TaskState.INTERRUPTED
                 if (future!!.isDone) return TaskState.COMPLETED
@@ -114,10 +114,7 @@ class KryptonScheduler : Scheduler {
                         return@execute
                     }
                     val name = KryptonPluginManager.fromInstance(plugin)?.description?.name ?: "UNKNOWN"
-                    LOGGER.error(
-                        "Plugin $name generated an exception whilst trying to execute task $callable!",
-                        exception
-                    )
+                    LOGGER.error("Plugin $name generated an exception whilst trying to execute task $callable!", exception)
                 } finally {
                     if (period == 0L) finish()
                     currentTaskThread = null

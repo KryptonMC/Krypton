@@ -23,6 +23,9 @@ import com.mojang.brigadier.arguments.ArgumentType
 import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.nbt.CompoundTag
 
+/**
+ * An argument type for parsing compound NBT tags from SNBT data.
+ */
 object NBTCompoundArgument : ArgumentType<CompoundTag> {
 
     private val EXAMPLES = listOf("{}", "{foo=bar}")

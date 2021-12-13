@@ -25,7 +25,4 @@ import org.kryptonmc.nbt.Tag
 
 @JvmRecord
 @CataloguedBy(MemoryKeys::class)
-data class MemoryKey<T : Any>(
-    val key: Key,
-    val codec: Codec<Tag, T>
-)
+data class MemoryKey<T : Any>(val key: Key, val codec: Codec<Tag, T>)

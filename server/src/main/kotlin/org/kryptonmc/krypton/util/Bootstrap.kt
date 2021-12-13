@@ -53,14 +53,12 @@ import org.kryptonmc.krypton.entity.EntityFactory
 import org.kryptonmc.krypton.entity.KryptonEntityCategories
 import org.kryptonmc.krypton.entity.KryptonEntityTypes
 import org.kryptonmc.krypton.entity.attribute.AttributeLoader
-import org.kryptonmc.krypton.entity.hanging.KryptonPictures
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.ItemLoader
 import org.kryptonmc.krypton.item.ItemManager
 import org.kryptonmc.krypton.item.meta.KryptonMetaKeys
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
-import org.kryptonmc.krypton.statistic.KryptonStatisticTypes
 import org.kryptonmc.krypton.tags.GameEventTags
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.tags.KryptonTagTypes
@@ -138,10 +136,8 @@ object Bootstrap {
         AttributeLoader.init()
         AttributeTypes
         MetadataKeys
-        KryptonStatisticTypes
         StatisticTypes
         CustomStatistics
-        KryptonPictures
         Pictures
         KryptonMetaKeys
         MetaKeys // Not technically a registry, but quite close to one
@@ -173,11 +169,11 @@ object Bootstrap {
     @JvmStatic
     private fun missingTranslations(): Set<String> {
         val missing = TreeSet<String>()
-        InternalRegistries.ATTRIBUTE.values.checkTranslations(missing) { it.translation.key() }
-        InternalRegistries.ENTITY_TYPE.values.checkTranslations(missing) { it.translation.key() }
-        InternalRegistries.BLOCK.values.checkTranslations(missing) { it.translation.key() }
-        InternalRegistries.ITEM.values.checkTranslations(missing) { it.translation.key() }
-        Registries.GAMERULES.values.checkTranslations(missing) { it.translation.key() }
+        Registries.ATTRIBUTE.values.checkTranslations(missing) { it.translation.key() }
+        Registries.ENTITY_TYPE.values.checkTranslations(missing) { it.translation.key() }
+        Registries.BLOCK.values.checkTranslations(missing) { it.translation.key() }
+        Registries.ITEM.values.checkTranslations(missing) { it.translation.key() }
+        Registries.GAME_RULES.values.checkTranslations(missing) { it.translation.key() }
         return missing
     }
 }

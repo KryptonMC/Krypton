@@ -27,7 +27,6 @@ import com.mojang.brigadier.tree.RootCommandNode
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
 import org.kryptonmc.api.adventure.AdventureMessage
 import org.kryptonmc.api.command.BrigadierCommand
@@ -103,7 +102,7 @@ object KryptonCommandManager : CommandManager {
     }
 
     override fun unregister(alias: String) {
-        dispatcher.root.removeChildByName(alias)
+        lock.write { dispatcher.root.removeChildByName(alias.lowercase()) }
     }
 
     override fun dispatch(sender: Sender, command: String): Boolean {
@@ -113,6 +112,8 @@ object KryptonCommandManager : CommandManager {
             dispatcher.execute(parseResults)
             true
         } catch (exception: CommandSyntaxException) {
+            // The exception formatting here is mostly based on that of vanilla, so we can actually report all of the useful
+            // information that we may want for exception messages thrown by commands.
             val rawMessage = exception.rawMessage
             val message = if (rawMessage is AdventureMessage) rawMessage.wrapped else Component.text(exception.message.orEmpty())
             sender.sendMessage(message.color(NamedTextColor.RED))
@@ -120,10 +121,10 @@ object KryptonCommandManager : CommandManager {
             // This will process extra stuff that we want for proper error reporting to clients.
             if (exception.input != null && exception.cursor >= 0) {
                 val inputLength = min(exception.input.length, exception.cursor)
-                var errorMessage = Component.text(
-                    Component.empty().content(),
-                    Style.style(NamedTextColor.GRAY).clickEvent(ClickEvent.suggestCommand(command))
-                )
+                var errorMessage = Component.empty().style {
+                    it.color(NamedTextColor.GRAY)
+                    it.clickEvent(ClickEvent.suggestCommand(command))
+                }
 
                 // If the length of the input is too long, we shorten it by appending ... at the beginning.
                 if (inputLength > 10) errorMessage = errorMessage.append(Component.text("..."))

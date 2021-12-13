@@ -27,7 +27,6 @@ import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.krypton.command.InternalCommand
 import org.kryptonmc.krypton.command.argument
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
-import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.arguments.entities.entityArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackArgument
 import org.kryptonmc.krypton.command.arguments.item.ItemStackArgumentType

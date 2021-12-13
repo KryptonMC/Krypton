@@ -20,7 +20,15 @@ package org.kryptonmc.krypton.network.netty
 
 import io.netty.channel.Channel
 
+/**
+ * A listener that will be invoked when a channel is initialised.
+ *
+ * While this technically is not public API, as it is part of the server, and
+ * it may be removed without warning, there is a very low chance that this will
+ * be removed, as it was added specifically for plugins that depend on the
+ * server and need to add handlers to the pipeline.
+ */
 fun interface ChannelInitializeListener {
 
-    operator fun invoke(channel: Channel)
+    fun onInitialize(channel: Channel)
 }

@@ -25,7 +25,8 @@ import java.util.concurrent.ConcurrentHashMap
 
 object KryptonPropertyFactory : Property.Factory {
 
-    val PROPERTIES = ConcurrentHashMap<String, Property<*>>()
+    @JvmField
+    val PROPERTIES: MutableMap<String, Property<*>> = ConcurrentHashMap()
     // Rewrites from names in the Properties object to names from Mojang
     // TODO: Check on update
     private val NAME_REWRITES = mapOf(

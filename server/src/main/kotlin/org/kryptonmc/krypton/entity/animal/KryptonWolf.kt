@@ -45,6 +45,7 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
                 stopBeingAngry()
             }
         }
+
     override var collarColor: DyeColor
         get() = Registries.DYE_COLORS[data[MetadataKeys.WOLF.COLLAR_COLOR]]!!
         set(value) = data.set(MetadataKeys.WOLF.COLLAR_COLOR, Registries.DYE_COLORS.idOf(value))
@@ -54,6 +55,7 @@ class KryptonWolf(world: KryptonWorld) : KryptonTamable(world, EntityTypes.WOLF,
     override var remainingAngerTime: Int
         get() = data[MetadataKeys.WOLF.ANGER_TIME]
         set(value) = data.set(MetadataKeys.WOLF.ANGER_TIME, value)
+
     override var isTame: Boolean
         get() = super.isTame
         set(value) {

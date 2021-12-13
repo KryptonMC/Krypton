@@ -23,6 +23,7 @@ import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.TriState
 import net.minecrell.terminalconsole.SimpleTerminalConsole
+import org.apache.logging.log4j.Logger
 import org.jline.reader.LineReader
 import org.jline.reader.LineReaderBuilder
 import org.kryptonmc.api.adventure.toLegacySectionText
@@ -34,15 +35,18 @@ import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.util.TranslationBootstrap
 import org.kryptonmc.krypton.util.logger
 import java.util.Locale
+import java.util.UUID
 
 class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole(), ConsoleSender {
 
-    private var permissionFunction = PermissionFunction.ALWAYS_TRUE
-    override val name = Component.text("CONSOLE")
-    override val uuid = Identity.nil().uuid()
+    // The permission function defaults to ALWAYS_TRUE because we are god and have all permissions by default
+    private var permissionFunction = DEFAULT_PERMISSION_FUNCTION
+
+    override val name: Component = Component.text("CONSOLE")
+    override val uuid: UUID = Identity.nil().uuid()
 
     fun setupPermissions() {
-        val event = SetupPermissionsEvent(this) { PermissionFunction.ALWAYS_TRUE }
+        val event = SetupPermissionsEvent(this) { DEFAULT_PERMISSION_FUNCTION }
         permissionFunction = server.eventManager.fireSync(event).createFunction(this)
     }
 
@@ -75,6 +79,9 @@ class KryptonConsole(override val server: KryptonServer) : SimpleTerminalConsole
 
     companion object {
 
-        val LOGGER = logger("CONSOLE")
+        private val DEFAULT_PERMISSION_FUNCTION = PermissionFunction.ALWAYS_TRUE
+
+        @JvmField
+        val LOGGER: Logger = logger("CONSOLE")
     }
 }

@@ -18,6 +18,11 @@
  */
 package org.kryptonmc.krypton.effect
 
+/**
+ * These are specific world events that will be sent by the server to easily
+ * signal to clients when they occur. The seemingly arbitrary IDs are from
+ * [here](https://wiki.vg/Protocol#Effect).
+ */
 enum class Effect(val id: Int) {
 
     DISPENSER_DISPENSES(1000),

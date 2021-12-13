@@ -29,4 +29,9 @@ data class KryptonPicture(
 ) : Picture {
 
     override fun key(): Key = key
+
+    object Factory : Picture.Factory {
+
+        override fun of(key: Key, width: Int, height: Int): Picture = KryptonPicture(key, width, height)
+    }
 }

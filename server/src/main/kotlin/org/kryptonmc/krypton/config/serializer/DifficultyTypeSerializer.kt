@@ -24,19 +24,4 @@ import org.spongepowered.configurate.serialize.SerializationException
 import java.lang.reflect.Type
 import java.util.function.Predicate
 
-object DifficultyTypeSerializer : ScalarSerializer<Difficulty>(Difficulty::class.java) {
-
-    override fun serialize(item: Difficulty, typeSupported: Predicate<Class<*>>) = item.name.lowercase()
-
-    override fun deserialize(type: Type, source: Any): Difficulty = when (source) {
-        is Int -> Difficulty.fromId(source)
-        is String -> {
-            try {
-                Difficulty.valueOf(source.uppercase())
-            } catch (exception: IllegalArgumentException) {
-                throw SerializationException("Unknown difficulty $source!")
-            }
-        }
-        else -> throw SerializationException("Expected either an integer or a string for difficulties, got ${source::class.simpleName}")
-    }
-}
+object DifficultyTypeSerializer : EnumSerializer<Difficulty>(Difficulty::class, "difficulty", Difficulty::fromId, Difficulty::fromName)

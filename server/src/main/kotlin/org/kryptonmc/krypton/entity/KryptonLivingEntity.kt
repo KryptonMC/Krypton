@@ -37,13 +37,11 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.packet.out.play.PacketOutAttributes
 import org.kryptonmc.krypton.packet.out.play.PacketOutSpawnLivingEntity
-import org.kryptonmc.krypton.util.getIfPresent
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.ListTag
 import org.kryptonmc.nbt.StringTag
 import org.spongepowered.math.vector.Vector3i
-import java.util.Optional
 import kotlin.random.Random
 
 abstract class KryptonLivingEntity(
@@ -52,7 +50,7 @@ abstract class KryptonLivingEntity(
     attributeSupplier: AttributeSupplier
 ) : KryptonEntity(world, type), LivingEntity {
 
-    override val maxHealth: Float
+    final override val maxHealth: Float
         get() = attributes.value(AttributeTypes.MAX_HEALTH).toFloat()
     override var absorption = 0F
     final override val isAlive: Boolean
@@ -98,6 +96,34 @@ abstract class KryptonLivingEntity(
             val babyFactor = if (isBaby) 1.5F else 1F
             return (Random.nextFloat() - Random.nextFloat()) * 0.2F + babyFactor
         }
+
+    final override var isUsingItem: Boolean
+        get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 1 > 0
+        set(value) = setLivingFlag(1, value)
+    final override var hand: Hand
+        get() = if (data[MetadataKeys.LIVING.FLAGS].toInt() and 2 > 0) Hand.OFF else Hand.MAIN
+        set(value) = setLivingFlag(2, value == Hand.OFF)
+    final override var isInRiptideSpinAttack: Boolean
+        get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 4 > 0
+        set(value) = setLivingFlag(4, value)
+    override var health: Float
+        get() = data[MetadataKeys.LIVING.HEALTH]
+        set(value) = data.set(MetadataKeys.LIVING.HEALTH, value)
+    var potionEffectColor: Int
+        get() = data[MetadataKeys.LIVING.POTION_EFFECT_COLOR]
+        set(value) = data.set(MetadataKeys.LIVING.POTION_EFFECT_COLOR, value)
+    var isPotionEffectAmbient: Boolean
+        get() = data[MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE]
+        set(value) = data.set(MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE, value)
+    var arrowCount: Int
+        get() = data[MetadataKeys.LIVING.ARROWS]
+        set(value) = data.set(MetadataKeys.LIVING.ARROWS, value)
+    var stingerCount: Int
+        get() = data[MetadataKeys.LIVING.STINGERS]
+        set(value) = data.set(MetadataKeys.LIVING.STINGERS, value)
+    final override var sleepingPosition: Vector3i?
+        get() = data[MetadataKeys.LIVING.BED_LOCATION]
+        set(value) = data.set(MetadataKeys.LIVING.BED_LOCATION, value)
 
     init {
         data.add(MetadataKeys.LIVING.FLAGS)
@@ -184,10 +210,11 @@ abstract class KryptonLivingEntity(
         float("Health", health)
         int("HurtByTimestamp", lastHurtTimestamp)
         short("HurtTime", hurtTime)
-        sleepingPosition?.let {
-            int("SleepingX", it.x())
-            int("SleepingY", it.y())
-            int("SleepingZ", it.z())
+        val sleeping = sleepingPosition
+        if (sleeping != null) {
+            int("SleepingX", sleeping.x())
+            int("SleepingY", sleeping.y())
+            int("SleepingZ", sleeping.z())
         }
     }
 
@@ -213,34 +240,6 @@ abstract class KryptonLivingEntity(
         if (!isAlive) return
         super.tryRide(entity)
     }
-
-    final override var isUsingItem: Boolean
-        get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 1 > 0
-        set(value) = setLivingFlag(1, value)
-    final override var hand: Hand
-        get() = if (data[MetadataKeys.LIVING.FLAGS].toInt() and 2 > 0) Hand.OFF else Hand.MAIN
-        set(value) = setLivingFlag(2, value == Hand.OFF)
-    final override var isInRiptideSpinAttack: Boolean
-        get() = data[MetadataKeys.LIVING.FLAGS].toInt() and 4 > 0
-        set(value) = setLivingFlag(4, value)
-    override var health: Float
-        get() = data[MetadataKeys.LIVING.HEALTH]
-        set(value) = data.set(MetadataKeys.LIVING.HEALTH, value)
-    var potionEffectColor: Int
-        get() = data[MetadataKeys.LIVING.POTION_EFFECT_COLOR]
-        set(value) = data.set(MetadataKeys.LIVING.POTION_EFFECT_COLOR, value)
-    var isPotionEffectAmbient: Boolean
-        get() = data[MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE]
-        set(value) = data.set(MetadataKeys.LIVING.POTION_EFFECT_AMBIENCE, value)
-    var arrowCount: Int
-        get() = data[MetadataKeys.LIVING.ARROWS]
-        set(value) = data.set(MetadataKeys.LIVING.ARROWS, value)
-    var stingerCount: Int
-        get() = data[MetadataKeys.LIVING.STINGERS]
-        set(value) = data.set(MetadataKeys.LIVING.STINGERS, value)
-    final override var sleepingPosition: Vector3i?
-        get() = data[MetadataKeys.LIVING.BED_LOCATION].getIfPresent()
-        set(value) = data.set(MetadataKeys.LIVING.BED_LOCATION, Optional.ofNullable(value))
 
     companion object {
 

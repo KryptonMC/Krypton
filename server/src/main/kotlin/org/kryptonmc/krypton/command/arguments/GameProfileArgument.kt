@@ -18,6 +18,7 @@
  */
 package org.kryptonmc.krypton.command.arguments
 
+import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.context.CommandContext
@@ -26,16 +27,19 @@ import org.kryptonmc.krypton.command.arguments.entities.EntityArgumentParser
 import org.kryptonmc.krypton.command.arguments.entities.EntityQuery
 import org.kryptonmc.krypton.command.argument.argument
 
+/**
+ * Parses game profiles as entity selectors for single player targets.
+ */
 object GameProfileArgument : ArgumentType<EntityQuery> {
 
     override fun parse(reader: StringReader): EntityQuery {
-        if (reader.canRead() && reader.peek() == '@') {
+        if (reader.canRead() && reader.peek() == EntityArgumentParser.SELECTOR_CHAR) {
             reader.skip()
             val position = reader.cursor
             return EntityArgumentParser.parse(reader, reader.read(), position, true, false)
         }
         val position = reader.cursor
-        while (reader.canRead() && reader.peek() != ' ') {
+        while (reader.canRead() && reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) {
             reader.skip()
         }
         val string = reader.string.substring(position, reader.cursor)

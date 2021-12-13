@@ -21,11 +21,9 @@ package org.kryptonmc.krypton.world.fluid
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableSet
 import com.google.gson.JsonObject
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.property.Property
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.KryptonRegistryManager
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.util.IntHashBiMap
 import org.kryptonmc.krypton.util.KryptonDataLoader
 import org.kryptonmc.krypton.world.block.property.KryptonPropertyFactory
@@ -35,8 +33,11 @@ object FluidLoader : KryptonDataLoader("fluids") {
 
     private val KEY_MAP = mutableMapOf<String, KryptonFluid>()
     private val PROPERTY_MAP = mutableMapOf<String, PropertyEntry>()
-    val STATES = IntHashBiMap<KryptonFluid>()
 
+    @JvmField
+    val STATES: IntHashBiMap<KryptonFluid> = IntHashBiMap()
+
+    @JvmStatic
     fun properties(
         key: String,
         properties: Map<String, String>
@@ -63,11 +64,12 @@ object FluidLoader : KryptonDataLoader("fluids") {
             PROPERTY_MAP[key] = propertyEntry
 
             // Register to registry
-            if (InternalRegistries.FLUID.contains(Key.key(key))) return@forEach
-            KryptonRegistryManager.register(InternalRegistries.FLUID, key, defaultFluid)
+            if (Registries.FLUID.contains(Key.key(key))) return@forEach
+            Registries.FLUID.register(key, defaultFluid)
         }
     }
 
+    @JvmStatic
     private fun JsonObject.retrieveState(
         key: String,
         availableProperties: Set<Property<*>>,
@@ -82,6 +84,7 @@ object FluidLoader : KryptonDataLoader("fluids") {
         return propertyMap to fluid
     }
 
+    @JvmStatic
     private fun createFluid(
         key: Key,
         fluid: JsonObject,
@@ -92,7 +95,7 @@ object FluidLoader : KryptonDataLoader("fluids") {
         key,
         fluid["id"].asInt,
         state["stateId"].asInt,
-        InternalRegistries.ITEM[Key.key(fluid["bucketId"].asString)],
+        Registries.ITEM[Key.key(fluid["bucketId"].asString)],
         fluid["empty"].asBoolean,
         fluid["explosionResistance"].asDouble,
         state["source"].asBoolean,
@@ -105,6 +108,6 @@ object FluidLoader : KryptonDataLoader("fluids") {
 
     private class PropertyEntry {
 
-        val properties = ConcurrentHashMap<Map<String, String>, KryptonFluid>()
+        val properties: MutableMap<Map<String, String>, KryptonFluid> = ConcurrentHashMap()
     }
 }

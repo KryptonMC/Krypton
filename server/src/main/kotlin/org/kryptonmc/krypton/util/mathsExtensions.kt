@@ -52,11 +52,7 @@ fun Int.ceillog2(): Int {
     return MULTIPLY_DE_BRUIJN_BIT_POSITION[(temp.toLong() * 125613361L shr 27 and 31).toInt()]
 }
 
-fun Int.log2(): Int = ceillog2() - if (isPowerOfTwo()) 0 else 1
-
 fun Int.isPowerOfTwo(): Boolean = GenericMath.isPowerOfTwo(this)
-
-fun Int.roundToward(toward: Int): Int = (this + toward - 1) / toward * toward
 
 fun Random.nextUUID(): UUID {
     val most = nextLong() and -61441L or 16384L

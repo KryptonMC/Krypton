@@ -20,9 +20,9 @@ package org.kryptonmc.krypton.resource
 
 import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.entity.memory.MemoryKey
+import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.dimension.Dimension
 import org.kryptonmc.krypton.world.event.GameEvent
-import org.kryptonmc.krypton.world.chunk.ChunkStatus
 import org.kryptonmc.krypton.world.generation.feature.Structure
 import org.kryptonmc.krypton.world.generation.noise.NoiseGeneratorSettings
 

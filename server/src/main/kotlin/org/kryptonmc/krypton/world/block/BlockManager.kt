@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.world.block
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.krypton.world.block.handler.BlockHandler
 
-@Suppress("INAPPLICABLE_JVM_NAME")
 object BlockManager {
 
     private val handlers = mutableMapOf<String, BlockHandler>()

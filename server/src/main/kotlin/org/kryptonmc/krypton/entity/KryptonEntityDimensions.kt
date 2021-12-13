@@ -35,14 +35,7 @@ data class KryptonEntityDimensions(
 
     override fun toBoundingBox(x: Double, y: Double, z: Double): BoundingBox {
         val center = width / 2.0
-        return BoundingBox.of(
-            x - center,
-            y,
-            z - center,
-            x + center,
-            y + height,
-            z + center
-        )
+        return BoundingBox.of(x - center, y, z - center, x + center, y + height, z + center)
     }
 
     object Factory : EntityDimensions.Factory {

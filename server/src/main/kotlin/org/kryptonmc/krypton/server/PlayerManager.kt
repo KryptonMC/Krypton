@@ -18,7 +18,6 @@
  */
 package org.kryptonmc.krypton.server
 
-import com.google.common.hash.Hashing
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.audience.ForwardingAudience
 import net.kyori.adventure.key.Key
@@ -59,10 +58,8 @@ import org.kryptonmc.krypton.server.ban.BannedIpList
 import org.kryptonmc.krypton.server.ban.BannedPlayerList
 import org.kryptonmc.krypton.server.whitelist.Whitelist
 import org.kryptonmc.krypton.server.whitelist.WhitelistedIps
-import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
 import org.kryptonmc.krypton.util.Maths
 import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.data.PlayerDataManager
 import org.kryptonmc.krypton.world.dimension.parseDimension
@@ -123,14 +120,14 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             server.worldManager.worlds.keys,
             world.dimensionType,
             world.dimension,
-            Hashing.sha256().hashLong(server.worldManager.default.data.worldGenerationSettings.seed).asLong(),
+            Random.nextLong(),
             server.maxPlayers,
             server.config.world.viewDistance,
             server.config.world.simulationDistance,
             reducedDebugInfo,
             doImmediateRespawn,
-            world.isDebug,
-            server.worldManager.default.data.worldGenerationSettings.isFlat
+            false,
+            false
         ))
         session.send(PacketOutPluginMessage(BRAND_KEY, BRAND_MESSAGE))
         session.send(PacketOutDifficulty(world.difficulty))
@@ -201,7 +198,7 @@ class PlayerManager(private val server: KryptonServer) : ForwardingAudience {
             // Send info and quit message
             invalidateStatus()
             sendToAll(PacketOutPlayerInfo(PacketOutPlayerInfo.Action.REMOVE_PLAYER, player))
-            server.sendMessage(event.result.reason)
+            if (event.result.reason != null) server.sendMessage(event.result.reason!!)
         }
     }
 

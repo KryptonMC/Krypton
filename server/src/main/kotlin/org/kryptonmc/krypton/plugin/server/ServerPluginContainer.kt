@@ -20,6 +20,13 @@ package org.kryptonmc.krypton.plugin.server
 
 import org.kryptonmc.api.plugin.PluginContainer
 
+/**
+ * A plugin container representing the current server.
+ *
+ * This plugin container will **not** be registered to the plugin manager, and
+ * it only exists for use with things that require plugin containers, such as
+ * the services manager.
+ */
 object ServerPluginContainer : PluginContainer {
 
     override val description = ServerPluginDescription

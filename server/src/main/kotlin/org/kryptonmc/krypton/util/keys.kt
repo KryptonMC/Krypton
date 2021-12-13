@@ -19,13 +19,12 @@
 package org.kryptonmc.krypton.util
 
 import com.mojang.brigadier.StringReader
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import org.kryptonmc.api.adventure.toMessage
+import org.kryptonmc.krypton.command.toExceptionType
 
-private val ERROR_INVALID = SimpleCommandExceptionType(Component.translatable("argument.id.invalid").toMessage())
+private val ERROR_INVALID = Component.translatable("argument.id.invalid").toExceptionType()
 
 fun StringReader.nextKey(): Key {
     val cursor = cursor
@@ -50,9 +49,3 @@ private fun Char.isAllowedInKey() = this in ZERO_TO_NINE_RANGE ||
         this == '/' ||
         this == '.' ||
         this == '-'
-
-fun String.toKeyOrNull(): Key? = try {
-    Key.key(this)
-} catch (exception: InvalidKeyException) {
-    null
-}

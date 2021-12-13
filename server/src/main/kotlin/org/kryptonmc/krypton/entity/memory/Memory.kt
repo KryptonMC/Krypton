@@ -20,10 +20,7 @@ package org.kryptonmc.krypton.entity.memory
 
 import org.kryptonmc.nbt.CompoundTag
 
-class Memory<T : Any>(
-    val value: T?,
-    timeToLive: Long = Long.MAX_VALUE
-) {
+class Memory<T : Any>(val value: T?, timeToLive: Long = Long.MAX_VALUE) {
 
     var timeToLive = timeToLive
         private set

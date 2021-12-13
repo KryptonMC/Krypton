@@ -27,4 +27,14 @@ abstract class MetadataSerializer<T>(val id: Int) {
     abstract fun write(buf: ByteBuf, item: T)
 
     open fun copy(item: T): T = item
+
+    companion object {
+
+        @JvmStatic
+        fun <T> of(id: Int, writer: (ByteBuf, T) -> Unit): MetadataSerializer<T> = object : MetadataSerializer<T>(id) {
+            override fun write(buf: ByteBuf, item: T) {
+                writer(buf, item)
+            }
+        }
+    }
 }

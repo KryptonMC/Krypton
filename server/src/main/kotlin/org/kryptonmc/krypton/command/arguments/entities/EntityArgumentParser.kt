@@ -20,7 +20,17 @@ package org.kryptonmc.krypton.command.arguments.entities
 
 import com.mojang.brigadier.StringReader
 
+/**
+ * Parses entity selectors.
+ */
 object EntityArgumentParser {
+
+    const val SELECTOR_CHAR = '@'
+    private const val OPENING_BRACKET = '['
+    private const val CLOSING_BRACKET = ']'
+    private const val SELECTOR_SEPARATOR = ','
+    private const val EXCLUSION = '!'
+    private const val KEY_VALUE_SEPARATOR = '='
 
     @JvmStatic
     fun parse(
@@ -30,8 +40,8 @@ object EntityArgumentParser {
         onlyPlayers: Boolean,
         singleTarget: Boolean,
     ): EntityQuery = when (operation) {
-        'p' -> EntityQuery(emptyList(), EntityQuery.Selector.NEAREST_PLAYER)
-        'e' -> {
+        EntityQuery.Selector.NEAREST_PLAYER_CHAR -> EntityQuery(emptyList(), EntityQuery.Selector.NEAREST_PLAYER)
+        EntityQuery.Selector.ALL_ENTITIES_CHAR -> {
             if (singleTarget) {
                 reader.cursor = 0
                 throw EntityArgumentExceptions.TOO_MANY_ENTITIES.createWithContext(reader)
@@ -40,31 +50,33 @@ object EntityArgumentParser {
                 throw EntityArgumentExceptions.ONLY_FOR_PLAYERS.createWithContext(reader)
             }
 
-            if (reader.canRead() && reader.peek() == '[') {
+            // If we have a [, we know that we have filters to parse
+            if (reader.canRead() && reader.peek() == OPENING_BRACKET) {
                 reader.skip()
                 EntityQuery(parseArguments(reader), EntityQuery.Selector.ALL_ENTITIES)
             } else {
                 EntityQuery(emptyList(), EntityQuery.Selector.ALL_ENTITIES)
             }
         }
-        'r' -> EntityQuery(emptyList(), EntityQuery.Selector.RANDOM_PLAYER)
-        'a' -> {
+        EntityQuery.Selector.RANDOM_PLAYER_CHAR -> EntityQuery(emptyList(), EntityQuery.Selector.RANDOM_PLAYER)
+        EntityQuery.Selector.ALL_PLAYERS_CHAR -> {
             if (singleTarget) {
                 reader.cursor = 0
                 throw EntityArgumentExceptions.TOO_MANY_PLAYERS.createWithContext(reader)
             }
 
-            if (reader.canRead() && reader.peek() == '[') {
+            // If we have a [, we know that we have filters to parse
+            if (reader.canRead() && reader.peek() == OPENING_BRACKET) {
                 reader.skip()
                 EntityQuery(parseArguments(reader), EntityQuery.Selector.ALL_PLAYERS)
             } else {
                 EntityQuery(emptyList(), EntityQuery.Selector.ALL_PLAYERS)
             }
         }
-        's' -> EntityQuery(emptyList(), EntityQuery.Selector.EXECUTOR)
+        EntityQuery.Selector.EXECUTOR_CHAR -> EntityQuery(emptyList(), EntityQuery.Selector.EXECUTOR)
         else -> {
             reader.cursor = position
-            throw EntityArgumentExceptions.UNKNOWN_SELECTOR.createWithContext(reader, "@$operation")
+            throw EntityArgumentExceptions.UNKNOWN_SELECTOR.createWithContext(reader, "$SELECTOR_CHAR$operation")
         }
     }
 
@@ -72,20 +84,18 @@ object EntityArgumentParser {
     private fun parseArguments(reader: StringReader): List<EntityArgument.EntityArg> {
         reader.skipWhitespace()
         val args = mutableListOf<EntityArgument.EntityArg>()
-        while (reader.canRead() && reader.peek() != ']') {
+        while (reader.canRead() && reader.peek() != CLOSING_BRACKET) {
             reader.skipWhitespace()
             val position = reader.cursor
             val option = reader.readString()
-            if (option !in EntityArguments.ARGUMENTS) {
-                throw EntityArgumentExceptions.INVALID_OPTION.createWithContext(reader, option)
-            }
+            if (!EntityArguments.VALID.contains(option)) throw EntityArgumentExceptions.INVALID_OPTION.createWithContext(reader, option)
 
             reader.skipWhitespace()
-            if (reader.canRead() && reader.peek() == '=') {
+            if (reader.canRead() && reader.peek() == KEY_VALUE_SEPARATOR) {
                 reader.skip()
                 reader.skipWhitespace()
 
-                val exclude = reader.peek() == '!'
+                val exclude = reader.peek() == EXCLUSION
                 if (exclude) reader.skip()
 
                 val value = reader.readString()
@@ -94,12 +104,12 @@ object EntityArgumentParser {
                 reader.skipWhitespace()
                 if (!reader.canRead()) continue
 
-                if (reader.peek() == ',') {
+                if (reader.peek() == SELECTOR_SEPARATOR) {
                     reader.skip()
                     continue
                 }
 
-                if (reader.peek() != ']') throw EntityArgumentExceptions.UNTERMINATED.createWithContext(reader)
+                if (reader.peek() != CLOSING_BRACKET) throw EntityArgumentExceptions.UNTERMINATED.createWithContext(reader)
                 break
             }
 

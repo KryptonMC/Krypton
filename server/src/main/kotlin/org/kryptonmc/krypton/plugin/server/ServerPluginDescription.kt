@@ -23,6 +23,9 @@ import org.kryptonmc.api.plugin.PluginDescription
 import org.kryptonmc.krypton.KryptonPlatform
 import java.nio.file.Path
 
+/**
+ * A plugin description that describes the currently running server.
+ */
 object ServerPluginDescription : PluginDescription {
 
     override val id: String = "krypton"

@@ -18,9 +18,9 @@
  */
 package org.kryptonmc.krypton.command.arguments.coordinates
 
+import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 import org.kryptonmc.api.entity.player.Player
-import org.spongepowered.math.vector.Vector2d
 import org.spongepowered.math.vector.Vector3d
 
 @JvmRecord
@@ -33,16 +33,7 @@ data class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val 
     override val hasRelativeZ: Boolean
         get() = z.isRelative
 
-    override fun position(player: Player): Vector3d = Vector3d(
-        x.calculate(player.location.x()),
-        y.calculate(player.location.y()),
-        z.calculate(player.location.z())
-    )
-
-    override fun rotation(player: Player): Vector2d = Vector2d(
-        x.calculate(player.rotation.x().toDouble()),
-        y.calculate(player.rotation.y().toDouble())
-    )
+    override fun position(player: Player): Vector3d = Vector3d(x.get(player.location.x()), y.get(player.location.y()), z.get(player.location.z()))
 
     companion object {
 
@@ -50,14 +41,14 @@ data class WorldCoordinates(val x: WorldCoordinate, val y: WorldCoordinate, val 
         fun parse(reader: StringReader, correctCenter: Boolean): WorldCoordinates {
             val position = reader.cursor
             val x = WorldCoordinate.parse(reader, correctCenter)
-            if (!reader.canRead() || reader.peek() != ' ') {
+            if (!reader.canRead() || reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) {
                 reader.cursor = position
                 throw CoordinateExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
             }
 
             reader.skip()
             val y = WorldCoordinate.parse(reader, false)
-            if (!reader.canRead() || reader.peek() != ' ') {
+            if (!reader.canRead() || reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) {
                 reader.cursor = position
                 throw CoordinateExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
             }

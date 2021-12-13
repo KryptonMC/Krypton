@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  * For the original file that this file is derived from, see here:
- * https://github.com/VelocityPowered/Velocity/blob/dev/1.1.0/proxy/src/main/java/com/velocitypowered/proxy/plugin/loader/java/JavaPluginLoader.java
+ * https://github.com/PaperMC/Velocity/blob/0097359a99c23de4fc6b92c59a401a10208b4c4a/proxy/src/main/java/com/velocitypowered/proxy/plugin/loader/java/JavaPluginLoader.java
  */
 package org.kryptonmc.krypton.plugin.loader
 
@@ -37,6 +37,9 @@ import java.nio.file.Path
 import java.util.jar.JarInputStream
 import kotlin.io.path.inputStream
 
+/**
+ * Various utilities for loading and creating plugins.
+ */
 object PluginLoader {
 
     fun loadDescription(source: Path): LoadedPluginDescriptionCandidate {

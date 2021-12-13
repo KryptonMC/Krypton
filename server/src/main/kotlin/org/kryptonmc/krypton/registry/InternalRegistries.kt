@@ -19,33 +19,19 @@
 package org.kryptonmc.krypton.registry
 
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.Key.key
 import org.kryptonmc.api.registry.Registry
 import org.kryptonmc.api.resource.ResourceKey
-import org.kryptonmc.api.resource.ResourceKeys
 import org.kryptonmc.krypton.resource.InternalResourceKeys
 
 object InternalRegistries {
 
-    @JvmField val SOUND_EVENT = create(ResourceKeys.SOUND_EVENT)
-    @JvmField val ENTITY_TYPE = createDefaulted(ResourceKeys.ENTITY_TYPE, key("pig"))
-    @JvmField val PARTICLE_TYPE = create(ResourceKeys.PARTICLE_TYPE)
-    @JvmField val BLOCK = create(ResourceKeys.BLOCK)
-    @JvmField val ITEM = createDefaulted(ResourceKeys.ITEM, key("air"))
-    @JvmField val MENU = create(ResourceKeys.MENU)
-    @JvmField val ATTRIBUTE = create(ResourceKeys.ATTRIBUTE)
     @JvmField val MEMORIES = create(InternalResourceKeys.MEMORIES)
     @JvmField val GAME_EVENT = create(InternalResourceKeys.GAME_EVENT)
-    @JvmField val BIOME = create(ResourceKeys.BIOME)
-    @JvmField val STATISTIC_TYPE = create(ResourceKeys.STATISTIC_TYPE)
-    @JvmField val PICTURE = createDefaulted(ResourceKeys.PICTURE, key("kebab"))
-    @JvmField val FLUID = createDefaulted(ResourceKeys.FLUID, key("empty"))
-    @JvmField val BLOCK_ENTITY_TYPE = create(ResourceKeys.BLOCK_ENTITY_TYPE)
 
     // World generation registries
     @JvmField val STRUCTURE = create(InternalResourceKeys.STRUCTURE)
     @JvmField val NOISE_GENERATOR_SETTINGS = create(InternalResourceKeys.NOISE_GENERATOR_SETTINGS)
-    @JvmField val CHUNK_STATUS = createDefaulted(InternalResourceKeys.CHUNK_STATUS, key("empty"))
+    @JvmField val CHUNK_STATUS = createDefaulted(InternalResourceKeys.CHUNK_STATUS, Key.key("empty"))
 
     @JvmStatic
     private fun <T : Any> create(key: ResourceKey<out Registry<T>>): KryptonRegistry<T> = KryptonRegistryManager.create(key)

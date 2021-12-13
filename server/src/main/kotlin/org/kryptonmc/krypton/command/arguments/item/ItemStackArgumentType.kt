@@ -24,6 +24,9 @@ import com.mojang.brigadier.context.CommandContext
 import org.kryptonmc.api.command.Sender
 import org.kryptonmc.krypton.command.argument.argument
 
+/**
+ * An argument type that parses item stacks.
+ */
 object ItemStackArgumentType : ArgumentType<ItemStackArgument> {
 
     private val EXAMPLES = listOf("minecraft:cookie", "cookie", "cookie{foo=bar}")

@@ -26,6 +26,6 @@ import org.spongepowered.configurate.objectmapping.meta.Setting
 @JvmRecord
 data class AdvancedCategory(
     @Setting("synchronize-chunk-writes")
-    @Comment("Whether we should use the DSYNC option for saving region files to disk.")
+    @Comment("Whether to use the DSYNC option for saving region files to disk.")
     val synchronizeChunkWrites: Boolean = true
 )

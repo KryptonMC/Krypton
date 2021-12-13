@@ -38,9 +38,7 @@ class ConfigTests {
     fun `test config loads properly with correct values`() {
         val loader = HoconConfigurationLoader.builder()
             .defaultOptions(KryptonConfig.OPTIONS)
-            .source {
-                Thread.currentThread().contextClassLoader.getResourceAsStream("config.conf")!!.bufferedReader()
-            }
+            .source { ClassLoader.getSystemResourceAsStream("config.conf")!!.bufferedReader() }
             .build()
         val config = loader.load().get<KryptonConfig>()!!
 

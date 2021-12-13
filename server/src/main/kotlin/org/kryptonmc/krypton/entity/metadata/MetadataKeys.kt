@@ -82,7 +82,7 @@ object MetadataKeys {
 
     @JvmField val FLAGS = create(0, MetadataSerializers.BYTE, 0)
     @JvmField val AIR_TICKS = create(1, MetadataSerializers.VAR_INT, 300)
-    @JvmField val CUSTOM_NAME = create(2, MetadataSerializers.OPTIONAL_COMPONENT, Optional.empty())
+    @JvmField val CUSTOM_NAME = create(2, MetadataSerializers.OPTIONAL_COMPONENT, null)
     @JvmField val CUSTOM_NAME_VISIBILITY = create(3, MetadataSerializers.BOOLEAN, false)
     @JvmField val SILENT = create(4, MetadataSerializers.BOOLEAN, false)
     @JvmField val NO_GRAVITY = create(5, MetadataSerializers.BOOLEAN, false)
@@ -97,7 +97,7 @@ object MetadataKeys {
         @JvmField val POTION_EFFECT_AMBIENCE = create(11, MetadataSerializers.BOOLEAN, false)
         @JvmField val ARROWS = create(12, MetadataSerializers.VAR_INT, 0)
         @JvmField val STINGERS = create(13, MetadataSerializers.VAR_INT, 0)
-        @JvmField val BED_LOCATION = create(14, MetadataSerializers.OPTIONAL_POSITION, Optional.empty())
+        @JvmField val BED_LOCATION = create(14, MetadataSerializers.OPTIONAL_POSITION, null)
     }
 
     object ArmorStandKeys {
@@ -205,7 +205,7 @@ object MetadataKeys {
     object TamableKeys {
 
         @JvmField val FLAGS = create(17, MetadataSerializers.BYTE, 0)
-        @JvmField val OWNER = create(18, MetadataSerializers.OPTIONAL_UUID, Optional.empty())
+        @JvmField val OWNER = create(18, MetadataSerializers.OPTIONAL_UUID, null)
     }
 
     object AxolotlKeys {
@@ -238,8 +238,8 @@ object MetadataKeys {
 
         @JvmField val TYPE = create(17, MetadataSerializers.VAR_INT, FoxType.RED.ordinal)
         @JvmField val FLAGS = create(18, MetadataSerializers.BYTE, 0)
-        @JvmField val FIRST_TRUSTED = create(19, MetadataSerializers.OPTIONAL_UUID, Optional.empty())
-        @JvmField val SECOND_TRUSTED = create(20, MetadataSerializers.OPTIONAL_UUID, Optional.empty())
+        @JvmField val FIRST_TRUSTED = create(19, MetadataSerializers.OPTIONAL_UUID, null)
+        @JvmField val SECOND_TRUSTED = create(20, MetadataSerializers.OPTIONAL_UUID, null)
     }
 
     object GoatKeys {

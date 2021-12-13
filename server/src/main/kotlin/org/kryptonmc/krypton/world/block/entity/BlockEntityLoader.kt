@@ -22,8 +22,6 @@ import com.google.common.collect.ImmutableSet
 import com.google.gson.JsonObject
 import net.kyori.adventure.key.Key
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.registry.InternalRegistries
-import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.util.KryptonDataLoader
 
 object BlockEntityLoader : KryptonDataLoader("block_entities") {
@@ -38,12 +36,8 @@ object BlockEntityLoader : KryptonDataLoader("block_entities") {
                 Registries.BLOCK[id]!!
             }
 
-            if (InternalRegistries.BLOCK_ENTITY_TYPE.contains(namespacedKey)) return@forEach
-            KryptonRegistryManager.register(
-                InternalRegistries.BLOCK_ENTITY_TYPE,
-                namespacedKey,
-                KryptonBlockEntityType(namespacedKey, ImmutableSet.copyOf(blocks))
-            )
+            if (Registries.BLOCK_ENTITY_TYPE.contains(namespacedKey)) return@forEach
+            Registries.BLOCK_ENTITY_TYPE.register(namespacedKey, KryptonBlockEntityType(namespacedKey, ImmutableSet.copyOf(blocks)))
         }
     }
 }

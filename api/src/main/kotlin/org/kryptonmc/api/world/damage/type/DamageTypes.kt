@@ -61,5 +61,5 @@ public object DamageTypes {
     @JvmField public val BAD_RESPAWN_POINT: DamageType = get("bad_respawn_point")
 
     @JvmStatic
-    private fun get(name: String): DamageType = Registries.DAMAGE_SOURCES[Key.key(name)]!!
+    private fun get(name: String): DamageType = Registries.DAMAGE_TYPES[Key.key(name)]!!
 }

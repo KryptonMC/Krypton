@@ -55,9 +55,6 @@ class KryptonOcelot(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.OCEL
             .add(AttributeTypes.MOVEMENT_SPEED, 0.3)
             .add(AttributeTypes.ATTACK_DAMAGE, 3.0)
             .build()
-        private val TEMPT_INGREDIENTS = setOf(
-            ItemTypes.COD,
-            ItemTypes.SALMON
-        )
+        private val TEMPT_INGREDIENTS = setOf(ItemTypes.COD, ItemTypes.SALMON)
     }
 }

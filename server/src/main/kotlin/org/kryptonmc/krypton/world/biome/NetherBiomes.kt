@@ -27,7 +27,7 @@ import org.kryptonmc.api.world.biome.AmbientParticleSettings
 import org.kryptonmc.api.world.biome.BiomeCategories
 import org.kryptonmc.api.world.biome.Precipitation
 import org.kryptonmc.api.world.biome.biome
-import org.kryptonmc.krypton.effect.KryptonMusics
+import org.kryptonmc.krypton.effect.KryptonMusic
 import java.awt.Color
 
 object NetherBiomes {
@@ -42,7 +42,7 @@ object NetherBiomes {
         SoundEvents.AMBIENT_NETHER_WASTES_LOOP,
         SoundEvents.AMBIENT_NETHER_WASTES_MOOD,
         SoundEvents.AMBIENT_NETHER_WASTES_ADDITIONS,
-        KryptonMusics.NETHER_WASTES
+        KryptonMusic.game(SoundEvents.MUSIC_BIOME_NETHER_WASTES)
     )
 
     @JvmStatic
@@ -52,7 +52,7 @@ object NetherBiomes {
         SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP,
         SoundEvents.AMBIENT_SOUL_SAND_VALLEY_MOOD,
         SoundEvents.AMBIENT_SOUL_SAND_VALLEY_ADDITIONS,
-        KryptonMusics.SOUL_SAND_VALLEY,
+        KryptonMusic.game(SoundEvents.MUSIC_BIOME_SOUL_SAND_VALLEY),
         AmbientParticleSettings.of(ParticleTypes.ASH, null, 0.00625F)
     )
 
@@ -63,7 +63,7 @@ object NetherBiomes {
         SoundEvents.AMBIENT_BASALT_DELTAS_LOOP,
         SoundEvents.AMBIENT_BASALT_DELTAS_MOOD,
         SoundEvents.AMBIENT_BASALT_DELTAS_ADDITIONS,
-        KryptonMusics.BASALT_DELTAS,
+        KryptonMusic.game(SoundEvents.MUSIC_BIOME_BASALT_DELTAS),
         AmbientParticleSettings.of(ParticleTypes.WHITE_ASH, null, 0.118093334F)
     )
 
@@ -74,7 +74,7 @@ object NetherBiomes {
         SoundEvents.AMBIENT_CRIMSON_FOREST_LOOP,
         SoundEvents.AMBIENT_CRIMSON_FOREST_MOOD,
         SoundEvents.AMBIENT_CRIMSON_FOREST_ADDITIONS,
-        KryptonMusics.CRIMSON_FOREST,
+        KryptonMusic.game(SoundEvents.MUSIC_BIOME_CRIMSON_FOREST),
         AmbientParticleSettings.of(ParticleTypes.CRIMSON_SPORE, null, 0.025F)
     )
 
@@ -85,7 +85,7 @@ object NetherBiomes {
         SoundEvents.AMBIENT_WARPED_FOREST_LOOP,
         SoundEvents.AMBIENT_WARPED_FOREST_MOOD,
         SoundEvents.AMBIENT_WARPED_FOREST_ADDITIONS,
-        KryptonMusics.WARPED_FOREST,
+        KryptonMusic.game(SoundEvents.MUSIC_BIOME_WARPED_FOREST),
         AmbientParticleSettings.of(ParticleTypes.WARPED_SPORE, null, 0.01428F)
     )
 

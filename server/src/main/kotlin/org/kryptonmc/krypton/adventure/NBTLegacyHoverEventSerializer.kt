@@ -35,10 +35,12 @@ import java.io.IOException
 import java.lang.RuntimeException
 import java.util.UUID
 
+/**
+ * Serializes and deserializes hover events that used to be stored as
+ * components and are now dedicated objects. This uses Krypton's SNBT codec
+ * and Krypton NBT to parse NBT.
+ */
 object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
-
-    private val SNBT_CODEC: Codec<CompoundTag, String, CommandSyntaxException, RuntimeException> =
-        Codec.of({ SNBTParser(StringReader(it)).readSingleCompound() }, Tag::asString)
 
     private const val ITEM_TYPE = "id"
     private const val ITEM_COUNT = "Count"
@@ -47,16 +49,18 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
     private const val ENTITY_NAME = "name"
     private const val ENTITY_ID = "id"
 
+    private val SNBT_CODEC: Codec<CompoundTag, String, CommandSyntaxException, RuntimeException> = Codec.of(
+        { SNBTParser(StringReader(it)).readSingleCompound() },
+        Tag::asString
+    )
+
     override fun deserializeShowItem(input: Component): HoverEvent.ShowItem {
         return try {
             val raw = input.toPlainText()
             val nbt = SNBT_CODEC.decode(raw)
             val tag = nbt.getCompound(ITEM_TAG)
-            HoverEvent.ShowItem.of(
-                Key.key(nbt.getString(ITEM_TYPE)),
-                nbt.getByte(ITEM_COUNT).toInt(),
-                if (tag.isEmpty()) null else BinaryTagHolder.encode(tag, SNBT_CODEC)
-            )
+            val holder = if (!tag.isEmpty()) BinaryTagHolder.encode(tag, SNBT_CODEC) else null
+            HoverEvent.ShowItem.of(Key.key(nbt.getString(ITEM_TYPE)), nbt.getByte(ITEM_COUNT).toInt(), holder)
         } catch (exception: CommandSyntaxException) {
             throw IOException(exception)
         }
@@ -82,7 +86,8 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
             byte(ITEM_COUNT, input.count().toByte())
         }
         try {
-            if (input.nbt() != null) tag.put(ITEM_TAG, input.nbt()!!.get(SNBT_CODEC))
+            val nbt = input.nbt()
+            if (nbt != null) tag.put(ITEM_TAG, nbt.get(SNBT_CODEC))
         } catch (exception: CommandSyntaxException) {
             throw IOException(exception)
         }
@@ -94,7 +99,8 @@ object NBTLegacyHoverEventSerializer : LegacyHoverEventSerializer {
             string(ENTITY_ID, input.id().toString())
             string(ENTITY_TYPE, input.type().asString())
         }
-        if (input.name() != null) tag.string(ENTITY_NAME, encoder.encode(input.name()!!))
+        val name = input.name()
+        if (name != null) tag.string(ENTITY_NAME, encoder.encode(name))
         return Component.text(SNBT_CODEC.encode(tag.build()))
     }
 }

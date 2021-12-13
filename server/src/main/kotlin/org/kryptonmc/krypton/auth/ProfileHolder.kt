@@ -26,6 +26,14 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.UUID
 
+/**
+ * This holds a game profile and other information that we need when storing
+ * it, such as the expiry date, and the last time it was accessed.
+ *
+ * The reason why we store the last access time is so we can order profiles by
+ * it, because we only store the [KryptonProfileCache.MRU_LIMIT] most recent
+ * profiles to disk.
+ */
 class ProfileHolder(
     val profile: KryptonGameProfile,
     val expiryDate: ZonedDateTime,
@@ -71,6 +79,13 @@ class ProfileHolder(
 
     companion object {
 
+        /**
+         * Standard date formatter for the ISO 8601 calendar date standard,
+         * also including the timezone.
+         *
+         * See [here](https://en.wikipedia.org/wiki/ISO_8601#Calendar_dates)
+         */
+        @JvmField
         val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")
     }
 }

@@ -21,7 +21,18 @@ package org.kryptonmc.krypton.command.argument.serializer
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import io.netty.buffer.ByteBuf
 
-object IntArgumentSerializer : FlaggedArgumentSerializer<IntegerArgumentType> {
+/**
+ * Integer argument types are serialized with flags indicating if the minimum
+ * value is equal to -[Int.MAX_VALUE], and the maximum value is equal to
+ * [Int.MAX_VALUE], which are the minimum and maximum values that can be
+ * used with Brigadier's integer argument type.
+ *
+ * We then further write the minimum and maximum values, if they are not equal
+ * to -[Int.MAX_VALUE] and [Int.MAX_VALUE] respectively.
+ *
+ * See [here](https://wiki.vg/Command_Data#brigadier:integer)
+ */
+object IntegerArgumentSerializer : FlaggedArgumentSerializer<IntegerArgumentType> {
 
     override fun write(buf: ByteBuf, value: IntegerArgumentType) {
         val writeMin = value.minimum != Int.MIN_VALUE

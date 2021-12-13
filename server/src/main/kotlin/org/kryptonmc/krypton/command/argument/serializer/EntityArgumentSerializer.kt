@@ -21,6 +21,12 @@ package org.kryptonmc.krypton.command.argument.serializer
 import io.netty.buffer.ByteBuf
 import org.kryptonmc.krypton.command.arguments.entities.EntityArgument
 
+/**
+ * Entity argument types are serialized with flags indicating if the selector
+ * has a single target, and if it only targets players.
+ *
+ * See [here](https://wiki.vg/Command_Data#minecraft:entity)
+ */
 object EntityArgumentSerializer : FlaggedArgumentSerializer<EntityArgument> {
 
     override fun write(buf: ByteBuf, value: EntityArgument) {

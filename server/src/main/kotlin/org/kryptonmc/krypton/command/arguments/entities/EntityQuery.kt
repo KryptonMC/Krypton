@@ -19,9 +19,7 @@
 package org.kryptonmc.krypton.command.arguments.entities
 
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toMessage
 import org.kryptonmc.api.adventure.toPlainText
 import org.kryptonmc.api.command.Sender
@@ -30,6 +28,7 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.auth.KryptonGameProfile
 import org.kryptonmc.krypton.command.BrigadierExceptions
+import org.kryptonmc.krypton.command.toExceptionType
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 
@@ -47,7 +46,7 @@ data class EntityQuery(
         Selector.RANDOM_PLAYER -> listOf(source.server.players.random())
         Selector.ALL_PLAYERS -> {
             if (args.isNotEmpty()) {
-                val entities = applyArguments((source.server.players + source.world.entities).asSequence(), source)
+                val entities = applyArguments(source.server.players.asSequence().plus(source.world.entities), source)
                 if (entities.isEmpty()) throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()
                 entities
             } else {
@@ -57,7 +56,7 @@ data class EntityQuery(
         Selector.EXECUTOR -> listOf(source)
         Selector.ALL_ENTITIES -> {
             if (args.isNotEmpty()) {
-                val entities = applyArguments((source.server.players + source.world.entities).asSequence(), source)
+                val entities = applyArguments(source.server.players.asSequence().plus(source.world.entities), source)
                 if (entities.isEmpty()) throw EntityArgumentExceptions.ENTITY_NOT_FOUND.create()
                 entities
             } else {
@@ -88,9 +87,11 @@ data class EntityQuery(
                 val player = server.player(playerName) ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()
                 return listOf(player)
             }
-            return entities(sender).onEach {
+            val entities = entities(sender)
+            entities.forEach {
                 if (it !is KryptonPlayer) throw UnsupportedOperationException("You cannot call players if there is an entity in the arguments!")
-            } as List<KryptonPlayer>
+            }
+            return entities as List<KryptonPlayer>
         }
         val player = server.player(playerName) ?: throw EntityArgumentExceptions.PLAYER_NOT_FOUND.create()
         return listOf(player)
@@ -214,8 +215,7 @@ data class EntityQuery(
                 "advancements" -> notImplemented("advancements")
                 "predicate" -> notImplemented("predicate")
                 "sort" -> {
-                    val sorter = EntityArguments.Sorter.fromName(value.toString())
-                        ?: throw EntityArgumentExceptions.INVALID_SORT_TYPE.create(value)
+                    val sorter = EntityArguments.Sorter.fromName(value.toString()) ?: throw EntityArgumentExceptions.INVALID_SORT_TYPE.create(value)
                     entities = when (sorter) {
                         EntityArguments.Sorter.NEAREST -> entities.sortedBy { it.location.distanceSquared(source.location) }
                         EntityArguments.Sorter.FURTHEST -> entities.sortedByDescending { it.location.distanceSquared(source.location) }
@@ -226,7 +226,7 @@ data class EntityQuery(
                 "limit" -> {
                     checkInt(value.toString())
                     val limit = value.toString().toInt()
-                    if (limit <= 0) throw EntityArgumentExceptions.LIMIT_NULL.create()
+                    if (limit <= 0) throw EntityArgumentExceptions.LIMIT_NEGATIVE.create()
                     entities = if (entities.count() > limit) entities.take(limit - 1) else entities
                 }
                 else -> throw UnsupportedOperationException("Invalid option")
@@ -245,7 +245,7 @@ data class EntityQuery(
     }
 
     private fun notImplemented(option: String) {
-        throw DynamicCommandExceptionType { a -> text("Not yet implemented: $a").toMessage() }.create(option)
+        throw NOT_IMPLEMENTED.create(option)
     }
 
     private fun checkInt(string: String) {
@@ -256,7 +256,7 @@ data class EntityQuery(
         if (string.toIntOrNull() != null) return
         if (string.startsWith("..") && string.substring(2).toIntOrNull() != null) return
         if (string.contains("..") && string.toIntRange() != null) return
-        throw SimpleCommandExceptionType(translatable("argument.range.empty").toMessage()).create()
+        throw OUT_OF_RANGE.create()
     }
 
     enum class Selector {
@@ -271,23 +271,32 @@ data class EntityQuery(
 
         companion object {
 
+            const val RANDOM_PLAYER_CHAR = 'r'
+            const val ALL_PLAYERS_CHAR = 'a'
+            const val EXECUTOR_CHAR = 's'
+            const val ALL_ENTITIES_CHAR = 'e'
+            const val NEAREST_PLAYER_CHAR = 'p'
+
             /**
              * Gets the target selector from it's short name
              * you can find these at the [Minecraft Wiki](https://minecraft.fandom.com/wiki/Target_selectors)
              */
             @JvmStatic
             fun fromChar(selector: Char): Selector = when (selector) {
-                'p' -> NEAREST_PLAYER
-                'r' -> RANDOM_PLAYER
-                'a' -> ALL_PLAYERS
-                'e' -> ALL_ENTITIES
-                's' -> EXECUTOR
+                RANDOM_PLAYER_CHAR -> RANDOM_PLAYER
+                ALL_PLAYERS_CHAR -> ALL_PLAYERS
+                EXECUTOR_CHAR -> EXECUTOR
+                ALL_ENTITIES_CHAR -> ALL_ENTITIES
+                NEAREST_PLAYER_CHAR -> NEAREST_PLAYER
                 else -> UNKNOWN
             }
         }
     }
 
     companion object {
+
+        private val NOT_IMPLEMENTED = DynamicCommandExceptionType { Component.text(it.toString()).toMessage() }
+        private val OUT_OF_RANGE = Component.translatable("argument.range.empty").toExceptionType()
 
         @JvmStatic
         private fun String.toIntRange(): IntRange? {
@@ -300,5 +309,3 @@ data class EntityQuery(
         }
     }
 }
-
-

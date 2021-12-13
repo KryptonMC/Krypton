@@ -27,8 +27,10 @@ object MojangUUIDTypeAdapter : TypeAdapter<UUID>() {
 
     private val REPLACEMENT_REGEX = "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})".toRegex()
 
+    @JvmStatic
     fun fromString(string: String): UUID = UUID.fromString(string.replace(REPLACEMENT_REGEX, "$1-$2-$3-$4-$5"))
 
+    @JvmStatic
     fun toString(uuid: UUID): String = uuid.toString().replace("-", "")
 
     override fun read(reader: JsonReader): UUID = fromString(reader.nextString())

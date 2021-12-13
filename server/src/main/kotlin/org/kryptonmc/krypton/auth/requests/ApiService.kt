@@ -28,10 +28,16 @@ import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
+/**
+ * Used to make requests to the Mojang API.
+ */
 object ApiService {
 
     private val client = HttpClient.newHttpClient()
 
+    /**
+     * Requests the profile with the given [name] from the Mojang API.
+     */
     fun profile(name: String, executor: Executor? = null): CompletableFuture<KryptonGameProfile?> {
         val request = HttpRequest.newBuilder()
             .uri(URI("https://api.mojang.com/users/profiles/minecraft/$name"))
@@ -41,6 +47,9 @@ object ApiService {
         return future.thenApplyAsync { KryptonGameProfile.fromJson(it.body()) }
     }
 
+    /**
+     * Requests the profile with the given [uuid] from the Mojang API.
+     */
     fun profile(uuid: UUID, executor: Executor? = null): CompletableFuture<KryptonGameProfile?> {
         val id = MojangUUIDTypeAdapter.toString(uuid)
         val request = HttpRequest.newBuilder()

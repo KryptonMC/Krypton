@@ -24,24 +24,26 @@ import java.security.PublicKey
 import javax.crypto.Cipher
 
 /**
- * Object used for generating the server's key pair and decrypting data with the public key
+ * A utility for generating the server's key pair and decrypting data with the
+ * public key.
+ *
+ * See [here](https://wiki.vg/Protocol_Encryption#Key_Exchange)
  */
 object Encryption {
 
-    /**
-     * The algorithm used to generate the key pair for the server
-     */
     private const val PAIR_ALGORITHM = "RSA"
 
     private val keyPair = generateKeyPair()
     val publicKey: PublicKey = keyPair.public
 
+    @JvmStatic
     fun decrypt(encryptedData: ByteArray): ByteArray {
         val cipher = Cipher.getInstance(PAIR_ALGORITHM)
         cipher.init(Cipher.DECRYPT_MODE, keyPair.private)
         return cipher.doFinal(encryptedData)
     }
 
+    @JvmStatic
     private fun generateKeyPair(): KeyPair {
         val generator = KeyPairGenerator.getInstance(PAIR_ALGORITHM)
         generator.initialize(1024)

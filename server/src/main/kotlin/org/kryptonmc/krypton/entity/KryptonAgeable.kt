@@ -40,15 +40,16 @@ abstract class KryptonAgeable(
                 onAgeTransformation()
             }
         }
-    private var forcedAge = 0
-    private var forcedAgeTimer = 0
-    override val canBreedNaturally: Boolean
-        get() = false
-    override var isBaby: Boolean
+    final override var isBaby: Boolean
         get() = age < 0
         set(value) {
             age = if (value) -24000 else 0
         }
+
+    private var forcedAge = 0
+    private var forcedAgeTimer = 0
+    override val canBreedNaturally: Boolean
+        get() = false
 
     init {
         data.add(MetadataKeys.AGEABLE.BABY)

@@ -101,7 +101,8 @@ class LegacyQueryHandler(private val server: KryptonServer) : ChannelInboundHand
         val chars = message.toCharArray()
         buffer.writeShort(chars.size)
         chars.forEach { buffer.writeChar(it.code) }
-        pipeline().firstContext().writeAndFlush(buffer)
+        pipeline().firstContext()
+            .writeAndFlush(buffer)
             .addListener(ChannelFutureListener.CLOSE)
             .addListener { buffer.release() }
     }

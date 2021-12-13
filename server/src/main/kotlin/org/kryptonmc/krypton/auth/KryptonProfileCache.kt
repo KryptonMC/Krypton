@@ -48,12 +48,12 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         }
 
     init {
-        load().apply { reverse() }.forEach { safeAdd(it) }
+        load().apply { reverse() }.forEach { add(it) }
     }
 
     fun add(profile: KryptonGameProfile) {
         val expiry = ZonedDateTime.now().plusMonths(1)
-        safeAdd(ProfileHolder(profile, expiry))
+        add(ProfileHolder(profile, expiry))
     }
 
     override fun get(name: String): KryptonGameProfile? {
@@ -73,7 +73,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
         .map(ProfileHolder::profile)
         .iterator()
 
-    private fun safeAdd(holder: ProfileHolder) {
+    private fun add(holder: ProfileHolder) {
         val profile = holder.profile
         holder.lastAccess = operations.incrementAndGet()
         profilesByName[profile.name.lowercase()] = holder

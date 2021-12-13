@@ -34,6 +34,10 @@ fun ParticleEffect.write(buf: ByteBuf, x: Double, y: Double, z: Double) {
     /*
      * Write location. If the particle is directional, colorable, or a note, then we need
      * to manually apply the offsets first.
+     *
+     * The way this even works is really hacky. What we do is write the data in
+     * the offsets. This goes all the way back to old versions of Minecraft,
+     * and somehow still works in the newest versions.
      */
     val data = data
     when (data) {
@@ -43,19 +47,19 @@ fun ParticleEffect.write(buf: ByteBuf, x: Double, y: Double, z: Double) {
             val directionX = data.direction?.x() ?: random.nextGaussian()
             val directionY = data.direction?.y() ?: random.nextGaussian()
             val directionZ = data.direction?.z() ?: random.nextGaussian()
-            writeOffset(buf, directionX.toFloat(), directionY.toFloat(), directionZ.toFloat())
+            buf.writeOffset(directionX.toFloat(), directionY.toFloat(), directionZ.toFloat())
             buf.writeFloat(data.velocity)
             buf.writeInt(0)
         }
         is ColorParticleData -> {
             writeOffsetPosition(buf, x, y, z)
-            writeOffset(buf, data.red.toFloat() / 255F, data.green.toFloat() / 255F, data.blue.toFloat() / 255F)
+            buf.writeOffset(data.red.toFloat() / 255F, data.green.toFloat() / 255F, data.blue.toFloat() / 255F)
             buf.writeFloat(1F)
             buf.writeInt(0)
         }
         is NoteParticleData -> {
             writeOffsetPosition(buf, x, y, z)
-            writeOffset(buf, data.note.toFloat() / 24F, 0F, 0F)
+            buf.writeOffset(data.note.toFloat() / 24F, 0F, 0F)
             buf.writeFloat(1F)
             buf.writeInt(0)
         }
@@ -63,7 +67,7 @@ fun ParticleEffect.write(buf: ByteBuf, x: Double, y: Double, z: Double) {
             buf.writeDouble(x)
             buf.writeDouble(y)
             buf.writeDouble(z)
-            writeOffset(buf, offset.x().toFloat(), offset.y().toFloat(), offset.z().toFloat())
+            buf.writeOffset(offset.x().toFloat(), offset.y().toFloat(), offset.z().toFloat())
             buf.writeFloat(1F)
             buf.writeInt(quantity)
         }
@@ -78,8 +82,8 @@ private fun ParticleEffect.writeOffsetPosition(buf: ByteBuf, x: Double, y: Doubl
     buf.writeDouble(z + offset.z() * random.nextGaussian())
 }
 
-private fun writeOffset(buf: ByteBuf, x: Float, y: Float, z: Float) {
-    buf.writeFloat(x)
-    buf.writeFloat(y)
-    buf.writeFloat(z)
+private fun ByteBuf.writeOffset(x: Float, y: Float, z: Float) {
+    writeFloat(x)
+    writeFloat(y)
+    writeFloat(z)
 }

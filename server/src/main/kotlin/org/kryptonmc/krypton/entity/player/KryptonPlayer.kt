@@ -111,7 +111,6 @@ import org.kryptonmc.krypton.packet.out.play.PacketOutTitleTimes
 import org.kryptonmc.krypton.packet.out.play.PacketOutUnloadChunk
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateHealth
 import org.kryptonmc.krypton.packet.out.play.PacketOutUpdateViewPosition
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.service.KryptonVanishService
 import org.kryptonmc.krypton.util.*
 import org.kryptonmc.krypton.statistic.KryptonStatisticsTracker
@@ -286,6 +285,8 @@ class KryptonPlayer(
         get() = afkService.isAfk(this)
         set(value) = afkService.setAfk(this, value)
 
+    val blockHandler = PlayerBlockHandler(this)
+
     private var respawnPosition: Vector3i? = null
     private var respawnForced = false
     private var respawnAngle = 0F
@@ -295,7 +296,55 @@ class KryptonPlayer(
     private var previousCentralZ = 0
     private val visibleChunks = LongArraySet()
 
-    val blockHandler = PlayerBlockHandler(this)
+    override var health: Float
+        get() = super.health
+        set(value) {
+            super.health = value
+            if (!isLoaded) return
+            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
+        }
+
+    // Sources for vanilla hunger system values:
+    //      -> Minecraft Wiki https://minecraft.fandom.com/wiki/Hunger
+    // 20 is the default vanilla food level
+    override var foodLevel: Int = 20
+        set(value) {
+            field = value
+            if (!isLoaded) return
+            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
+        }
+
+    var foodTickTimer: Int = 0
+
+    // 0 is the default vanilla food exhaustion level
+    override var foodExhaustionLevel: Float = 0f
+
+    // 5 is the default vanilla food saturation level
+    override var foodSaturationLevel: Float = 5f
+        set(value) {
+            field = value
+            if (!isLoaded) return
+            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
+        }
+
+    override var absorption: Float
+        get() = data[MetadataKeys.PLAYER.ADDITIONAL_HEARTS]
+        set(value) = data.set(MetadataKeys.PLAYER.ADDITIONAL_HEARTS, value)
+    var score: Int
+        get() = data[MetadataKeys.PLAYER.SCORE]
+        set(value) = data.set(MetadataKeys.PLAYER.SCORE, value)
+    var skinSettings: Byte
+        get() = data[MetadataKeys.PLAYER.SKIN_FLAGS]
+        set(value) = data.set(MetadataKeys.PLAYER.SKIN_FLAGS, value)
+    override var mainHand: MainHand
+        get() = if (data[MetadataKeys.PLAYER.MAIN_HAND] == 0.toByte()) MainHand.LEFT else MainHand.RIGHT
+        set(value) = data.set(MetadataKeys.PLAYER.MAIN_HAND, if (value == MainHand.LEFT) 0 else 1)
+    var leftShoulder: CompoundTag
+        get() = data[MetadataKeys.PLAYER.LEFT_SHOULDER]
+        set(value) = data.set(MetadataKeys.PLAYER.LEFT_SHOULDER, value)
+    var rightShoulder: CompoundTag
+        get() = data[MetadataKeys.PLAYER.RIGHT_SHOULDER]
+        set(value) = data.set(MetadataKeys.PLAYER.RIGHT_SHOULDER, value)
 
     init {
         data.add(MetadataKeys.PLAYER.ADDITIONAL_HEARTS)
@@ -657,10 +706,6 @@ class KryptonPlayer(
     override fun getSpawnPacket(): Packet = PacketOutSpawnPlayer(this)
 
     override fun sendPluginMessage(channel: Key, message: ByteArray) {
-        if (channel in DEBUG_CHANNELS) {
-            SERVER_LOGGER.warn("A plugin attempted to send a plugin message on a debug channel. These channels will " +
-                    "only function correctly with a modified client.")
-        }
         session.send(PacketOutPluginMessage(channel, message))
     }
 
@@ -724,7 +769,7 @@ class KryptonPlayer(
     override fun playSound(sound: Sound) = playSound(sound, location.x(), location.y(), location.z())
 
     override fun playSound(sound: Sound, x: Double, y: Double, z: Double) {
-        val type = InternalRegistries.SOUND_EVENT[sound.name()]
+        val type = Registries.SOUND_EVENT[sound.name()]
         if (type != null) {
             session.send(PacketOutSoundEffect(sound, type, x, y, z))
             return
@@ -1012,33 +1057,15 @@ class KryptonPlayer(
 
     companion object {
 
-        val DEFAULT_PERMISSIONS = PermissionProvider { PermissionFunction.ALWAYS_NOT_SET }
         private const val FLYING_ACHIEVEMENT_MINIMUM_SPEED = 25
-        private val DEBUG_CHANNELS = setOf(
-            key("debug/paths"),
-            key("debug/neighbors_update"),
-            key("debug/caves"),
-            key("debug/structures"),
-            key("debug/worldgen_attempt"),
-            key("debug/poi_ticket_count"),
-            key("debug/poi_added"),
-            key("debug/poi_removed"),
-            key("debug/village_sections"),
-            key("debug/goal_selector"),
-            key("debug/brain"),
-            key("debug/bee"),
-            key("debug/hive"),
-            key("debug/game_test_add_marker"),
-            key("debug/game_test_clear"),
-            key("debug/raids")
-        )
-        private val LOGGER = logger<KryptonPlayer>()
-        private val SERVER_LOGGER = logger<KryptonServer>()
         private val ATTRIBUTES = attributes()
             .add(AttributeTypes.ATTACK_DAMAGE, 1.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.1)
             .add(AttributeTypes.ATTACK_SPEED)
             .add(AttributeTypes.LUCK)
             .build()
+
+        @JvmField
+        val DEFAULT_PERMISSIONS: PermissionProvider = PermissionProvider { PermissionFunction.ALWAYS_NOT_SET }
     }
 }

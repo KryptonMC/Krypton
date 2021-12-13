@@ -36,13 +36,6 @@ class SortedArraySet<T>(
     val last: T?
         get() = contents[size - 1]
 
-    fun addOrGet(element: T): T? {
-        val index = findIndex(element)
-        if (index >= 0) return contents[index]
-        addInternal(element, -index - 1)
-        return element
-    }
-
     fun get(element: T): T? {
         val index = findIndex(element)
         return if (index >= 0) contents[index] else null

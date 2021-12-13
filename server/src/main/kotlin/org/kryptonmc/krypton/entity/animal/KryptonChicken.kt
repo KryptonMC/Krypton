@@ -51,11 +51,6 @@ class KryptonChicken(world: KryptonWorld) : KryptonAnimal(world, EntityTypes.CHI
             .add(AttributeTypes.MAX_HEALTH, 4.0)
             .add(AttributeTypes.MOVEMENT_SPEED, 0.25)
             .build()
-        private val FOOD_ITEMS = setOf(
-            ItemTypes.WHEAT_SEEDS,
-            ItemTypes.MELON_SEEDS,
-            ItemTypes.PUMPKIN_SEEDS,
-            ItemTypes.BEETROOT_SEEDS
-        )
+        private val FOOD_ITEMS = setOf(ItemTypes.WHEAT_SEEDS, ItemTypes.MELON_SEEDS, ItemTypes.PUMPKIN_SEEDS, ItemTypes.BEETROOT_SEEDS)
     }
 }

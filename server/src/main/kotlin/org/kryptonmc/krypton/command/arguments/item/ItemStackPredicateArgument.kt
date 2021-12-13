@@ -21,6 +21,9 @@ package org.kryptonmc.krypton.command.arguments.item
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
 
+/**
+ * An argument type for parsing item stack predicates.
+ */
 object ItemStackPredicateArgument : ArgumentType<ItemStackPredicate> {
 
     private val EXAMPLES = listOf("minecraft:stone", "stone", "#minecraft:boats", "stone{foo=bar}")

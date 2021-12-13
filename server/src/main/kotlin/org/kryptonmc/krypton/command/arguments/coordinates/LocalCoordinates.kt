@@ -18,12 +18,19 @@
  */
 package org.kryptonmc.krypton.command.arguments.coordinates
 
+import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.StringReader
 import org.kryptonmc.api.entity.player.Player
 import org.spongepowered.math.TrigMath
-import org.spongepowered.math.vector.Vector2d
 import org.spongepowered.math.vector.Vector3d
 
+/**
+ * Coordinates that are local to not only a player's position, but also their
+ * rotation.
+ *
+ * In contrast to relative coordinates, local coordinates use a "left", "up",
+ * and "forward" component to calculate where the player should be moved.
+ */
 @JvmRecord
 data class LocalCoordinates(
     private val left: Double,
@@ -53,22 +60,20 @@ data class LocalCoordinates(
         return Vector3d(player.location.x() + offsetX, player.location.y() + offsetY, player.location.z() + offsetZ)
     }
 
-    override fun rotation(player: Player): Vector2d = Vector2d.ZERO
-
     companion object {
 
         @JvmStatic
         fun parse(reader: StringReader): LocalCoordinates {
             val resetPosition = reader.cursor
             val left = reader.readPositionalDouble(resetPosition)
-            if (!reader.canRead() || reader.peek() != ' ') {
+            if (!reader.canRead() || reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) {
                 reader.cursor = resetPosition
                 throw CoordinateExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
             }
             reader.skip()
 
             val up = reader.readPositionalDouble(resetPosition)
-            if (!reader.canRead() || reader.peek() != ' ') {
+            if (!reader.canRead() || reader.peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) {
                 reader.cursor = resetPosition
                 throw CoordinateExceptions.POSITION_3D_INCOMPLETE.createWithContext(reader)
             }
@@ -81,12 +86,12 @@ data class LocalCoordinates(
         @JvmStatic
         private fun StringReader.readPositionalDouble(resetPosition: Int): Double {
             if (!canRead()) throw CoordinateExceptions.POSITION_EXPECTED_DOUBLE.createWithContext(this)
-            if (peek() != '^') {
+            if (peek() != TextCoordinates.LOCAL_MODIFIER) {
                 cursor = resetPosition
                 throw CoordinateExceptions.POSITION_MIXED_TYPE.createWithContext(this)
             }
             skip()
-            return if (canRead() && peek() != ' ') readDouble() else 0.0
+            return if (canRead() && peek() != CommandDispatcher.ARGUMENT_SEPARATOR_CHAR) readDouble() else 0.0
         }
     }
 }

@@ -28,7 +28,6 @@ import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.WorldManager
 import org.kryptonmc.krypton.KryptonServer
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.resource.InternalResourceKeys
 import org.kryptonmc.krypton.util.ChunkProgressListener
 import org.kryptonmc.krypton.util.daemon
@@ -134,7 +133,7 @@ class KryptonWorldManager(
         val dimensions = generationSettings.dimensions
         val overworld = dimensions[Dimension.OVERWORLD]
         val dimensionType = (overworld?.type as? KryptonDimensionType) ?: KryptonDimensionTypes.OVERWORLD
-        val generator = overworld?.generator ?: DebugGenerator(InternalRegistries.BIOME)
+        val generator = overworld?.generator ?: DebugGenerator(Registries.BIOME)
         val world = KryptonWorld(
             server,
             data,

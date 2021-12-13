@@ -13,7 +13,7 @@
 package org.kryptonmc.api.event
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import org.kryptonmc.api.adventure.toPlainText
 
 /**
  * A result that contains a [reason] for allowing/denying the event, as a
@@ -22,17 +22,20 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
  * @param reason the reason for the result
  */
 @JvmRecord
-public data class ComponentResult(override val isAllowed: Boolean, public val reason: Component) : ResultedEvent.Result {
+public data class ComponentResult(override val isAllowed: Boolean, public val reason: Component?) : ResultedEvent.Result {
 
     override fun toString(): String {
-        if (isAllowed) return "allowed"
-        if (reason !== Component.empty()) return "denied: ${PlainTextComponentSerializer.plainText().serialize(reason)}"
+        if (isAllowed) {
+            if (reason != null) return "allowed: ${reason.toPlainText()}"
+            return "allowed"
+        }
+        if (reason != null) return "denied: ${reason.toPlainText()}"
         return "denied"
     }
 
     public companion object {
 
-        private val ALLOWED = ComponentResult(true, Component.empty())
+        private val ALLOWED = ComponentResult(true, null)
 
         /**
          * Returns a result that represents the event being allowed with no

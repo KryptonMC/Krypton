@@ -22,6 +22,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.entity.Entity
 import org.kryptonmc.api.entity.EntityType
 import org.kryptonmc.api.entity.EntityTypes
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.ambient.KryptonBat
 import org.kryptonmc.krypton.entity.animal.KryptonAxolotl
 import org.kryptonmc.krypton.entity.animal.KryptonBee
@@ -133,10 +134,12 @@ object EntityFactory {
 
     fun create(world: KryptonWorld, id: String, nbt: CompoundTag?): KryptonEntity? {
         return try {
-            create(InternalRegistries.ENTITY_TYPE[Key.key(id)], world)?.apply { if (nbt != null) load(nbt) } ?: run {
-                LOGGER.warn("No entity found with ID $id")
+            val entity = create(Registries.ENTITY_TYPE[Key.key(id)], world) ?: kotlin.run {
+                LOGGER.warn("No entity found with ID $id!")
                 return null
             }
+            if (nbt != null) entity.load(nbt)
+            return entity
         } catch (exception: RuntimeException) {
             LOGGER.warn("Exception loading entity", exception)
             null

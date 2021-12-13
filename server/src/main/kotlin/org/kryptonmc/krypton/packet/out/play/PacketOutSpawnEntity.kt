@@ -19,6 +19,7 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.KryptonEntity
 import org.kryptonmc.krypton.packet.EntityPacket
 import org.kryptonmc.krypton.registry.InternalRegistries
@@ -47,7 +48,7 @@ data class PacketOutSpawnEntity(
     constructor(entity: KryptonEntity) : this(
         entity.id,
         entity.uuid,
-        InternalRegistries.ENTITY_TYPE.idOf(entity.type),
+        Registries.ENTITY_TYPE.idOf(entity.type),
         entity.location.x(),
         entity.location.y(),
         entity.location.z(),

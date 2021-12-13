@@ -27,9 +27,7 @@ import org.kryptonmc.krypton.packet.Packet
 import org.kryptonmc.krypton.util.decodeBlockX
 import org.kryptonmc.krypton.util.decodeBlockY
 import org.kryptonmc.krypton.util.decodeBlockZ
-import org.kryptonmc.krypton.util.readBlockHitResult
 import org.kryptonmc.krypton.util.readEnum
-import org.kryptonmc.krypton.util.writeBlockHitResult
 import org.kryptonmc.krypton.util.writeEnum
 import org.kryptonmc.krypton.util.writeVector
 

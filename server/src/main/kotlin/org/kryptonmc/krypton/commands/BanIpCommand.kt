@@ -39,7 +39,9 @@ import org.kryptonmc.krypton.util.asString
 object BanIpCommand : InternalCommand {
 
     private val ALREADY_BANNED = SimpleCommandExceptionType(Component.translatable("commands.banip.failed").toMessage())
-    val IP_ADDRESS_PATTERN = Regex("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+
+    @JvmField
+    val IP_ADDRESS_PATTERN: Regex = Regex("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
             "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$")
 
     override fun register(dispatcher: CommandDispatcher<Sender>) {
@@ -76,9 +78,9 @@ object BanIpCommand : InternalCommand {
             sender.sendMessage(Component.translatable("commands.banip.success", Component.text(target), Component.text(reason)))
             return
         }
-        if (server.player(target) != null) {
+        val player = server.player(target)
+        if (player != null) {
             // The target is a player
-            val player = server.player(target)!!
             val entry = BannedIpEntry(player.address.asString(), reason = componentReason)
 
             // Check player is not already banned

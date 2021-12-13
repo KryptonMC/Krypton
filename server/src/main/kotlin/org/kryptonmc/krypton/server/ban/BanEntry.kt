@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.server.ban
 
 import com.google.gson.stream.JsonWriter
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.user.ban.Ban
 import org.kryptonmc.krypton.server.ServerConfigEntry
 import java.time.OffsetDateTime
@@ -34,8 +34,8 @@ sealed class BanEntry<T>(
     final override val reason: Component = DEFAULT_REASON
 ) : ServerConfigEntry<T>(key), Ban {
 
-    private val sourceName by lazy { LegacyComponentSerializer.legacySection().serialize(source) }
-    private val reasonString by lazy { LegacyComponentSerializer.legacySection().serialize(reason) }
+    private val sourceName by lazy { source.toLegacySectionText() }
+    private val reasonString by lazy { reason.toLegacySectionText() }
     private val startFormatted by lazy { creationDate.format(DATE_FORMATTER) }
     private val endFormatted by lazy { expirationDate?.format(DATE_FORMATTER) ?: "forever" }
     override val isInvalid: Boolean
@@ -63,8 +63,11 @@ sealed class BanEntry<T>(
 
     companion object {
 
+        @JvmField
         val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z")
-        val DEFAULT_SOURCE = Component.text("(Unknown)")
-        val DEFAULT_REASON = Component.text("Banned by operator.")
+        @JvmField
+        val DEFAULT_SOURCE: Component = Component.text("(Unknown)")
+        @JvmField
+        val DEFAULT_REASON: Component = Component.text("Banned by operator.")
     }
 }

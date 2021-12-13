@@ -18,6 +18,9 @@
  */
 package org.kryptonmc.krypton.util
 
+/**
+ * A bi-map of Int to T and T to Int.
+ */
 interface IntBiMap<T> : Iterable<T> {
 
     val size: Int

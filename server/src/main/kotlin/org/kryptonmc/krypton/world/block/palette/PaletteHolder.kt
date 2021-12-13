@@ -25,7 +25,7 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.world.biome.Biome
-import org.kryptonmc.krypton.registry.InternalRegistries
+import org.kryptonmc.krypton.registry.KryptonRegistry
 import org.kryptonmc.krypton.util.BitStorage
 import org.kryptonmc.krypton.util.IntBiMap
 import org.kryptonmc.krypton.util.SimpleBitStorage
@@ -173,7 +173,7 @@ class PaletteHolder<T> : PaletteResizer<T> {
         companion object {
 
             @JvmField
-            val BLOCKS = object : Strategy<Block>(BlockLoader.STATES, 4) {
+            val BLOCKS: Strategy<Block> = object : Strategy<Block>(BlockLoader.STATES, 4) {
 
                 override fun createConfiguration(bits: Int): Configuration<Block> = when (bits) {
                     0 -> Configuration(SingleValuePalette.Factory, bits)
@@ -182,8 +182,9 @@ class PaletteHolder<T> : PaletteResizer<T> {
                     else -> Configuration(GlobalPalette.Factory, registry.size.ceillog2())
                 }
             }
+
             @JvmField
-            val BIOMES = object : Strategy<Biome>(InternalRegistries.BIOME, 2) {
+            val BIOMES: Strategy<Biome> = object : Strategy<Biome>(Registries.BIOME as KryptonRegistry<Biome>, 2) {
 
                 override fun createConfiguration(bits: Int): Configuration<Biome> = when (bits) {
                     0 -> Configuration(SingleValuePalette.Factory, bits)

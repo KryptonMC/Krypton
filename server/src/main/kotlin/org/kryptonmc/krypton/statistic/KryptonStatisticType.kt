@@ -43,4 +43,9 @@ data class KryptonStatisticType<T : Any>(
     override fun iterator(): Iterator<Statistic<T>> = statistics.values.iterator()
 
     override fun key(): Key = key
+
+    object Factory : StatisticType.Factory {
+
+        override fun <T : Any> of(key: Key, registry: Registry<T>): StatisticType<T> = KryptonStatisticType(key, registry)
+    }
 }

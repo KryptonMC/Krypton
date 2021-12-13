@@ -90,9 +90,9 @@ data class KryptonBlock(
         return requireNotNull(BlockLoader.properties(key().asString(), newProperties)) { "Invalid properties $newValues for block ${key()}!" }
     }
 
-    override fun asItem(): ItemType? = if (itemKey != null) InternalRegistries.ITEM[itemKey] else null
+    override fun asItem(): ItemType? = if (itemKey != null) Registries.ITEM[itemKey] else null
 
-    override fun asFluid(): Fluid = InternalRegistries.FLUID[fluidKey]
+    override fun asFluid(): Fluid = Registries.FLUID[fluidKey]
 
     override fun key(): Key = key
 

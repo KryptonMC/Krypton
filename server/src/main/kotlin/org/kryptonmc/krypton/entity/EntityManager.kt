@@ -49,10 +49,7 @@ class EntityManager(val world: KryptonWorld) : AutoCloseable {
     private val byId = Int2ObjectOpenHashMap<KryptonEntity>()
     private val byUUID = hashMapOf<UUID, KryptonEntity>()
     private val byChunk = Long2ObjectOpenHashMap<MutableSet<KryptonEntity>>()
-    private val regionFileManager = RegionFileManager(
-        world.folder.resolve("entities"),
-        world.server.config.advanced.synchronizeChunkWrites
-    )
+    private val regionFileManager = RegionFileManager(world.folder.resolve("entities"), world.server.config.advanced.synchronizeChunkWrites)
     val entities: MutableCollection<KryptonEntity>
         get() = byId.values
 

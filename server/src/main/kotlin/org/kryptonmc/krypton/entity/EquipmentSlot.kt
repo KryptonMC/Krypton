@@ -23,16 +23,15 @@ import org.kryptonmc.api.entity.ArmorSlot
 enum class EquipmentSlot(
     val type: Type,
     val index: Int,
-    val filterFlag: Int,
     val displayName: String
 ) {
 
-    MAIN_HAND(Type.HAND, 0, 0, "mainhand"),
-    OFF_HAND(Type.HAND, 1, 5, "offhand"),
-    FEET(Type.ARMOR, 0, 1, "feet"),
-    LEGS(Type.ARMOR, 1, 2, "legs"),
-    CHEST(Type.ARMOR, 2, 3, "chest"),
-    HEAD(Type.ARMOR, 3, 4, "head");
+    MAIN_HAND(Type.HAND, 0, "mainhand"),
+    OFF_HAND(Type.HAND, 1, "offhand"),
+    FEET(Type.ARMOR, 0, "feet"),
+    LEGS(Type.ARMOR, 1, "legs"),
+    CHEST(Type.ARMOR, 2, "chest"),
+    HEAD(Type.ARMOR, 3, "head");
 
     fun index(offset: Int): Int = offset + index
 
@@ -44,23 +43,12 @@ enum class EquipmentSlot(
 
     companion object {
 
-        private val VALUES = values()
         private val BY_ARMOR_SLOT = mapOf(
             ArmorSlot.HELMET to HEAD,
             ArmorSlot.CHESTPLATE to CHEST,
             ArmorSlot.LEGGINGS to LEGS,
             ArmorSlot.BOOTS to FEET
         )
-
-        @JvmStatic
-        fun fromName(name: String): EquipmentSlot = requireNotNull(VALUES.firstOrNull { it.displayName == name }) {
-            "No equipment slot found with name $name!"
-        }
-
-        @JvmStatic
-        fun fromTypeAndIndex(type: Type, index: Int): EquipmentSlot = requireNotNull(VALUES.firstOrNull { it.type == type && it.index == index }) {
-            "No equipment slot found with type $type and index $index!"
-        }
 
         @JvmStatic
         fun fromArmorSlot(slot: ArmorSlot): EquipmentSlot = BY_ARMOR_SLOT[slot]!!

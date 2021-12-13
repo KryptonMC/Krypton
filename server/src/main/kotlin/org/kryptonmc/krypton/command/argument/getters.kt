@@ -21,4 +21,8 @@ package org.kryptonmc.krypton.command.argument
 import com.mojang.brigadier.context.CommandContext
 import org.kryptonmc.api.command.Sender
 
+/**
+ * Equivalent to [CommandContext.getArgument], except this uses a reified type
+ * to improve QOL in Kotlin. This also doesn't return a platform type.
+ */
 inline fun <reified T> CommandContext<Sender>.argument(name: String): T = getArgument(name, T::class.java)

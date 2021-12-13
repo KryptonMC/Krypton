@@ -21,10 +21,20 @@ package org.kryptonmc.krypton.command.argument.serializer
 import com.mojang.brigadier.arguments.ArgumentType
 import io.netty.buffer.ByteBuf
 
+/**
+ * A serializer used to write extra data about [T] argument types.
+ */
 interface ArgumentSerializer<T : ArgumentType<*>> {
 
+    /**
+     * Writes the given [value] to the given [buf].
+     */
     fun write(buf: ByteBuf, value: T)
 
+    /**
+     * A constant serializer used for argument types that have no data to
+     * serialize, hence the name "Empty".
+     */
     object Empty : ArgumentSerializer<ArgumentType<*>> {
 
         override fun write(buf: ByteBuf, value: ArgumentType<*>) {

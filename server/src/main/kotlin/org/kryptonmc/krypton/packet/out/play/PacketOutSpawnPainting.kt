@@ -19,9 +19,9 @@
 package org.kryptonmc.krypton.packet.out.play
 
 import io.netty.buffer.ByteBuf
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.entity.hanging.KryptonPainting
 import org.kryptonmc.krypton.packet.EntityPacket
-import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.util.data2D
 import org.kryptonmc.krypton.util.writeUUID
 import org.kryptonmc.krypton.util.writeVarInt
@@ -42,7 +42,7 @@ data class PacketOutSpawnPainting(
     constructor(painting: KryptonPainting) : this(
         painting.id,
         painting.uuid,
-        painting.picture?.let { InternalRegistries.PICTURE.idOf(it) } ?: DEFAULT_CANVAS_ID,
+        if (painting.picture != null) Registries.PICTURES.idOf(painting.picture!!) else DEFAULT_CANVAS_ID,
         painting.centerPosition.x(),
         painting.centerPosition.y(),
         painting.centerPosition.z(),
@@ -59,6 +59,6 @@ data class PacketOutSpawnPainting(
 
     companion object {
 
-        private val DEFAULT_CANVAS_ID = InternalRegistries.PICTURE.idOf(InternalRegistries.PICTURE.defaultValue)
+        private val DEFAULT_CANVAS_ID = Registries.PICTURES.idOf(Registries.PICTURES.defaultValue)
     }
 }

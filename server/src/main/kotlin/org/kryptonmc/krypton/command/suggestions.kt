@@ -27,48 +27,40 @@ import java.util.concurrent.CompletableFuture
 
 fun SuggestionsBuilder.suggestCoordinates(
     text: String,
-    coordinates: Sequence<TextCoordinates>,
+    coordinates: TextCoordinates,
     predicate: (String) -> Boolean
 ): CompletableFuture<Suggestions> {
     if (text.isEmpty()) {
         val results = mutableListOf<String>()
-        coordinates.forEach {
-            val suggestion = "${it.x} ${it.y} ${it.z}"
-            if (!predicate(suggestion)) return@forEach
-            results += it.x
-            results += "${it.x} ${it.y}"
-            results += suggestion
-        }
+        val (x, y, z) = coordinates
+        val suggestion = "$x $y $z"
+        if (!predicate(suggestion)) return suggest(emptySet())
+        results.add(x.toString())
+        results.add("$x $y")
+        results.add(suggestion)
         return suggest(results)
     }
     val components = text.split(" ")
     if (components.size == 1) {
         val results = mutableListOf<String>()
-        coordinates.forEach {
-            val suggestion = "${components[0]} ${it.y} ${it.z}"
-            if (!predicate(suggestion)) return@forEach
-            results += "${components[0]} ${it.y}"
-            results += suggestion
-        }
+        val (_, y, z) = coordinates
+        val suggestion = "${components[0]} $y $z"
+        if (!predicate(suggestion)) return suggest(emptySet())
+        results.add("${components[0]} $y")
+        results.add(suggestion)
         return suggest(results)
     }
     if (components.size == 2) {
         val results = mutableListOf<String>()
-        coordinates.forEach {
-            val suggestion = "${components[0]} ${components[1]} ${it.z}"
-            if (!predicate(suggestion)) return@forEach
-            results += suggestion
-        }
+        val suggestion = "${components[0]} ${components[1]} ${coordinates.z}"
+        if (!predicate(suggestion)) return suggest(emptySet())
+        results.add(suggestion)
         return suggest(results)
     }
     return suggest(emptyList())
 }
 
-fun <T> Sequence<T>.suggestKey(
-    builder: SuggestionsBuilder,
-    provider: (T) -> Key,
-    messageProvider: (T) -> Message
-): CompletableFuture<Suggestions> {
+fun <T> Sequence<T>.suggestKey(builder: SuggestionsBuilder, provider: (T) -> Key, messageProvider: (T) -> Message): CompletableFuture<Suggestions> {
     val remaining = builder.remaining.lowercase()
     filterResources(remaining, provider) { builder.suggest(provider(it).toString(), messageProvider(it)) }
     return builder.buildFuture()
@@ -80,7 +72,7 @@ fun <T> Sequence<T>.filterResources(text: String, provider: (T) -> Key, consumer
         val key = provider(it)
         if (hasColon && text.matchesSubString(key.asString())) {
             consumer(it)
-        } else if (text.matchesSubString(key.namespace()) || key.namespace() == "minecraft" && text.matchesSubString(key.value())) {
+        } else if (text.matchesSubString(key.namespace()) || key.namespace() == Key.MINECRAFT_NAMESPACE && text.matchesSubString(key.value())) {
             consumer(it)
         }
     }
@@ -97,7 +89,7 @@ private fun SuggestionsBuilder.suggest(suggestions: Iterable<String>): Completab
 fun String.matchesSubString(other: String): Boolean {
     var i = 0
     while (!other.startsWith(this, i)) {
-        i = other.indexOf(95.toChar(), i)
+        i = other.indexOf('_', i)
         if (i < 0) return false
         i++
     }
