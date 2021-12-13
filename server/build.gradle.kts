@@ -54,6 +54,7 @@ dependencies {
     testImplementation(libs.bundles.junit)
     testImplementation(libs.junit.platform.runner)
     testImplementation(libs.mockk)
+    testImplementation(libs.jimfs)
     testRuntimeOnly(libs.bytebuddy)
 }
 

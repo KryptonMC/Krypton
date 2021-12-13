@@ -18,14 +18,12 @@
  */
 package org.kryptonmc.krypton.auth
 
-import com.google.gson.JsonParseException
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileCache
 import org.kryptonmc.krypton.util.tryCreateFile
 import org.kryptonmc.krypton.util.logger
-import java.io.FileNotFoundException
 import java.io.IOException
 import java.nio.file.Path
 import java.time.ZonedDateTime
@@ -76,7 +74,7 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     private fun add(holder: ProfileHolder) {
         val profile = holder.profile
         holder.lastAccess = operations.incrementAndGet()
-        profilesByName[profile.name.lowercase()] = holder
+        profilesByName[profile.name] = holder
         profilesByUUID[profile.uuid] = holder
     }
 
@@ -92,11 +90,10 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
                 }
                 reader.endArray()
             }
-        } catch (ignored: FileNotFoundException) {
-        } catch (exception: JsonParseException) {
-            LOGGER.warn("Failed to parse JSON data from $path. You can delete it to force the server to recreate it.", exception)
         } catch (exception: IOException) {
             LOGGER.warn("Failed to read $path. You can delete it to force the server to recreate it.", exception)
+        } catch (exception: IllegalStateException) {
+            LOGGER.warn("Failed to parse JSON data from $path. You can delete it to force the server to recreate it.", exception)
         }
         return holders
     }

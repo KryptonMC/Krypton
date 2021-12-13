@@ -43,7 +43,8 @@ object KryptonAdventure {
      * This flattener adds the use of the official Minecraft translations from en_us.json
      * to render translatable components when they are flattened.
      */
-    val FLATTENER = ComponentFlattener.basic().toBuilder()
+    @JvmField
+    val FLATTENER: ComponentFlattener = ComponentFlattener.basic().toBuilder()
         .complexMapper<TranslatableComponent> { translatable, consumer ->
             consumer(TranslationBootstrap.RENDERER.render(translatable, Locale.ENGLISH))
         }

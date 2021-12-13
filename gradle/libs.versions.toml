@@ -43,6 +43,7 @@ junit-jupiter = "5.8.2"
 junit-platform = "1.8.2"
 mockk = "1.12.1"
 bytebuddy = "1.12.2"
+jimfs = "1.2"
 
 [libraries]
 
@@ -113,6 +114,7 @@ junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", ver
 junit-platform-runner = { group = "org.junit.platform", name = "junit-platform-runner", version.ref = "junit-platform" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 bytebuddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "bytebuddy" }
+jimfs = { group = "com.google.jimfs", name = "jimfs", version.ref = "jimfs" }
 
 # Miscellaneous
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }

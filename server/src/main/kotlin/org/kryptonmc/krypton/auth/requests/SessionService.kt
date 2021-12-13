@@ -75,5 +75,6 @@ object SessionService {
     }
 
     // This is Yggdrasil's strange way of digesting to hex.
+    @JvmStatic
     private fun MessageDigest.hexDigest(): String = BigInteger(digest()).toString(16)
 }

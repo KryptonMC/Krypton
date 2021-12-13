@@ -39,6 +39,7 @@ import org.kryptonmc.api.command.meta.CommandMeta
 import org.kryptonmc.api.command.meta.SimpleCommandMeta
 import org.kryptonmc.api.entity.player.Player
 import org.kryptonmc.api.event.command.CommandSendEvent
+import org.kryptonmc.krypton.command.meta.EmptyCommandMeta
 import org.kryptonmc.krypton.commands.BanCommand
 import org.kryptonmc.krypton.commands.BanIpCommand
 import org.kryptonmc.krypton.commands.ClearCommand
@@ -86,7 +87,7 @@ object KryptonCommandManager : CommandManager {
     private val rawCommandRegistrar = RawCommandRegistrar(lock.writeLock())
 
     override fun register(command: BrigadierCommand) {
-        brigadierCommandRegistrar.register(dispatcher.root, command, CommandMeta.builder(command).build())
+        brigadierCommandRegistrar.register(dispatcher.root, command, EmptyCommandMeta)
     }
 
     override fun register(command: SimpleCommand, meta: SimpleCommandMeta) {

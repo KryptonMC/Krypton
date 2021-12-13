@@ -16,24 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.command.registrar
+package org.kryptonmc.krypton.command.meta
 
-import com.mojang.brigadier.tree.RootCommandNode
-import org.kryptonmc.api.command.BrigadierCommand
 import org.kryptonmc.api.command.meta.CommandMeta
-import org.kryptonmc.api.command.Sender
-import java.util.concurrent.locks.Lock
 
 /**
- * Registers Brigadier commands to a root node. Brigadier commands are really
- * easy to register, as they are already backed by nodes that we are able to
- * add to the tree.
+ * For use by the brigadier command registrar, where command meta doesn't
+ * matter.
  */
-class BrigadierCommandRegistrar(lock: Lock) : KryptonCommandRegistrar<BrigadierCommand, CommandMeta>(lock) {
+object EmptyCommandMeta : CommandMeta {
 
-    override fun register(root: RootCommandNode<Sender>, command: BrigadierCommand, meta: CommandMeta) {
-        val literal = command.node
-        val name = literal.name
-        if (name == name.lowercase()) register(root, literal)
+    override val name: String = ""
+    override val aliases: Set<String> = emptySet()
+
+    override fun toBuilder(): CommandMeta.Builder {
+        throw UnsupportedOperationException("Cannot turn empty command meta into a builder!")
     }
 }

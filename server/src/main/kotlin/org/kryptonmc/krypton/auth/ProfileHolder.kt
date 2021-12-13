@@ -40,6 +40,21 @@ class ProfileHolder(
     @Volatile var lastAccess: Long = 0L
 ) {
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return profile == (other as ProfileHolder).profile && expiryDate == other.expiryDate
+    }
+
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + profile.hashCode()
+        result = 31 * result + expiryDate.hashCode()
+        return result
+    }
+
+    override fun toString(): String = "ProfileHolder(profile=$profile, expiryDate=${expiryDate})"
+
     object Adapter : TypeAdapter<ProfileHolder>() {
 
         override fun read(reader: JsonReader): ProfileHolder? {
