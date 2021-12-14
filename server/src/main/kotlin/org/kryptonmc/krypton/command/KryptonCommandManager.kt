@@ -60,11 +60,11 @@ import org.kryptonmc.krypton.commands.StopCommand
 import org.kryptonmc.krypton.commands.SummonCommand
 import org.kryptonmc.krypton.commands.TeleportCommand
 import org.kryptonmc.krypton.commands.TitleCommand
-import org.kryptonmc.krypton.commands.VersionCommand
 import org.kryptonmc.krypton.commands.WhitelistCommand
 import org.kryptonmc.krypton.command.registrar.BrigadierCommandRegistrar
 import org.kryptonmc.krypton.command.registrar.RawCommandRegistrar
 import org.kryptonmc.krypton.command.registrar.SimpleCommandRegistrar
+import org.kryptonmc.krypton.commands.krypton.KryptonCommand
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.packet.out.play.PacketOutDeclareCommands
 import org.kryptonmc.krypton.util.logger
@@ -176,7 +176,6 @@ object KryptonCommandManager : CommandManager {
         TitleCommand.register(dispatcher)
         DifficultyCommand.register(dispatcher)
         GameRuleCommand.register(dispatcher)
-        VersionCommand.register(dispatcher)
         KickCommand.register(dispatcher)
         BanCommand.register(dispatcher)
         PardonCommand.register(dispatcher)
@@ -185,6 +184,7 @@ object KryptonCommandManager : CommandManager {
         PardonIpCommand.register(dispatcher)
         GiveCommand.register(dispatcher)
         ClearCommand.register(dispatcher)
+        KryptonCommand.register(dispatcher)
     }
 
     fun parse(sender: Sender, input: String): ParseResults<Sender> = lock.read { dispatcher.parse(input, sender) }
