@@ -78,6 +78,7 @@ org.kryptonmc.krypton.command.arguments.item
 org.kryptonmc.krypton.command.meta
 org.kryptonmc.krypton.command.registrar
 org.kryptonmc.krypton.commands
+org.kryptonmc.krypton.commands.krypton
 org.kryptonmc.krypton.config
 org.kryptonmc.krypton.config.category
 org.kryptonmc.krypton.config.serializer
