@@ -999,62 +999,6 @@ class KryptonPlayer(
         return Vector3d.from(x, y, z)
     }
 
-    override var absorption: Float
-        get() = data[MetadataKeys.PLAYER.ADDITIONAL_HEARTS]
-        set(value) = data.set(MetadataKeys.PLAYER.ADDITIONAL_HEARTS, value)
-
-    var score: Int
-        get() = data[MetadataKeys.PLAYER.SCORE]
-        set(value) = data.set(MetadataKeys.PLAYER.SCORE, value)
-
-    override var health: Float
-        get() = super.health
-        set(value) {
-            super.health = value
-            if (!isLoaded) return
-            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
-        }
-
-    // Sources for vanilla hunger system values:
-    //      -> Minecraft Wiki https://minecraft.fandom.com/wiki/Hunger
-    // 20 is the default vanilla food level
-    override var foodLevel: Int = 20
-        set(value) {
-            field = value
-            if (!isLoaded) return
-            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
-        }
-
-    var foodTickTimer: Int = 0
-
-    // 0 is the default vanilla food exhaustion level
-    override var foodExhaustionLevel: Float = 0f
-
-    // 5 is the default vanilla food saturation level
-    override var foodSaturationLevel: Float = 5f
-        set(value) {
-            field = value
-            if (!isLoaded) return
-            session.send(PacketOutUpdateHealth(health, foodLevel, foodSaturationLevel))
-        }
-
-
-    var skinSettings: Byte
-        get() = data[MetadataKeys.PLAYER.SKIN_FLAGS]
-        set(value) = data.set(MetadataKeys.PLAYER.SKIN_FLAGS, value)
-
-    override var mainHand: MainHand
-        get() = if (data[MetadataKeys.PLAYER.MAIN_HAND] == 0.toByte()) MainHand.LEFT else MainHand.RIGHT
-        set(value) = data.set(MetadataKeys.PLAYER.MAIN_HAND, if (value == MainHand.LEFT) 0 else 1)
-
-    var leftShoulder: CompoundTag
-        get() = data[MetadataKeys.PLAYER.LEFT_SHOULDER]
-        set(value) = data.set(MetadataKeys.PLAYER.LEFT_SHOULDER, value)
-
-    var rightShoulder: CompoundTag
-        get() = data[MetadataKeys.PLAYER.RIGHT_SHOULDER]
-        set(value) = data.set(MetadataKeys.PLAYER.RIGHT_SHOULDER, value)
-
     companion object {
 
         private const val FLYING_ACHIEVEMENT_MINIMUM_SPEED = 25

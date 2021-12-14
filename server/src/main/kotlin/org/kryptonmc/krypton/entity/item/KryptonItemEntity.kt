@@ -65,11 +65,10 @@ class KryptonItemEntity(world: KryptonWorld) : KryptonEntity(world, EntityTypes.
             val minimum = Vector3d.from(location.x() - 1.0, location.y() - 0.5, location.z() - 1.0)
             val maximum = Vector3d.from(location.x() + 1.0, location.y() + 0.5, location.z() + 1.0)
             world.entityManager.forEachEntityInBounds(BoundingBox.of(minimum, maximum)) {
-                server.sendMessage(Component.text("Ent found"))
-                server.sendMessage(Component.text(it is KryptonLivingEntity))
-                server.sendMessage(it.name)
                 if (it.isAlive && it is KryptonLivingEntity) {
                     // TODO: Test for mob pick up and handle item merge
+                    server.sendMessage(Component.text("Ent found"))
+                    server.sendMessage(it.name)
                     entityPickupItem(it)
                     return@forEachEntityInBounds
                 }
