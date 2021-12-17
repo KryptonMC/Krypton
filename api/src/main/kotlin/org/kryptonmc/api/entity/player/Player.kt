@@ -25,6 +25,7 @@ import org.kryptonmc.api.world.World
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.world.GameMode
+import org.kryptonmc.api.world.weather.WeatherContainer
 import org.spongepowered.math.vector.Vector3d
 import java.net.InetSocketAddress
 import java.time.Instant
@@ -34,7 +35,7 @@ import java.util.Locale
  * A player that is connected to the server and playing the game.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface Player : LivingEntity, Equipable, InventoryHolder, PluginMessageRecipient {
+public interface Player : LivingEntity, Equipable, InventoryHolder, PluginMessageRecipient, WeatherContainer {
 
     /**
      * The address that the player is currently connected from.

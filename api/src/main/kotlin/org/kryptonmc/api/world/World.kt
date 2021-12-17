@@ -23,6 +23,7 @@ import org.kryptonmc.api.scoreboard.Scoreboard
 import org.kryptonmc.api.world.chunk.Chunk
 import org.kryptonmc.api.world.dimension.DimensionType
 import org.kryptonmc.api.world.rule.GameRuleHolder
+import org.kryptonmc.api.world.weather.WeatherContainer
 import org.spongepowered.math.vector.Vector2i
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
@@ -32,7 +33,7 @@ import java.nio.file.Path
  * Represents a loaded world.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface World : ForwardingAudience {
+public interface World : ForwardingAudience, WeatherContainer {
 
     /**
      * The server this world was loaded on.
