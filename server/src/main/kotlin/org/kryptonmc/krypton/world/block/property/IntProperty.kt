@@ -21,6 +21,4 @@ package org.kryptonmc.krypton.world.block.property
 class IntProperty(name: String, values: Set<Int>) : KryptonProperty<Int>(name, Int::class.java, values) {
 
     override fun fromString(value: String): Int? = value.toIntOrNull()
-
-    override fun toString(value: Int): String = value.toString()
 }

@@ -26,7 +26,7 @@ import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
 import java.util.Optional
 
-open class KryptonMetaHolder(var nbt: MutableCompoundTag = MutableCompoundTag()) : MetaHolder {
+open class KryptonMetaHolder(var nbt: CompoundTag = MutableCompoundTag()) : MetaHolder {
 
     override fun <V : Any> get(key: MetaKey<V>): V? {
         if (key !is KryptonMetaKey<V>) return null
@@ -35,7 +35,7 @@ open class KryptonMetaHolder(var nbt: MutableCompoundTag = MutableCompoundTag())
 
     override fun <V : Any> set(key: MetaKey<V>, value: V) {
         if (key !is KryptonMetaKey<V>) return
-        key.writer.write(nbt, value)
+        nbt = key.writer.write(nbt, value)
     }
 
     override fun <V : Any> contains(key: MetaKey<V>): Boolean {
@@ -61,4 +61,12 @@ open class KryptonMetaHolder(var nbt: MutableCompoundTag = MutableCompoundTag())
     }
 
     override fun toBuilder(): Pointers.Builder = Pointers.builder()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return nbt == (other as KryptonMetaHolder).nbt
+    }
+
+    override fun hashCode(): Int = nbt.hashCode()
 }

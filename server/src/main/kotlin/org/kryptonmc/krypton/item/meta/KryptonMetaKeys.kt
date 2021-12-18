@@ -157,7 +157,7 @@ object KryptonMetaKeys {
     }
 
     private fun setBlockList(name: String): KryptonMetaKey.Writer<List<Block>> = KryptonMetaKey.Writer { nbt, blocks ->
-        nbt[name] = MutableListTag(blocks.mapTo(mutableListOf()) { StringTag.of(it.key().asString()) })
+        nbt.put(name, ListTag.mutable(blocks.mapTo(mutableListOf()) { StringTag.of(it.key().asString()) }, 0))
     }
 
     @JvmStatic

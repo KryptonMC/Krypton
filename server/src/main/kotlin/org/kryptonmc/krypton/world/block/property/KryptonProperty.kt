@@ -33,6 +33,8 @@ sealed class KryptonProperty<T : Comparable<T>>(
         requireNotNull(fromString(it)) { "Unable to read property $this with value $it!" }
     }
 
+    override fun toString(value: T): String = value.toString()
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

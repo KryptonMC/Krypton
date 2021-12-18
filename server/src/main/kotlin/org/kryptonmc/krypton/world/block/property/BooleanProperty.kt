@@ -24,8 +24,6 @@ class BooleanProperty(name: String) : KryptonProperty<Boolean>(name, Boolean::cl
 
     override fun fromString(value: String): Boolean? = value.toBooleanStrictOrNull()
 
-    override fun toString(value: Boolean): String = value.toString()
-
     companion object {
 
         @JvmField

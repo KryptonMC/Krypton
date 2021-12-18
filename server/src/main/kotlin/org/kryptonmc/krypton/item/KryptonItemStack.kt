@@ -42,7 +42,7 @@ open class KryptonItemStack(
 
     fun getOrCreateTag(key: String): MutableCompoundTag {
         if (meta.nbt.contains(key, CompoundTag.ID)) return meta.nbt.getCompound(key).mutable()
-        return MutableCompoundTag().apply { meta.nbt[key] = this }
+        return MutableCompoundTag().apply { meta.nbt.put(key, this) }
     }
 
     fun save(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
@@ -63,6 +63,22 @@ open class KryptonItemStack(
     }
 
     override fun toBuilder(): Builder = Builder()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return type == (other as KryptonItemStack).type && amount == other.amount && meta == other.meta
+    }
+
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + type.hashCode()
+        result = 31 * result + amount.hashCode()
+        result = 31 * result + meta.hashCode()
+        return result
+    }
+
+    override fun toString(): String = "KryptonItemStack(type=$type, amount=$amount, meta=$meta)"
 
     class Builder(
         private var type: ItemType = ItemTypes.AIR,

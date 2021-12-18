@@ -68,7 +68,7 @@ class KryptonTropicalFish(world: KryptonWorld) : KryptonSchoolingFish(world, Ent
     }
 
     override fun saveToBucket(item: KryptonItemStack) {
-        item.meta.nbt.putInt("BucketVariantTag", data[MetadataKeys.TROPICAL_FISH.VARIANT])
+        item.meta.nbt = item.meta.nbt.putInt("BucketVariantTag", data[MetadataKeys.TROPICAL_FISH.VARIANT])
     }
 
     companion object {

@@ -44,6 +44,6 @@ data class KryptonMetaKey<V : Any>(
 
     fun interface Writer<T> {
 
-        fun write(tag: MutableCompoundTag, value: T)
+        fun write(tag: CompoundTag, value: T): CompoundTag
     }
 }

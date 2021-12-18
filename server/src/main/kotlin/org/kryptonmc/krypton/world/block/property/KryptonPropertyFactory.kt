@@ -28,6 +28,8 @@ object KryptonPropertyFactory : Property.Factory {
     @JvmField
     val PROPERTIES: MutableMap<String, Property<*>> = ConcurrentHashMap()
     // Rewrites from names in the Properties object to names from Mojang
+    // The way this entire thing works is pretty hacky. The reason why we do this in the first place is because ArticData uses Mojang names,
+    // and so we have to map those Mojang names to our names, since Krypton uses some more sensible names in places where they make more sense.
     // TODO: Check on update
     private val NAME_REWRITES = mapOf(
         "HAS_FIRST_BOTTLE" to "HAS_BOTTLE_0",
