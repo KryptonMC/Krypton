@@ -66,4 +66,15 @@ public interface CompassMeta : ScopedItemMeta<CompassMeta> {
         @Contract("_, _ -> this", mutates = "this")
         public fun lodestone(dimension: ResourceKey<World>, position: Vector3i): Builder
     }
+
+    public companion object {
+
+        /**
+         * Creates a new builder for building compass metadata.
+         *
+         * @return a new builder
+         */
+        @JvmStatic
+        public fun builder(): Builder = ItemMeta.FACTORY.builder(CompassMeta::class.java)
+    }
 }

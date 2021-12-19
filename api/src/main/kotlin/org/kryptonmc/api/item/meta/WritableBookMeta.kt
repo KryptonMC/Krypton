@@ -10,4 +10,15 @@ public interface WritableBookMeta : BookMeta<WritableBookMeta> {
      * A builder for building writable book metadata.
      */
     public interface Builder : BookMeta.Builder<Builder, WritableBookMeta>
+
+    public companion object {
+
+        /**
+         * Creates a new builder for building writable book metadata.
+         *
+         * @return a new builder
+         */
+        @JvmStatic
+        public fun builder(): Builder = ItemMeta.FACTORY.builder(WritableBookMeta::class.java)
+    }
 }

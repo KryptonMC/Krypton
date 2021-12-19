@@ -37,4 +37,15 @@ public interface PlayerHeadMeta : ScopedItemMeta<PlayerHeadMeta> {
         @Contract("_ -> this", mutates = "this")
         public fun owner(owner: GameProfile): Builder
     }
+
+    public companion object {
+
+        /**
+         * Creates a new builder for building player head metadata.
+         *
+         * @return a new builder
+         */
+        @JvmStatic
+        public fun builder(): Builder = ItemMeta.FACTORY.builder(PlayerHeadMeta::class.java)
+    }
 }

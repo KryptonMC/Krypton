@@ -92,4 +92,15 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta>, Book {
 
         override fun pages(pages: Collection<Component>): Builder
     }
+
+    public companion object {
+
+        /**
+         * Creates a new builder for building written book metadata.
+         *
+         * @return a new builder
+         */
+        @JvmStatic
+        public fun builder(): Builder = ItemMeta.FACTORY.builder(WrittenBookMeta::class.java)
+    }
 }

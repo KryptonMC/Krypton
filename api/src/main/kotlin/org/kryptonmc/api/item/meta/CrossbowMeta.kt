@@ -122,4 +122,15 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta> {
         @Contract("_ -> this", mutates = "this")
         public fun addProjectile(projectile: ItemStack): Builder
     }
+
+    public companion object {
+
+        /**
+         * Creates a new builder for building crossbow metadata.
+         *
+         * @return a new builder
+         */
+        @JvmStatic
+        public fun builder(): Builder = ItemMeta.FACTORY.builder(CrossbowMeta::class.java)
+    }
 }

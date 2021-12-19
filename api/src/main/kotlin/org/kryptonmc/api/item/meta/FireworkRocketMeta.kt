@@ -120,4 +120,15 @@ public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta> {
         @Contract("_ -> this", mutates = "this")
         public fun flightDuration(duration: Int): Builder
     }
+
+    public companion object {
+
+        /**
+         * Creates a new builder for building firework rocket metadata.
+         *
+         * @return a new builder
+         */
+        @JvmStatic
+        public fun builder(): Builder = ItemMeta.FACTORY.builder(FireworkRocketMeta::class.java)
+    }
 }

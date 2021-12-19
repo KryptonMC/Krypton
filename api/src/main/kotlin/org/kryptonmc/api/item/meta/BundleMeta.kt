@@ -95,4 +95,15 @@ public interface BundleMeta : ScopedItemMeta<BundleMeta> {
         @Contract("_ -> this", mutates = "this")
         public fun addItem(item: ItemStack): Builder
     }
+
+    public companion object {
+
+        /**
+         * Creates a new builder for building bundle metadata.
+         *
+         * @return a new builder
+         */
+        @JvmStatic
+        public fun builder(): Builder = ItemMeta.FACTORY.builder(BundleMeta::class.java)
+    }
 }

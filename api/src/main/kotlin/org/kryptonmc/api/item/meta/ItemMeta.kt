@@ -2,10 +2,13 @@ package org.kryptonmc.api.item.meta
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Buildable
+import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
+import org.kryptonmc.api.Krypton
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.data.ItemFlag
+import org.kryptonmc.api.util.provide
 import org.kryptonmc.api.world.GameMode
 import java.awt.Color
 
@@ -217,4 +220,24 @@ public interface ItemMeta {
      * A builder for building item metadata.
      */
     public interface Builder : ItemMetaBuilder<Builder, ItemMeta>
+
+    @ApiStatus.Internal
+    public interface Factory {
+
+        public fun <B : ItemMetaBuilder<B, I>, I : ItemMeta> builder(type: Class<I>): B
+    }
+
+    public companion object {
+
+        @JvmSynthetic
+        internal val FACTORY = Krypton.factoryProvider.provide<Factory>()
+
+        /**
+         * Creates a new builder for building item metadata.
+         *
+         * @return a new builder
+         */
+        @JvmStatic
+        public fun builder(): Builder = FACTORY.builder(ItemMeta::class.java)
+    }
 }

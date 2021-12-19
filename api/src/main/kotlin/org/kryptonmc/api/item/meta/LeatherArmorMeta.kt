@@ -37,4 +37,15 @@ public interface LeatherArmorMeta : ScopedItemMeta<LeatherArmorMeta> {
         @Contract("_ -> this", mutates = "this")
         public fun color(color: Color): Builder
     }
+
+    public companion object {
+
+        /**
+         * Creates a new builder for building leather armour metadata.
+         *
+         * @return a new builder
+         */
+        @JvmStatic
+        public fun builder(): Builder = ItemMeta.FACTORY.builder(LeatherArmorMeta::class.java)
+    }
 }
