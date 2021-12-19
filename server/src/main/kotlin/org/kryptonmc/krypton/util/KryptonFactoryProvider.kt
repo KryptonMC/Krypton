@@ -37,7 +37,7 @@ import org.kryptonmc.api.inventory.InventoryType
 import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.item.meta.DyeColor
+import org.kryptonmc.api.item.data.DyeColor
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.scoreboard.Objective

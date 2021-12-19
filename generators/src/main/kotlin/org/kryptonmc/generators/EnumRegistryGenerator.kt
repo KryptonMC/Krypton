@@ -27,12 +27,13 @@ import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.writeText
 
-abstract class EnumRegistryGenerator(private val output: Path) {
+abstract class EnumRegistryGenerator<E>(
+    private val output: Path,
+    private val name: ClassName,
+    private val returnType: ClassName
+) where E : Enum<E>, E : StringRepresentable {
 
-    fun <E> run(
-        name: ClassName,
-        returnType: ClassName
-    ) where E : Enum<E>, E : StringRepresentable {
+    fun run() {
         val file = FileSpec.builder(name.packageName, name.canonicalName)
             .indent("    ")
             .addImport("net.kyori.adventure.key", "Key")

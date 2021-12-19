@@ -20,7 +20,7 @@ package org.kryptonmc.krypton.item.meta
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.format.TextColor
-import org.kryptonmc.api.item.meta.DyeColor
+import org.kryptonmc.api.item.data.DyeColor
 import java.awt.Color
 
 @JvmRecord

@@ -10,7 +10,7 @@ package org.kryptonmc.api.entity.animal
 
 import org.kryptonmc.api.effect.sound.SoundEvents
 import org.kryptonmc.api.entity.animal.type.CatType
-import org.kryptonmc.api.item.meta.DyeColor
+import org.kryptonmc.api.item.data.DyeColor
 
 /**
  * A cat.

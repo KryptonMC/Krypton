@@ -26,7 +26,7 @@ import org.kryptonmc.api.entity.animal.type.FoxType
 import org.kryptonmc.api.entity.animal.type.MooshroomType
 import org.kryptonmc.api.entity.animal.type.ParrotType
 import org.kryptonmc.api.entity.aquatic.TropicalFishShape
-import org.kryptonmc.api.item.meta.DyeColors
+import org.kryptonmc.api.item.data.DyeColors
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.krypton.entity.Pose
@@ -34,7 +34,6 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.nbt.MutableCompoundTag
 import org.spongepowered.math.vector.Vector3f
 import org.spongepowered.math.vector.Vector3i
-import java.util.Optional
 import java.util.OptionalInt
 
 @Catalogue(MetadataKey::class)
