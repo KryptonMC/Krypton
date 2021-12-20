@@ -100,6 +100,22 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
         owner.session.send(PacketOutSetSlot(id, incrementStateId(), index, item))
     }
 
+    override fun write(buf: ByteBuf) {
+        buf.writeVarInt(SIZE)
+        buf.writeItem(crafting[4])
+        for (i in 0..3) {
+            buf.writeItem(crafting[i])
+        }
+        armor.forEach { buf.writeItem(it) }
+        for (i in 0..26) {
+            buf.writeItem(items[i + 9])
+        }
+        for (i in 0..8) {
+            buf.writeItem(items[i])
+        }
+        buf.writeItem(offHand)
+    }
+
     fun load(tag: ListTag) {
         clear()
         for (i in tag.indices) {
@@ -140,16 +156,6 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
             offHand.save(this)
         })
         return list
-    }
-
-    override val networkWriter: (ByteBuf) -> Unit = { buf ->
-        buf.writeVarInt(SIZE)
-        buf.writeItem(crafting[4])
-        for (i in 0..3) buf.writeItem(crafting[i])
-        armor.forEach { buf.writeItem(it) }
-        for (i in 0..26) buf.writeItem(items[i + 9])
-        for (i in 0..8) buf.writeItem(items[i])
-        buf.writeItem(offHand)
     }
 
     companion object {

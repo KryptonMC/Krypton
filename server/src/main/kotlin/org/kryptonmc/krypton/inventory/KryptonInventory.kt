@@ -18,12 +18,12 @@
  */
 package org.kryptonmc.krypton.inventory
 
-import io.netty.buffer.ByteBuf
-import org.kryptonmc.api.inventory.Inventory
 import org.kryptonmc.api.inventory.InventoryHolder
 import org.kryptonmc.api.inventory.InventoryType
+import org.kryptonmc.api.inventory.MutableInventory
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.network.Writable
 import org.kryptonmc.krypton.util.FixedList
 
 abstract class KryptonInventory(
@@ -32,9 +32,7 @@ abstract class KryptonInventory(
     override val owner: InventoryHolder,
     final override val size: Int,
     totalItems: Int = size
-) : Inventory {
-
-    abstract val networkWriter: (ByteBuf) -> Unit
+) : MutableInventory, Writable {
 
     var stateId = 0
         private set
