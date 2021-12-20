@@ -111,7 +111,7 @@ class KryptonWorld(
 
     override val chunkManager = ChunkManager(this)
     val playerManager = server.playerManager
-    val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
+    override val players: MutableSet<KryptonPlayer> = ConcurrentHashMap.newKeySet()
 
     override val height = dimensionType.height
     override val minimumBuildHeight = dimensionType.minimumY
