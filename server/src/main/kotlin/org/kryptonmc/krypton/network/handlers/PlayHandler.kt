@@ -203,10 +203,9 @@ class PlayHandler(
     private fun handleCreativeInventoryAction(packet: PacketInCreativeInventoryAction) {
         if (player.gameMode != GameMode.CREATIVE) return
         val item = packet.clickedItem
-        val inValidRange = packet.slot in 1 until KryptonPlayerInventory.SIZE
-        val hasDamage = item.meta.damage > 0
-        val isValid = item.isEmpty() || (hasDamage && item.amount <= 64 && !item.isEmpty())
-        if (inValidRange && isValid) player.inventory[packet.slot.toInt()] = packet.clickedItem
+        val inValidRange = packet.slot >= 1 && packet.slot < KryptonPlayerInventory.SIZE
+        val isValid = item.isEmpty() || item.meta.damage >= 0 && item.amount <= 64 && !item.isEmpty()
+        if (inValidRange && isValid) player.inventory[packet.slot] = packet.clickedItem
     }
 
     private fun handleEntityAction(packet: PacketInEntityAction) {

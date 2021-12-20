@@ -27,7 +27,6 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
 import org.kryptonmc.krypton.util.FixedList
 import org.kryptonmc.krypton.util.writeItem
@@ -99,8 +98,6 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
             45 -> offHand = item
         }
         owner.session.send(PacketOutSetSlot(id, incrementStateId(), index, item))
-        if (index == heldSlot) return
-        owner.session.send(PacketOutChangeHeldItem(index))
     }
 
     fun load(tag: ListTag) {
