@@ -9,7 +9,6 @@
 package org.kryptonmc.api.item.meta
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.data.ItemFlag
@@ -80,18 +79,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @return this builder
      */
     @Contract("_ -> this", mutates = "this")
-    public fun lore(vararg lore: Component): B = lore(lore.toList())
-
-    /**
-     * Sets the lore of the item to the given [lore].
-     *
-     * @param lore the lore
-     * @return this builder
-     */
-    @JvmSynthetic
-    @JvmName("loreArray")
-    @Contract("_ -> this", mutates = "this")
-    public fun lore(lore: Array<Component>): B = lore(lore.toList())
+    public fun lore(vararg lore: Component): B = lore(lore.asIterable())
 
     /**
      * Adds the given [lore] line to the lore of the item.
@@ -136,18 +124,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @return this builder
      */
     @Contract("_ -> this", mutates = "this")
-    public fun canDestroy(vararg blocks: Block): B = canDestroy(blocks.toList())
-
-    /**
-     * Sets the list of blocks the item can destroy to the given [blocks].
-     *
-     * @param blocks the blocks
-     * @return this builder
-     */
-    @JvmSynthetic
-    @JvmName("canDestroyArray")
-    @Contract("_ -> this", mutates = "this")
-    public fun canDestroy(blocks: Array<Block>): B = canDestroy(blocks.toList())
+    public fun canDestroy(vararg blocks: Block): B = canDestroy(blocks.asIterable())
 
     /**
      * Adds the given [block] to the list of blocks the item can destroy.
@@ -176,19 +153,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @return this builder
      */
     @Contract("_ -> this", mutates = "this")
-    public fun canPlaceOn(vararg blocks: Block): B = canPlaceOn(blocks.toList())
-
-    /**
-     * Sets the list of blocks the item can be placed on to the given
-     * [blocks].
-     *
-     * @param blocks the blocks
-     * @return this builder
-     */
-    @JvmSynthetic
-    @JvmName("canPlaceOnArray")
-    @Contract("_ -> this", mutates = "this")
-    public fun canPlaceOn(blocks: Array<Block>): B = canPlaceOn(blocks.toList())
+    public fun canPlaceOn(vararg blocks: Block): B = canPlaceOn(blocks.asIterable())
 
     /**
      * Adds the given [block] to the list of blocks the item can be placed on.

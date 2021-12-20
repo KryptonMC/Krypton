@@ -18,17 +18,13 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.meta.FireworkStarMeta
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.item.data.KryptonFireworkEffect
+import org.kryptonmc.krypton.item.data.save
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.ListTag
-import org.kryptonmc.nbt.StringTag
 
 class KryptonFireworkStarMeta(
     damage: Int,
@@ -47,13 +43,11 @@ class KryptonFireworkStarMeta(
         tag.getInt("Damage"),
         tag.getBoolean("Unbreakable"),
         tag.getInt("CustomModelData"),
-        tag.getDisplay<StringTag, Component>("Name", StringTag.ID, null) { GsonComponentSerializer.gson().deserialize(it.value) },
-        tag.getDisplay<ListTag, List<Component>>("Lore", ListTag.ID, emptyList()) { list ->
-            list.map { GsonComponentSerializer.gson().deserialize((it as StringTag).value) }
-        }!!,
+        tag.getName(),
+        tag.getLore(),
         tag.getInt("HideFlags"),
-        tag.getList("CanDestroy", StringTag.ID).mapTo(mutableSetOf()) { Registries.BLOCK[Key.key((it as StringTag).value)]!! },
-        tag.getList("CanPlaceOn", StringTag.ID).mapTo(mutableSetOf()) { Registries.BLOCK[Key.key((it as StringTag).value)]!! },
+        tag.getBlocks("CanDestroy"),
+        tag.getBlocks("CanPlaceOn"),
         KryptonFireworkEffect(tag.getCompound("Explosion"))
     )
 
@@ -77,6 +71,10 @@ class KryptonFireworkStarMeta(
         canPlaceOn,
         effect
     )
+
+    override fun saveData(): CompoundTag.Builder = super.saveData().apply {
+        if (effect != null) put("Explosion", effect.save())
+    }
 
     override fun withEffect(effect: FireworkEffect?): KryptonFireworkStarMeta = KryptonFireworkStarMeta(
         damage,

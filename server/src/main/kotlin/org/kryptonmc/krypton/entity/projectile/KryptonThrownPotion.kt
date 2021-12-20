@@ -24,7 +24,10 @@ import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonThrownPotion(world: KryptonWorld) : KryptonThrowableProjectile(world, EntityTypes.POTION), ThrownPotion {
+class KryptonThrownPotion(world: KryptonWorld) : KryptonThrowableProjectile(world, EntityTypes.POTION, DEFAULT_ITEM), ThrownPotion {
 
-    override val defaultItem: ItemType = ItemTypes.POTION
+    companion object {
+
+        private val DEFAULT_ITEM = createDefaultItem(ItemTypes.POTION)
+    }
 }

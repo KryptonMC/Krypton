@@ -18,17 +18,12 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.meta.BundleMeta
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.ListTag
-import org.kryptonmc.nbt.StringTag
 
 @Suppress("UNCHECKED_CAST")
 class KryptonBundleMeta(
@@ -47,13 +42,11 @@ class KryptonBundleMeta(
         tag.getInt("Damage"),
         tag.getBoolean("Unbreakable"),
         tag.getInt("CustomModelData"),
-        tag.getDisplay<StringTag, Component>("Name", StringTag.ID, null) { GsonComponentSerializer.gson().deserialize(it.value) },
-        tag.getDisplay<ListTag, List<Component>>("Lore", ListTag.ID, emptyList()) { list ->
-            list.map { GsonComponentSerializer.gson().deserialize((it as StringTag).value) }
-        }!!,
+        tag.getName(),
+        tag.getLore(),
         tag.getInt("HideFlags"),
-        tag.getList("CanDestroy", StringTag.ID).mapTo(mutableSetOf()) { Registries.BLOCK[Key.key((it as StringTag).value)]!! },
-        tag.getList("CanPlaceOn", StringTag.ID).mapTo(mutableSetOf()) { Registries.BLOCK[Key.key((it as StringTag).value)]!! },
+        tag.getBlocks("CanDestroy"),
+        tag.getBlocks("CanPlaceOn"),
         tag.getList("Items", CompoundTag.ID).map { KryptonItemStack(it as CompoundTag) }
     )
 
@@ -67,6 +60,10 @@ class KryptonBundleMeta(
         canDestroy: Set<Block>,
         canPlaceOn: Set<Block>
     ): KryptonBundleMeta = KryptonBundleMeta(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn, items)
+
+    override fun saveData(): CompoundTag.Builder = super.saveData().apply {
+        list("Items", CompoundTag.ID, items.map { (it as KryptonItemStack).save() })
+    }
 
     override fun withItems(items: List<ItemStack>): KryptonBundleMeta = KryptonBundleMeta(
         damage,
@@ -87,6 +84,16 @@ class KryptonBundleMeta(
     override fun removeItem(item: ItemStack): KryptonBundleMeta = withItems(items.minus(item))
 
     override fun toBuilder(): BundleMeta.Builder = Builder(this)
+
+    override fun equalTo(other: KryptonBundleMeta): Boolean = super.equalTo(other) && items == other.items
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + items.hashCode()
+        return result
+    }
+
+    override fun toString(): String = "KryptonBundleMeta(${partialToString()}, items=$items)"
 
     class Builder() : KryptonItemMetaBuilder<BundleMeta.Builder, BundleMeta>(), BundleMeta.Builder {
 

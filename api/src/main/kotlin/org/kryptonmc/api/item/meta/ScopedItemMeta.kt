@@ -9,8 +9,6 @@
 package org.kryptonmc.api.item.meta
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.util.Buildable
-import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.data.ItemFlag
 

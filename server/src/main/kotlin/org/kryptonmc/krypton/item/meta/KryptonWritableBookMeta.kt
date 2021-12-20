@@ -19,9 +19,13 @@
 package org.kryptonmc.krypton.item.meta
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.meta.WritableBookMeta
 import org.kryptonmc.krypton.util.convertToList
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.StringTag
 
 class KryptonWritableBookMeta(
     damage: Int,
@@ -33,16 +37,20 @@ class KryptonWritableBookMeta(
     canDestroy: Set<Block>,
     canPlaceOn: Set<Block>,
     override val pages: List<Component>
-) : AbstractItemMeta<KryptonWritableBookMeta>(
-    damage,
-    isUnbreakable,
-    customModelData,
-    name,
-    lore,
-    hideFlags,
-    canDestroy,
-    canPlaceOn
-), WritableBookMeta {
+) : AbstractItemMeta<KryptonWritableBookMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn),
+    WritableBookMeta {
+
+    constructor(tag: CompoundTag) : this(
+        tag.getInt("Damage"),
+        tag.getBoolean("Unbreakable"),
+        tag.getInt("CustomModelData"),
+        tag.getName(),
+        tag.getLore(),
+        tag.getInt("HideFlags"),
+        tag.getBlocks("CanDestroy"),
+        tag.getBlocks("CanPlaceOn"),
+        tag.getList("pages", StringTag.ID).map { LegacyComponentSerializer.legacySection().deserialize((it as StringTag).value) },
+    )
 
     override fun copy(
         damage: Int,
@@ -54,6 +62,10 @@ class KryptonWritableBookMeta(
         canDestroy: Set<Block>,
         canPlaceOn: Set<Block>
     ): KryptonWritableBookMeta = KryptonWritableBookMeta(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn, pages)
+
+    override fun saveData(): CompoundTag.Builder = super.saveData().apply {
+        list("pages", StringTag.ID, pages.map { StringTag.of(it.toJsonString()) })
+    }
 
     override fun withPages(pages: Iterable<Component>): KryptonWritableBookMeta = KryptonWritableBookMeta(
         damage,

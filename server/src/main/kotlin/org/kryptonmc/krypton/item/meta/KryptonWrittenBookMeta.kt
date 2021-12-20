@@ -20,12 +20,14 @@ package org.kryptonmc.krypton.item.meta
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.adventure.toLegacySectionText
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.data.WrittenBookGeneration
 import org.kryptonmc.api.item.meta.WrittenBookMeta
 import org.kryptonmc.krypton.util.convertToList
-import org.kryptonmc.nbt.ImmutableCompoundTag
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.StringTag
 
 class KryptonWrittenBookMeta(
     damage: Int,
@@ -42,6 +44,21 @@ class KryptonWrittenBookMeta(
     override val generation: WrittenBookGeneration
 ) : AbstractItemMeta<KryptonWrittenBookMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn), WrittenBookMeta {
 
+    constructor(tag: CompoundTag) : this(
+        tag.getInt("Damage"),
+        tag.getBoolean("Unbreakable"),
+        tag.getInt("CustomModelData"),
+        tag.getName(),
+        tag.getLore(),
+        tag.getInt("HideFlags"),
+        tag.getBlocks("CanDestroy"),
+        tag.getBlocks("CanPlaceOn"),
+        LegacyComponentSerializer.legacySection().deserialize(tag.getString("title")),
+        LegacyComponentSerializer.legacySection().deserialize(tag.getString("author")),
+        tag.getList("pages", StringTag.ID).map { LegacyComponentSerializer.legacySection().deserialize((it as StringTag).value) },
+        WrittenBookGeneration.fromId(tag.getInt("generation")) ?: WrittenBookGeneration.ORIGINAL
+    )
+
     override fun copy(
         damage: Int,
         isUnbreakable: Boolean,
@@ -52,6 +69,13 @@ class KryptonWrittenBookMeta(
         canDestroy: Set<Block>,
         canPlaceOn: Set<Block>
     ): KryptonWrittenBookMeta = copy(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn)
+
+    override fun saveData(): CompoundTag.Builder = super.saveData().apply {
+        string("title", title.toLegacySectionText())
+        string("author", author.toLegacySectionText())
+        list("pages", StringTag.ID, pages.map { StringTag.of(it.toJsonString()) })
+        int("generation", generation.ordinal)
+    }
 
     override fun withTitle(title: Component): KryptonWrittenBookMeta = copy(title = title)
 

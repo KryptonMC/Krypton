@@ -69,7 +69,7 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
     override fun mobInteract(player: KryptonPlayer, hand: Hand): InteractionResult {
         val heldItem = player.heldItem(hand)
         if (!isTame && TAME_FOOD.contains(heldItem.type)) {
-            if (!player.canInstantlyBuild) heldItem.amount--
+            if (!player.canInstantlyBuild) player.setHeldItem(hand, heldItem.shrink(1))
             if (!isSilent) {
                 world.playSound(location, SoundEvents.PARROT_EAT, soundSource, 1F, 1F + (Random.nextFloat() - Random.nextFloat()) * 0.2F)
             }
@@ -78,7 +78,7 @@ class KryptonParrot(world: KryptonWorld) : KryptonTamable(world, EntityTypes.PAR
             return InteractionResult.CONSUME
         }
         if (heldItem.type === POISONOUS_FOOD) {
-            if (!player.canInstantlyBuild) heldItem.amount--
+            if (!player.canInstantlyBuild) player.setHeldItem(hand, heldItem.shrink(1))
             // TODO: Add poison potion effect
             if (player.gameMode == GameMode.CREATIVE || !isInvulnerable) {
                 damage(KryptonEntityDamageSource(DamageTypes.PLAYER_ATTACK, player), 3.4028235E38F)

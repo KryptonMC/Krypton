@@ -18,6 +18,8 @@
  */
 package org.kryptonmc.krypton.util
 
+import java.util.function.ToIntFunction
+
 fun <T> Iterable<T>.convertToList(): List<T> {
     if (this is List<T>) {
         if (isEmpty()) return emptyList()
@@ -37,3 +39,11 @@ fun <T> Iterable<T>.convertToSet(): Set<T> {
 }
 
 fun <T> List<T>.minus(index: Int): List<T> = minus(get(index))
+
+fun <T> List<T>.toIntArray(converter: ToIntFunction<T>): IntArray {
+    val array = IntArray(size)
+    for (i in indices) {
+        array[i] = converter.applyAsInt(get(i))
+    }
+    return array
+}

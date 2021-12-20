@@ -21,7 +21,6 @@ package org.kryptonmc.krypton.entity
 import org.kryptonmc.api.entity.ArmorStand
 import org.kryptonmc.api.entity.EntityTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
-import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.util.FixedList
 import org.kryptonmc.krypton.world.KryptonWorld
@@ -31,8 +30,8 @@ import org.spongepowered.math.vector.Vector3f
 
 class KryptonArmorStand(world: KryptonWorld) : KryptonLivingEntity(world, EntityTypes.ARMOR_STAND, ATTRIBUTES), ArmorStand, KryptonEquipable {
 
-    private val handItems = FixedList<KryptonItemStack>(2, EmptyItemStack)
-    private val armorItems = FixedList<KryptonItemStack>(4, EmptyItemStack)
+    private val handItems = FixedList(2, KryptonItemStack.EMPTY)
+    private val armorItems = FixedList(4, KryptonItemStack.EMPTY)
     private var disabledSlots = 0
 
     override val handSlots: Iterable<KryptonItemStack>

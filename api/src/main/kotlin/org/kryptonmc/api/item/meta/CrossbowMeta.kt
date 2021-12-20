@@ -108,18 +108,6 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta>, ItemMetaBuilder.Pr
         public fun projectiles(vararg projectiles: ItemStack): Builder = projectiles(projectiles.asIterable())
 
         /**
-         * Sets the list of charged projectiles for the crossbow to the given
-         * [projectiles].
-         *
-         * @param projectiles the projectiles
-         * @return this builder
-         */
-        @JvmSynthetic
-        @JvmName("projectilesArray")
-        @Contract("_ -> this", mutates = "this")
-        public fun projectiles(projectiles: Array<ItemStack>): Builder = projectiles(projectiles.asIterable())
-
-        /**
          * Adds the given [projectile] to the list of charged projectiles for
          * the crossbow.
          *

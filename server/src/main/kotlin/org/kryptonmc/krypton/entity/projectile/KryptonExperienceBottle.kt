@@ -24,7 +24,12 @@ import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.world.KryptonWorld
 
-class KryptonExperienceBottle(world: KryptonWorld) : KryptonThrowableProjectile(world, EntityTypes.EXPERIENCE_BOTTLE), ExperienceBottle {
+class KryptonExperienceBottle(
+    world: KryptonWorld
+) : KryptonThrowableProjectile(world, EntityTypes.EXPERIENCE_BOTTLE, DEFAULT_ITEM), ExperienceBottle {
 
-    override val defaultItem: ItemType = ItemTypes.EXPERIENCE_BOTTLE
+    companion object {
+
+        private val DEFAULT_ITEM = createDefaultItem(ItemTypes.EXPERIENCE_BOTTLE)
+    }
 }

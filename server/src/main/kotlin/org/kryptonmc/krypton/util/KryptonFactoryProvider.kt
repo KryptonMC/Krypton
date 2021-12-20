@@ -38,6 +38,7 @@ import org.kryptonmc.api.item.ItemRarity
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.data.DyeColor
+import org.kryptonmc.api.item.meta.ItemMeta
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.resource.ResourcePack
 import org.kryptonmc.api.scoreboard.Objective
@@ -71,6 +72,7 @@ import org.kryptonmc.krypton.item.KryptonItemRarity
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.KryptonItemType
 import org.kryptonmc.krypton.item.data.KryptonDyeColor
+import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourcePack
 import org.kryptonmc.krypton.statistic.KryptonStatisticType
@@ -136,6 +138,7 @@ object KryptonFactoryProvider : FactoryProvider {
         register<DyeColor.Factory>(KryptonDyeColor.Factory)
         register<Picture.Factory>(KryptonPicture.Factory)
         register<StatisticType.Factory>(KryptonStatisticType.Factory)
+        register<ItemMeta.Factory>(KryptonItemMeta.Factory)
     }
 }
 

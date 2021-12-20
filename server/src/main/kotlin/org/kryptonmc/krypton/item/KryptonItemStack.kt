@@ -22,49 +22,74 @@ import net.kyori.adventure.key.Key
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemType
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.item.meta.MetaHolder
+import org.kryptonmc.api.item.meta.ItemMeta
+import org.kryptonmc.api.item.meta.ItemMetaBuilder
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
+import org.kryptonmc.krypton.item.meta.AbstractItemMeta
+import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.MutableCompoundTag
 
-open class KryptonItemStack(
+class KryptonItemStack(
     override val type: ItemType,
-    override var amount: Int,
-    override val meta: KryptonMetaHolder = KryptonMetaHolder()
+    override val amount: Int,
+    override val meta: AbstractItemMeta<*>
 ) : ItemStack {
 
-    constructor(nbt: CompoundTag) : this(
-        Registries.ITEM[Key.key(nbt.getString("id"))],
-        nbt.getInt("Count"),
-        KryptonMetaHolder(nbt.getCompound("tag").mutable())
-    )
+    constructor(tag: CompoundTag) : this(tag, Registries.ITEM[Key.key(tag.getString("id"))])
 
-    fun getOrCreateTag(key: String): MutableCompoundTag {
-        if (meta.nbt.contains(key, CompoundTag.ID)) return meta.nbt.getCompound(key).mutable()
-        return MutableCompoundTag().apply { meta.nbt.put(key, this) }
-    }
+    private constructor(tag: CompoundTag, type: ItemType) : this(
+        type,
+        tag.getInt("Count"),
+        ItemFactory.create(type, tag.getCompound("tag"))
+    )
 
     fun save(tag: CompoundTag.Builder): CompoundTag.Builder = tag.apply {
         string("id", type.key().asString())
         int("Count", amount)
-        put("tag", meta.nbt)
+        put("tag", meta.save())
     }
 
     fun save(): CompoundTag = save(CompoundTag.builder()).build()
 
     fun isEmpty(): Boolean {
-        if (this === EmptyItemStack) return true
         if (type !== ItemTypes.AIR) return amount <= 0
         return true
     }
 
-    override fun copy(): KryptonItemStack {
-        if (isEmpty()) return EmptyItemStack
-        return KryptonItemStack(type, amount, meta.copy())
+    override fun <I : ItemMeta> meta(type: Class<I>): I? {
+        if (type.isInstance(meta)) return type.cast(meta)
+        return null
     }
 
-    override fun toBuilder(): Builder = Builder()
+    override fun with(builder: ItemStack.Builder.() -> Unit): ItemStack = toBuilder().apply(builder).build()
+
+    override fun withType(type: ItemType): KryptonItemStack {
+        if (type == this.type) return this
+        return KryptonItemStack(type, amount, meta)
+    }
+
+    override fun withAmount(amount: Int): KryptonItemStack {
+        if (amount == this.amount) return this
+        return KryptonItemStack(type, amount, meta)
+    }
+
+    override fun grow(amount: Int): KryptonItemStack = withAmount(this.amount + amount)
+
+    override fun shrink(amount: Int): KryptonItemStack = withAmount(this.amount - amount)
+
+    override fun withMeta(meta: ItemMeta): KryptonItemStack {
+        if (meta == this.meta) return this
+        return KryptonItemStack(type, amount, meta as AbstractItemMeta<*>)
+    }
+
+    override fun withMeta(builder: ItemMeta.Builder.() -> Unit): KryptonItemStack = withMeta(ItemMeta.builder().apply(builder).build())
+
+    override fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> withMeta(type: Class<P>, builder: B.() -> Unit): KryptonItemStack {
+        val meta = ItemFactory.builder(type).apply(builder).build() as AbstractItemMeta<*>
+        return KryptonItemStack(this.type, amount, meta)
+    }
+
+    override fun toBuilder(): Builder = Builder(this)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -85,27 +110,47 @@ open class KryptonItemStack(
     class Builder(
         private var type: ItemType = ItemTypes.AIR,
         private var amount: Int = 1,
-        private var meta: KryptonMetaHolder = KryptonMetaHolder()
+        private var meta: AbstractItemMeta<*> = KryptonItemMeta.DEFAULT
     ) : ItemStack.Builder {
 
-        override fun type(type: ItemType): ItemStack.Builder = apply { this.type = type }
+        constructor(item: KryptonItemStack) : this(item.type, item.amount, item.meta)
 
-        override fun amount(amount: Int): ItemStack.Builder = apply {
+        override fun type(type: ItemType): Builder = apply { this.type = type }
+
+        override fun amount(amount: Int): Builder = apply {
             require(amount in 1..type.maximumStackSize) {
                 "Item amount must be between 1 and ${type.maximumStackSize}, was $amount!"
             }
             this.amount = amount
         }
 
-        override fun meta(builder: MetaHolder.() -> Unit): ItemStack.Builder = apply { meta.apply(builder) }
+        override fun meta(builder: ItemMeta.Builder.() -> Unit): Builder = apply {
+            meta = ItemMeta.builder().apply(builder).build() as AbstractItemMeta<*>
+        }
 
-        override fun build(): KryptonItemStack = KryptonItemStack(type, amount, meta)
+        override fun meta(meta: ItemMeta): Builder = apply { this.meta = meta as AbstractItemMeta<*> }
+
+        override fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> meta(
+            type: Class<P>,
+            builder: B.() -> Unit
+        ): Builder = apply { meta = ItemFactory.builder(type).apply(builder).build() as AbstractItemMeta<*> }
+
+        override fun build(): KryptonItemStack {
+            if (type == EMPTY.type && amount == EMPTY.amount && meta == EMPTY.meta) return EMPTY
+            return KryptonItemStack(type, amount, meta)
+        }
     }
 
     object Factory : ItemStack.Factory {
 
         override fun builder(): Builder = Builder()
 
-        override fun empty(): EmptyItemStack = EmptyItemStack
+        override fun empty(): ItemStack = EMPTY
+    }
+
+    companion object {
+
+        @JvmField
+        val EMPTY: KryptonItemStack = KryptonItemStack(ItemTypes.AIR, 1, KryptonItemMeta.DEFAULT)
     }
 }

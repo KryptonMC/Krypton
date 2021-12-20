@@ -27,7 +27,6 @@ import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.attribute.AttributeSupplier
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.util.FixedList
@@ -44,8 +43,8 @@ abstract class KryptonMob(
     attributeSupplier: AttributeSupplier
 ) : KryptonLivingEntity(world, type, attributeSupplier), Mob, KryptonEquipable {
 
-    private val handItems = FixedList<KryptonItemStack>(2, EmptyItemStack)
-    private val armorItems = FixedList<KryptonItemStack>(4, EmptyItemStack)
+    private val handItems = FixedList(2, KryptonItemStack.EMPTY)
+    private val armorItems = FixedList(4, KryptonItemStack.EMPTY)
     private val handDropChances = FloatArray(2)
     private val armorDropChances = FloatArray(4)
 

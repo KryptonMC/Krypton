@@ -84,17 +84,6 @@ public interface BundleMeta : ScopedItemMeta<BundleMeta>, ItemMetaBuilder.Provid
         public fun items(vararg items: ItemStack): Builder = items(items.asIterable())
 
         /**
-         * Sets the items held by the bundle to the given [items].
-         *
-         * @param items the items
-         * @return this builder
-         */
-        @JvmSynthetic
-        @JvmName("itemsArray")
-        @Contract("_ -> this", mutates = "this")
-        public fun items(items: Array<ItemStack>): Builder = items(items.asIterable())
-
-        /**
          * Adds the given [item] to the bundle.
          *
          * @param item the item to add

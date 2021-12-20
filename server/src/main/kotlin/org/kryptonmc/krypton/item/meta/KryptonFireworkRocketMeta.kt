@@ -18,17 +18,13 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.meta.FireworkRocketMeta
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.item.data.KryptonFireworkEffect
+import org.kryptonmc.krypton.item.data.save
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.ListTag
-import org.kryptonmc.nbt.StringTag
 
 class KryptonFireworkRocketMeta(
     damage: Int,
@@ -48,13 +44,11 @@ class KryptonFireworkRocketMeta(
         tag.getInt("Damage"),
         tag.getBoolean("Unbreakable"),
         tag.getInt("CustomModelData"),
-        tag.getDisplay<StringTag, Component>("Name", StringTag.ID, null) { GsonComponentSerializer.gson().deserialize(it.value) },
-        tag.getDisplay<ListTag, List<Component>>("Lore", ListTag.ID, emptyList()) { list ->
-            list.map { GsonComponentSerializer.gson().deserialize((it as StringTag).value) }
-        }!!,
+        tag.getName(),
+        tag.getLore(),
         tag.getInt("HideFlags"),
-        tag.getList("CanDestroy", StringTag.ID).mapTo(mutableSetOf()) { Registries.BLOCK[Key.key((it as StringTag).value)]!! },
-        tag.getList("CanPlaceOn", StringTag.ID).mapTo(mutableSetOf()) { Registries.BLOCK[Key.key((it as StringTag).value)]!! },
+        tag.getBlocks("CanDestroy"),
+        tag.getBlocks("CanPlaceOn"),
         tag.getCompound("Fireworks").getList("Explosions", CompoundTag.ID).map { KryptonFireworkEffect(it as CompoundTag) },
         tag.getCompound("Fireworks").getByte("Flight").toInt()
     )
@@ -69,6 +63,13 @@ class KryptonFireworkRocketMeta(
         canDestroy: Set<Block>,
         canPlaceOn: Set<Block>
     ): KryptonFireworkRocketMeta = copy(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn)
+
+    override fun saveData(): CompoundTag.Builder = super.saveData().apply {
+        compound("Fireworks") {
+            list("Explosions", CompoundTag.ID, effects.map(FireworkEffect::save))
+            byte("Flight", flightDuration.toByte())
+        }
+    }
 
     override fun withEffects(effects: List<FireworkEffect>): KryptonFireworkRocketMeta = copy(effects = effects)
 

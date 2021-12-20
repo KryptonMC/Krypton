@@ -26,7 +26,6 @@ import org.kryptonmc.api.inventory.PlayerInventory
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.out.play.PacketOutChangeHeldItem
 import org.kryptonmc.krypton.packet.out.play.PacketOutSetSlot
@@ -40,8 +39,8 @@ import org.kryptonmc.nbt.compound
 
 class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInventory(0, TYPE, owner, SIZE, 36), PlayerInventory {
 
-    override val crafting = FixedList<KryptonItemStack>(5, EmptyItemStack)
-    override val armor = FixedList<KryptonItemStack>(4, EmptyItemStack)
+    override val crafting = FixedList(5, KryptonItemStack.EMPTY)
+    override val armor = FixedList(4, KryptonItemStack.EMPTY)
 
     override val main: List<ItemStack> = items.subList(9, 35)
     override val hotbar: List<ItemStack> = items.subList(0, 8)
@@ -63,7 +62,7 @@ class KryptonPlayerInventory(override val owner: KryptonPlayer) : KryptonInvento
 
     override val mainHand: KryptonItemStack
         get() = items[heldSlot]
-    override var offHand: KryptonItemStack = EmptyItemStack
+    override var offHand: KryptonItemStack = KryptonItemStack.EMPTY
 
     override fun armor(slot: ArmorSlot) = armor[slot.ordinal]
 

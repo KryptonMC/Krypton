@@ -22,6 +22,9 @@ import net.kyori.adventure.text.Component
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.meta.PlayerHeadMeta
+import org.kryptonmc.krypton.auth.gameProfile
+import org.kryptonmc.krypton.auth.getGameProfile
+import org.kryptonmc.nbt.CompoundTag
 
 class KryptonPlayerHeadMeta(
     damage: Int,
@@ -35,6 +38,18 @@ class KryptonPlayerHeadMeta(
     override val owner: GameProfile?
 ) : AbstractItemMeta<KryptonPlayerHeadMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn), PlayerHeadMeta {
 
+    constructor(tag: CompoundTag) : this(
+        tag.getInt("Damage"),
+        tag.getBoolean("Unbreakable"),
+        tag.getInt("CustomModelData"),
+        tag.getName(),
+        tag.getLore(),
+        tag.getInt("HideFlags"),
+        tag.getBlocks("CanDestroy"),
+        tag.getBlocks("CanPlaceOn"),
+        tag.getGameProfile("SkullOwner")
+    )
+
     override fun copy(
         damage: Int,
         isUnbreakable: Boolean,
@@ -45,6 +60,10 @@ class KryptonPlayerHeadMeta(
         canDestroy: Set<Block>,
         canPlaceOn: Set<Block>
     ): KryptonPlayerHeadMeta = KryptonPlayerHeadMeta(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn, owner)
+
+    override fun saveData(): CompoundTag.Builder = super.saveData().apply {
+        gameProfile("SkullOwner", owner)
+    }
 
     override fun withOwner(owner: GameProfile?): KryptonPlayerHeadMeta = KryptonPlayerHeadMeta(
         damage,

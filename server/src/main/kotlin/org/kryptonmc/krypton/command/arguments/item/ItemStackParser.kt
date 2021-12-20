@@ -29,7 +29,6 @@ import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.tags.TagTypes
 import org.kryptonmc.krypton.command.toExceptionType
-import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.tags.KryptonTagManager
 import org.kryptonmc.krypton.util.nbt.SNBTParser
 import org.kryptonmc.nbt.CompoundTag
@@ -51,7 +50,7 @@ class ItemStackParser(val reader: StringReader, private val allowTags: Boolean) 
 
         return ItemStackPredicate {
             if (item != null) {
-                if (nbt != null) return@ItemStackPredicate nbt == (it.meta as? KryptonMetaHolder)?.nbt
+                if (nbt != null) return@ItemStackPredicate nbt == it.meta.save()
                 return@ItemStackPredicate it.type == item
             }
             if (tag != null) {

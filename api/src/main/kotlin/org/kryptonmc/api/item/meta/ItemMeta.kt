@@ -12,14 +12,11 @@ import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
-import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemType
-import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.util.provide
 import org.kryptonmc.api.world.GameMode
-import java.awt.Color
 
 /**
  * Holder for various item metadata values for an item stack.

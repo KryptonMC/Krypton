@@ -18,27 +18,36 @@
  */
 package org.kryptonmc.krypton.item.meta
 
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.item.meta.ItemMeta
+import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.item.mask
 import org.kryptonmc.krypton.util.convertToList
 import org.kryptonmc.krypton.util.convertToSet
 import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.ListTag
+import org.kryptonmc.nbt.StringTag
 import org.kryptonmc.nbt.Tag
+import org.kryptonmc.nbt.buildCompound
 
 @Suppress("UNCHECKED_CAST")
 abstract class AbstractItemMeta<I : ItemMeta>(
-    override val damage: Int,
-    override val isUnbreakable: Boolean,
-    override val customModelData: Int,
-    override val name: Component?,
-    override val lore: List<Component>,
-    override val hideFlags: Int,
-    override val canDestroy: Set<Block>,
-    override val canPlaceOn: Set<Block>
+    final override val damage: Int,
+    final override val isUnbreakable: Boolean,
+    final override val customModelData: Int,
+    final override val name: Component?,
+    final override val lore: List<Component>,
+    final override val hideFlags: Int,
+    final override val canDestroy: Set<Block>,
+    final override val canPlaceOn: Set<Block>
 ) : ItemMeta {
+
+    private var cachedNBT: CompoundTag? = null
 
     abstract fun copy(
         damage: Int = this.damage,
@@ -50,6 +59,26 @@ abstract class AbstractItemMeta<I : ItemMeta>(
         canDestroy: Set<Block> = this.canDestroy,
         canPlaceOn: Set<Block> = this.canPlaceOn
     ): I
+
+    fun save(): CompoundTag {
+        if (cachedNBT == null) cachedNBT = saveData().build()
+        return cachedNBT!!
+    }
+
+    protected open fun saveData(): CompoundTag.Builder = buildCompound {
+        int("Damage", damage)
+        boolean("Unbreakable", isUnbreakable)
+        int("CustomModelData", customModelData)
+        put("display", saveDisplay().build())
+        int("HideFlags", hideFlags)
+        list("CanDestroy", StringTag.ID, canDestroy.map { StringTag.of(it.key().asString()) })
+        list("CanPlaceOn", StringTag.ID, canPlaceOn.map { StringTag.of(it.key().asString()) })
+    }
+
+    protected open fun saveDisplay(): CompoundTag.Builder = buildCompound {
+        if (name != null) string("Name", name.toJsonString())
+        if (lore.isNotEmpty()) list("Lore", StringTag.ID, lore.map { StringTag.of(it.toJsonString()) })
+    }
 
     override fun hasFlag(flag: ItemFlag): Boolean = hideFlags and flag.mask() != 0
 
@@ -106,6 +135,37 @@ abstract class AbstractItemMeta<I : ItemMeta>(
         return copy(canPlaceOn = blocks.convertToSet())
     }
 
+    protected open fun equalTo(other: I): Boolean = damage == other.damage &&
+            isUnbreakable == other.isUnbreakable &&
+            customModelData == other.customModelData &&
+            name == other.name &&
+            lore == other.lore &&
+            hideFlags == other.hideFlags &&
+            canDestroy == other.canDestroy &&
+            canPlaceOn == other.canPlaceOn
+
+    protected fun partialToString(): String = "damage=$damage, isUnbreakable=$isUnbreakable, customModelData=$customModelData, name=$name, " +
+            "lore=$lore, hideFlags=$hideFlags, canDestroy=$canDestroy, canPlaceOn=$canPlaceOn"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return equalTo(other as I)
+    }
+
+    override fun hashCode(): Int {
+        var result = 1
+        result = 31 * result + damage.hashCode()
+        result = 31 * result + isUnbreakable.hashCode()
+        result = 31 * result + customModelData.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + lore.hashCode()
+        result = 31 * result + hideFlags.hashCode()
+        result = 31 * result + canDestroy.hashCode()
+        result = 31 * result + canPlaceOn.hashCode()
+        return result
+    }
+
     companion object {
 
         @JvmStatic
@@ -113,6 +173,21 @@ abstract class AbstractItemMeta<I : ItemMeta>(
             if (!contains("display", CompoundTag.ID) || !getCompound("display").contains(key, type)) return default
             val tag = getCompound("display")[key] as? T ?: return default
             return mapper(tag)
+        }
+
+        @JvmStatic
+        protected fun CompoundTag.getName(): Component? = getDisplay<StringTag, Component>("Name", StringTag.ID, null) {
+            GsonComponentSerializer.gson().deserialize(it.value)
+        }
+
+        @JvmStatic
+        protected fun CompoundTag.getLore(): List<Component> = getDisplay<ListTag, List<Component>>("Lore", ListTag.ID, emptyList()) { list ->
+            list.map { GsonComponentSerializer.gson().deserialize((it as StringTag).value) }
+        }!!
+
+        @JvmStatic
+        protected fun CompoundTag.getBlocks(key: String): Set<Block> = getList(key, StringTag.ID).mapTo(mutableSetOf()) {
+            Registries.BLOCK[Key.key((it as StringTag).value)]!!
         }
     }
 }

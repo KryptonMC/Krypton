@@ -70,6 +70,7 @@ public interface BookMeta<I : BookMeta<I>> : ScopedItemMeta<I> {
          * @param pages the pages
          * @return this builder
          */
+        @MetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun pages(pages: Iterable<Component>): B
 
@@ -79,19 +80,9 @@ public interface BookMeta<I : BookMeta<I>> : ScopedItemMeta<I> {
          * @param pages the pages
          * @return this builder
          */
+        @MetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun pages(vararg pages: Component): B = pages(pages.asIterable())
-
-        /**
-         * Sets the pages the book has to the given [pages].
-         *
-         * @param pages the pages
-         * @return this builder
-         */
-        @JvmSynthetic
-        @JvmName("pagesArray")
-        @Contract("_ -> this", mutates = "this")
-        public fun pages(pages: Array<Component>): B = pages(pages.asIterable())
 
         /**
          * Adds the given [page] to the list of pages the book has.
@@ -99,6 +90,7 @@ public interface BookMeta<I : BookMeta<I>> : ScopedItemMeta<I> {
          * @param page the page to add
          * @return this builder
          */
+        @MetaDsl
         @Contract("_ -> this", mutates = "this")
         public fun addPage(page: Component): B
     }

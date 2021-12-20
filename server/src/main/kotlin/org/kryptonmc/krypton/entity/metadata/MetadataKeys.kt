@@ -128,12 +128,12 @@ object MetadataKeys {
 
     object FireballKeys {
 
-        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.Factory.empty())
+        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.EMPTY)
     }
 
     object FireworkRocketKeys {
 
-        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.Factory.empty())
+        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.EMPTY)
         @JvmField val ATTACHED = create(9, MetadataSerializers.OPTIONAL_VAR_INT, OptionalInt.empty())
         @JvmField val SHOT_AT_ANGLE = create(10, MetadataSerializers.BOOLEAN, false)
     }
@@ -146,7 +146,7 @@ object MetadataKeys {
 
     object ThrowableProjectileKeys {
 
-        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.Factory.empty())
+        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.EMPTY)
     }
 
     object WitherSkullKeys {

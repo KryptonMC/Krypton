@@ -24,7 +24,6 @@ import net.kyori.adventure.key.InvalidKeyException
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
-import net.kyori.adventure.text.format.NamedTextColor
 import org.kryptonmc.api.block.Blocks
 import org.kryptonmc.api.entity.Hand
 import org.kryptonmc.api.event.command.CommandExecuteEvent
@@ -38,15 +37,12 @@ import org.kryptonmc.api.event.player.PlaceBlockEvent
 import org.kryptonmc.api.event.player.PluginMessageEvent
 import org.kryptonmc.api.event.player.ResourcePackStatusEvent
 import org.kryptonmc.api.event.player.RotateEvent
-import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.resource.ResourcePack
-import org.kryptonmc.api.util.Direction
 import org.kryptonmc.api.world.GameMode
 import org.kryptonmc.krypton.KryptonServer
 import org.kryptonmc.krypton.commands.KryptonPermission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
 import org.kryptonmc.krypton.inventory.KryptonPlayerInventory
-import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.handler
 import org.kryptonmc.krypton.item.handler.ItemTimedHandler
 import org.kryptonmc.krypton.network.SessionHandler
@@ -74,7 +70,6 @@ import org.kryptonmc.krypton.packet.`in`.play.PacketInSteerVehicle
 import org.kryptonmc.krypton.packet.`in`.play.PacketInTabComplete
 import org.kryptonmc.krypton.packet.out.play.EntityAnimation
 import org.kryptonmc.krypton.packet.out.play.PacketOutAnimation
-import org.kryptonmc.krypton.packet.out.play.PacketOutBlockChange
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPosition
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityPositionAndRotation
 import org.kryptonmc.krypton.packet.out.play.PacketOutEntityRotation
@@ -209,7 +204,7 @@ class PlayHandler(
         if (player.gameMode != GameMode.CREATIVE) return
         val item = packet.clickedItem
         val inValidRange = packet.slot in 1 until KryptonPlayerInventory.SIZE
-        val hasDamage = MetaKeys.DAMAGE in item.meta && item.meta[MetaKeys.DAMAGE]!! >= 0
+        val hasDamage = item.meta.damage > 0
         val isValid = item.isEmpty() || (hasDamage && item.amount <= 64 && !item.isEmpty())
         if (inValidRange && isValid) player.inventory[packet.slot.toInt()] = packet.clickedItem
     }

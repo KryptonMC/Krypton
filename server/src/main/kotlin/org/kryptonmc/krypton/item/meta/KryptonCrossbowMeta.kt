@@ -18,17 +18,12 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.meta.CrossbowMeta
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.ListTag
-import org.kryptonmc.nbt.StringTag
 
 class KryptonCrossbowMeta(
     damage: Int,
@@ -47,13 +42,11 @@ class KryptonCrossbowMeta(
         tag.getInt("Damage"),
         tag.getBoolean("Unbreakable"),
         tag.getInt("CustomModelData"),
-        tag.getDisplay<StringTag, Component>("Name", StringTag.ID, null) { GsonComponentSerializer.gson().deserialize(it.value) },
-        tag.getDisplay<ListTag, List<Component>>("Lore", ListTag.ID, emptyList()) { list ->
-            list.map { GsonComponentSerializer.gson().deserialize((it as StringTag).value) }
-        }!!,
+        tag.getName(),
+        tag.getLore(),
         tag.getInt("HideFlags"),
-        tag.getList("CanDestroy", StringTag.ID).mapTo(mutableSetOf()) { Registries.BLOCK[Key.key((it as StringTag).value)]!! },
-        tag.getList("CanPlaceOn", StringTag.ID).mapTo(mutableSetOf()) { Registries.BLOCK[Key.key((it as StringTag).value)]!! },
+        tag.getBlocks("CanDestroy"),
+        tag.getBlocks("CanPlaceOn"),
         tag.getBoolean("Charged"),
         tag.getList("ChargedProjectiles", CompoundTag.ID).map { KryptonItemStack(it as CompoundTag) }
     )
@@ -68,6 +61,11 @@ class KryptonCrossbowMeta(
         canDestroy: Set<Block>,
         canPlaceOn: Set<Block>
     ): KryptonCrossbowMeta = copy(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn)
+
+    override fun saveData(): CompoundTag.Builder = super.saveData().apply {
+        boolean("Charged", isCharged)
+        list("ChargedProjectiles", CompoundTag.ID, projectiles.map { (it as KryptonItemStack).save() })
+    }
 
     override fun withCharged(charged: Boolean): KryptonCrossbowMeta = copy(charged = charged)
 
@@ -104,6 +102,19 @@ class KryptonCrossbowMeta(
         charged,
         projectiles
     )
+
+    override fun equalTo(other: KryptonCrossbowMeta): Boolean = super.equalTo(other) &&
+            isCharged == other.isCharged &&
+            projectiles == other.projectiles
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + isCharged.hashCode()
+        result = 31 * result + projectiles.hashCode()
+        return result
+    }
+
+    override fun toString(): String = "KryptonCrossbowMeta(${partialToString()}, isCharged=$isCharged, projectiles=$projectiles)"
 
     class Builder() : KryptonItemMetaBuilder<CrossbowMeta.Builder, CrossbowMeta>(), CrossbowMeta.Builder {
 

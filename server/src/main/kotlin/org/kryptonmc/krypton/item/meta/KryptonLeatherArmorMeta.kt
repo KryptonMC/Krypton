@@ -21,6 +21,8 @@ package org.kryptonmc.krypton.item.meta
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.meta.LeatherArmorMeta
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.IntTag
 import java.awt.Color
 
 class KryptonLeatherArmorMeta(
@@ -36,6 +38,18 @@ class KryptonLeatherArmorMeta(
 ) : AbstractItemMeta<KryptonLeatherArmorMeta>(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn),
     LeatherArmorMeta {
 
+    constructor(tag: CompoundTag) : this(
+        tag.getInt("Damage"),
+        tag.getBoolean("Unbreakable"),
+        tag.getInt("CustomModelData"),
+        tag.getName(),
+        tag.getLore(),
+        tag.getInt("HideFlags"),
+        tag.getBlocks("CanDestroy"),
+        tag.getBlocks("CanPlaceOn"),
+        tag.getDisplay<IntTag, Color>("color", IntTag.ID, null) { Color(it.value) }
+    )
+
     override fun copy(
         damage: Int,
         isUnbreakable: Boolean,
@@ -46,6 +60,10 @@ class KryptonLeatherArmorMeta(
         canDestroy: Set<Block>,
         canPlaceOn: Set<Block>
     ): KryptonLeatherArmorMeta = KryptonLeatherArmorMeta(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn, color)
+
+    override fun saveDisplay(): CompoundTag.Builder = super.saveDisplay().apply {
+        if (color != null) int("color", color.rgb)
+    }
 
     override fun withColor(color: Color?): KryptonLeatherArmorMeta = KryptonLeatherArmorMeta(
         damage,

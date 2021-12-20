@@ -99,17 +99,6 @@ public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta>, ItemMe
         public fun effects(vararg effects: FireworkEffect): Builder = effects(effects.asIterable())
 
         /**
-         * Sets the list of effects for the rocket to the given [effects].
-         *
-         * @param effects the effects
-         * @return this builder
-         */
-        @JvmSynthetic
-        @JvmName("effectsArray")
-        @Contract("_ -> this", mutates = "this")
-        public fun effects(effects: Array<FireworkEffect>): Builder = effects(effects.asIterable())
-
-        /**
          * Adds the given [effect] to the list of effects for the rocket.
          *
          * @param effect the effect to add

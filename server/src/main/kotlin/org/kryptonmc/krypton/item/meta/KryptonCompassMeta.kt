@@ -18,19 +18,15 @@
  */
 package org.kryptonmc.krypton.item.meta
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.meta.CompassMeta
-import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.resource.ResourceKey
 import org.kryptonmc.api.world.World
 import org.kryptonmc.krypton.entity.getVector3i
+import org.kryptonmc.krypton.entity.vector3i
 import org.kryptonmc.krypton.world.dimension.parseDimension
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.ListTag
-import org.kryptonmc.nbt.StringTag
 import org.spongepowered.math.vector.Vector3i
 
 class KryptonCompassMeta(
@@ -51,13 +47,11 @@ class KryptonCompassMeta(
         tag.getInt("Damage"),
         tag.getBoolean("Unbreakable"),
         tag.getInt("CustomModelData"),
-        tag.getDisplay<StringTag, Component>("Name", StringTag.ID, null) { GsonComponentSerializer.gson().deserialize(it.value) },
-        tag.getDisplay<ListTag, List<Component>>("Lore", ListTag.ID, emptyList()) { list ->
-            list.map { GsonComponentSerializer.gson().deserialize((it as StringTag).value) }
-        }!!,
+        tag.getName(),
+        tag.getLore(),
         tag.getInt("HideFlags"),
-        tag.getList("CanDestroy", StringTag.ID).mapTo(mutableSetOf()) { Registries.BLOCK[Key.key((it as StringTag).value)]!! },
-        tag.getList("CanPlaceOn", StringTag.ID).mapTo(mutableSetOf()) { Registries.BLOCK[Key.key((it as StringTag).value)]!! },
+        tag.getBlocks("CanDestroy"),
+        tag.getBlocks("CanPlaceOn"),
         tag.getBoolean("LodestoneTracking"),
         tag["LodestoneDimension"]?.parseDimension(),
         tag.getVector3i("LodestonePos")
@@ -74,12 +68,20 @@ class KryptonCompassMeta(
         canPlaceOn: Set<Block>
     ): KryptonCompassMeta = copy(damage, isUnbreakable, customModelData, name, lore, hideFlags, canDestroy, canPlaceOn)
 
+    override fun saveData(): CompoundTag.Builder = super.saveData().apply {
+        boolean("LodestoneTracked", isTrackingLodestone)
+        if (lodestoneDimension != null) string("LodestoneDimension", lodestoneDimension.location.asString())
+        if (lodestonePosition != null) vector3i("LodestonePos", lodestonePosition)
+    }
+
     override fun withLodestone(
         dimension: ResourceKey<World>,
         position: Vector3i
     ): KryptonCompassMeta = copy(tracking = true, dimension = dimension, position = position)
 
     override fun withoutLodestone(): KryptonCompassMeta = copy(tracking = false, dimension = null, position = null)
+
+    override fun toBuilder(): CompassMeta.Builder = Builder(this)
 
     private fun copy(
         damage: Int = this.damage,
@@ -107,7 +109,21 @@ class KryptonCompassMeta(
         position
     )
 
-    override fun toBuilder(): CompassMeta.Builder = Builder(this)
+    override fun equalTo(other: KryptonCompassMeta): Boolean = super.equalTo(other) &&
+            isTrackingLodestone == other.isTrackingLodestone &&
+            lodestoneDimension == other.lodestoneDimension &&
+            lodestonePosition == other.lodestonePosition
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + isTrackingLodestone.hashCode()
+        result = 31 * result + lodestoneDimension.hashCode()
+        result = 31 * result + lodestonePosition.hashCode()
+        return result
+    }
+
+    override fun toString(): String = "KryptonCompassMeta(${partialToString()}, isTrackingLodestone=$isTrackingLodestone, " +
+            "lodestoneDimension=$lodestoneDimension, lodestonePosition=$lodestonePosition)"
 
     class Builder() : KryptonItemMetaBuilder<CompassMeta.Builder, CompassMeta>(), CompassMeta.Builder {
 

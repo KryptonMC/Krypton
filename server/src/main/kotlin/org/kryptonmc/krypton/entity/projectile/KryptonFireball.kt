@@ -24,6 +24,7 @@ import org.kryptonmc.api.item.ItemStack
 import org.kryptonmc.api.item.ItemTypes
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.KryptonItemStack
+import org.kryptonmc.krypton.item.meta.KryptonItemMeta
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.nbt.CompoundTag
 
@@ -35,13 +36,13 @@ abstract class KryptonFireball(
     private var rawItem: KryptonItemStack
         get() = data[MetadataKeys.FIREBALL.ITEM]
         set(value) {
-            if (value.type === ItemTypes.FIRE_CHARGE && value.meta.nbt.isEmpty()) return
-            data[MetadataKeys.FIREBALL.ITEM] = value.copy().apply { amount = 1 }
+            if (value.type === ItemTypes.FIRE_CHARGE && value.meta == KryptonItemMeta.DEFAULT) return
+            data[MetadataKeys.FIREBALL.ITEM] = value.withAmount(1)
         }
     final override val item: ItemStack
         get() {
             val raw = rawItem
-            if (raw.isEmpty()) return KryptonItemStack(ItemTypes.FIRE_CHARGE, 1)
+            if (raw.isEmpty()) return DEFAULT_ITEM
             return raw
         }
 
@@ -58,5 +59,10 @@ abstract class KryptonFireball(
     override fun save(): CompoundTag.Builder = super.save().apply {
         val raw = rawItem
         if (!raw.isEmpty()) put("Item", raw.save(CompoundTag.builder()).build())
+    }
+
+    companion object {
+
+        private val DEFAULT_ITEM = KryptonItemStack(ItemTypes.FIRE_CHARGE, 1, KryptonItemMeta.DEFAULT)
     }
 }

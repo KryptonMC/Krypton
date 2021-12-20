@@ -16,16 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.kryptonmc.krypton.item
+package org.kryptonmc.krypton.item.data
 
-import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.krypton.item.meta.EmptyMetaHolder
+import org.kryptonmc.api.item.data.FireworkEffect
+import org.kryptonmc.krypton.util.toIntArray
+import org.kryptonmc.nbt.CompoundTag
+import org.kryptonmc.nbt.compound
+import java.awt.Color
 
-object EmptyItemStack : KryptonItemStack(ItemTypes.AIR, 1, EmptyMetaHolder) {
-
-    override var amount: Int
-        get() = super.amount
-        set(_) = Unit
-
-    override fun toString(): String = "EmptyItemStack"
+fun FireworkEffect.save(): CompoundTag = compound {
+    intArray("Colors", colors.toIntArray(Color::getRGB))
+    intArray("FadeColors", colors.toIntArray(Color::getRGB))
+    boolean("Flicker", hasFlicker)
+    boolean("Trail", hasTrail)
+    byte("Type", type.ordinal.toByte())
 }
