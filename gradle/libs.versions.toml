@@ -5,7 +5,7 @@ metadata.format.version = "1.1"
 # API
 adventure = "4.9.3"
 configurate = "4.1.2"
-log4j = "2.15.0"
+log4j = "2.17.0"
 kotlin = "1.6.0"
 coroutines = "1.5.2"
 guava = "31.0.1-jre"
