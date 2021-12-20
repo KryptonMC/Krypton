@@ -17,7 +17,7 @@ import org.kryptonmc.api.item.ItemStack
  * Represents a player's inventory.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface PlayerInventory : Inventory {
+public interface PlayerInventory : MutableInventory {
 
     /**
      * The main inventory area, excluding the hotbar area. This has 27 slots,
@@ -125,12 +125,4 @@ public interface PlayerInventory : Inventory {
      * @param item the item to set
      */
     public fun setHeldItem(hand: Hand, item: ItemStack)
-
-    /**
-     * Set an item in this inventory at the specified [index].
-     *
-     * @param index the index (slot, starts from 0)
-     * @param item the item to set
-     */
-    public operator fun set(index: Int, item: ItemStack)
 }
