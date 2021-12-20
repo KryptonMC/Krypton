@@ -19,10 +19,9 @@
 package org.kryptonmc.krypton.command.arguments.item
 
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.krypton.item.ItemFactory
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.nbt.CompoundTag
-import org.kryptonmc.nbt.MutableCompoundTag
 
 /**
  * An argument that represents an item, optionally with some NBT data.
@@ -46,7 +45,7 @@ data class ItemStackArgument(val item: ItemType, val tag: CompoundTag? = null) {
     }
 
     private fun createStack(amount: Int): KryptonItemStack {
-        val nbt = tag?.mutable() ?: MutableCompoundTag()
-        return KryptonItemStack(item, amount, KryptonMetaHolder(nbt))
+        val nbt = tag ?: CompoundTag.empty()
+        return KryptonItemStack(item, amount, ItemFactory.create(item, nbt))
     }
 }

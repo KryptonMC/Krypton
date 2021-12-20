@@ -33,21 +33,16 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.kryptonmc.api.adventure.toJsonString
 import org.kryptonmc.api.registry.Registries
-import org.kryptonmc.krypton.world.block.BlockHitResult
-import org.kryptonmc.api.util.Direction
 import org.kryptonmc.krypton.command.argument.ArgumentSerializers
-import org.kryptonmc.krypton.item.EmptyItemStack
+import org.kryptonmc.krypton.item.ItemFactory
 import org.kryptonmc.krypton.item.KryptonItemStack
-import org.kryptonmc.krypton.item.meta.KryptonMetaHolder
 import org.kryptonmc.krypton.util.serialization.CompoundEncoder
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.MutableCompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
-import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.io.IOException
-import java.util.Optional
 import java.util.UUID
 import kotlin.math.ceil
 import kotlin.math.min
@@ -213,22 +208,23 @@ fun ByteBuf.writeChat(component: Component) {
 }
 
 fun ByteBuf.readItem(): KryptonItemStack {
-    if (!readBoolean()) return EmptyItemStack
+    if (!readBoolean()) return KryptonItemStack.EMPTY
     val id = readVarInt()
     val count = readByte()
-    val nbt = readNBT().mutable()
-    return KryptonItemStack(Registries.ITEM[id], count.toInt(), KryptonMetaHolder(nbt))
+    val nbt = readNBT()
+    val type = Registries.ITEM[id]
+    return KryptonItemStack(type, count.toInt(), ItemFactory.create(type, nbt))
 }
 
 fun ByteBuf.writeItem(item: KryptonItemStack) {
-    if (item === EmptyItemStack) {
+    if (item === KryptonItemStack.EMPTY) {
         writeBoolean(false)
         return
     }
     writeBoolean(true)
     writeVarInt(Registries.ITEM.idOf(item.type))
     writeByte(item.amount)
-    writeNBT(item.meta.nbt)
+    writeNBT(item.meta.save())
 }
 
 fun ByteBuf.readVector() = readLong().toVector()

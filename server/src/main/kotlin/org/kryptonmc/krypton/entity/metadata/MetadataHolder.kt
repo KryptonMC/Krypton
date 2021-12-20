@@ -101,7 +101,7 @@ class MetadataHolder(private val entity: KryptonEntity) {
 
         var isDirty = true
 
-        fun copy(): Entry<T> = Entry(key, key.serializer.copy(value))
+        fun copy(): Entry<T> = Entry(key, value)
     }
 
     companion object {

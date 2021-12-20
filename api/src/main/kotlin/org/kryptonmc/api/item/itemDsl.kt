@@ -18,10 +18,11 @@ import org.jetbrains.annotations.Contract
 internal annotation class ItemDsl
 
 /**
- * Constructs a new [ItemStack] using the provided [builder] function.
+ * Creates a new item stack from the result of applying the given [builder]
+ * function.
  *
  * @param builder the builder
- * @return a new [ItemStack]
+ * @return a new item stack
  */
 @ItemDsl
 @JvmSynthetic
@@ -29,12 +30,12 @@ internal annotation class ItemDsl
 public inline fun item(builder: ItemStack.Builder.() -> Unit): ItemStack = ItemStack.builder().apply(builder).build()
 
 /**
- * Constructs a new [ItemStack] using the provided item [type] and [builder]
- * function.
+ * Creates a new item stack with the given [type] and the result of applying
+ * the given [builder] function.
  *
  * @param type the item type
  * @param builder the builder
- * @return a new [ItemStack]
+ * @return a new item stack
  */
 @ItemDsl
 @JvmSynthetic
@@ -45,13 +46,13 @@ public inline fun item(
 ): ItemStack = ItemStack.builder().type(type).apply(builder).build()
 
 /**
- * Constructs a new [ItemStack] using the provided item [type], [amount], and
- * [builder] function.
+ * Creates a new item stack with the given [type], [amount], and the result of
+ * applying the given [builder] function.
  *
  * @param type the item type
  * @param amount the amount of items
  * @param builder the builder
- * @return a new [ItemStack]
+ * @return a new item stack
  */
 @ItemDsl
 @JvmSynthetic

@@ -26,7 +26,7 @@ import org.kryptonmc.api.entity.animal.type.FoxType
 import org.kryptonmc.api.entity.animal.type.MooshroomType
 import org.kryptonmc.api.entity.animal.type.ParrotType
 import org.kryptonmc.api.entity.aquatic.TropicalFishShape
-import org.kryptonmc.api.item.meta.DyeColors
+import org.kryptonmc.api.item.data.DyeColors
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.util.Catalogue
 import org.kryptonmc.krypton.entity.Pose
@@ -34,7 +34,6 @@ import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.nbt.MutableCompoundTag
 import org.spongepowered.math.vector.Vector3f
 import org.spongepowered.math.vector.Vector3i
-import java.util.Optional
 import java.util.OptionalInt
 
 @Catalogue(MetadataKey::class)
@@ -129,12 +128,12 @@ object MetadataKeys {
 
     object FireballKeys {
 
-        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.Factory.empty())
+        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.EMPTY)
     }
 
     object FireworkRocketKeys {
 
-        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.Factory.empty())
+        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.EMPTY)
         @JvmField val ATTACHED = create(9, MetadataSerializers.OPTIONAL_VAR_INT, OptionalInt.empty())
         @JvmField val SHOT_AT_ANGLE = create(10, MetadataSerializers.BOOLEAN, false)
     }
@@ -147,7 +146,7 @@ object MetadataKeys {
 
     object ThrowableProjectileKeys {
 
-        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.Factory.empty())
+        @JvmField val ITEM = create(8, MetadataSerializers.SLOT, KryptonItemStack.EMPTY)
     }
 
     object WitherSkullKeys {

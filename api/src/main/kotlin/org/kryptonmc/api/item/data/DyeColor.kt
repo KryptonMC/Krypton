@@ -6,7 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
-package org.kryptonmc.api.item.meta
+package org.kryptonmc.api.item.data
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.Keyed

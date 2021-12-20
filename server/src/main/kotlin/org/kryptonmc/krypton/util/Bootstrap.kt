@@ -31,7 +31,6 @@ import org.kryptonmc.api.entity.hanging.Pictures
 import org.kryptonmc.api.fluid.Fluids
 import org.kryptonmc.api.item.ItemRarities
 import org.kryptonmc.api.item.ItemTypes
-import org.kryptonmc.api.item.meta.MetaKeys
 import org.kryptonmc.api.registry.Registries
 import org.kryptonmc.api.statistic.CustomStatistics
 import org.kryptonmc.api.statistic.StatisticTypes
@@ -56,7 +55,6 @@ import org.kryptonmc.krypton.entity.attribute.AttributeLoader
 import org.kryptonmc.krypton.entity.metadata.MetadataKeys
 import org.kryptonmc.krypton.item.ItemLoader
 import org.kryptonmc.krypton.item.ItemManager
-import org.kryptonmc.krypton.item.meta.KryptonMetaKeys
 import org.kryptonmc.krypton.registry.InternalRegistries
 import org.kryptonmc.krypton.registry.KryptonRegistryManager
 import org.kryptonmc.krypton.tags.GameEventTags
@@ -139,8 +137,6 @@ object Bootstrap {
         StatisticTypes
         CustomStatistics
         Pictures
-        KryptonMetaKeys
-        MetaKeys // Not technically a registry, but quite close to one
         KryptonDamageTypes
         DamageTypes
 

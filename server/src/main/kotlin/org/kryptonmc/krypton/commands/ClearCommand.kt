@@ -32,7 +32,6 @@ import org.kryptonmc.krypton.command.arguments.item.ItemStackPredicateArgument
 import org.kryptonmc.krypton.command.literal
 import org.kryptonmc.krypton.command.permission
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.item.EmptyItemStack
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.packet.out.play.PacketOutWindowItems
 
@@ -77,7 +76,7 @@ object ClearCommand : InternalCommand {
             target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
         } else {
             targets.forEach { target ->
-                target.inventory.forEachIndexed { index, item -> if (predicate(item)) target.inventory[index] = EmptyItemStack }
+                target.inventory.items.forEachIndexed { index, item -> if (predicate(item)) target.inventory[index] = KryptonItemStack.EMPTY }
                 target.session.send(PacketOutWindowItems(target.inventory, target.inventory.mainHand))
             }
             sender.sendMessage(Component.translatable(
@@ -94,19 +93,19 @@ object ClearCommand : InternalCommand {
         var remaining = maxCount
 
         // Clear inventory items
-        remaining = clearList(predicate, remaining, inventory.items) { inventory.items[it] = EmptyItemStack }
+        remaining = clearList(predicate, remaining, inventory.items) { index, item -> inventory.items[index] = item }
         if (remaining == 0) return
 
         // Clear armor items
-        remaining = clearList(predicate, remaining, inventory.armor) { inventory.armor[it] = EmptyItemStack }
+        remaining = clearList(predicate, remaining, inventory.armor) { index, item -> inventory.armor[index] = item }
         if (remaining == 0) return
 
         // Clear crafting items
-        remaining = clearList(predicate, remaining, inventory.crafting) { inventory.crafting[it] = EmptyItemStack }
+        remaining = clearList(predicate, remaining, inventory.crafting) { index, item -> inventory.crafting[index] = item }
         if (remaining == 0) return
 
         // Clear offhand
-        clearItem(predicate, remaining, inventory.offHand) { inventory.offHand = EmptyItemStack }
+        clearItem(predicate, remaining, inventory.offHand) { inventory.offHand = it }
     }
 
     @JvmStatic
@@ -114,19 +113,19 @@ object ClearCommand : InternalCommand {
         predicate: ItemStackPredicate,
         originalRemaining: Int,
         items: MutableList<KryptonItemStack>,
-        removeItem: (Int) -> Unit
+        setItem: (Int, KryptonItemStack) -> Unit
     ) : Int {
         var remaining = originalRemaining
         items.forEachIndexed { index, item ->
             if (!predicate(item)) return@forEachIndexed
             when {
-                remaining == -1 -> removeItem(index)
+                remaining == -1 -> setItem(index, KryptonItemStack.EMPTY)
                 remaining > item.amount -> {
-                    removeItem(index)
+                    setItem(index, KryptonItemStack.EMPTY)
                     remaining -= item.amount
                 }
                 else -> {
-                    item.amount -= remaining
+                    setItem(index, item.shrink(remaining))
                     remaining = 0
                     return remaining
                 }
@@ -140,13 +139,13 @@ object ClearCommand : InternalCommand {
         predicate: ItemStackPredicate,
         remaining: Int,
         item: KryptonItemStack,
-        removeItem: () -> Unit
+        setItem: (KryptonItemStack) -> Unit
     ) {
         if (!predicate(item)) return
         when {
-            remaining == -1 -> removeItem()
-            remaining > item.amount -> removeItem()
-            else -> item.amount -= remaining
+            remaining == -1 -> setItem(KryptonItemStack.EMPTY)
+            remaining > item.amount -> setItem(KryptonItemStack.EMPTY)
+            else -> setItem(item.shrink(remaining))
         }
     }
 }
