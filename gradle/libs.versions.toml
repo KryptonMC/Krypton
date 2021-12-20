@@ -6,7 +6,7 @@ metadata.format.version = "1.1"
 adventure = "4.9.3"
 configurate = "4.1.2"
 log4j = "2.17.0"
-kotlin = "1.6.0"
+kotlin = "1.6.10"
 coroutines = "1.5.2"
 guava = "31.0.1-jre"
 gson = "2.8.9"
@@ -22,17 +22,16 @@ sparkApi = "0.1-SNAPSHOT"
 kotlinpoet = "1.10.2"
 
 # Server
-netty = "4.1.70.Final"
+netty = "4.1.72.Final"
 velocity = "3.0.1"
 event = "4.0.0-SNAPSHOT"
 asm = "9.2"
 tca = "1.3.0"
 jline = "3.21.0"
 dataConverter = "1.0.0-SNAPSHOT"
-dfu = "4.0"
 nbt = "2.5.1"
 articData = "1.18.1"
-caffeine = "3.0.4"
+caffeine = "3.0.5"
 fastutil = "8.5.6"
 clikt = "3.3.0"
 bstats = "2.2.1"
@@ -42,7 +41,7 @@ spark = "1.6-SNAPSHOT"
 junit-jupiter = "5.8.2"
 junit-platform = "1.8.2"
 mockk = "1.12.1"
-bytebuddy = "1.12.2"
+bytebuddy = "1.12.5"
 jimfs = "1.2"
 
 [libraries]
@@ -93,7 +92,6 @@ clikt = { group = "com.github.ajalt.clikt", name = "clikt", version.ref = "clikt
 
 # Data
 dataConverter = { group = "ca.spottedleaf", name = "dataconverter", version.ref = "dataConverter" }
-dfu = { group = "org.kryptonmc", name = "datafixerupper", version.ref = "dfu" }
 articData = { group = "de.articdive", name = "articdata", version.ref = "articData" }
 nbt = { group = "org.kryptonmc", name = "nbt-common-jvm", version.ref = "nbt" }
 
