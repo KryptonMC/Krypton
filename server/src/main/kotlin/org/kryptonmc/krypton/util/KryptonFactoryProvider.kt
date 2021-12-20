@@ -70,7 +70,7 @@ import org.kryptonmc.krypton.inventory.KryptonInventoryType
 import org.kryptonmc.krypton.item.KryptonItemRarity
 import org.kryptonmc.krypton.item.KryptonItemStack
 import org.kryptonmc.krypton.item.KryptonItemType
-import org.kryptonmc.krypton.item.meta.KryptonDyeColor
+import org.kryptonmc.krypton.item.data.KryptonDyeColor
 import org.kryptonmc.krypton.resource.KryptonResourceKey
 import org.kryptonmc.krypton.resource.KryptonResourcePack
 import org.kryptonmc.krypton.statistic.KryptonStatisticType

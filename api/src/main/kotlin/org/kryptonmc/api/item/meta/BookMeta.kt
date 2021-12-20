@@ -1,3 +1,11 @@
+/*
+ * This file is part of the Krypton API, licensed under the MIT license.
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
+ *
+ * This project is licensed under the terms of the MIT license.
+ * For more details, please reference the LICENSE file in the api top-level directory.
+ */
 package org.kryptonmc.api.item.meta
 
 import net.kyori.adventure.text.Component
@@ -7,7 +15,7 @@ import org.jetbrains.annotations.Contract
  * Contains shared metadata between [WritableBookMeta] and [WrittenBookMeta].
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public sealed interface BookMeta<I : BookMeta<I>> : ScopedItemMeta<I> {
+public interface BookMeta<I : BookMeta<I>> : ScopedItemMeta<I> {
 
     /**
      * The pages written in the book.
@@ -72,7 +80,7 @@ public sealed interface BookMeta<I : BookMeta<I>> : ScopedItemMeta<I> {
          * @return this builder
          */
         @Contract("_ -> this", mutates = "this")
-        public fun pages(vararg pages: Component): B
+        public fun pages(vararg pages: Component): B = pages(pages.asIterable())
 
         /**
          * Sets the pages the book has to the given [pages].
@@ -83,7 +91,7 @@ public sealed interface BookMeta<I : BookMeta<I>> : ScopedItemMeta<I> {
         @JvmSynthetic
         @JvmName("pagesArray")
         @Contract("_ -> this", mutates = "this")
-        public fun pages(pages: Array<Component>): B
+        public fun pages(pages: Array<Component>): B = pages(pages.asIterable())
 
         /**
          * Adds the given [page] to the list of pages the book has.

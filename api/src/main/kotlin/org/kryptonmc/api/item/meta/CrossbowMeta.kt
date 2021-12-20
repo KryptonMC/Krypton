@@ -1,6 +1,13 @@
+/*
+ * This file is part of the Krypton API, licensed under the MIT license.
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
+ *
+ * This project is licensed under the terms of the MIT license.
+ * For more details, please reference the LICENSE file in the api top-level directory.
+ */
 package org.kryptonmc.api.item.meta
 
-import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.item.ItemStack
 
@@ -8,7 +15,7 @@ import org.kryptonmc.api.item.ItemStack
  * Item metadata for a crossbow.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta> {
+public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta>, ItemMetaBuilder.Provider<CrossbowMeta.Builder> {
 
     /**
      * If the crossbow is charged.
@@ -44,7 +51,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta> {
      * @param projectile the projectile to add
      * @return new item metadata
      */
-    public fun addProjectile(projectile: Component): CrossbowMeta
+    public fun addProjectile(projectile: ItemStack): CrossbowMeta
 
     /**
      * Creates new item metadata with the projectile at the given [index]
@@ -64,7 +71,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta> {
      * @param projectile the projectile to remove
      * @return new item metadata
      */
-    public fun removeProjectile(projectile: Component): CrossbowMeta
+    public fun removeProjectile(projectile: ItemStack): CrossbowMeta
 
     /**
      * A builder for building crossbow metadata.
@@ -98,7 +105,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta> {
          * @return this builder
          */
         @Contract("_ -> this", mutates = "this")
-        public fun projectiles(vararg projectiles: ItemStack): Builder
+        public fun projectiles(vararg projectiles: ItemStack): Builder = projectiles(projectiles.asIterable())
 
         /**
          * Sets the list of charged projectiles for the crossbow to the given
@@ -110,7 +117,7 @@ public interface CrossbowMeta : ScopedItemMeta<CrossbowMeta> {
         @JvmSynthetic
         @JvmName("projectilesArray")
         @Contract("_ -> this", mutates = "this")
-        public fun projectiles(projectiles: Array<ItemStack>): Builder
+        public fun projectiles(projectiles: Array<ItemStack>): Builder = projectiles(projectiles.asIterable())
 
         /**
          * Adds the given [projectile] to the list of charged projectiles for

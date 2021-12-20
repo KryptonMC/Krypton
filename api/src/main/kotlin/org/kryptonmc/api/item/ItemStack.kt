@@ -6,6 +6,7 @@
  * This project is licensed under the terms of the MIT license.
  * For more details, please reference the LICENSE file in the api top-level directory.
  */
+@file:JvmSynthetic
 package org.kryptonmc.api.item
 
 import net.kyori.adventure.util.Buildable
@@ -143,8 +144,8 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
         @ItemDsl
         @JvmSynthetic
         @Contract("_ -> this", mutates = "this")
-        public fun <B : ItemMetaBuilder<B, I>, I : ItemMeta> meta(
-            type: Class<I>,
+        public fun <B : ItemMetaBuilder<*, *>, P : ItemMetaBuilder.Provider<B>> meta(
+            type: Class<P>,
             builder: B.() -> Unit
         ): Builder
 
@@ -158,10 +159,10 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
          */
         @ItemDsl
         @Contract("_ -> this", mutates = "this")
-        public fun <B : ItemMetaBuilder<B, I>, I : ItemMeta> meta(
-            type: Class<I>,
+        public fun <B : ItemMetaBuilder<*, *>, P : ItemMetaBuilder.Provider<B>> meta(
+            type: Class<P>,
             builder: Consumer<B>
-        ): Builder = meta<B, I>(type) { builder.accept(this) }
+        ): Builder = meta<B, P>(type) { builder.accept(this) }
 
         /**
          * Builds a new [ItemStack] with the settings retrieved from
@@ -236,6 +237,6 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
 @ItemDsl
 @JvmSynthetic
 @Contract("_ -> this", mutates = "this")
-public inline fun <B : ItemMetaBuilder<B, I>, reified I : ItemMeta> ItemStack.Builder.meta(
+public inline fun <B : ItemMetaBuilder<*, *>, reified P : ItemMetaBuilder.Provider<B>> ItemStack.Builder.meta(
     noinline builder: B.() -> Unit
-): ItemStack.Builder = meta(I::class.java, builder)
+): ItemStack.Builder = meta(P::class.java, builder)

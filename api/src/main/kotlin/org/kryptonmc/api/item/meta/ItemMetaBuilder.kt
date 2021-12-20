@@ -1,3 +1,11 @@
+/*
+ * This file is part of the Krypton API, licensed under the MIT license.
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
+ *
+ * This project is licensed under the terms of the MIT license.
+ * For more details, please reference the LICENSE file in the api top-level directory.
+ */
 package org.kryptonmc.api.item.meta
 
 import net.kyori.adventure.text.Component
@@ -72,7 +80,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @return this builder
      */
     @Contract("_ -> this", mutates = "this")
-    public fun lore(vararg lore: Component): B
+    public fun lore(vararg lore: Component): B = lore(lore.toList())
 
     /**
      * Sets the lore of the item to the given [lore].
@@ -83,7 +91,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
     @JvmSynthetic
     @JvmName("loreArray")
     @Contract("_ -> this", mutates = "this")
-    public fun lore(lore: Array<Component>): B
+    public fun lore(lore: Array<Component>): B = lore(lore.toList())
 
     /**
      * Adds the given [lore] line to the lore of the item.
@@ -128,7 +136,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @return this builder
      */
     @Contract("_ -> this", mutates = "this")
-    public fun canDestroy(vararg blocks: Block): B
+    public fun canDestroy(vararg blocks: Block): B = canDestroy(blocks.toList())
 
     /**
      * Sets the list of blocks the item can destroy to the given [blocks].
@@ -139,7 +147,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
     @JvmSynthetic
     @JvmName("canDestroyArray")
     @Contract("_ -> this", mutates = "this")
-    public fun canDestroy(blocks: Array<Block>): B
+    public fun canDestroy(blocks: Array<Block>): B = canDestroy(blocks.toList())
 
     /**
      * Adds the given [block] to the list of blocks the item can destroy.
@@ -168,7 +176,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      * @return this builder
      */
     @Contract("_ -> this", mutates = "this")
-    public fun canPlaceOn(vararg blocks: Block): B
+    public fun canPlaceOn(vararg blocks: Block): B = canPlaceOn(blocks.toList())
 
     /**
      * Sets the list of blocks the item can be placed on to the given
@@ -180,7 +188,7 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
     @JvmSynthetic
     @JvmName("canPlaceOnArray")
     @Contract("_ -> this", mutates = "this")
-    public fun canPlaceOn(blocks: Array<Block>): B
+    public fun canPlaceOn(blocks: Array<Block>): B = canPlaceOn(blocks.toList())
 
     /**
      * Adds the given [block] to the list of blocks the item can be placed on.
@@ -198,4 +206,18 @@ public interface ItemMetaBuilder<B : ItemMetaBuilder<B, I>, I : ItemMeta> {
      */
     @Contract("_ -> new", pure = true)
     public fun build(): I
+
+    /**
+     * A provider of an item meta builder
+     */
+    public interface Provider<T> {
+
+        /**
+         * Converts this object to a builder with all of the properties of this
+         * object set by default.
+         *
+         * @return a new builder
+         */
+        public fun toBuilder(): T
+    }
 }

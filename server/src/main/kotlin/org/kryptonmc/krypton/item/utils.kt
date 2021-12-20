@@ -21,8 +21,11 @@ package org.kryptonmc.krypton.item
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.krypton.item.handler.ItemHandler
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.krypton.item.handler.DummyItemHandler
 
 fun ItemType.handler(): ItemHandler = ItemManager.handler(this) ?: DummyItemHandler
 
 fun KryptonItemStack.destroySpeed(block: Block): Float = type.handler().destroySpeed(this, block)
+
+fun ItemFlag.mask(): Int = 1 shl ordinal

@@ -51,6 +51,8 @@ open class KryptonItemStack(
         put("tag", meta.nbt)
     }
 
+    fun save(): CompoundTag = save(CompoundTag.builder()).build()
+
     fun isEmpty(): Boolean {
         if (this === EmptyItemStack) return true
         if (type !== ItemTypes.AIR) return amount <= 0

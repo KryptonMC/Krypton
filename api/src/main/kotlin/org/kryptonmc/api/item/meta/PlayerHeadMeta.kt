@@ -1,3 +1,11 @@
+/*
+ * This file is part of the Krypton API, licensed under the MIT license.
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
+ *
+ * This project is licensed under the terms of the MIT license.
+ * For more details, please reference the LICENSE file in the api top-level directory.
+ */
 package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
@@ -7,13 +15,13 @@ import org.kryptonmc.api.auth.GameProfile
  * Item metadata for a player head.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface PlayerHeadMeta : ScopedItemMeta<PlayerHeadMeta> {
+public interface PlayerHeadMeta : ScopedItemMeta<PlayerHeadMeta>, ItemMetaBuilder.Provider<PlayerHeadMeta.Builder> {
 
     /**
      * The profile of the player that the head belongs to.
      */
     @get:JvmName("owner")
-    public val owner: GameProfile
+    public val owner: GameProfile?
 
     /**
      * Creates new item metadata with the given [owner].
@@ -21,7 +29,7 @@ public interface PlayerHeadMeta : ScopedItemMeta<PlayerHeadMeta> {
      * @param owner the new owner
      * @return new item metadata
      */
-    public fun withOwner(owner: GameProfile): PlayerHeadMeta
+    public fun withOwner(owner: GameProfile?): PlayerHeadMeta
 
     /**
      * A builder for building player head metadata.
@@ -35,7 +43,7 @@ public interface PlayerHeadMeta : ScopedItemMeta<PlayerHeadMeta> {
          * @return this builder
          */
         @Contract("_ -> this", mutates = "this")
-        public fun owner(owner: GameProfile): Builder
+        public fun owner(owner: GameProfile?): Builder
     }
 
     public companion object {

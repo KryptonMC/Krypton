@@ -1,3 +1,11 @@
+/*
+ * This file is part of the Krypton API, licensed under the MIT license.
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
+ *
+ * This project is licensed under the terms of the MIT license.
+ * For more details, please reference the LICENSE file in the api top-level directory.
+ */
 package org.kryptonmc.api.item.meta
 
 import org.jetbrains.annotations.Contract
@@ -7,7 +15,7 @@ import org.kryptonmc.api.item.ItemStack
  * Item metadata for a bundle.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface BundleMeta : ScopedItemMeta<BundleMeta> {
+public interface BundleMeta : ScopedItemMeta<BundleMeta>, ItemMetaBuilder.Provider<BundleMeta.Builder> {
 
     /**
      * The items contained within the bundle.
@@ -50,7 +58,7 @@ public interface BundleMeta : ScopedItemMeta<BundleMeta> {
      * @param item the item to remove
      * @return new item metadata
      */
-    public fun removeItem(item: ItemStack): ItemMeta
+    public fun removeItem(item: ItemStack): BundleMeta
 
     /**
      * A builder for building bundle metadata.
@@ -73,7 +81,7 @@ public interface BundleMeta : ScopedItemMeta<BundleMeta> {
          * @return this builder
          */
         @Contract("_ -> this", mutates = "this")
-        public fun items(vararg items: ItemStack): Builder
+        public fun items(vararg items: ItemStack): Builder = items(items.asIterable())
 
         /**
          * Sets the items held by the bundle to the given [items].
@@ -84,7 +92,7 @@ public interface BundleMeta : ScopedItemMeta<BundleMeta> {
         @JvmSynthetic
         @JvmName("itemsArray")
         @Contract("_ -> this", mutates = "this")
-        public fun items(items: Array<ItemStack>): Builder
+        public fun items(items: Array<ItemStack>): Builder = items(items.asIterable())
 
         /**
          * Adds the given [item] to the bundle.

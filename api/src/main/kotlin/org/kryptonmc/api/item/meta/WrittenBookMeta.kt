@@ -1,3 +1,11 @@
+/*
+ * This file is part of the Krypton API, licensed under the MIT license.
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
+ *
+ * This project is licensed under the terms of the MIT license.
+ * For more details, please reference the LICENSE file in the api top-level directory.
+ */
 package org.kryptonmc.api.item.meta
 
 import net.kyori.adventure.inventory.Book
@@ -9,7 +17,7 @@ import org.kryptonmc.api.item.data.WrittenBookGeneration
  * Item metadata for books that have been written.
  */
 @Suppress("INAPPLICABLE_JVM_NAME", "NonExtendableApiUsage")
-public interface WrittenBookMeta : BookMeta<WrittenBookMeta>, Book {
+public interface WrittenBookMeta : BookMeta<WrittenBookMeta>, Book, ItemMetaBuilder.Provider<WrittenBookMeta.Builder> {
 
     /**
      * The title of the written book.
@@ -70,6 +78,8 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta>, Book {
 
     override fun pages(vararg pages: Component): WrittenBookMeta = withPages(pages.toList())
 
+    override fun toBuilder(): Builder
+
     /**
      * A builder for building written book metadata.
      */
@@ -90,7 +100,9 @@ public interface WrittenBookMeta : BookMeta<WrittenBookMeta>, Book {
 
         override fun addPage(page: Component): Builder
 
-        override fun pages(pages: Collection<Component>): Builder
+        override fun pages(pages: Collection<Component>): Builder = pages(pages.asIterable())
+
+        override fun pages(vararg pages: Component): Builder = pages(pages.asIterable())
     }
 
     public companion object {

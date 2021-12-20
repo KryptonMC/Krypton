@@ -1,6 +1,13 @@
+/*
+ * This file is part of the Krypton API, licensed under the MIT license.
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
+ *
+ * This project is licensed under the terms of the MIT license.
+ * For more details, please reference the LICENSE file in the api top-level directory.
+ */
 package org.kryptonmc.api.item.meta
 
-import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.item.data.FireworkEffect
 
@@ -8,7 +15,7 @@ import org.kryptonmc.api.item.data.FireworkEffect
  * Item metadata for a firework rocket.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta> {
+public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta>, ItemMetaBuilder.Provider<FireworkRocketMeta.Builder> {
 
     /**
      * The effects that will display from the stars that the rocket produces
@@ -38,7 +45,7 @@ public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta> {
      * @param effect the effect to add
      * @return new item metadata
      */
-    public fun addEffect(effect: Component): FireworkRocketMeta
+    public fun addEffect(effect: FireworkEffect): FireworkRocketMeta
 
     /**
      * Creates new item metadata with the effect at the given [index] removed
@@ -58,7 +65,7 @@ public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta> {
      * @param effect the effect to remove
      * @return new item metadata
      */
-    public fun removeEffect(effect: Component): FireworkRocketMeta
+    public fun removeEffect(effect: FireworkEffect): FireworkRocketMeta
 
     /**
      * Creates new item metadata with the given flight [duration].
@@ -89,7 +96,7 @@ public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta> {
          * @return this builder
          */
         @Contract("_ -> this", mutates = "this")
-        public fun effects(vararg effects: FireworkEffect): Builder
+        public fun effects(vararg effects: FireworkEffect): Builder = effects(effects.asIterable())
 
         /**
          * Sets the list of effects for the rocket to the given [effects].
@@ -100,7 +107,7 @@ public interface FireworkRocketMeta : ScopedItemMeta<FireworkRocketMeta> {
         @JvmSynthetic
         @JvmName("effectsArray")
         @Contract("_ -> this", mutates = "this")
-        public fun effects(effects: Array<FireworkEffect>): Builder
+        public fun effects(effects: Array<FireworkEffect>): Builder = effects(effects.asIterable())
 
         /**
          * Adds the given [effect] to the list of effects for the rocket.

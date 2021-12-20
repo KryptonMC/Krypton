@@ -1,3 +1,11 @@
+/*
+ * This file is part of the Krypton API, licensed under the MIT license.
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
+ *
+ * This project is licensed under the terms of the MIT license.
+ * For more details, please reference the LICENSE file in the api top-level directory.
+ */
 package org.kryptonmc.api.item.data
 
 import net.kyori.adventure.util.Buildable
@@ -11,7 +19,7 @@ import java.awt.Color
  * An effect that may be produced from a firework star exploding.
  */
 @Suppress("INAPPLICABLE_JVM_NAME")
-public interface FireworkEffect {
+public interface FireworkEffect : Buildable<FireworkEffect, FireworkEffect.Builder> {
 
     /**
      * The type of this effect.
@@ -72,7 +80,7 @@ public interface FireworkEffect {
          * @return this builder
          */
         @Contract("_ -> this", mutates = "this")
-        public fun flickers(): Builder
+        public fun flickers(): Builder = flicker(true)
 
         /**
          * Sets whether the firework effect has a trail to the given [value].
@@ -89,7 +97,7 @@ public interface FireworkEffect {
          * @return this builder
          */
         @Contract("_ -> this", mutates = "this")
-        public fun trail(): Builder
+        public fun trail(): Builder = trail(true)
 
         /**
          * Sets the colours of the firework effect to the given [colors].
@@ -98,7 +106,7 @@ public interface FireworkEffect {
          * @return this builder
          */
         @Contract("_ -> this", mutates = "this")
-        public fun colors(colors: List<Color>): Builder
+        public fun colors(colors: Iterable<Color>): Builder
 
         /**
          * Adds the given [color] to the list of colours for this firework
@@ -117,7 +125,7 @@ public interface FireworkEffect {
          * @return this builder
          */
         @Contract("_ -> this", mutates = "this")
-        public fun fadeColors(colors: List<Color>): Builder
+        public fun fadeColors(colors: Iterable<Color>): Builder
 
         /**
          * Adds the given [color] to the list of fade colours for this

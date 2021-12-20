@@ -1,12 +1,21 @@
+/*
+ * This file is part of the Krypton API, licensed under the MIT license.
+ *
+ * Copyright (C) 2021 KryptonMC and the contributors to the Krypton project.
+ *
+ * This project is licensed under the terms of the MIT license.
+ * For more details, please reference the LICENSE file in the api top-level directory.
+ */
 package org.kryptonmc.api.item.meta
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.kryptonmc.api.Krypton
+import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.block.Block
 import org.kryptonmc.api.item.ItemType
+import org.kryptonmc.api.item.data.FireworkEffect
 import org.kryptonmc.api.item.data.ItemFlag
 import org.kryptonmc.api.util.provide
 import org.kryptonmc.api.world.GameMode
@@ -224,7 +233,9 @@ public interface ItemMeta {
     @ApiStatus.Internal
     public interface Factory {
 
-        public fun <B : ItemMetaBuilder<B, I>, I : ItemMeta> builder(type: Class<I>): B
+        public fun builder(): Builder
+
+        public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> builder(type: Class<P>): B
     }
 
     public companion object {
@@ -238,6 +249,6 @@ public interface ItemMeta {
          * @return a new builder
          */
         @JvmStatic
-        public fun builder(): Builder = FACTORY.builder(ItemMeta::class.java)
+        public fun builder(): Builder = FACTORY.builder()
     }
 }
