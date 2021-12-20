@@ -9,6 +9,7 @@
 @file:JvmSynthetic
 package org.kryptonmc.api.item
 
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.util.Buildable
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
@@ -41,6 +42,18 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
      */
     @get:JvmName("meta")
     public val meta: ItemMeta
+
+    /**
+     * The name of this item stack.
+     */
+    public val name: Component?
+        @JvmName("name") get() = meta.name
+
+    /**
+     * The lore of this item stack.
+     */
+    public val lore: List<Component>
+        @JvmName("lore") get() = meta.lore
 
     /**
      * Gets the metadata for this item stack as the given type [I], or returns
@@ -176,6 +189,23 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
         type: Class<P>,
         builder: Consumer<B>
     ): ItemStack = withMeta(type) { builder.accept(this) }
+
+    /**
+     * Creates a new item stack with the given [name].
+     *
+     * @param name the new name
+     * @return a new item stack
+     */
+    @Contract("_ -> new", pure = true)
+    public fun withName(name: Component?): ItemStack = withMeta(meta.withName(name))
+
+    /**
+     * Creates a new item stack with the given [lore].
+     *
+     * @param lore the new lore
+     * @return a new item stack
+     */
+    public fun withLore(lore: Iterable<Component>): ItemStack = withMeta(meta.withLore(lore))
 
     /**
      * For building new [ItemStack]s.
