@@ -123,6 +123,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
      * @param meta the new meta
      * @return a new item stack
      */
+    @Contract("_ -> new", pure = true)
     public fun withMeta(meta: ItemMeta): ItemStack
 
     /**
@@ -132,7 +133,19 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
      * @param builder the builder to apply
      * @return a new item stack
      */
+    @JvmSynthetic
+    @Contract("_ -> new", pure = true)
     public fun withMeta(builder: ItemMeta.Builder.() -> Unit): ItemStack
+
+    /**
+     * Creates a new item stack with meta retrieved applying the given
+     * [builder] to a new item metadata builder.
+     *
+     * @param builder the builder to apply
+     * @return a new item stack
+     */
+    @Contract("_ -> new", pure = true)
+    public fun withMeta(builder: Consumer<ItemMeta.Builder>): ItemStack = withMeta { builder.accept(this) }
 
     /**
      * Creates a new item stack with meta retrieved applying the given
@@ -145,6 +158,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
      * @return a new item stack
      */
     @JvmSynthetic
+    @Contract("_ -> new", pure = true)
     public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> withMeta(type: Class<P>, builder: B.() -> Unit): ItemStack
 
     /**
@@ -157,6 +171,7 @@ public interface ItemStack : Buildable<ItemStack, ItemStack.Builder> {
      * @param P the metadata type
      * @return a new item stack
      */
+    @Contract("_ -> new", pure = true)
     public fun <B : ItemMetaBuilder<B, P>, P : ItemMetaBuilder.Provider<B>> withMeta(
         type: Class<P>,
         builder: Consumer<B>
