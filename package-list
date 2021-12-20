@@ -40,6 +40,7 @@ org.kryptonmc.api.event.user.whitelist
 org.kryptonmc.api.fluid
 org.kryptonmc.api.inventory
 org.kryptonmc.api.item
+org.kryptonmc.api.item.data
 org.kryptonmc.api.item.meta
 org.kryptonmc.api.permission
 org.kryptonmc.api.plugin
@@ -101,6 +102,7 @@ org.kryptonmc.krypton.entity.player
 org.kryptonmc.krypton.entity.projectile
 org.kryptonmc.krypton.inventory
 org.kryptonmc.krypton.item
+org.kryptonmc.krypton.item.data
 org.kryptonmc.krypton.item.handler
 org.kryptonmc.krypton.item.meta
 org.kryptonmc.krypton.module
