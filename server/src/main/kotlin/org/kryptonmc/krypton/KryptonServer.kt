@@ -52,19 +52,16 @@ import org.kryptonmc.krypton.util.KryptonFactoryProvider
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.register
 import org.kryptonmc.krypton.util.spark.KryptonSparkPlugin
-import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.KryptonWorldManager
 import org.kryptonmc.krypton.world.scoreboard.KryptonScoreboard
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.net.InetSocketAddress
+import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Collections
 import java.util.Locale
 import java.util.UUID
-import kotlin.io.path.exists
-import kotlin.io.path.isDirectory
-import kotlin.io.path.isRegularFile
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.system.exitProcess
@@ -230,8 +227,15 @@ class KryptonServer(
         LOGGER.info("Loading plugins...")
         try {
             val pluginPath = Path.of("plugins")
-            if (!pluginPath.exists()) pluginPath.tryCreateDirectory()
-            if (!pluginPath.isDirectory()) {
+            if (!Files.exists(pluginPath)) {
+                try {
+                    Files.createDirectory(pluginPath)
+                } catch (exception: Exception) {
+                    LOGGER.warn("Failed to create the plugins directory! Plugins will not be loaded!", exception)
+                    return
+                }
+            }
+            if (!Files.isDirectory(pluginPath)) {
                 LOGGER.warn("Plugin path $pluginPath is not a directory! Plugins will not be loaded!")
                 return
             }
@@ -348,7 +352,7 @@ class KryptonServer(
         stop()
         val split = config.other.restartScript.split(" ")
         if (split.isNotEmpty()) {
-            if (!Path.of(split[0]).isRegularFile()) {
+            if (!Files.isRegularFile(Path.of(split[0]))) {
                 println("Unable to find restart script ${split[0]}! Refusing to restart!")
                 return
             }

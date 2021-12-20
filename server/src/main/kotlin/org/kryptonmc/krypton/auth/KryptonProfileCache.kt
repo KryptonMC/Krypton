@@ -22,9 +22,9 @@ import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import org.kryptonmc.api.auth.GameProfile
 import org.kryptonmc.api.auth.ProfileCache
-import org.kryptonmc.krypton.util.tryCreateFile
 import org.kryptonmc.krypton.util.logger
 import java.io.IOException
+import java.nio.file.Files
 import java.nio.file.Path
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -99,7 +99,14 @@ class KryptonProfileCache(private val path: Path) : ProfileCache {
     }
 
     fun save() {
-        path.tryCreateFile()
+        if (!Files.exists(path)) {
+            try {
+                Files.createFile(path)
+            } catch (exception: Exception) {
+                LOGGER.warn("Failed to create profile cache file $path.", exception)
+                return
+            }
+        }
         try {
             JsonWriter(path.writer()).use { writer ->
                 writer.beginArray()

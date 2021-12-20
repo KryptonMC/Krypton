@@ -71,6 +71,7 @@ class KryptonWorldManager(
             }
         }
     )
+    val statsFolder = storageManager.resolve("stats")
 
     private val name = server.config.world.name
     private val data = checkNotNull(storageManager.load(server.config.world.name)) { "You must provide an existing world for Krypton!" }

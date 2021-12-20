@@ -22,22 +22,19 @@ import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry
 import org.kryptonmc.krypton.KryptonPlatform
 import org.kryptonmc.krypton.entity.player.KryptonPlayer
-import org.kryptonmc.krypton.util.createTempFile
 import org.kryptonmc.krypton.util.daemon
 import org.kryptonmc.krypton.util.logger
 import org.kryptonmc.krypton.util.threadFactory
-import org.kryptonmc.krypton.util.tryCreateFile
 import org.kryptonmc.krypton.util.uncaughtExceptionHandler
 import org.kryptonmc.nbt.CompoundTag
 import org.kryptonmc.nbt.io.TagCompression
 import org.kryptonmc.nbt.io.TagIO
 import java.io.IOException
+import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
-import kotlin.io.path.deleteIfExists
-import kotlin.io.path.exists
-import kotlin.io.path.moveTo
 
 /**
  * Responsible for loading and saving player data files
@@ -56,8 +53,12 @@ class PlayerDataManager(val folder: Path) {
 
     fun load(player: KryptonPlayer): CompletableFuture<CompoundTag?> = CompletableFuture.supplyAsync({
         val playerFile = folder.resolve("${player.uuid}.dat")
-        if (!playerFile.exists()) {
-            playerFile.tryCreateFile()
+        if (!Files.exists(playerFile)) {
+            try {
+                Files.createFile(playerFile)
+            } catch (exception: Exception) {
+                LOGGER.warn("Failed to create player file for player with UUID ${player.uuid}!", exception)
+            }
             return@supplyAsync null
         }
 
@@ -93,21 +94,23 @@ class PlayerDataManager(val folder: Path) {
         val data = player.saveWithPassengers().build()
 
         // Create temp file and write data
-        val temp = folder.createTempFile(player.uuid.toString(), ".dat")
+        val temp = Files.createTempFile(folder, player.uuid.toString(), ".dat")
         TagIO.write(temp, data, TagCompression.GZIP)
 
         // Resolve actual file, and if it doesn't exist, rename the temp file
         val dataPath = folder.resolve("${player.uuid}.dat")
-        if (!dataPath.exists()) {
-            temp.moveTo(dataPath)
+        if (!Files.exists(dataPath)) {
+            Files.move(temp, dataPath, StandardCopyOption.REPLACE_EXISTING)
             return data
         }
 
         // Save the old data and then save the new data
-        val oldDataPath = folder.resolve("${player.uuid}.dat_old").apply { deleteIfExists() }
-        dataPath.moveTo(oldDataPath)
-        dataPath.deleteIfExists()
-        temp.moveTo(dataPath)
+        val oldDataPath = folder.resolve("${player.uuid}.dat_old")
+        Files.deleteIfExists(oldDataPath)
+        Files.move(dataPath, oldDataPath, StandardCopyOption.REPLACE_EXISTING)
+        Files.deleteIfExists(dataPath)
+        Files.move(temp, dataPath, StandardCopyOption.REPLACE_EXISTING)
+        Files.deleteIfExists(temp)
         return data
     }
 

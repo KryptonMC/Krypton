@@ -116,8 +116,6 @@ import org.kryptonmc.krypton.util.Directions
 import org.kryptonmc.krypton.util.InteractionResult
 import org.kryptonmc.krypton.util.Positioning
 import org.kryptonmc.krypton.util.serialization.encode
-import org.kryptonmc.krypton.util.logger
-import org.kryptonmc.krypton.util.tryCreateDirectory
 import org.kryptonmc.krypton.world.KryptonWorld
 import org.kryptonmc.krypton.world.chunk.ChunkPosition
 import org.kryptonmc.nbt.CompoundTag
@@ -126,6 +124,7 @@ import org.kryptonmc.nbt.StringTag
 import org.spongepowered.math.vector.Vector3d
 import org.spongepowered.math.vector.Vector3i
 import java.net.InetSocketAddress
+import java.nio.file.Files
 import java.time.Duration
 import java.time.Instant
 import java.util.Locale
@@ -225,10 +224,7 @@ class KryptonPlayer(
 
     override val scoreboard = world.scoreboard
     override var locale: Locale? = null
-    override val statistics = KryptonStatisticsTracker(
-        this,
-        world.folder.resolve("stats").tryCreateDirectory().resolve("$uuid.json")
-    )
+    override val statistics = KryptonStatisticsTracker(this, server.worldManager.statsFolder.resolve("$uuid.json"))
     override val cooldowns = KryptonCooldownTracker(this)
     override val teamRepresentation = name
     override val pushedByFluid = !isFlying

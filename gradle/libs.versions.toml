@@ -141,3 +141,4 @@ adventure = [
 configurate = ["configurate-core", "configurate-gson", "configurate-hocon", "configurate-yaml", "configurate-extra-kotlin", "configurate-extra-guice"]
 netty = ["netty-buffer", "netty-handler", "netty-transport"]
 junit = ["junit-api", "junit-engine", "kotlin-test-junit"]
+kotlin = ["kotlin-stdlib", "kotlin-stdlib-jdk7", "kotlin-stdlib-jdk8", "kotlin-reflect"]
