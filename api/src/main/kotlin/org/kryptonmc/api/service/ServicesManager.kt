@@ -20,10 +20,21 @@ public interface ServicesManager {
      * Registers a new service to this services manager.
      *
      * @param plugin the plugin that registered the service
-     * @param clazz the service class
+     * @param type the type of the service being provided
      * @param service the service being provided
+     * @return the registered service provider
      */
-    public fun <T> register(plugin: Any, clazz: Class<T>, service: T)
+    public fun <T> register(plugin: Any, type: Class<T>, service: T): ServiceProvider<T>
+
+    /**
+     * Registers a new service to this services manager.
+     *
+     * @param plugin the plugin that registered the service
+     * @param type the type of the service being provided
+     * @param service the service being provided
+     * @return the registered service provider
+     */
+    public fun <T> register(plugin: PluginContainer, type: Class<T>, service: T): ServiceProvider<T>
 
     /**
      * Gets the service for the given [clazz], or returns null if there is no
@@ -53,6 +64,18 @@ public interface ServicesManager {
  */
 @JvmSynthetic
 public inline fun <reified T> ServicesManager.register(plugin: PluginContainer, service: T) {
+    register(plugin, T::class.java, service)
+}
+
+/**
+ * Registers a new service to this services manager.
+ *
+ * @param plugin the plugin that registered the service
+ * @param T the service type
+ * @param service the service
+ */
+@JvmSynthetic
+public inline fun <reified T> ServicesManager.register(plugin: Any, service: T) {
     register(plugin, T::class.java, service)
 }
 
