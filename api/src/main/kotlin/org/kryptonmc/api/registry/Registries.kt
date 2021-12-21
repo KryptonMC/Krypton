@@ -57,7 +57,7 @@ public object Registries {
     @JvmField public val PARTICLE_TYPE: Registry<ParticleType> = create(ResourceKeys.PARTICLE_TYPE)
     @JvmField public val BLOCK: Registry<Block> = create(ResourceKeys.BLOCK)
     @JvmField public val ITEM: DefaultedRegistry<ItemType> = createDefaulted(ResourceKeys.ITEM, Key.key("air"))
-    @JvmField public val MENU: Registry<InventoryType> = create(ResourceKeys.MENU)
+    @JvmField public val INVENTORY_TYPES: Registry<InventoryType> = create(ResourceKeys.INVENTORY_TYPES)
     @JvmField public val ATTRIBUTE: Registry<AttributeType> = create(ResourceKeys.ATTRIBUTE)
     @JvmField public val BIOME: Registry<Biome> = create(ResourceKeys.BIOME)
     @JvmField public val STATISTIC_TYPE: Registry<StatisticType<*>> = create(ResourceKeys.STATISTIC_TYPE)
