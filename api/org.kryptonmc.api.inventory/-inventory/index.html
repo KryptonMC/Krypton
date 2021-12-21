@@ -27,39 +27,13 @@ if(savedDarkMode === true){
           <div class="breadcrumbs"><a href="../../index.html">api</a>/<a href="../index.html">org.kryptonmc.api.inventory</a>/<a href="index.html">Inventory</a></div>
           <div class="cover ">
             <h1 class="cover"><span><span>Inventory</span></span></h1>
-            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">Inventory</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-iterable/index.html">Iterable</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.item/-item-stack/index.html">ItemStack</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Represents an inventory that holds <a href="../../org.kryptonmc.api.item/-item-stack/index.html">ItemStack</a>s.</p><p class="paragraph">All get operations in <a href="index.html">Inventory</a> and <strong>all of its subtypes</strong> will return <a href="../../org.kryptonmc.api.item/-item-stack/-companion/empty.html">ItemStack.empty</a> to represent the absence of a value, rather than null.</p></div></div>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">Inventory</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-iterable/index.html">Iterable</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.item/-item-stack/index.html">ItemStack</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">An inventory that contains items.</p><p class="paragraph">The absence of a value in an inventory will always be represented by <a href="../../org.kryptonmc.api.item/-item-stack/-companion/empty.html">ItemStack.empty</a>, not null. This includes the default values in lists of items, such as <a href="items.html">items</a>.</p></div></div>
           </div>
           <div class="tabbedcontent">
             <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
             <div class="tabs-section-body">
               <h2 class="">Functions</h2>
-              <div class="table" data-togglable="Functions"><a data-name="1806371240%2FFunctions%2F-1197683648" anchor-label="add" id="1806371240%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-                <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="add.html"><span><span>add</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1806371240%2FFunctions%2F-1197683648"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="add.html"><span class="token function">add</span></a><span class="token punctuation">(</span>item<span class="token operator">: </span><a href="../../org.kryptonmc.api.item/-item-stack/index.html">ItemStack</a><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Puts the specified item in the first available empty slot in this inventory, or does nothing if the inventory is full.</p></div></div></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-<a data-name="-1341272617%2FFunctions%2F-1197683648" anchor-label="clear" id="-1341272617%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-                <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="clear.html"><span><span>clear</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1341272617%2FFunctions%2F-1197683648"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="clear.html"><span class="token function">clear</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Clears this inventory.</p></div></div></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-<a data-name="-1757030596%2FFunctions%2F-1197683648" anchor-label="contains" id="-1757030596%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+              <div class="table" data-togglable="Functions"><a data-name="-1757030596%2FFunctions%2F-1197683648" anchor-label="contains" id="-1757030596%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
                 <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
                   <div class="main-subrow keyValue ">
                     <div class=""><span class="inline-flex"><a href="contains.html"><span><span>contains</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1757030596%2FFunctions%2F-1197683648"></span>
@@ -111,19 +85,6 @@ if(savedDarkMode === true){
                     </div>
                   </div>
                 </div>
-<a data-name="1833539255%2FFunctions%2F-1197683648" anchor-label="remove" id="1833539255%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-                <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="remove.html"><span><span>remove</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1833539255%2FFunctions%2F-1197683648"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="remove.html"><span class="token function">remove</span></a><span class="token punctuation">(</span>item<span class="token operator">: </span><a href="../../org.kryptonmc.api.item/-item-stack/index.html">ItemStack</a><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Removes the specified <a href="remove.html">item</a> from the array, or does nothing if there isn't an element that matches this <a href="remove.html">item</a>.</p></div></div></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
 <a data-name="-1387152138%2FFunctions%2F-1197683648" anchor-label="spliterator" id="-1387152138%2FFunctions%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
                 <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
                   <div class="main-subrow keyValue ">
@@ -148,19 +109,6 @@ if(savedDarkMode === true){
                     <div>
                       <div class="title">
                         <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-1338043452%2FProperties%2F-1197683648" anchor-label="items" id="-1338043452%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@get:</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-name/index.html"><span class="token annotation">JvmName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"items"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="items.html">items</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.kryptonmc.api.item/-item-stack/index.html">ItemStack</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1338043452%2FProperties%2F-1197683648" anchor-label="items" id="-1338043452%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><p class="paragraph">The items in this inventory.</p></div></div></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-<a data-name="-617467855%2FProperties%2F-1197683648" anchor-label="owner" id="-617467855%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
-                <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
-                  <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="owner.html">owner</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-617467855%2FProperties%2F-1197683648"></span>
-                          <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                        </span></span></div>
-                    <div>
-                      <div class="title">
-                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":api:dokkaHtmlPartial/main"><a data-name="-617467855%2FProperties%2F-1197683648" anchor-label="owner" id="-617467855%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@get:</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-name/index.html"><span class="token annotation">JvmName</span></a><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"owner"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">val </span><a href="owner.html">owner</a><span class="token operator">: </span><a href="../-inventory-holder/index.html">InventoryHolder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-617467855%2FProperties%2F-1197683648" anchor-label="owner" id="-617467855%2FProperties%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a><p class="paragraph">The holder that owns this inventory.</p></div></div></div>
                       </div>
                     </div>
                   </div>
@@ -193,10 +141,10 @@ if(savedDarkMode === true){
                 </div>
               </div>
               <h2 class="">Inheritors</h2>
-              <div class="table" data-togglable="Inheritors"><a data-name="1429666762%2FInheritors%2F-1197683648" anchor-label="PlayerInventory" id="1429666762%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
+              <div class="table" data-togglable="Inheritors"><a data-name="-902407193%2FInheritors%2F-1197683648" anchor-label="MutableInventory" id="-902407193%2FInheritors%2F-1197683648" data-filterable-set=":api:dokkaHtmlPartial/main"></a>
                 <div class="table-row" data-filterable-current=":api:dokkaHtmlPartial/main" data-filterable-set=":api:dokkaHtmlPartial/main">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../-player-inventory/index.html">PlayerInventory</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1429666762%2FInheritors%2F-1197683648"></span>
+                    <div class=""><span class="inline-flex"><a href="../-mutable-inventory/index.html">MutableInventory</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-902407193%2FInheritors%2F-1197683648"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div></div>
